@@ -54,8 +54,8 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 				'status'    => ''
 			);
 			foreach ( $course_items as $item_id ) {
-
-				if ( false !== ( $data = wp_cache_get( sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_id(), $item_id ), 'lp-user-course-items' ) ) ) {
+				$cache_name = sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_id(), $item_id );
+				if ( false !== ( $data = wp_cache_get( $cache_name, 'lp-user-course-items' ) ) ) {
 					$data = end( $data );
 				} else {
 					$data = wp_parse_args(
@@ -66,8 +66,16 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 						$default_data
 					);
 				}
-
-				$this->_items[ $item_id ] = new LP_User_Item( $data );
+				$item = false;
+				switch ( get_post_type( $item_id ) ) {
+					case LP_LESSON_CPT:
+						$item = new LP_User_Item( $data );
+						break;
+					case LP_QUIZ_CPT:
+						$item = new LP_User_Item_Quiz( $data );
+						break;
+				}
+				$this->_items[ $item_id ] = apply_filters( 'learn-press/user-course-item', $item, $data, $this );
 			}
 		}
 
@@ -257,5 +265,14 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 		$item   = ! empty( $values[ $at ] ) ? $values[ $at ] : false;
 
 		return $item;
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @return LP_User_Item_Quiz|bool
+	 */
+	public function get_item_quiz($id){
+		return ! empty( $this->_items[ $id ] ) ? $this->_items[ $id ] : false;
 	}
 }

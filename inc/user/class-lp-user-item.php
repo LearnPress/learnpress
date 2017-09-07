@@ -95,18 +95,13 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * Get current question ID (quiz).
-	 *
-	 * @return int
-	 */
-	public function get_current_question() {
-		return learn_press_get_user_item_meta( $this->get_data( 'user_item_id' ), '_current_question', true );
-	}
-
-	/**
 	 * @return int
 	 */
 	public function get_user_item_id(){
 		return $this->get_data('user_item_id');
+	}
+
+	public function get_item_id(){
+		return $this->get_data('item_id');
 	}
 }

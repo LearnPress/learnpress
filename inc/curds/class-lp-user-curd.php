@@ -347,11 +347,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			foreach ( $items as $user_item_id => $_items ) {
 				$cache_name = sprintf( 'course-item-%d-%d-%d', $parent_item['user_id'], $parent_item['item_id'], $user_item_id );
 				// Refresh caching
-				if ( $force ) {
-					wp_cache_delete( $cache_name, 'lp-user-course-items' );
+				if ( false !== wp_cache_get( $cache_name, 'lp-user-course-items' ) ) {
+					wp_cache_replace( $cache_name, $_items, 'lp-user-course-items' );
+				} else {
+					wp_cache_set( $cache_name, $_items, 'lp-user-course-items' );
 				}
-
-				wp_cache_set( $cache_name, $_items, 'lp-user-course-items' );
 			}
 		}
 
@@ -520,9 +520,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			} else {
 				wp_cache_add( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
 			}
-
 		}
-
 		return $user_item_id;
 	}
 

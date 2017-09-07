@@ -174,16 +174,23 @@ add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_cont
 add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_summary_content', 20 );
 
 /**
+ * @see learn_press_content_item_summary_quiz_progress()
+ * @see learn_press_content_item_summary_question_title()
+ * @see learn_press_content_item_summary_question_content()
  * @see learn_press_content_item_summary_question()
  */
-add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question', 10 );
+
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_progress', 10 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_title', 15 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_content', 20 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question', 25 );
 
 /**
  * @see learn_press_content_item_summary_question_numbers()
  * @see learn_press_content_item_summary_quiz_buttons()
  */
-add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_numbers', 10 );
-add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_buttons', 15 );
+add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_buttons', 10 );
+add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_numbers', 15 );
 
 /**
  * @see learn_press_quiz_nav_buttons()

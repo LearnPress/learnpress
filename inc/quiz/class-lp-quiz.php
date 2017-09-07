@@ -163,11 +163,9 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	/**
 	 * Get quiz questions.
 	 *
-	 * @param bool $force
-	 *
 	 * @return mixed
 	 */
-	public function get_questions( $force = false ) {
+	public function get_questions() {
 		$questions = $this->_curd->get_questions( $this );
 
 		return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
@@ -415,7 +413,8 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 * @return mixed
 	 */
 	public function __get( $key ) {
-		echo '@deprecated[' . $key . ']';learn_press_debug(debug_backtrace());
+		echo '@deprecated[' . $key . ']';
+		learn_press_debug( debug_backtrace() );
 
 		return false;
 	}
@@ -677,14 +676,18 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	public function has_questions() {
-		return $this->get_questions();
+		return $this->count_questions() > 0;
 	}
 
 	public function has_question( $question_id ) {
 		return is_array( $this->get_questions() ) && isset( $this->questions[ $question_id ] );
 	}
 
-
+	/**
+	 * @param null $question_id
+	 *
+	 * @return mixed|void
+	 */
 	public function get_question_link( $question_id = null ) {
 		$course = LP_Global::course();
 
@@ -698,6 +701,75 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 		return apply_filters( 'learn_press_quiz_question_permalink', $permalink, $question_id, $this );
 	}
+
+	/**
+	 * Get prev question from a question.
+	 *
+	 * @param int $id
+	 *
+	 * @return bool
+	 */
+	public function get_prev_question( $id ) {
+		$prev = false;
+		if ( ( $questions = $this->get_questions() ) ) {
+			$questions = array_values( $questions );
+			if ( 0 < ( $at = array_search( $id, $questions ) ) ) {
+				$prev = $questions[ $at - 1 ];
+			}
+		}
+
+		return $prev;
+	}
+
+	/**
+	 * Get next question from a question.
+	 *
+	 * @param int $id
+	 *
+	 * @return bool
+	 */
+	public function get_next_question( $id ) {
+		$next = false;
+		if ( ( $questions = $this->get_questions() ) ) {
+			$questions = array_values( $questions );
+			if ( sizeof( $questions ) - 1 > ( $at = array_search( $id, $questions ) ) ) {
+				$next = $questions[ $at + 1 ];
+			}
+		}
+
+		return $next;
+	}
+
+	/**
+	 * Get index number of a question.
+	 *
+	 * @param int $id
+	 *
+	 * @return bool|mixed
+	 */
+	public function get_question_index( $id ) {
+		$index = false;
+		if ( ( $questions = $this->get_questions() ) ) {
+			$questions = array_values( $questions );
+			$index     = array_search( $id, $questions );
+		}
+
+		return $index;
+	}
+
+	/**
+	 * Count number questions in quiz.
+	 *
+	 * @return int
+	 */
+	public function count_questions() {
+		if ( ( $questions = $this->get_questions() ) ) {
+			return sizeof( $questions );
+		}
+
+		return 0;
+	}
+
 
 	public function get_question_param( $name, $id ) {
 		if ( $this->get_questions() ) {

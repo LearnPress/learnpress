@@ -84,7 +84,6 @@ class LP_Page_Controller {
 		global $lp_course, $lp_course_item, $wp_filter;
 		if ( $lp_course_item ) {
 
-
 			if ( ! empty( $wp_filter['learn-press/content-learning-summary'] ) ) {
 				unset( $wp_filter['learn-press/content-learning-summary'] );
 			}
@@ -176,6 +175,34 @@ class LP_Page_Controller {
 //			get_footer();
 //			die();
 		}
+
+		global $lp_quiz_question;
+		if($lp_quiz_question){
+			add_filter( 'admin_bar_menu', function () {
+				if ( ! ( ! is_admin() && is_user_logged_in() ) ) {
+					return;
+				}
+
+				if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
+					//return;
+				}
+
+				global $wp_admin_bar, $lp_quiz_question;
+
+				if ( ( $post_type_object = get_post_type_object( $lp_quiz_question->get_item_type() ) )
+				     && current_user_can( 'edit_post', $lp_quiz_question->get_id() )
+				     && $post_type_object->show_in_admin_bar
+				     && $edit_post_link = get_edit_post_link( $lp_quiz_question->get_id() )
+				) {
+					$type = get_post_type( $lp_quiz_question->get_id() );
+					$wp_admin_bar->add_menu( array(
+						'id'    => 'edit-' . $type,
+						'title' => $post_type_object->labels->edit_item,
+						'href'  => $edit_post_link
+					) );
+				}
+			}, 90 );
+        }
 
 		return $template;
 	}

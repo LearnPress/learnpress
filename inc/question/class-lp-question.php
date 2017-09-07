@@ -573,7 +573,6 @@ class LP_Question extends LP_Course_Item {
 	}
 
 	public function get_answers( $field = null, $exclude = null ) {
-		global $wpdb;
 		$answers      = array();
 		$data_answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'lp-questions' );
 

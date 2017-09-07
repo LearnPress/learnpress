@@ -19,8 +19,8 @@ isset( $question ) or die( __( 'Invalid question!', 'learnpress' ) );
 $question = LP_Question_Factory::get_question( $question->get_id() );
 
 $completed       = $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() );
-$course_finished = $user->has_finished_course( $course->get_id() );
-$checked         = $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() );
+//$course_finished = $user->has_finished_course( $course->get_id() );
+//$checked         = $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() );
 $show_result     = $quiz->get_data( 'show_result' ) == 'yes';
 $args            = array();
 
@@ -64,6 +64,7 @@ if ( ! $answers = $question->get_answers() ) {
 //		}
 		$disabled = '';
 		$id = uniqid( 'option-' );
+		$checked=false;
 		?>
         <li <?php echo $answer->option_class(); ?>  @click="toggle">
             <input type="checkbox"

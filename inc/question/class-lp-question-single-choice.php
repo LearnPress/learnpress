@@ -132,11 +132,11 @@ class LP_Question_Single_Choice extends LP_Question {
 			'correct' => false,
 			'mark'    => 0
 		);
-		if ( $answers = $this->answers ) {
+		if ( $answers = $this->get_answers() ) {
 			foreach ( $answers as $k => $answer ) {
 				if ( ( $answer['is_true'] == 'yes' ) && ( $this->is_selected_option( $answer, $user_answer ) /*$answer['value'] == $user_answer*/ ) ) {
 					$return['correct'] = true;
-					$return['mark']    = floatval( $this->mark );
+					$return['mark']    = floatval( $this->get_mark() );
 					break;
 				}
 			}

@@ -305,24 +305,28 @@ body {
 
 #wpadminbar {
     #wp-admin-bar-edit-lp_quiz,
-    #wp-admin-bar-edit-lp_lesson {
+    #wp-admin-bar-edit-lp_lesson,
+    #wp-admin-bar-edit-lp_question{
         .ab-item:before {
             font-family: fontawesome;
+            top:2px;
         }
     }
     #wp-admin-bar-edit-lp_quiz {
         .ab-item:before {
             content: "\f017";
-            top: 2px;
         }
     }
     #wp-admin-bar-edit-lp_lesson {
         .ab-item:before {
             content: "\f0f6";
-            top: 2px;
         }
     }
-
+    #wp-admin-bar-edit-lp_question {
+        .ab-item:before {
+            content: "\f29c";
+        }
+    }
 }
 
 .scroll-wrapper {

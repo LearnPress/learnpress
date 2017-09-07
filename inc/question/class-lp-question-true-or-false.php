@@ -157,11 +157,11 @@ class LP_Question_True_Or_False extends LP_Question {
 			'correct' => false,
 			'mark'    => 0
 		);
-		if ( $answers = $this->answers ) {
+		if ( $answers = $this->get_answers() ) {
 			foreach ( $answers as $k => $answer ) {
 				if ( ( $answer['is_true'] == 'yes' ) && ( $answer['value'] == $user_answer ) ) {
 					$return['correct'] = true;
-					$return['mark']    = floatval( $this->mark );
+					$return['mark']    = floatval( $this->get_mark() );
 					break;
 				}
 			}

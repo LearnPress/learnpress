@@ -414,7 +414,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	public
-	function get_current_question(
+	function get_current_question_x(
 		$quiz_id, $what = ''
 	) {
 		$current = $this->get_current_question_id( $quiz_id );
@@ -760,7 +760,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			wp_cache_replace( $cache_name, $items, 'lp-user-course-items' );
 		}
 
-		do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items[$user_item_id] );
+		do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items[ $user_item_id ] );
 
 		return $user_item_id;
 	}
@@ -777,13 +777,67 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( ! $course_data = $this->get_course_data( $course_id ) ) {
 			return false;
 		}
-		$course = learn_press_get_course($course_id);
-		$id = learn_press_get_user_item_meta( $course_data->get_user_item_id(), '_current_item', true );
+		$course = learn_press_get_course( $course_id );
+		$id     = learn_press_get_user_item_meta( $course_data->get_user_item_id(), '_current_item', true );
 		if ( $permalink && $id ) {
 			return apply_filters( 'learn-press/current-course-item-permalink', $course->get_item_link( $id ), $course_id, $this->get_id() );
 		} else {
 			return apply_filters( 'learn-press/current-course-item', $id, $course_id, $this->get_id() );
 		}
+	}
+
+	/**
+	 * Get current question's ID/Permalink inside quiz.
+	 *
+	 * @param int  $quiz_id
+	 * @param int  $course_id
+	 * @param bool $permalink
+	 *
+	 * @return bool|int|string
+	 */
+	public function get_current_question( $quiz_id, $course_id, $permalink = false ) {
+		$data = $this->get_course_data( $course_id );
+		if ( empty( $data[ $quiz_id ] ) ) {
+			return false;
+		}
+
+		$quiz        = learn_press_get_quiz( $quiz_id );
+		$quiz_item   = $data[ $quiz_id ];
+		$question_id = $quiz_item->get_current_question();
+
+		if ( $question_id && $permalink ) {
+			return apply_filters( 'learn-press/current-user-question-permalink', $quiz->get_question_link( $question_id ), $quiz_id, $course_id, $this->get_id() );
+		}
+
+		return apply_filters( 'learn-press/current-user-question', $question_id );
+	}
+
+	public function get_prev_question( $quiz_id = null, $course_id, $permalink = false ) {
+		if ( ! $quiz_id ) {
+			$quiz_id = $this->get_current_item( $course_id );
+		}
+
+		if ( ! $quiz_id ) {
+			return false;
+		}
+		$current = $this->get_current_question( $quiz_id, $course_id );
+		$quiz    = learn_press_get_quiz( $quiz_id );
+
+		return $quiz->get_prev_question( $current );
+	}
+
+	public function get_next_question( $quiz_id = null, $course_id, $permalink = false ) {
+		if ( ! $quiz_id ) {
+			$quiz_id = $this->get_current_item( $course_id );
+		}
+
+		if ( ! $quiz_id ) {
+			return false;
+		}
+		$current = $this->get_current_question( $quiz_id, $course_id );
+		$quiz    = learn_press_get_quiz( $quiz_id );
+
+		return $quiz->get_next_question( $current );
 	}
 
 	/**
@@ -1032,6 +1086,42 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		 *
 		 **/
 	}
+
+	/**
+	 * Get current results of a quiz
+	 *
+	 * @param int  $quiz_id
+	 * @param int  $course_id
+	 * @param bool $force
+	 *
+	 * @return mixed
+	 */
+	public
+	function get_quiz_results(
+		$quiz_id, $course_id = 0, $force = false
+	) {
+		learn_press_debug(debug_backtrace());
+		die(__CLASS__.'::'.__FUNCTION__);
+		$course_id    = $this->_get_course( $course_id );
+		$quiz_results = LP_Cache::get_quiz_results( false, array() );
+		$key          = $this->get_id() . '-' . $course_id . '-' . $quiz_id;
+		if ( ! array_key_exists( $key, $quiz_results ) || $force ) {
+			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
+				$quiz_results[ $key ] = reset( $history );
+				if ( $user_results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[ $key ] ) ) {
+					foreach ( $user_results as $k => $v ) {
+						$quiz_results[ $key ]->{$k} = $v;
+					}
+				}
+			} else {
+				$quiz_results[ $key ] = false;
+			}
+			LP_Cache::set_quiz_results( $quiz_results );
+		}
+
+		return $quiz_results[ $key ];
+	}
+
 
 	/**
 	 * Get current question user doing for a quiz
@@ -2184,39 +2274,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn-press/user-course-status', $status, $course_id, $this->get_id() );
 
 		//return apply_filters( 'learn_press_user_course_status', $this->get_course_info( $course_id, 'status' ), $this->get_id() );
-	}
-
-	/**
-	 * Get current results of a quiz
-	 *
-	 * @param int  $quiz_id
-	 * @param int  $course_id
-	 * @param bool $force
-	 *
-	 * @return mixed
-	 */
-	public
-	function get_quiz_results(
-		$quiz_id, $course_id = 0, $force = false
-	) {
-		$course_id    = $this->_get_course( $course_id );
-		$quiz_results = LP_Cache::get_quiz_results( false, array() );
-		$key          = $this->get_id() . '-' . $course_id . '-' . $quiz_id;
-		if ( ! array_key_exists( $key, $quiz_results ) || $force ) {
-			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
-				$quiz_results[ $key ] = reset( $history );
-				if ( $user_results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[ $key ] ) ) {
-					foreach ( $user_results as $k => $v ) {
-						$quiz_results[ $key ]->{$k} = $v;
-					}
-				}
-			} else {
-				$quiz_results[ $key ] = false;
-			}
-			LP_Cache::set_quiz_results( $quiz_results );
-		}
-
-		return $quiz_results[ $key ];
 	}
 
 	/**

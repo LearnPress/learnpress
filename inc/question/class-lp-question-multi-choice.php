@@ -102,21 +102,14 @@ class LP_Question_Multi_Choice extends LP_Question {
 	public function check( $user_answer = null ) {
 		$return = array(
 			'correct' => true,
-			'mark'    => floatval( $this->mark )
+			'mark'    => floatval( $this->get_mark() )
 		);
 		settype( $user_answer, 'array' );
-		if ( $answers = $this->answers ) {
+		if ( $answers = $this->get_answers() ) {
 			foreach ( $answers as $k => $answer ) {
-				$correct = false;
 				if ( $answer['is_true'] == 'yes' ) {
-					/**if( in_array( $answer['value'], $user_answer ) ){
-					 * $correct = true;
-					 * }*/
 					$correct = $this->is_selected_option( $answer, $user_answer );
 				} else {
-					/*if( ! in_array( $answer['value'], $user_answer ) ){
-						$correct = true;
-					}*/
 					$correct = ! $this->is_selected_option( $answer, $user_answer );
 				}
 

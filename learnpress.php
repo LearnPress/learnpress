@@ -701,6 +701,11 @@ function load_learn_press() {
 $GLOBALS['LearnPress'] = LP();
 
 
+/**
+ * The code below are used for testing purpose
+ *
+ * TODO: Remove these code before releasing.
+ */
 class LP_Global {
 	/**
 	 * @return LP_Quiz|LP_Lesson
@@ -732,12 +737,21 @@ class LP_Global {
 	/**
 	 * Alias of course item for highlighting in dev
 	 *
-	 * @return LP_Quiz
+	 * @return LP_Quiz|bool
 	 */
 	public static function course_item_quiz() {
 		$item = self::course_item();
 
 		return $item instanceof LP_Quiz ? $item : false;
+	}
+
+	/**
+	 * @return LP_Question
+	 */
+	public static function quiz_question() {
+		global $lp_quiz_question;
+
+		return $lp_quiz_question;
 	}
 }
 

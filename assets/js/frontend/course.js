@@ -143,6 +143,13 @@
                 callbacks: {}
             },
             methods: {
+                nextQuestion: function (event) {
+                    event.preventDefault();
+                    var data = $('.answer-options').serializeJSON();
+                    console.log(data)
+                    $(event.target.form).submit();
+
+                },
                 completeItem: function (event) {
                     event.preventDefault();
                     $(event.target.form).submit();
@@ -154,9 +161,11 @@
                         return;
                     }
                     $chk = $el.closest('.answer-option').find('input.option-check');
-                    console.log($el, $chk);
-
-                    $chk[0].checked = !$chk[0].checked;
+                    if ($chk.is(':checkbox')) {
+                        $chk[0].checked = !$chk[0].checked;
+                    } else {
+                        $chk[0].checked = true;
+                    }
                 }
             }
         });
@@ -177,10 +186,10 @@
                 var $oldHead = $('head'),
                     $oldBody = $('body');
 
-                jQuery('html').append($head).append($body).load(function(){
+                jQuery('html').append($head).append($body).load(function () {
                     alert();
                 });
-                setTimeout(function($a, $b){
+                setTimeout(function ($a, $b) {
                     $a.remove();
                     $b.remove();
                 }, 300, $oldHead, $oldBody)
