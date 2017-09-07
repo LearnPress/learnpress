@@ -20,6 +20,10 @@
     }
 }
 
+.form-button {
+    display: inline-block;
+}
+
 .learn-press-pagination {
     text-align: center;
     .page-numbers {
@@ -34,7 +38,7 @@
                 box-shadow: none;
                 line-height: 1;
             }
-            span{
+            span {
                 background: #F5F5F5;
             }
         }

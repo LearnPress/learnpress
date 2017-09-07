@@ -61,6 +61,10 @@ class LP_Page_Controller {
 
 		$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
 
+		if ( ! $user_item_id ) {
+			return $post;
+		}
+
 		if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
 			$question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT );
 

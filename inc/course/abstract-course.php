@@ -368,7 +368,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 */
 	public function set_viewing_item( $item ) {
 		if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
-			return;
+			return 0;
 		}
 		$user = learn_press_get_current_user();
 

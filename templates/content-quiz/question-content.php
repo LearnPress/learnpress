@@ -9,7 +9,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
+die();
 $user   = learn_press_get_current_user();
 $course = LP()->global['course'];
 $quiz   = isset( $item ) ? $item : LP()->global['course-item'];

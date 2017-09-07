@@ -772,14 +772,18 @@ function xyz() {
 		return;
 	}
 	remove_action( 'get_header', 'xyz' );
-	do_action('wp_head');
+	do_action( 'wp_head' );
 	learn_press_get_template( 'single-course/tabs/curriculum.php' );
 	learn_press_get_template( 'single-course/content-item.php' );
-	do_action('wp_footer');
+	do_action( 'wp_footer' );
 	die();
 }
 
 add_action( 'get_header', 'xyz' );
+
+add_action( 'learn_press/before_course_item_content', function ( $a, $b ) {
+	echo '<a href="' . get_permalink( $b ) . '">' . __( 'Course', 'learnpress' ) . '</a>';
+}, 10, 2 );
 
 //add_action( 'init', function () {
 //	$file = get_cache_file();

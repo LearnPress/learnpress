@@ -708,11 +708,18 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			return false;
 		}
 
-		if ( ! $course_data->get_data( 'user_item_id' ) ) {
+		if ( ! ( $user_course_item_id = $course_data->get_data( 'user_item_id' ) ) ) {
 			return false;
 		}
 
 		$user_item = $this->get_item( $item_id, $course_id, true );
+
+		/**
+		 * Update current item id is viewing in course
+		 */
+		if ( $item_id && $item_id != learn_press_get_user_item_meta( $user_course_item_id, '_current_item', true ) ) {
+			learn_press_update_user_item_meta( $user_course_item_id, '_current_item', $item_id );
+		}
 
 		if ( $user_item ) {
 			return $user_item['user_item_id'];
@@ -739,6 +746,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			return false;
 		}
 
+		// Update new changes to cache
 		$items = array(
 			$user_item_id => $this->_curd->get_user_item_by_id( $user_item_id )
 		);
@@ -752,9 +760,30 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			wp_cache_replace( $cache_name, $items, 'lp-user-course-items' );
 		}
 
-		do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items['user_item_id'] );
+		do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items[$user_item_id] );
 
 		return $user_item_id;
+	}
+
+	/**
+	 * Get item user has accessed in last time.
+	 *
+	 * @param  int $course_id
+	 * @param bool $permalink - Optional. TRUE will return permalink instead of ID.
+	 *
+	 * @return mixed
+	 */
+	public function get_current_item( $course_id, $permalink = false ) {
+		if ( ! $course_data = $this->get_course_data( $course_id ) ) {
+			return false;
+		}
+		$course = learn_press_get_course($course_id);
+		$id = learn_press_get_user_item_meta( $course_data->get_user_item_id(), '_current_item', true );
+		if ( $permalink && $id ) {
+			return apply_filters( 'learn-press/current-course-item-permalink', $course->get_item_link( $id ), $course_id, $this->get_id() );
+		} else {
+			return apply_filters( 'learn-press/current-course-item', $id, $course_id, $this->get_id() );
+		}
 	}
 
 	/**
