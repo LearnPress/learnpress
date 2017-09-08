@@ -32,7 +32,7 @@ class LP_Schedules {
 			$course   = learn_press_get_course();
 			$user     = learn_press_get_current_user();
 			$duration = $course->get_duration();
-			if( $duration && $user->has_enrolled_course( $course->id, true ) && !$user->has_finished_course( $course->id, true ) && $course->is_expired( $user->id ) <= 0 ) {
+			if( $duration && $user->has_enrolled_course( $course->id/*, true*/ ) && !$user->has_finished_course( $course->id/*, true */) && $course->is_expired( $user->id ) <= 0 ) {
 				$user->finish_course($course->id);
 				$this->schedule_update_user_items();
 				wp_redirect( get_permalink( $course->id ) );

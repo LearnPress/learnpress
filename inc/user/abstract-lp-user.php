@@ -1160,7 +1160,7 @@ class LP_Abstract_User {
 	public function can_purchase_course( $course_id ) {
 		$course        = learn_press_get_course( $course_id );
 		$course_status = $this->get_course_status( $course_id );
-		$purchasable   = $course->is_free() && ! $course->is_reached_limit() && !is_user_logged_in() || ! $course->is_free() && ! $course->is_reached_limit() && ( ! $this->has_ordered_course( $course_id ) || ( $this->has_ordered_course( $course_id ) && $course_status == 'finished' ) );
+		$purchasable   = $course->is_free() && ! $course->is_reached_limit() && ! is_user_logged_in() || ! $course->is_free() && ! $course->is_reached_limit() && ( ! $this->has_ordered_course( $course_id ) || ( $this->has_ordered_course( $course_id ) && $course_status == 'finished' ) );
 
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
@@ -1539,6 +1539,7 @@ class LP_Abstract_User {
 			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id );
 			if ( ! array_key_exists( $key, $item_statuses ) ) {
 				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id, $order_id );
+				LP_Cache::set_item_statuses( $item_statuses );
 			} elseif ( ! empty( $item_statuses[ $key ] ) && $item_statuses[ $key ] != '' ) {
 				$enrolled = true;
 			}

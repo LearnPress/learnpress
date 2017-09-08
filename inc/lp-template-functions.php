@@ -417,8 +417,9 @@ if ( ! function_exists( 'learn_press_section_item_meta' ) ) {
 	 * @param LP_Course
 	 */
 	function learn_press_section_item_meta( $item, $section, $course ) {
-		learn_press_get_template( 'single-course/section/item-meta.php', array( 'item'    => $item,
-		                                                                        'section' => $section
+		learn_press_get_template( 'single-course/section/item-meta.php', array(
+			'item'    => $item,
+			'section' => $section
 		) );
 	}
 }
@@ -527,9 +528,10 @@ if ( ! function_exists( 'learn_press_output_user_profile_tabs' ) ) {
 	 * @param LP_User
 	 */
 	function learn_press_output_user_profile_tabs( $user, $current, $tabs ) {
-		learn_press_get_template( 'profile/tabs.php', array( 'user'    => $user,
-		                                                     'tabs'    => $tabs,
-		                                                     'current' => $current
+		learn_press_get_template( 'profile/tabs.php', array(
+			'user'    => $user,
+			'tabs'    => $tabs,
+			'current' => $current
 		) );
 	}
 }
@@ -1556,6 +1558,7 @@ function learn_press_load_content_item_only( $name ) {
 			die();
 		}
 	}
+
 	return $name;
 }
 

@@ -493,6 +493,7 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 }
 
 function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = false ) {
+	$force=false;
 	if ( did_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" ) && ! $force ) {
 		return;
 	}
@@ -536,6 +537,9 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	}
 	$items = $wpdb->get_results( $query );
 
+	if($force){
+
+	}
 	$item_statuses = LP_Cache::get_item_statuses( false, array() );
 	$quiz_grades   = LP_Cache::get_quiz_grade( false, array() );
 	foreach ( $item_ids as $id ) {
