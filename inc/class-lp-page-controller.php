@@ -68,7 +68,7 @@ class LP_Page_Controller {
 		if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
 			$question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT );
 
-			//print_r( $question );
+			print_r( $question );
 
 			$lp_quiz_question = LP_Question_Factory::get_question( $question->ID );
 			if ( $user_item_id && learn_press_get_user_item_meta( $user_item_id, '_current_question', true ) != $question->ID ) {

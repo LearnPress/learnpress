@@ -30,6 +30,7 @@ if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) {
           action="<?php echo $quiz->get_question_link( $next_id ); ?>"
           @click="nextQuestion">
         <button type="submit"><?php _e( 'Next', 'learnpress' ); ?></button>
+		<?php LP_Nonce_Helper::quiz_action( 'next-question', $quiz->get_id(), $course_id ); ?>
     </form>
 	<?php
 }

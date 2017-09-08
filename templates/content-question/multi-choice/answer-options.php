@@ -16,7 +16,7 @@ $user   = LP_Global::user();
 
 isset( $question ) or die( __( 'Invalid question!', 'learnpress' ) );
 
-$question = LP_Question_Factory::get_question( $question->get_id() );
+$question = $quiz->get_viewing_question();// LP_Question_Factory::get_question( $question->get_id() );
 
 $completed       = $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() );
 //$course_finished = $user->has_finished_course( $course->get_id() );
@@ -65,13 +65,15 @@ if ( ! $answers = $question->get_answers() ) {
 		$disabled = '';
 		$id = uniqid( 'option-' );
 		$checked=false;
+		$answered = (array)$question->get_data('answered');
+
 		?>
         <li <?php echo $answer->option_class(); ?>  @click="toggle">
             <input type="checkbox"
                    class="option-check"
                    name="learn-press-question-<?php echo $question->get_id(); ?>[]"
                    value="<?php echo $answer->get_value(); ?>"
-				<?php checked( $question->is_selected_option( $answer, true ) ); ?>
+				<?php checked( in_array($answer->get_value(), $answered)); ?>
 				<?php echo $disabled; ?> />
             <div class="option-title">
                 <div class="option-title-content"><?php echo apply_filters( 'learn_press_question_answer_text', $answer->get_title(), $answer, $question ); ?></div>

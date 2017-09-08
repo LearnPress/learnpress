@@ -145,9 +145,10 @@
             methods: {
                 nextQuestion: function (event) {
                     event.preventDefault();
-                    var data = $('.answer-options').serializeJSON();
-                    console.log(data)
-                    $(event.target.form).submit();
+                    var data = $('.answer-options').serializeJSON(),
+                        $form = $(event.target.form),
+                        $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
+                    $form.append($hidden).submit();
 
                 },
                 completeItem: function (event) {

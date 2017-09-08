@@ -503,10 +503,14 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_content' ) ) 
 if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 
 	function learn_press_content_item_summary_question() {
-		$quiz = LP_Global::course_item_quiz();
-
+		$quiz   = LP_Global::course_item_quiz();
 		if ( $question = $quiz->get_viewing_question() ) {
-			$question->render();
+			$course = LP_Global::course();
+			$user   = LP_Global::user();
+			$course_data = $user->get_course_data( $course->get_id() );
+			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+
+			$question->render( $quiz_data->get_question_answer( $question->get_id() ) );
 		}
 	}
 }

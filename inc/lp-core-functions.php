@@ -410,12 +410,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	// Ensure that post name has to be sanitized. Fixed in 2.1.6
 	$name = sanitize_title( $name );
 
-	$post_names = LP_Cache::get_post_names( false, array() );
-	$post       = false;
-	if ( ! empty( $post_names[ $type ][ $name ] ) ) {
-		$post = get_post( $post_names[ $type ][ $name ] );
-	}
-	if ( ! $post ) {
+	if(false === ($id = wp_cache_get( $type . '-' . $name, 'lp-post-names' ))){
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT *
@@ -1882,7 +1877,7 @@ function learn_press_add_endpoints() {
 	if ( $endpoints = LP()->settings->get( 'checkout_endpoints' ) ) {
 		foreach ( $endpoints as $endpoint => $value ) {
 
-			$value = $value ? $value : $defaults[$endpoint];
+			$value = $value ? $value : $defaults[ $endpoint ];
 
 			$endpoint                     = preg_replace( '!_!', '-', $endpoint );
 			LP()->query_vars[ $endpoint ] = $value;

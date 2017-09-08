@@ -19,12 +19,14 @@ class LP_Quiz_Factory {
 	 */
 	public static function init() {
 		$actions = array(
-			'start-quiz'        => 'start_quiz',
-			'finish-quiz'       => 'finish_quiz',
-			'retake-quiz'       => 'retake_quiz',
-			'check-question'    => 'check_question',
-			'fetch-question'    => 'fetch_question',
-			'get-question-hint' => 'get_question_hint'
+			'start-quiz'         => 'start_quiz',
+			'next-question-quiz' => 'next_question',
+			'prev-question-quiz' => 'prev_question',
+			'finish-quiz'        => 'finish_quiz',
+			'retake-quiz'        => 'retake_quiz',
+			'check-question'     => 'check_question',
+			'fetch-question'     => 'fetch_question',
+			'get-question-hint'  => 'get_question_hint'
 		);
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
@@ -38,6 +40,54 @@ class LP_Quiz_Factory {
 			'question_icon_class'
 		), 10, 2 );
 		add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_question' ), 10, 3 );
+	}
+
+	public static function get_question_data() {
+		$post_data = ( stripslashes_deep( $_REQUEST ) );//['question-data'] );
+		if ( empty( $post_data['question-data'] ) ) {
+			return false;
+		}
+
+		$data = @json_decode( $post_data['question-data'] );
+		settype( $data, 'array' );
+
+		$questions = array();
+		foreach ( $data as $k => $v ) {
+			$id               = str_replace( 'learn-press-question-', '', $k );
+			$questions[ $id ] = (array) $v;
+		}
+
+		return $questions;
+	}
+
+	public static function next_question() {
+		if ( $questions = self::get_question_data() ) {
+			$user   = learn_press_get_current_user();
+			$course = learn_press_get_course( LP_Request::get_int( 'course-id' ) );
+			$quiz   = learn_press_get_quiz( LP_Request::get_int( 'quiz-id' ) );
+
+			$course_data = $user->get_course_data( $course->get_id() );
+			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+
+			$quiz_data->add_question_answer( $questions );
+			$quiz_data->update();
+
+			//learn_press_debug($quiz_data);die();
+		}
+	}
+
+	public static function prev_question() {
+		if ( $questions = self::get_question_data() ) {
+			$user   = learn_press_get_current_user();
+			$course = learn_press_get_course( LP_Request::get_int( 'course-id' ) );
+			$quiz   = learn_press_get_quiz( LP_Request::get_int( 'quiz-id' ) );
+
+			$course_data = $user->get_course_data( $course->get_id() );
+			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+
+			$quiz_data->add_question_answer( $questions );
+			$quiz_data->update();
+		}
 	}
 
 	public static function update_user_question( $quiz_id, $course_id, $user_id ) {

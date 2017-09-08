@@ -4,18 +4,47 @@
  * Class LP_User_Item_Quiz
  */
 class LP_User_Item_Quiz extends LP_User_Item {
+	/**
+	 * @var array
+	 */
 	protected $_answers = array();
 
+	/**
+	 * LP_User_Item_Quiz constructor.
+	 *
+	 * @param array $data
+	 */
 	public function __construct( $data ) {
 		parent::__construct( $data );
 
 		$this->_parse_answers();
 	}
 
+	/**
+	 *
+	 */
 	protected function _parse_answers() {
 		if ( $answers = learn_press_get_user_item_meta( $this->get_user_item_id(), '_question_answers', true ) ) {
-
+			$this->_answers = $answers;
 		}
+	}
+
+	public function add_question_answer( $id, $values = null ) {
+		if ( is_array( $id ) ) {
+			foreach ( $id as $k => $v ) {
+				$this->add_question_answer( $k, $v );
+			}
+		} else {
+			$this->_answers[ $id ] = $values;
+		}
+	}
+
+	public function get_question_answer( $id ) {
+		return ! empty( $this->_answers[ $id ] ) ? $this->_answers[ $id ] : false;
+	}
+
+	public function update() {
+		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
 	}
 
 	/**
