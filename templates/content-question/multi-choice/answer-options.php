@@ -66,7 +66,6 @@ if ( ! $answers = $question->get_answers() ) {
 		$id = uniqid( 'option-' );
 		$checked=false;
 		$answered = (array)$question->get_data('answered');
-
 		?>
         <li <?php echo $answer->option_class(); ?>  @click="toggle">
             <input type="checkbox"

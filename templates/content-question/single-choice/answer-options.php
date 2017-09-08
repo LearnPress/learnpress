@@ -51,10 +51,11 @@ if ( ! $answers = $question->get_answers() ) {
 		$disabled = '';
 		$id = uniqid( 'option-' );
 		$checked = '';
-		$answered = $question->get_data('answered');
-        if(is_array($answered)){
-            $answered = reset($answered);
-        }
+		$answered = $question->get_data( 'answered' );
+		if ( is_array( $answered ) ) {
+			$answered = reset( $answered );
+		}
+
 		?>
         <li <?php echo $answer->option_class(); ?> @click="toggle">
             <input type="radio"

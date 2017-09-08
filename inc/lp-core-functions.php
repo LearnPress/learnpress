@@ -410,7 +410,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	// Ensure that post name has to be sanitized. Fixed in 2.1.6
 	$name = sanitize_title( $name );
 
-	if(false === ($id = wp_cache_get( $type . '-' . $name, 'lp-post-names' ))){
+	if ( false === ( $id = wp_cache_get( $type . '-' . $name, 'lp-post-names' ) ) ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT *
@@ -418,20 +418,16 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 			WHERE 1 AND post_name = %s
 		", sanitize_title( $name ) );
 
-		$query .= " AND post_type IN ('" . $type . "' )";
+        $query .= " AND post_type IN ('" . $type . "' )";
 
-		if ( empty( $post_names[ $type ] ) ) {
-			$post_names[ $type ] = array();
-		}
 		if ( $post = $wpdb->get_row( $query ) ) {
-			//wp_cache_set( $post->ID, $post, 'posts' );
+			$id = $post->ID;
+			wp_cache_set( $id, $post, 'posts' );
+			wp_cache_set( $type . '-' . $name, $id, 'lp-post-names' );
 		}
-
-		$post_names[ $type ][ $name ] = $post ? $post->ID : 0;
-		LP_Cache::set_post_names( $post_names );
 	}
 
-	return $post ? get_post( $post_names[ $type ][ $name ] ) : false;
+	return $id ? get_post( $id ) : false;
 }
 
 function learn_press_get_current_course() {

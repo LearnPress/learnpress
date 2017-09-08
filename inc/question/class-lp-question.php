@@ -573,8 +573,10 @@ class LP_Question extends LP_Course_Item {
 	}
 
 	public function get_answers( $field = null, $exclude = null ) {
-		$answers      = array();
-		$data_answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'lp-questions' );
+		$answers = array();
+		if ( false === ( $data_answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'lp-questions' ) ) ) {
+			$data_answers = $this->get_default_answers();
+		};
 
 		if ( $data_answers ) {
 			$answers = new LP_Question_Answers( $data_answers );
@@ -598,18 +600,19 @@ class LP_Question extends LP_Course_Item {
 	 *
 	 * @return void
 	 */
-	public function render( $args = '' ) {
-		$args     = wp_parse_args(
-			$args,
-			array(
-				'answered' => null
-			)
-		);
-		$answered = ! empty( $args['answered'] ) ? $args['answered'] : null;
-		if ( null === $answered ) {
-			$answered = $this->get_user_answered( $args );
+	public function render( $args = array() ) {
+		$this->set_data( 'answered', $args );
+		$type = '';
+		switch ( $this->get_type() ) {
+			case 'true_or_false':
+			case 'single_choice':
+				$type = 'single-choice';
+				break;
+			case 'multi_choice':
+				$type = 'multi-choice';
+				break;
 		}
-		learn_press_get_template( 'content-question/single-choice/answer-options.php' );
+		learn_press_get_template( 'content-question/' . $type . '/answer-options.php', array( 'question' => $this ) );
 	}
 
 	public

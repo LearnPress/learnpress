@@ -71,8 +71,6 @@ class LP_Quiz_Factory {
 
 			$quiz_data->add_question_answer( $questions );
 			$quiz_data->update();
-
-			//learn_press_debug($quiz_data);die();
 		}
 	}
 
@@ -87,6 +85,7 @@ class LP_Quiz_Factory {
 
 			$quiz_data->add_question_answer( $questions );
 			$quiz_data->update();
+
 		}
 	}
 
