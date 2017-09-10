@@ -6,37 +6,22 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-
-$user   = learn_press_get_current_user();
-$course = learn_press_get_course();
-
-$status      = $user->get_course_status( $course->get_id() );
-$item_status = $user->get_item_status( $item->get_id() );
-$item_grade  = $user->get_item_grade( $item->get_id() );
-//
-//$security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->get_id(), $item->get_id() ) );
-//
-//$result     = $user->get_quiz_results( $item->get_id() );
-$has_result = false;
-if ( in_array( $item_status, array( 'completed', 'started' ) ) ) {
-	$has_result = true;
-}
 ?>
 <div class="course-item-meta">
 	<?php
-	$status_classes = array( 'fa course-item-status' );
-	$title          = '';
-	if ( $item_status ) {
-		$status_classes[] = 'has-status item-' . $item_status;
-		$title            = ucfirst( $item_status );
-	}
-	switch ( $item_status ) {
-		case 'started':
-			break;
-		case 'completed':
-			$status_classes[] = $item_grade;
-	}
-	echo '<i class="' . join( ' ', $status_classes ) . '"' . ( $title ? ' title="' . $title . '"' : '' ) . '></i>';
+	/**
+	 *
+	 */
+	do_action( 'learn-press/course-section-item/before-' . $item->get_item_type() . '-meta', $item );
+	?>
+
+    <i class="<?php echo join( ' ', $item->get_status_classes() ); ?>"></i>
+
+	<?php
+	/**
+	 *
+	 */
+	do_action( 'learn-press/course-section-item/after-' . $item->get_item_type() . '-meta', $item );
 	?>
 </div>
 

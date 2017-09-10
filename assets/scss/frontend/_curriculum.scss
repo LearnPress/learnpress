@@ -155,6 +155,18 @@
                     white-space: nowrap;
                     padding: 10px 0;
                     text-align: right;
+                    .count-questions {
+                        background: #848c63;
+                        height: 20px;
+                        line-height: 20px;
+                        min-width: 20px;
+                        text-align: center;
+                        font-size: 10px;
+                        color: #FFF;
+                        display: inline-block;
+                        border-radius: 10px;
+                        vertical-align: middle;
+                    }
                     .course-item-status {
                         width: 20px;
                         height: 20px;
@@ -163,6 +175,7 @@
                         text-align: center;
                         color: #DDD;
                         margin-left: 5px;
+                        vertical-align: middle;
                         @include border-radius(50%);
                         @include box-sizing(border-box);
                         &.has-status {
@@ -306,10 +319,10 @@ body {
 #wpadminbar {
     #wp-admin-bar-edit-lp_quiz,
     #wp-admin-bar-edit-lp_lesson,
-    #wp-admin-bar-edit-lp_question{
+    #wp-admin-bar-edit-lp_question {
         .ab-item:before {
             font-family: fontawesome;
-            top:2px;
+            top: 2px;
         }
     }
     #wp-admin-bar-edit-lp_quiz {

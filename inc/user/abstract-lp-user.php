@@ -338,6 +338,116 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return $return;
 	}
 
+	/**
+	 * Finish a quiz for the user and save all data needed
+	 *
+	 * @param int  $quiz_id
+	 * @param int  $course_id
+	 * @param bool $wp_error
+	 *
+	 * @return mixed
+	 */
+	public function finish_quiz( $quiz_id, $course_id, $wp_error = false ) {
+		if ( ! apply_filters( 'learn_press_before_user_finish_quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
+			return false;
+		}
+		$return = false;
+
+		try {
+			$course_id = $this->_get_course( $course_id );
+
+			$quiz = LP_Quiz::get_quiz( $quiz_id );
+			if ( ! $quiz ) {
+				throw new Exception( __( 'Invalid quiz!', 'learnpress' ), 'INVALID_QUIZ' );
+			}
+			$progress = $this->get_quiz_results( $quiz->get_id(), $course_id );
+			if ( $progress ) {
+				$start_time = strtotime( $progress->start );
+				// Maximum time spend to do quiz if it finish automatically
+				if ( is_array( $args ) && ! empty( $args['auto_finish'] ) ) {
+					$time = $start_time + $quiz->get_duration();
+				} else {
+					$time = current_time( 'timestamp' );
+					if ( $time > $start_time + $quiz->get_duration() ) {
+						$time = $start_time + $quiz->get_duration();
+					}
+				}
+				$updated = learn_press_update_user_item_field(
+					array(
+						'status'   => 'completed',
+						'end_time' => date( 'Y-m-d H:i:s', $time )
+					),
+					array(
+						'user_item_id' => $progress->history_id
+					)
+				);
+				if ( $updated ) {
+					if ( is_array( $args ) ) {
+						foreach ( $args as $k => $v ) {
+							learn_press_update_user_item_meta( $progress->history_id, $k, $v );
+						}
+					}
+					$return = $this->get_quiz_results( $quiz_id, $course_id, true );
+				}
+			}
+
+			do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->get_id() );
+		}
+		catch ( Exception $ex ) {
+			$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Retake a quiz for the user
+	 *
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	public function retake_quiz( $quiz_id, $course_id ) {
+		if ( ! apply_filters( 'learn_press_before_user_retake_quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
+			return false;
+		}
+		$course_id = $this->_get_course( $course_id );
+		$response  = false;
+		$return    = learn_press_update_user_item_field(
+			array(
+				'user_id'    => learn_press_get_current_user_id(),
+				'item_id'    => $quiz_id,
+				'ref_id'     => $course_id,
+				'start_time' => current_time( 'mysql' ),
+				'item_type'  => 'lp_quiz',
+				'status'     => 'started',
+				'ref_type'   => 'lp_course',
+				'parent_id'  => $this->get_course_history_id( $course_id )
+			)
+		);
+		if ( $return ) {
+			$quiz      = LP_Quiz::get_quiz( $quiz_id );
+			$questions = $quiz->get_questions();
+			if ( is_array( $questions ) ) {
+				$questions = array_keys( $questions );
+				$question  = reset( $questions );
+			} else {
+				$question = 0;
+			}
+			// Update user quiz meta data
+			learn_press_update_user_item_meta( $return, 'questions', $questions );
+			learn_press_update_user_item_meta( $return, 'current_question', $question );
+			learn_press_update_user_item_meta( $return, 'question_answers', array() );
+			LP_Cache::flush();
+			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
+		}
+		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $course_id, $this->get_id() );
+
+		return $response;
+	}
+
 	public
 	function get_quiz_time_remaining(
 		$quiz_id, $course_id = 0
@@ -454,115 +564,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return $question_answers;
 	}
 
-	/**
-	 * Finish a quiz for the user and save all data needed
-	 *
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 * @param     mixed Extra custom fields
-	 *
-	 * @return mixed
-	 */
-	public
-	function finish_quiz(
-		$quiz_id, $course_id, $args = ''
-	) {
-		if ( ! apply_filters( 'learn_press_before_user_finish_quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
-			return false;
-		}
-		$course_id = $this->_get_course( $course_id );
-
-		$quiz = LP_Quiz::get_quiz( $quiz_id );
-		if ( ! $quiz ) {
-			return;
-		}
-		$return   = false;
-		$progress = $this->get_quiz_results( $quiz->get_id(), $course_id );
-		if ( $progress ) {
-			$start_time = strtotime( $progress->start );
-			// Maximum time spend to do quiz if it finish automatically
-			if ( is_array( $args ) && ! empty( $args['auto_finish'] ) ) {
-				$time = $start_time + $quiz->get_duration();
-			} else {
-				$time = current_time( 'timestamp' );
-				if ( $time > $start_time + $quiz->get_duration() ) {
-					$time = $start_time + $quiz->get_duration();
-				}
-			}
-			$updated = learn_press_update_user_item_field(
-				array(
-					'status'   => 'completed',
-					'end_time' => date( 'Y-m-d H:i:s', $time )
-				),
-				array(
-					'user_item_id' => $progress->history_id
-				)
-			);
-			if ( $updated ) {
-				if ( is_array( $args ) ) {
-					foreach ( $args as $k => $v ) {
-						learn_press_update_user_item_meta( $progress->history_id, $k, $v );
-					}
-				}
-				$return = $this->get_quiz_results( $quiz_id, $course_id, true );
-			}
-		}
-
-		do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->get_id() );
-
-		return $return;
-	}
-
-	/**
-	 * Retake a quiz for the user
-	 *
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 *
-	 * @return array
-	 * @throws Exception
-	 */
-	public
-	function retake_quiz(
-		$quiz_id, $course_id
-	) {
-		if ( ! apply_filters( 'learn_press_before_user_retake_quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
-			return false;
-		}
-		$course_id = $this->_get_course( $course_id );
-		$response  = false;
-		$return    = learn_press_update_user_item_field(
-			array(
-				'user_id'    => learn_press_get_current_user_id(),
-				'item_id'    => $quiz_id,
-				'ref_id'     => $course_id,
-				'start_time' => current_time( 'mysql' ),
-				'item_type'  => 'lp_quiz',
-				'status'     => 'started',
-				'ref_type'   => 'lp_course',
-				'parent_id'  => $this->get_course_history_id( $course_id )
-			)
-		);
-		if ( $return ) {
-			$quiz      = LP_Quiz::get_quiz( $quiz_id );
-			$questions = $quiz->get_questions();
-			if ( is_array( $questions ) ) {
-				$questions = array_keys( $questions );
-				$question  = reset( $questions );
-			} else {
-				$question = 0;
-			}
-			// Update user quiz meta data
-			learn_press_update_user_item_meta( $return, 'questions', $questions );
-			learn_press_update_user_item_meta( $return, 'current_question', $question );
-			learn_press_update_user_item_meta( $return, 'question_answers', array() );
-			LP_Cache::flush();
-			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
-		}
-		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $course_id, $this->get_id() );
-
-		return $response;
-	}
 
 	/**
 	 * Get quiz status for the user
@@ -1100,8 +1101,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	function get_quiz_results(
 		$quiz_id, $course_id = 0, $force = false
 	) {
-		learn_press_debug(debug_backtrace());
-		die(__CLASS__.'::'.__FUNCTION__);
+		learn_press_debug( debug_backtrace() );
+		die( __CLASS__ . '::' . __FUNCTION__ );
 		$course_id    = $this->_get_course( $course_id );
 		$quiz_results = LP_Cache::get_quiz_results( false, array() );
 		$key          = $this->get_id() . '-' . $course_id . '-' . $quiz_id;

@@ -320,6 +320,26 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		return $lp_quiz_question && $lp_quiz_question->get_id() == $question_id;
 	}
 
+	public function get_status_classes( $user_id = 0, $course_id = 0 ) {
+		$user = learn_press_get_user( $user_id, ! $user_id );
+
+		$item_status = $user->get_item_status( $this->get_id(), $course_id );
+		$item_grade  = $user->get_item_grade( $this->get_id(), $course_id );
+
+		$status_classes = array( 'fa course-item-status' );
+		if ( $item_status ) {
+			$status_classes[] = 'has-status item-' . $item_status;
+		}
+		switch ( $item_status ) {
+			case 'started':
+				break;
+			case 'completed':
+				$status_classes[] = $item_grade;
+		}
+
+		return apply_filters( 'learn-press/item-status-classes', $status_classes, $this->get_id(), $course_id, $user_id );
+	}
+
 	public function offsetExists( $offset ) {
 
 	}

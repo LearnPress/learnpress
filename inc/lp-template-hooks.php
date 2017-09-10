@@ -166,6 +166,15 @@ add_action( 'learn-press/after-content-item-summary/lp_lesson', function () {
 add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
 
 /**
+ * @param LP_Quiz $item
+ */
+function learn_press_quiz_meta_questions( $item ) {
+	echo '<span class="count-questions">' . $item->count_questions() . '</span>';
+}
+
+add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_questions' );
+
+/**
  * @see learn_press_content_item_summary_title()
  * @see learn_press_content_item_summary_content()
  */
@@ -205,8 +214,6 @@ add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_continue_button', 20 )
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_complete_button', 25 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 30 );
 
-
-add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 25 );
 
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */

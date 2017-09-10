@@ -103,6 +103,11 @@ class LP_Page_Controller {
 				return $classes;
 			} );
 
+			add_filter('wp_title_parts', function(){
+                learn_press_debug(func_get_args());die();
+            });
+
+			//echo did_action()
 			add_action( 'wp_print_scripts', function () {
 				?>
                 <style type="text/css">

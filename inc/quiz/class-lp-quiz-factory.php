@@ -20,6 +20,7 @@ class LP_Quiz_Factory {
 	public static function init() {
 		$actions = array(
 			'start-quiz'         => 'start_quiz',
+			'redo-quiz'          => 'redo_quiz',
 			'next-question-quiz' => 'next_question',
 			'prev-question-quiz' => 'prev_question',
 			'finish-quiz'        => 'finish_quiz',
@@ -86,6 +87,52 @@ class LP_Quiz_Factory {
 			$quiz_data->add_question_answer( $questions );
 			$quiz_data->update();
 
+		}
+	}
+
+	public static function redo_quiz() {
+		$course_id = LP_Request::get_int( 'course-id' );
+		$quiz_id   = LP_Request::get_int( 'quiz-id' );
+		$nonce     = LP_Request::get_string( 'start-quiz-nonce' );
+		$result    = array( 'result' => 'failure' );
+		try {
+			if ( ! LP_Nonce_Helper::verify_quiz_action( 'redo', $nonce, $quiz_id, $course_id ) ) {
+				throw new Exception( __( 'Invalid request', 'learnpress' ), 'INVALID_REQUEST' );
+			}
+
+			$user   = learn_press_get_current_user();
+			$quiz   = learn_press_get_quiz( $quiz_id );
+			$course = learn_press_get_course( $course_id );
+
+			if ( !$user->has_quiz_status( array( 'completed' ), $quiz_id, $course_id ) ) {
+			    // TODO: ERROR
+			} else {
+				$data = $user->retake_quiz( $quiz_id, $course_id, true );
+				if ( is_wp_error( $data ) ) {
+					$result['message'] = $data->get_error_message();
+				} else {
+					$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
+
+					$result['result']   = 'success';
+					$result['redirect'] = apply_filters( 'learn-press/quiz-started/redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+				}
+			}
+		}
+		catch ( Exception $ex ) {
+			$result['message'] = $ex->getMessage();
+			$result['result']  = 'failure';
+		}
+
+		if ( learn_press_is_ajax() ) {
+			learn_press_send_json( $result );
+		}
+
+		if ( ! empty( $result['redirect'] ) ) {
+			if ( ! empty( $result['message'] ) ) {
+				learn_press_add_message( $result['message'] );
+			}
+			wp_redirect( $result['redirect'] );
+			exit();
 		}
 	}
 
