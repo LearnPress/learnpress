@@ -55,7 +55,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 			);
 			foreach ( $course_items as $item_id ) {
 				$cache_name = sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_id(), $item_id );
-				if ( false !== ( $data = wp_cache_get( $cache_name, 'lp-user-course-items' ) ) ) {
+				if ( false !== ( $data = learn_press_cache_get( $cache_name, 'lp-user-course-items' ) ) ) {
 					$data = reset( $data );
 				} else {
 					$data = wp_parse_args(
@@ -143,7 +143,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 			case 'evaluate_quiz':
 		}
 
-		$result = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' );
+		$result = learn_press_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' );
 
 		return $prop && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
 	}
@@ -154,7 +154,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 	 * @return float|int
 	 */
 	protected function _evaluate_course_by_lesson() {
-		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' ) ) ) {
+		if ( false === ( $data = learn_press_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' ) ) ) {
 			$completing = $this->get_completed_items( LP_LESSON_CPT, true );
 			if ( $completing[1] ) {
 				$result = $completing[0] / $completing[1];
@@ -167,7 +167,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 				'status' => $this->get_status()
 			);
 
-			wp_cache_set( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), $data, 'lp-user-course-results' );
+			learn_press_cache_set( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), $data, 'lp-user-course-results' );
 		}
 
 		return $data['result'];
@@ -176,7 +176,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 	public function get_completed_items( $type = '', $with_total = false, $section_id = 0 ) {
 		$key = sprintf( '%d-%d-%s', $this->get_user_id(), $this->_course->get_id(), md5( build_query( func_get_args() ) ) );
 
-		if ( false === ( $completed_items = wp_cache_get( $key, 'lp-user-completed-items' ) ) ) {
+		if ( false === ( $completed_items = learn_press_cache_get( $key, 'lp-user-completed-items' ) ) ) {
 			$completed     = 0;
 			$total         = 0;
 			$section_items = array();
@@ -207,7 +207,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 				}
 			}
 			$completed_items = array( $completed, $total );
-			wp_cache_set( $key, $completed_items, 'lp-user-completed-items' );
+			learn_press_cache_set( $key, $completed_items, 'lp-user-completed-items' );
 		}
 
 		return $with_total ? $completed_items : $completed_items[0];

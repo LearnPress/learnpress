@@ -42,6 +42,11 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	protected function load_curriculum( &$course ) {
 		$course_id = $course->get_id();
 		$this->read_course_curriculum( $course_id );
+		if($items = $course->get_items()){
+			foreach($items as $item_id){
+				learn_press_cache_get($item_id, 'posts');
+			}
+		}
 	}
 
 	/**
@@ -114,7 +119,7 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 
 			// Set cache
-			wp_cache_set( 'course-' . $id, array(), 'lp-course-curriculum' );
+			learn_press_cache_set( 'course-' . $id, array(), 'lp-course-curriculum' );
 		}
 
 		if ( $all_section_ids ) {
@@ -190,7 +195,7 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function get_course_sections( $course_id ) {
 		$this->read_course_sections( $course_id );
 
-		return wp_cache_get( 'course-' . $course_id, 'lp-course-sections' );
+		return learn_press_cache_get( 'course-' . $course_id, 'lp-course-sections' );
 	}
 
 	/**

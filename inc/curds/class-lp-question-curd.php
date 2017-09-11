@@ -68,7 +68,7 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	 */
 	protected function _load_answer_options( &$question ) {
 		$id             = $question->get_id();
-		$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
+		$answer_options = learn_press_cache_get( 'answer-options-' . $id, 'lp-questions' );
 		if ( false === $answer_options ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
@@ -93,7 +93,7 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		if ( ! empty( $answer_options['question_answer_id'] ) && $answer_options['question_answer_id'] > 0 ) {
 			$this->_load_answer_option_meta( $answer_options );
 		}
-		wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
+		learn_press_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
 
 		$question->set_data( 'answer_options', $answer_options );
 	}

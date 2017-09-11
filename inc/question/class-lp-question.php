@@ -574,7 +574,7 @@ class LP_Question extends LP_Course_Item {
 
 	public function get_answers( $field = null, $exclude = null ) {
 		$answers = array();
-		if ( false === ( $data_answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'lp-questions' ) ) ) {
+		if ( false === ( $data_answers = learn_press_cache_get( 'answer-options-' . $this->get_id(), 'lp-questions' ) ) ) {
 			$data_answers = $this->get_default_answers();
 		};
 

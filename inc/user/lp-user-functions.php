@@ -50,13 +50,13 @@ function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* add
 
 	// If $course_id is not passed consider $item_id is ID of a course
 	if ( ! $course_id ) {
-		if ( $item = wp_cache_get( 'course-' . $user_id . '-' . $item_id, 'lp-user-courses' ) ) {
+		if ( $item = learn_press_cache_get( 'course-' . $user_id . '-' . $item_id, 'lp-user-courses' ) ) {
 			return $item['user_item_id'];
 		}
 	} else {
 
 		// Otherwise, get item of the course
-		if ( $items = wp_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) {
+		if ( $items = learn_press_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) {
 			$item = reset( $items );
 
 			return $item['user_item_id'];

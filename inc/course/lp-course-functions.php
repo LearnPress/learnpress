@@ -17,7 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return LP_Course|mixed
  */
 function learn_press_get_course( $the_course = false ) {
-	return $the_course ? LP_Course::get_course( $the_course ) : LP()->global['course'];
+	static $courses = array();
+	if ( is_numeric( $the_course ) && empty( $courses[ $the_course ] ) ) {
+		$courses[ $the_course ] = LP_Course::get_course( $the_course );
+	}
+	return is_numeric( $the_course ) && ! empty( $courses[ $the_course ] ) ? $courses[ $the_course ] : LP()->global['course'];// LP_Global::course();
 }
 
 /**

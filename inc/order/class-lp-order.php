@@ -439,7 +439,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @return mixed
 	 */
 	public function get_items() {
-		return apply_filters( 'learn-press/order-items', wp_cache_get( 'order-' . $this->get_id(), 'lp-order-items' ) );
+		return apply_filters( 'learn-press/order-items', learn_press_cache_get( 'order-' . $this->get_id(), 'lp-order-items' ) );
 	}
 
 	public function get_item_meta( &$item ) {

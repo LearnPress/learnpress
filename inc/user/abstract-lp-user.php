@@ -129,7 +129,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 			$this->_curd->read_course( $this->get_id(), $course_id );
 
-			if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
+			if ( false !== ( $course_item = learn_press_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
 //			$course       = learn_press_get_course( $course_id );
 //			$course_items = $course->get_items();
 //			//$user_items = $course_item['items'];
@@ -248,7 +248,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return bool|mixed
 	 */
 	public function get_item_archive( $item_id, $course_id = 0, $return_last = false ) {
-		$records = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' );
+		$records = learn_press_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' );
 		if ( $records && $return_last ) {
 			$records = reset( $records );
 		}
@@ -632,7 +632,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$course_id = get_the_ID();
 		}
 		$item = false;
-		if ( false !== ( $items = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) ) {
+		if ( false !== ( $items = learn_press_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) ) {
 			// Only get status of a newest record.
 			if ( $last ) {
 				$item = reset( $items );
@@ -774,7 +774,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		$cache_name = sprintf( 'course-item-%d-%d-%d', $this->get_id(), $course_id, $item_id );
 
-			wp_cache_set( $cache_name, $items, 'lp-user-course-items' );
+			learn_press_cache_set( $cache_name, $items, 'lp-user-course-items' );
 
 		do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items[ $user_item_id ] );
 
@@ -1942,7 +1942,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		global $wpdb;
 		//$key_format = '%d-%d';
-		$cached = (array) wp_cache_get( 'user-quiz-statuses', 'learnpress' );
+		$cached = (array) learn_press_cache_get( 'user-quiz-statuses', 'learnpress' );
 		if ( ! array_key_exists( $this->get_id() . '-' . $course_id . '-' . $quiz_id, $cached ) || $force ) {
 			$query                                      = $wpdb->prepare( "
 				SELECT uq.item_id as id, uqm.meta_value as `status`
@@ -2016,7 +2016,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		global $wpdb;
 
 		// Get data from cache
-		$cached = (array) wp_cache_get( 'user-count-retaken-course', 'learnpress' );
+		$cached = (array) learn_press_cache_get( 'user-count-retaken-course', 'learnpress' );
 
 		// If no data exists in cache or force to get it from database
 		if ( ! array_key_exists( $this->get_id() . '-' . $course_id, $cached ) || $force ) {
@@ -2033,7 +2033,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			}
 			// Store into cache
 			$cached[ $this->get_id() . '-' . $course_id ] = $count;
-			wp_cache_set( 'user-count-retaken-course', $cached, 'learnpress' );
+			learn_press_cache_set( 'user-count-retaken-course', $cached, 'learnpress' );
 		} else {
 			$count = $cached[ $this->get_id() . '-' . $course_id ];
 		}
@@ -2287,7 +2287,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	) {
 
 		$status = false;
-		if ( false !== ( $data = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
+		if ( false !== ( $data = learn_press_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
 			$status = $data['status'];
 		}
 

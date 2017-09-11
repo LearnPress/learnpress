@@ -57,7 +57,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( LP_ORDER_CPT === $type ) {
 				$cache_key = 'lp-' . _count_posts_cache_key( $type, $perm );
 
-				$counts = wp_cache_get( $cache_key, 'counts' );
+				$counts = learn_press_cache_get( $cache_key, 'counts' );
 
 				if ( false !== $counts ) {
 					return $counts;
@@ -89,7 +89,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				$counts = (object) $counts;
-				wp_cache_set( $cache_key, $counts, 'counts' );
+				learn_press_cache_set( $cache_key, $counts, 'counts' );
 			}
 
 			return $counts;

@@ -1247,7 +1247,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			}
 			$quizzes_ids[]        = $quiz->ID;
 			$results[ $quiz->ID ] = $user->get_quiz_results( $quiz->ID, $this->get_id(), true );
-			if ( $quiz = wp_cache_get( $quiz->ID, 'posts' ) ) {
+			if ( $quiz = learn_press_cache_get( $quiz->ID, 'posts' ) ) {
 				$total_point += isset( $quiz->mark ) ? absint( $quiz->mark ) : 0;
 			}
 			$achieved_point += is_object( $results[ $quiz->ID ] ) ? $results[ $quiz->ID ]->mark : 0;
@@ -1280,7 +1280,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 				continue;
 			}
 			$quiz = LP_Quiz::get_quiz( $_quiz->ID );
-			if ( $_quiz = wp_cache_get( $quiz->id, 'posts' ) ) {
+			if ( $_quiz = learn_press_cache_get( $quiz->id, 'posts' ) ) {
 				$total_point += isset( $_quiz->mark ) ? absint( $_quiz->mark ) : 0;
 			}
 			$grade = $user->get_quiz_graduation( $quiz->id, $this->get_id() );

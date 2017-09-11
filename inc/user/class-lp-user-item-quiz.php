@@ -63,7 +63,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function get_result() {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
-		if ( false === ( $result = wp_cache_get( $cache_key, 'lp-quiz-result' ) ) ) {
+		if ( false === ( $result = learn_press_cache_get( $cache_key, 'lp-quiz-result' ) ) ) {
 			$result = array(
 				'questions'        => array(),
 				'mark'             => $quiz->get_mark(),
@@ -94,7 +94,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					$result['questions'][ $question_id ] = $check;
 				}
 			}
-			wp_cache_set( $cache_key, $result, 'lp-quiz-result' );
+			learn_press_cache_set( $cache_key, $result, 'lp-quiz-result' );
 		}
 
 		return $result;

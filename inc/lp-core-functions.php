@@ -410,7 +410,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	// Ensure that post name has to be sanitized. Fixed in 2.1.6
 	$name = sanitize_title( $name );
 
-	if ( false === ( $id = wp_cache_get( $type . '-' . $name, 'lp-post-names' ) ) ) {
+	if ( false === ( $id = learn_press_cache_get( $type . '-' . $name, 'lp-post-names' ) ) ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT *
@@ -422,8 +422,8 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 
 		if ( $post = $wpdb->get_row( $query ) ) {
 			$id = $post->ID;
-			wp_cache_set( $id, $post, 'posts' );
-			wp_cache_set( $type . '-' . $name, $id, 'lp-post-names' );
+			learn_press_cache_set( $id, $post, 'posts' );
+			learn_press_cache_set( $type . '-' . $name, $id, 'lp-post-names' );
 		}
 	}
 
@@ -2819,18 +2819,20 @@ function learn_press_cache_path( $group, $key = '' ) {
 }
 
 function learn_press_cache_get( $key, $group, $found = null ) {
-	$file = learn_press_cache_path( $group, $key );
 
 	if ( false === ( $data = wp_cache_get( $key, $group, $found ) ) ) {
-		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
-			try {
-				$data = unserialize( $content );
+		if ( strpos( $group, 'lp-user-' ) === false ) {
+			$file = learn_press_cache_path( $group, $key );
+			if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
+				try {
+					$data = maybe_unserialize( $content );
+				}
+				catch ( Exception $ex ) {
+					print_r( $content );
+					die();
+				}
+				wp_cache_set( $key, $data, $group, $found );
 			}
-			catch ( Exception $ex ) {
-				print_r( $content );
-				die();
-			}
-			wp_cache_set( $key, $data, $group, $found );
 		}
 	}
 
@@ -2838,11 +2840,16 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 }
 
 function learn_press_cache_set( $key, $data, $group = '', $expire = 0 ) {
-	$file = learn_press_cache_path( $group, $key );
 	wp_cache_set( $key, $data, $group, $expire );
 
+	if ( strpos( $group, 'lp-user-' ) !== false ) {
+		return;
+	}
+
+	$file = learn_press_cache_path( $group, $key );
+
 	if ( ! is_string( $data ) ) {
-		$data = serialize( $data );
+		$data = maybe_serialize( $data );
 	}
 	file_put_contents( $file, $data );
 }
