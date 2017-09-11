@@ -29,23 +29,14 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 
 			$this->recipient = LP()->settings->get( 'emails_new_course.recipient' );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
-				'{{site_admin_email}}',
-				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{course_id}}',
 				'{{course_name}}',
 				'{{course_edit_url}}',
 				'{{course_user_id}}',
 				'{{course_user_name}}',
 				'{{course_user_email}}',
-			);
+			) );
 
 			//$this->email_text_message_description = sprintf( '%s {{course_id}}, {{course_title}}, {{course_url}}, {{course_edit_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 			parent::__construct();
@@ -56,27 +47,26 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 		 *
 		 * @param $course_id
 		 *
-		 * @return bool|void
+		 * @return bool
 		 */
 		public function trigger( $course_id ) {
 
 			if ( ( ! $this->enable ) || ! $this->get_recipient() ) {
-				return;
+				return false;
 			}
 
-			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
 			$course = learn_press_get_course( $course_id );
 			$user   = learn_press_get_course_user( $course_id );
 
 			$this->object = $this->get_common_template_data(
-				$format,
+				$this->email_format,
 				array(
 					'course_id'         => $course_id,
 					'course_name'       => $course->get_title(),
 					'course_edit_url'   => admin_url( 'post.php?post=' . $course_id . '&action=edit' ),
 					'course_user_id'    => $user->get_id(),
 					'course_user_name'  => learn_press_get_profile_display_name( $user ),
-					'course_user_email' => $user->get_data('email')
+					'course_user_email' => $user->get_data( 'email' )
 				)
 			);
 

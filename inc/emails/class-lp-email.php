@@ -229,6 +229,16 @@ class LP_Email extends LP_Abstract_Settings {
 	public $variables = null;
 
 	/**
+	 * @var array|null
+	 */
+	public $basic_variables = null;
+
+	/**
+	 * @var null
+	 */
+	public $general_variables = null;
+
+	/**
 	 * @var null
 	 */
 	public $support_variables = null;
@@ -261,8 +271,23 @@ class LP_Email extends LP_Abstract_Settings {
 		 */
 		$this->heading      = LP()->settings->get( 'emails_' . $this->id . '.heading', $this->default_heading );
 		$this->subject      = LP()->settings->get( 'emails_' . $this->id . '.subject', $this->default_subject );
-		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' );
+		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' ) == 'plain_text' ? 'plain' : 'html';
 		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
+
+		$this->basic_variabless = array(
+			'{{site_url}}',
+			'{{site_title}}',
+			'{{login_url}}',
+			'{{email_heading}}',
+		);
+
+		$this->general_variables = array_merge( $this->basic_variables, array(
+			'{{site_admin_email}}',
+			'{{site_admin_name}}',
+			'{{header}}',
+			'{{footer}}',
+			'{{footer_text}}'
+		) );
 	}
 
 	public function get_variables_support() {
@@ -465,8 +490,7 @@ class LP_Email extends LP_Abstract_Settings {
 				$emogrifier = new Emogrifier( $content, $css );
 				$content    = $emogrifier->emogrify();
 
-			}
-			catch ( Exception $e ) {
+			} catch ( Exception $e ) {
 
 			}
 		}

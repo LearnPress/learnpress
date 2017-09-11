@@ -26,14 +26,10 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 
 		$this->email_text_message_description = sprintf( '%s [course_id], [course_title], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
 
-		$this->support_variables = array(
-			'{{site_url}}',
-			'{{site_title}}',
-			'{{login_url}}',
-			'{{email_heading}}',
+		$this->support_variables = array_merge( $this->basic_variables, array(
 			'{{user_email}}',
 			'{{user_nicename}}'
-		);
+		) );
 		parent::__construct();
 	}
 
@@ -42,27 +38,26 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 	 *
 	 * @param $user
 	 *
-	 * @return bool|void
+	 * @return bool
 	 */
 	public function trigger( $user ) {
 		if ( ! $this->enable ) {
-			return;
+			return false;
 		}
 
 		$user            = get_user_by( 'id', $user );
 		$this->recipient = $user->user_email;
 		$this->object    = $this->get_common_template_data(
-			$this->email_format == 'plain_text' ? 'plain' : 'html',
+			$this->email_format,
 			array(
 				'site_url'      => $user->ID,
-				'site_title'    => learn_press_get_profile_display_name( get_user_by( 'id', $user ) ),
 				'login_url'     => wp_login_url(),
 				'user_nicename' => $user->user_nincename,
 				'user_email'    => $user->user_email,
 				'email_heading' => $this->get_heading(),
 				'footer_text'   => $this->get_footer_text(),
 				'site_title'    => $this->get_blogname(),
-				'plain_text'    => $this->email_format == 'plain_text',
+				'plain_text'    => $this->email_format == 'plain',
 			)
 		);
 

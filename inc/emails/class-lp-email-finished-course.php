@@ -27,16 +27,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course' ) ) {
 			$this->default_subject = __( '[{{site_title}}] You have finished this course ({{course_name}})', 'learnpress' );
 			$this->default_heading = __( 'Finished course', 'learnpress' );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
-				'{{site_admin_email}}',
-				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{course_id}}',
 				'{{course_name}}',
 				'{{course_url}}',
@@ -44,7 +35,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course' ) ) {
 				'{{user_name}}',
 				'{{user_email}}',
 				'{{user_profile_url}}'
-			);
+			) );
 
 			//$this->email_text_message_description = sprintf( '%s {{course_id}}, {{course_title}}, {{course_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 
@@ -58,22 +49,21 @@ if ( ! class_exists( 'LP_Email_Finished_Course' ) ) {
 		 * @param $user_id
 		 * @param $result
 		 *
-		 * @return bool|void
+		 * @return bool
 		 */
 		public function trigger( $course_id, $user_id, $result ) {
 
 			if ( ! $this->enable || ! ( $user = learn_press_get_user( $user_id ) ) ) {
-				return;
+				return false;
 			}
 
-			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
 			$course = learn_press_get_course( $course_id );
 			remove_filter( 'the_title', 'wptexturize' );
 			$course_name = $course->get_title();
 			add_filter( 'the_title', 'wptexturize' );
 
 			$this->object = $this->get_common_template_data(
-				$format,
+				$this->email_format,
 				array(
 					'course_id'        => $course_id,
 					'course_name'      => $course_name,

@@ -26,16 +26,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 			$this->default_subject = __( 'Your order {{order_date}} has just been changed status', 'learnpress' );
 			$this->default_heading = __( 'Your order {{order_number}} has just been changed status', 'learnpress' );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
-				'{{site_admin_email}}',
-				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{order_id}}',
 				'{{order_user_id}}',
 				'{{order_user_name}}',
@@ -43,7 +34,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 				'{{order_items_table}}',
 				'{{order_detail_url}}',
 				'{{order_number}}',
-			);
+			) );
 
 			add_action( 'learn_press_update_order_status', array( $this, 'update_order_status' ), 10, 2 );
 			parent::__construct();
@@ -64,24 +55,23 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 		 * @param $new_status
 		 * @param $order_id
 		 *
-		 * @return bool|void|mixed
+		 * @return bool|mixed
 		 */
 		public function trigger( $new_status, $order_id ) {
 
 			if ( ! $this->enable ) {
-				return;
+				return false;
 			}
 
-			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
-			$order  = learn_press_get_order( $order_id );
+			$order = learn_press_get_order( $order_id );
 
 			$this->object = $this->get_common_template_data(
-				$format,
+				$this->email_format,
 				array(
 					'order_id'          => $order_id,
 					'order_user_id'     => $order->user_id,
 					'order_user_name'   => $order->get_user_name(),
-					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
+					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $this->email_format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
 					'order_detail_url'  => learn_press_user_profile_link( $order->user_id, 'orders' ),
 					'order_number'      => $order->get_order_number(),
 					'order_subtotal'    => $order->get_formatted_order_subtotal(),
