@@ -33,23 +33,14 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 
 			$this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
-				'{{site_admin_email}}',
-				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{order_id}}',
 				'{{order_user_id}}',
 				'{{order_user_name}}',
 				'{{order_items_table}}',
 				'{{order_edit_url}}',
 				'{{order_number}}',
-			);
+			) );
 
 			add_action( 'learn_press_order_status_pending_to_failed_notification', array( $this, 'trigger' ) );
 			add_action( 'learn_press_order_status_processing_to_failed_notification', array( $this, 'trigger' ) );
@@ -72,7 +63,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 				return false;
 			}
 
-			$order  = learn_press_get_order( $order_id );
+			$order = learn_press_get_order( $order_id );
 
 			$this->object = $this->get_common_template_data(
 				$this->email_format,

@@ -27,23 +27,14 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 			$this->default_subject = __( 'Your order {{order_date}} is completed', 'learnpress' );
 			$this->default_heading = __( 'Your order {{order_number}} is completed', 'learnpress' );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
-				'{{site_admin_email}}',
-				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{order_id}}',
 				'{{order_user_id}}',
 				'{{order_user_name}}',
 				'{{order_items_table}}',
 				'{{order_detail_url}}',
 				'{{order_number}}',
-			);
+			) );
 
 			// $this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 
@@ -65,7 +56,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 				return false;
 			}
 
-			$order  = learn_press_get_order( $order_id );
+			$order = learn_press_get_order( $order_id );
 
 			$this->object = $this->get_common_template_data(
 				$this->email_format,
@@ -111,6 +102,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 			if ( $order = $this->object['order'] ) {
 				$this->recipient = $order->get_user_email();
 			}
+
 			return parent::get_recipient();
 		}
 

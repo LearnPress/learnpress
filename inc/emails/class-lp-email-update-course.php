@@ -27,16 +27,9 @@ if ( ! class_exists( 'LP_Email_Update_Course' ) ) {
 			$this->default_subject = __( '[{{site_title}}]  The course ({{course_name}}) has just been updated.', 'learnpress' );
 			$this->default_heading = __( 'Update course', 'learnpress' );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 //				'{{site_admin_email}}',
 //				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
 				'{{course_id}}',
 				'{{course_name}}',
 				'{{course_url}}',
@@ -44,7 +37,7 @@ if ( ! class_exists( 'LP_Email_Update_Course' ) ) {
 				'{{user_name}}',
 				'{{user_email}}',
 				'{{user_profile_url}}'
-			);
+			) );
 
 			add_action( 'post_updated', array( $this, 'update_course' ), 10, 2 );
 

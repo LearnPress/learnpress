@@ -33,23 +33,14 @@ if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 			//$this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_items_table}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 //        $this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
-				'{{site_admin_email}}',
-				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{order_id}}',
 				'{{order_user_id}}',
 				'{{order_user_name}}',
 				'{{order_items_table}}',
 				'{{order_detail_url}}',
 				'{{order_number}}',
-			);
+			) );
 
 
 			add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
@@ -106,7 +97,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 			/**$this->find['site_title']    = '{site_title}';
 			 * $this->replace['site_title'] = $this->get_blogname();*/
 
-			$order  = learn_press_get_order( $order_id );
+			$order = learn_press_get_order( $order_id );
 
 			$this->object = $this->get_common_template_data(
 				$this->email_format,

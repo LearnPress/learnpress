@@ -26,14 +26,10 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 
 		$this->email_text_message_description = sprintf( '%s [course_id], [course_title], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
 
-		$this->support_variables = array(
-			'{{site_url}}',
-			'{{site_title}}',
-			'{{login_url}}',
-			'{{email_heading}}',
+		$this->support_variables = array_merge( $this->basic_variables, array(
 			'{{user_email}}',
 			'{{user_nicename}}'
-		);
+		) );
 		parent::__construct();
 	}
 

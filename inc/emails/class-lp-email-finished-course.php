@@ -27,16 +27,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course' ) ) {
 			$this->default_subject = __( '[{{site_title}}] You have finished this course ({{course_name}})', 'learnpress' );
 			$this->default_heading = __( 'Finished course', 'learnpress' );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
-				'{{site_admin_email}}',
-				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{course_id}}',
 				'{{course_name}}',
 				'{{course_url}}',
@@ -44,7 +35,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course' ) ) {
 				'{{user_name}}',
 				'{{user_email}}',
 				'{{user_profile_url}}'
-			);
+			) );
 
 			//$this->email_text_message_description = sprintf( '%s {{course_id}}, {{course_title}}, {{course_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 

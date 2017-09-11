@@ -26,16 +26,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 			$this->default_subject = __( 'Your order {{order_date}} has just been changed status', 'learnpress' );
 			$this->default_heading = __( 'Your order {{order_number}} has just been changed status', 'learnpress' );
 
-			$this->support_variables = array(
-				'{{site_url}}',
-				'{{site_title}}',
-				'{{site_admin_email}}',
-				'{{site_admin_name}}',
-				'{{login_url}}',
-				'{{header}}',
-				'{{footer}}',
-				'{{email_heading}}',
-				'{{footer_text}}',
+			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{order_id}}',
 				'{{order_user_id}}',
 				'{{order_user_name}}',
@@ -43,7 +34,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 				'{{order_items_table}}',
 				'{{order_detail_url}}',
 				'{{order_number}}',
-			);
+			) );
 
 			add_action( 'learn_press_update_order_status', array( $this, 'update_order_status' ), 10, 2 );
 			parent::__construct();
@@ -72,7 +63,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 				return false;
 			}
 
-			$order  = learn_press_get_order( $order_id );
+			$order = learn_press_get_order( $order_id );
 
 			$this->object = $this->get_common_template_data(
 				$this->email_format,
