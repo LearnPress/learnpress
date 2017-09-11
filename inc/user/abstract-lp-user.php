@@ -774,12 +774,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		$cache_name = sprintf( 'course-item-%d-%d-%d', $this->get_id(), $course_id, $item_id );
 
-		if ( wp_cache_get( $cache_name, 'lp-user-course-items' ) === false ) {
 			wp_cache_set( $cache_name, $items, 'lp-user-course-items' );
-
-		} else {
-			wp_cache_replace( $cache_name, $items, 'lp-user-course-items' );
-		}
 
 		do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items[ $user_item_id ] );
 
@@ -2240,6 +2235,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( ! $course_id ) {
 			return false;
 		}
+		// XXXXX
+		return false;
+
 		$user_course_info = LP_Cache::get_course_info( false, array() );
 		if ( empty( $user_course_info[ $this->get_id() ] ) ) {
 			$user_course_info[ $this->get_id() ] = array();

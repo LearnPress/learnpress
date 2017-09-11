@@ -2800,3 +2800,58 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 		echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
 	}
 }
+
+function learn_press_cache_path( $group, $key = '' ) {
+	$path = LP_PLUGIN_PATH . 'cache';
+	if ( ! file_exists( $path ) ) {
+		@mkdir( $path );
+	}
+	$path = $path . '/' . $group;
+
+	if ( ! file_exists( $path ) ) {
+		@mkdir( $path );
+	}
+	if ( $key ) {
+		$path = $path . '/' . $key . '.ch';
+	}
+
+	return $path;
+}
+
+function learn_press_cache_get( $key, $group, $found = null ) {
+	$file = learn_press_cache_path( $group, $key );
+
+	if ( false === ( $data = wp_cache_get( $key, $group, $found ) ) ) {
+		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
+			try {
+				$data = unserialize( $content );
+			}
+			catch ( Exception $ex ) {
+				print_r( $content );
+				die();
+			}
+			wp_cache_set( $key, $data, $group, $found );
+		}
+	}
+
+	return $data;
+}
+
+function learn_press_cache_set( $key, $data, $group = '', $expire = 0 ) {
+	$file = learn_press_cache_path( $group, $key );
+	wp_cache_set( $key, $data, $group, $expire );
+
+	if ( ! is_string( $data ) ) {
+		$data = serialize( $data );
+	}
+	file_put_contents( $file, $data );
+}
+
+function learn_press_cache_replace( $key, $data, $group = '', $expire = 0 ) {
+	wp_cache_replace( $key, $data, $group, $expire );
+}
+
+function learn_press_cache_add( $key, $data, $group = '', $expire = 0 ) {
+	wp_cache_add( $key, $data, $group, $expire );
+}
+

@@ -226,22 +226,22 @@ class LP_Email extends LP_Abstract_Settings {
 	/**
 	 * @var null
 	 */
-	public $variables = null;
+	public $variables = array();
 
 	/**
 	 * @var array|null
 	 */
-	public $basic_variables = null;
+	public $basic_variables = array();
 
 	/**
 	 * @var null
 	 */
-	public $general_variables = null;
+	public $general_variables = array();
 
 	/**
 	 * @var null
 	 */
-	public $support_variables = null;
+	public $support_variables = array();
 
 	/**
 	 * LP_Email constructor.
