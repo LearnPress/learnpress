@@ -333,7 +333,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			return false;
 		}
 		$curriculum = array();
-		if ( $sections = learn_press_cache_get( 'course-' . $this->get_id(), 'lp-course-sections' ) ) {
+		if ( $sections = wp_cache_get( 'course-' . $this->get_id(), 'lp-course-sections' ) ) {
 			foreach ( $sections as $k => $section ) {
 				$curriculum[ $section->section_id ] = new LP_Course_Section( $section );
 			}
@@ -356,7 +356,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return array
 	 */
 	public function get_items() {
-		return apply_filters( 'learn-press/course-items', learn_press_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
+		return apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
 	}
 
 	/**

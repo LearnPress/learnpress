@@ -93,7 +93,7 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		 * then ignore that course.
 		 */
 		foreach ( $course_id as $id ) {
-			if ( false ===($data = learn_press_cache_get( 'course-' . $id, 'lp-course-curriculum' ) )) {
+			if ( false ===($data = wp_cache_get( 'course-' . $id, 'lp-course-curriculum' ) )) {
 				$fetch_ids[] = $id;
 			}
 		}
@@ -145,7 +145,7 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						// If $cur_id is already set to a course
 						if ( $cur_id ) {
 							//wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
-							learn_press_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
+							wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
 						}
 
 						// Set $cur_id to new course and reset $curriculum
@@ -164,14 +164,14 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$_post = sanitize_post( $_post, 'raw' );
 					$_post = (object) $_post;
 					//wp_cache_add( $_post->ID, $_post, 'posts' );
-					learn_press_cache_set( $_post->ID, $_post, 'posts' );
+					wp_cache_set( $_post->ID, $_post, 'posts' );
 				}
 				//wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
-				learn_press_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
+				wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
 
 				// Cache items ids for using in some cases
 				foreach ( $item_ids as $cid => $ids ) {
-					learn_press_cache_set( 'course-' . $cid, $ids, 'lp-course-items' );
+					wp_cache_set( 'course-' . $cid, $ids, 'lp-course-items' );
 				}
 				unset( $curriculum );
 			}
@@ -214,7 +214,7 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		 * then ignore that course.
 		 */
 		foreach ( $course_id as $id ) {
-			if ( false === learn_press_cache_get( 'course-' . $id, 'lp-course-sections' ) ) {
+			if ( false === wp_cache_get( 'course-' . $id, 'lp-course-sections' ) ) {
 				$fetch_ids[] = $id;
 			}
 		}
@@ -239,14 +239,14 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			foreach ( $results as $row ) {
 				if ( $row->section_course_id !== $cur_id ) {
 					if ( $cur_id ) {
-						learn_press_cache_set( 'course-' . $cur_id, $course_sections, 'lp-course-sections' );
+						wp_cache_set( 'course-' . $cur_id, $course_sections, 'lp-course-sections' );
 					}
 					$cur_id          = $row->section_course_id;
 					$course_sections = array();
 				}
 				$course_sections[] = $row;
 			}
-			learn_press_cache_set( 'course-' . $cur_id, $course_sections, 'lp-course-sections' );
+			wp_cache_set( 'course-' . $cur_id, $course_sections, 'lp-course-sections' );
 			unset( $course_sections );
 		}
 
