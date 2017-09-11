@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $quiz = LP_Global::course_item_quiz();
 
-if ( ! $title = $quiz->get_title() ) {
+if ( ! $title = $quiz->get_heading_title() ) {
 	return;
 }
 ?>

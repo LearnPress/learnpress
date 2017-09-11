@@ -85,7 +85,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 			}
 			wp_cache_set( 'questions-' . $id, $questions, 'lp-quizzes' );
 
-			//$this->_load_question_answers();
+			$this->_load_question_answers( $quiz );
 		}
 	}
 
@@ -108,9 +108,13 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	protected function _load_question_answers( &$quiz ) {
 		global $wpdb;
 
-		$questions = $this->get_questions( $quiz );
-		$format    = array_fill( 0, sizeof( $questions ), '%d' );
-		$query     = $wpdb->prepare( "
+		if ( ! $questions = $this->get_questions( $quiz ) ) {
+			return;
+		}
+
+
+		$format = array_fill( 0, sizeof( $questions ), '%d' );
+		$query  = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_question_answers
 			WHERE question_id IN(" . join( ',', $format ) . ")
@@ -124,8 +128,17 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 				if ( empty( $answer_options[ $v->question_id ] ) ) {
 					$answer_options[ $v->question_id ] = array();
 				}
-				$answer_options[ $v->question_id ][] = (array) $v;
-				$kk                                  = sizeof( $answer_options[ $v->question_id ] );
+				$v = (array) $v;
+				if ( $answer_data = maybe_unserialize( $v['answer_data'] ) ) {
+					foreach ( $answer_data as $kk => $vv ) {
+						$v[ $kk ] = $vv;
+					}
+				}
+				unset( $v['answer_data'] );
+
+
+				$answer_options[ $v['question_id'] ][] = $v;
+				/*$kk                                  = sizeof( $answer_options[ $v->question_id ] );
 
 				if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
 					foreach ( $answer_data as $data_key => $data_value ) {
@@ -137,17 +150,22 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 					$meta_ids[ $group ] = array();
 				}
 				$meta_ids[ $group ][] = $v->question_answer_id;
-				$group                = ceil( sizeof( $answer_options ) / 5 ) - 1;
+				$group                = ceil( sizeof( $answer_options ) / 5 ) - 1;*/
+
+
 			}
+//			learn_press_debug( $results );
+//			learn_press_debug( $answer_options );
+//			die();
 			foreach ( $answer_options as $question_id => $options ) {
 				wp_cache_set( 'answer-options-' . $question_id, $options, 'lp-questions' );
 			}
 
 			foreach ( $meta_ids as $meta_id ) {
-				$this->_load_question_answer_meta( $meta_id );
+				//$this->_load_question_answer_meta( $meta_id );
 			}
 
-			$this->_load_answer_option_meta( $answer_options );
+			//$this->_load_question_answer_meta( $answer_options );
 		}
 		//
 

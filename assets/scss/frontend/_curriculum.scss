@@ -156,16 +156,15 @@
                     padding: 10px 0;
                     text-align: right;
                     .count-questions {
-                        background: #848c63;
+                        background: #DDD;
                         height: 20px;
                         line-height: 20px;
-                        min-width: 20px;
                         text-align: center;
                         font-size: 10px;
-                        color: #FFF;
                         display: inline-block;
-                        border-radius: 10px;
+                        border-radius: 3px;
                         vertical-align: middle;
+                        padding: 0 5px;
                     }
                     .course-item-status {
                         width: 20px;
@@ -231,8 +230,7 @@
                     transition: height linear 0.15s, top linear 0.15s;
                 }
 
-                &.current,
-                &:hover {
+                &.current {
                     padding-left: 10px;
                     background: #F9F9F9;
                     a {
@@ -263,7 +261,7 @@ body {
             background: #FFF;
             border-right: 1px solid #DDD;
             overflow: auto;
-            z-index: 99999;
+            z-index: 9999;
             .section-header {
                 padding: 15px;
                 .section-desc {
@@ -282,7 +280,7 @@ body {
         }
         #learn-press-content-item {
             position: fixed;
-            z-index: 99999;
+            z-index: 9999;
             background: #FFF;
             top: 32px;
             left: 400px;
@@ -367,7 +365,7 @@ body {
             line-height: 1;
             color: #999;
             border: 1px solid #DDD;
-            font-size: smaller;
+            font-size: 12px;
             &:hover {
                 background: #00adff;
                 color: #FFF;

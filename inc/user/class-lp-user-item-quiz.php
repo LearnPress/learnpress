@@ -56,22 +56,45 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return learn_press_get_user_item_meta( $this->get_data( 'user_item_id' ), '_current_question', true );
 	}
 
+	public function get_course_id() {
+		return $this->get_data( 'ref_id' );
+	}
+
 	public function get_result() {
-		$quiz = learn_press_get_quiz( $this->get_item_id() );
-		if ( false === ( $result = wp_cache_get( '', '' ) ) ) {
+		$quiz      = learn_press_get_quiz( $this->get_item_id() );
+		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
+		if ( false === ( $result = wp_cache_get( $cache_key, 'lp-quiz-result' ) ) ) {
 			$result = array(
-				'questions' => array()
+				'questions'        => array(),
+				'mark'             => $quiz->get_mark(),
+				'user_mark'        => 0,
+				'question_wrong'   => 0,
+				'question_correct' => 0,
+				'question_empty'   => 0
 			);
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {
 					$question = LP_Question_Factory::get_question( $question_id );
+					$answer   = $this->get_question_answer( $question_id );
 					$check    = $question->check();
 
 					$check['type'] = $question->get_type();
 
+					if ( $check['correct'] ) {
+						$result['question_correct'] ++;
+						$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
+					} else {
+						if ( false === $answer ) {
+							$result['question_empty'] ++;
+						} else {
+							$result['question_wrong'] ++;
+						}
+					}
+
 					$result['questions'][ $question_id ] = $check;
 				}
 			}
+			wp_cache_set( $cache_key, $result, 'lp-quiz-result' );
 		}
 
 		return $result;

@@ -418,7 +418,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 			WHERE 1 AND post_name = %s
 		", sanitize_title( $name ) );
 
-        $query .= " AND post_type IN ('" . $type . "' )";
+		$query .= " AND post_type IN ('" . $type . "' )";
 
 		if ( $post = $wpdb->get_row( $query ) ) {
 			$id = $post->ID;
@@ -1546,6 +1546,17 @@ function learn_press_send_json( $data ) {
 	echo wp_json_encode( $data );
 	echo '<-- LP_AJAX_END -->';
 	die;
+}
+
+/**
+ * Check if ajax is calling then send json data.
+ *
+ * @param array $data
+ */
+function learn_press_maybe_send_json( $data ) {
+	if ( learn_press_is_ajax() ) {
+		learn_press_send_json( $data );
+	}
 }
 
 /**

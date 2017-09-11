@@ -502,11 +502,14 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_content' ) ) 
 
 if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 
+	/**
+	 * Render content if quiz question.
+	 */
 	function learn_press_content_item_summary_question() {
-		$quiz   = LP_Global::course_item_quiz();
+		$quiz = LP_Global::course_item_quiz();
 		if ( $question = $quiz->get_viewing_question() ) {
-			$course = LP_Global::course();
-			$user   = LP_Global::user();
+			$course      = LP_Global::course();
+			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
 
@@ -625,6 +628,138 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 		learn_press_get_template( 'content-quiz/buttons/redo.php' );
 	}
 }
+
+if ( ! function_exists( 'learn_press_content_item_body_class' ) ) {
+
+	/**
+	 * Add custom classes into body tag in case user is viewing an item.
+	 *
+	 * @param array $classes
+	 *
+	 * @return array
+	 */
+	function learn_press_content_item_body_class( $classes ) {
+		global $lp_course_item;
+
+		if ( $lp_course_item ) {
+			$classes[] = 'course-item-popup viewing-course-item viewing-course-item-' . $lp_course_item->get_id() . ' course-item-' . $lp_course_item->get_item_type();
+		}
+
+		return $classes;
+	}
+
+}
+
+if ( ! function_exists( 'learn_press_content_item_script' ) ) {
+	/**
+	 * Add custom scripts + styles into head
+	 */
+	function learn_press_content_item_script() {
+		global $lp_course_item;
+
+		if ( ! $lp_course_item ) {
+			return;
+		}
+		?>
+        <style type="text/css">
+            html, body {
+                overflow: hidden;
+            }
+
+            body {
+                opacity: 0;
+
+            }
+
+            body.course-item-popup #learn-press-course-curriculum {
+                position: fixed;
+                top: 32px;
+                bottom: 0;
+                left: 0;
+                width: 400px;
+                background: #FFF;
+                border-right: 1px solid #DDD;
+                overflow: auto;
+                z-index: 99999;
+            }
+
+            body.course-item-popup #learn-press-content-item {
+                position: fixed;
+                z-index: 99999;
+                background: #FFF;
+                top: 32px;
+                left: 400px;
+                right: 0;
+                bottom: 0px;
+                overflow: hidden;
+            }
+        </style>
+		<?php
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
+	/**
+	 * Add edit links for course item question to admin bar.
+	 */
+	function learn_press_content_item_edit_links() {
+		if ( ! ( ! is_admin() && is_user_logged_in() ) ) {
+			return;
+		}
+
+		if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
+			//return;
+		}
+
+		global $wp_admin_bar, $lp_course_item, $lp_quiz_question;
+
+		/**
+		 * Edit link for lesson/quiz or any other course's item.
+		 */
+		if ( ( $post_type_object = get_post_type_object( $lp_course_item->get_item_type() ) )
+		     && current_user_can( 'edit_post', $lp_course_item->get_id() )
+		     && $post_type_object->show_in_admin_bar
+		     && $edit_post_link = get_edit_post_link( $lp_course_item->get_id() )
+		) {
+			$type = get_post_type( $lp_course_item->get_id() );
+			$wp_admin_bar->add_menu( array(
+				'id'    => 'edit-' . $type,
+				'title' => $post_type_object->labels->edit_item,
+				'href'  => $edit_post_link
+			) );
+		}
+
+		/**
+		 * Edit link for quiz's question.
+		 */
+		if ( $lp_quiz_question ) {
+			if ( ( $post_type_object = get_post_type_object( $lp_quiz_question->get_item_type() ) )
+			     && current_user_can( 'edit_post', $lp_quiz_question->get_id() )
+			     && $post_type_object->show_in_admin_bar
+			     && $edit_post_link = get_edit_post_link( $lp_quiz_question->get_id() )
+			) {
+				$type = get_post_type( $lp_quiz_question->get_id() );
+				$wp_admin_bar->add_menu( array(
+					'id'    => 'edit-' . $type,
+					'title' => $post_type_object->labels->edit_item,
+					'href'  => $edit_post_link
+				) );
+			}
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
+	function learn_press_control_displaying_course_item() {
+		add_action( 'learn-press/content-learning-summary', 'learn_press_course_curriculum_tab', 10 );
+		add_action( 'learn-press/content-learning-summary', 'learn_press_single_course_content_item', 20 );
+
+		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
+		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
+		add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
+	}
+}
+
 /**********************************************/
 /**********************************************/
 /**********************************************/
@@ -946,7 +1081,7 @@ if ( ! function_exists( 'learn_press_single_course_content_item' ) ) {
 	 * Display lesson content
 	 */
 	function learn_press_single_course_content_item() {
-		//learn_press_get_template( 'single-course/content-item.php' );
+		learn_press_get_template( 'single-course/content-item.php' );
 	}
 }
 

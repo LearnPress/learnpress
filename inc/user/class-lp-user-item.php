@@ -104,4 +104,5 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function get_item_id(){
 		return $this->get_data('item_id');
 	}
+
 }

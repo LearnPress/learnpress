@@ -111,7 +111,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *
 	 * @param int $course_id
 	 *
-	 * @return LP_User_Course_Item
+	 * @return LP_User_Course_Item|LP_User_Item_Quiz
 	 */
 	public function get_course_data( $course_id ) {
 
@@ -120,6 +120,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( empty( $course_data[ $this->get_id() ] ) ) {
 			$course_data[ $this->get_id() ] = array();
 		}
+
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
+		}
+
 		if ( empty( $course_data[ $this->get_id() ][ $course_id ] ) ) {
 
 			$this->_curd->read_course( $this->get_id(), $course_id );
@@ -265,18 +270,33 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		try {
 			// Validate course and quiz
 			if ( false === ( $course_id = $this->_verify_course_item( $quiz_id, $course_id ) ) ) {
-				throw new Exception( sprintf( __( '%s::%s - Course is not exists or does not contain the quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), 'INVALID_QUIZ_OR_COURSE' );
+				throw new Exception( sprintf( __( '%s::%s - Course is not exists or does not contain the quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_INVALID_QUIZ_OR_COURSE );
 			}
 
 			// If user has already finished the course
 			if ( $this->has_finished_course( $course_id ) ) {
-				throw new Exception( sprintf( __( '%s::%s - User has already finished course of this quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), 'COURSE_IS_FINISHED' );
+				throw new Exception( sprintf( __( '%s::%s - User has already finished course of this quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_COURSE_IS_FINISHED );
 
 			}
 
 			// Check if user has already started or completed quiz
 			if ( $this->has_item_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
-				throw new Exception( sprintf( __( '%s::%s - User has started or completed quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), 'QUIZ_HAS_STARTED_OR_COMPLETED' );
+				throw new Exception( sprintf( __( '%s::%s - User has started or completed quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
+			}
+
+			$course = learn_press_get_course( $course_id );
+			$user   = LP_Global::user();
+
+			if ( $course->is_require_enrollment() && $user->is( 'guest' ) ) {
+				throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
+			}
+
+			if ( learn_press_get_request( 'preview' ) == 'true' ) {
+				throw new Exception( __( 'You can not start a quiz in preview mode.', 'learnpress' ), LP_PREVIEW_MODE );
+			}
+
+			if ( $user->has_quiz_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
+				throw new Exception( __( 'You have started/completed quiz', 'learnpress' ), LP_INVALID_REQUEST );
 			}
 
 			/**
@@ -406,7 +426,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @param int $quiz_id
 	 * @param int $course_id
 	 *
-	 * @return array
+	 * @return array|WP_Error
 	 * @throws Exception
 	 */
 	public function retake_quiz( $quiz_id, $course_id ) {
@@ -863,6 +883,42 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn_press_user_has_quiz_status', in_array( $status, $statuses ), $statuses, $status, $quiz_id, $course_id, $this->get_id() );
 	}
 
+	/**
+	 * Get current results of a quiz
+	 *
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 *
+	 * @return mixed
+	 */
+	public function get_quiz_results( $quiz_id, $course_id = 0 ) {
+		return $this->get_quiz_result( $quiz_id, $course_id );
+	}
+
+	/**
+	 * Get current progress of user's quiz.
+	 *
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 *
+	 * @return LP_User_Item_Quiz
+	 */
+	public function get_quiz_data( $quiz_id, $course_id = 0 ) {
+		$result = false;
+		if ( $course_result = $this->get_course_data( $course_id ) ) {
+
+			print_r( get_class( $course_result ) );
+			$result = $course_result->get_item( $quiz_id );
+		}
+
+		return $result;
+	}
+
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
+
 	public
 	function get_quiz_last_results(
 		$quiz_id
@@ -1086,41 +1142,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		 * return apply_filters( 'learn_press_user_quiz_progress', $progress, $quiz_id, $course_id, $this->get_id() );
 		 *
 		 **/
-	}
-
-	/**
-	 * Get current results of a quiz
-	 *
-	 * @param int  $quiz_id
-	 * @param int  $course_id
-	 * @param bool $force
-	 *
-	 * @return mixed
-	 */
-	public
-	function get_quiz_results(
-		$quiz_id, $course_id = 0, $force = false
-	) {
-		learn_press_debug( debug_backtrace() );
-		die( __CLASS__ . '::' . __FUNCTION__ );
-		$course_id    = $this->_get_course( $course_id );
-		$quiz_results = LP_Cache::get_quiz_results( false, array() );
-		$key          = $this->get_id() . '-' . $course_id . '-' . $quiz_id;
-		if ( ! array_key_exists( $key, $quiz_results ) || $force ) {
-			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
-				$quiz_results[ $key ] = reset( $history );
-				if ( $user_results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[ $key ] ) ) {
-					foreach ( $user_results as $k => $v ) {
-						$quiz_results[ $key ]->{$k} = $v;
-					}
-				}
-			} else {
-				$quiz_results[ $key ] = false;
-			}
-			LP_Cache::set_quiz_results( $quiz_results );
-		}
-
-		return $quiz_results[ $key ];
 	}
 
 

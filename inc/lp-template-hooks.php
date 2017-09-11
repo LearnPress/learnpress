@@ -214,7 +214,7 @@ add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_continue_button', 20 )
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_complete_button', 25 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 30 );
 
-
+add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item' );
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */
 //add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );

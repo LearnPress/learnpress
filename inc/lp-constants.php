@@ -45,3 +45,12 @@ define( 'LP_CACHE_RESOURCE', false );
 define( 'LP_USE_ATTRIBUTES', false );
 define( 'LP_WIDGET_PATH', LP_PLUGIN_PATH . 'inc/widgets' );
 define( 'LP_WIDGET_URL', LP_PLUGIN_URL . 'inc/widgets' );
+
+// Error codes
+define( 'LP_INVALID_REQUEST', 100 );
+define( 'LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS', 110 );
+define( 'LP_REQUIRE_LOGIN', 120 );
+define( 'LP_PREVIEW_MODE', 130 );
+define( 'LP_INVALID_QUIZ_OR_COURSE', 140 );
+define( 'LP_COURSE_IS_FINISHED', 150 );
+define( 'LP_QUIZ_HAS_STARTED_OR_COMPLETED', 160 );

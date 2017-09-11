@@ -12,8 +12,6 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
-	public $content = '';
-
 	/**
 	 * LP_Quiz_CURD
 	 *
@@ -65,6 +63,20 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
+	}
+
+	public function get_heading_title() {
+		global $lp_quiz_question;
+		$title = $this->get_title();
+		if ( $lp_quiz_question instanceof LP_Question ) {
+			$titles = apply_filters( 'learn-press/quiz/title-parts', array(
+				$title,
+				sprintf( '<small>%s</small>', $lp_quiz_question->get_title() )
+			) );
+			$title  = apply_filters( 'learn-press/quiz/heading-title', join( ' ', $titles ) );
+		}
+
+		return $title;
 	}
 
 	/**
@@ -419,38 +431,26 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		return false;
 	}
 
-	public function get_content() {
-		if ( ! did_action( 'learn_press_get_content_' . $this->get_id() ) ) {
-			global $post, $wp_query;
-			$post = get_post( $this->get_id() );
-			//$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
-			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
-
-			if ( $posts ) {
-				$post = $posts[0];
-			}
-			setup_postdata( $post );
-			ob_start();
-			the_content();
-			$this->content = ob_get_clean();
-			wp_reset_postdata();
-			do_action( 'learn_press_get_content_' . $this->get_id() );
+	/**
+	 * This function is no longer support. Check directly from course.
+	 *
+	 * @deprecated
+	 *
+	 * @param int $the_course
+	 *
+	 * @return bool
+	 */
+	public function is_require_enrollment( $the_course = 0 ) {
+		if ( ! $the_course ) {
+			$the_course = get_the_ID();
 		}
 
-		return $this->content;
-	}
+		$return = false;
+		if ( $course = learn_press_get_course( $the_course ) ) {
+			$return = $course->is_require_enrollment();
+		}
 
-	/**
-	 * Get the quiz's post data.
-	 *
-	 * @return object
-	 */
-	public function get_quiz_data() {
-		return $this->post;
-	}
-
-	public function is_require_enrollment() {
-		return $this->course && $this->course->is_require_enrollment();
+		return $return;
 	}
 
 	/**
@@ -484,185 +484,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		return $return;
 	}
 
-	public function get_user_id_x() {
-		if ( empty( $this->user_id ) ) {
-			$user_id = get_current_user_id();
-			if ( ! $user_id ) {
-				if ( ! $this->is_require_enrollment() ) {
-					$user_id = $_SESSION['learn_press_temp_user_id'];
-				}
-			}
-			$this->user_id = $user_id;
-		}
-
-		return $this->user_id;
-	}
-
-	/**
-	 * @param bool  $the_quiz
-	 * @param array $args
-	 *
-	 * @return LP_Quiz
-	 */
-	public static function get_quiz( $the_quiz = false, $args = array() ) {
-		//$the_quiz = self::get_quiz_object( $the_quiz );
-		if ( ! $the_quiz ) {
-			return false;
-		}
-
-		return new LP_Quiz( $the_quiz, $args );
-	}
-
-	public function get_quiz_result( $quiz_id = null ) {
-		return false;
-	}
-
-
-	/**
-	 * Get all questions of a quiz from database
-	 *
-	 * @return array|null|object
-	 */
-	private function _get_questions() {
-		global $wpdb;
-		$query               = $wpdb->prepare( "
-			SELECT p.*, IF(pm.meta_value, pm.meta_value, 1) as mark
-			FROM {$wpdb->learnpress_quiz_questions} qq INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id AND p.post_type = %s
-			INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id AND q.post_type = %s
-			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = qq.question_id AND pm.meta_key = %s
-			WHERE qq.quiz_id = %d
-			ORDER BY qq.question_order ASC
-		", 'lp_question', 'lp_quiz', '_lp_mark', $this->get_id() );
-		self::$_meta['mark'] = 0;
-		if ( $questions = $wpdb->get_results( $query, OBJECT_K ) ) {
-			$question_ids = array_keys( $questions );
-
-			$answers = $this->_get_question_answers( $question_ids );
-			foreach ( $questions as $id => $question ) {
-				$answer_data = array( 'type' => 'true_or_false' );
-				// Fetch answers for questions if exists
-				if ( $answers ) {
-					$question->answers = array();
-					for ( $n = sizeof( $answers ), $i = $n - 1; $i >= 0; $i -- ) {
-						if ( $answers[ $i ]->id != $question->ID ) {
-							break;
-						}
-						$answers[ $i ]->answer_data                              = maybe_unserialize( $answers[ $i ]->answer_data );
-						$answer_data                                             = array_merge( $answer_data, $answers[ $i ]->answer_data );
-						$answer_data['id']                                       = $answers[ $i ]->question_answer_id;
-						$answer_data['order']                                    = $answers[ $i ]->answer_order;
-						$answer_data['type']                                     = $answers[ $i ]->type;
-						$question->answers[ $answers[ $i ]->question_answer_id ] = $answer_data;
-						unset( $answers[ $i ] );
-					}
-				}
-				$question->type = $answer_data['type'];
-				/**
-				 * Add item to 'posts' cache group
-				 */
-				$item_post = wp_cache_get( $question->ID, 'posts' );
-				if ( $item_post ) {
-					wp_cache_delete( $question->ID, 'posts' );
-				}
-				$add = wp_cache_add( $question->ID, $question, 'posts' );
-
-				// update mark of quiz
-				$this->_mark += absint( $question->mark );
-			}
-			// Update meta cache
-			update_meta_cache( 'post', $question_ids );
-		}
-
-		return $questions;
-	}
-
-	private function _get_question_answers( $question_ids ) {
-		global $wpdb;
-		$format_ids   = array_fill( 0, sizeof( $question_ids ), '%d' );
-		$prepare_args = array_merge( array( '_lp_type', 'lp_question' ), $question_ids );
-		$query        = $wpdb->prepare( "
-			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
-			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
-			RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
-			WHERE post_type = %s
-			AND ID IN(" . join( ',', $format_ids ) . ")
-			ORDER BY qq.question_order DESC, answer_order DESC
-		", $prepare_args );
-
-		return $wpdb->get_results( $query );
-	}
-
-	public function get_questions_( $force = false ) {
-		$questions = LP_Cache::get_quiz_questions( false, array() );
-		if ( ! array_key_exists( 'questions', self::$_meta[ $this->get_id() ] ) || $force ) {
-			self::$_meta[ $this->get_id() ]['questions'] = array();
-			global $wpdb;
-			/*$query = $wpdb->prepare( "
-					SELECT q.*, qq.params
-					FROM {$wpdb->posts} q
-					INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
-					AND q.post_type = %s
-					AND qq.quiz_id = %d
-				", LP_QUESTION_CPT, $this->get_id() );*/
-
-			$query = $wpdb->prepare( "
-			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
-			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
-			RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
-			WHERE ID IN(" . join( ',', $ids ) . ")
-			AND post_type = %s
-			ORDER BY qq.question_order, answer_order ASC
-		", '_lp_type', 'lp_question' );
-
-			if ( $this_questions = $wpdb->get_results( $query, OBJECT_K ) ) {
-				$question_ids = array();
-				foreach ( $this_questions as $id => $question ) {
-					$question->params                                   = maybe_unserialize( $question->params );
-					self::$_meta[ $this->get_id() ]['questions'][ $id ] = $question;
-					$GLOBALS['learnpress_question_answers'][ $id ]      = array();
-
-					/**
-					 * Add item to 'posts' cache group
-					 */
-					$item_post = wp_cache_get( $question->ID, 'posts' );
-					if ( ! $item_post ) {
-						wp_cache_add( $question->ID, $question, 'posts' );
-					}
-					$question_ids[] = $question->ID;
-				}
-				// Update cache
-				update_meta_cache( 'post', $question_ids );
-
-				if ( $answers = $wpdb->get_results( "
-					SELECT *
-					FROM {$wpdb->learnpress_question_answers}
-					WHERE question_id IN(" . join( ',', array_keys( $this_questions ) ) . ")
-					ORDER BY question_id, answer_order ASC
-				" )
-				) {
-
-					foreach ( $answers as $answer ) {
-						$GLOBALS['learnpress_question_answers'][ $answer->question_id ][ $answer->question_answer_id ]       = (array) maybe_unserialize( $answer->answer_data );
-						$GLOBALS['learnpress_question_answers'][ $answer->question_id ][ $answer->question_answer_id ]['id'] = $answer->question_answer_id;
-					}
-					//print_r($GLOBALS['learnpress_question_answers']);
-				}
-			}
-		} else {
-			$this_questions = self::$_meta[ $this->get_id() ]['questions'];
-		}
-
-		return apply_filters( 'learn_press_quiz_questions', $this_questions, $this->get_id(), $force );
-	}
-
-	public function get_buttons() {
-
-	}
-
 	public function has( $feature ) {
 		$args = func_get_args();
 		unset( $args[0] );
@@ -675,31 +496,53 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		}
 	}
 
+	/**
+	 * This quiz has any question?
+	 *
+	 * @return bool
+	 */
 	public function has_questions() {
 		return $this->count_questions() > 0;
 	}
 
+	/**
+	 * Return TRUE if quiz contain a question.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return bool
+	 */
 	public function has_question( $question_id ) {
-		return is_array( $this->get_questions() ) && isset( $this->questions[ $question_id ] );
+		$questions = $this->get_questions();
+
+		return apply_filters( 'learn-press/quiz/has-question', is_array( $questions ) && ( false !== array_search( $question_id, $questions ) ), $question_id, $this->get_id() );
 	}
 
 	/**
-	 * @param null $question_id
+	 * Get question permalink from it's ID.
+	 * If permalink option is turn on, add name of question
+	 * into quiz permalink. Otherwise, add it's ID into
+	 * query var.
 	 *
-	 * @return mixed|void
+	 * @param int $question_id
+	 *
+	 * @return string
 	 */
 	public function get_question_link( $question_id = null ) {
 		$course = LP_Global::course();
 
-		$permalink     = $course->get_item_link( $this->get_id() );
-		$question_name = get_post_field( 'post_name', $question_id );
+		$permalink = $course->get_item_link( $this->get_id() );
 		if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->get_id() ) != 'draft' ) {
-			$permalink = $permalink . $question_name;
+			$question_name = get_post_field( 'post_name', $question_id );
+			$permalink     = $permalink . $question_name;
 		} else {
-			$permalink = add_query_arg( array( 'question', $question_name ), $permalink );
+			$permalink = add_query_arg( array( 'question', $question_id ), $permalink );
 		}
 
-		return apply_filters( 'learn_press_quiz_question_permalink', $permalink, $question_id, $this );
+		// @deprecated
+		$permalink = apply_filters( 'learn_press_quiz_question_permalink', $permalink, $question_id, $this );
+
+		return apply_filters( 'learn-press/quiz/question-permalink', $permalink, $question_id, $this->get_id() );
 	}
 
 	/**
@@ -718,7 +561,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			}
 		}
 
-		return $prev;
+		return apply_filters( 'learn-press/quiz/prev-question-id', $prev, $this->get_id() );
 	}
 
 	/**
@@ -737,7 +580,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			}
 		}
 
-		return $next;
+		return apply_filters( 'learn-press/quiz/next-question-id', $next, $this->get_id() );
 	}
 
 	/**
@@ -754,7 +597,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			$index     = array_search( $id, $questions );
 		}
 
-		return $index;
+		return apply_filters( 'learn-press/quiz/question-index', $index, $this->get_id() );
 	}
 
 	/**
@@ -763,11 +606,12 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 * @return int
 	 */
 	public function count_questions() {
+		$size = 0;
 		if ( ( $questions = $this->get_questions() ) ) {
-			return sizeof( $questions );
+			$size = sizeof( $questions );
 		}
 
-		return 0;
+		return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
 	}
 
 
@@ -817,28 +661,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		$position = array_search( $question, $questions );
 
 		return $position;
-	}
-
-	/**
-	 * Get the quiz object
-	 *
-	 * @param  mixed $the_quiz
-	 *
-	 * @uses   WP_Post
-	 * @return WP_Post|bool false on failure
-	 */
-	private static function get_quiz_object( $the_quiz ) {
-		if ( false === $the_quiz ) {
-			$the_quiz = $GLOBALS['post'];
-		} elseif ( is_numeric( $the_quiz ) ) {
-			$the_quiz = get_post( $the_quiz );
-		} elseif ( $the_quiz instanceof LP_Quiz ) {
-			$the_quiz = get_post( $the_quiz->id );
-		} elseif ( ! ( $the_quiz instanceof WP_Post ) ) {
-			$the_quiz = false;
-		}
-
-		return apply_filters( 'learn_press_quiz_object', $the_quiz );
 	}
 
 	public function get_current_question( $user_id = 0, $course_id = 0 ) {

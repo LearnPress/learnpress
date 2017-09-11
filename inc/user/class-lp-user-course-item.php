@@ -56,7 +56,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 			foreach ( $course_items as $item_id ) {
 				$cache_name = sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_id(), $item_id );
 				if ( false !== ( $data = wp_cache_get( $cache_name, 'lp-user-course-items' ) ) ) {
-					$data = end( $data );
+					$data = reset( $data );
 				} else {
 					$data = wp_parse_args(
 						array(

@@ -22,9 +22,9 @@ $quiz   = LP_Global::course_item_quiz();
 
     <button type="submit"><?php _e( 'Start', 'learnpress' ); ?></button>
 
-	<?php LP_Nonce_Helper::quiz_action( 'start', $quiz->get_id(), $course->get_id() ); ?>
-
 	<?php do_action( 'learn-press/end-quiz-start-button' ); ?>
+
+    <?php LP_Nonce_Helper::quiz_action( 'start', $quiz->get_id(), $course->get_id() ); ?>
 
 </form>
 

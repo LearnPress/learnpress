@@ -145,15 +145,37 @@
             methods: {
                 nextQuestion: function (event) {
                     event.preventDefault();
-                    var data = $('.answer-options').serializeJSON(),
-                        $form = $(event.target.form),
-                        $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
-                    $form.append($hidden).submit();
-
+                    var $form = this._prepareForm(event);
+                    $form.submit();
+                },
+                prevQuestion: function () {
+                    event.preventDefault();
+                    var $form = this._prepareForm(event);
+                    $form.submit();
+                },
+                redoQuiz: function () {
+                    event.preventDefault();
+                    var $form = this._prepareForm(event);
+                    $form.submit();
+                },
+                startQuiz: function () {
+                    event.preventDefault();
+                    var $form = this._prepareForm(event);
+                    $form.submit();
                 },
                 completeItem: function (event) {
                     event.preventDefault();
-                    $(event.target.form).submit();
+                    var $form = this._prepareForm(event);
+                    $form.submit();
+                    return false;
+                },
+                _prepareForm: function (event) {
+                    var data = $('.answer-options').serializeJSON(),
+                        $target = $(event.target),
+                        $form = $target.is('form') ? $target : $(event.target.form),
+                        $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
+                    $form.find('input[name="question-data"]').remove();
+                    return $form.append($hidden);
                 },
                 toggle: function (event) {
                     var $el = $(event.target),

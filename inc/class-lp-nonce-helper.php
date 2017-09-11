@@ -71,6 +71,15 @@ class LP_Nonce_Helper {
 			$nonce = LP_Request::get_post( $action . '-quiz-nonce' );
 		}
 
+		if ( ! $quiz_id ) {
+			global $lp_course_item;
+			$quiz_id = $lp_course_item instanceof LP_Course_Item ? $lp_course_item->get_id() : 0;
+		}
+
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
+		}
+
 		return wp_verify_nonce( $nonce, sprintf( 'learn-press/quiz/%s/%s-%s-%s', $action, get_current_user_id(), $course_id, $quiz_id ) );
 	}
 }

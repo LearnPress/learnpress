@@ -34,6 +34,11 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	protected $_nonces = array();
 
 	/**
+	 * @var null
+	 */
+	protected $_content = null;
+
+	/**
 	 * LP_Course_Item constructor.
 	 *
 	 * @param $item mixed
@@ -70,7 +75,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	 * @return string
 	 */
 	public function get_title() {
-		return get_the_title( $this->get_id() );
+		return apply_filters( 'learn-press/course-item-title', get_the_title( $this->get_id() ), $this->get_id() );
 	}
 
 	/**
@@ -80,17 +85,20 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	 */
 	public function get_content() {
 
-		global $post;
-		$post = get_post( $this->get_id() );
-		setup_postdata( $post );
+		if ( ! $this->_content ) {
+			global $post;
+			$post = get_post( $this->get_id() );
+			setup_postdata( $post );
 
-		ob_start();
-		the_content();
-		$content = ob_get_clean();
+			ob_start();
+			the_content();
+			$this->_content = ob_get_clean();
 
-		wp_reset_postdata();
+			wp_reset_postdata();
 
-		return $content;
+		}
+
+		return $this->_content;
 	}
 
 	/**

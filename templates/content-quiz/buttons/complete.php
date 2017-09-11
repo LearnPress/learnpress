@@ -8,13 +8,21 @@
  */
 
 defined( 'ABSPATH' ) or die();
-
-$user = LP_Global::user();
 $quiz = LP_Global::course_item_quiz();
-$data = $user->get_course_data( get_the_ID() );
-$item = $data->get_viewing_item();
 ?>
 
-<form name="complete-quiz" class="complete-quiz form-button" method="post" enctype="multipart/form-data">
+<?php do_action( 'learn-press/quiz/before-complete-button' );?>
+
+<form name="complete-quiz" class="complete-quiz form-button" method="post" enctype="multipart/form-data" @submit="completeItem">
+
+	<?php do_action( 'learn-press/quiz/begin-complete-button' );?>
+
     <button type="submit"><?php _e( 'Complete', 'learnpress' ); ?></button>
+
+	<?php do_action( 'learn-press/quiz/end-complete-button' );?>
+
+	<?php LP_Nonce_Helper::quiz_action( 'complete', $quiz->get_id(), get_the_ID() ); ?>
+
 </form>
+
+<?php do_action( 'learn-press/quiz/after-complete-button' );?>

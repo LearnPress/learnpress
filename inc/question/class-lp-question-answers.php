@@ -38,8 +38,23 @@ class LP_Question_Answers implements ArrayAccess, Iterator {
 	 * @param $raw
 	 */
 	public function __construct( $raw ) {
-		$this->_randomize_options = true;
 		$this->_init( $raw );
+	}
+
+	/**
+	 * Set option randomize answer options.
+	 *
+	 * @param bool $randomize
+	 */
+	public function set_randomize_options( $randomize ) {
+		$this->_randomize_options = (bool) $randomize;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function get_randomize_options() {
+		return $this->_randomize_options;
 	}
 
 	/**

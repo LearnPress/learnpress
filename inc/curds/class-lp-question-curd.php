@@ -88,10 +88,13 @@ class LP_Question_CURD implements LP_Interface_CURD {
 					unset( $answer_options[ $k ]['answer_data'] );
 				}
 			}
-			$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
-			$this->_load_answer_option_meta( $answer_options );
-			wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
 		}
+		$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
+		if ( ! empty( $answer_options['question_answer_id'] ) && $answer_options['question_answer_id'] > 0 ) {
+			$this->_load_answer_option_meta( $answer_options );
+		}
+		wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
+
 		$question->set_data( 'answer_options', $answer_options );
 	}
 

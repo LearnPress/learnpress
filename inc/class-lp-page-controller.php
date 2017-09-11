@@ -40,174 +40,81 @@ class LP_Page_Controller {
 	}
 
 	function setup_data( $post ) {
+		static $courses = array();
+
 		if ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) {
 			return $post;
 		}
-		global $wp, $lp_course, $lp_course_item, $lp_quiz_question;
+
+		if ( ! empty( $courses[ $post->ID ] ) ) {
+			return $post;
+		}
+
+		$courses[ $post->ID ] = true;
+
+		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
 		$vars = $wp->query_vars;
 		if ( empty( $vars['course-item'] ) ) {
 			return false;
 		}
 
-		if ( ! is_numeric( $vars['course-item'] ) ) {
-			$item_type = $vars['item-type'];
-			$post      = learn_press_get_post_by_name( $vars['course-item'], $item_type );
-		} else {
-			$post      = get_post( absint( $vars['course-item'] ) );
-			$item_type = $post->post_type;
-		}
+		try {
+			// If item name is set in query vars
+			if ( ! is_numeric( $vars['course-item'] ) ) {
+				$item_type = $vars['item-type'];
+				$post_item = learn_press_get_post_by_name( $vars['course-item'], $item_type );
+			} else {
+				$post_item = get_post( absint( $vars['course-item'] ) );
+				$item_type = $post->post_type;
+			}
 
-		$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post->ID ) );
+			// Post item is not exists or get it's item failed.
+			if ( ! $post_item || ( $post_item && ( ! $lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) ) ) ) ) {
+				throw new Exception( __( 'You can not view this item or it is not exists!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
+			}
 
-		$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
+			$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
 
-		if ( ! $user_item_id ) {
-			return $post;
-		}
+			if ( ! $user_item_id ) {
+				return $post;
+			}
 
-		if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
-			if($question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT )) {
-				$lp_quiz_question = LP_Question_Factory::get_question( $question->ID );
-				if ( $user_item_id && learn_press_get_user_item_meta( $user_item_id, '_current_question', true ) != $question->ID ) {
-					learn_press_update_user_item_meta( $user_item_id, '_current_question', $question->ID );
+			// If item viewing is a QUIZ and have a question...
+			if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
+				if ( $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) {
+					$lp_quiz_question = LP_Question_Factory::get_question( $question->ID );
+
+					// Update current question for user
+					if ( $user_item_id && learn_press_get_user_item_meta( $user_item_id, '_current_question', true ) != $question->ID ) {
+						learn_press_update_user_item_meta( $user_item_id, '_current_question', $question->ID );
+					}
+				} else {
+					throw new Exception( __( 'Question invalid!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
+					// TODO: Process in case question does not exists.
 				}
-			}else{
-			    // TODO: Process in case question does not exists.
-            }
-			//$lp_course_item->set_viewing_question( $lp_quiz_question );
+				//$lp_course_item->set_viewing_question( $lp_quiz_question );
+			}
+		}
+		catch ( Exception $ex ) {
+			learn_press_add_message( $ex->getMessage(), 'error' );
 		}
 
 		return $post;
 	}
 
 	public function template_content_item( $template ) {
-		global $lp_course, $lp_course_item, $wp_filter;
+		global $lp_course, $lp_course_item, $wp_filter, $lp_user;
 		if ( $lp_course_item ) {
 
-			if ( ! empty( $wp_filter['learn-press/content-learning-summary'] ) ) {
-				unset( $wp_filter['learn-press/content-learning-summary'] );
+			if ( ! $lp_user->can_view_item( $lp_course_item->get_id() ) ) {
+				if ( $redirect = apply_filters( 'learn-press/access-forbidden-item-redirect', get_the_permalink( $lp_course->get_id() ), $lp_course_item->get_id(), $lp_course->get_id() ) ) {
+					wp_redirect( $redirect );
+					exit();
+				}
 			}
-			//echo $template = learn_press_locate_template( 'single-course/content-item.php' );
-			add_action( 'learn-press/content-learning-summary', function () {
-				learn_press_get_template( 'single-course/tabs/curriculum.php' );
-			}, 50 );
-			add_action( 'learn-press/content-learning-summary', function () {
-				learn_press_get_template( 'single-course/content-item.php' );
-			}, 50 );
 
-			add_filter( 'body_class', function ( $classes ) {
-				global $lp_course, $lp_course_item, $wp_filter;
-
-				$classes[] = 'course-item-popup viewing-course-item viewing-course-item-' . $lp_course_item->get_id() . ' course-item-' . $lp_course_item->get_item_type();
-
-				return $classes;
-			} );
-
-			add_filter('wp_title_parts', function(){
-                learn_press_debug(func_get_args());die();
-            });
-
-			//echo did_action()
-			add_action( 'wp_print_scripts', function () {
-				?>
-                <style type="text/css">
-                    html, body {
-                        overflow: hidden;
-                    }
-
-                    body {
-                        opacity: 0;
-
-                    }
-
-                    body.course-item-popup #learn-press-course-curriculum {
-                        position: fixed;
-                        top: 32px;
-                        bottom: 0;
-                        left: 0;
-                        width: 400px;
-                        background: #FFF;
-                        border-right: 1px solid #DDD;
-                        overflow: auto;
-                        z-index: 99999;
-                    }
-
-                    body.course-item-popup #learn-press-content-item {
-                        position: fixed;
-                        z-index: 99999;
-                        background: #FFF;
-                        top: 32px;
-                        left: 400px;
-                        right: 0;
-                        bottom: 0px;
-                        overflow: hidden;
-                    }
-                </style>
-				<?php
-			} );
-
-
-			add_filter( 'admin_bar_menu', function () {
-				if ( ! ( ! is_admin() && is_user_logged_in() ) ) {
-					return;
-				}
-
-				if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
-					//return;
-				}
-
-				global $wp_admin_bar, $lp_course_item;
-
-				if ( ( $post_type_object = get_post_type_object( $lp_course_item->get_item_type() ) )
-				     && current_user_can( 'edit_post', $lp_course_item->get_id() )
-				     && $post_type_object->show_in_admin_bar
-				     && $edit_post_link = get_edit_post_link( $lp_course_item->get_id() )
-				) {
-					$type = get_post_type( $lp_course_item->get_id() );
-					$wp_admin_bar->add_menu( array(
-						'id'    => 'edit-' . $type,
-						'title' => $post_type_object->labels->edit_item,
-						'href'  => $edit_post_link
-					) );
-				}
-			}, 90 );
-
-//			learn_press_get_template( 'single-course/tabs/curriculum.php' );
-//			learn_press_get_template( 'single-course/content-item.php' );
-//
-//			get_header();
-//
-//			get_footer();
-//			die();
+			do_action( 'learn-press/parse-course-item', $lp_course_item, $lp_course );
 		}
-
-		global $lp_quiz_question;
-		if($lp_quiz_question){
-			add_filter( 'admin_bar_menu', function () {
-				if ( ! ( ! is_admin() && is_user_logged_in() ) ) {
-					return;
-				}
-
-				if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
-					//return;
-				}
-
-				global $wp_admin_bar, $lp_quiz_question;
-
-				if ( ( $post_type_object = get_post_type_object( $lp_quiz_question->get_item_type() ) )
-				     && current_user_can( 'edit_post', $lp_quiz_question->get_id() )
-				     && $post_type_object->show_in_admin_bar
-				     && $edit_post_link = get_edit_post_link( $lp_quiz_question->get_id() )
-				) {
-					$type = get_post_type( $lp_quiz_question->get_id() );
-					$wp_admin_bar->add_menu( array(
-						'id'    => 'edit-' . $type,
-						'title' => $post_type_object->labels->edit_item,
-						'href'  => $edit_post_link
-					) );
-				}
-			}, 90 );
-        }
 
 		return $template;
 	}

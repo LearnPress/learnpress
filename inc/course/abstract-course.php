@@ -1038,6 +1038,22 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/course-has-item', $found, $item_id, $this->get_id() );
 	}
 
+	/**
+	 * Get course's item (less/quiz/etc...).
+	 *
+	 * @param int $item_id
+	 *
+	 * @return LP_Lesson|LP_Quiz
+	 */
+	public function get_item( $item_id ) {
+		$item = false;
+		if ( $this->has_item( $item_id ) ) {
+			$item = LP_Course_Item::get_item( $item_id );
+		}
+
+		return apply_filters( 'learn-press/course-item', $item, $item_id, $this->get_id() );
+	}
+
 	public function can_view_item( $item_id ) {
 		switch ( get_post_type() ) {
 			case LP_QUIZ_CPT:

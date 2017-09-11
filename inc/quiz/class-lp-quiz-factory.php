@@ -19,15 +19,16 @@ class LP_Quiz_Factory {
 	 */
 	public static function init() {
 		$actions = array(
-			'start-quiz'         => 'start_quiz',
-			'redo-quiz'          => 'redo_quiz',
-			'next-question-quiz' => 'next_question',
-			'prev-question-quiz' => 'prev_question',
-			'finish-quiz'        => 'finish_quiz',
-			'retake-quiz'        => 'retake_quiz',
-			'check-question'     => 'check_question',
-			'fetch-question'     => 'fetch_question',
-			'get-question-hint'  => 'get_question_hint'
+			'start-quiz'        => 'start_quiz',
+			'redo-quiz'         => 'redo_quiz',
+			'nav-question-quiz' => 'nav_question',
+			'complete-quiz'     => 'finish_quiz',
+
+			////
+			'retake-quiz'       => 'retake_quiz',
+			'check-question'    => 'check_question',
+			'fetch-question'    => 'fetch_question',
+			'get-question-hint' => 'get_question_hint'
 		);
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
@@ -40,83 +41,56 @@ class LP_Quiz_Factory {
 			__CLASS__,
 			'question_icon_class'
 		), 10, 2 );
-		add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_question' ), 10, 3 );
+		add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_current_question' ), 10, 3 );
 	}
 
-	public static function get_question_data() {
-		$post_data = ( stripslashes_deep( $_REQUEST ) );//['question-data'] );
-		if ( empty( $post_data['question-data'] ) ) {
-			return false;
-		}
-
-		$data = @json_decode( $post_data['question-data'] );
-		settype( $data, 'array' );
-
-		$questions = array();
-		foreach ( $data as $k => $v ) {
-			$id               = str_replace( 'learn-press-question-', '', $k );
-			$questions[ $id ] = (array) $v;
-		}
-
-		return $questions;
+	public static function nav_question() {
+		$check = self::maybe_save_questions( 'nav-question' );
 	}
 
-	public static function next_question() {
-		if ( $questions = self::get_question_data() ) {
-			$user   = learn_press_get_current_user();
-			$course = learn_press_get_course( LP_Request::get_int( 'course-id' ) );
-			$quiz   = learn_press_get_quiz( LP_Request::get_int( 'quiz-id' ) );
+	/**
+	 * Callback function for starting quiz
+	 */
+	public static function start_quiz() {
 
-			$course_data = $user->get_course_data( $course->get_id() );
-			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
-
-			$quiz_data->add_question_answer( $questions );
-			$quiz_data->update();
-		}
-	}
-
-	public static function prev_question() {
-		if ( $questions = self::get_question_data() ) {
-			$user   = learn_press_get_current_user();
-			$course = learn_press_get_course( LP_Request::get_int( 'course-id' ) );
-			$quiz   = learn_press_get_quiz( LP_Request::get_int( 'quiz-id' ) );
-
-			$course_data = $user->get_course_data( $course->get_id() );
-			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
-
-			$quiz_data->add_question_answer( $questions );
-			$quiz_data->update();
-
-		}
-	}
-
-	public static function redo_quiz() {
-		$course_id = LP_Request::get_int( 'course-id' );
-		$quiz_id   = LP_Request::get_int( 'quiz-id' );
-		$nonce     = LP_Request::get_string( 'start-quiz-nonce' );
-		$result    = array( 'result' => 'failure' );
 		try {
-			if ( ! LP_Nonce_Helper::verify_quiz_action( 'redo', $nonce, $quiz_id, $course_id ) ) {
-				throw new Exception( __( 'Invalid request', 'learnpress' ), 'INVALID_REQUEST' );
+
+			// Actually, no save question here. Just check nonce here.
+			$check = self::maybe_save_questions( 'start' );
+
+			// PHP Exception
+			if ( true !== $check ) {
+				throw $check;
 			}
+
+			$course_id = LP_Request::get_int( 'course-id' );
+			$quiz_id   = LP_Request::get_int( 'quiz-id' );
+			$nonce     = LP_Request::get_string( 'start-quiz-nonce' );
+			$result    = array( 'result' => 'failure' );
 
 			$user   = learn_press_get_current_user();
 			$quiz   = learn_press_get_quiz( $quiz_id );
 			$course = learn_press_get_course( $course_id );
 
-			if ( !$user->has_quiz_status( array( 'completed' ), $quiz_id, $course_id ) ) {
-			    // TODO: ERROR
-			} else {
-				$data = $user->retake_quiz( $quiz_id, $course_id, true );
-				if ( is_wp_error( $data ) ) {
-					$result['message'] = $data->get_error_message();
-				} else {
-					$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
 
-					$result['result']   = 'success';
-					$result['redirect'] = apply_filters( 'learn-press/quiz-started/redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
-				}
+			$data = $user->start_quiz( $quiz_id, $course_id, true );
+			if ( is_wp_error( $data ) ) {
+				$result['message'] = $data->get_error_message();
+			} else {
+				$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
+
+				$result['result']   = 'success';
+				$result['redirect'] = apply_filters( 'learn-press/quiz-started/redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 			}
+//				if ( $result ) {
+//					//learn_press_setup_user_course_data( $user->get_id(), $course_id );
+//					$response['status']        = $result->status;
+//					$response['html']          = file_get_contents( learn_press_get_current_url() );// learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
+//					$response['course_result'] = self::get_course_info( $user->get_id(), $course_id );
+//				} else {
+//					$response['result'] = 'error';
+//				}
+
 		}
 		catch ( Exception $ex ) {
 			$result['message'] = $ex->getMessage();
@@ -136,14 +110,199 @@ class LP_Quiz_Factory {
 		}
 	}
 
-	public static function update_user_question( $quiz_id, $course_id, $user_id ) {
+	/**
+	 * Callback function for retaking quiz
+	 */
+	public static function redo_quiz() {
+		try {
+			// Actually, no need to save question here. Just check wp nonce in this case.
+			$check = self::maybe_save_questions( 'redo' );
+
+			// PHP Exception
+			if ( true !== $check ) {
+				throw $check;
+			}
+
+			$result    = array( 'result' => 'failure' );
+			$course_id = LP_Request::get_int( 'course-id' );
+			$quiz_id   = LP_Request::get_int( 'quiz-id' );
+			$user      = learn_press_get_current_user();
+			$quiz      = learn_press_get_quiz( $quiz_id );
+
+			$data = $user->retake_quiz( $quiz_id, $course_id, true );
+
+			if ( is_wp_error( $data ) ) {
+				throw new Exception( $data->get_error_message(), $data->get_error_code() );
+			} else {
+				$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
+
+				$result['result']   = 'success';
+				$result['redirect'] = apply_filters( 'learn-press/quiz-started/redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+				$result['data']     = $data;
+			}
+		}
+		catch ( Exception $ex ) {
+			$result['message'] = $ex->getMessage();
+			$result['code']    = $ex->getCode();
+			$result['result']  = 'failure';
+		}
+
+		// Filter
+		$result = apply_filters( 'learn-press/quiz/redo-result', $result );
+
+		// Send ajax json
+		learn_press_maybe_send_json( $result );
+
+		// Message
+		if ( ! empty( $result['message'] ) ) {
+			learn_press_add_message( $result['message'] );
+		}
+
+		// Redirecting...
+		if ( ! empty( $result['redirect'] ) ) {
+			wp_redirect( $result['redirect'] );
+			exit();
+		}
+	}
+
+	/**
+	 * Callback for finishing quiz
+	 */
+	public static function finish_quiz() {
+
+		try {
+			$check = self::maybe_save_questions( 'finish' );
+
+			// PHP Exception
+			if ( true !== $check ) {
+				throw $check;
+			}
+
+			$user   = LP_Global::user();
+			$result = array( 'result' => 'failure' );
+
+			$course_id = LP_Request::get_int( 'course-id' );
+			$quiz_id   = LP_Request::get_int( 'quiz-id' );
+
+			$data = $user->finish_quiz( $quiz_id, $course_id );
+
+			if ( is_wp_error( $data ) ) {
+				throw new Exception( $data->get_error_message(), $data->get_error_code() );
+			} else {
+				if ( $course = learn_press_get_course( $course_id ) ) {
+					$quiz     = $course->get_item( $quiz_id );
+					$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
+
+					$result['result']   = 'success';
+					$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+					$result['data']     = $data;
+				}
+			}
+		}
+		catch ( Exception $ex ) {
+			$result['message'] = $ex->getMessage();
+			$result['code']    = $ex->getCode();
+		}
+
+		// Filter the result
+		$result = apply_filters( 'learn-press/quiz/finish-result', $result );
+
+		// Send json if the ajax is calling
+		learn_press_maybe_send_json( $result );
+
+		// Message
+		if ( ! empty( $result['message'] ) ) {
+			learn_press_add_message( $result['message'] );
+		}
+
+		// Redirecting...
+		if ( ! empty( $result['redirect'] ) ) {
+			wp_redirect( $result['redirect'] );
+			exit();
+		}
+	}
+
+	/**
+	 * Verify nonce and/or save question answers when posting.
+	 *
+	 * @param string $action
+	 * @param string $nonce
+	 *
+	 * @return bool|Exception
+	 *
+	 * @since 3.x.x
+	 */
+	public static function maybe_save_questions( $action = '', $nonce = '' ) {
+		try {
+			if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce ) ) {
+				throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
+			}
+
+			if ( $questions = self::get_answers_posted() ) {
+
+				$user   = learn_press_get_current_user();
+				$course = learn_press_get_course( LP_Request::get_int( 'course-id' ) );
+				$quiz   = learn_press_get_quiz( LP_Request::get_int( 'quiz-id' ) );
+
+				$course_data = $user->get_course_data( $course->get_id() );
+				$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+
+				$quiz_data->add_question_answer( $questions );
+				$quiz_data->update();
+			}
+		}
+		catch ( Exception $ex ) {
+			return $ex;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Update current question for user while doing quiz.
+	 *
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 * @param int $user_id
+	 */
+	public static function update_user_current_question( $quiz_id, $course_id, $user_id ) {
 		$user   = learn_press_get_user( $user_id );
-		$return = $user->get_item_archive( $quiz_id, $course_id, true );
 		$quiz   = learn_press_get_quiz( $quiz_id );
-		if ( $questions = $quiz->get_questions() ) {
+		$return = $user->get_item_archive( $quiz_id, $course_id, true );
+
+		if ( ! empty( $return['user_item_id'] ) && $questions = $quiz->get_questions() ) {
 			$question_id = reset( $questions );
 			learn_press_update_user_item_meta( $return['user_item_id'], '_current_question', $question_id );
 		}
+	}
+
+	/**
+	 * Parse question answers when posting.
+	 *
+	 * @return array|bool
+	 */
+	public static function get_answers_posted() {
+		$questions = array();
+		try {
+			$post_data = stripslashes_deep( $_REQUEST );
+			if ( empty( $post_data['question-data'] ) ) {
+				return false;
+			}
+
+			$data = @json_decode( $post_data['question-data'] );
+			settype( $data, 'array' );
+
+			foreach ( $data as $k => $v ) {
+				$id = absint( str_replace( 'learn-press-question-', '', $k ) );
+				if ( $id ) {
+					$questions[ $id ] = $v;
+				}
+			}
+		}
+		catch ( Exception $ex ) {
+		}
+
+		return $questions;
 	}
 
 	public static function question_icon_class( $data, $type ) {
@@ -275,155 +434,11 @@ class LP_Quiz_Factory {
 		return $start;
 	}
 
-	/**
-	 * Start quiz
-	 */
-	public static function start_quiz() {
 
-		$course_id = LP_Request::get_int( 'course-id' );
-		$quiz_id   = LP_Request::get_int( 'quiz-id' );
-		$nonce     = LP_Request::get_string( 'start-quiz-nonce' );
-		$result    = array( 'result' => 'failure' );
 
-		try {
-			if ( ! LP_Nonce_Helper::verify_quiz_action( 'start', $nonce, $quiz_id, $course_id ) ) {
-				throw new Exception( __( 'Invalid request', 'learnpress' ), 'INVALID_REQUEST' );
-			}
-
-			$user   = learn_press_get_current_user();
-			$quiz   = learn_press_get_quiz( $quiz_id );
-			$course = learn_press_get_course( $course_id );
-
-			if ( $course->is_require_enrollment() && $user->is( 'guest' ) ) {
-				throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), 'REQUIRE_LOGIN' );
-			}
-
-			if ( learn_press_get_request( 'preview' ) == 'true' ) {
-				throw new Exception( __( 'You can not start a quiz in preview mode.', 'learnpress' ), 'PREVIEW_MODE' );
-			}
-
-			if ( $user->has_quiz_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
-				$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
-			} else {
-				$data = $user->start_quiz( $quiz_id, $course_id, true );
-				if ( is_wp_error( $data ) ) {
-					$result['message'] = $data->get_error_message();
-				} else {
-					$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
-
-					$result['result']   = 'success';
-					$result['redirect'] = apply_filters( 'learn-press/quiz-started/redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
-				}
-//				if ( $result ) {
-//					//learn_press_setup_user_course_data( $user->get_id(), $course_id );
-//					$response['status']        = $result->status;
-//					$response['html']          = file_get_contents( learn_press_get_current_url() );// learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
-//					$response['course_result'] = self::get_course_info( $user->get_id(), $course_id );
-//				} else {
-//					$response['result'] = 'error';
-//				}
-			}
-		}
-		catch ( Exception $ex ) {
-			$result['message'] = $ex->getMessage();
-			$result['result']  = 'failure';
-		}
-
-		if ( learn_press_is_ajax() ) {
-			learn_press_send_json( $result );
-		}
-
-		if ( ! empty( $result['redirect'] ) ) {
-			if ( ! empty( $result['message'] ) ) {
-				learn_press_add_message( $result['message'] );
-			}
-			wp_redirect( $result['redirect'] );
-			exit();
-		}
-	}
-
-	public static function finish_quiz() {
-		self::_verify_nonce( __FUNCTION__ );
-		$course_id = learn_press_get_request( 'course_id' );
-		$quiz_id   = learn_press_get_request( 'quiz_id' );
-		$user      = learn_press_get_current_user();
-		$course    = learn_press_get_course( $course_id );
-		$quiz      = LP_Quiz::get_quiz( $quiz_id );
-
-		$response = array( 'result' => 'success' );
-		if ( $user->has_quiz_status( array( 'completed' ), $quiz_id, $course_id ) ) {
-			learn_press_send_json(
-				array(
-					'result'   => 'error',
-					'message'  => array(
-						'title'   => __( 'Error', 'learnpress' ),
-						'message' => __( 'You have already completed quiz', 'learnpress' )
-					),
-					'redirect' => $quiz->permalink
-				)
-			);
-		} else {
-			$answers = learn_press_get_request( 'answers' );
-			//if ( $answers ) {
-			$history = $user->get_quiz_results( $quiz_id, $course_id, true );
-			if ( ! $history ) {
-				learn_press_send_json(
-					array(
-						'result'  => 'error',
-						'message' => array(
-							'title'   => __( 'Error', 'learnpress' ),
-							'message' => __( 'Error while finish quiz', 'learnpress' )
-						)
-					)
-				);
-			}
-			$update_answers = (array) $history->question_answers;
-			$keys           = array_keys( $_POST );
-			$update         = false;
-			foreach ( $keys as $key ) {
-				if ( ! preg_match( '!^learn-press-question-([0-9]+)$!', $key, $matches ) ) {
-					continue;
-				}
-				$question_id                    = absint( $matches[1] );
-				$update_answers[ $question_id ] = $_POST[ $key ];
-				$update                         = true;
-			}
-			if ( $update ) {
-				learn_press_update_user_item_meta( $history->history_id, 'question_answers', $update_answers );
-			}
-			$auto = learn_press_get_request( 'auto_finish' );
-			if ( $auto ) {
-				$args = array( 'auto_finish' => 'yes' );
-			} else {
-				$args = array();
-			}
-			/*
-				foreach ( $answers as $question_id => $data ) {
-					settype( $data, 'array' );
-					if ( array_key_exists( 'learn-press-question-' . $question_id, $data ) ) {
-						$update_answers[$question_id] = $data['learn-press-question-' . $question_id];
-					}
-				}
-				print_r($update_answers);*/
-			///}
-
-			$result = $user->finish_quiz( $quiz_id, $course_id, $args );
-			if ( $result ) {
-				if ( ! empty( $args['auto_finish'] ) ) {
-					learn_press_add_message( __( 'Your quiz has finished automatically', 'learnpress' ) );
-				} else {
-					learn_press_add_message( __( 'You have finished quiz', 'learnpress' ) );
-				}
-			} else {
-				learn_press_add_message( __( 'Finish quiz failed', 'learnpress' ) );
-			}
-		}
-		wp_redirect( add_query_arg( array(
-			'content-item-only' => 'yes',
-			'done-action'       => 'finish-quiz'
-		), $course->get_item_link( $quiz_id ) ) );
-		exit();
-	}
+	//////////////////////////////////////////////////
+	/// //////////////////////////////////////////////
+	///
 
 	public static function retake_quiz() {
 
