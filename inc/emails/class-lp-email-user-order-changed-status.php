@@ -64,24 +64,23 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 		 * @param $new_status
 		 * @param $order_id
 		 *
-		 * @return bool|void|mixed
+		 * @return bool|mixed
 		 */
 		public function trigger( $new_status, $order_id ) {
 
 			if ( ! $this->enable ) {
-				return;
+				return false;
 			}
 
-			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
 			$order  = learn_press_get_order( $order_id );
 
 			$this->object = $this->get_common_template_data(
-				$format,
+				$this->email_format,
 				array(
 					'order_id'          => $order_id,
 					'order_user_id'     => $order->user_id,
 					'order_user_name'   => $order->get_user_name(),
-					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
+					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $this->email_format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
 					'order_detail_url'  => learn_press_user_profile_link( $order->user_id, 'orders' ),
 					'order_number'      => $order->get_order_number(),
 					'order_subtotal'    => $order->get_formatted_order_subtotal(),

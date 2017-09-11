@@ -72,16 +72,15 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 				return false;
 			}
 
-			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
 			$order  = learn_press_get_order( $order_id );
 
 			$this->object = $this->get_common_template_data(
-				$format,
+				$this->email_format,
 				array(
 					'order_id'          => $order_id,
 					'order_user_id'     => $order->user_id,
 					'order_user_name'   => $order->get_user_name(),
-					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
+					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $this->email_format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
 					'order_edit_url'    => admin_url( 'post.php?post=' . $order->id . '&action=edit' ),
 					'order_number'      => $order->get_order_number(),
 					'order_subtotal'    => $order->get_formatted_order_subtotal(),

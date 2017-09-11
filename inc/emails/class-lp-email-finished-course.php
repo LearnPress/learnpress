@@ -58,22 +58,21 @@ if ( ! class_exists( 'LP_Email_Finished_Course' ) ) {
 		 * @param $user_id
 		 * @param $result
 		 *
-		 * @return bool|void
+		 * @return bool
 		 */
 		public function trigger( $course_id, $user_id, $result ) {
 
 			if ( ! $this->enable || ! ( $user = learn_press_get_user( $user_id ) ) ) {
-				return;
+				return false;
 			}
 
-			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
 			$course = learn_press_get_course( $course_id );
 			remove_filter( 'the_title', 'wptexturize' );
 			$course_name = $course->get_title();
 			add_filter( 'the_title', 'wptexturize' );
 
 			$this->object = $this->get_common_template_data(
-				$format,
+				$this->email_format,
 				array(
 					'course_id'        => $course_id,
 					'course_name'      => $course_name,

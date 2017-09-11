@@ -105,12 +105,12 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 		 * @param $user_id
 		 * @param $user_course_id
 		 *
-		 * @return bool|void
+		 * @return bool
 		 */
 		public function trigger( $course_id, $user_id, $user_course_id ) {
 
 			if ( ! $this->enable ) {
-				return;
+				return false;
 			}
 
 			global $wpdb;
@@ -126,7 +126,7 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 			);
 
 			if ( ! $user_course_data ) {
-				return;
+				return false;
 			}
 			if ( ! empty( $user_course_data->start_time ) ) {
 				$start_time = $user_course_data->start_time;
@@ -140,13 +140,11 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 				}
 			}
 
-
-			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
 			$course = learn_press_get_course( $course_id );
 			$user   = learn_press_get_user( $user_id );
 
 			$this->object = $this->get_common_template_data(
-				$format,
+				$this->email_format,
 				array(
 					'course_id'          => $course_id,
 					'course_name'        => $course->get_title(),

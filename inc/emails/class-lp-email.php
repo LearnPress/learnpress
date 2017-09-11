@@ -261,7 +261,7 @@ class LP_Email extends LP_Abstract_Settings {
 		 */
 		$this->heading      = LP()->settings->get( 'emails_' . $this->id . '.heading', $this->default_heading );
 		$this->subject      = LP()->settings->get( 'emails_' . $this->id . '.subject', $this->default_subject );
-		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' );
+		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' ) == 'plain_text' ? 'plain' : 'html';
 		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
 	}
 
@@ -465,8 +465,7 @@ class LP_Email extends LP_Abstract_Settings {
 				$emogrifier = new Emogrifier( $content, $css );
 				$content    = $emogrifier->emogrify();
 
-			}
-			catch ( Exception $e ) {
+			} catch ( Exception $e ) {
 
 			}
 		}

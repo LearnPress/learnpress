@@ -42,27 +42,26 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 	 *
 	 * @param $user
 	 *
-	 * @return bool|void
+	 * @return bool
 	 */
 	public function trigger( $user ) {
 		if ( ! $this->enable ) {
-			return;
+			return false;
 		}
 
 		$user            = get_user_by( 'id', $user );
 		$this->recipient = $user->user_email;
 		$this->object    = $this->get_common_template_data(
-			$this->email_format == 'plain_text' ? 'plain' : 'html',
+			$this->email_format,
 			array(
 				'site_url'      => $user->ID,
-				'site_title'    => learn_press_get_profile_display_name( get_user_by( 'id', $user ) ),
 				'login_url'     => wp_login_url(),
 				'user_nicename' => $user->user_nincename,
 				'user_email'    => $user->user_email,
 				'email_heading' => $this->get_heading(),
 				'footer_text'   => $this->get_footer_text(),
 				'site_title'    => $this->get_blogname(),
-				'plain_text'    => $this->email_format == 'plain_text',
+				'plain_text'    => $this->email_format == 'plain',
 			)
 		);
 

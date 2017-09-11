@@ -55,20 +55,19 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 		 *
 		 * @param $course_id
 		 *
-		 * @return bool|void
+		 * @return bool
 		 */
 		public function trigger( $course_id ) {
 
 			if ( ! $this->enable ) {
-				return;
+				return false;
 			}
 
-			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
 			$course = learn_press_get_course( $course_id );
 			$user   = learn_press_get_course_user( $course_id );
 
 			$this->object = $this->get_common_template_data(
-				$format,
+				$this->email_format,
 				array(
 					'course_id'         => $course_id,
 					'course_name'       => $course->get_title(),
@@ -87,7 +86,7 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 			$this->recipient = $user->user_email;
 
 			if ( ! $this->get_recipient() ) {
-				return;
+				return false;
 			}
 			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
