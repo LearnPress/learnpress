@@ -1623,3 +1623,21 @@ function learn_press_global_js_templates() {
 }
 
 add_action( 'wp_print_scripts', 'learn_press_global_js_templates' );
+
+/**
+ * Prevent redirecting canonical in some cases :(
+ *
+ * @param string $redirect
+ * @param string $request
+ *
+ * @return string
+ */
+function learn_press_redirect_canonical( $redirect, $request ) {
+	if ( get_post_type() === LP_COURSE_CPT ) {
+		$redirect = '';
+	}
+
+	return $redirect;
+}
+
+add_filter( 'redirect_canonical', 'learn_press_redirect_canonical', 10, 2 );

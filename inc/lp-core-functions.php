@@ -355,6 +355,10 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  * @return array|bool|null|WP_Post
  */
 function learn_press_get_post_by_name( $name, $type, $single = true ) {
+
+    // Fixed in 2.1.9, in case the post name is not valid
+    $origin_name = urldecode($name);
+
 	// Ensure that post name has to be sanitized. Fixed in 2.1.6
 	$name = sanitize_title( $name );
 
@@ -368,8 +372,8 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->posts}
-			WHERE 1 AND post_name = %s
-		", sanitize_title( $name ) );
+			WHERE 1 AND ( post_name = %s OR post_name = %s )
+		",  $name , $origin_name );
 
 		$query .= " AND post_type IN ('" . $type . "' )";
 
