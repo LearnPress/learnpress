@@ -100,6 +100,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
+
 	}
 
 	/**

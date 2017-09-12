@@ -63,6 +63,8 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
+
+
 	}
 
 	public function get_heading_title() {

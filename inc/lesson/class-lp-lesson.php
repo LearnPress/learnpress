@@ -35,6 +35,8 @@ class LP_Lesson extends LP_Course_Item {
 	 */
 	public function __construct( $lesson, $args = '' ) {
 		parent::__construct( $lesson, $args );
+		static $count = 0;
+
 	}
 
 	/**

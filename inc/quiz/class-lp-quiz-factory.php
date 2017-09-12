@@ -618,15 +618,38 @@ class LP_Quiz_Factory {
 	}
 
 	public static function get_quiz( $the_quiz ) {
-		if ( ! $the_quiz instanceof LP_Quiz ) {
-			if ( $the_quiz instanceof WP_Post ) {
-				$the_quiz = $the_quiz->ID;
-			}
-			$the_quiz = new LP_Quiz( $the_quiz );
+		static $quizzes = array();
+		$the_id = 0;
+		if ( $the_quiz instanceof LP_Quiz ) {
+			$the_id = $the_quiz->get_id();
+		} elseif ( $the_quiz instanceof WP_Post ) {
+			$the_id = $the_quiz->ID;
+		} elseif ( isset( $the_quiz->ID ) ) {
+			$the_id = $the_quiz->ID;
 		}
+		if ( empty( $quizzes[ $the_id ] ) ) {
+			if ( $the_quiz instanceof LP_Quiz ) {
+				$quizzes[ $the_id ] = $the_quiz;
+			} else {
+				$quizzes[ $the_id ] = new LP_Quiz( $the_quiz );
+			}
+		}else{
+        }
 
-		return $the_quiz;
+		return $quizzes[ $the_id ];
 	}
 }
 
+return;
+$s = microtime(true);
+for($i  =0; $i<1000;$i++){
+    new LP_Lesson(765);
+}
+echo microtime(true)-$s;
+$s = microtime(true);
+for($i  =0; $i<1000;$i++){
+	new LP_Quiz(20);
+}
+echo microtime(true)-$s;
+die();
 LP_Quiz_Factory::init();
