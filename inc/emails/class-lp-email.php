@@ -231,12 +231,12 @@ class LP_Email extends LP_Abstract_Settings {
 	/**
 	 * @var array|null
 	 */
-	public $basic_variables = null;
+	public $basic_variables = array();
 
 	/**
 	 * @var null
 	 */
-	public $general_variables = null;
+	public $general_variables = array();
 
 	/**
 	 * @var null
@@ -255,8 +255,7 @@ class LP_Email extends LP_Abstract_Settings {
 		}
 
 		/**
-		 * Set template folder if it is not set.
-		 * Default is 'learnpress'
+		 * Set template folder if it is not set. Default is 'learnpress'
 		 */
 		if ( empty( $this->template_path ) ) {
 			$this->template_path = learn_press_template_path();
@@ -290,10 +289,22 @@ class LP_Email extends LP_Abstract_Settings {
 		) );
 	}
 
+	/**
+	 * Get variables support in mail.
+	 *
+	 * @return mixed
+	 */
 	public function get_variables_support() {
 		return apply_filters( 'learn_press_email_variables_support', $this->support_variables, $this );
 	}
 
+	/**
+	 * Magic function
+	 *
+	 * @param $key
+	 *
+	 * @return mixed
+	 */
 	public function __get( $key ) {
 		if ( ! empty( $this->{$key} ) ) {
 			return $this->{$key};
