@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class LP_User_Course_Item
+ * Class LP_User_Item_Course
  */
-class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
+class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Course's items
 	 *
@@ -25,8 +25,10 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 
 	protected $_item = null;
 
+	protected static $_loaded = 0;
+
 	/**
-	 * LP_User_Course_Item constructor.
+	 * LP_User_Item_Course constructor.
 	 *
 	 * @param null $item
 	 */
@@ -34,6 +36,16 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 		parent::__construct( $item );
 		$this->_item = $item;
 		$this->read_items();
+		self::$_loaded ++;
+		if ( self::$_loaded == 1 ) {
+			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+		}
+	}
+
+	public static function log( $data ) {
+		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
+		return $data;
 	}
 
 	/**
@@ -249,7 +261,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 	/**
 	 * @param int $item_id
 	 *
-	 * @return LP_User_Course_Item
+	 * @return LP_User_Item_Course
 	 */
 	public function get_item( $item_id ) {
 		return ! empty( $this->_items[ $item_id ] ) ? $this->_items[ $item_id ] : false;
@@ -258,7 +270,7 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 	/**
 	 * @param int $at
 	 *
-	 * @return LP_User_Course_Item
+	 * @return LP_User_Item_Course
 	 */
 	public function get_item_at( $at = 0 ) {
 		$values = array_values( $this->_items );

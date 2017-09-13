@@ -85,9 +85,10 @@ function learn_press_get_current_user_id() {
  *
  * @return bool|LP_User
  */
-function learn_press_get_current_user( $create_temp = true ) {
+function learn_press_get_current_user( $create_temp = true, $force_new = false ) {
 	if ( $id = get_current_user_id() ) {
-		return new LP_User( $id );
+
+		return learn_press_get_user($id, $force_new);
 	}
 
 	return $create_temp ? LP_User_Factory::get_temp_user() : false;
@@ -102,7 +103,7 @@ function learn_press_get_current_user( $create_temp = true ) {
  *
  * @return LP_User|mixed
  */
-function learn_press_get_user( $user_id, $current = false ) {
+function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
 
 	// Check if user is existing
 	if ( ! get_user_by( 'id', $user_id ) && $current ) {
@@ -113,7 +114,13 @@ function learn_press_get_user( $user_id, $current = false ) {
 		return false;
 	}
 
-	return new LP_User( $user_id );
+	if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
+		LP_Global::$users[ $user_id ] = new LP_User( $user_id );
+	}
+
+	return LP_Global::$users[ $user_id ];
+
+	//return new LP_User( $user_id );
 }
 
 /**
@@ -1562,7 +1569,7 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 }
 
 function learn_press_set_user_cookie_for_guest() {
-	if ( learn_press_is_course() && ! is_admin() ) {
+	if ( ! is_admin() && ! headers_sent() && learn_press_is_course() ) {
 		$guest_key = 'wordpress_logged_in_' . md5( 'guest' );
 		if ( is_user_logged_in() ) {
 			if ( ! empty( $_COOKIE[ $guest_key ] ) ) {
@@ -1746,4 +1753,16 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	return apply_filters( 'learn_press_user_profile_link', $url, $user_id, $tab );
 }
 
-include_once "lp-user-hooks.php";
+/**********************************************/
+/*       Functions are used for hooks         */
+/**********************************************/
+
+function learn_press_hk_before_start_quiz( $true, $quiz_id, $course_id, $user_id ) {
+	if ( 'yes' !== get_post_meta( $quiz_id, '_lp_archive_history', true ) ) {
+		learn_press_remove_user_items( $user_id, $quiz_id, $course_id );
+	}
+
+	return $true;
+}
+
+add_filter( 'learn-press/before-start-quiz', 'learn_press_hk_before_start_quiz', 10, 4 );

@@ -1325,7 +1325,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					array( '%d', '%d', '%d' )
 				);
 				ob_start();
-				$question = LP_Question_Factory::get_question( $id );
+				$question = LP_Question::get_question( $id );
 				learn_press_admin_view( 'meta-boxes/quiz/question.php', array( 'question' => $question ) );
 				$response['html'] = ob_get_clean();
 
@@ -1347,7 +1347,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				parse_str( $_POST['data'], $data );
 
 				do_action( 'learn_press_convert_question_type', $question_id, $from, $to, $data );
-				$question = LP_Question_Factory::get_question( $question_id, array( 'type' => $to ) );
+				$question = LP_Question::get_question( $question_id, array( 'type' => $to ) );
 
 				// trigger change user memorize question types
 				$user_id                 = get_current_user_id();
@@ -1631,7 +1631,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$new_question_id = learn_press_duplicate_question( $question_id, $quiz_id );
 			if ( ! is_wp_error( $new_question_id ) ) {
 				ob_start();
-				$question = LP_Question_Factory::get_question( $new_question_id );
+				$question = LP_Question::get_question( $new_question_id );
 				$post     = get_post( $quiz_id );
 				setup_postdata( $post );
 				_learn_press_setup_question( $new_question_id );

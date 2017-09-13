@@ -107,7 +107,7 @@ class LP_Checkout {
 		if ( $order_id ) {
 			return $order_id;
 		}
-		$cart = LP()->get_cart();
+		$cart = LP()->cart;
 		try {
 			// Start transaction if available
 			$wpdb->query( 'START TRANSACTION' );
@@ -275,7 +275,7 @@ class LP_Checkout {
 	}
 
 	public function validate_payment() {
-		$cart     = LP()->get_cart();
+		$cart     = LP()->cart;
 		$validate = true;
 		if ( $cart->needs_payment() ) {
 
@@ -318,7 +318,7 @@ class LP_Checkout {
 			 */
 			do_action( 'learn-press/before-checkout' );
 
-			$cart   = LP()->get_cart();
+			$cart   = LP()->cart;
 			$result = false;
 
 			// There is no course in cart

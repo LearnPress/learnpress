@@ -72,11 +72,13 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	protected $_curd = null;
 
+	protected static $_loaded = 0;
 
 	/**
 	 * Constructor
 	 *
-	 * @param int $the_user
+	 * @param int|LP_User|WP_User $the_user
+	 * @param mixed               $args
 	 *
 	 * @throws Exception
 	 */
@@ -97,6 +99,16 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
+		self::$_loaded ++;
+		if ( self::$_loaded == 1 ) {
+			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+		}
+	}
+
+	public static function log( $data ) {
+		$data[] = 'LP_User( ' . self::$_loaded . ' )';
+
+		return $data;
 	}
 
 	/**
@@ -111,7 +123,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *
 	 * @param int $course_id
 	 *
-	 * @return LP_User_Course_Item|LP_User_Item_Quiz
+	 * @return LP_User_Item_Course|LP_User_Item_Quiz|bool
 	 */
 	public function get_course_data( $course_id ) {
 
@@ -130,19 +142,15 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$this->_curd->read_course( $this->get_id(), $course_id );
 
 			if ( false !== ( $course_item = learn_press_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
-//			$course       = learn_press_get_course( $course_id );
-//			$course_items = $course->get_items();
-//			//$user_items = $course_item['items'];
-//			if ( $course_items ) {
-//				foreach ( $course_items as $item_id ) {
-//					$course_item['items'][ $item_id ] = new LP_User_Item( wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-'. $item_id, 'lp-user-course-items' ) );
-//				}
-//			}
+				$course_data[ $this->get_id() ][ $course_id ] = new LP_User_Item_Course( $course_item );
 			}
-			$course_data[ $this->get_id() ][ $course_id ] = new LP_User_Course_Item( $course_item );
 		}
 
-		return $course_data[ $this->get_id() ][ $course_id ];
+		if ( ! empty( $course_data[ $this->get_id() ][ $course_id ] ) ) {
+			return $course_data[ $this->get_id() ][ $course_id ];
+		}
+
+		return false;
 	}
 
 	/**
@@ -551,7 +559,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( $what == 'id' ) {
 			return $current;
 		} else {
-			$question = LP_Question_Factory::get_question( $current );
+			$question = LP_Question::get_question( $current );
 			switch ( $what ) {
 				case 'html':
 					if ( $question ) {
@@ -721,6 +729,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return bool
 	 */
 	public function maybe_update_item( $item_id, $course_id ) {
+		if ( ! $item_id ) {
+			return false;
+		}
 		if ( ! $course = learn_press_get_course( $course_id ) ) {
 			return false;
 		}
@@ -774,7 +785,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		$cache_name = sprintf( 'course-item-%d-%d-%d', $this->get_id(), $course_id, $item_id );
 
-			learn_press_cache_set( $cache_name, $items, 'lp-user-course-items' );
+		learn_press_cache_set( $cache_name, $items, 'lp-user-course-items' );
 
 		do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items[ $user_item_id ] );
 
@@ -2235,6 +2246,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( ! $course_id ) {
 			return false;
 		}
+
 		// XXXXX
 		return false;
 
@@ -2332,7 +2344,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$question_answers = ! empty( $progress->question_answers ) ? $progress->question_answers : array();
 			foreach ( $questions as $question_id ) {
 				if ( is_array( $question_answers ) && array_key_exists( $question_id, $question_answers ) && ! is_null( $question_answers[ $question_id ] ) ) {
-					$question = LP_Question_Factory::get_question( $question_id );
+					$question = LP_Question::get_question( $question_id );
 					$check    = $question->check( $question_answers[ $question_id ] );
 
 					if ( $check['correct'] ) {
@@ -2885,7 +2897,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$quiz_id = $this->get_quiz_by_question( $question_id );
 		}
 		if ( $quiz_id ) {
-			if ( $question = LP_Question_Factory::get_question( $question_id ) ) {
+			if ( $question = LP_Question::get_question( $question_id ) ) {
 				$quiz_results = $this->get_quiz_results( $quiz_id );
 				if ( ! empty( $quiz_results->question_answers ) ) {
 					$question_answer = array_key_exists( $question_id, $quiz_results->question_answers ) ? $quiz_results->question_answers[ $question_id ] : null;

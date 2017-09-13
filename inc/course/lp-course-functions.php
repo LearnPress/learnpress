@@ -17,11 +17,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return LP_Course|mixed
  */
 function learn_press_get_course( $the_course = false ) {
+
 	static $courses = array();
-	if ( is_numeric( $the_course ) && empty( $courses[ $the_course ] ) ) {
-		$courses[ $the_course ] = LP_Course::get_course( $the_course );
+	$the_id = 0;
+	if ( $the_course instanceof LP_Course ) {
+		$the_id = $the_course->get_id();
+	} elseif ( $the_course instanceof WP_Post ) {
+		$the_id = $the_course->ID;
+	} elseif ( isset( $the_course->ID ) ) {
+		$the_id = $the_course->ID;
 	}
-	return is_numeric( $the_course ) && ! empty( $courses[ $the_course ] ) ? $courses[ $the_course ] : LP()->global['course'];// LP_Global::course();
+	if ( empty( $courses[ $the_id ] ) ) {
+		if ( $the_course instanceof LP_Course ) {
+			$courses[ $the_id ] = $the_course;
+		} else {
+			$courses[ $the_id ] = LP_Course::get_course($the_course);
+		}
+	}
+
+	return $courses[ $the_id ];// : LP()->global['course'];// LP_Global::course();
 }
 
 /**
@@ -602,7 +616,7 @@ function learn_press_get_the_course() {
 	if ( ! $course ) {
 		$course_id = get_the_ID();
 		if ( get_post_type( $course ) == LP_COURSE_CPT ) {
-			$course = LP_Course::get_course( $course_id );
+			$course = learn_press_get_course($course_id);
 		}
 	}
 	if ( ! $course ) {

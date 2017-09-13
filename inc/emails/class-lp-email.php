@@ -255,8 +255,7 @@ class LP_Email extends LP_Abstract_Settings {
 		}
 
 		/**
-		 * Set template folder if it is not set.
-		 * Default is 'learnpress'
+		 * Set template folder if it is not set. Default is 'learnpress'
 		 */
 		if ( empty( $this->template_path ) ) {
 			$this->template_path = learn_press_template_path();
@@ -290,10 +289,22 @@ class LP_Email extends LP_Abstract_Settings {
 		) );
 	}
 
+	/**
+	 * Get variables support in mail.
+	 *
+	 * @return mixed
+	 */
 	public function get_variables_support() {
 		return apply_filters( 'learn_press_email_variables_support', $this->support_variables, $this );
 	}
 
+	/**
+	 * Magic function
+	 *
+	 * @param $key
+	 *
+	 * @return mixed
+	 */
 	public function __get( $key ) {
 		if ( ! empty( $this->{$key} ) ) {
 			return $this->{$key};
@@ -484,7 +495,7 @@ class LP_Email extends LP_Abstract_Settings {
 
 			try {
 				if ( ! class_exists( 'Emogrifier' ) ) {
-					LP()->_include( 'libraries/class-emogrifier.php' );
+					include_once LP_PLUGIN_PATH . 'inc/libraries/class-emogrifier.php';
 				}
 				// apply CSS styles inline for picky email clients
 				$emogrifier = new Emogrifier( $content, $css );

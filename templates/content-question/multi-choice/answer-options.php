@@ -16,7 +16,7 @@ $user   = LP_Global::user();
 
 isset( $question ) or die( __( 'Invalid question!', 'learnpress' ) );
 
-$question = $quiz->get_viewing_question();// LP_Question_Factory::get_question( $question->get_id() );
+$question = $quiz->get_viewing_question();// LP_Question::get_question( $question->get_id() );
 
 $completed       = $user->has_quiz_status( 'completed', $quiz->get_id(), $course->get_id() );
 //$course_finished = $user->has_finished_course( $course->get_id() );

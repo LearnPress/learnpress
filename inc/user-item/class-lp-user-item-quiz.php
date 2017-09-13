@@ -74,7 +74,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			);
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {
-					$question = LP_Question_Factory::get_question( $question_id );
+					$question = LP_Question::get_question( $question_id );
 					$answer   = $this->get_question_answer( $question_id );
 					$check    = $question->check();
 

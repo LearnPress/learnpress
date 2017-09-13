@@ -53,6 +53,8 @@ class LP_Question extends LP_Course_Item {
 		'mark' => 0
 	);
 
+	protected static $_loaded = 0;
+
 	/**
 	 * Construct
 	 *
@@ -88,6 +90,16 @@ class LP_Question extends LP_Course_Item {
 
 		$this->_options = $args;
 		$this->_init();
+		self::$_loaded ++;
+		if ( self::$_loaded == 1 ) {
+			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+		}
+	}
+
+	public static function log( $data ) {
+		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
+		return $data;
 	}
 
 	/**
@@ -401,42 +413,6 @@ class LP_Question extends LP_Course_Item {
 			$query .= sprintf( "ELSE answer_order END WHERE question_id = %d", $this->get_id() );
 			$wpdb->query( $query );
 		}
-	}
-
-	/**
-	 * Get question title
-	 *
-	 * @return string
-	 */
-	public
-	function get_title() {
-		return get_the_title( $this->get_id() );
-	}
-
-	/**
-	 * Get question content.
-	 *
-	 * @return string
-	 */
-	public function get_content() {
-		if ( '' === $this->_content ) {
-			global $post, $wp_query;
-
-			$post  = get_post( $this->get_id() );
-			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
-
-			if ( $posts ) {
-				$post = $posts[0];
-			}
-
-			setup_postdata( $post );
-			ob_start();
-			the_content();
-			$this->_content = ob_get_clean();
-			wp_reset_postdata();
-		}
-
-		return $this->_content;
 	}
 
 	/**
@@ -930,5 +906,100 @@ class LP_Question extends LP_Course_Item {
 		);
 
 		return apply_filters( 'learn-press/question/' . $type . '/admin-option-template-js-args', $args, $type );
+	}
+
+	/**
+	 * @param bool  $the_question
+	 * @param array $args
+	 *
+	 * @return LP_Course|bool
+	 */
+	public static function get_question( $the_question = false, $args = array() ) {
+		$the_question = self::get_question_object( $the_question );
+		if ( ! $the_question ) {
+			return false;
+		}
+
+		if ( ! empty( $args['force'] ) ) {
+			$force = ! ! $args['force'];
+			unset( $args['force'] );
+		} else {
+			$force = false;
+		}
+
+		$key_args = wp_parse_args( $args, array( 'id' => $the_question->ID, 'type' => $the_question->post_type ) );
+
+		$key = LP_Helper::array_to_md5( $key_args );
+
+		if ( $force ) {
+			LP_Global::$questions[ $key ] = false;
+		}
+
+		if ( empty( LP_Global::$questions[ $key ] ) ) {
+			$class_name = self::get_quiz_class( $the_question, $args );
+			if ( is_string( $class_name ) && class_exists( $class_name ) ) {
+				$lesson = new $class_name( $the_question->ID, $args );
+			} elseif ( $class_name instanceof LP_Question ) {
+				$lesson = $class_name;
+			} else {
+				$lesson = new self( $the_question->ID, $args );
+			}
+			LP_Global::$questions[ $key ] = $lesson;
+		}
+
+		return LP_Global::$questions[ $key ];
+	}
+
+	/**
+	 * @param  string $question_type
+	 *
+	 * @return string|false
+	 */
+	private static function get_class_name_from_question_type( $question_type ) {
+		return !$question_type ? __CLASS__ : 'LP_Question_' . implode( '_', array_map( 'ucfirst', explode( '-', $question_type ) ) );
+	}
+
+	/**
+	 * Get the lesson class name
+	 *
+	 * @param  WP_Post $the_question
+	 * @param  array   $args (default: array())
+	 *
+	 * @return string
+	 */
+	private static function get_quiz_class( $the_question, $args = array() ) {
+		$question_id = absint( $the_question->ID );
+		if ( ! empty( $args['type'] ) ) {
+			$question_type = $args['type'];
+		} else {
+            $question_type = get_post_meta($question_id, '_lp_type', true);
+		}
+
+		$class_name = self::get_class_name_from_question_type( $question_type );
+
+		// Filter class name so that the class can be overridden if extended.
+		return apply_filters( 'learn-press/question/object-class', $class_name, $question_type, $question_id );
+	}
+
+	/**
+	 * Get the lesson object
+	 *
+	 * @param  mixed $the_question
+	 *
+	 * @uses   WP_Post
+	 * @return WP_Post|bool false on failure
+	 */
+	private static function get_question_object( $the_question ) {
+		if ( false === $the_question ) {
+			$the_question = get_post_type() === LP_LESSON_CPT ? $GLOBALS['post'] : false;
+		} elseif ( is_numeric( $the_question ) ) {
+			$the_question = get_post( $the_question );
+		} elseif ( $the_question instanceof LP_Course_Item ) {
+			$the_question = get_post( $the_question->get_id() );
+		} elseif ( ! ( $the_question instanceof WP_Post ) ) {
+			$the_question = false;
+		}
+
+		return apply_filters( 'learn-press/question/post-object', $the_question );
 	}
 }

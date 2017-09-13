@@ -42,7 +42,6 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 				'passing_grade'      => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true )
 			)
 		);
-
 		$this->_load_questions( $quiz );
 		$this->_update_meta_cache( $quiz );
 
@@ -98,7 +97,8 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 * @param LP_Quiz $quiz
 	 */
 	protected function _update_meta_cache( &$quiz ) {
-		$meta_ids = $quiz->get_questions();
+		$meta_ids = learn_press_cache_get( 'questions-' . $quiz->get_id(), 'lp-quizzes' );
+
 		if ( false === $meta_ids ) {
 			$meta_ids = array( $quiz->get_id() );
 		} else {
@@ -116,7 +116,6 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 		if ( ! $questions = $this->get_questions( $quiz ) ) {
 			return;
 		}
-
 
 		$format = array_fill( 0, sizeof( $questions ), '%d' );
 		$query  = $wpdb->prepare( "
@@ -170,7 +169,16 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 				//$this->_load_question_answer_meta( $meta_id );
 			}
 
+			$fetched    = array_keys( $answer_options );
+			$un_fetched = array_diff( $questions, $fetched );
 			//$this->_load_question_answer_meta( $answer_options );
+		} else {
+			$un_fetched = $questions;
+		}
+		if ( $un_fetched ) {
+			foreach ( $un_fetched as $question_id ) {
+				learn_press_cache_set( 'answer-options-' . $question_id, array(), 'lp-questions' );
+			}
 		}
 		//
 

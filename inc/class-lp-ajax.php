@@ -12,6 +12,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * Init common ajax events
 		 */
 		public static function init() {
+			return;
 			$ajaxEvents = array(
 				'load_quiz_question'  => true,
 				'load_prev_question'  => false,
@@ -455,7 +456,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					)
 				);
 			}
-			if ( $question = LP_Question_Factory::get_question( $question_id ) ) {
+			if ( $question = LP_Question::get_question( $question_id ) ) {
 				$quiz->current_question = $question;
 
 				ob_start();

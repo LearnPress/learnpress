@@ -63,6 +63,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public $cart = false;
 
+		public $settings = null;
+
 		/**
 		 * @var null
 		 */
@@ -72,13 +74,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @var array
 		 */
 		public $query_vars = array();
-
-		/**
-		 * Store global variables
-		 *
-		 * @var array
-		 */
-		public $global = array( 'course' => null, 'course-item' => null, 'quiz-question' => null );
 
 		/**
 		 * Table prefixes
@@ -91,6 +86,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @var null
 		 */
 		public $query = null;
+
+		public $global = array();
 
 		/**
 		 * LearnPress constructor
@@ -111,6 +108,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		public function __get( $key ) {
+			_deprecated_argument( $key, '3.x.x' );
+			die();
 			$return = false;
 			switch ( $key ) {
 				case 'user':
@@ -145,13 +144,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			return $return;
-		}
-
-		public function set_object( $name, $object, $global = false ) {
-			$this->{$name} = $object;
-			if ( $global ) {
-				$GLOBALS[ $name ] = $object;
-			}
 		}
 
 		/**
@@ -228,12 +220,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'activate_' . $plugin_basename, array( $this, 'on_activate' ) );
 			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
 
-			add_action( 'init', array( $this, 'init' ), 15 );
+			//add_action( 'init', array( $this, 'init' ), 15 );
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 
-			///add_action( 'widgets_init', array( $this, 'widgets_init' ) );
-
-			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'load-post.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
@@ -247,6 +236,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		public function loaded() {
+			$this->init();
 			// let third parties know that we're ready
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
@@ -266,9 +256,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @hook learn_press_activate
 		 */
 		public function on_activate() {
-			// Deprecated
-			do_action( 'learn_press_activate', $this );
-
 			do_action( 'learn-press/activate', $this );
 		}
 
@@ -278,7 +265,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @hook learn_press_deactivate
 		 */
 		public function on_deactivate() {
-			do_action( 'learn_press_deactivate', $this );
+			do_action( 'learn-press/deactivate', $this );
 		}
 
 		/**
@@ -300,11 +287,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			$this->get_session();
 
+			$this->settings = $this->settings();
+
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_cart();
 			}
 
-			$this->schedule = require_once( LP_PLUGIN_PATH . "/inc/class-lp-schedules.php" );
 
 			LP_Emails::instance();
 
@@ -356,10 +344,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			return $this->cart;
 		}
 
-		public function get_checkout_cart() {
-			return learn_press_get_checkout_cart();
-		}
-
 		/**
 		 * Check type of request
 		 *
@@ -383,18 +367,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * Get the template folder in the theme.
-		 *
-		 * @param bool
-		 *
-		 * @access public
-		 * @return string
-		 */
-		public function template_path( $slash = false ) {
-			return learn_press_template_path( $slash );
-		}
-
-		/**
 		 * Includes needed files
 		 */
 		public function includes() {
@@ -414,10 +386,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/class-lp-debug.php';
 
-			require_once 'inc/course/abstract-course-item.php';
+			require_once 'inc/course/class-lp-course-item.php';
 			require_once 'inc/course/class-lp-course-section.php';
-			require_once 'inc/user/class-lp-user-item.php';
-			require_once 'inc/user/class-lp-user-course-item.php';
+			require_once 'inc/user-item/class-lp-user-item.php';
+			require_once 'inc/user-item/class-lp-user-item-course.php';
 
 
 			require_once 'inc/lp-deprecated.php';
@@ -433,21 +405,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once( 'inc/abstract-settings.php' );
 
 			if ( is_admin() ) {
-
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 				require_once 'inc/admin/class-lp-admin-notice.php';
-
-				/*if ( !defined( 'RWMB_VER' ) ) {
-					require_once 'inc/libraries/meta-box/meta-box.php';
-				}*/
-
 				require_once 'inc/admin/class-lp-admin.php';
-				//require_once 'inc/admin/class-lp-admin-settings.php';
-
-				//require_once( 'inc/admin/class-lp-admin-assets.php' );
 				require_once( 'inc/admin/settings/abstract-settings-page.php' );
 			}
-			$this->settings = LP_Settings::instance();
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-assets.php';
 			}
@@ -485,6 +447,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user/class-lp-user.php';
 			require_once 'inc/user/class-lp-profile.php';
 
+			require_once 'inc/user-item/class-lp-user-item.php';
+			require_once 'inc/user-item/class-lp-user-item-course.php';
+			require_once 'inc/user-item/class-lp-user-item-quiz.php';
+
 
 			// others
 			require_once 'inc/class-lp-session-handler.php';
@@ -520,12 +486,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
+			require_once 'inc/class-lp-schedules.php';
 
 			// widgets
 			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses' ) );
 
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
-
 		}
 
 		/**
@@ -551,35 +517,19 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * Include a file from plugin path
-		 *
-		 * @param           $file
-		 * @param string    $folder
-		 * @param bool|true $include_once
-		 *
-		 * @return bool
-		 */
-		public function _include( $file, $folder = 'inc', $include_once = true ) {
-			if ( file_exists( $include = $this->plugin_path( "{$folder}/{$file}" ) ) ) {
-				if ( $include_once ) {
-					include_once $include;
-				} else {
-					include $include;
-				}
-
-				return true;
-			}
-
-			return false;
-		}
-
-		/**
 		 * Get checkout object instance
 		 *
 		 * @return LP_Checkout
 		 */
 		public function checkout() {
 			return LP_Checkout::instance();
+		}
+
+		/**
+		 * @return bool|LP_Settings
+		 */
+		public function settings(){
+			return LP_Settings::instance();
 		}
 
 		/**
@@ -700,157 +650,4 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-
-/**
- * The code below are used for testing purpose
- *
- * TODO: Remove these code before releasing.
- */
-class LP_Global {
-	/**
-	 * @return LP_Quiz|LP_Lesson
-	 */
-	public static function course_item() {
-		global $lp_course_item;
-
-		return $lp_course_item;
-	}
-
-	/**
-	 * @return LP_Course
-	 */
-	public static function course() {
-		global $lp_course;
-
-		return $lp_course;
-	}
-
-	/**
-	 * @return LP_User
-	 */
-	public static function user() {
-		global $lp_user;
-
-		return $lp_user;
-	}
-
-	/**
-	 * Alias of course item for highlighting in dev
-	 *
-	 * @return LP_Quiz|bool
-	 */
-	public static function course_item_quiz() {
-		$item = self::course_item();
-
-		return $item instanceof LP_Quiz ? $item : false;
-	}
-
-	/**
-	 * @return LP_Question
-	 */
-	public static function quiz_question() {
-		global $lp_quiz_question;
-
-		return $lp_quiz_question;
-	}
-}
-
-add_filter( 'learn-press/checkout-no-payment-result', function ( $results, $order_id ) {
-	$order = learn_press_get_order( $order_id );
-	if ( $order->is_completed() ) {
-		$order_users = $order->get_users();
-		$users       = array();
-		foreach ( $order->get_items() as $item ) {
-			$course = learn_press_get_course( $item['course_id'] );
-			if ( $course->is_publish() ) {
-				foreach ( $order_users as $user_id ) {
-					if ( empty( $users[ $user_id ] ) ) {
-						$user = learn_press_get_user( $user_id );
-						if ( ! $user->is_exists() ) {
-							continue;
-						}
-
-						$users[ $user_id ] = $user;
-					}
-
-					$users[ $user_id ]->enroll( $course->get_id(), $order->get_id() );
-				}
-			}
-		}
-	}
-
-	return $results;
-}, 10, 2 );
-function xyz() {
-	if ( empty( $_REQUEST['xxxxx'] ) ) {
-		return;
-	}
-	remove_action( 'get_header', 'xyz' );
-	do_action( 'wp_head' );
-	learn_press_get_template( 'single-course/tabs/curriculum.php' );
-	learn_press_get_template( 'single-course/content-item.php' );
-	do_action( 'wp_footer' );
-	die();
-}
-
-add_action( 'get_header', 'xyz' );
-
-add_action( 'learn_press/before_course_item_content', function ( $a, $b ) {
-	echo '<a href="' . get_permalink( $b ) . '">' . __( 'Course', 'learnpress' ) . '</a>';
-}, 10, 2 );
-
-//add_action( 'init', function () {
-//	$file = get_cache_file();
-//
-//	if ( file_exists( $file ) && strtolower( $_SERVER['REQUEST_METHOD'] ) !== 'post' ) {
-//		echo file_get_contents( $file );
-//		die();
-//	}
-//	ob_start( 'xxxxx' );
-//} );
-//
-//function xxxxx( $buffer ) {
-//	$file = get_cache_file();
-//	file_put_contents( $file, $buffer );
-//
-//	return $buffer;
-//}
-//
-//function get_cache_file() {
-//	$dir  = wp_upload_dir();
-//	@mkdir($dir['basedir'] . '/cache/');
-//	$file = $dir['basedir'] . '/cache/' . md5( learn_press_get_current_url() ) . '.lp';
-//
-//	return $file;
-//}
-//function rrmdir($dir) {
-//	if (is_dir($dir)) {
-//		$objects = scandir($dir);
-//		foreach ($objects as $object) {
-//			if ($object != "." && $object != "..") {
-//				if (is_dir($dir."/".$object))
-//					rrmdir($dir."/".$object);
-//				else
-//					unlink($dir."/".$object);
-//			}
-//		}
-//		rmdir($dir);
-//	}
-//}
-//add_filter('query', function($query){
-//	if(preg_match( '/^\s*(insert|delete|update|replace)\s/i', $query ) ){
-//		$dir  = wp_upload_dir();
-//		$file = $dir['basedir'] . '/cache/';
-//		rrmdir($file);
-//	}
-//	return $query;
-//});
-//function shutdown() {
-//	global $wpdb;
-//
-//	// This is our shutdown function, in
-//	// here we can do any last operations
-//	// before the script is complete.
-//}
-//
-//register_shutdown_function( 'shutdown' );
+require_once 'inc/test.php';

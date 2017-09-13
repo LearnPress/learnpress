@@ -81,8 +81,7 @@ class LP_Page_Controller {
 			// If item viewing is a QUIZ and have a question...
 			if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
 				if ( $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) {
-					$lp_quiz_question = LP_Question_Factory::get_question( $question->ID );
-
+					$lp_quiz_question = LP_Question::get_question( $question->ID );
 					// Update current question for user
 					if ( $user_item_id && learn_press_get_user_item_meta( $user_item_id, '_current_question', true ) != $question->ID ) {
 						learn_press_update_user_item_meta( $user_item_id, '_current_question', $question->ID );
@@ -481,10 +480,6 @@ class LP_Page_Controller {
 	 * @return WP_Query
 	 */
 	public function pre_get_posts( $q ) {
-
-		global $course;
-
-
 		// We only want to affect the main query and not in admin
 		if ( ! $q->is_main_query() || is_admin() ) {
 			return $q;
@@ -494,69 +489,69 @@ class LP_Page_Controller {
 
 		$this->_queried_object = ! empty( $q->queried_object_id ) ? $q->queried_object : false;
 
-		/**
-		 * If is single course content
-		 */
-		if ( $q->get( 'post_type' ) == LP_COURSE_CPT && is_single() ) {
-			global $post;
-			/**
-			 * Added in LP 2.0.5 to fix issue in some cases course become 404
-			 * including case course link is valid but it also get 404 if
-			 * plugin WPML is installed
-			 */
-			if ( ! empty( $q->query_vars['p'] ) && LP_COURSE_CPT == get_post_type( $q->query_vars['p'] ) ) {
-				$post = get_post( $q->query_vars['p'] );
-			} else {
-				$course_name = $q->get( LP_COURSE_CPT );
-				$post        = learn_press_get_post_by_name( $course_name, LP_COURSE_CPT, true );
-			}
-
-			if ( ! $post ) {
-				learn_press_is_404();
-
-				return $q;
-			}
-			$course      = learn_press_get_course( $post->ID );
-			$item        = null;
-			$item_name   = null;
-			$item_object = null;
-
-			if ( $course ) {
-				LP()->global['course'] = $course;
-				if ( $item_name = $q->get( 'lesson' ) ) {
-					$item = learn_press_get_post_by_name( $item_name, 'lp_lesson', true );
-					if ( $item ) {
-						$item_object = LP_Lesson::get_lesson( $item->ID );
-					}
-				} elseif ( $item_name = $q->get( 'quiz' ) ) {
-					$item = learn_press_get_post_by_name( $item_name, 'lp_quiz', true );
-					if ( $item ) {
-						$quiz = LP_Quiz::get_quiz( $item->ID );
-						if ( $question_name = $q->get( 'question' ) ) {
-							$question = learn_press_get_post_by_name( $question_name, 'lp_question', true );
-							if ( ! $question ) {
-								learn_press_is_404();
-							} elseif ( ! $quiz->has_question( $question->ID ) ) {
-								learn_press_is_404();
-							} else {
-								LP()->global['quiz-question'] = $question;
-							}
-						}
-						$item_object = LP_Quiz::get_quiz( $item->ID );
-					}
-				}
-			}
-
-			if ( $item_name && ! $item_object ) {
-				//learn_press_is_404();
-			} elseif ( $item_object && ! $course->has( 'item', $item_object->id ) ) {
-				//learn_press_is_404();
-			} else {
-				LP()->global['course-item'] = $item_object;
-			}
-
-			return $q;
-		}
+//		/**
+//		 * If is single course content
+//		 */
+//		if ( $q->get( 'post_type' ) == LP_COURSE_CPT && is_single() ) {
+//			global $post;
+//			/**
+//			 * Added in LP 2.0.5 to fix issue in some cases course become 404
+//			 * including case course link is valid but it also get 404 if
+//			 * plugin WPML is installed
+//			 */
+//			if ( ! empty( $q->query_vars['p'] ) && LP_COURSE_CPT == get_post_type( $q->query_vars['p'] ) ) {
+//				$post = get_post( $q->query_vars['p'] );
+//			} else {
+//				$course_name = $q->get( LP_COURSE_CPT );
+//				$post        = learn_press_get_post_by_name( $course_name, LP_COURSE_CPT, true );
+//			}
+//
+//			if ( ! $post ) {
+//				learn_press_is_404();
+//
+//				return $q;
+//			}
+//			$course      = learn_press_get_course( $post->ID );
+//			$item        = null;
+//			$item_name   = null;
+//			$item_object = null;
+//
+//			if ( $course ) {
+//				LP()->global['course'] = $course;
+//				if ( $item_name = $q->get( 'lesson' ) ) {
+//					$item = learn_press_get_post_by_name( $item_name, 'lp_lesson', true );
+//					if ( $item ) {
+//						$item_object = LP_Lesson::get_lesson( $item->ID );
+//					}
+//				} elseif ( $item_name = $q->get( 'quiz' ) ) {
+//					$item = learn_press_get_post_by_name( $item_name, 'lp_quiz', true );
+//					if ( $item ) {
+//						$quiz = LP_Quiz::get_quiz( $item->ID );
+//						if ( $question_name = $q->get( 'question' ) ) {
+//							$question = learn_press_get_post_by_name( $question_name, 'lp_question', true );
+//							if ( ! $question ) {
+//								learn_press_is_404();
+//							} elseif ( ! $quiz->has_question( $question->ID ) ) {
+//								learn_press_is_404();
+//							} else {
+//								LP()->global['quiz-question'] = $question;
+//							}
+//						}
+//						$item_object = LP_Quiz::get_quiz( $item->ID );
+//					}
+//				}
+//			}
+//
+//			if ( $item_name && ! $item_object ) {
+//				//learn_press_is_404();
+//			} elseif ( $item_object && ! $course->has( 'item', $item_object->id ) ) {
+//				//learn_press_is_404();
+//			} else {
+//				LP()->global['course-item'] = $item_object;
+//			}
+//
+//			return $q;
+//		}
 
 
 		/**

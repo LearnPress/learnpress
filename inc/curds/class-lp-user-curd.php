@@ -53,7 +53,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Load user data
 	 *
-	 * @param LP_User $user
+	 * @param LP_User|LP_Abstract_User $user
 	 *
 	 * @return mixed;
 	 */

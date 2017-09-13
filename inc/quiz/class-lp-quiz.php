@@ -40,6 +40,8 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		'passing_grade'      => 0
 	);
 
+	protected static $_loaded = 0;
+
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
@@ -59,10 +61,19 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		} elseif ( ! empty( $the_quiz->ID ) ) {
 			$this->set_id( absint( $the_quiz->ID ) );
 		}
-
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
+
+		self::$_loaded ++;
+		if ( self::$_loaded == 1 ) {
+			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+		}
+	}
+
+	public static function log( $data ) {
+		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+		return $data;
 	}
 
 	public function get_heading_title() {
@@ -94,14 +105,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		return $this->get_data( 'retake_count' );
 	}
 
-//	public function set_mark( $mark ) {
-//	$this->_set_data( 'mark', $mark );
-//}
-//
-//	public function get_mark() {
-//		$this->get_data( 'mark' );
-//	}
-
 	public function set_show_result( $show_result ) {
 		$this->_set_data( 'show_result', $show_result );
 	}
@@ -109,14 +112,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	public function get_show_result() {
 		return $this->get_data( 'show_result' );
 	}
-
-//	public function set_duration( $duration ) {
-//		$this->_set_data( 'duration', $duration );
-//	}
-//
-//	public function get_duration() {
-//		$this->get_data( 'duration' );
-//	}
 
 	public function set_passing_grade_type( $type ) {
 		$this->_set_data( 'passing_grade_type', $type );
@@ -145,7 +140,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			$questions = $this->get_questions();
 			$mark      = 0;
 			foreach ( $questions as $question_id ) {
-				$question = LP_Question_Factory::get_question( $question_id );
+				$question = LP_Question::get_question( $question_id );
 				$mark     += $question->get_mark();
 			}
 			$this->_set_data( 'mark', $mark );
@@ -278,7 +273,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			}
 
 			$current_question_id = $user->get_current_quiz_question( $this->get_id(), $course->get_id() );
-			$question            = LP_Question_Factory::get_question( $current_question_id );
+			$question            = LP_Question::get_question( $current_question_id );
 			$duration            = $this->get_duration();
 			$remaining           = $user->get_quiz_time_remaining( $this->get_id(), $course_id );
 			if ( $remaining === false ) {
@@ -627,7 +622,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 	public function check_question( $question_id, $user_id ) {
 
-		if ( ! $question = LP_Question_Factory::get_question( $question_id ) ) {
+		if ( ! $question = LP_Question::get_question( $question_id ) ) {
 			return false;
 		}
 
@@ -667,7 +662,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		$user = learn_press_get_current_user( $user_id );
 		$id   = $user->get_current_quiz_question( $this->get_id(), $course_id );
 
-		return LP_Question_Factory::get_question( $id );
+		return LP_Question::get_question( $id );
 	}
 
 	/**
@@ -694,5 +689,96 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 	public function offsetExists( $offset ) {
 		return array_key_exists( $offset, $this->_questions );
+	}
+
+	/**
+	 * @param bool  $the_quiz
+	 * @param array $args
+	 *
+	 * @return LP_Course|bool
+	 */
+	public static function get_quiz( $the_quiz = false, $args = array() ) {
+		$the_quiz = self::get_quiz_object( $the_quiz );
+		if ( ! $the_quiz ) {
+			return false;
+		}
+
+		if ( ! empty( $args['force'] ) ) {
+			$force = ! ! $args['force'];
+			unset( $args['force'] );
+		} else {
+			$force = false;
+		}
+
+		$key_args = wp_parse_args( $args, array( 'id' => $the_quiz->ID, 'type' => $the_quiz->post_type ) );
+
+		$key = LP_Helper::array_to_md5( $key_args );
+
+		if ( $force ) {
+			LP_Global::$quizzes[ $key ] = false;
+		}
+
+		if ( empty( LP_Global::$quizzes[ $key ] ) ) {
+			$class_name = self::get_quiz_class( $the_quiz, $args );
+			if ( is_string( $class_name ) && class_exists( $class_name ) ) {
+				$lesson = new $class_name( $the_quiz->ID, $args );
+			} elseif ( $class_name instanceof LP_Course_Item ) {
+				$lesson = $class_name;
+			} else {
+				$lesson = new self( $the_quiz->ID, $args );
+			}
+			LP_Global::$quizzes[ $key ] = $lesson;
+		}
+
+		return LP_Global::$quizzes[ $key ];
+	}
+
+	/**
+	 * @param  string $quiz_type
+	 *
+	 * @return string|false
+	 */
+	private static function get_class_name_from_quiz_type( $quiz_type ) {
+		return LP_QUIZ_CPT === $quiz_type ? __CLASS__ : 'LP_Quiz_' . implode( '_', array_map( 'ucfirst', explode( '-', $quiz_type ) ) );
+	}
+
+	/**
+	 * Get the lesson class name
+	 *
+	 * @param  WP_Post $the_quiz
+	 * @param  array   $args (default: array())
+	 *
+	 * @return string
+	 */
+	private static function get_quiz_class( $the_quiz, $args = array() ) {
+		$lesson_id = absint( $the_quiz->ID );
+		$type      = $the_quiz->post_type;
+
+		$class_name = self::get_class_name_from_quiz_type( $type );
+
+		// Filter class name so that the class can be overridden if extended.
+		return apply_filters( 'learn-press/quiz/object-class', $class_name, $type, $lesson_id );
+	}
+
+	/**
+	 * Get the lesson object
+	 *
+	 * @param  mixed $the_quiz
+	 *
+	 * @uses   WP_Post
+	 * @return WP_Post|bool false on failure
+	 */
+	private static function get_quiz_object( $the_quiz ) {
+		if ( false === $the_quiz ) {
+			$the_quiz = get_post_type() === LP_LESSON_CPT ? $GLOBALS['post'] : false;
+		} elseif ( is_numeric( $the_quiz ) ) {
+			$the_quiz = get_post( $the_quiz );
+		} elseif ( $the_quiz instanceof LP_Course_Item ) {
+			$the_quiz = get_post( $the_quiz->get_id() );
+		} elseif ( ! ( $the_quiz instanceof WP_Post ) ) {
+			$the_quiz = false;
+		}
+
+		return apply_filters( 'learn-press/quiz/post-object', $the_quiz );
 	}
 }

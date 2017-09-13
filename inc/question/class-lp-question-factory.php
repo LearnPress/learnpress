@@ -11,85 +11,6 @@ defined( 'ABSPATH' ) || exit();
  * @version 1.0
  */
 class LP_Question_Factory {
-	/**
-	 * Get the class instance for question.
-	 *
-	 * @param mixed $the_question ID, WP_Post object, array or anything else (default: false)
-	 * @param array $args         Addition options (default: null)
-	 *
-	 * @return LP_Question|bool
-	 */
-	public static function get_question( $the_question = false, $args = array() ) {
-
-		$the_question = self::get_question_id( $the_question );
-
-		if ( ! $the_question ) {
-			return false;
-		}
-		$classname = self::get_question_class( $the_question, $args );
-		if ( ! class_exists( $classname ) ) {
-			$classname = apply_filters( 'learn-press/question-class-not-exists', 'LP_Question_None', $the_question );
-		}
-
-		return new $classname( $the_question, $args );
-	}
-
-	/**
-	 * Get class of a question from a type.
-	 *
-	 * @param  string
-	 *
-	 * @return string|false
-	 */
-	public static function get_class_name_from_question_type( $type ) {
-		$class = $type ? 'LP_Question_' . implode( '_', array_map( 'ucfirst', preg_split( '/-|_/', $type ) ) ) : false;
-
-		return apply_filters( 'learn-press/question-type-class', $class, $type );
-	}
-
-	/**
-	 * Get the class for a question from question object.
-	 *
-	 * @param mixed $the_question
-	 * @param array $args
-	 *
-	 * @return mixed
-	 */
-	public static function get_question_class( $the_question, $args = array() ) {
-		$question_type = false;
-		if ( $the_id = self::get_question_id( $the_question ) ) {
-			$question_type = get_post_meta( $the_id, '_lp_type', true );
-		} else if ( ! empty( $args['type'] ) ) {
-			$question_type = $args['type'];
-		}
-		$classname = self::get_class_name_from_question_type( $question_type );
-
-		return apply_filters( 'learn-press/question-class', $classname, $the_question, $args );
-	}
-
-	/**
-	 * Get the ID of a question.
-	 *
-	 * @param  mixed $the_question
-	 *
-	 * @return bool|int
-	 */
-	public static function get_question_id( $the_question ) {
-		global $post;
-		$the_id = false;
-
-		if ( false === $the_question && is_a( $post, 'WP_Post' ) && LP_ORDER_CPT === get_post_type( $post ) ) {
-			$the_id = $post->ID;
-		} elseif ( is_numeric( $the_question ) ) {
-			$the_id = $the_question;
-		} elseif ( $the_question instanceof LP_Question ) {
-			$the_id = $the_question->get_id();
-		} elseif ( ! empty( $the_question->ID ) ) {
-			$the_id = $the_question->ID;
-		}
-
-		return $the_id;
-	}
 
 	/**
 	 * Delete a question from database and it's related data.
@@ -188,7 +109,7 @@ class LP_Question_Factory {
 		if ( $status != 'completed' || $quiz->show_result != 'yes' ) {
 			return;
 		}
-		$question = LP_Question_Factory::get_question( $id );
+		$question = LP_Question::get_question( $id );
 		$user     = LP()->user;
 		$question->render( array( 'quiz_id' => $quiz->id, 'course_id' => get_the_ID(), 'check' => true ) );
 	}

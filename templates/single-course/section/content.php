@@ -25,6 +25,10 @@ if ( $items = $section->get_items() ) { ?>
             <li class="<?php echo join( ' ', $item->get_class() ); ?>">
 
 				<?php
+				if ( ! $item->is_visible() ) {
+					continue;
+				}
+
 				/**
 				 * @since 3.x.x
 				 */
@@ -33,11 +37,6 @@ if ( $items = $section->get_items() ) { ?>
 
                 <a href="<?php echo $item->get_permalink(); ?>">
 					<?php
-
-					if ( ! $item->is_visible() ) {
-						continue;
-					}
-
 					$args = array(
 						'item'    => $item,
 						'section' => $section

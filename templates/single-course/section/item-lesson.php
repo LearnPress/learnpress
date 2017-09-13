@@ -16,7 +16,7 @@ if ( ! isset( $item ) ) {
 }
 ?>
 
-<span href="" class="item-name">
+<span class="item-name">
     <?php echo $item->get_title(); ?>
 </span>
 

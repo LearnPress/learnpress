@@ -54,6 +54,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 */
 	protected $_status = array();
 
+	protected static $_loaded = 0;
 	/**
 	 * @param mixed $order_id
 	 */
@@ -72,8 +73,17 @@ class LP_Order extends LP_Abstract_Post_Data {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
+		self::$_loaded ++;
+		if ( self::$_loaded == 1 ) {
+			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+		}
 	}
 
+	public static function log( $data ) {
+		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
+		return $data;
+	}
 
 	/**
 	 * Load the order data.

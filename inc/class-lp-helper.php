@@ -38,4 +38,10 @@ class LP_Helper {
 
 		return $array;
 	}
+
+	public static function array_to_md5($array){
+		settype($array, 'array');
+		ksort($array);
+		return md5(serialize($array));
+	}
 }
