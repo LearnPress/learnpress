@@ -64,6 +64,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
+
 		self::$_loaded ++;
 		if ( self::$_loaded == 1 ) {
 			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
@@ -72,7 +73,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 	public static function log( $data ) {
 		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
 		return $data;
 	}
 
