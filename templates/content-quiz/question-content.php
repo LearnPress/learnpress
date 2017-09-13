@@ -21,7 +21,7 @@ $question_id = $user->get_current_quiz_question( $quiz->id, $course->get_id() );
 if ( !$question_id ) {
 	return;
 }
-$question = LP_Question_Factory::get_question( $question_id );
+$question = LP_Question::get_question( $question_id );
 ?>
 <?php if ( false !== ( $title = apply_filters( 'learn_press_quiz_question_title', $question->get_title() ) ) ): ?>
 	<h4 class="quiz-question-title"><?php echo $title; ?></h4>

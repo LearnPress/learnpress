@@ -55,7 +55,6 @@ if ( ! $answers = $question->get_answers() ) {
 		if ( is_array( $answered ) ) {
 			$answered = reset( $answered );
 		}
-
 		?>
         <li <?php echo $answer->option_class(); ?> @click="toggle">
             <input type="radio"

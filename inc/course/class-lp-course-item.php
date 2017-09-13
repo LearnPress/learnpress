@@ -69,36 +69,8 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		return get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
 	}
 
-	/**
-	 * Get the title of item.
-	 *
-	 * @return string
-	 */
 	public function get_title() {
-		return apply_filters( 'learn-press/course-item-title', get_the_title( $this->get_id() ), $this->get_id() );
-	}
-
-	/**
-	 * Get the content of item.
-	 *
-	 * @return string
-	 */
-	public function get_content() {
-
-		if ( ! $this->_content ) {
-			global $post;
-			$post = get_post( $this->get_id() );
-			setup_postdata( $post );
-
-			ob_start();
-			the_content();
-			$this->_content = ob_get_clean();
-
-			wp_reset_postdata();
-
-		}
-
-		return $this->_content;
+		return apply_filters( 'learn-press/course-item-title', parent::get_title(), $this->get_id() );
 	}
 
 	/**
@@ -113,7 +85,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		$item_type = get_post_type( $this->get_id() );
 
 		// If item type does not allow
-		$show = in_array( $item_type, $allow_items );
+		$show = true;// in_array( $item_type, $allow_items );
 
 		return apply_filters( 'learn-press/course-item-visible', $show, $this->get_item_type(), $this->get_id() );
 	}
@@ -128,7 +100,12 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	public function get_class( $more = '' ) {
 		global $lp_course_item;
 
-		$defaults = array( 'course-item course-item-' . $this->get_item_type() );
+		$defaults = array(
+			'course-item',
+			'course-item-' . $this->get_item_type(),
+			'course-item-' . $this->get_id(),
+			get_class( $this )
+		);
 
 		if ( $lp_course_item && $lp_course_item->get_id() == $this->get_id() ) {
 			$defaults[] = 'current';
@@ -212,7 +189,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		$item_type = '';
 		$item_id   = 0;
 
-		if ( is_numeric( $post ) ) {
+		if ( is_numeric( $post ) && $post > 0 ) {
 			$post = get_post( $post );
 		}
 
@@ -223,20 +200,31 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 
 		if ( $item_type ) {
 			if ( learn_press_is_support_course_item_type( $item_type ) ) {
-				$type  = str_replace( 'lp_', '', $item_type );
-				$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item_type, $item_id );
+				$type = str_replace( 'lp_', '', $item_type );
 
-				if ( class_exists( $class ) ) {
+				$class = apply_filters( 'learn-press/course-item-class', false, $type, $item_type, $item_id );
+
+				if ( is_string( $class ) && class_exists( $class ) ) {
 					$item = new $class( $post->ID, $post );
+				} elseif ( $class instanceof LP_Course_Item ) {
+					$item = $class;
+				}
+
+				if ( ! $item ) {
+
+					switch ( $type ) {
+						case 'lesson':
+							$item = LP_Lesson::get_lesson( $item_id );
+							break;
+						case 'quiz':
+							$item = LP_Quiz::get_quiz( $item_id );
+							break;
+					}
 				}
 			}
 		}
 
 		return apply_filters( 'learn-press/get-course-item', $item, $item_type, $item_id );
-	}
-
-	public static function get_question( $post ) {
-		return new LP_Question( $post );
 	}
 
 	public function get_user_status( $user ) {

@@ -548,15 +548,6 @@ function learn_press_cart_order_instructor() {
 	return 0;
 }
 
-function learn_press_handle_purchase_request() {
-	LP_Gateways::instance()->get_available_payment_gateways();
-	$method_var = 'learn-press-transaction-method';
-
-	$requested_transaction_method = empty( $_REQUEST[ $method_var ] ) ? false : $_REQUEST[ $method_var ];
-	learn_press_do_transaction( $requested_transaction_method );
-
-}
-
 function learn_press_get_orders( $args = array() ) {
 	//_deprecated_function( __FUNCTION__, '3.x.x', 'get_posts' );
 	$args['post_type'] = LP_ORDER_CPT;

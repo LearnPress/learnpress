@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return bool|LP_Quiz
  */
 function learn_press_get_quiz( $the_quiz ) {
-	return LP_Quiz_Factory::get_quiz( $the_quiz );
+	return LP_Quiz::get_quiz( $the_quiz );
 }
 
 /**
@@ -26,7 +26,7 @@ function learn_press_get_quiz( $the_quiz ) {
  * @return bool|LP_Question
  */
 function learn_press_get_question( $the_question ) {
-	return LP_Question_Factory::get_question( $the_question );
+	return LP_Question::get_question( $the_question );
 }
 
 function learn_press_get_build_in_question_types() {
@@ -84,9 +84,9 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 
 
 	if ( ! $question ) {
-		$question = LP_Question_Factory::get_question( get_the_ID() );
+		$question = LP_Question::get_question( get_the_ID() );
 	} elseif ( is_numeric( $question ) ) {
-		$question = LP_Question_Factory::get_question( $question );
+		$question = LP_Question::get_question( $question );
 	}
 	if ( $question ) {
 		if ( is_string( $classes ) ) {

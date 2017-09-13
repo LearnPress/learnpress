@@ -44,8 +44,11 @@ class LP_Quiz_Factory {
 		add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_current_question' ), 10, 3 );
 	}
 
+	/**
+	 * Save question data when navigating question.
+	 */
 	public static function nav_question() {
-		$check = self::maybe_save_questions( 'nav-question' );
+		self::maybe_save_questions( 'nav-question' );
 	}
 
 	/**
@@ -169,7 +172,6 @@ class LP_Quiz_Factory {
 	 * Callback for finishing quiz
 	 */
 	public static function finish_quiz() {
-
 		try {
 			$check = self::maybe_save_questions( 'finish' );
 
@@ -521,7 +523,7 @@ class LP_Quiz_Factory {
 		} else {
 		}
 		learn_press_setup_user_course_data( $user_id, $course_id );
-		$question = LP_Question_Factory::get_question( $question_id );
+		$question = LP_Question::get_question( $question_id );
 		$question->render( array( 'quiz_id' => $quiz_id, 'course_id' => $course_id, 'force' => true ) );
 		exit();
 	}
@@ -557,7 +559,7 @@ class LP_Quiz_Factory {
 		list( $course_id, $quiz_id, $user_id, $security ) = array_values( $check );
 		$question_id                = learn_press_get_request( 'question_id', 0 );
 		$quiz                       = LP_Quiz::get_quiz( $quiz_id );
-		$quiz->current_question     = LP_Question_Factory::get_question( $question_id );
+		$quiz->current_question     = LP_Question::get_question( $question_id );
 		LP()->global['course']      = LP_Course::get_course( $course_id );
 		LP()->global['course-item'] = $quiz;
 		$_REQUEST['html']           = learn_press_get_template_content( 'content-question/hint.php' );
@@ -617,39 +619,7 @@ class LP_Quiz_Factory {
 		);
 	}
 
-	public static function get_quiz( $the_quiz ) {
-		static $quizzes = array();
-		$the_id = 0;
-		if ( $the_quiz instanceof LP_Quiz ) {
-			$the_id = $the_quiz->get_id();
-		} elseif ( $the_quiz instanceof WP_Post ) {
-			$the_id = $the_quiz->ID;
-		} elseif ( isset( $the_quiz->ID ) ) {
-			$the_id = $the_quiz->ID;
-		}
-		if ( empty( $quizzes[ $the_id ] ) ) {
-			if ( $the_quiz instanceof LP_Quiz ) {
-				$quizzes[ $the_id ] = $the_quiz;
-			} else {
-				$quizzes[ $the_id ] = new LP_Quiz( $the_quiz );
-			}
-		}else{
-        }
 
-		return $quizzes[ $the_id ];
-	}
 }
 
-return;
-$s = microtime(true);
-for($i  =0; $i<1000;$i++){
-    new LP_Lesson(765);
-}
-echo microtime(true)-$s;
-$s = microtime(true);
-for($i  =0; $i<1000;$i++){
-	new LP_Quiz(20);
-}
-echo microtime(true)-$s;
-die();
 LP_Quiz_Factory::init();

@@ -291,10 +291,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
 	}
 
-	public function get_title() {
-		return get_the_title( $this->get_id() );
-	}
-
 	/**
 	 * @deprecated
 	 */
@@ -302,23 +298,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		_deprecated_function( __FUNCTION__, '3.x.x', 'LP_Course::get_content' );
 
 		return $this->get_content();
-	}
-
-	/**
-	 * Get the content of the course.
-	 *
-	 * @return string
-	 */
-	public function get_content() {
-		global $post;
-
-		$post = get_post( $this->get_id() );
-
-		setup_postdata( $post );
-		$the_content = get_the_content();
-		wp_reset_postdata();
-
-		return $the_content;
 	}
 
 	/**

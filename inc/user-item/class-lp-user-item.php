@@ -5,6 +5,7 @@
  * @since 3.x.x
  */
 class LP_User_Item extends LP_Abstract_Object_Data {
+	protected static $_loaded =0;
 	/**
 	 * LP_User_Item constructor.
 	 *
@@ -24,6 +25,16 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		if ( ! empty( $item['end_time'] ) ) {
 			$this->set_end_time( $item['end_time'] );
 		}
+		self::$_loaded ++;
+		if ( self::$_loaded == 1 ) {
+			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+		}
+	}
+
+	public static function log( $data ) {
+		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
+		return $data;
 	}
 
 	/**

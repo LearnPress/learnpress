@@ -42,7 +42,6 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 				'passing_grade'      => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true )
 			)
 		);
-
 		$this->_load_questions( $quiz );
 		$this->_update_meta_cache( $quiz );
 
@@ -93,7 +92,8 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 * @param LP_Quiz $quiz
 	 */
 	protected function _update_meta_cache( &$quiz ) {
-		$meta_ids = $quiz->get_questions();
+		$meta_ids = wp_cache_get( 'questions-' . $quiz->get_id(), 'lp-quizzes' );
+
 		if ( false === $meta_ids ) {
 			$meta_ids = array( $quiz->get_id() );
 		} else {

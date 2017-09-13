@@ -783,10 +783,10 @@ if ( ! function_exists( 'learn_press_wrapper_end' ) ) {
 
 if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 	function learn_press_single_course_args() {
-		$course = learn_press_get_course();
-		if ( $course && $course->get_id() ) {
-			$course->output_args();
-		}
+//		$course = learn_press_get_course();
+//		if ( $course && $course->get_id() ) {
+//			$course->output_args();
+//		}
 	}
 }
 
@@ -2013,7 +2013,7 @@ if ( ! function_exists( 'learn_press_course_remaining_time' ) ) {
 	}
 }
 
-add_filter( 'template_include', 'learn_press_permission_view_quiz', 100 );
+//add_filter( 'template_include', 'learn_press_permission_view_quiz', 100 );
 function learn_press_permission_view_quiz( $template ) {
 	$quiz = LP()->global['course-item'];
 	// if is not in single quiz
@@ -2205,7 +2205,7 @@ function learn_press_course_the_content( $content ) {
 	return $content;
 }
 
-add_action( 'template_redirect', 'learn_press_check_access_lesson' );
+//add_action( 'template_redirect', 'learn_press_check_access_lesson' );
 
 function learn_press_check_access_lesson() {
 	$queried_post_type = get_query_var( 'post_type' );

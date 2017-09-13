@@ -54,7 +54,7 @@ class LP_Emails {
 		if ( did_action( 'learn_press_emails_init' ) ) {
 			return;
 		}
-		LP()->_include( 'emails/class-lp-email.php' );
+		include LP_PLUGIN_PATH . 'inc/emails/class-lp-email.php';
 		$this->emails['LP_Email_New_Order_Admin']           = include( 'emails/class-lp-email-new-order-admin.php' );
 		$this->emails['LP_Email_New_Order_Customer']        = include( 'emails/class-lp-email-new-order-customer.php' );
 		$this->emails['LP_Email_New_Order_Instructor']      = include( 'emails/class-lp-email-new-order-instructor.php' );

@@ -9,48 +9,20 @@ defined( 'ABSPATH' ) || exit();
  * @since  0.9.15
  */
 class LP_Course extends LP_Abstract_Course {
+	protected static $_loaded = 0;
 
 	public function __construct( $course ) {
 		parent::__construct( $course );
-
-		//add_action( 'wp_head', array( $this, 'frontend_assets' ) );
-	}
-
-	public function frontend_assets() {
-		if ( learn_press_is_course() ) {
-			$translate = $this->_get_localize();
-			//LP_Assets::add_localize( $translate, false, 'learn-press-single-course' );
+		self::$_loaded ++;
+		if ( self::$_loaded == 1 ) {
+			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
 		}
 	}
 
-	private function _get_localize() {
-		return apply_filters(
-			'learn_press_single_course_js_params',
-			array(
-				'confirm_finish_course' => array(
-					'message' => sprintf( __( 'Are you sure you want to finish course %s?', 'learnpress' ), get_the_title() ),
-					'title'   => __( 'Finish course', 'learnpress' )
-				),
-				'confirm_retake_course' => array(
-					'message' => sprintf( __( 'Are you sure you want to retake course %s', 'learnpress' ), get_the_title() ),
-					'title'   => __( 'Retake course', 'learnpress' )
-				),
-                                'confirm_finish_quiz' => array(
-                                    'title'   => __( 'Finish quiz', 'learnpress' ),
-                                    'message' => __( 'Are you sure you want to finish this quiz?', 'learnpress' )
-                                ),
-                                'confirm_retake_quiz' => array(
-                                        'title'   => __( 'Retake quiz', 'learnpress' ),
-                                        'message' => __( 'Are you sure you want to retake this quiz?', 'learnpress' )
-                                ),
-                                'quiz_time_is_over'   => array(
-                                        'title'   => __( 'Time out!' ),
-                                        'message' => __( 'The time is over! Your quiz will automate come to finish', 'learnpress' )
-                                ),
-                                'finished_quiz'       => __( 'Congrats! You have finished this quiz', 'learnpress' ),
-                                'retaken_quiz'        => __( 'Congrats! You have re-taken this quiz. Please wait a moment and the page will reload', 'learnpress' )
-			)
-		);
+	public static function log( $data ) {
+		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
+		return $data;
 	}
 
 	/**
@@ -61,43 +33,38 @@ class LP_Course extends LP_Abstract_Course {
 	 */
 	public static function get_course( $the_course = false, $args = array() ) {
 		$the_course = self::get_course_object( $the_course );
-		if ( !$the_course ) {
+		if ( ! $the_course ) {
 			return false;
 		}
 
-		$class_name = self::get_course_class( $the_course, $args );
-		if ( !class_exists( $class_name ) ) {
-			$class_name = 'LP_Course';
+		if ( ! empty( $args['force'] ) ) {
+			$force = ! ! $args['force'];
+			unset( $args['force'] );
+		} else {
+			$force = false;
 		}
-		return new $class_name( $the_course, $args );
-	}
 
-	public static function get_course_by_item( $item_id ) {
-		static $courses = array();
-		$course = false;
-		if ( empty( $courses[$item_id] ) ) {
-			global $wpdb;
-			$query = $wpdb->prepare( "
-				SELECT lsi.item_id, ls.section_course_id as course_id
-					FROM {$wpdb->prefix}learnpress_section_items lsi
-					INNER JOIN {$wpdb->prefix}learnpress_sections ls ON ls.section_id = lsi.section_id
-					WHERE ls.section_course_id IN (SELECT c.ID
-						FROM {$wpdb->prefix}posts c
-						INNER JOIN {$wpdb->prefix}learnpress_sections ls ON ls.section_course_id = c.ID
-						INNER JOIN {$wpdb->prefix}learnpress_section_items lsi ON lsi.section_id = ls.section_id
-						WHERE lsi.item_id = %d
-					)
-			", $item_id );
-			if ( $items = $wpdb->get_results( $query ) ) {
-				foreach ( $items as $item ) {
-					$courses[$item->item_id] = $item->course_id;
-				}
+		$key_args = wp_parse_args( $args, array( 'id' => $the_course->ID, 'type' => $the_course->post_type ) );
+
+		$key = LP_Helper::array_to_md5( $key_args );
+
+		if ( $force ) {
+			LP_Global::$courses[ $key ] = false;
+		}
+
+		if ( empty( LP_Global::$courses[ $key ] ) ) {
+			$class_name = self::get_course_class( $the_course, $args );
+			if ( is_string( $class_name ) && class_exists( $class_name ) ) {
+				$course = new $class_name( $the_course->ID, $args );
+			} elseif ( $class_name instanceof LP_Abstract_Course ) {
+				$course = $class_name;
+			} else {
+				$course = new self( $the_course->ID, $args );
 			}
+			LP_Global::$courses[ $key ] = $course;
 		}
-		if ( !empty( $courses[$item_id] ) ) {
-			$course = $courses[$item_id];
-		}
-		return $course;
+
+		return LP_Global::$courses[ $key ];
 	}
 
 	/**
@@ -106,7 +73,7 @@ class LP_Course extends LP_Abstract_Course {
 	 * @return string|false
 	 */
 	private static function get_class_name_from_course_type( $course_type ) {
-		return $course_type ? 'LP_Course_' . implode( '_', array_map( 'ucfirst', explode( '-', $course_type ) ) ) : false;
+		return LP_COURSE_CPT === $course_type ? __CLASS__ : 'LP_Course_' . implode( '_', array_map( 'ucfirst', explode( '-', $course_type ) ) );
 	}
 
 	/**
@@ -119,25 +86,12 @@ class LP_Course extends LP_Abstract_Course {
 	 */
 	private static function get_course_class( $the_course, $args = array() ) {
 		$course_id = absint( $the_course->ID );
-		$post_type = $the_course->post_type;
+		$type      = $the_course->post_type;
 
-		if ( LP_COURSE_CPT === $post_type ) {
-			if ( isset( $args['course_type'] ) ) {
-				$course_type = $args['course_type'];
-			} else {
-				/*$terms          = get_the_terms( $course_id, 'course_type' );
-				$course_type    = ! empty( $terms ) ? sanitize_title( current( $terms )->name ) : 'simple';
-				*/
-				$course_type = 'simple';
-			}
-		} else {
-			$course_type = false;
-		}
-
-		$class_name = self::get_class_name_from_course_type( $course_type );
+		$class_name = self::get_class_name_from_course_type( $type );
 
 		// Filter class name so that the class can be overridden if extended.
-		return apply_filters( 'learn_press_course_object_class', $class_name, $course_type, $post_type, $course_id );
+		return apply_filters( 'learn-press/course/object-class', $class_name, $type, $course_id );
 	}
 
 	/**
@@ -150,19 +104,15 @@ class LP_Course extends LP_Abstract_Course {
 	 */
 	private static function get_course_object( $the_course ) {
 		if ( false === $the_course ) {
-			$the_course = $GLOBALS['post'];
+			$the_course = get_post_type() === LP_COURSE_CPT ? $GLOBALS['post'] : false;
 		} elseif ( is_numeric( $the_course ) ) {
 			$the_course = get_post( $the_course );
-		} elseif ( $the_course instanceof LP_Course ) {
-			$the_course = get_post( $the_course->id );
-		} elseif ( !( $the_course instanceof WP_Post ) ) {
+		} elseif ( $the_course instanceof LP_Abstract_Course ) {
+			$the_course = get_post( $the_course->get_id() );
+		} elseif ( ! ( $the_course instanceof WP_Post ) ) {
 			$the_course = false;
 		}
 
-		return apply_filters( 'learn_press_course_object', $the_course );
-	}
-
-	public function to_array() {
-
+		return apply_filters( 'learn-press/course/post-object', $the_course );
 	}
 }

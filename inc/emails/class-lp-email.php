@@ -484,7 +484,7 @@ class LP_Email extends LP_Abstract_Settings {
 
 			try {
 				if ( ! class_exists( 'Emogrifier' ) ) {
-					LP()->_include( 'libraries/class-emogrifier.php' );
+					include_once LP_PLUGIN_PATH . 'inc/libraries/class-emogrifier.php';
 				}
 				// apply CSS styles inline for picky email clients
 				$emogrifier = new Emogrifier( $content, $css );
