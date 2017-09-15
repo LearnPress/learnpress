@@ -49,7 +49,7 @@ class LP_Datetime extends DateTime {
 				$tz = new DateTimeZone( $tz );
 			}
 		}
-		if(!$tz){
+		if ( ! $tz ) {
 			$tz = null;
 		}
 		date_default_timezone_set( 'UTC' );
@@ -213,5 +213,14 @@ class LP_Datetime extends DateTime {
 	 */
 	public function toUnix() {
 		return (int) parent::format( 'U' );
+	}
+
+	public function getTimestamp( $local = true ) {
+		$timestamp = parent::getTimestamp();
+		if ( $local ) {
+			$timestamp += $this->getOffset();
+		}
+
+		return $timestamp;
 	}
 }

@@ -2438,9 +2438,12 @@ if ( ! empty( $_REQUEST['debug'] ) ) {
 }
 
 function learn_press_debug() {
-	$args = func_get_args();
-	$arg  = true;
+	$args  = func_get_args();
+	$arg   = true;
+	$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 3 );
+
 	echo '<pre>';
+	print_r( $debug[1] );
 	if ( $args ) {
 		foreach ( $args as $arg ) {
 			print_r( $arg );

@@ -697,18 +697,22 @@ class LP_Question extends LP_Course_Item {
 
 	}
 
-	public
-	function is_selected_option(
-		$answer, $answered = false
-	) {
-		$value = array_key_exists( 'value', $answer ) ? $answer['value'] : '';
+	/**
+	 * Find value in answer's option and compare with value answered by user.
+	 *
+	 * @param LP_Question_Answer_Option $answer
+	 * @param mixed                     $answered
+	 *
+	 * @return bool
+	 */
+	public function is_selected_option( $answer, $answered = false ) {
 		if ( is_array( $answered ) ) {
-			$is_selected = in_array( $value, $answered );
+			$is_selected = in_array( $answer['value'], $answered );
 		} else {
-			$is_selected = ( $value . '' === $answered . '' );
+			$is_selected = ( $answer['value'] . '' === $answered . '' );
 		}
 
-		return apply_filters( 'learn_press_is_selected_option', $is_selected, $answer, $answered, $this );
+		return apply_filters( 'learn-press/question/is-selected-option', $is_selected, $answer, $answered, $this->get_id() );
 	}
 
 	public
@@ -741,10 +745,7 @@ class LP_Question extends LP_Course_Item {
 		return false;
 	}
 
-	public
-	function check(
-		$args = null
-	) {
+	public function check( $args = null ) {
 		$return = array(
 			'correct' => false,
 			'mark'    => 0
@@ -912,7 +913,7 @@ class LP_Question extends LP_Course_Item {
 	 * @param bool  $the_question
 	 * @param array $args
 	 *
-	 * @return LP_Course|bool
+	 * @return LP_Question|bool
 	 */
 	public static function get_question( $the_question = false, $args = array() ) {
 		$the_question = self::get_question_object( $the_question );
@@ -956,7 +957,7 @@ class LP_Question extends LP_Course_Item {
 	 * @return string|false
 	 */
 	private static function get_class_name_from_question_type( $question_type ) {
-		return !$question_type ? __CLASS__ : 'LP_Question_' . implode( '_', array_map( 'ucfirst', explode( '-', $question_type ) ) );
+		return ! $question_type ? __CLASS__ : 'LP_Question_' . implode( '_', array_map( 'ucfirst', explode( '-', $question_type ) ) );
 	}
 
 	/**
@@ -972,7 +973,7 @@ class LP_Question extends LP_Course_Item {
 		if ( ! empty( $args['type'] ) ) {
 			$question_type = $args['type'];
 		} else {
-            $question_type = get_post_meta($question_id, '_lp_type', true);
+			$question_type = get_post_meta( $question_id, '_lp_type', true );
 		}
 
 		$class_name = self::get_class_name_from_question_type( $question_type );

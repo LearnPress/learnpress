@@ -59,7 +59,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * Get start-time.
 	 */
 	public function get_start_time() {
-		$this->get_data( 'start_time' );
+		return new LP_Datetime( $this->get_data( 'start_time' ));
 	}
 
 	/**
@@ -75,7 +75,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * Get end-time.
 	 */
 	public function get_end_time() {
-		$this->get_data( 'end_time' );
+		return new LP_Datetime( $this->get_data( 'end_time' ));
 	}
 
 	/**

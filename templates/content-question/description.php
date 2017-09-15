@@ -14,13 +14,6 @@ if ( ! $question = LP_Global::quiz_question() ) {
 	return;
 }
 
-$user = LP_Global::user();
-$quiz_data = $user->get_quiz_data($quiz->get_id());
-$result = $quiz_data->get_result();
-
-unset($result['questions']);
-learn_press_debug($quiz_data);
-
 if ( ! $content = $question->get_content() ) {
 	return;
 }

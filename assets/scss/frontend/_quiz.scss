@@ -2,6 +2,40 @@
     margin-bottom: 20px;
 }
 
+.quiz-progress {
+    display: flex;
+    margin: 20px -10px 20px 0;
+    .quiz-point-achieved,
+    .quiz-current-question,
+    .quiz-countdown {
+        flex: 1;
+        text-align: left;
+        position: relative;
+        .progress-number {
+            height: 20px;
+            padding: 5px 5px 5px 70px;
+            line-height: 20px;
+            margin-right: 10px;
+            background: #00adff;
+            color: #FFF;
+            @include border-radius(15px);
+        }
+        i {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            margin-top: -30px;
+            font-size: 30px;
+            text-align: center;
+            line-height: 60px;
+            color: #FFF;
+            background: #00adff;
+            @include border-radius(50%);
+        }
+    }
+}
+
 .answer-options {
     list-style: none;
     margin: 0;

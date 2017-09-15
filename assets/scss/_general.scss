@@ -391,30 +391,30 @@
     }
 }
 
-.advanced-list{
+.advanced-list {
     list-style: none;
-    li{
+    li {
         display: inline-block;
         background: #EEE;
         padding: 3px 8px;
         @include border-radius(2px);
-        .remove-item{
+        .remove-item {
             display: inline-block;
             text-decoration: none;
             line-height: 1;
             vertical-align: middle;
             margin-right: 5px;
             cursor: pointer;
-            &:hover{
+            &:hover {
                 color: #0085ba;
             }
-            &:before{
+            &:before {
                 font-family: dashicons;
                 content: "\f335";
                 text-decoration: none;
             }
         }
-        span{
+        span {
             display: inline-block;
         }
     }

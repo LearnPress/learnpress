@@ -77,21 +77,7 @@
                     display: inline-block;
                     margin-right: 5px;
                     .progress-bg {
-                        background: #DDD;
-                        height: 10px;
                         width: 100px;
-                        position: relative;
-                        overflow: hidden;
-                        @include border-radius(5px);
-                        .progress-active {
-                            height: 10px;
-                            width: 100%;
-                            background: #00adff;
-                            position: absolute;
-                            left: 50%;
-                            margin-left: -100%;
-                            @include border-radius(5px);
-                        }
                     }
                 }
             }
@@ -366,6 +352,10 @@ body {
             color: #999;
             border: 1px solid #DDD;
             font-size: 12px;
+            min-width: 20px;
+            span {
+                vertical-align: middle;
+            }
             &:hover {
                 background: #00adff;
                 color: #FFF;
@@ -377,6 +367,32 @@ body {
                 background: #00adff;
                 color: #FFF;
                 border-color: #3880a2;
+            }
+        }
+        &.answered {
+            a {
+                &:after {
+                    font-family: fontawesome;
+                    font-size: 8px;
+                    vertical-align: middle;
+                    margin-left: 3px;
+                }
+            }
+            &.answered-wrong {
+                a {
+                    color: #FF0000;
+                    &:after {
+                        //content: "\f05e";
+                    }
+                }
+            }
+            &.answered-true {
+                a {
+                    color: #00adff;
+                    &:after {
+                        //content: "\f00c";
+                    }
+                }
             }
         }
     }

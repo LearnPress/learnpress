@@ -184,12 +184,14 @@ add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_cont
 
 /**
  * @see learn_press_content_item_summary_quiz_progress()
+ * @see learn_press_content_item_summary_quiz_countdown()
  * @see learn_press_content_item_summary_question_title()
  * @see learn_press_content_item_summary_question_content()
  * @see learn_press_content_item_summary_question()
  */
 
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_progress', 10 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 10 );
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_title', 15 );
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_content', 20 );
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question', 25 );

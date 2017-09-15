@@ -6,6 +6,46 @@
 @import "frontend/quiz";
 @import "frontend/message";
 
+.learn-press-progress {
+    position: relative;
+    .progress-bg {
+        background: #DDD;
+        height: 10px;
+        position: relative;
+        overflow: hidden;
+        @include border-radius(5px);
+        .progress-active {
+            height: 100%;
+            width: 100%;
+            background: #00adff;
+            position: absolute;
+            left: 50%;
+            margin-left: -100%;
+            @include border-radius(5px);
+        }
+    }
+    .xxxx {
+        position: absolute;
+        width: 28px;
+        height: 28px;
+        background: #3393c1;
+        white-space: nowrap;
+        overflow: hidden;
+        font-size: 12px;
+        line-height: 28px;
+        border-radius: 50%;
+        margin-left: -15px;
+        top: 50%;
+        margin-top: -15px;
+        color: #FFF;
+        border: 1px solid #559abb;
+        text-align: center;
+        &:after{
+            content: '%';
+        }
+    }
+}
+
 .retake-course,
 .enroll-course,
 .purchase-course {

@@ -32,10 +32,10 @@ $title = $section->get_title();
 		<?php } ?>
     </div>
 	<?php if ( $user->has_enrolled_course( $section->get_course_id() ) ) {
-	    $percent = $user_course->get_percent_completed_items( '', $section->get_id() );
-	    ?>
+		$percent = $user_course->get_percent_completed_items( '', $section->get_id() );
+		?>
         <div class="section-meta">
-            <div class="section-progress" title="<?php echo intval($percent);?>%">
+            <div class="learn-press-progress section-progress" title="<?php echo intval( $percent ); ?>%">
                 <div class="progress-bg">
                     <div class="progress-active"
                          style="left: <?php echo $percent; ?>%;">

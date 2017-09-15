@@ -11,19 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$user   = learn_press_get_current_user();
-$course = LP()->global['course'];
-$quiz   = isset( $item ) ? $item : LP()->global['course-item'];
-if ( !$quiz ) {
-	return;
-}
-$duration = $quiz->get_duration_html();
-if ( strpos( $duration, ':' ) === false ) {
-	return;
-}
-if ( $user->has_completed_quiz( $quiz->id, $course->get_id() ) || $user->has_finished_course( $course->get_id() ) ) {
-	return;
-}
+
 ?>
 <div id="quiz-countdown" class="quiz-countdown hide-if-js" data-value="100">
 	<div class="countdown"><span><?php echo $quiz->get_duration_html(); ?></span></div>

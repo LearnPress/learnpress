@@ -489,6 +489,18 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_progress' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_content_item_summary_quiz_countdown' ) ) {
+
+	function learn_press_content_item_summary_quiz_countdown() {
+		$quiz = LP_Global::course_item_quiz();
+
+		if ( $question = $quiz->get_viewing_question() ) {
+			learn_press_get_template( 'content-quiz/countdown.php' );
+		}
+	}
+}
+
+
 if ( ! function_exists( 'learn_press_content_item_summary_question_content' ) ) {
 
 	function learn_press_content_item_summary_question_content() {

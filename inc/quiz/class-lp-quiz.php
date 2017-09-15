@@ -73,6 +73,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 	public static function log( $data ) {
 		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
 		return $data;
 	}
 
@@ -582,17 +583,18 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 * Get index number of a question.
 	 *
 	 * @param int $id
+	 * @param int $start
 	 *
 	 * @return bool|mixed
 	 */
-	public function get_question_index( $id ) {
+	public function get_question_index( $id, $start = 0 ) {
 		$index = false;
 		if ( ( $questions = $this->get_questions() ) ) {
 			$questions = array_values( $questions );
 			$index     = array_search( $id, $questions );
 		}
 
-		return apply_filters( 'learn-press/quiz/question-index', $index, $this->get_id() );
+		return apply_filters( 'learn-press/quiz/question-index', intval( $start ) + $index, $this->get_id() );
 	}
 
 	/**
