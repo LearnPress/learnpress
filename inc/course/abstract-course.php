@@ -312,11 +312,42 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		if ( ! $this->get_id() ) {
 			return false;
 		}
-		$curriculum = array();
-		if ( $sections = wp_cache_get( 'course-' . $this->get_id(), 'lp-course-sections' ) ) {
-			foreach ( $sections as $k => $section ) {
-				$curriculum[ $section->section_id ] = new LP_Course_Section( $section );
+		if ( false === ( $curriculum = wp_cache_get( 'course-' . $this->get_id(), 'lp-course-curriculum-sections' ) ) ) {
+			if ( $sections = wp_cache_get( 'course-' . $this->get_id(), 'lp-course-sections' ) ) {
+				foreach ( $sections as $k => $section ) {
+					$curriculum[ $section->section_id ] = new LP_Course_Section( $section );
+				}
+				// Update post meta
+				if ( $items = $this->get_items() ) {
+					update_meta_cache( 'post', $items );
+
+					global $wpdb;
+					$query = $wpdb->prepare( "
+						SELECT t.term_id, REPLACE(slug, 'post-format-', '') as format, object_id
+						FROM wp_terms AS t 
+						INNER JOIN wp_term_taxonomy AS tt
+						ON t.term_id = tt.term_id
+						INNER JOIN wp_term_relationships AS tr
+						ON tr.term_taxonomy_id = tt.term_taxonomy_id
+						WHERE tt.taxonomy IN (%s)
+						AND tr.object_id IN (" . join( ',', $items ) . ")
+						ORDER BY t.name ASC
+					", 'post_format' );
+					if ( $terms = $wpdb->get_results( $query ) ) {
+						$fetched = array();
+						foreach ( $terms as $term ) {
+							wp_cache_set( 'item-format-' . $term->object_id, $term->format, 'lp-item-formats' );
+							$fetched[] = $term->object_id;
+						}
+
+						$items = array_diff( $items, $fetched );
+					}
+					foreach ( $items as $item_id ) {
+						wp_cache_set( 'item-format-' . $item_id, '', 'lp-item-formats' );
+					}
+				}
 			}
+			wp_cache_set( 'course-' . $this->get_id(), $curriculum, 'lp-course-curriculum-sections' );
 		}
 		$return = false;
 		if ( $section_id ) {
@@ -841,43 +872,16 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn_press_get_course_items', $items, $this );
 	}
 
-	public function is_viewing( $content = '' ) {
-
-		$item_type = ! empty( $_REQUEST['course-item'] ) ? $_REQUEST['course-item'] : '';
-		$viewing   = apply_filters( 'learn_press_course_is_viewing', $item_type ? $item_type : 'course' );
-		if ( $content ) {
-			return $content == $viewing;
-		}
-
-		return $viewing;
-	}
-
 	public function is_viewing_item( $item_id = false ) {
-		$item   = LP()->global['course-item'];//$this->get_request_item();
-		$return = false;
-		if ( $item ) {
-			if ( $item_id ) {
-				$return = $item_id == $item->ID;
-			} else {
-				$return = $item->ID;
-			}
+		if ( false === ( $item = LP_Global::course_item() ) ) {
+			return false;
 		}
 
-		return apply_filters( 'learn_press_viewing_course_item', $return, $item_id, $this->get_id() );
+		return apply_filters( 'learn-press/is-viewing-item', $item_id == $item->get_id(), $item_id, $this->get_id() );
 	}
 
 	public function is_current_item( $item_id ) {
-		/*$item_type = !empty( $_REQUEST['course-item'] ) ? $_REQUEST['course-item'] : '';
-		$view_id   = 0;
-		if ( $item_type ) {
-			if ( !empty( $_REQUEST[$item_type . '_id'] ) ) {
-				$view_id = $_REQUEST[$item_type . '_id'];
-			}
-		}*/
-		$current_item = $this->current_item;
-		$view_id      = $current_item ? $current_item->ID : 0;
-
-		return apply_filters( 'learn_press_is_current_course_item', $view_id == $item_id, $item_id, $view_id, $this->get_id() );
+		return $this->is_viewing_item( $item_id );
 	}
 
 	/**
@@ -1019,7 +1023,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * Get course's item (less/quiz/etc...).
+	 * Get course's item (lesson/quiz/etc...).
 	 *
 	 * @param int $item_id
 	 *
@@ -1627,31 +1631,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return mixed
 	 */
 	public function output_args( $args = null ) {
-		$args   = wp_parse_args( $args, array( 'echo' => true, 'user_id' => get_current_user_id() ) );
-		$output = false;
-		if ( $user = learn_press_get_user( $args['user_id'] ) ) {
-			$course_info  = (array)$user->get_course_info( $this->get_id() );
-			$course_grade = $user->get_course_grade( $this->get_id() );
-			if ( array_key_exists( 'items', $course_info ) ) {
-				unset( $course_info['items'] );
-			}
-			$output = array(
-				'root_url'     => trailingslashit( get_site_url() ),
-				'id'           => $this->get_id(),
-				'url'          => $this->get_permalink(),
-				'results'      => $this->evaluate_course_results( $user->get_id() ),
-				// $this->get_course_info( $args['user_id'] ),
-				'grade'        => $course_grade,
-				'grade_html'   => learn_press_course_grade_html( $course_grade, false ),
-				'current_item' => $this->is_viewing_item(),
-				'items'        => $this->get_items_params()
-			);
-
-			$output = apply_filters( 'learn_press_single_course_params', $output, $this->get_id() );
-			LP_Assets::add_var( 'LP_Course_Params', wp_json_encode( $output ), 'learn-press-single-course' );
-		}
-
-		return $output;
+		return array();
 	}
 
 	/**

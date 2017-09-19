@@ -330,7 +330,9 @@ class LP_Quiz_Factory {
 		), 10, 2 );
 		echo '<script type="text/ng-template" id="tmpl-quiz-question">';
 
-		$none = new LP_Question_None();
+		$none = new LP_Question();
+
+
 
 		$none->admin_interface();
 		/*

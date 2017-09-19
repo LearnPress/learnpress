@@ -232,7 +232,7 @@ class LP_Question_Factory {
 	 */
 	public static function admin_template() {
 		foreach ( self::get_types() as $type => $name ) {
-			$class = self::get_class_name_from_question_type( $type );
+			$class = LP_Question::get_class_name_from_question_type( $type );
 			if ( ! class_exists( $class ) ) {
 				continue;
 			}

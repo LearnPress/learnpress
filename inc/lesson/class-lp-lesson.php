@@ -66,7 +66,7 @@ class LP_Lesson extends LP_Course_Item {
 	 * @param bool  $the_lesson
 	 * @param array $args
 	 *
-	 * @return LP_Course|bool
+	 * @return LP_Lesson|bool
 	 */
 	public static function get_lesson( $the_lesson = false, $args = array() ) {
 		$the_lesson = self::get_lesson_object( $the_lesson );

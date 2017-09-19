@@ -19,11 +19,12 @@ $user      = LP_Global::user();
 $quiz_data = $user->get_quiz_data( $quiz->get_id() );
 $result    = $quiz_data->get_result();
 $percent   = $quiz_data->get_questions_answered( true );
+//learn_press_debug($quiz_data);
 ?>
 <div class="quiz-progress">
     <div class="quiz-point-achieved">
         <i class="fa fa-trophy"></i>
-        <div class="progress-number"><?php echo $quiz_data->get_mark(); ?></div>
+        <div class="progress-number" @click="clickX"><?php echo $quiz_data->get_mark(); ?></div>
     </div>
     <div class="quiz-current-question">
         <i class="fa fa-question"></i>
@@ -32,12 +33,13 @@ $percent   = $quiz_data->get_questions_answered( true );
     <div class="quiz-countdown">
         <i class="fa fa-hourglass-start"></i>
         <div class="progress-number">
+            <strong>{{totalTime}}</strong>
 			<?php
-			if($duration = $quiz_data->get_time_remaining()) {
+			if ( $duration = $quiz_data->get_time_remaining() ) {
 				echo $duration->to_timer();
-			}else{
-			    echo '--:--';
-            }
+			} else {
+				echo '--:--';
+			}
 			?>
         </div>
     </div>

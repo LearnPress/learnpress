@@ -50,7 +50,8 @@ class LP_Assets extends LP_Abstract_Assets {
 			'profile-user' => array(
 				'processing'  => __( 'Processing', 'learnpress' ),
 				'redirecting' => __( 'Redirecting', 'learnpress' )
-			)
+			),
+			'course'       => learn_press_single_course_args()
 		);
 	}
 
@@ -98,6 +99,12 @@ class LP_Assets extends LP_Abstract_Assets {
 						'plupload',
 						'jquery-ui-slider',
 						'jquery-ui-draggable'
+					)
+				),
+				'jquery-scrollto'  => array(
+					'url'  => self::url( 'js/vendor/jquery.scrollTo.js' ),
+					'deps' => array(
+						'jquery'
 					)
 				)
 			)

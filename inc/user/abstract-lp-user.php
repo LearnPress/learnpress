@@ -913,7 +913,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$result = false;
 		if ( $course_result = $this->get_course_data( $course_id ) ) {
 
-			print_r( get_class( $course_result ) );
 			$result = $course_result->get_item( $quiz_id );
 		}
 
@@ -1484,7 +1483,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
-			} elseif ( $lesson->is( 'previewable' ) || $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+			} elseif ( $lesson->is_preview() || $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
 				$view = 'preview';
 			} elseif ( ! $course->is( 'required_enroll' ) ) {
 				// if course is not required enroll so the lesson is previewable

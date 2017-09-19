@@ -100,6 +100,18 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_continue_button() {
+		$user = LP_Global::user();
+
+		if ( false === ( $course_data = $user->get_course_data( get_the_ID() ) ) ) {
+			return;
+		}
+
+		$result = $course_data->get_results();
+
+		if ( $result['status'] !== 'enrolled' ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/buttons/continue.php' );
 	}
 }
@@ -763,7 +775,10 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 
 if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 	function learn_press_control_displaying_course_item() {
-		add_action( 'learn-press/content-learning-summary', 'learn_press_course_curriculum_tab', 10 );
+		global $wp_filter;
+
+
+		//add_action( 'learn-press/content-learning-summary', 'learn_press_course_curriculum_tab', 10 );
 		add_action( 'learn-press/content-learning-summary', 'learn_press_single_course_content_item', 20 );
 
 		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
@@ -795,10 +810,30 @@ if ( ! function_exists( 'learn_press_wrapper_end' ) ) {
 
 if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 	function learn_press_single_course_args() {
-//		$course = learn_press_get_course();
-//		if ( $course && $course->get_id() ) {
-//			$course->output_args();
-//		}
+		$output = array();
+		if ( ( $course = LP_Global::course() ) && $course->get_id() ) {
+			$user = LP_Global::user();
+			$item  =LP_Global::course_item();
+//				$course_info  = (array) $user->get_course_info( $this->get_id() );
+//				$course_grade = $user->get_course_grade( $this->get_id() );
+//				if ( array_key_exists( 'items', $course_info ) ) {
+//					unset( $course_info['items'] );
+//				}
+
+			$course_data = $user->get_course_data( $course->get_id() );
+			$output      = array(
+				'root_url'     => trailingslashit( get_site_url() ),
+				'id'           => $course->get_id(),
+				'url'          => $course->get_permalink(),
+				'result'       => $course_data ? $course_data->get_results() : false,
+				'current_item' => $item?$item->get_id() : false,
+				'items'        => $course->get_items_params()
+			);
+
+		}
+		$output = apply_filters( 'learn-press/course/single-params', $output, get_the_ID() );
+
+		return $output;
 	}
 }
 
@@ -1000,7 +1035,7 @@ if ( ! function_exists( 'learn_press_course_curriculum' ) ) {
 	 * Display course curriculum
 	 */
 	function learn_press_course_curriculum() {
-		learn_press_get_template( 'single-course/curriculum.php' );
+		///learn_press_get_template( 'single-course/curriculum.php' );
 	}
 }
 
@@ -1426,7 +1461,7 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 			}
 		}
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		if ( $lesson && $lesson->is_previewable() ) {
+		if ( $lesson && $lesson->is_preview() ) {
 			$classes[] = 'preview-item';
 		}
 
@@ -2254,5 +2289,33 @@ function learn_press_check_access_lesson() {
 function learn_press_fontend_js_template() {
 	learn_press_get_template( 'global/js-template.php' );
 }
+
+//function learn_press_course_item_class( $defaults, $this->get_item_type(), $this->get_id()){
+//	if ( $course = learn_press_get_course( $course_id ) ) {
+//		if ( $this->is_preview() ) {
+//			$status_classes[] = 'item-preview';
+//		} elseif ( $course->is_free() && ! $course->is_require_enrollment() ) {
+//			$status_classes[] = 'item-free';
+//		}
+//	}
+//
+//	if ( $user = learn_press_get_user( $user_id, ! $user_id ) ) {
+//		$item_status = $user->get_item_status( $this->get_id(), $course_id );
+//		$item_grade  = $user->get_item_grade( $this->get_id(), $course_id );
+//
+//		if ( $item_status ) {
+//			$status_classes[] = 'course-item-status';
+//			///$status_classes[] = 'has-status';
+//			$status_classes[] = 'item-' . $item_status;
+//		}
+//		switch ( $item_status ) {
+//			case 'started':
+//				break;
+//			case 'completed':
+//				$status_classes[] = $item_grade;
+//		}
+//	}
+//}
+//add_action('learn-press/course-item-class', 'learn_press_course_item_class');
 
 add_action( 'wp_footer', 'learn_press_fontend_js_template' );

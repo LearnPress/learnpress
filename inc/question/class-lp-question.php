@@ -805,7 +805,7 @@ class LP_Question extends LP_Course_Item {
 	public static function admin_js_template( $args = '' ) {
 		$args          = wp_parse_args( $args, array( 'echo' => true ) );
 		$type          = ! empty( $args['type'] ) ? $args['type'] : 'single_choice';
-		$fake_class    = LP_Question_Factory::get_class_name_from_question_type( $type );
+		$fake_class    = self::get_class_name_from_question_type( $type );
 		$fake_question = new $fake_class( 0, $type );
 		if ( ! $fake_question->is_support( 'add-answer-option' ) ) {
 			return '';
@@ -956,7 +956,7 @@ class LP_Question extends LP_Course_Item {
 	 *
 	 * @return string|false
 	 */
-	private static function get_class_name_from_question_type( $question_type ) {
+	public static function get_class_name_from_question_type( $question_type ) {
 		return ! $question_type ? __CLASS__ : 'LP_Question_' . implode( '_', array_map( 'ucfirst', explode( '-', $question_type ) ) );
 	}
 

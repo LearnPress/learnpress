@@ -69,8 +69,15 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		return get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_title() {
 		return apply_filters( 'learn-press/course-item-title', parent::get_title(), $this->get_id() );
+	}
+
+	public function get_format() {
+		return ( false !== ( $format = wp_cache_get( 'item-format-' . $this->get_id(), 'lp-item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
 	}
 
 	/**
@@ -94,11 +101,16 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	 * Get class of item.
 	 *
 	 * @param string $more
+	 * @param int    $user_id
 	 *
 	 * @return array
 	 */
-	public function get_class( $more = '' ) {
+	public function get_class( $more = '', $user_id = 0 ) {
 		global $lp_course_item;
+
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
 
 		$defaults = array(
 			'course-item',
@@ -106,6 +118,10 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 			'course-item-' . $this->get_id(),
 			get_class( $this )
 		);
+
+		if ( 'standard' !== ( $post_format = $this->get_format() ) ) {
+			$defaults[] = 'course-item-type-' . $post_format;
+		}
 
 		if ( $lp_course_item && $lp_course_item->get_id() == $this->get_id() ) {
 			$defaults[] = 'current';
@@ -117,7 +133,48 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 			$defaults[] = $more;
 		}
 
-		$classes = apply_filters( 'learn-press/course-item-class', $defaults, $this->get_item_type(), $this->get_id() );
+		$course_id = 0;
+		$enrolled  = false;
+		if ( $this->is_preview() ) {
+			$defaults[] = 'item-preview';
+		} else {
+			if ( $course = $this->get_course() ) {
+				$course_id = $course->get_id();
+				if ( $course->is_free() && ! $course->is_require_enrollment() ) {
+					$defaults[] = 'item-free';
+				} else {
+					if ( $user = learn_press_get_user( $user_id, ! $user_id ) ) {
+						if ( $enrolled = $user->has_enrolled_course( $course_id ) ) {
+							$item_status = $user->get_item_status( $this->get_id(), $course_id );
+							$item_grade  = $user->get_item_grade( $this->get_id(), $course_id );
+
+							if ( $item_status ) {
+								$defaults[] = 'has-status';
+								///$status_classes[] = 'has-status';
+								$defaults[] = 'status-' . $item_status;
+							}
+							switch ( $item_status ) {
+								case 'started':
+									break;
+								case 'completed':
+									$status_classes[] = $item_grade;
+							}
+						}
+					}
+					if ( ! $enrolled ) {
+						$defaults[] = 'item-locked';
+					}
+				}
+			} else {
+				$defaults[] = 'item-locked';
+			}
+		}
+
+		if ( ! $enrolled ) {
+
+		}
+
+		$classes = apply_filters( 'learn-press/course-item-class', $defaults, $this->get_item_type(), $this->get_id(), $course_id );
 
 		// Filter unwanted values
 		$classes = is_array( $classes ) ? $classes : explode( ' ', $classes );
@@ -202,7 +259,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 			if ( learn_press_is_support_course_item_type( $item_type ) ) {
 				$type = str_replace( 'lp_', '', $item_type );
 
-				$class = apply_filters( 'learn-press/course-item-class', false, $type, $item_type, $item_id );
+				$class = apply_filters( 'learn-press/course-item-object-class', false, $type, $item_type, $item_id );
 
 				if ( is_string( $class ) && class_exists( $class ) ) {
 					$item = new $class( $post->ID, $post );
@@ -318,15 +375,22 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 
 	public function get_status_classes( $user_id = 0, $course_id = 0 ) {
 		$status_classes = array();
-
+		if ( $course = learn_press_get_course( $course_id ) ) {
+			if ( $this->is_preview() ) {
+				$status_classes[] = 'item-preview';
+			} elseif ( $course->is_free() && ! $course->is_require_enrollment() ) {
+				$status_classes[] = 'item-free';
+			}
+		}
 
 		if ( $user = learn_press_get_user( $user_id, ! $user_id ) ) {
 			$item_status = $user->get_item_status( $this->get_id(), $course_id );
 			$item_grade  = $user->get_item_grade( $this->get_id(), $course_id );
 
 			if ( $item_status ) {
-				$status_classes   = array( 'fa course-item-status' );
-				$status_classes[] = 'has-status item-' . $item_status;
+				$status_classes[] = 'course-item-status';
+				///$status_classes[] = 'has-status';
+				$status_classes[] = 'item-' . $item_status;
 			}
 			switch ( $item_status ) {
 				case 'started':

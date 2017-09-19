@@ -1,5 +1,5 @@
-<?php
-?>dfgfdg
+<?php return;?>
+
 <div id="content-item-nav">
     <div class="content-item-nav-wrap">
         <form>

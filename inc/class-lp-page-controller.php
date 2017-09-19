@@ -102,7 +102,7 @@ class LP_Page_Controller {
 	}
 
 	public function template_content_item( $template ) {
-		global $lp_course, $lp_course_item, $wp_filter, $lp_user;
+		global $lp_course, $lp_course_item, $lp_user;
 		if ( $lp_course_item ) {
 
 			if ( ! $lp_user->can_view_item( $lp_course_item->get_id() ) ) {

@@ -16,28 +16,26 @@ $user_item      = $user_course[ $quiz->get_id() ];
 $have_questions = $quiz->get_questions();
 $can_view_item  = $user->can( 'view-item', $quiz->get_id(), $course->get_id() );
 ?>
+    <div id="content-item-quiz" class="content-item-summary">
+		<?php
+		/**
+		 * @see learn_press_content_item_summary_title()
+		 * @see learn_press_content_item_summary_content()
+		 */
+		do_action( 'learn-press/before-content-item-summary/' . $quiz->get_item_type() );
 
-<div class="content-item-summary">
-	<?php
-	/**
-	 * @see learn_press_content_item_summary_title()
-	 * @see learn_press_content_item_summary_content()
-	 */
-	do_action( 'learn-press/before-content-item-summary/' . $quiz->get_item_type() );
+		/**
+		 * @see learn_press_content_item_summary_question()
+		 */
+		do_action( 'learn-press/content-item-summary/' . $quiz->get_item_type() );
 
-	/**
-	 * @see learn_press_content_item_summary_question()
-	 */
-	do_action( 'learn-press/content-item-summary/' . $quiz->get_item_type() );
+		/**
+		 * @see learn_press_content_item_summary_question_numbers()
+		 */
+		do_action( 'learn-press/after-content-item-summary/' . $quiz->get_item_type() );
 
-	/**
-	 * @see learn_press_content_item_summary_question_numbers()
-	 */
-	do_action( 'learn-press/after-content-item-summary/' . $quiz->get_item_type() );
-
-	?>
-</div>
-
+		?>
+    </div>
 <?php
 
 ///////////////////////////

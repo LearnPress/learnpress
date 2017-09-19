@@ -141,67 +141,111 @@
                     white-space: nowrap;
                     padding: 10px 0;
                     text-align: right;
-                    .count-questions {
-                        background: #DDD;
+                    .item-meta {
                         height: 20px;
                         line-height: 20px;
                         text-align: center;
-                        font-size: 10px;
                         display: inline-block;
-                        border-radius: 3px;
                         vertical-align: middle;
-                        padding: 0 5px;
                     }
+                    .count-questions {
+                        background: #DDD;
+                        border-radius: 3px;
+                        padding: 0 5px;
+                        font-size: 10px;
+                    }
+
                     .course-item-status {
                         width: 20px;
-                        height: 20px;
-                        display: inline-block;
-                        border: 2px solid transparent;
-                        text-align: center;
+                        __border: 2px solid transparent;
                         color: #DDD;
                         margin-left: 5px;
-                        vertical-align: middle;
+                        font-family: fontawesome;
                         @include border-radius(50%);
                         @include box-sizing(border-box);
-                        &.has-status {
-                            border-color: #DDD;
-                            padding-top: 1px;
-                            font-family: fontawesome;
-                            &.item-started {
-                                &:before {
-                                    content: "\f141";
-                                }
-                            }
-                            &.item-completed {
-                                border-color: #00adff;
-                                color: #00adff;
-                                &:before {
-                                    content: "\f00c";
-                                }
-                            }
-                            &.passed {
-                                border-color: #00adff;
-                                color: #00adff;
-                            }
-                            &.item-failed {
-                                border-color: #FF0000;
-                                color: #FF0000;
-                                &:before {
-                                    content: "\f00d";
-                                }
-                            }
+                        &:before {
+                            vertical-align: middle;
                         }
                     }
                 }
 
                 &.course-item-lp_quiz {
+                    &.status-started {
+                        .course-item-status {
+                            &:before {
+                                content: "\f251";
+                            }
+                        }
+                    }
                     & > a:before {
                         content: "\f017";
                     }
                 }
                 &.course-item-lp_lesson {
-                    & > a:before {
-                        content: "\f0f6";
+                    & > a {
+                        &:before {
+                            content: "\f0f6";
+                        }
+                    }
+                    &.course-item-type-video {
+                        > a {
+                            &:before {
+                                content: "\f03d";
+                            }
+                        }
+                    }
+                    &.course-item-type-audio {
+                        > a {
+                            &:before {
+                                content: "\f027";
+                            }
+                        }
+                    }
+                }
+                &.item-preview {
+                    .course-item-status {
+                        &:before {
+                            content: "\f09c";
+                            color: #00adff;
+                        }
+                    }
+                }
+                &.item-locked {
+                    .course-item-status {
+                        &:before {
+                            content: "\f023";
+                            color: #ab6060;
+                        }
+                    }
+                }
+
+                &.has-status {
+                    border-color: #DDD;
+                    padding-top: 1px;
+                    &.status-started {
+                        &:before {
+                            content: "\f141";
+                        }
+                    }
+                    &.status-completed {
+                        .course-item-status {
+                            border-color: #00adff;
+                            color: #00adff;
+                            &:before {
+                                content: "\f00c";
+                            }
+                        }
+                    }
+                    &.passed {
+                        border-color: #00adff;
+                        color: #00adff;
+                    }
+                    &.item-failed {
+                        border-color: #FF0000;
+                        color: #FF0000;
+                        &:before {
+                            content: "\f00d";
+                        }
                     }
                 }
 

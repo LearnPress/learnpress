@@ -9,6 +9,11 @@
 
 defined( 'ABSPATH' ) or die;
 $item     = LP_Global::course_item();
+
+if($item->is_preview()){
+    return;
+}
+
 $course   = LP_Global::course();
 $user     = LP_Global::user();
 $security = $item->create_nonce( 'complete' );

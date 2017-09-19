@@ -71,6 +71,6 @@ if ( $items = $section->get_items() ) { ?>
     </ul>
 <?php } else { ?>
 
-    <?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) ); ?>
 
 <?php } ?>

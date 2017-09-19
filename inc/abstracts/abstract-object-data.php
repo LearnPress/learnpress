@@ -96,7 +96,7 @@ abstract class LP_Abstract_Object_Data {
 	 * @return int
 	 */
 	public function get_id() {
-		return $this->_id;
+		return absint( $this->_id );
 	}
 
 	/**
