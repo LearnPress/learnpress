@@ -18,10 +18,10 @@ $position  = 0;
 		if ( $quiz_data->is_answered_true( $question_id ) ) {
 			$class[] = 'answered';
 			$class[] = 'answered-true';
-		}elseif($quiz_data->is_answered( $question_id )){
+		} elseif ( $quiz_data->is_answered( $question_id ) ) {
 			$class[] = 'answered';
 			$class[] = 'answered-wrong';
-        }
+		}
 		?>
         <li class="<?php echo join( ' ', $class ); ?>">
             <a href="<?php echo $quiz->get_question_link( $question_id ); ?>">
@@ -30,12 +30,3 @@ $position  = 0;
         </li>
 	<?php } ?>
 </ul>
-<?php return;?>
-<div id="content-item-nav">
-    <div class="content-item-nav-wrap">
-        <form>
-            <a href="<?php echo $course->get_next_item(); ?>">Prev</a>
-            <button>Next</button>
-        </form>
-    </div>
-</div>

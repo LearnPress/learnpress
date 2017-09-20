@@ -296,10 +296,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			LP_Emails::instance();
 
-			if ( get_option( 'learn_press_install' ) == 'yes' ) {
-				flush_rewrite_rules();
-				delete_option( 'learn_press_install' );
-			}
+//			if ( get_option( 'learn_press_install' ) == 'yes' ) {
+//				flush_rewrite_rules();
+//				delete_option( 'learn_press_install' );
+//			}
 		}
 
 		/**

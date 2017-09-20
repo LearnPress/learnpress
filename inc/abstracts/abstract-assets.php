@@ -253,14 +253,32 @@ abstract class LP_Abstract_Assets {
 			return;
 		}
 		global $wp_scripts;
+
 		foreach ( $scripts_data as $handle => $data ) {
 			if ( ! empty( $this->_script_data[ $handle ] ) ) {
 				$data = array_merge( $data, $this->_script_data[ $handle ] );
 			}
+
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
+
+			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
+				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
+					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
+						print_r( $data );
+
+						$data = preg_replace_callback( '~:"[0-9.,]+"~', array( $this, '_valid_json_number' ), $data );
+
+						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
+					}
+				}
+			}
 			$wp_scripts->print_extra_script( $handle );
 		}
 
+	}
+
+	protected function _valid_json_number( $m ) {
+		return str_replace( array( ':"', '"' ), array(':', ''), $m[0] );
 	}
 
 	protected function _get_script_data() {

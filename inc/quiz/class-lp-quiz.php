@@ -37,7 +37,12 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		'retake_count'       => 0,
 		'show_result'        => 'no',
 		'passing_grade_type' => '',
-		'passing_grade'      => 0
+		'passing_grade'      => 0,
+		'show_check_answer'  => 'no',
+		'count_check_answer' => 0,
+		'show_hint'          => 'no',
+		'count_hint'         => 0,
+		'archive_history'    => 'no'
 	);
 
 	protected static $_loaded = 0;
@@ -674,6 +679,111 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		global $lp_quiz_question;
 
 		return $lp_quiz_question;
+	}
+
+	public function set_show_check_answer( $value ) {
+		$this->_set_data( 'show_check_answer', $value );
+	}
+
+	public function get_show_check_answer() {
+		return $this->get_data( 'show_check_answer' );
+	}
+
+	public function set_count_check_answer( $count ) {
+		$this->_set_data( 'count_check_answer', $count );
+	}
+
+	public function get_check_answer_count() {
+		return intval( $this->get_data( 'check_answer_count' ) );
+	}
+
+	/**
+	 * Return true if check answer is enabled.
+	 *
+	 * @return bool
+	 */
+	public function can_check_answer() {
+		$value = $this->get_data( 'show_check_answer' );
+		if ( ! is_numeric( $value ) ) {
+			$can = $value === 'yes';
+		} else {
+			$value = intval( $value );
+			if ( $value == 0 ) {
+				$can = false;
+			} elseif ( $value < 0 ) {
+				$can = true;
+			} else {
+				$checked = $this->get_check_answer_count();
+				$can     = $value - $checked;
+			}
+		}
+
+		return apply_filters( 'learn-press/quiz/enable-check-answer', $can, $this->get_id() );
+	}
+
+	public function set_show_hint( $value ) {
+		$this->_set_data( 'show_hint', $value );
+	}
+
+	public function get_show_hint() {
+		return intval( $this->get_data( 'show_hint' ) );
+	}
+
+	/**
+	 * @param $count
+	 */
+	public function set_count_hint( $count ) {
+		$this->_set_data( 'count_hint', $count );
+	}
+
+	public function get_count_hint() {
+		return intval( $this->get_data( 'count_hint' ) );
+	}
+
+	/**
+	 * Return true if check answer is enabled.
+	 *
+	 * @return bool
+	 */
+	public function can_hint_answer() {
+		$value = $this->get_data( 'show_hint' );
+		if ( ! is_numeric( $value ) ) {
+			$can = $value === 'yes';
+		} else {
+			$value = intval( $value );
+			if ( $value == 0 ) {
+				$can = false;
+			} elseif ( $value < 0 ) {
+				$can = true;
+			} else {
+				$checked = $this->get_count_hint();
+				$can     = $value - $checked;
+			}
+		}
+
+		return apply_filters( 'learn-press/quiz/enable-hint-answer', $can, $this->get_id() );
+	}
+
+	/**
+	 * Return true if hint answer is enabled.
+	 *
+	 * @return bool
+	 */
+	public function enable_show_hint() {
+		return apply_filters( 'learn-press/quiz/enable-show-hint', $this->get_data( 'show_hint' ) == 'yes', $this->get_id() );
+	}
+
+	public function set_archive_history( $value ) {
+		$this->_set_data( 'archive_history', $value );
+	}
+
+	/**
+	 * Return true if archive history is enabled.
+	 *
+	 * @return bool
+	 */
+	public function enable_archive_history() {
+		return apply_filters( 'learn-press/quiz/enable-archive-history', $this->get_data( 'archive_history' ) == 'yes', $this->get_id() );
 	}
 
 	public function offsetSet( $offset, $value ) {

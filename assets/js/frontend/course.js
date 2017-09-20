@@ -72,7 +72,10 @@
         var mutations = {
             'next': function (state, status) {
                 state.heartbeat = !!status;
-            }
+            },
+            checkQuestion: function (event) {
+                event.preventDefault();
+            },
         };
 
         var actions = {
@@ -107,11 +110,23 @@
                 }
             },
             methods: {
-                completeItem: function(){
+                completeItem: function () {
 
                 },
                 startCountdown: function () {
                     console.log($store.getters['totalTime'])
+                },
+                checkQuestion: function (event) {
+                    event.preventDefault();
+                    var $form = $(event.target).is('form') ? $(event.target) : $(event.target.form);
+
+                    console.log($form.serializeJSON())
+                },
+                showHint: function (event) {
+                    event.preventDefault();
+                    var $form = $(event.target).is('form') ? $(event.target) : $(event.target.form);
+
+                    console.log($form.serializeJSON())
                 }
             }
         });
@@ -132,6 +147,7 @@
             methods: {
                 startCountdown: function () {
                 }
+
             }
         });
 
@@ -149,6 +165,7 @@
                 }
             },
             methods: {
+
                 showItem: function (event) {
                     console.log(event.target);
                     return false;
@@ -181,6 +198,9 @@
                     var $form = this._prepareForm(event);
                     $form.submit();
                     return false;
+                },
+                checkQuestion: function (event) {
+                    event.preventDefault();
                 },
                 _prepareForm: function (event) {
                     var data = $('.answer-options').serializeJSON(),

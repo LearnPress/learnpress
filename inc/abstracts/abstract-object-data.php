@@ -229,7 +229,9 @@ abstract class LP_Abstract_Object_Data {
 		$errors = array_keys( $data );
 		foreach ( $data as $prop => $value ) {
 			$setter = "set_$prop";
-			if ( ! is_null( $value ) && is_callable( array( $this, $setter ) ) ) {
+			if ( /*! is_null( $value ) && */
+			is_callable( array( $this, $setter ) )
+			) {
 				$reflection = new ReflectionMethod( $this, $setter );
 
 				if ( $reflection->isPublic() ) {
@@ -242,7 +244,7 @@ abstract class LP_Abstract_Object_Data {
 		// If there is at least one method failed
 		if ( $errors ) {
 			$errors = array_map( array( $this, 'prefix_set_method' ), $errors );
-			throw new Exception( sprintf( __( 'The following these function do not exists %s', 'learnpress' ), join( ',', $errors ) ) );
+			throw new Exception( sprintf( __( 'The following these functions %s do not exists in %s', 'learnpress' ), join( ',', $errors ), get_class( $this ) ) );
 		}
 	}
 

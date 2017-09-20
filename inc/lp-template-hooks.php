@@ -206,6 +206,8 @@ add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_ite
  */
 add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_buttons', 10 );
 add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_numbers', 15 );
+add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_questions', 25 );
+
 
 /**
  * @see learn_press_quiz_nav_buttons()
@@ -213,12 +215,16 @@ add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_conte
  * @see learn_press_quiz_continue_button()
  * @see learn_press_quiz_complete_button()
  * @see learn_press_quiz_redo_button()
+ * @see learn_press_quiz_check_button()
+ * @see learn_press_quiz_hint_button()
  */
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_nav_buttons', 10 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_start_button', 15 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_continue_button', 20 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_complete_button', 25 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 30 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_check_button', 30 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_hint_button', 30 );
 
 add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item' );
 
@@ -228,6 +234,11 @@ add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_cou
  * @see learn_press_single_course_args()
  */
 add_action('learn-press/after-single-course', 'learn_press_single_course_args');
+
+/**
+ * @see learn_press_single_document_title_parts()
+ */
+add_filter('document_title_parts', 'learn_press_single_document_title_parts');
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */
 //add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );

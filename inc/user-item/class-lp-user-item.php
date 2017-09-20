@@ -5,11 +5,12 @@
  * @since 3.x.x
  */
 class LP_User_Item extends LP_Abstract_Object_Data {
-	protected static $_loaded =0;
+	protected static $_loaded = 0;
+
 	/**
 	 * LP_User_Item constructor.
 	 *
-	 * @param array $item. A record fetched from table _learnpress_user_items
+	 * @param array $item . A record fetched from table _learnpress_user_items
 	 */
 	public function __construct( $item ) {
 		settype( $item, 'array' );
@@ -59,7 +60,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * Get start-time.
 	 */
 	public function get_start_time() {
-		return new LP_Datetime( $this->get_data( 'start_time' ));
+		return new LP_Datetime( $this->get_data( 'start_time' ) );
 	}
 
 	/**
@@ -75,7 +76,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * Get end-time.
 	 */
 	public function get_end_time() {
-		return new LP_Datetime( $this->get_data( 'end_time' ));
+		return new LP_Datetime( $this->get_data( 'end_time' ) );
 	}
 
 	/**
@@ -102,18 +103,33 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return int
 	 */
 	public function get_user_id() {
-		return $this->get_data( 'user_id' );
+		return $this->get_user( 'id' );
+	}
+
+	/**
+	 * @param string $return
+	 *
+	 * @return LP_User|int
+	 */
+	public function get_user( $return = '' ) {
+		if ( $uid = $this->get_data( 'user_id' ) ) {
+			if ( $return == '' ) {
+				return learn_press_get_user( $uid );
+			}
+		}
+
+		return $uid;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function get_user_item_id(){
-		return $this->get_data('user_item_id');
+	public function get_user_item_id() {
+		return $this->get_data( 'user_item_id' );
 	}
 
-	public function get_item_id(){
-		return $this->get_data('item_id');
+	public function get_item_id() {
+		return $this->get_data( 'item_id' );
 	}
 
 }

@@ -2,26 +2,42 @@
 add_action( 'initx', function () {
 
 	global $wpdb;
+	$question_id = $wpdb->get_col( "
+		SELECT question_id FROM {$wpdb->learnpress_quiz_questions}
+		WHERE quiz_id = 20;
+	" );
+	$types       = array( 'true_or_false', 'single_choice', 'multi_choice' );
+	foreach ( $question_id as $id ) {
+		$wpdb->query( "
+			update wp_postmeta set meta_value = '" . $types[ rand( 0, 2 ) ] . "'
+			where meta_key = '_lp_type'
+			And post_id=" . $id . "
+		" );
+	}
 	$answers = $wpdb->get_results( "
 		select *
-		from wp_learnpress_question_answers
+		from wp_learnpress_question_answers 
 		where question_id = 26
 	" );
-	$i = 0;
-	foreach ( $answers as $answer ) {
-		$answer_data = unserialize( $answer->answer_data );
-		$answer_data['text'] = 'Option #' . $i++;
-		if($i===1){
-			$answer_data['is_true'] = 'yes';
-		}else{
-			$answer_data['is_true'] = 'no';
+	learn_press_debug( $answers );
+	die();
+	foreach ( $question_id as $id ) {
+		$i = 0;
+		foreach ( $answers as $answer ) {
+			$answer_data         = unserialize( $answer->answer_data );
+			$answer_data['text'] = 'Option #' . $i ++;
+			if ( $i === 1 ) {
+				$answer_data['is_true'] = 'yes';
+			} else {
+				$answer_data['is_true'] = 'no';
+			}
+			$answer_data['value'] = md5( microtime() );
+
+
+			$wpdb->query( "insert into wp_learnpress_question_answers ( question_id, answer_data, answer_order) values(" . $id . ",'" . serialize( $answer_data ) . "'," . $i . ")" );
 		}
-		$answer_data['value'] = md5(microtime());
-
-
-		$wpdb->query("update wp_learnpress_question_answers set answer_data='".serialize($answer_data)."', answer_order = {$i} where question_answer_id=" . $answer->question_answer_id);
 	}
-die();
+	die();
 } );
 
 /**

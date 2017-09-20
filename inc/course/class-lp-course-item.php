@@ -367,10 +367,15 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		return wp_verify_nonce( $nonce, $action );
 	}
 
-	public function is_viewing_question( $question_id ) {
+	public function is_viewing_question( $question_id = 0 ) {
 		global $lp_quiz_question;
+		if ( $question_id ) {
+			$viewing = $lp_quiz_question && $lp_quiz_question->get_id() == $question_id;
+		} else {
+			$viewing = $lp_quiz_question ? $lp_quiz_question->get_id() : false;
+		}
 
-		return $lp_quiz_question && $lp_quiz_question->get_id() == $question_id;
+		return apply_filters( 'learn-press/quiz/is-viewing-question', $viewing, $question_id, $this->get_id() );
 	}
 
 	public function get_status_classes( $user_id = 0, $course_id = 0 ) {

@@ -542,6 +542,34 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_content_item_summary_questions' ) ) {
+
+	/**
+	 * Render content if quiz question.
+	 */
+	function learn_press_content_item_summary_questions() {
+		return;
+		$quiz = LP_Global::course_item_quiz();
+		if ( $questions = $quiz->get_questions() ) {
+			$course      = LP_Global::course();
+			$user        = LP_Global::user();
+			$course_data = $user->get_course_data( $course->get_id() );
+			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+			global $lp_quiz_question;
+			foreach ( $questions as $question_id ) {
+				$question         = LP_Question::get_question( $question_id );
+				$lp_quiz_question = $question;
+
+
+				learn_press_get_template( 'content-question/title.php' );
+				learn_press_get_template( 'content-question/description.php' );
+				$question->render( $quiz_data->get_question_answer( $question->get_id() ) );
+				//learn_press_get_template('single-course/content-item-lp_quiz.php');
+			}
+		}
+	}
+}
+
 if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) {
 
 	function learn_press_content_item_summary_question_numbers() {
@@ -650,6 +678,52 @@ if ( ! function_exists( 'learn_press_quiz_redo_button' ) ) {
 		}
 
 		learn_press_get_template( 'content-quiz/buttons/redo.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_quiz_check_button' ) ) {
+
+	function learn_press_quiz_check_button() {
+		$course = LP_Global::course();
+		$user   = LP_Global::user();
+		$quiz   = LP_Global::course_item_quiz();
+
+		if ( ! $quiz->is_viewing_question() ) {
+			return;
+		}
+
+		if ( ! $quiz->can_check_answer() ) {
+			return;
+		}
+
+		if ( ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'content-quiz/buttons/check.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
+
+	function learn_press_quiz_hint_button() {
+		$course = LP_Global::course();
+		$user   = LP_Global::user();
+		$quiz   = LP_Global::course_item_quiz();
+
+		if ( ! $quiz->is_viewing_question() ) {
+			return;
+		}
+
+		if ( ! $quiz->can_hint_answer() ) {
+			return;
+		}
+
+		if ( ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'content-quiz/buttons/hint.php' );
 	}
 }
 
@@ -812,31 +886,30 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 	function learn_press_single_course_args() {
 		$output = array();
 		if ( ( $course = LP_Global::course() ) && $course->get_id() ) {
-			$user = LP_Global::user();
-			$item  =LP_Global::course_item();
-//				$course_info  = (array) $user->get_course_info( $this->get_id() );
-//				$course_grade = $user->get_course_grade( $this->get_id() );
-//				if ( array_key_exists( 'items', $course_info ) ) {
-//					unset( $course_info['items'] );
-//				}
-
+			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
-			$output      = array(
-				'root_url'     => trailingslashit( get_site_url() ),
-				'id'           => $course->get_id(),
-				'url'          => $course->get_permalink(),
-				'result'       => $course_data ? $course_data->get_results() : false,
-				'current_item' => $item?$item->get_id() : false,
-				'items'        => $course->get_items_params()
-			);
-
+			$output      = $course_data->get_js_args();
 		}
-		$output = apply_filters( 'learn-press/course/single-params', $output, get_the_ID() );
-
 		return $output;
 	}
 }
 
+if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
+
+	function learn_press_single_document_title_parts( $title ) {
+		if ( learn_press_is_course() ) {
+			if ( $item = LP_Global::course_item() ) {
+				$title['title'] = join( "", apply_filters( 'learn-press/document-course-title-parts', array(
+					$title['title'],
+					"&rarr;",
+					$item->get_title()
+				) ) );
+			}
+		}
+
+		return $title;
+	}
+}
 
 if ( ! function_exists( 'learn_press_courses_loop_item_thumbnail' ) ) {
 	/**

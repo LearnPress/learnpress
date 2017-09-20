@@ -245,23 +245,26 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 									)
 								)
 							),
+//							array(
+//								'name' => __( 'Show check answer', 'learnpress' ),
+//								'id'   => "{$prefix}show_check_answer",
+//								'type' => 'yes_no',
+//								'desc' => __( 'Show button to check answer while doing quiz.', 'learnpress' ),
+//								'std'  => 'no'
+//							),
 							array(
 								'name' => __( 'Show check answer', 'learnpress' ),
 								'id'   => "{$prefix}show_check_answer",
-								'type' => 'yes_no',
-								'desc' => __( 'Show button to check answer while doing quiz.', 'learnpress' ),
-								'std'  => 'no'
+								'type' => 'text',
+								'desc' => __( 'Show button to check answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
+								'std'  => '0'
 							),
 							array(
 								'name'    => __( 'Show hint', 'learnpress' ),
 								'id'      => "{$prefix}show_hint",
-								'type'    => 'yes_no',
-								'desc'    => __( 'Show button to hint answer while doing quiz.', 'learnpress' ),
-								'options' => array(
-									'no'  => __( 'No', 'learnpress' ),
-									'yes' => __( 'Yes', 'learnpress' )
-								),
-								'std'     => 'no'
+								'type'    => 'text',
+								'desc'    => __( 'Show button to hint answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
+								'std'     => '0'
 							)
 						)
 					)
