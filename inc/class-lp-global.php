@@ -30,12 +30,37 @@ class LP_Global {
 	public static $questions = array();
 
 	/**
+	 * @var bool
+	 */
+	protected static $_user = false;
+
+	/**
+	 * @var bool
+	 */
+	protected static $_course = false;
+
+	/**
+	 * @var bool
+	 */
+	protected static $_course_item = false;
+
+	/**
 	 * @return LP_Quiz|LP_Lesson
 	 */
 	public static function course_item() {
 		global $lp_course_item;
 
 		return $lp_course_item;
+	}
+
+	public static function set_course_item( $course_item ) {
+		global $lp_course_item;
+
+		if ( self::$_course_item === false ) {
+			self::$_course_item = $lp_course_item;
+		}
+
+		$lp_course_item = $course_item;
 	}
 
 	/**
@@ -47,6 +72,16 @@ class LP_Global {
 		return $lp_course;
 	}
 
+	public static function set_course( $course ) {
+		global $lp_course;
+
+		if ( self::$_course === false ) {
+			self::$_course = $lp_course;
+		}
+
+		$lp_course = $course;
+	}
+
 	/**
 	 * @return LP_User
 	 */
@@ -54,6 +89,16 @@ class LP_Global {
 		global $lp_user;
 
 		return $lp_user;
+	}
+
+	public static function set_user( $user ) {
+		global $lp_user;
+
+		if ( self::$_user === false ) {
+			self::$_user = $lp_user;
+		}
+
+		$lp_user = $user;
 	}
 
 	/**
@@ -74,5 +119,12 @@ class LP_Global {
 		global $lp_quiz_question;
 
 		return $lp_quiz_question;
+	}
+
+	public static function reset() {
+		global $lp_user, $lp_course, $lp_course_item, $lp_quiz_question;
+		$lp_user        = self::$_user;
+		$lp_course      = self::$_course;
+		$lp_course_item = self::$_course_item;
 	}
 }

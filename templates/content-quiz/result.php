@@ -10,18 +10,13 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$user   = learn_press_get_current_user();
-$course = LP()->global['course'];
-$quiz   = LP()->global['course-item'];
-if ( !$user->has( 'completed-quiz', $quiz->id ) ) {
-	return;
-}
-/*
-if ( !is_user_logged_in() ) {
-	learn_press_display_message( sprintf( __( 'You are not logged in and result', 'learnpress' ), learn_press_get_login_url() ), 'error' );
-}*/
+?>
 
-$history = $user->get_quiz_results( $quiz->id );
+<div class="quiz-result">
+Result
+</div>
+<?php
+return;
 ?>
 <div class="quiz-result lp-group-content-wrap">
 	<h4><?php echo esc_html( sprintf( __( 'You have reached %d of %d points (%s)', 'learnpress' ), $history->mark, $quiz->get_mark(), round( $history->mark_percent ) . '%' ) ); ?></h4>

@@ -191,10 +191,12 @@ add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_cont
  * @see learn_press_content_item_summary_quiz_progress()
  * @see learn_press_content_item_summary_quiz_countdown()
  * @see learn_press_content_item_summary_quiz_question()
+ * @see learn_press_content_item_summary_quiz_result()
  *
  */
 
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_progress', 10 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_result', 10 );
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 10 );
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_question', 10 );
 
@@ -226,14 +228,16 @@ add_action( 'learn-press/question-content-summary', 'learn_press_content_item_su
  * @see learn_press_quiz_redo_button()
  * @see learn_press_quiz_check_button()
  * @see learn_press_quiz_hint_button()
+ * @see learn_press_quiz_result_button()
  */
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_nav_buttons', 10 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_start_button', 15 );
-add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_continue_button', 20 );
-add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_complete_button', 25 );
-add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 30 );
-add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_check_button', 30 );
-add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_hint_button', 30 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_check_button', 20 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_hint_button', 25 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_continue_button', 30 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_complete_button', 35 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_result_button', 40 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 45 );
 
 add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item' );
 

@@ -1015,15 +1015,12 @@ if (typeof window.LP == 'undefined') {
                 var $tab = $(this), url = '';
                 $tab.closest('li').addClass('active').siblings().removeClass('active');
                 $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
-                //if (!$tab.closest('li').hasClass('default')) {
-                url = $tab.attr('href');
-                //} else {
-                //    url = window.location.href.removeQueryVar('tab');
-                //}
-                LP.setUrl(url);
-
+                $(document).trigger('learn-press/nav-tabs/clicked', $tab);
             });
-        $('.learn-press-nav-tabs li.active a').trigger('click');
+
+        setTimeout(function () {
+            $('.learn-press-nav-tabs li.active a').trigger('click');
+        }, 300);
 
         $('body.course-item-popup').parent().css('overflow', 'hidden');
         ///

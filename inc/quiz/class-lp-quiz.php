@@ -546,6 +546,16 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		return apply_filters( 'learn-press/quiz/question-permalink', $permalink, $question_id, $this->get_id() );
 	}
 
+	public function get_question_at( $at = 0 ) {
+		if ( $questions = $this->get_questions() ) {
+			$questions = array_values( $questions );
+
+			return @$questions[ $at ];
+		}
+
+		return false;
+	}
+
 	/**
 	 * Get prev question from a question.
 	 *
@@ -667,6 +677,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 	public function get_current_question( $user_id = 0, $course_id = 0 ) {
 		$user = learn_press_get_user( $user_id );
+
 		return LP_Question::get_question( $id );
 	}
 
@@ -696,7 +707,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 
-
 	public function set_show_hint( $value ) {
 		$this->_set_data( 'show_hint', $value );
 	}
@@ -711,7 +721,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	public function set_count_hint( $count ) {
 		$this->_set_data( 'count_hint', $count );
 	}
-
 
 
 	/**

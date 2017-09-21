@@ -132,6 +132,10 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return $this->get_data( 'item_id' );
 	}
 
+	public function get_parent() {
+		return intval( $this->get_data( 'parent_id' ) );
+	}
+
 	public function read_meta() {
 		global $wpdb;
 		$query = $wpdb->prepare( "
@@ -182,6 +186,33 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return $columns;
+	}
+
+	/**
+	 * @param $data
+	 *
+	 * @return LP_User_Item|bool
+	 */
+	public static function get_item_object( $data ) {
+		if ( isset( $data['item_id'] ) ) {
+			$item_id = $data['item_id'];
+		} elseif ( isset( $data->item_id ) ) {
+			$item_id = $data->item_id;
+		} else {
+			return false;
+		}
+
+		$item = false;
+		switch ( get_post_type( $item_id ) ) {
+			case LP_LESSON_CPT:
+				$item = new LP_User_Item( $data );
+				break;
+			case LP_QUIZ_CPT:
+				$item = new LP_User_Item_Quiz( $data );
+				break;
+		}
+
+		return apply_filters( 'learn-press/user-item-object', $item, $data );
 	}
 
 	public function update() {

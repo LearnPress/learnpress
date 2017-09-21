@@ -80,16 +80,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 						$default_data
 					);
 				}
-				$item = false;
-				switch ( get_post_type( $item_id ) ) {
-					case LP_LESSON_CPT:
-						$item = new LP_User_Item( $data );
-						break;
-					case LP_QUIZ_CPT:
-						$item = new LP_User_Item_Quiz( $data );
-						break;
-				}
-				$this->_items[ $item_id ] = apply_filters( 'learn-press/user-course-item', $item, $data, $this );
+				$this->_items[ $item_id ] = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $data ), $data, $this );
 			}
 		}
 
@@ -353,6 +344,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 */
 	public function get_item( $item_id ) {
 		return ! empty( $this->_items[ $item_id ] ) ? $this->_items[ $item_id ] : false;
+	}
+
+	public function set_item( $item ) {
+		if ( $item = LP_User_Item::get_item_object( $item ) ) {
+			$this->_items[ $item->get_item_id() ] = $item;
+		}
 	}
 
 	/**

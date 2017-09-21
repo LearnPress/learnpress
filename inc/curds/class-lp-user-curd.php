@@ -347,7 +347,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			foreach ( $items as $user_item_id => $_items ) {
 				$cache_name = sprintf( 'course-item-%d-%d-%d', $parent_item['user_id'], $parent_item['item_id'], $user_item_id );
 				// Refresh caching
-					wp_cache_set( $cache_name, $_items, 'lp-user-course-items' );
+				wp_cache_set( $cache_name, $_items, 'lp-user-course-items' );
 			}
 		}
 
@@ -419,7 +419,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$this->read_course( $user_id, $course_id );
 		}
 
-		$item = $this->get_user_item( $user_id, $item_id, $course_id );
+		if ( array_key_exists( 'user_item_id', $item_data ) && empty( $item_data['user_item_id'] ) ) {
+			$item = false;
+		} else {
+			$item = $this->get_user_item( $user_id, $item_id, $course_id );
+		}
 		// Table fields
 		$table_fields = array(
 			'user_id'        => '%d',
@@ -481,6 +485,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			);
 			$user_item_id = $wpdb->insert_id;
 			$item         = $this->get_user_item_by_id( $user_item_id );
+
 		} else {
 			$user_item_id = $item['user_item_id'];
 			$wpdb->update(
@@ -500,11 +505,15 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$item['status'] = $new_status;
 				}
 			}
+			$user = learn_press_get_user( $user_id );
+
+			$user_course = $user->get_course_data( $course_id );
+			$user_course->set_item( $item );
 
 			// Update cache
 			$existed = false !== ( $items = wp_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) );
 
-			if ( false === $items || empty( $items[ $user_item_id ] ) ) {
+			if ( false === $items || ! empty( $items[ $user_item_id ] ) ) {
 				settype( $items, 'array' );
 				$items[ $user_item_id ] = $item;
 			} else {
@@ -513,12 +522,14 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			wp_cache_set( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
 
+
 			/*if ( $existed ) {
 				wp_cache_replace( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
 			} else {
 				wp_cache_add( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
 			}*/
 		}
+
 		return $user_item_id;
 	}
 

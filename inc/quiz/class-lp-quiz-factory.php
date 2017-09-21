@@ -25,6 +25,7 @@ class LP_Quiz_Factory {
 			'complete-quiz'     => 'finish_quiz',
 			'check-answer-quiz' => 'check_answer',
 			'show-hint-quiz'    => 'hint_answer',
+			'show-result-quiz'  => 'show_result',
 
 			////
 			'retake-quiz'       => 'retake_quiz',
@@ -135,8 +136,10 @@ class LP_Quiz_Factory {
 			$quiz_id   = LP_Request::get_int( 'quiz-id' );
 			$user      = learn_press_get_current_user();
 			$quiz      = learn_press_get_quiz( $quiz_id );
-
+			///LP_Debug::startTransaction();
 			$data = $user->retake_quiz( $quiz_id, $course_id, true );
+
+			//LP_Debug::rollbackTransaction();
 
 			if ( is_wp_error( $data ) ) {
 				throw new Exception( $data->get_error_message(), $data->get_error_code() );
@@ -329,7 +332,7 @@ class LP_Quiz_Factory {
 			$result['message'] = $ex->getMessage();
 			$result['code']    = $ex->getCode();
 		}
-        //LP_Debug::rollbackTransaction();
+		//LP_Debug::rollbackTransaction();
 		$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id, $user->get_id() );
 
 		// Send json if the ajax is calling
@@ -345,6 +348,18 @@ class LP_Quiz_Factory {
 			wp_redirect( $result['redirect'] );
 			exit();
 		}
+	}
+
+	public static function show_result() {
+		$quiz_id = LP_Request::get_int( 'quiz-id' );
+		$quiz    = learn_press_get_quiz( $quiz_id );
+		if ( $quiz ) {
+			$redirect = $quiz->get_question_link( $quiz->get_question_at( 0 ) );
+			$redirect = add_query_arg( 'result', 'yes', $redirect );
+		} else {
+			$redirect = get_the_permalink();
+		}
+		wp_redirect( $redirect );
 	}
 
 	/**

@@ -16,7 +16,7 @@ $quiz   = LP_Global::course_item_quiz();
 
 <?php do_action( 'learn-press/before-quiz-redo-button' ); ?>
 
-<form name="redo-quiz" class="redo-quiz" method="post" enctype="multipart/form-data">
+<form name="redo-quiz" class="redo-quiz form-button" method="post" enctype="multipart/form-data">
 
 	<?php do_action( 'learn-press/begin-quiz-redo-button' ); ?>
 

@@ -20,7 +20,7 @@ if ( ! $answers = $question->get_answers() ) {
 	return;
 }
 ?>
-<ul class="answer-options">
+<ul id="answer-options-<?php echo $question->get_id();?>" <?php echo $answers->answers_class(); ?>>
 
 	<?php foreach ( $answers as $k => $answer ): ?>
 

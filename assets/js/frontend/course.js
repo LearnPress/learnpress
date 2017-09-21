@@ -122,7 +122,7 @@
                         $button = $('.button-check-answer'),
                         data = $form.serializeJSON();
 
-                    data['question-data'] = $('.answer-options').serializeJSON();
+                    data['question-data'] = $('#answer-options-' + data['question-id']).serializeJSON();
 
                     $.ajax({
                         data: data,
@@ -149,6 +149,7 @@
                     var $form = $(event.target).is('form') ? $(event.target) : $(event.target.form),
                         $button = $('.button-hint-question'),
                         data = $form.serializeJSON();
+                    data['question-data'] = $('#answer-options-' + data['question-id']).serializeJSON();
 
                     $.ajax({
                         data: data,
@@ -304,6 +305,13 @@
 
             $('body').css('opacity', 1);
         });
+
+        $(document).on('learn-press/nav-tabs/clicked', function (e, tab) {
+            if ($(document.body).hasClass('course-item-popup')) {
+                return;
+            }
+            LP.setUrl($(tab).attr('href'));
+        })
         return;
         Vue.component('LP_Quiz', {
             template: '#content-item-quiz',
@@ -378,6 +386,7 @@
                 }
             }
         });
+
         /*Vue.component('learn-press-modal-search-items', {
          template: '#learn-press-modal-search-items',
          data: function () {

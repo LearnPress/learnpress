@@ -383,4 +383,35 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$this->set_status( 'completed' );
 		$this->update();
 	}
+
+	public function redo(){
+		$course_id = $this->_get_course( $course_id );
+
+		$user_quiz  = $this->get_item_data( $quiz_id, $course_id );
+		$start_time = new LP_Datetime( current_time( 'mysql' ) );
+
+		$return = learn_press_update_user_item_field(
+			array(
+				'user_id'        => learn_press_get_current_user_id(),
+				'item_id'        => $quiz_id,
+				'ref_id'         => $course_id,
+				'start_time'     => $start_time,
+				'start_time_gmt' => $start_time->toSql( false ),
+				'item_type'      => 'lp_quiz',
+				'status'         => 'started',
+				'ref_type'       => 'lp_course',
+				'parent_id'      => $user_quiz ? $user_quiz->get_parent() : 0
+			)
+		);
+		if ( $return ) {
+
+			// Update user quiz meta data
+			learn_press_update_user_item_meta( $return, 'questions', $questions );
+			learn_press_update_user_item_meta( $return, 'current_question', $question );
+			learn_press_update_user_item_meta( $return, 'question_answers', array() );
+			LP_Cache::flush();
+			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
+		}
+		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $course_id, $this->get_id() );
+	}
 }
