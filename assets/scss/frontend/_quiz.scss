@@ -91,21 +91,28 @@
             -webkit-appearance: initial;
             margin: 0 10px 0 3px;
             position: relative;
-            border: none;
-            background: transparent;
+            border: 1px solid #eaeaea;
             z-index: 10;
-            &:before {
-                width: 30px;
-                height: 30px;
-                background: #fff;
-                border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            background: #FFF;
+            @include border-radius(4px);
+            &:focus {
                 outline: none;
-                position: relative;
-                border: 1px solid #eaeaea;
-                content: '';
-                display: block;
-                top: 50%;
-                margin-top: -16px;
+            }
+            &:before {
+                //width: 30px;
+                //height: 30px;
+                //background: #fff;
+                //border-radius: 4px;
+                //outline: none;
+                //position: relative;
+                //border: 1px solid #eaeaea;
+                //content: '';
+                //display: block;
+                //top: 50%;
+                //margin-top: -16px;
             }
             &:after {
                 content: '';
@@ -138,8 +145,10 @@
                     @include transform(rotate(36deg) scale(1));
                 }
             }
+
         }
         input[type="radio"] {
+            @include border-radius(50%);
             &:before {
                 border-radius: 50%;
             }
@@ -149,6 +158,94 @@
         }
         &:hover {
             background: #e1f5ff;
+        }
+        &.answer-correct {
+            background: #e1f5ff;
+            input[type="radio"]:checked,
+            input[type="checkbox"]:checked {
+                ~ .option-title {
+                    &:before {
+                        background: #e1f5ff;
+                    }
+                }
+            }
+        }
+
+        &.answered-correct {
+            input[type="radio"]:checked,
+            input[type="checkbox"]:checked {
+                ~ .option-title {
+                    &:before {
+                        background: #00adff;
+                    }
+                }
+            }
+        }
+
+        &.answered-wrong {
+            input[type="radio"],
+            input[type="checkbox"] {
+                &:before,
+                &:after {
+                    position: absolute;
+                    background: #FF0000;
+                    border: none;
+                    content: '';
+                    display: inline-block;
+                    left: 50%;
+                    top: 50%;
+                    @include border-radius(2px);
+                    @include transform(rotate(-45deg));
+                }
+
+                &:before {
+                    width: 4px;
+                    height: 16px;
+                    margin-top: -8px;
+                    margin-left: -2px;
+                }
+
+                &:after {
+                    width: 16px;
+                    height: 4px;
+                    margin-top: -2px;
+                    margin-left: -8px;
+                    border: none;
+                }
+            }
+
+            input[type="radio"]:checked,
+            input[type="checkbox"]:checked {
+                ~ .option-title {
+                    &:before {
+                        background: #FF0000;
+                    }
+                }
+            }
+        }
+    }
+}
+
+button[data-counter] {
+    position: relative;
+    &:after {
+        content: attr(data-counter);
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        border-radius: 50%;
+        height: 20px;
+        background: #00adff;
+        min-width: 20px;
+        line-height: 20px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: normal;
+        z-index: 10;
+    }
+    &:hover {
+        &:after {
+            background: #52c8ff;
         }
     }
 }

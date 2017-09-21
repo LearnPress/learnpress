@@ -36,6 +36,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		parent::__construct( $item );
 		$this->_item = $item;
 		$this->read_items();
+		$this->read_items_meta();
+
 		self::$_loaded ++;
 		if ( self::$_loaded == 1 ) {
 			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
@@ -93,6 +95,52 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		unset( $this->_data['items'] );
 
+	}
+
+	/**
+	 * Read item meta.
+	 *
+	 * @return mixed|bool
+	 */
+	public function read_items_meta() {
+		$item_ids = array();
+		if ( $this->_items ) {
+			foreach ( $this->_items as $item ) {
+				if ( $item->get_user_item_id() ) {
+					$item_ids[ $item->get_user_item_id() ] = $item->get_item_id();
+				}
+			}
+		}
+
+		if ( ! $item_ids ) {
+			return false;
+		}
+
+		global $wpdb;
+		$meta_ids = array_keys( $item_ids );
+		$format   = array_fill( 0, sizeof( $meta_ids ), '%d' );
+		$sql      = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ")
+		", $meta_ids );
+
+		if ( $results = $wpdb->get_results( $sql ) ) {
+			foreach ( $results as $result ) {
+				$item_id = $item_ids[ $result->learnpress_user_item_id ];
+
+				if ( $item_id === $this->get_item_id() ) {
+					$this->add_meta( $result );
+				} else {
+					$item               = $this->get_item( $item_id );
+					$result->meta_value = maybe_unserialize( $result->meta_value );
+
+					$item->add_meta( $result );
+				}
+			}
+		}
+
+		return $this->_meta_data;
 	}
 
 	public function offsetSet( $offset, $value ) {

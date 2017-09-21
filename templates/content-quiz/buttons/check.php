@@ -8,7 +8,12 @@
  */
 
 defined( 'ABSPATH' ) or die();
-$quiz = LP_Global::course_item_quiz();
+$quiz     = LP_Global::course_item_quiz();
+$question = LP_Global::quiz_question();
+$user     = LP_Global::user();
+
+$checked     = $user->has_checked_answer( $question->get_id(), $quiz->get_id(), get_the_ID() );
+$button_text = $checked ? __( 'Checked', 'learnpress' ) : __( 'Check', 'learnpress' );
 ?>
 
 <?php do_action( 'learn-press/quiz/before-check-answer-button' ); ?>
@@ -20,17 +25,22 @@ $quiz = LP_Global::course_item_quiz();
 
 		<?php if ( 0 > $quiz->get_show_check_answer() ) { ?>
 
-            <button type="submit"><?php _e( 'Check', 'learnpress' ); ?></button>
+            <button type="submit" <?php disabled( $checked ); ?>><?php echo $button_text; ?></button>
 
 		<?php } else { ?>
 
-            <button type="submit"><?php printf( __( 'Check (+%d)', 'learnpress' ), $quiz->can_check_answer() ); ?></button>
+            <button type="submit"
+                    class="button-check-answer"
+                    data-counter="<?php echo $user->can_check_answer( $quiz->get_id() ); ?>"
+				<?php disabled( $checked ); ?>><?php echo $button_text; ?></button>
 
 		<?php } ?>
 
 		<?php do_action( 'learn-press/quiz/end-check-answer-button' ); ?>
 
-		<?php LP_Nonce_Helper::quiz_action( 'check-answer', $quiz->get_id(), get_the_ID() ); ?>
+		<?php LP_Nonce_Helper::quiz_action( 'check-answer', $quiz->get_id(), get_the_ID(), true ); ?>
+
+        <input type="hidden" name="question-id" value="<?php echo $question->get_id(); ?>">
 
     </form>
 

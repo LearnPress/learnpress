@@ -153,10 +153,11 @@ add_action( 'learn-press/before-content-item-summary/lp_lesson', function () {
 add_action( 'learn-press/content-item-summary/lp_lesson', function () {
 	$item = LP_Global::course_item();
 	//if($item->is_show_complete
-    if(('standard' !==($format = $item->get_format())) && file_exists($format_template = learn_press_locate_template("content-lesson/type/{$format}.php"))){
-	    include_once $format_template;
-	    return;
-    }
+	if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/type/{$format}.php" ) ) ) {
+		include_once $format_template;
+
+		return;
+	}
 	learn_press_get_template( 'content-lesson/description.php' );
 } );
 
@@ -189,16 +190,13 @@ add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_cont
 /**
  * @see learn_press_content_item_summary_quiz_progress()
  * @see learn_press_content_item_summary_quiz_countdown()
- * @see learn_press_content_item_summary_question_title()
- * @see learn_press_content_item_summary_question_content()
- * @see learn_press_content_item_summary_question()
+ * @see learn_press_content_item_summary_quiz_question()
+ *
  */
 
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_progress', 10 );
 add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 10 );
-add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_title', 15 );
-add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_content', 20 );
-add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question', 25 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_question', 10 );
 
 /**
  * @see learn_press_content_item_summary_question_numbers()
@@ -207,6 +205,17 @@ add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_ite
 add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_buttons', 10 );
 add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_numbers', 15 );
 add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_questions', 25 );
+
+/**
+ * @see learn_press_content_item_summary_question_title()
+ * @see learn_press_content_item_summary_question_content()
+ * @see learn_press_content_item_summary_question()
+ */
+add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_title', 15 );
+add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_content', 20 );
+add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question', 25 );
+add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_explanation', 25 );
+add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_hint', 25 );
 
 
 /**
@@ -233,12 +242,12 @@ add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_cou
  *
  * @see learn_press_single_course_args()
  */
-add_action('learn-press/after-single-course', 'learn_press_single_course_args');
+add_action( 'learn-press/after-single-course', 'learn_press_single_course_args' );
 
 /**
  * @see learn_press_single_document_title_parts()
  */
-add_filter('document_title_parts', 'learn_press_single_document_title_parts');
+add_filter( 'document_title_parts', 'learn_press_single_document_title_parts' );
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */
 //add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );

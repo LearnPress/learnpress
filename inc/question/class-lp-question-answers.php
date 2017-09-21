@@ -33,11 +33,17 @@ class LP_Question_Answers implements ArrayAccess, Iterator {
 	protected $_origin_positions = false;
 
 	/**
+	 * @var LP_Question
+	 */
+	protected $_question = null;
+
+	/**
 	 * LP_Question_Answers constructor.
 	 *
 	 * @param $raw
 	 */
-	public function __construct( $raw ) {
+	public function __construct( $question, $raw ) {
+		$this->_question = $question;
 		$this->_init( $raw );
 	}
 
@@ -69,7 +75,8 @@ class LP_Question_Answers implements ArrayAccess, Iterator {
 
 		foreach ( $raw as $data ) {
 			$key                    = $data['question_answer_id'];
-			$this->_answers[ $key ] = new LP_Question_Answer_Option( $data );
+			$answer                 = new LP_Question_Answer_Option( $this->_question, $data );
+			$this->_answers[ $key ] = $answer;
 		}
 
 		// Keep origin positions
@@ -79,6 +86,14 @@ class LP_Question_Answers implements ArrayAccess, Iterator {
 		if ( $this->_randomize_options ) {
 			$this->_shuffle();
 		}
+	}
+
+	public function get_question() {
+		return $this->_question;
+	}
+
+	public function get_question_id() {
+		return $this->_question->get_id();
 	}
 
 	/**
@@ -174,6 +189,30 @@ class LP_Question_Answers implements ArrayAccess, Iterator {
 	protected function _shuffle() {
 		LP_Helper::shuffle_assoc( $this->_answers );
 	}
+
+	public function get_class( $more = '' ) {
+		$classes = array( 'answer-options' );
+		if ( $more && is_string( $more ) ) {
+			$more = explode( ' ', $more );
+		}
+
+		if ( $more && is_array( $more ) ) {
+			$classes = array_merge( $classes, $more );
+		}
+		if ( $this->get_question()->show_correct_answers() === 'yes' ) {
+			$classes[] = 'disabled';
+		}
+
+		// sanitize unwanted classes
+		$classes = LP_Helper::sanitize_array( $classes );
+
+		return apply_filters( 'learn-press/question/answer-option/classes', $classes, $this );
+	}
+
+	public function answers_class( $more = '' ) {
+		$classes = $this->get_class( $more );
+		echo 'class="' . join( ' ', $classes ) . '"';
+	}
 }
 
 /**
@@ -190,12 +229,19 @@ class LP_Question_Answer_Option implements ArrayAccess {
 	protected $_data = null;
 
 	/**
+	 * @var LP_Question
+	 */
+	protected $_question = null;
+
+	/**
 	 * LP_Question_Answer_Option constructor.
 	 *
-	 * @param $data
+	 * @param LP_Question $question
+	 * @param mixed       $data
 	 */
-	public function __construct( $data ) {
-		$this->_data = $data;
+	public function __construct( $question, $data ) {
+		$this->_data     = $data;
+		$this->_question = $question;
 	}
 
 	/**
@@ -244,11 +290,57 @@ class LP_Question_Answer_Option implements ArrayAccess {
 		if ( $more && is_array( $more ) ) {
 			$classes = array_merge( $classes, $more );
 		}
+		if ( $this->get_question()->show_correct_answers() === 'yes' ) {
+			if ( $this->is_true() ) {
+				$classes[] = 'answer-correct';
+			}
+			if ( $this->is_checked() && $this->is_true() ) {
+				$classes[] = 'answered-correct';
+			} elseif ( $this->is_checked() && ! $this->is_true() ) {
+				$classes[] = 'answered-wrong';
+			}
+		}
 
 		// sanitize unwanted classes
 		$classes = LP_Helper::sanitize_array( $classes );
 
 		return apply_filters( 'learn-press/question/answer-option/classes', $classes, $this );
+	}
+
+	public function checked( $echo = true ) {
+
+		return checked( $this->is_checked(), true, $echo );
+	}
+
+	public function disabled( $echo = true ) {
+		$q        = $this->_question;
+		$disabled = ( $q->show_correct_answers() === 'yes' ) || ( $q->disable_answers() === 'yes' );
+
+		return disabled( $disabled, true, $echo );
+	}
+
+	public function get_answered() {
+		return $this->get_question()->get_answered();
+	}
+
+	public function is_checked() {
+		if ( false === $this->get_answered() ) {
+			return false;
+		}
+
+		return in_array( $this->get_value(), (array) $this->get_answered() );
+	}
+
+
+	/**
+	 * @return bool|LP_Question
+	 */
+	public function get_question() {
+		return $this->_question;
+	}
+
+	public function get_question_id() {
+		return $this->_question->get_id();
 	}
 
 	/**

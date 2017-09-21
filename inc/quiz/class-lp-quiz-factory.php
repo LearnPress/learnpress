@@ -23,6 +23,8 @@ class LP_Quiz_Factory {
 			'redo-quiz'         => 'redo_quiz',
 			'nav-question-quiz' => 'nav_question',
 			'complete-quiz'     => 'finish_quiz',
+			'check-answer-quiz' => 'check_answer',
+			'show-hint-quiz'    => 'hint_answer',
 
 			////
 			'retake-quiz'       => 'retake_quiz',
@@ -42,6 +44,7 @@ class LP_Quiz_Factory {
 			'question_icon_class'
 		), 10, 2 );
 		add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_current_question' ), 10, 3 );
+		//print_r($_REQUEST);die();
 	}
 
 	/**
@@ -57,6 +60,7 @@ class LP_Quiz_Factory {
 	public static function start_quiz() {
 
 		try {
+			$result = array( 'result' => 'failure' );
 
 			// Actually, no save question here. Just check nonce here.
 			$check = self::maybe_save_questions( 'start' );
@@ -69,7 +73,6 @@ class LP_Quiz_Factory {
 			$course_id = LP_Request::get_int( 'course-id' );
 			$quiz_id   = LP_Request::get_int( 'quiz-id' );
 			$nonce     = LP_Request::get_string( 'start-quiz-nonce' );
-			$result    = array( 'result' => 'failure' );
 
 			$user   = learn_press_get_current_user();
 			$quiz   = learn_press_get_quiz( $quiz_id );
@@ -118,6 +121,8 @@ class LP_Quiz_Factory {
 	 */
 	public static function redo_quiz() {
 		try {
+			$result = array( 'result' => 'failure' );
+
 			// Actually, no need to save question here. Just check wp nonce in this case.
 			$check = self::maybe_save_questions( 'redo' );
 
@@ -126,7 +131,6 @@ class LP_Quiz_Factory {
 				throw $check;
 			}
 
-			$result    = array( 'result' => 'failure' );
 			$course_id = LP_Request::get_int( 'course-id' );
 			$quiz_id   = LP_Request::get_int( 'quiz-id' );
 			$user      = learn_press_get_current_user();
@@ -172,21 +176,22 @@ class LP_Quiz_Factory {
 	 * Callback for finishing quiz
 	 */
 	public static function finish_quiz() {
-		try {
-			$check = self::maybe_save_questions( 'finish' );
 
+		try {
+			$result = array( 'result' => 'failure' );
+
+			$check = self::maybe_save_questions( 'complete' );
 			// PHP Exception
 			if ( true !== $check ) {
 				throw $check;
 			}
 
-			$user   = LP_Global::user();
-			$result = array( 'result' => 'failure' );
+			$user = LP_Global::user();
 
 			$course_id = LP_Request::get_int( 'course-id' );
 			$quiz_id   = LP_Request::get_int( 'quiz-id' );
 
-			$data = $user->finish_quiz( $quiz_id, $course_id );
+			$data = $user->finish_quiz( $quiz_id, $course_id, true );
 
 			if ( is_wp_error( $data ) ) {
 				throw new Exception( $data->get_error_message(), $data->get_error_code() );
@@ -208,6 +213,124 @@ class LP_Quiz_Factory {
 
 		// Filter the result
 		$result = apply_filters( 'learn-press/quiz/finish-result', $result );
+
+		// Send json if the ajax is calling
+		learn_press_maybe_send_json( $result );
+
+		// Message
+		if ( ! empty( $result['message'] ) ) {
+			learn_press_add_message( $result['message'] );
+		}
+
+		// Redirecting...
+		if ( ! empty( $result['redirect'] ) ) {
+			wp_redirect( $result['redirect'] );
+			exit();
+		}
+	}
+
+	/**
+	 * Callback for finishing quiz
+	 */
+	public static function check_answer() {
+		$user        = LP_Global::user();
+		$course_id   = LP_Request::get_int( 'course-id' );
+		$quiz_id     = LP_Request::get_int( 'quiz-id' );
+		$question_id = LP_Request::get_int( 'question-id' );
+		//LP_Debug::startTransaction();
+		try {
+			$result = array( 'result' => 'failure' );
+
+			$check = self::maybe_save_questions( 'check-answer' );
+
+			// PHP Exception
+			if ( true !== $check ) {
+				throw $check;
+			}
+
+			$remain = $user->check_question( $question_id, $quiz_id, $course_id );
+
+			if ( is_wp_error( $remain ) ) {
+				throw new Exception( $remain->get_error_message(), $remain->get_error_code() );
+			} else {
+				if ( $course = learn_press_get_course( $course_id ) ) {
+					$quiz      = $course->get_item( $quiz_id );
+					$quiz_data = $user->get_item_data( $quiz_id, $course_id );
+					$redirect  = $quiz->get_question_link( $question_id, true );
+					$question  = learn_press_get_question( $question_id );
+					$question->show_correct_answers( 'yes' );
+
+					$result['result']   = 'success';
+					$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+					$result['remain']   = $remain;
+					$result['html']     = learn_press_get_template_content( 'content-question/content.php' );// $question->get_html( $quiz_data->get_question_answer( $question_id ) );
+				}
+			}
+		}
+		catch ( Exception $ex ) {
+			$result['message'] = $ex->getMessage();
+			$result['code']    = $ex->getCode();
+		}
+		//LP_Debug::rollbackTransaction();
+		$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id, $user->get_id() );
+
+		// Send json if the ajax is calling
+		learn_press_maybe_send_json( $result );
+
+		// Message
+		if ( ! empty( $result['message'] ) ) {
+			learn_press_add_message( $result['message'] );
+		}
+
+		// Redirecting...
+		if ( ! empty( $result['redirect'] ) ) {
+			wp_redirect( $result['redirect'] );
+			exit();
+		}
+	}
+
+	/**
+	 * Callback for finishing quiz
+	 */
+	public static function hint_answer() {
+		$user        = LP_Global::user();
+		$course_id   = LP_Request::get_int( 'course-id' );
+		$quiz_id     = LP_Request::get_int( 'quiz-id' );
+		$question_id = LP_Request::get_int( 'question-id' );
+		//LP_Debug::startTransaction();
+		try {
+			$result = array( 'result' => 'failure' );
+
+			$check = self::maybe_save_questions( 'show-hint' );
+			// PHP Exception
+			if ( true !== $check ) {
+				throw $check;
+			}
+
+			$remain = $user->hint( $question_id, $quiz_id, $course_id );
+
+			if ( is_wp_error( $remain ) ) {
+				throw new Exception( $remain->get_error_message(), $remain->get_error_code() );
+			} else {
+				if ( $course = learn_press_get_course( $course_id ) ) {
+					$quiz      = $course->get_item( $quiz_id );
+					$quiz_data = $user->get_item_data( $quiz_id, $course_id );
+					$redirect  = $quiz->get_question_link( $quiz_data->get_current_question(), true );
+
+					$result['result']   = 'success';
+					$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
+					$result['remain']   = $remain;
+					$result['html']     = learn_press_get_template_content( 'content-question/content.php' );// $question->get_html( $quiz_data->get_question_answer( $question_id ) );
+
+				}
+			}
+		}
+		catch ( Exception $ex ) {
+			$result['message'] = $ex->getMessage();
+			$result['code']    = $ex->getCode();
+		}
+        //LP_Debug::rollbackTransaction();
+		$result = apply_filters( 'learn-press/quiz/hint-answer-result', $result, $quiz_id, $course_id, $user->get_id() );
 
 		// Send json if the ajax is calling
 		learn_press_maybe_send_json( $result );
@@ -252,6 +375,7 @@ class LP_Quiz_Factory {
 				$quiz_data->add_question_answer( $questions );
 				$quiz_data->update();
 			}
+
 		}
 		catch ( Exception $ex ) {
 			return $ex;
@@ -287,11 +411,12 @@ class LP_Quiz_Factory {
 		$questions = array();
 		try {
 			$post_data = stripslashes_deep( $_REQUEST );
+
 			if ( empty( $post_data['question-data'] ) ) {
 				return false;
 			}
 
-			$data = @json_decode( $post_data['question-data'] );
+			$data = is_string( $post_data['question-data'] ) ? @json_decode( $post_data['question-data'] ) : $post_data['question-data'];
 			settype( $data, 'array' );
 
 			foreach ( $data as $k => $v ) {
@@ -331,7 +456,6 @@ class LP_Quiz_Factory {
 		echo '<script type="text/ng-template" id="tmpl-quiz-question">';
 
 		$none = new LP_Question();
-
 
 
 		$none->admin_interface();

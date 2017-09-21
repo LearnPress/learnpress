@@ -84,6 +84,8 @@ class LP_Question extends LP_Course_Item {
 			}
 		}
 
+		$this->set_data( 'answered', false );
+
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
@@ -126,6 +128,22 @@ class LP_Question extends LP_Course_Item {
 	 */
 	public function get_answer_options() {
 		return apply_filters( 'learn-press/question/answer-options', $this->get_data( 'answer_options' ), $this->get_id() );
+	}
+
+	public function set_explanation( $explanation = '' ) {
+		$this->_set_data( 'explanation', $explanation );
+	}
+
+	public function get_explanation() {
+		return apply_filters( 'learn-press/question/explanation', do_shortcode( $this->get_data( 'explanation' ) ), $this->get_id() );
+	}
+
+	public function set_hint( $hint = '' ) {
+		$this->_set_data( 'hint', $hint );
+	}
+
+	public function get_hint() {
+		return apply_filters( 'learn-press/question/hint', do_shortcode( $this->get_data( 'hint' ) ), $this->get_id() );
 	}
 
 	/**
@@ -192,7 +210,7 @@ class LP_Question extends LP_Course_Item {
 		$id         = absint( $this->get_id() );
 		$table_meta = $wpdb->learnpress_question_answermeta;
 		$table_main = $wpdb->learnpress_question_answers;
-		echo $query = $wpdb->prepare( "
+		$query      = $wpdb->prepare( "
 			DELETE FROM t1, t2
 			USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.learnpress_question_answer_id
 			WHERE t1.question_id = %d
@@ -480,10 +498,10 @@ class LP_Question extends LP_Course_Item {
 		return $answers;
 	}
 
-	public
-	function save(
-		$post_data = null
-	) {
+	/**
+	 * @param null $post_data
+	 */
+	public function save( $post_data = null ) {
 		global $wpdb;
 		/**
 		 * Allows add more type of question to save with the rules below
@@ -494,7 +512,7 @@ class LP_Question extends LP_Course_Item {
 			'single_choice'
 		) );
 
-		if ( in_array( $this->type, $types ) ) {
+		if ( in_array( $this->get_type(), $types ) ) {
 
 			$this->empty_answers();
 
@@ -529,10 +547,10 @@ class LP_Question extends LP_Course_Item {
 
 				}
 			}
-			if ( $this->mark == 0 ) {
-				$this->mark = 1;
-				update_post_meta( $this->get_id(), '_lp_mark', 1 );
-			}
+//			if ( $this->mark == 0 ) {
+//				$this->mark = 1;
+//				update_post_meta( $this->get_id(), '_lp_mark', 1 );
+//			}
 		}
 		do_action( 'learn_press_update_question_answer', $this, $post_data );
 	}
@@ -555,7 +573,7 @@ class LP_Question extends LP_Course_Item {
 		};
 
 		if ( $data_answers ) {
-			$answers = new LP_Question_Answers( $data_answers );
+			$answers = new LP_Question_Answers( $this, $data_answers );
 		}
 
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
@@ -576,8 +594,9 @@ class LP_Question extends LP_Course_Item {
 	 *
 	 * @return void
 	 */
-	public function render( $args = array() ) {
-		$this->set_data( 'answered', $args );
+	public function render( $args = false ) {
+		$this->set_answered( $args );
+
 		$type = '';
 		switch ( $this->get_type() ) {
 			case 'true_or_false':
@@ -589,6 +608,54 @@ class LP_Question extends LP_Course_Item {
 				break;
 		}
 		learn_press_get_template( 'content-question/' . $type . '/answer-options.php', array( 'question' => $this ) );
+	}
+
+	/**
+	 * Return HTML of question content.
+	 *
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	public function get_html( $args = array() ) {
+		ob_start();
+		$this->render( $args );
+
+		return ob_get_clean();
+	}
+
+	public function show_correct_answers( $yes_or_no = '' ) {
+		if ( in_array( $yes_or_no, array( 'yes', 'no' ) ) ) {
+			$this->_set_data( 'show_correct_answers', $yes_or_no );
+		}
+
+		return $this->get_data( 'show_correct_answers' );
+	}
+
+	public function disable_answers( $yes_or_no = '' ) {
+		if ( in_array( $yes_or_no, array( 'yes', 'no' ) ) ) {
+			$this->_set_data( 'disable_answers', $yes_or_no );
+		}
+
+		return $this->get_data( 'disable_answers' );
+	}
+
+	/**
+	 * Set answer for this question.
+	 *
+	 * @param mixed $answered
+	 */
+	public function set_answered( $answered ) {
+		$this->set_data( 'answered', $answered );
+	}
+
+	/**
+	 * Get answer for this question if set.
+	 *
+	 * @return array|mixed
+	 */
+	public function get_answered() {
+		return $this->get_data( 'answered' );
 	}
 
 	public

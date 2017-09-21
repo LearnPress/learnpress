@@ -666,9 +666,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	public function get_current_question( $user_id = 0, $course_id = 0 ) {
-		$user = learn_press_get_current_user( $user_id );
-		$id   = $user->get_current_quiz_question( $this->get_id(), $course_id );
-
+		$user = learn_press_get_user( $user_id );
 		return LP_Question::get_question( $id );
 	}
 
@@ -697,29 +695,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		return intval( $this->get_data( 'check_answer_count' ) );
 	}
 
-	/**
-	 * Return true if check answer is enabled.
-	 *
-	 * @return bool
-	 */
-	public function can_check_answer() {
-		$value = $this->get_data( 'show_check_answer' );
-		if ( ! is_numeric( $value ) ) {
-			$can = $value === 'yes';
-		} else {
-			$value = intval( $value );
-			if ( $value == 0 ) {
-				$can = false;
-			} elseif ( $value < 0 ) {
-				$can = true;
-			} else {
-				$checked = $this->get_check_answer_count();
-				$can     = $value - $checked;
-			}
-		}
 
-		return apply_filters( 'learn-press/quiz/enable-check-answer', $can, $this->get_id() );
-	}
 
 	public function set_show_hint( $value ) {
 		$this->_set_data( 'show_hint', $value );
@@ -736,33 +712,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		$this->_set_data( 'count_hint', $count );
 	}
 
-	public function get_count_hint() {
-		return intval( $this->get_data( 'count_hint' ) );
-	}
 
-	/**
-	 * Return true if check answer is enabled.
-	 *
-	 * @return bool
-	 */
-	public function can_hint_answer() {
-		$value = $this->get_data( 'show_hint' );
-		if ( ! is_numeric( $value ) ) {
-			$can = $value === 'yes';
-		} else {
-			$value = intval( $value );
-			if ( $value == 0 ) {
-				$can = false;
-			} elseif ( $value < 0 ) {
-				$can = true;
-			} else {
-				$checked = $this->get_count_hint();
-				$can     = $value - $checked;
-			}
-		}
-
-		return apply_filters( 'learn-press/quiz/enable-hint-answer', $can, $this->get_id() );
-	}
 
 	/**
 	 * Return true if hint answer is enabled.

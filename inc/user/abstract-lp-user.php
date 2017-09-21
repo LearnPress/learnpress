@@ -92,8 +92,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$this->set_id( $the_user );
 		} elseif ( $the_user instanceof self ) {
 			$this->set_id( absint( $the_user->get_id() ) );
-		} elseif ( ! empty( $the_user->get_id() ) ) {
-			$this->set_id( absint( $the_user->get_id() ) );
+		} elseif ( ! empty( $the_user->ID ) ) {
+			$this->set_id( absint( $the_user->gID ) );
 		}
 
 		if ( $this->get_id() > 0 ) {
@@ -151,6 +151,21 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param int $item_id
+	 * @param int $course_id
+	 *
+	 * @return LP_User_Item_Quiz|LP_User_Item|bool
+	 */
+	public function get_item_data( $item_id, $course_id ) {
+		$data = false;
+		if ( $course_data = $this->get_course_data( $course_id ) ) {
+			$data = $course_data->get_item( $item_id );
+		}
+
+		return $data;
 	}
 
 	/**
@@ -382,48 +397,33 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$return = false;
 
 		try {
-			$course_id = $this->_get_course( $course_id );
+			// Validate course and quiz
+			if ( false === ( $course_id = $this->_verify_course_item( $quiz_id, $course_id ) ) ) {
+				throw new Exception( sprintf( __( '%s::%s - Course is not exists or does not contain the quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_INVALID_QUIZ_OR_COURSE );
+			}
 
-			$quiz = LP_Quiz::get_quiz( $quiz_id );
-			if ( ! $quiz ) {
-				throw new Exception( __( 'Invalid quiz!', 'learnpress' ), 'INVALID_QUIZ' );
+			// If user has already finished the course
+			if ( $this->has_finished_course( $course_id ) ) {
+				throw new Exception( sprintf( __( '%s::%s - User has already finished course of this quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_COURSE_IS_FINISHED );
+
 			}
-			$progress = $this->get_quiz_results( $quiz->get_id(), $course_id );
-			if ( $progress ) {
-				$start_time = strtotime( $progress->start );
-				// Maximum time spend to do quiz if it finish automatically
-				if ( is_array( $args ) && ! empty( $args['auto_finish'] ) ) {
-					$time = $start_time + $quiz->get_duration();
-				} else {
-					$time = current_time( 'timestamp' );
-					if ( $time > $start_time + $quiz->get_duration() ) {
-						$time = $start_time + $quiz->get_duration();
-					}
-				}
-				$updated = learn_press_update_user_item_field(
-					array(
-						'status'   => 'completed',
-						'end_time' => date( 'Y-m-d H:i:s', $time )
-					),
-					array(
-						'user_item_id' => $progress->history_id
-					)
-				);
-				if ( $updated ) {
-					if ( is_array( $args ) ) {
-						foreach ( $args as $k => $v ) {
-							learn_press_update_user_item_meta( $progress->history_id, $k, $v );
-						}
-					}
-					$return = $this->get_quiz_results( $quiz_id, $course_id, true );
-				}
+
+			// Check if user has already started or completed quiz
+			if ( $this->has_item_status( array( 'completed' ), $quiz_id, $course_id ) ) {
+				throw new Exception( sprintf( __( '%s::%s - User has completed quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 			}
+
+			$user_quiz = $this->get_item_data($quiz_id, $course_id);
+
+			$user_quiz->finish();
 
 			do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->get_id() );
 		}
 		catch ( Exception $ex ) {
 			$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 		}
+
+
 
 		return $return;
 	}
@@ -917,6 +917,115 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Mark question that user has checked.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param   int $question_id
+	 * @param int   $quiz_id
+	 * @param int   $course_id
+	 *
+	 * @return WP_Error|mixed
+	 */
+	public function check_question( $question_id, $quiz_id, $course_id ) {
+		if ( ! $course = learn_press_get_course( $course_id ) ) {
+			return false;
+		}
+
+		if ( ! $course->has_item( $quiz_id ) ) {
+			return false;
+		}
+
+		$quiz = $course->get_item( $quiz_id );
+
+		if ( ! $quiz->has_question( $question_id ) ) {
+			return false;
+		}
+
+		$quiz_data = $this->get_item_data( $quiz_id, $course_id );
+
+		return $quiz_data->check_question( $question_id );
+	}
+
+	/**
+	 * Mark question that user has checked.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param   int $question_id
+	 * @param int   $quiz_id
+	 * @param int   $course_id
+	 *
+	 * @return WP_Error|mixed
+	 */
+	public function hint( $question_id, $quiz_id, $course_id ) {
+
+		if ( ! $course = learn_press_get_course( $course_id ) ) {
+			return false;
+		}
+
+		if ( ! $course->has_item( $quiz_id ) ) {
+			return false;
+		}
+
+		$quiz = $course->get_item( $quiz_id );
+
+		if ( ! $quiz->has_question( $question_id ) ) {
+			return false;
+		}
+
+		$quiz_data = $this->get_item_data( $quiz_id, $course_id );
+
+		if ( false === ( $remain = $quiz_data->hint( $question_id ) ) ) {
+			return new WP_Error( 1001, __( 'You can not hint question.', 'learnpress' ) );
+		}
+
+		return $remain;
+	}
+
+	/**
+	 * Return true if check answer is enabled.
+	 *
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 *
+	 * @return bool
+	 */
+	public function can_check_answer( $quiz_id, $course_id = 0 ) {
+
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
+		}
+
+		if ( $quiz_data = $this->get_item_data( $quiz_id, $course_id ) ) {
+			return $quiz_data->can_check_answer();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Return true if check answer is enabled.
+	 *
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 *
+	 * @return bool
+	 */
+	public function can_hint_answer( $quiz_id, $course_id = 0 ) {
+
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
+		}
+
+		if ( $quiz_data = $this->get_item_data( $quiz_id, $course_id ) ) {
+			return $quiz_data->can_hint_answer();
+		}
+
+		return false;
 	}
 
 	////////////////////////////////////////////////////////////////////////
@@ -3166,20 +3275,31 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *
 	 * @return bool
 	 */
-	public
-	function has_checked_answer(
-		$question_id, $quiz_id, $course_id = 0
-	) {
-		$course_id = $this->_get_course( $course_id );
-
-		$history = $this->get_quiz_results( $quiz_id, $course_id );
-		if ( ! $history ) {
-			return false;
+	public function has_checked_answer( $question_id, $quiz_id, $course_id = 0 ) {
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
 		}
-		$checked = (array) learn_press_get_user_item_meta( $history->history_id, 'question_checked', true );
-		$checked = array_filter( $checked );
 
-		return in_array( $question_id, $checked );
+		$quiz_data = $this->get_item_data( $quiz_id, $course_id );
+
+		return $quiz_data->has_checked_question( $question_id );
+	}
+
+	/**
+	 * @param     $question_id
+	 * @param     $quiz_id
+	 * @param int $course_id
+	 *
+	 * @return bool
+	 */
+	public function has_hinted_answer( $question_id, $quiz_id, $course_id = 0 ) {
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
+		}
+
+		$quiz_data = $this->get_item_data( $quiz_id, $course_id );
+
+		return $quiz_data->has_hinted_question( $question_id );
 	}
 
 	/**

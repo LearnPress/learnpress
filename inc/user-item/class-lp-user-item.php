@@ -132,4 +132,60 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return $this->get_data( 'item_id' );
 	}
 
+	public function read_meta() {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE learnpress_user_item_id = %d
+		", $this->get_user_item_id() );
+
+		if ( $results = $wpdb->get_results( $query ) ) {
+			foreach ( $results as $result ) {
+				$result->meta_value = maybe_unserialize( $result->meta_value );
+				$this->_meta_data[] = $result;
+			}
+		}
+
+	}
+
+	public function get_meta( $key, $single = true ) {
+		return learn_press_get_user_item_meta( $this->get_user_item_id(), $key, $single );
+	}
+
+	public function update_meta() {
+		if ( $this->_meta_data ) {
+			foreach ( $this->_meta_data as $meta_data ) {
+				learn_press_update_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key, $meta_data->meta_value );
+			}
+		}
+	}
+
+	public function get_mysql_data() {
+		$columns = array();
+		foreach ( $this->_data as $k => $v ) {
+			switch ( $k ) {
+				case 'start_time':
+				case 'end_time':
+					$v = $v->toSql();
+					break;
+				case 'start_time_gmt':
+					$v = new LP_Datetime( $this->_data['start_time'] );
+					$v = $v->toSql( false );
+					break;
+				case 'end_time_gmt':
+					$v = new LP_Datetime( $this->_data['end_time'] );
+					$v = $v->toSql( false );
+					break;
+			}
+			$columns[ $k ] = $v;
+		}
+
+		return $columns;
+	}
+
+	public function update() {
+		$data = $this->get_mysql_data();
+		learn_press_update_user_item_field( $data );
+	}
 }

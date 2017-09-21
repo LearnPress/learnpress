@@ -263,13 +263,14 @@ class LP_Question_Factory {
 		remove_action( 'save_post', array( __CLASS__, 'save' ) );
 		if ( ! empty( $_POST['learn_press_question'] ) ) {
 			foreach ( $_POST['learn_press_question'] as $the_id => $post_data ) {
-				( $question = self::get_question( $the_id ) ) && $question->save( $post_data );
+				( $question = LP_Question::get_question( $the_id ) ) && $question->save( $post_data );
 			}
 		}
 		add_action( 'save_post', array( __CLASS__, 'save' ) );
 	}
 
 	public static function fetch_question_content( $the_question, $args = false ) {
+		die(__FUNCTION__);
 		$question = self::get_question( $the_question );
 		$content  = '';
 		if ( $question ) {

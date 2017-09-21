@@ -12,8 +12,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * Init common ajax events
 		 */
 		public static function init() {
-			return;
-			$ajaxEvents = array(
+			/*$ajaxEvents = array(
 				'load_quiz_question'  => true,
 				'load_prev_question'  => false,
 				'load_next_question'  => false,
@@ -38,7 +37,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				if ( $nopriv ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajax_event, array( __CLASS__, $ajax_func ) );
 				}
-			}
+			}*/
 
 			LP_Request_Handler::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
 		}

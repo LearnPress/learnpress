@@ -7,15 +7,15 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( !$explanation ) {
+if ( ! $explanation = $question->get_explanation() ) {
 	return;
 }
 ?>
-<li class="learn-press-question-explanation">
-	<strong class="explanation-title"><?php esc_html_e('Explanation:', 'learnpress');?></strong>
-	<?php echo do_shortcode( $explanation ); ?>
-</li>
+<div class="question-explanation">
+    <strong class="explanation-title"><?php esc_html_e( 'Explanation:', 'learnpress' ); ?></strong>
+	<?php echo $explanation; ?>
+</div>

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Class LP_Quiz_CURD
+ * Class LP_User_Item_CURD
  *
- * Class to manipulating quiz with database.
+ * Class to manipulating user item with database.
  */
-class LP_Quiz_CURD implements LP_Interface_CURD {
+class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Errors codes and message.
 	 *
@@ -14,7 +14,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	protected $_error_messages = false;
 
 	/**
-	 * LP_Quiz_CURD constructor.
+	 * LP_User_Item_CURD constructor.
 	 */
 	public function __construct() {
 		$this->_error_messages = array(

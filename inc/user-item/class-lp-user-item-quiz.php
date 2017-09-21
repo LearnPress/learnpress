@@ -15,6 +15,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @param array $data
 	 */
 	public function __construct( $data ) {
+		$this->_curd = new LP_Quiz_CURD();
 		parent::__construct( $data );
 
 		$this->_parse_answers();
@@ -35,7 +36,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$this->add_question_answer( $k, $v );
 			}
 		} else {
-			$this->_answers[ $id ] = $values;
+			// User has not used checking answer feature
+			if ( ! $this->get_user()->has_checked_answer( $id, $this->get_id(), $this->get_course_id() ) ) {
+				$this->_answers[ $id ] = $values;
+			}
 		}
 	}
 
@@ -44,18 +48,32 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function update() {
+		parent::update();
 		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
 	}
 
 	/**
 	 * Get current question ID (quiz).
 	 *
-	 * @return int
+	 * @param string $return - Optional.
+	 *
+	 * @return int|LP_Question
 	 */
-	public function get_current_question() {
-		return learn_press_get_user_item_meta( $this->get_data( 'user_item_id' ), '_current_question', true );
+	public function get_current_question( $return = '' ) {
+		if ( $question = $this->get_meta( '_current_question', true ) ) {
+			if ( $return == 'object' ) {
+				$question = learn_press_get_question( $question );
+			}
+		}
+
+		return $question;
 	}
 
+	/**
+	 * Get ID of the course that this item assigned to.
+	 *
+	 * @return array|mixed
+	 */
 	public function get_course_id() {
 		return $this->get_data( 'ref_id' );
 	}
@@ -195,5 +213,174 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		return apply_filters( 'learn-press/quiz/time-remaining', $diff !== false ? new LP_Duration( $diff ) : false, $this->get_item_id(), $this->get_course_id() );
+	}
+
+	/**
+	 * Get all questions user has already used "Check"
+	 *
+	 * @return array
+	 */
+	public function get_checked_questions() {
+		$value = $this->get_meta( '_lp_question_checked', true );
+		if ( $value ) {
+			$value = (array) $value;
+		} else {
+			$value = array();
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Return true if user has already checked a question.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return bool
+	 */
+	public function has_checked_question( $question_id ) {
+		return in_array( $question_id, $this->get_checked_questions() );
+	}
+
+	/**
+	 * @param int $question_id
+	 *
+	 * @return int|WP_Error
+	 */
+	public function check_question( $question_id ) {
+		try {
+			$checked = false;
+			if ( ( $remain = $this->can_check_answer() ) && ( ! $checked = $this->has_checked_question( $question_id ) ) ) {
+				$checked   = $this->get_checked_questions();
+				$checked[] = $question_id;
+				$count     = $this->get_check_answer_count();
+				$this->set_meta( '_lp_question_checked', $checked );
+				//$this->set_meta( '_lp_check_answer_count', ++ $count );
+				$this->update_meta();
+				$remain --;
+			} else {
+				if ( ! $remain ) {
+					throw new Exception( __( 'Check question has reached limit.', 'learnpress' ), 1000 );
+				} elseif ( $checked ) {
+					throw new Exception( __( 'You have alreadt checked this question.', 'learnpress' ), 1010 );
+				}
+			}
+		}
+		catch ( Exception $ex ) {
+			return new WP_Error( $ex->getCode(), $ex->getMessage() );
+		}
+
+		return $remain;
+	}
+
+	/**
+	 * @param int $question_id
+	 *
+	 * @return int
+	 */
+	public function hint( $question_id ) {
+		if ( ( $remain = $this->can_hint_answer() ) /*&& ! $this->has_hint_question( $question_id ) */ ) {
+			if ( ! $this->has_hinted_question( $question_id ) ) {
+				$checked   = $this->get_hint_questions();
+				$checked[] = $question_id;
+				$this->set_meta( '_lp_question_hint', $checked );
+			}
+			$count = $this->get_count_hint();
+			//$this->set_meta( '_lp_hint_count', ++ $count );
+			$this->update_meta();
+			$remain --;
+		} else {
+			return false;
+		}
+
+		return $remain;
+	}
+
+	/**
+	 * Return true if user has already checked a question.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return bool
+	 */
+	public function has_hinted_question( $question_id ) {
+		return in_array( $question_id, $this->get_hint_questions() );
+	}
+
+	public function get_check_answer_count() {
+		return @sizeof( $this->get_checked_questions() );// absint( $this->get_meta( '_lp_check_answer_count' ) );
+	}
+
+	public function can_check_answer() {
+		$quiz = learn_press_get_quiz( $this->get_item_id() );
+
+		$value = $quiz->get_show_check_answer();
+		if ( ! is_numeric( $value ) ) {
+			$can = $value === 'yes';
+		} else {
+			$value = intval( $value );
+			if ( $value == 0 ) {
+				$can = false;
+			} elseif ( $value < 0 ) {
+				$can = true;
+			} else {
+				$checked = $this->get_check_answer_count();
+				$can     = $value - $checked;
+			}
+		}
+
+		return apply_filters( 'learn-press/user-quiz/can-check-answer', $can, $this->get_item_id(), $this->get_course_id() );
+	}
+
+	/**
+	 * Get all questions user has already used "Check"
+	 *
+	 * @return array
+	 */
+	public function get_hint_questions() {
+		$value = $this->get_meta( '_lp_question_hint', true );
+		if ( $value ) {
+			$value = (array) $value;
+		} else {
+			$value = array();
+		}
+
+		return $value;
+	}
+
+	public function get_count_hint() {
+		return @sizeof( $this->get_hint_questions() );// intval( $this->get_meta( '_lp_hint_count' ) );
+	}
+
+	/**
+	 * Return true if check answer is enabled.
+	 *
+	 * @return bool
+	 */
+	public function can_hint_answer() {
+		$quiz = learn_press_get_quiz( $this->get_item_id() );
+
+		$value = $quiz->get_show_hint();
+		if ( ! is_numeric( $value ) ) {
+			$can = $value === 'yes';
+		} else {
+			$value = intval( $value );
+			if ( $value == 0 ) {
+				$can = false;
+			} elseif ( $value < 0 ) {
+				$can = true;
+			} else {
+				$hint = $this->get_count_hint();
+				$can  = $value - $hint;
+			}
+		}
+
+		return apply_filters( 'learn-press/user-quiz/can-hint-answer', $can, $this->get_id(), $this->get_course_id() );
+	}
+
+	public function finish() {
+		$this->set_end_time( current_time( "mysql" ) );
+		$this->set_status( 'completed' );
+		$this->update();
 	}
 }

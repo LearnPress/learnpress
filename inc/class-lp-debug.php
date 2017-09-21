@@ -148,14 +148,14 @@ class LP_Debug {
 			self::$_current_name = md5( uniqid() );
 			$name                = self::$_current_name;
 		}
-		self::$_time[ $name ] = microtime(true);
+		self::$_time[ $name ] = microtime( true );
 	}
 
 	public static function timeEnd( $name = '' ) {
 		if ( ! $name ) {
 			$name = self::$_current_name;
 		}
-		$time = microtime(true) - self::$_time[ $name ];
+		$time = microtime( true ) - self::$_time[ $name ];
 		echo "{$name} execution time = " . $time . "\n";
 		unset( self::$_time[ $name ] );
 	}
@@ -176,5 +176,21 @@ class LP_Debug {
 			$exception = new $exception( $message, $code, $prev );
 			throw $exception;
 		}
+	}
+
+	/**
+	 * Start a new sql transaction
+	 */
+	public static function startTransaction() {
+		global $wpdb;
+		$wpdb->query( "START TRANSACTION;" );
+	}
+
+	/**
+	 * Rollback a sql transaction
+	 */
+	public static function rollbackTransaction() {
+		global $wpdb;
+		$wpdb->query( "ROLLBACK;" );
 	}
 }

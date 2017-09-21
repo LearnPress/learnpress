@@ -18,6 +18,7 @@ $can_view_item  = $user->can( 'view-item', $quiz->get_id(), $course->get_id() );
 ?>
 <script type="text/html" id="content-item-quiz">
     <div id="content-item-quiz" class="content-item-summary">
+
 		<?php
 		/**
 		 * @see learn_press_content_item_summary_title()
@@ -25,11 +26,16 @@ $can_view_item  = $user->can( 'view-item', $quiz->get_id(), $course->get_id() );
 		 */
 		do_action( 'learn-press/before-content-item-summary/' . $quiz->get_item_type() );
 
+		?>
+
+		<?php
 		/**
 		 * @see learn_press_content_item_summary_question()
 		 */
 		do_action( 'learn-press/content-item-summary/' . $quiz->get_item_type() );
+		?>
 
+		<?php
 		/**
 		 * @see learn_press_content_item_summary_question_numbers()
 		 */

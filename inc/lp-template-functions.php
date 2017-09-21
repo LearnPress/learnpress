@@ -512,6 +512,16 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_countdown' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_content_item_summary_quiz_question' ) ) {
+
+	function learn_press_content_item_summary_quiz_question() {
+		$quiz = LP_Global::course_item_quiz();
+
+		if ( $question = $quiz->get_viewing_question() ) {
+			learn_press_get_template( 'content-question/content.php' );
+		}
+	}
+}
 
 if ( ! function_exists( 'learn_press_content_item_summary_question_content' ) ) {
 
@@ -535,9 +545,55 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 			$course      = LP_Global::course();
 			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
-			$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
 
-			$question->render( $quiz_data->get_question_answer( $question->get_id() ) );
+			$answered = $user_quiz->get_question_answer( $question->get_id() );
+
+			$question->show_correct_answers( $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() ) ? 'yes' : false );
+			$question->disable_answers( $user_quiz->get_status() == 'completed' ? 'yes' : false );
+
+
+			$question->render( $answered );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' ) ) {
+
+	/**
+	 * Render content if quiz question.
+	 */
+	function learn_press_content_item_summary_question_explanation() {
+		$quiz = LP_Global::course_item_quiz();
+		if ( $question = $quiz->get_viewing_question() ) {
+			$course      = LP_Global::course();
+			$user        = LP_Global::user();
+			$course_data = $user->get_course_data( $course->get_id() );
+			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
+			if ( ! $question->get_explanation() || ! $user_quiz->has_checked_question( $question->get_id() ) ) {
+				return;
+			}
+			learn_press_get_template( 'content-question/explanation.php', array( 'question' => $question ) );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
+
+	/**
+	 * Render content if quiz question.
+	 */
+	function learn_press_content_item_summary_question_hint() {
+		$quiz = LP_Global::course_item_quiz();
+		if ( $question = $quiz->get_viewing_question() ) {
+			$course      = LP_Global::course();
+			$user        = LP_Global::user();
+			$course_data = $user->get_course_data( $course->get_id() );
+			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
+			if ( ! $question->get_hint() || ! $user_quiz->has_hinted_question( $question->get_id() ) ) {
+				return;
+			}
+			learn_press_get_template( 'content-question/hint.php', array( 'question' => $question ) );
 		}
 	}
 }
@@ -692,7 +748,7 @@ if ( ! function_exists( 'learn_press_quiz_check_button' ) ) {
 			return;
 		}
 
-		if ( ! $quiz->can_check_answer() ) {
+		if ( ! $user->can_check_answer( $quiz->get_id(), $course->get_id() ) ) {
 			return;
 		}
 
@@ -707,15 +763,20 @@ if ( ! function_exists( 'learn_press_quiz_check_button' ) ) {
 if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
 
 	function learn_press_quiz_hint_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
-		$quiz   = LP_Global::course_item_quiz();
+		$course   = LP_Global::course();
+		$user     = LP_Global::user();
+		$quiz     = LP_Global::course_item_quiz();
+		$question = LP_Global::quiz_question();
 
 		if ( ! $quiz->is_viewing_question() ) {
 			return;
 		}
 
-		if ( ! $quiz->can_hint_answer() ) {
+		if ( ! $question->get_hint() ) {
+			return;
+		}
+
+		if ( ! $user->can_hint_answer( $quiz->get_id(), $course->get_id() ) ) {
 			return;
 		}
 
@@ -886,10 +947,12 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 	function learn_press_single_course_args() {
 		$output = array();
 		if ( ( $course = LP_Global::course() ) && $course->get_id() ) {
-			$user        = LP_Global::user();
-			$course_data = $user->get_course_data( $course->get_id() );
-			$output      = $course_data->get_js_args();
+			$user = LP_Global::user();
+			if ( $course_data = $user->get_course_data( $course->get_id() ) ) {
+				$output = $course_data->get_js_args();
+			}
 		}
+
 		return $output;
 	}
 }

@@ -118,15 +118,104 @@
                 },
                 checkQuestion: function (event) {
                     event.preventDefault();
-                    var $form = $(event.target).is('form') ? $(event.target) : $(event.target.form);
+                    var $form = $(event.target).is('form') ? $(event.target) : $(event.target.form),
+                        $button = $('.button-check-answer'),
+                        data = $form.serializeJSON();
 
-                    console.log($form.serializeJSON())
+                    data['question-data'] = $('.answer-options').serializeJSON();
+
+                    $.ajax({
+                        data: data,
+                        type: 'post',
+                        success: function (res) {
+                            res = LP.parseJSON(res);
+                            if (_.isEmpty(res)) {
+                                return;
+                            }
+                            if (!res.remain) {
+                                $button.hide();
+                            } else {
+                                $button.attr('data-counter', res.remain).prop('disabled', true);
+                            }
+
+                            if (res.html) {
+                                $('#content-question-' + data['question-id']).replaceWith(res.html);
+                            }
+                        }
+                    });
                 },
                 showHint: function (event) {
                     event.preventDefault();
-                    var $form = $(event.target).is('form') ? $(event.target) : $(event.target.form);
+                    var $form = $(event.target).is('form') ? $(event.target) : $(event.target.form),
+                        $button = $('.button-hint-question'),
+                        data = $form.serializeJSON();
 
-                    console.log($form.serializeJSON())
+                    $.ajax({
+                        data: data,
+                        type: 'post',
+                        success: function (res) {
+                            res = LP.parseJSON(res);
+                            if (_.isEmpty(res)) {
+                                return;
+                            }
+                            if (!res.remain) {
+                                $button.hide();
+                            } else {
+                                $button.attr('data-counter', res.remain).prop('disabled', true);
+                            }
+
+                            if (res.html) {
+                                $('#content-question-' + data['question-id']).replaceWith(res.html);
+                            }
+                        }
+                    });
+                },
+                nextQuestion: function (event) {
+                    event.preventDefault();
+                    var $form = this._prepareForm(event);
+                    $form.submit();
+                },
+                prevQuestion: function () {
+                    event.preventDefault();
+                    var $form = this._prepareForm(event);
+                    $form.submit();
+                },
+                redoQuiz: function () {
+                    event.preventDefault();
+                    var $form = this._prepareForm(event);
+                    $form.submit();
+                },
+                startQuiz: function () {
+                    event.preventDefault();
+                    var $form = this._prepareForm(event);
+                    $form.submit();
+                },
+                _prepareForm: function (event) {
+                    var data = $('.answer-options').serializeJSON(),
+                        $target = $(event.target),
+                        $form = $target.is('form') ? $target : $(event.target.form),
+                        $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
+                    $form.find('input[name="question-data"]').remove();
+                    return $form.append($hidden);
+                },
+                toggle: function (event) {
+                    var $el = $(event.target),
+                        $chk = false;
+                    if ($el.is('input.option-check')) {
+                        return;
+                    }
+                    if ($el.is(':disabled')) {
+                        return;
+                    }
+                    $chk = $el.closest('.answer-option').find('input.option-check');
+                    if ($chk.is(':disabled')) {
+                        return;
+                    }
+                    if ($chk.is(':checkbox')) {
+                        $chk[0].checked = !$chk[0].checked;
+                    } else {
+                        $chk[0].checked = true;
+                    }
                 }
             }
         });
@@ -173,56 +262,7 @@
                 clickX: function () {
                     console.log('clickX')
                 },
-                nextQuestion: function (event) {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                },
-                prevQuestion: function () {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                },
-                redoQuiz: function () {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                },
-                startQuiz: function () {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                },
-                completeItem: function (event) {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                    return false;
-                },
-                checkQuestion: function (event) {
-                    event.preventDefault();
-                },
-                _prepareForm: function (event) {
-                    var data = $('.answer-options').serializeJSON(),
-                        $target = $(event.target),
-                        $form = $target.is('form') ? $target : $(event.target.form),
-                        $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
-                    $form.find('input[name="question-data"]').remove();
-                    return $form.append($hidden);
-                },
-                toggle: function (event) {
-                    var $el = $(event.target),
-                        $chk = false;
-                    if ($el.is('input.option-check')) {
-                        return;
-                    }
-                    $chk = $el.closest('.answer-option').find('input.option-check');
-                    if ($chk.is(':checkbox')) {
-                        $chk[0].checked = !$chk[0].checked;
-                    } else {
-                        $chk[0].checked = true;
-                    }
-                }
+
             }
         });
     });

@@ -88,7 +88,7 @@ function learn_press_get_current_user_id() {
 function learn_press_get_current_user( $create_temp = true, $force_new = false ) {
 	if ( $id = get_current_user_id() ) {
 
-		return learn_press_get_user($id, $force_new);
+		return learn_press_get_user( $id, $force_new );
 	}
 
 	return $create_temp ? LP_User_Factory::get_temp_user() : false;
@@ -394,15 +394,17 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 
 	// Table fields
 	$table_fields = array(
-		'user_id'    => '%d',
-		'item_id'    => '%d',
-		'ref_id'     => '%d',
-		'start_time' => '%s',
-		'end_time'   => '%s',
-		'item_type'  => '%s',
-		'status'     => '%s',
-		'ref_type'   => '%s',
-		'parent_id'  => '%d'
+		'user_id'        => '%d',
+		'item_id'        => '%d',
+		'ref_id'         => '%d',
+		'start_time'     => '%s',
+		'start_time_gmt' => '%s',
+		'end_time'       => '%s',
+		'end_time_gmt'   => '%s',
+		'item_type'      => '%s',
+		'status'         => '%s',
+		'ref_type'       => '%s',
+		'parent_id'      => '%d'
 	);
 
 	/**
@@ -431,6 +433,13 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 			$data[ $field ] = $value;
 			$data_format[]  = $table_fields[ $field ];
 		}
+	}
+
+	if ( ! empty( $fields['user_item_id'] ) ) {
+		$where = wp_parse_args(
+			$where,
+			array( 'user_item_id' => $fields['user_item_id'] )
+		);
 	}
 
 	//
@@ -499,6 +508,9 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		$extra_fields = array_diff_key( $fields, $table_fields );
 		if ( $extra_fields ) {
 			foreach ( $extra_fields as $meta_key => $meta_value ) {
+				if ( $meta_value == 'user_item_id' ) {
+					continue;
+				}
 				learn_press_update_user_item_meta( $updated_item->user_item_id, $meta_key, $meta_value );
 			}
 		}

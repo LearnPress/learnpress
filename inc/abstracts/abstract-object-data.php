@@ -382,11 +382,36 @@ abstract class LP_Abstract_Object_Data {
 			foreach ( $key_or_array as $key => $value ) {
 				$this->add_meta( $key, $value );
 			}
-		} else {
+		} elseif ( is_string( $key_or_array ) ) {
 			$this->_meta_data[] = (object) array(
 				'meta_key'   => $key_or_array,
 				'meta_value' => $value
 			);
+		} else {
+			$this->_meta_data[] = $key_or_array;
+		}
+	}
+
+	/**
+	 * Update item meta if it is already existed. Otherwise, add a new once.
+	 *
+	 * @param $meta_key
+	 * @param $meta_value
+	 */
+	public function set_meta( $meta_key, $meta_value ) {
+		if ( empty( $this->_meta_data ) ) {
+			$this->add_meta( $meta_key, $meta_value );
+		} else {
+			$found = false;
+			foreach ( $this->_meta_data as $k => $meta_data ) {
+				if ( $meta_data->meta_key === $meta_key ) {
+					$this->_meta_data[ $k ]->meta_value = $meta_value;
+					$found                              = true;
+				}
+			}
+			if ( ! $found ) {
+				$this->add_meta( $meta_key, $meta_value );
+			}
 		}
 	}
 
@@ -396,10 +421,6 @@ abstract class LP_Abstract_Object_Data {
 				$this->_curd->update_meta( $this, $meta_data );
 			}
 		}
-	}
-
-	public function get_meta( $key, $single = true ) {
-		return 10000;
 	}
 
 	public function get_meta_keys() {
