@@ -13,33 +13,46 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $post, $profile;
 
-$profile->query_courses();
-
+$courses = $profile->query_courses();
+/*
 $user = $profile->get_user();
 $args = array( 'user' => $user );
 
+
+return;
 $limit   = LP()->settings->get( 'profile_courses_limit', 10 );
 $limit   = apply_filters( 'learn_press_profile_tab_courses_all_limit', $limit );
 $courses = $user->get( 'courses', array( 'limit' => $limit ) );
 
 $num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
 $args['courses']   = $courses;
-$args['num_pages'] = $num_pages;
+$args['num_pages'] = $num_pages;*/
 ?>
 
 <?php if ( $courses ) { ?>
     <div class="learn-press-subtab-content">
 
-        <ul class="learn-press-courses profile-courses courses-list">
-			<?php foreach ( $courses as $post ) {
-				setup_postdata( $post );
-				learn_press_get_template( 'profile/tabs/courses/loop.php', array(
-					'user'      => $user,
-					'course_id' => $post->ID
-				) );
-				wp_reset_postdata();
-			} ?>
-        </ul>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Enrolled</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+			<?php foreach ( $courses as $user_course ) { ?>
+				<?php $course = learn_press_get_course( $user_course->get_id() ); ?>
+                <tr>
+                    <td><?php echo $course->get_title(); ?></td>
+                    <td><?php print_r( $user_course->get_results() ); ?></td>
+                    <td><?php echo $user_course->get_results( 'status' ); ?> </td>
+                </tr>
+
+			<?php } ?>
+            </tbody>
+        </table>
+
 
 		<?php learn_press_paging_nav( array( 'num_pages' => $num_pages ) ); ?>
 

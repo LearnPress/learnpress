@@ -175,6 +175,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return float|int
 	 */
 	public function get_results( $prop = '' ) {
+
 		$course_result = 'evaluate_lesson';//$this->get_data( 'course_result' );
 		switch ( $course_result ) {
 			// Completed lessons per total
@@ -212,9 +213,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			} else {
 				$result = 0;
 			}
+			$result *=100;
 			$data = array(
-				'result' => $result * 100,
-				'grade'  => $this->is_finished() ? ( $this->can_graduated() ? 'passed' : 'failed' ) : '',
+				'result' => $result,
+				'grade'  => $this->is_finished() ? ( $result >= $this->get_passing_condition() ? 'passed' : 'failed' ) : '',
 				'status' => $this->get_status()
 			);
 

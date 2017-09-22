@@ -741,25 +741,49 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				return $query;
 			}
 
-			$course_ids = array_keys( $orders );
-			$format     = array_fill( 0, sizeof( $course_ids ), '%d' );
+			$course_ids   = array_keys( $orders );
+			$format       = array_fill( 0, sizeof( $course_ids ), '%d' );
+			$query_args   = $course_ids;
+			$query_args[] = $user_id;
+
+//			echo $sql = $wpdb->prepare( "
+//				SELECT *
+//				FROM {$wpdb->learnpress_user_items}
+//				WHERE item_id IN(" . join( ',', $format ) . ")
+//				AND user_id = %d
+//				ORDER BY user_item_id DESC
+//			", $query_args );
 
 			$sql = $wpdb->prepare( "
-				SELECT *
-				FROM {$wpdb->learnpress_user_items}
-				WHERE item_id IN(" . join( ',', $format ) . ")
-				ORDER BY user_item_id DESC
-			", $course_ids );
+			SELECT *
+			FROM
+			(
+				SELECT ui.* 
+				FROM {$wpdb->learnpress_user_items} ui
+				INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s
+				where user_id = %d
+				ORDER BY item_id, user_item_id DESC
+				) X GROUP BY item_id
+			", 'lp_course', $user_id );
 
 			$items = $wpdb->get_results( $sql, ARRAY_A );
+
+
 			if ( $items ) {
+				$course_ids = wp_list_pluck( $items, 'item_id' );
+				LP_Helper::cache_posts( $course_ids );
+
 				$courses = array();
 				foreach ( $items as $item ) {
-					$courses[] = $this->read_course_info( $item );
+					$courses[] = new LP_User_Item_Course( $item );
+					///learn_press_get_course($item['item_id']);
+					//$course_ids[] = $item['item_id'];// $this->read_course_info( $item );
 				}
 			}
+
+			wp_cache_set( $cache_key, $courses, 'lp-user-course' );
 		}
-		learn_press_debug( $courses );
+		return $courses;
 	}
 
 	public function read_course_info( $course ) {
