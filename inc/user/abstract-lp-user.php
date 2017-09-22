@@ -924,7 +924,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	public function get_quiz_results( $quiz_id, $course_id = 0 ) {
 		$user_quiz = $this->get_item_data( $quiz_id, $course_id );
 
-		return $user_quiz ? $user_quiz->get_result() : false;
+		return $user_quiz ? $user_quiz->get_results() : false;
 	}
 
 	/**

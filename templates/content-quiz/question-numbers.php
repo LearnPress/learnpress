@@ -4,7 +4,7 @@ $quiz      = LP_Global::course_item_quiz();
 $questions = $quiz->get_questions();
 $user      = LP_Global::user();
 $quiz_data = $user->get_quiz_data( $quiz->get_id() );
-$result    = $quiz_data->get_result();
+$result    = $quiz_data->get_results();
 $position  = 0;
 ?>
 <ul class="question-numbers">

@@ -53,6 +53,13 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
+	 * @return bool|LP_Quiz
+	 */
+	public function get_quiz() {
+		return learn_press_get_quiz( $this->get_item_id() );
+	}
+
+	/**
 	 * Get current question ID (quiz).
 	 *
 	 * @param string $return - Optional.
@@ -60,7 +67,15 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return int|LP_Question
 	 */
 	public function get_current_question( $return = '' ) {
-		if ( $question = $this->get_meta( '_current_question', true ) ) {
+		$question = $this->get_meta( '_current_question', true );
+		if ( ! $question ) {
+			if ( $questions = $this->get_quiz()->get_questions() ) {
+				$question = reset( $questions );
+				$this->set_meta( '_current_question', $question );
+				$this->update_meta();
+			}
+		}
+		if ( $question ) {
 			if ( $return == 'object' ) {
 				$question = learn_press_get_question( $question );
 			}
@@ -81,11 +96,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Calculate result of quiz.
 	 *
-	 * @param bool $force - Optional. Force to refresh cache.
+	 * @param string $prop
+	 * @param bool   $force - Optional. Force to refresh cache.
 	 *
 	 * @return array|bool|mixed
 	 */
-	public function get_result( $force = false ) {
+	public function get_results( $prop = 'result', $force = false ) {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
 		if ( false === ( $result = wp_cache_get( $cache_key, 'lp-quiz-result' ) ) || $force ) {
@@ -97,7 +113,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				'question_empty'    => 0,
 				'question_answered' => 0,
 				'question_wrong'    => 0,
-				'question_correct'  => 0
+				'question_correct'  => 0,
+				'status'            => $this->get_status(),
+				'grade'             => ''
 			);
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {
@@ -124,17 +142,24 @@ class LP_User_Item_Quiz extends LP_User_Item {
 						$result['question_answered'] ++;
 					}
 				}
+				$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
+				$result['result'] = $percent;
+				$result['grade']  = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
 
 				$result['question_count'] = sizeof( $questions );
 			}
 			wp_cache_set( $cache_key, $result, 'lp-quiz-result' );
 		}
 
-		return $result;
+		return $prop && $result && array_key_exists( $prop, $result ) ? $result[$prop] : $result;
+	}
+
+	public function get_percent_result( $decimal = 1 ) {
+		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_results( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
 	}
 
 	public function is_answered( $question_id ) {
-		$result = $this->get_result();
+		$result = $this->get_results();
 		if ( ! empty( $result['questions'][ $question_id ] ) ) {
 			return $result['questions'][ $question_id ]['answered'];
 		}
@@ -143,7 +168,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function is_answered_true( $question_id ) {
-		$result = $this->get_result();
+		$result = $this->get_results();
 		if ( ! empty( $result['questions'][ $question_id ] ) ) {
 			return $result['questions'][ $question_id ]['correct'];
 		}
@@ -159,7 +184,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return float|int|mixed
 	 */
 	public function get_questions_answered( $percent = false ) {
-		$result = $this->get_result();
+		$result = $this->get_results();
 		if ( $percent ) {
 			$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
 		} else {
@@ -177,7 +202,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return float|int|mixed
 	 */
 	public function get_mark( $percent = false ) {
-		$result = $this->get_result();
+		$result = $this->get_results();
 		if ( $percent ) {
 			$return = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
 		} else {
@@ -195,7 +220,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function get_quiz_mark() {
-		$result = $this->get_result();
+		$result = $this->get_results();
 
 		return $result['mark'];
 	}
@@ -384,7 +409,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$this->update();
 	}
 
-	public function redo(){
+	public function redo() {
 		$course_id = $this->_get_course( $course_id );
 
 		$user_quiz  = $this->get_item_data( $quiz_id, $course_id );

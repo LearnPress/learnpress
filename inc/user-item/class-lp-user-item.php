@@ -58,9 +58,19 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	/**
 	 * Get start-time.
+	 *
+	 * @param string $format
+	 *
+	 * @return string|LP_Datetime
 	 */
-	public function get_start_time() {
-		return new LP_Datetime( $this->get_data( 'start_time' ) );
+	public function get_start_time( $format = '') {
+		$date = new LP_Datetime( $this->get_data( 'start_time' ) );
+
+		if ( $format ) {
+			return $date->format( $format );
+		}
+
+		return $date;
 	}
 
 	/**
@@ -74,9 +84,18 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	/**
 	 * Get end-time.
+	 *
+	 * @param string $format
+	 *
+	 * @return string|LP_Datetime
 	 */
-	public function get_end_time() {
-		return new LP_Datetime( $this->get_data( 'end_time' ) );
+	public function get_end_time( $format = '' ) {
+		$date = new LP_Datetime( $this->get_data( 'end_time' ) );
+		if ( $format ) {
+			return $date->format( $format );
+		}
+
+		return $date;
 	}
 
 	/**
@@ -218,5 +237,16 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function update() {
 		$data = $this->get_mysql_data();
 		learn_press_update_user_item_field( $data );
+	}
+
+	public function get_status_label() {
+		$statuses = array(
+			'enrolled'  => __( 'In Progress', 'learnpress' ),
+			'started'   => __( 'In Progress', 'learnpress' ),
+			'completed' => __( 'Completed', 'learnpress' ),
+			'finished'  => __( 'Finished', 'learnpress' )
+		);
+
+		return ! empty( $statuses[ $this->get_status() ] ) ? $statuses[ $this->get_status() ] : __( 'Unknown', 'learnpress' );
 	}
 }

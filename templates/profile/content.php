@@ -43,7 +43,13 @@ $current = $profile->get_current_tab();
 				}
 			} else {
 				foreach ( $tab_data['sections'] as $key => $section ) {
-					do_action( 'learn-press/profile-section-content', $key );
+					if ( $profile->get_current_section( '', false, false ) === $section['slug'] ) {
+						if ( is_callable( $tab_data['callback'] ) ) {
+							echo call_user_func_array( $section['callback'], array( $key, $section, $user ) );
+						} else {
+							do_action( 'learn-press/profile-section-content', $key, $section, $user );
+						}
+					}
 				}
 			} ?>
 

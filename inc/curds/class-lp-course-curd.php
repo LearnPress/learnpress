@@ -66,7 +66,8 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				'block_lesson_content' => get_post_meta( $id, '_lp_block_lesson_content', true ),
 				'course_result'        => get_post_meta( $id, '_lp_course_result', true ),
 				'passing_condition'    => get_post_meta( $id, '_lp_passing_condition', true ),
-				'payment'              => get_post_meta( $id, '_lp_payment', true )
+				'payment'              => get_post_meta( $id, '_lp_payment', true ),
+				'final_quiz'           => get_post_meta( $id, '_lp_final_quiz', true )
 			)
 		);
 	}
@@ -93,7 +94,7 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		 * then ignore that course.
 		 */
 		foreach ( $course_id as $id ) {
-			if ( false ===($data = wp_cache_get( 'course-' . $id, 'lp-course-curriculum' ) )) {
+			if ( false === ( $data = wp_cache_get( 'course-' . $id, 'lp-course-curriculum' ) ) ) {
 				$fetch_ids[] = $id;
 			}
 		}

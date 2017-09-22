@@ -721,30 +721,58 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return true;
 	}
 
-	public function query_courses( $user_id, $args = '' ) {
-		global $wpdb;
-
-		$args = wp_parse_args(
+	/**
+	 * Query courses by user
+	 *
+	 * @param int    $user_id
+	 * @param string $args
+	 *
+	 * @return LP_Query_List_Table
+	 */
+	public function query_courses( $user_id = 0, $args = '' ) {
+		global $wpdb, $wp;
+		$paged = 1;
+		if ( ! empty( $wp->query_vars['view_id'] ) ) {
+			$paged = absint( $wp->query_vars['view_id'] );
+		}
+		$paged = max( $paged, 1 );
+		$args  = wp_parse_args(
 			$args, array(
-				'paged' => 1,
+				'paged' => $paged,
 				'limit' => 10,
 			)
 		);
+
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
 
 		$cache_key = sprintf( 'courses-%d-%s', $user_id, md5( build_query( $args ) ) );
 
 		if ( false === ( $courses = wp_cache_get( $cache_key, 'lp-user-courses' ) ) ) {
 
-			$orders = $this->get_orders( $user_id );
-			$query  = array( 'total' => 0, 'pages' => 0, 'items' => false );
-			if ( ! $orders ) {
-				return $query;
-			}
+			$courses = array(
+				'total' => 0,
+				'paged' => $args['paged'],
+				'limit' => $args['limit'],
+				'pages' => 0,
+				'items' => array()
+			);
 
-			$course_ids   = array_keys( $orders );
-			$format       = array_fill( 0, sizeof( $course_ids ), '%d' );
-			$query_args   = $course_ids;
-			$query_args[] = $user_id;
+			try {
+
+				$orders = $this->get_orders( $user_id );
+				$query  = array( 'total' => 0, 'pages' => 0, 'items' => false );
+
+				if ( ! $orders ) {
+					throw new Exception( "", 0 );
+					//return new LP_Query_List_Table( $courses );
+				}
+
+				$course_ids   = array_keys( $orders );
+				$format       = array_fill( 0, sizeof( $course_ids ), '%d' );
+				$query_args   = $course_ids;
+				$query_args[] = $user_id;
 
 //			echo $sql = $wpdb->prepare( "
 //				SELECT *
@@ -753,37 +781,153 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 //				AND user_id = %d
 //				ORDER BY user_item_id DESC
 //			", $query_args );
+				$limit  = $args['limit'];
+				$offset = ( $args['paged'] - 1 ) * $limit;
 
-			$sql = $wpdb->prepare( "
-			SELECT *
-			FROM
-			(
-				SELECT ui.* 
-				FROM {$wpdb->learnpress_user_items} ui
-				INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s
-				where user_id = %d
-				ORDER BY item_id, user_item_id DESC
-				) X GROUP BY item_id
-			", 'lp_course', $user_id );
+				$sql = $wpdb->prepare( "
+					SELECT SQL_CALC_FOUND_ROWS *
+					FROM
+					(
+						SELECT ui.* 
+						FROM {$wpdb->learnpress_user_items} ui
+						INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s
+						where user_id = %d
+						ORDER BY item_id, user_item_id DESC
+						) X GROUP BY item_id
+						LIMIT {$offset}, {$limit}
+				", LP_COURSE_CPT, $user_id );
 
-			$items = $wpdb->get_results( $sql, ARRAY_A );
+				$items = $wpdb->get_results( $sql, ARRAY_A );
 
+				if ( $items ) {
+					$count      = $wpdb->get_var( "SELECT FOUND_ROWS()" );
+					$course_ids = wp_list_pluck( $items, 'item_id' );
+					LP_Helper::cache_posts( $course_ids );
 
-			if ( $items ) {
-				$course_ids = wp_list_pluck( $items, 'item_id' );
-				LP_Helper::cache_posts( $course_ids );
-
-				$courses = array();
-				foreach ( $items as $item ) {
-					$courses[] = new LP_User_Item_Course( $item );
-					///learn_press_get_course($item['item_id']);
-					//$course_ids[] = $item['item_id'];// $this->read_course_info( $item );
+					$courses['total'] = $count;
+					$courses['pages'] = ceil( $count / $args['limit'] );
+					foreach ( $items as $item ) {
+						$courses['items'][] = new LP_User_Item_Course( $item );
+						///learn_press_get_course($item['item_id']);
+						//$course_ids[] = $item['item_id'];// $this->read_course_info( $item );
+					}
 				}
+
+			}
+			catch ( Exception $ex ) {
+
 			}
 
 			wp_cache_set( $cache_key, $courses, 'lp-user-course' );
 		}
-		return $courses;
+
+		$courses['single'] = __( 'course', 'learnpress' );
+		$courses['plural'] = __( 'courses', 'learnpress' );
+
+		return new LP_Query_List_Table( $courses );
+	}
+
+	/**
+	 * Query quizzes by user.
+	 *
+	 * @param int    $user_id
+	 * @param string $args
+	 *
+	 * @return LP_Query_List_Table
+	 */
+	public function query_quizzes( $user_id = 0, $args = '' ) {
+		global $wpdb, $wp;
+		$paged = 1;
+		if ( ! empty( $wp->query_vars['view_id'] ) ) {
+			$paged = absint( $wp->query_vars['view_id'] );
+		}
+		$paged = max( $paged, 1 );
+		$args  = wp_parse_args(
+			$args, array(
+				'paged' => $paged,
+				'limit' => 10,
+			)
+		);
+
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
+
+		$cache_key = sprintf( 'quizzes-%d-%s', $user_id, md5( build_query( $args ) ) );
+
+		if ( false === ( $quizzes = wp_cache_get( $cache_key, 'lp-user-quizzes' ) ) ) {
+
+			$orders = $this->get_orders( $user_id );
+			$query  = array( 'total' => 0, 'pages' => 0, 'items' => false );
+
+			$quizzes = array(
+				'total' => 0,
+				'paged' => $args['paged'],
+				'limit' => $args['limit'],
+				'pages' => 0,
+				'items' => array()
+			);
+
+			try {
+				if ( ! $orders ) {
+					throw new Exception( "", 0 );
+				}
+
+				$course_ids   = array_keys( $orders );
+				$format       = array_fill( 0, sizeof( $course_ids ), '%d' );
+				$query_args   = $course_ids;
+				$query_args[] = $user_id;
+
+//			echo $sql = $wpdb->prepare( "
+//				SELECT *
+//				FROM {$wpdb->learnpress_user_items}
+//				WHERE item_id IN(" . join( ',', $format ) . ")
+//				AND user_id = %d
+//				ORDER BY user_item_id DESC
+//			", $query_args );
+				$limit  = $args['limit'];
+				$offset = ( $args['paged'] - 1 ) * $limit;
+
+				$sql = $wpdb->prepare( "
+					SELECT SQL_CALC_FOUND_ROWS *
+					FROM
+					(
+						SELECT ui.* 
+						FROM {$wpdb->learnpress_user_items} ui
+						INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s
+						where user_id = %d
+						ORDER BY item_id, user_item_id DESC
+						) X GROUP BY item_id
+						LIMIT {$offset}, {$limit}
+				", LP_QUIZ_CPT, $user_id );
+
+				$items = $wpdb->get_results( $sql, ARRAY_A );
+
+
+				if ( $items ) {
+					$count      = $wpdb->get_var( "SELECT FOUND_ROWS()" );
+					$course_ids = wp_list_pluck( $items, 'item_id' );
+					LP_Helper::cache_posts( $course_ids );
+
+					$quizzes['total'] = $count;
+					$quizzes['pages'] = ceil( $count / $args['limit'] );
+					foreach ( $items as $item ) {
+						$quizzes['items'][] = new LP_User_Item_Quiz( $item );
+						///learn_press_get_course($item['item_id']);
+						//$course_ids[] = $item['item_id'];// $this->read_course_info( $item );
+					}
+				}
+			}
+			catch ( Exception $ex ) {
+
+			}
+			wp_cache_set( $cache_key, $quizzes, 'lp-user-course' );
+		}
+
+		$quizzes['single'] = __( 'quiz', 'learnpress' );
+		$quizzes['plural'] = __( 'quizzes', 'learnpress' );
+
+		return new LP_Query_List_Table( $quizzes );
 	}
 
 	public function read_course_info( $course ) {

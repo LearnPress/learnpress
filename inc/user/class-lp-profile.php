@@ -182,76 +182,107 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function get_tabs() {
-			$settings = LP()->settings;
-			$defaults = array(
-				''              => array(
-					'title'    => __( 'Dashboard', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-dashboard', '' ),
-					'callback' => array( $this, 'tab_dashboard' )
-				),
-				'courses'       => array(
-					'title'    => __( 'Courses', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-courses', 'courses' ),
-					'callback' => array( $this, 'tab_courses' )
-				),
-				'quizzes'       => array(
-					'title'    => __( 'Quizzes', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-quizzes', 'quizzes' ),
-					'callback' => array( $this, 'tab_quizzes' )
-				),
-				'orders'        => array(
-					'title'    => __( 'Orders', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-orders', 'orders' ),
-					'callback' => array( $this, 'tab_orders' )
-				),
-				'order-details' => array(
-					'title'    => __( 'Order details', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-order-details', 'order-details' ),
-					'hidden'   => true,
-					'callback' => array( $this, 'tab_order_details' )
-				),
-				'settings'      => array(
-					'title'    => __( 'Settings', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-settings', 'settings' ),
-					'callback' => array( $this, 'tab_settings' ),
-					'sections' => array(
-						'basic-information' => array(
-							'title'    => __( 'General', 'learnpress' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ),
-							'callback' => array( $this, 'tab_order_details' )
+			static $tabs = false;
+
+			if ( $tabs === false ) {
+				$settings = LP()->settings;
+				$defaults = array(
+					''              => array(
+						'title'    => __( 'Dashboard', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-dashboard', '' ),
+						'callback' => array( $this, 'tab_dashboard' ),
+						'priority' => 10
+					),
+					'courses'       => array(
+						'title'    => __( 'Courses', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-courses', 'courses' ),
+						'callback' => array( $this, 'tab_courses' ),
+						'priority' => 15
+					),
+					'quizzes'       => array(
+						'title'    => __( 'Quizzes', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-quizzes', 'quizzes' ),
+						'callback' => array( $this, 'tab_quizzes' ),
+						'priority' => 20
+					),
+					'orders'        => array(
+						'title'    => __( 'Orders', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-orders', 'orders' ),
+						'callback' => array( $this, 'tab_orders' ),
+						'priority' => 25
+					),
+					'order-details' => array(
+						'title'    => __( 'Order details', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-order-details', 'order-details' ),
+						'hidden'   => true,
+						'callback' => array( $this, 'tab_order_details' ),
+						'priority' => 30
+					),
+					'settings'      => array(
+						'title'    => __( 'Settings', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-settings', 'settings' ),
+						'callback' => array( $this, 'tab_settings' ),
+						'sections' => array(
+							'basic-information' => array(
+								'title'    => __( 'General', 'learnpress' ),
+								'slug'     => $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ),
+								'callback' => array( $this, 'tab_order_details' ),
+								'priority' => 10
+							),
+							'avatar'            => array(
+								'title'    => __( 'Avatar', 'learnpress' ),
+								'callback' => array( $this, 'tab_order_details' ),
+								'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
+								'priority' => 20
+							),
+							'change-password'   => array(
+								'title'    => __( 'Password', 'learnpress' ),
+								'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
+								'hidden'   => true,
+								'callback' => array( $this, 'tab_order_details' ),
+								'priority' => 30
+							)
 						),
-						'avatar'            => array(
-							'title'    => __( 'Avatar', 'learnpress' ),
-							'callback' => array( $this, 'tab_order_details' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
-						),
-						'change-password'   => array(
-							'title'    => __( 'Password', 'learnpress' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
-							'hidden'   => true,
-							'callback' => array( $this, 'tab_order_details' )
-						)
+						'priority' => 35
 					)
-				)
-			);
+				);
 
-			$tabs = apply_filters( 'learn-press/profile-tabs', $defaults );
+				$tabs = apply_filters( 'learn-press/profile-tabs', $defaults );
 
-			foreach ( $tabs as $slug => $data ) {
-				if ( ! array_key_exists( 'slug', $data ) ) {
-					$data['slug'] = $slug;
-				}
-				if ( empty( $data['sections'] ) ) {
-					continue;
-				}
-				foreach ( $data['sections'] as $section_slug => $section_data ) {
-					if ( ! array_key_exists( 'slug', $section_data ) ) {
-						$tabs[ $slug ]['sections'][ $section_slug ]['slug'] = $section_slug;
+				foreach ( $tabs as $slug => $data ) {
+					if ( ! array_key_exists( 'slug', $data ) ) {
+						$tabs[ $slug ]['slug'] = $slug;
 					}
+
+					if ( ! array_key_exists( 'priority', $data ) ) {
+						$tabs[ $slug ]['priority'] = 10;
+					}
+
+					if ( empty( $data['sections'] ) ) {
+						continue;
+					}
+					foreach ( $data['sections'] as $section_slug => $section_data ) {
+						if ( ! array_key_exists( 'slug', $section_data ) ) {
+							$tabs[ $slug ]['sections'][ $section_slug ]['slug'] = $section_slug;
+						}
+
+						if ( ! array_key_exists( 'priority', $section_data ) ) {
+							$tabs[ $slug ]['sections'][ $section_slug ]['priority'] = 10;
+						}
+					}
+					//$tabs[ $slug ]['sections']
+					uasort( $tabs[ $slug ]['sections'], array( $this, '_sort_tabs' ) );
 				}
+
+				uasort( $tabs, array( $this, '_sort_tabs' ) );
+
 			}
 
 			return $tabs;
+		}
+
+		protected function _sort_tabs( $a, $b ) {
+			return $a['priority'] > $b['priority'];
 		}
 
 		/**
@@ -426,6 +457,32 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$url = apply_filters( 'learn_press_user_profile_link', $url, $user->get_id(), $tab );
 
 			return apply_filters( 'learn-press/user-profile-url', $url, $user->get_id(), $tab );
+		}
+
+		/**
+		 * Get current link of profile
+		 *
+		 * @param string $args           - Optional. Add more query args to url.
+		 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
+		 *
+		 * @return mixed|string
+		 */
+		public function get_current_url( $args = '', $with_permalink = false ) {
+			$url = $this->get_tab_link( $this->get_current_tab() );
+
+			if ( is_array( $args ) && $args ) {
+				if ( ! $with_permalink ) {
+					$url = add_query_arg( $args, $url );
+				} else {
+					$parts = array();
+					foreach ( $args as $k => $v ) {
+						$parts[] = "{$k}/{$v}";
+					}
+					$url = trailingslashit( $url ) . join( "/", $parts ) . '/';
+				}
+			}
+
+			return $url;
 		}
 
 		/**
@@ -635,8 +692,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $query;
 		}
 
+		/**
+		 * @return array|LP_Query_List_Table
+		 */
 		public function query_courses() {
 			return $this->_curd->query_courses( $this->get_user_data( 'id' ) );
+		}
+
+		/**
+		 * @return array|LP_Query_List_Table
+		 */
+		public function query_quizzes() {
+			return $this->_curd->query_quizzes( $this->get_user_data( 'id' ) );
 		}
 
 		/**

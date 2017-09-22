@@ -127,3 +127,30 @@
         font-size: 13px;
     }
 }
+
+.profile-list-table {
+    td{
+        &.column-actions{
+            white-space: nowrap;
+        }
+    ;
+    }
+    .result-percent {
+        font-size: 12px;
+        font-weight: bold;
+        min-width: 40px;
+        display: inline-block;
+        text-align: right;
+    }
+}
+
+.profile-list-courses {
+    .column-course {
+
+    }
+
+    .column-date,
+    .column-status {
+        width: 150px;
+    }
+}

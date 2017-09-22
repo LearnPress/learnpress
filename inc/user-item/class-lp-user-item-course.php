@@ -54,6 +54,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Read items's data of course for the user.
 	 */
 	public function read_items() {
+		$user_curd = new LP_User_CURD();
+		$user_curd->read_course( $this->get_user_id(), $this->get_course()->get_id() );
+
 		$this->_course = $course = learn_press_get_course( $this->get_id() );
 		$this->_set_data( $this->_item );
 		$course_items = $course->get_items();
@@ -174,16 +177,18 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 *
 	 * @return float|int
 	 */
-	public function get_results( $prop = '' ) {
+	public function get_results( $prop = 'result' ) {
 
-		$course_result = 'evaluate_lesson';//$this->get_data( 'course_result' );
+		$course_result = $this->get_course()->get_data( 'course_result' );
+		$results       = false;
 		switch ( $course_result ) {
 			// Completed lessons per total
 			case 'evaluate_lesson':
-				$this->_evaluate_course_by_lesson();
+				$results = $this->_evaluate_course_by_lesson();
 				break;
 			// Results of final quiz
 			case 'evaluate_final_quiz':
+				$results = $this->_evaluate_course_by_final_quiz();
 				break;
 			// Points of quizzes per points of all quizzes
 			case 'evaluate_quizzes':
@@ -195,35 +200,68 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			case 'evaluate_quiz':
 		}
 
-		$result = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' );
+		///$result = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' );
 
-		return $prop && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
+		return $prop && $results && array_key_exists( $prop, $results ) ? $results[ $prop ] : $results;
+	}
+
+	public function get_percent_result( $decimal = 1 ) {
+		return apply_filters( 'learn-press/user/course-percent-result', sprintf( '%s%%', round( $this->get_results( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
 	}
 
 	/**
 	 * Evaluate course result by lessons.
 	 *
-	 * @return float|int
+	 * @return array
 	 */
 	protected function _evaluate_course_by_lesson() {
-		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' ) ) ) {
+		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-lesson' ) ) ) {
 			$completing = $this->get_completed_items( LP_LESSON_CPT, true );
 			if ( $completing[1] ) {
 				$result = $completing[0] / $completing[1];
 			} else {
 				$result = 0;
 			}
-			$result *=100;
-			$data = array(
+			$result *= 100;
+			$data   = array(
 				'result' => $result,
 				'grade'  => $this->is_finished() ? ( $result >= $this->get_passing_condition() ? 'passed' : 'failed' ) : '',
 				'status' => $this->get_status()
 			);
 
-			wp_cache_set( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), $data, 'lp-user-course-results' );
+			wp_cache_set( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), $data, 'lp-user-course-results/evaluate-by-lesson' );
 		}
 
-		return $data['result'];
+		return $data;
+	}
+
+	/**
+	 * Evaluate course result by final quiz.
+	 *
+	 * @return array
+	 */
+	protected function _evaluate_course_by_final_quiz() {
+
+
+		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-final-quiz' ) ) ) {
+			$course     = $this->get_course();
+			$final_quiz = $course->get_final_quiz();
+
+			$result = false;
+			if ( $user_quiz = $this->get_item( $final_quiz ) ) {
+				$result = $user_quiz->get_results();
+			}
+
+			$data = array(
+				'result' => $result ? $result['result'] : 0,
+				'grade'  => $result ? $result['grade'] : '',
+				'status' => $this->get_status()
+			);
+
+			wp_cache_set( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), $data, 'lp-user-course-results/evaluate-by-final-quiz' );
+		}
+
+		return $data;
 	}
 
 	/**
