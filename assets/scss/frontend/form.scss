@@ -23,7 +23,7 @@
             td {
                 border-bottom: 1px solid #DDD;
                 font-size: 14px;
-                a{
+                a {
                     text-decoration: none;
                     border-bottom: none;
                 }
@@ -33,20 +33,20 @@
             }
         }
     }
-    .list-table-nav{
+    .list-table-nav {
         td {
             font-size: 14px;
-            &.nav-text{
+            &.nav-text {
                 text-align: left;
                 //padding-left: 0;
             }
-            &.nav-pages{
+            &.nav-pages {
                 text-align: right;
                 //padding-right: 0;
-                .learn-press-pagination{
+                .learn-press-pagination {
                     text-align: right;
                 }
-                .page-numbers{
+                .page-numbers {
                     margin-bottom: 0;
                 }
             }
@@ -54,16 +54,30 @@
     }
 }
 
-.lp-label{
+.lp-label {
     font-size: 12px;
     display: inline-block;
     padding: 3px 5px;
     background: #DDD;
     border-radius: 4px;
     line-height: 1;
-    &.label-finished{
+    color: #FFF;
+    &.label-finished,
+    &.label-completed {
+        background: #ffdc1e;
+    }
+
+    &.label-passed {
         background: #14c4ff;
-        color: #FFF;
+    }
+
+    &.label-failed {
+        background: #ff4d66;
+    }
+
+    &.label-enrolled,
+    &.label-started {
+        background: #d243ff;
     }
 }
 

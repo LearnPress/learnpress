@@ -129,8 +129,8 @@
 }
 
 .profile-list-table {
-    td{
-        &.column-actions{
+    td {
+        &.column-actions {
             white-space: nowrap;
         }
     ;
@@ -140,15 +140,16 @@
         font-weight: bold;
         min-width: 40px;
         display: inline-block;
-        text-align: right;
     }
 }
 
-.profile-list-courses {
+.profile-list-courses,
+.profile-list-quizzes {
     .column-course {
 
     }
-
+    .column-passing-grade,
+    .column-time-interval,
     .column-date,
     .column-status {
         width: 150px;

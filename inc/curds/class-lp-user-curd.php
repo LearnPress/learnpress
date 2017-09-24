@@ -818,7 +818,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			}
 
-			wp_cache_set( $cache_key, $courses, 'lp-user-course' );
+			wp_cache_set( $cache_key, $courses, 'lp-user-courses' );
 		}
 
 		$courses['single'] = __( 'course', 'learnpress' );

@@ -685,6 +685,16 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'echo'      => false,
 						'paged'     => $args['paged']
 					) );
+
+					$query = new LP_Query_List_Table(
+						array(
+							'total' => $query_order->found_posts,
+							'paged' => $args['paged'],
+							'limit' => $args['limit'],
+							'pages' => $query['num_pages'],
+							'items' => $orders
+						)
+					);
 				}
 
 			}

@@ -192,12 +192,22 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				break;
 			// Points of quizzes per points of all quizzes
 			case 'evaluate_quizzes':
+				$results = $this->_evaluate_course_by_quizzes();
 				break;
 			// Points of passed quizzes per points of all quizzes
 			case 'evaluate_passed_quizzes':
+				$results = $this->_evaluate_course_by_passed_quizzes();
 				break;
 			// Points of completed (may not passed) quizzes per points of all quizzes
 			case 'evaluate_quiz':
+				$results = $this->_evaluate_course_by_completed_quizzes();
+				break;
+		}
+
+		if ( $prop === 'status' ) {
+			if ( $results['grade'] ) {
+				$prop = 'grade';
+			}
 		}
 
 		///$result = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' );
@@ -225,7 +235,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$result *= 100;
 			$data   = array(
 				'result' => $result,
-				'grade'  => $this->is_finished() ? ( $result >= $this->get_passing_condition() ? 'passed' : 'failed' ) : '',
+				'grade'  => $this->is_finished() ? $this->_is_passed( $result ) : '',
 				'status' => $this->get_status()
 			);
 
@@ -242,19 +252,18 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 */
 	protected function _evaluate_course_by_final_quiz() {
 
-
 		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-final-quiz' ) ) ) {
 			$course     = $this->get_course();
 			$final_quiz = $course->get_final_quiz();
 
 			$result = false;
 			if ( $user_quiz = $this->get_item( $final_quiz ) ) {
-				$result = $user_quiz->get_results();
+				$result = $user_quiz->get_results( '' );
 			}
-
-			$data = array(
-				'result' => $result ? $result['result'] : 0,
-				'grade'  => $result ? $result['grade'] : '',
+			$percent = $result ? $result['result'] : 0;
+			$data    = array(
+				'result' => $percent,
+				'grade'  => $this->is_finished() ? $this->_is_passed( $result ) : '',
 				'status' => $this->get_status()
 			);
 
@@ -262,6 +271,117 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Evaluate course result by point of quizzes doing/done per total quizzes.
+	 *
+	 * @return array
+	 */
+	protected function _evaluate_course_by_quizzes() {
+
+		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-quizzes' ) ) ) {
+			$course = $this->get_course();
+			LP_Debug::timeStart();
+
+			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
+			$result = 0;
+
+			if ( $items = $this->get_items() ) {
+				foreach ( $items as $item ) {
+					if ( $item->get_type() !== LP_QUIZ_CPT ) {
+						continue;
+					}
+
+					$result += $item->get_results( 'result' );
+				}
+				$data['result'] = $result;
+
+				if ( $this->is_finished() ) {
+					$data['grade'] = $this->_is_passed( $result );
+				}
+			}
+
+			wp_cache_set( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), $data, 'lp-user-course-results/lp-user-course-results/evaluate-by-quizzes' );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Evaluate course result by point of quizzes doing/done per total quizzes.
+	 *
+	 * @return array
+	 */
+	protected function _evaluate_course_by_passed_quizzes() {
+
+		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-passed-quizzes' ) ) ) {
+			$course = $this->get_course();
+			LP_Debug::timeStart();
+
+			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
+			$result = 0;
+
+			if ( $items = $this->get_items() ) {
+				foreach ( $items as $item ) {
+					if ( $item->get_type() !== LP_QUIZ_CPT ) {
+						continue;
+					}
+
+					$result += $item->is_passed() ? $item->get_results( 'result' ) : 0;
+				}
+				$data['result'] = $result;
+
+				if ( $this->is_finished() ) {
+					$data['grade'] = $this->_is_passed( $result );
+				}
+			}
+
+			wp_cache_set( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), $data, 'lp-user-course-results/evaluate-by-passed-quizzes' );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Evaluate course result by point of quizzes doing/done per total quizzes.
+	 *
+	 * @return array
+	 */
+	protected function _evaluate_course_by_completed_quizzes() {
+
+		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-completed-quizzes' ) ) ) {
+			$course = $this->get_course();
+			LP_Debug::timeStart();
+
+			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
+			$result = 0;
+
+			if ( $items = $this->get_items() ) {
+				foreach ( $items as $item ) {
+					if ( $item->get_type() !== LP_QUIZ_CPT ) {
+						continue;
+					}
+
+					$result += $item->is_completed() ? $item->get_results( 'result' ) : 0;
+				}
+				$data['result'] = $result;
+
+				if ( $this->is_finished() ) {
+					$data['grade'] = $this->_is_passed( $result );
+				}
+			}
+
+			wp_cache_set( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), $data, 'lp-user-course-results/evaluate-by-completed-quizzes' );
+		}
+
+		return $data;
+	}
+
+	protected function _is_passed( $result ) {
+		$result = round( $result, 2 );
+
+		return $result >= $this->get_passing_condition() ? 'passed' : 'failed';
 	}
 
 	/**

@@ -47,6 +47,10 @@ class LP_Query_List_Table implements ArrayAccess {
 	 * @return int
 	 */
 	public function get_pages() {
+		if ( empty( $this->_data['pages'] ) && $this->_data['total'] ) {
+			$this->_data['pages'] = ceil( $this->_data['total'] / $this->_data['limit'] );
+		}
+
 		return absint( $this->_data['pages'] );
 	}
 
@@ -68,7 +72,7 @@ class LP_Query_List_Table implements ArrayAccess {
 	 * @return int
 	 */
 	public function get_paged() {
-		return absint( $this->_data['paged'] );
+		return max( 1, absint( $this->_data['paged'] ) );
 	}
 
 	/**
@@ -86,6 +90,7 @@ class LP_Query_List_Table implements ArrayAccess {
 	 * @return string
 	 */
 	public function get_nav( $echo = true ) {
+
 		return learn_press_paging_nav(
 			array(
 				'num_pages' => $this->get_pages(),

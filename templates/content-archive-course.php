@@ -10,7 +10,35 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-global $post, $wp_query, $lp_tax_query;
+global $post, $wp_query, $lp_tax_query, $wp_query;
+
+
+?>
+
+<?php if ( have_posts() ) : ?>
+
+	<?php do_action( 'learn_press_before_courses_loop' ); ?>
+
+	<?php learn_press_begin_courses_loop(); ?>
+
+
+	<?php while ( have_posts() ) : the_post(); ?>
+		<?php //echo $wp_query->current_post;?>
+		<?php learn_press_get_template_part( 'content', 'course' ); ?>
+
+	<?php endwhile; ?>
+
+	<?php learn_press_end_courses_loop(); ?>
+
+	<?php do_action( 'learn_press_after_courses_loop' ); ?>
+<?php else: ?>
+	<?php learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' ); ?>
+<?php endif; ?>
+
+<?php
+//learn_press_debug($wp_query);
+
+return;
 ?>
 <?php do_action( 'learn_press_before_main_content' ); ?>
 

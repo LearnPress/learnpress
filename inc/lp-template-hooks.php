@@ -180,6 +180,18 @@ function learn_press_quiz_meta_questions( $item ) {
 add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_questions' );
 
 /**
+ * @param LP_Quiz $item
+ */
+function learn_press_quiz_meta_final( $item ) {
+    $course = LP_Global::course();
+   if(! $course->is_final_quiz($item->get_id())){
+       return;
+   }
+	echo '<span class="item-meta final-quiz">' . __('Final', 'learnpress') . '</span>';
+}
+
+add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_final' );
+/**
  * @see learn_press_content_item_summary_title()
  * @see learn_press_content_item_summary_content()
  */

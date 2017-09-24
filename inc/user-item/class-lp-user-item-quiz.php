@@ -115,7 +115,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				'question_wrong'    => 0,
 				'question_correct'  => 0,
 				'status'            => $this->get_status(),
-				'grade'             => ''
+				'grade'             => '',
+				'result'            => 0
 			);
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {
@@ -151,7 +152,30 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			wp_cache_set( $cache_key, $result, 'lp-quiz-result' );
 		}
 
-		return $prop && $result && array_key_exists( $prop, $result ) ? $result[$prop] : $result;
+		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
+	}
+
+	public function is_passed() {
+		return $this->get_results( 'grade' ) === 'passed';
+	}
+
+	public function is_completed() {
+		return $this->get_status() === 'completed';
+	}
+
+	public function get_time_interval( $context = '' ) {
+		$interval = parent::get_time_interval();
+		if ( $context == 'display' ) {
+			$quiz = $this->get_quiz();
+			if ( $interval && $quiz->get_duration() ) {
+				$interval = new LP_Duration( $interval );
+				$interval = $interval->to_timer();
+			} else {
+				$interval = '--:--';
+			}
+		}
+
+		return $interval;
 	}
 
 	public function get_percent_result( $decimal = 1 ) {

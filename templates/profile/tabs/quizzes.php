@@ -24,6 +24,7 @@ if ( ! $query['total'] ) {
 
 ?>
 <div class="learn-press-subtab-content">
+    <h3 class="profile-heading"><?php _e( 'My Quizzes', 'learnpress' ); ?></h3>
 
     <table class="lp-list-table profile-list-quizzes profile-list-table">
         <thead>
@@ -31,7 +32,7 @@ if ( ! $query['total'] ) {
             <th class="column-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></th>
             <th class="column-date"><?php _e( 'Date', 'learnpress' ); ?></th>
             <th class="column-status"><?php _e( 'Progress', 'learnpress' ); ?></th>
-            <th class="column-status"><?php _e( 'Actions', 'learnpress' ); ?></th>
+            <th class="column-time-interval"><?php _e( 'Interval', 'learnpress' ); ?></th>
         </tr>
         </thead>
         <tbody>
@@ -47,11 +48,11 @@ if ( ! $query['total'] ) {
                 <td class="column-status">
                     <span class="result-percent"><?php echo $user_quiz->get_percent_result(); ?></span>
                     <span class="lp-label label-<?php echo esc_attr( $user_quiz->get_results( 'status' ) ); ?>">
-                            <?php echo $user_quiz->get_status_label(); ?>
-                        </span>
+                        <?php echo $user_quiz->get_status_label(); ?>
+                    </span>
                 </td>
-                <td class="column-actions">
-                    <a href="<?php echo $profile->get_current_url( array( 'details' => $quiz->get_id() ) ); ?>"><?php esc_html_e( 'Details', 'learnpress' ); ?></a>
+                <td class="column-time-interval">
+					<?php echo( $user_quiz->get_time_interval( 'display' ) ); ?>
                 </td>
             </tr>
 			<?php continue; ?>

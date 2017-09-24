@@ -18,7 +18,8 @@ if ( ! $query_orders ) {
 }
 //$orders = _learn_press_get_user_profile_orders( $user_id, $page, $limit );
 ?>
-<table class="table-orders">
+<h3 class="profile-heading"><?php _e( 'My Orders', 'learnpress' ); ?></h3>
+<table class="lp-list-table profile-list-orders profile-list-table">
     <thead>
     <tr class="order-row">
         <th class="column-order-number"><?php _e( 'Order', 'learnpress' ); ?></th>
@@ -29,12 +30,12 @@ if ( ! $query_orders ) {
     </tr>
     </thead>
     <tbody>
-	<?php foreach ( $query_orders['orders'] as $order_id ): $order = learn_press_get_order( $order_id ); ?>
+	<?php foreach ( $query_orders['items'] as $order_id ): $order = learn_press_get_order( $order_id ); ?>
         <tr class="order-row">
             <td class="column-order-number"><?php echo $order->get_order_number(); ?></td>
             <td class="column-order-date"><?php echo $order->get_order_date( get_option( 'date_format' ) ); ?></td>
             <td class="column-order-status">
-				<?php echo $order->get_order_status_html(); ?>
+                <span class="lp-label label-<?php echo esc_attr( $order->get_status() ); ?>"><?php echo $order->get_order_status_html(); ?></span>
             </td>
             <td class="column-order-total"><?php echo $order->get_formatted_order_total(); ?></td>
             <td class="column-order-action">
@@ -49,9 +50,14 @@ if ( ! $query_orders ) {
         </tr>
 	<?php endforeach; ?>
     </tbody>
+    <tfoot>
+    <tr class="list-table-nav">
+        <td colspan="2" class="nav-text">
+			<?php echo $query_orders->get_offset_text(); ?>
+        </td>
+        <td colspan="3" class="nav-pages">
+			<?php $query_orders->get_nav( true ); ?>
+        </td>
+    </tr>
+    </tfoot>
 </table>
-
-<?php
-echo $query_orders['pagination'];
-?>
-

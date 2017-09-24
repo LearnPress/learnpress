@@ -63,7 +63,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 *
 	 * @return string|LP_Datetime
 	 */
-	public function get_start_time( $format = '') {
+	public function get_start_time( $format = '' ) {
 		$date = new LP_Datetime( $this->get_data( 'start_time' ) );
 
 		if ( $format ) {
@@ -239,14 +239,38 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		learn_press_update_user_item_field( $data );
 	}
 
-	public function get_status_label() {
+	public function get_status_label( $status = '' ) {
 		$statuses = array(
 			'enrolled'  => __( 'In Progress', 'learnpress' ),
 			'started'   => __( 'In Progress', 'learnpress' ),
 			'completed' => __( 'Completed', 'learnpress' ),
-			'finished'  => __( 'Finished', 'learnpress' )
+			'finished'  => __( 'Finished', 'learnpress' ),
+			'passed'    => __( 'Passed', 'learnpress' ),
+			'failed'    => __( 'Failed', 'learnpress' )
 		);
 
-		return ! empty( $statuses[ $this->get_status() ] ) ? $statuses[ $this->get_status() ] : __( 'Unknown', 'learnpress' );
+		if ( ! $status ) {
+			$status = $this->get_status();
+		}
+
+		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Unknown', 'learnpress' );
+	}
+
+	/**
+	 * Get time from user started to ended.
+	 *
+	 * @param string $context
+	 *
+	 * @return bool|float|int
+	 */
+	public function get_time_interval( $context = '' ) {
+		$start = $this->get_start_time();
+		$end   = $this->get_end_time();
+		if ( $start->is_null() || $end->is_null() ) {
+			return false;
+		}
+		$interval = $end->getTimestamp() - $start->getTimestamp();
+
+		return $interval;
 	}
 }

@@ -148,17 +148,21 @@
                         text-align: center;
                         display: inline-block;
                         vertical-align: middle;
+                        margin-left: 5px;
+                        padding: 0 5px;
+                        border-radius: 3px;
+                        font-size: 10px;
+                        color: #FFF;
+                        &.final-quiz {
+                            background: #14c4ff;
+                        }
                     }
                     .count-questions {
                         background: #DDD;
-                        border-radius: 3px;
-                        padding: 0 5px;
-                        font-size: 10px;
+
                     }
 
                     .course-item-status {
-                        width: 20px;
-                        __border: 2px solid transparent;
                         color: #DDD;
                         margin-left: 5px;
                         font-family: fontawesome;
@@ -166,8 +170,10 @@
                         @include box-sizing(border-box);
                         &:before {
                             vertical-align: middle;
+                            font-size: 14px;
                         }
                     }
+
                 }
 
                 &.course-item-lp_quiz {

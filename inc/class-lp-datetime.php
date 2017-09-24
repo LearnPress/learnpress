@@ -26,6 +26,8 @@ class LP_Datetime extends DateTime {
 	 */
 	protected $tz;
 
+	protected $raw_date = null;
+
 	/**
 	 * Constructor.
 	 *
@@ -36,6 +38,12 @@ class LP_Datetime extends DateTime {
 		if ( empty( self::$gmt ) || empty( self::$stz ) ) {
 			self::$gmt = new DateTimeZone( 'GMT' );
 			self::$stz = new DateTimeZone( @date_default_timezone_get() );
+		}
+
+		if($date instanceof LP_Datetime){
+			$this->raw_date = $date->get_raw_date();
+		}else{
+			$this->raw_date = $date;
 		}
 
 		if ( empty( $date ) ) {
@@ -52,6 +60,11 @@ class LP_Datetime extends DateTime {
 		if ( ! $tz ) {
 			$tz = null;
 		}
+
+		if ( $this->raw_date === '0000-00-00 00:00:00' ) {
+			//$date = '1969-01-01 00:00:00';
+		}
+
 		date_default_timezone_set( 'UTC' );
 		$date = is_numeric( $date ) ? date( 'c', $date ) : $date;
 
@@ -60,6 +73,14 @@ class LP_Datetime extends DateTime {
 		date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
+	}
+
+	public function is_null() {
+		return $this->raw_date === '0000-00-00 00:00:00';
+	}
+
+	public function get_raw_date(){
+		return $this->raw_date;
 	}
 
 	/**

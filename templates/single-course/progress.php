@@ -53,7 +53,7 @@ learn_press_debug( $data->get_results() );
 			<?php } ?>
         </h4>
         <div class="lp-course-status">
-            <span class="number"><?php echo absint( $data->get_results( 'result' ) ); ?><span
+            <span class="number"><?php echo round( $data->get_results( 'result' ), 2 ); ?><span
                         class="percentage-sign">%</span></span>
 			<?php if ( $grade = $user->get_course_grade( $course->get_id() ) ) { ?>
                 <span class="grade <?php echo esc_attr( $grade ); ?>">

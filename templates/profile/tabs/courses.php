@@ -11,7 +11,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-global $post, $profile;
+global $post, $profile, $wpdb;
+$user = $wpdb->get_col( "select id from wp_users" );
+
+$curd = new LP_User_CURD();
+foreach ( $user as $uid ) {
+	$curd->query_courses( $uid );
+}
 
 $query   = $profile->query_courses();
 $profile = learn_press_get_profile();
@@ -24,12 +30,14 @@ if ( ! $query['total'] ) {
 
 ?>
 <div class="learn-press-subtab-content">
+    <h3 class="profile-heading"><?php _e( 'My Courses', 'learnpress' ); ?></h3>
 
     <table class="lp-list-table profile-list-courses profile-list-table">
         <thead>
         <tr>
             <th class="column-course"><?php _e( 'Course', 'learnpress' ); ?></th>
             <th class="column-date"><?php _e( 'Date', 'learnpress' ); ?></th>
+            <th class="column-passing-grade"><?php _e( 'Passing Grade', 'learnpress' ); ?></th>
             <th class="column-status"><?php _e( 'Progress', 'learnpress' ); ?></th>
             <th class="column-status"><?php _e( 'Actions', 'learnpress' ); ?></th>
         </tr>
@@ -44,10 +52,11 @@ if ( ! $query['total'] ) {
                     </a>
                 </td>
                 <td class="column-date"><?php echo $user_course->get_start_time( 'd M Y' ); ?></td>
+                <td class="column-passing-grade"><?php echo $course->get_passing_condition( true ); ?></td>
                 <td class="column-status">
                     <span class="result-percent"><?php echo $user_course->get_percent_result(); ?></span>
                     <span class="lp-label label-<?php echo esc_attr( $user_course->get_results( 'status' ) ); ?>">
-                            <?php echo $user_course->get_status_label(); ?>
+                            <?php echo $user_course->get_status_label( $user_course->get_results( 'status' ) ); ?>
                         </span>
                 </td>
                 <td class="column-actions">
@@ -58,8 +67,8 @@ if ( ! $query['total'] ) {
             <tr>
                 <td colspan="4">
 					<?php
-					$user_quiz = $user_course->get_item( $course->get_final_quiz() );
-					learn_press_debug( $user_quiz, $user_course->get_results() );
+					//$user_quiz = $user_course->get_item( $course->get_final_quiz() );
+					learn_press_debug( $user_course->get_results() );
 					?>
                 </td>
             </tr>
@@ -70,7 +79,7 @@ if ( ! $query['total'] ) {
             <td colspan="2" class="nav-text">
 				<?php echo $query->get_offset_text(); ?>
             </td>
-            <td colspan="2" class="nav-pages">
+            <td colspan="3" class="nav-pages">
 				<?php $query->get_nav( true ); ?>
             </td>
         </tr>

@@ -702,17 +702,17 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 *
 	 * @return array
 	 */
-	public function get_quizzes( $field = null ) {
-		$items   = $this->get_curriculum_items(
-			array(
-				'force' => false,
-				'group' => true,
-				'field' => $field
-			)
-		);
-		$quizzes = ! empty( $items['quizzes'] ) ? $items['quizzes'] : false;
+	public function get_quizzes() {
+		$quizzes = array();
+		if ( $items = $this->get_items() ) {
+			foreach ( $items as $item_id ) {
+				if ( get_post_type( $item_id ) == LP_QUIZ_CPT ) {
+					$quizzes[] = $item_id;
+				}
+			}
+		}
 
-		return apply_filters( 'learn_press_course_quizzes', $quizzes, $this );
+		return apply_filters( 'learn-press/course/quizzes', $quizzes, $this->get_id() );
 	}
 
 	/**
@@ -1040,6 +1040,16 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/course-item', $item, $item_id, $this->get_id() );
 	}
 
+	public function get_passing_condition( $format = false ) {
+		$value = $this->get_data( 'passing_condition' );
+		if ( $format ) {
+			$value = "{$value}%";
+			//$value .= $this->get_data('passing')
+		}
+
+		return $value;
+	}
+
 	public function can_view_item( $item_id ) {
 		switch ( get_post_type() ) {
 			case LP_QUIZ_CPT:
@@ -1194,6 +1204,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
 		}
+
+		$user        = learn_press_get_user( $user_id );
+		$user_course = $user->get_course_data( $this->get_id() );
+
+		return $user_course ? $user_course->get_results( 'result' ) : 0;
 
 		$quizzes = $this->get_quizzes();
 
@@ -1475,6 +1490,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return mixed|null
 	 */
 	public function _evaluate_course_by_quiz( $user_id, $force = false ) {
+		$user        = learn_press_get_user( $user_id );
+		$user_course = $user->get_course_data( $this->get_id() );
+
+		return $user_course ? $user_course->get_results( '' ) : 0;
 		global $wpdb;
 		$result = $this->evaluate_quiz( $this->final_quiz, $user_id );
 
