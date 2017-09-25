@@ -78,8 +78,8 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                 });
         },
         isHiddenAllSections: function (state, getters) {
-            var hiddenSections = getters['hiddenSections'];
             var sections = getters['sections'];
+            var hiddenSections = getters['hiddenSections'];
 
             return hiddenSections.length === sections.length;
         },
@@ -292,7 +292,7 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                         var result = response.body;
 
                         if (result.success) {
-                            console.log(result);
+                            // console.log(result);
                         }
                     },
                     function (error) {

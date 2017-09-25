@@ -311,7 +311,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 */
 	public function add_question( $the_quiz, $question_id, $args = array() ) {
 		if ( ! $the_quiz = learn_press_get_quiz( $the_quiz ) ) {
-			return $this->get_error( 'QUESTION_NOT_EXISTS' );
+			return $this->get_error( 'QUIZ_NOT_EXISTS' );
 		}
 		if ( ! $question = learn_press_get_question( $question_id ) ) {
 			return false;

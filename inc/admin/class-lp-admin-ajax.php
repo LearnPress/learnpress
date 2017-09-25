@@ -101,10 +101,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-questions',
 				'get-question-data',
 				'update_curriculum',
+				'update_list_quiz_questions',
 				'modal-search-items',
 				'modal-search-users',
 				'add-items-to-order',
-				'remove-items-from-order'
+				'remove-items-from-order',
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -315,6 +316,75 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
+		 * Handle ajax update list quiz questions.
+		 *
+		 * @since 3.0.0
+		 */
+		public static function update_list_quiz_questions() {
+			check_ajax_referer( 'learnpress_update_list_quiz_questions', 'nonce' );
+
+			$args = wp_parse_args( $_REQUEST, array(
+				'quiz_id' => false,
+				'type'    => ''
+			) );
+
+			$quiz_id = $args['quiz_id'];
+			$quiz    = learn_press_get_quiz( $quiz_id );
+
+			if ( ! $quiz ) {
+				wp_send_json_error();
+			}
+
+			$curd = new LP_Quiz_CURD();
+
+			$result = $args['type'];
+			switch ( $args['type'] ) {
+				case 'heartbeat' :
+					$result = true;
+					break;
+				case 'hidden-questions':
+					$hidden = learn_press_get_request( 'hidden' );
+					update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden );
+					break;
+				case 'sync-questions' :
+					// code
+					break;
+				case 'update-list-questions':
+					// code
+					break;
+				case 'new-question':
+					// code
+					break;
+				case 'update-question':
+					// code
+					break;
+				case 'remove-question':
+					// code
+					break;
+				case 'remove-questions':
+					// code
+					break;
+				case 'delete-question':
+					// code
+					break;
+				case 'sort-questions':
+					// code
+					break;
+				case 'search-questions':
+					// code
+					break;
+				default:
+					break;
+			}
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( $result->get_error_message() );
+			}
+
+			wp_send_json_success( $result );
+		}
+
+		/**
 		 * Get question data
 		 */
 		public static function get_question_data() {
@@ -439,8 +509,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -537,8 +606,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -571,8 +639,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -865,7 +932,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */

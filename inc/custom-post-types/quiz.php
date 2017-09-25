@@ -43,10 +43,53 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			 */
 			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link_if_not_assigned' ) );
 
-			add_action( 'edit_form_after_editor', array( $this, 'quiz_editor' ), 0 );
-
+//			add_action( 'edit_form_after_editor', array( $this, 'quiz_editor' ), 0 );
+			add_action( 'edit_form_after_editor', array( $this, 'template_quiz_editor' ) );
+			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
 
 			parent::__construct( $post_type, $args );
+		}
+
+		/**
+		 * Template quiz editor v2.
+		 *
+		 * @since 3.0.0
+		 */
+		public function template_quiz_editor() {
+			if ( LP_QUIZ_CPT !== get_post_type() ) {
+				return;
+			}
+			learn_press_admin_view( 'quiz/editor' );
+		}
+
+		/**
+		 * Load data for quiz editor.
+		 *
+		 * @since 3.0.0
+		 */
+		public function data_quiz_editor() {
+			if ( LP_QUIZ_CPT !== get_post_type() ) {
+				return;
+			}
+
+			global $post;
+			$quiz = LP_Quiz::get_quiz( $post->ID );
+
+			$hidden_questions = get_post_meta( $post->ID, '_lp_hidden_questions', true );
+
+			wp_localize_script( 'quiz-editor-v2', 'lp_quiz_editor', array(
+				'root'           => array(
+					'quiz_id' => $quiz->get_id(),
+					'ajax'    => admin_url( '' ),
+					'action'  => 'update_list_quiz_questions',
+					'nonce'   => wp_create_nonce( 'learnpress_update_list_quiz_questions' )
+				),
+				'listQuestions' => array(
+					'questions'        => $quiz->quiz_editor_get_questions(),
+					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array()
+				)
+			) );
+
 		}
 
 		public function quiz_editor() {
@@ -260,11 +303,11 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'  => '0'
 							),
 							array(
-								'name'    => __( 'Show hint', 'learnpress' ),
-								'id'      => "{$prefix}show_hint",
-								'type'    => 'text',
-								'desc'    => __( 'Show button to hint answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
-								'std'     => '0'
+								'name' => __( 'Show hint', 'learnpress' ),
+								'id'   => "{$prefix}show_hint",
+								'type' => 'text',
+								'desc' => __( 'Show button to hint answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
+								'std'  => '0'
 							)
 						)
 					)
@@ -370,7 +413,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int    $post_id
+		 * @param int $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;

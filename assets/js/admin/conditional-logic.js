@@ -137,7 +137,6 @@
                 default:
                     show = ( value1 == value2 );
             }
-            console.log(value1, value2)
             if (show != undefined) {
                 return show;
             }

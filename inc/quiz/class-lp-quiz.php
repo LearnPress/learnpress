@@ -184,6 +184,29 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
 	}
 
+	/**
+	 * Quiz editor get questions.
+	 *
+	 * @return mixed
+	 */
+	public function quiz_editor_get_questions() {
+		$questions = $this->get_questions();
+
+		$result = array();
+		if ( is_array( $questions ) ) {
+			foreach ( $questions as $question ) {
+				$result[] = array(
+					'question_id' => $question,
+					'open'        => false,
+					'title'       => get_the_title( $question ),
+					'type'        => LP_Question::get_question( $question )->get_type_label()
+				);
+			}
+		}
+
+		return apply_filters( 'learn-press/quiz/quiz_editor_questions', $result, $this->get_id() );
+	}
+
 	/************/
 	/**
 	 * Get admin configuration.
@@ -255,8 +278,8 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	/**
 	 * Get quiz's settings for json
 	 *
-	 * @param int  $user_id
-	 * @param int  $course_id
+	 * @param int $user_id
+	 * @param int $course_id
 	 * @param bool $force
 	 *
 	 * @return mixed|void
@@ -763,10 +786,10 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	/**
-	 * @param bool  $the_quiz
+	 * @param bool $the_quiz
 	 * @param array $args
 	 *
-	 * @return LP_Course|bool
+	 * @return LP_Quiz|bool
 	 */
 	public static function get_quiz( $the_quiz = false, $args = array() ) {
 		$the_quiz = self::get_quiz_object( $the_quiz );
@@ -780,7 +803,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		} else {
 			$force = false;
 		}
-
 		$key_args = wp_parse_args( $args, array( 'id' => $the_quiz->ID, 'type' => $the_quiz->post_type ) );
 
 		$key = LP_Helper::array_to_md5( $key_args );
@@ -817,7 +839,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 * Get the lesson class name
 	 *
 	 * @param  WP_Post $the_quiz
-	 * @param  array   $args (default: array())
+	 * @param  array $args (default: array())
 	 *
 	 * @return string
 	 */

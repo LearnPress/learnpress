@@ -15,11 +15,13 @@
         }
     }
     tbody {
-        &:nth-child(odd) {
-            background: #FFF;
-        }
-        &:nth-child(even) {
-            background: #f4fcff;
+        tr {
+            &:nth-child(odd) {
+                background: #FFF;
+            }
+            &:nth-child(even) {
+                background: #f4fcff;
+            }
         }
         .edit-inline {
             background: #FFF;
@@ -36,7 +38,7 @@
     tfoot {
         > tr > td,
         > tr > th {
-            padding: 8px 10px;
+            padding: 10px;
             border: none;
             text-align: left;
             border-bottom: 1px solid #ECECEC;
@@ -92,16 +94,18 @@
     .lp-column-actions {
         width: 50px;
     }
-    .lp-column-answer_text{
+    .lp-column-answer_text {
         padding-left: 0;
     }
 
     tbody {
-        &:hover {
-            > tr > td {
-                &.lp-column-actions {
-                    .lp-toolbar-buttons {
-                        visibility: visible;
+        tr {
+            &:hover {
+                > td {
+                    &.lp-column-actions {
+                        .lp-toolbar-buttons {
+                            visibility: visible;
+                        }
                     }
                 }
             }

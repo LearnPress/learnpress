@@ -73,9 +73,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function wrapper_start() {
-			if ( LP_COURSE_CPT == get_post_type() ) :
+			if ( LP_COURSE_CPT == get_post_type() ) {
 				learn_press_admin_view( 'course/editor-wrapper' );
-			endif;
+			} elseif ( LP_QUIZ_CPT == get_post_type() ) {
+				learn_press_admin_view( 'quiz/editor-wrapper' );
+			}
 
 			echo '<!-- BEGIN courseEditor app -->' . "\n";
 			echo '<div id="course-editor" class="" ng-app="courseEditor" ng-controller="courseEditor">' . "\n";
