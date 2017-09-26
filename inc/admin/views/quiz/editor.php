@@ -12,8 +12,9 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 
 <script type="text/x-template" id="tmpl-lp-quiz-editor">
     <div id="quiz-editor-v2" class="learn-press-box-data" :class="{'need-reload': !heartbeat}">
-        <div class="lp-box-data-head">
+        <div class="lp-box-data-head heading">
             <h3><?php echo __( 'Questions', 'learnpress' ); ?></h3>
+            <span class="collapse-list-questions" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>
         </div>
         <div class="lp-box-data-content">
 
@@ -53,6 +54,14 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
             computed: {
                 heartbeat: function () {
                     return $store.getters['heartbeat'];
+                },
+                isOpen: function () {
+                    return $store.getters['lqs/isHiddenListQuestions'];
+                }
+            },
+            methods: {
+                toggle: function () {
+                    $store.dispatch('lqs/toggleListQuestions');
                 }
             }
         })

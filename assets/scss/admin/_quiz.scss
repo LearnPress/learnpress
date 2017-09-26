@@ -283,3 +283,36 @@
         }
     }
 }
+
+#quiz-editor-v2 {
+    .heading {
+        padding: 15px;
+        position: relative;
+
+        h3 {
+            margin: 0;
+        }
+
+        .collapse-list-questions {
+            font-family: Dashicons;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            width: 40px;
+
+            &.close:before {
+                content: '\f140';
+            }
+
+            &.open:before {
+                content: '\f142';
+            }
+        }
+    }
+}

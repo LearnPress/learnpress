@@ -30,7 +30,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
     state.questions = state.questions.map(function (question) {
         var hiddenQuestions = state.hidden_questions;
         var find = hiddenQuestions.find(function (questionId) {
-            return parseInt(question.question_id) === parseInt(questionId);
+            return parseInt(question.id) === parseInt(questionId);
         });
 
         question.open = !find;
@@ -40,9 +40,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
     var getters = {
         listQuestions: function (state) {
-
-            console.log(state.questions);
-
             return state.questions || [];
         },
         hiddenQuestions: function (state) {
@@ -56,7 +53,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         },
         isHiddenListQuestions: function (state, getters) {
             var questions = getters['listQuestions'];
-
             var hiddenQuestions = getters['hiddenQuestions'];
 
             return questions.length === hiddenQuestions.length;
@@ -112,11 +108,15 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         'CLOSE_LIST_QUESTIONS': function (state) {
             state.questions = state.questions.map(function (_question) {
                 _question.open = false;
-            })
+
+                return _question;
+            });
         },
         'OPEN_LIST_QUESTIONS': function (state) {
             state.questions = state.questions.map(function (_question) {
                 _question.open = true;
+
+                return _question;
             })
         },
         'UPDATE_LIST_QUESTIONS_REQUEST': function () {
@@ -292,14 +292,74 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         status: function (state) {
             return state.status || 'error';
         },
+        currentRequest: function (state) {
+            return state.countCurrentRequest || 0;
+        },
         nonce: function (state) {
             return state.nonce;
+        }
+    };
+
+    var mutations = {
+        'UPDATE_HEART_BEAT': function (state, status) {
+            state.heartbeat = !!status;
+        },
+
+        'UPDATE_STATUS': function (state, status) {
+            state.status = status;
+        },
+
+        'INCREASE_NUMBER_REQUEST': function (state) {
+            state.countCurrentRequest++;
+        },
+
+        'DECREASE_NUMBER_REQUEST': function (state) {
+            state.countCurrentRequest--;
+        }
+    };
+
+    var actions = {
+        heartbeat: function (context) {
+            Vue.http
+                .LPRequest({
+                        type: 'heartbeat'
+                    }
+                )
+                .then(
+                    function (response) {
+                        var result = response.body;
+                        context.commit('UPDATE_HEART_BEAT', !!result.success);
+                    },
+                    function (error) {
+                        context.commit('UPDATE_HEART_BEAT', false);
+                    }
+                );
+        },
+
+        newRequest: function (context) {
+            context.commit('INCREASE_NUMBER_REQUEST');
+            context.commit('UPDATE_STATUS', 'loading');
+
+            window.onbeforeunload = function () {
+                return '';
+            }
+        },
+
+        requestComplete: function (context, status) {
+            context.commit('DECREASE_NUMBER_REQUEST');
+
+            if (context.getters.currentRequest === 0) {
+                context.commit('UPDATE_STATUS', status);
+                window.onbeforeunload = null;
+            }
         }
     };
 
     exports.LP_Quiz_Store = new Vuex.Store({
         state: state,
         getters: getters,
+        mutations: mutations,
+        actions: actions,
         modules: {
             lqs: LP_List_Quiz_Questions_Store
         }

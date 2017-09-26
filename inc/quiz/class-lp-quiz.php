@@ -196,10 +196,10 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		if ( is_array( $questions ) ) {
 			foreach ( $questions as $question ) {
 				$result[] = array(
-					'question_id' => $question,
-					'open'        => false,
-					'title'       => get_the_title( $question ),
-					'type'        => LP_Question::get_question( $question )->get_type_label()
+					'id'    => $question,
+					'open'  => false,
+					'title' => get_the_title( $question ),
+					'type'  => LP_Question::get_question( $question )->get_type_label()
 				);
 			}
 		}
