@@ -12,12 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $cart = learn_press_get_checkout_cart();
-print_r( LP()->session->get('order_awaiting_payment') );
 ?>
 
 <h4><?php _e( 'Your order', 'learnpress' ) ?></h4>
 
-<table class="learn-press-checkout-review-order-table">
+<table class="learn-press-checkout-review-order-table lp-list-table">
     <thead>
     <tr>
 		<?php

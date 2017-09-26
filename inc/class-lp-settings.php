@@ -8,7 +8,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -19,32 +19,70 @@ class LP_Settings {
 	protected $_options = array();
 
 	/**
+	 * @var string
+	 */
+	protected $_prefix = '';
+
+	/**
 	 * @var bool
 	 */
 	static protected $_instance = false;
 
 	/**
-	 * Constructor
+	 * Constructor.
+	 *
+	 * @param array|mixed $data
+	 * @param string      $prefix
 	 *
 	 */
-	public function __construct() {
-		global $wpdb;
-		$query = $wpdb->prepare( "
-			SELECT option_name, option_value
-			FROM {$wpdb->options}
-			WHERE option_name LIKE %s
-		", 'learn_press_%' );
-		if ( $options = $wpdb->get_results( $query ) ) {
-			foreach ( $options as $option ) {
-				$this->_options[$option->option_name] = maybe_unserialize( $option->option_value );
-				wp_cache_add( $option->option_name, $this->_options[$option->option_name], 'options' );
-			}
+	public function __construct( $data = false, $prefix = 'learn_press_' ) {
+
+		$this->_prefix = $prefix;
+
+		if ( ! $data ) {
+			$this->_load_options();
+		} else {
+			settype( $data, 'array' );
+			$this->_options = $data;
 		}
-		foreach ( array( 'learn_press_permalink_structure', 'learn_press_install' ) as $option ) {
-			if ( empty( $this->_options[$option] ) ) {
-				$this->_options[$option] = '';
-				wp_cache_add( $option, '', 'options' );
+	}
+
+	/**
+	 * @param string $group
+	 * @param string $prefix
+	 *
+	 * @return LP_Settings
+	 */
+	public function get_group( $group, $prefix = '' ) {
+		return new LP_Settings( $this->get( $group ), $prefix );
+	}
+
+	/**
+	 * Load options from database.
+	 */
+	protected function _load_options() {
+		if ( false === ( $_options = wp_cache_get( 'options', 'lp-options' ) ) ) {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				SELECT option_name, option_value
+				FROM {$wpdb->options}
+				WHERE option_name LIKE %s
+			", 'learn_press_%' );
+			if ( $options = $wpdb->get_results( $query ) ) {
+				foreach ( $options as $option ) {
+					$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
+					//wp_cache_add( $option->option_name, $this->_options[ $option->option_name ], 'options' );
+				}
 			}
+			foreach ( array( 'learn_press_permalink_structure', 'learn_press_install' ) as $option ) {
+				if ( empty( $this->_options[ $option ] ) ) {
+					$this->_options[ $option ] = '';
+					//wp_cache_add( $option, '', 'options' );
+				}
+			}
+			wp_cache_set( 'options', $this->_options, 'lp-options' );
+		} else {
+			$this->_options = $_options;
 		}
 	}
 
@@ -72,14 +110,14 @@ class LP_Settings {
 				$obj->{$current_var} = $value;
 			}
 		} else {
-			if ( isset( $obj[$current_var] ) ) {
+			if ( isset( $obj[ $current_var ] ) ) {
 				if ( count( $var ) ) {
-					$this->_set_option( $obj[$current_var], join( '.', $var ), $value );
+					$this->_set_option( $obj[ $current_var ], join( '.', $var ), $value );
 				} else {
-					$obj[$current_var] = $value;
+					$obj[ $current_var ] = $value;
 				}
 			} else {
-				$obj[$current_var] = $value;
+				$obj[ $current_var ] = $value;
 			}
 		}
 	}
@@ -93,14 +131,15 @@ class LP_Settings {
 	 * @return null
 	 */
 	public function get( $var, $default = null ) {
-		if ( strpos( $var, 'learn_press_' ) === false ) {
-			$var = 'learn_press_' . $var;
+		if ( $this->_prefix && strpos( $var, $this->_prefix ) === false ) {
+			$var = $this->_prefix . $var;
 		}
 		$segs   = explode( '.', $var );
 		$return = $this->_get_option( $this->_options, $var, $default );
 		if ( $return == '' || is_null( $return ) ) {
 			$return = $default;
 		}
+
 		return $return;
 	}
 
@@ -118,23 +157,23 @@ class LP_Settings {
 				return $default;
 			}
 		} else {
-			if ( isset( $obj[$current_var] ) ) {
+			if ( isset( $obj[ $current_var ] ) ) {
 				if ( count( $var ) ) {
-					return $this->_get_option( $obj[$current_var], join( '.', $var ), $default );
+					return $this->_get_option( $obj[ $current_var ], join( '.', $var ), $default );
 				} else {
-					return $obj[$current_var];
+					return $obj[ $current_var ];
 				}
 			} else {
 				return $default;
 			}
 		}
-		return $default;
 	}
 
 	public static function instance() {
 		if ( empty( self::$_instance ) ) {
 			self::$_instance = new self();
 		}
+
 		return self::$_instance;
 	}
 }

@@ -45,7 +45,7 @@ add_action( 'initx', function () {
  *
  * TODO: Remove these code before releasing.
  */
-add_filter( 'learn-press/checkout-no-payment-result', function ( $results, $order_id ) {
+add_filter( 'learn-press/checkout-no-payment-resultxxx', function ( $results, $order_id ) {
 	$order = learn_press_get_order( $order_id );
 	if ( $order->is_completed() ) {
 		$order_users = $order->get_users();

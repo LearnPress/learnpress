@@ -196,6 +196,20 @@ if ( ! function_exists( 'learn_press_order_payment' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_order_guest_email' ) ) {
+	/**
+	 * Output payment methods
+	 *
+	 * @hooked learn-press/checkout-order-review
+	 */
+	function learn_press_order_guest_email() {
+	    $checkout = LP()->checkout();
+		if ( $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
+			learn_press_get_template( 'checkout/guest-email.php' );
+		}
+	}
+}
+
 if ( ! function_exists( 'learn_press_order_comment' ) ) {
 	/**
 	 * Output order comment input
@@ -999,6 +1013,12 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 					$item->get_title()
 				) ) );
 			}
+		} elseif ( learn_press_is_courses() ) {
+			if ( learn_press_is_search() ) {
+				$title['title'] = __( 'Search course results', 'learnpress' );
+			} else {
+				$title['title'] = __( 'Courses', 'learnpress' );
+			}
 		}
 
 		return $title;
@@ -1348,7 +1368,7 @@ if ( ! function_exists( 'learn_press_checkout_user_form' ) ) {
 	 * Output login/register form before order review if user is not logged in
 	 */
 	function learn_press_checkout_user_form() {
-		learn_press_get_template( 'checkout/user-form.php' );
+		//learn_press_get_template( 'checkout/user-form.php' );
 	}
 }
 

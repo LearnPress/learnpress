@@ -65,7 +65,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	/**
 	 * @var null
 	 */
-	protected $paypal_email = null;
+	protected $paypal_email = '';
 
 	/**
 	 * @var null
@@ -85,7 +85,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 		$this->method_title       = 'Paypal';
 		$this->method_description = 'Make payment via Paypal';
-		$this->icon               = 'http://localhost/learnpress/dev/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.png';
+		$this->icon               = '';
 
 		$this->title       = 'Paypal';
 		$this->description = __( 'Pay with Paypal', 'learnpress' );
@@ -101,14 +101,14 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		$this->paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
 
 
-		$this->settings = LP()->settings;
+		$this->settings = LP()->settings()->get_group( 'learn_press_paypal', '' );
 
 		$this->init();
 		parent::__construct();
 	}
 
 	public function init() {
-		if ( $this->settings->get( 'paypal_enable' ) ) {
+		if ( $this->settings->get( 'enable' ) ) {
 			if ( $this->settings->get( 'paypal_sandbox' ) == 'no' ) {
 				$this->paypal_url         = $this->paypal_live_url;
 				$this->paypal_payment_url = $this->paypal_payment_live_url;
@@ -120,7 +120,6 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 				$this->paypal_nvp_api_url = $this->paypal_nvp_api_sandbox_url;
 				$this->paypal_email       = $this->settings->get( 'paypal_sandbox_email' );
 			}
-
 
 			if ( did_action( 'init' ) ) {
 				$this->register_web_hook();
@@ -140,25 +139,6 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 		}
 
-
-		if ( is_admin() ) {
-			ob_start();
-			?>
-            <script>
-                $('#learn_press_paypal_enable').change(function () {
-                    var $rows = $(this).closest('tr').siblings('tr');
-                    if (this.checked) {
-                        $rows.css("display", "");
-                    } else {
-                        $rows.css("display", "none");
-                    }
-                }).trigger('change');
-            </script>
-			<?php
-			$script = ob_get_clean();
-			$script = preg_replace( '!</?script>!', '', $script );
-			learn_press_enqueue_script( $script );
-		}
 		add_filter( 'learn_press_payment_gateway_available_paypal', array( $this, 'paypal_available' ), 10, 2 );
 	}
 
@@ -214,7 +194,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	public function paypal_available( $a, $b ) {
-		return LP()->settings->get( 'paypal_enable' ) == 'yes';
+		return $this->settings->get( 'enable' ) == 'yes';
 	}
 
 	public function get_order( $raw_custom ) {
@@ -283,6 +263,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	public function get_payment_form() {
+		return;;
 		$output = $this->get_description();;
 		$error = false;
 		if ( $this->settings->get( 'paypal_sandbox' ) == 'yes' ) {
@@ -433,7 +414,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 	protected function prepare_line_items() {
 		$this->line_items = array();
-		if ( $items = LP()->get_checkout_cart()->get_items() ) {
+		if ( $items = LP()->get_cart()->get_items() ) {
 			foreach ( $items as $item ) {
 				$this->add_line_item( get_the_title( $item['item_id'] ), $item['quantity'], $item['total'] );
 			}
@@ -475,6 +456,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	 * @return array
 	 */
 	public function get_paypal_args( $order ) {
+		$checkout = LP()->checkout();
 		$this->prepare_line_items();
 		$user   = learn_press_get_current_user();
 		$nonce  = wp_create_nonce( 'learn-press-paypal-nonce' );
@@ -495,7 +477,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 				//'invoice'       => $order->id,
 				'custom'        => json_encode( $custom ),
 				'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1',
-				'email'         => $user->get_email()
+				'email'         => $checkout->get_checkout_email()
 			),
 			$this->get_item_lines()
 		);
@@ -551,7 +533,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 				),
 				array(
 					'title'      => __( 'Sandbox Email Address', 'learnpress' ),
-					'id'         => $this->id . '[paypal_sandbox_email]',
+					'id'         => '[paypal_sandbox_email]',
 					'type'       => 'text',
 					'visibility' => array(
 						'state'       => 'show',
@@ -571,5 +553,13 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 				)
 			)
 		);
+	}
+
+	public function get_icon() {
+		if ( empty( $this->icon ) ) {
+			$this->icon = LP()->plugin_url( 'assets/images/paypal.png' );
+		}
+
+		return parent::get_icon();
 	}
 }

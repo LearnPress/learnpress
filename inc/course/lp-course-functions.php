@@ -30,6 +30,14 @@ function learn_press_get_course( $the_course = false ) {
 	} elseif ( isset( $the_course->ID ) ) {
 		$the_id = $the_course->ID;
 	}
+
+	if ( ! $the_course ) {
+		global $post;
+		if ( $post && isset( $post->ID ) && LP_COURSE_CPT === get_post_type( $post->ID ) ) {
+			$the_id = $post->ID;
+		}
+	}
+
 	if ( empty( $courses[ $the_id ] ) ) {
 		if ( $the_course instanceof LP_Course ) {
 			$courses[ $the_id ] = $the_course;

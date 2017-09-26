@@ -6,6 +6,50 @@
 @import "frontend/quiz";
 @import "frontend/message";
 
+.learn-press-breadcrumb {
+    margin-bottom: 20px;
+}
+
+/* Archive */
+form[name="search-course"] {
+    margin-bottom: 20px;
+    .search-course-input {
+        width: 80%;
+        vertical-align: middle;
+    }
+    .search-course-button {
+        vertical-align: middle;
+        float: right;
+    }
+}
+
+.learn-press-courses {
+    list-style: none;
+    margin-right: -2.1%;
+    margin-left: 0;
+    @include flex();
+    @include flex-wrap(wrap);
+    .course {
+        list-style: none;
+        width: 31.33333%;
+        margin: 0 2% 20px 0;
+        box-shadow: none;
+        padding: 0;
+
+        .course-title {
+            font-size: 1em;
+            margin: 1em 0;
+        }
+
+        .course-info {
+            font-size: 14px;
+            > span {
+                display: block;
+            }
+        }
+    }
+}
+
 .learn-press-progress {
     position: relative;
     .progress-bg {
@@ -40,7 +84,7 @@
         color: #FFF;
         border: 1px solid #559abb;
         text-align: center;
-        &:after{
+        &:after {
             content: '%';
         }
     }
@@ -81,6 +125,29 @@
             span {
                 background: #F5F5F5;
             }
+        }
+    }
+}
+
+.learn-press-message{
+    padding: 10px 12px 10px 17px;
+    background: #F5F5F5;
+    position: relative;
+    @include border-radius(5px);
+    &:before{
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: #00adff;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+    &.error{
+        &:before{
+            background: #d85454;
         }
     }
 }

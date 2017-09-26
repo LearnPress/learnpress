@@ -115,11 +115,9 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 		/**
 		 * Checkout process
-		 *
-		 * @return array|mixed|void
 		 */
 		public static function _request_checkout() {
-			return LP()->checkout->process_checkout_handler();
+			LP()->checkout()->process_checkout_handler();
 		}
 
 		/**

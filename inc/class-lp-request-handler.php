@@ -309,6 +309,7 @@ class LP_Request {
 				do_action( 'learn_press_request_handler_' . $key, $value, $key );
 			}
 		}
+
 		return $template;
 	}
 
@@ -518,6 +519,23 @@ class LP_Request {
 	 */
 	public static function get_post_array( $var, $default = false ) {
 		return self::get_post( $var, $default, 'array' );
+	}
+
+	/**
+	 * Get email field and validate.
+	 *
+	 * @param string $var
+	 * @param bool   $default
+	 *
+	 * @return bool|string
+	 */
+	public static function get_email( $var, $default = false ) {
+		$email = self::get_string( $var, $default );
+		if ( ! is_email( $email ) ) {
+			$email = $default;
+		}
+
+		return $email;
 	}
 }
 

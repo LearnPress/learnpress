@@ -55,10 +55,51 @@ class LP_Checkout {
 	public $errors = array();
 
 	/**
+	 * @var string
+	 */
+	protected $_checkout_email = '';
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
 		add_filter( 'learn_press_checkout_validate_field', array( $this, 'validate_fields' ), 10, 3 );
+		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_guest_email' ), 10, 3 );
+	}
+
+	/**
+	 * @param array       $errors
+	 * @param array       $fields
+	 * @param LP_Checkout $checkout
+	 *
+	 * @return array
+	 */
+	public function check_guest_email( $errors, $fields, $checkout ) {
+
+		if ( wp_verify_nonce( LP_Request::get_string( 'guest-checkout' ), 'guest-checkout' ) ) {
+			if ( $this->is_enable_guest_checkout() && ! is_user_logged_in() && empty( $this->_checkout_email ) ) {
+				$errors[] = __( 'Please enter your email.', 'learnpress' );
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Get email of user is being checkout.
+	 *
+	 * @return string
+	 */
+	public function get_checkout_email() {
+		if ( $this->_checkout_email ) {
+			return $this->_checkout_email;
+		} elseif ( is_user_logged_in() ) {
+			$user = learn_press_get_current_user( false );
+
+			return $user->get_email();
+		}
+
+		return false;
 	}
 
 	public function get_checkout_fields() {
@@ -66,6 +107,7 @@ class LP_Checkout {
 			$this->checkout_fields['user_login']    = __( 'Username', 'learnpress' );
 			$this->checkout_fields['user_password'] = __( 'Password', 'learnpress' );
 		}
+
 		$this->checkout_fields = apply_filters( 'learn_press_checkout_fields', $this->checkout_fields );
 
 		return $this->checkout_fields;
@@ -145,12 +187,24 @@ class LP_Checkout {
 				do_action( 'learn-press/checkout/new-order', $order_id );
 			}
 
+			if ( is_user_logged_in() ) {
+				$user_id = get_current_user_id();
+			} else {
+				$user_id = 0;
+			}
+
 			$order->set_customer_note( $this->order_comment );
 			$order->set_status( learn_press_default_order_status( 'lp-' ) );
 			$order->set_total( $cart->total );
 			$order->set_subtotal( $cart->subtotal );
+			$order->set_user_ip_address( learn_press_get_ip() );
+			$order->set_user_agent( learn_press_get_user_agent() );
 			$order->set_created_via( 'checkout' );
-			$order->set_user_id( apply_filters( 'learn-press/checkout/default-user', get_current_user_id() ) );
+			$order->set_user_id( apply_filters( 'learn-press/checkout/default-user', $user_id ) );
+
+			if ( $this->is_enable_guest_checkout() && $checkout_email = $this->get_checkout_email() ) {
+				$order->set_checkout_email( $checkout_email );
+			}
 
 			$order_id = $order->save();
 
@@ -233,26 +287,43 @@ class LP_Checkout {
 			learn_press_add_message( __( 'Please enter user password', 'learnpress' ) );
 		}
 
+		if ( wp_verify_nonce( 'guest-checkout', LP_Request::get_string( 'guest-checkout' ) ) ) {
+			if ( empty( $this->_checkout_email ) ) {
+				learn_press_add_message( __( 'Please enter your email.', 'learnpress' ) );
+			}
+		}
+
+		$validate = false;
+
+
 		return $validate;
 	}
 
 	/**
-	 * Process checkout from request
+	 * Process checkout from request.
+	 *
+	 * @return mixed
 	 */
 	public function process_checkout_handler() {
 		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
-			return;
+			return false;
 		}
 		/**
 		 * Set default fields from request
 		 */
-		$this->payment_method = ! empty( $_REQUEST['payment_method'] ) ? $_REQUEST['payment_method'] : '';
-		$this->user_login     = ! empty( $_POST['user_login'] ) ? $_POST['user_login'] : '';
-		$this->user_pass      = ! empty( $_POST['user_password'] ) ? $_POST['user_password'] : '';
-		$this->order_comment  = isset( $_REQUEST['order_comments'] ) ? $_REQUEST['order_comments'] : '';
+		$this->payment_method  = ! empty( $_REQUEST['payment_method'] ) ? $_REQUEST['payment_method'] : '';
+		$this->user_login      = ! empty( $_POST['user_login'] ) ? $_POST['user_login'] : '';
+		$this->user_pass       = ! empty( $_POST['user_password'] ) ? $_POST['user_password'] : '';
+		$this->order_comment   = isset( $_REQUEST['order_comments'] ) ? $_REQUEST['order_comments'] : '';
+		$this->_checkout_email = LP_Request::get_email( 'checkout-email' );
 
+		if ( $this->_checkout_email ) {
+			LP()->session->set( 'checkout-email', $this->_checkout_email );
+		}
 		// do checkout
-		return $this->process_checkout();
+		$this->process_checkout();
+
+		return true;
 	}
 
 	/**
@@ -271,9 +342,16 @@ class LP_Checkout {
 			}
 		}
 
+		$this->errors = apply_filters( 'learn-press/validate-checkout-fields', $this->errors, $fields, $this );
+
 		return ! sizeof( $this->errors );
 	}
 
+	/**
+	 * Validate checkout payment.
+	 *
+	 * @return bool
+	 */
 	public function validate_payment() {
 		$cart     = LP()->cart;
 		$validate = true;
@@ -289,6 +367,7 @@ class LP_Checkout {
 					$this->payment_method = $available_gateways[ $this->payment_method ];
 				}
 			}
+
 			if ( $this->payment_method ) {
 				$validate = $this->payment_method->validate_fields();
 			}
@@ -349,7 +428,7 @@ class LP_Checkout {
 			// Validate extra fields
 			if ( ! $this->validate_checkout_fields() ) {
 				foreach ( $this->errors as $error ) {
-					learn_press_add_message( $error );
+					learn_press_add_message( $error, 'error' );
 				}
 			} else {
 

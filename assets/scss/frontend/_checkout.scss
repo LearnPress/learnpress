@@ -7,7 +7,7 @@
 #learn-press-payment {
     .payment-methods {
         list-style: none;
-        .lp-payment-method{
+        .lp-payment-method {
             margin-bottom: 20px;
         }
         .payment-method-form {
@@ -17,5 +17,14 @@
             .payment-method-form {
             }
         }
+    }
+}
+
+#checkout-guest-email {
+    border: 1px solid #DDD;
+    padding: 20px;
+    margin: 0 0 20px 0;
+    .form-heading {
+        margin: 0;
     }
 }

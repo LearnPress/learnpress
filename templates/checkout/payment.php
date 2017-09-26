@@ -90,9 +90,13 @@ $count_gateways               = ! empty( $available_gateways ) ? sizeof( $availa
 
 	<?php endif; ?>
 
+	<?php
+	do_action( 'learn-press/payment-form' );
+	?>
+
 	<?php if ( $show_button ): ?>
 
-        <div class="place-order-action">
+        <div id="checkout-order-action" class="place-order-action">
 
 			<?php
 			// @deprecated
@@ -138,6 +142,5 @@ $count_gateways               = ! empty( $available_gateways ) ? sizeof( $availa
         </div>
 
 	<?php endif; ?>
-
 
 </div>

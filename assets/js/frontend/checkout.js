@@ -58,9 +58,9 @@
         var _formSubmit = function (e) {
             e.preventDefault();
             var $form = $payments.children('.selected'),
-                data = $form.serializeJSON()
+                data = $formCheckout.serializeJSON();
 
-            if ($form.triggerHandler('learn_press_checkout_place_order') !== false && $form.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false) {
+            if ($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false) {
 
                 removeMessage();
 

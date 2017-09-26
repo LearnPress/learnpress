@@ -157,6 +157,10 @@ function learn_press_get_ip() {
 	return esc_sql( $the_ip );
 }
 
+function learn_press_get_user_agent() {
+	return isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
+}
+
 /**
  * Generate an unique string
  *
@@ -2473,20 +2477,20 @@ if ( ! function_exists( 'learn_press_profile_localize_script' ) ) {
 }
 add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
 
-if ( ! function_exists( 'learn_press_checkout_localize_script' ) ) {
-
-	/**
-	 * Translate javascript text
-	 */
-	function learn_press_checkout_localize_script() {
-		$translate = array(
-			'unknown_error' => __( 'Unknown error!', 'learnpress' ),
-			'invalid_field' => __( 'Invalid field!', 'learnpress' ),
-		);
-		//LP_Assets::add_localize( $translate );
-	}
-}
-add_action( 'learn_press_enqueue_scripts', 'learn_press_checkout_localize_script' );
+//if ( ! function_exists( 'learn_press_checkout_localize_script' ) ) {
+//
+//	/**
+//	 * Translate javascript text
+//	 */
+//	function learn_press_checkout_localize_script() {
+//		$translate = array(
+//			'unknown_error' => __( 'Unknown error!', 'learnpress' ),
+//			'invalid_field' => __( 'Invalid field!', 'learnpress' ),
+//		);
+//		//LP_Assets::add_localize( $translate );
+//	}
+//}
+//add_action( 'learn_press_enqueue_scripts', 'learn_press_checkout_localize_script' );
 
 add_action( 'init', 'learn_press_cancel_order_process' );
 if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {

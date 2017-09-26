@@ -49,7 +49,7 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 		do_action( 'learn-press/before-checkout-order-review' );
 		?>
 
-        <div id="order_review" class="learn-press-checkout-review-order">
+        <div id="learn-press-order-review" class="checkout-review-order">
 
 			<?php
 

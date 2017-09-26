@@ -166,11 +166,14 @@ abstract class LP_Abstract_Object_Data {
 //					$changes[ $key_or_data ] = $value;
 //				}
 //			} else {
+			if($key_or_data==='total'){
+			}
 			if ( $extra ) {
 				// Do not allow to add extra data with the same key in data
 				if ( ! array_key_exists( $key_or_data, $this->_data ) ) {
 					$this->_extra_data[ $key_or_data ] = $value;
 				}
+
 			} else {
 				try {
 					if ( ! is_string( $key_or_data ) && ! is_numeric( $key_or_data ) ) {
@@ -182,6 +185,8 @@ abstract class LP_Abstract_Object_Data {
 					} else {
 						$this->_extra_data[ $key_or_data ] = $value;
 					}
+
+
 				}
 				catch ( Exception $ex ) {
 					print_r( $key_or_data );

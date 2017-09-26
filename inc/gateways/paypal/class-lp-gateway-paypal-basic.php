@@ -1,4 +1,5 @@
 <?php
+die(__FILE__);
 class LP_Gateway_Paypal_Basic extends LP_Gateway_Paypal{
 	public function get_request_url( $order_id ) {
 

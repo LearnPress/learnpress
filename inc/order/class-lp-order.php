@@ -44,7 +44,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 		'_edit_lock'            => '',
 		'_prices_include_tax'   => '',
 		'_order_key'            => '',
-		'_user_ip'              => ''
+		'_user_ip'              => '',
+		'_checkout_email'       => ''
 	);
 
 	/**
@@ -55,6 +56,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	protected $_status = array();
 
 	protected static $_loaded = 0;
+
 	/**
 	 * @param mixed $order_id
 	 */
@@ -423,7 +425,12 @@ class LP_Order extends LP_Abstract_Post_Data {
 		}
 		if ( $customer ) {
 			if ( ! $customer->is_exists() ) {
-				$customer_name = apply_filters( 'learn_press_order_customer_name', __( '[Guest]', 'learnpress' ) );
+				if ( $customer->get_id() ) {
+
+				}
+
+				echo $this->get_data( 'user_id' );
+				$customer_name = apply_filters( 'learn-press/order/guest-customer-name', __( '[Guest]', 'learnpress' ) );
 			} else {
 				if ( $customer->get_data( 'display_name' ) ) {
 					$customer_name = $customer->get_data( 'display_name' );
@@ -584,7 +591,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @param int|float $total
 	 */
 	public function set_total( $total = 0 ) {
-		$this->set_data( 'total', $total );
+		$this->_set_data( 'total', $total );
 	}
 
 	/**
@@ -600,7 +607,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @param float|int $subtotal
 	 */
 	public function set_subtotal( $subtotal = 0 ) {
-		$this->set_data( 'subtotal', $subtotal );
+		$this->_set_data( 'subtotal', $subtotal );
 	}
 
 	/**
@@ -1115,6 +1122,30 @@ class LP_Order extends LP_Abstract_Post_Data {
 
 	public function get_customer_note() {
 		return $this->get_data( 'customer_note' ) . '';
+	}
+
+	public function set_user_ip_address( $value ) {
+		$this->_set_data( 'user_ip_address', $value );
+	}
+
+	public function get_user_ip_address() {
+		return $this->get_data( 'user_ip_address' );
+	}
+
+	public function set_user_agent( $value ) {
+		$this->_set_data( 'user_agent', $value );
+	}
+
+	public function get_user_agent() {
+		return $this->get_data( 'user_agent' );
+	}
+
+	public function set_checkout_email( $email ) {
+		$this->_set_data( 'checkout_email', $email );
+	}
+
+	public function get_checkout_email() {
+		return $this->get_data( 'checkout_email' );
 	}
 
 	/**

@@ -1,4 +1,6 @@
 <?php
+die(__FILE__);
+
 class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 	public function get_request_url( $order_id ) {
 		$user    = learn_press_get_current_user();

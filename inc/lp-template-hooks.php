@@ -43,12 +43,21 @@ add_action( 'learn-press/before-checkout-form', 'learn_press_checkout_form_regis
 
 /**
  * @see learn_press_order_review()
+ */
+add_action( 'learn-press/checkout-order-review', 'learn_press_order_review', 5 );
+
+/**
  * @see learn_press_order_comment()
  * @see learn_press_order_payment()
  */
-add_action( 'learn-press/checkout-order-review', 'learn_press_order_review', 5 );
-add_action( 'learn-press/checkout-order-review', 'learn_press_order_comment', 10 );
-add_action( 'learn-press/checkout-order-review', 'learn_press_order_payment', 15 );
+add_action( 'learn-press/after-checkout-order-review', 'learn_press_order_comment', 10 );
+add_action( 'learn-press/after-checkout-order-review', 'learn_press_order_payment', 15 );
+
+/**
+ * @see learn_press_order_guest_email()
+ */
+add_action( 'learn-press/payment-form', 'learn_press_order_guest_email', 15 );
+
 
 /****************************/
 /*          Profile         */
@@ -183,11 +192,11 @@ add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_
  * @param LP_Quiz $item
  */
 function learn_press_quiz_meta_final( $item ) {
-    $course = LP_Global::course();
-   if(! $course->is_final_quiz($item->get_id())){
-       return;
-   }
-	echo '<span class="item-meta final-quiz">' . __('Final', 'learnpress') . '</span>';
+	$course = LP_Global::course();
+	if ( ! $course->is_final_quiz( $item->get_id() ) ) {
+		return;
+	}
+	echo '<span class="item-meta final-quiz">' . __( 'Final', 'learnpress' ) . '</span>';
 }
 
 add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_final' );

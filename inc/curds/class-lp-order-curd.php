@@ -46,24 +46,6 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( $id && ! is_wp_error( $id ) ) {
 			$order->set_id( $id );
 			$this->_updates( $order );
-
-			$meta_data = array(
-				'_order_currency'       => learn_press_get_currency(),
-				'_prices_include_tax'   => 'no',
-				'_user_ip_address'      => learn_press_get_ip(),
-				'_user_agent'           => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '',
-				'_user_id'              => $order->get_user_id(),
-				'_order_subtotal'       => $order->get_subtotal(),
-				'_order_total'          => $order->get_total(),
-				'_order_key'            => $order->get_order_key(),
-				'_payment_method'       => '',
-				'_payment_method_title' => '',
-				'_order_version'        => '3.0',
-				'_created_via'          => $order->get_created_via()
-			);
-			foreach ( $meta_data as $key => $value ) {
-				update_post_meta( $id, $key, $value );
-			}
 		}
 
 		return $id;
@@ -73,8 +55,36 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param LP_Order $order
 	 */
 	public function _updates( &$order ) {
-		update_post_meta( $order->get_id(), '_user_id', $order->get_user_id() );
+		$this->update_post_meta( $order );
 		$order->update_meta();
+	}
+
+	/**
+	 * @param LP_Order $order
+	 */
+	public function update_post_meta( $order ) {
+		$meta_data = array(
+			'_order_currency'       => learn_press_get_currency(),
+			'_prices_include_tax'   => 'no',
+			'_user_id'              => $order->get_user_id(),
+			'_order_subtotal'       => $order->get_subtotal(),
+			'_order_total'          => $order->get_total(),
+			'_order_key'            => $order->get_order_key(),
+			'_payment_method'       => $order->get_payment_method_title(),
+			'_payment_method_title' => $order->get_payment_method_title(),
+			'_user_ip_address'      => $order->get_user_ip_address(),
+			'_user_agent'           => $order->get_user_agent(),
+			'_order_version'        => '3.0',
+			'_created_via'          => $order->get_created_via()
+		);
+
+		if ( $checkout_email = $order->get_checkout_email() ) {
+			$meta_data['_checkout_email'] = $checkout_email;
+		}
+
+		foreach ( $meta_data as $key => $value ) {
+			update_post_meta( $order->get_id(), $key, $value );
+		}
 	}
 
 	/**
@@ -212,6 +222,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @param int $from
 	 * @param int $to
+	 *
+	 * @return mixed
 	 */
 	public function cln_items( $from, $to ) {
 		$order = learn_press_get_order( $from );
@@ -304,15 +316,18 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 			$order->set_data_via_methods(
 				array(
-					'user_id'       => $users,//get_post_meta( $order->get_id(), '_user_id', true ),
-					'order_date'    => new LP_Datetime( $post->post_date ),
-					'date_modified' => new LP_Datetime( $post->post_modified ),
-					'status'        => str_replace( 'lp-', '', $post->post_status ),
-					'parent_id'     => $post->post_parent,
-					'created_via'   => get_post_meta( $post->ID, '_created_via', true ),
-					'total'         => get_post_meta( $post->ID, '_order_total', true ),
-					'subtotal'      => get_post_meta( $post->ID, '_order_subtotal', true ),
-					'order_key'     => get_post_meta( $post->ID, '_order_key', true ),
+					'user_id'         => $users,//get_post_meta( $order->get_id(), '_user_id', true ),
+					'order_date'      => new LP_Datetime( $post->post_date ),
+					'date_modified'   => new LP_Datetime( $post->post_modified ),
+					'status'          => str_replace( 'lp-', '', $post->post_status ),
+					'parent_id'       => $post->post_parent,
+					'created_via'     => get_post_meta( $post->ID, '_created_via', true ),
+					'total'           => get_post_meta( $post->ID, '_order_total', true ),
+					'subtotal'        => get_post_meta( $post->ID, '_order_subtotal', true ),
+					'order_key'       => get_post_meta( $post->ID, '_order_key', true ),
+					'user_ip_address' => get_post_meta( $post->ID, '_user_ip_address', true ),
+					'user_agent'      => get_post_meta( $post->ID, '_user_agent', true ),
+					'checkout_email'  => get_post_meta( $post->ID, '_checkout_email', true )
 				)
 			);
 			$this->read_items( $order );

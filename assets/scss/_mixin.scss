@@ -67,3 +67,17 @@ $remove-icon-color: #d05d5d;
     line-height: $base;
     max-height: $base * $line;
 }
+
+@mixin flex(){
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: flex;
+}
+
+@mixin flex-wrap($wrap: none){
+    -webkit-flex-wrap: $wrap;
+    flex-wrap: $wrap;
+}

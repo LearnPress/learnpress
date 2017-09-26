@@ -91,6 +91,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * Load stored settings from database.
 	 */
 	protected function _load() {
+		return;
 		if ( false !== ( $this->stored = get_option( 'learn_press_' . $this->id ) ) ) {
 			foreach ( $this->stored as $prop => $value ) {
 				$prop   = preg_replace( '~[-]+~', '_', $prop );

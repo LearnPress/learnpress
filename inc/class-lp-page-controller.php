@@ -621,6 +621,9 @@ class LP_Page_Controller {
 			if ( isset( $q->query['page'] ) ) {
 				$q->set( 'paged', $q->query['page'] );
 			}
+
+			$q->set( 'posts_per_page', 6 );
+
 		}
 
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );

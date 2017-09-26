@@ -16,7 +16,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 	<?php do_action( 'learn_press_before_courses_loop_item' ); ?>
 
-	<a href="<?php the_permalink();?>" class="course-title">
+	<a href="<?php the_permalink();?>" class="course-permalink">
 
 		<?php do_action( 'learn_press_courses_loop_item_title' ); ?>
 
@@ -24,4 +24,5 @@ if ( !defined( 'ABSPATH' ) ) {
 
 	<?php do_action( 'learn_press_after_courses_loop_item' ); ?>
 
+    <?php learn_press_get_template('single-course/buttons.php');?>
 </li>

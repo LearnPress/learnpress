@@ -7,4 +7,4 @@
 
 defined( 'ABSPATH' ) || exit();
 ?>
-<h3><?php the_title(); ?></h3>
+<h3 class="course-title"><?php the_title(); ?></h3>
