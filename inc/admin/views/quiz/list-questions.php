@@ -21,19 +21,8 @@ learn_press_admin_view( 'quiz/question' );
         Vue.component('lp-list-quiz-questions', {
             template: '#tmpl-lp-list-quiz-questions',
             computed: {
-                status: function () {
-                    return $store.getters.status;
-                },
-                isOpen: function () {
-                    return !$store.getters['lqs/isHiddenListQuestions'];
-                },
                 listQuestions: function () {
                     return $store.getters['lqs/listQuestions'];
-                }
-            },
-            methods: {
-                toggle: function () {
-                    $store.dispatch('lqs/toggleListQuestions');
                 }
             }
         });

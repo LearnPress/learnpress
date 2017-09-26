@@ -315,4 +315,19 @@
             }
         }
     }
+
+    .lp-btn-toggle {
+        font-family: Dashicons;
+        line-height: 42px;
+        &.open {
+            &::after {
+                content: '\f343';
+            }
+        }
+        &.close {
+            &::after {
+                content: '\f347';
+            }
+        }
+    }
 }

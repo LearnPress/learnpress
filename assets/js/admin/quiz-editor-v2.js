@@ -283,6 +283,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         heartbeat: function (state) {
             return state.heartbeat;
         },
+        questionTypes: function (state) {
+            return state.types;
+        },
         action: function (state) {
             return state.action;
         },
