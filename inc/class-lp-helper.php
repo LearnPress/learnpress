@@ -66,4 +66,34 @@ class LP_Helper {
 			}
 		}
 	}
+
+	/**
+	 * Sort an array by a field.
+	 * Having some issue with default PHP usort function.
+	 *
+	 * @param array  $array
+	 * @param string $field
+	 * @param int    $default
+	 */
+	public static function sort_by_priority( &$array, $field = 'priority', $default = 10 ) {
+		foreach ( $array as $k => $item ) {
+			if ( ! array_key_exists( $field, $item ) ) {
+				$array[ $k ][ $field ] = $default;
+			}
+		}
+
+		$priority = array_unique( wp_list_pluck( $array, $field ) );
+		sort( $priority );
+		$priority = array_fill_keys( $priority, array() );
+
+		foreach ( $array as $k => $item ) {
+			$priority[ $item[ $field ] ][] = $item;
+		}
+
+		$sorted = array();
+		foreach ( $priority as $item ) {
+			$sorted = array_merge( $sorted, $item );
+		}
+		$array = $sorted;
+	}
 }
