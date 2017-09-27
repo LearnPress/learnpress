@@ -464,20 +464,20 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 		$args = array_merge(
 			array(
-				'cmd'           => '_cart',
-				'business'      => $this->paypal_email,
-				'no_note'       => 1,
-				'currency_code' => learn_press_get_currency(),
-				'charset'       => 'utf-8',
-				'rm'            => is_ssl() ? 2 : 1,
-				'upload'        => 1,
-				'return'        => esc_url( $this->get_return_url( $order ) ),
-				'cancel_return' => esc_url( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_site_url() ),
-				'bn'            => 'LearnPress_Cart',
+				'cmd'            => '_cart',
+				'business'       => $this->paypal_email,
+				'no_note'        => 1,
+				'currency_code'  => learn_press_get_currency(),
+				'charset'        => 'utf-8',
+				'rm'             => is_ssl() ? 2 : 1,
+				'upload'         => 1,
+				'return'         => esc_url( $this->get_return_url( $order ) ),
+				'cancel_return'  => esc_url( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_site_url() ),
+				'bn'             => 'LearnPress_Cart',
 				//'invoice'       => $order->id,
-				'custom'        => json_encode( $custom ),
-				'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1',
-				'email'         => $checkout->get_checkout_email()
+				'custom'         => json_encode( $custom ),
+				'notify_url'     => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1',
+				'checkout_email' => $checkout->get_checkout_email()
 			),
 			$this->get_item_lines()
 		);

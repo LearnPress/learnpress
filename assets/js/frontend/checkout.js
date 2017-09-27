@@ -52,7 +52,9 @@
              *
              * @type {string}
              */
-            selectedMethod = ''
+            selectedMethod = '',
+
+            $checkoutEmail = $('input[name="checkout-email"]')
         ;
 
         var _formSubmit = function (e) {
@@ -145,6 +147,37 @@
             $(document).trigger('learn-press/checkout-error');
         }
 
+        var _checkEmail = function () {
+
+            if (!this.value) {
+                $buttonCheckout.prop('disabled', true);
+                return;
+            }
+            $buttonCheckout.prop('disabled', false);
+
+
+            this.timer && clearTimeout(this.timer);
+            this.timer = setTimeout(function () {
+                $.post({
+                    url: window.location.href,
+                    data: {
+                        'lp-ajax': 'check-user-email',
+                        email: $checkoutEmail.val()
+                    },
+                    success: function (res) {
+                        var res = LP.parseJSON(res);
+                        if (res && res.exists === true) {
+                            $('#checkout-existing-account').show();
+                            $('#checkout-new-account').hide().find('input[name="checkout-new-account"]').prop('checked', false);
+                        } else {
+                            $('#checkout-existing-account').hide().find('input[name="checkout-existing-account"]').prop('checked', false);
+                            $('#checkout-new-account').show();
+                        }
+                    }
+                });
+            }, 500);
+        }
+
         var removeMessage = function () {
             $('.learn-press-error, .learn-press-notice, .learn-press-message').remove();
         }
@@ -155,6 +188,8 @@
         $buttonCheckout.on('click', function (e) {
 
         });
+
+        $checkoutEmail.on('keyup changex', _checkEmail).trigger('changex');
 
         $('.lp-button-guest-checkout').on('click', _guestCheckoutClick);
         $payments.on('change select', 'input[name="payment_method"]', _selectPaymentChange);

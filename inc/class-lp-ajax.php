@@ -27,7 +27,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'take_course'         => true,
 				'start_quiz'          => true,
 				'fetch_question'      => true,
-				'upload-user-avatar'  => false
+				'upload-user-avatar'  => false,
+				'check-user-email'    => true
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
@@ -40,6 +41,21 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}*/
 
 			LP_Request_Handler::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
+			LP_Request::register_ajax( 'check-user-email', array( __CLASS__, 'check_user_email' ) );
+		}
+
+		public static function check_user_email() {
+
+			$email    = LP_Request::get_email( 'email' );
+			$response = array(
+				'exists' => false
+			);
+
+			if ( get_user_by( 'email', $email ) ) {
+				$response['exists'] = true;
+			}
+
+			learn_press_maybe_send_json( $response );
 		}
 
 		/**
@@ -327,7 +343,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			if ( ! $item->verify_nonce( $security, 'complete' ) ) {
 				die( 'Bad request!' );
 			}
-
 
 
 			$response = array();

@@ -425,12 +425,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		}
 		if ( $customer ) {
 			if ( ! $customer->is_exists() ) {
-				if ( $customer->get_id() ) {
-
-				}
-
-				echo $this->get_data( 'user_id' );
-				$customer_name = apply_filters( 'learn-press/order/guest-customer-name', __( '[Guest]', 'learnpress' ) );
+				$customer_name = $this->get_guest_customer_name();
 			} else {
 				if ( $customer->get_data( 'display_name' ) ) {
 					$customer_name = $customer->get_data( 'display_name' );
@@ -440,9 +435,21 @@ class LP_Order extends LP_Abstract_Post_Data {
 					$customer_name = $customer->get_data( 'user_login' );
 				}
 			}
+		} else {
+			$customer_name = $this->get_guest_customer_name();
 		}
 
 		return $customer_name;
+	}
+
+	public function get_guest_customer_name() {
+		if ( $checkout_email = $this->get_checkout_email() ) {
+			$customer_name = sprintf( __( '%s (Guest)', 'learnpress' ), $checkout_email );
+		} else {
+			$customer_name = sprintf( __( '(Guest)', 'learnpress' ), $checkout_email );
+		}
+
+		return apply_filters( 'learn-press/order/guest-customer-name', $customer_name );
 	}
 
 	public function customer_exists() {
@@ -687,7 +694,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	public function get_user( $field = '' ) {
 
 		if ( false === ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) ) {
-			$user = learn_press_get_current_user();
+			return false;
 		}
 
 		if ( strtolower( $field ) == 'id' ) {

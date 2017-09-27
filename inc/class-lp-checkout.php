@@ -65,6 +65,41 @@ class LP_Checkout {
 	public function __construct() {
 		add_filter( 'learn_press_checkout_validate_field', array( $this, 'validate_fields' ), 10, 3 );
 		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_guest_email' ), 10, 3 );
+		add_filter( 'learn-press/payment-successful-result', function ( $result, $order_id ) {
+
+			if ( ! $this->is_enable_guest_checkout() ) {
+				return;
+			}
+
+			$checkout_option = LP_Request::get_string( 'checkout-email-option' );
+			switch ( $checkout_option ) {
+				case 'existing-account':
+					if ( ! $user_id = $this->checkout_email_exists() ) {
+						return;
+					}
+
+					if($order = learn_press_get_order( $order_id )) {
+						$order->set_user_id( $user_id );
+						$order->save();
+					}
+					break;
+				case 'new-account':
+					if ( $this->checkout_email_exists() ) {
+						return;
+					}
+
+					$this->_create_account();
+					break;
+			}
+			echo $this->get_checkout_email(), ',', $order_id,',', $this->checkout_email_exists();
+			die();
+		}, 10, 2 );
+
+		$this->_checkout_email = LP()->session->get( 'checkout-email' );
+	}
+
+	protected function _create_account() {
+
 	}
 
 	/**
@@ -100,6 +135,18 @@ class LP_Checkout {
 		}
 
 		return false;
+	}
+
+	public function checkout_email_exists() {
+		if ( ! $email = $this->get_checkout_email() ) {
+			return false;
+		}
+
+		if ( ! $user = get_user_by( 'email', $email ) ) {
+			return false;
+		}
+
+		return $user->ID;
 	}
 
 	public function get_checkout_fields() {

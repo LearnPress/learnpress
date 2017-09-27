@@ -28,3 +28,22 @@
         margin: 0;
     }
 }
+
+#checkout-guest-email {
+    #checkout-guest-options{
+        list-style: none;
+    }
+
+    #checkout-existing-account{
+        display: none;
+    }
+
+    &.email-exists {
+        #checkout-existing-account {
+            display: block;
+        }
+        #checkout-new-account{
+            display: none;
+        }
+    }
+}
