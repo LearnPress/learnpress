@@ -2019,10 +2019,10 @@ class LP_Abstract_User {
 				}
 			}
 		}
-		if ( $field && array_key_exists( $field, $user_course_info[ $this->id ][ $course_id ] ) ) {
-			$info = $user_course_info[ $this->id ][ $course_id ][ $field ];
-		} else {
-			$info = $user_course_info[ $this->id ][ $course_id ];
+		if ( $field && array_key_exists( $field, $user_course_info[$this->id][$course_id] ) ) {
+			$info = $user_course_info[$this->id][$course_id][$field];
+		} elseif ( isset( $user_course_info[$this->id][$course_id] ) ) {
+			$info = $user_course_info[$this->id][$course_id];
 		}
 
 		$this->_parse_item_order_of_course( $course_id );
@@ -2516,11 +2516,22 @@ class LP_Abstract_User {
 							AND uc.user_id=om.meta_value AND uc.item_type=%s
 						WHERE om.meta_value=%d
 							AND c.post_status = 'publish'
-					
+
+
+						UNION
+
+						SELECT c.*, uc.status as course_status
+						FROM {$wpdb->posts} c
+						LEFT JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id AND uc.user_id = %d
+						WHERE post_type = %s
+							AND ( c.post_status = 'publish' OR c.post_status = 'draf')
+							AND post_author = %d
 					) AS a WHERE 1=1
-					", LP_COURSE_CPT, LP_COURSE_CPT, $args ['user_id'] );
-			$query         .= $where . $order . $limit;
-			$data          = array(
+					", LP_COURSE_CPT, LP_COURSE_CPT, $args ['user_id'], $args ['user_id'], LP_COURSE_CPT, $args ['user_id'] );
+
+			$query .= $where . $order . $limit;
+
+			$data = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
