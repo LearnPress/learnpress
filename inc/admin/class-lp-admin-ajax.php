@@ -378,6 +378,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// code
 					break;
 				case 'sort-questions':
+					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
+					if ( ! $orders ) {
+						break;
+					}
+
+					$orders = wp_unslash( $orders );
+					$orders = json_decode( $orders, true );
+
+//					$result = $curd->sort_questions( $orders );
+
+					break;
 					// code
 					break;
 				case 'search-questions':

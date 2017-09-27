@@ -87,7 +87,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				),
 				'listQuestions' => array(
 					'questions'        => $quiz->quiz_editor_get_questions(),
-					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array()
+					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array(),
+					'order'            => learn_press_quiz_get_questions_order( $quiz->get_questions() )
 				)
 			) );
 

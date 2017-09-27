@@ -42,6 +42,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         listQuestions: function (state) {
             return state.questions || [];
         },
+        questionsOrder: function (state) {
+            return state.order || [];
+        },
         hiddenQuestions: function (state) {
             return state.questions
                 .filter(function (question) {
@@ -57,7 +60,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
             return questions.length === hiddenQuestions.length;
         },
-        statusUpdateSection: function (state) {
+        statusUpdateListQuestions: function (state) {
             return state.statusUpdateListQuestions;
         },
         statusUpdateQuestionItem: function (state) {
@@ -187,7 +190,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
         },
 
-        sortQuestions: function (context, orders) {
+        updateSortQuestions: function (context, orders) {
             Vue.http
                 .LPRequest({
                     type: 'sort-questions',

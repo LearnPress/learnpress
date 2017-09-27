@@ -11,7 +11,7 @@ learn_press_admin_view( 'quiz/settings' );
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-item">
     <tr class="question-item">
-        <td class="lp-column-sort"><i class="fa fa-bars"></i></td>
+        <td class="lp-column-sort movable"><i class="fa fa-bars"></i></td>
         <td class="lp-column-order"></td>
         <td class="lp-column-name">
             <input type="text" class="question-title lp-question-heading-title"
@@ -64,7 +64,7 @@ learn_press_admin_view( 'quiz/settings' );
 
         Vue.component('lp-quiz-question-item', {
             template: '#tmpl-lp-quiz-question-item',
-            props: ['question', 'questionTypes'],
+            props: ['question'],
             data: function () {
                 return {
                     unsaved: false,
@@ -74,6 +74,9 @@ learn_press_admin_view( 'quiz/settings' );
             computed: {
                 urlEdit: function () {
                     return 'post.php?post=' + this.question.id + '&action=edit';
+                },
+                questionTypes: function () {
+                    return $store.getters['questionTypes'];
                 }
             },
             methods: {
@@ -81,7 +84,7 @@ learn_press_admin_view( 'quiz/settings' );
                     $store.dispatch('lqs/toggleQuestion', this.question);
                 },
                 isAcitve: function (type) {
-                    return this.questionType === type;
+                    return this.question.type === type;
                 },
                 onChangeTitle: function () {
                     this.unsaved = true;

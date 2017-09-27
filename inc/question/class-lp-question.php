@@ -397,10 +397,7 @@ class LP_Question extends LP_Course_Item {
 	 *
 	 * @param array $orders List of answers
 	 */
-	public
-	function update_answer_orders(
-		$orders
-	) {
+	public function update_answer_orders( $orders ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 		    SELECT qa.question_answer_id, qam2.meta_value as `name`, qam.meta_value as `value`
@@ -451,14 +448,13 @@ class LP_Question extends LP_Course_Item {
 		return ucwords( str_replace( '_', ' ', $this->get_type() ) );
 	}
 
-	protected
-	function _init() {
+	protected function _init() {
 		add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
 	}
 
 
 	/**
-	 * @param mixed       $answers
+	 * @param mixed $answers
 	 * @param LP_Question $q
 	 *
 	 * @return array|bool
@@ -471,8 +467,7 @@ class LP_Question extends LP_Course_Item {
 		return $answers;
 	}
 
-	public
-	function get_default_answers(
+	public function get_default_answers(
 		$answers = false
 	) {
 		if ( ! $answers ) {
@@ -555,10 +550,7 @@ class LP_Question extends LP_Course_Item {
 		do_action( 'learn_press_update_question_answer', $this, $post_data );
 	}
 
-	public
-	function get_option_value(
-		$value = null
-	) {
+	public function get_option_value( $value = null ) {
 		if ( ! $value ) {
 			$value = uniqid();
 		}
@@ -579,8 +571,7 @@ class LP_Question extends LP_Course_Item {
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
 	}
 
-	public
-	function submit_answer(
+	public function submit_answer(
 		$quiz_id, $answer
 	) {
 		return false;
@@ -658,8 +649,7 @@ class LP_Question extends LP_Course_Item {
 		return $this->get_data( 'answered' );
 	}
 
-	public
-	function get_name() {
+	public function get_name() {
 		return
 			isset( $this->options['name'] ) ? $this->options['name'] : ucfirst( preg_replace_callback( '!_([a-z])!', array(
 				$this,
@@ -679,10 +669,7 @@ class LP_Question extends LP_Course_Item {
 	 *
 	 * @return  void
 	 */
-	public
-	function set(
-		$key, $value
-	) {
+	public function set( $key, $value ) {
 		$this->$key = $value;
 	}
 
@@ -692,26 +679,20 @@ class LP_Question extends LP_Course_Item {
 	 *          - $obj->a->b
 	 *          - or $obj->a['b']
 	 *
-	 * @param   null $key     string  Single or multiple level such as a.b.c
+	 * @param   null $key string  Single or multiple level such as a.b.c
 	 * @param   null $default mixed   Return a default value if the key does not exists or is empty
-	 * @param   null $func    string  The function to apply the result before return
+	 * @param   null $func string  The function to apply the result before return
 	 *
 	 * @return  mixed|null
 	 */
-	public
-	function get(
-		$key = null, $default = null, $func = null
-	) {
+	public function get( $key = null, $default = null, $func = null ) {
 		$val = $this->_get( $this, $key, $default );
 
 		return is_callable( $func ) ? call_user_func_array( $func, array( $val ) ) : $val;
 	}
 
 
-	protected
-	function _get(
-		$prop, $key, $default = null, $type = null
-	) {
+	protected function _get( $prop, $key, $default = null, $type = null ) {
 		$return = $default;
 
 		if ( $key === false || $key == null ) {
@@ -750,17 +731,14 @@ class LP_Question extends LP_Course_Item {
 	/**
 	 * Save question data on POST action
 	 */
-	public
-	function save_post_action() {
+	public function save_post_action() {
 	}
 
-	public
-	function get_icon() {
+	public function get_icon() {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/question.png' ), $this ) . '">';
 	}
 
-	public
-	function get_params() {
+	public function get_params() {
 
 	}
 
@@ -768,7 +746,7 @@ class LP_Question extends LP_Course_Item {
 	 * Find value in answer's option and compare with value answered by user.
 	 *
 	 * @param LP_Question_Answer_Option $answer
-	 * @param mixed                     $answered
+	 * @param mixed $answered
 	 *
 	 * @return bool
 	 */
@@ -782,10 +760,7 @@ class LP_Question extends LP_Course_Item {
 		return apply_filters( 'learn-press/question/is-selected-option', $is_selected, $answer, $answered, $this->get_id() );
 	}
 
-	public
-	function save_user_answer(
-		$answer, $quiz_id, $user_id = null
-	) {
+	public function save_user_answer( $answer, $quiz_id, $user_id = null ) {
 		if ( $user_id ) {
 			$user = LP_User_Factory::get_user( $user_id );
 		} else {
@@ -807,8 +782,7 @@ class LP_Question extends LP_Course_Item {
 		//do_action( 'learn_press_update_user_answer', $progress, $user_id, $this, $quiz_id );
 	}
 
-	public
-	function can_check_answer() {
+	public function can_check_answer() {
 		return false;
 	}
 
@@ -821,16 +795,12 @@ class LP_Question extends LP_Course_Item {
 		return $return;
 	}
 
-	public
-	function get_limit_options() {
+	public function get_limit_options() {
 		return - 1;
 	}
 
 
-	public
-	function get_user_answered(
-		$args
-	) {
+	public function get_user_answered( $args ) {
 		$args     = wp_parse_args(
 			$args,
 			array(
@@ -933,16 +903,14 @@ class LP_Question extends LP_Course_Item {
 	 *
 	 * @return array
 	 */
-	public
-	function get_option_template_data() {
+	public function get_option_template_data() {
 		$data = apply_filters( 'learn-press/question/admin-option-template-args', array(), $this->get_type() );
 		$data = apply_filters( 'learn-press/question/' . $this->get_type() . '/admin-option-template-args', $data, $this->get_type() );
 
 		return $data;
 	}
 
-	public
-	function to_element_data(
+	public function to_element_data(
 		$echo = true
 	) {
 		$data = apply_filters( '', array(
@@ -977,7 +945,7 @@ class LP_Question extends LP_Course_Item {
 	}
 
 	/**
-	 * @param bool  $the_question
+	 * @param bool $the_question
 	 * @param array $args
 	 *
 	 * @return LP_Question|bool
@@ -1031,7 +999,7 @@ class LP_Question extends LP_Course_Item {
 	 * Get the lesson class name
 	 *
 	 * @param  WP_Post $the_question
-	 * @param  array   $args (default: array())
+	 * @param  array $args (default: array())
 	 *
 	 * @return string
 	 */
