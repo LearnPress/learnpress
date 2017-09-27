@@ -23,6 +23,9 @@ learn_press_admin_view( 'quiz/question' );
             computed: {
                 listQuestions: function () {
                     return $store.getters['lqs/listQuestions'];
+                },
+                questionTypes: function () {
+                    return $store.getters['questionTypes'];
                 }
             }
         });

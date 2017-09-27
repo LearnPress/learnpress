@@ -324,18 +324,18 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			check_ajax_referer( 'learnpress_update_list_quiz_questions', 'nonce' );
 
 			$args = wp_parse_args( $_REQUEST, array(
-				'quiz_id' => false,
+				'quiz-id' => false,
 				'type'    => ''
 			) );
 
-			$quiz_id = $args['quiz_id'];
+			$quiz_id = $args['quiz-id'];
 			$quiz    = learn_press_get_quiz( $quiz_id );
 
 			if ( ! $quiz ) {
 				wp_send_json_error();
 			}
 
-			$curd = new LP_Quiz_CURD();
+			$curd = new LP_Question_CURD();
 
 			$result = $args['type'];
 			switch ( $args['type'] ) {
@@ -346,9 +346,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$hidden = learn_press_get_request( 'hidden' );
 					update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden );
 					break;
-				case 'sync-questions' :
-					// code
-					break;
 				case 'update-list-questions':
 					// code
 					break;
@@ -356,6 +353,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// code
 					break;
 				case 'update-question':
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+
+					$update = array(
+						'id'    => $question['id'],
+						'title' => $question['title'],
+					);
+
+					$result = $curd->update( $update );
 					// code
 					break;
 				case 'remove-question':
