@@ -356,8 +356,8 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  */
 function learn_press_get_post_by_name( $name, $type, $single = true ) {
 
-    // Fixed in 2.1.9, in case the post name is not valid
-    $origin_name = urldecode($name);
+	// Fixed in 2.1.9, in case the post name is not valid
+	$origin_name = urldecode( $name );
 
 	// Ensure that post name has to be sanitized. Fixed in 2.1.6
 	$name = sanitize_title( $name );
@@ -373,7 +373,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 			SELECT *
 			FROM {$wpdb->posts}
 			WHERE 1 AND ( post_name = %s OR post_name = %s )
-		",  $name , $origin_name );
+		", $name, $origin_name );
 
 		$query .= " AND post_type IN ('" . $type . "' )";
 
@@ -854,61 +854,76 @@ function learn_press_course_profile_link( $course_id = 0 ) {
  */
 add_action( 'all_admin_notices', 'learn_press_admin_course_tabs' );
 function learn_press_admin_course_tabs() {
-	if ( ! is_admin() ) {
+	$current_page_id = get_current_screen()->id;
+	$current_user    = wp_get_current_user();
+	if ( ! is_admin() || ! in_array( 'administrator', $current_user->roles ) ) {
 		return;
 	}
+
 	$admin_tabs = apply_filters(
 		'learn_press_admin_tabs_info',
 		array(
-
-			10 => array(
-				"link" => "edit.php?post_type=lp_course",
-				"name" => __( "Courses", "learnpress" ),
-				"id"   => "edit-lp_course",
+			array(
+				"link"     => "edit.php?post_type=lp_course",
+				"name"     => __( "Courses", "learnpress" ),
+				"id"       => "edit-lp_course",
+				'pages'    => array( 'edit-lp_course', 'edit-course_category', 'edit-course_tag', 'lp_course' )
 			),
+			array(
+				"link"     => "edit-tags.php?taxonomy=course_category&post_type=lp_course",
+				"name"     => __( "Categories", "learnpress" ),
+				"id"       => "edit-course_category",
+				'pages'    => array( 'edit-lp_course', 'edit-course_category', 'edit-course_tag', 'lp_course' )
 
-			20 => array(
-				"link" => "edit-tags.php?taxonomy=course_category&post_type=lp_course",
-				"name" => __( "Categories", "learnpress" ),
-				"id"   => "edit-course_category",
 			),
-			30 => array(
-				"link" => "edit-tags.php?taxonomy=course_tag&post_type=lp_course",
-				"name" => __( "Tags", "learnpress" ),
-				"id"   => "edit-course_tag",
-			),
-
-		)
+			array(
+				"link"     => "edit-tags.php?taxonomy=course_tag&post_type=lp_course",
+				"name"     => __( "Tags", "learnpress" ),
+				"id"       => "edit-course_tag",
+				'pages'    => array( 'edit-lp_course', 'edit-course_category', 'edit-course_tag', 'lp_course' )
+			)
+        )
 	);
-	ksort( $admin_tabs );
-	$tabs = array();
-	foreach ( $admin_tabs as $key => $value ) {
-		array_push( $tabs, $key );
-	}
-	$pages              = apply_filters(
-		'learn_press_admin_tabs_on_pages',
-		array( 'edit-lp_course', 'edit-course_category', 'edit-course_tag', 'lp_course' )
-	);
-	$admin_tabs_on_page = array();
-	foreach ( $pages as $page ) {
-		$admin_tabs_on_page[ $page ] = $tabs;
-	}
 
 
-	$current_page_id = get_current_screen()->id;
-	$current_user    = wp_get_current_user();
-	if ( ! in_array( 'administrator', $current_user->roles ) ) {
-		return;
-	}
-	if ( ! empty( $admin_tabs_on_page[ $current_page_id ] ) && count( $admin_tabs_on_page[ $current_page_id ] ) ) {
-		echo '<h2 class="nav-tab-wrapper lp-nav-tab-wrapper">';
-		foreach ( $admin_tabs_on_page[ $current_page_id ] as $admin_tab_id ) {
+	if ( ! function_exists( '_learn_press_sort_admin_course_tabs' ) ) {
+		function _learn_press_sort_admin_course_tabs( $a, $b ) {
+			if ( ! array_key_exists( 'priority', $a ) ) {
+				$a['priority'] = 10;
+			}
 
-			$class = ( $admin_tabs[ $admin_tab_id ]["id"] == $current_page_id ) ? "nav-tab nav-tab-active" : "nav-tab";
-			echo '<a href="' . admin_url( $admin_tabs[ $admin_tab_id ]["link"] ) . '" class="' . $class . ' nav-tab-' . $admin_tabs[ $admin_tab_id ]["id"] . '">' . $admin_tabs[ $admin_tab_id ]["name"] . '</a>';
+			if ( ! array_key_exists( 'priority', $b ) ) {
+				$b['priority'] = 10;
+			}
+
+			if ( $a['priority'] == $b['priority'] ) {
+				return 0;
+			}
+
+			return $a['priority'] < $b['priority'] ? - 1 : 1;
 		}
-		echo '</h2>';
 	}
+
+	usort( $admin_tabs, '_learn_press_sort_admin_course_tabs' );
+	//if ( ! empty( $admin_tabs_on_page[ $current_page_id ] ) && count( $admin_tabs_on_page[ $current_page_id ] ) ) {
+	$has_tab = false;
+	ob_start();
+	echo '<h2 class="nav-tab-wrapper lp-nav-tab-wrapper">';
+	foreach ( $admin_tabs as $tab ) {
+		if ( ! empty( $tab['pages'] ) && ! in_array( $current_page_id, $tab['pages'] ) ) {
+			continue;
+		}
+		$has_tab = true;
+		$class   = ( $tab["id"] == $current_page_id ) ? "nav-tab nav-tab-active" : "nav-tab";
+		echo '<a href="' . admin_url( $tab["link"] ) . '" class="' . $class . ' nav-tab-' . $tab["id"] . '">' . $tab["name"] . '</a>';
+	}
+	echo '</h2>';
+	$output = ob_get_clean();
+
+	if ( $has_tab ) {
+		echo $output;
+	}
+	//}
 }
 
 add_action( 'admin_footer', 'learn_press_show_menu' );
