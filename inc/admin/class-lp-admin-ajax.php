@@ -335,23 +335,28 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				wp_send_json_error();
 			}
 
-			$curd = new LP_Question_CURD();
+			$question_curd = new LP_Question_CURD();
+			$quiz_curd     = new LP_Quiz_CURD();
 
 			$result = $args['type'];
 			switch ( $args['type'] ) {
 				case 'heartbeat' :
 					$result = true;
 					break;
+
 				case 'hidden-questions':
 					$hidden = learn_press_get_request( 'hidden' );
 					update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden );
 					break;
+
 				case 'update-list-questions':
 					// code
 					break;
+
 				case 'new-question':
 					// code
 					break;
+
 				case 'update-question':
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
@@ -365,18 +370,23 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'title' => $question['title'],
 					);
 
-					$result = $curd->update( $update );
+					$result = $question_curd->update( $update );
 					// code
 					break;
+
 				case 'remove-question':
-					// code
+					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
+					$result = $quiz_curd->remove_question( $quiz_id, $question_id );
 					break;
+
 				case 'remove-questions':
 					// code
 					break;
+
 				case 'delete-question':
 					// code
 					break;
+
 				case 'sort-questions':
 					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
 					if ( ! $orders ) {
@@ -387,13 +397,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$orders = json_decode( $orders, true );
 
 //					$result = $curd->sort_questions( $orders );
+					break;
 
-					break;
-					// code
-					break;
 				case 'search-questions':
 					// code
 					break;
+
 				default:
 					break;
 			}

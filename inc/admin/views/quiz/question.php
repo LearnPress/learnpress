@@ -24,8 +24,7 @@ learn_press_admin_view( 'quiz/settings' );
         <td class="lp-column-actions">
             <div class="lp-box-data-actions lp-toolbar-buttons">
                 <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
-                    <a data-tooltip="Change type of this question"
-                       class="lp-btn-icon dashicons dashicons-editor-help"></a>
+                    <a class="lp-btn-icon dashicons dashicons-editor-help"></a>
                     <ul>
                         <li v-for="(type, key) in questionTypes" :data-type="key"
                             :class="isAcitve(type) ? 'active' : ''">
@@ -34,25 +33,20 @@ learn_press_admin_view( 'quiz/settings' );
                     </ul>
                 </div>
                 <div class="lp-toolbar-btn">
-                    <a target="_blank" data-tooltip="Edit question in new window" :href="urlEdit"
-                       class="lp-btn-icon dashicons dashicons-admin-links learn-press-tooltip"></a>
+                    <a target="_blank" :href="urlEdit"
+                       class="lp-btn-icon dashicons dashicons-admin-links "></a>
                 </div>
                 <div class="lp-toolbar-btn">
-                    <a target="_blank" data-tooltip="Clone this question"
-                       class="lp-btn-icon dashicons dashicons-admin-page learn-press-tooltip"></a>
+                    <a target="_blank" class="lp-btn-icon dashicons dashicons-admin-page "></a>
                 </div>
                 <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
-                    <a data-tooltip="Remove this question"
-                       class="lp-btn-icon dashicons dashicons-trash learn-press-tooltip"></a>
+                    <a class="lp-btn-icon dashicons dashicons-trash" @click="remove"></a>
                     <ul>
-                        <li><a class="learn-press-tooltip" data-tooltip="" data-delete-permanently="yes"> Delete
-                                permanently </a>
-                        </li>
+                        <li><a class=""> Delete permanently </a></li>
                     </ul>
                 </div>
                 <span @click="toggle" :class="question.open ?'open' : 'close'"
-                      class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip"
-                      data-tooltip="Toggle question content"></span>
+                      class="lp-toolbar-btn lp-btn-toggle "></span>
             </div>
         </td>
     </tr>
@@ -82,6 +76,9 @@ learn_press_admin_view( 'quiz/settings' );
             methods: {
                 toggle: function () {
                     $store.dispatch('lqs/toggleQuestion', this.question);
+                },
+                remove: function () {
+                    $store.dispatch('lqs/removeQuestion', this.question);
                 },
                 isAcitve: function (type) {
                     return this.question.type === type;

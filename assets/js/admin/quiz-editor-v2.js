@@ -164,13 +164,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 );
         },
 
-        removeQuestion: function (context, payload) {
-            context.commit('REMOVE_QUESTION', payload);
+        removeQuestion: function (context, question) {
+            context.commit('REMOVE_QUESTION', question);
 
             Vue.http
                 .LPRequest({
                     type: 'remove-question',
-                    'question-id': payload.itemId
+                    'question-id': question.id
                 })
         },
 
