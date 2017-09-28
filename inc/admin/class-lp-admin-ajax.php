@@ -374,6 +374,53 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// code
 					break;
 
+				case 'clone-question':
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+
+					$user_id = learn_press_get_current_user_id();
+
+					$new_question_id = learn_press_duplicate_question( $question['id'], $quiz_id );
+					if ( ! is_wp_error( $new_question_id ) ) {
+
+						// trigger change user memorize question types
+						$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+						$question_types          = ! $question_types ? array() : $question_types;
+						$type                    = get_post_meta( $new_question_id, '_lp_type', true );
+						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
+						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+
+						$question = LP_Question::get_question( $new_question_id );
+
+						$order  = $question['order'] + 1;
+						$result = array(
+							'id'       => $new_question_id,
+							'open'     => false,
+							'title'    => get_the_title( $new_question_id ),
+							'type'     => array(
+								'key'   => $question->get_type(),
+								'label' => $question->get_type_label()
+							),
+							'answers'  => array(
+								'heading' => $question->get_admin_option_headings(),
+								'options' => $question->get_answer_options()
+							),
+							'settings' => array(
+								'mark'        => get_post_meta( $new_question_id, '_lp_mark', true ),
+								'explanation' => get_post_meta( $new_question_id, '_lp_explanation', true ),
+								'hint'        => get_post_meta( $new_question_id, '_lp_hint', true )
+							),
+							'order'    => $order
+						);
+					}
+
+					//code
+					break;
+
 				case 'remove-question':
 					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
 					$result      = $quiz_curd->remove_question( $quiz_id, $question_id );

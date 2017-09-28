@@ -78,7 +78,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			$hidden_questions = get_post_meta( $post->ID, '_lp_hidden_questions', true );
 
 			wp_localize_script( 'quiz-editor-v2', 'lp_quiz_editor', array(
-				'root'          => array(
+				'root' => array(
 					'quiz_id' => $quiz->get_id(),
 					'ajax'    => admin_url( '' ),
 					'action'  => 'update_list_quiz_questions',
@@ -87,8 +87,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				),
 				'listQuestions' => array(
 					'questions'        => $quiz->quiz_editor_get_questions(),
-					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array(),
-					'order'            => learn_press_quiz_get_questions_order( $quiz->get_questions() )
+					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array()
 				)
 			) );
 

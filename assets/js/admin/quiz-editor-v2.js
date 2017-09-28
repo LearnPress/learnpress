@@ -164,6 +164,26 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 );
         },
 
+        cloneQuestion: function (context, question) {
+            Vue.http
+                .LPRequest({
+                    type: 'clone-question',
+                    'question': JSON.stringify(question)
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            // console.log(response);
+                        }
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                )
+        },
+
         removeQuestion: function (context, question) {
             context.commit('REMOVE_QUESTION', question);
 
@@ -192,7 +212,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             Vue.http
                 .LPRequest({
                     type: 'delete-question',
-                    'question-id': question.id
+                    'question': JSON.stringify(question)
+                })
+                .then(function () {
+                    context.commit('UPDATE_QUESTION_SUCCESS', question.id);
+                })
+                .catch(function () {
+                    context.commit('UPDATE_QUESTION_FAILURE', question.id);
                 })
         },
 

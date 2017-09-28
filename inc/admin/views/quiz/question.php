@@ -12,7 +12,7 @@ learn_press_admin_view( 'quiz/settings' );
 <script type="text/x-template" id="tmpl-lp-quiz-question-item">
     <tr class="question-item">
         <td class="lp-column-sort movable"><i class="fa fa-bars"></i></td>
-        <td class="lp-column-order"></td>
+        <td class="lp-column-order">{{index + 1}}</td>
         <td class="lp-column-name">
             <input type="text" class="question-title lp-question-heading-title"
                    v-model="question.title"
@@ -20,14 +20,14 @@ learn_press_admin_view( 'quiz/settings' );
                    @blur="updateTitle"
                    @input="onChangeTitle">
         </td>
-        <td class="lp-column-type">{{question.type}}</td>
+        <td class="lp-column-type">{{question.type.label}}</td>
         <td class="lp-column-actions">
             <div class="lp-box-data-actions lp-toolbar-buttons">
                 <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
                     <a class="lp-btn-icon dashicons dashicons-editor-help"></a>
                     <ul>
                         <li v-for="(type, key) in questionTypes" :data-type="key"
-                            :class="isAcitve(type) ? 'active' : ''">
+                            :class="isAcitve(key) ? 'active' : ''">
                             <a href="">{{type}}</a>
                         </li>
                     </ul>
@@ -37,7 +37,7 @@ learn_press_admin_view( 'quiz/settings' );
                        class="lp-btn-icon dashicons dashicons-admin-links "></a>
                 </div>
                 <div class="lp-toolbar-btn">
-                    <a target="_blank" class="lp-btn-icon dashicons dashicons-admin-page "></a>
+                    <a target="_blank" class="lp-btn-icon dashicons dashicons-admin-page" @click="clone"></a>
                 </div>
                 <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click="remove"></a>
@@ -58,7 +58,7 @@ learn_press_admin_view( 'quiz/settings' );
 
         Vue.component('lp-quiz-question-item', {
             template: '#tmpl-lp-quiz-question-item',
-            props: ['question'],
+            props: ['question', 'index'],
             data: function () {
                 return {
                     unsaved: false,
@@ -77,6 +77,9 @@ learn_press_admin_view( 'quiz/settings' );
                 toggle: function () {
                     $store.dispatch('lqs/toggleQuestion', this.question);
                 },
+                clone: function () {
+                    $store.dispatch('lqs/cloneQuestion', this.question);
+                },
                 remove: function () {
                     $store.dispatch('lqs/removeQuestion', this.question);
                 },
@@ -84,7 +87,7 @@ learn_press_admin_view( 'quiz/settings' );
                     $store.dispatch('lqs/deleteQuestion', this.question);
                 },
                 isAcitve: function (type) {
-                    return this.question.type === type;
+                    return this.question.type.key === type;
                 },
                 onChangeTitle: function () {
                     this.unsaved = true;

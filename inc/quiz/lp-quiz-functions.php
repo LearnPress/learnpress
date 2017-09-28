@@ -469,9 +469,9 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 			$ids[] = $id;
 		}
 
-		if ( $order = $wpdb->get_results( "SELECT q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q", ARRAY_A ) ) {
+		if ( $order = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q", ARRAY_A ) ) {
 			foreach ( $order as $id => $_order ) {
-				$orders[] = $_order['q_order'];
+				$orders[ $_order['q_id'] ] = $_order['q_order'];
 			}
 		}
 

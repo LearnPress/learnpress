@@ -11,7 +11,8 @@ learn_press_admin_view( 'quiz/question' );
 <script type="text/x-template" id="tmpl-lp-list-quiz-questions">
     <draggable v-model="listQuestions" :element="'tbody'" :options="optionDraggable" @end="updateSortQuestions">
         <lp-quiz-question-item v-for="(question, index) in listQuestions" :question="question"  :index="index"
-                               :key="index"></lp-quiz-question-item>
+                               :key="index">
+        </lp-quiz-question-item>
     </draggable>
 </script>
 

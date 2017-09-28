@@ -910,9 +910,7 @@ class LP_Question extends LP_Course_Item {
 		return $data;
 	}
 
-	public function to_element_data(
-		$echo = true
-	) {
+	public function to_element_data( $echo = true ) {
 		$data = apply_filters( '', array(
 				'type'           => $this->get_type(),
 				'title'          => $this->get_title(),
@@ -928,8 +926,7 @@ class LP_Question extends LP_Course_Item {
 		return $data;
 	}
 
-	public
-	static function get_option_template_data_for_js(
+	public static function get_option_template_data_for_js(
 		$args, $type
 	) {
 		$args = array(
