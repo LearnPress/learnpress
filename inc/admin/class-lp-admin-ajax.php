@@ -376,7 +376,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'remove-question':
 					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
-					$result = $quiz_curd->remove_question( $quiz_id, $question_id );
+					$result      = $quiz_curd->remove_question( $quiz_id, $question_id );
 					break;
 
 				case 'remove-questions':
@@ -384,7 +384,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'delete-question':
-					// code
+					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
+					$result      = $quiz_curd->remove_question( $quiz_id, $question_id, array( 'delete_permanently' => true ) );
 					break;
 
 				case 'sort-questions':

@@ -42,7 +42,7 @@ learn_press_admin_view( 'quiz/settings' );
                 <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click="remove"></a>
                     <ul>
-                        <li><a class=""> Delete permanently </a></li>
+                        <li><a class="" @click="deletePermanently"> Delete permanently </a></li>
                     </ul>
                 </div>
                 <span @click="toggle" :class="question.open ?'open' : 'close'"
@@ -79,6 +79,9 @@ learn_press_admin_view( 'quiz/settings' );
                 },
                 remove: function () {
                     $store.dispatch('lqs/removeQuestion', this.question);
+                },
+                deletePermanently: function () {
+                    $store.dispatch('lqs/deleteQuestion', this.question);
                 },
                 isAcitve: function (type) {
                     return this.question.type === type;

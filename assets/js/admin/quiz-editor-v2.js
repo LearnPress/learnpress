@@ -85,14 +85,14 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         'UPDATE_QUESTION': function () {
             // code
         },
-        'REMOVE_QUESTION': function (state, index) {
-            state.questions.splice(index, 1);
+        'REMOVE_QUESTION': function (state, item) {
+            var questions = state.questions,
+                index = questions.indexOf(item);
+
+            questions.splice(index, 1);
         },
         'REMOVE_QUESTIONS': function () {
             // code
-        },
-        'DELETE_QUESTION': function (state, index) {
-            state.questions.splice(index, 1);
         },
         'CLOSE_QUESTION': function (state, question) {
             state.questions.forEach(function (_question, index) {
@@ -170,6 +170,28 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             Vue.http
                 .LPRequest({
                     type: 'remove-question',
+                    'question-id': question.id
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            // console.log(result);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                )
+        },
+
+        deleteQuestion: function (context, question) {
+            context.commit('REMOVE_QUESTION', question);
+
+            Vue.http
+                .LPRequest({
+                    type: 'delete-question',
                     'question-id': question.id
                 })
         },
