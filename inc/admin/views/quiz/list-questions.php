@@ -5,14 +5,17 @@
  * @since 3.0.0
  */
 
-learn_press_admin_view( 'quiz/question' );
+learn_press_admin_view( 'quiz/question-item' );
+learn_press_admin_view( 'quiz/question-settings' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-list-quiz-questions">
     <draggable v-model="listQuestions" :element="'tbody'" :options="optionDraggable" @end="updateSortQuestions">
-        <lp-quiz-question-item v-for="(question, index) in listQuestions" :question="question"  :index="index"
-                               :key="index">
-        </lp-quiz-question-item>
+        <template v-for="(question, index) in listQuestions">
+            <lp-quiz-question-item :question="question" :index="index"></lp-quiz-question-item>
+            <lp-quiz-question-settings :question="question" :index="index"></lp-quiz-question-settings>
+        </template>
+
     </draggable>
 </script>
 
@@ -36,7 +39,15 @@ learn_press_admin_view( 'quiz/question' );
                 }
             },
             methods: {
-                updateSortQuestions: function () {
+                updateSortQuestions: function (event, b, c) {
+                    var item = jQuery(event.item),
+                        id = item.attr('data-item'),
+                        sibling = item.siblings('[data-item="' + id + '"]');
+
+
+                    sibling.insertAfter(item)
+
+
                     $store.dispatch('lqs/updateSortQuestions', this.questionsOrder);
 
                 }

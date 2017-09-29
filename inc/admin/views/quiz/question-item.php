@@ -4,13 +4,10 @@
  *
  * @since 3.0.0
  */
-
-learn_press_admin_view( 'quiz/answers' );
-learn_press_admin_view( 'quiz/settings' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-item">
-    <tr class="question-item">
+    <tr class="question-item" :item-id="index" :data-item="dataItem">
         <td class="lp-column-sort movable"><i class="fa fa-bars"></i></td>
         <td class="lp-column-order">{{index + 1}}</td>
         <td class="lp-column-name">
@@ -71,6 +68,9 @@ learn_press_admin_view( 'quiz/settings' );
                 },
                 questionTypes: function () {
                     return $store.getters['questionTypes'];
+                },
+                dataItem: function () {
+                    return 'index-' + this.index;
                 }
             },
             methods: {

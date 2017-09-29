@@ -16,12 +16,11 @@
     }
     tbody {
         tr {
-            &:nth-child(odd) {
-                background: #FFF;
-            }
-            &:nth-child(even) {
+            background: #FFF;
+            &:nth-child(4n-1) {
                 background: #f4fcff;
             }
+
         }
         .edit-inline {
             background: #FFF;
@@ -275,10 +274,10 @@
                 float: none;
             }
             .quiz-question-data {
-                padding-right: 0px;
+                padding-right: 0;
             }
             .quiz-question-options {
-                padding-left: 0px;
+                padding-left: 0;
             }
         }
     }
