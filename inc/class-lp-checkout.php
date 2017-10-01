@@ -65,41 +65,80 @@ class LP_Checkout {
 	public function __construct() {
 		add_filter( 'learn_press_checkout_validate_field', array( $this, 'validate_fields' ), 10, 3 );
 		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_guest_email' ), 10, 3 );
-		add_filter( 'learn-press/payment-successful-result', function ( $result, $order_id ) {
-
-			if ( ! $this->is_enable_guest_checkout() ) {
-				return;
-			}
-
-			$checkout_option = LP_Request::get_string( 'checkout-email-option' );
-			switch ( $checkout_option ) {
-				case 'existing-account':
-					if ( ! $user_id = $this->checkout_email_exists() ) {
-						return;
-					}
-
-					if($order = learn_press_get_order( $order_id )) {
-						$order->set_user_id( $user_id );
-						$order->save();
-					}
-					break;
-				case 'new-account':
-					if ( $this->checkout_email_exists() ) {
-						return;
-					}
-
-					$this->_create_account();
-					break;
-			}
-			echo $this->get_checkout_email(), ',', $order_id,',', $this->checkout_email_exists();
-			die();
-		}, 10, 2 );
+		add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
 
 		$this->_checkout_email = LP()->session->get( 'checkout-email' );
 	}
 
-	protected function _create_account() {
+	/**
+	 * Process customer when checking out.
+	 *
+	 * @param array $result
+	 * @param int   $order_id
+	 *
+	 * @return mixed
+	 */
+	public function process_customer( $result, $order_id ) {
 
+		try {
+			if ( ! $this->is_enable_guest_checkout() ) {
+				throw new Exception( '' );
+			}
+
+			if ( ! $order = learn_press_get_order( $order_id ) ) {
+				throw new Exception( '' );
+			}
+			$user_id         = 0;
+			$checkout_option = LP_Request::get_string( 'checkout-email-option' );
+			$order->delete_meta( '_create_account' );
+			switch ( $checkout_option ) {
+				case 'existing-account':
+					if ( ! $user_id = $this->checkout_email_exists() ) {
+						throw new Exception( '' );
+					}
+
+					break;
+				case 'new-account':
+					if ( $this->checkout_email_exists() ) {
+						throw new Exception( 'NEW ACCOUNT EMAIL IS EXISTED', 0 );
+					}
+
+					$order->set_meta( '_create_account', 'yes' );
+					LP()->session->set( 'user_waiting_payment', $this->get_checkout_email() );
+					break;
+			}
+
+			if ( $user_id ) {
+				$order->set_user_id( $user_id );
+			}
+
+			$order->save();
+		}
+		catch ( Exception $ex ) {
+			if ( $ex->getCode() && $message = $ex->getMessage() ) {
+				$result['message'] = $message;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	public function get_user_waiting_payment() {
+		return LP()->session->get( 'user_waiting_payment' );
+	}
+
+	/**
+	 * @return int|WP_Error
+	 */
+	protected function _create_account() {
+		$email    = $this->get_checkout_email();
+		$password = wp_generate_password( 12, true );
+		$user_id  = wp_create_user( $email, $password, $email );
+
+		return $user_id;
 	}
 
 	/**
@@ -137,6 +176,9 @@ class LP_Checkout {
 		return false;
 	}
 
+	/**
+	 * @return bool|int
+	 */
 	public function checkout_email_exists() {
 		if ( ! $email = $this->get_checkout_email() ) {
 			return false;
@@ -149,6 +191,11 @@ class LP_Checkout {
 		return $user->ID;
 	}
 
+	/**
+	 * Checkout fields.
+	 *
+	 * @return array
+	 */
 	public function get_checkout_fields() {
 		if ( ! is_user_logged_in() ) {
 			$this->checkout_fields['user_login']    = __( 'Username', 'learnpress' );
@@ -498,7 +545,8 @@ class LP_Checkout {
 					$result = $this->payment_method->process_payment( $order_id );
 					if ( isset( $result['result'] ) && 'success' === $result['result'] ) {
 						$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
-
+						print_r($result);
+						die();
 						if ( learn_press_is_ajax() ) {
 							learn_press_send_json( $result );
 						} else {

@@ -41,18 +41,22 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}*/
 
 			LP_Request_Handler::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
-			LP_Request::register_ajax( 'check-user-email', array( __CLASS__, 'check_user_email' ) );
+			LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
 		}
 
-		public static function check_user_email() {
+		public static function checkout_user_email_exists() {
 
 			$email    = LP_Request::get_email( 'email' );
 			$response = array(
-				'exists' => false
+				'exists' => 0
 			);
 
-			if ( get_user_by( 'email', $email ) ) {
-				$response['exists'] = true;
+			if ( $user = get_user_by( 'email', $email ) ) {
+				$response['exists'] = $email;
+			}
+
+			if ( $waiting_payment = LP()->checkout()->get_user_waiting_payment() ) {
+				$response['waiting_payment'] = $waiting_payment;
 			}
 
 			learn_press_maybe_send_json( $response );

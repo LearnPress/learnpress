@@ -63,6 +63,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public $cart = false;
 
+		/**
+		 * @var LP_Settings
+		 */
 		public $settings = null;
 
 		/**

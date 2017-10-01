@@ -11,12 +11,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class LP_Emails
+ */
 class LP_Emails {
 
-	public $emails;
+	/**
+	 * List of all email actions.
+	 *
+	 * @var array
+	 */
+	public $emails = array();
 
-	/** @var LP_Mail The single instance of the class */
+	/** @var LP_Emails The single instance of the class */
 	protected static $_instance = null;
+
+	/**
+	 * @var LP_Email
+	 */
+	protected $_current = null;
 
 	/**
 	 * Main LP_Mail Instance
@@ -28,6 +41,7 @@ class LP_Emails {
 	 * @return LP_Emails instance
 	 */
 	public static function instance() {
+
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 			self::init_email_notifications();
@@ -51,13 +65,15 @@ class LP_Emails {
 	}
 
 	public function __construct() {
-		if ( did_action( 'learn_press_emails_init' ) ) {
+		if ( did_action( 'learn-press/emails-init' ) ) {
 			return;
 		}
 		include LP_PLUGIN_PATH . 'inc/emails/class-lp-email.php';
 		$this->emails['LP_Email_New_Order_Admin']           = include( 'emails/class-lp-email-new-order-admin.php' );
 		$this->emails['LP_Email_New_Order_Customer']        = include( 'emails/class-lp-email-new-order-customer.php' );
 		$this->emails['LP_Email_New_Order_Instructor']      = include( 'emails/class-lp-email-new-order-instructor.php' );
+		$this->emails['LP_Email_New_Order_Guest']           = include( 'emails/class-lp-email-new-order-guest.php' );
+		$this->emails['LP_Email_Completed_Order_Guest']     = include( 'emails/class-lp-email-completed-order-guest.php' );
 		$this->emails['LP_Email_Cancelled_Order_Admin']     = include( 'emails/class-lp-email-cancelled-order-admin.php' );
 		$this->emails['LP_Email_User_Order_Completed']      = include( 'emails/class-lp-email-user-order-completed.php' );
 		$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );
@@ -81,35 +97,56 @@ class LP_Emails {
 		add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
 		add_action( 'learn_press_email_footer', array( $this, 'email_footer' ) );
 
-		do_action( 'learn_press_emails_init', $this );
+		do_action( 'learn-press/emails-init', $this );
 	}
 
-	public function email_header( $heading, $return = false ) {
+	/**
+	 * Email header.
+	 *
+	 * @param string $heading
+	 * @param bool   $echo
+	 *
+	 * @return string
+	 */
+	public function email_header( $heading, $echo = true ) {
 		ob_start();
 		learn_press_get_template( 'emails/email-header.php', array( 'email_heading' => $heading ) );
 		$header = ob_get_clean();
-		if ( ! $return ) {
+		if ( $echo ) {
 			echo $header;
-		} else {
-			return $header;
 		}
+
+		return $header;
 	}
 
-	public function email_footer( $footer_text, $return = false ) {
+	/**
+	 * Email footer.
+	 *
+	 * @param string $footer_text
+	 * @param bool   $echo
+	 *
+	 * @return string
+	 */
+	public function email_footer( $footer_text, $echo = true ) {
 		ob_start();
 		learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
 		$footer = ob_get_clean();
-		if ( ! $return ) {
+		if ( $echo ) {
 			echo $footer;
-		} else {
-			return $footer;
 		}
+
+		return $footer;
 	}
 
+	/**
+	 * Trigger some actions for sending email.
+	 *
+	 * @return null
+	 */
 	public static function send_email() {
 		self::instance();
 		$args = func_get_args();
-		do_action_ref_array( current_filter() . '_notification', $args );
+		do_action_ref_array( current_filter() . '/notification', $args );
 
 		return isset( $args[0] ) ? $args[0] : null;
 	}
@@ -173,23 +210,33 @@ class LP_Emails {
 
 	public static function init_email_notifications() {
 		$actions = apply_filters(
-			'learn_press_email_actions',
+			'learn-press/email-actions',
 			array(
 				'learn_press_course_submit_rejected',
 				'learn_press_course_submit_approved',
 				'learn_press_course_submit_for_reviewer',
 				'learn_press_user_enrolled_course',
 				// new order to admin
-				'learn_press_order_status_pending_to_processing',
-				'learn_press_order_status_pending_to_completed',
+				//'learn_press_order_status_pending_to_processing',
+				'learn-press/order/status-pending-to-processing',
+				//'learn_press_order_status_pending_to_completed',
+				'learn-press/order/status-pending-to-completed',
+				//'learn_press_order_status_pending_to_on-hold',
 				'learn_press_order_status_pending_to_on-hold',
-				'learn_press_order_status_failed_to_processing',
-				'learn_press_order_status_failed_to_completed',
+				//'learn_press_order_status_failed_to_processing',
+				'learn-press/order/status-failed-to-processing',
+				//'learn_press_order_status_failed_to_completed',
+				'learn-press/order/status-failed-to-completed',
+				//'learn_press_order_status_failed_to_on-hold',
 				'learn_press_order_status_failed_to_on-hold',
-				'learn_press_order_status_completed',
+				//'learn_press_order_status_completed',
+				'learn-press/order/status-completed',
 				// admin create new order
-				'learn_press_order_status_draft_to_pending',
-				'learn_press_order_status_draft_to_processing',
+				//'learn_press_order_status_draft_to_pending',
+				'learn-press/order/status-draft-to-pending',
+				//'learn_press_order_status_draft_to_processing',
+				'learn-press/order/status-draft-to-processing',
+				//'learn_press_order_status_draft_to_on-hold',
 				'learn_press_order_status_draft_to_on-hold',
 				// Create order
 				'learn_press_checkout_success_result',
@@ -201,6 +248,34 @@ class LP_Emails {
 		foreach ( $actions as $action ) {
 			add_action( $action, array( __CLASS__, 'send_email' ), 10, 10 );
 		}
+	}
+
+	public function set_current( $id ) {
+		if ( $id instanceof LP_Email ) {
+			$this->_current = $id->id;
+		} else {
+			$this->_current = $id;
+		}
+	}
+
+	public function get_current() {
+		return self::get_email( $this->_current );
+	}
+
+	/**
+	 * @param string $id
+	 *
+	 * @return LP_Email|bool
+	 */
+	public static function get_email( $id ) {
+		static $emails = array();
+		if ( ! $emails || empty( $emails[ $id ] ) ) {
+			foreach ( self::instance()->emails as $class => $email ) {
+				$emails[ $email->id ] = $class;
+			}
+		}
+
+		return ! empty( $emails[ $id ] ) ? self::instance()->emails[ $emails[ $id ] ] : false;
 	}
 
 	/* public static function send_email() {

@@ -466,6 +466,10 @@ class LP_Order extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/order-items', wp_cache_get( 'order-' . $this->get_id(), 'lp-order-items' ) );
 	}
 
+	public function is_guest() {
+		return ! $this->get_user_id();
+	}
+
 	public function get_item_meta( &$item ) {
 		if ( $metas = get_metadata( 'learnpress_order_item', $item['id'] ) ) {
 			foreach ( $metas as $k => $v ) {
@@ -741,15 +745,23 @@ class LP_Order extends LP_Abstract_Post_Data {
 	}
 
 	public function get_formatted_order_subtotal() {
-		$currency_symbol = learn_press_get_currency_symbol( $this->order_currency );
+		$currency_symbol = learn_press_get_currency_symbol( $this->get_currency() );
 
-		return learn_press_format_price( $this->order_subtotal, $currency_symbol );
+		return learn_press_format_price( $this->get_subtotal(), $currency_symbol );
 	}
 
 	public function get_formatted_order_total() {
-		$currency_symbol = learn_press_get_currency_symbol( $this->order_currency );
+		$currency_symbol = learn_press_get_currency_symbol( $this->get_currency() );
 
-		return learn_press_format_price( $this->order_total, $currency_symbol );
+		return learn_press_format_price( $this->get_total(), $currency_symbol );
+	}
+
+	public function get_currency() {
+		return $this->get_data( 'currency' ) ? $this->get_data( 'currency' ) : learn_press_get_currency();
+	}
+
+	public function set_currency( $value ) {
+		$this->_set_data( 'currency', $value );
 	}
 
 	public function get_payment_method_title() {
@@ -959,6 +971,9 @@ class LP_Order extends LP_Abstract_Post_Data {
 		$email = false;
 		if ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) {
 			$email = $user->get_data( 'user_email' );
+		} // Order is checked out by guest
+		elseif ( $email = $this->get_checkout_email() ) {
+
 		}
 
 		return $email;

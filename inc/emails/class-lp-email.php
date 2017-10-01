@@ -244,10 +244,25 @@ class LP_Email extends LP_Abstract_Settings {
 	public $support_variables = array();
 
 	/**
+	 * @var LP_Settings
+	 */
+	public $settings = null;
+
+	/**
+	 * @var string
+	 */
+	public $email_format = '';
+
+	/**
+	 * @var bool
+	 */
+	public $enable = false;
+
+	/**
 	 * LP_Email constructor.
 	 */
 	public function __construct() {
-		$this->id = str_replace( '-', '_', $this->id );
+		//$this->id = str_replace( '-', '_', $this->id );
 
 		// Set template base path to LP templates path if it is not set.
 		if ( is_null( $this->template_base ) ) {
@@ -265,28 +280,33 @@ class LP_Email extends LP_Abstract_Settings {
 			$this->object = array();
 		}
 
+		$this->settings = LP()->settings()->get_group( 'emails_' . $this->id, '' );
+
+
 		/**
 		 * Init general options
 		 */
-		$this->heading      = LP()->settings->get( 'emails_' . $this->id . '.heading', $this->default_heading );
-		$this->subject      = LP()->settings->get( 'emails_' . $this->id . '.subject', $this->default_subject );
-		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' ) == 'plain_text' ? 'plain' : 'html';
-		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
+		$this->heading      = $this->settings->get( 'heading', $this->default_heading );
+		$this->subject      = $this->settings->get( 'subject', $this->default_subject );
+		$this->email_format = $this->settings->get( 'email_format' ) == 'plain_text' ? 'plain' : 'html';
+		$this->enable       = $this->settings->get( 'enable' ) === 'yes';
 
-		$this->basic_variabless = array(
+		$this->basic_variables = array(
 			'{{site_url}}',
 			'{{site_title}}',
 			'{{login_url}}',
 			'{{email_heading}}',
 		);
 
-		$this->general_variables = array_merge( $this->basic_variables, array(
-			'{{site_admin_email}}',
-			'{{site_admin_name}}',
-			'{{header}}',
-			'{{footer}}',
-			'{{footer_text}}'
-		) );
+		$this->general_variables = array_merge(
+			$this->basic_variables,
+			array(
+				'{{site_admin_email}}',
+				'{{site_admin_name}}',
+				'{{header}}',
+				'{{footer}}',
+				'{{footer_text}}'
+			) );
 	}
 
 	/**
@@ -295,7 +315,7 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @return mixed
 	 */
 	public function get_variables_support() {
-		return apply_filters( 'learn_press_email_variables_support', $this->support_variables, $this );
+		return apply_filters( 'learn-press/email-variables-support', $this->support_variables, $this );
 	}
 
 	/**
@@ -309,7 +329,7 @@ class LP_Email extends LP_Abstract_Settings {
 		if ( ! empty( $this->{$key} ) ) {
 			return $this->{$key};
 		} else {
-			return LP()->settings->get( 'emails_' . $this->id . '.' . $key );
+			return $this->settings->get( $key );
 		}
 	}
 
@@ -321,7 +341,7 @@ class LP_Email extends LP_Abstract_Settings {
 	public function _remove_email_content_from_option( $options, $key ) {
 
 		if ( ! $this->is_current() ) {
-			return;
+			return false;
 		}
 
 		if ( is_array( $options ) && ( array_key_exists( 'email_content_html', $options ) || array_key_exists( 'email_content_plain', $options ) ) ) {
@@ -340,34 +360,56 @@ class LP_Email extends LP_Abstract_Settings {
 		return $options;
 	}
 
+	/**
+	 * Apply the variables to string
+	 *
+	 * @param string $string
+	 *
+	 * @return string
+	 */
 	public function format_string( $string ) {
 		$search = $replace = array();
 		if ( is_array( $this->variables ) ) {
 			$search  = array_keys( $this->variables );
 			$replace = array_values( $this->variables );
 		}
-		$search  = apply_filters( 'learn_press_email_format_string_find', $search, $this );
-		$replace = apply_filters( 'learn_press_email_format_string_replace', $replace, $this );
+		$search  = apply_filters( 'learn-press/email-format-string-find', $search, $this );
+		$replace = apply_filters( 'learn-press/email-format-string-replace', $replace, $this );
 
 		return str_replace( $search, $replace, $string );
 	}
 
+	/**
+	 * Get email recipient.
+	 *
+	 * @return string
+	 */
 	public function get_recipient() {
-		return apply_filters( 'learn_press_email_recipient_' . $this->id, $this->recipient, $this->object );
+		return apply_filters( 'learn-press/email-recipient-' . $this->id, $this->recipient, $this->object );
 	}
 
+	/**
+	 * Get email subject.
+	 *
+	 * @return string
+	 */
 	public function get_subject() {
-		return apply_filters( 'learn_press_email_subject_' . $this->id, $this->format_string( $this->subject ), $this->object );
+		return apply_filters( 'learn-press/email-subject-' . $this->id, $this->format_string( $this->subject ), $this->object );
 	}
 
+	/**
+	 * Get email content.
+	 *
+	 * @return string
+	 */
 	public function get_content() {
 		$email_format = $this->get_email_format();
+
 		if ( $email_format == 'plain_text' ) {
 			$email_content = preg_replace( $this->plain_search, $this->plain_replace, strip_tags( $this->get_content_plain() ) );
 		} else if ( in_array( $email_format, array( 'html', 'multipart' ) ) ) {
 			$email_content = $this->get_content_html();
 		} else {
-			$this->_prepare_content_text_message();
 			$email_content = preg_replace( $this->text_search, $this->text_replace, $this->get_content_text_message() );
 		}
 
@@ -376,17 +418,35 @@ class LP_Email extends LP_Abstract_Settings {
 		return wordwrap( $email_content, 70 );
 	}
 
+	/**
+	 * Get email heading.
+	 *
+	 * @return string
+	 */
 	public function get_heading() {
-		return apply_filters( 'learn_press_email_heading_' . $this->id, $this->format_string( $this->heading ), $this->object );
+		return apply_filters( 'learn-press/email-heading-' . $this->id, $this->format_string( $this->heading ), $this->object );
 	}
 
+	/**
+	 * Get email footer text.
+	 *
+	 * @return string
+	 */
 	public function get_footer_text() {
-		return apply_filters( 'learn_press_email_footer_text_' . $this->id, LP()->settings->get( 'emails_general.footer_text' ) );
+		$text = wpautop( wp_kses_post( wptexturize( LP()->settings->get( 'emails_general.footer_text' ) ) ) );
+
+		return apply_filters( 'learn-press/email-footer-text-' . $this->id, $text );
 	}
 
+	/**
+	 * Get email content HTML.
+	 *
+	 * @return string
+	 */
 	public function get_content_html() {
 		$template   = $this->get_template( 'template_html' );
 		$local_file = $this->get_theme_template_file( $template, $this->template_path );
+
 		if ( file_exists( $local_file ) ) {
 			$args = $this->get_template_data( 'html' );
 			is_array( $args ) && extract( $args );
@@ -395,16 +455,22 @@ class LP_Email extends LP_Abstract_Settings {
 			$content = ob_get_clean();
 		} else {
 			$template_file = $this->template_base . $template;
-			$content       = LP()->settings->get( 'emails_' . $this->id . '.email_content_html', file_get_contents( $template_file ) );
+			$content       = $this->settings->get( 'email_content_html', file_get_contents( $template_file ) );
 			$content       = stripslashes( $content );
 		}
 
 		return $content;
 	}
 
+	/**
+	 * Get email content plain.
+	 *
+	 * @return string
+	 */
 	public function get_content_plain() {
 		$template   = $this->get_template( 'template_plain' );
 		$local_file = $this->get_theme_template_file( $template, $this->template_path );
+
 		if ( file_exists( $local_file ) ) {
 			$args = $this->get_template_data( 'plain' );
 			is_array( $args ) && extract( $args );
@@ -413,30 +479,48 @@ class LP_Email extends LP_Abstract_Settings {
 			$content = ob_get_clean();
 		} else {
 			$template_file = $this->template_base . $template;
-			$content       = LP()->settings->get( 'emails_' . $this->id . '.email_content_plain', file_get_contents( $template_file ) );
+			$content       = $this->settings->get( 'email_content_plain', file_get_contents( $template_file ) );
 			$content       = stripslashes( $content );
 		}
 
 		return $content;
 	}
 
-	public function _prepare_content_text_message() {
-	}
-
+	/**
+	 * Get content context message.
+	 *
+	 * @return string
+	 */
 	public function get_content_text_message() {
-		return apply_filters( 'learn_press_email_text_message_' . $this->id, LP()->settings->get( 'emails_' . $this->id . '.content_text_message' ) );
+		return apply_filters( 'learn-press/email-text-message-' . $this->id, $this->settings->get( 'content_text_message' ) );
 	}
 
+	/**
+	 * Get email headers.
+	 *
+	 * @return string
+	 */
 	public function get_headers() {
-		return apply_filters( 'learn_press_email_headers', "Content-Type: " . $this->get_content_format() . "\r\n", $this->id, $this->object );
+		return apply_filters( 'learn-press/email-headers', "Content-Type: " . $this->get_content_format() . "\r\n", $this->id, $this->object );
 	}
 
+	/**
+	 * Get email attachments.
+	 *
+	 * @return array
+	 */
 	public function get_attachments() {
-		return apply_filters( 'learn_press_email_attachments', array(), $this->id, $this->object );
+		return apply_filters( 'learn-press/email-attachments', array(), $this->id, $this->object );
 	}
 
+	/**
+	 * Get FROM address. Default is admin email.
+	 *
+	 * @return string
+	 */
 	public function get_from_address() {
 		$email = sanitize_email( LP()->settings->get( 'emails_general.from_email' ) );
+
 		if ( ! is_email( $email ) ) {
 			$email = get_option( 'admin_email' );
 		}
@@ -444,8 +528,13 @@ class LP_Email extends LP_Abstract_Settings {
 		return $email;
 	}
 
+	/**
+	 * Get FROM name. Default is Blog name.
+	 * @return string
+	 */
 	public function get_from_name() {
 		$name = sanitize_email( LP()->settings->get( 'emails_general.from_name' ) );
+
 		if ( empty( $name ) ) {
 			$name = get_option( 'blogname' );
 		}
@@ -453,10 +542,29 @@ class LP_Email extends LP_Abstract_Settings {
 		return $name;
 	}
 
+	/**
+	 * Get image header in general settings.
+	 *
+	 * @return string
+	 */
+	public function get_image_header() {
+		return LP()->settings->get( 'emails_general.header_image' );
+	}
+
+	/**
+	 * Get WP Blog name.
+	 *
+	 * @return string
+	 */
 	public function get_blogname() {
 		return wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 	}
 
+	/**
+	 * Get email content format.
+	 *
+	 * @return string
+	 */
 	public function get_content_format() {
 		switch ( $this->get_email_format() ) {
 			case 'text_message' :
@@ -477,7 +585,9 @@ class LP_Email extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * @param $content
+	 * Apply css from external to inline.
+	 *
+	 * @param string $content
 	 *
 	 * @return string
 	 */
@@ -501,14 +611,22 @@ class LP_Email extends LP_Abstract_Settings {
 				$emogrifier = new Emogrifier( $content, $css );
 				$content    = $emogrifier->emogrify();
 
-			} catch ( Exception $e ) {
+			}
+			catch ( Exception $e ) {
 
 			}
 		}
 
-		return $content;
+		return apply_filters( 'learn-press/email-content-inline-style', $content, $this->id );
 	}
 
+	/**
+	 * Get template file from type.
+	 *
+	 * @param string $type
+	 *
+	 * @return string
+	 */
 	public function get_template( $type ) {
 		$type = esc_attr( basename( $type ) );
 
@@ -525,23 +643,53 @@ class LP_Email extends LP_Abstract_Settings {
 		return;
 	}
 
+	/**
+	 * Get template file.
+	 *
+	 * @param string $template
+	 * @param string $template_path
+	 *
+	 * @return string
+	 */
 	public function get_theme_template_file( $template, $template_path = null ) {
-		return trailingslashit( get_stylesheet_directory() ) . trailingslashit( apply_filters( 'learn_press_template_directory', $template_path ? $template_path : learn_press_template_path(), $template ) ) . $template;
+		$template_dir = apply_filters( 'learn-press/template-directory', $template_path ? $template_path : learn_press_template_path(), $template );
+
+		return join(
+			'',
+			array(
+				trailingslashit( get_stylesheet_directory() ),
+				trailingslashit( $template_dir ),
+				$template
+			)
+		);
 	}
 
+	/**
+	 * Send email.
+	 *
+	 * @param string $to
+	 * @param string $subject
+	 * @param string $message
+	 * @param array  $headers
+	 * @param array  $attachments
+	 *
+	 * @return bool
+	 */
 	public function send( $to, $subject, $message, $headers, $attachments ) {
-		LP_Debug::instance()->add( $to );
-		LP_Debug::instance()->add( func_get_args() );
-
+		//return;
 		add_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		add_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
+
 		$return  = false;
-		$message = apply_filters( 'learn_press_mail_content', $this->apply_style_inline( $message ), $this );
+		$message = apply_filters( 'learn-press/email-content', $this->apply_style_inline( $message ), $this );
+
 		if ( ! is_array( $to ) ) {
 			$to = preg_split( '~\s?,\s?~', $to );
 		}
+
 		$separated = apply_filters( 'learn_press_email_to_separated', false, $to, $this );
+
 		if ( ! $separated ) {
 			$return = wp_mail( $to, $subject, $message, $headers, $attachments );
 		} else {
@@ -551,6 +699,8 @@ class LP_Email extends LP_Abstract_Settings {
 				}
 			}
 		}
+
+		//
 		remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
@@ -558,11 +708,9 @@ class LP_Email extends LP_Abstract_Settings {
 		return $return;
 	}
 
-	public function _send( $from, $to, $subject, $message ) {
-
-	}
-
 	/**
+	 * Get format of email template content.
+	 *
 	 * @param string $format
 	 *
 	 * @return array
@@ -571,12 +719,19 @@ class LP_Email extends LP_Abstract_Settings {
 		return array( 'plain_text' => $format == 'plain' );
 	}
 
+	/**
+	 * Get common template data variables.
+	 *
+	 * @param string $format
+	 *
+	 * @return array
+	 */
 	public function get_common_template_data( $format = 'plain' ) {
 		$heading     = strip_tags( $this->get_heading() );
 		$footer_text = strip_tags( $this->get_footer_text() );
 		if ( $format != 'plain' ) {
-			$header = LP_Emails::instance()->email_header( $heading, true );
-			$footer = LP_Emails::instance()->email_footer( $footer_text, true );
+			$header = LP_Emails::instance()->email_header( $heading, false );
+			$footer = LP_Emails::instance()->email_footer( $footer_text, false );
 		} else {
 			$header = $heading;
 			$footer = $footer_text;
@@ -606,6 +761,13 @@ class LP_Email extends LP_Abstract_Settings {
 		return $common;
 	}
 
+	/**
+	 * Build list of template variables from an array.
+	 *
+	 * @param array $data
+	 *
+	 * @return array
+	 */
 	public function data_to_variables( $data = null ) {
 		if ( ! $data ) {
 			$data = $this->get_common_template_data();
@@ -620,6 +782,13 @@ class LP_Email extends LP_Abstract_Settings {
 		return $variables;
 	}
 
+	public function get_field_name( $name ) {
+		return 'emails_' . $this->id . "[$name]";
+	}
+
+	/**
+	 * @return string
+	 */
 	public function __toString() {
 		return $this->title;
 	}

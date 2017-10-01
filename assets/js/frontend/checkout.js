@@ -24,14 +24,14 @@
              *
              * @type {form}
              */
-            $formLogin = $('#learn-press-checkout-register'),
+            $formLogin = $('#learn-press-checkout-login'),
 
             /**
              * Login form
              *
              * @type {form}
              */
-            $formRegister = $('#learn-press-checkout-login'),
+            $formRegister = $('#learn-press-checkout-register'),
 
             /**
              * Payment method wrap
@@ -54,7 +54,26 @@
              */
             selectedMethod = '',
 
-            $checkoutEmail = $('input[name="checkout-email"]')
+            /**
+             * Checkout email field.
+             *
+             * @type {DOM}
+             */
+            $checkoutEmail = $('input[name="checkout-email"]'),
+
+            /**
+             * Checkout existing account option.
+             *
+             * @type {DOM}
+             */
+            $checkoutExistingAccount = $('#checkout-existing-account'),
+
+            /**
+             * Checkout new account option.
+             *
+             * @type {DOM}
+             */
+            $checkoutNewAccount = $('#checkout-new-account')
         ;
 
         var _formSubmit = function (e) {
@@ -89,7 +108,7 @@
                             }
                         } catch (error) {
                             if (!response.messages) {
-                                showMessage('<div class="learn-press-error">' + options.i18n_invalid_field + '</div>');
+                                showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
                             } else {
                                 showMessage(response.messages);
                             }
@@ -99,7 +118,7 @@
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        showMessage('<div class="learn-press-error">' + errorThrown + '</div>');
+                        showMessage('<div class="learn-press-message error">' + errorThrown + '</div>');
                         $buttonCheckout.html(options.i18n_place_order);
                         $buttonCheckout.prop('disabled', false);
                         LP.unblockContent();
@@ -147,32 +166,39 @@
             $(document).trigger('learn-press/checkout-error');
         }
 
+        if (String.prototype.isEmail === undefined) {
+            String.prototype.isEmail = function () {
+                return new RegExp('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$').test(this);
+            }
+        }
+
         var _checkEmail = function () {
 
-            if (!this.value) {
+            if (!this.value.isEmail()) {
                 $buttonCheckout.prop('disabled', true);
+                $('#checkout-guest-options').hide();
                 return;
             }
             $buttonCheckout.prop('disabled', false);
-
 
             this.timer && clearTimeout(this.timer);
             this.timer = setTimeout(function () {
                 $.post({
                     url: window.location.href,
                     data: {
-                        'lp-ajax': 'check-user-email',
+                        'lp-ajax': 'checkout-user-email-exists',
                         email: $checkoutEmail.val()
                     },
                     success: function (res) {
                         var res = LP.parseJSON(res);
-                        if (res && res.exists === true) {
-                            $('#checkout-existing-account').show();
-                            $('#checkout-new-account').hide().find('input[name="checkout-new-account"]').prop('checked', false);
+                        if (res && res.exists) {
+                            $checkoutExistingAccount.show().find('input[name="checkout-email-option"]').prop('checked', res.waiting_payment === res.exists);
+                            $checkoutNewAccount.hide().find('input[name="checkout-new-account"]').prop('checked', false);
                         } else {
-                            $('#checkout-existing-account').hide().find('input[name="checkout-existing-account"]').prop('checked', false);
-                            $('#checkout-new-account').show();
+                            $checkoutExistingAccount.hide().find('input[name="checkout-email-option"]').prop('checked', false);
+                            $checkoutNewAccount.show();
                         }
+                        $('#checkout-guest-options').show();
                     }
                 });
             }, 500);
@@ -196,6 +222,25 @@
         $formCheckout.on('submit', _formSubmit);
 
         $payments.children('.selected').find('input[name="payment_method"]').trigger('select');
+
+        $formLogin.on('click', '.checkout-login-form-toggle', function (e) {
+            e.preventDefault();
+            var toggle = $(this).data('toggle') === 'show';
+            $formLogin.find('#checkout-login-form').toggle(toggle);
+            $formLogin.find('.checkout-login-form-toggle[data-toggle="show"]').toggle(!toggle);
+        });
+
+        $formRegister.on('click', '.checkout-register-form-toggle', function (e) {
+            e.preventDefault();
+            var toggle = $(this).data('toggle') === 'show';
+            $formRegister.find('#checkout-register-form').toggle(toggle);
+            $formRegister.find('.checkout-register-form-toggle[data-toggle="show"]').toggle(!toggle);
+            console.log(toggle)
+        });
+
+        if (options.user_waiting_payment === options.user_checkout) {
+            //$checkoutExistingAccount.hide();
+        }
     }
 
     $(document).ready(function () {

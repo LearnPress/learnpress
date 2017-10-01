@@ -20,6 +20,16 @@
     }
 }
 
+#learn-press-checkout-login,
+#learn-press-checkout-register {
+    margin-bottom: 1.5em;
+}
+
+#checkout-login-form,
+#checkout-register-form {
+    display: none;
+}
+
 #checkout-guest-email {
     border: 1px solid #DDD;
     padding: 20px;
@@ -30,19 +40,22 @@
 }
 
 #checkout-guest-email {
-    #checkout-guest-options{
+    #checkout-guest-options {
         list-style: none;
+        margin: 0;
     }
 
-    #checkout-existing-account{
+    #checkout-existing-account,
+    #checkout-new-account {
         display: none;
+        margin: 0;
     }
 
     &.email-exists {
         #checkout-existing-account {
             display: block;
         }
-        #checkout-new-account{
+        #checkout-new-account {
             display: none;
         }
     }

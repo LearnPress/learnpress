@@ -401,7 +401,6 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	public function process_payment( $order ) {
-
 		$redirect = $this->get_request_url( $order );
 
 		$json = array(
@@ -458,31 +457,33 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	public function get_paypal_args( $order ) {
 		$checkout = LP()->checkout();
 		$this->prepare_line_items();
-		$user   = learn_press_get_current_user();
-		$nonce  = wp_create_nonce( 'learn-press-paypal-nonce' );
-		$custom = array( 'order_id' => $order->get_id(), 'order_key' => $order->get_order_key() );
+		$custom = array(
+			'order_id'       => $order->get_id(),
+			'order_key'      => $order->get_order_key(),
+			'checkout_email' => $checkout->get_checkout_email()
+		);
 
 		$args = array_merge(
 			array(
-				'cmd'            => '_cart',
-				'business'       => $this->paypal_email,
-				'no_note'        => 1,
-				'currency_code'  => learn_press_get_currency(),
-				'charset'        => 'utf-8',
-				'rm'             => is_ssl() ? 2 : 1,
-				'upload'         => 1,
-				'return'         => esc_url( $this->get_return_url( $order ) ),
-				'cancel_return'  => esc_url( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_site_url() ),
-				'bn'             => 'LearnPress_Cart',
-				//'invoice'       => $order->id,
-				'custom'         => json_encode( $custom ),
-				'notify_url'     => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1',
-				'checkout_email' => $checkout->get_checkout_email()
+				'cmd'           => '_cart',
+				'business'      => $this->paypal_email,
+				'no_note'       => 1,
+				'currency_code' => learn_press_get_currency(),
+				'charset'       => 'utf-8',
+				'rm'            => is_ssl() ? 2 : 1,
+				'upload'        => 1,
+				'return'        => esc_url( $this->get_return_url( $order ) ),
+				'cancel_return' => esc_url( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_site_url() ),
+				'bn'            => 'LearnPress_Cart',
+				'custom'        => json_encode( $custom ),
+				'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1'
 			),
 			$this->get_item_lines()
 		);
 
-		return apply_filters( 'learn_press_paypal_args', $args );
+		$args = apply_filters( 'learn_press_paypal_args', $args );
+
+		return apply_filters( 'learn-press/paypal/args', $args );
 	}
 
 	public function get_settings() {

@@ -42,10 +42,11 @@ if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 				'{{order_number}}',
 			) );
 
-
 			add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
 			add_action( 'learn_press_order_status_draft_to_processing_notification', array( $this, 'trigger' ) );
 			add_action( 'learn_press_order_status_draft_to_on-hold_notification', array( $this, 'trigger' ) );
+
+			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 
 			add_action( "update_post_meta", array( $this, '_trigger' ), 10, 4 );
 			parent::__construct();
@@ -72,7 +73,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 		/**
 		 * Trigger Email Notification
 		 *
-		 * @param $order_id
+		 * @param int $order_id
 		 *
 		 * @return boolean
 		 */
@@ -82,10 +83,16 @@ if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 			}
 
 			$order           = learn_press_get_order( $order_id );
-			$this->recipient = $order->get_user( 'user_email' );
+
+			if($order->is_guest()){
+				return false;
+			}
+
+			$this->recipient = $order->get_user_email();
 
 			$items       = $order->get_items();
-			$order_total = $order->order_total;
+			$order_total = $order->get_total();
+
 			/**
 			 * Return if course is free because this order will be enrolled
 			 *
@@ -94,6 +101,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 			if ( ! $this->recipient || ( count( $items ) === 0 && floatval( $order_total ) == 0 ) ) {
 				return false;
 			}
+
 			/**$this->find['site_title']    = '{site_title}';
 			 * $this->replace['site_title'] = $this->get_blogname();*/
 
@@ -103,14 +111,14 @@ if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 				$this->email_format,
 				array(
 					'order_id'          => $order_id,
-					'order_user_id'     => $order->user_id,
+					'order_user_id'     => $order->get_user_id(),
 					'order_user_name'   => $order->get_user_name(),
 					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $this->email_format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
 					'order_detail_url'  => $order->get_view_order_url(),
 					'order_number'      => $order->get_order_number(),
 					'order_subtotal'    => $order->get_formatted_order_subtotal(),
 					'order_total'       => $order->get_formatted_order_total(),
-					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) )
+					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->get_order_date() ) )
 				)
 			);
 
@@ -119,7 +127,6 @@ if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 			$this->object['order'] = $order;
 
 			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() );
-
 			return $return;
 		}
 

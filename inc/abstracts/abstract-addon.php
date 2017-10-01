@@ -147,6 +147,8 @@ class LP_Addon {
 		$addon_instance->plugin_file = $plugin_file;
 
 		self::$instances[ $instance ] = $addon_instance;
+
+		LP_Multi_Language::load_plugin_text_domain( $plugin_file );
 	}
 
 	/**

@@ -166,7 +166,7 @@ abstract class LP_Abstract_Object_Data {
 //					$changes[ $key_or_data ] = $value;
 //				}
 //			} else {
-			if($key_or_data==='total'){
+			if ( $key_or_data === 'total' ) {
 			}
 			if ( $extra ) {
 				// Do not allow to add extra data with the same key in data
@@ -395,6 +395,39 @@ abstract class LP_Abstract_Object_Data {
 		} else {
 			$this->_meta_data[] = $key_or_array;
 		}
+	}
+
+	/**
+	 * Delete meta data by key.
+	 * If meta value is passed, compare with existing value in database (string only).
+	 *
+	 * @param string $meta_key
+	 * @param bool   $meta_value - Optional. FALSE to abort comparison.
+	 *
+	 * @return bool
+	 */
+	public function delete_meta( $meta_key, $meta_value = false ) {
+		if ( empty( $this->_meta_data ) ) {
+			return false;
+		} else {
+			$new_meta_data = array();
+			foreach ( $this->_meta_data as $k => $meta_data ) {
+				if ( $meta_data->meta_key === $meta_key ) {
+					if ( false !== $meta_value && $meta_data->meta_value === $meta_value ) {
+						continue;
+					}
+					continue;
+				}
+				$new_meta_data[] = $meta_data;
+			}
+			// Assign new meta
+			$this->_meta_data = $new_meta_data;
+
+			// Force to deleting from database
+			delete_post_meta( $this->get_id(), $meta_key, $meta_value );
+		}
+
+		return true;
 	}
 
 	/**

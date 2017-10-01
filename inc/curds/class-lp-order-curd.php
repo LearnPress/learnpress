@@ -64,7 +64,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function update_post_meta( $order ) {
 		$meta_data = array(
-			'_order_currency'       => learn_press_get_currency(),
+			'_order_currency'       => $order->get_currency(),
 			'_prices_include_tax'   => 'no',
 			'_user_id'              => $order->get_user_id(),
 			'_order_subtotal'       => $order->get_subtotal(),
@@ -141,6 +141,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Update order.
 	 *
 	 * @param LP_Order $order
+	 *
+	 * @return int
 	 */
 	public function update( &$order ) {
 		$post_data = array(
@@ -172,6 +174,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 		$this->_updates( $order );
 
+		return $order->get_id();
 		//$order->read_meta_data( true ); // Refresh internal meta data, in case things were hooked into `save_post` or another WP hook.
 	}
 
@@ -327,7 +330,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'order_key'       => get_post_meta( $post->ID, '_order_key', true ),
 					'user_ip_address' => get_post_meta( $post->ID, '_user_ip_address', true ),
 					'user_agent'      => get_post_meta( $post->ID, '_user_agent', true ),
-					'checkout_email'  => get_post_meta( $post->ID, '_checkout_email', true )
+					'checkout_email'  => get_post_meta( $post->ID, '_checkout_email', true ),
+					'currency'        => get_post_meta( $post->ID, '_order_currency', true )
 				)
 			);
 			$this->read_items( $order );

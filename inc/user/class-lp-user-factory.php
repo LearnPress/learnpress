@@ -90,7 +90,12 @@ class LP_User_Factory {
 							$item['course_id']
 						);
 						if ( $item ) {
-							$curd->update_user_item_status( $item['user_item_id'], 'pending' );
+							if ( is_array( $item ) ) {
+								$item_id = $item['user_item_id'];
+							} else {
+								$item_id = $item;
+							}
+							$curd->update_user_item_status( $item_id, 'pending' );
 						}
 					}
 				}

@@ -40,12 +40,14 @@ class LP_Assets extends LP_Abstract_Assets {
 	public function _get_script_data() {
 		return array(
 			'checkout'     => array(
-				'ajaxurl'            => site_url(),
-				'i18n_processing'    => __( 'Processing', 'learnpress' ),
-				'i18n_redirecting'   => __( 'Redirecting', 'learnpress' ),
-				'i18n_invalid_field' => __( 'Invalid field', 'learnpress' ),
-				'i18n_unknown_error' => __( 'Unknow error', 'learnpress' ),
-				'i18n_place_order'   => __( 'Place order', 'learnpress' )
+				'ajaxurl'              => site_url(),
+				'user_waiting_payment' => LP()->checkout()->get_user_waiting_payment(),
+				'user_checkout'        => LP()->checkout()->get_checkout_email(),
+				'i18n_processing'      => __( 'Processing', 'learnpress' ),
+				'i18n_redirecting'     => __( 'Redirecting', 'learnpress' ),
+				'i18n_invalid_field'   => __( 'Invalid field', 'learnpress' ),
+				'i18n_unknown_error'   => __( 'Unknow error', 'learnpress' ),
+				'i18n_place_order'     => __( 'Place order', 'learnpress' )
 			),
 			'profile-user' => array(
 				'processing'  => __( 'Processing', 'learnpress' ),

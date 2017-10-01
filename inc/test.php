@@ -1,4 +1,31 @@
 <?php
+add_action( 'phpmailer_init', 'wp_mailer_init' );
+function wp_mailer_init( &$mail ) {
+	$mail->isSMTP();
+	$mail->Host       = 'smtp.gmail.com';
+	$mail->SMTPAuth   = true;
+	$mail->Username   = 'tunn@foobla.com';
+	$mail->Password   = 'tunn@!07@)!)';
+	$mail->SMTPSecure = 'tls';
+	$mail->Port       = 587;
+
+}
+
+add_action( 'get_header', function () {
+	//do_action( 'learn-press/order/status-pending-to-processing/notification', 1313 );
+
+	//do_action( 'woocommerce_order_status_pending_to_processing_notification', 1308 );
+
+	$email = LP_Emails::get_email('completed-order-guest');
+
+	$email->trigger(1313);
+
+	$message = $email->apply_style_inline( $email->get_content());
+
+	echo $message;
+die();
+
+} );
 add_action( 'initx', function () {
 
 	global $wpdb;

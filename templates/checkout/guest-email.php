@@ -22,7 +22,8 @@ $is_exists = $checkout->checkout_email_exists();
 
         <li id="checkout-existing-account">
             <label>
-                <input type="checkbox" name="checkout-email-option" value="existing-account">
+                <input type="checkbox" name="checkout-email-option"
+                       value="existing-account"<?php checked( $checkout->get_checkout_email() == $checkout->get_user_waiting_payment(), true ); ?>>
 				<?php _e( 'Your email is already exists. Checkout as this account?', 'learnpress' ); ?>
             </label>
         </li>
@@ -30,9 +31,8 @@ $is_exists = $checkout->checkout_email_exists();
         <li id="checkout-new-account">
             <label>
                 <input type="checkbox" name="checkout-email-option" value="new-account">
-				<?php _e( 'Create new account with this email?', 'learnpress' ); ?>
+				<?php _e( 'Create new account with this email? Account information will be sent to this email.', 'learnpress' ); ?>
             </label>
-            <p><?php _e( 'We will send you the account information to this email.', 'learnpress' ); ?></p>
         </li>
 
     </ul>

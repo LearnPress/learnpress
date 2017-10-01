@@ -770,17 +770,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 
 				$course_ids   = array_keys( $orders );
-				$format       = array_fill( 0, sizeof( $course_ids ), '%d' );
 				$query_args   = $course_ids;
 				$query_args[] = $user_id;
-
-//			echo $sql = $wpdb->prepare( "
-//				SELECT *
-//				FROM {$wpdb->learnpress_user_items}
-//				WHERE item_id IN(" . join( ',', $format ) . ")
-//				AND user_id = %d
-//				ORDER BY user_item_id DESC
-//			", $query_args );
 				$limit  = $args['limit'];
 				$offset = ( $args['paged'] - 1 ) * $limit;
 
@@ -808,11 +799,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$courses['pages'] = ceil( $count / $args['limit'] );
 					foreach ( $items as $item ) {
 						$courses['items'][] = new LP_User_Item_Course( $item );
-						///learn_press_get_course($item['item_id']);
-						//$course_ids[] = $item['item_id'];// $this->read_course_info( $item );
 					}
 				}
-
 			}
 			catch ( Exception $ex ) {
 

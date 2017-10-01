@@ -48,6 +48,7 @@ function learn_press_create_order( $order_data ) {
 
 	$order = new LP_Order();
 	$order->save();
+
 	return $order;
 
 	$order_data_defaults = array(
@@ -121,6 +122,7 @@ function learn_press_create_order( $order_data ) {
 				update_post_meta( $order_id, $k, $v );
 			}
 		}
+
 		return new LP_Order( $order_id );
 	}
 
@@ -850,14 +852,15 @@ function learn_press_get_register_order_statuses() {
 //				'show_in_admin_status_list' => true,
 //				'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learnpress' )
 //			);
-//			$lp_order_statuses['lp-failed']     = array(
-//				'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' )
-//			);
+	$order_statues['lp-failed'] = array(
+		'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' )
+	);
+
 	return $order_statues;
 }
 

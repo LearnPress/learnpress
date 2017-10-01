@@ -39,7 +39,6 @@ if ( ! $query['total'] ) {
             <th class="column-date"><?php _e( 'Date', 'learnpress' ); ?></th>
             <th class="column-passing-grade"><?php _e( 'Passing Grade', 'learnpress' ); ?></th>
             <th class="column-status"><?php _e( 'Progress', 'learnpress' ); ?></th>
-            <th class="column-status"><?php _e( 'Actions', 'learnpress' ); ?></th>
         </tr>
         </thead>
         <tbody>
@@ -59,18 +58,6 @@ if ( ! $query['total'] ) {
                             <?php echo $user_course->get_status_label( $user_course->get_results( 'status' ) ); ?>
                         </span>
                 </td>
-                <td class="column-actions">
-                    <a href="<?php echo $profile->get_current_url( array( 'details' => $course->get_id() ) ); ?>"><?php esc_html_e( 'Details', 'learnpress' ); ?></a>
-                </td>
-            </tr>
-			<?php continue; ?>
-            <tr>
-                <td colspan="4">
-					<?php
-					//$user_quiz = $user_course->get_item( $course->get_final_quiz() );
-					learn_press_debug( $user_course->get_results() );
-					?>
-                </td>
             </tr>
 		<?php } ?>
         </tbody>
@@ -79,7 +66,7 @@ if ( ! $query['total'] ) {
             <td colspan="2" class="nav-text">
 				<?php echo $query->get_offset_text(); ?>
             </td>
-            <td colspan="3" class="nav-pages">
+            <td colspan="2" class="nav-pages">
 				<?php $query->get_nav( true ); ?>
             </td>
         </tr>
