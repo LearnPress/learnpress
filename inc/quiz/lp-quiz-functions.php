@@ -55,7 +55,7 @@ function learn_press_get_question_answer_meta( $item_id, $meta_key, $single = tr
  *
  * @author  TuNN
  *
- * @param   int     $quiz_id  The ID of a quiz to get all questions
+ * @param   int $quiz_id The ID of a quiz to get all questions
  * @param   boolean $only_ids return an array of questions with IDs only or as post objects
  *
  * @return  array|null
@@ -445,4 +445,37 @@ if ( ! function_exists( 'learn_press_quiz_is_hide_question' ) ) {
 
 		return false;
 	}
+}
+
+if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
+	/**
+	 * Get question order in quiz.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $questions
+	 *
+	 * @return array
+	 */
+	function learn_press_quiz_get_questions_order( $questions = array() ) {
+
+		if ( ! $questions ) {
+			return array();
+		}
+
+		global $wpdb;
+		$ids = $orders = array();
+		foreach ( $questions as $id => $question ) {
+			$ids[] = $id;
+		}
+
+		if ( $order = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q", ARRAY_A ) ) {
+			foreach ( $order as $id => $_order ) {
+				$orders[ $_order['q_id'] ] = $_order['q_order'];
+			}
+		}
+
+		return $orders;
+	}
+
 }

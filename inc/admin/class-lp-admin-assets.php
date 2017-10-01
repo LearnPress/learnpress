@@ -135,6 +135,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					'screens' => array( LP_COURSE_CPT )
 				),
+				'quiz-editor-v2'                 => array(
+					'url'     => $this->url( 'js/admin/quiz-editor-v2.js' ),
+					'deps'    => array(
+						'lp-vue',
+						'lp-vuex',
+						'lp-vue-resource',
+						'lp-vuedraggable',
+					),
+					'screens' => array( LP_QUIZ_CPT )
+				),
 				'learn-press-modal-search-items' => array(
 					'url' => $this->url( 'js/admin/modal-search-items.js' )
 				),

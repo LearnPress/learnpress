@@ -61,8 +61,16 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		return $mark;
 	}
 
-	public function update( &$args ) {
+	public function update( &$args = array() ) {
 		// TODO: Implement update() method.
+		$question = wp_parse_args( $args, array(
+			'id'    => '',
+			'title' => ''
+		) );
+
+		wp_update_post( array( 'ID' => $question['id'], 'post_title' => $question['title'] ) );
+
+		return $question;
 	}
 
 	/**

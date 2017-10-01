@@ -101,10 +101,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-questions',
 				'get-question-data',
 				'update_curriculum',
+				'update_list_quiz_questions',
 				'modal-search-items',
 				'modal-search-users',
 				'add-items-to-order',
-				'remove-items-from-order'
+				'remove-items-from-order',
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -315,6 +316,153 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
+		 * Handle ajax update list quiz questions.
+		 *
+		 * @since 3.0.0
+		 */
+		public static function update_list_quiz_questions() {
+			check_ajax_referer( 'learnpress_update_list_quiz_questions', 'nonce' );
+
+			$args = wp_parse_args( $_REQUEST, array(
+				'quiz-id' => false,
+				'type'    => ''
+			) );
+
+			$quiz_id = $args['quiz-id'];
+			$quiz    = learn_press_get_quiz( $quiz_id );
+
+			if ( ! $quiz ) {
+				wp_send_json_error();
+			}
+
+			$question_curd = new LP_Question_CURD();
+			$quiz_curd     = new LP_Quiz_CURD();
+
+			$result = $args['type'];
+			switch ( $args['type'] ) {
+				case 'heartbeat' :
+					$result = true;
+					break;
+
+				case 'hidden-questions':
+					$hidden = learn_press_get_request( 'hidden' );
+					update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden );
+					break;
+
+				case 'update-list-questions':
+					// code
+					break;
+
+				case 'new-question':
+					// code
+					break;
+
+				case 'update-question':
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+
+					$update = array(
+						'id'    => $question['id'],
+						'title' => $question['title'],
+					);
+
+					$result = $question_curd->update( $update );
+					// code
+					break;
+
+				case 'clone-question':
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+
+					$user_id = learn_press_get_current_user_id();
+
+					$new_question_id = learn_press_duplicate_question( $question['id'], $quiz_id );
+					if ( ! is_wp_error( $new_question_id ) ) {
+
+						// trigger change user memorize question types
+						$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+						$question_types          = ! $question_types ? array() : $question_types;
+						$type                    = get_post_meta( $new_question_id, '_lp_type', true );
+						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
+						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+
+						$question = LP_Question::get_question( $new_question_id );
+
+						$order  = $question['order'] + 1;
+						$result = array(
+							'id'       => $new_question_id,
+							'open'     => false,
+							'title'    => get_the_title( $new_question_id ),
+							'type'     => array(
+								'key'   => $question->get_type(),
+								'label' => $question->get_type_label()
+							),
+							'answers'  => array(
+								'heading' => $question->get_admin_option_headings(),
+								'options' => $question->get_answer_options()
+							),
+							'settings' => array(
+								'mark'        => get_post_meta( $new_question_id, '_lp_mark', true ),
+								'explanation' => get_post_meta( $new_question_id, '_lp_explanation', true ),
+								'hint'        => get_post_meta( $new_question_id, '_lp_hint', true )
+							),
+							'order'    => $order
+						);
+					}
+
+					//code
+					break;
+
+				case 'remove-question':
+					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
+					$result      = $quiz_curd->remove_question( $quiz_id, $question_id );
+					break;
+
+				case 'remove-questions':
+					// code
+					break;
+
+				case 'delete-question':
+					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
+					$result      = $quiz_curd->remove_question( $quiz_id, $question_id, array( 'delete_permanently' => true ) );
+					break;
+
+				case 'sort-questions':
+					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
+					if ( ! $orders ) {
+						break;
+					}
+
+					$orders = wp_unslash( $orders );
+					$orders = json_decode( $orders, true );
+
+//					$result = $curd->sort_questions( $orders );
+					break;
+
+				case 'search-questions':
+					// code
+					break;
+
+				default:
+					break;
+			}
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( $result->get_error_message() );
+			}
+
+			wp_send_json_success( $result );
+		}
+
+		/**
 		 * Get question data
 		 */
 		public static function get_question_data() {
@@ -439,8 +587,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -537,8 +684,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -571,8 +717,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -865,7 +1010,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */
