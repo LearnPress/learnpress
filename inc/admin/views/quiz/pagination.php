@@ -18,7 +18,6 @@
               @click="nextLastPage">»</span>
     </div>
 </script>
-
 <script>
     (function (Vue, $store, $) {
 
