@@ -16,6 +16,199 @@
 })(window);
 
 /**
+ * Choose quiz items modal store.
+ *
+ * @since 3.0.0
+ */
+var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
+
+    var state = helpers.cloneObject(data.chooseItems);
+    state.quizId = false;
+    state.pagination = '';
+    state.status = '';
+
+    var getters = {
+        status: function (state) {
+            return state.status;
+        },
+        pagination: function (state) {
+            return state.pagination;
+        },
+        items: function (state, _getters) {
+            return state.items.map(function (item) {
+                var find = _getters.addItems.find(function (_item) {
+                    return item.id === _item.id;
+                });
+
+                item.added = !!find;
+
+                return item;
+            });
+        },
+        addedItems: function (state) {
+            return state.addedItems;
+        },
+        isOpen: function (state) {
+            return status.open;
+        },
+        quiz: function (state) {
+            return state.quizId;
+        }
+    };
+
+    var mutations = {
+        'TOGGLE': function (state) {
+            state.open = !state.open;
+        },
+        'SET_QUIZ': function (state, quizId) {
+            state.quizId = quizId;
+        },
+        'SET_LIST_ITEMS': function (state, items) {
+            state.items = items;
+        },
+        'ADD_ITEM': function (state, item) {
+            state.addedItems.push(item);
+        },
+        'REMOVE_ADDED_ITEM': function (state, item) {
+            state.addedItems.forEach(function (_item, index) {
+                if (_item.id === item.id) {
+                    state.addedItems.splice(index, 1);
+                }
+            })
+        },
+        'RESET': function (state) {
+            state.addedItems = [];
+            state.items = [];
+        },
+        'UPDATE_PAGINATION': function (state, pagination) {
+            state.pagination = pagination;
+        },
+        'SEARCH_ITEM_REQUEST': function (state) {
+            state.status = 'loading';
+        },
+        'SEARCH_ITEM_SUCCESS': function (state) {
+            state.status = 'successful';
+        },
+        'SEARCH_ITEM_FAIL': function (state) {
+            state.status = 'fail';
+        }
+    };
+
+    var actions = {
+        toggle: function (context) {
+            context.commit('TOGGLE');
+        },
+
+        open: function (context, quizId) {
+            context.commit('SET_QUIZ', quizId);
+            context.commit('RESET');
+            context.commit('TOGGLE');
+        },
+
+        addItem: function (context, item) {
+            context.commit('ADD_ITEM', item);
+        },
+
+        removeItem: function (context, index) {
+            context.commit('REMOVE_ADDED_ITEM', index);
+        },
+
+        searchItems: function (context, payload) {
+            context.commit('SEARCH_ITEM_REQUEST');
+
+            Vue.http
+                .LPRequest({
+                    type: 'search-items',
+                    query: payload.query,
+                    page: payload.page,
+                    exclude: JSON.stringify([])
+                }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (result.success) {
+                        return;
+                    }
+
+                    var data = result.data;
+
+                    context.commit('SET_LIST_ITEMS', data.items);
+                    context.commit('UPDATE_PAGINATION', data.pagination);
+                    context.commit('SEARCH_ITEMS_SUCCESS');
+                },
+                function (error) {
+                    context.commit('SEARCH_ITEMS_FAIL');
+
+                    console.log(error);
+                }
+            );
+        },
+
+        addItemsToQuiz: function (context) {
+            var items = context.getters.addItems;
+
+            if (items.length > 0) {
+                Vue.http
+                    .LPRequest({
+                        type: 'add-items-to-quiz',
+                        'quiz-id': context.getters.quiz,
+                        items: JSON.stringify(items)
+                    }).then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('TOGGLE');
+
+                            var items = result.data;
+                            context.commit('lqs/UPDATE_LIST_QUESTION_ITEMS', {
+                                quizId: context.getters.quiz,
+                                items: items
+                            }, {root: true});
+                        }
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                )
+            }
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters,
+        mutations: mutations,
+        actions: actions
+    }
+
+})(window, Vue, LP_Helpers, lp_quiz_editor);
+
+/**
+ * I18n Store
+ *
+ * @since 3.0.0
+ */
+var LP_Quiz_i18n_Store = (function (Vue, helpers, data) {
+
+    var state = helpers.cloneObject(data.i18n);
+
+    var getters = {
+        all: function (state) {
+            return state;
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters
+    }
+
+})(Vue, LP_Helpers, lp_quiz_editor);
+
+/**
  * List quiz questions store.
  *
  * @since 3.0.0
@@ -92,6 +285,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             questions.splice(index, 1);
         },
         'REMOVE_QUESTIONS': function () {
+            // code
+        },
+        'UPDATE_LIST_QUESTION_ITEMS': function (state, payload) {
             // code
         },
         'CLOSE_QUESTION': function (state, question) {
@@ -415,6 +611,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         mutations: mutations,
         actions: actions,
         modules: {
+            cqi: LP_Choose_Quiz_Items_Modal_Store,
+            i18n: LP_Quiz_i18n_Store,
             lqs: LP_List_Quiz_Questions_Store
         }
     });
