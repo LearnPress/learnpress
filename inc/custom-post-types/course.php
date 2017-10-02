@@ -971,6 +971,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				learn_press_add_message( __( 'Course Curriculum only appear if course is saved', 'learnpress' ), 'error' );
 			}
 
+			if( 'dopreview' == $preview ) {
+				return;
+			}
+
 			$this->_reset_sections();
 
 			if ( !empty( $_REQUEST['_lp_curriculum'] ) && 'dopreview' !== $preview ) {
