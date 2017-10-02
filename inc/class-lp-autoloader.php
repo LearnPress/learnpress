@@ -67,6 +67,8 @@ class LP_Autoloader {
 	 */
 	public function autoload( $class ) {
 		$class = strtolower( $class );
+
+
 		$file  = $this->get_file_name_from_class( $class );
 		$path  = '';
 

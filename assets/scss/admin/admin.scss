@@ -79,7 +79,8 @@
     }
 }
 
-.learn-press-payments {
+.learn-press-payments,
+.learn-press-emails{
     border-collapse: collapse;
     border: 1px solid #DDD;
     width: 100%;
@@ -96,6 +97,7 @@
     }
     .name {
         font-weight: bold;
+        text-transform: capitalize;
         a {
             text-decoration: none;
         }

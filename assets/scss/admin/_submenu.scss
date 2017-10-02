@@ -40,7 +40,7 @@
             display: block;
         }
         .lp-admin-tab-content {
-            padding-left: 271px!important;
+            padding-left: 271px !important;
             float: left;
             width: 100%;
             z-index: 0;
@@ -68,6 +68,27 @@
         .lp-admin-tab-content {
             background: #FFF;
             padding: 18px;
+            .subsubsub {
+                float: none;
+                margin: 0 0 20px 0;
+                border-bottom: 1px solid #DDD;
+                padding-bottom: 20px;
+                .active {
+                    font-weight: bold;
+                }
+
+                li {
+                    text-transform: capitalize;
+                    &:after {
+                        content: '|';
+                        display: inline-block;
+                        padding: 0 10px;
+                    }
+                    &:last-child:after{
+                        content: '';
+                    }
+                }
+            }
         }
     }
 }

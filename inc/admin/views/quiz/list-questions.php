@@ -15,6 +15,7 @@ learn_press_admin_view( 'quiz/question-settings' );
             <lp-quiz-question-item :question="question" :index="index"></lp-quiz-question-item>
             <lp-quiz-question-settings :question="question" :index="index"></lp-quiz-question-settings>
         </template>
+
     </draggable>
 </script>
 

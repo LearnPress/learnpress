@@ -17,9 +17,9 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 		 * LP_Email_Rejected_Course constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'rejected_course';
+			$this->id          = 'rejected-course';
 			$this->title       = __( 'Rejected course', 'learnpress' );
-			$this->description = __( 'Settings for email when a course is rejected', 'learnpress' );
+			$this->description = __( 'Settings for email when a course is rejected.', 'learnpress' );
 
 			$this->template_html  = 'emails/rejected-course.php';
 			$this->template_plain = 'emails/plain/rejected-course.php';

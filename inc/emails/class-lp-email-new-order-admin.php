@@ -20,7 +20,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 		 * LP_Email_New_Order_Admin constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'new_order';
+			$this->id          = 'new-order-admin';
 			$this->title       = __( 'New order admin', 'learnpress' );
 			$this->description = __( 'Send email to admin when new order is placed', 'learnpress' );
 

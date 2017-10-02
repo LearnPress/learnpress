@@ -17,9 +17,9 @@ if ( ! class_exists( 'LP_Email_Published_Course' ) ) {
 		 * LP_Email_Published_Course constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'published_course';
+			$this->id          = 'published-course';
 			$this->title       = __( 'Approved course', 'learnpress' );
-			$this->description = __( 'Settings for email when a course is approved', 'learnpress' );
+			$this->description = __( 'Settings for email when a course is approved.', 'learnpress' );
 
 			$this->template_html  = 'emails/published-course.php';
 			$this->template_plain = 'emails/plain/published-course.php';

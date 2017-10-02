@@ -21,9 +21,9 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 		 * LP_Email_New_Order_Instructor constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'new_order_instructor';
+			$this->id          = 'new-order-instructor';
 			$this->title       = __( 'New order instructor', 'learnpress' );
-			$this->description = __( 'Send email to the user who is instructor of course', 'learnpress' );
+			$this->description = __( 'Send email to course\'s instructor when user has purchased course.', 'learnpress' );
 
 			$this->template_html  = 'emails/new-order-instructor.php';
 			$this->template_plain = 'emails/plain/new-order-instructor.php';

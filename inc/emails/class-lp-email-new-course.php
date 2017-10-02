@@ -17,9 +17,9 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 		 */
 		public function __construct() {
 
-			$this->id          = 'new_course';
+			$this->id          = 'new-course';
 			$this->title       = __( 'New course', 'learnpress' );
-			$this->description = __( 'Email settings when a new course is submitted for review', 'learnpress' );
+			$this->description = __( 'Email settings when a new course is submitted for review.', 'learnpress' );
 
 			$this->template_html  = 'emails/new-course.php';
 			$this->template_plain = 'emails/plain/new-course.php';

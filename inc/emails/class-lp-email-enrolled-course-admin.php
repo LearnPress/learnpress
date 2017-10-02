@@ -19,9 +19,9 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 		 */
 		public function __construct() {
 
-			$this->id          = 'enrolled_course_admin';
+			$this->id          = 'enrolled-course-admin';
 			$this->title       = __( 'Enrolled course admin', 'learnpress' );
-			$this->description = __( 'Send this email to admins & instructor when the course is enrolled', 'learnpress' );
+			$this->description = __( 'Send this email to admin when user has enrolled course.', 'learnpress' );
 
 			$this->template_html  = 'emails/enrolled-course-admin.php';
 			$this->template_plain = 'emails/plain/enrolled-course-admin.php';

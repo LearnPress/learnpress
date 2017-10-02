@@ -532,7 +532,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * @return bool|LP_Settings
 		 */
-		public function settings(){
+		public function settings() {
 			return LP_Settings::instance();
 		}
 
@@ -654,4 +654,6 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-require_once 'inc/test.php';
+if ( file_exists( 'inc/test.php' ) ) {
+	require_once 'inc/test.php';
+}

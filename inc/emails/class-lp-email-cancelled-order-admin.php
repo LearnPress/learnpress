@@ -20,7 +20,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 		 * LP_Email_Cancelled_Order_Admin constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'cancelled_order';
+			$this->id          = 'cancelled-order-admin';
 			$this->title       = __( 'Cancelled order admin', 'learnpress' );
 			$this->description = __( 'Send email to admin when order has been cancelled', 'learnpress' );
 
