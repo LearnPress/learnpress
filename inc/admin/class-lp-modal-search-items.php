@@ -86,7 +86,7 @@ class LP_Modal_Search_Items {
 			'orderby'        => 'parent title',
 			'exclude'        => $exclude,
 			'posts_per_page' => $this->_options['limit'],
-			'offset'         => ( $this->_options['paged'] - 1 ) * $this->_options['limit']
+//			'offset'         => ( $this->_options['paged'] - 1 ) * $this->_options['limit']
 		);
 
 		$args['author'] = get_post_field( 'post_author', $context_id );
@@ -97,6 +97,7 @@ class LP_Modal_Search_Items {
 		$this->_query_args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
 
 		$posts        = get_posts( $this->_query_args );
+
 		$this->_items = array();
 
 		if ( ! empty( $posts ) ) {

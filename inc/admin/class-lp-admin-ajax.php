@@ -271,7 +271,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					$ids_exclude = array();
-					if ( is_array( $ids_exclude ) ) {
+					if ( is_array( $exclude ) ) {
 						foreach ( $exclude as $item ) {
 							$ids_exclude[] = $item['id'];
 						}
@@ -282,7 +282,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'context'    => 'course',
 						'context_id' => $course_id,
 						'term'       => $query,
-						'limit'      => 10,
+						'limit'      => apply_filters( 'learn-press/course-editor/choose-items-limit', 10 ),
 						'paged'      => $page,
 						'exclude'    => $ids_exclude,
 					) );
@@ -447,7 +447,50 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 //					$result = $curd->sort_questions( $orders );
 					break;
 
-				case 'search-questions':
+				case 'search-items':
+					$query   = isset( $_POST['query'] ) ? $_POST['query'] : '';
+					$page    = isset( $_POST['query'] ) ? intval( $_POST['query'] ) : 1;
+					$exclude = isset( $_POST['exclude'] ) ? $_POST['exclude'] : '';
+
+					if ( $exclude ) {
+						$exclude = json_decode( $exclude, true );
+					}
+
+					$ids_exclude = array();
+					if ( is_array( $exclude ) ) {
+						foreach ( $exclude as $item ) {
+							$ids_exclude[] = $item['id'];
+						}
+					}
+
+					$search = new LP_Modal_Search_Items( array(
+						'type'       => 'lp_question',
+						'context'    => 'quiz',
+						'context_id' => $quiz_id,
+						'term'       => $query,
+						'limit'      => apply_filters( 'learn-press/quiz-editor/choose-items-limit', 10 ),
+						'paged'      => $page,
+						'exclude'    => $ids_exclude
+					) );
+
+					$ids_item = $search->get_items();
+
+					$items = array();
+					foreach ( $ids_item as $id ) {
+						$post = get_post( $id );
+
+						$items[] = array(
+							'id'    => $post->ID,
+							'title' => $post->post_title,
+							'type'  => $post->post_type
+						);
+					}
+
+					$result = array(
+						'items'      => $items,
+						'pagination' => $search->get_pagination( false )
+					);
+
 					// code
 					break;
 
@@ -1033,7 +1076,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				case 'lp_question':
 					$query      = $wpdb->prepare( "
 						SELECT question_id
-						FROM {$wpdb->prefix}learnpress_quiz_questions
+						FROM {$wpdb->prefix}learnpress_quiz_questions AS qq
 						INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
 						WHERE %d
 						AND q.post_type = %s
