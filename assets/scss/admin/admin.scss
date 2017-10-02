@@ -17,9 +17,11 @@
 @import "course-editor-v2";
 @import "place-holder";
 @import "order";
-.tipsy{
+
+.tipsy {
     position: absolute;
 }
+
 /* Metabox email template field */
 .lp-email-templates {
     overflow: hidden;
@@ -80,7 +82,7 @@
 }
 
 .learn-press-payments,
-.learn-press-emails{
+.learn-press-emails {
     border-collapse: collapse;
     border: 1px solid #DDD;
     width: 100%;
@@ -137,6 +139,13 @@
                 background: #F7F7F7;
                 height: 35px;
                 padding: 0;
+            }
+        }
+        tr {
+            &:nth-child(odd) {
+                td {
+                    background: #F7F7F7;
+                }
             }
         }
     }

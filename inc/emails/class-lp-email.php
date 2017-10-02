@@ -258,12 +258,12 @@ class LP_Email extends LP_Abstract_Settings {
 	 */
 	public $enable = false;
 
+	public $group = '';
+
 	/**
 	 * LP_Email constructor.
 	 */
 	public function __construct() {
-		//$this->id = str_replace( '-', '_', $this->id );
-
 		// Set template base path to LP templates path if it is not set.
 		if ( is_null( $this->template_base ) ) {
 			$this->template_base = LP()->plugin_path( 'templates/' );
@@ -281,7 +281,6 @@ class LP_Email extends LP_Abstract_Settings {
 		}
 
 		$this->settings = LP()->settings()->get_group( 'emails_' . $this->id, '' );
-
 
 		/**
 		 * Init general options
@@ -307,6 +306,13 @@ class LP_Email extends LP_Abstract_Settings {
 				'{{footer}}',
 				'{{footer_text}}'
 			) );
+	}
+
+	public function enable($value = null){
+		if(is_bool($value)){
+			$this->enable = $value;
+		}
+		return $this->enable;
 	}
 
 	/**
