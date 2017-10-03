@@ -22,6 +22,11 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
 			$emails = LP_Emails::instance()->emails;
 			ob_start();
 			?>
+            <select>
+                <option>NULL</option>
+                <option value="1" selected="selected">1</option>
+                <option value="2">2</option>
+            </select>
             <table class="learn-press-emails">
                 <thead>
                 <tr>

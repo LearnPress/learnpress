@@ -438,6 +438,7 @@ function learn_press_footer_advertisement() {
 	$query_arg = learn_press_get_item_referral();
 
 	?>
+
     <div id="learn-press-advertisement" class="learn-press-advertisement-slider">
 		<?php
 		foreach ( $list_themes as $theme ) {
