@@ -10,14 +10,14 @@
     <div class="quiz-question-options">
         <div>
             <div class="postbox">
-                <h2 class="hndle"><span>Settings</span></h2>
+                <h2 class="hndle"><span><?php esc_html_e( 'Settings', 'learnpress' ); ?></span></h2>
                 <div class="inside">
                     <div>
                         <div v-for="(option, key) in options" class="rwmb-field rwmb-textarea-wrapper">
                             <div class="rwmb-label">
                                 <label for="">{{option.label}}</label>
                             </div>
-                            <div class="rwml-input" style="clear: both;">
+                            <div class="rwml-input">
                                 <div v-if="checkInputField(option.type, 'textarea')">
                                     <textarea name="" id="" cols="60" rows="3" class="rwmb-textarea large-text">{{option.value}}</textarea>
                                 </div>

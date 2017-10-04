@@ -7,11 +7,11 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-added-items-preview">
-    <div id="lp-quiz-added-items-preview" class="lp-quiz-added-items-preview" :class="{show:show}">
+    <div id="lp-quiz-added-items-preview" class="lp-added-items-preview" :class="{show:show}">
         <ul class="list-added-items">
             <template v-for="(item, index) in addedItems">
                 <li class="question-item removable" :class="item.type" @click="removeItem(item)">
-                    <span class="icon"></span>
+                    <input type="checkbox" checked>
                     <span class="title">{{item.title}}</span>
                 </li>
             </template>

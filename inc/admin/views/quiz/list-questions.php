@@ -43,9 +43,7 @@ learn_press_admin_view( 'quiz/question-settings' );
                         id = item.attr('data-item'),
                         sibling = item.siblings('[data-item="' + id + '"]');
 
-
-                    sibling.insertAfter(item)
-
+                    sibling.insertAfter(item);
 
                     $store.dispatch('lqs/updateSortQuestions', this.questionsOrder);
 

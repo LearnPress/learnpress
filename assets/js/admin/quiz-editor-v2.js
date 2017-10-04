@@ -87,9 +87,7 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             state.status = 'loading';
         },
         'SEARCH_ITEM_SUCCESS': function (state) {
-            console.log(state.status);
             state.status = 'successful';
-            console.log(state.status);
         },
         'SEARCH_ITEM_FAIL': function (state) {
             state.status = 'fail';
@@ -147,7 +145,7 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
 
         addItemsToQuiz: function (context) {
-            var items = context.getters.addItems;
+            var items = context.getters.addedItems;
 
             if (items.length > 0) {
                 Vue.http
@@ -158,6 +156,8 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                     }).then(
                     function (response) {
                         var result = response.body;
+
+                        console.log(result);
 
                         if (result.success) {
                             context.commit('TOGGLE');
@@ -366,7 +366,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             Vue.http
                 .LPRequest({
                     type: 'clone-question',
-                    'question': JSON.stringify(question)
+                    'question': question.id
                 })
                 .then(
                     function (response) {
@@ -410,7 +410,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             Vue.http
                 .LPRequest({
                     type: 'delete-question',
-                    'question': JSON.stringify(question)
+                    'question-id': question.id
                 })
                 .then(function () {
                     context.commit('UPDATE_QUESTION_SUCCESS', question.id);

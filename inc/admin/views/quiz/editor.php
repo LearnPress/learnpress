@@ -22,9 +22,9 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 <tr>
                     <th class="lp-column-sort"></th>
                     <th class="lp-column-order">#</th>
-                    <th class="lp-column-name">Name</th>
-                    <th class="lp-column-type">Type</th>
-                    <th class="lp-column-actions">Actions</th>
+                    <th class="lp-column-name"><?php esc_html_e( 'Name', 'learnpress' ); ?></th>
+                    <th class="lp-column-type"><?php esc_html_e( 'Type', 'learnpress' ); ?></th>
+                    <th class="lp-column-actions"><?php esc_html_e( 'Actions', 'learnpress' ); ?></th>
                 </tr>
                 </thead>
                 <lp-list-quiz-questions></lp-list-quiz-questions>
