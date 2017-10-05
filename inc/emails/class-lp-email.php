@@ -322,11 +322,15 @@ class LP_Email extends LP_Abstract_Settings {
 	public function enable( $value = null ) {
 		if ( is_bool( $value ) ) {
 			$this->enable = $value;
-			$this->settings->set('enable', $value ? 'yes' : 'no');
-			$this->settings->update($this->_option_id);
+			$this->settings->set( 'enable', $value ? 'yes' : 'no' );
+			$this->settings->update( $this->_option_id );
 		}
 
 		return $this->enable;
+	}
+
+	public function is_configured() {
+		return LP()->settings->get( $this->_option_id );
 	}
 
 	/**

@@ -31,23 +31,28 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
                 </tr>
                 </thead>
                 <tbody>
-				<?php foreach ( $emails as $email ) { ?>
+				<?php foreach ( $emails as $email ) {
+					if ( $email->group ) {
+						$url = esc_url( add_query_arg( array(
+							'section'     => $email->group,
+							'sub-section' => $email->id
+						), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) );
+					} else {
+						$url = esc_url( add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) );
+					} ?>
                     <tr>
                         <td class="name">
-							<?php if ( $email->group ) { ?>
-                                <a href="<?php echo esc_url( add_query_arg( array(
-									'section'     => $email->group,
-									'sub-section' => $email->id
-								), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) ); ?>"><?php echo $email->title; ?></a>
-							<?php } else { ?>
-                                <a href="<?php echo esc_url( add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) ); ?>"><?php echo $email->title; ?></a>
-							<?php } ?>
+                            <a href="<?php echo $url; ?>"><?php echo $email->title; ?></a>
                         </td>
                         <td class="description"><?php echo $email->description; ?></td>
-                        <td class="status<?php echo $email->enable ? ' enabled' : ''; ?>">
-                            <span class="change-email-status dashicons dashicons-yes"
-                                  data-status="<?php echo $email->enable ? 'on' : 'off'; ?>"
-                                  data-id="<?php echo $email->id; ?>"></span>
+                        <td class="status<?php echo $email->enable ? ' enabled' : ( $email->is_configured() ? '' : ' config' ); ?>">
+							<?php if ( $email->is_configured() ) { ?>
+                                <span class="change-email-status dashicons dashicons-yes"
+                                      data-status="<?php echo $email->enable ? 'on' : 'off'; ?>"
+                                      data-id="<?php echo $email->id; ?>"></span>
+							<?php } else { ?>
+                                <a href="<?php echo $url; ?>"><?php _e( 'Settings', 'learnpress' ); ?></a>
+							<?php } ?>
                         </td>
                     </tr>
 				<?php } ?>

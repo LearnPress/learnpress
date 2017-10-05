@@ -99,6 +99,7 @@
     }
     .name {
         font-weight: bold;
+        text-transform: capitalize;
         a {
             text-decoration: none;
         }
@@ -106,6 +107,7 @@
     .status {
         width: 100px;
         text-align: center;
+        cursor: pointer;
         .dashicons {
             background: #DDD;
             border-radius: 50%;
@@ -116,6 +118,12 @@
                 background: #0085ba;
             }
         }
+        &.config{
+            a{
+                text-decoration: none;
+                font-size: 12px;
+            }
+        }
     }
     thead {
         th {
@@ -124,9 +132,21 @@
         }
     }
     tbody {
-        td {
-            background: #FFF;
+        tr:nth-child(even) {
+            td {
+                background: #FFF;
+            }
         }
+
+        tr:nth-child(odd) {
+            td {
+                background: #F5F5F5;
+            }
+        }
+        td{
+            border-bottom: 1px solid #EEE;
+        }
+
         .ui-sortable-helper {
             border: 1px solid #DDD;
             margin-left: -1px;
