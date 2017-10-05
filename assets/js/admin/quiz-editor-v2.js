@@ -453,6 +453,16 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
         },
 
+        addQuestionAnswer: function (context, question) {
+            context.commit('UPDATE_QUESTION', question.id);
+
+            Vue.http
+                .LPRequest({
+                    type: 'add-question-answer',
+                    'question': JSON.stringify(question)
+                })
+        },
+
         updateSortQuestions: function (context, orders) {
             Vue.http
                 .LPRequest({

@@ -47,6 +47,10 @@
                 </tbody>
             </table>
         </div>
+        <p class="question-button-actions" v-if="question.type.key !== 'true_or_false'">
+            <button class="button add-question-option-button" type="button"
+                    @click="addQuestionAnswer"><?php esc_html_e( 'Add option' ) ?></button>
+        </p>
     </div>
 </script>
 
@@ -69,6 +73,9 @@
                 changeCorrectAnswer: function (e) {
                     var question = {'id': this.question.id, 'value': e.target.value};
                     $store.dispatch('lqs/changeCorrectAnswer', question);
+                },
+                addQuestionAnswer: function () {
+                    $store.dispatch('lqs/addQuestionAnswer', this.question);
                 }
             }
         })

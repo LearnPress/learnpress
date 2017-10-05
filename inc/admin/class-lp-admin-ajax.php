@@ -419,7 +419,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-
 					$action       = ! empty( $args['action'] ) ? $args['action'] : false;
 					$update['id'] = $question['id'];
 					switch ( $action ) {
@@ -456,6 +455,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'add-question-answer':
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+					break;
+
 				case 'clone-question':
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
@@ -466,7 +474,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$user_id = learn_press_get_current_user_id();
 
-					$new_question_id = learn_press_duplicate_question( $question['id'], $quiz_id );
+					$new_question_id = learn_press_duplicate_question( $question['id'], $quiz_id, array( 'post_status' => 'publish' ) );
 					if ( ! is_wp_error( $new_question_id ) ) {
 
 						// trigger change user memorize question types
@@ -705,8 +713,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -803,8 +810,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -837,8 +843,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1131,7 +1136,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */

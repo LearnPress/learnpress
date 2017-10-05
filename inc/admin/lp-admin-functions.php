@@ -1875,7 +1875,7 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 		if ( ! $post ) {
 			return;
 		}
-		$defalts     = array(
+		$default     = array(
 			'comment_status' => $post->comment_status,
 			'ping_status'    => $post->ping_status,
 			'post_author'    => get_current_user_id(),
@@ -1889,7 +1889,7 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order
 		);
-		$args        = wp_parse_args( $args, $defalts );
+		$args        = wp_parse_args( $args, $default );
 		$new_post_id = wp_insert_post( $args );
 		if ( ! is_wp_error( $new_post_id ) && $meta ) {
 			learn_press_duplicate_post_meta( $post_id, $new_post_id );
@@ -2034,7 +2034,7 @@ if ( ! function_exists( 'learn_press_duplicate_course' ) ) {
 
 if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
 
-	function learn_press_duplicate_question( $question_id = null, $quiz_id = null ) {
+	function learn_press_duplicate_question( $question_id = null, $quiz_id = null, $args = array() ) {
 		if ( ! $question_id || ! get_post( $question_id ) ) {
 			return new WP_Error( sprintf( __( 'Question id %s is not exists.', 'learnpress' ), $question_id ) );
 		}
@@ -2043,7 +2043,7 @@ if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
 		}
 
 		global $wpdb;
-		$new_question_id = learn_press_duplicate_post( $question_id );
+		$new_question_id = learn_press_duplicate_post( $question_id, $args );
 		if ( $quiz_id ) {
 			// learnpress_quiz_questions
 			$sql                = $wpdb->prepare( "
