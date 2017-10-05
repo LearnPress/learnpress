@@ -31,10 +31,23 @@
             });
         }
     });
+
+    // Document is already ready?
     $(document).ready(function () {
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
 
+        $(document).on('click', '.change-email-status', function () {
+            $.post({
+                url: window.location.href,
+                data: $.extend({
+                    'lp-ajax': 'update-email-status'
+                }, $(this).data()),
+                success: function (res) {
+                    console.log(res)
+                }
+            });
+        })
 
         $('.learn-press-tooltip').each(function () {
             var $el = $(this),
@@ -151,7 +164,7 @@
                             } else {
                                 $plugin.find('.plugin-action-buttons a')
                                     .removeClass('updating-message button-working')
-                                    .html(learn_press_admin_localize .plugin_installed);
+                                    .html(learn_press_admin_localize.plugin_installed);
                             }
                         }
                     })

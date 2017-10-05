@@ -22,11 +22,6 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
 			$emails = LP_Emails::instance()->emails;
 			ob_start();
 			?>
-            <select>
-                <option>NULL</option>
-                <option value="1" selected="selected">1</option>
-                <option value="2">2</option>
-            </select>
             <table class="learn-press-emails">
                 <thead>
                 <tr>
@@ -40,14 +35,19 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
                     <tr>
                         <td class="name">
 							<?php if ( $email->group ) { ?>
-                                <a href="<?php echo esc_url( add_query_arg( array('section'=>$email->group, 'sub-section' => $email->id), admin_url( 'admin.php?page=learn-press-settings&tab=emails' )) ); ?>"><?php echo $email->title; ?></a>
+                                <a href="<?php echo esc_url( add_query_arg( array(
+									'section'     => $email->group,
+									'sub-section' => $email->id
+								), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) ); ?>"><?php echo $email->title; ?></a>
 							<?php } else { ?>
-                                <a href="<?php echo esc_url( add_query_arg( array('section' => $email->id), admin_url( 'admin.php?page=learn-press-settings&tab=emails' )) ); ?>"><?php echo $email->title; ?></a>
+                                <a href="<?php echo esc_url( add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) ); ?>"><?php echo $email->title; ?></a>
 							<?php } ?>
                         </td>
                         <td class="description"><?php echo $email->description; ?></td>
                         <td class="status<?php echo $email->enable ? ' enabled' : ''; ?>">
-                            <span class="dashicons dashicons-yes"></span>
+                            <span class="change-email-status dashicons dashicons-yes"
+                                  data-status="<?php echo $email->enable ? 'on' : 'off'; ?>"
+                                  data-id="<?php echo $email->id; ?>"></span>
                         </td>
                     </tr>
 				<?php } ?>

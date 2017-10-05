@@ -308,10 +308,11 @@ class LP_Email extends LP_Abstract_Settings {
 			) );
 	}
 
-	public function enable($value = null){
-		if(is_bool($value)){
+	public function enable( $value = null ) {
+		if ( is_bool( $value ) ) {
 			$this->enable = $value;
 		}
+
 		return $this->enable;
 	}
 

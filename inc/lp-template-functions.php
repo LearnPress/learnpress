@@ -957,9 +957,9 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 	function learn_press_control_displaying_course_item() {
 		global $wp_filter;
 
-
 		//add_action( 'learn-press/content-learning-summary', 'learn_press_course_curriculum_tab', 10 );
 		add_action( 'learn-press/content-learning-summary', 'learn_press_single_course_content_item', 20 );
+		add_action( 'learn-press/content-landing-summary', 'learn_press_single_course_content_item', 20 );
 
 		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
 		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );

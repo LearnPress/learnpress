@@ -8,36 +8,10 @@ if (typeof window.LP == 'undefined') {
     window.LP = window.LearnPress = {};
 }
 
+
+
 (function ($) {
-    console.time('getElementById');
-    document.getElementById('test')
-    console.timeEnd('getElementById');
-
-    console.time('querySelector');
-    document.querySelector('test')
-    console.timeEnd('querySelector');
-
-    console.time('ID');
-    $('#test');
-    console.timeEnd('ID');
-
-    console.time('class');
-    $('.test');
-    console.timeEnd('class');
-
-    console.time('querySelector');
-    document.querySelector('test')
-    console.timeEnd('querySelector');
-
-
-    console.time('attr');
-    $('[attr-name="test"]');
-    console.timeEnd('attr');
-
-    console.time('contains');
-    $(':contains(My Name is Query)');
-    console.timeEnd('contains');
-
+    
     $.fn.serializeJSON = function (path) {
         var isInput = $(this).is('input') || $(this).is('select') || $(this).is('textarea');
         var unIndexed = isInput ? $(this).serializeArray() : $(this).find('input, select, textarea').serializeArray(),

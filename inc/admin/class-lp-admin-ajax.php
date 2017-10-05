@@ -106,6 +106,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-users',
 				'add-items-to-order',
 				'remove-items-from-order',
+				'update-email-status',
+
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -115,6 +117,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$callback   = preg_replace( '~[-]+~', '_', $callback );
 				add_action( "learn-press/ajax/{$ajax_event}", array( __CLASS__, $callback ) );
 			}
+		}
+
+		public static function update_email_status() {
+			$email = LP_Emails::get_email( LP_Request::get_string( 'id' ) );
+			if ( ! $email ) {
+				return;
+			}
+
+			$status = $email->enable( LP_Request::get_string( 'status' ) == 'on' );
+
+			die();
 		}
 
 		/**
@@ -630,7 +643,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -727,7 +741,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -760,7 +775,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1053,7 +1069,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null $context_id
+		 * @param null   $context_id
 		 *
 		 * @return array
 		 */
