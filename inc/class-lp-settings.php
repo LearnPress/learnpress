@@ -125,12 +125,16 @@ class LP_Settings {
 	/**
 	 * Get option recurse separated by DOT
 	 *
-	 * @param      $var
-	 * @param null $default
+	 * @param string $var
+	 * @param mixed  $default
 	 *
-	 * @return null
+	 * @return mixed
 	 */
-	public function get( $var, $default = null ) {
+	public function get( $var = null, $default = null ) {
+		if ( ! $var ) {
+			return $this->_options;
+		}
+
 		if ( $this->_prefix && strpos( $var, $this->_prefix ) === false ) {
 			$var = $this->_prefix . $var;
 		}
@@ -143,6 +147,13 @@ class LP_Settings {
 		return $return;
 	}
 
+	/**
+	 * @param      $obj
+	 * @param      $var
+	 * @param null $default
+	 *
+	 * @return null
+	 */
 	public function _get_option( $obj, $var, $default = null ) {
 		$var         = (array) explode( '.', $var );
 		$current_var = array_shift( $var );
@@ -169,6 +180,16 @@ class LP_Settings {
 		}
 	}
 
+	public function update( $key, $value = '' ) {
+		if ( func_num_args() == 1 ) {
+			$value = $this->get( $key );
+		}
+		update_option( $this->_prefix . $key, $value );
+	}
+
+	/**
+	 * @return bool|LP_Settings
+	 */
 	public static function instance() {
 		if ( empty( self::$_instance ) ) {
 			self::$_instance = new self();

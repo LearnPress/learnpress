@@ -258,7 +258,15 @@ class LP_Email extends LP_Abstract_Settings {
 	 */
 	public $enable = false;
 
+	/**
+	 * @var string
+	 */
 	public $group = '';
+
+	/**
+	 * @var string
+	 */
+	protected $_option_id = '';
 
 	/**
 	 * LP_Email constructor.
@@ -280,7 +288,9 @@ class LP_Email extends LP_Abstract_Settings {
 			$this->object = array();
 		}
 
-		$this->settings = LP()->settings()->get_group( 'emails_' . $this->id, '' );
+		$this->_option_id = 'emails_' . $this->id;
+
+		$this->settings = LP()->settings()->get_group( $this->_option_id, '' );
 
 		/**
 		 * Init general options
@@ -305,12 +315,15 @@ class LP_Email extends LP_Abstract_Settings {
 				'{{header}}',
 				'{{footer}}',
 				'{{footer_text}}'
-			) );
+			)
+		);
 	}
 
 	public function enable( $value = null ) {
 		if ( is_bool( $value ) ) {
 			$this->enable = $value;
+			$this->settings->set('enable', $value ? 'yes' : 'no');
+			$this->settings->update($this->_option_id);
 		}
 
 		return $this->enable;
@@ -790,7 +803,7 @@ class LP_Email extends LP_Abstract_Settings {
 	}
 
 	public function get_field_name( $name ) {
-		return 'emails_' . $this->id . "[$name]";
+		return $this->_option_id . "[$name]";
 	}
 
 	/**

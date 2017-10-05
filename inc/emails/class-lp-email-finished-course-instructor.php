@@ -128,19 +128,19 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => 'emails_finished_course[enable]'
+						'id'      => $this->get_field_name( 'enable' )
 					),
 					array(
 						'title'      => __( 'Subject', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_subject,
-						'id'         => 'emails_finished_course[subject]',
+						'id'         => $this->get_field_name( 'subject' ),
 						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_finished_course[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -151,13 +151,13 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 						'title'      => __( 'Heading', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_heading,
-						'id'         => 'emails_finished_course[heading]',
+						'id'         => $this->get_field_name( 'heading' ),
 						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_finished_course[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -168,7 +168,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 						'title'                => __( 'Email content', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
-						'id'                   => 'emails_finished_course[email_content]',
+						'id'                   => $this->get_field_name( 'email_content' ),
 						'template_base'        => $this->template_base,
 						'template_path'        => $this->template_path,//default learnpress
 						'template_html'        => $this->template_html,
@@ -180,7 +180,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_finished_course[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)

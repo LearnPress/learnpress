@@ -125,9 +125,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				return;
 			}
 
-			$status = $email->enable( LP_Request::get_string( 'status' ) == 'on' );
+			$status = $email->enable( LP_Request::get_string( 'status' ) == 'yes' );
 
-			die();
+			learn_press_send_json( array( 'status' => $status ) );
 		}
 
 		/**

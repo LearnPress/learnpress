@@ -38,15 +38,22 @@
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
 
         $(document).on('click', '.change-email-status', function () {
-            $.post({
-                url: window.location.href,
-                data: $.extend({
-                    'lp-ajax': 'update-email-status'
-                }, $(this).data()),
-                success: function (res) {
-                    console.log(res)
-                }
-            });
+            (function () {
+                $.post({
+                    url: window.location.href,
+                    data: {
+                        'lp-ajax': 'update-email-status',
+                        status: $(this).parent().hasClass('enabled') ? 'no' : 'yes',
+                        id: $(this).data('id')
+                    },
+                    dataType: 'text',
+                    success: $.proxy(function (res) {
+                        res = LP.parseJSON(res);
+                        console.log(res, this)
+                        $(this).parent().toggleClass('enabled', res.status)
+                    }, this)
+                });
+            }).apply(this)
         })
 
         $('.learn-press-tooltip').each(function () {
