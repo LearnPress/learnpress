@@ -317,7 +317,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
-		if ( $this->is_exists_question( $question_id ) ) {
+		if ( $this->is_exists_question( $the_quiz->get_id(), $question_id ) ) {
 			return false;
 		}
 
@@ -366,16 +366,18 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 */
 	public function is_exists_question( $the_id, $ids ) {
 		global $wpdb;
+
 		settype( $ids, 'array' );
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
-		$args   = $ids;
-		$args[] = $the_id;
-		$query  = $wpdb->prepare( "
+
+		$questions_ids = implode( ', ', $ids );
+
+		$query = $wpdb->prepare( "
 			SELECT quiz_question_id 
 			FROM {$wpdb->learnpress_quiz_questions} 
 			WHERE question_id IN( " . join( ',', $format ) . " )
 				AND quiz_id = %d
-		", $args );
+		", $questions_ids, $the_id );
 		if ( $results = $wpdb->get_results( $query ) ) {
 			return $results;
 		}

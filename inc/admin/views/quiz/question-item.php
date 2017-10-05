@@ -97,9 +97,13 @@
                 updateTitle: function () {
                     this.update();
                 },
-                update: function () {
+                update: function (e) {
                     this.unsaved = false;
-                    $store.dispatch('lqs/updateQuestion', this.question);
+                    var request = {
+                        'action': 'update-title',
+                        'question': this.question
+                    };
+                    $store.dispatch('lqs/updateQuestion', request);
                 }
             }
         });
