@@ -64,11 +64,30 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	public function update( &$args = array() ) {
 		// TODO: Implement update() method.
 		$question = wp_parse_args( $args, array(
-			'id'    => '',
-			'title' => ''
+			'action'  => '',
+			'id'      => '',
+			'title'   => '',
+			'content' => '',
+			'key'     => '',
+			'meta'    => '',
 		) );
 
-		wp_update_post( array( 'ID' => $question['id'], 'post_title' => $question['title'] ) );
+		switch ( $question['action'] ) {
+			case 'update-title':
+				wp_update_post( array( 'ID' => $question['id'], 'post_title' => $question['title'] ) );
+				break;
+			case 'update-content':
+				wp_update_post( array( 'ID' => $question['id'], 'post_content' => $question['content'] ) );
+				break;
+			case 'update-meta':
+				if ( ! $question['key'] ) {
+					break;
+				}
+				update_post_meta( $question['id'], '_lp_' . $question['key'], $question['meta'] );
+				break;
+			default:
+				break;
+		}
 
 		return $question;
 	}

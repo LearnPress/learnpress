@@ -659,41 +659,6 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
 
-                &.addable {
-                    color: #333;
-
-                    &:hover {
-                        color: #4caf50;
-                    }
-
-                    &:before {
-                        content: "\f132";
-                    }
-                }
-
-                &.added {
-                    color: #aaa;
-
-                    &:hover {
-                        color: #a00;
-                    }
-
-                    &:before {
-                        color: #4caf50;
-                        content: "\f147";
-                    }
-                }
-
-                &.removable {
-                    &:hover {
-                        color: #a00;
-                    }
-
-                    &:before {
-                        content: "\f335";
-                    }
-                }
-
                 &:before {
                     font-family: Dashicons;
                     position: relative;
@@ -714,6 +679,10 @@
             .list-items {
                 min-height: 260px;
                 margin: 0;
+                li {
+                    margin: 15px 0;
+                    cursor: pointer;
+                }
             }
 
             .pagination {
@@ -743,8 +712,8 @@
             background-color: #fff;
             z-index: 2;
             padding: 20px;
-            transform: translate(-100%, 0);
-            transition: transform 200ms ease-out;
+            transform: translate(100%, 0);
+            //transition: transform 100ms ease-out;
             max-height: 330px;
             overflow: auto;
 
@@ -753,7 +722,12 @@
             }
 
             .list-added-items {
-                margin: 0;
+                li {
+                    margin: 15px 0;
+                    &:first-child {
+                        margin: -10px 0 15px 0;
+                    }
+                }
             }
         }
 

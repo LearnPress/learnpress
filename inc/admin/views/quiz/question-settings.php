@@ -12,8 +12,8 @@ learn_press_admin_view( 'quiz/options' );
 <script type="text/x-template" id="tmpl-lp-quiz-question-settings">
     <tr class="edit-inline" :item-id="index" :class="question.open ? 'hide-if-js' : ''" :data-item="dataItem">
         <td colspan="5">
-            <lp-question-answers :answers="question.answers"></lp-question-answers>
-            <lp-question-options :options="question.settings"></lp-question-options>
+            <lp-question-answers :question="question"></lp-question-answers>
+            <lp-question-options :question="question"></lp-question-options>
         </td>
     </tr>
 </script>

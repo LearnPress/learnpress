@@ -329,6 +329,47 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
+		 * Get question data to add to quiz.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 *
+		 * @return array
+		 */
+		public static function get_question_data_to_quiz( $question_id ) {
+
+			if ( ! is_numeric( $question_id ) ) {
+				return array();
+			}
+
+			$question = LP_Question::get_question( $question_id );
+
+			$question_id = $question->get_id();
+
+			$data = array(
+				'id'       => $question_id,
+				'open'     => false,
+				'title'    => get_the_title( $question_id ),
+				'type'     => array(
+					'key'   => $question->get_type(),
+					'label' => $question->get_type_label()
+				),
+				'answers'  => array(
+					'heading' => $question->get_admin_option_headings(),
+					'options' => $question->get_answer_options()
+				),
+				'settings' => array(
+					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
+					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
+					'hint'        => get_post_meta( $question_id, '_lp_hint', true )
+				)
+			);
+
+			return $data;
+		}
+
+		/**
 		 * Handle ajax update list quiz questions.
 		 *
 		 * @since 3.0.0
@@ -378,13 +419,41 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$update = array(
-						'id'    => $question['id'],
-						'title' => $question['title'],
-					);
+
+					$action       = ! empty( $args['action'] ) ? $args['action'] : false;
+					$update['id'] = $question['id'];
+					switch ( $action ) {
+						case 'update-title':
+							$update['title'] = $question['title'];
+							break;
+						case 'update-content':
+							$update['content'] = $question['settings']['content']['value'];
+							break;
+						case 'update-meta':
+							if ( ! $meta_key = $args['meta'] ) {
+								break;
+							}
+							$update['key']  = $meta_key;
+							$update['meta'] = $question['settings'][ $meta_key ]['value'];
+							break;
+						default;
+							break;
+					}
+
+					$update = array_merge( $update, array( 'id' => $question['id'], 'action' => $action ) );
 
 					$result = $question_curd->update( $update );
 					// code
+					break;
+
+				case 'change-correct-answer':
+					$true_answer = ! empty ( $args['true-answer'] ) ? $args['true-answer'] : '';
+
+					if ( ! $true_answer ) {
+						break;
+					}
+
+
 					break;
 
 				case 'clone-question':
@@ -407,31 +476,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
 						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 
-						$question = LP_Question::get_question( $new_question_id );
-
-						$order  = $question['order'] + 1;
-						$result = array(
-							'id'       => $new_question_id,
-							'open'     => false,
-							'title'    => get_the_title( $new_question_id ),
-							'type'     => array(
-								'key'   => $question->get_type(),
-								'label' => $question->get_type_label()
-							),
-							'answers'  => array(
-								'heading' => $question->get_admin_option_headings(),
-								'options' => $question->get_answer_options()
-							),
-							'settings' => array(
-								'mark'        => get_post_meta( $new_question_id, '_lp_mark', true ),
-								'explanation' => get_post_meta( $new_question_id, '_lp_explanation', true ),
-								'hint'        => get_post_meta( $new_question_id, '_lp_hint', true )
-							),
-							'order'    => $order
-						);
+						$result = LP_Admin_Ajax::get_question_data_to_quiz( $new_question_id );
 					}
-
-					//code
 					break;
 
 				case 'remove-question':
@@ -446,6 +492,22 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				case 'delete-question':
 					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
 					$result      = $quiz_curd->remove_question( $quiz_id, $question_id, array( 'delete_permanently' => true ) );
+					break;
+
+				case 'add-items-to-quiz':
+
+					$result = array();
+
+					$questions = isset( $_POST['items'] ) ? $_POST['items'] : false;
+					$questions = json_decode( wp_unslash( $questions ), true );
+
+					if ( $questions ) {
+						foreach ( $questions as $key => $question ) {
+							if ( is_numeric( $quiz_curd->add_question( $quiz_id, $question['id'] ) ) ) {
+								$result[] = LP_Admin_Ajax::get_question_data_to_quiz( $question['id'] );
+							}
+						}
+					}
 					break;
 
 				case 'sort-questions':

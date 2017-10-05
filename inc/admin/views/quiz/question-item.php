@@ -39,7 +39,9 @@
                 <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click="remove"></a>
                     <ul>
-                        <li><a class="" @click="deletePermanently"> Delete permanently </a></li>
+                        <li><a class=""
+                               @click="deletePermanently"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
+                        </li>
                     </ul>
                 </div>
                 <span @click="toggle" :class="question.open ?'open' : 'close'"
@@ -95,9 +97,13 @@
                 updateTitle: function () {
                     this.update();
                 },
-                update: function () {
+                update: function (e) {
                     this.unsaved = false;
-                    $store.dispatch('lqs/updateQuestion', this.question);
+                    var request = {
+                        'action': 'update-title',
+                        'question': this.question
+                    };
+                    $store.dispatch('lqs/updateQuestion', request);
                 }
             }
         });

@@ -9,10 +9,9 @@ learn_press_admin_view( 'quiz/added-items-preview' );
 learn_press_admin_view( 'quiz/pagination' );
 ?>
 
-<!--Choose question item-->
 <script type="text/x-template" id="tmpl-lp-quiz-choose-item">
     <li class="question-item" :class="[item.type, item.added ? 'added': 'addable']" @click="add">
-        <span class="icon"></span>
+        <input type="checkbox" :checked="item.added === true">
         <span class="title">{{item.title}}</span>
     </li>
 </script>
@@ -45,15 +44,13 @@ learn_press_admin_view( 'quiz/pagination' );
     })(Vue, LP_Quiz_Store);
 </script>
 
-
-<!--Choose question items-->
 <script type="text/x-template" id="tmpl-lp-quiz-choose-items">
     <div id="lp-modal-choose-items" :class="{show:show, loading: loading}">
         <div class="lp-choose-items" :class="{'show-preview': showPreview}">
 
             <div class="header">
                 <div class="preview-title"><span><?php esc_html_e( 'Selected items', 'learnpress' ); ?>
-                        {{addedItems.length}}</span></div>
+                        ({{addedItems.length}})</span></div>
                 <ul class="tabs">
                     <li class="tab active"><a href="#"><?php esc_html_e( 'Questions', 'learnpress' ); ?></a></li>
                 </ul>
