@@ -17,7 +17,7 @@ class LP_Schedules {
 		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
 
 		if ( ! wp_next_scheduled( 'learn_press_schedule_update_user_items' ) ) {
-			wp_schedule_event( time(), 'ten_minutes', 'learn_press_schedule_update_user_items' );
+			wp_schedule_event( current_time('timestamp'), 'ten_minutes', 'learn_press_schedule_update_user_items' );
 		}
 		add_action( 'learn_press_schedule_update_user_items', array( $this, 'schedule_update_user_items' ) );
 
@@ -106,28 +106,13 @@ class LP_Schedules {
 		if ( empty( $wpdb->learnpress_user_items ) ) {
 			return;
 		}
-		/* $query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_user_items
-			WHERE user_item_id IN(
-				SELECT user_item_id FROM(
-					SELECT user_item_id
-					FROM {$wpdb->prefix}learnpress_user_items
-					WHERE end_time = %s
-					AND item_type = %s
-					GROUP BY item_id
-					ORDER BY user_item_id DESC
-				) AS X
-			)
-			LIMIT 0, 10
-		", '0000-00-00 00:00:00', 'lp_course' );*/
 		$where = '';
 		if ( $user_id ) {
-			$where .= $wpdb->prepare( "AND user_id = %d", $user_id );
+			$where .= $wpdb->prepare( "AND `ui`.user_id = %d", $user_id );
 		}
 
 		if ( $course_id ) {
-			$where .= $wpdb->prepare( " AND item_id = %d", $course_id );
+			$where .= $wpdb->prepare( " AND `ui`.item_id = %d", $course_id );
 		}
 
 		$groupby = '';
@@ -135,20 +120,38 @@ class LP_Schedules {
 			$groupby = 'GROUP BY item_id, user_id';
 		}
 
+		# BUILD QUERY TO GET EXPIRED COURSE
+		$now = current_time('mysql');
 		$query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_user_items
-			WHERE user_item_id IN(
-				SELECT max(user_item_id)
-				FROM {$wpdb->prefix}learnpress_user_items
-				WHERE end_time = %s
-				AND item_type = %s
-				AND status <> %s
-			  	{$where}
-				{$groupby}
-			  )
+			SELECT 
+				*,
+				DATE_ADD(ui.start_time,
+					INTERVAL (CAST(SUBSTRING_INDEX(pm.meta_value, ' ', 1) AS SIGNED) * CASE SUBSTRING_INDEX( `pm`.`meta_value`, ' ', - 1 )
+						WHEN 'week' THEN 10080
+						WHEN 'day' THEN 1440
+						WHEN 'hour' THEN 60
+						WHEN 'minute' THEN 1
+					END) MINUTE) AS `expired_in`
+			FROM
+				`{$wpdb->prefix}learnpress_user_items` AS `ui`
+					INNER JOIN
+				`{$wpdb->prefix}postmeta` AS `pm` ON `ui`.`item_type` = %s
+					AND `ui`.`item_id` = `pm`.`post_id`
+					AND `pm`.`meta_key` = %s
+			WHERE
+				`ui`.`end_time` = %s
+					AND `ui`.`status` <> %s
+					AND 
+					DATE_ADD(ui.start_time,
+						INTERVAL (CAST(SUBSTRING_INDEX(pm.meta_value, ' ', 1) AS SIGNED) * CASE SUBSTRING_INDEX( `pm`.`meta_value`, ' ', - 1 )
+							WHEN 'week' THEN 10080
+							WHEN 'day' THEN 1440
+							WHEN 'hour' THEN 60
+							WHEN 'minute' THEN 1
+						END) MINUTE) < %s
+			ORDER BY `expired_in` ASC
 			LIMIT 0, 10
-		", '0000-00-00 00:00:00', 'lp_course', 'finished' );
+		", LP_COURSE_CPT, '_lp_duration', '0000-00-00 00:00:00', 'finished', $now );
 
 		if ( $results = $wpdb->get_results( $query ) ) {
 			$ids = array();
