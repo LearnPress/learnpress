@@ -6,29 +6,22 @@
  */
 
 learn_press_admin_view( 'quiz/answers' );
-learn_press_admin_view( 'quiz/options' );
+learn_press_admin_view( 'quiz/meta' );
 ?>
 
-<script type="text/x-template" id="tmpl-lp-quiz-question-settings">
-    <tr class="edit-inline" :item-id="index" :class="question.open ? 'hide-if-js' : ''" :data-item="dataItem">
-        <td colspan="5">
-            <lp-question-answers :question="question"></lp-question-answers>
-            <lp-question-options :question="question"></lp-question-options>
-        </td>
-    </tr>
+<script type="text/x-template" id="tmpl-lp-question-settings">
+    <div class="question-settings" :class="question.open ? 'hide-if-js' : 'table-row'">
+        <lp-question-answers :question="question"></lp-question-answers>
+        <lp-question-meta :question="question"></lp-question-meta>
+    </div>
 </script>
 
 
 <script>
     (function (Vue, $store) {
-        Vue.component('lp-quiz-question-settings', {
-            template: '#tmpl-lp-quiz-question-settings',
-            props: ['question', 'index'],
-            computed: {
-                dataItem: function () {
-                    return 'index-' + this.index;
-                }
-            }
+        Vue.component('lp-question-settings', {
+            template: '#tmpl-lp-question-settings',
+            props: ['question', 'index']
         })
     })(Vue, LP_Quiz_Store)
 </script>

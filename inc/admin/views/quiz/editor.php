@@ -17,36 +17,37 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
             <span class="collapse-list-questions" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>
         </div>
         <div class="lp-box-data-content">
-            <table class="lp-list-questions">
-                <thead>
-                <tr>
-                    <th class="lp-column-sort"></th>
-                    <th class="lp-column-order">#</th>
-                    <th class="lp-column-name"><?php esc_html_e( 'Name', 'learnpress' ); ?></th>
-                    <th class="lp-column-type"><?php esc_html_e( 'Type', 'learnpress' ); ?></th>
-                    <th class="lp-column-actions"><?php esc_html_e( 'Actions', 'learnpress' ); ?></th>
-                </tr>
-                </thead>
+            <div class="lp-list-questions">
+                <div class="header">
+                    <div class="table-row">
+                        <div class="lp-column-sort"></div>
+                        <div class="lp-column-order">#</div>
+                        <div class="lp-column-name"><?php esc_html_e( 'Name', 'learnpress' ); ?></div>
+                        <div class="lp-column-type"><?php esc_html_e( 'Type', 'learnpress' ); ?></div>
+                        <div class="lp-column-actions"><?php esc_html_e( 'Actions', 'learnpress' ); ?></div>
+                    </div>
+                </div>
+
                 <lp-list-quiz-questions></lp-list-quiz-questions>
 
-                <tfoot>
-                <tr>
-                    <th class="lp-column-sort"><i class="fa fa-bars"></i></th>
-                    <th class="lp-column-order"></th>
-                    <th class="lp-column-name lp-column-quick-add" colspan="3">
-                        <div class="modal-search">
-                            <div class="modal-search-questions">
-                                <input type="text" class="search-input">
+                <div class="footer">
+                    <div class="table-row">
+                        <div class="lp-column-sort"><i class="fa fa-bars"></i></div>
+                        <div class="lp-column-order"></div>
+                        <div class="lp-column-name lp-column-quick-add">
+                            <div class="modal-search">
+                                <div class="modal-search-questions">
+                                    <input type="text" class="search-input">
+                                </div>
                             </div>
+                            <button type="button" class="button"
+                                    @click.stop="addNewItem"><?php esc_html_e( 'Add as New', 'learnpress' ); ?> </button>
+                            <button type="button" class="button"
+                                    @click.stop="openChooseItems"><?php esc_html_e( 'Select', 'learnpress' ); ?></button>
                         </div>
-                        <button type="button" class="button"
-                                @click.stop="addNewItem"><?php esc_html_e( 'Add as New', 'learnpress' ); ?> </button>
-                        <button type="button" class="button"
-                                @click.stop="openChooseItems"><?php esc_html_e( 'Select', 'learnpress' ); ?></button>
-                    </th>
-                </tr>
-                </tfoot>
-            </table>
+                    </div>
+                </div>
+            </div>
 
             <lp-quiz-choose-items></lp-quiz-choose-items>
         </div>
