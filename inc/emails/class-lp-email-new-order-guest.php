@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 
-	class LP_Email_New_Order_Guest extends LP_Email {
+	class LP_Email_New_Order_Guest extends LP_Email_Type_Order {
 
 		/**
 		 * LP_Email_New_Order_Guest constructor.
@@ -27,20 +27,8 @@ if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 			$this->title       = __( 'New order Guest', 'learnpress' );
 			$this->description = __( 'Send email to the user who has bought course as guest', 'learnpress' );
 
-			$this->template_html  = 'emails/new-order-guest.php';
-			$this->template_plain = 'emails/plain/new-order-guest.php';
-
-			$this->default_subject = __( '[{{site_title}}] Order placed', 'learnpress' );
-			$this->default_heading = __( 'Order placed', 'learnpress' );
-
-			$this->support_variables = array_merge( $this->general_variables, array(
-				'{{order_id}}',
-				'{{order_user_id}}',
-				'{{order_user_name}}',
-				'{{order_items_table}}',
-				'{{order_detail_url}}',
-				'{{order_number}}',
-			) );
+			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
+			$this->default_heading = __( 'Thank you for your order.', 'learnpress' );
 
 			add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
 			add_action( 'learn_press_order_status_draft_to_processing_notification', array( $this, 'trigger' ) );
@@ -59,11 +47,13 @@ if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 		 * @return boolean
 		 */
 		public function trigger( $order_id ) {
+			parent::trigger( $order_id );
+
 			if ( ! $this->enable ) {
 				return false;
 			}
 
-			$order = learn_press_get_order( $order_id );
+			$order = $this->get_order();
 
 			if ( ! $order->is_guest() ) {
 				return false;
@@ -71,35 +61,12 @@ if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 
 			$this->recipient = $order->get_user_email();
 
-			$this->object['order'] = $order;
-
-			/**
-			 * Return if course is free because this order will be enrolled
-			 *
-			 * In this case we use email enrolled-course
-			 */
-			if ( ! $this->recipient || ( $order->get_total() === 0 ) ) {
+			if ( ! $this->recipient ) {
 				return false;
 			}
 
-			LP_Emails::instance()->set_current( $this->id );
-
-			$this->object = $this->get_common_template_data(
-				$this->email_format,
-				array(
-					'order_id'          => $order_id,
-					'order_user_id'     => $order->get_user_id(),
-					'order_user_name'   => $order->get_user_name(),
-					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $this->email_format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
-					'order_detail_url'  => $order->get_view_order_url(),
-					'order_number'      => $order->get_order_number(),
-					'order_subtotal'    => $order->get_formatted_order_subtotal(),
-					'order_total'       => $order->get_formatted_order_total(),
-					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->get_order_date() ) )
-				)
-			);
-
-			$this->variables = $this->data_to_variables( $this->object );
+			$this->get_object();
+			$this->get_variable();
 
 			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() );
 

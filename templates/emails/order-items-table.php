@@ -9,9 +9,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$order = learn_press_get_order( $order_id );
+$email = LP_Emails::instance()->get_current();
+$order = $email->get_order();
+$items = $email->get_order_items_table();
 
-if ( ! $order->get_items() ) {
+if ( ! $items ) {
 	return;
 }
 ?>
@@ -46,33 +48,31 @@ if ( ! $order->get_items() ) {
 <table class="order-table-items" cellspacing="0" cellpadding="5">
     <thead>
     <tr>
+		<?php do_action( 'learn-press/before-email-order-item-heading', $email, $order ); ?>
         <th class="column-name"><?php _e( 'Course', 'learnpress' ); ?></th>
         <th class="column-quantity"><?php _e( 'Quantity', 'learnpress' ); ?></th>
         <th class="column-number"><?php _e( 'Price', 'learnpress' ); ?></th>
+		<?php do_action( 'learn-press/after-email-order-item-heading', $email, $order ); ?>
     </tr>
     </thead>
     <tbody>
 	<?php
-	$total = 0;
-	foreach ( $order->get_items() as $item_id => $item ):
+	foreach ( $items as $item_id => $item ):
 		$course = apply_filters( 'learn_press_order_item_course', learn_press_get_course( $item['course_id'] ), $item );
-		if ( isset( $instructor_id ) && $instructor_id && (get_post_field( 'post_author', $course->get_id() ) != $instructor_id )) {
-			continue;
-		}
-		$total += $item['total'];
+
 		?>
         <tr>
-			<?php do_action( 'learn_press_before_order_item', $item_id, $item, $order ); ?>
+			<?php do_action( 'learn-press/before-email-order-item', $item_id, $item, $email, $order ); ?>
             <td class="column-name">
-				<?php echo apply_filters( 'learn_press_order_item_name', $item['name'], $item ); ?>
+				<?php echo apply_filters( 'learn-press/email-order-item-name', $item['name'], $item ); ?>
             </td>
             <td class="column-quantity">
-				<?php echo apply_filters( 'learn_press_email_order_item_quantity', $item['quantity'], $item ); ?>
+				<?php echo apply_filters( 'learn-press/email-order-item-quantity', $item['quantity'], $item ); ?>
             </td>
             <td class="column-number">
-				<?php echo apply_filters( 'learn_press_email_order_item_cost', learn_press_format_price( $item['total'], learn_press_get_currency_symbol( $order->get_currency() ) ), $item ); ?>
+				<?php echo apply_filters( 'learn-press/email-order-item-cost', learn_press_format_price( $item['total'], learn_press_get_currency_symbol( $order->get_currency() ) ), $item ); ?>
             </td>
-			<?php do_action( 'learn_press_after_order_item', $item_id, $item, $order ); ?>
+			<?php do_action( 'learn-press/after-email-order-item', $item_id, $item, $email, $order ); ?>
         </tr>
 
 	<?php endforeach; ?>
@@ -82,11 +82,7 @@ if ( ! $order->get_items() ) {
         <td colspan="2" class="column-number"><?php _e( 'Total', 'learnpress' ); ?></td>
         <td class="column-number">
 			<?php
-			if ( isset( $instructor_id ) ) {
-				echo learn_press_format_price( $total, learn_press_get_currency_symbol( $order->get_currency() ) );
-			} else {
-				echo $order->get_formatted_order_total();
-			}
+			echo $email->get_order_total();
 			?>
         </td>
     </tr>

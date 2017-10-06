@@ -984,12 +984,11 @@ class LP_Order extends LP_Abstract_Post_Data {
 	public function get_user_email() {
 		$email = false;
 		if ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) {
-			$email = $user->get_data( 'user_email' );
+			$email = $user->get_data( 'email' );
 		} // Order is checked out by guest
 		elseif ( $email = $this->get_checkout_email() ) {
 
 		}
-
 		return $email;
 	}
 

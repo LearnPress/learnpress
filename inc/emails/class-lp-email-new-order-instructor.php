@@ -56,15 +56,16 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 			}
 
 			$return = array();
-			$this->get_object();
 
 			foreach ( $course_instructors as $user_id => $courses ) {
 				$user = get_user_by( 'ID', $user_id );
 				if ( ! $user ) {
 					continue;
 				}
-				$this->recipient                   = $user->user_email;
-				$this->object['order_items_table'] = $this->get_order_items_table( $user_id );
+				$this->recipient     = $user->user_email;
+				$this->instructor_id = $user_id;
+
+				$this->get_object();
 				$this->get_variable();
 
 				if ( $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() ) ) {

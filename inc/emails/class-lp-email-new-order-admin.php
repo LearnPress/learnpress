@@ -24,24 +24,11 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			$this->title       = __( 'New order admin', 'learnpress' );
 			$this->description = __( 'Send email to admin when new order is placed', 'learnpress' );
 
-			$this->default_subject                = __( 'New order placed on {{order_date}}', 'learnpress' );
-			$this->default_heading                = __( 'New user order', 'learnpress' );
-			$this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_items_table}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
+			$this->default_subject = __( 'New order placed on {{order_date}}', 'learnpress' );
+			$this->default_heading = __( 'New user order', 'learnpress' );
 
 			$this->recipients = get_option( 'admin_email' );
 			$this->recipient  = LP()->settings->get( 'emails_' . $this->id . '.recipients', $this->recipients );
-
-			$this->support_variables = array_merge(
-				$this->general_variables,
-				array(
-					'{{order_id}}',
-					'{{order_user_id}}',
-					'{{order_user_name}}',
-					'{{order_items_table}}',
-					'{{order_edit_url}}',
-					'{{order_number}}',
-				)
-			);
 
 
 //			add_action( 'learn_press_order_status_pending_to_processing_notification', array( $this, 'trigger' ) );
@@ -71,7 +58,8 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 		 * @return bool
 		 */
 		public function trigger( $order_id ) {
-			$this->order_id = $order_id;
+			parent::trigger( $order_id );
+
 			if ( ! $this->enable ) {
 				return false;
 			}
@@ -84,17 +72,6 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			return $return;
 		}
 
-
-		/**
-		 * Get email plain template.
-		 *
-		 * @param string $format
-		 *
-		 * @return array|object
-		 */
-		public function get_template_data( $format = 'plain' ) {
-			return $this->object;
-		}
 	}
 }
 
