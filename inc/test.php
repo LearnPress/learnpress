@@ -1,15 +1,5 @@
 <?php
-add_action( 'phpmailer_init', 'wp_mailer_init' );
-function wp_mailer_init( &$mail ) {
-	$mail->isSMTP();
-	$mail->Host       = 'smtp.gmail.com';
-	$mail->SMTPAuth   = true;
-	$mail->Username   = 'tunn@foobla.com';
-	$mail->Password   = 'tunn@!07@)!)';
-	$mail->SMTPSecure = 'tls';
-	$mail->Port       = 587;
 
-}
 
 add_action( 'get_header', function () {
 	//do_action( 'learn-press/order/status-pending-to-processing/notification', 1313 );
