@@ -1,6 +1,6 @@
 <?php
 /**
- * Editor wrapper.
+ * Course editor wrapper.
  *
  * @since 3.0.0
  */

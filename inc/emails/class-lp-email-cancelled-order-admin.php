@@ -20,7 +20,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 		 * LP_Email_Cancelled_Order_Admin constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'cancelled_order';
+			$this->id          = 'cancelled-order-admin';
 			$this->title       = __( 'Cancelled order admin', 'learnpress' );
 			$this->description = __( 'Send email to admin when order has been cancelled', 'learnpress' );
 
@@ -118,19 +118,19 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => 'emails_cancelled_order[enable]'
+						'id'      => $this->get_field_name( 'enable' )
 					),
 					array(
 						'title'      => __( 'Recipient(s)', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => get_option( 'admin_email' ),
-						'id'         => 'emails_cancelled_order[recipients]',
+						'id'         => $this->get_field_name( 'recipients' ),
 						'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>', 'learnpress' ), get_option( 'admin_email' ) ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_cancelled_order[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -141,13 +141,13 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 						'title'      => __( 'Subject', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_subject,
-						'id'         => 'emails_cancelled_order[subject]',
+						'id'         => $this->get_field_name( 'subject' ),
 						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_cancelled_order[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -158,13 +158,13 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 						'title'      => __( 'Heading', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_heading,
-						'id'         => 'emails_cancelled_order[heading]',
+						'id'         => $this->get_field_name( 'heading' ),
 						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_cancelled_order[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -175,7 +175,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 						'title'                => __( 'Email content', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
-						'id'                   => 'emails_cancelled_order[email_content]',
+						'id'                   => $this->get_field_name( 'email_content' ),
 						'template_base'        => $this->template_base,
 						'template_path'        => $this->template_path,//default learnpress
 						'template_html'        => $this->template_html,
@@ -187,7 +187,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_cancelled_order[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)

@@ -88,12 +88,12 @@ ob_start();
         }
 
         #email-body > tr > td{
-            padding: 20px;
+            padding: 0 20px 20px 20px;
         }
 
         #template_container #email-footer td {
             text-align: center;
-            padding: 20px;
+            padding: 0 20px;
         }
 
         .order-heading-total{

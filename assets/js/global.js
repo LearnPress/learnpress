@@ -1,11 +1,17 @@
 /**
  * Common functions/utils used in all page
  */
+
+
+
 if (typeof window.LP == 'undefined') {
     window.LP = window.LearnPress = {};
 }
 
+
+
 (function ($) {
+    
     $.fn.serializeJSON = function (path) {
         var isInput = $(this).is('input') || $(this).is('select') || $(this).is('textarea');
         var unIndexed = isInput ? $(this).serializeArray() : $(this).find('input, select, textarea').serializeArray(),

@@ -112,7 +112,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		public function __get( $key ) {
 			_deprecated_argument( $key, '3.x.x' );
-			die();
+
 			$return = false;
 			switch ( $key ) {
 				case 'user':
@@ -532,7 +532,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * @return bool|LP_Settings
 		 */
-		public function settings(){
+		public function settings() {
 			return LP_Settings::instance();
 		}
 
@@ -653,5 +653,6 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-require_once 'inc/test.php';
+if ( file_exists( LP_PLUGIN_PATH . 'inc/test.php' ) ) {
+	require_once 'inc/test.php';
+}

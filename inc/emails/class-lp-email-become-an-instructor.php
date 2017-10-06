@@ -95,20 +95,20 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 					'title'   => __( 'Enable', 'learnpress' ),
 					'type'    => 'yes-no',
 					'default' => 'no',
-					'id'      => 'emails_become_an_instructor[enable]',
+					'id'      => $this->get_field_name( 'enable' ),
 					'desc'    => __( 'Send notification to user when accept', 'learnpress' )
 				),
 				array(
 					'title'      => __( 'Subject', 'learnpress' ),
 					'type'       => 'text',
 					'default'    => $this->default_subject,
-					'id'         => 'emails_become_an_instructor[subject]',
+					'id'         => $this->get_field_name( 'subject' ),
 					'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
 					'visibility' => array(
 						'state'       => 'show',
 						'conditional' => array(
 							array(
-								'field'   => 'emails_become_an_instructor[enable]',
+								'field'   => $this->get_field_name( 'enable' ),
 								'compare' => '=',
 								'value'   => 'yes'
 							)
@@ -119,13 +119,13 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 					'title'      => __( 'Heading', 'learnpress' ),
 					'type'       => 'text',
 					'default'    => $this->default_heading,
-					'id'         => 'emails_become_an_instructor[heading]',
+					'id'         => $this->get_field_name( 'heading' ),
 					'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
 					'visibility' => array(
 						'state'       => 'show',
 						'conditional' => array(
 							array(
-								'field'   => 'emails_become_an_instructor[enable]',
+								'field'   => $this->get_field_name( 'enable' ),
 								'compare' => '=',
 								'value'   => 'yes'
 							)
@@ -136,7 +136,7 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 					'title'                => __( 'Email content', 'learnpress' ),
 					'type'                 => 'email-content',
 					'default'              => '',
-					'id'                   => 'emails_become_an_instructor[email_content]',
+					'id'                   => $this->get_field_name( 'email_content' ),
 					'template_base'        => $this->template_base,
 					'template_path'        => $this->template_path,//default learnpress
 					'template_html'        => $this->template_html,
@@ -148,7 +148,7 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 						'state'       => 'show',
 						'conditional' => array(
 							array(
-								'field'   => 'emails_become_an_instructor[enable]',
+								'field'   => $this->get_field_name( 'enable' ),
 								'compare' => '=',
 								'value'   => 'yes'
 							)

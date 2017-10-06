@@ -17,7 +17,7 @@
     }
 }
 
-#course-editor-v2 {
+#course-editor-v2, #quiz-editor-v2 {
     background-color: #fff;
     border: 1px solid #ddd;
     margin: 20px 0;
@@ -641,6 +641,7 @@
                 cursor: pointer;
                 font-size: 1em;
                 padding: 9px;
+                z-index: 9;
             }
         }
 
@@ -657,41 +658,6 @@
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
-
-                &.addable {
-                    color: #333;
-
-                    &:hover {
-                        color: #4caf50;
-                    }
-
-                    &:before {
-                        content: "\f132";
-                    }
-                }
-
-                &.added {
-                    color: #aaa;
-
-                    &:hover {
-                        color: #a00;
-                    }
-
-                    &:before {
-                        color: #4caf50;
-                        content: "\f147";
-                    }
-                }
-
-                &.removable {
-                    &:hover {
-                        color: #a00;
-                    }
-
-                    &:before {
-                        content: "\f335";
-                    }
-                }
 
                 &:before {
                     font-family: Dashicons;
@@ -713,6 +679,10 @@
             .list-items {
                 min-height: 260px;
                 margin: 0;
+                li {
+                    margin: 15px 0;
+                    cursor: pointer;
+                }
             }
 
             .pagination {
@@ -742,8 +712,8 @@
             background-color: #fff;
             z-index: 2;
             padding: 20px;
-            transform: translate(-100%, 0);
-            transition: transform 200ms ease-out;
+            transform: translate(100%, 0);
+            //transition: transform 100ms ease-out;
             max-height: 330px;
             overflow: auto;
 
@@ -752,7 +722,12 @@
             }
 
             .list-added-items {
-                margin: 0;
+                li {
+                    margin: 15px 0;
+                    &:first-child {
+                        margin: -10px 0 15px 0;
+                    }
+                }
             }
         }
 

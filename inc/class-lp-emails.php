@@ -69,22 +69,49 @@ class LP_Emails {
 			return;
 		}
 		include LP_PLUGIN_PATH . 'inc/emails/class-lp-email.php';
-		$this->emails['LP_Email_New_Order_Admin']           = include( 'emails/class-lp-email-new-order-admin.php' );
-		$this->emails['LP_Email_New_Order_Customer']        = include( 'emails/class-lp-email-new-order-customer.php' );
-		$this->emails['LP_Email_New_Order_Instructor']      = include( 'emails/class-lp-email-new-order-instructor.php' );
-		$this->emails['LP_Email_New_Order_Guest']           = include( 'emails/class-lp-email-new-order-guest.php' );
-		$this->emails['LP_Email_Completed_Order_Guest']     = include( 'emails/class-lp-email-completed-order-guest.php' );
-		$this->emails['LP_Email_Cancelled_Order_Admin']     = include( 'emails/class-lp-email-cancelled-order-admin.php' );
-		$this->emails['LP_Email_User_Order_Completed']      = include( 'emails/class-lp-email-user-order-completed.php' );
-		$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );
-		$this->emails['LP_Email_New_Course']                = include( 'emails/class-lp-email-new-course.php' );
-		$this->emails['LP_Email_Rejected_Course']           = include( 'emails/class-lp-email-rejected-course.php' );
-		$this->emails['LP_Email_Published_Course']          = include( 'emails/class-lp-email-published-course.php' );
-		$this->emails['LP_Email_Enrolled_Course']           = include( 'emails/class-lp-email-enrolled-course.php' );
-		$this->emails['LP_Email_Enrolled_Course_Admin']     = include( 'emails/class-lp-email-enrolled-course-admin.php' );
-		$this->emails['LP_Email_Finished_Course']           = include( 'emails/class-lp-email-finished-course.php' );
-		$this->emails['LP_Email_Update_Course']             = include( 'emails/class-lp-email-update-course.php' );
-		$this->emails['LP_Email_Become_An_Instructor']      = include( 'emails/class-lp-email-become-an-instructor.php' );
+		include LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-order.php';
+		// New order
+		$this->emails['LP_Email_New_Order_Admin']      = include( 'emails/class-lp-email-new-order-admin.php' );
+		$this->emails['LP_Email_New_Order_User']       = include( 'emails/class-lp-email-new-order-user.php' );
+		$this->emails['LP_Email_New_Order_Instructor'] = include( 'emails/class-lp-email-new-order-instructor.php' );
+		$this->emails['LP_Email_New_Order_Guest']      = include( 'emails/class-lp-email-new-order-guest.php' );
+
+		// Processing order
+		$this->emails['LP_Email_Processing_Order_User']  = include( 'emails/class-lp-email-processing-order-user.php' );
+		$this->emails['LP_Email_Processing_Order_Guest'] = include( 'emails/class-lp-email-processing-order-guest.php' );
+
+		// Completed order
+		$this->emails['LP_Email_Completed_Order_User']  = include( 'emails/class-lp-email-completed-order-user.php' );
+		$this->emails['LP_Email_Completed_Order_Guest'] = include( 'emails/class-lp-email-completed-order-guest.php' );
+
+		// Cancelled order
+		$this->emails['LP_Email_Cancelled_Order_Admin'] = include( 'emails/class-lp-email-cancelled-order-admin.php' );
+		$this->emails['LP_Email_Cancelled_Order_User']  = include( 'emails/class-lp-email-cancelled-order-user.php' );
+		$this->emails['LP_Email_Cancelled_Order_Guest'] = include( 'emails/class-lp-email-cancelled-order-guest.php' );
+
+		// Enrolled course
+		$this->emails['LP_Email_Enrolled_Course_Admin']      = include( 'emails/class-lp-email-enrolled-course-admin.php' );
+		$this->emails['LP_Email_Enrolled_Course_Instructor'] = include( 'emails/class-lp-email-enrolled-course-instructor.php' );
+		$this->emails['LP_Email_Enrolled_Course_User']       = include( 'emails/class-lp-email-enrolled-course-user.php' );
+
+		// Finished course
+		$this->emails['LP_Email_Finished_Course_Admin']      = include( 'emails/class-lp-email-finished-course-admin.php' );
+		$this->emails['LP_Email_Finished_Course_Instructor'] = include( 'emails/class-lp-email-finished-course-instructor.php' );
+		$this->emails['LP_Email_Finished_Course_User']       = include( 'emails/class-lp-email-finished-course-user.php' );
+
+		// Review course
+		$this->emails['LP_Email_New_Course']       = include( 'emails/class-lp-email-new-course.php' );
+		$this->emails['LP_Email_Rejected_Course']  = include( 'emails/class-lp-email-rejected-course.php' );
+		$this->emails['LP_Email_Published_Course'] = include( 'emails/class-lp-email-published-course.php' );
+
+		// Other
+		$this->emails['LP_Email_Update_Course']        = include( 'emails/class-lp-email-updated-course.php' );
+		$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
+
+		//$this->emails['LP_Email_User_Order_Completed']      = include( 'emails/class-lp-email-user-order-completed.php' );
+		//$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );
+
+		//$this->emails['LP_Email_Enrolled_Course_Admin']     = include( 'emails/class-lp-email-enrolled-course-admin.php' );
 
 		add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
 		add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10, 2 );

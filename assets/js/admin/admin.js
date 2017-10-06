@@ -31,10 +31,30 @@
             });
         }
     });
+
+    // Document is already ready?
     $(document).ready(function () {
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
 
+        $(document).on('click', '.change-email-status', function () {
+            (function () {
+                $.post({
+                    url: window.location.href,
+                    data: {
+                        'lp-ajax': 'update-email-status',
+                        status: $(this).parent().hasClass('enabled') ? 'no' : 'yes',
+                        id: $(this).data('id')
+                    },
+                    dataType: 'text',
+                    success: $.proxy(function (res) {
+                        res = LP.parseJSON(res);
+                        console.log(res, this)
+                        $(this).parent().toggleClass('enabled', res.status)
+                    }, this)
+                });
+            }).apply(this)
+        })
 
         $('.learn-press-tooltip').each(function () {
             var $el = $(this),
@@ -151,7 +171,7 @@
                             } else {
                                 $plugin.find('.plugin-action-buttons a')
                                     .removeClass('updating-message button-working')
-                                    .html(learn_press_admin_localize .plugin_installed);
+                                    .html(learn_press_admin_localize.plugin_installed);
                             }
                         }
                     })

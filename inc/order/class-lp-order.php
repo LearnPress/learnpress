@@ -695,6 +695,11 @@ class LP_Order extends LP_Abstract_Post_Data {
 		return $item_ids;
 	}
 
+	/**
+	 * @param string $field
+	 *
+	 * @return array|bool|int|LP_User|mixed
+	 */
 	public function get_user( $field = '' ) {
 
 		if ( false === ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) ) {
@@ -880,8 +885,17 @@ class LP_Order extends LP_Abstract_Post_Data {
 		return false;
 	}
 
+	/**
+	 * @return mixed|void
+	 */
 	public function get_user_name() {
-		return apply_filters( 'learn_press_order_user_name', sprintf( _x( '%1$s', 'full name', 'learnpress' ), $this->get_user( 'user_login' ) ) );
+		$user_name = $this->get_user( 'user_login' );
+
+		// In case the user is Guest
+		if(!$user_name){
+			$user_name = $this->get_user_email();
+		}
+		return apply_filters( 'learn-press/order/user-name', sprintf( _x( '%1$s', 'full name', 'learnpress' ), $user_name ) );
 	}
 
 	/**

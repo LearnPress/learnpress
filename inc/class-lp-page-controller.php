@@ -106,12 +106,11 @@ class LP_Page_Controller {
 		if ( $lp_course_item ) {
 
 			if ( ! $lp_user->can_view_item( $lp_course_item->get_id() ) ) {
-				if ( $redirect = apply_filters( 'learn-press/access-forbidden-item-redirect', get_the_permalink( $lp_course->get_id() ), $lp_course_item->get_id(), $lp_course->get_id() ) ) {
+				if ( $redirect = apply_filters( 'learn-press/access-forbidden-item-redirect', false, $lp_course_item->get_id(), $lp_course->get_id() ) ) {
 					wp_redirect( $redirect );
 					exit();
 				}
 			}
-
 			do_action( 'learn-press/parse-course-item', $lp_course_item, $lp_course );
 		}
 

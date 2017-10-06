@@ -184,6 +184,67 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
 	}
 
+	/**
+	 * Quiz editor get questions.
+	 *
+	 * @return mixed
+	 */
+	public function quiz_editor_get_questions() {
+		// list questions
+		$questions = $this->get_questions();
+		// order questions in quiz
+		$order = learn_press_quiz_get_questions_order( $questions );
+
+		$result = array();
+		if ( is_array( $questions ) ) {
+			foreach ( $questions as $index => $id ) {
+				$question = LP_Question::get_question( $id );
+				$post     = get_post( $id );
+				$result[] = array(
+					'id'       => $id,
+					'open'     => false,
+					'title'    => get_the_title( $id ),
+					'type'     => array(
+						'key'   => $question->get_type(),
+						'label' => $question->get_type_label()
+					),
+					'answers'  => array(
+						'heading' => $question->get_admin_option_headings(),
+						'options' => $question->get_answer_options()
+					),
+					'settings' => array(
+						'content'     => array(
+							'type'  => 'textarea',
+							'label' => __( 'Question Content', 'learnpress' ),
+							'value' => $post->post_content
+						),
+						'mark'        => array(
+							'type'  => 'number',
+							'label' => __( 'Mark for this question', 'learnpress' ),
+							'value' => get_post_meta( $id, '_lp_mark', true ),
+							'desc'  => __( 'Mark for choosing the right answer.', 'learnpress' )
+						),
+						'explanation' => array(
+							'type'  => 'textarea',
+							'label' => __( 'Question explanation', 'learnpress' ),
+							'value' => get_post_meta( $id, '_lp_explanation', true ),
+							'desc'  => __( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ),
+						),
+						'hint'        => array(
+							'type'  => 'textarea',
+							'label' => __( 'Question hint', 'learnpress' ),
+							'value' => get_post_meta( $id, '_lp_hint', true ),
+							'desc'  => __( 'Instruction for user to select the right answer. The text will be shown when user clicking \'Hint\' button.', 'learnpress' ),
+						)
+					),
+					'order'    => $order[ $index ]
+				);
+			}
+		}
+
+		return apply_filters( 'learn-press/quiz/quiz_editor_questions', $result, $this->get_id() );
+	}
+
 	/************/
 	/**
 	 * Get admin configuration.
@@ -255,8 +316,8 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	/**
 	 * Get quiz's settings for json
 	 *
-	 * @param int  $user_id
-	 * @param int  $course_id
+	 * @param int $user_id
+	 * @param int $course_id
 	 * @param bool $force
 	 *
 	 * @return mixed|void
@@ -763,10 +824,10 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	/**
-	 * @param bool  $the_quiz
+	 * @param bool $the_quiz
 	 * @param array $args
 	 *
-	 * @return LP_Course|bool
+	 * @return LP_Quiz|bool
 	 */
 	public static function get_quiz( $the_quiz = false, $args = array() ) {
 		$the_quiz = self::get_quiz_object( $the_quiz );
@@ -780,7 +841,6 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		} else {
 			$force = false;
 		}
-
 		$key_args = wp_parse_args( $args, array( 'id' => $the_quiz->ID, 'type' => $the_quiz->post_type ) );
 
 		$key = LP_Helper::array_to_md5( $key_args );
@@ -817,7 +877,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 * Get the lesson class name
 	 *
 	 * @param  WP_Post $the_quiz
-	 * @param  array   $args (default: array())
+	 * @param  array $args (default: array())
 	 *
 	 * @return string
 	 */

@@ -101,10 +101,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-questions',
 				'get-question-data',
 				'update_curriculum',
+				'update_list_quiz_questions',
 				'modal-search-items',
 				'modal-search-users',
 				'add-items-to-order',
-				'remove-items-from-order'
+				'remove-items-from-order',
+				'update-email-status',
+
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -114,6 +117,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$callback   = preg_replace( '~[-]+~', '_', $callback );
 				add_action( "learn-press/ajax/{$ajax_event}", array( __CLASS__, $callback ) );
 			}
+		}
+
+		public static function update_email_status() {
+			$email = LP_Emails::get_email( LP_Request::get_string( 'id' ) );
+			if ( ! $email ) {
+				return;
+			}
+
+			$status = $email->enable( LP_Request::get_string( 'status' ) == 'yes' );
+
+			learn_press_send_json( array( 'status' => $status ) );
 		}
 
 		/**
@@ -270,7 +284,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					$ids_exclude = array();
-					if ( is_array( $ids_exclude ) ) {
+					if ( is_array( $exclude ) ) {
 						foreach ( $exclude as $item ) {
 							$ids_exclude[] = $item['id'];
 						}
@@ -281,7 +295,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'context'    => 'course',
 						'context_id' => $course_id,
 						'term'       => $query,
-						'limit'      => 10,
+						'limit'      => apply_filters( 'learn-press/course-editor/choose-items-limit', 10 ),
 						'paged'      => $page,
 						'exclude'    => $ids_exclude,
 					) );
@@ -304,6 +318,266 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'pagination' => $search->get_pagination( false )
 					);
 
+					break;
+			}
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( $result->get_error_message() );
+			}
+
+			wp_send_json_success( $result );
+		}
+
+		/**
+		 * Get question data to add to quiz.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 *
+		 * @return array
+		 */
+		public static function get_question_data_to_quiz( $question_id ) {
+
+			if ( ! is_numeric( $question_id ) ) {
+				return array();
+			}
+
+			$question = LP_Question::get_question( $question_id );
+
+			$question_id = $question->get_id();
+
+			$data = array(
+				'id'       => $question_id,
+				'open'     => false,
+				'title'    => get_the_title( $question_id ),
+				'type'     => array(
+					'key'   => $question->get_type(),
+					'label' => $question->get_type_label()
+				),
+				'answers'  => array(
+					'heading' => $question->get_admin_option_headings(),
+					'options' => $question->get_answer_options()
+				),
+				'settings' => array(
+					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
+					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
+					'hint'        => get_post_meta( $question_id, '_lp_hint', true )
+				)
+			);
+
+			return $data;
+		}
+
+		/**
+		 * Handle ajax update list quiz questions.
+		 *
+		 * @since 3.0.0
+		 */
+		public static function update_list_quiz_questions() {
+			check_ajax_referer( 'learnpress_update_list_quiz_questions', 'nonce' );
+
+			$args = wp_parse_args( $_REQUEST, array(
+				'quiz-id' => false,
+				'type'    => ''
+			) );
+
+			$quiz_id = $args['quiz-id'];
+			$quiz    = learn_press_get_quiz( $quiz_id );
+
+			if ( ! $quiz ) {
+				wp_send_json_error();
+			}
+
+			$question_curd = new LP_Question_CURD();
+			$quiz_curd     = new LP_Quiz_CURD();
+
+			$result = $args['type'];
+			switch ( $args['type'] ) {
+				case 'heartbeat' :
+					$result = true;
+					break;
+
+				case 'hidden-questions':
+					$hidden = learn_press_get_request( 'hidden' );
+					update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden );
+					break;
+
+				case 'update-list-questions':
+					// code
+					break;
+
+				case 'new-question':
+					// code
+					break;
+
+				case 'update-question':
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+
+					$action       = ! empty( $args['action'] ) ? $args['action'] : false;
+					$update['id'] = $question['id'];
+					switch ( $action ) {
+						case 'update-title':
+							$update['title'] = $question['title'];
+							break;
+						case 'update-content':
+							$update['content'] = $question['settings']['content']['value'];
+							break;
+						case 'update-meta':
+							if ( ! $meta_key = $args['meta'] ) {
+								break;
+							}
+							$update['key']  = $meta_key;
+							$update['meta'] = $question['settings'][ $meta_key ]['value'];
+							break;
+						default;
+							break;
+					}
+
+					$update = array_merge( $update, array( 'id' => $question['id'], 'action' => $action ) );
+
+					$result = $question_curd->update( $update );
+					// code
+					break;
+
+				case 'change-correct-answer':
+					$true_answer = ! empty ( $args['true-answer'] ) ? $args['true-answer'] : '';
+
+					if ( ! $true_answer ) {
+						break;
+					}
+
+
+					break;
+
+				case 'add-question-answer':
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+					break;
+
+				case 'clone-question':
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+
+					$user_id = learn_press_get_current_user_id();
+
+					$new_question_id = learn_press_duplicate_question( $question['id'], $quiz_id, array( 'post_status' => 'publish' ) );
+					if ( ! is_wp_error( $new_question_id ) ) {
+
+						// trigger change user memorize question types
+						$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+						$question_types          = ! $question_types ? array() : $question_types;
+						$type                    = get_post_meta( $new_question_id, '_lp_type', true );
+						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
+						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+
+						$result = LP_Admin_Ajax::get_question_data_to_quiz( $new_question_id );
+					}
+					break;
+
+				case 'remove-question':
+					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
+					$result      = $quiz_curd->remove_question( $quiz_id, $question_id );
+					break;
+
+				case 'remove-questions':
+					// code
+					break;
+
+				case 'delete-question':
+					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
+					$result      = $quiz_curd->remove_question( $quiz_id, $question_id, array( 'delete_permanently' => true ) );
+					break;
+
+				case 'add-items-to-quiz':
+
+					$result = array();
+
+					$questions = isset( $_POST['items'] ) ? $_POST['items'] : false;
+					$questions = json_decode( wp_unslash( $questions ), true );
+
+					if ( $questions ) {
+						foreach ( $questions as $key => $question ) {
+							if ( is_numeric( $quiz_curd->add_question( $quiz_id, $question['id'] ) ) ) {
+								$result[] = LP_Admin_Ajax::get_question_data_to_quiz( $question['id'] );
+							}
+						}
+					}
+					break;
+
+				case 'sort-questions':
+					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
+					if ( ! $orders ) {
+						break;
+					}
+
+					$orders = wp_unslash( $orders );
+					$orders = json_decode( $orders, true );
+
+//					$result = $curd->sort_questions( $orders );
+					break;
+
+				case 'search-items':
+					$query   = isset( $_POST['query'] ) ? $_POST['query'] : '';
+					$page    = isset( $_POST['query'] ) ? intval( $_POST['query'] ) : 1;
+					$exclude = isset( $_POST['exclude'] ) ? $_POST['exclude'] : '';
+
+					if ( $exclude ) {
+						$exclude = json_decode( $exclude, true );
+					}
+
+					$ids_exclude = array();
+					if ( is_array( $exclude ) ) {
+						foreach ( $exclude as $item ) {
+							$ids_exclude[] = $item['id'];
+						}
+					}
+
+					$search = new LP_Modal_Search_Items( array(
+						'type'       => 'lp_question',
+						'context'    => 'quiz',
+						'context_id' => $quiz_id,
+						'term'       => $query,
+						'limit'      => apply_filters( 'learn-press/quiz-editor/choose-items-limit', 10 ),
+						'paged'      => $page,
+						'exclude'    => $ids_exclude
+					) );
+
+					$ids_item = $search->get_items();
+
+					$items = array();
+					foreach ( $ids_item as $id ) {
+						$post = get_post( $id );
+
+						$items[] = array(
+							'id'    => $post->ID,
+							'title' => $post->post_title,
+							'type'  => $post->post_type
+						);
+					}
+
+					$result = array(
+						'items'      => $items,
+						'pagination' => $search->get_pagination( false )
+					);
+
+					// code
+					break;
+
+				default:
 					break;
 			}
 
@@ -439,8 +713,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -537,8 +810,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -571,8 +843,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -865,7 +1136,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */
@@ -888,7 +1159,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				case 'lp_question':
 					$query      = $wpdb->prepare( "
 						SELECT question_id
-						FROM {$wpdb->prefix}learnpress_quiz_questions
+						FROM {$wpdb->prefix}learnpress_quiz_questions AS qq
 						INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
 						WHERE %d
 						AND q.post_type = %s

@@ -15,11 +15,12 @@
         }
     }
     tbody {
-        &:nth-child(odd) {
+        tr {
             background: #FFF;
-        }
-        &:nth-child(even) {
-            background: #f4fcff;
+            &:nth-child(4n-1) {
+                background: #f4fcff;
+            }
+
         }
         .edit-inline {
             background: #FFF;
@@ -36,7 +37,7 @@
     tfoot {
         > tr > td,
         > tr > th {
-            padding: 8px 10px;
+            padding: 10px;
             border: none;
             text-align: left;
             border-bottom: 1px solid #ECECEC;
@@ -92,16 +93,18 @@
     .lp-column-actions {
         width: 50px;
     }
-    .lp-column-answer_text{
+    .lp-column-answer_text {
         padding-left: 0;
     }
 
     tbody {
-        &:hover {
-            > tr > td {
-                &.lp-column-actions {
-                    .lp-toolbar-buttons {
-                        visibility: visible;
+        tr {
+            &:hover {
+                > td {
+                    &.lp-column-actions {
+                        .lp-toolbar-buttons {
+                            visibility: visible;
+                        }
                     }
                 }
             }
@@ -271,10 +274,58 @@
                 float: none;
             }
             .quiz-question-data {
-                padding-right: 0px;
+                padding-right: 0;
             }
             .quiz-question-options {
-                padding-left: 0px;
+                padding-left: 0;
+            }
+        }
+    }
+}
+
+#quiz-editor-v2 {
+    .heading {
+        padding: 15px;
+        position: relative;
+
+        h3 {
+            margin: 0;
+        }
+
+        .collapse-list-questions {
+            font-family: Dashicons;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            width: 40px;
+
+            &.close:before {
+                content: '\f140';
+            }
+
+            &.open:before {
+                content: '\f142';
+            }
+        }
+    }
+
+    .lp-btn-toggle {
+        font-family: Dashicons;
+        line-height: 42px;
+        &.open {
+            &::after {
+                content: '\f343';
+            }
+        }
+        &.close {
+            &::after {
+                content: '\f347';
             }
         }
     }
