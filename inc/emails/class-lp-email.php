@@ -68,6 +68,13 @@ class LP_Email extends LP_Abstract_Settings {
 	public $recipient;
 
 	/**
+	 * For display the field to setting specific emails.
+	 * .
+	 * @var string
+	 */
+	public $recipients = '';
+
+	/**
 	 * Heading for the email content.
 	 *
 	 * @var string
@@ -136,6 +143,8 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @var bool
 	 */
 	public $sending;
+
+	public $debug = false;
 
 	/**
 	 *  List of preg* regular expression patterns to search for,
@@ -284,6 +293,14 @@ class LP_Email extends LP_Abstract_Settings {
 			$this->template_path = learn_press_template_path();
 		}
 
+		if ( empty( $this->template_html ) ) {
+			$this->template_html = "emails/{$this->id}.php";
+		}
+
+		if ( empty( $this->template_plain ) ) {
+			$this->template_plain = "emails/plain/{$this->id}.php";
+		}
+
 		if ( ! $this->object ) {
 			$this->object = array();
 		}
@@ -323,7 +340,7 @@ class LP_Email extends LP_Abstract_Settings {
 		if ( is_bool( $value ) ) {
 			$this->enable = $value;
 			$this->settings->set( 'enable', $value ? 'yes' : 'no' );
-			$this->settings->update( $this->_option_id );
+			$this->settings->update( 'learn_press_' . $this->_option_id, $this->settings->get() );
 		}
 
 		return $this->enable;
@@ -522,7 +539,7 @@ class LP_Email extends LP_Abstract_Settings {
 	/**
 	 * Get email headers.
 	 *
-	 * @return string
+	 * @return string|array
 	 */
 	public function get_headers() {
 		return apply_filters( 'learn-press/email-headers', "Content-Type: " . $this->get_content_format() . "\r\n", $this->id, $this->object );
@@ -700,7 +717,11 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @return bool
 	 */
 	public function send( $to, $subject, $message, $headers, $attachments ) {
-		//return;
+
+		if($this->debug){
+			return false;
+		}
+
 		add_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		add_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
@@ -740,7 +761,9 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @return array
 	 */
 	public function get_template_data( $format = 'plain' ) {
-		return array( 'plain_text' => $format == 'plain' );
+
+		return $this->object;
+		///return array( 'plain_text' => $format == 'plain' );
 	}
 
 	/**
@@ -806,8 +829,126 @@ class LP_Email extends LP_Abstract_Settings {
 		return $variables;
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return string
+	 */
 	public function get_field_name( $name ) {
 		return $this->_option_id . "[$name]";
+	}
+
+	/**
+	 * Default options for all emails.
+	 * Almost the emails are the same with options.
+	 *
+	 * @return array
+	 */
+	protected function _default_settings() {
+		$default = array(
+			array(
+				'type'  => 'heading',
+				'title' => $this->title,
+				'desc'  => $this->description
+			),
+			array(
+				'title'   => __( 'Enable', 'learnpress' ),
+				'type'    => 'yes-no',
+				'default' => 'no',
+				'id'      => $this->get_field_name( 'enable' )
+			),
+			array(
+				'title'      => __( 'Recipient(s)', 'learnpress' ),
+				'type'       => 'text',
+				'default'    => get_option( 'admin_email' ),
+				'id'         => $this->get_field_name( 'recipients' ),
+				'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>', 'learnpress' ), get_option( 'admin_email' ) ),
+				'visibility' => array(
+					'state'       => 'show',
+					'conditional' => array(
+						array(
+							'field'   => $this->get_field_name( 'enable' ),
+							'compare' => '=',
+							'value'   => 'yes'
+						)
+					)
+				)
+			),
+			array(
+				'title'      => __( 'Subject', 'learnpress' ),
+				'type'       => 'text',
+				'default'    => $this->default_subject,
+				'id'         => $this->get_field_name( 'subject' ),
+				'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+				'visibility' => array(
+					'state'       => 'show',
+					'conditional' => array(
+						array(
+							'field'   => $this->get_field_name( 'enable' ),
+							'compare' => '=',
+							'value'   => 'yes'
+						)
+					)
+				)
+			),
+			array(
+				'title'      => __( 'Heading', 'learnpress' ),
+				'type'       => 'text',
+				'default'    => $this->default_heading,
+				'id'         => $this->get_field_name( 'heading' ),
+				'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+				'visibility' => array(
+					'state'       => 'show',
+					'conditional' => array(
+						array(
+							'field'   => $this->get_field_name( 'enable' ),
+							'compare' => '=',
+							'value'   => 'yes'
+						)
+					)
+				)
+			),
+			array(
+				'title'                => __( 'Email content', 'learnpress' ),
+				'type'                 => 'email-content',
+				'default'              => '',
+				'id'                   => $this->get_field_name( 'email_content' ),
+				'template_base'        => $this->template_base,
+				'template_path'        => $this->template_path,//default learnpress
+				'template_html'        => $this->template_html,
+				'template_plain'       => $this->template_plain,
+				'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
+				'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
+				'support_variables'    => $this->get_variables_support(),
+				'visibility'           => array(
+					'state'       => 'show',
+					'conditional' => array(
+						array(
+							'field'   => $this->get_field_name( 'enable' ),
+							'compare' => '=',
+							'value'   => 'yes'
+						)
+					)
+				)
+			)
+		);
+
+		/**
+		 * In case the email is not for sending to specific admin (like user who has bought course or author of course, etc..)
+		 * So, we do not need this field.
+		 */
+		if ( empty( $this->recipients ) ) {
+			unset( $default[2] );
+		}
+
+		return $default;
+	}
+
+	public function get_settings() {
+		return apply_filters(
+			'learn-press/email-settings/' . $this->id . '/settings',
+			$this->_default_settings()
+		);
 	}
 
 	/**

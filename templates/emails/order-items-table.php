@@ -9,9 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if(empty($order)){
-    $order = learn_press_get_order();
-}
+$order = learn_press_get_order( $order_id );
 
 if ( ! $order->get_items() ) {
 	return;
@@ -24,24 +22,24 @@ if ( ! $order->get_items() ) {
 
 <table class="order-details">
     <tr>
-        <th><?php _e('Order Number', 'learnpress');?></th>
-        <td><?php echo $order->get_order_number();?></td>
+        <th><?php _e( 'Order Number', 'learnpress' ); ?></th>
+        <td><?php echo $order->get_order_number(); ?></td>
     </tr>
     <tr>
-        <th><?php _e('Purchase Date', 'learnpress');?></th>
-        <td><?php echo $order->get_order_date();?></td>
+        <th><?php _e( 'Purchase Date', 'learnpress' ); ?></th>
+        <td><?php echo $order->get_order_date(); ?></td>
     </tr>
     <tr>
-        <th><?php _e('Payment Method', 'learnpress');?></th>
-        <td><?php echo $order->get_payment_method_title();?></td>
+        <th><?php _e( 'Payment Method', 'learnpress' ); ?></th>
+        <td><?php echo $order->get_payment_method_title(); ?></td>
     </tr>
     <tr>
-        <th><?php _e('Status', 'learnpress');?></th>
-        <td><?php echo $order->get_order_status_html();?></td>
+        <th><?php _e( 'Status', 'learnpress' ); ?></th>
+        <td><?php echo $order->get_order_status_html(); ?></td>
     </tr>
     <tr>
-        <th><?php _e('Your Email', 'learnpress');?></th>
-        <td><?php echo $order->get_user_email();?></td>
+        <th><?php _e( 'User Email', 'learnpress' ); ?></th>
+        <td><?php echo $order->get_user_email(); ?></td>
     </tr>
 </table>
 
@@ -54,10 +52,14 @@ if ( ! $order->get_items() ) {
     </tr>
     </thead>
     <tbody>
-	<?php foreach ( $order->get_items() as $item_id => $item ):
-
+	<?php
+	$total = 0;
+	foreach ( $order->get_items() as $item_id => $item ):
 		$course = apply_filters( 'learn_press_order_item_course', learn_press_get_course( $item['course_id'] ), $item );
-
+		if ( isset( $instructor_id ) && $instructor_id && (get_post_field( 'post_author', $course->get_id() ) != $instructor_id )) {
+			continue;
+		}
+		$total += $item['total'];
 		?>
         <tr>
 			<?php do_action( 'learn_press_before_order_item', $item_id, $item, $order ); ?>
@@ -77,8 +79,16 @@ if ( ! $order->get_items() ) {
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="2" class="column-number"><?php _e('Total', 'learnpress');?></td>
-        <td class="column-number"><?php echo $order->get_formatted_order_total();?></td>
+        <td colspan="2" class="column-number"><?php _e( 'Total', 'learnpress' ); ?></td>
+        <td class="column-number">
+			<?php
+			if ( isset( $instructor_id ) ) {
+				echo learn_press_format_price( $total, learn_press_get_currency_symbol( $order->get_currency() ) );
+			} else {
+				echo $order->get_formatted_order_total();
+			}
+			?>
+        </td>
     </tr>
     </tfoot>
 </table>

@@ -98,8 +98,9 @@
         color: #DDD;
     }
     .name {
-        font-weight: bold;
+        font-weight: normal;
         text-transform: capitalize;
+        min-width: 250px;
         a {
             text-decoration: none;
         }
@@ -118,8 +119,8 @@
                 background: #0085ba;
             }
         }
-        &.config{
-            a{
+        &.config {
+            a {
                 text-decoration: none;
                 font-size: 12px;
             }
@@ -143,7 +144,8 @@
                 background: #F5F5F5;
             }
         }
-        td{
+
+        td {
             border-bottom: 1px solid #EEE;
         }
 

@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 
-	class LP_Email_New_Order_Instructor extends LP_Email {
+	class LP_Email_New_Order_Instructor extends LP_Email_Type_Order {
 
 		/**
 		 * LP_Email_New_Order_Instructor constructor.
@@ -25,48 +25,14 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 			$this->title       = __( 'New order instructor', 'learnpress' );
 			$this->description = __( 'Send email to course\'s instructor when user has purchased course.', 'learnpress' );
 
-			$this->template_html  = 'emails/new-order-instructor.php';
-			$this->template_plain = 'emails/plain/new-order-instructor.php';
-
-			$this->default_subject = __( '[{{site_title}}] Order placed', 'learnpress' );
-			$this->default_heading = __( 'Order placed', 'learnpress' );
-			//$this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_items_table}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
-//        $this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
-
-			$this->support_variables = array_merge( $this->general_variables, array(
-				'{{order_id}}',
-				'{{order_user_id}}',
-				'{{order_user_name}}',
-				'{{order_items_table}}',
-				'{{order_detail_url}}',
-				'{{order_number}}',
-			) );
-
+			$this->default_subject = __( 'New order placed on {{order_date}}', 'learnpress' );
+			$this->default_heading = __( 'New user order', 'learnpress' );
 
 			add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
 			add_action( 'learn_press_order_status_draft_to_processing_notification', array( $this, 'trigger' ) );
 			add_action( 'learn_press_order_status_draft_to_on-hold_notification', array( $this, 'trigger' ) );
 
-			add_action( "update_post_meta", array( $this, '_trigger' ), 10, 4 );
 			parent::__construct();
-		}
-
-		/**
-		 * Trigger email.
-		 *
-		 * @param $meta_id
-		 * @param $object_id
-		 * @param $meta_key
-		 * @param $_meta_value
-		 */
-		public function _trigger( $meta_id, $object_id, $meta_key, $_meta_value ) {
-			if ( get_post_type( $object_id ) != LP_ORDER_CPT ) {
-				return;
-			}
-			if ( $meta_key != '_user_id' ) {
-				return;
-			}
-			$this->trigger( $object_id );
 		}
 
 		/**
@@ -74,158 +40,39 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 		 *
 		 * @param $order_id
 		 *
-		 * @return bool
+		 * @return bool|mixed
 		 */
 		public function trigger( $order_id ) {
 			if ( ! $this->enable ) {
 				return false;
 			}
 
-			$order           = learn_press_get_order( $order_id );
-			$this->recipient = $order->get_user( 'user_email' );
+			$this->order_id = $order_id;
 
-			$items = $order->get_items();
-			$email = array();
-			if ( sizeof( $items ) ) {
-				foreach ( $items as $item ) {
-					$course_id = $item['course_id'];
-					$user_id   = get_post_field( 'post_author', $course_id );
-					$user      = get_user_by( 'ID', $user_id );
-					if ( ! in_array( 'administrator', $user->roles ) ) {
-						$email[] = get_the_author_meta( 'user_email', get_post_field( 'post_author', $course_id ) );
-					}
-				}
-			}
-			$this->recipient = implode( ', ', $email );
+			$course_instructors = $this->get_course_instructors();
 
-			$order_total = $order->order_total;
-			/**
-			 * Return if course is free because this order will be enrolled
-			 *
-			 * In this case we use email enrolled-course
-			 */
-			if ( ! $this->recipient || ( count( $items ) === 0 && floatval( $order_total ) == 0 ) ) {
+			if ( ! $course_instructors ) {
 				return false;
 			}
-			/**$this->find['site_title']    = '{site_title}';
-			 * $this->replace['site_title'] = $this->get_blogname();*/
 
-			$order = learn_press_get_order( $order_id );
+			$return = array();
+			$this->get_object();
 
-			$this->object = $this->get_common_template_data(
-				$this->email_format,
-				array(
-					'order_id'          => $order_id,
-					'order_user_id'     => $order->user_id,
-					'order_user_name'   => $order->get_user_name(),
-					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $this->email_format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
-					'order_detail_url'  => $order->get_view_order_url(),
-					'order_number'      => $order->get_order_number(),
-					'order_subtotal'    => $order->get_formatted_order_subtotal(),
-					'order_total'       => $order->get_formatted_order_total(),
-					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) )
-				)
-			);
+			foreach ( $course_instructors as $user_id => $courses ) {
+				$user = get_user_by( 'ID', $user_id );
+				if ( ! $user ) {
+					continue;
+				}
+				$this->recipient                   = $user->user_email;
+				$this->object['order_items_table'] = $this->get_order_items_table( $user_id );
+				$this->get_variable();
 
-			$this->variables = $this->data_to_variables( $this->object );
-
-			$this->object['order'] = $order;
-
-			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() );
+				if ( $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() ) ) {
+					$return[] = $this->get_recipient();
+				}
+			}
 
 			return $return;
-		}
-
-		/**
-		 * Get email template.
-		 *
-		 * @param string $format
-		 *
-		 * @return array|object
-		 */
-		public function get_template_data( $format = 'plain' ) {
-			return $this->object;
-		}
-
-		/**
-		 * Admin settings fields.
-		 *
-		 * @return mixed
-		 */
-		public function get_settings() {
-			return apply_filters(
-				'learn-press/email-settings/new-order-instructor/settings',
-				array(
-					array(
-						'type'  => 'heading',
-						'title' => $this->title,
-						'desc'  => $this->description
-					),
-					array(
-						'title'   => __( 'Enable', 'learnpress' ),
-						'type'    => 'yes-no',
-						'default' => 'no',
-						'id'      => $this->get_field_name( 'enable' )
-					),
-					array(
-						'title'      => __( 'Subject', 'learnpress' ),
-						'type'       => 'text',
-						'default'    => $this->default_subject,
-						'id'         => $this->get_field_name( 'subject' ),
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
-						'visibility' => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => $this->get_field_name( 'enable' ),
-									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
-					),
-					array(
-						'title'      => __( 'Heading', 'learnpress' ),
-						'type'       => 'text',
-						'default'    => $this->default_heading,
-						'id'         => $this->get_field_name( 'heading' ),
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
-						'visibility' => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => $this->get_field_name( 'enable' ),
-									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
-					),
-					array(
-						'title'                => __( 'Email content', 'learnpress' ),
-						'type'                 => 'email-content',
-						'default'              => '',
-						'id'                   => $this->get_field_name( 'email_content' ),
-						'template_base'        => $this->template_base,
-						'template_path'        => $this->template_path,//default learnpress
-						'template_html'        => $this->template_html,
-						'template_plain'       => $this->template_plain,
-						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
-						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
-						'support_variables'    => $this->get_variables_support(),
-						'visibility'           => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => $this->get_field_name( 'enable' ),
-									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
-					)
-				)
-			);
 		}
 	}
 }

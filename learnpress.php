@@ -653,7 +653,6 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-if ( file_exists( 'inc/test.php' ) ) {
+if ( file_exists( LP_PLUGIN_PATH . 'inc/test.php' ) ) {
 	require_once 'inc/test.php';
 }

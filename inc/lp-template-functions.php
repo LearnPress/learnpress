@@ -2136,7 +2136,6 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 function learn_press_get_template_content( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
 	ob_start();
 	learn_press_get_template( $template_name, $args, $template_path, $default_path );
-
 	return ob_get_clean();
 }
 
