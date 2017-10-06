@@ -6,13 +6,13 @@
  */
 ?>
 
-<script type="text/x-template" id="tmpl-lp-question-options">
+<script type="text/x-template" id="tmpl-lp-question-meta">
     <div class="quiz-question-options">
         <div>
             <div class="postbox">
                 <h2 class="hndle"><span><?php esc_html_e( 'Settings', 'learnpress' ); ?></span></h2>
                 <div class="inside">
-                    <div>
+                    <div class="rwmb-meta-box">
                         <div class="rwmb-field rwmb-textarea-wrapper">
                             <div class="rwmb-label">
                                 <label for=""><?php esc_html_e( 'Question Content', 'learnpress' ); ?></label>
@@ -25,7 +25,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="rwmb-field rwmb-textarea-wrapper">
+                        <div class="rwmb-field rwmb-number-wrapper">
                             <div class="rwmb-label">
                                 <label for=""><?php esc_html_e( 'Mark for this question', 'learnpress' ); ?></label>
                             </div>
@@ -74,8 +74,8 @@
 <script>
     (function (Vue, $store) {
 
-        Vue.component('lp-question-options', {
-                template: '#tmpl-lp-question-options',
+        Vue.component('lp-question-meta', {
+                template: '#tmpl-lp-question-meta',
                 props: ['question'],
                 methods: {
                     updateContent: function () {

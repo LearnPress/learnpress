@@ -6,15 +6,13 @@
  */
 
 learn_press_admin_view( 'quiz/question-item' );
-learn_press_admin_view( 'quiz/question-settings' );
 ?>
 
+
 <script type="text/x-template" id="tmpl-lp-list-quiz-questions">
-    <draggable v-model="listQuestions" :element="'tbody'" :options="optionDraggable" @end="updateSortQuestions">
-        <template v-for="(question, index) in listQuestions">
-            <lp-quiz-question-item :question="question" :index="index"></lp-quiz-question-item>
-            <lp-quiz-question-settings :question="question" :index="index"></lp-quiz-question-settings>
-        </template>
+    <draggable v-model="listQuestions" :options="optionDraggable" @end="updateSortQuestions" class="main">
+        <lp-question-item v-for="(question, index) in listQuestions" :question="question" :index="index"
+                          :key="index"></lp-question-item>
     </draggable>
 </script>
 
