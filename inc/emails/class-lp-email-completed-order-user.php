@@ -47,7 +47,7 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 		 * @return boolean
 		 */
 		public function trigger( $order_id ) {
-			parent::__construct();
+			parent::trigger( $order_id );
 
 			if ( ! $this->enable ) {
 				return false;
@@ -55,13 +55,13 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 
 			$order = $this->get_order();
 
-			if ( ! $order->is_guest() ) {
+			if ( $order->is_guest() ) {
 				return false;
 			}
 
 			$this->recipient = $order->get_user_email();
 
-			if ( ! $this->recipient  ) {
+			if ( ! $this->recipient ) {
 				return false;
 			}
 

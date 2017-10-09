@@ -12,6 +12,7 @@ class LP_Settings_Cancelled_Order_Emails extends LP_Settings_Emails_Group {
 		$this->group_id = 'cancelled-order-emails';
 		$this->items    = array(
 			'cancelled-order-admin',
+			'cancelled-order-instructor',
 			'cancelled-order-user',
 			'cancelled-order-guest'
 		);

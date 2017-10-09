@@ -85,9 +85,10 @@ class LP_Emails {
 		$this->emails['LP_Email_Completed_Order_Guest'] = include( 'emails/class-lp-email-completed-order-guest.php' );
 
 		// Cancelled order
-		$this->emails['LP_Email_Cancelled_Order_Admin'] = include( 'emails/class-lp-email-cancelled-order-admin.php' );
-		$this->emails['LP_Email_Cancelled_Order_User']  = include( 'emails/class-lp-email-cancelled-order-user.php' );
-		$this->emails['LP_Email_Cancelled_Order_Guest'] = include( 'emails/class-lp-email-cancelled-order-guest.php' );
+		$this->emails['LP_Email_Cancelled_Order_Admin']      = include( 'emails/class-lp-email-cancelled-order-admin.php' );
+		$this->emails['LP_Email_Cancelled_Order_Instructor'] = include( 'emails/class-lp-email-cancelled-order-instructor.php' );
+		$this->emails['LP_Email_Cancelled_Order_User']       = include( 'emails/class-lp-email-cancelled-order-user.php' );
+		$this->emails['LP_Email_Cancelled_Order_Guest']      = include( 'emails/class-lp-email-cancelled-order-guest.php' );
 
 		// Enrolled course
 		$this->emails['LP_Email_Enrolled_Course_Admin']      = include( 'emails/class-lp-email-enrolled-course-admin.php' );

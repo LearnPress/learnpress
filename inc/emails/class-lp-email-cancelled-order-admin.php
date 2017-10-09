@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 
-	class LP_Email_Cancelled_Order_Admin extends LP_Email {
+	class LP_Email_Cancelled_Order_Admin extends LP_Email_Type_Order {
 		/**
 		 * LP_Email_Cancelled_Order_Admin constructor.
 		 */
@@ -24,23 +24,10 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 			$this->title       = __( 'Cancelled order admin', 'learnpress' );
 			$this->description = __( 'Send email to admin when order has been cancelled', 'learnpress' );
 
-			$this->template_html  = 'emails/cancelled-order.php';
-			$this->template_plain = 'emails/plain/cancelled-order.php';
-
-			$this->default_subject                = __( '[{{site_title}}] Cancelled order', 'learnpress' );
-			$this->default_heading                = __( 'Cancelled order', 'learnpress' );
-			$this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_items_table}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
+			$this->default_subject = __( 'Order placed on {{order_date}} has been cancelled', 'learnpress' );
+			$this->default_heading = __( 'User order has been cancelled', 'learnpress' );
 
 			$this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
-
-			$this->support_variables = array_merge( $this->general_variables, array(
-				'{{order_id}}',
-				'{{order_user_id}}',
-				'{{order_user_name}}',
-				'{{order_items_table}}',
-				'{{order_edit_url}}',
-				'{{order_number}}',
-			) );
 
 			add_action( 'learn_press_order_status_pending_to_failed_notification', array( $this, 'trigger' ) );
 			add_action( 'learn_press_order_status_processing_to_failed_notification', array( $this, 'trigger' ) );
@@ -59,30 +46,14 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 		 */
 		public function trigger( $order_id ) {
 
+			parent::trigger( $order_id );
+
 			if ( ! $this->enable ) {
 				return false;
 			}
 
-			$order = learn_press_get_order( $order_id );
-
-			$this->object = $this->get_common_template_data(
-				$this->email_format,
-				array(
-					'order_id'          => $order_id,
-					'order_user_id'     => $order->user_id,
-					'order_user_name'   => $order->get_user_name(),
-					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $this->email_format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
-					'order_edit_url'    => admin_url( 'post.php?post=' . $order->id . '&action=edit' ),
-					'order_number'      => $order->get_order_number(),
-					'order_subtotal'    => $order->get_formatted_order_subtotal(),
-					'order_total'       => $order->get_formatted_order_total(),
-					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) )
-				)
-			);
-
-			$this->variables = $this->data_to_variables( $this->object );
-
-			$this->object['order'] = $order;
+			$this->get_object();
+			$this->get_variable();
 
 			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 

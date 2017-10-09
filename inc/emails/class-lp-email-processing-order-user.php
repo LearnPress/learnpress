@@ -45,7 +45,8 @@ if ( ! class_exists( 'LP_Email_Processing_Order_User' ) ) {
 		 * @return boolean
 		 */
 		public function trigger( $order_id ) {
-			parent::__construct();
+			parent::trigger( $order_id );
+
 			if ( ! $this->enable ) {
 				return false;
 			}
