@@ -10,7 +10,7 @@ learn_press_admin_view( 'quiz/question-settings' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-item">
-    <div class="question-item" :item-id="index">
+    <div class="question-item" :item-id="question.id">
         <lp-question-actions :question="question" :index="index"></lp-question-actions>
         <lp-question-settings :question="question" :index="index"></lp-question-settings>
 

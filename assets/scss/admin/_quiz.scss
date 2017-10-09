@@ -94,6 +94,7 @@
                     width: 160px;
                 }
             }
+
             .main {
                 .question-item {
                     background: #fff;
@@ -179,6 +180,14 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+
+            .footer {
+                .lp-column-sort {
+                    i {
+                        visibility: hidden;
                     }
                 }
             }

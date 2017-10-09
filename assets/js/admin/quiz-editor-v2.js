@@ -467,7 +467,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             Vue.http
                 .LPRequest({
                     type: 'sort-questions',
-                    order: JSON.stringify(orders)
+                    orders: JSON.stringify(orders)
                 })
                 .then(
                     function (response) {

@@ -10,7 +10,8 @@ learn_press_admin_view( 'quiz/question-item' );
 
 
 <script type="text/x-template" id="tmpl-lp-list-quiz-questions">
-    <draggable v-model="listQuestions" :options="optionDraggable" @end="updateSortQuestions" class="main">
+    <draggable :list="listQuestions" class="main" :options="{handle: '.fa-bars'}" :element="'div'"
+               @end="updateSortQuestions">
         <lp-question-item v-for="(question, index) in listQuestions" :question="question" :index="index"
                           :key="index"></lp-question-item>
     </draggable>
@@ -27,24 +28,16 @@ learn_press_admin_view( 'quiz/question-item' );
                 },
                 questionsOrder: function () {
                     return $store.getters['lqs/questionsOrder'];
-                },
-                optionDraggable: function () {
-                    return {
-                        handle: '.movable',
-                        draggable: '.question-item'
-                    }
                 }
             },
             methods: {
-                updateSortQuestions: function (event, b, c) {
-                    var item = jQuery(event.item),
-                        id = item.attr('data-item'),
-                        sibling = item.siblings('[data-item="' + id + '"]');
+                updateSortQuestions: function (e) {
+                    var orders = [];
+                    this.listQuestions.forEach(function (question, index) {
+                        orders.push(parseInt(question.id));
+                    });
 
-                    sibling.insertAfter(item);
-
-                    $store.dispatch('lqs/updateSortQuestions', this.questionsOrder);
-
+                    $store.dispatch('lqs/updateSortQuestions', orders);
                 }
             }
         });
