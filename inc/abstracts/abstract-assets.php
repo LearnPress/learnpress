@@ -147,7 +147,7 @@ abstract class LP_Abstract_Assets {
 	 * @param string $media
 	 */
 	public function enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
-		$this->register_script( $handle, $src, $deps, $ver, $media );
+		$this->register_style( $handle, $src, $deps, $ver, $media );
 		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
 			call_user_func_array( 'wp_enqueue_style', $this->_styles[ $handle ] );
 		} else {
@@ -164,7 +164,7 @@ abstract class LP_Abstract_Assets {
 	 * @param bool  $ver
 	 * @param bool  $in_footer
 	 */
-	public function enqueue_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false ) {
+	public function enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
 		$this->register_script( $handle, $src, $deps, $ver, $in_footer );
 		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
 			call_user_func_array( 'wp_enqueue_script', $this->_scripts[ $handle ] );
