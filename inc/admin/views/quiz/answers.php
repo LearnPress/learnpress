@@ -20,6 +20,7 @@
                 </thead>
                 <draggable :list="question.answers.options" :element="'tbody'" @end="sortQuestionAnswers">
                     <tr v-for="(answer, index) in question.answers.options" class="lp-list-option lp-row"
+                        :data-answer-id="answer.question_answer_id"
                         :class="answerClass(answer.value)"
                         :data-id="answer.value">
                         <td class="lp-column lp-column-sort"><i class="fa fa-bars"></i></td>
@@ -37,7 +38,8 @@
                         </td>
                         <td class="lp-column lp-column-actions lp-toolbar-buttons">
                             <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
-                                <a class="lp-btn-icon dashicons dashicons-trash learn-press-tooltip"></a>
+                                <a class="lp-btn-icon dashicons dashicons-trash"
+                                   @click="deleteQuestionAnswer(answer.question_answer_id)"></a>
                             </div>
                         </td>
                     </tr>
@@ -80,6 +82,14 @@
                         orders.push(parseInt(option.question_answer_id));
                     });
                     $store.dispatch('lqs/updateOrderQuestionAnswers', orders);
+                },
+                deleteQuestionAnswer: function (answer_id) {
+
+                    $store.dispatch('lqs/deleteQuestionAnswer', {
+                        questionId: this.question.id,
+                        answerId: answer_id
+                    });
+
                 }
             }
         })

@@ -533,7 +533,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'sort-question-answers':
-                    $orders = ! empty( $args['orders-answers'] ) ? $args['orders-answers'] : false;
+					$orders = ! empty( $args['orders-answers'] ) ? $args['orders-answers'] : false;
 
 					if ( ! $orders ) {
 						break;
@@ -543,6 +543,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$orders = json_decode( $orders, true );
 
 					$result = $quiz_curd->sort_question_answers( $orders );
+					break;
+
+				case 'delete-question-answer':
+					$question_id = isset( $_POST['questionId'] ) ? $_POST['questionId'] : array();
+					$answer_id   = isset( $_POST['answerId'] ) ? intval( $_POST['answerId'] ) : false;
+
+					$delete = $question_curd->delete_question_answer( $question_id, $answer_id );
+
+					$result = $delete ? array( 'question_id' => $question_id, 'answer_id' => $answer_id ) : false;
 					break;
 
 				case 'search-items':

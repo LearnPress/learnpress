@@ -290,6 +290,23 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
             questions.splice(index, 1);
         },
+        'DELETE_QUESTION_ANSWER': function (state, payload) {
+            var questionId = payload.questionID,
+                answerId = payload.answerID;
+
+            state.questions = state.questions.map(function (question) {
+                if (question.id === questionId) {
+                    var answers = question.answers.options;
+                    answers.forEach(function (answer) {
+                        if (parseInt(answer.question_answer_id) === answerId) {
+                            var index = answers.indexOf(answer);
+                            answers.splice(index, 1);
+                        }
+                    })
+                }
+                return question;
+            })
+        },
         'REMOVE_QUESTIONS': function () {
             // code
         },
@@ -498,6 +515,32 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                         var result = response.body,
                             order = result.data;
                         context.commit('SORT_QUESTION_ANSWERS', order);
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                )
+        },
+
+        deleteQuestionAnswer: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'delete-question-answer',
+                    questionId: payload.questionId,
+                    answerId: payload.answerId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            var data = result.data;
+
+                            context.commit('DELETE_QUESTION_ANSWER', {
+                                'questionID': data['question_id'],
+                                'answerID': data['answer_id']
+                            });
+                        }
                     },
                     function (error) {
                         console.log(error);
