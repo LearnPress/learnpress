@@ -11,7 +11,7 @@ learn_press_admin_view( 'quiz/question-item' );
 
 <script type="text/x-template" id="tmpl-lp-list-quiz-questions">
     <draggable :list="listQuestions" class="main" :options="{handle: '.fa-bars'}" :element="'div'"
-               @end="updateSortQuestions">
+               @end="sortQuestions">
         <lp-question-item v-for="(question, index) in listQuestions" :question="question" :index="index"
                           :key="index"></lp-question-item>
     </draggable>
@@ -31,13 +31,13 @@ learn_press_admin_view( 'quiz/question-item' );
                 }
             },
             methods: {
-                updateSortQuestions: function (e) {
+                sortQuestions: function () {
                     var orders = [];
                     this.listQuestions.forEach(function (question, index) {
                         orders.push(parseInt(question.id));
                     });
 
-                    $store.dispatch('lqs/updateSortQuestions', orders);
+                    $store.dispatch('lqs/updateOrderQuestions', orders);
                 }
             }
         });

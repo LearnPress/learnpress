@@ -268,6 +268,12 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 return question;
             });
         },
+        'SORT_QUESTION_ANSWERS': function (state, orders) {
+            state.questions = state.questions.map(function (question) {
+                question.answers.options.answer_order = orders[question.answers.options.question_answer_id];
+                return question;
+            })
+        },
         'SET_QUESTIONS': function (state, questions) {
             state.questions = questions;
         },
@@ -463,7 +469,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
         },
 
-        updateSortQuestions: function (context, orders) {
+        updateOrderQuestions: function (context, orders) {
             Vue.http
                 .LPRequest({
                     type: 'sort-questions',
@@ -479,6 +485,24 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                         console.log(error);
                     }
                 );
+        },
+
+        updateOrderQuestionAnswers: function (context, orders) {
+            Vue.http
+                .LPRequest({
+                    type: 'sort-question-answers',
+                    'orders-answers': JSON.stringify(orders)
+                })
+                .then(
+                    function (response) {
+                        var result = response.body,
+                            order = result.data;
+                        context.commit('SORT_QUESTION_ANSWERS', order);
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                )
         },
 
         updateListQuestionsItems: function (context, payload) {

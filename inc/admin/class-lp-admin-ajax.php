@@ -532,6 +532,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$result = $quiz_curd->sort_questions( $orders );
 					break;
 
+				case 'sort-question-answers':
+                    $orders = ! empty( $args['orders-answers'] ) ? $args['orders-answers'] : false;
+
+					if ( ! $orders ) {
+						break;
+					}
+
+					$orders = wp_unslash( $orders );
+					$orders = json_decode( $orders, true );
+
+					$result = $quiz_curd->sort_question_answers( $orders );
+					break;
+
 				case 'search-items':
 					$query   = isset( $_POST['query'] ) ? $_POST['query'] : '';
 					$page    = isset( $_POST['query'] ) ? intval( $_POST['query'] ) : 1;
