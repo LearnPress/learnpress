@@ -58,7 +58,7 @@ if ( ! $items ) {
     <tbody>
 	<?php
 	foreach ( $items as $item_id => $item ):
-		$course = apply_filters( 'learn_press_order_item_course', learn_press_get_course( $item['course_id'] ), $item );
+		$course = apply_filters( 'learn-press/email-order-item-course', learn_press_get_course( $item['course_id'] ), $item );
 
 		?>
         <tr>

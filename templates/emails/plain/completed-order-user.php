@@ -1,6 +1,6 @@
 == {{header}} ==
 
-** Hi "Guest", **
+** Hi "{{order_user_name}}", **
 
 ** Your recent order at "{{site_title}}" has been completed. **
 

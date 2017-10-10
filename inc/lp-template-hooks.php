@@ -80,6 +80,16 @@ add_action( 'learn-press/user-profile', 'learn_press_user_profile_content', 10 )
  */
 add_action( 'learn-press/after-user-profile', 'learn_press_user_profile_footer', 5 );
 
+/**
+ * @see learn_press_profile_tab_orders()
+ * @see learn_press_profile_recover_order_form()
+ */
+
+add_action( 'learn-press/profile/orders', 'learn_press_profile_tab_orders', 10 );
+add_action( 'learn-press/profile/orders', 'learn_press_profile_recover_order_form', 15 );
+
+//add_action( 'learn-press/order/after-table-details', 'learn_press_profile_recover_my_order_form', 10 );
+
 /****************************/
 /*       Single course      */
 /****************************/

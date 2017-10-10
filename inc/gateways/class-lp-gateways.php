@@ -35,7 +35,7 @@ class LP_Gateways {
 	}
 
 	/**
-	 *
+	 * Init gateways
 	 */
 	public function init() {
 		if ( ! $this->payment_gateways ) {
@@ -52,7 +52,7 @@ class LP_Gateways {
 					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
 						$gateway = new $gateway();
 					}
-					$this->payment_gateways[ $k ] = apply_filters( 'learn_press_payment_method_init', $gateway );
+					$this->payment_gateways[ $k ] = apply_filters( 'learn-press/payment-gateway/init', $gateway );
 				}
 			}
 		}
@@ -91,8 +91,8 @@ class LP_Gateways {
 	/**
 	 * Callback function for sorting payment gateways.
 	 *
-	 * @param $a
-	 * @param $b
+	 * @param LP_Gateway_Abstract $a
+	 * @param LP_Gateway_Abstract $b
 	 *
 	 * @return bool|int
 	 */
@@ -116,8 +116,13 @@ class LP_Gateways {
 
 		foreach ( $this->payment_gateways as $slug => $gateway ) {
 
+			/**
+			 * @deprecated
+			 */
+			$gateway_available = apply_filters( 'learn_press_payment_gateway_available_' . $slug, true, $gateway );
+
 			// Let custom addon can define how is enable/disable
-			if ( apply_filters( 'learn_press_payment_gateway_available_' . $slug, true, $gateway ) ) {
+			if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
 
 				// If gateway has already selected before
 				if ( LP()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
@@ -135,7 +140,12 @@ class LP_Gateways {
 			$gateway->is_selected = true;
 		}
 
-		return apply_filters( 'learn_press_available_payment_gateways', $_available_gateways );
+		/**
+		 * @deprecated
+		 */
+		$_available_gateways = apply_filters( 'learn_press_available_payment_gateways', $_available_gateways );
+
+		return apply_filters( 'learn-press/payment-gateways/available', $_available_gateways );
 	}
 
 	/**

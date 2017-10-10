@@ -146,8 +146,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function update( &$order ) {
 		$post_data = array(
-			'post_date'     => $order->get_order_date()->toSql( true ),
-			'post_date_gmt' => $order->get_order_date()->toSql(),
+			'post_date'     => $order->get_order_date()->toSql(),
+			'post_date_gmt' => $order->get_order_date()->toSql( false ),
 			'post_status'   => 'lp-' . ( $order->get_status() ? $order->get_status() : learn_press_default_order_status() ),
 			'post_parent'   => $order->get_parent_id(),
 			//'post_excerpt'      => $this->get_post_excerpt( $order ),
@@ -341,6 +341,79 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return true;
 	}
 
+	/**
+	 * Recover an order checked out by Guest for an user.
+	 *
+	 * @param string $order_key
+	 * @param int    $user_id
+	 *
+	 * @return bool|LP_Order|WP_Error
+	 */
+	public function recover( $order_key, $user_id ) {
+		try {
+			$order = $this->get_order_by_key( $order_key );
+
+			// Validations
+			if ( ! $order ) {
+				throw new Exception( __( 'Invalid order.', 'learnpress' ), 1000 );
+			}
+
+			if ( ! $order->is_guest() ) {
+				throw new Exception( __( 'Order is already assigned.', 'learnpress' ), 1010 );
+			}
+
+			$user = learn_press_get_user( $user_id );
+
+			if ( ! $user ) {
+				throw new Exception( __( 'User is not exists.', 'learnpress' ), 1020 );
+			}
+
+			global $wpdb;
+
+			// Set user to order and update
+			$order->set_user_id( $user_id );
+			$order->save();
+
+			// Trigger action
+			do_action( 'learn-press/order/recovered-successful', $order->get_id(), $user_id );
+		}
+		catch ( Exception $ex ) {
+			return new WP_Error( $ex->getCode(), $ex->getMessage() );
+		}
+
+		return $order;
+	}
+
+	/**
+	 * Retrieve an order by order key.
+	 *
+	 * @param string $order_key
+	 *
+	 * @return bool|LP_Order
+	 */
+	public function get_order_by_key( $order_key ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT ID
+			FROM {$wpdb->posts} p 
+			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value = %s
+		", '_order_key', $order_key );
+
+		$order = false;
+		if ( $order_id = $wpdb->get_var( $query ) ) {
+			$order = learn_press_get_order( $order_id );
+		}
+
+		return $order;
+	}
+
+	/**
+	 * Get all child orders of an order by id
+	 *
+	 * @param int $order_id
+	 *
+	 * @return array|bool|mixed
+	 */
 	public function get_child_orders( $order_id ) {
 		global $wpdb;
 

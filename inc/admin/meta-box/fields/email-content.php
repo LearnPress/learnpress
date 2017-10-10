@@ -27,7 +27,7 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 			$meta  = wp_parse_args(
 				$meta,
 				array(
-					'format' => 'html',
+					'format' => 'plain_text',
 					'html'   => '',
 					'plain'  => ''
 				)

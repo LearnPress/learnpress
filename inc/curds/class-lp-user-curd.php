@@ -101,7 +101,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function get_orders( $user_id, $group_by_order = false ) {
 
 		// If user does not exists
-		if ( ! learn_press_get_user( $user_id ) ) {
+		if ( ! $user = learn_press_get_user( $user_id ) ) {
 			return false;
 		}
 
@@ -117,17 +117,38 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$post_status_in        = learn_press_get_order_statuses( true, true );
 			$post_status_in_format = array_fill( 0, sizeof( $post_status_in ), '%s' );
 
-			$query = $wpdb->prepare( "
-				SELECT * 
+			// Get order by user
+			$sql_orders = $wpdb->prepare( "
+				SELECT p.* 
 				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s
-				WHERE p.post_type = %s
-				AND meta_value = %d
+				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %d
+			", '_user_id', $user_id );
+
+			/**
+			 * Get order checked out by Guest but with the email of the user are getting
+			 */
+			$sql_guest_orders = $wpdb->prepare( "
+				UNION
+				SELECT p.* 
+				FROM {$wpdb->posts} p 
+				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
+				LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
+			", '_checkout_email', $user->get_email(), '_user_id' );
+
+			/**
+			 * The rest
+			 */
+			$sql_rest = $wpdb->prepare( " 
+				HAVING p.post_type = %s
 				AND p.post_status IN(" . join( ',', $post_status_in_format ) . ")
 				ORDER BY ID DESC
-			", array_merge( array( '_user_id', LP_ORDER_CPT, $user_id ), $post_status_in ) );
+			", array_merge( array(
+				LP_ORDER_CPT
+			), $post_status_in ) );
 
-			if ( $order_posts = $wpdb->get_results( $query ) ) {
+			$sql = $sql_orders . $sql_guest_orders . $sql_rest;
+
+			if ( $order_posts = $wpdb->get_results( $sql ) ) {
 				$order_ids = array();
 				foreach ( $order_posts as $order_post ) {
 
@@ -772,8 +793,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$course_ids   = array_keys( $orders );
 				$query_args   = $course_ids;
 				$query_args[] = $user_id;
-				$limit  = $args['limit'];
-				$offset = ( $args['paged'] - 1 ) * $limit;
+				$limit        = $args['limit'];
+				$offset       = ( $args['paged'] - 1 ) * $limit;
 
 				$sql = $wpdb->prepare( "
 					SELECT SQL_CALC_FOUND_ROWS *

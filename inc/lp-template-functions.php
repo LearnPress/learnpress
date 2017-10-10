@@ -203,7 +203,7 @@ if ( ! function_exists( 'learn_press_order_guest_email' ) ) {
 	 * @hooked learn-press/checkout-order-review
 	 */
 	function learn_press_order_guest_email() {
-	    $checkout = LP()->checkout();
+		$checkout = LP()->checkout();
 		if ( $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 			learn_press_get_template( 'checkout/guest-email.php' );
 		}
@@ -954,6 +954,9 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
+	/**
+	 *
+	 */
 	function learn_press_control_displaying_course_item() {
 		global $wp_filter;
 
@@ -964,6 +967,18 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
 		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
 		add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
+	}
+}
+
+if ( ! function_exists( 'learn_press_profile_tab_orders' ) ) {
+	function learn_press_profile_tab_orders() {
+		learn_press_get_template( 'profile/tabs/orders/list.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_profile_recover_order_form' ) ) {
+	function learn_press_profile_recover_order_form( $order ) {
+		learn_press_get_template( 'profile/tabs/orders/recover-order.php', array( 'order' => $order ) );
 	}
 }
 
@@ -1356,6 +1371,7 @@ if ( ! function_exists( 'learn_press_order_details_table' ) ) {
 		if ( ! $order_id ) {
 			return;
 		}
+		echo __FUNCTION__;
 		learn_press_get_template( 'order/order-details.php', array(
 			'order' => learn_press_get_order( $order_id )
 		) );
@@ -1879,6 +1895,7 @@ function learn_press_add_message( $message, $type = 'success', $options = array(
 	} else {
 		$messages[ $type ][] = $message;
 	}
+
 	learn_press_session_set( 'messages', $messages );
 }
 
@@ -2136,6 +2153,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 function learn_press_get_template_content( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
 	ob_start();
 	learn_press_get_template( $template_name, $args, $template_path, $default_path );
+
 	return ob_get_clean();
 }
 

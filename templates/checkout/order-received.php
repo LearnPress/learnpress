@@ -47,8 +47,8 @@ if ( isset( $order ) ) {
 		<?php endif; ?>
     </table>
 
-	<?php do_action( 'learn_press_order_received_' . $order->payment_method, $order->id ); ?>
-	<?php do_action( 'learn_press_order_received', $order ); ?>
+	<?php do_action( 'learn-press/order/received/' . $order->payment_method, $order->id ); ?>
+	<?php do_action( 'learn-press/order/received', $order ); ?>
 
 <?php } else { ?>
 

@@ -12,12 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 if ( ! isset( $order ) ) {
 	echo __( 'Invalid order', 'learnpress' );
+
 	return;
 }
 
 ?>
-<h2><?php _e( 'Order Details', 'learnpress' ); ?></h2>
-<table class="order_table order_details">
+<h3><?php _e( 'Order Details', 'learnpress' ); ?></h3>
+
+<table class="lp-list-table order-table-details">
     <thead>
     <tr>
         <th class="course-name"><?php _e( 'Course', 'learnpress' ); ?></th>
@@ -27,26 +29,26 @@ if ( ! isset( $order ) ) {
     <tbody>
 	<?php
 	if ( $items = $order->get_items() ) {
-		$currency_symbol = learn_press_get_currency_symbol( $order->order_currency );
+		$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
 
 		foreach ( $items as $item_id => $item ) {
-			if ( apply_filters( 'learn_press_order_item_visible', true, $item ) ) {
+			if ( apply_filters( 'learn-press/order/item-visible', true, $item ) ) {
 				$course = learn_press_get_course( $item['course_id'] );
 				if ( ! $course->exists() ) {
 					continue;
 				}
 				?>
-                <tr class="<?php echo esc_attr( apply_filters( 'learn_press_order_item_class', 'order_item', $item, $order ) ); ?>">
+                <tr class="<?php echo esc_attr( apply_filters( 'learn-press/order/item-class', 'order-item', $item, $order ) ); ?>">
                     <td class="course-name">
 						<?php
-						echo apply_filters( 'learn_press_order_item_name', sprintf( '<a href="%s">%s</a>', get_permalink( $item['course_id'] ), $item['name'] ), $item );
+						echo apply_filters( 'learn-press/order/item-name', sprintf( '<a href="%s">%s</a>', get_permalink( $item['course_id'] ), $item['name'] ), $item );
 						?>
                     </td>
                     <td class="course-total">
 						<?php
 						if ( $price = $course->get_price_html() ) {
 							$origin_price = $course->get_origin_price_html();
-							if ( $course->has_sale_price()) {
+							if ( $course->has_sale_price() ) {
 								echo '<span class="course-origin-price">' . $origin_price . '</span>';
 							}
 							echo '<span class="course-price">' . $price . '</span>';
@@ -65,7 +67,7 @@ if ( ! isset( $order ) ) {
 	/**
 	 * @since 3.x.x
 	 */
-	do_action( 'learn-press/order-items-table', $order );
+	do_action( 'learn-press/order/items-table', $order );
 
 	?>
     </tbody>
@@ -81,4 +83,7 @@ if ( ! isset( $order ) ) {
     </tfoot>
 </table>
 
-<?php do_action( 'learn_press_order_details_after_order_table', $order ); ?>
+<?php
+
+do_action( 'learn-press/order/after-table-details', $order );
+?>

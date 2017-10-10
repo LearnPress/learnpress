@@ -359,14 +359,20 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @return bool
 	 */
 	public function payment_complete( $transaction_id = '' ) {
-		do_action( 'learn_press_pre_payment_complete', $this->get_id() );
+		//do_action( 'learn_press_pre_payment_complete', $this->get_id() );
+
+		do_action( 'learn-press/payment-pre-complete', $this->get_id() );
 
 		LP()->session->order_awaiting_payment = null;
 
-		$valid_order_statuses = apply_filters( 'learn-press/valid-order-statuses-for-payment-complete', array(
-			'pending',
-			'processing'
-		), $this );
+		$valid_order_statuses = apply_filters(
+			'learn-press/valid-order-statuses-for-payment-complete',
+			array(
+				'pending',
+				'processing'
+			),
+			$this
+		);
 
 		if ( $this->get_id() && $this->has_status( $valid_order_statuses ) ) {
 
@@ -892,9 +898,10 @@ class LP_Order extends LP_Abstract_Post_Data {
 		$user_name = $this->get_user( 'user_login' );
 
 		// In case the user is Guest
-		if(!$user_name){
+		if ( ! $user_name ) {
 			$user_name = $this->get_user_email();
 		}
+
 		return apply_filters( 'learn-press/order/user-name', sprintf( _x( '%1$s', 'full name', 'learnpress' ), $user_name ) );
 	}
 
@@ -989,6 +996,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		elseif ( $email = $this->get_checkout_email() ) {
 
 		}
+
 		return $email;
 	}
 

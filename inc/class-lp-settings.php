@@ -39,7 +39,7 @@ class LP_Settings {
 
 		$this->_prefix = $prefix;
 
-		if ( ! $data ) {
+		if ( false === $data ) {
 			$this->_load_options();
 		} else {
 			settype( $data, 'array' );
@@ -54,7 +54,9 @@ class LP_Settings {
 	 * @return LP_Settings
 	 */
 	public function get_group( $group, $prefix = '' ) {
-		return new LP_Settings( $this->get( $group ), $prefix );
+		$options = ! empty( $this->_options[ $group ] ) ? $this->get( $group ) : array();
+
+		return new LP_Settings( $options, $prefix );
 	}
 
 	/**
@@ -184,7 +186,7 @@ class LP_Settings {
 		if ( func_num_args() == 1 ) {
 			$value = $this->get( $key );
 		}
-		learn_press_debug($this->_prefix . $key, $value);
+		learn_press_debug( $this->_prefix . $key, $value );
 		update_option( $this->_prefix . $key, $value );
 	}
 

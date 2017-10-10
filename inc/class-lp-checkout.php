@@ -248,21 +248,11 @@ class LP_Checkout {
 			// Start transaction if available
 			$wpdb->query( 'START TRANSACTION' );
 
-			$order_data = array(
-				'status'      => learn_press_default_order_status(),
-				'user_id'     => get_current_user_id(),
-				'user_note'   => $this->order_comment,
-				'created_via' => 'checkout'
-			);
-
 			// Insert or update the post data
 			$order_id = absint( LP()->session->get( 'order_awaiting_payment' ) );
 
 			// Resume the unpaid order if its pending
 			if ( $order = $this->_is_resume_order( $order_id ) ) {
-
-//				$order_data['ID'] = $order_id;
-//				$order            = learn_press_update_order( $order_data );
 
 				if ( is_wp_error( $order ) ) {
 					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 401 ) );
@@ -545,8 +535,6 @@ class LP_Checkout {
 					$result = $this->payment_method->process_payment( $order_id );
 					if ( isset( $result['result'] ) && 'success' === $result['result'] ) {
 						$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
-						print_r($result);
-						die();
 						if ( learn_press_is_ajax() ) {
 							learn_press_send_json( $result );
 						} else {

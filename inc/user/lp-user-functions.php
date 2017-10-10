@@ -276,7 +276,7 @@ function learn_press_edit_admin_bar() {
 		$course_profile['id']             = 'course_profile';
 		$course_profile['parent']         = 'user-actions';
 		$course_profile['title']          = $text ? $text : get_the_title( $profile );
-		$course_profile['href']           = learn_press_user_profile_link( $user_id, $first_tab );
+		$course_profile['href']           = learn_press_user_profile_link( $user_id, false );
 		$course_profile['meta']['target'] = LP()->settings->get( 'admin_bar_link_target' );
 		$wp_admin_bar->add_menu( $course_profile );
 	}

@@ -1,4 +1,3 @@
-
 == {{header}} ==
 
 ** Order placed by "{{order_user_name}}" has been cancelled **

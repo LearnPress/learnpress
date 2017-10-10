@@ -373,6 +373,7 @@ class LP_Cart {
 		$this->_cart_content = array();
 
 		unset( LP()->session->order_awaiting_payment );
+		unset( LP()->session->cart );
 
 		do_action( 'learn_press_emptied_cart' );
 

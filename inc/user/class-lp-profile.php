@@ -640,7 +640,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function query_orders( $args = '' ) {
 			global $wp_query;
 			$query = array(
-				'orders'     => array(),
+				'items'      => array(),
 				'total'      => 0,
 				'num_pages'  => 0,
 				'pagination' => ''

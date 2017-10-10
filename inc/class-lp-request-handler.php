@@ -59,6 +59,10 @@ class LP_Request {
 		add_action( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
 	}
 
+	public static function verify_nonce( $action, $nonce = '' ) {
+		return wp_verify_nonce( $nonce ? $nonce : self::get_string( "{$action}-nonce" ), $action );
+	}
+
 	/**
 	 * Purchase course action.
 	 * Perform this action when user clicking on "Buy this course" or "Enroll" button.

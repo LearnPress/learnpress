@@ -155,3 +155,21 @@
         width: 150px;
     }
 }
+
+.profile-recover-order {
+    padding: 20px;
+    border: 1px solid #DDD;
+    @include border-radius(4px);
+    p{
+        margin-bottom: 10px;
+    }
+    input[name="order-key"]{
+        width: 250px;
+    }
+}
+
+.order-recover{
+    input[name="order-key"], button{
+        vertical-align: middle;
+    }
+}

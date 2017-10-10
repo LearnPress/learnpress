@@ -117,7 +117,7 @@ class LP_Object_Data_CURD {
 		$object_id_column = $this->_meta_type . '_id';
 		$table            = _get_meta_table( $this->_meta_type );
 
-		$query = $wpdb->prepare( "
+		$query     = $wpdb->prepare( "
 			SELECT {$id_column} as meta_id, meta_key, meta_value
 			FROM {$table}
 			WHERE {$object_id_column} = %d
@@ -128,9 +128,24 @@ class LP_Object_Data_CURD {
 		return $meta_data;
 	}
 
-
-
 	public function update_meta( &$object, $meta ) {
-		update_metadata($this->_meta_type, $object->get_id(), $meta->meta_key, $meta->meta_value);
+		update_metadata( $this->_meta_type, $object->get_id(), $meta->meta_key, $meta->meta_value );
+	}
+
+	/**
+	 * @param $type
+	 *
+	 * @return mixed|LP_Object_Data_CURD
+	 */
+	public static function get( $type ) {
+		static $curds = false;
+		if ( ! $curds ) {
+			$curds = array(
+				'user'  => new LP_User_CURD(),
+				'order' => new LP_Order_CURD(),
+			);
+		}
+
+		return ! empty( $curds[ $type ] ) ? $curds[ $type ] : false;
 	}
 }

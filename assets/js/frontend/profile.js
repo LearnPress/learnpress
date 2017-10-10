@@ -313,6 +313,34 @@
         }
         // avatar
         new UserProfile(args);
+
+        Profile.recoverOrder();
+
     });
+
+    var Profile = {
+        recoverOrder: function () {
+            var $wrap = $('.order-recover'),
+                $buttonRecoverOrder = $wrap.find('.button-recover-order'),
+                $input = $wrap.find('input[name="order-key"]');
+
+            function recoverOrder() {
+                $.post({
+                    url: '',
+                    data: $wrap.serializeJSON(),
+                    success: function (response) {
+                        response = LP.parseJSON(response);
+                        console.log(response)
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    }
+                })
+            }
+
+            $buttonRecoverOrder.on('click', recoverOrder);
+        }
+    }
+
 
 })(jQuery);

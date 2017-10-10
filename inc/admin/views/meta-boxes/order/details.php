@@ -46,9 +46,9 @@ $method_title = $order->get_payment_method_title();
         <div class="order-data-field payment-method-title">
 			<?php
 			if ( $order->order_total == 0 ) {
-				printf( '<strong>%s</strong> at <strong>%s</strong>', $method_title, $order->get_data( 'user_ip' ) );
+				printf( '<strong>%s</strong> at <strong>%s</strong>', $method_title, $order->get_data( 'user_ip_address' ) );
 			} else {
-				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', $method_title, $order->get_data( 'user_ip' ) );
+				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', $method_title, $order->get_data( 'user_ip_address' ) );
 			} ?>
         </div>
         <h3 class="order-data-heading"><?php _e( 'Order details', 'learnpress' ); ?></h3>

@@ -446,7 +446,7 @@ class LP_Email extends LP_Abstract_Settings {
 	public function get_content() {
 		$email_format = $this->get_email_format();
 
-		if ( $email_format == 'plain_text' ) {
+		if ( $email_format == 'plain' ) {
 			$email_content = preg_replace( $this->plain_search, $this->plain_replace, strip_tags( $this->get_content_plain() ) );
 		} else if ( in_array( $email_format, array( 'html', 'multipart' ) ) ) {
 			$email_content = $this->get_content_html();
@@ -475,6 +475,7 @@ class LP_Email extends LP_Abstract_Settings {
 	 */
 	public function get_footer_text() {
 		$text = wpautop( wp_kses_post( wptexturize( LP()->settings->get( 'emails_general.footer_text' ) ) ) );
+		$text =LP()->settings->get( 'emails_general.footer_text' );
 
 		return apply_filters( 'learn-press/email-footer-text-' . $this->id, $text );
 	}
@@ -622,7 +623,7 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @return string
 	 */
 	public function get_email_format() {
-		return $this->email_format && class_exists( 'DOMDocument' ) ? $this->email_format : 'plain_text';
+		return $this->email_format && class_exists( 'DOMDocument' ) ? $this->email_format : 'plain';
 	}
 
 	/**
@@ -718,7 +719,7 @@ class LP_Email extends LP_Abstract_Settings {
 	 */
 	public function send( $to, $subject, $message, $headers, $attachments ) {
 
-		if($this->debug){
+		if ( $this->debug ) {
 			return false;
 		}
 
@@ -783,6 +784,7 @@ class LP_Email extends LP_Abstract_Settings {
 			$header = $heading;
 			$footer = $footer_text;
 		}
+
 		$admin_user = get_user_by( 'email', get_option( 'admin_email' ) );
 		$common     = array(
 			'header'           => $header,
