@@ -21,7 +21,10 @@ learn_press_admin_view( 'quiz/answer-item' );
                 </tr>
                 </thead>
                 <draggable :list="question.answers.options" :element="'tbody'" @end="sortQuestionAnswers">
-                    <lp-question-answer-item v-for="(answer, index) in question.answers.options" :key="index" :questionId="question.id" :answer="answer" :index="index" :isTrueOrFalse="isTrueOrFalse" :disableDeleteAnswer="disableDeleteAnswer"></lp-question-answer-item>
+                    <lp-question-answer-item v-for="(answer, index) in question.answers.options" :key="index"
+                                             :question="question" :answer="answer" :index="index"
+                                             :isTrueOrFalse="isTrueOrFalse" :isSingleChoice="isSingleChoice"
+                                             :disableDeleteAnswer="disableDeleteAnswer"></lp-question-answer-item>
                 </draggable>
             </table>
         </div>
@@ -40,6 +43,9 @@ learn_press_admin_view( 'quiz/answer-item' );
             computed: {
                 isTrueOrFalse: function () {
                     return this.question.type.key === 'true_or_false';
+                },
+                isSingleChoice: function () {
+                    return this.question.type.key === 'single_choice';
                 },
                 disableDeleteAnswer: function () {
                     return this.question.answers.options.length < 3;

@@ -18,13 +18,13 @@
                    @blur="updateAnswerTitle"/>
         </td>
         <td class="lp-column lp-column-answer_correct lp-answer-check">
-            <template v-if="isTrueOrFalse">
-                <input type="radio" :checked="answer.is_true === 'yes'" :value="answer.value"
-                       name="learnpress-answers-question[]" @change="changeCorrectAnswer">
+            <template v-if="isTrueOrFalse || isSingleChoice">
+                <input type="radio" :checked="isTrue" :value="answer.value" :name="name"
+                       @change="changeCorrectAnswer">
             </template>
             <template v-else>
-                <input type="checkbox" :checked="answer.is_true === 'yes'" :value="answer.value"
-                       name="learnpress-answers-question[]">
+                <input type="checkbox" :checked="isTrue" :value="answer.value" :name="name"
+                       @change="changeCorrectAnswer">
             </template>
         </td>
         <td class="lp-column lp-column-actions lp-toolbar-buttons">
@@ -41,27 +41,34 @@
 
         Vue.component('lp-question-answer-item', {
             template: '#tmpl-lp-question-answer-item',
-            props: ['questionId', 'answer', 'index', 'isTrueOrFalse', 'disableDeleteAnswer'],
+            props: ['question', 'answer', 'index', 'isTrueOrFalse', 'isSingleChoice', 'disableDeleteAnswer'],
+            computed: {
+                isTrue: function () {
+                    return this.answer.is_true === 'yes' ? 'checked' : '';
+                },
+                name: function () {
+                    return 'answer-question[' + this.question.id + '][checked][]'
+                }
+            },
             methods: {
                 answerClass: function (answer) {
                     return 'lp-list-option-' + answer;
                 },
                 changeCorrectAnswer: function (e) {
-                    var question = {'id': this.question.id, 'value': e.target.value};
-                    $store.dispatch('lqs/changeCorrectAnswer', question);
+                    //code
                 },
                 updateAnswerTitle: function () {
                     var request = {
                         'action': 'update-title',
                         'answer': this.answer,
-                        'questionId': this.questionId
+                        'questionId': this.question.id
                     };
                     $store.dispatch('lqs/updateQuestionAnswer', request);
                 },
                 deleteQuestionAnswer: function () {
 
                     var request = {
-                        'questionId': this.questionId,
+                        'questionId': this.question.id,
                         'answerId': this.answer.question_answer_id
                     };
 

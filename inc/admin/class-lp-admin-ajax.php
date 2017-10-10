@@ -491,16 +491,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
-				case 'change-correct-answer':
-					$true_answer = ! empty ( $args['true-answer'] ) ? $args['true-answer'] : '';
-
-					if ( ! $true_answer ) {
-						break;
-					}
-
-
-					break;
-
 				case 'add-question-answer':
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
