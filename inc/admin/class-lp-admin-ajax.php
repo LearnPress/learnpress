@@ -420,8 +420,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$action       = ! empty( $args['action'] ) ? $args['action'] : false;
-					$update['id'] = $question['id'];
+					$action = ! empty( $args['action'] ) ? $args['action'] : false;
+					$update = array();
+
 					switch ( $action ) {
 						case 'update-title':
 							$update['title'] = $question['title'];
@@ -444,6 +445,50 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$result = $question_curd->update( $update );
 					// code
+					break;
+
+				case 'update-question-answer':
+					$question_id = ! empty( $args['questionId'] ) ? $args['questionId'] : false;
+
+					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
+					$answer = json_decode( wp_unslash( $answer ), true );
+
+					if ( ! ( $question_id || is_array( $answer ) ) ) {
+						break;
+					}
+
+					$action = ! empty( $args['action'] ) ? $args['action'] : false;
+					$update = array();
+
+					switch ( $action ) {
+						case 'update-title':
+							$update['title'] = $answer['text'];
+							break;
+						case 'change-correct':
+							//code
+							break;
+						default;
+							break;
+					}
+
+					$update = array(
+						'data'  => array(
+							'answer_data' => serialize( array(
+									'text'    => stripslashes( $answer['text'] ),
+									'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+									'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
+								)
+							)
+						),
+						'where' => array(
+							'question_answer_id' => $answer['question_answer_id'],
+							'question_id'        => $question_id,
+							'answer_order'       => $answer['answer_order']
+						)
+					);
+
+					$result = $question_curd->update_answer( $update );
+
 					break;
 
 				case 'change-correct-answer':
@@ -492,10 +537,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				case 'remove-question':
 					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
 					$result      = $quiz_curd->remove_question( $quiz_id, $question_id );
-					break;
-
-				case 'remove-questions':
-					// code
 					break;
 
 				case 'delete-question':

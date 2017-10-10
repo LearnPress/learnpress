@@ -504,6 +504,23 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 );
         },
 
+        updateQuestionAnswer: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-question-answer',
+                    questionId: parseInt(payload.questionId),
+                    answer: JSON.stringify(payload.answer),
+                    action: payload.action
+                })
+                .then(function () {
+                    context.commit('UPDATE_QUESTION_ANSWER_SUCCESS', payload.question.id);
+                })
+                .catch(function () {
+                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', payload.question.id);
+                })
+
+        },
+
         updateOrderQuestionAnswers: function (context, orders) {
             Vue.http
                 .LPRequest({

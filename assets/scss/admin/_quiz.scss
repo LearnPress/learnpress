@@ -15,31 +15,37 @@
                     padding: 8px 10px
                 }
 
-                .lp-column-sort {
+                & > .lp-column-sort {
                     width: 15px;
-                    text-align: center;
-                    font-size: 18px;
-                    color: #CCC;
-                    cursor: ns-resize;
                 }
 
-                .lp-column-order {
+                & > .lp-column-order {
                     width: 25px;
                     text-align: right;
                 }
 
-                .lp-column-name {
+                & > .lp-column-name {
                     padding-left: 0;
                 }
 
-                .lp-column-type {
+                & > .lp-column-type {
                     width: 150px;
                     text-align: center;
                 }
 
-                .lp-column-actions {
+                & > .lp-column-actions {
                     width: 300px;
                     text-align: right;
+                }
+
+                .fa-bars{
+                    text-align: center;
+                    font-size: 18px;
+                    color: #CCC;
+                    cursor: ns-resize;
+                    &:hover {
+                        color: #0085ba;
+                    }
                 }
             }
 
@@ -74,8 +80,34 @@
                         padding: 20px;
                     }
                     .quiz-question-data {
-                        .lp-list-options {
+                        table.lp-list-options {
                             border: 1px solid #ddd;
+                            thead {
+                                .lp-column-heading-sort, .lp-column-heading-order, .lp-column-heading-actions {
+                                    width: 10px;
+                                }
+                                .lp-column-heading-answer_text {
+                                    width: calc(100% - 100px);
+                                }
+                                .lp-column-heading-answer_correct {
+                                    width: 70px;
+                                }
+                            }
+                            tbody {
+                                .lp-column-answer_text {
+                                    input {
+                                        width: 100%;
+                                        font-size: 14px;
+                                        border: none;
+                                        background: transparent;
+                                        box-shadow: none;
+                                        font-weight: normal;
+                                        color: #777;
+                                        padding: 0;
+                                    }
+                                }
+
+                            }
                         }
                     }
                 }
