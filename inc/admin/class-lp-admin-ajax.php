@@ -243,6 +243,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$orders = wp_unslash( $orders );
 					$orders = json_decode( $orders, true );
+
 					$result = $curd->sort_sections( $orders );
 
 					break;
@@ -419,8 +420,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$action       = ! empty( $args['action'] ) ? $args['action'] : false;
-					$update['id'] = $question['id'];
+					$action = ! empty( $args['action'] ) ? $args['action'] : false;
+					$update = array();
+
 					switch ( $action ) {
 						case 'update-title':
 							$update['title'] = $question['title'];
@@ -445,13 +447,47 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// code
 					break;
 
-				case 'change-correct-answer':
-					$true_answer = ! empty ( $args['true-answer'] ) ? $args['true-answer'] : '';
+				case 'update-question-answer':
+					$question_id = ! empty( $args['questionId'] ) ? $args['questionId'] : false;
 
-					if ( ! $true_answer ) {
+					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
+					$answer = json_decode( wp_unslash( $answer ), true );
+
+					if ( ! ( $question_id || is_array( $answer ) ) ) {
 						break;
 					}
 
+					$action = ! empty( $args['action'] ) ? $args['action'] : false;
+					$update = array();
+
+					switch ( $action ) {
+						case 'update-title':
+							$update['title'] = $answer['text'];
+							break;
+						case 'change-correct':
+							//code
+							break;
+						default;
+							break;
+					}
+
+					$update = array(
+						'data'  => array(
+							'answer_data' => serialize( array(
+									'text'    => stripslashes( $answer['text'] ),
+									'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+									'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
+								)
+							)
+						),
+						'where' => array(
+							'question_answer_id' => $answer['question_answer_id'],
+							'question_id'        => $question_id,
+							'answer_order'       => $answer['answer_order']
+						)
+					);
+
+					$result = $question_curd->update_answer( $update );
 
 					break;
 
@@ -493,10 +529,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$result      = $quiz_curd->remove_question( $quiz_id, $question_id );
 					break;
 
-				case 'remove-questions':
-					// code
-					break;
-
 				case 'delete-question':
 					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
 					$result      = $quiz_curd->remove_question( $quiz_id, $question_id, array( 'delete_permanently' => true ) );
@@ -520,6 +552,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'sort-questions':
 					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
+
 					if ( ! $orders ) {
 						break;
 					}
@@ -527,7 +560,29 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$orders = wp_unslash( $orders );
 					$orders = json_decode( $orders, true );
 
-//					$result = $curd->sort_questions( $orders );
+					$result = $quiz_curd->sort_questions( $orders );
+					break;
+
+				case 'sort-question-answers':
+					$orders = ! empty( $args['orders-answers'] ) ? $args['orders-answers'] : false;
+
+					if ( ! $orders ) {
+						break;
+					}
+
+					$orders = wp_unslash( $orders );
+					$orders = json_decode( $orders, true );
+
+					$result = $quiz_curd->sort_question_answers( $orders );
+					break;
+
+				case 'delete-question-answer':
+					$question_id = isset( $_POST['questionId'] ) ? $_POST['questionId'] : array();
+					$answer_id   = isset( $_POST['answerId'] ) ? intval( $_POST['answerId'] ) : false;
+
+					$delete = $question_curd->delete_question_answer( $question_id, $answer_id );
+
+					$result = $delete ? array( 'question_id' => $question_id, 'answer_id' => $answer_id ) : false;
 					break;
 
 				case 'search-items':

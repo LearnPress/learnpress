@@ -474,6 +474,64 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 		return $orders;
 	}
 
+	/**
+	 * Update order quiz questions.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $questions
+	 *
+	 * @return array
+	 */
+	public function sort_questions( $questions ) {
+		global $wpdb;
+
+		$orders = array();
+
+		foreach ( $questions as $index => $question_id ) {
+			$order = $index + 1;
+
+			$orders[ $question_id ] = $order;
+
+			$wpdb->update(
+				$wpdb->learnpress_quiz_questions,
+				array( 'question_order' => $order ),
+				array( 'question_id' => $question_id )
+			);
+		}
+
+		return $orders;
+	}
+
+	/**
+	 * Update order quiz question answers.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $answers
+	 *
+	 * @return array
+	 */
+	public function sort_question_answers( $answers ) {
+		global $wpdb;
+
+		$orders = array();
+
+		foreach ( $answers as $index => $answer_id ) {
+			$order = $index + 1;
+
+			$orders[ $answer_id ] = $order;
+
+			$wpdb->update(
+				$wpdb->learnpress_question_answers,
+				array( 'answer_order' => $order ),
+				array( 'question_answer_id' => $answer_id )
+			);
+		}
+
+		return $orders;
+	}
+
 	public function add_meta( &$object, $meta ) {
 		// TODO: Implement add_meta() method.
 	}

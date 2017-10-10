@@ -268,6 +268,12 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 return question;
             });
         },
+        'SORT_QUESTION_ANSWERS': function (state, orders) {
+            state.questions = state.questions.map(function (question) {
+                question.answers.options.answer_order = orders[question.answers.options.question_answer_id];
+                return question;
+            })
+        },
         'SET_QUESTIONS': function (state, questions) {
             state.questions = questions;
         },
@@ -283,6 +289,23 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 index = questions.indexOf(item);
 
             questions.splice(index, 1);
+        },
+        'DELETE_QUESTION_ANSWER': function (state, payload) {
+            var questionId = payload.questionID,
+                answerId = payload.answerID;
+
+            state.questions = state.questions.map(function (question) {
+                if (question.id === questionId) {
+                    var answers = question.answers.options;
+                    answers.forEach(function (answer) {
+                        if (parseInt(answer.question_answer_id) === answerId) {
+                            var index = answers.indexOf(answer);
+                            answers.splice(index, 1);
+                        }
+                    })
+                }
+                return question;
+            })
         },
         'REMOVE_QUESTIONS': function () {
             // code
@@ -463,11 +486,11 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
         },
 
-        updateSortQuestions: function (context, orders) {
+        updateOrderQuestions: function (context, orders) {
             Vue.http
                 .LPRequest({
                     type: 'sort-questions',
-                    order: JSON.stringify(orders)
+                    orders: JSON.stringify(orders)
                 })
                 .then(
                     function (response) {
@@ -479,6 +502,67 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                         console.log(error);
                     }
                 );
+        },
+
+        updateQuestionAnswer: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-question-answer',
+                    questionId: parseInt(payload.questionId),
+                    answer: JSON.stringify(payload.answer),
+                    action: payload.action
+                })
+                .then(function () {
+                    context.commit('UPDATE_QUESTION_ANSWER_SUCCESS', payload.question.id);
+                })
+                .catch(function () {
+                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', payload.question.id);
+                })
+
+        },
+
+        updateOrderQuestionAnswers: function (context, orders) {
+            Vue.http
+                .LPRequest({
+                    type: 'sort-question-answers',
+                    'orders-answers': JSON.stringify(orders)
+                })
+                .then(
+                    function (response) {
+                        var result = response.body,
+                            order = result.data;
+                        context.commit('SORT_QUESTION_ANSWERS', order);
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                )
+        },
+
+        deleteQuestionAnswer: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'delete-question-answer',
+                    questionId: payload.questionId,
+                    answerId: payload.answerId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            var data = result.data;
+
+                            context.commit('DELETE_QUESTION_ANSWER', {
+                                'questionID': data['question_id'],
+                                'answerID': data['answer_id']
+                            });
+                        }
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                )
         },
 
         updateListQuestionsItems: function (context, payload) {

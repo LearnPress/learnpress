@@ -61,6 +61,15 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		return $mark;
 	}
 
+	/**
+	 * Update question.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args
+	 *
+	 * @return array
+	 */
 	public function update( &$args = array() ) {
 		// TODO: Implement update() method.
 		$question = wp_parse_args( $args, array(
@@ -90,6 +99,55 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		}
 
 		return $question;
+	}
+
+	/**
+	 * Update question answer.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args
+	 *
+	 * @return false|int
+	 */
+	public function update_answer( $args = array() ) {
+
+		global $wpdb;
+
+		$answer = $wpdb->update( $wpdb->learnpress_question_answers,
+			$args['data'],
+			$args['where'],
+			array( '%s', '%s', '%s' ),
+			array( '%d', '%d', '%d' )
+		);
+
+		return $answer;
+
+	}
+
+	/**
+	 * Delete question answer.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $question_id
+	 * @param $answer_id
+	 *
+	 * @return bool|false|int
+	 */
+	public function delete_question_answer( $question_id, $answer_id ) {
+		if ( get_post_type( $question_id ) !== LP_QUESTION_CPT || ! $answer_id ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$result = $wpdb->delete(
+			$wpdb->learnpress_question_answers,
+			array( 'question_answer_id' => $answer_id )
+		);
+
+		return $result;
 	}
 
 	/**

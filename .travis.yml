@@ -21,3 +21,8 @@ before_script:
 
 script:
   - ./vendor/bin/phpcs -d date.timezone=UTC
+
+branches:
+  only:
+  - develop
+  - master

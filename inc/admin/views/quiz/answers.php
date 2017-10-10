@@ -4,6 +4,8 @@
  *
  * @since 3.0.0
  */
+
+learn_press_admin_view( 'quiz/answer-item' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-answers">
@@ -18,36 +20,15 @@
                     </th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr v-for="(answer, key) in question.answers.options" class="lp-list-option lp-row"
-                    :class="answerClass(answer.value)"
-                    :data-id="answer.value">
-                    <td class="lp-column lp-column-sort"><i class="fa fa-bars"></i></td>
-                    <td class="lp-column lp-column-order">{{answer.answer_order}}</td>
-                    <td class="lp-column lp-column-answer_text">{{answer.text}}</td>
-                    <td class="lp-column lp-column-answer_correct lp-answer-check">
-                        <template v-if="question.type.key === 'true_or_false'">
-                            <input type="radio" :checked="answer.is_true === 'yes'" :value="answer.value"
-                                   name="learnpress-answers-question[]" @change="changeCorrectAnswer">
-                        </template>
-                        <template v-else>
-                            <input type="checkbox" :checked="answer.is_true === 'yes'" :value="answer.value"
-                                   name="learnpress-answers-question[]">
-                        </template>
-                    </td>
-                    <td class="lp-column lp-column-actions lp-toolbar-buttons">
-                        <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
-                            <a class="lp-btn-icon dashicons dashicons-trash learn-press-tooltip"></a>
-                        </div>
-                        <span class="learn-press-tooltip lp-toolbar-btn lp-btn-move">
-                        <a class="lp-btn-icon dashicons dashicons-sort"></a>
-                    </span>
-                    </td>
-                </tr>
-                </tbody>
+                <draggable :list="question.answers.options" :element="'tbody'" @end="sortQuestionAnswers">
+                    <lp-question-answer-item v-for="(answer, index) in question.answers.options" :key="index"
+                                             :question="question" :answer="answer" :index="index"
+                                             :isTrueOrFalse="isTrueOrFalse" :isSingleChoice="isSingleChoice"
+                                             :disableDeleteAnswer="disableDeleteAnswer"></lp-question-answer-item>
+                </draggable>
             </table>
         </div>
-        <p class="question-button-actions" v-if="question.type.key !== 'true_or_false'">
+        <p class="question-button-actions" v-if="!isTrueOrFalse">
             <button class="button add-question-option-button" type="button"
                     @click="addQuestionAnswer"><?php esc_html_e( 'Add option' ) ?></button>
         </p>
@@ -59,23 +40,30 @@
         Vue.component('lp-question-answers', {
             template: '#tmpl-lp-question-answers',
             props: ['question'],
-            computed: {},
+            computed: {
+                isTrueOrFalse: function () {
+                    return this.question.type.key === 'true_or_false';
+                },
+                isSingleChoice: function () {
+                    return this.question.type.key === 'single_choice';
+                },
+                disableDeleteAnswer: function () {
+                    return this.question.answers.options.length < 3;
+                }
+            },
             methods: {
                 headingClass: function (heading) {
                     return 'lp-column-heading-' + heading;
                 },
-                answerClass: function (answer) {
-                    return 'lp-list-option-' + answer;
-                },
-                answersChecked: function (answer) {
-                    return (answer === 'yes') ? 'checked' : '';
-                },
-                changeCorrectAnswer: function (e) {
-                    var question = {'id': this.question.id, 'value': e.target.value};
-                    $store.dispatch('lqs/changeCorrectAnswer', question);
-                },
                 addQuestionAnswer: function () {
                     $store.dispatch('lqs/addQuestionAnswer', this.question);
+                },
+                sortQuestionAnswers: function () {
+                    var orders = [];
+                    this.question.answers.options.forEach(function (option, index) {
+                        orders.push(parseInt(option.question_answer_id));
+                    });
+                    $store.dispatch('lqs/updateOrderQuestionAnswers', orders);
                 }
             }
         })
