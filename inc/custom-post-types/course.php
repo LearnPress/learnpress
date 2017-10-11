@@ -160,7 +160,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 			global $wpdb;
-
 			$course     = LP_Course::get_course( $course_id );
 			$curriculum = $course->get_curriculum_items();
 			// course curriculum items / quiz items / questions of quiz
@@ -971,6 +970,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				learn_press_add_message( __( 'Course Curriculum only appear if course is saved', 'learnpress' ), 'error' );
 			}
 
+			if( 'dopreview' == $preview ) {
+				return;
+			}
+
 			$this->_reset_sections();
 
 			if ( !empty( $_REQUEST['_lp_curriculum'] ) && 'dopreview' !== $preview ) {
@@ -1177,8 +1180,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			global $post, $pagenow;
 
 			// Ensure that we are editing course in admin side
-
+			
 			if ( ( $pagenow != 'post.php' ) || ( get_post_type() != LP_COURSE_CPT ) ) {
+				return;
+			}
+			$preview = filter_input( INPUT_POST, 'wp-preview', FILTER_SANITIZE_STRING );
+
+			if( 'dopreview' == $preview ) {
 				return;
 			}
 
