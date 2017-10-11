@@ -107,22 +107,44 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	 * @since 3.0.0
 	 *
 	 * @param array $args
+	 * @param string $case
 	 *
 	 * @return false|int
 	 */
-	public function update_answer( $args = array() ) {
+	public function update_answer( $args = array(), $case = '' ) {
+
+		if ( ! $case ) {
+			return false;
+		}
 
 		global $wpdb;
 
-		$answer = $wpdb->update( $wpdb->learnpress_question_answers,
-			$args['data'],
-			$args['where'],
-			array( '%s', '%s', '%s' ),
-			array( '%d', '%d', '%d' )
-		);
+		$answer = false;
+
+		switch ( $case ) {
+			case 'update-title':
+				$answer = $wpdb->update( $wpdb->learnpress_question_answers,
+					$args['data'],
+					$args['where'],
+					array( '%s', '%s', '%s' ),
+					array( '%d', '%d', '%d' )
+				);
+				break;
+			case 'update-correct':
+				foreach ( $args as $arg ) {
+					$answer = $wpdb->update( $wpdb->learnpress_question_answers,
+						$arg['data'],
+						$arg['where'],
+						array( '%s', '%s', '%s' ),
+						array( '%d', '%d', '%d' )
+					);
+				}
+				break;
+			default:
+				break;
+		}
 
 		return $answer;
-
 	}
 
 	/**

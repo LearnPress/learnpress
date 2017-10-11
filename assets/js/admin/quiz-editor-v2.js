@@ -460,22 +460,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
         },
 
-        changeCorrectAnswer: function (context, question) {
-            context.commit('UPDATE_QUESTION', question.id);
-
-            Vue.http
-                .LPRequest({
-                    type: 'change-correct-answer',
-                    'true-answer': question.value
-                })
-                .then(function () {
-                    context.commit('UPDATE_QUESTION_SUCCESS', question.id);
-                })
-                .catch(function () {
-                    context.commit('UPDATE_QUESTION_FAILURE', question.id);
-                })
-        },
-
         addQuestionAnswer: function (context, question) {
             context.commit('UPDATE_QUESTION', question.id);
 
@@ -504,13 +488,30 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 );
         },
 
+        updateQuestionCorrectAnswer: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-correct-answer',
+                    question: JSON.stringify(payload.question),
+                    correctAnswer: JSON.stringify(payload.correctAnswer)
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+                        // code
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                )
+        },
+
         updateQuestionAnswer: function (context, payload) {
             Vue.http
                 .LPRequest({
                     type: 'update-question-answer',
                     questionId: parseInt(payload.questionId),
-                    answer: JSON.stringify(payload.answer),
-                    action: payload.action
+                    answer: JSON.stringify(payload.answer)
                 })
                 .then(function () {
                     context.commit('UPDATE_QUESTION_ANSWER_SUCCESS', payload.question.id);

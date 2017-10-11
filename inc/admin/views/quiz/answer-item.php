@@ -19,12 +19,12 @@
         </td>
         <td class="lp-column lp-column-answer_correct lp-answer-check">
             <template v-if="isTrueOrFalse || isSingleChoice">
-                <input type="radio" :checked="isTrue" :value="answer.value" :name="name"
-                       @change="changeCorrectAnswer">
+                <input type="radio" :checked="isTrue" :value="answer.value" :name="name" v-model="answer.is_true"
+                       @change="changeCorrect">
             </template>
             <template v-else>
-                <input type="checkbox" :checked="isTrue" :value="answer.value" :name="name"
-                       @change="changeCorrectAnswer">
+                <input type="checkbox" :checked="isTrue" :value="answer.value" :name="name" v-model="answer.is_true"
+                       @change="changeCorrect">
             </template>
         </td>
         <td class="lp-column lp-column-actions lp-toolbar-buttons">
@@ -54,8 +54,9 @@
                 answerClass: function (answer) {
                     return 'lp-list-option-' + answer;
                 },
-                changeCorrectAnswer: function (e) {
-                    //code
+                changeCorrect: function (e) {
+                    this.answer.is_true = (e.target.checked) ? 'yes' : '';
+                    this.$emit('changeCorrect', this.answer);
                 },
                 updateAnswerTitle: function () {
                     var request = {
