@@ -193,6 +193,14 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 2.1.9 =
+~ Fixed lesons lost when press preview button in edit course page.
+~ Fixed the "Buy this course" button display after course is "finished" 
+~ Fixed Courses and Instructor Tab from Profile page not shows courses
+~ Fixed Profile does not show courses created by himself
+~ Fixed Notify email not send when cousre auto finished
+
 = 2.1.8 =
 
 = 2.1.7.3 =
