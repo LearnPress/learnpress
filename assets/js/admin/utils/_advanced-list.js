@@ -97,7 +97,7 @@
         function getTemplate() {
             var $container = $(self.options.template);
             if ($container.length) {
-                return $container.html()+'xxxx';
+                return $container.html();
             }
             return self.options.template;
         }

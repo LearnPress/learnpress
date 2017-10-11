@@ -57,6 +57,24 @@
             color: #000;
             margin-left: 270px;
             float: none;
+            width: auto;
+        }
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .learnpress {
+        &.lp-submenu-settings {
+            .rwmb-field {
+                .rwmb-label {
+                    width: auto;
+                    float: none;
+                }
+            }
+            .rwmb-input {
+                margin-left: 0;
+                width: 100%;
+            }
         }
     }
 }

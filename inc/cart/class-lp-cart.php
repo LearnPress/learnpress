@@ -358,7 +358,7 @@ class LP_Cart {
 		$row_price       = $price * $quantity;
 		$course_subtotal = learn_press_format_price( $row_price, true );
 
-		return apply_filters( 'learn_press_cart_item_subtotal', $course_subtotal, $course, $quantity, $this );
+		return apply_filters( 'learn-press/cart/item-subtotal', $course_subtotal, $course, $quantity, $this );
 	}
 
 	/**
@@ -368,14 +368,14 @@ class LP_Cart {
 	 */
 	public function empty_cart() {
 
-		do_action( 'learn_press_before_empty_cart' );
+		do_action( 'learn-press/cart/before-empty' );
 
 		$this->_cart_content = array();
 
 		unset( LP()->session->order_awaiting_payment );
 		unset( LP()->session->cart );
 
-		do_action( 'learn_press_emptied_cart' );
+		do_action( 'learn-press/cart/emptied' );
 
 		return $this;
 	}

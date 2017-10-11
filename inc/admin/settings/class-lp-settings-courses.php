@@ -59,7 +59,9 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 			'learn-press/courses-settings-fields',
 			array_merge(
 			// General
-				apply_filters( 'learn-press/course-settings-fields/general', array(
+				apply_filters(
+					'learn-press/course-settings-fields/general',
+					array(
 						array(
 							'title' => __( 'General', 'learnpress' ),
 							'type'  => 'heading',
@@ -68,20 +70,20 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						array(
 							'title'   => __( 'Review course before publish', 'learnpress' ),
 							'desc'    => __( 'The course needs to be reviewed by admin before it can be published.', 'learnpress' ),
-							'id' => 'required_review',
+							'id'      => 'required_review',
 							'default' => 'yes',
 							'type'    => 'yes-no'
 						),
 						array(
 							'title'      => __( 'Enable edit published course', 'learnpress' ),
 							'desc'       => __( 'Allow instructors to edit the course that are published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
-							'id' => 'enable_edit_published',
+							'id'         => 'enable_edit_published',
 							'default'    => 'yes',
 							'type'       => 'yes-no',
 							'visibility' => array(
-								'state'          => 'show',
-								'conditional'    => array(
-									'field' => 'required_review',
+								'state'       => 'show',
+								'conditional' => array(
+									'field'   => 'required_review',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -90,7 +92,9 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 					)
 				),
 				// Archive
-				apply_filters( 'learn-press/course-settings-fields/archive', array(
+				apply_filters(
+					'learn-press/course-settings-fields/archive',
+					array(
 						array(
 							'title' => __( 'Archive', 'learnpress' ),
 							'type'  => 'heading',
@@ -98,14 +102,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Courses Page', 'learnpress' ),
-							'id' => 'courses_page_id',
+							'id'      => 'courses_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown'
 						),
 						array(
 							'title'             => __( 'Courses limit', 'learnpress' ),
 							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
-							'id' => 'archive_course_limit',
+							'id'                => 'archive_course_limit',
 							'default'           => '10',
 							'type'              => 'number',
 							'custom_attributes' => array(
@@ -115,7 +119,9 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 					)
 				),
 				// Single course
-				apply_filters( 'learn-press/course-settings-fields/single', array(
+				apply_filters(
+					'learn-press/course-settings-fields/single',
+					array(
 						array(
 							'title' => __( 'Single course', 'learnpress' ),
 							'type'  => 'heading',
@@ -128,27 +134,27 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Course category base', 'learnpress' ),
-							'id' => 'course_category_base',
+							'id'      => 'course_category_base',
 							'default' => 'course-category',
 							'type'    => 'text'
 						),
 						array(
 							'title'   => __( 'Course tag base', 'learnpress' ),
-							'id' => 'course_tag_base',
+							'id'      => 'course_tag_base',
 							'default' => 'course-tag',
 							'type'    => 'text'
 						),
 						array(
 							'title'   => __( 'Lesson', 'learnpress' ),
 							'type'    => 'text',
-							'id' => 'lesson_slug',
+							'id'      => 'lesson_slug',
 							'desc'    => __( sprintf( '%s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
 							'default' => 'lessons'
 						),
 						array(
 							'title'   => __( 'Quiz', 'learnpress' ),
 							'type'    => 'text',
-							'id' => 'quiz_slug',
+							'id'      => 'quiz_slug',
 							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-lesson/', home_url() ), 'learnpress' ),
 							'default' => 'quizzes'
 						)
@@ -163,21 +169,21 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Single course', 'learnpress' ),
-							'id' => 'generate_course_thumbnail',
+							'id'      => 'generate_course_thumbnail',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
 						),
 						array(
 							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-							'id' => 'single_course_image_size',
+							'id'         => 'single_course_image_size',
 							'default'    => array( 800, 450, 'yes' ),
 							'type'       => 'image-dimensions',
 							'visibility' => array(
-								'state'       => 'show',
+								'state' => 'show',
 
 								'conditional' => array(
-									'field' => 'generate_course_thumbnail',
+									'field'   => 'generate_course_thumbnail',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -185,22 +191,22 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Archive course', 'learnpress' ),
-							'id' => 'archive_course_thumbnail',
+							'id'      => 'archive_course_thumbnail',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
 						),
 						array(
 							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-							'id' => 'course_thumbnail_image_size',
+							'id'         => 'course_thumbnail_image_size',
 							'default'    => array( 400, 250, 'yes' ),
 							'type'       => 'image-dimensions',
 							'visibility' => array(
-								'state'       => 'show',
+								'state' => 'show',
 
 								'conditional' => array(
 									array(
-										'field' => 'archive_course_thumbnail',
+										'field'   => 'archive_course_thumbnail',
 										'compare' => '=',
 										'value'   => 'yes'
 									)
