@@ -24,7 +24,8 @@ learn_press_admin_view( 'quiz/answer-item' );
                     <lp-question-answer-item v-for="(answer, index) in question.answers.options" :key="index"
                                              :question="question" :answer="answer" :index="index"
                                              :isTrueOrFalse="isTrueOrFalse" :isSingleChoice="isSingleChoice"
-                                             :disableDeleteAnswer="disableDeleteAnswer"></lp-question-answer-item>
+                                             :disableDeleteAnswer="disableDeleteAnswer"
+                                             @changeCorrect="changeCorrect"></lp-question-answer-item>
                 </draggable>
             </table>
         </div>
@@ -64,6 +65,13 @@ learn_press_admin_view( 'quiz/answer-item' );
                         orders.push(parseInt(option.question_answer_id));
                     });
                     $store.dispatch('lqs/updateOrderQuestionAnswers', orders);
+                },
+                changeCorrect: function (correctAnswer) {
+                    var request = {
+                        'question': this.question,
+                        'correctAnswer': correctAnswer
+                    };
+                    $store.dispatch('lqs/updateQuestionCorrectAnswer', request);
                 }
             }
         })
