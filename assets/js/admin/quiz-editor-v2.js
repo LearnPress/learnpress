@@ -274,6 +274,12 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 return question;
             })
         },
+        'ADD_QUESTION_ANSWER': function (state, answer) {
+            state.questions = state.questions.map(function (question) {
+                question.answers.options.push(answer);
+                return question;
+            })
+        },
         'SET_QUESTIONS': function (state, questions) {
             state.questions = questions;
         },
@@ -460,14 +466,28 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
         },
 
-        addQuestionAnswer: function (context, question) {
-            context.commit('UPDATE_QUESTION', question.id);
+        addQuestionAnswer: function (context, payload) {
+            context.commit('UPDATE_QUESTION', payload.questionId);
 
             Vue.http
                 .LPRequest({
                     type: 'add-question-answer',
-                    'question': JSON.stringify(question)
+                    'questionId': payload.questionId,
+                    'answer': JSON.stringify(payload.answer)
                 })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            var answer = result.data;
+                            context.commit('ADD_QUESTION_ANSWER', answer);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                )
         },
 
         updateOrderQuestions: function (context, orders) {

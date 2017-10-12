@@ -91,8 +91,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'items'      => array()
 				),
 				'i18n'          => array(
-					'back'             => __( 'Back', 'learnpress' ),
-					'selected_items'   => __( 'Selected items', 'learnpress' ),
+					'option'         => __( 'Option', 'learnpress' ),
+					'unique'         => uniqid(),
+					'back'           => __( 'Back', 'learnpress' ),
+					'selected_items' => __( 'Selected items', 'learnpress' ),
 				),
 				'listQuestions' => array(
 					'questions'        => $quiz->quiz_editor_get_questions(),

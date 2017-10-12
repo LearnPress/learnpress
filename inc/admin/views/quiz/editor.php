@@ -58,7 +58,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-quiz-editor', {

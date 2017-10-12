@@ -17,7 +17,7 @@ learn_press_admin_view( 'quiz/meta' );
 </script>
 
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
         Vue.component('lp-question-settings', {
             template: '#tmpl-lp-question-settings',

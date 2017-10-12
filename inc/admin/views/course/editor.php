@@ -23,7 +23,7 @@ learn_press_admin_view( 'course/modal-choose-items' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-course-editor', {

@@ -20,7 +20,7 @@
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
         Vue.component('lp-added-items-preview', {
             template: '#tmpl-lp-added-items-preview',

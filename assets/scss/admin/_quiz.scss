@@ -38,7 +38,7 @@
                     text-align: right;
                 }
 
-                .fa-bars{
+                .fa-bars {
                     text-align: center;
                     font-size: 18px;
                     color: #CCC;
@@ -94,19 +94,32 @@
                                 }
                             }
                             tbody {
-                                .lp-column-answer_text {
-                                    input {
-                                        width: 100%;
-                                        font-size: 14px;
-                                        border: none;
-                                        background: transparent;
-                                        box-shadow: none;
-                                        font-weight: normal;
-                                        color: #777;
-                                        padding: 0;
+                                tr {
+                                    background: #fff;
+                                    &:nth-child(2n) {
+                                        background: #f4fcff;
+                                    }
+                                    td {
+                                        background: inherit;
                                     }
                                 }
-
+                                .answer-item, .new-answer-item {
+                                    .lp-column-answer_text {
+                                        input {
+                                            width: 100%;
+                                            font-size: 14px;
+                                            border: none;
+                                            background: transparent;
+                                            box-shadow: none;
+                                            font-weight: normal;
+                                            color: #777;
+                                            padding: 0;
+                                        }
+                                    }
+                                }
+                                .new-answer-item {
+                                    background: #FBE9E9;
+                                }
                             }
                         }
                     }

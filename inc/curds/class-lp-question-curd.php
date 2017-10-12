@@ -148,6 +148,43 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Add question answer.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args
+	 *
+	 * @return array|bool
+	 */
+	public function add_answer( $args = array() ) {
+
+		global $wpdb;
+
+		$wpdb->insert(
+			$wpdb->learnpress_question_answers,
+			array(
+				'question_id'  => $args['question_id'],
+				'answer_data'  => $args['answer_data'],
+				'answer_order' => $args['answer_order']
+			),
+			array( '%d', '%s', '%d' ) );
+
+		$question_answer_id = $wpdb->insert_id;
+		if ( $question_answer_id ) {
+			return array(
+				'question_answer_id' => $question_answer_id,
+				'question_id'        => $args['question_id'],
+				'answer_order'       => $args['answer_order'],
+				'text'               => unserialize($args['answer_data'])['text'],
+				'value'              => unserialize($args['answer_data'])['value'],
+				'is_true'            => unserialize($args['answer_data'])['is_true']
+			);
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Delete question answer.
 	 *
 	 * @since 3.0.0

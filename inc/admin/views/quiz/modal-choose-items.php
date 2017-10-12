@@ -16,7 +16,7 @@ learn_press_admin_view( 'quiz/pagination' );
     </li>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-quiz-choose-item', {
@@ -100,7 +100,7 @@ learn_press_admin_view( 'quiz/pagination' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store, $) {
 
         Vue.component('lp-quiz-choose-items', {

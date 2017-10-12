@@ -6,6 +6,7 @@
  */
 
 learn_press_admin_view( 'quiz/answer-item' );
+
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-answers">
@@ -25,7 +26,8 @@ learn_press_admin_view( 'quiz/answer-item' );
                                              :question="question" :answer="answer" :index="index"
                                              :isTrueOrFalse="isTrueOrFalse" :isSingleChoice="isSingleChoice"
                                              :disableDeleteAnswer="disableDeleteAnswer"
-                                             @changeCorrect="changeCorrect"></lp-question-answer-item>
+                                             @changeCorrect="changeCorrect"
+                    ></lp-question-answer-item>
                 </draggable>
             </table>
         </div>
@@ -36,7 +38,7 @@ learn_press_admin_view( 'quiz/answer-item' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
         Vue.component('lp-question-answers', {
             template: '#tmpl-lp-question-answers',
@@ -57,7 +59,18 @@ learn_press_admin_view( 'quiz/answer-item' );
                     return 'lp-column-heading-' + heading;
                 },
                 addQuestionAnswer: function () {
-                    $store.dispatch('lqs/addQuestionAnswer', this.question);
+
+                    var request = {
+                        'questionId': this.question.id,
+                        'answer': {
+                            text: $store.getters['i18n/all'].option + ' ' + (this.question.answers.options.length + 1),
+                            isTrue: '',
+                            order: this.question.answers.options.length + 1,
+                            value: $store.getters['i18n/all'].unique
+                        }
+                    };
+
+                    $store.dispatch('lqs/addQuestionAnswer', request);
                 },
                 sortQuestionAnswers: function () {
                     var orders = [];
