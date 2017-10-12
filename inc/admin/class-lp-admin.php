@@ -32,6 +32,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_end' ), 1000 );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
+
+			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
+		}
+
+
+		public function admin_redirect() {
+			if ( 'yes' === get_option( 'learn_press_install' ) && current_user_can( 'install_plugins' ) ) {
+				delete_option( 'learn_press_install' );
+
+				wp_safe_redirect( admin_url( 'index.php?page=lp-setup' ) );
+			}
 		}
 
 		public function body_class( $classes ) {
@@ -255,6 +266,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Redirect to admin settings page
 		 */
 		public function _redirect() {
+			die();
 			$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
 			if ( 'learn_press_settings' == $page ) {
 				$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
@@ -290,6 +302,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'helpers/class-lp-plugins-helper.php';
 			include_once 'class-lp-modal-search-items.php';
 			include_once 'class-lp-modal-search-users.php';
+			include_once 'class-lp-setup-wizard.php';
 		}
 	}
 

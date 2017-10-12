@@ -27,12 +27,12 @@ abstract class LP_Abstract_Assets {
 
 		$priory = 1000;
 		if ( is_admin() ) {
-			add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
+			//add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
 			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 
 		} else {
-			add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
+			//add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
 			//add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
@@ -41,9 +41,9 @@ abstract class LP_Abstract_Assets {
 
 	abstract function load_scripts();
 
-	public function do_register() {
-
-	}
+//	public function do_register() {
+//
+//	}
 
 	/**
 	 * Default scripts
@@ -264,10 +264,7 @@ abstract class LP_Abstract_Assets {
 			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
 					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
-						print_r( $data );
-
 						$data = preg_replace_callback( '~:"[0-9.,]+"~', array( $this, '_valid_json_number' ), $data );
-
 						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
 					}
 				}

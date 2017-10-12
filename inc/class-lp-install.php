@@ -46,8 +46,9 @@ class LP_Install {
 		add_action( 'admin_init', array( __CLASS__, 'do_update' ) );
 		add_action( 'admin_init', array( __CLASS__, 'check_update' ) );
 
+		//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
+
 		return;
-		add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
 		add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
 		add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
@@ -68,9 +69,9 @@ class LP_Install {
 			return;
 		}
 
-		if(!empty($_REQUEST['redirect'])){
-			learn_press_add_notice('asdasdasdasd');
-			wp_redirect(urldecode($_REQUEST['redirect']));
+		if ( ! empty( $_REQUEST['redirect'] ) ) {
+			learn_press_add_notice( 'asdasdasdasd' );
+			wp_redirect( urldecode( $_REQUEST['redirect'] ) );
 		}
 	}
 
@@ -121,6 +122,13 @@ class LP_Install {
 		self::_create_log_path();
 		self::_create_pages();
 
+		$current_version    = get_option( 'learnpress_version', null );
+		$current_db_version = get_option( 'learnpress_db_version', null );
+
+		// Fresh installation
+		if ( is_null( $current_version ) && is_null( $current_db_version ) ) {
+			update_option( 'learn_press_install', 'yes' );
+		}
 
 		// Force to show notice outdated template
 		learn_press_delete_user_option( 'hide-notice-template-files' );
@@ -133,6 +141,7 @@ class LP_Install {
 			add_action( 'admin_init', array( __CLASS__, '_auto_update' ), - 15 );
 		}
 	}
+
 
 	/**
 	 * Update default options for LP
@@ -428,6 +437,7 @@ class LP_Install {
 
 	public static function admin_menu() {
 		add_dashboard_page( '', '', 'manage_options', 'learn_press_upgrade_from_09', '' );
+
 	}
 
 	public static function hide_upgrade_notice() {

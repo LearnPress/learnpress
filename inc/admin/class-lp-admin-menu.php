@@ -137,8 +137,7 @@ class LP_Admin_Menu {
 					$item->get_menu_title(),
 					$item->get_capability(),
 					$item->get_id(),
-					array( $item, 'display' ),
-					$item->get_icon()
+					array( $item, 'display' )
 				);
 			}
 			$this->menu_items = $menu_items;

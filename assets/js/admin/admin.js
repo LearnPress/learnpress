@@ -31,7 +31,6 @@
             });
         }
     });
-
     // Document is already ready?
     $(document).ready(function () {
         $('.learn-press-dropdown-pages').dropdownPages();
