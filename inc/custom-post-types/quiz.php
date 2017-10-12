@@ -92,7 +92,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				),
 				'i18n'          => array(
 					'option'         => __( 'Option', 'learnpress' ),
-					'unique'         => uniqid(),
+					'unique'         => learn_press_uniqid(),
 					'back'           => __( 'Back', 'learnpress' ),
 					'selected_items' => __( 'Selected items', 'learnpress' ),
 				),

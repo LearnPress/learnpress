@@ -270,13 +270,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         },
         'SORT_QUESTION_ANSWERS': function (state, orders) {
             state.questions = state.questions.map(function (question) {
-                question.answers.options.answer_order = orders[question.answers.options.question_answer_id];
+                question.answers.answer_order = orders[question.answers.question_answer_id];
                 return question;
             })
         },
         'ADD_QUESTION_ANSWER': function (state, answer) {
             state.questions = state.questions.map(function (question) {
-                question.answers.options.push(answer);
+                question.answers.push(answer);
                 return question;
             })
         },
@@ -302,7 +302,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
             state.questions = state.questions.map(function (question) {
                 if (question.id === questionId) {
-                    var answers = question.answers.options;
+                    var answers = question.answers;
                     answers.forEach(function (answer) {
                         if (parseInt(answer.question_answer_id) === answerId) {
                             var index = answers.indexOf(answer);
@@ -311,7 +311,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                     })
                 }
                 return question;
-            })
+            });
         },
         'REMOVE_QUESTIONS': function () {
             // code

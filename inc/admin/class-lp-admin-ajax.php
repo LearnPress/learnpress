@@ -352,10 +352,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'key'   => $question->get_type(),
 					'label' => $question->get_type_label()
 				),
-				'answers'  => array(
-					'heading' => $question->get_admin_option_headings(),
-					'options' => $question->get_answer_options()
-				),
+				'answers'  => $question->get_answer_options(),
 				'settings' => array(
 					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
 					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
@@ -424,14 +421,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 							$update['title'] = $question['title'];
 							break;
 						case 'update-content':
-							$update['content'] = $question['settings']['content']['value'];
+							$update['content'] = $question['settings']['content'];
 							break;
 						case 'update-meta':
 							if ( ! $meta_key = $args['meta'] ) {
 								break;
 							}
 							$update['key']  = $meta_key;
-							$update['meta'] = $question['settings'][ $meta_key ]['value'];
+							$update['meta'] = $question['settings'][ $meta_key ];
 							break;
 						default;
 							break;
@@ -586,7 +583,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$correct_answer = json_decode( wp_unslash( $correct_answer ), true );
 
 					$question_type    = $question['type']['key'];
-					$question_answers = $question['answers']['options'];
+					$question_answers = $question['answers'];
 
 					$update         = array();
 					$number_correct = 0;

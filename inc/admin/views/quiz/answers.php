@@ -15,14 +15,15 @@ learn_press_admin_view( 'quiz/answer-item' );
             <table class="lp-list-options">
                 <thead>
                 <tr>
-                    <th v-for="(heading, key) in question.answers.heading" class="lp-column-heading"
-                        :class="headingClass(key)">
-                        {{heading}}
-                    </th>
+                    <th class="lp-column-heading lp-column-heading-sort"></th>
+                    <th class="lp-column-heading lp-column-heading-order"></th>
+                    <th class="lp-column-heading lp-column-heading-answer_text"><?php esc_html_e( 'Answer Text', 'learnpress' ); ?></th>
+                    <th class="lp-column-heading lp-column-heading-answer_correct"><?php esc_html_e( 'Is Correct?', 'learnpress' ); ?></th>
+                    <th class="lp-column-heading lp-column-heading-actions"></th>
                 </tr>
                 </thead>
-                <draggable :list="question.answers.options" :element="'tbody'" @end="sortQuestionAnswers">
-                    <lp-question-answer-item v-for="(answer, index) in question.answers.options" :key="index"
+                <draggable :list="question.answers" :element="'tbody'" @end="sortQuestionAnswers">
+                    <lp-question-answer-item v-for="(answer, index) in question.answers" :key="index"
                                              :question="question" :answer="answer" :index="index"
                                              :isTrueOrFalse="isTrueOrFalse" :isSingleChoice="isSingleChoice"
                                              :disableDeleteAnswer="disableDeleteAnswer"
@@ -51,7 +52,7 @@ learn_press_admin_view( 'quiz/answer-item' );
                     return this.question.type.key === 'single_choice';
                 },
                 disableDeleteAnswer: function () {
-                    return this.question.answers.options.length < 3;
+                    return this.question.answers.length < 3;
                 }
             },
             methods: {
@@ -63,9 +64,9 @@ learn_press_admin_view( 'quiz/answer-item' );
                     var request = {
                         'questionId': this.question.id,
                         'answer': {
-                            text: $store.getters['i18n/all'].option + ' ' + (this.question.answers.options.length + 1),
+                            text: $store.getters['i18n/all'].option + ' ' + (this.question.answers.length + 1),
                             isTrue: '',
-                            order: this.question.answers.options.length + 1,
+                            order: this.question.answers.length + 1,
                             value: $store.getters['i18n/all'].unique
                         }
                     };
@@ -74,7 +75,7 @@ learn_press_admin_view( 'quiz/answer-item' );
                 },
                 sortQuestionAnswers: function () {
                     var orders = [];
-                    this.question.answers.options.forEach(function (option, index) {
+                    this.question.answers.forEach(function (option, index) {
                         orders.push(parseInt(option.question_answer_id));
                     });
                     $store.dispatch('lqs/updateOrderQuestionAnswers', orders);
