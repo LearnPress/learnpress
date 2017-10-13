@@ -13,7 +13,6 @@ learn_press_admin_view( 'quiz/question-settings' );
     <div class="question-item" :item-id="question.id">
         <lp-question-actions :question="question" :index="index"></lp-question-actions>
         <lp-question-settings :question="question" :index="index"></lp-question-settings>
-
     </div>
 </script>
 

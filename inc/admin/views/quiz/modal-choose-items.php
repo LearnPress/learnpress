@@ -100,7 +100,7 @@ learn_press_admin_view( 'quiz/pagination' );
     </div>
 </script>
 
-<script type="text/javascript">
+<script>
     (function (Vue, $store, $) {
 
         Vue.component('lp-quiz-choose-items', {

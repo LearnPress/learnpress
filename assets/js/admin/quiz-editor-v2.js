@@ -69,9 +69,6 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         'ADD_ITEM': function (state, item) {
             state.addedItems.push(item);
         },
-        'UPDATE_QUIZ_ITEMS': function (state, items) {
-            state.addedItems = items;
-        },
         'REMOVE_ADDED_ITEM': function (state, item) {
             state.addedItems.forEach(function (_item, index) {
                 if (_item.id === item.id) {
@@ -161,10 +158,8 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                         var result = response.body;
 
                         if (result.success) {
-                            context.commit('TOGGLE');
-
                             var items = result.data;
-                            context.commit('UPDATE_QUIZ_ITEMS', items);
+                            context.commit('lqs/UPDATE_QUIZ_QUESTIONS', items, {root: true});
                         }
                     },
                     function (error) {
@@ -284,8 +279,12 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             state.questions = questions;
         },
         'ADD_NEW_QUESTION': function (state, question) {
-            question.open = true;
             state.questions.push(question);
+        },
+        'UPDATE_QUIZ_QUESTIONS': function (state, questions) {
+            questions.forEach(function (question) {
+                state.questions.push(question);
+            });
         },
         'UPDATE_QUESTION': function () {
             // code
@@ -314,9 +313,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             });
         },
         'REMOVE_QUESTIONS': function () {
-            // code
-        },
-        'UPDATE_LIST_QUESTION_ITEMS': function (state, payload) {
             // code
         },
         'CLOSE_QUESTION': function (state, question) {
@@ -534,10 +530,10 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                     answer: JSON.stringify(payload.answer)
                 })
                 .then(function () {
-                    context.commit('UPDATE_QUESTION_ANSWER_SUCCESS', payload.question.id);
+                    context.commit('UPDATE_QUESTION_ANSWER_SUCCESS', parseInt(payload.questionId));
                 })
                 .catch(function () {
-                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', payload.question.id);
+                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', parserInt(payload.questionId));
                 })
 
         },

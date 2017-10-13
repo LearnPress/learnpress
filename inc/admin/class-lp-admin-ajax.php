@@ -191,7 +191,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
 
-					$items = json_decode( wp_unslash( $items, true ) );
+					$items = json_decode( wp_unslash( $items ), true );
 
 					$result = $curd->update_section_items( $section_id, $items );
 					break;
@@ -200,7 +200,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
 
-					$items = json_decode( wp_unslash( $items, true ) );
+					$items = json_decode( wp_unslash( $items ), true );
 
 					if ( ! $items || ! $section_id ) {
 						$result = new WP_Error();
@@ -239,7 +239,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$orders = json_decode( wp_unslash( $orders, true ) );
+					$orders = json_decode( wp_unslash( $orders ), true );
 
 					$result = $curd->sort_sections( $orders );
 
@@ -252,7 +252,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'update-section':
 					$section = ! empty( $args['section'] ) ? $args['section'] : false;
-					$section = json_decode( wp_unslash( $section, true ) );
+					$section = json_decode( wp_unslash( $section ), true );
 
 					if ( ! is_array( $section ) || empty( $section ) ) {
 						break;
@@ -352,7 +352,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'key'   => $question->get_type(),
 					'label' => $question->get_type_label()
 				),
-				'answers'  => $question->get_answer_options(),
+				'answers'  => (array) $question->get_answer_options(),
 				'settings' => array(
 					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
 					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
@@ -543,6 +543,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 							}
 						}
 					}
+
 					break;
 
 				case 'sort-questions':
