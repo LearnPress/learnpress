@@ -1,3 +1,14 @@
+<?php
+/**
+ * Template for displaying header of setup wizard.
+ *
+ * @author  ThimPres
+ * @package LearnPress/Admin/Views
+ * @version 3.x.x
+ */
+
+defined( 'ABSPATH' ) or exit;
+?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>

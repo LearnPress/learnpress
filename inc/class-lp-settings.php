@@ -54,7 +54,7 @@ class LP_Settings {
 	 * @return LP_Settings
 	 */
 	public function get_group( $group, $prefix = '' ) {
-		$options = ! empty( $this->_options[ $group ] ) ? $this->get( $group ) : array();
+		$options = ! empty( $this->_options[ $this->_prefix . $group ] ) ? $this->get( $this->_prefix . $group ) : array();
 
 		return new LP_Settings( $options, $prefix );
 	}

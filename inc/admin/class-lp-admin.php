@@ -303,6 +303,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-modal-search-items.php';
 			include_once 'class-lp-modal-search-users.php';
 			include_once 'class-lp-setup-wizard.php';
+			include_once 'class-lp-updater.php';
 		}
 	}
 

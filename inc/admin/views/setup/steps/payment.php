@@ -1,9 +1,20 @@
-<h2><?php _e( 'Payment', 'learnpress' ); ?></h2>
 <?php
+/**
+ * Template for displaying payments of setup wizard.
+ *
+ * @author  ThimPres
+ * @package LearnPress/Admin/Views
+ * @version 3.x.x
+ */
+
+defined( 'ABSPATH' ) or exit;
+
 $wizard   = LP_Setup_Wizard::instance();
 $payments = $wizard->get_payments();
 
 ?>
+<h2><?php _e( 'Payment', 'learnpress' ); ?></h2>
+
 <ul class="browse-payments">
 	<?php foreach ( $payments as $slug => $payment ) { ?>
         <li class="payment payment-<?php echo $slug; ?>">

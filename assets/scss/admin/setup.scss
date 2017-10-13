@@ -1,5 +1,31 @@
-.lp-setup {
+/* The animation code */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-back {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(-180deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
+.lp-setup, .lp-update-database {
     color: #777;
+
     h1, h2, h3, h4, h5, h6 {
         color: #777;
         font-weight: normal;
@@ -9,6 +35,11 @@
         border-bottom: 1px solid #EEE;
         padding-bottom: 20px;
     }
+    p {
+        font-size: 16px;
+        margin: 0 0 20px 0;
+    }
+
     .logo {
         text-align: center;
     }
@@ -22,6 +53,54 @@
         padding: 20px;
         border: 1px solid #ececec;
         margin-bottom: 20px;
+        position: relative;
+        &.loading {
+            &:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+                background: #FFF;
+                opacity: 0.5;
+            }
+            .icon-loading {
+                display: block;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 20px;
+                height: 20px;
+                margin-left: -10px;
+                margin-top: -10px;
+                z-index: 15;
+                &:before,
+                &:after {
+                    width: 20px;
+                    height: 20px;
+                    top: 0;
+                    left: 0;
+                    content: '';
+                    position: absolute;
+                }
+                &:before {
+                    background: #e2e2e2;
+                    animation-name: spin;
+                    animation-duration: 4s;
+                    animation-iteration-count: infinite;
+                    animation-delay: 0s;
+                }
+                &:after {
+                    background: #39a1e5;
+                    animation-name: spin-back;
+                    animation-duration: 4s;
+                    animation-iteration-count: infinite;
+                    animation-delay: 0s;
+                }
+            }
+        }
     }
 
     .lp-setup-nav {
@@ -58,6 +137,17 @@
                     bottom: -20px;
                     z-index: 10;
                 }
+                &:after {
+                    width: 8px;
+                    height: 8px;
+                    position: absolute;
+                    background: #41b3ff;
+                    transform: rotate(45deg);
+                    left: 50%;
+                    bottom: -18px;
+                    margin-left: -5px;
+                    content: '';
+                }
             }
         }
     }
@@ -82,22 +172,6 @@
         }
     }
 
-    .lp-setup-content {
-        li {
-            &.content {
-                display: none;
-                font-size: 16px;
-                p {
-                    font-size: 16px;
-                    margin: 0 0 20px 0;
-                }
-                &.active {
-                    display: block;
-                }
-            }
-        }
-    }
-
     footer {
         max-width: 900px;
         margin: 0 auto;
@@ -111,12 +185,20 @@
         padding-top: 20px;
     }
 
-    .button-skip {
+    .button-skip-next,
+    .button-skip-prev {
         opacity: 0.7;
         float: left;
+        margin-right: 4px;
         &:hover {
             opacity: 1;
         }
+    }
+
+    .button-dashboard-page {
+        vertical-align: middle;
+        margin: 5px;
+        display: inline-block;
     }
 
     table {
@@ -125,9 +207,12 @@
         th, td {
             padding: 8px 8px 8px 0;
             font-weight: normal;
+            vertical-align: top;
+            text-align: left;
         }
         th {
             width: 33%;
+            text-align: left;
         }
     }
 
@@ -168,6 +253,20 @@
             line-height: 40px;
             color: #777;
             text-align: center;
+            &.button-primary{
+                color: #FFF;
+            }
+        }
+    }
+    .learn-press-message {
+        background: #FAFAFA;
+        padding: 15px;
+        border-left: 3px solid #05B3FF;
+        margin: 0 0 20px 0;
+        font-size: 14px;
+        border-radius: 4px;
+        &.error {
+            border-left-color: #FF0000;
         }
     }
 }

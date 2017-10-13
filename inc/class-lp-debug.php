@@ -193,4 +193,12 @@ class LP_Debug {
 		global $wpdb;
 		$wpdb->query( "ROLLBACK;" );
 	}
+
+	/**
+	 * Commit a sql transaction
+	 */
+	public static function commitTransaction() {
+		global $wpdb;
+		$wpdb->query( "COMMIT;" );
+	}
 }

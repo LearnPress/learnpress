@@ -3,11 +3,16 @@
 /**
  * Class LP_Setup_Wizard
  *
+ * Class helper for displaying the Setup Wizard page.
+ *
  * @since   3.x.x
  * @author  ThimPress
  * @package LearnPress/Classes
  */
 class LP_Setup_Wizard {
+	/**
+	 * @var string
+	 */
 	protected $_base_url = 'index.php?page=lp-setup';
 
 	/**
@@ -17,7 +22,6 @@ class LP_Setup_Wizard {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'setup_wizard' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
-
 	}
 
 	/**
@@ -34,6 +38,9 @@ class LP_Setup_Wizard {
 		if ( 'lp-setup' !== LP_Request::get_string( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
+
+		$this->save();
+
 		$assets = learn_press_admin_assets();
 
 		wp_enqueue_style( 'buttons' );
@@ -67,6 +74,37 @@ class LP_Setup_Wizard {
 		die();
 	}
 
+	public function save() {
+		$step = LP_Request::get_string( 'lp-setup-step' );
+		if ( ! wp_verify_nonce( LP_Request::get_string( 'lp-setup-nonce' ), 'lp-setup-step-' . $step ) ) {
+
+			return;
+		}
+
+		$postdata = LP_Request::get_array( 'settings' );
+
+		if ( ( 'yes' !== LP_Request::get( 'skip' ) ) && in_array( $step, array( 'payment', 'pages', 'currency' ) ) ) {
+
+			if ( array_key_exists( 'paypal', $postdata ) ) {
+				update_option( 'learn_press_paypal', $postdata['paypal'] );
+			}
+
+			if ( array_key_exists( 'currency', $postdata ) ) {
+				foreach ( $postdata['currency'] as $k => $v ) {
+					update_option( 'learn_press_' . $k, $v );
+				}
+			}
+
+			if ( array_key_exists( 'pages', $postdata ) ) {
+				foreach ( $postdata['pages'] as $k => $v ) {
+					update_option( 'learn_press_' . $k, $v );
+				}
+			}
+		}
+
+		do_action( 'learn-press/setup-wizard/update-settings', $postdata, $step );
+	}
+
 	/**
 	 * Return array of all steps are available when running setup wizard.
 	 *
@@ -76,7 +114,7 @@ class LP_Setup_Wizard {
 		static $steps = false;
 		if ( ! $steps ) {
 			$steps = apply_filters(
-				'learn-press/setup-wizard-steps',
+				'learn-press/setup-wizard/steps',
 				array(
 					'welcome'  => array(
 						'title'       => __( 'Welcome', 'learnpress' ),
@@ -84,14 +122,14 @@ class LP_Setup_Wizard {
 						'next_button' => __( 'Run setup wizard', 'learnpress' )
 					),
 					'currency' => array(
-						'title'       => __( 'Currency', 'learnpress' ),
-						'callback'    => array( $this, 'step_currency' ),
-						'back_button' => false
+						'title'            => __( 'Currency', 'learnpress' ),
+						'callback'         => array( $this, 'step_currency' ),
+						'back_button'      => false,
+						'skip_prev_button' => false
 					),
 					'pages'    => array(
-						'title'       => __( 'Static Pages', 'learnpress' ),
-						'callback'    => array( $this, 'step_pages' ),
-						'skip_button' => false
+						'title'    => __( 'Static Pages', 'learnpress' ),
+						'callback' => array( $this, 'step_pages' ),
 					),
 					'payment'  => array(
 						'title'    => __( 'Payment', 'learnpress' ),
@@ -133,7 +171,12 @@ class LP_Setup_Wizard {
 			$current   = reset( $key_steps );
 		}
 
-		return $key ? $current : $steps[ $current ];
+		$step = $steps[ $current ];
+		if ( empty( $step['slug'] ) ) {
+			$step['slug'] = $current;
+		}
+
+		return $key ? $current : $step;
 	}
 
 	/**

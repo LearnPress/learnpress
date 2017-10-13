@@ -1,30 +1,24 @@
 ;(function ($) {
-
-    "use strict";
+    'use strict';
 
     function init() {
-        $(document).on('click', '.buttons .button', function (e) {
+        $(document).on('click', '#button-update', function (e) {
             e.preventDefault();
-            var $form = $('#learn-press-setup-form'),
+            var $form = $('#learn-press-update-form'),
                 loadUrl = $(this).attr('href'),
                 $main = $('#main').addClass('loading');
-
+            $('.learn-press-message').remove();
             $.post({
                 url: loadUrl,
                 data: $form.serializeJSON(),
                 success: function (res) {
-                    var $html = $(res);
-                    $('#main').replaceWith($html.contents().filter('#main'));
-
-                    LP.setUrl(loadUrl);
-
-                    $('.learn-press-dropdown-pages').dropdownPages();
+                    $(res).insertBefore($form);
                     $main.removeClass('loading');
                 }
             });
         })
     }
 
-    $(document).ready(init)
+    $(document).ready(init);
 
 })(jQuery);
