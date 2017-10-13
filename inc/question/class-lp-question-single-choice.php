@@ -70,20 +70,20 @@ class LP_Question_Single_Choice extends LP_Question {
 
 	public function get_default_answers( $answers = false ) {
 		if ( ! $answers ) {
-			if ( $this->get_id() && get_post_status( $this->get_id() ) !== 'auto-draft' ) {
-				global $wpdb;
-				$sql              = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
-				                                    . " WHERE question_id = %d"
-				                                    . " ORDER BY `answer_order`", $this->get_id() );
-				$question_answers = $wpdb->get_results( $sql );
-				$answers          = array();
-				foreach ( $question_answers as $qa ) {
-					$answers[] = unserialize( $qa->answer_data );
-				}
-			}
-			if ( ! empty( $answers ) ) {
-				return $answers;
-			}
+//			if ( $this->get_id() && get_post_status( $this->get_id() ) !== 'auto-draft' ) {
+//				global $wpdb;
+//				$sql              = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
+//				                                    . " WHERE question_id = %d"
+//				                                    . " ORDER BY `answer_order`", $this->get_id() );
+//				$question_answers = $wpdb->get_results( $sql );
+//				$answers          = array();
+//				foreach ( $question_answers as $qa ) {
+//					$answers[] = unserialize( $qa->answer_data );
+//				}
+//			}
+//			if ( ! empty( $answers ) ) {
+//				return $answers;
+//			}
 			$answers = array(
 				array(
 					'is_true' => 'yes',

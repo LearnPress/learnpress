@@ -44,10 +44,10 @@ class LP_Question_Factory {
 	/**
 	 * Convert a question from a type to a new type.
 	 *
-	 * @param int    $id
+	 * @param int $id
 	 * @param string $from
 	 * @param string $to
-	 * @param array  $data
+	 * @param array $data
 	 *
 	 * @return LP_Question
 	 */
@@ -123,7 +123,6 @@ class LP_Question_Factory {
 	}
 
 
-
 	public static function sanitize_answers( $answers, $posted, $q ) {
 		$func = "_sanitize_{$q->type}_answers";
 		if ( is_callable( array( __CLASS__, $func ) ) ) {
@@ -156,7 +155,9 @@ class LP_Question_Factory {
 
 	protected static function _sanitize_true_or_false_answers( $answers, $q ) {
 		$size = sizeof( $answers );
-		if ( $size > 2 ) {
+		if ( $size == 0 ) {
+			$answers = $q->get_default_answers();
+		} else if ( $size > 2 ) {
 			$answers = array_slice( $answers, 0, 2 );
 		} elseif ( $size == 1 ) {
 			$answers[] = array(
@@ -164,8 +165,6 @@ class LP_Question_Factory {
 				'value'   => learn_press_uniqid(),
 				'text'    => __( 'Option', 'learnpress' )
 			);
-		} elseif ( $size == 0 ) {
-			return $answers;
 		}
 		$answers     = array_values( $answers );
 		$has_checked = false;
@@ -270,7 +269,7 @@ class LP_Question_Factory {
 	}
 
 	public static function fetch_question_content( $the_question, $args = false ) {
-		die(__FUNCTION__);
+		die( __FUNCTION__ );
 		$question = self::get_question( $the_question );
 		$content  = '';
 		if ( $question ) {
@@ -319,13 +318,13 @@ class LP_Question_Factory {
 	 * Also add to quiz if the id of quiz is passed.
 	 *
 	 * @param array $args
+	 * @param bool $get_answers | get new question answers data
 	 *
-	 * @return mixed|int
+	 * @return array|int|WP_Error
 	 */
-	public static function add_question( $args = array() ) {
-		global $wpdb;
-		print_r( $args );
-		$args        = wp_parse_args(
+	public static function add_question( $args = array(), $get_answers = false ) {
+
+		$args = wp_parse_args(
 			(array) $args,
 			array(
 				'quiz_id' => 0,
@@ -335,6 +334,7 @@ class LP_Question_Factory {
 				'title'   => __( 'Untitled question', 'learnpress' )
 			)
 		);
+
 		$question_id = wp_insert_post(
 			array(
 				'post_type'   => LP_QUESTION_CPT,
@@ -347,11 +347,42 @@ class LP_Question_Factory {
 				$quiz = learn_press_get_quiz( $args['quiz_id'] );
 				$quiz->add_question( $question_id, $args );
 			}
-			print_r( $args );
+
 			update_post_meta( $question_id, '_lp_type', $args['type'] );
 		}
 
-		return $question_id;
+		$question_curd = new LP_Question_CURD();
+
+		$question = LP_Question::get_question( $question_id, array( 'type' => $args['type'] ) );
+
+		// sanitize question answers data
+		$func    = "_sanitize_{$args['type']}_answers";
+		$answers = call_user_func_array( array( __CLASS__, $func ), array( array(), $question ) );
+
+		$data = array();
+		// insert answers data in new question
+		foreach ( $answers as $index => $answer ) {
+			$insert = array(
+				'question_id'  => $question_id,
+				'answer_data'  => serialize( array(
+						'text'    => stripslashes( $answer['text'] ),
+						'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+						'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
+					)
+				),
+				'answer_order' => $index + 1
+			);
+			$data[ $index ] = $question_curd->add_answer( $insert );
+		}
+
+		if ( $get_answers ) {
+			return array(
+				'id'      => $question_id,
+				'answers' => $data
+			);
+		} else {
+			return $question_id;
+		}
 	}
 }
 

@@ -467,9 +467,7 @@ class LP_Question extends LP_Course_Item {
 		return $answers;
 	}
 
-	public function get_default_answers(
-		$answers = false
-	) {
+	public function get_default_answers( $answers = false ) {
 		if ( ! $answers ) {
 			$answers = array(
 				array(
@@ -970,6 +968,7 @@ class LP_Question extends LP_Course_Item {
 
 		if ( empty( LP_Global::$questions[ $key ] ) ) {
 			$class_name = self::get_quiz_class( $the_question, $args );
+
 			if ( is_string( $class_name ) && class_exists( $class_name ) ) {
 				$lesson = new $class_name( $the_question->ID, $args );
 			} elseif ( $class_name instanceof LP_Question ) {

@@ -103,7 +103,7 @@ abstract class LP_Abstract_Object_Data {
 	 * Get object data
 	 *
 	 * @param string $name - Optional. Name of data want to get, true if return all.
-	 * @param mixed  $default
+	 * @param mixed $default
 	 *
 	 * @return array|mixed
 	 */
@@ -150,7 +150,7 @@ abstract class LP_Abstract_Object_Data {
 	 *
 	 * @param mixed $key_or_data
 	 * @param mixed $value
-	 * @param bool  $extra
+	 * @param bool $extra
 	 */
 	protected function _set_data( $key_or_data, $value = '', $extra = false ) {
 		if ( is_array( $key_or_data ) ) {
@@ -187,8 +187,7 @@ abstract class LP_Abstract_Object_Data {
 					}
 
 
-				}
-				catch ( Exception $ex ) {
+				} catch ( Exception $ex ) {
 					print_r( $key_or_data );
 					print_r( $ex->getMessage() );
 					die();
@@ -205,7 +204,7 @@ abstract class LP_Abstract_Object_Data {
 	 * Set extra data
 	 *
 	 * @param array|string $key_or_data
-	 * @param string       $value
+	 * @param string $value
 	 */
 	public function set_data( $key_or_data, $value = '' ) {
 		$this->_set_data( $key_or_data, $value, true );
@@ -380,7 +379,7 @@ abstract class LP_Abstract_Object_Data {
 	 * Add new meta data to object.
 	 *
 	 * @param string|array $key_or_array
-	 * @param string       $value
+	 * @param string $value
 	 */
 	public function add_meta( $key_or_array, $value = '' ) {
 		if ( is_array( $key_or_array ) ) {
@@ -402,7 +401,7 @@ abstract class LP_Abstract_Object_Data {
 	 * If meta value is passed, compare with existing value in database (string only).
 	 *
 	 * @param string $meta_key
-	 * @param bool   $meta_value - Optional. FALSE to abort comparison.
+	 * @param bool $meta_value - Optional. FALSE to abort comparison.
 	 *
 	 * @return bool
 	 */

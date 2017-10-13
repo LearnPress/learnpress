@@ -365,11 +365,12 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
     var actions = {
 
-        addNewQuestion: function (context, questions) {
+        addNewQuestion: function (context, payload) {
             Vue.http
                 .LPRequest({
                     type: 'new-question',
-                    questions: questions
+                    'question': JSON.stringify(payload.newQuestion),
+                    'quizId': parseInt(payload.quizId)
                 })
                 .then(
                     function (response) {
