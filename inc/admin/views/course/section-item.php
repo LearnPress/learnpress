@@ -33,7 +33,7 @@
     </li>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-section-item', {

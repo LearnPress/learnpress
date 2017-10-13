@@ -23,7 +23,7 @@ learn_press_admin_view( 'course/section' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-list-sections', {

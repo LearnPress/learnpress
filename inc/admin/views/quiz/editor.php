@@ -14,7 +14,8 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
     <div id="quiz-editor-v2" class="learn-press-box-data" :class="{'need-reload': !heartbeat}">
         <div class="lp-box-data-head heading">
             <h3><?php echo __( 'Questions', 'learnpress' ); ?></h3>
-            <span class="collapse-list-questions" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>
+            <span class="collapse-list-questions dashicons " @click="toggle"
+                  :class="isOpen ? 'dashicons-arrow-down' : 'dashicons-arrow-up'"></span>
         </div>
         <div class="lp-box-data-content">
             <div class="lp-list-questions">
@@ -58,7 +59,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-quiz-editor', {

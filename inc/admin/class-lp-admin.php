@@ -90,13 +90,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				learn_press_admin_view( 'quiz/editor-wrapper' );
 			}
 
-			echo '<!-- BEGIN courseEditor app -->' . "\n";
+			echo '<!-- BEGIN Admin Editor -->' . "\n";
 			echo '<div id="course-editor" class="" ng-app="courseEditor" ng-controller="courseEditor">' . "\n";
 		}
 
 		public function wrapper_end() {
 			echo '</div>' . "\n";
-			echo '<!-- END courseEditor app -->' . "\n";
+			echo '<!-- END Admin Editor -->' . "\n";
 		}
 
 		public function notice_required_permalink() {

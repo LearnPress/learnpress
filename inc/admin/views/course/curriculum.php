@@ -21,7 +21,7 @@ learn_press_admin_view( 'course/sections' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-curriculum', {

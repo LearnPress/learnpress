@@ -17,7 +17,7 @@ learn_press_admin_view( 'quiz/question-item' );
     </draggable>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-list-quiz-questions', {

@@ -199,6 +199,13 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		if ( is_array( $questions ) ) {
 			foreach ( $questions as $index => $id ) {
 				$question = LP_Question::get_question( $id );
+
+
+				$answers = array();
+				foreach ( $question->get_answer_options() as $key => $answer ) {
+					$answers[ $key ] = array_values( $answer );
+				}
+
 				$post     = get_post( $id );
 				$result[] = array(
 					'id'       => $id,
@@ -208,34 +215,12 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 						'key'   => $question->get_type(),
 						'label' => $question->get_type_label()
 					),
-					'answers'  => array(
-						'heading' => $question->get_admin_option_headings(),
-						'options' => $question->get_answer_options()
-					),
+					'answers'  => $question->get_answer_options(),
 					'settings' => array(
-						'content'     => array(
-							'type'  => 'textarea',
-							'label' => __( 'Question Content', 'learnpress' ),
-							'value' => $post->post_content
-						),
-						'mark'        => array(
-							'type'  => 'number',
-							'label' => __( 'Mark for this question', 'learnpress' ),
-							'value' => get_post_meta( $id, '_lp_mark', true ),
-							'desc'  => __( 'Mark for choosing the right answer.', 'learnpress' )
-						),
-						'explanation' => array(
-							'type'  => 'textarea',
-							'label' => __( 'Question explanation', 'learnpress' ),
-							'value' => get_post_meta( $id, '_lp_explanation', true ),
-							'desc'  => __( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ),
-						),
-						'hint'        => array(
-							'type'  => 'textarea',
-							'label' => __( 'Question hint', 'learnpress' ),
-							'value' => get_post_meta( $id, '_lp_hint', true ),
-							'desc'  => __( 'Instruction for user to select the right answer. The text will be shown when user clicking \'Hint\' button.', 'learnpress' ),
-						)
+						'content'     => $post->post_content,
+						'mark'        => get_post_meta( $id, '_lp_mark', true ),
+						'explanation' => get_post_meta( $id, '_lp_explanation', true ),
+						'hint'        => get_post_meta( $id, '_lp_hint', true )
 					),
 					'order'    => $order[ $index ]
 				);

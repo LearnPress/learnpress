@@ -17,7 +17,7 @@ learn_press_admin_view( 'course/pagination' );
     </li>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store) {
 
         Vue.component('lp-course-choose-item', {
@@ -118,7 +118,7 @@ learn_press_admin_view( 'course/pagination' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store, $) {
 
         Vue.component('lp-curriculum-choose-items', {

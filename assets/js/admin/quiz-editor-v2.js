@@ -270,7 +270,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         },
         'SORT_QUESTION_ANSWERS': function (state, orders) {
             state.questions = state.questions.map(function (question) {
-                question.answers.options.answer_order = orders[question.answers.options.question_answer_id];
+                question.answers.answer_order = orders[question.answers.question_answer_id];
+                return question;
+            })
+        },
+        'ADD_QUESTION_ANSWER': function (state, answer) {
+            state.questions = state.questions.map(function (question) {
+                question.answers.push(answer);
                 return question;
             })
         },
@@ -296,7 +302,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
             state.questions = state.questions.map(function (question) {
                 if (question.id === questionId) {
-                    var answers = question.answers.options;
+                    var answers = question.answers;
                     answers.forEach(function (answer) {
                         if (parseInt(answer.question_answer_id) === answerId) {
                             var index = answers.indexOf(answer);
@@ -305,7 +311,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                     })
                 }
                 return question;
-            })
+            });
         },
         'REMOVE_QUESTIONS': function () {
             // code
@@ -460,14 +466,28 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
         },
 
-        addQuestionAnswer: function (context, question) {
-            context.commit('UPDATE_QUESTION', question.id);
+        addQuestionAnswer: function (context, payload) {
+            context.commit('UPDATE_QUESTION', payload.questionId);
 
             Vue.http
                 .LPRequest({
                     type: 'add-question-answer',
-                    'question': JSON.stringify(question)
+                    'questionId': payload.questionId,
+                    'answer': JSON.stringify(payload.answer)
                 })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            var answer = result.data;
+                            context.commit('ADD_QUESTION_ANSWER', answer);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                )
         },
 
         updateOrderQuestions: function (context, orders) {

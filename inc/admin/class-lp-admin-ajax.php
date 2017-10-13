@@ -352,10 +352,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'key'   => $question->get_type(),
 					'label' => $question->get_type_label()
 				),
-				'answers'  => array(
-					'heading' => $question->get_admin_option_headings(),
-					'options' => $question->get_answer_options()
-				),
+				'answers'  => $question->get_answer_options(),
 				'settings' => array(
 					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
 					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
@@ -424,14 +421,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 							$update['title'] = $question['title'];
 							break;
 						case 'update-content':
-							$update['content'] = $question['settings']['content']['value'];
+							$update['content'] = $question['settings']['content'];
 							break;
 						case 'update-meta':
 							if ( ! $meta_key = $args['meta'] ) {
 								break;
 							}
 							$update['key']  = $meta_key;
-							$update['meta'] = $question['settings'][ $meta_key ]['value'];
+							$update['meta'] = $question['settings'][ $meta_key ];
 							break;
 						default;
 							break;
@@ -474,12 +471,28 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'add-question-answer':
-					$question = ! empty( $args['question'] ) ? $args['question'] : false;
-					$question = json_decode( wp_unslash( $question ), true );
+					$question_id = ! empty( $args['questionId'] ) ? $args['questionId'] : false;
 
-					if ( ! is_array( $question ) ) {
+					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
+					$answer = json_decode( wp_unslash( $answer ), true );
+
+					if ( ! ( $question_id || is_array( $answer ) ) ) {
 						break;
 					}
+
+					$insert = array(
+						'question_id'  => $question_id,
+						'answer_data'  => serialize( array(
+								'text'    => stripslashes( $answer['text'] ),
+								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+								'is_true' => isset( $answer['isTrue'] ) ? $answer['isTrue'] : ''
+							)
+						),
+						'answer_order' => $answer['order']
+					);
+
+					$result = $question_curd->add_answer( $insert );
+
 					break;
 
 				case 'clone-question':
@@ -570,9 +583,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$correct_answer = json_decode( wp_unslash( $correct_answer ), true );
 
 					$question_type    = $question['type']['key'];
-					$question_answers = $question['answers']['options'];
+					$question_answers = $question['answers'];
 
-					$update = array();
+					$update         = array();
+					$number_correct = 0;
 
 					foreach ( $question_answers as $index => $answer ) {
 
@@ -590,6 +604,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 							}
 						}
 
+						$number_correct += ( $answer_data['is_true'] == 'yes' ) ? 1 : 0;
+
 						$update[ $index ] = array(
 							'data'  => array(
 								'answer_data' => serialize( $answer_data )
@@ -602,7 +618,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						);
 					}
 
-					$question_curd->update_answer( $update, 'update-correct' );
+					if ( $number_correct ) {
+						$result = $question_curd->update_answer( $update, 'update-correct' );
+					} else {
+						$result = 'fail';
+					}
 
 					break;
 

@@ -66,7 +66,7 @@ learn_press_admin_view( 'course/new-section-item' );
     </div>
 </script>
 
-<script>
+<script type="text/javascript">
     (function (Vue, $store, $) {
 
         Vue.component('lp-section', {
