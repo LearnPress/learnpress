@@ -77,7 +77,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array $args
+ * @param array      $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -112,7 +112,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array $args
+ * @param array      $args
  *
  * @return mixed|string
  */
@@ -361,6 +361,7 @@ function learn_press_get_education_themes() {
 	return apply_filters(
 		'learn-press/education-themes',
 		array(
+			'20370918' => 'wordpress-lms',
 			'14058034' => 'eduma',
 			'17097658' => 'coach',
 			'11797847' => 'lms'
@@ -2210,12 +2211,12 @@ function learn_press_get_chart_general( $from = null, $by = null, $time_ago ) {
 		'teacher' => array(),
 		'revenue' => array()
 	);
-	var_dump( $results );
-	exit();
-	// get
 
-	$from_time = is_numeric( $from ) ? $from : strtotime( $from );
-
+	$from_time   = is_numeric( $from ) ? $from : strtotime( $from );
+	$_from       = '';
+	$_to         = '';
+	$_sql_format = '';
+	$date_format = '';
 	switch ( $by ) {
 		case 'days':
 			$date_format = 'M d Y';

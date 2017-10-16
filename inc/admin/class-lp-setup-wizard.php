@@ -39,6 +39,10 @@ class LP_Setup_Wizard {
 			return;
 		}
 
+		if ( 'finish' === LP_Request::get_string( 'step' ) ) {
+			delete_option( 'learn_press_install' );
+		}
+
 		$this->save();
 
 		$assets = learn_press_admin_assets();

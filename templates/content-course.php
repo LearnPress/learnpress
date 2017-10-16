@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -16,13 +16,13 @@ if ( !defined( 'ABSPATH' ) ) {
 
 	<?php do_action( 'learn_press_before_courses_loop_item' ); ?>
 
-	<a href="<?php the_permalink();?>" class="course-permalink">
+    <a href="<?php the_permalink(); ?>" class="course-permalink">
 
 		<?php do_action( 'learn_press_courses_loop_item_title' ); ?>
 
-	</a>
+    </a>
 
 	<?php do_action( 'learn_press_after_courses_loop_item' ); ?>
 
-    <?php learn_press_get_template('single-course/buttons.php');?>
+	<?php learn_press_get_template( 'single-course/buttons.php' ); ?>
 </li>

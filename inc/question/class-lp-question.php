@@ -969,7 +969,7 @@ class LP_Question extends LP_Course_Item {
 		}
 
 		if ( empty( LP_Global::$questions[ $key ] ) ) {
-			$class_name = self::get_quiz_class( $the_question, $args );
+			$class_name = self::get_question_class( $the_question, $args );
 			if ( is_string( $class_name ) && class_exists( $class_name ) ) {
 				$lesson = new $class_name( $the_question->ID, $args );
 			} elseif ( $class_name instanceof LP_Question ) {
@@ -1000,7 +1000,7 @@ class LP_Question extends LP_Course_Item {
 	 *
 	 * @return string
 	 */
-	private static function get_quiz_class( $the_question, $args = array() ) {
+	private static function get_question_class( $the_question, $args = array() ) {
 		$question_id = absint( $the_question->ID );
 		if ( ! empty( $args['type'] ) ) {
 			$question_type = $args['type'];

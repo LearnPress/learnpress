@@ -907,20 +907,24 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 	 * Add edit links for course item question to admin bar.
 	 */
 	function learn_press_content_item_edit_links() {
+		global $wp_admin_bar, $post, $lp_course_item, $lp_quiz_question;
+
 		if ( ! ( ! is_admin() && is_user_logged_in() ) ) {
 			return;
+		}
+
+		if ( is_learnpress() && $post && $post->ID === 0 ) {
+			$wp_admin_bar->remove_node( 'edit' );
 		}
 
 		if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
 			//return;
 		}
 
-		global $wp_admin_bar, $lp_course_item, $lp_quiz_question;
-
 		/**
 		 * Edit link for lesson/quiz or any other course's item.
 		 */
-		if ( ( $post_type_object = get_post_type_object( $lp_course_item->get_item_type() ) )
+		if ( $lp_course_item && ( $post_type_object = get_post_type_object( $lp_course_item->get_item_type() ) )
 		     && current_user_can( 'edit_post', $lp_course_item->get_id() )
 		     && $post_type_object->show_in_admin_bar
 		     && $edit_post_link = get_edit_post_link( $lp_course_item->get_id() )
@@ -950,8 +954,13 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 				) );
 			}
 		}
+
+
 	}
 }
+
+add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
+
 
 if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 	/**
@@ -966,7 +975,6 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 
 		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
 		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
-		add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
 	}
 }
 
@@ -1752,25 +1760,6 @@ if ( ! function_exists( 'learn_press_message' ) ) {
 
 /******************************/
 
-if ( ! function_exists( 'learn_press_body_class' ) ) {
-	/**
-	 * Append new class to body classes
-	 *
-	 * @param $classes
-	 *
-	 * @return array
-	 */
-	function learn_press_body_class( $classes ) {
-		$classes = (array) $classes;
-
-		if ( is_learnpress() ) {
-			$classes[] = 'learnpress';
-			$classes[] = 'learnpress-page';
-		}
-
-		return array_unique( $classes );
-	}
-}
 
 if ( ! function_exists( 'learn_press_course_class' ) ) {
 	/**
@@ -2523,3 +2512,38 @@ function learn_press_fontend_js_template() {
 //add_action('learn-press/course-item-class', 'learn_press_course_item_class');
 
 add_action( 'wp_footer', 'learn_press_fontend_js_template' );
+
+/**
+ * Add custom classes to body tag class name
+ *
+ * @param array $classes
+ *
+ * @return array
+ *
+ * @since 3.x.x
+ */
+function learn_press_body_classes( $classes ) {
+	$pages = learn_press_static_pages();
+
+	if ( $pages ) {
+		$is_lp_page = false;
+		settype( $classes, 'array' );
+
+		foreach ( $pages as $slug => $id ) {
+			if ( is_page( $id ) ) {
+				$classes[]  = $slug;
+				$is_lp_page = true;
+			}
+		}
+
+		if ( $is_lp_page || is_learnpress() ) {
+			$classes[] = get_stylesheet();
+			$classes[] = 'learnpress';
+			$classes[] = 'learnpress-page';
+		}
+	}
+
+	return $classes;
+}
+
+add_filter( 'body_class', 'learn_press_body_classes', 10 );

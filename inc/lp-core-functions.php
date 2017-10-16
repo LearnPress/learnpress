@@ -988,27 +988,64 @@ function learn_press_get_own_courses( $user_id ) {
 	return $my_query;
 }
 
-
+/**
+ * Return array list of currency positions
+ *
+ * @return array
+ */
 function learn_press_currency_positions() {
-	return apply_filters(
-		'learn_press_currency_positions',
-		array(
-			'left'             => __( 'Left', 'learnpress' ),
-			'right'            => __( 'Right', 'learnpress' ),
-			'left_with_space'  => __( 'Left with space', 'learnpress' ),
-			'right_with_space' => __( 'Right with space', 'learnpress' )
 
-		)
+	$positions = array(
+		'left'             => __( 'Left', 'learnpress' ),
+		'right'            => __( 'Right', 'learnpress' ),
+		'left_with_space'  => __( 'Left with space', 'learnpress' ),
+		'right_with_space' => __( 'Right with space', 'learnpress' )
+
 	);
+
+	foreach ( $positions as $pos => $text ) {
+		switch ( $pos ) {
+			case 'left':
+				$text = sprintf( '%s ( %s%s )', $text, learn_press_get_currency_symbol(), '69.99' );
+				break;
+			case 'right':
+				$text = sprintf( '%s ( %s%s )', $text, '69.99', learn_press_get_currency_symbol() );
+				break;
+			case 'left_with_space':
+				$text = sprintf( '%s ( %s %s )', $text, learn_press_get_currency_symbol(), '69.99' );
+				break;
+			case 'right_with_space':
+				$text = sprintf( '%s ( %s %s )', $text, '69.99', learn_press_get_currency_symbol() );
+				break;
+		}
+		$positions[ $pos ] = $text;
+	}
+
+	$positions = apply_filters( 'learn_press_currency_positions', $positions );
+
+	return apply_filters( 'learn-press/currency-positions', $positions );
 }
 
 /**
- * get the list of currencies with code and name
+ * @deprecated
  *
- * @author  ThimPress
- * @return  array
+ * @return array
  */
 function learn_press_get_payment_currencies() {
+	//_deprecated_function( __FUNCTION__, '3.0.0', 'learn_press_currencies' );
+
+	return apply_filters( 'learn_press_get_payment_currencies', learn_press_currencies() );
+}
+
+/**
+ * Get the list of currencies with code and name.
+ *
+ * @author  ThimPress
+ * @version 3.0.0
+ *
+ * @return  array
+ */
+function learn_press_currencies() {
 	$currencies = array(
 		'AED' => 'United Arab Emirates Dirham (د.إ)',
 		'AUD' => 'Australian Dollars ($)',
@@ -1057,15 +1094,20 @@ function learn_press_get_payment_currencies() {
 		'EGP' => 'Egyptian Pound (EGP)'
 	);
 
-	return apply_filters( 'learn_press_get_payment_currencies', $currencies );
+	return apply_filters( 'learn-press/currencies', $currencies );
 }
 
+/**
+ * Get current setting of currency.
+ *
+ * @return string
+ */
 function learn_press_get_currency() {
-	$currencies     = learn_press_get_payment_currencies();
+	$currencies     = learn_press_currencies();
 	$currency_codes = array_keys( $currencies );
 	$currency       = reset( $currency_codes );
 
-	return apply_filters( 'learn_press_currency', LP_Settings::instance( 'general' )->get( 'currency', $currency ) );
+	return apply_filters( 'learn_press_currency', LP_Settings::instance()->get( 'currency', $currency ) );
 }
 
 function learn_press_get_currency_symbol( $currency = '' ) {
@@ -2806,6 +2848,25 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 		$cur_timeunit = 'cur_' . $timeunit;
 		echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
 	}
+}
+
+/**
+ * Get default static pages of LP.
+ *
+ * @return array
+ *
+ * @since 3.0.0
+ */
+function learn_press_static_pages() {
+	return apply_filters(
+		'learn-press/static-pages',
+		array(
+			'checkout'         => learn_press_get_page_id( 'checkout' ),
+			'courses'          => learn_press_get_page_id( 'courses' ),
+			'profile'          => learn_press_get_page_id( 'profile' ),
+			'become_a_teacher' => learn_press_get_page_id( 'become_a_teacher' )
+		)
+	);
 }
 
 function learn_press_cache_path( $group, $key = '' ) {

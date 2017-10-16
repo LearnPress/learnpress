@@ -76,55 +76,74 @@
             $checkoutNewAccount = $('#checkout-new-account')
         ;
 
+        /**
+         * Add function to checking a string is in valid format of an email.
+         */
+        if (String.prototype.isEmail === undefined) {
+            String.prototype.isEmail = function () {
+                return new RegExp('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$').test(this);
+            }
+        }
+
+        /**
+         * Callback function for submitting form.
+         *
+         * @param e
+         * @returns {boolean}
+         * @private
+         */
         var _formSubmit = function (e) {
             e.preventDefault();
             var $form = $payments.children('.selected'),
                 data = $formCheckout.serializeJSON();
 
-            if ($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false) {
+            if (!($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false)) {
+                return;
+            }
 
-                removeMessage();
+            removeMessage();
 
-                if (options.i18n_processing) {
-                    $buttonCheckout.html(options.i18n_processing);
-                }
-                $buttonCheckout.prop('disabled', true);
+            if (options.i18n_processing) {
+                $buttonCheckout.html(options.i18n_processing);
+            }
 
-                //LP.blockContent();
-                $.ajax({
-                    url: options.ajaxurl + '/?lp-ajax=checkout',
-                    dataType: 'html',
-                    data: data,
-                    type: 'post',
-                    success: function (response) {
-                        response = LP.parseJSON(response);
-                        try {
-                            if ('success' === response.result) {
-                                if (response.redirect.match(/https?/)) {
-                                    window.location = response.redirect;
-                                }
-                            } else {
-                                throw "ERROR";
+            $buttonCheckout.prop('disabled', true);
+
+            //LP.blockContent();
+            $.ajax({
+                url: options.ajaxurl + '/?lp-ajax=checkout',
+                dataType: 'html',
+                data: data,
+                type: 'post',
+                success: function (response) {
+                    response = LP.parseJSON(response);
+                    try {
+                        if ('success' === response.result) {
+                            if (response.redirect.match(/https?/)) {
+                                window.location = response.redirect;
                             }
-                        } catch (error) {
-                            if (!response.messages) {
-                                showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
-                            } else {
-                                showMessage(response.messages);
-                            }
-                            $buttonCheckout.html(options.i18n_place_order);
-                            $buttonCheckout.prop('disabled', false);
-                            LP.unblockContent();
+                        } else {
+                            throw "ERROR";
                         }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        showMessage('<div class="learn-press-message error">' + errorThrown + '</div>');
+                    } catch (error) {
+                        if (!response.messages) {
+                            showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
+                        } else {
+                            showMessage(response.messages);
+                        }
                         $buttonCheckout.html(options.i18n_place_order);
                         $buttonCheckout.prop('disabled', false);
                         LP.unblockContent();
                     }
-                });
-            }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    showMessage('<div class="learn-press-message error">' + errorThrown + '</div>');
+                    $buttonCheckout.html(options.i18n_place_order);
+                    $buttonCheckout.prop('disabled', false);
+                    LP.unblockContent();
+                }
+            });
+
             return false;
         }
 
@@ -157,6 +176,11 @@
             $('#learn-press-button-guest-checkout').toggle(!showOrHide);
         }
 
+        /**
+         * Append messages into document.
+         *
+         * @param messages
+         */
         var showMessage = function (messages) {
             removeMessage();
             $formCheckout.prepend(messages);
@@ -166,12 +190,11 @@
             $(document).trigger('learn-press/checkout-error');
         }
 
-        if (String.prototype.isEmail === undefined) {
-            String.prototype.isEmail = function () {
-                return new RegExp('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$').test(this);
-            }
-        }
-
+        /**
+         * Callback function for checking email.
+         *
+         * @private
+         */
         var _checkEmail = function () {
 
             if (!this.value.isEmail()) {
@@ -204,8 +227,38 @@
             }, 500);
         }
 
+        /**
+         * Remove all messages
+         */
         var removeMessage = function () {
             $('.learn-press-error, .learn-press-notice, .learn-press-message').remove();
+        }
+
+        /**
+         * Callback function for showing/hiding register form.
+         *
+         * @param e {Event}
+         * @private
+         */
+        var _toggleRegisterForm = function (e) {
+            e.preventDefault();
+            var toggle = $(this).data('toggle') === 'show';
+            $formRegister.find('#checkout-register-form').toggle(toggle);
+            $formRegister.find('.checkout-register-form-toggle[data-toggle="show"]').toggle(!toggle);
+            console.log(toggle)
+        }
+
+        /**
+         * Callback function for showing/hiding login form.
+         *
+         * @param e {Event}
+         * @private
+         */
+        var _toggleLoginForm = function (e) {
+            e.preventDefault();
+            var toggle = $(this).data('toggle') === 'show';
+            $formLogin.find('#checkout-login-form').toggle(toggle);
+            $formLogin.find('.checkout-login-form-toggle[data-toggle="show"]').toggle(!toggle);
         }
 
         /**
@@ -215,28 +268,15 @@
 
         });
 
-        $checkoutEmail.on('keyup changex', _checkEmail).trigger('changex');
-
         $('.lp-button-guest-checkout').on('click', _guestCheckoutClick);
+
+
+        $checkoutEmail.on('keyup changex', _checkEmail).trigger('changex');
         $payments.on('change select', 'input[name="payment_method"]', _selectPaymentChange);
         $formCheckout.on('submit', _formSubmit);
-
         $payments.children('.selected').find('input[name="payment_method"]').trigger('select');
-
-        $formLogin.on('click', '.checkout-login-form-toggle', function (e) {
-            e.preventDefault();
-            var toggle = $(this).data('toggle') === 'show';
-            $formLogin.find('#checkout-login-form').toggle(toggle);
-            $formLogin.find('.checkout-login-form-toggle[data-toggle="show"]').toggle(!toggle);
-        });
-
-        $formRegister.on('click', '.checkout-register-form-toggle', function (e) {
-            e.preventDefault();
-            var toggle = $(this).data('toggle') === 'show';
-            $formRegister.find('#checkout-register-form').toggle(toggle);
-            $formRegister.find('.checkout-register-form-toggle[data-toggle="show"]').toggle(!toggle);
-            console.log(toggle)
-        });
+        $formLogin.on('click', '.checkout-login-form-toggle', _toggleLoginForm);
+        $formRegister.on('click', '.checkout-register-form-toggle', _toggleRegisterForm);
 
         if (options.user_waiting_payment === options.user_checkout) {
             //$checkoutExistingAccount.hide();

@@ -5,28 +5,52 @@
 @import "frontend/curriculum";
 @import "frontend/quiz";
 @import "frontend/message";
+@import "frontend/theme-support";
 
 .learn-press-breadcrumb {
+    margin-bottom: 20px;
+}
+
+.learnpress-page {
+    button {
+        height: 45px;
+        line-height: 45px;
+        padding: 0 12px;
+    }
+}
+
+.course-meta{
+    margin-bottom: 20px;
+}
+
+#learn-press-course-tabs{
     margin-bottom: 20px;
 }
 
 /* Archive */
 form[name="search-course"] {
     margin-bottom: 20px;
+    position: relative;
     .search-course-input {
-        width: 80%;
-        vertical-align: middle;
+        width: 100%;
+        padding: 12px;
+        @include box-sizing(border-box);
     }
     .search-course-button {
-        vertical-align: middle;
-        float: right;
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        bottom: 1px;
+        height: auto;
+        line-height: 1px;
     }
 }
 
-.learn-press-courses {
+ul.learn-press-courses {
     list-style: none;
     margin-right: -2.1%;
     margin-left: 0;
+    padding: 0;
     @include flex();
     @include flex-wrap(wrap);
     .course {
@@ -36,15 +60,39 @@ form[name="search-course"] {
         box-shadow: none;
         padding: 0;
 
+        .course-thumbnail,
+        .course-title,
+        .course-info {
+            margin: 0 0 0.8em 0;
+            line-height: 1;
+        }
+
+        .course-thumbnail {
+            img {
+                line-height: 1;
+                vertical-align: top;
+            }
+        }
+
         .course-title {
-            font-size: 1em;
-            margin: 1em 0;
+            font-size: 1.2em;
+            padding: 0;
+            font-weight: normal;
         }
 
         .course-info {
             font-size: 14px;
             > span {
                 display: block;
+            }
+        }
+
+        .lp-course-buttons {
+            form {
+                width: 100%;
+                button {
+                    width: 100%;
+                }
             }
         }
     }
@@ -132,13 +180,13 @@ form[name="search-course"] {
     }
 }
 
-.learn-press-message{
+.learn-press-message {
     padding: 10px 12px 10px 17px;
     background: #F5F5F5;
     position: relative;
     margin: 0 0 20px 0;
     @include border-radius(5px);
-    &:before{
+    &:before {
         position: absolute;
         content: '';
         top: 0;
@@ -149,8 +197,8 @@ form[name="search-course"] {
         border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
     }
-    &.error{
-        &:before{
+    &.error {
+        &:before {
             background: #d85454;
         }
     }

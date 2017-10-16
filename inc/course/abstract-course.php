@@ -211,7 +211,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		}
 		if ( ! $image ) {
 			if ( 'course_thumbnail' == $size ) {
-				$image = LP()->image( 'placeholder-400x250' );
+				$image = LP()->image( 'no-image.png' );//'placeholder-400x250' );
 			} else {
 				$image = LP()->image( 'placeholder-800x450' );
 			}

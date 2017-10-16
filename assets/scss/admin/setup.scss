@@ -39,6 +39,9 @@
         font-size: 16px;
         margin: 0 0 20px 0;
     }
+    a {
+        font-size: 13px;
+    }
 
     .logo {
         text-align: center;
@@ -253,7 +256,7 @@
             line-height: 40px;
             color: #777;
             text-align: center;
-            &.button-primary{
+            &.button-primary {
                 color: #FFF;
             }
         }

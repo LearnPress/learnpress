@@ -672,3 +672,21 @@ class LP_Factory {
 		return LP_Object_Data_CURD::get( 'order' );
 	}
 }
+//$a = file(ABSPATH . '/result.txt');
+//foreach($a as $k => $l){
+//	$a[$k] = preg_replace('~\n~', '', $l) . ";";
+//}
+//file_put_contents(ABSPATH . '/resultx.txt', join("\n", $a));
+//
+//return;
+//
+//$a2 = file(ABSPATH . '/data2.txt');
+//$a1 = file(ABSPATH . '/data1.txt');
+//
+//$a = array_diff($a2, $a1);
+//ob_start();
+//foreach ($a as $line){
+//	echo $line;
+//}
+//file_put_contents(ABSPATH . '/result.txt', ob_get_clean());
+//die();

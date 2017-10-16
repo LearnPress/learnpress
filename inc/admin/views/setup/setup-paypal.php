@@ -21,7 +21,7 @@ $settings = LP()->settings();
     </tr>
     <tr>
         <th><?php _e( 'Paypal Email', 'learnpress' ); ?></th>
-        <td><input class="regular-text" type="text" name="settings[paypal][paypal_email]"
+        <td><input class="regular-text" type="email" name="settings[paypal][paypal_email]"
                    value="<?php echo $settings->get( 'paypal.paypal_email' ); ?>"></td>
     </tr>
     <tr>
@@ -31,7 +31,7 @@ $settings = LP()->settings();
     </tr>
     <tr>
         <th><?php _e( 'Paypal Sandbox Email', 'learnpress' ); ?></th>
-        <td><input class="regular-text" type="text" name="settings[paypal][paypal_sandbox_email]"
+        <td><input class="regular-text" type="email" name="settings[paypal][paypal_sandbox_email]"
                    value="<?php echo $settings->get( 'paypal.paypal_sandbox_email' ); ?>"></td>
     </tr>
 </table>

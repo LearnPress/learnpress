@@ -46,14 +46,14 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'id' => 'currency',
 					'default' => 'USD',
 					'type'    => 'select',
-					'options' => $this->_get_currency_options()
+					'options' => learn_press_get_payment_currencies()
 				),
 				array(
 					'title'   => __( 'Currency position', 'learnpress' ),
 					'id' => 'currency_pos',
 					'default' => 'left',
 					'type'    => 'select',
-					'options' => $this->_get_currency_positions()
+					'options' => learn_press_currency_positions()
 				),
 				array(
 					'title'   => __( 'Thousands Separator', 'learnpress' ),
@@ -91,40 +91,6 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 		return $settings;
 	}
 
-	private function _get_currency_options() {
-		$currencies = array();
-
-		if ( $payment_currencies = learn_press_get_payment_currencies() ) {
-			foreach ( $payment_currencies as $code => $symbol ) {
-				$currencies[ $code ] = $symbol;
-			}
-		}
-
-		return $currencies;
-	}
-
-	private function _get_currency_positions() {
-		$positions = array();
-		foreach ( learn_press_currency_positions() as $pos => $text ) {
-			switch ( $pos ) {
-				case 'left':
-					$text = sprintf( '%s ( %s%s )', $text, learn_press_get_currency_symbol(), '69.99' );
-					break;
-				case 'right':
-					$text = sprintf( '%s ( %s%s )', $text, '69.99', learn_press_get_currency_symbol() );
-					break;
-				case 'left_with_space':
-					$text = sprintf( '%s ( %s %s )', $text, learn_press_get_currency_symbol(), '69.99' );
-					break;
-				case 'right_with_space':
-					$text = sprintf( '%s ( %s %s )', $text, '69.99', learn_press_get_currency_symbol() );
-					break;
-			}
-			$positions[ $pos ] = $text;
-		}
-
-		return $positions;
-	}
 }
 
 return new LP_Settings_General();

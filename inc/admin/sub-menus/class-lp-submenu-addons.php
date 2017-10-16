@@ -2,6 +2,8 @@
 
 /**
  * Class LP_Submenu_Addons
+ *
+ * @since 3.x.x
  */
 class LP_Submenu_Addons extends LP_Abstract_Submenu {
 
@@ -14,7 +16,8 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 		$this->page_title = __( 'LearnPress Addons', 'learnpress' );
 		$this->priority   = 20;
 
-		add_action( 'plugins_loaded', array( $this, 'add_ons_tabs' ) );
+		//add_action( 'plugins_loaded', array( $this, 'add_ons_tabs' ) );
+        $this->add_ons_tabs();
 //
 		//$this->sections = apply_filters( 'learn-press/admin/page-addons/sections', $sections );
 		parent::__construct();

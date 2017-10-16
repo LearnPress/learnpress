@@ -108,7 +108,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	public function init() {
-		if ( $this->settings->get( 'enable' ) ) {
+		if ( $this->is_enabled() ) {
 			if ( $this->settings->get( 'paypal_sandbox' ) == 'no' ) {
 				$this->paypal_url         = $this->paypal_live_url;
 				$this->paypal_payment_url = $this->paypal_payment_live_url;

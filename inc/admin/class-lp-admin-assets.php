@@ -26,7 +26,11 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected function _get_script_data() {
 		return array(
 			'learn-press-global'         => array(
-				'i18n' => 'This is global script for both admin and site'
+				'i18n'    => array(
+					'test_message' => 'This is global script for both admin and site'
+				),
+				'ajax'    => admin_url( 'admin-ajax.php' ),
+				'siteurl' => site_url()
 			),
 			'learn-press-meta-box-order' => apply_filters(
 				'learn-press/meta-box-order/script-data',
@@ -46,6 +50,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
+				'select2'                => LP_Admin_Assets::url( 'inc/libraries/meta-box/js/select2/select2.min.js' ),
 				'lp-vue'                 => array(
 					'url' => self::url( 'js/vendor/vue.js' ),
 					'ver' => '2.4.0'
@@ -69,7 +74,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'learn-press-global'     => array(
 					'url'  => $this->url( 'js/global.js' ),
-					'deps' => array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable' )
+					'deps' => array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' )
 				),
 				'learn-press-utils'      => array(
 					'url'  => $this->url( 'js/admin/utils.js' ),
@@ -83,7 +88,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'angularjs'              => $this->url( 'js/vendor/angular.1.6.4.js' ),
+				//'angularjs'              => $this->url( 'js/vendor/angular.1.6.4.js' ),
 				'tipsy'                  => array(
 					'url'  => $this->url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
 					'deps' => array( 'jquery' )
@@ -96,7 +101,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/admin/controllers/modal-search-questions.js' ),
 					'deps' => array( 'modal-search' )
 				),
-				'base-controller'        => array(
+				/*'base-controller'        => array(
 					'url'  => $this->url( 'js/admin/controllers/base.js' ),
 					'deps' => array( 'jquery', 'utils', 'angularjs' )
 				),
@@ -123,7 +128,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'quiz-app'               => array(
 					'url'  => $this->url( 'js/admin/quiz.js' ),
 					'deps' => array( 'question-controller', 'quiz-controller', 'question-app' )
-				),
+				),*/
 
 				'course-editor-v2'               => array(
 					'url'     => $this->url( 'js/admin/course-editor-v2.js' ),
@@ -173,6 +178,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-styles',
 			array(
+				'select2'           => LP()->plugin_url( 'inc/libraries/meta-box/css/select2/select2.css' ),
 				'font-awesome'      => $this->url( 'css/font-awesome.min.css' ),
 				'learn-press-admin' => $this->url( 'css/admin/admin.css' )
 			)
@@ -204,7 +210,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		}
 
 		/**
-		 * Enqueue scripts
+		 * Enqueue styles
 		 *
 		 * TODO: check to show only styles needed in specific pages
 		 */

@@ -39,6 +39,11 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	public function _get_script_data() {
 		return array(
+			'global'       => array(
+				'url'     => learn_press_get_current_url(),
+				'siteurl' => site_url(),
+				'theme'   => get_stylesheet()
+			),
 			'checkout'     => array(
 				'ajaxurl'              => site_url(),
 				'user_waiting_payment' => LP()->checkout()->get_user_waiting_payment(),
@@ -154,17 +159,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		}
 	}
 
-	public static function add_param() {
 
-	}
-
-	public static function add_var() {
-
-	}
-
-	public static function add_script_tag() {
-
-	}
 }
 
 /**

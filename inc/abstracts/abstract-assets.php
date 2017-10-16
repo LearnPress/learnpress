@@ -199,7 +199,7 @@ abstract class LP_Abstract_Assets {
 						'ver'  => LEARNPRESS_VERSION
 					)
 				);
-				$wp_scripts->add( $handle, add_query_arg( 'nocache', $no_cache, $data['url'] ), $data['deps'], $data['ver'] );
+				$wp_scripts->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
 			}
 
 		}
@@ -218,7 +218,7 @@ abstract class LP_Abstract_Assets {
 						'ver'  => LEARNPRESS_VERSION
 					)
 				);
-				$wp_styles->add( $handle, add_query_arg( 'nocache', $no_cache, $data['url'] ), $data['deps'], $data['ver'] );
+				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
 			}
 
 		}
@@ -242,7 +242,7 @@ abstract class LP_Abstract_Assets {
 	}
 
 	public function get_script_var_name( $handle ) {
-		$handle = str_replace( array( '_', '-' ), ' ', $handle );
+		$handle = str_replace( array( 'learn-press', '_', '-' ), ' ', $handle );
 		$handle = ucwords( $handle );
 
 		return 'lp' . str_replace( ' ', '', $handle ) . 'Settings';
@@ -264,7 +264,10 @@ abstract class LP_Abstract_Assets {
 			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
 					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
-						$data = preg_replace_callback( '~:"[0-9.,]+"~', array( $this, '_valid_json_number' ), $data );
+						$data = preg_replace_callback( '~:"[0-9.,]+"~', array(
+							$this,
+							'_valid_json_number'
+						), $data );
 						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
 					}
 				}
@@ -275,7 +278,7 @@ abstract class LP_Abstract_Assets {
 	}
 
 	protected function _valid_json_number( $m ) {
-		return str_replace( array( ':"', '"' ), array(':', ''), $m[0] );
+		return str_replace( array( ':"', '"' ), array( ':', '' ), $m[0] );
 	}
 
 	protected function _get_script_data() {
@@ -317,5 +320,17 @@ abstract class LP_Abstract_Assets {
 		}
 
 		return $url;
+	}
+
+	public static function add_param() {
+
+	}
+
+	public static function add_var() {
+
+	}
+
+	public static function add_script_tag() {
+
 	}
 }

@@ -38,20 +38,6 @@ $settings = LP()->settings();
 				<?php
 				$positions = array();
 				foreach ( learn_press_currency_positions() as $pos => $text ) {
-					switch ( $pos ) {
-						case 'left':
-							$text = sprintf( '%s ( %s%s )', $text, learn_press_get_currency_symbol(), '69.99' );
-							break;
-						case 'right':
-							$text = sprintf( '%s ( %s%s )', $text, '69.99', learn_press_get_currency_symbol() );
-							break;
-						case 'left_with_space':
-							$text = sprintf( '%s ( %s %s )', $text, learn_press_get_currency_symbol(), '69.99' );
-							break;
-						case 'right_with_space':
-							$text = sprintf( '%s ( %s %s )', $text, '69.99', learn_press_get_currency_symbol() );
-							break;
-					}
 					?>
                     <option value="<?php echo $pos; ?>"<?php selected( $pos == $settings->get( 'currency_pos' ) ); ?>><?php echo $text; ?></option><?php
 				}

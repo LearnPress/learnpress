@@ -7,17 +7,27 @@
     }
 }
 
-.learn-press-nav-tabs {
+.lp-single-course {
+    .lp-course-buttons {
+        margin-bottom: 20px;
+    }
+}
+
+ul.learn-press-nav-tabs {
     list-style: none;
     border-bottom: 3px solid #DDD;
+    margin: 0 0 20px 0;
+    padding: 0;
     .course-nav {
         float: left;
         position: relative;
+        margin: 0;
         a {
             display: inline-block;
             padding: 10px 20px;
             border-bottom: none;
             outline: none;
+            @include box-shadow(none);
         }
         &.active,
         &:hover {
@@ -37,8 +47,8 @@
     }
 }
 
-.course-item-popup{
-    #tab-curriculum{
+.course-item-popup {
+    #tab-curriculum {
         display: block;
     }
 }
@@ -47,7 +57,10 @@
     .curriculum-sections {
         list-style: none;
         margin: 0;
+        padding: 0;
         .section {
+            margin: 0;
+            padding: 0;
         }
         .section-header {
             display: table;
@@ -55,7 +68,6 @@
             width: 100%;
             @include box-sizing(border-box);
             .section-left {
-                /*flex: 9;*/
                 display: table-cell;
                 vertical-align: top;
             }
@@ -66,14 +78,14 @@
             .section-title {
                 font-weight: normal;
                 margin-bottom: 0;
+                font-size: 18px;
+                padding: 10px 0;
             }
             .section-desc {
                 font-size: 14px;
                 font-style: italic;
             }
             .section-meta {
-                //float: right;
-                //flex: 1;
                 display: table-cell;
                 white-space: nowrap;
                 padding-left: 20px;
@@ -92,12 +104,15 @@
         .section-content {
             list-style: none;
             margin: 0 0 15px 0;
+            padding: 0;
             .course-item {
                 position: relative;
                 font-size: 14px;
                 border-bottom: 1px solid #EEE;
                 transition: padding-left linear 0.15s;
                 background: #FFF;
+                margin: 0;
+                padding: 0;
                 > a {
                     border-bottom: none;
                     /*display: block;*/

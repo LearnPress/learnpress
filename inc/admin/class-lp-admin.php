@@ -28,6 +28,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
 			add_action( 'admin_notices', array( $this, 'notice_setup_page' ) );
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
+			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_start' ), - 1000 );
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_end' ), 1000 );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
@@ -36,10 +38,18 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
 		}
 
+		public function admin_notices() {
+			if ( 'yes' === get_option( 'learn_press_install' ) ) {
+				learn_press_admin_view( 'setup/notice-setup' );
+			}
+		}
 
+		/**
+		 * Redirect to setup page if we have just activated LP
+		 */
 		public function admin_redirect() {
-			if ( 'yes' === get_option( 'learn_press_install' ) && current_user_can( 'install_plugins' ) ) {
-				delete_option( 'learn_press_install' );
+			if ( 'yes' === get_transient( 'lp_activation_redirect' ) && current_user_can( 'install_plugins' ) ) {
+				delete_transient( 'lp_activation_redirect' );
 
 				wp_safe_redirect( admin_url( 'index.php?page=lp-setup' ) );
 			}

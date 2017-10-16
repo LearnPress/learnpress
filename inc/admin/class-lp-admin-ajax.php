@@ -818,7 +818,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -915,7 +916,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -948,7 +950,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1088,10 +1091,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/*************/
 
 		public static function load_chart() {
-			if ( ! class_exists( '' ) ) {
-				require_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/statistics.php';
-			}
-			LP_Admin_Submenu_Statistic::instance()->load_chart();
+			if ( ! class_exists( 'LP_Submenu_Statistics' ) ) {
+				$statistic = include_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/class-lp-submenu-statistics.php';
+			}else{
+			    $statistic = new LP_Submenu_Statistics();
+            }
+			$statistic->load_chart();
 		}
 
 		public static function search_course() {
@@ -1241,7 +1246,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null $context_id
+		 * @param null   $context_id
 		 *
 		 * @return array
 		 */

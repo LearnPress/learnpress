@@ -410,7 +410,7 @@ class LP_Page_Controller {
 		if ( $has_filter ) {
 			has_filter( 'the_content', 'wpautop' );
 		}
-		$wp_query->post->ID     = 0;
+		//$wp_query->post->ID     = 10;
 		$wp_query->post->filter = 'raw';
 		if ( learn_press_is_course_category() ) {
 			$wp_query->post->post_title = single_term_title( '', false );
