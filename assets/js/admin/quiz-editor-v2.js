@@ -286,8 +286,14 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 state.questions.push(question);
             });
         },
-        'UPDATE_QUESTION': function () {
-            // code
+        'CHANGE_QUESTION_TYPE': function (state, data) {
+            state.questions = state.questions.map(function (question) {
+                if (question.id === data.id) {
+                    question.answers = data.answers;
+                    question.type = data.type;
+                }
+                return question;
+            });
         },
         'REMOVE_QUESTION': function (state, item) {
             var questions = state.questions,
@@ -446,7 +452,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
         updateQuestion: function (context, payload) {
 
-            context.commit('UPDATE_QUESTION', payload.question.id);
+            // context.commit('UPDATE_QUESTION', payload.question.id);
 
             Vue.http
                 .LPRequest({
@@ -463,8 +469,30 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
         },
 
+        changeQuestionType: function (context, payload) {
+
+            Vue.http
+                .LPRequest({
+                    type: 'change-question-type',
+                    question: JSON.stringify(payload.question),
+                    'new-type': payload.newType
+                })
+                .then(function (response) {
+                    var result = response.body;
+
+                    if (result.success) {
+                        var question = result.data;
+                        console.log(question);
+                        context.commit('CHANGE_QUESTION_TYPE', question);
+                    }
+                })
+                .catch(function () {
+                    // code
+                })
+        },
+
         addQuestionAnswer: function (context, payload) {
-            context.commit('UPDATE_QUESTION', payload.questionId);
+            // context.commit('UPDATE_QUESTION', payload.questionId);
 
             Vue.http
                 .LPRequest({
@@ -474,6 +502,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 })
                 .then(
                     function (response) {
+
                         var result = response.body;
 
                         if (result.success) {

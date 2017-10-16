@@ -50,7 +50,8 @@ class LP_Question extends LP_Course_Item {
 	 * @var array
 	 */
 	protected $_data = array(
-		'mark' => 0
+		'mark'           => 0,
+		'answer_options' => array()
 	);
 
 	protected static $_loaded = 0;
@@ -492,60 +493,73 @@ class LP_Question extends LP_Course_Item {
 	}
 
 	/**
-	 * @param null $post_data
+	 * Save question data.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array
 	 */
-	public function save( $post_data = null ) {
-		global $wpdb;
-		/**
-		 * Allows add more type of question to save with the rules below
-		 */
-		$types = apply_filters( 'learn_press_save_default_question_types', array(
-			'true_or_false',
-			'multi_choice',
-			'single_choice'
-		) );
+	public function save() {
 
-		if ( in_array( $this->get_type(), $types ) ) {
-
-			$this->empty_answers();
-
-			if ( ! empty( $post_data['answer'] ) ) {
-				$checked = ! empty( $post_data['checked'] ) ? (array) $post_data['checked'] : array();
-				$answers = array();
-				foreach ( $post_data['answer']['text'] as $index => $text ) {
-					if ( ! $text ) {
-						continue;
-					}
-					$data      = array(
-						'answer_data'  => array(
-							'text'    => stripslashes( $text ),
-							'value'   => $post_data['answer']['value'][ $index ],
-							'is_true' => in_array( $post_data['answer']['value'][ $index ], $checked ) ? 'yes' : 'no'
-						),
-						'answer_order' => $index + 1,
-						'question_id'  => $this->get_id()
-					);
-					$answers[] = apply_filters( 'learn_press_question_answer_data', $data, $post_data['answer'], $this );
-				}
-
-				if ( $answers = apply_filters( 'learn_press_question_answers_data', $answers, $post_data['answer'], $this ) ) {
-					foreach ( $answers as $answer ) {
-						$answer['answer_data'] = maybe_serialize( $answer['answer_data'] );
-						$wpdb->insert(
-							$wpdb->learnpress_question_answers,
-							$answer,
-							array( '%s', '%d', '%d' )
-						);
-					}
-
-				}
-			}
-//			if ( $this->mark == 0 ) {
-//				$this->mark = 1;
-//				update_post_meta( $this->get_id(), '_lp_mark', 1 );
-//			}
+		if ( $this->get_id() ) {
+			$return = $this->_curd->update( $this );
+		} else {
+			$return = $this->_curd->create( $this );
 		}
-		do_action( 'learn_press_update_question_answer', $this, $post_data );
+
+		return $return;
+
+//		global $wpdb;
+//		/**
+//		 * Allows add more type of question to save with the rules below
+//		 */
+//		$types = apply_filters( 'learn_press_save_default_question_types', array(
+//			'true_or_false',
+//			'multi_choice',
+//			'single_choice'
+//		) );
+//
+//		if ( in_array( $this->get_type(), $types ) ) {
+//
+//			$this->empty_answers();
+//
+//			if ( ! empty( $post_data['answer'] ) ) {
+//				$checked = ! empty( $post_data['checked'] ) ? (array) $post_data['checked'] : array();
+//				$answers = array();
+//				foreach ( $post_data['answer']['text'] as $index => $text ) {
+//					if ( ! $text ) {
+//						continue;
+//					}
+//					$data      = array(
+//						'answer_data'  => array(
+//							'text'    => stripslashes( $text ),
+//							'value'   => $post_data['answer']['value'][ $index ],
+//							'is_true' => in_array( $post_data['answer']['value'][ $index ], $checked ) ? 'yes' : 'no'
+//						),
+//						'answer_order' => $index + 1,
+//						'question_id'  => $this->get_id()
+//					);
+//					$answers[] = apply_filters( 'learn_press_question_answer_data', $data, $post_data['answer'], $this );
+//				}
+//
+//				if ( $answers = apply_filters( 'learn_press_question_answers_data', $answers, $post_data['answer'], $this ) ) {
+//					foreach ( $answers as $answer ) {
+//						$answer['answer_data'] = maybe_serialize( $answer['answer_data'] );
+//						$wpdb->insert(
+//							$wpdb->learnpress_question_answers,
+//							$answer,
+//							array( '%s', '%d', '%d' )
+//						);
+//					}
+//
+//				}
+//			}
+////			if ( $this->mark == 0 ) {
+////				$this->mark = 1;
+////				update_post_meta( $this->get_id(), '_lp_mark', 1 );
+////			}
+//		}
+//		do_action( 'learn_press_update_question_answer', $this, $post_data );
 	}
 
 	public function get_option_value( $value = null ) {
