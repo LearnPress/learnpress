@@ -39,10 +39,40 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajax_event, array( __CLASS__, $ajax_func ) );
 				}
 			}*/
+			/**
+			 * action-name
+			 *      :nopriv => Allows calling AJAX with user is not logged in
+			 *      :nonce  => Requires checking nonce with value of request param action-name-nonce before doing AJAX
+			 */
+			$ajaxEvents = array(
+				'checkout-user-email-exists:nopriv',
+				'recover-order',
+				'request-become-a-teacher:nonce'
+			);
 
-			LP_Request_Handler::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
-			LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
-			LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
+			foreach ( $ajaxEvents as $action => $callback ) {
+
+				if ( is_numeric( $action ) ) {
+					$action = $callback;
+				}
+
+				$actions = LP_Request::parse_action( $action );
+				$method  = $actions['action'];
+
+				if ( ! is_callable( $callback ) ) {
+					$method   = preg_replace( '/-/', '_', $method );
+					$callback = array( __CLASS__, $method );
+				}
+
+				LP_Request::register_ajax( $action, $callback );
+			}
+
+			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
+			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
+		}
+
+		public static function request_become_a_teacher() {
+			LP_Forms_Handler::process_become_teacher();
 		}
 
 		public static function recover_order() {
@@ -94,33 +124,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			learn_press_maybe_send_json( $response );
-		}
-
-		/**
-		 * Do ajax if there is a 'lp-ajax' in $_REQUEST
-		 *
-		 * @param $var
-		 */
-		public static function do_ajax( $var ) {
-
-			if ( ! defined( 'LP_DOING_AJAX' ) ) {
-				define( 'LP_DOING_AJAX', true );
-			}
-			LP_Gateways::instance()->get_available_payment_gateways();
-			$result   = false;
-			$method   = preg_replace( '/[-]+/', '_', $var );
-			$callback = array( __CLASS__, '_request_' . $method );
-			if ( is_callable( $callback ) ) {
-				$result = call_user_func( $callback );
-			} elseif ( has_action( 'learn_press_ajax_handler_' . $var ) ) {
-				do_action( 'learn_press_ajax_handler_' . $var );
-
-				return;
-			}
-			if ( learn_press_get_request( 'format' ) == 'html' ) {
-				return;
-			}
-			learn_press_send_json( $result );
 		}
 
 		public static function upload_user_avatar() {

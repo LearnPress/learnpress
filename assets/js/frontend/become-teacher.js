@@ -1,39 +1,90 @@
-;(function ($) {
-	$(document).ready(function () {
-		$('form[name="become-teacher-form"]').submit(function () {
-			var $form = $(this),
-				$submit = $form.find('button[type="submit"]');
-			$form.find('.learn-press-error, .learn-press-message').fadeOut('fast', function () {
-				$(this).remove()
-			});
-			$submit.prop('disabled', true).html($submit.data('text-process'));
-			if ($form.triggerHandler('become_teacher_send') !== false) {
-				$.ajax({
-					url         : $form.attr('action'),
-					data        : $form.serialize(),
-					dataType    : 'html',
-					type        : 'post',
-					beforeSubmit: function () {
-						$form.find('input, select, textarea, button').prop('disabled', true);
-					},
-					success     : function (code) {
-						var response = LP.parseJSON(code);
+/**
+ * Become a Teacher form handler
+ *
+ * @author ThimPress
+ * @package LearnPress/JS
+ * @version 3.0.0
+ */
+if (typeof jQuery === 'undefined') {
+    console.log('jQuery is not defined');
+} else {
+    (function ($) {
+        $(document).ready(function () {
+            $('form[name="become-teacher-form"]').each(function () {
+                var $form = $(this),
+                    $submit = $form.find('button[type="submit"]'),
+                    hideMessages = function () {
+                        $('.learn-press-error, .learn-press-message').fadeOut('fast', function () {
+                            $(this).remove()
+                        });
+                    },
+                    showMessages = function (messages) {
+                        var m = [];
+                        if ($.isPlainObject(messages)) {
+                            for (var i in messages) {
+                                m.push($(messages[i]));
+                            }
+                        } else if ($.isArray(messages)) {
+                            m = messages.reverse();
+                        } else {
+                            m = [messages];
+                        }
+                        for (var i = 0; i < m.length; i++) {
+                            $(m[i]).insertBefore($form);
+                        }
 
-						if (response.result == 'success') {
-							$form.find('.become-teacher-fields').remove();//find('input, select, textarea, button').prop('disabled', true);
-						} else {
-							$submit.prop('disabled', false);
-							$submit.html($submit.data('text'));
-						}
-						if (response.message) {
-							for (var n = response.message.length, i = n - 1; i >= 0; i--) {
-								$form.prepend($(response.message[i]))
-							}
-						}
-					}
-				});
-			}
-			return false;
-		});
-	});
-})(jQuery);
+                    },
+                    blockForm = function (block) {
+                        return $form.find('input, select, button, textarea')
+                            .prop('disabled', !!block)
+                    };
+
+                $form.submit(function () {
+                    if ($form.triggerHandler('become_teacher_send') !== false) {
+                        $.ajax({
+                            url: window.location.href.addQueryVar('lp-ajax', 'request-become-a-teacher'),
+                            data: $form.serialize(),
+                            dataType: 'text',
+                            type: 'post',
+                            beforeSend: function () {
+                                hideMessages();
+
+                                blockForm(true)
+                                    .filter($submit)
+                                    .data('origin-text', $submit.text())
+                                    .html($submit.data('text'));
+
+                            },
+                            success: function (response) {
+                                response = LP.parseJSON(response);
+                                if (response.message) {
+                                    showMessages(response.message)
+                                }
+
+                                blockForm().filter($submit).html($submit.data('origin-text'));
+
+                                if (response.result === 'success') {
+                                    $form.remove();
+                                } else {
+                                    $submit.prop('disabled', false);
+                                    $submit.html($submit.data('text'));
+                                }
+
+                            },
+                            error: function (response) {
+                                response = LP.parseJSON(response);
+
+                                if (response.message) {
+                                    showMessages(response.message)
+                                }
+
+                                blockForm().filter($submit).html($submit.data('origin-text'));
+                            }
+                        });
+                    }
+                    return false;
+                });
+            })
+        });
+    })(jQuery);
+}

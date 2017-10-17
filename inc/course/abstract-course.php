@@ -497,8 +497,19 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return $output;
 	}
 
-	public function get_instructor() {
-		$instructor = learn_press_get_user( get_post_field( 'post_author', $this->get_id() ) );
+	/**
+	 * @param string $field
+	 *
+	 * @return LP_User|mixed
+	 */
+	public function get_instructor( $field = '' ) {
+		$user = learn_press_get_user( get_post_field( 'post_author', $this->get_id() ) );
+
+		return $field ? $user->get_data( $field ) : $user;
+	}
+
+	public function get_instructor_name() {
+		$instructor = $this->get_instructor();
 		$name       = '';
 
 		if ( $instructor ) {
@@ -518,7 +529,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return string
 	 */
 	public function get_instructor_html() {
-		$instructor = $this->get_instructor();
+		$instructor = $this->get_instructor_name();
 		$html       = sprintf(
 			'<a href="%s">%s</a>',
 			learn_press_user_profile_link( get_post_field( 'post_author', $this->get_id() ) ),

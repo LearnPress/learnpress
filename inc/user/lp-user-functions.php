@@ -1200,18 +1200,22 @@ function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 }
 
 function _learn_press_redirect_logout_redirect() {
-	$redirect_to = $_REQUEST['redirect_to'];
+	$redirect_to = LP_Request::get_string( 'redirect_to' );
 	$admin_url   = admin_url();
 	$pos         = strpos( $redirect_to, $admin_url );
-	if ( $pos === false ) {
-		$page_id  = LP()->settings->get( 'logout_redirect_page_id' );
+
+	if ( $pos !== false ) {
+		return;
+	}
+
+	if ( ( $page_id = LP()->settings->get( 'logout_redirect_page_id' ) ) && get_post( $page_id ) ) {
 		$page_url = get_page_link( $page_id );
-		if ( $page_id && $page_url ) {
-			wp_redirect( $page_url );
-			exit();
-		}
+		wp_redirect( $page_url );
+		exit();
 	}
 }
+
+add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
 
 function learn_press_get_profile_endpoints() {
 	$endpoints = (array) LP()->settings->get( 'profile_endpoints' );
@@ -1226,7 +1230,6 @@ function learn_press_get_profile_endpoints() {
 	return apply_filters( 'learn_press_profile_tab_endpoints', $endpoints );
 }
 
-add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
 
 function learn_press_update_user_option( $name, $value, $id = 0 ) {
 	if ( ! $id ) {

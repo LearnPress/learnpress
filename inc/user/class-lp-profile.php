@@ -104,11 +104,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		public function output_section_content( $section, $args, $user ) {
 			global $wp;
-			$current = $this->get_current_section();// ! empty( $wp->query_vars['section'] ) ? $wp->query_vars['section'] : false;
+			$current = $this->get_current_section();
 			if ( $current === $section ) {
-				if ( ( $location = learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ) ) && file_exists( $location ) ) {
+				if ( ( $location = learn_press_locate_template( 'profile/tabs/' . $this->get_current_tab() . '/' . $section . '.php' ) ) && file_exists( $location ) ) {
 					include $location;
 				} else {
+					do_action( 'learn-press/' );
+
 					echo $location;
 				}
 			}
@@ -197,7 +199,21 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'title'    => __( 'Courses', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.profile-courses', 'courses' ),
 						'callback' => array( $this, 'tab_courses' ),
-						'priority' => 15
+						'priority' => 15,
+						'sections' => array(
+							'own'       => array(
+								'title'    => __( 'Own', 'learnpress' ),
+								'slug'     => $settings->get( 'profile_endpoints.own-courses', 'ownx' ),
+								'callback' => array( $this, 'tab_order_details' ),
+								'priority' => 10
+							),
+							'purchased' => array(
+								'title'    => __( 'Purchased', 'learnpress' ),
+								'slug'     => $settings->get( 'profile_endpoints.purchased-courses', 'purchased' ),
+								'callback' => array( $this, 'tab_order_details' ),
+								'priority' => 15
+							)
+						)
 					),
 					'quizzes'       => array(
 						'title'    => __( 'Quizzes', 'learnpress' ),
@@ -276,6 +292,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 				uasort( $tabs, array( $this, '_sort_tabs' ) );
 
+				$key = md5( serialize( $tabs ) );
+				if ( $key !== get_option( '_lp_tabs_data' ) ) {
+					flush_rewrite_rules();
+					update_option( '_lp_tabs_data', $key, false );
+				}
 			}
 
 			return $tabs;

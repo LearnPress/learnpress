@@ -7,6 +7,13 @@
 @import "frontend/message";
 @import "frontend/theme-support";
 
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"]{
+    @include box-sizing(border-box);
+}
+
 .learn-press-breadcrumb {
     margin-bottom: 20px;
 }
@@ -183,11 +190,14 @@ ul.learn-press-courses {
 
 .learn-press-pagination {
     text-align: center;
+    margin-bottom: 20px;
     .page-numbers {
         display: inline-block;
         list-style: none;
+        margin: 0;
         > li {
             display: inline-block;
+            margin: 0;
             a, span {
                 display: block;
                 padding: 5px 10px;

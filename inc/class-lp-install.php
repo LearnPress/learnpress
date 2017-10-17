@@ -402,9 +402,7 @@ class LP_Install {
 	 * @return int|mixed
 	 */
 	protected
-	static function _search_page(
-		$type, $types
-	) {
+	static function _search_page( $type, $types) {
 		static $pages = array();
 		if ( empty( $pages[ $type ] ) ) {
 			global $wpdb;
@@ -687,17 +685,13 @@ class LP_Install {
 	}
 
 	public
-	static function update_db_version(
-		$version = null
-	) {
+	static function update_db_version( $version = null) {
 		delete_option( 'learnpress_db_version' );
 		update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 	}
 
 	public
-	static function update_version(
-		$version = null
-	) {
+	static function update_version( $version = null) {
 
 		delete_option( 'learnpress_version' );
 		update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );

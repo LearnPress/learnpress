@@ -162,16 +162,38 @@
     padding: 20px;
     border: 1px solid #DDD;
     @include border-radius(4px);
-    p{
+    p {
         margin-bottom: 10px;
     }
-    input[name="order-key"]{
+    input[name="order-key"] {
         width: 250px;
     }
 }
 
-.order-recover{
-    input[name="order-key"], button{
+.order-recover {
+    input[name="order-key"], button {
         vertical-align: middle;
+    }
+}
+
+.lp-tab-sections {
+    list-style: none;
+    margin: 0 0 20px 0;
+    padding: 0;
+    .section-tab {
+        float: left;
+        a, span {
+            display: inline-block;
+            margin: 0 10px 0 0;
+            padding-bottom: 5px;
+        }
+        &.active {
+            span {
+                border-bottom: 2px solid #00adff;
+            }
+        }
+    }
+    &:after {
+        @include clear-fix();
     }
 }

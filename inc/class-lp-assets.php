@@ -113,6 +113,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					'deps' => array(
 						'jquery'
 					)
+				),
+				'become-a-teacher'  => array(
+					'url'  => self::url( 'js/frontend/become-teacher.js' ),
+					'deps' => array(
+						'jquery'
+					)
 				)
 			)
 		);

@@ -8,8 +8,28 @@
 }
 
 .lp-single-course {
-    .course-author-box {
+    .course-author {
         margin-bottom: 40px;
+        .author-name {
+            float: left;
+            margin: 0 20px 0 0;
+            text-align: center;
+            img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+            }
+            a{
+                display: block;
+            }
+        }
+        .author-bio {
+            font-size: 15px;
+            font-style: italic;
+        }
+        &:after {
+            @include clear-fix();
+        }
     }
     .course-price {
         margin-bottom: 10px;
@@ -41,7 +61,7 @@ ul.learn-press-nav-tabs {
         float: left;
         position: relative;
         margin: 0;
-        list-style:none;
+        list-style: none;
         a {
             display: inline-block;
             padding: 10px 20px;

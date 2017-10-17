@@ -583,9 +583,7 @@ class LP_Question extends LP_Course_Item {
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
 	}
 
-	public function submit_answer(
-		$quiz_id, $answer
-	) {
+	public function submit_answer( $quiz_id, $answer) {
 		return false;
 	}
 
@@ -938,9 +936,7 @@ class LP_Question extends LP_Course_Item {
 		return $data;
 	}
 
-	public static function get_option_template_data_for_js(
-		$args, $type
-	) {
+	public static function get_option_template_data_for_js( $args, $type) {
 		$args = array(
 			'id'            => '{{questionData.id}}',
 			'answer_option' => array(

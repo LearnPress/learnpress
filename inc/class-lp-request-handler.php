@@ -38,6 +38,8 @@ class LP_Request {
 		add_action( 'get_header', array( __CLASS__, 'clean_cache' ), 1000000 );
 		add_action( 'save_post', array( __CLASS__, 'clean_cache' ), 1000000 );
 
+		self::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
+
 		/**
 		 * @see LP_Request::purchase_course()
 		 */
@@ -57,10 +59,6 @@ class LP_Request {
 		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
 
 		add_action( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
-	}
-
-	public static function verify_nonce( $action, $nonce = '' ) {
-		return wp_verify_nonce( $nonce ? $nonce : self::get_string( "{$action}-nonce" ), $action );
 	}
 
 	/**
@@ -339,10 +337,104 @@ class LP_Request {
 		}
 	}
 
+	/**
+	 * Register ajax action.
+	 * Add ajax into queue by an action and then LP check if there is a request
+	 * with key lp-ajax=action-name then do the action "action-name". By default,
+	 * ajax action is called if user is logged. But, it can be call in case user
+	 * is not logged in if the action is passed with key :nopriv at the end.
+	 *
+	 * E.g:
+	 *      + Only for user is logged in
+	 *      LP_Request::register_ajax( 'action', 'function_to_call', 5 )
+	 *
+	 *      + For guest
+	 *      LP_Request::register_ajax( 'action:nopriv', 'function_to_call', 5 )
+	 *
+	 * @param string $action
+	 * @param mixed  $function
+	 * @param int    $priority
+	 */
 	public static function register_ajax( $action, $function, $priority = 5 ) {
-		//$action, $function, $priority = 5
-		add_action( 'learn_press_ajax_handler_' . $action, $function, $priority );
+		$actions = self::parse_action( $action );
 
+		if ( isset( $actions['nonce'] ) ) {
+			add_filter( 'learn_press_ajax_verify_nonce_' . $actions['action'], array( __CLASS__, 'verify_nonce' ) );
+		}
+
+		//$action, $function, $priority = 5
+		add_action( 'learn_press_ajax_' . $actions['action'], $function, $priority );
+
+		/**
+		 * No requires logged in?
+		 */
+		if ( isset( $actions[1] ) ) {
+			//$action, $function, $priority = 5
+			add_action( 'learn_press_ajax_nopriv_' . $actions['action'], $function, $priority );
+		}
+
+		/**
+		 * @deprecated
+		 */
+		add_action( 'learn_press_ajax_handler_' . $action, $function, $priority );
+	}
+
+	/**
+	 * Do ajax if there is a 'lp-ajax' in $_REQUEST
+	 *
+	 * @param string $action
+	 */
+	public static function do_ajax( $action ) {
+
+		if ( ! defined( 'LP_DOING_AJAX' ) ) {
+			define( 'LP_DOING_AJAX', true );
+		}
+
+		LP_Gateways::instance()->get_available_payment_gateways();
+
+		if ( has_filter( 'learn_press_ajax_verify_nonce_' . $action ) ) {
+			if ( ! self::verify_nonce( $action ) ) {
+				die( '0' );
+			}
+		}
+
+		if ( is_user_logged_in() ) {
+			/**
+			 * @deprecated
+			 */
+			do_action( 'learn_press_ajax_handler_' . $action );
+
+			/**
+			 * @since 3.0
+			 */
+			do_action( 'learn_press_ajax_' . $action );
+		} else {
+			/**
+			 * @since 3.0
+			 */
+			do_action( 'learn_press_ajax_nopriv_' . $action );
+		}
+		die( '0' );
+	}
+
+	public static function verify_nonce( $action, $nonce = '' ) {
+		return wp_verify_nonce( $nonce ? $nonce : self::get_string( "{$action}-nonce" ), $action );
+	}
+
+	public static function parse_action( $action ) {
+		$args    = explode( ':', $action );
+		$actions = array(
+			'action' => $args[0]
+		);
+
+		if ( sizeof( $args ) > 1 ) {
+			array_shift( $args );
+			foreach ( $args as $arg ) {
+				$actions[ $arg ] = $arg;
+			}
+		}
+
+		return $actions;
 	}
 
 	/**
@@ -540,6 +632,19 @@ class LP_Request {
 		}
 
 		return $email;
+	}
+
+	public static function get_list() {
+		if ( func_num_args() < 1 ) {
+			return array();
+		}
+
+		$list = array();
+		foreach ( func_get_args() as $key ) {
+			$list[ $key ] = self::get( $key );
+		}
+
+		return $list;
 	}
 }
 

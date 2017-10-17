@@ -101,12 +101,6 @@ class LP_Email_Type_Order extends LP_Email {
 		return $this->object;
 	}
 
-	public function get_variable() {
-		$this->variables = $this->data_to_variables( $this->object );
-
-		return $this->variables;
-	}
-
 	/**
 	 * @return bool|LP_Order
 	 */

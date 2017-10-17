@@ -10,12 +10,69 @@
 class LP_Shortcode_Become_A_Teacher extends LP_Abstract_Shortcode {
 
 	/**
+	 * @var array
+	 */
+	protected static $messages = array();
+
+	/**
 	 * LP_Checkout_Shortcode constructor.
 	 *
 	 * @param mixed $atts
 	 */
 	public function __construct( $atts = '' ) {
 		parent::__construct( $atts );
+
+		$user = learn_press_get_current_user( false );
+
+		if ( ! $user ) {
+			self::add_message( sprintf( __( 'Please %s to send your request!', 'learnpress' ), sprintf( '<a href="%s">%s</a>', learn_press_get_login_url(), _x( 'login', 'become-teacher-form', 'learnpress' ) ) ), 'login' );
+		} else {
+
+			if ( self::has_sent() ) {
+				self::add_message( __( 'Your have already sent the request. Please wait for approving.', 'learnpress' ), 'sent' );
+			} else if ( learn_press_user_maybe_is_a_teacher() ) {
+				self::add_message( __( 'You are a teacher!', 'learnpress' ), 'is-teacher' );
+			}
+		}
+	}
+
+	/**
+	 * Check if the message has already sent.
+	 *
+	 * @return bool
+	 */
+	public static function has_sent() {
+		return learn_press_become_teacher_sent();
+	}
+
+	/**
+	 * Add new message into queue.
+	 *
+	 * @param        $message
+	 * @param string $code
+	 */
+	public static function add_message( $message, $code = '' ) {
+		self::$messages[ $code ] = $message;
+	}
+
+	/**
+	 * Get added message by code from queue.
+	 *
+	 * @param string $code
+	 *
+	 * @return bool|mixed
+	 */
+	public static function get_message( $code = '' ) {
+		return isset( self::$messages[ $code ] ) ? self::$messages[ $code ] : false;
+	}
+
+	/**
+	 * Get all messages added into queue.
+	 *
+	 * @return array
+	 */
+	public static function get_messages() {
+		return self::$messages;
 	}
 
 	/**
@@ -25,7 +82,6 @@ class LP_Shortcode_Become_A_Teacher extends LP_Abstract_Shortcode {
 	 */
 	public function output() {
 
-		global $wp;
 		ob_start();
 
 		$user    = learn_press_get_current_user();
@@ -37,7 +93,7 @@ class LP_Shortcode_Become_A_Teacher extends LP_Abstract_Shortcode {
 		if ( ! is_user_logged_in() ) {
 			$message = __( "Please login to fill in this form.", 'learnpress' );
 			$code    = 1;
-		} elseif ( in_array( LP_TEACHER_ROLE, $user->user->roles ) ) {
+		} elseif ( in_array( LP_TEACHER_ROLE, $user->get_roles() ) ) {
 			$message = __( "You are a teacher now.", 'learnpress' );
 			$code    = 2;
 		} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->get_id() ) == 'yes' ) {
@@ -48,8 +104,8 @@ class LP_Shortcode_Become_A_Teacher extends LP_Abstract_Shortcode {
 			$code    = 4;
 		}
 
-		if ( ! apply_filters( 'learn_press_become_a_teacher_display_form', true, $code, $message ) ) {
 
+		if ( apply_filters( 'learn_press_become_a_teacher_display_form', true, $code, $message ) ) {
 			$atts   = shortcode_atts(
 				array(
 					'method'                     => 'post',
@@ -62,8 +118,7 @@ class LP_Shortcode_Become_A_Teacher extends LP_Abstract_Shortcode {
 				$atts
 			);
 			$fields = learn_press_get_become_a_teacher_form_fields();
-			ob_start();
-			$args = array_merge(
+			$args   = array_merge(
 				array(
 					'fields'  => $fields,
 					'code'    => $code,
@@ -74,6 +129,7 @@ class LP_Shortcode_Become_A_Teacher extends LP_Abstract_Shortcode {
 
 			learn_press_get_template( 'global/become-teacher-form.php', $args );
 		}
+
 		return ob_get_clean();
 	}
 

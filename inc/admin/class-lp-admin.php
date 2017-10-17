@@ -36,6 +36,57 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
+			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
+			add_filter( 'views_users', array( $this, 'views_users' ), 10, 1 );
+			add_filter( 'user_row_actions', array( $this, 'user_row_actions' ), 10, 2 );
+			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
+		}
+
+		public function user_row_actions( $actions, $user ) {
+			if ( $pending_request = LP_User_Factory::get_pending_requests() ) {
+				if ( in_array( $user->ID, $pending_request ) ) {
+					$actions['accept'] = sprintf( '<a href="' . admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Accept', 'pending-request', 'learnpress' ) );
+					//$actions['deny']   = sprintf( '<a href="' . admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Deny', 'pending-request', 'learnpress' ) );
+				}
+			}
+
+			return $actions;
+		}
+
+		public function filter_users( $action ) {
+			switch ( $action ) {
+				case 'accept-request':
+					if ( ( $user_id = LP_Request::get_int( 'user_id' ) ) && $user = get_user_by( 'id', $user_id ) ) {
+						$be_teacher = new WP_User( $user_id );
+						$be_teacher->set_role( LP_TEACHER_ROLE );
+						delete_user_meta( $user_id, '_requested_become_teacher' );
+
+						do_action( 'learn-press/user-become-a-teacher', $user_id );
+					}
+					break;
+				case 'deny-request':
+					break;
+			}
+		}
+
+		public function users_custom_column( $content, $column_name, $user_id ) {
+
+		}
+
+		public function views_users( $views ) {
+			if ( $pending_request = LP_User_Factory::get_pending_requests() ) {
+				if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
+					$class = ' class="current"';
+					foreach ( $views as $k => $view ) {
+						$views[ $k ] = preg_replace( '!class="current"!', '', $view );
+					}
+				} else {
+					$class = '';
+				}
+				$views['pending-request'] = '<a href="' . admin_url( 'users.php?lp-action=pending-request' ) . '"' . $class . '>' . sprintf( __( 'Pending Request %s', 'learnpress' ), '<span class="count">(' . count( $pending_request ) . ')</span>' ) . '</a>';
+			}
+
+			return $views;
 		}
 
 		public function admin_notices() {

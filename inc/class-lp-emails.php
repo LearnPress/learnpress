@@ -108,6 +108,7 @@ class LP_Emails {
 		// Other
 		$this->emails['LP_Email_Update_Course']        = include( 'emails/class-lp-email-updated-course.php' );
 		$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
+		$this->emails['LP_Email_Instructor_Accepted']  = include( 'emails/class-lp-email-instructor-accepted.php' );
 
 		//$this->emails['LP_Email_User_Order_Completed']      = include( 'emails/class-lp-email-user-order-completed.php' );
 		//$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );

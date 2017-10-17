@@ -72,6 +72,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'date_created'  => $user_object->user_registered,
 					'date_modified' => get_user_meta( $user_id, 'last_update', true ),
 					'role'          => ! empty( $user_object->roles[0] ) ? $user_object->roles[0] : 'student',
+					'roles'         => ! empty( $user_object->roles ) ? $user_object->roles : array( 'student' ),
 				), null, true
 			);
 		}

@@ -1380,12 +1380,13 @@ function learn_press_user_maybe_is_a_teacher( $user = null ) {
 	if ( ! $user ) {
 		return false;
 	}
-	$role = in_array( 'administrator', $user->user->roles ) ? 'administrator' : false;
+
+	$role = $user->has_role( 'administrator' ) ? 'administrator' : false;
 	if ( ! $role ) {
-		$role = in_array( 'lp_teacher', $user->user->roles ) ? 'lp_teacher' : false;
+		$role = $user->has_role( 'lp_teacher' ) ? 'lp_teacher' : false;
 	}
 
-	return apply_filters( 'learn_press_user_maybe_is_a_teacher', $role, $user->get_id() );
+	return apply_filters( 'learn-press/user/is-teacher', $role, $user->get_id() );
 }
 
 function learn_press_get_become_a_teacher_form_fields() {
@@ -1395,18 +1396,23 @@ function learn_press_get_become_a_teacher_form_fields() {
 			'title'       => __( 'Name', 'learnpress' ),
 			'type'        => 'text',
 			'placeholder' => __( 'Your name', 'learnpress' ),
-			'def'         => $user->display_name
+			'saved'       => $user->get_display_name(),
+			'id'          => 'bat_name',
+			'required'    => true
 		),
 		'bat_email' => array(
 			'title'       => __( 'Email', 'learnpress' ),
 			'type'        => 'email',
 			'placeholder' => __( 'Your email address', 'learnpress' ),
-			'def'         => $user->user_email
+			'saved'       => $user->get_email(),
+			'id'          => 'bat_email',
+			'required'    => true
 		),
 		'bat_phone' => array(
 			'title'       => __( 'Phone', 'learnpress' ),
 			'type'        => 'text',
-			'placeholder' => __( 'Your phone number', 'learnpress' )
+			'placeholder' => __( 'Your phone number', 'learnpress' ),
+			'id'          => 'bat_phone'
 		)
 	);
 	$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
@@ -1490,12 +1496,11 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 }
 
 function learn_press_become_teacher_sent( $user_id = 0 ) {
-	$sent = learn_press_user_maybe_is_a_teacher( $user_id );
-	if ( ! $sent ) {
-		$sent = get_transient( 'learn_press_become_teacher_sent_' . $user_id ) == 'yes';
+	if ( func_num_args() == 0 ) {
+		$user_id = get_current_user_id();
 	}
 
-	return $sent;
+	return 'yes' === get_user_meta( $user_id, '_requested_become_teacher', true );
 }
 
 function _learn_press_translate_user_roles( $translations, $text, $context, $domain ) {

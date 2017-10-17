@@ -138,8 +138,28 @@ class LP_User_Factory {
 	 */
 	public static function exclude_temp_users( $args ) {
 		$args['exclude'] = self::_get_temp_user_ids();
+		if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
+			$args['include'] = self::get_pending_requests();
+		}
 
 		return $args;
+	}
+
+	public static function get_pending_requests() {
+		if ( false === ( $pending_requests = wp_cache_get( 'pending-requests', 'lp-users' ) ) ) {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				SELECT ID
+				FROM {$wpdb->users} u 
+				INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s
+				WHERE um.meta_value = %s
+			", '_requested_become_teacher', 'yes' );
+
+			$pending_requests = $wpdb->get_col( $query );
+			wp_cache_set( 'pending-requests', $pending_requests, 'lp-users' );
+		}
+
+		return $pending_requests;
 	}
 
 	/**

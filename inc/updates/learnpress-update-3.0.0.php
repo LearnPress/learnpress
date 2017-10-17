@@ -18,5 +18,14 @@ function learn_press_300_add_column_user_items() {
 }
 
 
+function learn_press_300_update_email_content_option(){
+
+}
+
+function learn_press_300_update_users(){
+	// create table _learnpress_users
+	// insert new row
+}
+
 //
 learn_press_300_add_column_user_items();

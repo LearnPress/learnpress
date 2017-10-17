@@ -42,7 +42,24 @@ class LP_Meta_Box_Helper {
 		$field  = $fields[0];
 		if ( self::include_field( $field ) ) {
 			self::parse_conditional_logic( $field );
-			$field['name']       = apply_filters( 'learn-press/meta-box/field-name', $field['title'], $field );
+
+			$field_name = '';
+			/**
+			 * Find the field's name
+			 */
+			foreach ( array( 'title', 'name' ) as $value ) {
+				if ( isset( $field[ $value ] ) ) {
+					$field_name = $field[ $value ];
+					break;
+				}
+			}
+
+			// Add the "asterisk" to required field
+			if ( isset( $field['required'] ) && $field['required'] ) {
+				$field_name = sprintf( '%s (*)', $field_name );
+			}
+
+			$field['name']       = apply_filters( 'learn-press/meta-box/field-name', $field_name, $field );
 			$field['field_name'] = apply_filters( 'learn-press/meta-box/field-field_name', $field['id'], $field );
 			$field['id']         = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
 			//$field['value']      = md5( $field['std'] );
@@ -145,9 +162,19 @@ class LP_Meta_Box_Helper {
 		add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
 		add_action( 'learn-press/meta-box-loaded', array( __CLASS__, 'load' ) );
 
+		add_filter( 'rwmb_field_meta', array( __CLASS__, 'field_meta' ), 10, 3 );
+
 		if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
 		}
+	}
+
+	public static function field_meta( $meta, $field, $saved ) {
+		if ( array_key_exists( 'saved', $field ) ) {
+			$meta = $field['saved'];
+		}
+
+		return $meta;
 	}
 
 	/**

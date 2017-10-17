@@ -14,10 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 $course = LP_Global::course();
 ?>
 
-<div class="course-author-box">
+<div class="course-author">
 	<h3><?php _e('About the Instructor', 'learnpress');?></h3>
-	<p><?php echo $course->get_instructor_html();?></p>
-	<div>
+	<p class="author-name">
+        <?php echo $course->get_instructor()->get_profile_picture();?>
+        <?php echo $course->get_instructor_html();?>
+    </p>
+	<div class="author-bio">
 		<?php echo $course->get_author()->get_description();?>
 	</div>
 </div>

@@ -1294,9 +1294,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			learn_press_admin_view( 'meta-boxes/course/review-log' );
 		}
 
-		public function posts_fields(
-			$fields
-		) {
+		public function posts_fields( $fields) {
 			if ( ! $this->_is_archive() ) {
 				return $fields;
 			}
@@ -1314,9 +1312,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_join_paged(
-			$join
-		) {
+		public function posts_join_paged( $join) {
 			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
@@ -1331,9 +1327,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|string
 		 */
-		public function posts_where_paged(
-			$where
-		) {
+		public function posts_where_paged( $where) {
 			if ( ! $this->_is_archive() ) {
 				return $where;
 			}
@@ -1354,9 +1348,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_orderby(
-			$order_by_statement
-		) {
+		public function posts_orderby( $order_by_statement) {
 			if ( ! $this->_is_archive() ) {
 				return $order_by_statement;
 			}
@@ -1373,9 +1365,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function sortable_columns(
-			$columns
-		) {
+		public function sortable_columns( $columns) {
 			$columns['author'] = 'author';
 			$columns['price']  = 'price';
 

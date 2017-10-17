@@ -21,7 +21,7 @@ class LP_Shortcodes {
 
 		$shortcodes = array(
 			'confirm_order'       => __CLASS__ . '::confirm_order',
-			'profile'             => array( __CLASS__, 'profile' ),
+			'profile'             => __CLASS__ . '::profile',
 			'become_teacher_form' => __CLASS__ . '::become_teacher_form',
 			'login_form'          => __CLASS__ . '::login_form',
 			'checkout'            => __CLASS__ . '::checkout',
@@ -36,14 +36,14 @@ class LP_Shortcodes {
 		}
 
 		//add_action( 'the_post', array( __CLASS__, 'auto_shortcode' ), -10, 2 );
-		add_action( 'template_include', array( __CLASS__, 'auto_shortcode' ), -10, 2 );
+		add_action( 'template_include', array( __CLASS__, 'auto_shortcode' ), - 10, 2 );
 
 	}
 
-	public static function auto_shortcode( $template) {
-        global $post;
+	public static function auto_shortcode( $template ) {
+		global $post;
 
-		if ( !$post ) {
+		if ( ! $post ) {
 			return $template;
 		}
 
@@ -62,7 +62,7 @@ class LP_Shortcodes {
 		}
 
 
-        return $template;
+		return $template;
 	}
 
 	public static function _login_form_bottom( $content, $args ) {

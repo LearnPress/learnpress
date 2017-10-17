@@ -122,7 +122,7 @@ add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_end_
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_progress', 40 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_tabs', 50 );
 //add_action( 'learn-press/content-landing-summary', 'learn_press_course_curriculum_popup', 65 );
-add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 60 );
+add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 80 );
 
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_price', 70 );
 
@@ -287,6 +287,48 @@ add_action( 'learn-press/after-single-course', 'learn_press_single_course_args' 
  * @see learn_press_single_document_title_parts()
  */
 add_filter( 'document_title_parts', 'learn_press_single_document_title_parts' );
+
+/***********************************/
+/*         BECOME A TEACHER        */
+/***********************************/
+add_action( 'learn-press/before-become-teacher-form', function () {
+	$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+	if ( ! $messages ) {
+		return;
+	}
+
+	learn_press_get_template( 'global/become-teacher-form/message.php', array( 'messages' => $messages ) );
+} );
+
+add_action( 'learn-press/before-become-teacher-form', function () {
+	$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+	if ( $messages ) {
+		return;
+	}
+	?>
+    <h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
+	<?php
+} );
+
+add_action( 'learn-press/become-teacher-form', function () {
+	$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+	if ( $messages ) {
+		return;
+	}
+
+	include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
+
+	learn_press_get_template( 'global/become-teacher-form/form-fields.php', array( 'fields' => learn_press_get_become_a_teacher_form_fields() ) );
+} );
+
+add_action( 'learn-press/after-become-teacher-form', function () {
+	$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+	if ( $messages ) {
+		return;
+	}
+
+	learn_press_get_template( 'global/become-teacher-form/button.php' );
+} );
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */
 //add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );

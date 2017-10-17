@@ -314,7 +314,7 @@ class LP_Email extends LP_Abstract_Settings {
 		 */
 		$this->heading      = $this->settings->get( 'heading', $this->default_heading );
 		$this->subject      = $this->settings->get( 'subject', $this->default_subject );
-		$this->email_format = $this->settings->get( 'email_format' ) == 'plain_text' ? 'plain' : 'html';
+		$this->email_format = $this->settings->get( 'email_content.format' ) == 'plain_text' ? 'plain' : 'html';
 		$this->enable       = $this->settings->get( 'enable' ) === 'yes';
 
 		$this->basic_variables = array(
@@ -348,6 +348,21 @@ class LP_Email extends LP_Abstract_Settings {
 
 	public function is_configured() {
 		return LP()->settings->get( $this->_option_id );
+	}
+
+	public function get_variable() {
+		$this->variables = $this->data_to_variables( $this->object );
+
+		return $this->variables;
+	}
+
+	public function get_object( $object_id = null ) {
+		$this->object = $this->get_common_template_data(
+			$this->email_format,
+			array()
+		);
+
+		return $this->object;
 	}
 
 	/**
@@ -445,7 +460,6 @@ class LP_Email extends LP_Abstract_Settings {
 	 */
 	public function get_content() {
 		$email_format = $this->get_email_format();
-
 		if ( $email_format == 'plain' ) {
 			$email_content = preg_replace( $this->plain_search, $this->plain_replace, strip_tags( $this->get_content_plain() ) );
 		} else if ( in_array( $email_format, array( 'html', 'multipart' ) ) ) {
@@ -475,7 +489,7 @@ class LP_Email extends LP_Abstract_Settings {
 	 */
 	public function get_footer_text() {
 		$text = wpautop( wp_kses_post( wptexturize( LP()->settings->get( 'emails_general.footer_text' ) ) ) );
-		$text =LP()->settings->get( 'emails_general.footer_text' );
+		$text = LP()->settings->get( 'emails_general.footer_text' );
 
 		return apply_filters( 'learn-press/email-footer-text-' . $this->id, $text );
 	}
@@ -486,8 +500,8 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @return string
 	 */
 	public function get_content_html() {
-		$template   = $this->get_template( 'template_html' );
-		$local_file = $this->get_theme_template_file( $template, $this->template_path );
+		$template = $this->get_template( 'template_html' );
+		/*$local_file = $this->get_theme_template_file( $template, $this->template_path );
 
 		if ( file_exists( $local_file ) ) {
 			$args = $this->get_template_data( 'html' );
@@ -495,11 +509,12 @@ class LP_Email extends LP_Abstract_Settings {
 			ob_start();
 			include $local_file;
 			$content = ob_get_clean();
-		} else {
-			$template_file = $this->template_base . $template;
-			$content       = $this->settings->get( 'email_content_html', file_get_contents( $template_file ) );
-			$content       = stripslashes( $content );
-		}
+		} else {*/
+		$template_file = $this->template_base . $template;
+		$content       = $this->settings->get( 'email_content.html', file_get_contents( $template_file ) );
+		$content       = stripslashes( $content );
+
+		//}
 
 		return $content;
 	}
@@ -510,8 +525,8 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @return string
 	 */
 	public function get_content_plain() {
-		$template   = $this->get_template( 'template_plain' );
-		$local_file = $this->get_theme_template_file( $template, $this->template_path );
+		$template = $this->get_template( 'template_plain' );
+		/*$local_file = $this->get_theme_template_file( $template, $this->template_path );
 
 		if ( file_exists( $local_file ) ) {
 			$args = $this->get_template_data( 'plain' );
@@ -519,11 +534,12 @@ class LP_Email extends LP_Abstract_Settings {
 			ob_start();
 			include $local_file;
 			$content = ob_get_clean();
-		} else {
-			$template_file = $this->template_base . $template;
-			$content       = $this->settings->get( 'email_content_plain', file_get_contents( $template_file ) );
-			$content       = stripslashes( $content );
-		}
+		} else {*/
+		$template_file = $this->template_base . $template;
+		$content       = $this->settings->get( 'email_content.plain', file_get_contents( $template_file ) );
+		$content       = stripslashes( $content );
+
+		//}
 
 		return $content;
 	}
