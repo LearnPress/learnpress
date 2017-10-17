@@ -36,13 +36,22 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                         <div class="lp-column-sort"><i class="fa fa-bars"></i></div>
                         <div class="lp-column-order"></div>
                         <div class="lp-column-name lp-column-quick-add">
-                            <div class="modal-search">
-                                <div class="modal-search-questions">
-                                    <input type="text" class="search-input">
-                                </div>
+                            <div class="new-question-title">
+                                <input type="text" name="new-question-title" :value="newQuestion.title"
+                                       v-model="newQuestion.title"
+                                       ref="newQuestionTitle">
                             </div>
-                            <button type="button" class="button"
-                                    @click.stop="addNewItem"><?php esc_html_e( 'Add as New', 'learnpress' ); ?> </button>
+                            <div class="add-new-button" :class="addNewEnable">
+                                <button type="button" class="button"
+                                        @click.stop="addNewItem"
+                                        @keyup.enter.stop="addNewItem"
+                                        :class="addNewEnable"><?php esc_html_e( 'Add as New', 'learnpress' ); ?> </button>
+                                <ul class="lp-dropdown-items" ref="newQuestionType">
+                                    <li v-for="(type, key) in questionTypes">
+                                        <a href="#" :data-type="key" @click.stop="addNewItem">{{type}}</a>
+                                    </li>
+                                </ul>
+                            </div>
                             <button type="button" class="button"
                                     @click.stop="openChooseItems"><?php esc_html_e( 'Select', 'learnpress' ); ?></button>
                         </div>
@@ -60,10 +69,18 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
 
         Vue.component('lp-quiz-editor', {
             template: '#tmpl-lp-quiz-editor',
+            data: function () {
+                return {
+                    newQuestion: {
+                        'title': '',
+                        'type': 'true_or_false'
+                    }
+                }
+            },
             created: function () {
                 setInterval(function () {
                     $store.dispatch('heartbeat');
@@ -78,14 +95,31 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 },
                 quizId: function () {
                     return $store.getters['id'];
+                },
+                addNewEnable: function () {
+                    return this.newQuestion.title ? 'visible' : 'disabled';
+                },
+                questionTypes: function () {
+                    return $store.getters['questionTypes'];
                 }
             },
             methods: {
                 toggle: function () {
                     $store.dispatch('lqs/toggleListQuestions');
                 },
-                addNewItem: function () {
+                addNewItem: function (e) {
+                    e.preventDefault();
+                    this.newQuestion.type = e.target.dataset.type;
 
+                    var request = {
+                        'newQuestion': this.newQuestion,
+                        'quizId': this.quizId
+                    };
+
+                    $store.dispatch('lqs/addNewQuestion', request);
+
+                    this.newQuestion.title = '';
+                    this.$refs.newQuestionTitle.focus();
                 },
                 openChooseItems: function () {
                     $store.dispatch('cqi/open', parseInt(this.quizId));
@@ -93,5 +127,5 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
             }
         })
 
-    })(Vue, LP_Quiz_Store);
+    })(Vue, LP_Quiz_Store, jQuery);
 </script>

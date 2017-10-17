@@ -467,9 +467,7 @@ class LP_Question extends LP_Course_Item {
 		return $answers;
 	}
 
-	public function get_default_answers(
-		$answers = false
-	) {
+	public function get_default_answers( $answers = false ) {
 		if ( ! $answers ) {
 			$answers = array(
 				array(

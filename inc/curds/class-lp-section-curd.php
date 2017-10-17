@@ -244,6 +244,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$result    = array();
 
 		foreach ( $all_items as $item ) {
+
+			$item  = (array) $item;
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
 
 			if ( $exist ) {

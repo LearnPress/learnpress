@@ -10,7 +10,7 @@ learn_press_admin_view( 'quiz/meta' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-settings">
-    <div class="question-settings" :class="question.open ? 'hide-if-js' : 'table-row'">
+    <div class="question-settings" :class="question.open ? 'table-row' : 'hide-if-js'">
         <lp-question-answers :question="question"></lp-question-answers>
         <lp-question-meta :question="question"></lp-question-meta>
     </div>

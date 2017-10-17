@@ -191,7 +191,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
 
-					$items = json_decode( wp_unslash( $items, true ) );
+					$items = json_decode( wp_unslash( $items ), true );
 
 					$result = $curd->update_section_items( $section_id, $items );
 					break;
@@ -200,7 +200,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
 
-					$items = json_decode( wp_unslash( $items, true ) );
+					$items = json_decode( wp_unslash( $items ), true );
 
 					if ( ! $items || ! $section_id ) {
 						$result = new WP_Error();
@@ -239,7 +239,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$orders = json_decode( wp_unslash( $orders, true ) );
+					$orders = json_decode( wp_unslash( $orders ), true );
 
 					$result = $curd->sort_sections( $orders );
 
@@ -252,7 +252,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'update-section':
 					$section = ! empty( $args['section'] ) ? $args['section'] : false;
-					$section = json_decode( wp_unslash( $section, true ) );
+					$section = json_decode( wp_unslash( $section ), true );
 
 					if ( ! is_array( $section ) || empty( $section ) ) {
 						break;
@@ -331,10 +331,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param $question_id
+		 * @param array $args | get new question data
 		 *
 		 * @return array
 		 */
-		public static function get_question_data_to_quiz( $question_id ) {
+		public static function get_question_data_to_quiz( $question_id, $args = array() ) {
 
 			if ( ! is_numeric( $question_id ) ) {
 				return array();
@@ -342,7 +343,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$question = LP_Question::get_question( $question_id );
 
-			$question_id = $question->get_id();
+			if ( $args ) {
+				$answers = $args;
+				foreach ( $args as $index => $arg ) {
+					$answers[ $index ] = $arg;
+				}
+			} else {
+				$answers = (array) $question->get_answer_options();
+			}
 
 			$data = array(
 				'id'       => $question_id,
@@ -352,7 +360,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'key'   => $question->get_type(),
 					'label' => $question->get_type_label()
 				),
-				'answers'  => $question->get_answer_options(),
+				'answers'  => $answers,
 				'settings' => array(
 					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
 					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
@@ -398,10 +406,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-list-questions':
-					// code
-					break;
-
-				case 'new-question':
 					// code
 					break;
 
@@ -495,6 +499,44 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'new-question':
+					$quiz_id  = ! empty( $args['quizId'] ) ? $args['quizId'] : false;
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! ( $quiz_id || is_array( $question ) ) ) {
+						break;
+					}
+
+					$user_id = learn_press_get_current_user_id();
+
+					$new_question = LP_Question_Factory::add_question(
+						array(
+							'type'  => $question['type'],
+							'title' => $question['title'],
+						), true
+					);
+
+					$new_question_id      = $new_question['id'];
+					// new question answers
+					$new_question_answers = $new_question['answers'];
+
+					if ( ! is_wp_error( $new_question_id ) ) {
+
+						// trigger change user memorize question types
+						$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+						$question_types          = ! $question_types ? array() : $question_types;
+						$type                    = get_post_meta( $new_question_id, '_lp_type', true );
+						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
+						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+						$quiz_curd->add_question( $quiz_id, $new_question_id );
+                        // get new question data
+						$result = LP_Admin_Ajax::get_question_data_to_quiz( $new_question_id, $new_question_answers );
+					}
+
+					// code
+					break;
+
 				case 'clone-question':
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
@@ -543,6 +585,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 							}
 						}
 					}
+
 					break;
 
 				case 'sort-questions':
