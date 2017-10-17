@@ -23,9 +23,8 @@
                 <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
                     <a class="lp-btn-icon dashicons dashicons-editor-help"></a>
                     <ul>
-                        <li v-for="(type, key) in questionTypes" :data-type="key"
-                            :class="isAcitve(key) ? 'active' : ''">
-                            <a href="">{{type}}</a>
+                        <li v-for="(type, key) in questionTypes" :class="isAcitve(key) ? 'active' : ''">
+                            <a href="" :data-type="key" @click.prevent="changeQuestionType">{{type}}</a>
                         </li>
                     </ul>
                 </div>
@@ -100,6 +99,14 @@
                         'question': this.question
                     };
                     $store.dispatch('lqs/updateQuestion', request);
+                },
+                changeQuestionType: function (e) {
+                    var request = {
+                        question: this.question,
+                        newType: e.target.dataset.type
+                    };
+
+                    $store.dispatch('lqs/changeQuestionType', request);
                 }
             }
         });

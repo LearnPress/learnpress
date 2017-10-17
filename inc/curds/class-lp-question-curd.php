@@ -5,8 +5,13 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		// TODO: Implement delete() method.
 	}
 
+	/**
+	 * @param object $question
+	 *
+	 * @return object
+	 */
 	public function create( &$question ) {
-
+//		return $question;
 	}
 
 	/**
@@ -78,8 +83,9 @@ class LP_Question_CURD implements LP_Interface_CURD {
 			'title'   => '',
 			'content' => '',
 			'key'     => '',
-			'meta'    => '',
+			'meta'    => ''
 		) );
+
 
 		switch ( $question['action'] ) {
 			case 'update-title':
@@ -99,6 +105,122 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		}
 
 		return $question;
+	}
+
+
+	/**
+	 * Convert answers to true or false question.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $answers
+	 *
+	 * @return mixed
+	 */
+	protected function _convert_answers_to_true_or_false( $answers ) {
+
+		if ( is_array( $answers ) ) {
+			if ( sizeof( $answers ) > 2 ) {
+				global $wpdb;
+				foreach ( $answers as $key => $answer ) {
+					if ( $key > 1 ) {
+						$wpdb->delete(
+							$wpdb->learnpress_question_answers,
+							array( 'question_answer_id' => $answer['question_answer_id'] )
+						);
+					}
+				}
+				$answers = array_slice( $answers, 0, 2 );
+			}
+
+			$correct = 0;
+			foreach ( $answers as $key => $answer ) {
+				if ( $answer['is_true'] == 'yes' ) {
+					$correct += 1;
+				}
+			}
+
+			if ( ! $correct ) {
+				// for single choice deletes all correct, set first option is correct
+				$answers[0]['is_true'] = 'yes';
+			} else if ( $correct == 2 ) {
+				// for multiple choice keeps all correct, remove all correct and keep first option
+				$answers[1]['is_true'] = '';
+			}
+		}
+
+		return $answers;
+	}
+
+	/**
+	 *
+	 * Convert answers for multi choice to single choice question.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $answers
+	 *
+	 * @return array
+	 */
+	protected function _convert_answers_multi_choice_to_single_choice( $answers ) {
+		if ( is_array( $answers ) ) {
+
+			$correct = 0;
+			foreach ( $answers as $key => $answer ) {
+				if ( $answer['is_true'] == 'yes' ) {
+					$correct += 1;
+				}
+			}
+
+			if ( $correct > 1 ) {
+				// remove all correct and keep first option
+				$answers[0]['is_true'] = '';
+			}
+		}
+
+		return $answers;
+	}
+
+	/**
+	 * Change question type.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $question_id
+	 * @param $old_type
+	 * @param $new_type
+	 *
+	 * @return bool|LP_Question|mixed
+	 */
+	public function change_question_type( $question_id, $old_type, $new_type ) {
+
+		$old_question   = LP_Question::get_question( $question_id );
+		$answer_options = $old_question->get_data( 'answer_options' );
+
+		update_post_meta( $question_id, '_lp_type', $new_type );
+
+		if ( $new_question = LP_Question::get_question( $question_id, array( 'force' => true ) ) ) {
+
+			// except convert from true or false
+			if ( ! ( ( $old_type == 'true_or_false' ) && ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) ) {
+				if ( $new_type == 'true_or_false' ) {
+					$func = "_convert_answers_to_true_or_false";
+				} else {
+					$func = "_convert_answers_{$old_type}_to_{$new_type}";
+				}
+				if ( is_callable( array( $this, $func ) ) ) {
+					$answer_options = call_user_func_array( array( $this, $func ), array( $answer_options ) );
+				}
+			}
+
+			wp_cache_delete( 'answer-options-' . $question_id, 'lp-questions' );
+			wp_cache_set( 'answer-options-' . $question_id, $answer_options, 'lp-questions' );
+			$new_question->set_data( 'answer_options', $answer_options );
+
+			return $new_question;
+		}
+
+		return false;
 	}
 
 	/**
@@ -175,9 +297,9 @@ class LP_Question_CURD implements LP_Interface_CURD {
 				'question_answer_id' => $question_answer_id,
 				'question_id'        => $args['question_id'],
 				'answer_order'       => $args['answer_order'],
-				'text'               => unserialize($args['answer_data'])['text'],
-				'value'              => unserialize($args['answer_data'])['value'],
-				'is_true'            => unserialize($args['answer_data'])['is_true']
+				'text'               => unserialize( $args['answer_data'] )['text'],
+				'value'              => unserialize( $args['answer_data'] )['value'],
+				'is_true'            => unserialize( $args['answer_data'] )['is_true']
 			);
 		} else {
 			return false;
@@ -219,6 +341,7 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	protected function _load_answer_options( &$question ) {
 		$id             = $question->get_id();
 		$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
+
 		if ( false === $answer_options ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
@@ -240,6 +363,7 @@ class LP_Question_CURD implements LP_Interface_CURD {
 			}
 		}
 		$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
+
 		if ( ! empty( $answer_options['question_answer_id'] ) && $answer_options['question_answer_id'] > 0 ) {
 			$this->_load_answer_option_meta( $answer_options );
 		}

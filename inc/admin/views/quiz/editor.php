@@ -43,12 +43,12 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                             </div>
                             <div class="add-new-button" :class="addNewEnable">
                                 <button type="button" class="button"
-                                        @click.stop="addNewItem"
-                                        @keyup.enter.stop="addNewItem"
+                                        @click.prevent="addNewItem"
+                                        @keyup.enter.prevent="addNewItem"
                                         :class="addNewEnable"><?php esc_html_e( 'Add as New', 'learnpress' ); ?> </button>
                                 <ul class="lp-dropdown-items" ref="newQuestionType">
                                     <li v-for="(type, key) in questionTypes">
-                                        <a href="#" :data-type="key" @click.stop="addNewItem">{{type}}</a>
+                                        <a href="#" :data-type="key" @click.prevent="addNewItem">{{type}}</a>
                                     </li>
                                 </ul>
                             </div>

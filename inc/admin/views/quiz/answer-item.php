@@ -29,9 +29,8 @@
             </template>
         </td>
         <td class="lp-column lp-column-actions lp-toolbar-buttons">
-            <div class="lp-toolbar-btn lp-btn-remove" v-if="!(isTrueOrFalse || disableDeleteAnswer)">
-                <a class="lp-btn-icon dashicons dashicons-trash"
-                   @click="deleteQuestionAnswer"></a>
+            <div class="lp-toolbar-btn lp-btn-remove" v-if="deletable">
+                <a class="lp-btn-icon dashicons dashicons-trash" @click="deleteQuestionAnswer"></a>
             </div>
         </td>
     </tr>
@@ -49,6 +48,22 @@
                 },
                 name: function () {
                     return 'answer_question[' + this.question.id + ']'
+                },
+                numberCorrect: function () {
+                    var correct = 0;
+                    this.question.answers.forEach(function (answer) {
+                        if (answer.is_true === 'yes') {
+                            correct += 1;
+                        }
+                    });
+                    return correct;
+                },
+                deletable: function () {
+                    if ((this.answer.is_true === 'yes' && this.numberCorrect === 1) || this.isTrueOrFalse || this.disableDeleteAnswer) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 }
             },
             methods: {
