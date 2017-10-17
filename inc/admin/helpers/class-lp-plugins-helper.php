@@ -108,8 +108,8 @@ class LP_Plugins_Helper {
 			}
 		}
 		self::$plugins['installed'] = $plugins;
-		self::$plugins['free']      = array_diff_key( $wp_plugins, $wp_installed );
-		self::$plugins['premium']   = array_diff_key( $premium_plugins, $premium_installed );
+		self::$plugins['free']      = array_diff_key( (array) $wp_plugins, (array) $wp_installed );
+		self::$plugins['premium']   = array_diff_key( (array) $premium_plugins, (array) $premium_installed );
 
 		// Sort plugins
 		self::_sort_plugins();
@@ -235,7 +235,7 @@ class LP_Plugins_Helper {
 	 * Get our related themes.
 	 *
 	 * @param string $type
-	 * @param array $args
+	 * @param array  $args
 	 *
 	 * @return array|mixed
 	 */

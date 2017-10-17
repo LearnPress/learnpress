@@ -672,6 +672,7 @@ class LP_Factory {
 		return LP_Object_Data_CURD::get( 'order' );
 	}
 }
+
 //$a = file(ABSPATH . '/result.txt');
 //foreach($a as $k => $l){
 //	$a[$k] = preg_replace('~\n~', '', $l) . ";";
@@ -690,3 +691,13 @@ class LP_Factory {
 //}
 //file_put_contents(ABSPATH . '/result.txt', ob_get_clean());
 //die();
+function test_redirect_xxx( $url ) {
+	if ( ! empty( $_REQUEST['xxxx'] ) ) {
+		print_r( debug_backtrace() );
+		die();
+	}
+
+	return $url;
+}
+
+add_filter( 'wp_redirect', 'test_redirect_xxx' );

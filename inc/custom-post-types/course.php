@@ -809,7 +809,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$users_by_role = get_users( array( 'role' => $_role ) );
 				if ( $users_by_role ) {
 					foreach ( $users_by_role as $user ) {
-						$include[ $user->get('ID') ] = $user->user_login;
+						$include[ $user->get( 'ID' ) ] = $user->user_login;
 					}
 				}
 			}
@@ -1139,7 +1139,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					AND post_id = %d
 				";
 				$keys[] = $post->ID;
-				$sql = $wpdb->prepare( $sql, $keys );
+				$sql    = $wpdb->prepare( $sql, $keys );
 				$wpdb->query( $sql );
 				foreach ( $keys as $key ) {
 					unset( $_REQUEST[ $key ] );
@@ -1157,8 +1157,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		private function _validate_sale_price_date() {
 			$now              = current_time( 'timestamp' );
-			$sale_price_start = learn_press_get_request()['_lp_sale_start'];
-			$sale_price_end   = $_REQUEST['_lp_sale_end'];
+			$sale_price_start = learn_press_get_request( '_lp_sale_start' );
+			$sale_price_end   = learn_press_get_request( '_lp_sale_end' );
 			$end              = strtotime( $sale_price_end );
 			$start            = strtotime( $sale_price_start );
 
@@ -1449,7 +1449,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_video_meta_box_args', $meta_box );
 		}
 
-		public function update_payment(){
+		public function update_payment() {
 			//learn_press_debug($_REQUEST);die();
 		}
 

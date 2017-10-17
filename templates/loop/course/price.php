@@ -7,22 +7,24 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
 $course = LP()->global['course'];
 ?>
-
-<?php if ( $price_html = $course->get_price_html() ) : ?>
-
-	<span class="course-price"><?php echo $price_html; ?></span>
-	<?php 
-	if ( $course->get_origin_price() != $course->get_price() ) {
-		$origin_price_html = $course->get_origin_price_html();
-		?>
-	<span class="course-origin-price"><?php echo $origin_price_html; ?></span>
+<div class="course-price">
+	<?php if ( $price_html = $course->get_price_html() ) : ?>
 		<?php
-	}
-	?>
-<?php endif; ?>
+		if ( $course->get_origin_price() != $course->get_price() ) {
+			$origin_price_html = $course->get_origin_price_html();
+			?>
+            <span class="origin-price"><?php echo $origin_price_html; ?></span>
+			<?php
+		}
+		?>
+
+        <span class="price"><?php echo $price_html; ?></span>
+
+	<?php endif; ?>
+</div>

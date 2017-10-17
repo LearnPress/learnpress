@@ -19,12 +19,12 @@
     }
 }
 
-.course-meta{
+.course-meta {
     margin-bottom: 20px;
 }
 
-#learn-press-course-tabs{
-    margin-bottom: 20px;
+#learn-press-course-tabs {
+    margin-bottom: 40px;
 }
 
 /* Archive */
@@ -84,6 +84,28 @@ ul.learn-press-courses {
             font-size: 14px;
             > span {
                 display: block;
+            }
+            .course-price {
+                float: left;
+                .origin-price,
+                .price {
+                    vertical-align: middle;
+                }
+                .origin-price {
+                    font-size: 16px;
+                    text-decoration: line-through;
+                    font-style: italic;
+                    margin-right: 10px;
+                }
+                .price {
+                    font-size: 18px;
+                }
+            }
+            .course-instructor {
+                float: right;
+            }
+            &:after {
+                @include clear-fix();
             }
         }
 

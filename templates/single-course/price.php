@@ -20,17 +20,21 @@ if ( $lp_user->has_enrolled_course( $lp_course->get_id() ) ) {
 if ( ! $price = $lp_course->get_price_html() ) {
 	return;
 }
-
-if ( $lp_course->has_sale_price() ) {
-	?>
-    <span class="course-origin-price">
+?>
+<div class="course-price">
+	<?php
+	if ( $lp_course->has_sale_price() ) {
+		?>
+        <span class="origin-price">
 		<?php echo $lp_course->get_origin_price_html(); ?>
 	</span>
-	<?php
-}
+		<?php
+	}
 
-?>
-<span class="course-price">
+	?>
+    <span class="price">
 	<?php echo $price; ?>
 </span>
+
+</div>
 

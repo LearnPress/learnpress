@@ -7,13 +7,13 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$course = LP()->global['course'];
+$course = LP_Global::course();
 ?>
 
 <span class="course-instructor">
-	<?php echo sprintf( __( 'By %s', 'learnpress' ), $course->get_instructor_html() ); ?>
+	<?php echo $course->get_instructor_html(); ?>
 </span>

@@ -4,20 +4,20 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.x.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$course = LP()->global['course'];
+$course = LP_Global::course();
+?>
 
-printf(
-	'<span class="course-author" aria-hidden="true" itemprop="author">
-		%s %s</a>%s
-	</span>',
-	apply_filters( 'before_instructor_link', __( 'Instructor: ', 'learnpress' ) ),
-	apply_filters( 'learn_press_instructor_profile_link', $course->get_instructor_html(), null, $course->get_id() ),
-	apply_filters( 'after_instructor_link', '' )
-);
+<div class="course-author-box">
+	<h3><?php _e('About the Instructor', 'learnpress');?></h3>
+	<p><?php echo $course->get_instructor_html();?></p>
+	<div>
+		<?php echo $course->get_author()->get_description();?>
+	</div>
+</div>

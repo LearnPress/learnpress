@@ -498,15 +498,25 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function get_instructor() {
-		$user_data   = get_userdata( get_post_field( 'post_author', $this->get_id() ) );
-		$author_name = '';
-		if ( $user_data ) {
-			$author_name = $user_data->display_name;
+		$instructor = learn_press_get_user( get_post_field( 'post_author', $this->get_id() ) );
+		$name       = '';
+
+		if ( $instructor ) {
+			if ( $instructor->get_data( 'display_name' ) ) {
+				$name = $instructor->get_data( 'display_name' );
+			} elseif ( $instructor->get_data( 'user_nicename' ) ) {
+				$name = $instructor->get_data( 'user_nicename' );
+			} elseif ( $instructor->get_data( 'user_login' ) ) {
+				$name = $instructor->get_data( 'user_login' );
+			}
 		}
 
-		return apply_filters( 'learn_press_course_instructor', $author_name, $this->get_id() );
+		return apply_filters( 'learn-press/course/instructor-name', $name, $this->get_id() );
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_instructor_html() {
 		$instructor = $this->get_instructor();
 		$html       = sprintf(
@@ -545,12 +555,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return mixed
 	 */
 	public function get_origin_price() {
-		$price = $this->price;
-		if ( ! $price || 'yes' != $this->payment ) {
-			$price = 0;
-		} else {
-			$price = floatval( $price );
-		}
+		$price = $this->get_data( 'price' );
 
 		return $price;
 	}
@@ -1729,6 +1734,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		}
 
 		return $embed;
+	}
+
+	public function get_author() {
+		return learn_press_get_user( get_post_field( 'post_author', $this->get_id() ) );
 	}
 
 }

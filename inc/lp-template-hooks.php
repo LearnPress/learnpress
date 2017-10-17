@@ -113,8 +113,8 @@ add_action( 'learn-press/single-course-summary', 'learn_press_single_course_summ
  * @see learn_press_course_buttons()
  */
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_start_wrapper', 15 );
-add_action( 'learn-press/content-landing-summary', 'learn_press_course_price', 25 );
-add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 20 );
+//add_action( 'learn-press/content-landing-summary', 'learn_press_course_price', 25 );
+//add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 20 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_students', 30 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_end_wrapper', 35 );
 //add_action( 'learn-press/content-landing-summary', 'learn_press_single_course_content_lesson', 40 );
@@ -122,6 +122,10 @@ add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_end_
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_progress', 40 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_tabs', 50 );
 //add_action( 'learn-press/content-landing-summary', 'learn_press_course_curriculum_popup', 65 );
+add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 60 );
+
+add_action( 'learn-press/content-landing-summary', 'learn_press_course_price', 70 );
+
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_buttons', 70 );
 
 /**
@@ -304,9 +308,10 @@ add_action( 'learn_press_courses_loop_item_title', 'learn_press_courses_loop_ite
 add_action( 'learn_press_courses_loop_item_title', 'learn_press_courses_loop_item_title', 10 );
 
 add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_begin_meta', 10 );
-//add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_instructor', 15 );
 //add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_students', 20 );
 add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_price', 25 );
+add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_instructor', 25 );
+
 add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_end_meta', 30 );
 
 add_action( 'learn_press_after_courses_loop', 'learn_press_courses_pagination', 5 );
