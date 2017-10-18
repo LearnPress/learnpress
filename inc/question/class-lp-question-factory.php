@@ -84,7 +84,6 @@ class LP_Question_Factory {
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_assets' ) );
 			add_action( 'save_post', array( __CLASS__, 'save' ) );
-			add_action( 'edit_form_after_editor', array( __CLASS__, 'admin_template' ), - 990 );
 			add_action( 'learn_press_convert_question_type', array( __CLASS__, 'convert_question' ), 5, 4 );
 			add_filter( 'learn_press_question_answers_data', array( __CLASS__, 'sanitize_answers' ), 10, 3 );
 		}
@@ -225,24 +224,6 @@ class LP_Question_Factory {
 
 		return apply_filters( 'learn_press_question_types', $types );
 	}
-
-	/**
-	 * Print js template for each question type
-	 */
-	public static function admin_template() {
-		foreach ( self::get_types() as $type => $name ) {
-			$class = LP_Question::get_class_name_from_question_type( $type );
-			if ( ! class_exists( $class ) ) {
-				continue;
-			}
-			do_action( 'learn-press/admin-before-question-js-template', $type );
-			echo sprintf( '<!-- BEGIN %s JS Template -->', $class ) . "\n";
-			call_user_func_array( array( $class, 'admin_js_template' ), array( array( 'echo' => true ) ) );
-			echo sprintf( '<!-- END %s JS Template -->', $class ) . "\n";
-			do_action( 'learn-press/admin-after-question-js-template', $type );
-		}
-	}
-
 
 	public static function save( $post_id ) {
 		global $post, $pagenow;

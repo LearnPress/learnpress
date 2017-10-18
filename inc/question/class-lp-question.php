@@ -1,13 +1,16 @@
 <?php
 
 /**
- * Base class for type of question
+ * Base class for types of question
  *
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 1.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 /**
@@ -50,8 +53,13 @@ class LP_Question extends LP_Course_Item {
 	 * @var array
 	 */
 	protected $_data = array(
-		'mark'           => 0,
-		'answer_options' => array()
+		'mark'                 => 0,
+		'answer_options'       => array(),
+		'show_correct_answers' => '',
+		'disable_answers'      => '',
+		'answered'             => '',
+		'explanation'          => '',
+		'hint'                 => ''
 	);
 
 	protected static $_loaded = 0;
@@ -114,12 +122,64 @@ class LP_Question extends LP_Course_Item {
 		$this->_curd->load( $this );
 	}
 
+	/**
+	 * Save question data.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array
+	 */
+	public function save() {
+
+		if ( $this->get_id() ) {
+			$return = $this->_curd->update( $this );
+		} else {
+			$return = $this->_curd->create( $this );
+		}
+
+		return $return;
+	}
+
 	public function get_mark() {
 		return $this->get_data( 'mark' );
 	}
 
 	public function set_mark( $mark ) {
 		$this->_set_data( 'mark', abs( $mark ) );
+	}
+
+	public function show_correct_answers( $yes_or_no = '' ) {
+		if ( in_array( $yes_or_no, array( 'yes', 'no' ) ) ) {
+			$this->_set_data( 'show_correct_answers', $yes_or_no );
+		}
+
+		return $this->get_data( 'show_correct_answers' );
+	}
+
+	public function disable_answers( $yes_or_no = '' ) {
+		if ( in_array( $yes_or_no, array( 'yes', 'no' ) ) ) {
+			$this->_set_data( 'disable_answers', $yes_or_no );
+		}
+
+		return $this->get_data( 'disable_answers' );
+	}
+
+	/**
+	 * Set answer for this question.
+	 *
+	 * @param mixed $answered
+	 */
+	public function set_answered( $answered ) {
+		$this->set_data( 'answered', $answered );
+	}
+
+	/**
+	 * Get answer for this question if set.
+	 *
+	 * @return array|mixed
+	 */
+	public function get_answered() {
+		return $this->get_data( 'answered' );
 	}
 
 	/**
@@ -237,53 +297,8 @@ class LP_Question extends LP_Course_Item {
 	 * @return string
 	 */
 	public function admin_interface( $args = array() ) {
-		$question = $this;
-		ob_start();
 
-		//do_action( 'learn-press/admin-question/before-interface', $args, $this->get_id() );
-
-		if ( $header_view = $this->get_header_view( $args ) ) {
-			include "{$header_view}";
-		}
-
-		if ( in_array( $this->get_type(), array( 'none', '' ) ) ) {
-			printf( '<p class="lp-question-unknown-type-msg" ng-show="!isValidQuestionType()">%s</p>', __( 'Question type is unknown. Please specific a type.', 'learnpress' ) );
-		} else {
-			if ( $question_view = $this->get_view( $args ) ) {
-				include "{$question_view}";
-			}
-		}
-
-		if ( $footer_view = $this->get_footer_view( $args ) ) {
-			include "{$footer_view}";
-		}
-		//do_action( 'learn-press/admin-question/after-interface', $args, $this->get_id() );
-
-		$output = ob_get_clean();
-
-		if ( ! isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
-			echo $output;
-		}
-
-		return $output;
-	}
-
-	public function get_view( $args = '' ) {
-		if ( $this->is_support( 'answer_options' ) ) {
-			$view = learn_press_get_admin_view( 'question/html-answer-options' );
-		} else {
-			$view = false;
-		}
-
-		return apply_filters( 'learn-press/admin-question/interface-html', $view, $args, $this->get_id() );
-	}
-
-	public function get_header_view( $args = '' ) {
-		return apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'question/html-header' ), $args, $this->get_id() );
-	}
-
-	public function get_footer_view( $args = '' ) {
-		return apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'question/html-footer' ), $args, $this->get_id() );
+		return;
 	}
 
 	/**
@@ -359,6 +374,13 @@ class LP_Question extends LP_Course_Item {
 		}
 	}
 
+	/**
+	 * @param $meta
+	 * @param $field
+	 * @param $is_saved
+	 *
+	 * @return string
+	 */
 	public function _filter_meta_box_meta( $meta, $field, $is_saved ) {
 		if ( preg_match( '~\[question-content\]~', $field['id'] ) && $field['context'] == 'quiz-list-questions' ) {
 			$post = get_post( $this->get_id() );
@@ -468,6 +490,11 @@ class LP_Question extends LP_Course_Item {
 		return $answers;
 	}
 
+	/**
+	 * @param bool $answers
+	 *
+	 * @return array|bool
+	 */
 	public function get_default_answers( $answers = false ) {
 		if ( ! $answers ) {
 			$answers = array(
@@ -493,75 +520,10 @@ class LP_Question extends LP_Course_Item {
 	}
 
 	/**
-	 * Save question data.
+	 * @param null $value
 	 *
-	 * @since 3.0.0
-	 *
-	 * @return array
+	 * @return null|string
 	 */
-	public function save() {
-
-		if ( $this->get_id() ) {
-			$return = $this->_curd->update( $this );
-		} else {
-			$return = $this->_curd->create( $this );
-		}
-
-		return $return;
-
-//		global $wpdb;
-//		/**
-//		 * Allows add more type of question to save with the rules below
-//		 */
-//		$types = apply_filters( 'learn_press_save_default_question_types', array(
-//			'true_or_false',
-//			'multi_choice',
-//			'single_choice'
-//		) );
-//
-//		if ( in_array( $this->get_type(), $types ) ) {
-//
-//			$this->empty_answers();
-//
-//			if ( ! empty( $post_data['answer'] ) ) {
-//				$checked = ! empty( $post_data['checked'] ) ? (array) $post_data['checked'] : array();
-//				$answers = array();
-//				foreach ( $post_data['answer']['text'] as $index => $text ) {
-//					if ( ! $text ) {
-//						continue;
-//					}
-//					$data      = array(
-//						'answer_data'  => array(
-//							'text'    => stripslashes( $text ),
-//							'value'   => $post_data['answer']['value'][ $index ],
-//							'is_true' => in_array( $post_data['answer']['value'][ $index ], $checked ) ? 'yes' : 'no'
-//						),
-//						'answer_order' => $index + 1,
-//						'question_id'  => $this->get_id()
-//					);
-//					$answers[] = apply_filters( 'learn_press_question_answer_data', $data, $post_data['answer'], $this );
-//				}
-//
-//				if ( $answers = apply_filters( 'learn_press_question_answers_data', $answers, $post_data['answer'], $this ) ) {
-//					foreach ( $answers as $answer ) {
-//						$answer['answer_data'] = maybe_serialize( $answer['answer_data'] );
-//						$wpdb->insert(
-//							$wpdb->learnpress_question_answers,
-//							$answer,
-//							array( '%s', '%d', '%d' )
-//						);
-//					}
-//
-//				}
-//			}
-////			if ( $this->mark == 0 ) {
-////				$this->mark = 1;
-////				update_post_meta( $this->get_id(), '_lp_mark', 1 );
-////			}
-//		}
-//		do_action( 'learn_press_update_question_answer', $this, $post_data );
-	}
-
 	public function get_option_value( $value = null ) {
 		if ( ! $value ) {
 			$value = uniqid();
@@ -570,6 +532,12 @@ class LP_Question extends LP_Course_Item {
 		return $value;
 	}
 
+	/**
+	 * @param null $field
+	 * @param null $exclude
+	 *
+	 * @return mixed
+	 */
 	public function get_answers( $field = null, $exclude = null ) {
 		$answers = array();
 		if ( false === ( $data_answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'lp-questions' ) ) ) {
@@ -583,10 +551,15 @@ class LP_Question extends LP_Course_Item {
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
 	}
 
-	public function submit_answer( $quiz_id, $answer) {
+	/**
+	 * @param $quiz_id
+	 * @param $answer
+	 *
+	 * @return bool
+	 */
+	public function submit_answer( $quiz_id, $answer ) {
 		return false;
 	}
-
 
 	/**
 	 * Prints the question in frontend user
@@ -625,40 +598,10 @@ class LP_Question extends LP_Course_Item {
 		return ob_get_clean();
 	}
 
-	public function show_correct_answers( $yes_or_no = '' ) {
-		if ( in_array( $yes_or_no, array( 'yes', 'no' ) ) ) {
-			$this->_set_data( 'show_correct_answers', $yes_or_no );
-		}
-
-		return $this->get_data( 'show_correct_answers' );
-	}
-
-	public function disable_answers( $yes_or_no = '' ) {
-		if ( in_array( $yes_or_no, array( 'yes', 'no' ) ) ) {
-			$this->_set_data( 'disable_answers', $yes_or_no );
-		}
-
-		return $this->get_data( 'disable_answers' );
-	}
 
 	/**
-	 * Set answer for this question.
-	 *
-	 * @param mixed $answered
+	 * @return string
 	 */
-	public function set_answered( $answered ) {
-		$this->set_data( 'answered', $answered );
-	}
-
-	/**
-	 * Get answer for this question if set.
-	 *
-	 * @return array|mixed
-	 */
-	public function get_answered() {
-		return $this->get_data( 'answered' );
-	}
-
 	public function get_name() {
 		return
 			isset( $this->options['name'] ) ? $this->options['name'] : ucfirst( preg_replace_callback( '!_([a-z])!', array(
@@ -667,6 +610,11 @@ class LP_Question extends LP_Course_Item {
 			), $this->get_type() ) );
 	}
 
+	/**
+	 * @param $matches
+	 *
+	 * @return string
+	 */
 	public function sanitize_name_callback( $matches ) {
 		return strtoupper( $matches[1] );
 	}
@@ -702,6 +650,14 @@ class LP_Question extends LP_Course_Item {
 	}
 
 
+	/**
+	 * @param $prop
+	 * @param $key
+	 * @param null $default
+	 * @param null $type
+	 *
+	 * @return mixed|null
+	 */
 	protected function _get( $prop, $key, $default = null, $type = null ) {
 		$return = $default;
 
@@ -738,18 +694,8 @@ class LP_Question extends LP_Course_Item {
 		return $return;
 	}
 
-	/**
-	 * Save question data on POST action
-	 */
-	public function save_post_action() {
-	}
-
 	public function get_icon() {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/question.png' ), $this ) . '">';
-	}
-
-	public function get_params() {
-
 	}
 
 	/**
@@ -770,6 +716,11 @@ class LP_Question extends LP_Course_Item {
 		return apply_filters( 'learn-press/question/is-selected-option', $is_selected, $answer, $answered, $this->get_id() );
 	}
 
+	/**
+	 * @param $answer
+	 * @param $quiz_id
+	 * @param null $user_id
+	 */
 	public function save_user_answer( $answer, $quiz_id, $user_id = null ) {
 		if ( $user_id ) {
 			$user = LP_User_Factory::get_user( $user_id );
@@ -792,10 +743,18 @@ class LP_Question extends LP_Course_Item {
 		//do_action( 'learn_press_update_user_answer', $progress, $user_id, $this, $quiz_id );
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function can_check_answer() {
 		return false;
 	}
 
+	/**
+	 * @param null $args
+	 *
+	 * @return array
+	 */
 	public function check( $args = null ) {
 		$return = array(
 			'correct' => false,
@@ -805,11 +764,11 @@ class LP_Question extends LP_Course_Item {
 		return $return;
 	}
 
-	public function get_limit_options() {
-		return - 1;
-	}
-
-
+	/**
+	 * @param $args
+	 *
+	 * @return null
+	 */
 	public function get_user_answered( $args ) {
 		$args     = wp_parse_args(
 			$args,
@@ -843,55 +802,6 @@ class LP_Question extends LP_Course_Item {
 	}
 
 	/**
-	 * Print html js template for question in admin
-	 *
-	 * @param mixed $args
-	 *
-	 * @return mixed
-	 */
-	public static function admin_js_template( $args = '' ) {
-		$args          = wp_parse_args( $args, array( 'echo' => true ) );
-		$type          = ! empty( $args['type'] ) ? $args['type'] : 'single_choice';
-		$fake_class    = self::get_class_name_from_question_type( $type );
-		$fake_question = new $fake_class( 0, $type );
-		if ( ! $fake_question->is_support( 'add-answer-option' ) ) {
-			return '';
-		}
-		ob_start();
-		?>
-        <script type="text/ng-template" id="tmpl-question-<?php echo $type; ?>-option">
-			<?php
-			add_filter( 'learn-press/question/' . $type . '/admin-option-template-args', array(
-				__CLASS__,
-				'get_option_template_data_for_js'
-			), 10, 2 );
-			learn_press_admin_view(
-				'question/html-base-option',
-				array(
-					'question' => $fake_question,
-					'answer'   => array(
-						'value'   => '',
-						'is_true' => '',
-						'text'    => ''
-					)
-				)
-			);
-			remove_filter( 'learn-press/question/' . $type . '/admin-option-template-args', array(
-				__CLASS__,
-				'get_option_template_data_for_js'
-			), 10, 2 );
-			?>
-        </script>
-		<?php
-		$template = apply_filters( 'learn-press/question/' . $type . 'answer-option-template', ob_get_clean(), __CLASS__ );
-		if ( $args['echo'] ) {
-			echo $template;
-		}
-
-		return $template;
-	}
-
-	/**
 	 * Get heading columns for admin question option
 	 *
 	 * @return mixed
@@ -906,47 +816,6 @@ class LP_Question extends LP_Course_Item {
 		);
 
 		return apply_filters( 'learn-press/question/multi-choices/admin-option-headings', $option_headings, $this->get_id() );
-	}
-
-	/**
-	 * Variables for admin option template
-	 *
-	 * @return array
-	 */
-	public function get_option_template_data() {
-		$data = apply_filters( 'learn-press/question/admin-option-template-args', array(), $this->get_type() );
-		$data = apply_filters( 'learn-press/question/' . $this->get_type() . '/admin-option-template-args', $data, $this->get_type() );
-
-		return $data;
-	}
-
-	public function to_element_data( $echo = true ) {
-		$data = apply_filters( '', array(
-				'type'           => $this->get_type(),
-				'title'          => $this->get_title(),
-				'id'             => $this->get_id(),
-				'answer_options' => $this->get_answer_options()
-			)
-		);
-		$data = wp_json_encode( $data, JSON_PRETTY_PRINT );
-		if ( $echo ) {
-			echo $data;
-		}
-
-		return $data;
-	}
-
-	public static function get_option_template_data_for_js( $args, $type) {
-		$args = array(
-			'id'            => '{{questionData.id}}',
-			'answer_option' => array(
-				'value'   => 'OPTION_VALUE_PLACEHOLDER',
-				'text'    => '',
-				'is_true' => false
-			)
-		);
-
-		return apply_filters( 'learn-press/question/' . $type . '/admin-option-template-js-args', $args, $type );
 	}
 
 	/**

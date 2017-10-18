@@ -332,6 +332,27 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Delete all question answers.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $question_id
+	 *
+	 * @return bool|false|int
+	 */
+	public function delete_question_answers( $question_id ) {
+		if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$result = $wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
+
+		return $result;
+	}
+
+	/**
 	 * Load answer options for the question from database.
 	 * Load from cache if data is already loaded into cache.
 	 * Otherwise, load from database and put to cache.
