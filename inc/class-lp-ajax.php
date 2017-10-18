@@ -47,7 +47,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$ajaxEvents = array(
 				'checkout-user-email-exists:nopriv',
 				'recover-order',
-				'request-become-a-teacher:nonce'
+				'request-become-a-teacher:nonce',
+				'upload-user-avatar'
 			);
 
 			foreach ( $ajaxEvents as $action => $callback ) {
@@ -66,6 +67,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 				LP_Request::register_ajax( $action, $callback );
 			}
+
+			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
 
 			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
 			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );

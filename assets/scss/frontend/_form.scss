@@ -104,6 +104,8 @@
             input[type="number"],
             input[type="password"] {
                 padding: 8px;
+                width: 100%;
+                @include box-sizing(border-box);
             }
         }
     }

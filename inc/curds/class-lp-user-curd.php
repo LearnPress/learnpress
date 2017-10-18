@@ -894,7 +894,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 				if ( ! $orders ) {
 					throw new Exception( "", 0 );
-					//return new LP_Query_List_Table( $courses );
 				}
 
 				$course_ids   = array_keys( $orders );
@@ -1040,7 +1039,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 
 				$course_ids   = array_keys( $orders );
-				$format       = array_fill( 0, sizeof( $course_ids ), '%d' );
 				$query_args   = $course_ids;
 				$query_args[] = $user_id;
 
@@ -1111,7 +1109,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 				$items = $wpdb->get_results( $sql, ARRAY_A );
 
-
 				if ( $items ) {
 					$count      = $wpdb->get_var( "SELECT FOUND_ROWS()" );
 					$course_ids = wp_list_pluck( $items, 'item_id' );
@@ -1121,8 +1118,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$quizzes['pages'] = ceil( $count / $args['limit'] );
 					foreach ( $items as $item ) {
 						$quizzes['items'][] = new LP_User_Item_Quiz( $item );
-						///learn_press_get_course($item['item_id']);
-						//$course_ids[] = $item['item_id'];// $this->read_course_info( $item );
 					}
 				}
 			}

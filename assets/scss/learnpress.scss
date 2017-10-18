@@ -14,6 +14,12 @@ input[type="password"]{
     @include box-sizing(border-box);
 }
 
+.clearfix{
+    &:after{
+        @include clear-fix();
+    }
+}
+
 .learn-press-breadcrumb {
     margin-bottom: 20px;
 }

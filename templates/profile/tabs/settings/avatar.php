@@ -79,6 +79,7 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
         <img src="{{data.url}}?r={{data.r}}"/>
         <div class="lp-crop-controls">
             <div class="lp-zoom">
+                <div></div>
             </div>
             <a href="" class="lp-cancel-upload dashicons dashicons-no-alt"></a>
         </div>

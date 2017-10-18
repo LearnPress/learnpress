@@ -409,5 +409,4 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 	}
 } // End class LP_Admin
-
 return new LP_Admin();
