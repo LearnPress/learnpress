@@ -56,7 +56,6 @@ class LP_Settings_Emails_Group extends LP_Settings {
 		}
 		echo '</ul>';
 
-
 		if ( ! empty( $this->items[ $current ] ) ) {
 			$this->items[ $current ]->admin_options();
 		}

@@ -359,18 +359,18 @@ class LP_Request {
 		$actions = self::parse_action( $action );
 
 		if ( isset( $actions['nonce'] ) ) {
-			add_filter( 'learn_press_ajax_verify_nonce_' . $actions['action'], array( __CLASS__, 'verify_nonce' ) );
+			add_filter( 'learn-press/ajax/verify-none/' . $actions['action'], array( __CLASS__, 'verify_nonce' ) );
 		}
 
 		//$action, $function, $priority = 5
-		add_action( 'learn_press_ajax_' . $actions['action'], $function, $priority );
+		add_action( 'learn-press/ajax/' . $actions['action'], $function, $priority );
 
 		/**
 		 * No requires logged in?
 		 */
 		if ( isset( $actions[1] ) ) {
 			//$action, $function, $priority = 5
-			add_action( 'learn_press_ajax_nopriv_' . $actions['action'], $function, $priority );
+			add_action( 'learn-press/ajax/no-priv/' . $actions['action'], $function, $priority );
 		}
 
 		/**
@@ -392,7 +392,7 @@ class LP_Request {
 
 		LP_Gateways::instance()->get_available_payment_gateways();
 
-		if ( has_filter( 'learn_press_ajax_verify_nonce_' . $action ) ) {
+		if ( has_filter( 'learn-press/ajax/verify-none/' . $action ) ) {
 			if ( ! self::verify_nonce( $action ) ) {
 				die( '0' );
 			}
@@ -407,12 +407,12 @@ class LP_Request {
 			/**
 			 * @since 3.0
 			 */
-			do_action( 'learn_press_ajax_' . $action );
+			do_action( 'learn-press/ajax/' . $action );
 		} else {
 			/**
 			 * @since 3.0
 			 */
-			do_action( 'learn_press_ajax_nopriv_' . $action );
+			do_action( 'learn-press/ajax/no-priv/' . $action );
 		}
 		die( '0' );
 	}

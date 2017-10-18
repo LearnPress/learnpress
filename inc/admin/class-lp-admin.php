@@ -42,6 +42,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
 		}
 
+		/**
+		 * Add actions to users list
+		 *
+		 * @param array   $actions
+		 * @param WP_User $user
+		 *
+		 * @return mixed
+		 */
 		public function user_row_actions( $actions, $user ) {
 			if ( $pending_request = LP_User_Factory::get_pending_requests() ) {
 				if ( in_array( $user->ID, $pending_request ) ) {
@@ -53,6 +61,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			return $actions;
 		}
 
+		/**
+		 * Filter user by custom param
+		 *
+		 * @param string $action
+		 */
 		public function filter_users( $action ) {
 			switch ( $action ) {
 				case 'accept-request':
@@ -62,6 +75,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						delete_user_meta( $user_id, '_requested_become_teacher' );
 
 						do_action( 'learn-press/user-become-a-teacher', $user_id );
+
+						wp_redirect( admin_url( 'users.php?lp-action=accepted-request&user_id=' . $user_id ) );
+						exit();
 					}
 					break;
 				case 'deny-request':
@@ -73,6 +89,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 		}
 
+		/**
+		 * Add new view to users views for filtering user by "pending request" of "become a teacher".
+		 *
+		 * @param array $views
+		 *
+		 * @return mixed
+		 */
 		public function views_users( $views ) {
 			if ( $pending_request = LP_User_Factory::get_pending_requests() ) {
 				if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
@@ -89,9 +112,19 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			return $views;
 		}
 
+		/**
+		 * Display admin notices
+		 */
 		public function admin_notices() {
 			if ( 'yes' === get_option( 'learn_press_install' ) ) {
 				learn_press_admin_view( 'setup/notice-setup' );
+			}
+
+			if ( ( 'accepted-request' === LP_Request::get( 'lp-action' ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id ) ) {
+				if ( ! current_user_can( 'promote_user', $user_id ) ) {
+					wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
+				}
+				echo '<div class="updated notice">' . __( 'User has accepted to become a teacher.', 'learnpress' ) . '</div>';
 			}
 		}
 
@@ -106,6 +139,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 		}
 
+		/**
+		 * Custom admin body classes.
+		 *
+		 * @param array $classes
+		 *
+		 * @return array|string
+		 */
 		public function body_class( $classes ) {
 			$post_type = get_post_type();
 			if ( preg_match( '~^lp_~', $post_type ) ) {
@@ -215,16 +255,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					$notice .= __( wp_kses( '<a href="' . $page['url'] . '">' . $page['title'] . '</a>', array( 'a' => array( 'href' => array() ) ) ), 'learnpress' );
 				}
 
-
 				$notice .= '.' . esc_html__( ' Please click to the link to set it up, ensure all functions work properly.', 'learnpress' );
 
 				return $count ? learn_press_add_notice( $notice, 'error' ) : '';
 			}
 
 			return '';
-
 		}
 
+		/**
+		 * Notices outdated templates.
+		 */
 		public function notice_outdated_templates() {
 			if ( current_user_can( 'manage_options' ) ) {
 				$page = '';
@@ -367,6 +408,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-updater.php';
 		}
 	}
+} // End class LP_Admin
 
-	return new LP_Admin();
-}
+return new LP_Admin();

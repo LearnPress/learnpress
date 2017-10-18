@@ -35,7 +35,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press-meta-box-order' => apply_filters(
 				'learn-press/meta-box-order/script-data',
 				array(
-					'i18n_error' => __( 'Ooops! Error.', 'learnpress' )
+					'i18n_error' => __( 'Ooops! Error.', 'learnpress' ),
+					'i18n_guest' => __( 'Guest', 'learnpress' )
 				)
 			)
 		);

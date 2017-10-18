@@ -16,8 +16,7 @@ Domain Path: /languages/
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
-error_reporting( E_ALL );
-ini_set( 'display_errors', 1 );
+
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
@@ -672,32 +671,3 @@ class LP_Factory {
 		return LP_Object_Data_CURD::get( 'order' );
 	}
 }
-
-//$a = file(ABSPATH . '/result.txt');
-//foreach($a as $k => $l){
-//	$a[$k] = preg_replace('~\n~', '', $l) . ";";
-//}
-//file_put_contents(ABSPATH . '/resultx.txt', join("\n", $a));
-//
-//return;
-//
-//$a2 = file(ABSPATH . '/data2.txt');
-//$a1 = file(ABSPATH . '/data1.txt');
-//
-//$a = array_diff($a2, $a1);
-//ob_start();
-//foreach ($a as $line){
-//	echo $line;
-//}
-//file_put_contents(ABSPATH . '/result.txt', ob_get_clean());
-//die();
-function test_redirect_xxx( $url ) {
-	if ( ! empty( $_REQUEST['xxxx'] ) ) {
-		print_r( debug_backtrace() );
-		die();
-	}
-
-	return $url;
-}
-
-add_filter( 'wp_redirect', 'test_redirect_xxx' );

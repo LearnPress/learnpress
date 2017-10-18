@@ -108,8 +108,10 @@ class LP_Plugins_Helper {
 			}
 		}
 		self::$plugins['installed'] = $plugins;
-		self::$plugins['free']      = array_diff_key( (array) $wp_plugins, (array) $wp_installed );
-		self::$plugins['premium']   = array_diff_key( (array) $premium_plugins, (array) $premium_installed );
+		if ( is_array( $wp_plugins ) ) {
+			self::$plugins['free'] = array_diff_key( $wp_plugins, (array) $wp_installed );
+		}
+		self::$plugins['premium'] = array_diff_key( (array) $premium_plugins, (array) $premium_installed );
 
 		// Sort plugins
 		self::_sort_plugins();
@@ -149,33 +151,36 @@ class LP_Plugins_Helper {
 			self::require_plugins_api();
 
 			$plugins = array();
-			$api     = plugins_api( 'query_plugins', $query_args );
-			if ( is_wp_error( $api ) ) {
-				echo join( "", $api->errors['plugins_api_failed'] );
-
-				return false;
-			}
-			if ( ! is_array( $api->plugins ) ) {
-				return $plugins;
-			}
-			$all_plugins = get_plugins();
-			// Filter plugins with tag contains 'learnpress'
-			$_plugins = array_filter( $api->plugins, array( __CLASS__, '_filter_plugin' ) );
-
-			// Ensure that the array is indexed from 0
-			$_plugins = array_values( $_plugins );
-
-			for ( $n = sizeof( $_plugins ), $i = $n - 1; $i >= 0; $i -- ) {
-				$plugin = $_plugins[ $i ];
-				$key    = $plugin->slug;
-				foreach ( $all_plugins as $file => $p ) {
-					if ( strpos( $file, $plugin->slug ) !== false ) {
-						$key = $file;
-						break;
-					}
+			try {
+				$api = plugins_api( 'query_plugins', $query_args );
+				if ( is_wp_error( $api ) ) {
+					throw new Exception( __( 'WP query plugins error!', 'learnpress' ) );
 				}
-				$plugin->source  = 'wp';
-				$plugins[ $key ] = (array) $plugin;
+				if ( ! is_array( $api->plugins ) ) {
+					throw new Exception( __( 'WP query plugins empty!', 'learnpress' ) );
+				}
+				$all_plugins = get_plugins();
+				// Filter plugins with tag contains 'learnpress'
+				$_plugins = array_filter( $api->plugins, array( __CLASS__, '_filter_plugin' ) );
+
+				// Ensure that the array is indexed from 0
+				$_plugins = array_values( $_plugins );
+
+				for ( $n = sizeof( $_plugins ), $i = $n - 1; $i >= 0; $i -- ) {
+					$plugin = $_plugins[ $i ];
+					$key    = $plugin->slug;
+					foreach ( $all_plugins as $file => $p ) {
+						if ( strpos( $file, $plugin->slug ) !== false ) {
+							$key = $file;
+							break;
+						}
+					}
+					$plugin->source  = 'wp';
+					$plugins[ $key ] = (array) $plugin;
+				}
+			}
+			catch ( Exception $ex ) {
+				$plugins = $ex->getMessage();
 			}
 			set_transient( $transient_key, $plugins, self::$transient_timeout );
 		}

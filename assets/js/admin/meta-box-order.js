@@ -16,7 +16,7 @@
                 template: '#tmpl-order-advanced-list-item',
                 onRemove: function () {
                     if (this.$el.children().length === 0) {
-                        this.$el.append('<li class="user-guest">Guest</li>')
+                        this.$el.append('<li class="user-guest">'+orderOptions.i18n_guest+'</li>')
                     }
                     console.log(this.$el)
                 },
@@ -24,7 +24,7 @@
                     this.$el.find('.user-guest').remove();
                 }
             },
-            orderOptions = lpLearnPressMetaBoxOrderSettings;
+            orderOptions = lpMetaBoxOrderSettings;
 
         if ($listUsers.length) {
             $listUsers.advancedList(advancedListOptions);

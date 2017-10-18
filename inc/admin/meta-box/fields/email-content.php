@@ -14,7 +14,6 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 		public static function admin_enqueue_scripts() {
 			wp_enqueue_script( 'learn-press-email-content-field', LP()->plugin_url( 'inc/admin/meta-box/assets/email-content.js' ) );
 			wp_enqueue_style( 'learn-press-email-content-field', LP()->plugin_url( 'inc/admin/meta-box/assets/email-content.css' ) );
-
 		}
 
 		/**
@@ -66,8 +65,6 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 					'selected' => $email_format
 				)
 			);
-
-
 			?>
             <div class="lp-email-templates">
 				<?php
@@ -140,9 +137,6 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 
 						<?php if ( ! $has_local_file ): ?>
 							<?php if ( $field['support_variables'] /*$this->get_variables_support() */ ): ?>
-                                <p>
-                                    <strong><?php esc_html_e( 'Click on variables to add it into email content', 'learnpress' ); ?></strong>
-                                </p>
                                 <ol class="learn-press-email-variables<?php echo $template_type == 'html' ? ' has-editor' : ''; ?>"
                                     data-target="<?php echo esc_attr( sanitize_key( $field['field_name'] . '-' . $template_type ) ); ?>">
 									<?php foreach ( $field['support_variables'] as $variable ): ?>
@@ -150,10 +144,13 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
                                             <code><?php echo $variable; ?></code></li>
 									<?php endforeach; ?>
                                 </ol>
+                                <p class="description">
+                                    <?php esc_html_e( 'Click on variables to add it into email content', 'learnpress' ); ?>
+                                </p>
 							<?php endif; ?>
-                            <p class="description">
-								<?php printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
-                            </p>
+<!--                            <p class="description">-->
+<!--								--><?php //printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
+<!--                            </p>-->
 						<?php endif; ?>
                     </div>
 					<?php

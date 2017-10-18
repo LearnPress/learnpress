@@ -16,7 +16,7 @@ if ( ! isset( $section ) ) {
 }
 
 ?>
-<form method="post" name="profile-change-password" enctype="multipart/form-data">
+<form method="post" name="profile-change-password" enctype="multipart/form-data" class="learn-press-form">
 	<?php
 
 	/**
@@ -24,7 +24,7 @@ if ( ! isset( $section ) ) {
 	 */
 	do_action( 'learn-press/before-profile-change-password-fields', $profile );
 	?>
-    <ul class="lp-form-fields">
+    <ul class="form-fields">
 		<?php
 
 		// @deprecated
@@ -35,21 +35,21 @@ if ( ! isset( $section ) ) {
 		 */
 		do_action( 'learn-press/begin-profile-change-password-fields', $profile );
 		?>
-        <li class="lp-form-field">
+        <li class="form-field">
             <label for="pass0"><?php _e( 'Old password', 'learnpress' ); ?></label>
-            <div class="lp-form-field-input">
+            <div class="form-field-input">
                 <input type="password" id="pass0" name="pass0" autocomplete="off" class="regular-text"/>
             </div>
         </li>
-        <li class="lp-form-field">
+        <li class="form-field">
             <label for="pass1"><?php _e( 'New password', 'learnpress' ); ?></label>
-            <div class="lp-form-field-input">
+            <div class="form-field-input">
                 <input type="password" name="pass1" id="pass1" class="regular-text" value=""/>
             </div>
         </li>
-        <li class="lp-form-field">
+        <li class="form-field">
             <label for="pass2"><?php _e( 'Confirmation password', 'learnpress' ); ?></label>
-            <div class="lp-form-field-input">
+            <div class="form-field-input">
                 <input name="pass2" type="password" id="pass2" class="regular-text" value=""/>
                 <p id="lp-password-not-match"
                    class="description lp-field-error-message hide-if-js"><?php _e( 'New password does not match!', 'learnpress' ); ?></p>

@@ -73,10 +73,11 @@ class LP_Email_Type_Order extends LP_Email {
 	 * Get template data object.
 	 *
 	 * @param int $order_id
+	 * @param array
 	 *
 	 * @return array
 	 */
-	public function get_object( $order_id = 0 ) {
+	public function get_object( $order_id = 0, $more = array() ) {
 		if ( ! $order_id ) {
 			$order_id = $this->order_id;
 		}

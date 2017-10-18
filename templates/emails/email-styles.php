@@ -6,7 +6,7 @@ ob_start();
             color: #777;
         }
 
-        #template_container{
+        #template_container {
             background: #f2fbff;
         }
 
@@ -87,19 +87,21 @@ ob_start();
             text-align: right;
         }
 
-        #email-body > tr > td{
+        #email-body > tr > td {
             padding: 0 20px 20px 20px;
         }
 
         #template_container #email-footer td {
             text-align: center;
-            padding: 0 20px;
+            padding: 20px;
+            border-top: 1px solid #daf4ff;
         }
 
-        .order-heading-total{
+        .order-heading-total {
             display: block;
             font-size: 32px;
         }
+
         p {
             margin: 0 0 20px 0;
         }

@@ -321,7 +321,7 @@ class LP_Email extends LP_Abstract_Settings {
 			'{{site_url}}',
 			'{{site_title}}',
 			'{{login_url}}',
-			'{{email_heading}}',
+			'{{email_heading}}'
 		);
 
 		$this->general_variables = array_merge(
@@ -334,6 +334,8 @@ class LP_Email extends LP_Abstract_Settings {
 				'{{footer_text}}'
 			)
 		);
+
+		$this->support_variables = $this->general_variables;
 	}
 
 	public function enable( $value = null ) {
@@ -356,11 +358,14 @@ class LP_Email extends LP_Abstract_Settings {
 		return $this->variables;
 	}
 
-	public function get_object( $object_id = null ) {
+	public function get_object( $object_id = null, $more = array() ) {
 		$this->object = $this->get_common_template_data(
-			$this->email_format,
-			array()
+			$this->email_format
 		);
+
+		if ( is_array( $more ) ) {
+			$this->object = array_merge( $this->object, $more );
+		}
 
 		return $this->object;
 	}

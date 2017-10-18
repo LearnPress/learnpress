@@ -21,9 +21,17 @@ class LP_Email_Instructor_Accepted extends LP_Email {
 		$this->default_subject = __( '[{{site_title}}] Request to become an instructor', 'learnpress' );
 		$this->default_heading = __( 'Become an instructor', 'learnpress' );
 
-		add_action( 'learn-press/become-a-teacher-sent', array( $this, 'trigger' ) );
+		add_action( 'learn-press/user-become-a-teacher', array( $this, 'trigger' ) );
+		add_action( 'set_user_role', array( $this, 'set_user_role' ), 10, 3 );
 
 		parent::__construct();
+	}
+
+	public function set_user_role( $user_id, $role, $old_roles ) {
+		if ( LP_TEACHER_ROLE === $role ) {
+			$user = get_user_by( 'id', $user_id );
+			$this->trigger( $user->user_email );
+		}
 	}
 
 	/**
@@ -34,7 +42,8 @@ class LP_Email_Instructor_Accepted extends LP_Email {
 	 * @return bool
 	 */
 	public function trigger( $email ) {
-		if ( ! $this->enable ) {
+
+		if ( ! $this->enable() ) {
 			return false;
 		}
 
@@ -44,7 +53,7 @@ class LP_Email_Instructor_Accepted extends LP_Email {
 
 		LP_Emails::instance()->set_current( $this->id );
 
-		$this->recipient = get_option( 'admin_email' );
+		$this->recipient = $email;
 
 		$this->get_object();
 		$this->get_variable();

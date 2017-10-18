@@ -24,6 +24,8 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 		add_action( 'learn-press/become-a-teacher-sent', array( $this, 'trigger' ) );
 
 		parent::__construct();
+
+		$this->support_variables[] = '{{request_email}}';
 	}
 
 	/**
@@ -46,7 +48,9 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 
 		$this->recipient = get_option( 'admin_email' );
 
-		$this->get_object();
+		$this->get_object( null, array(
+			'request_email' => $email
+		) );
 		$this->get_variable();
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );

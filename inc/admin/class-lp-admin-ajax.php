@@ -79,11 +79,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				__CLASS__,
 				'_modal_search_items_not_found'
 			), 10, 2 );
-			add_action( 'admin_init', array( __CLASS__, 'do_ajax' ), - 1000 );
 			//add_action( 'load-post-new.php', array( __CLASS__, 'do_ajax' )  );
 			//add_action( 'load-post.php', array( __CLASS__, 'do_ajax' )  );
 
-			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
+			do_action( 'learn-press/ajax/admin-load', __CLASS__ );
 
 			$ajax_events = array(
 				'add_question',
@@ -109,13 +108,21 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'update-email-status',
 
 			);
-			foreach ( $ajax_events as $ajax_event => $callback ) {
-				if ( ! is_string( $ajax_event ) ) {
-					$ajax_event = $callback;
+			foreach ( $ajax_events as $action => $callback ) {
+
+				if ( is_numeric( $action ) ) {
+					$action = $callback;
 				}
-				$ajax_event = preg_replace( '~[-]+~', '_', $ajax_event );
-				$callback   = preg_replace( '~[-]+~', '_', $callback );
-				add_action( "learn-press/ajax/{$ajax_event}", array( __CLASS__, $callback ) );
+
+				$actions = LP_Request::parse_action( $action );
+				$method  = $actions['action'];
+
+				if ( ! is_callable( $callback ) ) {
+					$method   = preg_replace( '/-/', '_', $method );
+					$callback = array( __CLASS__, $method );
+				}
+
+				LP_Request::register_ajax( $action, $callback );
 			}
 		}
 
@@ -330,7 +337,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
+		 * @param       $question_id
 		 * @param array $args | get new question data
 		 *
 		 * @return array
@@ -914,15 +921,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
-		public static function do_ajax() {
-			if ( empty( $_REQUEST['lp-ajax'] ) ) {
-				return;
-			}
-			$action = preg_replace( '~[-]~', '_', $_REQUEST['lp-ajax'] );
-			do_action( "learn-press/ajax/{$action}" );
-			die();
-		}
-
 		/**
 		 * Ajax callback to add new question into quiz
 		 */
@@ -1156,9 +1154,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function load_chart() {
 			if ( ! class_exists( 'LP_Submenu_Statistics' ) ) {
 				$statistic = include_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/class-lp-submenu-statistics.php';
-			}else{
-			    $statistic = new LP_Submenu_Statistics();
-            }
+			} else {
+				$statistic = new LP_Submenu_Statistics();
+			}
 			$statistic->load_chart();
 		}
 
