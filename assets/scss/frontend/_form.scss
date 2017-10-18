@@ -11,6 +11,9 @@
         background: #FFF;
         text-align: left;
     }
+    tr{
+        border: 0;
+    }
     thead {
         tr {
             color: #444;
@@ -102,7 +105,8 @@
             input[type="text"],
             input[type="email"],
             input[type="number"],
-            input[type="password"] {
+            input[type="password"],
+            textarea{
                 padding: 8px;
                 width: 100%;
                 @include box-sizing(border-box);

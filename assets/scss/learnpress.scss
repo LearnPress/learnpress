@@ -26,7 +26,7 @@ input[type="password"]{
 
 .learnpress-page {
     button {
-        height: 45px;
+        //height: 45px;
         line-height: 45px;
         padding: 0 12px;
     }
@@ -238,6 +238,25 @@ ul.learn-press-courses {
     &.error {
         &:before {
             background: #d85454;
+        }
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    ul.learn-press-courses {
+        .course{
+            width: 48%;
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    ul.learn-press-courses {
+        margin-right: 0;
+        .course{
+            width: 100%;
+            margin-right: 0;
         }
     }
 }

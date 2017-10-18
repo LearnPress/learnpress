@@ -1,11 +1,23 @@
 #learn-press-user-profile {
-    overflow: hidden;
+    position: relative;
+    &:before {
+        position: absolute;
+        content: '';
+        width: 200px;
+        top: 0;
+        bottom: 0;
+        background: #f5f5f5;
+    }
+    &:after {
+        @include clear-fix();
+    }
 }
 
 #learn-press-profile-header {
     height: 100px;
     background: #f0defb;
     position: relative;
+    z-index: 100;
     .lp-profile-avatar {
         position: absolute;
         bottom: -10px;
@@ -21,14 +33,15 @@
     min-width: 200px;
     padding-top: 40px;
     background: #f5f5f5;
-    margin-bottom: -20000px;
-    padding-bottom: 20000px;
+    /*margin-bottom: -20000px;
+    padding-bottom: 20000px;*/
     .tabs {
         list-style: none;
         margin: 0;
         padding: 0;
         > li {
             margin-bottom: 0;
+            position: relative;
             ul {
                 list-style: none;
                 margin: 0;
@@ -80,11 +93,18 @@
                 ul {
                     background: #EAEAEA;
                     display: block;
+                    position: absolute;
+                    width: 200px;
+                    top: 0;
+                    margin: 0;
+                    padding: 0;
+                    left: 100%;
+                    z-index: 100;
                 }
             }
         }
-
     }
+
 }
 
 #learn-press-profile-content {
@@ -167,6 +187,7 @@
     }
     input[name="order-key"] {
         width: 250px;
+        display: inline-block;
     }
 }
 
@@ -190,15 +211,17 @@
     background: #eaeaea;
     .section-tab {
         float: left;
+        list-style: none;
         a, span {
             display: inline-block;
-            //margin: 0 10px 0 0;
             padding: 8px 10px;
             line-height: 1;
+            box-shadow: none;
         }
         &.active {
             span {
                 border-bottom: 2px solid #00adff;
+                padding-bottom: 6px;
             }
         }
     }
@@ -380,5 +403,95 @@
     }
     &:after {
         @include clear-fix();
+    }
+}
+#profile-mobile-menu {
+    display: none;
+}
+@media screen and (max-width: 480px) {
+    #learn-press-user-profile {
+        &:before {
+            display: none;
+        }
+    }
+    #learn-press-profile-header {
+
+    }
+    #learn-press-profile-nav {
+        height: 40px;
+        z-index: 90;
+        /* position: relative; */
+        padding-top: 0;
+        min-width: 40px;
+        width: 40px;
+        float: right;
+        margin-bottom: 20px;
+        #profile-mobile-menu {
+            display: block;
+            width: 40px;
+            height: 40px;
+            float: right;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: none;
+        }
+        .learn-press-tabs {
+            right: 0;
+            width: 100%;
+            display: none;
+            background: #03A9F4;
+            color: #FFF;
+            position: absolute;
+            margin-top: 40px;
+            li {
+                a {
+                    color: #FFF;
+                }
+                &:hover:not(.active) {
+                    > a {
+                        background: #D0D0D0;
+                        color: #FFF;
+                    }
+                    ul {
+                        position: relative;
+                        left: 0;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+        &:hover {
+            #profile-mobile-menu {
+                background: #03a8f4;
+                /* border: 1px solid #DDD; */
+                color: #FFF;
+            }
+            .learn-press-tabs {
+                display: block;
+            }
+        }
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 40px;
+            height: 40px;
+            background: #F5F5F5;
+        }
+
+        .tabs {
+
+            > li.active, > li:hover {
+
+                ul, a {
+                    background: #0191d4;
+                }
+            }
+        }
+    }
+    #learn-press-profile-content {
+        float: none;
+        width: 100%;
     }
 }

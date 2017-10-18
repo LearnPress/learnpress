@@ -236,8 +236,8 @@ class LP_Query {
 						foreach ( $args['sections'] as $section_slug => $section ) {
 							$section_slug = $profile->get_slug( $section, $section_slug );
 							add_rewrite_rule(
-								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?$',
-								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
+								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?([0-9]*)?$',
+								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
 								'top'
 							);
 						}
