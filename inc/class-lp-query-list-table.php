@@ -89,7 +89,7 @@ class LP_Query_List_Table implements ArrayAccess {
 	 *
 	 * @return string
 	 */
-	public function get_nav( $echo = true ) {
+	public function get_nav_numbers( $echo = true ) {
 
 		return learn_press_paging_nav(
 			array(
@@ -110,7 +110,7 @@ class LP_Query_List_Table implements ArrayAccess {
 		return array( $from, $to );
 	}
 
-	public function get_offset_text( $format = '' ) {
+	public function get_offset_text( $format = '', $echo = false ) {
 		$offset = $this->get_offset();
 		if ( ! $format ) {
 			if ( $this->_data['single'] && $this->_data['plural'] ) {
@@ -120,7 +120,7 @@ class LP_Query_List_Table implements ArrayAccess {
 			}
 		}
 
-		return str_replace(
+		$output = str_replace(
 			array( '{{from}}', '{{to}}', '{{total}}', '{{item_name}}' ),
 			array(
 				$offset[0],
@@ -130,6 +130,27 @@ class LP_Query_List_Table implements ArrayAccess {
 			),
 			$format
 		);
+		if ( $echo ) {
+			echo $output;
+		}
+
+		return $output;
+	}
+
+	public function get_nav( $format = '', $echo = false ) {
+		$output  = '';
+		$offset  = $this->get_offset_text( $format, false );
+		$numbers = $this->get_nav_numbers( false );
+
+		if ( $offset && $numbers ) {
+			$output = sprintf( '<div class="learn-press-nav-items">%s%s</div>', $offset, $numbers );
+		}
+
+		if ( $echo ) {
+			echo $output;
+		}
+
+		return $output;
 	}
 
 	public function offsetExists( $offset ) {

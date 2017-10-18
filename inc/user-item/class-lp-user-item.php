@@ -64,7 +64,9 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return string|LP_Datetime
 	 */
 	public function get_start_time( $format = '' ) {
-		$date = new LP_Datetime( $this->get_data( 'start_time' ) );
+		$time = $this->get_data( 'start_time' );
+
+		$date = new LP_Datetime( $time );
 
 		if ( $format ) {
 			return $date->format( $format );
@@ -253,7 +255,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 			$status = $this->get_status();
 		}
 
-		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Unknown', 'learnpress' );
+		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not enrolled', 'learnpress' );
 	}
 
 	/**

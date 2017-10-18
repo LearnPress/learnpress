@@ -187,12 +187,14 @@
     list-style: none;
     margin: 0 0 20px 0;
     padding: 0;
+    background: #eaeaea;
     .section-tab {
         float: left;
         a, span {
             display: inline-block;
-            margin: 0 10px 0 0;
-            padding-bottom: 5px;
+            //margin: 0 10px 0 0;
+            padding: 8px 10px;
+            line-height: 1;
         }
         &.active {
             span {
@@ -200,6 +202,32 @@
             }
         }
     }
+    &:after {
+        @include clear-fix();
+    }
+}
+
+.profile-heading {
+    font-size: 18px;
+}
+
+.lp-sub-menu {
+    list-style: none;
+    margin: 0 0 10px 0;
+    li {
+        display: inline-block;
+        a, span {
+            display: inline-block;
+            margin: 0 10px 0 0;
+        }
+    }
+}
+
+.learn-press-nav-items {
+    .learn-press-pagination {
+        float: right;
+    }
+
     &:after {
         @include clear-fix();
     }

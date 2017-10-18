@@ -40,9 +40,9 @@ class LP_Datetime extends DateTime {
 			self::$stz = new DateTimeZone( @date_default_timezone_get() );
 		}
 
-		if($date instanceof LP_Datetime){
+		if ( $date instanceof LP_Datetime ) {
 			$this->raw_date = $date->get_raw_date();
-		}else{
+		} else {
 			$this->raw_date = $date;
 		}
 
@@ -79,7 +79,7 @@ class LP_Datetime extends DateTime {
 		return $this->raw_date === '0000-00-00 00:00:00';
 	}
 
-	public function get_raw_date(){
+	public function get_raw_date() {
 		return $this->raw_date;
 	}
 
@@ -162,6 +162,9 @@ class LP_Datetime extends DateTime {
 	 * @return  string   The date string in the specified format format.
 	 */
 	public function format( $format, $local = true ) {
+		if ( '0000-00-00 00:00:00' === $this->raw_date ) {
+			return '';
+		}
 		if ( $local == false && ! empty( self::$gmt ) ) {
 			parent::setTimezone( self::$gmt );
 		}

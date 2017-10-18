@@ -11,16 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-global $post, $profile, $wpdb;
-$user = $wpdb->get_col( "select id from wp_users" );
-
-$curd = new LP_User_CURD();
-foreach ( $user as $uid ) {
-	$curd->query_courses( $uid );
-}
+$profile = learn_press_get_profile();
 
 $query   = $profile->query_courses();
-$profile = learn_press_get_profile();
 
 if ( ! $query['total'] ) {
 	learn_press_display_message( __( 'You haven\'t got any courses yet!', 'learnpress' ) );
@@ -67,7 +60,7 @@ if ( ! $query['total'] ) {
 				<?php echo $query->get_offset_text(); ?>
             </td>
             <td colspan="2" class="nav-pages">
-				<?php $query->get_nav( true ); ?>
+				<?php $query->get_nav_numbers( true ); ?>
             </td>
         </tr>
         </tfoot>
