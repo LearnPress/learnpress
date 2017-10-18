@@ -402,7 +402,9 @@ class LP_Install {
 	 * @return int|mixed
 	 */
 	protected
-	static function _search_page( $type, $types) {
+	static function _search_page(
+		$type, $types
+	) {
 		static $pages = array();
 		if ( empty( $pages[ $type ] ) ) {
 			global $wpdb;
@@ -685,13 +687,17 @@ class LP_Install {
 	}
 
 	public
-	static function update_db_version( $version = null) {
+	static function update_db_version(
+		$version = null
+	) {
 		delete_option( 'learnpress_db_version' );
 		update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 	}
 
 	public
-	static function update_version( $version = null) {
+	static function update_version(
+		$version = null
+	) {
 
 		delete_option( 'learnpress_version' );
 		update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
@@ -828,6 +834,18 @@ class LP_Install {
 					parent_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					PRIMARY KEY  (user_item_id)
 				) $collate;";
+		}
+
+		if ( ! in_array( $wpdb->learnpress_user_itemmeta, $tables ) ) {
+			$query .= "
+				CREATE TABLE {$wpdb->prefix}learnpress_user_itemmeta (
+					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					learnpress_user_item_id bigint(20) unsigned NOT NULL,
+					meta_key varchar(45) NOT NULL DEFAULT '',
+					meta_value text NOT NULL,
+					PRIMARY KEY  (meta_id)
+				) $collate;
+				";
 		}
 
 		if ( ! in_array( $wpdb->learnpress_question_answermeta, $tables ) ) {

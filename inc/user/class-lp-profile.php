@@ -489,7 +489,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed|string
 		 */
 		public function get_current_url( $args = '', $with_permalink = false ) {
-			$url = $this->get_tab_link( $this->get_current_tab() );
+			$url = $this->get_tab_link( $this->get_current_tab(), $this->get_current_section() );
 
 			if ( is_array( $args ) && $args ) {
 				if ( ! $with_permalink ) {
@@ -724,17 +724,35 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
+		 * Query user's courses
+		 *
+		 * @param string $type - Optional. [own, purchased, enrolled, etc]
+		 * @param mixed  $args - Optional.
+		 *
 		 * @return array|LP_Query_List_Table
 		 */
-		public function query_courses() {
-			return $this->_curd->query_courses( $this->get_user_data( 'id' ) );
+		public function query_courses( $type = 'own', $args = '' ) {
+			$query = false;
+			switch ( $type ) {
+				case 'purchased':
+					$query = $this->_curd->query_purchased_courses( $this->get_user_data( 'id' ), $args );
+					break;
+				case 'enrolled':
+					break;
+				default:
+					$query = $this->_curd->query_own_courses( $this->get_user_data( 'id' ), $args );
+			}
+
+			return $query;
 		}
 
 		/**
+		 * @param mixed $args
+		 *
 		 * @return array|LP_Query_List_Table
 		 */
-		public function query_quizzes() {
-			return $this->_curd->query_quizzes( $this->get_user_data( 'id' ) );
+		public function query_quizzes( $args = '' ) {
+			return $this->_curd->query_quizzes( $this->get_user_data( 'id' ), $args );
 		}
 
 		/**
@@ -748,6 +766,105 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return $order;
+		}
+
+		/**
+		 * Get filters for own courses tab.
+		 *
+		 * @param string $current_filter
+		 *
+		 * @return array
+		 */
+		public function get_own_courses_filters( $current_filter = '' ) {
+			$url      = $this->get_current_url();
+			$defaults = array(
+				'all'     => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
+				'publish' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'publish', $url ) ), __( 'Publish', 'learnpress' ) ),
+				'pending' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'pending', $url ) ), __( 'Pending', 'learnpress' ) )
+			);
+
+			if ( ! $current_filter ) {
+				$keys           = array_keys( $defaults );
+				$current_filter = reset( $keys );
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( $k === $current_filter ) {
+					$defaults[ $k ] = sprintf( '<span>%s</span>', strip_tags( $v ) );
+				}
+			}
+
+			return apply_filters(
+				'learn-press/profile/own-courses-filters',
+				$defaults
+			);
+		}
+
+		/**
+		 * Get filters for purchased courses tab.
+		 *
+		 * @param string $current_filter
+		 *
+		 * @return array
+		 */
+		public function get_purchased_courses_filters( $current_filter = '' ) {
+			$url      = $this->get_current_url( false );
+			$defaults = array(
+				'all'          => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
+				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) )
+			);
+
+			if ( ! $current_filter ) {
+				$keys           = array_keys( $defaults );
+				$current_filter = reset( $keys );
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( $k === $current_filter ) {
+					$defaults[ $k ] = sprintf( '<span>%s</span>', strip_tags( $v ) );
+				}
+			}
+
+			return apply_filters(
+				'learn-press/profile/purchased-courses-filters',
+				$defaults
+			);
+		}
+
+		/**
+		 * Get filters for purchased courses tab.
+		 *
+		 * @param string $current_filter
+		 *
+		 * @return array
+		 */
+		public function get_quizzes_filters( $current_filter = '' ) {
+			$url      = $this->get_current_url( false );
+			$defaults = array(
+				'all'       => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
+				'completed' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) )
+			);
+
+			if ( ! $current_filter ) {
+				$keys           = array_keys( $defaults );
+				$current_filter = reset( $keys );
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( $k === $current_filter ) {
+					$defaults[ $k ] = sprintf( '<span>%s</span>', strip_tags( $v ) );
+				}
+			}
+
+			return apply_filters(
+				'learn-press/profile/quizzes-filters',
+				$defaults
+			);
 		}
 
 		/**

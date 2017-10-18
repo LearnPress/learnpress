@@ -56,7 +56,7 @@ if ( ! $query_orders['items'] ) {
 			<?php echo $query_orders->get_offset_text(); ?>
 		</td>
 		<td colspan="3" class="nav-pages">
-			<?php $query_orders->get_nav( true ); ?>
+			<?php $query_orders->get_nav_numbers( true ); ?>
 		</td>
 	</tr>
 	</tfoot>
