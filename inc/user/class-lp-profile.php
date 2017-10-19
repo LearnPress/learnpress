@@ -868,6 +868,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
+		 * @param string $redirect
+		 *
+		 * @return string
+		 */
+		public function logout_url( $redirect = '' ) {
+
+			$url = wp_login_url( $redirect );
+
+			return $url;
+		}
+
+		/**
 		 * Get an instance of LP_Profile for a user id
 		 *
 		 * @param $user_id

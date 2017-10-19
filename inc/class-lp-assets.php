@@ -42,6 +42,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'global'       => array(
 				'url'     => learn_press_get_current_url(),
 				'siteurl' => site_url(),
+				'ajax'    => admin_url( 'admin-ajax.php' ),
 				'theme'   => get_stylesheet()
 			),
 			'checkout'     => array(
@@ -114,7 +115,7 @@ class LP_Assets extends LP_Abstract_Assets {
 						'jquery'
 					)
 				),
-				'become-a-teacher'  => array(
+				'become-a-teacher' => array(
 					'url'  => self::url( 'js/frontend/become-teacher.js' ),
 					'deps' => array(
 						'jquery'

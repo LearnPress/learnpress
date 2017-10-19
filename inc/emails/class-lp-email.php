@@ -611,7 +611,17 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @return string
 	 */
 	public function get_image_header() {
-		return LP()->settings->get( 'emails_general.header_image' );
+		$image = LP()->settings->get( 'emails_general.header_image' );
+
+		if ( is_array( $image ) ) {
+			$image = reset( $image );
+		}
+
+		if ( is_numeric( $image ) ) {
+			$image = wp_get_attachment_image_url( $image, 'full' );
+		}
+
+		return $image;
 	}
 
 	/**

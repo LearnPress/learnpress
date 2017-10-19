@@ -94,7 +94,7 @@ ob_start();
         #template_container #email-footer td {
             text-align: center;
             padding: 20px;
-            border-top: 1px solid #daf4ff;
+            border-top: 1px solid #DDD;
         }
 
         .order-heading-total {

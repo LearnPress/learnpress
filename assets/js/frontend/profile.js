@@ -13,7 +13,7 @@
             'click #lp-upload-photo': '_upload',
             'click .lp-cancel-upload': '_cancel'
         },
-        el: '#lp-user-profile-form',
+        el: '#lp-user-edit-avatar',
         uploader: null,
         initialize: function () {
             console.log()
@@ -35,6 +35,7 @@
             this.$('.lp-avatar-preview').removeClass('croping');
         },
         filesAdded: function (up, files) {
+            console.log(this.$('.lp-avatar-preview'))
             var that = this;
             up.files.splice(0, up.files.length - 1);
             that.$('.lp-avatar-preview').addClass('uploading');
@@ -78,7 +79,7 @@
                 runtimes: 'html5,flash,silverlight,html4',
                 browse_button: 'lp-upload-photo',
                 container: $('#lp-user-edit-avatar').get(0),
-                url: (typeof LP_Settings !== 'undefined' ? LP_Settings.ajax : window.location.href).addQueryVar('action', 'learnpress_upload-user-avatar'),
+                url: (typeof lpGlobalSettings !== 'undefined' ? lpGlobalSettings.ajax : '').addQueryVar('action', 'learnpress_upload-user-avatar'),
                 filters: {
                     max_file_size: '10mb',
                     mime_types: [

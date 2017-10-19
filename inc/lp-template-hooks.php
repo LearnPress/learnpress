@@ -88,6 +88,10 @@ add_action( 'learn-press/after-user-profile', 'learn_press_user_profile_footer',
 add_action( 'learn-press/profile/orders', 'learn_press_profile_tab_orders', 10 );
 add_action( 'learn-press/profile/orders', 'learn_press_profile_recover_order_form', 15 );
 
+add_action( 'learn-press/before-profile-nav', function () {
+	learn_press_get_template( 'profile/mobile-menu.php' );
+} );
+
 //add_action( 'learn-press/order/after-table-details', 'learn_press_profile_recover_my_order_form', 10 );
 
 /****************************/
