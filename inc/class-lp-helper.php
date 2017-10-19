@@ -96,4 +96,30 @@ class LP_Helper {
 		}
 		$array = $sorted;
 	}
+
+	/**
+	 * Merge two or more classes into one.
+	 *
+	 * @return array
+	 */
+	public static function merge_class() {
+		if ( func_num_args() == 1 ) {
+			return func_get_arg( 0 );
+		} elseif ( func_num_args() == 0 ) {
+			return null;
+		}
+		$classes = array();
+		foreach ( func_get_args() as $class ) {
+			if ( is_string( $class ) ) {
+				$cls     = explode( ' ', $class );
+				$classes = array_merge( $classes, $cls );
+			} else {
+				$classes = array_merge( $classes, $class );
+			}
+		}
+		$classes = array_filter( $classes );
+		$classes = array_unique( $classes );
+
+		return $classes;
+	}
 }

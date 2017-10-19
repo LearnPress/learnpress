@@ -45,6 +45,11 @@ class LP_Global {
 	protected static $_course_item = false;
 
 	/**
+	 * @var LP_Profile
+	 */
+	protected static $_profile = false;
+
+	/**
 	 * @return LP_Quiz|LP_Lesson
 	 */
 	public static function course_item() {
@@ -127,4 +132,38 @@ class LP_Global {
 		$lp_course      = self::$_course;
 		$lp_course_item = self::$_course_item;
 	}
+
+	/**
+	 * @param bool $global
+	 * @param bool $reset
+	 *
+	 * @return LP_Profile|WP_Error
+	 */
+	public static function profile( $global = false, $reset = false ) {
+		global $profile;
+
+		/**
+		 * Get origin global $profile (stored in class) if $global = TRUE
+		 */
+		if ( $global ) {
+
+			/**
+			 * If $reset = TRUE then set global $profile to origin global $profile (stored in class)
+			 */
+			if ( ! $reset ) {
+				return self::$_profile;
+			}
+
+			$profile = self::$_profile;
+		}
+
+		return $profile;
+	}
+
+	public static function init() {
+		global $profile;
+		self::$_profile = $profile = LP_Profile::instance( get_current_user_id() );
+	}
 }
+
+add_action( 'init', array( 'LP_GLobal', 'init' ) );

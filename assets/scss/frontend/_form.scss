@@ -111,6 +111,15 @@
                 width: 100%;
                 @include box-sizing(border-box);
             }
+            .description{
+                font-style: italic;
+                margin-top: 10px;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+            .asterisk{
+                color: #FF0000;
+            }
         }
     }
 }

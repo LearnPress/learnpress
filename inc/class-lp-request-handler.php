@@ -59,6 +59,8 @@ class LP_Request {
 		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
 
 		add_action( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
+
+		add_action( 'init', array( 'LP_Forms_Handler', 'init' ) );
 	}
 
 	/**
@@ -645,6 +647,16 @@ class LP_Request {
 		}
 
 		return $list;
+	}
+
+	public static function get_redirect($default = '') {
+		if ( $redirect = self::get_string( 'redirect' ) ) {
+			$redirect = urldecode( $redirect );
+		}else{
+			$redirect = $default;
+		}
+
+		return $redirect;
 	}
 }
 

@@ -388,6 +388,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/curds/class-lp-order-curd.php';
 
 			require_once 'inc/class-lp-debug.php';
+			require_once 'inc/class-lp-global.php';
+			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 
 			require_once 'inc/course/class-lp-course-item.php';
 			require_once 'inc/course/class-lp-course-section.php';

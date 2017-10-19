@@ -88,6 +88,61 @@ add_action( 'learn-press/after-user-profile', 'learn_press_user_profile_footer',
 add_action( 'learn-press/profile/orders', 'learn_press_profile_tab_orders', 10 );
 add_action( 'learn-press/profile/orders', 'learn_press_profile_recover_order_form', 15 );
 
+add_action( 'learn-press/profile/dashboard-summary', function () {
+	learn_press_get_template( 'profile/dashboard-logged-in.php' );
+}, 15 );
+
+add_action( 'learn-press/user-profile', function () {
+	$profile = LP_Global::profile();
+
+	if ( ! $profile->get_user()->is_guest() ) {
+		return;
+	}
+
+	if ( 'yes' === LP()->settings()->get( 'enable_register_profile' ) || 'yes' === LP()->settings()->get( 'enable_login_profile' ) ) {
+		return;
+	}
+
+	learn_press_get_template( 'profile/not-logged-in.php' );
+}, 15 );
+
+add_action( 'learn-press/user-profile', function () {
+	$profile = LP_Global::profile();
+
+	if ( ! $profile->get_user()->is_guest() ) {
+		return;
+	}
+
+	if ( ! $fields = $profile->get_login_fields() ) {
+		return;
+	}
+
+	if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
+		return;
+	}
+
+	learn_press_get_template( 'global/login-form.php', array( 'fields' => $fields ) );
+}, 15 );
+
+add_action( 'learn-press/user-profile', function () {
+	$profile = LP_Global::profile();
+
+	if ( ! $profile->get_user()->is_guest() ) {
+		return;
+	}
+
+	if ( ! $fields = $profile->get_register_fields() ) {
+		return;
+	}
+
+	if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
+		return;
+	}
+
+	learn_press_get_template( 'global/register-form.php', array( 'fields' => $fields ) );
+}, 15 );
+
+
 add_action( 'learn-press/before-profile-nav', function () {
 	learn_press_get_template( 'profile/mobile-menu.php' );
 } );

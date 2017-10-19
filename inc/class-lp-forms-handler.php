@@ -83,5 +83,217 @@ class LP_Forms_Handler {
 
 		return $validate;
 	}
+
+	public static function process_login() {
+		if ( ! LP_Request::verify_nonce( 'learn-press-login' ) ) {
+			return;
+		}
+
+		add_filter( 'learn-press/login-validate-field', array(
+			__CLASS__,
+			'login_validate_field'
+		), 10, 3 );
+
+		$fields      = LP_Shortcode_Login_Form::get_login_fields();
+		$field_names = wp_list_pluck( $fields, 'id' );
+		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), $field_names );
+
+		$result = array(
+			'message' => array(),
+			'result'  => 'success'
+		);
+
+		foreach ( $fields as $field ) {
+			$name     = $field['id'];
+			$validate = apply_filters( 'learn-press/login-validate-field', $name, $field, $args[ $name ] );
+
+			if ( is_wp_error( $validate ) ) {
+				learn_press_add_message( $validate->get_error_message(), 'error' );
+
+				$result['message'][ $name ] = learn_press_get_message( $validate->get_error_message(), 'error' );
+				$result['result']           = 'error';
+			} elseif ( ! $validate ) {
+				$message = sprintf( __( 'Field "%s" is required.', 'learnpress' ), $field['title'] );
+
+				learn_press_add_message( $message, 'error' );
+
+				$result['message'][ $name ] = learn_press_get_message( $message, 'error' );
+				$result['result']           = 'error';
+			}
+		}
+
+		remove_filter( 'learn-press/login-validate-field', array(
+			__CLASS__,
+			'login_validate_field'
+		) );
+
+		if ( $result['result'] === 'success' ) {
+			$logged = wp_signon(
+				array(
+					'user_login'    => $args['username'],
+					'user_password' => $args['password'],
+					'rememberme'    => LP_Request::get_string( 'rememberme' )
+				)
+			);
+
+			if ( is_wp_error( $logged ) ) {
+				$result['result'] = 'error';
+				foreach ( $logged->get_error_messages() as $code => $message ) {
+					$result['message'][ $code ] = learn_press_get_message( $message, 'error' );
+
+					learn_press_add_message( $message, 'error' );
+				}
+			}
+		}
+
+		$result = apply_filters( 'learn-press/login-request-result', $result );
+
+		if ( $result['result'] === 'success' ) {
+			$message             = __( 'Login successful.', 'learnpress' );
+			$result['message'][] = learn_press_get_message( $message, 'success' );
+
+			learn_press_add_message( $message, 'success' );
+		}
+
+		learn_press_maybe_send_json( $result, 'learn_press_print_messages' );
+
+		if ( ( $result['result'] === 'success' ) && $redirect = LP_Request::get_redirect( learn_press_get_current_url() ) ) {
+			wp_redirect( $redirect );
+			exit();
+		}
+	}
+
+	public static function login_validate_field( $name, $field, $value ) {
+		return ! ! $value;
+	}
+
+	public static function process_register() {
+		if ( ! LP_Request::verify_nonce( 'learn-press-register' ) ) {
+			return;
+		}
+
+		add_filter( 'learn-press/register-validate-field', array(
+			__CLASS__,
+			'register_validate_field'
+		), 10, 3 );
+
+		$fields      = LP_Shortcode_Register_Form::get_register_fields();
+		$field_names = wp_list_pluck( $fields, 'id' );
+		$args        = call_user_func_array( array( 'LP_Request', 'get_list' ), $field_names );
+
+		$result = array(
+			'message' => array(),
+			'result'  => 'success'
+		);
+
+		foreach ( $fields as $field ) {
+			$name     = $field['id'];
+			$validate = apply_filters( 'learn-press/register-validate-field', $name, $field, $args[ $name ] );
+
+			if ( is_wp_error( $validate ) ) {
+				learn_press_add_message( $validate->get_error_message(), 'error' );
+
+				$result['message'][ $name ] = learn_press_get_message( $validate->get_error_message(), 'error' );
+				$result['result']           = 'error';
+			} elseif ( ! $validate ) {
+				$message = sprintf( __( 'Field "%s" is required.', 'learnpress' ), $field['title'] );
+
+				learn_press_add_message( $message, 'error' );
+
+				$result['message'][ $name ] = learn_press_get_message( $message, 'error' );
+				$result['result']           = 'error';
+			}
+		}
+
+		remove_filter( 'learn-press/register-validate-field', array(
+			__CLASS__,
+			'register_validate_field'
+		) );
+
+		if ( $result['result'] === 'success' ) {
+
+			$new_user = apply_filters( 'learn-press/new-user-data', array(
+				'user_login' => $args['reg_username'],
+				'user_pass'  => isset( $args['reg_password'] ) ? $args['reg_password'] : '',
+				'user_email' => $args['reg_email']
+			) );
+
+			$user_id = wp_insert_user( $new_user );
+
+			if ( is_wp_error( $user_id ) ) {
+				$result['result'] = 'error';
+				foreach ( $user_id->get_error_messages() as $code => $message ) {
+					$result['message'][ $code ] = learn_press_get_message( $message, 'error' );
+
+					learn_press_add_message( $message, 'error' );
+				}
+			}
+		}
+
+		$result = apply_filters( 'learn-press/register-request-result', $result );
+
+		if ( $result['result'] === 'success' ) {
+			$message             = __( 'Register successful.', 'learnpress' );
+			$result['message'][] = learn_press_get_message( $message, 'success' );
+
+			learn_press_add_message( $message, 'success' );
+
+			$logged = wp_signon(
+				array(
+					'user_login'    => $args['reg_username'],
+					'user_password' => $args['reg_password']
+				)
+			);
+		}
+
+		learn_press_maybe_send_json( $result, 'learn_press_print_messages' );
+
+		if ( ( $result['result'] === 'success' ) && $redirect = LP_Request::get_redirect( learn_press_get_current_url() ) ) {
+			wp_redirect( $redirect );
+			exit();
+		}
+	}
+
+	public static function register_validate_field( $name, $field, $value ) {
+		$validate = ! ! $value;
+
+		if ( $validate && $name === 'reg_password' ) {
+			try {
+				if ( strlen( $value ) < 6 ) {
+					throw new Exception( __( 'Password is to short!', 'learnpress' ), 100 );
+				}
+
+				if ( preg_match( '#\s+#', $value ) ) {
+					throw new Exception( __( 'Password can not have a spacing!', 'learnpress' ), 110 );
+				}
+
+				if ( ! preg_match( "#[a-zA-Z]+#", $value ) ) {
+					throw new Exception( __( 'Password must include at least one letter!', 'learnpress' ), 120 );
+				}
+
+				if ( ! preg_match( "#[A-Z]+#", $value ) ) {
+					throw new Exception( __( 'Password must include at least one capitalize letter!', 'learnpress' ), 125 );
+				}
+
+				if ( ! preg_match( "#[0-9]+#", $value ) ) {
+					throw new Exception( __( 'Password must include at least one number!', 'learnpress' ), 125 );
+				}
+
+				if ( ! preg_match( '#[~!@\#$%^&*()]#', $value ) ) {
+					throw new Exception( __( 'Password must include at least one character ~!@#$%^&*() !', 'learnpress' ), 125 );
+				}
+			}
+			catch ( Exception $ex ) {
+				$validate = new WP_Error( $ex->getCode(), $ex->getMessage() );
+			}
+		}
+
+		return $validate;
+	}
+
+	public static function init() {
+		self::process_login();
+		self::process_register();
+	}
 }
 

@@ -12,19 +12,10 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
-?>
 
-<?php
-/**
- * If $user is not set then get the current user.
- */
-global $wp, $wp_rewrite;
-
-if ( ! isset( $profile ) ) {
-	$profile = learn_press_get_profile();
-}
+$profile = LP_Global::profile();
 ?>
-<div id="learn-press-user-profile" class="lp-user-profile">
+<div id="learn-press-user-profile"<?php $profile->main_class();?>>
 
 	<?php
 	/**
