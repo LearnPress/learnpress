@@ -64,6 +64,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$this->_role = $this->get_role();
 			}
 
+			$this->maybe_logout_redirect();
+
 			$this->_default_actions = apply_filters(
 				'learn-press/profile-default-actions',
 				array(
@@ -89,7 +91,33 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					 */
 					LP_Request_Handler::register( 'save-profile-' . $action, array( $this, 'save' ) );
 				}
+
+				add_filter( 'learn-press/profile/class', array( $this, 'profile_class' ) );
 			}
+		}
+
+		/**
+		 * Maybe logout wp if there is a logout sign
+		 */
+		public function maybe_logout_redirect() {
+			if ( ( 'true' !== LP_Request::get_string( 'lp-logout' ) ) || ! wp_verify_nonce( LP_Request::get_string( 'nonce' ), 'lp-logout' ) ) {
+				return;
+			}
+
+			wp_logout();
+			if ( ! $redirect = LP_Request::get_redirect() ) {
+				$redirect = learn_press_get_current_url();
+			}
+			wp_redirect( $redirect );
+			exit();
+		}
+
+		public function profile_class( $classes ) {
+			if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && 'yes' === LP()->settings()->get( 'enable_register_profile' ) ) {
+				$classes[] = 'enable-login-register';
+			}
+
+			return $classes;
 		}
 
 		public function output( $tab, $args, $user ) {
@@ -114,7 +142,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					echo $location;
 				}
 			}
-
 		}
 
 		/**
@@ -163,6 +190,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $this->_user;
 		}
 
+		public function is_current_user() {
+			return $this->get_user()->is( 'current' );
+		}
+
 		/**
 		 * Wrap function for $user->get_data()
 		 *
@@ -176,6 +207,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		public function tab_dashboard() {
 			learn_press_get_template( 'profile/dashboard.php', array( 'user' => $this->_user ) );
+		}
+
+		public function get_login_url( $redirect = false ) {
+			return learn_press_get_login_url( $redirect !== false ? $redirect : $this->get_current_url() );
 		}
 
 		/**
@@ -868,15 +903,86 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
-		 * @param string $redirect
+		 * @param bool $redirect
 		 *
 		 * @return string
 		 */
-		public function logout_url( $redirect = '' ) {
+		public function logout_url( $redirect = false ) {
+			if ( $this->enable_login() ) {
+				$profile_url = learn_press_get_page_link( 'profile' );
+				$url         = add_query_arg( array(
+					'lp-logout' => 'true',
+					'nonce'     => wp_create_nonce( 'lp-logout' )
+				), untrailingslashit( $profile_url ) );
 
-			$url = wp_login_url( $redirect );
+				if ( $redirect !== false ) {
+					$url = add_query_arg( 'redirect', urlencode( $redirect ), $url );
+				}
+			} else {
+				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );
+			}
 
-			return $url;
+			return apply_filters( 'learn-press/logout-url', $url );
+		}
+
+		/**
+		 * Echo class for main div.
+		 *
+		 * @param bool   $echo
+		 * @param string $more
+		 *
+		 * @return string
+		 */
+		public function main_class( $echo = true, $more = '' ) {
+			$classes = array( 'lp-user-profile' );
+			if ( $this->is_current_user() ) {
+				$classes[] = 'current-user';
+			}
+
+			if ( $this->get_user()->is_guest() ) {
+				$classes[] = 'guest';
+			}
+
+			$classes = LP_Helper::merge_class( $classes, $more );
+
+			$class = ' class="' . join( ' ', apply_filters( 'learn-press/profile/class', $classes ) ) . '"';
+			if ( $echo ) {
+				echo $class;
+			}
+
+			return $class;
+		}
+
+		/**
+		 * @return array
+		 */
+		public function get_login_fields() {
+			return LP_Shortcode_Login_Form::get_login_fields();
+		}
+
+		/**
+		 * @return array
+		 */
+		public function get_register_fields() {
+			return LP_Shortcode_Register_Form::get_register_fields();
+		}
+
+		/**
+		 * TRUE if enable show login form in user profile if user is not logged in.
+		 *
+		 * @return bool
+		 */
+		public function enable_login() {
+			return 'yes' === LP()->settings()->get( 'enable_login_profile' );
+		}
+
+		/**
+		 * TRUE if enable show register form in user profile if user is not logged in.
+		 *
+		 * @return bool
+		 */
+		public function enable_register() {
+			return 'yes' === LP()->settings()->get( 'enable_register_profile' );
 		}
 
 		/**

@@ -1603,11 +1603,17 @@ function learn_press_send_json( $data ) {
  * Check if ajax is calling then send json data.
  *
  * @param array $data
+ * @param mixed $callback
+ *
+ * @return bool
  */
-function learn_press_maybe_send_json( $data ) {
+function learn_press_maybe_send_json( $data, $callback = null ) {
 	if ( learn_press_is_ajax() ) {
+		is_callable( $callback ) && call_user_func( $callback );
 		learn_press_send_json( $data );
 	}
+
+	return false;
 }
 
 /**
@@ -1887,7 +1893,7 @@ function learn_press_get_login_url( $redirect = null ) {
 }
 
 function _learn_press_get_login_url( $url ) {
-	if ( $profile_page = learn_press_get_page_link( 'profile' ) ) {
+	if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && $profile_page = learn_press_get_page_link( 'profile' ) ) {
 		$a   = parse_url( $url );
 		$url = $profile_page . ( ! empty( $a['query'] ) ? '?' . $a['query'] : '' );
 	}

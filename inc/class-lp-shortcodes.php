@@ -24,6 +24,7 @@ class LP_Shortcodes {
 			'profile'             => __CLASS__ . '::profile',
 			'become_teacher_form' => __CLASS__ . '::become_teacher_form',
 			'login_form'          => __CLASS__ . '::login_form',
+			'register_form'       => __CLASS__ . '::register_form',
 			'checkout'            => __CLASS__ . '::checkout',
 			'recent_courses'      => __CLASS__ . '::recent_courses',
 			'featured_courses'    => __CLASS__ . '::featured_courses',
@@ -32,14 +33,19 @@ class LP_Shortcodes {
 
 		foreach ( $shortcodes as $shortcode => $function ) {
 			$shortcode = "learn_press_{$shortcode}";
-			add_shortcode( apply_filters( "{$shortcode}_shortcode_tag", $shortcode ), $function );
+			add_shortcode( apply_filters( "learn-press/shortcode/{$shortcode}/tag", $shortcode ), $function );
 		}
 
-		//add_action( 'the_post', array( __CLASS__, 'auto_shortcode' ), -10, 2 );
 		add_action( 'template_include', array( __CLASS__, 'auto_shortcode' ), - 10, 2 );
-
 	}
 
+	/**
+	 * Auto add shortcode into page.
+	 *
+	 * @param $template
+	 *
+	 * @return mixed
+	 */
 	public static function auto_shortcode( $template ) {
 		global $post;
 
@@ -61,10 +67,12 @@ class LP_Shortcodes {
 			}
 		}
 
-
 		return $template;
 	}
 
+	/*
+	 *
+	 */
 	public static function _login_form_bottom( $content, $args ) {
 		if ( ! ( ! empty( $args['context'] ) && $args['context'] == 'learn-press-login' ) ) {
 			return;
@@ -181,7 +189,7 @@ class LP_Shortcodes {
 		return self::wrapper_shortcode( ob_get_clean() );
 	}
 
-	static function login_form( $atts, $content = '' ) {
+	public static function login_form( $atts, $content = '' ) {
 		$atts = shortcode_atts(
 			array(
 				'redirect' => ''
@@ -190,7 +198,11 @@ class LP_Shortcodes {
 		);
 		add_filter( 'login_form_bottom', array( __CLASS__, 'login_form_bottom' ), 10, 2 );
 
-		return self::wrapper_shortcode( learn_press_get_template_content( 'profile/login-form.php', $atts ) );
+		return self::wrapper_shortcode( new LP_Shortcode_Login_Form( $atts ) );
+	}
+
+	public static function register_form( $atts, $content = '' ) {
+		return self::wrapper_shortcode( new LP_Shortcode_Register_Form( $atts ) );
 	}
 
 	public static function login_form_bottom( $html, $args ) {

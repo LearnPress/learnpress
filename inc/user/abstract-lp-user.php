@@ -1310,14 +1310,22 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Detect the type of user
 	 *
-	 * @param $type
+	 * @param string|int $type
 	 *
 	 * @return bool
 	 */
 	public function is( $type ) {
-		$name = preg_replace( '!LP_User(_?)!', '', get_class( $this ) );
+		$is = false;
+		if ( $type === 'current' ) {
+			$is = $this->is( get_current_user_id() );
+		} elseif ( is_string( $type ) ) {
+			$name = preg_replace( '!LP_User(_?)!', '', get_class( $this ) );
+			$is   = strtolower( $name ) == strtolower( $type );
+		} elseif ( is_numeric( $type ) ) {
+			$is = $this->get_id() && ( $this->get_id() == $type );
+		}
 
-		return strtolower( $name ) == strtolower( $type );
+		return $is;
 	}
 
 	/**

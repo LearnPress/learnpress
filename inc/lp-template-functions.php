@@ -228,6 +228,11 @@ if ( ! function_exists( 'learn_press_user_profile_header' ) ) {
 	 * @hooked learn-press/before-user-profile
 	 */
 	function learn_press_user_profile_header( $user ) {
+		$profile = LP_Global::profile();
+
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
 		learn_press_get_template( 'profile/profile-cover.php', array( 'user' => $user ) );
 	}
 }
@@ -239,6 +244,12 @@ if ( ! function_exists( 'learn_press_user_profile_content' ) ) {
 	 * @hooked learn-press/user-profile
 	 */
 	function learn_press_user_profile_content( $user ) {
+		$profile = LP_Global::profile();
+
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
 		learn_press_get_template( 'profile/content.php', array( 'user' => $user ) );
 	}
 }
@@ -261,6 +272,12 @@ if ( ! function_exists( 'learn_press_user_profile_tabs' ) ) {
 	 * @param $user
 	 */
 	function learn_press_user_profile_tabs( $user = null ) {
+		$profile = LP_Global::profile();
+
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
 		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
 	}
 }
