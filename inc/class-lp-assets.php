@@ -209,10 +209,17 @@ class LP_Assets {
 
 		// global
 		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, $ver, 1 );
+
 		$scripts->add( 'learn-press-jalerts', $default_path . 'js/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
 
 		// frontend
 		$scripts->add( 'learn-press-js', $default_path . 'js/frontend/learnpress' . $suffix . '.js', $deps, $ver, 1 );
+		$jalerts_text = array(
+				'okButton' => __( 'Ok', 'learnpress' ),
+				'cancelButton' => __( 'Cancel', 'learnpress' ),
+		);
+		$scripts->localize('learn-press-js','jalerts_text', $jalerts_text);
+
 		$scripts->add( 'learn-press-single-course', $default_path . 'js/frontend/single-course' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-course-quiz', $default_path . 'js/frontend/quiz' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/lesson' . $suffix . '.js', $deps, $ver, 1 );
