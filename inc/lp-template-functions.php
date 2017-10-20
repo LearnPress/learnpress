@@ -1941,6 +1941,10 @@ function learn_press_message_count( $type = '' ) {
 	return $count;
 }
 
+function learn_press_clear_messages() {
+	learn_press_session_set( 'messages', array() );
+}
+
 /**
  * Displays messages before main content
  */

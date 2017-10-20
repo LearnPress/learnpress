@@ -1248,12 +1248,18 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 					break;
 				case 'price':
-					$price   = get_post_meta( $post->ID, '_lp_price', true );
-					$is_paid = get_post_meta( $post->ID, '_lp_payment', true );
-					if ( ( $is_paid === 'yes' ) && $price ) {
-						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', $price ), learn_press_format_price( get_post_meta( $post->ID, '_lp_price', true ), true ) );
+					$price   = $course->get_price();
+					$is_paid = ! $course->is_free();
+
+					$origin_price = '';
+					if ( $course->get_origin_price() && $course->has_sale_price() ) {
+						$origin_price = sprintf( '<span class="origin-price">%s</span>', $course->get_origin_price_html() );
+					}
+
+					if ( $is_paid ) {
+						echo sprintf( '<a href="%s" class="price">%s%s</a>', add_query_arg( 'filter_price', $price ), $origin_price, learn_press_format_price( $course->get_price(), true ) );
 					} else {
-						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', 0 ), __( 'Free', 'learnpress' ) );
+						echo sprintf( '<a href="%s" class="price">%s%s</a>', add_query_arg( 'filter_price', 0 ), $origin_price, __( 'Free', 'learnpress' ) );
 					}
 					break;
 				case 'students' :
@@ -1294,7 +1300,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			learn_press_admin_view( 'meta-boxes/course/review-log' );
 		}
 
-		public function posts_fields( $fields) {
+		public function posts_fields( $fields ) {
 			if ( ! $this->_is_archive() ) {
 				return $fields;
 			}
@@ -1312,7 +1318,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_join_paged( $join) {
+		public function posts_join_paged( $join ) {
 			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
@@ -1327,7 +1333,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|string
 		 */
-		public function posts_where_paged( $where) {
+		public function posts_where_paged( $where ) {
 			if ( ! $this->_is_archive() ) {
 				return $where;
 			}
@@ -1348,7 +1354,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public function posts_orderby( $order_by_statement) {
+		public function posts_orderby( $order_by_statement ) {
 			if ( ! $this->_is_archive() ) {
 				return $order_by_statement;
 			}
@@ -1365,7 +1371,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function sortable_columns( $columns) {
+		public function sortable_columns( $columns ) {
 			$columns['author'] = 'author';
 			$columns['price']  = 'price';
 

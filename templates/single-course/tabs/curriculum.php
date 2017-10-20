@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $course;
+
 ?>
 <div class="course-curriculum" id="learn-press-course-curriculum" @click="showItem">
     <div class="curriculum-scrollable">

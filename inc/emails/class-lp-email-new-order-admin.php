@@ -39,8 +39,8 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 //			add_action( 'learn_press_order_status_failed_to_completed_notification', array( $this, 'trigger' ) );
 //			add_action( 'learn_press_order_status_failed_to_on-hold_notification', array( $this, 'trigger' ) );
 
-			add_action( 'learn-press/order-status-pending-to-processing_status', array( $this, 'trigger' ) );
-			add_action( 'learn-press/order-status-pending-completed-status', array( $this, 'trigger' ) );
+			add_action( 'learn-press/order/status-pending-to-processing_status', array( $this, 'trigger' ) );
+			add_action( 'learn-press/order/status-pending-completed-status', array( $this, 'trigger' ) );
 			add_action( 'learn_press_order_status_pending_to_on-hold_notification', array( $this, 'trigger' ) );
 
 			add_action( 'learn_press_order_status_failed_to_processing_notification', array( $this, 'trigger' ) );

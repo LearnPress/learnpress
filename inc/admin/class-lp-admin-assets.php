@@ -94,7 +94,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'modal-search'           => array(
+				/*'modal-search'           => array(
 					'url'  => $this->url( 'js/admin/controllers/modal-search.js' ),
 					'deps' => array( 'jquery', 'utils', 'angularjs' )
 				),

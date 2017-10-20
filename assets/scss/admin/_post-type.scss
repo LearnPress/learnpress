@@ -55,3 +55,14 @@
         }
     }
 }
+
+.post-type-lp_course {
+    .column-price {
+        .origin-price {
+            font-size: 12px;
+            text-decoration: line-through;
+            margin-right: 10px;
+            color: #FF0000;
+        }
+    }
+}

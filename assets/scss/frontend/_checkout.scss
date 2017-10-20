@@ -7,11 +7,22 @@
 #learn-press-payment {
     .payment-methods {
         list-style: none;
+        margin: 0;
+        padding: 0;
         .lp-payment-method {
             margin-bottom: 20px;
+            label{
+                display: block;
+                background: #F5F5F5;
+                padding: 10px 20px;
+                line-height: 1;
+            }
         }
         .payment-method-form {
             display: none;
+            background: #F9f9f9;
+            padding: 15px 20px;
+            border-top: 1px solid #DDD;
         }
         .selected {
             .payment-method-form {
@@ -23,6 +34,7 @@
 #learn-press-checkout-login,
 #learn-press-checkout-register {
     margin-bottom: 1.5em;
+
 }
 
 #checkout-login-form,

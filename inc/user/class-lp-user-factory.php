@@ -36,7 +36,7 @@ class LP_User_Factory {
 		 */
 		add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
 
-		add_action( 'learn-press/order-status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
+		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 		add_action( 'learn-press/deleted-order-item', array( __CLASS__, 'delete_user_item' ), 10, 2 );
 	}
 
@@ -71,61 +71,92 @@ class LP_User_Factory {
 		if ( ! $order = learn_press_get_order( $the_id ) ) {
 			return;
 		}
-		remove_action( 'learn-press/order-status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
-		global $wpdb;
+		remove_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
+		LP_Debug::startTransaction();
+		try {
+			switch ( $new_status ) {
+				case 'pending':
+				case 'processing':
+				case 'cancelled':
+					self::_update_user_item_pending( $order, $new_status );
+					break;
+				case'completed':
+					self::_update_user_item_purchased( $order, $new_status );
+			}
+			LP_Debug::commitTransaction();
+		}
+		catch ( Exception $ex ) {
+			LP_Debug::rollbackTransaction();
+		}
+	}
+
+	/**
+	 * @param LP_Order $order
+	 * @param string   $new_status
+	 */
+	protected static function _update_user_item_pending( $order, $new_status ) {
 		$curd  = new LP_User_CURD();
 		$items = $order->get_items();
-		switch ( $new_status ) {
-			case 'pending':
-			case 'processing':
-			case 'cancelled':
-				if ( ! $items ) {
-					break;
+		if ( ! $items ) {
+			return;
+		}
+		foreach ( $order->get_users() as $user_id ) {
+			foreach ( $items as $item ) {
+				$item = $curd->get_user_item(
+					$user_id,
+					$item['course_id']
+				);
+				if ( $item ) {
+					if ( is_array( $item ) ) {
+						$item_id = $item['user_item_id'];
+					} else {
+						$item_id = $item;
+					}
+					$curd->update_user_item_status( $item_id, 'pending' );
 				}
-				foreach ( $order->get_users() as $user_id ) {
-					foreach ( $items as $item ) {
-						$item = $curd->get_user_item(
-							$user_id,
-							0,
-							$item['course_id']
-						);
-						if ( $item ) {
-							if ( is_array( $item ) ) {
-								$item_id = $item['user_item_id'];
-							} else {
-								$item_id = $item;
-							}
-							$curd->update_user_item_status( $item_id, 'pending' );
+			}
+		}
+	}
+
+	/**
+	 * @param LP_Order $order
+	 * @param string   $new_status
+	 */
+	protected static function _update_user_item_purchased( $order, $new_status ) {
+		$curd  = new LP_User_CURD();
+		$items = $order->get_items();
+		if ( ! $items ) {
+			return;
+		}
+		if ( ! $items ) {
+			return;
+		}
+		foreach ( $order->get_users() as $user_id ) {
+			foreach ( $items as $item ) {
+				$user_item_id = $curd->update_user_item(
+					$user_id,
+					$item['course_id'],
+					array(
+						'ref_id'    => $order->get_id(),
+						'ref_type'  => LP_ORDER_CPT,
+						'parent_id' => 0
+					)
+				);
+
+				if ( $user_item_id ) {
+					$item        = $curd->get_user_item_by_id( $user_item_id );
+					$last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
+					$args        = array( 'status' => $last_status );
+					if ( ! $last_status ) {
+						if ( 'enrolled' == ( $args['status'] = LP()->settings->get( 'auto_enroll' ) == 'no' ? 'purchased' : 'enrolled' ) ) {
+							$time                   = new LP_Datetime();
+							$args['start_time']     = $time->toSql();
+							$args['start_time_gmt'] = $time->toSql( false );
 						}
 					}
+					$curd->update_user_item_by_id( $user_item_id, $args );
 				}
-				break;
-			case'completed':
-				if ( ! $items ) {
-					break;
-				}
-				foreach ( $order->get_users() as $user_id ) {
-					foreach ( $items as $item ) {
-						$user_item_id = $curd->update_user_item(
-							$user_id,
-							$item['course_id'],
-							array(
-								'ref_id'    => $the_id,
-								'ref_type'  => LP_ORDER_CPT,
-								'parent_id' => 0
-							)
-						);
-						if ( $user_item_id ) {
-							$item        = $curd->get_user_item_by_id( $user_item_id );
-							$last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
-							if ( ! $last_status ) {
-								$curd->update_user_item_by_id( $user_item_id, array( 'status' => 'purchased' ) );
-							} else {
-								$curd->update_user_item_by_id( $user_item_id, array( 'status' => $last_status ) );
-							}
-						}
-					}
-				}
+			}
 		}
 	}
 

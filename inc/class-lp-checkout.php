@@ -23,7 +23,7 @@ class LP_Checkout {
 	/**
 	 * Payment method
 	 *
-	 * @var string
+	 * @var string|LP_Gateway_Abstract
 	 */
 	public $payment_method = null;
 
@@ -395,10 +395,10 @@ class LP_Checkout {
 		/**
 		 * Set default fields from request
 		 */
-		$this->payment_method  = ! empty( $_REQUEST['payment_method'] ) ? $_REQUEST['payment_method'] : '';
-		$this->user_login      = ! empty( $_POST['user_login'] ) ? $_POST['user_login'] : '';
-		$this->user_pass       = ! empty( $_POST['user_password'] ) ? $_POST['user_password'] : '';
-		$this->order_comment   = isset( $_REQUEST['order_comments'] ) ? $_REQUEST['order_comments'] : '';
+		$this->payment_method  = LP_Request::get_string( 'payment_method' );
+		$this->user_login      = LP_Request::get_string( 'user_login' );
+		$this->user_pass       = LP_Request::get_string( 'user_password' );
+		$this->order_comment   = LP_Request::get_string( 'order_comments' );
 		$this->_checkout_email = LP_Request::get_email( 'checkout-email' );
 
 		if ( $this->_checkout_email ) {
@@ -434,6 +434,8 @@ class LP_Checkout {
 	/**
 	 * Validate checkout payment.
 	 *
+	 * @throws Exception
+	 *
 	 * @return bool
 	 */
 	public function validate_payment() {
@@ -444,9 +446,10 @@ class LP_Checkout {
 			if ( ! $this->payment_method instanceof LP_Gateway_Abstract ) {
 				// Payment Method
 				$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+
 				if ( ! isset( $available_gateways[ $this->payment_method ] ) ) {
 					$this->payment_method = '';
-					learn_press_add_message( __( 'Invalid payment method.', 'learnpress' ) );
+					throw new Exception( __( 'No payment method is selected', 'learnpress' ), LP_ERROR_NO_PAYMENT_METHOD_SELECTED );
 				} else {
 					$this->payment_method = $available_gateways[ $this->payment_method ];
 				}
@@ -516,6 +519,7 @@ class LP_Checkout {
 				}
 			} else {
 
+				// maybe throw new exception
 				$this->validate_payment();
 
 				// Create order
@@ -527,7 +531,6 @@ class LP_Checkout {
 
 				// allow Third-party hook
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
-
 				if ( $this->payment_method ) {
 					// Store the order is waiting for payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;
@@ -571,25 +574,16 @@ class LP_Checkout {
 			learn_press_add_message( $has_error, 'error' );
 		}
 
-		if ( learn_press_is_ajax() ) {
-			$is_error = ! ! learn_press_message_count( 'error' );
-			// Get all messages
-			$error_messages = '';
-			if ( $is_error ) {
-				ob_start();
-				learn_press_print_messages();
-				$error_messages = ob_get_clean();
-			}
+		$is_error = ! ! learn_press_message_count( 'error' );
 
-			$result = apply_filters( 'learn-press/checkout-error',
-				array(
-					'result'   => ! $is_error ? 'success' : 'fail',
-					'messages' => $error_messages
-				)
-			);
+		$result = apply_filters( 'learn-press/checkout-error',
+			array(
+				'result'   => ! $is_error ? 'success' : 'fail',
+				'messages' => learn_press_get_messages()
+			)
+		);
 
-			learn_press_send_json( $result );
-		}
+		learn_press_maybe_send_json( $result, 'learn_press_clear_messages' );
 	}
 
 	/**
@@ -598,6 +592,7 @@ class LP_Checkout {
 	 * @return LP_Checkout
 	 */
 	public static function instance() {
+
 		if ( empty( self::$_instance ) ) {
 			self::$_instance = new LP_Checkout();
 		}

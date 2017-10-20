@@ -244,6 +244,9 @@
     })(Vue, LP.Course);
 
     $(document).ready(function () {
+        if(!$('#lp-single-course').length){
+            return;
+        }
         LP.$Course = new Vue({
             el: '#lp-single-course',
             created: function () {

@@ -181,6 +181,7 @@ class LP_Plugins_Helper {
 			}
 			catch ( Exception $ex ) {
 				$plugins = $ex->getMessage();
+				learn_press_add_message( $plugins );
 			}
 			set_transient( $transient_key, $plugins, self::$transient_timeout );
 		}
