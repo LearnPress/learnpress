@@ -215,6 +215,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
     state.statusUpdateListQuestions = {};
     state.statusUpdateQuestionItem = {};
 
+
+
     state.questions = state.questions.map(function (question) {
         var hiddenQuestions = state.hidden_questions;
         var find = hiddenQuestions.find(function (questionId) {

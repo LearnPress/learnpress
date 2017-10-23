@@ -102,7 +102,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array()
 				)
 			) );
-
 		}
 
 		/**

@@ -149,7 +149,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'lp-vue-resource',
 						'lp-vuedraggable',
 					),
-					'screens' => array( LP_QUIZ_CPT )
+					'screens' => array( LP_QUESTION_CPT, LP_QUIZ_CPT )
 				),
 				'learn-press-modal-search-items' => array(
 					'url' => $this->url( 'js/admin/modal-search-items.js' )

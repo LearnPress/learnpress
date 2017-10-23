@@ -21,6 +21,7 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	 */
 	public function load( &$question ) {
 		$the_id = $question->get_id();
+
 		if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
 			LP_Debug::throw_exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $the_id ) );
 		}

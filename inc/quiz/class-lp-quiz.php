@@ -340,13 +340,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$result = array();
 			if ( is_array( $questions ) ) {
 				foreach ( $questions as $index => $id ) {
+
 					$question = LP_Question::get_question( $id );
-
-
-					$answers = array();
-					foreach ( $question->get_answer_options() as $key => $answer ) {
-						$answers[ $key ] = array_values( $answer );
-					}
 
 					$post     = get_post( $id );
 					$result[] = array(
@@ -357,12 +352,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 							'key'   => $question->get_type(),
 							'label' => $question->get_type_label()
 						),
-						'answers'  => $question->get_answer_options(),
+						'answers'  => (array) $question->get_answer_options(),
 						'settings' => array(
 							'content'     => $post->post_content,
-							'mark'        => get_post_meta( $id, '_lp_mark', true ),
-							'explanation' => get_post_meta( $id, '_lp_explanation', true ),
-							'hint'        => get_post_meta( $id, '_lp_hint', true )
+							'mark'        => $question->get_data( 'mark' ),
+							'explanation' => $question->get_data( 'explanation' ),
+							'hint'        => $question->get_data( 'hint' ),
 						),
 						'order'    => $order[ $index ]
 					);

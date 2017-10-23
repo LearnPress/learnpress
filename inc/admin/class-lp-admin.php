@@ -44,7 +44,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -188,6 +188,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				learn_press_admin_view( 'course/editor-wrapper' );
 			} elseif ( LP_QUIZ_CPT == get_post_type() ) {
 				learn_press_admin_view( 'quiz/editor-wrapper' );
+			} elseif ( LP_QUESTION_CPT == get_post_type() ) {
+				learn_press_admin_view( 'question/editor-wrapper' );
 			}
 		}
 

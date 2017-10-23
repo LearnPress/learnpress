@@ -5,8 +5,8 @@
  * @since 3.0.0
  */
 
-learn_press_admin_view( 'quiz/answers' );
-learn_press_admin_view( 'quiz/meta' );
+learn_press_admin_view( 'question/answers' );
+learn_press_admin_view( 'question/meta' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-settings">
