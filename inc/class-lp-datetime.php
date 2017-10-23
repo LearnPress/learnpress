@@ -184,7 +184,7 @@ class LP_Datetime extends DateTime {
 	 * @return float
 	 */
 	public function getOffset( $hours = false ) {
-		return (float) $hours ? ( $this->tz->getOffset( $this ) / 3600 ) : $this->tz->getOffset( $this );
+		return $this->tz ? (float) $hours ? ( $this->tz->getOffset( $this ) / 3600 ) : $this->tz->getOffset( $this ) : 0;
 	}
 
 	/**

@@ -383,7 +383,7 @@ body {
             top: 32px;
             left: 400px;
             right: 0;
-            bottom: 0px;
+            bottom: 0;
             overflow: hidden;
             .content-item-wrap {
                 margin: 20px auto;
@@ -540,15 +540,15 @@ body {
         margin-right: 4%;
         width: 46%;
         margin-bottom: 30px;
-        .lp-course-progress-heading{
+        .lp-course-progress-heading {
             margin-bottom: 10px;
         }
-        .lp-progress-bar{
+        .lp-progress-bar {
             height: 10px;
             background: #DDD;
             border-radius: 5px;
-            .lp-progress-value{
-                height:10px;
+            .lp-progress-value {
+                height: 10px;
                 min-width: 20%;
                 background-color: #008cff;
                 border-radius: 5px;
@@ -557,6 +557,67 @@ body {
     }
     &:after {
         @include clear-fix();
+    }
+}
+
+#course-item-content-header,
+#course-item-content-footer {
+    position: fixed;
+    height: 60px;
+    right: 0;
+    padding: 15px;
+}
+
+#course-item-content-header {
+    top: 0;
+    left: 0;
+    background: #e7f7ff;
+    z-index: 100;
+    border-bottom: 1px solid #bde6fb;
+    .course-item-search {
+        input {
+            height: 30px;
+            width: 385px;
+            background: transparent;
+            border: none;
+            padding: 0;
+            box-shadow: none;
+            &:focus {
+                box-shadow: none;
+                outline: none;
+                color: #777;
+            }
+        }
+        button {
+            background: transparent;
+            border: none;
+            position: absolute;
+            left: 400px;
+            z-index: 99;
+            margin-left: -30px;
+            padding: 0;
+            height: 30px;
+            line-height: 30px;
+            font-size: 15px;
+            &:after {
+                font-family: fontawesome;
+                content: "\f002";
+                color: #777;
+            }
+        }
+    }
+}
+
+#course-item-content-footer {
+    border-top: 1px solid #DDD;
+    bottom: 0;
+    left: 400px;
+    button,
+    .lp-button {
+        height: 30px;
+        line-height: 30px;
+        padding: 0 10px;
+        font-size: 14px;
     }
 }
 

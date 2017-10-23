@@ -892,9 +892,13 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 
             }
 
+            body.course-item-popup #wpadminbar{
+                display: none;
+            }
+
             body.course-item-popup #learn-press-course-curriculum {
                 position: fixed;
-                top: 32px;
+                top: 60px;
                 bottom: 0;
                 left: 0;
                 width: 400px;
@@ -908,10 +912,10 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 position: fixed;
                 z-index: 99999;
                 background: #FFF;
-                top: 32px;
+                top: 60px;
                 left: 400px;
                 right: 0;
-                bottom: 0px;
+                bottom: 0;
                 overflow: hidden;
             }
         </style>
@@ -1355,7 +1359,6 @@ if ( ! function_exists( 'learn_press_single_course_content_item' ) ) {
 	 * Display lesson content
 	 */
 	function learn_press_single_course_content_item() {
-	    echo 'xxxx';
 		learn_press_get_template( 'single-course/content-item.php' );
 	}
 }

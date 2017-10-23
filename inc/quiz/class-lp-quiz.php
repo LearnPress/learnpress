@@ -83,7 +83,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	public function get_heading_title() {
-		global $lp_quiz_question;
+		/*global $lp_quiz_question;
 		$title = $this->get_title();
 		if ( $lp_quiz_question instanceof LP_Question ) {
 			$titles = apply_filters( 'learn-press/quiz/title-parts', array(
@@ -91,9 +91,9 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 				sprintf( '<small>%s</small>', $lp_quiz_question->get_title() )
 			) );
 			$title  = apply_filters( 'learn-press/quiz/heading-title', join( ' ', $titles ) );
-		}
+		}*/
 
-		return $title;
+		return $this->get_title();
 	}
 
 	/**

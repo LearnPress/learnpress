@@ -14,6 +14,9 @@ $user = learn_press_get_current_user();
 
 ?>
 <div id="learn-press-content-item">
+
+	<?php do_action( 'learn-press/course-item-content-header', $lp_course_item->get_id(), $lp_course->get_id() ); ?>
+
     <div class="content-item-scrollable">
         <div class="content-item-wrap">
 			<?php
@@ -56,4 +59,8 @@ $user = learn_press_get_current_user();
 
         </div>
     </div>
+
+	<?php do_action( 'learn-press/course-item-content-footer', $lp_course_item->get_id(), $lp_course->get_id() ); ?>
+
+
 </div>

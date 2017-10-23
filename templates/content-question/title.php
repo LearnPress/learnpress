@@ -17,5 +17,5 @@ if ( ! $question = LP_Global::quiz_question() ) {
 	return;
 }
 ?>
-<h4><?php echo apply_filters( 'learn-press/quiz-question-title', sprintf( __( 'Question %d', '' ), $quiz->get_question_index( $question->get_id() ) + 1 ) ); ?></h4>
-<p><?php echo $question->get_title();?></p>
+<!--<h4>--><?php //echo apply_filters( 'learn-press/quiz-question-title', sprintf( __( 'Question %d', '' ), $quiz->get_question_index( $question->get_id() ) + 1 ) ); ?><!--</h4>-->
+<h4><?php echo $question->get_title();?></h4>

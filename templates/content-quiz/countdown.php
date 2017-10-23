@@ -1,5 +1,5 @@
 <?php
 ?>
 <div class="quiz-countdown">
-	asdasdasdada
+	Countdown here
 </div>

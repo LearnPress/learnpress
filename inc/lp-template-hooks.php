@@ -249,6 +249,13 @@ add_action( 'learn-press/after-content-item-summary/lp_lesson', function () {
 	learn_press_get_template( 'content-lesson/button-complete.php' );
 } );
 
+add_action( 'learn-press/course-item-content-header', function () {
+	learn_press_get_template( 'single-course/content-item/header.php' );
+} );
+
+add_action( 'learn-press/course-item-content-footer', function () {
+	learn_press_get_template( 'single-course/content-item/footer.php' );
+} );
 
 add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
 

@@ -1,5 +1,7 @@
-;(function ($) {
+;(function ($, settings) {
     "use strict";
+
+    if (!settings) return;
 
     if (window.LP === undefined) {
         window.LP = {};
@@ -284,10 +286,10 @@
     }
 
     $(document).ready(function () {
-        LP.$checkout = new Checkout(lpCheckoutSettings);
+        LP.$checkout = new Checkout(settings);
     })
 
-})(jQuery);
+})(jQuery, ( typeof lpCheckoutSettings !== 'undefined') || false);
 //
 // ;
 // (function ($) {

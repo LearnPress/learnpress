@@ -17,4 +17,4 @@ if ( ! $title = $quiz->get_heading_title() ) {
 	return;
 }
 ?>
-<h2 class="course-item-title quiz-title"><?php echo $title; ?></h2>
+<h3 class="course-item-title quiz-title"><?php echo $title; ?></h3>
