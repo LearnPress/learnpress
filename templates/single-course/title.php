@@ -10,6 +10,8 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+global $course;
 ?>
 
 <h1 itemprop="name" class="course-title entry-title"><?php the_title(); ?></h1>

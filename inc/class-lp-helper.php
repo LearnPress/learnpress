@@ -122,4 +122,30 @@ class LP_Helper {
 
 		return $classes;
 	}
+
+	/**
+	 * Sanitize order statuses.
+	 * Add prefix lp- into each status if it is not exists.
+	 *
+	 * @param $statuses
+	 *
+	 * @return array|mixed
+	 */
+	public static function sanitize_order_status( &$statuses ) {
+		if ( is_array( $statuses ) ) {
+			foreach ( $statuses as $k => $status ) {
+				if ( false === strpos( $status, 'lp-' ) ) {
+					$statuses[ $k ] = "lp-{$status}";
+				}
+			}
+		} else {
+			$statuses = preg_split( '#\s+#', $statuses );
+			self::sanitize_order_status( $statuses );
+			if ( sizeof( $statuses ) == 1 ) {
+				$statuses = reset( $statuses );
+			}
+		}
+
+		return $statuses;
+	}
 }

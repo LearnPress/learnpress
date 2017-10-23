@@ -245,26 +245,35 @@ class LP_Emails {
 				'learn_press_course_submit_approved',
 				'learn_press_course_submit_for_reviewer',
 				'learn_press_user_enrolled_course',
+
 				// new order to admin
 				//'learn_press_order_status_pending_to_processing',
 				'learn-press/order/status-pending-to-processing',
 				//'learn_press_order_status_pending_to_completed',
+
 				'learn-press/order/status-pending-to-completed',
 				//'learn_press_order_status_pending_to_on-hold',
+
 				'learn_press_order_status_pending_to_on-hold',
 				//'learn_press_order_status_failed_to_processing',
+
 				'learn-press/order/status-failed-to-processing',
 				//'learn_press_order_status_failed_to_completed',
+
 				'learn-press/order/status-failed-to-completed',
 				//'learn_press_order_status_failed_to_on-hold',
 				'learn_press_order_status_failed_to_on-hold',
+
 				//'learn_press_order_status_completed',
 				'learn-press/order/status-completed',
+
 				// admin create new order
 				//'learn_press_order_status_draft_to_pending',
+
 				'learn-press/order/status-draft-to-pending',
 				//'learn_press_order_status_draft_to_processing',
 				'learn-press/order/status-draft-to-processing',
+
 				//'learn_press_order_status_draft_to_on-hold',
 				'learn_press_order_status_draft_to_on-hold',
 				// Create order

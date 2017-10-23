@@ -303,6 +303,53 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
+		 * @param LP_Order $order
+		 * @param array    $user_id
+		 * @param bool     $trigger_action
+		 */
+		protected function _update_child( $order, $user_id, $trigger_action = false ) {
+			$new_orders = array();
+			if ( $child_orders = $order->get_child_orders() ) {
+				foreach ( $child_orders as $child_id ) {
+					$child_order         = learn_press_get_order( $child_id );
+					$child_order_user_id = $child_order->get_user( 'id' );
+
+					if ( ! in_array( $child_order_user_id, $user_id ) ) {
+						wp_delete_post( $child_order_user_id );
+						continue;
+					}
+					$order->cln_items( $child_order->get_id() );
+					$new_orders[ $child_order_user_id ] = $child_order;
+				}
+			}
+
+			foreach ( $user_id as $uid ) {
+				if ( empty( $new_orders[ $uid ] ) ) {
+					$new_order          = $order->cln();
+					$new_orders[ $uid ] = $new_order;
+				} else {
+					$new_order = $new_orders[ $uid ];
+				}
+
+				$old_status = get_post_status( $new_order->get_id() );
+				$new_order->set_order_date( $order->get_order_date() );
+				$new_order->set_parent_id( $order->get_id() );
+				$new_order->set_user_id( $uid );
+
+				$new_order->set_status( learn_press_get_request( 'order-status' ) );
+				$new_order->save();
+				$new_status = get_post_status( $new_order->get_id() );
+
+				if ( ( $new_status === $old_status ) && $trigger_action ) {
+					$status = str_replace( 'lp-', '', $new_status );
+					do_action( 'learn-press/order/status-' . $status, $order->get_id(), $status );
+					do_action( 'learn-press/order/status-' . $status . '-to-' . $status, $order->get_id() );
+					do_action( 'learn-press/order/status-changed', $order->get_id(), $status, $status );
+				}
+			}
+		}
+
+		/**
 		 * Save order data
 		 *
 		 * @param int $post_id
@@ -315,42 +362,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
 
-
-				$user_id = learn_press_get_request( 'order-customer' );
-				$order   = learn_press_get_order( $post_id );
+				$user_id        = learn_press_get_request( 'order-customer' );
+				$order          = learn_press_get_order( $post_id );
+				$old_status     = get_post_status( $order->get_id() );
+				$trigger_action = LP_Request::get_string( 'trigger-order-action' ) == 'current-status';
 
 				if ( is_array( $user_id ) ) {
-
-					$new_orders = array();
-					if ( $child_orders = $order->get_child_orders() ) {
-						foreach ( $child_orders as $child_id ) {
-							$child_order         = learn_press_get_order( $child_id );
-							$child_order_user_id = $child_order->get_user( 'id' );
-
-							if ( ! in_array( $child_order_user_id, $user_id ) ) {
-								wp_delete_post( $child_order_user_id );
-								continue;
-							}
-							$order->cln_items( $child_order->get_id() );
-							$new_orders[ $child_order_user_id ] = $child_order;
-						}
-					}
-
-					foreach ( $user_id as $uid ) {
-						if ( empty( $new_orders[ $uid ] ) ) {
-							$new_order          = $order->cln();
-							$new_orders[ $uid ] = $new_order;
-						} else {
-							$new_order = $new_orders[ $uid ];
-						}
-
-						$new_order->set_order_date( $order->get_order_date() );
-						$new_order->set_parent_id( $order->get_id() );
-						$new_order->set_user_id( $uid );
-
-						$new_order->set_status( learn_press_get_request( 'order-status' ) );
-						$new_order->save();
-					}
+					$this->_update_child( $order, $user_id, $trigger_action );
 					$order->set_user_id( $user_id );
 
 				} else {
@@ -359,6 +377,22 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 				$order->set_status( learn_press_get_request( 'order-status' ) );
 				$order->save();
+
+				$new_status = get_post_status( $order->get_id() );
+
+				/**
+				 * If the status is not changed and force to trigger action is set
+				 * then trigger action for current status if this order is for singular
+				 * user. If the order is for multi users then it will trigger in
+				 * each child order
+				 */
+				if ( ! is_array( $user_id ) && ( $new_status === $old_status ) && $trigger_action ) {
+					$status = str_replace( 'lp-', '', $new_status );
+					do_action( 'learn-press/order/status-' . $status, $order->get_id(), $status );
+					do_action( 'learn-press/order/status-' . $status . '-to-' . $status, $order->get_id() );
+					do_action( 'learn-press/order/status-changed', $order->get_id(), $status, $status );
+				}
+
 
 //				$order_statuses = learn_press_get_order_statuses();
 //				$order_statuses = array_keys( $order_statuses );

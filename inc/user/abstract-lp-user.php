@@ -141,7 +141,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( empty( $course_data[ $this->get_id() ][ $course_id ] ) ) {
 
 			$this->_curd->read_course( $this->get_id(), $course_id );
-
 			if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
 				$course_data[ $this->get_id() ][ $course_id ] = new LP_User_Item_Course( $course_item );
 			}

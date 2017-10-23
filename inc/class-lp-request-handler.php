@@ -636,6 +636,11 @@ class LP_Request {
 		return $email;
 	}
 
+	/**
+	 * Get a batch of params from request into an array.
+	 *
+	 * @return array
+	 */
 	public static function get_list() {
 		if ( func_num_args() < 1 ) {
 			return array();
@@ -649,6 +654,13 @@ class LP_Request {
 		return $list;
 	}
 
+	/**
+	 * Get param 'redirect' in request.
+	 *
+	 * @param string $default
+	 *
+	 * @return string
+	 */
 	public static function get_redirect($default = '') {
 		if ( $redirect = self::get_string( 'redirect' ) ) {
 			$redirect = urldecode( $redirect );
@@ -662,7 +674,7 @@ class LP_Request {
 
 LP_Request::init();
 
-// Backward compatibility
+// Backward compatibility for 2.x.x
 class LP_Request_Handler extends LP_Request {
 
 }

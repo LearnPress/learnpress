@@ -676,14 +676,23 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get all orders of profile's user.
 		 *
+		 * @param mixed $args
 		 *
 		 * @since 3.x.x
 		 *
 		 * @return array
 		 */
-		public function get_user_orders() {
+		public function get_user_orders( $args = '' ) {
 
-			return $this->_curd->get_orders( $this->get_user_data( 'id' ), true );
+			$args = wp_parse_args(
+				$args,
+				array(
+					'group_by_order' => true,
+					'status'         => ''
+				)
+			);
+
+			return $this->_curd->get_orders( $this->get_user_data( 'id' ), $args );
 		}
 
 		/**
@@ -701,7 +710,22 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				'num_pages'  => 0,
 				'pagination' => ''
 			);
-			if ( $order_ids = $this->get_user_orders() ) {
+
+			$query_args = array();
+
+			if ( is_array( $args ) ) {
+				foreach ( array( 'status', 'group_by_order' ) as $k ) {
+					if ( isset( $args[ $k ] ) ) {
+						$query_args[ $k ] = $args[ $k ];
+					}
+				}
+			}
+
+			if ( empty( $query_args['status'] ) ) {
+				$query_args['status'] = 'completed processing cancelled';
+			}
+
+			if ( $order_ids = $this->get_user_orders( $query_args ) ) {
 				$default_args = array(
 					'paged' => 1,
 					'limit' => 10

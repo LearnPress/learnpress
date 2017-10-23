@@ -290,7 +290,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		// Deprecated filter
 //		$status = apply_filters( 'learn_press_order_status', $status, $this );
 //
-//		return apply_filters( 'learn-press/order-status', $status, $the_id );
+//		return apply_filters( 'learn-press/order/status', $status, $the_id );
 
 		return $this->get_status();
 	}
@@ -306,7 +306,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 
 		$status = apply_filters( 'learn_press_order_status', $status, $this );
 
-		return apply_filters( 'learn-press/order-status', $status, $this->get_id() );
+		return apply_filters( 'learn-press/order/status', $status, $this->get_id() );
 	}
 
 	/**
@@ -1113,9 +1113,9 @@ class LP_Order extends LP_Abstract_Post_Data {
 			/**
 			 * @since 3.x.x
 			 */
-			do_action( 'learn-press/order-status-' . $new_status, $the_id, $old_status );
-			do_action( 'learn-press/order-status-' . $old_status . '-to-' . $new_status, $the_id );
-			do_action( 'learn-press/order-status-changed', $the_id, $old_status, $new_status );
+			do_action( 'learn-press/order/status-' . $new_status, $the_id, $old_status );
+			do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $the_id );
+			do_action( 'learn-press/order/status-changed', $the_id, $old_status, $new_status );
 
 			return true;
 		}

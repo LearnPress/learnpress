@@ -48,7 +48,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'checkout-user-email-exists:nopriv',
 				'recover-order',
 				'request-become-a-teacher:nonce',
-				'upload-user-avatar'
+				'upload-user-avatar',
+				'checkout'
 			);
 
 			foreach ( $ajaxEvents as $action => $callback ) {
@@ -72,6 +73,10 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
 			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
+		}
+
+		public static function checkout() {
+			LP()->checkout()->process_checkout_handler();
 		}
 
 		public static function request_become_a_teacher() {
@@ -171,13 +176,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				)
 			);
 			learn_press_send_json( $response );
-		}
-
-		/**
-		 * Checkout process
-		 */
-		public static function _request_checkout() {
-			LP()->checkout()->process_checkout_handler();
 		}
 
 		/**
@@ -739,3 +737,4 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 }
 // Call class
 LP_AJAX::init();
+

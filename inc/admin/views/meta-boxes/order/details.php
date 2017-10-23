@@ -81,7 +81,7 @@ $method_title = $order->get_payment_method_title();
 				}
 				?>
             </select>
-            <label><input type="checkbox"><?php _e( 'Force to trigger order action', 'learnpress' ); ?></label>
+<!--            <label><input type="checkbox">--><?php //_e( 'Force to trigger order action', 'learnpress' ); ?><!--</label>-->
         </div>
 
         <div class="order-data-field order-data-user">
