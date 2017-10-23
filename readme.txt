@@ -193,6 +193,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.9 =
+~ Fixed user can not receive email when course is expired
+~ Fixed issue when ordering the course is free
+~ Fixed first lesson does not load
+~ Fixed course does not show in user profile
+~ Fixed Quiz does not work correctly
+~ Fixed auto enroll option
+~ Fixed issue of quiz countdown with timezone option
+
 = 2.1.8 =
 
 = 2.1.7.3 =
