@@ -892,7 +892,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 
             }
 
-            body.course-item-popup #wpadminbar{
+            body.course-item-popup #wpadminbar {
                 display: none;
             }
 

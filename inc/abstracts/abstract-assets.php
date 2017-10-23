@@ -29,7 +29,7 @@ abstract class LP_Abstract_Assets {
 		if ( is_admin() ) {
 			//add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_admin_scripts' ), $priory + 10 );
 
 		} else {
 			//add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
@@ -248,8 +248,13 @@ abstract class LP_Abstract_Assets {
 		return 'lp' . str_replace( ' ', '', $handle ) . 'Settings';
 	}
 
-	public function localize_printed_scripts() {
-		if ( ! ( $scripts_data = $this->_get_script_data() ) ) {
+	public function _get_admin_script_data() {
+		return false;
+	}
+
+	public function localize_printed_scripts( $side = '' ) {
+		$scripts_data = ( $side == 'admin' ) ? $this->_get_admin_script_data() : $this->_get_script_data();
+		if ( ! $scripts_data ) {
 			return;
 		}
 		global $wp_scripts;
@@ -264,7 +269,7 @@ abstract class LP_Abstract_Assets {
 			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
 					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
-						$data = preg_replace_callback( '~:"[0-9.,]+"~', array(
+						$data                                             = preg_replace_callback( '~:"[0-9.,]+"~', array(
 							$this,
 							'_valid_json_number'
 						), $data );
@@ -275,6 +280,10 @@ abstract class LP_Abstract_Assets {
 			$wp_scripts->print_extra_script( $handle );
 		}
 
+	}
+
+	public function localize_printed_admin_scripts() {
+		$this->localize_printed_scripts( 'admin' );
 	}
 
 	protected function _valid_json_number( $m ) {

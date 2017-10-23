@@ -64,8 +64,6 @@ class LP_Shortcode_Featured_Courses extends LP_Abstract_Shortcode {
 			)
 		);
 
-
-
 		$output = ob_get_clean();
 
 		return $output;
