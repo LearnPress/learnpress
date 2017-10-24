@@ -18,7 +18,7 @@ $course = LP_Global::course();
             <button></button>
         </form>
     </div>
-    <h2>
+    <h2 class="course-title">
         <?php echo $course->get_title();?>
     </h2>
 </div>

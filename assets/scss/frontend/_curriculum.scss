@@ -389,6 +389,14 @@ body {
                 margin: 20px auto;
                 max-width: 900px;
             }
+            .course-item-title{
+                font-size: 1.4rem;
+            }
+            .content-question-summary{
+                .question-title{
+                    font-size: 1.2rem;
+                }
+            }
         }
         #content-item-nav {
             position: fixed;
@@ -565,7 +573,6 @@ body {
     position: fixed;
     height: 60px;
     right: 0;
-    padding: 15px;
 }
 
 #course-item-content-header {
@@ -573,8 +580,13 @@ body {
     left: 0;
     background: #e7f7ff;
     z-index: 100;
-    border-bottom: 1px solid #bde6fb;
+    border-bottom: 1px solid #DDDDDD;
+    padding: 0;
     .course-item-search {
+        float: left;
+        width: 400px;
+        padding: 15px;
+        box-sizing: border-box;
         input {
             height: 30px;
             width: 385px;
@@ -582,6 +594,7 @@ body {
             border: none;
             padding: 0;
             box-shadow: none;
+            float: left;
             &:focus {
                 box-shadow: none;
                 outline: none;
@@ -605,6 +618,14 @@ body {
                 color: #777;
             }
         }
+    }
+    .course-title{
+        font-size: 1.4rem;
+        float: left;
+        clear: none;
+        height: 60px;
+        line-height: 60px;
+        padding: 0 15px;
     }
 }
 

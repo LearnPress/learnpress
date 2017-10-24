@@ -18,4 +18,4 @@ if ( ! $question = LP_Global::quiz_question() ) {
 }
 ?>
 <!--<h4>--><?php //echo apply_filters( 'learn-press/quiz-question-title', sprintf( __( 'Question %d', '' ), $quiz->get_question_index( $question->get_id() ) + 1 ) ); ?><!--</h4>-->
-<h4><?php echo $question->get_title();?></h4>
+<h4 class="question-title"><?php echo $question->get_title();?></h4>

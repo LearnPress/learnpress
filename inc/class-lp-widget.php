@@ -146,11 +146,11 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			$this->instance = $this->sanitize_instance( $instance );
 
 			if ( ! apply_filters( 'learn_press_widget_display_content', true, $this ) ) {
-				return;
+				//return;
 			}
 
 			if ( ! apply_filters( 'learn_press_widget_display_content-' . $this->id_base, true, $this ) ) {
-				return;
+				//return;
 			}
 			$this->before_widget();
 			$this->show();
