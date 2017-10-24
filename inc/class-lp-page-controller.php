@@ -257,13 +257,16 @@ class LP_Page_Controller {
 				$has_filter = true;
 				remove_filter( 'the_content', 'wpautop' );
 			}
+			$content = wpautop($content);
 			$content = do_shortcode( $content );
 			if ( $has_filter ) {
 				has_filter( 'the_content', 'wpautop' );
 			}
-			//if ( empty( $wp_query->post->ID ) ) {
-			$wp_query->post->ID = 0;
-			//}
+
+			if ( empty( $wp_query->post->ID ) ) {
+				$wp_query->post->ID = 0;
+			}
+
 			$wp_query->post->filter = 'raw';
 			if ( learn_press_is_course_category() ) {
 				$wp_query->post->post_title = single_term_title( '', false );//__( 'Course Category', 'learnpress' );
@@ -271,33 +274,36 @@ class LP_Page_Controller {
 
 			$wp_query->post->post_content   = $content;
 			$wp_query->posts                = array( $wp_query->post );
-			$wp_query->found_posts          = 1;
-			$wp_query->is_single            = false;
-			$wp_query->is_preview           = false;
-			$wp_query->is_page              = false;
-			$wp_query->is_archive           = false;
-			$wp_query->is_date              = false;
-			$wp_query->is_year              = false;
-			$wp_query->is_month             = false;
-			$wp_query->is_day               = false;
-			$wp_query->is_time              = false;
-			$wp_query->is_author            = false;
-			$wp_query->is_category          = false;
-			$wp_query->is_tag               = false;
-			$wp_query->is_tax               = false;
-			$wp_query->is_search            = false;
-			$wp_query->is_feed              = false;
-			$wp_query->is_comment_feed      = false;
-			$wp_query->is_trackback         = false;
-			$wp_query->is_home              = false;
-			$wp_query->is_404               = false;
-			$wp_query->is_comments_popup    = false;
-			$wp_query->is_paged             = false;
-			$wp_query->is_admin             = false;
-			$wp_query->is_attachment        = false;
-			$wp_query->is_singular          = false;
-			$wp_query->is_posts_page        = false;
-			$wp_query->is_post_type_archive = false;
+			if( is_post_type_archive( LP_COURSE_CPT ) ) {
+				$wp_query->is_page = true;
+			} else {
+				$wp_query->found_posts          = 1;
+				$wp_query->is_single            = true;
+				$wp_query->is_preview           = false;
+				$wp_query->is_archive           = false;
+				$wp_query->is_date              = false;
+				$wp_query->is_year              = false;
+				$wp_query->is_month             = false;
+				$wp_query->is_day               = false;
+				$wp_query->is_time              = false;
+				$wp_query->is_author            = false;
+				$wp_query->is_category          = false;
+				$wp_query->is_tag               = false;
+				$wp_query->is_tax               = false;
+				$wp_query->is_search            = false;
+				$wp_query->is_feed              = false;
+				$wp_query->is_comment_feed      = false;
+				$wp_query->is_trackback         = false;
+				$wp_query->is_home              = false;
+				$wp_query->is_404               = false;
+				$wp_query->is_comments_popup    = false;
+				$wp_query->is_paged             = false;
+				$wp_query->is_admin             = false;
+				$wp_query->is_attachment        = false;
+				$wp_query->is_singular          = false;
+				$wp_query->is_posts_page        = false;
+				$wp_query->is_post_type_archive = false;
+			}
 
 		}
 

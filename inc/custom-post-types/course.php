@@ -936,15 +936,28 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		private function _reset_sections() {
 			global $wpdb, $post;
-
+			if(!is_user_logged_in()){
+				return;
+			}
+			# add reset to log
+			if( learn_press_debug_enable() ) {
+				$current_user 	= learn_press_get_current_user();
+				$time 			= current_time('mysql');
+				$request 		= print_r($_REQUEST, true);
+				$new_log 		= "\nUser:{$current_user->user->user_login}\nTime:{$time}\nRequest:{$request}\n - - - - - - - - - - - - - - \n";
+				$log = get_post_meta($post->ID, 'learn-press-reset-sections', true);
+				$log = $new_log.$log;
+				update_post_meta( $post->ID, 'learn-press-reset-sections', $log );
+			}
+			# end add log
 			$wpdb->query(
 				$wpdb->prepare( "
-					DELETE FROM si
-					USING {$wpdb->learnpress_section_items} si
-					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
-					INNER JOIN {$wpdb->posts} p ON p.ID = s.section_course_id
-					WHERE p.ID = %d
-				", $post->ID )
+					DELETE FROM si 
+					USING {$wpdb->learnpress_section_items} si 
+					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id 
+					INNER JOIN {$wpdb->posts} p ON p.ID = s.section_course_id 
+					WHERE p.ID = %d 
+				", $post->ID ) 
 			);
 			$wpdb->query( "
 				ALTER TABLE {$wpdb->learnpress_section_items} AUTO_INCREMENT = 1

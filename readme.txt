@@ -1,11 +1,10 @@
-
-=== LearnPress - WordPress LMS Plugin ===
+=== LearnPress - WordPress LMS Plugin ===  
 Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
-Donate link:
-Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
+Donate link:  
+Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 2.1.8.1
+Stable tag: 2.1.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +38,7 @@ Take a look at Premium **[Education WordPress Theme](http://themeforest.net/item
 [youtube https://www.youtube.com/watch?v=zTtZ_CpWDOY&hd=1&&cc_load_policy=1]
 
 Are you looking for *best LMS WordPress plugin*?
+
 
 ###LearnPress features###
 
@@ -196,7 +196,16 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 2.1.9.1 =
++ Update language
+
 = 2.1.9 =
+~ Fixed lesons lost when press preview button in edit course page.
+~ Fixed the "Buy this course" button display after course is "finished"
+~ Fixed Courses and Instructor Tab from Profile page not shows courses
+~ Fixed Profile does not show courses created by himself
+~ Fixed Notify email not send when cousre auto finished
 ~ Fixed user can not receive email when course is expired
 ~ Fixed issue when ordering the course is free
 ~ Fixed first lesson does not load
@@ -446,7 +455,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Added option to show name of user in profile
 + Added duplicate a question inside quiz
 + Added preview mode of course for instructor or admin
-+ Added memorize question type is the most used
++ Added memorize question type is the most used 
 + Added new tab to edit user information in profile page
 + Improved admin course editor
 + Removed "Cart" outside LearnPress core and separated to addon
@@ -542,6 +551,6 @@ https://www.transifex.com/projects/p/learnpress/
 = 0.9.19 =
 In this version, we have changed a little bit about LearnPress Plugin directory structure and moved all add-ons to become independence plugins. If you face any problems relate to add-ons, please completely remove old version and re-install LearnPress. It does not affect your current data. Thank you.
 
-== Other note ==
-<a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
+== Other note ==  
+<a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  
 <a href="https://github.com/LearnPress/LearnPress/" target="_blank">LearnPress github repo.</a>
