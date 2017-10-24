@@ -18,3 +18,7 @@ node_modules/
 /languages/learnpress-vi.mo
 /languages/learnpress-vi.po
 test list.txt
+/.buildpath
+/.project
+/.gitignore
+/.settings/
