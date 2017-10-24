@@ -154,6 +154,8 @@ class LP_Query {
 		add_rewrite_tag( '%view%', '([^/]*)' );
 		add_rewrite_tag( '%view_id%', '(.*)' );
 		add_rewrite_tag( '%section%', '(.*)' );
+
+		add_rewrite_tag( '%popup%', '(.*)' );
 		do_action( 'learn_press_add_rewrite_tags' );
 	}
 
@@ -199,6 +201,18 @@ class LP_Query {
 				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
 				'top'
 			);
+
+			/* Test */
+			add_rewrite_rule(
+				'^popup/' . $slug . '(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
+				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_lesson',
+				'top'
+			);
+			add_rewrite_rule(
+				'^popup/' . $slug . '(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
+				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
+				'top'
+			);
 		} else {
 
 			add_rewrite_rule(
@@ -208,6 +222,18 @@ class LP_Query {
 			);
 			add_rewrite_rule(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
+				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
+				'top'
+			);
+
+			/* Test */
+			add_rewrite_rule(
+				'^popup/' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
+				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
+				'top'
+			);
+			add_rewrite_rule(
+				'^popup/' . $slug . '/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
 				'top'
 			);
