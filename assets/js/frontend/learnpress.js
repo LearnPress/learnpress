@@ -64,4 +64,9 @@
 	}, LP);
 
 
+	// add translatex for jquery alert
+	$.alerts.okButton 		= jalerts_text.okButton;
+	$.alerts.cancelButton 	= jalerts_text.cancelButton;
+
+
 })(jQuery);

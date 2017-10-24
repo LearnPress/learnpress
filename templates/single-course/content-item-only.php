@@ -53,7 +53,8 @@ $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
                 LP.sendMessage(LP.Hook.applyFilters('learn_press_content_item_send_data', data, windowTarget), windowTarget);
                 $('a:not(.js-action)').click(function () {
                     var link = $(this).attr('href');
-                    if (link) {
+                    var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+                    if (re.test(link)) { 
                         windowTarget.open(link, "_blank");
                         return false;
                     }

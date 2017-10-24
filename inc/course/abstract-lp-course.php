@@ -1194,14 +1194,18 @@ abstract class LP_Abstract_Course {
 		$total_point    = 0;
 		$quizzes_ids    = array();
 		foreach ( $quizzes as $quiz ) {
-			if ( ! $this->enable_evaluate_item( $quiz->ID, $user_id ) ) {
-				continue;
-			}
-			$quizzes_ids[]        = $quiz->ID;
+// 			if ( ! $this->enable_evaluate_item( $quiz->ID, $user_id ) ) {
+// 				continue;
+// 			}
+			$quizzes_ids[]  = $quiz->ID;
+			$quiz_obj 		= learn_press_get_quiz($quiz->ID);
+			$quiz_mark 		= $quiz_obj->post->mark?$quiz_obj->post->mark:0;
+			$total_point 	+= $quiz_mark;
+
 			$results[ $quiz->ID ] = $user->get_quiz_results( $quiz->ID, $this->id, true );
-			if ( $quiz = wp_cache_get( $quiz->ID, 'posts' ) ) {
-				$total_point += isset( $quiz->mark ) ? absint( $quiz->mark ) : 0;
-			}
+// 			if ( $quiz = wp_cache_get( $quiz->ID, 'posts' ) ) {
+// 				$total_point += isset( $quiz->mark ) ? absint( $quiz->mark ) : 0;
+// 			}
 			$achieved_point += is_object( $results[ $quiz->ID ] ) ? $results[ $quiz->ID ]->mark : 0;
 		}
 		if ( $total_point > 0 ) {
