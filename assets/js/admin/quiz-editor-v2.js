@@ -215,6 +215,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
     state.statusUpdateListQuestions = {};
     state.statusUpdateQuestionItem = {};
 
+
+
     state.questions = state.questions.map(function (question) {
         var hiddenQuestions = state.hidden_questions;
         var find = hiddenQuestions.find(function (questionId) {
@@ -482,8 +484,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
                     if (result.success) {
                         var question = result.data;
-                        console.log(question);
                         context.commit('CHANGE_QUESTION_TYPE', question);
+                        context.commit('OPEN_QUESTION', question);
                     }
                 })
                 .catch(function () {
@@ -811,7 +813,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
         next(function (response) {
             var body = response.body,
-                result = response.success || false;
+                result = body.success || false;
 
             if (result) {
                 $store.dispatch('requestComplete', 'success');

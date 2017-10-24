@@ -21,6 +21,7 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	 */
 	public function load( &$question ) {
 		$the_id = $question->get_id();
+
 		if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
 			LP_Debug::throw_exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $the_id ) );
 		}
@@ -327,6 +328,27 @@ class LP_Question_CURD implements LP_Interface_CURD {
 			$wpdb->learnpress_question_answers,
 			array( 'question_answer_id' => $answer_id )
 		);
+
+		return $result;
+	}
+
+	/**
+	 * Delete all question answers.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $question_id
+	 *
+	 * @return bool|false|int
+	 */
+	public function delete_question_answers( $question_id ) {
+		if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$result = $wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
 
 		return $result;
 	}

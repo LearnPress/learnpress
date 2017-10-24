@@ -5,7 +5,7 @@
  * @since 3.0.0
  */
 
-learn_press_admin_view( 'quiz/answer-item' );
+learn_press_admin_view( 'question/answer-item' );
 
 ?>
 
@@ -27,8 +27,7 @@ learn_press_admin_view( 'quiz/answer-item' );
                                              :question="question" :answer="answer" :index="index"
                                              :isTrueOrFalse="isTrueOrFalse" :isSingleChoice="isSingleChoice"
                                              :disableDeleteAnswer="disableDeleteAnswer"
-                                             @changeCorrect="changeCorrect"
-                    ></lp-question-answer-item>
+                                             @changeCorrect="changeCorrect"></lp-question-answer-item>
                 </draggable>
             </table>
         </div>
@@ -75,6 +74,7 @@ learn_press_admin_view( 'quiz/answer-item' );
                 },
                 sortQuestionAnswers: function () {
                     var orders = [];
+
                     this.question.answers.forEach(function (option, index) {
                         orders.push(parseInt(option.question_answer_id));
                     });

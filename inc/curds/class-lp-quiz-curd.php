@@ -30,7 +30,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 */
 	public function load( &$quiz ) {
 		$the_id = $quiz->get_id();
-		if ( ! $the_id || LP_QUIZ_CPT !== get_post_type( $the_id ) ) {
+		if ( ! $the_id || ! in_array( get_post_type( $the_id ), array( LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
 			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 		}
 		$quiz->set_data_via_methods(

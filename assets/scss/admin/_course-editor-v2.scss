@@ -287,18 +287,13 @@
         }
 
         .section-item {
-            border: 1px dashed #ddd;
             position: relative;
             margin: 0;
             border-bottom-width: 0;
             transition: background 200ms ease-out;
 
             &:nth-child(2n+1) {
-                background-color: #fbfbfb;
-            }
-
-            &:hover {
-                background-color: #f5f5f5;
+                background-color: #f4fcff;
             }
 
             &.sortable-ghost {
@@ -468,10 +463,10 @@
             }
 
             input {
-                font-size: 1em;
+                font-size: 14px;
                 border: none;
                 width: 100%;
-                padding: 10px 10px 10px 0;
+                padding: 8px 10px;
             }
         }
     }

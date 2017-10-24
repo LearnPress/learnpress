@@ -13,7 +13,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 <script type="text/x-template" id="tmpl-lp-quiz-editor">
     <div id="quiz-editor-v2" class="learn-press-box-data" :class="{'need-reload': !heartbeat}">
         <div class="lp-box-data-head heading">
-            <h3><?php echo __( 'Questions', 'learnpress' ); ?></h3>
+            <h3><?php echo __( 'Questions', 'learnpress' ); ?><span class="status" :class="status"></span></h3>
             <span class="collapse-list-questions dashicons " @click="toggle"
                   :class="isOpen ? 'dashicons-arrow-down' : 'dashicons-arrow-up'"></span>
         </div>
@@ -90,6 +90,9 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 heartbeat: function () {
                     return $store.getters['heartbeat'];
                 },
+                status: function () {
+                    return $store.getters.status;
+                },
                 isOpen: function () {
                     return $store.getters['lqs/isHiddenListQuestions'];
                 },
@@ -101,6 +104,9 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 },
                 questionTypes: function () {
                     return $store.getters['questionTypes'];
+                },
+                listQuestion: function () {
+                    return $store.getters['lqs/listQuestions'];
                 }
             },
             methods: {

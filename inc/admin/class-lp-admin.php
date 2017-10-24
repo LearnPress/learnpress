@@ -30,8 +30,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
-			add_action( 'edit_form_after_editor', array( $this, 'wrapper_start' ), - 1000 );
-			add_action( 'edit_form_after_editor', array( $this, 'wrapper_end' ), 1000 );
+			add_action( 'edit_form_after_editor', array( $this, 'wrapper_editor' ), - 1000 );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 
@@ -45,7 +44,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -184,20 +183,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			<?php
 		}
 
-		public function wrapper_start() {
+		public function wrapper_editor() {
 			if ( LP_COURSE_CPT == get_post_type() ) {
 				learn_press_admin_view( 'course/editor-wrapper' );
 			} elseif ( LP_QUIZ_CPT == get_post_type() ) {
 				learn_press_admin_view( 'quiz/editor-wrapper' );
+			} elseif ( LP_QUESTION_CPT == get_post_type() ) {
+				learn_press_admin_view( 'question/editor-wrapper' );
 			}
-
-			echo '<!-- BEGIN Admin Editor -->' . "\n";
-			echo '<div id="course-editor" class="" ng-app="courseEditor" ng-controller="courseEditor">' . "\n";
-		}
-
-		public function wrapper_end() {
-			echo '</div>' . "\n";
-			echo '<!-- END Admin Editor -->' . "\n";
 		}
 
 		public function notice_required_permalink() {

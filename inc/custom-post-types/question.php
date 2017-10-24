@@ -1,17 +1,32 @@
 <?php
-// hotfix
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Class LP_Question_Post_Type
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 3.0.0
+ */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
 
 if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
-	// class LP_Question_Post_Type
+
+	/**
+	 * Class LP_Question_Post_Type
+	 */
 	class LP_Question_Post_Type extends LP_Abstract_Post_Type {
 		/**
 		 * @var null
 		 */
 		protected static $_instance = null;
 
+		/**
+		 * @var array
+		 */
 		public static $metaboxes = array();
 
 		/**
@@ -22,57 +37,118 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type, $args = '' ) {
 			add_action( 'admin_head', array( $this, 'init' ) );
-			add_action( 'init', array( $this, 'init_question' ) );
-			add_action( 'edit_form_after_editor', array( $this, 'question_editor' ), 0 );
+
+			add_action( 'edit_form_after_editor', array( $this, 'template_question_editor' ) );
+			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
+
+			$this->add_map_method( 'before_delete', 'delete_question_answers' );
 
 			parent::__construct( $post_type, $args );
 
 		}
 
-		public function question_editor() {
-			global $post;
+
+		/**
+		 * Template quiz editor v2.
+		 *
+		 * @since 3.0.0
+		 */
+		public function template_question_editor() {
 			if ( LP_QUESTION_CPT !== get_post_type() ) {
 				return;
 			}
-			learn_press_admin_view( 'meta-boxes/html-admin-question' );
+			learn_press_admin_view( 'question/editor' );
 		}
 
-		public function init_question() {
-			if ( ! empty( $_REQUEST['post'] ) && get_post_type( $_REQUEST['post'] ) == LP_QUESTION_CPT ) {
-				$q = _learn_press_setup_question( array( $_REQUEST['post'] ) );
+		/**
+		 * Load data for question editor.
+		 *
+		 * @since 3.0.0
+		 */
+		public function data_question_editor() {
+
+
+			if ( LP_QUESTION_CPT !== get_post_type() ) {
+				return;
 			}
+
+			global $post;
+			$quiz     = LP_Quiz::get_quiz( 1550 );
+			$question = LP_Question::get_question( $post->ID );
+
+			wp_localize_script( 'quiz-editor-v2', 'lp_quiz_editor', array(
+				'root'          => array(
+					'quiz_id' => $post->ID,
+					'ajax'    => admin_url( '' ),
+					'action'  => 'update_list_quiz_questions',
+					'nonce'   => wp_create_nonce( 'learnpress_update_list_quiz_questions' ),
+					'types'   => LP_Question_Factory::get_types()
+				),
+				'chooseItems'   => array(
+					'open'       => false,
+					'addedItems' => array(),
+					'items'      => array()
+				),
+				'i18n'          => array(
+					'option'         => __( 'Option', 'learnpress' ),
+					'unique'         => learn_press_uniqid(),
+					'back'           => __( 'Back', 'learnpress' ),
+					'selected_items' => __( 'Selected items', 'learnpress' ),
+				),
+				'listQuestions' => array(
+					'questions'        => array(
+						array(
+							'id'       => $post->ID,
+							'open'     => false,
+							'title'    => get_the_title( $post->ID ),
+							'type'     => array(
+								'key'   => $question->get_type(),
+								'label' => $question->get_type_label()
+							),
+							'answers'  => (array) $question->get_answer_options(),
+							'settings' => array(
+								'content'     => $post->post_content,
+								'mark'        => $question->get_data( 'mark' ),
+								'explanation' => $question->get_data( 'explanation' ),
+								'hint'        => $question->get_data( 'hint' )
+							)
+						)
+					),
+					'hidden_questions' => array()
+				)
+			) );
+
 		}
 
+		/**
+		 * Delete all question answers when delete question.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 *
+		 * @return bool|false|int
+		 */
+		public function delete_question_answers( $question_id ) {
+			$question_curd = new LP_Question_CURD();
+			$result        = $question_curd->delete_question_answers( $question_id );
+
+			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
+
+			return $result;
+		}
+
+		/**
+		 * Init question.
+		 *
+		 * @since 3.0.0
+		 */
 		public function init() {
 			global $pagenow, $post_type;
 			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
 			if ( ! is_array( $hidden ) && empty( $hidden ) ) {
 				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
 			}
-		}
-
-		/**
-		 * Delete all answers assign to question being deleted
-		 *
-		 * @param $post_id
-		 */
-		public function delete_question_answers( $post_id ) {
-			global $wpdb;
-			$query = $wpdb->prepare( "
-				DELETE FROM {$wpdb->prefix}learnpress_question_answers
-				WHERE question_id = %d
-			", $post_id );
-			$wpdb->query( $query );
-			learn_press_reset_auto_increment( 'learnpress_question_answers' );
-
-			// also, delete question from quiz
-			$wpdb->query(
-				$wpdb->prepare( "
-					DELETE FROM {$wpdb->prefix}learnpress_quiz_questions
-					WHERE question_id = %d
-				", $post_id )
-			);
-			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
 		}
 
 		/**
@@ -132,11 +208,19 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			);
 		}
 
+		/**
+		 * Add question meta box settings.
+		 */
 		public function add_meta_boxes() {
 			self::$metaboxes['general_settings'] = new RW_Meta_Box( self::settings_meta_box() );
 			parent::add_meta_boxes();
 		}
 
+		/**
+		 * Register question meta box settings.
+		 *
+		 * @return mixed
+		 */
 		public static function settings_meta_box() {
 			$prefix   = '_lp_';
 			$meta_box = array(
@@ -174,64 +258,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 
 		/**
-		 * Enqueue scripts
-		 */
-		public function admin_scripts() {
-			if ( ! in_array( get_post_type(), array( LP_QUESTION_CPT ) ) ) {
-				return;
-			}
-			ob_start();
-			?>
-            <script>
-                var form = $('#post');
-                form.submit(function (evt) {
-                    var $title = $('#title'),
-                        is_error = false;
-                    if (0 == $title.val().length) {
-                        alert('<?php _e( 'Please enter the title of the question.', 'learnpress' );?>');
-                        $title.focus();
-                        is_error = true;
-                    } else if ($('.lpr-question-types').length && ( 0 == $('.lpr-question-types').val().length )) {
-                        alert('<?php _e( 'Please enter question type.', 'learnpress' );?>');
-                        $('.lpr-question-types').focus();
-                        is_error = true;
-                    }
-                    if (is_error) {
-                        evt.preventDefault();
-                        return false;
-                    }
-                });
-            </script>
-			<?php
-			$script = ob_get_clean();
-			$script = preg_replace( '!</?script>!', '', $script );
-			learn_press_enqueue_script( $script );
-			ob_start();
-			?>
-            <script type="text/html" id="tmpl-form-quick-add-question">
-                <div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
-                    <input type="text">
-                    <select class="lpr-question-types lpr-select2" name="lpr_question[type]"
-                            id="lpr-quiz-question-type">
-						<?php if ( $questions = learn_press_question_types() ): ?>
-							<?php foreach ( $questions as $type => $name ): ?>
-                                <option value="<?php echo $type; ?>"><?php echo $name; ?></option>
-							<?php endforeach; ?>
-						<?php endif; ?>
-                    </select>
-                    <button class="button" data-action="add"
-                            type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
-                    <button data-action="cancel" class="button"
-                            type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
-                    <span class="lpr-ajaxload">...</span>
-                </div>
-            </script>
-			<?php
-			$js_template = ob_get_clean();
-			learn_press_enqueue_script( $js_template, true );
-		}
-
-		/**
 		 * Add columns to admin manage question page
 		 *
 		 * @param  array $columns
@@ -241,12 +267,12 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				'author'    => __( 'Author', 'learnpress' ),
-				LP_QUIZ_CPT => __( 'Quiz', 'learnpress' ),
-				'type'      => __( 'Type', 'learnpress' )
+				'author'  => __( 'Author', 'learnpress' ),
+				'lp_quiz' => __( 'Quiz', 'learnpress' ),
+				'type'    => __( 'Type', 'learnpress' )
 			);
 
-			if ( false !== $pos && ! array_key_exists( LP_QUIZ_CPT, $columns ) ) {
+			if ( false !== $pos && ! array_key_exists( 'lp_quiz', $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					$new_columns,
@@ -270,7 +296,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			switch ( $name ) {
-				case LP_QUIZ_CPT:
+				case 'lp_quiz':
 					$quizzes = learn_press_get_question_quizzes( $post_id );
 					if ( $quizzes ) {
 						foreach ( $quizzes as $quiz ) {
@@ -299,6 +325,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 
 		/**
+		 * Posts_join_paged.
+		 *
 		 * @param $join
 		 *
 		 * @return string
@@ -361,12 +389,15 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['author']      = 'author';
-			$columns[ LP_QUIZ_CPT ] = 'quiz-name';
+			$columns['author']  = 'author';
+			$columns['lp_quiz'] = 'quiz-name';
 
 			return $columns;
 		}
 
+		/**
+		 * @return bool
+		 */
 		private function _is_archive() {
 			global $pagenow, $post_type;
 			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_QUESTION_CPT != $post_type ) ) {
@@ -376,14 +407,23 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			return true;
 		}
 
+		/**
+		 * @return bool|int
+		 */
 		private function _filter_quiz() {
 			return ! empty( $_REQUEST['filter_quiz'] ) ? absint( $_REQUEST['filter_quiz'] ) : false;
 		}
 
+		/**
+		 * @return string
+		 */
 		private function _get_orderby() {
 			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
 
+		/**
+		 * @return LP_Question_Post_Type|null
+		 */
 		public static function instance() {
 			if ( ! self::$_instance ) {
 				$args            = array(
@@ -397,6 +437,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			return self::$_instance;
 		}
-	} // end LP_Question_Post_Type
+	}
+
 	$question_post_type = LP_Question_Post_Type::instance();
 }
