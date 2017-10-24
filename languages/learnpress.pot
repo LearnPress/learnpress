@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Package Name\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-24 08:39+0700\n"
+"POT-Creation-Date: 2017-10-24 14:33+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,11 +152,23 @@ msgstr ""
 msgid "You have started this quiz"
 msgstr ""
 
-#: inc/class-lp-assets.php:800
+#: inc/class-lp-assets.php:218 inc/class-lp-install.php:90
+#: inc/lp-core-functions.php:2019 inc/admin/class-lp-admin.php:180
+msgid "Ok"
+msgstr ""
+
+#: inc/class-lp-assets.php:219 inc/class-lp-install.php:90
+#: inc/lp-core-functions.php:2020 inc/admin/class-lp-admin-ajax.php:884
+#: inc/admin/class-lp-admin.php:181 inc/custom-post-types/course.php:719
+#: templates/profile/tabs/orders.php:40
+msgid "Cancel"
+msgstr ""
+
+#: inc/class-lp-assets.php:807
 msgid "Password and confirmation password do not match"
 msgstr ""
 
-#: inc/class-lp-assets.php:801
+#: inc/class-lp-assets.php:808
 msgid "This field is required"
 msgstr ""
 
@@ -245,17 +257,6 @@ msgstr ""
 
 #: inc/class-lp-install.php:90
 msgid "Do not ask again."
-msgstr ""
-
-#: inc/class-lp-install.php:90 inc/lp-core-functions.php:2019
-#: inc/admin/class-lp-admin.php:180
-msgid "Ok"
-msgstr ""
-
-#: inc/class-lp-install.php:90 inc/lp-core-functions.php:2020
-#: inc/admin/class-lp-admin-ajax.php:884 inc/admin/class-lp-admin.php:181
-#: inc/custom-post-types/course.php:719 templates/profile/tabs/orders.php:40
-msgid "Cancel"
 msgstr ""
 
 #: inc/class-lp-install.php:91
@@ -634,7 +635,7 @@ msgstr ""
 msgid "Courses"
 msgstr ""
 
-#: inc/lp-core-functions.php:874 inc/custom-post-types/course.php:1320
+#: inc/lp-core-functions.php:874 inc/custom-post-types/course.php:1333
 msgid "Categories"
 msgstr ""
 
@@ -1365,7 +1366,7 @@ msgstr ""
 #: inc/admin/views/statistics/orders.php:8
 #: inc/admin/views/statistics/users.php:8
 #: inc/admin/views/statistics/users.php:44
-#: inc/custom-post-types/course.php:1309 inc/custom-post-types/course.php:1316
+#: inc/custom-post-types/course.php:1322 inc/custom-post-types/course.php:1329
 msgid "Students"
 msgstr ""
 
@@ -1392,7 +1393,7 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:774 inc/admin/lp-admin-functions.php:2376
 #: inc/admin/views/statistics/courses.php:46
 #: inc/admin/views/statistics/general.php:60
-#: inc/course/abstract-lp-course.php:515 inc/custom-post-types/course.php:1377
+#: inc/course/abstract-lp-course.php:515 inc/custom-post-types/course.php:1390
 #: inc/order/lp-order-functions.php:560
 msgid "Free"
 msgstr ""
@@ -2196,7 +2197,7 @@ msgid "Title"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/editor.php:62
-#: inc/custom-post-types/course.php:1308 inc/custom-post-types/course.php:1315
+#: inc/custom-post-types/course.php:1321 inc/custom-post-types/course.php:1328
 msgid "Content"
 msgstr ""
 
@@ -3322,7 +3323,7 @@ msgstr ""
 msgid "%d%% completed"
 msgstr ""
 
-#: inc/course/abstract-lp-course.php:1539
+#: inc/course/abstract-lp-course.php:1543
 #, php-format
 msgid "This course will end within %s next"
 msgstr ""
@@ -3812,8 +3813,8 @@ msgstr ""
 msgid "This course is free."
 msgstr ""
 
-#: inc/custom-post-types/course.php:689 inc/custom-post-types/course.php:1310
-#: inc/custom-post-types/course.php:1317 templates/cart/form.php:30
+#: inc/custom-post-types/course.php:689 inc/custom-post-types/course.php:1323
+#: inc/custom-post-types/course.php:1330 templates/cart/form.php:30
 #: templates/emails/order-items-table.php:21
 msgid "Price"
 msgstr ""
@@ -3866,8 +3867,8 @@ msgstr ""
 msgid "Author Settings"
 msgstr ""
 
-#: inc/custom-post-types/course.php:796 inc/custom-post-types/course.php:1307
-#: inc/custom-post-types/course.php:1314 inc/custom-post-types/lesson.php:204
+#: inc/custom-post-types/course.php:796 inc/custom-post-types/course.php:1320
+#: inc/custom-post-types/course.php:1327 inc/custom-post-types/lesson.php:204
 #: inc/custom-post-types/question.php:243 inc/custom-post-types/quiz.php:324
 msgid "Author"
 msgstr ""
@@ -3876,28 +3877,28 @@ msgstr ""
 msgid "Review Logs"
 msgstr ""
 
-#: inc/custom-post-types/course.php:970
+#: inc/custom-post-types/course.php:983
 msgid "Course Curriculum only appear if course is saved"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1139
+#: inc/custom-post-types/course.php:1152
 msgid "Course has approved by Reviewer"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1144
+#: inc/custom-post-types/course.php:1157
 msgid "Course has rejected by Reviewer"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1149
+#: inc/custom-post-types/course.php:1162
 #, php-format
 msgid "Course has submitted by %s"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1154
+#: inc/custom-post-types/course.php:1167
 msgid "Course has updated by Reviewer"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1352
+#: inc/custom-post-types/course.php:1365
 #, php-format
 msgctxt "learnpress"
 msgid "%d section"
@@ -3905,7 +3906,7 @@ msgid_plural "%d sections"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/custom-post-types/course.php:1355
+#: inc/custom-post-types/course.php:1368
 #, php-format
 msgctxt "learnpress"
 msgid "%d lesson"
@@ -3913,11 +3914,11 @@ msgid_plural "%d lessons"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/custom-post-types/course.php:1357
+#: inc/custom-post-types/course.php:1370
 msgid "0 lesson"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1361
+#: inc/custom-post-types/course.php:1374
 #, php-format
 msgctxt "learnpress"
 msgid "%d quiz"
@@ -3925,55 +3926,55 @@ msgid_plural "%d quizzes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/custom-post-types/course.php:1363
+#: inc/custom-post-types/course.php:1376
 msgid "0 quiz"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1368
+#: inc/custom-post-types/course.php:1381
 msgid "No content"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1531
+#: inc/custom-post-types/course.php:1544
 msgid "Course Video"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1536
+#: inc/custom-post-types/course.php:1549
 msgid "Video ID"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1539
+#: inc/custom-post-types/course.php:1552
 msgid "The id of Youtube or Vimeo video"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1543
+#: inc/custom-post-types/course.php:1556
 msgid "Video Type"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1546
+#: inc/custom-post-types/course.php:1559
 msgid "Chose video type"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1549
+#: inc/custom-post-types/course.php:1562
 msgid "Youtube"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1550
+#: inc/custom-post-types/course.php:1563
 msgid "Vimeo"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1554
+#: inc/custom-post-types/course.php:1567
 msgid "Embed width"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1557
+#: inc/custom-post-types/course.php:1570
 msgid "Set width of embed"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1561
+#: inc/custom-post-types/course.php:1574
 msgid "Embed height"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1564
+#: inc/custom-post-types/course.php:1577
 msgid "Set height of embed"
 msgstr ""
 
