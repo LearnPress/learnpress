@@ -32,7 +32,7 @@ gulp.task('default', ['less', 'watch']);
  * SVN: Copy working directory to SVN and prepare something before submitting.
  */
 var rootPath = '/Users/tu/Documents/foobla',
-    svnPath = rootPath + '/svn/learnpress',
+    svnPath = rootPath + '/wporg/learnpress',
     releasePath = rootPath + '/releases/learnpress',
     svnTrunkPath = svnPath + '/trunk',
     svnTagsPath = svnPath + '/tags',

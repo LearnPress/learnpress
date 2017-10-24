@@ -2016,7 +2016,7 @@ function learn_press_front_scripts() {
 		'siteurl'     => home_url(),
 		'current_url' => learn_press_get_current_url(),
 		'localize'    => array(
-			'button_ok'     => __( 'OK', 'learnpress' ),
+			'button_ok'     => __( 'Ok', 'learnpress' ),
 			'button_cancel' => __( 'Cancel', 'learnpress' ),
 			'button_yes'    => __( 'Yes', 'learnpress' ),
 			'button_no'     => __( 'No', 'learnpress' )

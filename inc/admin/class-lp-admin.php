@@ -177,7 +177,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 				'plugin_url' => learn_press_plugin_url(),
 				'siteurl'    => home_url(),
 				'localize'   => array(
-					'button_ok'     => __( 'OK', 'learnpress' ),
+					'button_ok'     => __( 'Ok', 'learnpress' ),
 					'button_cancel' => __( 'Cancel', 'learnpress' ),
 					'button_yes'    => __( 'Yes', 'learnpress' ),
 					'button_no'     => __( 'No', 'learnpress' )
