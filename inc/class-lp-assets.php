@@ -64,6 +64,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	public function _get_scripts() {
+
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
@@ -93,8 +94,10 @@ class LP_Assets extends LP_Abstract_Assets {
 					'deps' => array( 'global' )
 				),
 				'checkout'         => array(
-					'url'  => self::url( 'js/frontend/checkout.js' ),
-					'deps' => array( 'global' )
+					'url'     => self::url( 'js/frontend/checkout.js' ),
+					'deps'    => array( 'global' ),
+					'enqueue' => learn_press_is_checkout() || learn_press_is_course() && ! learn_press_is_learning_course()
+
 				),
 				'course'           => array(
 					'url'  => self::url( 'js/frontend/course.js' ),
@@ -123,6 +126,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				)
 			)
 		);
+
 	}
 
 	/**
@@ -139,15 +143,16 @@ class LP_Assets extends LP_Abstract_Assets {
 		 */
 		if ( $scripts = $this->_get_scripts() ) {
 			foreach ( $scripts as $handle => $data ) {
-				$enqueue = true;
-				switch ( $handle ) {
+				$enqueue = array_key_exists( 'enqueue', $data ) ? $data['enqueue'] : true;
+				/*switch ( $handle ) {
 					case 'checkout':
 						$enqueue = false;
 						if ( learn_press_is_course() || learn_press_is_checkout() ) {
 							$enqueue = true;
 						}
 
-				}
+				}*/
+				$enqueue = apply_filters( 'learn-press/enqueue-script', $enqueue, $handle );
 				if ( $handle == 'font-awesome' || $enqueue ) {
 					wp_enqueue_script( $handle );
 				}

@@ -217,6 +217,9 @@ ul.learn-press-nav-tabs {
                         &.final-quiz {
                             background: #14c4ff;
                         }
+                        &.trans {
+                            padding: 0;
+                        }
                     }
                     .count-questions {
                         background: #DDD;
@@ -241,7 +244,7 @@ ul.learn-press-nav-tabs {
                     &.status-started {
                         .course-item-status {
                             &:before {
-                                content: "\f251";
+                                content: "\f141";
                             }
                         }
                     }
@@ -389,12 +392,13 @@ body {
                 margin: 20px auto;
                 max-width: 900px;
             }
-            .course-item-title{
+            .course-item-title {
                 font-size: 1.4rem;
             }
-            .content-question-summary{
-                .question-title{
+            .content-question-summary {
+                .question-title {
                     font-size: 1.2rem;
+                    margin-bottom: 10px;
                 }
             }
         }
@@ -415,6 +419,20 @@ body {
                 height: 40px;
                 line-height: 40px;
                 padding: 0 20px;
+            }
+        }
+
+        .comment-form-textarea {
+            @include box-sizing(border-box);
+        }
+
+        &.wpadminbar {
+            #learn-press-course-curriculum,
+            #learn-press-content-item{
+                top: 92px;
+            }
+            #course-item-content-header{
+                top: 32px;
             }
         }
     }
@@ -619,7 +637,7 @@ body {
             }
         }
     }
-    .course-title{
+    .course-title {
         font-size: 1.4rem;
         float: left;
         clear: none;

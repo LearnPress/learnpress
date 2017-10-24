@@ -287,13 +287,7 @@ if ( ! function_exists( 'learn_press_single_course_summary' ) ) {
 	 * Display content of single course summary
 	 */
 	function learn_press_single_course_summary() {
-		global $course;
-		$user = learn_press_get_current_user();
-		if ( ! $course->is_require_enrollment() || $user->has_course_status( $course->get_id(), array(
-				'enrolled',
-				'finished'
-			) )
-		) {
+		if ( learn_press_is_learning_course() ) {
 			learn_press_get_template( 'single-course/content-learning.php' );
 		} else {
 			learn_press_get_template( 'single-course/content-landing.php' );
@@ -893,7 +887,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
             }
 
             body.course-item-popup #wpadminbar {
-                display: none;
+                _display: none;
             }
 
             body.course-item-popup #learn-press-course-curriculum {
@@ -2572,3 +2566,28 @@ function learn_press_body_classes( $classes ) {
 }
 
 add_filter( 'body_class', 'learn_press_body_classes', 10 );
+
+/**
+ * Return true if user is learning a course
+ *
+ * @param int $course_id
+ *
+ * @since 3.0
+ *
+ * @return bool|mixed
+ */
+function learn_press_is_learning_course( $course_id = 0 ) {
+	$user        = learn_press_get_current_user();
+	$course      = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
+	$is_learning = false;
+
+	if ( $course && ! $course->is_require_enrollment() || $user->has_course_status( $course->get_id(), array(
+			'enrolled',
+			'finished'
+		) )
+	) {
+		$is_learning = true;
+	}
+
+	return apply_filters( 'learn-press/is-learning-course', $is_learning );
+}

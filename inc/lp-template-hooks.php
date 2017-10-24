@@ -225,6 +225,35 @@ add_action( 'learn-press/content-learning-summary', 'learn_press_course_buttons'
  * @see learn_press_course_item_content()
  */
 add_action( 'learn-press/course-item-content', 'learn_press_course_item_content', 5 );
+add_action( 'learn-press/course-item-content', function () {
+
+	$item = LP_Global::course_item();
+
+	if ( ! $item ) {
+		return;
+	}
+
+	if ( ! $item->is_support( 'comments' ) ) {
+		return;
+	}
+
+	global $post;
+
+	$post = get_post( $item->get_id() );
+
+	setup_postdata( $post );
+
+	comments_template();
+
+	wp_reset_postdata();
+
+}, 5 );
+
+add_filter( 'get_comment_link', function ( $link, $comment, $args, $cpage ) {
+
+	return $link;
+
+}, 10, 4 );
 
 add_action( 'learn-press/before-content-item-summary/lp_lesson', function () {
 	$item = LP_Global::course_item();

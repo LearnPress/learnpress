@@ -46,6 +46,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	 */
 	public function __construct( $item, $args = null ) {
 		parent::__construct( $item, $args );
+		$this->add_support( 'comments', get_post_field( 'comment_status', $this->get_id() ) === 'open' );
 	}
 
 	/**

@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit();
 	do_action( 'learn-press/course-section-item/before-' . $item->get_item_type() . '-meta', $item );
 	?>
 
-    <i class="fa item-meta course-item-status"></i>
+    <i class="fa item-meta course-item-status trans"></i>
 
 	<?php
 	/**

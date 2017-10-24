@@ -24,28 +24,34 @@ $percent   = $quiz_data->get_questions_answered( true );
 <div class="quiz-progress">
     <div class="progress-items">
         <div class="progress-item quiz-point-achieved">
-            <i class="fa fa-trophy"></i>
-            <div class="progress-number" @click="clickX">
-				<?php echo sprintf( __( 'Point %s', 'learnpress' ), $quiz_data->get_mark() ); ?>
-            </div>
+            <span class="progress-number">
+                0
+            </span>
+            <span class="progress-label" @click="clickX">
+				<?php _e( 'Point', 'learnpress' ); ?>
+            </span>
         </div>
         <div class="progress-item quiz-current-question">
-            <i class="fa fa-question"></i>
-            <div class="progress-number">
-				<?php echo sprintf( __( 'Question %d/%d', 'learnpress' ), $quiz->get_question_index( $quiz_data->get_current_question(), 1 ), $quiz_data->get_total_questions() ); ?>
-            </div>
+            <span class="progress-number">
+				<?php echo sprintf( __( '%d/%d', 'learnpress' ), $quiz->get_question_index( $quiz_data->get_current_question(), 1 ), $quiz_data->get_total_questions() ); ?>
+            </span>
+            <span class="progress-label" @click="clickX">
+				<?php _e( 'Question', 'learnpress' ); ?>
+            </span>
         </div>
         <div class="progress-item quiz-countdown">
-            <i class="fa fa-hourglass-start"></i>
-            <div class="progress-number">
+            <span class="progress-number">
+                00:00:24
+            </span>
+            <span class="progress-label">
 				<?php
 				if ( $duration = $quiz_data->get_time_remaining() ) {
-					echo sprintf( __( 'Time remaining %s', 'learnpress' ), $duration->to_timer() );
+					_e( 'Time remaining', 'learnpress' );
 				} else {
 					echo __( 'Unlimited', 'learnpress' );
 				}
 				?>
-            </div>
+            </span>
         </div>
     </div>
 </div>

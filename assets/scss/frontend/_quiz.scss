@@ -3,28 +3,28 @@
 }
 
 .quiz-progress {
-    position: fixed;
-    top: 32px;
-    left: 400px;
-    right: 0;
     background: rgb(231, 247, 255);
-    z-index: 100;
-    border-bottom: 1px solid #bde6fb;
+    margin-bottom: 40px;
     .progress-items {
         display: flex;
-        margin: 0 auto;
-        max-width: 900px;
         .progress-item {
             flex: 1;
-            text-align: left;
             position: relative;
-            height: 40px;
-            line-height: 40px;
             font-size: 15px;
             color: #777;
-            .progress-number {
-                float: left;
-                height: 60px;
+            .progress-number,
+            .progress-label{
+                display: block;
+                text-align: center;
+                line-height: 1;
+            }
+            .progress-number{
+                font-size: 20px;
+                margin: 15px 0 10px 0;
+            }
+            .progress-label{
+                font-size: 14px;
+                margin-bottom: 15px;
             }
             i {
                 display: none;
@@ -125,10 +125,10 @@
                 border-left: none;
                 position: absolute;
                 top: 50%;
-                left: 13px;
+                left: 10px;
                 box-sizing: content-box;
                 opacity: 0;
-                margin-top: -12px;
+                margin-top: -10px;
                 @include transform(rotate(36deg) scale(0));
                 @include transition(all 0.25s);
             }
