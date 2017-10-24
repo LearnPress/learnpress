@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Package Name\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-23 10:37+0700\n"
+"POT-Creation-Date: 2017-10-24 08:39+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -247,7 +247,8 @@ msgstr ""
 msgid "Do not ask again."
 msgstr ""
 
-#: inc/class-lp-install.php:90
+#: inc/class-lp-install.php:90 inc/lp-core-functions.php:2019
+#: inc/admin/class-lp-admin.php:180
 msgid "Ok"
 msgstr ""
 
@@ -733,10 +734,6 @@ msgstr ""
 #: inc/lp-core-functions.php:1493
 #, php-format
 msgid "Accept: %s"
-msgstr ""
-
-#: inc/lp-core-functions.php:2019 inc/admin/class-lp-admin.php:180
-msgid "OK"
 msgstr ""
 
 #: inc/lp-core-functions.php:2021 inc/admin/class-lp-admin.php:182
