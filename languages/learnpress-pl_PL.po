@@ -1,23 +1,26 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# 
-# Translators:
-# Hoang Ha <halink0803@gmail.com>, 2015
-# Wojciech Ganicz <polischmen@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: LearnPress\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-16 16:21+0700\n"
-"PO-Revision-Date: 2015-07-23 19:05+0000\n"
-"Last-Translator: Wojciech Ganicz <polischmen@gmail.com>\n"
-"Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/learnpress/language/pl_PL/)\n"
+"PO-Revision-Date: 2017-10-24 01:18+0000\n"
+"Last-Translator: Nguyễn Ngoc Tú <tunnhn@gmail.com>\n"
+"Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl_PL\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: pl-PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
+"&&(n%100<10||n%100 >= 20)? 1 : 2)\n"
+"X-Generator: Loco - https://localise.biz/"
+
+#: inc/custom-post-types/order.php:388
+#, php-format
+msgid "Draft order <span class=\"count\">(%s)</span>"
+msgid_plural "Draft order <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: learnpress.php:352
 msgid "Learning Management System"
@@ -211,7 +214,8 @@ msgstr "Integracja z BuddyPress"
 #: inc/lpr-add-on-functions.php:378
 #, php-format
 msgid "Using the profile system provided by BuddyPress.%s"
-msgstr "Używanie podczas kursów systemu profilowego rozwijanego przez bbPress.%s"
+msgstr ""
+"Używanie podczas kursów systemu profilowego rozwijanego przez bbPress.%s"
 
 #: inc/lpr-add-on-functions.php:387
 msgid "Certificate"
@@ -243,7 +247,9 @@ msgstr "Eksport/Import"
 
 #: inc/lpr-add-on-functions.php:420
 msgid "Export and Import your courses with all lesson and quiz in easiest way"
-msgstr "Eksport oraz Import Twoich kursów wraz ze wszystkimi modułami oraz testami w najprostrzy sposób."
+msgstr ""
+"Eksport oraz Import Twoich kursów wraz ze wszystkimi modułami oraz testami w "
+"najprostrzy sposób."
 
 #: inc/lpr-add-on-functions.php:429
 msgid "Prerequisite Courses"
@@ -283,13 +289,18 @@ msgid ""
 "An unexpected error occurred. Something may be wrong with WordPress.org or "
 "this server&#8217;s configuration. If you continue to have problems, please "
 "try the <a href=\"https://wordpress.org/support/\">support forums</a>."
-msgstr "Nieznany błąd. Cos mogło pójsć nie tak z WordPress.org, lub z konfiguracją serwera. Jeżeli problem bedzie się powtarzać napisz na <a href=\"https://wordpress.org/support/\"> forum </a>."
+msgstr ""
+"Nieznany błąd. Cos mogło pójsć nie tak z WordPress.org, lub z konfiguracją "
+"serwera. Jeżeli problem bedzie się powtarzać napisz na <a href=\"https:"
+"//wordpress.org/support/\"> forum </a>."
 
 #: inc/lpr-add-on-functions.php:515
 msgid ""
 "(WordPress could not establish a secure connection to WordPress.org. Please "
 "contact your server administrator.)"
-msgstr "(WordPress nie mógł ustalić bezpiecznego połączenia z WordPress.oeg. Skontaktuj się z administratorem serwera)"
+msgstr ""
+"(WordPress nie mógł ustalić bezpiecznego połączenia z WordPress.oeg. "
+"Skontaktuj się z administratorem serwera)"
 
 #: inc/lpr-add-on-functions.php:610
 #, php-format
@@ -374,17 +385,23 @@ msgstr "Tagi"
 #, php-format
 msgid ""
 "<strong>LearnPress is almost ready</strong>. <a class=\"lpr-set-up\" "
-"href=\"%s\">Setting up</a> something right now is a good idea. That's better"
-" than you <a class=\"lpr-ignore lpr-set-up\">ignore</a> the message."
-msgstr "<strong>LearnPress jest prawie gotowy</strong>. <a class=\"lpr-set-up\" href=\"%s\">Ustawienie</a> czegoś bedzie dobrym krokiem. To będzie lepsze niz <a class=\"lpr-ignore lpr-set-up\">zignorowanie</a> tej wiadomości."
+"href=\"%s\">Setting up</a> something right now is a good idea. That's better "
+"than you <a class=\"lpr-ignore lpr-set-up\">ignore</a> the message."
+msgstr ""
+"<strong>LearnPress jest prawie gotowy</strong>. <a class=\"lpr-set-up\" "
+"href=\"%s\">Ustawienie</a> czegoś bedzie dobrym krokiem. To będzie lepsze "
+"niz <a class=\"lpr-ignore lpr-set-up\">zignorowanie</a> tej wiadomości."
 
 #: inc/lpr-core-functions.php:728
 #, php-format
 msgid ""
-"<strong>LearnPress Profile is almost ready</strong>. You must <a "
-"href=\"%s\">update your permalink structure</a> to something other than the "
-"default for it to work."
-msgstr "<strong>LearnPress Profile jest prawie gotowy</strong>. Musisz tylko <a href=\"%s\">poprawić strukturę linków</a> ustawiając coś innego niż podstawowe ustawienia."
+"<strong>LearnPress Profile is almost ready</strong>. You must <a href=\"%s\">"
+"update your permalink structure</a> to something other than the default for "
+"it to work."
+msgstr ""
+"<strong>LearnPress Profile jest prawie gotowy</strong>. Musisz tylko <a "
+"href=\"%s\">poprawić strukturę linków</a> ustawiając coś innego niż "
+"podstawowe ustawienia."
 
 #: inc/lpr-core-functions.php:1071
 msgid "LearnPress webhook process Complete"
@@ -477,11 +494,15 @@ msgstr "Przepraszamy ! Nie możesz dołączyć do tego kursu "
 
 #: inc/lpr-course-functions.php:2099
 msgid "Be sure you want to retake this course! All your data will be deleted."
-msgstr "Na pewno chcesz wziąć udział ponownie w kursie? Wszystkie wcześniejsze dane zostaną skasowane."
+msgstr ""
+"Na pewno chcesz wziąć udział ponownie w kursie? Wszystkie wcześniejsze dane "
+"zostaną skasowane."
 
 #: inc/lpr-course-functions.php:2100
 msgid "Be sure you want to retake this quiz! All your data will be deleted."
-msgstr "Na pewno chcesz wziąć udział ponownie w teście? Wszystkie wcześniejsze dane zostaną skasowane."
+msgstr ""
+"Na pewno chcesz wziąć udział ponownie w teście? Wszystkie wcześniejsze dane "
+"zostaną skasowane."
 
 #: inc/lpr-course-functions.php:2101
 msgid "Are you sure you want to finish this quiz?"
@@ -586,7 +607,8 @@ msgstr "Kurs zostanie zakończony za %s."
 msgid ""
 "You have passed %d percent of course and now you can finish this course if "
 "you want"
-msgstr "Zakończyłeś %d procent kursu i możesz teraz zakończyć go jeśli tego chcesz."
+msgstr ""
+"Zakończyłeś %d procent kursu i możesz teraz zakończyć go jeśli tego chcesz."
 
 #: inc/lpr-template-functions.php:844
 msgid "Congratulations! You have completed this lesson."
@@ -811,7 +833,8 @@ msgstr "Import/Eksport dodatków nie znaleziony. "
 
 #: inc/admin/class.lpr-admin-ajax.php:72
 msgid "Import sample data successfully. The page will reload now!"
-msgstr "Import prostych danych zakończony pomyślnie ! Strona zostanie przeładowana !"
+msgstr ""
+"Import prostych danych zakończony pomyślnie ! Strona zostanie przeładowana !"
 
 #: inc/admin/class.lpr-admin-ajax.php:75
 msgid "Unknown error when importing sample data. Please try again!"
@@ -825,10 +848,11 @@ msgstr "Nie znaleziono plików. Spróbuj ponownie!"
 msgid ""
 "Unknown error when installing/activating Import/Export addon. Please try "
 "again!"
-msgstr "Nieznany błąd podczas instalacji.aktywacji Dodatku Impor/Eksport. Spróbuj ponownie !"
+msgstr ""
+"Nieznany błąd podczas instalacji.aktywacji Dodatku Impor/Eksport. Spróbuj "
+"ponownie !"
 
-#: inc/admin/class.lpr-admin-ajax.php:98
-#: inc/admin/class.lpr-admin-ajax.php:119
+#: inc/admin/class.lpr-admin-ajax.php:98 inc/admin/class.lpr-admin-ajax.php:119
 #: inc/admin/class.lpr-admin-ajax.php:139
 msgid ""
 "You do not have sufficient permissions to deactivate plugins for this site."
@@ -933,9 +957,11 @@ msgstr "Przepraszamy ! Nie masz uprawnień by zduplikować ten kurs"
 #: inc/admin/lpr-admin-functions.php:396
 #, php-format
 msgid ""
-"Want full free features? Click <a href=\"%s\">here</a> to install LearnPress"
-" Add-ons Bundle for free!"
-msgstr "Chcesz więcej? Kliknij <a href=\"%s\">tutaj</a>, aby zainstalować LearnPress Add-ons Bundle za darmo !"
+"Want full free features? Click <a href=\"%s\">here</a> to install LearnPress "
+"Add-ons Bundle for free!"
+msgstr ""
+"Chcesz więcej? Kliknij <a href=\"%s\">tutaj</a>, aby zainstalować LearnPress "
+"Add-ons Bundle za darmo !"
 
 #: inc/admin/lpr-admin-functions.php:467
 #, php-format
@@ -945,11 +971,26 @@ msgstr "Użytkownik %s został opiekunem"
 #: inc/admin/lpr-admin-functions.php:508
 msgid ""
 "\n"
-"            <div class=\"updated\" id=\"learn-press-install-sample-data-notice\">\n"
-"                <p>You haven't got any courses yet! Would you like to install sample data?</p>\n"
-"                <p>If yes, it requires to install addon named <strong>LearnPress Import/Export</strong> but don't worry because it is completely automated. [<a href=\"\" class=\"yes\">Yes</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=\"\" class=\"no\">No thank!</a>]</p>\n"
+"            <div class=\"updated\" id=\"learn-press-install-sample-data-"
+"notice\">\n"
+"                <p>You haven't got any courses yet! Would you like to "
+"install sample data?</p>\n"
+"                <p>If yes, it requires to install addon named <strong>"
+"LearnPress Import/Export</strong> but don't worry because it is completely "
+"automated. [<a href=\"\" class=\"yes\">Yes</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a "
+"href=\"\" class=\"no\">No thank!</a>]</p>\n"
 "            </div>"
-msgstr "\n            <div class=\"updated\" id=\"learn-press-install-sample-data-notice\">\n                <p>Nie dodałeś jeszcze rzadnych kursów ! Niechciałbyś dodać jakiś sekcji?</p>\n                <p>Jeżeli tak to możesz zainstalować dodatek <strong>LearnPress Import/Export</strong>, ale nie martw się - jest to całkowicie automatyczne . [<a href=\"\" class=\"yes\">Tak</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=\"\" class=\"no\">Nie dzięki!</a>]</p>\n            </div>"
+msgstr ""
+"\n"
+"            <div class=\"updated\" id=\"learn-press-install-sample-data-"
+"notice\">\n"
+"                <p>Nie dodałeś jeszcze rzadnych kursów ! Niechciałbyś dodać "
+"jakiś sekcji?</p>\n"
+"                <p>Jeżeli tak to możesz zainstalować dodatek <strong>"
+"LearnPress Import/Export</strong>, ale nie martw się - jest to całkowicie "
+"automatyczne . [<a href=\"\" class=\"yes\">Tak</a>]&nbsp;&nbsp;&nbsp;&nbsp;"
+"[<a href=\"\" class=\"no\">Nie dzięki!</a>]</p>\n"
+"            </div>"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:31
 msgid "Do you want to remove this lesson permanently?"
@@ -1019,8 +1060,7 @@ msgid "Collapse All"
 msgstr "Zwiń wszystkie"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:99
-msgid ""
-"Outline your course and add content with sections, lessons and quizzes."
+msgid "Outline your course and add content with sections, lessons and quizzes."
 msgstr "Określ kurs i dodaj zawartość z sekcjami, modułami oraz testami."
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:112
@@ -1123,7 +1163,10 @@ msgstr "Program kursu"
 msgid ""
 "Build a course by selecting created lessons and quizzes or adding new ones. "
 "Sorting, editing, shortcuts (l and q), it never gets easier with LearnPress."
-msgstr "Stwórz kurs, poprzez zaznaczenie stworzonych lekcji i testów lub dodanie któregoś. Sortowanie, edytowanie oraz skróty (l i q), nigdy nie będzie łatwiej."
+msgstr ""
+"Stwórz kurs, poprzez zaznaczenie stworzonych lekcji i testów lub dodanie "
+"któregoś. Sortowanie, edytowanie oraz skróty (l i q), nigdy nie będzie "
+"łatwiej."
 
 #: inc/admin/settings/class.lpr-settings-emails.php:19
 msgid "General options"
@@ -1249,13 +1292,13 @@ msgstr "Strona kursów"
 #: inc/admin/settings/class.lpr-settings-pages.php:92
 #: inc/admin/settings/class.lpr-settings-pages.php:114
 msgid "Ok"
-msgstr "Ok"
+msgstr "Chap nhan"
 
 #: inc/admin/settings/class.lpr-settings-pages.php:59
 #: inc/admin/settings/class.lpr-settings-pages.php:93
 #: inc/admin/settings/class.lpr-settings-pages.php:115
 msgid "Cancel"
-msgstr "Anuluj"
+msgstr "Huy bo"
 
 #: inc/admin/settings/class.lpr-settings-pages.php:69
 msgid "Profile Page"
@@ -1385,15 +1428,18 @@ msgid "LearnPress Add-ons"
 msgstr "Dodatki LearnPress"
 
 #: inc/admin/sub-menus/add-ons.php:57
-msgid ""
-"Add-ons are features that you can add or remove depending on your needs"
-msgstr "Dodatki są narzędziami które możesz włączyć lub wyłączyć w zależności od potrzeb."
+msgid "Add-ons are features that you can add or remove depending on your needs"
+msgstr ""
+"Dodatki są narzędziami które możesz włączyć lub wyłączyć w zależności od "
+"potrzeb."
 
 #: inc/admin/sub-menus/add-ons.php:95
 msgid ""
 "One or more plugins state has changed to activate/deactivate. Click 'Apply' "
 "button to update"
-msgstr "Jeden lub więcej pluginów ma zmieniony status na aktywowany/nie aktywny. Kliknij \"Zatwierdź\" aby zaktualizować"
+msgstr ""
+"Jeden lub więcej pluginów ma zmieniony status na aktywowany/nie aktywny. "
+"Kliknij \"Zatwierdź\" aby zaktualizować"
 
 #: inc/admin/sub-menus/add-ons.php:158
 msgid "Install and/or activate all"
@@ -1401,7 +1447,8 @@ msgstr "Zainstaluj i.lub aktywuj wszystkie"
 
 #: inc/admin/sub-menus/add-ons.php:165
 msgid "Plugin <i>'{{data.name}}'</i> install failed! Please try again"
-msgstr "Instalacja pluginu <i>'{{data.name}}'</i> nie powiodła się. Spróbuj ponownie."
+msgstr ""
+"Instalacja pluginu <i>'{{data.name}}'</i> nie powiodła się. Spróbuj ponownie."
 
 #: inc/admin/sub-menus/add-ons.php:170
 msgid "Plugin <i>'{{data.name}}'</i> install completed!"
@@ -1642,9 +1689,14 @@ msgstr "Test kończący kurs"
 
 #: inc/custom-post-types/course.php:227
 msgid ""
-"If Final Quiz option is checked, then the course will be assessed by result of the last quiz, else the course\n"
-"                                      will be assessed by the progress of learning lessons"
-msgstr "Jeśli opcja \"test końcowy\" jest zaznaczona, to oczywiście będą oceniane przez wyniku ostatniego testu, ewentualnie kurs będzie rozstrzygany poprzez postęp nauki."
+"If Final Quiz option is checked, then the course will be assessed by result "
+"of the last quiz, else the course\n"
+"                                      will be assessed by the progress of "
+"learning lessons"
+msgstr ""
+"Jeśli opcja \"test końcowy\" jest zaznaczona, to oczywiście będą oceniane "
+"przez wyniku ostatniego testu, ewentualnie kurs będzie rozstrzygany poprzez "
+"postęp nauki."
 
 #: inc/custom-post-types/course.php:230
 msgid "No Final Quiz"
@@ -1690,7 +1742,9 @@ msgstr "Opłata za kurs"
 msgid ""
 "If Paid be checked, An administrator will review then set course price and "
 "commission"
-msgstr "Jeżeli płatność jest zaznaczona, administrator przejrzy ustawienia i je potwierdzi"
+msgstr ""
+"Jeżeli płatność jest zaznaczona, administrator przejrzy ustawienia i je "
+"potwierdzi"
 
 #: inc/custom-post-types/course.php:277 inc/order/lpr-order-functions.php:352
 msgid "Free"
@@ -1701,9 +1755,10 @@ msgid "Paid"
 msgstr "Płatny"
 
 #: inc/custom-post-types/course.php:287
-msgid ""
-"If free, this field is empty or set 0. (Only admin can edit this field)"
-msgstr "Dla opcji \"darmowy\" zostaw puste lub wybierz 0. (tylko admin może edytować to pole)"
+msgid "If free, this field is empty or set 0. (Only admin can edit this field)"
+msgstr ""
+"Dla opcji \"darmowy\" zostaw puste lub wybierz 0. (tylko admin może edytować "
+"to pole)"
 
 #: inc/custom-post-types/course.php:296
 msgid "This course is enrolled require and the suggestion price is "
@@ -1806,7 +1861,9 @@ msgstr "Lekcja podglądowa"
 msgid ""
 "If this is a preview lesson, then student can view this lesson content "
 "without taking the course"
-msgstr "Jeżeli jest to lekcja podglądowa, student może zobaczyć ja bez dołączania do kursu"
+msgstr ""
+"Jeżeli jest to lekcja podglądowa, student może zobaczyć ja bez dołączania do "
+"kursu"
 
 #: inc/custom-post-types/lesson.php:116
 msgid "Yes"
@@ -1888,14 +1945,6 @@ msgstr "Detale zamówienia"
 msgctxt "Order status"
 msgid "Draft Order"
 msgstr "Podgląd zamówienia"
-
-#: inc/custom-post-types/order.php:388
-#, php-format
-msgid "Draft order <span class=\"count\">(%s)</span>"
-msgid_plural "Draft order <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
 
 #: inc/custom-post-types/order.php:432 inc/custom-post-types/order.php:436
 msgid "Unknow"
@@ -2015,9 +2064,10 @@ msgid "Quiz Duration"
 msgstr "Czas trwania kursu"
 
 #: inc/custom-post-types/quiz.php:108
-msgid ""
-"Quiz duration (in minutes). Auto submits when expire. Set 0 to disable."
-msgstr "Czas trwania kursu (w minutach). Auto zakończenie po upływie czasu. Wpisz 0, by wyłączyć."
+msgid "Quiz duration (in minutes). Auto submits when expire. Set 0 to disable."
+msgstr ""
+"Czas trwania kursu (w minutach). Auto zakończenie po upływie czasu. Wpisz 0, "
+"by wyłączyć."
 
 #: inc/custom-post-types/quiz.php:115
 msgid "Re-take quiz"
@@ -2039,7 +2089,9 @@ msgstr "Pokaż odpowiedź na pytanie natychmiastowo."
 msgid ""
 "Show the correct answer and explanation (if exists) of the question right "
 "after student answered."
-msgstr "Pokaż poprawną odpowiedź oraz wytłumaczenie (jeżeli istnieje) pytania tuz po oddaniu odpowiedzi."
+msgstr ""
+"Pokaż poprawną odpowiedź oraz wytłumaczenie (jeżeli istnieje) pytania tuz po "
+"oddaniu odpowiedzi."
 
 #: inc/custom-post-types/quiz.php:152
 msgid "Please enter the title of the quiz"
@@ -2086,7 +2138,8 @@ msgstr "Opis pytania"
 msgid ""
 "No answer added to question or you must select at least one the answer is "
 "correct!"
-msgstr "Brak odpowiedzi lub musisz zaznaczyc przynajmniej jedną poprawną odpowiedź"
+msgstr ""
+"Brak odpowiedzi lub musisz zaznaczyc przynajmniej jedną poprawną odpowiedź"
 
 #: inc/question-type/class.lpr-question-type-multi-choice.php:192
 #: inc/question-type/class.lpr-question-type-single-choice.php:186
@@ -2268,9 +2321,11 @@ msgstr "Zdałeś kurs zdobywając %.2f%% z całości."
 #: templates/course/course-result.php:15 templates/quiz/percentage.php:13
 #, php-format
 msgid ""
-"Sorry, you have not passed this course. This course required you pass %.2f%%"
-" but your result is only %.2f%%"
-msgstr "Przepraszamy, ale nie zaliczyłeś tego kursu. Wymagane jest minimum %.2f%%, jednak zdobyłeś tylko %.2f%%."
+"Sorry, you have not passed this course. This course required you pass %.2f%% "
+"but your result is only %.2f%%"
+msgstr ""
+"Przepraszamy, ale nie zaliczyłeś tego kursu. Wymagane jest minimum %.2f%%, "
+"jednak zdobyłeś tylko %.2f%%."
 
 #: templates/course/curriculum.php:19
 msgid "Curriculum is empty"
@@ -2298,7 +2353,6 @@ msgstr "Dołączyłeś"
 
 #: templates/course/students.php:15
 #, php-format
-msgctxt ""
 msgid "You and one student enrolled"
 msgid_plural "You and %1$s students enrolled"
 msgstr[0] "Ty i jedna osba dołączyliście"
@@ -2307,7 +2361,6 @@ msgstr[2] "Ty i wraz z %1$s osobami dołączyliście"
 
 #: templates/course/students.php:18
 #, php-format
-msgctxt ""
 msgid "One student enrolled"
 msgid_plural "%1$s students enrolled"
 msgstr[0] "Jedna osoba dołączyła"
@@ -2322,7 +2375,9 @@ msgstr "Nikt nie dołączył"
 msgid ""
 "Unfortunately your order cannot be processed as the originating "
 "bank/merchant has declined your transaction."
-msgstr "Niestety zakup nie może zostać zakończony z powodu zablokowania transakcji przez bank."
+msgstr ""
+"Niestety zakup nie może zostać zakończony z powodu zablokowania transakcji "
+"przez bank."
 
 #: templates/order/confirm.php:9
 msgid "Please attempt your purchase again or go to your account page."
