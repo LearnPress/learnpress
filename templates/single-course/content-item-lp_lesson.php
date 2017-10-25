@@ -10,10 +10,9 @@
 defined( 'ABSPATH' ) or die;
 $course = LP_Global::course();
 $item   = LP_Global::course_item();
-learn_press_get_template('content-lesson/title.php');
-learn_press_get_template('content-lesson/description.php');
+//learn_press_get_template('content-lesson/title.php');
+//learn_press_get_template('content-lesson/description.php');
 ?>
-<script type="text/html" id="content-item-lesson">
     <div class="content-item-summary">
 
 		<?php
@@ -40,6 +39,5 @@ learn_press_get_template('content-lesson/description.php');
 		</div>
 	*/ ?>
     </div>
-</script>
 
 <lp_lesson_component></lp_lesson_component>

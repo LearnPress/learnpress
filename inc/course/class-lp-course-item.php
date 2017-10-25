@@ -339,7 +339,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 			$user_id = get_current_user_id();
 		}
 
-		$action = sprintf( '%s-item-%d-%d-%d', $action, $user_id, $course_id, $this->get_id() );
+		$action = $this->get_nonce_action( $action, $course_id, $user_id );
 
 		return wp_create_nonce( $action );
 	}
@@ -363,9 +363,13 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 			$user_id = get_current_user_id();
 		}
 
-		$action = sprintf( '%s-item-%d-%d-%d', $action, $user_id, $course_id, $this->get_id() );
+		$action = $this->get_nonce_action( $action, $course_id, $user_id );
 
 		return wp_verify_nonce( $nonce, $action );
+	}
+
+	public function get_nonce_action( $action, $course_id, $user_id ) {
+		return sprintf( '%s-item-%d-%d-%d', $action, $user_id, $course_id, $this->get_id() );
 	}
 
 	public function is_viewing_question( $question_id = 0 ) {

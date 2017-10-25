@@ -49,7 +49,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'recover-order',
 				'request-become-a-teacher:nonce',
 				'upload-user-avatar',
-				'checkout'
+				'checkout',
+				'complete-lesson'
 			);
 
 			foreach ( $ajaxEvents as $action => $callback ) {
@@ -592,16 +593,19 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * Complete lesson
 		 */
 		public static function complete_lesson() {
-			$nonce        = learn_press_get_request( 'nonce' );
-			$item_id      = learn_press_get_request( 'id' );
-			$course_id    = learn_press_get_request( 'course_id' );
-			$post         = get_post( $item_id );
-			$user         = learn_press_get_current_user();
-			$course       = LP_Course::get_course( $course_id );
-			$response     = array(
+			$nonce     = LP_Request::get_string( 'complete-lesson-nonce' );
+			$item_id   = LP_Request::get_int( 'id' );
+			$course_id = LP_Request::get_int( 'course_id' );
+
+			$post     = get_post( $item_id );
+			$user     = learn_press_get_current_user();
+			$course   = LP_Course::get_course( $course_id );
+			$response = array(
 				'result' => 'success'
 			);
-			$nonce_action = sprintf( 'learn-press-complete-%s-%d-%d-%d', $post->post_type, $post->ID, $course->get_id(), $user->get_id() );
+
+			$item = $course->get_item( $item_id );
+			$nonce_action = $item->get_nonce_action( 'complete', $course_id, $user->get_id() );
 			// security check
 			if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
 				$response['result']  = 'error';
@@ -631,7 +635,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					$response['result']  = 'fail';
 				}
 			}
-			learn_press_send_json( $response );
+			learn_press_maybe_send_json( $response );
 		}
 
 		/**
