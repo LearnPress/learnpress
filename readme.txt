@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 2.1.9.1
+Stable tag: 2.1.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -197,36 +197,39 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 2.1.9.2 =
++ Fixed "Block Lessons Content" option in course settings
+
 = 2.1.9.1 =
 + Update language
 
 = 2.1.9 =
-~ Fixed lesons lost when press preview button in edit course page.
-~ Fixed the "Buy this course" button display after course is "finished"
-~ Fixed Courses and Instructor Tab from Profile page not shows courses
-~ Fixed Profile does not show courses created by himself
-~ Fixed Notify email not send when cousre auto finished
-~ Fixed user can not receive email when course is expired
-~ Fixed issue when ordering the course is free
-~ Fixed first lesson does not load
-~ Fixed course does not show in user profile
-~ Fixed Quiz does not work correctly
-~ Fixed auto enroll option
-~ Fixed issue of quiz countdown with timezone option
++ Fixed lesons lost when press preview button in edit course page.
++ Fixed the "Buy this course" button display after course is "finished"
++ Fixed Courses and Instructor Tab from Profile page not shows courses
++ Fixed Profile does not show courses created by himself
++ Fixed Notify email not send when cousre auto finished
++ Fixed user can not receive email when course is expired
++ Fixed issue when ordering the course is free
++ Fixed first lesson does not load
++ Fixed course does not show in user profile
++ Fixed Quiz does not work correctly
++ Fixed auto enroll option
++ Fixed issue of quiz countdown with timezone option
 
 = 2.1.8 =
-~ Fixed missing template tag
++ Fixed missing template tag
 
 = 2.1.7.3 =
-~ Fixed can not save curriculum with SiteOrigin.
-~ Fixed instructor can select lessons/quizzes of an another user when editing course.
-~ Fixed get request var does not exists while updating course.
-~ Fixed can not load lesson with Yoast Seo enabled.
-~ Fixed become a teacher page with page builder.
-~ Fixed eye icon does not show when opening a lesson.
++ Fixed can not save curriculum with SiteOrigin.
++ Fixed instructor can select lessons/quizzes of an another user when editing course.
++ Fixed get request var does not exists while updating course.
++ Fixed can not load lesson with Yoast Seo enabled.
++ Fixed become a teacher page with page builder.
++ Fixed eye icon does not show when opening a lesson.
 
 = 2.1.7.2 =
-~ Fixed can add a question to multiple quizzes
++ Fixed can add a question to multiple quizzes
 
 = 2.1.7 =
 + Added link to navigate to course in checkout page
