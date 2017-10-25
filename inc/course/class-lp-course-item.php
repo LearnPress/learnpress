@@ -116,11 +116,10 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		$defaults = array(
 			'course-item',
 			'course-item-' . $this->get_item_type(),
-			'course-item-' . $this->get_id(),
-			get_class( $this )
+			'course-item-' . $this->get_id()
 		);
 
-		if ( 'standard' !== ( $post_format = $this->get_format() ) ) {
+		if ( ( 'standard' !== ( $post_format = $this->get_format() ) ) && $post_format ) {
 			$defaults[] = 'course-item-type-' . $post_format;
 		}
 
@@ -158,7 +157,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 								case 'started':
 									break;
 								case 'completed':
-									$status_classes[] = $item_grade;
+									$defaults[] = $item_grade;
 							}
 						}
 					}

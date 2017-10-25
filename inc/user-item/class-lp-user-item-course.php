@@ -170,6 +170,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return false;
 	}
 
+	public function get_course( $return = '' ) {
+		$cid = $this->get_data( 'item_id' );
+		if ( $return == '' ) {
+			return $cid ? learn_press_get_course( $cid ) : false;
+		}
+
+		return $cid;
+	}
+
 	/**
 	 * Get result of course.
 	 *
@@ -204,6 +213,19 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			case 'evaluate_quiz':
 				$results = $this->_evaluate_course_by_completed_quizzes();
 				break;
+		}
+
+		if ( is_array( $results ) ) {
+			$count_items     = $course->count_items();
+			$completed_items = $this->get_completed_items();
+			$results         = array_merge(
+				$results,
+				array(
+					'count_items'     => $count_items,
+					'completed_items' => $completed_items,
+					'skipped_items'   => $count_items - $completed_items
+				)
+			);
 		}
 
 		if ( $prop === 'status' ) {
@@ -262,6 +284,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			if ( $user_quiz = $this->get_item( $final_quiz ) ) {
 				$result = $user_quiz->get_results( '' );
 			}
+
 			$percent = $result ? $result['result'] : 0;
 			$data    = array(
 				'result' => $percent,
@@ -502,7 +525,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * @param int $item_id
 	 *
-	 * @return LP_User_Item_Course|bool
+	 * @return LP_User_Item|LP_User_Item_Quiz|bool
 	 */
 	public function get_item( $item_id ) {
 		return ! empty( $this->_items[ $item_id ] ) ? $this->_items[ $item_id ] : false;
@@ -512,6 +535,20 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		if ( $item = LP_User_Item::get_item_object( $item ) ) {
 			$this->_items[ $item->get_item_id() ] = $item;
 		}
+	}
+
+	/**
+	 * @param        $item_id
+	 * @param string $prop
+	 *
+	 * @return bool|float|int
+	 */
+	public function get_item_result( $item_id, $prop = 'result' ) {
+		if ( $item = $this->get_item( $item_id ) ) {
+			return $item->get_result( $prop );
+		}
+
+		return false;
 	}
 
 	/**

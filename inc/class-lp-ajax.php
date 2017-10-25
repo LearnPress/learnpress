@@ -601,10 +601,11 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$user     = learn_press_get_current_user();
 			$course   = LP_Course::get_course( $course_id );
 			$response = array(
-				'result' => 'success'
+				'result'   => 'success',
+				'redirect' => $course->get_item_link( $item_id )
 			);
 
-			$item = $course->get_item( $item_id );
+			$item         = $course->get_item( $item_id );
 			$nonce_action = $item->get_nonce_action( 'complete', $course_id, $user->get_id() );
 			// security check
 			if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
@@ -621,21 +622,31 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					$response['can_finish']    = $can_finish;
 					$response['next_item']     = $course->get_next_item( $item_id );
 
-					ob_start();
 					if ( $can_finish ) {
-						learn_press_display_message( __( 'Congratulations! You have completed this lesson and you can finish course.', 'learnpress' ) );
+						learn_press_add_message( sprintf( __( 'Congrats! You have completed "" and you can finish course.', 'learnpress' ), $item->get_title() ) );
 					} else {
-						learn_press_display_message( __( 'Congratulations! You have completed this lesson.', 'learnpress' ) );
+						learn_press_add_message( sprintf( __( 'Congrats! You have completed "%s".', 'learnpress' ), $item->get_title() ) );
 					}
-					$response['message'] = ob_get_clean();
 				} else {
-					ob_start();
-					learn_press_display_message( $result->get_error_message() );
-					$response['message'] = ob_get_clean();
-					$response['result']  = 'fail';
+					learn_press_add_message( $result->get_error_message() );
+					$response['result'] = 'fail';
 				}
 			}
+
+			if ( $response['result'] === 'success' ) {
+				if ( $next = $course->get_next_item() ) {
+					$response['redirect'] = $course->get_item_link( $next );
+				}
+			}
+
+			$response = apply_filters( 'learn-press/user-completed-lesson-result', $response, $item_id, $course_id, $user->get_id() );
+
 			learn_press_maybe_send_json( $response );
+
+			if ( ! empty( $response['redirect'] ) ) {
+				wp_redirect( $response['redirect'] );
+				exit();
+			}
 		}
 
 		/**

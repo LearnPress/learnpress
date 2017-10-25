@@ -15,7 +15,6 @@ $course_data = $user->get_course_data( get_the_ID() );
 
 $quiz_item = $course_data->get_item_quiz( $quiz->get_id() );// $user->get_quiz_data( $quiz->get_id() );
 
-$user      = LP_Global::user();
 $quiz_data = $user->get_quiz_data( $quiz->get_id() );
 $result    = $quiz_data->get_results();
 $percent   = $quiz_data->get_questions_answered( true );

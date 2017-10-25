@@ -40,6 +40,7 @@ if ( ! $messages ) {
 		}
 		?>
         <div class="<?php echo join( ' ', $classes ); ?>" <?php echo $data ? join( ' ', $data ) : ''; ?>>
+            <i class="fa"></i>
 			<?php
 			//			if ( !preg_match( '!<p>!', $content ) && !preg_match( '!<div>!', $content ) ) {
 			//				$content = sprintf( '<p>%s</p>', $content );

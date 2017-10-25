@@ -13,16 +13,16 @@
             font-size: 15px;
             color: #777;
             .progress-number,
-            .progress-label{
+            .progress-label {
                 display: block;
                 text-align: center;
                 line-height: 1;
             }
-            .progress-number{
+            .progress-number {
                 font-size: 20px;
                 margin: 15px 0 10px 0;
             }
-            .progress-label{
+            .progress-label {
                 font-size: 14px;
                 margin-bottom: 15px;
             }
@@ -247,6 +247,122 @@ button[data-counter] {
     &:hover {
         &:after {
             background: #52c8ff;
+        }
+    }
+}
+
+.quiz-result {
+    max-width: 400px;
+    margin: 50px auto 20px;
+    text-align: center;
+    .result-grade {
+        .result-achieved,
+        .result-require {
+            display: block;
+            width: 100px;
+            margin: 0 auto;
+        }
+        .result-achieved {
+            font-size: 36px;
+            border-bottom: 2px solid #04adff;
+        }
+        .result-message {
+            font-size: 14px;
+        }
+    }
+    &.failed {
+        .result-achieved {
+            color: #c55757;
+        }
+        .result-message {
+            strong {
+                color: #c55757;
+            }
+        }
+    }
+
+    &.passed {
+        .result-achieved {
+            color: #04adff;
+        }
+        .result-message {
+            strong {
+                color: #04adff;
+            }
+        }
+    }
+
+    .result-statistic{
+        list-style: none;
+        text-align: left;
+        margin: 0;
+        padding:0;
+        .result-statistic-field{
+            display: flex;
+            label, p{
+                flex: 1;
+                margin: 0;
+            }
+            label{
+                font-weight: bold;
+            }
+            p{
+                text-align: right;
+            }
+        }
+    }
+}
+
+.circle-bar {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-color: #DDD;
+    &:before {
+        border-radius: 50%;
+        border: 10px solid #DDD;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 0;
+        content: '';
+        box-sizing: border-box;
+    }
+    .before,
+    .after {
+        border-radius: 50%;
+        border: 10px solid #14c4ff;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 0;
+        box-sizing: border-box;
+
+    }
+
+    .before {
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        transform: rotate(45deg);
+    }
+
+    .after {
+        border-color: #14c4ff;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        transform: rotate(45deg);
+    }
+
+    &.bg50 {
+        .after {
+            transform: rotate(45deg);
+            z-index: 10;
+            border-left-color: inherit;
+            border-bottom-color: inherit;
         }
     }
 }

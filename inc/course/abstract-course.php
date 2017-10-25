@@ -895,7 +895,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			return false;
 		}
 
-		return apply_filters( 'learn-press/is-viewing-item', $item_id == $item->get_id(), $item_id, $this->get_id() );
+		return apply_filters( 'learn-press/is-viewing-item', false !== $item_id ? $item_id == $item->get_id() : $item->get_id(), $item_id, $this->get_id() );
 	}
 
 	public function is_current_item( $item_id ) {
@@ -1127,8 +1127,75 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn_press_course_item_link', $item_links[ $key ], $item_id, $this );
 	}
 
-	public function get_next_item( $args = null ) {
+	/**
+	 * Get course's item at a position.
+	 *
+	 * @param int $at
+	 *
+	 * @return bool|mixed
+	 */
+	public function get_item_at( $at ) {
+		if ( ! $items = $this->get_items() ) {
+			return false;
+		}
 
+		return ! empty( $items[ $at ] ) ? $items[ $at ] : false;
+	}
+
+	/**
+	 * Get position of an item in course curriculum.
+	 *
+	 * @param LP_Course_Item|LP_User_Item|int $item
+	 *
+	 * @return mixed
+	 */
+	public function get_item_position( $item ) {
+		if ( ! $items = $this->get_items() ) {
+			return false;
+		}
+		$item_id = is_a( $item, 'LP_User_Item' ) || is_a( $item, 'LP_Course_Item' ) ? $item->get_id() : absint( $item );
+
+		return array_search( $item_id, $items );
+	}
+
+	public function get_current_item() {
+		return $this->is_viewing_item();
+	}
+
+	public function get_next_item( $args = null ) {
+		$current = $this->get_current_item();
+		$items   = $this->get_items();
+		$next    = false;
+		if ( $count = sizeof( $items ) ) {
+			if ( $current === false ) {
+				$next = $items[0];
+			} else {
+				$current_position = $this->get_item_position( $current );
+				if ( $current_position < $count - 1 ) {
+					$current_position ++;
+				}
+				$next = $items[ $current_position ];
+			}
+		}
+
+		return apply_filters( 'learn-press/course/next-item', $next, $this->get_id() );
+	}
+
+	public function get_prev_item( $args = null ) {
+		$current = $this->get_current_item();
+		$items   = $this->get_items();
+		$prev    = false;
+		if ( $count = sizeof( $items ) ) {
+			if ( $current !== false ) {
+				$current_position = $this->get_item_position( $current );
+				if ( $current_position > 0 ) {
+					$current_position --;
+				}
+				$prev = $items[ $current_position ];
+			}
+		}
+
+		return apply_filters( 'learn-press/course/prev-item', $prev, $this->get_id() );
 	}
 
 	public function get_next_item_html( $args = null ) {
@@ -1477,6 +1544,14 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		}
 
 		return apply_filters( 'learn_press_count_user_completed_items', $count, $this->get_id(), $user_id );
+	}
+
+	public function count_items() {
+		if ( $items = $this->get_items() ) {
+			return sizeof( $items );
+		}
+
+		return 0;
 	}
 
 	/**

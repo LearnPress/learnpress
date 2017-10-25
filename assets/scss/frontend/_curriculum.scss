@@ -311,11 +311,14 @@ ul.learn-press-nav-tabs {
                         border-color: #00adff;
                         color: #00adff;
                     }
-                    &.item-failed {
-                        border-color: #FF0000;
-                        color: #FF0000;
-                        &:before {
-                            content: "\f00d";
+                    &.item-failed,
+                    &.failed {
+                        .course-item-status {
+                            border-color: #FF0000;
+                            color: #FF0000;
+                            &:before {
+                                content: "\f00d";
+                            }
                         }
                     }
                 }
@@ -452,7 +455,7 @@ body {
             }
         }
     }
-    #ifr-course-item{
+    #ifr-course-item {
         position: absolute;
         top: 0;
         left: 0;
@@ -598,11 +601,15 @@ body {
             height: 10px;
             background: #DDD;
             border-radius: 5px;
+            overflow: hidden;
+            position: relative;
             .lp-progress-value {
                 height: 10px;
-                min-width: 20%;
                 background-color: #008cff;
                 border-radius: 5px;
+                margin-left: -100%;
+                position: absolute;
+                width: 100%;
             }
         }
     }
@@ -669,6 +676,7 @@ body {
         height: 60px;
         line-height: 60px;
         padding: 0 15px;
+        margin: 0;
     }
 }
 
@@ -682,6 +690,19 @@ body {
         line-height: 30px;
         padding: 0 10px;
         font-size: 14px;
+    }
+}
+
+.learn-press-form {
+    &.completed {
+        button {
+            &:before {
+                font-family: fontawesome;
+                content: '\f00c';
+                font-size: 18px;
+                margin-right: 10px;
+            }
+        }
     }
 }
 

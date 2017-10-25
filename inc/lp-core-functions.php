@@ -1610,6 +1610,9 @@ function learn_press_send_json( $data ) {
 function learn_press_maybe_send_json( $data, $callback = null ) {
 	if ( learn_press_is_ajax() ) {
 		is_callable( $callback ) && call_user_func( $callback );
+		if ( empty( $data['message'] ) && ( $message = learn_press_get_messages( true ) ) ) {
+			$data['message'] = $message;
+		}
 		learn_press_send_json( $data );
 	}
 

@@ -93,6 +93,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $this->get_data( 'ref_id' );
 	}
 
+	public function get_result( $prop = 'result', $force = false ) {
+		return $this->get_results( $prop, $force );
+	}
+
 	/**
 	 * Calculate result of quiz.
 	 *
@@ -116,7 +120,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				'question_correct'  => 0,
 				'status'            => $this->get_status(),
 				'grade'             => '',
-				'result'            => 0
+				'result'            => 0,
+				'time_spend'        => $this->get_time_interval( 'display' )
 			);
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {

@@ -165,6 +165,10 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return intval( $this->get_data( 'parent_id' ) );
 	}
 
+	public function get_result( $prop = 'result', $force = false ) {
+		return false;
+	}
+
 	public function read_meta() {
 		global $wpdb;
 		$query = $wpdb->prepare( "

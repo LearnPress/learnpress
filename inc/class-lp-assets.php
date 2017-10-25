@@ -69,6 +69,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'learn-press/frontend-default-scripts',
 			array(
 				'watchjs'          => self::url( 'js/vendor/watch.js' ),
+				'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
 				'lp-vue'           => array(
 					'url' => self::url( 'js/vendor/vue.js' ),
 					'ver' => '2.4.0'

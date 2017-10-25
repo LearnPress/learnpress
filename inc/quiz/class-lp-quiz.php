@@ -198,7 +198,19 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_passing_grade() {
-			return $this->get_data( 'passing_grade' );
+			$type  = $this->get_passing_grade_type();
+			$value = $this->get_data( 'passing_grade' );
+			switch ( $type ) {
+				case 'percentage':
+					$value = "{$value}%";
+					break;
+				case 'point':
+					break;
+				default:
+					$value = false;
+			}
+
+			return $value;
 		}
 
 		/**

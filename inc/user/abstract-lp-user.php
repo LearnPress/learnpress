@@ -143,7 +143,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$this->_curd->read_course( $this->get_id(), $course_id );
 			if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
 				$course_data[ $this->get_id() ][ $course_id ] = new LP_User_Item_Course( $course_item );
-			}else{
+			} else {
 				$course_data[ $this->get_id() ][ $course_id ] = new LP_User_Item_Course( $course_id );
 			}
 		}
@@ -672,10 +672,16 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		$grade = false;
 
+		$course_data = $this->get_course_data( $course_id );
+
+		if ( $course_data && $item_result = $course_data->get_item_result( $item_id, false ) ) {
+			$grade = isset( $item_result['grade'] ) ? $item_result['grade'] : false;
+		}
+		return $grade;
 		if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
 			$status = $item['status'];
 			if ( $status === 'completed' ) {
-				$grade = learn_press_get_user_item_meta( $item['user_item_id'], '_grade', true );
+				$grade = learn_press_get_user_item_meta( $item['user_item_id'], '_quiz_grade', true );
 			}
 		}
 

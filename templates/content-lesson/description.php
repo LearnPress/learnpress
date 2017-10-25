@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $lesson = LP_Global::course_item();
 if ( ! $content = $lesson->get_content() ) {
+	learn_press_get_template( 'content-lesson/no-content.php' );
+
 	return;
 }
 ?>
