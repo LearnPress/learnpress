@@ -3,7 +3,7 @@
  * Template for display content of lesson
  *
  * @author  ThimPress
- * @version 2.1.9
+ * @version 2.1.9.2
  */
 global $lp_query, $wp_query;
 $user          = learn_press_get_current_user();

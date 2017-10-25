@@ -204,7 +204,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Update language
 
 = 2.1.9 =
-+ Fixed lesons lost when press preview button in edit course page.
++ Fixed lessons lost when press preview button in edit course page.
 + Fixed the "Buy this course" button display after course is "finished"
 + Fixed Courses and Instructor Tab from Profile page not shows courses
 + Fixed Profile does not show courses created by himself
@@ -269,7 +269,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Fixed a bug when using template_include filter
 
 = 2.1.5.2 =
-+ Fixed some warning messaages
++ Fixed some warning messages
 + Fixed orders display missing in user profile
 
 = 2.1.5 =
