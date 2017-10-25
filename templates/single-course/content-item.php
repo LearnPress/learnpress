@@ -14,6 +14,11 @@ $user = learn_press_get_current_user();
 
 ?>
 <div id="learn-press-content-item">
+	<?php if ( 1==0 &&! learn_press_is_content_only() ) { ?>
+        <iframe id="ifr-course-item" src="<?php echo learn_press_get_course_popup_link();?>" onreadystatechange="window.xxxx()">
+
+        </iframe>
+	<?php } ?>
 
 	<?php do_action( 'learn-press/course-item-content-header', $lp_course_item->get_id(), $lp_course->get_id() ); ?>
 

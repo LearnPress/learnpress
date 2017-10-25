@@ -17,7 +17,7 @@ if ( $prev_id = $user->get_prev_question( $quiz->get_id(), $course_id ) ) {
 	?>
 	<?php do_action( 'learn-press/quiz/before-prev-question-button' ); ?>
 
-    <form name="prev-question" class="prev-question form-button" method="post"
+    <form name="prev-question" class="prev-question form-button lp-form" method="post"
           action="<?php echo $quiz->get_question_link( $prev_id ); ?>"
           @submit="prevQuestion">
 
@@ -40,7 +40,7 @@ if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) {
 	?>
 	<?php do_action( 'learn-press/quiz/before-next-question-button' ); ?>
 
-    <form name="next-question" class="next-question form-button" method="post"
+    <form name="next-question" class="next-question form-button lp-form" method="post"
           action="<?php echo $quiz->get_question_link( $next_id ); ?>"
           @submit="nextQuestion">
 

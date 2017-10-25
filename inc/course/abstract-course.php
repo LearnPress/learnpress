@@ -222,7 +222,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function get_permalink() {
-		return $this->permalink;
+		return get_the_permalink( $this->get_id() );
 	}
 
 	public function is_visible() {
@@ -1087,7 +1087,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			switch ( $item_type ) {
 				case 'lp_lesson':
 				case 'lp_quiz':
-					$permalink = trailingslashit( get_the_permalink( $this->get_id() ) );
+					$permalink = trailingslashit( $this->get_permalink() );
 					$post_name = get_post_field( 'post_name', $item_id );
 					$slug      = '';
 					if ( $item_type == 'lp_quiz' ) {

@@ -68,7 +68,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-
+				'watchjs'          => self::url( 'js/vendor/watch.js' ),
 				'lp-vue'           => array(
 					'url' => self::url( 'js/vendor/vue.js' ),
 					'ver' => '2.4.0'
@@ -101,7 +101,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'course'           => array(
 					'url'  => self::url( 'js/frontend/course.js' ),
-					'deps' => array( 'global', 'lp-vue', 'jquery-scrollbar' )
+					'deps' => array( 'global', 'lp-vue', 'jquery-scrollbar', 'watchjs' )
 				),
 				'profile-user'     => array(
 					'url'  => self::url( 'js/frontend/profile.js' ),
@@ -143,7 +143,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		 */
 		if ( $scripts = $this->_get_scripts() ) {
 			foreach ( $scripts as $handle => $data ) {
-				$enqueue = array_key_exists( 'enqueue', $data ) ? $data['enqueue'] : true;
+				$enqueue = is_array( $data ) && array_key_exists( 'enqueue', $data ) ? $data['enqueue'] : true;
 				/*switch ( $handle ) {
 					case 'checkout':
 						$enqueue = false;

@@ -249,11 +249,74 @@ add_action( 'learn-press/course-item-content', function () {
 
 }, 5 );
 
-add_filter( 'get_comment_link', function ( $link, $comment, $args, $cpage ) {
+add_action( 'init', function () {
+} );
+add_filter( 'wp_redirect', function ( $link ) {
+
+	if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
+		$referer = $_SERVER['HTTP_REFERER'];
+
+		$link = learn_press_get_course_redirect( $referer, $link );
+	}
 
 	return $link;
 
-}, 10, 4 );
+}, 10 );
+
+function learn_press_get_course_redirect( $referer, $link ) {
+
+	$info_a = parse_url( $referer );
+	$info_b = parse_url( $link );
+
+	$a = explode( '/', $info_a['path'] );
+	$a = array_filter( $a );
+
+	$b = explode( '/', $info_b['path'] );
+	$b = array_filter( $b );
+
+	$same = array_intersect_assoc( $a, $b );
+
+	$a = array_diff_assoc( $a, $same );
+	$b = array_diff_assoc( $b, $same );
+
+	$a = array_values( $a );
+	$b = array_values( $b );
+
+	if ( array_shift( $a ) === 'popup' ) {
+		unset( $a[0] );
+		if ( ! ( array_diff_assoc( $a, $b ) ) ) {
+			$link = '';
+			foreach ( array( 'scheme', 'host', 'port', 'path' ) as $v ) {
+				if ( ! isset( $info_a[ $v ] ) ) {
+					continue;
+				}
+
+				if ( $v == 'scheme' ) {
+					$sep = '://';
+				} elseif ( $v == 'host' ) {
+					$sep = '';
+				} elseif ( $v == 'port' ) {
+					$link .= ':';
+					$sep  = '';
+				} else {
+					$sep = '/';
+				}
+				$link = $link . $info_a[ $v ] . $sep;
+			}
+
+			if ( ! empty( $info_b['query'] ) ) {
+				$link .= '?' . $info_b['query'];
+			}
+
+			if ( ! empty( $info_b['fragment'] ) ) {
+				$link .= '#' . $info_b['fragment'];
+			}
+		}
+	}
+
+	return $link;
+}
+
 
 add_action( 'learn-press/before-content-item-summary/lp_lesson', function () {
 	$item = LP_Global::course_item();

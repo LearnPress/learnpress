@@ -18,3 +18,7 @@ if ( ! $content = $lesson->get_content() ) {
 ?>
 
 <div class="content-item-description lesson-description"><?php echo $content; ?></div>
+
+<form method="post">
+    <button>Login</button>
+</form>

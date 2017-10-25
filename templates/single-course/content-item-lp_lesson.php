@@ -10,14 +10,8 @@
 defined( 'ABSPATH' ) or die;
 $course = LP_Global::course();
 $item   = LP_Global::course_item();
-print_r( $_REQUEST );
-if ( array_key_exists( 'security', $_REQUEST ) ) {
-	if ( $item->verify_nonce( $_REQUEST['security'], 'complete' ) ) {
-		echo 'Completed';
-	} else {
-		echo 'Failed';
-	}
-}
+learn_press_get_template('content-lesson/title.php');
+learn_press_get_template('content-lesson/description.php');
 ?>
 <script type="text/html" id="content-item-lesson">
     <div class="content-item-summary">

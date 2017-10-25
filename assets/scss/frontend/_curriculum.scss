@@ -350,6 +350,7 @@ ul.learn-press-nav-tabs {
 }
 
 body {
+
     &.course-item-popup {
         overflow: hidden;
         _opacity: 0;
@@ -428,13 +429,37 @@ body {
 
         &.wpadminbar {
             #learn-press-course-curriculum,
-            #learn-press-content-item{
+            #learn-press-content-item {
                 top: 92px;
             }
-            #course-item-content-header{
+            #course-item-content-header {
                 top: 32px;
             }
         }
+        &.content-only {
+            #learn-press-content-item {
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 9999999;
+                #course-item-content-header,
+                #course-item-content-footer {
+                    display: none;
+                }
+                .content-item-scrollable {
+                    bottom: 0;
+                }
+            }
+        }
+    }
+    #ifr-course-item{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999999;
+        background: #FFF;
     }
 }
 

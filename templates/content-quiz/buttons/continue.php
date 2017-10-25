@@ -13,7 +13,7 @@ $user = LP_Global::user();
 ?>
 <?php do_action( 'learn-press/quiz/before-continue-button' ); ?>
 
-    <form name="continue-quiz" class="continue-quiz form-button" method="post"
+    <form name="continue-quiz" class="continue-quiz form-button lp-form" method="post"
           action="<?php echo $user->get_current_question( $user->get_current_item( get_the_ID() ), get_the_ID(), true ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-continue-button' ); ?>

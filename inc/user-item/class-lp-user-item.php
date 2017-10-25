@@ -133,13 +133,21 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return LP_User|int
 	 */
 	public function get_user( $return = '' ) {
-		if ( $uid = $this->get_data( 'user_id' ) ) {
-			if ( $return == '' ) {
-				return learn_press_get_user( $uid );
-			}
+		$uid = $this->get_data( 'user_id' );
+		if ( $return == '' ) {
+			return $uid ? learn_press_get_user( $uid ) : new LP_User();
 		}
 
 		return $uid;
+	}
+
+	public function get_course( $return = '' ) {
+		$cid = $this->get_data( 'ref_id' );
+		if ( $return == '' ) {
+			return $cid ? learn_press_get_course( $cid ) : false;
+		}
+
+		return $cid;
 	}
 
 	/**
@@ -274,5 +282,33 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		$interval = $end->getTimestamp() - $start->getTimestamp();
 
 		return $interval;
+	}
+
+	public function current_user_can_view() {
+		$user = $this->get_user();
+		if ( false !== ( $view = $user->can_view_item( $this->get_id(), $this->get_course( 'id' ) ) ) ) {
+			return $view;
+		}
+
+		return false;
+	}
+
+	public function get_js_args() {
+		$course = $this->get_course();
+//		$args = array(
+//			'url'=>$course->get_item_link( $item->get_id() )
+//		)
+		$item_js = array(
+			'status'   => '',
+			'url'      => $course->get_item_link( $this->get_id() ),
+			'viewable' => ''
+		);
+
+		if ( ( $view = $this->current_user_can_view() ) !== false ) {
+			$item_js['status']   = $this->get_status();
+			$item_js['viewable'] = $view;
+		}
+
+		return $item_js;
 	}
 }

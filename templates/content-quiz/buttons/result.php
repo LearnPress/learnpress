@@ -17,7 +17,7 @@ global $wp;
 
 <?php do_action( 'learn-press/before-quiz-result-button' ); ?>
 
-<form name="show-quiz-result" class="show-quiz-result form-button" method="post" enctype="multipart/form-data">
+<form name="show-quiz-result" class="show-quiz-result form-button lp-form" method="post" enctype="multipart/form-data">
 
 	<?php do_action( 'learn-press/begin-quiz-result-button' ); ?>
 

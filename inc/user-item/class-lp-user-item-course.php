@@ -65,7 +65,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				'user_id'   => $this->get_user_id(),
 				'item_id'   => 0,
 				'item_type' => '',
-				'ref_id'    => $this->get_id(),
+				'ref_id'    => $course->get_id(),
 				'ref_type'  => get_post_type( $this->get_id() ),
 				'parent_id' => $this->get_data( 'parent_id' ),
 				'status'    => ''
@@ -533,10 +533,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return ! empty( $this->_items[ $id ] ) ? $this->_items[ $id ] : false;
 	}
 
-	public function get_course() {
-		return learn_press_get_course( $this->get_id() );
-	}
+//	public function get_course($return = '') {
+//		return learn_press_get_course( $this->get_id() );
+//	}
 
+	/**
+	 * Get js settings of course.
+	 *
+	 * @return array
+	 */
 	public function get_js_args() {
 		$js_args = false;
 		if ( $course = $this->get_course() ) {
@@ -554,25 +559,19 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return apply_filters( 'learn-press/course/single-params', $js_args, $this->get_course()->get_id() );
 	}
 
+	/**
+	 * Get js settings of course items.
+	 *
+	 * @return array
+	 */
 	public function get_items_for_js() {
 		$args = array();
 		if ( $items = $this->get_items() ) {
 			$user   = $this->get_user();
 			$course = $this->get_course();
 			foreach ( $items as $item ) {
-				if ( ( $view = $user->can( 'view-item', $item->get_id(), $this->get_id() ) ) !== false ) {
-					$item_js = array(
-						'status' => $item->get_status(),
-						'url'    => $course->get_item_link( $item->get_id() )
-					);
-				} else {
-					$item_js = array(
-						'status' => '',
-						'url'    => ''
-					);
-				}
 
-				$args[ $item->get_id() ] = $item_js;
+				$args[ $item->get_id() ] = $item->get_js_args();// $item_js;
 			}
 		}
 

@@ -857,7 +857,10 @@ if ( ! function_exists( 'learn_press_content_item_body_class' ) ) {
 		global $lp_course_item;
 
 		if ( $lp_course_item ) {
-			$classes[] = 'course-item-popup viewing-course-item viewing-course-item-' . $lp_course_item->get_id() . ' course-item-' . $lp_course_item->get_item_type();
+			$classes[] = 'course-item-popup';
+			$classes[] = 'viewing-course-item';
+			$classes[] = 'viewing-course-item-' . $lp_course_item->get_id();
+			$classes[] = 'course-item-' . $lp_course_item->get_item_type();
 		}
 
 		return $classes;
@@ -2444,7 +2447,7 @@ function learn_press_load_content_item_only( $name ) {
 	}
 }
 
-add_action( 'get_header', 'learn_press_load_content_item_only' );
+//add_action( 'get_header', 'learn_press_load_content_item_only' );
 
 
 // Fix issue with course content is duplicated if theme use the_content instead of $course->get_description()

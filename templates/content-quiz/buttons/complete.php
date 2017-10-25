@@ -13,7 +13,7 @@ $quiz = LP_Global::course_item_quiz();
 
 <?php do_action( 'learn-press/quiz/before-complete-button' );?>
 
-<form name="complete-quiz" class="complete-quiz form-button" method="post" enctype="multipart/form-data" @submit="completeItem">
+<form name="complete-quiz" class="complete-quiz form-button lp-form" method="post" enctype="multipart/form-data" @submit="completeItem">
 
 	<?php do_action( 'learn-press/quiz/begin-complete-button' );?>
 

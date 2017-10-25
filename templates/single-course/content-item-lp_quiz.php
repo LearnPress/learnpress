@@ -16,7 +16,7 @@ $user_item      = $user_course[ $quiz->get_id() ];
 $have_questions = $quiz->get_questions();
 $can_view_item  = $user->can( 'view-item', $quiz->get_id(), $course->get_id() );
 ?>
-<script type="text/html" id="content-item-quiz">
+<!--<script type="text/html" id="content-item-quiz">-->
     <div id="content-item-quiz" class="content-item-summary">
 
 		<?php
@@ -43,8 +43,8 @@ $can_view_item  = $user->can( 'view-item', $quiz->get_id(), $course->get_id() );
 
 		?>
     </div>
-</script>
-<lp_quiz_component></lp_quiz_component>
+<!--</script>
+//<lp_quiz_component></lp_quiz_component>-->
 <?php
 
 ///////////////////////////

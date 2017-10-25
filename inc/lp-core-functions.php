@@ -2496,7 +2496,6 @@ if ( ! empty( $_REQUEST['debug'] ) ) {
 
 function learn_press_debug() {
 	$args  = func_get_args();
-	$arg   = true;
 	$debug = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 3 );
 
 	echo '<pre>';
@@ -2507,9 +2506,17 @@ function learn_press_debug() {
 		}
 	}
 	echo '</pre>';
+	print_r( $args );
+	print_r( debug_backtrace() );
 	if ( $arg === true ) {
 		die( __FUNCTION__ );
 	}
+}
+
+function learn_press_is_content_only() {
+	global $wp;
+
+	return ! empty( $wp->query_vars['content-item-only'] );
 }
 
 if ( ! function_exists( 'learn_press_profile_localize_script' ) ) {
@@ -2724,6 +2731,20 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 			);
 		}
 	}
+
+	return $link;
+}
+
+function learn_press_get_course_popup_link() {
+	$link = '';
+	if ( $item = LP_Global::course_item() ) {
+		$link = $item->get_permalink();
+	}
+	$course           = LP_Global::course();
+	$course_link      = $course->get_permalink();
+	$course_base_link = dirname( $course_link );
+
+	$link = str_replace( $course_base_link, $course_base_link . '/popup', $link );
 
 	return $link;
 }

@@ -389,7 +389,6 @@ class LP_Quiz_Factory {
 				$quiz_data->add_question_answer( $questions );
 				$quiz_data->update();
 			}
-
 		}
 		catch ( Exception $ex ) {
 			return $ex;
