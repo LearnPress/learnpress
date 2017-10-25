@@ -55,7 +55,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 */
 	public function read_items() {
 		$user_curd = new LP_User_CURD();
-		$user_curd->read_course( $this->get_user_id(), $this->get_course()->get_id() );
+		$user_curd->read_course( $this->get_user_id(), $this->get_id() );
 
 		$this->_course = $course = learn_press_get_course( $this->get_id() );
 		$this->_set_data( $this->_item );
@@ -178,8 +178,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return float|int
 	 */
 	public function get_results( $prop = 'result' ) {
-
-		$course_result = $this->get_course()->get_data( 'course_result' );
+		if ( ! $course = $this->get_course() ) {
+			return false;
+		}
+		$course_result = $course->get_data( 'course_result' );
 		$results       = false;
 		switch ( $course_result ) {
 			// Completed lessons per total
@@ -556,7 +558,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			);
 		}
 
-		return apply_filters( 'learn-press/course/single-params', $js_args, $this->get_course()->get_id() );
+		return apply_filters( 'learn-press/course/single-params', $js_args, $this->get_id() );
 	}
 
 	/**
