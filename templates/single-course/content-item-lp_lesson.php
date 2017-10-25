@@ -21,7 +21,8 @@ if ( $user_data && in_array( 'administrator', $user_data->roles ) ) {
 $block_option = get_post_meta( $course->id, '_lp_block_lesson_content', true );
 $duration     = $course->get_user_duration_html( $user->id, true );
 
-if ( ! $admin && $course->is_expired() && ( $block_option == 'yes' ) && ( get_post_meta( $item->id, '_lp_preview', true ) !== 'yes' ) ) {
+
+if ( ! $admin && $course->is_expired() <= 0 && ( $block_option == 'yes' ) && ( get_post_meta( $item->id, '_lp_preview', true ) !== 'yes' ) ) {
 	learn_press_get_template( 'content-lesson/block-content.php' );
 } else {
 	?>
