@@ -22,13 +22,6 @@ if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
 }
 
-add_action( 'plugins_loaded', function () {
-	error_reporting( E_ALL );
-	ini_set( 'error_reporting', 1 );
-} );
-
-
-
 if ( ! class_exists( 'LearnPress' ) ) {
 
 	/**
