@@ -12,7 +12,8 @@
         <ul class="list-added-items">
             <template v-for="(item, index) in addedItems">
                 <li @click="removeItem(item)" class="section-item removable" :class="item.type">
-                    <span class="icon"></span>
+                    <input type="checkbox" checked>
+
                     <span class="title">{{item.title}}</span>
                 </li>
             </template>

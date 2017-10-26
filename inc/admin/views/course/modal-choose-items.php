@@ -12,7 +12,7 @@ learn_press_admin_view( 'course/pagination' );
 
 <script type="text/x-template" id="tmpl-lp-course-choose-item">
     <li class="section-item" :class="[item.type, item.added ? 'added' : 'addable']" @click="add">
-        <span class="icon"></span>
+        <input type="checkbox" :checked="item.added === true">
         <span class="title">{{item.title}}</span>
     </li>
 </script>
