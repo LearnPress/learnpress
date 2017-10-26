@@ -10,9 +10,97 @@
 
     'use strict';
 
+    function LP_Storage(key) {
+        var storage = window.localStorage;
+        this.key = key;
+        this.get = function (id) {
+            var val = storage.getItem(this.key) || '',
+                sections = val.split(',');
+            if (id) {
+                id = id + '';
+                var pos = sections.indexOf(id);
+                if (pos >= 0) {
+                    return sections[pos];
+                }
+            }
+            return sections;
+        }
+        this.set = function (sections) {
+            if (typeof sections !== 'string') {
+                sections = sections.join(',');
+            }
+            storage.setItem(this.key, sections);
+        }
+        this.hasSection = function (id) {
+            id = id + '';
+            var sections = this.get(),
+                at = sections.indexOf(id);
+
+            return at >= 0 ? at : false;
+        }
+        this.add = function (id) {
+            id = id + '';
+            var sections = this.get();
+            if (this.hasSection(id)) {
+                return;
+            }
+            sections.push(id);
+            this.set(sections);
+        }
+        this.remove = function (id) {
+            id = id + '';
+            var at = this.hasSection(id);
+            if (at !== false) {
+                var sections = this.get();
+                sections.splice(at, 1);
+                this.set(sections);
+            }
+        }
+    }
+
     function LP_Course(settings) {
+        var sectionStorage = new LP_Storage('sections');
 
+        function toggleAnswerOptions() {
+            var $el = $(event.target),
+                $chk = false;
+            if ($el.is('input.option-check')) {
+                return;
+            }
 
+            $chk = $el.closest('.answer-option').find('input.option-check');
+
+            if ($chk.is(':disabled')) {
+                return;
+            }
+            if ($chk.is(':checkbox')) {
+                $chk[0].checked = !$chk[0].checked;
+            } else {
+                $chk[0].checked = true;
+            }
+        }
+
+        function toggleSection() {
+            var id = $(this).closest('.section').data('section-id');
+            $(this).siblings('.section-content').slideToggle(function () {
+                if ($(this).is(':visible')) {
+                    sectionStorage.remove(id);
+                } else {
+                    sectionStorage.add(id);
+                }
+            });
+        }
+
+        var hiddenSections = sectionStorage.get(),
+            sections = $('.curriculum-sections').find('.section');
+
+        for (var i = 0; i < hiddenSections.length; i++) {
+            sections.filter('[data-section-id="' + hiddenSections[i] + '"]').find('.section-content').hide();
+        }
+
+        $(document)
+            .on('click', '.answer-options .answer-option', toggleAnswerOptions)
+            .on('click', '.section-header', toggleSection);
     }
 
     $(document).ready(function () {
@@ -75,8 +163,6 @@
                 //parent.window && (parent.window.open(link, '_blank').focus());
             }
         });
-
-
 
 
         //}

@@ -123,7 +123,7 @@ ul.learn-press-nav-tabs {
             }
             .section-desc {
                 font-size: 14px;
-                font-style: italic;
+                font-style: italic;;
             }
             .section-meta {
                 display: table-cell;
@@ -370,7 +370,7 @@ body {
             .section-header {
                 padding: 0 15px;
                 .section-desc {
-                    display: none;
+                    margin: -10px 0 5px;
                 }
             }
             .course-item {
@@ -559,8 +559,8 @@ body {
                         //content: "\f00c";
                     }
                 }
-                &.current{
-                    a{
+                &.current {
+                    a {
                         color: #FFF;
                     }
                 }
@@ -689,6 +689,7 @@ body {
     border-top: 1px solid #DDD;
     bottom: 0;
     left: 400px;
+    padding: 15px;
     button,
     .lp-button {
         height: 30px;
@@ -715,10 +716,17 @@ body {
     body.course-item-popup {
         #learn-press-course-curriculum {
             width: 300px;
+            .progress-bg {
+                width: 40px;
+            }
         }
         #content-item-nav,
-        #learn-press-content-item {
+        #learn-press-content-item,
+        #course-item-content-footer{
             left: 300px;
+        }
+        .section-desc{
+            display: none;
         }
     }
 }
@@ -729,7 +737,8 @@ body {
             width: 300px;
         }
         #content-item-nav,
-        #learn-press-content-item {
+        #learn-press-content-item,
+        #course-item-content-footer{
             left: 300px;
         }
         #learn-press-content-item {
@@ -747,7 +756,8 @@ body {
             width: 200px;
         }
         #content-item-nav,
-        #learn-press-content-item {
+        #learn-press-content-item,
+        #course-item-content-footer{
             left: 200px;
         }
         #learn-press-content-item {

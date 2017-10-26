@@ -903,7 +903,6 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 top: 60px;
                 bottom: 0;
                 left: 0;
-                width: 400px;
                 background: #FFF;
                 border-right: 1px solid #DDD;
                 overflow: auto;
@@ -915,7 +914,6 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 z-index: 99999;
                 background: #FFF;
                 top: 60px;
-                left: 400px;
                 right: 0;
                 bottom: 0;
                 overflow: hidden;
