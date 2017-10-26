@@ -2019,10 +2019,13 @@ class LP_Abstract_User {
 				}
 			}
 		}
-		if ( $field && array_key_exists( $field, $user_course_info[$this->id][$course_id] ) ) {
-			$info = $user_course_info[$this->id][$course_id][$field];
-		} elseif ( isset( $user_course_info[$this->id][$course_id] ) ) {
-			$info = $user_course_info[$this->id][$course_id];
+		$info = array();
+		if ( isset( $user_course_info[$this->id][$course_id] ) ) {
+			if ( $field && array_key_exists( $field, $user_course_info[$this->id][$course_id] ) ) {
+				$info = $user_course_info[$this->id][$course_id][$field];
+			} else {
+				$info = $user_course_info[$this->id][$course_id];
+			}
 		}
 
 		$this->_parse_item_order_of_course( $course_id );
