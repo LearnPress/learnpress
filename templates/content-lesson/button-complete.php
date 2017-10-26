@@ -26,8 +26,7 @@ $security  = $item->create_nonce( 'complete' );
 	do_action( 'learn-press/lesson/before-complete-button' );
 	?>
 	<?php if ( $completed ) { ?>
-        <button class="button-complete-item button-complete-lesson"
-                disabled="disabled"><?php echo __( 'Completed', 'learnpress' ); ?></button>
+        <p><i class="fa fa-check"></i> <?php echo __( 'Completed', 'learnpress' ); ?></p>
 	<?php } else { ?>
         <input type="hidden" name="id" value="<?php echo $item->get_id(); ?>"/>
         <input type="hidden" name="course_id" value="<?php echo $course->get_id(); ?>"/>

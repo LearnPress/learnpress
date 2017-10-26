@@ -11,11 +11,19 @@
         padding: 0;
         .lp-payment-method {
             margin-bottom: 20px;
-            label{
+            label {
                 display: block;
                 background: #F5F5F5;
                 padding: 10px 20px;
                 line-height: 1;
+                img {
+                    vertical-align: middle;
+                }
+            }
+            &.selected {
+                label {
+                    background: $second-color;
+                }
             }
         }
         .payment-method-form {

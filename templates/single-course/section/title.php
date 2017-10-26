@@ -37,7 +37,7 @@ $title = $section->get_title();
         <div class="section-meta">
             <div class="learn-press-progress section-progress" title="<?php echo intval( $percent ); ?>%">
                 <div class="progress-bg">
-                    <div class="progress-active"
+                    <div class="progress-active primary-background-color"
                          style="left: <?php echo $percent; ?>%;">
                     </div>
                 </div>

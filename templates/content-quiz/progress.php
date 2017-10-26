@@ -63,7 +63,7 @@ return;
 ?>
 <div title="0%" class="learn-press-progress quiz-progress">
     <div class="progress-bg">
-        <div class="progress-active" style="left: <?php echo $percent; ?>%;"
+        <div class="progress-active primary-background-color" style="left: <?php echo $percent; ?>%;"
              data-percent="<?php echo $percent; ?>%"></div>
     </div>
     <span class="xxxx" style="left: <?php echo $percent; ?>%">

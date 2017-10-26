@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <h4><?php _e( 'Additional Information', 'learnpress' ); ?></h4>
 
-    <textarea name="order_comments"></textarea>
+    <textarea name="order_comments" class="order-comments"
+              placeholder="<?php _e( 'Note to administrator', 'learnpress' ); ?>"></textarea>
 
 </div>

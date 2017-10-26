@@ -1,3 +1,13 @@
+// Global variables
+$primary-color: #00adff;
+
+$second-color: #e7f7ff;
+
+$primary-bg-color: #000;
+$primary-bg-color-before: #000;
+$primary-bg-color-after: #000;
+
+// Import
 @import "mixin.scss";
 @import "frontend/checkout";
 @import "frontend/form";
@@ -133,6 +143,11 @@ ul.learn-press-courses {
     }
 }
 
+.order-comments {
+    width: 100%;
+    min-height: 150px;
+}
+
 .learn-press-progress {
     position: relative;
     .progress-bg {
@@ -144,7 +159,7 @@ ul.learn-press-courses {
         .progress-active {
             height: 100%;
             width: 100%;
-            background: #00adff;
+            //background: #00adff;
             position: absolute;
             left: 50%;
             margin-left: -100%;
@@ -269,6 +284,30 @@ ul.learn-press-courses {
             }
         }
     }
+}
+
+.primary-color {
+    color: #00adff;
+}
+
+.primary-color-before {
+    &:before {
+        color: #00adff;
+    }
+}
+
+.primary-color-after {
+    &:after {
+        color: #00adff;
+    }
+}
+
+.primary-background-color {
+    background: #00adff;
+}
+
+.primary-background-color {
+    background: #00adff;
 }
 
 @media screen and (max-width: 768px) {

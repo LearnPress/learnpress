@@ -1,8 +1,6 @@
 ;(function ($, settings) {
     "use strict";
 
-    if (!settings) return;
-
     if (window.LP === undefined) {
         window.LP = {};
     }
@@ -286,10 +284,12 @@
     }
 
     $(document).ready(function () {
-        LP.$checkout = new Checkout(settings);
+        if (typeof lpCheckoutSettings !== 'undefined') {
+            LP.$checkout = new Checkout(lpCheckoutSettings);
+        }
     })
 
-})(jQuery, ( typeof lpCheckoutSettings !== 'undefined') || false);
+})(jQuery);
 //
 // ;
 // (function ($) {

@@ -439,6 +439,9 @@ body {
                 top: 32px;
             }
         }
+        .content-item-summary{
+            margin-bottom: 20px;
+        }
         &.content-only {
             #learn-press-content-item {
                 left: 0;
@@ -628,6 +631,7 @@ body {
     position: fixed;
     height: 60px;
     right: 0;
+    @include box-sizing(border-box);
 }
 
 #course-item-content-header {
@@ -722,10 +726,10 @@ body {
         }
         #content-item-nav,
         #learn-press-content-item,
-        #course-item-content-footer{
+        #course-item-content-footer {
             left: 300px;
         }
-        .section-desc{
+        .section-desc {
             display: none;
         }
     }
@@ -738,7 +742,7 @@ body {
         }
         #content-item-nav,
         #learn-press-content-item,
-        #course-item-content-footer{
+        #course-item-content-footer {
             left: 300px;
         }
         #learn-press-content-item {
@@ -757,7 +761,7 @@ body {
         }
         #content-item-nav,
         #learn-press-content-item,
-        #course-item-content-footer{
+        #course-item-content-footer {
             left: 200px;
         }
         #learn-press-content-item {
