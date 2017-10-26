@@ -15,7 +15,7 @@ if ( ! $hint = $question->get_hint() ) {
 	return;
 }
 ?>
-<div class="question-hint">
+<div class="question-hint-content">
     <strong class="hint-title"><?php esc_html_e( 'Hint:', 'learnpress' ); ?></strong>
 	<?php echo $hint; ?>
 </div>

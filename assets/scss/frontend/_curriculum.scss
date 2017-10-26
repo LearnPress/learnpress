@@ -295,7 +295,7 @@ ul.learn-press-nav-tabs {
                     padding-top: 1px;
                     &.status-started {
                         &:before {
-                            content: "\f141";
+                            //content: "\f141";
                         }
                     }
                     &.status-completed {
@@ -557,6 +557,11 @@ body {
                     color: #00adff;
                     &:after {
                         //content: "\f00c";
+                    }
+                }
+                &.current{
+                    a{
+                        color: #FFF;
                     }
                 }
             }

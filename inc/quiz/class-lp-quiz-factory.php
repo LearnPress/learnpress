@@ -26,6 +26,7 @@ class LP_Quiz_Factory {
 			'check-answer-quiz' => 'check_answer',
 			'show-hint-quiz'    => 'hint_answer',
 			'show-result-quiz'  => 'show_result',
+			'show-review-quiz'  => 'show_review',
 
 			////
 			'retake-quiz'       => 'retake_quiz',
@@ -200,7 +201,7 @@ class LP_Quiz_Factory {
 			} else {
 				if ( $course = learn_press_get_course( $course_id ) ) {
 					$quiz     = $course->get_item( $quiz_id );
-					$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
+					$redirect = $quiz->get_permalink();// _question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ), true );
 
 					$result['result']   = 'success';
 					$result['redirect'] = apply_filters( 'learn-press/quiz/completed-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
@@ -353,12 +354,24 @@ class LP_Quiz_Factory {
 		$quiz_id = LP_Request::get_int( 'quiz-id' );
 		$quiz    = learn_press_get_quiz( $quiz_id );
 		if ( $quiz ) {
-			$redirect = $quiz->get_question_link( $quiz->get_question_at( 0 ) );
-			$redirect = add_query_arg( 'result', 'yes', $redirect );
+			$redirect = $quiz->get_permalink();
 		} else {
 			$redirect = get_the_permalink();
 		}
 		wp_redirect( $redirect );
+		exit();
+	}
+
+	public static function show_review() {
+		$quiz_id = LP_Request::get_int( 'quiz-id' );
+		$quiz    = learn_press_get_quiz( $quiz_id );
+		if ( $quiz ) {
+			$redirect = $quiz->get_question_link( $quiz->get_question_at( 0 ) );
+		} else {
+			$redirect = get_the_permalink();
+		}
+		wp_redirect( $redirect );
+		exit();
 	}
 
 	/**

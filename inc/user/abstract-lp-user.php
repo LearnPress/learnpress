@@ -122,13 +122,17 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Get data for a course user has enrolled.
 	 *
-	 * @param int $course_id
+	 * @param int|LP_Abstract_Course $course_id
 	 *
 	 * @return LP_User_Item_Course|LP_User_Item_Quiz|bool
 	 */
 	public function get_course_data( $course_id ) {
 
 		static $course_data = array();
+
+		if ( is_a( $course_id, 'LP_Abstract_Course' ) ) {
+			$course_id = $course_id->get_id();
+		}
 
 		if ( empty( $course_data[ $this->get_id() ] ) ) {
 			$course_data[ $this->get_id() ] = array();
@@ -162,6 +166,16 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return LP_User_Item_Quiz|LP_User_Item|bool
 	 */
 	public function get_item_data( $item_id, $course_id ) {
+		return $this->get_user_item( $item_id, $course_id );
+	}
+
+	/**
+	 * @param int $item_id
+	 * @param int $course_id
+	 *
+	 * @return LP_User_Item_Quiz|LP_User_Item|bool
+	 */
+	public function get_user_item( $item_id, $course_id ) {
 		$data = false;
 		if ( $course_data = $this->get_course_data( $course_id ) ) {
 			$data = $course_data->get_item( $item_id );
@@ -677,6 +691,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( $course_data && $item_result = $course_data->get_item_result( $item_id, false ) ) {
 			$grade = isset( $item_result['grade'] ) ? $item_result['grade'] : false;
 		}
+
 		return $grade;
 		if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
 			$status = $item['status'];
@@ -2009,12 +2024,10 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			return $count;
 		}
 
-		global $wpdb;
-
-		$count   = 0;
-		$history = $this->get_quiz_history( $quiz_id, $course_id );
-		if ( $history ) {
-			$count = sizeof( $history ) - 1;
+		$count     = 0;
+		$user_item = $this->get_item_data( $quiz_id, $course_id );
+		if ( $user_item ) {
+			$count = $user_item->count_history() - 1;
 		}
 
 		return apply_filters( 'learn_press_user_count_retaken_quiz', $count, $quiz_id, $course_id, $this->get_id() );

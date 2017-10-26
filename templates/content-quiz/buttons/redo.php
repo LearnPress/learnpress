@@ -10,7 +10,9 @@
 defined( 'ABSPATH' ) or die();
 
 $course = LP_Global::course();
+$user = LP_Global::user();
 $quiz   = LP_Global::course_item_quiz();
+$quiz_data = $user->get_item_data($quiz->get_id(), $course->get_id());
 
 ?>
 
@@ -20,7 +22,7 @@ $quiz   = LP_Global::course_item_quiz();
 
 	<?php do_action( 'learn-press/begin-quiz-redo-button' ); ?>
 
-    <button type="submit"><?php _e( 'Redo', 'learnpress' ); ?></button>
+    <button type="submit" data-counter="<?php echo $quiz_data->can_retake_quiz();?> "><?php _e( 'Redo', 'learnpress' ); ?></button>
 
 	<?php do_action( 'learn-press/end-quiz-redo-button' ); ?>
 

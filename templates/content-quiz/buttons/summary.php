@@ -21,7 +21,7 @@ global $wp;
 
 	<?php do_action( 'learn-press/begin-quiz-result-button' ); ?>
 
-    <button type="submit"><?php _e( 'Result', 'learnpress' ); ?></button>
+    <button type="submit"><?php _e( 'Summary', 'learnpress' ); ?></button>
 
 	<?php do_action( 'learn-press/end-quiz-result-button' ); ?>
 

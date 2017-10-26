@@ -121,7 +121,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				'status'            => $this->get_status(),
 				'grade'             => '',
 				'result'            => 0,
-				'time_spend'        => $this->get_time_interval( 'display' )
+				'time_spend'        => $this->get_time_interval( 'display' ),
+				'retake_count'      => 0
 			);
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {
@@ -197,7 +198,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function is_answered_true( $question_id ) {
-		$result = $this->get_results();
+		$result = $this->get_results( false );
 		if ( ! empty( $result['questions'][ $question_id ] ) ) {
 			return $result['questions'][ $question_id ]['correct'];
 		}
@@ -316,7 +317,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				if ( ! $remain ) {
 					throw new Exception( __( 'Check question has reached limit.', 'learnpress' ), 1000 );
 				} elseif ( $checked ) {
-					throw new Exception( __( 'You have alreadt checked this question.', 'learnpress' ), 1010 );
+					throw new Exception( __( 'You have already checked this question.', 'learnpress' ), 1010 );
 				}
 			}
 		}
@@ -416,7 +417,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		$value = $quiz->get_show_hint();
 		if ( ! is_numeric( $value ) ) {
-			$can = $value === 'yes';
+			$can = ( $value === 'yes' );
 		} else {
 			$value = intval( $value );
 			if ( $value == 0 ) {
@@ -436,6 +437,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$this->set_end_time( current_time( "mysql" ) );
 		$this->set_status( 'completed' );
 		$this->update();
+	}
+
+	public function is_review_questions() {
+		return LP_Global::quiz_question() && ( $this->get_status() === 'completed' );
+	}
+
+	public function can_retake_quiz() {
+		return $this->get_user()->can_retake_quiz( $this->get_id(), $this->get_course() );
 	}
 
 	public function redo() {

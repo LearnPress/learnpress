@@ -230,23 +230,24 @@
 button[data-counter] {
     position: relative;
     &:after {
-        content: attr(data-counter);
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        border-radius: 50%;
-        height: 20px;
-        background: #00adff;
-        min-width: 20px;
-        line-height: 20px;
-        text-align: center;
-        font-size: 12px;
-        font-weight: normal;
-        z-index: 10;
+        content: "(+" attr(data-counter) ")";
+        padding-left: 5px;
+        //position: absolute;
+        //top: -10px;
+        //right: -10px;
+        //border-radius: 50%;
+        //height: 20px;
+        //background: #00adff;
+        //min-width: 20px;
+        //line-height: 20px;
+        //text-align: center;
+        //font-size: 12px;
+        //font-weight: normal;
+        //z-index: 10;
     }
     &:hover {
         &:after {
-            background: #52c8ff;
+            //background: #52c8ff;
         }
     }
 }
@@ -258,13 +259,15 @@ button[data-counter] {
     .result-grade {
         .result-achieved,
         .result-require {
-            display: block;
-            width: 100px;
+            display: inline-block;
             margin: 0 auto;
         }
         .result-achieved {
             font-size: 36px;
             border-bottom: 2px solid #04adff;
+        }
+        .result-require{
+            display: block;
         }
         .result-message {
             font-size: 14px;
@@ -292,24 +295,37 @@ button[data-counter] {
         }
     }
 
-    .result-statistic{
+    .result-statistic {
         list-style: none;
         text-align: left;
         margin: 0;
-        padding:0;
-        .result-statistic-field{
+        padding: 0;
+        .result-statistic-field {
             display: flex;
-            label, p{
+            label, p {
                 flex: 1;
                 margin: 0;
             }
-            label{
+            label {
                 font-weight: bold;
             }
-            p{
+            p {
                 text-align: right;
             }
         }
+    }
+}
+
+.question-explanation-content,
+.question-hint-content {
+    margin-bottom: 20px;
+    background: #F5F5F5;
+    padding: 10px 15px;
+}
+
+.redo-quiz {
+    button[type="submit"] {
+        content: attr(data-counter);
     }
 }
 

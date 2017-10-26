@@ -81,8 +81,10 @@ class LP_Page_Controller {
 
 			// If item viewing is a QUIZ and have a question...
 			if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
+
 				if ( $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) {
 					$lp_quiz_question = LP_Question::get_question( $question->ID );
+
 					// Update current question for user
 					if ( $user_item_id && learn_press_get_user_item_meta( $user_item_id, '_current_question', true ) != $question->ID ) {
 						learn_press_update_user_item_meta( $user_item_id, '_current_question', $question->ID );

@@ -297,6 +297,18 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return false;
 	}
 
+	public function get_history(){
+		return wp_cache_get(sprintf('course-item-%s-%s-%s', $this->get_user_id(), $this->get_course('id'), $this->get_id()), 'lp-user-course-items');
+	}
+
+	public function count_history(){
+		if($items = $this->get_history()){
+			return sizeof($items);
+		}
+
+		return 0;
+	}
+
 	public function get_js_args() {
 		$course = $this->get_course();
 //		$args = array(

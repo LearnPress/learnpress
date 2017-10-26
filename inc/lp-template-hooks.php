@@ -405,6 +405,11 @@ add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_conte
  * @see learn_press_content_item_summary_question_content()
  * @see learn_press_content_item_summary_question()
  */
+add_action( 'learn-press/question-content-summary', function () {
+	if ( learn_press_is_review_questions() ) {
+		learn_press_get_template('content-quiz/review-title.php');
+	}
+}, 15 );
 add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_title', 15 );
 add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_content', 20 );
 add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question', 25 );
@@ -429,6 +434,7 @@ add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_hint_button', 25 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_continue_button', 30 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_complete_button', 35 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_result_button', 40 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_summary_button', 40 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 45 );
 
 add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item' );

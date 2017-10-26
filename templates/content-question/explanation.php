@@ -15,7 +15,7 @@ if ( ! $explanation = $question->get_explanation() ) {
 	return;
 }
 ?>
-<div class="question-explanation">
+<div class="question-explanation-content">
     <strong class="explanation-title"><?php esc_html_e( 'Explanation:', 'learnpress' ); ?></strong>
 	<?php echo $explanation; ?>
 </div>

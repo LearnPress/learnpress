@@ -55,7 +55,7 @@ function learn_press_get_question_answer_meta( $item_id, $meta_key, $single = tr
  *
  * @author  TuNN
  *
- * @param   int $quiz_id The ID of a quiz to get all questions
+ * @param   int     $quiz_id  The ID of a quiz to get all questions
  * @param   boolean $only_ids return an array of questions with IDs only or as post objects
  *
  * @return  array|null
@@ -478,4 +478,14 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 		return $orders;
 	}
 
+}
+
+function learn_press_is_review_questions() {
+	if ( ( $item = LP_Global::course_item() ) && ( $user = learn_press_get_current_user() ) ) {
+		$quiz_data = $user->get_item_data( $item->get_id(), get_the_ID() );
+
+		return $quiz_data && $quiz_data->is_review_questions();
+	}
+
+	return false;
 }

@@ -18,18 +18,21 @@ $quiz_item = $course_data->get_item_quiz( $quiz->get_id() );// $user->get_quiz_d
 $quiz_data = $user->get_quiz_data( $quiz->get_id() );
 $result    = $quiz_data->get_results();
 $percent   = $quiz_data->get_questions_answered( true );
+if($quiz_data->is_review_questions()){
+    return;
+}
 //learn_press_debug($quiz_data);
 ?>
 <div class="quiz-progress">
     <div class="progress-items">
-        <div class="progress-item quiz-point-achieved">
-            <span class="progress-number">
-                0
-            </span>
-            <span class="progress-label" @click="clickX">
-				<?php _e( 'Point', 'learnpress' ); ?>
-            </span>
-        </div>
+<!--        <div class="progress-item quiz-point-achieved">-->
+<!--            <span class="progress-number">-->
+<!--                0-->
+<!--            </span>-->
+<!--            <span class="progress-label" @click="clickX">-->
+<!--				--><?php //_e( 'Point', 'learnpress' ); ?>
+<!--            </span>-->
+<!--        </div>-->
         <div class="progress-item quiz-current-question">
             <span class="progress-number">
 				<?php echo sprintf( __( '%d/%d', 'learnpress' ), $quiz->get_question_index( $quiz_data->get_current_question(), 1 ), $quiz_data->get_total_questions() ); ?>
