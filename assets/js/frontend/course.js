@@ -91,12 +91,16 @@
             });
         }
 
-        var hiddenSections = sectionStorage.get(),
-            sections = $('.curriculum-sections').find('.section');
+        function initSections(){
+            var hiddenSections = sectionStorage.get(),
+                sections = $('.curriculum-sections').find('.section');
 
-        for (var i = 0; i < hiddenSections.length; i++) {
-            sections.filter('[data-section-id="' + hiddenSections[i] + '"]').find('.section-content').hide();
+            for (var i = 0; i < hiddenSections.length; i++) {
+                sections.filter('[data-section-id="' + hiddenSections[i] + '"]').find('.section-content').hide();
+            }
         }
+
+        initSections();
 
         $(document)
             .on('click', '.answer-options .answer-option', toggleAnswerOptions)
@@ -112,64 +116,7 @@
 
         new LP_Course(lpCourseSettings);
 
-        var ifr = $('#ifr-course-item').on('load', function () {
-            console.log('loaded');
-        })
 
-        //if (parent.window) {
-        var beingRedirect = '';
-        var $win = parent.window,
-            $doc = parent.window.document;
-        window.onunload = function (e) {
-            console.log(beingRedirect)
-            // Notify top window of the unload event
-            window.top.postMessage('iframe_change', '*');
-            if (beingRedirect) {
-                window.top.location.href = beingRedirect;
-
-                return false;
-            }
-        };
-
-        var receiveMessage = function receiveMessage(e) {
-            if (ifr.length === 0) {
-                return;
-            }
-            var url = $win.location.href,
-                url_parts = url.split("/"),
-                allowed = url_parts[0] + "//" + url_parts[2];
-
-            // Only react to messages from same domain as current document
-            if (e.origin !== allowed) return;
-            // Handle the message
-            switch (e.data) {
-                case 'iframe_change':
-                    window.top.location.href = (ifr.attr('src'));
-            }
-        };
-        //$win.addEventListener("message", receiveMessage, false);
-
-        $(document).on('click', '.content-item-description a', function (e) {
-            //e.preventDefault();
-            console.log('add')
-        })
-        $(document).on('click', '.content-item-description', function (e) {
-            // e.preventDefault();
-
-            var el = $(e.target),
-                link = el.attr('href');
-            if (link) {
-                beingRedirect = link;
-                //parent.window && (parent.window.open(link, '_blank').focus());
-            }
-        });
-
-
-        //}
-
-        window.xxxx = function () {
-            alert();
-        }
         $(document).ready(function () {
             function prepareForm(form) {
                 var data = $('.answer-options').serializeJSON(),

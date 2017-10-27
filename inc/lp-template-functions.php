@@ -1046,6 +1046,23 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
+	function learn_press_single_quiz_args() {
+		$args = array();
+		if ( $quiz = LP_Global::course_item_quiz() ) {
+			$user      = LP_Global::user();
+			$user_quiz = $user->get_item_data( $quiz->get_id(), get_the_ID() );
+			$args      = array(
+				'id'            => $quiz->get_id(),
+				'totalTime'     => $quiz->get_duration()->get(),
+				'remainingTime' => $user_quiz->get_time_remaining()
+			);
+		}
+
+		return $args;
+	}
+}
+
 if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 
 	function learn_press_single_document_title_parts( $title ) {
@@ -2602,3 +2619,37 @@ function learn_press_is_learning_course( $course_id = 0 ) {
 
 	return apply_filters( 'learn-press/is-learning-course', $is_learning );
 }
+
+function learn_press_print_custom_styles() {
+
+	if ( 'yes' !== LP()->settings()->get( 'enable_custom_colors' ) ) {
+		return;
+	}
+
+	if ( ! $schemas = LP()->settings()->get( 'color_schemas' ) ) {
+		return;
+	}
+	$schema = $schemas[0];
+	$css    = array();
+	foreach ( $schema as $selector => $props ) {
+		if ( empty( $css[ $selector ] ) ) {
+			$css[ $selector ] = '';
+		}
+
+		foreach ( $props as $prop => $value ) {
+			$css[ $selector ] .= "{$prop}: {$value} !important;";
+		}
+	}
+	?>
+    <style id="learn-press-custom-css">
+        <?php
+        foreach($css as $selector => $props){
+            echo $selector . '{'.$props.'}' . "\n";
+        }
+        ?>
+
+    </style>
+	<?php
+}
+
+add_action( 'wp_footer', 'learn_press_print_custom_styles' );

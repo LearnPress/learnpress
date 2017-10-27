@@ -51,46 +51,46 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
-				'select2'                => LP_Admin_Assets::url( 'inc/libraries/meta-box/js/select2/select2.min.js' ),
-				'lp-vue'                 => array(
+				'select2'            => LP_Admin_Assets::url( 'inc/libraries/meta-box/js/select2/select2.min.js' ),
+				'lp-vue'             => array(
 					'url' => self::url( 'js/vendor/vue.js' ),
 					'ver' => '2.4.0'
 				),
-				'lp-vuex'                => array(
+				'lp-vuex'            => array(
 					'url' => self::url( 'js/vendor/vuex.2.3.1.js' ),
 					'ver' => '2.3.1'
 				),
-				'lp-vue-resource'        => array(
+				'lp-vue-resource'    => array(
 					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
 					'ver' => '1.3.4'
 				),
-				'lp-sortable'            => array(
+				'lp-sortable'        => array(
 					'url' => self::url( 'js/vendor/sortable.1.6.0.js' ),
 					'ver' => '1.6.0'
 				),
-				'lp-vuedraggable'        => array(
+				'lp-vuedraggable'    => array(
 					'url'  => self::url( 'js/vendor/vuedraggable.2.14.1.js' ),
 					'ver'  => '2.14.1',
 					'deps' => array( 'lp-sortable' )
 				),
-				'learn-press-global'     => array(
+				'learn-press-global' => array(
 					'url'  => $this->url( 'js/global.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' )
 				),
-				'learn-press-utils'      => array(
+				'learn-press-utils'  => array(
 					'url'  => $this->url( 'js/admin/utils.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'admin'                  => array(
+				'admin'              => array(
 					'url'  => $this->url( 'js/admin/admin.js' ),
-					'deps' => array( 'learn-press-global', 'learn-press-utils' )
+					'deps' => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' )
 				),
-				'admin-tabs'             => array(
+				'admin-tabs'         => array(
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
 					'deps' => array( 'jquery' )
 				),
 				//'angularjs'              => $this->url( 'js/vendor/angular.1.6.4.js' ),
-				'tipsy'                  => array(
+				'tipsy'              => array(
 					'url'  => $this->url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
 					'deps' => array( 'jquery' )
 				),
@@ -181,7 +181,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			array(
 				'select2'           => LP()->plugin_url( 'inc/libraries/meta-box/css/select2/select2.css' ),
 				'font-awesome'      => $this->url( 'css/font-awesome.min.css' ),
-				'learn-press-admin' => $this->url( 'css/admin/admin.css' )
+				'learn-press-admin' => array(
+					'url'  => $this->url( 'css/admin/admin.css' ),
+					'deps' => array( 'wp-color-picker' )
+				)
 			)
 		);
 	}

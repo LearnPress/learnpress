@@ -1,0 +1,61 @@
+.color-schemas {
+    border-collapse: collapse;
+    margin: 0 20px 20px 0;
+    float: left;
+    td, th {
+        padding: 10px 10px;
+    }
+    tbody {
+        border: 1px solid transparent;
+        opacity: 0.5;
+        td, th {
+            text-align: left;
+            background: #F5F5F5;
+        }
+        tr:first-child {
+            td, th {
+                padding-bottom: 0;
+            }
+        }
+    }
+    tfoot {
+        td, th {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+    .remove-schema {
+        float: right;
+        color: #FF0000;
+    }
+    &.current {
+        tbody {
+            border-color: #DDD;
+            td, th {
+                background: rgba(5, 215, 255, 0.26);
+            }
+            opacity: 1;
+        }
+    }
+    &:first-child {
+        .remove-schema,
+        .apply-schema {
+            display: none;
+        }
+    }
+    &:nth-child(2) {
+        clear: both;
+    }
+    &:hover{
+        tbody{
+            opacity: 1;
+        }
+    }
+    .wp-color-result {
+        margin: 0;
+    }
+    .color-selector input {
+        width: 0 !important;
+        opacity: 0;
+    }
+}

@@ -255,7 +255,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $result['mark'];
 	}
 
-	public function get_time_remaining() {
+	/**
+	 * Return time remaining.
+	 *
+	 * @return LP_Duration
+	 */
+	public function get_time_remaining( $seconds = false ) {
 		$quiz          = learn_press_get_quiz( $this->get_item_id() );
 		$quiz_duration = $quiz->get_duration();
 		$diff          = false;
@@ -267,7 +272,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			}
 		}
 
-		return apply_filters( 'learn-press/quiz/time-remaining', $diff !== false ? new LP_Duration( $diff ) : false, $this->get_item_id(), $this->get_course_id() );
+		$remaining = $diff !== false ? new LP_Duration( $diff ) : false;
+
+		return apply_filters( 'learn-press/quiz/time-remaining', $remaining && $seconds ? $remaining->get() : 0, $this->get_item_id(), $this->get_course_id() );
 	}
 
 	/**

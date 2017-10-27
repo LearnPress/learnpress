@@ -2509,8 +2509,6 @@ function learn_press_debug() {
 		}
 	}
 	echo '</pre>';
-	print_r( $args );
-	print_r( debug_backtrace() );
 	if ( $arg === true ) {
 		die( __FUNCTION__ );
 	}
@@ -2816,10 +2814,6 @@ function learn_press_timezone_offset() {
 		return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
 	}
 }
-
-add_filter( 'script_loader_src', function ( $s ) {
-	return add_query_arg( 'no-cache', microtime( true ), $s );
-} );
 
 function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 	global $wp_locale;

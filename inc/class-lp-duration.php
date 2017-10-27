@@ -141,4 +141,8 @@ class LP_Duration {
 
 		return new LP_Duration( $diff );
 	}
+
+	public function get(){
+		return $this->_duration;
+	}
 }

@@ -59,7 +59,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				'processing'  => __( 'Processing', 'learnpress' ),
 				'redirecting' => __( 'Redirecting', 'learnpress' )
 			),
-			'course'       => learn_press_single_course_args()
+			'course'       => learn_press_single_course_args(),
+			'quiz'         => learn_press_single_quiz_args()
 		);
 	}
 
@@ -103,6 +104,11 @@ class LP_Assets extends LP_Abstract_Assets {
 				'course'           => array(
 					'url'  => self::url( 'js/frontend/course.js' ),
 					'deps' => array( 'global', 'lp-vue', 'jquery-scrollbar', 'watchjs' )
+				),
+				'quiz'             => array(
+					'url'     => self::url( 'js/frontend/quiz.js' ),
+					'deps'    => array( 'global', 'lp-vue', 'jquery-scrollbar', 'watchjs' ),
+					'enqueue' => LP_Global::course_item_quiz() ? true : false
 				),
 				'profile-user'     => array(
 					'url'  => self::url( 'js/frontend/profile.js' ),

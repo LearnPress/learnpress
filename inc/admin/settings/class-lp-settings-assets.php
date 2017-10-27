@@ -22,6 +22,14 @@ class LP_Settings_Assets extends LP_Abstract_Settings_Page {
 		$this->text = __( 'Assets', 'learnpress' );
 
 		parent::__construct();
+
+		add_action( 'learn-press/update-settings/updated', array( $this, 'update' ) );
+	}
+
+	public function update() {
+		if ( ! empty( $_REQUEST['color_schema'] ) ) {
+			update_option( 'learn_press_color_schemas', $_REQUEST['color_schema'] );
+		}
 	}
 
 	public function output() {
@@ -42,21 +50,28 @@ class LP_Settings_Assets extends LP_Abstract_Settings_Page {
 			'learn_press_profile_settings',
 			array(
 				array(
-					'title'   => __( 'Profile page', 'learnpress' ),
-					'id' => 'profile_page_id',
+					'title'   => __( 'Enable custom colors', 'learnpress' ),
+					'id'      => 'enable_custom_colors',
+					'default' => 'no',
+					'type'    => 'yes-no',
+					'desc'    => __( 'Use color schema for main colors.', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'Color schema', 'learnpress' ),
+					'id'      => 'color_schema',
 					'default' => '',
-					'type'    => 'pages-dropdown'
+					'type'    => 'color-schema'
 				),
 				array(
 					'title'   => __( 'Load css', 'learnpress' ),
-					'id' => 'load_css',
+					'id'      => 'load_css',
 					'default' => 'yes',
 					'type'    => 'checkbox',
 					'desc'    => __( 'Load default stylesheet for LearnPress', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Debug mode', 'learnpress' ),
-					'id' => 'debug',
+					'id'      => 'debug',
 					'default' => 'yes',
 					'type'    => 'checkbox',
 					'desc'    => __( 'Turn on/off debug mode for developer', 'learnpress' )
