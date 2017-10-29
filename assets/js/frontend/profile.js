@@ -16,7 +16,6 @@
         el: '#lp-user-edit-avatar',
         uploader: null,
         initialize: function () {
-            console.log()
             _.bindAll(this, 'filesAdded', 'uploadProgress', 'uploadError', 'fileUploaded', 'crop');
             this._getUploader();
         },
@@ -35,7 +34,6 @@
             this.$('.lp-avatar-preview').removeClass('croping');
         },
         filesAdded: function (up, files) {
-            console.log(this.$('.lp-avatar-preview'))
             var that = this;
             up.files.splice(0, up.files.length - 1);
             that.$('.lp-avatar-preview').addClass('uploading');
@@ -331,7 +329,6 @@
                     data: $wrap.serializeJSON(),
                     success: function (response) {
                         response = LP.parseJSON(response);
-                        console.log(response)
                         if (response.redirect) {
                             window.location.href = response.redirect;
                         }

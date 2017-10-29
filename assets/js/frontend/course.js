@@ -6,7 +6,7 @@
  * @author ThimPress
  * @package LearnPress/JS/Course
  */
-(function ($, LP, _, Vue, Vuex) {
+(function ($, LP, _) {
 
     'use strict';
 
@@ -30,6 +30,7 @@
                 sections = sections.join(',');
             }
             storage.setItem(this.key, sections);
+            return sections.split(',');
         }
         this.hasSection = function (id) {
             id = id + '';
@@ -46,6 +47,7 @@
             }
             sections.push(id);
             this.set(sections);
+            return sections;
         }
         this.remove = function (id) {
             id = id + '';
@@ -54,7 +56,9 @@
                 var sections = this.get();
                 sections.splice(at, 1);
                 this.set(sections);
+                return sections;
             }
+            return false;
         }
     }
 
@@ -91,9 +95,17 @@
             });
         }
 
-        function initSections(){
-            var hiddenSections = sectionStorage.get(),
-                sections = $('.curriculum-sections').find('.section');
+        function initSections() {
+            var $activeSection = $('.course-item.current').closest('.section'),
+                sections = $('.curriculum-sections').find('.section'),
+                sectionId = $activeSection.data('section-id'),
+                hiddenSections = [];
+
+            if ($activeSection) {
+                hiddenSections = sectionStorage.remove(sectionId);
+            } else {
+                hiddenSections = sectionStorage.get();
+            }
 
             for (var i = 0; i < hiddenSections.length; i++) {
                 sections.filter('[data-section-id="' + hiddenSections[i] + '"]').find('.section-content').hide();
@@ -122,6 +134,9 @@
                 var data = $('.answer-options').serializeJSON(),
                     $form = $(form),
                     $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
+                if (($form.attr('method') + '').toLowerCase() !== 'post') {
+                    return;
+                }
                 $form.find('input[name="question-data"]').remove();
                 return $form.append($hidden);
             }
@@ -177,4 +192,4 @@
             LP.setUrl($(tab).attr('href'));
         })
     })
-})(jQuery, LP, _, Vue, Vuex);
+})(jQuery, LP, _);

@@ -9,9 +9,17 @@
             width: 250px;
             font-size: 14px;
         }
+        .rwmb-input {
+            margin-left: 270px;
+            float: none;
+            width: auto;
+        }
         .description {
             margin-top: 8px;
             color: #888;
+        }
+        .rwmb-input-list {
+            margin-left: 0;
         }
         &.rwmb-heading-wrapper {
             h4 {
@@ -64,16 +72,15 @@
 
 @media screen and (max-width: 1280px) {
     .learnpress {
-        &.lp-submenu-settings {
-            .rwmb-field {
-                .rwmb-label {
-                    width: auto;
-                    float: none;
-                }
+        .rwmb-field {
+            .rwmb-label {
+                width: auto;
+                float: none;
             }
             .rwmb-input {
                 margin-left: 0;
                 width: 100%;
+                float: left;
             }
         }
     }

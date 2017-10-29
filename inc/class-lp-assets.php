@@ -72,20 +72,23 @@ class LP_Assets extends LP_Abstract_Assets {
 				'watchjs'          => self::url( 'js/vendor/watch.js' ),
 				'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
 				'lp-vue'           => array(
-					'url' => self::url( 'js/vendor/vue.js' ),
-					'ver' => '2.4.0'
+					'url'     => self::url( 'js/vendor/vue.js' ),
+					'ver'     => '2.4.0',
+					'enqueue' => false
 				),
 				'lp-vuex'          => array(
-					'url' => self::url( 'js/vendor/vuex.2.3.1.js' ),
-					'ver' => '2.3.1'
+					'url'     => self::url( 'js/vendor/vuex.2.3.1.js' ),
+					'ver'     => '2.3.1',
+					'enqueue' => false
 				),
 				'lp-vue-resource'  => array(
-					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
-					'ver' => '1.3.4'
+					'url'     => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
+					'ver'     => '1.3.4',
+					'enqueue' => false
 				),
 				'global'           => array(
 					'url'  => self::url( 'js/global.js' ),
-					'deps' => array( 'jquery', 'underscore', 'utils', 'backbone' )
+					'deps' => array( 'jquery', 'underscore', 'utils' )
 				),
 				'jquery-scrollbar' => array(
 					'url'  => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.js' ),
@@ -103,21 +106,23 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'course'           => array(
 					'url'  => self::url( 'js/frontend/course.js' ),
-					'deps' => array( 'global', 'lp-vue', 'jquery-scrollbar', 'watchjs' )
+					'deps' => array( 'global', 'jquery-scrollbar', 'watchjs' )
 				),
 				'quiz'             => array(
 					'url'     => self::url( 'js/frontend/quiz.js' ),
-					'deps'    => array( 'global', 'lp-vue', 'jquery-scrollbar', 'watchjs' ),
+					'deps'    => array( 'global', 'jquery-scrollbar', 'watchjs' ),
 					'enqueue' => LP_Global::course_item_quiz() ? true : false
 				),
 				'profile-user'     => array(
-					'url'  => self::url( 'js/frontend/profile.js' ),
-					'deps' => array(
+					'url'     => self::url( 'js/frontend/profile.js' ),
+					'deps'    => array(
 						'global',
 						'plupload',
+						'backbone',
 						'jquery-ui-slider',
 						'jquery-ui-draggable'
-					)
+					),
+					'enqueue' => learn_press_is_profile()
 				),
 				'jquery-scrollto'  => array(
 					'url'  => self::url( 'js/vendor/jquery.scrollTo.js' ),

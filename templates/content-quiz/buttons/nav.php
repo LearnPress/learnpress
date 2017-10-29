@@ -59,7 +59,7 @@ if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) {
 ?>
 
 <?php
-if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) {
+if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) && ! $user->has_completed_quiz( $quiz->get_id(), $course_id ) ) {
 	?>
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 

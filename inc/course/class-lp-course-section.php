@@ -234,4 +234,17 @@ class LP_Course_Section {
 	public function get_slug() {
 		return $this->get_title() ? sanitize_title( $this->get_title() ) . '-' . $this->get_id() : $this->get_id();
 	}
+
+	public function main_class() {
+		$class = array( 'section' );
+
+		if ( ! $this->count_items() ) {
+			$class[] = 'section-empty';
+		}
+
+		$output = 'class="' . join( ' ', $class ) . '"';
+
+		echo " " . $output;
+		return $output;
+	}
 }

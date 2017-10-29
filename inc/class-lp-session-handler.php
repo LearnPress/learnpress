@@ -406,10 +406,3 @@ function learn_press_session_get( $key, $default = null ) {
 function learn_press_session_set( $key, $value ) {
 	LP_Session_Handler::instance()->set( $key, $value );
 }
-
-add_action( 'init', function () {
-	if ( ! empty( $_REQUEST['clear_session'] ) ) {
-		LP_Session_Handler::instance()->destroy_session();
-		die();
-	}
-} );

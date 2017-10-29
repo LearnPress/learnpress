@@ -1050,12 +1050,13 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {
 		$args = array();
 		if ( $quiz = LP_Global::course_item_quiz() ) {
-			$user      = LP_Global::user();
-			$user_quiz = $user->get_item_data( $quiz->get_id(), get_the_ID() );
-			$args      = array(
+			$user           = LP_Global::user();
+			$user_quiz      = $user->get_item_data( $quiz->get_id(), get_the_ID() );
+			$remaining_time = $user_quiz->get_time_remaining();
+			$args           = array(
 				'id'            => $quiz->get_id(),
 				'totalTime'     => $quiz->get_duration()->get(),
-				'remainingTime' => $user_quiz->get_time_remaining()
+				'remainingTime' => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get()
 			);
 		}
 
@@ -2455,6 +2456,194 @@ if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 		return $info ? $info->display_name : '';
 	}
 }
+
+if ( ! function_exists( 'learn_press_profile_dashboard_logged_in' ) ) {
+	function learn_press_profile_dashboard_logged_in() {
+		learn_press_get_template( 'profile/dashboard-logged-in.php' );
+	}
+}
+if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
+	function learn_press_profile_dashboard_not_logged_in() {
+		$profile = LP_Global::profile();
+
+		if ( ! $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		if ( 'yes' === LP()->settings()->get( 'enable_register_profile' ) || 'yes' === LP()->settings()->get( 'enable_login_profile' ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'profile/not-logged-in.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_profile_login_form' ) ) {
+	function learn_press_profile_login_form() {
+		$profile = LP_Global::profile();
+
+		if ( ! $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		if ( ! $fields = $profile->get_login_fields() ) {
+			return;
+		}
+
+		if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'global/login-form.php', array( 'fields' => $fields ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_profile_register_form' ) ) {
+	function learn_press_profile_register_form() {
+		$profile = LP_Global::profile();
+
+		if ( ! $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		if ( ! $fields = $profile->get_register_fields() ) {
+			return;
+		}
+
+		if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'global/register-form.php', array( 'fields' => $fields ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_lesson_title' ) ) {
+	function learn_press_content_item_lesson_title() {
+		learn_press_get_template( 'content-lesson/title.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
+	function learn_press_content_item_lesson_content() {
+		$item = LP_Global::course_item();
+		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/type/{$format}.php" ) ) ) {
+			include_once $format_template;
+
+			return;
+		}
+		learn_press_get_template( 'content-lesson/description.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
+	function learn_press_content_item_lesson_complete_button() {
+		learn_press_get_template( 'content-lesson/button-complete.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_header' ) ) {
+	function learn_press_content_item_header() {
+		learn_press_get_template( 'single-course/content-item/header.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_footer' ) ) {
+	function learn_press_content_item_footer() {
+		learn_press_get_template( 'single-course/content-item/footer.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_review_quiz_title' ) ) {
+	function learn_press_content_item_review_quiz_title() {
+		if ( learn_press_is_review_questions() ) {
+			learn_press_get_template( 'content-quiz/review-title.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_become_teacher_messages' ) ) {
+	function learn_press_become_teacher_messages() {
+		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+		if ( ! $messages ) {
+			return;
+		}
+
+		learn_press_get_template( 'global/become-teacher-form/message.php', array( 'messages' => $messages ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_become_teacher_messages' ) ) {
+
+	function learn_press_become_teacher_heading() {
+		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+		if ( $messages ) {
+			return;
+		}
+		?>
+        <h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
+		<?php
+	}
+}
+
+if ( ! function_exists( 'learn_press_become_teacher_form_fields' ) ) {
+
+	function learn_press_become_teacher_form_fields() {
+		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+		if ( $messages ) {
+			return;
+		}
+
+		include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
+
+		learn_press_get_template( 'global/become-teacher-form/form-fields.php', array( 'fields' => learn_press_get_become_a_teacher_form_fields() ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_become_teacher_button' ) ) {
+
+	function learn_press_become_teacher_button() {
+		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+		if ( $messages ) {
+			return;
+		}
+
+		learn_press_get_template( 'global/become-teacher-form/button.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_become_teacher_button' ) ) {
+
+	function learn_press_content_item_comments() {
+
+		$item = LP_Global::course_item();
+
+		if ( ! $item ) {
+			return;
+		}
+
+		if ( ! $item->is_support( 'comments' ) ) {
+			return;
+		}
+
+		global $post;
+
+		$post = get_post( $item->get_id() );
+
+		setup_postdata( $post );
+
+		comments_template();
+
+		wp_reset_postdata();
+	}
+}
+
+if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
+	function learn_press_profile_mobile_menu() {
+		learn_press_get_template( 'profile/mobile-menu.php' );
+	}
+}
+
 function learn_press_is_content_item_only() {
 	return ! empty( $_REQUEST['content-item-only'] );
 }

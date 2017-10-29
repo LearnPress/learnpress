@@ -88,64 +88,16 @@ add_action( 'learn-press/after-user-profile', 'learn_press_user_profile_footer',
 add_action( 'learn-press/profile/orders', 'learn_press_profile_tab_orders', 10 );
 add_action( 'learn-press/profile/orders', 'learn_press_profile_recover_order_form', 15 );
 
-add_action( 'learn-press/profile/dashboard-summary', function () {
-	learn_press_get_template( 'profile/dashboard-logged-in.php' );
-}, 15 );
+add_action( 'learn-press/profile/dashboard-summary', 'learn_press_profile_dashboard_logged_in', 15 );
 
-add_action( 'learn-press/user-profile', function () {
-	$profile = LP_Global::profile();
+add_action( 'learn-press/user-profile', 'learn_press_profile_dashboard_not_logged_in', 15 );
 
-	if ( ! $profile->get_user()->is_guest() ) {
-		return;
-	}
+add_action( 'learn-press/user-profile', 'learn_press_profile_login_form', 15 );
 
-	if ( 'yes' === LP()->settings()->get( 'enable_register_profile' ) || 'yes' === LP()->settings()->get( 'enable_login_profile' ) ) {
-		return;
-	}
-
-	learn_press_get_template( 'profile/not-logged-in.php' );
-}, 15 );
-
-add_action( 'learn-press/user-profile', function () {
-	$profile = LP_Global::profile();
-
-	if ( ! $profile->get_user()->is_guest() ) {
-		return;
-	}
-
-	if ( ! $fields = $profile->get_login_fields() ) {
-		return;
-	}
-
-	if ( 'yes' !== LP()->settings()->get( 'enable_login_profile' ) ) {
-		return;
-	}
-
-	learn_press_get_template( 'global/login-form.php', array( 'fields' => $fields ) );
-}, 15 );
-
-add_action( 'learn-press/user-profile', function () {
-	$profile = LP_Global::profile();
-
-	if ( ! $profile->get_user()->is_guest() ) {
-		return;
-	}
-
-	if ( ! $fields = $profile->get_register_fields() ) {
-		return;
-	}
-
-	if ( 'yes' !== LP()->settings()->get( 'enable_register_profile' ) ) {
-		return;
-	}
-
-	learn_press_get_template( 'global/register-form.php', array( 'fields' => $fields ) );
-}, 15 );
+add_action( 'learn-press/user-profile', 'learn_press_profile_register_form', 15 );
 
 
-add_action( 'learn-press/before-profile-nav', function () {
-	learn_press_get_template( 'profile/mobile-menu.php' );
-} );
+add_action( 'learn-press/before-profile-nav', 'learn_press_profile_mobile_menu', 10 );
 
 //add_action( 'learn-press/order/after-table-details', 'learn_press_profile_recover_my_order_form', 10 );
 
@@ -225,46 +177,16 @@ add_action( 'learn-press/content-learning-summary', 'learn_press_course_buttons'
  * @see learn_press_course_item_content()
  */
 add_action( 'learn-press/course-item-content', 'learn_press_course_item_content', 5 );
-add_action( 'learn-press/course-item-content', function () {
+add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 5 );
 
-	$item = LP_Global::course_item();
+//add_filter( 'wp_redirect', 'learn_press_get_course_redirect', 10 );
 
-	if ( ! $item ) {
-		return;
-	}
+function learn_press_get_course_redirect(  $link ) {
 
-	if ( ! $item->is_support( 'comments' ) ) {
-		return;
-	}
-
-	global $post;
-
-	$post = get_post( $item->get_id() );
-
-	setup_postdata( $post );
-
-	comments_template();
-
-	wp_reset_postdata();
-
-}, 5 );
-
-add_action( 'init', function () {
-} );
-add_filter( 'wp_redirect', function ( $link ) {
-
-	if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-		$referer = $_SERVER['HTTP_REFERER'];
-
-		$link = learn_press_get_course_redirect( $referer, $link );
-	}
-
-	return $link;
-
-}, 10 );
-
-function learn_press_get_course_redirect( $referer, $link ) {
-
+	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
+	    return $link;
+    }
+    $referer = $_SERVER['HTTP_REFERER'] ;
 	$info_a = parse_url( $referer );
 	$info_b = parse_url( $link );
 
@@ -318,36 +240,15 @@ function learn_press_get_course_redirect( $referer, $link ) {
 }
 
 
-add_action( 'learn-press/before-content-item-summary/lp_lesson', function () {
-	$item = LP_Global::course_item();
-	//if($item->is_show_complete
-	learn_press_get_template( 'content-lesson/title.php' );
-} );
+add_action( 'learn-press/before-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_title', 10 );
 
-add_action( 'learn-press/content-item-summary/lp_lesson', function () {
-	$item = LP_Global::course_item();
-	//if($item->is_show_complete
-	if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/type/{$format}.php" ) ) ) {
-		include_once $format_template;
+add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content',10);
 
-		return;
-	}
-	learn_press_get_template( 'content-lesson/description.php' );
-} );
+add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_complete_button', 10 );
 
-add_action( 'learn-press/after-content-item-summary/lp_lesson', function () {
-	$item = LP_Global::course_item();
-	//if($item->is_show_complete
-	learn_press_get_template( 'content-lesson/button-complete.php' );
-} );
+add_action( 'learn-press/course-item-content-header', 'learn_press_content_item_header',10 );
 
-add_action( 'learn-press/course-item-content-header', function () {
-	learn_press_get_template( 'single-course/content-item/header.php' );
-} );
-
-add_action( 'learn-press/course-item-content-footer', function () {
-	learn_press_get_template( 'single-course/content-item/footer.php' );
-} );
+add_action( 'learn-press/course-item-content-footer', 'learn_press_content_item_footer', 10 );
 
 add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
 
@@ -355,7 +256,8 @@ add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_met
  * @param LP_Quiz $item
  */
 function learn_press_quiz_meta_questions( $item ) {
-	echo '<span class="item-meta count-questions">' . $item->count_questions() . '</span>';
+	$count = $item->count_questions();
+	echo '<span class="item-meta count-questions">' . sprintf( $count ? _n( '%d question', '%d questions', 'learnpress' ) : __( '%d question', 'learnpress' ), $count ) . '</span>';
 }
 
 add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_questions' );
@@ -405,11 +307,7 @@ add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_conte
  * @see learn_press_content_item_summary_question_content()
  * @see learn_press_content_item_summary_question()
  */
-add_action( 'learn-press/question-content-summary', function () {
-	if ( learn_press_is_review_questions() ) {
-		learn_press_get_template('content-quiz/review-title.php');
-	}
-}, 15 );
+add_action( 'learn-press/question-content-summary', 'learn_press_content_item_review_quiz_title', 15 );
 add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_title', 15 );
 add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_content', 20 );
 add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question', 25 );
@@ -454,44 +352,13 @@ add_filter( 'document_title_parts', 'learn_press_single_document_title_parts' );
 /***********************************/
 /*         BECOME A TEACHER        */
 /***********************************/
-add_action( 'learn-press/before-become-teacher-form', function () {
-	$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-	if ( ! $messages ) {
-		return;
-	}
+add_action( 'learn-press/before-become-teacher-form', 'learn_press_become_teacher_messages', 10 );
 
-	learn_press_get_template( 'global/become-teacher-form/message.php', array( 'messages' => $messages ) );
-} );
+add_action( 'learn-press/before-become-teacher-form', 'learn_press_become_teacher_heading', 10 );
 
-add_action( 'learn-press/before-become-teacher-form', function () {
-	$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-	if ( $messages ) {
-		return;
-	}
-	?>
-    <h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
-	<?php
-} );
+add_action( 'learn-press/become-teacher-form', 'learn_press_become_teacher_form_fields', 10 );
 
-add_action( 'learn-press/become-teacher-form', function () {
-	$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-	if ( $messages ) {
-		return;
-	}
-
-	include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-
-	learn_press_get_template( 'global/become-teacher-form/form-fields.php', array( 'fields' => learn_press_get_become_a_teacher_form_fields() ) );
-} );
-
-add_action( 'learn-press/after-become-teacher-form', function () {
-	$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-	if ( $messages ) {
-		return;
-	}
-
-	learn_press_get_template( 'global/become-teacher-form/button.php' );
-} );
+add_action( 'learn-press/after-become-teacher-form', 'learn_press_become_teacher_button', 10 );
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */
 //add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );

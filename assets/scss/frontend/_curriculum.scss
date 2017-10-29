@@ -101,10 +101,19 @@ ul.learn-press-nav-tabs {
         .section {
             margin: 0;
             padding: 0;
+            &.section-empty {
+                .section-header {
+                    margin-bottom: 20px;
+                }
+                .learn-press-message {
+                    margin-left: 15px;
+                    margin-right: 15px;
+                }
+            }
         }
         .section-header {
             display: table;
-            border-bottom: 2px solid #00adff;
+            border-bottom: 1px solid #00adff;
             width: 100%;
             @include box-sizing(border-box);
             .section-left {
@@ -222,8 +231,7 @@ ul.learn-press-nav-tabs {
                         }
                     }
                     .count-questions {
-                        background: #DDD;
-
+                        background: #dd88ae;
                     }
 
                     .course-item-status {
@@ -439,7 +447,7 @@ body {
                 top: 32px;
             }
         }
-        .content-item-summary{
+        .content-item-summary {
             margin-bottom: 20px;
         }
         &.content-only {
@@ -718,6 +726,15 @@ body {
 
 @media screen and (max-width: 1300px) {
     body.course-item-popup {
+        #course-item-content-header .course-item-search {
+            width: 300px;
+            input{
+                width: 285px;
+            }
+            button{
+                left: 300px;
+            }
+        }
         #learn-press-course-curriculum {
             width: 300px;
             .progress-bg {
@@ -737,6 +754,15 @@ body {
 
 @media screen and (max-width: 1200px) {
     body.course-item-popup {
+        #course-item-content-header .course-item-search {
+            width: 300px;
+            input{
+                width: 285px;
+            }
+            button{
+                left: 300px;
+            }
+        }
         #learn-press-course-curriculum {
             width: 300px;
         }
@@ -756,6 +782,15 @@ body {
 
 @media screen and (max-width: 768px) {
     body.course-item-popup {
+        #course-item-content-header .course-item-search {
+            width: 200px;
+            input{
+                width: 185px;
+            }
+            button{
+                left: 200px;
+            }
+        }
         #learn-press-course-curriculum {
             width: 200px;
         }
