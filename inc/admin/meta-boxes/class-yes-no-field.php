@@ -23,7 +23,7 @@ if ( ! class_exists( 'RWMB_Yes_No_Field' ) ) {
 		 */
 		static function html( $meta, $field = '' ) {
 
-			$value = empty( $meta ) ? $meta : $field['std'];
+			$value = empty( $meta ) ? $field['std'] : $meta;
 			$true  = ! learn_press_is_negative_value( $value );
 
 			return sprintf(
