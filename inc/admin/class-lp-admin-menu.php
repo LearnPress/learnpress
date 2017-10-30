@@ -42,20 +42,8 @@ class LP_Admin_Menu {
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_menus' ), 50 );
 		}
 
-		// auto include file for admin page
-		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
-		/*$page = ! empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
-		if ( $page ) {
-			if ( strpos( $page, 'learn-press-' ) !== false ) {
-				$file = preg_replace( '!^learn-press-!', '', $page );
-				$file = str_replace( '_', '-', $file );
-				if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
-					$this->_submenu = require_once $file;
-				}
-			}
-		}*/
 		/**
-		 * @since 3.x
+		 * @since 3.0.0
 		 */
 		$this->capability = 'edit_' . LP_COURSE_CPT . 's';
 		include_once 'sub-menus/abstract-submenu.php';

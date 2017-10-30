@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -31,7 +31,7 @@ $user = learn_press_get_current_user();
 			do_action( 'learn_press/before_course_item_content', $lp_course_item->get_id(), $lp_course->get_id() );
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 *
 			 */
 			do_action( 'learn-press/before-course-item-content', $lp_course_item->get_id(), $lp_course->get_id() );
@@ -43,7 +43,7 @@ $user = learn_press_get_current_user();
 				do_action( 'learn_press_course_item_content', $lp_course_item );
 
 				/**
-				 * @since 3.x.x
+				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/course-item-content', $lp_course_item->get_id(), $lp_course->get_id() );
 
@@ -52,7 +52,7 @@ $user = learn_press_get_current_user();
 			}
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn_press/after-course-item-content', $lp_course_item->get_id(), $lp_course->get_id() );
 

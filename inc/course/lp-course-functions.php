@@ -57,7 +57,7 @@ function learn_press_get_course( $the_course = false ) {
  * @param int    $course_id
  * @param int    $user_id
  *
- * @since 3.x.x
+ * @since 3.0.0
  *
  * @return string
  */
@@ -73,7 +73,7 @@ function learn_press_create_course_action_nonce( $action, $course_id = 0, $user_
  * @param int    $course_id
  * @param int    $user_id
  *
- * @since 3.x.x
+ * @since 3.0.0
  *
  * @return bool
  */
@@ -85,7 +85,7 @@ function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0
  * Get type of items are supported in course curriculum (post types).
  * Default: [lp_lesson, lp_quiz]
  *
- * @since 3.x.x
+ * @since 3.0.0
  *
  * @return mixed
  */

@@ -5,7 +5,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes/CURD
- * @since   3.x.x
+ * @since   3.0.0
  */
 class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function create( &$course ) {

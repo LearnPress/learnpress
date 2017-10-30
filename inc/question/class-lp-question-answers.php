@@ -3,7 +3,7 @@
 /**
  * Class LP_Question_Answers
  *
- * @since 3.x.x
+ * @since 3.0.0
  */
 class LP_Question_Answers implements ArrayAccess, Iterator {
 	/**
@@ -218,7 +218,7 @@ class LP_Question_Answers implements ArrayAccess, Iterator {
 /**
  * Class LP_Question_Answer_Option
  *
- * @since 3.x.x
+ * @since 3.0.0
  */
 class LP_Question_Answer_Option implements ArrayAccess {
 	/**

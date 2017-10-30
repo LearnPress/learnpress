@@ -382,7 +382,7 @@ class LP_Quiz_Factory {
 	 *
 	 * @return bool|Exception
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	public static function maybe_save_questions( $action = '', $nonce = '' ) {
 		try {

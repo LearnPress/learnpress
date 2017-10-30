@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit();
 
 /**
- * New functions since 3.x.x
+ * New functions since 3.0.0
  */
 
 /**
@@ -168,7 +168,6 @@ add_action( 'learn-press/content-learning-summary', 'learn_press_course_buttons'
 
 ///add_action( 'learn-press/content-learning-summary', 'learn_press_course_content_item', 50 );
 
-
 /**
  * Course item content
  */
@@ -179,100 +178,13 @@ add_action( 'learn-press/content-learning-summary', 'learn_press_course_buttons'
 add_action( 'learn-press/course-item-content', 'learn_press_course_item_content', 5 );
 add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 5 );
 
-//add_filter( 'wp_redirect', 'learn_press_get_course_redirect', 10 );
-
-function learn_press_get_course_redirect(  $link ) {
-
-	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
-	    return $link;
-    }
-    $referer = $_SERVER['HTTP_REFERER'] ;
-	$info_a = parse_url( $referer );
-	$info_b = parse_url( $link );
-
-	$a = explode( '/', $info_a['path'] );
-	$a = array_filter( $a );
-
-	$b = explode( '/', $info_b['path'] );
-	$b = array_filter( $b );
-
-	$same = array_intersect_assoc( $a, $b );
-
-	$a = array_diff_assoc( $a, $same );
-	$b = array_diff_assoc( $b, $same );
-
-	$a = array_values( $a );
-	$b = array_values( $b );
-
-	if ( array_shift( $a ) === 'popup' ) {
-		unset( $a[0] );
-		if ( ! ( array_diff_assoc( $a, $b ) ) ) {
-			$link = '';
-			foreach ( array( 'scheme', 'host', 'port', 'path' ) as $v ) {
-				if ( ! isset( $info_a[ $v ] ) ) {
-					continue;
-				}
-
-				if ( $v == 'scheme' ) {
-					$sep = '://';
-				} elseif ( $v == 'host' ) {
-					$sep = '';
-				} elseif ( $v == 'port' ) {
-					$link .= ':';
-					$sep  = '';
-				} else {
-					$sep = '/';
-				}
-				$link = $link . $info_a[ $v ] . $sep;
-			}
-
-			if ( ! empty( $info_b['query'] ) ) {
-				$link .= '?' . $info_b['query'];
-			}
-
-			if ( ! empty( $info_b['fragment'] ) ) {
-				$link .= '#' . $info_b['fragment'];
-			}
-		}
-	}
-
-	return $link;
-}
-
-
 add_action( 'learn-press/before-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_title', 10 );
-
 add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content',10);
-
 add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_complete_button', 10 );
-
 add_action( 'learn-press/course-item-content-header', 'learn_press_content_item_header',10 );
-
 add_action( 'learn-press/course-item-content-footer', 'learn_press_content_item_footer', 10 );
-
 add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
-
-/**
- * @param LP_Quiz $item
- */
-function learn_press_quiz_meta_questions( $item ) {
-	$count = $item->count_questions();
-	echo '<span class="item-meta count-questions">' . sprintf( $count ? _n( '%d question', '%d questions', 'learnpress' ) : __( '%d question', 'learnpress' ), $count ) . '</span>';
-}
-
 add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_questions' );
-
-/**
- * @param LP_Quiz $item
- */
-function learn_press_quiz_meta_final( $item ) {
-	$course = LP_Global::course();
-	if ( ! $course->is_final_quiz( $item->get_id() ) ) {
-		return;
-	}
-	echo '<span class="item-meta final-quiz">' . __( 'Final', 'learnpress' ) . '</span>';
-}
-
 add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_final' );
 /**
  * @see learn_press_content_item_summary_title()
@@ -314,7 +226,6 @@ add_action( 'learn-press/question-content-summary', 'learn_press_content_item_su
 add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_explanation', 25 );
 add_action( 'learn-press/question-content-summary', 'learn_press_content_item_summary_question_hint', 25 );
 
-
 /**
  * @see learn_press_quiz_nav_buttons()
  * @see learn_press_quiz_start_button()
@@ -353,11 +264,8 @@ add_filter( 'document_title_parts', 'learn_press_single_document_title_parts' );
 /*         BECOME A TEACHER        */
 /***********************************/
 add_action( 'learn-press/before-become-teacher-form', 'learn_press_become_teacher_messages', 10 );
-
 add_action( 'learn-press/before-become-teacher-form', 'learn_press_become_teacher_heading', 10 );
-
 add_action( 'learn-press/become-teacher-form', 'learn_press_become_teacher_form_fields', 10 );
-
 add_action( 'learn-press/after-become-teacher-form', 'learn_press_become_teacher_button', 10 );
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */
@@ -383,9 +291,7 @@ add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_ite
 //add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_students', 20 );
 add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_price', 25 );
 add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_instructor', 25 );
-
 add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_item_end_meta', 30 );
-
 add_action( 'learn_press_after_courses_loop', 'learn_press_courses_pagination', 5 );
 
 /* single course content */
@@ -457,19 +363,13 @@ add_action( 'learn_press_after_profile_loop_course', 'learn_press_after_profile_
 add_action( 'learn_press_after_quiz_question_title', 'learn_press_single_quiz_question_answer', 5, 2 );
 add_action( 'learn_press_order_received', 'learn_press_order_details_table', 5 );
 add_action( 'learn_press_before_template_part', 'learn_press_generate_template_information', 999, 4 );
-
 add_action( 'learn_press/after_course_item_content', 'learn_press_course_item_edit_link', 10, 2 );
-function learn_press_course_item_edit_link( $item_id, $course_id ) {
-	$user = learn_press_get_current_user();
-	if ( $user->can_edit_item( $item_id, $course_id ) ): ?>
-        <p class="edit-course-item-link">
-            <a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
-        </p>
-	<?php endif;
-}
-
 add_action( 'learn_press/after_course_item_content', 'learn_press_course_nav_items', 10, 2 );
 add_action( 'learn_press/after_course_item_content', 'learn_press_lesson_comment_form', 10, 2 );
+
+
+add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
+add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 //add_action('learn_press_after_content_item', 'learn_press_edit_item_link', 10, 3);
 //add_action('learn_press_after_content_item', 'learn_press_course_nav_items', 10, 3);
 //add_action('learn_press_after_content_item', 'learn_press_lesson_comment_form', 10, 3);
@@ -517,40 +417,3 @@ if ( !function_exists( 'learn_press_redirect_profile' ) ) {
 	}
 
 }*/
-
-function learn_press_comments_template_query_args( $comment_args ) {
-	$post_type = get_post_type( $comment_args['post_id'] );
-	if ( $post_type == 'lp_course' ) {
-		$comment_args['type__not_in'] = 'review';
-	}
-
-	return $comment_args;
-}
-
-add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
-
-if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
-	function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
-		global $wpdb;
-		if ( ! $post_id ) {
-			$post_id = learn_press_get_course_id();
-		}
-		if ( ! $post_id ) {
-			return $count;
-		}
-		if ( get_post_type( $post_id ) == 'lp_course' ) {
-			$sql   = " SELECT count(*) "
-			         . " FROM {$wpdb->comments} "
-			         . " WHERE comment_post_ID=%d "
-			         . " and comment_approved=1 "
-			         . " and comment_type != 'review' ";
-			$count = $wpdb->get_var( $wpdb->prepare( $sql, $post_id ) );
-
-			return apply_filters( 'learn_press_get_comments_number', $count, $post_id );
-		}
-
-		return $count;
-	}
-}
-
-add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );

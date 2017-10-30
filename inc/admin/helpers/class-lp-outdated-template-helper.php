@@ -4,7 +4,7 @@
  * Class LP_Outdated_Template_Helper
  *
  * @author ThimPress
- * @since  3.x.x
+ * @since  3.0.0
  */
 class LP_Outdated_Template_Helper {
 	/**

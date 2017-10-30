@@ -46,7 +46,7 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
  *
  * @return bool
  */
-function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* added 3.x.x */ ) {
+function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* added 3.0.0 */ ) {
 
 	// If $course_id is not passed consider $item_id is ID of a course
 	if ( ! $course_id ) {
@@ -385,7 +385,7 @@ add_action( 'user_register', 'learn_press_update_user_teacher_role', 10, 1 );
  *                                  field_name_n => value n
  *                                  )
  * @param mixed $where              - Optional. Fields with values for conditional update with the same format of $fields.
- * @param bool  $update_cache       - Optional. Should be update to cache or not (since 3.x.x).
+ * @param bool  $update_cache       - Optional. Should be update to cache or not (since 3.0.0).
  *
  * @return mixed
  */

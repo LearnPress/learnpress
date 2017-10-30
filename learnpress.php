@@ -110,7 +110,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		public function __get( $key ) {
-			_deprecated_argument( $key, '3.x.x' );
+			_deprecated_argument( $key, '3.0.0' );
 
 			$return = false;
 			switch ( $key ) {

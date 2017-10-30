@@ -194,7 +194,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	public function __get( $key ) {
 		$return = false;
 
-		_deprecated_argument( __CLASS__ . '::' . $key, '3.x.x' );
+		_deprecated_argument( __CLASS__ . '::' . $key, '3.0.0' );
 
 		if ( ! empty( $this->user->data->{$key} ) ) {
 			$return = $this->user->data->{$key};
@@ -249,7 +249,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *
 	 * @return bool
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	protected function _verify_course_item( $item_id, $course_id = 0 ) {
 		if ( false !== ( $course = $this->_get_course( $course_id, 'object' ) ) ) {
@@ -268,7 +268,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *
 	 * @return mixed
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	public function has_item_status( $statuses, $item_id, $course_id ) {
 		settype( $statuses, 'array' );
@@ -356,7 +356,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			do_action( 'learn_press_user_start_quiz', $return, $quiz_id, $course_id, $this->get_id() );
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/user/quiz-started', $quiz_id, $course_id, $this->get_id() );
 		}
@@ -462,7 +462,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			}
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/user/quiz-redone', $quiz_id, $course_id, $this->get_id() );
 		}
@@ -650,7 +650,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @param int  $course_id
 	 * @param bool $last
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @return mixed
 	 */
@@ -675,7 +675,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @param int $item_id
 	 * @param int $course_id
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @return mixed
 	 */
@@ -716,7 +716,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		// Deprecated third argument
 		if ( func_num_args() >= 3 ) {
-			_deprecated_argument( __FUNCTION__ . ' {$force}', '3.x.x' );
+			_deprecated_argument( __FUNCTION__ . ' {$force}', '3.0.0' );
 		}
 
 		if ( ! $course_id ) {
@@ -741,7 +741,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	/**
 	 * Update viewing item data into database.
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @param int $item_id
 	 * @param int $course_id
@@ -941,7 +941,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Mark question that user has checked.
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @param   int $question_id
 	 * @param int   $quiz_id
@@ -972,7 +972,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Mark question that user has checked.
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @param   int $question_id
 	 * @param int   $quiz_id
@@ -1863,7 +1863,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$enrolled = apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		return apply_filters( 'learn-press/has-enrolled-course', $enrolled, $this->get_id(), $course_id );
 	}
@@ -2414,7 +2414,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	public function has_ordered_course( $course_id ) {
 		$return = apply_filters( 'learn-press/user-has-ordered-course', $this->get_course_order( $course_id ), $course_id, $this->get_id() );
 
-		// Deprecated since 3.x.x
+		// Deprecated since 3.0.0
 		$return = apply_filters( 'learn_press_user_has_ordered_course', $return, $course_id, $this->get_id() );
 
 		return $return;
@@ -2432,7 +2432,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		$return = apply_filters( 'learn-press/course-order-status', $order_id ? get_post_status( $order_id ) : false, $course_id, $this->get_id() );
 
-		// Deprecated since 3.x.x
+		// Deprecated since 3.0.0
 		$return = apply_filters( 'learn_press_user_has_ordered_course', $return, $course_id, $this->get_id() );
 
 		return $return;
@@ -3293,7 +3293,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	public function can_access_course( $course_id ) {
 		$return = apply_filters( 'learn-press/user-can-access-course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->get_id() );
 
-		// Deprecated since 3.x.x
+		// Deprecated since 3.0.0
 		$return = apply_filters( 'learn_press_user_can_access_course', $return, $course_id, $this->get_id() );
 
 		return $return;

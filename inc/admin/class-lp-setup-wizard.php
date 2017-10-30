@@ -5,7 +5,7 @@
  *
  * Class helper for displaying the Setup Wizard page.
  *
- * @since   3.x.x
+ * @since   3.0.0
  * @author  ThimPress
  * @package LearnPress/Classes
  */

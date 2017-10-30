@@ -3,7 +3,7 @@
 /**
  * Class LP_Settings_Emails_Group
  *
- * @since 3.x.x
+ * @since 3.0.0
  */
 class LP_Settings_Emails_Group extends LP_Settings {
 

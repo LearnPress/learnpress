@@ -26,7 +26,7 @@ do_action( 'learn_press_before_single_course' );
 do_action( 'learn_press_before_single_course_summary' );
 
 /**
- * @since 3.x.x
+ * @since 3.0.0
  */
 do_action( 'learn-press/before-main-content' );
 
@@ -36,7 +36,7 @@ do_action( 'learn-press/before-single-course' );
 <div id="learn-press-course" class="course-summary">
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
      *
      * @see learn_press_single_course_summary()
 	 */
@@ -46,7 +46,7 @@ do_action( 'learn-press/before-single-course' );
 <?php
 
 /**
- * @since 3.x.x
+ * @since 3.0.0
  */
 do_action( 'learn-press/after-main-content' );
 

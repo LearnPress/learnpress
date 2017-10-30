@@ -63,7 +63,7 @@ function learn_press_create_order( $order_data ) {
 	// @deprecated
 	$order_data_defaults = apply_filters( 'learn_press_defaults_order_data', $order_data_defaults );
 
-	/// @since 3.x.x
+	/// @since 3.0.0
 	$order_data_defaults = apply_filters( 'learn-press/order/default-data', $order_data_defaults );
 	$order_data          = wp_parse_args( $order_data, $order_data_defaults );
 
@@ -551,7 +551,7 @@ function learn_press_cart_order_instructor() {
 }
 
 function learn_press_get_orders( $args = array() ) {
-	//_deprecated_function( __FUNCTION__, '3.x.x', 'get_posts' );
+	//_deprecated_function( __FUNCTION__, '3.0.0', 'get_posts' );
 	$args['post_type'] = LP_ORDER_CPT;
 	$orders            = get_posts( $args );
 
@@ -790,7 +790,7 @@ function learn_press_get_order_statuses( $prefix = true, $status_only = false ) 
 	// @deprecated
 	$order_statuses = apply_filters( 'learn_press_order_statuses', $order_statuses );
 
-	// @since 3.x.x
+	// @since 3.0.0
 	return apply_filters( 'learn-press/order-statues', $order_statuses );
 }
 

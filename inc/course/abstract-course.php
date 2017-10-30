@@ -134,7 +134,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			$key = strtolower( $key );
 		}
 		if ( $key == 'id' ) {
-			_deprecated_argument( __CLASS__ . '::id', '3.x.x' );
+			_deprecated_argument( __CLASS__ . '::id', '3.0.0' );
 		}
 		if ( empty( $this->{$key} ) ) {
 			$value = false;
@@ -295,7 +295,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @deprecated
 	 */
 	public function get_description() {
-		_deprecated_function( __FUNCTION__, '3.x.x', 'LP_Course::get_content' );
+		_deprecated_function( __FUNCTION__, '3.0.0', 'LP_Course::get_content' );
 
 		return $this->get_content();
 	}
@@ -978,7 +978,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 *
 	 * @return int
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	public function get_max_students() {
 		return apply_filters( 'learn-press/max-students', absint( $this->get_data( 'max_students' ) ), $this->get_id() );
@@ -1469,7 +1469,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 */
 	public function _evaluate_course_by_lesson( $user_id, $force = false ) {
 		if ( func_num_args() > 1 ) {
-			_deprecated_argument( '$force', '3.x.x' );
+			_deprecated_argument( '$force', '3.0.0' );
 		}
 		//static $evaluate_course_by_lesson = array();
 		$evaluate_course_by_lesson = LP_Cache::get_evaluate_course_by_lesson( false, array() );

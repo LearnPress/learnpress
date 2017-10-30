@@ -5,7 +5,7 @@
  *
  * Shortcode to display the checkout form
  *
- * @since 3.x.x
+ * @since 3.0.0
  */
 class LP_Shortcode_Become_A_Teacher extends LP_Abstract_Shortcode {
 

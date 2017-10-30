@@ -678,7 +678,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @param mixed $args
 		 *
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 *
 		 * @return array
 		 */

@@ -3,7 +3,7 @@
 /**
  * Class LP_Order_CURD
  *
- * @since 3.x.x
+ * @since 3.0.0
  */
 class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 

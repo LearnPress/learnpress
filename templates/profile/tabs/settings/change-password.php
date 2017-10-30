@@ -3,7 +3,7 @@
  * Form for displaying change password form in profile page
  *
  * @author  ThimPress
- * @version 3.x.x
+ * @version 3.0.0
  * @package LearnPress/Templates
  */
 
@@ -20,7 +20,7 @@ if ( ! isset( $section ) ) {
 	<?php
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/before-profile-change-password-fields', $profile );
 	?>
@@ -31,7 +31,7 @@ if ( ! isset( $section ) ) {
 		do_action( 'learn_press_before_' . $section . '_edit_fields' );
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/begin-profile-change-password-fields', $profile );
 		?>
@@ -58,7 +58,7 @@ if ( ! isset( $section ) ) {
 		<?php
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/end-profile-change-password-fields', $profile );
 
@@ -69,7 +69,7 @@ if ( ! isset( $section ) ) {
 
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-profile-change-password-fields', $profile );
 	?>

@@ -309,7 +309,7 @@ class LP_Checkout {
 				// Allow plugins to add order item meta
 				do_action( 'learn_press_add_order_item_meta', $item_id, $item );
 
-				// @since 3.x.x
+				// @since 3.0.0
 				do_action( 'learn-press/checkout/add-order-item-meta', $item_id, $item );
 			}
 
@@ -344,7 +344,7 @@ class LP_Checkout {
 	/**
 	 * Guest checkout is enable?
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @return mixed
 	 */
@@ -480,7 +480,7 @@ class LP_Checkout {
 			do_action( 'learn_press_before_checkout_process' );
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/before-checkout' );
 

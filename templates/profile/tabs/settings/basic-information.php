@@ -3,7 +3,7 @@
  * Form for editing basic information of user in profile page
  *
  * @author  ThimPress
- * @version 3.x.x
+ * @version 3.0.0
  * @package LearnPress/Templates
  */
 
@@ -24,7 +24,7 @@ $user = $profile->get_user();
 	<?php
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/before-profile-basic-information-fields', $profile );
 
@@ -35,7 +35,7 @@ $user = $profile->get_user();
 		<?php
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/begin-profile-basic-information-fields', $profile );
 
@@ -87,7 +87,7 @@ $user = $profile->get_user();
 		do_action( 'learn_press_after_' . $section . '_edit_fields' );
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/end-profile-basic-information-fields', $profile );
 
@@ -97,7 +97,7 @@ $user = $profile->get_user();
 	<?php
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-profile-basic-information-fields', $profile );
 

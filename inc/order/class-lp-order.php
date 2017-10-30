@@ -166,7 +166,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	/**
 	 * Get confirm received text
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @return string
 	 */
@@ -182,13 +182,13 @@ class LP_Order extends LP_Abstract_Post_Data {
 	/**
 	 * Get thank you message after the order is placed.
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @return mixed
 	 */
 	public function get_thankyou_message() {
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		$message = apply_filters( 'learn-press/', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
 
@@ -388,13 +388,13 @@ class LP_Order extends LP_Abstract_Post_Data {
 			do_action( 'learn_press_payment_complete', $this->get_id() );
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/payment-complete', $this->get_id() );
 		} else {
 			do_action( 'learn_press_payment_complete_order_status_' . $this->get_status(), $this->get_id() );
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/payment-complete-order-status-' . $this->get_status(), $this->get_id() );
 		}
@@ -415,7 +415,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		$received_url = apply_filters( 'learn_press_get_checkout_order_received_url', $received_url, $this );
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		return apply_filters( 'learn-press/checkout-order-received-url', $received_url, $this );
 	}
@@ -526,7 +526,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		global $wpdb;
 
 		if ( func_num_args() > 1 ) {
-			_deprecated_argument( 'quantity and meta', '3.x.x' );
+			_deprecated_argument( 'quantity and meta', '3.0.0' );
 		}
 
 		if ( is_numeric( $item ) ) {
@@ -581,7 +581,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		do_action( 'learn_press_new_order_item', $item_id, $item, $this->get_id() );
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/added-order-item', $item_id, $item, $this->get_id() );
 
@@ -666,7 +666,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		do_action( 'learn_press_before_delete_order_item', $item_id );
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/before-delete-order-item', $item_id, $this->get_id() );
 
@@ -676,7 +676,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		wp_cache_delete( 'order-' . $this->get_id(), 'lp-order-items' );
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/deleted-order-item', $item_id, $this->get_id() );
 
@@ -1111,7 +1111,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 			do_action( 'learn_press_update_order_status', $new_status, $the_id );
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/order/status-' . $new_status, $the_id, $old_status );
 			do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $the_id );

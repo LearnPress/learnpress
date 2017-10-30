@@ -1,7 +1,7 @@
 <?php
 /**
  * Add columns for storing the time in GMT
- * @since 3.x.x
+ * @since 3.0.0
  */
 function learn_press_300_add_column_user_items() {
 	global $wpdb;

@@ -22,14 +22,14 @@ global $course;
 	do_action( 'learn_press_begin_single_course_description' );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/before-single-course-description' );
 
 	echo $course->get_content();
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-single-course-description' );
 

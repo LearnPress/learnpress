@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Admin/Views
- * @version 3.x.x
+ * @version 3.0.0
  */
 if ( isset( $order_items ) ) {
 	$currency_symbol = learn_press_get_currency_symbol( $order_items->currency );

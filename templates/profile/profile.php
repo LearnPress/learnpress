@@ -5,7 +5,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 /**
@@ -19,17 +19,17 @@ $profile = LP_Global::profile();
 
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/before-user-profile', $profile );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/user-profile', $profile );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-user-profile', $profile );
 	?>

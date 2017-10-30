@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -32,7 +32,7 @@ if ( is_user_logged_in() ) {
 
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/before-checkout-login-form-fields' );
 
@@ -47,7 +47,7 @@ if ( is_user_logged_in() ) {
 			do_action( 'learn_press_checkout_user_login_before_form_fields' );
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/begin-checkout-login-form-fields' );
 
@@ -70,7 +70,7 @@ if ( is_user_logged_in() ) {
 
 			<?php
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/end-checkout-login-form-fields' );
 
@@ -84,7 +84,7 @@ if ( is_user_logged_in() ) {
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/before-checkout-login-form-button' );
 		?>
@@ -98,7 +98,7 @@ if ( is_user_logged_in() ) {
 
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-checkout-login-form-fields' );
 

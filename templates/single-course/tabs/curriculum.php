@@ -24,7 +24,7 @@ global $course;
 		do_action( 'learn_press_before_single_course_curriculum' );
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/before-single-course-curriculum' );
 
@@ -49,7 +49,7 @@ global $course;
 		<?php
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/after-single-course-curriculum' );
 

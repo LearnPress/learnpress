@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,7 +30,7 @@ if ( $items = $section->get_items() ) { ?>
 				}
 
 				/**
-				 * @since 3.x.x
+				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/begin-section-loop-item', $item );
 				?>
@@ -43,14 +43,14 @@ if ( $items = $section->get_items() ) { ?>
 					);
 
 					/**
-					 * @since 3.x.x
+					 * @since 3.0.0
 					 */
 					do_action( 'learn-press/before-section-loop-item', $item );
 
 					learn_press_get_template( "single-course/section/" . $item->get_template(), $args );
 
 					/**
-					 * @since 3.x.x
+					 * @since 3.0.0
 					 *
 					 * @see   learn_press_section_item_meta()
 					 */
@@ -61,7 +61,7 @@ if ( $items = $section->get_items() ) { ?>
 
 				<?php
 				/**
-				 * @since 3.x.x
+				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/end-section-loop-item', $item );
 				?>

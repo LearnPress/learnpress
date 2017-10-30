@@ -2,7 +2,7 @@
 
 /**
  * Class LP_User_Item
- * @since 3.x.x
+ * @since 3.0.0
  */
 class LP_User_Item extends LP_Abstract_Object_Data {
 	protected static $_loaded = 0;

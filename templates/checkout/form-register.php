@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +26,7 @@ if ( is_user_logged_in() ) {
 	do_action( 'learn_press_checkout_before_user_register_form' );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/before-checkout-register-form' );
 	?>
@@ -78,7 +78,7 @@ if ( is_user_logged_in() ) {
 	do_action( 'learn_press_checkout_after_user_register_form' );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-checkout-register-form' );
 	?>

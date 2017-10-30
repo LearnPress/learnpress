@@ -45,7 +45,7 @@ class LP_Gateways {
 			// Filter
 			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
 
-			// 3.x.x
+			// 3.0.0
 			$gateways = apply_filters( 'learn-press/payment-methods', $gateways );
 			if ( $gateways ) {
 				foreach ( $gateways as $k => $gateway ) {

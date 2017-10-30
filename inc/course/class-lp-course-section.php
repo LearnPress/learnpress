@@ -3,7 +3,7 @@
 /**
  * Class LP_Course_Section
  *
- * @since 3.x.x
+ * @since 3.0.0
  */
 class LP_Course_Section {
 

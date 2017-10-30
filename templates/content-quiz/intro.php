@@ -4,7 +4,7 @@
  *
  * @package LearnPress/Templates
  * @author  ThimPress
- * @version 3.x.x
+ * @version 3.0.0
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly

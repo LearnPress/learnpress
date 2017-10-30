@@ -6,9 +6,10 @@ $course = LP_Global::course();
         <button
                 class="lp-button"><?php _e( 'Back to Course', 'learnpress' ); ?></button>
     </form>
-
-    <form class="lp-form form-button" method="post">
-        <button
-                class="lp-button"><?php _e( 'Finish', 'learnpress' ); ?></button>
-    </form>
+	<?php if ( 1 == 0 ) { ?>
+        <form class="lp-form form-button" method="post">
+            <button
+                    class="lp-button"><?php _e( 'Finish', 'learnpress' ); ?></button>
+        </form>
+	<?php } ?>
 </div>

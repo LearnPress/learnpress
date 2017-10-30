@@ -3,7 +3,7 @@
 /**
  * Class LP_Submenu_Addons
  *
- * @since 3.x.x
+ * @since 3.0.0
  */
 class LP_Submenu_Addons extends LP_Abstract_Submenu {
 

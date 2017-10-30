@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -43,7 +43,7 @@ $count_gateways               = ! empty( $available_gateways ) ? sizeof( $availa
 				do_action( 'learn_press_before_payments' );
 
 				/**
-				 * @since 3.x.x
+				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/begin-payment-methods' );
 				?>
@@ -71,7 +71,7 @@ $count_gateways               = ! empty( $available_gateways ) ? sizeof( $availa
 
 				<?php
 				/**
-				 * @since 3.x.x
+				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/end-payment-methods' );
 
@@ -103,7 +103,7 @@ $count_gateways               = ! empty( $available_gateways ) ? sizeof( $availa
 			do_action( 'learn_press_order_before_submit' );
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/before-checkout-submit-button' );
 			?>
@@ -125,7 +125,7 @@ $count_gateways               = ! empty( $available_gateways ) ? sizeof( $availa
 			<?php
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/after-checkout-submit-button' );
 

@@ -21,7 +21,7 @@ $checkout = LP()->checkout();
 do_action( 'learn_press_before_checkout_form', $checkout );
 
 /**
- * @since 3.x.x
+ * @since 3.0.0
  *
  * @see   learn_press_checkout_form_login()
  * @see   learn_press_checkout_form_register()
@@ -45,7 +45,7 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 		 */
 		do_action( 'learn_press_checkout_before_order_review' );
 
-		// @since 3.x.x
+		// @since 3.0.0
 		do_action( 'learn-press/before-checkout-order-review' );
 		?>
 
@@ -59,7 +59,7 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 			do_action( 'learn_press_checkout_order_review' );
 
 			/**
-			 * @since 3.x.x
+			 * @since 3.0.0
              *
              * @see learn_press_order_review()
              * @see learn_press_order_comment()
@@ -71,7 +71,7 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
         </div>
 
 		<?php
-		// @since 3.x.x
+		// @since 3.0.0
 		do_action( 'learn-press/after-checkout-order-review' );
 
 		/**
@@ -90,7 +90,7 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 
 	<?php
 }
-// @since 3.x.x
+// @since 3.0.0
 do_action( 'learn-press/after-checkout-form' );
 
 /**

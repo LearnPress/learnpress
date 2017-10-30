@@ -43,7 +43,7 @@ interface LP_Interface_CURD {
 	/**
 	 * Read meta data for passed object.
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @param $object
 	 */
@@ -52,7 +52,7 @@ interface LP_Interface_CURD {
 	/**
 	 * Add new meta data.
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @param $object
 	 * @param $meta
@@ -62,7 +62,7 @@ interface LP_Interface_CURD {
 	/**
 	 * Update meta data.
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @param $object
 	 * @param $meta
@@ -72,7 +72,7 @@ interface LP_Interface_CURD {
 	/**
 	 * Delete meta data.
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @param $object
 	 * @param $meta

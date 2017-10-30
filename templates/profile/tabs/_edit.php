@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-_deprecated_file( __FILE__, '3.x.x' );
+_deprecated_file( __FILE__, '3.0.0' );
 
 $user                    = learn_press_get_current_user();
 $user_info               = get_userdata( $user->get_id() );

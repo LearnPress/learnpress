@@ -5,7 +5,7 @@
  *
  * Abstract class for shortcodes
  *
- * @since 3.x.x
+ * @since 3.0.0
  */
 abstract class LP_Abstract_Shortcode_Courses extends LP_Abstract_Shortcode {
 

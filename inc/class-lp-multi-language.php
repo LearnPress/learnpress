@@ -26,7 +26,7 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 		 * @return void
 		 */
 		public static function load_textdomain() {
-			_deprecated_function( __FUNCTION__, '3.x.x' );
+			_deprecated_function( __FUNCTION__, '3.0.0' );
 			$plugin_folder = basename( LP_PLUGIN_PATH );
 			$text_domain   = 'learnpress';
 			$locale        = apply_filters( 'plugin_locale', get_locale(), $text_domain );

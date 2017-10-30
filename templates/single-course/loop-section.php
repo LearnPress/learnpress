@@ -26,7 +26,7 @@ if ( ! isset( $section ) ) {
 	do_action( 'learn_press_curriculum_section_summary', $section );
 
 	/**
-	 * @since  3.x.x
+	 * @since  3.0.0
 	 *
 	 * @see learn_press_curriculum_section_title - 5
 	 * @see learn_press_curriculum_section_content - 10

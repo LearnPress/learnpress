@@ -4,7 +4,7 @@
  *
  * @package LearnPress/Templates
  * @author  ThimPress
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 defined( 'ABSPATH' ) or die;
@@ -22,7 +22,7 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
 
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/before-profile-avatar-fields', $profile );
 	?>
@@ -61,7 +61,7 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
 
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-profile-avatar-fields', $profile );
 	?>

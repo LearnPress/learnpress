@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,7 +21,7 @@ $cart = learn_press_get_checkout_cart();
     <tr>
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/before-heading-row' );
 		?>
@@ -31,7 +31,7 @@ $cart = learn_press_get_checkout_cart();
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/after-heading-row' );
 		?>
@@ -46,7 +46,7 @@ $cart = learn_press_get_checkout_cart();
 	do_action( 'learn_press_review_order_before_cart_contents' );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 
 	do_action( 'learn-press/review-order/before-cart-contents' );
@@ -69,7 +69,7 @@ $cart = learn_press_get_checkout_cart();
 					do_action( 'learn_press_review_order_before_cart_item', $cart_item );
 
 					/**
-					 * @since 3.x.x
+					 * @since 3.0.0
 					 */
 					do_action( 'learn-press/review-order/before-cart-item', $cart_item, $cart_item_key );
 					?>
@@ -85,7 +85,7 @@ $cart = learn_press_get_checkout_cart();
 					<?php
 
 					/**
-					 * @since 3.x.x
+					 * @since 3.0.0
 					 */
 					do_action( 'learn-press/review-order/after-cart-item', $cart_item, $cart_item_key );
 
@@ -102,7 +102,7 @@ $cart = learn_press_get_checkout_cart();
 	}
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 
 	do_action( 'learn-press/review-order/after-cart-contents' );
@@ -122,7 +122,7 @@ $cart = learn_press_get_checkout_cart();
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/before-subtotal-row' );
 		?>
@@ -132,7 +132,7 @@ $cart = learn_press_get_checkout_cart();
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/after-subtotal-row' );
 		?>
@@ -145,7 +145,7 @@ $cart = learn_press_get_checkout_cart();
 	do_action( 'learn_press_review_order_before_order_total' );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/review-order/before-order-total' );
 
@@ -154,7 +154,7 @@ $cart = learn_press_get_checkout_cart();
     <tr class="order-total">
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/before-total-row' );
 		?>
@@ -164,7 +164,7 @@ $cart = learn_press_get_checkout_cart();
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/after-total-row' );
 		?>
@@ -173,7 +173,7 @@ $cart = learn_press_get_checkout_cart();
 	<?php
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/review-order/after-order-total' );
 

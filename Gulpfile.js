@@ -124,7 +124,7 @@ gulp.task('release', ['copy-release'], function () {
 });
 
 // main task
-gulp.task('svn', ['less', 'copy-trunk'], function () {
+gulp.task('svn', ['scss', 'copy-trunk'], function () {
     updateReadme(getCurrentVer(true), function () {
         return gulp.start('release', ['copy-tag']);
     })

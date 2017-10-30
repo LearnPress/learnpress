@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -36,7 +36,7 @@ if ( ! isset( $order ) ) {
 		<?php } ?>
 
 		<?php
-		// @since 3.x.x
+		// @since 3.0.0
 		do_action( 'learn-press/before-confirm-order-details', $order->get_id() );
 		?>
         <ul class="order_details">
@@ -65,7 +65,7 @@ if ( ! isset( $order ) ) {
         </ul>
 
 		<?php
-		// @since 3.x.x
+		// @since 3.0.0
 		do_action( 'learn-press/after-confirm-order-details', $order->get_id() );
 		?>
 

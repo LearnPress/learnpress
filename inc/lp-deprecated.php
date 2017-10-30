@@ -350,7 +350,7 @@ if ( ! function_exists( '_learn_press_default_course_tabs' ) ) {
 	 * @return array
 	 */
 	function _learn_press_default_course_tabs( $tabs = array() ) {
-		_deprecated_function( __FUNCTION__, '3.x.x', 'learn_press_get_course_tabs' );
+		_deprecated_function( __FUNCTION__, '3.0.0', 'learn_press_get_course_tabs' );
 
 		return learn_press_get_course_tabs();
 	}

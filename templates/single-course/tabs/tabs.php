@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 defined( 'ABSPATH' ) or exit();
@@ -41,7 +41,7 @@ if ( empty( $tabs ) ) {
 					call_user_func( $tab['callback'], $key, $tab );
 				} else {
 					/**
-					 * @since 3.x.x
+					 * @since 3.0.0
 					 */
 					do_action( 'learn-press/course-tab-content', $key, $tab );
 				}

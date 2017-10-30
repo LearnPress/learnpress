@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -42,7 +42,7 @@ do_action( 'learn_press_before_content_learning' );
 	do_action( 'learn_press_content_learning_summary' );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @see   learn_press_course_meta_start_wrapper()
 	 */
