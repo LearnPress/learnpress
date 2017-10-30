@@ -50,7 +50,9 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'request-become-a-teacher:nonce',
 				'upload-user-avatar',
 				'checkout',
-				'complete-lesson'
+				'complete-lesson',
+				'finish-course',
+				'retake-course'
 			);
 
 			foreach ( $ajaxEvents as $action => $callback ) {
@@ -342,33 +344,37 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Request finish course
 		 */
-		public static function _request_finish_course() {
-			$nonce     = learn_press_get_request( 'security' );
-			$course_id = absint( learn_press_get_request( 'id' ) );
+		public static function finish_course() {
+			$nonce     = LP_Request::get_string( 'finish-course-nonce' );
+			$course_id = LP_Request::get_int( 'course-id' );
+			$course    = LP_Course::get_course( $course_id );
 			$user      = learn_press_get_current_user();
 
-			$course = LP_Course::get_course( $course_id );
-
-			$nonce_action = sprintf( 'learn-press-finish-course-%d-%d', $course_id, $user->get_id() );
+			$nonce_action = sprintf( 'finish-course-%d-%d', $course_id, $user->get_id() );
 			if ( ! $user->get_id() || ! $course || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
-
+			//LP_Debug::startTransaction();
 			$finished = $user->finish_course( $course_id );
-
-			$response = array();
+			//LP_Debug::rollbackTransaction();
+			$response = array(
+				'redirect' => get_the_permalink( $course_id )
+			);
 
 			if ( $finished ) {
 				learn_press_add_message( sprintf( __( 'You have finished this course "%s"', 'learnpress' ), $course->get_title() ) );
-				$response['redirect'] = get_the_permalink( $course_id );
-
 				$response['result'] = 'success';
 			} else {
-				$response['message'] = __( 'Error! You cannot finish this course. Please contact your administrator for more information.', 'learnpress' );
-				$response['result']  = 'error';
+				learn_press_add_message( __( 'Error! You cannot finish this course. Please contact your administrator for more information.', 'learnpress' ) );
+				$response['result'] = 'error';
 			}
 
-			learn_press_send_json( $response );
+			learn_press_maybe_send_json( $response );
+
+			if ( ! empty( $response['redirect'] ) ) {
+				wp_redirect( $response['redirect'] );
+				exit();
+			}
 		}
 
 		/**
@@ -652,32 +658,51 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Retake course action
 		 */
-		public static function _request_retake_course() {
-			$security        = learn_press_get_request( 'security' );
-			$course_id       = learn_press_get_request( 'course_id' );
+		public static function retake_course() {
+			$security        = LP_Request::get_string( 'retake-course-nonce' );
+			$course_id       = LP_Request::get_int( 'course_id' );
 			$user            = learn_press_get_current_user();
 			$course          = LP_Course::get_course( $course_id );
 			$response        = array(
 				'result' => 'error'
 			);
-			$security_action = sprintf( 'learn-press-retake-course-%d-%d', $course->get_id(), $user->get_id() );
+			$security_action = sprintf( 'retake-course-%d-%d', $course->get_id(), $user->get_id() );
 			// security check
 			if ( ! wp_verify_nonce( $security, $security_action ) ) {
-				$response['message'] = __( 'Error! Invalid lesson or security checked failure', 'learnpress' );
+				learn_press_add_message( __( 'Error! Invalid course or security checked failure', 'learnpress' ), 'error' );
 			} else {
 				if ( $user->can( 'retake-course', $course_id ) ) {
 					if ( ! $result = $user->retake_course( $course_id ) ) {
-						$response['message'] = __( 'Error!', 'learnpress' );
+						learn_press_add_message( __( 'Error!', 'learnpress' ), 'error' );
 					} else {
 						learn_press_add_message( sprintf( __( 'You have retaken course "%s"', 'learnpress' ), $course->get_title() ) );
-						$response['result']   = 'success';
-						$response['redirect'] = apply_filters( 'learn_press_retake_course_redirect', add_query_arg( 'retaken-course', $course_id, get_the_permalink( $course_id ) ) );
+						$response['result'] = 'success';
 					}
 				} else {
-					$result['message'] = __( 'Error! You can not retake course', 'learnpress' );
+					learn_press_add_message( __( 'Error! You can not retake course', 'learnpress' ), 'error' );
 				}
 			}
-			learn_press_send_json( $response );
+
+
+			if ( learn_press_message_count( 'error' ) == 0 ) {
+				if ( $item = $course->get_item_at( 0 ) ) {
+					$redirect = $course->get_item_link( $item );
+				} else {
+					$redirect = $course->get_permalink();
+				}
+				$response['redirect'] = apply_filters( 'learn-press/user-retake-course-redirect', $redirect );
+				$response             = apply_filters( 'learn-press/user-retaken-course-result', $response, $course_id, $user->get_id() );
+			} else {
+				$response['redirect'] = $course->get_permalink();
+				$response             = apply_filters( 'learn-press/user-retake-course-failed-result', $response, $course_id, $user->get_id() );
+			}
+
+			learn_press_maybe_send_json( $response );
+
+			if ( ! empty( $response['redirect'] ) ) {
+				wp_redirect( $response['redirect'] );
+				exit();
+			}
 		}
 
 		public static function start_quiz() {

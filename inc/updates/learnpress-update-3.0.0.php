@@ -5,7 +5,7 @@
  */
 function learn_press_300_add_column_user_items() {
 	global $wpdb;
-	echo $sql = $wpdb->prepare( "
+	$sql = $wpdb->prepare( "
 		ALTER TABLE {$wpdb->learnpress_user_items}
 		ADD COLUMN `start_time_gmt` DATETIME NULL DEFAULT %s AFTER `start_time`,
 		ADD COLUMN `end_time_gmt` DATETIME NULL DEFAULT %s AFTER `end_time`;
@@ -15,6 +15,11 @@ function learn_press_300_add_column_user_items() {
 	if ( $wpdb->last_error !== '' ) {
 		learn_press_add_message( $wpdb->last_error, 'error' );
 	}
+}
+
+function learn_Press_300_update_metas(){
+	$query = "
+	";
 }
 
 

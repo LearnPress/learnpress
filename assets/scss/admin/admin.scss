@@ -248,3 +248,25 @@
     }
 }
 
+#field-_lp_course_result {
+    input[name="_lp_course_result"] +
+    #passing-condition-quiz-result {
+        display: none;
+        background: #F5F5F5;
+        padding: 10px;
+        input{
+            width: 100%;
+            margin: 0;
+            @include box-sizing(border-box);
+        }
+        p{
+            margin: 7px 0 0;
+            color: #777;
+            font-style: italic;
+        }
+    }
+    input[name="_lp_course_result"]:checked +
+    #passing-condition-quiz-result {
+        display: block;
+    }
+}

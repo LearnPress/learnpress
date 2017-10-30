@@ -226,6 +226,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					);
 				}
 			}
+
+			if ( 'evaluate_final_quiz' === LP_Request::get_string( '_lp_course_result' ) ) {
+				$passing_grade = LP_Request::get_string( '_lp_course_result_final_quiz_passing_condition' );
+
+				$quiz_id = $course->get_final_quiz();
+
+				update_post_meta( $quiz_id, '_lp_passing_grade', $passing_grade );
+				//update_post_meta( $course_id, '_lp_passing_condition', $passing_grade );
+			}
 		}
 
 		/**
@@ -419,6 +428,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Re-take course', 'learnpress' ),
 						'id'   => "{$prefix}retake_count",
 						'type' => 'number',
+						'min'  => - 1,
 						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable.', 'learnpress' ),
 						'std'  => 0,
 					),
@@ -445,10 +455,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Course assessment
 		 *
-		 * @return mixed|null|void
+		 * @return mixed
 		 */
 		public static function assessment_meta_box() {
-			$post_id            = learn_press_get_request( 'post' );
+			global $post;
+			$post_id = LP_Request::get_int( 'post' ) ? LP_Request::get_int( 'post' ) : $post->ID;
+			if ( ! $post_id ) {
+				return false;
+			}
+
 			$prefix             = '_lp_';
 			$course_results     = get_post_meta( $post_id, '_lp_course_result', true );
 			$course_result_desc = '';
@@ -460,6 +475,23 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
 				$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learnpress' );
 			}
+
+			$course        = learn_press_get_course( $post_id );
+			$passing_grade = '';
+
+			if ( $final_quiz = $course->get_final_quiz() ) {
+				$quiz = learn_press_get_quiz( $final_quiz );
+
+				$passing_grade = $quiz->get_passing_grade();
+			}
+
+			$quiz_passing_condition_html = '
+				<div id="passing-condition-quiz-result">
+				<input type="number" name="_lp_course_result_final_quiz_passing_condition" value="' . absint( $passing_grade ) . '" />
+				<p>' . __( 'Current passing grade of Final quiz, you can change it here. This value will be applied for Passing Grade of the course.', 'learnpress' ) . '</p>
+				</div>
+			';
+
 			$meta_box = array(
 				'id'       => 'course_assessment',
 				'title'    => __( 'Assessment', 'learnpress' ),
@@ -473,24 +505,40 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => $course_result_desc,
 						'options' => array(
-							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by lessons user has completed per total lessons in course.', 'learnpress' ) ),
-							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by results of final quiz in course.', 'learnpress' ) ),
+							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' )
+							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by lessons user has completed per total lessons in course.', 'learnpress' ) ),
+							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' )
+							                             . $quiz_passing_condition_html
+							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by results of final quiz in course.', 'learnpress' ) ),
 							// new options
-							'evaluate_quizzes'        => __( 'Evaluate results of quizzes', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points per total point of all quizzes.', 'learnpress' ) ),
-							'evaluate_passed_quizzes' => __( 'Evaluate results of quizzes passed', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points of passed course per total point of all quizzes.', 'learnpress' ) ),
-							'evaluate_quiz'           => __( 'Evaluate quizzes', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by quizzes user has completed per total quizzes.', 'learnpress' ) ),
+							'evaluate_quizzes'        => __( 'Evaluate results of quizzes', 'learnpress' )
+							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points per total point of all quizzes.', 'learnpress' ) ),
+							'evaluate_passed_quizzes' => __( 'Evaluate results of quizzes passed', 'learnpress' )
+							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points of passed course per total point of all quizzes.', 'learnpress' ) ),
+							'evaluate_quiz'           => __( 'Evaluate quizzes', 'learnpress' )
+							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by quizzes user has completed per total quizzes.', 'learnpress' ) ),
 						),
 						'std'     => 'evaluate_lesson',
 						'inline'  => false
 					),
 					array(
-						'name' => __( 'Passing condition value', 'learnpress' ),
-						'id'   => "{$prefix}passing_condition",
-						'type' => 'number',
-						'min'  => 1,
-						'max'  => 100,
-						'desc' => __( 'The percentage of quiz result or lessons completed to finish the course.', 'learnpress' ),
-						'std'  => 80,
+						'name'       => __( 'Passing condition value', 'learnpress' ),
+						'id'         => "{$prefix}passing_condition",
+						'type'       => 'number',
+						'min'        => 1,
+						'max'        => 100,
+						'desc'       => __( 'The percentage of quiz result or lessons completed to finish the course.', 'learnpress' ),
+						'std'        => 80,
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => "{$prefix}course_result",
+									'compare' => '!=',
+									'value'   => 'evaluate_final_quiz'
+								)
+							)
+						)
 					)
 				)
 			);
@@ -824,18 +872,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 		private function _update_final_quiz() {
 			global $post;
-			$final_quiz = false;
 
-			if ( learn_press_get_request( '_lp_course_result' ) == 'evaluate_final_quiz' ) {
-				if ( $final_quiz = learn_press_get_final_quiz( $post->ID ) ) {
-					update_post_meta( $post->ID, '_lp_final_quiz', $final_quiz );
-				} else {
-					delete_post_meta( $post->ID, '_lp_final_quiz' );
-				}
-			} else {
-				delete_post_meta( $post->ID, '_lp_final_quiz' );
-			}
-			do_action( 'learn_press_update_final_quiz', $final_quiz, $post->ID );
+			$final_quiz = learn_press_get_final_quiz( $post->ID );
 
 			return $final_quiz;
 		}

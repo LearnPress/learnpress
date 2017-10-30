@@ -101,6 +101,31 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	/**
+	 * Get end-time.
+	 *
+	 * @param mixed $time
+	 */
+	public function set_end_time_gmt( $time ) {
+		$this->set_data_date( 'end_time_gmt', $time );
+	}
+
+	/**
+	 * Get end-time.
+	 *
+	 * @param string $format
+	 *
+	 * @return string|LP_Datetime
+	 */
+	public function get_end_time_gmt( $format = '' ) {
+		$date = new LP_Datetime( $this->get_data( 'end_time_gmt' ) );
+		if ( $format ) {
+			return $date->format( $format );
+		}
+
+		return $date;
+	}
+
+	/**
 	 * Set item-status.
 	 *
 	 * @param string $status
@@ -204,7 +229,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 			switch ( $k ) {
 				case 'start_time':
 				case 'end_time':
-					$v = $v->toSql();
+					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'start_time_gmt':
 					$v = new LP_Datetime( $this->_data['start_time'] );
@@ -250,7 +275,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	public function update() {
 		$data = $this->get_mysql_data();
-		learn_press_update_user_item_field( $data );
+		return learn_press_update_user_item_field( $data );
 	}
 
 	public function get_status_label( $status = '' ) {
@@ -297,13 +322,13 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return false;
 	}
 
-	public function get_history(){
-		return wp_cache_get(sprintf('course-item-%s-%s-%s', $this->get_user_id(), $this->get_course('id'), $this->get_id()), 'lp-user-course-items');
+	public function get_history() {
+		return wp_cache_get( sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_course( 'id' ), $this->get_id() ), 'lp-user-course-items' );
 	}
 
-	public function count_history(){
-		if($items = $this->get_history()){
-			return sizeof($items);
+	public function count_history() {
+		if ( $items = $this->get_history() ) {
+			return sizeof( $items );
 		}
 
 		return 0;

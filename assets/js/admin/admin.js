@@ -36,6 +36,18 @@
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
 
+        $(document).on('click', '#field-_lp_course_result input[name="_lp_course_result"]', function(){
+            var $input = $(this),
+                checked = $input.is(':checked');
+
+            if($input.val() === 'evaluate_final_quiz' && checked){
+                var $passingConditionInput = $('#_lp_passing_condition'),
+                    passingCondition = $passingConditionInput.val();
+
+
+            }
+        });
+
         $(document).on('click', '.change-email-status', function () {
             (function () {
                 $.post({

@@ -279,16 +279,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-final-quiz' ) ) ) {
 			$course     = $this->get_course();
 			$final_quiz = $course->get_final_quiz();
-
-			$result = false;
+			$result     = false;
 			if ( $user_quiz = $this->get_item( $final_quiz ) ) {
-				$result = $user_quiz->get_results( '' );
+				$result = $user_quiz->get_results( false );
 			}
 
 			$percent = $result ? $result['result'] : 0;
 			$data    = array(
 				'result' => $percent,
-				'grade'  => $this->is_finished() ? $this->_is_passed( $result ) : '',
+				'grade'  => $this->is_finished() ? $this->_is_passed( $percent ) : '',
 				'status' => $this->get_status()
 			);
 
@@ -405,7 +404,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	protected function _is_passed( $result ) {
 		$result = round( $result, 2 );
-
 		return $result >= $this->get_passing_condition() ? 'passed' : 'failed';
 	}
 
@@ -481,7 +479,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return string
 	 */
 	public function get_passing_condition() {
-		return $this->_course->get_data( 'passing_condition' );
+		return $this->_course->get_passing_condition();
 	}
 
 	/**
@@ -596,6 +594,27 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return apply_filters( 'learn-press/course/single-params', $js_args, $this->get_id() );
+	}
+
+	/**
+	 * Get number of retaken times for user course.
+	 *
+	 * @return int
+	 */
+	public function get_retaken_count() {
+		return absint( learn_press_get_user_item_meta( $this->get_user_item_id(), '_lp_retaken_count', true ) );
+	}
+
+	/**
+	 * Increase retaken count.
+	 *
+	 * @return bool|int
+	 */
+	public function increase_retake_count() {
+		$count = $this->get_retaken_count();
+		$count ++;
+
+		return learn_press_update_user_item_meta( $this->get_user_item_id(), '_lp_retaken_count', $count );
 	}
 
 	/**

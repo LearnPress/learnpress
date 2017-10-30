@@ -55,7 +55,7 @@
 
         function timeCountdown() {
             stopCountdown();
-            if ((thisSettings.remainingTime <= 0 ) || (-1 === $.inArray(settings.status, ['completed', 'finished']))) {
+            if ((thisSettings.remainingTime <= 0 ) || (-1 !== $.inArray(settings.status, ['completed', 'finished']))) {
                 return;
             }
             thisSettings.remainingTime--;

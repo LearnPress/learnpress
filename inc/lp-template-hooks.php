@@ -21,6 +21,7 @@ add_action( 'learn-press/course-buttons', 'learn_press_course_purchase_button', 
 add_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button', 10 );
 add_action( 'learn-press/course-buttons', 'learn_press_course_retake_button', 15 );
 add_action( 'learn-press/course-buttons', 'learn_press_course_continue_button', 20 );
+add_action( 'learn-press/course-buttons', 'learn_press_course_finish_button', 25 );
 
 
 /**
@@ -405,7 +406,7 @@ if ( !function_exists( 'learn_press_redirect_profile' ) ) {
 				$user = learn_press_get_current_user();
 				$url  = learn_press_user_profile_link( $user->id, $wp->query_vars['view'] );
 				if ( !$url ) {
-					$redirect_url = get_permalink() . $wp_query->query['user'];
+					:wq$redirect_url = get_permalink() . $wp_query->query['user'];
 					$url          = wp_login_url( $redirect_url );
 				}
 				die('ddddddddddddd');

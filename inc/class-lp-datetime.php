@@ -51,12 +51,13 @@ class LP_Datetime extends DateTime {
 		}
 
 		if ( ! ( $tz instanceof DateTimeZone ) ) {
-			if ( ( $tz === null ) && $tz = get_option( 'timezone_string' ) ) {
-				$tz = new DateTimeZone( $tz );
+			if ( ( $tz === null ) ) {
+				$tz = new DateTimeZone( self::timezone_string() );
 			} elseif ( is_string( $tz ) && $tz ) {
 				$tz = new DateTimeZone( $tz );
 			}
 		}
+
 		if ( ! $tz ) {
 			$tz = null;
 		}
@@ -73,6 +74,33 @@ class LP_Datetime extends DateTime {
 		date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
+	}
+
+	public static function timezone_string() {
+
+		if ( $timezone = get_option( 'timezone_string' ) ) {
+			return $timezone;
+		}
+
+		if ( 0 === ( $utc_offset = intval( get_option( 'gmt_offset', 0 ) ) ) ) {
+			return 'UTC';
+		}
+
+		$utc_offset *= 3600;
+
+		if ( $timezone = timezone_name_from_abbr( '', $utc_offset ) ) {
+			return $timezone;
+		}
+
+		foreach ( timezone_abbreviations_list() as $abbr ) {
+			foreach ( $abbr as $city ) {
+				if ( (bool) date( 'I' ) === (bool) $city['dst'] && $city['timezone_id'] && intval( $city['offset'] ) === $utc_offset ) {
+					return $city['timezone_id'];
+				}
+			}
+		}
+
+		return 'UTC';
 	}
 
 	public function is_null() {
@@ -246,5 +274,9 @@ class LP_Datetime extends DateTime {
 		}
 
 		return $timestamp;
+	}
+
+	public static function getSqlNullDate(){
+		return '0000-00-00 00:00:00';
 	}
 }

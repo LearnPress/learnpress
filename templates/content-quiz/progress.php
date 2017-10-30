@@ -43,7 +43,7 @@ if($quiz_data->is_review_questions()){
         </div>
         <div class="progress-item quiz-countdown">
             <span class="progress-number">
-                00:00:24
+                --:--:--
             </span>
             <span class="progress-label">
 				<?php

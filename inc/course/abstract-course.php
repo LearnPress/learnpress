@@ -6,19 +6,6 @@ defined( 'ABSPATH' ) || exit();
  * Class LP_Abstract_Course
  */
 abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
-	/**
-	 * The course (post) ID.
-	 *
-	 * @var int
-	 */
-	public $idx = 0;
-
-	/**
-	 * $post Stores post data
-	 *
-	 * @var $post WP_Post
-	 */
-	public $postx = null;
 
 	/**
 	 *
@@ -364,10 +351,26 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Return list of item's ids in course's curriculum.
 	 *
+	 * @param string|array $type
+	 *
 	 * @return array
 	 */
-	public function get_items() {
-		return apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
+	public function get_items( $type = '' ) {
+		$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
+
+		if ( $type ) {
+			$item_types = array();
+			settype( $type, 'array' );
+			foreach ( $items as $item_id ) {
+				if ( in_array( get_post_type( $item_id ), $type ) ) {
+					$item_types[] = $item_id;
+				}
+			}
+
+			$items = apply_filters( 'learn-press/course-items-by-type', $item_types, $type, $this->get_id() );
+		}
+
+		return $items;
 	}
 
 	/**
@@ -739,155 +742,29 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return array
 	 */
 	public function get_lessons( $args = null ) {
-		$args            = wp_parse_args(
-			$args,
-			array(
-				'field' => ''
-			)
-		);
-		$curriculum_args = array_merge(
-			array(
-				'force' => false,
-				'group' => true
-			),
-			$args
-		);
-		$items           = $this->get_curriculum_items( $curriculum_args );
-		$lessons         = ! empty( $items['lessons'] ) ? $items['lessons'] : false;
-
-		return apply_filters( 'learn_press_course_lessons', $lessons, $this );
-	}
-
-	/**
-	 * Get all items in a course
-	 *
-	 * @param array $args {
-	 *                    force       bool    Force to get curriculum items that does not care for it is already existing in memory or not
-	 *                    group        bool    Group the items returned by type of each item
-	 *                    field        string  The fields want to get
-	 *                    }
-	 *
-	 * @return array
-	 */
-	public function get_curriculum_items( $args = array() ) {
-
-		// default value for $args
-		$force        = false;
-		$group        = false;
-		$field        = '';
-		$field_map    = '';
-		$field_format = '';
-
-		$args    = wp_parse_args(
-			$args,
-			array(
-				'force'        => false,
-				'group'        => false,
-				'field'        => '',
-				'field_map'    => '',
-				'field_format' => ''
-			)
-		);
 		$lessons = array();
-		$quizzes = array();
-
-		// overwrite default values with params passed
-		extract( $args );
-		$items = array();
-		if ( ! $this->_curriculum_items || $force ) {
-			$curriculum = $this->get_curriculum( null, $force );
-			$index      = 0;
-			if ( ! empty( $field ) ) {
-				if ( is_string( $field ) ) {
-					$field = explode( '![\s]+!', $field );
-				}
-				settype( $field, 'array' );
-			} else {
-				$field = false;
-			}
-			if ( ! empty( $field_map ) ) {
-				if ( is_string( $field_map ) ) {
-					$field_map = explode( '![\s]+!', $field_map );
-				}
-				settype( $field_map, 'array' );
-			} else {
-				$field_map = false;
-			}
-			if ( ! empty( $field_format ) ) {
-				if ( is_string( $field_format ) ) {
-					$field_format = explode( '![\s]+!', $field_format );
-				}
-				settype( $field_format, 'array' );
-			} else {
-				$field_format = false;
-			}
-			//if( is_array( $field ) ) $field = array_map( $field, 'strtolower' );
-			if ( $curriculum ) {
-				foreach ( $curriculum as $section ) {
-					if ( empty( $section->items ) ) {
-						continue;
-					}
-					foreach ( $section->items as $loop_item ) {
-						if ( empty( $section->section_id ) ) {
-							continue;
-						}
-						$loop_item->section_id = $section->section_id;
-						if ( $field ) {
-							$item       = array();
-							$item_array = (array) $loop_item;
-							foreach ( $field as $k => $field_name ) {
-								if ( array_key_exists( $field_name, $item_array ) ) {
-									if ( $field_map && ! empty( $field_map[ $k ] ) ) {
-										$map_key = $field_map[ $k ];
-									} else {
-										$map_key = $field_name;
-									}
-									if ( $field_format && ! empty( $field_format[ $k ] ) ) {
-										if ( $field_format[ $k ] == '%d' ) {
-											$item[ $map_key ] = strpos( '.', $item_array[ $field_name ] ) !== false ? floatval( $item_array[ $field_name ] ) : intval( $item_array[ $field_name ] );
-										} elseif ( $field_format[ $k ] == '%s' ) {
-											$item[ $map_key ] = (string) $item_array[ $field_name ];
-										}
-									} else {
-										$item[ $map_key ] = $item_array[ $field_name ];
-									}
-									//break;
-								}
-							}
-							if ( sizeof( $item ) == 1 ) {
-								$item = reset( $item );
-							}
-						} else {
-							$item = $loop_item;
-						}
-						if ( $loop_item->post_type == LP_LESSON_CPT ) {
-							$lessons[ $index ] = $item;
-						} else {
-							$quizzes[ $index ] = $item;
-						}
-						$index ++;
-					}
-				}
-			}
-			// group
-			if ( $group ) {
-				$items = array(
-					'quizzes' => $quizzes,
-					'lessons' => $lessons
-				);
-			} else {
-				// combine lessons and quizzes as it should be in curriculum
-				for ( $i = 0, $n = sizeof( $quizzes ) + sizeof( $lessons ); $i < $n; $i ++ ) {
-					if ( ! empty( $quizzes[ $i ] ) ) {
-						$items[] = $quizzes[ $i ];
-					} elseif ( ! empty( $lessons[ $i ] ) ) {
-						$items[] = $lessons[ $i ];
-					}
+		if ( $items = $this->get_items() ) {
+			foreach ( $items as $item_id ) {
+				if ( get_post_type( $item_id ) == LP_LESSON_CPT ) {
+					$lessons[] = $item_id;
 				}
 			}
 		}
 
-		return apply_filters( 'learn_press_get_course_items', $items, $this );
+		return $items;
+	}
+
+	/**
+	 * Get all items in a course.
+	 *
+	 * @deprecated
+	 *
+	 * @param string $type . Type of items, eg: lp_lesson, lp_quiz...
+	 *
+	 * @return array
+	 */
+	public function get_curriculum_items( $type = '' ) {
+		return $this->get_items( $type );
 	}
 
 	public function is_viewing_item( $item_id = false ) {
@@ -1057,14 +934,20 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/course-item', $item, $item_id, $this->get_id() );
 	}
 
-	public function get_passing_condition( $format = false ) {
+	/**
+	 * Get course passing condition value.
+	 *
+	 * @param bool   $format
+	 * @param string $context
+	 *
+	 * @return array|mixed|string
+	 */
+	public function get_passing_condition( $format = false, $context = '' ) {
 		$value = $this->get_data( 'passing_condition' );
 		if ( $format ) {
 			$value = "{$value}%";
-			//$value .= $this->get_data('passing')
 		}
-
-		return $value;
+		return 'edit' === $context ? $value : apply_filters( 'learn-press/course-passing-condition', $value, $this->get_id() );
 	}
 
 	public function can_view_item( $item_id ) {
@@ -1293,22 +1176,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		$user_course = $user->get_course_data( $this->get_id() );
 
 		return $user_course ? $user_course->get_results( 'result' ) : 0;
-
-		$quizzes = $this->get_quizzes();
-
-		if ( ( 'evaluate_lesson' === $this->get_data( 'course_result' ) ) || ! $quizzes ) {
-			$results = $this->_evaluate_course_by_lesson( $user_id );
-		} elseif ( 'evaluate_final_quiz' === $this->get_data( 'course_result' ) ) {
-			$results = $this->_evaluate_course_by_quiz( $user_id );
-		} elseif ( 'evaluate_quiz' === $this->get_data( 'course_result' ) ) {
-			$results = $this->_evaluate_course_by_quizzes( $user_id );
-		} elseif ( 'evaluate_quizzes' === $this->get_data( 'course_result' ) ) {
-			$results = $this->_evaluate_course_by_quizzes_results( $user_id );
-		} elseif ( 'evaluate_passed_quizzes' === $this->get_data( 'course_result' ) ) {
-			$results = $this->_evaluate_course_by_passed_quizzes_results( $user_id );
-		}
-
-		return apply_filters( 'learn_press_evaluation_course_results', $results );
 	}
 
 	/**
@@ -1495,7 +1362,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @param bool   $force
 	 * @param string $type
 	 *
-	 * @return int|mixed|null
+	 * @return int|bool
 	 */
 	public function get_completed_items( $user_id = 0, $force = false, $type = '' ) {
 
@@ -1504,30 +1371,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			$user_id = get_current_user_id();
 		}
 
-		return learn_press_get_user( $user_id )->get_completed_items( $this->get_id() );
+		$user = learn_press_get_user( $user_id );
 
+		$items = $user ? $user->get_completed_items( $this->get_id() ) : false;
 
-		_learn_press_parse_user_item_statuses( $user_id, $this->get_id() );
-		$item_statuses   = LP_Cache::get_item_statuses( false, array() );
-		$completed_items = array();
-		if ( $item_statuses ) {
-			if ( $curriculum_items = $this->post->curriculum_items ) {
-				$curriculum_items = maybe_unserialize( $curriculum_items );
-				foreach ( $curriculum_items as $item_id ) {
-					if ( $type && $type !== get_post_type( $item_id ) ) {
-						continue;
-					}
-					$k = sprintf( '%d-%d-%d', $user_id, $this->get_id(), $item_id );
-					if ( ! empty( $item_statuses[ $k ] ) && $item_statuses[ $k ] == 'completed' ) {
-						if ( $this->enable_evaluate_item( $item_id, $user_id ) ) {
-							$completed_items[] = $item_id;
-						}
-					}
-				}
-			}
-		}
-
-		return apply_filters( 'learn_press_user_completed_items', $completed_items, $this->get_id(), $user_id );
+		return apply_filters( 'learn-press/user-completed-items', $items, $user_id, $this->get_id() );
 	}
 
 	/**
@@ -1566,7 +1414,9 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function get_final_quiz() {
-		return $this->get_data( 'final_quiz' );
+		$final_quiz = $this->get_data( 'final_quiz' );
+
+		return apply_filters( 'learn-press/course-final-quiz', $final_quiz, $this->get_id() );
 	}
 
 	public function set_final_quiz( $id ) {
@@ -1586,10 +1436,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		$user_course = $user->get_course_data( $this->get_id() );
 
 		return $user_course ? $user_course->get_results( '' ) : 0;
-		global $wpdb;
-		$result = $this->evaluate_quiz( $this->final_quiz, $user_id );
-
-		return apply_filters( 'learn_press_evaluation_course_quiz', $result, $this->get_id(), $user_id );
 	}
 
 	public function evaluate_quiz( $quiz_id, $user_id, $force = false ) {
@@ -1708,7 +1554,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @param int $user_id
 	 * @param     mixed
 	 *
-	 * @return mixed|null|void
+	 * @return mixed
 	 */
 	public function get_user_expired_time( $user_id = 0, $args = array() ) {
 
@@ -1733,7 +1579,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @param int $user_id
 	 * @param     mixed
 	 *
-	 * @return mixed|null|void
+	 * @return mixed
 	 */
 	public function is_expired( $user_id = 0, $args = array() ) {
 		settype( $args, 'array' );
@@ -1791,10 +1637,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Get external link of "Buy this course" button
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	public function get_external_link() {
-		return apply_filters( 'learn_press_external_link_buy_course', $this->external_link_buy_course, $this->get_id() );
+		return apply_filters( 'learn-press/course-external-link', $this->get_data( 'external_link' ), $this->get_id() );
 	}
 
 	public function get_video_embed() {
@@ -1823,8 +1669,15 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return $embed;
 	}
 
+	public function get_retake_count() {
+		return absint( $this->get_data( 'retake_count' ) );
+	}
+
 	public function get_author() {
 		return learn_press_get_user( get_post_field( 'post_author', $this->get_id() ) );
 	}
 
+	public function get_tags() {
+		return apply_filters( 'learn-press/course-tags', get_the_term_list( $this->get_id(), 'course_tag', __( 'Tags: ', 'learnpress' ), ', ', '' ) );
+	}
 }

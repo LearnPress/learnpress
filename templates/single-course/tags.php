@@ -7,14 +7,14 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$course = LP()->global['course'];
+$course = LP_Global::course();
 
-$tags = apply_filters( 'learn_press_course_tags', get_the_term_list( $course->get_id(), 'course_tag', __( 'Tags: ', 'learnpress' ), ', ', '' ) );
-if ( !$tags ) {
+$tags = $course->get_tags();
+if ( ! $tags ) {
 	return;
 }
 ?>

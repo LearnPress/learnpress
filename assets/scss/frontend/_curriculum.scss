@@ -724,14 +724,26 @@ body {
     }
 }
 
+.lp-course-progress {
+    position: relative;
+    .lp-passing-conditional {
+        position: absolute;
+        height: 10px;
+        width: 3px;
+        background: #FF0000;
+        top: 0;
+        margin-left: -1px;
+    }
+}
+
 @media screen and (max-width: 1300px) {
     body.course-item-popup {
         #course-item-content-header .course-item-search {
             width: 300px;
-            input{
+            input {
                 width: 285px;
             }
-            button{
+            button {
                 left: 300px;
             }
         }
@@ -756,10 +768,10 @@ body {
     body.course-item-popup {
         #course-item-content-header .course-item-search {
             width: 300px;
-            input{
+            input {
                 width: 285px;
             }
-            button{
+            button {
                 left: 300px;
             }
         }
@@ -784,10 +796,10 @@ body {
     body.course-item-popup {
         #course-item-content-header .course-item-search {
             width: 200px;
-            input{
+            input {
                 width: 185px;
             }
-            button{
+            button {
                 left: 200px;
             }
         }

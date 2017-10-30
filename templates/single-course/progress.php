@@ -22,7 +22,7 @@ $force             = isset( $force ) ? $force : false;
 $num_of_decimal    = 0;
 $result            = $course->evaluate_course_results( null, $force );
 $current           = absint( $result );
-$passing_condition = round( $course->passing_condition, $num_of_decimal );
+$passing_condition = round( $course->get_passing_condition(), $num_of_decimal );
 $passed            = $current >= $passing_condition;
 $heading           = apply_filters( 'learn_press_course_progress_heading', $status == 'finished' ? __( 'Your results', 'learnpress' ) : __( 'Learning progress', 'learnpress' ) );
 $course_items      = sizeof( $course->get_curriculum_items() );

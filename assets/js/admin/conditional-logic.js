@@ -68,6 +68,9 @@
                             var $chk = control.find('input[type="checkbox"]');
                             value = $chk.is(':checked') ? $chk.val() : '';
                             break;
+                        case 'radio':
+                            value = control.find('input:checked').val();
+                            break;
                         default:
                             value = control.find('input, select').val();
 
@@ -203,6 +206,8 @@
                     that.update($(this).closest('.rwmb-field'), $fields);
                 }).trigger('change');
             }, this);
+
+            console.log($fields)
         },
         getFieldType: function (field) {
             var $field = $(field);
@@ -219,7 +224,7 @@
         getFieldName: function (field) {
             return $(field).find('.rwmb-field-name').val();
         },
-        supportFields: ['yes-no', 'text', 'number']
+        supportFields: ['yes-no', 'text', 'number', 'radio']
     });
     $(document).ready(function () {
         new Conditional_Logic({conditionals: lp_conditional_logic});

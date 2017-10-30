@@ -1668,7 +1668,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$return = false;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			$result = $course->evaluate_course_results();
-			$return = ( $result >= $course->passing_condition ) && $this->has_course_status( $course_id, array(
+			$return = ( $result >= $course->get_passing_condition() ) && $this->has_course_status( $course_id, array(
 					'enrolled',
 					'started'
 				) );
@@ -1705,6 +1705,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	public function get_completed_items( $course_id ) {
 		$this->_curd->get_user_items( $this->get_id(), $course_id );
+
+		return $this->_curd->get_user_completed_items( $this->get_id(), $course_id );
 	}
 
 	/**
@@ -1718,7 +1720,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	public function can_retake_course( $course_id, $force = false ) {
 		$can = false;
 		if ( $course = learn_press_get_course( $course_id ) ) {
-			$count = $course->retake_count;
+			$count = $course->get_retake_count();
 			if ( $count > 0 ) {
 				// Number of taken
 				$taken = $this->count_retaken_course( $course_id, $force );
@@ -1751,20 +1753,20 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		global $wpdb;
 		$return = 0;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
-			if ( ! $this->can( 'finish-course', $course_id ) && 1 == 0 ) {
+			if ( ! $this->can( 'finish-course', $course_id ) ) {
 				return false;
 			} else {
-				$time      = current_time( 'timestamp' );
-				$expired   = $course->get_user_expired_time( $this->get_id() );
-				$updated   = $wpdb->update(
-					$wpdb->prefix . 'learnpress_user_items',
-					array(
-						'end_time' => date( 'Y-m-d H:i:s', $expired - $time < 0 ? $expired : $time ),
-						'status'   => 'finished'
-					),
-					array( 'user_id' => $this->get_id(), 'item_id' => $course_id ),
-					array( '%s', '%s' )
-				);
+
+				$user_course = $this->get_course_data( $course_id );
+				$end_time    = new LP_Datetime();
+
+				$user_course->set_end_time( $end_time->toSql() );
+				$user_course->set_end_time_gmt( $end_time->toSql( false ) );
+				$user_course->set_status( 'finished' );
+
+				$user_course->update();
+
+
 				$null_time = '0000-00-00 00:00';
 
 				$return = $wpdb->get_var(
@@ -1777,12 +1779,14 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 						", $this->get_id(), $course_id, $null_time, $null_time )
 				);
 				if ( $return ) {
-					do_action( 'learn_press_user_finish_course', $course_id, $this->get_id(), $return );
+					do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
 				}
+
+				wp_cache_flush();
 			}
 		}
 
-		return apply_filters( 'learn_press_user_finish_course_data', $return, $course_id, $this->get_id() );
+		return apply_filters( 'learn-press/user-course-finished-data', $return, $course_id, $this->get_id() );
 	}
 
 	public function is_instructor() {
@@ -1891,36 +1895,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return bool
 	 */
 	public function has_finished_course( $course_id, $force = false ) {
-		$item_statuses = LP_Cache::get_item_statuses( false, array() );
-		$key           = sprintf( '%d-%d-%d', $this->get_id(), $course_id, $course_id );
-		$enrolled      = false;
-		if ( ! empty( $item_statuses[ $key ] ) ) {
-			$enrolled = $item_statuses[ $key ];
+		if ( func_num_args() > 1 ) {
+			_deprecated_argument( '$force', '3.0.0' );
 		}
 
-		return apply_filters( 'learn_press_user_has_finished_course', $enrolled == 'finished', $this, $course_id );
-
-
-		//static $courses = array();
-		$finished_courses = LP_Cache::get_finished_courses( false, array() );
-		if ( empty( $finished_courses[ $course_id ] ) || $force ) {
-			global $wpdb;
-			$query                          = $wpdb->prepare( "
-				SELECT status
-				FROM {$wpdb->prefix}learnpress_user_items uc
-				INNER JOIN {$wpdb->posts} c ON c.ID = uc.item_id
-				INNER JOIN {$wpdb->posts} o ON o.ID = uc.ref_id
-				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
-				WHERE uc.user_id = %d
-				AND uc.item_id = %d
-				AND o.post_status = %s
-				ORDER BY user_item_id DESC LIMIT 0,1
-			", '_user_id', $this->get_id(), $this->get_id(), $course_id, 'lp-completed' );
-			$finished_courses[ $course_id ] = $wpdb->get_var( $query ) == 'finished' ? 'yes' : 'no';
-			LP_Cache::set_finished_courses( $finished_courses );
-		}
-
-		return apply_filters( 'learn_press_user_has_finished_course', $finished_courses[ $course_id ] == 'yes', $course_id, $this->get_id() );
+		return apply_filters( 'learn-press/user-has-finished-course', $this->get_course_status( $course_id ) == 'finished', $this, $course_id );
 	}
 
 	public function has_passed_course( $course_id ) {
@@ -2049,32 +2028,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			return $count;
 		}
 
-		global $wpdb;
-
-		// Get data from cache
-		$cached = (array) wp_cache_get( 'user-count-retaken-course', 'learnpress' );
-
-		// If no data exists in cache or force to get it from database
-		if ( ! array_key_exists( $this->get_id() . '-' . $course_id, $cached ) || $force ) {
-			$query = $wpdb->prepare( "
-				SELECT count(user_item_id) - 1 FROM {$wpdb->prefix}learnpress_user_items
-				WHERE user_id = %d
-				AND item_id = %d
-				AND item_type = %s
-			", $this->get_id(), $course_id, 'lp_course' );
-
-			$count = $wpdb->get_var( $query );
-			if ( $count < 0 ) {
-				$count = 0;
-			}
-			// Store into cache
-			$cached[ $this->get_id() . '-' . $course_id ] = $count;
-			wp_cache_set( 'user-count-retaken-course', $cached, 'learnpress' );
-		} else {
-			$count = $cached[ $this->get_id() . '-' . $course_id ];
+		if($user_course = $this->get_course_data($course_id)){
+			$count = $user_course->get_retaken_count();
 		}
 
-		return apply_filters( 'learn_press_user_count_retaken_course', $count, $course_id, $this->get_id() );
+		return $count;
 	}
 
 	public function retake_course( $course_id ) {
@@ -2083,48 +2041,37 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		}
 
 		global $wpdb;
-		$inserted = 0;
+		$result = false;
 
-		$check = apply_filters( 'learn_press_before_retake_course', true, $course_id, $this->get_id() );
+		$check = apply_filters( 'learn-press/before-retake-course', true, $course_id, $this->get_id() );
 		if ( ! $check ) {
 			return false;
 		}
-		if ( $wpdb->insert(
-			$wpdb->prefix . 'learnpress_user_items',
-			array(
-				'user_id'    => $this->get_id(),
-				'item_id'    => $course_id,
-				'start_time' => current_time( 'mysql' ),
-				'status'     => 'enrolled',
-				'end_time'   => '0000-00-00 00:00:00',
-				'ref_id'     => $this->get_course_order( $course_id ),
-				'item_type'  => 'lp_course',
-				'ref_type'   => 'lp_order'
-			),
-			array( '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s' )
-		)
-		) {
-			$inserted = $wpdb->insert_id;
 
-			/*
-			 * Should be deleted all user items when user retake course?
-			 */
-			$wpdb->query(
-				$wpdb->prepare( "
-					DELETE FROM {$wpdb->prefix}learnpress_user_items
-					WHERE user_id = %d
-					AND ref_id = %d
-					AND ref_type = %s
-				", $this->get_id(), $course_id, 'lp_course' )
-			);
-			do_action( 'learn_press_user_retaken_course', $course_id, $this->get_id(), $inserted );
+		if ( $course_data = $this->get_course_data( $course_id ) ) {
+			$course_data->set_status( 'enrolled' );
+			$course_data->set_end_time( LP_Datetime::getSqlNullDate() );
+			$course_data->set_end_time_gmt( LP_Datetime::getSqlNullDate() );
 
-		} else {
-			learn_press_debug( $wpdb );
-			do_action( 'learn_press_user_retake_course_failed', $course_id, $this->get_id(), $inserted );
+			if ( $result = $course_data->update() ) {
+
+				$course_data->increase_retake_count();
+
+				/*
+				 * Should be deleted all user items when user retake course?
+				 */
+				$wpdb->query(
+					$wpdb->prepare( "
+						DELETE FROM {$wpdb->prefix}learnpress_user_items
+						WHERE parent_id = %d
+					", $result->user_item_id )
+				);
+				do_action( 'learn-press/user/retaken-course', $result, $course_id, $this->get_id() );
+			}
+
 		}
 
-		return $inserted;
+		return $result;
 	}
 
 	/**

@@ -67,7 +67,8 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				'course_result'        => get_post_meta( $id, '_lp_course_result', true ),
 				'passing_condition'    => get_post_meta( $id, '_lp_passing_condition', true ),
 				'payment'              => get_post_meta( $id, '_lp_payment', true ),
-				'final_quiz'           => get_post_meta( $id, '_lp_final_quiz', true )
+				'final_quiz'           => get_post_meta( $id, '_lp_final_quiz', true ),
+				'external_link'        => get_post_meta( $id, '_lp_external_link_buy_course', true )
 			)
 		);
 	}
