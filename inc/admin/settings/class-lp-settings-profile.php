@@ -160,7 +160,13 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'  => 'text',
 							'std'   => 'order-details',
 							'desc'  => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/order-details/123]</code>' )
-						),
+						)
+					),
+					$this
+				),
+				apply_filters(
+					'learn-press/profile-settings-fields/settings-tab',
+					array(
 						array(
 							'title' => __( 'Settings Tab', 'learnpress' ),
 							'type'  => 'heading',
@@ -194,8 +200,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'default' => 'change-password',
 							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/settings/basic-information]</code>' )
 						)
-					),
-					$this
+					)
 				),
 				apply_filters(
 					'learn-press/profile-settings-fields/avatar',
