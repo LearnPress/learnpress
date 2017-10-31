@@ -138,7 +138,6 @@ class LP_Assets extends LP_Abstract_Assets {
 				)
 			)
 		);
-
 	}
 
 	/**
@@ -170,6 +169,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				}
 			}
 		}
+
+
 
 		/**
 		 * Enqueue scripts

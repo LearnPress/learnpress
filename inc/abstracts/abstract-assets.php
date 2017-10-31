@@ -134,6 +134,7 @@ abstract class LP_Abstract_Assets {
 	public function register_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false ) {
 		if ( ! isset( $this->_scripts[ $handle ] ) ) {
 			$this->_scripts[ $handle ] = array( $handle, $src, $deps, $ver, $in_footer );
+
 		}
 	}
 
@@ -166,7 +167,9 @@ abstract class LP_Abstract_Assets {
 	 */
 	public function enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
 		$this->register_script( $handle, $src, $deps, $ver, $in_footer );
-		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
+		if ( /*did_action( 'init' ) ||*/
+			did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' )
+		) {
 			call_user_func_array( 'wp_enqueue_script', $this->_scripts[ $handle ] );
 		} else {
 			$this->_enqueue_scripts[] = $handle;
@@ -204,6 +207,12 @@ abstract class LP_Abstract_Assets {
 
 		}
 
+		if ( $this->_scripts ) {
+			foreach ( $this->_scripts as $script ) {
+				call_user_func_array( array( $wp_scripts, 'add' ), $script );
+			}
+		}
+
 		if ( $default_styles = $this->_get_styles() ) {
 
 			foreach ( $default_styles as $handle => $data ) {
@@ -221,6 +230,12 @@ abstract class LP_Abstract_Assets {
 				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
 			}
 
+		}
+
+		if ( $this->_styles ) {
+			foreach ( $this->_styles as $style ) {
+				call_user_func_array( array( $wp_styles, 'add' ), $style );
+			}
 		}
 		// admin
 
@@ -259,7 +274,7 @@ abstract class LP_Abstract_Assets {
 		}
 		global $wp_scripts;
 
-		if ( ! $wp_scripts ){
+		if ( ! $wp_scripts ) {
 			$wp_scripts = new WP_Scripts();
 		}
 

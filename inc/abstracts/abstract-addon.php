@@ -63,8 +63,8 @@ class LP_Addon {
 	}
 
 	/**
-     * Get plugin slug from plugin file.
-     *
+	 * Get plugin slug from plugin file.
+	 *
 	 * @return bool|string
 	 */
 	public function get_plugin_slug() {
@@ -114,6 +114,10 @@ class LP_Addon {
 	 */
 	public function get_name() {
 		return str_replace( '_', ' ', str_replace( 'LP_Addon_', '', get_class( $this ) ) );
+	}
+
+	public function get_plugin_url( $sub = '/' ) {
+		return plugins_url( $sub, $this->plugin_file );
 	}
 
 	/**

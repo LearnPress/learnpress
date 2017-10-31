@@ -1128,8 +1128,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $sections ) {
 						$items          = $course->get_curriculum_items( array( 'group' => true ) );
 						$count_sections = sizeof( $sections );
-						$count_lessons  = sizeof( $items['lessons'] );
-						$count_quizzes  = sizeof( $items['quizzes'] );
+						$count_lessons  = $course->get_items( LP_LESSON_CPT );
+						$count_quizzes  = $course->get_items( LP_QUIZ_CPT );
 						$output         = sprintf( _nx( '%d section', '%d sections', $count_sections, 'learnpress' ), $count_sections );
 						$output         .= ' (';
 						if ( $count_lessons ) {
