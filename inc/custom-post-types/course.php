@@ -459,7 +459,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function assessment_meta_box() {
 			global $post;
-			$post_id = LP_Request::get_int( 'post' ) ? LP_Request::get_int( 'post' ) : $post->ID;
+			$post_id = LP_Request::get_int( 'post' );
+			$post_id = $post_id ? $post_id : !empty($post) ? $post->ID : 0;
 			if ( ! $post_id ) {
 				return false;
 			}
