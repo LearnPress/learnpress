@@ -32,7 +32,17 @@ if ( $user->has( 'quiz-status', array( 'started', 'completed' ), $quiz->id, $cou
 	</li>
 	<li>
 		<label><?php _e( 'Passing grade:', 'learnpress' ); ?></label>
-		<?php echo sprintf( '%d%%', $quiz->passing_grade ); ?>
+		<?php 
+		if( 'point' == $quiz->passing_grade_type ) {
+			echo $quiz->passing_grade; 
+			echo '&nbsp;'; 
+			echo __('Point','learnpress');
+		} elseif( 'percentage' == $quiz->passing_grade_type ) {
+			echo sprintf( '%d%%', $quiz->passing_grade ); 
+		} elseif( 'no' == $quiz->passing_grade_type ) {
+			echo __('None', 'learnpress');
+		}
+		?>
 	</li>
 	<li>
 		<label><?php _e( 'Questions:', 'learnpress' ); ?></label>
