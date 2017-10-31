@@ -1188,10 +1188,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			$user_id = get_current_user_id();
 		}
 
-		$user        = learn_press_get_user( $user_id );
-		$user_course = $user->get_course_data( $this->get_id() );
+		if ( $user = learn_press_get_user( $user_id ) ) {
+			$user_course = $user->get_course_data( $this->get_id() );
+		}
 
-		return $user_course ? $user_course->get_results( 'result' ) : 0;
+		return isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
 	}
 
 	/**

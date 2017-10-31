@@ -92,7 +92,6 @@ class LP_Global {
 	 */
 	public static function user() {
 		global $lp_user;
-
 		return $lp_user;
 	}
 
