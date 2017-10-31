@@ -18,7 +18,7 @@ $item_link  = $viewable ? 'href="' . $course->get_item_link( $item->ID ) . '"' :
 
 <li <?php learn_press_course_item_class( $item->ID ); ?> data-type="<?php echo $item->post_type; ?>">
 	<?php do_action( 'learn_press_before_section_item_title', $item, $section, $course ); ?>
-    <<?php echo $tag; ?> class="course-item-title button-load-item" <?php echo $tag == 'a' ? "target=$target" : ''; ?><?php echo $item_link; ?>
+    <<?php echo $tag; ?> class="course-item-title button-load-item" <?php echo $tag == 'a' ? 'target="'.$target.'" ' : ''; ?><?php echo $item_link; ?>
     data-id="<?php echo $item->ID; ?>" data-complete-nonce="<?php echo wp_create_nonce( 'learn-press-complete-' . $item->post_type . '-' . $item->ID ); ?>
     "><?php echo $item_title; ?></<?php echo $tag; ?>>
 <?php do_action( 'learn_press_after_section_item_title', $item, $section, $course ); ?>
