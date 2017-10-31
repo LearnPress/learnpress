@@ -456,8 +456,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public static function assessment_meta_box() {
 			global $post;
 			$post_id = LP_Request::get_int( 'post' );
-			$post_id = $post_id ? $post_id : ! empty( $post ) ? $post->ID : 0;
-
+			$post_id = $post_id ? $post_id : (! empty( $post ) ? $post->ID : 0);
 
 			$prefix             = '_lp_';
 			$course_result_desc = '';
@@ -1129,8 +1128,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $sections ) {
 						$items          = $course->get_curriculum_items( array( 'group' => true ) );
 						$count_sections = sizeof( $sections );
-						$count_lessons  = $course->get_items( LP_LESSON_CPT );
-						$count_quizzes  = $course->get_items( LP_QUIZ_CPT );
+						$count_lessons  = $course->count_items( LP_LESSON_CPT );
+						$count_quizzes  = $course->count_items( LP_QUIZ_CPT );
 						$output         = sprintf( _nx( '%d section', '%d sections', $count_sections, 'learnpress' ), $count_sections );
 						$output         .= ' (';
 						if ( $count_lessons ) {

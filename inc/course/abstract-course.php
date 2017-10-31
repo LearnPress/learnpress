@@ -358,7 +358,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	public function get_items( $type = '' ) {
 		$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
 
-		if ( $type ) {
+		if ( $type && $items ) {
 			$item_types = array();
 			settype( $type, 'array' );
 			foreach ( $items as $item_id ) {
