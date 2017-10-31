@@ -16,7 +16,7 @@ Domain Path: /languages/
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
-
+error_reporting( - 1 );
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';

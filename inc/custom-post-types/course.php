@@ -189,27 +189,23 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function update_course( $course_id ) {
 			global $wpdb;
 
-			$course     = LP_Course::get_course( $course_id );
-			$curriculum = $course->get_curriculum_items();
+			$course = LP_Course::get_course( $course_id );
+			if ( ! $curriculum = $course->get_items() ) {
+				return;
+			}
 			// course curriculum items / quiz items / questions of quiz
 			$item_ids = $quiz_ids = $question_ids = array();
 
 			// get curriculum item
-			foreach ( $curriculum as $item ) {
-				$item_ids[] = (int) $item->ID;
+			foreach ( $curriculum as $item_id ) {
+				$item_ids[] = (int) $item_id;
 
 				// filter quiz item
-				if ( get_post_type( $item->ID ) == LP_QUIZ_CPT ) {
-					$quiz_ids[] = $item->ID;
-				}
-			}
-
-			// get question items
-			foreach ( $quiz_ids as $quiz_id ) {
-				$quiz      = LP_Quiz::get_quiz( $quiz_id );
-				$questions = $quiz->get_questions();
-				foreach ( $questions as $question ) {
-					$question_ids[] = $question->ID;
+				if ( get_post_type( $item_id ) == LP_QUIZ_CPT ) {
+					$quiz = LP_Quiz::get_quiz( $item_id );
+					if ( $questions = $quiz->get_questions() ) {
+						$question_ids = array_merge( $question_ids, $questions );
+					}
 				}
 			}
 
@@ -460,39 +456,43 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public static function assessment_meta_box() {
 			global $post;
 			$post_id = LP_Request::get_int( 'post' );
-			$post_id = $post_id ? $post_id : !empty($post) ? $post->ID : 0;
-			if ( ! $post_id ) {
-				return false;
-			}
+			$post_id = $post_id ? $post_id : ! empty( $post ) ? $post->ID : 0;
+
 
 			$prefix             = '_lp_';
-			$course_results     = get_post_meta( $post_id, '_lp_course_result', true );
 			$course_result_desc = '';
-			if ( in_array( $course_results, array( '', 'evaluate_lesson', 'evaluate_final_quiz' ) ) ) {
-				$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>', __( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
+
+			if ( $course_results = get_post_meta( $post_id, '_lp_course_result', true ) ) {
+				if ( in_array( $course_results, array( '', 'evaluate_lesson', 'evaluate_final_quiz' ) ) ) {
+					$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>', __( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
+				}
 			}
+
 			$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
 			$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
+
 			if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
 				$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learnpress' );
 			}
 
-			$course        = learn_press_get_course( $post_id );
-			$passing_grade = '';
+			$quiz_passing_condition_html = '';
 
-			if ( $final_quiz = $course->get_final_quiz() ) {
-				$quiz = learn_press_get_quiz( $final_quiz );
+			if($course        = learn_press_get_course( $post_id )) {
+				$passing_grade = '';
 
-				$passing_grade = $quiz->get_passing_grade();
+				if ( $final_quiz = $course->get_final_quiz() ) {
+					$quiz = learn_press_get_quiz( $final_quiz );
+
+					$passing_grade = $quiz->get_passing_grade();
+				}
+
+				$quiz_passing_condition_html = '
+					<div id="passing-condition-quiz-result">
+					<input type="number" name="_lp_course_result_final_quiz_passing_condition" value="' . absint( $passing_grade ) . '" />
+					<p>' . __( 'Current passing grade of Final quiz, you can change it here. This value will be applied for Passing Grade of the course.', 'learnpress' ) . '</p>
+					</div>
+				';
 			}
-
-			$quiz_passing_condition_html = '
-				<div id="passing-condition-quiz-result">
-				<input type="number" name="_lp_course_result_final_quiz_passing_condition" value="' . absint( $passing_grade ) . '" />
-				<p>' . __( 'Current passing grade of Final quiz, you can change it here. This value will be applied for Passing Grade of the course.', 'learnpress' ) . '</p>
-				</div>
-			';
-
 			$meta_box = array(
 				'id'       => 'course_assessment',
 				'title'    => __( 'Assessment', 'learnpress' ),
