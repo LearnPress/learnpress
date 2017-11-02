@@ -178,6 +178,10 @@ class LP_Addon {
 		LP_Multi_Language::load_plugin_text_domain( $plugin_file );
 	}
 
+	public function get_plugin_url( $sub = '/' ) {
+		return plugins_url( $sub, $this->plugin_file );
+	}
+
 	/**
 	 * @return mixed
 	 */

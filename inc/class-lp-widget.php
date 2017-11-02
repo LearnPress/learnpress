@@ -2,7 +2,7 @@
 /**
  * Base class of LearnPress widgets and helper function.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Widgets
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
@@ -248,9 +248,8 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 
 				# If there is old value, bind it to field as init value
 				if ( $this->instance[ $key ] ) {
-					$field['std'] = $this->instance[ $key ];
+					$field['saved'] = $this->instance[ $key ];
 				}
-
 				//$field['value']      = md5( $field['std'] );
 				$this->map_fields[ $field['id'] ] = $origin_id;
 				$this->_show_field( $field );
