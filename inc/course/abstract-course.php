@@ -374,21 +374,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * Count items
-	 *
-	 * @param string $type
-	 *
-	 * @return int
-	 */
-	public function count_items( $type = '' ) {
-		if ( $items = $this->get_items( $type ) ) {
-			return sizeof( $items );
-		}
-
-		return 0;
-	}
-
-	/**
 	 * Set item is viewing in single course.
 	 *
 	 * @param LP_Course_Item $item
@@ -962,7 +947,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		if ( $format ) {
 			$value = "{$value}%";
 		}
-
 		return 'edit' === $context ? $value : apply_filters( 'learn-press/course-passing-condition', $value, $this->get_id() );
 	}
 
@@ -1409,6 +1393,14 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		}
 
 		return apply_filters( 'learn_press_count_user_completed_items', $count, $this->get_id(), $user_id );
+	}
+
+	public function count_items() {
+		if ( $items = $this->get_items() ) {
+			return sizeof( $items );
+		}
+
+		return 0;
 	}
 
 	/**

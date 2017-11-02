@@ -1,19 +1,22 @@
 <?php
 /**
- * Template for displaying archive course content
+ * Template for displaying archive course content.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-archive-course.php
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.0.6
+ * @version 3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-global $post, $wp_query, $lp_tax_query, $wp_query;
-
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php global $post, $wp_query, $lp_tax_query, $wp_query; ?>
+
 <?php do_action( 'learn_press_before_main_content' ); ?>
 
 <?php do_action( 'learn_press_archive_description' ); ?>
@@ -24,18 +27,22 @@ global $post, $wp_query, $lp_tax_query, $wp_query;
 
 	<?php learn_press_begin_courses_loop(); ?>
 
+	<?php while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
 
-	<?php while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post(); ?>
+		learn_press_get_template_part( 'content', 'course' );
 
-		<?php learn_press_get_template_part( 'content', 'course' ); ?>
-
-	<?php endwhile; ?>
+	endwhile; ?>
 
 	<?php learn_press_end_courses_loop(); ?>
 
 	<?php do_action( 'learn_press_after_courses_loop' ); ?>
+
+	<?php wp_reset_postdata(); ?>
+
 <?php else: ?>
+
 	<?php learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' ); ?>
+
 <?php endif; ?>
 
 <?php do_action( 'learn_press_after_main_content' ); ?>

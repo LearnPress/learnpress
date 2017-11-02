@@ -1,25 +1,32 @@
 <?php
 /**
- * Template for displaying checkout form
+ * Template for displaying checkout form.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/form.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
-learn_press_print_notices();
+<?php learn_press_print_notices(); ?>
 
-$checkout = LP()->checkout();
+<?php $checkout = LP()->checkout(); ?>
 
+<?php
 /**
  * @deprecated
  */
 do_action( 'learn_press_before_checkout_form', $checkout );
+?>
 
+<?php
 /**
  * @since 3.0.0
  *
@@ -27,7 +34,9 @@ do_action( 'learn_press_before_checkout_form', $checkout );
  * @see   learn_press_checkout_form_register()
  */
 do_action( 'learn-press/before-checkout-form' );
+?>
 
+<?php
 // Guest checkout is disabled
 if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 	echo apply_filters( 'learn-press/checkout-require-login-message', __( 'Please login to checkout.', 'learnpress' ) );
@@ -39,12 +48,13 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
           action="<?php echo esc_url( learn_press_get_checkout_url() ); ?>" enctype="multipart/form-data">
 
 		<?php
-
 		/**
 		 * @deprecated
 		 */
 		do_action( 'learn_press_checkout_before_order_review' );
+		?>
 
+		<?php
 		// @since 3.0.0
 		do_action( 'learn-press/before-checkout-order-review' );
 		?>
@@ -52,7 +62,6 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
         <div id="learn-press-order-review" class="checkout-review-order">
 
 			<?php
-
 			/**
 			 * @deprecated
 			 */
@@ -60,11 +69,11 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 
 			/**
 			 * @since 3.0.0
-             *
-             * @see learn_press_order_review()
-             * @see learn_press_order_comment()
-             * @see learn_press_order_payment()
-             */
+			 *
+			 * @see learn_press_order_review()
+			 * @see learn_press_order_comment()
+			 * @see learn_press_order_payment()
+			 */
 			do_action( 'learn-press/checkout-order-review' );
 			?>
 
@@ -84,7 +93,8 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 
 	<?php if ( ! is_user_logged_in() ) { ?>
         <p>
-            <button type="button" class="lp-button lp-button-guest-checkout" id="learn-press-button-guest-checkout"><?php _e( 'Continue checkout as Guest?', 'learnpress' ); ?></label></button>
+            <button type="button" class="lp-button lp-button-guest-checkout"
+                    id="learn-press-button-guest-checkout"><?php _e( 'Continue checkout as Guest?', 'learnpress' ); ?></label></button>
         </p>
 	<?php } ?>
 

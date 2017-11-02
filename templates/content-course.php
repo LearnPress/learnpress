@@ -1,17 +1,20 @@
 <?php
 /**
- * Template for displaying course content within the loop
+ * Template for displaying course content within the loop.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-course.php
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
 <li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
 	<?php do_action( 'learn_press_before_courses_loop_item' ); ?>
@@ -25,4 +28,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php do_action( 'learn_press_after_courses_loop_item' ); ?>
 
 	<?php learn_press_get_template( 'single-course/buttons.php' ); ?>
+
 </li>
