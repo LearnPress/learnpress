@@ -24,6 +24,13 @@ class LP_Update_30 {
 		}
 	}
 
+	/**
+	 * Update settings.
+	 */
+	public static function update_settings(){
+
+	}
+
 	public static function update_metas() {
 		$query = "
 	";

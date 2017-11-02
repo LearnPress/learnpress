@@ -12,46 +12,46 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 
 		private $courses = array();
 
-		public function __construct () {
+		public function __construct() {
 
 			$prefix        = '';
 			$this->options = array(
-				'title' => array(
+				'title'                  => array(
 					'name' => __( 'Title', 'learnpress' ),
 					'id'   => "{$prefix}title",
 					'type' => 'text',
 					'std'  => __( 'Recent Courses', 'learnpress' )
 				),
-				'show_teacher' => array(
-					'name' => __( 'Show teacher', 'learpnress' ),
-					'id'   => "{$prefix}show_teacher",
-					'type' => 'checkbox',
-					'std'  => 1
+				'show_teacher'           => array(
+					'name'  => __( 'Show teacher', 'learpnress' ),
+					'id'    => "{$prefix}show_teacher",
+					'type'  => 'checkbox',
+					'std'   => 1
 				),
-				'show_lesson' => array(
+				'show_lesson'            => array(
 					'name' => __( 'Show lesson', 'learpnress' ),
 					'id'   => "{$prefix}show_lesson",
 					'type' => 'checkbox',
 					'std'  => 1
 				),
-				'show_thumbnail' => array(
+				'show_thumbnail'         => array(
 					'name' => __( 'Show Thumbnail', 'learpnress' ),
 					'id'   => "{$prefix}show_thumbnail",
 					'type' => 'checkbox',
 					'std'  => 1
 				),
-				'limit' => array(
+				'limit'                  => array(
 					'name' => __( 'Limit', 'learpnress' ),
 					'id'   => "{$prefix}limit",
-					'type'  => 'number',
-					'min'   => 1,
+					'type' => 'number',
+					'min'  => 1,
 					'std'  => 4
 				),
-				'desc_length' => array(
+				'desc_length'            => array(
 					'name' => __( 'Description Length', 'learpnress' ),
 					'id'   => "{$prefix}desc_length",
 					'type' => 'number',
-					'min'   => 0,
+					'min'  => 0,
 					'std'  => 10
 				),
 				'show_enrolled_students' => array(
@@ -60,19 +60,19 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 					'type' => 'checkbox',
 					'std'  => 1
 				),
-				'show_price' => array(
+				'show_price'             => array(
 					'name' => __( 'Show Price', 'learpnress' ),
 					'id'   => "{$prefix}show_price",
 					'type' => 'checkbox',
 					'std'  => 1
 				),
-				'css_class' => array(
+				'css_class'              => array(
 					'name' => __( 'CSS Class', 'learpnress' ),
 					'id'   => "{$prefix}css_class",
 					'type' => 'text',
 					'std'  => ''
 				),
-				'bottom_link_text' => array(
+				'bottom_link_text'       => array(
 					'name' => __( 'Go to Courses', 'learpnress' ),
 					'id'   => "{$prefix}bottom_link_text",
 					'type' => 'text',
@@ -93,7 +93,7 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 		public function get_lp_course( $post ) {
 			$id     = $post->ID;
 			$course = null;
-			if ( !empty( $id ) ) {
+			if ( ! empty( $id ) ) {
 				$course = new LP_Course( $id );
 			}
 
@@ -104,7 +104,7 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 		 * get courses
 		 * @return array|null array of course
 		 */
-		private function get_courses () {
+		private function get_courses() {
 
 			if ( empty( $this->instance ) ) {
 				return array();
@@ -112,7 +112,7 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 
 			global $wpdb;
 
-			$posts   = $wpdb->get_results(
+			$posts = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT DISTINCT p.ID, p.post_date
 						FROM $wpdb->posts AS p
@@ -133,7 +133,7 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 
 		}
 
-		public function show () {
+		public function show() {
 			$this->courses = $this->get_courses();
 			include learn_press_locate_widget_template( $this->get_slug() );
 		}

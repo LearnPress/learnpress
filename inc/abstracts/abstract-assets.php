@@ -176,6 +176,18 @@ abstract class LP_Abstract_Assets {
 		}
 	}
 
+	public function add_script_data( $handle, $key_or_array, $value = '' ) {
+		if ( empty( $this->_script_data[ $handle ] ) ) {
+			$this->_script_data[ $handle ] = array();
+		}
+
+		if ( func_num_args() == 2 && is_array( $key_or_array ) ) {
+			$this->_script_data[ $handle ] = LP_Helper::array_merge_recursive( $this->_script_data[ $handle ], $key_or_array );
+		} else {
+			$this->_script_data[ $handle ][ $key_or_array ] = $value;
+		}
+	}
+
 	/**
 	 * Register scripts and styles for admin.
 	 */
@@ -269,6 +281,13 @@ abstract class LP_Abstract_Assets {
 
 	public function localize_printed_scripts( $side = '' ) {
 		$scripts_data = ( $side == 'admin' ) ? $this->_get_admin_script_data() : $this->_get_script_data();
+
+		if ( is_array( $scripts_data ) && is_array( $this->_script_data ) ) {
+			$scripts_data = LP_Helper::array_merge_recursive( $scripts_data, $this->_script_data );
+		} elseif ( is_array( $this->_script_data ) ) {
+			$scripts_data = $this->_script_data;
+		}
+
 		if ( ! $scripts_data ) {
 			return;
 		}
@@ -279,19 +298,20 @@ abstract class LP_Abstract_Assets {
 		}
 
 		foreach ( $scripts_data as $handle => $data ) {
-			if ( ! empty( $this->_script_data[ $handle ] ) ) {
+			/*if ( ! empty( $this->_script_data[ $handle ] ) ) {
 				$data = array_merge( $data, $this->_script_data[ $handle ] );
-			}
+			}*/
 
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 
 			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
 					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
-						$data                                             = preg_replace_callback( '~:"[0-9.,]+"~', array(
+						$data = preg_replace_callback( '~:"([0-9.,]+|true|false)"~', array(
 							$this,
 							'_valid_json_number'
 						), $data );
+
 						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
 					}
 				}

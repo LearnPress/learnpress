@@ -358,6 +358,16 @@ class LP_Request {
 	 * @param int    $priority
 	 */
 	public static function register_ajax( $action, $function, $priority = 5 ) {
+
+		if ( is_array( $action ) ) {
+			foreach ( $action as $args ) {
+				if ( ! empty( $args['action'] ) && ! empty( $args['callback'] ) ) {
+					self::register_ajax( $args['action'], $args['callback'], ! empty( $args['priority'] ) ? $args['priority'] : 5 );
+				}
+			}
+
+			return;
+		}
 		$actions = self::parse_action( $action );
 
 		if ( isset( $actions['nonce'] ) ) {
@@ -661,10 +671,10 @@ class LP_Request {
 	 *
 	 * @return string
 	 */
-	public static function get_redirect($default = '') {
+	public static function get_redirect( $default = '' ) {
 		if ( $redirect = self::get_string( 'redirect' ) ) {
 			$redirect = urldecode( $redirect );
-		}else{
+		} else {
 			$redirect = $default;
 		}
 

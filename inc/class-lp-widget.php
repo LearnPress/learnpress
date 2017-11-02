@@ -152,6 +152,7 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			if ( ! apply_filters( 'learn_press_widget_display_content-' . $this->id_base, true, $this ) ) {
 				//return;
 			}
+
 			$this->before_widget();
 			$this->show();
 			$this->after_widget();
@@ -206,6 +207,7 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 				$field['field_name'] = $this->get_field_name( $field['id'] );
 				$field['id']         = $this->get_field_id( $field['id'] );
 				$field['value']      = md5( $field['std'] );
+				//$field['saved']      = $field['std'];
 				//learn_press_debug( $field );
 				$this->map_fields[ $field['id'] ] = $origin_id;
 				$this->_show_field( $field );
