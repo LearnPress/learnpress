@@ -270,3 +270,34 @@
         display: block;
     }
 }
+
+//admin widget
+.widget {
+    .widget-content {
+        .rwmb-field {
+            &:not(:last-of-type) {
+                margin: 0 0 10px;
+                &:first-child {
+                    margin-top: 10px;
+                }
+            }
+            &:last-child {
+                margin-bottom: 10px;
+            }
+            .rwmb-label, .rwmb-input {
+                width: 100%;
+            }
+            .rwmb-label {
+                margin-bottom: 2px;
+                label {
+                    font-weight: 400;
+                }
+            }
+            .rwmb-input {
+                input[type="text"] {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
