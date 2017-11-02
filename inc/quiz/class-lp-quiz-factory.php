@@ -110,7 +110,7 @@ class LP_Quiz_Factory {
 	 * Start quiz
 	 */
 	public static function start_quiz() {
-
+		wp_cache_flush();
 		self::_verify_nonce( __FUNCTION__ );
 
 		$course_id = learn_press_get_request( 'course_id' );
@@ -316,6 +316,7 @@ class LP_Quiz_Factory {
 	}
 
 	public static function fetch_question() {
+		wp_cache_flush();
 		add_filter( 'learn_press_user_current_quiz_question', array( __CLASS__, '_current_question' ), 100, 4 );
 	}
 
