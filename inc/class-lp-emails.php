@@ -1,15 +1,16 @@
 <?php
-
 /**
- * Class LP_Mails
+ * Base class of LearnPress emails and helper functions.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 1.0
+ * @package  Learnpress/Emails
+ * @version  3.0.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 /**
  * Class LP_Emails
@@ -133,7 +134,7 @@ class LP_Emails {
 	 * Email header.
 	 *
 	 * @param string $heading
-	 * @param bool   $echo
+	 * @param bool $echo
 	 *
 	 * @return string
 	 */
@@ -152,7 +153,7 @@ class LP_Emails {
 	 * Email footer.
 	 *
 	 * @param string $footer_text
-	 * @param bool   $echo
+	 * @param bool $echo
 	 *
 	 * @return string
 	 */

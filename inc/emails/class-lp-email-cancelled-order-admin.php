@@ -15,13 +15,16 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 
+	/**
+	 * Class LP_Email_Cancelled_Order_Admin
+	 */
 	class LP_Email_Cancelled_Order_Admin extends LP_Email_Type_Order {
 		/**
 		 * LP_Email_Cancelled_Order_Admin constructor.
 		 */
 		public function __construct() {
 			$this->id          = 'cancelled-order-admin';
-			$this->title       = __( 'Cancelled order admin', 'learnpress' );
+			$this->title       = __( 'Admin', 'learnpress' );
 			$this->description = __( 'Send email to admin when order has been cancelled', 'learnpress' );
 
 			$this->default_subject = __( 'Order placed on {{order_date}} has been cancelled', 'learnpress' );

@@ -1,12 +1,10 @@
 <?php
-
 /**
- * Class LP_Email_New_Order_Guest
- *
- * Send email to customer email in case they checkout as a guest.
+ * LP_Email_New_Order_Guest.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
+ * @package Learnpress/Classes
+ * @extends LP_Email_Type_Order
  * @version 3.0.0
  */
 
@@ -17,14 +15,16 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 
+	/**
+	 * Class LP_Email_New_Order_Guest
+	 */
 	class LP_Email_New_Order_Guest extends LP_Email_Type_Order {
-
 		/**
 		 * LP_Email_New_Order_Guest constructor.
 		 */
 		public function __construct() {
 			$this->id          = 'new-order-guest';
-			$this->title       = __( 'New order Guest', 'learnpress' );
+			$this->title       = __( 'Guest', 'learnpress' );
 			$this->description = __( 'Send email to the user who has bought course as guest', 'learnpress' );
 
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );

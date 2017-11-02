@@ -1,13 +1,16 @@
 <?php
-
 /**
- * Class LP_Email
+ * Base class of LearnPress shortcodes and helper functions.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 1.0
+ * @category Widgets
+ * @package  Learnpress/Shortcodes
+ * @version  3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 class LP_Email extends LP_Abstract_Settings {

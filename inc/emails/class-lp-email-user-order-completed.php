@@ -1,17 +1,22 @@
 <?php
-
 /**
  * Class LP_Email_User_Order_Completed
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 
+	/**
+	 * Class LP_Email_User_Order_Completed
+	 */
 	class LP_Email_User_Order_Completed extends LP_Email {
 		/**
 		 * LP_Email_User_Order_Completed constructor.

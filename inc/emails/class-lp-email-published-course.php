@@ -1,17 +1,24 @@
 <?php
-
 /**
  * Class LP_Email_Published_Course
  *
+ * Approved new course email.
+ *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Published_Course' ) ) {
 
+	/**
+	 * Class LP_Email_Published_Course
+	 */
 	class LP_Email_Published_Course extends LP_Email {
 		/**
 		 * LP_Email_Published_Course constructor.

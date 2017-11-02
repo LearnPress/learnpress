@@ -1,66 +1,82 @@
 <?php
-
 /**
- * Class LP_Email_Enrolled_Course
+ * Class LP_Email_Instructor_Accepted
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
-class LP_Email_Instructor_Accepted extends LP_Email {
-
-	public function __construct() {
-
-		$this->id          = 'instructor-accepted';
-		$this->title       = __( 'Accepted', 'learnpress' );
-		$this->description = __( 'Become an instructor email', 'learnpress' );
-
-		$this->default_subject = __( '[{{site_title}}] Request to become an instructor', 'learnpress' );
-		$this->default_heading = __( 'Become an instructor', 'learnpress' );
-
-		add_action( 'learn-press/user-become-a-teacher', array( $this, 'trigger' ) );
-		add_action( 'set_user_role', array( $this, 'set_user_role' ), 10, 3 );
-
-		parent::__construct();
-	}
-
-	public function set_user_role( $user_id, $role, $old_roles ) {
-		if ( LP_TEACHER_ROLE === $role ) {
-			$user = get_user_by( 'id', $user_id );
-			$this->trigger( $user->user_email );
-		}
-	}
-
+if ( ! class_exists( 'LP_Email_Instructor_Accepted' ) ) {
 	/**
-	 * Trigger email.
-	 *
-	 * @param string $email
-	 *
-	 * @return bool
+	 * Class LP_Email_Instructor_Accepted
 	 */
-	public function trigger( $email ) {
+	class LP_Email_Instructor_Accepted extends LP_Email {
 
-		if ( ! $this->enable() ) {
-			return false;
+		/**
+		 * LP_Email_Instructor_Accepted constructor.
+		 */
+		public function __construct() {
+			$this->id          = 'instructor-accepted';
+			$this->title       = __( 'Accepted', 'learnpress' );
+			$this->description = __( 'Become an instructor email', 'learnpress' );
+
+			$this->default_subject = __( '[{{site_title}}] Request to become an instructor', 'learnpress' );
+			$this->default_heading = __( 'Become an instructor', 'learnpress' );
+
+			add_action( 'learn-press/user-become-a-teacher', array( $this, 'trigger' ) );
+			add_action( 'set_user_role', array( $this, 'set_user_role' ), 10, 3 );
+
+			parent::__construct();
 		}
 
-		if ( ! $user = get_user_by( 'email', $email ) ) {
-			return false;
+		/**
+		 * Set user role.
+		 *
+		 * @param $user_id
+		 * @param $role
+		 * @param $old_roles
+		 */
+		public function set_user_role( $user_id, $role, $old_roles ) {
+			if ( LP_TEACHER_ROLE === $role ) {
+				$user = get_user_by( 'id', $user_id );
+				$this->trigger( $user->user_email );
+			}
 		}
 
-		LP_Emails::instance()->set_current( $this->id );
+		/**
+		 * Trigger email.
+		 *
+		 * @param string $email
+		 *
+		 * @return bool
+		 */
+		public function trigger( $email ) {
 
-		$this->recipient = $email;
+			if ( ! $this->enable() ) {
+				return false;
+			}
 
-		$this->get_object();
-		$this->get_variable();
+			if ( ! $user = get_user_by( 'email', $email ) ) {
+				return false;
+			}
 
-		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+			LP_Emails::instance()->set_current( $this->id );
 
-		return $return;
+			$this->recipient = $email;
+
+			$this->get_object();
+			$this->get_variable();
+
+			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
+			return $return;
+		}
 	}
 }
 

@@ -1,11 +1,11 @@
 <?php
-
 /**
- * Class LP_Email_Cancelled_Order_Guest
+ * LP_Email_Cancelled_Order_Guest.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 3.0
+ * @package Learnpress/Classes
+ * @extends LP_Email_Type_Order
+ * @version 3.0.0
  */
 
 /**
@@ -15,13 +15,16 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Cancelled_Order_Guest' ) ) {
 
+	/**
+	 * Class LP_Email_Cancelled_Order_Guest
+	 */
 	class LP_Email_Cancelled_Order_Guest extends LP_Email_Type_Order {
 		/**
 		 * LP_Email_Cancelled_Order_Guest constructor.
 		 */
 		public function __construct() {
 			$this->id          = 'cancelled-order-guest';
-			$this->title       = __( 'Cancelled order Guest', 'learnpress' );
+			$this->title       = __( 'Guest', 'learnpress' );
 			$this->description = __( 'Send email to admin when order has been cancelled', 'learnpress' );
 
 			$this->default_subject = __( 'Your order on {{order_date}} has been cancelled', 'learnpress' );

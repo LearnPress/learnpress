@@ -1,26 +1,31 @@
 <?php
 /**
- * Class LP_Email_Enrolled_Course_Admin
+ * LP_Email_Enrolled_Course_Admin.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 1.0
+ * @package Learnpress/Classes
+ * @extends LP_Email
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 
+	/**
+	 * Class LP_Email_Enrolled_Course_Admin
+	 */
 	class LP_Email_Enrolled_Course_Admin extends LP_Email {
-
 
 		/**
 		 * LP_Email_Enrolled_Course_Admin constructor.
 		 */
 		public function __construct() {
-
 			$this->id          = 'enrolled-course-admin';
-			$this->title       = __( 'Enrolled course admin', 'learnpress' );
+			$this->title       = __( 'Admin', 'learnpress' );
 			$this->description = __( 'Send this email to admin when user has enrolled course.', 'learnpress' );
 
 			$this->template_html  = 'emails/enrolled-course-admin.php';
@@ -66,7 +71,7 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 
 			$all_users_id = array();
 
-			if ( LP()->settings->get( 'emails_enrolled_course_admin.send_admins' ) === 'yes' ) {
+			if ( LP()->settings->get( 'emails_enrolled_course_admin.enable' ) === 'yes' ) {
 
 				// Get all users with role admin
 				$admins = get_users( array(
@@ -193,12 +198,6 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 						'type'    => 'yes-no',
 						'default' => 'no',
 						'id'      => $this->get_field_name( 'enable' )
-					),
-					array(
-						'title'   => __( 'Send Admins', 'learnpress' ),
-						'type'    => 'yes-no',
-						'default' => 'no',
-						'id'      => $this->get_field_name( 'send_admins' )
 					),
 					array(
 						'title'      => __( 'Subject', 'learnpress' ),
