@@ -256,7 +256,7 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			}
 			wp_reset_postdata();
 			remove_filter( 'get_post_metadata', array( $this, 'field_data' ) );
-			remove_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
+			remove_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10 );
 		}
 
 		/**

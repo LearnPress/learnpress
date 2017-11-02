@@ -103,7 +103,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course_User' ) ) {
 				$this->recipient = $this->object['user']->user_email;
 			}
 
-			return parent::get_recipient();
+			parent::get_recipient();
 		}
 
 		/**
