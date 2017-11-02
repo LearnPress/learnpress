@@ -215,8 +215,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
     state.statusUpdateListQuestions = {};
     state.statusUpdateQuestionItem = {};
 
-
-
     state.questions = state.questions.map(function (question) {
         var hiddenQuestions = state.hidden_questions;
         var find = hiddenQuestions.find(function (questionId) {
@@ -351,20 +349,11 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 return _question;
             })
         },
-        'UPDATE_LIST_QUESTIONS_REQUEST': function () {
-            Vue.set(state.statusUpdateListQuestions, 'updating');
-        },
-        'UPDATE_LIST_QUESTIONS_SUCCESS': function () {
-            Vue.set(state.statusUpdateListQuestions, 'succeeded');
-        },
-        'UPDATE_LIST_QUESTIONS_FAILURE': function () {
-            Vue.set(state.statusUpdateListQuestions, 'failed');
-        },
         'UPDATE_QUESTION_REQUEST': function (state, questionId) {
             Vue.set(state.statusUpdateQuestionItem, questionId, 'updating');
         },
         'UPDATE_QUESTION_SUCCESS': function (state, questionID) {
-            Vue.set(state.statusUpdateQuestionItem, questionID, 'succeeded');
+            Vue.set(state.statusUpdateQuestionItem, questionID, 'successful');
         },
         'UPDATE_QUESTION_FAILURE': function (state, questionID) {
             Vue.set(state.statusUpdateQuestionItem, questionID, 'failed')
@@ -374,6 +363,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
     var actions = {
 
         addNewQuestion: function (context, payload) {
+
             Vue.http
                 .LPRequest({
                     type: 'new-question',
@@ -454,7 +444,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
         updateQuestion: function (context, payload) {
 
-            // context.commit('UPDATE_QUESTION', payload.question.id);
+            context.commit('UPDATE_QUESTION_REQUEST', payload.question.id);
 
             Vue.http
                 .LPRequest({
@@ -473,6 +463,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
         changeQuestionType: function (context, payload) {
 
+            context.commit('UPDATE_QUESTION_REQUEST', payload.question.id);
+
             Vue.http
                 .LPRequest({
                     type: 'change-question-type',
@@ -485,16 +477,18 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                     if (result.success) {
                         var question = result.data;
                         context.commit('CHANGE_QUESTION_TYPE', question);
+                        context.commit('UPDATE_QUESTION_SUCCESS', payload.question.id);
                         context.commit('OPEN_QUESTION', question);
                     }
                 })
                 .catch(function () {
-                    // code
+                    context.commit('UPDATE_QUESTION_FAILURE', payload.question.id);
+
                 })
         },
 
         addQuestionAnswer: function (context, payload) {
-            // context.commit('UPDATE_QUESTION', payload.questionId);
+            context.commit('UPDATE_QUESTION_REQUEST', payload.questionId);
 
             Vue.http
                 .LPRequest({
@@ -510,9 +504,11 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                         if (result.success) {
                             var answer = result.data;
                             context.commit('ADD_QUESTION_ANSWER', answer);
+                            context.commit('UPDATE_QUESTION_SUCCESS', payload.questionId);
                         }
                     },
                     function (error) {
+                        context.commit('UPDATE_QUESTION_FAILURE', payload.questionId);
                         console.error(error);
                     }
                 )
@@ -537,6 +533,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         },
 
         updateQuestionCorrectAnswer: function (context, payload) {
+            context.commit('UPDATE_QUESTION_REQUEST', payload.question.id);
+
             Vue.http
                 .LPRequest({
                     type: 'update-correct-answer',
@@ -546,9 +544,12 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 .then(
                     function (response) {
                         var result = response.body;
-                        // code
+                        if (result.success) {
+                            context.commit('UPDATE_QUESTION_SUCCESS', payload.question.id);
+                        }
                     },
                     function (error) {
+                        context.commit('UPDATE_QUESTION_FAILURE', payload.question.id);
                         console.log(error);
                     }
                 )
@@ -833,7 +834,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 (function ($, Vue, $store) {
     $(document).ready(function () {
         window.LP_Quiz_Editor = new Vue({
-            el: '#quiz-editor-v2',
+            el: '#admin-quiz-editor',
             template: '<lp-quiz-editor></lp-quiz-editor>'
         });
     });

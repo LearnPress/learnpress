@@ -6,7 +6,7 @@
  */
 ?>
 
-<div id="quiz-editor-v2">
+<div id="admin-quiz-editor">
 	<div class="lp-place-holder">
 		<div class="line-heading"></div>
 

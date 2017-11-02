@@ -206,8 +206,6 @@
                     that.update($(this).closest('.rwmb-field'), $fields);
                 }).trigger('change');
             }, this);
-
-            console.log($fields)
         },
         getFieldType: function (field) {
             var $field = $(field);

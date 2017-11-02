@@ -1,378 +1,726 @@
-;(function ($) {
-	var Course_Editor = function (args) {
-		this.model = new Course_Editor.Model(args);
-		this.view = new Course_Editor.View({model: this.model});
-	};
+;
 
-	var xxx = {
-		time : 0,
-		check: function (v) {
-			if (v == undefined || this.time == 0) {
-				this.time = (new Date()).getTime();
-			} else {
-				var old = this.time;
-				this.time = 0;
-				return (new Date()).getTime() - old < v;
-			}
-			return true;
-		}
-	};
+/**
+ * Helpers
+ *
+ * @since 3.0.0
+ */
+(function (exports) {
+    function cloneObject(object) {
+        return JSON.parse(JSON.stringify(object));
+    }
 
-	Course_Editor.View = Backbone.View.extend({
-		$editor          : null,
-		el               : 'body',
-		events           : {
-			//'focus .item-name'                   : '_selectItem',
-			'focus .section-name'                : '_selectSection',
-			'click .button-add-section'          : '_addNewSection',
-			'click .button-add-content'          : '_showContentTypes',
-			'click .section-content-types > span': '_addNewItem',
-			'click .course-row-actions a'        : '_rowActions'
-		},
-		initialize       : function () {
-			this.render();
-		},
-		render           : function () {
-			this.$editor = this.template('course-editor');
-			var $curriculum = this.$editor.find('#lp-course-curriculum');
-			this.model.sections.forEach(function (section) {
-				var $section = this._createSection(section);
-				$curriculum.append($section);
-			}, this);
-
-			this.addEmptySection({}, $curriculum);
-
-			$curriculum.sortable({
-				axis  : 'y',
-				handle: '.section-move'
-			});
+    exports.LP_Helpers = {
+        cloneObject: cloneObject
+    };
+})(window);
 
 
-			$('#postbox-container-2').prepend(this.$editor);
-		},
-		_createSection   : function (section, options) {
-			var that = this,
-				sectionArgs = section.toJSON(),
-				$section = this.template('course-section', sectionArgs),
-				$container = $section.find('.section-items');
-			options = $.extend({}, options || {})
-			//section.$el = $section;
-			section.$el = $section;
-			section.items.forEach(function (item) {
-				var $item = this._createItem(item, section);
-				$container.append($item);
-			}, this);
-			if (!options.addEmptyItem) {
-				this.addEmptyItem({section: sectionArgs}, section);
-			}
-			$container.sortable({
-				axis       : 'y',
-				handle     : '.section-item-move',
-				connectWith: '.section-items',
-				stop       : function (e, ui) {
-					if (!ui.item.hasClass('ui-draggable')) {
-						return;
-					}
-					var temp_id = parseInt($(this).closest('.course-section').data('temp_id')),
-						args = ui.item.data(),
-						section = that.model.findSection({temp_id: temp_id});
-					var $item = that.addEmptyItem(args, section);
-					$item.insertBefore(ui.item);
-					$item.find('.item-name').focus();
-					ui.item.remove();
-					//ui.draggable.remove();
-					console.log('DROPPED')
-				}
-			});
+/**
+ * I18n Store
+ *
+ * @since 3.0.0
+ */
 
-			$section.find('.section-content-types li').draggable({
-				revert           : 'invalid',
-				connectToSortable: '.section-items',
-				helper           : function () {
+var LP_Curriculum_i18n_Store = (function (Vue, helpers, data) {
+    var state = helpers.cloneObject(data.i18n);
 
-					var $helper = $(this).clone();
-					$helper.get(0).className = 'ui-draggable ui-draggable-handle course-section-item';
-					return $helper[0];
-				},
-			});
-			$section.find('.section-items').droppable({
-				accept: '.dashicons',
-				drop  : function (e, ui) {
+    var getters = {
+        all: function (state) {
+            return state;
+        }
+    };
 
-					if (!xxx.check(10)) {
-						//return;
-					}
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters
+    };
+
+})(Vue, LP_Helpers, lq_course_editor);
+
+/**
+ * Sections Store.
+ *
+ * @since 3.0.0
+ */
+var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
+    var state = helpers.cloneObject(data.sections);
+
+    state.statusUpdateSection = {};
+    state.statusUpdateSectionItem = {};
+
+    state.sections = state.sections.map(function (section) {
+        var hiddenSections = state.hidden_sections;
+        var find = hiddenSections.find(function (sectionId) {
+            return parseInt(section.id) === parseInt(sectionId);
+        });
+
+        section.open = !find;
+
+        return section;
+    });
+
+    var getters = {
+        sections: function (state) {
+            return state.sections || [];
+        },
+        urlEdit: function (state) {
+            return state.urlEdit;
+        },
+        hiddenSections: function (state) {
+            return state.sections
+                .filter(function (section) {
+                    return !section.open;
+                })
+                .map(function (section) {
+                    return parseInt(section.id);
+                });
+        },
+        isHiddenAllSections: function (state, getters) {
+            var sections = getters['sections'];
+            var hiddenSections = getters['hiddenSections'];
+
+            return hiddenSections.length === sections.length;
+        },
+        statusUpdateSection: function (state) {
+            return state.statusUpdateSection;
+        },
+        statusUpdateSectionItem: function (state) {
+            return state.statusUpdateSectionItem;
+        }
+    };
+
+    var mutations = {
+        'SORT_SECTION': function (state, orders) {
+            state.sections = state.sections.map(function (section) {
+                section.order = orders[section.id];
+
+                return section;
+            });
+        },
+        'SET_SECTIONS': function (state, sections) {
+            state.sections = sections;
+        },
+        'ADD_NEW_SECTION': function (state, section) {
+            section.open = true;
+            state.sections.push(section);
+        },
+        'REMOVE_SECTION': function (state, index) {
+            state.sections.splice(index, 1);
+        },
+        'REMOVE_SECTION_ITEM': function (state, payload) {
+            var section = state.sections.find(function (section) {
+                return (section.id === payload.sectionId);
+            });
+
+            var items = section.items || [];
+            var index = -1;
+            items.forEach(function (item, i) {
+                if (item.id === payload.itemId) {
+                    index = i;
+                }
+            });
+
+            if (index !== -1) {
+                items.splice(index, 1);
+            }
+        },
+        'UPDATE_SECTION_ITEMS': function (state, payload) {
+            var section = state.sections.find(function (section) {
+                return parseInt(section.id) === parseInt(payload.sectionId);
+            });
+
+            if (!section) {
+                return;
+            }
+            section.items = payload.items;
+        },
+        'UPDATE_SECTION_ITEM': function (state, payload) {
+
+        },
+
+        'CLOSE_SECTION': function (state, section) {
+            state.sections.forEach(function (_section, index) {
+                if (section.id === _section.id) {
+                    state.sections[index].open = false;
+                }
+            });
+
+        },
+
+        'OPEN_SECTION': function (state, section) {
+            state.sections.forEach(function (_section, index) {
+                if (section.id === _section.id) {
+                    state.sections[index].open = true;
+                }
+            });
+        },
+
+        'OPEN_ALL_SECTIONS': function (state) {
+            state.sections = state.sections.map(function (_section) {
+                _section.open = true;
+
+                return _section;
+            });
+        },
+
+        'CLOSE_ALL_SECTIONS': function (state) {
+            state.sections = state.sections.map(function (_section) {
+                _section.open = false;
+
+                return _section;
+            });
+        },
+
+        'UPDATE_SECTION_REQUEST': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'updating');
+        },
+
+        'UPDATE_SECTION_SUCCESS': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'successful');
+        },
+
+        'UPDATE_SECTION_FAILURE': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'failed');
+        },
+
+        'UPDATE_SECTION_ITEM_REQUEST': function (state, itemId) {
+            Vue.set(state.statusUpdateSectionItem, itemId, 'updating');
+        },
+
+        'UPDATE_SECTION_ITEM_SUCCESS': function (state, itemId) {
+            Vue.set(state.statusUpdateSectionItem, itemId, 'successful');
+        },
+
+        'UPDATE_SECTION_ITEM_FAILURE': function (state, itemId) {
+            Vue.set(state.statusUpdateSectionItem, itemId, 'failed');
+        }
+    };
+
+    var actions = {
+        addNewSection: function (context, section) {
+            Vue.http
+                .LPRequest({
+                    type: 'new-section',
+                    section: section
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('ADD_NEW_SECTION', result.data);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        removeSection: function (context, payload) {
+            context.commit('REMOVE_SECTION', payload.index);
+
+            Vue.http.LPRequest({
+                type: 'remove-section',
+                'section-id': payload.section.id
+            }).then(
+                function (response) {
+                    var result = response.body;
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        },
+
+        updateSection: function (context, section) {
+            context.commit('UPDATE_SECTION_REQUEST', section.id);
+
+            Vue.http
+                .LPRequest({
+                    type: 'update-section',
+                    section: JSON.stringify(section)
+                })
+                .then(function () {
+                    context.commit('UPDATE_SECTION_SUCCESS', section.id);
+                })
+                .catch(function () {
+                    context.commit('UPDATE_SECTION_FAILURE', section.id);
+                })
+        },
+
+        updateSortSections: function (context, orders) {
+            Vue.http
+                .LPRequest({
+                    type: 'sort-sections',
+                    orders: JSON.stringify(orders)
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+                        var order_sections = result.data;
+                        context.commit('SORT_SECTION', order_sections);
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        removeSectionItem: function (context, payload) {
+            context.commit('REMOVE_SECTION_ITEM', payload);
+
+            Vue.http
+                .LPRequest({
+                    type: 'remove-section-item',
+                    'item-id': payload.itemId,
+                    'section-id': payload.sectionId
+                });
+        },
+
+        updateSectionItems: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-section-items',
+                    'items': JSON.stringify(payload.items),
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            // console.log(result);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        updateSectionItem: function (context, payload) {
+            context.commit('UPDATE_SECTION_ITEM_REQUEST', payload.item.id);
+
+            Vue.http
+                .LPRequest({
+                    type: 'update-section-item',
+                    'item': payload.item,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        context.commit('UPDATE_SECTION_ITEM_SUCCESS', payload.item.id);
+
+                        var result = response.body;
+                        if (result.success) {
+                            var item = result.data;
+
+                            context.commit('UPDATE_SECTION_ITEM', {
+                                sectionId: payload.sectionId,
+                                item: item
+                            });
+                        }
+                    },
+                    function (error) {
+                        context.commit('UPDATE_SECTION_ITEM_FAILURE', payload.item.id);
+                        console.error(error);
+                    }
+                );
+        },
+
+        newSectionItem: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'new-section-item',
+                    'item': payload.item,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('UPDATE_SECTION_ITEMS', {
+                                sectionId: payload.sectionId,
+                                items: result.data
+                            });
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        toggleSection: function (context, section) {
+            if (section.open) {
+                context.commit('CLOSE_SECTION', section);
+            } else {
+                context.commit('OPEN_SECTION', section);
+            }
+
+            Vue.http
+                .LPRequest({
+                    type: 'hidden-sections',
+                    hidden: context.getters['hiddenSections']
+                });
+        },
+        toggleAllSections: function (context) {
+            var hidden = context.getters['isHiddenAllSections'];
+
+            if (hidden) {
+                context.commit('OPEN_ALL_SECTIONS');
+            } else {
+                context.commit('CLOSE_ALL_SECTIONS');
+            }
+
+            Vue.http
+                .LPRequest({
+                    type: 'hidden-sections',
+                    hidden: context.getters['hiddenSections']
+                });
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters,
+        mutations: mutations,
+        actions: actions
+    };
+})(Vue, LP_Helpers, lq_course_editor);
 
 
-				}
-			});
+/**
+ * Choose Item Modal Store
+ *
+ * @since 3.0.0
+ *
+ * @type {{namespaced, state, getters, mutations, actions}}
+ */
+var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
+    var state = helpers.cloneObject(data.chooseItems);
+    state.sectionId = false;
+    state.pagination = '';
+    state.status = '';
 
-			return $section;
-		},
-		_addNewItem      : function (e) {
-			e.preventDefault();
-			var temp_id = parseInt($(e.target).closest('.course-section').data('temp_id')),
-				args = $(e.target).data(),
-				section = this.model.findSection({temp_id: temp_id});
-			var $item = this.addEmptyItem(args, section);
-			$item.find('.item-name').focus();
-		},
-		_createItem      : function (item, section) {
-			var itemArgs = {},
-				sectionArgs = {};
-			if (!$.isPlainObject(item)) {
-				itemArgs = item.toJSON();
-			} else {
-				itemArgs = item;
-			}
+    var getters = {
+        status: function (state) {
+            return state.status;
+        },
+        pagination: function (state) {
+            return state.pagination;
+        },
+        items: function (state, _getters) {
+            return state.items.map(function (item) {
+                var find = _getters.addedItems.find(function (_item) {
+                    return item.id === _item.id;
+                });
 
-			if (!$.isPlainObject(section)) {
-				sectionArgs = section.toJSON();
-			} else {
-				sectionArgs = section;
-			}
+                item.added = !!find;
 
-			item.set('$el', $item);
+                return item;
+            });
+        },
+        addedItems: function (state) {
+            return state.addedItems;
+        },
+        isOpen: function (state) {
+            return state.open;
+        },
+        types: function (state) {
+            return state.types;
+        },
+        section: function () {
+            return state.sectionId;
+        }
+    };
 
-			var $item = this.template('course-section-item', $.extend(itemArgs, {section: sectionArgs}));
-			return $item;
-		},
-		_selectItem      : function (e) {
+    var mutations = {
+        'TOGGLE': function (state) {
+            state.open = !state.open;
+        },
+        'SET_SECTION': function (state, sectionId) {
+            state.sectionId = sectionId;
+        },
+        'SET_LIST_ITEMS': function (state, items) {
+            state.items = items;
+        },
+        'ADD_ITEM': function (state, item) {
+            state.addedItems.push(item);
+        },
+        'REMOVE_ADDED_ITEM': function (state, item) {
+            state.addedItems.forEach(function (_item, index) {
+                if (_item.id === item.id) {
+                    state.addedItems.splice(index, 1);
+                }
+            });
+        },
+        'RESET': function (state) {
+            state.addedItems = [];
+            state.items = [];
+        },
+        'UPDATE_PAGINATION': function (state, pagination) {
+            state.pagination = pagination;
+        },
+        'SEARCH_ITEMS_REQUEST': function (state) {
+            state.status = 'loading';
+        },
+        'SEARCH_ITEMS_SUCCESS': function (state) {
+            state.status = 'successful';
+        },
+        'SEARCH_ITEMS_FAILURE': function (state) {
+            state.status = 'failed';
+        }
+    };
 
-		},
-		_selectSection   : function (e) {
-			var $el = $(e.target);
-			$el.closest('.course-section').addClass('active').siblings().removeClass('active');
-		},
-		_addNewSection   : function (e) {
-			var section = new Course_Editor.Section({});
-			this.model.sections.add(section);
+    var actions = {
+        toggle: function (context) {
+            context.commit('TOGGLE');
+        },
 
-			var $section = this._createSection(section);
-			this.$editor.find('#lp-course-curriculum').append($section);
-			$section.find('.section-name').focus();
-		},
-		_showContentTypes: function (e) {
-			e.preventDefault();
-			var that = this,
-				$content = $(e.target).siblings('.section-content-types');
-			if (!$content.is(':visible')) {
-				that.$('.section-content-types').not($content).slideUp();
-			}
-			$content.slideToggle();
+        open: function (context, sectionId) {
+            context.commit('SET_SECTION', sectionId);
+            context.commit('RESET');
+            context.commit('TOGGLE');
+        },
 
-		},
-		_rowActions      : function (e) {
-			e.preventDefault();
-			var $el = $(e.target),
-				action = $el.data('action'),
-				temp_id = parseInt($el.closest('.course-section-item').data('temp_id'));
-			switch (action) {
-				case 'quick-edit':
-					this.showQuickEdit(temp_id);
-					break;
-				case 'remove-item':
-					this.model.remove({temp_id: temp_id});
-					break;
-				case 'toggle':
-					$el.closest('.course-section').find('.section-body').slideToggle();
-			}
-		},
-		showQuickEdit    : function (temp_id) {
-			var that = this;
-			//this.$('.course-section-item').removeClass('active');
-			var /*temp_id = parseInt($el.closest('.course-section-item').addClass('active').data('temp_id')),*/
-				model = this.model.findItem({temp_id: temp_id});
-			if (!model) {
-				return;
-			}
-			var $tmpl = this.template('course-item-editor', model.toJSON());
-			this.$('#course-item-editor .course-item-editor').remove();
-			$tmpl.appendTo(this.$('#course-item-editor'));
+        addItem: function (context, item) {
+            context.commit('ADD_ITEM', item);
+        },
 
-			( function (editor_id) {
-				var init, id, $wrap;
-				tinymce.execCommand('mceRemoveEditor', true, that.editor_id);
-				if (typeof tinymce !== 'undefined') {
-					init = tinyMCEPreInit.mceInit['content'];
-					init.selector = '#' + editor_id;
-					init.tabfocus_elements = init.tabfocus_elements.replace('content', editor_id);
-					init.body_class = init.body_class.replace('content', editor_id);
-					init.setup = function (ed) {
-						ed.on('change', function (e) {
-							model.set('post_content', ed.getContent());
-						});
-					}
+        removeItem: function (context, index) {
+            context.commit('REMOVE_ADDED_ITEM', index);
+        },
 
-					$wrap = tinymce.$('#wp-' + editor_id + '-wrap');
-					tinyMCEPreInit.mceInit[editor_id] = init;
+        searchItems: function (context, payload) {
+            context.commit('SEARCH_ITEMS_REQUEST');
 
-					if (( $wrap.hasClass('tmce-active') || !tinyMCEPreInit.qtInit.hasOwnProperty(editor_id) ) && !init.wp_skip_init) {
-						tinymce.init(init);
+            Vue.http.LPRequest({
+                type: 'search-items',
+                query: payload.query,
+                'item-type': payload.type,
+                page: payload.page,
+                exclude: JSON.stringify([])
+            }).then(
+                function (response) {
+                    var result = response.body;
 
-						if (!window.wpActiveEditor) {
-							window.wpActiveEditor = editor_id;
-						}
-					}
-					$wrap.css('visibility', '');
-				}
+                    if (!result.success) {
+                        return;
+                    }
 
-				if (typeof quicktags !== 'undefined') {
-					var xxx = tinyMCEPreInit.qtInit['content'];
-					xxx.id = editor_id;
+                    var data = result.data;
 
-					tinyMCEPreInit.qtInit[editor_id] = xxx;
+                    context.commit('SET_LIST_ITEMS', data.items);
+                    context.commit('UPDATE_PAGINATION', data.pagination);
+                    context.commit('SEARCH_ITEMS_SUCCESS');
+                },
+                function (error) {
+                    context.commit('SEARCH_ITEMS_FAILURE');
 
-					quicktags(xxx);
+                    console.error(error);
+                }
+            );
+        },
 
-					if (!window.wpActiveEditor) {
-						window.wpActiveEditor = editor_id;
-					}
-				}
-				///tinymce.execCommand('mceAddEditor', true, editor_id);
-				QTags._buttonsInit();
-				that.editor_id = editor_id;
-			}('course-item-content-' + temp_id));
-		},
-		addEmptySection  : function (args, $curriculum) {
-			// add empty section
-			var section = new Course_Editor.Section(args);
-			this.model.sections.add(section);
+        addItemsToSection: function (context) {
+            var items = context.getters.addedItems;
 
-			var $section = this._createSection(section);
-			if ($curriculum) {
-				$curriculum.append($section);
-			}
-			return $section;
-		},
-		addEmptyItem     : function (args, section) {
-			// add empty section
-			var item = new Backbone.Model(args);
-			section.items.add(item);
-			var $item = this.template('course-section-item', $.extend(item.toJSON()));
-			if (section.$el) {
-				section.$el.find('.section-items').append($item);
-			}
-			item.set('$el', $item);
-			return $item;
-		},
-		template         : function (id, args) {
-			return $(wp.template(id)(args));
-		}
-	});
+            if (items.length > 0) {
+                Vue.http.LPRequest({
+                    type: 'add-items-to-section',
+                    'section-id': context.getters.section,
+                    items: JSON.stringify(items)
+                }).then(
+                    function (response) {
+                        var result = response.body;
 
-	Course_Editor.Model = Backbone.Model.extend({
-		sections     : null,
-		rawArgs      : null,
-		initialize   : function (args) {
-			this.rawArgs = args;
-			this.initSections();
-		},
-		initSections : function () {
-			this.sections = new Course_Editor.Sections();
-			_.forEach(this.rawArgs.sections, function (section) {
-				this.sections.add(new Course_Editor.Section(section))
-			}, this);
-		},
-		findItemWhere: function (atts) {
-			var items = [];
-			this.sections.forEach(function (section) {
-				var find = section.items.findWhere(atts);
-				if (find) {
-					_.union(items, find);
-				}
-			});
-			return items;
-		},
-		findItem     : function (atts) {
-			var item = undefined;
-			this.sections.forEach(function (section) {
-				if (item) {
-					return true;
-				}
-				item = section.items.find(atts);
+                        if (result.success) {
+                            context.commit('TOGGLE');
 
-			});
-			return item;
-		},
-		findSection  : function (atts) {
-			return this.sections.find(atts);
-		},
-		remove       : function (atts) {
-			var section = this.findSection(atts);
-			if (section) {
-				this.sections.remove(section);
-			} else {
-				//var items = this.findItem(atts);
-				this.sections.forEach(function (section) {
-					var item = section.items.find(atts);
-					if (item) {
-						section.items.remove(item);
-					}
-				})
-			}
-		}
-	});
+                            var items = result.data;
+                            context.commit('ss/UPDATE_SECTION_ITEMS', {
+                                sectionId: context.getters.section,
+                                items: items
+                            }, {root: true});
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+            }
+        }
+    };
 
-	Course_Editor.Section = Backbone.Model.extend({
-		items     : null,
-		initialize: function (args) {
-			this.items = new Course_Editor.Items();
-			_.forEach(args.items, function (v) {
-				this.items.add(v);
-			}, this);
-		},
-		toJSON    : function () {
-			var keys = ['section_id', 'section_name', 'section_course_id', 'section_order', 'section_description', 'temp_id'],
-				json = {};
-			_.forEach(keys, function (key) {
-				json[key] = this.get(key);
-			}, this);
-			return json;
-		}
-	});
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters,
+        mutations: mutations,
+        actions: actions
+    }
+})(window, Vue, LP_Helpers, lq_course_editor);
 
-	Course_Editor.Sections = Backbone.Collection.extend({
-		temp_id   : 1,
-		model     : function (args, b) {
-			return new Course_Editor.Section(args);
-		},
-		initialize: function (args) {
-			_.bindAll(this, 'incTempId');
-			this.on('add', this.incTempId);
-			this.on('remove', function (a, b) {
-				console.log('remove section: ', a, b)
-			})
-			/*_.forEach(args, function(v, k){
-			 this.sections.add(v);
-			 }, this);*/
-		},
-		incTempId : function (model) {
-			model.set('temp_id', Course_Editor.temp_id);
-			Course_Editor.temp_id++;
-		}
-	});
+/**
+ * Root Store
+ *
+ * @since 3.0.0
+ */
+(function (exports, Vue, Vuex, helpers, data) {
+    var state = helpers.cloneObject(data.root);
 
-	Course_Editor.Items = Backbone.Collection.extend({
-		temp_id   : 1,
-		initialize: function (args) {
-			_.bindAll(this, 'incTempId');
-			this.on('add', this.incTempId);
-			this.on('remove', function (a, b) {
-				console.log(a, a.get('$el'))
-				if (a.get('$el')) {
-					a.get('$el').remove();
-				}
-			})
-		},
-		incTempId : function (model) {
-			model.set('temp_id', Course_Editor.temp_id);
-			Course_Editor.temp_id++;
-		}
-	});
+    state.status = 'success';
+    state.heartbeat = true;
+    state.countCurrentRequest = 0;
 
-	Course_Editor.temp_id = 1;
-	$(document).ready(function () {
-		new Course_Editor(Course_Settings);
-	});
-})(jQuery);
+    var getters = {
+        heartbeat: function (state) {
+            return state.heartbeat;
+        },
+        action: function (state) {
+            return state.action;
+        },
+        id: function (state) {
+            return state.course_id;
+        },
+        status: function (state) {
+            return state.status || 'error';
+        },
+        currentRequest: function (state) {
+            return state.countCurrentRequest || 0;
+        },
+        urlAjax: function (state) {
+            return state.ajax;
+        },
+        nonce: function (state) {
+            return state.nonce;
+        }
+    };
+
+    var mutations = {
+        'UPDATE_HEART_BEAT': function (state, status) {
+            state.heartbeat = !!status;
+        },
+
+        'UPDATE_STATUS': function (state, status) {
+            state.status = status;
+        },
+        'INCREASE_NUMBER_REQUEST': function (state) {
+            state.countCurrentRequest++;
+        },
+        'DECREASE_NUMBER_REQUEST': function (state) {
+            state.countCurrentRequest--;
+        }
+    };
+
+    var actions = {
+        heartbeat: function (context) {
+            Vue.http
+                .LPRequest({
+                    type: 'heartbeat'
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+                        context.commit('UPDATE_HEART_BEAT', !!result.success);
+                    },
+                    function (error) {
+                        context.commit('UPDATE_HEART_BEAT', false);
+                    }
+                );
+        },
+
+        newRequest: function (context) {
+            context.commit('INCREASE_NUMBER_REQUEST');
+            context.commit('UPDATE_STATUS', 'loading');
+
+            window.onbeforeunload = function () {
+                return '';
+            }
+        },
+
+        requestComplete: function (context, status) {
+            context.commit('DECREASE_NUMBER_REQUEST');
+
+            if (context.getters.currentRequest === 0) {
+                context.commit('UPDATE_STATUS', status);
+                window.onbeforeunload = null;
+            }
+        }
+    };
+
+    exports.LP_Curriculum_Store = new Vuex.Store({
+        state: state,
+        getters: getters,
+        mutations: mutations,
+        actions: actions,
+        modules: {
+            ci: LP_Choose_Items_Modal_Store,
+            i18n: LP_Curriculum_i18n_Store,
+            ss: LP_Curriculum_Sections_Store
+        }
+    });
+
+})(window, Vue, Vuex, LP_Helpers, lq_course_editor);
+
+/**
+ * HTTP
+ *
+ * @since 3.0.0
+ */
+(function (exports, Vue, $store) {
+    Vue.http.LPRequest = function (payload) {
+        payload['nonce'] = $store.getters.nonce;
+        payload['lp-ajax'] = $store.getters.action;
+        payload['course-id'] = $store.getters.id;
+
+        return Vue.http.post($store.getters.urlAjax,
+            payload,
+            {
+                emulateJSON: true,
+                params: {
+                    namespace: 'LPCurriculumRequest'
+                }
+            });
+    };
+
+    Vue.http.interceptors.push(function (request, next) {
+        if (request.params['namespace'] !== 'LPCurriculumRequest') {
+            next();
+            return;
+        }
+
+        $store.dispatch('newRequest');
+
+        next(function (response) {
+            var body = response.body;
+            var result = body.success || false;
+
+            if (result) {
+                $store.dispatch('requestComplete', 'success');
+            } else {
+                $store.dispatch('requestComplete', 'failed');
+            }
+        });
+    });
+})(window, Vue, LP_Curriculum_Store);
+
+/**
+ * Init app.
+ *
+ * @since 3.0.0
+ */
+(function ($, Vue, $store) {
+    $(document).ready(function () {
+        window.LP_Course_Editor = new Vue({
+            el: '#admin-course-editor',
+            template: '<lp-course-editor></lp-course-editor>'
+        });
+    });
+})(jQuery, Vue, LP_Curriculum_Store);

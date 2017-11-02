@@ -7,21 +7,22 @@
 
 learn_press_admin_view( 'course/sections' );
 ?>
+
 <script type="text/x-template" id="tmpl-lp-course-curriculum">
+
     <div id="lp-course-curriculum" class="lp-course-curriculum">
         <div class="heading">
-            <h4><?php _e( 'Curriculum', 'learnpress' ); ?> <span class="status" :class="status"></span></h4>
-
-            <span class="collapse-sections"
-                  @click="toggle"
-                  :class="isOpen ? 'open' : 'close'"></span>
+            <h4><?php _e( 'Curriculum', 'learnpress' ); ?> <span :class="['status', status]"></span></h4>
+            <span class="collapse-sections" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>
         </div>
 
         <lp-list-sections></lp-list-sections>
     </div>
+
 </script>
 
 <script type="text/javascript">
+
     (function (Vue, $store) {
 
         Vue.component('lp-curriculum', {
