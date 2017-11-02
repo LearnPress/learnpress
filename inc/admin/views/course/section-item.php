@@ -12,11 +12,8 @@
 
         <div class="icon"></div>
         <div class="title">
-            <input type="text" title="title"
-                   @blur="updateTitle"
-                   @keyup.enter="updateTitle"
-                   @input="onChangeTitle"
-                   v-model="item.title">
+            <input v-model="item.title" type="text" title="title no-submit"
+                   @blur="updateTitle" @keyup.enter="updateTitle" @input="onChangeTitle">
         </div>
 
         <div class="item-actions">

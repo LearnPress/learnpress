@@ -11,7 +11,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 
 
 <script type="text/x-template" id="tmpl-lp-quiz-editor">
-    <div id="quiz-editor-v2" class="learn-press-box-data" :class="{'need-reload': !heartbeat}">
+    <div id="admin-quiz-editor" class="learn-press-box-data lp-admin-editor" :class="{'need-reload': !heartbeat}">
         <div class="lp-box-data-head heading">
             <h3><?php echo __( 'Questions', 'learnpress' ); ?><span class="status" :class="status"></span></h3>
             <span class="collapse-list-questions dashicons " @click="toggle"
@@ -29,7 +29,9 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                     </div>
                 </div>
 
-                <lp-list-quiz-questions></lp-list-quiz-questions>
+                <form @submit.prevent="">
+                    <lp-list-quiz-questions></lp-list-quiz-questions>
+                </form>
 
                 <div class="footer">
                     <div class="table-row">
@@ -117,12 +119,10 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                     e.preventDefault();
                     this.newQuestion.type = e.target.dataset.type;
 
-                    var request = {
-                        'newQuestion': this.newQuestion,
-                        'quizId': this.quizId
-                    };
-
-                    $store.dispatch('lqs/addNewQuestion', request);
+                    $store.dispatch('lqs/addNewQuestion', {
+                        newQuestion: this.newQuestion,
+                        quizId: this.quizId
+                    });
 
                     this.newQuestion.title = '';
                     this.$refs.newQuestionTitle.focus();

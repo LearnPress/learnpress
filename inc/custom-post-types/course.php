@@ -76,7 +76,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$course = learn_press_get_course( $post->ID );
 
 			$hidden_sections = get_post_meta( $post->ID, '_admin_hidden_sections', true );
-			wp_localize_script( 'course-editor-v2', 'lq_course_editor', array(
+			wp_localize_script( 'admin-course-editor', 'lq_course_editor', array(
 				'root'        => array(
 					'course_id' => $course->get_id(),
 					'ajax'      => admin_url( '' ),

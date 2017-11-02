@@ -1,11 +1,11 @@
 <?php
-
 /**
- * Class LP_Email_New_Order_Admin
+ * LP_Email_New_Order_Admin.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 1.0
+ * @package Learnpress/Classes
+ * @extends LP_Email_Type_Order
+ * @version 3.0.0
  */
 
 /**
@@ -15,13 +15,16 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 
+	/**
+	 * Class LP_Email_New_Order_Admin
+	 */
 	class LP_Email_New_Order_Admin extends LP_Email_Type_Order {
 		/**
 		 * LP_Email_New_Order_Admin constructor.
 		 */
 		public function __construct() {
 			$this->id          = 'new-order-admin';
-			$this->title       = __( 'New order admin', 'learnpress' );
+			$this->title       = __( 'Admin', 'learnpress' );
 			$this->description = __( 'Send email to admin when new order is placed', 'learnpress' );
 
 			$this->default_subject = __( 'New order placed on {{order_date}}', 'learnpress' );

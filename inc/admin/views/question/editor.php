@@ -11,7 +11,7 @@ learn_press_admin_view( 'question/meta' );
 
 
 <script type="text/x-template" id="tmpl-lp-quiz-editor">
-    <div id="quiz-editor-v2" class="learn-press-box-data">
+    <div id="admin-quiz-editor" class="learn-press-box-data">
         <div class="lp-box-data-content">
             <div class="lp-list-questions">
                 <div class="main">

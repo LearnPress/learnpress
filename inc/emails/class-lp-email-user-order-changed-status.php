@@ -4,18 +4,24 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 
+	/**
+	 * Class LP_Email_User_Order_Changed_Status
+	 */
 	class LP_Email_User_Order_Changed_Status extends LP_Email {
-
 		/**
 		 * LP_Email_User_Order_Changed_Status constructor.
 		 */
 		public function __construct() {
-
 			$this->id          = 'user_order_changed_status';
 			$this->title       = __( 'User order changed status', 'learnpress' );
 			$this->description = __( 'Send email to user when the order is changed status', 'learnpress' );

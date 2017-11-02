@@ -1,24 +1,29 @@
 <?php
-
 /**
- * Class LP_Email_Finished_Course
+ * Class LP_Email_Finished_Course_Admin
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Finished_Course_Admin' ) ) {
 
+	/**
+	 * Class LP_Email_Finished_Course_Admin
+	 */
 	class LP_Email_Finished_Course_Admin extends LP_Email {
 		/**
 		 * LP_Email_Finished_Course constructor.
 		 */
 		public function __construct() {
 			$this->id          = 'finished-course-admin';
-			$this->title       = __( 'Finished course admin', 'learnpress' );
+			$this->title       = __( 'Admin', 'learnpress' );
 			$this->description = __( 'Send this email to user when a user finished a course', 'learnpress' );
 
 			$this->template_html  = 'emails/finished-course.php';

@@ -1,21 +1,28 @@
 <?php
 /**
- * The template for display the content of single course
+ * Template for displaying course content within the loop.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-single-course.php
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 if ( post_password_required() ) {
 	echo get_the_password_form();
 
 	return;
-}
+} ?>
+
+<?php
 /**
  * @deprecated
  */
@@ -35,8 +42,8 @@ do_action( 'learn-press/before-single-course' );
 	<?php
 	/**
 	 * @since 3.0.0
-     *
-     * @see learn_press_single_course_summary()
+	 *
+	 * @see learn_press_single_course_summary()
 	 */
 	do_action( 'learn-press/single-course-summary' );
 	?>

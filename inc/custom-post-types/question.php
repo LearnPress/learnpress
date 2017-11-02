@@ -76,7 +76,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			$quiz     = LP_Quiz::get_quiz( 1550 );
 			$question = LP_Question::get_question( $post->ID );
 
-			wp_localize_script( 'quiz-editor-v2', 'lp_quiz_editor', array(
+			wp_localize_script( 'admin-quiz-editor', 'lp_quiz_editor', array(
 				'root'          => array(
 					'quiz_id' => $post->ID,
 					'ajax'    => admin_url( '' ),

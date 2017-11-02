@@ -7,10 +7,10 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-actions">
-    <div class="question-actions table-row">
+    <div class="question-actions table-row" :class="status">
         <div class="lp-column-sort"><i class="fa fa-bars"></i></div>
         <div class="lp-column-order">{{index +1}}</div>
-        <div class="lp-column-name">
+        <div class="lp-column-name" @dblclick="toggle">
             <input type="text" class="question-title"
                    v-model="question.title"
                    @keyup.enter='updateTitle'
@@ -63,6 +63,10 @@
                 };
             },
             computed: {
+                status: function () {
+                    console.log($store.getters['lqs/statusUpdateQuestionItem'][this.question.id]);
+                    return $store.getters['lqs/statusUpdateQuestionItem'][this.question.id] || '';
+                },
                 urlEdit: function () {
                     return 'post.php?post=' + this.question.id + '&action=edit';
                 },
@@ -94,19 +98,16 @@
                 },
                 update: function (e) {
                     this.unsaved = false;
-                    var request = {
-                        'action': 'update-title',
-                        'question': this.question
-                    };
-                    $store.dispatch('lqs/updateQuestion', request);
+                    $store.dispatch('lqs/updateQuestion', {
+                        action: 'update-title',
+                        question: this.question
+                    });
                 },
                 changeQuestionType: function (e) {
-                    var request = {
+                    $store.dispatch('lqs/changeQuestionType', {
                         question: this.question,
                         newType: e.target.dataset.type
-                    };
-
-                    $store.dispatch('lqs/changeQuestionType', request);
+                    });
                 }
             }
         });

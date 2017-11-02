@@ -3,7 +3,7 @@
 /**
  * Class LP_Email_Completed_Order_User
  *
- * Send email to customer email in case they checkout as a guest.
+ * Send email to customer in case they checkout after login.
  *
  * @author  ThimPress
  * @package LearnPress/Classes
@@ -17,6 +17,9 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 
+	/**
+	 * Class LP_Email_Completed_Order_User
+	 */
 	class LP_Email_Completed_Order_User extends LP_Email_Type_Order {
 
 		/**
@@ -24,7 +27,7 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 		 */
 		public function __construct() {
 			$this->id          = 'completed-order-user';
-			$this->title       = __( 'Completed order user', 'learnpress' );
+			$this->title       = __( 'User', 'learnpress' );
 			$this->description = __( 'Send email to the user who has bought course when order is completed.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order on {{order_date}} has completed', 'learnpress' );

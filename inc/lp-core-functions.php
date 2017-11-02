@@ -105,7 +105,7 @@ function learn_press_plugin_path( $sub_dir = '' ) {
  *
  * @param        $file
  * @param string $folder
- * @param bool   $include_once
+ * @param bool $include_once
  *
  * @return bool
  */
@@ -307,7 +307,7 @@ function learn_press_section_item_types() {
  * Enqueue js code to print out
  *
  * @param string $code
- * @param bool   $script_tag - wrap code between <script> tag
+ * @param bool $script_tag - wrap code between <script> tag
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
@@ -487,7 +487,7 @@ add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
  * @param string $str
- * @param int    $lines
+ * @param int $lines
  */
 function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
@@ -908,7 +908,7 @@ function learn_press_show_menu() {
  *
  * @param string $to
  * @param string $action
- * @param array  $vars
+ * @param array $vars
  *
  * @return mixed
  */
@@ -1833,7 +1833,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int  $expire
+ * @param int $expire
  * @param bool $secure
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
@@ -2776,7 +2776,7 @@ function learn_press_deprecated_function( $function, $version, $replacement = nu
  * Sanitize content of tooltip
  *
  * @param string $tooltip
- * @param bool   $html
+ * @param bool $html
  *
  * @return string
  */
@@ -2922,8 +2922,7 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
 			try {
 				$data = unserialize( $content );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				print_r( $content );
 				die();
 			}
@@ -2952,3 +2951,43 @@ function learn_press_cache_add( $key, $data, $group = '', $expire = 0 ) {
 	wp_cache_add( $key, $data, $group, $expire );
 }
 
+if ( ! function_exists( 'learn_press_get_widget_course_object' ) ) {
+	/**
+	 * Get course object for widget query.
+	 *
+	 * @param $query
+	 *
+	 * @return array
+	 */
+	function learn_press_get_widget_course_object( $query ) {
+
+		global $wpdb;
+
+		// query posts
+		$posts = $wpdb->get_results( $query );
+
+		// get lp courses object from Wordpress post
+		$courses = array_map( 'learn_press_get_lp_course', $posts );
+
+		return $courses;
+	}
+}
+
+if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
+	/**
+	 * Get learn press course from wordpress post object
+	 *
+	 * @param object - reference $post Wordpress post object
+	 *
+	 * @return LP_Course course
+	 */
+	function learn_press_get_lp_course( $post ) {
+		$id     = $post->ID;
+		$course = null;
+		if ( ! empty( $id ) ) {
+			$course = new LP_Course( $id );
+		}
+
+		return $course;
+	}
+}

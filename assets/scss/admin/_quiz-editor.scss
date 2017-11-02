@@ -1,0 +1,330 @@
+#admin-quiz-editor {
+    .lp-box-data-head {
+
+        .status {
+            font-family: Dashicons;
+            font-size: 20px;
+            position: relative;
+            top: 5px;
+            margin-left: 10px;
+            visibility: hidden;
+
+            &:before {
+                content: "\f463";
+            }
+
+            &.loading {
+                visibility: visible;
+                animation: rotation 2s infinite linear;
+                display: inline-block;
+            }
+        }
+        .collapse-list-questions {
+            font-family: Dashicons;
+            position: absolute;
+            top: 0;
+            right: 5px;
+            bottom: 0;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            width: 40px;
+            height: 65px;
+        }
+    }
+
+    .lp-box-data-content {
+        padding: 15px 0;
+        .lp-list-questions {
+            color: #777;
+            border-collapse: collapse;
+
+            .table-row {
+                display: flex;
+                flex-direction: row;
+
+                & > * {
+                    width: 100%;
+                    padding: 8px 10px
+                }
+
+                & > .lp-column-sort {
+                    width: 15px;
+                }
+
+                & > .lp-column-order {
+                    width: 25px;
+                    text-align: right;
+                }
+
+                & > .lp-column-name {
+                    padding-left: 0;
+                }
+
+                & > .lp-column-type {
+                    width: 150px;
+                    text-align: center;
+                }
+
+                & > .lp-column-actions {
+                    width: 300px;
+                    text-align: right;
+                }
+
+                .fa-bars {
+                    text-align: center;
+                    font-size: 18px;
+                    color: #CCC;
+                    cursor: ns-resize;
+                    &:hover {
+                        color: #0085ba;
+                    }
+                }
+            }
+
+            .header {
+                border-bottom: 1px solid #ddd;
+                .table-row {
+                    & > * {
+                        font-weight: bold;
+                        padding: 12px 8px 12px 0;
+                    }
+                }
+            }
+
+            .main {
+                .question-actions {
+                    .lp-column-name {
+                        input {
+                            width: 100%;
+                            font-size: 14px;
+                            border: none;
+                            background: transparent;
+                            box-shadow: none;
+                            font-weight: normal;
+                            color: #777;
+                            padding: 0;
+                        }
+                    }
+
+                    &.updating {
+                        background-color: #e6f2d0;
+                    }
+                }
+                .question-settings {
+                    border: 1px solid #ddd;
+                    & > * {
+                        padding: 20px;
+                    }
+                    .quiz-question-data {
+                        table.lp-list-options {
+                            border: 1px solid #ddd;
+                            thead {
+                                .lp-column-heading-sort, .lp-column-heading-order, .lp-column-heading-actions {
+                                    width: 10px;
+                                }
+                                .lp-column-heading-answer_text {
+                                    width: calc(100% - 100px);
+                                }
+                                .lp-column-heading-answer_correct {
+                                    width: 70px;
+                                }
+                            }
+                            tbody {
+                                tr {
+                                    background: #fff;
+                                    &:nth-child(2n) {
+                                        background: #f4fcff;
+                                    }
+                                    td {
+                                        background: inherit;
+                                    }
+                                }
+                                .answer-item, .new-answer-item {
+                                    .lp-column-answer_text {
+                                        input {
+                                            width: 100%;
+                                            font-size: 14px;
+                                            border: none;
+                                            background: transparent;
+                                            box-shadow: none;
+                                            font-weight: normal;
+                                            color: #777;
+                                            padding: 0;
+                                        }
+                                    }
+                                }
+                                .new-answer-item {
+                                    background: #FBE9E9;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .header {
+                .cell {
+                    font-weight: bold;
+                    padding: 12px 8px 12px 0;
+                    border-bottom: 1px solid #DDD;
+                }
+                .lp-column-type, .lp-column-actions {
+                    text-align: center;
+                }
+                .lp-column-actions {
+                    width: 160px;
+                }
+            }
+
+            .main {
+                .question-item {
+                    background: #fff;
+                    &:nth-child(2n+1) {
+                        background: #f4fcff;
+                    }
+                    .cell {
+                        padding: 10px;
+                    }
+                    .question-actions {
+                        .lp-column-name {
+                            input {
+                                width: 100%;
+                                font-size: 14px;
+                                border: none;
+                                background: transparent;
+                                box-shadow: none;
+                                font-weight: normal;
+                                color: #777;
+                                padding: 0;
+                            }
+                        }
+                        .lp-column-actions {
+                            padding: 0;
+                            .lp-toolbar-buttons {
+                                position: relative;
+                                z-index: 10;
+                                visibility: hidden;
+                                height: auto;
+                                .lp-toolbar-btn {
+                                    height: 42px;
+                                    .lp-btn-icon {
+                                        width: 30px;
+                                        height: 30px;
+                                        text-align: center;
+                                        position: absolute;
+                                        top: 50%;
+                                        margin-top: -15px;
+                                        left: 50%;
+                                        margin-left: -15px;
+                                        line-height: 30px;
+                                    }
+                                }
+                                .lp-btn-toggle {
+                                    font-family: Dashicons;
+                                    line-height: 42px;
+                                    font-size: 16px;
+                                    &.open {
+                                        &::after {
+                                            content: '\f343';
+                                        }
+                                    }
+                                    &.close {
+                                        &::after {
+                                            content: '\f347';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        &:hover {
+                            .lp-toolbar-buttons {
+                                visibility: visible;
+                            }
+                        }
+                    }
+
+                    .question-settings {
+                        background: #fff;
+
+                        .quiz-question-options {
+                            .inside {
+                                margin: 0;
+                                padding: 0;
+                                .rwmb-meta-box {
+                                    .rwmb-field {
+                                        padding: 20px;
+                                        margin: 0;
+                                        &:nth-child(2n+1) {
+                                            background: #f4fcff;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .footer {
+                .new-question-title {
+                    position: relative;
+                    display: inline-block;
+                    min-width: 300px;
+
+                    input[name="new-question-title"] {
+                        border: 1px solid #DDD;
+                        width: 100%;
+                        margin: 0;
+                        padding: 5px 10px;
+                        @include box-shadow(none);
+                        &:focus {
+                            border-color: #DDD;
+                        }
+                    }
+                }
+                .add-new-button {
+                    display: inline;
+                    position: relative;
+                    .lp-dropdown-items {
+                        position: absolute;
+                        margin: 5px;
+                        background-color: #FFF;
+                        top: 100%;
+                        border: 1px solid #DDD;
+                        right: -1px;
+                        width: 200px;
+                        z-index: 9999999;
+                        display: none;
+                        li {
+                            margin: 0;
+                            a {
+                                display: block;
+                                padding: 10px;
+                                line-height: 1;
+                                text-decoration: none;
+                                outline: none;
+                                box-shadow: none;
+                            }
+                        }
+                    }
+
+                    &.visible {
+                        &:hover {
+                            .lp-dropdown-items {
+                                display: block !important;
+                            }
+                        }
+                    }
+                }
+                .lp-column-sort {
+                    i {
+                        visibility: hidden;
+                    }
+                }
+            }
+        }
+    }
+}

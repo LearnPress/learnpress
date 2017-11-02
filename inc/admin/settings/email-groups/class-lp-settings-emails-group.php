@@ -28,16 +28,19 @@ class LP_Settings_Emails_Group extends LP_Settings {
 		$emails = LP_Emails::instance()->emails;
 
 		$ids = array_fill_keys( $this->items, '' );
+
 		foreach ( $this->items as $id ) {
 			foreach ( $emails as $email ) {
 				if ( ! array_key_exists( $email->id, $ids ) ) {
 					continue;
 				}
-				$email->group = $this->group_id;
+				$email->group      = $this->group_id;
 				$ids[ $email->id ] = $email;
 			}
 		}
+
 		$this->items = $ids;
+
 		add_action( 'learn-press/admin/setting-payments/admin-options-' . $this->group_id, array(
 			$this,
 			'admin_page'
@@ -46,6 +49,7 @@ class LP_Settings_Emails_Group extends LP_Settings {
 
 	public function admin_page() {
 		$current = $this->get_current_section();
+
 		echo '<ul class="subsubsub">';
 		foreach ( $this->items as $email ) {
 			if ( $current == $email->id ) {

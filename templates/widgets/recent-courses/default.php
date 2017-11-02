@@ -1,85 +1,93 @@
 <?php
 /**
- * Template for displaying content of Recent Courses widget
+ * Template for displaying content of Recent Courses widget.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/widgets/recent-courses/default.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates/Widgets
- * @version 2.1.5
+ * @category Widgets
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
+?>
 
+<?php
+//widget instance
 $instance = $this->instance;
 ?>
-<div class="<?php echo 'archive-course-widget-outer ' . esc_attr( $instance["css_class"] ); ?>">
-	<div class="widget-body">
-		<?php foreach ( $this->courses as $course ): ?>
-			<div class="course-entry">
-				<?php if ( !empty( $instance['show_thumbnail'] ) ): ?>
-					<div class="course-cover">
-						<a href="<?php echo get_the_permalink( $course->get_id() ); ?>">
-							<?php echo get_the_post_thumbnail( $course->get_id(), 'medium' ); ?>
-						</a>
-					</div>
-				<?php endif; ?>
-				<div class="course-detail">
-					<a href="<?php echo get_the_permalink( $course->get_id() ) ?>">
-						<h3 class="course-title">
-							<?php echo $course->get_course_data()->post_title; ?>
-						</h3>
-					</a>
-					<?php if ( !empty( $instance['desc_length'] ) && intval( $instance['desc_length'] ) > 0 ): ?>
-						<div class="course-description"><?php
-							$content_length = intval( $instance['desc_length'] );
-							$the_content    = $course->get_course_data()->post_content;
-							$the_content    = wp_trim_words( $the_content, $content_length, __( '...', 'learnpress' ) );
-							echo $the_content;
-							?></div>
-					<?php endif; ?>
-					<div class="course-meta-data">
-						<?php if ( !empty( $instance['show_price'] ) ): ?>
-							<div class="course-meta-field">
-								<?php
-								echo $course->get_price_html();
-								?>
-							</div>
-						<?php endif; ?>
-						<?php if ( !empty( $instance['show_enrolled_students'] ) ): ?>
-							<div class="course-student-number course-meta-field">
-								<?php
-								$students = $course->get_users_enrolled();
-								echo intval( $students ) > 1 ? sprintf( __( '%d students', 'learnpress' ), $students ) : sprintf( __( '%d student', 'learnpress' ), $students );
-								?>
-							</div>
-						<?php endif; ?>
-						<?php if ( !empty( $instance['show_lesson'] ) ): ?>
-							<div class="course-lesson-number course-meta-field">
-								<?php
-								$lessons = sizeof( $course->get_lessons() );
-								echo intval( $lessons ) > 1 ? sprintf( __( '%d lessons', 'learnpress' ), $lessons ) : sprintf( __( '%d lesson', 'learnpress' ), $lessons );
-								?>
-							</div>
-						<?php endif; ?>
-						<?php if ( !empty( $instance['show_teacher'] ) ): ?>
-							<div class="course-meta-field">
-								<?php echo $course->get_instructor_html(); ?>
-							</div>
-						<?php endif; ?>
-					</div>
-				</div>
-			</div>
-		<?php endforeach; ?>
-	</div>
-	<div class="widget-footer">
-		<?php if ( !empty( $instance['bottom_link_text'] ) ):
+
+<div class="archive-course-widget-outer <?php esc_attr_e( $instance["css_class"] ); ?>">
+
+    <div class="widget-body">
+		<?php foreach ( $this->courses as $course ) { ?>
+
+			<?php $data = array(
+				'id'         => $course->get_id(),
+				'title'      => $course->get_title(),
+				'content'    => $course->get_data( 'post_content' ),
+				'price'      => $course->get_price_html(),
+				'students'   => $course->get_users_enrolled(),
+				'lessons'    => sizeof( $course->get_lessons() ),
+				'instructor' => $course->get_instructor_html(),
+			); ?>
+
+            <div class="course-entry">
+                <!-- course thumbnail -->
+				<?php if ( ! empty( $instance['show_thumbnail'] ) ) { ?>
+                    <div class="course-cover">
+                        <a href="<?php echo get_the_permalink( $data['id'] ); ?>">
+							<?php echo get_the_post_thumbnail( $data['id'], 'medium' ); ?>
+                        </a>
+                    </div>
+				<?php } ?>
+                <div class="course-detail">
+                    <!-- course title -->
+                    <a href="<?php echo get_the_permalink( $data['id'] ) ?>">
+                        <h3 class="course-title"><?php echo $data['title']; ?></h3>
+                    </a>
+                    <!-- course content -->
+					<?php if ( ! empty( $instance['desc_length'] ) && intval( $instance['desc_length'] ) > 0 ) { ?>
+                        <div class="course-description">
+							<?php $content_length = intval( $instance['desc_length'] ); ?>
+							<?php echo wp_trim_words( $content, $content_length, __( '...', 'learnpress' ) ); ?></div>
+					<?php } ?>
+                    <div class="course-meta-data">
+                        <!-- price -->
+						<?php if ( ! empty( $instance['show_price'] ) ) { ?>
+                            <div class="course-meta-field"><?php echo $data['price']; ?></div>
+						<?php } ?>
+                        <!-- number students -->
+						<?php if ( ! empty( $instance['show_enrolled_students'] ) ) { ?>
+                            <div class="course-student-number course-meta-field">
+								<?php echo intval( $data['students'] ) > 1 ? sprintf( __( '%d students', 'learnpress' ), $data['students'] ) : sprintf( __( '%d student', 'learnpress' ), $data['students'] ); ?>
+                            </div>
+						<?php } ?>
+                        <!-- number lessons -->
+						<?php if ( ! empty( $instance['show_lesson'] ) ) { ?>
+                            <div class="course-lesson-number course-meta-field">
+								<?php echo intval( $data['lessons'] ) > 1 ? sprintf( __( '%d lessons', 'learnpress' ), $data['lessons'] ) : sprintf( __( '%d lesson', 'learnpress' ), $data['lessons'] ); ?>
+                            </div>
+						<?php } ?>
+                        <!-- instructor -->
+						<?php if ( ! empty( $instance['show_teacher'] ) ) { ?>
+                            <div class="course-meta-field"><?php echo $data['instructor']; ?></div>
+						<?php } ?>
+                    </div>
+                </div>
+            </div>
+		<?php } ?>
+    </div>
+    <div class="widget-footer">
+		<?php if ( ! empty( $instance['bottom_link_text'] ) ) {
 			$page_id = get_option( 'learn_press_courses_page_id' );
-			$link = get_the_permalink( $page_id );
-			$title = get_the_title( $page_id );
+			$link    = get_the_permalink( $page_id );
+			$title   = get_the_title( $page_id );
 			?>
-			<a class="pull-right" href="<?php echo $link ?>">
+            <a class="pull-right" href="<?php echo esc_url( $link ); ?>">
 				<?php echo wp_kses_post( $instance['bottom_link_text'] ); ?>
-			</a>
-		<?php endif; ?>
-	</div>
+            </a>
+		<?php } ?>
+    </div>
 </div>
-<div class="clearfix"></div>

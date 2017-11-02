@@ -1,24 +1,31 @@
 <?php
-
 /**
- * Class LP_Email_Enrolled_Course_Instructor
+ * LP_Email_Enrolled_Course_Instructor.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 1.0
+ * @package Learnpress/Classes
+ * @extends LP_Email
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Enrolled_Course_Instructor' ) ) {
+
+	/**
+	 * Class LP_Email_Enrolled_Course_Instructor
+	 */
 	class LP_Email_Enrolled_Course_Instructor extends LP_Email {
 		/**
 		 * LP_Email_Enrolled_Course_Instructor constructor.
 		 */
 		public function __construct() {
 			$this->id          = 'enrolled-course-instructor';
-			$this->title       = __( 'Enrolled course instructor', 'learnpress' );
-			$this->description = __( 'Send this email to user when they have enrolled course.', 'learnpress' );
+			$this->title       = __( 'Instructor', 'learnpress' );
+			$this->description = __( 'Send this email to instructor when they have enrolled course.', 'learnpress' );
 
 			$this->template_html  = 'emails/enrolled-course.php';
 			$this->template_plain = 'emails/plain/enrolled-course.php';

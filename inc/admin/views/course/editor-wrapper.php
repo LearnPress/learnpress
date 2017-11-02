@@ -6,7 +6,7 @@
  */
 ?>
 
-<div id="course-editor-v2">
+<div id="admin-course-editor">
     <div class="lp-place-holder">
         <div class="line-heading"></div>
 

@@ -1,11 +1,11 @@
 <?php
-
 /**
- * Class LP_Email_Cancelled_Order_Instructor
+ * LP_Email_Cancelled_Order_Instructor.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 3.0
+ * @package Learnpress/Classes
+ * @extends LP_Email_Type_Order
+ * @version 3.0.0
  */
 
 /**
@@ -21,7 +21,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
 		 */
 		public function __construct() {
 			$this->id          = 'cancelled-order-instructor';
-			$this->title       = __( 'Cancelled order instructor', 'learnpress' );
+			$this->title       = __( 'Instructor', 'learnpress' );
 			$this->description = __( 'Send email to course instructor when order has been cancelled', 'learnpress' );
 
 			$this->default_subject = __( 'Order placed on {{order_date}} has been cancelled', 'learnpress' );

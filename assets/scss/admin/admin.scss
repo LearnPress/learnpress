@@ -6,7 +6,6 @@
 @import "../general";
 @import "advertisment";
 @import "question";
-@import "quiz";
 @import "submenu";
 @import "meta-box";
 @import "admin-tabs";
@@ -14,10 +13,11 @@
 @import "post-type";
 @import "modal-search";
 @import "dashboard";
-@import "course-editor-v2";
 @import "place-holder";
 @import "order";
 @import "settings";
+@import "course-editor";
+@import "quiz-editor";
 
 .tipsy {
     position: absolute;
@@ -254,12 +254,12 @@
         display: none;
         background: #F5F5F5;
         padding: 10px;
-        input{
+        input {
             width: 100%;
             margin: 0;
             @include box-sizing(border-box);
         }
-        p{
+        p {
             margin: 7px 0 0;
             color: #777;
             font-style: italic;

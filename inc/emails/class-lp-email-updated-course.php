@@ -4,19 +4,30 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Updated_Course' ) ) {
 
+	/**
+	 * Class LP_Email_Updated_Course
+	 */
 	class LP_Email_Updated_Course extends LP_Email {
 
+		/**
+		 * @var
+		 */
 		public $object;
 
+		/**
+		 * LP_Email_Updated_Course constructor.
+		 */
 		public function __construct() {
-
 			$this->id          = 'updated-course';
 			$this->title       = __( 'Updated course', 'learnpress' );
 			$this->description = __( 'Send this email to users have purchased when the course is updated.', 'learnpress' );

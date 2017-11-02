@@ -1,11 +1,11 @@
 <?php
-
 /**
- * Class LP_Email_New_Order_Customer
+ * LP_Email_New_Order_Customer.
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 1.0
+ * @package Learnpress/Classes
+ * @extends LP_Email_Type_Order
+ * @version 3.0.0
  */
 
 /**
@@ -15,6 +15,9 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 
+	/**
+	 * Class LP_Email_New_Order_User
+	 */
 	class LP_Email_New_Order_User extends LP_Email_Type_Order {
 
 		/**
@@ -22,7 +25,7 @@ if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 		 */
 		public function __construct() {
 			$this->id          = 'new-order-user';
-			$this->title       = __( 'New order user', 'learnpress' );
+			$this->title       = __( 'User', 'learnpress' );
 			$this->description = __( 'Send email to the user who has bought course.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
@@ -52,7 +55,7 @@ if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 				return false;
 			}
 
-			$order = $this->get_order( );
+			$order = $this->get_order();
 
 			if ( $order->is_guest() ) {
 				return false;

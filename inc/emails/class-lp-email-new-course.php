@@ -1,22 +1,29 @@
 <?php
-defined( 'ABSPATH' ) || exit();
-
 /**
  * Class LP_Email_New_Course
  *
+ * Review new course email.
+ *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 
+	/**
+	 * Class LP_Email_New_Course
+	 */
 	class LP_Email_New_Course extends LP_Email {
 		/**
 		 * LP_Email_New_Course constructor.
 		 */
 		public function __construct() {
-
 			$this->id          = 'new-course';
 			$this->title       = __( 'New course', 'learnpress' );
 			$this->description = __( 'Email settings when a new course is submitted for review.', 'learnpress' );
