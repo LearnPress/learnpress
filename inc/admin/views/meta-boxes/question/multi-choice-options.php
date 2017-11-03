@@ -9,42 +9,50 @@ $option_headings = array(
 $option_headings = apply_filters( 'learn-press/question/multi-choices/admin-option-headings', $option_headings, $this->id );
 ?>
 
-<div class="learn-press-question" id="learn-press-question-<?php echo $this->id; ?>" data-type="multi-choice" data-id="<?php echo $this->id; ?>">
+<div class="learn-press-question" id="learn-press-question-<?php echo $this->id; ?>" data-type="multi-choice"
+     data-id="<?php echo $this->id; ?>">
 
-	<p class="question-bottom-actions">
+    <p class="question-bottom-actions">
 		<?php
 		$top_buttons = apply_filters(
 			'learn_press_question_top_buttons',
 			array(
-				'change_type' => learn_press_dropdown_question_types( array( 'echo' => false, 'id' => 'learn-press-dropdown-question-types-' . $this->id, 'selected' => $this->type ) )
+				'change_type' => learn_press_dropdown_question_types( array(
+					'echo'     => false,
+					'id'       => 'learn-press-dropdown-question-types-' . $this->id,
+					'selected' => $this->type
+				) )
 			),
 			$this
 		);
 		echo join( "\n", $top_buttons );
 		?>
-	</p>
-	<table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $this->id; ?>">
-		<thead>
-		<tr>
+    </p>
+    <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $this->id; ?>">
+        <thead>
+        <tr>
 			<?php foreach ( $option_headings as $key => $text ) { ?>
 				<?php
-				$classes = apply_filters( 'learn-press/question/multi-choices/admin-option-column-heading-class', array( 'column-heading', 'column-heading-' . $key ) );
+				$classes = apply_filters( 'learn-press/question/multi-choices/admin-option-column-heading-class', array(
+					'column-heading',
+					'column-heading-' . $key
+				) );
 				?>
-				<th class="<?php echo join( ' ', $classes ); ?>">
+                <th class="<?php echo join( ' ', $classes ); ?>" width="<?php echo ( ! $text ) ? 20 : ''; ?>">
 					<?php do_action( 'learn-press/question/multi-choices/admin-option-column-heading-before-title', $key, $this->id ); ?>
 					<?php echo apply_filters( 'learn-press/question/multi-choices/admin-option-column-heading-title', $text ); ?>
 					<?php do_action( 'learn-press/question/multi-choices/admin-option-column-heading-after-title', $key, $this->id ); ?>
-				</th>
+                </th>
 			<?php } ?>
-		</tr>
-		<!--
+        </tr>
+        <!--
 		<th><?php _e( 'Answer Text', 'learnpress' ); ?></th>
 		<th><?php _e( 'Is Correct?', 'learnpress' ); ?></th>
 		<th width="20"></th>
 		<th width="20"></th>
 		-->
-		</thead>
-		<tbody>
+        </thead>
+        <tbody>
 
 		<?php $answers = $this->answers;
 		if ( $answers ): ?>
@@ -55,7 +63,7 @@ $option_headings = apply_filters( 'learn-press/question/multi-choices/admin-opti
 
 				<?php do_action( 'learn_press_before_question_answer_option', $this ); ?>
 
-				<tr class="lp-list-option lp-list-option-<?php echo $value; ?>" data-id="<?php echo $value; ?>">
+                <tr class="lp-list-option lp-list-option-<?php echo $value; ?>" data-id="<?php echo $value; ?>">
 					<?php foreach ( $option_headings as $heading => $title ) { ?>
 						<?php
 						$classes = array( 'column-content', 'column-content-' . $heading );
@@ -63,26 +71,32 @@ $option_headings = apply_filters( 'learn-press/question/multi-choices/admin-opti
 						switch ( $heading ) {
 							case 'answer_text':
 								?>
-								<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[<?php echo $this->id; ?>][answer][text][]" value="<?php echo esc_attr( $answer['text'] ); ?>" />
+                                <input class="lp-answer-text no-submit key-nav" type="text"
+                                       name="learn_press_question[<?php echo $this->id; ?>][answer][text][]"
+                                       value="<?php echo esc_attr( $answer['text'] ); ?>"/>
 								<?php
 								break;
 							case 'answer_correct':
 								$classes[] = 'lp-answer-check';
 								?>
-								<input type="hidden" name="learn_press_question[<?php echo $this->id; ?>][answer][value][]" value="<?php echo $value; ?>" />
-								<input type="checkbox" name="learn_press_question[<?php echo $this->id; ?>][checked][]" <?php checked( $answer['is_true'] == 'yes', true ); ?> value="<?php echo $value; ?>" />
+                                <input type="hidden"
+                                       name="learn_press_question[<?php echo $this->id; ?>][answer][value][]"
+                                       value="<?php echo $value; ?>"/>
+                                <input type="checkbox"
+                                       name="learn_press_question[<?php echo $this->id; ?>][checked][]" <?php checked( $answer['is_true'] == 'yes', true ); ?>
+                                       value="<?php echo $value; ?>"/>
 								<?php
 								break;
 							case 'actions':
 								$classes[] = 'lp-list-option-actions lp-remove-list-option';
 								?>
-								<i class="dashicons dashicons-trash"></i>
+                                <i class="dashicons dashicons-trash"></i>
 								<?php
 								break;
 							case 'sort':
 								$classes[] = 'lp-list-option-actions lp-move-list-option open-hand';
 								?>
-								<i class="dashicons dashicons-sort"></i>
+                                <i class="dashicons dashicons-sort"></i>
 								<?php
 								break;
 
@@ -94,11 +108,11 @@ $option_headings = apply_filters( 'learn-press/question/multi-choices/admin-opti
 						<?php do_action( 'learn-press/question/multi-choices/admin-option-column-' . $heading . '-content', $answer, $this->id ); ?>
 						<?php do_action( 'learn-press/question/multi-choices/admin-option-columns-content', $heading, $answer, $this->id ); ?>
 						<?php $html = ob_get_clean(); ?>
-						<th class="<?php echo join( ' ', $classes ); ?>">
+                        <th class="<?php echo join( ' ', $classes ); ?>">
 							<?php echo $html; ?>
-						</th>
+                        </th>
 					<?php } ?>
-					<!--
+                    <!--
 					<td>
 						<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[<?php echo $this->id; ?>][answer][text][]" value="<?php echo esc_attr( $answer['text'] ); ?>" />
 					</td>
@@ -113,15 +127,15 @@ $option_headings = apply_filters( 'learn-press/question/multi-choices/admin-opti
 						<i class="dashicons dashicons-sort"></i>
 					</td>
 					-->
-				</tr>
+                </tr>
 
 				<?php do_action( 'learn_press_after_question_answer_option', $this ); ?>
 
 			<?php endforeach; ?>
 		<?php endif; ?>
-		</tbody>
-	</table>
-	<p class="question-bottom-actions">
+        </tbody>
+    </table>
+    <p class="question-bottom-actions">
 		<?php
 		$bottom_buttons = apply_filters(
 			'learn_press_question_bottom_buttons',
@@ -136,10 +150,10 @@ $option_headings = apply_filters( 'learn-press/question/multi-choices/admin-opti
 		);
 		echo join( "\n", $bottom_buttons );
 		?>
-	</p>
+    </p>
 </div>
 <script type="text/javascript">
-	jQuery(function ($) {
-		LP.sortableQuestionAnswers($('#learn-press-question-<?php echo $this->id;?>'));
-	});
+    jQuery(function ($) {
+        LP.sortableQuestionAnswers($('#learn-press-question-<?php echo $this->id;?>'));
+    });
 </script>
