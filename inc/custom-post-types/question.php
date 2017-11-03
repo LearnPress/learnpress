@@ -41,10 +41,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_action( 'edit_form_after_editor', array( $this, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
-			$this->add_map_method( 'before_delete', 'delete_question_answers' );
+//			$this->add_map_method( 'before_delete', 'delete_question_answers' );
 
 			parent::__construct( $post_type, $args );
-
 		}
 
 
@@ -67,13 +66,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public function data_question_editor() {
 
-
 			if ( LP_QUESTION_CPT !== get_post_type() ) {
 				return;
 			}
 
 			global $post;
-			$quiz     = LP_Quiz::get_quiz( 1550 );
 			$question = LP_Question::get_question( $post->ID );
 
 			wp_localize_script( 'admin-quiz-editor', 'lp_quiz_editor', array(
@@ -130,12 +127,10 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return bool|false|int
 		 */
 		public function delete_question_answers( $question_id ) {
-			$question_curd = new LP_Question_CURD();
-			$result        = $question_curd->delete_question_answers( $question_id );
-
-			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
-
-			return $result;
+			// question curd
+			$curd = new LP_Question_CURD();
+			// remove all answer of quesion
+			$curd->delete_question_answers( $question_id );
 		}
 
 		/**
@@ -422,6 +417,15 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 
 		/**
+		 * Quiz assigned view.
+		 *
+		 * @since 3.0.0
+		 */
+		public static function question_assigned() {
+			learn_press_admin_view( 'meta-boxes/quiz/assigned.php' );
+		}
+
+		/**
 		 * @return LP_Question_Post_Type|null
 		 */
 		public static function instance() {
@@ -439,5 +443,10 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 	}
 
+	// LP_Question_Post_Type
 	$question_post_type = LP_Question_Post_Type::instance();
+
+	// add meta box
+	$question_post_type
+		->add_meta_box( 'lesson_assigned', __( 'Assigned', 'learnpress' ), 'question_assigned', 'side', 'high' );
 }

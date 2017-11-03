@@ -971,7 +971,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			global $post, $pagenow;
 
 			// Ensure that we are editing course in admin side
-
 			if ( ( $pagenow != 'post.php' ) || ( get_post_type() != LP_COURSE_CPT ) ) {
 				return;
 			}

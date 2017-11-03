@@ -1653,7 +1653,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$args['post_status'] = 'publish';
 				$item_id             = wp_insert_post( $args );
 				if ( $item_id ) {
-					LP_Lesson_Post_Type::create_default_meta( $item_id );
+					LP_Lesson::set_default_meta( $item_id );
 					$item                        = get_post( $item_id );
 					$response['post']            = $item;
 					$response['post']->edit_link = get_edit_post_link( $item_id );
