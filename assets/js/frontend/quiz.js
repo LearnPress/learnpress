@@ -644,7 +644,7 @@
                 this.$('.button-next-question').toggleClass('hide-if-js', this.model.isLast());
                 var current = this.model.current();
                 if (current) {
-                    this.$('.button-check-answer').toggleClass('hide-if-js', current.get('hasCheckAnswer') !== 'yes');
+                    this.$('.button-check-answer').toggleClass('hide-if-js', current.get('hasCheckAnswer') !== 'yes' && current.get('checked') !== false);
                     this.$('.button-hint').toggleClass('hide-if-js', current.get('hasHint') !== 'yes');
                 }
             }
@@ -858,7 +858,7 @@
             var data = this._validateObject(args), that = this;
             data = LP.Hook.applyFilters('learn_press_finish_quiz_data', data);
             var beforeSend = args.beforeSend || function () {
-                };
+            };
             LP.ajax({
                 url: this.model.get('url'),
                 action: 'finish-quiz',
