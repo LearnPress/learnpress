@@ -3,8 +3,8 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
-Tested up to: 4.8
-Stable tag: 2.1.9.2
+Tested up to: 4.8.3
+Stable tag: 2.1.9.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -196,6 +196,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 2.1.9.3 =
++ Compatible with WordPress 4.8.3
++ Fixed show check answer option in quiz settings
++ Fixed course category page
 
 = 2.1.9.2 =
 + Fixed "Block Lessons Content" option in course settings
