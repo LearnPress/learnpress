@@ -210,7 +210,6 @@ class LP_Page_Controller {
 		define( 'LEARNPRESS_IS_TAX', is_tax( get_object_taxonomies( 'lp_course' ) ) );
 		define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
 		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY || LEARNPRESS_IS_SEARCH || LEARNPRESS_IS_TAX ) {
-
 			global $wp_query, $post, $wp;
 			if ( is_callable( 'clone' ) ) {
 				LP()->wp_query = clone( $wp_query );
@@ -257,13 +256,15 @@ class LP_Page_Controller {
 				$has_filter = true;
 				remove_filter( 'the_content', 'wpautop' );
 			}
+
 			$content = wpautop($content);
 			$content = do_shortcode( $content );
+
 			if ( $has_filter ) {
 				has_filter( 'the_content', 'wpautop' );
 			}
 
-			if ( empty( $wp_query->post->ID ) ) {
+			if ( empty( $wp_query->post->ID ) || LEARNPRESS_IS_CATEGORY ) {
 				$wp_query->post->ID = 0;
 			}
 
@@ -274,8 +275,12 @@ class LP_Page_Controller {
 
 			$wp_query->post->post_content   = $content;
 			$wp_query->posts                = array( $wp_query->post );
-			if( is_post_type_archive( LP_COURSE_CPT ) ) {
-				$wp_query->is_page = true;
+			if( is_post_type_archive( LP_COURSE_CPT ) || LEARNPRESS_IS_CATEGORY ) {
+				$wp_query->is_page = false;
+// 				$wp_query->is_posts_page        = true;
+				$wp_query->is_archive           = true;
+				$wp_query->is_category          = true;
+				$wp_query->is_single            = false;
 			} else {
 				$wp_query->found_posts          = 1;
 				$wp_query->is_single            = true;
