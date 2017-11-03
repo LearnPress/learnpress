@@ -384,7 +384,7 @@ abstract class LP_Abstract_Course {
 		$output = '';
 		if ( $count = $this->count_users_enrolled( 'append' ) ):
 			$course_info = $this->get_course_info( $user_id );
-			if ( $course_info['status'] ):
+			if ( isset($course_info['status']) && $course_info['status']):
 				if ( $count == 1 ):
 					$output .= __( 'You enrolled', 'learnpress' );
 				else:
