@@ -456,7 +456,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public static function assessment_meta_box() {
 			global $post;
 			$post_id = LP_Request::get_int( 'post' );
-			$post_id = $post_id ? $post_id : (! empty( $post ) ? $post->ID : 0);
+			$post_id = $post_id ? $post_id : ( ! empty( $post ) ? $post->ID : 0 );
 
 			$prefix             = '_lp_';
 			$course_result_desc = '';
@@ -476,7 +476,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$quiz_passing_condition_html = '';
 
-			if($course        = learn_press_get_course( $post_id )) {
+			if ( $course = learn_press_get_course( $post_id ) ) {
 				$passing_grade = '';
 
 				if ( $final_quiz = $course->get_final_quiz() ) {
@@ -979,7 +979,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
-			$user                  = LP()->user;
+			$user                  = learn_press_get_current_user();
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 

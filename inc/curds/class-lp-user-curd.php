@@ -630,6 +630,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$item = reset( $item );
 			}
 		}
+
 		return $item;
 	}
 
@@ -914,14 +915,16 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( ! empty( $wp->query_vars['view_id'] ) ) {
 			$paged = absint( $wp->query_vars['view_id'] );
 		}
-		$paged = max( $paged, 1 );
 		$args  = wp_parse_args(
-			$args, array(
-				'paged'  => $paged,
+			$args,
+			array(
+				'paged'  => 1,
 				'limit'  => 10,
 				'status' => ''
 			)
 		);
+
+		$args['paged'] = max( $args['paged'], 1 );
 
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
@@ -954,7 +957,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 
 				$valid_orders = array_keys( $orders );
-
 				$course_ids   = array_keys( $orders );
 				$query_args   = $course_ids;
 				$query_args[] = $user_id;

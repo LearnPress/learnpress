@@ -239,6 +239,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return $prop && $results && array_key_exists( $prop, $results ) ? $results[ $prop ] : $results;
 	}
 
+	public function is_passed(){
+		return $this->get_results('grade') == 'passed';
+	}
+
 	public function get_percent_result( $decimal = 1 ) {
 		return apply_filters( 'learn-press/user/course-percent-result', sprintf( '%s%%', round( $this->get_results( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
 	}

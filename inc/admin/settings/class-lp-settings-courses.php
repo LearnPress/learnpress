@@ -8,8 +8,9 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	 * LP_Settings_Courses constructor.
 	 */
 	public function __construct() {
-		$this->id   = 'courses';
-		$this->text = __( 'Courses', 'learnpress' );
+		$this->id       = 'courses';
+		$this->text     = __( 'Courses', 'learnpress' );
+		$this->priority = 20;
 
 		parent::__construct();
 	}

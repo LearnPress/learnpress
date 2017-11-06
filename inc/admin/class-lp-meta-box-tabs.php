@@ -122,14 +122,14 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 		}
 
 		/**
-		 * @return mixed|string|void
+		 * @return array
 		 */
 		public function get_tabs() {
 			$tabs       = $this->opt( 'tabs' );
 			$post_types = $this->opt( 'post_type' );
 			if ( is_array( $post_types ) ) {
 				foreach ( $post_types as $post_type ) {
-					$tabs = apply_filters( "learn_press_{$post_type}_tabs", $tabs );
+					$tabs = apply_filters( "learn-press/{$post_type}/tabs", $tabs );
 				}
 			}
 			return $tabs;

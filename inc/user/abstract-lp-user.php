@@ -2028,7 +2028,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			return $count;
 		}
 
-		if($user_course = $this->get_course_data($course_id)){
+		if ( $user_course = $this->get_course_data( $course_id ) ) {
 			$count = $user_course->get_retaken_count();
 		}
 
@@ -2915,9 +2915,14 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * @param array $args
 	 *
-	 * @return mixed
+	 * @return LP_Query_List_Table
 	 */
 	public function get_purchased_courses( $args = array() ) {
+
+
+		return $this->_curd->query_purchased_courses( $this->get_id(), $args );
+
+
 		global $wpdb;
 		static $courses = array();
 		$args = wp_parse_args(
@@ -2935,9 +2940,10 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( empty( $courses[ $key ] ) ) {
 			$limit = "\n";
 			if ( $args['limit'] > 0 ) {
-				if ( ! $args['paged'] ) {
+				if ( 1 > $args['paged'] ) {
 					$args['paged'] = 1;
 				}
+				print_r($args);die();
 				$start = ( $args['paged'] - 1 ) * $args['limit'];
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}

@@ -174,4 +174,18 @@ class LP_Helper {
 
 		return $merged;
 	}
+
+	public static function json_encode( $data ) {
+		$data = wp_json_encode( $data );
+		$data = preg_replace_callback( '~:"([0-9.,]+|true|false)"~', array(
+			__CLASS__,
+			'_valid_json_value'
+		), $data );
+
+		return $data;
+	}
+
+	public static function _valid_json_value( $m ) {
+		return str_replace( array( ':"', '"' ), array( ':', '' ), $m[0] );
+	}
 }
