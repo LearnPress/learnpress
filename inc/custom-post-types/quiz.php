@@ -110,21 +110,15 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @param $post_id
 		 */
 		public function delete_quiz_questions( $post_id ) {
-			global $wpdb;
-			$query = $wpdb->prepare( "
-				DELETE FROM {$wpdb->prefix}learnpress_quiz_questions
-				WHERE quiz_id = %d
-			", $post_id );
-			$wpdb->query( $query );
-			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
+			//curd
+			$course_curd = new LP_Course_CURD();
+			$quiz_curd   = new LP_Quiz_CURD();
 
-			// delete quiz from course's section
-			$query = $wpdb->prepare( "
-				DELETE FROM {$wpdb->prefix}learnpress_section_items
-				WHERE item_id = %d
-			", $post_id );
-			$wpdb->query( $query );
-			learn_press_reset_auto_increment( 'learnpress_section_items' );
+			// remove questions from quiz
+			$quiz_curd->remove_question( $post_id, true );
+
+			// remove quiz from course
+			$course_curd->remove_item_from_course( $post_id );
 		}
 
 		/**
@@ -597,6 +591,15 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
+		 * Quiz assigned view.
+         *
+         * @since 3.0.0
+		 */
+		public static function quiz_assigned() {
+			learn_press_admin_view( 'meta-boxes/course/assigned.php' );
+		}
+
+		/**
 		 * @return LP_Quiz_Post_Type|null
 		 */
 		public static function instance() {
@@ -609,5 +612,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 	}
 
+	// LP_Quiz_Post_Type
 	$quiz_post_type = LP_Quiz_Post_Type::instance();
+
+	// add meta box
+	$quiz_post_type
+		->add_meta_box( 'lesson_assigned', __( 'Assigned', 'learnpress' ), 'quiz_assigned', 'side', 'high' );
 }

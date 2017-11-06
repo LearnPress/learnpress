@@ -32,7 +32,7 @@ class LP_Lesson extends LP_Course_Item {
 	/**
 	 * LP_Lesson constructor.
 	 *
-	 * @param int          $lesson
+	 * @param int $lesson
 	 * @param array|string $args
 	 */
 	public function __construct( $lesson, $args = '' ) {
@@ -63,7 +63,7 @@ class LP_Lesson extends LP_Course_Item {
 	}
 
 	/**
-	 * @param bool  $the_lesson
+	 * @param bool $the_lesson
 	 * @param array $args
 	 *
 	 * @return LP_Lesson|bool
@@ -105,6 +105,23 @@ class LP_Lesson extends LP_Course_Item {
 	}
 
 	/**
+	 * Set default data for lesson.
+	 *
+	 * @param $id
+	 */
+	public static function set_default_meta( $id ) {
+		$meta = apply_filters( 'learn_press/lesson/default_meta',
+			array(
+				'_lp_duration' => 10,
+				'_lp_preview'  => 'no'
+			)
+		);
+		foreach ( $meta as $key => $value ) {
+			update_post_meta( $id, $key, $value );
+		}
+	}
+
+	/**
 	 * @param  string $lesson_type
 	 *
 	 * @return string|false
@@ -117,7 +134,7 @@ class LP_Lesson extends LP_Course_Item {
 	 * Get the lesson class name
 	 *
 	 * @param  WP_Post $the_lesson
-	 * @param  array   $args (default: array())
+	 * @param  array $args (default: array())
 	 *
 	 * @return string
 	 */

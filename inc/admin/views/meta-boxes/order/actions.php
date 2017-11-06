@@ -1,11 +1,23 @@
 <?php
+/**
+ * Admin View: Order actions Meta box
+ */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 global $post, $action;
 $post_type        = $post->post_type;
 $post_type_object = get_post_type_object( $post_type );
 $can_publish      = current_user_can( $post_type_object->cap->publish_posts );
-$is_multiple      =
+$datef            = __( 'M j, Y @ H:i' );
+?>
 
-$datef = __( 'M j, Y @ H:i' );
+<?php
 if ( 0 != $post->ID ) {
 	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
 		$stamp = __( 'Scheduled for: <b>%1$s</b>' );
@@ -23,8 +35,8 @@ if ( 0 != $post->ID ) {
 	$stamp = __( 'Publish <b>immediately</b>' );
 	$date  = date_i18n( $datef, strtotime( current_time( 'mysql' ) ) );
 }
-
 ?>
+
 <div class="submitbox" id="submitpost">
     <div id="minor-publishing">
         <div id="misc-publishing-actions">
@@ -32,9 +44,12 @@ if ( 0 != $post->ID ) {
                 <select name="trigger-order-action">
                     <option value=""><?php _e( 'Actions', 'learnpress' ); ?></option>
                     <option value="current-status"><?php _e( 'Trigger action of current order status', 'learnpress' ); ?></option>
-<!--                    <option value="resend-new-order-email">--><?php //_e( 'Resend new order email', 'learnpress' ); ?><!--</option>-->
-<!--                    <option value="resend-completed-order-email">--><?php //_e( 'Resend completed order email', 'learnpress' ); ?><!--</option>-->
-<!--                    <option value="resend-cancelled-order-email">--><?php //_e( 'Resend cancelled order email', 'learnpress' ); ?><!--</option>-->
+                    <!--                    <option value="resend-new-order-email">-->
+					<?php //_e( 'Resend new order email', 'learnpress' ); ?><!--</option>-->
+                    <!--                    <option value="resend-completed-order-email">-->
+					<?php //_e( 'Resend completed order email', 'learnpress' ); ?><!--</option>-->
+                    <!--                    <option value="resend-cancelled-order-email">-->
+					<?php //_e( 'Resend cancelled order email', 'learnpress' ); ?><!--</option>-->
                 </select>
             </div>
 			<?php if ( $can_publish ) : // Contributors don't get to choose the date of publish ?>
@@ -123,9 +138,10 @@ if ( 0 != $post->ID ) {
 						$delete_text = __( 'Move to Trash' );
 					}
 					?>
-                    <a class="submitdelete deletion"
-                       href="<?php echo get_delete_post_link( $post->ID ); ?>"><?php echo $delete_text; ?></a><?php
-				} ?>
+                    <a class="submitdelete deletion" href="<?php echo get_delete_post_link( $post->ID ); ?>">
+						<?php echo $delete_text; ?>
+                    </a>
+				<?php } ?>
             </div>
 
             <div id="publishing-action">

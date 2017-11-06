@@ -267,6 +267,53 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
+		 * Remove lesson, quiz from course.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $item_id
+		 */
+		public function remove_item_from_course( $item_id ) {
+
+			global $wpdb;
+
+			// delete item from course's section
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_section_items
+				WHERE item_id = %d
+			", $item_id );
+
+			$wpdb->query( $query );
+
+			learn_press_reset_auto_increment( 'learnpress_section_items' );
+		}
+
+		/**
+		 * Remove all course data from database, includes section and course's items
+		 *
+		 * @param $course_id
+		 */
+		public function remove_course( $course_id ) {
+			global $wpdb;
+
+			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $course_id ) );
+			if ( $section_ids ) {
+				$wpdb->query(
+					$wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $section_ids ) . ")", 1 )
+				);
+				learn_press_reset_auto_increment( 'learnpress_section_items' );
+			}
+
+			// delete all sections
+			$query = $wpdb->prepare( "
+					DELETE FROM {$wpdb->prefix}learnpress_sections
+					WHERE section_course_id = %d
+					", $course_id );
+			$wpdb->query( $query );
+			learn_press_reset_auto_increment( 'learnpress_sections' );
+		}
+
+		/**
 		 * Get recent courses.
 		 *
 		 * @param array $args
@@ -332,8 +379,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		public function get_popular_courses( $args = array() ) {
 			global $wpdb;
 
-			$limit    = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
-			$order    = ! empty( $args['order'] ) ? $args['order'] : 'DESC';
+			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
+			$order = ! empty( $args['order'] ) ? $args['order'] : 'DESC';
 
 			$query = apply_filters( 'learn-press/course-curd/query-popular-courses',
 				$wpdb->prepare(

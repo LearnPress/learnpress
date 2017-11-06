@@ -350,6 +350,8 @@ class LP_Question_CURD implements LP_Interface_CURD {
 
 		$result = $wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
 
+		learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
+
 		return $result;
 	}
 

@@ -400,34 +400,45 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 		}
 
 		global $wpdb;
-		$id       = $the_quiz->get_id();
-		$args     = wp_parse_args( $args, array( 'delete_permanently' => false ) );
-		$is_multi = is_array( $question_id );
+		$id         = $the_quiz->get_id();
+		$args       = wp_parse_args( $args, array( 'delete_permanently' => false ) );
+		$is_multi   = is_array( $question_id );
+		$remove_all = $question_id === true ? true : false;
+		$results    = array();
 
-		$ids = $question_id;
-		settype( $ids, 'array' );
-		$results = array();
-		$deleted = '';
+		if ( ! $remove_all ) {
+			$ids = $question_id;
+			settype( $ids, 'array' );
+			$deleted = '';
 
-		foreach ( $ids as $question_id ) {
-			do_action( 'learn-press/delete-quiz-question', $question_id, $id );
+			foreach ( $ids as $question_id ) {
+				do_action( 'learn-press/delete-quiz-question', $question_id, $id );
+				$deleted = $wpdb->delete(
+					$wpdb->prefix . 'learnpress_quiz_questions',
+					array(
+						'quiz_id'     => $id,
+						'question_id' => $question_id
+					),
+					array( '%d', '%d' )
+				);
+				$this->reorder_questions( $the_quiz );
+				do_action( 'learn-press/deleted-quiz-question', $question_id, $id, $deleted );
+				if ( $deleted && $args['delete_permanently'] ) {
+					LP_Question_Factory::delete_question( $question_id, $id );
+				}
+				$results[ $question_id ] = $deleted;
+			}
+		} else {
 			$deleted = $wpdb->delete(
 				$wpdb->prefix . 'learnpress_quiz_questions',
-				array(
-					'quiz_id'     => $id,
-					'question_id' => $question_id
-				),
-				array( '%d', '%d' )
+				array( 'quiz_id' => $id ),
+				array( '%d' )
 			);
-			$this->reorder_questions( $the_quiz );
-			do_action( 'learn-press/deleted-quiz-question', $question_id, $id, $deleted );
-			if ( $deleted && $args['delete_permanently'] ) {
-				LP_Question_Factory::delete_question( $question_id, $id );
-			}
-			$results[ $question_id ] = $deleted;
 		}
 
-		return $is_multi ? $results : $deleted;
+		learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
+
+		return $remove_all ? $deleted : ( $is_multi ? $results : $deleted );
 	}
 
 	/**
