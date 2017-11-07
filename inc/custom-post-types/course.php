@@ -34,7 +34,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 //				->add_map_method( 'save', 'before_save_curriculum', false )
 				->add_map_method( 'before_delete', 'delete_course_sections' );
 
-			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
+			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 20, 3 );
 
 			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 0 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
@@ -939,16 +939,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if(!is_user_logged_in()){
 				return;
 			}
-			# add reset to log
-			if( learn_press_debug_enable() ) {
-				$current_user 	= learn_press_get_current_user();
-				$time 			= current_time('mysql');
-				$request 		= print_r($_REQUEST, true);
-				$new_log 		= "\nUser:{$current_user->user->user_login}\nTime:{$time}\nRequest:{$request}\n - - - - - - - - - - - - - - \n";
-				$log = get_post_meta($post->ID, 'learn-press-reset-sections', true);
-				$log = $new_log.$log;
-				update_post_meta( $post->ID, 'learn-press-reset-sections', $log );
-			}
+
 			# end add log
 			$wpdb->query(
 				$wpdb->prepare( "
@@ -1188,21 +1179,28 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
-		public function before_save_curriculum() {
+		public function before_save_curriculum( $post_id = null, $current_post = null, $update = null ) {
 
 			global $post, $pagenow;
+
 
 			// Ensure that we are editing course in admin side
 			
 			if ( ( $pagenow != 'post.php' ) || ( get_post_type() != LP_COURSE_CPT ) ) {
 				return;
 			}
+			
+			if( LP_COURSE_CPT !== $current_post->post_type ){
+				return;
+			}
+
+			
 			$preview = filter_input( INPUT_POST, 'wp-preview', FILTER_SANITIZE_STRING );
 
 			if( 'dopreview' == $preview ) {
 				return;
 			}
-
+			
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
