@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit();
 
-if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
+if ( ! class_exists( 'LP_Meta_Box_Tabs' ) ) {
 	/**
 	 * Class LP_Meta_Box_Tabs
 	 *
@@ -48,10 +48,11 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 		 * @return string
 		 */
 		public function add_tab_arg( $url ) {
-			if ( array_key_exists( 'learn-press-meta-box-tab', $_REQUEST ) && !empty( $_REQUEST['learn-press-meta-box-tab'] ) ) {
-				$url = remove_query_arg('tab', $url	);
+			if ( array_key_exists( 'learn-press-meta-box-tab', $_REQUEST ) && ! empty( $_REQUEST['learn-press-meta-box-tab'] ) ) {
+				$url = remove_query_arg( 'tab', $url );
 				$url = add_query_arg( 'tab', $_REQUEST['learn-press-meta-box-tab'], $url );
 			}
+
 			return $url;
 		}
 
@@ -59,8 +60,8 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 		 * Display tabs
 		 */
 		public function display() {
-			if ( !empty( $this->args['post_type'] ) ) {
-				if ( !is_array( $this->args['post_type'] ) ) {
+			if ( ! empty( $this->args['post_type'] ) ) {
+				if ( ! is_array( $this->args['post_type'] ) ) {
 					$this->args['post_type'] = preg_split( '!\s+!', $this->args['post_type'] );
 				}
 			}
@@ -69,15 +70,15 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 				return;
 			}
 
-			if ( !in_array( get_post_type(), $this->args['post_type'] ) ) {
+			if ( ! in_array( get_post_type(), $this->args['post_type'] ) ) {
 				return;
 			}
 			include learn_press_get_admin_view( 'meta-boxes/tabs' );
 		}
 
 		public function add_meta_boxes() {
-			if ( !empty( $this->args['post_type'] ) ) {
-				if ( !is_array( $this->args['post_type'] ) ) {
+			if ( ! empty( $this->args['post_type'] ) ) {
+				if ( ! is_array( $this->args['post_type'] ) ) {
 					$this->args['post_type'] = preg_split( '!\s+!', $this->args['post_type'] );
 				}
 			}
@@ -105,7 +106,7 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 		 * @return string
 		 */
 		public function opt( $name ) {
-			return array_key_exists( $name, $this->args ) ? $this->args[$name] : '';
+			return array_key_exists( $name, $this->args ) ? $this->args[ $name ] : '';
 		}
 
 		public function show() {
@@ -118,6 +119,7 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 		 */
 		public function postbox_classes( $classes ) {
 			$classes[] = 'lp-meta-box-tabs';
+
 			return array_filter( $classes );
 		}
 
@@ -127,11 +129,16 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 		public function get_tabs() {
 			$tabs       = $this->opt( 'tabs' );
 			$post_types = $this->opt( 'post_type' );
+
 			if ( is_array( $post_types ) ) {
 				foreach ( $post_types as $post_type ) {
 					$tabs = apply_filters( "learn-press/{$post_type}/tabs", $tabs );
+
+					// @deprecated
+					$tabs = apply_filters( "learn_press_{$post_type}_tabs", $tabs );
 				}
 			}
+
 			return $tabs;
 		}
 	}

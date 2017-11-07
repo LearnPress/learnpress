@@ -16,6 +16,7 @@ class RWMB_Checkbox_List_Field extends RWMB_Input_List_Field {
 	 * @return array
 	 */
 	public static function normalize( $field ) {
+
 		$field['multiple'] = true;
 		$field = parent::normalize( $field );
 

@@ -68,6 +68,19 @@
             width: auto;
         }
     }
+
+    .rwmb-google-fonts-wrapper {
+        .rwmb-input {
+            label {
+                font-weight: bold;
+                display: block;
+                margin-bottom: 5px;
+            }
+            input{
+                width: 90%;
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 1280px) {
