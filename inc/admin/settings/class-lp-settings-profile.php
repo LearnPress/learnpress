@@ -18,8 +18,9 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->id   = 'profile';
-		$this->text = __( 'Profile', 'learnpress' );
+		$this->id       = 'profile';
+		$this->text     = __( 'Profile', 'learnpress' );
+		$this->priority = 30;
 
 		parent::__construct();
 	}

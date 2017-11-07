@@ -24,8 +24,9 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->id   = 'payments';
-		$this->text = __( 'Payments', 'learnpress' );
+		$this->id       = 'payments';
+		$this->text     = __( 'Payments', 'learnpress' );
+		$this->priority = 40;
 
 		parent::__construct();
 
@@ -93,20 +94,20 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					array(
 						array(
 							'title'   => __( 'Checkout page', 'learnpress' ),
-							'id' => 'checkout_page_id',
+							'id'      => 'checkout_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown'
 						),
 						array(
 							'title'   => __( 'Auto enroll', 'learnpress' ),
-							'id' => 'auto_enroll',
+							'id'      => 'auto_enroll',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Auto enroll a user after they buying a course.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Enable guest checkout', 'learnpress' ),
-							'id' => 'guest_checkout',
+							'id'      => 'guest_checkout',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Auto enroll a user after they buying a course.', 'learnpress' )
@@ -123,7 +124,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Order received', 'learnpress' ),
-							'id' => 'checkout_endpoints[order_received]',
+							'id'      => 'checkout_endpoints[order_received]',
 							'default' => '',
 							'type'    => 'text'
 						)
@@ -138,7 +139,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					),
 					array(
 						'title'   => __( 'Payment order', 'learnpress' ),
-						'id' => 'payment_order',
+						'id'      => 'payment_order',
 						'default' => '',
 						'type'    => 'payment-order'
 					)
