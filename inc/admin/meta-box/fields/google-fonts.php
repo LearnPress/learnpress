@@ -27,17 +27,25 @@ if ( ! class_exists( 'RWMB_Google_Fonts_Field' ) ) {
 				array( 'families' => '', 'subsets' => '' )
 			);
 			ob_start();
-			echo '<p>' . __( 'Fonts', 'learnpress' ) . '</p>';
+			echo '<label>' . __( 'Fonts', 'learnpress' ) . '</label>';
 			printf(
 				'<input type="text" class="rwmb-google-fonts" name="%s[families]" value="%s">',
 				$field['id'],
 				$meta['families']
 			);
-			echo '<p>' . __( 'Subset', 'learnpress' ) . '</p>';
+			printf(
+				'<p class="description">%s</p>',
+				__( 'Font families separated by |, eg: Open Sans|Roboto.', 'learnpress' )
+			);
+			echo '<label>' . __( 'Subset', 'learnpress' ) . '</label>';
 			printf(
 				'<input type="text" class="rwmb-google-fonts" name="%s[subsets]" value="%s">',
 				$field['id'],
 				$meta['subsets']
+			);
+			printf(
+				'<p class="description">%s</p>',
+				__( 'Font subsets separated by comma, eg: greek,latin.', 'learnpress' )
 			);
 
 			return ob_get_clean();

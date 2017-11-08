@@ -1,5 +1,5 @@
 <?php
-if(!class_exists('LP_Meta_Box_Helper')) {
+if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 	/**
 	 * Class LP_Meta_Box_Helper
 	 */
@@ -40,7 +40,7 @@ if(!class_exists('LP_Meta_Box_Helper')) {
 
 			$fields = RW_Meta_Box::normalize_fields( array( $field ) );
 			$field  = $fields[0];
-			if ( self::include_field( $field ) ) {
+			if ( $class_name = self::include_field( $field ) ) {
 				self::parse_conditional_logic( $field );
 
 				$field_name = '';
@@ -60,12 +60,19 @@ if(!class_exists('LP_Meta_Box_Helper')) {
 				}
 
 				$field['name']       = apply_filters( 'learn-press/meta-box/field-name', $field_name, $field );
-				$field['field_name'] = apply_filters( 'learn-press/meta-box/field-field_name', $field['id'], $field );
+				//$field['field_name'] = apply_filters( 'learn-press/meta-box/field-field_name', $field['id'], $field );
 				$field['id']         = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
+
 				//$field['value']      = md5( $field['std'] );
+
+				//call_user_func( array( $class_name, 'admin_enqueue_scripts' ), $field );
+				//call_user_func( array( $class_name, 'show' ), $field, true, 0 );
+				//call_user_func( array( $class_name, 'add_actions' ), $field );
 				RWMB_Field::call( 'admin_enqueue_scripts', $field );
 				RWMB_Field::call( 'show', $field, true, 0 );
-				RWMB_Field::call( $field, 'add_actions' );
+				RWMB_Field::call( 'add_actions', $field );
+
+				///RWMB_Field::call( $field, 'add_actions' );
 			}
 		}
 
@@ -149,7 +156,7 @@ if(!class_exists('LP_Meta_Box_Helper')) {
 				$class = self::$types[ $type ];
 			}
 
-			return class_exists( $class );
+			return class_exists( $class ) ? $class : false;
 		}
 
 		/**
