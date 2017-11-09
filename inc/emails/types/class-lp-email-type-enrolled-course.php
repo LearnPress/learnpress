@@ -43,8 +43,9 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 			)
 		);
 
-		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'get_users_to_send' ), 99, 3 );
-		add_action( 'learn-press/user-enrolled-course', array( $this, 'trigger' ), 99, 3 );
+		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
+		add_action( 'learn-press/user-enrolled-course/notification', array( $this, 'trigger' ), 99, 3 );
+
 	}
 
 	public function get_object( $object_id = '', $more = '' ) {

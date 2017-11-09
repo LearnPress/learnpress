@@ -2,7 +2,7 @@
 /**
  * Base class of LearnPress emails and helper functions.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Emails
  * @version  3.0.0
  */
@@ -24,8 +24,17 @@ class LP_Emails {
 	 */
 	public $emails = array();
 
-	/** @var LP_Emails The single instance of the class */
+	/**
+	 * The single instance of the class
+	 *
+	 * @var LP_Emails
+	 */
 	protected static $_instance = null;
+
+	/**
+	 * @var LP_Background_Process_Emailer
+	 */
+	protected static $_background_emailer = null;
 
 	/**
 	 * @var LP_Email
@@ -39,6 +48,7 @@ class LP_Emails {
 	 *
 	 * @since 1.0
 	 * @static
+	 *
 	 * @return LP_Emails instance
 	 */
 	public static function instance() {
@@ -65,7 +75,7 @@ class LP_Emails {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'learnpress' ), '1.0' );
 	}
 
-	public function __construct() {
+	protected function __construct() {
 		if ( did_action( 'learn-press/emails-init' ) ) {
 			return;
 		}
@@ -137,7 +147,7 @@ class LP_Emails {
 	 * Email header.
 	 *
 	 * @param string $heading
-	 * @param bool $echo
+	 * @param bool   $echo
 	 *
 	 * @return string
 	 */
@@ -156,7 +166,7 @@ class LP_Emails {
 	 * Email footer.
 	 *
 	 * @param string $footer_text
-	 * @param bool $echo
+	 * @param bool   $echo
 	 *
 	 * @return string
 	 */
@@ -174,14 +184,12 @@ class LP_Emails {
 	/**
 	 * Trigger some actions for sending email.
 	 *
-	 * @return null
+	 * @param string $hook
+	 * @param mixed  $args
 	 */
-	public static function send_email() {
+	public static function send_email( $hook, $args ) {
 		self::instance();
-		$args = func_get_args();
-		do_action_ref_array( current_filter() . '/notification', $args );
-
-		return isset( $args[0] ) ? $args[0] : null;
+		do_action_ref_array( $hook . '/notification', $args );
 	}
 
 	/**
@@ -250,45 +258,35 @@ class LP_Emails {
 				'learn_press_course_submit_for_reviewer',
 				'learn_press_user_enrolled_course',
 
-				// new order to admin
-				//'learn_press_order_status_pending_to_processing',
+				// New order
 				'learn-press/order/status-pending-to-processing',
-				//'learn_press_order_status_pending_to_completed',
-
 				'learn-press/order/status-pending-to-completed',
-				//'learn_press_order_status_pending_to_on-hold',
 
-				'learn_press_order_status_pending_to_on-hold',
-				//'learn_press_order_status_failed_to_processing',
-
-				'learn-press/order/status-failed-to-processing',
-				//'learn_press_order_status_failed_to_completed',
-
-				'learn-press/order/status-failed-to-completed',
-				//'learn_press_order_status_failed_to_on-hold',
-				'learn_press_order_status_failed_to_on-hold',
-
-				//'learn_press_order_status_completed',
+				// Completed order
 				'learn-press/order/status-completed',
 
-				// admin create new order
-				//'learn_press_order_status_draft_to_pending',
+				// Cancelled order
+				'learn-press/order/status-cancelled',
 
-				'learn-press/order/status-draft-to-pending',
-				//'learn_press_order_status_draft_to_processing',
-				'learn-press/order/status-draft-to-processing',
+				// User become an teacher
+				'set_user_role',
 
-				//'learn_press_order_status_draft_to_on-hold',
-				'learn_press_order_status_draft_to_on-hold',
+				// User enrolled course
+				'learn-press/user-enrolled-course',
+
+				// User finished course
+				'learn-press/user-course-finished'
+
 				// Create order
-				'learn_press_checkout_success_result',
-				'learn_press_user_finish_course',
-				// user become an teacher
-				'set_user_role'
+				//'learn_press_checkout_success_result',
+				//'learn_press_user_finish_course',
 			)
 		);
+
+		self::$_background_emailer = new LP_Background_Process_Emailer();
+
 		foreach ( $actions as $action ) {
-			add_action( $action, array( __CLASS__, 'send_email' ), 10, 10 );
+			add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );
 		}
 	}
 
@@ -320,9 +318,19 @@ class LP_Emails {
 		return ! empty( $emails[ $id ] ) ? self::instance()->emails[ $emails[ $id ] ] : false;
 	}
 
-	/* public static function send_email() {
-	  self::instance();
-	  $args = func_get_args();
-	  do_action_ref_array( current_filter() . '_notification', $args );
-	  } */
+	public static function queue_email() {
+		self::$_background_emailer->push_to_queue(
+			array(
+				'filter' => current_filter(),
+				'args'   => func_get_args(),
+			)
+		);
+	}
+
+
+//	public static function send_email() {
+//		self::instance();
+//		$args = func_get_args();
+//		do_action_ref_array( current_filter() . '_notification', $args );
+//	}
 }

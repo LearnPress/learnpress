@@ -37,7 +37,6 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 //			add_action( 'learn_press_order_status_draft_to_processing_notification', array( $this, 'trigger' ) );
 //			add_action( 'learn_press_order_status_draft_to_on-hold_notification', array( $this, 'trigger' ) );
 
-			add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 
 			parent::__construct();
 		}
