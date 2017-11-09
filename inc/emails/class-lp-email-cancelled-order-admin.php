@@ -32,11 +32,6 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 
 			$this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
 
-			add_action( 'learn_press_order_status_pending_to_failed_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_processing_to_failed_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_completed_to_failed_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_on-hold_to_failed_notification', array( $this, 'trigger' ) );
-
 			parent::__construct();
 		}
 

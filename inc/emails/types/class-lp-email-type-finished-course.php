@@ -45,8 +45,8 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 			)
 		);
 
-		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'get_users_to_send' ), 99, 3 );
-		add_action( 'learn-press/user-course-finished', array( $this, 'trigger' ), 99, 3 );
+		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
+		add_action( 'learn-press/user-course-finished/notification', array( $this, 'trigger' ), 99, 3 );
 	}
 
 	public function get_object( $object_id = '', $more = '' ) {
@@ -58,7 +58,6 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 		if ( ! $user || ! $course_data ) {
 			return;
 		}
-		wp_cache_flush();
 
 		$this->object = $this->get_common_template_data(
 			$this->email_format,

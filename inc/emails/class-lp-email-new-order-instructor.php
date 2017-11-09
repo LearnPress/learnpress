@@ -30,10 +30,6 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 			$this->default_subject = __( 'New order placed on {{order_date}}', 'learnpress' );
 			$this->default_heading = __( 'New user order', 'learnpress' );
 
-			add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_draft_to_processing_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_draft_to_on-hold_notification', array( $this, 'trigger' ) );
-
 			parent::__construct();
 		}
 

@@ -379,30 +379,22 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-assets.php';
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
-
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-section-curd.php';
 			require_once 'inc/curds/class-lp-user-curd.php';
 			require_once 'inc/curds/class-lp-quiz-curd.php';
 			require_once 'inc/curds/class-lp-question-curd.php';
 			require_once 'inc/curds/class-lp-order-curd.php';
-
 			require_once 'inc/class-lp-debug.php';
 			require_once 'inc/class-lp-global.php';
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-
 			require_once 'inc/course/class-lp-course-item.php';
 			require_once 'inc/course/class-lp-course-section.php';
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
-
-
 			require_once 'inc/lp-deprecated.php';
 			require_once 'inc/class-lp-cache.php';
-
-			// include core functions
 			require_once 'inc/lp-core-functions.php';
-			// auto include file for class if class doesn't exists
 			require_once 'inc/class-lp-autoloader.php';
 			require_once 'inc/class-lp-install.php';
 			require_once 'inc/lp-webhooks.php';
@@ -426,22 +418,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/attributes/lp-attributes-functions.php';
 			}
 
-			// course
 			require_once 'inc/course/lp-course-functions.php';
 			require_once 'inc/course/abstract-course.php';
 			require_once 'inc/course/class-lp-course.php';
-
-			// quiz
 			require_once 'inc/quiz/lp-quiz-functions.php';
 			require_once 'inc/quiz/class-lp-quiz-factory.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
-
-			// lesson
 			require_once 'inc/lesson/lp-lesson-functions.php';
-			// question
-			//require_once 'inc/question/lp-question.php';
-
-			// order
 			require_once 'inc/order/lp-order-functions.php';
 			require_once 'inc/order/class-lp-order.php';
 
@@ -451,40 +434,25 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user/abstract-lp-user.php';
 			require_once 'inc/user/class-lp-user.php';
 			require_once 'inc/user/class-lp-profile.php';
-
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/user-item/class-lp-user-item-quiz.php';
-
-
-			// others
 			require_once 'inc/class-lp-session-handler.php';
 			require_once 'inc/admin/class-lp-email.php';
-			// assets
 
 			if ( is_admin() ) {
-
-				//Include pointers
 				require_once 'inc/admin/pointers/pointers.php';
 			} else {
-
-				// shortcodes
 				require_once 'inc/class-lp-shortcodes.php';
 			}
 
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );
 			require_once( 'inc/lp-template-hooks.php' );
-			// settings
-			//require_once 'inc/class-lp-settings.php';
-			// simple cart
 			require_once 'inc/cart/class-lp-cart.php';
 			require_once 'inc/cart/lp-cart-functions.php';
-			// payment gateways
 			require_once 'inc/gateways/class-lp-gateway-abstract.php';
 			require_once 'inc/gateways/class-lp-gateways.php';
-
-			//add ajax-action
 			require_once 'inc/admin/class-lp-admin-ajax.php';
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-ajax.php';
@@ -492,6 +460,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
 			require_once 'inc/class-lp-schedules.php';
+			require_once 'inc/class-lp-background-process-emailer.php';
 
 			// widgets
 			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses' ) );

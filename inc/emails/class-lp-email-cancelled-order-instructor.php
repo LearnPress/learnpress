@@ -27,11 +27,6 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
 			$this->default_subject = __( 'Order placed on {{order_date}} has been cancelled', 'learnpress' );
 			$this->default_heading = __( 'User order has been cancelled', 'learnpress' );
 
-			add_action( 'learn_press_order_status_pending_to_failed_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_processing_to_failed_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_completed_to_failed_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_on-hold_to_failed_notification', array( $this, 'trigger' ) );
-
 			parent::__construct();
 		}
 

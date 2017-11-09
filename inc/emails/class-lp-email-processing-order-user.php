@@ -29,12 +29,6 @@ if ( ! class_exists( 'LP_Email_Processing_Order_User' ) ) {
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
 			$this->default_heading = __( 'Thank you for your order.', 'learnpress' );
 
-			add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_draft_to_processing_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_draft_to_on-hold_notification', array( $this, 'trigger' ) );
-
-			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
-
 			parent::__construct();
 		}
 
