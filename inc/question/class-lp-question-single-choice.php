@@ -60,35 +60,6 @@ if ( ! class_exists( 'LP_Question_Single_Choice' ) ) {
 		}
 
 		/**
-		 * @param bool $answers
-		 *
-		 * @return array|bool
-		 */
-		public function get_default_answers( $answers = false ) {
-			if ( ! $answers ) {
-				$answers = array(
-					array(
-						'is_true' => 'yes',
-						'value'   => 'option_first',
-						'text'    => __( 'Option First', 'learnpress' )
-					),
-					array(
-						'is_true' => 'no',
-						'value'   => 'option_seconds',
-						'text'    => __( 'Option Seconds', 'learnpress' )
-					),
-					array(
-						'is_true' => 'no',
-						'value'   => 'option_third',
-						'text'    => __( 'Option Third', 'learnpress' )
-					)
-				);
-			}
-
-			return $answers;
-		}
-
-		/**
 		 * @param array $args
 		 *
 		 * @return string

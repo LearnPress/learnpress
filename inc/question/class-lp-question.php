@@ -400,6 +400,10 @@ class LP_Question extends LP_Course_Item {
 	 */
 	public function set_type( $type = '' ) {
 
+		echo '<pre>';
+		var_dump( $this->_question_type );
+		echo '</pre>';
+
 		if ( ! $type ) {
 			return false;
 		}
@@ -407,6 +411,11 @@ class LP_Question extends LP_Course_Item {
 		if ( ! learn_press_is_support_question_type( $type ) ) {
 			return false;
 		}
+
+		echo '<pre>';
+		var_dump( $type );
+		echo '</pre>';
+//		die();
 
 		// Change to new type and update meta value
 		$this->_question_type = $type;
@@ -459,6 +468,7 @@ class LP_Question extends LP_Course_Item {
 	 * @return string
 	 */
 	public function get_type() {
+//		var_dump($this->_question_type);
 		return $this->_question_type;
 	}
 
@@ -477,6 +487,7 @@ class LP_Question extends LP_Course_Item {
 
 
 	/**
+	 *
 	 * @param mixed $answers
 	 * @param LP_Question $q
 	 *
@@ -484,37 +495,51 @@ class LP_Question extends LP_Course_Item {
 	 */
 	public function _get_default_answers( $answers = false, $q = null ) {
 		if ( ! $answers && ( $q && $q->get_id() == $this->get_id() ) ) {
-			$answers = $this->get_default_answers( $answers );
+			$answers = $this->get_default_answers();
 		}
 
 		return $answers;
 	}
 
 	/**
-	 * @param bool $answers
+	 * Get default question answer.
+	 *
+	 * @return array
+	 */
+	public static function get_default_answer() {
+		$answer = array(
+			'text'    => __( 'New Option', 'learnpress' ),
+			'is_true' => false,
+			'order'   => '',
+			'value'   => learn_press_uniqid()
+		);
+
+		return $answer;
+	}
+
+	/**
+	 * Get default question list answers.
 	 *
 	 * @return array|bool
 	 */
-	public function get_default_answers( $answers = false ) {
-		if ( ! $answers ) {
-			$answers = array(
-				array(
-					'is_true' => 'yes',
-					'value'   => learn_press_uniqid(),
-					'text'    => __( 'First option', 'learnpress' )
-				),
-				array(
-					'is_true' => 'no',
-					'value'   => learn_press_uniqid(),
-					'text'    => __( 'Second option', 'learnpress' )
-				),
-				array(
-					'is_true' => 'no',
-					'value'   => learn_press_uniqid(),
-					'text'    => __( 'Third option', 'learnpress' )
-				)
-			);
-		}
+	public function get_default_answers() {
+		$answers = array(
+			array(
+				'is_true' => 'yes',
+				'value'   => learn_press_uniqid(),
+				'text'    => __( 'First option', 'learnpress' )
+			),
+			array(
+				'is_true' => 'no',
+				'value'   => learn_press_uniqid(),
+				'text'    => __( 'Second option', 'learnpress' )
+			),
+			array(
+				'is_true' => 'no',
+				'value'   => learn_press_uniqid(),
+				'text'    => __( 'Third option', 'learnpress' )
+			)
+		);
 
 		return $answers;
 	}
@@ -802,12 +827,12 @@ class LP_Question extends LP_Course_Item {
 	}
 
 	/**
-	 * Get heading columns for admin question option
+	 * Get heading columns for admin question answers.
 	 *
 	 * @return mixed
 	 */
-	public function get_admin_option_headings() {
-		$option_headings = array(
+	public function get_answer_headings() {
+		$answer_headings = array(
 			'sort'           => '',
 			'order'          => '',
 			'answer_text'    => __( 'Answer Text', 'learnpress' ),
@@ -815,7 +840,7 @@ class LP_Question extends LP_Course_Item {
 			'actions'        => ''
 		);
 
-		return apply_filters( 'learn-press/question/multi-choices/admin-option-headings', $option_headings, $this->get_id() );
+		return apply_filters( 'learn-press/question/default-admin-answer-headings', $answer_headings, $this->get_id() );
 	}
 
 	/**

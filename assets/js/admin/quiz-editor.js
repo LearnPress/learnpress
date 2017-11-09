@@ -296,8 +296,12 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             });
         },
         'REMOVE_QUESTION': function (state, item) {
+
             var questions = state.questions,
                 index = questions.indexOf(item);
+
+            console.log(questions);
+
 
             questions.splice(index, 1);
         },

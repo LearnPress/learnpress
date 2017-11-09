@@ -101,6 +101,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'get-question-data',
 				'update_curriculum',
 				'update_list_quiz_questions',
+				'update_question_item',
 				'modal-search-items',
 				'modal-search-users',
 				'add-items-to-order',
@@ -379,7 +380,190 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
-		 * Handle ajax update list quiz questions.
+		 * Handle ajax admin question editor.
+		 *
+		 * @since 3.0.0
+		 */
+		public static function update_question_item() {
+			check_ajax_referer( 'learnpress_admin_editor_question', 'nonce' );
+
+			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+
+			$id       = $args['id'];
+			$question = learn_press_get_question( $id );
+
+			if ( ! $question ) {
+				wp_send_json_error();
+			}
+
+			$curd             = new LP_Question_CURD();
+			$return           = array();
+			$result['status'] = false;
+
+			switch ( $args['type'] ) {
+
+				case 'change-question-type':
+
+					$type = ! empty( $args['question_type'] ) ? $args['question_type'] : false;
+
+					if ( ! $type ) {
+						break;
+					}
+
+					// change question type
+					$update = $curd->change_question_type( $question, $type );
+
+					if ( $update === 0 ) {
+						$result['message'] = __( '[Change question type] Fail: Question error', 'learnpress' );
+					} else if ( $update === false ) {
+						$result['message'] = __( '[Change question type] Fail: No update', 'learnpress' );
+					} else {
+                        $result = array(
+							'status'   => true,
+							'message'  => __( '[Change question type] Successful', 'learnpress' ),
+							'question' => self::get_question_data_to_quiz( $question->get_id() )
+						);
+					}
+
+					break;
+
+				case 'sort-answer' :
+					// answers order
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
+
+					if ( ! $order ) {
+						break;
+					}
+
+					// sort answers
+					$sort = $curd->sort_answers( $question, $order );
+
+					if ( $sort === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Sort answer]: Successful', 'learnpress' );
+					} else {
+						if ( $sort === 0 ) {
+							$result['message'] = __( '[Sort answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $sort === false ) {
+							$result['message'] = __( '[Sort answer] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
+				case 'update-answer-title':
+
+					// answers order
+					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
+					$answer = json_decode( wp_unslash( $answer ), true );
+
+					if ( ! $answer ) {
+						break;
+					}
+
+					// update answer title
+					$update = $curd->update_answer_title( $question, $answer );
+
+					if ( $update === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Update answer title]: Successful', 'learnpress' );
+					} else {
+						if ( $update === 0 ) {
+							$result['message'] = __( '[Update answer title] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $update === false ) {
+							$result['message'] = __( '[Update answer title] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
+					break;
+
+				case 'change-correct':
+					// correct answer
+					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
+					$correct = json_decode( wp_unslash( $correct ), true );
+
+					if ( ! $correct ) {
+						break;
+					}
+
+					// update correct answer
+					$update = $curd->change_correct_answer( $question, $correct );
+
+					if ( $update === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Update correct answer]: Successful', 'learnpress' );
+					} else {
+						if ( $update === 0 ) {
+							$result['message'] = __( '[Update correct answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $update === - 1 ) {
+							$result['message'] = __( '[Update correct answer] Fail: Question has not correct answer', 'learnpress' );
+						}
+						if ( $update === false ) {
+							$result['message'] = __( '[Update correct answer] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
+				case 'delete-answer' :
+					// answer id
+					$answer = ! empty( $args['answer_id'] ) ? $args['answer_id'] : false;
+
+					if ( ! $answer ) {
+						break;
+					}
+
+					// update correct answer
+					$delete = $curd->delete_answer( $question, $answer );
+
+					if ( $delete === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Delete answer]: Successful', 'learnpress' );
+					} else {
+						if ( $delete === 0 ) {
+							$result['message'] = __( '[Delete answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $delete === false ) {
+							$result['message'] = __( '[Delete answer] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
+				case 'new-answer' :
+
+					// add new answer
+					$new = $curd->new_answer( $question );
+
+					if ( $new === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Add new answer]: Successful', 'learnpress' );
+					} else {
+						if ( $new === 0 ) {
+							$result['message'] = __( '[Add new answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $new === false ) {
+							$result['message'] = __( '[Add new answer] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+			}
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( $result->get_error_message() );
+			}
+
+			wp_send_json_success( $result );
+		}
+
+		/**
+		 * Handle ajax admin quiz editor.
 		 *
 		 * @since 3.0.0
 		 */
@@ -636,7 +820,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$orders = json_decode( wp_unslash( $orders ), true );
 
-					$result = $quiz_curd->sort_question_answers( $orders );
+					$result = $question_curd->sort_answers( $orders );
 					break;
 
 				case 'update-correct-answer':
@@ -888,8 +1072,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -977,8 +1160,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1011,8 +1193,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1307,7 +1488,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */
@@ -1799,7 +1980,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 				// end trigger change user memorize question types
 				if ( 'auto-draft' === $question->post->post_status ) {
-					$question->answers = $question->get_default_answers( false );
+					$question->answers = $question->get_default_answers();
 				}
 				learn_press_send_json(
 					array(
@@ -2126,6 +2307,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			die();
 		}
+
 		public static function upload_user_avatar() {
 			$file       = $_FILES['lp-upload-avatar'];
 			$upload_dir = learn_press_user_profile_picture_upload_dir();

@@ -7,11 +7,6 @@ defined( 'ABSPATH' ) || exit();
 class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 	/**
-	 * @var mixed|null
-	 */
-	protected $tabs = null;
-
-	/**
 	 * LP_Submenu_Settings constructor.
 	 */
 	public function __construct() {
@@ -27,7 +22,6 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		 * To add new tab use hook learn-press/admin/settings-tabs-array
 		 */
 		$this->tabs = learn_press_settings_tabs_array();
-		$this->_sort_tabs();
 
 		$this->init_tab();
 
@@ -45,16 +39,6 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		add_filter( 'rwmb_field_meta', array( $this, 'field_meta' ), 10, 2 );
 
 		parent::__construct();
-	}
-
-	protected function _sort_tabs() {
-		if ( $this->tabs ) {
-			uasort( $this->tabs, array( $this, '_sort_tabs_callback' ) );
-		}
-	}
-
-	protected function _sort_tabs_callback( $a, $b ) {
-		return $a->priority > $b->priority;
 	}
 
 	public function field_meta( $meta, $field ) {

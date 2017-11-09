@@ -26,7 +26,7 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 		 *
 		 * @var string
 		 */
-		protected $_question_type = 'multi_choice';
+		public $_question_type = 'multi_choice';
 
 		/**
 		 * Construct
@@ -43,15 +43,6 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 		 */
 		public function admin_script() {
 			return;
-		}
-
-		/**
-		 * @param bool $answers
-		 *
-		 * @return array|bool
-		 */
-		public function get_default_answers( $answers = false ) {
-			return parent::get_default_answers( $answers );
 		}
 
 		/**

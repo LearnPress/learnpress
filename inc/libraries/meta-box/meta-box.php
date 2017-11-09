@@ -33,13 +33,9 @@ if ( defined( 'ABSPATH' ) && ! defined( 'RWMB_VER' ) ) {
 	$loader = new RWMB_Loader;
 	$loader->init();
 }
-
-$fields = glob( LP_PLUGIN_PATH . 'inc/admin/meta-boxes/*.php' );
-$fields = apply_filters( 'learn-press/meta-box/fields', $fields );
-
 // Field classes
-foreach ( $fields as $file ) {
+foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-boxes/*.php' ) as $file ) {
 	require_once $file;
 }
 
-do_action( 'learn-press/meta-box-loaded' );
+do_action('learn-press/meta-box-loaded');

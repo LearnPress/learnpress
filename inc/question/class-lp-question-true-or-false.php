@@ -99,21 +99,19 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 		 *
 		 * @return array|bool
 		 */
-		public function get_default_answers( $answers = false ) {
-			if ( ! $answers ) {
-				$answers = array(
-					array(
-						'is_true' => 'yes',
-						'value'   => 'true',
-						'text'    => __( 'True', 'learnpress' )
-					),
-					array(
-						'is_true' => 'no',
-						'value'   => 'false',
-						'text'    => __( 'False', 'learnpress' )
-					)
-				);
-			}
+		public function get_default_answers() {
+			$answers = array(
+				array(
+					'is_true' => 'yes',
+					'value'   => 'true',
+					'text'    => __( 'True', 'learnpress' )
+				),
+				array(
+					'is_true' => 'no',
+					'value'   => 'false',
+					'text'    => __( 'False', 'learnpress' )
+				)
+			);
 
 			return $answers;
 		}
