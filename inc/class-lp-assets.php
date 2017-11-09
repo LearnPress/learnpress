@@ -57,7 +57,8 @@ class LP_Assets extends LP_Abstract_Assets {
 			),
 			'profile-user' => array(
 				'processing'  => __( 'Processing', 'learnpress' ),
-				'redirecting' => __( 'Redirecting', 'learnpress' )
+				'redirecting' => __( 'Redirecting', 'learnpress' ),
+				'avatar_size' => learn_press_get_avatar_thumb_size()
 			),
 			'course'       => learn_press_single_course_args(),
 			'quiz'         => learn_press_single_quiz_args()

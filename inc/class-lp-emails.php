@@ -71,6 +71,9 @@ class LP_Emails {
 		}
 		include LP_PLUGIN_PATH . 'inc/emails/class-lp-email.php';
 		include LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-order.php';
+		include LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-enrolled-course.php';
+		include LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-finished-course.php';
+
 		// New order
 		$this->emails['LP_Email_New_Order_Admin']      = include( 'emails/class-lp-email-new-order-admin.php' );
 		$this->emails['LP_Email_New_Order_User']       = include( 'emails/class-lp-email-new-order-user.php' );

@@ -1756,7 +1756,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			if ( ! $this->can( 'finish-course', $course_id ) ) {
 				return false;
 			} else {
-
 				$user_course = $this->get_course_data( $course_id );
 				$end_time    = new LP_Datetime();
 
@@ -2546,8 +2545,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 				throw new Exception( __( 'Enroll course failed.', 'learnpress' ) );
 			}
 
-			$date = new LP_Datetime();
+			if ( ! $this->can_enroll_course( $course_id ) ) {
+				throw new Exception( __( 'Enroll course failed.', 'learnpress' ) );
+			}
 
+			$date = new LP_Datetime();
 			$data = array(
 				//'user_id'   => $order->get_user( 'id' ),
 				//'item_id'   => $course_id,
@@ -2559,8 +2561,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 				'start_time'     => $date->toSql(),
 				'start_time_gmt' => $date->toSql( false )
 			);
+			if ( $return = $this->_curd->update_user_item( $this->get_id(), $course_id, $data ) ) {
+				do_action( 'learn-press/user-enrolled-course', $course_id, $this->get_id(), $return );
+			}
 
-			return $this->_curd->update_user_item( $this->get_id(), $course_id, $data );
+			return $return;
 		}
 		catch ( Exception $ex ) {
 			return new WP_Error( 'ENROLL_ERROR', $ex->getMessage() );
@@ -2943,7 +2948,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 				if ( 1 > $args['paged'] ) {
 					$args['paged'] = 1;
 				}
-				print_r($args);die();
+				print_r( $args );
+				die();
 				$start = ( $args['paged'] - 1 ) * $args['limit'];
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}

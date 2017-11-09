@@ -1341,7 +1341,6 @@ add_action( 'init', 'learn_press_update_user_profile' );
  * Update user avatar
  */
 function learn_press_update_user_profile_avatar() {
-	return true;
 	$upload_dir = learn_press_user_profile_picture_upload_dir();
 	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
 		delete_user_meta( get_current_user_id(), '_lp_profile_picture' );
@@ -1388,12 +1387,11 @@ function learn_press_update_user_profile_avatar() {
 			@unlink( $path );
 		}
 	}
-	learn_press_add_message( __( 'Your avatar updated', 'learnpress' ) );
 
 	return true;
 }
 
-add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
+//add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
 
 /**
  * Update user basic information.

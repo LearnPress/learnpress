@@ -673,3 +673,7 @@ class LP_Factory {
 		return LP_Object_Data_CURD::get( 'order' );
 	}
 }
+
+//add_action('wp_redirect', function ($r){
+//	learn_press_debug(debug_backtrace());die();
+//});

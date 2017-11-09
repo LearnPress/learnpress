@@ -35,9 +35,6 @@ class LP_Request {
 			add_action( 'template_include', array( __CLASS__, 'process_request' ), 50 );
 		}
 
-		add_action( 'get_header', array( __CLASS__, 'clean_cache' ), 1000000 );
-		add_action( 'save_post', array( __CLASS__, 'clean_cache' ), 1000000 );
-
 		self::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
 
 		/**
@@ -59,8 +56,29 @@ class LP_Request {
 		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
 
 		add_action( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
-
 		add_action( 'init', array( 'LP_Forms_Handler', 'init' ) );
+		add_filter( 'learn-press/checkout-no-payment-result', array( __CLASS__, 'maybe_redirect_checkout' ), 10, 2 );
+		add_filter( 'learn-press/purchase-course-id', array( __CLASS__, 'maybe_enroll_course' ), 10, 2 );
+
+	}
+
+	public static function maybe_redirect_checkout( $result, $order_id ) {
+
+		if ( $course_id = get_transient( 'checkout_enroll_course_id' ) ) {
+			self::do_enroll( $course_id, $order_id, 'enroll-course' );
+			delete_transient( 'checkout_enroll_course_id' );
+			unset( $result['redirect'] );
+		}
+
+		return $result;
+	}
+
+	public static function maybe_enroll_course( $course_id, $action ) {
+		if ( 'enroll-course' === $action ) {
+			set_transient( 'checkout_enroll_course_id', $course_id );
+		}
+
+		return $course_id;
 	}
 
 	/**
@@ -73,7 +91,7 @@ class LP_Request {
 	 * @return bool
 	 */
 	public static function purchase_course( $course_id, $action ) {
-		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id );
+		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id, $action );
 		$course    = learn_press_get_course( $course_id );
 
 
@@ -87,11 +105,12 @@ class LP_Request {
 		$order         = $user->get_course_order( $course_id );
 		$add_to_cart   = false;
 		$enroll_course = false;
+
 		try {
 			/**
 			 * If there is no order of user related to course.
 			 */
-			if ( ! $order ) {
+			if ( ! $order || $order->has_invalid_status() ) {
 				$add_to_cart = true;
 			} else {
 
@@ -281,19 +300,6 @@ class LP_Request {
 		}
 
 		return $url;
-	}
-
-	public static function clean_cache() {
-		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) == 'post' ) {
-			add_filter( 'wp_redirect', array( __CLASS__, 'redirect' ) );
-			LP_Cache::flush();
-		}
-	}
-
-	public static function redirect( $url ) {
-		remove_filter( 'wp_redirect', array( __CLASS__, 'redirect' ) );
-
-		return add_query_arg( 'lp-reload', 'yes', $url );
 	}
 
 	public static function get_header() {
