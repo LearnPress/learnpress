@@ -1,5 +1,14 @@
 <?php
+/**
+ * Todo: update emails
+ */
 
+
+/**
+ * Class LP_Update_30
+ *
+ * Helper class for updating database to 3.0.0
+ */
 class LP_Update_30 {
 	public static function update() {
 		self::add_column_user_items();

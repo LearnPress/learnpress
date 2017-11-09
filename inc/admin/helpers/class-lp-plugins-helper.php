@@ -24,7 +24,8 @@ class LP_Plugins_Helper {
 	);
 
 	public static function require_plugins_api() {
-		if ( ! function_exists( 'plugins_api' ) ) {
+		global $pagenow;
+		if ( ! function_exists( 'plugins_api' ) && 'plugin-install.php' !== $pagenow ) {
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
 		}
 	}

@@ -123,6 +123,10 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 			return;
 		}
 
+		if ( ! $course_data->get_item_at( 0 ) ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/buttons/continue.php' );
 	}
 }

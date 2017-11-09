@@ -198,6 +198,8 @@
                         left: nl
                     });
                     $(document.body).addClass('profile-resizing');
+
+                    console.log(ui.value, data)
                 },
                 stop: function () {
                     $(document.body).removeClass('profile-resizing');
@@ -306,9 +308,9 @@
             });
         }
         var args = {};
-        if (typeof LP_Settings !== 'undefined') {
-            args.viewWidth = parseInt(LP_Settings.avatar_size['width']);
-            args.viewHeight = parseInt(LP_Settings.avatar_size['height']);
+        if (typeof lpProfileUserSettings !== 'undefined') {
+            args.viewWidth = parseInt(lpProfileUserSettings.avatar_size['width']);
+            args.viewHeight = parseInt(lpProfileUserSettings.avatar_size['height']);
         }
         // avatar
         new UserProfile(args);

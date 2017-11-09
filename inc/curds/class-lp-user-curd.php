@@ -67,17 +67,18 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( false !== ( $user_object = get_user_by( 'id', $user_id ) ) ) {
 			$user->set_data(
 				array(
-					'email'         => $user_object->user_email,
-					'user_login'    => $user_object->user_login,
-					'description'   => $user_object->description,
-					'first_name'    => isset( $user_object->first_name ) ? $user_object->first_name : '',
-					'last_name'     => isset( $user_object->last_name ) ? $user_object->last_name : '',
-					'nickname'      => isset( $user_object->nickname ) ? $user_object->nickname : '',
-					'display_name'  => $user_object->display_name,
-					'date_created'  => $user_object->user_registered,
-					'date_modified' => get_user_meta( $user_id, 'last_update', true ),
-					'role'          => ! empty( $user_object->roles[0] ) ? $user_object->roles[0] : 'student',
-					'roles'         => ! empty( $user_object->roles ) ? $user_object->roles : array( 'student' ),
+					'email'           => $user_object->user_email,
+					'user_login'      => $user_object->user_login,
+					'description'     => $user_object->description,
+					'first_name'      => isset( $user_object->first_name ) ? $user_object->first_name : '',
+					'last_name'       => isset( $user_object->last_name ) ? $user_object->last_name : '',
+					'nickname'        => isset( $user_object->nickname ) ? $user_object->nickname : '',
+					'display_name'    => $user_object->display_name,
+					'date_created'    => $user_object->user_registered,
+					'date_modified'   => get_user_meta( $user_id, 'last_update', true ),
+					'role'            => ! empty( $user_object->roles[0] ) ? $user_object->roles[0] : 'student',
+					'roles'           => ! empty( $user_object->roles ) ? $user_object->roles : array( 'student' ),
+					'profile_picture' => get_user_meta( $user_id, '_lp_profile_picture', true )
 				), null, true
 			);
 		}
@@ -915,7 +916,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( ! empty( $wp->query_vars['view_id'] ) ) {
 			$paged = absint( $wp->query_vars['view_id'] );
 		}
-		$args  = wp_parse_args(
+		$args = wp_parse_args(
 			$args,
 			array(
 				'paged'  => 1,

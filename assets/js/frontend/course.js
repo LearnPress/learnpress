@@ -121,14 +121,6 @@
 
     $(document).ready(function () {
 
-        if (lpCourseSettings && lpCourseSettings.items) {
-            lpCourseSettings.items[18].timeRemaining = 3600;
-            lpCourseSettings.items[18].totalTime = 7200;
-        }
-
-        new LP_Course(lpCourseSettings);
-
-
         $(document).ready(function () {
             function prepareForm(form) {
                 var data = $('.answer-options').serializeJSON(),

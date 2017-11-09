@@ -235,6 +235,14 @@ class LP_Order extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/has-order-status', $has, $status, $this->get_id() );
 	}
 
+	/**
+	 * Check if order has a status as wp default.
+	 *
+	 * @return bool
+	 */
+	public function has_invalid_status() {
+		return ! $this->has_status( learn_press_get_order_statuses( false, true ) );
+	}
 
 	/**
 	 * Updates order to new status if needed

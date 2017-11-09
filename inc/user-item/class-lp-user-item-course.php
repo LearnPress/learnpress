@@ -239,10 +239,29 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return $prop && $results && array_key_exists( $prop, $results ) ? $results[ $prop ] : $results;
 	}
 
-	public function is_passed(){
-		return $this->get_results('grade') == 'passed';
+	/**
+	 * @param string $context
+	 *
+	 * @return string
+	 */
+	public function get_grade( $context = '' ) {
+		$grade = $this->get_results( 'grade' );
+
+		return $context == 'display' ? learn_press_course_grade_html( $grade, false ) : $grade;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function is_passed() {
+		return $this->get_grade() == 'passed';
+	}
+
+	/**
+	 * @param int $decimal
+	 *
+	 * @return int|string
+	 */
 	public function get_percent_result( $decimal = 1 ) {
 		return apply_filters( 'learn-press/user/course-percent-result', sprintf( '%s%%', round( $this->get_results( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
 	}
@@ -408,6 +427,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	protected function _is_passed( $result ) {
 		$result = round( $result, 2 );
+
 		return $result >= $this->get_passing_condition() ? 'passed' : 'failed';
 	}
 
