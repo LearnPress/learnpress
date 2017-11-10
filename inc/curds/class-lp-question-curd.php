@@ -473,15 +473,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @return bool|false|int
 		 */
-		public function new_answer( $question ) {
+		public function new_answer( $question, $answer ) {
 
 			if ( get_post_type( $question->get_id() ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
 			global $wpdb;
-
-			$answer = LP_Question::get_default_answer();
 
 			$insert = $wpdb->insert(
 				$wpdb->learnpress_question_answers,

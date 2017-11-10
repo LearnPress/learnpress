@@ -7,12 +7,13 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-answer">
-    <tr class="answer-item" :data-id="answer.value" :data-answer-id="answer.question_answer_id">
+    <tr class="answer-item" :data-id="answer.value" :data-answer-id="id" :data-answer-order="order">
         <td class="sort"><i class="fa fa-bars"></i></td>
-        <td class="order">{{answer.answer_order}}</td>
+        <td class="order">{{order}}</td>
         <td class="answer-text">
             <input type="text" v-model="answer.text"
-                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle"/>
+                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle" @keyup.38="previousItem"
+                   @keyup.40="nextItem"/>
         </td>
         <td class="answer-correct lp-answer-check">
             <input :type="radio ? 'radio' : 'checkbox'" :checked="correct ? 'checked' : ''" :value="answer.value"
@@ -28,7 +29,7 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
 
         Vue.component('lp-question-answer', {
             template: '#tmpl-lp-question-answer',
@@ -39,6 +40,14 @@
                 }
             },
             computed: {
+                // answer id
+                id: function () {
+                    return this.answer.question_answer_id;
+                },
+                // answer order
+                order: function () {
+                    return this.answer.answer_order;
+                },
                 // check correct answer
                 correct: function () {
                     return this.answer.is_true === 'yes';
@@ -61,6 +70,12 @@
                         $store.dispatch('updateAnswerTitle', this.answer);
                     }
                 },
+                previousItem: function () {
+                    $('tr[data-answer-order=' + this.order + ']').prev().find('.answer-text input').focus();
+                },
+                nextItem: function () {
+                    $('tr[data-answer-order=' + this.order + ']').next().find('.answer-text input').focus();
+                },
                 changeCorrect: function (e) {
                     this.answer.is_true = (e.target.checked) ? 'yes' : '';
                     this.$emit('changeCorrect', this.answer);
@@ -73,6 +88,6 @@
                 }
             }
         })
-    })(Vue, LP_Question_Store);
+    })(Vue, LP_Question_Store, jQuery);
 
 </script>

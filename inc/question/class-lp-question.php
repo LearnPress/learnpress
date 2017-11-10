@@ -510,7 +510,6 @@ class LP_Question extends LP_Course_Item {
 		$answer = array(
 			'text'    => __( 'New Option', 'learnpress' ),
 			'is_true' => false,
-			'order'   => '',
 			'value'   => learn_press_uniqid()
 		);
 

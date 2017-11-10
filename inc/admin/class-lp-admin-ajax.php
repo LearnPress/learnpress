@@ -418,7 +418,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else if ( $update === false ) {
 						$result['message'] = __( '[Change question type] Fail: No update', 'learnpress' );
 					} else {
-                        $result = array(
+						$result = array(
 							'status'   => true,
 							'message'  => __( '[Change question type] Successful', 'learnpress' ),
 							'question' => self::get_question_data_to_quiz( $question->get_id() )
@@ -522,8 +522,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$delete = $curd->delete_answer( $question, $answer );
 
 					if ( $delete === 1 ) {
-						$result['status']  = true;
-						$result['message'] = __( '[Delete answer]: Successful', 'learnpress' );
+						$result = array(
+							'status'  => true,
+							'message' => __( '[Delete answer]: Successful', 'learnpress' )
+						);
 					} else {
 						if ( $delete === 0 ) {
 							$result['message'] = __( '[Delete answer] Fail: No database row affected', 'learnpress' );
@@ -537,12 +539,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'new-answer' :
 
-					// add new answer
-					$new = $curd->new_answer( $question );
+					// new answer
+					$answer = LP_Question::get_default_answer();
+					// add new
+					$new = $curd->new_answer( $question, $answer );
 
 					if ( $new === 1 ) {
-						$result['status']  = true;
-						$result['message'] = __( '[Add new answer]: Successful', 'learnpress' );
+						$result = array(
+							'status'  => true,
+							'message' => __( '[Add new answer]: Successful', 'learnpress' )
+						);
 					} else {
 						if ( $new === 0 ) {
 							$result['message'] = __( '[Add new answer] Fail: No database row affected', 'learnpress' );

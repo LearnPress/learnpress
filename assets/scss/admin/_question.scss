@@ -71,6 +71,7 @@
             tbody {
                 tr {
                     background: #f4fcff;
+                    color: #777;
                     &:nth-child(2n) {
                         background: #fff;
                     }
@@ -93,6 +94,9 @@
                             &:hover {
                                 color: #0085ba;
                             }
+                        }
+                        &.order{
+                            font-size: 13px;
                         }
                         &.answer-text {
                             input {
