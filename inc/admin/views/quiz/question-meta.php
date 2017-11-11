@@ -6,7 +6,7 @@
  */
 ?>
 
-<script type="text/x-template" id="tmpl-lp-question-meta">
+<script type="text/x-template" id="tmpl-lp-quiz-question-meta">
     <div class="quiz-question-options">
         <div>
             <div class="postbox">
@@ -33,7 +33,7 @@
                                 <div>
                                     <input name="mark" type="number" v-model="question.settings.mark"
                                            @change="updateMeta">
-                                    <p class="description"><?php _e( 'Mark for choosing the right answer.', 'learnpress' );?></p>
+                                    <p class="description"><?php _e( 'Mark for choosing the right answer.', 'learnpress' ); ?></p>
                                 </div>
                             </div>
                         </div>
@@ -74,8 +74,8 @@
 <script type="text/javascript">
     (function (Vue, $store) {
 
-        Vue.component('lp-question-meta', {
-                template: '#tmpl-lp-question-meta',
+        Vue.component('lp-quiz-question-meta', {
+                template: '#tmpl-lp-quiz-question-meta',
                 props: ['question'],
                 methods: {
                     updateContent: function () {

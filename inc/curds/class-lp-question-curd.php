@@ -225,7 +225,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function change_question_type( $question, $new_type ) {
 
-			$old_type = $question->get_type();
+			$old_type    = $question->get_type();
 			$question_id = $question->get_id();
 
 			if ( $old_type == $new_type ) {
@@ -261,21 +261,45 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		}
 
 		/**
+		 * Delete permanently question.
+		 *
+		 * @param $question_id
+		 *
+		 * @return array|bool|false|WP_Post
+		 */
+		public function delete_permanently_question( $question_id ) {
+
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+				return false;
+			}
+
+			// delete all question answers
+			$this->delete_answer( $question_id, '', $force = false );
+
+			// remove permanently question
+			$delete = wp_delete_post( $question_id );
+
+			return $delete;
+
+		}
+
+		/**
 		 * Update answer title
 		 *
-		 * @param $question LP_Question
+		 * @param $question_id
 		 * @param $answer
 		 *
 		 * @return bool|false|int
 		 */
-		public function update_answer_title( $question, $answer ) {
+		public function update_answer_title( $question_id, $answer ) {
 
-			if ( get_post_type( $question->get_id() ) !== LP_QUESTION_CPT ) {
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
 			global $wpdb;
 
+			// question data
 			$data = array(
 				'data'  => array(
 					'answer_data' => serialize( array(
@@ -287,7 +311,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				),
 				'where' => array(
 					'question_answer_id' => $answer['question_answer_id'],
-					'question_id'        => $question->get_id(),
+					'question_id'        => $question_id,
 					'answer_order'       => $answer['answer_order']
 				)
 			);
@@ -305,16 +329,18 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Update correct answer.
 		 *
-		 * @param $question LP_Question
+		 * @param $question_id
 		 * @param $correct
 		 *
 		 * @return bool|int
 		 */
-		public function change_correct_answer( $question, $correct ) {
+		public function change_correct_answer( $question_id, $correct ) {
 
-			if ( get_post_type( $question->get_id() ) !== LP_QUESTION_CPT ) {
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
+
+			$question = LP_Question::get_question( $question_id );
 
 			global $wpdb;
 
@@ -393,14 +419,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Sort answers.
 		 *
-		 * @param $question LP_Question
+		 * @param $question_id
 		 * @param array $order
 		 *
 		 * @return bool|int
 		 */
-		public function sort_answers( $question, $order = array() ) {
+		public function sort_answers( $question_id, $order = array() ) {
 
-			if ( get_post_type( $question->get_id() ) !== LP_QUESTION_CPT ) {
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -437,15 +463,15 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Delete question answer.
 		 *
-		 * @param $question LP_Question
-		 * @param $answer
+		 * @param $question_id
+		 * @param $answer_id
 		 * @param $force
 		 *
 		 * @return bool|false|int
 		 */
-		public function delete_answer( $question, $answer, $force = false ) {
+		public function delete_answer( $question_id, $answer_id, $force = false ) {
 
-			if ( get_post_type( $question->get_id() ) !== LP_QUESTION_CPT ) {
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -454,12 +480,12 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			if ( $force ) {
 				$delete = $wpdb->delete(
 					$wpdb->learnpress_question_answers,
-					array( 'question_id' => $question->get_id() )
+					array( 'question_id' => $question_id )
 				);
 			} else {
 				$delete = $wpdb->delete(
 					$wpdb->learnpress_question_answers,
-					array( 'question_answer_id' => $answer )
+					array( 'question_answer_id' => $answer_id )
 				);
 			}
 
@@ -469,29 +495,30 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Add new answer.
 		 *
-		 * @param $question LP_Question
+		 * @param $question_id
 		 *
 		 * @return bool|false|int
 		 */
-		public function new_answer( $question, $answer ) {
+		public function new_answer( $question_id, $answer ) {
 
-			if ( get_post_type( $question->get_id() ) !== LP_QUESTION_CPT ) {
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
+
+			$question = LP_Question::get_question( $question_id );
 
 			global $wpdb;
 
 			$insert = $wpdb->insert(
 				$wpdb->learnpress_question_answers,
 				array(
-					'question_id'  => $question->get_id(),
+					'question_id'  => $question_id,
 					'answer_data'  => serialize( $answer ),
 					'answer_order' => count( $question->get_data( 'answer_options' ) ) + 1
 				),
 				array( '%d', '%s', '%d' ) );
 
 			return $insert;
-
 		}
 
 

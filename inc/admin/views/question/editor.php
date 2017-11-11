@@ -33,7 +33,7 @@ learn_press_admin_view( 'question/answer' );
                     <th v-for="(heading, key) in headings" :class="key">{{heading}}</th>
                 </tr>
                 </thead>
-                <draggable :list="answers" :element="'tbody'" @end="sortAnswers">
+                <draggable :list="answers" :element="'tbody'" @end="sort">
                     <lp-question-answer v-for="(answer, index) in answers" :key="index" :index="index" :type="type"
                                         :radio="radio" :number="number" :answer="answer"
                                         @changeCorrect="changeCorrect"></lp-question-answer>
@@ -87,6 +87,7 @@ learn_press_admin_view( 'question/answer' );
                 }
             },
             methods: {
+                // check question type active
                 active: function (type) {
                     return this.type === type ? 'active' : '';
                 },
@@ -95,7 +96,8 @@ learn_press_admin_view( 'question/answer' );
                         $store.dispatch('changeQuestionType', type);
                     }
                 },
-                sortAnswers: function () {
+                // sort answer options
+                sort: function () {
                     var orders = [];
 
                     this.answers.forEach(function (answer) {

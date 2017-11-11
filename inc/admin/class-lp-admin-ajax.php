@@ -100,8 +100,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-questions',
 				'get-question-data',
 				'update_curriculum',
-				'update_list_quiz_questions',
-				'update_question_item',
+				'admin_quiz_editor',
+				'admin_question_editor',
 				'modal-search-items',
 				'modal-search-users',
 				'add-items-to-order',
@@ -384,20 +384,22 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public static function update_question_item() {
-			check_ajax_referer( 'learnpress_admin_editor_question', 'nonce' );
+		public static function admin_question_editor() {
+
+			check_ajax_referer( 'learnpress_admin_question_editor', 'nonce' );
 
 			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
 
-			$id       = $args['id'];
-			$question = learn_press_get_question( $id );
+			// question id
+			$question_id = $args['id'];
+			$question    = learn_press_get_question( $question_id );
 
 			if ( ! $question ) {
 				wp_send_json_error();
 			}
 
 			$curd             = new LP_Question_CURD();
-			$return           = array();
+			$result           = array();
 			$result['status'] = false;
 
 			switch ( $args['type'] ) {
@@ -454,7 +456,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'update-answer-title':
 
-					// answers order
+					// answers
 					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
 					$answer = json_decode( wp_unslash( $answer ), true );
 
@@ -463,7 +465,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// update answer title
-					$update = $curd->update_answer_title( $question, $answer );
+					$update = $curd->update_answer_title( $question_id, $answer );
 
 					if ( $update === 1 ) {
 						$result['status']  = true;
@@ -479,8 +481,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
-					break;
-
 				case 'change-correct':
 					// correct answer
 					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
@@ -491,7 +491,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// update correct answer
-					$update = $curd->change_correct_answer( $question, $correct );
+					$update = $curd->change_correct_answer( $question_id, $correct );
 
 					if ( $update === 1 ) {
 						$result['status']  = true;
@@ -512,14 +512,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'delete-answer' :
 					// answer id
-					$answer = ! empty( $args['answer_id'] ) ? $args['answer_id'] : false;
+					$answer_id = ! empty( $args['answer_id'] ) ? $args['answer_id'] : false;
 
-					if ( ! $answer ) {
+					if ( ! $answer_id ) {
 						break;
 					}
 
-					// update correct answer
-					$delete = $curd->delete_answer( $question, $answer );
+					// delete answer
+					$delete = $curd->delete_answer( $question_id, $answer_id );
 
 					if ( $delete === 1 ) {
 						$result = array(
@@ -542,7 +542,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// new answer
 					$answer = LP_Question::get_default_answer();
 					// add new
-					$new = $curd->new_answer( $question, $answer );
+					$new = $curd->new_answer( $question_id, $answer );
 
 					if ( $new === 1 ) {
 						$result = array(
@@ -573,28 +573,62 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public static function update_list_quiz_questions() {
-			check_ajax_referer( 'learnpress_update_list_quiz_questions', 'nonce' );
+		public static function admin_quiz_editor() {
 
-			$args = wp_parse_args( $_REQUEST, array(
-				'quiz-id' => false,
-				'type'    => ''
-			) );
+			check_ajax_referer( 'learnpress_admin_quiz_editor', 'nonce' );
 
-			$quiz_id = $args['quiz-id'];
+			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+
+			// get quiz
+			$quiz_id = $args['id'];
 			$quiz    = learn_press_get_quiz( $quiz_id );
 
 			if ( ! $quiz ) {
 				wp_send_json_error();
 			}
 
-			$question_curd = new LP_Question_CURD();
 			$quiz_curd     = new LP_Quiz_CURD();
+			$question_curd = new LP_Question_CURD();
 
-			$result = $args['type'];
+			$result           = array();
+			$result['status'] = false;
+
 			switch ( $args['type'] ) {
+
 				case 'heartbeat' :
 					$result = true;
+					break;
+
+				case 'update-question-title':
+
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! is_array( $question ) ) {
+						break;
+					}
+
+					wp_update_post( array( 'ID' => $question['id'], 'post_title' => $question['title'] ) );
+
+					$result['status'] = true;
+
+					break;
+
+				case 'sort-question-answers':
+
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
+					$order = json_decode( wp_unslash( $order ), true );
+
+
+					if ( ! ( $question_id && $order ) ) {
+						break;
+					}
+
+					// sort answer
+					$result = $question_curd->sort_answers( $question_id, $order );
+
 					break;
 
 				case 'hidden-questions':
@@ -661,6 +695,36 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'update-question-answer-title':
+
+					// question id
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+
+					// answers
+					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
+					$answer = json_decode( wp_unslash( $answer ), true );
+
+					if ( ! ( $question_id && $answer ) ) {
+						break;
+					}
+
+					// update answer title
+					$update = $question_curd->update_answer_title( $question_id, $answer );
+
+					if ( $update === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Update answer title]: Successful', 'learnpress' );
+					} else {
+						if ( $update === 0 ) {
+							$result['message'] = __( '[Update answer title] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $update === false ) {
+							$result['message'] = __( '[Update answer title] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
 				case 'update-question-answer':
 					$question_id = ! empty( $args['questionId'] ) ? $args['questionId'] : false;
 
@@ -692,36 +756,38 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'add-question-answer':
-					$question_id = ! empty( $args['questionId'] ) ? $args['questionId'] : false;
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
-					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
-					$answer = json_decode( wp_unslash( $answer ), true );
-
-					if ( ! ( $question_id || is_array( $answer ) ) ) {
+					if ( ! $question_id ) {
 						break;
 					}
 
-					$insert = array(
-						'question_id'  => $question_id,
-						'answer_data'  => serialize( array(
-								'text'    => stripslashes( $answer['text'] ),
-								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-								'is_true' => isset( $answer['isTrue'] ) ? $answer['isTrue'] : ''
-							)
-						),
-						'answer_order' => $answer['order']
-					);
+					// new answer
+					$answer = LP_Question::get_default_answer();
+					// add new
+					$new = $question_curd->new_answer( $question_id, $answer );
 
-					$result = $question_curd->add_answer( $insert );
-
+					if ( $new === 1 ) {
+						$result = array(
+							'status'  => true,
+							'message' => __( '[Add new answer]: Successful', 'learnpress' )
+						);
+					} else {
+						if ( $new === 0 ) {
+							$result['message'] = __( '[Add new answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $new === false ) {
+							$result['message'] = __( '[Add new answer] Fail: Query error', 'learnpress' );
+						}
+					}
 					break;
 
 				case 'new-question':
-					$quiz_id  = ! empty( $args['quizId'] ) ? $args['quizId'] : false;
+
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
-					if ( ! ( $quiz_id || is_array( $question ) ) ) {
+					if ( ! is_array( $question ) ) {
 						break;
 					}
 
@@ -776,16 +842,31 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 						$result = LP_Admin_Ajax::get_question_data_to_quiz( $new_question_id );
 					}
+
 					break;
 
 				case 'remove-question':
-					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
-					$result      = $quiz_curd->remove_question( $quiz_id, $question_id );
+
+					$question_id = isset( $_POST['question'] ) ? intval( $_POST['question'] ) : false;
+
+					if ( $question_id ) {
+						break;
+					}
+
+					$result = $quiz_curd->remove_question( $quiz_id, $question_id );
+
 					break;
 
 				case 'delete-question':
-					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
-					$result      = $quiz_curd->remove_question( $quiz_id, $question_id, array( 'delete_permanently' => true ) );
+
+					$question_id = isset( $_POST['question'] ) ? intval( $_POST['question'] ) : false;
+
+					if ( $question_id ) {
+						break;
+					}
+
+					$result = $quiz_curd->delete_question( $quiz_id, $question_id );
+
 					break;
 
 				case 'add-items-to-quiz':
@@ -806,82 +887,46 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'sort-questions':
-					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
 
-					if ( ! $orders ) {
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
+					$order = json_decode( wp_unslash( $order ), true );
+
+					if ( ! $order ) {
 						break;
 					}
 
-					$orders = json_decode( wp_unslash( $orders ), true );
+					$result = $quiz_curd->sort_questions( $order );
 
-					$result = $quiz_curd->sort_questions( $orders );
 					break;
 
-				case 'sort-question-answers':
-					$orders = ! empty( $args['orders-answers'] ) ? $args['orders-answers'] : false;
+				case 'change-question-correct-answer':
 
-					if ( ! $orders ) {
+					$question_id       = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+
+					// correct answer
+					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
+					$correct = json_decode( wp_unslash( $correct ), true );
+
+					if ( ! $correct ) {
 						break;
 					}
 
-					$orders = json_decode( wp_unslash( $orders ), true );
+					// update correct answer
+					$update = $question_curd->change_correct_answer( $question_id, $correct );
 
-					$result = $question_curd->sort_answers( $orders );
-					break;
-
-				case 'update-correct-answer':
-
-					$question       = ! empty( $args['question'] ) ? $args['question'] : false;
-					$correct_answer = ! empty( $args['correctAnswer'] ) ? $args['correctAnswer'] : false;
-
-					if ( ! ( $question || $correct_answer ) ) {
-						break;
-					}
-
-
-					$question       = json_decode( wp_unslash( $question ), true );
-					$correct_answer = json_decode( wp_unslash( $correct_answer ), true );
-
-					$question_type    = $question['type']['key'];
-					$question_answers = $question['answers'];
-
-					$update         = array();
-					$number_correct = 0;
-
-					foreach ( $question_answers as $index => $answer ) {
-
-						$answer_data = array(
-							'text'    => stripslashes( $answer['text'] ),
-							'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-							'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
-						);
-
-						if ( $answer['question_answer_id'] == $correct_answer['question_answer_id'] ) {
-							$answer_data['is_true'] = $correct_answer['is_true'];
-						} else {
-							if ( in_array( $question_type, array( 'true_or_false', 'single_choice' ) ) ) {
-								$answer_data['is_true'] = '';
-							}
-						}
-
-						$number_correct += ( $answer_data['is_true'] == 'yes' ) ? 1 : 0;
-
-						$update[ $index ] = array(
-							'data'  => array(
-								'answer_data' => serialize( $answer_data )
-							),
-							'where' => array(
-								'question_answer_id' => $answer['question_answer_id'],
-								'question_id'        => $question['id'],
-								'answer_order'       => $answer['answer_order']
-							)
-						);
-					}
-
-					if ( $number_correct ) {
-						$result = $question_curd->update_answer( $update, 'update-correct' );
+					if ( $update === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Update correct answer]: Successful', 'learnpress' );
 					} else {
-						$result = 'fail';
+						if ( $update === 0 ) {
+							$result['message'] = __( '[Update correct answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $update === - 1 ) {
+							$result['message'] = __( '[Update correct answer] Fail: Question has not correct answer', 'learnpress' );
+						}
+						if ( $update === false ) {
+							$result['message'] = __( '[Update correct answer] Fail: Query error', 'learnpress' );
+						}
 					}
 
 					break;

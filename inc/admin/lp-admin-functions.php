@@ -77,7 +77,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array      $args
+ * @param array $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -112,7 +112,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array      $args
+ * @param array $args
  *
  * @return mixed|string
  */
@@ -1879,7 +1879,7 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 			'post_parent'    => $post->post_parent,
 			'post_password'  => $post->post_password,
 			'post_status'    => 'draft',
-			'post_title'     => $post->post_title . ' - Copy',
+			'post_title'     => $post->post_title,
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order

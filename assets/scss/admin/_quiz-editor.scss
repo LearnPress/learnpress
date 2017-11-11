@@ -47,7 +47,7 @@
 
                 & > * {
                     width: 100%;
-                    padding: 8px 10px
+                    padding: 12px 10px
                 }
 
                 & > .lp-column-sort {
@@ -269,59 +269,61 @@
             }
 
             .footer {
-                .new-question-title {
-                    position: relative;
-                    display: inline-block;
-                    min-width: 300px;
-
-                    input[name="new-question-title"] {
-                        border: 1px solid #DDD;
-                        width: 100%;
-                        margin: 0;
-                        padding: 5px 10px;
-                        @include box-shadow(none);
-                        &:focus {
-                            border-color: #DDD;
-                        }
-                    }
-                }
-                .add-new-button {
-                    display: inline;
-                    position: relative;
-                    .lp-dropdown-items {
-                        position: absolute;
-                        margin: 5px;
-                        background-color: #FFF;
-                        top: 100%;
-                        border: 1px solid #DDD;
-                        right: -1px;
-                        width: 200px;
-                        z-index: 9999999;
-                        display: none;
-                        li {
+                .add-new-question {
+                    padding-left: 75px;
+                    .title {
+                        position: relative;
+                        display: inline-block;
+                        min-width: 300px;
+                        input {
+                            border: 1px solid #DDD;
+                            width: 100%;
                             margin: 0;
-                            a {
-                                display: block;
-                                padding: 10px;
-                                line-height: 1;
-                                text-decoration: none;
-                                outline: none;
-                                box-shadow: none;
+                            padding: 5px 10px;
+                            @include box-shadow(none);
+                            &:focus {
+                                border-color: #DDD;
                             }
                         }
                     }
+                    .add-new {
+                        display: inline;
+                        position: relative;
+                        ul.question-types {
+                            position: absolute;
+                            margin: 6px;
+                            background-color: #FFF;
+                            top: 100%;
+                            border: 1px solid #DDD;
+                            right: -2px;
+                            width: 200px;
+                            z-index: 9999999;
+                            display: none;
+                            li {
+                                margin: 0;
+                                a {
+                                    display: block;
+                                    padding: 10px;
+                                    line-height: 1;
+                                    text-decoration: none;
+                                    outline: none;
+                                    box-shadow: none;
+                                }
+                            }
+                        }
 
-                    &.visible {
                         &:hover {
-                            .lp-dropdown-items {
+                            ul.question-types {
                                 display: block !important;
                             }
                         }
                     }
-                }
-                .lp-column-sort {
-                    i {
-                        visibility: hidden;
+                    .select-item {
+                        display: inline;
+                    }
+                    button {
+                        height: 30px;
+                        box-shadow: 0 1px 0 #ccc !important;
                     }
                 }
             }

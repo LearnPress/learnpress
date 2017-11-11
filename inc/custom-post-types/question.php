@@ -94,8 +94,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'answers'             => $answers,
 					'supportAnswerOption' => isset( $question->get_supports()['answer-options'] ),
 					'ajax'                => admin_url( '' ),
-					'action'              => 'update_question_item',
-					'nonce'               => wp_create_nonce( 'learnpress_admin_editor_question' ),
+					'action'              => 'admin_question_editor',
+					'nonce'               => wp_create_nonce( 'learnpress_admin_question_editor' ),
 					'questionTypes'       => LP_Question_Factory::get_types(),
 					'pageNow'             => $pagenow
 				)

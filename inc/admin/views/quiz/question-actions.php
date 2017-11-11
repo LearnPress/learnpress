@@ -1,21 +1,18 @@
 <?php
 /**
- * Question actions template.
+ * Admin Quiz Editor: Question actions.
  *
  * @since 3.0.0
  */
 ?>
 
-<script type="text/x-template" id="tmpl-lp-question-actions">
+<script type="text/x-template" id="tmpl-lp-quiz-question-actions">
     <div class="question-actions table-row" :class="status">
         <div class="lp-column-sort"><i class="fa fa-bars"></i></div>
         <div class="lp-column-order">{{index +1}}</div>
         <div class="lp-column-name" @dblclick="toggle">
-            <input type="text" class="question-title"
-                   v-model="question.title"
-                   @keyup.enter='updateTitle'
-                   @blur="updateTitle"
-                   @input="onChangeTitle">
+            <input type="text" class="question-title" v-model="question.title"
+                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle">
         </div>
         <div class="lp-column-type">{{question.type.label}}</div>
         <div class="lp-column-actions">
@@ -23,28 +20,28 @@
                 <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
                     <a class="lp-btn-icon dashicons dashicons-editor-help"></a>
                     <ul>
-                        <li v-for="(type, key) in questionTypes" :class="isAcitve(key) ? 'active' : ''">
-                            <a href="" :data-type="key" @click.prevent="changeQuestionType">{{type}}</a>
+                        <li v-for="(type, key) in questionTypes" :class="active(key) ? 'active' : ''">
+                            <a href="" :data-type="key" @click.prevent="changeType(key)">{{type}}</a>
                         </li>
                     </ul>
                 </div>
                 <div class="lp-toolbar-btn">
-                    <a target="_blank" :href="urlEdit"
-                       class="lp-btn-icon dashicons dashicons-admin-links "></a>
+                    <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-admin-links "></a>
                 </div>
                 <div class="lp-toolbar-btn">
-                    <a target="_blank" class="lp-btn-icon dashicons dashicons-admin-page" @click="clone"></a>
+                    <a href="" class="lp-btn-icon dashicons dashicons-admin-page" @click.prevent="clone"></a>
                 </div>
                 <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
-                    <a class="lp-btn-icon dashicons dashicons-trash" @click="remove"></a>
+                    <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>
-                        <li><a class=""
-                               @click="deletePermanently"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
+                        <li>
+                            <a href="" @click.prevent="deletePermanently">
+								<?php esc_html_e( 'Delete permanently', 'learnpress' ); ?>
+                            </a>
                         </li>
                     </ul>
                 </div>
-                <span @click="toggle" :class="question.open ?'open' : 'close'"
-                      class="lp-toolbar-btn lp-btn-toggle "></span>
+                <span :class="['lp-toolbar-btn lp-btn-toggle', question.open ?'open' : 'close']" @click="toggle"></span>
             </div>
         </div>
     </div>
@@ -53,61 +50,68 @@
 <script type="text/javascript">
     (function (Vue, $store) {
 
-        Vue.component('lp-question-actions', {
-            template: '#tmpl-lp-question-actions',
+        Vue.component('lp-quiz-question-actions', {
+            template: '#tmpl-lp-quiz-question-actions',
             props: ['question', 'index'],
             data: function () {
                 return {
-                    unsaved: false,
-                    removing: false
+                    changed: false
                 };
             },
             computed: {
+                // question status
                 status: function () {
-                    console.log($store.getters['lqs/statusUpdateQuestionItem'][this.question.id]);
                     return $store.getters['lqs/statusUpdateQuestionItem'][this.question.id] || '';
                 },
-                urlEdit: function () {
+                // url edit question
+                url: function () {
                     return 'post.php?post=' + this.question.id + '&action=edit';
                 },
+                // list question types
                 questionTypes: function () {
                     return $store.getters['questionTypes'];
                 }
             },
             methods: {
+                // toogle question
                 toggle: function () {
                     $store.dispatch('lqs/toggleQuestion', this.question);
                 },
+                // check question type active
+                active: function (type) {
+                    return this.type === type ? 'active' : '';
+                },
+                // clone question
                 clone: function () {
                     $store.dispatch('lqs/cloneQuestion', this.question);
                 },
+                // remove question from quiz
                 remove: function () {
-                    $store.dispatch('lqs/removeQuestion', this.question);
+                    $store.dispatch('lqs/removeQuestion', this.question.id);
                 },
+                // delete permanently question
                 deletePermanently: function () {
-                    $store.dispatch('lqs/deleteQuestion', this.question);
+                    $store.dispatch('lqs/deleteQuestion', this.question.id);
                 },
-                isAcitve: function (type) {
-                    return this.question.type.key === type;
+                // onchange question title
+                changeTitle: function () {
+                    this.changed = true;
                 },
-                onChangeTitle: function () {
-                    this.unsaved = true;
-                },
+                // update question title
                 updateTitle: function () {
-                    this.update();
+                    if (this.changed) {
+                        $store.dispatch('lqs/updateQuestionTitle', this.question);
+                    }
+                    this.changed = false;
                 },
-                update: function (e) {
-                    this.unsaved = false;
-                    $store.dispatch('lqs/updateQuestion', {
-                        action: 'update-title',
-                        question: this.question
-                    });
-                },
-                changeQuestionType: function (e) {
-                    $store.dispatch('lqs/changeQuestionType', {
-                        question: this.question,
-                        newType: e.target.dataset.type
-                    });
+                // change question type
+                changeType: function (type) {
+                    if (this.question.type !== type) {
+                        $store.dispatch('lqs/changeQuestionType', {
+                            question: this.question,
+                            newType: type
+                        });
+                    }
                 }
             }
         });
