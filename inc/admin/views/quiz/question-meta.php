@@ -78,20 +78,16 @@
                 template: '#tmpl-lp-quiz-question-meta',
                 props: ['question'],
                 methods: {
+                    // update question content
                     updateContent: function () {
-                        var request = {
-                            'action': 'update-content',
-                            'question': this.question
-                        };
-                        $store.dispatch('lqs/updateQuestion', request);
+                        $store.dispatch('lqs/updateQuestionContent', this.question);
                     },
+                    // update question meta
                     updateMeta: function (e) {
-                        var request = {
-                            'action': 'update-meta',
-                            'question': this.question,
-                            'meta': e.target.name
-                        };
-                        $store.dispatch('lqs/updateQuestion', request);
+                        $store.dispatch('lqs/updateQuestionMeta', {
+                            question: this.question,
+                            meta_key: e.target.name
+                        });
                     }
                 }
             }

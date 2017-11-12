@@ -614,6 +614,38 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'update-question-content':
+
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! $question ) {
+						break;
+					}
+
+					wp_update_post( array( 'ID' => $question['id'], 'post_content' => $question['settings']['content'] ) );
+
+					$result['status'] = true;
+
+					break;
+
+                case 'update-question-meta':
+
+	                $question = ! empty( $args['question'] ) ? $args['question'] : false;
+	                $question = json_decode( wp_unslash( $question ), true );
+
+	                $meta_key = ! empty( $args['meta_key'] ) ? $args['meta_key'] : false;
+
+	                if ( ! ($question && $meta_key)) {
+		                break;
+	                }
+
+	                update_post_meta( $question['id'], '_lp_' . $meta_key, $question['settings'][$meta_key]);
+
+	                $result['status'] = true;
+
+	                break;
+
 				case 'sort-question-answers':
 
 					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
@@ -637,41 +669,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-list-questions':
-					// code
-					break;
-
-				case 'update-question':
-					$question = ! empty( $args['question'] ) ? $args['question'] : false;
-					$question = json_decode( wp_unslash( $question ), true );
-
-					if ( ! is_array( $question ) ) {
-						break;
-					}
-
-					$action = ! empty( $args['action'] ) ? $args['action'] : false;
-					$update = array();
-
-					switch ( $action ) {
-						case 'update-title':
-							$update['title'] = $question['title'];
-							break;
-						case 'update-content':
-							$update['content'] = $question['settings']['content'];
-							break;
-						case 'update-meta':
-							if ( ! $meta_key = $args['meta'] ) {
-								break;
-							}
-							$update['key']  = $meta_key;
-							$update['meta'] = $question['settings'][ $meta_key ];
-							break;
-						default;
-							break;
-					}
-
-					$update = array_merge( $update, array( 'id' => $question['id'], 'action' => $action ) );
-
-					$result = $question_curd->update( $update );
 					// code
 					break;
 
@@ -755,7 +752,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
-				case 'add-question-answer':
+				case 'new-question-answer':
 					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
 					if ( ! $question_id ) {
@@ -901,13 +898,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'change-question-correct-answer':
 
-					$question_id       = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
 					// correct answer
 					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
 					$correct = json_decode( wp_unslash( $correct ), true );
 
-					if ( ! $correct ) {
+					if ( ! ( $question_id && $correct ) ) {
 						break;
 					}
 
@@ -932,12 +929,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'delete-question-answer':
-					$question_id = isset( $_POST['questionId'] ) ? $_POST['questionId'] : array();
-					$answer_id   = isset( $_POST['answerId'] ) ? intval( $_POST['answerId'] ) : false;
 
-					$delete = $question_curd->delete_question_answer( $question_id, $answer_id );
+					$question_id = isset( $_POST['question_id'] ) ? $_POST['question_id'] : false;
+					$answer_id   = isset( $_POST['answer_id'] ) ? intval( $_POST['answer_id'] ) : false;
 
-					$result = $delete ? array( 'question_id' => $question_id, 'answer_id' => $answer_id ) : false;
+					if ( ! ( $question_id && $answer_id ) ) {
+						break;
+					}
+
+					$result = $question_curd->delete_answer( $question_id, $answer_id );
+
 					break;
 
 				case 'search-items':

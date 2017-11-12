@@ -64,7 +64,7 @@
                 },
                 // deletable answer option
                 deletable: function () {
-                    return ((this.answer.is_true === 'yes' && this.numberCorrect === 1) || (this.question.type.key === 'true_or_false') || this.question.answers.length < 2);
+                    return !((this.answer.is_true === 'yes' && this.numberCorrect === 1) || (this.question.type.key === 'true_or_false') || this.question.answers.length < 3);
                 }
             },
             methods: {
@@ -79,25 +79,18 @@
                 // update answer option title
                 updateTitle: function () {
                     if (this.changed) {
-                        var request = {
-                            'question_id': this.question.id,
-                            'answer': this.answer
-                        };
-                        $store.dispatch('lqs/updateQuestionAnswerTitle', request);
-
-
+                        $store.dispatch('lqs/updateQuestionAnswerTitle', {
+                            question_id: this.question.id,
+                            answer: this.answer
+                        });
                     }
                 },
                 // deletable answer
                 deleteAnswer: function () {
-
-                    var request = {
-                        'questionId': this.question.id,
-                        'answerId': this.answer.question_answer_id
-                    };
-
-                    $store.dispatch('lqs/deleteQuestionAnswer', request);
-
+                    $store.dispatch('lqs/deleteQuestionAnswer', {
+                        question_id: this.question.id,
+                        answer_id: this.answer.question_answer_id
+                    });
                 }
             }
         });

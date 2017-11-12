@@ -86,48 +86,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		}
 
 		/**
-		 * Update question.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param array $args
-		 *
-		 * @return array
-		 */
-//		public function update( &$args = array() ) {
-//			// TODO: Implement update() method.
-//			$question = wp_parse_args( $args, array(
-//				'action'  => '',
-//				'id'      => '',
-//				'title'   => '',
-//				'content' => '',
-//				'key'     => '',
-//				'meta'    => ''
-//			) );
-//
-//
-//			switch ( $question['action'] ) {
-//				case 'update-title':
-//					wp_update_post( array( 'ID' => $question['id'], 'post_title' => $question['title'] ) );
-//					break;
-//				case 'update-content':
-//					wp_update_post( array( 'ID' => $question['id'], 'post_content' => $question['content'] ) );
-//					break;
-//				case 'update-meta':
-//					if ( ! $question['key'] ) {
-//						break;
-//					}
-//					update_post_meta( $question['id'], '_lp_' . $question['key'], $question['meta'] );
-//					break;
-//				default:
-//					break;
-//			}
-//
-//			return $question;
-//		}
-
-
-		/**
 		 * Change question type.
 		 *
 		 * @since 3.0.0
@@ -477,6 +435,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			global $wpdb;
 
+			// delete all answer in question
 			if ( $force ) {
 				$delete = $wpdb->delete(
 					$wpdb->learnpress_question_answers,

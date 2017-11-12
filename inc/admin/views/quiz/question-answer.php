@@ -50,7 +50,7 @@ learn_press_admin_view( 'quiz/question-answer-option' );
             methods: {
                 // new answer option
                 newAnswer: function () {
-                    $store.dispatch('lqs/addQuestionAnswer', this.question.id);
+                    $store.dispatch('lqs/newQuestionAnswer', this.question.id);
                 },
                 // sort answer options
                 sort: function () {
