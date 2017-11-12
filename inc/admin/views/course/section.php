@@ -11,7 +11,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="[isOpen ? 'open' : 'close', status]">
-        <div class="section-head" @dblclick="toggle" :input="input">
+        <div class="section-head" @dblclick="toggle">
             <span class="movable"></span>
             <!--Section title-->
             <input v-model="section.title" type="text" title="title" class="title-input"
@@ -40,16 +40,16 @@ learn_press_admin_view( 'course/new-section-item' );
                                          @update="updateItem" @remove="removeItem" :order="index+1"></lp-section-item>
                     </draggable>
 
-                    <lp-new-section-item @create="newSectionItem"></lp-new-section-item>
+                    <lp-new-section-item @create="newItem"></lp-new-section-item>
                 </div>
             </div>
 
             <div class="section-actions">
                 <button type="button" class="button button-secondary"
-                        @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
+                        @click="openModal"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
 
-                <div class="remove" :class="{confirm: confirmRemove}">
-                    <span class="icon" @click="removeSection"><span class="dashicons dashicons-trash"></span></span>
+                <div class="remove" :class="{confirm: confirm}">
+                    <span class="icon" @click="removing"><span class="dashicons dashicons-trash"></span></span>
                     <div class="confirm" @click="remove"><?php esc_html_e( 'Are you sure?', 'learnpress' ); ?></div>
                 </div>
             </div>
@@ -65,8 +65,8 @@ learn_press_admin_view( 'course/new-section-item' );
             props: ['section', 'index'],
             data: function () {
                 return {
-                    unsaved: false,
-                    confirmRemove: false
+                    changed: false,
+                    confirm: false
                 };
             },
             mounted: function () {
@@ -94,15 +94,10 @@ learn_press_admin_view( 'course/new-section-item' );
                         this.section.items = items;
 
                         $store.dispatch('ss/updateSectionItems', {
-                            sectionId: this.section.id,
+                            section_id: this.section.id,
                             items: items
                         });
                     }
-                },
-
-                input: function () {
-//                    $(this.$refs.collapse).find('input.no-submit');
-//                    console.log($(this.$refs.collapse));
                 },
 
                 optionDraggable: function () {
@@ -118,6 +113,7 @@ learn_press_admin_view( 'course/new-section-item' );
                 }
             },
             methods: {
+                // toggle section
                 toggle: function () {
                     $store.dispatch('ss/toggleSection', this.section);
                 },
@@ -131,61 +127,52 @@ learn_press_admin_view( 'course/new-section-item' );
                 },
                 toggleAnimation: function (open) {
 
-                    console.log($(this.$refs.collapse));
-
                     if (open) {
                         $(this.$refs.collapse).slideDown();
                     } else {
                         $(this.$refs.collapse).slideUp();
                     }
                 },
-                newSectionItem: function (item) {
-                    $store.dispatch('ss/newSectionItem', {
-                        sectionId: this.section.id,
-                        item: item
-                    });
+                // updating section
+                updating: function () {
+                    this.changed = true;
                 },
-                removeItem: function (item) {
-                    $store.dispatch('ss/removeSectionItem', {
-                        sectionId: this.section.id,
-                        itemId: item.id
-                    });
+                // update section
+                completed: function () {
+                    if (this.changed) {
+                        $store.dispatch('ss/updateSection', this.section);
+                        this.changed = false;
+                    }
                 },
-                updateItem: function (item) {
-                    $store.dispatch('ss/updateSectionItem', {
-                        sectionId: this.section.id,
-                        item: item
-                    });
-                },
-                removeSection: function () {
-                    this.confirmRemove = true;
+                // click remove section
+                removing: function () {
+                    this.confirm = true;
                     var vm = this;
 
                     setTimeout(function () {
-                        vm.confirmRemove = false;
+                        vm.confirm = false;
                     }, 3000);
                 },
+                // remove section
                 remove: function () {
-                    if (!this.confirmRemove) {
-                        return;
-                    }
-
-                    this.confirmRemove = false;
-                    $store.dispatch('ss/removeSection', {
-                        index: this.index,
-                        section: this.section
-                    });
-                },
-                updating: function () {
-                    this.unsaved = true;
-                },
-                completed: function () {
-                    if (this.unsaved) {
-                        $store.dispatch('ss/updateSection', this.section);
-                        this.unsaved = false;
+                    if (this.confirm) {
+                        $store.dispatch('ss/removeSection', {index: this.index, section: this.section});
+                        this.confirm = false;
                     }
                 },
-                openChooseItems: function () {
+                // update section item
+                updateItem: function (item) {
+                    $store.dispatch('ss/updateSectionItem', {section_id: this.section.id, item: item});
+                },
+                // remove section item
+                removeItem: function (item) {
+                    $store.dispatch('ss/removeSectionItem', {section_id: this.section.id, item_id: item.id});
+                },
+                // new section item
+                newItem: function (item) {
+                    $store.dispatch('ss/newSectionItem', {section_id: this.section.id, item: item});
+                },
+                openModal: function () {
                     $store.dispatch('ci/open', parseInt(this.section.id));
                 }
             }

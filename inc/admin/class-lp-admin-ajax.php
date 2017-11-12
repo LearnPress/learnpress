@@ -146,13 +146,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function update_curriculum() {
 			check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
-			$args = wp_parse_args( $_REQUEST, array(
-				'course-id' => false,
-				'type'      => ''
-			) );
+			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
 
-			$course_id = $args['course-id'];
-			$course    = learn_press_get_course( $args['course-id'] );
+			$course_id = $args['id'];
+			$course    = LP_Course::get_course( $course_id );
+
 			if ( ! $course ) {
 				wp_send_json_error();
 			}
@@ -166,103 +164,32 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'hidden-sections':
-					$hidden = learn_press_get_request( 'hidden' );
+
+					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
+
 					update_post_meta( $course_id, '_admin_hidden_sections', $hidden );
-					break;
 
-				case 'sync-sections':
-					$result = $course->get_curriculum_raw();
-					break;
-
-				case 'new-section-item':
-					$item       = isset( $_POST['item'] ) ? $_POST['item'] : array();
-					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
-
-					$result = $curd->create_section_item( $section_id, $item );
-					break;
-
-				case 'update-section-item':
-					$item       = isset( $_POST['item'] ) ? $_POST['item'] : array();
-					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
-
-					$result = $curd->update_section_item( $section_id, $item );
-					break;
-
-				case 'remove-section-item':
-					$item_id    = isset( $_POST['item-id'] ) ? intval( $_POST['item-id'] ) : false;
-					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
-
-					$result = $curd->remove_section_item( $section_id, $item_id );
-					break;
-
-				case 'update-section-items':
-					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
-					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
-
-					$items = json_decode( wp_unslash( $items ), true );
-
-					$result = $curd->update_section_items( $section_id, $items );
-					break;
-
-				case 'add-items-to-section':
-					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
-					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
-
-					$items = json_decode( wp_unslash( $items ), true );
-
-					if ( ! $items || ! $section_id ) {
-						$result = new WP_Error();
-						break;
-					}
-
-					$result = $curd->add_items_section( $section_id, $items );
-
-					break;
-
-				case 'new-section':
-					$post_section = isset( $_POST['section'] ) ? $_POST['section'] : array();
-					$section_name = isset( $post_section['title'] ) ? $post_section['title'] : '';
-
-					$args = array(
-						'section_course_id'   => $course_id,
-						'section_description' => '',
-						'section_name'        => $section_name,
-						'items'               => array(),
-					);
-
-					$section = $curd->create( $args );
-					$result  = array(
-						'id'          => $section['section_id'],
-						'items'       => $section['items'],
-						'title'       => $section['section_name'],
-						'description' => $section['section_description'],
-						'course_id'   => $section['section_course_id'],
-						'order'       => $section['section_order'],
-					);
 					break;
 
 				case 'sort-sections':
-					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
-					if ( ! $orders ) {
+
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
+					$order = json_decode( wp_unslash( $order ), true );
+
+					if ( ! $order ) {
 						break;
 					}
 
-					$orders = json_decode( wp_unslash( $orders ), true );
+					$result = $curd->sort_sections( $order );
 
-					$result = $curd->sort_sections( $orders );
-
-					break;
-
-				case 'remove-section':
-					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
-					$curd->delete( $section_id );
 					break;
 
 				case 'update-section':
+
 					$section = ! empty( $args['section'] ) ? $args['section'] : false;
 					$section = json_decode( wp_unslash( $section ), true );
 
-					if ( ! is_array( $section ) || empty( $section ) ) {
+					if ( ! $section ) {
 						break;
 					}
 
@@ -278,17 +205,109 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'remove-section':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+
+					if ( ! $section_id ) {
+						break;
+					}
+
+					$curd->delete( $section_id );
+
+					break;
+
+				case 'new-section':
+
+					$section_name = ! empty( $args['section_name'] ) ? $args['section_name'] : false;
+
+					$args = array(
+						'section_course_id'   => $course_id,
+						'section_description' => '',
+						'section_name'        => $section_name,
+						'items'               => array(),
+					);
+
+					// create section
+					$section = $curd->create( $args );
+
+					$result = array(
+						'id'          => $section['section_id'],
+						'items'       => $section['items'],
+						'title'       => $section['section_name'],
+						'description' => $section['section_description'],
+						'course_id'   => $section['section_course_id'],
+						'order'       => $section['section_order'],
+					);
+
+					break;
+
+				case 'update-section-item':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
+					$item       = json_decode( wp_unslash( $item ), true );
+
+					if ( ! ( $section_id && $item ) ) {
+						break;
+					}
+
+					$result = $curd->update_section_item( $section_id, $item );
+
+					break;
+
+				case 'remove-section-item':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
+
+					if ( ! ( $section_id && $item_id ) ) {
+						break;
+					}
+
+					$result = $curd->remove_section_item( $section_id, $item_id );
+					break;
+
+				case 'new-section-item':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
+					$item       = json_decode( wp_unslash( $item ), true );
+
+					if ( ! ( $section_id && $item ) ) {
+						break;
+					}
+
+					$result = $curd->create_section_item( $section_id, $item );
+					break;
+
+				case 'update-section-items':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$items      = ! empty( $args['items'] ) ? $args['items'] : false;
+					$items      = json_decode( wp_unslash( $items ), true );
+
+					if ( ! ( $section_id && $items ) ) {
+						break;
+					}
+
+					$result = $curd->update_section_items( $section_id, $items );
+
+					break;
+
 				case 'search-items':
-					$query   = isset( $_POST['query'] ) ? $_POST['query'] : '';
-					$type    = isset( $_POST['item-type'] ) ? $_POST['item-type'] : '';
-					$page    = ! empty( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
-					$exclude = ! empty( $_POST['exclude'] ) ? wp_unslash( $_POST['exclude'] ) : '';
+
+					$query   = isset( $args['query'] ) ? $args['query'] : '';
+					$type    = isset( $args['item_type'] ) ? $args['item_type'] : '';
+					$page    = ! empty( $args['page'] ) ? $args['page'] : 1;
+					$exclude = ! empty( $args['exclude'] ) ? $args['exclude'] : '';
 
 					if ( $exclude ) {
 						$exclude = json_decode( $exclude, true );
 					}
 
 					$ids_exclude = array();
+
 					if ( is_array( $exclude ) ) {
 						foreach ( $exclude as $item ) {
 							$ids_exclude[] = $item['id'];
@@ -324,6 +343,24 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					);
 
 					break;
+
+				case 'add-items-to-section':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$items      = ! empty( $args['items'] ) ? $args['items'] : false;
+					$items      = json_decode( wp_unslash( $items ), true );
+
+					if ( ! $items || ! $section_id ) {
+						break;
+					}
+
+					$result = $curd->add_items_section( $section_id, $items );
+
+					break;
+
+                default:
+                    break;
+
 			}
 
 			if ( is_wp_error( $result ) ) {

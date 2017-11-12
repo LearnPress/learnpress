@@ -6,19 +6,17 @@
  */
 ?>
 <script type="text/x-template" id="tmpl-lp-section-item">
-    <li :data-item-id="item.id"
-        :class="[item.type, {updating: updating, removing: removing}]"
-        class="section-item">
+    <li :class="['section-item',item.type, {updating: updating, removing: removing}]" :data-item-id="item.id">
 
         <div class="icon"></div>
         <div class="title">
             <input v-model="item.title" type="text" title="title no-submit"
-                   @blur="updateTitle" @keyup.enter="updateTitle" @input="onChangeTitle">
+                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle">
         </div>
 
         <div class="item-actions">
             <div class="actions">
-                <a class="edit" :href="urlEdit" target="_blank">
+                <a class="edit" :href="url" target="_blank">
                     <span class="dashicons dashicons-edit"></span>
                 </a>
                 <a class="remove" @click.prevent="remove">
@@ -38,12 +36,13 @@
             props: ['item', 'order'],
             data: function () {
                 return {
-                    unsaved: false,
+                    changed: false,
                     removing: false
                 };
             },
             computed: {
-                urlEdit: function () {
+                // edit item url
+                url: function () {
                     return $store.getters['ss/urlEdit'] + this.item.id;
                 },
                 updating: function () {
@@ -57,23 +56,20 @@
                 }
             },
             methods: {
-                onChangeTitle: function () {
-                    this.unsaved = true;
+                changeTitle: function () {
+                    this.changed = true;
                 },
+                // update item title
+                updateTitle: function () {
+                    if (this.changed) {
+                        this.$emit('update', this.item);
+                        this.changed = false;
+                    }
+                },
+                // remove item
                 remove: function () {
                     this.removing = true;
                     this.$emit('remove', this.item);
-                },
-                updateTitle: function () {
-                    this.update();
-                },
-                update: function () {
-                    if (!this.unsaved) {
-                        return;
-                    }
-
-                    this.unsaved = false;
-                    this.$emit('update', this.item);
                 }
             }
         });

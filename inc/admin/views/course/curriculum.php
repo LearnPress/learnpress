@@ -36,6 +36,7 @@ learn_press_admin_view( 'course/sections' );
                 }
             },
             methods: {
+                // toggle all sections
                 toggle: function () {
                     $store.dispatch('ss/toggleAllSections');
                 }
