@@ -88,103 +88,20 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Change question type.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param $question_id
-		 * @param $old_type
-		 * @param $new_type
-		 *
-		 * @return bool|LP_Question|mixed
-		 */
-//		public function change_question_type( $question_id, $old_type, $new_type ) {
-//
-//			$old_question   = LP_Question::get_question( $question_id );
-//			$answer_options = $old_question->get_data( 'answer_options' );
-//
-//			update_post_meta( $question_id, '_lp_type', $new_type );
-//
-//			if ( $new_question = LP_Question::get_question( $question_id, array( 'force' => true ) ) ) {
-//
-//				// except convert from true or false
-//				if ( ! ( ( $old_type == 'true_or_false' ) && ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) ) {
-//					if ( $new_type == 'true_or_false' ) {
-//						$func = "_convert_answers_to_true_or_false";
-//					} else {
-//						$func = "_convert_answers_{$old_type}_to_{$new_type}";
-//					}
-//					if ( is_callable( array( $this, $func ) ) ) {
-//						$answer_options = call_user_func_array( array( $this, $func ), array( $answer_options ) );
-//					}
-//				}
-//
-//				wp_cache_delete( 'answer-options-' . $question_id, 'lp-questions' );
-//				wp_cache_set( 'answer-options-' . $question_id, $answer_options, 'lp-questions' );
-//				$new_question->set_data( 'answer_options', $answer_options );
-//
-//				return $new_question;
-//			}
-//
-//			return false;
-//		}
-
-		/**
-		 * Update question answer.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param array $args
-		 * @param string $case
-		 *
-		 * @return false|int
-		 */
-		public function update_answer( $args = array(), $case = '' ) {
-
-			if ( ! $case ) {
-				return false;
-			}
-
-			global $wpdb;
-
-			$answer = false;
-
-			switch ( $case ) {
-				case 'update-title':
-					$answer = $wpdb->update( $wpdb->learnpress_question_answers,
-						$args['data'],
-						$args['where'],
-						array( '%s', '%s', '%s' ),
-						array( '%d', '%d', '%d' )
-					);
-					break;
-				case 'update-correct':
-					foreach ( $args as $arg ) {
-						$answer = $wpdb->update( $wpdb->learnpress_question_answers,
-							$arg['data'],
-							$arg['where'],
-							array( '%s', '%s', '%s' ),
-							array( '%d', '%d', '%d' )
-						);
-					}
-					break;
-				default:
-					break;
-			}
-
-			return $answer;
-		}
-
-		/**
-		 * Change question type.
-		 *
-		 * @param $question LP_Question
 		 * @param $new_type
 		 *
 		 * @return bool|int|LP_Question
 		 */
-		public function change_question_type( $question, $new_type ) {
+		public function change_question_type( $question_id, $new_type ) {
+
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+				return false;
+			}
+
+			$question = LP_Question::get_question( $question_id );
 
 			$old_type    = $question->get_type();
-			$question_id = $question->get_id();
 
 			if ( $old_type == $new_type ) {
 				return 0;
@@ -223,7 +140,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @param $question_id
 		 *
-		 * @return array|bool|false|WP_Post
+		 * @return bool
 		 */
 		public function delete_permanently_question( $question_id ) {
 
@@ -235,9 +152,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$this->delete_answer( $question_id, '', $force = false );
 
 			// remove permanently question
-			$delete = wp_delete_post( $question_id );
+			wp_delete_post( $question_id );
 
-			return $delete;
+			return true;
 
 		}
 

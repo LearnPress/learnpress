@@ -95,24 +95,19 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     };
 
     var actions = {
+
         toggle: function (context) {
             context.commit('TOGGLE');
         },
 
+        // open modal
         open: function (context, quizId) {
             context.commit('SET_QUIZ', quizId);
             context.commit('RESET');
             context.commit('TOGGLE');
         },
 
-        addItem: function (context, item) {
-            context.commit('ADD_ITEM', item);
-        },
-
-        removeItem: function (context, index) {
-            context.commit('REMOVE_ADDED_ITEM', index);
-        },
-
+        // query available question
         searchItems: function (context, payload) {
             context.commit('SEARCH_ITEM_REQUEST');
 
@@ -144,16 +139,24 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             );
         },
 
-        addItemsToQuiz: function (context) {
+        // add question
+        addItem: function (context, item) {
+            context.commit('ADD_ITEM', item);
+        },
+
+        // remove question
+        removeItem: function (context, index) {
+            context.commit('REMOVE_ADDED_ITEM', index);
+        },
+
+        addQuestionsToQuiz: function (context) {
             var items = context.getters.addedItems;
 
             if (items.length > 0) {
-                Vue.http
-                    .LPRequest({
-                        type: 'add-items-to-quiz',
-                        'quiz-id': context.getters.quiz,
-                        items: JSON.stringify(items)
-                    }).then(
+                Vue.http.LPRequest({
+                    type: 'add-questions-to-quiz',
+                    items: JSON.stringify(items)
+                }).then(
                     function (response) {
                         var result = response.body;
 
@@ -377,82 +380,52 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
     var actions = {
 
+        toggleAll: function (context) {
+            var hidden = context.getters['isHiddenListQuestions'];
+
+            if (hidden) {
+                context.commit('OPEN_LIST_QUESTIONS');
+            } else {
+                context.commit('CLOSE_LIST_QUESTIONS');
+            }
+
+            Vue.http.LPRequest({
+                type: 'hidden-questions',
+                hidden: context.getters['hiddenQuestions']
+            })
+        },
+
         newQuestion: function (context, question) {
 
-            Vue.http
-                .LPRequest({
-                    type: 'new-question',
-                    'question': JSON.stringify(question)
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
+            Vue.http.LPRequest({
+                type: 'new-question',
+                question: JSON.stringify(question)
+            }).then(
+                function (response) {
+                    var result = response.body;
 
-                        if (result.success) {
-                            context.commit('ADD_NEW_QUESTION', result.data);
-                        }
-                    },
-                    function (error) {
-                        console.log(error);
+                    if (result.success) {
+                        context.commit('ADD_NEW_QUESTION', result.data);
                     }
-                );
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
         },
 
-        cloneQuestion: function (context, question) {
-            Vue.http
-                .LPRequest({
-                    type: 'clone-question',
-                    question: JSON.stringify(question)
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            context.commit('ADD_NEW_QUESTION', result.data);
-                        }
-                    },
-                    function (error) {
-                        console.log(error);
-                    }
-                )
-        },
-
-        removeQuestion: function (context, question) {
-
-            Vue.http
-                .LPRequest({
-                    type: 'remove-question',
-                    question: question
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            context.commit('REMOVE_QUESTION', question);
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                )
-        },
-
-        deleteQuestion: function (context, question) {
-
-            Vue.http
-                .LPRequest({
-                    type: 'delete-question',
-                    question: question
-                })
-                .then(function () {
-                    context.commit('REMOVE_QUESTION', question);
-                    context.commit('UPDATE_QUESTION_SUCCESS', question.id);
-                })
-                .catch(function () {
-                    context.commit('UPDATE_QUESTION_FAILURE', question.id);
-                })
+        updateQuestionsOrder: function (context, order) {
+            Vue.http.LPRequest({
+                type: 'sort-questions',
+                order: JSON.stringify(order)
+            }).then(
+                function (response) {
+                    context.commit('SORT_QUESTIONS', order);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
         },
 
         updateQuestionTitle: function (context, question) {
@@ -470,6 +443,197 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 function () {
                     context.commit('UPDATE_QUESTION_FAILURE', question.id);
                 })
+        },
+
+        changeQuestionType: function (context, payload) {
+
+            context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
+
+            Vue.http.LPRequest({
+                type: 'change-question-type',
+                question_id: payload.question_id,
+                question_type: payload.type
+            }).then(function (response) {
+                var result = response.body;
+
+                if (result.success) {
+                    var question = result.data;
+                    context.commit('CHANGE_QUESTION_TYPE', question);
+                    context.commit('UPDATE_QUESTION_SUCCESS', payload.question_id);
+                    context.commit('OPEN_QUESTION', question);
+                }
+            }).catch(function () {
+                context.commit('UPDATE_QUESTION_FAILURE', payload.question_id);
+
+            })
+        },
+
+        cloneQuestion: function (context, question) {
+            Vue.http.LPRequest({
+                type: 'clone-question',
+                question: JSON.stringify(question)
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (result.success) {
+                        context.commit('ADD_NEW_QUESTION', result.data);
+                    }
+                },
+                function (error) {
+                    console.log(error);
+                }
+            )
+        },
+
+        removeQuestion: function (context, question_id) {
+
+            Vue.http.LPRequest({
+                type: 'remove-question',
+                question_id: question_id
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (result.success) {
+                        context.commit('REMOVE_QUESTION', question_id);
+                    }
+                },
+                function (error) {
+                    console.error(error);
+                }
+            )
+        },
+
+        deleteQuestion: function (context, question_id) {
+
+            Vue.http
+                .LPRequest({
+                    type: 'delete-question',
+                    question_id: question_id
+                })
+                .then(function () {
+                    context.commit('REMOVE_QUESTION', question_id);
+                    context.commit('UPDATE_QUESTION_SUCCESS', question_id);
+                })
+                .catch(function () {
+                    context.commit('UPDATE_QUESTION_FAILURE', question_id);
+                })
+        },
+
+        toggleQuestion: function (context, question) {
+            if (question.open) {
+                context.commit('CLOSE_QUESTION', question);
+            } else {
+                context.commit('OPEN_QUESTION', question);
+            }
+
+            Vue.http.LPRequest({
+                    type: 'hidden-questions',
+                    hidden: context.getters['hiddenQuestions']
+                }
+            )
+        },
+
+        updateQuestionAnswersOrder: function (context, payload) {
+            Vue.http.LPRequest({
+                type: 'sort-question-answers',
+                question_id: payload.question_id,
+                order: JSON.stringify(payload.order)
+            }).then(
+                function (response) {
+                    var result = response.body,
+                        order = result.data;
+                    context.commit('SORT_QUESTION_ANSWERS', order);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            )
+        },
+
+        updateQuestionAnswerTitle: function (context, payload) {
+
+            Vue.http.LPRequest({
+                type: 'update-question-answer-title',
+                question_id: parseInt(payload.question_id),
+                answer: JSON.stringify(payload.answer)
+            }).then(
+                function () {
+                    context.commit('UPDATE_QUESTION_ANSWER_SUCCESS', parseInt(payload.question_id));
+                }
+            ).catch(
+                function () {
+                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', parserInt(payload.question_id));
+                })
+        },
+
+        updateQuestionCorrectAnswer: function (context, payload) {
+            context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
+
+            Vue.http.LPRequest({
+                type: 'change-question-correct-answer',
+                question_id: payload.question_id,
+                correct: JSON.stringify(payload.correct)
+            }).then(
+                function (response) {
+                    var result = response.body;
+                    if (result.success) {
+                        context.commit('UPDATE_QUESTION_SUCCESS', payload.question_id);
+                    }
+                },
+                function (error) {
+                    context.commit('UPDATE_QUESTION_FAILURE', payload.question_id);
+                    console.log(error);
+                }
+            )
+        },
+
+        deleteQuestionAnswer: function (context, payload) {
+            Vue.http.LPRequest({
+                type: 'delete-question-answer',
+                question_id: payload.question_id,
+                answer_id: payload.answer_id
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (result.success) {
+                        context.commit('DELETE_QUESTION_ANSWER', {
+                            question_id: payload.question_id,
+                            answer_id: payload.answer_id
+                        });
+                    }
+                },
+                function (error) {
+                    console.log(error);
+                }
+            )
+        },
+
+        newQuestionAnswer: function (context, question_id) {
+            context.commit('UPDATE_QUESTION_REQUEST', question_id);
+
+            Vue.http
+                .LPRequest({
+                    type: 'new-question-answer',
+                    question_id: question_id
+                })
+                .then(
+                    function (response) {
+
+                        var result = response.body;
+
+                        if (result.success) {
+                            var answer = result.data;
+                            context.commit('UPDATE_QUESTION_SUCCESS', question_id);
+                        }
+                    },
+                    function (error) {
+                        context.commit('UPDATE_QUESTION_FAILURE', question_id);
+                        console.error(error);
+                    }
+                )
         },
 
         updateQuestionContent: function (context, question) {
@@ -506,217 +670,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                     context.commit('UPDATE_QUESTION_FAILURE', payload.question.id);
                 })
         },
-
-        changeQuestionType: function (context, payload) {
-
-            context.commit('UPDATE_QUESTION_REQUEST', payload.question.id);
-
-            Vue.http
-                .LPRequest({
-                    type: 'change-question-type',
-                    question: JSON.stringify(payload.question),
-                    'new-type': payload.newType
-                })
-                .then(function (response) {
-                    var result = response.body;
-
-                    if (result.success) {
-                        var question = result.data;
-                        context.commit('CHANGE_QUESTION_TYPE', question);
-                        context.commit('UPDATE_QUESTION_SUCCESS', payload.question.id);
-                        context.commit('OPEN_QUESTION', question);
-                    }
-                })
-                .catch(function () {
-                    context.commit('UPDATE_QUESTION_FAILURE', payload.question.id);
-
-                })
-        },
-
-        newQuestionAnswer: function (context, question_id) {
-            context.commit('UPDATE_QUESTION_REQUEST', question_id);
-
-            Vue.http
-                .LPRequest({
-                    type: 'new-question-answer',
-                    question_id: question_id
-                })
-                .then(
-                    function (response) {
-
-                        var result = response.body;
-
-                        if (result.success) {
-                            var answer = result.data;
-                            context.commit('UPDATE_QUESTION_SUCCESS', question_id);
-                        }
-                    },
-                    function (error) {
-                        context.commit('UPDATE_QUESTION_FAILURE', question_id);
-                        console.error(error);
-                    }
-                )
-        },
-
-        updateQuestionsOrder: function (context, order) {
-            Vue.http
-                .LPRequest({
-                    type: 'sort-questions',
-                    order: JSON.stringify(order)
-                })
-                .then(
-                    function (response) {
-                        context.commit('SORT_QUESTIONS', order);
-                    },
-                    function (error) {
-                        console.log(error);
-                    }
-                );
-        },
-
-        updateQuestionCorrectAnswer: function (context, payload) {
-            context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
-
-            Vue.http.LPRequest({
-                type: 'change-question-correct-answer',
-                question_id: payload.question_id,
-                correct: JSON.stringify(payload.correct)
-            }).then(
-                function (response) {
-                    var result = response.body;
-                    if (result.success) {
-                        context.commit('UPDATE_QUESTION_SUCCESS', payload.question_id);
-                    }
-                },
-                function (error) {
-                    context.commit('UPDATE_QUESTION_FAILURE', payload.question_id);
-                    console.log(error);
-                }
-            )
-        },
-
-        updateQuestionAnswerTitle: function (context, payload) {
-
-            Vue.http.LPRequest({
-                type: 'update-question-answer-title',
-                question_id: parseInt(payload.question_id),
-                answer: JSON.stringify(payload.answer)
-            }).then(
-                function () {
-                    context.commit('UPDATE_QUESTION_ANSWER_SUCCESS', parseInt(payload.question_id));
-                }
-            ).catch(
-                function () {
-                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', parserInt(payload.question_id));
-                })
-        },
-
-        updateQuestionAnswer: function (context, payload) {
-            Vue.http
-                .LPRequest({
-                    type: 'update-question-answer',
-                    questionId: parseInt(payload.questionId),
-                    answer: JSON.stringify(payload.answer)
-                })
-                .then(function () {
-                    context.commit('UPDATE_QUESTION_ANSWER_SUCCESS', parseInt(payload.questionId));
-                })
-                .catch(function () {
-                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', parserInt(payload.questionId));
-                })
-
-        },
-
-        updateQuestionAnswersOrder: function (context, payload) {
-            Vue.http.LPRequest({
-                type: 'sort-question-answers',
-                question_id: payload.question_id,
-                order: JSON.stringify(payload.order)
-            }).then(
-                function (response) {
-                    var result = response.body,
-                        order = result.data;
-                    context.commit('SORT_QUESTION_ANSWERS', order);
-                },
-                function (error) {
-                    console.log(error);
-                }
-            )
-        },
-
-        deleteQuestionAnswer: function (context, payload) {
-            Vue.http.LPRequest({
-                type: 'delete-question-answer',
-                question_id: payload.question_id,
-                answer_id: payload.answer_id
-            }).then(
-                function (response) {
-                    var result = response.body;
-
-                    if (result.success) {
-                        var data = result.data;
-
-                        context.commit('DELETE_QUESTION_ANSWER', {
-                            question_id: payload.question_id,
-                            answer_id: payload.answer_id
-                        });
-                    }
-                },
-                function (error) {
-                    console.log(error);
-                }
-            )
-        },
-
-        updateListQuestionsItems: function (context, payload) {
-            Vue.http
-                .LPRequest({
-                    type: 'update-list-questions',
-                    'items': JSON.stringify(payload.items)
-                }).then(
-                function (response) {
-                    var result = response.body;
-
-                    if (result.success) {
-                        // console.log(result);
-                    }
-                },
-                function (error) {
-                    console.log(error);
-                }
-            )
-        },
-
-        toggleQuestion: function (context, question) {
-            if (question.open) {
-                context.commit('CLOSE_QUESTION', question);
-            } else {
-                context.commit('OPEN_QUESTION', question);
-            }
-
-            Vue.http
-                .LPRequest({
-                        type: 'hidden-questions',
-                        hidden: context.getters['hiddenQuestions']
-                    }
-                )
-        },
-
-        toggleAll: function (context) {
-            var hidden = context.getters['isHiddenListQuestions'];
-
-            if (hidden) {
-                context.commit('OPEN_LIST_QUESTIONS');
-            } else {
-                context.commit('CLOSE_LIST_QUESTIONS');
-            }
-
-            Vue.http
-                .LPRequest({
-                    type: 'hidden-questions',
-                    hidden: context.getters['hiddenQuestions']
-                })
-        }
     };
 
     return {

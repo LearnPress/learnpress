@@ -48,10 +48,6 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                 }
             },
             methods: {
-                // new answer option
-                newAnswer: function () {
-                    $store.dispatch('lqs/newQuestionAnswer', this.question.id);
-                },
                 // sort answer options
                 sort: function () {
                     var order = [];
@@ -65,11 +61,16 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                         order: order
                     });
                 },
+                // change correct answer
                 changeCorrect: function (correct) {
                     $store.dispatch('lqs/updateQuestionCorrectAnswer', {
                         question_id: this.question.id,
                         correct: correct
                     });
+                },
+                // new answer option
+                newAnswer: function () {
+                    $store.dispatch('lqs/newQuestionAnswer', this.question.id);
                 }
             }
         })

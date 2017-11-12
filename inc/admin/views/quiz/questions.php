@@ -9,10 +9,9 @@ learn_press_admin_view( 'quiz/question' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-questions">
-    <draggable :list="questions" class="main" :options="{handle: '.fa-bars'}" :element="'div'"
-               @end="sort">
+    <draggable :list="questions" class="main" :options="{handle: '.fa-bars'}" @end="sort">
         <lp-quiz-question-item v-for="(question, index) in questions" :question="question" :index="index"
-                          :key="index"></lp-quiz-question-item>
+                               :key="index"></lp-quiz-question-item>
     </draggable>
 </script>
 
@@ -22,6 +21,7 @@ learn_press_admin_view( 'quiz/question' );
         Vue.component('lp-quiz-questions', {
             template: '#tmpl-lp-quiz-questions',
             computed: {
+                // list quiz questions
                 questions: function () {
                     return $store.getters['lqs/listQuestions'];
                 }

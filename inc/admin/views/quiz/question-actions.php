@@ -20,7 +20,7 @@
                 <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
                     <a class="lp-btn-icon dashicons dashicons-editor-help"></a>
                     <ul>
-                        <li v-for="(type, key) in questionTypes" :class="active(key) ? 'active' : ''">
+                        <li v-for="(type, key) in questionTypes" :class="active(key)">
                             <a href="" :data-type="key" @click.prevent="changeType(key)">{{type}}</a>
                         </li>
                     </ul>
@@ -73,25 +73,9 @@
                 }
             },
             methods: {
-                // toogle question
-                toggle: function () {
-                    $store.dispatch('lqs/toggleQuestion', this.question);
-                },
                 // check question type active
                 active: function (type) {
-                    return this.type === type ? 'active' : '';
-                },
-                // clone question
-                clone: function () {
-                    $store.dispatch('lqs/cloneQuestion', this.question);
-                },
-                // remove question from quiz
-                remove: function () {
-                    $store.dispatch('lqs/removeQuestion', this.question.id);
-                },
-                // delete permanently question
-                deletePermanently: function () {
-                    $store.dispatch('lqs/deleteQuestion', this.question.id);
+                    return this.question.type.key === type ? 'active' : '';
                 },
                 // onchange question title
                 changeTitle: function () {
@@ -108,10 +92,26 @@
                 changeType: function (type) {
                     if (this.question.type !== type) {
                         $store.dispatch('lqs/changeQuestionType', {
-                            question: this.question,
-                            newType: type
+                            question_id: this.question.id,
+                            type: type
                         });
                     }
+                },
+                // clone question
+                clone: function () {
+                    $store.dispatch('lqs/cloneQuestion', this.question);
+                },
+                // remove question from quiz
+                remove: function () {
+                    $store.dispatch('lqs/removeQuestion', this.question.id);
+                },
+                // delete permanently question
+                deletePermanently: function () {
+                    $store.dispatch('lqs/deleteQuestion', this.question.id);
+                },
+                // toggle question
+                toggle: function () {
+                    $store.dispatch('lqs/toggleQuestion', this.question);
                 }
             }
         });

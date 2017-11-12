@@ -120,7 +120,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 // add new question
                 addItem: function (type) {
                     this.newQuestion.type = type;
-                    $store.dispatch('lqs/newQuestion', {newQuestion: this.newQuestion});
+                    $store.dispatch('lqs/newQuestion', this.newQuestion);
                     this.newQuestion.title = '';
                 },
                 // open modal

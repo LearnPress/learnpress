@@ -25,19 +25,20 @@
         Vue.component('lp-quiz-added-items-preview', {
                 template: '#tmpl-lp-quiz-added-items-preview',
                 props: {
+                    // only show added items
                     show: {
                         type: Boolean,
                         value: false
                     }
                 },
-                methods: {
-                    removeItem: function (item) {
-                        $store.dispatch('cqi/removeItem', item);
-                    }
-                },
                 computed: {
                     addedItems: function () {
                         return $store.getters['cqi/addedItems'];
+                    }
+                },
+                methods: {
+                    removeItem: function (item) {
+                        $store.dispatch('cqi/removeItem', item);
                     }
                 }
             }
