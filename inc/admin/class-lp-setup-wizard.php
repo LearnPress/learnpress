@@ -28,6 +28,9 @@ class LP_Setup_Wizard {
 	 * Add an empty menu item for validating page.
 	 */
 	public function admin_menu() {
+		if ( 'lp-setup' !== LP_Request::get_string( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
+			return;
+		}
 		add_dashboard_page( '', '', 'manage_options', 'lp-setup', '' );
 	}
 

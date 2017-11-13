@@ -779,16 +779,22 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		global $wpdb;
 		$item     = LP_Course_Item::get_item( $item_id );
+		$time     = new LP_Datetime();
 		$inserted = $wpdb->insert(
 			$wpdb->learnpress_user_items,
-			array(
-				'user_id'   => $this->get_id(),
-				'item_id'   => $item_id,
-				'item_type' => $item->get_item_type(),
-				'status'    => '',
-				'ref_id'    => $course_id,
-				'ref_type'  => LP_COURSE_CPT,
-				'parent_id' => $course_data->get_data( 'user_item_id' )
+			apply_filters(
+				'learn-press/default-user-item-data',
+				array(
+					'user_id'        => $this->get_id(),
+					'item_id'        => $item_id,
+					'item_type'      => $item->get_item_type(),
+					'start_time'     => $time->toSql(),
+					'start_time_gmt' => $time->toSql( false ),
+					'status'         => learn_press_default_user_item_status($item_id),
+					'ref_id'         => $course_id,
+					'ref_type'       => LP_COURSE_CPT,
+					'parent_id'      => $course_data->get_data( 'user_item_id' )
+				)
 			)
 		);
 
@@ -1749,34 +1755,21 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn_press_user_incomplete_items', $item_ids, $course_id, $this->get_id() );
 	}
 
+	/**
+	 * Finish course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return int|bool
+	 */
 	public function finish_course( $course_id ) {
-		global $wpdb;
-		$return = 0;
+		$return = false;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			if ( ! $this->can( 'finish-course', $course_id ) ) {
 				return false;
 			} else {
 				$user_course = $this->get_course_data( $course_id );
-				$end_time    = new LP_Datetime();
-
-				$user_course->set_end_time( $end_time->toSql() );
-				$user_course->set_end_time_gmt( $end_time->toSql( false ) );
-				$user_course->set_status( 'finished' );
-
-				$user_course->update();
-
-
-				$null_time = '0000-00-00 00:00';
-
-				$return = $wpdb->get_var(
-					$wpdb->prepare( "
-							SELECT user_item_id
-							FROM {$wpdb->prefix}learnpress_user_items
-							WHERE user_id = %d
-								AND item_id = %d
-								AND start_time <> %s AND end_time <> %s
-						", $this->get_id(), $course_id, $null_time, $null_time )
-				);
+				$return      = $user_course->finish();
 				if ( $return ) {
 					do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
 				}

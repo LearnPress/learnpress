@@ -94,7 +94,7 @@ class LP_Datetime extends DateTime {
 
 		foreach ( timezone_abbreviations_list() as $abbr ) {
 			foreach ( $abbr as $city ) {
-				if ( (bool) date( 'I' ) === (bool) $city['dst'] && $city['timezone_id'] && intval( $city['offset'] ) === $utc_offset ) {
+				if ( ((bool) date( 'I' ) === (bool) $city['dst']) && $city['timezone_id'] && (intval( $city['offset'] ) === $utc_offset) ) {
 					return $city['timezone_id'];
 				}
 			}
@@ -276,7 +276,7 @@ class LP_Datetime extends DateTime {
 		return $timestamp;
 	}
 
-	public static function getSqlNullDate(){
+	public static function getSqlNullDate() {
 		return '0000-00-00 00:00:00';
 	}
 }

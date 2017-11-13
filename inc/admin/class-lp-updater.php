@@ -113,7 +113,7 @@ class LP_Updater {
 	 */
 	public function admin_menu() {
 		// Permission
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( 'lp-database-updater' !== LP_Request::get_string( 'page' ) || ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
 

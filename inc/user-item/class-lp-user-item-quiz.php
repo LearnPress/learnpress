@@ -165,10 +165,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $this->get_results( 'grade' ) === 'passed';
 	}
 
-	public function is_completed() {
-		return $this->get_status() === 'completed';
-	}
-
 	public function get_time_interval( $context = '' ) {
 		$interval = parent::get_time_interval();
 		if ( $context == 'display' ) {

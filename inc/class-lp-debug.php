@@ -28,21 +28,44 @@ class LP_Debug {
 	/**
 	 * Constructor for the logger.
 	 */
-	public function __construct() {
+	protected function __construct() {
 		$this->_handles = array();
+
+		add_action( 'plugins_loaded', array( $this, 'init' ) );
 	}
 
 	protected static $_current_name = '';
+
+	protected $_lock = null;
 
 	/**
 	 * Destructor.
 	 */
 	public function __destruct() {
+		if ( ! $this->_handles ) {
+			return;
+		}
 		foreach ( $this->_handles as $handle ) {
 			@fclose( $handle );
 		}
 	}
 
+	public function init() {
+		$this->clear( 'query' );
+		add_filter( 'query', array( $this, 'log_query' ) );
+	}
+
+	public function log_query( $query ) {
+		if ( preg_match( '!INSERT.*learnpress_user_items!', $query ) ) {
+			ob_start();
+			print_r( debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 10 ) );
+			$log = ob_get_clean();
+
+			$this->add( $log, 'query', false, true );
+		}
+
+		return $query;
+	}
 
 	/**
 	 * Open log file for writing.
@@ -73,33 +96,42 @@ class LP_Debug {
 		return false;
 	}
 
-
 	/**
 	 * Add a log entry to chosen file.
 	 *
 	 * @param string $handle
 	 * @param string $message
 	 * @param bool   $clear
+	 * @param bool   $force
 	 */
-	public function add( $message, $handle = 'log', $clear = false ) {
+	public function add( $message, $handle = 'log', $clear = false, $force = false ) {
 		if ( ! $handle ) {
 			$handle = 'log';
 		}
-		if ( LP()->settings->get( 'debug' ) == 'yes' && $this->open( $handle ) && is_resource( $this->_handles[ $handle ] ) ) {
+
+		if ( $this->_lock === null ) {
+			$this->_lock = ! ( LP()->settings->get( 'debug' ) == 'yes' );
+		}
+
+		if ( ( ! $force && ! $this->_lock || $force ) && $this->_can_log( $handle ) ) {
 			if ( $clear ) {
 				$this->clear( $handle );
 			}
 			$time = date_i18n( 'm-d-Y @ H:i:s -' );
+
 			if ( ! is_string( $message ) ) {
 				ob_start();
 				print_r( $message );
 				$message = ob_get_clean();
 			}
 			fwrite( $this->_handles[ $handle ], "-----" . $time . "-----\n" . $message . "\n" );
+			do_action( 'learn_press_log_add', $handle, $message );
 		}
-		do_action( 'learn_press_log_add', $handle, $message );
 	}
 
+	protected function _can_log( $handle ) {
+		return $this->open( $handle ) && is_resource( $this->_handles[ $handle ] );
+	}
 
 	/**
 	 * Clear entries from chosen file.
@@ -202,3 +234,5 @@ class LP_Debug {
 		$wpdb->query( "COMMIT;" );
 	}
 }
+
+return LP_Debug::instance();

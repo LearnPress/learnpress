@@ -5,6 +5,9 @@
  * @since 3.0.0
  */
 class LP_User_Item extends LP_Abstract_Object_Data {
+	/**
+	 * @var int
+	 */
 	protected static $_loaded = 0;
 
 	/**
@@ -275,6 +278,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	public function update() {
 		$data = $this->get_mysql_data();
+
 		return learn_press_update_user_item_field( $data );
 	}
 
@@ -332,6 +336,82 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Return number of seconds has exceeded.
+	 * If greater than or equals to 0 that means the time is exceeded.
+	 * Otherwise, the time is not exceeded
+	 *
+	 * @return float|int
+	 */
+	public function is_exceeded() {
+		$current = ( new LP_Datetime() )->getTimestamp();
+		LP_Debug::instance()->add( $this->get_item_id() . ',' . $this->get_exceeded_time() . '.' . $current, '', false, true );
+
+		return $this->get_exceeded_time() - $current;
+	}
+
+	/**
+	 * @param string $format
+	 *
+	 * @return int|mixed
+	 */
+	public function get_exceeded_time( $format = '' ) {
+		$start_time = $this->get_start_time()->getTimestamp();
+		$duration   = $this->get_course()->get_duration();
+
+		return $format ? date( $format, $start_time + $duration ) : $start_time + $duration;
+	}
+
+	/**
+	 * Return true of item is completed/finished
+	 *
+	 * @param string $status
+	 *
+	 * @return bool
+	 */
+	public function is_completed( $status = 'completed' ) {
+		return $this->get_status() === $status;
+	}
+
+	public function complete( $status = 'completed' ) {
+
+		global $wpdb;
+
+		//$time = new LP_Datetime();
+		//$item = LP_Course_Item::get_item( $this->get_item_id() );
+
+
+		$end_time  = new LP_Datetime();
+		$null_time = '0000-00-00 00:00';
+
+		$this->set_end_time( $end_time->toSql() );
+		$this->set_end_time_gmt( $end_time->toSql( false ) );
+		$this->set_status( $status );
+		$this->update();
+
+		$return = $wpdb->get_var(
+			$wpdb->prepare( "
+				SELECT user_item_id
+				FROM {$wpdb->prefix}learnpress_user_items
+				WHERE user_id = %d
+					AND item_id = %d
+					AND start_time <> %s AND end_time <> %s
+					AND status = %s
+			", $this->get_id(), $this->get_item_id(), $null_time, $null_time, $status )
+		);
+
+		return $return;
+	}
+
+	/**
+	 * Get post type of item.
+	 *
+	 * @return string
+	 */
+	public function get_post_type() {
+		return get_post_type( $this->get_item_id() );
 	}
 
 	public function get_js_args() {

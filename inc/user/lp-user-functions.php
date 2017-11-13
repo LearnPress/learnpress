@@ -1779,3 +1779,17 @@ function learn_press_hk_before_start_quiz( $true, $quiz_id, $course_id, $user_id
 }
 
 add_filter( 'learn-press/before-start-quiz', 'learn_press_hk_before_start_quiz', 10, 4 );
+
+function learn_press_default_user_item_status( $item_id ) {
+	$status = '';
+	switch ( get_post_type( $item_id ) ) {
+		case LP_LESSON_CPT:
+		case LP_QUIZ_CPT:
+			$status = 'started';
+			break;
+		case LP_COURSE_CPT:
+			$status = 'enrolled';
+	}
+
+	return apply_filters( 'learn-press/default-user-item-status', $status, $item_id );
+}

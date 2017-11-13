@@ -27,6 +27,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	protected static $_loaded = 0;
 
+	protected $_items_by_item_ids = array();
+
 	/**
 	 * LP_User_Item_Course constructor.
 	 *
@@ -83,7 +85,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 						$default_data
 					);
 				}
-				$this->_items[ $item_id ] = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $data ), $data, $this );
+				$course_item                                                  = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $data ), $data, $this );
+				$this->_items[ $item_id ]                                     = $course_item;
+				$this->_items_by_item_ids[ $course_item->get_user_item_id() ] = $item_id;
 			}
 		}
 
@@ -290,6 +294,40 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Finish course for user
+	 *
+	 * @return int
+	 */
+	public function finish() {
+
+		return parent::complete('finished');
+
+
+		global $wpdb;
+
+		$end_time  = new LP_Datetime();
+		$null_time = '0000-00-00 00:00';
+
+		$this->set_end_time( $end_time->toSql() );
+		$this->set_end_time_gmt( $end_time->toSql( false ) );
+		$this->set_status( 'finished' );
+		$this->update();
+
+		$return = $wpdb->get_var(
+			$wpdb->prepare( "
+				SELECT user_item_id
+				FROM {$wpdb->prefix}learnpress_user_items
+				WHERE user_id = %d
+					AND item_id = %d
+					AND start_time <> %s AND end_time <> %s
+					AND status = %s
+			", $this->get_id(), $this->get_item_id(), $null_time, $null_time, 'finished' )
+		);
+
+		return $return;
 	}
 
 	/**
@@ -551,6 +589,21 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 */
 	public function get_item( $item_id ) {
 		return ! empty( $this->_items[ $item_id ] ) ? $this->_items[ $item_id ] : false;
+	}
+
+	/**
+	 * @param int $user_item_id
+	 *
+	 * @return LP_User_Item|LP_User_Item_Quiz|bool
+	 */
+	public function get_item_by_user_item_id( $user_item_id ) {
+		if ( ! empty( $this->_items_by_item_ids[ $user_item_id ] ) ) {
+			$item_id = $this->_items_by_item_ids[ $user_item_id ];
+
+			return $this->get_item( $item_id );
+		}
+
+		return false;
 	}
 
 	public function set_item( $item ) {

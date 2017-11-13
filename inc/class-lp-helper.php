@@ -157,19 +157,23 @@ class LP_Helper {
 	 *
 	 * @return array
 	 */
-	public static function array_merge_recursive( array & $array1, array & $array2 ) {
+	public static function array_merge_recursive( & $array1, & $array2 ) {
 		$merged = $array1;
 
-		foreach ( $array2 as $key => & $value ) {
-			if ( is_array( $value ) && isset( $merged[ $key ] ) && is_array( $merged[ $key ] ) ) {
-				$merged[ $key ] = self::array_merge_recursive( $merged[ $key ], $value );
-			} else if ( is_numeric( $key ) ) {
-				if ( ! in_array( $value, $merged ) ) {
-					$merged[] = $value;
+		if ( is_array( $array1 ) && is_array( $array2 ) ) {
+			foreach ( $array2 as $key => & $value ) {
+				if ( is_array( $value ) && isset( $merged[ $key ] ) && is_array( $merged[ $key ] ) ) {
+					$merged[ $key ] = self::array_merge_recursive( $merged[ $key ], $value );
+				} else if ( is_numeric( $key ) ) {
+					if ( ! in_array( $value, $merged ) ) {
+						$merged[] = $value;
+					}
+				} else {
+					$merged[ $key ] = $value;
 				}
-			} else {
-				$merged[ $key ] = $value;
 			}
+		} elseif ( is_array( $array2 ) ) {
+			$merged = $array2;
 		}
 
 		return $merged;

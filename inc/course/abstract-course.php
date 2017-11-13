@@ -1517,7 +1517,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		 * Duration is in string such as 10 week, 4 hour, etc...
 		 * So we can use strtotime('+10 week') to convert it to seconds
 		 */
-		return strtotime( "+" . $this->duration, 0 );
+		return strtotime( "+" . $this->get_data('duration'), 0 );
 	}
 
 

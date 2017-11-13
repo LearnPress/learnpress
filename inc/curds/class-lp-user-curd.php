@@ -635,12 +635,37 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $item;
 	}
 
-	public function get_user_item_by_id( $user_item_id ) {
+	/**
+	 * @param int    $user_item_id
+	 * @param string $type
+	 *
+	 * @return array
+	 */
+	public function get_user_item_by_id( $user_item_id, $type = '' ) {
 		global $wpdb;
 
-		$item = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->learnpress_user_items} WHERE user_item_id = %d", $user_item_id ), ARRAY_A );
+		$query = $wpdb->prepare( "
+			SELECT * 
+			FROM {$wpdb->learnpress_user_items} 
+			WHERE user_item_id = %d
+			" . ( $type ? $wpdb->prepare( "AND item_type = %s", $type ) : '' ) . "
+		", $user_item_id );
+		$item  = $wpdb->get_row( $query, ARRAY_A );
 
 		return $item;
+	}
+
+	/**
+	 * @param int $user_item_id
+	 *
+	 * @return bool|LP_User_Item_Course
+	 */
+	public function get_user_item_course( $user_item_id ) {
+		if ( $item = $this->get_user_item_by_id( $user_item_id, LP_COURSE_CPT ) ) {
+			return new LP_User_Item_Course( $item );
+		}
+
+		return false;
 	}
 
 	public function get_user_item_meta( $user_item_id, $meta_key, $single = true ) {

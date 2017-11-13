@@ -32,7 +32,7 @@ class LP_Emails {
 	protected static $_instance = null;
 
 	/**
-	 * @var LP_Background_Process_Emailer
+	 * @var LP_Background_Emailer
 	 */
 	protected static $_background_emailer = null;
 
@@ -283,7 +283,7 @@ class LP_Emails {
 			)
 		);
 
-		self::$_background_emailer = new LP_Background_Process_Emailer();
+		self::$_background_emailer = new LP_Background_Emailer();
 
 		foreach ( $actions as $action ) {
 			add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );

@@ -2575,7 +2575,19 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
-	function learn_press_content_item_lesson_complete_button() {
+	function learn_press_content_item_lesson_complete_button( $course_id, $lesson_id ) {
+		$user = LP_Global::user();
+
+		if ( ( $course_item = $user->get_course_data( $course_id ) ) && $course_item->is_finished() ) {
+			return;
+		}
+
+		if ( $lesson_item = $course_item->get_item( $lesson_id ) ) {
+			if ( $lesson_item->is_completed() ) {
+				return;
+			}
+		}
+
 		learn_press_get_template( 'content-lesson/button-complete.php' );
 	}
 }
@@ -2611,7 +2623,7 @@ if ( ! function_exists( 'learn_press_become_teacher_messages' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_become_teacher_messages' ) ) {
+if ( ! function_exists( 'learn_press_become_teacher_heading' ) ) {
 
 	function learn_press_become_teacher_heading() {
 		$messages = LP_Shortcode_Become_A_Teacher::get_messages();

@@ -47,6 +47,13 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	public function __construct( $item, $args = null ) {
 		parent::__construct( $item, $args );
 		$this->add_support( 'comments', get_post_field( 'comment_status', $this->get_id() ) === 'open' );
+
+		// Set default data
+		$this->set_data(
+			array(
+				'duration' => get_post_meta( $this->get_id(), '_lp_duration', true )
+			)
+		);
 	}
 
 	/**
@@ -410,6 +417,15 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		}
 
 		return apply_filters( 'learn-press/item-status-classes', $status_classes, $this->get_id(), $course_id, $user_id );
+	}
+
+	public function get_duration() {
+		$duration = $this->get_data( 'duration' );
+		if ( ! is_numeric( $duration ) ) {
+			$duration = strtotime( '+' . $duration, 0 );
+		}
+
+		return $duration;
 	}
 
 	public function offsetExists( $offset ) {

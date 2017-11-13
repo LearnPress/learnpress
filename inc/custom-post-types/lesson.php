@@ -151,19 +151,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 							'type' => 'yes-no',
 							'desc' => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
 							'std'  => 'no'
-						),
-						array(
-							'name'     => __( 'Social Sharing', 'learnpress-certificates' ),
-							'id'       => 'certificates_adsasdasdasdasda',
-							'default'  => '',
-							'type'     => 'checkbox_list',
-							'options'  => array(
-								'twitter'  => __( 'Twitter', 'learnpress-certificates' ),
-								'facebook' => __( 'Facebook', 'learnpress-certificates' ),
-								'plusonce' => __( 'Plusonce', 'learnpress-certificates' )
-							),
-							'select_all_none'=>true
-						),
+						)
 					)
 				)
 			);
