@@ -1,0 +1,102 @@
+#learn-press-confirm-abort-upgrade-course {
+	display: none;
+}
+
+a[href~=learn_press_upgrade] {
+	display: none !important;
+}
+
+.lp-update-10 {
+	max-width: 800px;
+	margin: 50px auto;
+}
+
+.lp-update-10 .head {
+	padding: 20px;
+	margin: -20px -20px 20px -20px;
+	background-color: #F5F5F5;
+	font-size: 28px;
+	position: relative;
+	overflow: hidden;
+	border-bottom: 1px solid #ECECEC;
+}
+
+.lp-update-10 .head .dashicons {
+	font-size: 60px;
+	display: block;
+	width: 80px;
+	height: 80px;
+	color: #814490;
+	position: absolute;
+	right: 0;
+	top: 0;
+	line-height: 80px;
+	background-color: #FFF;
+	border-left: 1px solid #ECECEC;
+}
+
+.lp-update-10 form > h2 {
+	border-bottom: none;
+	font-size: 18px;
+	margin: 15px 0;
+	padding: 0;
+}
+
+.lp-update-10 .lp-update-content {
+	margin: 0 0 10px 0;
+	color: #999;
+}
+
+.lp-update-10 .lp-update-message {
+	display: none;
+}
+
+.upgrade-error {
+	color: #ff0000;
+}
+
+.lp-update-10 .lp-update-actions.lp-ajaxload > a {
+	display: none;
+}
+
+.lp-ajaxload {
+	text-align: left;
+	height: 38px;
+	overflow: hidden;
+}
+
+.lp-ajaxload:before {
+	font-family: dashicons;
+	content: "\f111";
+	-webkit-animation: form-press-spinner 2s infinite linear;
+	animation: learn-press-ajax-spinner 2s infinite linear;
+	color: #CECECE;
+	display: inline-block;
+	width: 38px;
+	height: 40px;
+	font-size: 40px;
+	position: relative;
+	line-height: 1;
+}
+
+@-webkit-keyframes learn-press-ajax-spinner {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+@keyframes learn-press-ajax-spinner {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}

@@ -1,0 +1,151 @@
+/* admin order details */
+.column-order_date,
+.column-order_total,
+.column-order_status,
+.post-type-lp_order .column-title {
+	width: 10%;
+}
+.post-type-lp_order .column-order_student {
+	width: 12%;
+}
+#order_details .ui-sortable-handle,
+#order_details .handlediv {
+	display: none !important;
+}
+#order_details .inside {
+	padding: 20px;
+	margin: 0;
+}
+#order_details .order-user-avatar {
+	float: left;
+	margin-right: 20px;
+}
+#order_details .order-user-meta {
+	float: left;
+}
+#order_details .order-items table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+#order_details .order-items table tr {
+	border-bottom: 1px solid #EEE;
+}
+#order_details .order-items table thead th {
+	height: 30px;
+	text-align: left;
+	font-size: 16px;
+	padding: 15px 10px;
+}
+#order_details .order-items table td {
+	padding: 15px 10px;
+	font-size: 16px;
+}
+#order_details .order-items table .align-right {
+	text-align: right;
+}
+#order_details .order-data {
+	float: right;
+}
+#order_details .order-data {
+	text-align: right;
+}
+#order_details .order-data .order-data-number {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+#order_details .order-data .order-data-date {
+	font-size: 14px;
+	font-style: italic;
+	margin-bottom: 5px;
+}
+#order_details .order-data .order-data-payment-method {
+	font-size: 16px;
+	font-weight: bold;
+	margin: 5px 0;
+}
+#order_details .order-data .order-data-status {
+	border-radius: 3px;
+	padding: 2px 5px;
+	display: inline-block;
+	color: #FFF;
+	font-size: 12px;
+}
+#order_details .order-data .order-data-status.completed {
+	background-color: #006400;
+}
+#order_details .order-data .order-data-status.pending {
+	background-color: #CCCCCC;
+}
+#order_details .total {
+	font-weight: bold;
+	font-size: 16px;
+}
+#order_details .avatar-multiple-users{
+	width: 120px;
+	height: 120px;
+	background: #F5F5F5;
+	position: relative;
+}
+#order_details .avatar-multiple-users:before,
+#order_details .avatar-multiple-users:after{
+	content: "\f110";
+	width: 120px;
+	height:120px;
+	position: absolute;
+	top:0;
+	left: 0;
+	font-family: dashicons;
+	font-size: 58px;
+	color: #a1adbb;
+	text-align: center;
+	line-height: 120px;
+}
+#order_details .avatar-multiple-users:before{
+	font-size: 48px;
+	left: -27px;
+	color: #DEDEDE;
+}
+#order_details .avatar-multiple-users span:after{
+	font-family: dashicons;
+	content: "\f132";
+	font-size: 32px;
+	top: 0;
+	position: absolute;
+	width: 120px;
+	height: 120px;
+	text-align: center;
+	line-height: 120px;
+	left: 31px;
+	color: #a1adbb;
+}
+#order_details .order-users > strong{
+	font-weight: bold;
+}
+#order_details .order-users p{
+	font-style: italic;
+	margin: 5px 0 15px 0;
+}
+#order_details .payment-method-title{
+	font-weight: bold;
+}
+
+
+.order-status-description {
+	font-size: smaller;
+	background: #CEE8FF;
+	padding: 5px;
+	font-style: italic;
+	color: #848484;
+	position: relative;
+	margin-top: 10px;
+	border-radius: 3px;
+}
+.order-status-description:before {
+	content: '';
+	border: 5px solid transparent;
+	border-bottom-color: #CEE8FF;
+	position: absolute;
+	top: -10px;
+}

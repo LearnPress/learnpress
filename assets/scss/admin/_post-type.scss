@@ -1,0 +1,68 @@
+/**
+ * Order
+ */
+.post-type-lp_order {
+    .wp-list-table {
+        .column-order_status {
+            width: 100px;
+        }
+        .order_status {
+            span {
+                display: inline-block;
+                &:after {
+                    font-family: fontawesome;
+                    display: inline-block;
+                    font-size: 20px;
+                    color: #FFF;
+                    text-align: center;
+                    line-height: 20px;
+                    width: 20px;
+                    height: 20px;
+                }
+                &.completed:after {
+                    content: "\f00c";
+                    color: $primary-color;
+                }
+                &.processing:after {
+                    content: "\f251";
+                    color: #563F7A;
+                }
+                &.pending:after {
+                    content: "\f017";
+                    color: #AAA;
+                }
+                &.cancelled:after {
+                    content: "\f057";
+                    color: #FF0000;
+                }
+                &.draft:after {
+                    content: "\f223";
+                    color: #69b391;
+                }
+            }
+        }
+        .column-title,
+        .column-order_total,
+        .column-order_date {
+            width: 150px;
+        }
+        .column-order_items {
+            ol {
+                margin: 0;
+                padding: 0;
+                list-style-position: inside;
+            }
+        }
+    }
+}
+
+.post-type-lp_course {
+    .column-price {
+        .origin-price {
+            font-size: 12px;
+            text-decoration: line-through;
+            margin-right: 10px;
+            color: #FF0000;
+        }
+    }
+}
