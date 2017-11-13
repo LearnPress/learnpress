@@ -669,7 +669,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 function () {
                     context.commit('UPDATE_QUESTION_FAILURE', payload.question.id);
                 })
-        },
+        }
     };
 
     return {

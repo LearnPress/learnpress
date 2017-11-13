@@ -90,9 +90,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'key'   => $question->get_type(),
 						'label' => $question->get_type_label()
 					),
-					'headings'            => $question->get_answer_headings(),
 					'answers'             => $answers,
-					'supportAnswerOption' => isset( $question->get_supports()['answer-options'] ),
 					'ajax'                => admin_url( '' ),
 					'action'              => 'admin_question_editor',
 					'nonce'               => wp_create_nonce( 'learnpress_admin_question_editor' ),
