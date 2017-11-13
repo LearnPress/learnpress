@@ -202,6 +202,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$wpdb->query( $sql );
 			}
 			update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
+			wp_cache_delete($post_id, 'post_meta');
 			learn_press_reset_auto_increment( $wpdb->postmeta );
 		}
 
