@@ -101,7 +101,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			$question = LP_Question::get_question( $question_id );
 
-			$old_type    = $question->get_type();
+			$old_type = $question->get_type();
 
 			if ( $old_type == $new_type ) {
 				return 0;
@@ -372,6 +372,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * Add new answer.
 		 *
 		 * @param $question_id
+		 * @param $answer
 		 *
 		 * @return bool|false|int
 		 */
@@ -410,10 +411,15 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		protected function _convert_answers_to_true_or_false( $answers ) {
 
 			if ( is_array( $answers ) ) {
+
+				// array answer ids
+				$answer_ids = array_keys( $answers );
+
 				if ( sizeof( $answers ) > 2 ) {
 					global $wpdb;
+
 					foreach ( $answers as $key => $answer ) {
-						if ( $key > 1 ) {
+						if ( array_search( $key, $answer_ids ) > 1 ) {
 							$wpdb->delete(
 								$wpdb->learnpress_question_answers,
 								array( 'question_answer_id' => $answer['question_answer_id'] )
@@ -432,10 +438,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 				if ( ! $correct ) {
 					// for single choice deletes all correct, set first option is correct
-					$answers[0]['is_true'] = 'yes';
+					$answers[ $answer_ids[0] ]['is_true'] = 'yes';
 				} else if ( $correct == 2 ) {
 					// for multiple choice keeps all correct, remove all correct and keep first option
-					$answers[1]['is_true'] = '';
+					$answers[ $answer_ids[1] ]['is_true'] = '';
 				}
 			}
 
@@ -453,7 +459,12 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return array
 		 */
 		protected function _convert_answers_multi_choice_to_single_choice( $answers ) {
+
 			if ( is_array( $answers ) ) {
+
+
+				// array answer ids
+				$answer_ids = array_keys( $answers );
 
 				$correct = 0;
 				foreach ( $answers as $key => $answer ) {
@@ -464,7 +475,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 				if ( $correct > 1 ) {
 					// remove all correct and keep first option
-					$answers[0]['is_true'] = '';
+					$answers[$answer_ids[0]]['is_true'] = '';
 				}
 			}
 

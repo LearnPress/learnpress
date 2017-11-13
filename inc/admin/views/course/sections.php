@@ -38,10 +38,13 @@ learn_press_admin_view( 'course/new-section' );
             methods: {
                 // sort sections
                 sort: function () {
+
                     var order = [];
                     this.sections.forEach(function (section, index) {
                         order.push(parseInt(section.id));
                     });
+
+                    console.log(order);
 
                     $store.dispatch('ss/updateSectionsOrder', order);
                 }

@@ -30,7 +30,11 @@ learn_press_admin_view( 'question/answer' );
             <table class="list-question-answers">
                 <thead>
                 <tr>
-                    <th v-for="(heading, key) in headings" :class="key">{{heading}}</th>
+                    <th class="sort"></th>
+                    <th class="order"></th>
+                    <th class="answer_text"><?php __( 'Answer Text', 'learnpress' ); ?></th>
+                    <th class="answer_correct"><?php __( 'Is Correct?', 'learnpress' ); ?></th>
+                    <th class="actions"></th>
                 </tr>
                 </thead>
                 <draggable :list="answers" :element="'tbody'" @end="sort">
@@ -54,9 +58,6 @@ learn_press_admin_view( 'question/answer' );
         Vue.component('lp-question-editor', {
             template: '#tmpl-lp-question-editor',
             computed: {
-                headings: function () {
-                    return $store.getters['headings'];
-                },
                 // list answers
                 answers: function () {
                     return $store.getters['answers'];
@@ -73,9 +74,9 @@ learn_press_admin_view( 'question/answer' );
                 number: function () {
                     return this.answers.length;
                 },
-                // answer addable
+                // addable new answer
                 addable: function () {
-                    return this.type !== 'true_or_false' && $store.getters['supportAnswerOption'];
+                    return this.type !== 'true_or_false';
                 },
                 // question status
                 status: function () {
@@ -91,6 +92,7 @@ learn_press_admin_view( 'question/answer' );
                 active: function (type) {
                     return this.type === type ? 'active' : '';
                 },
+                // change question type
                 changeType: function (type) {
                     if (this.type !== type) {
                         $store.dispatch('changeQuestionType', type);
@@ -98,17 +100,21 @@ learn_press_admin_view( 'question/answer' );
                 },
                 // sort answer options
                 sort: function () {
-                    var orders = [];
+                    var order = [];
 
                     this.answers.forEach(function (answer) {
-                        orders.push(parseInt(answer.question_answer_id));
+                        order.push(parseInt(answer.question_answer_id));
                     });
 
-                    $store.dispatch('updateAnswersOrder', orders);
+                    console.log(order);
+
+                    $store.dispatch('updateAnswersOrder', order);
                 },
+                // change correct answer
                 changeCorrect: function (correct) {
                     $store.dispatch('updateCorrectAnswer', correct);
                 },
+                // new answer option
                 newAnswer: function () {
                     if (this.status === 'successful') {
                         $store.dispatch('newAnswer');

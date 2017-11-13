@@ -90,7 +90,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'update_quiz',
 				'update_quiz_question_orders',
 				'update_question_answer_orders',
-				'change_question_type',
 				'closed_question_box',
 				'add_quiz_questions',
 				'clear_quiz_question',
@@ -181,6 +180,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					$result = $curd->sort_sections( $order );
+
+					// last section
+					$last_section_id = end( $order );
+					// update final quiz
+					$curd->update_final_quiz( $last_section_id );
 
 					break;
 
@@ -283,15 +287,20 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'update-section-items':
 
-					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-					$items      = ! empty( $args['items'] ) ? $args['items'] : false;
-					$items      = json_decode( wp_unslash( $items ), true );
+					$section_id   = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$last_section = ! empty( $args['last_section'] ) ? $args['last_section'] : false;
+					$items        = ! empty( $args['items'] ) ? $args['items'] : false;
+					$items        = json_decode( wp_unslash( $items ), true );
 
 					if ( ! ( $section_id && $items ) ) {
 						break;
 					}
 
 					$result = $curd->update_section_items( $section_id, $items );
+
+					if ( $last_section ) {
+						$curd->update_final_quiz( $section_id );
+					}
 
 					break;
 
@@ -358,8 +367,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
-                default:
-                    break;
+				default:
+					break;
 
 			}
 
@@ -371,31 +380,54 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
-		 * Get question data to add to quiz.
+		 * Get question data in admin question editor.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 *
+		 * @return array
+		 */
+		public static function get_question_data_to_question_editor( $question_id ) {
+
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+				return array();
+			}
+
+			// get question
+			$question = LP_Question::get_question( $question_id );
+
+			$data = array(
+				'id'      => $question_id,
+				'open'    => false,
+				'title'   => get_the_title( $question_id ),
+				'type'    => array(
+					'key'   => $question->get_type(),
+					'label' => $question->get_type_label()
+				),
+				'answers' => $question->get_data( 'answer_options' )
+			);
+
+			return $data;
+		}
+
+		/**
+		 * Get question data in admin quiz editor.
 		 *
 		 * @since 3.0.0
 		 *
 		 * @param       $question_id
-		 * @param array $args | get new question data
 		 *
 		 * @return array
 		 */
-		public static function get_question_data_to_quiz( $question_id, $args = array() ) {
+		public static function get_question_data_to_quiz_editor( $question_id ) {
 
-			if ( ! is_numeric( $question_id ) ) {
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return array();
 			}
 
+			// get question
 			$question = LP_Question::get_question( $question_id );
-
-			if ( $args ) {
-				$answers = $args;
-				foreach ( $args as $index => $arg ) {
-					$answers[ $index ] = $arg;
-				}
-			} else {
-				$answers = (array) $question->get_answer_options();
-			}
 
 			$data = array(
 				'id'       => $question_id,
@@ -405,7 +437,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'key'   => $question->get_type(),
 					'label' => $question->get_type_label()
 				),
-				'answers'  => $answers,
+				'answers'  => $question->get_data( 'answer_options' ),
 				'settings' => array(
 					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
 					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
@@ -450,19 +482,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// change question type
-					$update = $curd->change_question_type( $question_id, $type );
+					$curd->change_question_type( $question_id, $type );
 
-					if ( $update === 0 ) {
-						$result['message'] = __( '[Change question type] Fail: Question error', 'learnpress' );
-					} else if ( $update === false ) {
-						$result['message'] = __( '[Change question type] Fail: No update', 'learnpress' );
-					} else {
-						$result = array(
-							'status'   => true,
-							'message'  => __( '[Change question type] Successful', 'learnpress' ),
-							'question' => self::get_question_data_to_quiz( $question_id )
-						);
-					}
+					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
 
 					break;
 
@@ -475,19 +497,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// sort answers
-					$sort = $curd->sort_answers( $question, $order );
+					$curd->sort_answers( $question_id, $order );
 
-					if ( $sort === 1 ) {
-						$result['status']  = true;
-						$result['message'] = __( '[Sort answer]: Successful', 'learnpress' );
-					} else {
-						if ( $sort === 0 ) {
-							$result['message'] = __( '[Sort answer] Fail: No database row affected', 'learnpress' );
-						}
-						if ( $sort === false ) {
-							$result['message'] = __( '[Sort answer] Fail: Query error', 'learnpress' );
-						}
-					}
+					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
 
 					break;
 
@@ -502,21 +514,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// update answer title
-					$update = $curd->update_answer_title( $question_id, $answer );
-
-					if ( $update === 1 ) {
-						$result['status']  = true;
-						$result['message'] = __( '[Update answer title]: Successful', 'learnpress' );
-					} else {
-						if ( $update === 0 ) {
-							$result['message'] = __( '[Update answer title] Fail: No database row affected', 'learnpress' );
-						}
-						if ( $update === false ) {
-							$result['message'] = __( '[Update answer title] Fail: Query error', 'learnpress' );
-						}
-					}
-
-					break;
+					$result = $curd->update_answer_title( $question_id, $answer );
 
 				case 'change-correct':
 					// correct answer
@@ -528,22 +526,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// update correct answer
-					$update = $curd->change_correct_answer( $question_id, $correct );
-
-					if ( $update === 1 ) {
-						$result['status']  = true;
-						$result['message'] = __( '[Update correct answer]: Successful', 'learnpress' );
-					} else {
-						if ( $update === 0 ) {
-							$result['message'] = __( '[Update correct answer] Fail: No database row affected', 'learnpress' );
-						}
-						if ( $update === - 1 ) {
-							$result['message'] = __( '[Update correct answer] Fail: Question has not correct answer', 'learnpress' );
-						}
-						if ( $update === false ) {
-							$result['message'] = __( '[Update correct answer] Fail: Query error', 'learnpress' );
-						}
-					}
+					$result = $curd->change_correct_answer( $question_id, $correct );
 
 					break;
 
@@ -556,21 +539,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// delete answer
-					$delete = $curd->delete_answer( $question_id, $answer_id );
+					$curd->delete_answer( $question_id, $answer_id );
 
-					if ( $delete === 1 ) {
-						$result = array(
-							'status'  => true,
-							'message' => __( '[Delete answer]: Successful', 'learnpress' )
-						);
-					} else {
-						if ( $delete === 0 ) {
-							$result['message'] = __( '[Delete answer] Fail: No database row affected', 'learnpress' );
-						}
-						if ( $delete === false ) {
-							$result['message'] = __( '[Delete answer] Fail: Query error', 'learnpress' );
-						}
-					}
+					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
 
 					break;
 
@@ -579,22 +550,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// new answer
 					$answer = LP_Question::get_default_answer();
 					// add new
-					$new = $curd->new_answer( $question_id, $answer );
+					$curd->new_answer( $question_id, $answer );
 
-					if ( $new === 1 ) {
-						$result = array(
-							'status'  => true,
-							'message' => __( '[Add new answer]: Successful', 'learnpress' )
-						);
-					} else {
-						if ( $new === 0 ) {
-							$result['message'] = __( '[Add new answer] Fail: No database row affected', 'learnpress' );
-						}
-						if ( $new === false ) {
-							$result['message'] = __( '[Add new answer] Fail: Query error', 'learnpress' );
-						}
-					}
+					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
 
+					break;
+
+				default:
 					break;
 			}
 
@@ -676,7 +638,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 						$quiz_curd->add_question( $quiz_id, $new_question_id );
 						// get new question data
-						$result = LP_Admin_Ajax::get_question_data_to_quiz( $new_question_id, $new_question_answers );
+						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question_id );
 					}
 
 					// code
@@ -722,7 +684,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// change question type
 					$question_curd->change_question_type( $question_id, $type );
 
-					$result = LP_Admin_Ajax::get_question_data_to_quiz( $question_id );
+					$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question_id );
 
 					break;
 
@@ -748,7 +710,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
 						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 
-						$result = LP_Admin_Ajax::get_question_data_to_quiz( $new_question_id );
+						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question_id );
 					}
 
 					break;
@@ -952,7 +914,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					if ( $questions ) {
 						foreach ( $questions as $key => $question ) {
 							if ( is_numeric( $quiz_curd->add_question( $quiz_id, $question['id'] ) ) ) {
-								$result[] = LP_Admin_Ajax::get_question_data_to_quiz( $question['id'] );
+								$result[] = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question['id'] );
 							}
 						}
 					}
@@ -1281,16 +1243,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( $question = learn_press_get_question( $id ) ) {
 				$question->update_answer_orders( $answers );
 			}
-		}
-
-		/**
-		 * Change type of a question.
-		 */
-		public static function change_question_type() {
-			list( $id, $from, $to ) = self::getPhpInput( 'id', 'from', 'to' );
-			LP_Question_Factory::convert_question( $id, $from, $to );
-			$question = learn_press_get_question( $id );
-			$question->admin_interface();
 		}
 
 		public static function add_quiz_questions() {

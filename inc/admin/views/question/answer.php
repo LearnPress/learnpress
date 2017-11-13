@@ -7,7 +7,7 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-answer">
-    <tr class="answer-item" :data-id="answer.value" :data-answer-id="id" :data-answer-order="order">
+    <tr class="answer-item" :data-answer-id="id" :data-answer-order="order">
         <td class="sort"><i class="fa fa-bars"></i></td>
         <td class="order">{{order}}</td>
         <td class="answer-text">
