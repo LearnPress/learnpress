@@ -142,7 +142,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			 * increase the auto-increment each time order is updated
 			 * in case the user_id is not changed
 			 */
-			if ( $existed = $wpdb->get_results( $sql ) ) {
+			$remove_ids = array();
+			$existed = $wpdb->get_results( $sql );
+			if ( !empty( $existed ) ) {
 				$cases      = array();
 				$edited     = array();
 				$meta_ids   = array();
@@ -178,12 +180,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
 				$wpdb->query( $sql );
 			}
-			$sql        = "
-				SELECT meta_id FROM wp_postmeta WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
-			";
-			$sql        = $wpdb->prepare( $sql, $post_id, '_user_id' );
-			$keep_users = $wpdb->get_col( $sql );
-			if ( $keep_users ) {
+
+			$keep_users = array();
+			if( !empty($remove_ids) ){
+				$sql        = "
+					SELECT meta_id FROM wp_postmeta WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
+				";
+				$sql        = $wpdb->prepare( $sql, $post_id, '_user_id' );
+				$keep_users = $wpdb->get_col( $sql );
+			}
+
+			if ( !empty($keep_users) ) {
 				$sql = "
 					DELETE
 					FROM {$wpdb->postmeta}
