@@ -172,10 +172,10 @@ learn_press_admin_view( 'quiz/pagination' );
                     this.adding = false;
                     this.makeSearch();
                 },
-
+                // add items to quiz
                 checkout: function () {
                     this.adding = true;
-                    $store.dispatch('cqi/addItemsToQuiz');
+                    $store.dispatch('cqi/addQuestionsToQuiz');
                 },
 
                 changePage: function (page) {

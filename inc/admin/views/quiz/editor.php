@@ -1,21 +1,20 @@
 <?php
 /**
- * Quiz editor template.
+ * Admin Quiz Editor: Editor template.
  *
  * @since 3.0.0
  */
 
-learn_press_admin_view( 'quiz/list-questions' );
+learn_press_admin_view( 'quiz/questions' );
 learn_press_admin_view( 'quiz/modal-choose-items' );
 ?>
-
 
 <script type="text/x-template" id="tmpl-lp-quiz-editor">
     <div id="admin-quiz-editor" class="learn-press-box-data lp-admin-editor" :class="{'need-reload': !heartbeat}">
         <div class="lp-box-data-head heading">
             <h3><?php echo __( 'Questions', 'learnpress' ); ?><span class="status" :class="status"></span></h3>
-            <span class="collapse-list-questions dashicons " @click="toggle"
-                  :class="isOpen ? 'dashicons-arrow-down' : 'dashicons-arrow-up'"></span>
+            <span :class="['collapse-list-questions dashicons ' , close ? 'dashicons-arrow-down' : 'dashicons-arrow-up']"
+                  @click="toggle"></span>
         </div>
         <div class="lp-box-data-content">
             <div class="lp-list-questions">
@@ -30,32 +29,32 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 </div>
 
                 <form @submit.prevent="">
-                    <lp-list-quiz-questions></lp-list-quiz-questions>
+                    <lp-quiz-questions></lp-quiz-questions>
                 </form>
 
                 <div class="footer">
                     <div class="table-row">
-                        <div class="lp-column-sort"><i class="fa fa-bars"></i></div>
-                        <div class="lp-column-order"></div>
-                        <div class="lp-column-name lp-column-quick-add">
-                            <div class="new-question-title">
-                                <input type="text" name="new-question-title" :value="newQuestion.title"
-                                       v-model="newQuestion.title"
-                                       ref="newQuestionTitle">
+                        <div class="add-new-question">
+                            <div class="title">
+                                <input type="text" v-model="newQuestion.title">
                             </div>
-                            <div class="add-new-button" :class="addNewEnable">
-                                <button type="button" class="button"
-                                        @click.prevent="addNewItem"
-                                        @keyup.enter.prevent="addNewItem"
-                                        :class="addNewEnable"><?php esc_html_e( 'Add as New', 'learnpress' ); ?> </button>
-                                <ul class="lp-dropdown-items" ref="newQuestionType">
+                            <div class="add-new">
+                                <button type="button" class="button" :disabled="!addableNew"
+                                        @click.prevent="addItem(newQuestion.type)"
+                                        @keyup.enter.prevent="addItem(newQuestion.type)">
+									<?php esc_html_e( 'Add as New', 'learnpress' ); ?>
+                                </button>
+                                <ul class="question-types">
                                     <li v-for="(type, key) in questionTypes">
-                                        <a href="#" :data-type="key" @click.prevent="addNewItem">{{type}}</a>
+                                        <a href="#" :data-type="key" @click.prevent="addItem(key)">{{type}}</a>
                                     </li>
                                 </ul>
                             </div>
-                            <button type="button" class="button"
-                                    @click.stop="openChooseItems"><?php esc_html_e( 'Select', 'learnpress' ); ?></button>
+                            <div class="select-item">
+                                <button type="button" class="button" @click.prevent="openModal">
+									<?php esc_html_e( 'Select', 'learnpress' ); ?>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,42 +91,40 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 heartbeat: function () {
                     return $store.getters['heartbeat'];
                 },
+                // editor status
                 status: function () {
                     return $store.getters.status;
                 },
-                isOpen: function () {
+                // list questions close
+                close: function () {
                     return $store.getters['lqs/isHiddenListQuestions'];
                 },
-                quizId: function () {
+                // quiz id
+                id: function () {
                     return $store.getters['id'];
                 },
-                addNewEnable: function () {
-                    return this.newQuestion.title ? 'visible' : 'disabled';
+                // addable new
+                addableNew: function () {
+                    return !!this.newQuestion.title;
                 },
+                // all question types
                 questionTypes: function () {
                     return $store.getters['questionTypes'];
-                },
-                listQuestion: function () {
-                    return $store.getters['lqs/listQuestions'];
                 }
             },
             methods: {
+                // toggle all questions
                 toggle: function () {
-                    $store.dispatch('lqs/toggleListQuestions');
+                    $store.dispatch('lqs/toggleAll');
                 },
-                addNewItem: function (e) {
-                    e.preventDefault();
-                    this.newQuestion.type = e.target.dataset.type;
-
-                    $store.dispatch('lqs/addNewQuestion', {
-                        newQuestion: this.newQuestion,
-                        quizId: this.quizId
-                    });
-
+                // add new question
+                addItem: function (type) {
+                    this.newQuestion.type = type;
+                    $store.dispatch('lqs/newQuestion', this.newQuestion);
                     this.newQuestion.title = '';
-                    this.$refs.newQuestionTitle.focus();
                 },
-                openChooseItems: function () {
+                // open modal
+                openModal: function () {
                     $store.dispatch('cqi/open', parseInt(this.quizId));
                 }
             }

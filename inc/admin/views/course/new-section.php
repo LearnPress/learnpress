@@ -13,13 +13,9 @@
         <form @submit.prevent="">
             <div class="section-head">
                 <span class="creatable"></span>
-                <input
-                        v-model="title"
-                        type="text"
-                        title="title"
-                        class="title-input"
-                        @keyup.enter.prevent="addNewSection"
-                        placeholder="<?php esc_attr_e( 'Create a new section', 'learnpress' ); ?>">
+                <input v-model="title" type="text" title="title" class="title-input"
+                       placeholder="<?php esc_attr_e( 'Create a new section', 'learnpress' ); ?>"
+                       @keyup.enter.prevent="newSection">
             </div>
         </form>
     </div>
@@ -36,10 +32,8 @@
                 };
             },
             methods: {
-                addNewSection: function () {
-                    $store.dispatch('ss/addNewSection', {
-                        title: this.title
-                    });
+                newSection: function () {
+                    $store.dispatch('ss/newSection', this.title);
 
                     this.title = '';
                 }

@@ -111,13 +111,13 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
         'REMOVE_SECTION_ITEM': function (state, payload) {
             var section = state.sections.find(function (section) {
-                return (section.id === payload.sectionId);
+                return (section.id === payload.section_id);
             });
 
             var items = section.items || [];
             var index = -1;
             items.forEach(function (item, i) {
-                if (item.id === payload.itemId) {
+                if (item.id === payload.item_id) {
                     index = i;
                 }
             });
@@ -128,7 +128,7 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
         'UPDATE_SECTION_ITEMS': function (state, payload) {
             var section = state.sections.find(function (section) {
-                return parseInt(section.id) === parseInt(payload.sectionId);
+                return parseInt(section.id) === parseInt(payload.section_id);
             });
 
             if (!section) {
@@ -199,40 +199,49 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
     };
 
     var actions = {
-        addNewSection: function (context, section) {
-            Vue.http
-                .LPRequest({
-                    type: 'new-section',
-                    section: section
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
 
-                        if (result.success) {
-                            context.commit('ADD_NEW_SECTION', result.data);
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
+        toggleAllSections: function (context) {
+            var hidden = context.getters['isHiddenAllSections'];
 
-        removeSection: function (context, payload) {
-            context.commit('REMOVE_SECTION', payload.index);
+            if (hidden) {
+                context.commit('OPEN_ALL_SECTIONS');
+            } else {
+                context.commit('CLOSE_ALL_SECTIONS');
+            }
 
             Vue.http.LPRequest({
-                type: 'remove-section',
-                'section-id': payload.section.id
+                type: 'hidden-sections',
+                hidden: context.getters['hiddenSections']
+            });
+        },
+
+        updateSectionsOrder: function (context, order) {
+            Vue.http.LPRequest({
+                type: 'sort-sections',
+                order: JSON.stringify(order)
             }).then(
                 function (response) {
                     var result = response.body;
+                    var order_sections = result.data;
+                    context.commit('SORT_SECTION', order_sections);
                 },
                 function (error) {
                     console.error(error);
                 }
             );
+        },
+
+        toggleSection: function (context, section) {
+            if (section.open) {
+                context.commit('CLOSE_SECTION', section);
+            } else {
+                context.commit('OPEN_SECTION', section);
+            }
+
+            Vue.http.LPRequest({
+                type: 'hidden-sections',
+                hidden: context.getters['hiddenSections']
+            });
         },
 
         updateSection: function (context, section) {
@@ -251,22 +260,64 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                 })
         },
 
-        updateSortSections: function (context, orders) {
-            Vue.http
-                .LPRequest({
-                    type: 'sort-sections',
-                    orders: JSON.stringify(orders)
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-                        var order_sections = result.data;
-                        context.commit('SORT_SECTION', order_sections);
-                    },
-                    function (error) {
-                        console.error(error);
+        removeSection: function (context, payload) {
+            context.commit('REMOVE_SECTION', payload.index);
+
+            Vue.http.LPRequest({
+                type: 'remove-section',
+                section_id: payload.section.id
+            }).then(
+                function (response) {
+                    var result = response.body;
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        },
+
+        newSection: function (context, name) {
+            Vue.http.LPRequest({
+                type: 'new-section',
+                section_name: name
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (result.success) {
+                        context.commit('ADD_NEW_SECTION', result.data);
                     }
-                );
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        },
+
+        updateSectionItem: function (context, payload) {
+            context.commit('UPDATE_SECTION_ITEM_REQUEST', payload.item.id);
+
+            Vue.http.LPRequest({
+                type: 'update-section-item',
+                section_id: payload.section_id,
+                item: JSON.stringify(payload.item)
+
+            }).then(
+                function (response) {
+                    context.commit('UPDATE_SECTION_ITEM_SUCCESS', payload.item.id);
+
+                    var result = response.body;
+                    if (result.success) {
+                        var item = result.data;
+
+                        context.commit('UPDATE_SECTION_ITEM', {section_id: payload.section_id, item: item});
+                    }
+                },
+                function (error) {
+                    context.commit('UPDATE_SECTION_ITEM_FAILURE', payload.item.id);
+                    console.error(error);
+                }
+            );
         },
 
         removeSectionItem: function (context, payload) {
@@ -275,113 +326,47 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
             Vue.http
                 .LPRequest({
                     type: 'remove-section-item',
-                    'item-id': payload.itemId,
-                    'section-id': payload.sectionId
+                    section_id: payload.section_id,
+                    item_id: payload.item_id
                 });
-        },
-
-        updateSectionItems: function (context, payload) {
-            Vue.http
-                .LPRequest({
-                    type: 'update-section-items',
-                    'items': JSON.stringify(payload.items),
-                    'section-id': payload.sectionId
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            // console.log(result);
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
-
-        updateSectionItem: function (context, payload) {
-            context.commit('UPDATE_SECTION_ITEM_REQUEST', payload.item.id);
-
-            Vue.http
-                .LPRequest({
-                    type: 'update-section-item',
-                    'item': payload.item,
-                    'section-id': payload.sectionId
-                })
-                .then(
-                    function (response) {
-                        context.commit('UPDATE_SECTION_ITEM_SUCCESS', payload.item.id);
-
-                        var result = response.body;
-                        if (result.success) {
-                            var item = result.data;
-
-                            context.commit('UPDATE_SECTION_ITEM', {
-                                sectionId: payload.sectionId,
-                                item: item
-                            });
-                        }
-                    },
-                    function (error) {
-                        context.commit('UPDATE_SECTION_ITEM_FAILURE', payload.item.id);
-                        console.error(error);
-                    }
-                );
         },
 
         newSectionItem: function (context, payload) {
-            Vue.http
-                .LPRequest({
-                    type: 'new-section-item',
-                    'item': payload.item,
-                    'section-id': payload.sectionId
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
+            Vue.http.LPRequest({
+                type: 'new-section-item',
+                section_id: payload.section_id,
+                item: JSON.stringify(payload.item)
+            }).then(
+                function (response) {
+                    var result = response.body;
 
-                        if (result.success) {
-                            context.commit('UPDATE_SECTION_ITEMS', {
-                                sectionId: payload.sectionId,
-                                items: result.data
-                            });
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
+                    if (result.success) {
+                        context.commit('UPDATE_SECTION_ITEMS', {section_id: payload.section_id, items: result.data});
                     }
-                );
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
         },
 
-        toggleSection: function (context, section) {
-            if (section.open) {
-                context.commit('CLOSE_SECTION', section);
-            } else {
-                context.commit('OPEN_SECTION', section);
-            }
+        updateSectionItems: function (context, payload) {
+            Vue.http.LPRequest({
+                type: 'update-section-items',
+                section_id: payload.section_id,
+                items: JSON.stringify(payload.items)
+            }).then(
+                function (response) {
+                    var result = response.body;
 
-            Vue.http
-                .LPRequest({
-                    type: 'hidden-sections',
-                    hidden: context.getters['hiddenSections']
-                });
-        },
-        toggleAllSections: function (context) {
-            var hidden = context.getters['isHiddenAllSections'];
-
-            if (hidden) {
-                context.commit('OPEN_ALL_SECTIONS');
-            } else {
-                context.commit('CLOSE_ALL_SECTIONS');
-            }
-
-            Vue.http
-                .LPRequest({
-                    type: 'hidden-sections',
-                    hidden: context.getters['hiddenSections']
-                });
+                    if (result.success) {
+                        // console.log(result);
+                    }
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
         }
     };
 
@@ -479,6 +464,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     };
 
     var actions = {
+
         toggle: function (context) {
             context.commit('TOGGLE');
         },
@@ -489,21 +475,13 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             context.commit('TOGGLE');
         },
 
-        addItem: function (context, item) {
-            context.commit('ADD_ITEM', item);
-        },
-
-        removeItem: function (context, index) {
-            context.commit('REMOVE_ADDED_ITEM', index);
-        },
-
         searchItems: function (context, payload) {
             context.commit('SEARCH_ITEMS_REQUEST');
 
             Vue.http.LPRequest({
                 type: 'search-items',
                 query: payload.query,
-                'item-type': payload.type,
+                item_type: payload.type,
                 page: payload.page,
                 exclude: JSON.stringify([])
             }).then(
@@ -528,13 +506,21 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             );
         },
 
+        addItem: function (context, item) {
+            context.commit('ADD_ITEM', item);
+        },
+
+        removeItem: function (context, index) {
+            context.commit('REMOVE_ADDED_ITEM', index);
+        },
+
         addItemsToSection: function (context) {
             var items = context.getters.addedItems;
 
             if (items.length > 0) {
                 Vue.http.LPRequest({
                     type: 'add-items-to-section',
-                    'section-id': context.getters.section,
+                    section_id: context.getters.section,
                     items: JSON.stringify(items)
                 }).then(
                     function (response) {
@@ -545,7 +531,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
                             var items = result.data;
                             context.commit('ss/UPDATE_SECTION_ITEMS', {
-                                sectionId: context.getters.section,
+                                section_id: context.getters.section,
                                 items: items
                             }, {root: true});
                         }
@@ -621,19 +607,17 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
     var actions = {
         heartbeat: function (context) {
-            Vue.http
-                .LPRequest({
-                    type: 'heartbeat'
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-                        context.commit('UPDATE_HEART_BEAT', !!result.success);
-                    },
-                    function (error) {
-                        context.commit('UPDATE_HEART_BEAT', false);
-                    }
-                );
+            Vue.http.LPRequest({
+                type: 'heartbeat'
+            }).then(
+                function (response) {
+                    var result = response.body;
+                    context.commit('UPDATE_HEART_BEAT', !!result.success);
+                },
+                function (error) {
+                    context.commit('UPDATE_HEART_BEAT', false);
+                }
+            );
         },
 
         newRequest: function (context) {
@@ -676,9 +660,9 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
  */
 (function (exports, Vue, $store) {
     Vue.http.LPRequest = function (payload) {
+        payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
-        payload['course-id'] = $store.getters.id;
 
         return Vue.http.post($store.getters.urlAjax,
             payload,

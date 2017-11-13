@@ -78,12 +78,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			$hidden_questions = get_post_meta( $post->ID, '_lp_hidden_questions', true );
 
-			wp_localize_script( 'admin-quiz-editor', 'lp_quiz_editor', array(
+			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', array(
 				'root'          => array(
 					'quiz_id' => $quiz->get_id(),
 					'ajax'    => admin_url( '' ),
-					'action'  => 'update_list_quiz_questions',
-					'nonce'   => wp_create_nonce( 'learnpress_update_list_quiz_questions' ),
+					'action'  => 'admin_quiz_editor',
+					'nonce'   => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
 					'types'   => LP_Question_Factory::get_types()
 				),
 				'chooseItems'   => array(
@@ -592,8 +592,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 		/**
 		 * Quiz assigned view.
-         *
-         * @since 3.0.0
+		 *
+		 * @since 3.0.0
 		 */
 		public static function quiz_assigned() {
 			learn_press_admin_view( 'meta-boxes/course/assigned.php' );

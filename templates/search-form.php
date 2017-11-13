@@ -26,5 +26,5 @@ defined( 'ABSPATH' ) || exit();
            placeholder="<?php _e( 'Search course...', 'learnpress' ); ?>"/>
     <input type="hidden" name="ref" value="course"/>
 
-    <button class="search-course-button"><?php _e( 'Search', 'learnpress' ); ?></button>
+    <button class="button search-course-button"><?php _e( 'Search', 'learnpress' ); ?></button>
 </form>

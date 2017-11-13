@@ -38,7 +38,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function __construct( $post_type, $args = '' ) {
 			add_action( 'admin_head', array( $this, 'init' ) );
 
-			add_action( 'edit_form_after_editor', array( $this, 'template_question_editor' ) );
+			add_action( 'edit_form_after_editor', array( __CLASS__, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
 //			$this->add_map_method( 'before_delete', 'delete_question_answers' );
@@ -48,11 +48,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 
 		/**
-		 * Template quiz editor v2.
+		 * JS template for admin question editor.
 		 *
 		 * @since 3.0.0
 		 */
-		public function template_question_editor() {
+		public static function template_question_editor() {
 			if ( LP_QUESTION_CPT !== get_post_type() ) {
 				return;
 			}
@@ -70,52 +70,39 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				return;
 			}
 
-			global $post;
-			$question = LP_Question::get_question( $post->ID );
+			global $post, $pagenow;
 
-			wp_localize_script( 'admin-quiz-editor', 'lp_quiz_editor', array(
-				'root'          => array(
-					'quiz_id' => $post->ID,
-					'ajax'    => admin_url( '' ),
-					'action'  => 'update_list_quiz_questions',
-					'nonce'   => wp_create_nonce( 'learnpress_update_list_quiz_questions' ),
-					'types'   => LP_Question_Factory::get_types()
-				),
-				'chooseItems'   => array(
-					'open'       => false,
-					'addedItems' => array(),
-					'items'      => array()
-				),
-				'i18n'          => array(
-					'option'         => __( 'Option', 'learnpress' ),
-					'unique'         => learn_press_uniqid(),
-					'back'           => __( 'Back', 'learnpress' ),
-					'selected_items' => __( 'Selected items', 'learnpress' ),
-				),
-				'listQuestions' => array(
-					'questions'        => array(
-						array(
-							'id'       => $post->ID,
-							'open'     => false,
-							'title'    => get_the_title( $post->ID ),
-							'type'     => array(
-								'key'   => $question->get_type(),
-								'label' => $question->get_type_label()
-							),
-							'answers'  => (array) $question->get_answer_options(),
-							'settings' => array(
-								'content'     => $post->post_content,
-								'mark'        => $question->get_data( 'mark' ),
-								'explanation' => $question->get_data( 'explanation' ),
-								'hint'        => $question->get_data( 'hint' )
-							)
-						)
+			// add default answer for new question
+			if ( $pagenow === 'post-new.php' ) {
+				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'multi_choice' ) ) );
+				$answers  = $question->get_default_answers();
+			} else {
+				$question = LP_Question::get_question( $post->ID );
+				$answers  = $question->get_data( 'answer_options' );
+			}
+
+			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor', array(
+				'root' => array(
+					'id'                  => $post->ID,
+					'open'                => false,
+					'title'               => get_the_title( $post->ID ),
+					'type'                => array(
+						'key'   => $question->get_type(),
+						'label' => $question->get_type_label()
 					),
-					'hidden_questions' => array()
+					'headings'            => $question->get_answer_headings(),
+					'answers'             => $answers,
+					'supportAnswerOption' => isset( $question->get_supports()['answer-options'] ),
+					'ajax'                => admin_url( '' ),
+					'action'              => 'admin_question_editor',
+					'nonce'               => wp_create_nonce( 'learnpress_admin_question_editor' ),
+					'questionTypes'       => LP_Question_Factory::get_types(),
+					'pageNow'             => $pagenow
 				)
 			) );
 
 		}
+
 
 		/**
 		 * Delete all question answers when delete question.
@@ -123,8 +110,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param $question_id
-		 *
-		 * @return bool|false|int
 		 */
 		public function delete_question_answers( $question_id ) {
 			// question curd

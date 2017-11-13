@@ -30,7 +30,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
-			add_action( 'edit_form_after_editor', array( $this, 'wrapper_editor' ), - 1000 );
+			add_action( 'edit_form_after_editor', array( $this, 'wrapper_editor' ), - 10 );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 

@@ -100,7 +100,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-questions',
 				'get-question-data',
 				'update_curriculum',
-				'update_list_quiz_questions',
+				'admin_quiz_editor',
+				'admin_question_editor',
 				'modal-search-items',
 				'modal-search-users',
 				'add-items-to-order',
@@ -145,13 +146,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function update_curriculum() {
 			check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
-			$args = wp_parse_args( $_REQUEST, array(
-				'course-id' => false,
-				'type'      => ''
-			) );
+			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
 
-			$course_id = $args['course-id'];
-			$course    = learn_press_get_course( $args['course-id'] );
+			$course_id = $args['id'];
+			$course    = LP_Course::get_course( $course_id );
+
 			if ( ! $course ) {
 				wp_send_json_error();
 			}
@@ -165,103 +164,32 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'hidden-sections':
-					$hidden = learn_press_get_request( 'hidden' );
+
+					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
+
 					update_post_meta( $course_id, '_admin_hidden_sections', $hidden );
-					break;
 
-				case 'sync-sections':
-					$result = $course->get_curriculum_raw();
-					break;
-
-				case 'new-section-item':
-					$item       = isset( $_POST['item'] ) ? $_POST['item'] : array();
-					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
-
-					$result = $curd->create_section_item( $section_id, $item );
-					break;
-
-				case 'update-section-item':
-					$item       = isset( $_POST['item'] ) ? $_POST['item'] : array();
-					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
-
-					$result = $curd->update_section_item( $section_id, $item );
-					break;
-
-				case 'remove-section-item':
-					$item_id    = isset( $_POST['item-id'] ) ? intval( $_POST['item-id'] ) : false;
-					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
-
-					$result = $curd->remove_section_item( $section_id, $item_id );
-					break;
-
-				case 'update-section-items':
-					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
-					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
-
-					$items = json_decode( wp_unslash( $items ), true );
-
-					$result = $curd->update_section_items( $section_id, $items );
-					break;
-
-				case 'add-items-to-section':
-					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
-					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
-
-					$items = json_decode( wp_unslash( $items ), true );
-
-					if ( ! $items || ! $section_id ) {
-						$result = new WP_Error();
-						break;
-					}
-
-					$result = $curd->add_items_section( $section_id, $items );
-
-					break;
-
-				case 'new-section':
-					$post_section = isset( $_POST['section'] ) ? $_POST['section'] : array();
-					$section_name = isset( $post_section['title'] ) ? $post_section['title'] : '';
-
-					$args = array(
-						'section_course_id'   => $course_id,
-						'section_description' => '',
-						'section_name'        => $section_name,
-						'items'               => array(),
-					);
-
-					$section = $curd->create( $args );
-					$result  = array(
-						'id'          => $section['section_id'],
-						'items'       => $section['items'],
-						'title'       => $section['section_name'],
-						'description' => $section['section_description'],
-						'course_id'   => $section['section_course_id'],
-						'order'       => $section['section_order'],
-					);
 					break;
 
 				case 'sort-sections':
-					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
-					if ( ! $orders ) {
+
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
+					$order = json_decode( wp_unslash( $order ), true );
+
+					if ( ! $order ) {
 						break;
 					}
 
-					$orders = json_decode( wp_unslash( $orders ), true );
+					$result = $curd->sort_sections( $order );
 
-					$result = $curd->sort_sections( $orders );
-
-					break;
-
-				case 'remove-section':
-					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
-					$curd->delete( $section_id );
 					break;
 
 				case 'update-section':
+
 					$section = ! empty( $args['section'] ) ? $args['section'] : false;
 					$section = json_decode( wp_unslash( $section ), true );
 
-					if ( ! is_array( $section ) || empty( $section ) ) {
+					if ( ! $section ) {
 						break;
 					}
 
@@ -277,17 +205,109 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'remove-section':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+
+					if ( ! $section_id ) {
+						break;
+					}
+
+					$curd->delete( $section_id );
+
+					break;
+
+				case 'new-section':
+
+					$section_name = ! empty( $args['section_name'] ) ? $args['section_name'] : false;
+
+					$args = array(
+						'section_course_id'   => $course_id,
+						'section_description' => '',
+						'section_name'        => $section_name,
+						'items'               => array(),
+					);
+
+					// create section
+					$section = $curd->create( $args );
+
+					$result = array(
+						'id'          => $section['section_id'],
+						'items'       => $section['items'],
+						'title'       => $section['section_name'],
+						'description' => $section['section_description'],
+						'course_id'   => $section['section_course_id'],
+						'order'       => $section['section_order'],
+					);
+
+					break;
+
+				case 'update-section-item':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
+					$item       = json_decode( wp_unslash( $item ), true );
+
+					if ( ! ( $section_id && $item ) ) {
+						break;
+					}
+
+					$result = $curd->update_section_item( $section_id, $item );
+
+					break;
+
+				case 'remove-section-item':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
+
+					if ( ! ( $section_id && $item_id ) ) {
+						break;
+					}
+
+					$result = $curd->remove_section_item( $section_id, $item_id );
+					break;
+
+				case 'new-section-item':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
+					$item       = json_decode( wp_unslash( $item ), true );
+
+					if ( ! ( $section_id && $item ) ) {
+						break;
+					}
+
+					$result = $curd->create_section_item( $section_id, $item );
+					break;
+
+				case 'update-section-items':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$items      = ! empty( $args['items'] ) ? $args['items'] : false;
+					$items      = json_decode( wp_unslash( $items ), true );
+
+					if ( ! ( $section_id && $items ) ) {
+						break;
+					}
+
+					$result = $curd->update_section_items( $section_id, $items );
+
+					break;
+
 				case 'search-items':
-					$query   = isset( $_POST['query'] ) ? $_POST['query'] : '';
-					$type    = isset( $_POST['item-type'] ) ? $_POST['item-type'] : '';
-					$page    = ! empty( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
-					$exclude = ! empty( $_POST['exclude'] ) ? wp_unslash( $_POST['exclude'] ) : '';
+
+					$query   = isset( $args['query'] ) ? $args['query'] : '';
+					$type    = isset( $args['item_type'] ) ? $args['item_type'] : '';
+					$page    = ! empty( $args['page'] ) ? $args['page'] : 1;
+					$exclude = ! empty( $args['exclude'] ) ? $args['exclude'] : '';
 
 					if ( $exclude ) {
 						$exclude = json_decode( $exclude, true );
 					}
 
 					$ids_exclude = array();
+
 					if ( is_array( $exclude ) ) {
 						foreach ( $exclude as $item ) {
 							$ids_exclude[] = $item['id'];
@@ -323,6 +343,24 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					);
 
 					break;
+
+				case 'add-items-to-section':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$items      = ! empty( $args['items'] ) ? $args['items'] : false;
+					$items      = json_decode( wp_unslash( $items ), true );
+
+					if ( ! $items || ! $section_id ) {
+						break;
+					}
+
+					$result = $curd->add_items_section( $section_id, $items );
+
+					break;
+
+                default:
+                    break;
+
 			}
 
 			if ( is_wp_error( $result ) ) {
@@ -379,159 +417,239 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
-		 * Handle ajax update list quiz questions.
+		 * Handle ajax admin question editor.
 		 *
 		 * @since 3.0.0
 		 */
-		public static function update_list_quiz_questions() {
-			check_ajax_referer( 'learnpress_update_list_quiz_questions', 'nonce' );
+		public static function admin_question_editor() {
 
-			$args = wp_parse_args( $_REQUEST, array(
-				'quiz-id' => false,
-				'type'    => ''
-			) );
+			check_ajax_referer( 'learnpress_admin_question_editor', 'nonce' );
 
-			$quiz_id = $args['quiz-id'];
+			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+
+			// question id
+			$question_id = $args['id'];
+			$question    = learn_press_get_question( $question_id );
+
+			if ( ! $question ) {
+				wp_send_json_error();
+			}
+
+			$curd             = new LP_Question_CURD();
+			$result           = array();
+			$result['status'] = false;
+
+			switch ( $args['type'] ) {
+
+				case 'change-question-type':
+
+					$type = ! empty( $args['question_type'] ) ? $args['question_type'] : false;
+
+					if ( ! $type ) {
+						break;
+					}
+
+					// change question type
+					$update = $curd->change_question_type( $question_id, $type );
+
+					if ( $update === 0 ) {
+						$result['message'] = __( '[Change question type] Fail: Question error', 'learnpress' );
+					} else if ( $update === false ) {
+						$result['message'] = __( '[Change question type] Fail: No update', 'learnpress' );
+					} else {
+						$result = array(
+							'status'   => true,
+							'message'  => __( '[Change question type] Successful', 'learnpress' ),
+							'question' => self::get_question_data_to_quiz( $question_id )
+						);
+					}
+
+					break;
+
+				case 'sort-answer' :
+					// answers order
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
+
+					if ( ! $order ) {
+						break;
+					}
+
+					// sort answers
+					$sort = $curd->sort_answers( $question, $order );
+
+					if ( $sort === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Sort answer]: Successful', 'learnpress' );
+					} else {
+						if ( $sort === 0 ) {
+							$result['message'] = __( '[Sort answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $sort === false ) {
+							$result['message'] = __( '[Sort answer] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
+				case 'update-answer-title':
+
+					// answers
+					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
+					$answer = json_decode( wp_unslash( $answer ), true );
+
+					if ( ! $answer ) {
+						break;
+					}
+
+					// update answer title
+					$update = $curd->update_answer_title( $question_id, $answer );
+
+					if ( $update === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Update answer title]: Successful', 'learnpress' );
+					} else {
+						if ( $update === 0 ) {
+							$result['message'] = __( '[Update answer title] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $update === false ) {
+							$result['message'] = __( '[Update answer title] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
+				case 'change-correct':
+					// correct answer
+					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
+					$correct = json_decode( wp_unslash( $correct ), true );
+
+					if ( ! $correct ) {
+						break;
+					}
+
+					// update correct answer
+					$update = $curd->change_correct_answer( $question_id, $correct );
+
+					if ( $update === 1 ) {
+						$result['status']  = true;
+						$result['message'] = __( '[Update correct answer]: Successful', 'learnpress' );
+					} else {
+						if ( $update === 0 ) {
+							$result['message'] = __( '[Update correct answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $update === - 1 ) {
+							$result['message'] = __( '[Update correct answer] Fail: Question has not correct answer', 'learnpress' );
+						}
+						if ( $update === false ) {
+							$result['message'] = __( '[Update correct answer] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
+				case 'delete-answer' :
+					// answer id
+					$answer_id = ! empty( $args['answer_id'] ) ? $args['answer_id'] : false;
+
+					if ( ! $answer_id ) {
+						break;
+					}
+
+					// delete answer
+					$delete = $curd->delete_answer( $question_id, $answer_id );
+
+					if ( $delete === 1 ) {
+						$result = array(
+							'status'  => true,
+							'message' => __( '[Delete answer]: Successful', 'learnpress' )
+						);
+					} else {
+						if ( $delete === 0 ) {
+							$result['message'] = __( '[Delete answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $delete === false ) {
+							$result['message'] = __( '[Delete answer] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+
+				case 'new-answer' :
+
+					// new answer
+					$answer = LP_Question::get_default_answer();
+					// add new
+					$new = $curd->new_answer( $question_id, $answer );
+
+					if ( $new === 1 ) {
+						$result = array(
+							'status'  => true,
+							'message' => __( '[Add new answer]: Successful', 'learnpress' )
+						);
+					} else {
+						if ( $new === 0 ) {
+							$result['message'] = __( '[Add new answer] Fail: No database row affected', 'learnpress' );
+						}
+						if ( $new === false ) {
+							$result['message'] = __( '[Add new answer] Fail: Query error', 'learnpress' );
+						}
+					}
+
+					break;
+			}
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( $result->get_error_message() );
+			}
+
+			wp_send_json_success( $result );
+		}
+
+		/**
+		 * Handle ajax admin quiz editor.
+		 *
+		 * @since 3.0.0
+		 */
+		public static function admin_quiz_editor() {
+
+			check_ajax_referer( 'learnpress_admin_quiz_editor', 'nonce' );
+
+			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+
+			// get quiz
+			$quiz_id = $args['id'];
 			$quiz    = learn_press_get_quiz( $quiz_id );
 
 			if ( ! $quiz ) {
 				wp_send_json_error();
 			}
 
-			$question_curd = new LP_Question_CURD();
 			$quiz_curd     = new LP_Quiz_CURD();
+			$question_curd = new LP_Question_CURD();
 
-			$result = $args['type'];
+			$result           = array();
+			$result['status'] = false;
+
 			switch ( $args['type'] ) {
+
 				case 'heartbeat' :
 					$result = true;
 					break;
 
 				case 'hidden-questions':
-					$hidden = learn_press_get_request( 'hidden' );
+
+					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
+
 					update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden );
-					break;
-
-				case 'update-list-questions':
-					// code
-					break;
-
-				case 'update-question':
-					$question = ! empty( $args['question'] ) ? $args['question'] : false;
-					$question = json_decode( wp_unslash( $question ), true );
-
-					if ( ! is_array( $question ) ) {
-						break;
-					}
-
-					$action = ! empty( $args['action'] ) ? $args['action'] : false;
-					$update = array();
-
-					switch ( $action ) {
-						case 'update-title':
-							$update['title'] = $question['title'];
-							break;
-						case 'update-content':
-							$update['content'] = $question['settings']['content'];
-							break;
-						case 'update-meta':
-							if ( ! $meta_key = $args['meta'] ) {
-								break;
-							}
-							$update['key']  = $meta_key;
-							$update['meta'] = $question['settings'][ $meta_key ];
-							break;
-						default;
-							break;
-					}
-
-					$update = array_merge( $update, array( 'id' => $question['id'], 'action' => $action ) );
-
-					$result = $question_curd->update( $update );
-					// code
-					break;
-
-				case 'change-question-type':
-					$question = ! empty( $args['question'] ) ? $args['question'] : false;
-					$question = json_decode( wp_unslash( $question ), true );
-
-					$old_type = $question['type']['key'];
-					$new_type = ! empty( $args['new-type'] ) ? $args['new-type'] : false;
-
-					if ( ! ( is_array( $question ) || $new_type ) ) {
-						break;
-					}
-
-					if ( $old_type == $new_type ) {
-						break;
-					}
-					$question_curd->change_question_type( $question['id'], $old_type, $new_type );
-
-					$result = LP_Admin_Ajax::get_question_data_to_quiz( $question['id'] );
-
-					break;
-
-				case 'update-question-answer':
-					$question_id = ! empty( $args['questionId'] ) ? $args['questionId'] : false;
-
-					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
-					$answer = json_decode( wp_unslash( $answer ), true );
-
-					if ( ! ( $question_id || is_array( $answer ) ) ) {
-						break;
-					}
-
-					$update = array(
-						'data'  => array(
-							'answer_data' => serialize( array(
-									'text'    => stripslashes( $answer['text'] ),
-									'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-									'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
-								)
-							)
-						),
-						'where' => array(
-							'question_answer_id' => $answer['question_answer_id'],
-							'question_id'        => $question_id,
-							'answer_order'       => $answer['answer_order']
-						)
-					);
-
-					$result = $question_curd->update_answer( $update, 'update-title' );
-
-					break;
-
-				case 'add-question-answer':
-					$question_id = ! empty( $args['questionId'] ) ? $args['questionId'] : false;
-
-					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
-					$answer = json_decode( wp_unslash( $answer ), true );
-
-					if ( ! ( $question_id || is_array( $answer ) ) ) {
-						break;
-					}
-
-					$insert = array(
-						'question_id'  => $question_id,
-						'answer_data'  => serialize( array(
-								'text'    => stripslashes( $answer['text'] ),
-								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-								'is_true' => isset( $answer['isTrue'] ) ? $answer['isTrue'] : ''
-							)
-						),
-						'answer_order' => $answer['order']
-					);
-
-					$result = $question_curd->add_answer( $insert );
 
 					break;
 
 				case 'new-question':
-					$quiz_id  = ! empty( $args['quizId'] ) ? $args['quizId'] : false;
+
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
-					if ( ! ( $quiz_id || is_array( $question ) ) ) {
+					if ( ! $question ) {
 						break;
 					}
 
@@ -564,17 +682,63 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// code
 					break;
 
-				case 'clone-question':
+				case 'sort-questions':
+
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
+					$order = json_decode( wp_unslash( $order ), true );
+
+					if ( ! $order ) {
+						break;
+					}
+
+					$result = $quiz_curd->sort_questions( $order );
+
+					break;
+
+				case 'update-question-title':
+
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
-					if ( ! is_array( $question ) ) {
+					if ( ! $question ) {
+						break;
+					}
+
+					wp_update_post( array( 'ID' => $question['id'], 'post_title' => $question['title'] ) );
+
+					$result['status'] = true;
+
+					break;
+
+				case 'change-question-type':
+
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+					$type        = ! empty( $args['question_type'] ) ? $args['question_type'] : false;
+
+					if ( ! ( $question_id || $type ) ) {
+						break;
+					}
+
+					// change question type
+					$question_curd->change_question_type( $question_id, $type );
+
+					$result = LP_Admin_Ajax::get_question_data_to_quiz( $question_id );
+
+					break;
+
+				case 'clone-question':
+
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! $question ) {
 						break;
 					}
 
 					$user_id = learn_press_get_current_user_id();
 
 					$new_question_id = learn_press_duplicate_question( $question['id'], $quiz_id, array( 'post_status' => 'publish' ) );
+
 					if ( ! is_wp_error( $new_question_id ) ) {
 
 						// trigger change user memorize question types
@@ -586,129 +750,152 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 						$result = LP_Admin_Ajax::get_question_data_to_quiz( $new_question_id );
 					}
+
 					break;
 
 				case 'remove-question':
-					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
-					$result      = $quiz_curd->remove_question( $quiz_id, $question_id );
+
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+
+					if ( ! $question_id ) {
+						break;
+					}
+
+					$result = $quiz_curd->remove_question( $quiz_id, $question_id );
+
 					break;
 
 				case 'delete-question':
-					$question_id = isset( $_POST['question-id'] ) ? intval( $_POST['question-id'] ) : false;
-					$result      = $quiz_curd->remove_question( $quiz_id, $question_id, array( 'delete_permanently' => true ) );
-					break;
 
-				case 'add-items-to-quiz':
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
-					$result = array();
-
-					$questions = isset( $_POST['items'] ) ? $_POST['items'] : false;
-					$questions = json_decode( wp_unslash( $questions ), true );
-
-					if ( $questions ) {
-						foreach ( $questions as $key => $question ) {
-							if ( is_numeric( $quiz_curd->add_question( $quiz_id, $question['id'] ) ) ) {
-								$result[] = LP_Admin_Ajax::get_question_data_to_quiz( $question['id'] );
-							}
-						}
-					}
-
-					break;
-
-				case 'sort-questions':
-					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
-
-					if ( ! $orders ) {
+					if ( ! $question_id ) {
 						break;
 					}
 
-					$orders = json_decode( wp_unslash( $orders ), true );
+					$result = $quiz_curd->delete_question( $quiz_id, $question_id );
 
-					$result = $quiz_curd->sort_questions( $orders );
 					break;
 
 				case 'sort-question-answers':
-					$orders = ! empty( $args['orders-answers'] ) ? $args['orders-answers'] : false;
 
-					if ( ! $orders ) {
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
+					$order = json_decode( wp_unslash( $order ), true );
+
+
+					if ( ! ( $question_id && $order ) ) {
 						break;
 					}
 
-					$orders = json_decode( wp_unslash( $orders ), true );
+					// sort answer
+					$result = $question_curd->sort_answers( $question_id, $order );
 
-					$result = $quiz_curd->sort_question_answers( $orders );
 					break;
 
-				case 'update-correct-answer':
+				case 'update-question-answer-title':
 
-					$question       = ! empty( $args['question'] ) ? $args['question'] : false;
-					$correct_answer = ! empty( $args['correctAnswer'] ) ? $args['correctAnswer'] : false;
+					// question id
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
-					if ( ! ( $question || $correct_answer ) ) {
+					// answers
+					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
+					$answer = json_decode( wp_unslash( $answer ), true );
+
+					if ( ! ( $question_id && $answer ) ) {
 						break;
 					}
 
+					// update answer title
+					$result = $question_curd->update_answer_title( $question_id, $answer );
 
-					$question       = json_decode( wp_unslash( $question ), true );
-					$correct_answer = json_decode( wp_unslash( $correct_answer ), true );
+					break;
 
-					$question_type    = $question['type']['key'];
-					$question_answers = $question['answers'];
+				case 'change-question-correct-answer':
 
-					$update         = array();
-					$number_correct = 0;
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
-					foreach ( $question_answers as $index => $answer ) {
+					// correct answer
+					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
+					$correct = json_decode( wp_unslash( $correct ), true );
 
-						$answer_data = array(
-							'text'    => stripslashes( $answer['text'] ),
-							'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-							'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
-						);
-
-						if ( $answer['question_answer_id'] == $correct_answer['question_answer_id'] ) {
-							$answer_data['is_true'] = $correct_answer['is_true'];
-						} else {
-							if ( in_array( $question_type, array( 'true_or_false', 'single_choice' ) ) ) {
-								$answer_data['is_true'] = '';
-							}
-						}
-
-						$number_correct += ( $answer_data['is_true'] == 'yes' ) ? 1 : 0;
-
-						$update[ $index ] = array(
-							'data'  => array(
-								'answer_data' => serialize( $answer_data )
-							),
-							'where' => array(
-								'question_answer_id' => $answer['question_answer_id'],
-								'question_id'        => $question['id'],
-								'answer_order'       => $answer['answer_order']
-							)
-						);
+					if ( ! ( $question_id && $correct ) ) {
+						break;
 					}
 
-					if ( $number_correct ) {
-						$result = $question_curd->update_answer( $update, 'update-correct' );
-					} else {
-						$result = 'fail';
-					}
+					// update correct answer
+					$result = $question_curd->change_correct_answer( $question_id, $correct );
 
 					break;
 
 				case 'delete-question-answer':
-					$question_id = isset( $_POST['questionId'] ) ? $_POST['questionId'] : array();
-					$answer_id   = isset( $_POST['answerId'] ) ? intval( $_POST['answerId'] ) : false;
 
-					$delete = $question_curd->delete_question_answer( $question_id, $answer_id );
+					$question_id = isset( $_POST['question_id'] ) ? $_POST['question_id'] : false;
+					$answer_id   = isset( $_POST['answer_id'] ) ? intval( $_POST['answer_id'] ) : false;
 
-					$result = $delete ? array( 'question_id' => $question_id, 'answer_id' => $answer_id ) : false;
+					if ( ! ( $question_id && $answer_id ) ) {
+						break;
+					}
+
+					$result = $question_curd->delete_answer( $question_id, $answer_id );
+
+					break;
+
+				case 'new-question-answer':
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+
+					if ( ! $question_id ) {
+						break;
+					}
+
+					// new answer
+					$answer = LP_Question::get_default_answer();
+					// add new
+					$result = $question_curd->new_answer( $question_id, $answer );
+
+					break;
+
+				case 'update-question-content':
+
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					if ( ! $question ) {
+						break;
+					}
+
+					wp_update_post( array(
+						'ID'           => $question['id'],
+						'post_content' => $question['settings']['content']
+					) );
+
+					$result['status'] = true;
+
+					break;
+
+				case 'update-question-meta':
+
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = json_decode( wp_unslash( $question ), true );
+
+					$meta_key = ! empty( $args['meta_key'] ) ? $args['meta_key'] : false;
+
+					if ( ! ( $question && $meta_key ) ) {
+						break;
+					}
+
+					update_post_meta( $question['id'], '_lp_' . $meta_key, $question['settings'][ $meta_key ] );
+
+					$result['status'] = true;
+
 					break;
 
 				case 'search-items':
-					$query   = isset( $_POST['query'] ) ? $_POST['query'] : '';
-					$page    = isset( $_POST['query'] ) ? intval( $_POST['query'] ) : 1;
-					$exclude = isset( $_POST['exclude'] ) ? $_POST['exclude'] : '';
+
+					$query   = ! empty( $args['query'] ) ? $args['query'] : '';
+					$page    = ! empty( $args['page'] ) ? intval( $args['page'] ) : 1;
+					$exclude = ! empty( $args['exclude'] ) ? intval( $args['exclude'] ) : '';
 
 					if ( $exclude ) {
 						$exclude = json_decode( $exclude, true );
@@ -749,7 +936,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'pagination' => $search->get_pagination( false )
 					);
 
-					// code
+					break;
+
+				case 'add-questions-to-quiz':
+
+					$result = array();
+
+					$questions = isset( $_POST['items'] ) ? $_POST['items'] : false;
+					$questions = json_decode( wp_unslash( $questions ), true );
+
+					if ( ! $questions ) {
+						break;
+					}
+
+					if ( $questions ) {
+						foreach ( $questions as $key => $question ) {
+							if ( is_numeric( $quiz_curd->add_question( $quiz_id, $question['id'] ) ) ) {
+								$result[] = LP_Admin_Ajax::get_question_data_to_quiz( $question['id'] );
+							}
+						}
+					}
+
 					break;
 
 				default:
@@ -888,8 +1095,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -977,8 +1183,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1011,8 +1216,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1307,7 +1511,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */
@@ -1799,7 +2003,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 				// end trigger change user memorize question types
 				if ( 'auto-draft' === $question->post->post_status ) {
-					$question->answers = $question->get_default_answers( false );
+					$question->answers = $question->get_default_answers();
 				}
 				learn_press_send_json(
 					array(
@@ -2126,6 +2330,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			die();
 		}
+
 		public static function upload_user_avatar() {
 			$file       = $_FILES['lp-upload-avatar'];
 			$upload_dir = learn_press_user_profile_picture_upload_dir();

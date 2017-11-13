@@ -12,9 +12,8 @@ class LP_Settings_Pages extends LP_Abstract_Settings_Page {
 	 * LP_Settings_Pages constructor.
 	 */
 	public function __construct() {
-		$this->id       = 'pages';
-		$this->text     = __( 'Pages', 'learnpress' );
-		$this->priority = 50;
+		$this->id   = 'pages';
+		$this->text = __( 'Pages', 'learnpress' );
 
 		parent::__construct();
 	}

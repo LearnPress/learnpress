@@ -1,44 +1,122 @@
 <?php
 /**
- * Quiz editor template.
+ * Admin question editor: editor template.
  *
  * @since 3.0.0
  */
 
-learn_press_admin_view( 'question/answers' );
-learn_press_admin_view( 'question/meta' );
+learn_press_admin_view( 'question/answer' );
 ?>
 
+<script type="text/x-template" id="tmpl-lp-question-editor">
 
-<script type="text/x-template" id="tmpl-lp-quiz-editor">
-    <div id="admin-quiz-editor" class="learn-press-box-data">
-        <div class="lp-box-data-content">
-            <div class="lp-list-questions">
-                <div class="main">
-                    <div class="question-item">
-                        <div class="question-settings table-row">
-                            <lp-question-answers v-for="(question, index) in listQuestions" :question="question"
-                                                 :key="index"></lp-question-answers>
-                        </div>
+    <div id="lp-admin-question-editor" class="learn-press-box-data">
+        <div class="lp-box-data-head lp-row">
+            <h3 class="heading"><?php esc_html_e( 'Question Answers', 'learnpress' ); ?></h3>
+            <div class="lp-box-data-actions lp-toolbar-buttons">
+                <div class="lp-toolbar-btn question-actions">
+                    <div class="question-types">
+                        <a href="" class="lp-btn-icon dashicons dashicons-editor-help"></a>
+                        <ul>
+                            <li v-for="(type, key) in types" :data-type="key" :class="active(key)">
+                                <a href="" @click.prevent="changeType(key)">{{type}}</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="lp-box-data-content">
+            <table class="list-question-answers">
+                <thead>
+                <tr>
+                    <th v-for="(heading, key) in headings" :class="key">{{heading}}</th>
+                </tr>
+                </thead>
+                <draggable :list="answers" :element="'tbody'" @end="sort">
+                    <lp-question-answer v-for="(answer, index) in answers" :key="index" :index="index" :type="type"
+                                        :radio="radio" :number="number" :answer="answer"
+                                        @changeCorrect="changeCorrect"></lp-question-answer>
+                </draggable>
+            </table>
+            <p class="add-answer" v-if="addable">
+                <button class="button add-question-option-button" type="button"
+                        @click="newAnswer"><?php esc_html_e( 'Add option', 'learnpress' ); ?></button>
+            </p>
+        </div>
     </div>
+
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    (function (Vue, $store) {
 
-        Vue.component('lp-quiz-editor', {
-            template: '#tmpl-lp-quiz-editor',
+        Vue.component('lp-question-editor', {
+            template: '#tmpl-lp-question-editor',
             computed: {
-                listQuestions: function () {
-                    return $store.getters['lqs/listQuestions'];
+                headings: function () {
+                    return $store.getters['headings'];
+                },
+                // list answers
+                answers: function () {
+                    return $store.getters['answers'];
+                },
+                // question type key
+                type: function () {
+                    return $store.getters['type']['key'];
+                },
+                // check type radio answer type
+                radio: function () {
+                    return this.type === 'true_or_false' || this.type === 'single_choice';
+                },
+                // number answer
+                number: function () {
+                    return this.answers.length;
+                },
+                // answer addable
+                addable: function () {
+                    return this.type !== 'true_or_false' && $store.getters['supportAnswerOption'];
+                },
+                // question status
+                status: function () {
+                    return $store.getters['status'];
+                },
+                // all question types
+                types: function () {
+                    return $store.getters['types']
+                }
+            },
+            methods: {
+                // check question type active
+                active: function (type) {
+                    return this.type === type ? 'active' : '';
+                },
+                changeType: function (type) {
+                    if (this.type !== type) {
+                        $store.dispatch('changeQuestionType', type);
+                    }
+                },
+                // sort answer options
+                sort: function () {
+                    var orders = [];
+
+                    this.answers.forEach(function (answer) {
+                        orders.push(parseInt(answer.question_answer_id));
+                    });
+
+                    $store.dispatch('updateAnswersOrder', orders);
+                },
+                changeCorrect: function (correct) {
+                    $store.dispatch('updateCorrectAnswer', correct);
+                },
+                newAnswer: function () {
+                    if (this.status === 'successful') {
+                        $store.dispatch('newAnswer');
+                    }
                 }
             }
 
         })
 
-    })(Vue, LP_Quiz_Store, jQuery);
+    })(Vue, LP_Question_Store);
 </script>

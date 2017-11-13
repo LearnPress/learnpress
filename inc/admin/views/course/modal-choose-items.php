@@ -149,6 +149,49 @@ learn_press_admin_view( 'course/pagination' );
                         $('body').removeClass('lp-modal-choose-items-open');
                     }
                 });
+            }, computed: {
+                status: function () {
+                    return $store.getters['ci/status'];
+                },
+                loading: function () {
+                    return this.status === 'loading';
+                },
+                textButtonEdit: function () {
+                    if (this.showPreview) {
+                        return $store.getters['i18n/all'].back;
+                    }
+
+                    return $store.getters['i18n/all'].selected_items + ' (' + this.addedItems.length + ')';
+                },
+                addedItems: function () {
+                    return $store.getters['ci/addedItems'];
+                },
+                pagination: function () {
+                    return $store.getters['ci/pagination'];
+                },
+                totalPage: function () {
+                    if (this.pagination) {
+                        return parseInt(this.pagination.total) - 1 || 1;
+                    }
+
+                    return 1;
+                },
+                items: function () {
+                    return $store.getters['ci/items'];
+                },
+                show: function () {
+                    return $store.getters['ci/isOpen'];
+                },
+                types: function () {
+                    return $store.getters['ci/types'];
+                },
+                firstType: function () {
+                    for (var type in $store.getters['ci/types']) {
+                        return type;
+                    }
+
+                    return false;
+                }
             },
             methods: {
                 init: function () {
@@ -215,50 +258,6 @@ learn_press_admin_view( 'course/pagination' );
                         page: this.page,
                         type: this.tab
                     });
-                }
-            },
-            computed: {
-                status: function () {
-                    return $store.getters['ci/status'];
-                },
-                loading: function () {
-                    return this.status === 'loading';
-                },
-                textButtonEdit: function () {
-                    if (this.showPreview) {
-                        return $store.getters['i18n/all'].back;
-                    }
-
-                    return $store.getters['i18n/all'].selected_items + ' (' + this.addedItems.length + ')';
-                },
-                addedItems: function () {
-                    return $store.getters['ci/addedItems'];
-                },
-                pagination: function () {
-                    return $store.getters['ci/pagination'];
-                },
-                totalPage: function () {
-                    if (this.pagination) {
-                        return parseInt(this.pagination.total) - 1 || 1;
-                    }
-
-                    return 1;
-                },
-                items: function () {
-                    return $store.getters['ci/items'];
-                },
-                show: function () {
-                    return $store.getters['ci/isOpen'];
-                },
-                types: function () {
-                    return $store.getters['ci/types'];
-                },
-                firstType: function () {
-                    for (var type in $store.getters['ci/types']) {
-                        return type;
-                    }
-
-                    return false;
                 }
             }
         });

@@ -27,13 +27,6 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	public $text = '';
 
 	/**
-	 * Priority
-	 * 
-	 * @var int
-	 */
-	public $priority = 75;
-
-	/**
 	 * Constructor
 	 */
 	public function __construct() {

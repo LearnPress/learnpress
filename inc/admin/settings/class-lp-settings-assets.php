@@ -20,7 +20,6 @@ class LP_Settings_Assets extends LP_Abstract_Settings_Page {
 	public function __construct() {
 		$this->id   = 'assets';
 		$this->text = __( 'Assets', 'learnpress' );
-		$this->priority = 80;
 
 		parent::__construct();
 

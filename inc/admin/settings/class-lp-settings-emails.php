@@ -22,10 +22,8 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->id       = 'emails';
-		$this->text     = __( 'Emails', 'learnpress' );
-		$this->priority = 70;
-
+		$this->id   = 'emails';
+		$this->text = __( 'Emails', 'learnpress' );
 		parent::__construct();
 
 		add_filter( 'learn-press/admin/submenu-section-title', array( $this, 'custom_section_title' ), 10, 2 );
@@ -130,12 +128,12 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'type'  => 'heading'
 				),
 				array(
-					'title'            => __( 'Header image', 'learnpress' ),
-					'id'               => 'emails_general[header_image]',
-					'default'          => '',
-					'type'             => 'image_advanced',
-					'max_file_uploads' => 1,
-					'desc'             => __( 'The image will be displayed in the top of the email.', 'learnpress' )
+					'title'   => __( 'Header image', 'learnpress' ),
+					'id'      => 'emails_general[header_image]',
+					'default' => '',
+					'type'    => 'image_advanced',
+					'max_file_uploads'=>1,
+					'desc'    => __( 'The image will be displayed in the top of the email.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Footer text', 'learnpress' ),

@@ -386,6 +386,98 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Update order question in quiz.
+	 *
+	 * @param $order
+	 *
+	 * @return false|int
+	 */
+	public function sort_questions( $order ) {
+		global $wpdb;
+
+		// number db row affected
+		$rows_affected = 0;
+
+		foreach ( $order as $index => $question_id ) {
+
+			$update = $wpdb->update(
+				$wpdb->learnpress_quiz_questions,
+				array( 'question_order' => $index + 1 ),
+				array( 'question_id' => $question_id )
+			);
+
+			if ( $update === false ) {
+				return $update;
+			} else {
+				$rows_affected += $update;
+			};
+
+			// return 1 for successful, 0 for database error
+			return $rows_affected ? 1 : 0;
+		}
+
+		// return -1 for don't update
+		return - 1;
+
+	}
+
+	/**
+	 * Remove question from quiz.
+	 *
+	 * @param $quiz
+	 * @param $question_id
+	 *
+	 * @return bool|false|int|WP_Error
+	 */
+	public function remove_question( $quiz, $question_id ) {
+
+		if ( ! $quiz = learn_press_get_quiz( $quiz ) ) {
+			return $this->get_error( 'QUIZ_NOT_EXISTS' );
+		}
+
+		global $wpdb;
+
+		// remove question from quiz
+		$delete = $wpdb->delete(
+			$wpdb->prefix . 'learnpress_quiz_questions',
+			array(
+				'quiz_id'     => $quiz->get_id(),
+				'question_id' => $question_id
+			),
+			array( '%d', '%d' )
+		);
+
+		// reorder questions
+		$this->reorder_questions( $quiz );
+		// increment quiz questions
+		learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
+
+		return $delete;
+	}
+
+	/**
+	 * Delete permanently question from quiz.
+	 *
+	 * @param $quiz
+	 * @param $question_id
+	 *
+	 * @return array|bool|false|WP_Post
+	 */
+	public function delete_question( $quiz, $question_id ) {
+
+		$question_curd = new LP_Question_CURD();
+
+		// remove question from quiz
+		$this->remove_question( $quiz, $question_id );
+
+		// delete permanently question
+		$delete = $question_curd->delete_permanently_question( $question_id );
+
+		return $delete;
+
+	}
+
+	/**
 	 * Remove a question from list of questions
 	 *
 	 * @param LP_Quiz|int $the_quiz
@@ -394,7 +486,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed         false on failed
 	 */
-	public function remove_question( $the_quiz, $question_id, $args = array() ) {
+	public function _remove_question( $the_quiz, $question_id, $args = array() ) {
 		if ( ! $the_quiz = learn_press_get_quiz( $the_quiz ) ) {
 			return $this->get_error( 'QUIZ_NOT_EXISTS' );
 		}
@@ -481,35 +573,6 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 		}
 
 		$this->reorder_questions( $orders );
-
-		return $orders;
-	}
-
-	/**
-	 * Update order quiz questions.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param $questions
-	 *
-	 * @return array
-	 */
-	public function sort_questions( $questions ) {
-		global $wpdb;
-
-		$orders = array();
-
-		foreach ( $questions as $index => $question_id ) {
-			$order = $index + 1;
-
-			$orders[ $question_id ] = $order;
-
-			$wpdb->update(
-				$wpdb->learnpress_quiz_questions,
-				array( 'question_order' => $order ),
-				array( 'question_id' => $question_id )
-			);
-		}
 
 		return $orders;
 	}

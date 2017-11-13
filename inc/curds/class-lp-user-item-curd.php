@@ -384,48 +384,6 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * Remove a question from list of questions
-	 *
-	 * @param LP_Quiz|int $the_quiz
-	 * @param int|array   $question_id ID of the question to remove
-	 * @param mixed       $args        Extra options
-	 *
-	 * @return mixed         false on failed
-	 */
-	public function remove_question( $the_quiz, $question_id, $args = array() ) {
-		if ( $the_quiz = learn_press_get_quiz( $the_quiz ) ) {
-			return $this->get_error( 'QUESTION_NOT_EXISTS' );
-		}
-		global $wpdb;
-		$id       = $this->get_id();
-		$args     = wp_parse_args( $args, array( 'delete_permanently' => false ) );
-		$is_multi = is_array( $question_id );
-
-		$ids = $question_id;
-		settype( $ids, 'array' );
-		$results = array();
-		foreach ( $ids as $question_id ) {
-			do_action( 'learn-press/delete-quiz-question', $question_id, $id );
-			$deleted = $wpdb->delete(
-				$wpdb->prefix . 'learnpress_quiz_questions',
-				array(
-					'quiz_id'     => $id,
-					'question_id' => $question_id
-				),
-				array( '%d', '%d' )
-			);
-			$this->reorder_questions();
-			do_action( 'learn-press/deleted-quiz-question', $question_id, $id, $deleted );
-			if ( $deleted && $args['delete_permanently'] ) {
-				LP_Question_Factory::delete_question( $question_id, $id );
-			}
-			$results[ $question_id ] = $deleted;
-		}
-
-		return $is_multi ? $results : $deleted;
-	}
-
-	/**
 	 * Update quiz questions.
 	 *
 	 * @param array $questions An array of questions need to update.
