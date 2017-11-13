@@ -37,6 +37,11 @@ class LP_Schedules {
 		add_action( 'learn_press_delete_user_guest_transient', array( $this, 'delete_user_guest_transient' ) );
 	}
 
+	/**
+	 * @param int $user_item_id
+	 *
+	 * @return bool|LP_User_Item_Course
+	 */
 	protected function _get_item_course( $user_item_id ) {
 		$curd = new LP_User_CURD();
 
