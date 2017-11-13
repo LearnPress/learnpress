@@ -182,6 +182,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$result = $curd->sort_sections( $order );
 
+					// last section
+					$last_section_id = end( $order );
+					// update final quiz
+					$curd->update_final_quiz( $last_section_id );
+
 					break;
 
 				case 'update-section':
@@ -283,15 +288,20 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'update-section-items':
 
-					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-					$items      = ! empty( $args['items'] ) ? $args['items'] : false;
-					$items      = json_decode( wp_unslash( $items ), true );
+					$section_id   = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$last_section = ! empty( $args['last_section'] ) ? $args['last_section'] : false;
+					$items        = ! empty( $args['items'] ) ? $args['items'] : false;
+					$items        = json_decode( wp_unslash( $items ), true );
 
 					if ( ! ( $section_id && $items ) ) {
 						break;
 					}
 
 					$result = $curd->update_section_items( $section_id, $items );
+
+					if ( $last_section ) {
+						$curd->update_final_quiz( $section_id );
+					}
 
 					break;
 
@@ -358,8 +368,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
-                default:
-                    break;
+				default:
+					break;
 
 			}
 

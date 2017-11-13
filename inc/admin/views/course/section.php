@@ -46,7 +46,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
             <div class="section-actions">
                 <button type="button" class="button button-secondary"
-                        @click="openModal"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
+                        @click="openModal"><?php esc_html_e( 'Select items', 'learnpress' ); ?></button>
 
                 <div class="remove" :class="{confirm: confirm}">
                     <span class="icon" @click="removing"><span class="dashicons dashicons-trash"></span></span>

@@ -306,6 +306,35 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return ! ! $item;
 	}
 
+	/**
+	 * Update course final quiz.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id
+	 *
+	 * @return bool
+	 */
+	public function update_final_quiz( $section_id ) {
+
+		// get last section items
+		$section_items = $this->get_section_items( $section_id );
+
+		if ( $section_items ) {
+			// last item in last section
+			$final = end( $section_items );
+
+			if ( $final['type'] == LP_QUIZ_CPT ) {
+				update_post_meta( $this->course_id, '_lp_final_quiz', $final['id'] );
+			} else {
+				delete_post_meta( $this->course_id, '_lp_final_quiz' );
+			}
+		}
+
+		return true;
+
+	}
+
 	public function sort_section_items( $orders ) {
 
 	}

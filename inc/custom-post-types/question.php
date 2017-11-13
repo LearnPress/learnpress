@@ -74,7 +74,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			// add default answer for new question
 			if ( $pagenow === 'post-new.php' ) {
-				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'multi_choice' ) ) );
+				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'true_or_false' ) ) );
 				$answers  = $question->get_default_answers();
 			} else {
 				$question = LP_Question::get_question( $post->ID );
