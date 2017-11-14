@@ -74,7 +74,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			// add default answer for new question
 			if ( $pagenow === 'post-new.php' ) {
-				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'multi_choice' ) ) );
+				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'true_or_false' ) ) );
 				$answers  = $question->get_default_answers();
 			} else {
 				$question = LP_Question::get_question( $post->ID );
@@ -90,9 +90,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'key'   => $question->get_type(),
 						'label' => $question->get_type_label()
 					),
-					'headings'            => $question->get_answer_headings(),
 					'answers'             => $answers,
-					'supportAnswerOption' => isset( $question->get_supports()['answer-options'] ),
 					'ajax'                => admin_url( '' ),
 					'action'              => 'admin_question_editor',
 					'nonce'               => wp_create_nonce( 'learnpress_admin_question_editor' ),

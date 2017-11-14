@@ -103,11 +103,11 @@
                 },
                 // remove question from quiz
                 remove: function () {
-                    $store.dispatch('lqs/removeQuestion', this.question.id);
+                    $store.dispatch('lqs/removeQuestion', this.question);
                 },
                 // delete permanently question
                 deletePermanently: function () {
-                    $store.dispatch('lqs/deleteQuestion', this.question.id);
+                    $store.dispatch('lqs/deleteQuestion', this.question);
                 },
                 // toggle question
                 toggle: function () {

@@ -1335,6 +1335,13 @@ function learn_press_add_row_action_link( $actions ) {
 add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
 add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 
+function learn_press_output_admin_template()
+{
+	learn_press_admin_view('admin-template.php');
+}
+
+add_action('admin_print_scripts', 'learn_press_output_admin_template');
+
 function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;
 	$course_meta = $wpdb->get_results(
@@ -1377,9 +1384,14 @@ function learn_press_process_duplicate_action() {
 			$post_id = array_shift( $post_id );
 		}
 		// check for post is exists
-		if ( ! ( $post_id && $post = get_post( $post_id ) ) ) {
-			wp_die( __( 'Oops! The course does not exist.', 'learnpress' ) );
+		if ( ! $post_id  ) {
+			wp_die( __( 'Oops! ID does not exist.', 'learnpress' ) );
 		}
+
+		if(!$post = get_post($post_id)){
+			wp_die( __( 'Oops! The course does not exist.', 'learnpress' ) );
+        }
+
 		// ensure that user can create course
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			wp_die( __( 'Sorry! You have not permission to duplicate this course.', 'learnpress' ) );
@@ -1390,19 +1402,18 @@ function learn_press_process_duplicate_action() {
 		$new_course_author = $current_user->ID;
 
 		// setup course data
-		$new_course_title = $post->post_title . ' - Copy';
 		$args             = array(
-			'comment_status' => $post->comment_status,
-			'ping_status'    => $post->ping_status,
+			'post_status'    => 'draft',
+			'post_title'     => $post->post_title,
+			'post_type'      => $post->post_type,
 			'post_author'    => $new_course_author,
 			'post_content'   => $post->post_content,
 			'post_excerpt'   => $post->post_excerpt,
 			'post_name'      => $post->post_name,
+			'comment_status' => $post->comment_status,
+			'ping_status'    => $post->ping_status,
 			'post_parent'    => $post->post_parent,
 			'post_password'  => $post->post_password,
-			'post_status'    => 'draft',
-			'post_title'     => $new_course_title,
-			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order
 		);

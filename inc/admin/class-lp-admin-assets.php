@@ -51,49 +51,49 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
-				'select2'                           => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
-				'lp-vue'                            => array(
+				'select2'                            => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
+				'lp-vue'                             => array(
 					'url' => self::url( 'js/vendor/vue.js' ),
 					'ver' => '2.4.0'
 				),
-				'lp-vuex'                           => array(
+				'lp-vuex'                            => array(
 					'url' => self::url( 'js/vendor/vuex.2.3.1.js' ),
 					'ver' => '2.3.1'
 				),
-				'lp-vue-resource'                   => array(
+				'lp-vue-resource'                    => array(
 					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
 					'ver' => '1.3.4'
 				),
-				'lp-sortable'                       => array(
+				'lp-sortable'                        => array(
 					'url' => self::url( 'js/vendor/sortable.1.6.0.js' ),
 					'ver' => '1.6.0'
 				),
-				'lp-vuedraggable'                   => array(
+				'lp-vuedraggable'                    => array(
 					'url'  => self::url( 'js/vendor/vuedraggable.2.14.1.js' ),
 					'ver'  => '2.14.1',
 					'deps' => array( 'lp-sortable' )
 				),
-				'learn-press-global'                => array(
+				'learn-press-global'                 => array(
 					'url'  => $this->url( 'js/global.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' )
 				),
-				'learn-press-utils'                 => array(
+				'learn-press-utils'                  => array(
 					'url'  => $this->url( 'js/admin/utils.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'admin'                             => array(
+				'admin'                              => array(
 					'url'  => $this->url( 'js/admin/admin.js' ),
 					'deps' => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' )
 				),
-				'admin-tabs'                        => array(
+				'admin-tabs'                         => array(
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'tipsy'                             => array(
+				'tipsy'                              => array(
 					'url'  => $this->url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'learn-press-admin-course-editor'   => array(
+				'learn-press-admin-course-editor'    => array(
 					'url'     => $this->url( 'js/admin/course-editor.js' ),
 					'deps'    => array(
 						'lp-vue',
@@ -103,7 +103,11 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					'screens' => array( LP_COURSE_CPT )
 				),
-				'learn-press-admin-quiz-editor'     => array(
+				'learn-press-admin-duplicate-course' => array(
+					'url'  => $this->url( 'js/admin/duplicate-course.js' ),
+					'deps' => array( 'jquery', 'backbone', 'wp-util' )
+				),
+				'learn-press-admin-quiz-editor'      => array(
 					'url'     => $this->url( 'js/admin/quiz-editor.js' ),
 					'deps'    => array(
 						'lp-vue',
@@ -113,7 +117,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					'screens' => array( LP_QUIZ_CPT )
 				),
-				'learn-press-admin-question-editor' => array(
+				'learn-press-admin-question-editor'  => array(
 					'url'     => $this->url( 'js/admin/question-editor.js' ),
 					'deps'    => array(
 						'lp-vue',
@@ -123,13 +127,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					'screens' => array( LP_QUESTION_CPT )
 				),
-				'learn-press-modal-search-items'    => array(
+				'learn-press-modal-search-items'     => array(
 					'url' => $this->url( 'js/admin/modal-search-items.js' )
 				),
-				'learn-press-modal-search-users'    => array(
+				'learn-press-modal-search-users'     => array(
 					'url' => $this->url( 'js/admin/modal-search-users.js' )
 				),
-				'learn-press-meta-box-order'        => array(
+				'learn-press-meta-box-order'         => array(
 					'url'     => $this->url( 'js/admin/meta-box-order.js' ),
 					'deps'    => array(
 						'learn-press-global',

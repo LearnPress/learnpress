@@ -87,6 +87,21 @@
         });
     });
 
+    $(document).on('click', '.wp-list-table .lp-duplicate-course', function (e) {
+        e.preventDefault();
+        var _this = $(this),
+            _tr = _this.closest('tr'),
+            _id = _tr.find('.check-column input[type="checkbox"]').val(),
+            _title = _tr.find('.title strong').text();
+
+        _this.LP_Course_Duplicator({
+            _target: _this,
+            course_id: _id,
+            course_title: _title
+        });
+        return false;
+    });
+
     var LP_Admin = window.LP_Admin = {
         init: function () {
             var $doc = $(document);

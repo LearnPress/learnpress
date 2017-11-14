@@ -34,14 +34,8 @@
         type: function (state) {
             return state.type;
         },
-        headings: function (state) {
-            return state.headings || [];
-        },
         answers: function (state) {
             return Object.values(state.answers) || [];
-        },
-        supportAnswerOption: function (state) {
-            return state.supportAnswerOption;
         },
         settings: function (state) {
             return state.setting;
@@ -78,12 +72,21 @@
             state.status = status;
         },
 
-        'SORT_ANSWERS': function (state, order) {
-            // code
+        'CHANGE_QUESTION_TYPE': function (state, question) {
+            state.answers = question.answers;
+            state.type = question.type;
         },
 
-        'DELETE_ANSWER': function (state, order) {
-            //state.answers.splice(order, 1);
+        'SORT_ANSWERS': function (state, question) {
+            state.answers = question.answers;
+        },
+
+        'DELETE_ANSWER': function (state, answers) {
+            state.answers = answers;
+        },
+
+        'NEW_ANSWER': function (state, answers) {
+            state.answers = answers;
         },
 
         'INCREASE_NUMBER_REQUEST': function (state) {
@@ -97,35 +100,18 @@
 
     var actions = {
 
-        'changeQuestionType': function (context, questionType) {
+        changeQuestionType: function (context, type) {
 
             Vue.http.LPRequest({
                 type: 'change-question-type',
-                question_type: questionType
-            }).then(
-                // code
-            )
+                question_type: type
+            }).then(function (response) {
+                var result = response.body;
 
-        },
-
-        updateAnswerTitle: function (context, answer) {
-
-            Vue.http.LPRequest({
-                type: 'update-answer-title',
-                answer: JSON.stringify(answer)
-            }).then(
-                // code
-            )
-
-        },
-
-        updateCorrectAnswer: function (context, correct) {
-
-            Vue.http.LPRequest({
-                type: 'change-correct',
-                correct: JSON.stringify(correct)
+                if (result.success) {
+                    context.commit('CHANGE_QUESTION_TYPE', result.data);
+                }
             })
-
         },
 
         updateAnswersOrder: function (context, order) {
@@ -137,16 +123,26 @@
                 function (response) {
                     var result = response.body;
                     if (result.success) {
-                        context.commit('SORT_ANSWERS', order);
+                        context.commit('SORT_ANSWERS', result.data);
                     }
                 }
             )
         },
 
-        newAnswer: function (context) {
+        updateAnswerTitle: function (context, answer) {
 
             Vue.http.LPRequest({
-                type: 'new-answer'
+                type: 'update-answer-title',
+                answer: JSON.stringify(answer)
+            })
+
+        },
+
+        updateCorrectAnswer: function (context, correct) {
+
+            Vue.http.LPRequest({
+                type: 'change-correct',
+                correct: JSON.stringify(correct)
             })
 
         },
@@ -160,13 +156,26 @@
                 function (response) {
                     var result = response.body;
 
-                    if (!result.success) {
-                        return;
+                    if (result.success) {
+                        context.commit('DELETE_ANSWER', result.data);
+                    } else {
+                        // notice error
                     }
 
-                    var data = result.data;
-                    if (data.status) {
-                        context.commit('DELETE_ANSWER', payload.order - 1);
+                })
+
+        },
+
+        newAnswer: function (context) {
+
+            Vue.http.LPRequest({
+                type: 'new-answer'
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (result.success) {
+                        context.commit('NEW_ANSWER', result.data);
                     } else {
                         // notice error
                     }

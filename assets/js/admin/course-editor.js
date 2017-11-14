@@ -351,10 +351,12 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
 
         updateSectionItems: function (context, payload) {
+
             Vue.http.LPRequest({
                 type: 'update-section-items',
                 section_id: payload.section_id,
-                items: JSON.stringify(payload.items)
+                items: JSON.stringify(payload.items),
+                last_section: state.sections[state.sections.length - 1] === (payload.section_id)
             }).then(
                 function (response) {
                     var result = response.body;
