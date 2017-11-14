@@ -341,7 +341,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function quiz_editor_get_questions() {
+		public function quiz_editor_get_questions($settings = false) {
 			// list questions
 			$questions = $this->get_questions();
 			// order questions in quiz

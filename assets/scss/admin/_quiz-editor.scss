@@ -312,9 +312,25 @@
                             }
                         }
 
-                        &:hover {
-                            ul.question-types {
-                                display: block !important;
+                        button{
+                            &:hover{
+                                & + .question-types{
+                                    display: block;
+                                }
+                            }
+
+                            & + .question-types{
+                                &:hover{
+                                    display: block;
+                                }
+                            }
+
+                            &[disabled="disabled"]{
+                                &:hover{
+                                    & + .question-types{
+                                        display: none;
+                                    }
+                                }
                             }
                         }
                     }

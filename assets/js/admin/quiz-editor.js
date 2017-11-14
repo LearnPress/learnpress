@@ -289,9 +289,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             state.questions.push(question);
         },
         'UPDATE_QUIZ_QUESTIONS': function (state, questions) {
-            questions.forEach(function (question) {
-                state.questions.push(question);
-            });
+            state.questions.push(questions);
         },
         'CHANGE_QUESTION_TYPE': function (state, data) {
             state.questions = state.questions.map(function (question) {
@@ -307,7 +305,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             var questions = state.questions,
                 index = questions.indexOf(item);
 
-            questions.splice(index, 1);
+            state.questions.splice(index, 1);
         },
         'DELETE_QUESTION_ANSWER': function (state, payload) {
             var question_id = payload.question_id,
@@ -486,17 +484,17 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             )
         },
 
-        removeQuestion: function (context, question_id) {
+        removeQuestion: function (context, question) {
 
             Vue.http.LPRequest({
                 type: 'remove-question',
-                question_id: question_id
+                question_id: question.id
             }).then(
                 function (response) {
                     var result = response.body;
 
                     if (result.success) {
-                        context.commit('REMOVE_QUESTION', question_id);
+                        context.commit('REMOVE_QUESTION', question);
                     }
                 },
                 function (error) {
@@ -505,19 +503,19 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             )
         },
 
-        deleteQuestion: function (context, question_id) {
+        deleteQuestion: function (context, question) {
 
             Vue.http
                 .LPRequest({
                     type: 'delete-question',
-                    question_id: question_id
+                    question_id: question.id
                 })
                 .then(function () {
-                    context.commit('REMOVE_QUESTION', question_id);
-                    context.commit('UPDATE_QUESTION_SUCCESS', question_id);
+                    context.commit('REMOVE_QUESTION', question);
+                    context.commit('UPDATE_QUESTION_SUCCESS', question.id);
                 })
                 .catch(function () {
-                    context.commit('UPDATE_QUESTION_FAILURE', question_id);
+                    context.commit('UPDATE_QUESTION_FAILURE', question.id);
                 })
         },
 

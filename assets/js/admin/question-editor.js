@@ -81,12 +81,12 @@
             state.answers = question.answers;
         },
 
-        'DELETE_ANSWER': function (state, question) {
-            state.answers = question.answers;
+        'DELETE_ANSWER': function (state, answers) {
+            state.answers = answers;
         },
 
-        'NEW_ANSWER': function (state, question) {
-            state.answers = question.answers;
+        'NEW_ANSWER': function (state, answers) {
+            state.answers = answers;
         },
 
         'INCREASE_NUMBER_REQUEST': function (state) {

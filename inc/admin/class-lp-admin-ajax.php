@@ -516,6 +516,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// update answer title
 					$result = $curd->update_answer_title( $question_id, $answer );
 
+					break;
+
 				case 'change-correct':
 					// correct answer
 					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
@@ -541,7 +543,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// delete answer
 					$curd->delete_answer( $question_id, $answer_id );
 
-					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
+					$result = $question->get_data( 'answer_options' );
 
 					break;
 
@@ -552,7 +554,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// add new
 					$curd->new_answer( $question_id, $answer );
 
-					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
+					$result = $question->get_data( 'answer_options' );
 
 					break;
 

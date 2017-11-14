@@ -350,6 +350,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return false;
 			}
 
+			$question = LP_Question::get_question( $question_id );
+
+			// exist answer options
+			$answers = $question->get_data( 'answer_options' );
+
 			global $wpdb;
 
 			// delete all answer in question
@@ -358,11 +363,21 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					$wpdb->learnpress_question_answers,
 					array( 'question_id' => $question_id )
 				);
+
+				if ( $delete ) {
+					$question->set_data( 'answer_options', '' );
+				}
 			} else {
 				$delete = $wpdb->delete(
 					$wpdb->learnpress_question_answers,
 					array( 'question_answer_id' => $answer_id )
 				);
+				if ( $delete ) {
+					unset( $answers[ $answer_id ] );
+					$question->set_data( 'answer_options', $answers );
+
+					$this->sort_answers( $question_id, array_keys( $answers ) );
+				}
 			}
 
 			return $delete;
@@ -372,11 +387,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * Add new answer.
 		 *
 		 * @param $question_id
-		 * @param $answer
+		 * @param $new_answer
 		 *
 		 * @return bool|false|int
 		 */
-		public function new_answer( $question_id, $answer ) {
+		public function new_answer( $question_id, $new_answer ) {
 
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
@@ -384,16 +399,26 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			$question = LP_Question::get_question( $question_id );
 
+			// exist answer options
+			$answers = $question->get_data( 'answer_options' );
+			// number answer options
+			$number = count( $question->get_data( 'answer_options' ) );
+
 			global $wpdb;
 
 			$insert = $wpdb->insert(
 				$wpdb->learnpress_question_answers,
 				array(
 					'question_id'  => $question_id,
-					'answer_data'  => serialize( $answer ),
-					'answer_order' => count( $question->get_data( 'answer_options' ) ) + 1
+					'answer_data'  => serialize( $new_answer ),
+					'answer_order' => $number + 1
 				),
 				array( '%d', '%s', '%d' ) );
+
+			if ( $insert ) {
+				$new_answer['answer_order'] = $number + 1;
+				$question->set_data( 'answer_options', array_merge( $answers, array( $new_answer ) ) );
+			}
 
 			return $insert;
 		}
@@ -475,7 +500,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 				if ( $correct > 1 ) {
 					// remove all correct and keep first option
-					$answers[$answer_ids[0]]['is_true'] = '';
+					$answers[ $answer_ids[0] ]['is_true'] = '';
 				}
 			}
 
