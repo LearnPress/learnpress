@@ -818,6 +818,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// add new
 					$result = $question_curd->new_answer( $question_id, $answer );
 
+					if ( $question_curd->new_answer( $question_id, $answer ) ) {
+						$result = $answer;
+					}
+
 					break;
 
 				case 'update-question-content':

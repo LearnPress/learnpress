@@ -315,7 +315,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 if (question.id === question_id) {
                     var answers = question.answers;
                     answers.forEach(function (answer) {
-                        if (parseInt(answer.question_answer_id) === answer_id) {
+                        if (answer.question_answer_id === answer_id) {
                             var index = answers.indexOf(answer);
                             answers.splice(index, 1);
                         }
@@ -624,6 +624,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
                         if (result.success) {
                             var answer = result.data;
+                            context.commit('ADD_QUESTION_ANSWER', answer);
                             context.commit('UPDATE_QUESTION_SUCCESS', question_id);
                         }
                     },
