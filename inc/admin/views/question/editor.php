@@ -5,27 +5,16 @@
  * @since 3.0.0
  */
 
+learn_press_admin_view( 'question/actions' );
 learn_press_admin_view( 'question/answer' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-editor">
 
     <div id="lp-admin-question-editor" class="learn-press-box-data">
-        <div class="lp-box-data-head lp-row">
-            <h3 class="heading"><?php esc_html_e( 'Question Answers', 'learnpress' ); ?></h3>
-            <div class="lp-box-data-actions lp-toolbar-buttons">
-                <div class="lp-toolbar-btn question-actions">
-                    <div class="question-types">
-                        <a href="" class="lp-btn-icon dashicons dashicons-editor-help"></a>
-                        <ul>
-                            <li v-for="(type, key) in types" :data-type="key" :class="active(key)">
-                                <a href="" @click.prevent="changeType(key)">{{type}}</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+        <lp-question-actions :type="type"></lp-question-actions>
+
         <div class="lp-box-data-content">
             <table class="list-question-answers">
                 <thead>
@@ -81,23 +70,9 @@ learn_press_admin_view( 'question/answer' );
                 // question status
                 status: function () {
                     return $store.getters['status'];
-                },
-                // all question types
-                types: function () {
-                    return $store.getters['types']
                 }
             },
             methods: {
-                // check question type active
-                active: function (type) {
-                    return this.type === type ? 'active' : '';
-                },
-                // change question type
-                changeType: function (type) {
-                    if (this.type !== type) {
-                        $store.dispatch('changeQuestionType', type);
-                    }
-                },
                 // sort answer options
                 sort: function () {
                     var order = [];
@@ -106,7 +81,6 @@ learn_press_admin_view( 'question/answer' );
                         order.push(parseInt(answer.question_answer_id));
                     });
 
-                    console.log(order);
 
                     $store.dispatch('updateAnswersOrder', order);
                 },
