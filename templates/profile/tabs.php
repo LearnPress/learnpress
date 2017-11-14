@@ -43,6 +43,12 @@ global $wp, $wp_query, $profile;
 				<?php if ( ! empty( $tab_data['sections'] ) ) { ?>
                     <ul class="">
 						<?php foreach ( $tab_data['sections'] as $section_key => $section_data ) {
+
+							// If current user do not have permission and/or tab is invisible
+							if ( ! $profile->current_user_can( "view-section-{$section_key}" ) || $profile->is_hidden( $section_data ) ) {
+								continue;
+							}
+
 							$classes = array( esc_attr( $section_key ) );
 							if ( $profile->is_current_section( $section_key, $section_key ) ) {
 								$classes[] = 'active';

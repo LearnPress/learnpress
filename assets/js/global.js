@@ -147,7 +147,7 @@ if (typeof window.LP === 'undefined') {
                     }
                     try {
                         if (i == keys.length - 1) {
-                            objExp = objPath + "=isNaN(that.value) ? that.value : Number(that.value);";
+                            objExp = objPath + "= !(that.value + '').length || isNaN(that.value) ? that.value : Number(that.value);";
                             end = true;
                         } else {
                             objExp = objPath + "={}";

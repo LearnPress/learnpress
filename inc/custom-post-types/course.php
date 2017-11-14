@@ -456,18 +456,18 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public static function assessment_meta_box() {
 			global $post;
 			$post_id = LP_Request::get_int( 'post' );
-			$post_id = $post_id ? $post_id : (! empty( $post ) ? $post->ID : 0);
+			$post_id = $post_id ? $post_id : ( ! empty( $post ) ? $post->ID : 0 );
 
 			$prefix             = '_lp_';
 			$course_result_desc = '';
 
 			if ( $course_results = get_post_meta( $post_id, '_lp_course_result', true ) ) {
 				if ( in_array( $course_results, array( '', 'evaluate_lesson', 'evaluate_final_quiz' ) ) ) {
-					$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>', __( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
+					//$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>', __( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
 				}
 			}
 
-			$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
+			//$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
 			$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
 
 			if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
@@ -476,7 +476,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$quiz_passing_condition_html = '';
 
-			if($course        = learn_press_get_course( $post_id )) {
+			if ( $course = learn_press_get_course( $post_id ) ) {
 				$passing_grade = '';
 
 				if ( $final_quiz = $course->get_final_quiz() ) {
@@ -605,6 +605,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$message = __( 'This course is free.', 'learnpress' );
 					};
 				}
+				$sale_price_dates_class = 'lp-course-sale_end-field';
+				if ( ! $start_date && ! $end_date ) {
+					$sale_price_dates_class .= ' hide-if-js';
+				}
 				$conditional = array(
 //					'state'       => 'show',
 //					'conditional' => array(
@@ -626,7 +630,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc'       => $message,
 						'std'        => $price,
 						'visibility' => $conditional
-						//'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
 					),
 					array(
 						'name'       => __( 'Sale Price', 'learnpress' ),
@@ -634,9 +637,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'       => 'number',
 						'min'        => 0,
 						'step'       => 0.01,
-						'desc'       => sprintf( '<p class="description">%s</p>', __( 'Leave blank to remove sale price.', 'learnpress' ) ) . '<a href="#" id="' . $prefix . 'sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
+						'desc'       => sprintf( '<p class="description">%s</p>', __( 'Leave blank to remove sale price.', 'learnpress' ) )
+						                . '<a href="#"'.($start_date||$end_date ? ' style="display:none;"' : '').' id="' . $prefix . 'sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
 						'std'        => $sale_price,
-						//'class'      => 'lp-course-price-field lp-course-sale_price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
 						'visibility' => $conditional
 					),
 					array(
@@ -644,7 +647,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'         => "{$prefix}sale_start",
 						'type'       => 'datetime',
 						'std'        => $start_date,
-						'class'      => 'lp-course-sale_start-field hide',
+						'class'      => $sale_price_dates_class,
 						'visibility' => $conditional
 					),
 					array(
@@ -653,7 +656,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'       => 'datetime',
 						'desc'       => '<a href="#" id="' . $prefix . 'sale_price_schedule_cancel">' . __( 'Cancel', 'learnpress' ) . '</a>',
 						'std'        => $end_date,
-						'class'      => 'lp-course-sale_end-field hide',
+						'class'      => $sale_price_dates_class,
 						'visibility' => $conditional
 					)
 				);

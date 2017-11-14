@@ -30,6 +30,11 @@ $link = $profile->get_tab_link( $tab_key );
 <ul class="lp-tab-sections">
 
 	<?php foreach ( $tab_data['sections'] as $section_key => $section_data ) {
+
+		if ( $profile->is_hidden( $section_data ) ) {
+			continue;
+		}
+
 		$classes = array( 'section-tab', esc_attr( $section_key ) );
 		if ( $profile->is_current_section( $section_key, $section_key ) ) {
 			$classes[] = 'active';
@@ -40,7 +45,7 @@ $link = $profile->get_tab_link( $tab_key );
 		?>
 
         <li class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( $profile->is_current_section( $section_key, $section_key) ) { ?>
+			<?php if ( $profile->is_current_section( $section_key, $section_key ) ) { ?>
                 <span><?php echo $section_data['title']; ?></span>
 			<?php } else { ?>
                 <a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a>

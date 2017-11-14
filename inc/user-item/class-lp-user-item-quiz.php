@@ -165,6 +165,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $this->get_results( 'grade' ) === 'passed';
 	}
 
+	public function get_percent_result( $decimal = 1 ) {
+		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_results( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
+	}
+
 	public function get_time_interval( $context = '' ) {
 		$interval = parent::get_time_interval();
 		if ( $context == 'display' ) {
@@ -180,9 +184,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $interval;
 	}
 
-	public function get_percent_result( $decimal = 1 ) {
-		return apply_filters( 'learn-press/user/quiz-percent-result', sprintf( '%s%%', round( $this->get_results( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
-	}
+
 
 	public function is_answered( $question_id ) {
 		$result = $this->get_results();

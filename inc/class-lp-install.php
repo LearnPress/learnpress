@@ -151,7 +151,7 @@ class LP_Install {
 	 * Update default options for LP
 	 */
 	private static function _create_options() {
-
+		return;
 		include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-base.php';
 		$settings_classes = array(
 			'LP_Settings_General'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-general.php',

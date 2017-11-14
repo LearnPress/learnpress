@@ -8,7 +8,7 @@
             var $form = $('#learn-press-setup-form'),
                 loadUrl = $(this).attr('href'),
                 $main = $('#main').addClass('loading');
-
+            console.log($form.serializeJSON());
             $.post({
                 url: loadUrl,
                 data: $form.serializeJSON(),

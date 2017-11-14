@@ -8,6 +8,8 @@
  */
 
 defined( 'ABSPATH' ) or exit;
+do_action('admin_print_footer_scripts');
+do_action('admin_footer');
 ?>
 <footer>
 	<?php printf( __( 'LearnPress %s. Designed by @ThimPress.', 'learnpress' ), LEARNPRESS_VERSION ); ?>

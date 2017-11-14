@@ -473,6 +473,10 @@ class LP_Request {
 			case 'get':
 				$env = $_GET;
 				break;
+			case 'wp':
+				global $wp;
+				$env = $wp->query_vars;
+				break;
 			default:
 				$env = $_REQUEST;
 		}

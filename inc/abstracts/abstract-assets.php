@@ -262,14 +262,13 @@ abstract class LP_Abstract_Assets {
 	}
 
 	public function localize_printed_scripts( $side = '' ) {
-		$scripts_data = ( $side == 'admin' ) ? $this->_get_admin_script_data() : $this->_get_script_data();
+		$scripts_data = ( $side == 'admin' ) ? $this->_get_script_data() : $this->_get_script_data();
 
 		if ( is_array( $scripts_data ) && is_array( $this->_script_data ) ) {
 			$scripts_data = LP_Helper::array_merge_recursive( $scripts_data, $this->_script_data );
 		} elseif ( is_array( $this->_script_data ) ) {
 			$scripts_data = $this->_script_data;
 		}
-
 		if ( ! $scripts_data ) {
 			return;
 		}
@@ -278,7 +277,6 @@ abstract class LP_Abstract_Assets {
 		if ( ! $wp_scripts ){
 			$wp_scripts = new WP_Scripts();
 		}
-
 		foreach ( $scripts_data as $handle => $data ) {
 			/*if ( ! empty( $this->_script_data[ $handle ] ) ) {
 				$data = array_merge( $data, $this->_script_data[ $handle ] );

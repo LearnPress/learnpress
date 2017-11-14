@@ -4,19 +4,30 @@
 ;(function ($) {
     var adminTabs = function ($el, options) {
         var $tabs = $el.find('.tabs-nav').find('li'),
+            $tabsWrap = $tabs.parent(),
             $contents = $el.find('.tabs-content-container > li'),
             $currentTab = null,
             $currentContent = null;
 
         function selectTab($tab) {
             var index = $tabs.index($tab),
-                $tabsWrap = $tabs.parent(),
                 url = $tab.find('a').attr('href');
 
             $currentContent = $contents.eq(index);
 
             $tab.addClass('active').siblings('li.active').removeClass('active');
             $currentContent.show().css({visibility: 'hidden'});
+            calculateHeight($currentContent);
+            $currentContent.hide();
+            $currentContent.show();
+            $currentContent.siblings('li.active').fadeOut(0, function () {
+                $currentContent.addClass('active').siblings('li.active').removeClass('active');
+            });
+
+            LP.setUrl(url);
+        }
+
+        function calculateHeight($currentContent) {
 
             var contentHeight = $currentContent.height(),
                 tabsHeight = $tabsWrap.outerHeight();
@@ -26,15 +37,7 @@
             } else {
                 contentHeight = undefined;
             }
-
-            $currentContent.css('visibility', '').css({height: contentHeight}).hide();
-
-            $currentContent.show();
-            $currentContent.siblings('li.active').fadeOut(0, function () {
-                $currentContent.addClass('active').siblings('li.active').removeClass('active');
-            });
-
-            LP.setUrl(url);
+            $currentContent.css('visibility', '').css({height: contentHeight});
         }
 
         function selectDefaultTab() {
@@ -56,6 +59,10 @@
         function init() {
             initEvents();
             selectDefaultTab();
+            $(window).on('resize.calculate-tab', function () {
+                var $currentContent = $el.find('.tabs-content-container .active').css('height', '');
+                calculateHeight($currentContent);
+            })
         }
 
         init();

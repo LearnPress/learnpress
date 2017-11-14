@@ -10,6 +10,7 @@
 defined( 'ABSPATH' ) or exit;
 
 $settings = LP()->settings();
+
 ?>
 <table>
     <tr>
@@ -22,7 +23,7 @@ $settings = LP()->settings();
     <tr>
         <th><?php _e( 'Paypal Email', 'learnpress' ); ?></th>
         <td><input class="regular-text" type="email" name="settings[paypal][paypal_email]"
-                   value="<?php echo $settings->get( 'paypal.paypal_email' ); ?>"></td>
+                   value="<?php echo $settings->get( 'paypal.paypal_email', '' ); ?>"></td>
     </tr>
     <tr>
         <th><?php _e( 'Sandbox Mode', 'learnpress' ); ?></th>
@@ -32,6 +33,6 @@ $settings = LP()->settings();
     <tr>
         <th><?php _e( 'Paypal Sandbox Email', 'learnpress' ); ?></th>
         <td><input class="regular-text" type="email" name="settings[paypal][paypal_sandbox_email]"
-                   value="<?php echo $settings->get( 'paypal.paypal_sandbox_email' ); ?>"></td>
+                   value="<?php echo $settings->get( 'paypal.paypal_sandbox_email', '' ); ?>"></td>
     </tr>
 </table>

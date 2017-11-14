@@ -36,11 +36,11 @@
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
 
-        $(document).on('click', '#field-_lp_course_result input[name="_lp_course_result"]', function(){
+        $(document).on('click', '#field-_lp_course_result input[name="_lp_course_result"]', function () {
             var $input = $(this),
                 checked = $input.is(':checked');
 
-            if($input.val() === 'evaluate_final_quiz' && checked){
+            if ($input.val() === 'evaluate_final_quiz' && checked) {
                 var $passingConditionInput = $('#_lp_passing_condition'),
                     passingCondition = $passingConditionInput.val();
 
@@ -71,6 +71,19 @@
             var $el = $(this),
                 args = $.extend({title: 'data-tooltip', offset: 10, gravity: 's'}, $el.data());
             $el.tipsy(args);
+        });
+
+        $(document).on('click', '#_lp_sale_price_schedule', function (e) {
+            e.preventDefault();
+            $(this).hide();
+            $('#field-_lp_sale_start, #field-_lp_sale_end').removeClass('hide-if-js');
+            $(window).trigger('resize.calculate-tab');
+
+        }).on('click', '#_lp_sale_price_schedule_cancel', function (e) {
+            e.preventDefault();
+            $('#_lp_sale_price_schedule').show();
+            $('#field-_lp_sale_start, #field-_lp_sale_end').addClass('hide-if-js').find('#_lp_sale_start, #_lp_sale_end').val('');
+            $(window).trigger('resize.calculate-tab');
         });
     });
 

@@ -52,6 +52,21 @@
         }
     }
 
+    //#field-_lp_course_result {
+    //    .rwmb-input-list {
+    //        li:nth-child(n+3) {
+    //            display: none;
+    //        }
+    //    }
+    //}
+
+    .lp-course-sale_start-field,
+    .lp-course-sale_end-field{
+        &.hide {
+            display: none;
+        }
+    }
+
     &.lp-submenu-settings {
         .lp-admin-settings-buttons {
             border-top: 1px solid #DDD;
@@ -76,10 +91,13 @@
                 display: block;
                 margin-bottom: 5px;
             }
-            input{
+            input {
                 width: 90%;
             }
         }
+    }
+    #learn-press-toggle-course-results{
+        display: block;
     }
 }
 

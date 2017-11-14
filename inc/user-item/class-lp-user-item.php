@@ -194,7 +194,12 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function get_result( $prop = 'result', $force = false ) {
-		return false;
+		$result = array(
+			'result' => $this->is_completed() ? 100 : 0,
+			'grade'  => $this->is_completed() ? 'passed' : 'failed'
+		);
+
+		return $prop && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
 	}
 
 	public function read_meta() {
@@ -412,6 +417,14 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	public function get_post_type() {
 		return get_post_type( $this->get_item_id() );
+	}
+
+	public function is_passed() {
+		return $this->get_result( 'grade' ) === 'passed';
+	}
+
+	public function get_percent_result( $decimal = 1 ) {
+		return apply_filters( 'learn-press/user/item-percent-result', sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
 	}
 
 	public function get_js_args() {

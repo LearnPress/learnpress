@@ -210,13 +210,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					'name_option' => 'learn_press_profile_page_id',
 					'id'          => 'lp-admin-warning-profile',
 					'title'       => __( 'Profile Page', 'learnpress' ),
-					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=pages' )
+					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=profile' )
 				),
 				array(
 					'name_option' => 'learn_press_checkout_page_id',
 					'id'          => 'lp-admin-warning-checkout',
 					'title'       => __( 'Checkout Page', 'learnpress' ),
-					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=checkout' )
+					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=payments' )
 				),
 			);
 
@@ -308,7 +308,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
                     </script>
 					<?php
 					$code = ob_get_clean();
-					LP_Assets::add_script_tag( $code, '__all' );
+
+					echo $code;
 				} else {
 				}
 			}
@@ -350,10 +351,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					'button_no'     => __( 'No', 'learnpress' )
 				)
 			);
-			LP_Assets::add_param( $js, false, 'learn-press-global', 'LP_Settings' );
+			/*LP_Abstract_Assets::add_param( $js, false, 'learn-press-global', 'LP_Settings' );
 			if ( LP_Settings::instance()->get( 'debug' ) == 'yes' ) {
 				LP_Assets::add_var( 'LEARN_PRESS_DEBUG', 'true', '__all' );
-			}
+			}*/
 			$did = true;
 		}
 

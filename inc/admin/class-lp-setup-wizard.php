@@ -50,6 +50,8 @@ class LP_Setup_Wizard {
 
 		$assets = learn_press_admin_assets();
 
+		@do_action( 'admin_enqueue_scripts' );
+
 		wp_enqueue_style( 'buttons' );
 		wp_enqueue_style( 'common' );
 		wp_enqueue_style( 'forms' );
@@ -60,21 +62,16 @@ class LP_Setup_Wizard {
 		wp_enqueue_style( 'lp-setup', $assets->url( 'css/admin/setup.css' ) );
 		wp_enqueue_style( 'lp-select2', $assets->url( '../inc/libraries/meta-box/css/select2/select2.css' ) );
 
-		wp_enqueue_script( 'lp-global', $assets->url( 'js/global.js' ), array(
-			'jquery',
-			'jquery-ui-sortable',
-			'underscore'
-		) );
+		$assets->enqueue_script( 'learn-press-global' );
 		wp_enqueue_script( 'lp-select2', $assets->url( '../inc/libraries/meta-box/js/select2/select2.min.js' ) );
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/admin/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'js/admin/admin.js' ) );
 		wp_enqueue_script( 'lp-setup', $assets->url( 'js/admin/setup.js' ), array(
-			'lp-global',
+			'learn-press-global',
 			'lp-select2',
 			'lp-admin',
 			'lp-utils'
 		) );
-
 		learn_press_admin_view( 'setup/header' );
 		learn_press_admin_view( 'setup/content', array( 'steps' => $this->get_steps() ) );
 		learn_press_admin_view( 'setup/footer' );
@@ -106,6 +103,7 @@ class LP_Setup_Wizard {
 				foreach ( $postdata['pages'] as $k => $v ) {
 					update_option( 'learn_press_' . $k, $v );
 				}
+
 			}
 		}
 
