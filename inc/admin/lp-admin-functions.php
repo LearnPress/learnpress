@@ -1332,8 +1332,15 @@ function learn_press_add_row_action_link( $actions ) {
 	return $actions;
 }
 
-//add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
-//add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
+add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
+add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
+
+function learn_press_output_admin_template()
+{
+	learn_press_admin_view('admin-template.php');
+}
+
+add_action('admin_print_scripts', 'learn_press_output_admin_template');
 
 function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;

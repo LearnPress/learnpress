@@ -55,7 +55,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'bundle_activate_add_ons'         => false,
 				'install_sample_data'             => false,
 				// Duplicate Course
-				'duplicate_course'                => false,
+//				'duplicate_course'                => false,
 				'duplicate_question'              => false,
 				// Remove Notice
 				'remove_notice_popup'             => false,
@@ -98,9 +98,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'bundle_update_quiz_questions',
 				'modal-search-questions',
 				'get-question-data',
+
 				'update_curriculum',
 				'admin_quiz_editor',
 				'admin_question_editor',
+				'duplicate_course',
+
 				'modal-search-items',
 				'modal-search-users',
 				'add-items-to-order',
@@ -122,8 +125,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$callback = array( __CLASS__, $method );
 				}
 
+
 				LP_Request::register_ajax( $action, $callback );
 			}
+
 		}
 
 		public static function update_email_status() {
@@ -2201,9 +2206,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function duplicate_course() {
+
+			die( 'xxx' );
+
 			if ( empty( $_POST['course_id'] ) || empty( $_POST['_nonce'] ) || ! wp_verify_nonce( $_POST['_nonce'], 'lp-duplicate-course' ) ) {
 				return;
 			}
+
 			global $wpdb;
 			$course_id = absint( $_POST['course_id'] );
 			$force     = ! empty( $_POST['content'] ) && $_POST['content'] ? true : false;

@@ -36,11 +36,11 @@
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
 
-        $(document).on('click', '#field-_lp_course_result input[name="_lp_course_result"]', function(){
+        $(document).on('click', '#field-_lp_course_result input[name="_lp_course_result"]', function () {
             var $input = $(this),
                 checked = $input.is(':checked');
 
-            if($input.val() === 'evaluate_final_quiz' && checked){
+            if ($input.val() === 'evaluate_final_quiz' && checked) {
                 var $passingConditionInput = $('#_lp_passing_condition'),
                     passingCondition = $passingConditionInput.val();
 
@@ -72,6 +72,21 @@
                 args = $.extend({title: 'data-tooltip', offset: 10, gravity: 's'}, $el.data());
             $el.tipsy(args);
         });
+    });
+
+    $(document).on('click', '.wp-list-table .lp-duplicate-course', function (e) {
+        e.preventDefault();
+        var _this = $(this),
+            _tr = _this.closest('tr'),
+            _id = _tr.find('.check-column input[type="checkbox"]').val(),
+            _title = _tr.find('.title strong').text();
+
+        _this.LP_Course_Duplicator({
+            _target: _this,
+            course_id: _id,
+            course_title: _title
+        });
+        return false;
     });
 
     var LP_Admin = window.LP_Admin = {
