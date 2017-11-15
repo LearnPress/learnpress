@@ -638,7 +638,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'min'        => 0,
 						'step'       => 0.01,
 						'desc'       => sprintf( '<p class="description">%s</p>', __( 'Leave blank to remove sale price.', 'learnpress' ) )
-						                . '<a href="#"'.($start_date||$end_date ? ' style="display:none;"' : '').' id="' . $prefix . 'sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
+						                . '<a href="#"' . ( $start_date || $end_date ? ' style="display:none;"' : '' ) . ' id="' . $prefix . 'sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
 						'std'        => $sale_price,
 						'visibility' => $conditional
 					),
@@ -1121,36 +1121,51 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @param int
 		 */
 		public function columns_content( $column, $post_id = 0 ) {
+
 			global $post;
 			$course = LP_Course::get_course( $post->ID );
+
 			switch ( $column ) {
 
 				case 'sections':
-					$sections = $course->get_curriculum();
-					if ( $sections ) {
-						$items          = $course->get_curriculum_items( array( 'group' => true ) );
-						$count_sections = sizeof( $sections );
-						$count_lessons  = $course->count_items( LP_LESSON_CPT );
-						$count_quizzes  = $course->count_items( LP_QUIZ_CPT );
-						$output         = sprintf( _nx( '%d section', '%d sections', $count_sections, 'learnpress' ), $count_sections );
-						$output         .= ' (';
-						if ( $count_lessons ) {
-							$output .= sprintf( _nx( '%d lesson', '%d lessons', $count_lessons, 'learnpress' ), $count_lessons );
-						} else {
-							$output .= __( "0 lesson", 'learnpress' );
+
+					// course curd
+					$curd = new LP_Course_CURD();
+
+					// course section
+					$sections = $curd->get_course_sections( $post->ID );
+					$number_sections = count( $sections );
+
+					if ( $number_sections ) {
+						// get items
+						$items = wp_cache_get( 'course-' . $post->ID, 'lp-course-items' );
+
+						$number_lessons = $number_quizzes = 0;
+
+						if ( $items ) {
+							foreach ( $items as $item_id ) {
+								if ( get_post_type( $item_id ) == LP_LESSON_CPT ) {
+									$number_lessons ++;
+								} else if ( get_post_type( $item_id ) == LP_QUIZ_CPT ) {
+									$number_quizzes ++;
+								}
+							}
 						}
+
+						$output = sprintf( _nx( '%d section', '%d sections', $number_sections, 'learnpress' ), $number_sections );
+						$output .= ' (';
+						$output .= $number_lessons ? sprintf( _nx( '%d lesson', '%d lessons', $number_lessons, 'learnpress' ), $number_lessons ) :  __( "0 lesson", 'learnpress' );
 						$output .= ', ';
-						if ( $count_quizzes ) {
-							$output .= sprintf( _nx( '%d quiz', '%d quizzes', $count_quizzes, 'learnpress' ), $count_quizzes );
-						} else {
-							$output .= __( "0 quiz", 'learnpress' );
-						}
+						$output .= $number_quizzes ? sprintf( _nx( '%d quiz', '%d quizzes', $number_quizzes, 'learnpress' ), $number_quizzes ) :  __( "0 quiz", 'learnpress' );
 						$output .= ')';
+
 						echo $output;
 					} else {
 						_e( 'No content', 'learnpress' );
 					}
+
 					break;
+
 				case 'price':
 					$price   = $course->get_price();
 					$is_paid = ! $course->is_free();

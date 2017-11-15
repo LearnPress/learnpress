@@ -1311,22 +1311,22 @@ function learn_press_add_row_action_link( $actions ) {
 			$link = array_shift( $links );
 			$link = sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] );
 		}
-		$actions['lpr-course-row-action'] = $link;
+		$actions['lp-course-row-action'] = $link;
 	} else if ( LP_QUIZ_CPT === $post->post_type ) {
 		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
-		$actions['lpr-course-row-action'] = $link;
+		$actions['lp-course-row-action'] = $link;
 	} else if ( LP_QUESTION_CPT === $post->post_type ) {
 		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
-		$actions['lpr-course-row-action'] = $link;
+		$actions['lp-course-row-action'] = $link;
 	} else if ( LP_LESSON_CPT === $post->post_type ) {
 		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
-		$actions['lpr-course-row-action'] = $link;
+		$actions['lp-course-row-action'] = $link;
 	}
 
 	return $actions;
@@ -1335,12 +1335,11 @@ function learn_press_add_row_action_link( $actions ) {
 add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
 add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 
-function learn_press_output_admin_template()
-{
-	learn_press_admin_view('admin-template.php');
+function learn_press_output_admin_template() {
+	learn_press_admin_view( 'admin-template.php' );
 }
 
-add_action('admin_print_scripts', 'learn_press_output_admin_template');
+add_action( 'admin_print_scripts', 'learn_press_output_admin_template' );
 
 function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;
@@ -1362,185 +1361,6 @@ function learn_press_copy_post_meta( $from_id, $to_id ) {
 		$wpdb->query( $sql_query );
 	}
 }
-
-/**
- * Duplicate a course when user hit "Duplicate" button
- *
- * @author  TuNN
- */
-function learn_press_process_duplicate_action() {
-
-	$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
-	$action        = $wp_list_table->current_action();
-
-	if ( isset( $_REQUEST['action'] ) && $action == 'lp-duplicate-course' ) {
-		// current is not usefully because this feature using ajax action
-		$post_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
-		$nonce   = ! empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
-		if ( ! wp_verify_nonce( $nonce, 'lp-duplicate-' . $post_id ) ) {
-			wp_die( __( 'Error', 'learnpress' ) );
-		}
-		if ( $post_id && is_array( $post_id ) ) {
-			$post_id = array_shift( $post_id );
-		}
-		// check for post is exists
-		if ( ! $post_id  ) {
-			wp_die( __( 'Oops! ID does not exist.', 'learnpress' ) );
-		}
-
-		if(!$post = get_post($post_id)){
-			wp_die( __( 'Oops! The course does not exist.', 'learnpress' ) );
-        }
-
-		// ensure that user can create course
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_die( __( 'Sorry! You have not permission to duplicate this course.', 'learnpress' ) );
-		}
-
-		// assign course to current user
-		$current_user      = wp_get_current_user();
-		$new_course_author = $current_user->ID;
-
-		// setup course data
-		$args             = array(
-			'post_status'    => 'draft',
-			'post_title'     => $post->post_title,
-			'post_type'      => $post->post_type,
-			'post_author'    => $new_course_author,
-			'post_content'   => $post->post_content,
-			'post_excerpt'   => $post->post_excerpt,
-			'post_name'      => $post->post_name,
-			'comment_status' => $post->comment_status,
-			'ping_status'    => $post->ping_status,
-			'post_parent'    => $post->post_parent,
-			'post_password'  => $post->post_password,
-			'to_ping'        => $post->to_ping,
-			'menu_order'     => $post->menu_order
-		);
-		// insert new course and get it ID
-		$new_post_id = wp_insert_post( $args );
-
-		if ( ! $new_post_id ) {
-			LP_Admin_Notice::add_redirect( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
-			wp_redirect( admin_url( 'edit.php?post_type=lp_course' ) );
-			exit();
-		}
-		// assign related tags/categories to new course
-		$taxonomies = get_object_taxonomies( $post->post_type );
-		foreach ( $taxonomies as $taxonomy ) {
-			$post_terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'slugs' ) );
-			wp_set_object_terms( $new_post_id, $post_terms, $taxonomy, false );
-		}
-
-		// duplicate course data
-		global $wpdb;
-		//learn_press_copy_post_meta( $post_id, $new_post_id );
-
-		$query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_sections s
-			INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
-			WHERE c.ID = %d
-		", $post->ID );
-		if ( $sections = $wpdb->get_results( $query ) ) {
-			foreach ( $sections as $section ) {
-				$new_section_id = $wpdb->insert(
-					$wpdb->prefix . 'learnpress_sections',
-					array(
-						'section_name'        => $section->section_name,
-						'section_course_id'   => $new_post_id,
-						'section_order'       => $section->section_order,
-						'section_description' => $section->section_description
-					),
-					array( '%s', '%d', '%d', '%s' )
-				);
-				if ( $new_section_id ) {
-					$query = $wpdb->prepare( "
-						SELECT i.*
-						FROM {$wpdb->posts} i
-						INNER JOIN {$wpdb->prefix}learnpress_sections s ON i.item_id = i.ID
-						WHERE s.section_id = %d
-					", $section->section_id );
-					if ( $items = $wpdb->get_results( $query ) ) {
-						foreach ( $items as $item ) {
-							$item_args = (array) $item;
-							unset(
-								$item_args['ID'],
-								$item_args['post_author'],
-								$item_args['post_date'],
-								$item_args['post_date_gmt'],
-								$item_args['post_modified'],
-								$item_args['post_modified_gmt'],
-								$item_args['comment_count']
-							);
-							$new_item_id = $wpdb->insert(
-								$wpdb->posts,
-								$item_args
-							);
-						}
-					}
-				}
-			}
-		}
-		LP_Admin_Notice::add_redirect( __( '<p>Course duplicated.</p>', 'learnpress' ) );
-		wp_redirect( admin_url( "post.php?post={$new_post_id}&action=edit" ) );
-		die();
-	}
-
-	// duplicate action
-	$action  = ! empty( $_REQUEST['lp-action'] ) ? $_REQUEST['lp-action'] : '';
-	$actions = array(
-		'lp-duplicate-question',
-		'lp-duplicate-lesson',
-		'lp-duplicate-quiz'
-	);
-	if ( ! in_array( $action, $actions ) ) {
-		return;
-	}
-
-	$post_id = ! empty ( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
-	$nonce   = ! empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
-	if ( ! $post_id || ! wp_verify_nonce( $nonce, 'lp-duplicate-' . $post_id ) ) {
-		return;
-	}
-	// only duplicate question. not assign any data
-	$new_post_id = 0;
-	if ( $action === 'lp-duplicate-question' ) {
-		$new_post_id = learn_press_duplicate_question( $post_id );
-		$post_type   = LP_QUESTION_CPT;
-		$error       = __( 'Sorry! Duplicate question failed!', 'learnpress' );
-		$success     = __( 'Question duplicated.', 'learnpress' );
-	} else if ( $action === 'lp-duplicate-lesson' ) {
-		$new_post_id = learn_press_duplicate_lesson( $post_id );
-		$post_type   = LP_LESSON_CPT;
-		$error       = __( 'Sorry! Duplicate lesson failed!', 'learnpress' );
-		$success     = __( 'Lesson duplicated.', 'learnpress' );
-	} else if ( $action === 'lp-duplicate-quiz' ) {
-		$new_post_id = learn_press_duplicate_quiz( $post_id );
-		$post_type   = LP_QUIZ_CPT;
-		$error       = __( 'Sorry! Duplicate quiz failed!', 'learnpress' );
-		$success     = __( 'Quiz duplicated.', 'learnpress' );
-	}
-
-	if ( ! $new_post_id ) {
-		return;
-	}
-	$redirect = 0;
-	if ( is_wp_error( $new_post_id ) ) {
-		LP_Admin_Notice::add_redirect( $error, 'error' );
-		$redirect = admin_url( 'edit.php?post_type=' . $post_type );
-	} else {
-		LP_Admin_Notice::add_redirect( $success, 'updated' );
-		$redirect = admin_url( 'post.php?post=' . $new_post_id . '&action=edit' );
-	}
-
-	if ( $redirect ) {
-		wp_safe_redirect( $redirect );
-		exit();
-	}
-}
-
-add_action( 'load-edit.php', 'learn_press_process_duplicate_action' );
 
 /**
  * Install a plugin
@@ -1890,7 +1710,7 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 			'post_parent'    => $post->post_parent,
 			'post_password'  => $post->post_password,
 			'post_status'    => 'draft',
-			'post_title'     => $post->post_title,
+			'post_title'     => $post->post_title . __( ' Copy', 'learnpress' ),
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order
@@ -1980,29 +1800,27 @@ if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 if ( ! function_exists( 'learn_press_duplicate_course' ) ) {
 
 	function learn_press_duplicate_course( $course_id = null, $force = true ) {
-		if ( ! function_exists( '_learn_press_get_course_curriculum' ) ) {
-			require_once LP_PLUGIN_PATH . 'inc/lp-init.php';
-		}
-		global $wpdb;
 
-		if ( $course_id && is_array( $course_id ) ) {
-			$course_id = array_shift( $course_id );
+		if ( ! $course_id ) {
+			return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
 		}
-		// check for post is exists
-		if ( ! $course_id || ! ( $post = get_post( $course_id ) ) ) {
+
+		if ( get_post_type( $course_id ) != LP_COURSE_CPT ) {
 			return new WP_Error( __( '<p>Op! The course does not exist</p>', 'learnpress' ) );
+		}
+
+		// ensure that user can create course
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
 		} else {
-			// ensure that user can create course
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
+			// duplicate course
+			$new_course_id = learn_press_duplicate_post( $course_id );
+			if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
+				return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
 			} else {
-				// duplicate course
-				$new_course_id = learn_press_duplicate_post( $course_id );
-				if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
-					return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
-				} else {
-					$curriculums = _learn_press_get_course_curriculum( $course_id );
-					foreach ( $curriculums as $section_id => $section ) {
+				$curriculum = _learn_press_get_course_curriculum( $course_id );
+				if ( is_array( $curriculum ) ) {
+					foreach ( $curriculum as $section_id => $section ) {
 						$new_section_id = learn_press_course_insert_section( array(
 							'section_name'        => $section->section_name,
 							'section_course_id'   => $new_course_id,
@@ -2166,16 +1984,6 @@ if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
 	}
 
 }
-
-
-if ( ! function_exists( 'learn_press_duplicate_lesson' ) ) {
-
-	function learn_press_duplicate_lesson( $lesson_id = null ) {
-		return learn_press_duplicate_post( $lesson_id );
-	}
-
-}
-
 
 /**
  * Get general data to render in chart

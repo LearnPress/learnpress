@@ -54,14 +54,13 @@
                 data = {
                     course_id: id,
                     _nonce: nonce,
-                    'lp-ajax': 'duplicate_course',
-                    //'action': 'learnpress_duplicate_course'
+                    'lp-ajax': 'duplicate_course'
                 },
                 buttons = _this.parents('#learn-press-duplicate-course').find('button');
             data.content = _this.hasClass('all-content') ? 1 : 0;
 
             $.ajax({
-                url: '',//ajaxurl,
+                url: '',
                 type: 'POST',
                 data: data,
                 dataType: 'json',

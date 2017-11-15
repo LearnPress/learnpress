@@ -197,6 +197,10 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return ! ! $result;
 	}
 
+	public function duplicate( &$section, $args = array() ) {
+		// TODO: Implement delete() method.
+	}
+
 	/**
 	 * Get list items of section.
 	 *
@@ -206,10 +210,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array
 	 */
-	private function get_section_items( $section_id ) {
+	public function get_section_items( $section_id ) {
 		$course = learn_press_get_course( $this->course_id );
 
 		$sections = $course->get_curriculum_raw();
+
 		if ( empty( $sections ) ) {
 			return array();
 		}

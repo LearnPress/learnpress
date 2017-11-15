@@ -5,7 +5,7 @@
  *
  * Class to manipulating quiz with database.
  */
-class LP_Quiz_CURD implements LP_Interface_CURD {
+class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Errors codes and message.
 	 *
@@ -53,7 +53,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	}
 
 	public function create( &$quiz ) {
-
+		// TODO: Implement update() method.
 	}
 
 	public function update( &$quiz ) {
@@ -62,6 +62,54 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 
 	public function delete( &$quiz ) {
 		// TODO: Implement delete() method.
+	}
+
+	public function duplicate( &$quiz_id, $args = array() ) {
+
+		if ( ! $quiz_id ) {
+			return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
+		}
+
+		if ( get_post_type( $quiz_id ) != LP_QUIZ_CPT ) {
+			return new WP_Error( __( '<p>Op! The quiz does not exist</p>', 'learnpress' ) );
+		}
+
+		// ensure that user can create quiz
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this quiz</p>', 'learnpress' ) );
+		}
+
+		// duplicate quiz
+		$new_quiz_id = learn_press_duplicate_post( $quiz_id, $args, true );
+
+		if ( ! $new_quiz_id || is_wp_error( $new_quiz_id ) ) {
+			return new WP_Error( __( '<p>Sorry! Duplicate quiz failed!</p>', 'learnpress' ) );
+		} else {
+
+			$quiz      = LP_Quiz::get_quiz( $quiz_id );
+			$questions = $quiz->get_questions();
+
+			// question curd
+			$question_curd = new LP_Question_CURD();
+
+			// duplicate questions in quiz
+			if ( $questions ) {
+
+				$questions = array_keys( $questions );
+
+				foreach ( $questions as $question_id ) {
+
+					// duplicate question
+					$new_question_id = $question_curd->duplicate($question_id, array( 'post_status' => 'publish' ) );
+
+					// add duplicate question to new quiz
+					$this->add_question($new_quiz_id, $new_question_id );
+				}
+			}
+
+			return $new_quiz_id;
+		}
+
 	}
 
 	/**

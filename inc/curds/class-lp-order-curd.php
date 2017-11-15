@@ -345,7 +345,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Recover an order checked out by Guest for an user.
 	 *
 	 * @param string $order_key
-	 * @param int    $user_id
+	 * @param int $user_id
 	 *
 	 * @return bool|LP_Order|WP_Error
 	 */
@@ -376,8 +376,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Trigger action
 			do_action( 'learn-press/order/recovered-successful', $order->get_id(), $user_id );
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			return new WP_Error( $ex->getCode(), $ex->getMessage() );
 		}
 
@@ -435,5 +434,9 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $orders;
+	}
+
+	public function duplicate( &$order, $args = array() ) {
+		// TODO: Implement duplicate() method.
 	}
 }
