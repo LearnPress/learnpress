@@ -4,6 +4,7 @@
  * Interface LP_Interface_CURD
  */
 interface LP_Interface_CURD {
+
 	/**
 	 * Create item and insert to database.
 	 *
@@ -41,13 +42,14 @@ interface LP_Interface_CURD {
 	public function delete( &$object );
 
 	/**
-	 * Read meta data for passed object.
-	 *
-	 * @since 3.0.0
+	 * Duplicate item and insert to database
 	 *
 	 * @param $object
+	 * @param array $args
+	 *
+	 * @return mixed
 	 */
-	public function read_meta( &$object );
+	public function duplicate( &$object, $args = array() );
 
 	/**
 	 * Add new meta data.
@@ -58,6 +60,15 @@ interface LP_Interface_CURD {
 	 * @param $meta
 	 */
 	public function add_meta( &$object, $meta );
+
+	/**
+	 * Read meta data for passed object.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $object
+	 */
+	public function read_meta( &$object );
 
 	/**
 	 * Update meta data.
@@ -91,14 +102,24 @@ class LP_Object_Data_CURD {
 	 */
 	protected $_meta_type = 'post';
 
-	public function duplicate( $order_id ) {
-		$order = learn_press_get_order( $order_id );
-	}
-
+	/**
+	 * Add new meta data.
+	 *
+	 * @param $object
+	 * @param $meta
+	 */
 	public function add_meta( &$object, $meta ) {
 		// TODO: Implement add_meta() method.
 	}
 
+	/**
+	 * Delete meta data.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $object
+	 * @param $meta
+	 */
 	public function delete_meta( &$object, $meta ) {
 		// TODO: Implement delete_meta() method.
 	}
@@ -106,7 +127,7 @@ class LP_Object_Data_CURD {
 	/**
 	 * Read all meta data from DB.
 	 *
-	 * @param $object
+	 * @param $object LP_Course|LP_Lesson|LP_Quiz|LP_Question
 	 *
 	 * @return array|null|object
 	 */
@@ -128,6 +149,14 @@ class LP_Object_Data_CURD {
 		return $meta_data;
 	}
 
+	/**
+	 * Update meta data.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $object LP_Course|LP_Lesson|LP_Quiz|LP_Question
+	 * @param $meta
+	 */
 	public function update_meta( &$object, $meta ) {
 		update_metadata( $this->_meta_type, $object->get_id(), $meta->meta_key, $meta->meta_value );
 	}

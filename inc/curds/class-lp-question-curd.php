@@ -33,6 +33,62 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		}
 
 		/**
+		 * Duplicate question.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 * @param array $args
+		 *
+		 * @return mixed|WP_Error
+		 */
+		public function duplicate( &$question_id, $args = array() ) {
+
+			if ( ! $question_id ) {
+				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
+			}
+
+			if ( get_post_type( $question_id ) != LP_QUESTION_CPT ) {
+				return new WP_Error( __( '<p>Op! The question does not exist</p>', 'learnpress' ) );
+			}
+
+			// ensure that user can create question
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this question</p>', 'learnpress' ) );
+			}
+
+			// duplicate question
+			$new_question_id = learn_press_duplicate_post( $question_id, array( 'post_status' => 'publish' ) );
+
+			if ( ! $new_question_id || is_wp_error( $new_question_id ) ) {
+				return new WP_Error( __( '<p>Sorry! Duplicate question failed!</p>', 'learnpress' ) );
+			} else {
+
+				global $wpdb;
+
+				// duplicate question answer
+				$query          = $wpdb->prepare( " SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d", $question_id );
+				$answer_options = $wpdb->get_results( $query );
+
+				if ( $answer_options ) {
+					foreach ( $answer_options as $option ) {
+						$wpdb->insert(
+							$wpdb->learnpress_question_answers,
+							array(
+								'question_id'  => $new_question_id,
+								'answer_data'  => $option->answer_data,
+								'answer_order' => $option->answer_order
+							),
+							array( '%d', '%s', '%s' )
+						);
+					}
+				}
+
+				return $new_question_id;
+			}
+		}
+
+		/**
 		 * @param LP_Question $question
 		 *
 		 * @return mixed

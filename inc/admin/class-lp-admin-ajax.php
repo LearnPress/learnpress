@@ -2205,30 +2205,36 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			die;
 		}
 
+		/**
+		 * Duplicate course ajax.
+		 */
 		public static function duplicate_course() {
 
-			die( 'xxx' );
+		    $curd = new LP_Course_CURD();
 
 			if ( empty( $_POST['course_id'] ) || empty( $_POST['_nonce'] ) || ! wp_verify_nonce( $_POST['_nonce'], 'lp-duplicate-course' ) ) {
 				return;
 			}
 
-			global $wpdb;
 			$course_id = absint( $_POST['course_id'] );
 			$force     = ! empty( $_POST['content'] ) && $_POST['content'] ? true : false;
 
 			$results       = array(
 				'redirect' => admin_url( 'edit.php?post_type=' . LP_COURSE_CPT )
 			);
-			$new_course_id = learn_press_duplicate_course( $course_id, $force );
-			if ( is_wp_error( $course_id ) ) {
-				LP_Admin_Notice::add_redirect( $course_id->get_error_message(), 'error' );
+
+			$new_course_id = $curd->duplicate($course_id);
+
+			if ( is_wp_error( $new_course_id ) ) {
+				LP_Admin_Notice::add_redirect( $new_course_id->get_error_message(), 'error' );
 			} else {
 				LP_Admin_Notice::add_redirect( sprintf( '<strong>%s</strong> %s', get_the_title( $course_id ), __( ' course has duplicated', 'learnpress' ) ), 'updated' );
 				$results['redirect'] = admin_url( 'post.php?post=' . $new_course_id . '&action=edit' );
 			}
 
 			wp_send_json( $results );
+
+
 			die();
 		}
 

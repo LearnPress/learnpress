@@ -14,6 +14,7 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Course_CURD' ) ) {
+
 	/**
 	 * Class LP_Course_CURD
 	 */
@@ -29,6 +30,93 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 		public function delete( &$course ) {
 			// TODO: Implement delete() method.
+		}
+
+		/**
+		 * Duplicate course.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $course_id
+		 * @param array $args
+		 *
+		 * @return mixed|WP_Error
+		 */
+		public function duplicate( &$course_id, $args = array() ) {
+
+			if ( ! $course_id ) {
+				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
+			}
+
+			if ( get_post_type( $course_id ) != LP_COURSE_CPT ) {
+				return new WP_Error( __( '<p>Op! The course does not exist</p>', 'learnpress' ) );
+			}
+
+			// ensure that user can create course
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
+			}
+			// duplicate course
+			$new_course_id = learn_press_duplicate_post( $course_id );
+
+			if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
+				return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
+			} else {
+
+				// original course section curd
+				$curd = new LP_Section_CURD( $course_id );
+
+				// get course sections
+				$sections = $this->get_course_sections( $course_id );
+				// new course section curd
+				$new_course_curd = new LP_Section_CURD( $new_course_id );
+
+				$quiz_curd = new LP_Quiz_CURD();
+
+				if ( is_array( $sections ) ) {
+
+					foreach ( $sections as $section ) {
+
+						$args = array(
+							'section_name'        => $section->section_name,
+							'section_course_id'   => $new_course_id,
+							'section_order'       => $section->section_order,
+							'section_description' => $section->section_description
+						);
+
+						// clone sections to new course
+						$new_section = $new_course_curd->create( $args );
+
+						// get section items of original course
+						$items = $curd->get_section_items( $section->section_id );
+
+						$new_items = array();
+
+						// duplicate items
+						if ( is_array( $items ) ) {
+							foreach ( $items as $key => $item ) {
+								// clone quiz
+								if ( $item['type'] == LP_QUIZ_CPT ) {
+									$new_item_id = $quiz_curd->duplicate( $item['id'], array( 'post_status' => 'publish' ) );
+								} else {
+									// clone lesson
+									$new_item_id = learn_press_duplicate_post( $item['id'], array( 'post_status' => 'publish' ) );
+								}
+
+								// get new items data to add to section
+								$new_items[ $key ] = array( 'id' => $new_item_id, 'type' => $item['type'] );
+							}
+
+							// add new clone items to section
+							$new_course_curd->add_items_section( $new_section['section_id'], $new_items );
+						}
+					}
+
+					return $new_course_id;
+				}
+			}
+
+			return false;
 		}
 
 		/**
@@ -95,40 +183,31 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			global $wpdb;
 
-			if ( is_numeric( $course_id ) ) {
-				settype( $course_id, 'array' );
+			if ( get_post_type( $course_id ) != LP_COURSE_CPT ) {
+				return false;
 			}
-
-			$fetch_ids = array();
 
 			/**
 			 * Get course's data from cache and if it is already existed
 			 * then ignore that course.
 			 */
-			foreach ( $course_id as $id ) {
-				if ( false === ( $data = wp_cache_get( 'course-' . $id, 'lp-course-curriculum' ) ) ) {
-					$fetch_ids[] = $id;
-				}
-			}
-
-			// There is no course ids to read
-			if ( ! $fetch_ids ) {
+			if ( wp_cache_get( 'course-' . $course_id, 'lp-course-curriculum' ) ) {
 				return false;
 			}
 
 			// Read course sections
-			$this->read_course_sections( $fetch_ids );
+			$this->read_course_sections( $course_id );
 
-			$all_section_ids = array();
-			foreach ( $fetch_ids as $id ) {
-				if ( $sections = $this->get_course_sections( $id ) ) {
-					$section_ids     = wp_list_pluck( $sections, 'section_id' );
-					$all_section_ids = array_merge( $all_section_ids, $section_ids );
-				}
+			$section_ids = array();
 
-				// Set cache
-				wp_cache_set( 'course-' . $id, array(), 'lp-course-curriculum' );
+			if ( $sections = $this->get_course_sections( $course_id ) ) {
+				$section_ids = wp_list_pluck( $sections, 'section_id' );
 			}
+
+			$all_section_ids = $section_ids;
+
+			// Set cache
+			wp_cache_set( 'course-' . $course_id, array(), 'lp-course-curriculum' );
 
 			if ( $all_section_ids ) {
 				$format        = array_fill( 0, sizeof( $all_section_ids ), '%d' );
@@ -214,37 +293,27 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return mixed|array
 		 */
 		public function read_course_sections( $course_id ) {
+
 			global $wpdb;
 
-			if ( is_numeric( $course_id ) ) {
-				settype( $course_id, 'array' );
+			if ( get_post_type( $course_id ) != LP_COURSE_CPT ) {
+				return false;
 			}
-
-			$fetch_ids = array();
 
 			/**
 			 * Get course's data from cache and if it is already existed
 			 * then ignore that course.
 			 */
-			foreach ( $course_id as $id ) {
-				if ( false === wp_cache_get( 'course-' . $id, 'lp-course-sections' ) ) {
-					$fetch_ids[] = $id;
-				}
-			}
-
-			// There is no course ids to read
-			if ( ! $fetch_ids ) {
+			if ( wp_cache_get( 'course-' . $course_id, 'lp-course-sections' ) ) {
 				return false;
 			}
 
-			$format = array_fill( 0, sizeof( $fetch_ids ), '%d' );
-			$query  = $wpdb->prepare( "
-			SELECT s.*
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->learnpress_sections} s ON p.ID = s.section_course_id
-			WHERE p.ID IN(" . join( ',', $format ) . ")
-			ORDER BY p.ID, `section_order` ASC
-		", $fetch_ids );
+			$query = $wpdb->prepare( "
+				SELECT s.* FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->learnpress_sections} s ON p.ID = s.section_course_id
+				WHERE p.ID = %d
+				ORDER BY p.ID, `section_order` ASC
+		", $course_id );
 
 			if ( $results = $wpdb->get_results( $query ) ) {
 				$course_sections = array();
