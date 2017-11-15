@@ -55,7 +55,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'bundle_activate_add_ons'         => false,
 				'install_sample_data'             => false,
 				// Duplicate Course
-//				'duplicate_course'                => false,
+				'duplicate_course'                => false,
 				'duplicate_question'              => false,
 				// Remove Notice
 				'remove_notice_popup'             => false,
@@ -66,6 +66,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
+
 				// enable for non-logged in users
 				if ( $nopriv ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -124,7 +125,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$method   = preg_replace( '/-/', '_', $method );
 					$callback = array( __CLASS__, $method );
 				}
-
 
 				LP_Request::register_ajax( $action, $callback );
 			}
@@ -1068,7 +1068,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -1156,7 +1157,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1189,7 +1191,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1474,7 +1477,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null $context_id
+		 * @param null   $context_id
 		 *
 		 * @return array
 		 */
@@ -2333,6 +2336,5 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 if ( defined( 'DOING_AJAX' ) ) {
 	add_action( 'wp_ajax_learnpress_upload-user-avatar', array( 'LP_Admin_Ajax', 'upload_user_avatar' ) );
-} else {
-	add_action( 'init', array( 'LP_Admin_Ajax', 'init' ) );
 }
+add_action( 'init', array( 'LP_Admin_Ajax', 'init' ) );

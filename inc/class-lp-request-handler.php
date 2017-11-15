@@ -416,23 +416,33 @@ class LP_Request {
 			}
 		}
 
+		$has_action = false;
+
 		if ( is_user_logged_in() ) {
 			/**
 			 * @deprecated
 			 */
 			do_action( 'learn_press_ajax_handler_' . $action );
 
+			$has_action = has_action( 'learn-press/ajax/' . $action );
+
 			/**
 			 * @since 3.0
 			 */
 			do_action( 'learn-press/ajax/' . $action );
 		} else {
+
+			$has_action = has_action( 'learn-press/ajax/no-priv/' . $action );
+
 			/**
 			 * @since 3.0
 			 */
 			do_action( 'learn-press/ajax/no-priv/' . $action );
 		}
-		die( '0' );
+
+		if ( $has_action ) {
+			die( '{END_AJAX}' );
+		}
 	}
 
 	public static function verify_nonce( $action, $nonce = '' ) {
