@@ -1311,22 +1311,22 @@ function learn_press_add_row_action_link( $actions ) {
 			$link = array_shift( $links );
 			$link = sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] );
 		}
-		$actions['lp-course-row-action'] = $link;
+		$actions['lp-duplicate-row-action'] = $link;
 	} else if ( LP_QUIZ_CPT === $post->post_type ) {
 		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
-		$actions['lp-course-row-action'] = $link;
+		$actions['lp-duplicate-row-action'] = $link;
 	} else if ( LP_QUESTION_CPT === $post->post_type ) {
 		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
-		$actions['lp-course-row-action'] = $link;
+		$actions['lp-duplicate-row-action'] = $link;
 	} else if ( LP_LESSON_CPT === $post->post_type ) {
 		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
-		$actions['lp-course-row-action'] = $link;
+		$actions['lp-duplicate-row-action'] = $link;
 	}
 
 	return $actions;
@@ -1334,12 +1334,6 @@ function learn_press_add_row_action_link( $actions ) {
 
 add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
 add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
-
-function learn_press_output_admin_template() {
-	learn_press_admin_view( 'admin-template.php' );
-}
-
-add_action( 'admin_print_scripts', 'learn_press_output_admin_template' );
 
 function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;

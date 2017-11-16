@@ -29,7 +29,9 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @throws Exception
 	 */
 	public function load( &$quiz ) {
+
 		$the_id = $quiz->get_id();
+
 		if ( ! $the_id || ! in_array( get_post_type( $the_id ), array( LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
 			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 		}
@@ -64,6 +66,16 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		// TODO: Implement delete() method.
 	}
 
+	/**
+	 * Duplicate quiz.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $quiz_id
+	 * @param array $args
+	 *
+	 * @return mixed|WP_Error
+	 */
 	public function duplicate( &$quiz_id, $args = array() ) {
 
 		if ( ! $quiz_id ) {
