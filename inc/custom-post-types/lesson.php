@@ -18,7 +18,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type ) {
 
-			$this->add_map_method( 'before_delete', 'delete_course_item' );
+			$this->add_map_method( 'before_delete', 'before_delete_lesson' );
 
 			/**
 			 * Hide View Quiz link if not assigned to Course
@@ -56,11 +56,18 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			}
 		}
 
-		public function delete_course_item( $post_id ) {
-			// course curd
-			$curd = new LP_Course_CURD();
-			// remove lesson from quiz
-			$curd->remove_item_from_course( $post_id );
+		/**
+         * Remove lesson form course items.
+         *
+         * @since 3.0.0
+         *
+		 * @param $post_id
+		 */
+		public function before_delete_lesson( $post_id ) {
+            // lesson curd
+			$curd = new LP_Lesson_CURD();
+			// remove lesson from course items
+			$curd->delete( $post_id );
 		}
 
 		public function admin_scripts() {

@@ -25,6 +25,115 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Create item and insert to database.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $args array
+	 *
+	 * @return mixed
+	 */
+	public function create( &$args ) {
+
+		global $wpdb;
+
+		$section                  = $this->parse( $args );
+		$section                  = stripslashes_deep( $section );
+		$section['section_order'] = $this->get_last_number_order( $section['section_course_id'] ) + 1;
+		$insert_data              = array(
+			'section_course_id'   => $this->course_id,
+			'section_name'        => $section['section_name'],
+			'section_order'       => $section['section_order'],
+			'section_description' => $section['section_description'],
+		);
+
+		$wpdb->insert(
+			$wpdb->learnpress_sections,
+			$insert_data,
+			array( '%d', '%s', '%d', '%s' )
+		);
+		$section['section_id'] = $wpdb->insert_id;
+
+		return $section;
+	}
+
+	/**
+	 * Update data into database.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $args array
+	 *
+	 * @return mixed
+	 */
+	public function update( &$args = array() ) {
+
+		$section = $this->parse( $args );
+
+		if ( empty( $section['section_id'] ) ) {
+			return $this->create( $args );
+		}
+
+		$section_id  = $section['section_id'];
+		$update_data = array(
+			'section_name'        => $section['section_name'],
+			'section_course_id'   => $section['section_course_id'],
+			'section_order'       => $section['section_order'],
+			'section_description' => $section['section_description'],
+		);
+
+		global $wpdb;
+
+		$wpdb->update(
+			$wpdb->learnpress_sections,
+			$update_data,
+			array( 'section_id' => $section_id )
+		);
+		$section['section_id'] = $section_id;
+
+		return $section;
+	}
+
+	/**
+	 * Delete section data from database.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $id string
+	 *
+	 * @return bool
+	 */
+	public function delete( &$id ) {
+
+		global $wpdb;
+
+		// Remove section items.
+		$wpdb->delete( $wpdb->learnpress_section_items, array( 'section_id' => $id ) );
+
+		// Remove section
+		$result = $wpdb->delete( $wpdb->learnpress_sections, array( 'section_id' => $id ) );
+
+		return ! ! $result;
+	}
+
+	public function duplicate( &$section, $args = array() ) {
+		// TODO: Implement duplicate() method.
+	}
+
+	/**
+	 * Load data from database.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param object $object
+	 *
+	 * @return mixed
+	 */
+	public function load( &$object ) {
+		// TODO: Implement load() method.
+	}
+
+	/**
 	 * Parse input data.
 	 *
 	 * @since 3.0.0
@@ -43,6 +152,62 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		) );
 
 		return $data;
+	}
+
+	/**
+	 * Get course sections ids and set data to cache.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array
+	 */
+	public function read_get_sections_ids() {
+
+		// Get course's sections id data from cache
+		$ids = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections-ids' );
+
+		if ( ! $ids ) {
+			global $wpdb;
+			// get sections id
+			$ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $this->course_id ) );
+			// Set cache
+			wp_cache_set( 'course-' . $this->course_id, $ids, 'lp-course-sections-ids' );
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Remove all items from each section and delete course's sections.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool
+	 */
+	public function clear() {
+
+		$sections_ids = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections-ids' );
+
+		if ( ! $sections_ids ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		// Remove all items in course's sections
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $sections_ids ) . ")", 1 ) );
+		learn_press_reset_auto_increment( 'learnpress_section_items' );
+		// delete sections ids cache
+		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections-ids' );
+
+
+		// delete sections in course
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $this->course_id ) );
+		learn_press_reset_auto_increment( 'learnpress_sections' );
+		// delete sections cache
+		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections' );
+
+		return true;
 	}
 
 	/**
@@ -86,119 +251,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $orders;
-	}
-
-	/**
-	 * Create item and insert to database.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param $args array
-	 *
-	 * @return mixed
-	 */
-	public function create( &$args ) {
-		global $wpdb;
-
-		$section                  = $this->parse( $args );
-		$section                  = stripslashes_deep( $section );
-		$section['section_order'] = $this->get_last_number_order( $section['section_course_id'] ) + 1;
-		$insert_data              = array(
-			'section_course_id'   => $this->course_id,
-			'section_name'        => $section['section_name'],
-			'section_order'       => $section['section_order'],
-			'section_description' => $section['section_description'],
-		);
-
-		$wpdb->insert(
-			$wpdb->learnpress_sections,
-			$insert_data,
-			array( '%d', '%s', '%d', '%s' )
-		);
-		$section['section_id'] = $wpdb->insert_id;
-
-		return $section;
-	}
-
-	/**
-	 * Load data from database.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param object $object
-	 *
-	 * @return mixed
-	 */
-	public function load( &$object ) {
-		// TODO: Implement load() method.
-	}
-
-	/**
-	 * Update data into database.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param $args array
-	 *
-	 * @return mixed
-	 */
-	public function update( &$args = array() ) {
-		$section = $this->parse( $args );
-
-		if ( empty( $section['section_id'] ) ) {
-			return $this->create( $args );
-		}
-
-		$section_id  = $section['section_id'];
-		$update_data = array(
-			'section_name'        => $section['section_name'],
-			'section_course_id'   => $section['section_course_id'],
-			'section_order'       => $section['section_order'],
-			'section_description' => $section['section_description'],
-		);
-
-		global $wpdb;
-
-		$wpdb->update(
-			$wpdb->learnpress_sections,
-			$update_data,
-			array( 'section_id' => $section_id )
-		);
-		$section['section_id'] = $section_id;
-
-		return $section;
-	}
-
-	/**
-	 * Delete data from database.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param $id string
-	 *
-	 * @return bool
-	 */
-	public function delete( &$id ) {
-		global $wpdb;
-
-		/**
-		 * Remove section items.
-		 */
-		$wpdb->delete(
-			$wpdb->learnpress_section_items,
-			array( 'section_id' => $id )
-		);
-
-		$result = $wpdb->delete(
-			$wpdb->learnpress_sections,
-			array( 'section_id' => $id )
-		);
-
-		return ! ! $result;
-	}
-
-	public function duplicate( &$section, $args = array() ) {
-		// TODO: Implement delete() method.
 	}
 
 	/**

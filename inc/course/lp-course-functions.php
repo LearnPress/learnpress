@@ -156,25 +156,6 @@ function learn_press_get_item_courses( $item ) {
 	return $wpdb->get_results( $query );
 }
 
-/**
- * Get the quizzes that a question is assigned to
- *
- * @param $question_id
- *
- * @return mixed
- */
-function learn_press_get_question_quizzes( $question_id ) {
-	global $wpdb;
-	$query = $wpdb->prepare( "
-		SELECT q.*
-		FROM {$wpdb->posts} q
-		INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON q.ID = qq.quiz_id
-		WHERE qq.question_id = %d
-	", $question_id );
-
-	return $wpdb->get_results( $query );
-}
-
 function _learn_press_usort_terms_by_ID( $terms ) {
 	$version = get_bloginfo( 'version' );
 	if ( version_compare( $version, '4.7', '>=' ) ) {

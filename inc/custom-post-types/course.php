@@ -44,14 +44,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function __construct( $post_type ) {
 			parent::__construct( $post_type );
 
+			add_action( 'init', array( $this, 'register_taxonomy' ) );
+
 			// Map origin methods to another method
 			$this
 				->add_map_method( 'save', 'update_course', false )
 				->add_map_method( 'save', 'before_save_curriculum', false )
-				->add_map_method( 'before_delete', 'delete_course_sections' );
+				->add_map_method( 'before_delete', 'before_delete_course' );
 
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
-			add_action( 'init', array( $this, 'register_taxonomy' ) );
+
 			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 
@@ -61,6 +63,74 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			add_action( 'edit_form_after_editor', array( $this, 'template_course_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_course_editor' ) );
+		}
+
+		/**
+		 * Register course taxonomy.
+		 */
+		public function register_taxonomy() {
+
+			$settings      = LP()->settings;
+
+			$category_base = $settings->get( 'course_category_base' );
+			register_taxonomy( 'course_category', array( LP_COURSE_CPT ),
+				array(
+					'label'             => __( 'Course Categories', 'learnpress' ),
+					'labels'            => array(
+						'name'          => __( 'Course Categories', 'learnpress' ),
+						'menu_name'     => __( 'Category', 'learnpress' ),
+						'singular_name' => __( 'Category', 'learnpress' ),
+						'add_new_item'  => __( 'Add New Course Category', 'learnpress' ),
+						'all_items'     => __( 'All Categories', 'learnpress' )
+					),
+					'query_var'         => true,
+					'public'            => true,
+					'hierarchical'      => true,
+					'show_ui'           => true,
+					'show_in_menu'      => 'learn_press',
+					'show_admin_column' => true,
+					'show_in_admin_bar' => true,
+					'show_in_nav_menus' => true,
+					'rewrite'           => array(
+						'slug'         => empty( $category_base ) ? _x( 'course-category', 'slug', 'learnpress' ) : $category_base,
+						'hierarchical' => true,
+						'with_front'   => false
+					),
+				)
+			);
+
+			$tag_base = $settings->get( 'course_tag_base' );
+			register_taxonomy( 'course_tag', array( LP_COURSE_CPT ),
+				array(
+					'labels'                => array(
+						'name'                       => __( 'Course Tags', 'learnpress' ),
+						'singular_name'              => __( 'Tag', 'learnpress' ),
+						'search_items'               => __( 'Search Course Tags', 'learnpress' ),
+						'popular_items'              => __( 'Popular Course Tags', 'learnpress' ),
+						'all_items'                  => __( 'All Course Tags', 'learnpress' ),
+						'parent_item'                => null,
+						'parent_item_colon'          => null,
+						'edit_item'                  => __( 'Edit Course Tag', 'learnpress' ),
+						'update_item'                => __( 'Update Course Tag', 'learnpress' ),
+						'add_new_item'               => __( 'Add New Course Tag', 'learnpress' ),
+						'new_item_name'              => __( 'New Course Tag Name', 'learnpress' ),
+						'separate_items_with_commas' => __( 'Separate tags with commas', 'learnpress' ),
+						'add_or_remove_items'        => __( 'Add or remove tags', 'learnpress' ),
+						'choose_from_most_used'      => __( 'Choose from the most used tags', 'learnpress' ),
+						'menu_name'                  => __( 'Tags', 'learnpress' ),
+					),
+					'public'                => true,
+					'hierarchical'          => false,
+					'show_ui'               => true,
+					'show_in_menu'          => 'learn_press',
+					'update_count_callback' => '_update_post_term_count',
+					'query_var'             => true,
+					'rewrite'               => array(
+						'slug'       => empty( $tag_base ) ? _x( 'course-tag', 'slug', 'learnpress' ) : $tag_base,
+						'with_front' => false
+					),
+				)
+			);
 		}
 
 		/**
@@ -123,69 +193,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			return $m;
 		}
 
-		public function register_taxonomy() {
-			$settings      = LP()->settings;
-			$category_base = $settings->get( 'course_category_base' );
-			register_taxonomy( 'course_category', array( LP_COURSE_CPT ),
-				array(
-					'label'             => __( 'Course Categories', 'learnpress' ),
-					'labels'            => array(
-						'name'          => __( 'Course Categories', 'learnpress' ),
-						'menu_name'     => __( 'Category', 'learnpress' ),
-						'singular_name' => __( 'Category', 'learnpress' ),
-						'add_new_item'  => __( 'Add New Course Category', 'learnpress' ),
-						'all_items'     => __( 'All Categories', 'learnpress' )
-					),
-					'query_var'         => true,
-					'public'            => true,
-					'hierarchical'      => true,
-					'show_ui'           => true,
-					'show_in_menu'      => 'learn_press',
-					'show_admin_column' => true,
-					'show_in_admin_bar' => true,
-					'show_in_nav_menus' => true,
-					'rewrite'           => array(
-						'slug'         => empty( $category_base ) ? _x( 'course-category', 'slug', 'learnpress' ) : $category_base,
-						'hierarchical' => true,
-						'with_front'   => false
-					),
-				)
-			);
-
-			$tag_base = $settings->get( 'course_tag_base' );
-			register_taxonomy( 'course_tag', array( LP_COURSE_CPT ),
-				array(
-					'labels'                => array(
-						'name'                       => __( 'Course Tags', 'learnpress' ),
-						'singular_name'              => __( 'Tag', 'learnpress' ),
-						'search_items'               => __( 'Search Course Tags', 'learnpress' ),
-						'popular_items'              => __( 'Popular Course Tags', 'learnpress' ),
-						'all_items'                  => __( 'All Course Tags', 'learnpress' ),
-						'parent_item'                => null,
-						'parent_item_colon'          => null,
-						'edit_item'                  => __( 'Edit Course Tag', 'learnpress' ),
-						'update_item'                => __( 'Update Course Tag', 'learnpress' ),
-						'add_new_item'               => __( 'Add New Course Tag', 'learnpress' ),
-						'new_item_name'              => __( 'New Course Tag Name', 'learnpress' ),
-						'separate_items_with_commas' => __( 'Separate tags with commas', 'learnpress' ),
-						'add_or_remove_items'        => __( 'Add or remove tags', 'learnpress' ),
-						'choose_from_most_used'      => __( 'Choose from the most used tags', 'learnpress' ),
-						'menu_name'                  => __( 'Tags', 'learnpress' ),
-					),
-					'public'                => true,
-					'hierarchical'          => false,
-					'show_ui'               => true,
-					'show_in_menu'          => 'learn_press',
-					'update_count_callback' => '_update_post_term_count',
-					'query_var'             => true,
-					'rewrite'               => array(
-						'slug'       => empty( $tag_base ) ? _x( 'course-tag', 'slug', 'learnpress' ) : $tag_base,
-						'with_front' => false
-					),
-				)
-			);
-		}
-
 		public function update_course( $course_id ) {
 			global $wpdb;
 
@@ -234,27 +241,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Delete all questions assign to quiz being deleted
+		 * Delete course sections before delete course.
+		 *
+		 * @since 3.0.0
 		 *
 		 * @param $post_id
 		 */
-		public function delete_course_sections( $post_id ) {
-			global $wpdb;
-			// delete all items in section first
-			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $post_id ) );
-			if ( $section_ids ) {
-				$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $section_ids ) . ")", 1 ) );
-				learn_press_reset_auto_increment( 'learnpress_section_items' );
-
-			}
-
-			// delete all sections
-			$query = $wpdb->prepare( "
-					DELETE FROM {$wpdb->prefix}learnpress_sections
-					WHERE section_course_id = %d
-					", $post_id );
-			$wpdb->query( $query );
-			learn_press_reset_auto_increment( 'learnpress_sections' );
+		public function before_delete_course( $post_id ) {
+			// course curd
+			$curd = new LP_Course_CURD();
+			// remove all items from each section and delete course's sections
+			$curd->delete( $post_id );
 		}
 
 
@@ -1133,7 +1130,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$curd = new LP_Course_CURD();
 
 					// course section
-					$sections = $curd->get_course_sections( $post->ID );
+					$sections        = $curd->get_course_sections( $post->ID );
 					$number_sections = count( $sections );
 
 					if ( $number_sections ) {
@@ -1154,9 +1151,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 						$output = sprintf( _nx( '%d section', '%d sections', $number_sections, 'learnpress' ), $number_sections );
 						$output .= ' (';
-						$output .= $number_lessons ? sprintf( _nx( '%d lesson', '%d lessons', $number_lessons, 'learnpress' ), $number_lessons ) :  __( "0 lesson", 'learnpress' );
+						$output .= $number_lessons ? sprintf( _nx( '%d lesson', '%d lessons', $number_lessons, 'learnpress' ), $number_lessons ) : __( "0 lesson", 'learnpress' );
 						$output .= ', ';
-						$output .= $number_quizzes ? sprintf( _nx( '%d quiz', '%d quizzes', $number_quizzes, 'learnpress' ), $number_quizzes ) :  __( "0 quiz", 'learnpress' );
+						$output .= $number_quizzes ? sprintf( _nx( '%d quiz', '%d quizzes', $number_quizzes, 'learnpress' ), $number_quizzes ) : __( "0 quiz", 'learnpress' );
 						$output .= ')';
 
 						echo $output;

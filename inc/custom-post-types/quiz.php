@@ -37,7 +37,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type, $args = '' ) {
 
-			$this->add_map_method( 'before_delete', 'delete_quiz_questions' );
+			$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
 			// hide View Quiz link on Quiz table action
 			add_filter( 'page_row_actions', array( $this, 'remove_view_link' ), 10, 2 );
@@ -105,20 +105,17 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
-		 * Delete all questions assign to quiz being deleted
+		 * Delete all questions assign to quiz.
+         *
+         * @since 3.0.0
 		 *
 		 * @param $post_id
 		 */
-		public function delete_quiz_questions( $post_id ) {
-			//curd
-			$course_curd = new LP_Course_CURD();
-			$quiz_curd   = new LP_Quiz_CURD();
-
-			// remove questions from quiz
-			$quiz_curd->remove_question( $post_id, true );
-
-			// remove quiz from course
-			$course_curd->remove_item_from_course( $post_id );
+		public function before_delete_quiz( $post_id ) {
+			// quiz curd
+			$curd = new LP_Quiz_CURD();
+			// remove question from course items
+			$curd->delete( $question_id );
 		}
 
 		/**

@@ -379,12 +379,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-assets.php';
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
+
+			// curds
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-section-curd.php';
-			require_once 'inc/curds/class-lp-user-curd.php';
+			require_once 'inc/curds/class-lp-lesson-curd.php';
 			require_once 'inc/curds/class-lp-quiz-curd.php';
 			require_once 'inc/curds/class-lp-question-curd.php';
 			require_once 'inc/curds/class-lp-order-curd.php';
+			require_once 'inc/curds/class-lp-user-curd.php';
+
 			require_once 'inc/class-lp-debug.php';
 			require_once 'inc/class-lp-global.php';
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
