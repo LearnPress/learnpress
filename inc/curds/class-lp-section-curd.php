@@ -121,6 +121,39 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Remove all items from each section and delete course's sections.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool
+	 */
+	public function clear() {
+
+		$sections_ids = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections-ids' );
+
+		if ( ! $sections_ids ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		// Remove all items in course's sections
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $sections_ids ) . ")", 1 ) );
+		learn_press_reset_auto_increment( 'learnpress_section_items' );
+		// delete sections ids cache
+		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections-ids' );
+
+
+		// delete sections in course
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $this->course_id ) );
+		learn_press_reset_auto_increment( 'learnpress_sections' );
+		// delete sections cache
+		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections' );
+
+		return true;
+	}
+
+	/**
 	 * Load data from database.
 	 *
 	 * @since 3.0.0
@@ -175,39 +208,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $ids;
-	}
-
-	/**
-	 * Remove all items from each section and delete course's sections.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @return bool
-	 */
-	public function clear() {
-
-		$sections_ids = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections-ids' );
-
-		if ( ! $sections_ids ) {
-			return false;
-		}
-
-		global $wpdb;
-
-		// Remove all items in course's sections
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $sections_ids ) . ")", 1 ) );
-		learn_press_reset_auto_increment( 'learnpress_section_items' );
-		// delete sections ids cache
-		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections-ids' );
-
-
-		// delete sections in course
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $this->course_id ) );
-		learn_press_reset_auto_increment( 'learnpress_sections' );
-		// delete sections cache
-		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections' );
-
-		return true;
 	}
 
 	/**
@@ -282,6 +282,33 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Create new section item and add to course.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id
+	 * @param $item
+	 *
+	 * @return array
+	 */
+	public function new_item( $section_id, $item ) {
+
+		$item = wp_parse_args( $item, array( 'title' => '', 'type' => '' ) );
+
+		// create new item
+		$post_id = wp_insert_post( array(
+			'post_title'  => $item['title'],
+			'post_type'   => $item['type'] ? $item['type'] : LP_LESSON_CPT,
+			'post_status' => 'publish'
+		) );
+
+		$item['id'] = $post_id;
+
+		// add item to section
+		return $this->add_items_section( $section_id, array( $item ) );
+	}
+
+	/**
 	 * @param $items array
 	 *
 	 * @since 3.0.0
@@ -292,6 +319,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array
 	 */
 	public function add_items_section( $section_id, $items = array() ) {
+
 		$order         = 1;
 		$current_items = $this->get_section_items( $section_id );
 
@@ -306,19 +334,15 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
 
 			if ( $exist ) {
-				$wpdb->update(
-					$wpdb->learnpress_section_items,
-					array(
-						'item_order' => $order
-					),
+				$wpdb->update( $wpdb->learnpress_section_items,
+					array( 'item_order' => $order ),
 					array(
 						'section_id' => $section_id,
 						'item_id'    => $item['id']
 					)
 				);
 			} else {
-				$wpdb->insert(
-					$wpdb->learnpress_section_items,
+				$wpdb->insert( $wpdb->learnpress_section_items,
 					array(
 						'section_id' => $section_id,
 						'item_id'    => $item['id'],
@@ -328,12 +352,10 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 			}
 
-			$post     = get_post( $item['id'] );
-			$result[] = array(
-				'id'    => $post->ID,
-				'title' => $post->post_title,
-				'type'  => $post->post_type,
-			);
+			// get WP Post
+			$post = get_post( $item['id'] );
+
+			$result[] = array( 'id' => $post->ID, 'title' => $post->post_title, 'type' => $post->post_type, );
 
 			$order ++;
 		}
@@ -435,27 +457,25 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array
 	 */
 	public function update_section_items( $section_id, $items ) {
+
 		$current_items = $this->get_section_items( $section_id );
 
 		global $wpdb;
+
 		foreach ( $items as $index => $item ) {
 			$order = $index + 1;
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
 
 			if ( $exist ) {
-				$wpdb->update(
-					$wpdb->learnpress_section_items,
-					array(
-						'item_order' => $order
-					),
+				$wpdb->update( $wpdb->learnpress_section_items,
+					array( 'item_order' => $order ),
 					array(
 						'section_id' => $section_id,
 						'item_id'    => $item['id']
 					)
 				);
 			} else {
-				$wpdb->insert(
-					$wpdb->learnpress_section_items,
+				$wpdb->insert( $wpdb->learnpress_section_items,
 					array(
 						'section_id' => $section_id,
 						'item_id'    => $item['id'],
@@ -507,54 +527,19 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * Update section item.
+	 * Update lesson, quiz title in admin course editor.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $section_id
 	 * @param $item
 	 *
 	 * @return array
 	 */
-	public function update_section_item( $section_id, $item ) {
-		$item = wp_parse_args( $item, array(
-			'id'    => '',
-			'title' => '',
-			'type'  => ''
-		) );
+	public function update_item( $item ) {
+		$item = wp_parse_args( $item, array( 'id' => '', 'title' => '', ) );
 
-		wp_update_post( array(
-			'ID'         => $item['id'],
-			'post_title' => $item['title'],
-		) );
+		wp_update_post( array( 'ID' => $item['id'], 'post_title' => $item['title'], ) );
 
 		return $item;
-	}
-
-	/**
-	 * Create a section item.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param $section_id
-	 * @param $item
-	 *
-	 * @return array
-	 */
-	public function create_section_item( $section_id, $item ) {
-		$item = wp_parse_args( $item, array(
-			'title' => '',
-			'type'  => ''
-		) );
-
-		$post_id = wp_insert_post( array(
-			'post_title'  => $item['title'],
-			'post_type'   => $item['type'],
-			'post_status' => 'publish'
-		) );
-
-		$item['id'] = $post_id;
-
-		return $this->add_items_section( $section_id, array( $item ) );
 	}
 }

@@ -140,6 +140,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function update_curriculum() {
+
 			check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
 			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
@@ -151,18 +152,25 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				wp_send_json_error();
 			}
 
-			$curd = new LP_Section_CURD( $course_id );
+            // course curd
+			$course_curd = new LP_Course_CURD();
+            // section curd
+			$section_curd = new LP_Section_CURD( $course_id );
 
 			$result = $args['type'];
+
 			switch ( $args['type'] ) {
+
 				case 'heartbeat':
+
 					$result = true;
 					break;
 
 				case 'hidden-sections':
 
+					// get hidden sections id
 					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
-
+					// update course post meta
 					update_post_meta( $course_id, '_admin_hidden_sections', $hidden );
 
 					break;
@@ -176,12 +184,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = $curd->sort_sections( $order );
+					$result = $section_curd->sort_sections( $order );
 
 					// last section
 					$last_section_id = end( $order );
 					// update final quiz
-					$curd->update_final_quiz( $last_section_id );
+					$section_curd->update_final_quiz( $last_section_id );
 
 					break;
 
@@ -202,7 +210,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'section_course_id'   => $section['course_id'],
 					);
 
-					$result = $curd->update( $update );
+					$result = $section_curd->update( $update );
 
 					break;
 
@@ -214,7 +222,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$curd->delete( $section_id );
+					$section_curd->delete( $section_id );
 
 					break;
 
@@ -230,7 +238,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					);
 
 					// create section
-					$section = $curd->create( $args );
+					$section = $section_curd->create( $args );
 
 					$result = array(
 						'id'          => $section['section_id'],
@@ -253,7 +261,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = $curd->update_section_item( $section_id, $item );
+					// update lesson, quiz title
+					$result = $section_curd->update_item( $item );
 
 					break;
 
@@ -266,7 +275,22 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = $curd->remove_section_item( $section_id, $item_id );
+					// remove item from course
+                    $course_curd->remove_item($item_id);
+
+					break;
+
+				case 'delete-section-item':
+
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
+
+					if ( ! ( $section_id && $item_id ) ) {
+						break;
+					}
+
+					$result = wp_delete_post( $item_id );
+
 					break;
 
 				case 'new-section-item':
@@ -279,7 +303,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = $curd->create_section_item( $section_id, $item );
+					// create new lesson, quiz and add to course
+					$result = $section_curd->new_item( $section_id, $item );
+
 					break;
 
 				case 'update-section-items':
@@ -293,10 +319,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = $curd->update_section_items( $section_id, $items );
+					$result = $section_curd->update_section_items( $section_id, $items );
 
 					if ( $last_section ) {
-						$curd->update_final_quiz( $section_id );
+						$section_curd->update_final_quiz( $section_id );
 					}
 
 					break;
@@ -360,7 +386,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = $curd->add_items_section( $section_id, $items );
+					$result = $section_curd->add_items_section( $section_id, $items );
 
 					break;
 
@@ -1060,8 +1086,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -1149,8 +1174,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -1183,8 +1207,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );

@@ -79,7 +79,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				// get course sections
 				$sections = $this->get_course_sections( $course_id );
 				// new course section curd
-				$new_course_curd = new LP_Section_CURD( $new_course_id );
+				$new_course_section_curd = new LP_Section_CURD( $new_course_id );
 
 				$quiz_curd = new LP_Quiz_CURD();
 
@@ -95,7 +95,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						);
 
 						// clone sections to new course
-						$new_section = $new_course_curd->create( $data );
+						$new_section = $new_course_section_curd->create( $data );
 
 						// get section items of original course
 						$items = $curd->get_section_items( $section->section_id );
@@ -118,7 +118,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 							}
 
 							// add new clone items to section
-							$new_course_curd->add_items_section( $new_section['section_id'], $new_items );
+							$new_course_section_curd->add_items_section( $new_section['section_id'], $new_items );
 						}
 					}
 

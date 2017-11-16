@@ -331,6 +331,17 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                 });
         },
 
+        deleteSectionItem: function (context, payload) {
+            context.commit('REMOVE_SECTION_ITEM', payload);
+
+            Vue.http
+                .LPRequest({
+                    type: 'delete-section-item',
+                    section_id: payload.section_id,
+                    item_id: payload.item_id
+                });
+        },
+
         newSectionItem: function (context, payload) {
             Vue.http.LPRequest({
                 type: 'new-section-item',

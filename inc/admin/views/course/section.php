@@ -37,7 +37,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     <draggable v-model="items" :element="'ul'" :options="optionDraggable">
                         <!--Section items-->
                         <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id"
-                                         @update="updateItem" @remove="removeItem" :order="index+1"></lp-section-item>
+                                         @update="updateItem" @remove="removeItem" @delete="deleteItem" :order="index+1"></lp-section-item>
                     </draggable>
 
                     <lp-new-section-item @create="newItem"></lp-new-section-item>
@@ -167,6 +167,9 @@ learn_press_admin_view( 'course/new-section-item' );
                 // remove section item
                 removeItem: function (item) {
                     $store.dispatch('ss/removeSectionItem', {section_id: this.section.id, item_id: item.id});
+                },
+                deleteItem: function (item) {
+                    $store.dispatch('ss/deleteSectionItem', {section_id: this.section.id, item_id: item.id});
                 },
                 // new section item
                 newItem: function (item) {

@@ -16,12 +16,15 @@
 
         <div class="item-actions">
             <div class="actions">
-                <a class="edit" :href="url" target="_blank">
-                    <span class="dashicons dashicons-edit"></span>
-                </a>
-                <a class="remove" @click.prevent="remove">
-                    <span class="dashicons dashicons-trash"></span>
-                </a>
+                <div class="action edit-item"><a href="" class="lp-btn-icon dashicons dashicons-admin-page"></a></div>
+                <div class="action delete-item">
+                    <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
+                    <ul>
+                        <li>
+                            <a @click.prevent="deletePermanently"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -70,6 +73,11 @@
                 remove: function () {
                     this.removing = true;
                     this.$emit('remove', this.item);
+                },
+                // remove item
+                deletePermanently: function () {
+                    this.removing = true;
+                    this.$emit('delete', this.item);
                 }
             }
         });
