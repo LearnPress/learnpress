@@ -281,11 +281,21 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 		}
 
+		/**
+		 * Update option data user rated.
+		 */
 		public function rated() {
 			update_option( 'learn_press_message_user_rated', 'yes' );
 			die();
 		}
 
+		/**
+		 * Admin footer add review.
+		 *
+		 * @param $footer_text
+		 *
+		 * @return string
+		 */
 		public function admin_footer_text( $footer_text ) {
 			$current_screen = get_current_screen();
 			$pages          = learn_press_get_screens();
@@ -294,23 +304,22 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;&#9733;&#9733;&#9733;%s rating. A huge thanks in advance!', 'learnpress' ), '<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'learnpress' ) . '">', '</a>' );
 					ob_start(); ?>
                     <script type="text/javascript">
-                        var $ratingLink = $('a.lp-rating-link').click(function (e) {
-                            $.ajax({
-                                url: '<?php echo admin_url( 'admin-ajax.php' );?>',
-                                data: {
-                                    action: 'learn_press_rated'
-                                },
-                                success: function () {
-                                    $ratingLink.parent().html($ratingLink.data('rated'));
-                                }
+                        jQuery(document).ready(function ($) {
+                            var $ratingLink = $('a.lp-rating-link').click(function (e) {
+                                $.ajax({
+                                    url: ajaxurl,
+                                    data: {
+                                        action: 'learn_press_rated'
+                                    },
+                                    success: function () {
+                                        $ratingLink.parent().html($ratingLink.data('rated'));
+                                    }
+                                });
                             });
                         });
                     </script>
 					<?php
-					$code = ob_get_clean();
-
-					echo $code;
-				} else {
+					echo ob_get_clean();
 				}
 			}
 
