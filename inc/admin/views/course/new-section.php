@@ -33,7 +33,9 @@
             },
             methods: {
                 newSection: function () {
-                    $store.dispatch('ss/newSection', this.title);
+                    if (this.title) {
+                        $store.dispatch('ss/newSection', this.title);
+                    }
 
                     this.title = '';
                 }

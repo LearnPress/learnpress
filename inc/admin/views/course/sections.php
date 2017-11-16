@@ -44,8 +44,6 @@ learn_press_admin_view( 'course/new-section' );
                         order.push(parseInt(section.id));
                     });
 
-                    console.log(order);
-
                     $store.dispatch('ss/updateSectionsOrder', order);
                 }
             }
