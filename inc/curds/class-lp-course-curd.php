@@ -57,7 +57,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
 			}
 			// duplicate course
-			$new_course_id = learn_press_duplicate_post( $course_id );
+			$new_course_id = learn_press_duplicate_post( $course_id, $args, true );
 
 			if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
 				return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
@@ -95,11 +95,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						// duplicate items
 						if ( is_array( $items ) ) {
 							foreach ( $items as $key => $item ) {
-								// clone quiz
+								// duplicate quiz
 								if ( $item['type'] == LP_QUIZ_CPT ) {
 									$new_item_id = $quiz_curd->duplicate( $item['id'], array( 'post_status' => 'publish' ) );
 								} else {
-									// clone lesson
+									// duplicate lesson
 									$new_item_id = learn_press_duplicate_post( $item['id'], array( 'post_status' => 'publish' ) );
 								}
 

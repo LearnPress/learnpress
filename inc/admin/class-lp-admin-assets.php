@@ -103,10 +103,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					'screens' => array( LP_COURSE_CPT )
 				),
-				'learn-press-admin-duplicate-course' => array(
-					'url'  => $this->url( 'js/admin/duplicate-course.js' ),
-					'deps' => array( 'jquery', 'backbone', 'wp-util' )
-				),
 				'learn-press-admin-quiz-editor'      => array(
 					'url'     => $this->url( 'js/admin/quiz-editor.js' ),
 					'deps'    => array(

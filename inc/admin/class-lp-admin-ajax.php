@@ -90,10 +90,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-questions',
 				'get-question-data',
 
+				// admin editor
 				'update_curriculum',
 				'admin_quiz_editor',
 				'admin_question_editor',
-				'duplicate_course',
+				// duplicator
+				'duplicator',
 
 				'modal-search-items',
 				'modal-search-users',
@@ -2137,7 +2139,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function duplicate_course() {
 
-			$curd = new LP_Course_CURD();
+		    $curd = new LP_Course_CURD();
 
 			if ( empty( $_POST['course_id'] ) || empty( $_POST['_nonce'] ) || ! wp_verify_nonce( $_POST['_nonce'], 'lp-duplicate-course' ) ) {
 				return;
@@ -2146,11 +2148,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$course_id = absint( $_POST['course_id'] );
 			$force     = ! empty( $_POST['content'] ) && $_POST['content'] ? true : false;
 
-			$results = array(
+			$results       = array(
 				'redirect' => admin_url( 'edit.php?post_type=' . LP_COURSE_CPT )
 			);
 
-			$new_course_id = $curd->duplicate( $course_id );
+			$new_course_id = $curd->duplicate($course_id);
 
 			if ( is_wp_error( $new_course_id ) ) {
 				LP_Admin_Notice::add_redirect( $new_course_id->get_error_message(), 'error' );

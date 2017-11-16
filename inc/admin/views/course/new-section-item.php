@@ -61,10 +61,12 @@
                     this.choosingType = false;
                 },
                 createItem: function () {
-                    this.$emit('create', {
-                        type: this.type,
-                        title: this.title
-                    });
+                    if (this.title) {
+                        this.$emit('create', {
+                            type: this.type,
+                            title: this.title
+                        });
+                    }
 
                     this.title = '';
                 },

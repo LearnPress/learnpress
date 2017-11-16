@@ -281,11 +281,21 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 		}
 
+		/**
+		 * Update option data user rated.
+		 */
 		public function rated() {
 			update_option( 'learn_press_message_user_rated', 'yes' );
 			die();
 		}
 
+		/**
+		 * Admin footer add review.
+		 *
+		 * @param $footer_text
+		 *
+		 * @return string
+		 */
 		public function admin_footer_text( $footer_text ) {
 			$current_screen = get_current_screen();
 			$pages          = learn_press_get_screens();
@@ -310,10 +320,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
                     </script>
 					<?php
-					$code = ob_get_clean();
-
-					echo $code;
-				} else {
+					echo ob_get_clean();
 				}
 			}
 
