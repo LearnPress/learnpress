@@ -145,10 +145,17 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return int
 	 */
 	public function update( &$order ) {
+
+		// If there is no items in the order then set it status to Pending
+		$status = $order->get_status() ? $order->get_status() : learn_press_default_order_status();
+		if('pending'!== $status && !$order->get_items()){
+			$status = 'pending';
+		}
+
 		$post_data = array(
 			'post_date'     => $order->get_order_date()->toSql(),
 			'post_date_gmt' => $order->get_order_date()->toSql( false ),
-			'post_status'   => 'lp-' . ( $order->get_status() ? $order->get_status() : learn_press_default_order_status() ),
+			'post_status'   => 'lp-' . $status,
 			'post_parent'   => $order->get_parent_id(),
 			//'post_excerpt'      => $this->get_post_excerpt( $order ),
 			//'post_modified'     => $order->get_date_modified( ),

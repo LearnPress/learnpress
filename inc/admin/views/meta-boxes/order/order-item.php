@@ -3,7 +3,7 @@
  * Display single row of order items.
  */
 ?>
-<tr class="order-item-row" data-item_id="<?php echo $item['id']; ?>" data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
+<tr class="order-item-row" data-item_id="<?php echo $item['id']; ?>" data-id="<?php echo $item['course_id'];?>" data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
 	<td class="column-name">
 		<?php do_action('learn_press_before_order_details_item_title', $item);?>
         <?php do_action('learn_press/before_order_details_item_title', $item);?>

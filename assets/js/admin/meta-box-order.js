@@ -16,7 +16,7 @@
                 template: '#tmpl-order-advanced-list-item',
                 onRemove: function () {
                     if (this.$el.children().length === 0) {
-                        this.$el.append('<li class="user-guest">'+orderOptions.i18n_guest+'</li>')
+                        this.$el.append('<li class="user-guest">' + orderOptions.i18n_guest + '</li>')
                     }
                     console.log(this.$el)
                 },
@@ -26,11 +26,22 @@
             },
             orderOptions = lpMetaBoxOrderSettings;
 
+        function getAddedUsers() {
+            return $('#list-users').children().map(function () {
+                return $(this).data('id')
+            }).get();
+        }
+
+        function getAddedItems() {
+            return $('.list-order-items tbody').children('.order-item-row').map(function () {
+                return $(this).data('id')
+            }).get();
+        }
+
         if ($listUsers.length) {
             $listUsers.advancedList(advancedListOptions);
             if (orderOptions.users) {
                 _.forEach(orderOptions.users, function (userData, userId) {
-                    console.log(template(orderOptions.userTextFormat, userData));
                     $listUsers.advancedList('add', [
                         template(orderOptions.userTextFormat, userData),
                         userId
@@ -79,13 +90,14 @@
             }
         });
 
-
         $('#learn-press-add-order-item').on('click', function () {
+            console.log(getAddedItems())
             LP.$modalSearchItems.open({
                 data: {
                     postType: 'lp_course',
                     context: 'order-items',
                     contextId: $('#post_ID').val(),
+                    exclude: getAddedItems(),
                     show: true
                 },
                 callbacks: {
@@ -121,6 +133,7 @@
                     contextId: $('#post_ID').val(),
                     show: true,
                     multiple: $(this).data('multiple') === 'yes',
+                    exclude: getAddedUsers(),
                     textFormat: orderOptions.userTextFormat
                 },
                 callbacks: {
@@ -149,9 +162,8 @@
                 }
             });
         });
-    })
-    return;
-
+    });
+/*
     var LP_Order_View = window.LP_Order_View = Backbone.View.extend({
         el: 'body',
         events: {
@@ -444,5 +456,5 @@
 
     $(document).ready(function () {
         new LP_Order_View();
-    });
+    });*/
 })(jQuery);

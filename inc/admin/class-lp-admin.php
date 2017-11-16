@@ -44,7 +44,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array $actions
+		 * @param array   $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -294,17 +294,20 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;&#9733;&#9733;&#9733;%s rating. A huge thanks in advance!', 'learnpress' ), '<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'learnpress' ) . '">', '</a>' );
 					ob_start(); ?>
                     <script type="text/javascript">
-                        var $ratingLink = $('a.lp-rating-link').click(function (e) {
-                            $.ajax({
-                                url: '<?php echo admin_url( 'admin-ajax.php' );?>',
-                                data: {
-                                    action: 'learn_press_rated'
-                                },
-                                success: function () {
-                                    $ratingLink.parent().html($ratingLink.data('rated'));
-                                }
+                        jQuery(function ($) {
+                            var $ratingLink = $('a.lp-rating-link').click(function (e) {
+                                $.ajax({
+                                    url: '<?php echo admin_url( 'admin-ajax.php' );?>',
+                                    data: {
+                                        action: 'learn_press_rated'
+                                    },
+                                    success: function () {
+                                        $ratingLink.parent().html($ratingLink.data('rated'));
+                                    }
+                                });
                             });
-                        });
+                        })
+
                     </script>
 					<?php
 					$code = ob_get_clean();

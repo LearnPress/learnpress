@@ -47,8 +47,32 @@ class LP_Modal_Search_Items {
 				'paged'        => 1
 			)
 		);
+
+		if ( is_string( $this->_options['exclude'] ) ) {
+			$this->_options['exclude'] = explode( ',', $this->_options['exclude'] );
+		}
+
+		add_filter( 'learn-press/modal-search-items/exclude', array(
+			$this,
+			'exclude_items'
+		), 10, 4 );
+
+		add_filter( 'learn-press/modal-search-items/args', array(
+			$this,
+			'query_args'
+		), 10, 3 );
+
+		add_filter( 'learn-press/modal-search-items/not-found', array(
+			$this,
+			'_modal_search_items_not_found'
+		), 10, 2 );
 	}
 
+	/**
+	 * Build query args from object options and get posts.
+	 *
+	 * @return array
+	 */
 	protected function _get_items() {
 		global $wpdb;
 
@@ -72,21 +96,26 @@ class LP_Modal_Search_Items {
 			}
 		}
 
-		$exclude = array();
+		// @since 3.0.0
+		$exclude = array_unique( (array) apply_filters( 'learn-press/modal-search-items/exclude', $this->_options['exclude'], $type, $context, $context_id ) );
 
-		if ( ! empty( $this->_options['exclude'] ) ) {
-			$exclude = array_map( 'intval', $this->_options['exclude'] );
-		}
+		// @deprecated
 		$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
-		$exclude = array_map( 'intval', $exclude );
-		$args    = array(
+
+		if ( is_array( $exclude ) ) {
+			$exclude = array_map( 'intval', $exclude );
+		}
+
+		$paged = max( 1, $this->_options['paged'] );
+
+		$args = array(
 			'post_type'      => array( $type ),
 			'post_status'    => 'publish',
 			'order'          => 'ASC',
 			'orderby'        => 'parent title',
 			'exclude'        => $exclude,
 			'posts_per_page' => $this->_options['limit'],
-//			'offset'         => ( $this->_options['paged'] - 1 ) * $this->_options['limit']
+			'offset'         => ( $paged - 1 ) * $this->_options['limit']
 		);
 
 		$args['author'] = get_post_field( 'post_author', $context_id );
@@ -94,25 +123,25 @@ class LP_Modal_Search_Items {
 		if ( $term ) {
 			$args['s'] = $term;
 		}
-		$this->_query_args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
 
-		$posts        = get_posts( $this->_query_args );
+		// @since 3.0.0
+		$this->_query_args = apply_filters( 'learn-press/modal-search-items/args', $args, $context, $context_id );
 
-		$this->_items = array();
+		// @deprecated
+		$this->_query_args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $this->_query_args, $context, $context_id );
 
-		if ( ! empty( $posts ) ) {
-			foreach ( $posts as $post ) {
-				if ( in_array( $post->ID, $current_items ) ) {
-					continue;
-				}
-				$this->_items[] = $post->ID;
-			}
-
+		if ( $posts = get_posts( $this->_query_args ) ) {
+			$this->_items = wp_list_pluck( $posts, 'ID' );
 		}
 
 		return $this->_items;
 	}
 
+	/**
+	 * Get the items
+	 *
+	 * @return array
+	 */
 	public function get_items() {
 		if ( $this->_changed ) {
 			$this->_get_items();
@@ -121,13 +150,27 @@ class LP_Modal_Search_Items {
 		return $this->_items;
 	}
 
+	/**
+	 * Get pagination in html.
+	 *
+	 * @param bool $html
+	 *
+	 * @return array|string|void
+	 */
 	function get_pagination( $html = true ) {
 
 		$pagination = '';
 		if ( $items = $this->get_items() ) {
-			$q = new WP_Query( $this->_query_args );
+			$args = $this->_query_args;
+
+			if ( ! empty( $args['exclude'] ) ) {
+				$args['post__not_in'] = $args['exclude'];
+			}
+
+			$q = new WP_Query( $args );
 
 			if ( $this->_options['paged'] && $q->max_num_pages > 1 ) {
+
 				$pagenum_link = html_entity_decode( get_pagenum_link() );
 
 				$query_args = array();
@@ -160,6 +203,11 @@ class LP_Modal_Search_Items {
 		return $pagination;
 	}
 
+	/**
+	 * Return string of list items
+	 *
+	 * @return string
+	 */
 	public function get_html_items() {
 		ob_start();
 		if ( $items = $this->get_items() ) {
@@ -174,7 +222,14 @@ class LP_Modal_Search_Items {
                     ', 'lp-result-item', $item, esc_attr( get_the_title( $item ) ), get_post_type( $item ) );
 			}
 		} else {
-			echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $this->_options['type'] ) . '</li>';
+
+			// @since 3.0.0
+			$item_not_found = apply_filters( 'learn-press/modal-search-items/not-found', __( 'No item found', 'learnpress' ), $this->_options['type'] );
+
+			// @deprecated
+			$item_not_found = apply_filters( 'learn_press_modal_search_items_not_found', $item_not_found );
+
+			echo '<li>' . $item_not_found . '</li>';
 		}
 
 		return ob_get_clean();
@@ -192,5 +247,95 @@ class LP_Modal_Search_Items {
 		}
 
 		return $instance;
+	}
+
+	/**
+	 * @param array  $args
+	 * @param string $context
+	 * @param string $context_id
+	 *
+	 * @return mixed
+	 */
+	public static function query_args( $args, $context, $context_id ) {
+		if ( ( LP_ORDER_CPT === get_post_type( $context_id ) ) && ( LP_COURSE_CPT === $args['post_type'] ) ) {
+			if ( ! empty( $args['author'] ) ) {
+				unset( $args['author'] );
+			}
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Filter to exclude the items has already added to it's parent.
+	 * Each item only use one time
+	 *
+	 * @param        $exclude
+	 * @param        $type
+	 * @param string $context
+	 * @param null   $context_id
+	 *
+	 * @return array
+	 */
+	public static function exclude_items( $exclude, $type, $context = '', $context_id = null ) {
+		global $wpdb;
+		$used_items = array();
+		switch ( $type ) {
+			case 'lp_lesson':
+			case 'lp_quiz':
+				$query      = $wpdb->prepare( "
+						SELECT item_id
+						FROM {$wpdb->prefix}learnpress_section_items si
+						INNER JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id
+						INNER JOIN {$wpdb->posts} p ON p.ID = s.section_course_id
+						WHERE %d
+						AND p.post_type = %s
+					", 1, LP_COURSE_CPT );
+				$used_items = $wpdb->get_col( $query );
+				break;
+			case 'lp_question':
+				$query      = $wpdb->prepare( "
+						SELECT question_id
+						FROM {$wpdb->prefix}learnpress_quiz_questions AS qq
+						INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
+						WHERE %d
+						AND q.post_type = %s
+					", 1, LP_QUIZ_CPT );
+				$used_items = $wpdb->get_col( $query );
+				break;
+
+		}
+		if ( $used_items && $exclude ) {
+			$exclude = array_merge( $exclude, $used_items );
+		} else if ( $used_items ) {
+			$exclude = $used_items;
+		}
+
+		return is_array( $exclude ) ? array_unique( $exclude ) : array();
+	}
+
+	/**
+	 * @param $message
+	 * @param $type
+	 *
+	 * @return string
+	 */
+	public static function items_not_found( $message, $type ) {
+		switch ( $type ) {
+			case LP_LESSON_CPT:
+				$message = __( 'There are no available lessons for this course, please use ', 'learnpress' );
+				$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_lesson' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
+				break;
+			case LP_QUIZ_CPT:
+				$message = __( 'There are no available quizzes for this course, please use ', 'learnpress' );
+				$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_quiz' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
+				break;
+			case LP_QUESTION_CPT:
+				$message = __( 'There are no available questions for this quiz, please use ', 'learnpress' );
+				$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_question' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
+				break;
+		}
+
+		return $message;
 	}
 }

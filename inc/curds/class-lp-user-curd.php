@@ -191,31 +191,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 			}
-//
-//			echo $query = $wpdb->prepare( "
-//				SELECT o.ID, oim.meta_value as course_id
-//				FROM {$wpdb->learnpress_order_items} oi
-//				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id AND meta_key = %s
-//				INNER JOIN {$wpdb->postmeta} om ON om.post_id = oi.order_id AND om.meta_key = %s AND om.meta_value = %d
-//				INNER JOIN {$wpdb->posts} o ON o.ID = om.post_id AND o.post_status <> %s
-//				WHERE o.post_type = %s ORDER BY ID ASC
-//			", '_course_id', '_user_id', $user_id, 'trash', LP_ORDER_CPT );
-//
-//			if ( $rows = $wpdb->get_results( $query ) ) {
-//				foreach ( $rows as $row ) {
-//					if ( empty( $orders[ $row->course_id ] ) ) {
-//						$orders[ $row->course_id ] = array();
-//					}
-//					$orders[ $row->course_id ][] = $row->ID;
-//				}
-//
-//				// Sort the order ids from highest to lowest
-//				foreach ( $orders as $course_id => $order_ids ) {
-//					if ( $order_ids ) {
-//						rsort( $orders[ $course_id ] );
-//					}
-//				}
-//			}
 
 			// Store to cache
 			wp_cache_set( 'user-' . $user_id, $orders, 'lp-user-orders' );

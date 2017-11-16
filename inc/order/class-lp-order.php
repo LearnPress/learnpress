@@ -303,6 +303,10 @@ class LP_Order extends LP_Abstract_Post_Data {
 		return $this->get_status();
 	}
 
+	public function get_user_ip_address() {
+		return $this->get_data( 'user_ip_address' );
+	}
+
 	/**
 	 * Get current status of order
 	 *
@@ -435,8 +439,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 */
 	public function get_customer_name() {
 		$customer_name = '';
+		$customer      = false;
 		if ( 'auto-draft' === get_post_status( $this->get_id() ) ) {
-			$customer = learn_press_get_current_user( false );
 		} else {
 			$customer = learn_press_get_user( $this->get_data( 'user_id' ) );
 		}
@@ -788,7 +792,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 
 	public function get_payment_method_title() {
 		if ( $this->order_total == 0 ) {
-			$title = __( 'No Payment', 'learnpress' );
+			$title = '';
 		} else {
 			$title = $this->payment_method_title;
 		}
@@ -1180,10 +1184,6 @@ class LP_Order extends LP_Abstract_Post_Data {
 
 	public function set_user_ip_address( $value ) {
 		$this->_set_data( 'user_ip_address', $value );
-	}
-
-	public function get_user_ip_address() {
-		return $this->get_data( 'user_ip_address' );
 	}
 
 	public function set_user_agent( $value ) {

@@ -103,15 +103,19 @@
 
 @media screen and (max-width: 1280px) {
     .learnpress {
-        .rwmb-field {
-            .rwmb-label {
-                width: auto;
-                float: none;
-            }
-            .rwmb-input {
-                margin-left: 0;
-                width: 100%;
-                float: left;
+        .rwmb-meta-box{
+        }
+        #meta-box-tab-course_settings {
+            .rwmb-field {
+                .rwmb-label {
+                    width: auto;
+                    float: none;
+                }
+                .rwmb-input {
+                    margin-left: 0;
+                    width: 100%;
+                    float: left;
+                }
             }
         }
     }

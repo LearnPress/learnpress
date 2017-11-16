@@ -72,16 +72,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
 				}
 			}
-			add_filter( 'learn_press_modal_search_items_exclude', array(
-				__CLASS__,
-				'_modal_search_items_exclude'
-			), 10, 4 );
-			add_filter( 'learn_press_modal_search_items_not_found', array(
-				__CLASS__,
-				'_modal_search_items_not_found'
-			), 10, 2 );
-			//add_action( 'load-post-new.php', array( __CLASS__, 'do_ajax' )  );
-			//add_action( 'load-post.php', array( __CLASS__, 'do_ajax' )  );
 
 			do_action( 'learn-press/ajax/admin-load', __CLASS__ );
 
@@ -1285,8 +1275,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
 			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
 			$paged      = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
+			$exclude    = LP_Request::get( 'exclude' );
 
-			$search = new LP_Modal_Search_Items( compact( 'term', 'type', 'context', 'context_id', 'paged' ) );
+			$search = new LP_Modal_Search_Items( compact( 'term', 'type', 'context', 'context_id', 'paged', 'exclude' ) );
 
 			learn_press_send_json( array(
 				'html'  => $search->get_html_items(),
@@ -1308,8 +1299,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$paged       = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
 			$multiple    = (string) ( stripslashes( learn_press_get_request( 'multiple' ) ) ) == 'yes';
 			$text_format = (string) ( stripslashes( learn_press_get_request( 'text_format' ) ) );
+			$exclude     = LP_Request::get( 'exclude' );
 
-			$search = new LP_Modal_Search_Users( compact( 'term', 'type', 'context', 'context_id', 'paged', 'multiple', 'text_format' ) );
+			$search = new LP_Modal_Search_Users( compact( 'term', 'type', 'context', 'context_id', 'paged', 'multiple', 'text_format', 'exclude' ) );
 
 			learn_press_send_json( array(
 				'html'  => $search->get_html_items(),
@@ -1451,73 +1443,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		public static function _modal_search_items_not_found( $message, $type ) {
-			switch ( $type ) {
-				case 'lp_lesson':
-					$message = __( 'There are no available lessons for this course, please use ', 'learnpress' );
-					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_lesson' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
-					break;
-				case 'lp_quiz':
-					$message = __( 'There are no available quizzes for this course, please use ', 'learnpress' );
-					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_quiz' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
-					break;
-				case 'lp_question':
-					$message = __( 'There are no available questions for this quiz, please use ', 'learnpress' );
-					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_question' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
-					break;
-			}
-
-			return $message;
-		}
-
-		/**
-		 * Filter to exclude the items has already added to it's parent.
-		 * Each item only use one time
-		 *
-		 * @param        $exclude
-		 * @param        $type
-		 * @param string $context
-		 * @param null   $context_id
-		 *
-		 * @return array
-		 */
-		public static function _modal_search_items_exclude( $exclude, $type, $context = '', $context_id = null ) {
-			global $wpdb;
-			$used_items = array();
-			switch ( $type ) {
-				case 'lp_lesson':
-				case 'lp_quiz':
-					$query      = $wpdb->prepare( "
-						SELECT item_id
-						FROM {$wpdb->prefix}learnpress_section_items si
-						INNER JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id
-						INNER JOIN {$wpdb->posts} p ON p.ID = s.section_course_id
-						WHERE %d
-						AND p.post_type = %s
-					", 1, LP_COURSE_CPT );
-					$used_items = $wpdb->get_col( $query );
-					break;
-				case 'lp_question':
-					$query      = $wpdb->prepare( "
-						SELECT question_id
-						FROM {$wpdb->prefix}learnpress_quiz_questions AS qq
-						INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
-						WHERE %d
-						AND q.post_type = %s
-					", 1, LP_QUIZ_CPT );
-					$used_items = $wpdb->get_col( $query );
-					break;
-
-			}
-			if ( $used_items && $exclude ) {
-				$exclude = array_merge( $exclude, $used_items );
-			} else if ( $used_items ) {
-				$exclude = $used_items;
-			}
-
-			return array_unique( $exclude );
-		}
-
 		public static function add_item_to_section() {
 			global $wpdb;
 			$section = learn_press_get_request( 'section' );
@@ -1532,7 +1457,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 			}
 		}
-
 
 		public static function remove_quiz_question() {
 			global $wpdb;
@@ -1883,7 +1807,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$page_id = wp_insert_post( $args );
 
 				if ( $page_id ) {
-					$response['page'] = get_page( $page_id );
+					$response['page'] = get_post( $page_id );
 					$html             = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
@@ -2213,7 +2137,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function duplicate_course() {
 
-		    $curd = new LP_Course_CURD();
+			$curd = new LP_Course_CURD();
 
 			if ( empty( $_POST['course_id'] ) || empty( $_POST['_nonce'] ) || ! wp_verify_nonce( $_POST['_nonce'], 'lp-duplicate-course' ) ) {
 				return;
@@ -2222,11 +2146,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$course_id = absint( $_POST['course_id'] );
 			$force     = ! empty( $_POST['content'] ) && $_POST['content'] ? true : false;
 
-			$results       = array(
+			$results = array(
 				'redirect' => admin_url( 'edit.php?post_type=' . LP_COURSE_CPT )
 			);
 
-			$new_course_id = $curd->duplicate($course_id);
+			$new_course_id = $curd->duplicate( $course_id );
 
 			if ( is_wp_error( $new_course_id ) ) {
 				LP_Admin_Notice::add_redirect( $new_course_id->get_error_message(), 'error' );
