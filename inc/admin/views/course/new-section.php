@@ -13,7 +13,7 @@
         <form @submit.prevent="">
             <div class="section-head">
                 <span class="creatable"></span>
-                <input v-model="title" type="text" title="title" class="title-input"
+                <input v-model="section_title" type="text" title="title" class="title-input"
                        placeholder="<?php esc_attr_e( 'Create a new section', 'learnpress' ); ?>"
                        @keyup.enter.prevent="newSection">
             </div>

@@ -128,13 +128,15 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 },
                 // add new question
                 addItem: function (type) {
-                    // create draft quiz if auto draft
-                    this.draftQuiz();
+                    if (this.new_question.title) {
+                        // create draft quiz if auto draft
+                        this.draftQuiz();
 
-                    // new question
-                    this.new_question.type = type;
-                    $store.dispatch('lqs/newQuestion', this.new_question);
-                    this.new_question.title = '';
+                        // new question
+                        this.new_question.type = type;
+                        $store.dispatch('lqs/newQuestion', this.new_question);
+                        this.new_question.title = '';
+                    }
                 },
                 // open modal
                 openModal: function () {

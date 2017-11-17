@@ -286,8 +286,6 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                     var result = response.body;
 
                     if (result.success) {
-                        // update check course status auto draft
-                        context.commit('UPDATE_COURSE_STATUS', false);
                         // update course section
                         context.commit('ADD_NEW_SECTION', result.data);
                     }
