@@ -350,8 +350,11 @@ class LP_Order {
 		learn_press_add_order_item_meta( $item_id, '_quantity', $item['quantity'] );
 		learn_press_add_order_item_meta( $item_id, '_subtotal', $item['subtotal'] );
 		learn_press_add_order_item_meta( $item_id, '_total', $item['total'] );
-		learn_press_add_order_item_meta( $item_id, '_data', $item['data'] );
-
+		$item_data = '';
+		if( isset( $item['data'] ) && $item['data'] ) {
+			$item_data = $item['data'];
+		}
+		learn_press_add_order_item_meta( $item_id, '_data', $item_data );
 		return $item_id;
 	}
 
