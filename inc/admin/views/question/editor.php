@@ -106,7 +106,7 @@ learn_press_admin_view( 'question/answer' );
                     this.draftQuestion();
                     // update title
                     $store.dispatch('updateAnswerTitle', answer);
-                }
+                },
                 // change correct answer
                 changeCorrect: function (correct) {
                     this.draftQuestion();
@@ -117,7 +117,7 @@ learn_press_admin_view( 'question/answer' );
                 deleteAnswer: function (answer) {
                     this.draftQuestion();
                     $store.dispatch('deleteAnswer', answer);
-                }
+                },
                 // new answer option
                 newAnswer: function () {
                     this.draftQuestion();
