@@ -1556,19 +1556,18 @@ abstract class LP_Abstract_Course {
 	 * @return mixed|null|void
 	 */
 	public function get_user_expired_time( $user_id = 0, $args = array() ) {
-
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
 		}
 		$duration    = $this->get_duration();
 		$user        = learn_press_get_user( $user_id );
 		$course_info = $user->get_course_info( $this->id );
-		$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : intval( strtotime( $course_info['start'] ) ) + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+// 		$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : intval( strtotime( $course_info['start'] ) ) + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+		$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : intval( strtotime( $course_info['start'] ) );
 		if ( $duration == 0 ) {
 			$duration = DAY_IN_SECONDS * 365 * 100;
 		}
 		$expired = $start_time + $duration;
-
 		return apply_filters( 'learn_press_user_course_expired_time', $expired, $user_id, $this->id );
 	}
 
