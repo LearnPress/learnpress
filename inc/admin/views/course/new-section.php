@@ -22,25 +22,38 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
 
         Vue.component('lp-new-section', {
             template: '#tmpl-lp-new-section',
             data: function () {
                 return {
-                    title: ''
+                    section_title: ''
                 };
             },
             methods: {
-                newSection: function () {
-                    if (this.title) {
-                        $store.dispatch('ss/newSection', this.title);
+                // draft new course
+                draftCourse: function () {
+                    if ($store.getters['autoDraft']) {
+                        $store.dispatch('draftCourse', {
+                            title: $('input[name=post_title]').val(),
+                            content: $('textarea[name=content]').val()
+                        });
                     }
+                },
+                newSection: function () {
+                    // prevent create no title section
+                    if (this.section_title) {
+                        // create draft course if auto draft
+                        this.draftCourse();
 
-                    this.title = '';
+                        // new section
+                        $store.dispatch('ss/newSection', this.section_title);
+                        this.section_title = '';
+                    }
                 }
             }
         });
 
-    })(Vue, LP_Curriculum_Store);
+    })(Vue, LP_Curriculum_Store, jQuery);
 </script>

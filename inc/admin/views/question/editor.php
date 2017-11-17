@@ -29,7 +29,9 @@ learn_press_admin_view( 'question/answer' );
                 <draggable :list="answers" :element="'tbody'" @end="sort">
                     <lp-question-answer v-for="(answer, index) in answers" :key="index" :index="index" :type="type"
                                         :radio="radio" :number="number" :answer="answer"
-                                        @changeCorrect="changeCorrect"></lp-question-answer>
+                                        @changeType="changeType" @updateTitle="updateTitle"
+                                        @changeCorrect="changeCorrect"
+                                        @deleteAnswer="deleteAnswer"></lp-question-answer>
                 </draggable>
             </table>
             <p class="add-answer" v-if="addable">
@@ -42,7 +44,7 @@ learn_press_admin_view( 'question/answer' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
 
         Vue.component('lp-question-editor', {
             template: '#tmpl-lp-question-editor',
@@ -73,23 +75,53 @@ learn_press_admin_view( 'question/answer' );
                 }
             },
             methods: {
+                // draft new question
+                draftQuestion: function () {
+                    if ($store.getters['autoDraft']) {
+                        $store.dispatch('draftQuestion', {
+                            title: $('input[name=post_title]').val(),
+                            content: $('textarea[name=content]').val()
+                        });
+                    }
+                },
+                changeType: function (type) {
+                    // create draft quiz if auto draft
+                    this.draftQuestion();
+
+                    $store.dispatch('changeQuestionType', type);
+                },
                 // sort answer options
                 sort: function () {
-                    var order = [];
+                    this.draftQuestion();
 
+                    // sort answer
+                    var order = [];
                     this.answers.forEach(function (answer) {
                         order.push(parseInt(answer.question_answer_id));
                     });
-
-
                     $store.dispatch('updateAnswersOrder', order);
                 },
+                // change answer title
+                updateTitle: function (answer) {
+                    this.draftQuestion();
+                    // update title
+                    $store.dispatch('updateAnswerTitle', answer);
+                }
                 // change correct answer
                 changeCorrect: function (correct) {
+                    this.draftQuestion();
+                    // update correct
                     $store.dispatch('updateCorrectAnswer', correct);
                 },
+                // delete answer
+                deleteAnswer: function (answer) {
+                    this.draftQuestion();
+                    $store.dispatch('deleteAnswer', answer);
+                }
                 // new answer option
                 newAnswer: function () {
+                    this.draftQuestion();
+                    // new answer
                     if (this.status === 'successful') {
                         $store.dispatch('newAnswer');
                     }
@@ -98,5 +130,5 @@ learn_press_admin_view( 'question/answer' );
 
         })
 
-    })(Vue, LP_Question_Store);
+    })(Vue, LP_Question_Store, jQuery);
 </script>

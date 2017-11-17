@@ -80,11 +80,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', array(
 				'root'          => array(
-					'quiz_id' => $quiz->get_id(),
-					'ajax'    => admin_url( '' ),
-					'action'  => 'admin_quiz_editor',
-					'nonce'   => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
-					'types'   => LP_Question_Factory::get_types()
+					'quiz_id'    => $post->ID,
+					'auto_draft' => get_post_status( $post->ID ) == 'auto-draft',
+					'ajax'       => admin_url( '' ),
+					'action'     => 'admin_quiz_editor',
+					'nonce'      => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
+					'types'      => LP_Question_Factory::get_types()
 				),
 				'chooseItems'   => array(
 					'open'       => false,
@@ -106,8 +107,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 		/**
 		 * Delete all questions assign to quiz.
-         *
-         * @since 3.0.0
+		 *
+		 * @since 3.0.0
 		 *
 		 * @param $post_id
 		 */

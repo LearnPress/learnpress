@@ -70,7 +70,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function register_taxonomy() {
 
-			$settings      = LP()->settings;
+			$settings = LP()->settings;
 
 			$category_base = $settings->get( 'course_category_base' );
 			register_taxonomy( 'course_category', array( LP_COURSE_CPT ),
@@ -148,10 +148,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$hidden_sections = get_post_meta( $post->ID, '_admin_hidden_sections', true );
 			wp_localize_script( 'learn-press-admin-course-editor', 'lq_course_editor', array(
 				'root'        => array(
-					'course_id' => $course->get_id(),
-					'ajax'      => admin_url( '' ),
-					'action'    => 'update_curriculum',
-					'nonce'     => wp_create_nonce( 'learnpress_update_curriculum' ),
+					'course_id'     => $post->ID,
+					'auto_draft'    => get_post_status( $post->ID ) == 'auto-draft',
+					'ajax'          => admin_url( '' ),
+					'action'        => 'update_curriculum',
+					'nonce'         => wp_create_nonce( 'learnpress_update_curriculum' ),
 				),
 				'chooseItems' => array(
 					'types'      => learn_press_course_get_support_item_types(),

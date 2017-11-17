@@ -84,6 +84,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor', array(
 				'root' => array(
 					'id'            => $post->ID,
+					'auto_draft'    => get_post_status( $post->ID ) == 'auto-draft',
 					'open'          => false,
 					'title'         => get_the_title( $post->ID ),
 					'type'          => array(
@@ -94,8 +95,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'ajax'          => admin_url( '' ),
 					'action'        => 'admin_question_editor',
 					'nonce'         => wp_create_nonce( 'learnpress_admin_question_editor' ),
-					'questionTypes' => LP_Question_Factory::get_types(),
-					'pageNow'       => $pagenow
+					'questionTypes' => LP_Question_Factory::get_types()
 				)
 			) );
 

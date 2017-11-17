@@ -162,6 +162,10 @@ learn_press_admin_view( 'quiz/pagination' );
                 },
                 show: function () {
                     return $store.getters['cqi/isOpen'];
+                },
+                // check new quiz
+                new_quiz: function () {
+                    return $store.getters['autoDraft'];
                 }
             },
             methods: {
@@ -175,7 +179,8 @@ learn_press_admin_view( 'quiz/pagination' );
                 // add items to quiz
                 checkout: function () {
                     this.adding = true;
-                    $store.dispatch('cqi/addQuestionsToQuiz');
+
+                    this.$emit('addItems', this.page);
                 },
 
                 changePage: function (page) {

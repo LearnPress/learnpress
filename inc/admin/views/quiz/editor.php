@@ -36,12 +36,12 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                     <div class="table-row">
                         <div class="add-new-question">
                             <div class="title">
-                                <input type="text" v-model="newQuestion.title">
+                                <input type="text" v-model="new_question.title">
                             </div>
                             <div class="add-new">
                                 <button type="button" class="button" :disabled="!addableNew"
-                                        @click.prevent="addItem(newQuestion.type)"
-                                        @keyup.enter.prevent="addItem(newQuestion.type)">
+                                        @click.prevent="addItem(new_question.type)"
+                                        @keyup.enter.prevent="addItem(new_question.type)">
 									<?php esc_html_e( 'Add as New', 'learnpress' ); ?>
                                 </button>
                                 <ul class="question-types">
@@ -60,7 +60,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 </div>
             </div>
 
-            <lp-quiz-choose-items></lp-quiz-choose-items>
+            <lp-quiz-choose-items @addItems="addItems"></lp-quiz-choose-items>
         </div>
 
         <div class="notify-reload">
@@ -76,7 +76,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
             template: '#tmpl-lp-quiz-editor',
             data: function () {
                 return {
-                    newQuestion: {
+                    new_question: {
                         'title': '',
                         'type': 'true_or_false'
                     }
@@ -105,7 +105,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 },
                 // addable new
                 addableNew: function () {
-                    return !!this.newQuestion.title;
+                    return !!this.new_question.title;
                 },
                 // all question types
                 questionTypes: function () {
@@ -117,15 +117,36 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 toggle: function () {
                     $store.dispatch('lqs/toggleAll');
                 },
+                // draft new quiz
+                draftQuiz: function () {
+                    if ($store.getters['autoDraft']) {
+                        $store.dispatch('draftQuiz', {
+                            title: $('input[name=post_title]').val(),
+                            content: $('textarea[name=content]').val()
+                        });
+                    }
+                },
                 // add new question
                 addItem: function (type) {
-                    this.newQuestion.type = type;
-                    $store.dispatch('lqs/newQuestion', this.newQuestion);
-                    this.newQuestion.title = '';
+                    // create draft quiz if auto draft
+                    this.draftQuiz();
+
+                    // new question
+                    this.new_question.type = type;
+                    $store.dispatch('lqs/newQuestion', this.new_question);
+                    this.new_question.title = '';
                 },
                 // open modal
                 openModal: function () {
                     $store.dispatch('cqi/open', parseInt(this.quizId));
+                },
+                // add choose items in modal to quiz
+                addItems: function (type) {
+                    // create draft quiz if auto draft
+                    this.draftQuiz();
+
+                    // add items
+                    $store.dispatch('cqi/addQuestionsToQuiz');
                 }
             }
         })

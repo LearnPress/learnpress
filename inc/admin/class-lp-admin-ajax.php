@@ -152,9 +152,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				wp_send_json_error();
 			}
 
-            // course curd
+			// course curd
 			$course_curd = new LP_Course_CURD();
-            // section curd
+			// section curd
 			$section_curd = new LP_Section_CURD( $course_id );
 
 			$result = $args['type'];
@@ -164,6 +164,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				case 'heartbeat':
 
 					$result = true;
+					break;
+
+				case 'draft-course':
+
+					$new_course = ! empty( $args['course'] ) ? $args['course'] : false;
+					$new_course = json_decode( wp_unslash( $new_course ), true );
+
+					if ( ! $new_course ) {
+						break;
+					}
+
+					$title   = $new_course['title'] ? $new_course['title'] : __( 'New Course', 'learnpress' );
+					$content = $new_course['content'] ? $new_course['content'] : '';
+
+					wp_update_post( array(
+						'ID'           => $course_id,
+						'post_title'   => $title,
+						'post_content' => $content,
+						'post_status'  => 'draft'
+					) );
+
 					break;
 
 				case 'hidden-sections':
@@ -251,7 +272,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
-				case 'update-section-item':
+				case
+				'update-section-item':
 
 					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
@@ -276,7 +298,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// remove item from course
-                    $course_curd->remove_item($item_id);
+					$course_curd->remove_item( $item_id );
 
 					break;
 
@@ -496,6 +518,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			switch ( $args['type'] ) {
 
+				case 'draft-question':
+
+					$new_question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$new_question = json_decode( wp_unslash( $new_question ), true );
+
+					if ( ! $new_question ) {
+						break;
+					}
+
+					$title   = $new_question['title'] ? $new_question['title'] : __( 'New Question', 'learnpress' );
+					$content = $new_question['content'] ? $new_question['content'] : '';
+
+					wp_update_post( array(
+						'ID'           => $question_id,
+						'post_title'   => $title,
+						'post_content' => $content,
+						'post_status'  => 'draft'
+					) );
+
+					break;
+
 				case 'change-question-type':
 
 					$type = ! empty( $args['question_type'] ) ? $args['question_type'] : false;
@@ -623,6 +666,28 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$result = true;
 					break;
 
+				case 'draft-quiz':
+
+					$new_quiz = ! empty( $args['quiz'] ) ? $args['quiz'] : false;
+					$new_quiz = json_decode( wp_unslash( $new_quiz ), true );
+
+					if ( ! $new_quiz ) {
+						break;
+					}
+
+					$title   = $new_quiz['title'] ? $new_quiz['title'] : __( 'New Quiz', 'learnpress' );
+					$content = $new_quiz['content'] ? $new_quiz['content'] : '';
+
+					wp_update_post( array(
+						'ID'           => $quiz_id,
+						'post_title'   => $title,
+						'post_content' => $content,
+						'post_status'  => 'draft'
+					) );
+
+					break;
+
+
 				case 'hidden-questions':
 
 					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
@@ -633,6 +698,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'new-question':
 
+					// new question
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
@@ -642,6 +708,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$user_id = learn_press_get_current_user_id();
 
+					// create new question
 					$new_question = LP_Question_Factory::add_question(
 						array(
 							'type'  => $question['type'],
@@ -931,14 +998,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'add-questions-to-quiz':
 
-					$result = array();
-
+					// added questions
 					$questions = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$questions = json_decode( wp_unslash( $questions ), true );
 
 					if ( ! $questions ) {
 						break;
 					}
+
+					$result = array();
 
 					if ( $questions ) {
 						foreach ( $questions as $key => $question ) {

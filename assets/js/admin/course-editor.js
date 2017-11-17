@@ -277,6 +277,7 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
 
         newSection: function (context, name) {
+
             Vue.http.LPRequest({
                 type: 'new-section',
                 section_name: name
@@ -285,6 +286,9 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                     var result = response.body;
 
                     if (result.success) {
+                        // update check course status auto draft
+                        context.commit('UPDATE_COURSE_STATUS', false);
+                        // update course section
                         context.commit('ADD_NEW_SECTION', result.data);
                     }
                 },
@@ -588,6 +592,9 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         id: function (state) {
             return state.course_id;
         },
+        autoDraft: function (state) {
+            return state.auto_draft;
+        },
         status: function (state) {
             return state.status || 'error';
         },
@@ -603,16 +610,24 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     };
 
     var mutations = {
+
         'UPDATE_HEART_BEAT': function (state, status) {
             state.heartbeat = !!status;
+        },
+
+        'UPDATE_AUTO_DRAFT_STATUS': function (state, status) {
+            // check auto draft status
+            state.auto_draft = status;
         },
 
         'UPDATE_STATUS': function (state, status) {
             state.status = status;
         },
+
         'INCREASE_NUMBER_REQUEST': function (state) {
             state.countCurrentRequest++;
         },
+
         'DECREASE_NUMBER_REQUEST': function (state) {
             state.countCurrentRequest--;
         }
@@ -631,6 +646,26 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                     context.commit('UPDATE_HEART_BEAT', false);
                 }
             );
+        },
+
+        draftCourse: function (context, payload) {
+            var auto_draft = context.getters['autoDraft'];
+
+            if (auto_draft) {
+                Vue.http.LPRequest({
+                    type: 'draft-course',
+                    course: JSON.stringify(payload)
+                }).then(function(response) {
+                        var result = response.body;
+
+                        if (!result.success) {
+                            return;
+                        }
+
+                        context.commit('UPDATE_AUTO_DRAFT_STATUS', false);
+                    }
+                )
+            }
         },
 
         newRequest: function (context) {
