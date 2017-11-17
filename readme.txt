@@ -3,8 +3,8 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
-Tested up to: 4.8.3
-Stable tag: 2.1.9.3
+Tested up to: 4.9
+Stable tag: 2.1.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -196,6 +196,13 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 2.1.9.4 =
++ Compatible with WordPress 4.9
++ Fixed buy this course button in single course
++ Fixed lost course content when update page
++ Fixed enrolled course email
++ Fixed course auto finish before expired
 
 = 2.1.9.3 =
 + Compatible with WordPress 4.8.3
