@@ -39,16 +39,59 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
-			// hide View Quiz link on Quiz table action
-			add_filter( 'page_row_actions', array( $this, 'remove_view_link' ), 10, 2 );
-
 			// hide View Quiz link if not assigned to Course
-			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link_if_not_assigned' ) );
+			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link' ) );
 
 			add_action( 'edit_form_after_editor', array( $this, 'template_quiz_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
 
 			parent::__construct( $post_type, $args );
+		}
+
+		/**
+		 * Register quiz post type.
+		 */
+		public function register() {
+			register_post_type( LP_QUIZ_CPT,
+				apply_filters( 'lp_quiz_post_type_args',
+					array(
+						'labels'             => array(
+							'name'               => __( 'Quizzes', 'learnpress' ),
+							'menu_name'          => __( 'Quizzes', 'learnpress' ),
+							'singular_name'      => __( 'Quiz', 'learnpress' ),
+							'add_new_item'       => __( 'Add New Quiz', 'learnpress' ),
+							'edit_item'          => __( 'Edit Quiz', 'learnpress' ),
+							'all_items'          => __( 'Quizzes', 'learnpress' ),
+							'view_item'          => __( 'View Quiz', 'learnpress' ),
+							'add_new'            => __( 'New Quiz', 'learnpress' ),
+							'update_item'        => __( 'Update Quiz', 'learnpress' ),
+							'search_items'       => __( 'Search Quizzes', 'learnpress' ),
+							'not_found'          => sprintf( __( 'You have not got any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
+							'not_found_in_trash' => __( 'No quiz found in Trash', 'learnpress' )
+						),
+						'public'             => true,
+						'publicly_queryable' => true,
+						'show_ui'            => true,
+						'has_archive'        => false,
+						'capability_type'    => LP_LESSON_CPT,
+						'map_meta_cap'       => true,
+						'show_in_menu'       => 'learn_press',
+						'show_in_admin_bar'  => true,
+						'show_in_nav_menus'  => true,
+						'supports'           => array(
+							'title',
+							'editor',
+							'revisions',
+						),
+						'hierarchical'       => true,
+						'rewrite'            => array(
+							'slug'         => 'quizzes',
+							'hierarchical' => true,
+							'with_front'   => false
+						)
+					)
+				)
+			);
 		}
 
 		/**
@@ -117,52 +160,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			$curd = new LP_Quiz_CURD();
 			// remove question from course items
 			$curd->delete( $question_id );
-		}
-
-		/**
-		 * Register quiz post type
-		 */
-		public function register() {
-			register_post_type( LP_QUIZ_CPT,
-				apply_filters( 'lp_quiz_post_type_args',
-					array(
-						'labels'             => array(
-							'name'               => __( 'Quizzes', 'learnpress' ),
-							'menu_name'          => __( 'Quizzes', 'learnpress' ),
-							'singular_name'      => __( 'Quiz', 'learnpress' ),
-							'add_new_item'       => __( 'Add New Quiz', 'learnpress' ),
-							'edit_item'          => __( 'Edit Quiz', 'learnpress' ),
-							'all_items'          => __( 'Quizzes', 'learnpress' ),
-							'view_item'          => __( 'View Quiz', 'learnpress' ),
-							'add_new'            => __( 'New Quiz', 'learnpress' ),
-							'update_item'        => __( 'Update Quiz', 'learnpress' ),
-							'search_items'       => __( 'Search Quizzes', 'learnpress' ),
-							'not_found'          => sprintf( __( 'You have not got any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
-							'not_found_in_trash' => __( 'No quiz found in Trash', 'learnpress' )
-						),
-						'public'             => true,
-						'publicly_queryable' => true,
-						'show_ui'            => true,
-						'has_archive'        => false,
-						'capability_type'    => LP_LESSON_CPT,
-						'map_meta_cap'       => true,
-						'show_in_menu'       => 'learn_press',
-						'show_in_admin_bar'  => true,
-						'show_in_nav_menus'  => true,
-						'supports'           => array(
-							'title',
-							'editor',
-							'revisions',
-						),
-						'hierarchical'       => true,
-						'rewrite'            => array(
-							'slug'         => 'quizzes',
-							'hierarchical' => true,
-							'with_front'   => false
-						)
-					)
-				)
-			);
 		}
 
 		/**
@@ -300,7 +297,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			return apply_filters( 'learn_press_quiz_general_meta_box', $meta_box );
 		}
-
 
 		/**
 		 * Add columns to admin manage quiz page
@@ -529,25 +525,9 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
-		 * Remove View Quiz link on dashboard Quiz list
-		 *
-		 * @param array $actions
-		 *
-		 * @return array $actions
+		 * Hide View Quiz link if not assigned to Course.
 		 */
-		public function remove_view_link( $actions, $post ) {
-			$post_id = $post->ID;
-			if ( $post->post_type === LP_QUIZ_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
-				unset( $actions['view'] );
-			}
-
-			return $actions;
-		}
-
-		/**
-		 * Hide view Quiz link
-		 */
-		public function hide_view_quiz_link_if_not_assigned() {
+		public function hide_view_quiz_link() {
 			$current_screen = get_current_screen();
 			global $post;
 			if ( ! $post ) {
@@ -573,19 +553,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
                 </style>
 				<?php
 			}
-		}
-
-		/**
-		 * @param $return
-		 * @param $post_id
-		 * @param $new_title
-		 * @param $new_slug
-		 * @param $post
-		 *
-		 * @return mixed
-		 */
-		public function get_sample_permalink_html( $return, $post_id, $new_title, $new_slug, $post ) {
-			return $return;
 		}
 
 		/**

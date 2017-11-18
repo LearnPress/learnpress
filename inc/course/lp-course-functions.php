@@ -7,9 +7,10 @@
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 /**
  * @param $the_course
@@ -865,7 +866,7 @@ if ( ! function_exists( 'learn_press_item_sample_permalink' ) ) {
 		if ( $post->post_type !== LP_QUIZ_CPT && $post->post_type !== LP_LESSON_CPT ) {
 			return $permalink;
 		}
-//	    $permalink  = str_replace( $post->post_name, '%pagename%' , $permalink );
+
 		$permalink[0] = str_replace( $post->post_name, '%pagename%', $permalink[0] );
 		if ( ! preg_match( '~^https?://~', $permalink[0] ) ) {
 			add_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10, 5 );

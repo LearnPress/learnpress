@@ -101,36 +101,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 		}
 
-
 		/**
-		 * Remove question from quiz items.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param $question_id
-		 */
-		public function before_delete_question( $question_id ) {
-			// question curd
-			$curd = new LP_Question_CURD();
-			// remove question from course items
-			$curd->delete( $question_id );
-		}
-
-		/**
-		 * Init question.
-		 *
-		 * @since 3.0.0
-		 */
-		public function init() {
-			global $pagenow, $post_type;
-			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
-			if ( ! is_array( $hidden ) && empty( $hidden ) ) {
-				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
-			}
-		}
-
-		/**
-		 * Register question post type
+		 * Register question post type.
 		 */
 		public function register() {
 			register_taxonomy( 'question_tag', array( LP_QUESTION_CPT ),
@@ -184,6 +156,32 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				'hierarchical'       => true,
 				'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
 			);
+		}
+
+		/**
+		 * Init question.
+		 *
+		 * @since 3.0.0
+		 */
+		public function init() {
+			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
+			if ( ! is_array( $hidden ) && empty( $hidden ) ) {
+				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
+			}
+		}
+
+		/**
+		 * Remove question from quiz items.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 */
+		public function before_delete_question( $question_id ) {
+			// question curd
+			$curd = new LP_Question_CURD();
+			// remove question from course items
+			$curd->delete( $question_id );
 		}
 
 		/**

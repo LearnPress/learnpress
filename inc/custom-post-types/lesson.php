@@ -1,10 +1,22 @@
 <?php
+/**
+ * Class LP_Lesson_Post_Type
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 3.0.0
+ */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
 if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
-	// class LP_Lesson_Post_Type
+
+	/**
+	 * Class LP_Lesson_Post_Type
+	 */
 	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type {
 		/**
 		 * @var null
@@ -20,74 +32,14 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 			$this->add_map_method( 'before_delete', 'before_delete_lesson' );
 
-			/**
-			 * Hide View Quiz link if not assigned to Course
-			 */
-			add_action( 'admin_footer', array( $this, 'hide_view_lesson_link_if_not_assigned' ) );
+			// hide View Lesson link if not assigned to course
+			add_action( 'admin_footer', array( $this, 'hide_view_lesson_link' ) );
 
 			parent::__construct( $post_type );
 		}
 
-		public function hide_view_lesson_link_if_not_assigned() {
-			$current_screen = get_current_screen();
-			global $post;
-			if ( ! $post ) {
-				return;
-			}
-			if ( $current_screen->id === LP_LESSON_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
-				?>
-                <style type="text/css">
-                    #wp-admin-bar-view {
-                        display: none;
-                    }
-
-                    #sample-permalink a {
-                        pointer-events: none;
-                        cursor: default;
-                        text-decoration: none;
-                        color: #666;
-                    }
-
-                    #preview-action {
-                        display: none;
-                    }
-                </style>
-				<?php
-			}
-		}
-
 		/**
-         * Remove lesson form course items.
-         *
-         * @since 3.0.0
-         *
-		 * @param $post_id
-		 */
-		public function before_delete_lesson( $post_id ) {
-            // lesson curd
-			$curd = new LP_Lesson_CURD();
-			// remove lesson from course items
-			$curd->delete( $post_id );
-		}
-
-		public function admin_scripts() {
-			if ( in_array( get_post_type(), array( LP_LESSON_CPT ) ) ) {
-				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/vendor/jquery.caret.js', 'jquery' ) );
-			}
-		}
-
-		public function admin_styles() {
-
-		}
-
-		public function admin_params() {
-			return array(
-				'notice_empty_lesson' => ''
-			);
-		}
-
-		/**
-		 * Register lesson post type
+		 * Register lesson post type.
 		 */
 		public function register() {
 			return
@@ -137,7 +89,9 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * Meta boxes
 		 */
 		public function add_meta_boxes() {
-			$prefix     = '_lp_';
+
+			$prefix = '_lp_';
+
 			$meta_boxes = apply_filters( 'learn_press_lesson_meta_box_args',
 				array(
 					'id'     => 'lesson_settings',
@@ -167,36 +121,50 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			parent::add_meta_boxes();
 		}
 
-		public function enqueue_script() {
-			if ( LP_LESSON_CPT != get_post_type() ) {
-				return;
-			}
-			LP_Assets::enqueue_script( 'select2', LP_PLUGIN_URL . '/lib/meta-box/js/select2/select2.min.js' );
-			LP_Assets::enqueue_style( 'select2', LP_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
-			ob_start();
-			?>
-            <script>
-                var form = $('#post');
-                form.submit(function (evt) {
-                    var $title = $('#title'),
-                        is_error = false;
-                    if (0 == $title.val().length) {
-                        alert('<?php _e( 'Please enter the title of the lesson', 'learnpress' );?>');
-                        $title.focus();
-                        is_error = true;
-                    }
-                    if (is_error) {
-                        evt.preventDefault();
-                        return false;
-                    }
-                });
-            </script>
-			<?php
-			$script = ob_get_clean();
-			$script = preg_replace( '!</?script>!', '', $script );
-			learn_press_enqueue_script( $script );
+		/**
+		 * Remove lesson form course items.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $post_id
+		 */
+		public function before_delete_lesson( $post_id ) {
+			// lesson curd
+			$curd = new LP_Lesson_CURD();
+			// remove lesson from course items
+			$curd->delete( $post_id );
 		}
 
+		/**
+		 * hide View Lesson link if not assigned to course
+		 */
+		public function hide_view_lesson_link() {
+			$current_screen = get_current_screen();
+			global $post;
+			if ( ! $post ) {
+				return;
+			}
+			if ( $current_screen->id === LP_LESSON_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
+				?>
+                <style type="text/css">
+                    #wp-admin-bar-view {
+                        display: none;
+                    }
+
+                    #sample-permalink a {
+                        pointer-events: none;
+                        cursor: default;
+                        text-decoration: none;
+                        color: #666;
+                    }
+
+                    #preview-action {
+                        display: none;
+                    }
+                </style>
+				<?php
+			}
+		}
 
 		/**
 		 * Add columns to admin manage lesson page
@@ -290,77 +258,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			}
 		}
 
-		function posts_fields( $fields ) {
-			if ( ! $this->_is_archive() ) {
-				return $fields;
-			}
-
-			$fields = " DISTINCT " . $fields;
-
-			return $fields;
-		}
-
-		/**
-		 * @param $join
-		 *
-		 * @return string
-		 */
-		public function posts_join_paged( $join ) {
-			if ( ! $this->_is_archive() ) {
-				return $join;
-			}
-			global $wpdb;
-			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || ( $this->_get_search() ) ) {
-				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = {$wpdb->posts}.ID";
-				$join .= " LEfT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
-				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
-			}
-
-			return $join;
-		}
-
-		/**
-		 * @param $where
-		 *
-		 * @return mixed|string
-		 */
-		public function posts_where_paged( $where ) {
-
-			if ( ! $this->_is_archive() ) {
-				return $where;
-			}
-			global $wpdb;
-			if ( $course_id = $this->_filter_course() ) {
-				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
-			}
-			if ( isset( $_GET['s'] ) ) {
-				$s     = $_GET['s'];
-				$where = preg_replace(
-					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
-					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
-				);
-			}
-
-			return $where;
-		}
-
-		/**
-		 * @param $order_by_statement
-		 *
-		 * @return string
-		 */
-		public function posts_orderby( $order_by_statement ) {
-			global $wpdb;
-			if ( ! $this->_is_archive() ) {
-				return $order_by_statement;
-			}
-			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
-				$order_by_statement = "{$wpdb->posts}.post_title {$_GET['order']}";
-			}
-
-			return $order_by_statement;
-		}
-
 		/**
 		 * @param $columns
 		 *
@@ -395,9 +292,60 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		/**
-		 * Lesson assigned view.
+		 * Admin scripts.
+		 */
+		public function admin_scripts() {
+			if ( in_array( get_post_type(), array( LP_LESSON_CPT ) ) ) {
+				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/vendor/jquery.caret.js' ) );
+			}
+		}
+
+		/**
+         * Add admin params.
          *
-         * @since 3.0.0
+		 * @return array
+		 */
+		public function admin_params() {
+			return array( 'notice_empty_lesson' => '' );
+		}
+
+		/**
+		 * Enqueue script.
+		 */
+		public function enqueue_script() {
+			if ( LP_LESSON_CPT != get_post_type() ) {
+				return;
+			}
+			LP_Assets::enqueue_script( 'select2', LP_PLUGIN_URL . '/lib/meta-box/js/select2/select2.min.js' );
+			LP_Assets::enqueue_style( 'select2', LP_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
+			ob_start();
+			?>
+            <script>
+                var form = $('#post');
+                form.submit(function (evt) {
+                    var $title = $('#title'),
+                        is_error = false;
+                    if (0 === $title.val().length) {
+                        alert('<?php _e( 'Please enter the title of the lesson', 'learnpress' );?>');
+                        $title.focus();
+                        is_error = true;
+                    }
+                    if (is_error) {
+                        evt.preventDefault();
+                        return false;
+                    }
+                });
+            </script>
+			<?php
+			$script = ob_get_clean();
+			$script = preg_replace( '!</?script>!', '', $script );
+			learn_press_enqueue_script( $script );
+		}
+
+		/**
+		 * Lesson assigned view.
+		 *
+		 * @since 3.0.0
 		 */
 		public static function lesson_assigned() {
 			learn_press_admin_view( 'meta-boxes/course/assigned.php' );
