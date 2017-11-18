@@ -42,7 +42,7 @@
                             multiple: this.multiple ? 'yes': 'no',
                             text_format: this.textFormat,
                             exclude: this.exclude,
-                            'lp-ajax': 'modal-search-users'
+                            'lp-ajax': 'modal_search_users'
                         }, {
                             emulateJSON: true,
                             params: {}

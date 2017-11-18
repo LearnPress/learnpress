@@ -208,6 +208,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			if ( $new_question = LP_Question::get_question( $question_id, array( 'force' => true ) ) ) {
 
+				$user_id                 = get_current_user_id();
+				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_type );
+
 				// except convert from true or false
 				if ( ! ( ( $old_type == 'true_or_false' ) && ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) ) {
 					if ( $new_type == 'true_or_false' ) {

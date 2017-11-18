@@ -109,9 +109,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// Remove section items.
 		$wpdb->delete( $wpdb->learnpress_section_items, array( 'section_id' => $id ) );
+		learn_press_reset_auto_increment( 'learnpress_section_items' );
 
 		// Remove section
 		$result = $wpdb->delete( $wpdb->learnpress_sections, array( 'section_id' => $id ) );
+		learn_press_reset_auto_increment( 'learnpress_sections' );
 
 		return ! ! $result;
 	}

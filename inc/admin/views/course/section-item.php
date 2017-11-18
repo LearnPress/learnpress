@@ -16,7 +16,7 @@
 
         <div class="item-actions">
             <div class="actions">
-                <div class="action edit-item"><a href="" class="lp-btn-icon dashicons dashicons-edit"></a></div>
+                <div class="action edit-item"><a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a></div>
                 <div class="action delete-item">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>

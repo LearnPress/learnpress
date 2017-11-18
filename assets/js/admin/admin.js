@@ -53,7 +53,7 @@
                 $.post({
                     url: window.location.href,
                     data: {
-                        'lp-ajax': 'update-email-status',
+                        'lp-ajax': 'update_email_status',
                         status: $(this).parent().hasClass('enabled') ? 'no' : 'yes',
                         id: $(this).data('id')
                     },
