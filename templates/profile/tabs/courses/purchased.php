@@ -1,21 +1,27 @@
 <?php
 /**
- * User Courses tab
+ * Template for displaying purchased courses in courses tab of user profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/courses/purchased.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 $profile = learn_press_get_profile();
-
 $query = $profile->query_courses( 'purchased', array( 'status' => LP_Request::get_string( 'filter-status' ) ) );
 ?>
+
 <div class="learn-press-subtab-content">
+
     <h3 class="profile-heading"><?php _e( 'Purchased Courses', 'learnpress' ); ?></h3>
 
 	<?php if ( $filters = $profile->get_purchased_courses_filters( LP_Request::get_string( 'filter-status' ) ) ) { ?>

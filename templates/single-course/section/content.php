@@ -1,31 +1,35 @@
 <?php
 /**
- * Display the content of a section including the items.
+ * Template for displaying content and items of section in single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/section/content.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
-if ( ! isset( $section ) ) {
+<?php if ( ! isset( $section ) ) {
 	return;
-}
+} ?>
 
-global $lp_user;
+<?php global $lp_user; ?>
 
-if ( $items = $section->get_items() ) { ?>
+<?php if ( $items = $section->get_items() ) { ?>
 
     <ul class="section-content">
 
 		<?php foreach ( $items as $item ) { ?>
+
             <li class="<?php echo join( ' ', $item->get_class() ); ?>">
 
-				<?php
-				if ( ! $item->is_visible() ) {
+				<?php if ( ! $item->is_visible() ) {
 					continue;
 				}
 
@@ -36,11 +40,8 @@ if ( $items = $section->get_items() ) { ?>
 				?>
 
                 <a href="<?php echo $item->get_permalink(); ?>">
-					<?php
-					$args = array(
-						'item'    => $item,
-						'section' => $section
-					);
+
+					<?php $args = array( 'item' => $item, 'section' => $section );
 
 					/**
 					 * @since 3.0.0
@@ -55,8 +56,8 @@ if ( $items = $section->get_items() ) { ?>
 					 * @see   learn_press_section_item_meta()
 					 */
 					do_action( 'learn-press/after-section-loop-item', $item, $section );
-
 					?>
+
                 </a>
 
 				<?php
@@ -67,8 +68,11 @@ if ( $items = $section->get_items() ) { ?>
 				?>
 
             </li>
+
 		<?php } ?>
+
     </ul>
+
 <?php } else { ?>
 
 	<?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) ); ?>

@@ -1,20 +1,24 @@
 <?php
 /**
- * Output register form.
+ * Template for displaying register form.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/form-register.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 if ( is_user_logged_in() ) {
 	return;
 }
-
 ?>
 
 <form id="learn-press-checkout-register" class="learn-press-form register" method="post" enctype="multipart/form-data">

@@ -1,14 +1,18 @@
 <?php
 /**
+ * Template for displaying order comment.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/order-comment.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="learn-press-checkout-comment">

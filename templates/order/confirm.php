@@ -1,35 +1,39 @@
 <?php
 /**
- * Display confirm message after order is placed.
+ * Template for displaying confirm message after order is placed.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/order/confirm.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
-
-if ( ! isset( $order ) ) {
-	$order = learn_press_get_order();
-}
 ?>
-<?php if ( $order ) : ?>
 
-	<?php if ( $order->has_status( 'failed' ) ) : ?>
+<?php if ( ! isset( $order ) ) {
+	$order = learn_press_get_order();
+} ?>
+
+<?php if ( $order ) { ?>
+
+	<?php if ( $order->has_status( 'failed' ) ) { ?>
 
         <p><?php _e( 'Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction.', 'learnpress' ); ?></p>
 
         <p>
-			<?php
-			if ( is_user_logged_in() ) {
+			<?php if ( is_user_logged_in() ) {
 				_e( 'Please attempt your purchase again or go to your account page.', 'learnpress' );
 			} else {
 				_e( 'Please attempt your purchase again.', 'learnpress' );
-			}
-			?>
+			} ?>
         </p>
 
-	<?php else : ?>
+	<?php } else { ?>
 
 		<?php if ( false !== ( $confirm_text = $order->get_confirm_order_received_text() ) ) { ?>
             <p class="confirm-order-received-text"><?php echo $confirm_text; ?></p>
@@ -39,6 +43,7 @@ if ( ! isset( $order ) ) {
 		// @since 3.0.0
 		do_action( 'learn-press/before-confirm-order-details', $order->get_id() );
 		?>
+
         <ul class="order_details">
             <li class="order">
 				<?php _e( 'Order Number:', 'learnpress' ); ?>
@@ -69,13 +74,13 @@ if ( ! isset( $order ) ) {
 		do_action( 'learn-press/after-confirm-order-details', $order->get_id() );
 		?>
 
-	<?php endif; ?>
+	<?php } ?>
 
 	<?php do_action( 'learn_press_confirm_order' . $order->transaction_method, $order->get_id() ); ?>
 	<?php do_action( 'learn_press_confirm_order', $order->get_id() ); ?>
 
-<?php else : ?>
+<?php } else { ?>
 
     <p><?php echo $order->get_thankyou_message(); ?></p>
 
-<?php endif; ?>
+<?php } ?>

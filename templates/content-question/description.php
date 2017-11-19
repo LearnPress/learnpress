@@ -2,14 +2,22 @@
 /**
  * Template for displaying description of question.
  *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-question/description.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
-$quiz = LP_Global::course_item_quiz();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php $quiz = LP_Global::course_item_quiz(); ?>
+
+<?php
 if ( ! $question = LP_Global::quiz_question() ) {
 	return;
 }
@@ -18,6 +26,5 @@ if ( ! $content = $question->get_content() ) {
 	return;
 }
 ?>
-<div class="quiz-question-desc">
-	<?php echo $content; ?>
-</div>
+
+<div class="quiz-question-desc"><?php echo $content; ?></div>

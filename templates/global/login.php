@@ -1,7 +1,16 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: tu
- * Date: 7/28/17
- * Time: 11:11 AM
+ * Template for displaying login.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/global/login.php.
+ *
+ * @author  ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>

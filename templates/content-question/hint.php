@@ -1,20 +1,26 @@
 <?php
 /**
- * Template for displaying question's hint
+ * Template for displaying hint of question.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-question/hint.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 if ( ! $hint = $question->get_hint() ) {
 	return;
 }
 ?>
+
 <div class="question-hint-content">
     <strong class="hint-title"><?php esc_html_e( 'Hint:', 'learnpress' ); ?></strong>
 	<?php echo $hint; ?>

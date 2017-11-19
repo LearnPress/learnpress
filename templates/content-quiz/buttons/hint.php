@@ -1,13 +1,21 @@
 <?php
 /**
- * Template for displaying Hint button.
+ * Template for displaying Hint button in quiz.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/buttons/complete.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 $quiz        = LP_Global::course_item_quiz();
 $question    = LP_Global::quiz_question();
 $user        = LP_Global::user();
@@ -33,12 +41,15 @@ $button_text = $hinted ? __( 'Hinted', 'learnpress' ) : __( 'Hint', 'learnpress'
                     data-counter="<?php echo $user->can_hint_answer( $quiz->get_id() ); ?>"
 				<?php disabled( $hinted ); ?>><?php echo $button_text; ?></button>
             <input type="hidden" name="noajax" value="yes">
+
 		<?php } ?>
 
 		<?php do_action( 'learn-press/quiz/end-question-hint-button' ); ?>
 
 		<?php LP_Nonce_Helper::quiz_action( 'show-hint', $quiz->get_id(), get_the_ID(), true ); ?>
+
         <input type="hidden" name="question-id" value="<?php echo $question->get_id(); ?>">
+
     </form>
 
 <?php do_action( 'learn-press/quiz/after-question-hint-button' ); ?>

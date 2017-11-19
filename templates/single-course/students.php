@@ -1,28 +1,32 @@
 <?php
 /**
- * Template for displaying the students of a course
+ * Template for displaying students of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/students.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-$course = learn_press_get_course();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php $course = learn_press_get_course(); ?>
+
+<?php
 // Do not show if course is no require enrollment
 if ( ! $course || ! $course->is_require_enrollment() ) {
-	//return;
-}
-?>
+	return;
+} ?>
+
 <span class="course-students" title="<?php echo esc_html( $course->get_students_html() ); ?>">
-	<?php
-	$count = $course->count_users_enrolled( 'append' );
-	echo $count > 1 ? sprintf(
-		_n( '%d student', '%d students', $count, 'learnpress' ),
-		$count
-	) : sprintf( __( '%d student', 'learnpress' ), $count );
-	?>
+
+    <?php $count = $course->count_users_enrolled( 'append' );
+
+    echo $count > 1 ? sprintf( _n( '%d student', '%d students', $count, 'learnpress' ), $count ) : sprintf( __( '%d student', 'learnpress' ), $count ); ?>
+
 </span>

@@ -2,14 +2,17 @@
 /**
  * Template for displaying content of landing course.
  *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/content-landing.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
 <?php

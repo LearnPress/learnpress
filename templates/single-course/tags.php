@@ -1,22 +1,28 @@
 <?php
 /**
- * Template for displaying the tags of a course
+ * Template for displaying tags of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/tags.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-$course = LP_Global::course();
-
-$tags = $course->get_tags();
-if ( ! $tags ) {
-	return;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+
+<?php
+$course = LP_Global::course();
+$tags   = $course->get_tags();
+?>
+
+<?php if ( ! $tags ) {
+	return;
+} ?>
 
 <span class="course-tags"><?php echo $tags; ?></span>

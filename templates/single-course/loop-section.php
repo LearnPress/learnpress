@@ -1,25 +1,27 @@
 <?php
 /**
- * Template for displaying loop of section
+ * Template for displaying loop course of section.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/loop-section.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-if ( ! isset( $section ) ) {
-	return;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php if ( ! isset( $section ) ) {
+	return;
+} ?>
 
 <li<?php $section->main_class();?> id="section-<?php echo $section->get_slug(); ?>" data-id="<?php echo $section->get_slug(); ?>" data-section-id="<?php echo $section->get_id();?>">
 
 	<?php
-
 	/**
 	 * @deprecated
 	 */

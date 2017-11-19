@@ -1,15 +1,21 @@
 <?php
 /**
- * Template for displaying quiz's introduction
+ * Template for displaying introduction of quiz.
  *
- * @package LearnPress/Templates
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/intro.php.
+ *
  * @author  ThimPress
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
 
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 $course = LP_Global::course();
 $quiz   = LP_Global::course_item_quiz();
 $count  = $quiz->get_retake_count();

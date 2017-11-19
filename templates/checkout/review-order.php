@@ -1,18 +1,21 @@
 <?php
 /**
- * Template for displaying or detail for reviewing before placing order.
+ * Template for displaying reviewing before placing order.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/review-order.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-$cart = learn_press_get_checkout_cart();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php $cart = learn_press_get_checkout_cart(); ?>
 
 <h4><?php _e( 'Your order', 'learnpress' ) ?></h4>
 
@@ -61,8 +64,7 @@ $cart = learn_press_get_checkout_cart();
 			if ( $_course && 0 < $cart_item['quantity'] ) {
 				?>
                 <tr class="<?php echo esc_attr( apply_filters( 'learn-press/review-order/cart-item-class', 'cart-item', $cart_item, $cart_item_key ) ); ?>">
-
-					<?php
+                    <?php
 					/**
 					 * @deprecated
 					 */
@@ -83,7 +85,6 @@ $cart = learn_press_get_checkout_cart();
 						<?php echo apply_filters( 'learn-press/review-order/cart-item-subtotal', $cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item, $cart_item_key ); ?>
                     </td>
 					<?php
-
 					/**
 					 * @since 3.0.0
 					 */
@@ -94,7 +95,6 @@ $cart = learn_press_get_checkout_cart();
 					 */
 					do_action( 'learn_press_review_order_after_cart_item', $cart_item );
 					?>
-
                 </tr>
 				<?php
 			}

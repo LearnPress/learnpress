@@ -1,13 +1,18 @@
 <?php
 /**
- * Template for dispaying tab orders in user profile
+ * Template for displaying orders tab in user profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/tabs/orders.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="profile-orders">

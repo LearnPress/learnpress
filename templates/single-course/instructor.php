@@ -1,26 +1,32 @@
 <?php
 /**
- * Template for displaying the instructor of a course
+ * Template for displaying instructor of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/instructor.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-$course = LP_Global::course();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
+<?php $course = LP_Global::course(); ?>
+
 <div class="course-author">
-	<h3><?php _e('About the Instructor', 'learnpress');?></h3>
-	<p class="author-name">
-        <?php echo $course->get_instructor()->get_profile_picture();?>
-        <?php echo $course->get_instructor_html();?>
+
+    <h3><?php _e( 'About the Instructor', 'learnpress' ); ?></h3>
+
+    <p class="author-name">
+		<?php echo $course->get_instructor()->get_profile_picture(); ?>
+		<?php echo $course->get_instructor_html(); ?>
     </p>
-	<div class="author-bio">
-		<?php echo $course->get_author()->get_description();?>
-	</div>
+    <div class="author-bio">
+		<?php echo $course->get_author()->get_description(); ?>
+    </div>
+
 </div>

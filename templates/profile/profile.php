@@ -1,21 +1,23 @@
 <?php
 /**
- * Template for displaying user profile.
- * Main page which wrap all content in user profile.
+ * Template for displaying main user profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/profile/profile.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
 /**
  * Prevent loading this file directly
  */
-defined( 'ABSPATH' ) || exit;
-
-$profile = LP_Global::profile();
+defined( 'ABSPATH' ) || exit();
 ?>
-<div id="learn-press-user-profile"<?php $profile->main_class();?>>
+
+<?php $profile = LP_Global::profile(); ?>
+
+<div id="learn-press-user-profile"<?php $profile->main_class(); ?>>
 
 	<?php
 	/**

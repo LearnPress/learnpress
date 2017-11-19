@@ -1,29 +1,35 @@
 <?php
 /**
- * Template for displaying the thumbnail of a course
+ * Template for displaying thumbnail of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/thumbnail.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 2.0.6
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 global $post;
 $course      = learn_press_get_course();
 $video_embed = $course->get_video_embed();
-if ( $video_embed ):
-	?>
-	<div class="course-video">
-		<?php echo $video_embed; ?>
-	</div>
-	<?php
-endif;
-if ( !has_post_thumbnail() || $video_embed ) {
-	return;
-}
 ?>
+
+<?php if ( $video_embed ) { ?>
+    <div class="course-video"><?php echo $video_embed; ?></div>
+	<?php
+} ?>
+
+<?php if ( ! has_post_thumbnail() || $video_embed ) {
+	return;
+} ?>
+
 <div class="course-thumbnail">
 	<?php
 	$image_title   = get_the_title( get_post_thumbnail_id() ) ? esc_attr( get_the_title( get_post_thumbnail_id() ) ) : '';

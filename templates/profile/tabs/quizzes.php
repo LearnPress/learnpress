@@ -1,21 +1,26 @@
 <?php
 /**
- * User Courses tab
+ * Template for displaying quizzes tab in user profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/tabs/quizzes.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-global $post, $profile;
-
-$profile = learn_press_get_profile();
-$query   = $profile->query_quizzes( array( 'status' => LP_Request::get_string( 'filter-status' ) ));
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php
+global $post, $profile;
+$profile = learn_press_get_profile();
+$query   = $profile->query_quizzes( array( 'status' => LP_Request::get_string( 'filter-status' ) ) );
+?>
+
 <div class="learn-press-subtab-content">
     <h3 class="profile-heading"><?php _e( 'My Quizzes', 'learnpress' ); ?></h3>
 
@@ -59,12 +64,7 @@ $query   = $profile->query_quizzes( array( 'status' => LP_Request::get_string( '
                 </tr>
 				<?php continue; ?>
                 <tr>
-                    <td colspan="4">
-						<?php
-						//$user_quiz = $user_quiz->get_item( $quiz->get_final_quiz() );
-						//learn_press_debug( $user_quiz, $user_quiz->get_results() );
-						?>
-                    </td>
+                    <td colspan="4"></td>
                 </tr>
 			<?php } ?>
             </tbody>

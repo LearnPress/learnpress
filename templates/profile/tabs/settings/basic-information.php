@@ -1,13 +1,21 @@
 <?php
 /**
- * Form for editing basic information of user in profile page
+ * Template for displaying editing basic information form of user in profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/settings/tabs/basic-information.php.
  *
  * @author  ThimPress
- * @version 3.0.0
- * @package LearnPress/Templates
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) || exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 
 global $profile;
 
@@ -16,13 +24,12 @@ if ( ! isset( $section ) ) {
 }
 
 $user = $profile->get_user();
-
 ?>
+
 <form method="post" id="learn-press-profile-basic-information" name="profile-basic-information"
       enctype="multipart/form-data" class="learn-press-form">
 
 	<?php
-
 	/**
 	 * @since 3.0.0
 	 */
@@ -30,10 +37,8 @@ $user = $profile->get_user();
 
 	?>
     <ul class="form-fields">
-		<?php ?>
 
 		<?php
-
 		/**
 		 * @since 3.0.0
 		 */
@@ -81,8 +86,8 @@ $user = $profile->get_user();
 				<?php learn_press_profile_list_display_names(); ?>
             </div>
         </li>
-		<?php
 
+		<?php
 		// @deprecated
 		do_action( 'learn_press_after_' . $section . '_edit_fields' );
 
@@ -95,12 +100,10 @@ $user = $profile->get_user();
     </ul>
 
 	<?php
-
 	/**
 	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-profile-basic-information-fields', $profile );
-
 	?>
 
     <p>

@@ -1,20 +1,28 @@
 <?php
 /**
- * Template for displaying Retake course button.
+ * Template for displaying Retake button in single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/buttons/retake.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 $course = LP_Global::course();
 $user   = LP_Global::user();
-
-if ( 0 >= ( $count = $user->can_retake_course( $course->get_id() ) ) ) {
-	return;
-}
 ?>
+
+<?php if ( 0 >= ( $count = $user->can_retake_course( $course->get_id() ) ) ) {
+	return;
+} ?>
 
 <?php do_action( 'learn-press/before-retake-form' ); ?>
 

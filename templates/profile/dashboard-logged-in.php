@@ -1,20 +1,26 @@
 <?php
 /**
- * Template for displaying a message in profile dashboard if user is logged in.
+ * Template for displaying message in profile dashboard if user is logged in.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/profile/dashboard-logged-in.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or exit;
-
-global $profile;
-
-if ( ! $profile->is_current_user() ) {
-	return;
-}
-$user = $profile->get_user();
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php global $profile; ?>
+
+<?php if ( ! $profile->is_current_user() ) {
+	return;
+} ?>
+
+<?php $user = $profile->get_user(); ?>
+
 <p><?php echo sprintf( __( 'Hello <strong>%s</strong> (not %s? %s)', 'learnpress' ), $user->get_display_name(), $user->get_display_name(), sprintf( '<a href="%s">%s</a>', $profile->logout_url(), __( 'Sign out', 'learnpress' ) ) ); ?></p>

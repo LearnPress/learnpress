@@ -1,13 +1,21 @@
 <?php
 /**
- * Template for displaying Check Answer button.
+ * Template for displaying Check question answer button in quiz.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/buttons/check.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 $quiz     = LP_Global::course_item_quiz();
 $question = LP_Global::quiz_question();
 $user     = LP_Global::user();

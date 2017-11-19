@@ -1,20 +1,24 @@
 <?php
 /**
- * Displaying the description of single quiz
+ * Template for displaying description of quiz.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/description.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-$quiz = LP_Global::course_item_quiz();
-if ( ! $content = $quiz->get_content() ) {
-	return;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php $quiz = LP_Global::course_item_quiz(); ?>
+
+<?php if ( ! $content = $quiz->get_content() ) {
+	return;
+} ?>
 
 <div class="content-item-description quiz-description"><?php echo $content; ?></div>

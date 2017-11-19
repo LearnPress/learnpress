@@ -1,18 +1,22 @@
 <?php
 /**
- * Displaying the description of single course
+ * Template for displaying overview tab of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/tabs/overview.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-global $course;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php global $course; ?>
+
 <div class="course-description" id="learn-press-course-description">
 
 	<?php

@@ -1,10 +1,16 @@
 <?php
 /**
- * Template for displaying content of audio lesson
+ * Template for displaying content of audio lesson.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-lesson/type/audio.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined('ABSPATH') or die();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>

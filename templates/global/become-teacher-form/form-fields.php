@@ -1,19 +1,23 @@
 <?php
 /**
- * Template for displaying fields of become-teacher form.
+ * Template for displaying become teacher form.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/global/become-teacher-form/form-fields.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or exit;
-
-if ( ! isset( $fields ) ) {
-	return;
-}
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php if ( ! isset( $fields ) ) {
+	return;
+} ?>
 
 <ul class="become-teacher-fields form-fields">
 

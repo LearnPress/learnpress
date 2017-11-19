@@ -1,18 +1,24 @@
 <?php
 /**
- * Template for displaying messages in become-teacher form.
+ * Template for displaying message in become teacher form.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/global/become-teacher-form/message.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
-if ( ! isset( $messages ) ) {
+<?php if ( ! isset( $messages ) ) {
 	return;
-}
+} ?>
 
-foreach ( $messages as $code => $message ) {
+<?php foreach ( $messages as $code => $message ) {
 	learn_press_display_message( $message );
 }

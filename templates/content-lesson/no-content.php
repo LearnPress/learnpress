@@ -1,9 +1,18 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: tu
- * Date: 10/25/17
- * Time: 2:12 PM
+ * Template for displaying no content lesson.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-lesson/no-content.php.
+ *
+ * @author  ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-learn_press_display_message(__('No content', 'learnpress'));
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php learn_press_display_message( __( 'No content', 'learnpress' ) );

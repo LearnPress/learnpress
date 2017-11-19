@@ -1,18 +1,22 @@
 <?php
 /**
- *  Template for displaying user profile tabs.
+ * Template for displaying user profile tabs.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/profile/tabs.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-global $wp, $wp_query, $profile;
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php global $wp, $wp_query, $profile; ?>
+
 <div id="learn-press-profile-nav">
 
 	<?php do_action( 'learn-press/before-profile-nav', $profile ); ?>
@@ -41,6 +45,7 @@ global $wp, $wp_query, $profile;
                 </a>
                 <!--section-->
 				<?php if ( ! empty( $tab_data['sections'] ) ) { ?>
+
                     <ul class="">
 						<?php foreach ( $tab_data['sections'] as $section_key => $section_data ) {
 
@@ -57,12 +62,17 @@ global $wp, $wp_query, $profile;
 							$section_slug = $profile->get_slug( $section_data, $section_key );
 							$section_link = $profile->get_tab_link( $tab_key, $section_slug );
 							?>
+
                             <li class="<?php echo join( ' ', $classes ); ?>">
                                 <a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a>
                             </li>
+
 						<?php } ?>
+
                     </ul>
+
 				<?php } ?>
+
             </li>
 		<?php } ?>
 
