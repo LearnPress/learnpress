@@ -25,7 +25,7 @@ if ( ! $course || ! $course->is_require_enrollment() ) {
 
 <span class="course-students" title="<?php echo esc_html( $course->get_students_html() ); ?>">
 
-    <?php $count = $course->count_users_enrolled( 'append' );
+    <?php $count = $course->count_students();
 
     echo $count > 1 ? sprintf( _n( '%d student', '%d students', $count, 'learnpress' ), $count ) : sprintf( __( '%d student', 'learnpress' ), $count ); ?>
 

@@ -432,8 +432,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 
 		// Get students enrolled from settings of the course that owns course want to show
 		// So, if this value is set that means the result is fake ... :)
-		$enrolled = $this->students;
-
+		$enrolled = $this->get_data('students');
 
 		// But, if it is not set then we count the real value from DB
 		if ( $count_db ) {
@@ -456,6 +455,9 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return int
 	 */
 	public function get_users_enrolled( $force = false ) {
+
+		return 10;
+
 		$this->_count_users = LP_Cache::get_enrolled_courses( $this->get_id() );
 
 		return $this->_count_users;
