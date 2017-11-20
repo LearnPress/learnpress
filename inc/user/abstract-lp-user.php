@@ -790,7 +790,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 					'item_type'      => $item->get_item_type(),
 					'start_time'     => $time->toSql(),
 					'start_time_gmt' => $time->toSql( false ),
-					'status'         => learn_press_default_user_item_status($item_id),
+					'status'         => learn_press_default_user_item_status( $item_id ),
 					'ref_id'         => $course_id,
 					'ref_type'       => LP_COURSE_CPT,
 					'parent_id'      => $course_data->get_data( 'user_item_id' )
@@ -1511,26 +1511,13 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$can_enroll = false;
 		}
 
-		return apply_filters( 'learn-press/can-enroll-course', $can_enroll, $course_id, $this->get_id() );
-		// check if course is purchasable
-		$enrollable = false;
-		if ( ! $course ) {
-			$enrollable = false;
-		} elseif ( get_post_status( $course->get_id() ) !== 'publish' ) {
-			$enrollable = false;
-		} elseif ( ! $course->is_required_enroll() ) {
-			$enrollable = false;
-		} elseif ( ! $course->is_purchasable() ) {
-			$enrollable = 'enough';
-		} elseif ( $course->is_free() && $this->is_exists() ) {
-			$enrollable = true;
-		} elseif ( $course->is_purchasable() && ( $this->has_purchased_course( $course_id ) ) ) {
-			$order      = new LP_Order( $this->get_course_order( $course_id ), OBJECT_K );
-			$enrollable = ! $this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
+		if ( $course_item = $this->get_course_data( $course_id ) ) {
+			if ( in_array( $course_item->get_status(), array( 'pending', '' ) ) ) {
+				$can_enroll = false;
+			}
 		}
-		$enrollable = apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this->get_id(), $course_id );
 
-		return $enrollable;
+		return apply_filters( 'learn-press/can-enroll-course', $can_enroll, $course_id, $this->get_id() );
 	}
 
 	public function can_view_item( $item_id, $course_id = 0 ) {
@@ -2341,6 +2328,15 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	public function has_purchased_course( $course_id ) {
 		return apply_filters( 'learn_press_user_has_purchased_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->get_id() );
+	}
+
+	public function is_locked_course( $course_id ) {
+		$locked =false;
+		if ( $course_item = $this->get_course_data( $course_id ) ) {
+			$locked = 'locked' === learn_press_get_user_item_meta( $course_item->get_user_item_id(), '_status', true );
+		}
+
+		return $locked;
 	}
 
 	/**

@@ -110,7 +110,7 @@ abstract class LP_Abstract_Post_Type {
 
 	public function update_default_meta() {
 		global $wp_query, $post;
-		if ( !$post ) {
+		if ( ! $post ) {
 			return;
 		}
 		if ( empty( $post->post_type ) ) {
@@ -123,7 +123,7 @@ abstract class LP_Abstract_Post_Type {
 			return;
 		}
 		foreach ( $this->_default_metas as $k => $v ) {
-			if ( !metadata_exists( 'post', $post->ID, $k ) ) {
+			if ( ! metadata_exists( 'post', $post->ID, $k ) ) {
 				update_post_meta( $post->ID, $k, $v );
 			}
 		}
@@ -174,7 +174,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function _do_output_meta_box( $post, $box ) {
-		$callback = $this->_meta_boxes[$box['id']][2];
+		$callback = $this->_meta_boxes[ $box['id'] ][2];
 		if ( is_array( $callback ) ) {
 			if ( $callback[0] instanceof LP_Abstract_Post_Type ) {
 				if ( $callback[1] != __FUNCTION__ ) {
@@ -193,52 +193,65 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function _before_delete_post( $post_id ) {
+
 		// TODO:
-		if ( !$this->_check_post() ) {
+		if ( ! $this->_check_post() ) {
 			return;
 		}
 		$func_args = func_get_args();
+
 		return $this->_call_method( 'before_delete', $func_args );
 	}
 
 	public function _posts_fields( $fields ) {
-		if ( !$this->_check_post() ) {
+		if ( ! $this->_check_post() ) {
 			return $fields;
 		}
+
 		return $this->posts_fields( $fields );
 	}
 
 	public function _posts_join_paged( $join ) {
-		if ( !$this->_check_post() ) {
+		if ( ! $this->_check_post() ) {
 			return $join;
 		}
+
 		return $this->posts_join_paged( $join );
 	}
 
 	public function _posts_where_paged( $where ) {
-		if ( !$this->_check_post() ) {
+		if ( ! $this->_check_post() ) {
 			return $where;
 		}
+
 		return $this->posts_where_paged( $where );
 	}
 
 	public function _posts_orderby( $orderby ) {
-		if ( !$this->_check_post() ) {
+		if ( ! $this->_check_post() ) {
 			return $orderby;
 		}
+
 		return $this->posts_orderby( $orderby );
 	}
 
 	public function _check_post() {
 		global $pagenow, $post_type;
-		if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( $this->_post_type != $post_type ) ) {
+
+		if ( ! is_admin() || ( ! in_array( $pagenow, array(
+				'edit.php',
+				'post.php'
+			) ) ) || ( $this->_post_type != $post_type )
+		) {
 			return false;
 		}
+
 		return true;
 	}
 
 	public function add_meta_box( $id, $title, $callback = null, $context = 'advanced', $priority = 'default', $callback_args = null ) {
-		$this->_meta_boxes[$id] = func_get_args();
+		$this->_meta_boxes[ $id ] = func_get_args();
+
 		return $this;
 	}
 
@@ -252,18 +265,18 @@ abstract class LP_Abstract_Post_Type {
 		}
 		do_action( 'learn_press_add_meta_boxes', $this->_post_type, $this );
 		do_action( "learn_press_{$this->_post_type}_add_meta_boxes", $this );
-		if ( !$this->_meta_boxes ) {
+		if ( ! $this->_meta_boxes ) {
 			return;
 		}
 
 		foreach ( $this->_meta_boxes as $k => $meta_box ) {
 			$size = sizeof( $meta_box );
-			if ( ( $size == 2 ) || ( $size == 3 && !$meta_box[2] ) ) {
+			if ( ( $size == 2 ) || ( $size == 3 && ! $meta_box[2] ) ) {
 				$func        = 'output_' . preg_replace( '/[-]+/', '_', $meta_box[0] );
 				$meta_box[2] = array( $this, $func );
 			}
 			array_splice( $meta_box, 3, 0, array( $this->_post_type ) );
-			$this->_meta_boxes[$k] = $meta_box;
+			$this->_meta_boxes[ $k ] = $meta_box;
 
 			$meta_box[2] = array( $this, '_do_output_meta_box' );
 			call_user_func_array( 'add_meta_box', $meta_box );
@@ -325,10 +338,11 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function _post_row_actions( $actions, $post ) {
-		if ( !$this->_check_post() ) {
+		if ( ! $this->_check_post() ) {
 			return $actions;
 		}
 		$func_args = func_get_args();
+
 		return $this->_call_method( 'row_actions', $func_args );
 	}
 
@@ -364,30 +378,32 @@ abstract class LP_Abstract_Post_Type {
 
 	public function add_map_method( $origin, $replace, $single = false ) {
 		if ( $single ) {
-			$this->_map_methods[$origin] = $replace;
+			$this->_map_methods[ $origin ] = $replace;
 		} else {
-			if ( empty( $this->_map_methods[$origin] ) ) {
-				$this->_map_methods[$origin] = array( $replace );
+			if ( empty( $this->_map_methods[ $origin ] ) ) {
+				$this->_map_methods[ $origin ] = array( $replace );
 			} else {
-				$this->_map_methods[$origin][] = $replace;
+				$this->_map_methods[ $origin ][] = $replace;
 			}
 		}
+
 		return $this;
 	}
 
 	private function _get_map_method( $origin ) {
-		if ( !empty( $this->_map_methods[$origin] ) ) {
-			if ( is_array( $this->_map_methods[$origin] ) ) {
+		if ( ! empty( $this->_map_methods[ $origin ] ) ) {
+			if ( is_array( $this->_map_methods[ $origin ] ) ) {
 				$callback = array();
-				foreach ( $this->_map_methods[$origin] as $method ) {
+				foreach ( $this->_map_methods[ $origin ] as $method ) {
 					$callback[] = array( $this, $method );
 				}
 			} else {
-				$callback = array( $this, $this->_map_methods[$origin] );
+				$callback = array( $this, $this->_map_methods[ $origin ] );
 			}
 		} else {
 			$callback = array( $this, $origin );
 		}
+
 		return $callback;
 	}
 
@@ -402,6 +418,7 @@ abstract class LP_Abstract_Post_Type {
 		} else {
 			$return = call_user_func_array( $callbacks, $args );
 		}
+
 		return $return;
 	}
 
@@ -412,7 +429,7 @@ abstract class LP_Abstract_Post_Type {
 		if ( $this->_post_type !== $post_type ) {
 			return $messages;
 		}
-		$messages[$this->_post_type] = array(
+		$messages[ $this->_post_type ] = array(
 			0  => '', // Unused. Messages start at index 1.
 			1  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'updated.', 'learnpress' ) ),
 			2  => __( 'Custom field updated.', 'learnpress' ),
@@ -449,14 +466,14 @@ abstract class LP_Abstract_Post_Type {
 					$view_link = '';
 					break;
 			}
-			$messages[$this->_post_type][1] .= $view_link;
-			$messages[$this->_post_type][6] .= $view_link;
-			$messages[$this->_post_type][9] .= $view_link;
+			$messages[ $this->_post_type ][1] .= $view_link;
+			$messages[ $this->_post_type ][6] .= $view_link;
+			$messages[ $this->_post_type ][9] .= $view_link;
 
-			$preview_permalink = add_query_arg( 'preview', 'true', $permalink );
-			$preview_link      = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
-			$messages[$this->_post_type][8] .= $preview_link;
-			$messages[$this->_post_type][10] .= $preview_link;
+			$preview_permalink                 = add_query_arg( 'preview', 'true', $permalink );
+			$preview_link                      = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			$messages[ $this->_post_type ][8]  .= $preview_link;
+			$messages[ $this->_post_type ][10] .= $preview_link;
 		}
 
 		return $messages;

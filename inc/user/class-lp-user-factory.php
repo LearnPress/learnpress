@@ -72,7 +72,7 @@ class LP_User_Factory {
 			return;
 		}
 		remove_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
-		LP_Debug::startTransaction();
+		//LP_Debug::startTransaction();
 		try {
 			switch ( $new_status ) {
 				case 'pending':
@@ -83,10 +83,10 @@ class LP_User_Factory {
 				case'completed':
 					self::_update_user_item_purchased( $order, $new_status );
 			}
-			LP_Debug::commitTransaction();
+			//LP_Debug::commitTransaction();
 		}
 		catch ( Exception $ex ) {
-			LP_Debug::rollbackTransaction();
+			//LP_Debug::rollbackTransaction();
 		}
 	}
 
@@ -154,8 +154,12 @@ class LP_User_Factory {
 							$args['start_time_gmt'] = $time->toSql( false );
 						}
 					}
+
 					$curd->update_user_item_by_id( $user_item_id, $args );
+				}else{
+					global $wpdb;
 				}
+
 			}
 		}
 	}

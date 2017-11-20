@@ -78,6 +78,10 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 			return;
 		}
 
+		if($user->is_locked_course($course->get_id())){
+		    return;
+        }
+
 		learn_press_get_template( 'single-course/buttons/enroll.php' );
 	}
 

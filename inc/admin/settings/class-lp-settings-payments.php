@@ -109,7 +109,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 							'id' => 'guest_checkout',
 							'default' => 'yes',
 							'type'    => 'yes-no',
-							'desc'    => __( 'Auto enroll a user after they buying a course.', 'learnpress' )
+							'desc'    => __( 'Enable user buy course as a Guest.', 'learnpress' )
 						)
 					)
 				),

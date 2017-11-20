@@ -148,7 +148,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// If there is no items in the order then set it status to Pending
 		$status = $order->get_status() ? $order->get_status() : learn_press_default_order_status();
-		if('pending'!== $status && !$order->get_items()){
+		if ( in_array( $status, array( 'completed', 'processing' ) ) && ! $order->get_items() ) {
 			$status = 'pending';
 		}
 
@@ -217,11 +217,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		foreach ( $meta_keys as $key ) {
 			update_post_meta( $cloned->get_id(), $key, get_post_meta( $order->get_id(), $key, true ) );
-			//echo $cloned->get_id(),',', $key,',', get_post_meta( $order->get_id(), $key, true );
 		}
 
-
-//die();
 		$this->cln_items( $order->get_id(), $cloned->get_id() );
 
 		return $cloned;
@@ -352,7 +349,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Recover an order checked out by Guest for an user.
 	 *
 	 * @param string $order_key
-	 * @param int $user_id
+	 * @param int    $user_id
 	 *
 	 * @return bool|LP_Order|WP_Error
 	 */
@@ -383,7 +380,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Trigger action
 			do_action( 'learn-press/order/recovered-successful', $order->get_id(), $user_id );
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			return new WP_Error( $ex->getCode(), $ex->getMessage() );
 		}
 

@@ -636,6 +636,21 @@ function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_valu
 	return update_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $meta_value, $prev_value );
 }
 
+
+/**
+ * Update user item meta to table user_itemmeta
+ *
+ * @param int    $object_id
+ * @param string $meta_key
+ * @param mixed  $meta_value
+ * @param bool   $delete_all
+ *
+ * @return bool|int
+ */
+function learn_press_delete_user_item_meta( $object_id, $meta_key, $meta_value = '', $delete_all = false ) {
+	return delete_metadata( 'learnpress_user_item', $object_id, $meta_key, $meta_value, $delete_all );
+}
+
 /**
  * Exclude the temp users from query.
  *

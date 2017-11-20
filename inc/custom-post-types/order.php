@@ -22,9 +22,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		public function __construct( $post_type ) {
 			add_action( 'init', array( $this, 'register_post_statues' ) );
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
-
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_action( 'trashed_post', array( $this, 'trashed_order' ) );
+			add_action( 'transition_post_status', array( $this, 'restore_order' ), 10, 3 );
+
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 			//add_action( 'add_meta_boxes', array( $this, 'post_new' ) );
 
@@ -149,17 +151,122 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
+		 * Disable accessing course if the order is trashed.
+		 *
+		 * @param int $order_id
+		 */
+		public function trashed_order( $order_id ) {
+
+			if ( ! $order = learn_press_get_order( $order_id ) ) {
+				return;
+			}
+
+			if ( ! $items = $order->get_items() ) {
+				return;
+			}
+
+			if ( ! $users = $order->get_users() ) {
+				return;
+			}
+
+			$user_curd  = new LP_User_CURD();
+			$order_data = array();
+			foreach ( $users as $user_id ) {
+				$user = learn_press_get_user( $user_id );
+				if ( ! $user ) {
+					continue;
+				}
+
+				foreach ( $items as $item ) {
+					$item_course = $user->get_course_data( $item['course_id'] );
+
+					if ( ! $item_course ) {
+						continue;
+					}
+
+					// Store user_id and item_id of current user item into the order
+					$order_data[ $item_course->get_user_item_id() ] = array(
+						'user_id' => $item_course->get_user_id(),
+						'item_id' => $item_course->get_item_id()
+					);
+
+					// And remove it from user item
+					$user_curd->update_user_item_by_id(
+						$item_course->get_user_item_id(),
+						array(
+							'user_id' => 0,
+							'item_id' => 0
+						)
+					);
+				}
+			}
+
+			// Store all to the order itself
+			update_post_meta( $order_id, '_lp_user_data', $order_data );
+		}
+
+		/**
+		 * Restore user course item when the order is stored (usually from trash).
+		 *
+		 * @param string  $new
+		 * @param string  $old
+		 * @param WP_Post $post
+		 */
+		public function restore_order( $new, $old, $post ) {
+
+			if ( ! ( 'trash' === $old ) ) {
+				return;
+			}
+
+			if ( ! $order = learn_press_get_order( $post->ID ) ) {
+				return;
+			}
+
+			if ( ! $user_item_data = get_post_meta( $post->ID, '_lp_user_data', true ) ) {
+				return;
+			}
+
+			if ( ! $items = $order->get_items() ) {
+				return;
+			}
+
+			if ( ! $users = $order->get_users() ) {
+				return;
+			}
+
+			$user_curd = new LP_User_CURD();
+
+			foreach ( $user_item_data as $user_item_id => $data ) {
+
+				if ( ! $item_course = $user_curd->get_user_item_by_id( $user_item_id ) ) {
+					continue;
+				}
+
+				// Restore data
+				$user_curd->update_user_item_by_id(
+					$user_item_id,
+					$data
+				);
+			}
+
+			// Delete data
+			delete_post_meta( $post->ID, '_lp_user_data' );
+		}
+
+		/**
 		 * Delete all records related to order being deleted
 		 *
 		 * @param $post_id
 		 */
 		public function delete_order_data( $post_id ) {
+
 			global $wpdb, $post;
 			if ( get_post_type( $post_id ) != 'lp_order' ) {
 				return;
 			}
+			LP_Debug::startTransaction();
 			// get order items
-			$query = $wpdb->prepare( "
+			echo $query = $wpdb->prepare( "
 				SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items
 				WHERE order_id = %d
 			", $post_id );
@@ -169,27 +276,27 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$user_id = intval( get_post_meta( $post_id, '_user_id', true ) );
 
 				// delete order item meta data
-				$query = "
+				echo $query = "
 					DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
 					WHERE learnpress_order_item_id IN(" . join( ',', $item_ids ) . ")
 				";
 				$wpdb->query( $query );
 
 				// delete order items
-				$query = $wpdb->prepare( "
+				echo $query = $wpdb->prepare( "
 					DELETE FROM {$wpdb->prefix}learnpress_order_items
 					WHERE order_id = %d
 				", $post_id );
 				$wpdb->query( $query );
 
-				$query = $wpdb->prepare( "
+				echo $query = $wpdb->prepare( "
 					SELECT item_id
 					FROM {$wpdb->prefix}learnpress_user_items
 					WHERE ref_id = %d AND user_id = %d AND ref_type = %s
 				", $post_id, $user_id, LP_ORDER_CPT );
 				if ( $course_ids = $wpdb->get_col( $query ) ) {
 					// Delete user course items
-					$query = $wpdb->prepare( "
+					echo $query = $wpdb->prepare( "
 						DELETE
 						FROM ui, uim
 						USING {$wpdb->prefix}learnpress_user_items AS ui
@@ -201,7 +308,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					// Delete other items
 					$format = array_fill( 0, sizeof( $course_ids ), '%d' );
 					$args   = array_merge( $course_ids, array( $user_id ) );
-					$query  = $wpdb->prepare( "
+					echo $query = $wpdb->prepare( "
 						DELETE
 						FROM ui, uim
 						USING {$wpdb->prefix}learnpress_user_items AS ui
@@ -217,6 +324,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					learn_press_delete_user_data( $user_id );
 				}
 			}
+			LP_Debug::rollbackTransaction();
+
+			die();
 		}
 
 		/**
@@ -335,6 +445,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$new_order->set_order_date( $order->get_order_date() );
 				$new_order->set_parent_id( $order->get_id() );
 				$new_order->set_user_id( $uid );
+				$new_order->set_total( $order->get_total() );
+				$new_order->set_subtotal( $order->get_subtotal() );
 
 				$new_order->set_status( learn_press_get_request( 'order-status' ) );
 				$new_order->save();
