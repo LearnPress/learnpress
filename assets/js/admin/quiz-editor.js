@@ -280,12 +280,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         'ADD_QUESTION_ANSWER': function (state, payload) {
             state.questions = state.questions.map(function (question) {
                 if (question.id === payload.question_id) {
-
-                    console.log(payload.answer);
-
-                    console.log(question.answers);
-
                     question.answers.push(payload.answer);
+                    return question;
+                } else {
                     return question;
                 }
             })
@@ -633,6 +630,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
                         if (result.success) {
                             var answer = result.data;
+
                             context.commit('ADD_QUESTION_ANSWER', {question_id: question_id, answer: answer});
                             context.commit('UPDATE_QUESTION_SUCCESS', question_id);
                         }
