@@ -196,7 +196,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			);
 			$response = wp_remote_request( $url, $args );
 
-			if ( ! is_wp_error( $response ) ) {
+			if ( is_wp_error( $response ) ) {
 				return false;
 			}
 
@@ -204,16 +204,16 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			$response = json_decode( $response, true );
 
 			if ( ! empty( $response ) && ! empty( $response['matches'] ) ) {
-				$themes = array();
+				$all_themes = array();
 				foreach ( $response['matches'] as $theme ) {
-					$themes[ $theme['id'] ] = $theme;
+					$all_themes[ $theme['id'] ] = $theme;
 				}
 
 				if ( $education_themes = learn_press_get_education_themes() ) {
-					$themes['other']     = array_diff_key( $themes, $education_themes );
-					$themes['education'] = array_diff_key( $themes, $themes['other'] );
+					$themes['other']     = array_diff_key( $all_themes, $education_themes );
+					$themes['education'] = array_diff_key( $all_themes, $themes['other'] );
 				} else {
-					$themes['other'] = $themes;
+					$themes['other'] = $all_themes;
 				}
 				set_transient( 'lp_related_themes', $themes, DAY_IN_SECONDS / 2 );
 			}

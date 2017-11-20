@@ -35,7 +35,7 @@
                     count = $this.children().length;
 
                 $this.prev('h2').find('span').html(count)
-            })
+            });
         };
     $(document).on('keyup', '.lp-search-addon', function (e) {
         timer && clearTimeout(timer);
