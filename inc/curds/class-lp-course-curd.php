@@ -28,8 +28,18 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			// TODO: Implement update() method.
 		}
 
-		public function delete( &$course ) {
-			// TODO: Implement delete() method.
+		/**
+		 * Delete course.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param object $course_id
+		 */
+		public function delete( &$course_id ) {
+			// section curd
+			$curd = new LP_Section_CURD( $course_id );
+			// clear course items
+			$curd->clear();
 		}
 
 		/**
@@ -57,7 +67,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
 			}
 			// duplicate course
-			$new_course_id = learn_press_duplicate_post( $course_id, $args, true );
+			$new_course_id = learn_press_duplicate_post( $course_id, $args );
 
 			if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
 				return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
@@ -69,7 +79,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				// get course sections
 				$sections = $this->get_course_sections( $course_id );
 				// new course section curd
-				$new_course_curd = new LP_Section_CURD( $new_course_id );
+				$new_course_section_curd = new LP_Section_CURD( $new_course_id );
 
 				$quiz_curd = new LP_Quiz_CURD();
 
@@ -77,7 +87,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 					foreach ( $sections as $section ) {
 
-						$args = array(
+						$data = array(
 							'section_name'        => $section->section_name,
 							'section_course_id'   => $new_course_id,
 							'section_order'       => $section->section_order,
@@ -85,7 +95,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						);
 
 						// clone sections to new course
-						$new_section = $new_course_curd->create( $args );
+						$new_section = $new_course_section_curd->create( $data );
 
 						// get section items of original course
 						$items = $curd->get_section_items( $section->section_id );
@@ -99,7 +109,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 								if ( $item['type'] == LP_QUIZ_CPT ) {
 									$new_item_id = $quiz_curd->duplicate( $item['id'], array( 'post_status' => 'publish' ) );
 								} else {
-									// duplicate lesson
+									// clone lesson
 									$new_item_id = learn_press_duplicate_post( $item['id'], array( 'post_status' => 'publish' ) );
 								}
 
@@ -108,7 +118,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 							}
 
 							// add new clone items to section
-							$new_course_curd->add_items_section( $new_section['section_id'], $new_items );
+							$new_course_section_curd->add_items_section( $new_section['section_id'], $new_items );
 						}
 					}
 
@@ -308,6 +318,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				return false;
 			}
 
+			$section_curd = new LP_Section_CURD( $course_id );
+
+			$section_curd->read_get_sections_ids();
+
 			$query = $wpdb->prepare( "
 				SELECT s.* FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->learnpress_sections} s ON p.ID = s.section_course_id
@@ -336,23 +350,20 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * Remove lesson, quiz from course.
+		 * Remove lesson, quiz from course's curriculum.
 		 *
 		 * @since 3.0.0
 		 *
 		 * @param $item_id
 		 */
-		public function remove_item_from_course( $item_id ) {
+		public function remove_item( $item_id ) {
 
 			global $wpdb;
 
 			// delete item from course's section
-			$query = $wpdb->prepare( "
-				DELETE FROM {$wpdb->prefix}learnpress_section_items
-				WHERE item_id = %d
-			", $item_id );
-
-			$wpdb->query( $query );
+			$wpdb->query(
+				$wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE item_id = %d", $item_id )
+			);
 
 			learn_press_reset_auto_increment( 'learnpress_section_items' );
 		}

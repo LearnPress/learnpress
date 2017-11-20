@@ -37,13 +37,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type, $args = '' ) {
 
-			$this->add_map_method( 'before_delete', 'delete_quiz_questions' );
-
-			// hide View Quiz link on Quiz table action
-			add_filter( 'page_row_actions', array( $this, 'remove_view_link' ), 10, 2 );
+			$this->add_map_method( 'before_delete', 'before_delete_quiz' );
 
 			// hide View Quiz link if not assigned to Course
-			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link_if_not_assigned' ) );
+			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link' ) );
 
 			add_action( 'edit_form_after_editor', array( $this, 'template_quiz_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_quiz_editor' ) );
@@ -52,77 +49,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
-		 * Template quiz editor v2.
-		 *
-		 * @since 3.0.0
-		 */
-		public function template_quiz_editor() {
-			if ( LP_QUIZ_CPT !== get_post_type() ) {
-				return;
-			}
-			learn_press_admin_view( 'quiz/editor' );
-		}
-
-		/**
-		 * Load data for quiz editor.
-		 *
-		 * @since 3.0.0
-		 */
-		public function data_quiz_editor() {
-			if ( LP_QUIZ_CPT !== get_post_type() ) {
-				return;
-			}
-
-			global $post;
-			$quiz = LP_Quiz::get_quiz( $post->ID );
-
-			$hidden_questions = get_post_meta( $post->ID, '_lp_hidden_questions', true );
-
-			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', array(
-				'root'          => array(
-					'quiz_id' => $quiz->get_id(),
-					'ajax'    => admin_url( '' ),
-					'action'  => 'admin_quiz_editor',
-					'nonce'   => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
-					'types'   => LP_Question_Factory::get_types()
-				),
-				'chooseItems'   => array(
-					'open'       => false,
-					'addedItems' => array(),
-					'items'      => array()
-				),
-				'i18n'          => array(
-					'option'         => __( 'Option', 'learnpress' ),
-					'unique'         => learn_press_uniqid(),
-					'back'           => __( 'Back', 'learnpress' ),
-					'selected_items' => __( 'Selected items', 'learnpress' ),
-				),
-				'listQuestions' => array(
-					'questions'        => $quiz->quiz_editor_get_questions(),
-					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array()
-				)
-			) );
-		}
-
-		/**
-		 * Delete all questions assign to quiz being deleted
-		 *
-		 * @param $post_id
-		 */
-		public function delete_quiz_questions( $post_id ) {
-			//curd
-			$course_curd = new LP_Course_CURD();
-			$quiz_curd   = new LP_Quiz_CURD();
-
-			// remove questions from quiz
-			$quiz_curd->remove_question( $post_id, true );
-
-			// remove quiz from course
-			$course_curd->remove_item_from_course( $post_id );
-		}
-
-		/**
-		 * Register quiz post type
+		 * Register quiz post type.
 		 */
 		public function register() {
 			register_post_type( LP_QUIZ_CPT,
@@ -165,6 +92,74 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					)
 				)
 			);
+		}
+
+		/**
+		 * Template quiz editor v2.
+		 *
+		 * @since 3.0.0
+		 */
+		public function template_quiz_editor() {
+			if ( LP_QUIZ_CPT !== get_post_type() ) {
+				return;
+			}
+			learn_press_admin_view( 'quiz/editor' );
+		}
+
+		/**
+		 * Load data for quiz editor.
+		 *
+		 * @since 3.0.0
+		 */
+		public function data_quiz_editor() {
+			if ( LP_QUIZ_CPT !== get_post_type() ) {
+				return;
+			}
+
+			global $post;
+			$quiz = LP_Quiz::get_quiz( $post->ID );
+
+			$hidden_questions = get_post_meta( $post->ID, '_lp_hidden_questions', true );
+
+			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', array(
+				'root'          => array(
+					'quiz_id'    => $post->ID,
+					'auto_draft' => get_post_status( $post->ID ) == 'auto-draft',
+					'ajax'       => admin_url( '' ),
+					'action'     => 'admin_quiz_editor',
+					'nonce'      => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
+					'types'      => LP_Question_Factory::get_types()
+				),
+				'chooseItems'   => array(
+					'open'       => false,
+					'addedItems' => array(),
+					'items'      => array()
+				),
+				'i18n'          => array(
+					'option'         => __( 'Option', 'learnpress' ),
+					'unique'         => learn_press_uniqid(),
+					'back'           => __( 'Back', 'learnpress' ),
+					'selected_items' => __( 'Selected items', 'learnpress' ),
+				),
+				'listQuestions' => array(
+					'questions'        => $quiz->quiz_editor_get_questions(),
+					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array()
+				)
+			) );
+		}
+
+		/**
+		 * Delete all questions assign to quiz.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $post_id
+		 */
+		public function before_delete_quiz( $post_id ) {
+			// quiz curd
+			$curd = new LP_Quiz_CURD();
+			// remove question from course items
+			$curd->delete( $question_id );
 		}
 
 		/**
@@ -302,7 +297,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			return apply_filters( 'learn_press_quiz_general_meta_box', $meta_box );
 		}
-
 
 		/**
 		 * Add columns to admin manage quiz page
@@ -531,25 +525,9 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
-		 * Remove View Quiz link on dashboard Quiz list
-		 *
-		 * @param array $actions
-		 *
-		 * @return array $actions
+		 * Hide View Quiz link if not assigned to Course.
 		 */
-		public function remove_view_link( $actions, $post ) {
-			$post_id = $post->ID;
-			if ( $post->post_type === LP_QUIZ_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
-				unset( $actions['view'] );
-			}
-
-			return $actions;
-		}
-
-		/**
-		 * Hide view Quiz link
-		 */
-		public function hide_view_quiz_link_if_not_assigned() {
+		public function hide_view_quiz_link() {
 			$current_screen = get_current_screen();
 			global $post;
 			if ( ! $post ) {
@@ -575,19 +553,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
                 </style>
 				<?php
 			}
-		}
-
-		/**
-		 * @param $return
-		 * @param $post_id
-		 * @param $new_title
-		 * @param $new_slug
-		 * @param $post
-		 *
-		 * @return mixed
-		 */
-		public function get_sample_permalink_html( $return, $post_id, $new_title, $new_slug, $post ) {
-			return $return;
 		}
 
 		/**

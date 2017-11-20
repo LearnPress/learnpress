@@ -1,20 +1,28 @@
 <?php
 /**
- * Template for displaying Next/Prev buttons inside quiz.
+ * Template for displaying Next/Prev buttons in quiz.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/buttons/nav.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 $user      = LP_Global::user();
 $quiz      = LP_Global::course_item_quiz();
 $course_id = get_the_ID();
+?>
 
-if ( $prev_id = $user->get_prev_question( $quiz->get_id(), $course_id ) ) {
-	?>
+<?php if ( $prev_id = $user->get_prev_question( $quiz->get_id(), $course_id ) ) { ?>
+
 	<?php do_action( 'learn-press/quiz/before-prev-question-button' ); ?>
 
     <form name="prev-question" class="prev-question form-button lp-form" method="post"
@@ -31,13 +39,11 @@ if ( $prev_id = $user->get_prev_question( $quiz->get_id(), $course_id ) ) {
     </form>
 
 	<?php do_action( 'learn-press/quiz/after-prev-question-button' ); ?>
-	<?php
-}
-?>
 
-<?php
-if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) {
-	?>
+<?php } ?>
+
+<?php if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) { ?>
+
 	<?php do_action( 'learn-press/quiz/before-next-question-button' ); ?>
 
     <form name="next-question" class="next-question form-button lp-form" method="post"
@@ -54,13 +60,11 @@ if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) {
     </form>
 
 	<?php do_action( 'learn-press/quiz/after-prev-question-button' ); ?>
-	<?php
-}
-?>
 
-<?php
-if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) && ! $user->has_completed_quiz( $quiz->get_id(), $course_id ) ) {
-	?>
+<?php } ?>
+
+<?php if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) && ! $user->has_completed_quiz( $quiz->get_id(), $course_id ) ) { ?>
+
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 
     <form name="skip-question" class="skip-question form-button" method="post"
@@ -77,7 +81,6 @@ if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) && ! $us
     </form>
 
 	<?php do_action( 'learn-press/quiz/after-skip-question-button' ); ?>
-	<?php
-}
-?>
+
+<?php } ?>
 

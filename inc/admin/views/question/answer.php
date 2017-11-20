@@ -12,8 +12,7 @@
         <td class="order">{{order}}</td>
         <td class="answer-text">
             <input type="text" v-model="answer.text"
-                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle" @keyup.38="previousItem"
-                   @keyup.40="nextItem"/>
+                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle"/>
         </td>
         <td class="answer-correct lp-answer-check">
             <input :type="radio ? 'radio' : 'checkbox'" :checked="correct ? 'checked' : ''" :value="answer.value"
@@ -67,21 +66,15 @@
                 },
                 updateTitle: function () {
                     if (this.changed) {
-                        $store.dispatch('updateAnswerTitle', this.answer);
+                        this.$emit('updateTitle', this.answer);
                     }
-                },
-                previousItem: function () {
-                    $('tr[data-answer-order=' + this.order + ']').prev().find('.answer-text input').focus();
-                },
-                nextItem: function () {
-                    $('tr[data-answer-order=' + this.order + ']').next().find('.answer-text input').focus();
                 },
                 changeCorrect: function (e) {
                     this.answer.is_true = (e.target.checked) ? 'yes' : '';
                     this.$emit('changeCorrect', this.answer);
                 },
                 deleteAnswer: function () {
-                    $store.dispatch('deleteAnswer', {
+                    this.$emit('deleteAnswer', {
                         id: this.answer.question_answer_id,
                         order: this.answer.answer_order
                     });

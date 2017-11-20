@@ -62,8 +62,20 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		// TODO: Implement update() method.
 	}
 
-	public function delete( &$quiz ) {
-		// TODO: Implement delete() method.
+	/**
+	 * Delete quiz.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param object $quiz_id
+	 */
+	public function delete( &$quiz_id ) {
+		// course curd
+		$curd = new LP_Course_CURD();
+		// remove quiz from course items
+		$curd->remove_item( $quiz_id );
+		// remove questions from quiz
+		$this->remove_questions( $quiz_id, '', true );
 	}
 
 	/**
@@ -112,10 +124,10 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				foreach ( $questions as $question_id ) {
 
 					// duplicate question
-					$new_question_id = $question_curd->duplicate($question_id, array( 'post_status' => 'publish' ) );
+					$new_question_id = $question_curd->duplicate( $question_id, array( 'post_status' => 'publish' ) );
 
 					// add duplicate question to new quiz
-					$this->add_question($new_quiz_id, $new_question_id );
+					$this->add_question( $new_quiz_id, $new_question_id );
 				}
 			}
 
@@ -484,57 +496,50 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Remove question from quiz.
 	 *
-	 * @param $quiz
+	 * @since 3.0.0
+	 *
+	 * @param $quiz_id
 	 * @param $question_id
+	 * @param bool $force
 	 *
 	 * @return bool|false|int|WP_Error
 	 */
-	public function remove_question( $quiz, $question_id ) {
+	public function remove_questions( $quiz_id, $question_id, $force = false ) {
 
-		if ( ! $quiz = learn_press_get_quiz( $quiz ) ) {
+		if ( ! $quiz = learn_press_get_quiz( $quiz_id ) ) {
 			return $this->get_error( 'QUIZ_NOT_EXISTS' );
 		}
 
 		global $wpdb;
 
-		// remove question from quiz
-		$delete = $wpdb->delete(
-			$wpdb->prefix . 'learnpress_quiz_questions',
-			array(
-				'quiz_id'     => $quiz->get_id(),
-				'question_id' => $question_id
-			),
-			array( '%d', '%d' )
-		);
+		if ( $force ) {
+			// remove all questions from quiz
+			$delete = $wpdb->delete(
+				$wpdb->prefix . 'learnpress_quiz_questions',
+				array( 'quiz_id' => $quiz_id, ),
+				array( '%d' )
+			);
 
-		// reorder questions
-		$this->reorder_questions( $quiz );
-		// increment quiz questions
-		learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
+			return $delete;
 
-		return $delete;
-	}
+		} else {
+			// remove question from quiz
+			$delete = $wpdb->delete(
+				$wpdb->prefix . 'learnpress_quiz_questions',
+				array(
+					'quiz_id'     => $quiz_id,
+					'question_id' => $question_id
+				),
+				array( '%d', '%d' )
+			);
 
-	/**
-	 * Delete permanently question from quiz.
-	 *
-	 * @param $quiz
-	 * @param $question_id
-	 *
-	 * @return array|bool|false|WP_Post
-	 */
-	public function delete_question( $quiz, $question_id ) {
+			// reorder questions
+			$this->reorder_questions( $quiz );
+			// increment quiz questions
+			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
 
-		$question_curd = new LP_Question_CURD();
-
-		// remove question from quiz
-		$this->remove_question( $quiz, $question_id );
-
-		// delete permanently question
-		$delete = $question_curd->delete_permanently_question( $question_id );
-
-		return $delete;
-
+			return $delete;
+		}
 	}
 
 	/**

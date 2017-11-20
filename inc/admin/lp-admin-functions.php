@@ -7,30 +7,91 @@
  * @version   1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
+if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
+	/**
+	 * Setup action links to the admin course, lesson, quiz, question. e.g: Add Duplicate link, hide View link for lesson, quiz so on.
+	 *
+	 * @param $actions
+	 *
+	 * @return mixed
+	 */
+	function learn_press_add_row_action_link( $actions ) {
+
+		global $post;
+
+		if ( LP_COURSE_CPT == $post->post_type ) {
+			$duplicate_link = admin_url( 'edit.php?post_type=lp_course&action=lp-duplicate-course&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
+			$duplicate_link = array(
+				array(
+					'link'  => $duplicate_link,
+					'title' => __( 'Duplicate this course', 'learnpress' ),
+					'class' => 'lp-duplicate-course'
+				)
+			);
+			$links          = apply_filters( 'learn_press_row_action_links', $duplicate_link );
+			if ( count( $links ) > 1 ) {
+				$drop_down = array( '<ul class="lpr-row-action-dropdown">' );
+				foreach ( $links as $link ) {
+					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] ) . '</li>';
+				};
+				$drop_down[] = '</ul>';
+				$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
+			} else {
+				$link = array_shift( $links );
+				$link = sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] );
+			}
+			$actions['lp-duplicate-row-action'] = $link;
+		} else if ( LP_QUIZ_CPT === $post->post_type ) {
+			unset( $actions['view'] );
+			$url                                = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
+			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
+			$actions['lp-duplicate-row-action'] = $link;
+		} else if ( LP_QUESTION_CPT === $post->post_type ) {
+			unset( $actions['view'] );
+			$url                                = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
+			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
+			$actions['lp-duplicate-row-action'] = $link;
+		} else if ( LP_LESSON_CPT === $post->post_type ) {
+			unset( $actions['view'] );
+			$url                                = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
+			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
+			$actions['lp-duplicate-row-action'] = $link;
+		}
+
+		return $actions;
+	}
+
+	add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
+	add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 }
 
-/**
- * Default admin settings pages
- *
- * @return mixed
- */
-function learn_press_settings_tabs_array() {
-	$default_tabs = array(
-		'general'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
-		'courses'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
-		'profile'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
-		'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
-		'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
-		'emails'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
-		'assets'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-assets.php",
-	);
+if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
+	/**
+	 * Default admin settings pages
+	 *
+	 * @return mixed
+	 */
+	function learn_press_settings_tabs_array() {
+		$default_tabs = array(
+			'general'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
+			'courses'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
+			'profile'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
+			'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
+			'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
+			'emails'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
+			'assets'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-assets.php",
+		);
 
-	// Deprecated
-	$tabs = apply_filters( 'learn_press_settings_tabs_array', $default_tabs );
+		// Deprecated
+		$tabs = apply_filters( 'learn_press_settings_tabs_array', $default_tabs );
 
-	return apply_filters( 'learn-press/admin/settings-tabs-array', $tabs );
+		return apply_filters( 'learn-press/admin/settings-tabs-array', $tabs );
+	}
 }
 
 
@@ -1281,59 +1342,6 @@ function set_post_order_in_admin( $wp_query ) {
 }
 
 add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
-/**
- * Add actions to the list of the course. e.g: Duplicate link
- *
- * @param $actions
- *
- * @return mixed
- */
-function learn_press_add_row_action_link( $actions ) {
-	global $post;
-	if ( LP_COURSE_CPT == $post->post_type ) {
-		$duplicate_link = admin_url( 'edit.php?post_type=lp_course&action=lp-duplicate-course&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
-		$duplicate_link = array(
-			array(
-				'link'  => $duplicate_link,
-				'title' => __( 'Duplicate this course', 'learnpress' ),
-				'class' => 'lp-duplicate-course'
-			)
-		);
-		$links          = apply_filters( 'learn_press_row_action_links', $duplicate_link );
-		if ( count( $links ) > 1 ) {
-			$drop_down = array( '<ul class="lpr-row-action-dropdown">' );
-			foreach ( $links as $link ) {
-				$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] ) . '</li>';
-			};
-			$drop_down[] = '</ul>';
-			$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
-		} else {
-			$link = array_shift( $links );
-			$link = sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] );
-		}
-		$actions['lp-duplicate-row-action'] = $link;
-	} else if ( LP_QUIZ_CPT === $post->post_type ) {
-		unset( $actions['view'] );
-		$url                              = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
-		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
-		$actions['lp-duplicate-row-action'] = $link;
-	} else if ( LP_QUESTION_CPT === $post->post_type ) {
-		unset( $actions['view'] );
-		$url                              = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
-		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
-		$actions['lp-duplicate-row-action'] = $link;
-	} else if ( LP_LESSON_CPT === $post->post_type ) {
-		unset( $actions['view'] );
-		$url                              = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
-		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
-		$actions['lp-duplicate-row-action'] = $link;
-	}
-
-	return $actions;
-}
-
-add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
-add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 
 function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;

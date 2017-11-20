@@ -28,8 +28,24 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			// TODO: Implement update() method.
 		}
 
-		public function delete( &$question ) {
-			// TODO: Implement delete() method.
+		/**
+		 * Delete question.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param object $question_id
+		 */
+		public function delete( &$question_id ) {
+			// remove all answer of question
+			$this->clear( $question_id );
+
+			// quiz curd
+			$curd = new LP_Quiz_CURD();
+
+			// get the quizzes that a question is assigned to
+			$quiz = $this->get_quiz( $question_id );
+			// remove question from quiz
+			$curd->remove_questions( $quiz->ID, $question_id );
 		}
 
 		/**
@@ -142,6 +158,29 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		}
 
 		/**
+		 * Get the quizzes that a question is assigned to.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 *
+		 * @return null|object WP_Post
+		 */
+		public function get_quiz( $question_id ) {
+
+			global $wpdb;
+
+			$query = $wpdb->prepare( "
+	  			SELECT post.* FROM {$wpdb->posts} post
+				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions quiz ON post.ID = quiz.quiz_id
+				WHERE quiz.question_id = %d
+			", $question_id );
+
+			// get single row
+			return $wpdb->get_row( $query );
+		}
+
+		/**
 		 * Change question type.
 		 *
 		 * @param $question_id
@@ -169,6 +208,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			if ( $new_question = LP_Question::get_question( $question_id, array( 'force' => true ) ) ) {
 
+				$user_id                 = get_current_user_id();
+				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_type );
+
 				// except convert from true or false
 				if ( ! ( ( $old_type == 'true_or_false' ) && ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) ) {
 					if ( $new_type == 'true_or_false' ) {
@@ -189,29 +231,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			}
 
 			return false;
-		}
-
-		/**
-		 * Delete permanently question.
-		 *
-		 * @param $question_id
-		 *
-		 * @return bool
-		 */
-		public function delete_permanently_question( $question_id ) {
-
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
-				return false;
-			}
-
-			// delete all question answers
-			$this->delete_answer( $question_id, '', $force = false );
-
-			// remove permanently question
-			wp_delete_post( $question_id );
-
-			return true;
-
 		}
 
 		/**
@@ -632,20 +651,18 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @param $question_id
 		 *
-		 * @return bool|false|int
+		 * @return bool
 		 */
-		public function delete_question_answers( $question_id ) {
+		public function clear( $question_id ) {
+
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
 			global $wpdb;
+			$wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
 
-			$result = $wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
-
-			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
-
-			return $result;
+			return true;
 		}
 
 		/**

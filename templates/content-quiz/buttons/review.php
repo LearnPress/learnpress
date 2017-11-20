@@ -1,18 +1,23 @@
 <?php
 /**
- * Template for displaying State quiz button
+ * Template for displaying Review quiz button.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/buttons/review.php.
  *
  * @author  ThimPress
- * @package LearnPress
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 $course = LP_Global::course();
 $quiz   = LP_Global::course_item_quiz();
-
-global $wp;
 ?>
 
 <?php do_action( 'learn-press/before-quiz-review-button' ); ?>

@@ -1,22 +1,25 @@
 <?php
 /**
- * Template for displaying order details
+ * Template for displaying order details.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/order/order-details.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-if ( ! isset( $order ) ) {
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php if ( ! isset( $order ) ) {
 	echo __( 'Invalid order', 'learnpress' );
 
 	return;
-}
-
-?>
+} ?>
 <h3><?php _e( 'Order Details', 'learnpress' ); ?></h3>
 
 <table class="lp-list-table order-table-details">
@@ -27,17 +30,18 @@ if ( ! isset( $order ) ) {
     </tr>
     </thead>
     <tbody>
-	<?php
-	if ( $items = $order->get_items() ) {
+	<?php if ( $items = $order->get_items() ) {
 		$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
 
 		foreach ( $items as $item_id => $item ) {
+
 			if ( apply_filters( 'learn-press/order/item-visible', true, $item ) ) {
+
 				$course = learn_press_get_course( $item['course_id'] );
 				if ( ! $course->exists() ) {
 					continue;
-				}
-				?>
+				} ?>
+
                 <tr class="<?php echo esc_attr( apply_filters( 'learn-press/order/item-class', 'order-item', $item, $order ) ); ?>">
                     <td class="course-name">
 						<?php
@@ -56,20 +60,21 @@ if ( ! isset( $order ) ) {
 						?>
                     </td>
                 </tr>
+
 				<?php
 			}
 		}
-	}
+	} ?>
 
+	<?php
 	// @deprecated
 	do_action( 'learn_press_order_items_table', $order );
 
 	/**
 	 * @since 3.0.0
 	 */
-	do_action( 'learn-press/order/items-table', $order );
+	do_action( 'learn-press/order/items-table', $order ); ?>
 
-	?>
     </tbody>
     <tfoot>
     <tr>
@@ -83,7 +88,4 @@ if ( ! isset( $order ) ) {
     </tfoot>
 </table>
 
-<?php
-
-do_action( 'learn-press/order/after-table-details', $order );
-?>
+<?php do_action( 'learn-press/order/after-table-details', $order ); ?>

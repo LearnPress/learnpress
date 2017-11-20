@@ -436,6 +436,56 @@
         .section-item {
             .item-actions {
                 text-align: right;
+                .actions {
+                    .action {
+                        width: 30px;
+                        height: 30px;
+                        padding: 0;
+                        text-align: center;
+                        position: relative;
+                        vertical-align: middle;
+                        cursor: pointer;
+                        display: inline-block;
+                        margin: 0;
+                        a {
+                            margin-top: 5px;
+                        }
+                        &.delete-item {
+                            ul {
+                                position: absolute;
+                                top: 100%;
+                                width: 130px;
+                                padding: 2px 0;
+                                right: 0;
+                                background: #fdfeff;
+                                margin: 0;
+                                border: 1px solid #DDD;
+                                z-index: 9;
+                                display: none;
+                                li {
+                                    margin: 0;
+                                    padding: 2px;
+                                    a {
+                                        color: #d05d5d;
+                                        text-decoration: none;
+                                    }
+                                    &:hover {
+                                        background: #dbf5ff;
+                                        color: #d05d5d;
+                                    }
+                                }
+                            }
+                            &:hover {
+                                .dashicons-trash {
+                                    color: #d05d5d;
+                                }
+                                ul {
+                                    display: block;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             &:hover {
@@ -766,6 +816,7 @@
     z-index: 99999;
     opacity: 0.8;
 }
+
 #learn-press-message-box-window {
     position: fixed;
     top: 0;
@@ -776,6 +827,7 @@
     color: #FFF;
     text-align: center;
 }
+
 #message-box-wrap {
     margin: 0 auto;
     /* text-align: center; */
@@ -783,26 +835,31 @@
     text-align: left;
     max-width: 70%;
 }
+
 .message-box-title {
     color: #FFF;
     margin: 0 0 40px 0;
     font-size: 34px;
 }
+
 .message-box-content {
     font-size: 16px;
     line-height: 1.5;
 }
+
 .message-box-animation {
     background-image: url("../../images/animation.gif");
     width: 220px;
     height: 20px;
     margin: 20px 0 0;
 }
+
 .message-box-buttons {
     margin: 20px 0 0;
     border-top: 1px solid #929292;
     padding-top: 20px;
 }
+
 .message-box-button {
     margin-right: 10px !important;
 }

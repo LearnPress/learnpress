@@ -1,10 +1,18 @@
 <?php
 /**
- * @author        ThimPress
- * @package       LearnPress/Templates
- * @version       1.0
+ * Template for displaying title of course within the loop.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/loop/course/title.php.
+ *
+ * @author  ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 ?>
+
 <h3 class="course-title"><?php the_title(); ?></h3>

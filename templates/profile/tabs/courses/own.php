@@ -1,21 +1,27 @@
 <?php
 /**
- * User own courses tab.
+ * Template for displaying own courses in courses tab of user profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/courses/own.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 $profile = learn_press_get_profile();
 $query   = $profile->query_courses( 'own', array( 'status' => LP_Request::get_string( 'filter-status' ) ) );
-
 ?>
+
 <div class="learn-press-subtab-content">
+
     <h3 class="profile-heading">
 		<?php _e( 'My Courses', 'learnpress' ); ?>
     </h3>
@@ -28,11 +34,9 @@ $query   = $profile->query_courses( 'own', array( 'status' => LP_Request::get_st
         </ul>
 	<?php } ?>
 
-	<?php
-	if ( ! $query['total'] ) {
+	<?php if ( ! $query['total'] ) {
 		learn_press_display_message( __( 'No courses!', 'learnpress' ) );
-	} else {
-		?>
+	} else { ?>
 
         <ul class="learn-press-courses profile-courses-list">
 			<?php

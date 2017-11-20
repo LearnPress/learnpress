@@ -39,7 +39,7 @@
                             term: term || this.term,
                             paged: this.paged,
                             exclude: this.exclude,
-                            'lp-ajax': 'modal-search-items'
+                            'lp-ajax': 'modal_search_items'
                         }, {
                             emulateJSON: true,
                             params: {}

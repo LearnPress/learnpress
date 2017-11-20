@@ -1,29 +1,33 @@
 <?php
 /**
- * Display content of item is viewing inside course.
+ * Template for displaying item content in single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/content-item.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) || exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 global $lp_course, $lp_course_item;
 $user = learn_press_get_current_user();
-
 ?>
-<div id="learn-press-content-item">
-	<?php if ( 1==0 &&! learn_press_is_content_only() ) { ?>
-        <iframe id="ifr-course-item" src="<?php echo learn_press_get_course_popup_link();?>" onreadystatechange="window.xxxx()">
 
-        </iframe>
-	<?php } ?>
+<div id="learn-press-content-item">
 
 	<?php do_action( 'learn-press/course-item-content-header', $lp_course_item->get_id(), $lp_course->get_id() ); ?>
 
     <div class="content-item-scrollable">
+
         <div class="content-item-wrap">
+
 			<?php
 			/**
 			 * @deprecated
@@ -63,9 +67,9 @@ $user = learn_press_get_current_user();
 			?>
 
         </div>
+
     </div>
 
 	<?php do_action( 'learn-press/course-item-content-footer', $lp_course_item->get_id(), $lp_course->get_id() ); ?>
-
 
 </div>

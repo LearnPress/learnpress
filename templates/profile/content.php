@@ -2,17 +2,20 @@
 /**
  * Template for displaying user profile content.
  *
+ * This template can be overridden by copying it to yourtheme/learnpress/profile/content.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
+<?php
 if ( ! isset( $user ) ) {
 	$user = learn_press_get_current_user();
 }
@@ -29,6 +32,7 @@ $current = $profile->get_current_tab();
 			continue;
 		}
 		?>
+
         <div id="profile-content-<?php echo esc_attr( $tab_key ); ?>">
 			<?php
 			// show profile sections
@@ -55,6 +59,7 @@ $current = $profile->get_current_tab();
 
 			<?php do_action( 'learn-press/after-profile-content' ); ?>
         </div>
+
 	<?php } ?>
 
 </div>

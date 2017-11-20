@@ -2,14 +2,20 @@
 /**
  * Template for displaying content of question.
  *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-question/content.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or exit();
-$question = LP_Global::quiz_question();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php $question = LP_Global::quiz_question(); ?>
 
 <div class="content-question-summary" id="content-question-<?php echo $question->get_id(); ?>">
 	<?php
@@ -18,7 +24,5 @@ $question = LP_Global::quiz_question();
 	 * @see learn_press_content_item_summary_question_content()
 	 * @see learn_press_content_item_summary_question()
 	 */
-	do_action( 'learn-press/question-content-summary' );
-
-	?>
+	do_action( 'learn-press/question-content-summary' ); ?>
 </div>

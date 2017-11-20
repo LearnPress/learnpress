@@ -1,32 +1,37 @@
 <?php
 /**
- * Form for displaying change password form in profile page
+ * Template for displaying change password form in profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/settings/tabs/change-password.php.
  *
  * @author  ThimPress
- * @version 3.0.0
- * @package LearnPress/Templates
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) || exit;
-
-global $profile;
-
-if ( ! isset( $section ) ) {
-	$section = 'change-password';
-}
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
-<form method="post" name="profile-change-password" enctype="multipart/form-data" class="learn-press-form">
-	<?php
 
+<?php global $profile; ?>
+
+<?php if ( ! isset( $section ) ) {
+	$section = 'change-password';
+} ?>
+
+<form method="post" name="profile-change-password" enctype="multipart/form-data" class="learn-press-form">
+
+	<?php
 	/**
 	 * @since 3.0.0
 	 */
-	do_action( 'learn-press/before-profile-change-password-fields', $profile );
-	?>
-    <ul class="form-fields">
-		<?php
+	do_action( 'learn-press/before-profile-change-password-fields', $profile ); ?>
 
+    <ul class="form-fields">
+
+		<?php
 		// @deprecated
 		do_action( 'learn_press_before_' . $section . '_edit_fields' );
 
@@ -35,6 +40,7 @@ if ( ! isset( $section ) ) {
 		 */
 		do_action( 'learn-press/begin-profile-change-password-fields', $profile );
 		?>
+
         <li class="form-field">
             <label for="pass0"><?php _e( 'Old password', 'learnpress' ); ?></label>
             <div class="form-field-input">
@@ -55,8 +61,8 @@ if ( ! isset( $section ) ) {
                    class="description lp-field-error-message hide-if-js"><?php _e( 'New password does not match!', 'learnpress' ); ?></p>
             </div>
         </li>
-		<?php
 
+		<?php
 		/**
 		 * @since 3.0.0
 		 */
@@ -65,6 +71,7 @@ if ( ! isset( $section ) ) {
 		// @deprecated
 		do_action( 'learn_press_after_' . $section . '_edit_fields' );
 		?>
+
     </ul>
 
 	<?php
@@ -73,6 +80,7 @@ if ( ! isset( $section ) ) {
 	 */
 	do_action( 'learn-press/after-profile-change-password-fields', $profile );
 	?>
+
     <p>
         <input type="hidden" name="save-profile-password"
                value="<?php echo wp_create_nonce( 'learn-press-save-profile-password' ); ?>">

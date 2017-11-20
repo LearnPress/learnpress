@@ -1,41 +1,16 @@
 <?php
 /**
- * Template for displaying content of quiz's question
+ * Template for displaying question content in quiz.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/question-content.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-die();
-$user   = learn_press_get_current_user();
-$course = LP()->global['course'];
-$quiz   = isset( $item ) ? $item : LP()->global['course-item'];
-if ( !$quiz ) {
-	return;
-}
-$question_id = $user->get_current_quiz_question( $quiz->id, $course->get_id() );//$quiz->get_current_question();
-
-if ( !$question_id ) {
-	return;
-}
-$question = LP_Question::get_question( $question_id );
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
-<?php if ( false !== ( $title = apply_filters( 'learn_press_quiz_question_title', $question->get_title() ) ) ): ?>
-	<h4 class="quiz-question-title"><?php echo $title; ?></h4>
-<?php endif; ?>
-<div class="quiz-question-content">
-	<div method="post" name="quiz-question-content">
-		<?php if ( false !== ( $content = apply_filters( 'learn_press_quiz_question_content', $question->get_content() ) ) ): ?>
-			<div class="question-content">
-				<?php echo $content; ?>
-			</div>
-		<?php endif; ?>
-		<?php
-		$question->render( array( 'quiz_id' => $quiz->id, 'course_id' => $course->get_id() ) );
-		?>
-		<?php learn_press_get_template( 'content-question/hint.php', array( 'quiz' => $quiz ) ); ?>
-	</div>
-</div>

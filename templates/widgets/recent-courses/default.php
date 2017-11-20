@@ -10,7 +10,10 @@
  * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) || exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
 <?php

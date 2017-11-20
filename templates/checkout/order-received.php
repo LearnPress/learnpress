@@ -1,18 +1,24 @@
 <?php
 /**
- * Template for displaying order details
+ * Template for displaying order detail.
  *
- * @author        ThimPress
- * @package       LearnPress/Templates
- * @version       3.0.0
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/order-received.php.
+ *
+ * @author  ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 if ( isset( $order ) ) {
-	if ( is_int( $order ) ) {
+
+    if ( is_int( $order ) ) {
 		$order = learn_press_get_order( $order );
 	}
 	?>

@@ -1,10 +1,18 @@
 <?php
 /**
+ * Template for displaying review quiz title.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/review-title.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
-defined( 'ABSPATH' ) or die();
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
 <h3><?php _e( 'Review', 'learnpress' ); ?></h3>

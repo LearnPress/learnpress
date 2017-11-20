@@ -1,17 +1,22 @@
 <?php
 /**
- * Template for displaying course items navigation
+ * Template for displaying course items navigation.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/nav-items.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 2.1.5
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) || exit;
-
-$nav = learn_press_get_nav_course_item_url( $course_id, $item_id, $content_only );
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php $nav = learn_press_get_nav_course_item_url( $course_id, $item_id, $content_only ); ?>
+
 <nav id="lp-navigation" class="navigation course-item-navigation" role="navigation">
 	<div class="nav-links">
 		<?php if ( isset( $nav['back']['link'] ) ) { ?>

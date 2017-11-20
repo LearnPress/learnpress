@@ -1,27 +1,31 @@
 <?php
 /**
- * User Courses tab
+ * Template for displaying courses tab in user profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/tabs/courses.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 $profile = learn_press_get_profile();
-
 $query   = $profile->query_courses();
+?>
 
-if ( ! $query['total'] ) {
+<?php if ( ! $query['total'] ) {
 	learn_press_display_message( __( 'You haven\'t got any courses yet!', 'learnpress' ) );
 
 	return;
-}
+} ?>
 
-?>
 <div class="learn-press-subtab-content">
     <h3 class="profile-heading"><?php _e( 'My Courses', 'learnpress' ); ?></h3>
 

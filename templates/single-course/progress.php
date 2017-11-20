@@ -1,22 +1,37 @@
 <?php
 /**
- * @author        ThimPress
- * @package       LearnPress/Templates
- * @version       2.1.6
+ * Template for displaying progress of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/progress.php.
+ *
+ * @author  ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
+ */
+
+/**
+ * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 $course = LP_Global::course();
 $user   = learn_press_get_current_user();
+?>
+
+<?php
 if ( ! $course ) {
 	return;
 }
-$course_data = $user->get_course_data( get_the_ID() );
-
-$status = $user->get( 'course-status', $course->get_id() );
 if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
 	return;
 }
+?>
+
+<?php
+$course_data       = $user->get_course_data( get_the_ID() );
+$status            = $user->get( 'course-status', $course->get_id() );
 $force             = isset( $force ) ? $force : false;
 $num_of_decimal    = 0;
 $result            = $course->evaluate_course_results( null, $force );
@@ -24,17 +39,17 @@ $current           = absint( $result );
 $passing_condition = round( $course->get_passing_condition(), $num_of_decimal );
 $passed            = $current >= $passing_condition;
 $heading           = apply_filters( 'learn_press_course_progress_heading', $status == 'finished' ? __( 'Your results', 'learnpress' ) : __( 'Learning progress', 'learnpress' ) );
-$course_items      = sizeof( $course->get_curriculum_items() );
 $completed_items   = $course->count_completed_items();
 $course_results    = $course->evaluate_course_results();
-
-$course_results = $course_data->get_results( false );
+$course_results    = $course_data->get_results( false );
 ?>
+
 <div class="learn-press-course-results-progress">
+
     <div class="items-progress">
-		<?php if ( $heading !== false ): ?>
+		<?php if ( $heading !== false ) { ?>
             <h4 class="lp-course-progress-heading"><?php esc_html_e( 'Items completed', 'learnpress' ); ?></h4>
-		<?php endif; ?>
+		<?php } ?>
         <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course_results['count_items'] ); ?></span>
         <div class="lp-course-progress">
             <div class="lp-progress-bar">
@@ -43,8 +58,8 @@ $course_results = $course_data->get_results( false );
                 </div>
             </div>
         </div>
-
     </div>
+
     <div class="course-progress">
         <h4 class="lp-course-progress-heading">
 			<?php esc_html_e( 'Course results', 'learnpress' ); ?>
@@ -73,4 +88,5 @@ $course_results = $course_data->get_results( false );
             </div>
         </div>
     </div>
+
 </div>

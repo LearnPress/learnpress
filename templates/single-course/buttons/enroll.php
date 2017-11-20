@@ -1,18 +1,23 @@
 <?php
 /**
- * Template for displaying Enroll button.
+ * Template for displaying Enroll button in single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/buttons/enroll.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
-
-if ( ! isset( $course ) ) {
-	$course = learn_press_get_course();
-}
 ?>
+
+<?php if ( ! isset( $course ) ) {
+	$course = learn_press_get_course();
+} ?>
 
 <?php do_action( 'learn-press/before-enroll-form' ); ?>
 

@@ -1,26 +1,30 @@
 <?php
 /**
- * Template for displaying the content of current question
+ * Template for displaying quiz result.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/result.php.
  *
  * @author  ThimPress
- * @package LearnPress
- * @version 2.0.7
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
-$user = LP_Global::user();
-$quiz = LP_Global::course_item_quiz();
-//$course_data = $user->get_course_data( get_the_ID() );
+<?php
+$user      = LP_Global::user();
+$quiz      = LP_Global::course_item_quiz();
 $quiz_data = $user->get_quiz_data( $quiz->get_id() );
 $result    = $quiz_data->get_results( false );
-if ( $quiz_data->is_review_questions() ) {
-	return;
-}
-//learn_press_debug( $result );
 ?>
+
+<?php if ( $quiz_data->is_review_questions() ) {
+	return;
+} ?>
 
 <div class="quiz-result <?php echo esc_attr( $result['grade'] ); ?>">
 
@@ -54,4 +58,5 @@ if ( $quiz_data->is_review_questions() ) {
             <p><?php echo $result['question_empty']; ?></p>
         </li>
     </ul>
+
 </div>

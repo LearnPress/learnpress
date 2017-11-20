@@ -47,7 +47,7 @@
                 // change question type
                 changeType: function (type) {
                     if (this.type !== type) {
-                        $store.dispatch('changeQuestionType', type);
+                        this.$emit('changeType', type);
                     }
                 }
             }

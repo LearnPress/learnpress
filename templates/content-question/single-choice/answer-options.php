@@ -1,33 +1,42 @@
 <?php
 /**
- * Template for displaying content of single-choice question
+ * Template for displaying answer options of single-choice question.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-question/single-choice/answer-options.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 2.1.5
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 $course = LP_Global::course();
 $quiz   = LP_Global::course_item_quiz();
-$user   = learn_press_get_current_user();
+$user   = LP_Global::user();
+
+isset( $question ) or die( __( 'Invalid question!', 'learnpress' ) );
 
 $question = $quiz->get_viewing_question();
+
+$question->show_correct_answers( $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() ) ? 'yes' : false );
 
 if ( ! $answers = $question->get_answers() ) {
 	return;
 }
 ?>
-<ul id="answer-options-<?php echo $question->get_id();?>" <?php echo $answers->answers_class(); ?>>
 
-	<?php foreach ( $answers as $k => $answer ): ?>
+<ul id="answer-options-<?php echo $question->get_id(); ?>" <?php echo $answers->answers_class(); ?>>
+
+	<?php foreach ( $answers as $k => $answer ) { ?>
 
         <li <?php echo $answer->option_class(); ?> @click="toggle">
-            <input type="radio"
-                   class="option-check"
-                   name="learn-press-question-<?php echo $question->get_id(); ?>"
+            <input type="radio" class="option-check" name="learn-press-question-<?php echo $question->get_id(); ?>"
                    value="<?php echo $answer->get_value(); ?>"
 				<?php $answer->checked(); ?>
 				<?php $answer->disabled(); ?> />
@@ -39,6 +48,6 @@ if ( ! $answers = $question->get_answers() ) {
 
         </li>
 
-	<?php endforeach; ?>
+	<?php } ?>
 
 </ul>

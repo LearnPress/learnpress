@@ -41,7 +41,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_action( 'edit_form_after_editor', array( __CLASS__, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
-//			$this->add_map_method( 'before_delete', 'delete_question_answers' );
+			$this->add_map_method( 'before_delete', 'before_delete_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -83,54 +83,26 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor', array(
 				'root' => array(
-					'id'                  => $post->ID,
-					'open'                => false,
-					'title'               => get_the_title( $post->ID ),
-					'type'                => array(
+					'id'            => $post->ID,
+					'auto_draft'    => get_post_status( $post->ID ) == 'auto-draft',
+					'open'          => false,
+					'title'         => get_the_title( $post->ID ),
+					'type'          => array(
 						'key'   => $question->get_type(),
 						'label' => $question->get_type_label()
 					),
-					'answers'             => $answers,
-					'ajax'                => admin_url( '' ),
-					'action'              => 'admin_question_editor',
-					'nonce'               => wp_create_nonce( 'learnpress_admin_question_editor' ),
-					'questionTypes'       => LP_Question_Factory::get_types(),
-					'pageNow'             => $pagenow
+					'answers'       => $answers,
+					'ajax'          => admin_url( '' ),
+					'action'        => 'admin_question_editor',
+					'nonce'         => wp_create_nonce( 'learnpress_admin_question_editor' ),
+					'questionTypes' => LP_Question_Factory::get_types()
 				)
 			) );
 
 		}
 
-
 		/**
-		 * Delete all question answers when delete question.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param $question_id
-		 */
-		public function delete_question_answers( $question_id ) {
-			// question curd
-			$curd = new LP_Question_CURD();
-			// remove all answer of quesion
-			$curd->delete_question_answers( $question_id );
-		}
-
-		/**
-		 * Init question.
-		 *
-		 * @since 3.0.0
-		 */
-		public function init() {
-			global $pagenow, $post_type;
-			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
-			if ( ! is_array( $hidden ) && empty( $hidden ) ) {
-				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
-			}
-		}
-
-		/**
-		 * Register question post type
+		 * Register question post type.
 		 */
 		public function register() {
 			register_taxonomy( 'question_tag', array( LP_QUESTION_CPT ),
@@ -184,6 +156,32 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				'hierarchical'       => true,
 				'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
 			);
+		}
+
+		/**
+		 * Init question.
+		 *
+		 * @since 3.0.0
+		 */
+		public function init() {
+			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
+			if ( ! is_array( $hidden ) && empty( $hidden ) ) {
+				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
+			}
+		}
+
+		/**
+		 * Remove question from quiz items.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 */
+		public function before_delete_question( $question_id ) {
+			// question curd
+			$curd = new LP_Question_CURD();
+			// remove question from course items
+			$curd->delete( $question_id );
 		}
 
 		/**
@@ -275,30 +273,31 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function columns_content( $name, $post_id = 0 ) {
 			switch ( $name ) {
 				case 'lp_quiz':
-					$quizzes = learn_press_get_question_quizzes( $post_id );
-					if ( $quizzes ) {
-						foreach ( $quizzes as $quiz ) {
-							echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
-							echo '<div class="row-actions">';
-							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learnpress' ) );
-							echo "&nbsp;|&nbsp;";
-							printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learnpress' ) );
-							echo "&nbsp;|&nbsp;";
-							if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
-								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_quiz' ), __( 'Remove Filter', 'learnpress' ) );
-							} else {
-								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_quiz', $quiz->ID ), __( 'Filter', 'learnpress' ) );
-							}
-							echo '</div></div>';
-						}
+					// question curd
+					$curd = new LP_Question_CURD();
+					// get quiz
+					$quiz = $curd->get_quiz( $post_id );
 
+					if ( $quiz ) {
+						echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
+						echo '<div class="row-actions">';
+						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learnpress' ) );
+						echo "&nbsp;|&nbsp;";
+						printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learnpress' ) );
+						echo "&nbsp;|&nbsp;";
+						if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
+							printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_quiz' ), __( 'Remove Filter', 'learnpress' ) );
+						} else {
+							printf( '<a href="%s">%s</a>', add_query_arg( 'filter_quiz', $quiz->ID ), __( 'Filter', 'learnpress' ) );
+						}
+						echo '</div></div>';
 					} else {
 						_e( 'Not assigned yet', 'learnpress' );
 					}
-
 					break;
 				case 'type':
 					echo learn_press_question_name_from_slug( get_post_meta( $post_id, '_lp_type', true ) );
+					break;
 			}
 		}
 

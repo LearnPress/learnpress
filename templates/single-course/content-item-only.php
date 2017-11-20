@@ -1,4 +1,21 @@
 <?php
+/**
+ * Template for displaying content item only in single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/content-item-only.php.
+ *
+ * @author  ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
+ */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 // Get header for our template
 learn_press_get_template( 'single-course/header-content-item-only.php' );
 $user   = learn_press_get_current_user();

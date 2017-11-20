@@ -1,31 +1,32 @@
 <?php
 /**
- * Template for displaying sections in the top of profile tab content.
+ * Template for displaying sections in the top of user profile tab content.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/tabs/sections.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
 /**
  * Prevent loading this file directly
  */
-defined( 'ABSPATH' ) || exit;
+defined( 'ABSPATH' ) || exit();
 ?>
 
-<?php
-global $profile;
+<?php global $profile; ?>
 
+<?php
 if ( ! isset( $tab_key, $tab_data ) ) {
 	return;
 }
 
 if ( empty( $tab_data['sections'] ) ) {
 	return;
-}
+} ?>
 
-$link = $profile->get_tab_link( $tab_key );
-?>
+<?php $link = $profile->get_tab_link( $tab_key ); ?>
 
 <ul class="lp-tab-sections">
 

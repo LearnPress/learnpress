@@ -2,16 +2,24 @@
 /**
  * Template for displaying user email field which enable checkout as guest.
  *
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/guest-email.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.0.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or exit();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 $checkout  = LP()->checkout();
 $is_exists = $checkout->checkout_email_exists();
 ?>
+
 <div id="checkout-guest-email" class="<?php echo $is_exists ? ' email-exists' : ''; ?>">
     <h4 class="form-heading"><?php _e( 'Your email', 'learnpress' ); ?></h4>
     <p class="form-desc"><?php _e( 'Your real email we will send order code.', 'learnpress' ); ?></p>

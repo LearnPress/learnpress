@@ -31,6 +31,9 @@
         id: function (state) {
             return state.id;
         },
+        autoDraft: function (state) {
+            return state.auto_draft;
+        },
         type: function (state) {
             return state.type;
         },
@@ -68,6 +71,11 @@
 
     var mutations = {
 
+        'UPDATE_AUTO_DRAFT_STATUS': function (state, status) {
+            // check auto draft status
+            state.auto_draft = status;
+        },
+
         'UPDATE_STATUS': function (state, status) {
             state.status = status;
         },
@@ -99,6 +107,26 @@
     };
 
     var actions = {
+
+        draftQuestion: function (context, payload) {
+            var auto_draft = context.getters['autoDraft'];
+
+            if (auto_draft) {
+                Vue.http.LPRequest({
+                    type: 'draft-question',
+                    question: JSON.stringify(payload)
+                }).then(function (response) {
+                        var result = response.body;
+
+                        if (!result.success) {
+                            return;
+                        }
+
+                        context.commit('UPDATE_AUTO_DRAFT_STATUS', false);
+                    }
+                )
+            }
+        },
 
         changeQuestionType: function (context, type) {
 

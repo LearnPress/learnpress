@@ -7,9 +7,10 @@
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 /**
  * @param $the_course
@@ -152,25 +153,6 @@ function learn_press_get_item_courses( $item ) {
 			INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
 			WHERE si.item_id = %d
 	", $item );
-
-	return $wpdb->get_results( $query );
-}
-
-/**
- * Get the quizzes that a question is assigned to
- *
- * @param $question_id
- *
- * @return mixed
- */
-function learn_press_get_question_quizzes( $question_id ) {
-	global $wpdb;
-	$query = $wpdb->prepare( "
-		SELECT q.*
-		FROM {$wpdb->posts} q
-		INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON q.ID = qq.quiz_id
-		WHERE qq.question_id = %d
-	", $question_id );
 
 	return $wpdb->get_results( $query );
 }
@@ -884,7 +866,7 @@ if ( ! function_exists( 'learn_press_item_sample_permalink' ) ) {
 		if ( $post->post_type !== LP_QUIZ_CPT && $post->post_type !== LP_LESSON_CPT ) {
 			return $permalink;
 		}
-//	    $permalink  = str_replace( $post->post_name, '%pagename%' , $permalink );
+
 		$permalink[0] = str_replace( $post->post_name, '%pagename%', $permalink[0] );
 		if ( ! preg_match( '~^https?://~', $permalink[0] ) ) {
 			add_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10, 5 );

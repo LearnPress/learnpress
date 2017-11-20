@@ -64,7 +64,7 @@
                 window.location.href, {
                     order_id: $('#post_ID').val(),
                     items: [item_id],
-                    'lp-ajax': 'remove-items-from-order'
+                    'lp-ajax': 'remove_items_from_order'
                 }, {
                     emulateJSON: true,
                     params: {}
@@ -107,7 +107,7 @@
                             window.location.href, {
                                 order_id: this.contextId,
                                 items: this.selected,
-                                'lp-ajax': 'add-items-to-order'
+                                'lp-ajax': 'add_items_to_order'
                             }, {
                                 emulateJSON: true,
                                 params: {}
