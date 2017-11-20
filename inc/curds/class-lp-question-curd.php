@@ -495,7 +495,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$question->set_data( 'answer_options', array_merge( $answers, array( $new_answer ) ) );
 			}
 
-			return $insert;
+			return $wpdb->insert_id;
 		}
 
 

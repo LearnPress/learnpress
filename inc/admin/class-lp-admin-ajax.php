@@ -810,10 +810,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					// new answer
 					$answer = LP_Question::get_default_answer();
 					// add new
-					$result = $question_curd->new_answer( $question_id, $answer );
+					$new_answer_id = $question_curd->new_answer( $question_id, $answer );
 
-					if ( $question_curd->new_answer( $question_id, $answer ) ) {
-						$result = $answer;
+					$question = LP_Question::get_question( $question_id );
+
+					if ( $new_answer_id ) {
+						$result = array_merge( $answer, array(
+							'question_answer_id' => $new_answer_id,
+							'question_id'        => $question_id,
+							'answer_order'       => count( $question->get_data( 'answer_options' ) )
+						) );
 					}
 
 					break;

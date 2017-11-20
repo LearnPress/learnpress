@@ -1763,7 +1763,7 @@ if ( ! function_exists( 'learn_press_duplicate_post_meta' ) ) {
 
 }
 
-add_filter( 'learn_press_question_types', 'learn_press_sort_questions', 99 );
+//add_filter( 'learn_press_question_types', 'learn_press_sort_questions', 99 );
 if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 	function learn_press_sort_questions( $types ) {
 		$user_id        = get_current_user_id();
@@ -1771,7 +1771,7 @@ if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 		if ( ! empty( $question_types ) ) {
 			$sort = array();
 			// re-sort array descending
-			arsort( $question_types );
+			arsort( $types );
 			$new_types = array();
 			$ktypes    = array_keys( $types );
 
