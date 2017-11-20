@@ -20,6 +20,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param $post_type
 		 */
 		public function __construct( $post_type ) {
+
 			add_action( 'init', array( $this, 'register_post_statues' ) );
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
@@ -34,11 +35,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				->add_map_method( 'before_delete', 'delete_order_data' )
 				->add_map_method( 'save', 'save_order' );
 
+
 			add_filter( 'wp_count_posts', array( $this, 'filter_count_posts' ), 100, 3 );
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
 			add_filter( 'posts_where_paged', array( $this, 'filter_orders' ) );
 
 			parent::__construct( $post_type );
+
 		}
 
 		/**
@@ -169,6 +172,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			}
 
+			// Also trash child orders
+			if ( $order->is_multi_users() && ( $child_orders = $order->get_child_orders() ) ) {
+				foreach ( $child_orders as $child_order ) {
+					wp_trash_post($child_order);
+				}
+			}
+
 			$user_curd  = new LP_User_CURD();
 			$order_data = array();
 			foreach ( $users as $user_id ) {
@@ -234,6 +244,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			}
 
+			// Restore child order if current order is for multi users
+			if ( $order->is_multi_users() && ( $child_orders = $order->get_child_orders() ) ) {
+				foreach ( $child_orders as $child_order ) {
+					wp_untrash_post($child_order);
+				}
+			}
+
 			$user_curd = new LP_User_CURD();
 
 			foreach ( $user_item_data as $user_item_id => $data ) {
@@ -254,79 +271,25 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
-		 * Delete all records related to order being deleted
+		 * Delete all records related to order being deleted.
+         *
+         * @since 3.0.0
 		 *
-		 * @param $post_id
+		 * @param int $post_id
+		 *
+		 * @return mixed
 		 */
 		public function delete_order_data( $post_id ) {
 
-			global $wpdb, $post;
 			if ( get_post_type( $post_id ) != 'lp_order' ) {
-				return;
+				return false;
 			}
-			LP_Debug::startTransaction();
-			// get order items
-			echo $query = $wpdb->prepare( "
-				SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items
-				WHERE order_id = %d
-			", $post_id );
-			if ( $item_ids = $wpdb->get_col( $query ) ) {
 
-				// get user order
-				$user_id = intval( get_post_meta( $post_id, '_user_id', true ) );
-
-				// delete order item meta data
-				echo $query = "
-					DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
-					WHERE learnpress_order_item_id IN(" . join( ',', $item_ids ) . ")
-				";
-				$wpdb->query( $query );
-
-				// delete order items
-				echo $query = $wpdb->prepare( "
-					DELETE FROM {$wpdb->prefix}learnpress_order_items
-					WHERE order_id = %d
-				", $post_id );
-				$wpdb->query( $query );
-
-				echo $query = $wpdb->prepare( "
-					SELECT item_id
-					FROM {$wpdb->prefix}learnpress_user_items
-					WHERE ref_id = %d AND user_id = %d AND ref_type = %s
-				", $post_id, $user_id, LP_ORDER_CPT );
-				if ( $course_ids = $wpdb->get_col( $query ) ) {
-					// Delete user course items
-					echo $query = $wpdb->prepare( "
-						DELETE
-						FROM ui, uim
-						USING {$wpdb->prefix}learnpress_user_items AS ui
-						LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
-						WHERE ref_id = %d AND user_id = %d AND ref_type = %s
-					", $post_id, $user_id, LP_ORDER_CPT );
-					$wpdb->query( $query );
-
-					// Delete other items
-					$format = array_fill( 0, sizeof( $course_ids ), '%d' );
-					$args   = array_merge( $course_ids, array( $user_id ) );
-					echo $query = $wpdb->prepare( "
-						DELETE
-						FROM ui, uim
-						USING {$wpdb->prefix}learnpress_user_items AS ui
-						LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
-						WHERE ref_id IN(" . join( ',', $format ) . ") AND user_id = %d
-					", $args );
-					$wpdb->query( $query );
-
-				}
-
-				// delete all data related user order
-				if ( $user_id ) {
-					learn_press_delete_user_data( $user_id );
-				}
+			if ( $order = learn_press_get_order( $post_id ) ) {
+				return LP_Factory::get_order_factory()->delete_order_data( $order );
 			}
-			LP_Debug::rollbackTransaction();
 
-			die();
+			return false;
 		}
 
 		/**

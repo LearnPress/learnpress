@@ -78,10 +78,10 @@ class LP_User_Factory {
 				case 'pending':
 				case 'processing':
 				case 'cancelled':
-					self::_update_user_item_pending( $order, $new_status );
+					//self::_update_user_item_pending( $order, $new_status );
 					break;
 				case'completed':
-					self::_update_user_item_purchased( $order, $new_status );
+					self::_update_user_item_purchased( $order, $old_status, $new_status );
 			}
 			//LP_Debug::commitTransaction();
 		}
@@ -92,9 +92,10 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
+	 * @param string   $old_status
 	 * @param string   $new_status
 	 */
-	protected static function _update_user_item_pending( $order, $new_status ) {
+	protected static function _update_user_item_pending( $order, $old_status, $new_status ) {
 		$curd  = new LP_User_CURD();
 		$items = $order->get_items();
 		if ( ! $items ) {
@@ -120,9 +121,11 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
+	 * @param string   $old_status
 	 * @param string   $new_status
 	 */
-	protected static function _update_user_item_purchased( $order, $new_status ) {
+	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
+		global $wpdb;
 		$curd  = new LP_User_CURD();
 		$items = $order->get_items();
 		if ( ! $items ) {
@@ -133,15 +136,30 @@ class LP_User_Factory {
 		}
 		foreach ( $order->get_users() as $user_id ) {
 			foreach ( $items as $item ) {
-				$user_item_id = $curd->update_user_item(
-					$user_id,
-					$item['course_id'],
-					array(
-						'ref_id'    => $order->get_id(),
-						'ref_type'  => LP_ORDER_CPT,
-						'parent_id' => 0
-					)
-				);
+
+				if ( $user_item_id = self::_get_course_item( $order->get_user_id(), $item['course_id'], $user_id ) ) {
+					$user_item_id = $curd->update_user_item(
+						$user_id,
+						$item['course_id'],
+						array(
+							'ref_id'    => $order->get_id(),
+							'ref_type'  => LP_ORDER_CPT,
+							'parent_id' => 0
+						)
+					);
+				} else {
+					$wpdb->insert(
+						$wpdb->learnpress_user_items,
+						array(
+							'item_id'   => $item['course_id'],
+							'ref_id'    => $order->get_id(),
+							'ref_type'  => LP_ORDER_CPT,
+							'user_id'   => $user_id,
+							'item_type' => LP_COURSE_CPT
+						)
+					);
+					$user_item_id = $wpdb->insert_id;
+				}
 
 				if ( $user_item_id ) {
 					$item        = $curd->get_user_item_by_id( $user_item_id );
@@ -156,12 +174,23 @@ class LP_User_Factory {
 					}
 
 					$curd->update_user_item_by_id( $user_item_id, $args );
-				}else{
-					global $wpdb;
 				}
-
 			}
 		}
+	}
+
+	protected static function _get_course_item( $order_id, $course_id, $user_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE ref_id = %d
+				AND ref_type = %s
+				AND item_id = %d
+				AND user_id = %d
+		", $order_id, LP_ORDER_CPT, $course_id, $user_id );
+
+		return $wpdb->get_var( $query );
 	}
 
 	/**

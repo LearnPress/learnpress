@@ -372,6 +372,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Includes needed files
 		 */
 		public function includes() {
+			require_once 'inc/class-lp-factory.php';
 			require_once 'inc/class-lp-datetime.php';
 			require_once 'inc/interfaces/interface-curd.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
@@ -463,9 +464,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
+
+			require_once 'inc/background-process/class-lp-background-emailer.php';
+			require_once 'inc/background-process/class-lp-background-schedule-items.php';
 			require_once 'inc/class-lp-schedules.php';
-			require_once 'inc/class-lp-background-emailer.php';
-			require_once 'inc/class-lp-background-schedule-items.php';
 
 			// widgets
 			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses' ) );
@@ -631,25 +633,3 @@ $GLOBALS['LearnPress'] = LP();
 if ( file_exists( LP_PLUGIN_PATH . 'inc/test.php' ) ) {
 	require_once 'inc/test.php';
 }
-
-class LP_Factory {
-	/**
-	 * @return LP_User_CURD
-	 */
-	public static function get_user_factory() {
-		return LP_Object_Data_CURD::get( 'user' );
-	}
-
-	/**
-	 * @return LP_Order_CURD
-	 */
-	public static function get_order_factory() {
-		return LP_Object_Data_CURD::get( 'order' );
-	}
-}
-
-
-
-//add_action('wp_redirect', function ($r){
-//	learn_press_debug(debug_backtrace());die();
-//});

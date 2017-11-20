@@ -336,6 +336,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return true;
 	}
 
+
 	/**
 	 * Load user items by item_id of course item
 	 *
@@ -454,11 +455,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function update_user_item( $user_id, $item_id, $item_data = array(), $course_id = 0 ) {
 		global $wpdb;
-//		if ( ! $course_id ) {
-//			$this->read_course( $user_id, $item_id );
-//		} else {
-//			$this->read_course( $user_id, $course_id );
-//		}
 
 		if ( array_key_exists( 'user_item_id', $item_data ) && empty( $item_data['user_item_id'] ) ) {
 			$item = false;
@@ -494,6 +490,18 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( array_key_exists( 'status', $item_data ) && $item_data['status'] != $item['status'] ) {
 			$new_status = $item_data['status'];
 			unset( $item_data['status'] );
+		}
+
+		if ( ! empty( $item_data['start_time'] ) && empty( $item_data['start_time_gmt'] ) ) {
+			$start_time = new LP_Datetime( $item_data['start_time'] );
+
+			$item_data['start_time_gmt'] = $start_time->toSql( false );
+		}
+
+		if ( ! empty( $item_data['end_time'] ) && empty( $item_data['end_time_gmt'] ) ) {
+			$start_time = new LP_Datetime( $item_data['end_time'] );
+
+			$item_data['end_time_gmt'] = $start_time->toSql( false );
 		}
 
 		// Build data and data format
@@ -680,16 +688,18 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// Table fields
 		$table_fields = array(
-			'user_item_id' => '%d',
-			'user_id'      => '%d',
-			'item_id'      => '%d',
-			'ref_id'       => '%d',
-			'start_time'   => '%s',
-			'end_time'     => '%s',
-			'item_type'    => '%s',
-			'status'       => '%s',
-			'ref_type'     => '%s',
-			'parent_id'    => '%d'
+			'user_item_id'   => '%d',
+			'user_id'        => '%d',
+			'item_id'        => '%d',
+			'ref_id'         => '%d',
+			'start_time'     => '%s',
+			'start_time_gmt' => '%s',
+			'end_time'       => '%s',
+			'end_time_gmt'   => '%s',
+			'item_type'      => '%s',
+			'status'         => '%s',
+			'ref_type'       => '%s',
+			'parent_id'      => '%d'
 		);
 
 		// Data and format
@@ -819,6 +829,41 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Delete a row from user items by user_item_id key.
+	 *
+	 * @param int $user_item_id
+	 *
+	 * @return mixed
+	 */
+	public function delete_by_user_item_id( $user_item_id ) {
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_user_items}
+			WHERE parent_id = %d
+		", $user_item_id );
+
+		// Delete child items (lessons, quizzes, etc) in case the item being deleted is a course
+		if ( $child = $wpdb->get_col( $query ) ) {
+			foreach ( $child as $child_id ) {
+				$this->delete_by_user_item_id( $child_id );
+			}
+		}
+
+		// Delete origin item
+		echo $query = $wpdb->prepare( "
+			DELETE
+			FROM ui, uim
+			USING {$wpdb->prefix}learnpress_user_items AS ui
+			LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
+			WHERE user_item_id = %d
+		", $user_item_id );
+
+		return $wpdb->query( $query );
 	}
 
 	/**

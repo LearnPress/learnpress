@@ -16,6 +16,11 @@ class LP_Plugins_Helper {
 	);
 
 	/**
+	 * @var LP_Background_Query_Items
+	 */
+	protected static $_background_query_items = null;
+
+	/**
 	 * @var array
 	 */
 	public static $themes = array(
@@ -109,10 +114,14 @@ class LP_Plugins_Helper {
 			}
 		}
 		self::$plugins['installed'] = $plugins;
+
 		if ( is_array( $wp_plugins ) ) {
 			self::$plugins['free'] = array_diff_key( $wp_plugins, (array) $wp_installed );
 		}
-		self::$plugins['premium'] = array_diff_key( (array) $premium_plugins, (array) $premium_installed );
+
+		if ( is_array( $premium_plugins ) ) {
+			self::$plugins['premium'] = array_diff_key( $premium_plugins, (array) $premium_installed );
+		}
 
 		// Sort plugins
 		self::_sort_plugins();
@@ -129,110 +138,33 @@ class LP_Plugins_Helper {
 	 * @return mixed
 	 */
 	public static function get_plugins_from_wp( $args = null ) {
-		// the number of plugins on each page queried,
-		// when we can reach to this figure?
-		$per_page = 20;
-		$paged    = 1;
-		$tag      = 'learnpress';
 
-		$query_args    = array(
-			'page'              => $paged,
-			'per_page'          => $per_page,
-			'fields'            => array(
-				'last_updated'    => true,
-				'icons'           => true,
-				'active_installs' => true
-			),
-			'locale'            => get_locale(),
-			'installed_plugins' => self::get_installed_plugin_slugs(),
-			'author'            => 'thimpress'
-		);
-		$transient_key = "lp_plugins_wp";
-		if ( ! ( $plugins = get_transient( $transient_key ) ) ) {
-			self::require_plugins_api();
-
-			$plugins = array();
-			try {
-				$api = plugins_api( 'query_plugins', $query_args );
-				if ( is_wp_error( $api ) ) {
-					throw new Exception( __( 'WP query plugins error!', 'learnpress' ) );
-				}
-				if ( ! is_array( $api->plugins ) ) {
-					throw new Exception( __( 'WP query plugins empty!', 'learnpress' ) );
-				}
-				$all_plugins = get_plugins();
-				// Filter plugins with tag contains 'learnpress'
-				$_plugins = array_filter( $api->plugins, array( __CLASS__, '_filter_plugin' ) );
-
-				// Ensure that the array is indexed from 0
-				$_plugins = array_values( $_plugins );
-
-				for ( $n = sizeof( $_plugins ), $i = $n - 1; $i >= 0; $i -- ) {
-					$plugin = $_plugins[ $i ];
-					$key    = $plugin->slug;
-					foreach ( $all_plugins as $file => $p ) {
-						if ( strpos( $file, $plugin->slug ) !== false ) {
-							$key = $file;
-							break;
-						}
-					}
-					$plugin->source  = 'wp';
-					$plugins[ $key ] = (array) $plugin;
-				}
-			}
-			catch ( Exception $ex ) {
-				$plugins = $ex->getMessage();
-				//learn_press_add_message( $plugins );
-			}
-			set_transient( $transient_key, $plugins, self::$transient_timeout );
+		if ( ! ( $plugins = get_transient( 'lp_plugins_wp' ) ) ) {
+			self::$_background_query_items->push_to_queue(
+				array(
+					'callback' => array( 'LP_Background_Query_Items', 'query_free_addons' )
+				)
+			);
 		}
 
 		return $plugins;
 	}
 
+	/**
+	 * Get all premium addons from cache.
+	 * If there is no addons, push an action to queue in order to
+	 * trying query all addons from thimpress.com in next requesting.
+	 *
+	 * @return mixed
+	 */
 	public static function get_premium_plugins() {
-		$transient_key = "lp_plugins_tp";
-		if ( ! ( $plugins = get_transient( $transient_key ) ) ) {
-			$plugins  = array();
-			$url      = 'https://thimpress.com/?thimpress_get_addons=premium';
-			$response = wp_remote_get( esc_url_raw( $url ), array( 'decompress' => false ) );
 
-			if ( ! is_wp_error( $response ) ) {
-
-				$response = wp_remote_retrieve_body( $response );
-				$response = json_decode( $response, true );
-
-				if ( ! empty( $response ) ) {
-
-					$maps = array(
-						'authorize-net-add-on-learnpress'      => 'learnpress-authorizenet-payment',
-						'2checkout-add-learnpress'             => 'learnpress-2checkout-payment',
-						'commission-add-on-for-learnpress'     => 'learnpress-commission',
-						'paid-memberships-pro-add-learnpress'  => 'learnpress-paid-membership-pro',
-						'gradebook-add-on-for-learnpress'      => 'learnpress-gradebook',
-						'sorting-choice-add-on-for-learnpress' => 'learnpress-sorting-choice',
-						'content-drip-add-on-for-learnpress'   => 'learnpress-content-drip',
-						'mycred-add-on-for-learnpress'         => 'learnpress-mycred',
-						'random-quiz-add-on-for-learnpress'    => 'learnpress-random-quiz',
-						'co-instructors-add-on-for-learnpress' => 'learnpress-co-instructor',
-						'collections-add-on-for-learnpress'    => 'learnpress-collections',
-						'woocommerce-add-on-for-learnpress'    => 'learnpress-woo-payment',
-						'stripe-add-on-for-learnpress'         => 'learnpress-stripe',
-						'certificates-add-on-for-learnpress'   => 'learnpress-certificates'
-					);
-
-					foreach ( $response as $key => $item ) {
-						$slug = $item['slug'];
-						if ( ! empty( $maps[ $slug ] ) ) {
-							$plugin_file             = sprintf( '%1$s/%1$s.php', $maps[ $slug ] );
-							$plugins[ $plugin_file ] = $item;
-						}
-					}
-
-					set_transient( $transient_key, $plugins, self::$transient_timeout );
-
-				}
-			}
+		if ( ! ( $plugins = get_transient( 'lp_plugins_tp' ) ) ) {
+			self::$_background_query_items->push_to_queue(
+				array(
+					'callback' => array( 'LP_Background_Query_Items', 'query_premium_addons' )
+				)
+			);
 		}
 
 		return $plugins;
@@ -250,38 +182,15 @@ class LP_Plugins_Helper {
 
 		self::$themes = get_transient( 'lp_related_themes' );
 
-		if ( isset( $_GET['check'] ) && wp_verify_nonce( $_GET['check'], 'lp_check_related_themes' ) || ! self::$themes ) {
-
-			self::$themes = array();
-			$url          = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
-			$args         = array(
-				'headers' => array(
-					"Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
+		if ( ! self::$themes ) {
+			self::$_background_query_items->push_to_queue(
+				array(
+					'callback' => array( 'LP_Background_Query_Items', 'get_related_themes' )
 				)
 			);
-			$response     = wp_remote_request( $url, $args );
-
-			if ( ! is_wp_error( $response ) ) {
-				$response = wp_remote_retrieve_body( $response );
-				$response = json_decode( $response, true );
-				if ( ! empty( $response ) && ! empty( $response['matches'] ) ) {
-					$themes = array();
-					foreach ( $response['matches'] as $theme ) {
-						$themes[ $theme['id'] ] = $theme;
-					}
-					if ( $education_themes = learn_press_get_education_themes() ) {
-						self::$themes['other']     = array_diff_key( $themes, $education_themes );
-						self::$themes['education'] = array_diff_key( $themes, self::$themes['other'] );
-					} else {
-						self::$themes['other'] = $themes;
-					}
-					delete_transient( 'lp_related_themes' );
-					set_transient( 'lp_related_themes', self::$themes, self::$transient_timeout );
-				}
-			}
 		}
 
-		if ( $type && array_key_exists( $type, self::$themes ) ) {
+		if ( $type && self::$themes && array_key_exists( $type, self::$themes ) ) {
 			$themes = self::$themes[ $type ];
 			$args   = wp_parse_args( $args, array( 'include' => '' ) );
 			if ( $themes && $args['include'] ) {
@@ -309,14 +218,15 @@ class LP_Plugins_Helper {
 	 * @return int
 	 */
 	public static function count_themes( $type = '' ) {
-		$themes = self::get_related_themes();
-		$count  = 0;
+		$count = 0;
 
-		if ( array_key_exists( $type, $themes ) ) {
-			$count = ! empty( $themes[ $type ] ) ? sizeof( $themes[ $type ] ) : 0;
-		} else {
-			foreach ( $themes as $k => $v ) {
-				$count += ! empty( $v ) ? sizeof( $v ) : 0;
+		if ( $themes = self::get_related_themes() ) {
+			if ( array_key_exists( $type, $themes ) ) {
+				$count = ! empty( $themes[ $type ] ) ? sizeof( $themes[ $type ] ) : 0;
+			} else {
+				foreach ( $themes as $k => $v ) {
+					$count += ! empty( $v ) ? sizeof( $v ) : 0;
+				}
 			}
 		}
 
@@ -515,6 +425,10 @@ class LP_Plugins_Helper {
 	public static function init() {
 		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
 		add_filter( 'extra_plugin_headers', array( __CLASS__, 'add_on_header' ) );
+
+		if ( ! is_a( self::$_background_query_items, 'LP_Background_Query_Addons' ) ) {
+			self::$_background_query_items = new LP_Background_Query_Items();
+		}
 	}
 }
 
