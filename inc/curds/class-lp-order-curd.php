@@ -218,7 +218,9 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( $order->is_multi_users() ) {
 			if ( $child_orders = $order->get_child_orders() ) {
 				foreach ( $child_orders as $child_order ) {
-					$this->delete_order_data( $child_order );
+					if ( $child_order = learn_press_get_order( $child_order ) ) {
+						$this->delete_order_data( $child_order );
+					}
 				}
 			}
 		}

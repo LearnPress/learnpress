@@ -186,6 +186,9 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			return $plugins;
 		}
 
+		/**
+		 * @return array|bool
+		 */
 		public static function get_related_themes() {
 			$themes   = array();
 			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';

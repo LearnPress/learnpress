@@ -78,7 +78,7 @@ class LP_User_Factory {
 				case 'pending':
 				case 'processing':
 				case 'cancelled':
-					self::_update_user_item_pending( $order, $new_status );
+					//self::_update_user_item_pending( $order, $new_status );
 					break;
 				case'completed':
 					self::_update_user_item_purchased( $order, $new_status );
@@ -156,10 +156,7 @@ class LP_User_Factory {
 					}
 
 					$curd->update_user_item_by_id( $user_item_id, $args );
-				}else{
-					global $wpdb;
 				}
-
 			}
 		}
 	}
