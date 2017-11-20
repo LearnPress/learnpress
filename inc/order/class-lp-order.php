@@ -487,6 +487,19 @@ class LP_Order extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/order-items', wp_cache_get( 'order-' . $this->get_id(), 'lp-order-items' ) );
 	}
 
+	/**
+	 * Get list of course ids from order.
+	 *
+	 * @return array|bool
+	 */
+	public function get_item_ids(){
+		if($items = $this->get_items()){
+			return wp_list_pluck($items, 'course_id');
+		}
+
+		return false;
+	}
+
 	public function is_guest() {
 		return ! $this->get_user_id();
 	}

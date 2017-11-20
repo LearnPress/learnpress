@@ -110,18 +110,23 @@ abstract class LP_Abstract_Post_Type {
 
 	public function update_default_meta() {
 		global $wp_query, $post;
+
 		if ( ! $post ) {
 			return;
 		}
+
 		if ( empty( $post->post_type ) ) {
 			return;
 		}
+
 		if ( $post->post_type != $this->_post_type ) {
 			return;
 		}
+
 		if ( empty( $this->_default_metas ) ) {
 			return;
 		}
+
 		foreach ( $this->_default_metas as $k => $v ) {
 			if ( ! metadata_exists( 'post', $post->ID, $k ) ) {
 				update_post_meta( $post->ID, $k, $v );
@@ -171,8 +176,16 @@ abstract class LP_Abstract_Post_Type {
 		$func_args = func_get_args();
 		$this->_call_method( 'save', $func_args );
 		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+
+		return $post_id;
 	}
 
+	/**
+	 * Ouput meta boxes.
+	 *
+	 * @param WP_Post $post
+	 * @param mixed $box
+	 */
 	public function _do_output_meta_box( $post, $box ) {
 		$callback = $this->_meta_boxes[ $box['id'] ][2];
 		if ( is_array( $callback ) ) {
@@ -193,7 +206,6 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function _before_delete_post( $post_id ) {
-
 		// TODO:
 		if ( ! $this->_check_post() ) {
 			return;
@@ -284,7 +296,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function before_delete( $post_id ) {
-
+		// Implement from child
 	}
 
 	/**

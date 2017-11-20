@@ -190,6 +190,127 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Delete all data related to the order is being deleted.
+	 * Including:
+	 *      + Order item metas  - learnpress_order_itemmeta
+	 *      + Order items       - learnpress_order_items
+	 *      + User item metas   - learnpress_user_itemmeta
+	 *      + User items        - learnpress_user_items
+	 *
+	 * @param LP_Order $order
+	 *
+	 * @return mixed
+	 */
+	public function delete_order_data( $order ) {
+		global $wpdb;
+
+		// Get order items
+		$query = $wpdb->prepare( "
+			SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items
+			WHERE order_id = %d
+		", $order->get_id() );
+
+		if ( ! $item_ids = $wpdb->get_col( $query ) ) {
+			return false;
+		}
+
+		// If order is for multi-users then delete all child orders first.
+		if ( $order->is_multi_users() ) {
+			if ( $child_orders = $order->get_child_orders() ) {
+				foreach ( $child_orders as $child_order ) {
+					$this->delete_order_data( $child_order );
+				}
+			}
+		}
+
+		// Get user order
+		$user_id     = intval( get_post_meta( $order->get_id(), '_user_id', true ) );
+		$order_items = $order->get_item_ids();
+
+		// Delete rows from order item meta data
+		$query = "
+			DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
+			WHERE learnpress_order_item_id IN(" . join( ',', $item_ids ) . ")
+		";
+		$wpdb->query( $query );
+
+		// Delete order items
+		$query = $wpdb->prepare( "
+			DELETE FROM {$wpdb->prefix}learnpress_order_items
+			WHERE order_id = %d
+		", $order->get_id() );
+		$wpdb->query( $query );
+
+		/**
+		 * Get all user item id related to user with current order
+		 */
+		$user_item_ids = array();
+		if ( $user_data = get_post_meta( $order->get_id(), '_lp_user_data', true ) ) {
+			foreach ( $user_data as $user_item_id => $data ) {
+				$user_item_ids[] = $user_item_id;
+			}
+		}
+
+		// Get all courses in this order that user has already enrolled (existed in learnpress_user_items)
+		$order_items_format = array_fill( 0, sizeof( $order_items ), '%d' );
+		$query_args         = array_merge( $order_items, array( $order->get_id(), $user_id, LP_ORDER_CPT ) );
+
+		$query = $wpdb->prepare( "
+			SELECT user_item_id
+			FROM {$wpdb->prefix}learnpress_user_items
+			WHERE item_id IN(" . join( ',', $order_items_format ) . ")
+				AND ref_id = %d 
+				AND user_id = %d 
+				AND ref_type = %s
+		", $query_args );
+
+		if ( $_user_item_ids = $wpdb->get_col( $query ) ) {
+			$user_item_ids = array_merge( $user_item_ids, $_user_item_ids );
+		}
+
+		if ( $user_item_ids ) {
+			$user_factory = LP_Factory::get_user_factory();
+			foreach ( $user_item_ids as $user_item_id ) {
+				$user_factory->delete_by_user_item_id( $user_item_id );
+			}
+		}
+
+		if ( 1 == 0 ) {
+			print_r( $user_item_id );
+
+			// Delete user course items
+			echo $query = $wpdb->prepare( "
+				DELETE
+				FROM ui, uim
+				USING {$wpdb->prefix}learnpress_user_items AS ui
+				LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
+				WHERE ref_id = %d AND user_id = %d AND ref_type = %s
+			", $order->get_id(), $user_id, LP_ORDER_CPT );
+			$wpdb->query( $query );
+
+			// Delete other items
+			$format = array_fill( 0, sizeof( $course_ids ), '%d' );
+			$args   = array_merge( $course_ids, array( $user_id ) );
+			echo $query = $wpdb->prepare( "
+						DELETE
+						FROM ui, uim
+						USING {$wpdb->prefix}learnpress_user_items AS ui
+						LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
+						WHERE ref_id IN(" . join( ',', $format ) . ") AND user_id = %d
+					", $args );
+			$wpdb->query( $query );
+
+		}
+
+		// delete all data related user order
+		if ( $user_id ) {
+			//learn_press_delete_user_data( $user_id );
+		}
+
+		return true;
+	}
+
+	/**
 	 * @param LP_Order $order
 	 *
 	 * @return LP_Order

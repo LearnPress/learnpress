@@ -336,6 +336,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return true;
 	}
 
+
 	/**
 	 * Load user items by item_id of course item
 	 *
@@ -819,6 +820,41 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Delete a row from user items by user_item_id key.
+	 *
+	 * @param int $user_item_id
+	 *
+	 * @return mixed
+	 */
+	public function delete_by_user_item_id( $user_item_id ) {
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_user_items}
+			WHERE parent_id = %d
+		", $user_item_id );
+
+		// Delete child items (lessons, quizzes, etc) in case the item being deleted is a course
+		if ( $child = $wpdb->get_col( $query ) ) {
+			foreach ( $child as $child_id ) {
+				$this->delete_by_user_item_id( $child_id );
+			}
+		}
+
+		// Delete origin item
+		echo $query = $wpdb->prepare( "
+			DELETE
+			FROM ui, uim
+			USING {$wpdb->prefix}learnpress_user_items AS ui
+			LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
+			WHERE user_item_id = %d
+		", $user_item_id );
+
+		return $wpdb->query( $query );
 	}
 
 	/**

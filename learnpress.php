@@ -463,9 +463,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
+
+			require_once 'inc/background-process/class-lp-background-emailer.php';
+			require_once 'inc/background-process/class-lp-background-schedule-items.php';
 			require_once 'inc/class-lp-schedules.php';
-			require_once 'inc/class-lp-background-emailer.php';
-			require_once 'inc/class-lp-background-schedule-items.php';
 
 			// widgets
 			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses' ) );
