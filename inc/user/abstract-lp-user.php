@@ -1498,7 +1498,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return bool|string
 	 */
 	public function can_enroll_course( $course_id ) {
-		# condition
 		$course = learn_press_get_course( $course_id );
 
 		$can_enroll = ! ! $course && $course->is_publish();
@@ -1509,12 +1508,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		if ( $can_enroll && ! $course->is_free() && ! $this->has_purchased_course( $course_id ) ) {
 			$can_enroll = false;
-		}
 
-		if ( $course_item = $this->get_course_data( $course_id ) ) {
-			if ( in_array( $course_item->get_status(), array( 'pending', '' ) ) ) {
-				$can_enroll = false;
-			}
 		}
 
 		return apply_filters( 'learn-press/can-enroll-course', $can_enroll, $course_id, $this->get_id() );
@@ -2524,18 +2518,23 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @param int $course_id
 	 * @param int $order_id
 	 *
-	 * @return mixed
+	 * @return mixed|WP_Error
 	 * @throws Exception
 	 */
 	public function enroll( $course_id, $order_id ) {
 
+//		$check = apply_filters( 'learn_press_before_enroll_course', true, $this, $course_id );
+//		if ( ! $check ) {
+//			return false;
+//		}
+
 		try {
 			if ( ! $order = learn_press_get_order( $order_id ) ) {
-				throw new Exception( __( 'Enroll course failed.', 'learnpress' ) );
+				throw new Exception( __( 'Enroll course failed.', 'learnpress' ), 10000 );
 			}
 
-			if ( ! $this->can_enroll_course( $course_id ) ) {
-				throw new Exception( __( 'Enroll course failed.', 'learnpress' ) );
+			if ( ! $this->can_enroll_course( $course_id ) && 1==0) {
+				throw new Exception( __( 'Enroll course failed.', 'learnpress' ), 10001 );
 			}
 
 			$date = new LP_Datetime();
@@ -2550,8 +2549,12 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 				'start_time'     => $date->toSql(),
 				'start_time_gmt' => $date->toSql( false )
 			);
+
 			if ( $return = $this->_curd->update_user_item( $this->get_id(), $course_id, $data ) ) {
 				do_action( 'learn-press/user-enrolled-course', $course_id, $this->get_id(), $return );
+
+				// @deprecated
+				do_action( 'learn_press_user_enrolled_course', $course_id, $this->get_id(), $return );
 			}
 
 			return $return;
@@ -2559,96 +2562,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		catch ( Exception $ex ) {
 			return new WP_Error( 'ENROLL_ERROR', $ex->getMessage() );
 		}
-
-		if ( ! $this->can( 'enroll-course', $course_id ) ) {
-			return false;
-		}
-		global $wpdb;
-		$inserted = 0;
-
-		$check = apply_filters( 'learn_press_before_enroll_course', true, $this, $course_id );
-		if ( ! $check ) {
-			return false;
-		}
-
-		$course = learn_press_get_course( $course_id );
-		$ref_id = 0;
-		if ( $course->is_free() ) {
-			# 1 create order
-			$order_data = array(
-				'status'      => apply_filters( 'learn_press_default_enroll_order_status', 'completed' ),
-				'user_id'     => get_current_user_id(),
-				'user_note'   => '',
-				'created_via' => 'enroll'
-			);
-			$order      = learn_press_create_order( $order_data );
-
-			# 2 add order item
-			$item       = array(
-				'order_item_name' => $course->get_title(),
-				'course_id'       => $course->get_id(),
-				'name'            => $course->get_title(),
-				'quantity'        => 1,
-				'subtotal'        => $course->get_price(),
-				'total'           => $course->get_price()
-			);
-			$order_item = learn_press_add_order_item( $order->get_id(), $item );
-			$ref_id     = $order->get_id();
-
-			# 3 add order itemmeta
-			learn_press_add_order_item_meta( $order_item, '_course_id', $course->get_id() );
-			learn_press_add_order_item_meta( $order_item, '_quantity', 1 );
-			learn_press_add_order_item_meta( $order_item, '_subtotal', 0 );
-			learn_press_add_order_item_meta( $order_item, '_total', 0 );
-
-		} else {
-			$ref_id = $this->get_course_order( $course_id );
-		}
-
-		/**
-		 * // backup from server
-		 * if ( $wpdb->insert(
-		 * $wpdb->prefix . 'learnpress_user_items',
-		 * array(
-		 * 'user_id'    => $this->get_id(),
-		 * 'item_id'    => $course_id,
-		 * 'start_time' => current_time( 'mysql' ),
-		 * 'status'     => 'enrolled',
-		 * 'end_time'   => '0000-00-00 00:00:00',
-		 * 'ref_id'     => $ref_id,
-		 * 'item_type'  => 'lp_course',
-		 * 'ref_type'   => $ref_type
-		 * ),
-		 * array( '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s' )
-		 * )
-		 * ) {
-		 */
-		# 4 enroll course
-		if ( $wpdb->insert(
-			$wpdb->prefix . 'learnpress_user_items',
-			array(
-				'user_id'    => $this->get_id(),
-				'item_id'    => $course_id,
-				'start_time' => current_time( 'mysql' ),
-				'status'     => 'enrolled',
-				'end_time'   => '0000-00-00 00:00:00',
-				'ref_id'     => $ref_id,
-				'item_type'  => 'lp_course',
-				'ref_type'   => 'lp_order'
-			),
-			array( '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s' )
-		)
-		) {
-			$inserted = $wpdb->insert_id;
-
-			do_action( 'learn_press_user_enrolled_course', $course_id, $this->get_id(), $inserted );
-
-		} else {
-			learn_press_debug( $wpdb );
-			do_action( 'learn_press_user_enroll_course_failed', $this, $course_id, $inserted );
-		}
-
-		return $inserted;
 	}
 
 	/**

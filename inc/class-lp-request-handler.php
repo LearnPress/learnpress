@@ -262,18 +262,26 @@ class LP_Request {
 		return true;
 	}
 
+	/**
+	 * @param int    $course_id
+	 * @param int    $order_id
+	 * @param string $action
+	 */
 	public static function do_enroll( $course_id, $order_id, $action ) {
-		$user = LP_Global::user();
-		$user->enroll( $course_id, $order_id );
-		learn_press_add_message(
-			sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-			'success',
-			array(
-				'position'  => 'fixedInOut',
-				'delay-in'  => 10,
-				'delay-out' => 5000
-			)
-		);
+		$user  = LP_Global::user();
+		$thing = $user->enroll( $course_id, $order_id );
+
+		if ( is_wp_error( $thing ) ) {
+			learn_press_add_message(
+				$thing->get_error_message(),
+				'error'
+			);
+		} else {
+			learn_press_add_message(
+				sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+				'success'
+			);
+		}
 		wp_redirect( get_the_permalink( $course_id ) );
 		exit();
 	}
