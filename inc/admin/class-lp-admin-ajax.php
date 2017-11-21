@@ -424,6 +424,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'draft-question':
 
+					// new question title and content
 					$new_question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$new_question = json_decode( wp_unslash( $new_question ), true );
 
@@ -431,15 +432,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$title   = $new_question['title'] ? $new_question['title'] : __( 'New Question', 'learnpress' );
-					$content = $new_question['content'] ? $new_question['content'] : '';
+					$args = array(
+						'title'   => $new_question['title'],
+						'content' => $new_question['content'],
+						'status'  => 'draft'
+					);
 
-					wp_update_post( array(
-						'ID'           => $question_id,
-						'post_title'   => $title,
-						'post_content' => $content,
-						'post_status'  => 'draft'
-					) );
+					$result = $curd->create( $args );
 
 					break;
 
@@ -610,31 +609,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$user_id = learn_press_get_current_user_id();
-
-					// create new question
-					$new_question = LP_Question_Factory::add_question(
-						array(
-							'type'  => $question['type'],
-							'title' => $question['title'],
-						), true
+					$args = array(
+						'quiz_id' => $quiz_id,
+						'title'   => $question['title'],
+						'type'    => $question['type'],
 					);
 
-					$new_question_id = $new_question['id'];
-					// new question answers
-					$new_question_answers = $new_question['answers'];
+					$new_question = $question_curd->create( $args );
 
-					if ( ! is_wp_error( $new_question_id ) ) {
-
-						// trigger change user memorize question types
-						$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
-						$question_types          = ! $question_types ? array() : $question_types;
-						$type                    = get_post_meta( $new_question_id, '_lp_type', true );
-						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
-						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
-						$quiz_curd->add_question( $quiz_id, $new_question_id );
+					if ( ! is_wp_error( $new_question ) ) {
 						// get new question data
-						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question_id );
+						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question, true );
 					}
 
 					// code
@@ -1030,18 +1015,29 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param       $question_id
+		 * @param       $question
+		 * @param       $object
 		 *
 		 * @return array
 		 */
-		public static function get_question_data_to_quiz_editor( $question_id ) {
+		public static function get_question_data_to_quiz_editor( $question, $object = false ) {
 
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
-				return array();
+			if ( ! $object ) {
+				if ( get_post_type( $question ) !== LP_QUESTION_CPT ) {
+					return array();
+				}
+
+				// get question
+				$question = LP_Question::get_question( $question );
 			}
 
-			// get question
-			$question = LP_Question::get_question( $question_id );
+			$question_id = $question->get_id();
+
+			$answers = $question->get_data( 'answer_options' );
+
+			if ( $question->get_type() == 'true_or_false' ) {
+				$answers = array_slice( $answers, 2, 4 );
+			}
 
 			$data = array(
 				'id'       => $question_id,
@@ -1051,12 +1047,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'key'   => $question->get_type(),
 					'label' => $question->get_type_label()
 				),
-				'answers'  => $question->get_data( 'answer_options' ),
+				'answers'  => $answers,
 				'settings' => array(
 					'mark'        => get_post_meta( $question_id, '_lp_mark', true ),
 					'explanation' => get_post_meta( $question_id, '_lp_explanation', true ),
 					'hint'        => get_post_meta( $question_id, '_lp_hint', true )
-				)
+				),
+				'order'    => count( $answers )
 			);
 
 			return $data;

@@ -127,7 +127,7 @@ class LP_Question extends LP_Course_Item {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array
+	 * @return int|object|WP_Error
 	 */
 	public function save() {
 
@@ -400,10 +400,6 @@ class LP_Question extends LP_Course_Item {
 	 */
 	public function set_type( $type = '' ) {
 
-		echo '<pre>';
-		var_dump( $this->_question_type );
-		echo '</pre>';
-
 		if ( ! $type ) {
 			return false;
 		}
@@ -411,11 +407,6 @@ class LP_Question extends LP_Course_Item {
 		if ( ! learn_press_is_support_question_type( $type ) ) {
 			return false;
 		}
-
-		echo '<pre>';
-		var_dump( $type );
-		echo '</pre>';
-//		die();
 
 		// Change to new type and update meta value
 		$this->_question_type = $type;
@@ -468,7 +459,6 @@ class LP_Question extends LP_Course_Item {
 	 * @return string
 	 */
 	public function get_type() {
-//		var_dump($this->_question_type);
 		return $this->_question_type;
 	}
 
