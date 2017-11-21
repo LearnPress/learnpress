@@ -20,11 +20,76 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 	 */
 	class LP_Question_CURD implements LP_Interface_CURD {
 
-		public function create( &$question ) {
-			// TODO: Implement create() method.
+		/**
+		 * Create question and can add to quiz.
+		 *
+		 * @param array $args
+		 *
+		 * @return int|WP_Error
+		 */
+		public function create( &$args = array() ) {
+
+			$user_id = learn_press_get_current_user_id();
+
+			$args = wp_parse_args(
+				$args,
+				array(
+					'quiz_id' => 0,
+					'order'   => - 1,
+					'status'  => 'publish',
+					'type'    => 'true_or_false',
+					'title'   => __( 'New question', 'learnpress' ),
+					'content' => ''
+				)
+			);
+
+			$question_id = wp_insert_post( array(
+				'post_type'    => LP_QUESTION_CPT,
+				'post_status'  => $args['status'],
+				'post_title'   => $args['title'],
+				'post_content' => $args['content']
+			) );
+
+			if ( $question_id ) {
+
+				update_post_meta( $question_id, '_lp_type', $args['type'] );
+				get_user_meta( $user_id, '_learn_press_memorize_question_types', $args['type'] );
+
+				$question = LP_Question::get_question( $question_id, array( 'type' => $args['type'] ) );
+				$question->set_type( $args['type'] );
+
+				$answers = $question->get_default_answers();
+
+				// insert answers data in new question
+				foreach ( $answers as $index => $answer ) {
+					$insert = array(
+						'question_id'  => $question_id,
+						'answer_data'  => serialize( array(
+								'text'    => stripslashes( $answer['text'] ),
+								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+								'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
+							)
+						),
+						'answer_order' => $index + 1
+					);
+					$this->add_answer( $args['type'], $insert );
+				}
+
+				// add question to quiz
+				if ( ! empty( $args['quiz_id'] ) ) {
+					$quiz_curd = new LP_Quiz_CURD();
+					$quiz_curd->add_question( $args['quiz_id'], $question_id, $args['order'] );
+				}
+
+				return $question;
+			}
+
+			return $question_id;
 		}
 
+
 		public function update( &$question ) {
+			return $question;
 			// TODO: Implement update() method.
 		}
 
@@ -190,6 +255,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function change_question_type( $question_id, $new_type ) {
 
+			if(get_post_status($question_id) =='auto_draft'){
+				$this->create();
+			}
+
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
@@ -208,7 +277,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			if ( $new_question = LP_Question::get_question( $question_id, array( 'force' => true ) ) ) {
 
-				$user_id                 = get_current_user_id();
+				$user_id = get_current_user_id();
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_type );
 
 				// except convert from true or false
@@ -587,13 +656,16 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
+		 * @param string $question_type
 		 * @param array $args
 		 *
 		 * @return array|bool
 		 */
-		public function add_answer( $args = array() ) {
+		public function add_answer( $question_type = '', $args = array() ) {
 
 			global $wpdb;
+
+			$question = LP_Question::get_question( $args['question_id'], array( 'type' => $question_type ) );
 
 			$wpdb->insert(
 				$wpdb->learnpress_question_answers,
@@ -606,7 +678,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			$question_answer_id = $wpdb->insert_id;
 			if ( $question_answer_id ) {
-				return array(
+				// update question answer option data
+				$answer_options = $question->get_data( 'answer_options' ) ? $question->get_data( 'answer_options' ) : array();
+
+				$new_answer_option_data = array(
 					'question_answer_id' => $question_answer_id,
 					'question_id'        => $args['question_id'],
 					'answer_order'       => $args['answer_order'],
@@ -614,6 +689,15 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'value'              => unserialize( $args['answer_data'] )['value'],
 					'is_true'            => unserialize( $args['answer_data'] )['is_true']
 				);
+
+				if ( ! $answer_options ) {
+					$question->set_data( 'answer_options', array( $new_answer_option_data ) );
+				} else {
+					$answer_options[] = $new_answer_option_data;
+					$question->set_data( 'answer_options', $answer_options );
+				}
+
+				return $new_answer_option_data;
 			} else {
 				return false;
 			}
@@ -629,7 +713,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @return bool|false|int
 		 */
-		public function delete_question_answer( $question_id, $answer_id ) {
+		public
+		function delete_question_answer(
+			$question_id, $answer_id
+		) {
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT || ! $answer_id ) {
 				return false;
 			}
@@ -653,7 +740,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function clear( $question_id ) {
+		public
+		function clear(
+			$question_id
+		) {
 
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
@@ -672,7 +762,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @param $question LP_Question
 		 */
-		protected function _load_answer_options( &$question ) {
+		protected
+		function _load_answer_options(
+			&$question
+		) {
 			$id             = $question->get_id();
 			$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
 
@@ -713,7 +806,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @return mixed;
 		 */
-		protected function _load_answer_option_meta( &$answer_options ) {
+		protected
+		function _load_answer_option_meta(
+			&$answer_options
+		) {
 			global $wpdb;
 			if ( ! $answer_options ) {
 				return false;
@@ -741,19 +837,31 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			return true;
 		}
 
-		public function add_meta( &$object, $meta ) {
+		public
+		function add_meta(
+			&$object, $meta
+		) {
 			// TODO: Implement add_meta() method.
 		}
 
-		public function delete_meta( &$object, $meta ) {
+		public
+		function delete_meta(
+			&$object, $meta
+		) {
 			// TODO: Implement delete_meta() method.
 		}
 
-		public function read_meta( &$object ) {
+		public
+		function read_meta(
+			&$object
+		) {
 			// TODO: Implement read_meta() method.
 		}
 
-		public function update_meta( &$object, $meta ) {
+		public
+		function update_meta(
+			&$object, $meta
+		) {
 			// TODO: Implement update_meta() method.
 		}
 	}

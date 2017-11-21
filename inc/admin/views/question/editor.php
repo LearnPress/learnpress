@@ -13,7 +13,7 @@ learn_press_admin_view( 'question/answer' );
 
     <div id="lp-admin-question-editor" class="learn-press-box-data">
 
-        <lp-question-actions :type="type"></lp-question-actions>
+        <lp-question-actions :type="type" @changeType="changeType"></lp-question-actions>
 
         <div class="lp-box-data-content">
             <table class="list-question-answers">
@@ -29,7 +29,7 @@ learn_press_admin_view( 'question/answer' );
                 <draggable :list="answers" :element="'tbody'" @end="sort">
                     <lp-question-answer v-for="(answer, index) in answers" :key="index" :index="index" :type="type"
                                         :radio="radio" :number="number" :answer="answer"
-                                        @changeType="changeType" @updateTitle="updateTitle"
+                                        @updateTitle="updateTitle"
                                         @changeCorrect="changeCorrect"
                                         @deleteAnswer="deleteAnswer"></lp-question-answer>
                 </draggable>
@@ -72,6 +72,13 @@ learn_press_admin_view( 'question/answer' );
                 // question status
                 status: function () {
                     return $store.getters['status'];
+                },
+                // autoDraft
+                autoDraft: function () {
+                    return this.autoDraft = {
+                        title: $('input[name=post_title]').val(),
+                        content: $('textarea[name=content]').val()
+                    }
                 }
             },
             methods: {
@@ -87,6 +94,8 @@ learn_press_admin_view( 'question/answer' );
                 changeType: function (type) {
                     // create draft quiz if auto draft
                     this.draftQuestion();
+
+                    console.log(this.autoDraft);
 
                     $store.dispatch('changeQuestionType', type);
                 },
@@ -109,6 +118,7 @@ learn_press_admin_view( 'question/answer' );
                 },
                 // change correct answer
                 changeCorrect: function (correct) {
+                    console.log(correct);
                     this.draftQuestion();
                     // update correct
                     $store.dispatch('updateCorrectAnswer', correct);

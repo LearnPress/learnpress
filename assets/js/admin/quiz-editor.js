@@ -162,6 +162,7 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
                         if (result.success) {
                             var items = result.data;
+
                             // update quiz list questions
                             context.commit('lqs/UPDATE_QUIZ_QUESTIONS', items, {root: true});
                         }
@@ -294,7 +295,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             state.questions.push(question);
         },
         'UPDATE_QUIZ_QUESTIONS': function (state, questions) {
-            state.questions.push(questions);
+            questions.forEach(function (question) {
+                state.questions.push(question);
+            });
         },
         'CHANGE_QUESTION_TYPE': function (state, data) {
             state.questions = state.questions.map(function (question) {
