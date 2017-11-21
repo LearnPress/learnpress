@@ -238,14 +238,21 @@ ul.learn-press-nav-tabs {
                         color: #DDD;
                         margin-left: 5px;
                         font-family: fontawesome;
+                        display: none;
                         @include border-radius(50%);
                         @include box-sizing(border-box);
+
                         &:before {
                             vertical-align: middle;
                             font-size: 14px;
                         }
                     }
+                }
 
+                &.has-status{
+                    .course-item-status{
+                        display: inline-block;
+                    }
                 }
 
                 &.course-item-lp_quiz {
@@ -662,6 +669,8 @@ body {
             padding: 0;
             box-shadow: none;
             float: left;
+            font-style: italic;
+            color: #AAA;
             &:focus {
                 box-shadow: none;
                 outline: none;
@@ -685,7 +694,7 @@ body {
                 color: #777;
             }
         }
-        &.has-keyword{
+        &.has-keyword {
             button {
                 &:after {
                     content: "\f00d";
