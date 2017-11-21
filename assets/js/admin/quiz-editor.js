@@ -149,13 +149,14 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             context.commit('REMOVE_ADDED_ITEM', index);
         },
 
-        addQuestionsToQuiz: function (context, payload) {
+        addQuestionsToQuiz: function (context, quiz) {
             var items = context.getters.addedItems;
 
             if (items.length > 0) {
                 Vue.http.LPRequest({
                     type: 'add-questions-to-quiz',
-                    items: JSON.stringify(items)
+                    items: JSON.stringify(items),
+                    draft_quiz: JSON.stringify(quiz)
                 }).then(
                     function (response) {
                         var result = response.body;
@@ -401,11 +402,12 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             })
         },
 
-        newQuestion: function (context, question) {
+        newQuestion: function (context, payload) {
 
             Vue.http.LPRequest({
                 type: 'new-question',
-                question: JSON.stringify(question)
+                question: JSON.stringify(payload.question),
+                draft_quiz: JSON.stringify(payload.quiz)
             }).then(
                 function (response) {
                     var result = response.body;
@@ -717,9 +719,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         id: function (state) {
             return state.quiz_id;
         },
-        autoDraft: function (state) {
-            return state.auto_draft;
-        },
         status: function (state) {
             return state.status || 'error';
         },
@@ -737,12 +736,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             state.heartbeat = !!status;
         },
 
-        'UPDATE_AUTO_DRAFT_STATUS': function (state, status) {
-            // check auto draft status
-            state.auto_draft = status;
-        },
-
-        // quiz editor status
         'UPDATE_STATUS': function (state, status) {
             state.status = status;
         },
@@ -772,26 +765,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                         context.commit('UPDATE_HEART_BEAT', false);
                     }
                 );
-        },
-
-        draftQuiz: function (context, payload) {
-            var auto_draft = context.getters['autoDraft'];
-
-            if (auto_draft) {
-                Vue.http.LPRequest({
-                    type: 'draft-quiz',
-                    quiz: JSON.stringify(payload)
-                }).then(function (response) {
-                        var result = response.body;
-
-                        if (!result.success) {
-                            return;
-                        }
-
-                        context.commit('UPDATE_AUTO_DRAFT_STATUS', false);
-                    }
-                )
-            }
         },
 
         newRequest: function (context) {

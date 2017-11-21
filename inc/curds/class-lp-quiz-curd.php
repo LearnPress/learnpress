@@ -54,8 +54,32 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $quiz;
 	}
 
-	public function create( &$quiz ) {
-		// TODO: Implement update() method.
+	/**
+	 * Create quiz.
+	 *
+	 * @param array $args
+	 *
+	 * @return int|WP_Error
+	 */
+	public function create( &$args = array() ) {
+
+		$args = wp_parse_args( $args, array(
+				'id'      => 0,
+				'status'  => 'publish',
+				'title'   => __( 'New quiz', 'learnpress' ),
+				'content' => ''
+			)
+		);
+
+		$quiz_id = wp_insert_post( array(
+			'ID'           => $args['id'],
+			'post_type'    => LP_QUIZ_CPT,
+			'post_status'  => $args['status'],
+			'post_title'   => $args['title'],
+			'post_content' => $args['content']
+		) );
+
+		return $quiz_id;
 	}
 
 	public function update( &$quiz ) {

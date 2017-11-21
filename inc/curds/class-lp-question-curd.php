@@ -25,7 +25,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @param array $args
 		 *
-		 * @return int|WP_Error
+		 * @return bool|int|LP_Question|WP_Error
 		 */
 		public function create( &$args = array() ) {
 
@@ -37,6 +37,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'quiz_id' => 0,
 					'order'   => - 1,
 					'status'  => 'publish',
+					'id'      => 0,
 					'type'    => 'true_or_false',
 					'title'   => __( 'New question', 'learnpress' ),
 					'content' => ''
@@ -44,11 +45,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			);
 
 			$question_id = wp_insert_post( array(
+				'ID'           => $args['id'],
 				'post_type'    => LP_QUESTION_CPT,
 				'post_status'  => $args['status'],
 				'post_title'   => $args['title'],
 				'post_content' => $args['content']
 			) );
+
 
 			if ( $question_id ) {
 
@@ -248,23 +251,18 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Change question type.
 		 *
-		 * @param $question_id
+		 * @param $question LP_Question
 		 * @param $new_type
 		 *
 		 * @return bool|int|LP_Question
 		 */
-		public function change_question_type( $question_id, $new_type ) {
+		public function change_question_type( $question, $new_type ) {
 
-			if(get_post_status($question_id) =='auto_draft'){
-				$this->create();
-			}
-
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+			if ( get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
 				return false;
 			}
 
-			$question = LP_Question::get_question( $question_id );
-
+			$question_id = $question->get_id();
 			$old_type = $question->get_type();
 
 			if ( $old_type == $new_type ) {
@@ -348,23 +346,21 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Update correct answer.
 		 *
-		 * @param $question_id
+		 * @param $question LP_Question
 		 * @param $correct
 		 *
 		 * @return bool|int
 		 */
-		public function change_correct_answer( $question_id, $correct ) {
+		public function change_correct_answer( $question, $correct ) {
 
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+			if ( get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
 				return false;
 			}
-
-			$question = LP_Question::get_question( $question_id );
 
 			global $wpdb;
 
 			$question_type    = $question->get_type();
-			$question_answers = $question->get_answer_options();
+			$question_answers = $question->get_data('answer_options');
 
 			$args           = array();
 			$number_correct = 0;

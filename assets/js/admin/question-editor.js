@@ -31,9 +31,6 @@
         id: function (state) {
             return state.id;
         },
-        autoDraft: function (state) {
-            return state.auto_draft;
-        },
         type: function (state) {
             return state.type;
         },
@@ -71,11 +68,6 @@
 
     var mutations = {
 
-        'UPDATE_AUTO_DRAFT_STATUS': function (state, status) {
-            // check auto draft status
-            state.auto_draft = status;
-        },
-
         'UPDATE_STATUS': function (state, status) {
             state.status = status;
         },
@@ -89,11 +81,7 @@
             state.answers = question.answers;
         },
 
-        'DELETE_ANSWER': function (state, answers) {
-            state.answers = answers;
-        },
-
-        'NEW_ANSWER': function (state, answers) {
+        'UPDATE_ANSWERS': function (state, answers) {
             state.answers = answers;
         },
 
@@ -108,31 +96,12 @@
 
     var actions = {
 
-        draftQuestion: function (context, payload) {
-            var auto_draft = context.getters['autoDraft'];
-
-            if (auto_draft) {
-                Vue.http.LPRequest({
-                    type: 'draft-question',
-                    question: JSON.stringify(payload)
-                }).then(function (response) {
-                        var result = response.body;
-
-                        if (!result.success) {
-                            return;
-                        }
-
-                        context.commit('UPDATE_AUTO_DRAFT_STATUS', false);
-                    }
-                )
-            }
-        },
-
-        changeQuestionType: function (context, type) {
+        changeQuestionType: function (context, payload) {
 
             Vue.http.LPRequest({
                 type: 'change-question-type',
-                question_type: type
+                question_type: payload.type,
+                draft_question: JSON.stringify(payload.question)
             }).then(function (response) {
                 var result = response.body;
 
@@ -166,12 +135,20 @@
 
         },
 
-        updateCorrectAnswer: function (context, correct) {
+        updateCorrectAnswer: function (context, payload) {
 
             Vue.http.LPRequest({
                 type: 'change-correct',
-                correct: JSON.stringify(correct)
-            })
+                correct: JSON.stringify(payload.correct),
+                draft_question: JSON.stringify(payload.question)
+            }).then(
+                function (response) {
+                    var result = response.body;
+                    if (result.success) {
+                        context.commit('UPDATE_ANSWERS', result.data);
+                    }
+                }
+            )
 
         },
 
@@ -185,7 +162,7 @@
                     var result = response.body;
 
                     if (result.success) {
-                        context.commit('DELETE_ANSWER', result.data);
+                        context.commit('UPDATE_ANSWERS', result.data);
                     } else {
                         // notice error
                     }
@@ -203,7 +180,7 @@
                     var result = response.body;
 
                     if (result.success) {
-                        context.commit('NEW_ANSWER', result.data);
+                        context.commit('UPDATE_ANSWERS', result.data);
                     } else {
                         // notice error
                     }

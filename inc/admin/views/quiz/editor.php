@@ -117,24 +117,18 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 toggle: function () {
                     $store.dispatch('lqs/toggleAll');
                 },
-                // draft new quiz
-                draftQuiz: function () {
-                    if ($store.getters['autoDraft']) {
-                        $store.dispatch('draftQuiz', {
-                            title: $('input[name=post_title]').val(),
-                            content: $('textarea[name=content]').val()
-                        });
-                    }
-                },
                 // add new question
                 addItem: function (type) {
                     if (this.new_question.title) {
-                        // create draft quiz if auto draft
-                        this.draftQuiz();
-
                         // new question
                         this.new_question.type = type;
-                        $store.dispatch('lqs/newQuestion', this.new_question);
+                        $store.dispatch('lqs/newQuestion', {
+                            quiz: {
+                                title: $('input[name=post_title]').val(),
+                                content: $('textarea[name=content]').val()
+                            },
+                            question: this.new_question
+                        });
                         this.new_question.title = '';
                     }
                 },
@@ -144,11 +138,11 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 },
                 // add choose items in modal to quiz
                 addItems: function (type) {
-                    // create draft quiz if auto draft
-                    this.draftQuiz();
-
                     // add items
-                    $store.dispatch('cqi/addQuestionsToQuiz');
+                    $store.dispatch('cqi/addQuestionsToQuiz', {
+                        title: $('input[name=post_title]').val(),
+                        content: $('textarea[name=content]').val()
+                    });
                 }
             }
         })
