@@ -36,12 +36,13 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                     <div class="table-row">
                         <div class="add-new-question">
                             <div class="title">
-                                <input type="text" v-model="new_question.title">
+                                <form @submit.prevent="">
+                                    <input type="text" v-model="new_question.title" @keyup.enter.prevent="addItem(new_question.type)">
+                                </form>
                             </div>
                             <div class="add-new">
                                 <button type="button" class="button" :disabled="!addableNew"
-                                        @click.prevent="addItem(new_question.type)"
-                                        @keyup.enter.prevent="addItem(new_question.type)">
+                                        @click.prevent="addItem(new_question.type)">
 									<?php esc_html_e( 'Add as New', 'learnpress' ); ?>
                                 </button>
                                 <ul class="question-types">
