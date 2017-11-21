@@ -150,7 +150,8 @@
                 width: '100%'
             }).css('opacity', 1).end().css('opacity', 1);
 
-            var $curriculum = $('.course-item-popup').find('.curriculum-scrollable');
+            var $curriculum = $('.course-item-popup').find('.curriculum-scrollable'),
+                $courseItems = $curriculum.find('.course-item');
             $curriculum.addClass('scrollbar-light')
                 .scrollbar({
                     scrollx: false
@@ -168,6 +169,46 @@
                 $cs.scrollTo($cs.find('.course-item.current'), 100);
             }, 300);
 
+            $(document).on('learn-press/nav-tabs/clicked', function (e, tab) {
+                if ($(document.body).hasClass('course-item-popup')) {
+                    return;
+                }
+                LP.setUrl($(tab).attr('href'));
+            }).on('keyup keypress', '.course-item-search input', function (e) {
+
+                if (e.type === 'keypress' && e.keyCode === 13) {
+                    return false;
+                }
+
+                var s = this.value,
+                    r = new RegExp(s, 'ig');
+                $courseItems.map(function () {
+                    var $item = $(this),
+                        itemName = $item.find('.item-name').text();
+                    if (itemName.match(r) || !s.length) {
+                        $item.show();
+                    } else {
+                        $item.hide();
+                    }
+                });
+
+                $('.section').show().each(function () {
+                    if (s.length) {
+                        if (!$(this).find('.section-content').children(':visible').length) {
+                            $(this).hide();
+                        } else {
+                            $(this).show();
+                        }
+                    } else {
+                        $(this).show();
+                    }
+                })
+                $(this).closest('.course-item-search').toggleClass('has-keyword', !!this.value.length)
+            }).on('click', '.course-item-search button', function (e) {
+                var $form = $(this).closest('.course-item-search');
+                $form.find('input').val('').trigger('keyup')
+            })
+
             /////$('.course-item-popup').find('#learn-press-course-curriculum').addClass('scrollbar-light').scrollbar({scrollx: false});
 
             if ($('#wpadminbar').length) {
@@ -177,11 +218,6 @@
             $('body').css('opacity', 1);
         });
 
-        $(document).on('learn-press/nav-tabs/clicked', function (e, tab) {
-            if ($(document.body).hasClass('course-item-popup')) {
-                return;
-            }
-            LP.setUrl($(tab).attr('href'));
-        })
+
     })
 })(jQuery, LP, _);

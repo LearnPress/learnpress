@@ -21,8 +21,8 @@ defined( 'ABSPATH' ) || exit();
 
     <div class="course-item-search">
         <form>
-            <input type="text" placeholder=""/>
-            <button></button>
+            <input type="text" placeholder="<?php esc_attr_e('Search item', 'learnpress');?>"/>
+            <button type="button"></button>
         </form>
     </div>
 

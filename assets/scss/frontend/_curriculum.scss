@@ -685,6 +685,13 @@ body {
                 color: #777;
             }
         }
+        &.has-keyword{
+            button {
+                &:after {
+                    content: "\f00d";
+                }
+            }
+        }
     }
     .course-title {
         font-size: 1.4rem;
