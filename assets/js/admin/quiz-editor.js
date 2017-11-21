@@ -301,13 +301,15 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             });
         },
         'CHANGE_QUESTION_TYPE': function (state, data) {
+
             state.questions = state.questions.map(function (question) {
-                if (question.id === data.id) {
+                if (parseInt(question.id) === data.id) {
                     question.answers = data.answers;
                     question.type = data.type;
                 }
                 return question;
             });
+
         },
         'REMOVE_QUESTION': function (state, item) {
 

@@ -139,8 +139,7 @@
 
             Vue.http.LPRequest({
                 type: 'change-correct',
-                correct: JSON.stringify(payload.correct),
-                draft_question: JSON.stringify(payload.question)
+                correct: JSON.stringify(payload.correct)
             }).then(
                 function (response) {
                     var result = response.body;

@@ -116,13 +116,7 @@ learn_press_admin_view( 'question/answer' );
                 // change correct answer
                 changeCorrect: function (correct) {
                     // update correct
-                    $store.dispatch('updateCorrectAnswer', {
-                        question: {
-                            title: $('input[name=post_title]').val(),
-                            content: $('textarea[name=content]').val()
-                        },
-                        correct: correct
-                    });
+                    $store.dispatch('updateCorrectAnswer', correct);
                 },
                 // delete answer
                 deleteAnswer: function (answer) {

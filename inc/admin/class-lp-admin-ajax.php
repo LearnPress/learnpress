@@ -522,16 +522,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					// draft question args
-					$args = ! empty( $args['draft_question'] ) ? $args['draft_question'] : '';
-					$args = (array) ( json_decode( wp_unslash( $args ), '' ) );
-
-					$draft = self::draft_question( $question_id, $args );
-					// check if draft question false or question exist
-					if ( $draft ) {
-						$question = $draft;
-					}
-
 					// update correct answer
 					$curd->change_correct_answer( $question, $correct );
 
@@ -702,9 +692,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$question = LP_Question::get_question( $question_id );
 
 					// change question type
-					$question_curd->change_question_type( $question, $type );
+					$question = $question_curd->change_question_type( $question, $type );
 
-					$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question_id );
+					$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question, true );
 
 					break;
 
