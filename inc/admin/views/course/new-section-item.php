@@ -26,7 +26,7 @@
             </template>
         </div>
         <div class="title">
-            <input type="text" :placeholder="placeholderInput" @keyup.enter="createItem" v-model="title">
+            <input type="text" :placeholder="placeholderInput" @keyup.enter="createItem" @blur="createItem" v-model="title">
         </div>
     </div>
 </script>

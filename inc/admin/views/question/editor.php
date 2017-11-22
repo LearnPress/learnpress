@@ -73,18 +73,15 @@ learn_press_admin_view( 'question/answer' );
                 status: function () {
                     return $store.getters['status'];
                 },
-                // autoDraft
-                autoDraft: function () {
-                    return this.autoDraft = {
-                        title: $('input[name=post_title]').val(),
-                        content: $('textarea[name=content]').val()
-                    }
+                // get draft status
+                draft: function () {
+                    return $store.getters['autoDraft'];
                 }
             },
             methods: {
                 // draft new question
                 draftQuestion: function () {
-                    if ($store.getters['autoDraft']) {
+                    if (this.draft) {
                         $store.dispatch('draftQuestion', {
                             title: $('input[name=post_title]').val(),
                             content: $('textarea[name=content]').val()
@@ -93,15 +90,16 @@ learn_press_admin_view( 'question/answer' );
                 },
                 changeType: function (type) {
                     // create draft quiz if auto draft
-                    this.draftQuestion();
-
-                    console.log(this.autoDraft);
-
-                    $store.dispatch('changeQuestionType', type);
+                    $store.dispatch('changeQuestionType', {
+                        question: {
+                            title: $('input[name=post_title]').val(),
+                            content: $('textarea[name=content]').val()
+                        },
+                        type: type
+                    });
                 },
                 // sort answer options
                 sort: function () {
-                    this.draftQuestion();
 
                     // sort answer
                     var order = [];
@@ -112,25 +110,20 @@ learn_press_admin_view( 'question/answer' );
                 },
                 // change answer title
                 updateTitle: function (answer) {
-                    this.draftQuestion();
                     // update title
                     $store.dispatch('updateAnswerTitle', answer);
                 },
                 // change correct answer
                 changeCorrect: function (correct) {
-                    console.log(correct);
-                    this.draftQuestion();
                     // update correct
                     $store.dispatch('updateCorrectAnswer', correct);
                 },
                 // delete answer
                 deleteAnswer: function (answer) {
-                    this.draftQuestion();
                     $store.dispatch('deleteAnswer', answer);
                 },
                 // new answer option
                 newAnswer: function () {
-                    this.draftQuestion();
                     // new answer
                     if (this.status === 'successful') {
                         $store.dispatch('newAnswer');

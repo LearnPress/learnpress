@@ -398,6 +398,41 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
+		 * Draft question.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 * @param array $args
+		 *
+		 * @return bool|int|LP_Question
+		 */
+		private static function draft_question( $question_id, $args = array() ) {
+
+			if ( get_post_status( $question_id ) != 'auto-draft' ) {
+				return false;
+			}
+
+			$curd = new LP_Question_CURD();
+
+			$args = array(
+				'id'      => $question_id,
+				'title'   => $args['title'] ? $args['title'] : __( 'New question', 'learnpress' ),
+				'content' => $args['content'],
+				'status'  => 'draft'
+			);
+
+			$question = $curd->create( $args );
+
+			if ( ! $question ) {
+				return false;
+
+			}
+
+			return $question;
+		}
+
+		/**
 		 * Handle ajax admin question editor.
 		 *
 		 * @since 3.0.0
@@ -422,26 +457,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			switch ( $args['type'] ) {
 
-				case 'draft-question':
-
-					// new question title and content
-					$new_question = ! empty( $args['question'] ) ? $args['question'] : false;
-					$new_question = json_decode( wp_unslash( $new_question ), true );
-
-					if ( ! $new_question ) {
-						break;
-					}
-
-					$args = array(
-						'title'   => $new_question['title'],
-						'content' => $new_question['content'],
-						'status'  => 'draft'
-					);
-
-					$result = $curd->create( $args );
-
-					break;
-
 				case 'change-question-type':
 
 					$type = ! empty( $args['question_type'] ) ? $args['question_type'] : false;
@@ -450,8 +465,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
+					// draft question args
+					$args = ! empty( $args['draft_question'] ) ? $args['draft_question'] : '';
+					$args = (array) ( json_decode( wp_unslash( $args ), '' ) );
+
+					$draft = self::draft_question( $question_id, $args );
+
+					// check if draft question false or question exist
+					if ( $draft ) {
+						$question = $draft;
+					}
+
 					// change question type
-					$curd->change_question_type( $question_id, $type );
+					$curd->change_question_type( $question, $type );
 
 					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
 
@@ -497,7 +523,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// update correct answer
-					$result = $curd->change_correct_answer( $question_id, $correct );
+					$curd->change_correct_answer( $question, $correct );
+
+					$result = $question->get_data( 'answer_options' );
 
 					break;
 
@@ -569,28 +597,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$result = true;
 					break;
 
-				case 'draft-quiz':
-
-					$new_quiz = ! empty( $args['quiz'] ) ? $args['quiz'] : false;
-					$new_quiz = json_decode( wp_unslash( $new_quiz ), true );
-
-					if ( ! $new_quiz ) {
-						break;
-					}
-
-					$title   = $new_quiz['title'] ? $new_quiz['title'] : __( 'New Quiz', 'learnpress' );
-					$content = $new_quiz['content'] ? $new_quiz['content'] : '';
-
-					wp_update_post( array(
-						'ID'           => $quiz_id,
-						'post_title'   => $title,
-						'post_content' => $content,
-						'post_status'  => 'draft'
-					) );
-
-					break;
-
-
 				case 'hidden-questions':
 
 					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
@@ -606,6 +612,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$question = json_decode( wp_unslash( $question ), true );
 
 					if ( ! $question ) {
+						break;
+					}
+
+					// draft quiz
+					if ( get_post_status( $quiz_id ) == 'auto-draft' ) {
+
+						$draft_quiz = ! empty( $args['draft_quiz'] ) ? $args['draft_quiz'] : '';
+						$draft_quiz = (array) ( json_decode( wp_unslash( $draft_quiz ), '' ) );
+
+						$quiz_args = array(
+							'id'      => $quiz_id,
+							'title'   => $draft_quiz['title'] ? $draft_quiz['title'] : __( 'New question', 'learnpress' ),
+							'content' => $draft_quiz['content'],
+							'status'  => 'draft'
+						);
+
+						$quiz_id = $quiz_curd->create( $quiz_args );
+					}
+
+					if ( ! $quiz_id ) {
+						$result = new WP_Error( __( 'Create quiz fail.', 'learnpress' ) );
 						break;
 					}
 
@@ -662,10 +689,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					// change question type
-					$question_curd->change_question_type( $question_id, $type );
+					$question = LP_Question::get_question( $question_id );
 
-					$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question_id );
+					// change question type
+					$question = $question_curd->change_question_type( $question, $type );
+
+					$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question, true );
 
 					break;
 
@@ -678,18 +707,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$user_id = learn_press_get_current_user_id();
-
-					$new_question_id = learn_press_duplicate_question( $question['id'], $quiz_id, array( 'post_status' => 'publish' ) );
+					// duplicate question
+					$new_question_id = $question_curd->duplicate( $question['id'], array( 'post_status' => 'publish' ) );
 
 					if ( ! is_wp_error( $new_question_id ) ) {
-
-						// trigger change user memorize question types
-						$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
-						$question_types          = ! $question_types ? array() : $question_types;
-						$type                    = get_post_meta( $new_question_id, '_lp_type', true );
-						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
-						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+						// add question to quiz
+						$quiz_curd->add_question( $quiz_id, $new_question_id );
 
 						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question_id );
 					}
@@ -767,8 +790,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
+					$question = LP_Question::get_question( $question_id );
+
 					// update correct answer
-					$result = $question_curd->change_correct_answer( $question_id, $correct );
+					$result = $question_curd->change_correct_answer( $question, $correct );
 
 					break;
 
@@ -901,14 +926,32 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = array();
+					// draft quiz
+					if ( get_post_status( $quiz_id ) == 'auto-draft' ) {
+
+						$draft_quiz = ! empty( $args['draft_quiz'] ) ? $args['draft_quiz'] : '';
+						$draft_quiz = (array) ( json_decode( wp_unslash( $draft_quiz ), '' ) );
+
+						$quiz_args = array(
+							'id'      => $quiz_id,
+							'title'   => $draft_quiz['title'],
+							'content' => $draft_quiz['content'],
+							'status'  => 'draft'
+						);
+
+						$quiz_id = $quiz_curd->create( $quiz_args );
+					}
+
+					if ( ! $quiz_id ) {
+						$result = new WP_Error( __( 'Create quiz fail.', 'learnpress' ) );
+						break;
+					}
 
 					if ( $questions ) {
 						foreach ( $questions as $key => $question ) {
-							if ( is_numeric( $quiz_curd->add_question( $quiz_id, $question['id'] ) ) ) {
-								$result[] = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question['id'] );
-							}
+							$quiz_curd->add_question( $quiz_id, $question['id'] );
 						}
+						$result = $quiz->quiz_editor_get_questions();
 					}
 
 					break;
@@ -1031,13 +1074,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$question = LP_Question::get_question( $question );
 			}
 
+			// question id
 			$question_id = $question->get_id();
-
+			// question answer
 			$answers = $question->get_data( 'answer_options' );
-
-			if ( $question->get_type() == 'true_or_false' ) {
-				$answers = array_slice( $answers, 2, 4 );
-			}
 
 			$data = array(
 				'id'       => $question_id,

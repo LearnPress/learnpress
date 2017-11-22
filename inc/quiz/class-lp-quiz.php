@@ -341,21 +341,22 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function quiz_editor_get_questions($settings = false) {
+		public function quiz_editor_get_questions() {
 			// list questions
 			$questions = $this->get_questions();
 			// order questions in quiz
-			$order = learn_press_quiz_get_questions_order( $questions );
+			$question_order = learn_press_quiz_get_questions_order( $questions );
 
 			$result = array();
 			if ( is_array( $questions ) ) {
 				foreach ( $questions as $index => $id ) {
+
 					$question = LP_Question::get_question( $id );
 
-
 					$answers = array();
-					foreach ( $question->get_answer_options() as $key => $answer ) {
-						$answers[ $key ] = array_values( $answer );
+					// handle question answer
+					foreach ( $question->get_data('answer_options') as $answer ) {
+						$answers[] =  $answer ;
 					}
 
 					$post     = get_post( $id );
@@ -367,14 +368,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 							'key'   => $question->get_type(),
 							'label' => $question->get_type_label()
 						),
-						'answers'  => $question->get_answer_options(),
+						'answers'  => $answers,
 						'settings' => array(
 							'content'     => $post->post_content,
 							'mark'        => get_post_meta( $id, '_lp_mark', true ),
 							'explanation' => get_post_meta( $id, '_lp_explanation', true ),
 							'hint'        => get_post_meta( $id, '_lp_hint', true )
 						),
-						'order'    => $order[ $index ]
+						'order'    => $question_order[ $index ]
 					);
 				}
 			}

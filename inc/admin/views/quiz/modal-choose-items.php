@@ -179,7 +179,6 @@ learn_press_admin_view( 'quiz/pagination' );
                 // add items to quiz
                 checkout: function () {
                     this.adding = true;
-
                     this.$emit('addItems', this.page);
                 },
 

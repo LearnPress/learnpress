@@ -36,12 +36,13 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                     <div class="table-row">
                         <div class="add-new-question">
                             <div class="title">
-                                <input type="text" v-model="new_question.title">
+                                <form @submit.prevent="">
+                                    <input type="text" v-model="new_question.title" @keyup.enter.prevent="addItem()">
+                                </form>
                             </div>
                             <div class="add-new">
                                 <button type="button" class="button" :disabled="!addableNew"
-                                        @click.prevent="addItem(new_question.type)"
-                                        @keyup.enter.prevent="addItem(new_question.type)">
+                                        @click.prevent="addItem(new_question.type)">
 									<?php esc_html_e( 'Add as New', 'learnpress' ); ?>
                                 </button>
                                 <ul class="question-types">
@@ -78,7 +79,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 return {
                     new_question: {
                         'title': '',
-                        'type': 'true_or_false'
+                        'type': ''
                     }
                 }
             },
@@ -110,6 +111,10 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 // all question types
                 questionTypes: function () {
                     return $store.getters['questionTypes'];
+                },
+                // trigger user memorize
+                newQuestionType: function () {
+                    return $store.getters['defaultNewQuestionType'];
                 }
             },
             methods: {
@@ -117,24 +122,23 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 toggle: function () {
                     $store.dispatch('lqs/toggleAll');
                 },
-                // draft new quiz
-                draftQuiz: function () {
-                    if ($store.getters['autoDraft']) {
-                        $store.dispatch('draftQuiz', {
-                            title: $('input[name=post_title]').val(),
-                            content: $('textarea[name=content]').val()
-                        });
-                    }
-                },
                 // add new question
                 addItem: function (type) {
+
                     if (this.new_question.title) {
-                        // create draft quiz if auto draft
-                        this.draftQuiz();
+                        if (!type) {
+                            type = this.newQuestionType;
+                        }
 
                         // new question
                         this.new_question.type = type;
-                        $store.dispatch('lqs/newQuestion', this.new_question);
+                        $store.dispatch('lqs/newQuestion', {
+                            quiz: {
+                                title: $('input[name=post_title]').val(),
+                                content: $('textarea[name=content]').val()
+                            },
+                            question: this.new_question
+                        });
                         this.new_question.title = '';
                     }
                 },
@@ -144,11 +148,11 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 },
                 // add choose items in modal to quiz
                 addItems: function (type) {
-                    // create draft quiz if auto draft
-                    this.draftQuiz();
-
                     // add items
-                    $store.dispatch('cqi/addQuestionsToQuiz');
+                    $store.dispatch('cqi/addQuestionsToQuiz', {
+                        title: $('input[name=post_title]').val(),
+                        content: $('textarea[name=content]').val()
+                    });
                 }
             }
         })

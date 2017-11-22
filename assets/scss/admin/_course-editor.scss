@@ -767,8 +767,7 @@
             z-index: 2;
             padding: 20px;
             transform: translate(100%, 0);
-            //transition: transform 100ms ease-out;
-            max-height: 330px;
+            max-height: 375px;
             overflow: auto;
 
             &.show {
