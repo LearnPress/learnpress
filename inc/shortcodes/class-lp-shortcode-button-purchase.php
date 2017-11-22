@@ -1,6 +1,6 @@
 <?php
 /**
- * Checkout Page Shortcode.
+ * Button Purchase Shortcode.
  *
  * @author   ThimPress
  * @category Shortcodes
@@ -24,7 +24,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Purchase' ) ) {
 	class LP_Shortcode_Button_Purchase extends LP_Abstract_Shortcode {
 
 		/**
-		 * LP_Checkout_Shortcode constructor.
+		 * LP_Shortcode_Button_Purchase constructor.
 		 *
 		 * @param mixed $atts
 		 */
@@ -51,19 +51,22 @@ if ( ! class_exists( 'LP_Shortcode_Button_Purchase' ) ) {
 
 			if ( '@current' === $atts['id'] ) {
 				$course_id = learn_press_is_course() ? get_the_ID() : 0;
-			}else{
+			} else {
 				$course_id = $atts['id'];
 			}
 
-			if ( $course = learn_press_get_course( $course_id ) ) {
+			if ( $course_id && ( $course = learn_press_get_course( $course_id ) ) ) {
 				LP_Global::set_course( $course );
+				global $post;
+				$post = get_post( $course_id );
 
+				setup_postdata( $post );
 				add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text' ) );
 
 				learn_press_get_template( 'single-course/buttons/purchase.php', array( 'course' => $course ) );
 
 				remove_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text' ) );
-
+				wp_reset_postdata();
 				LP_Global::reset();
 			} else {
 
