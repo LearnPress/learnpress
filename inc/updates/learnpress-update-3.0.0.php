@@ -13,6 +13,9 @@ class LP_Update_30 {
 	public static function update() {
 		self::add_column_user_items();
 		self::update_user_course_items();
+
+		LP_Install::update_db_version();
+		LP_Install::update_version();
 	}
 
 	/**
@@ -22,15 +25,16 @@ class LP_Update_30 {
 	public static function add_column_user_items() {
 		global $wpdb;
 		$sql = $wpdb->prepare( "
-		ALTER TABLE {$wpdb->learnpress_user_items}
-		ADD COLUMN `start_time_gmt` DATETIME NULL DEFAULT %s AFTER `start_time`,
-		ADD COLUMN `end_time_gmt` DATETIME NULL DEFAULT %s AFTER `end_time`;
-	", '0000-00-00 00:00:00', '0000-00-00 00:00:00' );
-
-		$wpdb->query( $sql );
-		if ( $wpdb->last_error !== '' ) {
-			learn_press_add_message( $wpdb->last_error, 'error' );
-		}
+			ALTER TABLE {$wpdb->learnpress_user_items}
+			ADD COLUMN `start_time_gmt` DATETIME NULL DEFAULT %s AFTER `start_time`,
+			ADD COLUMN `end_time_gmt` DATETIME NULL DEFAULT %s AFTER `end_time`;
+		", '0000-00-00 00:00:00', '0000-00-00 00:00:00' );
+		ob_start();
+		@$wpdb->query( $sql );
+		ob_get_clean();
+//		if ( $wpdb->last_error !== '' ) {
+//			learn_press_add_message( $wpdb->last_error, 'error' );
+//		}
 	}
 
 	/**

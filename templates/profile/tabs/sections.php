@@ -24,9 +24,8 @@ if ( ! isset( $tab_key, $tab_data ) ) {
 
 if ( empty( $tab_data['sections'] ) ) {
 	return;
-} ?>
-
-<?php $link = $profile->get_tab_link( $tab_key ); ?>
+}
+$link = $profile->get_tab_link( $tab_key ); ?>
 
 <ul class="lp-tab-sections">
 

@@ -937,6 +937,7 @@ function learn_press_course_grade_html( $grade, $echo = true ) {
 			$html = __( 'Failed', 'learnpress' );
 			break;
 		case 'in-progress':
+        default:
 			$html = __( 'In Progress', 'learnpress' );
 			break;
 	}

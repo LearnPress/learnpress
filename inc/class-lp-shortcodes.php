@@ -2,7 +2,7 @@
 /**
  * Base class of LearnPress shortcodes and helper functions.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Widgets
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
@@ -24,15 +24,17 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		public static function init() {
 
 			$shortcodes = array(
-				'confirm_order'       => __CLASS__ . '::confirm_order',
-				'profile'             => __CLASS__ . '::profile',
-				'become_teacher_form' => __CLASS__ . '::become_teacher_form',
-				'login_form'          => __CLASS__ . '::login_form',
-				'register_form'       => __CLASS__ . '::register_form',
-				'checkout'            => __CLASS__ . '::checkout',
-				'recent_courses'      => __CLASS__ . '::recent_courses',
-				'featured_courses'    => __CLASS__ . '::featured_courses',
-				'popular_courses'     => __CLASS__ . '::popular_courses'
+				'confirm_order'          => __CLASS__ . '::confirm_order',
+				'profile'                => __CLASS__ . '::profile',
+				'become_teacher_form'    => __CLASS__ . '::become_teacher_form',
+				'login_form'             => __CLASS__ . '::login_form',
+				'register_form'          => __CLASS__ . '::register_form',
+				'checkout'               => __CLASS__ . '::checkout',
+				'recent_courses'         => __CLASS__ . '::recent_courses',
+				'featured_courses'       => __CLASS__ . '::featured_courses',
+				'popular_courses'        => __CLASS__ . '::popular_courses',
+				'button_enroll_course'   => __CLASS__ . '::button_enroll',
+				'button_purchase_course' => __CLASS__ . '::button_purchase'
 			);
 
 			foreach ( $shortcodes as $shortcode => $function ) {
@@ -220,7 +222,26 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 
 			return $html;
 		}
+
+		/**
+		 * @param        $atts
+		 * @param string $content
+		 *
+		 * @return LP_Shortcode_Button_Enroll
+		 */
+		public static function button_enroll( $atts, $content = '' ) {
+			return new LP_Shortcode_Button_Enroll( $atts );
+		}
+
+		/**
+		 * @param        $atts
+		 * @param string $content
+		 *
+		 * @return LP_Shortcode_Button_Purchase
+		 */
+		public static function button_purchase( $atts, $content = '' ) {
+			return new LP_Shortcode_Button_Purchase( $atts );
+		}
 	}
 }
-
 LP_Shortcodes::init();

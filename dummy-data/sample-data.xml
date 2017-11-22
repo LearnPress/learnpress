@@ -1,0 +1,1453 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+	xmlns:excerpt="http://wordpress.org/export/LPR_EXPORT_VER/excerpt/"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:wp="http://wordpress.org/export/LPR_EXPORT_VER/"
+>
+<channel>
+	<title>DEV LearnPress 1.0</title>
+	<link>http://localhost/foobla/learnpress/1.0</link>
+	<description>Just another WordPress site</description>
+	<pubDate>Sat, 09 Jan 2016 07:59:54 +0000</pubDate>
+	<language>en-US</language>
+	<wp:wxr_version>1.0</wp:wxr_version>
+	<wp:base_site_url>http://localhost/foobla/learnpress/1.0</wp:base_site_url>
+	<wp:base_blog_url>http://localhost/foobla/learnpress/1.0</wp:base_blog_url>
+	<wp:plugin_name>learnpress</wp:plugin_name>
+	<wp:plugin_version>1.0</wp:plugin_version>
+		<wp:author><wp:author_id>1</wp:author_id><wp:author_login>admin</wp:author_login><wp:author_email>tunnhn@gmail.com</wp:author_email><wp:author_display_name><![CDATA[admin]]></wp:author_display_name><wp:author_first_name><![CDATA[]]></wp:author_first_name><wp:author_last_name><![CDATA[]]></wp:author_last_name></wp:author>
+			<item>
+	<title>This is a new course</title>
+	<link>http://localhost/foobla/learnpress/1.0/dao-tao-cac-khoa-hoc-onine/this-is-a-new-course/</link>
+	<pubDate>Wed, 11 Nov 2015 10:45:53 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/?post_type=lp_course&#038;p=873</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1511</wp:post_id>
+	<wp:post_date>2015-11-11 10:45:53</wp:post_date>
+	<wp:post_date_gmt>2015-11-11 10:45:53</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>this-is-a-new-course</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_course</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1451441611:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
+		<wp:meta_value><![CDATA[]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_course_status</wp:meta_key>
+		<wp:meta_value><![CDATA[publish]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_curriculum</wp:meta_key>
+		<wp:meta_value><![CDATA[a:1:{i:0;a:3:{s:4:"name";s:10:"Section #1";s:11:"description";s:0:"";s:5:"items";a:2:{i:614;a:5:{s:4:"name";s:18:"word wide web 2222";s:8:"old_name";s:13:"word wide web";s:7:"item_id";s:4:"1232";s:15:"section_item_id";s:3:"614";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}}]]></wp:meta_value>
+		</wp:postmeta>
+	<wp:section>
+		<wp:section_id>207</wp:section_id>
+		<wp:section_name>Section #1</wp:section_name>
+		<wp:section_course_id>1511</wp:section_course_id>
+		<wp:section_order>1</wp:section_order>
+		<wp:section_description><![CDATA[]]></wp:section_description>
+					<wp:section_item>
+				<wp:section_id>207</wp:section_id>
+				<wp:item_id>1512</wp:item_id>
+				<wp:item_order>1</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+			</wp:section>
+	
+</item><item>
+	<title>word wide web 2222</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/wwwwwwwwwwwwwwwwwwww/</link>
+	<pubDate>Wed, 30 Dec 2015 02:06:58 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/?post_type=lp_lesson&#038;p=1232</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1512</wp:post_id>
+	<wp:post_date>2015-12-30 02:06:58</wp:post_date>
+	<wp:post_date_gmt>2015-12-30 02:06:58</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>wwwwwwwwwwwwwwwwwwww</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1451443416:1]]></wp:meta_value>
+		</wp:postmeta>
+</item>			<item>
+	<title>What should be here?</title>
+	<link>http://localhost/foobla/learnpress/1.0/dao-tao-cac-khoa-hoc-onine/what-should-be-here/</link>
+	<pubDate>Fri, 04 Dec 2015 07:08:08 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/?post_type=lp_course&#038;p=908</guid>
+	<description></description>
+	<content:encoded><![CDATA[Phasellus accumsan cursus velit. Phasellus nec sem in justo pellentesque facilisis. Fusce vel dui. Integer tincidunt. Quisque id odio.
+
+Sed hendrerit. Morbi mattis ullamcorper velit. Phasellus dolor. Sed libero. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem.
+
+Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. Phasellus tempus. Donec posuere vulputate arcu. Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Sed a libero.
+
+Nam eget dui. Quisque ut nisi. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Nunc nec neque. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam.
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Vestibulum suscipit nulla quis orci. Fusce ac felis sit amet ligula pharetra condimentum. Vestibulum fringilla pede sit amet augue. Etiam rhoncus.]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1513</wp:post_id>
+	<wp:post_date>2015-12-04 07:08:08</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 07:08:08</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>what-should-be-here</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_course</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+				<category domain="course_category" nicename="it" id="18" parent="0" description=" "><![CDATA[IT]]></category>
+		<category domain="course_category" nicename="software" id="19" parent="18" description=" "><![CDATA[Software]]></category>
+			<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1452319104:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_admin_hidden_sections</wp:meta_key>
+		<wp:meta_value><![CDATA[a:5:{i:0;s:3:"132";i:1;s:3:"133";i:2;s:3:"134";i:3;s:3:"135";i:4;s:0:"";}]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
+		<wp:meta_value><![CDATA[]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_curriculum</wp:meta_key>
+		<wp:meta_value><![CDATA[a:6:{i:0;a:3:{s:4:"name";s:10:"Section #1";s:11:"description";s:33:"asd asd asdasd asdasd asdasd asda";s:5:"items";a:15:{i:615;a:5:{s:4:"name";s:12:"333333333333";s:8:"old_name";s:12:"333333333333";s:7:"item_id";s:4:"1146";s:15:"section_item_id";s:3:"615";s:9:"post_type";s:7:"lp_quiz";}i:616;a:5:{s:4:"name";s:18:"where are you now?";s:8:"old_name";s:18:"where are you now?";s:7:"item_id";s:4:"1148";s:15:"section_item_id";s:3:"616";s:9:"post_type";s:9:"lp_lesson";}i:617;a:5:{s:4:"name";s:21:"I am here, beside you";s:8:"old_name";s:21:"I am here, beside you";s:7:"item_id";s:4:"1149";s:15:"section_item_id";s:3:"617";s:9:"post_type";s:7:"lp_quiz";}i:618;a:5:{s:4:"name";s:9:"asdasdasd";s:8:"old_name";s:9:"asdasdasd";s:7:"item_id";s:4:"1143";s:15:"section_item_id";s:3:"618";s:9:"post_type";s:9:"lp_lesson";}i:619;a:5:{s:4:"name";s:9:"dsfsdfsdf";s:8:"old_name";s:9:"dsfsdfsdf";s:7:"item_id";s:4:"1144";s:15:"section_item_id";s:3:"619";s:9:"post_type";s:9:"lp_lesson";}i:620;a:5:{s:4:"name";s:8:"Lesson 1";s:8:"old_name";s:8:"Lesson 1";s:7:"item_id";s:4:"1139";s:15:"section_item_id";s:3:"620";s:9:"post_type";s:9:"lp_lesson";}i:621;a:5:{s:4:"name";s:8:"Lesson 2";s:8:"old_name";s:8:"Lesson 2";s:7:"item_id";s:4:"1140";s:15:"section_item_id";s:3:"621";s:9:"post_type";s:9:"lp_lesson";}i:622;a:5:{s:4:"name";s:8:"Lesson 3";s:8:"old_name";s:8:"Lesson 3";s:7:"item_id";s:4:"1142";s:15:"section_item_id";s:3:"622";s:9:"post_type";s:9:"lp_lesson";}i:623;a:5:{s:4:"name";s:17:"qqqqqqqqqqqqqqqqq";s:8:"old_name";s:17:"qqqqqqqqqqqqqqqqq";s:7:"item_id";s:4:"1153";s:15:"section_item_id";s:3:"623";s:9:"post_type";s:9:"lp_lesson";}i:624;a:5:{s:4:"name";s:10:"trau va bo";s:8:"old_name";s:10:"trau va bo";s:7:"item_id";s:4:"1154";s:15:"section_item_id";s:3:"624";s:9:"post_type";s:9:"lp_lesson";}i:625;a:5:{s:4:"name";s:19:"adasdasdasda asd as";s:8:"old_name";s:19:"adasdasdasda asd as";s:7:"item_id";s:4:"1164";s:15:"section_item_id";s:3:"625";s:9:"post_type";s:9:"lp_lesson";}i:626;a:5:{s:4:"name";s:19:"asd asda sdasdas da";s:8:"old_name";s:19:"asd asda sdasdas da";s:7:"item_id";s:4:"1165";s:15:"section_item_id";s:3:"626";s:9:"post_type";s:9:"lp_lesson";}i:627;a:5:{s:4:"name";s:16:"asdasdasdasdasda";s:8:"old_name";s:16:"asdasdasdasdasda";s:7:"item_id";s:4:"1166";s:15:"section_item_id";s:3:"627";s:9:"post_type";s:9:"lp_lesson";}i:628;a:5:{s:4:"name";s:18:"assasdasdasdasdasd";s:8:"old_name";s:18:"assasdasdasdasdasd";s:7:"item_id";s:4:"1167";s:15:"section_item_id";s:3:"628";s:9:"post_type";s:9:"lp_lesson";}s:7:"item-14";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:1;a:3:{s:4:"name";s:10:"Section #2";s:11:"description";s:49:"asdas das d asdas das asdasd asdas dasdas dasdasd";s:5:"items";a:5:{i:629;a:5:{s:4:"name";s:22:"How to create a course";s:8:"old_name";s:22:"How to create a course";s:7:"item_id";s:4:"1169";s:15:"section_item_id";s:3:"629";s:9:"post_type";s:9:"lp_lesson";}i:630;a:5:{s:4:"name";s:17:"What is your name";s:8:"old_name";s:17:"What is your name";s:7:"item_id";s:4:"1170";s:15:"section_item_id";s:3:"630";s:9:"post_type";s:9:"lp_lesson";}i:631;a:5:{s:4:"name";s:20:"My name is Tu Nguyen";s:8:"old_name";s:20:"My name is Tu Nguyen";s:7:"item_id";s:4:"1171";s:15:"section_item_id";s:3:"631";s:9:"post_type";s:9:"lp_lesson";}i:632;a:5:{s:4:"name";s:23:"sdfsdfsdf sdf sdf sdf s";s:8:"old_name";s:23:"sdfsdfsdf sdf sdf sdf s";s:7:"item_id";s:4:"1168";s:15:"section_item_id";s:3:"632";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-4";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:2;a:3:{s:4:"name";s:10:"Section #3";s:11:"description";s:0:"";s:5:"items";a:2:{i:633;a:5:{s:4:"name";s:14:"sdfsd fsd fsdf";s:8:"old_name";s:14:"sdfsd fsd fsdf";s:7:"item_id";s:4:"1172";s:15:"section_item_id";s:3:"633";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:3;a:3:{s:4:"name";s:10:"Section #4";s:11:"description";s:0:"";s:5:"items";a:2:{i:634;a:5:{s:4:"name";s:22:"sdf sdfsd fsdf sdfsd f";s:8:"old_name";s:22:"sdf sdfsd fsdf sdfsd f";s:7:"item_id";s:4:"1173";s:15:"section_item_id";s:3:"634";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:4;a:3:{s:4:"name";s:10:"Section #5";s:11:"description";s:0:"";s:5:"items";a:6:{i:635;a:5:{s:4:"name";s:15:"happy new year!";s:8:"old_name";s:15:"happy new year!";s:7:"item_id";s:4:"1228";s:15:"section_item_id";s:3:"635";s:9:"post_type";s:9:"lp_lesson";}i:636;a:5:{s:4:"name";s:15:"happy new year!";s:8:"old_name";s:15:"happy new year!";s:7:"item_id";s:4:"1229";s:15:"section_item_id";s:3:"636";s:9:"post_type";s:9:"lp_lesson";}i:637;a:5:{s:4:"name";s:8:"Lesson 1";s:8:"old_name";s:8:"Lesson 1";s:7:"item_id";s:4:"1136";s:15:"section_item_id";s:3:"637";s:9:"post_type";s:9:"lp_lesson";}i:638;a:5:{s:4:"name";s:8:"Lesson 2";s:8:"old_name";s:8:"Lesson 2";s:7:"item_id";s:4:"1137";s:15:"section_item_id";s:3:"638";s:9:"post_type";s:9:"lp_lesson";}i:639;a:5:{s:4:"name";s:18:"oi troi oi la troi";s:8:"old_name";s:18:"oi troi oi la troi";s:7:"item_id";s:4:"1230";s:15:"section_item_id";s:3:"639";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-5";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:5;a:3:{s:4:"name";s:10:"Section #6";s:11:"description";s:0:"";s:5:"items";a:4:{i:640;a:5:{s:4:"name";s:12:"333333333333";s:8:"old_name";s:12:"333333333333";s:7:"item_id";s:4:"1145";s:15:"section_item_id";s:3:"640";s:9:"post_type";s:9:"lp_lesson";}i:641;a:5:{s:4:"name";s:8:"44444444";s:8:"old_name";s:8:"44444444";s:7:"item_id";s:4:"1227";s:15:"section_item_id";s:3:"641";s:9:"post_type";s:9:"lp_lesson";}i:642;a:5:{s:4:"name";s:6:"cookie";s:8:"old_name";s:6:"cookie";s:7:"item_id";s:4:"1231";s:15:"section_item_id";s:3:"642";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-3";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}}]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_course_status</wp:meta_key>
+		<wp:meta_value><![CDATA[publish]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_course_result</wp:meta_key>
+		<wp:meta_value><![CDATA[evaluate_lesson]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_required_enroll</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>
+	<wp:section>
+		<wp:section_id>208</wp:section_id>
+		<wp:section_name>Section #1</wp:section_name>
+		<wp:section_course_id>1513</wp:section_course_id>
+		<wp:section_order>1</wp:section_order>
+		<wp:section_description><![CDATA[asd asd asdasd asdasd asdasd asda]]></wp:section_description>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1514</wp:item_id>
+				<wp:item_order>1</wp:item_order>
+				<wp:item_type>lp_quiz</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1515</wp:item_id>
+				<wp:item_order>2</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1516</wp:item_id>
+				<wp:item_order>3</wp:item_order>
+				<wp:item_type>lp_quiz</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1517</wp:item_id>
+				<wp:item_order>4</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1518</wp:item_id>
+				<wp:item_order>5</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1519</wp:item_id>
+				<wp:item_order>6</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1520</wp:item_id>
+				<wp:item_order>7</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1521</wp:item_id>
+				<wp:item_order>8</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1522</wp:item_id>
+				<wp:item_order>9</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1523</wp:item_id>
+				<wp:item_order>10</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1524</wp:item_id>
+				<wp:item_order>11</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1525</wp:item_id>
+				<wp:item_order>12</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1526</wp:item_id>
+				<wp:item_order>13</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>208</wp:section_id>
+				<wp:item_id>1527</wp:item_id>
+				<wp:item_order>14</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+			</wp:section>
+	
+	<wp:section>
+		<wp:section_id>209</wp:section_id>
+		<wp:section_name>Section #2</wp:section_name>
+		<wp:section_course_id>1513</wp:section_course_id>
+		<wp:section_order>2</wp:section_order>
+		<wp:section_description><![CDATA[asdas das d asdas das asdasd asdas dasdas dasdasd]]></wp:section_description>
+					<wp:section_item>
+				<wp:section_id>209</wp:section_id>
+				<wp:item_id>1528</wp:item_id>
+				<wp:item_order>1</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>209</wp:section_id>
+				<wp:item_id>1529</wp:item_id>
+				<wp:item_order>2</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>209</wp:section_id>
+				<wp:item_id>1530</wp:item_id>
+				<wp:item_order>3</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>209</wp:section_id>
+				<wp:item_id>1531</wp:item_id>
+				<wp:item_order>4</wp:item_order>
+				<wp:item_type>lp_quiz</wp:item_type>
+			</wp:section_item>
+			</wp:section>
+	
+	<wp:section>
+		<wp:section_id>210</wp:section_id>
+		<wp:section_name>Section #3</wp:section_name>
+		<wp:section_course_id>1513</wp:section_course_id>
+		<wp:section_order>3</wp:section_order>
+		<wp:section_description><![CDATA[]]></wp:section_description>
+					<wp:section_item>
+				<wp:section_id>210</wp:section_id>
+				<wp:item_id>1532</wp:item_id>
+				<wp:item_order>1</wp:item_order>
+				<wp:item_type>lp_quiz</wp:item_type>
+			</wp:section_item>
+			</wp:section>
+	
+	<wp:section>
+		<wp:section_id>211</wp:section_id>
+		<wp:section_name>Section #4</wp:section_name>
+		<wp:section_course_id>1513</wp:section_course_id>
+		<wp:section_order>4</wp:section_order>
+		<wp:section_description><![CDATA[]]></wp:section_description>
+					<wp:section_item>
+				<wp:section_id>211</wp:section_id>
+				<wp:item_id>1533</wp:item_id>
+				<wp:item_order>1</wp:item_order>
+				<wp:item_type>lp_quiz</wp:item_type>
+			</wp:section_item>
+			</wp:section>
+	
+	<wp:section>
+		<wp:section_id>212</wp:section_id>
+		<wp:section_name>Section #5</wp:section_name>
+		<wp:section_course_id>1513</wp:section_course_id>
+		<wp:section_order>5</wp:section_order>
+		<wp:section_description><![CDATA[]]></wp:section_description>
+					<wp:section_item>
+				<wp:section_id>212</wp:section_id>
+				<wp:item_id>1534</wp:item_id>
+				<wp:item_order>1</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>212</wp:section_id>
+				<wp:item_id>1535</wp:item_id>
+				<wp:item_order>2</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>212</wp:section_id>
+				<wp:item_id>1536</wp:item_id>
+				<wp:item_order>3</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>212</wp:section_id>
+				<wp:item_id>1537</wp:item_id>
+				<wp:item_order>4</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>212</wp:section_id>
+				<wp:item_id>1538</wp:item_id>
+				<wp:item_order>5</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+			</wp:section>
+	
+	<wp:section>
+		<wp:section_id>213</wp:section_id>
+		<wp:section_name>Section #6</wp:section_name>
+		<wp:section_course_id>1513</wp:section_course_id>
+		<wp:section_order>6</wp:section_order>
+		<wp:section_description><![CDATA[]]></wp:section_description>
+					<wp:section_item>
+				<wp:section_id>213</wp:section_id>
+				<wp:item_id>1539</wp:item_id>
+				<wp:item_order>1</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>213</wp:section_id>
+				<wp:item_id>1540</wp:item_id>
+				<wp:item_order>2</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+					<wp:section_item>
+				<wp:section_id>213</wp:section_id>
+				<wp:item_id>1541</wp:item_id>
+				<wp:item_order>3</wp:item_order>
+				<wp:item_type>lp_lesson</wp:item_type>
+			</wp:section_item>
+			</wp:section>
+	
+</item><item>
+	<title>333333333333</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/333333333333-2/</link>
+	<pubDate>Tue, 08 Dec 2015 04:19:22 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/333333333333-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1514</wp:post_id>
+	<wp:post_date>2015-12-08 04:19:22</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 04:19:22</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>333333333333-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1451469598:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_show_result</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_show_question_answer</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_type</wp:meta_key>
+		<wp:meta_value><![CDATA[true_or_false]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>where are you now?</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/where-are-you-now/</link>
+	<pubDate>Tue, 08 Dec 2015 08:20:59 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/where-are-you-now/</guid>
+	<description></description>
+	<content:encoded><![CDATA[Nulla porta dolor. Ut varius tincidunt libero. Sed augue ipsum, egestas nec, vestibulum et, malesuada adipiscing, dui. Fusce egestas elit eget lorem. Vivamus aliquet elit ac nisl.
+
+Cras ultricies mi eu turpis hendrerit fringilla. Quisque id mi. Fusce ac felis sit amet ligula pharetra condimentum. Maecenas malesuada. Praesent nec nisl a purus blandit viverra.
+
+In auctor lobortis lacus. Phasellus leo dolor, tempus non, auctor et, hendrerit quis, nisi. Nam adipiscing. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Nam commodo suscipit quam.
+
+Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam accumsan lorem in dui. Cras varius. Nunc egestas, augue at pellentesque laoreet, felis eros vehicula leo, at malesuada velit leo quis pede. Suspendisse non nisl sit amet velit hendrerit rutrum.
+
+Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc nulla. In turpis.]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1515</wp:post_id>
+	<wp:post_date>2015-12-08 08:20:59</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 08:20:59</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>where-are-you-now</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1451449804:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>I am here, beside you</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/i-am-here-beside-you/</link>
+	<pubDate>Tue, 08 Dec 2015 08:26:07 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/i-am-here-beside-you/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1516</wp:post_id>
+	<wp:post_date>2015-12-08 08:26:07</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 08:26:07</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>i-am-here-beside-you</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1452319835:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_show_result</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_show_question_answer</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>
+	<wp:question>
+		<wp:quiz_id>1516</wp:quiz_id>
+		<wp:question_id>1542</wp:question_id>
+		<wp:params><![CDATA[]]></wp:params>
+		<wp:question_order></wp:question_order>
+	</wp:question>
+
+
+	<wp:question>
+		<wp:quiz_id>1516</wp:quiz_id>
+		<wp:question_id>1543</wp:question_id>
+		<wp:params><![CDATA[]]></wp:params>
+		<wp:question_order></wp:question_order>
+	</wp:question>
+
+
+</item><item>
+	<title>Question #1</title>
+	<link>http://localhost/foobla/learnpress/1.0/questions/question-1/</link>
+	<pubDate>Sat, 09 Jan 2016 06:12:35 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/questions/question-1/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1542</wp:post_id>
+	<wp:post_date>2016-01-09 06:12:35</wp:post_date>
+	<wp:post_date_gmt>2016-01-09 06:12:35</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>question-1</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_type</wp:meta_key>
+		<wp:meta_value><![CDATA[multi_choice]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1452321706:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>
+	<wp:answer>
+		<wp:question_id>1543</wp:question_id>
+		<wp:answer_data><![CDATA[a:3:{s:4:"text";s:4:"True";s:5:"value";s:4:"true";s:7:"is_true";s:3:"yes";}]]></wp:answer_data>
+		<wp:answer_order>1</wp:answer_order>
+	</wp:answer>
+
+
+	<wp:answer>
+		<wp:question_id>1543</wp:question_id>
+		<wp:answer_data><![CDATA[a:3:{s:4:"text";s:11:"Falseasdasd";s:5:"value";s:5:"false";s:7:"is_true";s:3:"yes";}]]></wp:answer_data>
+		<wp:answer_order>2</wp:answer_order>
+	</wp:answer>
+
+
+	<wp:answer>
+		<wp:question_id>1543</wp:question_id>
+		<wp:answer_data><![CDATA[a:3:{s:4:"text";s:13:"asdasdasdadss";s:5:"value";s:13:"5690ac2667caa";s:7:"is_true";s:2:"no";}]]></wp:answer_data>
+		<wp:answer_order>3</wp:answer_order>
+	</wp:answer>
+
+
+</item><item>
+	<title>Question #2</title>
+	<link>http://localhost/foobla/learnpress/1.0/questions/question-2/</link>
+	<pubDate>Sat, 09 Jan 2016 06:12:49 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/questions/question-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1543</wp:post_id>
+	<wp:post_date>2016-01-09 06:12:49</wp:post_date>
+	<wp:post_date_gmt>2016-01-09 06:12:49</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>question-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_type</wp:meta_key>
+		<wp:meta_value><![CDATA[multi_choice]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1452326236:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>
+	<wp:answer>
+		<wp:question_id>1543</wp:question_id>
+		<wp:answer_data><![CDATA[a:3:{s:4:"text";s:12:"Option First";s:5:"value";s:12:"option_first";s:7:"is_true";s:3:"yes";}]]></wp:answer_data>
+		<wp:answer_order>1</wp:answer_order>
+	</wp:answer>
+
+
+	<wp:answer>
+		<wp:question_id>1543</wp:question_id>
+		<wp:answer_data><![CDATA[a:3:{s:4:"text";s:14:"Option Seconds";s:5:"value";s:14:"option_seconds";s:7:"is_true";s:3:"yes";}]]></wp:answer_data>
+		<wp:answer_order>2</wp:answer_order>
+	</wp:answer>
+
+
+	<wp:answer>
+		<wp:question_id>1543</wp:question_id>
+		<wp:answer_data><![CDATA[a:3:{s:4:"text";s:12:"Option Third";s:5:"value";s:12:"option_third";s:7:"is_true";s:2:"no";}]]></wp:answer_data>
+		<wp:answer_order>3</wp:answer_order>
+	</wp:answer>
+
+
+</item><item>
+	<title>asdasdasd</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/asdasdasd/</link>
+	<pubDate>Tue, 08 Dec 2015 03:58:51 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/asdasdasd/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1517</wp:post_id>
+	<wp:post_date>2015-12-08 03:58:51</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 03:58:51</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>asdasdasd</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>dsfsdfsdf</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/dsfsdfsdf/</link>
+	<pubDate>Tue, 08 Dec 2015 03:59:33 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/dsfsdfsdf/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1518</wp:post_id>
+	<wp:post_date>2015-12-08 03:59:33</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 03:59:33</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>dsfsdfsdf</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 1</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-1-2/</link>
+	<pubDate>Fri, 04 Dec 2015 08:41:24 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-1-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1519</wp:post_id>
+	<wp:post_date>2015-12-04 08:41:24</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 08:41:24</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-1-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 2</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-2-2/</link>
+	<pubDate>Fri, 04 Dec 2015 08:41:24 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-2-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1520</wp:post_id>
+	<wp:post_date>2015-12-04 08:41:24</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 08:41:24</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-2-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 3</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-3/</link>
+	<pubDate>Tue, 08 Dec 2015 03:58:28 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-3/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1521</wp:post_id>
+	<wp:post_date>2015-12-08 03:58:28</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 03:58:28</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-3</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>qqqqqqqqqqqqqqqqq</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/qqqqqqqqqqqqqqqqq/</link>
+	<pubDate>Tue, 08 Dec 2015 15:15:04 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/qqqqqqqqqqqqqqqqq/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1522</wp:post_id>
+	<wp:post_date>2015-12-08 15:15:04</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 15:15:04</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>qqqqqqqqqqqqqqqqq</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1449589506:1]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>trau va bo</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/trau-va-bo/</link>
+	<pubDate>Tue, 08 Dec 2015 15:16:40 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/trau-va-bo/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1523</wp:post_id>
+	<wp:post_date>2015-12-08 15:16:40</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 15:16:40</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>trau-va-bo</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>adasdasdasda asd as</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/adasdasdasda-asd-as/</link>
+	<pubDate>Thu, 17 Dec 2015 02:29:12 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/adasdasdasda-asd-as/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1524</wp:post_id>
+	<wp:post_date>2015-12-17 02:29:12</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 02:29:12</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>adasdasdasda-asd-as</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>asd asda sdasdas da</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/asd-asda-sdasdas-da/</link>
+	<pubDate>Thu, 17 Dec 2015 02:29:12 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/asd-asda-sdasdas-da/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1525</wp:post_id>
+	<wp:post_date>2015-12-17 02:29:12</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 02:29:12</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>asd-asda-sdasdas-da</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>asdasdasdasdasda</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/asdasdasdasdasda/</link>
+	<pubDate>Thu, 17 Dec 2015 02:29:12 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/asdasdasdasdasda/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1526</wp:post_id>
+	<wp:post_date>2015-12-17 02:29:12</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 02:29:12</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>asdasdasdasdasda</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>assasdasdasdasdasd</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/assasdasdasdasdasd/</link>
+	<pubDate>Thu, 17 Dec 2015 02:29:12 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/assasdasdasdasdasd/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1527</wp:post_id>
+	<wp:post_date>2015-12-17 02:29:12</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 02:29:12</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>assasdasdasdasdasd</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>How to create a course</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/how-to-create-a-course/</link>
+	<pubDate>Thu, 17 Dec 2015 03:39:13 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/how-to-create-a-course/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1528</wp:post_id>
+	<wp:post_date>2015-12-17 03:39:13</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:39:13</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>how-to-create-a-course</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>What is your name</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/what-is-your-name/</link>
+	<pubDate>Thu, 17 Dec 2015 03:39:13 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/what-is-your-name/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1529</wp:post_id>
+	<wp:post_date>2015-12-17 03:39:13</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:39:13</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>what-is-your-name</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>My name is Tu Nguyen</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/my-name-is-tu-nguyen/</link>
+	<pubDate>Thu, 17 Dec 2015 03:39:13 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/my-name-is-tu-nguyen/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1530</wp:post_id>
+	<wp:post_date>2015-12-17 03:39:13</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:39:13</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>my-name-is-tu-nguyen</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>sdfsdfsdf sdf sdf sdf s</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/sdfsdfsdf-sdf-sdf-sdf-s/</link>
+	<pubDate>Thu, 17 Dec 2015 03:39:07 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/sdfsdfsdf-sdf-sdf-sdf-s/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1531</wp:post_id>
+	<wp:post_date>2015-12-17 03:39:07</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:39:07</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>sdfsdfsdf-sdf-sdf-sdf-s</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>sdfsd fsd fsdf</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/sdfsd-fsd-fsdf/</link>
+	<pubDate>Thu, 17 Dec 2015 03:44:14 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/sdfsd-fsd-fsdf/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1532</wp:post_id>
+	<wp:post_date>2015-12-17 03:44:14</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:44:14</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>sdfsd-fsd-fsdf</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>sdf sdfsd fsdf sdfsd f</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/sdf-sdfsd-fsdf-sdfsd-f/</link>
+	<pubDate>Thu, 17 Dec 2015 03:44:14 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/sdf-sdfsd-fsdf-sdfsd-f/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1533</wp:post_id>
+	<wp:post_date>2015-12-17 03:44:14</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:44:14</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>sdf-sdfsd-fsdf-sdfsd-f</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>happy new year!</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/happy-new-year/</link>
+	<pubDate>Tue, 29 Dec 2015 09:25:33 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/happy-new-year/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1534</wp:post_id>
+	<wp:post_date>2015-12-29 09:25:33</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:25:33</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>happy-new-year</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>happy new year!</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/happy-new-year-2/</link>
+	<pubDate>Tue, 29 Dec 2015 09:25:34 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/happy-new-year-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1535</wp:post_id>
+	<wp:post_date>2015-12-29 09:25:34</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:25:34</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>happy-new-year-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 1</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-1/</link>
+	<pubDate>Fri, 04 Dec 2015 08:17:04 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-1/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1536</wp:post_id>
+	<wp:post_date>2015-12-04 08:17:04</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 08:17:04</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-1</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1451567890:1]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 2</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-2/</link>
+	<pubDate>Fri, 04 Dec 2015 08:17:04 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1537</wp:post_id>
+	<wp:post_date>2015-12-04 08:17:04</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 08:17:04</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>oi troi oi la troi</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/oi-troi-oi-la-troi/</link>
+	<pubDate>Tue, 29 Dec 2015 09:29:54 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/oi-troi-oi-la-troi/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1538</wp:post_id>
+	<wp:post_date>2015-12-29 09:29:54</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:29:54</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>oi-troi-oi-la-troi</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>333333333333</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/333333333333-2/</link>
+	<pubDate>Tue, 08 Dec 2015 04:18:47 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/333333333333-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1539</wp:post_id>
+	<wp:post_date>2015-12-08 04:18:47</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 04:18:47</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>333333333333-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>44444444</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/44444444-2/</link>
+	<pubDate>Tue, 29 Dec 2015 09:02:22 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/44444444-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1540</wp:post_id>
+	<wp:post_date>2015-12-29 09:02:22</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:02:22</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>44444444-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>cookie</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/cookie/</link>
+	<pubDate>Tue, 29 Dec 2015 09:33:07 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/cookie/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1541</wp:post_id>
+	<wp:post_date>2015-12-29 09:33:07</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:33:07</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>cookie</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item>	</channel>
+</rss>

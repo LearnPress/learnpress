@@ -2,7 +2,7 @@
 /**
  * Login Form Shortcode.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Shortcodes
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
@@ -34,14 +34,18 @@ if ( ! class_exists( 'LP_Shortcode_Login_Form' ) ) {
 		 * @return string
 		 */
 		public function output() {
-
-			if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
-				include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
+			if ( is_user_logged_in() ) {
+				$user   = learn_press_get_current_user();
+				$output = sprintf( __( 'Your are logged in as %s. <a href="%s">Log out</a>?', 'learnpress' ), $user->get_display_name(), wp_logout_url() );
+			} else {
+				if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
+					include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
+				}
+				ob_start();
+				learn_press_print_messages();
+				learn_press_get_template( 'global/login-form.php', array( 'fields' => self::get_login_fields() ) );
+				$output = ob_get_clean();
 			}
-			ob_start();
-			learn_press_print_messages();
-			learn_press_get_template( 'profile/login-form.php', array( 'fields' => self::get_login_fields() ) );
-			$output = ob_get_clean();
 
 			return $output;
 		}

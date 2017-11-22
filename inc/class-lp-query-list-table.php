@@ -18,18 +18,20 @@ class LP_Query_List_Table implements ArrayAccess {
 
 		$this->_data = wp_parse_args(
 			$data, array(
-				'pages'  => 0,
-				'total'  => 0,
-				'items'  => null,
-				'paged'  => 1,
-				'limit'  => 10,
-				'single' => 'item',
-				'plural' => 'items'
+				'pages'      => 0,
+				'total'      => 0,
+				'items'      => null,
+				'paged'      => 1,
+				'limit'      => 10,
+				'nav_format' => '%#%/',
+				'nav_base'   => '',
+				'single'     => __( 'item', 'learnpress' ),
+				'plural'     => __( 'items', 'learnpress' )
 			)
 		);
 
 		global $wp;
-		if ( ! empty( $wp->query_vars['view_id'] ) ) {
+		if ( ! empty( $wp->query_vars['view_id'] ) && empty( $data['paged'] ) ) {
 			$this->_data['paged'] = absint( $wp->query_vars['view_id'] );
 		}
 
@@ -91,17 +93,32 @@ class LP_Query_List_Table implements ArrayAccess {
 	 */
 	public function get_nav_numbers( $echo = true ) {
 
+		if ( ! empty( $this->_data['nav_base'] ) ) {
+			if ( is_callable( $this->_data['nav_base'] ) ) {
+				$base = call_user_func_array( $this->_data['nav_base'], array( $this->_data['nav_format'] ) );
+			}else{
+				$base = $this->_data['nav_base'];
+			}
+		} else {
+			$base = trailingslashit( preg_replace( '~\/[0-9]+\/?$~', '', learn_press_get_current_url() ) );
+		}
+
 		return learn_press_paging_nav(
 			array(
 				'num_pages' => $this->get_pages(),
 				'paged'     => $this->get_paged(),
 				'echo'      => $echo,
-				'format'    => '%#%/',
-				'base'      => trailingslashit( preg_replace( '~\/[0-9]+\/?$~', '', learn_press_get_current_url() ) )
+				'format'    => $this->_data['nav_format'],
+				'base'      => $base
 			)
 		);
 	}
 
+	/**
+	 * Get range
+	 *
+	 * @return array
+	 */
 	public function get_offset() {
 		$from = ( $this->get_paged() - 1 ) * $this->get_limit() + 1;
 		$to   = $from + $this->get_limit() - 1;
@@ -112,6 +129,7 @@ class LP_Query_List_Table implements ArrayAccess {
 
 	public function get_offset_text( $format = '', $echo = false ) {
 		$offset = $this->get_offset();
+
 		if ( ! $format ) {
 			if ( $this->_data['single'] && $this->_data['plural'] ) {
 				$format = __( 'Displaying {{from}} to {{to}} of {{total}} {{item_name}}.', 'learnpress' );
@@ -139,7 +157,7 @@ class LP_Query_List_Table implements ArrayAccess {
 
 	public function get_nav( $format = '', $echo = false ) {
 		$output  = '';
-		$offset  = $this->get_offset_text( $format, false );
+		$offset  = $this->get_offset_text( empty( $format ) ? $this->_data['format'] : $format, false );
 		$numbers = $this->get_nav_numbers( false );
 
 		if ( $offset && $numbers ) {

@@ -78,9 +78,9 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 			return;
 		}
 
-		if($user->is_locked_course($course->get_id())){
-		    return;
-        }
+		if ( $user->is_locked_course( $course->get_id() ) ) {
+			return;
+		}
 
 		learn_press_get_template( 'single-course/buttons/enroll.php' );
 	}
@@ -1106,21 +1106,59 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
-
+	/**
+	 * Custom document title depending on LP current page.
+	 * E.g: Single course, profile, etc...
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $title
+	 *
+	 * @return array
+	 */
 	function learn_press_single_document_title_parts( $title ) {
+		// Single course page
 		if ( learn_press_is_course() ) {
 			if ( $item = LP_Global::course_item() ) {
-				$title['title'] = join( "", apply_filters( 'learn-press/document-course-title-parts', array(
-					$title['title'],
-					"&rarr;",
-					$item->get_title()
-				) ) );
+				$title['title'] = join(
+					' ',
+					apply_filters(
+						'learn-press/document-course-title-parts',
+						array(
+							$title['title'],
+							" &rarr; ",
+							$item->get_title()
+						)
+					)
+				);
 			}
 		} elseif ( learn_press_is_courses() ) {
 			if ( learn_press_is_search() ) {
 				$title['title'] = __( 'Search course results', 'learnpress' );
 			} else {
 				$title['title'] = __( 'Courses', 'learnpress' );
+			}
+		} elseif ( learn_press_is_profile() ) {
+			$profile  = LP_Profile::instance();
+			$tab_slug = $profile->get_current_tab();
+			$tab      = $profile->get_tab_at( $tab_slug );
+			if ( $page_id = learn_press_get_page_id( 'profile' ) ) {
+				$page_title = get_the_title( $page_id );
+			} else {
+				$page_title = '';
+			}
+			if ( $tab ) {
+				$title['title'] = join(
+					' ',
+					apply_filters(
+						'learn-press/document-profile-title-parts',
+						array(
+							$page_title,
+							'&rarr;',
+							$tab['title']
+						)
+					)
+				);
 			}
 		}
 
@@ -2691,6 +2729,14 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 
 function learn_press_is_content_item_only() {
 	return ! empty( $_REQUEST['content-item-only'] );
+}
+
+function learn_press_label_html( $label ) {
+	?>
+    <span class="lp-label label-<?php echo esc_attr( $label ); ?>">
+         <?php echo $label; ?>
+    </span>
+	<?php
 }
 
 /**
