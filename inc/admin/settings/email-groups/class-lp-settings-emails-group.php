@@ -34,7 +34,7 @@ class LP_Settings_Emails_Group extends LP_Settings {
 				if ( ! array_key_exists( $email->id, $ids ) ) {
 					continue;
 				}
-				$email->group      = $this->group_id;
+				$email->group      = $this;
 				$ids[ $email->id ] = $email;
 			}
 		}

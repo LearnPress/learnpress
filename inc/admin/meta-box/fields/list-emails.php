@@ -32,17 +32,20 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
                 </thead>
                 <tbody>
 				<?php foreach ( $emails as $email ) {
+					$group = '';
 					if ( $email->group ) {
 						$url = esc_url( add_query_arg( array(
-							'section'     => $email->group,
+							'section'     => $email->group->group_id,
 							'sub-section' => $email->id
 						), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) );
+
+						$group = $email->group;
 					} else {
 						$url = esc_url( add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) );
 					} ?>
                     <tr>
                         <td class="name">
-                            <a href="<?php echo $url; ?>"><?php echo $email->title; ?></a>
+                            <a href="<?php echo $url; ?>"><?php echo join( ' &rarr; ', array( $group, $email->title ) ); ?></a>
                         </td>
                         <td class="description"><?php echo $email->description; ?></td>
                         <td class="status<?php echo $email->enable ? ' enabled' : ( $email->is_configured() ? '' : ' config' ); ?>">
