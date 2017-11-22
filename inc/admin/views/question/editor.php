@@ -100,23 +100,28 @@ learn_press_admin_view( 'question/answer' );
                 },
                 // sort answer options
                 sort: function () {
-
-                    // sort answer
-                    var order = [];
-                    this.answers.forEach(function (answer) {
-                        order.push(parseInt(answer.question_answer_id));
-                    });
-                    $store.dispatch('updateAnswersOrder', order);
+                    if (!this.draft) {
+                        // sort answer
+                        var order = [];
+                        this.answers.forEach(function (answer) {
+                            order.push(parseInt(answer.question_answer_id));
+                        });
+                        $store.dispatch('updateAnswersOrder', order);
+                    }
                 },
                 // change answer title
                 updateTitle: function (answer) {
-                    // update title
-                    $store.dispatch('updateAnswerTitle', answer);
+                    if (!this.draft) {
+                        // update title
+                        $store.dispatch('updateAnswerTitle', answer);
+                    }
                 },
                 // change correct answer
                 changeCorrect: function (correct) {
-                    // update correct
-                    $store.dispatch('updateCorrectAnswer', correct);
+                    if (!this.draft) {
+//                    // update correct
+                        $store.dispatch('updateCorrectAnswer', correct);
+                    }
                 },
                 // delete answer
                 deleteAnswer: function (answer) {

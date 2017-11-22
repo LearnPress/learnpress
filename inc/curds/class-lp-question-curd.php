@@ -162,8 +162,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$new_question->set_data( 'answer_options', $question->get_data( 'answer_options' ) );
 
 				// trigger change user memorize question types
-				$user_id    = get_current_user_id();
+				$user_id = get_current_user_id();
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_question->get_type() );
+
 
 				global $wpdb;
 
@@ -366,7 +367,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @param $question LP_Question
 		 * @param $correct
 		 *
-		 * @return bool|int
+		 * @return bool | LP_Question
 		 */
 		public function change_correct_answer( $question, $correct ) {
 
@@ -376,11 +377,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			global $wpdb;
 
+			$question_id      = $question->get_id();
 			$question_type    = $question->get_type();
 			$question_answers = $question->get_data( 'answer_options' );
 
-			$args           = array();
-			$number_correct = 0;
+			$db_args = $answers = array();
 
 			foreach ( $question_answers as $index => $answer ) {
 
@@ -400,61 +401,55 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					}
 				}
 
+				// question answers data to set cache
+				$answers[ $index ] = array(
+					'question_answer_id' => $answer['question_answer_id'],
+					'question_id'        => $question_id,
+					'answer_order'       => $answer['answer_order'],
+					'text'               => $answer_data['text'],
+					'value'              => $answer_data['value'],
+					'is_true'            => $answer_data['is_true']
+				);
+
 				// new answers data
-				$args[ $index ] = array(
+				$db_args[ $index ] = array(
 					'data'  => array(
 						'answer_data' => serialize( $answer_data )
 					),
 					'where' => array(
 						'question_answer_id' => $answer['question_answer_id'],
-						'question_id'        => $question->get_id(),
+						'question_id'        => $question_id,
 						'answer_order'       => $answer['answer_order']
 					)
 				);
-
-				// count correct
-				$number_correct += ( $answer_data['is_true'] == 'yes' ) ? 1 : 0;
 			}
 
-			// prevent update when there is no correct answer
-			if ( $number_correct ) {
-
-				// number db row affected
-				$rows_affected = 0;
-
-				foreach ( $args as $id => $arg ) {
-
-					$update = $wpdb->update( $wpdb->learnpress_question_answers,
-						$arg['data'],
-						$arg['where'],
-						array( '%s', '%s', '%s' ),
-						array( '%d', '%d', '%d' )
-					);
-
-					if ( $update === false ) {
-						return $update;
-					} else {
-						$rows_affected += $update;
-					};
-				}
-
-				// return 1 for successful, 0 for database error
-				return $rows_affected ? 1 : 0;
-
-			} else {
-				// return -1 for don't update
-				return - 1;
+			// update db
+			foreach ( $db_args as $id => $arg ) {
+				$wpdb->update( $wpdb->learnpress_question_answers,
+					$arg['data'],
+					$arg['where'],
+					array( '%s', '%s', '%s' ),
+					array( '%d', '%d', '%d' )
+				);
 			}
+
+			// set question answer data
+			$question->set_data( 'answer_options', $answers );
+
+			return $question;
+
 		}
-
 
 		/**
 		 * Sort answers.
 		 *
+		 * @since 3.0.0
+		 *
 		 * @param $question_id
 		 * @param array $order
 		 *
-		 * @return bool|int
+		 * @return bool|LP_Question
 		 */
 		public function sort_answers( $question_id, $order = array() ) {
 
@@ -462,34 +457,30 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return false;
 			}
 
-			global $wpdb;
-
-			// number db row affected
-			$rows_affected = 0;
-
 			if ( $order ) {
-				foreach ( $order as $index => $answer_id ) {
 
-					$sort = $wpdb->update(
+				$question = LP_Question::get_question( $question_id );
+				$answers  = $question->get_data( 'answer_options' );
+
+				global $wpdb;
+				$new_answers = array();
+				foreach ( $order as $index => $answer_id ) {
+					$wpdb->update(
 						$wpdb->learnpress_question_answers,
 						array( 'answer_order' => $index + 1 ),
 						array( 'question_answer_id' => $answer_id )
 					);
 
-					if ( $sort === false ) {
-						return - 2;
-					} else {
-						$rows_affected += $sort;
-					};
+					$new_answers[ $answer_id ] = $answers[ $answer_id ];
 				}
 
-				// return 1 for successful, 0 for database error
-				return $rows_affected ? 1 : 0;
+				$question->set_data( 'answer_options', $new_answers );
 
-			} else {
-				// return -1 for don't update
-				return - 1;
+				return $question;
+
 			}
+
+			return false;
 		}
 
 		/**
@@ -726,10 +717,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @return bool|false|int
 		 */
-		public
-		function delete_question_answer(
-			$question_id, $answer_id
-		) {
+		public function delete_question_answer( $question_id, $answer_id ) {
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT || ! $answer_id ) {
 				return false;
 			}
@@ -753,10 +741,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @return bool
 		 */
-		public
-		function clear(
-			$question_id
-		) {
+		public function clear( $question_id ) {
 
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
@@ -775,10 +760,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @param $question LP_Question
 		 */
-		protected
-		function _load_answer_options(
-			&$question
-		) {
+		protected function _load_answer_options( &$question ) {
 			$id             = $question->get_id();
 			$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
 
@@ -819,10 +801,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @return mixed;
 		 */
-		protected
-		function _load_answer_option_meta(
-			&$answer_options
-		) {
+		protected function _load_answer_option_meta( &$answer_options ) {
 			global $wpdb;
 			if ( ! $answer_options ) {
 				return false;
@@ -850,31 +829,19 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			return true;
 		}
 
-		public
-		function add_meta(
-			&$object, $meta
-		) {
+		public function add_meta( &$object, $meta ) {
 			// TODO: Implement add_meta() method.
 		}
 
-		public
-		function delete_meta(
-			&$object, $meta
-		) {
+		public function delete_meta( &$object, $meta ) {
 			// TODO: Implement delete_meta() method.
 		}
 
-		public
-		function read_meta(
-			&$object
-		) {
+		public function read_meta( &$object ) {
 			// TODO: Implement read_meta() method.
 		}
 
-		public
-		function update_meta(
-			&$object, $meta
-		) {
+		public function update_meta( &$object, $meta ) {
 			// TODO: Implement update_meta() method.
 		}
 	}
