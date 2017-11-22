@@ -287,6 +287,24 @@ ul.learn-press-courses {
     }
 }
 
+ul.list-table-nav {
+    display: flex;
+    list-style: none;
+    margin-left: 0;
+    .nav-text {
+        flex: 1;
+        text-align: left;
+    }
+    .nav-pages {
+        flex: 1;
+        text-align: right;
+        .learn-press-pagination {
+            display: inline-block;
+            margin-bottom: 0;
+        }
+    }
+}
+
 .primary-color {
     color: #00adff;
 }

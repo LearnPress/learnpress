@@ -432,7 +432,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 
 		// Get students enrolled from settings of the course that owns course want to show
 		// So, if this value is set that means the result is fake ... :)
-		$enrolled = $this->get_data('students');
+		$enrolled = $this->get_data( 'students' );
 
 		// But, if it is not set then we count the real value from DB
 		if ( $count_db ) {
@@ -878,11 +878,14 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 				$statuses[ $k ] = 'lp-' . $v;
 			}
 		}
+		if ( empty( $data[ $this->get_id() ] ) ) {
+			$data[ $this->get_id() ] = array();
+		}
 		sort( $statuses );
 		$key = md5( serialize( $statuses ) );
-		if ( ! array_key_exists( $key, $data ) ) {
-			$in_clause    = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
-			$query        = $wpdb->prepare( "
+		if ( ! array_key_exists( $key, $data[ $this->get_id() ] ) ) {
+			$in_clause = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
+			$query = $wpdb->prepare( "
 				SELECT count(oim.meta_id)
 				FROM {$wpdb->learnpress_order_itemmeta} oim
 				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
@@ -892,10 +895,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 				WHERE o.post_type = %s
 				AND o.post_status IN ($in_clause)
 			", array_merge( array( '_course_id', $this->get_id(), 'lp_order' ), $statuses ) );
-			$data[ $key ] = $wpdb->get_var( $query );
+			$data[ $this->get_id() ][ $key ] = $wpdb->get_var( $query );
 		}
 
-		return $data[ $key ];
+		return $data[ $this->get_id() ][ $key ];
 	}
 
 	public function need_payment() {
@@ -949,6 +952,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		if ( $format ) {
 			$value = "{$value}%";
 		}
+
 		return 'edit' === $context ? $value : apply_filters( 'learn-press/course-passing-condition', $value, $this->get_id() );
 	}
 
@@ -1519,7 +1523,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		 * Duration is in string such as 10 week, 4 hour, etc...
 		 * So we can use strtotime('+10 week') to convert it to seconds
 		 */
-		return strtotime( "+" . $this->get_data('duration'), 0 );
+		return strtotime( "+" . $this->get_data( 'duration' ), 0 );
 	}
 
 

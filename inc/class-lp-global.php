@@ -92,6 +92,7 @@ class LP_Global {
 	 */
 	public static function user() {
 		global $lp_user;
+
 		return $lp_user;
 	}
 
@@ -125,11 +126,23 @@ class LP_Global {
 		return $lp_quiz_question;
 	}
 
+	/**
+	 * Reset global variables to default
+	 */
 	public static function reset() {
 		global $lp_user, $lp_course, $lp_course_item, $lp_quiz_question;
-		$lp_user        = self::$_user;
-		$lp_course      = self::$_course;
-		$lp_course_item = self::$_course_item;
+
+		if ( self::$_user ) {
+			$lp_user = self::$_user;
+		}
+
+		if ( self::$_course ) {
+			$lp_course = self::$_course;
+		}
+
+		if ( self::$_course_item ) {
+			$lp_course_item = self::$_course_item;
+		}
 	}
 
 	/**

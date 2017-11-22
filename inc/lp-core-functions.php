@@ -1767,7 +1767,7 @@ if ( ! function_exists( 'learn_press_is_course' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_course() {
-		return is_singular( array( 'lp_course' ) );
+		return is_singular( array( LP_COURSE_CPT ) );
 	}
 }
 

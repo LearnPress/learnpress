@@ -2,7 +2,7 @@
 /**
  * Abstract Class for Shortcodes.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Abstract
  * @package  Learnpress/Classes
  * @version  3.0.0

@@ -2,7 +2,7 @@
 /**
  * Base class of LearnPress shortcodes and helper functions.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Widgets
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
@@ -32,7 +32,10 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				'checkout'            => __CLASS__ . '::checkout',
 				'recent_courses'      => __CLASS__ . '::recent_courses',
 				'featured_courses'    => __CLASS__ . '::featured_courses',
-				'popular_courses'     => __CLASS__ . '::popular_courses'
+				'popular_courses'     => __CLASS__ . '::popular_courses',
+				'button_enroll'       => __CLASS__ . '::button_enroll',
+				'button_purchase'     => __CLASS__ . '::button_purchase',
+				'button_course'       => __CLASS__ . '::button_course'
 			);
 
 			foreach ( $shortcodes as $shortcode => $function ) {
@@ -220,7 +223,36 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 
 			return $html;
 		}
+
+		/**
+		 * @param        $atts
+		 * @param string $content
+		 *
+		 * @return LP_Shortcode_Button_Enroll
+		 */
+		public static function button_enroll( $atts, $content = '' ) {
+			return new LP_Shortcode_Button_Enroll( $atts );
+		}
+
+		/**
+		 * @param        $atts
+		 * @param string $content
+		 *
+		 * @return LP_Shortcode_Button_Purchase
+		 */
+		public static function button_purchase( $atts, $content = '' ) {
+			return new LP_Shortcode_Button_Purchase( $atts );
+		}
+
+		/**
+		 * @param        $atts
+		 * @param string $content
+		 *
+		 * @return LP_Shortcode_Button_Course
+		 */
+		public static function button_course( $atts, $content = '' ) {
+			return new LP_Shortcode_Button_Course( $atts );
+		}
 	}
 }
-
 LP_Shortcodes::init();

@@ -15,8 +15,8 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		$this->priority   = 40;
 
 		$this->tabs = apply_filters( 'learn-press/admin/tools-tabs', array(
-				'database' => __( 'Database', 'learnpress' ),
-				'template' => __( 'Template', 'learnpress' )
+				'template' => __( 'Template', 'learnpress' ),
+				'database' => __( 'Database', 'learnpress' )
 			)
 		);
 	}

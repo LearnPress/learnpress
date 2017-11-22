@@ -93,6 +93,8 @@
                     sectionStorage.add(id);
                 }
             });
+
+            console.log('xxxx')
         }
 
         function initSections() {
@@ -214,6 +216,8 @@
             if ($('#wpadminbar').length) {
                 $('body').addClass('wpadminbar')
             }
+
+            new LP_Course({})
 
             $('body').css('opacity', 1);
         });
