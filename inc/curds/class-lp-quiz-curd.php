@@ -417,10 +417,16 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
+		// list exist quiz question
+		$list_questions = $this->get_questions( $the_quiz );
+		// add new question and set to cache
+		$list_questions[$question_id] = strval( $question_id );
+		wp_cache_set( 'questions-' . $the_quiz->get_id(), $list_questions, 'lp-quizzes' );
+
 		global $wpdb;
 		$id   = $the_quiz->get_id();
 		$args = wp_parse_args( $args, array( 'order' => - 1 ) );
-		$this->reorder_questions( $the_quiz );
+//		$this->reorder_questions( $the_quiz );
 		if ( $args['order'] >= 0 ) {
 			$query = $wpdb->prepare( "
 				UPDATE {$wpdb->prefix}learnpress_quiz_questions

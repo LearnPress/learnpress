@@ -707,18 +707,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$user_id = learn_press_get_current_user_id();
-
-					$new_question_id = learn_press_duplicate_question( $question['id'], $quiz_id, array( 'post_status' => 'publish' ) );
+					// duplicate question
+					$new_question_id = $question_curd->duplicate( $question['id'], array( 'post_status' => 'publish' ) );
 
 					if ( ! is_wp_error( $new_question_id ) ) {
-
-						// trigger change user memorize question types
-						$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
-						$question_types          = ! $question_types ? array() : $question_types;
-						$type                    = get_post_meta( $new_question_id, '_lp_type', true );
-						$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
-						update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+						// add question to quiz
+						$quiz_curd->add_question( $quiz_id, $new_question_id );
 
 						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question_id );
 					}
@@ -953,14 +947,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = array();
-
 					if ( $questions ) {
 						foreach ( $questions as $key => $question ) {
-							if ( is_numeric( $quiz_curd->add_question( $quiz_id, $question['id'] ) ) ) {
-								$result[] = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question['id'] );
-							}
+							$quiz_curd->add_question( $quiz_id, $question['id'] );
 						}
+						$result = $quiz->quiz_editor_get_questions();
 					}
 
 					break;

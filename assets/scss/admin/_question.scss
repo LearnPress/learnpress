@@ -12,19 +12,21 @@
                     position: absolute;
                     top: 100%;
                     right: 0;
+                    height: 85px;
                     background: #fdfeff;
                     margin: 0;
                     border: 1px solid #DDD;
                     display: none;
                     li {
-                        &.active {
+                        margin: 0;
+                        &:hover, &.active {
                             background: #dbf5ff;
                         }
                         a {
                             display: block;
                             white-space: nowrap;
                             text-decoration: none;
-                            padding: 3px 8px;
+                            padding: 5px 25px;
                             font-size: 12px;
                             text-align: right;
                             color: #0073aa;
@@ -95,7 +97,7 @@
                                 color: #0085ba;
                             }
                         }
-                        &.order{
+                        &.order {
                             font-size: 13px;
                         }
                         &.answer-text {

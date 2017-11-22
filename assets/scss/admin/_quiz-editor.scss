@@ -237,6 +237,15 @@
                                         }
                                     }
                                 }
+                                .lp-toolbar-btn-dropdown {
+                                    ul {
+                                        li {
+                                            a {
+                                                padding: 10px 25px;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                         &:hover {
@@ -312,22 +321,22 @@
                             }
                         }
 
-                        button{
-                            &:hover{
-                                & + .question-types{
+                        button {
+                            &:hover {
+                                & + .question-types {
                                     display: block;
                                 }
                             }
 
-                            & + .question-types{
-                                &:hover{
+                            & + .question-types {
+                                &:hover {
                                     display: block;
                                 }
                             }
 
-                            &[disabled="disabled"]{
-                                &:hover{
-                                    & + .question-types{
+                            &[disabled="disabled"] {
+                                &:hover {
+                                    & + .question-types {
                                         display: none;
                                     }
                                 }

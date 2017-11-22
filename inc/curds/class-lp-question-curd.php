@@ -110,10 +110,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			// quiz curd
 			$curd = new LP_Quiz_CURD();
 
-			// get the quizzes that a question is assigned to
+			// get the quizzes that a question is assigned to, return WP Post
 			$quiz = $this->get_quiz( $question_id );
+
 			// remove question from quiz
-			$curd->remove_questions( $quiz->ID, $question_id );
+			if ( $quiz ) {
+				$curd->remove_questions( $quiz->ID, $question_id );
+			}
 		}
 
 		/**
@@ -141,12 +144,26 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this question</p>', 'learnpress' ) );
 			}
 
+			// origin question
+			$question = LP_Question::get_question( $question_id );
+
 			// duplicate question
 			$new_question_id = learn_press_duplicate_post( $question_id, array( 'post_status' => 'publish' ) );
 
 			if ( ! $new_question_id || is_wp_error( $new_question_id ) ) {
 				return new WP_Error( __( '<p>Sorry! Duplicate question failed!</p>', 'learnpress' ) );
 			} else {
+
+				// init new question
+				$new_question = LP_Question::get_question( $new_question_id );
+
+				// set data
+				$new_question->set_type( $question->get_type() );
+				$new_question->set_data( 'answer_options', $question->get_data( 'answer_options' ) );
+
+				// trigger change user memorize question types
+				$user_id    = get_current_user_id();
+				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_question->get_type() );
 
 				global $wpdb;
 
@@ -263,7 +280,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			}
 
 			$question_id = $question->get_id();
-			$old_type = $question->get_type();
+			$old_type    = $question->get_type();
 
 			if ( $old_type == $new_type ) {
 				return false;
@@ -360,7 +377,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			global $wpdb;
 
 			$question_type    = $question->get_type();
-			$question_answers = $question->get_data('answer_options');
+			$question_answers = $question->get_data( 'answer_options' );
 
 			$args           = array();
 			$number_correct = 0;

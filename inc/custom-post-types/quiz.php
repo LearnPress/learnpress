@@ -119,15 +119,20 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			global $post;
 			$quiz = LP_Quiz::get_quiz( $post->ID );
 
+			// trigger user memorize question types
+			$user_id                   = get_current_user_id();
+			$default_new_question_type = get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) ? get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) : 'true_or_false';
+
 			$hidden_questions = get_post_meta( $post->ID, '_lp_hidden_questions', true );
 
 			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', array(
 				'root'          => array(
-					'quiz_id'    => $post->ID,
-					'ajax'       => admin_url( '' ),
-					'action'     => 'admin_quiz_editor',
-					'nonce'      => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
-					'types'      => LP_Question_Factory::get_types()
+					'quiz_id' => $post->ID,
+					'ajax'    => admin_url( '' ),
+					'action'  => 'admin_quiz_editor',
+					'nonce'   => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
+					'types'   => LP_Question_Factory::get_types(),
+					'default_new'      => $default_new_question_type
 				),
 				'chooseItems'   => array(
 					'open'       => false,

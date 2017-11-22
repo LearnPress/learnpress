@@ -37,7 +37,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                         <div class="add-new-question">
                             <div class="title">
                                 <form @submit.prevent="">
-                                    <input type="text" v-model="new_question.title" @keyup.enter.prevent="addItem(new_question.type)">
+                                    <input type="text" v-model="new_question.title" @keyup.enter.prevent="addItem()">
                                 </form>
                             </div>
                             <div class="add-new">
@@ -79,7 +79,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 return {
                     new_question: {
                         'title': '',
-                        'type': 'true_or_false'
+                        'type': ''
                     }
                 }
             },
@@ -111,6 +111,10 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 // all question types
                 questionTypes: function () {
                     return $store.getters['questionTypes'];
+                },
+                // trigger user memorize
+                newQuestionType: function () {
+                    return $store.getters['defaultNewQuestionType'];
                 }
             },
             methods: {
@@ -120,7 +124,12 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 },
                 // add new question
                 addItem: function (type) {
+
                     if (this.new_question.title) {
+                        if (!type) {
+                            type = this.newQuestionType;
+                        }
+
                         // new question
                         this.new_question.type = type;
                         $store.dispatch('lqs/newQuestion', {
