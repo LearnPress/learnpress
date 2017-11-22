@@ -54,6 +54,10 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	protected static $_users = array();
 
+	public $profile_picture_src = null;
+
+	public $profile_picture_type = null;
+
 	protected $_data = array(
 		'email'         => '',
 		'user_login'    => '',

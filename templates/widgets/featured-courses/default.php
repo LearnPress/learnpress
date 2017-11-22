@@ -14,9 +14,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 //widget instance
 $instance = $this->instance;
 ?>

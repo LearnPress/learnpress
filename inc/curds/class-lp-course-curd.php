@@ -47,7 +47,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param $course_id
+		 * @param       $course_id
 		 * @param array $args
 		 *
 		 * @return mixed|WP_Error
@@ -406,6 +406,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
 			$order = ! empty( $args['order'] ) ? $args['order'] : 'DESC';
 
+			if ( $limit <= 0 ) {
+				$limit = 0;
+			}
+
 			$query = apply_filters( 'learn-press/course-curd/query-recent-courses',
 				$wpdb->prepare(
 					"SELECT DISTINCT p.ID FROM $wpdb->posts AS p
@@ -434,6 +438,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$order_by = ! empty( $args['order_by'] ) ? $args['order_by'] : 'post_date';
 			$order    = ! empty( $args['order'] ) ? $args['order'] : 'DESC';
 
+			if ( $limit <= 0 ) {
+				$limit = 0;
+			}
+
 			$query = apply_filters( 'learn-press/course-curd/query-feature-courses',
 				$wpdb->prepare( "
 				SELECT DISTINCT p.ID FROM {$wpdb->posts} p
@@ -461,6 +469,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
 			$order = ! empty( $args['order'] ) ? $args['order'] : 'DESC';
+
+			if ( $limit <= 0 ) {
+				$limit = 0;
+			}
 
 			$query = apply_filters( 'learn-press/course-curd/query-popular-courses',
 				$wpdb->prepare(

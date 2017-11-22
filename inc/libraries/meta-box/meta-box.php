@@ -34,7 +34,7 @@ if ( defined( 'ABSPATH' ) && ! defined( 'RWMB_VER' ) ) {
 	$loader->init();
 }
 // Field classes
-foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-boxes/*.php' ) as $file ) {
+foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/*.php' ) as $file ) {
 	require_once $file;
 }
 

@@ -14,11 +14,10 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 //widget instance
 $instance = $this->instance;
+
 ?>
 
 <div class="archive-course-widget-outer <?php esc_attr_e( $instance["css_class"] ); ?>">
