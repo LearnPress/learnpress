@@ -290,6 +290,17 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 }
             })
         },
+        'CHANGE_QUESTION_CORRECT_ANSWERS': function (state, data) {
+            state.questions = state.questions.map(function (question) {
+                if (parseInt(question.id) === data.id) {
+                    console.log(data.id);
+                    question.answers = data.answers;
+                    console.log(data.answers);
+                    console.log(question.answers);
+                }
+                return question;
+            });
+        },
         'SET_QUESTIONS': function (state, questions) {
             console.log(state.questions);
             state.questions = questions;
@@ -598,6 +609,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 function (response) {
                     var result = response.body;
                     if (result.success) {
+                        context.commit('CHANGE_QUESTION_CORRECT_ANSWERS', result.data);
                         context.commit('UPDATE_QUESTION_SUCCESS', payload.question_id);
                     }
                 },

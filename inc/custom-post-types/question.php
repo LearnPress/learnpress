@@ -41,7 +41,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_action( 'edit_form_after_editor', array( __CLASS__, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
 
-			$this->add_map_method( 'before_delete', 'before_delete_question' );
+			$this->add_map_method( 'before_delete', 'before_delete_question' )
+			     ->add_map_method( 'save', 'save_question' );
 
 			parent::__construct( $post_type, $args );
 		}
@@ -78,7 +79,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$answers  = $question->get_default_answers();
 			} else {
 				$question = LP_Question::get_question( $post->ID );
-				$answers  = $question->get_data( 'answer_options' );
+				$answers  = array_values( $question->get_data( 'answer_options' ) );
 			}
 
 			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor', array(
@@ -182,6 +183,45 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			$curd = new LP_Question_CURD();
 			// remove question from course items
 			$curd->delete( $question_id );
+		}
+
+		/**
+		 * Add default answer when save new question action.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $question_id
+		 */
+		public function save_question( $question_id ) {
+			if ( get_post_status( $question_id ) == 'auto-draft' ) {
+				$curd          = new LP_Question_CURD();
+				$user_id       = learn_press_get_current_user_id();
+				$question_type = 'true_or_false';
+
+
+				update_post_meta( $question_id, '_lp_type', $question_type );
+				get_user_meta( $user_id, '_learn_press_memorize_question_types', $question_type );
+
+				$question = LP_Question::get_question( $question_id, array( 'type' => $question_type ) );
+				$question->set_type( $question_type );
+
+				$answers = $question->get_default_answers();
+
+				// insert answers data in new question
+				foreach ( $answers as $index => $answer ) {
+					$insert = array(
+						'question_id'  => $question_id,
+						'answer_data'  => serialize( array(
+								'text'    => stripslashes( $answer['text'] ),
+								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+								'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
+							)
+						),
+						'answer_order' => $index + 1
+					);
+					$curd->add_answer( $question_type, $insert );
+				}
+			}
 		}
 
 		/**

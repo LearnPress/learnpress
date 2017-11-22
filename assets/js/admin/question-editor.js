@@ -34,6 +34,9 @@
         type: function (state) {
             return state.type;
         },
+        autoDraft: function (state) {
+            return state.auto_draft;
+        },
         answers: function (state) {
             return Object.values(state.answers) || [];
         },
@@ -72,13 +75,17 @@
             state.status = status;
         },
 
+        'UPDATE_AUTO_DRAFT_STATUS': function (state, status) {
+            state.autoDraft = status;
+        },
+
         'CHANGE_QUESTION_TYPE': function (state, question) {
             state.answers = question.answers;
             state.type = question.type;
         },
 
-        'SORT_ANSWERS': function (state, question) {
-            state.answers = question.answers;
+        'SET_ANSWERS': function (state, answers) {
+            state.answers = answers;
         },
 
         'UPDATE_ANSWERS': function (state, answers) {
@@ -120,7 +127,7 @@
                 function (response) {
                     var result = response.body;
                     if (result.success) {
-                        context.commit('SORT_ANSWERS', result.data);
+                        context.commit('SET_ANSWERS', result.data);
                     }
                 }
             )
@@ -135,16 +142,17 @@
 
         },
 
-        updateCorrectAnswer: function (context, payload) {
+        updateCorrectAnswer: function (context, correct) {
 
             Vue.http.LPRequest({
                 type: 'change-correct',
-                correct: JSON.stringify(payload.correct)
+                correct: JSON.stringify(correct)
             }).then(
                 function (response) {
                     var result = response.body;
                     if (result.success) {
                         context.commit('UPDATE_ANSWERS', result.data);
+                        context.commit('UPDATE_AUTO_DRAFT_STATUS', false);
                     }
                 }
             )

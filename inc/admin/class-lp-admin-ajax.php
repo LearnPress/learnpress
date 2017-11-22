@@ -445,7 +445,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			// question id
 			$question_id = $args['id'];
-			$question    = learn_press_get_question( $question_id );
+			$question    = LP_Question::get_question( $question_id );
 
 			if ( ! $question ) {
 				wp_send_json_error();
@@ -492,9 +492,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// sort answers
-					$curd->sort_answers( $question_id, $order );
+					$question = $curd->sort_answers( $question_id, $order );
 
-					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
+					$result = array_values( $question->get_data( 'answer_options' ) );
 
 					break;
 
@@ -514,6 +514,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'change-correct':
+
 					// correct answer
 					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
 					$correct = json_decode( wp_unslash( $correct ), true );
@@ -522,8 +523,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
+
 					// update correct answer
-					$curd->change_correct_answer( $question, $correct );
+					$question = $curd->change_correct_answer( $question, $correct );
 
 					$result = $question->get_data( 'answer_options' );
 
@@ -791,9 +793,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					$question = LP_Question::get_question( $question_id );
+					// update correct answer, get new question
+					$question = $question_curd->change_correct_answer( $question, $correct );
 
-					// update correct answer
-					$result = $question_curd->change_correct_answer( $question, $correct );
+					$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $question, true );
 
 					break;
 
@@ -1026,18 +1029,24 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
+		 * @param $question
+		 * @param $object | if true, input in question object, do not need init LP_Question::get_question()
 		 *
 		 * @return array
 		 */
-		public static function get_question_data_to_question_editor( $question_id ) {
+		public static function get_question_data_to_question_editor( $question, $object = false ) {
 
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
-				return array();
+			if ( ! $object ) {
+				if ( get_post_type( $question ) !== LP_QUESTION_CPT ) {
+					return array();
+				}
+
+				// get question
+				$question = LP_Question::get_question( $question );
 			}
 
-			// get question
-			$question = LP_Question::get_question( $question_id );
+			// question id
+			$question_id = $question->get_id();
 
 			$data = array(
 				'id'      => $question_id,
@@ -1059,7 +1068,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param       $question
-		 * @param       $object
+		 * @param       $object | if true, input in question object, do not need init LP_Question::get_question()
 		 *
 		 * @return array
 		 */

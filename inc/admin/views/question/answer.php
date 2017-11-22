@@ -7,9 +7,9 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-answer">
-    <tr class="answer-item" :data-answer-id="id" :data-answer-order="order">
+    <tr class="answer-item" :data-answer-id="id">
         <td class="sort"><i class="fa fa-bars"></i></td>
-        <td class="order">{{order}}</td>
+        <td class="order">{{index +1}}</td>
         <td class="answer-text">
             <input type="text" v-model="answer.text"
                    @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle"/>
@@ -42,10 +42,6 @@
                 // answer id
                 id: function () {
                     return this.answer.question_answer_id;
-                },
-                // answer order
-                order: function () {
-                    return this.answer.answer_order;
                 },
                 // check correct answer
                 correct: function () {
