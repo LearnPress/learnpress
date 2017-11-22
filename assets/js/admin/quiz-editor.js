@@ -293,10 +293,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         'CHANGE_QUESTION_CORRECT_ANSWERS': function (state, data) {
             state.questions = state.questions.map(function (question) {
                 if (parseInt(question.id) === data.id) {
-                    console.log(data.id);
                     question.answers = data.answers;
-                    console.log(data.answers);
-                    console.log(question.answers);
                 }
                 return question;
             });
