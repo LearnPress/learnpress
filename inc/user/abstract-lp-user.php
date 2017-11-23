@@ -1578,7 +1578,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$view = false;
 		}
 
-
 		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->get_id(), $course_id );
 	}
 
@@ -1598,7 +1597,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( $course_id ) {
 			$course = LP_Course::get_course( $course_id );
 		}
-
 
 		if ( $course ) {
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
