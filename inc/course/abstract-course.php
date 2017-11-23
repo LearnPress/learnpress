@@ -179,7 +179,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Get course thumbnail, return placeholder if it does not exists
 	 *
 	 * @param string $size
-	 * @param array  $attr
+	 * @param array $attr
 	 *
 	 * @return string
 	 */
@@ -290,7 +290,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Get all curriculum of this course
 	 *
-	 * @param int  $section_id
+	 * @param int $section_id
 	 * @param bool $force
 	 *
 	 * @return bool|LP_Course_Section
@@ -351,11 +351,15 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Return list of item's ids in course's curriculum.
 	 *
+	 * @since 3.0.0
+	 *
 	 * @param string|array $type
 	 *
 	 * @return array
 	 */
 	public function get_items( $type = '' ) {
+
+		// get course items from cache
 		$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
 
 		if ( $type && $items ) {
@@ -368,6 +372,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			}
 
 			$items = apply_filters( 'learn-press/course-items-by-type', $item_types, $type, $this->get_id() );
+
 		}
 
 		return $items;
@@ -715,47 +720,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return $this->_students_list;
 	}
 
-
-	/**
-	 * Get all quizzes in a course
-	 *
-	 * @param string
-	 *
-	 * @return array
-	 */
-	public function get_quizzes() {
-		$quizzes = array();
-		if ( $items = $this->get_items() ) {
-			foreach ( $items as $item_id ) {
-				if ( get_post_type( $item_id ) == LP_QUIZ_CPT ) {
-					$quizzes[] = $item_id;
-				}
-			}
-		}
-
-		return apply_filters( 'learn-press/course/quizzes', $quizzes, $this->get_id() );
-	}
-
-	/**
-	 * Get all lessons in a course
-	 *
-	 * @param mixed
-	 *
-	 * @return array
-	 */
-	public function get_lessons( $args = null ) {
-		$lessons = array();
-		if ( $items = $this->get_items() ) {
-			foreach ( $items as $item_id ) {
-				if ( get_post_type( $item_id ) == LP_LESSON_CPT ) {
-					$lessons[] = $item_id;
-				}
-			}
-		}
-
-		return $items;
-	}
-
 	/**
 	 * Get all items in a course.
 	 *
@@ -884,8 +848,8 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		sort( $statuses );
 		$key = md5( serialize( $statuses ) );
 		if ( ! array_key_exists( $key, $data[ $this->get_id() ] ) ) {
-			$in_clause = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
-			$query = $wpdb->prepare( "
+			$in_clause                       = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
+			$query                           = $wpdb->prepare( "
 				SELECT count(oim.meta_id)
 				FROM {$wpdb->learnpress_order_itemmeta} oim
 				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
@@ -942,7 +906,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Get course passing condition value.
 	 *
-	 * @param bool   $format
+	 * @param bool $format
 	 * @param string $context
 	 *
 	 * @return array|mixed|string
@@ -1114,7 +1078,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * @param int  $user_id
+	 * @param int $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -1124,10 +1088,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			$user_id = get_current_user_id();
 		}
 		$html    = '';
-		$quizzes = $this->get_quizzes();
+		$quizzes = $this->get_items(LP_QUIZ_CPT );
 		if ( ( $this->course_result == 'evaluate_lesson' ) || ! $quizzes ) {
 
-			$lessons     = $this->get_lessons();
+			$lessons     = $this->get_items(LP_LESSON_CPT);
 			$total_items = sizeof( $quizzes ) + sizeof( $lessons );
 
 
@@ -1155,7 +1119,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	protected function _evaluate_course_by_lessons( $user_id = 0, $force = false, $type = '' ) {
-		$lessons = $this->get_lessons();
+		$lessons = $this->get_items(LP_LESSON_CPT);
 		$result  = 0;
 		if ( $lessons ) {
 			$completed_items = $this->count_completed_items( $user_id, $force, 'lp_lesson' );
@@ -1168,7 +1132,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate course results for user by course results settings
 	 *
-	 * @param int     $user_id
+	 * @param int $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed
@@ -1194,7 +1158,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return mixed|void
 	 */
 	public function _evaluate_course_by_quizzes_results( $user_id, $force = false ) {
-		$quizzes        = $this->get_quizzes();
+		$quizzes        = $this->get_items(LP_QUIZ_CPT );
 		$user           = learn_press_get_user( $user_id );
 		$results        = array();
 		$achieved_point = 0;
@@ -1229,7 +1193,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function _evaluate_course_by_passed_quizzes_results( $user_id, $force = false ) {
-		$quizzes        = $this->get_quizzes();
+		$quizzes        = $this->get_items(LP_QUIZ_CPT );
 		$user           = learn_press_get_user( $user_id );
 		$results        = array();
 		$achieved_point = 0;
@@ -1311,7 +1275,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 
 		if ( ! array_key_exists( $key, $completed_lessons ) || $force ) {
 			global $wpdb;
-			$course_lessons = $this->get_lessons( array( 'field' => 'ID' ) );
+			$course_lessons = $this->get_items( LP_LESSON_CPT );
 			if ( ! $course_lessons ) {
 				return 0;
 			}
@@ -1336,7 +1300,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by lessons user completed.
 	 *
-	 * @param int     $user_id
+	 * @param int $user_id
 	 * @param boolean $force
 	 *
 	 * @return int|mixed|null|void
@@ -1349,7 +1313,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		$evaluate_course_by_lesson = LP_Cache::get_evaluate_course_by_lesson( false, array() );
 		$key                       = $user_id . '-' . $this->get_id();
 		if ( ! array_key_exists( $key, $evaluate_course_by_lesson ) || $force ) {
-			$course_lessons    = $this->get_lessons( array( 'field' => 'ID' ) );
+			$course_lessons    = $this->get_items( LP_LESSON_CPT );
 			$completed_lessons = $this->get_completed_lessons( $user_id );
 			if ( $size = sizeof( $course_lessons ) ) {
 				$evaluate_course_by_lesson[ $key ] = min( $completed_lessons / sizeof( $course_lessons ), 1 ) * 100;
@@ -1366,7 +1330,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Get number of lessons user has completed
 	 *
 	 * @param        $user_id
-	 * @param bool   $force
+	 * @param bool $force
 	 * @param string $type
 	 *
 	 * @return int|bool
@@ -1386,7 +1350,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * @param int  $user_id
+	 * @param int $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -1433,7 +1397,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by final quiz
 	 *
-	 * @param int     $user_id
+	 * @param int $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null
@@ -1465,13 +1429,13 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by avg of all quizzes
 	 *
-	 * @param int     $user_id
+	 * @param int $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed
 	 */
 	public function _evaluate_course_by_quizzes( $user_id, $force = false ) {
-		$quizzes = $this->get_quizzes();
+		$quizzes = $this->get_items(LP_QUIZ_CPT );
 		$result  = 0;
 		if ( $quizzes ) {
 			$count = 0;

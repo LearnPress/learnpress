@@ -25,11 +25,17 @@ if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
 				$field = $meta;
 				$meta  = $html;
 			}
+
+			$value = empty( $meta ) ? $field['std'] : $meta;
+			$true  = ! learn_press_is_negative_value( $value );
+
 			return sprintf(
-				'<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="1" %s>',
+				'<input type="hidden" name="%s" value="no">
+				<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="yes" %s>',
+				$field['field_name'],
 				$field['field_name'],
 				$field['id'],
-				empty( $meta ) ? checked( $field['std'], 'yes', false ) : checked( $meta, 'yes', false )
+				checked( $true, true, false )
 			);
 		}
 

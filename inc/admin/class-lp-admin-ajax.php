@@ -245,8 +245,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
-				case
-				'update-section-item':
+				case 'update-section-item':
 
 					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 					$item       = ! empty( $args['item'] ) ? $args['item'] : false;

@@ -2575,7 +2575,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * @param array $args
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	public function get_questions( $args = array() ) {
 		static $questions = array();
@@ -2670,7 +2670,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	public function _get_orders() {
 		global $wpdb;
@@ -2833,61 +2833,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return LP_Query_List_Table
 	 */
 	public function get_purchased_courses( $args = array() ) {
-
-
 		return $this->_curd->query_purchased_courses( $this->get_id(), $args );
-
-
-		global $wpdb;
-		static $courses = array();
-		$args = wp_parse_args(
-			$args,
-			array(
-				'status'  => '',
-				'limit'   => - 1,
-				'paged'   => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
-				'user_id' => $this->get_id(),
-				'fields'  => ''
-			)
-		);
-		ksort( $args );
-		$key = md5( serialize( $args ) );
-		if ( empty( $courses[ $key ] ) ) {
-			$limit = "\n";
-			if ( $args['limit'] > 0 ) {
-				if ( 1 > $args['paged'] ) {
-					$args['paged'] = 1;
-				}
-				print_r( $args );
-				die();
-				$start = ( $args['paged'] - 1 ) * $args['limit'];
-				$limit .= "LIMIT " . $start . ',' . $args['limit'];
-			}
-			$query = $wpdb->prepare( "
-				SELECT SQL_CALC_FOUND_ROWS c.*
-				FROM {$wpdb->posts} o
-				INNER JOIN {$wpdb->prefix}learnpress_order_items oi ON oi.order_id = o.ID
-				INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = %s
-				INNER JOIN {$wpdb->posts} c ON c.ID = oim.meta_value
-				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s
-				WHERE o.post_status IN( %s, %s, %s )
-				AND c.post_type = %s
-				AND c.post_status = %s
-				AND om.meta_value = %d
-			", '_course_id', '_user_id', 'lp-completed', 'lp-processing', 'lp-on-hold', 'lp_course', 'publish', $args['user_id'] );
-			$query .= $limit;
-
-			$data = array(
-				'rows' => $wpdb->get_results( $query, OBJECT_K )
-			);
-
-			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
-
-			$courses[ $key ] = $data;
-		}
-		$this->_FOUND_ROWS = $courses[ $key ]['count'];
-
-		return $courses[ $key ]['rows'];
 	}
 
 	/**
