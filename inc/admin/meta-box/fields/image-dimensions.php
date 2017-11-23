@@ -47,6 +47,7 @@ class RWMB_Image_Dimensions_Field extends RWMB_Field {
 	protected static function sanitize_meta( $meta ) {
 		settype( $meta, 'array' );
 		if ( sizeof( $meta ) === 3 && empty( $meta['width'] ) ) {
+		    print_r($meta);
 			$meta = array(
 				'width'  => $meta[0],
 				'height' => $meta[1],
