@@ -1564,7 +1564,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
-			} elseif ( $lesson->is_preview() || $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+			} elseif ( $lesson->is_preview() || $this->is_admin() || ( $this->is_instructor() && get_post_field( 'post_author', $course_id ) == $this->get_id() ) ) {
 				$view = 'preview';
 			} elseif ( ! $course->is( 'required_enroll' ) ) {
 				// if course is not required enroll so the lesson is previewable
@@ -1597,10 +1597,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$course = LP_Course::get_course( $course_id );
 		}
 
+
 		if ( $course ) {
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 				$view = 'enrolled';
-			} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+			} elseif ( $this->is_admin() || ( $this->is_instructor() && get_post_field( 'post_author', $course_id ) == $this->get_id() ) ) {
 				$view = 'preview';
 			} elseif ( ! $course->is( 'required_enroll' ) ) {
 				$view = 'no-required-enroll';
