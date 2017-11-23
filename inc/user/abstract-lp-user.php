@@ -1560,6 +1560,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$course_id = $this->_get_course( $course_id );
 
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
+
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 				// or user has enrolled course
@@ -1576,6 +1577,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( get_post_status( $course_id ) == 'pending' ) {
 			$view = false;
 		}
+
 
 		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->get_id(), $course_id );
 	}
@@ -1777,7 +1779,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	public function is_admin() {
-		$roles = ! empty( $this->user->roles ) ? $this->user->roles : array();
+		$roles = $this->get_data( 'roles' ) ? $this->get_data( 'roles' ) : array();
 
 		return in_array( 'administrator', $roles );
 	}
