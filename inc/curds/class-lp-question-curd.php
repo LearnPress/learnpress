@@ -29,11 +29,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function create( &$args = array() ) {
 
-			$user_id = learn_press_get_current_user_id();
-
 			$args = wp_parse_args(
-				$args,
-				array(
+				$args, array(
 					'quiz_id' => 0,
 					'order'   => - 1,
 					'status'  => 'publish',
@@ -44,8 +41,16 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				)
 			);
 
+			// set question author for author of quiz
+			if ( ! empty( $args['quiz_id'] ) ) {
+				$user_id = get_post_field( 'post_author', $args['quiz_id'] );
+			} else {
+				$user_id = learn_press_get_current_user_id();
+			}
+
 			$question_id = wp_insert_post( array(
 				'ID'           => $args['id'],
+				'post_author'  => $user_id,
 				'post_type'    => LP_QUESTION_CPT,
 				'post_status'  => $args['status'],
 				'post_title'   => $args['title'],

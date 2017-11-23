@@ -83,7 +83,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * Constructor
 	 *
 	 * @param int|LP_User|WP_User $the_user
-	 * @param mixed               $args
+	 * @param mixed $args
 	 *
 	 * @throws Exception
 	 */
@@ -221,7 +221,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * Check if a course is exists then return it's ID.
 	 * Try to get it from global.
 	 *
-	 * @param int    $course_id
+	 * @param int $course_id
 	 * @param string $return
 	 *
 	 * @return bool|false|int|LP_Course
@@ -267,8 +267,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * Return TRUE if an item has a status.
 	 *
 	 * @param array $statuses
-	 * @param int   $item_id
-	 * @param int   $course_id
+	 * @param int $item_id
+	 * @param int $course_id
 	 *
 	 * @return mixed
 	 *
@@ -284,8 +284,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Get all records of an item.
 	 *
-	 * @param int  $item_id
-	 * @param int  $course_id
+	 * @param int $item_id
+	 * @param int $course_id
 	 * @param bool $return_last
 	 *
 	 * @return bool|mixed
@@ -302,8 +302,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Start quiz for the user.
 	 *
-	 * @param int  $quiz_id
-	 * @param int  $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param bool $wp_error Optional. Whether to return a WP_Error on failure. Default false.
 	 *
 	 * @throws Exception
@@ -363,8 +363,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/user/quiz-started', $quiz_id, $course_id, $this->get_id() );
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 		}
 
@@ -374,8 +373,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Finish a quiz for the user and save all data needed
 	 *
-	 * @param int  $quiz_id
-	 * @param int  $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param bool $wp_error
 	 *
 	 * @return mixed
@@ -413,8 +412,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->get_id() );
 
 			do_action( 'learn-press/user/quiz-finished', $quiz_id, $course_id, $this->get_id() );
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 		}
 
@@ -424,8 +422,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Retake a quiz for the user
 	 *
-	 * @param int  $quiz_id
-	 * @param int  $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param bool $wp_error
 	 *
 	 * @return bool|WP_Error
@@ -469,8 +467,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			 * @since 3.0.0
 			 */
 			do_action( 'learn-press/user/quiz-redone', $quiz_id, $course_id, $this->get_id() );
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 			do_action( 'learn-press/user/retake-quiz-failure', $quiz_id, $course_id, $this->get_id() );
 		}
@@ -650,8 +647,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * @param int  $item_id
-	 * @param int  $course_id
+	 * @param int $item_id
+	 * @param int $course_id
 	 * @param bool $last
 	 *
 	 * @since 3.0.0
@@ -710,8 +707,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Get current status of an item for user.
 	 *
-	 * @param int  $item_id
-	 * @param int  $course_id
+	 * @param int $item_id
+	 * @param int $course_id
 	 * @param bool $force
 	 *
 	 * @return bool|mixed
@@ -846,8 +843,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Get current question's ID/Permalink inside quiz.
 	 *
-	 * @param int  $quiz_id
-	 * @param int  $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param bool $permalink
 	 *
 	 * @return bool|int|string
@@ -901,9 +898,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * Checks if has status of a quiz for user
 	 *
 	 * @param string|array $statuses
-	 * @param int          $quiz_id
-	 * @param int          $course_id
-	 * @param boolean      $force
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 * @param boolean $force
 	 *
 	 * @return bool
 	 */
@@ -954,8 +951,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @since 3.0.0
 	 *
 	 * @param   int $question_id
-	 * @param int   $quiz_id
-	 * @param int   $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 *
 	 * @return WP_Error|mixed
 	 */
@@ -985,8 +982,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @since 3.0.0
 	 *
 	 * @param   int $question_id
-	 * @param int   $quiz_id
-	 * @param int   $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 *
 	 * @return WP_Error|mixed
 	 */
@@ -1109,9 +1106,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Get history of a quiz for an user
 	 *
-	 * @param int  $quiz_id
-	 * @param int  $course_id
-	 * @param int  $history_id
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 * @param int $history_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -1121,7 +1118,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		$course = learn_press_get_course( $course_id );
 		if ( $course ) {
-			$quizzes = $course->get_quizzes( 'ID' );
+			$quizzes = $course->get_items( LP_QUIZ_CPT );
 		} else {
 			$quizzes = array();
 		}
@@ -1624,7 +1621,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * - INT (number of remain) if user CAN retake quiz
 	 *
 	 * @param         $quiz_id
-	 * @param int     $course_id
+	 * @param int $course_id
 	 *
 	 * @return mixed|null
 	 */
@@ -1676,7 +1673,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *      - started: value of column `status` in user_items is started
 	 *      - enrolled: value of column `status` in user_items is enrolled
 	 *
-	 * @param int          $course_id
+	 * @param int $course_id
 	 * @param string|array $statuses
 	 *
 	 * @since 2.0
@@ -1766,8 +1763,14 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn-press/user-course-finished-data', $return, $course_id, $this->get_id() );
 	}
 
+	/**
+	 * Check user instructor.
+	 *
+	 * @return bool
+	 */
 	public function is_instructor() {
-		$roles = ! empty( $this->user->roles ) ? $this->user->roles : array();
+
+		$roles = $this->get_data( 'roles' ) ? $this->get_data( 'roles' ) : array();
 
 		return in_array( LP_TEACHER_ROLE, $roles );
 	}
@@ -1828,7 +1831,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Return true if user has already enrolled course
 	 *
-	 * @param int  $course_id
+	 * @param int $course_id
 	 * @param bool $force
 	 *
 	 * @return bool
@@ -1931,8 +1934,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 
 	/**
-	 * @param int  $quiz_id
-	 * @param int  $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -1965,8 +1968,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Count number of time user has retaken a quiz
 	 *
-	 * @param int  $quiz_id
-	 * @param int  $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param bool $force
 	 *
 	 * @return int
@@ -1992,7 +1995,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Count number of time user has retaken a quiz
 	 *
-	 * @param int  $course_id
+	 * @param int $course_id
 	 * @param bool $force
 	 *
 	 * @return int
@@ -2170,9 +2173,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Return current status of course for user
 	 *
-	 * @param int    $course_id
+	 * @param int $course_id
 	 * @param string $field
-	 * @param bool   $force
+	 * @param bool $force
 	 *
 	 * @return mixed
 	 */
@@ -2329,7 +2332,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	public function is_locked_course( $course_id ) {
-		$locked =false;
+		$locked = false;
 		if ( $course_item = $this->get_course_data( $course_id ) ) {
 			$locked = 'locked' === learn_press_get_user_item_meta( $course_item->get_user_item_id(), '_status', true );
 		}
@@ -2373,7 +2376,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	/**
 	 * @param      $item
-	 * @param int  $course_id
+	 * @param int $course_id
 	 * @param bool $force
 	 *
 	 * @return mixed|void
@@ -2438,7 +2441,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	/**
 	 * Get the order that contains the course.
 	 *
-	 * @param int    $course_id
+	 * @param int $course_id
 	 * @param string $return type of order to return LP_Order|ID
 	 *
 	 * @return int|LP_Order|mixed
@@ -2537,7 +2540,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 				throw new Exception( __( 'Enroll course failed.', 'learnpress' ), 10000 );
 			}
 
-			if ( ! $this->can_enroll_course( $course_id ) && 1==0) {
+			if ( ! $this->can_enroll_course( $course_id ) && 1 == 0 ) {
 				throw new Exception( __( 'Enroll course failed.', 'learnpress' ), 10001 );
 			}
 
@@ -2562,8 +2565,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			}
 
 			return $return;
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			return new WP_Error( 'ENROLL_ERROR', $ex->getMessage() );
 		}
 	}
@@ -3011,7 +3013,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * Get user's quiz's graduation
 	 *
 	 * @param      $quiz_id
-	 * @param int  $course_id
+	 * @param int $course_id
 	 * @param bool $check_completed
 	 *
 	 * @return mixed|void
@@ -3094,7 +3096,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	/**
 	 * @param string $type
-	 * @param int    $size
+	 * @param int $size
 	 *
 	 * @return false|string
 	 */
