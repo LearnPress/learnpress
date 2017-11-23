@@ -21,8 +21,8 @@ learn_press_admin_view( 'question/answer' );
                 <tr>
                     <th class="sort"></th>
                     <th class="order"></th>
-                    <th class="answer_text"><?php __( 'Answer Text', 'learnpress' ); ?></th>
-                    <th class="answer_correct"><?php __( 'Is Correct?', 'learnpress' ); ?></th>
+                    <th class="answer_text"><?php _e( 'Answer Text', 'learnpress' ); ?></th>
+                    <th class="answer_correct"><?php _e( 'Is Correct?', 'learnpress' ); ?></th>
                     <th class="actions"></th>
                 </tr>
                 </thead>
