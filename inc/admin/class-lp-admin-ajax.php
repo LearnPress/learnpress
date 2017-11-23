@@ -332,8 +332,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 			
 			// allow super admin can search course of other user 
-			if( is_super_admin() && $context == 'course-items' && $type=='lp_course' ) {
-			    unset( $args['author'] );
+			if( is_super_admin() && (
+					( $context == 'course-items' && in_array( $type, array( LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT ) ))
+					|| ( $context == 'quiz-items' && $type == LP_QUESTION_CPT )
+				)
+			) {
+				unset( $args['author'] );
 			}
 			
 			$args        = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
