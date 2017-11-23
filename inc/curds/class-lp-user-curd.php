@@ -456,6 +456,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function update_user_item( $user_id, $item_id, $item_data = array(), $course_id = 0 ) {
 		global $wpdb;
 
+		if ( false == get_user_by( 'id', $user_id ) ) {
+			return false;
+		}
+
 		if ( array_key_exists( 'user_item_id', $item_data ) && empty( $item_data['user_item_id'] ) ) {
 			$item = false;
 		} else {
@@ -568,6 +572,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$item['status'] = $new_status;
 				}
 			}
+
 			$user        = learn_press_get_user( $user_id );
 			$user_course = $user->get_course_data( $course_id );
 

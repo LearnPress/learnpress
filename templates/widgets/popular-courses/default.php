@@ -53,7 +53,7 @@ $instance = $this->instance;
 					<?php if ( ! empty( $instance['desc_length'] ) && intval( $instance['desc_length'] ) > 0 ) { ?>
                         <div class="course-description">
 							<?php $content_length = intval( $instance['desc_length'] ); ?>
-							<?php echo wp_trim_words( $content, $content_length, __( '...', 'learnpress' ) ); ?></div>
+							<?php echo wp_trim_words( $data['content'], $content_length, __( '...', 'learnpress' ) ); ?></div>
 					<?php } ?>
                     <div class="course-meta-data">
                         <!-- price -->

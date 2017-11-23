@@ -19,10 +19,16 @@ class LP_User_Factory {
 	public static $_deleted_users = array();
 
 	/**
+	 * @var LP_Background_Clear_Temp_Users
+	 */
+	protected static $_background_clear_users = null;
+
+	/**
 	 *
 	 */
 	public static function init() {
-		self::$_guest_transient = WEEK_IN_SECONDS;
+		self::$_background_clear_users = new LP_Background_Clear_Temp_Users();
+		self::$_guest_transient        = WEEK_IN_SECONDS;
 		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn_press_user_start_quiz', array( __CLASS__, 'start_quiz' ), 10, 4 );
 		add_action( 'learn_press_user_retake_quiz', array( __CLASS__, 'retake_quiz' ), 10, 4 );
@@ -30,14 +36,27 @@ class LP_User_Factory {
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
 		add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
+		add_action( 'init', array( __CLASS__, 'clear_temp_users' ) );
 
 		/**
 		 * Filters into wp users manager
 		 */
-		add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
+		//add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
 
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 		add_action( 'learn-press/deleted-order-item', array( __CLASS__, 'delete_user_item' ), 10, 2 );
+	}
+
+	public static function clear_temp_users() {
+		global $wpdb;
+		if ( $users = learn_press_get_temp_users() ) {
+			self::$_background_clear_users->push_to_queue(
+				array(
+					'action' => 'clear_temp_users',
+					'users'  => $users
+				)
+			);
+		}
 	}
 
 	/**
@@ -201,7 +220,7 @@ class LP_User_Factory {
 	 * @return mixed
 	 */
 	public static function exclude_temp_users( $args ) {
-		$args['exclude'] = self::_get_temp_user_ids();
+		//$args['exclude'] = self::_get_temp_user_ids();
 		if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
 			$args['include'] = self::get_pending_requests();
 		}
@@ -252,7 +271,7 @@ class LP_User_Factory {
 	 * in and we need an user for some purpose such as:
 	 * do a quiz , etc...
 	 *
-	 * @return LP_User
+	 * @return LP_User|LP_User_Guest
 	 */
 	public static function get_temp_user() {
 		global $wpdb;
@@ -428,7 +447,7 @@ class LP_User_Factory {
 	 *
 	 * @param int
 	 *
-	 * @return mixed|void
+	 * @return string
 	 */
 	public static function get_user_class( $the_id = 0 ) {
 		$deleted     = in_array( $the_id, self::$_deleted_users );

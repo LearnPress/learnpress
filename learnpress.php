@@ -381,6 +381,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 
+			// Background processes
+			require_once 'inc/background-process/class-lp-background-emailer.php';
+			require_once 'inc/background-process/class-lp-background-schedule-items.php';
+			require_once 'inc/background-process/class-lp-background-clear-temp-users.php';
+
 			// curds
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-section-curd.php';
@@ -465,8 +470,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
 
-			require_once 'inc/background-process/class-lp-background-emailer.php';
-			require_once 'inc/background-process/class-lp-background-schedule-items.php';
+
 			require_once 'inc/class-lp-schedules.php';
 
 			// widgets
@@ -633,3 +637,19 @@ $GLOBALS['LearnPress'] = LP();
 if ( file_exists( LP_PLUGIN_PATH . 'inc/test.php' ) ) {
 	require_once 'inc/test.php';
 }
+
+/**
+ * @param WP_User_Query $q
+ */
+function ccccc( &$q ) {
+	global $wpdb;
+	$where          = $wpdb->prepare( "
+		SELECT ID
+		FROM {$wpdb->users} u 
+		INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
+		LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
+	", '_lp_temp_user', 'yes', '_lp_expiration' );
+	$q->query_where .= " AND ID NOT IN({$where})";
+}
+
+add_action( 'pre_user_query', 'ccccc' );

@@ -268,21 +268,27 @@ class LP_Request {
 	 * @param string $action
 	 */
 	public static function do_enroll( $course_id, $order_id, $action ) {
-		$user  = LP_Global::user();
-		$thing = $user->enroll( $course_id, $order_id );
+		$user     = LP_Global::user();
+		$redirect = get_the_permalink( $course_id );
+		$thing    = $user->enroll( $course_id, $order_id );
 
 		if ( is_wp_error( $thing ) ) {
 			learn_press_add_message(
 				$thing->get_error_message(),
 				'error'
 			);
-		} else {
+
+			if ( $thing->get_error_code() == 10002 ) {
+				$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( $redirect ) );
+			}
+		} elseif ( $thing ) {
 			learn_press_add_message(
 				sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
 				'success'
 			);
 		}
-		wp_redirect( get_the_permalink( $course_id ) );
+
+		wp_redirect( apply_filters( 'learn-press/enroll-course-redirect', $redirect ) );
 		exit();
 	}
 

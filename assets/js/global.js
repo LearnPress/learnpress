@@ -1167,6 +1167,11 @@ if (typeof window.LP === 'undefined') {
 
     });
     LearnPress = LP;
+    
+    $(document).on('click', '#wp-admin-bar-query-monitor', function () {
+        $('#qm').css({'z-index': 999999999, position: 'relative'});
+        $('html, body').css('overflow', 'auto');
+    })
 })(jQuery);
 
 

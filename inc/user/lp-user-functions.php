@@ -83,7 +83,7 @@ function learn_press_get_current_user_id() {
  *
  * @param bool $create_temp - Optional. Create temp user if user is not logged in.
  *
- * @return bool|LP_User
+ * @return bool|LP_User|LP_User_Guest
  */
 function learn_press_get_current_user( $create_temp = true, $force_new = false ) {
 	if ( $id = get_current_user_id() ) {
@@ -91,7 +91,8 @@ function learn_press_get_current_user( $create_temp = true, $force_new = false )
 		return learn_press_get_user( $id, $force_new );
 	}
 
-	return $create_temp ? LP_User_Factory::get_temp_user() : false;
+	return $create_temp ? new LP_User_Guest( 0 ) : false;
+	//return $create_temp ? LP_User_Factory::get_temp_user() : false;
 }
 
 
@@ -657,14 +658,14 @@ function learn_press_delete_user_item_meta( $object_id, $meta_key, $meta_value =
  * @param WP_User_Query $q
  */
 function learn_press_filter_temp_users( $q ) {
-	if ( $temp_users = learn_press_get_temp_users() ) {
-		$exclude = (array) $q->get( 'exclude' );
-		$exclude = array_merge( $exclude, $temp_users );
-		$q->set( 'exclude', $exclude );
-	}
+//	if ( $temp_users = learn_press_get_temp_users() ) {
+//		$exclude = (array) $q->get( 'exclude' );
+//		$exclude = array_merge( $exclude, $temp_users );
+//		$q->set( 'exclude', $exclude );
+//	}
 }
 
-add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
+//add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
 
 /**
  * Get temp users.
@@ -672,15 +673,22 @@ add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
  * @return array
  */
 function learn_press_get_temp_users() {
-	global $wpdb;
-	$query = $wpdb->prepare( "
+	return false;
+	if ( false === ( $temp_users = wp_cache_get( 'learn-press/temp-users' ) ) ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
 			SELECT ID
 			FROM {$wpdb->users} u 
 			INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
 			LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
 		", '_lp_temp_user', 'yes', '_lp_expiration' );
 
-	return $wpdb->get_col( $query );
+		$temp_users = $wpdb->get_col( $query );
+
+		wp_cache_set( 'learn-press/temp-users', $temp_users );
+	}
+
+	return $temp_users;
 }
 
 /**

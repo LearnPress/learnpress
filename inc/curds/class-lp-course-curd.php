@@ -314,9 +314,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			 * Get course's data from cache and if it is already existed
 			 * then ignore that course.
 			 */
-			if ( wp_cache_get( 'course-' . $course_id, 'lp-course-sections' ) ) {
+			if ( false !== wp_cache_get( 'course-' . $course_id, 'lp-course-sections' ) ) {
 				return false;
 			}
+
+			wp_cache_set( 'course-' . $course_id, array(), 'lp-course-sections' );
 
 			$section_curd = new LP_Section_CURD( $course_id );
 
@@ -327,7 +329,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				INNER JOIN {$wpdb->learnpress_sections} s ON p.ID = s.section_course_id
 				WHERE p.ID = %d
 				ORDER BY p.ID, `section_order` ASC
-		", $course_id );
+			", $course_id );
 
 			if ( $results = $wpdb->get_results( $query ) ) {
 				$course_sections = array();

@@ -361,8 +361,8 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	/**
 	 * Handle a completed payment
 	 *
-	 * @param LP_Order
-	 * @param Paypal IPN params
+	 * @param LP_Order $order
+	 * @param array    $request
 	 */
 	protected function payment_status_completed( $order, $request ) {
 
@@ -375,7 +375,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			$this->payment_complete( $order, ( ! empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learnpress' ) );
 			// save paypal fee
 			if ( ! empty( $request['mc_fee'] ) ) {
-				update_post_meta( $order->post->ID, '_transaction_fee', $request['mc_fee'] );
+				update_post_meta( $order->get_id(), '_transaction_fee', $request['mc_fee'] );
 			}
 		} else {
 		}

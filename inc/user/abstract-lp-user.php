@@ -2329,7 +2329,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	public function is_locked_course( $course_id ) {
-		$locked =false;
+		$locked = false;
 		if ( $course_item = $this->get_course_data( $course_id ) ) {
 			$locked = 'locked' === learn_press_get_user_item_meta( $course_item->get_user_item_id(), '_status', true );
 		}
@@ -2537,8 +2537,12 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 				throw new Exception( __( 'Enroll course failed.', 'learnpress' ), 10000 );
 			}
 
-			if ( ! $this->can_enroll_course( $course_id ) && 1==0) {
+			if ( ! $this->can_enroll_course( $course_id ) ) {
 				throw new Exception( __( 'Enroll course failed.', 'learnpress' ), 10001 );
+			}
+
+			if ( ! $this->get_id() ) {
+				throw new Exception( __( 'Please login to enroll course.', 'learnpress' ), 10002 );
 			}
 
 			$date = new LP_Datetime();
@@ -2564,7 +2568,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			return $return;
 		}
 		catch ( Exception $ex ) {
-			return new WP_Error( 'ENROLL_ERROR', $ex->getMessage() );
+			return new WP_Error( $ex->getCode(), $ex->getMessage() );
 		}
 	}
 

@@ -31,6 +31,14 @@ class LP_Update_30 {
 		", '0000-00-00 00:00:00', '0000-00-00 00:00:00' );
 		ob_start();
 		@$wpdb->query( $sql );
+
+		$sql = $wpdb->prepare( "
+			ALTER TABLE {$wpdb->learnpress_user_items}
+			CHANGE COLUMN `user_id` `user_id` BIGINT(20) NOT NULL DEFAULT '-1' ,
+			CHANGE COLUMN `item_id` `item_id` BIGINT(20) NOT NULL DEFAULT '-1' ;
+		" );
+		@$wpdb->query( $sql );
+
 		ob_get_clean();
 //		if ( $wpdb->last_error !== '' ) {
 //			learn_press_add_message( $wpdb->last_error, 'error' );
@@ -40,7 +48,7 @@ class LP_Update_30 {
 	/**
 	 * Update settings.
 	 */
-	public static function update_settings(){
+	public static function update_settings() {
 
 	}
 
@@ -92,7 +100,7 @@ class LP_Update_30 {
 			 */
 			$query_args = array( '_lp_retaken_count', LP_COURSE_CPT );
 			$query_args = array_merge( $query_args, $course_ids );
-			$query = $wpdb->prepare( "
+			$query      = $wpdb->prepare( "
 				INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
 				SELECT MAX( user_item_id ), %s, COUNT(*) - 1
 				FROM {$wpdb->learnpress_user_items}

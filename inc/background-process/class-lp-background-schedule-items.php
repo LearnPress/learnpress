@@ -115,38 +115,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 
 			return false;
 
-			$curd = new LP_User_CURD();
-
-			foreach ( $items as $course_item_id => $item_data ) {
-
-				if ( ! $item_course = $curd->get_user_item_course( $course_item_id ) ) {
-					continue;
-				}
-
-				if ( $item_course->is_finished() ) {
-					continue;
-				}
-
-				if ( ! empty( $item_data['items'] ) ) {
-					foreach ( $item_data['items'] as $user_item_id ) {
-						if ( ! $user_item = $item_course->get_item( $user_item_id ) ) {
-							continue;
-						}
-						switch ( $user_item->get_post_type() ) {
-							case LP_QUIZ_CPT:
-							case LP_LESSON_CPT:
-								$user_item->complete();
-								break;
-							default:
-								do_action( 'learn-press/schedule/auto-complete-item', $user_item_id );
-						}
-					}
-				}
-
-				$item_course->finish();
-			}
-
-			return false;
 		}
 
 		protected function _get_items() {

@@ -204,8 +204,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$user_curd->update_user_item_by_id(
 						$item_course->get_user_item_id(),
 						array(
-							'user_id' => 0,
-							'item_id' => 0
+							'user_id' => -1,
+							'item_id' => -1
 						)
 					);
 				}

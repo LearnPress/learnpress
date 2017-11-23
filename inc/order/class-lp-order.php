@@ -492,9 +492,9 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 *
 	 * @return array|bool
 	 */
-	public function get_item_ids(){
-		if($items = $this->get_items()){
-			return wp_list_pluck($items, 'course_id');
+	public function get_item_ids() {
+		if ( $items = $this->get_items() ) {
+			return wp_list_pluck( $items, 'course_id' );
 		}
 
 		return false;
@@ -1112,6 +1112,10 @@ class LP_Order extends LP_Abstract_Post_Data {
 
 		// Only update if new status is difference with old status.
 		if ( $new_status !== $old_status ) {
+
+			if ( ! $this->get_user_id() ) {
+				$new_status = 'pending';
+			}
 
 			if ( doing_action( 'save_post' ) ) {
 				// Update post's status using wpdb to preventing loop
