@@ -1766,14 +1766,25 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn-press/user-course-finished-data', $return, $course_id, $this->get_id() );
 	}
 
+	/**
+	 * Check user instructor.
+	 *
+	 * @return bool
+	 */
 	public function is_instructor() {
-		$roles = ! empty( $this->user->roles ) ? $this->user->roles : array();
+
+		$roles = $this->get_data( 'roles' ) ? $this->get_data( 'roles' ) : array();
 
 		return in_array( LP_TEACHER_ROLE, $roles );
 	}
 
+	/**
+	 * Check user admin.
+	 *
+	 * @return bool
+	 */
 	public function is_admin() {
-		$roles = ! empty( $this->user->roles ) ? $this->user->roles : array();
+		$roles = $this->get_data( 'roles' ) ? $this->get_data( 'roles' ) : array();
 
 		return in_array( 'administrator', $roles );
 	}
