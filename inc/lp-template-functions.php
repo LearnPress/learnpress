@@ -49,7 +49,7 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 
 	/**
-	 * Enroll course button
+	 * Enroll course button.
 	 */
 	function learn_press_course_enroll_button() {
 		$user   = LP_Global::user();
@@ -60,29 +60,27 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 			return;
 		}
 
-		// Course is not require enrolling
-		if ( ! $course->is_required_enroll() || ( ! $course->is_free() && $user->has_enrolled_course( $course->get_id() ) ) ) {
-			return;
-		}
-
-		// If user has already finished course
-		if ( $user->has_finished_course( $course->get_id() ) || $user->has_enrolled_course( $course->get_id() ) ) {
-			return;
-		}
-
-		if ( $course->is_free() && ! $course->is_in_stock() ) {
-			return;
-		}
-
-		if ( ! $course->is_free() && ! $user->has_purchased_course( $course->get_id() ) ) {
-			return;
-		}
-
+		// Locked course for user
 		if ( $user->is_locked_course( $course->get_id() ) ) {
 			return;
 		}
 
-		learn_press_get_template( 'single-course/buttons/enroll.php' );
+		// Course out of stock (full students)
+		if ( ! $course->is_in_stock() ) {
+			return;
+		}
+
+		// Course is not require enrolling
+		if ( ! $course->is_required_enroll() ) {
+			return;
+		}
+
+		// For free course and user does not purchased
+		if ( $course->is_free() && ! $user->has_purchased_course( $course->get_id() ) ) {
+			learn_press_get_template( 'single-course/buttons/enroll.php' );
+		} else {
+			return;
+		}
 	}
 
 }
@@ -1742,10 +1740,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $lesson_id
-	 * @param int          $course_id
+	 * @param int $lesson_id
+	 * @param int $course_id
 	 * @param array|string $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -1802,10 +1800,10 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $quiz_id
-	 * @param int          $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param string|array $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -1978,7 +1976,7 @@ function learn_press_get_messages( $clear = false ) {
  *
  * @param string $message
  * @param string $type
- * @param array  $options
+ * @param array $options
  */
 function learn_press_add_message( $message, $type = 'success', $options = array() ) {
 	if ( ! is_array( $options ) ) {
@@ -2213,9 +2211,9 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name
- * @param array  $args          (default: array())
+ * @param array $args (default: array())
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return void
  */
@@ -2251,7 +2249,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
  * @uses learn_press_get_template();
  *
  * @param        $template_name
- * @param array  $args
+ * @param array $args
  * @param string $template_path
  * @param string $default_path
  *
@@ -2277,7 +2275,7 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
  *
  * @param string $template_name
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return string
  */
