@@ -384,10 +384,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 		global $wpdb;
 
-		//$time = new LP_Datetime();
-		//$item = LP_Course_Item::get_item( $this->get_item_id() );
-
-
 		$end_time  = new LP_Datetime();
 		$null_time = '0000-00-00 00:00';
 

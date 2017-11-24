@@ -272,14 +272,16 @@ class LP_Cart {
 
 			if ( $cart = learn_press_session_get( $this->_cart_session_key ) ) {
 				foreach ( $cart as $cart_id => $values ) {
-					$course = learn_press_get_course( $values['item_id'] );
-					if ( $course && $course->exists() && $values['quantity'] > 0 ) {
-						if ( ! $course->is_purchasable() ) {
-							learn_press_add_message( sprintf( __( '%s has been removed from your cart because it can no longer be purchased.', 'learnpress' ), $course->get_title() ), 'error' );
-							do_action( 'learn-press/remove-cart-item-from-session', $cart, $values );
-						} else {
-							$data                            = array_merge( $values, array( 'data' => $course ) );
-							$this->_cart_content[ $cart_id ] = apply_filters( 'learn-press/get-cart-item-from-session', $data, $values, $cart_id );
+					if ( ! empty( $values['item_id'] ) ) {
+						$course = learn_press_get_course( $values['item_id'] );
+						if ( $course && $course->exists() && $values['quantity'] > 0 ) {
+							if ( ! $course->is_purchasable() ) {
+								learn_press_add_message( sprintf( __( '%s has been removed from your cart because it can no longer be purchased.', 'learnpress' ), $course->get_title() ), 'error' );
+								do_action( 'learn-press/remove-cart-item-from-session', $cart, $values );
+							} else {
+								$data                            = array_merge( $values, array( 'data' => $course ) );
+								$this->_cart_content[ $cart_id ] = apply_filters( 'learn-press/get-cart-item-from-session', $data, $values, $cart_id );
+							}
 						}
 					}
 				}

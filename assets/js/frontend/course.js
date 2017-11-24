@@ -172,9 +172,22 @@
             }, 300);
 
             $(document).on('learn-press/nav-tabs/clicked', function (e, tab) {
+
                 if ($(document.body).hasClass('course-item-popup')) {
                     return;
                 }
+
+                var $tab = $(tab),
+                    $parent = $tab.closest('.course-nave');
+
+                if ($tab.siblings().lengt === 0) {
+                    return;
+                }
+
+                if ($parent.hasClass('default')) {
+
+                }
+
                 LP.setUrl($(tab).attr('href'));
             }).on('keyup keypress', '.course-item-search input', function (e) {
 
@@ -211,11 +224,14 @@
                 $form.find('input').val('').trigger('keyup')
             })
 
-            /////$('.course-item-popup').find('#learn-press-course-curriculum').addClass('scrollbar-light').scrollbar({scrollx: false});
-
             if ($('#wpadminbar').length) {
                 $('body').addClass('wpadminbar')
             }
+
+            $(document).on('click', '#wp-admin-bar-query-monitor', function () {
+                $('#qm').css({'z-index': 999999999, position: 'relative'});
+                $('html, body').css('overflow', 'auto');
+            });
 
             new LP_Course({})
 

@@ -225,21 +225,23 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$query_args    = array_merge( $all_section_ids, $post_statuses );
 
 				$query = $wpdb->prepare( "
-				SELECT s.*, si.*, p.*
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->learnpress_section_items} si ON si.item_id = p.ID
-				INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
-				WHERE s.section_id IN(" . join( ',', $format ) . ")
-				AND p.post_status IN(%s)
-				ORDER BY s.section_course_id, s.section_order, si.item_order ASC
-			", $query_args );
+					SELECT s.*, si.*, p.*
+					FROM {$wpdb->posts} p
+					INNER JOIN {$wpdb->learnpress_section_items} si ON si.item_id = p.ID
+					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
+					WHERE s.section_id IN(" . join( ',', $format ) . ")
+					AND p.post_status IN(%s)
+					ORDER BY s.section_course_id, s.section_order, si.item_order ASC
+				", $query_args );
 
-				$item_ids = array();
+				$item_ids       = array();
+				$meta_cache_ids = array( $course_id );
+				$quiz_ids       = array();
 
 				if ( $results = $wpdb->get_results( $query ) ) {
 					$curriculum = array();
 					$cur_id     = 0;
-					$post_cache = (array) get_post( 1 );
+					$post_cache = (array) get_post();
 					foreach ( $results as $row ) {
 						// Switch to other course
 						if ( $row->section_course_id !== $cur_id ) {
@@ -256,26 +258,41 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						}
 
 						$curriculum[] = $row;
+
 						if ( empty( $item_ids[ $row->section_course_id ] ) ) {
 							$item_ids[ $row->section_course_id ] = array( $row->ID );
 						} else {
 							$item_ids[ $row->section_course_id ][] = $row->ID;
 						}
+
+						$meta_cache_ids[] = $row->ID;
+
+						if ( $row->post_type === LP_QUIZ_CPT ) {
+							$quiz_ids[] = $row->ID;
+						}
+
 						// Cache post for using get_post() later.
 						$_post = array_intersect_key( (array) $row, $post_cache );
 						$_post = sanitize_post( $_post, 'raw' );
 						$_post = (object) $_post;
-						//wp_cache_add( $_post->ID, $_post, 'posts' );
 						wp_cache_set( $_post->ID, $_post, 'posts' );
 					}
-					//wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
+
 					wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
 
 					// Cache items ids for using in some cases
 					foreach ( $item_ids as $cid => $ids ) {
 						wp_cache_set( 'course-' . $cid, $ids, 'lp-course-items' );
 					}
+
 					unset( $curriculum );
+				}
+
+				update_meta_cache( 'post', $meta_cache_ids );
+
+				if ( $quiz_ids ) {
+					$quiz_factory = new LP_Quiz_CURD();
+					$quiz_factory->load_questions( $quiz_ids );
 				}
 			}
 

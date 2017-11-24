@@ -2188,33 +2188,14 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_course_info( $course_id, $field = null, $force = false ) {
+
+		_deprecated_function(__FUNCTION__, '3.0.0');
 		if ( ! $course_id ) {
 			return false;
 		}
 
 		// XXXXX
 		return false;
-
-		$user_course_info = LP_Cache::get_course_info( false, array() );
-		if ( empty( $user_course_info[ $this->get_id() ] ) ) {
-			$user_course_info[ $this->get_id() ] = array();
-		}
-		if ( $course_id && ! array_key_exists( $course_id, $user_course_info[ $this->get_id() ] ) || $force ) {
-			if ( $result = learn_press_get_user_courses_info( $this->get_id(), array( $course_id ) ) ) {
-				foreach ( $result as $cid => $data ) {
-					$user_course_info[ $this->get_id() ][ $cid ] = $data;
-				}
-			}
-		}
-		if ( $field && array_key_exists( $field, $user_course_info[ $this->get_id() ][ $course_id ] ) ) {
-			$info = $user_course_info[ $this->get_id() ][ $course_id ][ $field ];
-		} else {
-			$info = $user_course_info[ $this->get_id() ][ $course_id ];
-		}
-
-		$this->_parse_item_order_of_course( $course_id );
-
-		return apply_filters( 'learn_press_user_course_info', $info, $this, $course_id );
 	}
 
 	/**

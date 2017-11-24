@@ -663,37 +663,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			return $return;
 		}
 
-		/**
-		 * Get the course that contains this quiz
-		 *
-		 * @param string
-		 *
-		 * @return bool|null
-		 */
-		public function get_course( $args = null ) {
-			if ( empty( $this->course ) ) {
-				global $wpdb;
-				$query = $wpdb->prepare( "
-				SELECT c.*
-				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->learnpress_sections} s on c.ID = s.section_course_id
-				INNER JOIN {$wpdb->learnpress_section_items} si on si.section_id = s.section_id AND si.item_id = %d
-				", $this->get_id() );
-				if ( $course_id = $wpdb->get_var( $query ) ) {
-					$this->course = LP_Course::get_course( $course_id );
-				}
-			}
-			$return = $this->course;
-			if ( $this->course && $args ) {
-				$args = wp_parse_args( $args, array( 'field' => null ) );
-				if ( $args['field'] ) {
-					$return = $this->course->{$args['field']};
-				}
-			}
-
-			return $return;
-		}
-
 		public function has( $feature ) {
 			$args = func_get_args();
 			unset( $args[0] );

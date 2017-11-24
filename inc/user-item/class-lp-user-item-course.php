@@ -306,30 +306,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function finish() {
 
 		return parent::complete( 'finished' );
-
-
-		global $wpdb;
-
-		$end_time  = new LP_Datetime();
-		$null_time = '0000-00-00 00:00';
-
-		$this->set_end_time( $end_time->toSql() );
-		$this->set_end_time_gmt( $end_time->toSql( false ) );
-		$this->set_status( 'finished' );
-		$this->update();
-
-		$return = $wpdb->get_var(
-			$wpdb->prepare( "
-				SELECT user_item_id
-				FROM {$wpdb->prefix}learnpress_user_items
-				WHERE user_id = %d
-					AND item_id = %d
-					AND start_time <> %s AND end_time <> %s
-					AND status = %s
-			", $this->get_id(), $this->get_item_id(), $null_time, $null_time, 'finished' )
-		);
-
-		return $return;
 	}
 
 	/**
@@ -368,8 +344,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	protected function _evaluate_course_by_quizzes() {
 
 		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-quizzes' ) ) ) {
-			$course = $this->get_course();
-			LP_Debug::timeStart();
 
 			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
 			$result = 0;

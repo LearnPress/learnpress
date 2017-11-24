@@ -1724,6 +1724,22 @@ if ( ! function_exists( 'learn_press_after_quiz_question_title' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_course_loop_item_buttons' ) ) {
+	function learn_press_course_loop_item_buttons() {
+		learn_press_get_template( 'single-course/buttons.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_loop_item_user_progress' ) ) {
+	function learn_press_course_loop_item_user_progress() {
+		$course = LP_Global::course();
+		$user   = LP_Global::user();
+
+		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
+			echo $user->get_course_status( $course->get_id() );
+		}
+	}
+}
 
 if ( ! function_exists( 'learn_press_course_item_class' ) ) {
 	function learn_press_course_item_class( $item_id, $course_id = 0, $class = null ) {

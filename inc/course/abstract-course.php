@@ -360,29 +360,39 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 */
 	public function get_items( $type = '', $preview = true ) {
 
-		// get course items from cache
-		$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
+		$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
 
-		if ( ( $type || ! $preview ) && $items ) {
-			$item_types = array();
-			if ( $type ) {
-				settype( $type, 'array' );
-			}
-			foreach ( $items as $item_id ) {
+		if ( false === ( $items = wp_cache_get( 'course-' . $key, 'lp-course-items' ) ) ) {
 
-				if ( ! $preview ) {
-					$item = $this->get_item( $item_id );
-					if ( $item->is_preview() ) {
-						continue;
+			// get course items from cache
+			$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
+
+			if ( ( $type || ! $preview ) && $items ) {
+				$item_types = array();
+				if ( $type ) {
+					settype( $type, 'array' );
+				}
+
+				foreach ( $items as $item_id ) {
+
+					if ( ! $preview ) {
+						$item = $this->get_item( $item_id );
+
+						if ( ! $item || $item->is_preview() ) {
+							continue;
+						}
+					}
+
+					if ( ! $type || is_array( $type ) && in_array( get_post_type( $item_id ), $type ) ) {
+						$item_types[] = $item_id;
 					}
 				}
 
-				if ( ! $type || is_array( $type ) && in_array( get_post_type( $item_id ), $type ) ) {
-					$item_types[] = $item_id;
-				}
+				$items = apply_filters( 'learn-press/course-items-by-type', $item_types, $type, $this->get_id() );
+
 			}
 
-			$items = apply_filters( 'learn-press/course-items-by-type', $item_types, $type, $this->get_id() );
+			wp_cache_set( 'course-' . $key, $items, 'lp-course-items' );
 
 		}
 
@@ -496,26 +506,33 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 *
 	 * @return string
 	 */
-	public function get_students_html( $user_id = null ) {
+	public function get_students_html() {
 		$output = '';
 		if ( $count = $this->count_users_enrolled( 'append' ) ):
-			$course_info = $this->get_course_info( $user_id );
-			if ( $course_info['status'] ):
+			$user = learn_press_get_current_user();
+			if ( $user->has_enrolled_course( $this->get_id() ) ):
 				if ( $count == 1 ):
 					$output .= __( 'You enrolled', 'learnpress' );
 				else:
-					$output .= sprintf( _nx( 'You and one student enrolled', 'You and <span class="course-students-number">%1$s</span> students enrolled', intval( $count - 1 ), '', 'learnpress' ), $count - 1 );
+					$output .= sprintf(
+						_nx(
+							'You and one student enrolled',
+							'You and <span class="course-students-number">%1$s</span> students enrolled',
+							intval( $count - 1 ),
+							'students-html',
+							'learnpress'
+						)
+						, $count - 1
+					);
 				endif;
-				$output = apply_filters( 'learn_press_students_enrolled_html', $output, $this );
 			else:
-				$output = sprintf( _nx( 'One student enrolled', '<span class="course-students-number">%1$s</span> students enrolled', $count, '', 'learnpress' ), $count );
-				$output = apply_filters( 'learn_press_one_student_enrolled_html', $output, $this );
+				$output = sprintf( _nx( 'One student enrolled', '<span class="course-students-number">%1$s</span> students enrolled', $count, 'students-html', 'learnpress' ), $count );
 			endif;
 		else:
-			$output = apply_filters( 'learn_press_no_student_enrolled_html', __( 'No student enrolled', 'learnpress' ), $this );
+			$output = __( 'No student enrolled', 'learnpress' );
 		endif;
 
-		return $output;
+		return apply_filters( 'learn-press/students-enrolled-html', $output, $this->get_id() );
 	}
 
 	/**

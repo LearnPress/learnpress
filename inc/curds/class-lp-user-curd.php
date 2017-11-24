@@ -328,8 +328,24 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// Cache the courses is not read
 		if ( $fetch_ids ) {
+			$defaults = array(
+				'user_item_id'   => 0,
+				'user_id'        => $user_id,
+				'item_id'        => 0,
+				'start_time'     => '0000-00-00 00:00',
+				'start_time_gmt' => '0000-00-00 00:00',
+				'end_time'       => '0000-00-00 00:00',
+				'end_time_gmt'   => '0000-00-00 00:00',
+				'item_type'      => '',
+				'status'         => '',
+				'ref_type'       => '',
+				'ref_id'         => '',
+				'parent_id'      => 0,
+				'ext_status'     => '',
+				'items'          => array()
+			);
 			foreach ( $fetch_ids as $fetch_id ) {
-				//wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, array( 'items' => array() ), 'lp-user-courses' );
+				wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, $defaults, 'lp-user-courses' );
 			}
 		}
 

@@ -107,7 +107,7 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $quiz_id
+	 * @param       $quiz_id
 	 * @param array $args
 	 *
 	 * @return mixed|WP_Error
@@ -167,25 +167,51 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$id        = $quiz->get_id();
 		$questions = wp_cache_get( 'questions-' . $id, 'lp-quizzes' );
 		if ( false === $questions || $quiz->get_no_cache() ) {
-			global $wpdb;
-			$questions = array();
-			$query     = $wpdb->prepare( "
-				SELECT p.*, qq.question_order AS `order`
-				FROM {$wpdb->posts} p 
-				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
-				WHERE qq.quiz_id = %d
-				ORDER BY question_order ASC
-			", $id );
-			if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
-				foreach ( $results as $k => $v ) {
-					wp_cache_set( $v->ID, $v, 'posts' );
-					$questions[ $v->ID ] = $v->ID;
-				}
-			}
-			wp_cache_set( 'questions-' . $id, $questions, 'lp-quizzes' );
+			$this->load_questions( $quiz->get_id() );
 
-			$this->_load_question_answers( $quiz );
+			$this->load_question_answers( $quiz );
 		}
+	}
+
+	public function load_questions( $quiz_ids ) {
+		global $wpdb;
+		settype( $quiz_ids, 'array' );
+
+		$format    = array_fill( 0, sizeof( $quiz_ids ), '%d' );
+		$questions = array_fill_keys( $quiz_ids, array() );
+
+		$query = $wpdb->prepare( "
+			SELECT p.*, qq.quiz_id, qq.question_order AS `order`
+			FROM {$wpdb->posts} p 
+			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
+			WHERE qq.quiz_id IN(" . join( ',', $format ) . ")
+			ORDER BY question_order ASC
+		", $quiz_ids );
+
+		$question_ids = array();
+
+		if ( $results = $wpdb->get_results( $query ) ) {
+			foreach ( $results as $k => $v ) {
+				settype( $v, 'object' );
+
+				$quiz_id = $v->quiz_id;
+
+				wp_cache_set( $v->ID, $v, 'posts' );
+
+				if ( empty( $questions[ $quiz_id ] ) ) {
+					$questions[ $quiz_id ] = array();
+				}
+
+				$questions[ $quiz_id ][ $v->ID ] = $v->ID;
+				$question_ids[]                  = $v->ID;
+			}
+		}
+
+		foreach ( $questions as $quiz_id => $quiz_questions ) {
+			wp_cache_set( 'questions-' . $quiz_id, $quiz_questions, 'lp-quizzes' );
+		}
+
+		update_meta_cache( 'post', $question_ids );
 	}
 
 	/**
@@ -205,7 +231,7 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Load answer quiz's questions.
 	 */
-	protected function _load_question_answers( &$quiz ) {
+	public function load_question_answers( &$quiz ) {
 		global $wpdb;
 
 		if ( ! $questions = $this->get_questions( $quiz ) ) {
@@ -331,7 +357,7 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Reorder question by indexed number.
 	 *
 	 * @param LP_Quiz|WP_Post|int $the_quiz
-	 * @param mixed $questions
+	 * @param mixed               $questions
 	 *
 	 * @return mixed
 	 */
@@ -401,7 +427,7 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @param LP_Quiz|int $the_quiz
 	 * @param             $question_id
-	 * @param array $args
+	 * @param array       $args
 	 *
 	 * @return mixed false on failed
 	 */
@@ -420,7 +446,7 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		// list exist quiz question
 		$list_questions = $this->get_questions( $the_quiz );
 		// add new question and set to cache
-		$list_questions[$question_id] = strval( $question_id );
+		$list_questions[ $question_id ] = strval( $question_id );
 		wp_cache_set( 'questions-' . $the_quiz->get_id(), $list_questions, 'lp-quizzes' );
 
 		global $wpdb;
@@ -461,7 +487,7 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Check if a question (or batch of questions) is already added to quiz.
 	 *
-	 * @param int $the_id
+	 * @param int       $the_id
 	 * @param int|array $ids
 	 *
 	 * @return array|bool|null|object
@@ -528,8 +554,8 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $quiz_id
-	 * @param $question_id
+	 * @param      $quiz_id
+	 * @param      $question_id
 	 * @param bool $force
 	 *
 	 * @return bool|false|int|WP_Error
@@ -576,8 +602,8 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Remove a question from list of questions
 	 *
 	 * @param LP_Quiz|int $the_quiz
-	 * @param int|array $question_id ID of the question to remove
-	 * @param mixed $args Extra options
+	 * @param int|array   $question_id ID of the question to remove
+	 * @param mixed       $args        Extra options
 	 *
 	 * @return mixed         false on failed
 	 */

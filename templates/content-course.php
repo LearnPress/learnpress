@@ -13,11 +13,19 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
+
+$user = LP_Global::user();
 ?>
 
 <li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-	<?php do_action( 'learn_press_before_courses_loop_item' ); ?>
+	<?php
+    // @deprecated
+    do_action( 'learn_press_before_courses_loop_item' );
+
+    // @since 3.0.0
+    do_action( 'learn-press/before-courses-loop-item' );
+    ?>
 
     <a href="<?php the_permalink(); ?>" class="course-permalink">
 
@@ -25,8 +33,13 @@ defined( 'ABSPATH' ) || exit();
 
     </a>
 
-	<?php do_action( 'learn_press_after_courses_loop_item' ); ?>
+	<?php
 
-	<?php learn_press_get_template( 'single-course/buttons.php' ); ?>
+    // @since 3.0.0
+	do_action( 'learn-press/after-courses-loop-item' );
+
+	// @deprecated
+    do_action( 'learn_press_after_courses_loop_item' );
+    ?>
 
 </li>

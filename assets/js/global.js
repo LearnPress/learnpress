@@ -1118,7 +1118,7 @@ if (typeof window.LP === 'undefined') {
             });
 
         setTimeout(function () {
-            $('.learn-press-nav-tabs li.active a').trigger('click');
+            $('.learn-press-nav-tabs li.active:not(.default) a').trigger('click');
         }, 300);
 
         $('body.course-item-popup').parent().css('overflow', 'hidden');
@@ -1161,19 +1161,9 @@ if (typeof window.LP === 'undefined') {
                 }, delay, $el);
             }
         });
-
-        //$(window).on("message onmessage", LP.receiveMessage, false);
-        window.addEventListener("message", LP.receiveMessage, false);
-
     });
     LearnPress = LP;
-    
-    $(document).on('click', '#wp-admin-bar-query-monitor', function () {
-        $('#qm').css({'z-index': 999999999, position: 'relative'});
-        $('html, body').css('overflow', 'auto');
-    });
 
-    console.log('xxxxxx')
 })(jQuery);
 
 
