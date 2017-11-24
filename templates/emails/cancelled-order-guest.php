@@ -1,3 +1,5 @@
+<?php ?>
+
 {{header}}
 
 <p>Hi <strong>Guest</strong>, </p>

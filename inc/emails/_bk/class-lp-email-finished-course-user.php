@@ -24,7 +24,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course_User' ) ) {
 		public function __construct() {
 			$this->id          = 'finished-course-user';
 			$this->title       = __( 'User', 'learnpress' );
-			$this->description = __( 'Send this email to user when a user finished a course', 'learnpress' );
+			$this->description = __( 'Send this email to user when a user finished a course.', 'learnpress' );
 
 			$this->template_html  = 'emails/finished-course.php';
 			$this->template_plain = 'emails/plain/finished-course.php';
@@ -140,7 +140,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course_User' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_subject,
 						'id'         => $this->get_field_name( 'subject' ),
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
@@ -157,7 +157,7 @@ if ( ! class_exists( 'LP_Email_Finished_Course_User' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_heading,
 						'id'         => $this->get_field_name( 'heading' ),
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(

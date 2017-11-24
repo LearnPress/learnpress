@@ -97,7 +97,7 @@ learn_press_admin_view( 'course/pagination' );
                     </button>
 
                     <button type="button" class="button button-secondary edit-selected"
-                            :disabled=" adding"
+                            :disabled="adding || (!addedItems.length && !showPreview)"
                             @click.prevent="showPreview = !showPreview">
                         {{textButtonEdit}}
                     </button>

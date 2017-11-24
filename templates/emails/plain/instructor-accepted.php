@@ -1,3 +1,5 @@
+<?php ?>
+
 == {{header}} ==
 
 ** Congrats! You become an Instructor at "{{site_title}}" **

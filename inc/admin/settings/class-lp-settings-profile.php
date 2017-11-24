@@ -37,7 +37,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title' => __( 'General', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'  => __( 'General settings', 'learnpress' )
+							'desc'  => __( 'General settings.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Profile page', 'learnpress' ),
@@ -208,7 +208,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title' => __( 'Avatar', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'  => __( 'User avatar settings', 'learnpress' )
+							'desc'  => __( 'User avatar settings.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Enable custom avatar', 'learnpress' ),

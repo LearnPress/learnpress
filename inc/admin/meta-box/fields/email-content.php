@@ -145,7 +145,7 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 									<?php endforeach; ?>
                                 </ol>
                                 <p class="description">
-                                    <?php esc_html_e( 'Click on variables to add it into email content', 'learnpress' ); ?>
+                                    <?php esc_html_e( 'Click on variables to add it into email content.', 'learnpress' ); ?>
                                 </p>
 							<?php endif; ?>
 <!--                            <p class="description">-->

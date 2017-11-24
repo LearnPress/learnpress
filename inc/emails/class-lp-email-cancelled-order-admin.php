@@ -25,7 +25,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 		public function __construct() {
 			$this->id          = 'cancelled-order-admin';
 			$this->title       = __( 'Admin', 'learnpress' );
-			$this->description = __( 'Send email to admin when order has been cancelled', 'learnpress' );
+			$this->description = __( 'Send email to admin when order has been cancelled.', 'learnpress' );
 
 			$this->default_subject = __( 'Order placed on {{order_date}} has been cancelled', 'learnpress' );
 			$this->default_heading = __( 'User order has been cancelled', 'learnpress' );
@@ -94,7 +94,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 						'type'       => 'text',
 						'default'    => get_option( 'admin_email' ),
 						'id'         => $this->get_field_name( 'recipients' ),
-						'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>', 'learnpress' ), get_option( 'admin_email' ) ),
+						'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>.', 'learnpress' ), get_option( 'admin_email' ) ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
@@ -111,7 +111,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_subject,
 						'id'         => $this->get_field_name( 'subject' ),
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
@@ -128,7 +128,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_heading,
 						'id'         => $this->get_field_name( 'heading' ),
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(

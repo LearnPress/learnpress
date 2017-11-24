@@ -1,6 +1,5 @@
-<?php
+<?php ?>
 
-?>
 == {{email_heading}} ==
 
 You have enrolled in the course  "{{course_url}}" ({{course_name}}).

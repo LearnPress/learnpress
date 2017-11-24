@@ -1,6 +1,6 @@
 <div class="card">
     <h2><?php _e( 'Upgrade Database', 'learnpress' ); ?></h2>
-    <p><?php _e( 'Force to upgrade database', 'learnpress' ); ?></p>
+    <p><?php _e( 'Force to upgrade database.', 'learnpress' ); ?></p>
     <p class="tools-button">
         <a class="button" href="<?php echo admin_url( 'index.php?page=lp-database-updater' ); ?>"><?php esc_html_e( 'Upgrade', 'learnpress' ); ?></a>
     </p>
@@ -21,7 +21,7 @@
 </div>-->
 <div class="card">
 	<h2><?php _e( 'Remove current Data', 'learnpress' ); ?></h2>
-	<p><?php _e( 'Remove all courses, lessons, quizzes and questions', 'learnpress' ); ?></p>
+	<p><?php _e( 'Remove all courses, lessons, quizzes and questions.', 'learnpress' ); ?></p>
 	<form method="post" name="learn-press-form-remove-data">
 		<div class="learn-press-message lp-error">
 			<p><?php _e( 'Be careful before using this action!', 'learnpress' ); ?></p>

@@ -6,11 +6,11 @@
             display: block;
             margin-bottom: 5px;
             float: left;
-            width: 250px;
+            width: 190px;
             font-size: 14px;
         }
         .rwmb-input {
-            margin-left: 270px;
+            margin-left: 190px;
             float: none;
             width: auto;
         }
@@ -24,8 +24,8 @@
         &.rwmb-heading-wrapper {
             h4 {
                 font-size: 15px;
-                margin: 0px 0 5px 0;
-                padding: 0 0 0px;
+                margin: 0 0 5px 0;
+                padding: 0 0 0;
                 border-bottom: 2px solid #563d7c;
                 display: inline-block;
                 text-transform: initial;
@@ -52,16 +52,7 @@
         }
     }
 
-    //#field-_lp_course_result {
-    //    .rwmb-input-list {
-    //        li:nth-child(n+3) {
-    //            display: none;
-    //        }
-    //    }
-    //}
-
-    .lp-course-sale_start-field,
-    .lp-course-sale_end-field{
+    .lp-course-sale_start-field, .lp-course-sale_end-field {
         &.hide {
             display: none;
         }
@@ -96,14 +87,21 @@
             }
         }
     }
-    #learn-press-toggle-course-results{
+    #learn-press-toggle-course-results {
         display: block;
+    }
+
+    // lesson metaboxs
+    #lesson_settings {
+        & > .inside {
+            margin: 20px 0 0;
+        }
     }
 }
 
 @media screen and (max-width: 1280px) {
     .learnpress {
-        .rwmb-meta-box{
+        .rwmb-meta-box {
         }
         #meta-box-tab-course_settings {
             .rwmb-field {

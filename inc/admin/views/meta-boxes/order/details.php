@@ -102,7 +102,7 @@ $user_ip      = $order->get_user_ip_address();
 
 				<?php if ( 'pending' !== $order->get_status() ) {
 					echo '<p class="description">';
-					_e( 'In order to changing order user change the status to \'Pending\'', 'learnpress' );
+					_e( 'In order to changing order user change the status to \'Pending\'.', 'learnpress' );
 					echo '</p>';
 				} ?>
 
@@ -167,7 +167,7 @@ $user_ip      = $order->get_user_ip_address();
                                 id="learn-press-add-order-item"><?php _e( 'Add Item', 'learnpress' ); ?></button>
 					<?php } else {
 						echo '<p class="description">';
-						_e( 'In order to changing order items change the status to \'Pending\'', 'learnpress' );
+						_e( 'In order to changing order items change the status to \'Pending\'.', 'learnpress' );
 						echo '</p>';
 					} ?>
                     <!--<button class="button" type="button" id="learn-press-calculate-order-total"><?php _e( 'Calculate Total', 'learnpress' ); ?></button>-->

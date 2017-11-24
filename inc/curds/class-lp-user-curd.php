@@ -79,7 +79,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'role'            => ! empty( $user_object->roles[0] ) ? $user_object->roles[0] : 'student',
 					'roles'           => ! empty( $user_object->roles ) ? $user_object->roles : array( 'student' ),
 					'profile_picture' => get_user_meta( $user_id, '_lp_profile_picture', true )
-				), null, true
+				)
 			);
 		}
 

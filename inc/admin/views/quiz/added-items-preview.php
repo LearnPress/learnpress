@@ -26,10 +26,7 @@
                 template: '#tmpl-lp-quiz-added-items-preview',
                 props: {
                     // only show added items
-                    show: {
-                        type: Boolean,
-                        value: false
-                    }
+                    show: true
                 },
                 computed: {
                     addedItems: function () {

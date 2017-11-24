@@ -103,14 +103,14 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 							'id'           => "{$prefix}duration",
 							'type'         => 'duration',
 							'default_time' => 'minute',
-							'desc'         => __( 'Duration of the lesson. Set 0 to disable', 'learnpress' ),
+							'desc'         => __( 'Duration of the lesson. Set 0 to disable.', 'learnpress' ),
 							'std'          => 30,
 						),
 						array(
 							'name' => __( 'Preview Lesson', 'learnpress' ),
 							'id'   => "{$prefix}preview",
 							'type' => 'yes-no',
-							'desc' => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
+							'desc' => __( 'If this is a preview lesson, then student can view this lesson content without taking the course.', 'learnpress' ),
 							'std'  => 'no'
 						)
 					)
