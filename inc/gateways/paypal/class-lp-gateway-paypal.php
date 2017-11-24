@@ -84,7 +84,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		$this->id = 'paypal';
 
 		$this->method_title       = 'Paypal';
-		$this->method_description = 'Make payment via Paypal';
+		$this->method_description = 'Make payment via Paypal.';
 		$this->icon               = '';
 
 		$this->title       = 'Paypal';

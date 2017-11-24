@@ -25,10 +25,10 @@ if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 		public function __construct() {
 			$this->id          = 'new-order-guest';
 			$this->title       = __( 'Guest', 'learnpress' );
-			$this->description = __( 'Send email to the user who has bought course as guest', 'learnpress' );
+			$this->description = __( 'Send email to the user who has bought course as guest.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
-			$this->default_heading = __( 'Thank you for your order.', 'learnpress' );
+			$this->default_heading = __( 'Thank you for your order', 'learnpress' );
 
 			parent::__construct();
 		}
@@ -103,7 +103,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_subject,
 						'id'         => $this->get_field_name( 'subject' ),
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
@@ -120,7 +120,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Guest' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_heading,
 						'id'         => $this->get_field_name( 'heading' ),
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(

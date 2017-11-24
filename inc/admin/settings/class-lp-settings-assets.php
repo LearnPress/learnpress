@@ -67,14 +67,14 @@ class LP_Settings_Assets extends LP_Abstract_Settings_Page {
 					'id'      => 'load_css',
 					'default' => 'yes',
 					'type'    => 'checkbox',
-					'desc'    => __( 'Load default stylesheet for LearnPress', 'learnpress' )
+					'desc'    => __( 'Load default stylesheet for LearnPress.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Debug mode', 'learnpress' ),
 					'id'      => 'debug',
 					'default' => 'yes',
 					'type'    => 'checkbox',
-					'desc'    => __( 'Turn on/off debug mode for developer', 'learnpress' )
+					'desc'    => __( 'Turn on/off debug mode for developer.', 'learnpress' )
 				),
 			)
 		);

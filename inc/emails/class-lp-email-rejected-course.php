@@ -126,7 +126,7 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_subject,
 						'id'         => $this->get_field_name( 'subject' ),
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
@@ -143,7 +143,7 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_heading,
 						'id'         => $this->get_field_name( 'heading' ),
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(

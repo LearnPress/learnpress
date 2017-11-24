@@ -65,7 +65,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						array(
 							'title' => __( 'General', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'  => __( 'General settings', 'learnpress' )
+							'desc'  => __( 'General settings.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Review course before publish', 'learnpress' ),
@@ -172,7 +172,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'id'      => 'generate_course_thumbnail',
 							'default' => 'yes',
 							'type'    => 'yes-no',
-							'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
+							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
 						),
 						array(
 							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
@@ -194,7 +194,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'id'      => 'archive_course_thumbnail',
 							'default' => 'yes',
 							'type'    => 'yes-no',
-							'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
+							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
 						),
 						array(
 							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),

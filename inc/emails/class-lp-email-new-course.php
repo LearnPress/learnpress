@@ -138,7 +138,7 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 						'type'       => 'text',
 						'default'    => get_option( 'admin_email' ),
 						'id'         => $this->get_field_name( 'recipients' ),
-						'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>', 'learnpress' ), get_option( 'admin_email' ) ),
+						'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>.', 'learnpress' ), get_option( 'admin_email' ) ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
@@ -155,7 +155,7 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_subject,
 						'id'         => $this->get_field_name( 'subject' ),
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
@@ -172,7 +172,7 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 						'type'       => 'text',
 						'default'    => $this->default_heading,
 						'id'         => $this->get_field_name( 'heading' ),
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(

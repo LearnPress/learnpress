@@ -24,7 +24,7 @@ if ( ! class_exists( 'LP_Email_Instructor_Accepted' ) ) {
 		public function __construct() {
 			$this->id          = 'instructor-accepted';
 			$this->title       = __( 'Accepted', 'learnpress' );
-			$this->description = __( 'Become an instructor email', 'learnpress' );
+			$this->description = __( 'Become an instructor email.', 'learnpress' );
 
 			$this->default_subject = __( '[{{site_title}}] Request to become an instructor', 'learnpress' );
 			$this->default_heading = __( 'Become an instructor', 'learnpress' );

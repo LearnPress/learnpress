@@ -28,7 +28,7 @@ if ( ! class_exists( 'LP_Email_Processing_Order_Guest' ) ) {
 			$this->description = __( 'Send email to user who has purchased course as a Guest when the order is processing.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
-			$this->default_heading = __( 'Thank you for your order.', 'learnpress' );
+			$this->default_heading = __( 'Thank you for your order', 'learnpress' );
 
 			parent::__construct();
 		}

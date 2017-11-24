@@ -29,7 +29,7 @@ if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 			$this->description = __( 'Send email to the user who has bought course.', 'learnpress' );
 
 			$this->default_subject = __( 'Your order placed on {{order_date}}', 'learnpress' );
-			$this->default_heading = __( 'Thank you for your order.', 'learnpress' );
+			$this->default_heading = __( 'Thank you for your order', 'learnpress' );
 
 			parent::__construct();
 		}
