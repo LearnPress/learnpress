@@ -26,10 +26,7 @@
         Vue.component('lp-added-items-preview', {
             template: '#tmpl-lp-added-items-preview',
             props: {
-                show: {
-                    type: Boolean,
-                    default: false
-                }
+                show: true
             },
             methods: {
                 removeItem: function (item) {

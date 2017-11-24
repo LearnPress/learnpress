@@ -89,7 +89,8 @@ learn_press_admin_view( 'quiz/pagination' );
                     </button>
 
                     <button type="button" class="button button-secondary edit-selected"
-                            @click.prevent="showPreview = !showPreview" :disable="!addedItems.length || adding">
+                            @click.prevent="showPreview = !showPreview"
+                            :disabled="adding || (!addedItems.length && !showPreview)">
                         {{editCartButton}}
                     </button>
 
