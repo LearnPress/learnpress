@@ -13,14 +13,14 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php global $profile; ?>
+global $profile;
 
-<?php if ( ! $profile->is_current_user() ) {
+if ( ! $profile->is_current_user() ) {
 	return;
-} ?>
+}
 
-<?php $user = $profile->get_user(); ?>
+$user = $profile->get_user();
+?>
 
 <p><?php echo sprintf( __( 'Hello <strong>%s</strong> (not %s? %s)', 'learnpress' ), $user->get_display_name(), $user->get_display_name(), sprintf( '<a href="%s">%s</a>', $profile->logout_url(), __( 'Sign out', 'learnpress' ) ) ); ?></p>

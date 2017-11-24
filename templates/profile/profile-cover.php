@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/profile/profile-cover.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,13 +13,10 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php global $profile; ?>
+global $profile;
 
-<?php
 $user = $profile->get_user();
-learn_press_get_course();
 ?>
 
 <div id="learn-press-profile-header" class="lp-profile-header">

@@ -13,9 +13,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 if ( ! isset( $user ) ) {
 	$user = learn_press_get_current_user();
 }

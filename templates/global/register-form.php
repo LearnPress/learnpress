@@ -13,9 +13,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $profile = LP_Global::profile();
 $fields  = $profile->get_register_fields();
 ?>

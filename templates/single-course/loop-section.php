@@ -13,11 +13,11 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php if ( ! isset( $section ) ) {
+if ( ! isset( $section ) ) {
 	return;
-} ?>
+}
+?>
 
 <li<?php $section->main_class();?> id="section-<?php echo $section->get_slug(); ?>" data-id="<?php echo $section->get_slug(); ?>" data-section-id="<?php echo $section->get_id();?>">
 

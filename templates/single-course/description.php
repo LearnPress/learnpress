@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/description.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,22 +13,23 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $course = LP()->global['course']; ?>
+$course = LP_Global::course();
 
-<?php if ( $course->is( 'viewing-item' ) ) {
+if ( $course->is_viewing_item() ) {
 	if ( false === apply_filters( 'learn_press_display_course_description_on_viewing_item', false ) ) {
 		return;
 	}
-} ?>
+}
 
-<?php $description_heading = apply_filters( 'learn_press_single_course_description_heading', __( 'Course Description', 'learnpress' ), $course ); ?>
+$description_heading = apply_filters( 'learn_press_single_course_description_heading', __( 'Course description', 'learnpress' ), $course );
+?>
 
 <?php if ( $description_heading ) { ?>
 
     <h3 class="course-description-heading"
-        id="learn-press-course-description-heading"><?php echo $description_heading; ?></h3>
+        id="learn-press-course-description-heading"><?php echo $description_heading; ?>
+    </h3>
 
 <?php } ?>
 

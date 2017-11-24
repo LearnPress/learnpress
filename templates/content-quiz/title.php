@@ -13,12 +13,12 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $quiz = LP_Global::course_item_quiz(); ?>
+$quiz = LP_Global::course_item_quiz();
 
-<?php if ( ! $title = $quiz->get_heading_title() ) {
+if ( ! $title = $quiz->get_heading_title() ) {
 	return;
-} ?>
+}
+?>
 
 <h3 class="course-item-title quiz-title"><?php echo $title; ?></h3>

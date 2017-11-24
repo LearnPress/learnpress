@@ -13,9 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $profile = LP_Global::profile(); ?>
+$profile = LP_Global::profile();
+?>
 
 <div id="learn-press-user-profile"<?php $profile->main_class(); ?>>
 
