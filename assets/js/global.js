@@ -1173,7 +1173,7 @@ if (typeof window.LP === 'undefined') {
         $('html, body').css('overflow', 'auto');
     });
 
-    console.log('test crontab')
+    console.log('xxxxxx')
 })(jQuery);
 
 
