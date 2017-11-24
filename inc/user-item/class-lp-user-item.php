@@ -445,4 +445,23 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 		return $item_js;
 	}
+
+	/**
+	 * @param $name
+	 * @param $arguments
+	 *
+	 * @return mixed
+	 */
+	public function __call( $name, $arguments ) {
+		if ( ! method_exists( $this, $name ) ) {
+			if ( $course = $this->get_course() ) {
+				$item = $course->get_item( $this->get_item_id() );
+				if ( is_callable( array( $item, $name ) ) ) {
+					return call_user_func_array( array( $item, $name ), $arguments );
+				}
+			}
+		}
+
+		return false;
+	}
 }

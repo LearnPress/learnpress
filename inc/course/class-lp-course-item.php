@@ -144,6 +144,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		$enrolled  = false;
 		if ( $this->is_preview() ) {
 			$defaults[] = 'item-preview';
+			$defaults[] = 'has-status';
 		} else {
 			if ( $course = $this->get_course() ) {
 				$course_id = $course->get_id();

@@ -87,14 +87,6 @@ class LP_Course_Section {
 	protected function _get_item( $item ) {
 
 		return LP_Course_Item::get_item( $item->item_id );
-//		$type  = str_replace( 'lp_', '', $item->item_type );
-//		$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item, $this );
-//
-//		if ( class_exists( $class ) ) {
-//			return new $class( $item->item_id, $item );
-//		}
-//
-//		return false;
 	}
 
 	/**
@@ -165,10 +157,41 @@ class LP_Course_Section {
 	/**
 	 * Get items in this section.
 	 *
-	 * @return object[]
+	 * @param string|array $type
+	 * @param bool         $preview
+	 *
+	 * @return array
 	 */
-	public function get_items() {
-		return apply_filters( 'learn-press/section-items', $this->data['items'], $this );
+	public function get_items( $type = '', $preview = true ) {
+		$items = apply_filters( 'learn-press/section-items', $this->data['items'], $this );
+
+		if ( ! $items ) {
+			return $items;
+		}
+
+		if ( $type || ! $preview ) {
+			$filtered_items = array();
+
+			if ( $type ) {
+				settype( $type, 'array' );
+			}
+
+			foreach ( $items as $item ) {
+
+				if ( ! $preview ) {
+					if ( $item->is_preview() ) {
+						continue;
+					}
+				}
+				if ( ! $type || $type && in_array( get_post_type( $item->get_post_type() ), $type ) ) {
+					$filtered_items[] = $item;
+				}
+			}
+
+			$items = $filtered_items;
+		}
+
+		return $items;
 	}
 
 	/**
@@ -206,12 +229,15 @@ class LP_Course_Section {
 	/**
 	 * Count number of items in section.
 	 *
+	 * @param string $type
+	 * @param bool   $preview
+	 *
 	 * @return int
 	 */
-	public function count_items() {
-		$items = $this->get_items();
+	public function count_items( $type = '', $preview = true ) {
+		$items = $this->get_items( $type, $preview );
 
-		return is_array( $items ) ? sizeof( $this->get_items() ) : 0;
+		return is_array( $items ) ? sizeof( $items ) : 0;
 	}
 
 	/**
@@ -245,6 +271,7 @@ class LP_Course_Section {
 		$output = 'class="' . join( ' ', $class ) . '"';
 
 		echo " " . $output;
+
 		return $output;
 	}
 }

@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/section/title.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,19 +13,17 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $user        = learn_press_get_current_user();
 $course      = learn_press_get_the_course();
 $user_course = $user->get_course_data( get_the_ID() );
-?>
 
-<?php if ( ! isset( $section ) ) {
+if ( ! isset( $section ) ) {
 	return;
-} ?>
+}
 
-<?php $title = $section->get_title(); ?>
+$title = $section->get_title();
+?>
 
 <div class="section-header">
 
@@ -51,7 +49,7 @@ $user_course = $user->get_course_data( get_the_ID() );
                     <div class="progress-active primary-background-color" style="left: <?php echo $percent; ?>%;"></div>
                 </div>
             </div>
-            <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items() ); ?></span>
+            <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items( '', false ) ); ?></span>
             <span class="collapse"></span>
         </div>
 

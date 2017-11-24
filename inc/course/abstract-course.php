@@ -179,7 +179,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Get course thumbnail, return placeholder if it does not exists
 	 *
 	 * @param string $size
-	 * @param array $attr
+	 * @param array  $attr
 	 *
 	 * @return string
 	 */
@@ -290,7 +290,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Get all curriculum of this course
 	 *
-	 * @param int $section_id
+	 * @param int  $section_id
 	 * @param bool $force
 	 *
 	 * @return bool|LP_Course_Section
@@ -354,19 +354,30 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @since 3.0.0
 	 *
 	 * @param string|array $type
+	 * @param bool         $preview
 	 *
 	 * @return array
 	 */
-	public function get_items( $type = '' ) {
+	public function get_items( $type = '', $preview = true ) {
 
 		// get course items from cache
 		$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
 
-		if ( $type && $items ) {
+		if ( ( $type || ! $preview ) && $items ) {
 			$item_types = array();
-			settype( $type, 'array' );
+			if ( $type ) {
+				settype( $type, 'array' );
+			}
 			foreach ( $items as $item_id ) {
-				if ( in_array( get_post_type( $item_id ), $type ) ) {
+
+				if ( ! $preview ) {
+					$item = $this->get_item( $item_id );
+					if ( $item->is_preview() ) {
+						continue;
+					}
+				}
+
+				if ( ! $type || is_array( $type ) && in_array( get_post_type( $item_id ), $type ) ) {
 					$item_types[] = $item_id;
 				}
 			}
@@ -906,7 +917,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Get course passing condition value.
 	 *
-	 * @param bool $format
+	 * @param bool   $format
 	 * @param string $context
 	 *
 	 * @return array|mixed|string
@@ -1078,7 +1089,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -1088,10 +1099,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			$user_id = get_current_user_id();
 		}
 		$html    = '';
-		$quizzes = $this->get_items(LP_QUIZ_CPT );
+		$quizzes = $this->get_items( LP_QUIZ_CPT );
 		if ( ( $this->course_result == 'evaluate_lesson' ) || ! $quizzes ) {
 
-			$lessons     = $this->get_items(LP_LESSON_CPT);
+			$lessons     = $this->get_items( LP_LESSON_CPT );
 			$total_items = sizeof( $quizzes ) + sizeof( $lessons );
 
 
@@ -1119,7 +1130,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	protected function _evaluate_course_by_lessons( $user_id = 0, $force = false, $type = '' ) {
-		$lessons = $this->get_items(LP_LESSON_CPT);
+		$lessons = $this->get_items( LP_LESSON_CPT );
 		$result  = 0;
 		if ( $lessons ) {
 			$completed_items = $this->count_completed_items( $user_id, $force, 'lp_lesson' );
@@ -1132,7 +1143,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate course results for user by course results settings
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed
@@ -1158,7 +1169,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return mixed|void
 	 */
 	public function _evaluate_course_by_quizzes_results( $user_id, $force = false ) {
-		$quizzes        = $this->get_items(LP_QUIZ_CPT );
+		$quizzes        = $this->get_items( LP_QUIZ_CPT );
 		$user           = learn_press_get_user( $user_id );
 		$results        = array();
 		$achieved_point = 0;
@@ -1193,7 +1204,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function _evaluate_course_by_passed_quizzes_results( $user_id, $force = false ) {
-		$quizzes        = $this->get_items(LP_QUIZ_CPT );
+		$quizzes        = $this->get_items( LP_QUIZ_CPT );
 		$user           = learn_press_get_user( $user_id );
 		$results        = array();
 		$achieved_point = 0;
@@ -1300,7 +1311,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by lessons user completed.
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return int|mixed|null|void
@@ -1330,7 +1341,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Get number of lessons user has completed
 	 *
 	 * @param        $user_id
-	 * @param bool $force
+	 * @param bool   $force
 	 * @param string $type
 	 *
 	 * @return int|bool
@@ -1350,7 +1361,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -1365,8 +1376,16 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn_press_count_user_completed_items', $count, $this->get_id(), $user_id );
 	}
 
-	public function count_items() {
-		if ( $items = $this->get_items() ) {
+	/**
+	 * Count all items in a course.
+	 *
+	 * @param string|array $type    - Optional. Filter item by it's post-type, e.g: lp_lesson
+	 * @param bool         $preview - Optional. False to exclude if item is preview
+	 *
+	 * @return int
+	 */
+	public function count_items( $type = '', $preview = true ) {
+		if ( $items = $this->get_items( $type, $preview ) ) {
 			return sizeof( $items );
 		}
 
@@ -1397,7 +1416,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by final quiz
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null
@@ -1429,13 +1448,13 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by avg of all quizzes
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed
 	 */
 	public function _evaluate_course_by_quizzes( $user_id, $force = false ) {
-		$quizzes = $this->get_items(LP_QUIZ_CPT );
+		$quizzes = $this->get_items( LP_QUIZ_CPT );
 		$result  = 0;
 		if ( $quizzes ) {
 			$count = 0;

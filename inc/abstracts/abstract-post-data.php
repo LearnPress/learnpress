@@ -103,4 +103,8 @@ class LP_Abstract_Post_Data extends LP_Abstract_Object_Data {
 	public function get_post_status() {
 		return get_post_status( $this->get_id() );
 	}
+
+	public function get_post_type() {
+		return get_post_type( $this->get_id() );
+	}
 }

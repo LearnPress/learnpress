@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/section/content.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,13 +13,13 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php if ( ! isset( $section ) ) {
+if ( ! isset( $section ) ) {
 	return;
-} ?>
+}
 
-<?php global $lp_user; ?>
+global $lp_user;
+?>
 
 <?php if ( $items = $section->get_items() ) { ?>
 

@@ -13,16 +13,15 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
+
 $course = learn_press_get_course();
 $user   = learn_press_get_current_user();
-?>
 
-<?php if ( ! $user->has( 'purchased-course', $course->get_id() ) ) {
+if ( ! $user->has( 'purchased-course', $course->get_id() ) ) {
 	return;
-} ?>
+}
+?>
 
 <?php $status = $user->get_course_status( $course->get_id() ); ?>
 

@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/thumbnail.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,22 +13,21 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 global $post;
 $course      = learn_press_get_course();
 $video_embed = $course->get_video_embed();
-?>
 
-<?php if ( $video_embed ) { ?>
+if ( $video_embed ) {
+	?>
     <div class="course-video"><?php echo $video_embed; ?></div>
 	<?php
-} ?>
+}
 
-<?php if ( ! has_post_thumbnail() || $video_embed ) {
+if ( ! has_post_thumbnail() || $video_embed ) {
 	return;
-} ?>
+}
+?>
 
 <div class="course-thumbnail">
 	<?php

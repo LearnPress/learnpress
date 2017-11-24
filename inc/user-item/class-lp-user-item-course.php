@@ -220,7 +220,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		if ( is_array( $results ) ) {
-			$count_items     = $course->count_items();
+			$count_items     = $course->count_items( '', false );
 			$completed_items = $this->get_completed_items();
 			$results         = array_merge(
 				$results,
@@ -303,7 +303,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 */
 	public function finish() {
 
-		return parent::complete('finished');
+		return parent::complete( 'finished' );
 
 
 		global $wpdb;
@@ -503,11 +503,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					} else {
 						$item_type = '';
 					}
+
 					if ( $type === $item_type ) {
 						if ( $item->get_status() == 'completed' ) {
 							$completed ++;
 						}
-						$total ++;
+
+						if ( ! $item->is_preview() ) {
+							$total ++;
+						}
 					}
 				}
 			}

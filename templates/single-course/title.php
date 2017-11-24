@@ -13,8 +13,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php global $course; ?>
+?>
 
 <h1 itemprop="name" class="course-title entry-title"><?php the_title(); ?></h1>

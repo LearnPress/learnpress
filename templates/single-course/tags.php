@@ -13,16 +13,13 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-
-<?php
 $course = LP_Global::course();
 $tags   = $course->get_tags();
-?>
 
-<?php if ( ! $tags ) {
+if ( ! $tags ) {
 	return;
-} ?>
+}
+?>
 
 <span class="course-tags"><?php echo $tags; ?></span>
