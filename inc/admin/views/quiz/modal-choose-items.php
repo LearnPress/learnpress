@@ -83,7 +83,7 @@ learn_press_admin_view( 'quiz/pagination' );
                 <div class="cart">
 
                     <button type="button" class="button button-primary checkout" @click="checkout"
-                            :disable="!addedItems.length || adding">
+                            :disabled="!addedItems.length || adding">
                         <span v-if="!adding"><?php esc_html_e( 'Add', 'learnpress' ); ?></span>
                         <span v-if="adding"><?php esc_html_e( 'Adding', 'learnpress' ); ?></span>
                     </button>
@@ -153,9 +153,8 @@ learn_press_admin_view( 'quiz/pagination' );
                 },
                 totalPage: function () {
                     if (this.pagination) {
-                        return parseInt(this.pagination.total) - 1 || 1;
+                        return parseInt(this.pagination.total) || 1;
                     }
-                    return 1;
                 },
                 items: function () {
                     return $store.getters['cqi/items'];

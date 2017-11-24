@@ -740,19 +740,9 @@
             }
 
             .pagination {
-                .number {
-                    &:not(.current) {
-                        cursor: pointer;
-                    }
-
-                    border: 1px solid #eee;
-                    padding: 5px 10px;
-                    background-color: #aaa;
-                    margin-right: 5px;
-
-                    &.current {
-                        background-color: transparent;
-                    }
+                .index {
+                    line-height: 28px;
+                    margin-left: 20px;
                 }
             }
         }
@@ -767,7 +757,7 @@
             z-index: 2;
             padding: 20px;
             transform: translate(100%, 0);
-            max-height: 375px;
+            max-height: 400px;
             overflow: auto;
 
             &.show {

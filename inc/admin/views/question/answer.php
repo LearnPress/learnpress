@@ -11,8 +11,10 @@
         <td class="sort"><i class="fa fa-bars"></i></td>
         <td class="order">{{index +1}}</td>
         <td class="answer-text">
-            <input type="text" v-model="answer.text"
-                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle"/>
+            <form @submit.prevent="">
+                <input type="text" v-model="answer.text"
+                       @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle"/>
+            </form>
         </td>
         <td class="answer-correct lp-answer-check">
             <input :type="radio ? 'radio' : 'checkbox'" :checked="correct ? 'checked' : ''" :value="answer.value"
