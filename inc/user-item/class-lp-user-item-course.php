@@ -59,38 +59,40 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		$user_curd = new LP_User_CURD();
 		$user_curd->read_course( $this->get_user_id(), $this->get_id() );
 
-		$this->_course = $course = learn_press_get_course( $this->get_id() );
 		$this->_set_data( $this->_item );
-		$course_items = $course->get_items();
-		if ( $course_items ) {
-			$default_data = array(
-				'user_id'   => $this->get_user_id(),
-				'item_id'   => 0,
-				'item_type' => '',
-				'ref_id'    => $course->get_id(),
-				'ref_type'  => get_post_type( $this->get_id() ),
-				'parent_id' => $this->get_data( 'parent_id' ),
-				'status'    => ''
-			);
-			foreach ( $course_items as $item_id ) {
-				$cache_name = sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_id(), $item_id );
-				if ( false !== ( $data = wp_cache_get( $cache_name, 'lp-user-course-items' ) ) ) {
-					$data = reset( $data );
-				} else {
-					$data = wp_parse_args(
-						array(
-							'item_id'   => $item_id,
-							'item_type' => get_post_type( $item_id )
-						),
-						$default_data
-					);
+
+		if ( $course = learn_press_get_course( $this->get_id() ) ) {
+			$this->_course = $course;
+			$course_items  = $course->get_items();
+			if ( $course_items ) {
+				$default_data = array(
+					'user_id'   => $this->get_user_id(),
+					'item_id'   => 0,
+					'item_type' => '',
+					'ref_id'    => $course->get_id(),
+					'ref_type'  => get_post_type( $this->get_id() ),
+					'parent_id' => $this->get_data( 'parent_id' ),
+					'status'    => ''
+				);
+				foreach ( $course_items as $item_id ) {
+					$cache_name = sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_id(), $item_id );
+					if ( false !== ( $data = wp_cache_get( $cache_name, 'lp-user-course-items' ) ) ) {
+						$data = reset( $data );
+					} else {
+						$data = wp_parse_args(
+							array(
+								'item_id'   => $item_id,
+								'item_type' => get_post_type( $item_id )
+							),
+							$default_data
+						);
+					}
+					$course_item                                                  = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $data ), $data, $this );
+					$this->_items[ $item_id ]                                     = $course_item;
+					$this->_items_by_item_ids[ $course_item->get_user_item_id() ] = $item_id;
 				}
-				$course_item                                                  = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $data ), $data, $this );
-				$this->_items[ $item_id ]                                     = $course_item;
-				$this->_items_by_item_ids[ $course_item->get_user_item_id() ] = $item_id;
 			}
 		}
-
 		unset( $this->_data['items'] );
 
 	}
