@@ -1,6 +1,5 @@
-<?php
+<?php ?>
 
-?>
 == {{email_heading}} ==
 
 "{{course_url}}" ({{course_name}}) has just been updated.

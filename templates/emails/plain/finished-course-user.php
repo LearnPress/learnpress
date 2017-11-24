@@ -1,3 +1,5 @@
+<?php ?>
+
 == {{header}} ==
 
 ** Congrats! You have finished course "{{course_name}}" **

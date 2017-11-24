@@ -1,6 +1,5 @@
-<?php
+<?php ?>
 
-?>
 == {{email_heading}} ==
 
 Dear {{course_user_name}},

@@ -1,3 +1,5 @@
+<?php ?>
+
 {{header}}
 
 <p>User {{user_display_name}} ({{user_email}}) has finished course "{{course_name}}"</p>

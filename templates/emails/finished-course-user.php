@@ -1,3 +1,5 @@
+<?php ?>
+
 {{header}}
 
 <p>Congrats! You have finished course "{{course_name}}"</p>

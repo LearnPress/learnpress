@@ -1,3 +1,5 @@
+<?php ?>
+
 == {{header}} ==
 
 ** Hi "{{order_user_name}}", **

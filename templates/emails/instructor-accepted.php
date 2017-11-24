@@ -1,3 +1,5 @@
+<?php ?>
+
 {{header}}
 
 <p>Congrats! You become an Instructor at <strong>{{site_title}}</strong></p>
