@@ -9,39 +9,32 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-pagination">
-    <div class="pagination" v-if="totalPage > 1">
-                    <span class="number first" :class="{current: (page == 1)}"
-                          v-if="totalPage > 2"
-                          @click="previousFirstPage">«</span>
-
-        <span class="number previous"
-              :class="{current: (page == 1)}"
-              @click="previousPage"><?php esc_html_e( 'Previous', 'learnpress' ); ?></span>
-        <span class="number next"
-              :class="{current: (page == totalPage)}"
-              @click="nextPage"><?php esc_html_e( 'Next', 'learnpress' ); ?></span>
-
-        <span class="number last" v-if="totalPage > 2"
-              :class="{current: (page == totalPage)}"
-              @click="nextLastPage">»</span>
+    <div class="pagination" v-if="total > 1">
+        <form prevent.submit="">
+            <button class="button first" :disabled="page == 1" v-if="total > 2 && page > 1"
+                    @click.prevent="previousFirstPage">«
+            </button>
+            <button class="button previous" :disabled="page == 1"
+                    @click.prevent="previousPage"><?php esc_html_e( 'Previous', 'learnpress' ); ?></button>
+            <button class="button next" :disabled="page == total"
+                    @click.prevent="nextPage"><?php esc_html_e( 'Next', 'learnpress' ); ?></button>
+            <button class="button last" :disabled="page == total" v-if="total > 2 && page < total"
+                    @click.prevent="nextLastPage">»
+            </button>
+            <span class="index">{{page}} / {{total}}</span>
+        </form>
     </div>
 </script>
 
 <script type="text/javascript">
+
     (function (Vue, $store, $) {
 
         Vue.component('lp-pagination', {
             template: '#tmpl-lp-pagination',
             props: ['total'],
             data: function () {
-                return {
-                    page: 1
-                }
-            },
-            computed: {
-                totalPage: function () {
-                    return this.total;
-                }
+                return {page: 1}
             },
             methods: {
                 update: function () {
@@ -78,6 +71,6 @@
             }
         });
 
-
     })(Vue, LP_Curriculum_Store, jQuery);
+
 </script>

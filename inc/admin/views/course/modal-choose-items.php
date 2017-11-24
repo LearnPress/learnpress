@@ -56,10 +56,8 @@ learn_press_admin_view( 'course/pagination' );
 
                 <ul class="tabs">
                     <template v-for="(type, key) in types">
-                        <li :data-type="key"
-                            class="tab"
-                            @click.prevent="changeTab(key)"
-                            :class="key === tab ? 'active': 'inactive'">
+                        <li :data-type="key" :class="['tab', key === tab ? 'active': 'inactive']"
+                            @click.prevent="changeTab(key)">
                             <a href="#" @click.prevent="">{{type}}</a>
                         </li>
                     </template>
@@ -72,9 +70,7 @@ learn_press_admin_view( 'course/pagination' );
             <div class="main">
                 <form class="search" @submit.prevent="">
                     <input placeholder="<?php esc_attr_e( 'Type here to search item', 'learnpress' ); ?>"
-                           title="search"
-                           @input="onChangeQuery"
-                           v-model="query">
+                           title="search" @input="onChangeQuery" v-model="query">
                 </form>
 
                 <ul class="list-items">
@@ -83,11 +79,8 @@ learn_press_admin_view( 'course/pagination' );
                     </template>
 
                     <template v-for="item in items">
-                        <lp-course-choose-item
-                                @add="addItem"
-                                @remove="removeItem"
-                                :added="item.added"
-                                :item="item"></lp-course-choose-item>
+                        <lp-course-choose-item @add="addItem" @remove="removeItem"
+                                               :added="item.added" :item="item"></lp-course-choose-item>
                     </template>
                 </ul>
 
@@ -97,19 +90,15 @@ learn_press_admin_view( 'course/pagination' );
 
             <div class="footer">
                 <div class="cart">
-                    <button
-                            @click="checkout"
-                            :disabled="!addedItems.length || adding"
-                            type="button"
-                            class="button button-primary checkout">
+                    <button type="button" class="button button-primary checkout"
+                            @click="checkout" :disabled="!addedItems.length || adding">
                         <span v-if="!adding"><?php esc_html_e( 'Add', 'learnpress' ); ?></span>
                         <span v-if="adding"><?php esc_html_e( 'Adding', 'learnpress' ); ?></span>
                     </button>
 
-                    <button type="button"
-                            :disabled="!addedItems.length || adding"
-                            @click.prevent="showPreview = !showPreview"
-                            class="button button-secondary edit-selected">
+                    <button type="button" class="button button-secondary edit-selected"
+                            :disabled=" adding"
+                            @click.prevent="showPreview = !showPreview">
                         {{textButtonEdit}}
                     </button>
                 </div>
@@ -171,10 +160,8 @@ learn_press_admin_view( 'course/pagination' );
                 },
                 totalPage: function () {
                     if (this.pagination) {
-                        return parseInt(this.pagination.total) - 1 || 1;
+                        return parseInt(this.pagination.total) || 1;
                     }
-
-                    return 1;
                 },
                 items: function () {
                     return $store.getters['ci/items'];
