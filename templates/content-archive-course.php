@@ -13,36 +13,73 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php global $post, $wp_query, $lp_tax_query, $wp_query; ?>
+global $post, $wp_query, $lp_tax_query, $wp_query;
 
-<?php do_action( 'learn_press_before_main_content' ); ?>
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_before_main_content' );
 
-<?php do_action( 'learn_press_archive_description' ); ?>
+/**
+ * @since 3.0.0
+ */
+do_action( 'learn-press/before-main-content' );
 
-<?php if ( LP()->wp_query->have_posts() ) : ?>
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_archive_description' );
 
-	<?php do_action( 'learn_press_before_courses_loop' ); ?>
+/**
+ * @since 3.0.0
+ */
+do_action( 'learn-press/archive-description' );
 
-	<?php learn_press_begin_courses_loop(); ?>
+if ( LP()->wp_query->have_posts() ) :
 
-	<?php while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_before_courses_loop' );
+
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn-press/before-courses-loop' );
+
+	learn_press_begin_courses_loop();
+
+	while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
 
 		learn_press_get_template_part( 'content', 'course' );
 
-	endwhile; ?>
+	endwhile;
 
-	<?php learn_press_end_courses_loop(); ?>
+	learn_press_end_courses_loop();
 
-	<?php do_action( 'learn_press_after_courses_loop' ); ?>
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn_press_after_courses_loop' );
 
-	<?php wp_reset_postdata(); ?>
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn-press/after-courses-loop' );
 
-<?php else: ?>
+	wp_reset_postdata();
 
-	<?php learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' ); ?>
+else:
+	learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' );
+endif;
 
-<?php endif; ?>
+/**
+ * @since 3.0.0
+ */
+do_action( 'learn-press/after-main-content' );
 
-<?php do_action( 'learn_press_after_main_content' ); ?>
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_after_main_content' );

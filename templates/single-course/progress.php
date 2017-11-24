@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/progress.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,44 +13,33 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $course = LP_Global::course();
-$user   = learn_press_get_current_user();
-?>
+$user   = LP_Global::user();
 
-<?php
-if ( ! $course ) {
+if ( ! $course || ! $user ) {
 	return;
 }
+
 if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
 	return;
 }
-?>
 
-<?php
-$course_data       = $user->get_course_data( get_the_ID() );
-$status            = $user->get( 'course-status', $course->get_id() );
-$force             = isset( $force ) ? $force : false;
-$num_of_decimal    = 0;
-$result            = $course->evaluate_course_results( null, $force );
-$current           = absint( $result );
-$passing_condition = round( $course->get_passing_condition(), $num_of_decimal );
-$passed            = $current >= $passing_condition;
-$heading           = apply_filters( 'learn_press_course_progress_heading', $status == 'finished' ? __( 'Your results', 'learnpress' ) : __( 'Learning progress', 'learnpress' ) );
-$completed_items   = $course->count_completed_items();
-$course_results    = $course->evaluate_course_results();
+$course_data       = $user->get_course_data( $course->get_id() );
 $course_results    = $course_data->get_results( false );
+$passing_condition = $course->get_passing_condition();
 ?>
 
 <div class="learn-press-course-results-progress">
 
     <div class="items-progress">
-		<?php if ( $heading !== false ) { ?>
-            <h4 class="lp-course-progress-heading"><?php esc_html_e( 'Items completed', 'learnpress' ); ?></h4>
+
+		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/items-completed-heading', __( 'Items completed', 'learnpress' ) ) ) ) { ?>
+            <h4 class="lp-course-progress-heading"><?php esc_html( $heading ); ?></h4>
 		<?php } ?>
+
         <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course_results['count_items'] ); ?></span>
+
         <div class="lp-course-progress">
             <div class="lp-progress-bar">
                 <div class="lp-progress-value"
@@ -58,15 +47,20 @@ $course_results    = $course_data->get_results( false );
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="course-progress">
-        <h4 class="lp-course-progress-heading">
-			<?php esc_html_e( 'Course results', 'learnpress' ); ?>
-			<?php if ( $tooltip = learn_press_get_course_results_tooltip( $course->get_id() ) ) { ?>
-                <span class="learn-press-tooltip" data-content="<?php echo esc_html( $tooltip ); ?>"></span>
-			<?php } ?>
-        </h4>
+
+		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/result-heading', __( 'Course results', 'learnpress' ) ) ) ) { ?>
+            <h4 class="lp-course-progress-heading">
+				<?php esc_html( $heading ); ?>
+				<?php if ( $tooltip = learn_press_get_course_results_tooltip( $course->get_id() ) ) { ?>
+                    <span class="learn-press-tooltip" data-content="<?php echo esc_html( $tooltip ); ?>"></span>
+				<?php } ?>
+            </h4>
+		<?php } ?>
+
         <div class="lp-course-status">
             <span class="number"><?php echo round( $course_results['result'], 2 ); ?><span
                         class="percentage-sign">%</span></span>
@@ -76,7 +70,9 @@ $course_results    = $course_data->get_results( false );
 				</span>
 			<?php } ?>
         </div>
-        <div class="lp-course-progress <?php echo $passed ? ' passed' : ''; ?>" data-value="<?php echo $current; ?>"
+
+        <div class="lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>"
+             data-value="<?php echo $course_results['result']; ?>"
              data-passing-condition="<?php echo $passing_condition; ?>">
             <div class="lp-progress-bar">
                 <div class="lp-progress-value" style="left: <?php echo $course_results['result']; ?>%;">
