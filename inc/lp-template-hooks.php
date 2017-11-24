@@ -285,8 +285,13 @@ add_action( 'learn_press_before_main_content', 'learn_press_breadcrumb' );
 add_action( 'learn_press_before_main_content', 'learn_press_search_form' );
 
 /* archive courses */
-add_action( 'learn_press_courses_loop_item_title', 'learn_press_courses_loop_item_thumbnail', 10 );
-add_action( 'learn_press_courses_loop_item_title', 'learn_press_courses_loop_item_title', 10 );
+
+/**
+ * @see learn_press_courses_loop_item_thumbnail
+ * @see learn_press_courses_loop_item_title
+ */
+add_action( 'learn-press/courses-loop-item-title', 'learn_press_courses_loop_item_thumbnail', 10 );
+add_action( 'learn-press/courses-loop-item-title', 'learn_press_courses_loop_item_title', 15 );
 
 /**
  * @see learn_press_courses_loop_item_begin_meta

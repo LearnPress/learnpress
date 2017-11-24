@@ -29,7 +29,13 @@ $user = LP_Global::user();
 
     <a href="<?php the_permalink(); ?>" class="course-permalink">
 
-		<?php do_action( 'learn_press_courses_loop_item_title' ); ?>
+		<?php
+        // @deprecated
+        do_action( 'learn_press_courses_loop_item_title' );
+
+        // @since 3.0.0
+        do_action( 'learn-press/courses-loop-item-title' );
+        ?>
 
     </a>
 
