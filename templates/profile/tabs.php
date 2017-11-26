@@ -14,7 +14,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$profile;
+global $profile;
 ?>
 
 <div id="learn-press-profile-nav">
