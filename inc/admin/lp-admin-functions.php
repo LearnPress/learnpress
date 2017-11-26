@@ -138,7 +138,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array $args
+ * @param array      $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -173,7 +173,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array $args
+ * @param array      $args
  *
  * @return mixed|string
  */
@@ -504,6 +504,9 @@ function learn_press_footer_advertisement() {
     <div id="learn-press-advertisement" class="learn-press-advertisement-slider">
 		<?php
 		foreach ( $list_themes as $theme ) {
+			if ( empty( $theme['url'] ) ) {
+				continue;
+			}
 			$theme['url'] = add_query_arg( $query_arg, $theme['url'] );
 			//$theme['description'] = learn_press_trim_content( $theme['description'], 10 );
 			$full_description  = learn_press_trim_content( $theme['description'] );
