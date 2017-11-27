@@ -1,10 +1,9 @@
 <?php
 /**
- * LP_Email_New_Order_Customer.
+ * Email for user when has new order.
  *
  * @author  ThimPress
- * @package Learnpress/Classes
- * @extends LP_Email_Type_Order
+ * @package LearnPress/Classes
  * @version 3.0.0
  */
 
@@ -32,6 +31,9 @@ if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 			$this->default_heading = __( 'Thank you for your order', 'learnpress' );
 
 			parent::__construct();
+
+			// remove order complete for free order ( default new free order auto create pending from pending to completed )
+			remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 		}
 
 		/**

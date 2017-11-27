@@ -38,44 +38,36 @@ class LP_Email_Type_Order extends LP_Email {
 		// Completed orders
 		add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 
-		// New orders
+		// new free order
 		add_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
+		// new paid order
 		add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 	}
 
 	/**
-	 * @param bool $include_admin
+	 * Get courses instructor.
+	 *
+	 * @since 3.0.0
 	 *
 	 * @return array
 	 */
-	public function get_course_instructors( $include_admin = false ) {
+	public function get_course_instructors() {
 		$order_id = $this->order_id;
 		$order    = learn_press_get_order( $order_id );
 
 		$items              = $order->get_items();
-		$course_instructors = array();
+		$instructors = array();
 
 		if ( sizeof( $items ) ) {
 			foreach ( $items as $item ) {
 				$user_id = get_post_field( 'post_author', $item['course_id'] );
-				if ( ! $include_admin ) {
-					$user = get_user_by( 'ID', $user_id );
-					if ( ! $user ) {
-						continue;
-					}
-					if ( in_array( 'administrator', $user->roles ) ) {
-						continue;
-					}
+				if($user_id){
+					$instructors[] = $user_id;
 				}
-
-				if ( empty( $course_instructors[ $user_id ] ) ) {
-					$course_instructors[ $user_id ] = array();
-				}
-				$course_instructors[ $user_id ][] = $item['course_id'];
 			}
 		}
 
-		return $course_instructors;
+		return $instructors;
 	}
 
 	/**

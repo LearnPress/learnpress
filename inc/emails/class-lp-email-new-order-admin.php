@@ -1,10 +1,9 @@
 <?php
 /**
- * LP_Email_New_Order_Admin.
+ * Email for admin when has new order.
  *
  * @author  ThimPress
- * @package Learnpress/Classes
- * @extends LP_Email_Type_Order
+ * @package LearnPress/Classes
  * @version 3.0.0
  */
 
@@ -19,6 +18,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 	 * Class LP_Email_New_Order_Admin
 	 */
 	class LP_Email_New_Order_Admin extends LP_Email_Type_Order {
+
 		/**
 		 * LP_Email_New_Order_Admin constructor.
 		 */
@@ -34,6 +34,9 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			$this->recipient  = LP()->settings->get( 'emails_' . $this->id . '.recipients', $this->recipients );
 
 			parent::__construct();
+
+			// remove order complete for free order ( default new free order auto create pending from pending to completed )
+			remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 		}
 
 		/**

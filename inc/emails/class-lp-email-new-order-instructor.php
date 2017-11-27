@@ -1,10 +1,9 @@
 <?php
 /**
- * LP_Email_New_Order_Instructor.
+ * Email for instructor when has new order.
  *
  * @author  ThimPress
- * @package Learnpress/Classes
- * @extends LP_Email_Type_Order
+ * @package LearnPress/Classes
  * @version 3.0.0
  */
 
@@ -34,7 +33,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 		}
 
 		/**
-		 * Trigger Email Notification
+		 * Trigger email notification.
 		 *
 		 * @param $order_id
 		 *
@@ -47,15 +46,15 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 
 			$this->order_id = $order_id;
 
-			$course_instructors = $this->get_course_instructors();
+			$instructors = $this->get_course_instructors();
 
-			if ( ! $course_instructors ) {
+			if ( ! $instructors ) {
 				return false;
 			}
 
 			$return = array();
 
-			foreach ( $course_instructors as $user_id => $courses ) {
+			foreach ( $instructors as $user_id ) {
 				$user = get_user_by( 'ID', $user_id );
 				if ( ! $user ) {
 					continue;
