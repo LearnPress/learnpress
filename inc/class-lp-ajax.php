@@ -55,6 +55,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'retake-course'
 			);
 
+			$ajaxEvents = apply_filters( 'learn-press/ajax/events', $ajaxEvents );
+
 			foreach ( $ajaxEvents as $action => $callback ) {
 
 				if ( is_numeric( $action ) ) {

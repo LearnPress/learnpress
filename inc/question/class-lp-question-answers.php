@@ -247,10 +247,15 @@ class LP_Question_Answer_Option implements ArrayAccess {
 	/**
 	 * Get option title.
 	 *
+	 * @param string $context
+	 *
 	 * @return string
 	 */
-	public function get_title() {
+	public function get_title( $context = '' ) {
 		$title = array_key_exists( 'text', $this->_data ) ? $this->_data['text'] : '';
+		if ( $context == 'display' ) {
+			$title = do_shortcode( $title );
+		}
 
 		return apply_filters( 'learn-press/question/option-title', $title, $this );
 	}

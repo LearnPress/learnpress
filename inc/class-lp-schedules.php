@@ -154,7 +154,6 @@ class LP_Schedules {
 
 	public function schedule_update_user_items() {
 		$this->_update_user_course_expired();
-		LP_Debug::instance()->add( __FUNCTION__ );
 	}
 
 	/**

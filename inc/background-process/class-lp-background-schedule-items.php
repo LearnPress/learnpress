@@ -52,9 +52,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		public function dispatch_queue() {
 			if ( ! empty( $this->data ) ) {
 				$this->save()->dispatch();
-				LP_Debug::instance()->add( 'Shutdown', '', false, true );
 			}
-
 		}
 
 		/**
@@ -63,7 +61,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
-			ob_start();
 			$this->_get_items();
 			if ( ! $items = get_transient( $this->transient_key ) ) {
 				return false;
@@ -108,8 +105,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 					$item_course->finish();
 				}
 			}
-
-			LP_Debug::instance()->add( ob_get_clean(), '', false, true );
 
 			remove_action( 'shutdown', array( $this, 'dispatch_queue' ) );
 

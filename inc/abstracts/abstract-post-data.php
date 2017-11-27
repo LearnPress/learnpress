@@ -64,10 +64,18 @@ class LP_Abstract_Post_Data extends LP_Abstract_Object_Data {
 	/**
 	 * Get the title of item.
 	 *
+	 * @param string $context
+	 *
 	 * @return string
 	 */
-	public function get_title() {
-		return get_the_title( $this->get_id() );
+	public function get_title( $context = '' ) {
+		$title = get_the_title( $this->get_id() );
+
+		if ( 'display' === $context ) {
+			$title = do_shortcode( $title );
+		}
+
+		return $title;
 	}
 
 	/**

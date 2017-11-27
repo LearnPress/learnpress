@@ -371,7 +371,6 @@ class LP_User_Factory {
 	 * Call this function hourly
 	 */
 	public static function schedule_cleanup_temp_users() {
-		LP_Debug::instance()->add( __FUNCTION__ );
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT user_id

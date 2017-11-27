@@ -38,6 +38,7 @@ class LP_Quiz_Factory {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
 			LP_Request_Handler::register( "lp-{$k}", array( __CLASS__, $v ) );
 		}
+
 		add_action( 'learn_press_after_single_quiz_summary', array( __CLASS__, 'output_quiz_params' ) );
 		add_action( 'delete_post', array( __CLASS__, 'delete_quiz' ), 10, 2 );
 		add_filter( 'learn-press/question/admin-option-template-args', array(
@@ -252,7 +253,6 @@ class LP_Quiz_Factory {
 			}
 
 			$remain = $user->check_question( $question_id, $quiz_id, $course_id );
-
 			if ( is_wp_error( $remain ) ) {
 				throw new Exception( $remain->get_error_message(), $remain->get_error_code() );
 			} else {
@@ -402,6 +402,8 @@ class LP_Quiz_Factory {
 				$quiz_data->add_question_answer( $questions );
 				$quiz_data->update();
 			}
+
+
 		}
 		catch ( Exception $ex ) {
 			return $ex;
@@ -431,9 +433,11 @@ class LP_Quiz_Factory {
 	/**
 	 * Parse question answers when posting.
 	 *
+	 * @param int $question_id
+	 *
 	 * @return array|bool
 	 */
-	public static function get_answers_posted() {
+	public static function get_answers_posted( $question_id = 0 ) {
 		$questions = array();
 		try {
 			$post_data = stripslashes_deep( $_REQUEST );
@@ -448,6 +452,9 @@ class LP_Quiz_Factory {
 			foreach ( $data as $k => $v ) {
 				$id = absint( str_replace( 'learn-press-question-', '', $k ) );
 				if ( $id ) {
+					if ( is_object( $v ) ) {
+						$v = (array) $v;
+					}
 					$questions[ $id ] = $v;
 				}
 			}
@@ -455,7 +462,7 @@ class LP_Quiz_Factory {
 		catch ( Exception $ex ) {
 		}
 
-		return $questions;
+		return $question_id ? ( array_key_exists( $question_id, $questions ) ? $questions[ $question_id ] : false ) : $questions;
 	}
 
 	public static function question_icon_class( $data, $type ) {

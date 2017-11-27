@@ -78,10 +78,12 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	}
 
 	/**
+	 * @param string $context
+	 *
 	 * @return string
 	 */
-	public function get_title() {
-		return apply_filters( 'learn-press/course-item-title', parent::get_title(), $this->get_id() );
+	public function get_title( $context = '' ) {
+		return apply_filters( 'learn-press/course-item-title', parent::get_title( $context ), $this->get_id() );
 	}
 
 	public function get_format() {

@@ -127,12 +127,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', array(
 				'root'          => array(
-					'quiz_id' => $post->ID,
-					'ajax'    => admin_url( '' ),
-					'action'  => 'admin_quiz_editor',
-					'nonce'   => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
-					'types'   => LP_Question_Factory::get_types(),
-					'default_new'      => $default_new_question_type
+					'quiz_id'     => $post->ID,
+					'ajax'        => admin_url( '' ),
+					'action'      => 'admin_quiz_editor',
+					'nonce'       => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
+					'types'       => LP_Question_Factory::get_types(),
+					'default_new' => $default_new_question_type
 				),
 				'chooseItems'   => array(
 					'open'       => false,
@@ -229,7 +229,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'min'          => 0,
 						'std'          => 10,
 					),
-					array(
+					/*array(
 						'name'    => __( 'Passing Grade Type', 'learnpress' ),
 						'desc'    => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
 						'id'      => "{$prefix}passing_grade_type",
@@ -240,7 +240,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'point'      => __( 'Point', 'learnpress' )
 						),
 						'std'     => 'percentage',
-					),
+					),*/
 					array(
 						'name' => __( 'Passing Grade (<span>%</span>)', 'learnpress' ),
 						'desc' => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
@@ -285,16 +285,20 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					array(
 						'name' => __( 'Show check answer', 'learnpress' ),
 						'id'   => "{$prefix}show_check_answer",
-						'type' => 'text',
+						'type' => 'number',
 						'desc' => __( 'Show button to check answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
-						'std'  => '0'
+						'std'  => '0',
+						'min'  => - 1,
+						'max'  => 100
 					),
 					array(
 						'name' => __( 'Show hint', 'learnpress' ),
 						'id'   => "{$prefix}show_hint",
-						'type' => 'text',
+						'type' => 'number',
 						'desc' => __( 'Show button to hint answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
-						'std'  => '0'
+						'std'  => '0',
+						'min'  => - 1,
+						'max'  => 100
 					)
 				)
 			);
@@ -338,7 +342,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;

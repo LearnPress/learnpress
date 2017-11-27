@@ -317,6 +317,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			if ( false === $duration || '' === $duration ) {
 				if ( $duration = get_post_meta( $this->get_id(), '_lp_duration', true ) ) {
 					$duration = new LP_Duration( $duration );
+				} else {
+					$duration = new LP_Duration( 0 );
 				}
 
 				$this->_set_data( 'duration', $duration );
@@ -355,8 +357,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 					$answers = array();
 					// handle question answer
-					foreach ( $question->get_data('answer_options') as $answer ) {
-						$answers[] =  $answer ;
+					foreach ( $question->get_data( 'answer_options' ) as $answer ) {
+						$answers[] = $answer;
 					}
 
 					$post     = get_post( $id );

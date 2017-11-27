@@ -33,12 +33,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function add_question_answer( $id, $values = null ) {
 		if ( is_array( $id ) ) {
 			foreach ( $id as $k => $v ) {
+				if ( is_object( $v ) ) {
+					$v = array( $v );
+				}
 				$this->add_question_answer( $k, $v );
 			}
 		} else {
 			// User has not used checking answer feature
 			if ( ! $this->get_user()->has_checked_answer( $id, $this->get_id(), $this->get_course_id() ) ) {
 				$this->_answers[ $id ] = $values;
+				$this->set_meta( '_question_answers', $this->_answers );
 			}
 		}
 	}
@@ -49,6 +53,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function update() {
 		parent::update();
+
 		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
 	}
 
@@ -185,7 +190,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 
-
 	public function is_answered( $question_id ) {
 		$result = $this->get_results();
 		if ( ! empty( $result['questions'][ $question_id ] ) ) {
@@ -313,9 +317,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			if ( ( $remain = $this->can_check_answer() ) && ( ! $checked = $this->has_checked_question( $question_id ) ) ) {
 				$checked   = $this->get_checked_questions();
 				$checked[] = $question_id;
-				$count     = $this->get_check_answer_count();
+				$this->read_meta();
 				$this->set_meta( '_lp_question_checked', $checked );
-				//$this->set_meta( '_lp_check_answer_count', ++ $count );
 				$this->update_meta();
 				$remain --;
 			} else {

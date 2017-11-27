@@ -59,7 +59,6 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 			FROM {$wpdb->learnpress_user_items}
 			WHERE ref_id = %d
 		", 0 );
-		LP_Debug::instance()->add( $query );
 		if ( $item_empty_course = $wpdb->get_results( $query ) ) {
 
 			$q_vars = array();

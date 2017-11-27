@@ -13,9 +13,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $quiz        = LP_Global::course_item_quiz();
 $question    = LP_Global::quiz_question();
 $user        = LP_Global::user();
@@ -32,7 +30,7 @@ $button_text = $hinted ? __( 'Hinted', 'learnpress' ) : __( 'Hint', 'learnpress'
 
 		<?php if ( 0 > $quiz->get_show_hint() ) { ?>
 
-            <button type="submit" <?php disabled( $checked ); ?>><?php echo $button_text; ?></button>
+            <button type="submit" <?php disabled( $hinted ); ?>><?php echo $button_text; ?></button>
 
 		<?php } else { ?>
 
