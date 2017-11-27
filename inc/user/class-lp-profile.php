@@ -238,7 +238,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'sections' => array(
 							'own'       => array(
 								'title'    => __( 'Own', 'learnpress' ),
-								'slug'     => $settings->get( 'profile_endpoints.own-courses', 'ownx' ),
+								'slug'     => $settings->get( 'profile_endpoints.own-courses', 'own' ),
 								'callback' => array( $this, 'tab_order_details' ),
 								'priority' => 10
 							),
