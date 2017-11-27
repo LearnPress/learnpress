@@ -138,7 +138,7 @@ class LP_Cart {
 		// course is not purchasable
 		if ( !$course->is_purchasable() ) {
 			learn_press_display_message( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
-			if ( $redirect = apply_filter( 'learn_press_course_is_not_purchasable_redirect', get_the_permalink( $course_id ), $course_id ) ) {
+			if ( $redirect = apply_filters( 'learn_press_course_is_not_purchasable_redirect', get_the_permalink( $course_id ), $course_id ) ) {
 				wp_redirect( $redirect );
 				exit();
 			}

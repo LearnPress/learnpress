@@ -2074,6 +2074,7 @@ class LP_Abstract_User {
 		if ( ! array_key_exists( $key, $quiz_results ) || $force ) {
 			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
 				$quiz_results[ $key ] = reset( $history );
+				$quiz_results[ $key ]->_quiz_grade = null;
 				if ( $user_results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[ $key ] ) ) {
 					foreach ( $user_results as $k => $v ) {
 						$quiz_results[ $key ]->{$k} = $v;
