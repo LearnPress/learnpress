@@ -55,7 +55,15 @@
 
         function timeCountdown() {
             stopCountdown();
-            if ((thisSettings.remainingTime <= 0 ) || (-1 !== $.inArray(settings.status, ['completed', 'finished']))) {
+            var overtime = thisSettings.remainingTime <= 0,
+                isCompleted = -1 !== $.inArray(settings.status, ['completed', 'finished']);
+
+            if (isCompleted) {
+                return;
+            }
+
+            if (overtime) {
+                callbackEvents.callEvent('finish');
                 return;
             }
             thisSettings.remainingTime--;
@@ -124,8 +132,6 @@
             window.lpQuiz = new LP_Quiz(lpQuizSettings);
         }
     })
-
-
 
 
 })(jQuery);

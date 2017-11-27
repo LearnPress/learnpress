@@ -35,7 +35,7 @@ if ( ! $answers = $question->get_answers() ) {
 
 	<?php foreach ( $answers as $k => $answer ) { ?>
 
-        <li <?php echo $answer->option_class(); ?> @click="toggle">
+        <li <?php echo $answer->option_class(); ?>>
             <input type="radio" class="option-check" name="learn-press-question-<?php echo $question->get_id(); ?>"
                    value="<?php echo $answer->get_value(); ?>"
 				<?php $answer->checked(); ?>

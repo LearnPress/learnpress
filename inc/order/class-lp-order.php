@@ -1032,7 +1032,14 @@ class LP_Order extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/child-orders', $this->_curd->get_child_orders( $this->get_id() ), $this->get_id() );
 	}
 
-	public function get_title() {
+	/**
+	 * Order title
+	 *
+	 * @param string $context
+	 *
+	 * @return array|mixed
+	 */
+	public function get_title($context = '') {
 		return $this->get_data( 'order_title', __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" ) );
 	}
 

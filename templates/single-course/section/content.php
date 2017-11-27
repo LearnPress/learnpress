@@ -18,7 +18,6 @@ if ( ! isset( $section ) ) {
 	return;
 }
 
-global $lp_user;
 ?>
 
 <?php if ( $items = $section->get_items() ) { ?>

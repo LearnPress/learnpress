@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/title.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit();
 
 $quiz = LP_Global::course_item_quiz();
 
-if ( ! $title = $quiz->get_heading_title() ) {
+if ( ! $title = $quiz->get_heading_title( 'display' ) ) {
 	return;
 }
 ?>

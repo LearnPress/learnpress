@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit();
 
 <?php global $course; ?>
 
-<div class="course-curriculum" id="learn-press-course-curriculum" @click="showItem">
+<div class="course-curriculum" id="learn-press-course-curriculum">
 
     <div class="curriculum-scrollable">
 

@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/section/item-lesson.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,10 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php if ( ! isset( $item ) ) {
+if ( ! isset( $item ) ) {
 	return;
 } ?>
 
-<span class="item-name"><?php echo $item->get_title(); ?></span>
+<span class="item-name"><?php echo $item->get_title( 'display' ); ?></span>

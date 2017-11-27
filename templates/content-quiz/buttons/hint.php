@@ -38,11 +38,12 @@ $button_text = $hinted ? __( 'Hinted', 'learnpress' ) : __( 'Hint', 'learnpress'
                     type="submit"
                     data-counter="<?php echo $user->can_hint_answer( $quiz->get_id() ); ?>"
 				<?php disabled( $hinted ); ?>><?php echo $button_text; ?></button>
-            <input type="hidden" name="noajax" value="yes">
 
 		<?php } ?>
 
-		<?php do_action( 'learn-press/quiz/end-question-hint-button' ); ?>
+        <input type="hidden" name="noajax" value="yes">
+
+        <?php do_action( 'learn-press/quiz/end-question-hint-button' ); ?>
 
 		<?php LP_Nonce_Helper::quiz_action( 'show-hint', $quiz->get_id(), get_the_ID(), true ); ?>
 

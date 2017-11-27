@@ -103,18 +103,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			return $data;
 		}
 
-		public function get_heading_title() {
-			/*global $lp_quiz_question;
-			$title = $this->get_title();
-			if ( $lp_quiz_question instanceof LP_Question ) {
-				$titles = apply_filters( 'learn-press/quiz/title-parts', array(
-					$title,
-					sprintf( '<small>%s</small>', $lp_quiz_question->get_title() )
-				) );
-				$title  = apply_filters( 'learn-press/quiz/heading-title', join( ' ', $titles ) );
-			}*/
-
-			return $this->get_title();
+		/**
+		 * @param string $context
+		 *
+		 * @return string
+		 */
+		public function get_heading_title( $context = '' ) {
+			return $this->get_title( $context );
 		}
 
 		/**

@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/progress.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,24 +13,26 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-
-<?php
 $user        = LP_Global::user();
 $quiz        = LP_Global::course_item_quiz();
 $course_data = $user->get_course_data( get_the_ID() );
+$quiz_item   = $course_data->get_item_quiz( $quiz->get_id() );
+$quiz_data   = $user->get_quiz_data( $quiz->get_id() );
 
-$quiz_item = $course_data->get_item_quiz( $quiz->get_id() );
-
-$quiz_data = $user->get_quiz_data( $quiz->get_id() );
-$result    = $quiz_data->get_results();
-$percent   = $quiz_data->get_questions_answered( true );
-?>
-
-<?php if ( $quiz_data->is_review_questions() ) {
+if ( $quiz_data->is_review_questions() ) {
 	return;
-} ?>
+}
+
+if ( false === $quiz->get_duration() ) {
+	return;
+}
+
+$result  = $quiz_data->get_results();
+$percent = $quiz_data->get_questions_answered( true );
+
+print_r($quiz->get_duration());
+?>
 
 <div class="quiz-progress">
     <div class="progress-items">
@@ -38,7 +40,7 @@ $percent   = $quiz_data->get_questions_answered( true );
             <span class="progress-number">
 				<?php echo sprintf( __( '%d/%d', 'learnpress' ), $quiz->get_question_index( $quiz_data->get_current_question(), 1 ), $quiz_data->get_total_questions() ); ?>
             </span>
-            <span class="progress-label" @click="clickX">
+            <span class="progress-label">
 				<?php _e( 'Question', 'learnpress' ); ?>
             </span>
         </div>

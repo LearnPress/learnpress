@@ -44,8 +44,7 @@ $security  = $item->create_nonce( 'complete' );
         <input type="hidden" name="type" value="lp_lesson"/>
         <input type="hidden" name="lp-ajax" value="complete-lesson"/>
         <input type="hidden" name="noajax" value="yes"/>
-        <button class="button-complete-item button-complete-lesson"
-                @click="completeItem"><?php echo __( 'Complete', 'learnpress' ); ?></button>
+        <button class="button-complete-item button-complete-lesson"><?php echo __( 'Complete', 'learnpress' ); ?></button>
 
 	<?php } ?>
 
