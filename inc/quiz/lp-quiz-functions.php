@@ -290,42 +290,6 @@ function learn_press_get_user_quiz_status( $quiz_id, $user_id = false ) {
 	return $user ? $user->get_quiz_status( $quiz_id ) : '';
 }
 
-/**
- * Redirect to question if user access to a quiz that user has started
- *
- * @param string
- *
- * @return string
- */
-function learn_press_redirect_to_question( $template ) {
-	global $post_type;
-	if ( is_single() && $post_type == LP_QUIZ_CPT ) {
-		$user        = learn_press_get_current_user();
-		$quiz_id     = get_the_ID();
-		$quiz_status = $user->get_quiz_status( $quiz_id );
-		if ( $quiz_status == 'started' && learn_press_get_quiz_time_remaining( $user->get_id(), $quiz_id ) == 0 && get_post_meta( $quiz_id, '_lpr_duration', true ) ) {
-			$user->finish_quiz( $quiz_id );
-			$quiz_status = 'completed';
-		}
-		$redirect = null;
-		if ( learn_press_get_request( 'question' ) && $quiz_status == '' ) {
-			$redirect = get_the_permalink( $quiz_id );
-		} elseif ( $quiz_status == 'started' ) {
-			if ( learn_press_get_request( 'question' ) ) {
-			} else {
-				$redirect = learn_press_get_user_question_url( $quiz_id );
-			}
-		} elseif ( $quiz_status == 'completed' && learn_press_get_request( 'question' ) ) {
-			$redirect = get_the_permalink( $quiz_id );
-		}
-		if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
-			wp_redirect( $redirect );
-			exit();
-		}
-	}
-
-	return $template;
-}
 
 //add_action( 'template_redirect', 'learn_press_redirect_to_question' );
 
@@ -342,11 +306,6 @@ function learn_press_get_quizzes( $user_id = 0, &$args = array() ) {
 	return $user->get_quizzes( $args );
 }
 
-function learn_press_output_question_nonce( $question ) {
-	printf( '<input type="hidden" name="update-question-nonce" value="%s" />', wp_create_nonce( 'current-question-nonce-' . $question->id ) );
-}
-
-add_action( 'learn_press_after_question_wrap', 'learn_press_output_question_nonce' );
 
 function learn_press_add_question_type_support( $types, $supports ) {
 	if ( empty( $GLOBALS['learn_press_question_type_support'] ) ) {
@@ -417,7 +376,7 @@ function learn_press_question_type_support( $type, $features ) {
 	return $has_support;
 }
 
-function _learn_press_add_question_type_support() {
+function learn_press_default_question_type_support() {
 	learn_press_add_question_type_support(
 		array(
 			'multi_choice',
@@ -428,7 +387,7 @@ function _learn_press_add_question_type_support() {
 	);
 }
 
-add_action( 'plugins_loaded', '_learn_press_add_question_type_support' );
+add_action( 'plugins_loaded', 'learn_press_default_question_type_support' );
 
 if ( ! function_exists( 'learn_press_quiz_is_hide_question' ) ) {
 	function learn_press_quiz_is_hide_question( $quiz_id = null ) {

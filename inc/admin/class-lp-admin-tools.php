@@ -26,8 +26,6 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 					default:
 						break;
 				}
-//			} else {
-//				wp_die( __( 'Sorry, you are nto allowed to access this page.', 'learnpress' ) );
 			}
 		}
 

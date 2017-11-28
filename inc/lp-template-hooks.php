@@ -169,8 +169,15 @@ add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_con
 add_action( 'learn-press/course-item-content-header', 'learn_press_content_item_header', 10 );
 add_action( 'learn-press/course-item-content-footer', 'learn_press_content_item_footer', 10 );
 add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
-add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_questions' );
-add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_final' );
+
+/**
+ * @see learn_press_quiz_meta_questions
+ * @see learn_press_quiz_meta_duration
+ * @see learn_press_quiz_meta_final
+ */
+add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_questions', 5 );
+add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_duration', 10 );
+add_action( 'learn-press/course-section-item/before-lp_quiz-meta', 'learn_press_quiz_meta_final', 15 );
 
 /**
  * @see learn_press_content_item_summary_title

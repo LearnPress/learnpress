@@ -207,35 +207,6 @@ function learn_press_get_order_item_meta( $item_id, $meta_key, $single = true ) 
 	return get_metadata( 'learnpress_order_item', $item_id, $meta_key, $single );
 }
 
-/*******************************/
-
-/*
- * Check to see if a user can view the order
- *
- * @param      $order_id
- * @param null $user_id
- * @return bool
- */
-function learn_press_user_can_view_order( $order_id, $user_id = null ) {
-	if ( ! intval( $order_id ) ) {
-		return false;
-	}
-	if ( ! $user_id && ! ( $user_id = get_current_user_id() ) ) {
-		return false;
-	}
-	if ( ! get_post( $order_id ) ) {
-		return false;
-	}
-
-	$orders = get_user_meta( $user_id, '_lpr_order_id' );
-
-	if ( ! in_array( $order_id, $orders ) ) {
-		return false;
-	}
-
-	return true;
-}
-
 /**
  * Get order
  *

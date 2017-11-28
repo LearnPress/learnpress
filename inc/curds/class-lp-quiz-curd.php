@@ -212,6 +212,9 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		update_meta_cache( 'post', $question_ids );
+
+		$question_factory = new LP_Question_CURD();
+		$question_factory->load_answer_options( $question_ids );
 	}
 
 	/**

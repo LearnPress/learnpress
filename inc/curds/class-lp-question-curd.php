@@ -129,7 +129,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
+		 * @param       $question_id
 		 * @param array $args
 		 *
 		 * @return mixed|WP_Error
@@ -451,7 +451,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
+		 * @param       $question_id
 		 * @param array $order
 		 *
 		 * @return bool|LP_Question
@@ -666,7 +666,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string $question_type
-		 * @param array $args
+		 * @param array  $args
 		 *
 		 * @return array|bool
 		 */
@@ -772,11 +772,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			if ( false === $answer_options ) {
 				global $wpdb;
 				$query = $wpdb->prepare( "
-				SELECT *
-				FROM {$wpdb->prefix}learnpress_question_answers
-				WHERE question_id = %d
-				ORDER BY answer_order ASC
-			", $id );
+					SELECT *
+					FROM {$wpdb->prefix}learnpress_question_answers
+					WHERE question_id = %d
+					ORDER BY answer_order ASC
+				", $id );
 				if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {
 					foreach ( $answer_options as $k => $v ) {
 						$answer_options[ $k ] = (array) $answer_options[ $k ];
@@ -788,6 +788,12 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 						unset( $answer_options[ $k ]['answer_data'] );
 					}
 				}
+
+				//learn_press_debug( $this->load_answer_options( $question->get_id() ) );
+
+				//learn_press_debug( $answer_options );
+				//die();
+				$answer_options = $this->load_answer_options( $question->get_id() );
 			}
 			$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
 
@@ -797,6 +803,59 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
 
 			$question->set_data( 'answer_options', $answer_options );
+		}
+
+		/**
+		 * @param array|int $question_ids
+		 *
+		 * @return array|bool
+		 */
+		public function load_answer_options( $question_ids ) {
+			global $wpdb;
+			if ( is_numeric( $question_ids ) ) {
+				$return_id = $question_ids;
+			}
+			settype( $question_id, 'array' );
+			$format = array_fill( 0, sizeof( $question_ids ), '%d' );
+
+			$query = $wpdb->prepare( "
+				SELECT *
+				FROM {$wpdb->prefix}learnpress_question_answers
+				WHERE question_id IN(" . join( ',', $format ) . ")
+				ORDER BY question_id, answer_order ASC
+			", $question_ids );
+
+			$question_answers = array();
+
+			if ( $answer_options = $wpdb->get_results( $query ) ) {
+				foreach ( $answer_options as $k => $v ) {
+					$qid = $v->question_id;
+
+					if ( empty( $question_answers[ $qid ] ) ) {
+						$question_answers[ $qid ] = array();
+					}
+
+					//$answer_options[ $k ] = (array) $answer_options[ $k ];
+					if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
+						foreach ( $answer_data as $data_key => $data_value ) {
+							$v->{$data_key} = $data_value;
+						}
+					}
+
+					//unset( $answer_options[ $k ]['answer_data'] );
+					unset( $v->answer_data );
+
+					$question_answers[ $qid ][ $v->question_answer_id ] = (array) $v;
+				}
+			}
+
+			if ( $question_answers ) {
+				foreach ( $question_answers as $question_id => $answer ) {
+					wp_cache_set( 'answer-options-' . $question_id, $answer, 'lp-questions' );
+				}
+			}
+
+			return isset( $return_id ) ? ( array_key_exists( $return_id, $question_answers ) ? $question_answers[ $return_id ] : false ) : $question_answers;
 		}
 
 		/**
@@ -814,10 +873,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$answer_option_ids = wp_list_pluck( $answer_options, 'question_answer_id' );
 			$format            = array_fill( 0, sizeof( $answer_option_ids ), '%d' );
 			$query             = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_question_answermeta
-			WHERE learnpress_question_answer_id IN(" . join( ', ', $format ) . ")
-		", $answer_option_ids );
+				SELECT *
+				FROM {$wpdb->prefix}learnpress_question_answermeta
+				WHERE learnpress_question_answer_id IN(" . join( ', ', $format ) . ")
+			", $answer_option_ids );
 			if ( $metas = $wpdb->get_results( $query ) ) {
 				foreach ( $metas as $meta ) {
 					$key        = $meta->meta_key;

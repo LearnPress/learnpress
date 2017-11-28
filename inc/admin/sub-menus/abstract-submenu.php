@@ -83,6 +83,17 @@ abstract class LP_Abstract_Submenu {
 	public function __construct() {
 		add_action( 'learn-press/admin/page-content-sections', array( $this, 'output_section_nav' ) );
 		add_filter( 'admin_body_class', array( $this, 'body_class' ) );
+		//add_action('admin_enqueue_scripts', array($this))
+
+		if ( $this->is_displaying() ) {
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		}
+	}
+
+	public function enqueue_assets(){}
+
+	public function is_displaying() {
+		return $this->get_id() === LP_Request::get_string( 'page' );
 	}
 
 	/**

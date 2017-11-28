@@ -241,7 +241,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				if ( $results = $wpdb->get_results( $query ) ) {
 					$curriculum = array();
 					$cur_id     = 0;
-					$post_cache = (array) get_post();
+
 					foreach ( $results as $row ) {
 						// Switch to other course
 						if ( $row->section_course_id !== $cur_id ) {
@@ -272,9 +272,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						}
 
 						// Cache post for using get_post() later.
-						$_post = array_intersect_key( (array) $row, $post_cache );
-						$_post = sanitize_post( $_post, 'raw' );
-						$_post = (object) $_post;
+						$_post = sanitize_post( $row, 'raw' );
+						//$_post = (object) $_post;
 						wp_cache_set( $_post->ID, $_post, 'posts' );
 					}
 

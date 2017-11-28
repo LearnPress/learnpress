@@ -18,8 +18,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function __construct() {
 			$this->includes();
-			add_action( 'admin_print_scripts', array( $this, 'plugin_js_settings' ) );
-			add_action( 'template_redirect', array( $this, '_redirect' ) );
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
@@ -53,7 +51,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			if ( $pending_request = LP_User_Factory::get_pending_requests() ) {
 				if ( in_array( $user->ID, $pending_request ) ) {
 					$actions['accept'] = sprintf( '<a href="' . admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Accept', 'pending-request', 'learnpress' ) );
-					//$actions['deny']   = sprintf( '<a href="' . admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Deny', 'pending-request', 'learnpress' ) );
 				}
 			}
 
@@ -341,55 +338,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
-		 * Output common js settings in admin
-		 *
-		 * @since 0.9.4
-		 */
-		public function plugin_js_settings() {
-			static $did = false;
-			if ( $did || ! is_admin() ) {
-				return;
-			}
-			$js = array(
-				'ajax'       => admin_url( 'admin-ajax.php' ),
-				'plugin_url' => learn_press_plugin_url(),
-				'siteurl'    => home_url(),
-				'localize'   => array(
-					'button_ok'     => __( 'OK', 'learnpress' ),
-					'button_cancel' => __( 'Cancel', 'learnpress' ),
-					'button_yes'    => __( 'Yes', 'learnpress' ),
-					'button_no'     => __( 'No', 'learnpress' )
-				)
-			);
-			/*LP_Abstract_Assets::add_param( $js, false, 'learn-press-global', 'LP_Settings' );
-			if ( LP_Settings::instance()->get( 'debug' ) == 'yes' ) {
-				LP_Assets::add_var( 'LEARN_PRESS_DEBUG', 'true', '__all' );
-			}*/
-			$did = true;
-		}
-
-		/**
-		 * Redirect to admin settings page
-		 */
-		public function _redirect() {
-			die();
-			$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
-			if ( 'learn_press_settings' == $page ) {
-				$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
-				$tabs        = learn_press_settings_tabs_array();
-
-				if ( ! $current_tab || ( $tabs && empty( $tabs[ $current_tab ] ) ) ) {
-					if ( $tabs ) {
-						$tab_keys    = array_keys( $tabs );
-						$current_tab = reset( $tab_keys );
-						wp_redirect( admin_url( 'options-general.php?page=learn_press_settings&tab=' . $current_tab ) );
-						exit();
-					}
-				}
-			}
-		}
-
-		/**
 		 * Include all classes and functions used for admin
 		 */
 		public function includes() {
@@ -411,6 +359,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-modal-search-users.php';
 			include_once 'class-lp-setup-wizard.php';
 			include_once 'class-lp-updater.php';
+			include_once 'class-lp-install-sample-data.php';
 		}
 	}
 } // End class LP_Admin

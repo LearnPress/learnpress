@@ -75,6 +75,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					'status'    => ''
 				);
 				foreach ( $course_items as $item_id ) {
+
 					$cache_name = sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_id(), $item_id );
 					if ( false !== ( $data = wp_cache_get( $cache_name, 'lp-user-course-items' ) ) ) {
 						$data = reset( $data );
