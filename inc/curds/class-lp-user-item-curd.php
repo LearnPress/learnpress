@@ -387,50 +387,6 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		return false;
 	}
 
-	/**
-	 * Update quiz questions.
-	 *
-	 * @param array $questions An array of questions need to update.
-	 *
-	 * @return mixed
-	 */
-	public function update_questions( $questions ) {
-		if ( ! $questions ) {
-			return false;
-		}
-		$this->_maybe_sort_questions( $questions );
-		$orders = array();
-		foreach ( $questions as $question_id => $data ) {
-			// If the ID is not a numeric, then add new question
-			$is_new = false;
-			if ( ! is_numeric( $question_id ) ) {
-				if ( $new_question_id = LP_Question_Factory::add_question( $data ) ) {
-					$question = learn_press_get_question( $new_question_id );
-					$this->add_question( $new_question_id, $data );
-				}
-				$is_new = true;
-			} else {
-				$question = learn_press_get_question( $question_id );
-			}
-
-			if ( isset( $question ) && $question instanceof LP_Question ) {
-				// Do not need to update a new question.
-				if ( $is_new ) {
-					$orders[ $question_id ] = $question->get_id();
-				} else {
-					$question->set_data( $data );
-					if ( $question_id = $question->store() ) {
-						$orders[ $question_id ] = $question_id;
-					}
-				}
-			}
-		}
-
-		$this->reorder_questions( $orders );
-
-		return $orders;
-	}
-
 	public function add_meta( &$object, $meta ) {
 		// TODO: Implement add_meta() method.
 	}

@@ -196,7 +196,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/class-lp-assets.php';
 			}
 			require_once 'inc/question/class-lp-question.php';
-			require_once 'inc/question/class-lp-question-factory.php';
 
 			// Register custom-post-type and taxonomies
 			require_once 'inc/custom-post-types/abstract.php';

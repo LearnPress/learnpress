@@ -18,7 +18,16 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 	/**
 	 * Class LP_Question_CURD
 	 */
-	class LP_Question_CURD implements LP_Interface_CURD {
+	class LP_Question_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
+
+		/**
+		 * LP_Question_CURD constructor.
+		 */
+		public function __construct() {
+			$this->_error_messages = array(
+				'QUESTION_NOT_EXISTS' => __( 'Question does not exists.', 'learnpress' )
+			);
+		}
 
 		/**
 		 * Create question and can add to quiz.
@@ -102,14 +111,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		}
 
 		/**
-		 * Delete question.
+		 * Delete all question's related data before run wp_delete_post(), hook to before delete question hook.
 		 *
 		 * @since 3.0.0
 		 *
 		 * @param object $question_id
 		 */
 		public function delete( &$question_id ) {
-			// remove all answer of question
+			// remove all answer of question from {$wpdb->prefix}learnpress_question_answers table
 			$this->clear( $question_id );
 
 			// quiz curd
@@ -748,8 +757,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function clear( $question_id ) {
 
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
-				return false;
+			if ( ! learn_press_get_question( $question_id ) ) {
+				return $this->get_error( 'QUESTION_NOT_EXISTS' );
 			}
 
 			global $wpdb;

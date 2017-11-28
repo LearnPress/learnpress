@@ -7,13 +7,6 @@
  */
 class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
-	 * Errors codes and message.
-	 *
-	 * @var array|bool
-	 */
-	protected $_error_messages = false;
-
-	/**
 	 * LP_Quiz_CURD constructor.
 	 */
 	public function __construct() {
@@ -556,7 +549,7 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @param      $quiz_id
 	 * @param      $question_id
-	 * @param bool $force
+	 * @param bool $force | remove all questions from quiz
 	 *
 	 * @return bool|false|int|WP_Error
 	 */
@@ -575,10 +568,9 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				array( 'quiz_id' => $quiz_id, ),
 				array( '%d' )
 			);
-
-			return $delete;
-
 		} else {
+			do_action( 'learn-press/delete-quiz-question', $question_id, $quiz_id );
+
 			// remove question from quiz
 			$delete = $wpdb->delete(
 				$wpdb->prefix . 'learnpress_quiz_questions',
@@ -589,113 +581,16 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				array( '%d', '%d' )
 			);
 
+			do_action( 'learn-press/deleted-quiz-question', $question_id, $quiz_id, $delete );
+
 			// reorder questions
 			$this->reorder_questions( $quiz );
-			// increment quiz questions
-			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
-
-			return $delete;
-		}
-	}
-
-	/**
-	 * Remove a question from list of questions
-	 *
-	 * @param LP_Quiz|int $the_quiz
-	 * @param int|array   $question_id ID of the question to remove
-	 * @param mixed       $args        Extra options
-	 *
-	 * @return mixed         false on failed
-	 */
-	public function _remove_question( $the_quiz, $question_id, $args = array() ) {
-		if ( ! $the_quiz = learn_press_get_quiz( $the_quiz ) ) {
-			return $this->get_error( 'QUIZ_NOT_EXISTS' );
 		}
 
-		global $wpdb;
-		$id         = $the_quiz->get_id();
-		$args       = wp_parse_args( $args, array( 'delete_permanently' => false ) );
-		$is_multi   = is_array( $question_id );
-		$remove_all = $question_id === true ? true : false;
-		$results    = array();
-
-		if ( ! $remove_all ) {
-			$ids = $question_id;
-			settype( $ids, 'array' );
-			$deleted = '';
-
-			foreach ( $ids as $question_id ) {
-				do_action( 'learn-press/delete-quiz-question', $question_id, $id );
-				$deleted = $wpdb->delete(
-					$wpdb->prefix . 'learnpress_quiz_questions',
-					array(
-						'quiz_id'     => $id,
-						'question_id' => $question_id
-					),
-					array( '%d', '%d' )
-				);
-				$this->reorder_questions( $the_quiz );
-				do_action( 'learn-press/deleted-quiz-question', $question_id, $id, $deleted );
-				if ( $deleted && $args['delete_permanently'] ) {
-					LP_Question_Factory::delete_question( $question_id, $id );
-				}
-				$results[ $question_id ] = $deleted;
-			}
-		} else {
-			$deleted = $wpdb->delete(
-				$wpdb->prefix . 'learnpress_quiz_questions',
-				array( 'quiz_id' => $id ),
-				array( '%d' )
-			);
-		}
-
+		// increment quiz questions
 		learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
 
-		return $remove_all ? $deleted : ( $is_multi ? $results : $deleted );
-	}
-
-	/**
-	 * Update quiz questions.
-	 *
-	 * @param array $questions An array of questions need to update.
-	 *
-	 * @return mixed
-	 */
-	public function update_questions( $questions ) {
-		if ( ! $questions ) {
-			return false;
-		}
-		$this->_maybe_sort_questions( $questions );
-		$orders = array();
-		foreach ( $questions as $question_id => $data ) {
-			// If the ID is not a numeric, then add new question
-			$is_new = false;
-			if ( ! is_numeric( $question_id ) ) {
-				if ( $new_question_id = LP_Question_Factory::add_question( $data ) ) {
-					$question = learn_press_get_question( $new_question_id );
-					$this->add_question( $new_question_id, $data );
-				}
-				$is_new = true;
-			} else {
-				$question = learn_press_get_question( $question_id );
-			}
-
-			if ( isset( $question ) && $question instanceof LP_Question ) {
-				// Do not need to update a new question.
-				if ( $is_new ) {
-					$orders[ $question_id ] = $question->get_id();
-				} else {
-					$question->set_data( $data );
-					if ( $question_id = $question->store() ) {
-						$orders[ $question_id ] = $question_id;
-					}
-				}
-			}
-		}
-
-		$this->reorder_questions( $orders );
-
-		return $orders;
+		return $delete;
 	}
 
 	/**
@@ -747,20 +642,5 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function update_meta( &$object, $meta ) {
 		return learn_press_update_user_item_meta( $object->get_user_item_id(), $meta->meta_key, $meta->meta_value );
-	}
-
-	/**
-	 * Get WP_Object.
-	 *
-	 * @param $code
-	 *
-	 * @return bool|WP_Error
-	 */
-	protected function get_error( $code ) {
-		if ( isset( $this->_error_messages[ $code ] ) ) {
-			return new WP_Error( $code, $this->_error_messages[ $code ] );
-		}
-
-		return false;
 	}
 }

@@ -44,6 +44,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		protected $_item_type = 'lp_question';
 
 		/**
+		 * @var array
+		 */
+		protected static $_types = array();
+
+		/**
 		 * Any features this question support.
 		 *
 		 * @var array
@@ -149,14 +154,25 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			return $return;
 		}
 
+		/**
+		 * @return array|mixed
+		 */
 		public function get_mark() {
 			return $this->get_data( 'mark' );
 		}
 
+		/**
+		 * @param $mark
+		 */
 		public function set_mark( $mark ) {
 			$this->_set_data( 'mark', abs( $mark ) );
 		}
 
+		/**
+		 * @param string $yes_or_no
+		 *
+		 * @return array|mixed
+		 */
 		public function show_correct_answers( $yes_or_no = '' ) {
 			if ( in_array( $yes_or_no, array( 'yes', 'no' ) ) ) {
 				$this->_set_data( 'show_correct_answers', $yes_or_no );
@@ -165,6 +181,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			return $this->get_data( 'show_correct_answers' );
 		}
 
+		/**
+		 * @param string $yes_or_no
+		 *
+		 * @return array|mixed
+		 */
 		public function disable_answers( $yes_or_no = '' ) {
 			if ( in_array( $yes_or_no, array( 'yes', 'no' ) ) ) {
 				$this->_set_data( 'disable_answers', $yes_or_no );
@@ -200,20 +221,47 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			return apply_filters( 'learn-press/question/answer-options', $this->get_data( 'answer_options' ), $this->get_id() );
 		}
 
+		/**
+		 * @param string $explanation
+		 */
 		public function set_explanation( $explanation = '' ) {
 			$this->_set_data( 'explanation', $explanation );
 		}
 
+		/**
+		 * @return mixed
+		 */
 		public function get_explanation() {
 			return apply_filters( 'learn-press/question/explanation', do_shortcode( $this->get_data( 'explanation' ) ), $this->get_id() );
 		}
 
+		/**
+		 * @param string $hint
+		 */
 		public function set_hint( $hint = '' ) {
 			$this->_set_data( 'hint', $hint );
 		}
 
+		/**
+		 * @return mixed
+		 */
 		public function get_hint() {
 			return apply_filters( 'learn-press/question/hint', do_shortcode( $this->get_data( 'hint' ) ), $this->get_id() );
+		}
+
+		/**
+		 * Get all type of questions
+		 *
+		 * @return mixed
+		 */
+		public static function get_types() {
+			$types = array(
+				'true_or_false' => __( 'True Or False', 'learnpress' ),
+				'multi_choice'  => __( 'Multi Choice', 'learnpress' ),
+				'single_choice' => __( 'Single Choice', 'learnpress' )
+			);
+
+			return apply_filters( 'learn_press_question_types', $types );
 		}
 
 		/**
@@ -345,7 +393,10 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$box = new LP_Quiz_Question_Meta_Box( $meta_box_settings );
 
 			// Add this manually because the hook is already done!!!
-			add_meta_box( $box->id, $box->title, array( $box, 'show' ), LP_QUESTION_CPT, $box->context, $box->priority );
+			add_meta_box( $box->id, $box->title, array(
+				$box,
+				'show'
+			), LP_QUESTION_CPT, $box->context, $box->priority );
 
 			//remove_filter( 'default_hidden_meta_boxes', '');
 			// Show meta box

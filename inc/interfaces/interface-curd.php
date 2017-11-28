@@ -103,6 +103,13 @@ class LP_Object_Data_CURD {
 	protected $_meta_type = 'post';
 
 	/**
+	 * Errors codes and message.
+	 *
+	 * @var bool
+	 */
+	protected $_error_messages = false;
+
+	/**
 	 * Add new meta data.
 	 *
 	 * @param $object
@@ -176,5 +183,20 @@ class LP_Object_Data_CURD {
 		}
 
 		return ! empty( $curds[ $type ] ) ? $curds[ $type ] : false;
+	}
+
+	/**
+	 * Get WP_Object.
+	 *
+	 * @param $code
+	 *
+	 * @return bool|WP_Error
+	 */
+	protected function get_error( $code ) {
+		if ( isset( $this->_error_messages[ $code ] ) ) {
+			return new WP_Error( $code, $this->_error_messages[ $code ] );
+		}
+
+		return false;
 	}
 }

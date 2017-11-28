@@ -96,7 +96,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'ajax'          => admin_url( '' ),
 					'action'        => 'admin_question_editor',
 					'nonce'         => wp_create_nonce( 'learnpress_admin_question_editor' ),
-					'questionTypes' => LP_Question_Factory::get_types()
+					'questionTypes' => LP_Question::get_types()
 				)
 			) );
 

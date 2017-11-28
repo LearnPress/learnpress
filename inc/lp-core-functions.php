@@ -105,7 +105,7 @@ function learn_press_plugin_path( $sub_dir = '' ) {
  *
  * @param        $file
  * @param string $folder
- * @param bool   $include_once
+ * @param bool $include_once
  *
  * @return bool
  */
@@ -272,7 +272,7 @@ function learn_press_sanitize_url( $url, $trailingslashit = true ) {
  * @return mixed
  */
 function learn_press_question_types() {
-	return LP_Question_Factory::get_types();
+	return LP_Question::get_types();
 }
 
 /**
@@ -307,7 +307,7 @@ function learn_press_section_item_types() {
  * Enqueue js code to print out
  *
  * @param string $code
- * @param bool   $script_tag - wrap code between <script> tag
+ * @param bool $script_tag - wrap code between <script> tag
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
@@ -487,7 +487,7 @@ add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
  * @param string $str
- * @param int    $lines
+ * @param int $lines
  */
 function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
@@ -908,7 +908,7 @@ function learn_press_show_menu() {
  *
  * @param string $to
  * @param string $action
- * @param array  $vars
+ * @param array $vars
  *
  * @return mixed
  */
@@ -1833,7 +1833,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int  $expire
+ * @param int $expire
  * @param bool $secure
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
@@ -2007,14 +2007,16 @@ function learn_press_parse_request() {
 
 add_action( 'parse_request', 'learn_press_parse_request' );
 
-/**
- * Reset AUTO_INC of a table
- *
- * @param $table
- */
-function learn_press_reset_auto_increment( $table ) {
-	global $wpdb;
-	$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}$table AUTO_INCREMENT = %d", 1 ) );
+if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
+	/**
+     * Reset AUTO INCREMENT of the table.
+     *
+	 * @param $table
+	 */
+	function learn_press_reset_auto_increment( $table ) {
+		global $wpdb;
+		$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}$table AUTO_INCREMENT = %d", 1 ) );
+	}
 }
 
 /**
@@ -2776,7 +2778,7 @@ function learn_press_deprecated_function( $function, $version, $replacement = nu
  * Sanitize content of tooltip
  *
  * @param string $tooltip
- * @param bool   $html
+ * @param bool $html
  *
  * @return string
  */
@@ -2922,8 +2924,7 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
 			try {
 				$data = unserialize( $content );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				print_r( $content );
 				die();
 			}

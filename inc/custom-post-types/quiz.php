@@ -131,7 +131,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'ajax'        => admin_url( '' ),
 					'action'      => 'admin_quiz_editor',
 					'nonce'       => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
-					'types'       => LP_Question_Factory::get_types(),
+					'types'       => LP_Question::get_types(),
 					'default_new' => $default_new_question_type
 				),
 				'chooseItems'   => array(
