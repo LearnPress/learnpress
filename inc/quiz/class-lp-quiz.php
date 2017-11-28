@@ -199,14 +199,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		public function get_passing_grade() {
 			$type  = $this->get_passing_grade_type();
 			$value = $this->get_data( 'passing_grade' );
-			switch ( $type ) {
 
+			switch ( $type ) {
 				case 'point':
 					break;
 				case 'percentage':
 				default:
 					$value = "{$value}%";
-
+					break;
 			}
 
 			return $value;
@@ -384,32 +384,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			return apply_filters( 'learn-press/quiz/quiz_editor_questions', $result, $this->get_id() );
 		}
 
-		/************/
-		/**
-		 * Get admin configuration.
-		 *
-		 * @return array
-		 */
-		public function get_admin_config() {
-			$id     = $this->get_id();
-			$config = array(
-				'id'        => $id,
-				'questions' => $this->get_questions(),
-				'closed'    => learn_press_is_hidden_post_box( $id )
-			);
-
-			return apply_filters( 'learn-press/quiz/admin-config', $config, $id );
-		}
-
-
-		/******/
-
-
-		protected function _init() {
-
-			add_action( 'wp_head', array( $this, 'frontend_assets' ) );
-		}
-
 		/**
 		 * Get quiz duration html.
 		 *
@@ -427,20 +401,33 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * Get number quiz question.
+		 * Get number questions in quiz.
 		 *
 		 * @return int
 		 */
-		public function get_total_questions() {
-			$questions = $this->get_questions();
-			$count     = 0;
-			if ( $questions ) {
-				$count = count( $questions );
+		public function count_questions() {
+			$size = 0;
+			if ( ( $questions = $this->get_questions() ) ) {
+				$size = sizeof( $questions );
 			}
 
-			return $count;
+			return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
 		}
 
+		/**
+		 * This quiz has any question?
+		 *
+		 * @return bool
+		 */
+		public function has_questions() {
+			return $this->count_questions() > 0;
+		}
+
+		/**
+		 * Get js localize script in frontend. [NOT USED]
+		 *
+		 * @return mixed
+		 */
 		public function get_localize() {
 			$localize = array(
 				'confirm_finish_quiz' => array(
@@ -460,161 +447,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			);
 
 			return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
-		}
-
-		/**
-		 * Get quiz's settings for json
-		 *
-		 * @param int  $user_id
-		 * @param int  $course_id
-		 * @param bool $force
-		 *
-		 * @return mixed|void
-		 */
-		public function get_settings( $user_id = 0, $course_id = 0, $force = false ) {
-			if ( ! $course_id ) {
-				$course_id = get_the_ID();
-			}
-			$user        = learn_press_get_current_user( $user_id );
-			$course      = learn_press_get_course( $course_id );
-			$quiz_params = LP_Cache::get_quiz_params( false, array() );
-			$key         = sprintf( '%d-%d-%d', $user_id, $course_id, $this->get_id() );
-			if ( ! array_key_exists( $key, $quiz_params ) || $force ) {
-
-				if ( $results = $user->get_quiz_results( $this->get_id(), $course_id, $force ) ) {
-					$questions = $results->questions;
-				} else {
-					$questions = learn_press_get_quiz_questions();
-					$questions = array_keys( $questions );
-				}
-
-				$current_question_id = $user->get_current_quiz_question( $this->get_id(), $course->get_id() );
-				$question            = LP_Question::get_question( $current_question_id );
-				$duration            = $this->get_duration();
-				$remaining           = $user->get_quiz_time_remaining( $this->get_id(), $course_id );
-				if ( $remaining === false ) {
-					$remaining = $this->get_duration();
-				} elseif ( $remaining < 0 ) {
-					$remaining = 0;
-				}
-				//$r_time              = ( $remaining > 0 ) && !in_array( $user->get_quiz_status( $this->get_id(), $course_id, $force ), array( '', 'completed' ) ) ? $remaining : $this->duration;
-
-				$js = array(
-					'id'              => $this->get_id(),
-					'questions'       => array_values( $this->get_question_params( $questions, $current_question_id ) ),
-					//$questions,
-					'status'          => $user->get_quiz_status( $this->get_id(), $course_id, $force ),
-					'permalink'       => get_the_permalink(),
-					'ajaxurl'         => admin_url( 'admin-ajax.php' ),
-					'question'        => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
-					'totalTime'       => $this->get_duration(),
-					'userTime'        => $duration - $remaining,
-					'currentQuestion' => get_post_field( 'post_name', $current_question_id ),
-					'usePermalink'    => get_option( 'permalink' ),
-					'courseId'        => $course_id
-				);
-				if ( $js['status'] == 'completed' ) {
-					$js['result'] = $user->get_quiz_results( $this->get_id(), $course_id, $force );
-				}
-				if ( $js['status'] == 'started' ) {
-					if ( $history = $user->get_quiz_results( $this->get_id(), $course_id ) ) {
-						$js['startTime']  = strtotime( $history->start, current_time( 'timestamp' ) );
-						$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');
-					}
-				}
-
-				$quiz_params[ $key ] = $js;
-				LP_Cache::set_quiz_params( $quiz_params );
-			}
-
-			return apply_filters( 'learn_press_single_quiz_params', $quiz_params[ $key ], $this );
-		}
-
-		public function get_question_params( $ids, $current = 0 ) {
-			global $wpdb;
-			if ( ! $ids ) {
-				$ids = array( 0 );
-			}
-
-			$results = array();
-			if ( $questions = $this->get_questions() ) {
-				$user              = learn_press_get_current_user();
-				$show_check_answer = $this->show_check_answer;
-				$show_hint         = $this->show_hint;
-				$checked_answers   = array();
-				//$show_explanation  = $this->show_explanation;
-				if ( $show_check_answer == 'yes' ) {
-					if ( $history = $user->get_quiz_results( $this->get_id() ) ) {
-						$checked_answers = ! empty( $history->checked ) ? (array) $history->checked : array();
-					}
-				}
-				foreach ( $questions as $question_id => $question ) {
-					$_question = (object) array(
-						'id'    => absint( $question->ID ),
-						'type'  => $question->type,
-						'title' => get_the_title( $question->ID ),
-						'name'  => get_post_field( 'post_name', $question->ID ),
-						'url'   => trailingslashit( $this->get_question_link( $question->ID ) )
-					);
-					if ( $show_check_answer == 'yes' ) {
-						//$_question->check_answer = learn_press_question_type_support( $question->type, 'check-answer' );
-						$_question->hasCheckAnswer = learn_press_question_type_support( $question->type, 'check-answer' ) ? 'yes' : 'no';
-						$_question->checked        = array();
-					}
-					if ( $show_hint == 'yes' && empty( $question->hasHint ) ) {
-						$_question->hasHint = get_post_meta( $question->ID, '_lp_hint', true ) ? 'yes' : 'no';
-					}
-					/*if ( $show_explanation == 'yes' && empty( $question->hasExplanation ) ) {
-						$_question->hasExplanation = get_post_meta( $question->ID, '_lp_explanation', true ) ? 'yes' : 'no';
-					}*/
-					/*if ( empty( $results[$row->id] ) ) {
-						$results[$row->id] = (object) array(
-							'id'   => absint( $row->id ),
-							'type' => $row->type
-						);
-						if ( $show_check_answer == 'yes' ) {
-							$results[$row->id]->check_answer = learn_press_question_type_support( $row->type, 'check-answer' );
-							$results[$row->id]->checked      = array();
-						}
-
-						if ( $show_hint == 'yes' && empty( $results[$row->id]->hint ) ) {
-							$results[$row->id]->hint = get_post_meta( $row->id, '_lp_hint', true ) ? true : false;
-						}
-						if ( $show_explanation == 'yes' && empty( $results[$row->id]->explanation ) ) {
-							$results[$row->id]->explanation = get_post_meta( $row->id, '_lp_explanation', true ) ? true : false;
-						}
-					//}
-					*/
-					if ( $show_check_answer == 'yes' ) {
-						if ( in_array( $question->ID, $checked_answers ) ) {
-							if ( ! empty( $question->answers ) ) {
-								foreach ( $question->answers as $answer ) {
-									$checked = maybe_unserialize( $answer );
-									unset( $checked['text'] );
-									$_question->checked[ $answer['id'] ] = $checked;
-								}
-							}
-						} else {
-							$_question->checked = false;
-						}
-					}
-
-					if ( $current == $question->ID ) {
-						$_question->current = 'yes';
-					}
-					$results[ $question->ID ] = $_question;
-				}
-			}
-
-			return apply_filters( 'learn_press_quiz_param_questions', $results, $this->get_id() );
-		}
-
-		public function frontend_assets() {
-			if ( learn_press_is_course() && ( $quiz = LP()->global['course-item'] ) && $quiz->id == $this->get_id() ) {
-				$translate = $this->get_localize();
-				//LP_Assets::add_localize( $translate, false, 'learn-press-single-quiz' );
-				//LP_Assets::add_param( $this->get_settings(), false, 'learn-press-single-quiz' );
-			}
 		}
 
 		/**
@@ -664,6 +496,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			return $return;
 		}
 
+		/**
+		 * @param $feature
+		 *
+		 * @return mixed
+		 * @throws Exception
+		 */
 		public function has( $feature ) {
 			$args = func_get_args();
 			unset( $args[0] );
@@ -674,15 +512,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			} else {
 				throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $feature ) );
 			}
-		}
-
-		/**
-		 * This quiz has any question?
-		 *
-		 * @return bool
-		 */
-		public function has_questions() {
-			return $this->count_questions() > 0;
 		}
 
 		/**
@@ -726,6 +555,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			return apply_filters( 'learn-press/quiz/question-permalink', $permalink, $question_id, $this->get_id() );
 		}
 
+		/**
+		 * @param int $at
+		 *
+		 * @return bool
+		 */
 		public function get_question_at( $at = 0 ) {
 			if ( $questions = $this->get_questions() ) {
 				$questions = array_values( $questions );
@@ -793,30 +627,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * Count number questions in quiz.
+		 * Check question.
 		 *
-		 * @return int
+		 * @param $question_id
+		 * @param $user_id
+		 *
+		 * @return bool
 		 */
-		public function count_questions() {
-			$size = 0;
-			if ( ( $questions = $this->get_questions() ) ) {
-				$size = sizeof( $questions );
-			}
-
-			return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
-		}
-
-
-		public function get_question_param( $name, $id ) {
-			if ( $this->get_questions() ) {
-				if ( ! empty( $this->questions[ $id ] ) ) {
-					return ! empty( $this->questions[ $id ]->params[ $name ] ) ? $this->questions[ $id ]->params[ $name ] : null;
-				}
-			}
-
-			return false;
-		}
-
 		public function check_question( $question_id, $user_id ) {
 
 			if ( ! $question = LP_Question::get_question( $question_id ) ) {
@@ -837,8 +654,18 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 			learn_press_update_user_quiz_meta( $history->history_id, 'checked', $checked );
 
+			return true;
+
 		}
 
+		/**
+		 * Get question position in quiz.
+		 *
+		 * @param $question
+		 * @param int $user_id
+		 *
+		 * @return false|int|string
+		 */
 		public function get_question_position( $question, $user_id = 0 ) {
 			if ( ! $user_id ) {
 				$user_id = learn_press_get_current_user_id();
@@ -855,6 +682,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			return $position;
 		}
 
+		/**
+		 * @param int $user_id
+		 * @param int $course_id
+		 *
+		 * @return bool|LP_Question
+		 */
 		public function get_current_question( $user_id = 0, $course_id = 0 ) {
 			$user = learn_press_get_user( $user_id );
 			$id   = $user->get_current_quiz_question( $this->get_id(), $course_id );
@@ -881,20 +714,33 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			// Do not allow to set value directly!
 		}
 
+		/**
+		 * @param mixed $offset
+		 */
 		public function offsetUnset( $offset ) {
 			// Do not allow to unset value directly!
 		}
 
+		/**
+		 * @param mixed $offset
+		 *
+		 * @return bool|mixed
+		 */
 		public function offsetGet( $offset ) {
 			return $this->offsetExists( $offset ) ? $this->_questions[ $offset ] : false;
 		}
 
+		/**
+		 * @param mixed $offset
+		 *
+		 * @return bool
+		 */
 		public function offsetExists( $offset ) {
 			return array_key_exists( $offset, $this->_questions );
 		}
 
 		/**
-		 * @param bool  $the_quiz
+		 * @param bool $the_quiz
 		 * @param array $args
 		 *
 		 * @return LP_Quiz|bool
@@ -947,7 +793,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_quiz
-		 * @param  array   $args (default: array())
+		 * @param  array $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -962,7 +808,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * Get the lesson object
+		 * Get the quiz object
 		 *
 		 * @param  mixed $the_quiz
 		 *
@@ -971,7 +817,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		private static function get_quiz_object( $the_quiz ) {
 			if ( false === $the_quiz ) {
-				$the_quiz = get_post_type() === LP_LESSON_CPT ? $GLOBALS['post'] : false;
+				$the_quiz = get_post_type() === LP_QUIZ_CPT ? $GLOBALS['post'] : false;
 			} elseif ( is_numeric( $the_quiz ) ) {
 				$the_quiz = get_post( $the_quiz );
 			} elseif ( $the_quiz instanceof LP_Course_Item ) {

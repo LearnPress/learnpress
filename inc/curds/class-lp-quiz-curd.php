@@ -409,7 +409,7 @@ class LP_Quiz_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function get_questions( $the_quiz ) {
 		if ( ! $the_quiz = learn_press_get_quiz( $the_quiz ) ) {
-			return $this->get_error( 'QUESTION_NOT_EXISTS' );
+			return $this->get_error( 'QUIZ_NOT_EXISTS' );
 		}
 
 		return wp_cache_get( 'questions-' . $the_quiz->get_id(), 'lp-quizzes' );

@@ -1,11 +1,14 @@
 <?php
 /**
- * Common functions to manipulate with the quiz
+ * Common functions to manipulate with the quiz.
+ *
+ * @since 3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 /**
  * Get quiz from anything is passed

@@ -34,6 +34,6 @@ $count  = $quiz->get_retake_count();
     </li>
     <li>
         <label><?php _e( 'Questions', 'learnpress' ); ?></label>
-        <span><?php echo $quiz->get_total_questions(); ?></span>
+        <span><?php echo $quiz->count_questions(); ?></span>
     </li>
 </ul>
