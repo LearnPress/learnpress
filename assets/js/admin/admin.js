@@ -60,12 +60,11 @@
                     dataType: 'text',
                     success: $.proxy(function (res) {
                         res = LP.parseJSON(res);
-                        console.log(res, this)
                         $(this).parent().toggleClass('enabled', res.status)
                     }, this)
                 });
             }).apply(this)
-        })
+        });
 
         $('.learn-press-tooltip').each(function () {
             var $el = $(this),
@@ -155,12 +154,12 @@
             }
             e.preventDefault();
 
-            if (action == 'yes') {
+            if (action === 'yes') {
                 $container
                     .find('.install-sample-data-notice').slideUp()
                     .siblings('.install-sample-data-loading').slideDown()
             } else {
-                $('#learn-press-install-sample-data-notice').fadeOut();
+                $container.fadeOut();
             }
             $.ajax({
                 url: ajaxurl,
@@ -229,10 +228,11 @@
         var $sandbox_mode = $('#learn_press_paypal_sandbox_mode'),
             $paypal_type = $('#learn_press_paypal_type');
         $paypal_type.change(function () {
-            $('.learn_press_paypal_type_security').toggleClass('hide-if-js', 'security' != this.value);
+            $('.learn_press_paypal_type_security').toggleClass('hide-if-js', 'security' !== this.value);
         });
         $sandbox_mode.change(function () {
-            this.checked ? $('.sandbox input').removeAttr('readonly') : $('.sandbox input').attr('readonly', true);
+            var $input = $('.sandbox input');
+            this.checked ? $input.removeAttr('readonly') : $input.attr('readonly', true);
         });
 
         $('#learn_press_paypal_enable').change(function () {
@@ -264,8 +264,4 @@
     $doc.ready(_ready);
 })(jQuery);
 
-/**
- * Created by foobla on 3/10/2015.
- */
-
-if (typeof LP == 'undefined') LP = {};
+if (typeof LP === 'undefined') LP = {};

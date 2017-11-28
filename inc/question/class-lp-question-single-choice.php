@@ -1,11 +1,10 @@
 <?php
-
 /**
  * LP_Question_Single_Choice
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.0.0
  * @extends LP_Question
  */
 
@@ -15,6 +14,7 @@
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Question_Single_Choice' ) ) {
+
 	/**
 	 * Class LP_Question_Single_Choice
 	 */
@@ -39,36 +39,6 @@ if ( ! class_exists( 'LP_Question_Single_Choice' ) ) {
 		}
 
 		/**
-		 * @return bool
-		 */
-		public function can_check_answer() {
-			return false;
-		}
-
-		/**
-		 * @return string
-		 */
-		public function get_icon() {
-			return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/single-choice.png' ), $this ) . '">';
-		}
-
-		/**
-		 * Question admin script.
-		 */
-		public function admin_script() {
-			return;
-		}
-
-		/**
-		 * @param array $args
-		 *
-		 * @return string
-		 */
-		public function admin_interface( $args = array() ) {
-			return parent::admin_interface( $args );
-		}
-
-		/**
 		 * Check user answer.
 		 *
 		 * @param null $user_answer
@@ -76,13 +46,11 @@ if ( ! class_exists( 'LP_Question_Single_Choice' ) ) {
 		 * @return array
 		 */
 		public function check( $user_answer = null ) {
-			$return = array(
-				'correct' => false,
-				'mark'    => 0
-			);
+			$return = parent::check();
+
 			if ( $answers = $this->get_answers() ) {
-				foreach ( $answers as $k => $answer ) {
-					if ( ( $answer['is_true'] == 'yes' ) && ( $this->is_selected_option( $answer, $user_answer ) ) ) {
+				foreach ( $answers as $key => $option ) {
+					if ( ( $option['is_true'] == 'yes' ) && ( $this->is_selected_option( $option, $user_answer ) ) ) {
 						$return['correct'] = true;
 						$return['mark']    = floatval( $this->get_mark() );
 						break;

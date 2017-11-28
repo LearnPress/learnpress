@@ -8,18 +8,17 @@
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-answer-option">
     <tr class="answer-item" :data-answer-id="answer.question_answer_id">
-        <td class="lp-column lp-column-sort"><i class="fa fa-bars"></i></td>
-        <td class="lp-column lp-column-order">{{index +1}}</td>
-        <td class="lp-column lp-column-answer_text">
+        <td class="sort"><i class="fa fa-bars"></i></td>
+        <td class="order">{{index +1}}</td>
+        <td class="answer-text">
             <input type="text" v-model="answer.text"
                    @change="changeTitle" @keyup.enter="updateTitle" @blur="updateTitle"/>
         </td>
-        <td class="lp-column lp-column-answer_correct lp-answer-check">
+        <td class="answer-correct lp-answer-check">
             <input :type="radio ? 'radio' : 'checkbox'" :checked="correct" :value="answer.value" :name="name"
                    @change="changeCorrect">
-
         </td>
-        <td class="lp-column lp-column-actions lp-toolbar-buttons">
+        <td class="actions lp-toolbar-buttons">
             <div class="lp-toolbar-btn lp-btn-remove" v-if="deletable">
                 <a class="lp-btn-icon dashicons dashicons-trash" @click="deleteAnswer"></a>
             </div>

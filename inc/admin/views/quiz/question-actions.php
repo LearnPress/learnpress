@@ -8,14 +8,14 @@
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-actions">
     <div class="question-actions table-row" :class="status">
-        <div class="lp-column-sort"><i class="fa fa-bars"></i></div>
-        <div class="lp-column-order">{{index +1}}</div>
-        <div class="lp-column-name" @dblclick="toggle">
+        <div class="sort"><i class="fa fa-bars"></i></div>
+        <div class="order">{{index +1}}</div>
+        <div class="name" @dblclick="toggle">
             <input type="text" class="question-title" v-model="question.title"
                    @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle">
         </div>
-        <div class="lp-column-type">{{question.type.label}}</div>
-        <div class="lp-column-actions">
+        <div class="type">{{question.type.label}}</div>
+        <div class="actions">
             <div class="lp-box-data-actions lp-toolbar-buttons">
                 <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
                     <a class="lp-btn-icon dashicons dashicons-editor-help"></a>

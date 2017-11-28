@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Quiz
  *
@@ -39,8 +38,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		protected $_item_type = 'lp_quiz';
 
+		/**
+		 * @var array
+		 */
 		protected $_questions = array();
 
+		/**
+		 * @var array
+		 */
 		protected $_data = array(
 			'retake_count'       => 0,
 			'show_result'        => 'no',
@@ -88,7 +93,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 *
 		 * Log debug data.
 		 *
 		 * @since 3.0.0
