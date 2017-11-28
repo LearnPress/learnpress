@@ -125,6 +125,12 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 				@$wpdb->query( $query_rename_tables );
 			}
 		}
+
+		$query = "ALTER TABLE {$wpdb->prefix}learnpress_user_items ADD COLUMN `parent_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `ref_type`;";
+		if ( @$wpdb->query( $query ) ) {
+			update_option( 'learn_press_upgrade_table_20', 'yes' );
+		}
+
 		// This line has added in version 2.0.5 to fix issue with bug can not do anything after active LP
 		$wpdb->query( "COMMIT;" );
 

@@ -569,7 +569,6 @@ class LP_Quiz_Factory {
 			if ( $result ) {
 				/*LP_Cache::flush( 'user-completed-items', 'quiz-results', 'user-quiz-history', 'course-item-statuses', 'quiz-params' );
 				//LP_Cache::set_quiz_status( $user->id . '-' . $course_id . '-' . $quiz_id, 'started' );
-				learn_press_setup_user_course_data( $user->id, $course_id );
 				LP()->global['course-item'] = LP_Quiz::get_quiz( $quiz_id );
 				$response['status']         = $result->status;
 				$response['course_result']  = self::get_course_info( $user->id, $course_id );
@@ -632,7 +631,6 @@ class LP_Quiz_Factory {
 			}
 		} else {
 		}
-		learn_press_setup_user_course_data( $user_id, $course_id );
 		$question = LP_Question::get_question( $question_id );
 		$question->render( array( 'quiz_id' => $quiz_id, 'course_id' => $course_id, 'force' => true ) );
 		exit();

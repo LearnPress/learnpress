@@ -668,8 +668,6 @@ function learn_press_get_user_question_answer( $args = '' ) {
 	return $answered;
 }
 
-require_once LP_PLUGIN_PATH . "/inc/lp-init.php";
-
 function need_to_updating() {
 	ob_start();
 	learn_press_display_message( 'This function need to updating' );
@@ -926,8 +924,6 @@ function learn_press_prepare_archive_courses( $template ) {
 			$_post = sanitize_post( $_post, 'raw' );
 			wp_cache_add( $_post->ID, $_post, 'posts' );
 		}
-		_learn_press_get_courses_curriculum( $ids, false, false );
-		_learn_press_count_users_enrolled_courses( $ids );
 	}
 
 	return $template;
@@ -979,3 +975,38 @@ function learn_press_course_passing_condition( $value, $course_id ) {
 }
 
 add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_condition', 10, 2 );
+
+/**
+ * Cache static pages
+ */
+function learn_press_setup_pages() {
+	global $wpdb;
+	static $pages = false;
+	if ( $pages == false ) {
+		$pages    = array( 'courses', 'profile', 'become_a_teacher', 'checkout' );
+		$page_ids = array();
+		foreach ( $pages as $page ) {
+			$id = get_option( 'learn_press_' . $page . '_page_id' );
+			if ( $id ) {
+				$page_ids[] = $id;
+			}
+		}
+		if ( ! $page_ids ) {
+			return;
+		}
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->posts}
+			WHERE %d AND ID IN(" . join( ',', $page_ids ) . ")
+			AND post_status <> %s
+		", 1, 'trash' );
+		if ( ! $pages = $wpdb->get_results( $query ) ) {
+			return;
+		}
+		foreach ( $pages as $page ) {
+			wp_cache_add( $page->ID, $page, 'posts' );
+		}
+	}
+}
+
+add_action( 'init', 'learn_press_setup_pages' );

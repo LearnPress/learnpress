@@ -36,61 +36,9 @@ class LP_Query {
 		if ( did_action( 'learn_press_parse_query' ) ) {
 			return $q;
 		}
-		$user    = learn_press_get_current_user();
-		$request = $this->get_request();
-		if ( ! $request || is_admin() ) {
-			return $q;
-		}
-		remove_filter( 'do_parse_request', array( $this, 'get_current_quiz_question' ), 1010, 3 );
-		$course_type = 'lp_course';
-		$post_types  = get_post_types( '', 'objects' );
 
-		if ( empty( $post_types[ $course_type ] ) ) {
-			return;
-		}
-		/********************/
-		if ( empty( $q->query_vars[ LP_COURSE_CPT ] ) ) {
-			return;
-		}
-		$this->query_vars['course'] = $q->query_vars[ LP_COURSE_CPT ];
-		$course_id                  = learn_press_setup_course_data( $this->query_vars['course'] );
-		$quiz_name                  = '';
-		$question_name              = '';
-		$lesson_name                = '';
-		if ( ! empty( $q->query_vars['quiz'] ) ) {
-			$quiz_name                     = $this->query_vars['quiz'] = $q->query_vars['quiz'];
-			$this->query_vars['item_type'] = LP_QUIZ_CPT;
-			if ( ! empty( $q->query_vars['question'] ) ) {
-				$question_name = $this->query_vars['question'] = $q->query_vars['question'];
-			}
-		} elseif ( ! empty( $q->query_vars['lesson'] ) ) {
-			$lesson_name                   = $this->query_vars['lesson'] = $q->query_vars['lesson'];
-			$this->query_vars['item_type'] = LP_LESSON_CPT;
-		}
-		if ( $quiz_name && $question_name ) {
-			if ( $quiz = learn_press_get_post_by_name( $quiz_name, LP_QUIZ_CPT ) ) {
-				if ( $user->has_quiz_status( 'completed', $quiz->ID, $course_id ) ) {
-					//remove question name from uri
-					$course   = learn_press_get_course( $course_id );
-					$redirect = $course->get_item_link( $quiz->ID );// get_site_url() . '/' . dirname( $request_match );
-					wp_redirect( $redirect );
-					exit();
-				}
-				if ( $question = learn_press_get_post_by_name( $question_name, 'lp_question' ) ) {
-					global $wpdb;
-					$query = $wpdb->prepare( "
-						SELECT MAX(user_item_id)
-						FROM {$wpdb->prefix}learnpress_user_items
-						WHERE user_id = %d AND item_id = %d AND item_type = %s and status <> %s
-					", learn_press_get_current_user_id(), $quiz->ID, 'lp_quiz', 'completed' );
-					if ( $history_id = $wpdb->get_var( $query ) ) {
-						learn_press_update_user_item_meta( $history_id, 'current_question', $question->ID );
-					}
-				}
-			}
-		}
-		$this->query_vars['course_id'] = $course_id;
 		do_action_ref_array( 'learn_press_parse_query', array( &$this ) );
+		return $q;
 	}
 
 	/**

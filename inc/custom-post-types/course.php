@@ -1190,8 +1190,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( $wp_query->is_main_query() ) {
 				if ( LP_COURSE_CPT == $wp_query->query['post_type'] && $wp_query->posts ) {
 					$post_ids = wp_list_pluck( $wp_query->posts, 'ID' );
-					_learn_press_get_courses_curriculum( $post_ids, false, false );
-					_learn_press_count_users_enrolled_courses( $post_ids );
 				}
 			}
 

@@ -2679,9 +2679,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			if ( $data['rows'] ) {
 				$course_ids = array_keys( $data['rows'] );
-				learn_press_setup_user_course_data( $this->get_id(), $course_ids );
 				learn_press_get_user_courses_info( $this->get_id(), $course_ids );
-				_learn_press_count_users_enrolled_courses( $course_ids );
 
 			}
 			$courses[ $key ] = $data;

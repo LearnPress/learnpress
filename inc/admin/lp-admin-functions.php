@@ -1772,65 +1772,6 @@ if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_duplicate_course' ) ) {
-
-	function learn_press_duplicate_course( $course_id = null, $force = true ) {
-
-		if ( ! $course_id ) {
-			return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
-		}
-
-		if ( get_post_type( $course_id ) != LP_COURSE_CPT ) {
-			return new WP_Error( __( '<p>Op! The course does not exist</p>', 'learnpress' ) );
-		}
-
-		// ensure that user can create course
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
-		} else {
-			// duplicate course
-			$new_course_id = learn_press_duplicate_post( $course_id );
-			if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
-			} else {
-				$curriculum = _learn_press_get_course_curriculum( $course_id );
-				if ( is_array( $curriculum ) ) {
-					foreach ( $curriculum as $section_id => $section ) {
-						$new_section_id = learn_press_course_insert_section( array(
-							'section_name'        => $section->section_name,
-							'section_course_id'   => $new_course_id,
-							'section_order'       => $section->section_order,
-							'section_description' => $section->section_description
-						) );
-
-						if ( $section->items ) {
-							foreach ( $section->items as $item ) {
-								// duplicate item
-								if ( $force && $item->post_type === LP_QUIZ_CPT ) {
-									$item_id = learn_press_duplicate_quiz( $item->ID, array( 'post_status' => 'publish' ) );
-								} else {
-									$item_id = learn_press_duplicate_post( $item->ID, array( 'post_status' => 'publish' ) );
-								}
-								if ( $force ) {
-									$section_item_id = learn_press_course_insert_section_item( array(
-										'section_id' => $new_section_id,
-										'item_id'    => $item_id,
-										'item_order' => $item->item_order,
-										'item_type'  => $item->item_type
-									) );
-								}
-							}
-						}
-					}
-
-					return $new_course_id;
-				}
-			}
-		}
-	}
-
-}
-
 if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
 
 	function learn_press_duplicate_question( $question_id = null, $quiz_id = null, $args = array() ) {
