@@ -21,11 +21,13 @@ defined( 'ABSPATH' ) || exit();
 
     <div class="course-item-search">
         <form>
-            <input type="text" placeholder="<?php esc_attr_e('Search item', 'learnpress');?>"/>
+            <input type="text" placeholder="<?php esc_attr_e( 'Search item', 'learnpress' ); ?>"/>
             <button type="button"></button>
         </form>
     </div>
 
-    <h2 class="course-title"><?php echo $course->get_title(); ?></h2>
+    <h2 class="course-title">
+        <a href="<?php echo esc_url( $course->get_permalink() ) ?>"><?php echo $course->get_title(); ?></a>
+    </h2>
 
 </div>

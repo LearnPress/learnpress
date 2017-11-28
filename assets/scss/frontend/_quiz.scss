@@ -4,7 +4,7 @@
 
 .quiz-progress {
     background: rgb(231, 247, 255);
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     .progress-items {
         display: flex;
         .progress-item {
@@ -54,7 +54,7 @@
     margin: 0;
     padding: 0;
     .answer-option {
-        margin: 0 0 20px 0;
+        margin: 0 0 15px 0;
         position: relative;
         background: #F5F5F5;
         padding: 10px;
@@ -254,7 +254,7 @@ button[data-counter] {
 
 .quiz-result {
     max-width: 400px;
-    margin: 50px auto 20px;
+    margin: 30px auto 20px;
     text-align: center;
     .result-grade {
         .result-achieved,

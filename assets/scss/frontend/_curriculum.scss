@@ -119,6 +119,7 @@ ul.learn-press-nav-tabs {
             .section-left {
                 display: table-cell;
                 vertical-align: top;
+                cursor: pointer;
             }
             .section-title,
             .section-desc {
@@ -232,6 +233,8 @@ ul.learn-press-nav-tabs {
                     }
                     .count-questions {
                         background: #dd88ae;
+                        padding: 5px;
+                        height: auto;
                     }
 
                     .course-item-status {
@@ -408,13 +411,16 @@ body {
             bottom: 0;
             overflow: hidden;
             .content-item-wrap {
-                margin: 20px auto;
+                margin: 10px auto;
                 max-width: 900px;
             }
             .course-item-title {
                 font-size: 1.4rem;
             }
             .content-question-summary {
+                .review-heading {
+                    text-align: center;
+                }
                 .question-title {
                     font-size: 1.2rem;
                     margin-bottom: 10px;
@@ -460,6 +466,9 @@ body {
         }
         .content-item-summary {
             margin-bottom: 20px;
+            & > h3 {
+                margin-bottom: 10px;
+            }
         }
         &.content-only {
             #learn-press-content-item {
@@ -534,13 +543,14 @@ body {
         display: inline-block;
         a {
             display: block;
-            padding: 5px 8px;
+            padding: 8px;
             background: #F5F5F5;
             line-height: 1;
             color: #999;
             border: 1px solid #DDD;
             font-size: 12px;
             min-width: 20px;
+            box-shadow: none;
             span {
                 vertical-align: middle;
             }
@@ -553,7 +563,7 @@ body {
         &.current {
             a {
                 background: #00adff;
-                color: #FFF;
+                color: #FFF !important;
                 border-color: #3880a2;
             }
         }
@@ -714,6 +724,9 @@ body {
         line-height: 60px;
         padding: 0 15px;
         margin: 0;
+        a{
+            box-shadow: none;
+        }
     }
 }
 
@@ -724,7 +737,7 @@ body {
     padding: 15px;
     button,
     .lp-button {
-        height: 30px;
+        height: 35px;
         line-height: 30px;
         padding: 0 10px;
         font-size: 14px;

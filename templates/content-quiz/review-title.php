@@ -15,4 +15,4 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<h3><?php _e( 'Review', 'learnpress' ); ?></h3>
+<h3 class="review-heading"><?php _e( 'Review', 'learnpress' ); ?></h3>
