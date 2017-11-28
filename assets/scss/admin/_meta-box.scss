@@ -50,6 +50,13 @@
                 min-width: 200px;
             }
         }
+        &.rwmb-duration-wrapper{
+            .rwmb-input{
+                select, input{
+                    vertical-align: middle;
+                }
+            }
+        }
     }
 
     .lp-course-sale_start-field, .lp-course-sale_end-field {

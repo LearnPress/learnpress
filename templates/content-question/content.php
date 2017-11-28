@@ -13,9 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $question = LP_Global::quiz_question(); ?>
+$question = LP_Global::quiz_question(); ?>
 
 <div class="content-question-summary" id="content-question-<?php echo $question->get_id(); ?>">
 	<?php

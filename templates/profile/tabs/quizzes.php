@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/tabs/quizzes.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,18 +13,16 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
-global $post, $profile;
-$profile = learn_press_get_profile();
-$query   = $profile->query_quizzes( array( 'status' => LP_Request::get_string( 'filter-status' ) ) );
+$profile       = learn_press_get_profile();
+$filter_status = LP_Request::get_string( 'filter-status' );
+$query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
 ?>
 
 <div class="learn-press-subtab-content">
     <h3 class="profile-heading"><?php _e( 'My Quizzes', 'learnpress' ); ?></h3>
 
-	<?php if ( $filters = $profile->get_quizzes_filters( LP_Request::get_string( 'filter-status' ) ) ) { ?>
+	<?php if ( $filters = $profile->get_quizzes_filters( $filter_status ) ) { ?>
         <ul class="lp-sub-menu">
 			<?php foreach ( $filters as $class => $link ) { ?>
                 <li class="<?php echo $class; ?>"><?php echo $link; ?></li>
@@ -48,7 +46,7 @@ $query   = $profile->query_quizzes( array( 'status' => LP_Request::get_string( '
                 <tr>
                     <td class="column-course">
                         <a href="<?php echo $quiz->get_permalink(); ?>">
-							<?php echo $quiz->get_title(); ?>
+							<?php echo $quiz->get_title( 'display' ); ?>
                         </a>
                     </td>
                     <td class="column-date"><?php echo $user_quiz->get_start_time( 'd M Y' ); ?></td>

@@ -496,26 +496,34 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			'user_item_id'   => 0//insert
 		);
 
-		$last_results = $this->get_item_archive( $quiz_id, $course_id, true );
-
+		$last_results         = $this->get_item_archive( $quiz_id, $course_id, true );
+		$set_current_question = false;
 		// If there is no a record
 		if ( ! $last_results ) {
-			$item_data = apply_filters( 'learn-press/insert-user-item-data', $item_data, $quiz_id, $course_id, $this->get_id() );
+			$item_data            = apply_filters( 'learn-press/insert-user-item-data', $item_data, $quiz_id, $course_id, $this->get_id() );
+			$set_current_question = true;
 			//learn_press_update_user_item_field( $item_data );
 		} else {
 
 			// If there is one record but it's status is not valid then
 			// update it as started
 			if ( in_array( $last_results['status'], array( '', 'viewed' ) ) ) {
-				$item_data['status'] = 'started';
-				$item_data           = apply_filters( 'learn-press/update-user-item-data', $item_data, $quiz_id, $course_id, $this->get_id() );
+				$last_results['status'] = 'started';
+				$item_data              = apply_filters( 'learn-press/update-user-item-data', $last_results, $quiz_id, $course_id, $this->get_id() );
+				$set_current_question   = true;
 				//learn_press_update_user_item_field( $item_data, array( 'user_item_id' => $last_results['user_item_id'] ) );
 			}
 		}
 
-		///learn_press_update_user_item_field( $item_data );
 		$this->_curd->update_user_item( $this->get_id(), $quiz_id, $item_data, $course_id );
 		$return = $this->get_item_archive( $quiz_id, $course_id, true );
+
+		if ( $return && $set_current_question ) {
+			$quiz = learn_press_get_quiz( $quiz_id );
+			if ( $first_question = $quiz->get_question_at( 0 ) ) {
+				learn_press_update_user_item_meta( $return['user_item_id'], '_current_question', $first_question );
+			}
+		}
 
 		return $return;
 	}
@@ -2189,7 +2197,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	public function get_course_info( $course_id, $field = null, $force = false ) {
 
-		_deprecated_function(__FUNCTION__, '3.0.0');
+		_deprecated_function( __FUNCTION__, '3.0.0' );
 		if ( ! $course_id ) {
 			return false;
 		}

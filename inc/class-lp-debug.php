@@ -124,8 +124,13 @@ class LP_Debug {
 				print_r( $message );
 				$message = ob_get_clean();
 			}
-			fwrite( $this->_handles[ $handle ], "-----" . $time . "-----\n" . $message . "\n" );
-			do_action( 'learn_press_log_add', $handle, $message );
+			try {
+				fwrite( $this->_handles[ $handle ], "-----" . $time . "-----\n" . $message . "\n" );
+				do_action( 'learn_press_log_add', $handle, $message );
+			}
+			catch ( Exception $ex ) {
+				error_log( 'LearnPress add log failed!' );
+			}
 		}
 	}
 

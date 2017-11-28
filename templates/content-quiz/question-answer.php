@@ -13,9 +13,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 if ( ! isset( $question_id ) ) {
 	return;
 }

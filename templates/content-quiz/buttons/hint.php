@@ -23,8 +23,7 @@ $button_text = $hinted ? __( 'Hinted', 'learnpress' ) : __( 'Hint', 'learnpress'
 
 <?php do_action( 'learn-press/quiz/before-question-hint-button' ); ?>
 
-    <form name="question-hint" class="question-hint form-button lp-form" method="post" enctype="multipart/form-data"
-          @submit="showHint">
+    <form name="question-hint" class="question-hint form-button lp-form" method="post" enctype="multipart/form-data">
 
 		<?php do_action( 'learn-press/quiz/begin-question-hint-button' ); ?>
 

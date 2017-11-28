@@ -1807,8 +1807,10 @@ function learn_press_default_user_item_status( $item_id ) {
 	$status = '';
 	switch ( get_post_type( $item_id ) ) {
 		case LP_LESSON_CPT:
+		    $status = 'started';
+		    break;
 		case LP_QUIZ_CPT:
-			$status = 'started';
+			$status = 'viewed';
 			break;
 		case LP_COURSE_CPT:
 			$status = 'enrolled';

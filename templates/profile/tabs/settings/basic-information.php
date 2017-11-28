@@ -13,11 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
-
-global $profile;
+$profile = LP_Profile::instance();
 
 if ( ! isset( $section ) ) {
 	$section = 'basic-information';

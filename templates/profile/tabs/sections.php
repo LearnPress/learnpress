@@ -13,11 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php global $profile; ?>
+$profile = LP_Profile::instance();
 
-<?php
 if ( ! isset( $tab_key, $tab_data ) ) {
 	return;
 }

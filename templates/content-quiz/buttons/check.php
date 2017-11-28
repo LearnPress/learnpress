@@ -40,7 +40,10 @@ $button_text = $checked ? __( 'Checked', 'learnpress' ) : __( 'Check', 'learnpre
             <button type="submit"
                     class="button-check-answer"
                     data-counter="<?php echo $user->can_check_answer( $quiz->get_id() ); ?>"
-				<?php disabled( $checked ); ?>><?php echo $button_text; ?></button>
+				<?php disabled( $checked ); ?>>
+                <?php echo $button_text; ?>
+            </button>
+
 		<?php } ?>
         <input type="hidden" name="noajax" value="yes">
 		<?php do_action( 'learn-press/quiz/end-check-answer-button' ); ?>

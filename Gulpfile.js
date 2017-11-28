@@ -20,7 +20,8 @@ var gulp = require('gulp'),
     readFile = require('read-file'),
     replace = require('gulp-replace'),
     mkdirp = require("mkdirp"),
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    cleanCSS = require('gulp-clean-css');
 
 gulp.task('scss', function () {
     return gulp.src(['assets/scss/**/*.scss'])
@@ -49,6 +50,13 @@ gulp.task('compress-js', function (cb) {
         .pipe(uglify())
         .pipe(gulp.dest('assets/js/admin'))
 });
+
+gulp.task('minify-css', function () {
+    return gulp.src('./assets/**/*.css')
+        .pipe(cleanCSS())
+        .pipe(gulp.dest('./assets'));
+});
+
 /*
  * SVN: Copy working directory to SVN and prepare something before submitting.
  */
@@ -134,28 +142,3 @@ gulp.task('svn', ['scss', 'copy-trunk'], function () {
 });
 
 // end of the world!
-
-gulp.task("compile-sass-to-css", function (project) {
-    return gulp.src([
-        'sources/' + project + '/assets/sass/style.scss',
-        'sources/' + project + '/shortcodes/**/assets/sass/*.scss',
-        '!sources/' + project + '/shortcodes/**/assets/sass/*-options.scss',
-        'sources/' + project + '/inc/widgets/**/assets/sass/*.scss',
-        '!sources/' + project + '/inc/widgets/**/assets/sass/*-options.scss',
-    ])
-
-        .pipe(concat('_tmp-options.scss'))
-        .pipe(gulp.dest('sources/' + project + '/assets/sass/'))
-        .pipe(sourcemaps.init())
-        .pipe(rename('style.unminify.css'))
-        .pipe(sass())
-        .pipe(sourcemaps.write({includeContent: false, sourceRoot: 'src'}))
-        .pipe(lec())
-        .pipe(gulp.dest('sources/' + project + '/'))
-        .pipe(rename('style.css'))
-        .pipe(cssmin())
-        .pipe(lec())
-
-        .pipe(gulp.dest('sources/' + project + '/'))
-        .pipe(livereload());
-});

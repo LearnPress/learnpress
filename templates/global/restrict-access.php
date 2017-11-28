@@ -13,11 +13,15 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
+
+get_header();
+
+// @deprecated
+do_action( 'learn_press_before_main_content' );
+
+// @since 3.0.0
+do_action( 'learn-press/before-main-content' );
 ?>
-
-<?php get_header(); ?>
-
-<?php do_action( 'learn_press_before_main_content' ); ?>
 
 <div class="restrict-access-page">
 
@@ -25,6 +29,12 @@ defined( 'ABSPATH' ) || exit();
 
 </div>
 
-<?php do_action( 'learn_press_after_main_content' ); ?>
+<?php
 
-<?php get_footer(); ?>
+// @since 3.0.0
+do_action( 'learn-press/after-main-content' );
+
+// @deprecated
+do_action( 'learn_press_after_main_content' );
+
+get_footer(); ?>

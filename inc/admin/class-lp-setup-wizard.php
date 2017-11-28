@@ -260,15 +260,9 @@ class LP_Setup_Wizard {
 			'paypal' => array(
 				'name'     => __( 'Paypal', 'learnpress' ),
 				'desc'     => 'Pay with your Paypal account',
-				'icon'     => 'http://localhost/learnpress/test/wp-content/plugins/woocommerce/assets/images/paypal.png',
+				'icon'     => LP()->plugin_url( '/assets/images/paypal-2.png' ),
 				'callback' => array( $this, 'setup_paypal' )
-			),
-//			'stripe' => array(
-//				'name'     => __( 'Stripe', 'learnpress' ),
-//				'desc'     => 'Pay with your Cash',
-//				'callback' => array( $this, 'setup_stripe' ),
-//				'icon'     => 'http://localhost/learnpress/test/wp-content/plugins/woocommerce/assets/images/stripe.png'
-//			)
+			)
 		);
 	}
 

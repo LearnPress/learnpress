@@ -196,13 +196,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$type  = $this->get_passing_grade_type();
 			$value = $this->get_data( 'passing_grade' );
 			switch ( $type ) {
-				case 'percentage':
-					$value = "{$value}%";
-					break;
+
 				case 'point':
 					break;
+				case 'percentage':
 				default:
-					$value = false;
+					$value = "{$value}%";
+
 			}
 
 			return $value;
@@ -705,12 +705,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return string
 		 */
 		public function get_question_link( $question_id = null ) {
-			$course = LP_Global::course();
-
+			$course    = LP_Global::course();
 			$permalink = $course->get_item_link( $this->get_id() );
 			if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->get_id() ) != 'draft' ) {
-				$question_name = get_post_field( 'post_name', $question_id );
-				$permalink     = $permalink . $question_name;
+				if ( get_post_type( $question_id ) === LP_QUESTION_CPT ) {
+					$question_name = get_post_field( 'post_name', $question_id );
+					$permalink     = $permalink . $question_name;
+				}
 			} else {
 				$permalink = add_query_arg( array( 'question', $question_id ), $permalink );
 			}

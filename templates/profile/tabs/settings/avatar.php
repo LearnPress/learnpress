@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/settings/tabs/avatar.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,10 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
-global $profile;
+$profile      = LP_Profile::instance();
 $user         = $profile->get_user();
 $custom_img   = $user->get_upload_profile_src();
 $gravatar_img = $user->get_profile_picture( 'gravatar' );
@@ -33,7 +31,8 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
 	?>
 
     <div id="lp-user-edit-avatar" class="lp-edit-profile lp-edit-avatar">
-        <div class="lp-avatar-preview" style="width: <?php echo $thumb_size['width']; ?>px;height: <?php echo $thumb_size['height']; ?>px;">
+        <div class="lp-avatar-preview"
+             style="width: <?php echo $thumb_size['width']; ?>px;height: <?php echo $thumb_size['height']; ?>px;">
             <div class="profile-picture profile-avatar-current">
 				<?php if ( $custom_img ) { ?>
                     <img src="<?php echo $custom_img; ?>"/>

@@ -1,8 +1,6 @@
 // Global variables
 $primary-color: #00adff;
-
 $second-color: #e7f7ff;
-
 $primary-bg-color: #000;
 $primary-bg-color-before: #000;
 $primary-bg-color-after: #000;
@@ -23,7 +21,6 @@ input[type="number"],
 input[type="password"] {
     @include box-sizing(border-box);
 }
-
 .clearfix {
     &:after {
         @include clear-fix();
@@ -36,7 +33,6 @@ input[type="password"] {
 
 .learnpress-page {
     button {
-        //height: 45px;
         line-height: 45px;
         padding: 0 12px;
     }
@@ -160,31 +156,10 @@ ul.learn-press-courses {
         .progress-active {
             height: 100%;
             width: 100%;
-            //background: #00adff;
             position: absolute;
             left: 50%;
             margin-left: -100%;
             @include border-radius(5px);
-        }
-    }
-    .xxxx {
-        position: absolute;
-        width: 28px;
-        height: 28px;
-        background: #3393c1;
-        white-space: nowrap;
-        overflow: hidden;
-        font-size: 12px;
-        line-height: 28px;
-        border-radius: 50%;
-        margin-left: -15px;
-        top: 50%;
-        margin-top: -15px;
-        color: #FFF;
-        border: 1px solid #559abb;
-        text-align: center;
-        &:after {
-            content: '%';
         }
     }
 }
@@ -226,6 +201,9 @@ ul.learn-press-courses {
                 border: 1px solid #DDD;
                 box-shadow: none;
                 line-height: 1;
+                float: none;
+                font-size: 1em;
+                border-radius: 0;
             }
             span {
                 background: #F5F5F5;

@@ -19,8 +19,7 @@ defined( 'ABSPATH' ) || exit();
 
 <?php do_action( 'learn-press/quiz/before-complete-button' ); ?>
 
-    <form name="complete-quiz" class="complete-quiz form-button lp-form" method="post" enctype="multipart/form-data"
-          @submit="completeItem">
+    <form name="complete-quiz" class="complete-quiz form-button lp-form" method="post" enctype="multipart/form-data">
 
 		<?php do_action( 'learn-press/quiz/begin-complete-button' ); ?>
 
@@ -29,6 +28,7 @@ defined( 'ABSPATH' ) || exit();
 		<?php do_action( 'learn-press/quiz/end-complete-button' ); ?>
 
 		<?php LP_Nonce_Helper::quiz_action( 'complete', $quiz->get_id(), get_the_ID() ); ?>
+        <input type="hidden" name="noajax" value="yes">
 
     </form>
 

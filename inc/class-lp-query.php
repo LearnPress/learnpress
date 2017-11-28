@@ -332,7 +332,9 @@ class LP_Query {
 		return $item;
 	}
 
-
+	/**
+	 * @param WP_Query $q
+	 */
 	public function query_taxonomy( $q ) {
 		// We only want to affect the main query
 		if ( ! $q->is_main_query() ) {
@@ -345,6 +347,11 @@ class LP_Query {
 		}
 	}
 
+	/**
+	 * @param string $join
+	 *
+	 * @return string
+	 */
 	public function join_term( $join ) {
 		global $wp_query, $wpdb;
 
@@ -359,6 +366,11 @@ class LP_Query {
 		return $join;
 	}
 
+	/**
+	 * @param string $where
+	 *
+	 * @return string
+	 */
 	public function add_tax_search( $where ) {
 		global $wp_query, $wpdb;
 
@@ -370,6 +382,11 @@ class LP_Query {
 		return $where;
 	}
 
+	/**
+	 * @param string $groupby
+	 *
+	 * @return string
+	 */
 	public function tax_groupby( $groupby ) {
 		global $wpdb;
 		$groupby = "{$wpdb->posts}.ID";
@@ -379,6 +396,9 @@ class LP_Query {
 		return $groupby;
 	}
 
+	/**
+	 * Remove filter query
+	 */
 	public function remove_query_tax() {
 		remove_filter( 'posts_where', 'learn_press_add_tax_search' );
 		remove_filter( 'posts_join', 'learn_press_join_term' );

@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/content-item-lp_quiz.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,22 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
-$user        = learn_press_get_current_user();
-$course      = LP_Global::course();
-$quiz        = LP_Global::course_item_quiz();
-$user_course = $user->get_course_data( $course->get_id() );
-?>
-<?php if ( ! $quiz ) {
-	return;
-} ?>
-
-<?php
-$user_item      = $user_course[ $quiz->get_id() ];
-$have_questions = $quiz->get_questions();
-$can_view_item  = $user->can( 'view-item', $quiz->get_id(), $course->get_id() );
+$quiz = LP_Global::course_item_quiz();
 ?>
 
 <div id="content-item-quiz" class="content-item-summary">

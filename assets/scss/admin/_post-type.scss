@@ -66,3 +66,35 @@
         }
     }
 }
+
+.post-type-lp_lesson {
+    .column-preview {
+        text-align: left;
+        float: none;
+        input[type="checkbox"] {
+            border: none;
+            width: 30px;
+            height: auto;
+            box-shadow: none;
+            margin: 0;
+            text-align: center;
+            @include transform(rotate(-180deg));
+            &:before,
+            &:checked:before {
+                font: 400 21px/1 fontawesome;
+                content: "\f205";
+                font-size: 24px;
+                width: 30px;
+                margin: 0;
+                text-align: center;
+            }
+
+            &:checked {
+                @include transform(rotate(0deg));
+                &:before {
+                    margin-top: -1px;
+                }
+            }
+        }
+    }
+}

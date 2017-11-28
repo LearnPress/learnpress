@@ -415,16 +415,16 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		$this->set_status( $status );
 		$this->update();
 
-		$return = $wpdb->get_var(
-			$wpdb->prepare( "
+		$query = $wpdb->prepare( "
 				SELECT user_item_id
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
 					AND item_id = %d
 					AND start_time <> %s AND end_time <> %s
 					AND status = %s
-			", $this->get_id(), $this->get_item_id(), $null_time, $null_time, $status )
-		);
+			", $this->get_user_id(), $this->get_item_id(), $null_time, $null_time, $status );
+
+		$return = $wpdb->get_var( $query );
 
 		return $return;
 	}

@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/intro.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,9 +13,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $course = LP_Global::course();
 $quiz   = LP_Global::course_item_quiz();
 $count  = $quiz->get_retake_count();
@@ -24,7 +22,7 @@ $count  = $quiz->get_retake_count();
 <ul class="quiz-intro">
     <li>
         <label><?php _e( 'Attempts allowed', 'learnpress' ); ?></label>
-		<span><?php echo ( null == $count || 0 > $count ) ? __( 'Unlimited', 'learnpress' ) : ( $count ? $count : __( 'No', 'learnpress' ) ); ?></span>
+        <span><?php echo ( null == $count || 0 > $count ) ? __( 'Unlimited', 'learnpress' ) : ( $count ? $count : __( 'No', 'learnpress' ) ); ?></span>
     </li>
     <li>
         <label><?php _e( 'Duration', 'learnpress' ); ?></label>

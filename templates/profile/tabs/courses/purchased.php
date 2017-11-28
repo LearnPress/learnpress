@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/courses/purchased.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,18 +13,17 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
-$profile = learn_press_get_profile();
-$query = $profile->query_courses( 'purchased', array( 'status' => LP_Request::get_string( 'filter-status' ) ) );
+$profile       = learn_press_get_profile();
+$filter_status = LP_Request::get_string( 'filter-status' );
+$query         = $profile->query_courses( 'purchased', array( 'status' => $filter_status ) );
 ?>
 
 <div class="learn-press-subtab-content">
 
     <h3 class="profile-heading"><?php _e( 'Purchased Courses', 'learnpress' ); ?></h3>
 
-	<?php if ( $filters = $profile->get_purchased_courses_filters( LP_Request::get_string( 'filter-status' ) ) ) { ?>
+	<?php if ( $filters = $profile->get_purchased_courses_filters( $filter_status ) ) { ?>
         <ul class="lp-sub-menu">
 			<?php foreach ( $filters as $class => $link ) { ?>
                 <li class="<?php echo $class; ?>"><?php echo $link; ?></li>

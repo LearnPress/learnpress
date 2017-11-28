@@ -13,17 +13,16 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php global $profile; ?>
+$profile = LP_Profile::instance();
 
-<?php if ( false === ( $order = $profile->get_view_order() ) ) {
+if ( false === ( $order = $profile->get_view_order() ) ) {
 	return;
-} ?>
+}
 
-<?php
 learn_press_get_template( 'order/order-details.php', array( 'order' => $order ) );
 learn_press_get_template( 'profile/tabs/orders/recover-my-order.php', array( 'order' => $order ) );
+
 ?>
 
 <?php if ( $order->get_user_id() != get_current_user_id() ) { ?>
@@ -33,7 +32,6 @@ learn_press_get_template( 'profile/tabs/orders/recover-my-order.php', array( 'or
 <?php } else { ?>
 
 	<?php if ( ( $checkout_email = $order->get_checkout_email() ) && $checkout_email != $profile->get_user()->get_email() ) { ?>
-
 
         <p><?php printf( __( 'This order is paid by %s', 'learnpress' ), $order->get_checkout_email() ); ?></p>
 

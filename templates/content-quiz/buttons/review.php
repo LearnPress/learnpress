@@ -13,14 +13,11 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $course = LP_Global::course();
 $quiz   = LP_Global::course_item_quiz();
-?>
 
-<?php do_action( 'learn-press/before-quiz-review-button' ); ?>
+do_action( 'learn-press/before-quiz-review-button' ); ?>
 
 <form name="show-quiz-review" class="show-quiz-review form-button lp-form" method="post" enctype="multipart/form-data">
 

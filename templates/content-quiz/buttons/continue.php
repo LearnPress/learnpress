@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/buttons/complete.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,9 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $user = LP_Global::user(); ?>
+$user = LP_Global::user(); ?>
 
 <?php do_action( 'learn-press/quiz/before-continue-button' ); ?>
 

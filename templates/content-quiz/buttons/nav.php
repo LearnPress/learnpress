@@ -13,9 +13,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $user      = LP_Global::user();
 $quiz      = LP_Global::course_item_quiz();
 $course_id = get_the_ID();
@@ -26,8 +24,7 @@ $course_id = get_the_ID();
 	<?php do_action( 'learn-press/quiz/before-prev-question-button' ); ?>
 
     <form name="prev-question" class="prev-question form-button lp-form" method="post"
-          action="<?php echo $quiz->get_question_link( $prev_id ); ?>"
-          @submit="prevQuestion">
+          action="<?php echo $quiz->get_question_link( $prev_id ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-prev-question-button' ); ?>
 
@@ -47,8 +44,7 @@ $course_id = get_the_ID();
 	<?php do_action( 'learn-press/quiz/before-next-question-button' ); ?>
 
     <form name="next-question" class="next-question form-button lp-form" method="post"
-          action="<?php echo $quiz->get_question_link( $next_id ); ?>"
-          @submit="nextQuestion">
+          action="<?php echo $quiz->get_question_link( $next_id ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-next-question-button' ); ?>
 
@@ -68,8 +64,7 @@ $course_id = get_the_ID();
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 
     <form name="skip-question" class="skip-question form-button" method="post"
-          action="<?php echo $quiz->get_question_link( $next_id ); ?>"
-          @submit="nextQuestion">
+          action="<?php echo $quiz->get_question_link( $next_id ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-skip-question-button' ); ?>
 

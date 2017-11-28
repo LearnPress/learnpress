@@ -246,9 +246,9 @@
 
         $('.learn-press-toggle-lesson-preview').on('change', function () {
             $.ajax({
-                url: LP_Settings.ajax,
+                url: '',
                 data: {
-                    action: 'learnpress_toggle_lesson_preview',
+                    'lp-ajax': 'toggle_lesson_preview',
                     lesson_id: this.value,
                     previewable: this.checked ? 'yes' : 'no',
                     nonce: $(this).attr('data-nonce')

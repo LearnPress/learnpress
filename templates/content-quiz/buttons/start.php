@@ -13,9 +13,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $course = LP_Global::course();
 $quiz   = LP_Global::course_item_quiz();
 ?>
@@ -30,7 +28,8 @@ $quiz   = LP_Global::course_item_quiz();
 
 	<?php do_action( 'learn-press/end-quiz-start-button' ); ?>
 
-	<?php LP_Nonce_Helper::quiz_action( 'start', $quiz->get_id(), $course->get_id() ); ?>
+	<?php LP_Nonce_Helper::quiz_action( 'start', $quiz->get_id(), $course->get_id(), true ); ?>
+    <input type="hidden" name="noajax" value="yes">
 
 </form>
 

@@ -31,7 +31,6 @@ if ( false === $quiz->get_duration() ) {
 $result  = $quiz_data->get_results();
 $percent = $quiz_data->get_questions_answered( true );
 
-print_r($quiz->get_duration());
 ?>
 
 <div class="quiz-progress">

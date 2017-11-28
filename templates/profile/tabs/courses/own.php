@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/courses/own.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,11 +13,10 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
-$profile = learn_press_get_profile();
-$query   = $profile->query_courses( 'own', array( 'status' => LP_Request::get_string( 'filter-status' ) ) );
+$profile       = learn_press_get_profile();
+$filter_status = LP_Request::get_string( 'filter-status' );
+$query         = $profile->query_courses( 'own', array( 'status' => $filter_status ) );
 ?>
 
 <div class="learn-press-subtab-content">
@@ -26,7 +25,7 @@ $query   = $profile->query_courses( 'own', array( 'status' => LP_Request::get_st
 		<?php _e( 'My Courses', 'learnpress' ); ?>
     </h3>
 
-	<?php if ( $filters = $profile->get_own_courses_filters( LP_Request::get_string( 'filter-status' ) ) ) { ?>
+	<?php if ( $filters = $profile->get_own_courses_filters( $filter_status ) ) { ?>
         <ul class="lp-sub-menu">
 			<?php foreach ( $filters as $class => $link ) { ?>
                 <li class="<?php echo $class; ?>"><?php echo $link; ?></li>

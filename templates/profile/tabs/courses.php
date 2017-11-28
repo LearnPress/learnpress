@@ -13,14 +13,11 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $profile = learn_press_get_profile();
 $query   = $profile->query_courses();
-?>
 
-<?php if ( ! $query['total'] ) {
+if ( ! $query['total'] ) {
 	learn_press_display_message( __( 'You haven\'t got any courses yet!', 'learnpress' ) );
 
 	return;
