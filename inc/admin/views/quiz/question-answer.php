@@ -15,11 +15,11 @@ learn_press_admin_view( 'quiz/question-answer-option' );
             <table class="lp-list-options">
                 <thead>
                 <tr>
-                    <th class="lp-column-heading lp-column-heading-sort"></th>
-                    <th class="lp-column-heading lp-column-heading-order"></th>
-                    <th class="lp-column-heading lp-column-heading-answer_text"><?php esc_html_e( 'Answer Text', 'learnpress' ); ?></th>
-                    <th class="lp-column-heading lp-column-heading-answer_correct"><?php esc_html_e( 'Is Correct?', 'learnpress' ); ?></th>
-                    <th class="lp-column-heading lp-column-heading-actions"></th>
+                    <th class="sort"></th>
+                    <th class="order"></th>
+                    <th class="answer-text"><?php esc_html_e( 'Answer Text', 'learnpress' ); ?></th>
+                    <th class="answer-correct"><?php esc_html_e( 'Is Correct?', 'learnpress' ); ?></th>
+                    <th class="actions"></th>
                 </tr>
                 </thead>
                 <draggable :list="question.answers" :element="'tbody'" @end="sort">

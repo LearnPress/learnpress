@@ -20,11 +20,11 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
             <div class="lp-list-questions">
                 <div class="header">
                     <div class="table-row">
-                        <div class="lp-column-sort"></div>
-                        <div class="lp-column-order">#</div>
-                        <div class="lp-column-name"><?php esc_html_e( 'Name', 'learnpress' ); ?></div>
-                        <div class="lp-column-type"><?php esc_html_e( 'Type', 'learnpress' ); ?></div>
-                        <div class="lp-column-actions"><?php esc_html_e( 'Actions', 'learnpress' ); ?></div>
+                        <div class="sort"></div>
+                        <div class="order">#</div>
+                        <div class="name"><?php esc_html_e( 'Name', 'learnpress' ); ?></div>
+                        <div class="type"><?php esc_html_e( 'Type', 'learnpress' ); ?></div>
+                        <div class="actions"><?php esc_html_e( 'Actions', 'learnpress' ); ?></div>
                     </div>
                 </div>
 

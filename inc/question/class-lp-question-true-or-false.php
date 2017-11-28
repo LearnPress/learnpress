@@ -1,11 +1,10 @@
 <?php
-
 /**
  * LP_Question_True_Or_False
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.0.0
  * @extends LP_Question
  */
 
@@ -60,27 +59,18 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 		}
 
 		/**
-		 * @param array $args
+		 * Check user answer.
 		 *
-		 * @return string
-		 */
-		public function admin_interface( $args = array() ) {
-			return parent::admin_interface( $args );
-		}
-
-		/**
 		 * @param null $user_answer
 		 *
 		 * @return array
 		 */
 		public function check( $user_answer = null ) {
-			$return = array(
-				'correct' => false,
-				'mark'    => 0
-			);
+			$return = parent::check();
+
 			if ( $answers = $this->get_answers() ) {
-				foreach ( $answers as $k => $answer ) {
-					if ( ( $answer['is_true'] == 'yes' ) && ( $answer['value'] == $user_answer ) ) {
+				foreach ( $answers as $key => $option ) {
+					if ( ( $option['is_true'] == 'yes' ) && ( $option['value'] == $user_answer ) ) {
 						$return['correct'] = true;
 						$return['mark']    = floatval( $this->get_mark() );
 						break;
