@@ -269,7 +269,6 @@ class LP_Request {
 		$user     = LP_Global::user();
 		$redirect = get_the_permalink( $course_id );
 		$thing    = $user->enroll( $course_id, $order_id );
-
 		if ( is_wp_error( $thing ) ) {
 			learn_press_add_message(
 				$thing->get_error_message(),

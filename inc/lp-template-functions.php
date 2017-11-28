@@ -75,11 +75,14 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 			return;
 		}
 
+		$purchased = $user->has_purchased_course( $course->get_id() );
 		// For free course and user does not purchased
-		if ( $course->is_free() && ! $user->has_purchased_course( $course->get_id() ) ) {
+		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
-		} else {
-			return;
+		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
+			if ( ! $course_data->get_status() ) {
+				learn_press_get_template( 'single-course/buttons/enroll.php' );
+			}
 		}
 	}
 
@@ -2622,14 +2625,16 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
-	function learn_press_content_item_lesson_complete_button( $course_id, $lesson_id ) {
-		$user = LP_Global::user();
+	function learn_press_content_item_lesson_complete_button() {
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+		$lesson = LP_Global::course_item();
 
-		if ( ( $course_item = $user->get_course_data( $course_id ) ) && $course_item->is_finished() ) {
+		if ( ( $course_item = $user->get_course_data( $course->get_id() ) ) && $course_item->is_finished() ) {
 			return;
 		}
 
-		if ( $lesson_item = $course_item->get_item( $lesson_id ) ) {
+		if ( $lesson_item = $course_item->get_item( $lesson->get_id() ) ) {
 			if ( $lesson_item->is_completed() ) {
 				return;
 			}
