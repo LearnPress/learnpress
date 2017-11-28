@@ -5,12 +5,20 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
-class LP_Abstract_User extends LP_Abstract_Object_Data {
+if ( ! class_exists( 'LP_Abstract_User' ) ) {
+
+	/**
+	 * Class LP_Abstract_User
+	 */
+	class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	/**
 	 * @var WP_User object
@@ -52,42 +60,55 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	protected $_course_items = array();
 
-	protected static $_users = array();
+		/**
+		 * @var array
+		 */
+		protected static $_users = array();
 
-	public $profile_picture_src = null;
+		/**
+		 * @var null
+		 */
+		public $profile_picture_src = null;
 
-	public $profile_picture_type = null;
+		/**
+		 * @var null
+		 */
+		public $profile_picture_type = null;
 
-	protected $_data = array(
-		'email'         => '',
-		'user_login'    => '',
-		'description'   => '',
-		'first_name'    => '',
-		'last_name'     => '',
-		'nickname'      => '',
-		'display_name'  => '',
-		'date_created'  => '',
-		'date_modified' => '',
-		'role'          => '',
-		'roles'         => array()
-	);
+		/**
+		 * @var array
+		 */
+		protected $_data = array(
+			'email'         => '',
+			'user_login'    => '',
+			'description'   => '',
+			'first_name'    => '',
+			'last_name'     => '',
+			'nickname'      => '',
+			'display_name'  => '',
+			'date_created'  => '',
+			'date_modified' => '',
+			'role'          => '',
+			'roles'         => array()
+		);
 
 	/**
 	 * @var LP_User_CURL|null
 	 */
 	protected $_curd = null;
 
-	protected static $_loaded = 0;
+		/**
+		 * @var int
+		 */
+		protected static $_loaded = 0;
 
-	/**
-	 * Constructor
-	 *
-	 * @param int|LP_User|WP_User $the_user
-	 * @param mixed               $args
-	 *
-	 * @throws Exception
-	 */
-	public function __construct( $the_user = 0, $args = array() ) {
+		/**
+		 * LP_Abstract_User constructor.
+		 *
+		 * @param int $the_user
+		 * @param array $args
+		 */
+		public function __construct( $the_user = 0, $args = array() ) {
 
 		$this->_curd = new LP_User_CURD();
 
@@ -515,6 +536,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			}
 		}
 
+		///learn_press_update_user_item_field( $item_data );
 		$this->_curd->update_user_item( $this->get_id(), $quiz_id, $item_data, $course_id );
 		$return = $this->get_item_archive( $quiz_id, $course_id, true );
 
@@ -2197,10 +2219,10 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	public function get_course_info( $course_id, $field = null, $force = false ) {
 
-		_deprecated_function( __FUNCTION__, '3.0.0' );
-		if ( ! $course_id ) {
-			return false;
-		}
+			_deprecated_function( __FUNCTION__, '3.0.0' );
+			if ( ! $course_id ) {
+				return false;
+			}
 
 		// XXXXX
 		return false;
@@ -3233,4 +3255,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return $this->get_data( 'display_name' );
 	}
 	/** Getter/Setter functions */
+}
+
 }

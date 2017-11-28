@@ -26,7 +26,8 @@ class LP_Query_List_Table implements ArrayAccess {
 				'nav_format' => '%#%/',
 				'nav_base'   => '',
 				'single'     => __( 'item', 'learnpress' ),
-				'plural'     => __( 'items', 'learnpress' )
+				'plural'     => __( 'items', 'learnpress' ),
+				'format'     => ''
 			)
 		);
 
@@ -96,7 +97,7 @@ class LP_Query_List_Table implements ArrayAccess {
 		if ( ! empty( $this->_data['nav_base'] ) ) {
 			if ( is_callable( $this->_data['nav_base'] ) ) {
 				$base = call_user_func_array( $this->_data['nav_base'], array( $this->_data['nav_format'] ) );
-			}else{
+			} else {
 				$base = $this->_data['nav_base'];
 			}
 		} else {

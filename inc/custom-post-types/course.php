@@ -255,6 +255,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function update_course( $course_id ) {
 			global $wpdb;
 
+			/**
+			 * Update all course items if set Course Author option
+			 */
 			$course = LP_Course::get_course( $course_id );
 			if ( ! $curriculum = $course->get_items() ) {
 				return;

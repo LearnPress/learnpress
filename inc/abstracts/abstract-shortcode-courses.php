@@ -70,15 +70,22 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 		public function get_atts() {
 			$atts = parent::get_atts();
 
+			$atts = wp_parse_args( $atts, array(
+				'limit'    => 1,
+				'order_by' => 'post_date',
+				'order'    => 'DESC'
+			) );
+
 			$limit    = $atts['limit'];
 			$order_by = $atts['order_by'];
 			$order    = $atts['order'];
 
-			// Validation date
-			$arr_orders_by = array( 'post_date', 'post_title', 'post_status', 'comment_count' );
-			$arr_orders    = array( 'DESC', 'ASC' );
-			$order         = strtoupper( $order );
+			// valid atts
+			if ( ! absint( $limit ) ) {
+				$limit = 10;
+			}
 
+			$arr_orders_by = array( 'post_date', 'post_title', 'post_status', 'comment_count' );
 			if ( ! in_array( $order_by, $arr_orders_by ) || ! in_array( 'post_' . $order_by, $arr_orders_by ) ) {
 				$order_by = 'post_date';
 			} else {
@@ -87,11 +94,10 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 				}
 			}
 
+			$arr_orders    = array( 'DESC', 'ASC' );
+			$order         = strtoupper( $order );
 			if ( ! in_array( $order, $arr_orders ) ) {
 				$order = 'DESC';
-			}
-			if ( ! absint( $limit ) ) {
-				$limit = 10;
 			}
 
 			return array( 'limit' => $limit, 'order_by' => $order_by, 'order' => $order );

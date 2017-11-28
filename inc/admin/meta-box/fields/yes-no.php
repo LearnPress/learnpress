@@ -8,14 +8,14 @@
 // Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
 
-if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
+if ( ! class_exists( 'RWMB_Yes_No_Field' ) ) {
 	class RWMB_Yes_No_Field extends RWMB_Field {
 		/**
 		 * Get field HTML
 		 *
 		 * @param string $html
-		 * @param mixed  $meta
-		 * @param mixed  $field
+		 * @param mixed $meta
+		 * @param mixed $field
 		 *
 		 * @return string
 		 */
@@ -47,13 +47,13 @@ if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
 		 *
 		 * @param mixed $new
 		 * @param mixed $old
-		 * @param int   $post_id
+		 * @param int $post_id
 		 * @param array $field
 		 *
 		 * @return int
 		 */
 		static function value( $new, $old, $post_id, $field ) {
-			return empty( $new ) ? 'no' : 'yes';
+			return ! empty( $new ) && $new == 'yes' ? 'yes' : 'no';
 		}
 
 		static function begin_html( $html, $meta, $field = '' ) {

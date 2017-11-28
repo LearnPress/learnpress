@@ -15,14 +15,19 @@ class RWMB_Image_Dimensions_Field extends RWMB_Field {
 	 */
 	public static function html( $meta, $field ) {
 		$meta = self::sanitize_meta( $meta );
+
+		// default value
+		$width  = array_key_exists( 'width', $meta ) ? $meta['width'] : 10;
+		$height = array_key_exists( 'height', $meta ) ? $meta['height'] : 10;
+
 		ob_start();
 		?>
         <input type="text" size="4" name="<?php echo $field['id']; ?>[width]"
-               value="<?php echo $meta['width']; ?>"
+               value="<?php echo $width; ?>"
                placeholder=""/>
         <span class="lp-sign-times">&times;</span>
         <input type="text" size="4" name="<?php echo $field['id']; ?>[height]"
-               value="<?php echo $meta['height']; ?>"
+               value="<?php echo $height; ?>"
                placeholder=""/>
         <span><?php _e( 'px', 'learnpress' ); ?></span>
         <span class="lp-sign-times">&nbsp;&nbsp;&nbsp;</span>
