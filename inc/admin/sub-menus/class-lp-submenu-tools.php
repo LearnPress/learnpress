@@ -19,6 +19,8 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 				'database' => __( 'Database', 'learnpress' )
 			)
 		);
+
+		parent::__construct();
 	}
 
 	public function page_content_database() {
@@ -27,6 +29,10 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 
 	public function page_content_template() {
 		learn_press_admin_view( 'tools/html-template' );
+	}
+
+	public function enqueue_assets() {
+		wp_enqueue_script( 'learn-press-submenu-tools', LP()->plugin_url( 'assets/js/admin/admin-tools.js' ), array( 'jquery' ) );
 	}
 
 	/**

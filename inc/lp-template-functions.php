@@ -2906,6 +2906,22 @@ function learn_press_quiz_meta_questions( $item ) {
 	echo '<span class="item-meta count-questions">' . sprintf( $count ? _n( '%d question', '%d questions', 'learnpress' ) : __( '%d question', 'learnpress' ), $count ) . '</span>';
 }
 
+/**
+ * @param LP_Quiz $item
+ */
+function learn_press_quiz_meta_duration( $item ) {
+	$duration = $item->get_duration();
+	if ( $duration ) {
+		$format = array(
+			'day'    => _x( '%s day', 'duration', 'learnpress' ),
+			'hour'   => _x( '%s hour', 'duration', 'learnpress' ),
+			'minute' => _x( '%s min', 'duration', 'learnpress' ),
+			'second' => _x( '%s sec', 'duration', 'learnpress' ),
+		);
+		echo '<span class="item-meta duration">' . $duration->to_timer( $format, true ) . '</span>';
+	}
+}
+
 function learn_press_course_item_edit_link( $item_id, $course_id ) {
 	$user = learn_press_get_current_user();
 	if ( $user->can_edit_item( $item_id, $course_id ) ): ?>

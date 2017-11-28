@@ -47,7 +47,7 @@ function learn_press_get_course( $the_course = false ) {
 		}
 	}
 
-	return $courses[ $the_id ];// : LP()->global['course'];// LP_Global::course();
+	return $courses[ $the_id ];
 }
 
 /**
@@ -95,46 +95,6 @@ function learn_press_get_course_item_types() {
 		'lp_lesson',
 		'lp_quiz'
 	) );
-}
-
-/**
- * print out class for quiz body
- *
- * @param null $class
- *
- * @return bool
- */
-function learn_press_quiz_class( $class = null ) {
-	$item = LP()->global['course-item'];
-	$user = LP()->user;
-
-	if ( ! $item ) {
-		return false;
-	}
-
-	$quiz = LP_Quiz::get_quiz( $item->ID );
-
-	if ( $class && is_string( $class ) ) {
-		$class = explode( ' ', $class );
-	} elseif ( ! $class ) {
-		$class = array();
-	}
-
-	$class[] = "single-quiz";
-
-	if ( $status = $user->get_quiz_status( $quiz->id ) ) {
-		$class[] = 'quiz-' . $status;
-	}
-
-	if ( $quiz->has( 'questions' ) ) {
-		$class[] = 'has-questions';
-	}
-
-	$class[] = 'clearfix';
-
-	$class = array_unique( $class );
-
-	post_class( join( ' ', $class ) );
 }
 
 /**
@@ -282,7 +242,6 @@ function learn_press_item_meta_format( $item, $nonce = '' ) {
 
 		//return false to hide post format
 		if ( $format = apply_filters( 'learn_press_course_item_format', $format, $item ) ) {
-			//printf( '<span class="lp-label lp-label-format lp-label-format-%s">%s</span>', $format, ucfirst( $format ) );
 			printf( '<label for="post-format-0" class="post-format-icon post-format-%s" title="%s"></label>', $format, ucfirst( $format ) );
 		} else {
 			echo $nonce;
@@ -297,10 +256,6 @@ function learn_press_course_item_format_exclude( $format, $item ) {
 
 	return $format;
 }
-
-//add_filter( 'learn_press_course_item_format', 'learn_press_course_item_format_exclude', 5, 2 );
-/*******************************************************/
-/*******************************************************/
 
 /**
  * Get curriculum of a course
@@ -326,7 +281,6 @@ function learn_press_get_course_curriculum( $course_id ) {
  * @return boolean
  */
 function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
-	//_deprecated_function( __FUNCTION__, '1.0', 'LP_User -> has_enrolled_course');
 	if ( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
 		return $user->has_enrolled_course( $course_id );
 	}
@@ -360,7 +314,6 @@ function learn_press_is_free_course( $course_id = null ) {
  * @return  string
  */
 function learn_press_get_user_course_status( $user_id = null, $course_id = null ) {
-	//_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> get_course_status');
 	if ( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
 		return $user->get_course_status( $course_id );
 	}
@@ -384,7 +337,7 @@ function learn_press_user_can_view_lesson( $lesson_id, $course_id = 0, $user_id 
 	if ( $user_id ) {
 		$user = learn_press_get_user( $user_id );
 	} else {
-		$user = LP()->user;
+		$user = LP_Global::user();
 	}
 
 	return $user ? $user->can( 'view-lesson', $lesson_id, $course_id ) : false;
@@ -403,7 +356,7 @@ function learn_press_user_can_view_quiz( $quiz_id = null, $course_id = 0, $user_
 	if ( $user_id ) {
 		$user = learn_press_get_user( $user_id );
 	} else {
-		$user = LP()->user;
+		$user = LP_Global::user();
 	}
 
 	return $user ? $user->can( 'view-quiz', $quiz_id, $course_id ) : false;
@@ -424,46 +377,6 @@ function learn_press_course_enroll_required( $course_id = null ) {
 	$required = ( 'yes' == get_post_meta( $course_id, '_lpr_course_enrolled_require', true ) );
 
 	return apply_filters( 'learn_press_course_enroll_required', $required, $course_id );
-}
-
-/**
- * Checks to see that an user has finished a lesson or not yet
- * Function return the ID of a course if the user has completed a lesson
- * Otherwise, return false
- *
- * @author TuNguyen
- *
- * @param null $lesson_id
- * @param null $user_id
- *
- * @return mixed
- */
-function learn_press_user_has_completed_lesson( $lesson_id = null, $user_id = null ) {
-
-	_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> has_completed_quiz' );
-	if ( $user = learn_press_get_user( $user_id ) ) {
-		return $user->has_completed_quiz( $lesson_id );
-	}
-
-	return false;
-
-	$lesson_id = learn_press_get_lesson_id( $lesson_id );
-	if ( ! $user_id ) {
-		$user_id = get_current_user_id();
-	}
-
-	$completed_lessons = get_user_meta( $user_id, '_lpr_lesson_completed', true );
-
-	if ( ! $completed_lessons ) {
-		return false;
-	}
-	foreach ( $completed_lessons as $courses ) {
-		if ( is_array( $courses ) && in_array( $lesson_id, $courses ) ) {
-			return true;
-		}
-	}
-
-	return false;
 }
 
 /**
@@ -610,16 +523,12 @@ learn_press_course_add_support_item_type(
 );
 
 function learn_press_get_course_id() {
-	$course_id = false;
+	$course_id = 0;
 	if ( learn_press_is_course() ) {
 		$course_id = get_the_ID();
 	}
 
 	return $course_id;
-}
-
-function learn_press_course_item() {
-
 }
 
 function learn_press_get_the_course() {

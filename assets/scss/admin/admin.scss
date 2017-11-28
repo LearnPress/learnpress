@@ -23,6 +23,20 @@
     position: absolute;
 }
 
+.learnpress {
+    a, a:active {
+        outline: none;
+        box-shadow: none;
+    }
+    .lp-install-sample-data-options {
+        border: 1px solid #DDD;
+        padding: 0px 20px 10px 20px;
+        legend {
+            font-size: 16px;
+        }
+    }
+}
+
 /* Metabox email template field */
 .lp-email-templates {
     overflow: hidden;

@@ -229,7 +229,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/user-item/class-lp-user-item-quiz.php';
 			require_once 'inc/class-lp-session-handler.php';
-			require_once 'inc/admin/class-lp-email.php';
 
 			if ( is_admin() ) {
 				require_once 'inc/admin/pointers/pointers.php';

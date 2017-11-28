@@ -97,7 +97,13 @@ class LP_Duration {
 		return $this->_duration < 10 && $leading_zero ? "0" . $this->_duration : $this->_duration;
 	}
 
-	public function to_timer() {
+	/**
+	 * @param array|string $format
+	 * @param bool         $remove_empty
+	 *
+	 * @return string
+	 */
+	public function to_timer( $format = '', $remove_empty = false ) {
 		$day    = $this->get_days();
 		$mod    = $this->_duration - $day * 24 * 3600;
 		$hour   = ( $mod - ( $mod % 3600 ) ) / 3600;
@@ -124,6 +130,20 @@ class LP_Duration {
 			}
 		}
 
+		if ( $format ) {
+
+			foreach ( array( 'day', 'hour', 'minute', 'second' ) as $p ) {
+				if ( $remove_empty && array_key_exists( $p, $parts ) && intval( $parts[ $p ] ) == 0 ) {
+					unset( $parts[ $p ] );
+				}
+				if ( ! empty( $format[ $p ] ) && ! empty( $parts[ $p ] ) ) {
+					$parts[ $p ] = sprintf( $format[ $p ], $parts[ $p ] );
+				}
+			}
+
+			return join( ' ', $parts );
+		}
+
 		return join( ':', $parts );
 	}
 
@@ -142,7 +162,7 @@ class LP_Duration {
 		return new LP_Duration( $diff );
 	}
 
-	public function get(){
+	public function get() {
 		return $this->_duration;
 	}
 }

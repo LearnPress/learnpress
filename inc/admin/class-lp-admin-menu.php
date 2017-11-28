@@ -117,9 +117,11 @@ class LP_Admin_Menu {
 				if ( is_string( $item ) && class_exists( $item ) ) {
 					$item = new $item();
 				}
+
 				if ( ! $item instanceof LP_Abstract_Submenu ) {
 					continue;
 				}
+
 				add_submenu_page(
 					'learn_press',
 					$item->get_page_title(),
@@ -128,6 +130,7 @@ class LP_Admin_Menu {
 					$item->get_id(),
 					array( $item, 'display' )
 				);
+
 			}
 			$this->menu_items = $menu_items;
 		}

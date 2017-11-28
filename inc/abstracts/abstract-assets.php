@@ -274,14 +274,11 @@ abstract class LP_Abstract_Assets {
 		}
 		global $wp_scripts;
 
-		if ( ! $wp_scripts ){
+		if ( ! $wp_scripts ) {
 			$wp_scripts = new WP_Scripts();
 		}
 		foreach ( $scripts_data as $handle => $data ) {
-			/*if ( ! empty( $this->_script_data[ $handle ] ) ) {
-				$data = array_merge( $data, $this->_script_data[ $handle ] );
-			}*/
-
+			$data = apply_filters( 'learn-press/script-data', $data, $handle );
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
 
 			if ( isset( $wp_scripts->registered[ $handle ] ) ) {

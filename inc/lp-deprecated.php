@@ -355,3 +355,111 @@ if ( ! function_exists( '_learn_press_default_course_tabs' ) ) {
 		return learn_press_get_course_tabs();
 	}
 }
+
+
+function learn_press_sanitize_json( $string ) {
+
+	echo json_encode( $string );
+
+	return $string;
+}
+
+
+function learn_press_get_subtabs_course() {
+	$subtabs = array(
+		'all'       => __( 'All', 'learnpress' ),
+		'learning'  => __( 'Learning', 'learnpress' ),
+		'purchased' => __( 'Purchased', 'learnpress' ),
+		'finished'  => __( 'Finished', 'learnpress' ),
+		'own'       => __( 'Own', 'learnpress' )
+	);
+
+	$subtabs = apply_filters( 'learn_press_profile_tab_courses_subtabs', $subtabs );
+
+	return $subtabs;
+}
+
+
+# -------------------------------
+# Validation Data Settings Page Before Save
+add_filter( 'learn_press_update_option_value', 'learn_press_validation_data_before_save', 10, 2 );
+
+function learn_press_validation_data_before_save( $value = '', $name = '' ) {
+	if ( $name === 'learn_press_profile_endpoints' ) {
+
+		if ( empty( $value['profile-courses'] ) ) {
+			$value['profile-courses'] = 'courses';
+		}
+	}
+
+	return $value;
+}
+
+
+// Show filters for students list
+function learn_press_get_students_list_filter() {
+	$filter = array(
+		'all'         => esc_html__( 'All', 'learnpress' ),
+		'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
+		'finished'    => esc_html__( 'Finished', 'learnpress' )
+	);
+
+	return apply_filters( 'learn_press_get_students_list_filter', $filter );
+}
+
+
+function learn_press_get_request_args( $args = array() ) {
+	$request = array();
+	if ( $args ) {
+		foreach ( $args as $key ) {
+			$request[] = array_key_exists( $key, $_REQUEST ) ? $_REQUEST[ $key ] : false;
+		}
+	}
+
+	return $request;
+}
+
+
+/**
+ * Redirect to question if user access to a quiz that user has started
+ *
+ * @param string
+ *
+ * @return string
+ */
+function learn_press_redirect_to_question( $template ) {
+	global $post_type;
+	if ( is_single() && $post_type == LP_QUIZ_CPT ) {
+		$user        = learn_press_get_current_user();
+		$quiz_id     = get_the_ID();
+		$quiz_status = $user->get_quiz_status( $quiz_id );
+		if ( $quiz_status == 'started' && learn_press_get_quiz_time_remaining( $user->get_id(), $quiz_id ) == 0 && get_post_meta( $quiz_id, '_lpr_duration', true ) ) {
+			$user->finish_quiz( $quiz_id );
+			$quiz_status = 'completed';
+		}
+		$redirect = null;
+		if ( learn_press_get_request( 'question' ) && $quiz_status == '' ) {
+			$redirect = get_the_permalink( $quiz_id );
+		} elseif ( $quiz_status == 'started' ) {
+			if ( learn_press_get_request( 'question' ) ) {
+			} else {
+				$redirect = learn_press_get_user_question_url( $quiz_id );
+			}
+		} elseif ( $quiz_status == 'completed' && learn_press_get_request( 'question' ) ) {
+			$redirect = get_the_permalink( $quiz_id );
+		}
+		if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
+			wp_redirect( $redirect );
+			exit();
+		}
+	}
+
+	return $template;
+}
+
+
+function learn_press_output_question_nonce( $question ) {
+	printf( '<input type="hidden" name="update-question-nonce" value="%s" />', wp_create_nonce( 'current-question-nonce-' . $question->id ) );
+}
+
+add_action( 'learn_press_after_question_wrap', 'learn_press_output_question_nonce' );

@@ -1676,7 +1676,7 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 		if ( ! $post ) {
 			return;
 		}
-		$default     = array(
+		$default = array(
 			'comment_status' => $post->comment_status,
 			'ping_status'    => $post->ping_status,
 			'post_author'    => get_current_user_id(),
@@ -1690,8 +1690,10 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order
 		);
-		$args        = wp_parse_args( $args, $default );
+		$args    = wp_parse_args( $args, $default );
+
 		$new_post_id = wp_insert_post( $args );
+
 		if ( ! is_wp_error( $new_post_id ) && $meta ) {
 			learn_press_duplicate_post_meta( $post_id, $new_post_id );
 			// assign related tags/categories to new course
@@ -2112,4 +2114,59 @@ function learn_press_get_default_section( $section = null ) {
 	}
 
 	return $section;
+}
+
+/**
+ * Display time fields for a post in editing mode.
+ *
+ * @param int $edit
+ * @param int $for_post
+ * @param int $tab_index
+ * @param int $multi
+ */
+function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
+	global $wp_locale;
+	$post = get_post();
+
+	if ( $for_post ) {
+		$edit = ! ( in_array( $post->post_status, array(
+				'draft',
+				'pending'
+			) ) && ( ! $post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
+	}
+
+	$tab_index_attribute = '';
+	if ( (int) $tab_index > 0 ) {
+		$tab_index_attribute = " tabindex=\"$tab_index\"";
+	}
+
+	$time_adj  = current_time( 'timestamp' );
+	$post_date = ( $for_post ) ? $post->post_date : get_comment()->comment_date;
+	$jj        = ( $edit ) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
+	$mm        = ( $edit ) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
+	$aa        = ( $edit ) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
+	$hh        = ( $edit ) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
+	$mn        = ( $edit ) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
+	$ss        = ( $edit ) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
+
+	$cur_jj = gmdate( 'd', $time_adj );
+	$cur_mm = gmdate( 'm', $time_adj );
+	$cur_aa = gmdate( 'Y', $time_adj );
+	$cur_hh = gmdate( 'H', $time_adj );
+	$cur_mn = gmdate( 'i', $time_adj );
+
+	$map = array(
+		'mm' => array( $mm, $cur_mm ),
+		'jj' => array( $jj, $cur_jj ),
+		'aa' => array( $aa, $cur_aa ),
+		'hh' => array( $hh, $cur_hh ),
+		'mn' => array( $mn, $cur_mn ),
+	);
+	foreach ( $map as $timeunit => $value ) {
+		list( $unit, $curr ) = $value;
+
+		echo '<input type="hidden" id="hidden_' . $timeunit . '" name="hidden_' . $timeunit . '" value="' . $unit . '" />' . "\n";
+		$cur_timeunit = 'cur_' . $timeunit;
+		echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
+	}
 }
