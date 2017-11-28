@@ -2911,7 +2911,7 @@ function learn_press_quiz_meta_questions( $item ) {
  */
 function learn_press_quiz_meta_duration( $item ) {
 	$duration = $item->get_duration();
-	if ( $duration ) {
+	if ( $duration->get() ) {
 		$format = array(
 			'day'    => _x( '%s day', 'duration', 'learnpress' ),
 			'hour'   => _x( '%s hour', 'duration', 'learnpress' ),
