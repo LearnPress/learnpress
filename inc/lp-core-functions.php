@@ -811,19 +811,31 @@ function learn_press_currency_positions( $currency = false ) {
 		$currency = learn_press_get_currency_symbol();
 	}
 
+	$settings = LP()->settings();
+
+	$thousands_separator = '';
+	$decimals_separator  = $settings->get( 'decimals_separator', '.' );
+	$number_of_decimals  = $settings->get( 'number_of_decimals', 2 );
+
+	if ( $number_of_decimals > 0 ) {
+		$example = '69' . $decimals_separator . str_repeat( '9', $number_of_decimals );
+	} else {
+		$example = '69';
+	}
+
 	foreach ( $positions as $pos => $text ) {
 		switch ( $pos ) {
 			case 'left':
-				$text = sprintf( '%s ( %s%s )', $text, $currency, '69.99' );
+				$text = sprintf( '%s ( %s%s )', $text, $currency, $example );
 				break;
 			case 'right':
-				$text = sprintf( '%s ( %s%s )', $text, '69.99', $currency );
+				$text = sprintf( '%s ( %s%s )', $text, $example, $currency );
 				break;
 			case 'left_with_space':
-				$text = sprintf( '%s ( %s %s )', $text, $currency, '69.99' );
+				$text = sprintf( '%s ( %s %s )', $text, $currency, $example );
 				break;
 			case 'right_with_space':
-				$text = sprintf( '%s ( %s %s )', $text, '69.99', $currency );
+				$text = sprintf( '%s ( %s %s )', $text, $example, $currency );
 				break;
 		}
 		$positions[ $pos ] = $text;
@@ -1053,18 +1065,30 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 			break;
 	}
 
-	return apply_filters( 'learn_press_currency_symbol', $currency_symbol, $currency );
+	$currency_symbol = apply_filters( 'learn_press_currency_symbol', $currency_symbol, $currency );
+
+	return apply_filters( 'learn-press/currency-symbol', $currency_symbol, $currency );
 }
 
+/**
+ * Get static page for LP page by name.
+ *
+ * @param string $key
+ *
+ * @return string
+ */
 function learn_press_get_page_link( $key ) {
 	$page_id = LP()->settings->get( $key . '_page_id' );
 	if ( get_post_status( $page_id ) == 'publish' ) {
 		$link = apply_filters( 'learn_press_get_page_link', get_permalink( $page_id ), $page_id, $key );
+		$link = apply_filters( 'learn-press/get-page-link', get_permalink( $page_id ), $page_id, $key );
 	} else {
 		$link = '';
 	}
 
-	return apply_filters( 'learn_press_get_page_' . $key . '_link', $link, $page_id );
+	$link = apply_filters( 'learn_press_get_page_' . $key . '_link', $link, $page_id );
+
+	return apply_filters( 'learn-press/get-page-' . $key . '-link', $link, $page_id );
 }
 
 
@@ -1139,7 +1163,6 @@ function learn_press_seconds_to_weeks( $secs ) {
 	return $result;
 }
 
-add_action( 'learn_press_frontend_action_retake_course', array( 'LP_AJAX', 'retake_course' ) );
 
 function learn_press_get_query_var( $var ) {
 	global $wp_query;

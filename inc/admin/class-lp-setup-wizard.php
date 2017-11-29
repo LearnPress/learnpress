@@ -22,6 +22,66 @@ class LP_Setup_Wizard {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'setup_wizard' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
+
+		$actions = array(
+			'setup-create-pages' => 'create_pages',
+			'get-price-format'   => 'get_price_format'
+		);
+		foreach ( $actions as $action => $callback ) {
+			LP_Request::register_ajax( $action, array( $this, $callback ) );
+		}
+	}
+
+	/**
+	 * Create static pages action
+	 */
+	public function create_pages() {
+		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce', 'setup-create-pages' ) ) ) {
+			die();
+		}
+
+		$settings = LP_Request::get( 'settings' );
+		foreach ( $settings['pages'] as $page => $page_id ) {
+			if ( empty( $page_id ) ) {
+				$_REQUEST['settings']['pages'][ $page ] = $this->create_page( $page );
+			}
+		}
+
+		LP_Request::$ajax_shutdown = false;
+	}
+
+	/**
+	 * Get sample format price
+	 */
+	public static function get_price_format() {
+		LP_Setup_Wizard::instance()->save();
+		LP()->settings()->refresh();
+		echo learn_press_format_price( 1234.56, true );
+		die();
+	}
+
+	/**
+	 * Create page by type.
+	 *
+	 * @param string $page
+	 *
+	 * @return int|WP_Error
+	 */
+	public function create_page( $page ) {
+		$page_titles = array(
+			'courses_page_id'          => _x( 'LP Courses', 'static-page', 'learnpress' ),
+			'profile_page_id'          => _x( 'LP Profile', 'static-page', 'learnpress' ),
+			'checkout_page_id'         => _x( 'LP Checkout', 'static-page', 'learnpress' ),
+			'become_a_teacher_page_id' => _x( 'LP Become Teacher', 'static-page', 'learnpress' ),
+		);
+
+		return wp_insert_post(
+			array(
+				'post_title'  => $page_titles[ $page ],
+				'post_status' => 'publish',
+				'post_type'   => 'page'
+			)
+		);
 	}
 
 	/**
@@ -47,6 +107,9 @@ class LP_Setup_Wizard {
 		}
 
 		$this->save();
+
+		// Refresh new changes
+		LP()->settings()->refresh();
 
 		$assets = learn_press_admin_assets();
 
@@ -80,8 +143,8 @@ class LP_Setup_Wizard {
 
 	public function save() {
 		$step = LP_Request::get_string( 'lp-setup-step' );
-		if ( ! wp_verify_nonce( LP_Request::get_string( 'lp-setup-nonce' ), 'lp-setup-step-' . $step ) ) {
 
+		if ( ! wp_verify_nonce( LP_Request::get_string( 'lp-setup-nonce' ), 'lp-setup-step-' . $step ) ) {
 			return;
 		}
 
@@ -103,7 +166,6 @@ class LP_Setup_Wizard {
 				foreach ( $postdata['pages'] as $k => $v ) {
 					update_option( 'learn_press_' . $k, $v );
 				}
-
 			}
 		}
 
@@ -259,7 +321,7 @@ class LP_Setup_Wizard {
 		return array(
 			'paypal' => array(
 				'name'     => __( 'Paypal', 'learnpress' ),
-				'desc'     => 'Pay with your Paypal account',
+				'desc'     => __( 'Enter your Paypal email address for accepting payment via Paypal.', 'learnpress'),
 				'icon'     => LP()->plugin_url( '/assets/images/paypal-2.png' ),
 				'callback' => array( $this, 'setup_paypal' )
 			)

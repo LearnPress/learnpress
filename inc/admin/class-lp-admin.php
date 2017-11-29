@@ -13,6 +13,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 	 * Class LP_Admin
 	 */
 	class LP_Admin {
+
+		/**
+		 * @var array
+		 */
+		protected $_static_pages = false;
+
 		/**
 		 *  Constructor
 		 */
@@ -34,9 +40,202 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
 			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
+
+			add_filter( 'manage_pages_columns', array( $this, 'page_columns_head' ) );
+			add_filter( 'manage_pages_custom_column', array( $this, 'page_columns_content' ), 10, 2 );
+			add_filter( 'views_edit-page', array( $this, 'views_pages' ), 10 );
+			add_filter( 'pre_get_posts', array( $this, 'filter_pages' ), 10 );
+
 			add_filter( 'views_users', array( $this, 'views_users' ), 10, 1 );
 			add_filter( 'user_row_actions', array( $this, 'user_row_actions' ), 10, 2 );
+
+			add_action( 'init', array( $this, 'init' ), 50 );
+
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
+		}
+
+		public function init() {
+			$this->_get_static_pages();
+		}
+
+		/**
+		 * Check if a page is set for WooCommerce.
+		 *
+		 * @param int $id
+		 *
+		 * @return bool
+		 */
+		protected function _is_wc_page( $id ) {
+			if ( class_exists( 'WooCommerce' ) ) {
+				$wc_admin_post_types = new WC_Admin_Post_Types();
+				$a                   = $wc_admin_post_types->add_display_post_states( array(), get_post( $id ) );
+				$wc_pages            = array(
+					'wc_page_for_shop',
+					'wc_page_for_cart',
+					'wc_page_for_checkout',
+					'wc_page_for_myaccount',
+					'wc_page_for_terms'
+				);
+				foreach ( $wc_pages as $for_page ) {
+					if ( isset( $a[ $for_page ] ) ) {
+						return $a[ $for_page ];
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Check if a page is set for Paid Membership Pro.
+		 *
+		 * @param int $id
+		 *
+		 * @return bool|mixed
+		 */
+		protected function _is_pmpro_page( $id ) {
+			global $pmpro_pages;
+			if ( $pmpro_pages ) {
+				$pages = array(
+					'account'      => __( 'Account', 'learnpress' ),
+					'billing'      => __( 'Billing', 'learnpress' ),
+					'cancel'       => __( 'Cancel', 'learnpress' ),
+					'checkout'     => __( 'Checkout', 'learnpress' ),
+					'confirmation' => __( 'Confirmation', 'learnpress' ),
+					'invoice'      => __( 'Invoice', 'learnpress' ),
+					'levels'       => __( 'Levels', 'learnpress' )
+				);
+
+				foreach ( $pages as $name => $text ) {
+					if ( $pmpro_pages[ $name ] == $id ) {
+						return $text;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * @param string $plugin
+		 *
+		 * @return array|bool
+		 */
+		protected function _get_static_pages( $plugin = '' ) {
+			if ( false === $this->_static_pages ) {
+				$this->_static_pages = array(
+					'learnpress'          => array(),
+					'WooCommerce'         => array(),
+					'Paid Membership Pro' => array()
+				);
+				$all_pages           = array(
+					'courses'          => __( 'Courses', 'learnpress' ),
+					'profile'          => __( 'Profile', 'learnpress' ),
+					'checkout'         => __( 'Checkout', 'learnpress' ),
+					'become_a_teacher' => __( 'Become a Teacher', 'learnpress' )
+				);
+				foreach ( $all_pages as $name => $title ) {
+					if ( ( $page_id = learn_press_get_page_id( $name ) ) && 'publish' === get_post_status( $page_id ) ) {
+						$this->_static_pages['learnpress'][ $page_id ] = $title;
+
+						if ( $for_page = $this->_is_wc_page( $page_id ) ) {
+							$this->_static_pages['WooCommerce'][ $page_id ] = $for_page;
+						}
+
+						if ( $for_page = $this->_is_pmpro_page( $page_id ) ) {
+							$this->_static_pages['Paid Membership Pro'][ $page_id ] = $for_page;
+						}
+					}
+				}
+			}
+
+			return $plugin ? ( ! empty( $this->_static_pages[ $plugin ] ) ? $this->_static_pages[ $plugin ] : false ) : $this->_static_pages;
+		}
+
+		/**
+		 * Add new column to WP Pages manage to show what page is assigned to.
+		 *
+		 * @param array $columns
+		 *
+		 * @return array
+		 */
+		public function page_columns_head( $columns ) {
+
+			$_columns = $columns;
+			$columns  = array();
+
+			foreach ( $_columns as $name => $text ) {
+				if ( $name === 'date' ) {
+					$columns['lp-page'] = __( 'Assigned', 'learnpress' );
+				}
+				$columns[ $name ] = $text;
+			}
+
+			return $columns;
+		}
+
+		/**
+		 * Display the page is assigned to LP Page.
+		 *
+		 * @param string $column_name
+		 * @param int    $post
+		 */
+		public function page_columns_content( $column_name, $post ) {
+			$pages = $this->_get_static_pages();
+			switch ( $column_name ) {
+				case 'lp-page':
+					if ( ! empty( $pages['learnpress'][ $post ] ) ) {
+						echo $pages['learnpress'][ $post ];
+					}
+
+					foreach ( $pages as $plugin => $plugin_pages ) {
+						if ( $plugin === 'learnpress' ) {
+							continue;
+						}
+
+						if ( ! empty( $pages[ $plugin ][ $post ] ) ) {
+							echo sprintf( '<p class="for-plugin-page">(%s - %s)</p>', $plugin, $pages[ $plugin ][ $post ] );
+						}
+					}
+			}
+		}
+
+		/**
+		 * @param $actions
+		 *
+		 * @return mixed
+		 */
+		public function views_pages( $actions ) {
+
+			if ( $pages = $this->_get_static_pages( 'learnpress' ) ) {
+				$text = sprintf( __( 'LearnPress Pages (%d)', 'learnpress' ), sizeof( $pages ) );
+				if ( 'yes' !== LP_Request::get( 'lp-page' ) ) {
+					$actions['lp-page'] = sprintf(
+						'<a href="%s">%s</a>',
+						admin_url( 'edit.php?post_type=page&lp-page=yes' ),
+						$text
+					);
+				} else {
+					$actions['lp-page'] = $text;
+				}
+			}
+
+			return $actions;
+		}
+
+		/**
+		 * @param WP_Query $q
+		 *
+		 * @return mixed
+		 */
+		public function filter_pages( $q ) {
+			if ( 'page' == LP_Request::get( 'post_type' ) && 'yes' == LP_Request::get( 'lp-page' ) ) {
+				if ( $ids = array_keys( $this->_get_static_pages( 'learnpress' ) ) ) {
+					$q->set( 'post__in', $ids );
+				}
+			}
+
+			return $q;
 		}
 
 		/**

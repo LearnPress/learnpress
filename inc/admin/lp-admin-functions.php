@@ -223,6 +223,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	$replace .= ' data-selected="' . $selected . '"';
 	$replace .= " data-placeholder='" . __( 'Select a page&hellip;', 'learnpress' ) . "' id=";
 	$output  = '<div class="list-pages-wrapper">' . str_replace( ' id=', $replace, $output );
+
 	if ( $before ) {
 		$before_output = array();
 		foreach ( $before as $v => $l ) {
@@ -231,6 +232,11 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$before_output = join( "\n", $before_output );
 		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
 	}
+
+	if($selected && get_post_status($selected) !== 'publish'){
+	    $selected = 0;
+    }
+
 	if ( $allow_create ) {
 		ob_start(); ?>
         <button class="button button-quick-add-page" data-id="<?php echo $id; ?>"
@@ -251,7 +257,9 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	} else {
 		$output .= '</div>';
 	}
+
 	$output = sprintf( '<div class="learn-press-dropdown-pages">%s</div>', $output );
+
 	if ( $echo ) {
 		echo $output;
 	}

@@ -74,11 +74,21 @@ class LP_Install_Sample_Data {
 			$this->dummy_text = preg_split( '!\s!', $dummy_text );
 		}
 
-		self::$section_range  = LP_Request::get( 'section-range' );
-		self::$item_range     = LP_Request::get( 'item-range' );
-		self::$question_range = LP_Request::get( 'question-range' );
-		self::$answer_range   = LP_Request::get( 'answer-range' );
+		if ( $section_range = LP_Request::get( 'section-range' ) ) {
+			self::$section_range = $section_range;
+		}
 
+		if ( $item_range = LP_Request::get( 'item-range' ) ) {
+			self::$item_range = $item_range;
+		}
+
+		if ( $question_range = LP_Request::get( 'question-range' ) ) {
+			self::$question_range = $question_range;
+		}
+
+		if ( $answer_range = LP_Request::get( 'answer-range' ) ) {
+			self::$answer_range = $answer_range;
+		}
 		LP_Debug::startTransaction();
 
 		try {

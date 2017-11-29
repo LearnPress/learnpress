@@ -25,6 +25,11 @@ class LP_Request {
 	protected static $_head = null;
 
 	/**
+	 * @var bool
+	 */
+	public static $ajax_shutdown = true;
+
+	/**
 	 * Constructor
 	 */
 	public static function init() {
@@ -84,7 +89,7 @@ class LP_Request {
 	/**
 	 * Purchase course action, when user clicking on "Buy this course" or "Enroll" button.
 	 *
-	 * @param int $course_id
+	 * @param int    $course_id
 	 * @param string $action
 	 *
 	 * @return bool
@@ -207,7 +212,8 @@ class LP_Request {
 			if ( ! $add_to_cart && ! $enroll_course ) {
 				throw new Exception( __( 'Invalid action.', 'learnpress' ) );
 			}
-		} catch ( Exception $e ) {
+		}
+		catch ( Exception $e ) {
 			if ( $e->getMessage() ) {
 				learn_press_add_message( $e->getMessage(), 'error' );
 			}
@@ -223,7 +229,7 @@ class LP_Request {
 	/**
 	 * Function callback
 	 *
-	 * @param int $course_id
+	 * @param int    $course_id
 	 * @param string $cart_id
 	 * @param string $action
 	 *
@@ -261,8 +267,8 @@ class LP_Request {
 	}
 
 	/**
-	 * @param int $course_id
-	 * @param int $order_id
+	 * @param int    $course_id
+	 * @param int    $order_id
 	 * @param string $action
 	 */
 	public static function do_enroll( $course_id, $order_id, $action ) {
@@ -338,8 +344,8 @@ class LP_Request {
 	 * Register new request
 	 *
 	 * @param string|array $action
-	 * @param mixed $function
-	 * @param int $priority
+	 * @param mixed        $function
+	 * @param int          $priority
 	 */
 	public static function register( $action, $function = '', $priority = 5 ) {
 		if ( is_array( $action ) ) {
@@ -371,8 +377,8 @@ class LP_Request {
 	 *      LP_Request::register_ajax( 'action:nopriv', 'function_to_call', 5 )
 	 *
 	 * @param string $action
-	 * @param mixed $function
-	 * @param int $priority
+	 * @param mixed  $function
+	 * @param int    $priority
 	 */
 	public static function register_ajax( $action, $function, $priority = 5 ) {
 
@@ -451,7 +457,7 @@ class LP_Request {
 			do_action( 'learn-press/ajax/no-priv/' . $action );
 		}
 
-		if ( $has_action ) {
+		if ( $has_action && self::$ajax_shutdown ) {
 			die( '{END_AJAX}' );
 		}
 	}
@@ -480,7 +486,7 @@ class LP_Request {
 	 * Get variable value from Server environment.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 * @param string $type
 	 * @param string $env
 	 *
@@ -527,7 +533,7 @@ class LP_Request {
 	 * Get value int from environment.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 * @param string $env
 	 *
 	 * @return int
@@ -540,7 +546,7 @@ class LP_Request {
 	 * Get value float from environment.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 * @param string $env
 	 *
 	 * @return float
@@ -553,7 +559,7 @@ class LP_Request {
 	 * Get value bool from environment.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 * @param string $env
 	 *
 	 * @return bool
@@ -566,7 +572,7 @@ class LP_Request {
 	 * Get value string from environment.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 * @param string $env
 	 *
 	 * @return string
@@ -579,7 +585,7 @@ class LP_Request {
 	 * Get value array from environment.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 * @param string $env
 	 *
 	 * @return array
@@ -592,7 +598,7 @@ class LP_Request {
 	 * Get value from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 *
 	 * @return mixed
 	 */
@@ -604,7 +610,7 @@ class LP_Request {
 	 * Get value int from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 *
 	 * @return int
 	 */
@@ -616,7 +622,7 @@ class LP_Request {
 	 * Get value float from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 *
 	 * @return float
 	 */
@@ -628,7 +634,7 @@ class LP_Request {
 	 * Get value bool from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 *
 	 * @return bool
 	 */
@@ -640,7 +646,7 @@ class LP_Request {
 	 * Get value string from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 *
 	 * @return string
 	 */
@@ -652,7 +658,7 @@ class LP_Request {
 	 * Get value array from $_POST.
 	 *
 	 * @param string $var
-	 * @param mixed $default
+	 * @param mixed  $default
 	 *
 	 * @return array
 	 */
@@ -664,7 +670,7 @@ class LP_Request {
 	 * Get email field and validate.
 	 *
 	 * @param string $var
-	 * @param bool $default
+	 * @param bool   $default
 	 *
 	 * @return bool|string
 	 */

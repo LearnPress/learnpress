@@ -52,8 +52,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'remove_notice_popup'     => false,
 				// Update order status
 				'update_order_status'     => false,
-
-
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -85,8 +83,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal_search_users',
 				'add_items_to_order',
 				'remove_items_from_order',
-				'update_email_status',
-
+				'update_email_status'
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -401,7 +398,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param $question_id
+		 * @param       $question_id
 		 * @param array $args
 		 *
 		 * @return bool|int|LP_Question
@@ -1331,7 +1328,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

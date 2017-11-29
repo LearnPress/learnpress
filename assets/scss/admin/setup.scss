@@ -36,8 +36,10 @@
         padding-bottom: 20px;
     }
     p {
-        font-size: 16px;
-        margin: 0 0 20px 0;
+        &.large-text {
+            font-size: 16px;
+            margin: 0 0 20px 0;
+        }
     }
     a {
         font-size: 13px;
@@ -57,6 +59,10 @@
         border: 1px solid #ececec;
         margin-bottom: 20px;
         position: relative;
+        .description {
+            font-size: 13px;
+            font-style: italic;
+        }
         &.loading {
             &:after {
                 content: '';
@@ -261,6 +267,7 @@
             }
         }
     }
+
     .learn-press-message {
         background: #FAFAFA;
         padding: 15px;
@@ -271,5 +278,10 @@
         &.error {
             border-left-color: #FF0000;
         }
+    }
+
+    #preview-price {
+        font-size: 18px;
+        color: #FF0000;
     }
 }

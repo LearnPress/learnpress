@@ -55,10 +55,13 @@
             .find('option').each(function () {
             $(this).html($(this).html().replace(/&nbsp;&nbsp;&nbsp;/g, ''));
         });
+
         $select.select2({
-            allowClear: true, unselect: function () {
-                alert('sadasd')
-            }
+            allowClear: true
+        });
+
+        $select.on('select2:select', function (e) {
+            var data = e.params.data;
         });
 
         $element.on('click', '.quick-add-page-inline button', function () {
@@ -124,3 +127,5 @@
         })
     }
 })(jQuery);
+
+

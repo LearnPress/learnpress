@@ -26,6 +26,11 @@ class LP_Settings {
 	/**
 	 * @var bool
 	 */
+	protected $_load_data = false;
+
+	/**
+	 * @var bool
+	 */
 	static protected $_instance = false;
 
 	/**
@@ -40,6 +45,7 @@ class LP_Settings {
 		$this->_prefix = $prefix;
 
 		if ( false === $data ) {
+			$this->_load_data = true;
 			$this->_load_options();
 		} else {
 			settype( $data, 'array' );
@@ -61,9 +67,11 @@ class LP_Settings {
 
 	/**
 	 * Load options from database.
+	 *
+	 * @param bool $force
 	 */
-	protected function _load_options() {
-		if ( false === ( $_options = wp_cache_get( 'options', 'lp-options' ) ) ) {
+	protected function _load_options( $force = false ) {
+		if ( ( false === ( $_options = wp_cache_get( 'options', 'lp-options' ) ) ) || $force ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT option_name, option_value
@@ -188,6 +196,14 @@ class LP_Settings {
 		}
 		learn_press_debug( $this->_prefix . $key, $value );
 		update_option( $this->_prefix . $key, $value );
+	}
+
+	public function refresh() {
+		if ( $this->_load_data ) {
+			$this->_load_options( true );
+		}
+
+		return $this;
 	}
 
 	/**
