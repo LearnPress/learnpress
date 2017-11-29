@@ -327,6 +327,17 @@
                 background-color: #ffeded;
             }
 
+            .drag {
+                width: 16px;
+                height: 16px;
+                cursor: url("../../images/openhand.cur") 7 5, default;
+                &:hover {
+                    .drag {
+                        fill: #0085ba;
+                    }
+                }
+            }
+
             .icon {
                 position: absolute;
                 top: 0;
@@ -335,6 +346,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                cursor: url("../../images/openhand.cur") 7 5, default;
             }
 
             .title {
@@ -371,6 +383,7 @@
                     color: #a00;
                 }
             }
+
         }
 
         .new-section-item {
@@ -391,7 +404,6 @@
 
                 &:hover, &:focus {
                     background-color: #fff;
-                    margin-right: 10px;
 
                     .type {
                         display: inline-block;
@@ -399,8 +411,9 @@
                 }
 
                 .type {
-                    display: none;
+                    display: inline-block;
                     padding: 8px 9px;
+                    color: #ccc;
 
                     input {
                         display: none;
@@ -408,7 +421,6 @@
 
                     &.current {
                         color: #0085ba;
-                        display: inline-block;;
                     }
 
                     &:before {
@@ -514,8 +526,6 @@
                 font-size: 20px;
                 color: #0085ba;
                 text-align: center;
-                cursor: move;
-
                 &:before {
                     font-family: Dashicons;
                 }
