@@ -10,7 +10,7 @@ learn_press_admin_view( 'course/modal-choose-items' );
 
 ?>
 <script type="text/x-template" id="tmpl-lp-course-editor">
-    <div id="admin-course-editor" :class="[{'need-reload': !heartbeat}, 'lp-admin-editor']">
+    <div id="admin-editor-lp_course" :class="[{'need-reload': !heartbeat}, 'lp-admin-editor']">
         <form @submit.prevent="">
             <lp-curriculum></lp-curriculum>
         </form>

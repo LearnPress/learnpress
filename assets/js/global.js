@@ -41,7 +41,7 @@ if (typeof window.LP === 'undefined') {
             }
 
             return self;
-        }
+        };
 
         this.off = function (event, callback) {
             var namespaces = event.split('.'),
@@ -83,7 +83,7 @@ if (typeof window.LP === 'undefined') {
             }
 
             return self;
-        }
+        };
 
         this.callEvent = function (event,callbackArgs) {
             if (!callbacks[event]) {
@@ -122,7 +122,7 @@ if (typeof window.LP === 'undefined') {
                 objPath = "indexed['" + match[0] + "']";
 
             if (keys) {
-                if (typeof indexed[match[0]] != 'object') {
+                if (typeof indexed[match[0]] !== 'object') {
                     indexed[match[0]] = {};
                 }
 
@@ -132,8 +132,8 @@ if (typeof window.LP === 'undefined') {
                         objExp = '',
                         preObjPath = objPath;
 
-                    if (prop == '') {
-                        if (arrayKeys[rawPath] == undefined) {
+                    if (prop === '') {
+                        if (arrayKeys[rawPath] === undefined) {
                             arrayKeys[rawPath] = 0;
                         } else {
                             arrayKeys[rawPath]++;
@@ -146,7 +146,7 @@ if (typeof window.LP === 'undefined') {
                         objPath += "['" + prop + "']";
                     }
                     try {
-                        if (i == keys.length - 1) {
+                        if (i === keys.length - 1) {
                             objExp = objPath + "= !(that.value + '').length || isNaN(that.value) ? that.value : Number(that.value);";
                             end = true;
                         } else {
@@ -185,7 +185,7 @@ if (typeof window.LP === 'undefined') {
         return $.each(this, function () {
             var $el = $(this),
                 content = $el.data('content');
-            if (!content || ($el.data('tooltip') != undefined)) {
+            if (!content || ($el.data('tooltip') !== undefined)) {
                 return;
             }
             var $tooltip = null;
@@ -219,11 +219,11 @@ if (typeof window.LP === 'undefined') {
     };
     $.fn.hasEvent = function (name) {
         var events = $(this).data('events');
-        if (typeof events.LP == 'undefined') {
+        if (typeof events.LP === 'undefined') {
             return false;
         }
         for (i = 0; i < events.LP.length; i++) {
-            if (events.LP[i].namespace == name) {
+            if (events.LP[i].namespace === name) {
                 return true;
             }
         }
@@ -254,7 +254,7 @@ if (typeof window.LP === 'undefined') {
             url += url.match(/\?/) ? '&' : '?';
             url += name + '=' + value;
         } else {
-            if ((url.indexOf('&' + name + '=') != -1) || (url.indexOf('?' + name + '=') != -1)) {
+            if ((url.indexOf('&' + name + '=') !== -1) || (url.indexOf('?' + name + '=') !== -1)) {
                 url = url.replace(new RegExp(name + "=([^&#]*)", 'g'), name + '=' + value);
             } else {
                 url += url.match(/\?/) ? '&' : '?';
@@ -273,7 +273,7 @@ if (typeof window.LP === 'undefined') {
         return url + (m[1] ? '#' + m[1] : '');
     };
 
-    if ($.isEmptyObject("") == false) {
+    if ($.isEmptyObject("") === false) {
         $.isEmptyObject = function (a) {
             for (prop in a) {
                 if (a.hasOwnProperty(prop)) {
@@ -320,7 +320,7 @@ if (typeof window.LP === 'undefined') {
                         },
                         start = function () {
                             timerOut = setInterval(function () {
-                                if (--n == 0) {
+                                if (--n === 0) {
                                     hide.call($div[0]);
                                     $.isFunction(args.onCancel) && args.onCancel(args.data);
                                     stop();
@@ -329,7 +329,7 @@ if (typeof window.LP === 'undefined') {
                             }, 1000);
 
                             timerHide = setInterval(function () {
-                                if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
+                                if (!$elem.is(':visible') || $elem.css("visibility") === 'hidden') {
                                     stop();
                                     $div.remove();
                                     $div.parent().css('position', '');
@@ -363,7 +363,6 @@ if (typeof window.LP === 'undefined') {
                     this.destroy = function () {
                         $div.remove();
                         $elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
-                        ;
                         stop();
 
                     };
@@ -425,7 +424,7 @@ if (typeof window.LP === 'undefined') {
             } else if (this.instance) {
                 this._removeInstance(this.instance.id);
             }
-            if (this.instances.length == 0) {
+            if (this.instances.length === 0) {
                 if (this.$block) {
                     this.$block.hide();
                 }
@@ -473,7 +472,7 @@ if (typeof window.LP === 'undefined') {
         },
         _removeInstance: function (id) {
             for (var i = 0; i < this.instances.length; i++) {
-                if (this.instances[i].id == id) {
+                if (this.instances[i].id === id) {
 
                     this.instances.splice(i, 1);
 
@@ -491,9 +490,8 @@ if (typeof window.LP === 'undefined') {
         },
         _getInstance: function (id) {
             for (var i = 0; i < this.instances.length; i++) {
-                if (this.instances[i].id == id) {
+                if (this.instances[i].id === id) {
                     return this.instances[i];
-                    break;
                 }
             }
         },
@@ -526,9 +524,9 @@ if (typeof window.LP === 'undefined') {
             $button.data('callback', callback).click(function () {
                 var instance = $(this).data('instance'),
                     callback = instance.events[$(this).data('callback')];
-                if ($.type(callback) == 'function') {
+                if ($.type(callback) === 'function') {
                     if (callback.apply(LP.MessageBox, [instance]) === false) {
-                        return;
+                        // return;
                     } else {
                         LP.MessageBox.hide(null, instance);
                     }
@@ -565,11 +563,11 @@ if (typeof window.LP === 'undefined') {
             return this;
         },
         addHook: function (hookType, action, callable, priority, tag) {
-            if (undefined == this.hooks[hookType][action]) {
+            if (undefined === this.hooks[hookType][action]) {
                 this.hooks[hookType][action] = [];
             }
             var hooks = this.hooks[hookType][action];
-            if (undefined == tag) {
+            if (undefined === tag) {
                 tag = action + '_' + hooks.length;
             }
             this.hooks[hookType][action].push({tag: tag, callable: callable, priority: priority});
@@ -580,7 +578,7 @@ if (typeof window.LP === 'undefined') {
             // splice args from object into array and remove first index which is the hook name
             args = Array.prototype.slice.call(args, 1);
 
-            if (undefined != this.hooks[hookType][action]) {
+            if (undefined !== this.hooks[hookType][action]) {
                 var hooks = this.hooks[hookType][action], hook;
                 //sort by priority
                 hooks.sort(function (a, b) {
@@ -588,25 +586,25 @@ if (typeof window.LP === 'undefined') {
                 });
                 for (var i = 0; i < hooks.length; i++) {
                     hook = hooks[i].callable;
-                    if (typeof hook != 'function')
+                    if (typeof hook !== 'function')
                         hook = window[hook];
-                    if ('action' == hookType) {
+                    if ('action' === hookType) {
                         hook.apply(null, args);
                     } else {
                         args[0] = hook.apply(null, args);
                     }
                 }
             }
-            if ('filter' == hookType) {
+            if ('filter' === hookType) {
                 return args[0];
             }
             return this;
         },
         removeHook: function (hookType, action, priority, tag) {
-            if (undefined != this.hooks[hookType][action]) {
+            if (undefined !== this.hooks[hookType][action]) {
                 var hooks = this.hooks[hookType][action];
                 for (var i = hooks.length - 1; i >= 0; i--) {
-                    if ((undefined == tag || tag == hooks[i].tag) && (undefined == priority || priority == hooks[i].priority)) {
+                    if ((undefined === tag || tag === hooks[i].tag) && (undefined === priority || priority === hooks[i].priority)) {
                         hooks.splice(i, 1);
                     }
                 }
@@ -649,10 +647,10 @@ if (typeof window.LP === 'undefined') {
             return window.location.href;
         },
         addQueryVar: function (name, value, url) {
-            return (url == undefined ? window.location.href : url).addQueryVar(name, value);
+            return (url === undefined ? window.location.href : url).addQueryVar(name, value);
         },
         removeQueryVar: function (name, url) {
-            return (url == undefined ? window.location.href : url).removeQueryVar(name);
+            return (url === undefined ? window.location.href : url).removeQueryVar(name);
         },
         reload: function (url) {
             if (!url) {
@@ -666,7 +664,7 @@ if (typeof window.LP === 'undefined') {
             if (m) {
                 response = m[1];
             }
-            return (type || "json") == "json" ? this.parseJSON(response) : response;
+            return (type || "json") === "json" ? this.parseJSON(response) : response;
         },
         parseJSON: function (data) {
             var m = data.match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
@@ -707,7 +705,7 @@ if (typeof window.LP === 'undefined') {
         doAjax: function (args) {
             var type = args.type || 'post',
                 dataType = args.dataType || 'json',
-                action = ( ( args.prefix == undefined ) || 'learnpress_') + args.action,
+                action = ( ( args.prefix === undefined ) || 'learnpress_') + args.action,
                 data = args.action ? $.extend(args.data, {action: action}) : args.data;
 
             $.ajax({
@@ -762,7 +760,7 @@ if (typeof window.LP === 'undefined') {
             }
         },
         toElement: function (element, args) {
-            if ($(element).length == 0) {
+            if ($(element).length === 0) {
                 return;
             }
             args = $.extend({
@@ -775,7 +773,7 @@ if (typeof window.LP === 'undefined') {
             }, args || {});
             var $container = $(args.container),
                 rootTop = 0;
-            if ($container.length == 0) {
+            if ($container.length === 0) {
                 $container = $('body, html');
             }
             rootTop = $container.offset().top;
@@ -853,7 +851,7 @@ if (typeof window.LP === 'undefined') {
             //}
         },
         blockContent: function () {
-            if ($('#learn-press-block-content').length == 0) {
+            if ($('#learn-press-block-content').length === 0) {
                 $(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
             }
             LP.hideMainScrollbar().addClass('block-content');
@@ -909,13 +907,13 @@ if (typeof window.LP === 'undefined') {
         alert: function (localize, callback) {
             var title = '',
                 message = '';
-            if (typeof localize == 'string') {
+            if (typeof localize === 'string') {
                 message = localize;
             } else {
-                if (typeof localize['title'] != 'undefined') {
+                if (typeof localize['title'] !== 'undefined') {
                     title = localize['title'];
                 }
-                if (typeof localize['message'] != 'undefined') {
+                if (typeof localize['message'] !== 'undefined') {
                     message = localize['message'];
                 }
             }
@@ -929,13 +927,13 @@ if (typeof window.LP === 'undefined') {
             var title = '',
                 message = '';
 
-            if (typeof localize == 'string') {
+            if (typeof localize === 'string') {
                 message = localize;
             } else {
-                if (typeof localize['title'] != 'undefined') {
+                if (typeof localize['title'] !== 'undefined') {
                     title = localize['title'];
                 }
-                if (typeof localize['message'] != 'undefined') {
+                if (typeof localize['message'] !== 'undefined') {
                     message = localize['message'];
                 }
             }
@@ -980,7 +978,7 @@ if (typeof window.LP === 'undefined') {
             var target = event.origin || event.originalEvent.origin,
                 data = event.data || event.originalEvent.data || '';
             if (typeof data === 'string' || data instanceof String) {
-                if (data.indexOf('{') == 0) {
+                if (data.indexOf('{') === 0) {
                     data = LP.parseJSON(data);
                 }
             }
@@ -1076,7 +1074,7 @@ if (typeof window.LP === 'undefined') {
                 //LP.setUrl($contentID);
                 e.preventDefault();
             }).filter(function () {
-                return $(this).attr('href') == window.location.hash;
+                return $(this).attr('href') === window.location.hash;
             }).trigger('click');
             if (!current) {
                 $tabs.first().trigger('click');
@@ -1085,7 +1083,7 @@ if (typeof window.LP === 'undefined') {
     }
 
     $(document).ready(function () {
-        if (typeof $.alerts != 'undefined') {
+        if (typeof $.alerts !== 'undefined') {
             $.alerts.overlayColor = '#000';
             $.alerts.overlayOpacity = 0.5;
         }
