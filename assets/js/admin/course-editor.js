@@ -749,7 +749,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 (function ($, Vue, $store) {
     $(document).ready(function () {
         window.LP_Course_Editor = new Vue({
-            el: '#admin-course-editor',
+            el: '#admin-editor-lp_course',
             template: '<lp-course-editor></lp-course-editor>'
         });
     });

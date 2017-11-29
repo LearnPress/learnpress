@@ -10,7 +10,7 @@ learn_press_admin_view( 'course/sections' );
 
 <script type="text/x-template" id="tmpl-lp-course-curriculum">
 
-    <div id="lp-course-curriculum" class="lp-course-curriculum">
+    <div class="lp-course-curriculum">
         <div class="heading">
             <h4><?php _e( 'Curriculum', 'learnpress' ); ?> <span :class="['status', status]"></span></h4>
             <span class="collapse-sections" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>

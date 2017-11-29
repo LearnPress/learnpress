@@ -10,7 +10,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-editor">
-    <div id="admin-quiz-editor" class="learn-press-box-data lp-admin-editor" :class="{'need-reload': !heartbeat}">
+    <div id="admin-editor-lp_quiz" class="learn-press-box-data lp-admin-editor" :class="{'need-reload': !heartbeat}">
         <div class="lp-box-data-head heading">
             <h3><?php echo __( 'Questions', 'learnpress' ); ?><span class="status"></span></h3>
             <span :class="['collapse-list-questions dashicons ' , close ? 'dashicons-arrow-down' : 'dashicons-arrow-up']"

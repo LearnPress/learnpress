@@ -882,7 +882,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 (function ($, Vue, $store) {
     $(document).ready(function () {
         window.LP_Quiz_Editor = new Vue({
-            el: '#admin-quiz-editor',
+            el: '#admin-editor-lp_quiz',
             template: '<lp-quiz-editor></lp-quiz-editor>'
         });
     });

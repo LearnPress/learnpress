@@ -277,7 +277,7 @@
 (function ($, Vue, $store) {
     $(document).ready(function () {
         window.LP_Question_Editor = new Vue({
-            el: '#lp-admin-question-editor',
+            el: '#admin-editor-lp_question',
             template: '<lp-question-editor></lp-question-editor>'
         });
     });

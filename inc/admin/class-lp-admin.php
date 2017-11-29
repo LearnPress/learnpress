@@ -241,7 +241,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -379,13 +379,16 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			<?php
 		}
 
+		/**
+		 * Wrapper admin editor.
+		 *
+		 * @since 3.0.0
+		 */
 		public function wrapper_editor() {
-			if ( LP_COURSE_CPT == get_post_type() ) {
-				learn_press_admin_view( 'course/editor-wrapper' );
-			} elseif ( LP_QUIZ_CPT == get_post_type() ) {
-				learn_press_admin_view( 'quiz/editor-wrapper' );
-			} elseif ( LP_QUESTION_CPT == get_post_type() ) {
-				learn_press_admin_view( 'question/editor-wrapper' );
+			$post_type = get_post_type();
+
+			if ( in_array( $post_type, array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
+				learn_press_admin_view( 'editor-wrapper', array( 'post_type' => $post_type ) );
 			}
 		}
 

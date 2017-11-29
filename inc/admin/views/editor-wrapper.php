@@ -6,7 +6,7 @@
  */
 ?>
 
-<div id="admin-course-editor">
+<div id="admin-editor-<?php esc_attr_e( $post_type ); ?>">
     <div class="lp-place-holder">
         <div class="line-heading"></div>
 

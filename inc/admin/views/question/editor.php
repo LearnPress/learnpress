@@ -11,7 +11,7 @@ learn_press_admin_view( 'question/answer' );
 
 <script type="text/x-template" id="tmpl-lp-question-editor">
 
-    <div id="lp-admin-question-editor" class="learn-press-box-data">
+    <div id="admin-editor-lp_question" class="lp-admin-editor learn-press-box-data">
 
         <lp-question-actions :type="type" @changeType="changeType"></lp-question-actions>
 
