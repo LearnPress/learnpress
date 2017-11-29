@@ -38,7 +38,7 @@ $passing_condition = $course->get_passing_condition();
             <h4 class="lp-course-progress-heading"><?php esc_html( $heading ); ?></h4>
 		<?php } ?>
 
-        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course_results['count_items'] ); ?></span>
+        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items('', false) ); ?></span>
 
         <div class="lp-course-progress">
             <div class="lp-progress-bar">

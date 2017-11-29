@@ -110,7 +110,7 @@ function learn_press_plugin_path( $sub_dir = '' ) {
  *
  * @param        $file
  * @param string $folder
- * @param bool $include_once
+ * @param bool   $include_once
  *
  * @return bool
  */
@@ -312,7 +312,7 @@ function learn_press_section_item_types() {
  * Enqueue js code to print out
  *
  * @param string $code
- * @param bool $script_tag - wrap code between <script> tag
+ * @param bool   $script_tag - wrap code between <script> tag
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
@@ -486,7 +486,7 @@ add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
  * @param string $str
- * @param int $lines
+ * @param int    $lines
  */
 function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
@@ -711,7 +711,7 @@ function learn_press_human_time_to_seconds( $time, $default = '' ) {
  *
  * @param string $to
  * @param string $action
- * @param array $vars
+ * @param array  $vars
  *
  * @return mixed
  */
@@ -792,33 +792,38 @@ function learn_press_get_own_courses( $user_id ) {
 }
 
 /**
- * Return array list of currency positions
+ * Return array list of currency positions.
+ *
+ * @param bool|string $currency
  *
  * @return array
  */
-function learn_press_currency_positions() {
+function learn_press_currency_positions( $currency = false ) {
 
 	$positions = array(
 		'left'             => __( 'Left', 'learnpress' ),
 		'right'            => __( 'Right', 'learnpress' ),
 		'left_with_space'  => __( 'Left with space', 'learnpress' ),
 		'right_with_space' => __( 'Right with space', 'learnpress' )
-
 	);
+
+	if ( false === $currency ) {
+		$currency = learn_press_get_currency_symbol();
+	}
 
 	foreach ( $positions as $pos => $text ) {
 		switch ( $pos ) {
 			case 'left':
-				$text = sprintf( '%s ( %s%s )', $text, learn_press_get_currency_symbol(), '69.99' );
+				$text = sprintf( '%s ( %s%s )', $text, $currency, '69.99' );
 				break;
 			case 'right':
-				$text = sprintf( '%s ( %s%s )', $text, '69.99', learn_press_get_currency_symbol() );
+				$text = sprintf( '%s ( %s%s )', $text, '69.99', $currency );
 				break;
 			case 'left_with_space':
-				$text = sprintf( '%s ( %s %s )', $text, learn_press_get_currency_symbol(), '69.99' );
+				$text = sprintf( '%s ( %s %s )', $text, $currency, '69.99' );
 				break;
 			case 'right_with_space':
-				$text = sprintf( '%s ( %s %s )', $text, '69.99', learn_press_get_currency_symbol() );
+				$text = sprintf( '%s ( %s %s )', $text, '69.99', $currency );
 				break;
 		}
 		$positions[ $pos ] = $text;
@@ -906,13 +911,16 @@ function learn_press_currencies() {
  * @return string
  */
 function learn_press_get_currency() {
-	$currencies     = learn_press_currencies();
-	$currency_codes = array_keys( $currencies );
-	$currency       = reset( $currency_codes );
+	$currency = apply_filters( 'learn_press_currency', LP_Settings::instance()->get( 'currency', 'USD' ) );
 
-	return apply_filters( 'learn_press_currency', LP_Settings::instance()->get( 'currency', $currency ) );
+	return apply_filters( 'learn-press/currency', $currency );
 }
 
+/**
+ * @param string $currency
+ *
+ * @return string
+ */
 function learn_press_get_currency_symbol( $currency = '' ) {
 	if ( ! $currency ) {
 		$currency = learn_press_get_currency();
@@ -1622,7 +1630,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int $expire
+ * @param int  $expire
  * @param bool $secure
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
@@ -1798,8 +1806,8 @@ add_action( 'parse_request', 'learn_press_parse_request' );
 
 if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
 	/**
-     * Reset AUTO INCREMENT of the table.
-     *
+	 * Reset AUTO INCREMENT of the table.
+	 *
 	 * @param $table
 	 */
 	function learn_press_reset_auto_increment( $table ) {
@@ -2403,7 +2411,7 @@ function learn_press_deprecated_function( $function, $version, $replacement = nu
  * Sanitize content of tooltip
  *
  * @param string $tooltip
- * @param bool $html
+ * @param bool   $html
  *
  * @return string
  */
@@ -2492,7 +2500,8 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
 			try {
 				$data = unserialize( $content );
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				print_r( $content );
 				die();
 			}

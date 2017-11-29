@@ -10,4 +10,7 @@
 defined( 'ABSPATH' ) or exit;
 ?>
 <h2><?php _e( 'Welcome to LearnPress', 'learnpress' ); ?></h2>
-<p>Curabitur vestibulum aliquam leo. Etiam iaculis nunc ac metus. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.. Suspendisse non nisl sit amet velit hendrerit rutrum.</p>
+
+<p><?php _e( 'Thanks for choosing LearnPress to sell your courses online!', 'learnpress' ); ?></p>
+
+<p><?php _e( 'Setup Wizard help you to config some basic information before publishing your site.', 'learnpress' ); ?></p>

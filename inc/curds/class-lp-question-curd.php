@@ -821,10 +821,17 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function load_answer_options( $question_ids ) {
 			global $wpdb;
+
 			if ( is_numeric( $question_ids ) ) {
 				$return_id = $question_ids;
 			}
-			settype( $question_id, 'array' );
+
+			settype( $question_ids, 'array' );
+
+			if ( sizeof( $question_ids ) ) {
+				return false;
+			}
+
 			$format = array_fill( 0, sizeof( $question_ids ), '%d' );
 
 			$query = $wpdb->prepare( "

@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) or exit;
 
 $settings = LP()->settings();
-
+$currency = $settings->get( 'currency', 'USD' );
 ?>
 
 <h2><?php _e( 'Currency', 'learnpress' ); ?></h2>
@@ -24,7 +24,7 @@ $settings = LP()->settings();
 				if ( $payment_currencies = learn_press_get_payment_currencies() ) {
 					foreach ( $payment_currencies as $code => $symbol ) {
 						?>
-                        <option value="<?php echo $code; ?>"<?php selected( $code == $settings->get( 'currency' ) ); ?>><?php echo $symbol; ?></option>
+                        <option value="<?php echo $code; ?>"<?php selected( $code == $currency ); ?>><?php echo $symbol; ?></option>
 						<?php
 					}
 				} ?>
