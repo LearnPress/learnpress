@@ -828,7 +828,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			settype( $question_ids, 'array' );
 
-			if ( sizeof( $question_ids ) ) {
+			if ( !sizeof( $question_ids ) ) {
 				return false;
 			}
 
