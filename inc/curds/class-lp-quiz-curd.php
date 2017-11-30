@@ -38,11 +38,13 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 */
 		public function load( &$quiz ) {
 
-			$the_id = $quiz->get_id();
+			// quiz id
+			$id = $quiz->get_id();
 
-			if ( ! $the_id || ! in_array( get_post_type( $the_id ), array( LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
+			if ( ! $id || get_post_type( $id ) !== LP_QUIZ_CPT ) {
 				throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 			}
+
 			$quiz->set_data_via_methods(
 				array(
 					'retake_count'       => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),

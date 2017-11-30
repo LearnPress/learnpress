@@ -177,7 +177,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * Load course data
+		 * Load course data.
 		 *
 		 * @param LP_Course $course
 		 *

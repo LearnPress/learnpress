@@ -1678,11 +1678,21 @@ if ( ! function_exists( 'learn_press_course_insert_section_item' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
-
+	/**
+     * Duplicate post.
+     *
+     * @since 3.0.0
+     *
+	 * @param null $post_id
+	 * @param array $args
+	 * @param bool $meta
+	 *
+	 * @return bool|mixed
+	 */
 	function learn_press_duplicate_post( $post_id = null, $args = array(), $meta = true ) {
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			return;
+			return false;
 		}
 		$default = array(
 			'comment_status' => $post->comment_status,

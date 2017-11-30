@@ -113,8 +113,32 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 			}
 		}
 
-		public function load( &$object ) {
-			// TODO: Implement load() method.
+		/**
+		 * Load lesson data.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param object $lesson
+		 *
+		 * @return object
+		 * @throws Exception
+		 */
+		public function load( &$lesson ) {
+			// lesson id
+			$id = $lesson->get_id();
+
+			if ( ! $id || get_post_type( $id ) !== LP_LESSON_CPT ) {
+				throw new Exception( __( 'Invalid lesson.', 'learnpress' ) );
+			}
+
+			$lesson->set_data(
+				array(
+					'duration' => get_post_meta( $id, '_lp_duration', true ),
+					'preview'  => get_post_meta( $id, '_lp_preview', true )
+				)
+			);
+
+			return $lesson;
 		}
 	}
 
