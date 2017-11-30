@@ -24,3 +24,5 @@ test list.txt
 /.project
 /.gitignore
 /.settings/
+.DS_Store
+.gitignore
