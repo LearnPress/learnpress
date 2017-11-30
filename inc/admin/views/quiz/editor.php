@@ -65,7 +65,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
         </div>
 
         <div class="notify-reload">
-            <div class="inner"><?php esc_html_e( 'Something went wrong! Please reload to keep editing list quiz questions.', 'learnpress' ); ?></div>
+            <div class="inner"><?php esc_html_e( 'Something went wrong! Please reload to keep editing quiz questions.', 'learnpress' ); ?></div>
         </div>
     </div>
 </script>
