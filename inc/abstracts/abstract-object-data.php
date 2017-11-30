@@ -160,12 +160,7 @@ abstract class LP_Abstract_Object_Data {
 		} elseif ( $key_or_data ) {
 			$data    = $extra ? $this->_extra_data : $this->_data;
 			$changes = $extra ? $this->_extra_data_changes : $this->_changes;
-			//if ( array_key_exists( $key_or_data, $this->_data ) ) {
-//			if ( false ) {
-//				if ( $value !== $data[ $key_or_data ] ) {
-//					$changes[ $key_or_data ] = $value;
-//				}
-//			} else {
+
 			if ( $key_or_data === 'total' ) {
 			}
 			if ( $extra ) {
@@ -193,10 +188,6 @@ abstract class LP_Abstract_Object_Data {
 					die();
 				}
 			}
-			//}
-
-
-			//}
 		}
 	}
 

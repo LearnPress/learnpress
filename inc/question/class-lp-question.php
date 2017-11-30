@@ -329,10 +329,10 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$table_meta = $wpdb->learnpress_question_answermeta;
 			$table_main = $wpdb->learnpress_question_answers;
 			$query      = $wpdb->prepare( "
-			DELETE FROM t1, t2
-			USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.learnpress_question_answer_id
-			WHERE t1.question_id = %d
-		", $id );
+				DELETE FROM t1, t2
+				USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.learnpress_question_answer_id
+				WHERE t1.question_id = %d
+			", $id );
 
 			// deprecated
 			do_action( 'learn_press_before_delete_question_answers', $id );
@@ -463,13 +463,13 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		public function update_answer_orders( $orders ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
-		    SELECT qa.question_answer_id, qam2.meta_value as `name`, qam.meta_value as `value`
-            FROM wp_learnpress_question_answers qa
-            INNER JOIN wp_learnpress_question_answermeta qam ON qa.question_answer_id = qam.learnpress_question_answer_id AND qam.meta_key = %s
-            INNER JOIN wp_learnpress_question_answermeta qam2 ON qa.question_answer_id = qam2.learnpress_question_answer_id AND qam2.meta_key = %s
-            WHERE qa.question_id = %d
-            ORDER BY answer_order
-		", 'value', 'text', $this->get_id() );
+			    SELECT qa.question_answer_id, qam2.meta_value as `name`, qam.meta_value as `value`
+	            FROM {$wpdb->learnpress_question_answers} qa
+	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam ON qa.question_answer_id = qam.learnpress_question_answer_id AND qam.meta_key = %s
+	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam2 ON qa.question_answer_id = qam2.learnpress_question_answer_id AND qam2.meta_key = %s
+	            WHERE qa.question_id = %d
+	            ORDER BY answer_order
+			", 'value', 'text', $this->get_id() );
 			if ( $answers = $wpdb->get_results( $query ) ) {
 				$query = "
                 UPDATE {$wpdb->learnpress_question_answers} 

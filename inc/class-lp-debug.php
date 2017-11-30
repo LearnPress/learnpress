@@ -185,16 +185,25 @@ class LP_Debug {
 			self::$_current_name = md5( uniqid() );
 			$name                = self::$_current_name;
 		}
+		self::$_current_name  = $name;
 		self::$_time[ $name ] = microtime( true );
 	}
 
-	public static function timeEnd( $name = '' ) {
+	public static function timeEnd( $name = '', $echo = true ) {
+
 		if ( ! $name ) {
 			$name = self::$_current_name;
 		}
+
 		$time = microtime( true ) - self::$_time[ $name ];
-		echo "{$name} execution time = " . $time . "\n";
+
+		if ( $echo ) {
+			echo "{$name} execution time = " . $time . "\n";
+		}
+
 		unset( self::$_time[ $name ] );
+
+		return $time;
 	}
 
 	/**

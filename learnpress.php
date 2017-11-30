@@ -149,6 +149,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function includes() {
 			require_once 'inc/class-lp-factory.php';
 			require_once 'inc/class-lp-datetime.php';
+			require_once 'inc/class-lp-hard-cache.php';
 			require_once 'inc/interfaces/interface-curd.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
 			require_once 'inc/abstracts/abstract-post-data.php';
@@ -162,6 +163,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/background-process/class-lp-background-clear-temp-users.php';
 
 			// curds
+			require_once 'inc/curds/class-lp-helper-curd.php';
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-section-curd.php';
 			require_once 'inc/curds/class-lp-lesson-curd.php';

@@ -81,13 +81,11 @@ class LP_Settings {
 			if ( $options = $wpdb->get_results( $query ) ) {
 				foreach ( $options as $option ) {
 					$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
-					//wp_cache_add( $option->option_name, $this->_options[ $option->option_name ], 'options' );
 				}
 			}
 			foreach ( array( 'learn_press_permalink_structure', 'learn_press_install' ) as $option ) {
 				if ( empty( $this->_options[ $option ] ) ) {
 					$this->_options[ $option ] = '';
-					//wp_cache_add( $option, '', 'options' );
 				}
 			}
 			wp_cache_set( 'options', $this->_options, 'lp-options' );

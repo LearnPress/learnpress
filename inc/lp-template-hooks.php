@@ -118,7 +118,6 @@ add_action( 'learn-press/single-course-summary', 'learn_press_single_course_summ
  * @see learn_press_single_course_content_item
  * @see learn_press_course_progress
  * @see learn_press_course_tabs
- * @see learn_press_course_curriculum_popup
  * @see learn_press_course_buttons
  */
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_start_wrapper', 5 );
@@ -140,7 +139,6 @@ add_action( 'learn-press/content-landing-summary', 'learn_press_course_buttons',
  * @see learn_press_single_course_content_item
  * @see learn_press_course_progress
  * @see learn_press_course_tabs
- * @see learn_press_course_curriculum_popup
  * @see learn_press_course_buttons
  */
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_meta_start_wrapper', 10 );

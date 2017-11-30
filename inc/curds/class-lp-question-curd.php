@@ -775,6 +775,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @param $question LP_Question
 		 */
 		protected function _load_answer_options( &$question ) {
+
 			$id             = $question->get_id();
 			$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
 
@@ -798,10 +799,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					}
 				}
 
-				//learn_press_debug( $this->load_answer_options( $question->get_id() ) );
-
-				//learn_press_debug( $answer_options );
-				//die();
 				$answer_options = $this->load_answer_options( $question->get_id() );
 			}
 			$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
@@ -820,6 +817,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return array|bool
 		 */
 		public function load_answer_options( $question_ids ) {
+
 			global $wpdb;
 
 			if ( is_numeric( $question_ids ) ) {
@@ -832,37 +830,40 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return false;
 			}
 
-			$format = array_fill( 0, sizeof( $question_ids ), '%d' );
+			$cache_key = md5( serialize( $question_ids ) );
 
-			$query = $wpdb->prepare( "
-				SELECT *
-				FROM {$wpdb->prefix}learnpress_question_answers
-				WHERE question_id IN(" . join( ',', $format ) . ")
-				ORDER BY question_id, answer_order ASC
-			", $question_ids );
+			if ( false === ( $question_answers = LP_Hard_Cache::get( $cache_key, 'lp-questions' ) ) ) {
+				$format = array_fill( 0, sizeof( $question_ids ), '%d' );
 
-			$question_answers = array();
+				$query = $wpdb->prepare( "
+					SELECT *
+					FROM {$wpdb->prefix}learnpress_question_answers
+					WHERE question_id IN(" . join( ',', $format ) . ")
+					ORDER BY question_id, answer_order ASC
+				", $question_ids );
 
-			if ( $answer_options = $wpdb->get_results( $query ) ) {
-				foreach ( $answer_options as $k => $v ) {
-					$qid = $v->question_id;
+				$question_answers = array();
 
-					if ( empty( $question_answers[ $qid ] ) ) {
-						$question_answers[ $qid ] = array();
-					}
+				if ( $answer_options = $wpdb->get_results( $query ) ) {
+					foreach ( $answer_options as $k => $v ) {
+						$qid = $v->question_id;
 
-					//$answer_options[ $k ] = (array) $answer_options[ $k ];
-					if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
-						foreach ( $answer_data as $data_key => $data_value ) {
-							$v->{$data_key} = $data_value;
+						if ( empty( $question_answers[ $qid ] ) ) {
+							$question_answers[ $qid ] = array();
 						}
+
+						if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
+							foreach ( $answer_data as $data_key => $data_value ) {
+								$v->{$data_key} = $data_value;
+							}
+						}
+
+						unset( $v->answer_data );
+
+						$question_answers[ $qid ][ $v->question_answer_id ] = (array) $v;
 					}
-
-					//unset( $answer_options[ $k ]['answer_data'] );
-					unset( $v->answer_data );
-
-					$question_answers[ $qid ][ $v->question_answer_id ] = (array) $v;
 				}
+				LP_Hard_Cache::set($cache_key, $question_answers, 'lp-questions');
 			}
 
 			if ( $question_answers ) {
@@ -882,6 +883,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return mixed;
 		 */
 		protected function _load_answer_option_meta( &$answer_options ) {
+
 			global $wpdb;
 			if ( ! $answer_options ) {
 				return false;

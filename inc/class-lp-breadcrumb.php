@@ -1,6 +1,6 @@
 <?php
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -75,12 +75,12 @@ class LP_Breadcrumb {
 			'is_tax'
 		);
 
-		if ( ( !is_front_page() && !( is_post_type_archive() && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) ) || is_paged() ) {
+		if ( ( ! is_front_page() && ! ( is_post_type_archive() && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) ) || is_paged() ) {
 			foreach ( $conditionals as $conditional ) {
 				if ( is_callable( $conditional ) && call_user_func( $conditional ) ) {
 					$conditional = preg_replace( '/^learn_press_/', '', $conditional );
 					$conditional = preg_replace( '/^is_/', '', $conditional );
-					if( is_callable( array( $this, 'add_crumbs_' . $conditional ) ) ) {
+					if ( is_callable( array( $this, 'add_crumbs_' . $conditional ) ) ) {
 						call_user_func( array( $this, 'add_crumbs_' . $conditional ) );
 					}
 					break;
@@ -141,14 +141,18 @@ class LP_Breadcrumb {
 	 * @param string $permalink
 	 */
 	private function add_crumbs_single( $post_id = 0, $permalink = '' ) {
-		if ( !$post_id ) {
+		if ( ! $post_id ) {
 			global $post;
 		} else {
 			$post = get_post( $post_id );
 		}
 		if ( 'lp_course' === get_post_type( $post ) ) {
 			$this->prepend_courses_page();
-			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array( 'orderby' => 'parent', 'order' => 'DESC' ) ) ) {
+			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array(
+				'orderby' => 'parent',
+				'order'   => 'DESC'
+			) )
+			) {
 				$main_term = apply_filters( 'learn_press_breadcrumb_main_term', $terms[0], $terms );
 				$this->term_ancestors( $main_term->term_id, 'course_category' );
 				$this->add_crumb( $main_term->name, get_term_link( $main_term ) );
@@ -225,9 +229,10 @@ class LP_Breadcrumb {
 
 		$_name = learn_press_get_page_id( 'courses' ) ? get_the_title( learn_press_get_page_id( 'courses' ) ) : '';
 
-		if ( !$_name ) {
-			$course_post_type = get_post_type_object( 'course' );
-			$_name             = $course_post_type->labels->singular_name;
+		if ( ! $_name ) {
+			if ( $course_post_type = get_post_type_object( 'course' ) ) {
+				$_name = $course_post_type->labels->singular_name;
+			}
 		}
 
 		$this->add_crumb( $_name, get_post_type_archive_link( 'lp_course' ) );
@@ -320,7 +325,7 @@ class LP_Breadcrumb {
 		foreach ( $ancestors as $ancestor ) {
 			$ancestor = get_term( $ancestor, $taxonomy );
 
-			if ( !is_wp_error( $ancestor ) && $ancestor ) {
+			if ( ! is_wp_error( $ancestor ) && $ancestor ) {
 				$this->add_crumb( $ancestor->name, get_term_link( $ancestor ) );
 			}
 		}

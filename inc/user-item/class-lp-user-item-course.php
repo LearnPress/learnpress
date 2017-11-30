@@ -628,10 +628,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return ! empty( $this->_items[ $id ] ) ? $this->_items[ $id ] : false;
 	}
 
-//	public function get_course($return = '') {
-//		return learn_press_get_course( $this->get_id() );
-//	}
-
 	/**
 	 * Get js settings of course.
 	 *

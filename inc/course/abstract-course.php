@@ -296,46 +296,13 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return bool|LP_Course_Section
 	 */
 	public function get_curriculum( $section_id = 0, $force = false ) {
+
 		if ( ! $this->get_id() ) {
 			return false;
 		}
-		if ( false === ( $curriculum = wp_cache_get( 'course-' . $this->get_id(), 'lp-course-curriculum-sections' ) ) ) {
-			if ( $sections = wp_cache_get( 'course-' . $this->get_id(), 'lp-course-sections' ) ) {
-				foreach ( $sections as $k => $section ) {
-					$curriculum[ $section->section_id ] = new LP_Course_Section( $section );
-				}
-				// Update post meta
-				if ( $items = $this->get_items() ) {
-					update_meta_cache( 'post', $items );
 
-					global $wpdb;
-					$query = $wpdb->prepare( "
-						SELECT t.term_id, REPLACE(slug, 'post-format-', '') as format, object_id
-						FROM wp_terms AS t 
-						INNER JOIN wp_term_taxonomy AS tt
-						ON t.term_id = tt.term_id
-						INNER JOIN wp_term_relationships AS tr
-						ON tr.term_taxonomy_id = tt.term_taxonomy_id
-						WHERE tt.taxonomy IN (%s)
-						AND tr.object_id IN (" . join( ',', $items ) . ")
-						ORDER BY t.name ASC
-					", 'post_format' );
-					if ( $terms = $wpdb->get_results( $query ) ) {
-						$fetched = array();
-						foreach ( $terms as $term ) {
-							wp_cache_set( 'item-format-' . $term->object_id, $term->format, 'lp-item-formats' );
-							$fetched[] = $term->object_id;
-						}
+		$curriculum = $this->_curd->get_curriculum( $this->get_id() );
 
-						$items = array_diff( $items, $fetched );
-					}
-					foreach ( $items as $item_id ) {
-						wp_cache_set( 'item-format-' . $item_id, '', 'lp-item-formats' );
-					}
-				}
-			}
-			wp_cache_set( 'course-' . $this->get_id(), $curriculum, 'lp-course-curriculum-sections' );
-		}
 		$return = false;
 		if ( $section_id ) {
 			if ( ! empty( $curriculum[ $section_id ] ) ) {
@@ -345,7 +312,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 			$return = $curriculum;
 		}
 
-		return apply_filters( 'learn_press_course_curriculum', $return, $this->get_id(), $section_id );
+		return apply_filters( 'learn-press/course/curriculum', $return, $this->get_id(), $section_id );
 	}
 
 	/**
@@ -363,6 +330,8 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
 
 		if ( false === ( $items = wp_cache_get( 'course-' . $key, 'lp-course-items' ) ) ) {
+
+			LP_Helper_CURD::update_meta_cache( 'post', $items );
 
 			// get course items from cache
 			$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );

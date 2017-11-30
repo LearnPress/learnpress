@@ -115,4 +115,8 @@ class LP_Abstract_Post_Data extends LP_Abstract_Object_Data {
 	public function get_post_type() {
 		return get_post_type( $this->get_id() );
 	}
+
+	public static function default_meta() {
+		return array();
+	}
 }
