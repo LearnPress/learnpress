@@ -2167,7 +2167,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	);
 	if ( $tab ) {
 		$args['tab'] = $tab;
-	} else {
+	} elseif(learn_press_is_profile()) {
 		$args['tab'] = learn_press_get_current_profile_tab();
 	}
 	$args         = array_map( '_learn_press_urlencode', $args );
