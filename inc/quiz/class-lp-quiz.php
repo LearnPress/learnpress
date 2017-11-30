@@ -1,6 +1,6 @@
 <?php
 /**
- * Class LP_Quiz
+ * Class LP_Quiz.
  *
  * @author  ThimPress
  * @package LearnPress/Classes
@@ -19,12 +19,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 	 */
 	class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
-		/**
-		 * LP_Quiz_CURD
-		 *
-		 * @var LP_Quiz_CURD
-		 */
-		protected $_curd = false;
 
 		/**
 		 * @var array
@@ -121,6 +115,29 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function load() {
 			$this->_curd->load( $this );
+		}
+
+		/**
+		 * Get default quiz meta.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @return mixed
+		 */
+		public static function get_default_meta() {
+			$meta = array(
+				'show_hide_question' => 'hide',
+				'review_questions'   => 'no',
+				'show_result'        => 'no',
+				'duration'           => '10 minute',
+				'passing_grade'      => 80,
+				'retake_count'       => 0,
+				'archive_history'    => 'no',
+				'show_check_answer'  => 0,
+				'show_hint'          => 0
+			);
+
+			return apply_filters( 'learn-press/quiz/default-meta', $meta );
 		}
 
 		/**
@@ -475,28 +492,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * This function is no longer support. Check directly from course.
-		 *
-		 * @deprecated
-		 *
-		 * @param int $the_course
-		 *
-		 * @return bool
-		 */
-		public function is_require_enrollment( $the_course = 0 ) {
-			if ( ! $the_course ) {
-				$the_course = get_the_ID();
-			}
-
-			$return = false;
-			if ( $course = learn_press_get_course( $the_course ) ) {
-				$return = $course->is_require_enrollment();
-			}
-
-			return $return;
-		}
-
-		/**
 		 * @param $feature
 		 *
 		 * @return mixed
@@ -705,41 +700,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * Implement ArrayAccess functions.
-		 *
-		 * @param mixed $offset
-		 * @param mixed $value
-		 */
-		public function offsetSet( $offset, $value ) {
-			// Do not allow to set value directly!
-		}
-
-		/**
-		 * @param mixed $offset
-		 */
-		public function offsetUnset( $offset ) {
-			// Do not allow to unset value directly!
-		}
-
-		/**
-		 * @param mixed $offset
-		 *
-		 * @return bool|mixed
-		 */
-		public function offsetGet( $offset ) {
-			return $this->offsetExists( $offset ) ? $this->_questions[ $offset ] : false;
-		}
-
-		/**
-		 * @param mixed $offset
-		 *
-		 * @return bool
-		 */
-		public function offsetExists( $offset ) {
-			return array_key_exists( $offset, $this->_questions );
-		}
-
-		/**
 		 * @param bool $the_quiz
 		 * @param array $args
 		 *
@@ -827,6 +787,41 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return apply_filters( 'learn-press/quiz/post-object', $the_quiz );
+		}
+
+		/**
+		 * Implement ArrayAccess functions.
+		 *
+		 * @param mixed $offset
+		 * @param mixed $value
+		 */
+		public function offsetSet( $offset, $value ) {
+			// Do not allow to set value directly!
+		}
+
+		/**
+		 * @param mixed $offset
+		 */
+		public function offsetUnset( $offset ) {
+			// Do not allow to unset value directly!
+		}
+
+		/**
+		 * @param mixed $offset
+		 *
+		 * @return bool|mixed
+		 */
+		public function offsetGet( $offset ) {
+			return $this->offsetExists( $offset ) ? $this->_questions[ $offset ] : false;
+		}
+
+		/**
+		 * @param mixed $offset
+		 *
+		 * @return bool
+		 */
+		public function offsetExists( $offset ) {
+			return array_key_exists( $offset, $this->_questions );
 		}
 	}
 }

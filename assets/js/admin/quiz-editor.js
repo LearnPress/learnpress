@@ -299,9 +299,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
             });
         },
         'SET_QUESTIONS': function (state, questions) {
-            console.log(state.questions);
             state.questions = questions;
-            console.log(state.questions);
         },
         'ADD_NEW_QUESTION': function (state, question) {
             state.questions.push(question);

@@ -38,14 +38,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function create( &$args = array() ) {
 
-			$args = wp_parse_args(
-				$args, array(
+			$args = wp_parse_args( $args, array(
 					'quiz_id' => 0,
 					'order'   => - 1,
+					'id'      => '',
 					'status'  => 'publish',
-					'id'      => 0,
 					'type'    => 'true_or_false',
-					'title'   => __( 'New question', 'learnpress' ),
+					'title'   => __( 'New Question', 'learnpress' ),
 					'content' => ''
 				)
 			);
@@ -63,11 +62,20 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				'post_type'    => LP_QUESTION_CPT,
 				'post_status'  => $args['status'],
 				'post_title'   => $args['title'],
-				'post_content' => $args['content']
+				'post_content' => $args['content'],
 			) );
 
 
 			if ( $question_id ) {
+
+				// add default meta for new lesson
+				$default_meta = LP_Question::get_default_meta();
+
+				if ( is_array( $default_meta ) ) {
+					foreach ( $default_meta as $key => $value ) {
+						update_post_meta( $question_id, '_lp_' . $key, $value );
+					}
+				}
 
 				update_post_meta( $question_id, '_lp_type', $args['type'] );
 				get_user_meta( $user_id, '_learn_press_memorize_question_types', $args['type'] );
@@ -675,7 +683,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string $question_type
-		 * @param array  $args
+		 * @param array $args
 		 *
 		 * @return array|bool
 		 */

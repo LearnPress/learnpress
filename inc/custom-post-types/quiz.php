@@ -178,7 +178,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public static function settings_meta_box() {
-			$prefix   = '_lp_';
+
 			$meta_box = array(
 				'title'      => __( 'General Settings', 'learnpress' ),
 				'post_types' => LP_QUIZ_CPT,
@@ -188,7 +188,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					array(
 						'name'    => __( 'Show questions', 'learnpress' ),
 						'desc'    => __( 'Show list of questions while doing quiz as ordered numbers (1, 2, 3, etc).', 'learnpress' ),
-						'id'      => "{$prefix}show_hide_question",
+						'id'      => '_lp_show_hide_question',
 						'type'    => 'radio',
 						'options' => array(
 							'show' => __( 'Show', 'learnpress' ),
@@ -198,14 +198,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Review questions', 'learnpress' ),
-						'id'   => "{$prefix}review_questions",
+						'id'   => '_lp_review_questions',
 						'type' => 'yes-no',
 						'desc' => __( 'Allow re-viewing questions after completing quiz.', 'learnpress' ),
 						'std'  => 'no'
 					),
 					array(
 						'name'       => __( 'Show correct answer', 'learnpress' ),
-						'id'         => "{$prefix}show_result",
+						'id'         => '_lp_show_result',
 						'type'       => 'yes_no',
 						'desc'       => __( 'Show correct answer when reviewing questions.', 'learnpress' ),
 						'std'        => 'no',
@@ -213,7 +213,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => "{$prefix}review_questions",
+									'field'   => '_lp_review_questions',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -223,28 +223,16 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					array(
 						'name'         => __( 'Duration', 'learnpress' ),
 						'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
-						'id'           => "{$prefix}duration",
-						'type'         => 'duration',//'number',
+						'id'           => '_lp_duration',
+						'type'         => 'duration',
 						'default_time' => 'minute',
 						'min'          => 0,
 						'std'          => 10,
 					),
-					/*array(
-						'name'    => __( 'Passing Grade Type', 'learnpress' ),
-						'desc'    => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
-						'id'      => "{$prefix}passing_grade_type",
-						'type'    => 'radio',
-						'options' => array(
-							'no'         => __( 'No', 'learnpress' ),
-							'percentage' => __( 'Percentage', 'learnpress' ),
-							'point'      => __( 'Point', 'learnpress' )
-						),
-						'std'     => 'percentage',
-					),*/
 					array(
 						'name' => __( 'Passing Grade (<span>%</span>)', 'learnpress' ),
 						'desc' => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
-						'id'   => "{$prefix}passing_grade",
+						'id'   => '_lp_passing_grade',
 						'type' => 'number',
 						'min'  => 0,
 						'max'  => 100,
@@ -252,7 +240,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Re-take', 'learnpress' ),
-						'id'   => "{$prefix}retake_count",
+						'id'   => '_lp_retake_count',
 						'type' => 'number',
 						'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learnpress' ),
 						'min'  => 0,
@@ -260,7 +248,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					),
 					array(
 						'name'       => __( 'Archive history', 'learnpress' ),
-						'id'         => "{$prefix}archive_history",
+						'id'         => '_lp_archive_history',
 						'type'       => 'yes_no',
 						'desc'       => __( 'Archive quiz results for each time.', 'learnpress' ),
 						'std'        => 'no',
@@ -268,23 +256,16 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => "{$prefix}retake_count",
+									'field'   => '_lp_retake_count',
 									'compare' => '>',
 									'value'   => '1'
 								)
 							)
 						)
 					),
-//							array(
-//								'name' => __( 'Show check answer', 'learnpress' ),
-//								'id'   => "{$prefix}show_check_answer",
-//								'type' => 'yes_no',
-//								'desc' => __( 'Show button to check answer while doing quiz.', 'learnpress' ),
-//								'std'  => 'no'
-//							),
 					array(
 						'name' => __( 'Show check answer', 'learnpress' ),
-						'id'   => "{$prefix}show_check_answer",
+						'id'   => '_lp_show_check_answer',
 						'type' => 'number',
 						'desc' => __( 'Show button to check answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
 						'std'  => '0',
@@ -293,7 +274,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Show hint', 'learnpress' ),
-						'id'   => "{$prefix}show_hint",
+						'id'   => '_lp_show_hint',
 						'type' => 'number',
 						'desc' => __( 'Show button to hint answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
 						'std'  => '0',
@@ -342,7 +323,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int    $post_id
+		 * @param int $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;

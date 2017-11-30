@@ -351,7 +351,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$course = learn_press_get_course( $course_id );
 			$user   = LP_Global::user();
 
-			if ( $course->is_require_enrollment() && $user->is( 'guest' ) ) {
+			if ( $course->is_required_enroll() && $user->is( 'guest' ) ) {
 				throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
 			}
 
@@ -1536,7 +1536,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		$can_enroll = ! ! $course && $course->is_publish();
 
-		if ( $can_enroll && $course->is_free() && ! $course->is_require_enrollment() && ! $course->is_in_stock() ) {
+		if ( $can_enroll && $course->is_free() && ! $course->is_required_enroll() && ! $course->is_in_stock() ) {
 			$can_enroll = false;
 		}
 
@@ -3145,7 +3145,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 	 */
 	public function can_do_quiz( $quiz_id, $course_id = 0 ) {
 		$course = LP_Course::get_course( $course_id );
-		if ( $course->is_require_enrollment() ) {
+		if ( $course->is_required_enroll() ) {
 			$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && ! $this->has( 'started-quiz', $quiz_id, $course_id );
 		} else {
 			$can = ! $this->has( 'started-quiz', $quiz_id, $course_id );

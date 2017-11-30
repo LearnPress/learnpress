@@ -56,6 +56,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		protected $_supports = array();
 
 		/**
+		 * @var int
+		 */
+		protected static $_loaded = 0;
+
+		/**
 		 * @var array
 		 */
 		protected $_data = array(
@@ -67,11 +72,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			'explanation'          => '',
 			'hint'                 => ''
 		);
-
-		/**
-		 * @var int
-		 */
-		protected static $_loaded = 0;
 
 		/**
 		 * Construct
@@ -117,6 +117,10 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		}
 
 		/**
+		 * Debug log.
+		 *
+		 * @since 3.0.0
+		 *
 		 * @param $data
 		 *
 		 * @return array
@@ -134,6 +138,21 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 */
 		public function load() {
 			$this->_curd->load( $this );
+		}
+
+		/**
+		 * Get default question meta.
+		 *
+		 * @return mixed
+		 */
+		public static function get_default_meta() {
+			$meta = array(
+				'mark'        => 1,
+				'explanation' => null,
+				'hint'        => null
+			);
+
+			return apply_filters( 'learn-press/question/default-meta', $meta );
 		}
 
 		/**

@@ -148,12 +148,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$title   = $new_course['title'] ? $new_course['title'] : __( 'New Course', 'learnpress' );
 					$content = $new_course['content'] ? $new_course['content'] : '';
 
-					wp_update_post( array(
-						'ID'           => $course_id,
-						'post_title'   => $title,
-						'post_content' => $content,
-						'post_status'  => 'draft'
-					) );
+					$args = array(
+						'id'      => $course_id,
+						'status'  => 'draft',
+						'title'   => $title,
+						'content' => $content
+					);
+
+					$course_curd->create( $args );
 
 					break;
 
@@ -621,7 +623,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 						$quiz_args = array(
 							'id'      => $quiz_id,
-							'title'   => $draft_quiz['title'] ? $draft_quiz['title'] : __( 'New question', 'learnpress' ),
+							'title'   => $draft_quiz['title'] ? $draft_quiz['title'] : __( 'New Quiz', 'learnpress' ),
 							'content' => $draft_quiz['content'],
 							'status'  => 'draft'
 						);
@@ -1328,8 +1330,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

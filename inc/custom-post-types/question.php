@@ -238,7 +238,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public static function settings_meta_box() {
-			$prefix   = '_lp_';
+
 			$meta_box = array(
 				'id'     => 'question_settings',
 				'title'  => __( 'Settings', 'learnpress' ),
@@ -246,7 +246,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				'fields' => array(
 					array(
 						'name'  => __( 'Mark for this question', 'learnpress' ),
-						'id'    => "{$prefix}mark",
+						'id'    => '_lp_mark',
 						'type'  => 'number',
 						'clone' => false,
 						'desc'  => __( 'Mark for choosing the right answer.', 'learnpress' ),
@@ -255,14 +255,14 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Question explanation', 'learnpress' ),
-						'id'   => "{$prefix}explanation",
+						'id'   => '_lp_explanation',
 						'type' => 'textarea',
 						'desc' => __( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ),
 						'std'  => null
 					),
 					array(
 						'name' => __( 'Question hint', 'learnpress' ),
-						'id'   => "{$prefix}hint",
+						'id'   => '_lp_hint',
 						'type' => 'textarea',
 						'desc' => __( 'Instruction for user to select the right answer. The text will be shown when user clicking \'Hint\' button.', 'learnpress' ),
 						'std'  => null

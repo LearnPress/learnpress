@@ -86,11 +86,9 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		/**
-		 * Meta boxes
+		 * Meta boxes.
 		 */
 		public function add_meta_boxes() {
-
-			$prefix = '_lp_';
 
 			$meta_boxes = apply_filters( 'learn_press_lesson_meta_box_args',
 				array(
@@ -100,7 +98,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'fields' => array(
 						array(
 							'name'         => __( 'Lesson Duration', 'learnpress' ),
-							'id'           => "{$prefix}duration",
+							'id'           => '_lp_duration',
 							'type'         => 'duration',
 							'default_time' => 'minute',
 							'desc'         => __( 'Duration of the lesson. Set 0 to disable.', 'learnpress' ),
@@ -108,7 +106,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 						),
 						array(
 							'name' => __( 'Preview Lesson', 'learnpress' ),
-							'id'   => "{$prefix}preview",
+							'id'   => '_lp_preview',
 							'type' => 'yes-no',
 							'desc' => __( 'If this is a preview lesson, then student can view this lesson content without taking the course.', 'learnpress' ),
 							'std'  => 'no'
@@ -301,8 +299,8 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		/**
-         * Add admin params.
-         *
+		 * Add admin params.
+		 *
 		 * @return array
 		 */
 		public function admin_params() {

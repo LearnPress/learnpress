@@ -1,4 +1,18 @@
 <?php
+/**
+ * Class LP_Abstract_Object_Data.
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 3.0.0
+ */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
+if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 /**
  * Class LP_Abstract_Object_Data
@@ -75,11 +89,14 @@ abstract class LP_Abstract_Object_Data {
 		$this->load_curd();
 	}
 
-	protected function load_curd() {
-		if ( is_string( $this->_curd ) && $this->_curd ) {
-			$this->_curd = new $this->_curd();
+		/**
+		 * Load curd.
+		 */
+		protected function load_curd() {
+			if ( is_string( $this->_curd ) && $this->_curd ) {
+				$this->_curd = new $this->_curd();
+			}
 		}
-	}
 
 	/**
 	 * Set id of object in database
@@ -127,15 +144,21 @@ abstract class LP_Abstract_Object_Data {
 		return false;
 	}
 
-	public function get_extra_data( $name = '', $default = '' ) {
-		if ( is_string( $name ) ) {
-			// Check in data first then check in extra data
-			return array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default;
-		} elseif ( is_array( $name ) ) {
-			$data = array();
-			foreach ( $name as $key ) {
-				$data[ $key ] = $this->get_extra_data( $key, $default );
-			}
+		/**
+		 * @param string $name
+		 * @param string $default
+		 *
+		 * @return array|bool|mixed|string
+		 */
+		public function get_extra_data( $name = '', $default = '' ) {
+			if ( is_string( $name ) ) {
+				// Check in data first then check in extra data
+				return array_key_exists( $name, $this->_extra_data ) ? $this->_extra_data[ $name ] : $default;
+			} elseif ( is_array( $name ) ) {
+				$data = array();
+				foreach ( $name as $key ) {
+					$data[ $key ] = $this->get_extra_data( $key, $default );
+				}
 
 			return $data;
 		} elseif ( true === $name ) {
@@ -201,9 +224,13 @@ abstract class LP_Abstract_Object_Data {
 		$this->_set_data( $key_or_data, $value, true );
 	}
 
-	public function set_data_date( $key, $value ) {
-		if ( is_null( $key ) ) {
-			$this->_set_data( $key, $value );
+		/**
+		 * @param $key
+		 * @param $value
+		 */
+		public function set_data_date( $key, $value ) {
+			if ( is_null( $key ) ) {
+				$this->_set_data( $key, $value );
 
 			return;
 		} elseif ( ! $value instanceof LP_Datetime ) {
@@ -254,9 +281,14 @@ abstract class LP_Abstract_Object_Data {
 		return $extra ? array_merge( array_keys( $this->_data ), array_keys( $this->_extra_data ) ) : array_keys( $this->_data );
 	}
 
-	public function prefix_set_method( $method ) {
-		return "set_{$method}";
-	}
+		/**
+		 * @param $method
+		 *
+		 * @return string
+		 */
+		public function prefix_set_method( $method ) {
+			return "set_{$method}";
+		}
 
 	/**
 	 * Apply the changes
@@ -342,10 +374,7 @@ abstract class LP_Abstract_Object_Data {
 	public function read_meta() {
 		if ( $meta_data = $this->_curd->read_meta( $this ) ) {
 
-			$external_metas = array_filter( $meta_data, array(
-				$this,
-				'exclude_metas'
-			) );//$this->internal_meta_keys = array_merge( array_map( array( $this, 'prefix_key' ), $object->get_data_keys() ), $this->internal_meta_keys );
+				$external_metas = array_filter( $meta_data, array( $this, 'exclude_metas' ) );
 
 			foreach ( $external_metas as $meta ) {
 				$this->_meta_data[] = $meta;
@@ -443,16 +472,26 @@ abstract class LP_Abstract_Object_Data {
 		}
 	}
 
-	public function update_meta() {
-		if ( $this->_meta_data ) {
-			foreach ( $this->_meta_data as $meta_data ) {
-				$this->_curd->update_meta( $this, $meta_data );
+		/**
+		 * Update meta.
+		 */
+		public function update_meta() {
+			if ( $this->_meta_data ) {
+				foreach ( $this->_meta_data as $meta_data ) {
+					$this->_curd->update_meta( $this, $meta_data );
+				}
 			}
 		}
-	}
 
-	public function get_meta_keys() {
-		return $this->_meta_keys;
+		/**
+		 * Get meta keys.
+		 *
+		 * @return array
+		 */
+		public function get_meta_keys() {
+			return $this->_meta_keys;
+		}
+
 	}
 
 }
