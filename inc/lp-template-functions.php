@@ -400,17 +400,18 @@ if ( ! function_exists( 'learn_press_course_tabs' ) ) {
 	}
 }
 
-if ( ! function_exists( '' ) ) {
+if ( ! function_exists( 'learn_press_course_item_content' ) ) {
 	/**
-	 * @param LP_Course_Item $item
+	 * Get course item content template.
+     *
+     * @since 3.0.0
 	 */
-	function learn_press_course_item_content( $item ) {
+	function learn_press_course_item_content() {
 		global $lp_course, $lp_course_item;
-		$item               = $lp_course_item;
-		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
+		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $lp_course_item->get_item_type() . '.php' );
 
 		if ( file_exists( $item_template_name ) ) {
-			learn_press_get_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
+			learn_press_get_template( 'single-course/content-item-' . $lp_course_item->get_item_type() . '.php' );
 		}
 	}
 }
@@ -2968,7 +2969,7 @@ if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
 //	if ( $course = learn_press_get_course( $course_id ) ) {
 //		if ( $this->is_preview() ) {
 //			$status_classes[] = 'item-preview';
-//		} elseif ( $course->is_free() && ! $course->is_require_enrollment() ) {
+//		} elseif ( $course->is_free() && ! $course->is_required_enroll() ) {
 //			$status_classes[] = 'item-free';
 //		}
 //	}
@@ -3043,7 +3044,7 @@ function learn_press_is_learning_course( $course_id = 0 ) {
 	$course      = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
 	$is_learning = false;
 
-	if ( $course && ! $course->is_require_enrollment() || $user->has_course_status( $course->get_id(), array(
+	if ( $course && ! $course->is_required_enroll() || $user->has_course_status( $course->get_id(), array(
 			'enrolled',
 			'finished'
 		) )

@@ -196,7 +196,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array
 	 */
-	public function read_get_sections_ids() {
+	public function read_sections_ids() {
 
 		// Get course's sections id data from cache
 		$ids = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections-ids' );
@@ -291,7 +291,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param $section_id
 	 * @param $item
 	 *
-	 * @return array
+	 * @return array | bool
 	 */
 	public function new_item( $section_id, $item ) {
 
@@ -300,15 +300,23 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$item = wp_parse_args( $item, array( 'title' => '', 'type' => '' ) );
 
-		// create new item
-		$post_id = wp_insert_post( array(
-			'post_author' => $author_id,
-			'post_title'  => $item['title'],
-			'post_type'   => $item['type'] ? $item['type'] : LP_LESSON_CPT,
-			'post_status' => 'publish'
-		) );
+		$lesson_curd = new LP_Lesson_CURD();
+		$quiz_curd   = new LP_Quiz_CURD();
 
-		$item['id'] = $post_id;
+		$args = array(
+			'title'  => $item['title'],
+			'author' => $author_id
+		);
+
+		if ( $item['type'] == LP_LESSON_CPT ) {
+			$item['id'] = $lesson_curd->create( $args );
+		} else if ( $item['type'] == LP_QUIZ_CPT ) {
+			$item['id'] = $quiz_curd->create( $args );
+		}
+
+		if ( is_wp_error( $item['id'] ) || ! $item['id'] ) {
+			return false;
+		}
 
 		// add item to section
 		return $this->add_items_section( $section_id, array( $item ) );

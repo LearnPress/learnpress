@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Course_Post_Type
  *
@@ -496,8 +495,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function settings_meta_box() {
 
-			$prefix = '_lp_';
-
 			$meta_box = array(
 				'id'       => 'course_settings',
 				'title'    => __( 'General', 'learnpress' ),
@@ -507,28 +504,28 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'fields'   => array(
 					array(
 						'name' => __( 'Duration', 'learnpress' ),
-						'id'   => "{$prefix}duration",
+						'id'   => '_lp_duration',
 						'type' => 'duration',
 						'desc' => __( 'The duration of the course.', 'learnpress' ),
 						'std'  => '10 weeks'
 					),
 					array(
 						'name' => __( 'Maximum students', 'learnpress' ),
-						'id'   => "{$prefix}max_students",
+						'id'   => '_lp_max_students',
 						'type' => 'number',
 						'desc' => __( 'Maximum number of students who can enroll in this course.', 'learnpress' ),
 						'std'  => 1000,
 					),
 					array(
 						'name' => __( 'Students enrolled', 'learnpress' ),
-						'id'   => "{$prefix}students",
+						'id'   => '_lp_students',
 						'type' => 'number',
 						'desc' => __( 'How many students have taken this course.', 'learnpress' ),
 						'std'  => 0,
 					),
 					array(
 						'name' => __( 'Re-take course', 'learnpress' ),
-						'id'   => "{$prefix}retake_count",
+						'id'   => '_lp_retake_count',
 						'type' => 'number',
 						'min'  => - 1,
 						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable.', 'learnpress' ),
@@ -536,14 +533,21 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Featured', 'learnpress' ),
-						'id'   => "{$prefix}featured",
+						'id'   => '_lp_featured',
 						'type' => 'yes_no',
 						'desc' => __( 'Set course as featured.', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(
+						'name' => __( 'Block Lessons Content', 'learnpress' ),
+						'id'   => '_lp_block_lesson_content',
+						'type' => 'yes_no',
+						'desc' => __( 'Block lessons content when course is expired.', 'learnpress' ),
+						'std'  => 'no',
+					),
+					array(
 						'name' => __( 'External link buy course', 'learnpress' ),
-						'id'   => "{$prefix}external_link_buy_course",
+						'id'   => '_lp_external_link_buy_course',
 						'type' => 'url',
 						'desc' => __( 'Redirect to this url when you press button buy this course.', 'learnpress' ),
 						'std'  => '',
@@ -564,7 +568,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$post_id = LP_Request::get_int( 'post' );
 			$post_id = $post_id ? $post_id : ( ! empty( $post ) ? $post->ID : 0 );
 
-			$prefix             = '_lp_';
 			$course_result_desc = '';
 
 			if ( $course_results = get_post_meta( $post_id, '_lp_course_result', true ) ) {
@@ -607,7 +610,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'fields'   => array(
 					array(
 						'name'    => __( 'Course result', 'learnpress' ),
-						'id'      => "{$prefix}course_result",
+						'id'      => '_lp_course_result',
 						'type'    => 'radio',
 						'desc'    => $course_result_desc,
 						'options' => array(
@@ -616,7 +619,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' )
 							                             . $quiz_passing_condition_html
 							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by results of final quiz in course.', 'learnpress' ) ),
-							// new options
 							'evaluate_quizzes'        => __( 'Evaluate results of quizzes', 'learnpress' )
 							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points per total point of all quizzes.', 'learnpress' ) ),
 							'evaluate_passed_quizzes' => __( 'Evaluate results of quizzes passed', 'learnpress' )
@@ -629,7 +631,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array(
 						'name'       => __( 'Passing condition value', 'learnpress' ),
-						'id'         => "{$prefix}passing_condition",
+						'id'         => '_lp_passing_condition',
 						'type'       => 'number',
 						'min'        => 1,
 						'max'        => 100,
@@ -639,7 +641,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => "{$prefix}course_result",
+									'field'   => '_lp_course_result',
 									'compare' => '!=',
 									'value'   => 'evaluate_final_quiz'
 								)
@@ -660,7 +662,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public static function payment_meta_box() {
 
 			$course_id = ! empty( $_GET['post'] ) ? $_GET['post'] : 0;
-			$prefix    = '_lp_';
 
 			$meta_box = array(
 				'id'       => 'course_payment',
@@ -674,7 +675,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$payment = get_post_meta( $course_id, '_lp_payment', true );
 
 			if ( current_user_can( 'manage_options' ) ) {
-//				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
 				$message    = '';
 				$price      = get_post_meta( $course_id, '_lp_price', true );
 				$sale_price = '';
@@ -710,7 +710,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'state'       => 'show',
 					'conditional' => array(
 						array(
-							'field'   => "{$prefix}payment",
+							'field'   => '_lp_payment',
 							'compare' => '=',
 							'value'   => 'yes'
 						)
@@ -720,7 +720,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$meta_box['fields'],
 					array(
 						'name'       => __( 'Price', 'learnpress' ),
-						'id'         => "{$prefix}price",
+						'id'         => '_lp_price',
 						'type'       => 'number',
 						'min'        => 0.01,
 						'step'       => 0.01,
@@ -730,18 +730,18 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array(
 						'name'       => __( 'Sale Price', 'learnpress' ),
-						'id'         => "{$prefix}sale_price",
+						'id'         => '_lp_sale_price',
 						'type'       => 'number',
 						'min'        => 0,
 						'step'       => 0.01,
 						'desc'       => sprintf( '<p class="description">%s</p>', __( 'Leave blank to remove sale price.', 'learnpress' ) )
-						                . '<a href="#"' . ( $start_date || $end_date ? ' style="display:none;"' : '' ) . ' id="' . $prefix . 'sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
+						                . '<a href="#"' . ( $start_date || $end_date ? ' style="display:none;"' : '' ) . ' id="_lp_sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
 						'std'        => $sale_price,
 						'visibility' => $conditional
 					),
 					array(
 						'name'       => __( 'Sale start date', 'learnpress' ),
-						'id'         => "{$prefix}sale_start",
+						'id'         => '_lp_sale_start',
 						'type'       => 'datetime',
 						'std'        => $start_date,
 						'class'      => $sale_price_dates_class,
@@ -749,9 +749,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array(
 						'name'       => __( 'Sale end date', 'learnpress' ),
-						'id'         => "{$prefix}sale_end",
+						'id'         => '_lp_sale_end',
 						'type'       => 'datetime',
-						'desc'       => '<a href="#" id="' . $prefix . 'sale_price_schedule_cancel">' . __( 'Cancel', 'learnpress' ) . '</a>',
+						'desc'       => '<a href="#" id="_lp_sale_price_schedule_cancel">' . __( 'Cancel', 'learnpress' ) . '</a>',
 						'std'        => $end_date,
 						'class'      => $sale_price_dates_class,
 						'visibility' => $conditional
@@ -761,14 +761,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$price                = get_post_meta( $course_id, '_lp_price', true );
 				$meta_box['fields'][] = array(
 					'name'  => __( 'Price set by Admin', 'learnpress' ),
-					'id'    => "{$prefix}price",
+					'id'    => '_lp_price',
 					'type'  => 'html',
 					'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
 					'html'  => $price !== '' ? sprintf( '<strong>%s</strong>', learn_press_format_price( $price, true ) ) : __( 'Not set', 'learnpress' )
 				);
 				$meta_box['fields'][] = array(
 					'name'  => __( 'Course Suggestion Price', 'learnpress' ),
-					'id'    => "{$prefix}suggestion_price",
+					'id'    => '_lp_suggestion_price',
 					'type'  => 'number',
 					'min'   => 0,
 					'step'  => 0.01,
@@ -784,11 +784,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				array(
 					array(
 						'name'       => __( 'Require enrollment', 'learnpress' ),
-						'id'         => "{$prefix}required_enroll",
+						'id'         => '_lp_required_enroll',
 						'type'       => 'yes_no',
 						'desc'       => __( 'Require users logged in to study or public to all.', 'learnpress' ),
 						'std'        => 'yes',
-						//'class'      => 'lp-course-required-enroll' . ( ( $payment == 'yes' ) ? ' hide-if-js' : '' ),
 						'visibility' => $conditional
 					)
 				)
@@ -809,8 +808,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$course_id = ! empty( $_GET['post'] ) ? $_GET['post'] : 0;
 			$post      = get_post( $course_id );
 			$author    = $post ? $post->post_author : get_current_user_id();
-
-			$prefix = '_lp_';
 
 			$include = array();
 			$role    = array( 'administrator', 'lp_teacher' );
@@ -835,7 +832,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'fields'   => array(
 					array(
 						'name'       => __( 'Author', 'learnpress' ),
-						'id'         => "{$prefix}course_author",
+						'id'         => '_lp_course_author',
 						'desc'       => '',
 						'multiple'   => false,
 						'allowClear' => false,
@@ -902,7 +899,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return mixed|null
 		 */
 		public static function video_meta_box() {
-			$prefix   = '_lp_';
+
 			$meta_box = array(
 				'id'       => 'course_video',
 				'title'    => __( 'Course Video', 'learnpress' ),
@@ -911,14 +908,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'fields'   => array(
 					array(
 						'name' => __( 'Video ID', 'learnpress' ),
-						'id'   => "{$prefix}video_id",
+						'id'   => '_lp_video_id',
 						'type' => 'text',
 						'desc' => __( 'The id of Youtube or Vimeo video', 'learnpress' ),
 						'std'  => ''
 					),
 					array(
 						'name'    => __( 'Video Type', 'learnpress' ),
-						'id'      => "{$prefix}video_type",
+						'id'      => '_lp_video_type',
 						'type'    => 'select',
 						'desc'    => __( 'Chose video type', 'learnpress' ),
 						'std'     => 'youtube',
@@ -929,14 +926,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Embed width', 'learnpress' ),
-						'id'   => "{$prefix}video_embed_width",
+						'id'   => '_lp_video_embed_width',
 						'type' => 'number',
 						'desc' => __( 'Set width of embed', 'learnpress' ),
 						'std'  => '560'
 					),
 					array(
 						'name' => __( 'Embed height', 'learnpress' ),
-						'id'   => "{$prefix}video_embed_height",
+						'id'   => '_lp_video_embed_height',
 						'type' => 'number',
 						'desc' => __( 'Set height of embed', 'learnpress' ),
 						'std'  => '315'

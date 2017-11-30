@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Course_CURD
  *
@@ -20,8 +19,56 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 	 */
 	class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
-		public function create( &$course ) {
-			// TODO: Implement create() method.
+		/**
+		 * LP_Course_CURD constructor.
+		 */
+		public function __construct() {
+			$this->_error_messages = array(
+				'COURSE_NOT_EXISTS' => __( 'Course does not exists.', 'learnpress' )
+			);
+		}
+
+		/**
+		 * Create course, with default meta.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $args
+		 *
+		 * @return int|WP_Error
+		 */
+		public function create( &$args = array() ) {
+
+			$args = wp_parse_args( $args, array(
+					'id'      => '',
+					'status'  => 'publish',
+					'title'   => __( 'New Course', 'learnpress' ),
+					'content' => '',
+					'author'  => learn_press_get_current_user_id()
+				)
+			);
+
+			$course_id = wp_insert_post( array(
+				'ID'           => $args['id'],
+				'post_type'    => LP_COURSE_CPT,
+				'post_status'  => $args['status'],
+				'post_title'   => $args['title'],
+				'post_content' => $args['content'],
+				'post_author'  => $args['author']
+			) );
+
+			if ( $course_id ) {
+				// add default meta for new course
+				$default_meta = LP_Course::get_default_meta();
+
+				if ( is_array( $default_meta ) ) {
+					foreach ( $default_meta as $key => $value ) {
+						update_post_meta( $course_id, '_lp_' . $key, $value );
+					}
+				}
+			}
+
+			return $course_id;
 		}
 
 		public function update( &$course ) {
@@ -162,7 +209,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$course->set_data(
 				array(
 					'status'               => $post_object->post_status,
-					'require_enrollment'   => get_post_meta( $id, '_lp_required_enroll', true ),
+					'required_enroll'      => get_post_meta( $id, '_lp_required_enroll', true ),
 					'price'                => get_post_meta( $id, '_lp_price', true ),
 					'sale_price'           => get_post_meta( $id, '_lp_sale_price', true ),
 					'sale_start'           => get_post_meta( $id, '_lp_sale_start', true ),
@@ -338,7 +385,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			$section_curd = new LP_Section_CURD( $course_id );
 
-			$section_curd->read_get_sections_ids();
+			$section_curd->read_sections_ids();
 
 			$query = $wpdb->prepare( "
 				SELECT s.* FROM {$wpdb->posts} p

@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit();
 $course = learn_press_get_course();
 
 // Do not show if course is no require enrollment
-if ( ! $course || ! $course->is_require_enrollment() ) {
+if ( ! $course || ! $course->is_required_enroll() ) {
 	return;
 }
 ?>
