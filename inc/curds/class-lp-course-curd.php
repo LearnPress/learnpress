@@ -186,7 +186,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		public function load( &$course ) {
 			$this->load_curriculum( $course );
 			$this->load_data( $course );
-
 			return $course;
 		}
 

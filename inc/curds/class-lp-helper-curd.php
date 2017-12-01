@@ -43,13 +43,14 @@ class LP_Helper_CURD {
 			}
 
 			LP_Hard_Cache::set( $cache_key, $meta_data, "{$type}-meta" );
-		} else {
-			foreach ( $ids as $id ) {
-				if ( ! isset( $meta_data[ $id ] ) ) {
-					$meta_data[ $id ] = array();
-				}
-				wp_cache_set( $id, $meta_data[ $id ], "{$type}_meta" );
+		}
+
+		foreach ( $ids as $id ) {
+			if ( ! isset( $meta_data[ $id ] ) ) {
+				$meta_data[ $id ] = array();
 			}
+
+			wp_cache_set( $id, $meta_data[ $id ], "{$type}_meta" );
 		}
 
 	}

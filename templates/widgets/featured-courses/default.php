@@ -29,10 +29,12 @@ $instance = $this->instance;
 				'title'      => $course->get_title(),
 				'content'    => $course->get_data( 'post_content' ),
 				'price'      => $course->get_price_html(),
-				'students'   => $course->get_users_enrolled(),
+				'students'   => $course->get_users_enrolled('append'),
 				'lessons'    => sizeof( $course->get_items( LP_LESSON_CPT ) ),
 				'instructor' => $course->get_instructor_html(),
-			); ?>
+			);
+			echo $course->get_data('students');
+			?>
 
             <div class="course-entry">
                 <!-- course thumbnail -->

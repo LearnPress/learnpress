@@ -66,15 +66,26 @@ class LP_Settings_Miscellaneous extends LP_Abstract_Settings_Page {
 					'title'   => __( 'Load css', 'learnpress' ),
 					'id'      => 'load_css',
 					'default' => 'yes',
-					'type'    => 'checkbox',
+					'type'    => 'yes-no',
 					'desc'    => __( 'Load default stylesheet for LearnPress.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Debug mode', 'learnpress' ),
 					'id'      => 'debug',
 					'default' => 'yes',
-					'type'    => 'checkbox',
+					'type'    => 'yes-no',
 					'desc'    => __( 'Turn on/off debug mode for developer.', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'Hard cache', 'learnpress' ),
+					'type'    => 'heading',
+				),
+				array(
+					'title'   => __( 'Enable hard cache', 'learnpress' ),
+					'id'      => 'enable_hard_cache',
+					'default' => 'no',
+					'type'    => 'yes-no',
+					'desc'    => sprintf( __( 'Enable cache for static content such as content and settings of course, lesson, quiz. <a href="%s">%s</a>', 'learnpress' ), admin_url('admin.php?page=learn-press-tools&tab=cache'), __('Advanced', 'learnpress'))
 				),
 			)
 		);

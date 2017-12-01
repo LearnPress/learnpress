@@ -19,7 +19,12 @@ class LP_Hard_Cache {
 	 */
 	protected static $_default_group = '';
 
-	public static $lock = false;
+	/**
+	 * @var bool
+	 */
+	protected static $_lock = false;
+
+	protected static $_hard_lock = false;
 
 	/**
 	 * Init
@@ -27,6 +32,17 @@ class LP_Hard_Cache {
 	public static function init() {
 		$upload_dir       = wp_upload_dir();
 		self::$_root_path = trailingslashit( $upload_dir['basedir'] ) . 'lp-cache';
+
+		if ( defined( 'LP_HARD_CACHE' ) ) {
+			self::$_lock = self::$_hard_lock = ! LP_HARD_CACHE;
+		} else {
+			self::$_lock = self::$_hard_lock = ! ( 'yes' === LP()->settings()->get( 'enable_hard_cache' ) );
+		}
+
+		if ( self::is_locked() ) {
+			return;
+		}
+
 		@wp_mkdir_p( self::$_root_path );
 	}
 
@@ -41,7 +57,7 @@ class LP_Hard_Cache {
 	 */
 	public static function replace( $key, $data, $group = '' ) {
 
-		if ( self::$lock ) {
+		if ( self::is_locked() ) {
 			return false;
 		}
 
@@ -65,7 +81,7 @@ class LP_Hard_Cache {
 	 */
 	public static function set( $key, $data, $group = '' ) {
 
-		if ( self::$lock ) {
+		if ( self::is_locked() ) {
 			return false;
 		}
 
@@ -82,7 +98,7 @@ class LP_Hard_Cache {
 	 */
 	public static function get( $key, $group = '' ) {
 
-		if ( self::$lock ) {
+		if ( self::is_locked() ) {
 			return false;
 		}
 
@@ -99,7 +115,7 @@ class LP_Hard_Cache {
 	 */
 	public static function read( $key, $group = '' ) {
 
-		if ( self::$lock ) {
+		if ( self::is_locked() ) {
 			return false;
 		}
 
@@ -131,7 +147,7 @@ class LP_Hard_Cache {
 	 */
 	protected static function write( $key, $data, $group = '', $overwrite = false ) {
 
-		if ( self::$lock ) {
+		if ( self::is_locked() ) {
 			return false;
 		}
 
@@ -165,6 +181,11 @@ class LP_Hard_Cache {
 	 * @return string
 	 */
 	protected static function get_file( $key, $group = '' ) {
+
+		if ( self::is_locked() ) {
+			return false;
+		}
+
 		$path = array( self::$_root_path, $group );
 		$path = array_filter( $path );
 		$path = join( '/', $path );
@@ -173,6 +194,61 @@ class LP_Hard_Cache {
 
 		return $file;
 	}
+
+	protected static function get_path( $group = '' ) {
+		$path = array( self::$_root_path, $group );
+		$path = array_filter( $path );
+		$path = join( '/', $path );
+
+		return $path;
+	}
+
+	/**
+	 * Enable for updating cache temporary even it is locked.
+	 */
+	public static function unlock() {
+		self::$_lock = false;
+	}
+
+	/**
+	 * Disable for updating cache temporary event it is not locked.
+	 */
+	public static function lock() {
+		self::$_lock = true;
+	}
+
+	/**
+	 * Reset lock to default.
+	 */
+	public static function reset_lock() {
+		self::$_lock = self::$_hard_lock;
+	}
+
+	/**
+	 * Check if cache is locked
+	 *
+	 * @return bool
+	 */
+	public static function is_locked() {
+		return self::$_lock;
+	}
+
+	public static function flush( $group = false ) {
+		WP_Filesystem();
+		global $wp_filesystem;
+
+		if ( ! $wp_filesystem ) {
+			return false;
+		}
+
+		if ( $group ) {
+			$return = $wp_filesystem->rmdir( self::get_path( $group ), true );
+		} else {
+			$return = $wp_filesystem->rmdir( self::$_root_path, true );
+		}
+
+		return $return;
+	}
 }
-//LP_Hard_Cache::$lock = true;
+
 add_action( 'init', array( 'LP_Hard_Cache', 'init' ) );

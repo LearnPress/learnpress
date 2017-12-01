@@ -488,13 +488,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return int
 		 */
-		public function get_users_enrolled( $force = false ) {
+		public function get_users_enrolled( $count_db = '' ) {
 
-			return 10;
-
-			$this->_count_users = LP_Cache::get_enrolled_courses( $this->get_id() );
-
-			return $this->_count_users;
+			return $this->count_users_enrolled( $count_db );
 			/*
 			if ( ( $this->_count_users === null && !array_key_exists( $this->get_id(), self::$course_users ) ) || $force ) {
 				self::$course_users = _learn_press_count_users_enrolled_courses( array( $this->get_id() ) );
