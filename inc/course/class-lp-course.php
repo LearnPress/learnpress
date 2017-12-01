@@ -30,23 +30,11 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function __construct( $course ) {
 			parent::__construct( $course );
-			if ( $this->get_id() > 0 ) {
-				$this->load();
-			}
 
 			self::$_loaded ++;
 			if ( self::$_loaded == 1 ) {
 				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
 			}
-		}
-
-		/**
-		 * Read course data, curriculum: sections, items, etc...
-		 *
-		 * @since 3.0.0
-		 */
-		public function load() {
-			$this->_curd->load( $this );
 		}
 
 		/**

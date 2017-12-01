@@ -662,6 +662,7 @@ body {
     position: fixed;
     height: 60px;
     right: 0;
+    line-height: 60px;
     @include box-sizing(border-box);
 }
 
@@ -726,8 +727,17 @@ body {
         line-height: 60px;
         padding: 0 15px;
         margin: 0;
-        a{
+        a {
             box-shadow: none;
+        }
+    }
+    .form-button {
+        &.lp-button-back {
+            float: right;
+            margin-right: 15px;
+            button{
+                line-height: 34px;
+            }
         }
     }
 }

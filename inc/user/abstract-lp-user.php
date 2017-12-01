@@ -612,7 +612,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			if ( $history ) {
 				$keys    = array_keys( $history );
-				$current = learn_press_get_user_quiz_meta( $keys[0], 'current_question' );
+				//$current = learn_press_get_user_quiz_meta( $keys[0], 'current_question' );
 			}
 		}
 

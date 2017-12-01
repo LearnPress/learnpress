@@ -641,13 +641,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			if ( ! $history ) {
 				return false;
 			}
-			$checked = (array) learn_press_get_user_quiz_meta( $history->history_id, 'checked' );
+			$checked = array();// learn_press_get_user_quiz_meta( $history->history_id, 'checked' );
 			$checked = array_filter( $checked );
 			if ( ! in_array( $question_id, $checked ) ) {
 				$checked[] = $question_id;
 			}
 
-			learn_press_update_user_quiz_meta( $history->history_id, 'checked', $checked );
+			//learn_press_update_user_quiz_meta( $history->history_id, 'checked', $checked );
 
 			return true;
 

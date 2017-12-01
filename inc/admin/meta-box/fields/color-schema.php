@@ -18,6 +18,13 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		ob_start();
 		$colors  = array(
 			array(
+				'title'    => __( 'Popup heading background', 'learnpress' ),
+				'selector' => '#course-item-content-header',
+				'props'    => array(
+					'background' => '#FF0000'
+				)
+			),
+			array(
 				'title'    => __( 'Section title', 'learnpress' ),
 				'selector' => '.section-title',
 				'props'    => array(

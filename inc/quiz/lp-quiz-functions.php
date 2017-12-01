@@ -131,18 +131,6 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 	}
 }
 
-function learn_press_get_user_quiz_meta( $quiz_user_id, $meta_key, $single = true ) {
-	return get_metadata( 'learnpress_user_item', $quiz_user_id, $meta_key, $single );
-}
-
-function learn_press_add_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
-	return add_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
-}
-
-function learn_press_update_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
-	return update_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
-}
-
 /**
  * @param int
  * @param int - since 0.9.5

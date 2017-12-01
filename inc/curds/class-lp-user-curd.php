@@ -409,10 +409,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			ORDER BY item_id, user_item_id DESC
 		", $args );
 
-		if ( $results = $wpdb->get_results( $query, ARRAY_A ) ) {
+		if ( $results = $wpdb->get_results( $query ) ) {
 			$items    = array();
 			$meta_ids = array();
 			foreach ( $results as $result ) {
+				$result       = (array) $result;
 				$user_item_id = $result['item_id'];
 				if ( empty( $items[ $user_item_id ] ) ) {
 					$items[ $user_item_id ]                = array();

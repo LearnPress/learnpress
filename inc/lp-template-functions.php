@@ -80,6 +80,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
+
 			if ( ! $course_data->get_status() ) {
 				learn_press_get_template( 'single-course/buttons/enroll.php' );
 			}

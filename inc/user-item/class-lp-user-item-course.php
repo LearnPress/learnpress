@@ -60,7 +60,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		$user_curd->read_course( $this->get_user_id(), $this->get_id() );
 
 		$this->_set_data( $this->_item );
-
 		if ( $course = learn_press_get_course( $this->get_id() ) ) {
 			$this->_course = $course;
 			$course_items  = $course->get_items();
@@ -379,7 +378,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-passed-quizzes' ) ) ) {
 			$course = $this->get_course();
-			LP_Debug::timeStart();
 
 			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
 			$result = 0;
@@ -414,7 +412,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-completed-quizzes' ) ) ) {
 			$course = $this->get_course();
-			LP_Debug::timeStart();
 
 			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
 			$result = 0;
@@ -462,12 +459,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$completed     = 0;
 			$total         = 0;
 			$section_items = array();
+
 			if ( $section_id && $section = $this->_course->get_curriculum( $section_id ) ) {
 				$section_items = $section->get_items();
+
 				if ( $section_items ) {
 					$section_items = array_keys( $section_items );
 				}
 			}
+
 			if ( $items = $this->_items ) {
 				foreach ( $items as $item ) {
 

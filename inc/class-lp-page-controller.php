@@ -30,6 +30,7 @@ class LP_Page_Controller {
 		if ( self::$_instance || is_admin() ) {
 			return;
 		}
+
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
 		add_filter( 'template_include', array( $this, 'template_content_item' ) );
@@ -168,10 +169,15 @@ class LP_Page_Controller {
 			return $tmpl;
 		}
 
-		// If there is no template is valid in theme or plugin
-		if ( ! ( $template = $this->_find_template() ) ) {
-			// Get template of wp page.
-			$template = get_page_template();
+		if ( $this->_is_archive() || learn_press_is_course() ) {
+			// If there is no template is valid in theme or plugin
+			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
+				// Get template of wp page.
+				$template = get_page_template();
+			}else{
+				$template = $lp_template;
+			}
+
 			if ( $this->_is_single() ) {
 				global $post;
 				setup_postdata( $post );
@@ -188,13 +194,14 @@ class LP_Page_Controller {
 	 * Find template for archive or single course in theme.
 	 * If there is no template then load default from plugin.
 	 *
+	 * @param string $template
+	 *
 	 * @return string
 	 */
-	protected function _find_template() {
+	protected function _find_template( $template ) {
 		$file           = '';
 		$find           = array();
 		$theme_template = learn_press_template_path();
-		$template       = '';
 
 		/**
 		 * Find template for archive or single course page in theme.
@@ -210,10 +217,12 @@ class LP_Page_Controller {
 		}
 
 		if ( $file ) {
-			$template = locate_template( array_unique( $find ) );
-			if ( ! $template && ! in_array( $file, array( 'single-course.php', 'archive-course.php' ) ) ) {
-				$template = learn_press_plugin_path( 'templates/' ) . $file;
+			$_template = locate_template( array_unique( $find ) );
+			if ( ! $_template && ! in_array( $file, array( 'single-course.php', 'archive-course.php' ) ) ) {
+				$_template = learn_press_plugin_path( 'templates/' ) . $file;
 			}
+
+			$template = $_template;
 		}
 
 		return $template;
@@ -486,7 +495,6 @@ class LP_Page_Controller {
 		if ( ! $q->is_main_query() || is_admin() ) {
 			return $q;
 		}
-
 		remove_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 
 		$this->_queried_object = ! empty( $q->queried_object_id ) ? $q->queried_object : false;

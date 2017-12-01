@@ -13,9 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $course = LP_Global::course(); ?>
+$course = LP_Global::course();
+?>
 
 <div id="course-item-content-header">
 
@@ -28,6 +28,10 @@ defined( 'ABSPATH' ) || exit();
 
     <h2 class="course-title">
         <a href="<?php echo esc_url( $course->get_permalink() ) ?>"><?php echo $course->get_title(); ?></a>
+
     </h2>
 
+    <form class="lp-form form-button lp-button-back" action="<?php echo $course->get_permalink(); ?>">
+        <button class="lp-button"><?php _e( 'Back to Course', 'learnpress' ); ?></button>
+    </form>
 </div>

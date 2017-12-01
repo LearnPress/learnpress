@@ -790,7 +790,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 				$question_answers = apply_filters( 'learn_press_update_user_question_answers', $question_answers, $progress->history_id, $user_id, $this, $quiz_id );
 
-				learn_press_update_user_quiz_meta( $progress->history_id, 'question_answers', $question_answers );
+				//learn_press_update_user_quiz_meta( $progress->history_id, 'question_answers', $question_answers );
 			}
 		}
 

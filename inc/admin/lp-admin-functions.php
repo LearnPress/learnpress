@@ -78,13 +78,13 @@ if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
 	 */
 	function learn_press_settings_tabs_array() {
 		$default_tabs = array(
-			'general'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
-			'courses'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
-			'profile'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
-			'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
-			'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
-			'emails'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
-			'assets'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-assets.php",
+			'general'       => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
+			'courses'       => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
+			'profile'       => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
+			'payments'      => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
+			'pages'         => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
+			'emails'        => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
+			'miscellaneous' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-miscellaneous.php",
 		);
 
 		// Deprecated
@@ -233,9 +233,9 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
 	}
 
-	if($selected && get_post_status($selected) !== 'publish'){
-	    $selected = 0;
-    }
+	if ( $selected && get_post_status( $selected ) !== 'publish' ) {
+		$selected = 0;
+	}
 
 	if ( $allow_create ) {
 		ob_start(); ?>
@@ -1679,13 +1679,13 @@ if ( ! function_exists( 'learn_press_course_insert_section_item' ) ) {
 
 if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	/**
-     * Duplicate post.
-     *
-     * @since 3.0.0
-     *
-	 * @param null $post_id
+	 * Duplicate post.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param null  $post_id
 	 * @param array $args
-	 * @param bool $meta
+	 * @param bool  $meta
 	 *
 	 * @return bool|mixed
 	 */
