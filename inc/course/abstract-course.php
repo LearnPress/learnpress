@@ -360,7 +360,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string|array $type
-		 * @param bool         $preview
+		 * @param bool         $preview - True for including 'Preview' item
 		 *
 		 * @return array
 		 */

@@ -23,7 +23,7 @@ $user = $profile->get_user();
     <div class="lp-profile-cover">
         <div class="lp-profile-avatar">
 			<?php echo $user->get_profile_picture(); ?>
-            <span class="profile-name"><?php echo $user->get_data( 'user_login' ); ?></span>
+            <span class="profile-name"><?php echo $user->get_display_name(); ?></span>
         </div>
     </div>
 </div>
