@@ -8,11 +8,15 @@
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-actions">
     <div class="question-actions table-row" :class="status">
-        <div class="sort"><i class="fa fa-bars"></i></div>
+        <div class="sort">
+            <svg class="svg-icon" viewBox="0 0 32 32">
+                <path d="M 14 5.5 a 3 3 0 1 1 -3 -3 A 3 3 0 0 1 14 5.5 Z m 7 3 a 3 3 0 1 0 -3 -3 A 3 3 0 0 0 21 8.5 Z m -10 4 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 12.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 12.5 Z m -10 10 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 22.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 22.5 Z"></path>
+            </svg>
+        </div>
         <div class="order">{{index +1}}</div>
         <div class="name" @dblclick="toggle">
             <input type="text" class="question-title" v-model="question.title"
-                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle">
+                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle" @keyup="keyUp">
         </div>
         <div class="type">{{question.type.label}}</div>
         <div class="actions">
@@ -32,12 +36,15 @@
                     <a href="" class="lp-btn-icon dashicons dashicons-admin-page" @click.prevent="clone"></a>
                 </div>
                 <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
-                    <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
+                    <a class="lp-btn-icon dashicons dashicons-menu"></a>
                     <ul>
                         <li>
-                            <a href="" @click.prevent="deletePermanently">
-								<?php esc_html_e( 'Delete permanently', 'learnpress' ); ?>
-                            </a>
+                            <a @click.prevent="remove"
+                               class="remove"><?php esc_html_e( 'Remove from quiz', 'learnpress' ); ?></a>
+                        </li>
+                        <li>
+                            <a @click.prevent="deletePermanently"
+                               class="delete"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
                         </li>
                     </ul>
                 </div>
@@ -55,6 +62,8 @@
             props: ['question', 'index'],
             data: function () {
                 return {
+                    // origin question title
+                    title: this.question.title,
                     changed: false
                 };
             },
@@ -112,6 +121,18 @@
                 // toggle question
                 toggle: function () {
                     $store.dispatch('lqs/toggleQuestion', this.question);
+                },
+                // navigation questions
+                keyUp: function (event) {
+                    var keyCode = event.keyCode;
+                    // escape update question title
+                    if (keyCode === 27) {
+                        this.question.title = this.title;
+                    } else if ((keyCode === 8 || keyCode === 46) && !this.question.title.length) {
+                        this.remove();
+                    } else {
+                        this.$emit('nav', {key: event.keyCode, order: this.index});
+                    }
                 }
             }
         });
