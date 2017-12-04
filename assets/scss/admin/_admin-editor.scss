@@ -346,7 +346,7 @@
 
                 .title {
                     margin-left: 5px;
-                    margin-right: 80px;
+                    margin-right: 120px;
                     flex-grow: 1;
                     flex-basis: 100%;
 
@@ -465,6 +465,10 @@
                             margin: 0;
                             a {
                                 margin-top: 5px;
+                                color: #999;
+                                &:hover {
+                                    color: #0073aa;
+                                }
                             }
                             &.delete-item {
                                 ul {
@@ -797,9 +801,9 @@
                                 position: relative;
                                 z-index: 10;
                                 visibility: hidden;
-                                height: auto;
+                                height: 100%;
                                 .lp-toolbar-btn {
-                                    height: 42px;
+                                    height: 100%;
                                     .lp-btn-icon {
                                         width: 30px;
                                         height: 30px;

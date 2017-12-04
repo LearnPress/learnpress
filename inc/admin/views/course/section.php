@@ -10,7 +10,7 @@ learn_press_admin_view( 'course/new-section-item' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-section">
-    <div class="section" :class="[isOpen ? 'open' : 'close', status]">
+    <div class="section" :class="[isOpen ? 'open' : 'close', status]" :data-section-order="index">
         <div class="section-head" @dblclick="toggle">
             <span class="movable" @click.prevent="toggle"></span>
             <!--Section title-->
@@ -37,8 +37,8 @@ learn_press_admin_view( 'course/new-section-item' );
                     <draggable v-model="items" :element="'ul'" :options="optionDraggable">
                         <!--Section items-->
                         <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id"
-                                         @update="updateItem" @remove="removeItem" @delete="deleteItem"
-                                         :order="index+1"></lp-section-item>
+                                         @update="updateItem" @remove="removeItem" @delete="deleteItem" @nav="navItem"
+                                         :order="index+1" :ref="index+1"></lp-section-item>
                     </draggable>
 
                     <lp-new-section-item @create="newItem"></lp-new-section-item>
@@ -171,6 +171,33 @@ learn_press_admin_view( 'course/new-section-item' );
                 },
                 deleteItem: function (item) {
                     $store.dispatch('ss/deleteSectionItem', {section_id: this.section.id, item_id: item.id});
+                },
+                // navigation course items
+                navItem: function (payload) {
+
+                    var keyCode = payload.key,
+                        order = payload.order;
+
+                    if (keyCode === 38) {
+                        if (order === 1) {
+                            this.$refs.description.focus();
+                        } else {
+                            this.nav(order - 1);
+                        }
+                    }
+                    if (keyCode === 40 || keyCode === 13) {
+                        if (order === this.section.items.length) {
+                            // code
+                        } else {
+                            this.nav(order + 1);
+                        }
+                    }
+
+                },
+                // focus item
+                nav: function (position) {
+                    var element = 'div[data-section-order=' + this.index + '] li[data-item-order=' + position + ']';
+                    ($(element).find('.title input')).focus();
                 },
                 // new section item
                 newItem: function (item) {
