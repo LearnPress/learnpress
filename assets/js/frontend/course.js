@@ -73,8 +73,15 @@
         var sectionStorage = new LP_Storage('sections'),
             $body = $('body'),
             $content = $('.content-item-scrollable'),
-            $curriculum = $('.course-item-popup').find('.curriculum-scrollable'),
-            $courseItems = $curriculum.find('.course-item');
+            $curriculum = $('#learn-press-course-curriculum'),
+            $contentItem = $('#learn-press-content-item'),
+            $curriculumScrollable = $curriculum.find('.curriculum-scrollable'),
+            $header = $('#course-item-content-header'),
+            $footer = $('#course-item-content-footer'),
+            $courseItems = $curriculum.find('.course-item'),
+            curriculumWidth = $curriculum.outerWidth(),
+            isShowingHeader = true,
+            fullScreen, contentTop = 0, headerTimer;
 
         /**
          * Toggle answer option check/uncheck
@@ -205,7 +212,7 @@
                     $(this).show();
                 }
             });
-            $(this).closest('.course-item-search').toggleClass('has-keyword', !!this.value.length)
+            $(this).closest('.course-item-search').toggleClass('has-keyword', !!this.value.length);
         }
 
         function onClearSearchInputClick(e) {
@@ -216,6 +223,93 @@
         function onClickQM() {
             $('#qm').css({'z-index': 999999999, position: 'relative'});
             $('html, body').css('overflow', 'auto');
+        }
+
+        function maybeShowCurriculum(e) {
+            var offset = $(this).offset(),
+                offsetX = e.pageX - offset.left;
+
+            if (!fullScreen || (offsetX > 50)) {
+                return;
+            }
+
+            timeoutToClose();
+
+            if (!isShowingHeader) {
+                $curriculum.stop().animate({
+                    left: 0
+                });
+
+                $contentItem.stop().animate({
+                    left: curriculumWidth
+                });
+
+                $footer.stop().animate({
+                    left: curriculumWidth
+                });
+
+                $header.find('.course-item-search').show();
+                toggleEventShowCurriculum(true);
+                isShowingHeader = true;
+            }
+        }
+
+        function toggleEventShowCurriculum(b) {
+            $(document)[b ? 'off' : 'on']('mousemove.maybe-show-curriculum', 'body', maybeShowCurriculum);
+        }
+
+        function timeoutToClose() {
+            headerTimer && clearTimeout(headerTimer);
+            headerTimer = setTimeout(function () {
+                if (!fullScreen) {
+                    return;
+                }
+
+                $curriculum.stop().animate({
+                    left: -curriculumWidth
+                });
+
+                $contentItem.stop().animate({
+                    left: 0
+                });
+
+                $footer.stop().animate({
+                    left: 0
+                });
+
+                $header.find('.course-item-search').hide();
+
+                isShowingHeader = false;
+                toggleEventShowCurriculum();
+            }, 3000);
+        }
+
+        function toggleContentItem(e) {
+            e.preventDefault();
+
+            fullScreen = $body.toggleClass('full-screen-content-item').hasClass('full-screen-content-item');
+            $curriculum
+                .stop()
+                .animate({
+                    left: fullScreen ? -curriculumWidth : 0
+                });
+
+            $contentItem
+                .stop()
+                .animate({
+                    left: fullScreen ? 0 : curriculumWidth
+                });
+
+            $footer.stop().animate({
+                left: fullScreen ? 0 : curriculumWidth
+            });
+
+            isShowingHeader = !fullScreen;
+            window.localStorage && window.localStorage.setItem('lp-full-screen', fullScreen ? 'yes' : 'no');
+
+            fullScreen && toggleEventShowCurriculum();
+            $header.find('.course-title').stop().animate({marginLeft: fullScreen ? -curriculumWidth : 0})
+            $header.find('.course-item-search').stop().animate({opacity: fullScreen ? 0 : 1});
         }
 
         function initEvents() {
@@ -229,7 +323,14 @@
                 .on('click', '.section-header', toggleSection)
                 .on('submit', 'form.lp-form', function () {
                     prepareForm(this);
-                });
+                }).on('click', '.toggle-content-item', toggleContentItem);
+
+            $curriculum.hover(function () {
+                headerTimer && clearTimeout(headerTimer);
+            }, function () {
+                if (fullScreen) timeoutToClose();
+            })
+
         }
 
         function initScrollbar() {
@@ -246,12 +347,12 @@
             }).css('opacity', 1).end().css('opacity', 1);
 
 
-            $curriculum.addClass('scrollbar-light')
+            $curriculumScrollable.addClass('scrollbar-light')
                 .scrollbar({
                     scrollx: false
                 });
 
-            $curriculum.parent().css({
+            $curriculumScrollable.parent().css({
                 position: 'absolute',
                 top: 0,
                 bottom: 0,
@@ -264,18 +365,34 @@
          */
         function init() {
 
+            $('#learn-press-content-item').appendTo($body);
+
             setTimeout(function () {
                 var $cs = $('body.course-item-popup').find('.curriculum-sections').parent();
                 $cs.scrollTo($cs.find('.course-item.current'), 100);
             }, 300);
 
             if ($('#wpadminbar').length) {
-                $body.addClass('wpadminbar')
+                $body.addClass('wpadminbar');
+                contentTop = 32;
             }
 
             initSections();
             initEvents();
             initScrollbar();
+
+            fullScreen = window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
+            
+            if (fullScreen) {
+                $body.addClass('full-screen-content-item');
+                $contentItem.css('left', 0);
+                $curriculum.css('left', -curriculumWidth);
+                $footer.css('left', 0);
+                isShowingHeader = !fullScreen;
+                $header.find('.course-title').css({marginLeft: fullScreen ? -curriculumWidth : 0})
+                $header.find('.course-item-search').css({opacity: fullScreen ? 0 : 1});
+                toggleEventShowCurriculum();
+            }
 
             $body.css('opacity', 1);
 
@@ -289,4 +406,5 @@
             new LP_Course({})
         });
     })
-})(jQuery, LP, _);
+})
+(jQuery, LP, _);

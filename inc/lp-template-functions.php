@@ -404,8 +404,8 @@ if ( ! function_exists( 'learn_press_course_tabs' ) ) {
 if ( ! function_exists( 'learn_press_course_item_content' ) ) {
 	/**
 	 * Get course item content template.
-     *
-     * @since 3.0.0
+	 *
+	 * @since 3.0.0
 	 */
 	function learn_press_course_item_content() {
 		global $lp_course, $lp_course_item;
@@ -1035,18 +1035,33 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 
 add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
 
-
 if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 	/**
-	 *
+	 * If user is viewing content of an item instead of the whole course
+	 * then remove all content of course and replace with content of
+	 * that item.
 	 */
 	function learn_press_control_displaying_course_item() {
 		global $wp_filter;
 
-		//add_action( 'learn-press/content-learning-summary', 'learn_press_course_curriculum_tab', 10 );
-		add_action( 'learn-press/content-learning-summary', 'learn_press_single_course_content_item', 40 );
-		add_action( 'learn-press/content-landing-summary', 'learn_press_single_course_content_item', 40 );
+		// Remove all hooks added to content of whole course.
+		$hooks = array( 'content-learning-summary', 'content-landing-summary' );
 
+		if ( empty( $wp_filter['learn-press-backup-hooks'] ) ) {
+			$wp_filter['learn-press-backup-hooks'] = array();
+		}
+
+		foreach ( $hooks as $hook ) {
+			if ( isset( $wp_filter["learn-press/{$hook}"] ) ) {
+				// Move to backup to restore it if needed.
+				$wp_filter['learn-press-backup-hooks']["learn-press/{$hook}"] = $wp_filter["learn-press/{$hook}"];
+
+				// Remove the origin hook
+				unset( $wp_filter["learn-press/{$hook}"] );
+			}
+		}
+
+		// Add more assets into page that displaying content of an item
 		add_filter( 'body_class', 'learn_press_content_item_body_class', 10 );
 		add_action( 'wp_print_scripts', 'learn_press_content_item_script', 10 );
 	}
@@ -1064,9 +1079,6 @@ if ( ! function_exists( 'learn_press_profile_recover_order_form' ) ) {
 	}
 }
 
-/**********************************************/
-/**********************************************/
-/**********************************************/
 if ( ! function_exists( 'learn_press_wrapper_start' ) ) {
 	/**
 	 * Wrapper Start
@@ -1262,7 +1274,6 @@ if ( ! function_exists( 'learn_press_courses_loop_item_students' ) ) {
 	}
 }
 
-
 if ( ! function_exists( 'learn_press_courses_pagination' ) ) {
 	/**
 	 * Output the pagination of archive courses
@@ -1271,7 +1282,6 @@ if ( ! function_exists( 'learn_press_courses_pagination' ) ) {
 		learn_press_get_template( 'loop/course/pagination.php' );
 	}
 }
-
 
 if ( ! function_exists( 'learn_press_breadcrumb' ) ) {
 	/**
@@ -1354,7 +1364,6 @@ if ( ! function_exists( 'learn_press_course_thumbnail' ) ) {
 	}
 }
 
-
 if ( ! function_exists( 'learn_press_course_progress' ) ) {
 	/**
 	 * Display course curriculum
@@ -1382,7 +1391,6 @@ if ( ! function_exists( 'learn_press_course_curriculum' ) ) {
 	}
 }
 
-
 if ( ! function_exists( 'learn_press_course_categories' ) ) {
 	/**
 	 * Display course categories
@@ -1400,7 +1408,6 @@ if ( ! function_exists( 'learn_press_course_tags' ) ) {
 		learn_press_get_template( 'single-course/tags.php' );
 	}
 }
-
 
 if ( ! function_exists( 'learn_press_course_instructor' ) ) {
 	/**
@@ -1447,7 +1454,6 @@ if ( ! function_exists( 'learn_press_course_thumbnail' ) ) {
 	}
 }
 
-
 if ( ! function_exists( 'learn_press_single_course_description' ) ) {
 	/**
 	 * Display course description
@@ -1489,7 +1495,6 @@ if ( ! function_exists( 'learn_press_section_item_meta' ) ) {
 	}
 }
 
-
 if ( ! function_exists( 'learn_press_order_details_table' ) ) {
 
 	/**
@@ -1509,7 +1514,6 @@ if ( ! function_exists( 'learn_press_order_details_table' ) ) {
 		) );
 	}
 }
-
 
 if ( ! function_exists( 'learn_press_checkout_user_form' ) ) {
 	/**

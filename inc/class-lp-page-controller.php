@@ -174,7 +174,7 @@ class LP_Page_Controller {
 			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
 				// Get template of wp page.
 				$template = get_page_template();
-			}else{
+			} else {
 				$template = $lp_template;
 			}
 
@@ -475,7 +475,17 @@ class LP_Page_Controller {
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
 		ob_start();
-		learn_press_get_template( 'content-single-course.php' );
+
+		/**
+		 * Display template of content item if user is viewing course's item.
+		 * Otherwise, display template of course.
+		 */
+		if ( $course_item = LP_Global::course_item() ) {
+			learn_press_get_template( 'content-single-item.php' );
+		} else {
+			learn_press_get_template( 'content-single-course.php' );
+		}
+
 		$content = ob_get_clean();
 		remove_filter( 'the_content', 'wpautop' );
 		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );

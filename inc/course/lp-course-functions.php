@@ -609,7 +609,6 @@ if ( ! function_exists( 'learn_press_get_course_item_url' ) ) {
 add_filter( 'get_comment_link', 'learn_press_item_comment_link', 100, 4 );
 function learn_press_item_comment_link( $link, $comment, $args, $cpage ) {
 
-    return '';
 	if ( $course_id = learn_press_get_item_course_id( $comment->comment_post_ID, LP_QUIZ_CPT ) ) {
 		if ( $course = learn_press_get_course( $course_id ) ) {
 			$link = str_replace( get_the_permalink( $comment->comment_post_ID ), $course->get_item_link( $comment->comment_post_ID ), $link );
@@ -713,78 +712,69 @@ if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
 	}
 }
 /**
- * Update url lesson & quiz in admin page
+ * Get course id of an item by id
  */
 
 if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 
 	function learn_press_get_item_course_id( $post_id, $post_type ) {
-
-
 		global $wpdb;
+		$course_id = false;
 
-		$query = $wpdb->prepare( "SELECT section.section_course_id FROM {$wpdb->learnpress_sections} AS section"
-		                         . " INNER JOIN {$wpdb->learnpress_section_items} AS item ON item.section_id = section.section_id"
-		                         . " INNER JOIN {$wpdb->posts} AS course ON course.ID = section.section_course_id"
-		                         . " WHERE course.post_type = %s"
-		                         . " AND course.post_status = %s"
-		                         . " AND item.item_id = %d"
-		                         . " LIMIT 1", LP_COURSE_CPT, 'publish', $post_id );
+		if ( false !== ( $courses = wp_cache_get( 'item-course-ids', 'learn-press' ) ) ) {
 
-		return apply_filters( 'learn_press_get_quiz_course_id', absint( $wpdb->get_var( $query ) ), $post_id );
+			foreach ( $courses as $course_id => $items ) {
+				if ( in_array( $post_id, $items ) ) {
+					break;
+				}
+				$course_id = false;
+			}
 
-		/**
-		 * Get Course id by Quiz post_id
-		 *
-		 * @global type $wpdb
-		 *
-		 * @param type  $post_id
-		 *
-		 * @return $course_id
-		 */
-		if ( $post_type == LP_QUIZ_CPT ) {
-			$query = $wpdb->prepare( "SELECT section.section_course_id FROM {$wpdb->learnpress_sections} AS section"
-			                         . " INNER JOIN {$wpdb->learnpress_section_items} AS item ON item.section_id = section.section_id"
-			                         . " INNER JOIN {$wpdb->posts} AS course ON course.ID = section.section_course_id"
-			                         . " WHERE course.post_type = %s"
-			                         . " AND course.post_status = %s"
-			                         . " AND item.item_type = %s"
-			                         . " AND item.item_id = %d"
-			                         . " LIMIT 1", LP_COURSE_CPT, 'publish', LP_QUIZ_CPT, $post_id );
-
-			return apply_filters( 'learn_press_get_quiz_course_id', absint( $wpdb->get_var( $query ) ), $post_id );
+		} else {
+			$courses = array();
 		}
 
-		/**
-		 * Get Course id by Lesson post_id
-		 *
-		 * @global type $wpdb
-		 *
-		 * @param type  $post_id
-		 *
-		 * @return $course_id
-		 */
+		if ( false === $course_id ) {
+//			$query = $wpdb->prepare( "SELECT section.section_course_id FROM {$wpdb->learnpress_sections} AS section"
+//			                         . " INNER JOIN {$wpdb->learnpress_section_items} AS item ON item.section_id = section.section_id"
+//			                         . " INNER JOIN {$wpdb->posts} AS course ON course.ID = section.section_course_id"
+//			                         . " WHERE course.post_type = %s"
+//			                         . " AND course.post_status = %s"
+//			                         . " AND item.item_id = %d"
+//			                         . " LIMIT 1", LP_COURSE_CPT, 'publish', $post_id );
 
-		if ( $post_type == LP_LESSON_CPT ) {
+			$query = $wpdb->prepare("
+			    SELECT section.section_course_id
+                FROM wp_learnpress_sections AS section
+                INNER JOIN wp_learnpress_section_items AS item
+                ON item.section_id = section.section_id
+                WHERE item.item_id = %d
+                LIMIT 1
+			", $post_id);
 
-			$query = $wpdb->prepare( "SELECT section.section_course_id FROM {$wpdb->learnpress_sections} AS section"
-			                         . " INNER JOIN {$wpdb->learnpress_section_items} AS item ON item.section_id = section.section_id"
-			                         . " INNER JOIN {$wpdb->posts} AS course ON course.ID = section.section_course_id"
-			                         . " WHERE course.post_type = %s"
-			                         . " AND course.post_status = %s"
-			                         . " AND item.item_type = %s"
-			                         . " AND item.item_id = %d"
-			                         . " LIMIT 1", LP_COURSE_CPT, 'publish', LP_LESSON_CPT, $post_id );
+			$course_id = apply_filters( 'learn-press/item-course-id', absint( $wpdb->get_var( $query ) ), $post_id );
 
-			return apply_filters( 'learn_press_get_lesson_course_id', absint( $wpdb->get_var( $query ) ), $post_id );
+			if ( $course = learn_press_get_course( $course_id ) ) {
+				$courses[ $course_id ] = $course->get_items();
+			}
+
+			if ( empty( $courses[ $course_id ] ) ) {
+				$courses[ $course_id ] = array();
+			}
+
+			if ( ! in_array( $post_id, $courses[ $course_id ] ) ) {
+				$courses[ $course_id ][] = $post_id;
+			}
+			wp_cache_set( 'item-course-ids', $courses, 'learn-press' );
 
 		}
 
+		return $course_id;
 	}
 }
 
 function learn_press_item_sample_permalink_html( $return, $post_id, $new_title, $new_slug, $post ) {
-	remove_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10, 5 );
+	remove_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10);
 	if ( preg_match( '~<strong.*>~', $return, $m ) ) {
 		//$return = str_replace( $m[0], $m[0] . '<span class="learn-press-tooltip dashicons dashicons-editor-help" data-tooltip="asdasdasd"></span>', $return );
 	}

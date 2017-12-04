@@ -155,6 +155,13 @@ add_action( 'learn-press/content-learning-summary', 'learn_press_course_buttons'
  */
 
 /**
+ * @see learn_press_course_curriculum_tab
+ * @see learn_press_single_course_content_item
+ */
+add_action( 'learn-press/single-item-summary', 'learn_press_course_curriculum_tab', 5 );
+add_action( 'learn-press/single-item-summary', 'learn_press_single_course_content_item', 10 );
+
+/**
  * @see learn_press_course_item_content
  * @see learn_press_content_item_comments
  */
