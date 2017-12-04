@@ -11,13 +11,14 @@
     <li :class="['section-item',item.type, {updating: updating, removing: removing}]" :data-item-id="item.id">
         <div class="icon"></div>
         <div class="title">
-            <input v-model="item.title" type="text" title="title no-submit"
-                   @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle">
+            <input v-model="item.title" type="text" @change="changeTitle" @blur="updateTitle"
+                   @keyup.enter="updateTitle">
         </div>
 
         <div class="item-actions">
             <div class="actions">
-                <div class="action edit-item"><a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a></div>
+                <div class="action edit-item"><a :href="url" target="_blank"
+                                                 class="lp-btn-icon dashicons dashicons-edit"></a></div>
                 <div class="action delete-item">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>

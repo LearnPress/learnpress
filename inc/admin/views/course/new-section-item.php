@@ -9,24 +9,17 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-new-section-item">
-    <div class="new-section-item section-item"
-         @keyup.up="up"
-         @keyup.down="down"
-         :class="{choosing: choosingType}">
-        <div class="types"
-             @mouseleave="mouseLeave"
-             @mouseover="mouseOver">
+    <div class="new-section-item section-item" @keyup.up="up" @keyup.down="down" :class="{choosing: choosingType}">
+        <div class="types" @mouseleave="mouseLeave" @mouseover="mouseOver">
             <template v-for="(_type, key) in types">
-                <label class="type"
-                       :title="_type"
-                       :class="[key, {current: (type==key)}]">
-                    <input v-model="type"
-                           type="radio" name="lp-section-item-type" :value="key">
+                <label class="type" :title="_type" :class="[key, {current: (type==key)}]">
+                    <input v-model="type" type="radio" name="lp-section-item-type" :value="key">
                 </label>
             </template>
         </div>
         <div class="title">
-            <input type="text" :placeholder="placeholderInput" @keyup.enter="createItem" @blur="createItem" v-model="title">
+            <input type="text" :placeholder="placeholderInput" @keyup.enter="createItem" @blur="createItem"
+                   v-model="title">
         </div>
     </div>
 </script>
@@ -60,15 +53,19 @@
                 mouseLeave: function () {
                     this.choosingType = false;
                 },
+                // emit create item
+                create: function () {
+                    this.$emit('create', {
+                        type: this.type,
+                        title: this.title
+                    });
+                    this.title = '';
+                },
+                // set time out for blur change type item
                 createItem: function () {
                     if (this.title) {
-                        this.$emit('create', {
-                            type: this.type,
-                            title: this.title
-                        });
+                        setTimeout(this.create, 300);
                     }
-
-                    this.title = '';
                 },
                 changeType: function (next) {
                     if (this.title) {
