@@ -128,8 +128,6 @@
                     // escape update question title
                     if (keyCode === 27) {
                         this.question.title = this.title;
-                    } else if ((keyCode === 8 || keyCode === 46) && !this.question.title.length) {
-                        this.remove();
                     } else {
                         this.$emit('nav', {key: event.keyCode, order: this.index});
                     }

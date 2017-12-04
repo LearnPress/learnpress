@@ -98,8 +98,6 @@
                     // escape update course item title
                     if (keyCode === 27) {
                         this.item.title = this.title;
-                    } else if ((keyCode === 8 || keyCode === 46) && !this.item.title.length) {
-                        this.remove();
                     } else {
                         this.$emit('nav', {key: event.keyCode, order: this.order});
                     }

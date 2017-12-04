@@ -25,7 +25,8 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                 <draggable :list="question.answers" :element="'tbody'" @end="sort">
                     <lp-quiz-question-answer-option v-for="(answer, index) in question.answers"
                                                     :question="question" :answer="answer" :index="index" :key="index"
-                                                    @changeCorrect="changeCorrect"></lp-quiz-question-answer-option>
+                                                    @changeCorrect="changeCorrect"
+                                                    @nav="navItem"></lp-quiz-question-answer-option>
                 </draggable>
             </table>
         </div>
@@ -37,7 +38,7 @@ learn_press_admin_view( 'quiz/question-answer-option' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
         Vue.component('lp-quiz-question-answers', {
             template: '#tmpl-lp-quiz-question-answers',
             props: ['question'],
@@ -71,8 +72,31 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                 // new answer option
                 newAnswer: function () {
                     $store.dispatch('lqs/newQuestionAnswer', this.question.id);
+                },
+                // navigation course items
+                navItem: function (payload) {
+
+                    var keyCode = payload.key,
+                        order = payload.order;
+
+                    if (keyCode === 38 && order > 0) {
+                        this.nav(order - 1);
+                    }
+                    if (keyCode === 40 || keyCode === 13) {
+                        if (order === this.question.answers.length) {
+                            // code
+                        } else {
+                            this.nav(order + 1);
+                        }
+                    }
+
+                },
+                // focus item
+                nav: function (position) {
+                    var element = 'div[data-item-id=' + this.question.id + '] tr[data-order-answer=' + position + ']';
+                    ($(element).find('.answer-text input')).focus();
                 }
             }
         })
-    })(Vue, LP_Quiz_Store);
+    })(Vue, LP_Quiz_Store, jQuery);
 </script>
