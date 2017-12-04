@@ -484,19 +484,16 @@
                                         a {
                                             color: #0073aa;
                                             text-decoration: none;
+                                            &.delete-permanently {
+                                                color: #d05d5d;
+                                            }
                                         }
                                         &:hover {
                                             background: #dbf5ff;
-                                            a.delete-permanently {
-                                                color: #d05d5d;
-                                            }
                                         }
                                     }
                                 }
                                 &:hover {
-                                    .dashicons-trash {
-                                        color: #d05d5d;
-                                    }
                                     ul {
                                         display: block;
                                     }
@@ -640,6 +637,7 @@
             .table-row {
                 display: flex;
                 flex-direction: row;
+                text-align: center;
 
                 & > * {
                     width: 100%;
@@ -648,34 +646,37 @@
 
                 & > .sort {
                     width: 15px;
+                    fill: #d5dce0;
+                    cursor: url("../../images/openhand.cur") 7 5, default;
+                    visibility: hidden;
+                    padding-right: 0;
+                    svg {
+                        width: 18px;
+                        height: 20px;
+                    }
+                    &:hover {
+                        fill: #0085ba;
+                    }
                 }
 
                 & > .order {
-                    width: 25px;
-                    text-align: right;
+                    width: 10px;
                 }
 
                 & > .name {
-                    padding-left: 0;
+                    padding: 10px;
                 }
 
                 & > .type {
                     width: 150px;
-                    text-align: center;
                 }
 
                 & > .actions {
                     width: 300px;
-                    text-align: right;
                 }
-
-                .fa-bars {
-                    text-align: center;
-                    font-size: 18px;
-                    color: #CCC;
-                    cursor: ns-resize;
-                    &:hover {
-                        color: #0085ba;
+                &:hover {
+                    & > .sort {
+                        visibility: visible;
                     }
                 }
             }
@@ -686,6 +687,9 @@
                     & > * {
                         font-weight: bold;
                         padding: 12px 8px 12px 0;
+                    }
+                    .sort {
+                        width: 45px;
                     }
                 }
             }
@@ -718,14 +722,11 @@
                         table.lp-list-options {
                             border: 1px solid #ddd;
                             thead {
-                                .sort, .order, .actions {
-                                    width: 10px;
-                                }
                                 .answer-text {
                                     width: calc(100% - 100px);
                                 }
                                 .answer-correct {
-                                    width: 70px;
+                                    width: 65px;
                                 }
                             }
                             tbody {
@@ -735,7 +736,14 @@
                                         background: #f4fcff;
                                     }
                                     td {
+                                        padding: 0 10px;
                                         background: inherit;
+                                        &.sort {
+                                            cursor: url("../../images/openhand.cur") 7 5, default;
+                                        }
+                                        &.answer-correct{
+                                            text-align: center;
+                                        }
                                     }
                                 }
                                 .answer-item, .new-answer-item {
@@ -758,20 +766,6 @@
                             }
                         }
                     }
-                }
-            }
-
-            .header {
-                .cell {
-                    font-weight: bold;
-                    padding: 12px 8px 12px 0;
-                    border-bottom: 1px solid #DDD;
-                }
-                .type, .actions {
-                    text-align: center;
-                }
-                .actions {
-                    width: 160px;
                 }
             }
 
@@ -838,6 +832,9 @@
                                         li {
                                             a {
                                                 padding: 10px 25px;
+                                                &.remove {
+                                                    color: #0073aa;
+                                                }
                                             }
                                         }
                                     }
@@ -874,80 +871,86 @@
             }
 
             .footer {
-                .add-new-question {
-                    padding-left: 75px;
-                    .title {
-                        position: relative;
-                        display: inline-block;
-                        min-width: 300px;
-                        input {
-                            border: 1px solid #DDD;
-                            width: 100%;
-                            margin: 0;
-                            padding: 5px 10px;
-                            @include box-shadow(none);
-                            &:focus {
-                                border-color: #DDD;
-                            }
-                        }
-                    }
-                    .add-new {
-                        display: inline;
-                        position: relative;
-                        ul.question-types {
-                            position: absolute;
-                            margin: 6px;
-                            background-color: #FFF;
-                            top: 100%;
-                            border: 1px solid #DDD;
-                            right: -2px;
-                            width: 200px;
-                            z-index: 9999999;
-                            display: none;
-                            li {
+                .table-row {
+                    text-align: left;
+                    .add-new-question {
+                        padding-left: 65px;
+                        .title {
+                            position: relative;
+                            display: inline-block;
+                            min-width: 300px;
+                            input {
+                                border: 1px solid #DDD;
+                                width: 100%;
                                 margin: 0;
-                                a {
-                                    display: block;
-                                    padding: 10px;
-                                    line-height: 1;
-                                    text-decoration: none;
-                                    outline: none;
-                                    box-shadow: none;
+                                padding: 5px 10px;
+                                @include box-shadow(none);
+                                &:focus {
+                                    border-color: #DDD;
                                 }
                             }
                         }
-
-                        button {
-                            &:hover {
-                                & + .question-types {
-                                    display: block;
+                        .add-new {
+                            display: inline;
+                            position: relative;
+                            ul.question-types {
+                                position: absolute;
+                                margin: 6px;
+                                background-color: #FFF;
+                                top: 100%;
+                                border: 1px solid #DDD;
+                                right: -2px;
+                                width: 200px;
+                                z-index: 9999999;
+                                display: none;
+                                li {
+                                    margin: 0;
+                                    a {
+                                        display: block;
+                                        padding: 10px;
+                                        line-height: 1;
+                                        text-decoration: none;
+                                        outline: none;
+                                        box-shadow: none;
+                                    }
                                 }
                             }
 
-                            & + .question-types {
-                                &:hover {
-                                    display: block;
-                                }
-                            }
-
-                            &[disabled="disabled"] {
+                            button {
                                 &:hover {
                                     & + .question-types {
-                                        display: none;
+                                        display: block;
+                                    }
+                                }
+
+                                & + .question-types {
+                                    &:hover {
+                                        display: block;
+                                    }
+                                }
+
+                                &[disabled="disabled"] {
+                                    &:hover {
+                                        & + .question-types {
+                                            display: none;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    .select-item {
-                        display: inline;
-                    }
-                    button {
-                        height: 30px;
-                        box-shadow: 0 1px 0 #ccc !important;
+                        .select-item {
+                            display: inline;
+                        }
+                        button {
+                            height: 30px;
+                            box-shadow: 0 1px 0 #ccc !important;
+                        }
                     }
                 }
             }
+        }
+        .question-button-actions {
+            text-align: left;
         }
     }
 }
@@ -1022,7 +1025,7 @@
                             width: 10px;
                         }
                         &.answer-correct {
-                            width: 70px;
+                            width: 65px;
                         }
                     }
                 }
@@ -1049,7 +1052,7 @@
                             text-align: center;
                             font-size: 18px;
                             color: #CCC;
-                            cursor: ns-resize;
+                            cursor: url("../../images/openhand.cur") 7 5, default;
                             &:hover {
                                 color: #0085ba;
                             }

@@ -12,7 +12,7 @@ learn_press_admin_view( 'course/new-section-item' );
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="[isOpen ? 'open' : 'close', status]">
         <div class="section-head" @dblclick="toggle">
-            <span class="movable"></span>
+            <span class="movable" @click.prevent="toggle"></span>
             <!--Section title-->
             <input v-model="section.title" type="text" title="title" class="title-input"
                    @change="updating" @blur="completed" @keyup.enter="completed"
@@ -37,7 +37,8 @@ learn_press_admin_view( 'course/new-section-item' );
                     <draggable v-model="items" :element="'ul'" :options="optionDraggable">
                         <!--Section items-->
                         <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id"
-                                         @update="updateItem" @remove="removeItem" @delete="deleteItem" :order="index+1"></lp-section-item>
+                                         @update="updateItem" @remove="removeItem" @delete="deleteItem"
+                                         :order="index+1"></lp-section-item>
                     </draggable>
 
                     <lp-new-section-item @create="newItem"></lp-new-section-item>
