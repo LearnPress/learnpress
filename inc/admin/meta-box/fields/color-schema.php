@@ -6,29 +6,38 @@
  * @since 3.0
  */
 class RWMB_Color_Schema_Field extends RWMB_Field {
-	/**
-	 * HTML
-	 *
-	 * @param mixed $meta
-	 * @param array $field
-	 *
-	 * @return string
-	 */
-	public static function html( $meta, $field = array() ) {
-		ob_start();
-		$colors  = array(
+	protected static function get_colors() {
+		$colors = array(
 			array(
 				'title'    => __( 'Popup heading background', 'learnpress' ),
 				'selector' => '#course-item-content-header',
 				'props'    => array(
-					'background' => '#FF0000'
+					'background' => '#e7f7ff'
 				)
 			),
 			array(
-				'title'    => __( 'Section title', 'learnpress' ),
-				'selector' => '.section-title',
+				'title'    => __( 'Section heading background', 'learnpress' ),
+				'selector' => '.section-header',
 				'props'    => array(
-					'background' => '#FF0000'
+					'background' => '#FFFFFF'
+				)
+			),
+			array(
+				'title'    => __( 'Lines color', 'learnpress' ),
+				'selector' => '
+                    #course-item-content-header, 
+                    .course-curriculum ul.curriculum-sections .section-content .course-item, 
+                    body.course-item-popup #learn-press-course-curriculum,
+                    #course-item-content-header .toggle-content-item',
+				'props'    => array(
+					'border-color' => '#DDD'
+				)
+			),
+			array(
+				'title'    => __( 'Section heading color', 'learnpress' ),
+				'selector' => '.section-header, .section-header .section-title, .section-header .section-desc ',
+				'props'    => array(
+					'color' => ''
 				)
 			),
 			array(
@@ -39,20 +48,42 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 				)
 			)
 		);
+
+		return $colors;
+	}
+
+	/**
+	 * HTML
+	 *
+	 * @param mixed $meta
+	 * @param array $field
+	 *
+	 * @return string
+	 */
+	public static function html( $meta, $field = array() ) {
+		ob_start();
+		$colors = self::get_colors();
+
 		$schemas = get_option( 'learn_press_color_schemas' );
+
 		if ( ! $schemas ) {
 			$schemas = array( $colors );
 		} else {
 			foreach ( $schemas as $k => $schema ) {
 				$schemas[ $k ] = $colors;
 				foreach ( $colors as $m => $options ) {
-					$key = $options['selector'];
+					echo $key = preg_replace('!#!', '', $options['selector']);
 					if ( ! empty( $schema[ $key ] ) ) {
-						$schemas[ $k ][ $m ]['props'] = $schema[ $key ];
+						foreach ( $options['props'] as $prop_name => $prop_value ) {
+							if ( isset( $schema[ $key ][ $prop_name ] ) ) {
+								$schemas[ $k ][ $m ]['props'][ $prop_name ] = $schema[ $key ][ $prop_name ];
+							}
+						}
 					}
 				}
 			}
 		}
+print_r($schemas);die();
 		?>
         <div id="color-schemas">
 			<?php foreach ( $schemas as $k => $schema ) { ?>
@@ -67,8 +98,9 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 								if ( false === strpos( $name, '[' . $prop . ']' ) ) {
 									$name .= '[' . $prop . ']';
 									?>
-                                    <td class="color-selector"><input name="<?php echo $name; ?>"
-                                                                      value="<?php echo $value; ?>"></td>
+                                    <td class="color-selector">
+                                        <input name="<?php echo $name; ?>" value="<?php echo $value; ?>">
+                                    </td>
 								<?php } ?>
 							<?php } ?>
                         </tr>
@@ -91,6 +123,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
         </div>
         <script type="text/javascript">
             jQuery(function ($) {
+
                 var $btn = $('.clone-schema').on('click', function () {
                     var $src = $(this).closest('table'),
                         $dst = $src.clone().find('.clone-schema').remove().end().insertAfter($src).removeClass('current'),

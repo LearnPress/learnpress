@@ -81,7 +81,8 @@
             $courseItems = $curriculum.find('.course-item'),
             curriculumWidth = $curriculum.outerWidth(),
             isShowingHeader = true,
-            fullScreen, contentTop = 0, headerTimer;
+            fullScreen, contentTop = 0, headerTimer,
+            inPopup = false;
 
         /**
          * Toggle answer option check/uncheck
@@ -364,11 +365,18 @@
          * Init
          */
         function init() {
+            inPopup = $body.hasClass('course-item-popup');
+            initSections();
+            initEvents();
+
+            if (!inPopup) {
+                return;
+            }
 
             $('#learn-press-content-item').appendTo($body);
 
             setTimeout(function () {
-                var $cs = $('body.course-item-popup').find('.curriculum-sections').parent();
+                var $cs = $body.find('.curriculum-sections').parent();
                 $cs.scrollTo($cs.find('.course-item.current'), 100);
             }, 300);
 
@@ -376,13 +384,9 @@
                 $body.addClass('wpadminbar');
                 contentTop = 32;
             }
-
-            initSections();
-            initEvents();
             initScrollbar();
-
             fullScreen = window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
-            
+
             if (fullScreen) {
                 $body.addClass('full-screen-content-item');
                 $contentItem.css('left', 0);

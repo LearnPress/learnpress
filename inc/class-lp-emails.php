@@ -186,12 +186,14 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function queue_email() {
+
 			self::$_background_emailer->push_to_queue(
 				array(
 					'filter' => current_filter(),
 					'args'   => func_get_args(),
 				)
 			);
+
 		}
 
 		/**
