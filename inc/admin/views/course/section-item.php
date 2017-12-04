@@ -5,10 +5,14 @@
  * @since 3.0.0
  */
 ?>
-<!--<div class="drag"><svg class="Icon DragIcon DragHandle-icon" viewBox="0 0 32 32"><path d="M 14 5.5 a 3 3 0 1 1 -3 -3 A 3 3 0 0 1 14 5.5 Z m 7 3 a 3 3 0 1 0 -3 -3 A 3 3 0 0 0 21 8.5 Z m -10 4 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 12.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 12.5 Z m -10 10 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 22.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 22.5 Z"></path></svg></div>-->
 
 <script type="text/x-template" id="tmpl-lp-section-item">
     <li :class="['section-item',item.type, {updating: updating, removing: removing}]" :data-item-id="item.id">
+        <div class="drag">
+            <svg class="svg-icon" viewBox="0 0 32 32">
+                <path d="M 14 5.5 a 3 3 0 1 1 -3 -3 A 3 3 0 0 1 14 5.5 Z m 7 3 a 3 3 0 1 0 -3 -3 A 3 3 0 0 0 21 8.5 Z m -10 4 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 12.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 12.5 Z m -10 10 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 22.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 22.5 Z"></path>
+            </svg>
+        </div>
         <div class="icon"></div>
         <div class="title">
             <input v-model="item.title" type="text" @change="changeTitle" @blur="updateTitle"
@@ -20,10 +24,13 @@
                 <div class="action edit-item"><a :href="url" target="_blank"
                                                  class="lp-btn-icon dashicons dashicons-edit"></a></div>
                 <div class="action delete-item">
-                    <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
+                    <a class="lp-btn-icon dashicons dashicons-menu"></a>
                     <ul>
                         <li>
-                            <a @click.prevent="deletePermanently"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
+                            <a @click.prevent="remove"><?php esc_html_e( 'Remove from course', 'learnpress' ); ?></a>
+                        </li>
+                        <li>
+                            <a @click.prevent="deletePermanently" class="delete-permanently"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
                         </li>
                     </ul>
                 </div>

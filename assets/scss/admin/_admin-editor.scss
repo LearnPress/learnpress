@@ -184,7 +184,7 @@
                 }
 
                 .movable {
-                    cursor: move;
+                    cursor: url("../../images/openhand.cur") 7 5, default;
 
                     &:before {
                         content: "\f333";
@@ -296,6 +296,9 @@
                 margin: 0;
                 border-bottom-width: 0;
                 transition: background 200ms ease-out;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
                 &:nth-child(2n+1) {
                     background-color: #f4fcff;
@@ -324,30 +327,28 @@
                 }
 
                 .drag {
-                    width: 16px;
-                    height: 16px;
+                    width: 18px;
+                    height: 20px;
                     cursor: url("../../images/openhand.cur") 7 5, default;
+                    flex-shrink: 0;
+                    visibility: hidden;
+                    fill: #d5dce0;
                     &:hover {
-                        .drag {
-                            fill: #0085ba;
-                        }
+                        fill: #0085ba;
                     }
                 }
 
                 .icon {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    bottom: 0;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    cursor: url("../../images/openhand.cur") 7 5, default;
                 }
 
                 .title {
-                    margin-left: 38px;
+                    margin-left: 5px;
                     margin-right: 80px;
+                    flex-grow: 1;
+                    flex-basis: 100%;
 
                     input {
                         color: inherit;
@@ -380,6 +381,12 @@
                     }
                 }
 
+                &:hover {
+                    .drag {
+                        visibility: visible;
+                    }
+                }
+
             }
 
             .new-section-item {
@@ -397,6 +404,7 @@
 
                 .types {
                     display: inline-block;
+                    margin-left: 15px;
 
                     &:hover, &:focus {
                         background-color: #fff;
@@ -472,14 +480,16 @@
                                     display: none;
                                     li {
                                         margin: 0;
-                                        padding: 2px;
+                                        padding: 10px 5px;
                                         a {
-                                            color: #d05d5d;
+                                            color: #0073aa;
                                             text-decoration: none;
                                         }
                                         &:hover {
                                             background: #dbf5ff;
-                                            color: #d05d5d;
+                                            a.delete-permanently {
+                                                color: #d05d5d;
+                                            }
                                         }
                                     }
                                 }

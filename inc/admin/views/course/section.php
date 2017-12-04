@@ -102,7 +102,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
                 optionDraggable: function () {
                     return {
-                        handle: '.icon',
+                        handle: '.drag',
                         draggable: '.section-item',
                         group: {
                             name: 'lp-section-items',
