@@ -381,7 +381,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 					$result[] = array(
 						'id'       => $id,
 						'open'     => false,
-						'title'    => get_the_title( $id ),
+						'title'    => $post->post_title,
 						'type'     => array(
 							'key'   => $question->get_type(),
 							'label' => $question->get_type_label()
