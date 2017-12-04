@@ -588,7 +588,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                 }
             ).catch(
                 function () {
-                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', parserInt(payload.question_id));
+                    context.commit('UPDATE_QUESTION_ANSWER_FAILURE', parseInt(payload.question_id));
                     context.commit('UPDATE_QUESTION_FAILURE', payload.question_id);
                 })
         },

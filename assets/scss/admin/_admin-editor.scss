@@ -745,7 +745,7 @@
                                         &.sort {
                                             cursor: url("../../images/openhand.cur") 7 5, default;
                                         }
-                                        &.answer-correct{
+                                        &.answer-correct {
                                             text-align: center;
                                         }
                                     }
@@ -856,6 +856,7 @@
                         background: #fff;
 
                         .quiz-question-options {
+                            text-align: left;
                             .inside {
                                 margin: 0;
                                 padding: 0;

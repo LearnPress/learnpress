@@ -63,9 +63,10 @@
                 },
                 // set time out for blur change type item
                 createItem: function () {
-                    if (this.title) {
-                        setTimeout(this.create, 300);
+                    if (!this.title) {
+                        return;
                     }
+                    setTimeout(this.create, 300);
                 },
                 changeType: function (next) {
                     if (this.title) {

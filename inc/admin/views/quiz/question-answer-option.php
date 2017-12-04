@@ -7,12 +7,12 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-answer-option">
-    <tr class="answer-item" :data-answer-id="answer.question_answer_id">
+    <tr class="answer-item" :data-answer-id="answer.question_answer_id" :data-order-answer="index">
         <td class="sort"><i class="fa fa-bars"></i></td>
         <td class="order">{{index +1}}</td>
         <td class="answer-text">
             <input type="text" v-model="answer.text"
-                   @change="changeTitle" @keyup.enter="updateTitle" @blur="updateTitle"/>
+                   @change="changeTitle" @keyup.enter="updateTitle" @blur="updateTitle" @keyup="keyUp"/>
         </td>
         <td class="answer-correct lp-answer-check">
             <input :type="radio ? 'radio' : 'checkbox'" :checked="correct" :value="answer.value" :name="name"
@@ -34,6 +34,8 @@
             props: ['question', 'answer', 'index'],
             data: function () {
                 return {
+                    // origin answer text
+                    text: this.answer.text,
                     changed: false
                 }
             },
@@ -90,6 +92,16 @@
                         question_id: this.question.id,
                         answer_id: this.answer.question_answer_id
                     });
+                },
+                // navigation answer option items
+                keyUp: function (event) {
+                    var keyCode = event.keyCode;
+                    // escape update answer option items text
+                    if (keyCode === 27) {
+                        this.answer.text = this.text;
+                    } else {
+                        this.$emit('nav', {key: event.keyCode, order: this.index});
+                    }
                 }
             }
         });
