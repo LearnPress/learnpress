@@ -293,45 +293,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @param $key
 		 *
+		 * @deprecated since 3.0.0
+		 *
 		 * @return bool|LP_Checkout|LP_Course|LP_Emails|LP_User|LP_User_Guest|mixed
 		 */
 		public function __get( $key ) {
-			_deprecated_argument( $key, '3.0.0' );
-
-			$return = false;
-			switch ( $key ) {
-				case 'user':
-					$return = learn_press_get_current_user();
-					break;
-				case 'email':
-					$return = LP_Emails::instance();
-					break;
-				case 'checkout':
-					$return = LP_Checkout::instance();
-					break;
-				case 'course':
-					if ( empty( $this->_course ) ) {
-						if ( learn_press_is_course() ) {
-							$this->_course = learn_press_setup_object_data( get_the_ID() );
-						}
-					}
-					$return = $this->_course;
-					break;
-				case 'quiz':
-					if ( empty( $this->_quiz ) ) {
-						if ( learn_press_is_quiz() ) {
-							$this->_quiz = learn_press_setup_object_data( get_the_ID() );
-						}
-					}
-					$return = $this->_quiz;
-					break;
-				default:
-					if ( strpos( $key, 'tbl_' ) === 0 ) {
-						$return = $this->_table_prefixes[ $key ];
-					}
-			}
-
-			return $return;
+			return false;
 		}
 
 		/**
@@ -376,13 +343,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			if ( ! current_theme_supports( 'post-thumbnails' ) ) {
 				add_theme_support( 'post-thumbnails' );
 			}
-			add_post_type_support( 'lp_course', 'thumbnail' );
+			add_post_type_support( LP_COURSE_CPT, 'thumbnail' );
 
 			// if enabled generate course thumbnail on General Settings add new image sizes
 			$enabled_course_thum = LP()->settings->get( 'generate_course_thumbnail', 'yes' );
+
 			if ( $enabled_course_thum !== 'yes' ) {
 				return;
 			}
+
 			$sizes = apply_filters( 'learn_press_image_sizes', array( 'single_course', 'course_thumbnail' ) );
 
 			foreach ( $sizes as $image_size ) {

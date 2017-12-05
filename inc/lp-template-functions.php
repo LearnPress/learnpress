@@ -1828,7 +1828,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 		$classes = array(
 			'course-lesson course-item course-item-' . $lesson_id
 		);
-		if ( $status = LP()->user->get_item_status( $lesson_id ) ) {
+
+		$user = learn_press_get_current_user();
+
+		if ( $status = $user->get_item_status( $lesson_id ) ) {
 			$classes[] = "item-has-status item-{$status}";
 		}
 		if ( $lesson_id && $course->is( 'current-item', $lesson_id ) ) {
@@ -1888,7 +1891,7 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 			'course-quiz course-item course-item-' . $quiz_id
 		);
 
-		if ( $status = LP()->user->get_item_status( $quiz_id ) ) {
+		if ( $status = $user->get_item_status( $quiz_id ) ) {
 			$classes[] = "item-has-status item-{$status}";
 		}
 
@@ -2119,6 +2122,7 @@ if ( ! function_exists( 'learn_press_page_controller' ) ) {
 	 * @return file
 	 */
 	function learn_press_page_controller( $template/*, $slug, $name*/ ) {
+	    die(__FUNCTION__);
 		global $wp;
 		if ( isset( $wp->query_vars['lp-order-received'] ) ) {
 			global $post;

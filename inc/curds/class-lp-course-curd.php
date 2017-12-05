@@ -186,6 +186,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		public function load( &$course ) {
 			$this->load_curriculum( $course );
 			$this->load_data( $course );
+
 			return $course;
 		}
 
@@ -614,6 +615,47 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				) );
 
 			return $query;
+		}
+
+		/**
+		 * @param int          $course_id
+		 * @param string|array $statuses
+		 *
+		 * @return int
+		 */
+		public function count_by_orders( $course_id, $statuses = 'completed' ) {
+			global $wpdb;
+
+			settype( $statuses, 'array' );
+			foreach ( $statuses as $k => $v ) {
+				if ( ! preg_match( '/^lp-/', $v ) ) {
+					$statuses[ $k ] = 'lp-' . $v;
+				}
+			}
+			sort( $statuses );
+			$cache_key = md5( serialize( $statuses ) );
+
+			if ( false === ( $count = wp_cache_get( 'course-' . $course_id . '-' . $cache_key, 'lp-course-orders' ) ) ) {
+				$in_clause  = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
+				$query_args = array_merge( array( '_course_id', $course_id, LP_ORDER_CPT ), $statuses );
+
+				$query = $wpdb->prepare( "
+				SELECT count(oim.meta_id)
+				FROM {$wpdb->learnpress_order_itemmeta} oim
+				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
+					AND oim.meta_key = %s
+					AND oim.meta_value = %d
+				INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
+				WHERE o.post_type = %s
+				AND o.post_status IN ($in_clause)
+			", $query_args );
+
+				$count = absint( $wpdb->get_var( $query ) );
+
+				wp_cache_set( 'course-' . $course_id . '-' . $cache_key, $count, 'lp-course-orders' );
+			}
+
+			return $count;
 		}
 	}
 }

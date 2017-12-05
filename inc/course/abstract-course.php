@@ -122,7 +122,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'sale_end'             => get_post_meta( $id, '_lp_sale_end', true ),
 					'duration'             => get_post_meta( $id, '_lp_duration', true ),
 					'max_students'         => get_post_meta( $id, '_lp_max_students', true ),
-					'students'             => get_post_meta( $id, '_lp_students', true ),
+					'students'             => false,
+					'fake_students'        => get_post_meta( $id, '_lp_students', true ),
 					'retake_count'         => get_post_meta( $id, '_lp_retake_count', true ),
 					'featured'             => get_post_meta( $id, '_lp_featured', true ),
 					'block_lesson_content' => get_post_meta( $id, '_lp_block_lesson_content', true ),
@@ -458,63 +459,42 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * Count the total of students has enrolled course
-		 *
-		 * @param string (null|append|swaps)
-		 *
-		 * @return mixed
+		 * @return int
 		 */
-		public function count_users_enrolled( $count_db = '' ) {
-
-			// Get students enrolled from settings of the course that owns course want to show
-			// So, if this value is set that means the result is fake ... :)
-			$enrolled = absint( $this->get_data( 'students' ) );
-
-			// But, if it is not set then we count the real value from DB
-			if ( $count_db ) {
-				$real_enrolled = $this->get_users_enrolled();
-				if ( $count_db == 'append' ) {
-					$enrolled += $real_enrolled;
-				} elseif ( $count_db == 'swaps' && $real_enrolled ) {
-					$enrolled = $real_enrolled;
-				}
-			}
-
-			return apply_filters( 'learn_press_count_users_enrolled', $enrolled, $this );
+		public function get_fake_students() {
+			return $this->get_data( 'fake_students' );
 		}
 
 		/**
 		 * Count the real users has enrolled
 		 *
-		 * @param bool $force
-		 *
 		 * @return int
 		 */
-		public function get_users_enrolled( $count_db = '' ) {
+		public function get_users_enrolled() {
+			$enrolled = $this->get_data( 'students' );
 
-			return $this->count_users_enrolled( $count_db );
-			/*
-			if ( ( $this->_count_users === null && !array_key_exists( $this->get_id(), self::$course_users ) ) || $force ) {
-				self::$course_users = _learn_press_count_users_enrolled_courses( array( $this->get_id() ) );
+			if ( false === $enrolled ) {
+				$enrolled = $this->count_students();
+
+				$this->_set_data( 'students', $enrolled );
 			}
-			if ( !array_key_exists( $this->get_id(), self::$course_users ) ) {
-				$this->_count_users = 0;
-			} else {
-				$this->_count_users = absint( self::$course_users[$this->get_id()] );
-			}
-			return $this->_count_users;*/
+
+			$enrolled = absint( $enrolled );
+
+			// @deprecated
+			$enrolled = apply_filters( 'learn_press_count_users_enrolled', $enrolled, $this );
+
+			return apply_filters( 'learn-press/course/users-enrolled', $enrolled, $this );
 		}
 
 		/**
 		 * Output html for students enrolled counter
 		 *
-		 * @param int Optional - user ID
-		 *
 		 * @return string
 		 */
 		public function get_students_html() {
 			$output = '';
-			if ( $count = $this->count_users_enrolled( 'append' ) ):
+			if ( $count = $this->get_users_enrolled() ):
 				$user = learn_press_get_current_user();
 				if ( $user->has_enrolled_course( $this->get_id() ) ):
 					if ( $count == 1 ):
@@ -889,40 +869,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @param string $statuses
+		 * @param string|array $statuses
 		 *
 		 * @return mixed
 		 */
 		public function count_in_order( $statuses = 'completed' ) {
-			global $wpdb;
-			static $data = array();
-			settype( $statuses, 'array' );
-			foreach ( $statuses as $k => $v ) {
-				if ( ! preg_match( '/^lp-/', $v ) ) {
-					$statuses[ $k ] = 'lp-' . $v;
-				}
-			}
-			if ( empty( $data[ $this->get_id() ] ) ) {
-				$data[ $this->get_id() ] = array();
-			}
-			sort( $statuses );
-			$key = md5( serialize( $statuses ) );
-			if ( ! array_key_exists( $key, $data[ $this->get_id() ] ) ) {
-				$in_clause                       = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
-				$query                           = $wpdb->prepare( "
-				SELECT count(oim.meta_id)
-				FROM {$wpdb->learnpress_order_itemmeta} oim
-				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
-					AND oim.meta_key = %s
-					AND oim.meta_value = %d
-				INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
-				WHERE o.post_type = %s
-				AND o.post_status IN ($in_clause)
-			", array_merge( array( '_course_id', $this->get_id(), 'lp_order' ), $statuses ) );
-				$data[ $this->get_id() ][ $key ] = $wpdb->get_var( $query );
-			}
-
-			return $data[ $this->get_id() ][ $key ];
+			return $this->_curd->count_by_orders( $this->get_id(), $statuses );
 		}
 
 		/**

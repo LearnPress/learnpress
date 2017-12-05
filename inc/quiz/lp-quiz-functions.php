@@ -137,14 +137,14 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
  *
  * @return bool|int
  */
-function learn_press_get_current_question( $quiz_id = null, $user_id = 0 ) {
+function learn_press_get_current_question( $quiz_id = null, $course_id = 0, $user_id = 0 ) {
 	if ( $user_id ) {
 		$user = learn_press_get_user( $user_id );
 	} else {
-		$user = LP()->user;
+		$user = learn_press_get_current_user();
 	}
 
-	return $user->get_current_question( $quiz_id );
+	return $user->get_current_question( $quiz_id, $course_id );
 }
 
 /**
@@ -258,7 +258,7 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
  * @return boolean
  */
 function learn_press_user_has_started_quiz( $user_id = null, $quiz_id = null ) {
-	$user = $user_id ? learn_press_get_user( $user_id ) : LP()->user;
+	$user = $user_id ? learn_press_get_user( $user_id ) : learn_press_get_current_user();
 
 	return $user ? $user->has( 'started-quiz', $quiz_id ) : false;
 }
@@ -276,7 +276,7 @@ function learn_press_user_has_started_quiz( $user_id = null, $quiz_id = null ) {
  * @return string
  */
 function learn_press_get_user_quiz_status( $quiz_id, $user_id = false ) {
-	$user = $user_id ? learn_press_get_user( $user_id ) : LP()->user;
+	$user = $user_id ? learn_press_get_user( $user_id ) : learn_press_get_current_user();
 
 	return $user ? $user->get_quiz_status( $quiz_id ) : '';
 }

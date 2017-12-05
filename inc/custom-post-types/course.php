@@ -1281,7 +1281,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
-			$user                  = LP()->user;
+			$user                  = learn_press_get_current_user();
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
