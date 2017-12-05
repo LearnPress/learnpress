@@ -457,7 +457,7 @@ abstract class LP_Abstract_Post_Type {
 				// translators: Publish box date format, see http://php.net/date
 				date_i18n( __( 'M j, Y @ G:i', 'learnpress' ), strtotime( $post->post_date ) )
 			),
-			10 => sprintf( '% %s', $post_type_object->labels->singular_name, __( 'draft updated.', 'learnpress' ) )
+			10 => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'draft updated.', 'learnpress' ) )
 		);
 
 		if ( $post_type_object->publicly_queryable ) {

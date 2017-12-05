@@ -1008,7 +1008,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 
             body.course-item-popup #learn-press-content-item {
                 position: fixed;
-                z-index: 99999;
+                z-index: 9999;
                 background: #FFF;
                 top: 60px;
                 right: 0;
@@ -1552,7 +1552,7 @@ if ( ! function_exists( 'learn_press_order_details_table' ) ) {
 		if ( ! $order_id ) {
 			return;
 		}
-		echo __FUNCTION__;
+
 		learn_press_get_template( 'order/order-details.php', array(
 			'order' => learn_press_get_order( $order_id )
 		) );
@@ -2796,6 +2796,40 @@ if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_profile_order_details' ) ) {
+	function learn_press_profile_order_details() {
+		$profile = LP_Profile::instance();
+
+		if ( false === ( $order = $profile->get_view_order() ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'order/order-details.php', array( 'order' => $order ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_profile_order_recover' ) ) {
+	function learn_press_profile_order_recover() {
+		$profile = LP_Profile::instance();
+
+		if ( false === ( $order = $profile->get_view_order() ) ) {
+			return;
+		}
+		learn_press_get_template( 'profile/tabs/orders/recover-my-order.php', array( 'order' => $order ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_profile_order_message' ) ) {
+	function learn_press_profile_order_message() {
+		$profile = LP_Profile::instance();
+
+		if ( false === ( $order = $profile->get_view_order() ) ) {
+			return;
+		}
+		learn_press_get_template( 'profile/tabs/orders/order-message.php', array( 'order' => $order ) );
+	}
+}
+
 function learn_press_is_content_item_only() {
 	return ! empty( $_REQUEST['content-item-only'] );
 }
@@ -2807,7 +2841,6 @@ function learn_press_label_html( $label ) {
     </span>
 	<?php
 }
-
 
 
 //add_action( 'get_header', 'learn_press_load_content_item_only' );

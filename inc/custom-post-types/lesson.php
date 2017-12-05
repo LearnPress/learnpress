@@ -61,7 +61,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'public'             => true, // no access directly via lesson permalink url
 					'query_var'          => true,
 					'taxonomies'         => array( 'lesson_tag' ),
-					'publicly_queryable' => true,
+					'publicly_queryable' => false,
 					'show_ui'            => true,
 					'has_archive'        => false,
 					'capability_type'    => LP_LESSON_CPT,

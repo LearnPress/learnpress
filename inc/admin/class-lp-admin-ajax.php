@@ -646,10 +646,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					if ( ! is_wp_error( $new_question ) ) {
 						// add question to hidden questions in quiz meta
-						$hidden_questions   = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
+						$hidden_questions = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
+						if ( ! $hidden_questions ) {
+							$hidden_questions = array();
+						}
+
 						$hidden_questions[] = $new_question->get_id();// add question to hidden questions in quiz meta
-						$hidden_questions   = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
-						$hidden_questions[] = $new_question->get_id();
+						/*$hidden_questions   = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
+						$hidden_questions[] = $new_question->get_id();*/
 						update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );
 						// get new question data
 						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question, true );
@@ -1345,7 +1349,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

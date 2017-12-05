@@ -87,6 +87,15 @@ add_action( 'learn-press/profile/orders', 'learn_press_profile_tab_orders', 5 );
 add_action( 'learn-press/profile/orders', 'learn_press_profile_recover_order_form', 10 );
 
 /**
+ * @see learn_press_profile_order_details
+ * @see learn_press_profile_order_recover
+ * @see learn_press_profile_order_message
+ */
+add_action( 'learn-press/profile/order-details', 'learn_press_profile_order_details', 5 );
+add_action( 'learn-press/profile/order-details', 'learn_press_profile_order_recover', 10 );
+add_action( 'learn-press/profile/order-details', 'learn_press_profile_order_message', 15 );
+
+/**
  * @see learn_press_profile_dashboard_logged_in
  */
 add_action( 'learn-press/profile/dashboard-summary', 'learn_press_profile_dashboard_logged_in', 5 );
