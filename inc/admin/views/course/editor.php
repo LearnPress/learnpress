@@ -10,15 +10,31 @@ learn_press_admin_view( 'course/modal-choose-items' );
 
 ?>
 <script type="text/x-template" id="tmpl-lp-course-editor">
-    <div id="admin-editor-lp_course" :class="[{'need-reload': !heartbeat}, 'lp-admin-editor']">
-        <form @submit.prevent="">
-            <lp-curriculum></lp-curriculum>
-        </form>
+    <div id="admin-editor-lp_course" class='lp-admin-editor'>
+        <div v-if="heartbeat">
+            <form @submit.prevent="">
+                <lp-curriculum></lp-curriculum>
+            </form>
 
-        <lp-curriculum-choose-items></lp-curriculum-choose-items>
+            <lp-curriculum-choose-items></lp-curriculum-choose-items>
+        </div>
+        <div v-else>
+            <div class="lp-place-holder">
+                <div class="line-heading"></div>
 
-        <div class="notify-reload">
-            <div class="inner"><?php esc_html_e( 'Something went wrong! Please reload to keep editing curriculum.', 'learnpress' ); ?></div>
+                <div class="line-sm"></div>
+                <div class="line-xs"></div>
+
+                <div class="line-df"></div>
+                <div class="line-lgx"></div>
+                <div class="line-lg"></div>
+
+                <div class="line-df"></div>
+                <div class="line-lg"></div>
+                <div class="line-lgx"></div>
+
+                <div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to keep editing curriculum.', 'learnpress' ); ?></div>
+            </div>
         </div>
     </div>
 </script>
