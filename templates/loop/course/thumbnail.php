@@ -15,7 +15,7 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<?php $course = LP()->global['course']; ?>
+<?php $course = learn_press_get_course(); ?>
 
 <div class="course-thumbnail">
 
