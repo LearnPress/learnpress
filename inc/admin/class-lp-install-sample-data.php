@@ -42,15 +42,22 @@ class LP_Install_Sample_Data {
 
 		add_filter( 'learn-press/script-data', array( $this, 'i18n' ), 10, 2 );
 
-		if ( 'lp-install-sample-data' !== LP_Request::get( 'page' ) ) {
+		$actions = array(
+			'lp-install-sample-data',
+			'lp-uninstall-sample-data'
+		);
+
+		if ( ! in_array( LP_Request::get( 'page' ), $actions ) ) {
 			return;
 		}
 		add_action( 'init', array( $this, 'install' ) );
+		add_action( 'init', array( $this, 'uninstall' ) );
 	}
 
 	public function i18n( $data, $handle ) {
 		$i18n = array(
-			'confirm_install_sample_data' => __( 'Are you sure you want to install sample course data?', 'learnpress' )
+			'confirm_install_sample_data' => __( 'Are you sure you want to install sample course data?', 'learnpress' ),
+			'confirm_uninstall_sample_data' => __( 'Are you sure you want to delete sample course data?', 'learnpress' )
 		);
 
 		if ( empty( $data['i18n'] ) ) {
@@ -131,6 +138,107 @@ class LP_Install_Sample_Data {
 	}
 
 	/**
+	 * Un-install
+	 */
+	public function uninstall() {
+		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'uninstall-sample-course' ) ) {
+			return;
+		}
+
+		global $wpdb;
+
+		$posts = $this->get_sample_posts();
+
+		if ( ! $posts ) {
+			die();
+		}
+
+		LP_Debug::startTransaction();
+		try {
+			foreach ( $posts as $post ) {
+				switch ( $post->post_type ) {
+					case LP_COURSE_CPT:
+						$this->_delete_course( $post->ID );
+						break;
+					case LP_QUIZ_CPT:
+						$this->_delete_quiz( $post->ID );
+						break;
+					case LP_QUESTION_CPT:
+						$this->_delete_question( $post->ID );
+						break;
+				}
+
+				$this->_delete_post( $post->ID );
+			}
+		}
+		catch ( Exception $ex ) {
+			LP_Debug::rollbackTransaction();
+			echo "Error: " . $ex->getMessage();
+		}
+		LP_Debug::commitTransaction();
+
+		die();
+	}
+
+	/**
+	 * Get all posts marked as "sample data"
+	 *
+	 * @return array|null|object
+	 */
+	public function get_sample_posts() {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+	        SELECT p.ID, post_type
+	        FROM {$wpdb->posts} p
+	        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %s
+	    ", '_lp_sample_data', 'yes' );
+
+		return $wpdb->get_results( $query );
+	}
+
+	protected function _delete_course( $id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+	        SELECT section_id
+	        FROM {$wpdb->learnpress_sections}
+	        WHERE section_course_id = %d
+	    ", $id );
+
+		if ( $section_ids = $wpdb->get_col( $query ) ) {
+			$wpdb->query( "DELETE FROM {$wpdb->learnpress_section_items} WHERE section_id IN(" . join( ',', $section_ids ) . ")" );
+			$wpdb->query( "DELETE FROM {$wpdb->learnpress_sections} WHERE section_id IN(" . join( ',', $section_ids ) . ")" );
+		}
+	}
+
+	protected function _delete_quiz( $id ) {
+		global $wpdb;
+		$wpdb->query( "DELETE FROM {$wpdb->learnpress_quiz_questions} WHERE quiz_id = {$id}" );
+	}
+
+	protected function _delete_question( $id ) {
+		global $wpdb;
+		$wpdb->query( "DELETE FROM {$wpdb->learnpress_question_answers} WHERE question_id = {$id}" );
+	}
+
+	protected function _delete_post( $post_id ) {
+		global $wpdb;
+		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id = $post_id" );
+		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE ID = $post_id" );
+	}
+
+	protected function _delete_user_items( $ids ) {
+		global $wpdb;
+		$format = array_fill( 0, sizeof( $ids ), '%d' );
+		$query  = $wpdb->prepare( "
+	        DELETE 
+	        FROM {$wpdb->learnpress_user_items}
+	        WHERE item_id IN(" . join( ',', $format ) . ")
+	    ", $ids );
+
+		$wpdb->query( $query );
+	}
+
+	/**
 	 * Generate content with 'lorem' text.
 	 *
 	 * @param int $min
@@ -199,7 +307,8 @@ class LP_Install_Sample_Data {
 				'_lp_featured'          => 'no',
 				'_lp_course_result'     => 'evaluate_lesson',
 				'_lp_passing_condition' => '80',
-				'_lp_required_enroll'   => 'yes'
+				'_lp_required_enroll'   => 'yes',
+				'_lp_sample_data'       => 'yes'
 			);
 			foreach ( $metas as $key => $value ) {
 				update_post_meta( $course_id, $key, $value );
@@ -313,6 +422,9 @@ class LP_Install_Sample_Data {
 		$lesson_id = wp_insert_post( $data );
 
 		if ( $lesson_id ) {
+
+			update_post_meta( $lesson_id, '_lp_sample_data', 'yes' );
+
 			$section_data = array(
 				'section_id' => $section_id,
 				'item_id'    => $lesson_id,
@@ -361,7 +473,8 @@ class LP_Install_Sample_Data {
 				'_lp_retake_count'       => rand( 0, 10 ),
 				'_lp_archive_history'    => 'no',
 				'_lp_show_check_answer'  => '0',
-				'_lp_show_hint'          => '0'
+				'_lp_show_hint'          => '0',
+				'_lp_sample_data'        => 'yes'
 			);
 
 			foreach ( $metas as $key => $value ) {
@@ -413,6 +526,7 @@ class LP_Install_Sample_Data {
 			$type = $this->get_question_type();
 
 			update_post_meta( $question_id, '_lp_type', $type );
+			update_post_meta( $question_id, '_lp_sample_data', 'yes' );
 
 			$quiz_question_data = array(
 				'quiz_id'     => $quiz_id,

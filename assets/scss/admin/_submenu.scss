@@ -84,11 +84,19 @@
                         display: inline-block;
                         padding: 0 10px;
                     }
-                    &:last-child:after{
+                    &:last-child:after {
                         content: '';
                     }
                 }
             }
+        }
+    }
+
+    #learn-press-uninstall-sample-data {
+        float: right;
+        opacity: 0.5;
+        &:hover{
+            opacity: 1;
         }
     }
 }

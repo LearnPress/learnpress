@@ -69,12 +69,12 @@ class LP_Global {
 	}
 
 	/**
-	 * @return LP_Course
+	 * @return LP_Course|bool
 	 */
 	public static function course() {
 		global $lp_course;
 
-		return $lp_course;
+		return is_a( $lp_course, 'LP_Course' ) ? $lp_course : false;
 	}
 
 	public static function set_course( $course ) {

@@ -57,5 +57,12 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
 			<?php esc_html_e( 'Install', 'learnpress' ); ?>
         </a>
         <a href="" id="learn-press-install-sample-data-options"><?php esc_html_e( 'Show options', 'learnpress' ); ?></a>
+        <a class="button"
+           data-text="<?php esc_attr_e( 'Delete sample course', 'learnpress' ); ?>"
+           data-uninstalling-text="<?php esc_attr_e( 'Deleting...', 'learnpress' ); ?>"
+           id="learn-press-uninstall-sample-data"
+           href="<?php echo wp_nonce_url( admin_url( 'index.php?page=lp-uninstall-sample-data' ), 'uninstall-sample-course' ); ?>">
+			<?php _e( 'Delete sample course', 'learnpress' ); ?>
+        </a>
     </p>
 </div>
