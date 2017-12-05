@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class LP_Email_Completed_Order_User
  *
@@ -33,11 +32,6 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 			$this->default_subject = __( 'Your order on {{order_date}} has completed', 'learnpress' );
 			$this->default_heading = __( 'Your order has completed', 'learnpress' );
 
-//			add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
-//			add_action( 'learn_press_order_status_draft_to_processing_notification', array( $this, 'trigger' ) );
-//			add_action( 'learn_press_order_status_draft_to_on-hold_notification', array( $this, 'trigger' ) );
-
-
 			parent::__construct();
 		}
 
@@ -51,13 +45,24 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 		public function trigger( $order_id ) {
 			parent::trigger( $order_id );
 
-			if ( ! $this->enable ) {
-				return false;
-			}
-
 			$order = $this->get_order();
 
 			if ( $order->is_guest() ) {
+				return false;
+			}
+
+			$items = $order->get_items();
+
+			$free = 0;
+			foreach ( $items as $item ) {
+				$course = LP_Course::get_course( $item['course_id'] );
+				if ( $course->is_free() ) {
+					$free ++;
+				}
+			}
+
+			// disable for enroll free course
+			if ( $free == sizeof( $items ) ) {
 				return false;
 			}
 

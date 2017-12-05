@@ -39,7 +39,7 @@ class LP_Email_Type_Order extends LP_Email {
 		add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 
 		// new free order
-		add_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
+//		add_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
 		// new paid order
 		add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 	}

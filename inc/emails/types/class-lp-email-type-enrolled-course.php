@@ -48,6 +48,12 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 
 	}
 
+	/**
+	 * @param string $object_id
+	 * @param string $more
+	 *
+	 * @return array|object|void
+	 */
 	public function get_object( $object_id = '', $more = '' ) {
 
 		$user        = learn_press_get_user( $this->user_id );
@@ -76,7 +82,7 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	}
 
 	/**
-	 * Get instrcutor of the course.
+	 * Get instructor of the course.
 	 *
 	 * @return LP_User|mixed
 	 */
@@ -90,6 +96,10 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	 * @param int $user_item_id
 	 */
 	public function trigger( $course_id, $user_id, $user_item_id ) {
+		if ( ! $this->enable ) {
+			return;
+		}
+
 		$this->course_id    = $course_id;
 		$this->user_id      = $user_id;
 		$this->user_item_id = $user_item_id;

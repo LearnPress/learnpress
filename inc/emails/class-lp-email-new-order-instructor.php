@@ -33,6 +33,14 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 
 			// remove complete order hook for free course ( default new free order auto create pending from pending to completed )
 			remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
+
+			// disable send mail for enable enroll course instructor mail
+			if ( ! learn_press_is_negative_value( LP()->settings()->get( 'emails_enrolled-course-instructor' )['enable'] ) ) {
+				remove_action( 'learn-press/order/status-pending-to-completed/notification', array(
+					$this,
+					'trigger'
+				) );
+			}
 		}
 
 		/**
@@ -45,7 +53,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 		public function trigger( $order_id ) {
 			parent::trigger( $order_id );
 
-			$instructors = $this->get_course_instructors();
+			$instructors = $this->get_order_instructors( $order_id );
 
 			if ( ! $instructors ) {
 				return false;
@@ -69,7 +77,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 					}
 				}
 
-				$this->recipient     = $user->get_data('email');
+				$this->recipient     = $user->get_data( 'email' );
 				$this->instructor_id = $user_id;
 
 				$this->get_object();

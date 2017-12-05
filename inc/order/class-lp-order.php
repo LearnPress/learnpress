@@ -76,6 +76,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * LP_Order constructor.
 		 *
 		 * @param bool $order_id
+		 *
+		 * @throws Exception
 		 */
 		public function __construct( $order_id = false ) {
 			$this->_curd = new LP_Order_CURD();
