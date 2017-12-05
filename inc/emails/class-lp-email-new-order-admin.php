@@ -35,7 +35,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 
 			parent::__construct();
 
-			// remove order complete for free order ( default new free order auto create pending from pending to completed )
+			// remove complete order hook for free course ( default new free order auto create pending from pending to completed )
 			remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 		}
 

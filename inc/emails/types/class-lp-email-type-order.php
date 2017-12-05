@@ -55,13 +55,13 @@ class LP_Email_Type_Order extends LP_Email {
 		$order_id = $this->order_id;
 		$order    = learn_press_get_order( $order_id );
 
-		$items              = $order->get_items();
+		$items       = $order->get_items();
 		$instructors = array();
 
 		if ( sizeof( $items ) ) {
 			foreach ( $items as $item ) {
 				$user_id = get_post_field( 'post_author', $item['course_id'] );
-				if($user_id){
+				if ( $user_id ) {
 					$instructors[] = $user_id;
 				}
 			}
@@ -156,9 +156,14 @@ class LP_Email_Type_Order extends LP_Email {
 	}
 
 	/**
-	 * @param int $order_id
+	 * @param $order_id
+	 *
+	 * @return void
 	 */
 	public function trigger( $order_id ) {
+		if ( ! $this->enable ) {
+			return;
+		}
 		$this->order_id = $order_id;
 
 		LP_Emails::instance()->set_current( $this->id );
