@@ -127,19 +127,20 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'title'   => __( 'Send email in background', 'learnpress' ),
 					'id'      => 'emails_general[send_email_background]',
 					'default' => 'no',
-					'type'    => 'yes-no'
+					'type'    => 'yes-no',
+					'desc'    => __( 'Defer transaction email and runs in background.', 'learnpress' )
 				),
 				array(
 					'title' => __( 'Email template', 'learnpress' ),
 					'type'  => 'heading'
 				),
 				array(
-					'title'   => __( 'Header image', 'learnpress' ),
-					'id'      => 'emails_general[header_image]',
-					'default' => '',
-					'type'    => 'image_advanced',
-					'max_file_uploads'=>1,
-					'desc'    => __( 'The image will be displayed in the top of the email.', 'learnpress' )
+					'title'            => __( 'Header image', 'learnpress' ),
+					'id'               => 'emails_general[header_image]',
+					'default'          => '',
+					'type'             => 'image_advanced',
+					'max_file_uploads' => 1,
+					'desc'             => __( 'The image will be displayed in the top of the email.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Footer text', 'learnpress' ),

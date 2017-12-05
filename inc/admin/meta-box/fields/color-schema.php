@@ -83,7 +83,6 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 				}
 			}
 		}
-print_r($schemas);die();
 		?>
         <div id="color-schemas">
 			<?php foreach ( $schemas as $k => $schema ) { ?>
