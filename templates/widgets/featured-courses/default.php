@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/widgets/featured-courses/default.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Widgets
  * @package  Learnpress/Templates
  * @version  3.0.0
@@ -29,11 +29,10 @@ $instance = $this->instance;
 				'title'      => $course->get_title(),
 				'content'    => $course->get_data( 'post_content' ),
 				'price'      => $course->get_price_html(),
-				'students'   => $course->get_users_enrolled('append'),
+				'students'   => $course->get_users_enrolled(),
 				'lessons'    => sizeof( $course->get_items( LP_LESSON_CPT ) ),
 				'instructor' => $course->get_instructor_html(),
 			);
-			echo $course->get_data('students');
 			?>
 
             <div class="course-entry">

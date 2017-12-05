@@ -186,7 +186,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_show_result() {
-			return $this->get_data( 'show_result' );
+			return $this->get_data( 'show_result' ) === 'yes';
 		}
 
 		/**

@@ -13,9 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $course = LP()->global['course']; ?>
+$course = LP_Global::course();
+?>
 
 <div class="course-price">
 

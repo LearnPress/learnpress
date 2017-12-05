@@ -678,22 +678,6 @@ if ( ! function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_course_nav_items' ) ) {
-	/**
-	 * Displaying course items navigation
-	 *
-	 * @param null $item_id
-	 * @param null $course_id
-	 */
-	function learn_press_course_nav_items( $item_id = null, $course_id = null ) {
-		learn_press_get_template( 'single-course/nav-items.php', array(
-			'course_id'    => $course_id,
-			'item_id'      => $item_id,
-			'content_only' => learn_press_is_content_item_only()
-		) );
-	}
-}
-
 if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
 	/**
 	 * Displaying course items navigation

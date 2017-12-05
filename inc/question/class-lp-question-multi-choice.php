@@ -56,25 +56,44 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 			$return = parent::check();
 
 			settype( $user_answer, 'array' );
+
 			if ( $answers = $this->get_answers() ) {
+				$correct = true;
 				foreach ( $answers as $key => $option ) {
-					if ( $option['is_true'] == 'yes' ) {
-						$correct = $this->is_selected_option( $option, $user_answer );
-					} else {
-						$correct = ! $this->is_selected_option( $option, $user_answer );
+
+					// Consider option is true
+					$correct  = true;
+					$selected = $this->is_selected_option( $option, $user_answer );
+
+					// If the option is FALSE but user selected => WRONG
+					if ( $selected && $option['is_true'] !== 'yes' ) {
+						$correct = false;
+					} // If option is TRUE but user did not select => WRONG
+					elseif ( ! $selected && $option['is_true'] === 'yes' ) {
+						$correct = false;
 					}
 
-					// if the option is TRUE but user did not select it => WRONG
-					// or, if the option is FALSE but user selected it => WRONG
-					if ( $correct ) {
-						$return = array(
-							'correct' => true,
-							'mark'    => floatval( $this->get_mark() )
-						);
+
+//					echo "correct = ";
+//					print_r( $correct );
+//					echo ", ", $this->is_selected_option( $option, $user_answer );
+//					echo "option = ";
+//					print_r( $option );
+//					echo "answer = ";
+//					print_r( $user_answer );
+//					echo "xxxxxxx\n\n";
+
+					// Only one option is selected wrong
+					if ( ! $correct ) {
 						break;
 					}
 				}
-
+				if ( $correct ) {
+					$return = array(
+						'correct' => false,
+						'mark'    => floatval( $this->get_mark() )
+					);
+				}
 			}
 
 			return $return;

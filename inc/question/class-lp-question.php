@@ -537,7 +537,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 		/**
 		 *
-		 * @param mixed $answers
+		 * @param mixed       $answers
 		 * @param LP_Question $q
 		 *
 		 * @return array|bool
@@ -632,7 +632,31 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					$type = 'multi-choice';
 					break;
 			}
+
 			learn_press_get_template( 'content-question/' . $type . '/answer-options.php', array( 'question' => $this ) );
+		}
+
+		public function setup_data( $quiz_id, $course_id = 0, $user_id = 0 ) {
+
+			$quiz   = learn_press_get_quiz( $quiz_id );
+			$course = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
+
+			if ( $user_id ) {
+				$user = learn_press_get_user( $user_id );
+			} else {
+				$user = learn_press_get_current_user();
+			}
+
+			$show_correct = false;
+
+			if ( $user && $quiz && $course ) {
+				if ( $user_quiz = $user->get_quiz_data( $quiz->get_id(), $course->get_id() ) ) {
+					$has_checked  = $user->has_checked_answer( $this->get_id(), $quiz->get_id(), $course->get_id() );
+					$show_correct = $user_quiz->is_completed() && ( $has_checked || $quiz->get_show_result() ) ? 'yes' : false;
+				}
+			}
+
+			$this->show_correct_answers( $show_correct );
 		}
 
 		/**
@@ -689,9 +713,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 *          - $obj->a->b
 		 *          - or $obj->a['b']
 		 *
-		 * @param   null $key string  Single or multiple level such as a.b.c
+		 * @param   null $key     string  Single or multiple level such as a.b.c
 		 * @param   null $default mixed   Return a default value if the key does not exists or is empty
-		 * @param   null $func string  The function to apply the result before return
+		 * @param   null $func    string  The function to apply the result before return
 		 *
 		 * @return  mixed|null
 		 */
@@ -705,8 +729,8 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Magic function to get question data.
 		 *
-		 * @param $prop
-		 * @param $key
+		 * @param      $prop
+		 * @param      $key
 		 * @param null $default
 		 * @param null $type
 		 *
@@ -752,11 +776,12 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Find value in answer's option and compare with value answered by user.
 		 *
 		 * @param LP_Question_Answer_Option $answer
-		 * @param mixed $answered
+		 * @param mixed                     $answered
 		 *
 		 * @return bool
 		 */
 		public function is_selected_option( $answer, $answered = false ) {
+
 			if ( is_array( $answered ) ) {
 				$is_selected = in_array( $answer['value'], $answered );
 			} else {
@@ -769,8 +794,8 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Save user question answer.
 		 *
-		 * @param $answer
-		 * @param $quiz_id
+		 * @param      $answer
+		 * @param      $quiz_id
 		 * @param null $user_id
 		 */
 		public function save_user_answer( $answer, $quiz_id, $user_id = null ) {
@@ -861,7 +886,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get question.
 		 *
-		 * @param bool $the_question
+		 * @param bool  $the_question
 		 * @param array $args
 		 *
 		 * @return LP_Question|bool
@@ -907,7 +932,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Get the question class name.
 		 *
 		 * @param  WP_Post $the_question
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -939,7 +964,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get the question object.
 		 *
-		 * @since 3.0.0
+		 * @since  3.0.0
 		 *
 		 * @param  mixed $the_question
 		 *

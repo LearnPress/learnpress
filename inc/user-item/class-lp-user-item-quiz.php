@@ -113,6 +113,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function get_results( $prop = 'result', $force = false ) {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
+
 		if ( false === ( $result = wp_cache_get( $cache_key, 'lp-quiz-result' ) ) || $force ) {
 			$result = array(
 				'questions'         => array(),
@@ -129,6 +130,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				'time_spend'        => $this->get_time_interval( 'display' ),
 				'retake_count'      => 0
 			);
+
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {
 					$question = LP_Question::get_question( $question_id );
@@ -150,6 +152,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					}
 
 					$result['questions'][ $question_id ] = $check;
+
 					if ( $check['answered'] ) {
 						$result['question_answered'] ++;
 					}
@@ -201,6 +204,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function is_answered_true( $question_id ) {
 		$result = $this->get_results( false );
+
 		if ( ! empty( $result['questions'][ $question_id ] ) ) {
 			return $result['questions'][ $question_id ]['correct'];
 		}

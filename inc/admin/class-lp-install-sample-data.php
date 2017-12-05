@@ -56,7 +56,7 @@ class LP_Install_Sample_Data {
 
 	public function i18n( $data, $handle ) {
 		$i18n = array(
-			'confirm_install_sample_data' => __( 'Are you sure you want to install sample course data?', 'learnpress' ),
+			'confirm_install_sample_data'   => __( 'Are you sure you want to install sample course data?', 'learnpress' ),
 			'confirm_uninstall_sample_data' => __( 'Are you sure you want to delete sample course data?', 'learnpress' )
 		);
 
@@ -594,6 +594,10 @@ class LP_Install_Sample_Data {
 		} else {
 			foreach ( $answers as $k => $v ) {
 				$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';
+
+				if ( $answers[ $k ]['is_true'] === 'yes' ) {
+					$answers[ $k ]['text'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+				}
 			}
 		}
 

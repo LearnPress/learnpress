@@ -13,9 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $course = LP_Global::course(); ?>
+$course = LP_Global::course();
+?>
 
 <span class="course-instructor">
 	<?php echo $course->get_instructor_html(); ?>

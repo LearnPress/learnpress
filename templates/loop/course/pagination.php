@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/loop/course/pagination.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,13 +13,13 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php global $wp_query; ?>
+global $wp_query;
 
-<?php if ( $wp_query->max_num_pages <= 1 ) {
+if ( $wp_query->max_num_pages <= 1 ) {
 	return;
-} ?>
+}
+?>
 
 <nav class="learn-press-pagination">
 	<?php echo paginate_links( apply_filters( 'learn_press_pagination_args', array(

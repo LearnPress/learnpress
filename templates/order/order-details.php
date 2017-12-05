@@ -13,13 +13,13 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php if ( ! isset( $order ) ) {
+if ( ! isset( $order ) ) {
 	echo __( 'Invalid order', 'learnpress' );
 
 	return;
-} ?>
+}
+?>
 <h3><?php _e( 'Order Details', 'learnpress' ); ?></h3>
 
 <table class="lp-list-table order-table-details">

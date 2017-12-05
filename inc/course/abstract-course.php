@@ -244,7 +244,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$image = sprintf( '<img src="%s" %s />', $image, '' );
 			}
 
-			return apply_filters( 'learn_press_course_image', $image, $this->get_id(), $size, $attr );
+			$image = apply_filters( 'learn_press_course_image', $image, $this->get_id(), $size, $attr );
+
+			return apply_filters( 'learn-press/course/image', $image, $this->get_id(), $size, $attr );
 		}
 
 		/**

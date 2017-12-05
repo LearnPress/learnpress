@@ -13,9 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php if ( ! isset( $order ) ) {
+if ( ! isset( $order ) ) {
 	$order = learn_press_get_order();
 } ?>
 

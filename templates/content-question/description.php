@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-question/description.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,11 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $quiz = LP_Global::course_item_quiz(); ?>
+$quiz = LP_Global::course_item_quiz();
 
-<?php
 if ( ! $question = LP_Global::quiz_question() ) {
 	return;
 }

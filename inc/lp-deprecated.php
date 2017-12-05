@@ -463,3 +463,33 @@ function learn_press_output_question_nonce( $question ) {
 }
 
 add_action( 'learn_press_after_question_wrap', 'learn_press_output_question_nonce' );
+
+
+if ( ! function_exists( 'learn_press_course_nav_items' ) ) {
+	/**
+	 * Displaying course items navigation
+	 *
+	 * @param null $item_id
+	 * @param null $course_id
+	 */
+	function learn_press_course_nav_items( $item_id = null, $course_id = null ) {
+		learn_press_get_template( 'single-course/nav-items.php', array(
+			'course_id'    => $course_id,
+			'item_id'      => $item_id,
+			'content_only' => learn_press_is_content_item_only()
+		) );
+	}
+}
+
+/**
+ * Load course item content only
+ */
+function learn_press_load_content_item_only( $name ) {
+	if ( learn_press_is_content_item_only() ) {
+		if ( LP()->global['course-item'] ) {
+			remove_action( 'get_header', 'learn_press_load_content_item_only' );
+			learn_press_get_template( 'single-course/content-item-only.php' );
+			die();
+		}
+	}
+}

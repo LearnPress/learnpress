@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/result.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,16 +13,13 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $user      = LP_Global::user();
 $quiz      = LP_Global::course_item_quiz();
 $quiz_data = $user->get_quiz_data( $quiz->get_id() );
 $result    = $quiz_data->get_results( false );
-?>
 
-<?php if ( $quiz_data->is_review_questions() ) {
+if ( $quiz_data->is_review_questions() ) {
 	return;
 } ?>
 

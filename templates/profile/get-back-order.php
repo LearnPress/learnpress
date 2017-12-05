@@ -13,9 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php if ( ! $order->is_guest() ) {
+if ( ! $order->is_guest() ) {
 	return;
 } ?>
 

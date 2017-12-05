@@ -677,9 +677,11 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_explanation' 
 			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
+
 			if ( ! $question->get_explanation() ) {
 				return;
 			}
+
 			if ( $user_quiz->has_checked_question( $question->get_id() ) || $user_quiz->is_answered_true( $question->get_id() ) ) {
 				learn_press_get_template( 'content-question/explanation.php', array( 'question' => $question ) );
 			}
@@ -699,9 +701,11 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_hint' ) ) {
 			$user        = LP_Global::user();
 			$course_data = $user->get_course_data( $course->get_id() );
 			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
-			if ( ! $question->get_hint() || ! $user_quiz->has_hinted_question( $question->get_id() ) ) {
+
+			if ( ! $question->get_hint() || ! $user_quiz->has_hinted_question( $question->get_id() ) || $user_quiz->has_checked_question( $question->get_id() ) ) {
 				return;
 			}
+
 			learn_press_get_template( 'content-question/hint.php', array( 'question' => $question ) );
 		}
 
@@ -929,6 +933,12 @@ if ( ! function_exists( 'learn_press_quiz_hint_button' ) ) {
 		}
 
 		if ( ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
+			return;
+		}
+
+		$quiz_item = $user->get_quiz_data( $quiz->get_id(), $course->get_id() );
+
+		if ( $quiz_item && ( $quiz_item->has_checked_question( $question->get_id() ) || $quiz_item->is_answered( $question->get_id() ) ) ) {
 			return;
 		}
 
@@ -2122,7 +2132,7 @@ if ( ! function_exists( 'learn_press_page_controller' ) ) {
 	 * @return file
 	 */
 	function learn_press_page_controller( $template/*, $slug, $name*/ ) {
-	    die(__FUNCTION__);
+		die( __FUNCTION__ );
 		global $wp;
 		if ( isset( $wp->query_vars['lp-order-received'] ) ) {
 			global $post;
@@ -2798,18 +2808,7 @@ function learn_press_label_html( $label ) {
 	<?php
 }
 
-/**
- * Load course item content only
- */
-function learn_press_load_content_item_only( $name ) {
-	if ( learn_press_is_content_item_only() ) {
-		if ( LP()->global['course-item'] ) {
-			remove_action( 'get_header', 'learn_press_load_content_item_only' );
-			learn_press_get_template( 'single-course/content-item-only.php' );
-			die();
-		}
-	}
-}
+
 
 //add_action( 'get_header', 'learn_press_load_content_item_only' );
 
