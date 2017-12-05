@@ -124,6 +124,12 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'type'    => 'text'
 				),
 				array(
+					'title'   => __( 'Send email in background', 'learnpress' ),
+					'id'      => 'emails_general[send_email_background]',
+					'default' => 'no',
+					'type'    => 'yes-no'
+				),
+				array(
 					'title' => __( 'Email template', 'learnpress' ),
 					'type'  => 'heading'
 				),

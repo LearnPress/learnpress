@@ -173,34 +173,56 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				)
 			);
 
-			self::$_background_emailer = new LP_Background_Emailer();
+			if ( 'yes' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
 
-			foreach ( $actions as $action ) {
-				add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );
+				self::$_background_emailer = new LP_Background_Emailer();
+
+				foreach ( $actions as $action ) {
+					add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );
+				}
+
+			} else {
+
+				foreach ( $actions as $action ) {
+					add_action( $action, array( __CLASS__, 'send_email' ), 10, 10 );
+				}
+
 			}
 		}
 
 		/**
-		 * Set mail data.
+		 * Push email notification into queue.
 		 *
 		 * @since 3.0.0
 		 */
 		public static function queue_email() {
-
-			self::$_background_emailer->push_to_queue(
-				array(
-					'filter' => current_filter(),
-					'args'   => func_get_args(),
-				)
+			$data_queue = array(
+				'filter' => current_filter(),
+				'args'   => func_get_args(),
 			);
+			self::$_background_emailer->push_to_queue( $data_queue );
+		}
 
+		/**
+		 * Send email notification.
+		 */
+		public static function send_email() {
+			try {
+				$args = func_get_args();
+				self::instance();
+				do_action_ref_array( current_filter() . '/notification', $args );
+
+				LP_Debug::instance()->add( current_filter() . '/notification' );
+			}
+			catch ( Exception $e ) {
+			}
 		}
 
 		/**
 		 * Email header.
 		 *
 		 * @param string $heading
-		 * @param bool $echo
+		 * @param bool   $echo
 		 *
 		 * @return string
 		 */
@@ -211,6 +233,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			if ( $echo ) {
 				echo $header;
 			}
+
 			return $header;
 		}
 
@@ -218,7 +241,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * Email footer.
 		 *
 		 * @param string $footer_text
-		 * @param bool $echo
+		 * @param bool   $echo
 		 *
 		 * @return string
 		 */
@@ -229,18 +252,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			if ( $echo ) {
 				echo $footer;
 			}
-			return $footer;
-		}
 
-		/**
-		 * Trigger some actions for sending email.
-		 *
-		 * @param string $hook
-		 * @param mixed $args
-		 */
-		public static function send_email( $hook, $args ) {
-			self::instance();
-			do_action_ref_array( $hook . '/notification', $args );
+			return $footer;
 		}
 
 		/**

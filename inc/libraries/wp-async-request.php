@@ -80,6 +80,10 @@ abstract class WP_Async_Request {
 	public function dispatch() {
 		$url  = add_query_arg( $this->get_query_args(), $this->get_query_url() );
 		$args = $this->get_post_args();
+		LP_Debug::instance()->add('=========================');
+		LP_Debug::instance()->add($args);
+		LP_Debug::instance()->add("url={$url}");
+		LP_Debug::instance()->add('=========================');
 
 		return wp_remote_post( esc_url_raw( $url ), $args );
 	}

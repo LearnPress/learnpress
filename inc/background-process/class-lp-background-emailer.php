@@ -45,13 +45,10 @@ if ( ! class_exists( 'LP_Background_Emailer' ) ) {
 		 * Dispatch queue emails
 		 */
 		public function dispatch_queue() {
-			print_r( $this->data );
-			die();
 
 			if ( ! empty( $this->data ) ) {
 				$this->save()->dispatch();
 			}
-
 
 		}
 
