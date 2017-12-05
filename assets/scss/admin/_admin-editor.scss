@@ -6,49 +6,12 @@
     border: 1px solid #ddd;
     margin: 20px 0;
     position: relative;
-
-    .notify-reload {
-        display: none;
-    }
-
-    &.need-reload {
-        position: relative;
-
-        .notify-reload {
-            padding-top: 20px;
-            color: #fff;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            z-index: 2;
-            display: block;
-            opacity: 0.6;
-
-            .inner {
-                text-align: center;
-                line-height: 2;
-                padding: 50px 20px;
-                font-size: 2em;
-            }
-        }
-    }
 }
 
 /**
  *  Course admin editor.
  */
 #admin-editor-lp_course {
-
-    &.need-reload {
-        height: 200px;
-        > form {
-            overflow: hidden;
-            opacity: 0;
-        }
-    }
 
     .lp-course-curriculum {
         .heading {
@@ -582,20 +545,6 @@
  * Quiz admin editor.
  */
 #admin-editor-lp_quiz {
-
-    &.need-reload {
-        > .lp-box-data-head {
-            display: none;
-        }
-        > .lp-box-data-content {
-            height: 200px;
-            overflow: hidden;
-            opacity: 0;
-        }
-        .notify-reload {
-            padding-top: 30px;
-        }
-    }
 
     .lp-box-data-head {
         .status {
