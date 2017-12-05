@@ -650,11 +650,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						if ( ! $hidden_questions ) {
 							$hidden_questions = array();
 						}
-
-						$hidden_questions[] = $new_question->get_id();// add question to hidden questions in quiz meta
-						/*$hidden_questions   = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
-						$hidden_questions[] = $new_question->get_id();*/
+						$hidden_questions[] = $new_question->get_id();
 						update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );
+
 						// get new question data
 						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question, true );
 					}
@@ -721,10 +719,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$new_question_id = $question_curd->duplicate( $question['id'], array( 'post_status' => 'publish' ) );
 
 					if ( ! is_wp_error( $new_question_id ) ) {
+
 						// add question to hidden questions in quiz meta
-						$hidden_questions   = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
-						$hidden_questions[] = $new_question_id;
+						$hidden_questions = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
+						if ( ! $hidden_questions ) {
+							$hidden_questions = array();
+						}
+						$hidden_questions[] = $new_question_id;// add question to hidden questions in quiz meta
 						update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );
+
 						// add question to quiz
 						$quiz_curd->add_question( $quiz_id, $new_question_id );
 
@@ -963,7 +966,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					if ( $questions ) {
+						// add question to hidden questions in quiz meta
 						$hidden_questions = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
+						if ( ! $hidden_questions ) {
+							$hidden_questions = array();
+						}
+
 						foreach ( $questions as $key => $question ) {
 							// add question to hidden questions in quiz meta
 							$hidden_questions[] = $question['id'];
@@ -1349,8 +1357,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
