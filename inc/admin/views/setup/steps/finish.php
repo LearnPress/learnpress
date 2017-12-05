@@ -18,11 +18,13 @@ defined( 'ABSPATH' ) or exit;
 <p class="finish-buttons">
     <a class="button"
        id="install-sample-course"
-       href="<?php echo wp_nonce_url( admin_url( 'index.php?page=lp-install-sample-data' ), 'install-sample-course' ); ?>">
-        <?php _e( 'Install sample course', 'learnpress' ); ?>
+       href="<?php echo esc_url( wp_nonce_url( admin_url( 'index.php?page=lp-install-sample-data' ), 'install-sample-course' ) ); ?>">
+		<?php _e( 'Install sample course', 'learnpress' ); ?>
     </a>
     <a class="button"
-       href="<?php echo admin_url( 'post-new.php?post_type=lp_course' ); ?>"><?php _e( 'Create new course', 'learnpress' ); ?></a>
+       href="<?php echo esc_url( admin_url( 'post-new.php?post_type=lp_course' ) ); ?>"><?php _e( 'Create new course', 'learnpress' ); ?></a>
     <a class="button"
-       href="<?php echo admin_url( 'index.php' ); ?>"><?php _e( 'Back to Dashboard', 'learnpress' ); ?></a>
+       href="<?php echo esc_url( get_site_url() ); ?>"><?php _e( 'Visit your site', 'learnpress' ); ?></a>
+    <a class="button"
+       href="<?php echo esc_url( admin_url( 'index.php' ) ); ?>"><?php _e( 'Back to Dashboard', 'learnpress' ); ?></a>
 </p>
