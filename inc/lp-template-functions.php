@@ -55,6 +55,10 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
+		if ( $course->get_external_link() ) {
+			return;
+		}
+
 		// If course is not published
 		if ( ! $course->is_publish() ) {
 			return;
@@ -100,6 +104,10 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 			$course = learn_press_get_course();
 		}
 
+		if ( $course->get_external_link() ) {
+			return;
+		}
+
 		if ( ! isset( $user ) ) {
 			$user = learn_press_get_current_user();
 		}
@@ -119,9 +127,14 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_continue_button() {
-		$user = LP_Global::user();
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
 
-		if ( false === ( $course_data = $user->get_course_data( get_the_ID() ) ) ) {
+		if ( $course->get_external_link() ) {
+			return;
+		}
+
+		if ( false === ( $course_data = $user->get_course_data( $course->get_id() ) ) ) {
 			return;
 		}
 
@@ -144,17 +157,38 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_finish_button() {
-		$user = LP_Global::user();
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
 
-		if ( false === ( $course_data = $user->get_course_data( get_the_ID() ) ) ) {
+		if ( $course->get_external_link() ) {
 			return;
 		}
 
-		if ( ! $user->can_finish_course( get_the_ID() ) ) {
+		if ( false === ( $course_data = $user->get_course_data( $course->get_id() ) ) ) {
+			return;
+		}
+
+		if ( ! $user->can_finish_course( $course->get_id() ) ) {
 			return;
 		}
 
 		learn_press_get_template( 'single-course/buttons/finish.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_external_button' ) ) {
+
+	/**
+	 * Retake course button
+	 */
+	function learn_press_course_external_button() {
+		$course = LP_Global::course();
+
+		if ( ! $link = $course->get_external_link() ) {
+			return;
+		}
+
+		learn_press_get_template( 'single-course/buttons/external-link.php' );
 	}
 }
 

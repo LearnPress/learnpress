@@ -77,6 +77,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			'block_lesson_content' => '',
 			'course_result'        => '',
 			'passing_conditional'  => '',
+			'external_link'        => '',
 			'payment'              => ''
 		);
 
@@ -129,7 +130,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'passing_condition'    => get_post_meta( $id, '_lp_passing_condition', true ),
 					'payment'              => get_post_meta( $id, '_lp_payment', true ),
 					'final_quiz'           => get_post_meta( $id, '_lp_final_quiz', true ),
-					'external_link'        => get_post_meta( $id, '_lp_external_link_buy_course', true )
+					'external_link'        => get_post_meta( $id, '_lp_external_link_buy_course', true ),
+					'external_link_text'   => get_post_meta( $id, '_lp_external_link_text', true ),
 				)
 			);
 		}
@@ -1697,6 +1699,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_external_link() {
 			return apply_filters( 'learn-press/course-external-link', $this->get_data( 'external_link' ), $this->get_id() );
+		}
+
+		public function get_external_link_text() {
+			return apply_filters( 'learn-press/course-external-link-text', __( 'By this course', 'learnpress' ), $this->get_id() );
 		}
 
 		/**
