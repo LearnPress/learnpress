@@ -1024,6 +1024,37 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		}
 
 		/**
+		 * Get instructors to send mail.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param null $order_id
+		 *
+		 * @return array
+		 */
+		public function get_order_instructors( $order_id ) {
+			if ( ! $order_id ) {
+				return array();
+			}
+
+			$order = learn_press_get_order( $order_id );
+
+			$items       = $order->get_items();
+			$instructors = array();
+
+			if ( sizeof( $items ) ) {
+				foreach ( $items as $item ) {
+					$user_id = get_post_field( 'post_author', $item['course_id'] );
+					if ( $user_id ) {
+						$instructors[] = $user_id;
+					}
+				}
+			}
+
+			return $instructors;
+		}
+
+		/**
 		 * @return string
 		 */
 		public function __toString() {
