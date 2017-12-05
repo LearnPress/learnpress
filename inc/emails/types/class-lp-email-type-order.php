@@ -29,6 +29,7 @@ class LP_Email_Type_Order extends LP_Email {
 				'{{order_items_table}}',
 				'{{order_detail_url}}',
 				'{{order_number}}',
+				'{{order_key}}'
 			)
 		);
 
@@ -39,7 +40,7 @@ class LP_Email_Type_Order extends LP_Email {
 		add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 
 		// new free order
-//		add_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
+		// add_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
 		// new paid order
 		add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 	}
@@ -74,7 +75,7 @@ class LP_Email_Type_Order extends LP_Email {
 	 * Get template data object.
 	 *
 	 * @param int $order_id
-	 * @param array
+	 * @param     array
 	 *
 	 * @return array
 	 */
@@ -96,7 +97,8 @@ class LP_Email_Type_Order extends LP_Email {
 				'order_number'      => $order->get_order_number(),
 				'order_subtotal'    => $order->get_formatted_order_subtotal(),
 				'order_total'       => $order->get_formatted_order_total(),
-				'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->get_order_date() ) )
+				'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->get_order_date() ) ),
+				'order_key'         => $order->get_order_key()
 			)
 		);
 

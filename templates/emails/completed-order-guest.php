@@ -8,6 +8,8 @@
 
 <p>See your order details below:</p>
 
+<p>Order key: {{order_key}}</p>
+
 {{order_items_table}}
 
 {{footer}}
