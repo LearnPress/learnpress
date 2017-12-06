@@ -149,8 +149,9 @@ class LP_Setup_Wizard {
 		}
 
 		$postdata = LP_Request::get_array( 'settings' );
+		$steps    = array( 'payment', 'pages', 'currency', 'emails' );
 
-		if ( ( 'yes' !== LP_Request::get( 'skip' ) ) && in_array( $step, array( 'payment', 'pages', 'currency' ) ) ) {
+		if ( ( 'yes' !== LP_Request::get( 'skip' ) ) && in_array( $step, $steps ) ) {
 
 			if ( array_key_exists( 'paypal', $postdata ) ) {
 				update_option( 'learn_press_paypal', $postdata['paypal'] );
@@ -166,6 +167,20 @@ class LP_Setup_Wizard {
 				foreach ( $postdata['pages'] as $k => $v ) {
 					update_option( 'learn_press_' . $k, $v );
 				}
+			}
+
+			if ( array_key_exists( 'emails', $postdata ) ) {
+
+				if ( ! empty( $postdata['emails']['enable'] ) && ( $postdata['emails']['enable'] === 'yes' ) ) {
+
+					if ( $emails = LP_Emails::instance()->emails ) {
+						foreach ( $emails as $email ) {
+							$response[ $email->id ] = $email->enable( true );
+						}
+					}
+
+				}
+
 			}
 		}
 
@@ -201,6 +216,10 @@ class LP_Setup_Wizard {
 					'payment'  => array(
 						'title'    => __( 'Payment', 'learnpress' ),
 						'callback' => array( $this, 'step_payment' )
+					),
+					'emails'   => array(
+						'title'    => __( 'Emails', 'learnpress' ),
+						'callback' => array( $this, 'step_emails' )
 					),
 					'finish'   => array(
 						'title'    => __( 'Finish', 'learnpress' ),
@@ -321,7 +340,7 @@ class LP_Setup_Wizard {
 		return array(
 			'paypal' => array(
 				'name'     => __( 'Paypal', 'learnpress' ),
-				'desc'     => __( 'Enter your Paypal email address for accepting payment via Paypal.', 'learnpress'),
+				'desc'     => __( 'Enter your Paypal email address for accepting payment via Paypal.', 'learnpress' ),
 				'icon'     => LP()->plugin_url( '/assets/images/paypal-2.png' ),
 				'callback' => array( $this, 'setup_paypal' )
 			)
@@ -356,6 +375,10 @@ class LP_Setup_Wizard {
 
 	public function step_payment() {
 		learn_press_admin_view( 'setup/steps/payment' );
+	}
+
+	public function step_emails() {
+		learn_press_admin_view( 'setup/steps/emails' );
 	}
 
 	public function step_finish() {
