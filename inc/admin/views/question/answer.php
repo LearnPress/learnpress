@@ -73,7 +73,7 @@
                 },
                 deleteAnswer: function () {
                     this.$emit('deleteAnswer', {
-                        id: this.answer.question_answer_id,
+                        id: this.id,
                         order: this.answer.answer_order
                     });
                 }

@@ -475,9 +475,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// change question type
-					$curd->change_question_type( $question, $type );
+					$question = $curd->change_question_type( $question, $type );
 
-					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question_id );
+					$result = LP_Admin_Ajax::get_question_data_to_question_editor( $question, true );
 
 					break;
 
@@ -520,7 +520,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					if ( ! $correct ) {
 						break;
 					}
-
 
 					// update correct answer
 					$question = $curd->change_correct_answer( $question, $correct );
@@ -1081,7 +1080,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'key'   => $question->get_type(),
 					'label' => $question->get_type_label()
 				),
-				'answers' => $question->get_data( 'answer_options' )
+				'answers' => array_values( $question->get_data( 'answer_options' ) )
 			);
 
 			return $data;
