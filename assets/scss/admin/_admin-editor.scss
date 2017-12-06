@@ -699,7 +699,7 @@
                                         }
                                     }
                                 }
-                                .answer-item, .new-answer-item {
+                                .answer-option {
                                     .answer-text {
                                         input {
                                             width: 100%;
@@ -712,9 +712,6 @@
                                             padding: 0;
                                         }
                                     }
-                                }
-                                .new-answer-item {
-                                    background: #FBE9E9;
                                 }
                             }
                         }
@@ -926,7 +923,7 @@
                     position: absolute;
                     top: 100%;
                     right: 0;
-                    height: 85px;
+                    height: auto;
                     background: #fdfeff;
                     margin: 0;
                     border: 1px solid #DDD;
@@ -946,6 +943,9 @@
                             color: #0073aa;
                             margin: 0;
                         }
+                    }
+                    &:hover {
+                        display: block;
                     }
                 }
             }
@@ -1033,6 +1033,9 @@
                                     background: transparent;
                                 }
                             }
+                        }
+                        &.lp-toolbar-buttons {
+                            z-index: auto;
                         }
                     }
                 }

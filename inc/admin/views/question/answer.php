@@ -4,29 +4,35 @@
  *
  * @since 3.0.0
  */
+
+learn_press_admin_view( 'question/option' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-answer">
-    <tr class="answer-item" :data-answer-id="id">
-        <td class="sort"><i class="fa fa-bars"></i></td>
-        <td class="order">{{index +1}}</td>
-        <td class="answer-text">
-            <form @submit.prevent="">
-                <input type="text" v-model="answer.text"
-                       @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle"/>
-            </form>
-        </td>
-        <td class="answer-correct lp-answer-check">
-            <input :type="radio ? 'radio' : 'checkbox'" :checked="correct ? 'checked' : ''" :value="answer.value"
-                   :name="name"
-                   @change="changeCorrect">
-        </td>
-        <td class="actions lp-toolbar-buttons">
-            <div v-if="deletable" class="lp-toolbar-btn lp-btn-remove remove-answer">
-                <a class="lp-btn-icon dashicons dashicons-trash" @click="deleteAnswer"></a>
-            </div>
-        </td>
-    </tr>
+    <div class="lp-box-data-content">
+        <table class="list-question-answers">
+            <thead>
+            <tr>
+                <th class="sort"></th>
+                <th class="order"></th>
+                <th class="answer_text"><?php _e( 'Answer Text', 'learnpress' ); ?></th>
+                <th class="answer_correct"><?php _e( 'Is Correct?', 'learnpress' ); ?></th>
+                <th class="actions"></th>
+            </tr>
+            </thead>
+            <draggable :list="answers" :element="'tbody'" @end="sort">
+                <lp-question-answer-option v-for="(answer, index) in answers" :key="index" :index="index" :type="type"
+                                           :radio="radio" :number="number" :answer="answer"
+                                           @updateTitle="updateTitle"
+                                           @changeCorrect="changeCorrect"
+                                           @deleteAnswer="deleteAnswer"></lp-question-answer-option>
+            </draggable>
+        </table>
+        <p class="add-answer" v-if="addable">
+            <button class="button add-question-option-button" type="button"
+                    @click="newAnswer"><?php esc_html_e( 'Add option', 'learnpress' ); ?></button>
+        </p>
+    </div>
 </script>
 
 <script type="text/javascript">
@@ -34,48 +40,69 @@
 
         Vue.component('lp-question-answer', {
             template: '#tmpl-lp-question-answer',
-            props: ['answer', 'index', 'type', 'radio', 'number'],
-            data: function () {
-                return {
-                    changed: false
-                }
-            },
+            props: ['type'],
             computed: {
-                // answer id
-                id: function () {
-                    return this.answer.question_answer_id;
+                // list answers
+                answers: function () {
+                    return $store.getters['answers'];
                 },
-                // check correct answer
-                correct: function () {
-                    return this.answer.is_true === 'yes';
+                // check type radio answer type
+                radio: function () {
+                    return this.type === 'true_or_false' || this.type === 'single_choice';
                 },
-                // input correct form name
-                name: function () {
-                    return 'answer_question[' + $store.getters['id'] + ']'
+                // number answer
+                number: function () {
+                    return this.answers.length;
                 },
-                // deletable answer
-                deletable: function () {
-                    return !(this.number < 3 || (this.correct && $store.getters['numberCorrect'] === 1 ) || this.type === 'true_or_false');
+                // addable new answer
+                addable: function () {
+                    return this.type !== 'true_or_false';
+                },
+                // question status
+                status: function () {
+                    return $store.getters['status'];
+                },
+                // get draft status
+                draft: function () {
+                    return $store.getters['autoDraft'];
                 }
             },
             methods: {
-                changeTitle: function () {
-                    this.changed = true;
-                },
-                updateTitle: function () {
-                    if (this.changed) {
-                        this.$emit('updateTitle', this.answer);
+                // sort answer options
+                sort: function () {
+                    if (!this.draft) {
+                        // sort answer
+                        var order = [];
+                        this.answers.forEach(function (answer) {
+                            order.push(parseInt(answer.question_answer_id));
+                        });
+                        $store.dispatch('updateAnswersOrder', order);
                     }
                 },
-                changeCorrect: function (e) {
-                    this.answer.is_true = (e.target.checked) ? 'yes' : '';
-                    this.$emit('changeCorrect', this.answer);
+                // change answer title
+                updateTitle: function (answer) {
+                    if (!this.draft) {
+                        // update title
+                        $store.dispatch('updateAnswerTitle', answer);
+                    }
                 },
-                deleteAnswer: function () {
-                    this.$emit('deleteAnswer', {
-                        id: this.id,
-                        order: this.answer.answer_order
-                    });
+                // change correct answer
+                changeCorrect: function (correct) {
+                    if (!this.draft) {
+//                    // update correct
+                        $store.dispatch('updateCorrectAnswer', correct);
+                    }
+                },
+                // delete answer
+                deleteAnswer: function (answer) {
+                    $store.dispatch('deleteAnswer', answer);
+                },
+                // new answer option
+                newAnswer: function () {
+                    // new answer
+                    if (this.status === 'successful') {
+                        $store.dispatch('newAnswer');
+                    }
                 }
             }
         })

@@ -537,7 +537,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 		/**
 		 *
-		 * @param mixed       $answers
+		 * @param mixed $answers
 		 * @param LP_Question $q
 		 *
 		 * @return array|bool
@@ -713,9 +713,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 *          - $obj->a->b
 		 *          - or $obj->a['b']
 		 *
-		 * @param   null $key     string  Single or multiple level such as a.b.c
+		 * @param   null $key string  Single or multiple level such as a.b.c
 		 * @param   null $default mixed   Return a default value if the key does not exists or is empty
-		 * @param   null $func    string  The function to apply the result before return
+		 * @param   null $func string  The function to apply the result before return
 		 *
 		 * @return  mixed|null
 		 */
@@ -776,7 +776,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Find value in answer's option and compare with value answered by user.
 		 *
 		 * @param LP_Question_Answer_Option $answer
-		 * @param mixed                     $answered
+		 * @param mixed $answered
 		 *
 		 * @return bool
 		 */
@@ -886,7 +886,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get question.
 		 *
-		 * @param bool  $the_question
+		 * @param bool $the_question
 		 * @param array $args
 		 *
 		 * @return LP_Question|bool
@@ -932,7 +932,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Get the question class name.
 		 *
 		 * @param  WP_Post $the_question
-		 * @param  array   $args (default: array())
+		 * @param  array $args (default: array())
 		 *
 		 * @return string
 		 */

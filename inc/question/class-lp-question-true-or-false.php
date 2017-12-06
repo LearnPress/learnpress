@@ -27,10 +27,12 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 		protected $_question_type = 'true_or_false';
 
 		/**
-		 * Constructor
+		 * LP_Question_True_Or_False constructor.
 		 *
 		 * @param null $the_question
 		 * @param null $args
+		 *
+		 * @throws Exception
 		 */
 		public function __construct( $the_question = null, $args = null ) {
 			parent::__construct( $the_question, $args );

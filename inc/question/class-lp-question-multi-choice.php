@@ -31,6 +31,8 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 		 *
 		 * @param null $the_question
 		 * @param null $options
+		 *
+		 * @throws Exception
 		 */
 		public function __construct( $the_question = null, $options = null ) {
 			parent::__construct( $the_question, $options );
@@ -72,16 +74,6 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 					elseif ( ! $selected && $option['is_true'] === 'yes' ) {
 						$correct = false;
 					}
-
-
-//					echo "correct = ";
-//					print_r( $correct );
-//					echo ", ", $this->is_selected_option( $option, $user_answer );
-//					echo "option = ";
-//					print_r( $option );
-//					echo "answer = ";
-//					print_r( $user_answer );
-//					echo "xxxxxxx\n\n";
 
 					// Only one option is selected wrong
 					if ( ! $correct ) {
