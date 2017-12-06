@@ -24,28 +24,15 @@ if (typeof window.LP == 'undefined') {
 					type    : 'post',
 					success : function ( response ) {
 						response = LP.parseJSON( response );
-						var current_url = window.location.href;
-						var d = new Date();
-						var rc = d.getTime();
 						if ( response.result == 'fail' ) {
 							if ( LP.Hook.applyFilters( 'learn_press_user_enroll_course_failed', course_id ) !== false ) {
 								if ( response.redirect ) {
-									if ( response.redirect.indexOf('?') > -1 ) {
-										response.redirect += '&rc='+rc;
-									}else{
-										response.redirect += '?rc='+rc;
-									}
 									LP.reload( response.redirect );
 								}
 							}
 						} else {
 							if ( LP.Hook.applyFilters( 'learn_press_user_enrolled_course', course_id ) !== false ) {
 								if ( response.redirect ) {
-									if ( response.redirect.indexOf('?') > -1 ) {
-										response.redirect += '&rc='+rc;
-									}else{
-										response.redirect += '?rc='+rc;
-									}
 									LP.reload( response.redirect );
 								}
 							}
