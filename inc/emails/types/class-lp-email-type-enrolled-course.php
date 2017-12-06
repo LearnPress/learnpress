@@ -56,11 +56,14 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	 */
 	public function get_object( $object_id = '', $more = '' ) {
 
-		$user        = learn_press_get_user( $this->user_id );
-		$course      = learn_press_get_course( $this->course_id );
-		$course_data = $user->get_course_data( $this->course_id );
+		$user   = learn_press_get_user( $this->user_id );
+		$course = learn_press_get_course( $this->course_id );
 
-		if ( ! $user || ! $course_data ) {
+		if ( ! $user ) {
+			return;
+		}
+
+		if ( $course_data = $user->get_course_data( $this->course_id ) ) {
 			return;
 		}
 
