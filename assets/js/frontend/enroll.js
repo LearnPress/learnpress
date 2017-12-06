@@ -30,14 +30,10 @@ if (typeof window.LP == 'undefined') {
 						if ( response.result == 'fail' ) {
 							if ( LP.Hook.applyFilters( 'learn_press_user_enroll_course_failed', course_id ) !== false ) {
 								if ( response.redirect ) {
-									if( response.redirect == current_url ) {
-										if ( current_url.indexOf('?') > -1 ) {
-											current_url += '&rc='+rc;
-										}else{
-											current_url += '?rc='+rc;
-										}
-										window.location.href = current_url;
-										return;
+									if ( response.redirect.indexOf('?') > -1 ) {
+										response.redirect += '&rc='+rc;
+									}else{
+										response.redirect += '?rc='+rc;
 									}
 									LP.reload( response.redirect );
 								}
@@ -45,14 +41,10 @@ if (typeof window.LP == 'undefined') {
 						} else {
 							if ( LP.Hook.applyFilters( 'learn_press_user_enrolled_course', course_id ) !== false ) {
 								if ( response.redirect ) {
-									if( response.redirect == current_url ) {
-										if (current_url.indexOf('?') > -1){
-											current_url += '&rc='+rc;
-										}else{
-											current_url += '?rc='+rc;
-										}
-										window.location.href = current_url;
-										return;
+									if ( response.redirect.indexOf('?') > -1 ) {
+										response.redirect += '&rc='+rc;
+									}else{
+										response.redirect += '?rc='+rc;
 									}
 									LP.reload( response.redirect );
 								}
