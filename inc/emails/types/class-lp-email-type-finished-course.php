@@ -93,6 +93,10 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 	 * @param int $user_item_id
 	 */
 	public function trigger( $course_id, $user_id, $user_item_id ) {
+		if ( ! $this->enable ) {
+			return;
+		}
+
 		$this->course_id    = $course_id;
 		$this->user_id      = $user_id;
 		$this->user_item_id = $user_item_id;

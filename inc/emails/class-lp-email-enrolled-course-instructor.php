@@ -39,45 +39,43 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Instructor' ) ) {
 		 * @param int $course_id
 		 * @param int $user_id
 		 * @param int $user_item_id
+		 *
+		 * @return bool|string
 		 */
 		public function trigger( $course_id, $user_id, $user_item_id ) {
 
 			parent::trigger( $course_id, $user_id, $user_item_id );
 
 			if ( ! $instructor = $this->get_instructor() ) {
-				return;
+				return false;
 			}
 
-			$user  = learn_press_get_user( $instructor->get_id() );
-			$roles = $user->get_data( 'roles' );
+			$roles = $instructor->get_data( 'roles' );
 
 			if ( ! $roles ) {
-				return;
+				return false;
 			}
 
 			// if instructor is admin
 			if ( in_array( 'administrator', $roles ) ) {
 				// disable when turn on send admin mail option
 				if ( ! learn_press_is_negative_value( LP()->settings()->get( 'emails_enrolled-course-admin' )['enable'] ) ) {
-					return;
+					return false;
 				}
 			}
 
-			$this->recipient     = $user->get_data( 'email' );
-			$this->instructor_id = $user_id;
+			$this->recipient = $instructor->get_data( 'email' );
 
 			$this->get_object();
 			$this->get_variable();
 
 			if ( $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() ) ) {
-				$return[] = $this->get_recipient();
+				$return = $this->get_recipient();
+
+				return $return;
 			}
 
-			$this->recipient = $instructor->get_email();
-
-			$this->get_object();
-
-			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+			return false;
 		}
 	}
 }

@@ -39,24 +39,35 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 		 * @param int $course_id
 		 * @param int $user_id
 		 * @param int $user_item_id
+		 *
+		 * @return bool|mixed
 		 */
 		public function trigger( $course_id, $user_id, $user_item_id ) {
 
 			parent::trigger( $course_id, $user_id, $user_item_id );
 
-			if ( ! $this->enable ) {
-				return;
-			}
-
 			if ( ! $instructor = $this->get_instructor() ) {
-				return;
+				return false;
 			}
 
-			$this->recipient = $instructor->get_email();
+			$roles = $instructor->get_data( 'roles' );
+
+			if ( ! $roles ) {
+				return false;
+			}
+
+			$this->recipient = $instructor->get_data( 'email' );
 
 			$this->get_object();
+			$this->get_variable();
 
-			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+			if ( $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() ) ) {
+				$return = $this->get_recipient();
+
+				return $return;
+			}
+
+			return false;
 		}
 	}
 }
