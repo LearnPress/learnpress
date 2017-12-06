@@ -48,6 +48,26 @@
             }
         });
 
+        function toggleEmails(e) {
+            e.preventDefault();
+            var $button = $(this),
+                status = $button.data('status');
+
+            $.ajax({
+                url: '',
+                data: {
+                    'lp-ajax': 'update_email_status',
+                    status: status
+                },
+                success: function (response) {
+                    response = LP.parseJSON(response);
+                    for (var i in response) {
+                        $('#email-' + i + ' .status').toggleClass('enabled', response[i]);
+                    }
+                }
+            });
+        }
+
         $(document).on('click', '.change-email-status', function () {
             (function () {
                 $.post({
@@ -60,11 +80,14 @@
                     dataType: 'text',
                     success: $.proxy(function (res) {
                         res = LP.parseJSON(res);
-                        $(this).parent().toggleClass('enabled', res.status)
+                        for (var i in res) {
+                            $('#email-' + i + ' .status').toggleClass('enabled', res[i]);
+                        }
                     }, this)
                 });
             }).apply(this)
-        });
+        }).on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails);
+
 
         $('.learn-press-tooltip').each(function () {
             var $el = $(this),
@@ -85,6 +108,7 @@
             $(window).trigger('resize.calculate-tab');
         });
     });
+
 
     $(document).on('click', '.wp-list-table .lp-duplicate-row-action', function (e) {
         e.preventDefault();
@@ -108,7 +132,7 @@
         });
 
         return false;
-    });
+    })
 
     var LP_Admin = window.LP_Admin = {
         init: function () {

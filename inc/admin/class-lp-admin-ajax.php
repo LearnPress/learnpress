@@ -1149,14 +1149,26 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function update_email_status() {
-			$email = LP_Emails::get_email( LP_Request::get_string( 'id' ) );
-			if ( ! $email ) {
-				return;
+
+			$email_id = LP_Request::get_string( 'id' );
+			$status   = LP_Request::get_string( 'status' );
+			$response = array();
+
+			if ( $email_id ) {
+
+				$email = LP_Emails::get_email( LP_Request::get_string( 'id' ) );
+				if ( ! $email ) {
+					return;
+				}
+
+				$response[ $email->id ] = $email->enable( $status == 'yes' );
+			} else {
+				$emails = LP_Emails::instance()->emails;
+				foreach ( $emails as $email ) {
+					$response[ $email->id ] = $email->enable( $status == 'yes' ) ;
+				}
 			}
-
-			$status = $email->enable( LP_Request::get_string( 'status' ) == 'yes' );
-
-			learn_press_send_json( array( 'status' => $status ) );
+			learn_press_send_json( $response );
 		}
 
 		/**
@@ -1357,7 +1369,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

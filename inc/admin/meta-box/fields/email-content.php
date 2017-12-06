@@ -145,12 +145,12 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 									<?php endforeach; ?>
                                 </ol>
                                 <p class="description">
-                                    <?php esc_html_e( 'Click on variables to add it into email content.', 'learnpress' ); ?>
+									<?php esc_html_e( 'Click on variables to add it into email content.', 'learnpress' ); ?>
                                 </p>
 							<?php endif; ?>
-<!--                            <p class="description">-->
-<!--								--><?php //printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
-<!--                            </p>-->
+                            <!--                            <p class="description">-->
+                            <!--								--><?php //printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
+                            <!--                            </p>-->
 						<?php endif; ?>
                     </div>
 					<?php
@@ -160,6 +160,30 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 			<?php
 
 			return ob_get_clean();
+		}
+
+		/**
+		 * Get content of an email.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $format
+		 * @param array  $meta
+		 * @param array  $field
+		 *
+		 * @return bool|string
+		 */
+		public static function get_email_content( $format, $meta = array(), $field = array() ) {
+
+			if ( $meta && isset( $meta[ $format ] ) ) {
+				$content = stripslashes( $meta[ $format ] );
+			} else {
+				$template      = ! empty( $field["template_{$format}"] ) ? $field["template_{$format}"] : null;
+				$template_file = $field['template_base'] . $template;
+				$content       = @file_get_contents( $template_file );
+			}
+
+			return $content;
 		}
 	}
 }

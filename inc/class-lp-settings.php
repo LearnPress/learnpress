@@ -192,7 +192,6 @@ class LP_Settings {
 		if ( func_num_args() == 1 ) {
 			$value = $this->get( $key );
 		}
-		learn_press_debug( $this->_prefix . $key, $value );
 		update_option( $this->_prefix . $key, $value );
 	}
 

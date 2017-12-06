@@ -43,24 +43,35 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
 					} else {
 						$url = esc_url( add_query_arg( array( 'section' => $email->id ), admin_url( 'admin.php?page=learn-press-settings&tab=emails' ) ) );
 					} ?>
-                    <tr>
+                    <tr id="email-<?php echo $email->id; ?>">
                         <td class="name">
-                            <a href="<?php echo $url; ?>"><?php echo join( ' &rarr; ', array( $group, $email->title ) ); ?></a>
+                            <a href="<?php echo $url; ?>"><?php echo join( ' &rarr; ', array(
+									$group,
+									$email->title
+								) ); ?></a>
                         </td>
                         <td class="description"><?php echo $email->description; ?></td>
-                        <td class="status<?php echo $email->enable ? ' enabled' : ( $email->is_configured() ? '' : ' config' ); ?>">
-							<?php if ( $email->is_configured() ) { ?>
-                                <span class="change-email-status dashicons dashicons-yes"
-                                      data-status="<?php echo $email->enable ? 'on' : 'off'; ?>"
-                                      data-id="<?php echo $email->id; ?>"></span>
-							<?php } else { ?>
-                                <a href="<?php echo $url; ?>"><?php _e( 'Settings', 'learnpress' ); ?></a>
-							<?php } ?>
+                        <td class="status<?php echo $email->enable ? ' enabled' : ''; ?>">
+                            <span class="change-email-status dashicons dashicons-yes"
+                                  data-status="<?php echo $email->enable ? 'on' : 'off'; ?>"
+                                  data-id="<?php echo $email->id; ?>"></span>
+
+
+                            <a href="<?php echo $url; ?>"><?php _e( 'Settings', 'learnpress' ); ?></a>
                         </td>
                     </tr>
 				<?php } ?>
                 </tbody>
             </table>
+            <p class="email-actions">
+                <?php _e('You can enable/disable each email by clicking on the status icon or apply for all emails by clicking these buttons', 'learnpress');?>
+                <button class="button"
+                        id="learn-press-enable-emails"
+                        data-status="yes"><?php _e( 'Enable all', 'learnpress' ); ?></button>
+                <button class="button"
+                        id="learn-press-disable-emails"
+                        data-status="no"><?php _e( 'Disable all', 'learnpress' ); ?></button>
+            </p>
 			<?php
 			return ob_get_clean();
 		}

@@ -356,6 +356,6 @@ abstract class LP_Abstract_Assets {
 	}
 
 	public static function add_script_tag() {
-
+	
 	}
 }

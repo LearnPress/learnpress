@@ -2,7 +2,7 @@
 /**
  * Base class of LearnPress shortcodes and helper functions.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Widgets
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
@@ -354,6 +354,34 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		public function enable( $value = null ) {
 			if ( is_bool( $value ) ) {
 				$this->enable = $value;
+
+				// Load default settings if the email is not configured
+				if ( ! $this->is_configured() ) {
+					$settings = $this->get_settings();
+
+					foreach ( $settings as $field ) {
+						if ( $field['type'] == 'heading' ) {
+							continue;
+						}
+
+						$id = str_replace( $this->_option_id, '', $field['id'] );
+						$id = str_replace( array( '[', ']' ), '', $id );
+
+						if ( $id == 'email_content' ) {
+							$this->settings->set(
+								'email_content',
+								array(
+									'format' => 'html',
+									'plain'  => RWMB_Email_Content_Field::get_email_content( 'plain', '', $field ),
+									'html'   => RWMB_Email_Content_Field::get_email_content( 'html', '', $field )
+								)
+							);
+						} else {
+							$this->settings->set( $id, $field['default'] );
+						}
+					}
+
+				}
 				$this->settings->set( 'enable', $value ? 'yes' : 'no' );
 				$this->settings->update( 'learn_press_' . $this->_option_id, $this->settings->get() );
 			}
@@ -378,7 +406,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		}
 
 		/**
-		 * @param null $object_id
+		 * @param null  $object_id
 		 * @param array $more
 		 *
 		 * @return array|object
@@ -717,7 +745,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					$emogrifier = new Emogrifier( $content, $css );
 					$content    = $emogrifier->emogrify();
 
-				} catch ( Exception $e ) {
+				}
+				catch ( Exception $e ) {
 
 				}
 			}
@@ -775,8 +804,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @param string $to
 		 * @param string $subject
 		 * @param string $message
-		 * @param array $headers
-		 * @param array $attachments
+		 * @param array  $headers
+		 * @param array  $attachments
 		 *
 		 * @return bool
 		 */

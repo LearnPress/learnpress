@@ -1,7 +1,7 @@
 ;(function ($) {
 	var $doc = $(document),
 		oldData = false;
-return 'wtf?';
+return '';
 
 	function addPageToAllDropdowns(args) {
 		var position = $.inArray(args.ID + "", args.positions);

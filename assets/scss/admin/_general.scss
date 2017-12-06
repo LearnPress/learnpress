@@ -200,6 +200,12 @@
             border-radius: 50%;
             color: #FFF;
         }
+        a{
+            display: block;
+            font-size: 12px;
+            text-decoration: none;
+            margin-top: 5px;
+        }
         &.enabled {
             .dashicons {
                 background: #0085ba;
@@ -207,8 +213,6 @@
         }
         &.config {
             a {
-                text-decoration: none;
-                font-size: 12px;
             }
         }
     }
@@ -248,6 +252,9 @@
                 padding: 0;
             }
         }
+    }
+    ~ .email-actions{
+        text-align: right;
     }
     &.sortable {
         .order:hover {
