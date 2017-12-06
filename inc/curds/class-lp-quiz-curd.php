@@ -37,12 +37,11 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * @throws Exception
 		 */
 		public function load( &$quiz ) {
-
 			// quiz id
 			$id = $quiz->get_id();
 
 			if ( ! $id || get_post_type( $id ) !== LP_QUIZ_CPT ) {
-				throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
+				throw new Exception( sprintf( __( 'Invalid quiz with ID "%d".', 'learnpress' ), $id ) );
 			}
 
 			$quiz->set_data_via_methods(
@@ -376,7 +375,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * Reorder question by indexed number.
 		 *
 		 * @param LP_Quiz|WP_Post|int $the_quiz
-		 * @param mixed               $questions
+		 * @param mixed $questions
 		 *
 		 * @return mixed
 		 */
@@ -446,7 +445,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @param LP_Quiz|int $the_quiz
 		 * @param             $question_id
-		 * @param array       $args
+		 * @param array $args
 		 *
 		 * @return mixed false on failed
 		 */
@@ -506,7 +505,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Check if a question (or batch of questions) is already added to quiz.
 		 *
-		 * @param int       $the_id
+		 * @param int $the_id
 		 * @param int|array $ids
 		 *
 		 * @return array|bool|null|object

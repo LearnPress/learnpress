@@ -76,7 +76,7 @@
         },
 
         'UPDATE_AUTO_DRAFT_STATUS': function (state, status) {
-            state.autoDraft = status;
+            state.auto_draft = status;
         },
 
         'CHANGE_QUESTION_TYPE': function (state, question) {
@@ -113,6 +113,7 @@
                 var result = response.body;
 
                 if (result.success) {
+                    context.commit('UPDATE_AUTO_DRAFT_STATUS', false);
                     context.commit('CHANGE_QUESTION_TYPE', result.data);
                 }
             })

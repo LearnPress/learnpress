@@ -79,15 +79,6 @@ learn_press_admin_view( 'question/answer' );
                 }
             },
             methods: {
-                // draft new question
-                draftQuestion: function () {
-                    if (this.draft) {
-                        $store.dispatch('draftQuestion', {
-                            title: $('input[name=post_title]').val(),
-                            content: $('textarea[name=content]').val()
-                        });
-                    }
-                },
                 changeType: function (type) {
                     // create draft quiz if auto draft
                     $store.dispatch('changeQuestionType', {

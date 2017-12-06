@@ -128,7 +128,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 			$id = $lesson->get_id();
 
 			if ( ! $id || get_post_type( $id ) !== LP_LESSON_CPT ) {
-				throw new Exception( __( 'Invalid lesson.', 'learnpress' ) );
+				throw new Exception( sprintf( __( 'Invalid lesson with ID "%d".', 'learnpress' ), $id ) );
 			}
 
 			$lesson->set_data(

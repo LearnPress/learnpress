@@ -83,27 +83,32 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$question = LP_Question::get_question( $question_id, array( 'type' => $args['type'] ) );
 				$question->set_type( $args['type'] );
 
-				$answers = $question->get_default_answers();
 
-				// insert answers data in new question
-				foreach ( $answers as $index => $answer ) {
-					$insert = array(
-						'question_id'  => $question_id,
-						'answer_data'  => serialize( array(
-								'text'    => stripslashes( $answer['text'] ),
-								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-								'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
-							)
-						),
-						'answer_order' => $index + 1
-					);
-					$this->add_answer( $args['type'], $insert );
-				}
+				global $pagenow;
 
-				// add question to quiz
-				if ( ! empty( $args['quiz_id'] ) ) {
-					$quiz_curd = new LP_Quiz_CURD();
-					$quiz_curd->add_question( $args['quiz_id'], $question_id, $args['order'] );
+				if ( $pagenow != 'post-new.php' ) {
+					$answers = $question->get_default_answers();
+
+					// insert answers data in new question
+					foreach ( $answers as $index => $answer ) {
+						$insert = array(
+							'question_id'  => $question_id,
+							'answer_data'  => serialize( array(
+									'text'    => stripslashes( $answer['text'] ),
+									'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+									'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
+								)
+							),
+							'answer_order' => $index + 1
+						);
+						$this->add_answer( $args['type'], $insert );
+					}
+
+					// add question to quiz
+					if ( ! empty( $args['quiz_id'] ) ) {
+						$quiz_curd = new LP_Quiz_CURD();
+						$quiz_curd->add_question( $args['quiz_id'], $question_id, $args['order'] );
+					}
 				}
 
 				return $question;
@@ -215,18 +220,21 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * @param LP_Question $question
 		 *
-		 * @return mixed
+		 * @return bool
+		 * @throws Exception
 		 */
 		public function load( &$question ) {
-			$the_id = $question->get_id();
+			// question id
+			$id = $question->get_id();
 
-			if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
-				LP_Debug::throw_exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $the_id ) );
+			if ( ! $id || ! in_array( get_post_type( $id ), array( 'revision', LP_QUESTION_CPT ) ) ) {
+				throw new Exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $id ) );
 			}
+
 			$question->set_data_via_methods(
 				array(
-					'explanation' => get_post_meta( $the_id, '_lp_explanation', true ),
-					'hint'        => get_post_meta( $the_id, '_lp_hint', true )
+					'explanation' => get_post_meta( $id, '_lp_explanation', true ),
+					'hint'        => get_post_meta( $id, '_lp_hint', true )
 				)
 			);
 			$this->_load_answer_options( $question );
@@ -236,11 +244,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		}
 
 		/**
-		 * Load question meta data.
-		 *
-		 * @param LP_Question $question
+		 * @param $question | LP_Question
 		 */
-		protected function _load_meta( $question ) {
+		protected function _load_meta( &$question ) {
 			$type = get_post_meta( $question->get_id(), '_lp_type', true );
 			if ( ! learn_press_is_support_question_type( $type ) ) {
 				$type = 'true_or_false';
@@ -581,12 +587,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				array(
 					'question_id'  => $question_id,
 					'answer_data'  => serialize( $new_answer ),
-					'answer_order' => $number + 1
+					'answer_order' => $number + 1,
 				),
 				array( '%d', '%s', '%d' ) );
 
 			if ( $insert ) {
-				$new_answer['answer_order'] = $number + 1;
+				$new_answer['question_answer_id'] = $wpdb->insert_id;
+				$new_answer['question_id']        = $question_id;
+				$new_answer['answer_order']       = $number + 1;
 				$question->set_data( 'answer_options', array_merge( $answers, array( $new_answer ) ) );
 			}
 
@@ -871,7 +879,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 						$question_answers[ $qid ][ $v->question_answer_id ] = (array) $v;
 					}
 				}
-				LP_Hard_Cache::set($cache_key, $question_answers, 'lp-questions');
+				LP_Hard_Cache::set( $cache_key, $question_answers, 'lp-questions' );
 			}
 
 			if ( $question_answers ) {
