@@ -6,6 +6,10 @@
     border: 1px solid #ddd;
     margin: 20px 0;
     position: relative;
+    .heading,
+    .lp-box-data-content {
+        padding: 0;
+    }
 }
 
 /**
@@ -20,6 +24,7 @@
 
             h4 {
                 margin: 0;
+                font-size: 18px;
             }
 
             .collapse-sections {
@@ -34,7 +39,7 @@
                 align-items: center;
                 cursor: pointer;
                 width: 40px;
-
+                color: #999;
                 &.close:before {
                     content: '\f140';
                 }
@@ -68,24 +73,22 @@
             margin: 0;
             padding: 10px;
             border-top: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
         }
 
         .section {
             border: 1px solid #e5e5e5;
             margin-bottom: 10px;
             opacity: 1;
-
+            background: #FFF;
             &.new-section {
-                box-shadow: 0 0 30px #ddd;
-
+                //box-shadow: 0 0 30px #ddd;
+                margin-bottom: 0;
                 form {
                     margin: 0;
                 }
 
                 .section-head {
-                    background-color: #fff;
-
+                    background-color: #f4fcff;
                     .creatable {
                         position: relative;
                         top: 1px;
@@ -137,13 +140,17 @@
                 background-color: #f9f9f9;
                 padding: 3px;
                 position: relative;
-                border-bottom: 1px solid #e5e5e5;
                 transition: background 500ms ease-out;
 
                 .movable, .creatable {
                     display: inline-block;
                     font-family: Dashicons;
-                    padding: 5px 10px;
+                    font-size: 20px;
+                    vertical-align: middle;
+                    width: 30px;
+                    text-align: center;
+                    margin-top: -4px;
+                    color: #999;
                 }
 
                 .movable {
@@ -151,6 +158,9 @@
 
                     &:before {
                         content: "\f333";
+                    }
+                    &:hover {
+                        color: #0085ba;
                     }
                 }
 
@@ -179,6 +189,7 @@
                             font-size: 30px;
                             font-family: Dashicons;
                             line-height: 42px;
+                            color: #999;
                         }
 
                         &.open {
@@ -215,6 +226,7 @@
 
             .section-content {
                 padding: 20px 20px 0;
+                border-top: 1px solid #e5e5e5;
             }
 
             .details {
@@ -226,6 +238,7 @@
                 border: none;
                 line-height: 30px;
                 width: calc(100% - 80px);
+                padding-left: 0;
             }
 
             .description-input {
@@ -296,6 +309,7 @@
                     flex-shrink: 0;
                     visibility: hidden;
                     fill: #d5dce0;
+                    padding-top: 3px;
                     &:hover {
                         fill: #0085ba;
                     }
@@ -426,8 +440,10 @@
                             cursor: pointer;
                             display: inline-block;
                             margin: 0;
-                            a {
-                                margin-top: 5px;
+                            > a {
+                                width: 30px;
+                                height: 30px;
+                                line-height: 30px;
                                 color: #999;
                                 &:hover {
                                     color: #0073aa;
@@ -437,7 +453,7 @@
                                 ul {
                                     position: absolute;
                                     top: 100%;
-                                    width: 130px;
+                                    width: 200px;
                                     padding: 2px 0;
                                     right: 0;
                                     background: #fdfeff;
@@ -445,9 +461,10 @@
                                     border: 1px solid #DDD;
                                     z-index: 9;
                                     display: none;
+                                    text-align: right;
                                     li {
                                         margin: 0;
-                                        padding: 10px 5px;
+                                        padding: 8px;
                                         a {
                                             color: #0073aa;
                                             text-decoration: none;
@@ -505,7 +522,7 @@
                     font-size: 14px;
                     border: none;
                     width: 100%;
-                    padding: 8px 10px;
+                    padding: 8px 10px 8px 0;
                 }
             }
         }
@@ -577,12 +594,12 @@
             align-items: center;
             cursor: pointer;
             width: 40px;
-            height: 65px;
+            height: 55px;
+            color: #999;
         }
     }
 
     .lp-box-data-content {
-        padding: 15px 0;
         .lp-list-questions {
             color: #777;
             border-collapse: collapse;
@@ -594,7 +611,7 @@
 
                 & > * {
                     width: 100%;
-                    padding: 12px 10px
+                    padding: 9px 10px
                 }
 
                 & > .sort {
@@ -603,9 +620,14 @@
                     cursor: url("../../images/openhand.cur") 7 5, default;
                     visibility: hidden;
                     padding-right: 0;
+                    position: relative;
                     svg {
                         width: 18px;
                         height: 20px;
+                        position: absolute;
+                        top: 50%;
+                        margin-top: -10px;
+                        left: 4px;
                     }
                     &:hover {
                         fill: #0085ba;
@@ -722,6 +744,7 @@
             .main {
                 .question-item {
                     background: #fff;
+                    border-bottom: 1px solid #f1f1f1;
                     &:nth-child(2n+1) {
                         background: #f4fcff;
                     }
@@ -826,16 +849,19 @@
                     text-align: left;
                     .add-new-question {
                         padding-left: 65px;
+                        margin-top: -1px;
+                        border-top:1px solid #DDD;
                         .title {
                             position: relative;
                             display: inline-block;
-                            min-width: 300px;
+                            min-width: 500px;
                             input {
                                 border: 1px solid #DDD;
                                 width: 100%;
                                 margin: 0;
-                                padding: 5px 10px;
+                                padding: 6px 6px;
                                 @include box-shadow(none);
+                                @include border-radius(3px);
                                 &:focus {
                                     border-color: #DDD;
                                 }

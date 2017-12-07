@@ -589,8 +589,11 @@ class LP_Install_Sample_Data {
 			);
 		}
 
+		// Set option is TRUE randomize
 		if ( $type !== 'multi_choice' ) {
-			$answers[ rand( 0, sizeof( $answers ) - 1 ) ]['is_true'] = 'yes';
+			$at                        = rand( 0, sizeof( $answers ) - 1 );
+			$answers[ $at ]['is_true'] = 'yes';
+			$answers[ $at ]['text']    .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
 		} else {
 			foreach ( $answers as $k => $v ) {
 				$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';

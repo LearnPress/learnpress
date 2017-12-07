@@ -12,7 +12,7 @@ learn_press_admin_view( 'course/new-section' );
 <script type="text/x-template" id="tmpl-lp-list-sections">
 
     <div class="curriculum-sections">
-        <draggable :list="sections" :options="{handle: '.movable'}" @end="sort">
+        <draggable :list="sections" :options="{handle: '.movable'}" :move="onSort" @end="sort">
             <lp-section v-for="(section, index) in sections"
                         :section="section" :index="index" :key="index"></lp-section>
         </draggable>
@@ -45,6 +45,9 @@ learn_press_admin_view( 'course/new-section' );
                     });
 
                     $store.dispatch('ss/updateSectionsOrder', order);
+                },
+                onSort: function (e) {
+                    console.log(e);
                 }
             }
         });
