@@ -104,6 +104,8 @@ class LP_Setup_Wizard {
 
 		if ( 'finish' === LP_Request::get_string( 'step' ) ) {
 			delete_option( 'learn_press_install' );
+
+			LP_Install::create_options();
 		}
 
 		$this->save();

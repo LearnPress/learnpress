@@ -13,3 +13,9 @@
 @import "order";
 @import "settings";
 @import "admin-editor";
+
+.button {
+    &.disabled {
+        pointer-events: none;
+    }
+}

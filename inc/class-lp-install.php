@@ -73,7 +73,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
-				learn_press_add_notice( 'asdasdasdasd' );
 				wp_redirect( urldecode( $_REQUEST['redirect'] ) );
 			}
 		}
@@ -118,7 +117,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * Run installation after LearnPress is activated.
 		 */
 		public static function install() {
-			self::_create_options();
+			self::create_options();
 			self::_create_tables();
 			self::_create_cron_jobs();
 			self::_delete_transients();
@@ -153,8 +152,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		/**
 		 * Update default options for LP
 		 */
-		private static function _create_options() {
-			return;
+		public static function create_options() {
 			include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-base.php';
 			$settings_classes = array(
 				'LP_Settings_General'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-general.php',
@@ -187,6 +185,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 							$option_name = 'learn_press_' . $option['id'];
 						} else {
 							$option_name = $option['id'];
+						}
+
+						if ( false !== get_option( $option_name ) ) {
+							continue;
 						}
 
 						$value = $option['default'];
@@ -450,7 +452,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				self::install();
 			}
 			if ( ! get_option( 'learnpress_version' ) || ! get_option( 'learn_press_currency' ) ) {
-				self::_create_options();
+				self::create_options();
 			}
 			$ask = get_transient( 'learn_press_upgrade_courses_ask_again' );
 			if ( self::_need_to_update() ) {

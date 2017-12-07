@@ -36,7 +36,6 @@ class LP_Request {
 		if ( is_admin() ) {
 			add_action( 'init', array( __CLASS__, 'process_request' ), 50 );
 		} else {
-			//add_action( 'wp', array( __CLASS__, 'process_request' ), 50 );
 			add_action( 'template_include', array( __CLASS__, 'process_request' ), 50 );
 		}
 
@@ -433,8 +432,6 @@ class LP_Request {
 			}
 		}
 
-		$has_action = false;
-
 		if ( is_user_logged_in() ) {
 			/**
 			 * @deprecated
@@ -699,6 +696,30 @@ class LP_Request {
 		}
 
 		return $list;
+	}
+
+	/**
+	 * Parse string from request to array by comma.
+	 *
+	 * @param string $var
+	 * @param string $separator
+	 *
+	 * @return array
+	 */
+	public static function get_list_array( $var, $separator = ',' ) {
+		$list = self::get_string( $var );
+
+		if ( ! $list ) {
+			return array();
+		}
+
+		if ( $separator === ',' ) {
+			$list = preg_split( '!\s?,\s?!', $list );
+		} else {
+			$list = explode( $separator, $list );
+		}
+
+		return array_map( 'trim', $list );
 	}
 
 	/**

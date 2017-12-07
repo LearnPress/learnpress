@@ -2539,14 +2539,37 @@ function learn_press_timezone_offset() {
  *
  * @since 3.0.0
  */
-function learn_press_static_pages() {
-	return apply_filters(
-		'learn-press/static-pages',
-		array(
+function learn_press_static_page_ids() {
+
+	if ( false === ( $pages = wp_cache_get( 'static-page-ids', 'learnpress' ) ) ) {
+		$pages = array(
 			'checkout'         => learn_press_get_page_id( 'checkout' ),
 			'courses'          => learn_press_get_page_id( 'courses' ),
 			'profile'          => learn_press_get_page_id( 'profile' ),
 			'become_a_teacher' => learn_press_get_page_id( 'become_a_teacher' )
+		);
+
+		wp_cache_set( 'static-page-ids', $pages, 'learnpress' );
+	}
+
+	return apply_filters( 'learn-press/static-page-ids', $pages );
+}
+
+/**
+ * Get default static pages of LP.
+ *
+ * @return array
+ *
+ * @since 3.0.0
+ */
+function learn_press_static_pages() {
+	return apply_filters(
+		'learn-press/static-pages',
+		array(
+			'checkout'         => _x( 'Checkout', 'static-page-name', 'learnpress' ),
+			'courses'          => _x( 'Courses', 'static-page-name', 'learnpress' ),
+			'profile'          => _x( 'Profile', 'static-page-name', 'learnpress' ),
+			'become_a_teacher' => _x( 'Become a Teacher', 'static-page-name', 'learnpress' )
 		)
 	);
 }

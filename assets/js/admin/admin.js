@@ -68,6 +68,29 @@
             });
         }
 
+        /**
+         * Callback event for button to creating pages inside error message.
+         *
+         * @param {Event} e
+         */
+        function createPages(e) {
+            var $button = $(this).addClass('disabled');
+            e.preventDefault();
+            $.post({
+                url: $button.attr('href'),
+                data: {
+                    'lp-ajax': 'create-pages'
+                },
+                dataType: 'text',
+                success: function (res) {
+                    var $message = $button.closest('.error').html('<p>' + res + '</p>');
+                    setTimeout(function () {
+                        $message.fadeOut()
+                    }, 2000);
+                }
+            });
+        }
+
         $(document).on('click', '.change-email-status', function () {
             (function () {
                 $.post({
@@ -86,7 +109,8 @@
                     }, this)
                 });
             }).apply(this)
-        }).on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails);
+        }).on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails)
+            .on('click', '#learn-press-create-pages', createPages);
 
 
         $('.learn-press-tooltip').each(function () {

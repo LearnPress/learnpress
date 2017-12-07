@@ -1577,16 +1577,6 @@ function learn_press_get_screens() {
 	return apply_filters( 'learn_press_screen_ids', $screens );
 }
 
-function learn_press_get_admin_pages() {
-	return apply_filters(
-		'learn_press_admin_pages',
-		array(
-			'learn-press-settings',
-			'learn-press-settings'
-		)
-	);
-}
-
 function learn_press_is_post_type_screen( $post_type, $union = 'OR' ) {
 	if ( is_array( $post_type ) ) {
 		$return = null;

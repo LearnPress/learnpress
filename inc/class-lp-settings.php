@@ -204,6 +204,30 @@ class LP_Settings {
 	}
 
 	/**
+	 * Update option with default prefix is learn_press_
+	 *
+	 * @param string $name
+	 * @param mixed  $value
+	 * @param string $prefix
+	 */
+	public static function update_option( $name, $value, $prefix = 'learn_press_' ) {
+		update_option( "{$prefix}{$name}", $value );
+	}
+
+	/**
+	 * Get option with default prefix is learn_press_
+	 *
+	 * @param string $name
+	 * @param mixed  $default
+	 * @param string $prefix
+	 *
+	 * @return mixed
+	 */
+	public static function get_option( $name, $default, $prefix = 'learn_press_' ) {
+		return get_option( "{$prefix}{$name}", $default );
+	}
+
+	/**
 	 * @return bool|LP_Settings
 	 */
 	public static function instance() {

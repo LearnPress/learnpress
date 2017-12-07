@@ -53,13 +53,20 @@ class LP_Helper {
 		return md5( serialize( $array ) );
 	}
 
+	/**
+	 * Load posts from database into cache by ids
+	 *
+	 * @param array|int $ids
+	 */
 	public static function cache_posts( $ids ) {
-		settype( $ids, 'array' );
 		global $wpdb;
+
+		settype( $ids, 'array' );
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
 		$query  = $wpdb->prepare( "
 			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ")
 		", $ids );
+
 		if ( $posts = $wpdb->get_results( $query ) ) {
 			foreach ( $posts as $post ) {
 				wp_cache_set( $post->ID, $post, 'posts' );
@@ -179,6 +186,26 @@ class LP_Helper {
 		return $merged;
 	}
 
+	/**
+	 * Encode the object to json format.
+	 * Replace number, "false", "true" in couple of quotes with
+	 * original value.
+	 * Example:
+	 *      Input: {
+	 *          number: "1234",
+	 *          true_value: "true",
+	 *          false_value: "false"
+	 *      }
+	 *      Output: {
+	 *          number: 1234,
+	 *          true_value: true,
+	 *          false_value: false
+	 *      }
+	 *
+	 * @param array $data
+	 *
+	 * @return false|mixed|string
+	 */
 	public static function json_encode( $data ) {
 		$data = wp_json_encode( $data );
 		$data = preg_replace_callback( '~:"([0-9.,]+|true|false)"~', array(
@@ -189,7 +216,51 @@ class LP_Helper {
 		return $data;
 	}
 
+	/**
+	 * Callback function for json_encode method "json_encode".
+	 *
+	 * @param array $m
+	 *
+	 * @return string
+	 */
 	public static function _valid_json_value( $m ) {
 		return str_replace( array( ':"', '"' ), array( ':', '' ), $m[0] );
+	}
+
+	/**
+	 * Create LP static page.
+	 *
+	 * @param string $name
+	 * @param string $assign_to - Optional. Assign to LP page after creating successful.
+	 *
+	 * @return bool|int|WP_Error
+	 */
+	public static function create_page( $name, $assign_to = '' ) {
+		$args = array(
+			'post_type'   => 'page',
+			'post_title'  => $name,
+			'post_status' => 'publish'
+		);
+
+		if ( ! $page_id = wp_insert_post( $args ) ) {
+			return false;
+		}
+
+		update_post_meta( $page_id, '_lp_page', 'yes' );
+
+		if ( $assign_to ) {
+			$pages = learn_press_static_pages();
+
+			if ( ! empty( $pages[ $assign_to ] ) ) {
+				update_option( "learn_press_{$assign_to}_page_id", $page_id );
+
+				// Update cache
+				$page_ids               = learn_press_static_page_ids();
+				$page_ids[ $assign_to ] = $page_id;
+				wp_cache_set( 'static-page-ids', $page_ids, 'learnpress' );
+			}
+		}
+
+		return $page_id;
 	}
 }

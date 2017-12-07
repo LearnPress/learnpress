@@ -30,7 +30,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
 
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
-			add_action( 'admin_notices', array( $this, 'notice_setup_page' ) );
+			add_action( 'admin_notices', array( $this, 'notice_setup_pages' ) );
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
@@ -241,7 +241,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array $actions
+		 * @param array   $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -402,57 +402,57 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 		}
 
-		public function notice_setup_page() {
 
-			$args = array(
-				array(
-					'name_option' => 'learn_press_profile_page_id',
-					'id'          => 'lp-admin-warning-profile',
-					'title'       => __( 'Profile Page', 'learnpress' ),
-					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=profile' )
-				),
-				array(
-					'name_option' => 'learn_press_checkout_page_id',
-					'id'          => 'lp-admin-warning-checkout',
-					'title'       => __( 'Checkout Page', 'learnpress' ),
-					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=payments' )
-				),
-			);
+		/**
+		 * Add notice for missing pages.
+		 *
+		 * @return mixed
+		 */
+		public function notice_setup_pages() {
 
-			if ( current_user_can( 'manage_options' ) ) {
-
-				$notice = esc_html__( 'The following required page(s) are currently missing: ', 'learnpress' );
-				$count  = 0;
-				$pages  = array();
-
-				foreach ( $args as $key => $arg ) {
-					$item_page_id   = get_option( $arg['name_option'] );
-					$item_transient = get_transient( $arg['id'] );
-					$item_page      = get_post( $item_page_id );
-
-					if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
-						$count ++;
-						$pages[] = array(
-							'url'   => $arg['url'],
-							'title' => $arg['title']
-						);
-
-					}
-				}
-
-				foreach ( $pages as $key => $page ) {
-					if ( $key == ( $count - 1 ) && $count != 1 ) {
-						$notice .= esc_html__( ' and ', 'learnpress' );
-					}
-					$notice .= __( wp_kses( '<a href="' . $page['url'] . '">' . $page['title'] . '</a>', array( 'a' => array( 'href' => array() ) ) ), 'learnpress' );
-				}
-
-				$notice .= '.' . esc_html__( ' Please click to the link to set it up, ensure all functions work properly.', 'learnpress' );
-
-				return $count ? learn_press_add_notice( $notice, 'error' ) : '';
+			if ( ! current_user_can( 'manage_options' ) ) {
+				return;
 			}
 
-			return '';
+			$missing_pages = array();
+			$pages         = apply_filters(
+				'learn-press/required-pages',
+				array(
+					'profile'  => array(
+						'title'    => __( 'Profile Page', 'learnpress' ),
+						'settings' => admin_url( 'admin.php?page=learn-press-settings&tab=profile' )
+					),
+					'checkout' => array(
+						'title'    => __( 'Checkout Page', 'learnpress' ),
+						'settings' => admin_url( 'admin.php?page=learn-press-settings&tab=payments' )
+					)
+				)
+			);
+
+			foreach ( $pages as $id => $page ) {
+
+				if ( ( $page_id = learn_press_get_page_id( $id ) ) && get_post( $page_id ) ) {
+					continue;
+				}
+				$missing_pages[ $id ] = $page;
+			}
+
+			if ( ! $missing_pages ) {
+				return;
+			}
+
+			$pages = array();
+
+			foreach ( $missing_pages as $id => $page ) {
+				$pages[] = __( wp_kses( '<a href="' . $page['settings'] . '">' . $page['title'] . '</a>', array(
+					'a' => array( 'href' => array() )
+				) ), 'learnpress' );
+			}
+
+			$notice = sprintf( __( 'The following required page(s) are currently missing: %s.', 'learnpress' ), join( ', ', $pages ) );
+			$notice .= sprintf( __( 'To ensure all functions work properly click <a class="button" id="learn-press-create-pages" href="%s">here</a> to create and set it up automatically.', 'learnpress' ), esc_url( wp_nonce_url( admin_url( 'admin.php?lp-ajax=create-pages' ), 'create-pages' ) ) );
+
+			learn_press_add_notice( $notice, 'error' );
 		}
 
 		/**

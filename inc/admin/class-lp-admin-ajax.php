@@ -83,7 +83,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal_search_users',
 				'add_items_to_order',
 				'remove_items_from_order',
-				'update_email_status'
+				'update_email_status',
+				'create-pages'
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -101,7 +102,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				LP_Request::register_ajax( $action, $callback );
 			}
-
 		}
 
 		/**
@@ -1164,7 +1164,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			} else {
 				$emails = LP_Emails::instance()->emails;
 				foreach ( $emails as $email ) {
-					$response[ $email->id ] = $email->enable( $status == 'yes' ) ;
+					$response[ $email->id ] = $email->enable( $status == 'yes' );
 				}
 			}
 			learn_press_send_json( $response );
@@ -1495,14 +1495,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$page_name = ! empty( $_REQUEST['page_name'] ) ? $_REQUEST['page_name'] : '';
 			$response  = array();
 			if ( $page_name ) {
-				$args    = array(
-					'post_type'   => 'page',
-					'post_title'  => $page_name,
-					'post_status' => 'publish'
-				);
-				$page_id = wp_insert_post( $args );
 
-				if ( $page_id ) {
+				if ( $page_id = LP_Helper::create_page( $page_name ) ) {
 					$response['page'] = get_post( $page_id );
 					$html             = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
@@ -1516,10 +1510,39 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$response['error'] = __( 'Empty page name!', 'learnpress' );
 			}
 			learn_press_send_json( $response );
-			die();
 		}
 
-		/*******************************************************************************************************/
+		/**
+		 * Create LP static pages
+		 */
+		public static function create_pages() {
+			check_admin_referer( 'create-pages' );
+
+			$pages      = LP_Request::get_list_array( 'pages' );
+			$pages      = array_fill_keys( $pages, '' );
+			$all_pages  = learn_press_static_page_ids();
+			$page_names = learn_press_static_pages();
+
+			if ( empty( $pages ) ) {
+				$pages = $all_pages;
+			}
+
+			foreach ( $pages as $id => $page_id ) {
+				if ( ! empty( $all_pages[ $id ] ) ) {
+					continue;
+				}
+
+				$page_id = LP_Helper::create_page( isset( $page_names[ $id ] ) ? $page_names[ $id ] : ucfirst( $id ), $id );
+
+				// Add profile link into admin bar
+				if ( $page_id && $id == 'profile' ) {
+					LP_Settings::update_option( 'admin_bar_link', 'yes' );
+				}
+			}
+
+			echo __( 'The required pages are created successful.', 'learnpress' );
+			die();
+		}
 
 		/**
 		 * Install sample data or dismiss the notice depending on user's option

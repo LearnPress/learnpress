@@ -3070,7 +3070,7 @@ if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
  * @since 3.0.0
  */
 function learn_press_body_classes( $classes ) {
-	$pages = learn_press_static_pages();
+	$pages = learn_press_static_page_ids();
 
 	if ( $pages ) {
 		$is_lp_page = false;
