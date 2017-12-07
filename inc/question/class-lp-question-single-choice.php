@@ -28,10 +28,12 @@ if ( ! class_exists( 'LP_Question_Single_Choice' ) ) {
 		protected $_question_type = 'single_choice';
 
 		/**
-		 * Constructor
+		 * LP_Question_Single_Choice constructor.
 		 *
-		 * @param mixed
-		 * @param array
+		 * @param null $the_question
+		 * @param null $args
+		 *
+		 * @throws Exception
 		 */
 		public function __construct( $the_question = null, $args = null ) {
 			parent::__construct( $the_question, $args );
