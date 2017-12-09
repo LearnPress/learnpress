@@ -157,11 +157,57 @@
 			addItemsToSection       : function (e, $view, $items) {
 				var that = this,
 					selected = $items;
+				var items = [];
 				selected.each(function () {
 					var $li = $(this);//.closest('li').addClass('selected'),
 					args = $li.dataToJSON();
-					that.addQuestion(args);
+					items.push( args );
+					//that.addQuestion(args);
 					$li.remove();
+				});
+				//∂console.log( items );
+				that.addQuestions(items);
+			},
+			addQuestions: function (items ) {
+				var that = this;
+				if(!items || !items.length){
+					return;
+				}
+				var args = items.shift();
+				args = $.extend({
+					id  : 0,
+					type: null,
+					name: null
+				}, args);
+				console.log(args);
+				if (!args.id && !args.type) {
+					alert('ERROR');
+					return;
+				}
+				var that = this,
+					post_data = $.extend({
+						action : 'learnpress_add_quiz_question',
+						quiz_id: $('#post_ID').val()
+					}, args);
+
+				post_data = LP.Hook.applyFilters('LP.add_question_post_data', post_data);
+
+				$.ajax({
+					url     : LP_Settings.ajax,
+					dataType: 'html',
+					type    : 'post',
+					data    : post_data,
+					success : function (response) {
+						response = LP.parseJSON(response);
+						var $newQuestion = $(response.html);
+						$('#learn-press-list-questions').append( $newQuestion );
+						that.$( '#lp-modal-quiz-questions li[data-id="' + response.id + '"]' ).addClass( 'selected hide-if-js' );
+						//LP.Question._hideQuestion( args.id )
+						LP.Hook.doAction('learn_press_add_quiz_question', $newQuestion, args);
+						if( items && items.length ) {
+							that.addQuestions( items );
+						}
+					}
 				});
 			},
 			addQuestion             : function (args) {
@@ -236,7 +282,11 @@
 						args = $li.dataToJSON();
 					/*$item = that.createItem( args, $section );
 					 $item.removeClass('lp-item-empty');*/
-					that.addQuestion({id: $(this).val()});
+					alert( $li );
+					console.log( $li );
+					console.log( args );
+					console.log( '-----------' );
+					//that.addQuestion({id: $(this).val()});
 				});
 				$form.remove();
 				LP.MessageBox.hide();
