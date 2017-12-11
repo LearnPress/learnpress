@@ -41,10 +41,20 @@ class LP_Addon {
 		//add_action( 'plugins_loaded', array( $this, 'check_version' ) );
 		add_action( 'init', array( $this, 'init' ) );
 
+		// Include
+		$this->_includes();
 
 	}
 
-	public function plugin_links( $links ) {
+	public function _plugin_links( $links ) {
+		if ( is_callable( array( $this, 'plugin_links' ) ) && ( $plugin_links = call_user_func( array(
+				$this,
+				'plugin_links'
+			) ) )
+		) {
+			$links = array_merge( $links, $plugin_links );
+		}
+
 		return $links;
 	}
 
@@ -58,13 +68,13 @@ class LP_Addon {
 
 		add_filter( "plugin_action_links_{$this->get_plugin_slug()}", array(
 			$this,
-			'plugin_links'
+			'_plugin_links'
 		) );
 	}
 
 	/**
-     * Get plugin slug from plugin file.
-     *
+	 * Get plugin slug from plugin file.
+	 *
 	 * @return bool|string
 	 */
 	public function get_plugin_slug() {
@@ -96,6 +106,10 @@ class LP_Addon {
 		}
 
 		return $this->_valid;
+	}
+
+	protected function _includes() {
+
 	}
 
 	/**

@@ -179,10 +179,20 @@ add_action( 'learn-press/single-item-summary', 'learn_press_single_course_conten
 add_action( 'learn-press/course-item-content', 'learn_press_course_item_content', 5 );
 add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
 
+/**
+ * @see learn_press_content_item_lesson_title
+ * @see learn_press_content_item_lesson_content
+ * @see learn_press_content_item_lesson_complete_button
+ */
 add_action( 'learn-press/before-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_title', 10 );
 add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content', 10 );
 add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_complete_button', 10 );
 
+/**
+ * @see learn_press_content_item_header
+ * @see learn_press_content_item_footer
+ * @see learn_press_section_item_meta
+ */
 add_action( 'learn-press/course-item-content-header', 'learn_press_content_item_header', 10 );
 add_action( 'learn-press/course-item-content-footer', 'learn_press_content_item_footer', 10 );
 add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );

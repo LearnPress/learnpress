@@ -2658,6 +2658,13 @@ if ( ! function_exists( 'learn_press_profile_register_form' ) ) {
 
 if ( ! function_exists( 'learn_press_content_item_lesson_title' ) ) {
 	function learn_press_content_item_lesson_title() {
+		$item = LP_Global::course_item();
+
+		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/{$format}/title.php" ) ) ) {
+			include_once $format_template;
+
+			return;
+		}
 		learn_press_get_template( 'content-lesson/title.php' );
 	}
 }
@@ -2665,12 +2672,17 @@ if ( ! function_exists( 'learn_press_content_item_lesson_title' ) ) {
 if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 	function learn_press_content_item_lesson_content() {
 		$item = LP_Global::course_item();
-		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/type/{$format}.php" ) ) ) {
+
+		if ( $item->is_blocked() ) {
+			return;
+		}
+
+		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/{$format}/content.php" ) ) ) {
 			include_once $format_template;
 
 			return;
 		}
-		learn_press_get_template( 'content-lesson/description.php' );
+		learn_press_get_template( 'content-lesson/content.php' );
 	}
 }
 

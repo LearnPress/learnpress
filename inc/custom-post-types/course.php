@@ -706,6 +706,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				if ( ! $start_date && ! $end_date ) {
 					$sale_price_dates_class .= ' hide-if-js';
 				}
+				$message     .= sprintf( __( 'Course price in <strong>%s</strong> currency.', 'learnpress' ), learn_press_get_currency() );
 				$conditional = array(
 					'state'       => 'show',
 					'conditional' => array(
@@ -734,7 +735,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'       => 'number',
 						'min'        => 0,
 						'step'       => 0.01,
-						'desc'       => sprintf( '<p class="description">%s</p>', __( 'Leave blank to remove sale price.', 'learnpress' ) )
+						'desc'       => sprintf(
+							                '<p class="description">%s %s</p>',
+							                sprintf( __( 'Course sale price in <strong>%s</strong> currency.', 'learnpress' ), learn_press_get_currency() ),
+							                __( 'Leave blank to remove sale price.', 'learnpress' )
+						                )
 						                . '<a href="#"' . ( $start_date || $end_date ? ' style="display:none;"' : '' ) . ' id="_lp_sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
 						'std'        => $sale_price,
 						'visibility' => $conditional

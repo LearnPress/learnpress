@@ -110,7 +110,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * Get class of item.
 		 *
 		 * @param string $more
-		 * @param int $user_id
+		 * @param int    $user_id
 		 *
 		 * @return array
 		 */
@@ -321,8 +321,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * Create nonce for checking actions on an item.
 		 *
 		 * @param string $action
-		 * @param int $course_id
-		 * @param int $user_id
+		 * @param int    $course_id
+		 * @param int    $user_id
 		 *
 		 * @return string
 		 */
@@ -345,8 +345,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 *
 		 * @param string $nonce
 		 * @param string $action
-		 * @param int $course_id
-		 * @param int $user_id
+		 * @param int    $course_id
+		 * @param int    $user_id
 		 *
 		 * @return false|int
 		 */
@@ -438,6 +438,41 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			}
 
 			return $duration;
+		}
+
+		/**
+		 * @param int $course_id
+		 * @param int $user_id
+		 *
+		 * @return bool
+		 */
+		public function is_blocked( $course_id = 0, $user_id = 0 ) {
+
+			$blocked = false;
+
+			if ( $course_id ) {
+				$course = learn_press_get_course( $course_id );
+			} else {
+				$course = $this->get_course();
+			}
+
+			if ( ! $user_id ) {
+				$user_id = get_current_user_id();
+			}
+
+			$user = learn_press_get_user( $user_id );
+
+			if ( $user ) {
+
+				$is_admin      = in_array( 'administrator', $user->get_data( 'roles' ) );
+				$block_content = $course->get_data( 'block_lesson_content' );
+
+				if ( ! $is_admin && $course->is_expired() <= 0 && ( $block_content == 'yes' ) && ( get_post_meta( $this->get_id(), '_lp_preview', true ) !== 'yes' ) ) {
+					$blocked = true;
+				}
+			}
+
+			return apply_filters( 'learn-press/course-item/blocked', $blocked, $this->get_id(), $course->get_id(), $user->get_id() );
 		}
 
 		public function offsetExists( $offset ) {

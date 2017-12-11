@@ -13,6 +13,5 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php learn_press_display_message( __( 'This lesson has been locked', 'learnpress' ), 'error' );
+learn_press_display_message( __( 'This lesson has been locked', 'learnpress' ), 'error' );

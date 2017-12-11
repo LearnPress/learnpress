@@ -289,7 +289,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 							'change-password'   => array(
 								'title'    => __( 'Password', 'learnpress' ),
 								'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
-								'hidden'   => true,
 								'callback' => array( $this, 'tab_order_details' ),
 								'priority' => 30
 							)
@@ -299,6 +298,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				);
 
 				$tabs = apply_filters( 'learn-press/profile-tabs', $defaults );
+
 
 				foreach ( $tabs as $slug => $data ) {
 					if ( ! array_key_exists( 'slug', $data ) ) {

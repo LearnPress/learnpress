@@ -52,6 +52,10 @@
     }
 }
 
+.edit-content {
+    margin-left: 5px;
+}
+
 ul.learn-press-nav-tabs {
     list-style: none;
     border-bottom: 3px solid #DDD;
@@ -470,6 +474,20 @@ body {
             & > h3 {
                 margin-bottom: 10px;
             }
+            .entry-video {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: #000;
+                line-height: 1;
+                iframe {
+                    width: 100%;
+                    margin-bottom: 0;
+                    max-width: 900px;
+                    vertical-align: top;
+                }
+            }
         }
         &.content-only {
             #learn-press-content-item {
@@ -860,34 +878,43 @@ body {
 }
 
 @media screen and (max-width: 768px) {
-    body.course-item-popup {
-        #course-item-content-header .course-item-search {
-            width: 200px;
-            input {
-                width: 185px;
+    body {
+        &.course-item-popup {
+            #course-item-content-header .course-item-search {
+                width: 200px;
+                input {
+                    width: 185px;
+                }
+                button {
+                    left: 200px;
+                }
             }
-            button {
+            #learn-press-course-curriculum {
+                width: 200px;
+            }
+            #content-item-nav,
+            #learn-press-content-item,
+            #course-item-content-footer {
                 left: 200px;
             }
-        }
-        #learn-press-course-curriculum {
-            width: 200px;
-        }
-        #content-item-nav,
-        #learn-press-content-item,
-        #course-item-content-footer {
-            left: 200px;
-        }
-        #learn-press-content-item {
-            .content-item-nav-wrap,
-            .content-item-wrap {
-                width: 90%;
+            #learn-press-content-item {
+                .content-item-nav-wrap,
+                .content-item-wrap {
+                    width: 90%;
+                }
+            }
+
+            &.wpadminbar {
+                #learn-press-content-item,
+                #learn-press-course-curriculum {
+                    top: 106px;
+                }
+                #course-item-content-header {
+                    top: 46px;
+                }
             }
         }
     }
-}
-
-@media screen and (max-width: 768px) {
     .learn-press-course-results-progress {
         margin-right: 0%;
         .items-progress,

@@ -79,7 +79,6 @@
             $header = $('#course-item-content-header'),
             $footer = $('#course-item-content-footer'),
             $courseItems = $curriculum.find('.course-item'),
-            curriculumWidth = $curriculum.outerWidth(),
             isShowingHeader = true,
             fullScreen, contentTop = 0, headerTimer,
             inPopup = false;
@@ -226,9 +225,14 @@
             $('html, body').css('overflow', 'auto');
         }
 
+        function getCurriculumWidth() {
+            return $curriculum.outerWidth();
+        }
+
         function maybeShowCurriculum(e) {
             var offset = $(this).offset(),
-                offsetX = e.pageX - offset.left;
+                offsetX = e.pageX - offset.left,
+                curriculumWidth = getCurriculumWidth();
 
             if (!fullScreen || (offsetX > 50)) {
                 return;
@@ -247,6 +251,8 @@
 
                 $footer.stop().animate({
                     left: curriculumWidth
+                }, function () {
+                    $(document, window).trigger('learn-press/toggle-content-item');
                 });
 
                 $header.find('.course-item-search').show();
@@ -262,6 +268,8 @@
         function timeoutToClose() {
             headerTimer && clearTimeout(headerTimer);
             headerTimer = setTimeout(function () {
+                var curriculumWidth = getCurriculumWidth();
+
                 if (!fullScreen) {
                     return;
                 }
@@ -276,6 +284,8 @@
 
                 $footer.stop().animate({
                     left: 0
+                }, function () {
+                    $(document, window).trigger('learn-press/toggle-content-item');
                 });
 
                 $header.find('.course-item-search').hide();
@@ -287,7 +297,7 @@
 
         function toggleContentItem(e) {
             e.preventDefault();
-
+            var curriculumWidth = getCurriculumWidth();
             fullScreen = $body.toggleClass('full-screen-content-item').hasClass('full-screen-content-item');
             $curriculum
                 .stop()
@@ -303,6 +313,8 @@
 
             $footer.stop().animate({
                 left: fullScreen ? 0 : curriculumWidth
+            }, function () {
+                $(document, window).trigger('learn-press/toggle-content-item');
             });
 
             isShowingHeader = !fullScreen;
@@ -361,6 +373,50 @@
             }).css('opacity', 1).end().css('opacity', 1);
         }
 
+        function fitVideo() {
+            var $wrapContent = $('.content-item-summary'),
+                $entryVideo = $wrapContent.find('.entry-video'),
+                $frame = $entryVideo.find('iframe'),
+                width = $frame.attr('width'),
+                height = $frame.attr('height'),
+                ratio = 1,
+                contentHeight, timer;
+
+            function resizeVideo() {
+                var frameWidth = $frame.width();
+                contentHeight = frameWidth * ratio;
+                $frame.css({
+                    height: contentHeight,
+                    marginLeft: ( $entryVideo.width() - frameWidth) / 2
+                });
+
+                $wrapContent.css({
+                    paddingTop: contentHeight
+                });
+            }
+
+            if (!$entryVideo.length) {
+                return false;
+            }
+
+            $wrapContent.addClass('content-item-video');
+
+            if (width && height) {
+                if (width.indexOf('%') === -1 && height.indexOf('%') === -1) {
+                    ratio = height / width;
+                }
+            }
+
+            $(window).on('resize.fit-content-video learn-press/toggle-content-item', function () {
+                timer && clearTimeout(timer);
+                timer = setTimeout(resizeVideo, 250);
+            }).trigger('resize.fit-content-video');
+
+            $('.content-item-scrollable').scroll(function () {
+                $(this).find('.entry-video').css('padding-top', this.scrollTop);
+            });
+        }
+
         /**
          * Init
          */
@@ -385,9 +441,13 @@
                 contentTop = 32;
             }
             initScrollbar();
+            fitVideo();
+
             fullScreen = window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
 
             if (fullScreen) {
+
+                var curriculumWidth = getCurriculumWidth();
                 $body.addClass('full-screen-content-item');
                 $contentItem.css('left', 0);
                 $curriculum.css('left', -curriculumWidth);
@@ -397,6 +457,7 @@
                 $header.find('.course-item-search').css({opacity: fullScreen ? 0 : 1});
                 toggleEventShowCurriculum();
             }
+
 
             $body.css('opacity', 1);
 

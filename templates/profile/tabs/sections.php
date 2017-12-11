@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || exit();
 
 $profile = LP_Profile::instance();
 
+
 if ( ! isset( $tab_key, $tab_data ) ) {
 	return;
 }
@@ -23,6 +24,7 @@ if ( ! isset( $tab_key, $tab_data ) ) {
 if ( empty( $tab_data['sections'] ) ) {
 	return;
 }
+
 $link = $profile->get_tab_link( $tab_key ); ?>
 
 <ul class="lp-tab-sections">

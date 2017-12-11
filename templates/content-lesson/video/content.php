@@ -17,11 +17,19 @@ defined( 'ABSPATH' ) || exit();
 $lesson = LP_Global::course_item();
 
 // lesson no content
-if ( ! $content = $lesson->get_content() ) {
+if ( ! $lesson->get_content() ) {
 	learn_press_get_template( 'content-lesson/no-content.php' );
 
 	return;
 }
+
+if ( $video = $lesson->get_video() ) {
+	?>
+    <div class="entry-video">
+        <?php echo $video[0];?>
+    </div>
+	<?php
+}
 ?>
 
-<div class="content-item-description lesson-description"><?php echo $content; ?></div>
+<div class="content-item-description lesson-description"><?php echo $lesson->get_content_video(); ?></div>

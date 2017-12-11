@@ -3233,6 +3233,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$this->_curd->read_course( $this->get_id(), $the_course );
 		}
 
+		public function can_edit( $post_id ) {
+			if ( $this->get_id() !== get_current_user_id() ) {
+				return false;
+			}
+
+			return current_user_can( 'edit_post', $post_id );
+		}
+
 		/**
 		 *
 		 * 'email'         => '',

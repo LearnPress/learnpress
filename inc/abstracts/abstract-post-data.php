@@ -24,10 +24,15 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 */
 		protected $_post_type = '';
 
-	/**
-	 * @var string
-	 */
-	protected $_content = '';
+		/**
+		 * @var string
+		 */
+		protected $_content = '';
+
+		/**
+		 * @var null
+		 */
+		protected $_video = null;
 
 		/**
 		 * LP_Abstract_Post_Data constructor.
@@ -47,10 +52,10 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 				$id = absint( $post->ID );
 			}
 
-		settype( $args, 'array' );
-		$args['id'] = $id;
-		parent::__construct( $args );
-	}
+			settype( $args, 'array' );
+			$args['id'] = $id;
+			parent::__construct( $args );
+		}
 
 		/**
 		 * Get status of post.
@@ -108,43 +113,72 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		public function get_title( $context = '' ) {
 			$title = get_the_title( $this->get_id() );
 
-		if ( 'display' === $context ) {
-			$title = do_shortcode( $title );
-		}
+			if ( 'display' === $context ) {
+				$title = do_shortcode( $title );
+			}
 
-		return $title;
-	}
+			return $title;
+		}
 
 		/**
 		 * Get the content.
 		 *
 		 * @since 3.0.0
 		 *
+		 * @param string $context
+		 *
 		 * @return string
 		 */
-		public function get_content() {
-			if ( ! $this->_content ) {
+		public function get_content( $context = 'display' ) {
+			if ( 'display' === $context ) {
+				if ( ! $this->_content ) {
+					global $post, $wp_query;
 
-			global $post, $wp_query;
+					$posts = apply_filters_ref_array( 'the_posts', array(
+						array( get_post( $this->get_id() ) ),
+						&$wp_query
+					) );
 
-				$posts = apply_filters_ref_array( 'the_posts', array(
-					array( get_post( $this->get_id() ) ),
-					&$wp_query
-				) );
+					if ( $posts ) {
+						$post = $posts[0];
+					}
 
-			if ( $posts ) {
-				$post = $posts[0];
+					setup_postdata( $post );
+					ob_start();
+					the_content();
+					$this->_content = ob_get_clean();
+					wp_reset_postdata();
+				}
+			} else {
+				return get_post_field( 'post_content', $this->get_id() );
 			}
 
-				setup_postdata( $post );
-				ob_start();
-				the_content();
-				$this->_content = ob_get_clean();
-				wp_reset_postdata();
+			return $this->_content;
+		}
+
+		public function get_video() {
+			if ( ( $content = $this->get_content() ) && ( $this->_video === null ) ) {
+				$video = get_media_embedded_in_content( $content, array( 'video', 'object', 'embed', 'iframe' ) );
+
+				if ( $video ) {
+					$this->_video = $video;
+				} else {
+					$this->_video = '';
+				}
 			}
 
-		return $this->_content;
-	}
+			return $this->_video;
+		}
+
+		public function get_content_video() {
+			$content = $this->get_content();
+
+			if ( $this->get_video() ) {
+				return str_replace( $this->_video[0], '', $content );
+			}
+
+			return $content;
+		}
 
 		/*
 		 * Get post status.
@@ -175,6 +209,14 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 */
 		public static function get_default_meta() {
 			return array();
+		}
+
+		public function get_edit_link() {
+			return get_edit_post_link( $this->get_id() );
+		}
+
+		public function current_user_can_edit() {
+			return learn_press_get_current_user()->can_edit( $this->get_id() );
 		}
 	}
 }
