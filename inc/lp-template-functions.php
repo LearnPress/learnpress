@@ -15,11 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 	/**
-	 * Purchase course button
+	 * Purchase course button.
 	 */
 	function learn_press_course_purchase_button() {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
+
 
 		// If course is not published
 		if ( ! $course->is_publish() ) {
@@ -36,6 +37,11 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 			return;
 		}
 
+		// User can not purchase course
+		if ( ! $user->can_purchase_course( $course->get_id() ) ) {
+			return;
+		}
+
 		// If user has already purchased course but has not finished yet.
 		if ( $user->has_purchased_course( $course->get_id() ) && 'finished' !== $user->get_course_status( $course->get_id() ) ) {
 			return;
@@ -47,7 +53,6 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
-
 	/**
 	 * Enroll course button.
 	 */
@@ -79,12 +84,16 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 			return;
 		}
 
+		// User can not enroll course
+		if ( ! $user->can_enroll_course( $course->get_id() ) ) {
+			return;
+		}
+
 		$purchased = $user->has_purchased_course( $course->get_id() );
 		// For free course and user does not purchased
 		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
-
 			if ( ! $course_data->get_status() ) {
 				learn_press_get_template( 'single-course/buttons/enroll.php' );
 			}
@@ -187,6 +196,12 @@ if ( ! function_exists( 'learn_press_course_external_button' ) ) {
 		if ( ! $link = $course->get_external_link() ) {
 			return;
 		}
+
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_purchase_button', 10 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button', 15 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_retake_button', 20 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_continue_button', 25 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_finish_button', 30 );
 
 		learn_press_get_template( 'single-course/buttons/external-link.php' );
 	}
@@ -1811,10 +1826,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $lesson_id
-	 * @param int          $course_id
+	 * @param int $lesson_id
+	 * @param int $course_id
 	 * @param array|string $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -1874,10 +1889,10 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $quiz_id
-	 * @param int          $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param string|array $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -2050,7 +2065,7 @@ function learn_press_get_messages( $clear = false ) {
  *
  * @param string $message
  * @param string $type
- * @param array  $options
+ * @param array $options
  */
 function learn_press_add_message( $message, $type = 'success', $options = array() ) {
 	if ( ! is_array( $options ) ) {
@@ -2286,9 +2301,9 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name
- * @param array  $args          (default: array())
+ * @param array $args (default: array())
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return void
  */
@@ -2324,7 +2339,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
  * @uses learn_press_get_template();
  *
  * @param        $template_name
- * @param array  $args
+ * @param array $args
  * @param string $template_path
  * @param string $default_path
  *
@@ -2350,7 +2365,7 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
  *
  * @param string $template_name
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return string
  */
