@@ -21,6 +21,7 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
+
 		// If course is not published
 		if ( ! $course->is_publish() ) {
 			return;
@@ -195,6 +196,12 @@ if ( ! function_exists( 'learn_press_course_external_button' ) ) {
 		if ( ! $link = $course->get_external_link() ) {
 			return;
 		}
+
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_purchase_button', 10 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button', 15 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_retake_button', 20 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_continue_button', 25 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_finish_button', 30 );
 
 		learn_press_get_template( 'single-course/buttons/external-link.php' );
 	}
