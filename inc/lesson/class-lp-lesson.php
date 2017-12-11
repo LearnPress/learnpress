@@ -103,6 +103,12 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 			ob_start();
 			the_content();
 			$this->content = ob_get_clean();
+			$has_filter = false;
+			if ( has_filter( 'the_content', 'wpautop' ) ) {
+			    $has_filter = true;
+			} else {
+			    $this->content = wpautop($this->content);
+			}
 			wp_reset_postdata();
 			do_action( 'learn_press_get_content_' . $this->id );
 		//}
