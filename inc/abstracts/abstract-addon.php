@@ -38,12 +38,7 @@ class LP_Addon {
 	 * LP_Addon constructor.
 	 */
 	public function __construct() {
-		//add_action( 'plugins_loaded', array( $this, 'check_version' ) );
 		add_action( 'init', array( $this, 'init' ) );
-
-		// Include
-		$this->_includes();
-
 	}
 
 	public function _plugin_links( $links ) {
@@ -62,14 +57,49 @@ class LP_Addon {
 	 * Init
 	 */
 	public function init() {
-		if ( $this->_check_version() ) {
-			$this->load_text_domain();
+		if ( ! $this->_check_version() ) {
+			return;
 		}
+
+		$this->load_text_domain();
 
 		add_filter( "plugin_action_links_{$this->get_plugin_slug()}", array(
 			$this,
 			'_plugin_links'
 		) );
+
+		$this->_define_constants();
+		$this->_includes();
+		$this->_init_hooks();
+		$this->_enqueue_assets();
+	}
+
+	/**
+	 * Define add-on constants.
+	 */
+	protected function _define_constants() {
+
+	}
+
+	/**
+	 * Includes add-on files.
+	 */
+	protected function _includes() {
+
+	}
+
+	/**
+	 * Init add-on hooks.
+	 */
+	protected function _init_hooks() {
+
+	}
+
+	/**
+	 * Enqueue scripts.
+	 */
+	protected function _enqueue_assets() {
+
 	}
 
 	/**
@@ -106,10 +136,6 @@ class LP_Addon {
 		}
 
 		return $this->_valid;
-	}
-
-	protected function _includes() {
-
 	}
 
 	/**
