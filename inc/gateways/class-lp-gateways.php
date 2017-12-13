@@ -121,16 +121,18 @@ class LP_Gateways {
 			 */
 			$gateway_available = apply_filters( 'learn_press_payment_gateway_available_' . $slug, true, $gateway );
 
-			// Let custom addon can define how is enable/disable
-			if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
+			if ( $gateway_available ) {
+				// Let custom addon can define how is enable/disable
+				if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
 
-				// If gateway has already selected before
-				if ( LP()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
-					$gateway->is_selected = true;
-					$is_selected          = $gateway;
-				}
-				$_available_gateways[ $slug ] = $gateway;
-			};
+					// If gateway has already selected before
+					if ( LP()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
+						$gateway->is_selected = true;
+						$is_selected          = $gateway;
+					}
+					$_available_gateways[ $slug ] = $gateway;
+				};
+			}
 
 		}
 
