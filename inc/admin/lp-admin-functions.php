@@ -1110,7 +1110,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 		               . " AND CAST(loim.meta_value AS SIGNED) IN("
 		               //sub query
 		               . " SELECT tr.object_id "
-		               . " FROM wp_term_taxonomy tt INNER JOIN wp_term_relationships tr "
+		               . " FROM {$wpdb->prefix}term_taxonomy tt INNER JOIN {$wpdb->prefix}term_relationships tr "
 		               . " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
 		               . " WHERE tt.term_id=%d)";
 		$query_join .= $wpdb->prepare( $sql_join, $cat_id );

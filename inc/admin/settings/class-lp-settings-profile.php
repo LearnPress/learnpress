@@ -56,7 +56,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'          => 'admin_bar_link_text',
 							'default'     => '',
 							'type'        => 'text',
-							'placeholder' => __( 'Default: View Course Profile', 'learnpress' ),
+							'placeholder' => get_post_field( 'post_title', learn_press_get_page_id( 'profile' ) ),
+							'desc'        => __( 'If empty, text is name of page used for profile.', 'learnpress' ),
 							'visibility'  => array(
 								'state'       => 'show',
 								'conditional' => array(

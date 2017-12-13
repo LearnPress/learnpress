@@ -324,21 +324,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * Return total mark of quiz by calculating total mark of all questions.
+		 * Get duration of quiz
 		 *
 		 * @return LP_Duration
 		 */
 		public function get_duration() {
-			$duration = $this->get_data( 'duration' );
-			if ( false === $duration || '' === $duration ) {
-				if ( $duration = get_post_meta( $this->get_id(), '_lp_duration', true ) ) {
-					$duration = new LP_Duration( $duration );
-				} else {
-					$duration = new LP_Duration( 0 );
-				}
-
-				$this->_set_data( 'duration', $duration );
-			}
+			$duration = parent::get_duration();
 
 			return apply_filters( 'learn-press/quiz-duration', $duration, $this->get_id() );
 		}

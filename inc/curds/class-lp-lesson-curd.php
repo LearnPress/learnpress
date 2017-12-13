@@ -133,7 +133,6 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 
 			$lesson->set_data(
 				array(
-					'duration' => get_post_meta( $id, '_lp_duration', true ),
 					'preview'  => get_post_meta( $id, '_lp_preview', true )
 				)
 			);

@@ -72,7 +72,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 			foreach ( $schemas as $k => $schema ) {
 				$schemas[ $k ] = $colors;
 				foreach ( $colors as $m => $options ) {
-					echo $key = preg_replace('!#!', '', $options['selector']);
+                    $key = preg_replace('!#!', '', $options['selector']);
 					if ( ! empty( $schema[ $key ] ) ) {
 						foreach ( $options['props'] as $prop_name => $prop_value ) {
 							if ( isset( $schema[ $key ][ $prop_name ] ) ) {

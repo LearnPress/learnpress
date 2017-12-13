@@ -43,7 +43,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		/**
 		 * LP_Lesson constructor.
 		 *
-		 * @param int $lesson
+		 * @param int          $lesson
 		 * @param array|string $args
 		 */
 		public function __construct( $lesson, $args = '' ) {
@@ -103,7 +103,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		/**
 		 * Get LP Lesson.
 		 *
-		 * @param bool $the_lesson
+		 * @param bool  $the_lesson
 		 * @param array $args
 		 *
 		 * @return LP_Lesson|bool
@@ -153,11 +153,22 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'_lp_duration' => 30,
+				'_lp_duration' => '30 minute',
 				'_lp_preview'  => 'no'
 			);
 
 			return apply_filters( 'learn-press/course/default-meta', $meta );
+		}
+
+		/**
+		 * Get duration of lesson
+		 *
+		 * @return LP_Duration
+		 */
+		public function get_duration() {
+			$duration = parent::get_duration();
+
+			return apply_filters( 'learn-press/lesson-duration', $duration, $this->get_id() );
 		}
 
 		/**
@@ -173,7 +184,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_lesson
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */

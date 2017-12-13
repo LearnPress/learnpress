@@ -429,17 +429,24 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			return apply_filters( 'learn-press/item-status-classes', $status_classes, $this->get_id(), $course_id, $user_id );
 		}
 
-
 		/**
-		 * @return array|false|int|mixed
+		 * Get duration of quiz
+		 *
+		 * @return LP_Duration
 		 */
 		public function get_duration() {
 			$duration = $this->get_data( 'duration' );
-			if ( ! is_numeric( $duration ) ) {
-				$duration = strtotime( '+' . $duration, 0 );
+			if ( false === $duration || '' === $duration  ) {
+				if ( $duration = get_post_meta( $this->get_id(), '_lp_duration', true ) ) {
+					$duration = new LP_Duration( $duration );
+				} else {
+					$duration = new LP_Duration( 0 );
+				}
+
+				$this->_set_data( 'duration', $duration );
 			}
 
-			return $duration;
+			return apply_filters( 'learn-press/course-item-duration', $duration, $this->get_id() );
 		}
 
 		/**
@@ -455,7 +462,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			if ( $course_id ) {
 				$course = learn_press_get_course( $course_id );
 			} else {
-				$course = $this->get_course();
+				$course    = $this->get_course();
 				$course_id = $course ? $course->get_id() : 0;
 			}
 
