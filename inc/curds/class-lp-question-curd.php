@@ -39,13 +39,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		public function create( &$args = array() ) {
 
 			$args = wp_parse_args( $args, array(
-					'quiz_id' => 0,
-					'order'   => - 1,
-					'id'      => '',
-					'status'  => 'publish',
-					'type'    => 'true_or_false',
-					'title'   => __( 'New Question', 'learnpress' ),
-					'content' => ''
+					'quiz_id'        => 0,
+					'order'          => - 1,
+					'id'             => '',
+					'status'         => 'publish',
+					'type'           => 'true_or_false',
+					'title'          => __( 'New Question', 'learnpress' ),
+					'content'        => '',
+					'create_answers' => true // some cases does not need create answers for new question
 				)
 			);
 
@@ -83,10 +84,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$question = LP_Question::get_question( $question_id, array( 'type' => $args['type'] ) );
 				$question->set_type( $args['type'] );
 
-
-				global $pagenow;
-
-				if ( $pagenow != 'post-new.php' ) {
+				if ( $args['create_answers'] ) {
 					$answers = $question->get_default_answers();
 
 					// insert answers data in new question
@@ -311,13 +309,20 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$question_id = $question->get_id();
 			$old_type    = $question->get_type();
 
-			if ( $old_type == $new_type ) {
-				return false;
+			if ( $new_type == 'true_or_false' ) {
+				echo '<pre>';
+				var_dump($new_type);
+				echo '</pre>';
+				echo '<pre>';
+				var_dump($old_type);
+				echo '</pre>';
+				die( 'xxx' );
 			}
 
 			$answer_options = $question->get_data( 'answer_options' );
 
 			update_post_meta( $question_id, '_lp_type', $new_type );
+			$question->set_type($new_type);
 
 			if ( $new_question = LP_Question::get_question( $question_id, array( 'force' => true ) ) ) {
 

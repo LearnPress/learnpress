@@ -373,8 +373,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 					$answers = array();
 					// handle question answer
-					foreach ( $question->get_data( 'answer_options' ) as $answer ) {
-						$answers[] = $answer;
+					if ( is_array( $question->get_data( 'answer_options' ) ) ) {
+						foreach ( $question->get_data( 'answer_options' ) as $answer ) {
+							$answers[] = $answer;
+						}
 					}
 
 					$post     = get_post( $id );

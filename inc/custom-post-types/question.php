@@ -79,7 +79,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$answers  = $question->get_default_answers();
 			} else {
 				$question = LP_Question::get_question( $post->ID );
-				$answers  = array_values( $question->get_data( 'answer_options' ) );
+				$answers  = ($question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array());
 			}
 
 			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor', array(
