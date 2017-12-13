@@ -2661,12 +2661,12 @@ if ( ! function_exists( 'learn_press_get_widget_course_object' ) ) {
 	function learn_press_get_widget_course_object( $query ) {
 
 		global $wpdb;
-
 		// query posts
 		if ( $posts = $wpdb->get_results( $query ) ) {
 
 			// get lp courses object from Wordpress post
 			$courses = array_map( 'learn_press_get_lp_course', $posts );
+			$courses = array_filter( $courses );
 
 		} else {
 			$courses = array();
