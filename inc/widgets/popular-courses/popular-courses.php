@@ -49,57 +49,57 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 					'std'  => __( 'Popular Courses', 'learnpress' )
 				),
 				'show_teacher'           => array(
-					'name' => __( 'Show teacher', 'learpnress' ),
+					'name' => __( 'Show teacher', 'learnpress' ),
 					'id'   => "show_teacher",
 					'type' => 'checkbox',
 					'std'  => 1
 				),
 				'show_lesson'            => array(
-					'name' => __( 'Show lesson', 'learpnress' ),
+					'name' => __( 'Show lesson', 'learnpress' ),
 					'id'   => "show_lesson",
 					'type' => 'checkbox',
 					'std'  => 1
 				),
 				'show_thumbnail'         => array(
-					'name' => __( 'Show Thumbnail', 'learpnress' ),
+					'name' => __( 'Show Thumbnail', 'learnpress' ),
 					'id'   => "show_thumbnail",
 					'type' => 'checkbox',
 					'std'  => 1
 				),
 				'limit'                  => array(
-					'name' => __( 'Limit', 'learpnress' ),
+					'name' => __( 'Limit', 'learnpress' ),
 					'id'   => "limit",
 					'type' => 'number',
 					'min'  => 1,
 					'std'  => 5
 				),
 				'desc_length'            => array(
-					'name' => __( 'Description Length', 'learpnress' ),
+					'name' => __( 'Description Length', 'learnpress' ),
 					'id'   => "desc_length",
 					'type' => 'number',
 					'min'  => 0,
 					'std'  => 10
 				),
 				'show_enrolled_students' => array(
-					'name' => __( 'Show Enrolled Students', 'learpnress' ),
+					'name' => __( 'Show Enrolled Students', 'learnpress' ),
 					'id'   => "show_enrolled_students",
 					'type' => 'checkbox',
 					'std'  => 0
 				),
 				'show_price'             => array(
-					'name' => __( 'Show Price', 'learpnress' ),
+					'name' => __( 'Show Price', 'learnpress' ),
 					'id'   => "show_price",
 					'type' => 'checkbox',
 					'std'  => 1
 				),
 				'css_class'              => array(
-					'name' => __( 'CSS Class', 'learpnress' ),
+					'name' => __( 'CSS Class', 'learnpress' ),
 					'id'   => "css_class",
 					'type' => 'text',
 					'std'  => ''
 				),
 				'bottom_link_text'       => array(
-					'name' => __( 'Go to Courses', 'learpnress' ),
+					'name' => __( 'Go to Courses', 'learnpress' ),
 					'id'   => "bottom_link_text",
 					'type' => 'text',
 					'std'  => 'LP Courses'
