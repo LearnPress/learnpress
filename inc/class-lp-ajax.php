@@ -49,7 +49,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'recover-order',
 				'request-become-a-teacher:nonce',
 				'upload-user-avatar',
-				'checkout',
+				'checkout:nopriv',
 				'complete-lesson',
 				'finish-course',
 				'retake-course'

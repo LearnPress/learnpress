@@ -402,7 +402,7 @@ class LP_Request {
 		/**
 		 * No requires logged in?
 		 */
-		if ( isset( $actions[1] ) ) {
+		if ( isset( $actions['nopriv'] ) ) {
 			//$action, $function, $priority = 5
 			add_action( 'learn-press/ajax/no-priv/' . $actions['action'], $function, $priority );
 		}

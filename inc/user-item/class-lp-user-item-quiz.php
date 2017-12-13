@@ -140,7 +140,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					$check['type']     = $question->get_type();
 					$check['answered'] = $answered !== false;
 
-					if ( $check['correct'] ) {
+					if ( false !== $answered && $check['correct'] ) {
 						$result['question_correct'] ++;
 						$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
 					} else {

@@ -74,8 +74,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'default'    => 'yes',
 							'type'       => 'select',
 							'options'    => array(
-								'_self'  => __( 'Self', 'learnpress' ),
-								'_blank' => __( 'New window', 'learnpress' )
+								'_self'  => __( 'Open in same window', 'learnpress' ),
+								'_blank' => __( 'Open in new window', 'learnpress' )
 							),
 							'visibility' => array(
 								'state'       => 'show',

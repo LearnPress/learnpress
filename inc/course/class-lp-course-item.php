@@ -456,6 +456,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$course = learn_press_get_course( $course_id );
 			} else {
 				$course = $this->get_course();
+				$course_id = $course ? $course->get_id() : 0;
 			}
 
 			if ( ! $user_id ) {
@@ -464,8 +465,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$user = learn_press_get_user( $user_id );
 
-			if ( $user ) {
-
+			if ( $user && $course ) {
 				$is_admin      = in_array( 'administrator', $user->get_data( 'roles' ) );
 				$block_content = $course->get_data( 'block_lesson_content' );
 
@@ -474,7 +474,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn-press/course-item/is-blocked', $blocked, $this->get_id(), $course->get_id(), $user->get_id() );
+			return apply_filters( 'learn-press/course-item/is-blocked', $blocked, $this->get_id(), $course_id, $user_id );
 		}
 
 		public function offsetExists( $offset ) {

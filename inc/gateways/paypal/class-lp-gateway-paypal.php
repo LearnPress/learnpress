@@ -106,7 +106,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$this->paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
 
 			// get settings
-			$this->settings = LP()->settings()->get_group( 'learn_press_paypal', '' );
+			$this->settings = LP()->settings()->get_group( 'paypal', '' );
+
+			$this->enabled = $this->settings->get( 'enable' );
 
 			$this->init();
 			parent::__construct();
@@ -144,10 +146,12 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				//add_action('learn_press_payment_gateway_form_paypal', array($this, 'payment_form'));
 
 				add_action( 'learn_press_web_hook_learn_press_paypal', array( $this, 'web_hook_process_paypal' ) );
-
 			}
 
-			add_filter( 'learn_press_payment_gateway_available_'. $this->id, array( $this, 'paypal_available' ), 10, 2 );
+			add_filter( 'learn_press_payment_gateway_available_' . $this->id, array(
+				$this,
+				'paypal_available'
+			), 10, 2 );
 		}
 
 		public function register_web_hook() {
@@ -354,7 +358,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 								die();
 							}
 
-						} catch ( Exception $e ) {
+						}
+						catch ( Exception $e ) {
 							return false;
 
 						}
@@ -372,7 +377,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Handle a completed payment
 		 *
 		 * @param LP_Order $order
-		 * @param array $request
+		 * @param array    $request
 		 */
 		protected function payment_status_completed( $order, $request ) {
 

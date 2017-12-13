@@ -142,7 +142,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 * Set answer option by offset.
 		 *
 		 * @param int|string $offset
-		 * @param mixed $value
+		 * @param mixed      $value
 		 */
 		public function offsetSet( $offset, $value ) {
 			$this->_answers[ $offset ] = $value;
@@ -262,7 +262,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * LP_Question_Answer_Option constructor.
 		 *
 		 * @param LP_Question $question
-		 * @param mixed $data
+		 * @param mixed       $data
 		 */
 		public function __construct( $question, $data ) {
 			$this->_data     = $data;
@@ -398,6 +398,14 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 */
 		public function option_class( $more = '' ) {
 			echo 'class="' . join( ' ', $this->get_class( $more ) ) . '"';
+		}
+
+		public function get_data() {
+			return $this->_data;
+		}
+
+		public function __toString() {
+			return (string) $this->_data['text'];
 		}
 
 		/**

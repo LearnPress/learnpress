@@ -52,7 +52,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $enabled = 'yes';
+	public $enabled = 'no';
 
 	/**
 	 * @var null

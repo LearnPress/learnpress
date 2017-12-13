@@ -392,6 +392,7 @@ class LP_Checkout {
 		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
 			return false;
 		}
+
 		/**
 		 * Set default fields from request
 		 */
@@ -406,7 +407,6 @@ class LP_Checkout {
 		}
 		// do checkout
 		$this->process_checkout();
-
 		return true;
 	}
 

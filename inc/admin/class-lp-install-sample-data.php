@@ -595,11 +595,15 @@ class LP_Install_Sample_Data {
 			$answers[ $at ]['is_true'] = 'yes';
 			$answers[ $at ]['text']    .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
 		} else {
-			foreach ( $answers as $k => $v ) {
-				$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';
+			$has_true_option = false;
+			while ( ! $has_true_option ) {
+				foreach ( $answers as $k => $v ) {
+					$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';
 
-				if ( $answers[ $k ]['is_true'] === 'yes' ) {
-					$answers[ $k ]['text'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+					if ( $answers[ $k ]['is_true'] === 'yes' ) {
+						$answers[ $k ]['text'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+						$has_true_option       = true;
+					}
 				}
 			}
 		}
