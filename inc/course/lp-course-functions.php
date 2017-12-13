@@ -729,8 +729,8 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 
 			$query = $wpdb->prepare("
 			    SELECT section.section_course_id
-                FROM wp_learnpress_sections AS section
-                INNER JOIN wp_learnpress_section_items AS item
+                FROM {$wpdb->learnpress_sections} AS section
+                INNER JOIN {$wpdb->learnpress_section_items} AS item
                 ON item.section_id = section.section_id
                 WHERE item.item_id = %d
                 LIMIT 1

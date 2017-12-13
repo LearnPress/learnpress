@@ -71,7 +71,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				global $wpdb;
 				$query = "
 				        SELECT post_status, COUNT( * ) AS num_posts 
-                        FROM wp_posts 
+                        FROM {$wpdb->posts}
                         WHERE post_type = %s
                         AND post_parent = %d
 				    ";
@@ -356,7 +356,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$wpdb->query( $sql );
 			}
 			$sql        = "
-				SELECT meta_id FROM wp_postmeta WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
+				SELECT meta_id FROM {$wpdb->postmeta} WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
 			";
 			$sql        = $wpdb->prepare( $sql, $post_id, '_user_id' );
 			$keep_users = $wpdb->get_col( $sql );

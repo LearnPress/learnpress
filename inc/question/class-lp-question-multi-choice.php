@@ -56,7 +56,8 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 		 */
 		public function check( $user_answer = null ) {
 			$return = parent::check();
-
+			ob_start();
+			echo "[[[[[[[[[[$this->get_id()";
 			settype( $user_answer, 'array' );
 
 			if ( $answers = $this->get_answers() ) {
@@ -67,12 +68,16 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 					$correct  = true;
 					$selected = $this->is_selected_option( $option, $user_answer );
 
+					echo 'xxxxx';learn_press_debug($selected, $option, $user_answer);
+
 					// If the option is FALSE but user selected => WRONG
 					if ( $selected && $option['is_true'] !== 'yes' ) {
 						$correct = false;
+						echo "AAAAA";
 					} // If option is TRUE but user did not select => WRONG
 					elseif ( ! $selected && $option['is_true'] === 'yes' ) {
 						$correct = false;
+						echo "bbbbbb";
 					}
 
 					// Only one option is selected wrong
@@ -82,12 +87,15 @@ if ( ! class_exists( 'LP_Question_Multi_Choice' ) ) {
 				}
 				if ( $correct ) {
 					$return = array(
-						'correct' => false,
+						'correct' => true,
 						'mark'    => floatval( $this->get_mark() )
 					);
 				}
 			}
-
+			$output = ob_start();
+			if($this->get_id()==10460){
+				echo $output;die();
+			}
 			return $return;
 		}
 

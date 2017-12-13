@@ -322,8 +322,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			SELECT *
 			FROM(
 				SELECT ui.*, uim.meta_value as `ext_status`
-				FROM wp_learnpress_user_items ui
-				LEFT JOIN wp_learnpress_user_itemmeta uim ON uim.learnpress_user_item_id = ui.user_item_id AND uim.meta_key = %s
+				FROM {$wpdb->learnpress_user_items} ui
+				LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = ui.user_item_id AND uim.meta_key = %s
 				WHERE item_type = %s AND item_id IN(" . join( ',', $format ) . ") AND user_id = %d
 			) X
 			ORDER BY item_id, user_item_id DESC
