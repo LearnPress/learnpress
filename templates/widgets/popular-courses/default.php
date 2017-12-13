@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit();
 
 //widget instance
 $instance = $this->instance;
-
+var_dump($this->courses);
 ?>
 
 <div class="archive-course-widget-outer <?php esc_attr_e( $instance["css_class"] ); ?>">

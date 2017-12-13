@@ -51,6 +51,7 @@ class LP_Datetime extends DateTime {
 		}
 
 		if ( ! ( $tz instanceof DateTimeZone ) ) {
+
 			if ( ( $tz === null ) ) {
 				$tz = new DateTimeZone( self::timezone_string() );
 			} elseif ( is_string( $tz ) && $tz ) {
@@ -67,13 +68,20 @@ class LP_Datetime extends DateTime {
 		}
 
 		date_default_timezone_set( 'UTC' );
-		$date = is_numeric( $date ) ? date( 'c', $date ) : $date;
+		$date = is_numeric( $date ) ? date( 'Y-m-d H:i:s', $date ) : $date;
 
 		parent::__construct( $date, $tz );
 
 		date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
+	}
+
+	/**
+	 * Check if time is exceeded with current time
+	 */
+	public function is_exceeded( $interval = 0 ) {
+		return $this->getTimestamp() >= current_time( 'timestamp' ) + $interval;
 	}
 
 	public static function timezone_string() {
@@ -88,13 +96,14 @@ class LP_Datetime extends DateTime {
 
 		$utc_offset *= 3600;
 
+
 		if ( $timezone = timezone_name_from_abbr( '', $utc_offset ) ) {
 			return $timezone;
 		}
 
 		foreach ( timezone_abbreviations_list() as $abbr ) {
 			foreach ( $abbr as $city ) {
-				if ( ((bool) date( 'I' ) === (bool) $city['dst']) && $city['timezone_id'] && (intval( $city['offset'] ) === $utc_offset) ) {
+				if ( ( (bool) date( 'I' ) === (bool) $city['dst'] ) && $city['timezone_id'] && ( intval( $city['offset'] ) === $utc_offset ) ) {
 					return $city['timezone_id'];
 				}
 			}
@@ -178,7 +187,7 @@ class LP_Datetime extends DateTime {
 	 * @return  string  The date as a formatted string.
 	 */
 	public function __toString() {
-		return (string) parent::format( self::$format );
+		return (string) $this->format( self::$format, true );
 	}
 
 	/**
@@ -193,6 +202,7 @@ class LP_Datetime extends DateTime {
 		if ( '0000-00-00 00:00:00' === $this->raw_date ) {
 			return '';
 		}
+
 		if ( $local == false && ! empty( self::$gmt ) ) {
 			parent::setTimezone( self::$gmt );
 		}
@@ -268,12 +278,27 @@ class LP_Datetime extends DateTime {
 	}
 
 	public function getTimestamp( $local = true ) {
+		$this->setGMT( $local );
 		$timestamp = parent::getTimestamp();
+		$this->setGMT( $local, false );
+
 		if ( $local ) {
 			$timestamp += $this->getOffset();
 		}
 
 		return $timestamp;
+	}
+
+	protected function setGMT( $local = false, $gmt = true ) {
+		if ( $gmt ) {
+			if ( $local == false && ! empty( self::$gmt ) ) {
+				parent::setTimezone( self::$gmt );
+			}
+		} else {
+			if ( $local == false && ! empty( $this->tz ) ) {
+				parent::setTimezone( $this->tz );
+			}
+		}
 	}
 
 	public static function getSqlNullDate() {

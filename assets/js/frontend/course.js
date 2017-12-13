@@ -431,22 +431,17 @@
 
             $('#learn-press-content-item').appendTo($body);
 
-            setTimeout(function () {
-                var $cs = $body.find('.curriculum-sections').parent();
-                $cs.scrollTo($cs.find('.course-item.current'), 100);
-            }, 300);
-
             if ($('#wpadminbar').length) {
                 $body.addClass('wpadminbar');
                 contentTop = 32;
             }
+
             initScrollbar();
             fitVideo();
 
             fullScreen = window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
 
             if (fullScreen) {
-
                 var curriculumWidth = getCurriculumWidth();
                 $body.addClass('full-screen-content-item');
                 $contentItem.css('left', 0);
@@ -458,6 +453,10 @@
                 toggleEventShowCurriculum();
             }
 
+            setTimeout(function () {
+                var $cs = $body.find('.curriculum-sections').parent();
+                $cs.scrollTo($cs.find('.course-item.current'), 100);
+            }, 300);
 
             $body.css('opacity', 1);
 

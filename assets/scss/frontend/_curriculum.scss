@@ -246,7 +246,6 @@ ul.learn-press-nav-tabs {
                     .course-item-status {
                         color: #DDD;
                         margin-left: 5px;
-                        font-family: fontawesome;
                         display: none;
                         @include border-radius(50%);
                         @include box-sizing(border-box);
@@ -299,14 +298,19 @@ ul.learn-press-nav-tabs {
                 }
                 &.item-preview {
                     .course-item-status {
+                        background: #00adff;
+                        font-style: normal;
+                        @include border-radius(3px);
                         &:before {
-                            content: "\f09c";
-                            color: #00adff;
+                            content: attr(data-preview); // "\f09c";
+                            color: #FFF; // #00adff;
                         }
                     }
                 }
+
                 &.item-locked {
                     .course-item-status {
+                        display: inline-block;
                         &:before {
                             content: "\f023";
                             color: #ab6060;
@@ -369,6 +373,12 @@ ul.learn-press-nav-tabs {
                     &:before {
                         top: 0;
                         height: 100%;
+                    }
+                }
+
+                &:not(.item-preview) {
+                    .course-item-status {
+                        font-family: fontawesome;
                     }
                 }
             }

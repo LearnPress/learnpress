@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/section/item-meta.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -17,9 +17,14 @@ defined( 'ABSPATH' ) || exit();
 
 <div class="course-item-meta">
 
-    <?php do_action( 'learn-press/course-section-item/before-' . $item->get_item_type() . '-meta', $item ); ?>
+	<?php do_action( 'learn-press/course-section-item/before-' . $item->get_item_type() . '-meta', $item ); ?>
 
-    <i class="fa item-meta course-item-status trans"></i>
+	<?php if ( $item->is_preview() ) { ?>
+        <i class="item-meta course-item-status"
+           data-preview="<?php esc_html_e( 'Preview', 'learnpress' ); ?>"></i>
+	<?php } else { ?>
+        <i class="fa item-meta course-item-status trans"></i>
+	<?php } ?>
 
 	<?php do_action( 'learn-press/course-section-item/after-' . $item->get_item_type() . '-meta', $item ); ?>
 

@@ -76,8 +76,9 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 					if ( empty( $template ) ) {
 						continue;
 					}
+
 					$local_file    = ! empty( $field["template_{$template_type}_local"] ) ? $field["template_{$template_type}_local"] : null;//$this->get_theme_template_file( $template, $this->template_path );
-					$template_file = $field['template_base'] . $template;//$this->template_base . $template;
+                    $template_file = $field['template_base'] . $template;//$this->template_base . $template;
 					$template_dir  = $field['template_path'];//$this->template_path;//learn_press_template_path();
 					$classes       = array( 'learn-press-email-template' );
 					//extract( $field['extra'] );

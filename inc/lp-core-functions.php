@@ -713,12 +713,34 @@ function learn_press_get_course_duration_support() {
 	return apply_filters(
 		'learn_press_course_duration_support',
 		array(
-			'minute' => __( 'Minute(s)' ),
-			'hour'   => __( 'Hour(s)' ),
-			'day'    => __( 'Day(s)' ),
-			'week'   => __( 'Week(s)' )
+			'minute' => __( 'Minute(s)', 'learnpress' ),
+			'hour'   => __( 'Hour(s)', 'learnpress' ),
+			'day'    => __( 'Day(s)', 'learnpress' ),
+			'week'   => __( 'Week(s)', 'learnpress' )
 		)
 	);
+}
+
+function learn_press_number_to_string_time( $number ) {
+	$str = $number;
+	if ( preg_match( '!([0-9.]+) (minute|hour|day|week)!', $number, $matches ) ) {
+		switch ( $matches[2] ) {
+			case 'hour':
+				$minute = $matches[1] * 60;
+				$str    = sprintf( '%s hour %s minute', absint( $minute / 60 ), $minute % 60 );
+				break;
+			case 'day':
+				$hour = $matches[1] * 24;
+				$str    = sprintf( '%s day %s hour', absint( $hour / 24 ), $hour % 24 );
+				break;
+			case 'week':
+				$day = $matches[1] * 7;
+				$str    = sprintf( '%s week %s day', absint( $day / 7 ), $day % 7 );
+				break;
+		}
+	}
+
+	return $str;
 }
 
 function learn_press_human_time_to_seconds( $time, $default = '' ) {

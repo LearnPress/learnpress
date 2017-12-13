@@ -9,14 +9,29 @@ abstract class LP_Abstract_Assets {
 
 	protected $_cache = '';
 
+	/**
+	 * @var array
+	 */
 	protected $_scripts = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_styles = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_enqueue_scripts = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_enqueue_styles = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_script_data = array();
 
 	/**
@@ -40,10 +55,6 @@ abstract class LP_Abstract_Assets {
 	}
 
 	abstract function load_scripts();
-
-//	public function do_register() {
-//
-//	}
 
 	/**
 	 * Default scripts
@@ -234,20 +245,6 @@ abstract class LP_Abstract_Assets {
 			}
 
 		}
-		// admin
-
-		//$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, $ver, 1 );
-		//$scripts->add( 'learn-press-utils', $default_path . 'js/admin/utils' . $suffix . '.js', $deps, $ver, 1 );
-
-		/*
-		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), $ver, 1 );
-		$scripts->add( 'learn-press-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-admin-tabs', $default_path . 'js/admin/admin-tabs' . $suffix . '.js', $deps, $ver, 1 );*/
-
-		//$scripts->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, $ver, 1 );
-		//$scripts->add( 'learn-press-tipsy', $default_path . 'js/vendor/jquery-tipsy/jquery.tipsy.js' );
 	}
 
 	public function get_script_var_name( $handle ) {
