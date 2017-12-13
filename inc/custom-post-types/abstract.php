@@ -57,6 +57,11 @@ abstract class LP_Abstract_Post_Type {
 	protected $_default_metas = array();
 
 	/**
+	 * @var array
+	 */
+	protected $_remove_features = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param string
@@ -105,6 +110,28 @@ abstract class LP_Abstract_Post_Type {
 
 		if ( $args['default_meta'] ) {
 			$this->_default_metas = $args['default_meta'];
+		}
+
+		add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
+	}
+
+	public function maybe_remove_features() {
+		if ( ! $this->_remove_features ) {
+			return;
+		}
+
+		foreach ( $this->_remove_features as $feature ) {
+			remove_post_type_support( $this->_post_type, $feature );
+		}
+	}
+
+	public function remove_feature( $feature ) {
+		if ( is_array( $feature ) ) {
+			foreach ( $feature as $fea ) {
+				$this->remove_feature( $fea );
+			}
+		} else {
+			$this->_remove_features[] = $feature;
 		}
 	}
 
@@ -184,7 +211,7 @@ abstract class LP_Abstract_Post_Type {
 	 * Ouput meta boxes.
 	 *
 	 * @param WP_Post $post
-	 * @param mixed $box
+	 * @param mixed   $box
 	 */
 	public function _do_output_meta_box( $post, $box ) {
 		$callback = $this->_meta_boxes[ $box['id'] ][2];

@@ -31,7 +31,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		public function __construct( $post_type ) {
 
 			$this->add_map_method( 'before_delete', 'before_delete_lesson' );
-
 			// hide View Lesson link if not assigned to course
 			add_action( 'admin_footer', array( $this, 'hide_view_lesson_link' ) );
 
@@ -42,6 +41,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * Register lesson post type.
 		 */
 		public function register() {
+
 			return
 				array(
 					'labels'             => array(
@@ -72,16 +72,13 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'supports'           => array(
 						'title',
 						'editor',
-						'thumbnail',
 						'post-formats',
 						'revisions',
 						'comments'
-						//'excerpt'
 					),
 					'hierarchical'       => true,
 					'rewrite'            => array( 'slug' => 'lessons', 'hierarchical' => true, 'with_front' => false )
 				);
-
 
 		}
 
@@ -206,7 +203,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			switch ( $name ) {

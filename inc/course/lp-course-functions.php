@@ -602,7 +602,7 @@ if ( ! function_exists( 'learn_press_get_course_item_url' ) ) {
 	function learn_press_get_course_item_url( $course_id = null, $item_id = null ) {
 		$course = learn_press_get_course( $course_id );
 
-		return $course->get_item_link( $item_id );
+		return $course ? $course->get_item_link( $item_id ) : false;
 	}
 }
 

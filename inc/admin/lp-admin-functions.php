@@ -84,7 +84,7 @@ if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
 			'payments'      => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
 			'pages'         => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
 			'emails'        => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
-			'miscellaneous' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-miscellaneous.php",
+			'advanced' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-advanced.php",
 		);
 
 		// Deprecated

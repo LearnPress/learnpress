@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class LP_Settings_Miscellaneous extends LP_Abstract_Settings_Page {
+class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->id   = 'miscellaneous';
-		$this->text = __( 'Miscellaneous', 'learnpress' );
+		$this->id   = 'advanced';
+		$this->text = __( 'Advanced', 'learnpress' );
 
 		parent::__construct();
 
@@ -92,4 +92,4 @@ class LP_Settings_Miscellaneous extends LP_Abstract_Settings_Page {
 	}
 }
 
-return new LP_Settings_Miscellaneous();
+return new LP_Settings_Advanced();
