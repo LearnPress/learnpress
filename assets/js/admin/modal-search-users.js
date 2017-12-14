@@ -48,7 +48,8 @@
                             params: {}
                         }
                     ).then(function (response) {
-                        var result = LP.parseJSON(response.body);
+
+                        var result = LP.parseJSON(response.body || response.bodyText);
                         that.hasUsers = !!_.size(result.users);
 
                         $(that.$el).find('.search-results').html(result.html).find('input[type="checkbox"]').each(function () {

@@ -667,7 +667,7 @@ if (typeof window.LP === 'undefined') {
             return (type || "json") === "json" ? this.parseJSON(response) : response;
         },
         parseJSON: function (data) {
-            var m = data.match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
+            var m = (data+'').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
             try {
                 if (m) {
                     data = $.parseJSON(m[1]);

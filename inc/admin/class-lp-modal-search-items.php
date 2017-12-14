@@ -77,10 +77,10 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 				'query_args'
 			), 10, 3 );
 
-			add_filter( 'learn-press/modal-search-items/not-found', array(
-				$this,
-				'_modal_search_items_not_found'
-			), 10, 2 );
+//			add_filter( 'learn-press/modal-search-items/not-found', array(
+//				$this,
+//				'_modal_search_items_not_found'
+//			), 10, 2 );
 		}
 
 		/**

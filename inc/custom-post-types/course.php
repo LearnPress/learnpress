@@ -596,7 +596,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 				$quiz_passing_condition_html = '
 					<div id="passing-condition-quiz-result">
-					<input type="number" name="_lp_course_result_final_quiz_passing_condition" value="' . absint( $passing_grade ) . '" />
+					<input type="number" name="_lp_course_result_final_quiz_passing_condition" value="' . absint( $passing_grade ) . '" /> %
 					<p>' . __( 'Current passing grade of Final quiz, you can change it here. This value will be applied for Passing Grade of the course.', 'learnpress' ) . '</p>
 					</div>
 				';

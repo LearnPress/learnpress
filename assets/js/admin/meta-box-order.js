@@ -70,7 +70,7 @@
                     params: {}
                 }
             ).then(function (response) {
-                var result = LP.parseJSON(response.body);
+                var result = LP.parseJSON(response.body || response.bodyText);
                 $('.order-subtotal').html(result.order_data.subtotal_html);
                 $('.order-total').html(result.order_data.total_html);
             });
@@ -113,7 +113,7 @@
                                 params: {}
                             }
                         ).then(function (response) {
-                            var result = LP.parseJSON(response.body),
+                            var result = LP.parseJSON(response.body || response.bodyText),
                                 $noItem = $listItems.find('.no-order-items').hide();
                             $(result.item_html).insertBefore($noItem);
                             $('.order-subtotal').html(result.order_data.subtotal_html);

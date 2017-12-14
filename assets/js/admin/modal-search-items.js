@@ -45,7 +45,7 @@
                             params: {}
                         }
                     ).then(function (response) {
-                        var result = LP.parseJSON(response.body);
+                        var result = LP.parseJSON(response.body || response.bodyText);
                         that.hasItems = !!_.size(result.items);
 
                         $(that.$el).find('.search-results').html(result.html).find('input[type="checkbox"]').each(function () {
@@ -91,9 +91,9 @@
                         }
                     }
                 },
-                addItems:function(){
+                addItems: function () {
                     var close = true;
-                    if(this.callbacks && this.callbacks.addItems){
+                    if (this.callbacks && this.callbacks.addItems) {
                         this.callbacks.addItems.call(this);
                     }
                     $(document).triggerHandler('learn-press/add-order-items', this.selected);
@@ -124,7 +124,7 @@
                 close: function () {
                     this.show = false;
                 },
-                focusSearch: _.debounce(function(){
+                focusSearch: _.debounce(function () {
                     $('input[name="search"]', this.$el).focus();
                 }, 200)
             }
