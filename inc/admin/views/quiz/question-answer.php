@@ -22,7 +22,7 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                     <th class="actions"></th>
                 </tr>
                 </thead>
-                <draggable :list="question.answers" :element="'tbody'" @end="sort">
+                <draggable :list="question.answers" :element="'tbody'" @end="sort" :options="{handle: '.sort'}">
                     <lp-quiz-question-answer-option v-for="(answer, index) in question.answers"
                                                     :question="question" :answer="answer" :index="index" :key="index"
                                                     @changeCorrect="changeCorrect"
