@@ -270,8 +270,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					learn_press_item_meta_format( $post_id, __( 'Standard', 'learnpress' ) );
 					break;
 				case 'duration':
-					$duration = absint( get_post_meta( $post_id, '_lp_duration', true ) ) * 60;
-					if ( $duration >= 600 ) {
+					//$duration = absint( get_post_meta( $post_id, '_lp_duration', true ) ) * 60;
+				    $duration = strtotime( get_post_meta( $post_id, '_lp_duration', true ),0 );
+					if( $duration > 86400 ) {
+					    echo learn_press_seconds_to_weeks( $duration );
+					} elseif ( $duration >= 600 ) {
 						echo date( 'H:i:s', $duration );
 					} elseif ( $duration > 0 ) {
 						echo date( 'i:s', $duration );
