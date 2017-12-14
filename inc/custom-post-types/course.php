@@ -477,10 +477,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( is_super_admin() ) {
 				$default_tabs['author'] = new RW_Meta_Box( self::author_meta_box() );
 			}
+
+			$course_tabs = apply_filters( 'learn-press/admin-course-tabs', $default_tabs );
 			new LP_Meta_Box_Tabs(
 				array(
 					'post_type' => LP_COURSE_CPT,
-					'tabs'      => $default_tabs,
+					'tabs'      => $course_tabs,
 					'title'     => __( 'Course Settings', 'learnpress' )
 				)
 			);

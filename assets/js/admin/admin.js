@@ -133,31 +133,6 @@
         });
     });
 
-
-    $(document).on('click', '.wp-list-table .lp-duplicate-row-action', function (e) {
-        e.preventDefault();
-
-        var _this = $(this),
-            _tr = _this.closest('tr'),
-            _id = _tr.find('.check-column input[type="checkbox"]').val(),
-            data = {
-                id: _id,
-                'lp-ajax': 'duplicator'
-            };
-
-        $.ajax({
-            url: '',
-            type: 'POST',
-            data: data
-        }).done(function (res) {
-            if (typeof res.redirect !== 'undefined') {
-                window.location.href = res.redirect;
-            }
-        });
-
-        return false;
-    })
-
     var LP_Admin = window.LP_Admin = {
         init: function () {
             var $doc = $(document);

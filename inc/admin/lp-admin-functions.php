@@ -25,7 +25,7 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 		global $post;
 
 		if ( LP_COURSE_CPT == $post->post_type ) {
-			$duplicate_link = admin_url( 'edit.php?post_type=lp_course&action=lp-duplicate-course&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
+			$duplicate_link = admin_url( 'edit.php?post_type=' . LP_COURSE_CPT . '&lp-ajax=duplicator&id=' . $post->ID );
 			$duplicate_link = array(
 				array(
 					'link'  => $duplicate_link,
@@ -48,17 +48,17 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_QUIZ_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$url                                = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
+			$url                                = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-ajax=duplicator&id=' . $post->ID );
 			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_QUESTION_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$url                                = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
+			$url                                = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-ajax=duplicator&id=' . $post->ID );
 			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_LESSON_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$url                                = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
+			$url                                = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-ajax=duplicator&id=' . $post->ID );
 			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		}
@@ -78,12 +78,12 @@ if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
 	 */
 	function learn_press_settings_tabs_array() {
 		$default_tabs = array(
-			'general'       => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
-			'courses'       => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
-			'profile'       => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
-			'payments'      => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
-			'pages'         => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
-			'emails'        => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
+			'general'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
+			'courses'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
+			'profile'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
+			'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
+			'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
+			'emails'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
 			'advanced' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-advanced.php",
 		);
 
@@ -138,7 +138,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array      $args
+ * @param array $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -173,7 +173,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array      $args
+ * @param array $args
  *
  * @return mixed|string
  */
@@ -1673,9 +1673,9 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param null  $post_id
+	 * @param null $post_id
 	 * @param array $args
-	 * @param bool  $meta
+	 * @param bool $meta
 	 *
 	 * @return bool|mixed
 	 */

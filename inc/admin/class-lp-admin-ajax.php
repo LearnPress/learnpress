@@ -1015,40 +1015,35 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				$new_item_id = '';
 
+				$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => 'publish' ) );
+
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
 						$curd        = new LP_Course_CURD();
-						$new_item_id = $curd->duplicate( $args['id'], array( 'post_status' => 'publish' ) );
+						$new_item_id = $curd->duplicate( $args['id'], $duplicate_args );
 						break;
 					case LP_LESSON_CPT:
 						$curd        = new LP_Lesson_CURD();
-						$new_item_id = $curd->duplicate( $args['id'], array( 'post_status' => 'publish' ) );
+						$new_item_id = $curd->duplicate( $args['id'], $duplicate_args );
 						break;
 					case LP_QUIZ_CPT:
 						$curd        = new LP_Quiz_CURD();
-						$new_item_id = $curd->duplicate( $args['id'], array( 'post_status' => 'publish' ) );
+						$new_item_id = $curd->duplicate( $args['id'], $duplicate_args );
 						break;
 					case LP_QUESTION_CPT:
 						$curd        = new LP_Question_CURD();
-						$new_item_id = $curd->duplicate( $args['id'], array( 'post_status' => 'publish' ) );
+						$new_item_id = $curd->duplicate( $args['id'], $duplicate_args );
 						break;
 					default:
 						break;
 				}
 
-				$results = array( 'redirect' => admin_url( 'edit.php?post_type=' . $post_type ) );
-
 				if ( is_wp_error( $new_item_id ) ) {
 					LP_Admin_Notice::add_redirect( $new_item_id->get_error_message(), 'error' );
 				} else {
-					LP_Admin_Notice::add_redirect( sprintf( '<strong>%s</strong> %s', get_the_title( $args['id'] ), __( ' has duplicated', 'learnpress' ) ), 'updated' );
-					$results['redirect'] = admin_url( 'post.php?post=' . $new_item_id . '&action=edit' );
+					wp_redirect( admin_url( 'post.php?post=' . $new_item_id . '&action=edit' ) );
 				}
 
-				wp_send_json( $results );
-
-
-				die();
 			}
 		}
 
