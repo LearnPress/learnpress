@@ -220,7 +220,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title'      => __( 'Size', 'learnpress' ),
 							'id'         => 'profile_picture_thumbnail_size',
-							'default'    => '',
+							'default'    => array( 'width' => 200, 'height' => 200 ),
 							'type'       => 'image-dimensions',
 							'visibility' => array(
 								'state'       => 'show',
@@ -231,7 +231,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 										'value'   => 'yes'
 									)
 								)
-							)
+							),
+							'desc'       => __( 'The height and width of avatar should be equal.', 'learnpress' )
 						)
 					)
 				),

@@ -272,11 +272,21 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
 
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
-
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'load-post.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), 0 );
+			add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 999 );
+		}
+
+		/**
+		 * Maybe flush rewrite rules
+		 */
+		public function maybe_flush_rewrite_rules() {
+			if ( get_option( 'learn-press-flush-rewrite-rules' ) == 'yes' ) {
+				flush_rewrite_rules();
+				delete_option( 'learn-press-flush-rewrite-rules' );
+			}
 		}
 
 		/**
@@ -306,7 +316,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @hook learn_press_activate
+		 * @hook  learn_press_activate
 		 */
 		public function on_activate() {
 			do_action( 'learn-press/activate', $this );
@@ -410,7 +420,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public function view_log(){
+		public function view_log() {
 			if ( ! empty( $_REQUEST['view-log'] ) ) {
 				$log = $_REQUEST['view-log'];
 				echo '<pre>';
@@ -586,6 +596,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			return $this->plugin_url( "assets/images/{$file}" );
+		}
+
+		public function flush_rewrite_rules() {
+			update_option( 'learn-press-flush-rewrite-rules', 'yes' );
+			flush_rewrite_rules();
 		}
 
 		/**

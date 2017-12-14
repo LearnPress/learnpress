@@ -280,12 +280,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 								'callback' => array( $this, 'tab_order_details' ),
 								'priority' => 10
 							),
-							'avatar'            => array(
-								'title'    => __( 'Avatar', 'learnpress' ),
-								'callback' => array( $this, 'tab_order_details' ),
-								'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
-								'priority' => 20
-							),
 							'change-password'   => array(
 								'title'    => __( 'Password', 'learnpress' ),
 								'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
@@ -296,6 +290,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'priority' => 35
 					)
 				);
+
+				if ( $this->is_enable_avatar() ) {
+					$defaults['settings']['sections']['avatar'] = array(
+						'title'    => __( 'Avatar', 'learnpress' ),
+						'callback' => array( $this, 'tab_order_details' ),
+						'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
+						'priority' => 20
+					);
+				}
 
 				$tabs = apply_filters( 'learn-press/profile-tabs', $defaults );
 
@@ -335,6 +338,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return $tabs;
+		}
+
+		/**
+		 * Enable custom avatar?
+		 *
+		 * @return bool
+		 */
+		public function is_enable_avatar() {
+			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
 		}
 
 		protected function _sort_tabs( $a, $b ) {
@@ -643,7 +655,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$return = learn_press_update_user_profile_basic_information( true );
 					break;
 				case 'avatar':
-					$return = learn_press_update_user_profile_avatar( true );
+					if ( $this->is_enable_avatar() ) {
+						$return = learn_press_update_user_profile_avatar( true );
+					}
 					break;
 				case 'password':
 					$return = learn_press_update_user_profile_change_password( true );

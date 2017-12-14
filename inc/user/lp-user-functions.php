@@ -99,7 +99,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	/**
 	 * Get user by ID. Return false if the user does not exists.
 	 *
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $current
 	 *
 	 * @return LP_User|mixed
@@ -377,15 +377,15 @@ add_action( 'user_register', 'learn_press_update_user_teacher_role', 10, 1 );
 /**
  * Update data into table learnpress_user_items.
  *
- * @param array $fields - Fields and values to be updated.
+ * @param array $fields             - Fields and values to be updated.
  *                                  Format: array(
  *                                  field_name_1 => value 1,
  *                                  field_name_2 => value 2,
  *                                  ....
  *                                  field_name_n => value n
  *                                  )
- * @param mixed $where - Optional. Fields with values for conditional update with the same format of $fields.
- * @param bool $update_cache - Optional. Should be update to cache or not (since 3.0.0).
+ * @param mixed $where              - Optional. Fields with values for conditional update with the same format of $fields.
+ * @param bool  $update_cache       - Optional. Should be update to cache or not (since 3.0.0).
  *
  * @return mixed
  */
@@ -540,7 +540,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
  * Get user item row(s) from user items table by multiple WHERE conditional
  *
  * @param array|int $where
- * @param bool $single
+ * @param bool      $single
  *
  * @return array
  */
@@ -593,9 +593,9 @@ function learn_press_get_user_item( $where, $single = true ) {
 /**
  * Get user item meta from user_itemmeta table
  *
- * @param int $user_item_id
+ * @param int    $user_item_id
  * @param string $meta_key
- * @param bool $single
+ * @param bool   $single
  *
  * @return mixed
  */
@@ -611,9 +611,9 @@ function learn_press_get_user_item_meta( $user_item_id, $meta_key, $single = tru
 /**
  * Add user item meta into table user_itemmeta
  *
- * @param int $user_item_id
+ * @param int    $user_item_id
  * @param string $meta_key
- * @param mixed $meta_value
+ * @param mixed  $meta_value
  * @param string $prev_value
  *
  * @return false|int
@@ -625,9 +625,9 @@ function learn_press_add_user_item_meta( $user_item_id, $meta_key, $meta_value, 
 /**
  * Update user item meta to table user_itemmeta
  *
- * @param int $user_item_id
+ * @param int    $user_item_id
  * @param string $meta_key
- * @param mixed $meta_value
+ * @param mixed  $meta_value
  * @param string $prev_value
  *
  * @return bool|int
@@ -640,10 +640,10 @@ function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_valu
 /**
  * Update user item meta to table user_itemmeta
  *
- * @param int $object_id
+ * @param int    $object_id
  * @param string $meta_key
- * @param mixed $meta_value
- * @param bool $delete_all
+ * @param mixed  $meta_value
+ * @param bool   $delete_all
  *
  * @return bool|int
  */
@@ -1064,20 +1064,34 @@ function learn_press_user_update_user_info() {
 
 if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	/**
-	 * @param        $avatar
-	 * @param string $id_or_email
-	 * @param array $size
+	 * Filter the avatar
 	 *
-	 * @return string|void
+	 * @param string $avatar
+	 * @param string $id_or_email
+	 * @param array  $size
+	 *
+	 * @return string
 	 */
 	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size ) {
+
+		$profile = LP_Profile::instance();
+
+		if ( ! $profile->is_enable_avatar() ) {
+			return $avatar;
+		}
+
 		if ( ( isset( $size['gravatar'] ) && $size['gravatar'] ) || ( $size['default'] && $size['force_default'] ) ) {
 			return $avatar;
 		}
+
 		$user_id = 0;
+
+		/**
+		 * Get the ID of user from $id_or_email
+		 */
 		if ( ! is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
 			if ( $user = get_user_by( 'email', $id_or_email ) ) {
-				$user_id = $user->get_id();
+				$user_id = $user->ID;
 			}
 		} elseif ( is_numeric( $id_or_email ) ) {
 			$user_id = $id_or_email;
@@ -1085,18 +1099,23 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 			$user_id = $id_or_email->user_id;
 		} elseif ( is_object( $id_or_email ) && $id_or_email instanceof WP_Comment ) {
 			if ( $user = get_user_by( 'email', $id_or_email->comment_author_email ) ) {
-				$user_id = $user->get_id();
+				$user_id = $user->ID;
 			}
 		}
+
 		if ( ! $user_id ) {
 			return $avatar;
 		}
+
 		$user = LP_User_Factory::get_user( $user_id );
-		if ( $profile_picture_src = $user->get_upload_profile_src() ) {// $user_profile_picture_url . $profile_picture;
+
+		if ( $profile_picture_src = $user->get_upload_profile_src() ) {
 			$lp           = LP();
 			$lp_setting   = $lp->settings;
 			$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );
 			$img_size     = '';
+
+			// Get avatar size
 			if ( ! is_array( $size ) ) {
 				if ( $size === 'thumbnail' ) {
 					$img_size = '';
@@ -1495,7 +1514,8 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 				return $return;
 			}
 		}
-	} catch ( Exception $ex ) {
+	}
+	catch ( Exception $ex ) {
 		return $wp_error ? new WP_Error( 'UPDATE_PROFILE_ERROR', $ex->getMessage() ) : false;
 	}
 }
@@ -1651,7 +1671,8 @@ function learn_press_get_profile( $for_user = 0 ) {
 				}
 			}
 		}
-	} catch ( Exception $ex ) {
+	}
+	catch ( Exception $ex ) {
 		return new WP_Error( $ex->getMessage() );
 	}
 
@@ -1688,9 +1709,9 @@ function learn_press_profile_list_display_names( $args = '' ) {
 /**
  * Remove items from learnpress_user_items.
  *
- * @param int $user_id
- * @param int $item_id
- * @param int $course_id
+ * @param int  $user_id
+ * @param int  $item_id
+ * @param int  $course_id
  * @param bool $include_course - Optional. If TRUE then remove course and it's items
  */
 function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include_course = false ) {
@@ -1727,7 +1748,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 /**
  * Get user profile link
  *
- * @param int $user_id
+ * @param int  $user_id
  * @param null $tab
  *
  * @return mixed|string
@@ -1751,22 +1772,30 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		LP_User_Factory::$_deleted_users[] = $user_id;
 	}
 
-	$user = learn_press_get_current_user( false );
+	$user = learn_press_get_user( $user_id );
 
 	if ( ! $user ) {
 		return '';
 	}
+
 	global $wp_query;
 	$args = array(
-		'user' => $user->get_data( 'user_login' )
+		'user' => $user->get_username()
 	);
+
 	if ( isset( $args['user'] ) ) {
 		if ( '' === $tab ) {
 			$tab = learn_press_get_current_profile_tab();
 		}
 		if ( $tab ) {
 			$args['tab'] = $tab;
-		} else {
+		}
+
+		/**
+		 * If no tab is selected in profile and is current user
+		 * then no need the username in profile link.
+		 */
+		if ( ( $user_id == get_current_user_id() ) && ! isset( $args['tab'] ) ) {
 			unset( $args['user'] );
 		}
 	}

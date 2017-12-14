@@ -262,10 +262,13 @@
     float: left;
     background-color: #DDD;
     margin-bottom: 20px;
+    overflow: hidden;
+
     .profile-picture {
         float: left;
         margin-right: -100%;
         width: 100%;
+        margin-top: -25%;
         img {
             width: 100%;
             height: 100%;
@@ -516,7 +519,7 @@
 
 @media screen and (max-width: 768px) {
     #learn-press-user-profile,
-    #learn-press-user-profile.enable-login-register{
+    #learn-press-user-profile.enable-login-register {
         margin-right: 0;
         .learn-press-login-form,
         .learn-press-register-form {

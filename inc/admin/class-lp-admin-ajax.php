@@ -1372,7 +1372,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -1542,6 +1543,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					LP_Settings::update_option( 'admin_bar_link', 'yes' );
 				}
 			}
+			LP()->flush_rewrite_rules();
 
 			echo __( 'The required pages are created successful.', 'learnpress' );
 			die();
