@@ -55,6 +55,9 @@
                 },
                 // emit create item
                 create: function () {
+                    if (!this.title) {
+                        return;
+                    }
                     this.$emit('create', {
                         type: this.type,
                         title: this.title
