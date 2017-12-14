@@ -211,13 +211,7 @@ class LP_Page_Controller {
 		define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
 		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY || LEARNPRESS_IS_SEARCH || LEARNPRESS_IS_TAX ) {
 			global $wp_query, $post, $wp;
-			if ( is_callable( 'clone' ) ) {
-				LP()->wp_query = clone( $wp_query );
-			} else {
-				// PHP 7
-				LP()->wp_query = clone $wp_query;
-			}
-
+			LP()->wp_query = clone $wp_query;
 			$template = get_page_template();
 			/**
 			 * Fix in case a static page is used for archive course page and
