@@ -94,7 +94,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'      => 'profile_courses_limit',
 							'default' => '10',
 							'type'    => 'number',
-							'min'     => 1
+							'min'     => 1,
+							'desc'    => __( 'Number of courses displayed per page in profile.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Logout redirect', 'learnpress' ),
