@@ -707,12 +707,15 @@
                             tbody {
                                 tr {
                                     background: #fff;
+                                    border: 1px solid #DDD;
                                     &:nth-child(2n) {
                                         background: #f4fcff;
                                     }
                                     td {
                                         padding: 0 10px;
                                         background: inherit;
+                                        position: static;
+                                        border: none;
                                         &.sort {
                                             cursor: url("../../images/openhand.cur") 7 5, default;
                                         }
@@ -850,7 +853,7 @@
                     .add-new-question {
                         padding-left: 65px;
                         margin-top: -1px;
-                        border-top:1px solid #DDD;
+                        border-top: 1px solid #DDD;
                         .title {
                             position: relative;
                             display: inline-block;

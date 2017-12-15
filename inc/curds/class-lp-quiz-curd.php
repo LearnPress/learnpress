@@ -541,30 +541,21 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		public function sort_questions( $order ) {
 			global $wpdb;
 
-			// number db row affected
-			$rows_affected = 0;
-
 			foreach ( $order as $index => $question_id ) {
-
 				$update = $wpdb->update(
 					$wpdb->learnpress_quiz_questions,
 					array( 'question_order' => $index + 1 ),
-					array( 'question_id' => $question_id )
+					array( 'question_id' => $question_id ),
+					array( '%d' ),
+					array( '%d' )
 				);
 
 				if ( $update === false ) {
-					return $update;
-				} else {
-					$rows_affected += $update;
-				};
-
-				// return 1 for successful, 0 for database error
-				return $rows_affected ? 1 : 0;
+					return false;
+				}
 			}
 
-			// return -1 for don't update
-			return - 1;
-
+			return true;
 		}
 
 		/**

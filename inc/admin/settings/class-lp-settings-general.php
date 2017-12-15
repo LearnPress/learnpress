@@ -36,6 +36,19 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'default' => 'no',
 					'type'    => 'checkbox'
 				),*/
+
+				array(
+					'title' => __( 'General', 'learnpress' ),
+					'type'  => 'heading',
+					'desc'  => __( 'General settings.', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'Logout redirect', 'learnpress' ),
+					'id'      => 'logout_redirect_page_id',
+					'default' => '',
+					'type'    => 'pages-dropdown',
+					'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
+				),
 				array(
 					'title' => __( 'Currency', 'learnpress' ),
 					'type'  => 'heading',

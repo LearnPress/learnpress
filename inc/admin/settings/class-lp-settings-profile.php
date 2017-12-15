@@ -94,14 +94,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'      => 'profile_courses_limit',
 							'default' => '10',
 							'type'    => 'number',
-							'min'     => 1
-						),
-						array(
-							'title'   => __( 'Logout redirect', 'learnpress' ),
-							'id'      => 'logout_redirect_page_id',
-							'default' => '',
-							'type'    => 'pages-dropdown',
-							'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
+							'min'     => 1,
+							'desc'    => __( 'Number of courses displayed per page in profile.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Enable login form', 'learnpress' ),
