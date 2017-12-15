@@ -110,6 +110,20 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Enable user buy course as a Guest.', 'learnpress' )
+						),
+						array(
+							'title'   => __( 'Enable login in checkout', 'learnpress' ),
+							'id' => 'enable_login_checkout',
+							'default' => 'yes',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Enable login form in checkout page.', 'learnpress' )
+						),
+						array(
+							'title'   => __( 'Enable registration in checkout', 'learnpress' ),
+							'id' => 'enable_registration_checkout',
+							'default' => 'yes',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Enable registration form in checkout page.', 'learnpress' )
 						)
 					)
 				),

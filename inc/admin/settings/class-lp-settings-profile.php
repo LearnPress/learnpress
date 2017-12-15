@@ -245,16 +245,42 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'desc'  => __( 'Publicity and sharing your profile content.', 'learnpress' )
 						),
 						array(
-							'title'   => __( 'Basic Information', 'learnpress' ),
-							'id'      => 'profile_publicity[basic-information]',
-							'default' => 'no',
+							'title'   => __( 'My dashboard', 'learnpress' ),
+							'id'      => 'profile_publicity[dashboard]',
+							'default' => 'yes',
 							'type'    => 'yes-no'
 						),
 						array(
-							'title'   => __( 'Courses', 'learnpress' ),
-							'id'      => 'profile_publicity[courses]',
-							'default' => 'no',
-							'type'    => 'yes-no'
+							'title'      => __( 'Courses', 'learnpress' ),
+							'id'         => 'profile_publicity[courses]',
+							'default'    => 'no',
+							'type'       => 'yes-no',
+							'visibility' => array(
+								'state'       => 'show',
+								'conditional' => array(
+									array(
+										'field'   => 'profile_publicity[dashboard]',
+										'compare' => '=',
+										'value'   => 'yes'
+									)
+								)
+							)
+						),
+						array(
+							'title'      => __( 'Quizzes', 'learnpress' ),
+							'id'         => 'profile_publicity[quizzes]',
+							'default'    => 'no',
+							'type'       => 'yes-no',
+							'visibility' => array(
+								'state'       => 'show',
+								'conditional' => array(
+									array(
+										'field'   => 'profile_publicity[dashboard]',
+										'compare' => '=',
+										'value'   => 'yes'
+									)
+								)
+							)
 						)
 					)
 				)

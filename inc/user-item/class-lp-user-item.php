@@ -11,6 +11,11 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	protected static $_loaded = 0;
 
 	/**
+	 * @var bool
+	 */
+	protected $_is_available = null;
+
+	/**
 	 * LP_User_Item constructor.
 	 *
 	 * @param array $item . A record fetched from table _learnpress_user_items
@@ -144,6 +149,16 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	public function get_status() {
 		return $this->get_data( 'status' );
+	}
+
+	public function is_available() {
+		if ( null === $this->_is_available ) {
+			$user                = $this->get_user();
+			$order               = $user->get_course_order( $this->get_item_id() );
+			$this->_is_available = $order && $order->get_status() === 'completed';
+		}
+
+		return $this->_is_available;
 	}
 
 	/**

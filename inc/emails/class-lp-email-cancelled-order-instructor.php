@@ -28,6 +28,9 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
 			$this->default_heading = __( 'User order has been cancelled', 'learnpress' );
 
 			parent::__construct();
+
+			// Cancelled
+			add_action( 'learn-press/order/status-cancelled/notification', array( $this, 'trigger' ) );
 		}
 
 		/**

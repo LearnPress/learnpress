@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+include_once "class-lp-profile-tabs.php";
+
 if ( ! class_exists( 'LP_Profile' ) ) {
 	/**
 	 * Class LP_Profile
@@ -112,9 +114,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			exit();
 		}
 
+		public function is_guest() {
+			return ! $this->_user || $this->_user && $this->_user->is_guest();
+		}
+
 		public function profile_class( $classes ) {
 			if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && 'yes' === LP()->settings()->get( 'enable_register_profile' ) ) {
-				$classes[] = 'enable-login-register';
+				//$classes[] = 'enable-login-register';
+			}
+
+			if ( ! $this->is_guest() && ( $this->is_public() || $this->is_current_user() ) ) {
+				$classes[] = 'has-content';
 			}
 
 			return $classes;
@@ -182,8 +192,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 				$settings         = LP()->settings;
 				$this->_publicity = array(
-					'view-tab-courses'           => $settings->get( 'profile_publicity.courses' ) === 'yes',
+					'view-tab-dashboard'         => $settings->get( 'profile_publicity.dashboard' ) === 'yes',
 					'view-tab-basic-information' => $settings->get( 'profile_publicity.basic-information' ) === 'yes',
+					'view-tab-courses'           => $settings->get( 'profile_publicity.courses' ) === 'yes',
+					'view-tab-quizzes'           => $settings->get( 'profile_publicity.quizzes' ) === 'yes'
 				);
 			}
 
@@ -216,7 +228,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get default tabs for profile.
 		 *
-		 * @return mixed
+		 * @return LP_Profile_Tabs
 		 */
 		public function get_tabs() {
 			static $tabs = false;
@@ -224,7 +236,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			if ( $tabs === false ) {
 				$settings = LP()->settings;
 				$defaults = array(
-					''              => array(
+					'dashboard'     => array(
 						'title'    => __( 'Dashboard', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.profile-dashboard', '' ),
 						'callback' => array( $this, 'tab_dashboard' ),
@@ -301,43 +313,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 
 				$tabs = apply_filters( 'learn-press/profile-tabs', $defaults );
-
-
-				foreach ( $tabs as $slug => $data ) {
-					if ( ! array_key_exists( 'slug', $data ) ) {
-						$tabs[ $slug ]['slug'] = $slug;
-					}
-
-					if ( ! array_key_exists( 'priority', $data ) ) {
-						$tabs[ $slug ]['priority'] = 10;
-					}
-
-					if ( empty( $data['sections'] ) ) {
-						continue;
-					}
-					foreach ( $data['sections'] as $section_slug => $section_data ) {
-						if ( ! array_key_exists( 'slug', $section_data ) ) {
-							$tabs[ $slug ]['sections'][ $section_slug ]['slug'] = $section_slug;
-						}
-
-						if ( ! array_key_exists( 'priority', $section_data ) ) {
-							$tabs[ $slug ]['sections'][ $section_slug ]['priority'] = 10;
-						}
-					}
-					//$tabs[ $slug ]['sections']
-					uasort( $tabs[ $slug ]['sections'], array( $this, '_sort_tabs' ) );
-				}
-
-				uasort( $tabs, array( $this, '_sort_tabs' ) );
-
-				$key = md5( serialize( $tabs ) );
-				if ( $key !== get_option( '_lp_tabs_data' ) ) {
-					flush_rewrite_rules();
-					update_option( '_lp_tabs_data', $key, false );
-				}
+				$tabs = LP_Profile_Tabs::instance( $tabs, $this );
 			}
 
 			return $tabs;
+		}
+
+		public function get_slug( $data, $default = '' ) {
+			return $this->get_tabs()->get_slug( $data, $default );
 		}
 
 		/**
@@ -349,10 +332,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
 		}
 
-		protected function _sort_tabs( $a, $b ) {
-			return $a['priority'] > $b['priority'];
-		}
-
 		/**
 		 * Get current tab slug in query string.
 		 *
@@ -362,29 +341,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return string
 		 */
 		public function get_current_tab( $default = '', $key = true ) {
-			global $wp;
-			$current = $default;
-			if ( ! empty( $_REQUEST['view'] ) ) {
-				$current = $_REQUEST['view'];
-			} else if ( ! empty( $wp->query_vars['view'] ) ) {
-				$current = $wp->query_vars['view'];
-			} else {
-				if ( $tab = $this->get_tab_at() ) {
-					$current = $tab['slug'];
-				}
-			}
-			if ( $key ) {
-				$current_display = $current;
-				$current         = false;
-				foreach ( $this->get_tabs() as $_slug => $data ) {
-					if ( array_key_exists( 'slug', $data ) && ( $data['slug'] === $current_display ) ) {
-						$current = $_slug;
-						break;
-					}
-				}
-			}
-
-			return $current;
+			return $this->get_tabs()->get_current_tab( $default, $key );
 		}
 
 		/**
@@ -397,49 +354,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool|int|mixed|string
 		 */
 		public function get_current_section( $default = '', $key = true, $tab = '' ) {
-			global $wp;
-			$current = $default;
-			if ( ! empty( $_REQUEST['section'] ) ) {
-				$current = $_REQUEST['section'];
-			} else if ( ! empty( $wp->query_vars['section'] ) ) {
-				$current = $wp->query_vars['section'];
-			} else {
-				if ( false === $tab ) {
-					$current_tab = $this->get_current_tab();
-				} else {
-					$current_tab = $tab;
-				}
-				if ( $tab = $this->get_tab_at( $current_tab ) ) {
-					if ( ! empty( $tab['sections'] ) ) {
-						$section = reset( $tab['sections'] );
-						if ( array_key_exists( 'slug', $section ) ) {
-							$current = $section['slug'];
-						} else {
-							$sections = array_keys( $tab['sections'] );
-							$current  = reset( $sections );
-						}
-					}
-				}
-			}
-
-			// If find the key instead of value from settings
-			if ( $key ) {
-				$current_display = $current;
-				$current         = false;
-				foreach ( $this->get_tabs() as $_slug => $data ) {
-					if ( empty( $data['sections'] ) ) {
-						continue;
-					}
-					foreach ( $data['sections'] as $_slug => $data ) {
-						if ( array_key_exists( 'slug', $data ) && ( $data['slug'] === $current_display ) ) {
-							$current = $_slug;
-							break 2;
-						}
-					}
-				}
-			}
-
-			return $current;
+			return $this->get_tabs()->get_current_section( $default, $key, $tab );
 		}
 
 		/**
@@ -450,20 +365,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function get_tab_at( $position = 0 ) {
-			if ( $tabs = $this->get_tabs() ) {
-				if ( is_numeric( $position ) ) {
-					$tabs = array_values( $tabs );
-					if ( ! empty( $tabs[ $position ] ) ) {
-						return $tabs[ $position ];
-					}
-				} else {
-					if ( ! empty( $tabs[ $position ] ) ) {
-						return $tabs[ $position ];
-					}
-				}
-			}
-
-			return false;
+			return $this->get_tabs()->get_tab_at( $position );
 		}
 
 		/**
@@ -475,49 +377,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed|string
 		 */
 		public function get_tab_link( $tab = false, $with_section = false ) {
-
 			$user = $this->get_user();
 
 			if ( ! $user ) {
 				return '';
 			}
-			$args = array(
-				'user' => $user->get_data( 'user_login' )
-			);
-			if ( isset( $args['user'] ) ) {
-				if ( false === $tab ) {
-					$tab = $this->get_current_tab( null, false );
-				}
 
-				$tab_data = $this->get_tab_at( $tab );
-				$tab      = $this->get_slug( $tab_data, $tab );
-
-				if ( $tab ) {
-					$args['tab'] = $tab;
-				} else {
-					unset( $args['user'] );
-				}
-
-				if ( $with_section && ! empty( $tab_data['sections'] ) ) {
-					if ( $with_section === true ) {
-						$section_keys  = array_keys( $tab_data['sections'] );
-						$first_section = reset( $section_keys );
-						$with_section  = $this->get_slug( $tab_data['sections'][ $first_section ], $first_section );
-					}
-					$args['section'] = $with_section;
-				}
-			}
-			$args         = array_map( '_learn_press_urlencode', $args );
-			$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
-			if ( $profile_link ) {
-				if ( get_option( 'permalink_structure' ) ) {
-					$url = trailingslashit( $profile_link . join( "/", array_values( $args ) ) );
-				} else {
-					$url = add_query_arg( $args, $profile_link );
-				}
-			} else {
-				$url = get_author_posts_url( $user->get_id() );
-			}
+			$url = $this->get_tabs()->get_tab_link( $tab, $with_section, $user->get_username() );
 
 			/**
 			 * @deprecated
@@ -536,21 +402,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed|string
 		 */
 		public function get_current_url( $args = '', $with_permalink = false ) {
-			$url = $this->get_tab_link( $this->get_current_tab(), $this->get_current_section() );
-
-			if ( is_array( $args ) && $args ) {
-				if ( ! $with_permalink ) {
-					$url = add_query_arg( $args, $url );
-				} else {
-					$parts = array();
-					foreach ( $args as $k => $v ) {
-						$parts[] = "{$k}/{$v}";
-					}
-					$url = trailingslashit( $url ) . join( "/", $parts ) . '/';
-				}
-			}
-
-			return $url;
+			return $this->get_tabs()->get_current_url( $args, $with_permalink );
 		}
 
 		/**
@@ -587,16 +439,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return array_key_exists( 'hidden', $tab_or_section ) && $tab_or_section['hidden'];
 		}
 
-		/**
-		 * Get the slug of tab or section if defined.
-		 *
-		 * @param array  $tab_or_section
-		 * @param string $default
-		 *
-		 * @return string
-		 */
-		public function get_slug( $tab_or_section, $default = '' ) {
-			return array_key_exists( 'slug', $tab_or_section ) ? $tab_or_section['slug'] : $default;
+		public function is_public() {
+			return $this->current_user_can( 'view-tab-dashboard' );
 		}
 
 		/**
@@ -607,18 +451,20 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function current_user_can( $capability ) {
-
 			$tab         = substr( $capability, strlen( 'view-tab-' ) );
-			$public_tabs = array( 'courses', 'quizzes' );
-
+			$public_tabs = apply_filters( 'learn-press/profile/publicity-tabs', array() );
 			// public profile courses and quizzes tab
 			if ( in_array( $tab, $public_tabs ) ) {
 				$can = true;
 			} else {
-				if ( get_current_user_id() === $this->_user->get_id() ) {
+				if ( $this->_user && get_current_user_id() === $this->_user->get_id() ) {
 					$can = true;
 				} else {
-					$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+					if ( empty( $this->_publicity['view-tab-dashboard'] ) || ( false === $this->_publicity['view-tab-dashboard'] ) ) {
+						$can = false;
+					} else {
+						$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+					}
 				}
 			}
 
@@ -992,6 +838,30 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
+		 * Return true if the tab is visible for current user.
+		 *
+		 * @param string $tab_key
+		 * @param array  $tab_data
+		 *
+		 * @return bool
+		 */
+		public function tab_is_visible_for_user( $tab_key, $tab_data = null ) {
+			return $this->is_current_tab( $tab_key ) && $this->current_user_can( "view-tab-{$tab_key}" );
+		}
+
+		/**
+		 * Return true if the section is visible for current user.
+		 *
+		 * @param string $section_key
+		 * @param array  $section_data
+		 *
+		 * @return bool
+		 */
+		public function section_is_visible_for_user( $section_key, $section_data = array() ) {
+			return $this->current_user_can( "view-section-{$section_key}" ) && ! $this->is_hidden( $section_data );
+		}
+
+		/**
 		 * @return array
 		 */
 		public function get_login_fields() {
@@ -1024,6 +894,35 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
+		 * Get queried user in profile link.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @return false|WP_User
+		 */
+		public static function get_queried_user() {
+			global $wp_query;
+			if ( isset( $wp_query->query['user'] ) ) {
+				$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
+			} else {
+				$user = get_user_by( 'id', get_current_user_id() );
+			}
+
+			return $user;
+		}
+
+		/**
+		 * Return true if there is a name of user in profile link.
+		 *
+		 * @return bool
+		 */
+		public static function is_queried_user() {
+			global $wp_query;
+
+			return isset( $wp_query->query['user'] ) ? $wp_query->query['user'] : false;
+		}
+
+		/**
 		 * Get an instance of LP_Profile for a user id
 		 *
 		 * @param $user_id
@@ -1032,7 +931,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public static function instance( $user_id = 0 ) {
 			if ( ! $user_id ) {
-				$user_id = get_current_user_id();
+				if ( ! self::is_queried_user() ) {
+					$user_id = get_current_user_id();
+				} else {
+					if ( $user = self::get_queried_user() ) {
+						$user_id = $user->ID;
+					}
+				}
 			}
 			if ( empty( self::$_instances[ $user_id ] ) ) {
 				self::$_instances[ $user_id ] = new self( $user_id );

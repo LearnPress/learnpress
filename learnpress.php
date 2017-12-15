@@ -151,6 +151,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-datetime.php';
 			require_once 'inc/class-lp-hard-cache.php';
 			require_once 'inc/interfaces/interface-curd.php';
+			require_once 'inc/abstracts/abstract-array-access.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
 			require_once 'inc/abstracts/abstract-post-data.php';
 			require_once 'inc/abstracts/abstract-assets.php';

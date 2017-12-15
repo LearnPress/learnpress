@@ -11,7 +11,7 @@
         background: #FFF;
         text-align: left;
     }
-    tr{
+    tr {
         border: 0;
     }
     thead {
@@ -106,18 +106,18 @@
             input[type="email"],
             input[type="number"],
             input[type="password"],
-            textarea{
+            textarea {
                 padding: 8px;
                 width: 100%;
                 @include box-sizing(border-box);
             }
-            .description{
+            .description {
                 font-style: italic;
                 margin-top: 10px;
                 font-size: 14px;
                 line-height: 1.4;
             }
-            .asterisk{
+            .asterisk {
                 color: #FF0000;
             }
         }

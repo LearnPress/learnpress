@@ -33,6 +33,9 @@ if ( ! class_exists( 'LP_Email_Completed_Order_Guest' ) ) {
 			$this->default_heading = __( 'Your order has completed', 'learnpress' );
 
 			parent::__construct();
+
+			// Completed orders
+			add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 		}
 
 		/**

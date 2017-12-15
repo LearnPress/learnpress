@@ -167,16 +167,11 @@ ul.learn-press-nav-tabs {
                 background: #FFF;
                 margin: 0;
                 padding: 0;
-                > a {
+                .section-item-link {
                     border-bottom: none;
-                    /*display: block;*/
                     display: table;
                     box-shadow: none;
                     outline: none;
-                    //height: 50px;
-                    //line-height: 50px;
-                    //padding: 0px 0 0 30px;
-                    //margin: 10px 0 10px 0;
                     width: 100%;
                     line-height: 1.5;
                     &:before {
@@ -271,25 +266,25 @@ ul.learn-press-nav-tabs {
                             }
                         }
                     }
-                    & > a:before {
+                    .section-item-link:before {
                         content: "\f017";
                     }
                 }
                 &.course-item-lp_lesson {
-                    & > a {
+                    .section-item-link {
                         &:before {
                             content: "\f0f6";
                         }
                     }
                     &.course-item-type-video {
-                        > a {
+                        .section-item-link {
                             &:before {
                                 content: "\f03d";
                             }
                         }
                     }
                     &.course-item-type-audio {
-                        > a {
+                        .section-item-link {
                             &:before {
                                 content: "\f027";
                             }

@@ -85,6 +85,7 @@ class LP_Forms_Handler {
 	}
 
 	public static function process_login() {
+
 		if ( ! LP_Request::verify_nonce( 'learn-press-login' ) ) {
 			return;
 		}
@@ -227,6 +228,8 @@ class LP_Forms_Handler {
 
 					learn_press_add_message( $message, 'error' );
 				}
+			} else {
+				wp_new_user_notification( $user_id );
 			}
 		}
 

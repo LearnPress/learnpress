@@ -2,9 +2,9 @@
 /**
  * Template for displaying global login form.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/global/register-form.php.
+ * This template can be overridden by copying it to yourtheme/learnpress/global/form-register.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -18,15 +18,15 @@ $profile = LP_Global::profile();
 $fields  = $profile->get_register_fields();
 ?>
 
-<div class="learn-press-register-form learn-press-form">
+<div class="learn-press-form-register learn-press-form">
 
     <h3><?php echo _x( 'Register', 'register-heading', 'learnpress' ); ?></h3>
 
-	<?php do_action( 'learn-press/before-register-form' ); ?>
+	<?php do_action( 'learn-press/before-form-register' ); ?>
 
     <form name="learn-press-register" method="post" action="">
 
-		<?php do_action( 'learn-press/before-register-form-fields' ); ?>
+		<?php do_action( 'learn-press/before-form-register-fields' ); ?>
 
         <ul class="form-fields">
 			<?php foreach ( $fields as $field ) { ?>
@@ -36,16 +36,15 @@ $fields  = $profile->get_register_fields();
 			<?php } ?>
         </ul>
 
-		<?php do_action( 'learn-press/after-register-form-fields' ); ?>
+		<?php do_action( 'learn-press/after-form-register-fields' ); ?>
 
         <p>
-            <input type="hidden" name="learn-press-register-nonce"
-                   value="<?php echo wp_create_nonce( 'learn-press-register' ); ?>">
+			<?php wp_nonce_field( 'learn-press-register', 'learn-press-register-nonce' ); ?>
             <button type="submit"><?php _e( 'Register', 'learnpress' ); ?></button>
         </p>
 
     </form>
 
-	<?php do_action( 'learn-press/after-register-form' ); ?>
+	<?php do_action( 'learn-press/after-form-register' ); ?>
 
 </div>

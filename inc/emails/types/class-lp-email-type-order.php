@@ -32,17 +32,6 @@ class LP_Email_Type_Order extends LP_Email {
 				'{{order_key}}'
 			)
 		);
-
-		// Cancelled
-		add_action( 'learn-press/order/status-cancelled/notification', array( $this, 'trigger' ) );
-
-		// Completed orders
-		add_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
-
-		// new free order
-		// add_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
-		// new paid order
-		add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 	}
 
 	/**
@@ -101,6 +90,8 @@ class LP_Email_Type_Order extends LP_Email {
 				'order_key'         => $order->get_order_key()
 			)
 		);
+
+		$this->get_variable();
 
 		return $this->object;
 	}

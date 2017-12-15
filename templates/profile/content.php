@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/profile/content.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -21,12 +21,12 @@ if ( ! isset( $user ) ) {
 $profile = learn_press_get_profile();
 $tabs    = $profile->get_tabs();
 $current = $profile->get_current_tab();
-
 ?>
 <div id="learn-press-profile-content" class="lp-profile-content">
 
 	<?php foreach ( $tabs as $tab_key => $tab_data ) {
-		if ( ! $profile->is_current_tab( $tab_key ) || ! $profile->current_user_can( "view-tab-{$tab_key}" ) ) {
+
+		if ( ! $profile->tab_is_visible_for_user( $tab_key ) ) {
 			continue;
 		}
 		?>
@@ -35,7 +35,6 @@ $current = $profile->get_current_tab();
 			<?php
 			// show profile sections
 			do_action( 'learn-press/before-profile-content', $tab_key, $tab_data, $user ); ?>
-
 
 			<?php if ( empty( $tab_data['sections'] ) ) {
 				if ( is_callable( $tab_data['callback'] ) ) {

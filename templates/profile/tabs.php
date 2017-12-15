@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/profile/tabs.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -14,7 +14,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-global $profile;
+$profile = LP_Profile::instance();
 ?>
 
 <div id="learn-press-profile-nav">
@@ -24,12 +24,9 @@ global $profile;
     <ul class="learn-press-tabs tabs">
 
 		<?php
-        foreach ( $profile->get_tabs() as $tab_key => $tab_data ) {
+		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
 
-			// If current user do not have permission and/or tab is invisible
-			if ( ! $profile->current_user_can( "view-tab-{$tab_key}" ) || $profile->is_hidden( $tab_data ) ) {
-				continue;
-			}
+
 
 			$slug        = $profile->get_slug( $tab_data, $tab_key );
 			$link        = $profile->get_tab_link( $tab_key, true );
@@ -46,15 +43,10 @@ global $profile;
 					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', esc_html( $tab_data['title'] ), $tab_key ); ?>
                 </a>
                 <!--section-->
-				<?php if ( ! empty( $tab_data['sections'] ) ) { ?>
+				<?php if ( $sections = $tab_data->sections() ) { ?>
 
-                    <ul class="">
-						<?php foreach ( $tab_data['sections'] as $section_key => $section_data ) {
-
-							// If current user do not have permission and/or tab is invisible
-							if ( ! $profile->current_user_can( "view-section-{$section_key}" ) || $profile->is_hidden( $section_data ) ) {
-								continue;
-							}
+                    <ul class="profile-tab-sections">
+						<?php foreach ( $sections as $section_key => $section_data ) {
 
 							$classes = array( esc_attr( $section_key ) );
 							if ( $profile->is_current_section( $section_key, $section_key ) ) {

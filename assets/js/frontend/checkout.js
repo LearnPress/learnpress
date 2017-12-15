@@ -238,27 +238,29 @@
          * Callback function for showing/hiding register form.
          *
          * @param e {Event}
+         * @param toggle {boolean}
          * @private
          */
-        var _toggleRegisterForm = function (e) {
-            e.preventDefault();
-            var toggle = $(this).data('toggle') === 'show';
-            $formRegister.find('#checkout-register-form').toggle(toggle);
-            $formRegister.find('.checkout-register-form-toggle[data-toggle="show"]').toggle(!toggle);
-            console.log(toggle)
+        var _toggleRegisterForm = function (e, toggle) {
+
+            toggle = $formRegister.find('.learn-press-form-register').toggle(toggle).is(':visible');
+            $formRegister.find('.checkout-form-register-toggle[data-toggle="show"]').toggle(!toggle);
+
+            e && (e.preventDefault(), _toggleLoginForm(null, !toggle));
         }
 
         /**
          * Callback function for showing/hiding login form.
          *
          * @param e {Event}
+         * @param toggle {boolean}
          * @private
          */
-        var _toggleLoginForm = function (e) {
-            e.preventDefault();
-            var toggle = $(this).data('toggle') === 'show';
-            $formLogin.find('#checkout-login-form').toggle(toggle);
-            $formLogin.find('.checkout-login-form-toggle[data-toggle="show"]').toggle(!toggle);
+        var _toggleLoginForm = function (e, toggle) {
+            toggle = $formLogin.find('.learn-press-form-login').toggle(toggle).is(':visible');
+            $formLogin.find('.checkout-form-login-toggle[data-toggle="show"]').toggle(!toggle);
+
+            e && (e.preventDefault(), _toggleRegisterForm(null, !toggle));
         }
 
         /**
@@ -269,18 +271,33 @@
         });
 
         $('.lp-button-guest-checkout').on('click', _guestCheckoutClick);
+        $('#learn-press-button-cancel-guest-checkout').on('click', _guestCheckoutClick)
 
 
         $checkoutEmail.on('keyup changex', _checkEmail).trigger('changex');
         $payments.on('change select', 'input[name="payment_method"]', _selectPaymentChange);
         $formCheckout.on('submit', _formSubmit);
         $payments.children('.selected').find('input[name="payment_method"]').trigger('select');
-        $formLogin.on('click', '.checkout-login-form-toggle', _toggleLoginForm);
-        $formRegister.on('click', '.checkout-register-form-toggle', _toggleRegisterForm);
+        $formLogin.on('click', '.checkout-form-login-toggle', _toggleLoginForm);
+        $formRegister.on('click', '.checkout-form-register-toggle', _toggleRegisterForm);
 
         if (options.user_waiting_payment === options.user_checkout) {
             //$checkoutExistingAccount.hide();
         }
+
+        $formRegister.find('input').each(function () {
+            if ((-1 !== $.inArray($(this).attr('type').toLowerCase(), ['text', 'email', 'number'])) && $(this).val()) {
+                _toggleRegisterForm();
+                return false;
+            }
+        });
+
+        $formLogin.find('input:not([type="hidden"])').each(function () {
+            if ((-1 !== $.inArray($(this).attr('type').toLowerCase(), ['text', 'email', 'number'])) && $(this).val()) {
+                _toggleLoginForm();
+                return false;
+            }
+        });
     }
 
     $(document).ready(function () {

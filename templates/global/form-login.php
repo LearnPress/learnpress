@@ -2,7 +2,7 @@
 /**
  * Template for displaying template of login form.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/global/login-form.php.
+ * This template can be overridden by copying it to yourtheme/learnpress/global/form-login.php.
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
@@ -13,22 +13,20 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
 $profile = LP_Global::profile();
 $fields  = $profile->get_login_fields();
 ?>
 
-<div class="learn-press-login-form learn-press-form">
+<div class="learn-press-form-login learn-press-form">
 
     <h3><?php echo _x( 'Login', 'login-heading', 'learnpress' ); ?></h3>
 
-	<?php do_action( 'learn-press/before-login-form' ); ?>
+	<?php do_action( 'learn-press/before-form-login' ); ?>
 
     <form name="learn-press-login" method="post" action="">
 
-		<?php do_action( 'learn-press/before-login-form-fields' ); ?>
+		<?php do_action( 'learn-press/before-form-login-fields' ); ?>
 
         <ul class="form-fields">
 			<?php foreach ( $fields as $field ) { ?>
@@ -38,7 +36,7 @@ $fields  = $profile->get_login_fields();
 			<?php } ?>
         </ul>
 
-		<?php do_action( 'learn-press/after-login-form-fields' ); ?>
+		<?php do_action( 'learn-press/after-form-login-fields' ); ?>
         <p>
             <label>
                 <input type="checkbox" name="rememberme"/>
@@ -55,6 +53,6 @@ $fields  = $profile->get_login_fields();
         </p>
     </form>
 
-	<?php do_action( 'learn-press/after-login-form' ); ?>
+	<?php do_action( 'learn-press/after-form-login' ); ?>
 
 </div>

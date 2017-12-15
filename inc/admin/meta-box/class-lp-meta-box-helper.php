@@ -68,6 +68,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				//call_user_func( array( $class_name, 'admin_enqueue_scripts' ), $field );
 				//call_user_func( array( $class_name, 'show' ), $field, true, 0 );
 				//call_user_func( array( $class_name, 'add_actions' ), $field );
+
 				RWMB_Field::call( 'admin_enqueue_scripts', $field );
 				RWMB_Field::call( 'show', $field, true, 0 );
 				RWMB_Field::call( 'add_actions', $field );

@@ -31,6 +31,8 @@ if ( ! class_exists( 'LP_Email_Processing_Order_Guest' ) ) {
 			$this->default_heading = __( 'Thank you for your order', 'learnpress' );
 
 			parent::__construct();
+
+			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 		}
 
 		/**

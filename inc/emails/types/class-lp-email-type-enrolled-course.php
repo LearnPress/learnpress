@@ -59,26 +59,38 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 		$user   = learn_press_get_user( $this->user_id );
 		$course = learn_press_get_course( $this->course_id );
 
-		if ( ! $user ) {
-			return;
+		$object = array();
+
+		if ( $course ) {
+			$object = array_merge(
+				$object,
+				array(
+					'course_id'   => $course->get_id(),
+					'course_name' => $course->get_title(),
+					'course_url'  => $course->get_permalink()
+				)
+			);
+		}
+
+		if ( $user ) {
+			$object = array_merge(
+				$object,
+				array(
+					'user_id'           => $user->get_id(),
+					'user_name'         => $user->get_username(),
+					'user_email'        => $user->get_email(),
+					'user_display_name' => $user->get_display_name()
+				)
+			);
 		}
 
 		if ( $course_data = $user->get_course_data( $this->course_id ) ) {
-			return;
+			$object['course_start_date'] = $course_data->get_start_time();
 		}
 
 		$this->object = $this->get_common_template_data(
 			$this->email_format,
-			array(
-				'course_id'         => $course->get_id(),
-				'course_name'       => $course->get_title(),
-				'course_url'        => $course->get_permalink(),
-				'user_id'           => $user->get_id(),
-				'user_name'         => $user->get_username(),
-				'user_email'        => $user->get_email(),
-				'user_display_name' => $user->get_display_name(),
-				'course_start_date' => $course_data->get_start_time(),
-			)
+			$object
 		);
 
 		$this->get_variable();
@@ -99,9 +111,6 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	 * @param int $user_item_id
 	 */
 	public function trigger( $course_id, $user_id, $user_item_id ) {
-		if ( ! $this->enable ) {
-			return;
-		}
 
 		$this->course_id    = $course_id;
 		$this->user_id      = $user_id;

@@ -13,9 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $user = LP_Global::user(); ?>
+$user = LP_Global::user();
+?>
 
 <form name="continue-course" class="continue-course form-button lp-form" method="post"
       action="<?php echo $user->get_current_item( get_the_ID(), true ); ?>">

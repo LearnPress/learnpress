@@ -43,7 +43,7 @@ if ( ! class_exists( 'LP_Shortcode_Login_Form' ) ) {
 				}
 				ob_start();
 				learn_press_print_messages();
-				learn_press_get_template( 'global/login-form.php', array( 'fields' => self::get_login_fields() ) );
+				learn_press_get_template( 'global/form-login.php', array( 'fields' => self::get_login_fields() ) );
 				$output = ob_get_clean();
 			}
 

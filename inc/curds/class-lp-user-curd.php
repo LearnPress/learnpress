@@ -318,6 +318,28 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$args[] = $user_id;
 
 
+//		$user         = learn_press_get_user( $user_id );
+//		$order_format = array();
+//		if ( $user_orders = $user->get_orders( false ) ) {
+//			if ( isset( $user_orders[ $course_id ] ) ) {
+//				$order_ids    = $user_orders[ $course_id ];
+//				$order_format = array_fill( 0, sizeof( $order_ids ), '%d' );
+//				$args         = array_merge( $args, $order_ids );
+//			}
+//		}
+//		print_r( $args );
+//		echo "
+//		SELECT *
+//			FROM(
+//				SELECT ui.*, uim.meta_value as `ext_status`
+//				FROM {$wpdb->learnpress_user_items} ui
+//				LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = ui.user_item_id AND uim.meta_key = %s
+//				WHERE item_type = %s AND item_id IN(" . join( ',', $format ) . ") AND user_id = %d
+//				" . ( $order_format ? "OR ref_id IN(" . join( ',', $order_format ) . ")" : '' ) . "
+//			) X
+//		";
+//		echo
+
 		$query = $wpdb->prepare( "
 			SELECT *
 			FROM(
@@ -1375,5 +1397,39 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 	public function duplicate( &$user, $args = array() ) {
 		// TODO: Implement duplicate() method.
+	}
+
+	public static function create_user( $email, $username, $password ) {
+		if ( empty( $email ) || ! is_email( $email ) ) {
+			return new WP_Error( 'registration-error-invalid-email', __( 'Please provide a valid email address.', 'learnpress' ) );
+		}
+
+		if ( email_exists( $email ) ) {
+			return new WP_Error( 'registration-error-email-exists', __( 'An account is already registered with your email address. Please log in.', 'learnpress' ) );
+		}
+
+		$username = sanitize_user( $username );
+
+		if ( empty( $username ) || ! validate_username( $username ) ) {
+			return new WP_Error( 'registration-error-invalid-username', __( 'Please enter a valid account username.', 'learnpress' ) );
+		}
+
+		if ( username_exists( $username ) ) {
+			return new WP_Error( 'registration-error-username-exists', __( 'An account is already registered with that username. Please choose another.', 'learnpress' ) );
+		}
+
+		$new_user = wp_insert_user(
+			array(
+				'user_login' => $username,
+				'user_pass'  => $password,
+				'user_email' => $email
+			)
+		);
+
+		if ( is_wp_error( $new_user ) ) {
+			return new WP_Error( 'registration-error', __( 'Create user error.', 'learnpress' ) );
+		}
+
+		return $new_user;
 	}
 }

@@ -131,7 +131,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$date = date( 'Y-m-d H:i:s', $date );
 			}
 			$this->set_data_date( 'order_date', $date );
-			//$this->_set_da( 'order_date', $date );
 		}
 
 		/**

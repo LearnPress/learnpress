@@ -46,7 +46,7 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 				}
 				ob_start();
 				learn_press_print_messages();
-				learn_press_get_template( 'global/register-form.php', array( 'fields' => self::get_register_fields() ) );
+				learn_press_get_template( 'global/form-register.php', array( 'fields' => self::get_register_fields() ) );
 				$output = ob_get_clean();
 			}
 

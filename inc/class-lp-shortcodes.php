@@ -89,7 +89,13 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 			learn_press_print_messages();
 			$html = ob_get_clean();
 
-			return '<div class="learnpress">' . $html . $content . '</div>';
+			try {
+				$html .= $content->output();
+			}
+			catch ( Exception $ex ) {
+			}
+
+			return '<div class="learnpress">' . $html . '</div>';
 		}
 
 		/**

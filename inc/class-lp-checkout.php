@@ -349,7 +349,47 @@ class LP_Checkout {
 	 * @return mixed
 	 */
 	public function is_enable_guest_checkout() {
-		return true;// apply_filters( 'learn-press/enabled-guest-checkout', 'yes' === get_option( 'learn_press_enable_guest_checkout' ) );
+		return apply_filters(
+			'learn-press/checkout/enable-guest',
+			in_array(
+				LP()->settings()->get( 'guest_checkout' ),
+				array( '', 'yes' )
+			)
+		);
+	}
+
+	/**
+	 * Enable user can login in checkout page?
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool
+	 */
+	public function is_enable_login() {
+		return apply_filters(
+			'learn-press/checkout/enable-login',
+			in_array(
+				LP()->settings()->get( 'enable_login_checkout' ),
+				array( '', 'yes' )
+			)
+		);
+	}
+
+	/**
+	 * Enable user can register in checkout page?
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool
+	 */
+	public function is_enable_register() {
+		return apply_filters(
+			'learn-press/checkout/enable-register',
+			in_array(
+				LP()->settings()->get( 'enable_registration_checkout' ),
+				array( '', 'yes' )
+			) && get_option( 'users_can_register' )
+		);
 	}
 
 	/**
@@ -407,6 +447,7 @@ class LP_Checkout {
 		}
 		// do checkout
 		$this->process_checkout();
+
 		return true;
 	}
 

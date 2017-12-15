@@ -281,7 +281,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			$orders = learn_press_get_orders( $args );
-			print_r( $orders );
 			if ( $orders ) {
 				foreach ( $orders as $order ) {
 					return $order->ID;

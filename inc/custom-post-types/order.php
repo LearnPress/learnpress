@@ -179,6 +179,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 			}
 
+			return;
+
 			$user_curd  = new LP_User_CURD();
 			$order_data = array();
 			foreach ( $users as $user_id ) {

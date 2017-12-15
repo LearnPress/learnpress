@@ -19,11 +19,19 @@ defined( 'ABSPATH' ) || exit();
 <div class="learn-press-profile-dashboard">
 
 	<?php
-
+	/**
+	 * Before dashboard
+	 */
 	do_action( 'learn-press/profile/before-dashboard' );
 
+	/**
+	 * Dashboard summary
+	 */
 	do_action( 'learn-press/profile/dashboard-summary' );
 
+	/**
+	 * After dashboard
+	 */
 	do_action( 'learn-press/profile/after-dashboard' );
 
 	?>

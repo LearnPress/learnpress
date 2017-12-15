@@ -52,7 +52,9 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'checkout:nopriv',
 				'complete-lesson',
 				'finish-course',
-				'retake-course'
+				'retake-course',
+				//'register-user:nopriv',
+				//'login-user:nopriv'
 			);
 
 			$ajaxEvents = apply_filters( 'learn-press/ajax/events', $ajaxEvents );
@@ -78,6 +80,69 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
 			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
+		}
+
+		public static function register_user() {
+
+			if ( ! get_option( 'users_can_register' ) ) {
+				wp_die( __( 'Sorry! Registration is not allowed on this site.', 'learnpress' ) );
+			}
+
+			if ( ! wp_verify_nonce( LP_Request::get( 'learn-press-register-nonce' ), 'learn-press-register' ) ) {
+				wp_die( __( 'Bad request.', 'learnpress' ) );
+			}
+
+			$username = LP_Request::get_string( 'user_login' );
+			$password = LP_Request::get_string( 'user_password' );
+			$email    = LP_Request::get_email( 'user_email' );
+
+			try {
+				$error = apply_filters( 'learn-press/registration-error', new WP_Error(), $username, $password, $email );
+
+				if ( $error->get_error_code() ) {
+					throw new Exception( $error->get_error_message() );
+				}
+				$new_user = LP_User_CURD::create_user( $email, $username, $password );
+
+				if ( is_wp_error( $new_user ) ) {
+					throw new Exception( $new_user->get_error_message() );
+				}
+
+				// Login new user
+				global $current_user;
+
+				$current_user = get_user_by( 'id', $new_user );
+				wp_set_auth_cookie( $new_user, true );
+
+			}
+			catch ( Exception $e ) {
+				learn_press_add_message( $e->getMessage(), 'error' );
+			}
+
+			if ( ! $redirect = LP_Request::get( 'redirect' ) ) {
+				if ( ! $redirect = wp_get_raw_referer() ) {
+					$redirect = learn_press_get_page_link( 'profile' );
+				}
+			}
+
+			$response = array(
+				'result'   => learn_press_message_count( 'error' ) ? 'error' : 'success',
+				'message'  => learn_press_get_messages( true ),
+				'redirect' => $redirect
+			);
+
+			learn_press_send_json( $response );
+
+			wp_redirect( wp_validate_redirect( apply_filters( 'learn-press/registration-redirect', $redirect ), learn_press_get_page_link( 'profile' ) ) );
+			exit;
+		}
+
+		public static function login_user() {
+			LP_Forms_Handler::process_login();
+			print_r( learn_press_message_count( 'error' ) );
+			//print_r( learn_press_get_messages() );
+			//print_r( $_REQUEST );
+			die();
 		}
 
 		public static function checkout() {

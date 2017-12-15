@@ -10,6 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $email = LP_Emails::instance()->get_current();
+
+if ( ! $email ) {
+	return;
+}
+
 $order = $email->get_order();
 $items = $email->get_order_items_table();
 

@@ -203,9 +203,9 @@ class LP_Query {
 			);
 
 			$profile = learn_press_get_profile();
-			if ( $tabs = $profile->get_tabs() ) {
+			if ( $tabs = $profile->get_tabs()->get() ) {
 				foreach ( $tabs as $slug => $args ) {
-					$tab_slug = $profile->get_slug( $args, $slug );
+					$tab_slug = LP_Profile_Tabs::instance()->get_slug( $args, $slug );
 					add_rewrite_rule(
 						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/?([0-9]*)/?$',
 						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
@@ -214,7 +214,7 @@ class LP_Query {
 
 					if ( ! empty( $args['sections'] ) ) {
 						foreach ( $args['sections'] as $section_slug => $section ) {
-							$section_slug = $profile->get_slug( $section, $section_slug );
+							$section_slug = LP_Profile_Tabs::instance()->get_slug( $section, $section_slug );
 							add_rewrite_rule(
 								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?([0-9]*)?$',
 								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',

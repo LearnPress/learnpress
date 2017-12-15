@@ -154,6 +154,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 
 		public $debug = false;
 
+		protected $_object_loaded = false;
+
 		/**
 		 *  List of preg* regular expression patterns to search for,
 		 *  used in conjunction with $replace.
@@ -490,6 +492,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function format_string( $string ) {
+			$this->_maybe_get_object();
+
 			$search = $replace = array();
 			if ( is_array( $this->variables ) ) {
 				$search  = array_keys( $this->variables );
@@ -525,6 +529,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function get_content() {
+
 			$email_format = $this->get_email_format();
 			if ( $email_format == 'plain' ) {
 				$email_content = preg_replace( $this->plain_search, $this->plain_replace, strip_tags( $this->get_content_plain() ) );
@@ -537,6 +542,20 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			$email_content = $this->format_string( $email_content );
 
 			return wordwrap( $email_content, 70 );
+		}
+
+		/**
+		 * Try to get object if it is null.
+		 */
+		protected function _maybe_get_object() {
+			try {
+				if ( ! $this->_object_loaded && empty( $this->object ) ) {
+					$this->_object_loaded = true;
+					$this->get_object();
+				}
+			}
+			catch ( Exception $ex ) {
+			}
 		}
 
 		/**

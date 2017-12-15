@@ -89,6 +89,8 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 			return;
 		}
 
+		//$order_status = $user->get_order_status($course->get_id());
+
 		$purchased = $user->has_purchased_course( $course->get_id() );
 		// For free course and user does not purchased
 		if ( $course->is_free() && ! $purchased ) {
@@ -144,6 +146,10 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 		}
 
 		if ( false === ( $course_data = $user->get_course_data( $course->get_id() ) ) ) {
+			return;
+		}
+
+		if ( ! $course_data->is_available() ) {
 			return;
 		}
 
@@ -245,6 +251,11 @@ if ( ! function_exists( 'learn_press_checkout_form_login' ) ) {
 	 * @hooked learn-press/before-checkout-form
 	 */
 	function learn_press_checkout_form_login() {
+
+		if ( ! LP()->checkout()->is_enable_login() ) {
+			return;
+		}
+
 		learn_press_get_template( 'checkout/form-login.php' );
 	}
 
@@ -258,6 +269,11 @@ if ( ! function_exists( 'learn_press_checkout_form_register' ) ) {
 	 * @hooked learn-press/before-checkout-form
 	 */
 	function learn_press_checkout_form_register() {
+
+		if ( ! LP()->checkout()->is_enable_register() ) {
+			return;
+		}
+
 		learn_press_get_template( 'checkout/form-register.php' );
 	}
 
@@ -391,6 +407,13 @@ if ( ! function_exists( 'learn_press_course_price' ) ) {
 	 * Display course price.
 	 */
 	function learn_press_course_price() {
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+
+		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/price.php' );
 	}
 }
@@ -2615,6 +2638,19 @@ if ( ! function_exists( 'learn_press_profile_dashboard_logged_in' ) ) {
 		learn_press_get_template( 'profile/dashboard-logged-in.php' );
 	}
 }
+
+if ( ! function_exists( 'learn_press_profile_dashboard_user_bio' ) ) {
+	function learn_press_profile_dashboard_user_bio() {
+		$profile = LP_Profile::instance();
+
+		if ( ! $user = $profile->get_user() ) {
+			return;
+		}
+
+		learn_press_get_template( 'profile/user-bio.php' );
+	}
+}
+
 if ( ! function_exists( 'learn_press_profile_dashboard_not_logged_in' ) ) {
 	function learn_press_profile_dashboard_not_logged_in() {
 		$profile = LP_Global::profile();
@@ -2635,6 +2671,7 @@ if ( ! function_exists( 'learn_press_profile_login_form' ) ) {
 	function learn_press_profile_login_form() {
 		$profile = LP_Global::profile();
 
+		print_r( metadata_exists( 'user', $profile->get_user()->get_id(), '_lp_temp_user' ) );
 		if ( ! $profile->get_user()->is_guest() ) {
 			return;
 		}
@@ -2647,7 +2684,7 @@ if ( ! function_exists( 'learn_press_profile_login_form' ) ) {
 			return;
 		}
 
-		learn_press_get_template( 'global/login-form.php', array( 'fields' => $fields ) );
+		learn_press_get_template( 'global/form-login.php', array( 'fields' => $fields ) );
 	}
 }
 
@@ -2667,7 +2704,7 @@ if ( ! function_exists( 'learn_press_profile_register_form' ) ) {
 			return;
 		}
 
-		learn_press_get_template( 'global/register-form.php', array( 'fields' => $fields ) );
+		learn_press_get_template( 'global/form-register.php', array( 'fields' => $fields ) );
 	}
 }
 

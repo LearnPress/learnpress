@@ -1,6 +1,6 @@
 #learn-press-user-profile {
     position: relative;
-    &:not(.guest):before {
+    &.has-content:before {
         position: absolute;
         content: '';
         width: 200px;
@@ -503,29 +503,18 @@
 }
 
 #learn-press-user-profile {
-    .learn-press-login-form,
-    .learn-press-register-form {
-        max-width: 800px;
-    }
-    &.enable-login-register {
-        margin-right: -2%;
-        .learn-press-form {
-            width: 48%;
-            margin-right: 2%;
-            float: left;
-        }
+    .learn-press-form-login,
+    .learn-press-form-register {
+        border: 1px solid #DDD;
+        padding: 20px 20px 0 20px;
+        margin-bottom: 20px;
     }
 }
 
 @media screen and (max-width: 768px) {
     #learn-press-user-profile,
     #learn-press-user-profile.enable-login-register {
-        margin-right: 0;
-        .learn-press-login-form,
-        .learn-press-register-form {
-            width: 100%;
-            margin-right: 0;
-        }
+
     }
 }
 

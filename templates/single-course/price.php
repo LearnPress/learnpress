@@ -17,10 +17,6 @@ defined( 'ABSPATH' ) || exit();
 $user   = LP_Global::user();
 $course = LP_Global::course();
 
-if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
-	return;
-}
-
 if ( ! $price = $course->get_price_html() ) {
 	return;
 }

@@ -3,6 +3,9 @@
         display: none;
     }
 }
+.button-continue-guest-checkout{
+    clear: both;
+}
 
 #learn-press-payment {
     .payment-methods {
@@ -42,12 +45,33 @@
 #learn-press-checkout-login,
 #learn-press-checkout-register {
     margin-bottom: 1.5em;
-
+    border: 1px solid #DDD;
+    padding: 20px 20px 0 20px;
+    background: #FFFFFF;
+    //width: 48%;
+    //float: left;
 }
 
-#checkout-login-form,
-#checkout-register-form {
-    display: none;
+//#learn-press-checkout-login {
+//    margin-right: 2%;
+//}
+//
+//#learn-press-checkout-register {
+//    margin-left: 2%;
+//}
+
+#learn-press-order-review,
+.learn-press-checkout-comment {
+    margin-bottom: 20px;
+}
+
+#checkout-form-login,
+#checkout-form-register {
+    _display: none;
+    .learn-press-form-register,
+    .learn-press-form-login{
+        display: none;
+    }
 }
 
 #checkout-guest-email {

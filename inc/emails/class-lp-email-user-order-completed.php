@@ -6,7 +6,8 @@
  * @package LearnPress/Classes
  * @version 3.0.0
  */
-
+_deprecated_file( __FILE__, '3.0.0' );
+die();
 /**
  * Prevent loading this file directly
  */
@@ -41,7 +42,6 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 				'{{order_number}}',
 			) );
 
-			// $this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 
 			add_action( 'learn_press_order_status_completed_notification', array( $this, 'trigger' ) );
 

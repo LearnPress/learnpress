@@ -18,6 +18,8 @@ if ( ! isset( $section ) ) {
 	return;
 }
 
+$user = LP_Global::user();
+
 ?>
 
 <?php if ( $items = $section->get_items() ) { ?>
@@ -36,28 +38,21 @@ if ( ! isset( $section ) ) {
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/begin-section-loop-item', $item );
-				?>
 
-                <a href="<?php echo $item->get_permalink(); ?>">
-
-					<?php $args = array( 'item' => $item, 'section' => $section );
-
-					/**
-					 * @since 3.0.0
-					 */
-					do_action( 'learn-press/before-section-loop-item', $item );
-
-					learn_press_get_template( "single-course/section/" . $item->get_template(), $args );
-
-					/**
-					 * @since 3.0.0
-					 *
-					 * @see   learn_press_section_item_meta()
-					 */
-					do_action( 'learn-press/after-section-loop-item', $item, $section );
+				if ( $user->can_view_item( $item->get_id() ) ) {
 					?>
-
-                </a>
+                    <a class="section-item-link" href="<?php echo $item->get_permalink(); ?>">
+						<?php learn_press_get_template( 'single-course/section/content-item.php', array( 'item'    => $item,
+						                                                                                 'section' => $section
+						) ); ?>
+                    </a>
+				<?php } else { ?>
+                    <div class="section-item-link">
+						<?php learn_press_get_template( 'single-course/section/content-item.php', array( 'item'    => $item,
+						                                                                                 'section' => $section
+						) ); ?>
+                    </div>
+				<?php } ?>
 
 				<?php
 				/**

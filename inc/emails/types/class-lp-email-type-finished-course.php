@@ -54,25 +54,45 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 		$user        = learn_press_get_user( $this->user_id );
 		$course      = learn_press_get_course( $this->course_id );
 		$course_data = $user->get_course_data( $this->course_id );
+		$object      = array();
 
-		if ( ! $user || ! $course_data ) {
-			return;
+		if ( $course ) {
+			$object = array_merge(
+				$object,
+				array(
+					'course_id'   => $course->get_id(),
+					'course_name' => $course->get_title(),
+					'course_url'  => $course->get_permalink()
+				)
+			);
+		}
+
+		if ( $user ) {
+			$object = array_merge(
+				$object,
+				array(
+					'user_id'           => $user->get_id(),
+					'user_name'         => $user->get_username(),
+					'user_email'        => $user->get_email(),
+					'user_display_name' => $user->get_display_name()
+				)
+			);
+		}
+
+		if ( $course_data ) {
+			$object = array_merge(
+				$object,
+				array(
+					'course_start_date'     => $course_data->get_start_time(),
+					'course_grade'          => $course_data->get_grade( 'display' ),
+					'course_result_percent' => $course_data->get_percent_result()
+				)
+			);
 		}
 
 		$this->object = $this->get_common_template_data(
 			$this->email_format,
-			array(
-				'course_id'             => $course->get_id(),
-				'course_name'           => $course->get_title(),
-				'course_url'            => $course->get_permalink(),
-				'user_id'               => $user->get_id(),
-				'user_name'             => $user->get_username(),
-				'user_email'            => $user->get_email(),
-				'user_display_name'     => $user->get_display_name(),
-				'course_start_date'     => $course_data->get_start_time(),
-				'course_grade'          => $course_data->get_grade( 'display' ),
-				'course_result_percent' => $course_data->get_percent_result(),
-			)
+			$object
 		);
 
 		$this->get_variable();

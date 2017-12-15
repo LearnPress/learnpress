@@ -264,12 +264,6 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
 	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
-		if ( $tabs = learn_press_get_user_profile_tabs() ) {
-			$keys      = array_keys( $tabs );
-			$first_tab = reset( $keys );
-		} else {
-			$first_tab = '';
-		}
 		$text                             = LP()->settings->get( 'admin_bar_link_text' );
 		$user_id                          = learn_press_get_current_user_id();
 		$course_profile                   = array();
@@ -324,15 +318,15 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 	) );
 }
 
+/**
+ * Get queried user in profile link
+ *
+ * @since 3.0.0
+ *
+ * @return false|WP_User
+ */
 function learn_press_get_profile_user() {
-	global $wp_query;
-	if ( isset( $wp_query->query['user'] ) ) {
-		$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
-	} else {
-		$user = get_user_by( 'id', get_current_user_id() );
-	}
-
-	return $user;
+	return LP_Profile::get_queried_user();
 }
 
 
