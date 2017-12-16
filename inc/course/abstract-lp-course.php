@@ -347,7 +347,7 @@ abstract class LP_Abstract_Course {
 			}
 		}
 
-		return apply_filters( 'learn_press_count_users_enrolled', $enrolled, $this );
+		return apply_filters( 'learn_press_count_users_enrolled', $enrolled, $this, $count_db );
 	}
 
 	/**
