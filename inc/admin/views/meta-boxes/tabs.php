@@ -7,7 +7,7 @@ if ( ! $tabs ) {
 }
 $current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 ?>
-<div id="learn-press-course-settings" class="learn-press-tabs vertical initialize">
+<div id="learn-press-admin-editor-metabox-settings" class="learn-press-tabs vertical initialize">
     <div class="tabs-heading">
         <h4><?php echo $this->opt( 'title' ); ?></h4>
     </div>

@@ -186,7 +186,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				'priority'   => 'high',
 				'fields'     => array(
 					array(
-						'name'    => __( 'Show questions', 'learnpress' ),
+						'name'    => __( 'Show Questions', 'learnpress' ),
 						'desc'    => __( 'Show list of questions while doing quiz as ordered numbers (1, 2, 3, etc).', 'learnpress' ),
 						'id'      => '_lp_show_hide_question',
 						'type'    => 'radio',
@@ -197,14 +197,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'     => 'hide'
 					),
 					array(
-						'name' => __( 'Review questions', 'learnpress' ),
+						'name' => __( 'Review Questions', 'learnpress' ),
 						'id'   => '_lp_review_questions',
 						'type' => 'yes-no',
 						'desc' => __( 'Allow re-viewing questions after completing quiz.', 'learnpress' ),
 						'std'  => 'no'
 					),
 					array(
-						'name'       => __( 'Show correct answer', 'learnpress' ),
+						'name'       => __( 'Show Correct Answer', 'learnpress' ),
 						'id'         => '_lp_show_result',
 						'type'       => 'yes_no',
 						'desc'       => __( 'Show correct answer when reviewing questions.', 'learnpress' ),
@@ -247,7 +247,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'  => 0
 					),
 					array(
-						'name'       => __( 'Archive history', 'learnpress' ),
+						'name'       => __( 'Archive History', 'learnpress' ),
 						'id'         => '_lp_archive_history',
 						'type'       => 'yes_no',
 						'desc'       => __( 'Archive quiz results for each time.', 'learnpress' ),
@@ -264,7 +264,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						)
 					),
 					array(
-						'name' => __( 'Show check answer', 'learnpress' ),
+						'name' => __( 'Show Check Answer', 'learnpress' ),
 						'id'   => '_lp_show_check_answer',
 						'type' => 'number',
 						'desc' => __( 'Show button to check answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),
@@ -273,7 +273,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'max'  => 100
 					),
 					array(
-						'name' => __( 'Show hint', 'learnpress' ),
+						'name' => __( 'Show Hint', 'learnpress' ),
 						'id'   => '_lp_show_hint',
 						'type' => 'number',
 						'desc' => __( 'Show button to hint answer while doing quiz ( 0 = Disabled, -1 = Unlimited, N = Number of check ).', 'learnpress' ),

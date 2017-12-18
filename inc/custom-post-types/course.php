@@ -512,21 +512,21 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => '10 weeks'
 					),
 					array(
-						'name' => __( 'Maximum students', 'learnpress' ),
+						'name' => __( 'Maximum Students', 'learnpress' ),
 						'id'   => '_lp_max_students',
 						'type' => 'number',
 						'desc' => __( 'Maximum number of students who can enroll in this course.', 'learnpress' ),
 						'std'  => 1000,
 					),
 					array(
-						'name' => __( 'Students enrolled', 'learnpress' ),
+						'name' => __( 'Students Enrolled', 'learnpress' ),
 						'id'   => '_lp_students',
 						'type' => 'number',
 						'desc' => __( 'How many students have taken this course.', 'learnpress' ),
 						'std'  => 0,
 					),
 					array(
-						'name' => __( 'Re-take course', 'learnpress' ),
+						'name' => __( 'Re-take Course', 'learnpress' ),
 						'id'   => '_lp_retake_count',
 						'type' => 'number',
 						'min'  => - 1,
@@ -548,7 +548,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => 'no',
 					),
 					array(
-						'name' => __( 'External link buy course', 'learnpress' ),
+						'name' => __( 'External Link Buy Course', 'learnpress' ),
 						'id'   => '_lp_external_link_buy_course',
 						'type' => 'url',
 						'desc' => __( 'Redirect to this url when you press button buy this course.', 'learnpress' ),

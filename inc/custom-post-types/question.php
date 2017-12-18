@@ -254,14 +254,14 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'std'   => 1
 					),
 					array(
-						'name' => __( 'Question explanation', 'learnpress' ),
+						'name' => __( 'Question Explanation', 'learnpress' ),
 						'id'   => '_lp_explanation',
 						'type' => 'textarea',
 						'desc' => __( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ),
 						'std'  => null
 					),
 					array(
-						'name' => __( 'Question hint', 'learnpress' ),
+						'name' => __( 'Question Hint', 'learnpress' ),
 						'id'   => '_lp_hint',
 						'type' => 'textarea',
 						'desc' => __( 'Instruction for user to select the right answer. The text will be shown when user clicking \'Hint\' button.', 'learnpress' ),
