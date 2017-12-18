@@ -163,35 +163,32 @@
 					args = $li.dataToJSON();
 					items.push( args );
 					//that.addQuestion(args);
-					$li.remove();
+//					$li.remove();
 				});
 				//∂console.log( items );
+//				LP.blockContent();
 				that.addQuestions(items);
 			},
 			addQuestions: function (items ) {
 				var that = this;
-				if(!items || !items.length){
+				if( !items || !items.length ) {
 					return;
 				}
-				var args = items.shift();
-				args = $.extend({
-					id  : 0,
-					type: null,
-					name: null
-				}, args);
-				console.log(args);
-				if (!args.id && !args.type) {
-					alert('ERROR');
+				var question_ids = [];
+				$.each( items, function( index, element ) {
+					question_ids.push( element.id );
+				});
+				if(!question_ids || !question_ids.length){
 					return;
 				}
+				args = {'question_ids': question_ids};
 				var that = this,
 					post_data = $.extend({
-						action : 'learnpress_add_quiz_question',
+						action : 'learnpress_add_multi_quiz_question',
 						quiz_id: $('#post_ID').val()
 					}, args);
-
-				post_data = LP.Hook.applyFilters('LP.add_question_post_data', post_data);
-
+				post_data = LP.Hook.applyFilters('LP.add_multi_question_post_data', post_data);
+				this.$( '#learn-press-modal-search-items .lp-list-items li input[type="checkbox"]').attr('disabled','disabled');
 				$.ajax({
 					url     : LP_Settings.ajax,
 					dataType: 'html',
@@ -201,12 +198,11 @@
 						response = LP.parseJSON(response);
 						var $newQuestion = $(response.html);
 						$('#learn-press-list-questions').append( $newQuestion );
-						that.$( '#lp-modal-quiz-questions li[data-id="' + response.id + '"]' ).addClass( 'selected hide-if-js' );
-						//LP.Question._hideQuestion( args.id )
-						LP.Hook.doAction('learn_press_add_quiz_question', $newQuestion, args);
-						if( items && items.length ) {
-							that.addQuestions( items );
-						}
+						$.each(response.ids, function(index, question_id){
+							that.$( '#learn-press-modal-search-items .lp-list-items li[data-id="' + question_id + '"]' ).remove();
+						});
+						that.$( '#learn-press-modal-search-items .lp-list-items li input[type="checkbox"]').removeAttr('disabled');
+						LP.Hook.doAction('learn_press_add_multi_quiz_question', response.ids, response.ids );
 					}
 				});
 			},
