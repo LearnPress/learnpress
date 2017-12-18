@@ -4,12 +4,16 @@
 .lp-admin-editor {
     background-color: #fff;
     border: 1px solid #ddd;
-    margin: 20px 0;
+    margin: 20px 0 0 0;
     position: relative;
     .heading,
     .lp-box-data-content {
         padding: 0;
     }
+}
+
+#learn-press-admin-editor-metabox-settings {
+    margin-top: 20px;
 }
 
 /**
