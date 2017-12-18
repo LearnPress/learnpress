@@ -1059,8 +1059,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$current_position = $this->get_item_position( $current );
 					if ( $current_position < $count - 1 ) {
 						$current_position ++;
+						$next = $items[ $current_position ];
 					}
-					$next = $items[ $current_position ];
 				}
 			}
 
@@ -1076,8 +1076,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$current_position = $this->get_item_position( $current );
 					if ( $current_position > 0 ) {
 						$current_position --;
+						$prev = $items[ $current_position ];
 					}
-					$prev = $items[ $current_position ];
 				}
 			}
 

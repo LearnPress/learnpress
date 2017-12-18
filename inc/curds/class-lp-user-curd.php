@@ -1016,6 +1016,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 
+				$where .= $wpdb->prepare( " AND post_status != %s", 'trash' );
+
 				$where = $where . $wpdb->prepare( " AND post_type = %s AND post_author = %d", LP_COURSE_CPT, $user_id );
 				$sql   = "
 					SELECT SQL_CALC_FOUND_ROWS ID

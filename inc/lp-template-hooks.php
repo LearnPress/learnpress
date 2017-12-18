@@ -182,6 +182,11 @@ add_action( 'learn-press/course-item-content', 'learn_press_course_item_content'
 add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
 
 /**
+ * @see learn_press_content_item_nav
+ */
+add_action( 'learn-press/after-course-item-content', 'learn_press_content_item_nav', 5 );
+
+/**
  * @see learn_press_content_item_lesson_title
  * @see learn_press_content_item_lesson_content
  * @see learn_press_content_item_lesson_complete_button

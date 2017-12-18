@@ -21,6 +21,7 @@ input[type="number"],
 input[type="password"] {
     @include box-sizing(border-box);
 }
+
 .clearfix {
     &:after {
         @include clear-fix();
@@ -311,6 +312,19 @@ ul.list-table-nav {
     font-size: 85%;
     text-decoration: line-through;
     margin-right: 5px;
+}
+
+.course-item-nav {
+    display: flex;
+    .prev, .next {
+        flex: 1;
+        span {
+            display: block;
+        }
+    }
+    .next {
+        text-align: right;
+    }
 }
 
 @media screen and (max-width: 768px) {

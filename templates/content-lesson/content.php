@@ -14,9 +14,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
 $lesson = LP_Global::course_item();
-$user   = LP_Global::user();
 
 // lesson no content
 if ( ! $content = $lesson->get_content() ) {
