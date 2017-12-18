@@ -38,6 +38,13 @@ class LP_Addon {
 	 * LP_Addon constructor.
 	 */
 	public function __construct() {
+		if ( ! $this->_check_version() ) {
+			return;
+		}
+
+		$this->_define_constants();
+		$this->_includes();
+
 		add_action( 'init', array( $this, 'init' ) );
 	}
 
@@ -68,8 +75,7 @@ class LP_Addon {
 			'_plugin_links'
 		) );
 
-		$this->_define_constants();
-		$this->_includes();
+
 		$this->_init_hooks();
 		$this->_enqueue_assets();
 	}
