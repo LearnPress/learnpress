@@ -109,6 +109,11 @@ $user_ip      = $order->get_user_ip_address();
             </div>
 
         </div>
+
+        <div class="order-data-field order-data-key">
+            <label><?php _e( 'Order key', 'learnpress' ); ?></label>
+			<?php echo $order->get_order_key(); ?>
+        </div>
     </div>
     <h3 class="order-data-heading"><?php _e( 'Order Items', 'learnpress' ); ?></h3>
     <div class="order-items">

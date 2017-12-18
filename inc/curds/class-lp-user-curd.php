@@ -286,6 +286,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			settype( $course_id, 'array' );
 		}
 
+		if ( ! $user_id ) {
+			return false;
+		}
+
 		$fetch_ids = array();
 
 		/**
@@ -989,19 +993,19 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			try {
 
-				$orders = $this->get_orders( $user_id );
-				$query  = array( 'total' => 0, 'pages' => 0, 'items' => false );
+				//$orders = $this->get_orders( $user_id );
+				$query = array( 'total' => 0, 'pages' => 0, 'items' => false );
 
-				if ( ! $orders ) {
-					throw new Exception( "", 0 );
-				}
-
-				$course_ids   = array_keys( $orders );
-				$query_args   = $course_ids;
-				$query_args[] = $user_id;
-				$limit        = $args['limit'];
-				$where        = "WHERE 1";
-				$offset       = ( $args['paged'] - 1 ) * $limit;
+//				//if ( ! $orders ) {
+//				//	throw new Exception( "Error", 0 );
+//				//}
+//
+//				//$course_ids   = array_keys( $orders );
+//				//$query_args   = $course_ids;
+//				$query_args[] = $user_id;
+				$limit  = $args['limit'];
+				$where  = "WHERE 1";
+				$offset = ( $args['paged'] - 1 ) * $limit;
 
 				if ( ! empty( $args['status'] ) ) {
 					if ( is_array( $args['status'] ) ) {
@@ -1041,7 +1045,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 			}
 			catch ( Exception $ex ) {
-
+				learn_press_add_message( $ex->getMessage() );
 			}
 
 			wp_cache_set( $cache_key, $courses, 'lp-user-courses' );
@@ -1064,13 +1068,15 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function query_purchased_courses( $user_id = 0, $args = '' ) {
 		global $wpdb, $wp;
 		$paged = 1;
+
 		if ( ! empty( $wp->query_vars['view_id'] ) ) {
 			$paged = absint( $wp->query_vars['view_id'] );
 		}
+
 		$args = wp_parse_args(
 			$args,
 			array(
-				'paged'  => 1,
+				'paged'  => $paged,
 				'limit'  => 10,
 				'status' => ''
 			)

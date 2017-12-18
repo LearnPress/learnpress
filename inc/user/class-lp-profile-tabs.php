@@ -176,6 +176,11 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 */
 	public function get_tab_link( $tab = false, $with_section = false, $user = null ) {
 
+		if ( ( $tab || $with_section ) && empty( $user ) ) {
+			$current_user = learn_press_get_current_user();
+			$user         = $current_user->get_username();
+		}
+
 		$args = array( 'user' => $user );
 
 		if ( isset( $args['user'] ) ) {
@@ -376,5 +381,9 @@ class LP_Profile_Tab extends LP_Array_Access {
 
 	public function get_profile() {
 		return $this->_profile ? $this->_profile : LP_Profile::instance();
+	}
+
+	public function is_hidden(){
+		return $this->get('hidden');
 	}
 }

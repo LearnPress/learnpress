@@ -208,7 +208,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return intval( $this->get_data( 'parent_id' ) );
 	}
 
-	public function get_result( $prop = 'result', $force = false ) {
+	public function get_result( $prop = 'result' ) {
 		$result = array(
 			'result' => $this->is_completed() ? 100 : 0,
 			'grade'  => $this->is_completed() ? 'passed' : 'failed'
@@ -265,7 +265,11 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function update_meta() {
 		if ( $this->_meta_data ) {
 			foreach ( $this->_meta_data as $meta_data ) {
-				learn_press_update_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key, $meta_data->meta_value );
+				if ( $meta_data->meta_value ) {
+					learn_press_update_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key, $meta_data->meta_value );
+				} else {
+					learn_press_delete_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key );
+				}
 			}
 		}
 	}
@@ -439,9 +443,16 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 					AND status = %s
 			", $this->get_user_id(), $this->get_item_id(), $null_time, $null_time, $status );
 
-		$return = $wpdb->get_var( $query );
+		if ( $return = $wpdb->get_var( $query ) ) {
+			$this->maybe_update_item_grade();
+		}
 
 		return $return;
+	}
+
+	public function maybe_update_item_grade() {
+		$result = $this->get_result();
+		learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
 	}
 
 	/**

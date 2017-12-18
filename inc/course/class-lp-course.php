@@ -104,7 +104,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @param bool $the_course
 		 * @param array $args
 		 *
-		 * @return bool
+		 * @return bool|LP_Course
 		 */
 		public static function get_course( $the_course = false, $args = array() ) {
 			$the_course = self::get_course_object( $the_course );

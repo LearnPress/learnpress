@@ -65,7 +65,7 @@ $passing_condition = $course->get_passing_condition();
             <span class="number"><?php echo round( $course_results['result'], 2 ); ?><span
                         class="percentage-sign">%</span></span>
 			<?php if ( $grade = $course_results['grade'] ) { ?>
-                <span class="grade <?php echo esc_attr( $grade ); ?>">
+                <span class="lp-label grade <?php echo esc_attr( $grade ); ?>">
 				<?php learn_press_course_grade_html( $grade ); ?>
 				</span>
 			<?php } ?>

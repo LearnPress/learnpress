@@ -107,12 +107,8 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 					$start_time = $item_course->get_start_time()->getTimestamp();
 					$duration   = $item_course->get_course()->get_duration();
 
-
 					learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'via', 'schedule' );
 					learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'exceeded', $exceeded );
-					learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'aaaa', $start_time );
-					learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'bbbb', $duration );
-					learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'cccc', $start_time + $duration );
 				}
 			}
 

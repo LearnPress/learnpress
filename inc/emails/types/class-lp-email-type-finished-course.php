@@ -51,7 +51,11 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 
 	public function get_object( $object_id = '', $more = '' ) {
 
-		$user        = learn_press_get_user( $this->user_id );
+		$user = learn_press_get_user( $this->user_id );
+		if ( ! $user ) {
+			print_r( $this );
+			die();
+		}
 		$course      = learn_press_get_course( $this->course_id );
 		$course_data = $user->get_course_data( $this->course_id );
 		$object      = array();

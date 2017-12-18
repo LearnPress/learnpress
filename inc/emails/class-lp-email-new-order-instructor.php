@@ -55,6 +55,10 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 		public function trigger( $order_id ) {
 			parent::trigger( $order_id );
 
+			if ( ! $this->enable ) {
+				return false;
+			}
+
 			$instructors = $this->get_order_instructors( $order_id );
 
 			if ( ! $instructors ) {

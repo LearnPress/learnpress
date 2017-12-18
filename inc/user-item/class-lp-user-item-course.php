@@ -193,11 +193,14 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return float|int
 	 */
 	public function get_results( $prop = 'result' ) {
+
 		if ( ! $course = $this->get_course() ) {
 			return false;
 		}
+
 		$course_result = $course->get_data( 'course_result' );
 		$results       = false;
+
 		switch ( $course_result ) {
 			// Completed lessons per total
 			case 'evaluate_lesson':
@@ -229,9 +232,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				array(
 					'count_items'     => $count_items,
 					'completed_items' => $completed_items,
-					'skipped_items'   => $count_items - $completed_items
+					'skipped_items'   => $count_items - $completed_items,
+					'status'          => $this->get_status()
 				)
 			);
+
+			$results['grade'] = $this->is_finished() ? $this->_is_passed( $results['result'] ) : '';
 		}
 
 		if ( $prop === 'status' ) {
@@ -305,7 +311,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 */
 	public function finish() {
 
-		return parent::complete( 'finished' );
+		$return = parent::complete( 'finished' );
+
+		return $return;
 	}
 
 	/**
@@ -377,7 +385,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	protected function _evaluate_course_by_passed_quizzes() {
 
 		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-passed-quizzes' ) ) ) {
-			$course = $this->get_course();
 
 			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
 			$result = 0;
@@ -605,6 +612,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		return false;
+	}
+
+	public function get_result( $prop = '' ) {
+		return $this->get_results( $prop );
 	}
 
 	/**

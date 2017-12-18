@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/order/order-details.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -87,5 +87,9 @@ if ( ! isset( $order ) ) {
     </tr>
     </tfoot>
 </table>
+
+<p>
+	<?php printf( __( '<strong>Order key:</strong> %s', 'learnpress' ), $order->get_order_key() ); ?>
+</p>
 
 <?php do_action( 'learn-press/order/after-table-details', $order ); ?>

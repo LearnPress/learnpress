@@ -1112,9 +1112,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			global $wpdb, $post;
 			$request          = $_POST;
 			$price            = floatval( $request['_lp_price'] );
-			$sale_price       = $request['_lp_sale_price'];
-			$sale_price_start = $request['_lp_sale_start'];
-			$sale_price_end   = $request['_lp_sale_end'];
+			$sale_price       = LP_Request::get( '_lp_sale_price' );
+			$sale_price_start = LP_Request::get( '_lp_sale_start' );
+			$sale_price_end   = LP_Request::get( '_lp_sale_end' );
 			$keys             = array();
 			// Delete all meta no need anymore
 			if ( $price <= 0 ) {

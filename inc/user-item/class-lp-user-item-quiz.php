@@ -135,7 +135,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				foreach ( $questions as $question_id ) {
 					$question = LP_Question::get_question( $question_id );
 					$answered = $this->get_question_answer( $question_id );
-					$check    = $question->check( $answered );
+					$check    = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
 
 					$check['type']     = $question->get_type();
 					$check['answered'] = $answered !== false;
@@ -162,6 +162,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$result['grade']  = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
 
 				$result['question_count'] = sizeof( $questions );
+
+				if ( false === learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
+					learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
+				}
 			}
 			wp_cache_set( $cache_key, $result, 'lp-quiz-result' );
 		}

@@ -46,6 +46,10 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 
 			parent::trigger( $course_id, $user_id, $user_item_id );
 
+			if ( ! $this->enable ) {
+				return false;
+			}
+
 			if ( ! $instructor = $this->get_instructor() ) {
 				return false;
 			}
@@ -59,7 +63,6 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 			$this->recipient = $instructor->get_data( 'email' );
 
 			$this->get_object();
-			$this->get_variable();
 
 			if ( $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() ) ) {
 				$return = $this->get_recipient();

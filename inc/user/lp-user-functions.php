@@ -505,6 +505,10 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 				if ( $meta_value == 'user_item_id' ) {
 					continue;
 				}
+
+				if ( empty( $meta_value ) ) {
+					$meta_value = '';
+				}
 				learn_press_update_user_item_meta( $updated_item->user_item_id, $meta_key, $meta_value );
 			}
 		}

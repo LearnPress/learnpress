@@ -726,13 +726,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$grade = isset( $item_result['grade'] ) ? $item_result['grade'] : false;
 			}
 
-			return $grade;
-			if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
-				$status = $item['status'];
-				if ( $status === 'completed' ) {
-					$grade = learn_press_get_user_item_meta( $item['user_item_id'], '_quiz_grade', true );
-				}
-			}
+//			return $grade;
+//			if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
+//				$status = $item['status'];
+//				if ( $status === 'completed' ) {
+//					$grade = learn_press_get_user_item_meta( $item['user_item_id'], '_quiz_grade', true );
+//				}
+//			}
 
 			return apply_filters( 'learn-press/user-item-grade', $grade, $item_id, $this->get_id(), $course_id );
 		}
@@ -1376,12 +1376,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_finished_courses() {
 			global $wpdb;
 			$query = $wpdb->prepare( "
-			SELECT p.*, uc.start_time, uc.end_time, uc.ref_id
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON p.ID = uc.item_id
-			WHERE uc.user_id = %d
-			AND uc.status = %s
-		", $this->get_id(), 'finished' );
+				SELECT p.*, uc.start_time, uc.end_time, uc.ref_id
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON p.ID = uc.item_id
+				WHERE uc.user_id = %d
+				AND uc.status = %s
+			", $this->get_id(), 'finished' );
 
 			return apply_filters( 'learn_press_user_finished_courses', $wpdb->get_results( $query ) );
 		}
@@ -1471,10 +1471,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 				$query = $wpdb->prepare( "
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT q.*
-				FROM {$wpdb->posts} q
-				INNER JOIN {$wpdb->prefix}learnpress_user_items uq ON uq.item_id = q.ID
-				WHERE uq.user_id = %d AND uq.item_type = %s
-			", $this->get_id(), 'lp_quiz' );
+					FROM {$wpdb->posts} q
+					INNER JOIN {$wpdb->prefix}learnpress_user_items uq ON uq.item_id = q.ID
+					WHERE uq.user_id = %d AND uq.item_type = %s
+				", $this->get_id(), 'lp_quiz' );
 
 				$query           = $query . $limit;
 				$rows            = $wpdb->get_results( $query );
@@ -1793,11 +1793,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			global $wpdb;
 			$query    = $wpdb->prepare( "
 			SELECT user_item_id
-			FROM {$wpdb->learnpress_user_items}
-			WHERE user_id = %d
-			AND (item_id = %d OR ref_id = %d)
-			AND `status` NOT IN(%s, %s)
-		", $this->get_id(), $course_id, $course_id, 'completed', 'finished' );
+				FROM {$wpdb->learnpress_user_items}
+				WHERE user_id = %d
+				AND (item_id = %d OR ref_id = %d)
+				AND `status` NOT IN(%s, %s)
+			", $this->get_id(), $course_id, $course_id, 'completed', 'finished' );
 			$item_ids = $wpdb->get_col( $query );
 
 			return apply_filters( 'learn_press_user_incomplete_items', $item_ids, $course_id, $this->get_id() );
@@ -2271,12 +2271,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_course_info( $course_id, $field = null, $force = false ) {
 
-			_deprecated_function( __FUNCTION__, '3.0.0' );
+			//_deprecated_function( __FUNCTION__, '3.0.0' );
 			if ( ! $course_id ) {
 				return false;
 			}
 
-			// XXXXX
 			return false;
 		}
 
@@ -2319,6 +2318,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function evaluate_quiz_results( $quiz_id, $progress ) {
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.0' );
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
 			$results   = array(
 				'mark'            => 0,
@@ -2784,6 +2784,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function get_answer_results( $question_id, $quiz_id = null ) {
+
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.0' );
+
 			$data = false;
 			if ( ! $quiz_id ) {
 				$quiz_id = $this->get_quiz_by_question( $question_id );
@@ -3192,7 +3195,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param     $quiz_id
 		 * @param int $course_id
 		 *
-		 * @return mixed|void
+		 * @return bool
 		 * @throws Exception
 		 */
 		public function can_do_quiz( $quiz_id, $course_id = 0 ) {
@@ -3257,7 +3260,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function is_guest() {
-			return !$this->get_id() || metadata_exists( 'user', $this->get_id(), '_lp_temp_user' );
+			return ! $this->get_id() || metadata_exists( 'user', $this->get_id(), '_lp_temp_user' );
 		}
 
 		public function read_course( $the_course ) {

@@ -26,7 +26,9 @@ $profile = LP_Profile::instance();
 		<?php
 		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
 
-
+			if ( $tab_data->is_hidden() ) {
+				continue;
+			}
 
 			$slug        = $profile->get_slug( $tab_data, $tab_key );
 			$link        = $profile->get_tab_link( $tab_key, true );

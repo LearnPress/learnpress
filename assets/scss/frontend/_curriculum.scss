@@ -529,6 +529,12 @@ body {
             }
         }
     }
+    .content-item-summary,
+    .lp-quiz-buttons {
+        .form-button-finish-course {
+            float: right;
+        }
+    }
 }
 
 #wpadminbar {
@@ -681,6 +687,17 @@ body {
                 margin-left: -100%;
                 position: absolute;
                 width: 100%;
+            }
+        }
+
+        .lp-course-status {
+            .grade {
+                &.failed {
+                    background: #FF0000;
+                }
+                &.passed {
+                    background: #3eadff;
+                }
             }
         }
     }

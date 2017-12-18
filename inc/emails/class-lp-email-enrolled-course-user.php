@@ -45,6 +45,10 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_User' ) ) {
 
 			parent::trigger( $course_id, $user_id, $user_item_id );
 
+			if ( ! $this->enable ) {
+				return;
+			}
+
 			$this->get_object();
 
 			$user = learn_press_get_user( $user_id );

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return mixed
  */
 function learn_press_generate_order_key() {
-	return apply_filters( 'learn-press/order-key', uniqid( 'order_' ) );
+	return apply_filters( 'learn-press/order-key', strtoupper( uniqid( 'ORDER' ) ) );
 }
 
 /**

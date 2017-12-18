@@ -25,7 +25,7 @@ $security  = $item->create_nonce( 'complete' );
 ?>
 
 <form method="post" name="learn-press-form-complete-lesson"
-      class="learn-press-form<?php echo $completed ? ' completed' : ''; ?>">
+      class="learn-press-form form-button<?php echo $completed ? ' completed' : ''; ?>">
 
 	<?php do_action( 'learn-press/lesson/before-complete-button' ); ?>
 

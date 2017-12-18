@@ -41,6 +41,8 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
 		 * @return mixed
 		 */
 		public function trigger( $order_id ) {
+			parent::trigger($order_id);
+
 			if ( ! $this->enable ) {
 				return false;
 			}

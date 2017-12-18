@@ -1141,7 +1141,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			if ( $new_status !== $old_status ) {
 
 				if ( ! $this->get_user_id() ) {
-					$new_status = 'pending';
+					//$new_status = 'pending';
 				}
 
 				if ( doing_action( 'save_post' ) ) {

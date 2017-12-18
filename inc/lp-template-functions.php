@@ -2876,7 +2876,7 @@ if ( ! function_exists( 'learn_press_content_item_nav' ) ) {
 				'next_item' => $next_item,
 				'prev_item' => $prev_item
 			)
-        );
+		);
 	}
 }
 
@@ -3201,12 +3201,16 @@ function learn_press_is_learning_course( $course_id = 0 ) {
 	$user        = learn_press_get_current_user();
 	$course      = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
 	$is_learning = false;
+	$has_status  = false;
 
-	if ( $course && ! $course->is_required_enroll() || $user->has_course_status( $course->get_id(), array(
+	if ( $user && $course ) {
+		$has_status = $user->has_course_status( $course->get_id(), array(
 			'enrolled',
 			'finished'
-		) )
-	) {
+		) );
+	}
+
+	if ( $course && ( ! $course->is_required_enroll() || $has_status ) ) {
 		$is_learning = true;
 	}
 

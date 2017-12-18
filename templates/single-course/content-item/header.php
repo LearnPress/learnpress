@@ -32,7 +32,7 @@ $course = LP_Global::course();
 
     <a class="toggle-content-item" href=""></a>
 
-    <form class="lp-form form-button lp-button-back" action="<?php echo $course->get_permalink(); ?>">
+    <form class="lp-form form-button lp-button-back" method="post" action="<?php echo $course->get_permalink(); ?>">
         <button class="lp-button"><?php _e( 'Back to Course', 'learnpress' ); ?></button>
     </form>
 
