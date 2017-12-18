@@ -158,6 +158,23 @@ class LP_Gateways {
 	}
 
 	/**
+	 * @param string $id
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool|LP_Gateway_Abstract
+	 */
+	public function get_gateway( $id ) {
+		if ( $gateways = $this->get_gateways() ) {
+			if ( isset( $gateways[ $id ] ) ) {
+				return $gateways[ $id ];
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Ensure that only one instance of LP_Gateways is loaded
 	 * @return LP_Gateways|null
 	 */

@@ -1,36 +1,40 @@
 ;(function ($) {
-    // Make payments sortable
-    $('.learn-press-payments.sortable tbody').sortable({
-        handle: '.dashicons-menu',
-        helper: function (e, ui) {
-            ui.children().each(function () {
-                $(this).width($(this).width());
-            });
-            return ui;
-        },
-        axis: 'y',
-        start: function (event, ui) {
 
-        },
-        stop: function (event, ui) {
+    function makePaymentsSortable() {
+        // Make payments sortable
+        $('.learn-press-payments.sortable tbody').sortable({
+            handle: '.dashicons-menu',
+            helper: function (e, ui) {
+                ui.children().each(function () {
+                    $(this).width($(this).width());
+                });
+                return ui;
+            },
+            axis: 'y',
+            start: function (event, ui) {
 
-        },
-        update: function (event, ui) {
-            var order = $(this).children().map(function () {
-                return $(this).find('input[name="payment-order"]').val()
-            }).get();
-            $.post({
-                url: '',
-                data: {
-                    'lp-ajax': 'ajax-update-payment-order',
-                    order: order
-                },
-                success: function (response) {
-                    console.log(response)
-                }
-            });
-        }
-    });
+            },
+            stop: function (event, ui) {
+
+            },
+            update: function (event, ui) {
+                var order = $(this).children().map(function () {
+                    return $(this).find('input[name="payment-order"]').val()
+                }).get();
+                $.post({
+                    url: '',
+                    data: {
+                        'lp-ajax': 'update-payment-order',
+                        order: order
+                    },
+                    success: function (response) {
+                        console.log(response)
+                    }
+                });
+            }
+        });
+    }
+
     // Document is already ready?
     $(document).ready(function () {
         $('.learn-press-dropdown-pages').dropdownPages();
@@ -63,6 +67,28 @@
                     response = LP.parseJSON(response);
                     for (var i in response) {
                         $('#email-' + i + ' .status').toggleClass('enabled', response[i]);
+                    }
+                }
+            });
+        }
+
+        function togglePaymentStatus(e) {
+            e.preventDefault();
+            var $row = $(this).closest('tr'),
+                $button = $(this),
+                status = $row.find('.status').hasClass('enabled') ? 'no' : 'yes';
+
+            $.ajax({
+                url: '',
+                data: {
+                    'lp-ajax': 'update-payment-status',
+                    status: status,
+                    id: $row.data('payment')
+                },
+                success: function (response) {
+                    response = LP.parseJSON(response);
+                    for (var i in response) {
+                        $('#payment-' + i + ' .status').toggleClass('enabled', response[i]);
                     }
                 }
             });
@@ -110,7 +136,8 @@
                 });
             }).apply(this)
         }).on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails)
-            .on('click', '#learn-press-create-pages', createPages);
+            .on('click', '#learn-press-create-pages', createPages)
+            .on('click', '.learn-press-payments .status .dashicons', togglePaymentStatus);
 
 
         $('.learn-press-tooltip').each(function () {
@@ -215,6 +242,7 @@
     var $doc = $(document);
 
     function _ready() {
+        makePaymentsSortable();
         LP_Admin.init();
         $(document).on('click', '.plugin-action-buttons a', function (e) {
 

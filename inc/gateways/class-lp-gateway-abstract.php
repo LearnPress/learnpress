@@ -79,10 +79,13 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		if ( ! $this->admin_name ) {
 			$this->admin_name = preg_replace( '!LP_Gateway_!', '', get_class( $this ) );
 		}
+
 		if ( ! $this->id ) {
 			$this->id = sanitize_title( $this->title );
 		}
 
+		$this->settings = LP()->settings()->get_group( $this->id, '' );
+		$this->enabled  = $this->settings->get( 'enable' );
 		// Load settings
 		$this->_load();
 	}
@@ -151,6 +154,20 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	public function is_enabled() {
+		return $this->enabled == 'yes';
+	}
+
+	public function enable( $status ) {
+		if ( is_bool( $status ) ) {
+			$this->enabled = $status;
+			if ( ! $options = get_option( 'learn_press_' . $this->get_id() ) ) {
+				$options = array();
+			}
+
+			$options['enable'] = $status ? 'yes' : 'no';
+			update_option( 'learn_press_' . $this->get_id(), $options );
+		}
+
 		return $this->enabled == 'yes';
 	}
 

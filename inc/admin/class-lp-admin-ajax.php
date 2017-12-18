@@ -66,7 +66,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$ajax_events = array(
 				'search_items' => 'modal_search_items',
-				'update_payment_order',
+				'update-payment-order',
+				'update-payment-status',
 				'toggle_lesson_preview',
 
 				// admin editor
@@ -1142,6 +1143,25 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
+		 * Update ordering of payments when user changing.
+		 *
+		 * @since 3.0.0
+		 */
+		public static function update_payment_status() {
+			$payment_id = learn_press_get_request( 'id' );
+			$status     = LP_Request::get_string( 'status' );
+			$payment    = LP_Gateways::instance()->get_gateway( $payment_id );
+
+			if ( ! $payment ) {
+				return;
+			}
+
+			$response[ $payment->id ] = $payment->enable( $status == 'yes' );
+
+			learn_press_send_json( $response );
+		}
+
+		/**
 		 * Update email status.
 		 *
 		 * @since 3.0.0
@@ -1154,7 +1174,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			if ( $email_id ) {
 
-				$email = LP_Emails::get_email( LP_Request::get_string( 'id' ) );
+				$email = LP_Emails::get_email( $email_id );
 				if ( ! $email ) {
 					return;
 				}
