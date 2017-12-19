@@ -126,7 +126,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'show_hide_question' => 'hide',
+				'show_hide_question' => 'no',
 				'review_questions'   => 'no',
 				'show_result'        => 'no',
 				'duration'           => '10 minute',
