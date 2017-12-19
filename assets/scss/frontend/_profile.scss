@@ -1,6 +1,6 @@
 #learn-press-user-profile {
     position: relative;
-    &.has-content:before {
+    &:before {
         position: absolute;
         content: '';
         width: 200px;

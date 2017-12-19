@@ -129,8 +129,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				//$classes[] = 'enable-login-register';
 			}
 
-			if ( ! $this->is_guest() && ( $this->is_public() || $this->is_current_user() ) ) {
-				$classes[] = 'has-content';
+			if ( $this->is_public() ) {//} ! $this->is_guest() && ( $this->is_public() || $this->is_current_user() ) ) {
+				//$classes[] = 'has-content';
 			}
 
 			return $classes;
@@ -198,16 +198,16 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					}
 				}
 
-				if(!$this->_user && !is_user_logged_in()){
+				if ( ! $this->_user && ! is_user_logged_in() ) {
 					$this->_user = learn_press_get_current_user();
 				}
 
 				$settings         = LP()->settings;
 				$this->_publicity = array(
-					'view-tab-dashboard'         => $settings->get( 'profile_publicity.dashboard' ) === 'yes',
-					'view-tab-basic-information' => $settings->get( 'profile_publicity.basic-information' ) === 'yes',
-					'view-tab-courses'           => $settings->get( 'profile_publicity.courses' ) === 'yes',
-					'view-tab-quizzes'           => $settings->get( 'profile_publicity.quizzes' ) === 'yes'
+					'view-tab-dashboard'         => $this->get_publicity( 'my-dashboard' ) == 'yes',
+					'view-tab-basic-information' => $this->get_publicity( 'dashboard' ) == 'yes',
+					'view-tab-courses'           => $this->get_publicity( 'courses' ) == 'yes',
+					'view-tab-quizzes'           => $this->get_publicity( 'quizzes' ) == 'yes'
 				);
 			}
 
@@ -584,7 +584,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			 * For first time user did not save anything from profile then get default
 			 * from settings in admin.
 			 */
-			if ( ( $user = $this->get_user() ) && ( '' === ( $publicity = $$user->get_data( 'profile_publicity' ) ) ) ) {
+			if ( ( $user = $this->get_user() ) && ( '' === ( $publicity = $user->get_data( 'profile_publicity' ) ) ) ) {
 				$publicity = array(
 					'my-dashboard' => LP()->settings()->get( 'profile_publicity.dashboard' ),
 					'courses'      => LP()->settings()->get( 'profile_publicity.courses' ),

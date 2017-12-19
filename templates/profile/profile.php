@@ -15,13 +15,15 @@
 defined( 'ABSPATH' ) || exit();
 
 $profile = LP_Global::profile();
-?>
 
-<div id="learn-press-user-profile"<?php $profile->main_class(); ?>>
+if ( $profile->is_public() ) {
+	?>
 
-	<?php
+    <div id="learn-press-user-profile"<?php $profile->main_class(); ?>>
 
-	if ( $profile->is_public() ) {
+		<?php
+
+
 		/**
 		 * @since 3.0.0
 		 */
@@ -36,9 +38,11 @@ $profile = LP_Global::profile();
 		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/after-user-profile', $profile );
-	} else {
-		_e( 'This user does not public their profile.', 'learnpress' );
-	}
-	?>
 
-</div>
+		?>
+
+    </div>
+
+<?php } else {
+	_e( 'This user does not public their profile.', 'learnpress' );
+}
