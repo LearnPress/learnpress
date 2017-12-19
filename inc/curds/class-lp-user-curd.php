@@ -1013,7 +1013,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						$where .= $wpdb->prepare( " AND post_status IN(" . join( ',', $where ) . ")", $a );
 					} else {
 						if ( 'pending' === $args['status'] ) {
-							$where .= $wpdb->prepare( " AND post_status IN( %s )", array( 'draft' ) );
+							$where .= $wpdb->prepare( " AND post_status IN( %s, %s )", array( 'draft', 'pending' ) );
 						} else {
 							$where .= $wpdb->prepare( " AND post_status = %s", $args['status'] );
 						}
@@ -1023,7 +1023,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$where .= $wpdb->prepare( " AND post_status != %s", 'trash' );
 
 				$where = $where . $wpdb->prepare( " AND post_type = %s AND post_author = %d", LP_COURSE_CPT, $user_id );
-				$sql   = "
+				echo $sql   = "
 					SELECT SQL_CALC_FOUND_ROWS ID
 					FROM {$wpdb->posts} c
 					{$where} 
