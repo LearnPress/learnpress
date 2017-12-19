@@ -14,7 +14,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-global $profile;
+$profile = LP_Profile::instance();
 
 $user = $profile->get_user();
 ?>

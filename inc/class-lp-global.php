@@ -154,6 +154,12 @@ class LP_Global {
 	public static function profile( $global = false, $reset = false ) {
 		global $profile;
 
+		if ( ! $profile ) {
+			//self::$_profile = $profile = LP_Profile::instance( get_current_user_id() );
+		}
+
+		return LP_Profile::instance();
+
 		/**
 		 * Get origin global $profile (stored in class) if $global = TRUE
 		 */
@@ -177,5 +183,3 @@ class LP_Global {
 		self::$_profile = $profile = LP_Profile::instance( get_current_user_id() );
 	}
 }
-
-add_action( 'init', array( 'LP_GLobal', 'init' ) );

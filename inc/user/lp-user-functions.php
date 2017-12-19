@@ -1651,29 +1651,6 @@ function learn_press_get_user_avatar( $user_id = 0, $size = '' ) {
  * @return LP_Profile|WP_Error
  */
 function learn_press_get_profile( $for_user = 0 ) {
-	global $wp;
-	try {
-		if ( $for_user ) {
-			if ( ! get_user_by( 'id', $for_user ) ) {
-				throw new Exception( sprintf( __( 'The user %s does not exists.', 'learnpress' ), $for_user ) );
-			}
-		} else {
-			// If empty query user consider you are viewing of yours.
-			if ( empty( $wp->query_vars['user'] ) ) {
-				$for_user = get_current_user_id();
-			} else {
-				if ( $wp_user = get_user_by( 'login', $wp->query_vars['user'] ) ) {
-					$for_user = $wp_user->ID;
-				} else {
-					throw new Exception( sprintf( __( 'The user %s does not exists.', 'learnpress' ), $wp->query_vars['user'] ) );
-				}
-			}
-		}
-	}
-	catch ( Exception $ex ) {
-		return new WP_Error( $ex->getMessage() );
-	}
-
 	return LP_Profile::instance( $for_user );
 }
 

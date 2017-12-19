@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/profile/dashboard-logged-in.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -14,7 +14,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-global $profile;
+$profile = LP_Profile::instance();
 
 if ( ! $profile->is_current_user() ) {
 	return;

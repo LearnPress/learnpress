@@ -236,19 +236,21 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title' => __( 'Publicity', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'  => __( 'Publicity and sharing your profile content.', 'learnpress' )
+							'desc'  => __( 'Publicity and sharing user profile content.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'My dashboard', 'learnpress' ),
 							'id'      => 'profile_publicity[dashboard]',
 							'default' => 'yes',
-							'type'    => 'yes-no'
+							'type'    => 'yes-no',
+							'desc'    => __( 'Public user profile content, if this option is turn off then other sections in profile also become invisible.', 'learnpress' )
 						),
 						array(
 							'title'      => __( 'Courses', 'learnpress' ),
 							'id'         => 'profile_publicity[courses]',
 							'default'    => 'no',
 							'type'       => 'yes-no',
+							'desc'       => __( 'Public user profile courses.', 'learnpress' ),
 							'visibility' => array(
 								'state'       => 'show',
 								'conditional' => array(
@@ -265,6 +267,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'         => 'profile_publicity[quizzes]',
 							'default'    => 'no',
 							'type'       => 'yes-no',
+							'desc'       => __( 'Public user profile quizzes.', 'learnpress' ),
 							'visibility' => array(
 								'state'       => 'show',
 								'conditional' => array(

@@ -26,7 +26,7 @@ $profile = LP_Profile::instance();
 		<?php
 		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
 
-			if ( $tab_data->is_hidden() ) {
+			if ( $tab_data->is_hidden() || ! $tab_data->user_can_view() ) {
 				continue;
 			}
 

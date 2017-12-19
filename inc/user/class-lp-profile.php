@@ -50,6 +50,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		protected $_curd = null;
 
 		/**
+		 * @var null
+		 */
+		protected $_tabs = null;
+
+		/**
 		 *  Constructor
 		 *
 		 * @param        $user
@@ -71,9 +76,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$this->_default_actions = apply_filters(
 				'learn-press/profile-default-actions',
 				array(
-					'basic-information' => __( 'Account information updated successfully.', 'learnpress' ),
-					'avatar'            => __( 'Account avatar updated successfully.', 'learnpress' ),
-					'password'          => __( 'Password updated successfully.', 'learnpress' )
+					'basic-information' => __( 'Account information updated successful.', 'learnpress' ),
+					'avatar'            => __( 'Account avatar updated successful.', 'learnpress' ),
+					'password'          => __( 'Password updated successful.', 'learnpress' ),
+					'publicity'         => __( 'Account publicity updated successful.', 'learnpress' ),
 				)
 			);
 
@@ -160,7 +166,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return string
 		 */
 		protected function get_role() {
-			if ( $user = learn_press_get_current_user( false ) ) {
+			if ( $user = $this->get_user() ) {///learn_press_get_current_user( false ) ) {
 				if ( ! $user->is_guest() ) {
 					if ( $this->_user->is_admin() ) {
 						return 'admin';
@@ -186,8 +192,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			if ( ! $this->_user instanceof LP_Abstract_User ) {
 				if ( is_numeric( $this->_user ) ) {
 					$this->_user = learn_press_get_user( $this->_user );
-				} elseif ( empty( $this->_user ) ) {
-					$this->_user = learn_press_get_current_user( true );
+				} elseif ( is_string( $this->_user ) ) {
+					if ( $user = get_user_by( 'login', $this->_user ) ) {
+						$this->_user = learn_press_get_user( $user->ID );
+					}
+				}
+
+				if(!$this->_user && !is_user_logged_in()){
+					$this->_user = learn_press_get_current_user();
 				}
 
 				$settings         = LP()->settings;
@@ -203,7 +215,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		public function is_current_user() {
-			return $this->get_user()->is( 'current' );
+			return ( $user = $this->get_user() ) ? $user->is( 'current' ) : false;
 		}
 
 		/**
@@ -231,9 +243,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return LP_Profile_Tabs
 		 */
 		public function get_tabs() {
-			static $tabs = false;
 
-			if ( $tabs === false ) {
+			if ( $this->_tabs === null ) {
 				$settings = LP()->settings;
 				$defaults = array(
 					'dashboard'     => array(
@@ -312,11 +323,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					);
 				}
 
-				$tabs = apply_filters( 'learn-press/profile-tabs', $defaults );
-				$tabs = LP_Profile_Tabs::instance( $tabs, $this );
+				if ( 'yes' === $settings->get( 'profile_publicity.dashboard' ) ) {
+					$defaults['settings']['sections']['publicity'] = array(
+						'title'    => __( 'Publicity', 'learnpress' ),
+						'slug'     => 'publicity',
+						'priority' => 40
+					);
+				}
+
+				$tabs        = apply_filters( 'learn-press/profile-tabs', $defaults );
+				$this->_tabs = new LP_Profile_Tabs( $tabs, LP_Profile::instance() );
 			}
 
-			return $tabs;
+			return $this->_tabs;
 		}
 
 		public function get_slug( $data, $default = '' ) {
@@ -436,7 +455,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function is_hidden( $tab_or_section ) {
-			return array_key_exists( 'hidden', $tab_or_section ) && $tab_or_section['hidden'];
+			return is_array( $tab_or_section ) && array_key_exists( 'hidden', $tab_or_section ) && $tab_or_section['hidden'];
 		}
 
 		public function is_public() {
@@ -457,13 +476,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			if ( in_array( $tab, $public_tabs ) ) {
 				$can = true;
 			} else {
-				if ( $this->_user && get_current_user_id() === $this->_user->get_id() ) {
+				if ( $this->_user && $this->_user->get_id() && ( get_current_user_id() === $this->_user->get_id() ) ) {
 					$can = true;
 				} else {
 					if ( empty( $this->_publicity['view-tab-dashboard'] ) || ( false === $this->_publicity['view-tab-dashboard'] ) ) {
 						$can = false;
 					} else {
-						$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+						$can = ! empty( $this->_publicity[ $capability ] ) && ( $this->_publicity[ $capability ] == true );
 					}
 				}
 			}
@@ -482,13 +501,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			$action  = '';
 			$message = '';
-
 			// Find the action by checking the nonce
 			foreach ( $this->_default_actions as $_action => $message ) {
 				if ( wp_verify_nonce( $nonce, 'learn-press-save-profile-' . $_action ) ) {
 					$action = $_action;
 					break;
 				}
+				$action = '';
 			}
 
 			// If none of actions found.
@@ -496,6 +515,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return false;
 			}
 			$return = false;
+
 			switch ( $action ) {
 				case 'basic-information':
 					$return = learn_press_update_user_profile_basic_information( true );
@@ -508,6 +528,21 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				case 'password':
 					$return = learn_press_update_user_profile_change_password( true );
 					break;
+				case 'publicity':
+					$publicity = LP_Request::get_array( 'publicity' );
+
+					if ( empty( $publicity['my-dashboard'] ) ) {
+						$publicity = false;
+					} elseif ( 'yes' !== $publicity['my-dashboard'] ) {
+						$publicity = false;
+					}
+
+					if ( ! $publicity ) {
+						update_user_meta( get_current_user_id(), '_lp_profile_publicity', array() );
+					} else {
+						update_user_meta( get_current_user_id(), '_lp_profile_publicity', $publicity );
+					}
+
 			}
 			if ( is_wp_error( $return ) ) {
 				learn_press_add_message( $return->get_error_message() );
@@ -531,6 +566,41 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Get publicity profile settings.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $tab
+		 *
+		 * @return array|mixed
+		 */
+		public function get_publicity( $tab = '' ) {
+
+			$publicity = false;
+			/**
+			 * For first time user did not save anything from profile then get default
+			 * from settings in admin.
+			 */
+			if ( ( $user = $this->get_user() ) && ( '' === ( $publicity = $$user->get_data( 'profile_publicity' ) ) ) ) {
+				$publicity = array(
+					'my-dashboard' => LP()->settings()->get( 'profile_publicity.dashboard' ),
+					'courses'      => LP()->settings()->get( 'profile_publicity.courses' ),
+					'quizzes'      => LP()->settings()->get( 'profile_publicity.quizzes' )
+				);
+			}
+
+			if ( $publicity && $tab ) {
+				if ( array_key_exists( $tab, $publicity ) ) {
+					return $publicity[ $tab ];
+				} else {
+					return false;
+				}
+			}
+
+			return $publicity ? $publicity : false;
 		}
 
 		/**
@@ -823,7 +893,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$classes[] = 'current-user';
 			}
 
-			if ( $this->get_user()->is_guest() ) {
+			if ( ! is_user_logged_in() ) {
 				$classes[] = 'guest';
 			}
 
@@ -930,6 +1000,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return LP_Profile mixed
 		 */
 		public static function instance( $user_id = 0 ) {
+
 			if ( ! $user_id ) {
 				if ( ! self::is_queried_user() ) {
 					$user_id = get_current_user_id();
@@ -939,6 +1010,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					}
 				}
 			}
+
+			if ( $user_id === 3 ) {
+			}
+
 			if ( empty( self::$_instances[ $user_id ] ) ) {
 				self::$_instances[ $user_id ] = new self( $user_id );
 			}

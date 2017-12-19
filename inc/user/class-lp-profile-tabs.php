@@ -40,7 +40,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			if ( empty( $v['slug'] ) ) {
 				$v['slug'] = $k;
 			}
-			$this->_data[ $k ] = new LP_Profile_Tab( $v, $this->get_profile() );
+			$this->_data[ $k ] = new LP_Profile_Tab( $k, $v, $this->get_profile() );
 		}
 	}
 
@@ -250,7 +250,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 * @return mixed|string
 	 */
 	public function get_current_url( $args = '', $with_permalink = false ) {
-		$url = $this->get_tab_link( $this->get_current_tab(), $this->get_current_section() );
+		$url = $this->get_tab_link( $this->get_current_tab(), $this->get_current_section(), $this->get_profile()->get_user()->get_username() );
 
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {
@@ -322,19 +322,6 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	protected function _sort_tabs( $a, $b ) {
 		return $a['priority'] > $b['priority'];
 	}
-
-	public static function instance( $args = null, $profile = null ) {
-		if ( $args && self::$_instance ) {
-			///
-			return false;
-		}
-
-		if ( ! self::$_instance ) {
-			self::$_instance = new self( $args, $profile );
-		}
-
-		return self::$_instance;
-	}
 }
 
 /**
@@ -350,13 +337,21 @@ class LP_Profile_Tab extends LP_Array_Access {
 	protected $_profile = null;
 
 	/**
+	 * @var string
+	 */
+	public $id = '';
+
+	/**
 	 * LP_Profile_Tab constructor.
 	 *
+	 * @param string     $id
 	 * @param array      $data
 	 * @param LP_Profile $profile
 	 */
-	public function __construct( $data, $profile ) {
+	public function __construct( $id, $data, $profile ) {
 		parent::__construct( $data );
+		$this->_profile = $profile;
+		$this->id       = $id;
 	}
 
 	public function sections() {
@@ -364,8 +359,9 @@ class LP_Profile_Tab extends LP_Array_Access {
 		$sections = array();
 		if ( $all_sections = $this->get( 'sections' ) ) {
 			foreach ( $all_sections as $section_key => $section ) {
+
 				// If current user do not have permission and/or tab is invisible
-				if ( ! $profile->section_is_visible_for_user( $section_key ) ) {
+				if ( $profile->is_hidden( $section ) ) {
 					continue;
 				}
 				$sections[ $section_key ] = $section;
@@ -383,7 +379,17 @@ class LP_Profile_Tab extends LP_Array_Access {
 		return $this->_profile ? $this->_profile : LP_Profile::instance();
 	}
 
-	public function is_hidden(){
-		return $this->get('hidden');
+	public function user_can_view() {
+		$can = $this->get_profile()->current_user_can( "view-tab-{$this->id}" );
+
+		return $can;
+	}
+
+	public function user_can_view_section( $section ) {
+		return $this->get_profile()->current_user_can( "view-section-{$section}" );
+	}
+
+	public function is_hidden() {
+		return $this->get( 'hidden' );
 	}
 }
