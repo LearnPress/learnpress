@@ -727,14 +727,14 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 //			                         . " AND item.item_id = %d"
 //			                         . " LIMIT 1", LP_COURSE_CPT, 'publish', $post_id );
 
-			$query = $wpdb->prepare("
+			$query = $wpdb->prepare( "
 			    SELECT section.section_course_id
                 FROM {$wpdb->learnpress_sections} AS section
                 INNER JOIN {$wpdb->learnpress_section_items} AS item
                 ON item.section_id = section.section_id
                 WHERE item.item_id = %d
                 LIMIT 1
-			", $post_id);
+			", $post_id );
 
 			$course_id = apply_filters( 'learn-press/item-course-id', absint( $wpdb->get_var( $query ) ), $post_id );
 
@@ -758,7 +758,7 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 }
 
 function learn_press_item_sample_permalink_html( $return, $post_id, $new_title, $new_slug, $post ) {
-	remove_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10);
+	remove_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10 );
 	if ( preg_match( '~<strong.*>~', $return, $m ) ) {
 		//$return = str_replace( $m[0], $m[0] . '<span class="learn-press-tooltip dashicons dashicons-editor-help" data-tooltip="asdasdasd"></span>', $return );
 	}
@@ -845,11 +845,18 @@ function learn_press_course_grade_html( $grade, $echo = true ) {
 			$html = __( 'Failed', 'learnpress' );
 			break;
 		case 'in-progress':
-		default:
 			$html = __( 'In Progress', 'learnpress' );
 			break;
+		default:
+			$html = $grade;
+			break;
 	}
+	// @deprecated
 	$html = apply_filters( 'learn_press_course_grade_html', $html, $grade );
+
+	// @since 3.0.0
+	$html = apply_filters( 'learn-press/course/grade-html', $html, $grade );
+
 	if ( $echo ) {
 		echo $html;
 	}

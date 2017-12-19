@@ -52,7 +52,10 @@ class LP_Email_Type_Order extends LP_Email {
 			foreach ( $items as $item ) {
 				$user_id = get_post_field( 'post_author', $item['course_id'] );
 				if ( $user_id ) {
-					$instructors[] = $user_id;
+					if ( empty( $instructors[ $user_id ] ) ) {
+						$instructors[ $user_id ] = array();
+					}
+					$instructors[ $user_id ][] = $item['course_id'];
 				}
 			}
 		}

@@ -68,26 +68,23 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 			$return = array();
 
 			foreach ( $instructors as $user_id ) {
-				$user  = learn_press_get_user( $user_id );
-				$roles = $user->get_data( 'roles' );
+				$user = learn_press_get_user( $user_id );
 
-				if ( ! $roles ) {
+				if ( ! $user ) {
 					continue;
 				}
 
-				// if instructor is admin
-				if ( in_array( 'administrator', $roles ) ) {
-					// disable when turn on send admin mail option
-					if ( ! learn_press_is_negative_value( LP()->settings()->get( 'emails_new-order-admin' )['enable'] ) ) {
-						continue;
-					}
+				/**
+				 * If the instructor also is admin and email for admin is enabled
+				 */
+				if ( $user->is_admin() && LP_Emails::get_email( 'new-order-admin' )->enable() ) {
+					continue;
 				}
 
 				$this->recipient     = $user->get_data( 'email' );
 				$this->instructor_id = $user_id;
 
 				$this->get_object();
-				$this->get_variable();
 
 				if ( $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() ) ) {
 					$return[] = $this->get_recipient();

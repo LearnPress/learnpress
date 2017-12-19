@@ -7,6 +7,7 @@ $primary-bg-color-after: #000;
 
 // Import
 @import "mixin.scss";
+@import "ajaxload";
 @import "frontend/checkout";
 @import "frontend/form";
 @import "frontend/profile";
@@ -214,26 +215,30 @@ ul.learn-press-courses {
 }
 
 .learn-press-message {
-    padding: 10px 12px 10px 45px;
+    padding: 10px 12px 10px 15px;
     background: #F5F5F5;
     position: relative;
     margin: 0 0 20px 0;
     @include border-radius(5px);
-    i.fa {
-        font-size: 20px;
-        vertical-align: baseline;
-        margin-right: 10px;
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        margin-top: -13px;
-        height: 26px;
-        line-height: 26px;
-        background: #04adff;
-        width: 26px;
-        text-align: center;
-        border-radius: 50%;
-        color: #FFF;
+    &.icon {
+        padding-left: 45px;
+        &:after {
+            font-size: 20px;
+            vertical-align: baseline;
+            margin-right: 10px;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            margin-top: -13px;
+            height: 26px;
+            line-height: 26px;
+            background: #04adff;
+            width: 26px;
+            text-align: center;
+            border-radius: 50%;
+            color: #FFF;
+            font-family: FontAwesome;
+        }
     }
     &:before {
         position: absolute;
@@ -247,20 +252,25 @@ ul.learn-press-courses {
         border-bottom-left-radius: 5px;
     }
     &.error {
-        &:before {
-            background: #d85454;
-        }
-        .fa {
-            background: #d85554;
+
+        &.icon {
             &:before {
+                background: #d85554;
+            }
+            &:after {
                 content: "\f00d";
+                background: #d85554;
             }
         }
     }
     &.success {
-        .fa {
+        &.icon {
             &:before {
+                background: #00adff;
+            }
+            &:after {
                 content: "\f129";
+                background: #00adff;
             }
         }
     }

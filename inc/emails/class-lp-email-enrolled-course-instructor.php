@@ -54,18 +54,11 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Instructor' ) ) {
 				return false;
 			}
 
-			$roles = $instructor->get_data( 'roles' );
-
-			if ( ! $roles ) {
+			/**
+			 * If the instructor also is admin and email for admin is enabled
+			 */
+			if ( $instructor->is_admin() && LP_Emails::get_email( 'enrolled-course-admin' )->enable() ) {
 				return false;
-			}
-
-			// if instructor is admin
-			if ( in_array( 'administrator', $roles ) ) {
-				// disable when turn on send admin mail option
-				if ( ! learn_press_is_negative_value( LP()->settings()->get( 'emails_enrolled-course-admin' )['enable'] ) ) {
-					return false;
-				}
 			}
 
 			$this->recipient = $instructor->get_data( 'email' );

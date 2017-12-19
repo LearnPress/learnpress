@@ -320,25 +320,36 @@
     });
 
     var Profile = {
-        recoverOrder: function () {
+        recoverOrder: function (e) {
             var $wrap = $('.order-recover'),
                 $buttonRecoverOrder = $wrap.find('.button-recover-order'),
                 $input = $wrap.find('input[name="order-key"]');
 
             function recoverOrder() {
+                $buttonRecoverOrder.addClass('disabled').attr('disabled', 'disabled');
+                $wrap.find('.learn-press-message').remove();
                 $.post({
                     url: '',
                     data: $wrap.serializeJSON(),
                     success: function (response) {
                         response = LP.parseJSON(response);
+
+                        if (response.message) {
+                            $wrap.prepend('<div class="learn-press-message error icon"><i class="fa"></i> ' + response.message + '</div>');
+                        }
+
                         if (response.redirect) {
                             window.location.href = response.redirect;
                         }
+                        $buttonRecoverOrder.removeClass('disabled').removeAttr('disabled', '');
                     }
                 })
             }
 
             $buttonRecoverOrder.on('click', recoverOrder);
+            $input.on('change', function () {
+                $buttonRecoverOrder.prop('disabled', !this.value);
+            })
         }
     }
 

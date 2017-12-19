@@ -41,7 +41,7 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
 		 * @return mixed
 		 */
 		public function trigger( $order_id ) {
-			parent::trigger($order_id);
+			parent::trigger( $order_id );
 
 			if ( ! $this->enable ) {
 				return false;
@@ -58,15 +58,23 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_Instructor' ) ) {
 			$return = array();
 
 			foreach ( $course_instructors as $user_id => $courses ) {
-				$user = get_user_by( 'ID', $user_id );
+				$user = learn_press_get_user( $user_id );
+
 				if ( ! $user ) {
 					continue;
 				}
+
+				/**
+				 * If the instructor also is admin and email for admin is enabled
+				 */
+				if ( $user->is_admin() && LP_Emails::get_email( 'cancelled-order-admin' )->enable() ) {
+					continue;
+				}
+
 				$this->recipient     = $user->user_email;
 				$this->instructor_id = $user_id;
 
 				$this->get_object();
-				$this->get_variable();
 
 				if ( $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() ) ) {
 					$return[] = $this->get_recipient();

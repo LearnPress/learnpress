@@ -54,9 +54,10 @@ if ( ! class_exists( 'LP_Email_Finished_Course_Instructor' ) ) {
 				return false;
 			}
 
-			$roles = $instructor->get_data( 'roles' );
-
-			if ( ! $roles ) {
+			/**
+			 * If the instructor also is admin and email for admin is enabled
+			 */
+			if ( $instructor->is_admin() && LP_Emails::get_email( 'finished-course-admin' )->enable() ) {
 				return false;
 			}
 

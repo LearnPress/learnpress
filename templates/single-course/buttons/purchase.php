@@ -13,9 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php if ( ! isset( $course ) ) {
+if ( ! isset( $course ) ) {
 	$course = learn_press_get_course();
 } ?>
 

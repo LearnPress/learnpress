@@ -694,6 +694,8 @@
                 }
                 .question-settings {
                     border: 1px solid #ddd;
+                    border-left: none;
+                    border-right: none;
                     & > * {
                         padding: 20px;
                     }

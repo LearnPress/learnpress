@@ -635,7 +635,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'       => __( 'Passing condition value', 'learnpress' ),
 						'id'         => '_lp_passing_condition',
 						'type'       => 'number',
-						'min'        => 1,
+						'min'        => 0,
 						'max'        => 100,
 						'desc'       => __( 'The percentage of quiz result or lessons completed to finish the course.', 'learnpress' ),
 						'std'        => 80,

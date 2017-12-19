@@ -61,7 +61,6 @@ if ( ! class_exists( 'LP_Email_Cancelled_Order_User' ) ) {
 			}
 
 			$this->get_object();
-			$this->get_variable();
 
 			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 

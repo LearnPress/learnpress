@@ -65,7 +65,6 @@ if ( ! class_exists( 'LP_Email_Completed_Order_Guest' ) ) {
 			}
 
 			$this->get_object();
-			$this->get_variable();
 
 			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), array(), $this->get_attachments() );
 
