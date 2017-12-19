@@ -128,8 +128,7 @@ class LP_Install_Sample_Data {
 
 			LP_Debug::commitTransaction();
 
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 
 			echo $ex->getMessage();
@@ -170,8 +169,7 @@ class LP_Install_Sample_Data {
 
 				$this->_delete_post( $post->ID );
 			}
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 			echo "Error: " . $ex->getMessage();
 		}
@@ -343,7 +341,7 @@ class LP_Install_Sample_Data {
 	 * Create section.
 	 *
 	 * @param string $name
-	 * @param int    $course_id
+	 * @param int $course_id
 	 *
 	 * @return int
 	 */
@@ -404,8 +402,8 @@ class LP_Install_Sample_Data {
 	 * Create lesson.
 	 *
 	 * @param string $name
-	 * @param int    $section_id
-	 * @param int    $course_id
+	 * @param int $section_id
+	 * @param int $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -445,8 +443,8 @@ class LP_Install_Sample_Data {
 	 * Create quiz.
 	 *
 	 * @param string $name
-	 * @param int    $section_id
-	 * @param int    $course_id
+	 * @param int $section_id
+	 * @param int $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -465,7 +463,7 @@ class LP_Install_Sample_Data {
 		if ( $quiz_id ) {
 
 			$metas = array(
-				'_lp_show_hide_question' => 'hide',
+				'_lp_show_hide_question' => 'no',
 				'_lp_review_questions'   => 'yes',
 				'_lp_show_result'        => 'yes',
 				'_lp_duration'           => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
@@ -548,7 +546,7 @@ class LP_Install_Sample_Data {
 	/**
 	 * Create answers for a question.
 	 *
-	 * @param int    $question_id
+	 * @param int $question_id
 	 * @param string $type
 	 */
 	protected function create_question_answers( $question_id, $type ) {

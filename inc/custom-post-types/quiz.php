@@ -186,15 +186,11 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				'priority'   => 'high',
 				'fields'     => array(
 					array(
-						'name'    => __( 'Show Questions', 'learnpress' ),
-						'desc'    => __( 'Show list of questions while doing quiz as ordered numbers (1, 2, 3, etc).', 'learnpress' ),
-						'id'      => '_lp_show_hide_question',
-						'type'    => 'radio',
-						'options' => array(
-							'show' => __( 'Show', 'learnpress' ),
-							'hide' => __( 'Hide', 'learnpress' )
-						),
-						'std'     => 'hide'
+						'name' => __( 'Show Questions', 'learnpress' ),
+						'desc' => __( 'Show list of questions while doing quiz as ordered numbers (1, 2, 3, etc).', 'learnpress' ),
+						'id'   => '_lp_show_hide_question',
+						'type' => 'yes_no',
+						'std'  => 'no'
 					),
 					array(
 						'name' => __( 'Review Questions', 'learnpress' ),
