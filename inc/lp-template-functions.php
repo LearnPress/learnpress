@@ -39,7 +39,7 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 
 		// User can not purchase course
 		if ( ! $user->can_purchase_course( $course->get_id() ) ) {
-			learn_press_display_message( __( 'You have already purchased course and the order is processing or this course is can not purchasable!' ) );
+			//learn_press_display_message( __( 'You have already purchased course and the order is processing or this course is can not purchasable!' ) );
 
 			return;
 		}

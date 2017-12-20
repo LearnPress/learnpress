@@ -90,7 +90,7 @@ class LP_User_Factory {
 		if ( ! $order = learn_press_get_order( $the_id ) ) {
 			return;
 		}
-		remove_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
+		remove_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10 );
 		//LP_Debug::startTransaction();
 		try {
 			switch ( $new_status ) {
