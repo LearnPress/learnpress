@@ -1150,21 +1150,36 @@ class LP_Abstract_User {
 		}
 	}
 
-	/**
-	 * Return true if user can purchase a course
-	 *
-	 * @param $course_id
-	 *
-	 * @return bool
-	 */
-	public function can_purchase_course( $course_id ) {
-		$course        = learn_press_get_course( $course_id );
-		$course_status = $this->get_course_status( $course_id );
-		$purchasable   = $course->is_free() && ! $course->is_reached_limit() && !is_user_logged_in() || ! $course->is_free() && ! $course->is_reached_limit() && ( ! $this->has_ordered_course( $course_id ) || ( $this->has_ordered_course( $course_id ) && $course_status == 'finished' 
-							&& !$this->can_retake_course($course_id) ) );
-
-		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
-	}
+    /**
+     * Return true if user can purchase a course
+     *
+     * @param
+     *            $course_id
+     *            
+     * @return bool
+     */
+    public function can_purchase_course($course_id)
+    {
+        $course = learn_press_get_course($course_id);
+        $course_status = $this->get_course_status($course_id);
+        $purchasable = false;
+        if ($course->is_free() && ! $course->is_reached_limit() && ! is_user_logged_in()) {
+            $purchasable = true;
+        } elseif (! $course->is_free() && ! $course->is_reached_limit()) {
+            $has_ordered_course = $this->has_ordered_course($course_id);
+            if (! $has_ordered_course) {
+                $purchasable = true;
+            } else {
+                $order_status = learn_press_get_order_status($has_ordered_course);
+                $can_retake_course = $this->can_retake_course($course_id);
+                if ('cancelled' == $order_status || ($course_status == 'finished' && ! $can_retake_course)) {
+                    $purchasable = true;
+                }
+            }
+        }
+        
+        return apply_filters('learn_press_user_can_purchase_course', $purchasable, $this, $course_id);
+    }
 
 	/**
 	 * Return true if user can enroll a course
@@ -1398,6 +1413,12 @@ class LP_Abstract_User {
 	 */
 	public function can_retake_course( $course_id, $force = false ) {
 		$can = false;
+		$ordered = $this->has_ordered_course( $course_id );
+		if( !$ordered ) {
+		    return false;
+		} elseif ( 'completed' !== learn_press_get_order_status( $ordered ) ) {
+            return false;
+		}
 		if ( $course = learn_press_get_course( $course_id ) ) {
 			$count = $course->retake_count;
 			if ( $count > 0 ) {
@@ -1410,7 +1431,6 @@ class LP_Abstract_User {
 				}
 			}
 		}
-
 		return apply_filters( 'learn_press_user_can_retake_course', $can, $course->id, $this->id );
 	}
 
