@@ -137,7 +137,6 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function init_email_notifications() {
-
 			// mail notification actions
 			$actions = apply_filters(
 				'learn-press/email-actions',
@@ -188,6 +187,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				}
 
 			}
+
+			self::instance();
 		}
 
 		/**
