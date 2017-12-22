@@ -715,36 +715,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @param $limit int limit of records
-		 * @param $force boolean force to query database
-		 *
-		 * @return array list enrolled students
-		 */
-		public function get_students_list( $force = false, $limit = - 1 ) {
-			if ( ! $this->exists() ) {
-				return null;
-			}
-
-			global $wpdb;
-			if ( $limit < 0 ) {
-				$limit = PHP_INT_MAX;
-			}
-			if ( $this->_students_list === null || $force ) {
-				$query                = $wpdb->prepare( "
-				SELECT DISTINCT u.*
-				FROM {$wpdb->users} u
-				INNER JOIN {$wpdb->prefix}learnpress_user_items ui ON ui.user_id = u.ID
-				WHERE ui.item_id = %d
-				AND ui.item_type = %s
-				LIMIT %d
-			", $this->get_id(), LP_COURSE_CPT, $limit );
-				$this->_students_list = $wpdb->get_results( $query );
-			}
-
-			return $this->_students_list;
-		}
-
-		/**
 		 * Get all items in a course.
 		 *
 		 * @deprecated
