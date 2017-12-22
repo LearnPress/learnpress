@@ -51,7 +51,61 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			add_action( 'init', array( $this, 'init' ), 50 );
 
+			add_filter( 'views_plugins', array( $this, 'views_plugins' ) );
+
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
+		}
+
+		/**
+		 * Add 'LearnPress' tab into views of plugins manage.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $views
+		 *
+		 * @return array
+		 */
+		public function views_plugins( $views ) {
+			global $s;
+
+			$all_plugins = apply_filters( 'all_plugins', get_plugins() );
+			$search      = array_filter( $all_plugins, array( $this, '_search_callback' ) );
+
+			if ( $s && false !== stripos( $s, 'learnpress' ) ) {
+				$views['learnpress'] = sprintf(
+					'<a href="%s" class="current">%s <span class="count">(%d)</span></a>',
+					admin_url( 'plugins.php?s=learnpress' ),
+					__( 'LearnPress', 'learnpress' ),
+					sizeof( $search )
+				);
+			} else {
+				$views['learnpress'] = sprintf(
+					'<a href="%s">%s <span class="count">(%d)</span></a>',
+					admin_url( 'plugins.php?s=learnpress' ),
+					__( 'LearnPress', 'learnpress' ),
+					sizeof( $search )
+				);
+			}
+			return $views;
+		}
+
+		/**
+		 * Callback function for searching plugins have 'learnpress' inside.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $plugin
+		 *
+		 * @return bool
+		 */
+		public function _search_callback( $plugin ) {
+			foreach ( $plugin as $value ) {
+				if ( is_string( $value ) && false !== stripos( strip_tags( $value ), 'learnpress' ) ) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public function init() {
@@ -117,6 +171,37 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
+		 * Check if a page is set for Paid Membership Pro.
+		 *
+		 * @param int $id
+		 *
+		 * @return bool|mixed
+		 */
+		protected function _is_bp_page( $id ) {
+			if ( function_exists( 'buddypress' ) ) {
+
+				if ( ! $bp_pages = get_option( 'bp-pages' ) ) {
+					return false;
+				}
+
+				$pages = array(
+					'members'  => __( 'Members', 'learnpress' ),
+					'activity' => __( 'Activity', 'learnpress' ),
+					'register' => __( 'Register', 'learnpress' ),
+					'activate' => __( 'Activate', 'learnpress' )
+				);
+
+				foreach ( $pages as $name => $text ) {
+					if ( isset( $bp_pages[ $name ] ) && $bp_pages[ $name ] == $id ) {
+						return $text;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/**
 		 * @param string $plugin
 		 *
 		 * @return array|bool
@@ -126,7 +211,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				$this->_static_pages = array(
 					'learnpress'          => array(),
 					'WooCommerce'         => array(),
-					'Paid Membership Pro' => array()
+					'Paid Membership Pro' => array(),
+					'BuddyPress'
 				);
 				$all_pages           = array(
 					'courses'          => __( 'Courses', 'learnpress' ),
@@ -144,6 +230,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 						if ( $for_page = $this->_is_pmpro_page( $page_id ) ) {
 							$this->_static_pages['Paid Membership Pro'][ $page_id ] = $for_page;
+						}
+
+						if ( $for_page = $this->_is_bp_page( $page_id ) ) {
+							$this->_static_pages['BuddyPress'][ $page_id ] = $for_page;
 						}
 					}
 				}
@@ -166,7 +256,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			foreach ( $_columns as $name => $text ) {
 				if ( $name === 'date' ) {
-					$columns['lp-page'] = __( 'Assigned', 'learnpress' );
+					$columns['lp-page'] = __( 'LearnPress Page', 'learnpress' );
 				}
 				$columns[ $name ] = $text;
 			}

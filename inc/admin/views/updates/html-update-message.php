@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) or exit;
 ?>
-<div class="learn-press-message notice notice-warning">
+<div class="notice notice-warning">
     <p>
 		<?php _e( '<strong>LearnPress update</strong> – We need to update your database to the latest version.', 'learnpress' ); ?>
     </p>

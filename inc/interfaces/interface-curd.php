@@ -44,7 +44,7 @@ interface LP_Interface_CURD {
 	/**
 	 * Duplicate item and insert to database
 	 *
-	 * @param $object
+	 * @param       $object
 	 * @param array $args
 	 *
 	 * @return mixed
@@ -141,17 +141,21 @@ class LP_Object_Data_CURD {
 	public function read_meta( &$object ) {
 		global $wpdb;
 
-		$id_column        = ( 'user' == $this->_meta_type ) ? 'umeta_id' : 'meta_id';
-		$object_id_column = $this->_meta_type . '_id';
-		$table            = _get_meta_table( $this->_meta_type );
+		if ( false === ( $meta_data = wp_cache_get( $object->get_id(), 'object-meta' ) ) ) {
+			$id_column        = ( 'user' == $this->_meta_type ) ? 'umeta_id' : 'meta_id';
+			$object_id_column = $this->_meta_type . '_id';
+			$table            = _get_meta_table( $this->_meta_type );
 
-		$query     = $wpdb->prepare( "
-			SELECT {$id_column} as meta_id, meta_key, meta_value
-			FROM {$table}
-			WHERE {$object_id_column} = %d
-			ORDER BY {$id_column}
-		", $object->get_id() );
-		$meta_data = $wpdb->get_results( $query );
+			$query     = $wpdb->prepare( "
+				SELECT {$id_column} as meta_id, meta_key, meta_value
+				FROM {$table}
+				WHERE {$object_id_column} = %d
+				ORDER BY {$id_column}
+			", $object->get_id() );
+			$meta_data = $wpdb->get_results( $query );
+
+			wp_cache_set( $object->get_id(), $meta_data, 'object-meta' );
+		}
 
 		return $meta_data;
 	}

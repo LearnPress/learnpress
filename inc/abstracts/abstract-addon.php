@@ -190,9 +190,11 @@ class LP_Addon {
 	 */
 	public static function load( $instance, $path, $plugin_file = '' ) {
 		$plugin_folder = '';
+
 		if ( $plugin_file ) {
 			$plugin_folder = dirname( $plugin_file );
 		}
+
 		if ( $plugin_folder ) {
 			$path = "{$plugin_folder}/$path";
 		}
@@ -216,7 +218,7 @@ class LP_Addon {
 		if ( ! $addon_instance ) {
 			return;
 		}
-
+		
 		$addon_instance->plugin_file = $plugin_file;
 
 		self::$instances[ $instance ] = $addon_instance;
@@ -236,6 +238,7 @@ class LP_Addon {
 		if ( false === ( $name = self::_get_called_class() ) ) {
 			return false;
 		}
+
 		if ( empty( self::$instances[ $name ] ) ) {
 			self::$instances[ $name ] = new $name();
 		}

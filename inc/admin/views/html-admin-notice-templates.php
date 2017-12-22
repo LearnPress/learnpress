@@ -27,7 +27,7 @@ $theme_name = implode( ' & ', $theme_name );
 
 $readmore = 'https://thimpress.com/knowledge-base/outdated-template-fix/';
 ?>
-<div id="message" class="learn-press-message notice notice-warning">
+<div id="message" class="learn-press-message notice-warning">
     <p><?php printf( wp_kses( __( 'There is a new update of LearnPress. You may need to update your theme <strong>(%s)</strong> to avoid outdated template files.', 'learnpress' ), array( 'strong' => array() ) ), $theme_name ); ?></p>
     <p class="outdated-readmore-link"><?php echo sprintf( wp_kses( __( 'This is not a bug, don\'t worry. Read more about Outdated template files notice <a href="%s" target="_blank">here</a>.', 'learnpress' ), array(
 			'a' => array(

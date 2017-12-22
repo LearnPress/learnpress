@@ -52,7 +52,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'i18n_processing'      => __( 'Processing', 'learnpress' ),
 				'i18n_redirecting'     => __( 'Redirecting', 'learnpress' ),
 				'i18n_invalid_field'   => __( 'Invalid field', 'learnpress' ),
-				'i18n_unknown_error'   => __( 'Unknow error', 'learnpress' ),
+				'i18n_unknown_error'   => __( 'Unknown error', 'learnpress' ),
 				'i18n_place_order'     => __( 'Place order', 'learnpress' )
 			),
 			'profile-user' => array(
@@ -201,4 +201,9 @@ function learn_press_assets() {
 	return $assets;
 }
 
-learn_press_assets();
+/**
+ * Load frontend asset
+ */
+if ( ! is_admin() ) {
+	learn_press_assets();
+}
