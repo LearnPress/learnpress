@@ -2435,12 +2435,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function get_order_status( $course_id ) {
+			//LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 			$order_id = $this->get_course_order( $course_id, false );
 
 			$return = apply_filters( 'learn-press/course-order-status', $order_id ? get_post_status( $order_id ) : false, $course_id, $this->get_id() );
 
 			// Deprecated since 3.0.0
 			$return = apply_filters( 'learn_press_user_has_ordered_course', $return, $course_id, $this->get_id() );
+			//LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return $return;
 		}
@@ -2968,7 +2971,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return int
 		 */
 		function get_completed_items_in_section( $course_id, $section_id, $force = false ) {
-
+			_deprecated_function(__FUNCTION__, '3.0.0');
 			return rand( 1, 3 );
 
 			$course     = learn_press_get_course( $course_id );
@@ -3035,6 +3038,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Get user's quiz's graduation
 		 *
+		 * @deprecated
+		 *
 		 * @param      $quiz_id
 		 * @param int  $course_id
 		 * @param bool $check_completed
@@ -3042,7 +3047,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed|void
 		 */
 		public function get_quiz_graduation( $quiz_id, $course_id = 0, $check_completed = true ) {
-
+			_deprecated_function(__FUNCTION__, '3.0.0');
 			if ( ! $grade = LP_Cache::get_quiz_grade( sprintf( '%d-%d-%d', $this->get_id(), $course_id, $quiz_id ) ) ) {
 				$course_id = $this->_get_course( $course_id );
 				$result    = $this->get_quiz_results( $quiz_id, $course_id );

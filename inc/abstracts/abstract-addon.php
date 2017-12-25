@@ -170,17 +170,26 @@ class LP_Addon {
 		$plugin_folder = basename( $plugin_path );
 		$text_domain   = empty( $this->text_domain ) ? $plugin_folder : $this->text_domain;
 		$locale        = apply_filters( 'plugin_locale', get_locale(), $plugin_folder );
+		$domain_files  = array();
 
 		if ( is_admin() ) {
-			load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-admin-{$locale}.mo" );
-			load_textdomain( $text_domain, WP_LANG_DIR . "/plugins/{$plugin_folder}-admin-{$locale}.mo" );
+			$domain_files[] = WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-admin-{$locale}.mo";
+			$domain_files[] = WP_LANG_DIR . "/plugins/{$plugin_folder}-admin-{$locale}.mo";
 		}
 
-		load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo" );
+		$domain_files[] = WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo";
+		$domain_files[] = WP_CONTENT_DIR . "/plugins/{$plugin_folder}/languages/{$plugin_folder}-{$locale}.mo";
 
-		$mo = WP_CONTENT_DIR . "/plugins/{$plugin_folder}/languages/{$plugin_folder}-{$locale}.mo";
-		load_textdomain( $text_domain, $mo );
-		load_plugin_textdomain( $text_domain, false, plugin_basename( $plugin_path ) . "/languages" );
+		foreach ( $domain_files as $file ) {
+			if ( ! file_exists( $file ) ) {
+				continue;
+			}
+			load_textdomain( $text_domain, $file );
+		}
+
+		if ( $text_domain ) {
+			load_plugin_textdomain( $text_domain, false, plugin_basename( $plugin_path ) . "/languages" );
+		}
 	}
 
 	/**
@@ -218,12 +227,12 @@ class LP_Addon {
 		if ( ! $addon_instance ) {
 			return;
 		}
-		
+
 		$addon_instance->plugin_file = $plugin_file;
 
 		self::$instances[ $instance ] = $addon_instance;
 
-		LP_Multi_Language::load_plugin_text_domain( $plugin_file );
+		//LP_Multi_Language::load_plugin_text_domain( $plugin_file );
 	}
 
 	public function get_plugin_url( $sub = '/' ) {

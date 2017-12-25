@@ -75,8 +75,9 @@ class LP_Cart {
 	}
 
 	public function maybe_set_cart_cookies() {
+
 		if ( ! headers_sent()/* && did_action( 'wp_loaded' )*/ ) {
-			$this->set_cart_cookies( ! $this->is_empty() );
+			//$this->set_cart_cookies( ! $this->is_empty() );
 		}
 	}
 
@@ -117,6 +118,7 @@ class LP_Cart {
 			learn_press_debug( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
 			_doing_it_wrong( __FUNCTION__, __( 'Get cart should not be called before the wp_loaded action.', 'learnpress' ), '2.3' );
 		}
+
 		if ( ! did_action( 'learn_press_cart_loaded_from_session' ) ) {
 			$this->get_cart_from_session();
 		}

@@ -26,6 +26,11 @@ class LP_Debug {
 	private static $_time = array();
 
 	/**
+	 * @var array
+	 */
+	private static $_log_functions = array();
+
+	/**
 	 * Constructor for the logger.
 	 */
 	protected function __construct() {
@@ -51,20 +56,29 @@ class LP_Debug {
 	}
 
 	public function init() {
-		$this->clear( 'query' );
-		add_filter( 'query', array( $this, 'log_query' ) );
+		add_action( 'shutdown', array( $this, 'output' ) );
 	}
 
-	public function log_query( $query ) {
-		if ( preg_match( '!INSERT.*learnpress_user_items!', $query ) ) {
-			ob_start();
-			print_r( debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 10 ) );
-			$log = ob_get_clean();
+	public function output() {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && self::$_log_functions ) {
+			uasort( self::$_log_functions, array( $this, 'sort_log_functions' ) );
+			$total_time = 0;
+			$i          = 0;
+			foreach ( self::$_log_functions as $func => $times ) {
+				if ( ! is_array( $times ) ) {
+					continue;
+				}
+				$time = array_sum( $times );
+				echo str_pad( ++ $i, 3, '-', STR_PAD_LEFT ) . '.' . str_pad( $func, 50, '-' ) . ' = ' . str_pad( sizeof( $times ), 5, '-' ) . "(" . $time . ')' . "\n";
+				$total_time += $time;
+			}
+			echo '----' . str_pad( 'Total time', 50, '-' ) . ' = ' . $total_time . "\n";
 
-			$this->add( $log, 'query', false, true );
 		}
+	}
 
-		return $query;
+	public function sort_log_functions( $a, $b ) {
+		return sizeof( $a ) < sizeof( $b );
 	}
 
 	/**
@@ -246,6 +260,30 @@ class LP_Debug {
 	public static function commitTransaction() {
 		global $wpdb;
 		$wpdb->query( "COMMIT;" );
+	}
+
+	public static function log_function( $func ) {
+
+		if ( ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) {
+			return;
+		}
+
+		if ( empty( self::$_log_functions[ $func ] ) ) {
+			self::$_log_functions[ $func ] = array();
+		}
+
+		$last_func = ! empty( self::$_log_functions[ $func . '_func' ] ) ? self::$_log_functions[ $func . '_func' ] : '';
+
+		if ( $last_func == $func ) {
+			$time                                    = microtime( true ) - self::$_log_functions[ $func . '_time' ];
+			self::$_log_functions[ $func ][]         = $time;
+			self::$_log_functions[ $func . '_func' ] = '';
+
+		} else {
+			self::$_log_functions[ $func . '_time' ] = microtime( true );
+			self::$_log_functions[ $func . '_func' ] = $func;
+		}
+
 	}
 }
 

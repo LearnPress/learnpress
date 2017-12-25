@@ -71,27 +71,32 @@ class LP_Settings {
 	 * @param bool $force
 	 */
 	protected function _load_options( $force = false ) {
-		if ( ( false === ( $_options = wp_cache_get( 'options', 'lp-options' ) ) ) || $force ) {
-			global $wpdb;
-			$query = $wpdb->prepare( "
-				SELECT option_name, option_value
-				FROM {$wpdb->options}
-				WHERE option_name LIKE %s
-			", 'learn_press_%' );
-			if ( $options = $wpdb->get_results( $query ) ) {
-				foreach ( $options as $option ) {
-					$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
-				}
-			}
-			foreach ( array( 'learn_press_permalink_structure', 'learn_press_install' ) as $option ) {
-				if ( empty( $this->_options[ $option ] ) ) {
-					$this->_options[ $option ] = '';
-				}
-			}
-			wp_cache_set( 'options', $this->_options, 'lp-options' );
-		} else {
-			$this->_options = $_options;
+		$_options = wp_load_alloptions();
+		foreach ( $_options as $k => $v ) {
+			$this->_options[ $k ] = maybe_unserialize( $v );
 		}
+
+//		if ( ( false === ( $_options = wp_cache_get( 'options', 'lp-options' ) ) ) || $force ) {
+//			global $wpdb;
+//			$query = $wpdb->prepare( "
+//				SELECT option_name, option_value
+//				FROM {$wpdb->options}
+//				WHERE option_name LIKE %s
+//			", 'learn_press_%' );
+//			if ( $options = $wpdb->get_results( $query ) ) {
+//				foreach ( $options as $option ) {
+//					$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
+//				}
+//			}
+//			foreach ( array( 'learn_press_permalink_structure', 'learn_press_install' ) as $option ) {
+//				if ( empty( $this->_options[ $option ] ) ) {
+//					$this->_options[ $option ] = '';
+//				}
+//			}
+//			wp_cache_set( 'options', $this->_options, 'lp-options' );
+//		} else {
+//			$this->_options = $_options;
+//		}
 	}
 
 	/**
@@ -237,6 +242,80 @@ class LP_Settings {
 
 		return self::$_instance;
 	}
+
+	/**
+	 * Load all 'no' options from other plugins for caching purpose.
+	 *
+	 * @since 3.0.0
+	 */
+	public static function load_site_options() {
+		$options = array(
+			'pmpro_updates',
+			'pmpro_stripe_billingaddress',
+			'pmpro_only_filter_pmpro_emails',
+			'pmpro_email_member_notification',
+			'pmpro_hideads',
+			'pmpro_hideadslevels',
+			'_bbp_enable_group_forums',
+			'_bbp_theme_package_id',
+			'_bbp_root_slug',
+			'_bbp_include_root',
+			'_bbp_forum_slug',
+			'_bbp_topic_slug',
+			'_bbp_show_on_root',
+			'_bbp_topic_archive_slug',
+			'_bbp_reply_slug',
+			'_bbp_topic_tag_slug',
+			'_bbp_allow_topic_tags',
+			'_bbp_use_autoembed',
+			'_bbp_user_slug',
+			'_bbp_view_slug',
+			'_bbp_search_slug',
+			'_bbp_reply_archive_slug',
+			'_bbp_user_favs_slug',
+			'_bbp_user_subs_slug',
+			'pmpro_nuclear_HTTPS',
+			'pmpro_gateway',
+			'pmpro_recaptcha',
+			'pmpro_use_ssl',
+			'_bbp_enable_favorites',
+			'_bbp_enable_subscriptions',
+			'_bbp_allow_search',
+			'_bbp_use_wp_editor',
+			'pmpro_hide_footer_link',
+			'learn-press-flush-rewrite-rules',
+			'_lp_tabs_data',
+			'learn_press_permalinks'
+		);
+		global $wpdb;
+
+		$format = array_fill( 0, sizeof( $options ), '%s' );
+		$q      = $wpdb->prepare( "
+			SELECT option_name, option_value 
+			FROM $wpdb->options 
+			WHERE 1
+			AND option_name IN(" . join( ',', $format ) . ")
+		", $options );
+
+		$alloptions_db = $wpdb->get_results( $q, OBJECT_K );
+		$notoptions    = wp_cache_get( 'notoptions', 'options' );
+
+		foreach ( $options as $o_name ) {
+			if ( ! empty( $alloptions_db[ $o_name ] ) ) {
+				$o_value = maybe_unserialize( $alloptions_db[ $o_name ]->option_value );
+				wp_cache_set( $o_name, $o_value, 'options' );
+			} else {
+				if ( ! is_array( $notoptions ) ) {
+					$notoptions = array();
+				}
+				$notoptions[ $o_name ] = '';
+			}
+		}
+
+		wp_cache_set( 'notoptions', $notoptions, 'options' );
+	}
 }
+
+LP_Settings::load_site_options();
 
 return LP_Settings::instance();

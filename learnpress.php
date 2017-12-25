@@ -157,6 +157,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-assets.php';
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
+			require_once 'inc/class-lp-settings.php';
 
 			// Background processes
 			require_once 'inc/background-process/class-lp-background-emailer.php';
@@ -649,16 +650,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-
-add_filter( 'query', function ( $q ) {
-	if ( preg_match( '!learnpress_user_items!', $q ) && preg_match( '!INSERT|UPDATE!', $q ) ) {
-		$qx = @file_get_contents( 'xxx.txt' ) . "\n============================\n" . $q;
-		ob_start();
-		print_r( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
-		$qx .= ob_get_clean();
-		file_put_contents( 'xxx.txt', $qx );
-	}
-
-	return $q;
-} );

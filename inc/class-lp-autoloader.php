@@ -20,6 +20,8 @@ class LP_Autoloader {
 	 */
 	private $include_path = '';
 
+	protected $time = 0;
+
 	/**
 	 * The Constructor
 	 */
@@ -31,6 +33,11 @@ class LP_Autoloader {
 		spl_autoload_register( array( $this, 'autoload' ) );
 
 		$this->include_path = untrailingslashit( LP_PLUGIN_PATH ) . '/inc/';
+
+		add_action( 'shutdown', array( $this, 'output_time' ) );
+	}
+
+	public function output_time() {
 	}
 
 	/**
@@ -67,10 +74,8 @@ class LP_Autoloader {
 	 */
 	public function autoload( $class ) {
 		$class = strtolower( $class );
-
-
+		$start = microtime( true );
 		$file  = $this->get_file_name_from_class( $class );
-		$path  = '';
 
 		if ( preg_match( '~^lp_abstract_shortcode(.*)$~', $class, $m ) ) {
 			$file = 'abstract-shortcode' . str_replace( '_', '-', $m[1] ) . '.php';
@@ -104,6 +109,7 @@ class LP_Autoloader {
 				}
 			}
 		}
+		$this->time += ( microtime( true ) - $start );
 		$this->load_file( $path . $file );
 	}
 }

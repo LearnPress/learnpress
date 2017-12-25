@@ -108,9 +108,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array|mixed
 	 */
 	public function get_orders( $user_id, $args = array() ) {
+		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		// If user does not exists
 		if ( ! $user = learn_press_get_user( $user_id ) ) {
+			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 			return false;
 		}
 
@@ -128,6 +131,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$cache_key = md5( serialize( $args ) );
 
 		if ( false !== ( $orders = wp_cache_get( "user-{$user_id}-" . $cache_key, 'lp-user-orders' ) ) ) {
+			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 			return $orders;
 		}
 
@@ -228,6 +233,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			wp_cache_set( 'user-' . $user_id, $orders, 'lp-user-orders' );
 		}
 
+
 		if ( $orders && $args['status'] ) {
 			LP_Helper::sanitize_order_status( $args['status'] );
 			foreach ( $orders as $course_id => $order_ids ) {
@@ -245,6 +251,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		wp_cache_set( "user-{$user_id}-" . $cache_key, $orders, 'lp-user-orders' );
+		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		return $orders;
 	}
@@ -275,6 +282,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return bool
 	 */
 	public function read_course( $user_id = null, $course_id = null, $force = false ) {
+		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
@@ -288,6 +296,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		if ( ! $user_id ) {
+			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 			return false;
 		}
 
@@ -312,6 +322,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// There is no course ids to read
 		if ( ! $fetch_ids ) {
+			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 			return false;
 		}
 
@@ -408,6 +420,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, $defaults, 'lp-user-courses' );
 			}
 		}
+		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		return true;
 	}

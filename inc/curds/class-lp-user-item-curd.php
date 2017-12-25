@@ -72,6 +72,8 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * @param LP_Quiz $quiz
 	 */
 	protected function _load_questions( &$quiz ) {
+		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 		$id        = $quiz->get_id();
 		$questions = wp_cache_get( 'questions-' . $id, 'lp-quizzes' );
 		if ( false === $questions || $quiz->get_no_cache() ) {
@@ -94,6 +96,8 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 			$this->_load_question_answers( $quiz );
 		}
+		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 	}
 
 	/**
@@ -368,7 +372,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array|bool|null|object
 	 */
-	public function is_exists_question( $the_id, $ids ) {
+	public function is_exists_question( $the_id, $ids = array() ) {
 		global $wpdb;
 		settype( $ids, 'array' );
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
