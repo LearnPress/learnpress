@@ -566,6 +566,31 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
+		 * Get all users enrolled course ID.
+		 *
+		 * @param $course_id
+		 * @param int $limit
+		 *
+		 * @return array|null|object
+		 */
+		public function get_user_enrolled( $course_id, $limit = - 1 ) {
+			global $wpdb;
+			if ( $limit < 0 ) {
+				$limit = PHP_INT_MAX;
+			}
+			$query = $wpdb->prepare( "
+				SELECT DISTINCT user.ID FROM {$wpdb->users} user
+				INNER JOIN {$wpdb->prefix}learnpress_user_items user_item ON user_item.user_id = user.ID
+				WHERE user_item.item_id = %d
+				AND user_item.item_type = %s
+				LIMIT %d
+			", $course_id, LP_COURSE_CPT, $limit );
+
+			return $wpdb->get_results( $query );
+		}
+
+
+		/**
 		 * Get feature courses.
 		 *
 		 * @param array $args
@@ -631,7 +656,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @param int          $course_id
+		 * @param int $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
