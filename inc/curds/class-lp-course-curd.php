@@ -219,6 +219,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			if ( get_post_type( $course_id ) != LP_COURSE_CPT ) {
+				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 				return false;
 			}
 
@@ -227,6 +229,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			 * then ignore that course.
 			 */
 			if ( wp_cache_get( 'course-' . $course_id, 'lp-course-curriculum' ) ) {
+				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+
 				return false;
 			}
 

@@ -60,11 +60,11 @@ class LP_Debug {
 	}
 
 	public static function is_enable_log() {
-		return defined( 'WP_DEBUG' ) && WP_DEBUG && ( ! is_ajax() && ! learn_press_is_ajax() );
+		return defined( 'WP_DEBUG' ) && WP_DEBUG && ( ! learn_press_is_ajax() || ( function_exists( 'is_ajax' ) && ! is_ajax() ) );
 	}
 
 	public function output() {
-		if ( self::is_enable_log() && self::$_log_functions && !is_admin()) {
+		if ( self::is_enable_log() && self::$_log_functions && ! is_admin() ) {
 			uasort( self::$_log_functions, array( $this, 'sort_log_functions' ) );
 			$total_time = 0;
 			$i          = 0;
