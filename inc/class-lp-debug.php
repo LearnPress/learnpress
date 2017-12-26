@@ -59,11 +59,16 @@ class LP_Debug {
 		add_action( 'shutdown', array( $this, 'output' ) );
 	}
 
+	public static function is_enable_log() {
+		return defined( 'WP_DEBUG' ) && WP_DEBUG && ( ! is_ajax() && ! learn_press_is_ajax() );
+	}
+
 	public function output() {
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && self::$_log_functions ) {
+		if ( self::is_enable_log() && self::$_log_functions && !is_admin()) {
 			uasort( self::$_log_functions, array( $this, 'sort_log_functions' ) );
 			$total_time = 0;
 			$i          = 0;
+			echo "<!---\n";
 			foreach ( self::$_log_functions as $func => $times ) {
 				if ( ! is_array( $times ) ) {
 					continue;
@@ -73,7 +78,9 @@ class LP_Debug {
 				$total_time += $time;
 			}
 			echo '----' . str_pad( 'Total time', 50, '-' ) . ' = ' . $total_time . "\n";
+			echo microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'], ',', date( 'Y-m-d H:i:s' ), ',', date( 'Y-m-d H:i:s', $_SERVER['REQUEST_TIME_FLOAT'] );
 
+			echo "---->";
 		}
 	}
 
@@ -264,7 +271,7 @@ class LP_Debug {
 
 	public static function log_function( $func ) {
 
-		if ( ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) {
+		if ( ! self::is_enable_log() ) {
 			return;
 		}
 

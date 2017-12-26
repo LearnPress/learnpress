@@ -126,10 +126,12 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string $context
+		 * @param int    $length
+		 * @param string $more
 		 *
 		 * @return string
 		 */
-		public function get_content( $context = 'display' ) {
+		public function get_content( $context = 'display', $length = - 1, $more = '' ) {
 			if ( 'display' === $context ) {
 				if ( ! $this->_content ) {
 					global $post, $wp_query;
@@ -150,7 +152,12 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 					wp_reset_postdata();
 				}
 			} else {
-				return get_post_field( 'post_content', $this->get_id() );
+				$content = get_post_field( 'post_content', $this->get_id() );
+				if ( $length > 1 ) {
+					$content = wp_trim_words( $content, $length, $more );
+				}
+
+				return $content;
 			}
 
 			return $this->_content;

@@ -115,9 +115,7 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 		 */
 		public function show() {
 			// query courses
-			$query = $this->curd->get_recent_courses( array( 'limit' => (int) $this->instance['limit'] ) );
-			// get courses
-			$this->courses = learn_press_get_widget_course_object( $query );
+			$courses = $this->curd->get_recent_courses( array( 'limit' => (int) $this->instance['limit'] ) );
 
 			include $this->get_locate_template( $this->get_slug() );
 		}

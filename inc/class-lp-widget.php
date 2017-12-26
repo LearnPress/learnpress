@@ -190,6 +190,7 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			$this->before_widget();
 			$this->show();
 			$this->after_widget();
+
 		}
 
 		public function before_widget() {

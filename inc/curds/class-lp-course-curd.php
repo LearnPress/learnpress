@@ -552,23 +552,24 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			$query = apply_filters( 'learn-press/course-curd/query-recent-courses',
-				$wpdb->prepare(
-					"SELECT DISTINCT p.ID FROM $wpdb->posts AS p
+				$wpdb->prepare( "
+					SELECT DISTINCT p.ID 
+						FROM $wpdb->posts AS p
 						WHERE p.post_type = %s
 						AND p.post_status = %s
 						ORDER BY p.post_date {$order}
 						LIMIT %d
-					",
-					LP_COURSE_CPT, 'publish', $limit
-				) );
+				", LP_COURSE_CPT, 'publish', $limit
+				)
+			);
 
-			return $query;
+			return $wpdb->get_col( $query );
 		}
 
 		/**
 		 * Get all users enrolled course ID.
 		 *
-		 * @param $course_id
+		 * @param     $course_id
 		 * @param int $limit
 		 *
 		 * @return array|null|object
@@ -608,9 +609,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$limit = 0;
 			}
 
-			$query = apply_filters( 'learn-press/course-curd/query-feature-courses',
+			$query = apply_filters( 'learn-press/course-curd/query-featured-courses',
 				$wpdb->prepare( "
-				SELECT DISTINCT p.ID FROM {$wpdb->posts} p
+					SELECT DISTINCT p.ID 
+					FROM {$wpdb->posts} p
                     LEFT JOIN {$wpdb->postmeta} as pmeta ON p.ID=pmeta.post_id AND pmeta.meta_key = %s
                     WHERE p.post_type = %s
 						AND p.post_status = %s
@@ -620,7 +622,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
                 ", '_lp_featured', LP_COURSE_CPT, 'publish', 'yes', $limit )
 			);
 
-			return $query;
+			return $wpdb->get_col( $query );
 		}
 
 		/**
@@ -641,22 +643,23 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			$query = apply_filters( 'learn-press/course-curd/query-popular-courses',
-				$wpdb->prepare(
-					"SELECT DISTINCT p.*, count(*) as number_enrolled FROM {$wpdb->prefix}learnpress_user_items ui
+				$wpdb->prepare( "
+					SELECT DISTINCT p.ID, COUNT(*) AS number_enrolled 
+					FROM {$wpdb->prefix}learnpress_user_items ui
 					INNER JOIN {$wpdb->posts} p ON p.ID = ui.item_id
 					WHERE ui.item_type = %s
 						AND ( ui.status = %s OR ui.status = %s )
 						AND p.post_status = %s
-					ORDER BY ui.item_id {$order}
+					ORDER BY number_enrolled {$order}
 					LIMIT %d
-				", LP_COURSE_CPT, 'enrolled', 'finished', 'publish', $limit
-				) );
+				", LP_COURSE_CPT, 'enrolled', 'finished', 'publish', $limit )
+			);
 
-			return $query;
+			return $wpdb->get_col( $query );
 		}
 
 		/**
-		 * @param int $course_id
+		 * @param int          $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
@@ -679,15 +682,15 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$query_args = array_merge( array( '_course_id', $course_id, LP_ORDER_CPT ), $statuses );
 
 				$query = $wpdb->prepare( "
-				SELECT count(oim.meta_id)
-				FROM {$wpdb->learnpress_order_itemmeta} oim
-				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
-					AND oim.meta_key = %s
-					AND oim.meta_value = %d
-				INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
-				WHERE o.post_type = %s
-				AND o.post_status IN ($in_clause)
-			", $query_args );
+					SELECT count(oim.meta_id)
+					FROM {$wpdb->learnpress_order_itemmeta} oim
+					INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
+						AND oim.meta_key = %s
+						AND oim.meta_value = %d
+					INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
+					WHERE o.post_type = %s
+					AND o.post_status IN ($in_clause)
+				", $query_args );
 
 				$count = absint( $wpdb->get_var( $query ) );
 

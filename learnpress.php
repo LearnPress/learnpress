@@ -650,3 +650,9 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+add_action( 'wp_footer', function () {
+	for ( $i = 0; $i < 100; $i ++ ) {
+		pmpro_getMembershipLevelsForUser();
+	}
+} );
