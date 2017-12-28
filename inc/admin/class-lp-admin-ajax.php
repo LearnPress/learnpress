@@ -465,11 +465,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// draft question args
-					$args = $args['draft_question'] ? $args['draft_question'] : '';
+					$question_param = $args['draft_question'] ? $args['draft_question'] : '';
 
-					if ( $args ) {
-						$args  = (array) ( json_decode( wp_unslash( $args ), '' ) );
-						$draft = self::draft_question( $question_id, $args );
+					if ( $question_param ) {
+						$question_param = (array) ( json_decode( wp_unslash( $question_param ), '' ) );
+						$draft          = self::draft_question( $question_id, $question_param );
 
 						// check if draft question false or question exist
 						if ( $draft ) {
