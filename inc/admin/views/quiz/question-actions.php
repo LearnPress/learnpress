@@ -22,7 +22,7 @@
         <div class="actions">
             <div class="lp-box-data-actions lp-toolbar-buttons">
                 <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
-                    <a class="lp-btn-icon dashicons dashicons-migrate"></a>
+                    <a class="lp-btn-icon dashicons dashicons-migrate" title="change type"></a>
                     <ul>
                         <li v-for="(type, key) in questionTypes" :class="active(key)">
                             <a href="" :data-type="key" @click.prevent="changeType(key)">{{type}}</a>
@@ -30,13 +30,14 @@
                     </ul>
                 </div>
                 <div class="lp-toolbar-btn">
-                    <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-admin-links "></a>
+                    <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit" title="edit"></a>
                 </div>
                 <div class="lp-toolbar-btn">
-                    <a href="" class="lp-btn-icon dashicons dashicons-admin-page" @click.prevent="clone"></a>
+                    <a href="" class="lp-btn-icon dashicons dashicons-admin-page" @click.prevent="clone"
+                       title="duplicate"></a>
                 </div>
                 <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
-                    <a class="lp-btn-icon dashicons dashicons-trash"></a>
+                    <a class="lp-btn-icon dashicons dashicons-trash" title="delete"></a>
                     <ul>
                         <li>
                             <a @click.prevent="remove"
@@ -48,7 +49,7 @@
                         </li>
                     </ul>
                 </div>
-                <span :class="['lp-toolbar-btn lp-btn-toggle', question.open ?'open' : 'close']" @click="toggle"></span>
+                <span :class="['lp-toolbar-btn lp-btn-toggle', question.open ?'open' : 'close']" @click="toggle" title="toggle"></span>
             </div>
         </div>
     </div>

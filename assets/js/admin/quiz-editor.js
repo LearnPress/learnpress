@@ -418,6 +418,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
                     var result = response.body;
 
                     if (result.success) {
+                        // update new question type
+                        context.commit('UPDATE_NEW_QUESTION_TYPE', payload.question.type, {root: true});
                         // update list quiz questions
                         context.commit('ADD_NEW_QUESTION', result.data);
                     }

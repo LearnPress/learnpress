@@ -415,16 +415,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$curd = new LP_Question_CURD();
 
 			$args = wp_parse_args( $args, array(
-				'title'   => __( 'New Question', 'learnpress' ),
-				'content' => '',
-				'status'  => 'draft'
+				'id'             => $question_id,
+				'title'          => __( 'New Question', 'learnpress' ),
+				'content'        => '',
+				'status'         => 'draft',
+				'create_answers' => false
 			) );
 
 			$question = $curd->create( $args );
 
 			if ( ! $question ) {
 				return false;
-
 			}
 
 			return $question;
@@ -464,17 +465,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					// draft question args
-					$args = ! empty( $args['draft_question'] ) ? $args['draft_question'] : '';
-					$args = (array) ( json_decode( wp_unslash( $args ), '' ) );
+					$args = $args['draft_question'] ? $args['draft_question'] : '';
 
-					// do not need create answers for new question
-//					$args['create_answers'] = false;
+					if ( $args ) {
+						$args  = (array) ( json_decode( wp_unslash( $args ), '' ) );
+						$draft = self::draft_question( $question_id, $args );
 
-					$draft = self::draft_question( $question_id, $args );
-
-					// check if draft question false or question exist
-					if ( $draft ) {
-						$question = $draft;
+						// check if draft question false or question exist
+						if ( $draft ) {
+							$question = $draft;
+						}
 					}
 
 					// change question type
@@ -1387,8 +1387,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

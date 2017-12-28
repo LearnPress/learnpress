@@ -108,7 +108,7 @@
             Vue.http.LPRequest({
                 type: 'change-question-type',
                 question_type: payload.type,
-                draft_question: JSON.stringify(payload.question)
+                draft_question: context.getters.autoDraft ? JSON.stringify(payload.question) : ''
             }).then(function (response) {
                 var result = response.body;
 
