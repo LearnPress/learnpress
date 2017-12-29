@@ -35,7 +35,8 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				'popular_courses'     => __CLASS__ . '::popular_courses',
 				'button_enroll'       => __CLASS__ . '::button_enroll',
 				'button_purchase'     => __CLASS__ . '::button_purchase',
-				'button_course'       => __CLASS__ . '::button_course'
+				'button_course'       => __CLASS__ . '::button_course',
+				'course_curriculum'   => __CLASS__ . '::course_curriculum'
 			);
 
 			foreach ( $shortcodes as $shortcode => $function ) {
@@ -258,6 +259,16 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		 */
 		public static function button_course( $atts, $content = '' ) {
 			return new LP_Shortcode_Button_Course( $atts );
+		}
+
+		/**
+		 * @param array  $atts
+		 * @param string $content
+		 *
+		 * @return LP_Shortcode_Course_Curriculum
+		 */
+		public static function course_curriculum( $atts, $content = '' ) {
+			return new LP_Shortcode_Course_Curriculum( $atts );
 		}
 	}
 }
