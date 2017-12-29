@@ -1194,11 +1194,18 @@ abstract class LP_Abstract_Course {
 		$total_point    = 0;
 		$quizzes_ids    = array();
 		foreach ( $quizzes as $quiz ) {
+// 		    var_dump($quiz);
+// 		    exit(''.__LINE__);
 // 			if ( ! $this->enable_evaluate_item( $quiz->ID, $user_id ) ) {
 // 				continue;
 // 			}
+		    $quiz_obj 		= learn_press_get_quiz($quiz->ID);
+		    if( 'no' == $quiz_obj->passing_grade_type ) {
+		        continue;
+		    }
+
 			$quizzes_ids[]  = $quiz->ID;
-			$quiz_obj 		= learn_press_get_quiz($quiz->ID);
+			
 			$quiz_mark 		= $quiz_obj->post->mark?$quiz_obj->post->mark:0;
 			$total_point 	+= $quiz_mark;
 
@@ -1236,11 +1243,16 @@ abstract class LP_Abstract_Course {
 				continue;
 			}
 			$quiz = LP_Quiz::get_quiz( $_quiz->ID );
+			$quiz_obj 		= learn_press_get_quiz($quiz->ID);
+			if( 'no' == $quiz_obj->passing_grade_type ) {
+			    continue;
+			}
 			if ( $_quiz = wp_cache_get( $quiz->id, 'posts' ) ) {
 				$total_point += isset( $_quiz->mark ) ? absint( $_quiz->mark ) : 0;
 			}
 			$grade = $user->get_quiz_graduation( $quiz->id, $this->id );
-			/*$passing_grade      = get_post_meta( $quiz->ID, '_lp_passing_grade', true );
+			/*
+			$passing_grade      = get_post_meta( $quiz->ID, '_lp_passing_grade', true );
 			$results[$quiz->ID] = $user->get_quiz_results( $quiz->ID, $this->id, true );
 			$quiz_passed        = false;
 			$passing_grade_type = get_post_meta( $quiz->ID, '_lp_passing_grade_type', true );
@@ -1251,7 +1263,8 @@ abstract class LP_Abstract_Course {
 				$quiz_passed = ( $results[$quiz->ID]->mark >= intval( $passing_grade ) );
 			} else {
 				$quiz_passed = true;
-			}*/
+			}
+			*/
 			if ( $grade == 'passed' ) {
 				$quiz_results   = $user->get_quiz_results( $quiz->ID, $this->id, true );
 				$achieved_point += is_object( $quiz_results ) ? $quiz_results->mark : 0;
@@ -1467,6 +1480,10 @@ abstract class LP_Abstract_Course {
 			foreach ( $quizzes as $quiz ) {
 				if ( ! $this->enable_evaluate_item( $quiz->ID, $user_id ) ) {
 					continue;
+				}
+				$quiz_obj 		= learn_press_get_quiz($quiz->ID);
+				if( 'no' == $quiz_obj->passing_grade_type ) {
+				    continue;
 				}
 				$result += $this->evaluate_quiz( $quiz->ID, $user_id, $force );
 				$count ++;
