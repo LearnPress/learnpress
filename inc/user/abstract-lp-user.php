@@ -704,7 +704,7 @@ class LP_Abstract_User {
 				$query = $wpdb->prepare( "
                     SELECT o.item_id, o.status
                     FROM {$wpdb->prefix}learnpress_user_items o
-                    WHERE user_item_id = (SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items s2 WHERE s2.item_id = o.item_id)
+                    WHERE user_item_id = (SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items s2 WHERE s2.item_id = o.item_id AND s2.user_id = o.user_id)
                     AND user_id = %d AND ref_id = %d
                     AND item_id IN(" . join( ', ', $in ) . ")
                 ", $args );

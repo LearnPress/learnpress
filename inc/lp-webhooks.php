@@ -16,13 +16,13 @@ defined( 'ABSPATH' ) || exit();
  * @param $param
  */
 function learn_press_register_web_hook( $key, $param ) {
-	if ( !$key ) {
+	if ( ! $key ) {
 		return;
 	}
 	if ( empty ( $GLOBALS['learn_press']['web_hooks'] ) ) {
 		$GLOBALS['learn_press']['web_hooks'] = array();
 	}
-	$GLOBALS['learn_press']['web_hooks'][$key] = $param;
+	$GLOBALS['learn_press']['web_hooks'][ $key ] = $param;
 	do_action( 'learn_press_register_web_hook', $key, $param );
 }
 
@@ -33,6 +33,7 @@ function learn_press_register_web_hook( $key, $param ) {
  */
 function learn_press_get_web_hooks() {
 	$web_hooks = empty( $GLOBALS['learn_press']['web_hooks'] ) ? array() : (array) $GLOBALS['learn_press']['web_hooks'];
+
 	return apply_filters( 'learn_press_web_hooks', $web_hooks );
 }
 
@@ -45,7 +46,8 @@ function learn_press_get_web_hooks() {
  */
 function learn_press_get_web_hook( $key ) {
 	$web_hooks = learn_press_get_web_hooks();
-	$web_hook  = empty( $web_hooks[$key] ) ? false : $web_hooks[$key];
+	$web_hook  = empty( $web_hooks[ $key ] ) ? false : $web_hooks[ $key ];
+
 	return apply_filters( 'learn_press_web_hook', $web_hook, $key );
 }
 
@@ -56,7 +58,7 @@ function learn_press_process_web_hooks() {
 	$web_hooks           = learn_press_get_web_hooks();
 	$web_hooks_processed = array();
 	foreach ( $web_hooks as $key => $param ) {
-		if ( !empty( $_REQUEST[$param] ) ) {
+		if ( ! empty( $_REQUEST[ $param ] ) ) {
 			//$web_hooks_processed           = true;
 			$request_scheme                = is_ssl() ? 'https://' : 'http://';
 			$requested_web_hook_url        = untrailingslashit( $request_scheme . $_SERVER['HTTP_HOST'] ) . $_SERVER['REQUEST_URI'];
@@ -70,7 +72,7 @@ function learn_press_process_web_hooks() {
 			} else {
 
 			}
-			$web_hooks_processed[$param] = $_REQUEST;
+			$web_hooks_processed[ $param ] = $_REQUEST;
 			break;
 		}
 	}
@@ -95,7 +97,7 @@ add_action( 'wp_loaded', 'learn_press_process_web_hooks', 999 );
  * Update status of lesson when view at first time
  */
 function learn_press_header_item_only_view_first() {
-	if ( is_admin() || !learn_press_is_course() ) {
+	if ( is_admin() || ! learn_press_is_course() ) {
 		return;
 	}
 	global $wpdb;
@@ -109,10 +111,11 @@ function learn_press_header_item_only_view_first() {
 	if ( $status === 'enrolled' && $item ) {
 
 		// If status is not null that means user has viewed this item
-		$item_status = $user->get_item_status( $item->ID, $course->id );
-		if ( !( '' == $item_status || false == $item_status ) ) {
+		$item_status = learn_press_get_user_item_status_1234( $item->ID, $course->id, $user->id );// $user->get_item_status( $item->ID, $course->id );
+		if ( ! ( '' == $item_status || false == $item_status ) ) {
 			return;
 		}
+		var_dump($item_status);
 		$item_status = 'viewed';
 		if ( $parent_id = learn_press_get_user_item_id( $user->id, $course->id ) ) {
 			learn_press_update_user_item_field(
@@ -130,28 +133,34 @@ function learn_press_header_item_only_view_first() {
 			);
 		}
 		// Update cache
-		$item_statuses                                                  = LP_Cache::get_item_statuses( false, array() );
-		$item_statuses[$user->id . '-' . $course->id . '-' . $item->ID] = $item_status;
+		$item_statuses                                                    = LP_Cache::get_item_statuses( false, array() );
+		$item_statuses[ $user->id . '-' . $course->id . '-' . $item->ID ] = $item_status;
 		LP_Cache::set_item_statuses( $item_statuses );
+	}
+}
 
+function learn_press_get_user_item_status_1234( $item_id, $course_id, $user_id ) {
+	global $wpdb;
+	$item_statuses = LP_Cache::get_item_statuses( false, array() );
 
-		/* Insert status for lesson */
-		// Consume many queries :(
-		/**if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
-		 *
-		 * $result = $wpdb->query( "SELECT * FROM `$wpdb->learnpress_user_items` WHERE `item_id`= $item->ID" );
-		 * if ( $result === 0 ) {
-		 * $query = $wpdb->prepare( "
-		 * INSERT INTO {$wpdb->learnpress_user_items} (`user_id`, `item_id`, `start_time`, `end_time`, `item_type`, `status`, `ref_id`, `ref_type`, `parent_id`)
-		 * VALUES ( $user->ID, $item->ID, %s, %s, %s, %s, $course->ID, %s, $user->ID )
-		 * ", current_time( 'mysql' ), current_time( 'mysql' ), $item->_item->item_type, 'view', $course->post->post_type );
-		 * $wpdb->query( $query );
-		 * }
-		 * }*/
+	if ( ! $item_statuses || ! array_key_exists( $user_id . '-' . $course_id . '-' . $item_id, $item_statuses ) ) {
+
+		$query = $wpdb->prepare( "
+	        SELECT o.item_id, o.status
+	        FROM {$wpdb->prefix}learnpress_user_items o
+	        WHERE user_item_id = (SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items s2 WHERE s2.item_id = o.item_id AND s2.user_id = o.user_id)
+	        AND user_id = %d AND ref_id = %d
+	        AND item_id IN (%d)
+	    ", $user_id, $course_id, $item_id );
+
+		///echo $query;die();
+
+		$item_status = $wpdb->get_var( $query );
+	} else {
+		$item_status = $item_statuses[ $user_id . '-' . $course_id . '-' . $item_id ];
 	}
 
-	// should not flush if we did not do anything
-	// LP_Cache::flush();
+	return $item_status;
 }
 
 add_action( 'learn_press_print_assets', 'learn_press_header_item_only_view_first' );
