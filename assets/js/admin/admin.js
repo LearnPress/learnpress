@@ -390,7 +390,7 @@
                     hide();
                 }
             }
-        )
+        ).addClass('ready');
 
         return {
             close: close,

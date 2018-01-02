@@ -459,7 +459,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Add meta boxes to course post type page
 		 */
 		public function add_meta_boxes() {
-			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() ) {
+			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() || ! is_admin() ) {
 				return;
 			}
 			$default_tabs = array(

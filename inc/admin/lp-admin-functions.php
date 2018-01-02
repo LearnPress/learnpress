@@ -94,36 +94,6 @@ if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
 	}
 }
 
-/**
- * Display HTML of element for building QuickTip JS.
- *
- * @since 3.0.0
- *
- * @param string $tip
- * @param bool   $echo
- * @param array  $options
- *
- * @return string
- */
-function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
-	$atts = '';
-	if ( $options ) {
-		foreach ( $options as $k => $v ) {
-			$options[ $k ] = "data-{$k}=\"{$v}\"";
-		}
-		$atts = " " . join( ' ', $options );
-	}
-
-	$tip = sprintf( '<span class="learn-press-tip"%s>%s</span>', $atts, $tip );
-
-	if ( $echo ) {
-		echo $tip;
-	}
-
-	return $tip;
-}
-
-
 /*******************************/
 
 function learn_press_is_hidden_post_box( $id, $user_id = 0 ) {

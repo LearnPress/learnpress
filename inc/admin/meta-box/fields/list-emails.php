@@ -45,18 +45,22 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
 					} ?>
                     <tr id="email-<?php echo $email->id; ?>">
                         <td class="name">
-                            <a href="<?php echo $url; ?>"><?php echo join( ' &rarr; ', array(
-									$group,
-									$email->title
-								) ); ?></a>
+                            <a href="<?php echo $url; ?>">
+								<?php
+								if ( $group ) {
+									echo join( ' &rarr; ', array(
+										$group,
+										$email->title
+									) );
+								} else {
+									echo $email->title;
+								} ?></a>
                         </td>
                         <td class="description"><?php echo $email->description; ?></td>
                         <td class="status<?php echo $email->enable ? ' enabled' : ''; ?>">
                             <span class="change-email-status dashicons dashicons-yes"
                                   data-status="<?php echo $email->enable ? 'on' : 'off'; ?>"
                                   data-id="<?php echo $email->id; ?>"></span>
-
-
                             <a href="<?php echo $url; ?>"><?php _e( 'Settings', 'learnpress' ); ?></a>
                         </td>
                     </tr>
@@ -64,7 +68,7 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
                 </tbody>
             </table>
             <p class="email-actions">
-                <?php _e('You can enable/disable each email by clicking on the status icon or apply for all emails by clicking these buttons', 'learnpress');?>
+				<?php learn_press_quick_tip( __( 'You can enable/disable each email by clicking on the status icon or apply for all emails by clicking these buttons', 'learnpress' ) ); ?>
                 <button class="button"
                         id="learn-press-enable-emails"
                         data-status="yes"><?php _e( 'Enable all', 'learnpress' ); ?></button>

@@ -54,6 +54,34 @@ function learn_press_get_theme_name( $folder ) {
 	return ! empty( $theme['Name'] ) ? $theme['Name'] : '';
 }
 
+/**
+ * Display HTML of element for building QuickTip JS.
+ *
+ * @since 3.0.0
+ *
+ * @param string $tip
+ * @param bool   $echo
+ * @param array  $options
+ *
+ * @return string
+ */
+function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
+	$atts = '';
+	if ( $options ) {
+		foreach ( $options as $k => $v ) {
+			$options[ $k ] = "data-{$k}=\"{$v}\"";
+		}
+		$atts = " " . join( ' ', $options );
+	}
+
+	$tip = sprintf( '<span class="learn-press-tip"%s>%s</span>', $atts, $tip );
+
+	if ( $echo ) {
+		echo $tip;
+	}
+
+	return $tip;
+}
 
 /**
  * Return TRUE if defined WP_DEBUG and is true or 1.

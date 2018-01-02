@@ -71,6 +71,7 @@
                     LP.setUrl(loadUrl);
 
                     $('.learn-press-dropdown-pages').dropdownPages();
+                    $('.learn-press-tip').QuickTip();
                     $main.removeClass('loading');
                 }
             });
