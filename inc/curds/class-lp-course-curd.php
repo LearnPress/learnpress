@@ -240,6 +240,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$item_ids       = array();
 			$meta_cache_ids = array( $course_id );
 			$quiz_ids       = array();
+			$lesson_ids     = array();
 
 			$section_ids = array();
 
@@ -295,10 +296,15 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 							if ( $row->item_type === LP_QUIZ_CPT ) {
 								$quiz_ids[] = $row->item_id;
+							} elseif ( $row->item_type === LP_LESSON_CPT ) {
+								$lesson_ids[] = $row->item_id;
 							}
 						}
 
 						wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
+						wp_cache_set( 'course-' . $cur_id, $quiz_ids, 'lp-course-quizzes' );
+						wp_cache_set( 'course-' . $cur_id, $lesson_ids, 'lp-course-lessons' );
+
 						// Cache items ids for using in some cases
 						foreach ( $item_ids as $cid => $ids ) {
 							wp_cache_set( 'course-' . $cid, $ids, 'lp-course-items' );
@@ -315,12 +321,16 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 					if ( $item->item_type === LP_QUIZ_CPT ) {
 						$quiz_ids[] = $item->item_id;
+					} elseif ( $item->item_type === LP_LESSON_CPT ) {
+						$lesson_ids[] = $item->item_id;
 					}
 				}
 
 				// Set cache
 				wp_cache_set( 'course-' . $course_id, $curriculum, 'lp-course-curriculum' );
 				wp_cache_set( 'course-' . $course_id, $item_ids, 'lp-course-items' );
+				wp_cache_set( 'course-' . $course_id, $lesson_ids, 'lp-course-lessons' );
+				wp_cache_set( 'course-' . $course_id, $quiz_ids, 'lp-course-quizzes' );
 
 			}
 

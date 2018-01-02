@@ -262,67 +262,6 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			LP_Helper_CURD::update_meta_cache( 'post', $meta_ids );
 		}
 
-		/**
-		 * Load answer quiz's questions.
-		 *
-		 * @param LP_Quiz $quiz
-		 */
-		public function load_question_answers( &$quiz ) {
-
-			die( __CLASS__ . '::' . __FUNCTION__ );
-			global $wpdb;
-
-			if ( ! $questions = $this->get_questions( $quiz ) ) {
-				return;
-			}
-
-			$format = array_fill( 0, sizeof( $questions ), '%d' );
-			$query  = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_question_answers
-			WHERE question_id IN(" . join( ',', $format ) . ")
-			ORDER BY question_id, answer_order ASC
-		", $questions );
-			if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
-				$answer_options = array();
-				$meta_ids       = array();
-				foreach ( $results as $k => $v ) {
-					if ( empty( $answer_options[ $v->question_id ] ) ) {
-						$answer_options[ $v->question_id ] = array();
-					}
-					$v = (array) $v;
-					if ( $answer_data = maybe_unserialize( $v['answer_data'] ) ) {
-						foreach ( $answer_data as $kk => $vv ) {
-							$v[ $kk ] = $vv;
-						}
-					}
-					unset( $v['answer_data'] );
-
-
-					$answer_options[ $v['question_id'] ][] = $v;
-				}
-
-				foreach ( $answer_options as $question_id => $options ) {
-					wp_cache_set( 'answer-options-' . $question_id, $options, 'lp-questions' );
-				}
-
-				foreach ( $meta_ids as $meta_id ) {
-					//$this->_load_question_answer_meta( $meta_id );
-				}
-
-				$fetched    = array_keys( $answer_options );
-				$un_fetched = array_diff( $questions, $fetched );
-				//$this->_load_question_answer_meta( $answer_options );
-			} else {
-				$un_fetched = $questions;
-			}
-			if ( $un_fetched ) {
-				foreach ( $un_fetched as $question_id ) {
-					wp_cache_set( 'answer-options-' . $question_id, array(), 'lp-questions' );
-				}
-			}
-		}
-
 		protected function _load_question_answer_meta( $meta_ids ) {
 			global $wpdb;
 			$format = array_fill( 0, sizeof( $meta_ids ), '%d' );

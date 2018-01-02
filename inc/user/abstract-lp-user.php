@@ -726,14 +726,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$grade = isset( $item_result['grade'] ) ? $item_result['grade'] : false;
 			}
 
-//			return $grade;
-//			if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
-//				$status = $item['status'];
-//				if ( $status === 'completed' ) {
-//					$grade = learn_press_get_user_item_meta( $item['user_item_id'], '_quiz_grade', true );
-//				}
-//			}
-
 			return apply_filters( 'learn-press/user-item-grade', $grade, $item_id, $this->get_id(), $course_id );
 		}
 
@@ -1884,6 +1876,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return array
 		 */
 		public function get_orders( $last_order = true ) {
+
+			if ( $last_order ) {
+				if ( false !== ( $cached_last_order = wp_cache_get( 'user-' . $this->get_id(), 'lp-user-last-order' ) ) ) {
+					return $cached_last_order;
+				}
+			}
+
 			$my_orders = $this->_curd->get_orders( $this->get_id() );// _learn_press_get_user_course_orders( $this->get_id() );
 
 			if ( $last_order && $my_orders ) {
@@ -1891,6 +1890,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				foreach ( $my_orders as $course_id => $orders ) {
 					$last_orders[ $course_id ] = reset( $orders );
 				}
+				wp_cache_set( 'user-' . $this->get_id(), $last_orders, 'lp-user-last-order' );
 			} else {
 				$last_orders = $my_orders;
 			}
@@ -1933,20 +1933,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $activated;
-		}
-
-		private function _has_enrolled_course( $course_id ) {
-			global $wpdb;
-			echo $query = $wpdb->prepare( "
-				SELECT status
-				FROM {$wpdb->prefix}learnpress_user_items
-				WHERE user_id = %d
-				AND item_id = %d
-				AND status NOT IN(%s, %s)
-				LIMIT 0, 1
-			", $this->get_id(), $course_id, '', 'purchased' );
-
-			return $wpdb->get_var( $query ) ? true : false;
 		}
 
 		/**
@@ -2443,6 +2429,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			// Deprecated since 3.0.0
 			$return = apply_filters( 'learn_press_user_has_ordered_course', $return, $course_id, $this->get_id() );
+
 			//LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return $return;
@@ -2546,54 +2533,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * Get the owns order of all items in a course to check permission for view
-		 * This function is called when a function related with a course also is called
-		 * Make sure parse the order of any items before check permission of it
-		 *
-		 * @param $course_id
-		 *
-		 * @return mixed
-		 */
-		private function _parse_item_order_of_course( $course_id ) {
-			static $courses_parsed = array();
-			if ( ! $this->get_id() ) {
-				return false;
-			}
-			if ( ! empty( $courses_parsed[ $this->get_id() . '-' . $course_id ] ) ) {
-				return true;
-			}
-			global $wpdb;
-			$course = LP_Course::get_course( $course_id );
-			$items  = null;
-			if ( $course ) {
-				$items = $course->get_curriculum_items( array( 'field' => 'ID' ) );
-			}
-			if ( $items ) {
-				// How to make this simpler, LOL?
-				$query = $wpdb->prepare( "
-				SELECT order_id, si.item_id
-				FROM {$wpdb->posts} o
-				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
-				INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
-				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s
-				INNER JOIN {$wpdb->posts} c ON c.ID = oim.meta_value
-				INNER JOIN {$wpdb->learnpress_sections} s ON s.section_course_id = c.ID
-				INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id WHERE si.item_id IN (" . join( ',', $items ) . ")
-				AND o.post_status = %s
-			", '_user_id', $this->get_id(), '_course_id', 'lp-completed' );
-
-				if ( $results = $wpdb->get_results( $query ) ) {
-					foreach ( $results as $row ) {
-						self::$_order_items[ $row->item_id ] = $row->order_id;
-					}
-				}
-			}
-			$courses_parsed[ $this->get_id() . '-' . $course_id ] = true;
-
-			return true;
-		}
-
-		/**
 		 * Enroll this user to a course.
 		 *
 		 * @param int $course_id
@@ -2603,11 +2542,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function enroll( $course_id, $order_id ) {
-
-//		$check = apply_filters( 'learn_press_before_enroll_course', true, $this, $course_id );
-//		if ( ! $check ) {
-//			return false;
-//		}
 
 			try {
 				if ( ! $order = learn_press_get_order( $order_id ) ) {
@@ -2808,6 +2742,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
+		 * @deprecated
+		 *
 		 * @param $course_id
 		 *
 		 * @return mixed
@@ -2971,7 +2907,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return int
 		 */
 		function get_completed_items_in_section( $course_id, $section_id, $force = false ) {
-			_deprecated_function(__FUNCTION__, '3.0.0');
+			_deprecated_function( __FUNCTION__, '3.0.0' );
+
 			return rand( 1, 3 );
 
 			$course     = learn_press_get_course( $course_id );
@@ -3047,7 +2984,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed|void
 		 */
 		public function get_quiz_graduation( $quiz_id, $course_id = 0, $check_completed = true ) {
-			_deprecated_function(__FUNCTION__, '3.0.0');
+			_deprecated_function( __FUNCTION__, '3.0.0' );
 			if ( ! $grade = LP_Cache::get_quiz_grade( sprintf( '%d-%d-%d', $this->get_id(), $course_id, $quiz_id ) ) ) {
 				$course_id = $this->_get_course( $course_id );
 				$result    = $this->get_quiz_results( $quiz_id, $course_id );
@@ -3281,16 +3218,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 *
-		 * 'email'         => '',
-		 * 'user_login'    => '',
-		 * 'description'   => '',
-		 * 'first_name'    => '',
-		 * 'last_name'     => '',
-		 * 'nickname'      => '',
-		 * 'display_name'  => '',
-		 * 'date_created'  => '',
-		 * 'date_modified' => '',
 		 * @return array|mixed
 		 */
 		public function get_email() {

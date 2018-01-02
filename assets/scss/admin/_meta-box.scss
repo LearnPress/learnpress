@@ -8,6 +8,7 @@
             float: left;
             width: 190px;
             font-size: 14px;
+            text-transform: capitalize;
         }
         .rwmb-input {
             margin-left: 190px;
@@ -50,10 +51,10 @@
                 min-width: 200px;
             }
         }
-        &.rwmb-duration-wrapper{
-            .rwmb-input{
-                select, input{
-                    vertical-align: middle;
+        &.rwmb-duration-wrapper {
+            .rwmb-input {
+                select, input {
+                    vertical-align: top;
                 }
             }
         }
@@ -99,9 +100,11 @@
     }
 
     // lesson metaboxs
-    #lesson_settings {
-        & > .inside {
-            margin: 20px 0 0;
+    #postbox-container-2 {
+        .inside {
+            .rwmb-meta-box {
+                margin: 20px 0 0;
+            }
         }
     }
 }

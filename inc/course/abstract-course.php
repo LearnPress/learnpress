@@ -385,42 +385,44 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
-			$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
+			// get course items from cache
 
-			if ( false === ( $items = wp_cache_get( 'course-' . $key, 'lp-course-items' ) ) ) {
-
-				LP_Helper_CURD::update_meta_cache( 'post', $items );
-
-				// get course items from cache
+			if ( ! $type && $preview ) {
 				$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
+			} else {
+				$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
+				if ( false === ( $items = wp_cache_get( 'course-' . $key, 'lp-course-items' ) ) ) {
+					$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
+					LP_Helper_CURD::update_meta_cache( 'post', $items );
 
-				if ( ( $type || ! $preview ) && $items ) {
-					$item_types = array();
-					if ( $type ) {
-						settype( $type, 'array' );
-					}
+					if ( ( $type || ! $preview ) && $items ) {
+						$item_types = array();
+						if ( $type ) {
+							settype( $type, 'array' );
+						}
 
-					foreach ( $items as $item_id ) {
+						foreach ( $items as $item_id ) {
 
-						if ( ! $preview ) {
-							$item = $this->get_item( $item_id );
+							if ( ! $preview ) {
+								$item = $this->get_item( $item_id );
 
-							if ( ! $item || $item->is_preview() ) {
-								continue;
+								if ( ! $item || $item->is_preview() ) {
+									continue;
+								}
+							}
+
+							if ( ! $type || is_array( $type ) && in_array( get_post_type( $item_id ), $type ) ) {
+								$item_types[] = $item_id;
 							}
 						}
 
-						if ( ! $type || is_array( $type ) && in_array( get_post_type( $item_id ), $type ) ) {
-							$item_types[] = $item_id;
-						}
+						$items = apply_filters( 'learn-press/course-items-by-type', $item_types, $type, $this->get_id() );
+
 					}
 
-					$items = apply_filters( 'learn-press/course-items-by-type', $item_types, $type, $this->get_id() );
+					wp_cache_set( 'course-' . $key, $items, 'lp-course-items' );
 
 				}
-
-				wp_cache_set( 'course-' . $key, $items, 'lp-course-items' );
-
 			}
 			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 

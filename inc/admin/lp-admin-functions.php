@@ -94,6 +94,35 @@ if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
 	}
 }
 
+/**
+ * Display HTML of element for building QuickTip JS.
+ *
+ * @since 3.0.0
+ *
+ * @param string $tip
+ * @param bool   $echo
+ * @param array  $options
+ *
+ * @return string
+ */
+function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
+	$atts = '';
+	if ( $options ) {
+		foreach ( $options as $k => $v ) {
+			$options[ $k ] = "data-{$k}=\"{$v}\"";
+		}
+		$atts = " " . join( ' ', $options );
+	}
+
+	$tip = sprintf( '<span class="learn-press-tip"%s>%s</span>', $atts, $tip );
+
+	if ( $echo ) {
+		echo $tip;
+	}
+
+	return $tip;
+}
+
 
 /*******************************/
 
@@ -138,7 +167,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array $args
+ * @param array      $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -173,7 +202,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array $args
+ * @param array      $args
  *
  * @return mixed|string
  */
@@ -1673,9 +1702,9 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param null $post_id
+	 * @param null  $post_id
 	 * @param array $args
-	 * @param bool $meta
+	 * @param bool  $meta
 	 *
 	 * @return bool|mixed
 	 */

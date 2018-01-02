@@ -603,6 +603,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					</div>
 				';
 			}
+
+			$course_result_option_desc = array(
+				'evaluate_lesson'         => __( 'Evaluate by lessons user has completed per total lessons in course.', 'learnpress' ),
+				'evaluate_final_quiz'     => __( 'Evaluate by results of final quiz in course.', 'learnpress' ),
+				'evaluate_quizzes'        => __( 'Evaluate by achieved points per total point of all quizzes.', 'learnpress' ),
+				'evaluate_passed_quizzes' => __( 'Evaluate by achieved points of passed course per total point of all quizzes.', 'learnpress' ),
+				'evaluate_quiz'           => __( 'Evaluate by quizzes user has completed per total quizzes.', 'learnpress' ),
+			);
+
+			$course_result_option_tip = '<span class="learn-press-tip">%s</span>';
+
 			$meta_box = array(
 				'id'       => 'course_assessment',
 				'title'    => __( 'Assessment', 'learnpress' ),
@@ -617,16 +628,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc'    => $course_result_desc,
 						'options' => array(
 							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' )
-							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by lessons user has completed per total lessons in course.', 'learnpress' ) ),
+							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false, array( 'event' => 'click' ) ),
 							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' )
-							                             . $quiz_passing_condition_html
-							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by results of final quiz in course.', 'learnpress' ) ),
+							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_final_quiz'] )
+							                             . $quiz_passing_condition_html,
 							'evaluate_quizzes'        => __( 'Evaluate results of quizzes', 'learnpress' )
-							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points per total point of all quizzes.', 'learnpress' ) ),
+							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_quizzes'] ),
 							'evaluate_passed_quizzes' => __( 'Evaluate results of quizzes passed', 'learnpress' )
-							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points of passed course per total point of all quizzes.', 'learnpress' ) ),
+							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_passed_quizzes'] ),
 							'evaluate_quiz'           => __( 'Evaluate quizzes', 'learnpress' )
-							                             . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by quizzes user has completed per total quizzes.', 'learnpress' ) ),
+							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_quiz'] )
 						),
 						'std'     => 'evaluate_lesson',
 						'inline'  => false

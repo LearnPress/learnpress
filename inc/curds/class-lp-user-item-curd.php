@@ -96,6 +96,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 			$this->_load_question_answers( $quiz );
 		}
+		unset( $questions );
 		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 	}
@@ -243,7 +244,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * Reorder question by indexed number.
 	 *
 	 * @param LP_Quiz|WP_Post|int $the_quiz
-	 * @param mixed $questions
+	 * @param mixed               $questions
 	 *
 	 * @return mixed
 	 */
@@ -313,7 +314,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 *
 	 * @param LP_Quiz|int $the_quiz
 	 * @param             $question_id
-	 * @param array $args
+	 * @param array       $args
 	 *
 	 * @return mixed false on failed
 	 */
@@ -367,7 +368,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Check if a question (or batch of questions) is already added to quiz.
 	 *
-	 * @param int $the_id
+	 * @param int       $the_id
 	 * @param int|array $ids
 	 *
 	 * @return array|bool|null|object
