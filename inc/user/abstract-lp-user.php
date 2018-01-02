@@ -709,6 +709,8 @@ class LP_Abstract_User {
                     AND item_id IN(" . join( ', ', $in ) . ")
                 ", $args );
 
+
+
 				$item_statuses[ $key ] = false;
 				if ( $rows = $wpdb->get_results( $query ) ) {
 					foreach ( $rows as $row ) {

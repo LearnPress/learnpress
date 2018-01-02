@@ -31,6 +31,8 @@ class LP_Quiz_Factory {
 		}
 		add_action( 'learn_press_after_single_quiz_summary', array( __CLASS__, 'output_quiz_params' ) );
 		add_action( 'delete_post', array( __CLASS__, 'delete_quiz' ), 10, 2 );
+
+		self::fetch_question();
 	}
 
 	public static function delete_quiz( $post_id, $force=false ) {
@@ -324,7 +326,7 @@ class LP_Quiz_Factory {
 		$user    = learn_press_get_current_user();
 		$history = $user->get_quiz_results( $quiz_id, $course_id, true );
 
-		if ( !empty( $_REQUEST['lp-ajax'] ) && $_REQUEST['lp-ajax'] == 'fetch-question' ) {
+		if ( !empty( $_REQUEST['lp-action'] ) && $_REQUEST['lp-action'] == 'fetch-question' ) {
 			$question_id = !empty( $_REQUEST['id'] ) ? $_REQUEST['id'] : $question_id;
 			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $question_id );
 		}

@@ -315,7 +315,7 @@
                     url: question.get('url'),
                     data: $.extend({
                         id: question.get('id'),
-                        'lp-ajax': 'fetch-question',
+                        'lp-action': 'fetch-question',
                         'lp-update-current-question': true
                     }, args || {}),
                     dataType: 'html'
@@ -326,7 +326,7 @@
                     data: $.extend({
                         id: question.get('id'),
                         data: $('form[name="quiz-question-content"]').serialize(),
-                        'lp-ajax': 'fetch-question'
+                        'lp-action': 'fetch-question'
                     }, args || {}),
                     dataType: 'html',
                     success: function (response) {
@@ -341,7 +341,7 @@
             this.prepareQuestion(args)
         },
         prepareQuestion: function (args) {
-
+            return;
             var next = this.findNext(),
                 prev = this.findPrev();
 
@@ -858,7 +858,7 @@
             var data = this._validateObject(args), that = this;
             data = LP.Hook.applyFilters('learn_press_finish_quiz_data', data);
             var beforeSend = args.beforeSend || function () {
-            };
+                };
             LP.ajax({
                 url: this.model.get('url'),
                 action: 'finish-quiz',
