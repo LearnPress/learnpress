@@ -198,6 +198,8 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 2.1.9.6 =
++ Fixed issue when 2 users do a quiz at the same time
 
 = 2.1.9.5 =
 + Fixed minor bug related to purchase course
