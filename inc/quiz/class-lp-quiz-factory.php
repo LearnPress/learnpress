@@ -23,7 +23,7 @@ class LP_Quiz_Factory {
 			'finish-quiz'       => 'finish_quiz',
 			'retake-quiz'       => 'retake_quiz',
 			'check-question'    => 'check_question',
-			'fetch-question'    => 'fetch_question',
+			//'fetch-question'    => 'fetch_question',
 			'get-question-hint' => 'get_question_hint'
 		);
 		foreach ( $actions as $k => $v ) {
