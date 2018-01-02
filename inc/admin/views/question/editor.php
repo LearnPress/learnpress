@@ -12,7 +12,8 @@ learn_press_admin_view( 'question/answer' );
 <script type="text/x-template" id="tmpl-lp-question-editor">
     <div id="admin-editor-lp_question" class="lp-admin-editor learn-press-box-data">
         <lp-question-actions :type="type" @changeType="changeType"></lp-question-actions>
-        <lp-question-answer :type="type"></lp-question-answer>
+        <lp-question-answer v-if="type!='fill_in_blank'" :type="type" :answers="answers"></lp-question-answer>
+        <lp-fib-question-answer v-if="type=='fill_in_blank'" :type="type" :answers="answers"></lp-fib-question-answer>
     </div>
 </script>
 
@@ -21,10 +22,20 @@ learn_press_admin_view( 'question/answer' );
 
         Vue.component('lp-question-editor', {
             template: '#tmpl-lp-question-editor',
+            mounted: function () {
+                var vm = this;
+
+                this.$watch('type', function () {
+                });
+            },
             computed: {
                 // question type key
                 type: function () {
                     return $store.getters['type']['key'];
+                },
+                // list answers
+                answers: function () {
+                    return $store.getters['answers'];
                 }
             },
             methods: {

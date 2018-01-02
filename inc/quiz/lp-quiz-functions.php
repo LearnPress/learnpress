@@ -32,10 +32,6 @@ function learn_press_get_question( $the_question ) {
 	return LP_Question::get_question( $the_question );
 }
 
-function learn_press_get_build_in_question_types() {
-	return array( 'true_or_false', 'single_choice', 'multi_choice' );
-}
-
 function learn_press_add_question_answer_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return add_metadata( 'learnpress_question_answer', $item_id, $meta_key, $meta_value, $prev_value );
 }
@@ -250,12 +246,13 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
 }
 
 /**
- * Check if user has started a quiz or not
+ * Check if user has started a quiz or not.
  *
- * @param int $user_id
- * @param int $quiz_id
+ * @param null $user_id
+ * @param null $quiz_id
  *
- * @return boolean
+ * @return bool|mixed
+ * @throws Exception
  */
 function learn_press_user_has_started_quiz( $user_id = null, $quiz_id = null ) {
 	$user = $user_id ? learn_press_get_user( $user_id ) : learn_press_get_current_user();

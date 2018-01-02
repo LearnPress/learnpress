@@ -6,7 +6,6 @@
  */
 
 learn_press_admin_view( 'quiz/question-answer-option' );
-
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-answers">

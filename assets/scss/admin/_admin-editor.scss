@@ -454,10 +454,15 @@
                                 }
                             }
                             &.delete-item {
+                                > a {
+                                    &:hover {
+                                        color: #d05d5d;
+                                    }
+                                }
                                 ul {
                                     position: absolute;
                                     top: 100%;
-                                    width: 200px;
+                                    width: 165px;
                                     padding: 2px 0;
                                     right: 0;
                                     background: #fdfeff;
@@ -465,10 +470,11 @@
                                     border: 1px solid #DDD;
                                     z-index: 9;
                                     display: none;
-                                    text-align: right;
+                                    text-align: center;
                                     li {
                                         margin: 0;
                                         padding: 8px;
+                                        border-bottom: 1px solid #eee;
                                         a {
                                             color: #0073aa;
                                             text-decoration: none;
@@ -812,6 +818,7 @@
                                 .lp-toolbar-btn-dropdown {
                                     ul {
                                         li {
+                                            border-bottom: 1px solid #eee;
                                             a {
                                                 padding: 10px 25px;
                                                 &.remove {

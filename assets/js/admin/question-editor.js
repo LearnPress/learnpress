@@ -66,6 +66,9 @@
         },
         nonce: function (state) {
             return state.nonce;
+        },
+        state: function (state) {
+            return state;
         }
     };
 
@@ -104,7 +107,6 @@
     var actions = {
 
         changeQuestionType: function (context, payload) {
-
             Vue.http.LPRequest({
                 type: 'change-question-type',
                 question_type: payload.type,
@@ -120,7 +122,6 @@
         },
 
         updateAnswersOrder: function (context, order) {
-
             Vue.http.LPRequest({
                 type: 'sort-answer',
                 order: order
@@ -135,16 +136,13 @@
         },
 
         updateAnswerTitle: function (context, answer) {
-
             Vue.http.LPRequest({
                 type: 'update-answer-title',
                 answer: JSON.stringify(answer)
             })
-
         },
 
         updateCorrectAnswer: function (context, correct) {
-
             Vue.http.LPRequest({
                 type: 'change-correct',
                 correct: JSON.stringify(correct)
@@ -157,11 +155,9 @@
                     }
                 }
             )
-
         },
 
         deleteAnswer: function (context, payload) {
-
             Vue.http.LPRequest({
                 type: 'delete-answer',
                 answer_id: payload.id
@@ -174,13 +170,10 @@
                     } else {
                         // notice error
                     }
-
                 })
-
         },
 
         newAnswer: function (context) {
-
             Vue.http.LPRequest({
                 type: 'new-answer'
             }).then(
@@ -192,9 +185,7 @@
                     } else {
                         // notice error
                     }
-
                 })
-
         },
 
         newRequest: function (context) {

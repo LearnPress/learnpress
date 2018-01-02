@@ -11,7 +11,10 @@ learn_press_admin_view( 'quiz/question-meta' );
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-settings">
     <div class="question-settings" :class="question.open ? 'table-row' : 'hide-if-js'">
-        <lp-quiz-question-answers :question="question"></lp-quiz-question-answers>
+        <lp-quiz-question-answers v-if="question.type.key != 'fill_in_blank'"
+                                  :question="question"></lp-quiz-question-answers>
+        <lp-quiz-fib-question-answer v-if="question.type.key == 'fill_in_blank'"
+                                     :question="question"></lp-quiz-fib-question-answer>
         <lp-quiz-question-meta :question="question"></lp-quiz-question-meta>
     </div>
 </script>

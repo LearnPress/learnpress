@@ -699,7 +699,6 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 			$question->show_correct_answers( $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() ) ? 'yes' : false );
 			$question->disable_answers( $user_quiz->get_status() == 'completed' ? 'yes' : false );
 
-
 			$question->render( $answered );
 		}
 	}
@@ -1043,7 +1042,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 background: #FFF;
                 border-right: 1px solid #DDD;
                 overflow: auto;
-                z-index: 99999;
+                z-index: 9999;
             }
 
             body.course-item-popup #learn-press-content-item {
@@ -1851,10 +1850,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $lesson_id
-	 * @param int          $course_id
+	 * @param int $lesson_id
+	 * @param int $course_id
 	 * @param array|string $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -1914,10 +1913,10 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $quiz_id
-	 * @param int          $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param string|array $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -2090,7 +2089,7 @@ function learn_press_get_messages( $clear = false ) {
  *
  * @param string $message
  * @param string $type
- * @param array  $options
+ * @param array $options
  */
 function learn_press_add_message( $message, $type = 'success', $options = array() ) {
 	if ( ! is_array( $options ) ) {
@@ -2326,9 +2325,9 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name
- * @param array  $args          (default: array())
+ * @param array $args (default: array())
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return void
  */
@@ -2364,7 +2363,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
  * @uses learn_press_get_template();
  *
  * @param        $template_name
- * @param array  $args
+ * @param array $args
  * @param string $template_path
  * @param string $default_path
  *
@@ -2390,7 +2389,7 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
  *
  * @param string $template_name
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return string
  */

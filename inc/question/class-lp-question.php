@@ -56,6 +56,13 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		protected $_supports = array();
 
 		/**
+		 * support answer options
+		 *
+		 * @var bool
+		 */
+		protected $_answer_options = true;
+
+		/**
 		 * @var int
 		 */
 		protected static $_loaded = 0;
@@ -94,7 +101,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$this->set_id( absint( $the_question->ID ) );
 			}
 
-			if ( in_array( $this->get_type(), learn_press_get_build_in_question_types() ) ) {
+			if ( $this->_answer_options ) {
 				$this->add_support( 'answer_options' );
 				$this->add_support( 'auto_calculate_point' );
 				if ( $this->get_type() !== 'true_or_false' ) {
@@ -613,7 +620,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		}
 
 		/**
-		 * Prints the question in frontend user
+		 * Prints the question in frontend user.
 		 *
 		 * @param mixed $args
 		 *
