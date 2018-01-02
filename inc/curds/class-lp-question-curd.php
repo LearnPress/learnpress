@@ -309,20 +309,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$question_id = $question->get_id();
 			$old_type    = $question->get_type();
 
-			if ( $new_type == 'true_or_false' ) {
-				echo '<pre>';
-				var_dump($new_type);
-				echo '</pre>';
-				echo '<pre>';
-				var_dump($old_type);
-				echo '</pre>';
-				die( 'xxx' );
+			if ( $old_type == $new_type ) {
+				return false;
 			}
 
 			$answer_options = $question->get_data( 'answer_options' );
 
 			update_post_meta( $question_id, '_lp_type', $new_type );
-			$question->set_type($new_type);
+			$question->set_type( $new_type );
 
 			if ( $new_question = LP_Question::get_question( $question_id, array( 'force' => true ) ) ) {
 
