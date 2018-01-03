@@ -40,12 +40,8 @@ learn_press_admin_view( 'question/option' );
 
         Vue.component('lp-question-answer', {
             template: '#tmpl-lp-question-answer',
-            props: ['type'],
+            props: ['type', 'answers'],
             computed: {
-                // list answers
-                answers: function () {
-                    return $store.getters['answers'];
-                },
                 // check type radio answer type
                 radio: function () {
                     return this.type === 'true_or_false' || this.type === 'single_choice';

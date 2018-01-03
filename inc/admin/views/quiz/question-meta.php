@@ -53,7 +53,7 @@
                         </div>
                         <div class="rwmb-field rwmb-textarea-wrapper">
                             <div class="rwmb-label">
-                                <label for=""><?php _e( 'Question hint', 'learnpress' ); ?></label>
+                                <label for=""><?php _e( 'Question Hint', 'learnpress' ); ?></label>
                             </div>
                             <div class="rwml-input">
                                 <div>

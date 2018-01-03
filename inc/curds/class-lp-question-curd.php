@@ -37,7 +37,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|int|LP_Question|WP_Error
 		 */
 		public function create( &$args = array() ) {
-
 			$args = wp_parse_args( $args, array(
 					'quiz_id'        => 0,
 					'order'          => - 1,
@@ -71,14 +70,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 				// add default meta for new lesson
 				$default_meta = LP_Question::get_default_meta();
-
 				if ( is_array( $default_meta ) ) {
 					foreach ( $default_meta as $key => $value ) {
 						update_post_meta( $question_id, '_lp_' . $key, $value );
 					}
 				}
-
 				update_post_meta( $question_id, '_lp_type', $args['type'] );
+				// update user memory question types
 				get_user_meta( $user_id, '_learn_press_memorize_question_types', $args['type'] );
 
 				$question = LP_Question::get_question( $question_id, array( 'type' => $args['type'] ) );
@@ -155,7 +153,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return mixed|WP_Error
 		 */
 		public function duplicate( &$question_id, $args = array() ) {
-
 			if ( ! $question_id ) {
 				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
 			}
@@ -279,7 +276,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return null|object WP_Post
 		 */
 		public function get_quiz( $question_id ) {
-
 			global $wpdb;
 
 			$query = $wpdb->prepare( "
@@ -301,7 +297,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|int|LP_Question
 		 */
 		public function change_question_type( $question, $new_type ) {
-
 			if ( get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
 				return false;
 			}
@@ -323,16 +318,23 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$user_id = get_current_user_id();
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_type );
 
-				// except convert from true or false
-				if ( ! ( ( $old_type == 'true_or_false' ) && ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) ) {
-					if ( $new_type == 'true_or_false' ) {
-						$func = "_convert_answers_to_true_or_false";
-					} else {
-						$func = "_convert_answers_{$old_type}_to_{$new_type}";
-					}
-					if ( is_callable( array( $this, $func ) ) ) {
-						$answer_options = call_user_func_array( array( $this, $func ), array( $answer_options ) );
-					}
+				if ( $old_type == 'multi_choice' && $new_type == 'single_choice' ) {
+					// for convert to multi choice to single choice
+					$func = '_convert_answers_multi_choice_to_single_choice';
+				} else if ( $question->is_support( 'answer_options' ) && 'true_or_false' == $new_type ) {
+					// for all question supports answer options convert to true or false (except: Fill in blank, so on)
+					$func = '_convert_answers_to_true_or_false';
+				} else {
+					// for rest, clear answer data and create default
+					$func = '_convert_default_answers';
+				}
+
+				if ( is_callable( array( $this, $func ) ) ) {
+					$answer_options = call_user_func_array( array( $this, $func ), array(
+						$question,
+						$new_question,
+						$answer_options
+					) );
 				}
 
 				wp_cache_delete( 'answer-options-' . $question_id, 'lp-questions' );
@@ -354,7 +356,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|false|int
 		 */
 		public function update_answer_title( $question_id, $answer ) {
-
 			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
@@ -397,7 +398,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool | LP_Question
 		 */
 		public function change_correct_answer( $question, $correct ) {
-
 			if ( get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
 				return false;
 			}
@@ -465,7 +465,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$question->set_data( 'answer_options', $answers );
 
 			return $question;
-
 		}
 
 		/**
@@ -606,14 +605,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
+		 * @param $question
+		 * @param $new_question
 		 * @param $answers
 		 *
 		 * @return mixed
 		 */
-		protected function _convert_answers_to_true_or_false( $answers ) {
-
+		protected function _convert_answers_to_true_or_false( $question, $new_question, $answers ) {
 			if ( is_array( $answers ) ) {
-
 				// array answer ids
 				$answer_ids = array_keys( $answers );
 
@@ -656,15 +655,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
+		 * @param $question
+		 * @param $new_question
 		 * @param $answers
 		 *
 		 * @return array
 		 */
-		protected function _convert_answers_multi_choice_to_single_choice( $answers ) {
-
+		protected function _convert_answers_multi_choice_to_single_choice( $question, $new_question, $answers ) {
 			if ( is_array( $answers ) ) {
-
-
 				// array answer ids
 				$answer_ids = array_keys( $answers );
 
@@ -679,6 +677,44 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					// remove all correct and keep first option
 					$answers[ $answer_ids[0] ]['is_true'] = '';
 				}
+			}
+
+			return $answers;
+		}
+
+		/**
+		 * Convert default answers.
+		 *
+		 * @param $question LP_Question
+		 * @param $new_question LP_Question
+		 * @param $answers
+		 *
+		 * @return array
+		 */
+		protected function _convert_default_answers( $question, $new_question, $answers ) {
+			$question_id = $question->get_id();
+			// clear all exists answer
+			$this->clear( $question_id );
+			// set default answer
+			$answer_options = $new_question->get_default_answers();
+
+			if ( is_array( $answer_options ) ) {
+				// insert answers data in new question
+				foreach ( $answer_options as $index => $answer ) {
+					$insert        = array(
+						'question_id'  => $question_id,
+						'answer_data'  => serialize( array(
+								'text'    => stripslashes( $answer['text'] ),
+								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+								'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
+							)
+						),
+						'answer_order' => $index + 1
+					);
+					$new_answers[] = $this->add_answer( $new_question->get_type(), $insert );
+				};
+
+				return $new_answers;
 			}
 
 			return $answers;
@@ -764,11 +800,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Delete all question answers.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param $question_id
 		 *
-		 * @return bool
+		 * @return bool|WP_Error
 		 */
 		public function clear( $question_id ) {
 
@@ -778,8 +812,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			global $wpdb;
 			$wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
-
-			return true;
 		}
 
 		/**
