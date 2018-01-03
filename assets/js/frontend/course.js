@@ -429,7 +429,8 @@
                 return;
             }
 
-            $('#learn-press-content-item').appendTo($body);
+            $contentItem.appendTo($body);
+            $curriculum.appendTo($body);
 
             if ($('#wpadminbar').length) {
                 $body.addClass('wpadminbar');
