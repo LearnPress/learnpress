@@ -47,7 +47,7 @@ $instance = $this->instance;
 						<?php if ( !empty( $instance['show_enrolled_students'] ) ): ?>
 							<div class="course-student-number course-meta-field">
 								<?php
-								$students = $course->get_users_enrolled();
+								$students = $course->count_users_enrolled();
 								echo intval( $students ) > 1 ? sprintf( __( '%d students', 'learnpress' ), $students ) : sprintf( __( '%d student', 'learnpress' ), $students );
 								?>
 							</div>

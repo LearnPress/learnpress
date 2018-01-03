@@ -330,7 +330,7 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return mixed
 	 */
-	public function count_users_enrolled( $count_db = '' ) {
+	public function count_users_enrolled( $count_db = 'append' ) {
 
 		// Get students enrolled from settings of the course that owns course want to show
 		// So, if this value is set that means the result is fake ... :)
