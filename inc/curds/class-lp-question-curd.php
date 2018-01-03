@@ -324,6 +324,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				} else if ( $question->is_support( 'answer_options' ) && 'true_or_false' == $new_type ) {
 					// for all question supports answer options convert to true or false (except: Fill in blank, so on)
 					$func = '_convert_answers_to_true_or_false';
+				} else if ( ( $old_type == 'true_or_false' && $new_question->is_support( 'answer_options' ) ) || ( $old_type == 'single_choice' && $new_type == 'multi_choice' ) ) {
+					// for case not must to convert answer
+					$func = '';
 				} else {
 					// for rest, clear answer data and create default
 					$func = '_convert_default_answers';
@@ -337,7 +340,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					) );
 				}
 
-				wp_cache_delete( 'answer-options-' . $question_id, 'lp-questions' );
 				wp_cache_set( 'answer-options-' . $question_id, $answer_options, 'lp-questions' );
 				$new_question->set_data( 'answer_options', $answer_options );
 
