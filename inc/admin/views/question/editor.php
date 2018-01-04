@@ -10,7 +10,7 @@ learn_press_admin_view( 'question/answer' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-editor">
-    <div id="admin-editor-lp_question" class="lp-admin-editor learn-press-box-data">
+    <div id="admin-editor-lp_question" :class="['lp-admin-editor learn-press-box-data', type]">
         <lp-question-actions :type="type" @changeType="changeType"></lp-question-actions>
         <lp-question-answer v-if="type!='fill_in_blank'" :type="type" :answers="answers"></lp-question-answer>
         <lp-fib-question-answer v-if="type=='fill_in_blank'" :type="type" :answers="answers"></lp-fib-question-answer>

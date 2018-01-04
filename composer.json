@@ -14,7 +14,8 @@
     "install-standards": [
       "\"vendor/bin/phpcs\" --config-set installed_paths ../../wp-coding-standards/wpcs",
       "rm -rf vendor/squizlabs/php_codesniffer/CodeSniffer/Standards/PHPCompatibility",
-      "cp -r vendor/wimg/php-compatibility/PHPCompatibility vendor/squizlabs/php_codesniffer/CodeSniffer/Standards"
+      "cp -r vendor/wimg/php-compatibility/PHPCompatibility vendor/squizlabs/php_codesniffer/CodeSniffer/Standards",
+      "rm -rf vendor/wimg/php-compatibility/PHPCompatibility"
     ],
     "post-install-cmd": "@install-standards",
     "post-update-cmd": "@install-standards"
