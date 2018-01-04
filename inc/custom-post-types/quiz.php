@@ -146,8 +146,9 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'selected_items' => __( 'Selected items', 'learnpress' ),
 				),
 				'listQuestions' => array(
-					'questions'        => $quiz->quiz_editor_get_questions(),
-					'hidden_questions' => ! empty( $hidden_questions ) ? $hidden_questions : array()
+					'questions'         => $quiz->quiz_editor_get_questions(),
+					'hidden_questions'  => ! empty( $hidden_questions ) ? $hidden_questions : array(),
+					'externalComponent' => apply_filters( 'learn-press/admin/external-js-component', array() )
 				)
 			) );
 		}

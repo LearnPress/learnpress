@@ -11,9 +11,14 @@ learn_press_admin_view( 'quiz/question-meta' );
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-settings">
     <div class="question-settings" :class="question.open ? 'table-row' : 'hide-if-js'">
-        <lp-quiz-fib-question-answer v-if="question.type.key == 'fill_in_blank'"
-                                     :question="question"></lp-quiz-fib-question-answer>
-        <lp-quiz-question-answers v-else :question="question"></lp-quiz-question-answers>
+
+        <template v-if="isExternal">
+			<?php do_action( 'learn-press/quiz-editor/question-js-component' ); ?>
+        </template>
+        <template v-else>
+            <lp-quiz-question-answers :question="question"></lp-quiz-question-answers>
+        </template>
+
         <lp-quiz-question-meta :question="question"></lp-quiz-question-meta>
     </div>
 </script>
@@ -23,7 +28,13 @@ learn_press_admin_view( 'quiz/question-meta' );
     (function (Vue, $store) {
         Vue.component('lp-quiz-question-settings', {
             template: '#tmpl-lp-quiz-question-settings',
-            props: ['question', 'index']
+            props: ['question', 'index'],
+            computed: {
+                // check external vue component
+                isExternal: function () {
+                    return $store.getters['lqs/externalComponent'].indexOf(this.question.type.key) !== -1;
+                }
+            }
         })
     })(Vue, LP_Quiz_Store)
 </script>
