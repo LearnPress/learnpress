@@ -33,8 +33,20 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$this->add_map_method( 'before_delete', 'before_delete_lesson' );
 			// hide View Lesson link if not assigned to course
 			add_action( 'admin_footer', array( $this, 'hide_view_lesson_link' ) );
-
+			add_filter( 'views_edit-' . LP_LESSON_CPT, array( $this, 'views_pages' ), 10 );
 			parent::__construct( $post_type );
+		}
+
+		public function views_pages( $views ) {
+			$text = sprintf( __( 'Unassigned (%d)', 'learnpress' ), 0 );
+
+			$views['unassigned'] = sprintf(
+				'<a href="%s">%s</a>',
+				admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&unassigned=yes' ),
+				$text
+			);
+
+			return $views;
 		}
 
 		/**

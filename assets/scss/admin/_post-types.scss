@@ -78,6 +78,7 @@
             box-shadow: none;
             margin: 0;
             text-align: center;
+            background: transparent;
             @include transform(rotate(-180deg));
             &:before,
             &:checked:before {
