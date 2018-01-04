@@ -63,7 +63,7 @@ class LP_Schedules {
 	public function queue_items( $template ) {
 
 		$this->background_schedule_items->push_to_queue(
-			array( 'xxxx' => rand() )
+			array( 'auto-complete-item' => rand() )
 		);
 
 		return $template;
