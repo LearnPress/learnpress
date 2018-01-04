@@ -13,6 +13,7 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field {
 	 * Normalize parameters for field.
 	 *
 	 * @param array $field Field parameters.
+	 *
 	 * @return array
 	 */
 	public static function normalize( $field ) {
@@ -77,15 +78,16 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field {
 	 *
 	 * @see "save" method for better understanding
 	 *
-	 * @param int   $post_id Post ID.
-	 * @param bool  $saved   Is the meta box saved.
-	 * @param array $field   Field parameters.
+	 * @param int $post_id Post ID.
+	 * @param bool $saved Is the meta box saved.
+	 * @param array $field Field parameters.
 	 *
 	 * @return mixed
 	 */
 	public static function meta( $post_id, $saved, $field ) {
 		if ( isset( $field['parent'] ) && $field['parent'] ) {
 			$post = get_post( $post_id );
+
 			return $post->post_parent;
 		}
 
@@ -96,17 +98,19 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field {
 	 * Get options for walker.
 	 *
 	 * @param array $field Field parameters.
+	 *
 	 * @return array
 	 */
 	public static function get_options( $field ) {
 		$query = new WP_Query( $field['query_args'] );
+
 		return $query->have_posts() ? $query->posts : array();
 	}
 
 	/**
 	 * Get option label.
 	 *
-	 * @param array  $field Field parameters.
+	 * @param array $field Field parameters.
 	 * @param string $value Option value.
 	 *
 	 * @return string
@@ -121,5 +125,23 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field {
 			) ),
 			get_the_title( $value )
 		);
+	}
+
+	/**
+	 * Display field description.
+	 *
+	 * @param array $field
+	 *
+	 * @return string
+	 */
+	protected static function input_description( $field ) {
+
+		$id = $field['id'] ? ' id="' . esc_attr( $field['id'] ) . '-description"' : '';
+
+		if ( ! sizeof( self::get_options( $field ) ) ) {
+			return $field['desc_none'] ? "<p{$id} class='description'>{$field['desc_none']}</p>" : '';
+		}
+
+		return $field['desc'] ? "<p{$id} class='description'>{$field['desc']}</p>" : '';
 	}
 }
