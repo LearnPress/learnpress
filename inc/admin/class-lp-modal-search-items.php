@@ -227,14 +227,17 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 			ob_start();
 			if ( $items = $this->get_items() ) {
 				foreach ( $items as $id => $item ) {
+					$type        = get_post_type( $item );
+					$type_object = get_post_type_object( $type );
+					$type_name   = $type_object ? $type_object->labels->singular_name : '';
 					printf( '
                     <li class="%s" data-id="%2$d" data-type="%4$s" data-text="%3$s">
                         <label>
                             <input type="checkbox" value="%2$d" name="selectedItems[]">
-                            <span class="lp-item-text">%3$s</span>
+                            <span class="lp-item-text">%3$s (%5$s - #%6$s)</span>
                         </label>
                     </li>
-                    ', 'lp-result-item', $item, esc_attr( get_the_title( $item ) ), get_post_type( $item ) );
+                    ', 'lp-result-item', $item, esc_attr( get_the_title( $item ) ), $type, $type_name, $item );
 				}
 			} else {
 
@@ -259,7 +262,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		}
 
 		/**
-		 * @param array $args
+		 * @param array  $args
 		 * @param string $context
 		 * @param string $context_id
 		 *
@@ -282,7 +285,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null $context_id
+		 * @param null   $context_id
 		 *
 		 * @return array
 		 */

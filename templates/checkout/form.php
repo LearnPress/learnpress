@@ -85,7 +85,7 @@ do_action( 'learn-press/before-checkout-form' );
 
 		<?php if ( ! is_user_logged_in() ) { ?>
             <p class="button-cancel-guest-checkout">
-                <button type="button" class="lp-button"
+                <button type="button" class="lp-button lp-button"
                         id="learn-press-button-cancel-guest-checkout"><?php _e( 'Back', 'learnpress' ); ?></label></button>
             </p>
 		<?php } ?>

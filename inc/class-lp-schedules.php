@@ -270,7 +270,6 @@ class LP_Schedules {
 	}
 
 	public function user_course_expired( $user_id, $course_id ) {
-		LP_Debug::instance()->add( sprintf( 'User %d has finish course %s', $user_id, get_the_title( $course_id ) ) );
 	}
 }
 

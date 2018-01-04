@@ -33,7 +33,7 @@ $button_text = $hinted ? __( 'Hinted', 'learnpress' ) : __( 'Hint', 'learnpress'
 
 		<?php } else { ?>
 
-            <button class="button-hint-question"
+            <button class="lp-button button-hint-question"
                     type="submit"
                     data-counter="<?php echo $user->can_hint_answer( $quiz->get_id() ); ?>"
 				<?php disabled( $hinted ); ?>><?php echo $button_text; ?></button>

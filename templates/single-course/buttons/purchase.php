@@ -28,7 +28,7 @@ if ( ! isset( $course ) ) {
         <input type="hidden" name="purchase-course-nonce"
                value="<?php echo esc_attr( LP_Nonce_Helper::create_course( 'purchase' ) ); ?>"/>
 
-        <button class="button button-purchase-course">
+        <button class="lp-button button button-purchase-course">
 			<?php echo esc_html( apply_filters( 'learn-press/purchase-course-button-text', __( 'Buy this course', 'learnpress' ) ) ); ?>
         </button>
 

@@ -759,11 +759,11 @@ function learn_press_number_to_string_time( $number ) {
 				break;
 			case 'day':
 				$hour = $matches[1] * 24;
-				$str    = sprintf( '%s day %s hour', absint( $hour / 24 ), $hour % 24 );
+				$str  = sprintf( '%s day %s hour', absint( $hour / 24 ), $hour % 24 );
 				break;
 			case 'week':
 				$day = $matches[1] * 7;
-				$str    = sprintf( '%s week %s day', absint( $day / 7 ), $day % 7 );
+				$str = sprintf( '%s week %s day', absint( $day / 7 ), $day % 7 );
 				break;
 		}
 	}
@@ -2723,3 +2723,16 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
 		return $course;
 	}
 }
+
+
+add_filter( 'query', function ( $q ) {
+	if ( preg_match( '!learnpress_user_items!', $q ) && preg_match( '!UPDATE!', $q ) ) {
+
+		LP_Debug::instance()->add( $q );
+		LP_Debug::instance()->add( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
+		LP_Debug::instance()->add( $_REQUEST );
+		LP_Debug::instance()->add( "\n\n======================================\n\n" );
+	}
+
+	return $q;
+} );

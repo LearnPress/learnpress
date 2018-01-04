@@ -22,5 +22,5 @@ $order_key = isset( $order ) && is_a( $order, 'LP_Order' ) ? $order->get_order_k
            placeholder="<?php _e( 'Order key', 'learnpress' ); ?>">
     <input type="hidden" name="recover-order-nonce" value="<?php echo wp_create_nonce( 'recover-order' ); ?>">
     <input type="hidden" name="lp-ajax" value="recover-order">
-    <button type="button" class="button-recover-order" disabled="disabled"><?php _e( 'Recover', 'learnpress' ); ?></button>
+    <button type="button" class="lp-button button-recover-order" disabled="disabled"><?php _e( 'Recover', 'learnpress' ); ?></button>
 </div>

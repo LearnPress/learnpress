@@ -212,8 +212,6 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				$args = func_get_args();
 				self::instance();
 				do_action_ref_array( current_filter() . '/notification', $args );
-
-				LP_Debug::instance()->add( current_filter() . '/notification' );
 			}
 			catch ( Exception $e ) {
 			}

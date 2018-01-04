@@ -156,27 +156,20 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	 * the process is not already running.
 	 */
 	public function maybe_handle() {
-
 		// Don't lock up other requests while processing
 		session_write_close();
 
 		if ( $this->is_process_running() ) {
-			LP_Debug::instance()->add('xxxxxxxxxxxxxxxxxxxxxxxx');
-
 			// Background process already running.
 			wp_die();
 		}
 
 		if ( $this->is_queue_empty() ) {
-			LP_Debug::instance()->add('yyyyyyyyyyyyyyyyyyyyyyyy');
-
 			// No data to process.
 			wp_die();
 		}
 
-		////check_ajax_referer( $this->identifier, 'nonce' );
-
-		LP_Debug::instance()->add('zzzzzzzzzzzzzzz');
+		check_ajax_referer( $this->identifier, 'nonce' );
 
 		$this->handle();
 
@@ -233,8 +226,6 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	 * defined in the time_exceeded() method.
 	 */
 	protected function lock_process() {
-
-		LP_Debug::instance()->add('lock lock lock lock lock');
 		$this->start_time = time(); // Set start time of current process.
 
 		$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : 60; // 1 minute

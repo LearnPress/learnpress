@@ -109,7 +109,7 @@ $count_gateways               = $available_gateways ? sizeof( $available_gateway
 
 			<?php echo apply_filters( 'learn_press_order_button_html',
 				sprintf(
-					'<button type="submit" class="button alt" name="learn_press_checkout_place_order" id="learn-press-checkout-place-order" data-processing-text="%s" data-value="%s">%s</button>',
+					'<button type="submit" class="lp-button button alt" name="learn_press_checkout_place_order" id="learn-press-checkout-place-order" data-processing-text="%s" data-value="%s">%s</button>',
 					esc_attr( $order_button_text_processing ),
 					esc_attr( $order_button_text ),
 					esc_attr( $order_button_text )

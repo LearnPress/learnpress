@@ -99,7 +99,7 @@ $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_c
 			<?php do_action( 'learn_press_after_cart_contents' ); ?>
             </tbody>
         </table>
-        <button class="checkout-button"><?php _e( 'Checkout', 'learnpress' ); ?></button>
+        <button class="lp-button checkout-button"><?php _e( 'Checkout', 'learnpress' ); ?></button>
 		<?php do_action( 'learn_press_after_cart_table' ); ?>
     </form>
 

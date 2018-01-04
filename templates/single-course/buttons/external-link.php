@@ -20,6 +20,6 @@ $course = LP_Global::course();
 <form name="course-external-link" class="course-external-link form-button lp-form" method="get"
       action="<?php echo esc_url( $course->get_external_link() ); ?>">
 
-    <button type="submit" class="button"><?php echo esc_html( $course->get_external_link_text() ); ?></button>
+    <button type="submit" class="lp-button button"><?php echo esc_html( $course->get_external_link_text() ); ?></button>
 
 </form>
