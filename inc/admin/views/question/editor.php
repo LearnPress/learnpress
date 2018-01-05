@@ -12,8 +12,14 @@ learn_press_admin_view( 'question/answer' );
 <script type="text/x-template" id="tmpl-lp-question-editor">
     <div id="admin-editor-lp_question" :class="['lp-admin-editor learn-press-box-data', type]">
         <lp-question-actions :type="type" @changeType="changeType"></lp-question-actions>
-        <lp-question-answer v-if="type!='fill_in_blank'" :type="type" :answers="answers"></lp-question-answer>
-        <lp-fib-question-answer v-if="type=='fill_in_blank'" :type="type" :answers="answers"></lp-fib-question-answer>
+
+        <template v-if="isExternal">
+			<?php do_action( 'learn-press/question-editor/question-js-component' ); ?>
+        </template>
+        <template v-else>
+            <lp-question-answer :type="type" :answers="answers"></lp-question-answer>
+        </template>
+
     </div>
 </script>
 
@@ -32,6 +38,10 @@ learn_press_admin_view( 'question/answer' );
                 // question type key
                 type: function () {
                     return $store.getters['type']['key'];
+                },
+                // check external vue component
+                isExternal: function () {
+                    return $store.getters['externalComponent'].indexOf(this.type) !== -1;
                 },
                 // list answers
                 answers: function () {

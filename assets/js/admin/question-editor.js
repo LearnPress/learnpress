@@ -67,6 +67,9 @@
         nonce: function (state) {
             return state.nonce;
         },
+        externalComponent: function (state) {
+            return state.externalComponent || [];
+        },
         state: function (state) {
             return state;
         }

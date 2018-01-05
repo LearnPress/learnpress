@@ -241,6 +241,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         questionsOrder: function (state) {
             return state.order || [];
         },
+        externalComponent: function (state) {
+            return state.externalComponent || [];
+        },
         hiddenQuestions: function (state) {
             return state.questions
                 .filter(function (question) {
