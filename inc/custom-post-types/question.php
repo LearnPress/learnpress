@@ -37,9 +37,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type, $args = '' ) {
 			add_action( 'admin_head', array( $this, 'init' ) );
-
 			add_action( 'edit_form_after_editor', array( __CLASS__, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
+
+			add_filter( 'views_edit-' . LP_QUESTION_CPT, array( $this, 'views_pages' ), 10 );
+			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			$this->add_map_method( 'before_delete', 'before_delete_question' )
 			     ->add_map_method( 'save', 'save_question' );
@@ -47,6 +49,34 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			parent::__construct( $post_type, $args );
 		}
 
+		/**
+		 * Add filters to lesson view.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $views
+		 *
+		 * @return mixed
+		 */
+		public function views_pages( $views ) {
+			$unassigned_items = learn_press_get_unassigned_questions();
+			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
+			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
+				$views['unassigned'] = sprintf(
+					'<a href="%s" class="current">%s</a>',
+					admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
+					$text
+				);
+			} else {
+				$views['unassigned'] = sprintf(
+					'<a href="%s">%s</a>',
+					admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&unassigned=yes' ),
+					$text
+				);
+			}
+
+			return $views;
+		}
 
 		/**
 		 * JS template for admin question editor.
@@ -375,8 +405,21 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			global $wpdb;
+
 			if ( $quiz_id = $this->_filter_quiz() ) {
 				$where .= $wpdb->prepare( " AND (q.ID = %d)", $quiz_id );
+			}
+
+			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
+				global $wpdb;
+				$where .= $wpdb->prepare( "
+                    AND {$wpdb->posts}.ID NOT IN(
+                        SELECT qq.question_id 
+                        FROM {$wpdb->learnpress_quiz_questions} qq
+                        INNER JOIN wp_posts p ON p.ID = qq.question_id
+                        WHERE p.post_type = %s
+                    )
+                ", LP_QUESTION_CPT );
 			}
 
 			return $where;

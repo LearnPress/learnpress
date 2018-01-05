@@ -2724,6 +2724,65 @@ if ( ! function_exists( 'learn_press_get_lp_course' ) ) {
 	}
 }
 
+/**
+ * Get all items are unassigned to any course.
+ *
+ * @since 3.0.0
+ *
+ * @param string|array $type - Optional. Types of items to get, default is all.
+ *
+ * @return array
+ */
+function learn_press_get_unassigned_items( $type = '' ) {
+	global $wpdb;
+
+	if ( ! $type ) {
+		$type = learn_press_course_get_support_item_types();
+		$type = array_keys( $type );
+	}
+	settype( $type, 'array' );
+	$format = array_fill( 0, sizeof( $type ), '%s' );
+
+	$query = $wpdb->prepare( "
+        SELECT p.ID
+        FROM {$wpdb->posts} p
+        WHERE p.post_type IN(" . join( ',', $format ) . ")
+        AND p.ID NOT IN(
+            SELECT si.item_id 
+            FROM {$wpdb->learnpress_section_items} si
+            INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
+            WHERE p.post_type IN(" . join( ',', $format ) . ")
+        )
+    ", array_merge( $type, $type ) );
+
+	return $wpdb->get_col( $query );
+}
+
+/**
+ * Get all questions are unassigned to any quiz.
+ *
+ * @since 3.0.0
+ *
+ * @return array
+ */
+function learn_press_get_unassigned_questions() {
+	global $wpdb;
+
+    $query = $wpdb->prepare( "
+        SELECT p.ID
+        FROM {$wpdb->posts} p
+        WHERE p.post_type = %s
+        AND p.ID NOT IN(
+            SELECT qq.question_id 
+            FROM {$wpdb->learnpress_quiz_questions} qq
+            INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
+            WHERE p.post_type = %s
+        )
+    ", LP_QUESTION_CPT, LP_QUESTION_CPT );
+
+	return $wpdb->get_col( $query );
+}
+
 
 add_filter( 'query', function ( $q ) {
 	if ( preg_match( '!learnpress_user_items!', $q ) && preg_match( '!UPDATE!', $q ) ) {

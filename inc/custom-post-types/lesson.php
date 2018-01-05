@@ -34,17 +34,59 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			// hide View Lesson link if not assigned to course
 			add_action( 'admin_footer', array( $this, 'hide_view_lesson_link' ) );
 			add_filter( 'views_edit-' . LP_LESSON_CPT, array( $this, 'views_pages' ), 10 );
+			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
+
 			parent::__construct( $post_type );
 		}
 
-		public function views_pages( $views ) {
-			$text = sprintf( __( 'Unassigned (%d)', 'learnpress' ), 0 );
+		/**
+		 * Filter items unassigned.
+		 *
+		 * @param string $where
+		 *
+		 * @return string
+		 */
+		public function posts_where_paged( $where ) {
+			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
+				global $wpdb;
+				$where .= $wpdb->prepare( "
+                    AND {$wpdb->posts}.ID NOT IN(
+                        SELECT si.item_id 
+                        FROM {$wpdb->learnpress_section_items} si
+                        INNER JOIN wp_posts p ON p.ID = si.item_id
+                        WHERE p.post_type = %s
+                    )
+                ", LP_LESSON_CPT );
+			}
 
-			$views['unassigned'] = sprintf(
-				'<a href="%s">%s</a>',
-				admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&unassigned=yes' ),
-				$text
-			);
+			return $where;
+		}
+
+		/**
+		 * Add filters to lesson view.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $views
+		 *
+		 * @return mixed
+		 */
+		public function views_pages( $views ) {
+			$unassigned_items = learn_press_get_unassigned_items( LP_LESSON_CPT );
+			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
+			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
+				$views['unassigned'] = sprintf(
+					'<a href="%s" class="current">%s</a>',
+					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&unassigned=yes' ),
+					$text
+				);
+			} else {
+				$views['unassigned'] = sprintf(
+					'<a href="%s">%s</a>',
+					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&unassigned=yes' ),
+					$text
+				);
+			}
 
 			return $views;
 		}

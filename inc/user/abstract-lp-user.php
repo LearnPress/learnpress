@@ -468,7 +468,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				// If user has already finished the course
 				if ( $this->has_finished_course( $course_id ) ) {
-					throw new Exception( sprintf( __( '%s::%s - User has already finished course of this quiz.', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_COURSE_IS_FINISHED );
+					throw new Exception( sprintf( __( 'You can not redo a quiz in a finished course.', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_COURSE_IS_FINISHED );
 
 				}
 
