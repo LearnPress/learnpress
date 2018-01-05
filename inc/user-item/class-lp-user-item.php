@@ -406,7 +406,12 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	public function get_exceeded_time( $format = '' ) {
 		$start_time = $this->get_start_time()->getTimestamp();
-		$duration   = $this->get_course()->get_duration();
+
+		if ( $course = $this->get_course() ) {
+			$duration = $course->get_duration();
+		} else {
+			$duration = 100 * DAY_IN_SECONDS * 360;
+		}
 
 		return $format ? date( $format, $start_time + $duration ) : $start_time + $duration;
 	}

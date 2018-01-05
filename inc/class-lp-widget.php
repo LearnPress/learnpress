@@ -180,17 +180,17 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			$this->args     = $args;
 			$this->instance = $this->sanitize_instance( $instance );
 
-			if ( ! apply_filters( 'learn_press_widget_display_content', true, $this ) ) {
-				//return;
+			if ( ! apply_filters( 'learn-press/widget/display', true, $this ) ) {
+				return;
 			}
 
-			if ( ! apply_filters( 'learn_press_widget_display_content-' . $this->id_base, true, $this ) ) {
-				//return;
+			if ( ! apply_filters( 'learn-press/widget/display-' . $this->id_base, true, $this ) ) {
+				return;
 			}
+
 			$this->before_widget();
 			$this->show();
 			$this->after_widget();
-
 		}
 
 		public function before_widget() {
@@ -222,11 +222,13 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 		 */
 		public function form( $instance ) {
 			$this->instance = $this->sanitize_instance( $instance );
+
 			if ( ! $this->options ) {
-				return;
+				return false;
 			}
 
 			global $post;
+
 			add_filter( 'get_post_metadata', array( $this, 'field_data' ), 10, 4 );
 			add_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
 			//
@@ -234,6 +236,7 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			$post = (object) array( 'ID' => 1, 'post_type' => 'lp-post-widget' );
 
 			setup_postdata( $post );
+
 			if ( ! class_exists( 'RW_Meta_Box' ) ) {
 				require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
 			}
@@ -258,6 +261,8 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			wp_reset_postdata();
 			remove_filter( 'get_post_metadata', array( $this, 'field_data' ) );
 			remove_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10 );
+
+			return true;
 		}
 
 		/**
@@ -393,6 +398,26 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			$control_options = ! empty( $args['control_options'] ) ? $args['control_options'] : array();
 
 			return array( $id_base, $name, $widget_options, $control_options );
+		}
+
+		/**
+		 * @param string $instance
+		 * @param string $more
+		 *
+		 * @return array|mixed
+		 */
+		public function get_class( $instance = '', $more = '' ) {
+			$classes = array( 'lp-widget' );
+			if ( is_array( $instance ) && ! empty( $instance['css_class'] ) ) {
+				$classes = $instance['css_class'];
+			}
+			$classes = LP_Helper::merge_class( $classes, $more );
+
+			if ( $classes ) {
+				echo ' class="' . join( ',', $classes ) . '"';
+			}
+
+			return $classes;
 		}
 
 		private function sanitize_instance( $instance ) {

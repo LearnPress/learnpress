@@ -258,7 +258,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-schedules.php';
 
 			// widgets
-			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses' ) );
+			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses', 'course-progress' ) );
 
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
 		}
@@ -268,6 +268,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function init_hooks() {
 			$plugin_basename = $this->plugin_basename();
+
+			if ( 0 !== strcmp( $plugin_basename, 'learnpress/learnpress.php' ) ) {
+				add_action( 'admin_notices', array( $this, 'error' ) );
+			}
 
 			add_action( 'activate_' . $plugin_basename, array( $this, 'on_activate' ) );
 			add_action( 'deactivate_' . $plugin_basename, array( $this, 'on_deactivate' ) );
@@ -279,6 +283,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), 0 );
 			add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 999 );
+		}
+
+		public function error() {
+			?>
+            <div class="error">
+                <p><?php printf( __( 'LearnPress plugin basename must be equal with <strong>learnpress/learnpress.php</strong> (case sensitive) to ensure all functions work correct! (currently is <strong>%s</strong>)', 'learnpress' ), $this->plugin_basename() ); ?></p>
+            </div>
+			<?php
 		}
 
 		/**

@@ -1230,20 +1230,20 @@ function learn_press_seconds_to_weeks( $secs ) {
 	// format result
 	$result = '';
 	if ( $weeks ) {
-		$result .= $weeks . ' ' . __( 'week(s)', 'learnpress' ) . ' ';
+		$result .= $weeks . ' ' . _n( 'week', 'weeks', $weeks, 'learnpress' ) . ' ';
 	}
 
 	if ( $days ) {
-		$result .= $days . ' ' . __( 'day(s)', 'learnpress' ) . ' ';
+		$result .= $days . ' ' . _n( 'day', 'days', $days, 'learnpress' ) . ' ';
 	}
 
 	if ( ! $weeks ) {
 		if ( $hours ) {
-			$result .= $hours . ' ' . __( 'hour(s)', 'learnpress' ) . ' ';
+			$result .= $hours . ' ' . _n( 'hour', 'hours', $hours, 'learnpress' ) . ' ';
 
 		}
 		if ( $mins ) {
-			$result .= $mins . ' ' . __( 'min(s)', 'learnpress' ) . ' ';
+			$result .= $mins . ' ' . _n( 'minute', 'minutes', $mins, 'learnpress' ) . ' ';
 		}
 	}
 	$result = rtrim( $result );
@@ -2768,7 +2768,7 @@ function learn_press_get_unassigned_items( $type = '' ) {
 function learn_press_get_unassigned_questions() {
 	global $wpdb;
 
-    $query = $wpdb->prepare( "
+	$query = $wpdb->prepare( "
         SELECT p.ID
         FROM {$wpdb->posts} p
         WHERE p.post_type = %s
@@ -2782,16 +2782,3 @@ function learn_press_get_unassigned_questions() {
 
 	return $wpdb->get_col( $query );
 }
-
-
-add_filter( 'query', function ( $q ) {
-	if ( preg_match( '!learnpress_user_items!', $q ) && preg_match( '!UPDATE!', $q ) ) {
-
-		LP_Debug::instance()->add( $q );
-		LP_Debug::instance()->add( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
-		LP_Debug::instance()->add( $_REQUEST );
-		LP_Debug::instance()->add( "\n\n======================================\n\n" );
-	}
-
-	return $q;
-} );

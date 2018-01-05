@@ -668,6 +668,14 @@ body {
     }
 }
 
+.course-remaining-time{
+    .lp-label{
+        &.label-enrolled{
+            font-size: inherit;
+        }
+    }
+}
+
 .learn-press-course-results-progress {
     margin-right: -4%;
     .items-progress,

@@ -1528,6 +1528,26 @@ if ( ! function_exists( 'learn_press_course_buttons' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_course_remaining_time' ) ) {
+
+	function learn_press_course_remaining_time() {
+
+		if ( ! $course = LP_Global::course() ) {
+			return;
+		}
+
+		if ( ! $user = LP_Global::user() ) {
+			return;
+		}
+
+		if ( false === ( $remain = $user->get_course_remaining_time( $course->get_id() ) ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'single-course/remaining-time.php', array( 'remaining_time' => $remain ) );
+	}
+}
+
 if ( ! function_exists( 'learn_press_course_thumbnail' ) ) {
 	/**
 	 * Display Course Thumbnail
@@ -2925,9 +2945,9 @@ function learn_press_is_content_item_only() {
 	return ! empty( $_REQUEST['content-item-only'] );
 }
 
-function learn_press_label_html( $label ) {
+function learn_press_label_html( $label, $type = '' ) {
 	?>
-    <span class="lp-label label-<?php echo esc_attr( $label ); ?>">
+    <span class="lp-label label-<?php echo esc_attr( $type ? $type : $label ); ?>">
          <?php echo $label; ?>
     </span>
 	<?php

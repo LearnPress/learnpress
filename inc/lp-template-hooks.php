@@ -142,7 +142,6 @@ add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructo
 
 /**
  * @see learn_press_course_meta_start_wrapper
- * @see learn_press_course_status
  * @see learn_press_course_instructor
  * @see learn_press_course_students
  * @see learn_press_course_meta_end_wrapper
@@ -151,12 +150,13 @@ add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructo
  * @see learn_press_course_progress
  * @see learn_press_course_tabs
  * @see learn_press_course_buttons
+ * @see learn_press_course_remaining_time
  */
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_meta_start_wrapper', 10 );
-add_action( 'learn-press/content-learning-summary', 'learn_press_course_status', 15 );
-add_action( 'learn-press/content-learning-summary', 'learn_press_course_students', 20 );
-add_action( 'learn-press/content-learning-summary', 'learn_press_course_meta_end_wrapper', 25 );
-add_action( 'learn-press/content-learning-summary', 'learn_press_course_progress', 30 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_students', 15 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_meta_end_wrapper', 20 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_progress', 25 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_remaining_time', 30 );
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_tabs', 35 );
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_buttons', 40 );
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_instructor', 45 );

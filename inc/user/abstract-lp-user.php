@@ -148,10 +148,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * Get data for a course user has enrolled.
 		 *
 		 * @param int|LP_Abstract_Course $course_id
+		 * @param bool                   $check_exists
 		 *
 		 * @return LP_User_Item_Course|LP_User_Item_Quiz|bool
 		 */
-		public function get_course_data( $course_id ) {
+		public function get_course_data( $course_id, $check_exists = false ) {
 
 			static $course_data = array();
 
@@ -177,11 +178,19 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
+			$data = false;
+
 			if ( ! empty( $course_data[ $this->get_id() ][ $course_id ] ) ) {
-				return $course_data[ $this->get_id() ][ $course_id ];
+				$data = $course_data[ $this->get_id() ][ $course_id ];
 			}
 
-			return false;
+			if ( $data ) {
+				if ( ! $data->get_item_id() && $check_exists ) {
+					return false;
+				}
+			}
+
+			return $data;
 		}
 
 		/**
@@ -2475,7 +2484,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * @param $course_id
+		 * Get the remaining time of a course for the user.
+		 *
+		 * @param int $course_id
 		 *
 		 * @return bool|int|string
 		 */
@@ -2483,20 +2494,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$course = learn_press_get_course( $course_id );
 			$remain = false;
 			if ( $course->get_id() ) {
-				$course_duration = $course->duration * 7 * 24 * 3600;
-				$course_info     = $this->get_course_info( $course_id );
-				if ( $course_info ) {
-					$now        = time();
-					$start_time = intval( strtotime( $course_info['start'] ) );
-
-					if ( $start_time + $course_duration > $now ) {
-						$remain = $start_time + $course_duration - $now;
-						$remain = learn_press_seconds_to_weeks( $remain );
-					}
+				if ( $course_data = $this->get_course_data( $course_id, true ) ) {
+					$remain = $course_data->is_exceeded();
 				}
 			}
 
-			return $remain;
+			return $remain !== false ? learn_press_seconds_to_weeks( $remain ) : false;
 		}
 
 		/**

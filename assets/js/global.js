@@ -1060,6 +1060,105 @@ if (typeof window.LP === 'undefined') {
         });
     };
 
+    function QuickTip(el, options) {
+        var $el = $(el),
+            $tip = $('<div class="learn-press-tip-floating">' + $el.html() + '</div>'),
+            t = null,
+            closeInterval = 1000;
+
+        options = $.extend({
+            event: 'hover',
+            autoClose: true,
+            single: true
+        }, options, $el.data());
+
+        if (options.autoClose === false) {
+            $tip.append('<a class="close"></a>');
+            $tip.on('click', '.close', function () {
+                close();
+            })
+        }
+
+        function show() {
+            if (t) {
+                clearTimeout(t);
+                return;
+            }
+
+            if (options.single) {
+                $('.learn-press-tip').not($el).QuickTip('close');
+            }
+
+            $tip.appendTo(document.body);
+            var pos = $el.offset();
+
+            $tip.css({
+                top: pos.top - $tip.outerHeight() - 8,
+                left: pos.left - $tip.outerWidth() / 2 + 8
+            });
+        }
+
+        function hide() {
+            t && clearTimeout(t);
+            t = setTimeout(function () {
+                $tip.detach();
+                t = null;
+            }, closeInterval);
+        }
+
+        function close() {
+            closeInterval = 0;
+            hide();
+            closeInterval = 1000;
+        }
+
+        function open() {
+            show();
+        }
+
+        $el.html('');
+        if (options.event === 'click') {
+            $el.on('click', function (e) {
+                e.stopPropagation();
+                show();
+            })
+        }
+        $el.hover(
+            function (e) {
+                e.stopPropagation();
+                if (options.event !== 'click') {
+                    show();
+                }
+            },
+            function (e) {
+                e.stopPropagation();
+                if (options.autoClose) {
+                    hide();
+                }
+            }
+        ).addClass('ready');
+
+        return {
+            close: close,
+            open: open
+        }
+    }
+
+    $.fn.QuickTip = function (options) {
+        return $.each(this, function () {
+            var $tip = $(this).data('quick-tip');
+
+            if (!$tip) {
+                $tip = new QuickTip(this, options);
+                $(this).data('quick-tip', $tip);
+            }
+
+            if ($.type(options) === 'string') {
+                $tip[options] && $tip[options].apply($tip);
+            }
+        })
+    }
+
     function __initSubtabs() {
         $('.learn-press-subtabs').each(function () {
             var $tabContainer = $(this),
