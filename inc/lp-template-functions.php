@@ -1042,12 +1042,12 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 background: #FFF;
                 border-right: 1px solid #DDD;
                 overflow: auto;
-                z-index: 9999;
+                z-index: 99999;
             }
 
             body.course-item-popup #learn-press-content-item {
                 position: fixed;
-                z-index: 9999;
+                z-index: 99999;
                 background: #FFF;
                 top: 60px;
                 right: 0;

@@ -341,20 +341,26 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function start_quiz( $quiz_id, $course_id = 0, $wp_error = false ) {
 			try {
+				if ( $item_id = learn_press_get_request( 'lp-preview' ) ) {
+					learn_press_add_message( __( 'You can not start a quiz in preview mode.', 'learnpress' ), 'error' );
+					wp_redirect( learn_press_get_preview_url( $item_id ) );
+					exit();
+				}
+
 				// Validate course and quiz
 				if ( false === ( $course_id = $this->_verify_course_item( $quiz_id, $course_id ) ) ) {
-					throw new Exception( sprintf( __( '%s::%s - Course is not exists or does not contain the quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_INVALID_QUIZ_OR_COURSE );
+					throw new Exception( __( 'Course is not exists or does not contain the quiz', 'learnpress' ), LP_INVALID_QUIZ_OR_COURSE );
 				}
 
 				// If user has already finished the course
 				if ( $this->has_finished_course( $course_id ) ) {
-					throw new Exception( sprintf( __( '%s::%s - User has already finished course of this quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_COURSE_IS_FINISHED );
+					throw new Exception( __( 'User has already finished course of this quiz', 'learnpress' ), LP_COURSE_IS_FINISHED );
 
 				}
 
 				// Check if user has already started or completed quiz
 				if ( $this->has_item_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
-					throw new Exception( sprintf( __( '%s::%s - User has started or completed quiz', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
+					throw new Exception( __( 'User has started or completed quiz', 'learnpress' ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 				}
 
 				$course = learn_press_get_course( $course_id );
@@ -362,10 +368,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				if ( $course->is_required_enroll() && $user->is( 'guest' ) ) {
 					throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
-				}
-
-				if ( learn_press_get_request( 'preview' ) == 'true' ) {
-					throw new Exception( __( 'You can not start a quiz in preview mode.', 'learnpress' ), LP_PREVIEW_MODE );
 				}
 
 				if ( $user->has_quiz_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {

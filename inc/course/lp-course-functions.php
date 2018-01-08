@@ -803,11 +803,13 @@ add_filter( 'get_sample_permalink', 'learn_press_item_sample_permalink', 10, 5 )
  * @return string
  */
 function learn_press_get_preview_url( $post_id ) {
-	return add_query_arg(
-		array(
-			'lp-preview' => $post_id
-		), trailingslashit( get_site_url() )
-	);
+	return
+		add_query_arg(
+			array(
+				'lp-preview' => $post_id,
+				'_wpnonce'   => wp_create_nonce( 'lp-preview' )
+			), trailingslashit( get_site_url() )
+		);
 }
 
 if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {

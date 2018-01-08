@@ -39,6 +39,7 @@ class LP_Preview_Course {
 			if ( ! $course_id = $wpdb->get_var( $query ) ) {
 				self::$_preview_course = wp_insert_post(
 					array(
+						'post_author' => 0,
 						'post_type'   => LP_COURSE_CPT,
 						'post_title'  => __( 'Preview Course', 'learnpress' ),
 						'post_status' => 'publish',
@@ -61,6 +62,10 @@ class LP_Preview_Course {
 		try {
 
 			if ( ! $post_id = LP_Request::get_int( 'lp-preview' ) ) {
+				return;
+			}
+
+			if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'lp-preview' ) ) {
 				return;
 			}
 
@@ -96,7 +101,7 @@ class LP_Preview_Course {
 			$preview_course = self::get_preview_course();
 			$post_course    = get_post( $preview_course );
 
-			$post = wp_cache_get( self::$_preview_course, 'posts' );
+			$post              = wp_cache_get( self::$_preview_course, 'posts' );
 			$post->post_status = 'publish';
 			wp_cache_set( self::$_preview_course, $post, 'posts' );
 
@@ -111,12 +116,28 @@ class LP_Preview_Course {
 
 			// Prevent 404 because the preview item is not inside a course
 			add_filter( 'learn-press/query/404', '__return_false' );
+
+			// Add custom class to body
+			add_filter( 'body_class', array( __CLASS__, 'body_class' ) );
+
+			// Edit button
+			add_action( 'learn-press/before-course-item-content', array( __CLASS__, 'edit_button' ) );
 		}
 		catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 			wp_redirect( get_home_url() );
 			exit();
 		}
+	}
+
+	public static function edit_button() {
+		learn_press_display_message( sprintf( __( 'You are in preview mode. Continue <a href="%s">edit</a>?', 'learnpress' ), get_edit_post_link( self::$_item_id ) ), 'error' );
+	}
+
+	public static function body_class( $classes ) {
+		$classes[] = 'lp-preview';
+
+		return $classes;
 	}
 
 	/**
@@ -158,6 +179,16 @@ class LP_Preview_Course {
 
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'setup_preview' ) );
+		add_filter( 'wp_count_posts', array( __CLASS__, 'reduce_counts' ), 10, 3 );
+	}
+
+	public static function reduce_counts( $counts, $type, $perm ) {
+		if ( LP_COURSE_CPT === $type && self::get_preview_course() ) {
+			$counts->publish --;
+		}
+
+		return $counts;
+
 	}
 
 }

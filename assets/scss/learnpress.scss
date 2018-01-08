@@ -17,6 +17,7 @@ $primary-bg-color-after: #000;
 @import "frontend/theme-support";
 @import "frontend/widget";
 @import "quick-tip";
+@import "frontend/preview-course";
 
 input[type="text"],
 input[type="email"],
@@ -255,7 +256,9 @@ ul.learn-press-courses {
         border-bottom-left-radius: 5px;
     }
     &.error {
-
+        &:before{
+            background: #d85554;
+        }
         &.icon {
             &:before {
                 background: #d85554;
