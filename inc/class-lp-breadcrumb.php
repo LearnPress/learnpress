@@ -163,7 +163,7 @@ class LP_Breadcrumb {
 		} else {
 			$cat = current( get_the_category( $post ) );
 			if ( $cat ) {
-				$this->term_ancestors( $cat->term_id, 'course_category' );
+				$this->term_ancestors( $cat->term_id, 'post_category' );
 				$this->add_crumb( $cat->name, get_term_link( $cat ) );
 			}
 		}
@@ -199,21 +199,25 @@ class LP_Breadcrumb {
 	}
 
 	/**
-	 * Product category trail
+	 * Course category trail
 	 */
 	private function add_crumbs_course_category() {
-		$current_term = $GLOBALS['wp_query']->get_queried_object();
+		global $wp_query;
+		$current_term = $this->get_queried_object();
 
-		$this->prepend_courses_page();
-		$this->term_ancestors( $current_term->term_id, 'course_category' );
-		$this->add_crumb( $current_term->name );
+		if ( isset( $current_term->term_id ) ) {
+			$this->prepend_courses_page();
+			$this->term_ancestors( $current_term->term_id, 'course_category' );
+			$this->add_crumb( $current_term->name );
+		}
 	}
 
 	/**
 	 * Course tag trail
 	 */
 	private function add_crumbs_course_tag() {
-		$current_term = $GLOBALS['wp_query']->get_queried_object();
+		global $wp_query;
+		$current_term = $this->get_queried_object();
 
 		$this->prepend_courses_page();
 		$this->add_crumb( sprintf( __( 'Courses tagged &ldquo;%s&rdquo;', 'learnpress' ), $current_term->name ) );
@@ -253,7 +257,8 @@ class LP_Breadcrumb {
 	 * Category trail
 	 */
 	private function add_crumbs_category() {
-		$this_category = get_category( $GLOBALS['wp_query']->get_queried_object() );
+		global $wp_query;
+		$this_category = get_category( $this->get_queried_object() );
 
 		if ( 0 != $this_category->parent ) {
 			$this->term_ancestors( $this_category->parent, 'post_category' );
@@ -267,7 +272,8 @@ class LP_Breadcrumb {
 	 * Tag trail
 	 */
 	private function add_crumbs_tag() {
-		$queried_object = $GLOBALS['wp_query']->get_queried_object();
+		global $wp_query;
+		$queried_object = $this->get_queried_object();
 		$this->add_crumb( sprintf( __( 'Posts tagged &ldquo;%s&rdquo;', 'learnpress' ), single_tag_title( '', false ) ), get_tag_link( $queried_object->term_id ) );
 	}
 
@@ -290,7 +296,8 @@ class LP_Breadcrumb {
 	 * Add crumbs for date based archives
 	 */
 	private function add_crumbs_tax() {
-		$this_term = $GLOBALS['wp_query']->get_queried_object();
+		global $wp_query;
+		$this_term = $this->get_queried_object();
 		$taxonomy  = get_taxonomy( $this_term->taxonomy );
 
 		$this->add_crumb( $taxonomy->labels->name );
@@ -301,6 +308,40 @@ class LP_Breadcrumb {
 		}
 
 		$this->add_crumb( single_term_title( '', false ), get_term_link( $this_term->term_id, $this_term->taxonomy ) );
+	}
+
+	/**
+	 * Get default queried object by WP.
+	 * Fixed issue when viewing course category the text in breadcrumb is blank.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return object
+	 */
+	private function get_queried_object() {
+		static $default_queried_object;
+
+		if ( $default_queried_object ) {
+			return $default_queried_object;
+		}
+
+		global $wp_query;
+
+		// Store the current queried object
+		$queried_object    = $wp_query->queried_object;
+		$queried_object_id = $wp_query->queried_object_id;
+
+		// Clear the current queried object to ensure we get the default.
+		$wp_query->queried_object    = null;
+		$wp_query->queried_object_id = null;
+
+		$default_queried_object = $wp_query->get_queried_object();
+
+		// Restore current queried object
+		$wp_query->queried_object    = $queried_object;
+		$wp_query->queried_object_id = $queried_object_id;
+
+		return $default_queried_object;
 	}
 
 	/**
