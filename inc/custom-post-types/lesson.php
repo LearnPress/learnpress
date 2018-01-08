@@ -59,6 +59,25 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
                 ", LP_LESSON_CPT );
 			}
 
+			if ( $preview = LP_Request::get( 'preview' ) ) {
+				global $wpdb;
+
+				$clause = $wpdb->prepare( "
+                    SELECT ID
+                    FROM {$wpdb->posts} p 
+                    INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+                    WHERE pm.meta_value = %s
+                    AND p.post_type = %s
+                ", '_lp_preview', 'yes', LP_LESSON_CPT );
+
+				$in = '';
+				if ( 'no' === $preview ) {
+					$in = 'NOT';
+				}
+
+				$where .= " AND {$wpdb->posts}.ID {$in} IN({$clause})";
+			}
+
 			return $where;
 		}
 
@@ -73,22 +92,80 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function views_pages( $views ) {
 			$unassigned_items = learn_press_get_unassigned_items( LP_LESSON_CPT );
-			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
+			$unassigned_text  = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
-				$views['unassigned'] = sprintf(
+				$views['lesson-unassigned'] = sprintf(
 					'<a href="%s" class="current">%s</a>',
 					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&unassigned=yes' ),
-					$text
+					$unassigned_text
 				);
 			} else {
-				$views['unassigned'] = sprintf(
+				$views['lesson-unassigned'] = sprintf(
 					'<a href="%s">%s</a>',
 					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&unassigned=yes' ),
-					$text
+					$unassigned_text
+				);
+			}
+
+			$preview_items = $this->get_preview_items();
+			$preview_text  = sprintf( __( 'Preview %s', 'learnpress' ), '<span class="count">(' . $preview_items . ')</span>' );
+
+			if ( 'yes' === LP_Request::get( 'preview' ) ) {
+				$views['lesson-preview'] = sprintf(
+					'<a href="%s" class="current">%s</a>',
+					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&preview=yes' ),
+					$preview_text
+				);
+			} else {
+				$views['lesson-preview'] = sprintf(
+					'<a href="%s">%s</a>',
+					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&preview=yes' ),
+					$preview_text
+				);
+			}
+
+			$no_preview_items = $this->get_no_preview_items();
+			$no_preview_text  = sprintf( __( 'No Preview %s', 'learnpress' ), '<span class="count">(' . $no_preview_items . ')</span>' );
+
+			if ( 'no' === LP_Request::get( 'preview' ) ) {
+				$views['lesson-no-preview'] = sprintf(
+					'<a href="%s" class="current">%s</a>',
+					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&preview=no' ),
+					$no_preview_text
+				);
+			} else {
+				$views['lesson-no-preview'] = sprintf(
+					'<a href="%s">%s</a>',
+					admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&preview=no' ),
+					$no_preview_text
 				);
 			}
 
 			return $views;
+		}
+
+		public function get_preview_items() {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+		        SELECT COUNT(ID)
+		        FROM {$wpdb->posts} p 
+		        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+		        WHERE pm.meta_value = %s
+		        AND p.post_type = %s
+		    ", '_lp_preview', 'yes', LP_LESSON_CPT );
+
+			return $wpdb->get_var( $query );
+		}
+
+		public function get_no_preview_items() {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+		        SELECT COUNT(ID)
+		        FROM {$wpdb->posts} p 
+		        WHERE p.post_type = %s
+		    ", LP_LESSON_CPT );
+
+			return $wpdb->get_var( $query ) - $this->get_preview_items();
 		}
 
 		/**
@@ -115,7 +192,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'public'             => true, // no access directly via lesson permalink url
 					'query_var'          => true,
 					'taxonomies'         => array( 'lesson_tag' ),
-					'publicly_queryable' => false,
+					'publicly_queryable' => true,
 					'show_ui'            => true,
 					'has_archive'        => false,
 					'capability_type'    => LP_LESSON_CPT,

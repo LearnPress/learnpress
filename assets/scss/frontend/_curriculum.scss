@@ -297,8 +297,9 @@ ul.learn-press-nav-tabs {
                         font-style: normal;
                         @include border-radius(3px);
                         &:before {
-                            content: attr(data-preview); // "\f09c";
-                            color: #FFF; // #00adff;
+                            content: attr(data-preview);
+                            color: #FFF;
+                            vertical-align: baseline;
                         }
                     }
                 }

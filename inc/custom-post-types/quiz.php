@@ -101,7 +101,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'not_found_in_trash' => __( 'No quiz found in Trash', 'learnpress' )
 						),
 						'public'             => true,
-						'publicly_queryable' => false,
+						'publicly_queryable' => true,
 						'show_ui'            => true,
 						'has_archive'        => false,
 						'capability_type'    => LP_LESSON_CPT,

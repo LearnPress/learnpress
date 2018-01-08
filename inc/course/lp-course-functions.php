@@ -470,17 +470,19 @@ function learn_press_get_course_user( $course_id = null ) {
 }
 
 /**
- * Get item types support in course curriculum
+ * Get item types support in course curriculum.
+ *
+ * @param bool $keys
  *
  * @return mixed|null
  */
-function learn_press_course_get_support_item_types() {
+function learn_press_course_get_support_item_types( $keys = false ) {
 	$types = array();
 	if ( ! empty( $GLOBALS['learn_press_course_support_item_types'] ) ) {
 		$types = $GLOBALS['learn_press_course_support_item_types'];
 	}
 
-	return apply_filters( 'learn-press/course-support-items', $types );
+	return apply_filters( 'learn-press/course-support-items', $keys ? array_keys( $types ) : $types, $keys );
 }
 
 /**
@@ -759,26 +761,28 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 
 function learn_press_item_sample_permalink_html( $return, $post_id, $new_title, $new_slug, $post ) {
 	remove_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10 );
-	if ( preg_match( '~<strong.*>~', $return, $m ) ) {
-		//$return = str_replace( $m[0], $m[0] . '<span class="learn-press-tooltip dashicons dashicons-editor-help" data-tooltip="asdasdasd"></span>', $return );
-	}
 
-	$return .= '<span class="learn-press-tooltip dashicons dashicons-editor-help" data-tooltip="asdasdasd"></span>';
+	$return = sprintf(
+		'<a class="button" href="%s" target="_blank">%s</a>',
+		learn_press_get_preview_url( $post_id ),
+		__( 'Preview', 'learnpress' )
+	);
 
-	return $return;
+	$return .= '<span>' . __( 'Permalink only available if the item is already assigned to a course.', 'learnpress' ) . '</span>';
+
+	return sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $return );
 }
 
-add_filter( 'get_sample_permalink', 'learn_press_item_sample_permalink', 10, 5 );
 
 if ( ! function_exists( 'learn_press_item_sample_permalink' ) ) {
 
 	function learn_press_item_sample_permalink( $permalink, $post_id, $title, $name, $post ) {
-
-		if ( $post->post_type !== LP_QUIZ_CPT && $post->post_type !== LP_LESSON_CPT ) {
+		if ( ! in_array( $post->post_type, learn_press_course_get_support_item_types( true ) ) ) {
 			return $permalink;
 		}
 
 		$permalink[0] = str_replace( $post->post_name, '%pagename%', $permalink[0] );
+
 		if ( ! preg_match( '~^https?://~', $permalink[0] ) ) {
 			add_filter( 'get_sample_permalink_html', 'learn_press_item_sample_permalink_html', 10, 5 );
 		}
@@ -787,8 +791,24 @@ if ( ! function_exists( 'learn_press_item_sample_permalink' ) ) {
 	}
 
 }
+add_filter( 'get_sample_permalink', 'learn_press_item_sample_permalink', 10, 5 );
 
-add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 2 );
+/**
+ * Get preview url for LP post type.
+ *
+ * @since 3.0.0
+ *
+ * @param int $post_id
+ *
+ * @return string
+ */
+function learn_press_get_preview_url( $post_id ) {
+	return add_query_arg(
+		array(
+			'lp-preview' => $post_id
+		), trailingslashit( get_site_url() )
+	);
+}
 
 if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 
@@ -815,6 +835,8 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 		return $permalink;
 	}
 }
+add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 2 );
+
 
 add_filter( 'template_include', 'learn_press_prepare_archive_courses' );
 function learn_press_prepare_archive_courses( $template ) {

@@ -58,6 +58,11 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return int
 		 */
 		public function set_viewing_item( $item ) {
+
+//			if ( ! $this->has_item( $item->get_id() ) ) {
+//				return false;
+//			}
+
 			if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
 				return 0;
 			}
@@ -85,14 +90,14 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				'featured'                 => 'no',
 				'block_lesson_content'     => 'no',
 				'external_link_buy_course' => '',
-				'course_result'     => 'evaluate_lesson',
-				'passing_condition' => 80,
-				'price'           => '',
-				'sale_price'      => '',
-				'sale_start'      => '',
-				'sale_end'        => '',
-				'required_enroll' => 'yes',
-				'course_author' => learn_press_get_current_user_id()
+				'course_result'            => 'evaluate_lesson',
+				'passing_condition'        => 80,
+				'price'                    => '',
+				'sale_price'               => '',
+				'sale_start'               => '',
+				'sale_end'                 => '',
+				'required_enroll'          => 'yes',
+				'course_author'            => learn_press_get_current_user_id()
 			);
 
 			return apply_filters( 'learn-press/course/default-meta', $meta );
@@ -101,7 +106,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		/**
 		 * Get LP Course.
 		 *
-		 * @param bool $the_course
+		 * @param bool  $the_course
 		 * @param array $args
 		 *
 		 * @return bool|LP_Course
@@ -155,7 +160,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * Get the course class name
 		 *
 		 * @param  WP_Post $the_course
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */

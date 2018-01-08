@@ -53,6 +53,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
+			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			if ( self::$_enable_review ) {
 				add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
@@ -394,10 +395,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return mixed|string
 		 */
 		public function posts_where_paged( $where ) {
+
 			if ( ! $this->_is_archive() ) {
 				return $where;
 			}
+
 			global $wpdb;
+
 			if ( array_key_exists( 'filter_price', $_REQUEST ) ) {
 				if ( $_REQUEST['filter_price'] == 0 ) {
 					$where .= " AND ( pm_price.meta_value IS NULL || pm_price.meta_value = 0 )";
@@ -405,6 +409,18 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$where .= $wpdb->prepare( " AND ( pm_price.meta_value = %s )", $_REQUEST['filter_price'] );
 				}
 			}
+
+			//if ( get_post_type() == LP_COURSE_CPT ) {
+			$not_in = $wpdb->prepare( "
+				SELECT ID
+				FROM {$wpdb->posts} p 
+				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s 
+				WHERE pm.meta_value = %s
+			", '_lp_preview_course', 'yes' );
+
+			$where .= " AND {$wpdb->posts}.ID NOT IN( {$not_in} )";
+			//}
+
 
 			return $where;
 		}

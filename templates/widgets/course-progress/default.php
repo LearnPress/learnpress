@@ -25,7 +25,7 @@ if ( ! $course = LP_Global::course() ) {
 }
 ?>
 
-<div<?php $widget->get_class(); ?>>
+<div<?php $widget->get_class($widget->instance); ?>>
 
     <div class="widget-body">
 

@@ -23,6 +23,13 @@ class LP_Page_Controller {
 	protected static $_instance = null;
 
 	/**
+	 * Flag for 404 content.
+	 *
+	 * @var bool
+	 */
+	protected $_is_404 = false;
+
+	/**
 	 * LP_Page_Controller constructor.
 	 */
 	protected function __construct() {
@@ -40,7 +47,7 @@ class LP_Page_Controller {
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
 	}
 
-	function setup_data( $post ) {
+	public function setup_data( $post ) {
 		static $courses = array();
 
 		if ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) {
@@ -60,6 +67,7 @@ class LP_Page_Controller {
 		}
 
 		try {
+
 			// If item name is set in query vars
 			if ( ! is_numeric( $vars['course-item'] ) ) {
 				$item_type = $vars['item-type'];
@@ -71,12 +79,19 @@ class LP_Page_Controller {
 
 			// Post item is not exists or get it's item failed.
 			if ( ! $post_item || ( $post_item && ( ! $lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) ) ) ) ) {
+				$this->set_404( true );
 				throw new Exception( __( 'You can not view this item or it is not exists!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
 			}
 
 			$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
 
 			if ( ! $user_item_id ) {
+				return $post;
+			}
+
+			if ( ! $lp_course->has_item( $post_item->ID ) ) {
+				$this->set_404( true );
+
 				return $post;
 			}
 
@@ -104,17 +119,32 @@ class LP_Page_Controller {
 		return $post;
 	}
 
+	public function set_404( $is_404 ) {
+		global $wp_query;
+		$wp_query->is_404 = $this->_is_404 = (bool) $is_404;
+	}
+
+	public function is_404() {
+		return apply_filters( 'learn-press/query/404', $this->_is_404 );
+	}
+
 	public function template_content_item( $template ) {
 		global $lp_course, $lp_course_item, $lp_user;
-		if ( $lp_course_item ) {
 
-			if ( ! $lp_user->can_view_item( $lp_course_item->get_id() ) ) {
-				if ( $redirect = apply_filters( 'learn-press/access-forbidden-item-redirect', false, $lp_course_item->get_id(), $lp_course->get_id() ) ) {
-					wp_redirect( $redirect );
-					exit();
+		if ( $this->is_404() ) {
+			$template = get_404_template();
+		} else {
+
+			if ( $lp_course_item ) {
+				if ( ! $lp_user->can_view_item( $lp_course_item->get_id() ) ) {
+					if ( $redirect = apply_filters( 'learn-press/access-forbidden-item-redirect', false, $lp_course_item->get_id(), $lp_course->get_id() ) ) {
+						wp_redirect( $redirect );
+						exit();
+					}
 				}
+				do_action( 'learn-press/parse-course-item', $lp_course_item, $lp_course );
 			}
-			do_action( 'learn-press/parse-course-item', $lp_course_item, $lp_course );
+
 		}
 
 		return $template;

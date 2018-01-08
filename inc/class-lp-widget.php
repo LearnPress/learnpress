@@ -409,12 +409,12 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 		public function get_class( $instance = '', $more = '' ) {
 			$classes = array( 'lp-widget' );
 			if ( is_array( $instance ) && ! empty( $instance['css_class'] ) ) {
-				$classes = $instance['css_class'];
+				$classes[] = $instance['css_class'];
 			}
 			$classes = LP_Helper::merge_class( $classes, $more );
 
 			if ( $classes ) {
-				echo ' class="' . join( ',', $classes ) . '"';
+				echo ' class="' . join( ' ', $classes ) . '"';
 			}
 
 			return $classes;

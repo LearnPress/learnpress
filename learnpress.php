@@ -248,14 +248,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/gateways/class-lp-gateway-abstract.php';
 			require_once 'inc/gateways/class-lp-gateways.php';
 			require_once 'inc/admin/class-lp-admin-ajax.php';
+
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-ajax.php';
 			}
+
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
-
-
 			require_once 'inc/class-lp-schedules.php';
+			require_once 'inc/class-lp-preview-course.php';
 
 			// widgets
 			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses', 'course-progress' ) );

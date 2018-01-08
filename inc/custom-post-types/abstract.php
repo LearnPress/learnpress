@@ -509,7 +509,8 @@ abstract class LP_Abstract_Post_Type {
 			$messages[ $this->_post_type ][6] .= $view_link;
 			$messages[ $this->_post_type ][9] .= $view_link;
 
-			$preview_permalink                 = add_query_arg( 'preview', 'true', $permalink );
+			$preview_permalink = learn_press_get_preview_url( $post->ID );
+
 			$preview_link                      = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
 			$messages[ $this->_post_type ][8]  .= $preview_link;
 			$messages[ $this->_post_type ][10] .= $preview_link;
