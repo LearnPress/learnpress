@@ -14,13 +14,15 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 */
 		protected static $conditional_logic = array();
 
+		/**
+		 * @var null
+		 */
 		protected static $_screen = null;
 
 		/**
 		 * @param $fields
 		 */
 		public static function render_fields( $fields ) {
-
 			foreach ( $fields as $field ) {
 				// except heading options
 				if ( isset( $field['id'] ) ) {
@@ -37,37 +39,20 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 * @param $field
 		 */
 		public static function show_field( $field ) {
-
 			$fields = RW_Meta_Box::normalize_fields( array( $field ) );
 			$field  = $fields[0];
 			if ( $class_name = self::include_field( $field ) ) {
 				self::parse_conditional_logic( $field );
 
-				$field_name = '';
-				/**
-				 * Find the field's name
-				 */
-				foreach ( array( 'title', 'name' ) as $value ) {
-					if ( isset( $field[ $value ] ) ) {
-						$field_name = $field[ $value ];
-						break;
-					}
-				}
+				$field_title = self::get_field_title( $field );
 
 				// Add the "asterisk" to required field
 				if ( isset( $field['required'] ) && $field['required'] ) {
-					$field_name = sprintf( '%s <span class="asterisk">*</span>', $field_name );
+					$field_name = sprintf( '%s <span class="asterisk">*</span>', $field_title );
 				}
 
-				$field['name']       = apply_filters( 'learn-press/meta-box/field-name', $field_name, $field );
-				//$field['field_name'] = apply_filters( 'learn-press/meta-box/field-field_name', $field['id'], $field );
-				$field['id']         = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
-
-				//$field['value']      = md5( $field['std'] );
-
-				//call_user_func( array( $class_name, 'admin_enqueue_scripts' ), $field );
-				//call_user_func( array( $class_name, 'show' ), $field, true, 0 );
-				//call_user_func( array( $class_name, 'add_actions' ), $field );
+				$field['name'] = apply_filters( 'learn-press/meta-box/field-name', $field_title, $field );
+				$field['id']   = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
 
 				RWMB_Field::call( 'admin_enqueue_scripts', $field );
 				RWMB_Field::call( 'show', $field, true, 0 );
@@ -75,6 +60,21 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 				///RWMB_Field::call( $field, 'add_actions' );
 			}
+		}
+
+		/**
+		 * Find the field's name
+		 */
+		public static function get_field_title( $field ) {
+			$field_name = '';
+			foreach ( array( 'title', 'name' ) as $value ) {
+				if ( isset( $field[ $value ] ) ) {
+					$field_name = $field[ $value ];
+					break;
+				}
+			}
+
+			return $field_name;
 		}
 
 		protected static function sanitize_name( $name ) {
@@ -167,14 +167,20 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 			add_action( 'rwmb_before', array( __CLASS__, 'prepare_fields' ) );
 			add_action( 'admin_footer', array( __CLASS__, 'output_data' ) );
-			add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
 			add_action( 'learn-press/meta-box-loaded', array( __CLASS__, 'load' ) );
 
+			add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
+			add_filter( 'rwmb_html', array( __CLASS__, 'begin_html' ), 10, 3 );
+			//add_filter( 'rwmb_outer_html', array( __CLASS__, 'outer_html' ), 10, 3 );
 			add_filter( 'rwmb_field_meta', array( __CLASS__, 'field_meta' ), 10, 3 );
 
 			if ( ! class_exists( 'RW_Meta_Box' ) ) {
 				require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
 			}
+		}
+
+		public static function begin_html( $html, $field, $meta ) {
+			return $html . ( ! empty( $field['after_input'] ) ? $field['after_input'] : '' );
 		}
 
 		public static function field_meta( $meta, $field, $saved ) {

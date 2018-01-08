@@ -258,13 +258,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'          => 10,
 					),
 					array(
-						'name' => __( 'Passing Grade (<span>%</span>)', 'learnpress' ),
-						'desc' => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
-						'id'   => '_lp_passing_grade',
-						'type' => 'number',
-						'min'  => 0,
-						'max'  => 100,
-						'std'  => 80
+						'name'        => __( 'Passing Grade (<span>%</span>)', 'learnpress' ),
+						'desc'        => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
+						'id'          => '_lp_passing_grade',
+						'type'        => 'number',
+						'after_input' => '&nbsp;%',
+						'min'         => 0,
+						'max'         => 100,
+						'std'         => 80
 					),
 					array(
 						'name' => __( 'Re-take', 'learnpress' ),

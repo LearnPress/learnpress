@@ -419,6 +419,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			", '_lp_preview_course', 'yes' );
 
 			$where .= " AND {$wpdb->posts}.ID NOT IN( {$not_in} )";
+
 			//}
 
 
@@ -615,7 +616,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$quiz_passing_condition_html = '
 					<div id="passing-condition-quiz-result">
 					<input type="number" name="_lp_course_result_final_quiz_passing_condition" value="' . absint( $passing_grade ) . '" /> %
-					<p>' . __( 'Current passing grade of Final quiz, you can change it here. This value will be applied for Passing Grade of the course.', 'learnpress' ) . '</p>
+					<p>' . __( 'This is conditional "passing grade" of Final quiz will apply for result of this course. When you change it here, the "passing grade" also change with new value for the Final quiz.', 'learnpress' ) . '</p>
 					</div>
 				';
 			}
@@ -659,14 +660,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'inline'  => false
 					),
 					array(
-						'name'       => __( 'Passing condition value', 'learnpress' ),
-						'id'         => '_lp_passing_condition',
-						'type'       => 'number',
-						'min'        => 0,
-						'max'        => 100,
-						'desc'       => __( 'The percentage of quiz result or lessons completed to finish the course.', 'learnpress' ),
-						'std'        => 80,
-						'visibility' => array(
+						'name'        => __( 'Passing condition value', 'learnpress' ),
+						'id'          => '_lp_passing_condition',
+						'type'        => 'number',
+						'min'         => 0,
+						'max'         => 100,
+						'desc'        => __( 'The percentage of quiz result or lessons completed to finish the course.', 'learnpress' ),
+						'std'         => 80,
+						'after_input' => '&nbsp;%',
+						'visibility'  => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
