@@ -163,7 +163,7 @@ class LP_Breadcrumb {
 		} else {
 			$cat = current( get_the_category( $post ) );
 			if ( $cat ) {
-				$this->term_ancestors( $cat->term_id, 'post_category' );
+				$this->term_ancestors( $cat->term_id, 'course_category' );
 				$this->add_crumb( $cat->name, get_term_link( $cat ) );
 			}
 		}

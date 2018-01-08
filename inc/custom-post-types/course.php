@@ -622,11 +622,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			$course_result_option_desc = array(
-				'evaluate_lesson'         => __( 'Evaluate by lessons user has completed per total lessons in course.', 'learnpress' ),
+				'evaluate_lesson'         => __( '<p>Evaluate by number of lessons completed per number of total lessons.</p>', 'learnpress' )
+				                             . __( 'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 = 50.%', 'learnpress' ),
 				'evaluate_final_quiz'     => __( 'Evaluate by results of final quiz in course.', 'learnpress' ),
-				'evaluate_quizzes'        => __( 'Evaluate by achieved points per total point of all quizzes.', 'learnpress' ),
-				'evaluate_passed_quizzes' => __( 'Evaluate by achieved points of passed course per total point of all quizzes.', 'learnpress' ),
-				'evaluate_quiz'           => __( 'Evaluate by quizzes user has completed per total quizzes.', 'learnpress' ),
+				'evaluate_quizzes'        => __( 'Evaluate by achieved points of completed quizzes per total point of all quizzes.', 'learnpress' ),
+				'evaluate_passed_quizzes' => __( 'Evaluate by achieved points of quizzes passed per total point of all quizzes.', 'learnpress' ),
+				'evaluate_quiz'           => __( '<p>Evaluate by number of quizzes completed per number of total quizzes.</p>', 'learnpress' )
+				                             . __( '<p>E.g: Course has 10 quizzes and user completed 5 quizzes then the result = 5/10 = 50%.</p>', 'learnpress' ),
 			);
 
 			$course_result_option_tip = '<span class="learn-press-tip">%s</span>';
@@ -645,7 +647,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc'    => $course_result_desc,
 						'options' => array(
 							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' )
-							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false, array( 'event' => 'click' ) ),
+							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'] ),
 							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' )
 							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_final_quiz'] )
 							                             . $quiz_passing_condition_html,

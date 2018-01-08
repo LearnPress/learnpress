@@ -1848,7 +1848,7 @@ if ( ! function_exists( 'learn_press_course_loop_item_user_progress' ) ) {
 		$user   = LP_Global::user();
 
 		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
-			echo $user->get_course_status( $course->get_id() );
+			$user->get_course_status( $course->get_id() );
 		}
 	}
 }
