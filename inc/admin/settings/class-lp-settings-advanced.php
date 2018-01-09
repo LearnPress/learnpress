@@ -23,14 +23,14 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 
 		parent::__construct();
 
-		add_action( 'learn-press/update-settings/updated', array( $this, 'update' ) );
+		//add_action( 'learn-press/update-settings/updated', array( $this, 'update' ) );
 	}
 
-	public function update() {
-		if ( ! empty( $_REQUEST['color_schema'] ) ) {
-			update_option( 'learn_press_color_schemas', $_REQUEST['color_schema'] );
-		}
-	}
+//	public function update() {
+//		if ( ! empty( $_REQUEST['color_schema'] ) ) {
+//			update_option( 'learn_press_color_schemas', $_REQUEST['color_schema'] );
+//		}
+//	}
 
 	public function output() {
 		$view = learn_press_get_admin_view( 'settings/profile.php' );

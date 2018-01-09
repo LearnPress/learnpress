@@ -6,46 +6,35 @@
  * @since 3.0
  */
 class RWMB_Color_Schema_Field extends RWMB_Field {
+
+	public static function init() {
+		add_action( 'learn-press/update-settings/updated', array( __CLASS__, 'update' ) );
+	}
+
+	public static function update() {
+		if ( ! empty( $_REQUEST['color_schema'] ) ) {
+			update_option( 'learn_press_color_schemas', $_REQUEST['color_schema'] );
+		}
+//learn_press_debug($_REQUEST['color_schema']);die();
+	}
+
 	protected static function get_colors() {
 		$colors = array(
 			array(
-				'title'    => __( 'Popup heading background', 'learnpress' ),
-				'selector' => '#course-item-content-header',
-				'props'    => array(
-					'background' => '#e7f7ff'
-				)
+				'title' => __( 'Popup heading background', 'learnpress' ),
+				'id'    => 'popup-heading-bg'
 			),
 			array(
-				'title'    => __( 'Section heading background', 'learnpress' ),
-				'selector' => '.section-header',
-				'props'    => array(
-					'background' => '#FFFFFF'
-				)
+				'title' => __( 'Section heading background', 'learnpress' ),
+				'id'    => 'section-heading-bg'
 			),
 			array(
-				'title'    => __( 'Lines color', 'learnpress' ),
-				'selector' => '
-                    #course-item-content-header, 
-                    .course-curriculum ul.curriculum-sections .section-content .course-item, 
-                    body.course-item-popup #learn-press-course-curriculum,
-                    #course-item-content-header .toggle-content-item',
-				'props'    => array(
-					'border-color' => '#DDD'
-				)
+				'title' => __( 'Lines color', 'learnpress' ),
+				'id'    => 'lines-color'
 			),
 			array(
-				'title'    => __( 'Section heading color', 'learnpress' ),
-				'selector' => '.section-header, .section-header .section-title, .section-header .section-desc ',
-				'props'    => array(
-					'color' => ''
-				)
-			),
-			array(
-				'title'    => __( 'Final quiz label', 'learnpress' ),
-				'selector' => '.course-curriculum, .course-meta',
-				'props'    => array(
-					'background' => '#000'
-				)
+				'title' => __( 'Section heading color', 'learnpress' ),
+				'id'    => 'section-heading-color'
 			)
 		);
 
@@ -65,43 +54,41 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		$colors = self::get_colors();
 
 		$schemas = get_option( 'learn_press_color_schemas' );
+		learn_press_debug($schemas);
 
 		if ( ! $schemas ) {
 			$schemas = array( $colors );
 		} else {
 			foreach ( $schemas as $k => $schema ) {
+				if ( empty( $schema[0]['id'] ) ) {
+					$schemas = array( $colors );
+				}
 				$schemas[ $k ] = $colors;
 				foreach ( $colors as $m => $options ) {
-                    $key = preg_replace('!#!', '', $options['selector']);
-					if ( ! empty( $schema[ $key ] ) ) {
-						foreach ( $options['props'] as $prop_name => $prop_value ) {
-							if ( isset( $schema[ $key ][ $prop_name ] ) ) {
-								$schemas[ $k ][ $m ]['props'][ $prop_name ] = $schema[ $key ][ $prop_name ];
-							}
-						}
-					}
+
+					if(array_key_exists($options['id'] ,$schema)){
+					    $schemas[$k][$m]['std'] = $schema[$options['id']];
+                    }
 				}
 			}
 		}
+		learn_press_debug($schemas);
+
 		?>
         <div id="color-schemas">
 			<?php foreach ( $schemas as $k => $schema ) { ?>
                 <table class="color-schemas<?php echo $k == 0 ? ' current' : ''; ?>">
                     <tbody>
 					<?php foreach ( $schema as $option ) {
-						$name = 'color_schema[' . $k . '][' . $option['selector'] . ']';
+						$name = 'color_schema[' . $k . '][' . $option['id'] . ']';
+						$std  = ! empty( $option['std'] ) ? $option['std'] : '';
 						?>
                         <tr>
                             <th><?php echo $option['title']; ?></th>
-							<?php foreach ( $option['props'] as $prop => $value ) {
-								if ( false === strpos( $name, '[' . $prop . ']' ) ) {
-									$name .= '[' . $prop . ']';
-									?>
-                                    <td class="color-selector">
-                                        <input name="<?php echo $name; ?>" value="<?php echo $value; ?>">
-                                    </td>
-								<?php } ?>
-							<?php } ?>
+
+                            <td class="color-selector">
+                                <input name="<?php echo $name; ?>" value="<?php echo $std; ?>">
+                            </td>
                         </tr>
 					<?php } ?>
                     </tbody>
@@ -169,3 +156,5 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		return ob_get_clean();
 	}
 }
+
+RWMB_Color_Schema_Field::init();

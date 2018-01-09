@@ -24,19 +24,34 @@ class LP_Update_30 {
 	 */
 	public static function add_column_user_items() {
 		global $wpdb;
+		ob_start();
+
+		// Add columns start_time_gmt, end_time_gmt
 		$sql = $wpdb->prepare( "
 			ALTER TABLE {$wpdb->learnpress_user_items}
 			ADD COLUMN `start_time_gmt` DATETIME NULL DEFAULT %s AFTER `start_time`,
 			ADD COLUMN `end_time_gmt` DATETIME NULL DEFAULT %s AFTER `end_time`;
 		", '0000-00-00 00:00:00', '0000-00-00 00:00:00' );
-		ob_start();
+		@$wpdb->query( $sql );
+
+		// Update start_time_gmt, end_time_gmt with offset time from start_time, end_time
+		$time      = new LP_Datetime();
+		$offset    = $time->getOffset( true );
+		$null_time = LP_Datetime::getSqlNullDate();
+
+		$sql = $wpdb->prepare( "
+			UPDATE {$wpdb->learnpress_user_items}
+			SET 
+				start_time_gmt = IF(start_time = %s, %s, DATE_ADD(start_time, INTERVAL %f HOUR)),
+				end_time_gmt = IF(end_time = %s, %s, DATE_ADD(end_time, INTERVAL %f HOUR))
+		", $null_time, $null_time, $offset, $null_time, $null_time, $offset );
 		@$wpdb->query( $sql );
 
 		$sql = $wpdb->prepare( "
 			ALTER TABLE {$wpdb->learnpress_user_items}
-			CHANGE COLUMN `user_id` `user_id` BIGINT(20) NOT NULL DEFAULT '-1' ,
-			CHANGE COLUMN `item_id` `item_id` BIGINT(20) NOT NULL DEFAULT '-1' ;
-		" );
+			CHANGE COLUMN `user_id` `user_id` BIGINT(20) NOT NULL DEFAULT %d ,
+			CHANGE COLUMN `item_id` `item_id` BIGINT(20) NOT NULL DEFAULT %d ;
+		", - 1, - 1 );
 		@$wpdb->query( $sql );
 
 		ob_get_clean();
