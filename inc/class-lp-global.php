@@ -50,6 +50,11 @@ class LP_Global {
 	protected static $_profile = false;
 
 	/**
+	 * @var array
+	 */
+	public static $custom_posts = array();
+
+	/**
 	 * @return LP_Quiz|LP_Lesson
 	 */
 	public static function course_item() {
@@ -181,5 +186,17 @@ class LP_Global {
 	public static function init() {
 		global $profile;
 		self::$_profile = $profile = LP_Profile::instance( get_current_user_id() );
+	}
+
+	/**
+	 * @param $key
+	 *
+	 * @return bool|mixed
+	 */
+	public static function get_custom_posts( $key ) {
+		if ( array_key_exists( $key, self::$custom_posts ) ) {
+			return self::$custom_posts[ $key ];
+		}
+		return false;
 	}
 }

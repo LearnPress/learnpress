@@ -41,7 +41,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * @var string
 		 */
-		protected $_item_type = 'lp_question';
+		protected $_item_type = LP_QUESTION_CPT;
 
 		/**
 		 * @var array

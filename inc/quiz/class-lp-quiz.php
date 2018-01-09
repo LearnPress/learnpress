@@ -30,7 +30,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * @var string
 		 */
-		protected $_item_type = 'lp_quiz';
+		protected $_item_type = LP_QUIZ_CPT;
 
 		/**
 		 * @var array

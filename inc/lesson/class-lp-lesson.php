@@ -33,7 +33,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		/**
 		 * @var string
 		 */
-		protected $_item_type = 'lp_lesson';
+		protected $_item_type = LP_LESSON_CPT;
 
 		/**
 		 * @var int
@@ -43,8 +43,10 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		/**
 		 * LP_Lesson constructor.
 		 *
-		 * @param int          $lesson
-		 * @param array|string $args
+		 * @param $lesson
+		 * @param string $args
+		 *
+		 * @throws Exception
 		 */
 		public function __construct( $lesson, $args = '' ) {
 			parent::__construct( $lesson, $args );
@@ -64,6 +66,8 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 * Read course data, curriculum: sections, items, etc...
 		 *
 		 * @since 3.0.0
+		 *
+		 * @throws Exception
 		 */
 		public function load() {
 			$this->_curd->load( $this );
@@ -103,7 +107,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		/**
 		 * Get LP Lesson.
 		 *
-		 * @param bool  $the_lesson
+		 * @param bool $the_lesson
 		 * @param array $args
 		 *
 		 * @return LP_Lesson|bool
@@ -184,7 +188,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_lesson
-		 * @param  array   $args (default: array())
+		 * @param  array $args (default: array())
 		 *
 		 * @return string
 		 */
