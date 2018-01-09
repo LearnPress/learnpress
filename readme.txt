@@ -200,6 +200,12 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 = 2.1.9.6 =
 + Fixed issue when 2 users do a quiz at the same time
++ Fixed caculate pasing course grade wrong
++ Fixed number student enrolled not corect
++ Fixed bug: display wrong duration of lesson in list of lesson in admin.
++ Remove code not compatible with PHP 7
++ Fixed: conflict with Yoast SEO, content of lesson not auto add paragraph
+
 
 = 2.1.9.5 =
 + Fixed minor bug related to purchase course
