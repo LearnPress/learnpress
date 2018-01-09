@@ -15,7 +15,8 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		if ( ! empty( $_REQUEST['color_schema'] ) ) {
 			update_option( 'learn_press_color_schemas', $_REQUEST['color_schema'] );
 		}
-//learn_press_debug($_REQUEST['color_schema']);die();
+		//learn_press_debug( $_REQUEST['color_schema'] );
+		//die();
 	}
 
 	protected static function get_colors() {
@@ -54,64 +55,56 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		$colors = self::get_colors();
 
 		$schemas = get_option( 'learn_press_color_schemas' );
-		learn_press_debug($schemas);
 
 		if ( ! $schemas ) {
 			$schemas = array( $colors );
 		} else {
 			foreach ( $schemas as $k => $schema ) {
-				if ( empty( $schema[0]['id'] ) ) {
-					$schemas = array( $colors );
-				}
 				$schemas[ $k ] = $colors;
 				foreach ( $colors as $m => $options ) {
-
-					if(array_key_exists($options['id'] ,$schema)){
-					    $schemas[$k][$m]['std'] = $schema[$options['id']];
-                    }
+					if ( array_key_exists( $options['id'], $schema ) ) {
+						$schemas[ $k ][ $m ]['std'] = $schema[ $options['id'] ];
+					}
 				}
 			}
 		}
-		learn_press_debug($schemas);
+
+		$schemas = array_values($schemas);
 
 		?>
         <div id="color-schemas">
 			<?php foreach ( $schemas as $k => $schema ) { ?>
-                <table class="color-schemas<?php echo $k == 0 ? ' current' : ''; ?>">
-                    <tbody>
-					<?php foreach ( $schema as $option ) {
-						$name = 'color_schema[' . $k . '][' . $option['id'] . ']';
-						$std  = ! empty( $option['std'] ) ? $option['std'] : '';
-						?>
-                        <tr>
-                            <th><?php echo $option['title']; ?></th>
+                <div class="color-schemas<?php echo $k == 0 ? ' current' : ''; ?>">
+                    <table>
+                        <tbody>
+						<?php foreach ( $schema as $option ) {
+							$name = 'color_schema[' . $k . '][' . $option['id'] . ']';
+							$std  = ! empty( $option['std'] ) ? $option['std'] : '';
+							?>
+                            <tr>
+                                <th><?php echo $option['title']; ?></th>
 
-                            <td class="color-selector">
-                                <input name="<?php echo $name; ?>" value="<?php echo $std; ?>">
-                            </td>
-                        </tr>
-					<?php } ?>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="2">
-							<?php if ( $k == 0 ) { ?>
-                                <button class="button clone-schema"
-                                        type="button"><?php _e( 'Save as new', 'learnpress' ); ?></button>
-							<?php } ?>
-                            <a class="apply-schema" href=""><?php _e( 'Use this colors', 'learnpress' ); ?></a>
-                            <a class="remove-schema" href=""><?php _e( 'Delete', 'learnpress' ); ?></a>
-                        </td>
-                    </tr>
-                    </tfoot>
-                </table>
+                                <td class="color-selector">
+                                    <input name="<?php echo $name; ?>" value="<?php echo $std; ?>">
+                                </td>
+                            </tr>
+						<?php } ?>
+                        </tbody>
+                    </table>
+                    <p>
+                        <button class="button clone-schema"
+                                type="button"><?php _e( 'Save as new', 'learnpress' ); ?></button>
+                        <a class="apply-schema" href=""><?php _e( 'Use this colors', 'learnpress' ); ?></a>
+                        <a class="remove-schema" href=""><?php _e( 'Delete', 'learnpress' ); ?></a>
+                    </p>
+                </div>
 			<?php } ?>
         </div>
         <script type="text/javascript">
             jQuery(function ($) {
 
-                var $btn = $('.clone-schema').on('click', function () {
-                    var $src = $(this).closest('table'),
+                var $btn = $('.color-schemas').on('click', '.clone-schema', function () {
+                    var $src = $(this).closest('.color-schemas'),
                         $dst = $src.clone().find('.clone-schema').remove().end().insertAfter($src).removeClass('current'),
                         $colorPickers = $dst.find('.wp-picker-container');
                     $colorPickers.each(function () {
@@ -138,15 +131,17 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 
                 $(document).on('click', '.remove-schema', function (e) {
                     e.preventDefault();
-                    $(this).closest('table').remove();
+                    $(this).closest('.color-schemas').remove();
                 }).on('click', '.apply-schema', function (e) {
                     e.preventDefault();
-                    var $current = $('.color-schemas.current:first').find('tbody'),
-                        $btn = $(this);
+                    var $current = $('.color-schemas.current:first'),
+                        $btn = $(this),
+                        $new = $btn.closest('.color-schemas');
 
-                    $btn.closest('table').find('tbody').insertAfter($current);
+                    //$btn.closest('.color-schemas').insertAfter($current);
 
-                    $current.appendTo($btn.closest('table'));
+                    $current.insertAfter($new).removeClass('current');
+                    $current.parent().prepend($new.addClass('current'));
                 });
 
                 $('#color-schemas').find('.color-selector input').wpColorPicker();
