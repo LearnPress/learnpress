@@ -60,6 +60,9 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 			return $lesson_id;
 		}
 
+		/**
+		 * @param object $lesson
+		 */
 		public function update( &$lesson ) {
 			// TODO: Implement update() method.
 		}
@@ -133,7 +136,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 
 			$lesson->set_data(
 				array(
-					'preview'  => get_post_meta( $id, '_lp_preview', true )
+					'preview' => get_post_meta( $id, '_lp_preview', true )
 				)
 			);
 

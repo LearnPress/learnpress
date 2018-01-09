@@ -74,7 +74,7 @@ class LP_Checkout {
 	 * Process customer when checking out.
 	 *
 	 * @param array $result
-	 * @param int   $order_id
+	 * @param int $order_id
 	 *
 	 * @return mixed
 	 */
@@ -113,8 +113,7 @@ class LP_Checkout {
 			}
 
 			$order->save();
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			if ( $ex->getCode() && $message = $ex->getMessage() ) {
 				$result['message'] = $message;
 			}
@@ -142,8 +141,8 @@ class LP_Checkout {
 	}
 
 	/**
-	 * @param array       $errors
-	 * @param array       $fields
+	 * @param array $errors
+	 * @param array $fields
 	 * @param LP_Checkout $checkout
 	 *
 	 * @return array
@@ -322,14 +321,16 @@ class LP_Checkout {
 
 			// Third-party add meta data
 			do_action( 'learn-press/checkout/update-order-meta', $order_id );
+			// @deprecated
+			do_action( 'learn_press_checkout_update_order_meta', $order_id );
+
 
 			if ( ! $order_id || is_wp_error( $order_id ) ) {
 				learn_press_add_message( __( 'Checkout. Create order failed!', 'learnpress' ) );
 			}
 			$wpdb->query( 'COMMIT' );
 
-		}
-		catch ( Exception $e ) {
+		} catch ( Exception $e ) {
 			// There was an error adding order data!
 			$wpdb->query( 'ROLLBACK' );
 			learn_press_add_message( $e->getMessage() );
@@ -609,8 +610,7 @@ class LP_Checkout {
 					}
 				}
 			}
-		}
-		catch ( Exception $e ) {
+		} catch ( Exception $e ) {
 			$has_error = $e->getMessage();
 			learn_press_add_message( $has_error, 'error' );
 		}
