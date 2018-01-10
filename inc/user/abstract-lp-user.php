@@ -2035,7 +2035,7 @@ class LP_Abstract_User {
 			$user_course_info[ $this->id ] = array();
 		}
 		if ( $course_id && ! array_key_exists( $course_id, $user_course_info[ $this->id ] ) || $force ) {
-			if ( $result = learn_press_get_user_courses_info( $this->id, array( $course_id ) ) ) {
+		    if ( $result = learn_press_get_user_courses_info( $this->id, array( $course_id ), $force ) ) {
 				foreach ( $result as $cid => $data ) {
 					$user_course_info[ $this->id ][ $cid ] = $data;
 				}

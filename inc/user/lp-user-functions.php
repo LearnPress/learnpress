@@ -1340,24 +1340,27 @@ function learn_press_get_avatar_thumb_size() {
  *
  * @return mixed
  */
-function learn_press_get_user_courses_info( $user_id, $course_ids ) {
+function learn_press_get_user_courses_info( $user_id, $course_ids, $force=false ) {
 	global $wpdb;
 	$user_course_info = LP_Cache::get_course_info( false, array() );
 
 	if ( $user_id ) {
-	    if(!array_key_exists($user_id, $user_course_info)) {
+	    if(!array_key_exists($user_id, $user_course_info) || $force == true) {
 		    settype( $course_ids, 'array' );
 		    $format = array( $user_id );
-		    $format = array_merge( $format, $course_ids, array( 'lp_course' ) );
+		    $format = array_merge( $format, $course_ids, array( LP_COURSE_CPT,LP_ORDER_CPT ) );
 		    $in     = array_fill( 0, sizeof( $course_ids ), '%d' );
 		    $query  = $wpdb->prepare( "
-			SELECT uc.*
-			FROM {$wpdb->prefix}learnpress_user_items uc
-			INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
-			WHERE uc.user_id = %d AND uc.status IS NOT NULL
-			AND uc.item_id IN(" . join( ',', $in ) . ") AND uc.item_type = %s
-			ORDER BY user_item_id DESC
-		", $format );
+                        	SELECT uc.*
+                        	FROM {$wpdb->prefix}learnpress_user_items uc
+                        	INNER JOIN {$wpdb->posts} c ON c.ID = uc.item_id
+                         INNER JOIN {$wpdb->posts} o ON o.ID = uc.ref_id
+                        	WHERE uc.user_id = %d AND uc.status IS NOT NULL
+                            AND uc.item_id IN(" . join( ',', $in ) . ") 
+                            AND uc.item_type = %s 
+                            AND uc.ref_type = %s
+                        	ORDER BY user_item_id DESC
+                    ", $format );
 		    if ( empty( $user_course_info[ $user_id ] ) ) {
 			    $user_course_info[ $user_id ] = array();
 		    }
