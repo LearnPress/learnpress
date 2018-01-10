@@ -40,9 +40,9 @@ $passing_condition = $course->get_passing_condition();
 
         <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items('', false) ); ?></span>
 
-        <div class="lp-course-progress">
-            <div class="lp-progress-bar">
-                <div class="lp-progress-value"
+        <div class="learn-press-progress lp-course-progress">
+            <div class="progress-bg lp-progress-bar">
+                <div class="progress-active lp-progress-value"
                      style="left: <?php echo $course_results['count_items'] ? absint( $course_results['completed_items'] / $course_results['count_items'] * 100 ) : 0; ?>%;">
                 </div>
             </div>
@@ -55,9 +55,6 @@ $passing_condition = $course->get_passing_condition();
 		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/result-heading', __( 'Course results', 'learnpress' ) ) ) ) { ?>
             <h4 class="lp-course-progress-heading">
 				<?php esc_html( $heading ); ?>
-				<?php if ( $tooltip = learn_press_get_course_results_tooltip( $course->get_id() ) ) { ?>
-                    <span class="learn-press-tooltip" data-content="<?php echo esc_html( $tooltip ); ?>"></span>
-				<?php } ?>
             </h4>
 		<?php } ?>
 
@@ -71,11 +68,11 @@ $passing_condition = $course->get_passing_condition();
 			<?php } ?>
         </div>
 
-        <div class="lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>"
+        <div class="learn-press-progress lp-course-progress <?php echo $course_data->is_passed() ? ' passed' : ''; ?>"
              data-value="<?php echo $course_results['result']; ?>"
              data-passing-condition="<?php echo $passing_condition; ?>">
-            <div class="lp-progress-bar">
-                <div class="lp-progress-value" style="left: <?php echo $course_results['result']; ?>%;">
+            <div class="progress-bg lp-progress-bar">
+                <div class="progress-active lp-progress-value" style="left: <?php echo $course_results['result']; ?>%;">
                 </div>
             </div>
             <div class="lp-passing-conditional"

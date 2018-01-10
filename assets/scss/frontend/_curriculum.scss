@@ -315,7 +315,6 @@ ul.learn-press-nav-tabs {
                 }
 
                 &.has-status {
-                    border-color: #DDD;
                     padding-top: 1px;
                     &.status-started {
                         &:before {
@@ -495,7 +494,7 @@ body {
                 }
             }
         }
-        .learn-press-content-protected-message{
+        .learn-press-content-protected-message {
             margin-bottom: 50px;
             padding: 20px;
             background: #ffe0e0;
@@ -572,12 +571,22 @@ body {
 .scroll-wrapper {
     opacity: 0;
     overflow: hidden;
-    .scroll-element.scroll-y.scroll-scrolly_visible {
-        transition: opacity 0.25s;
+    .scroll-element {
+        background: transparent;
+
+        &.scroll-y {
+            &.scroll-scrolly_visible {
+                transition: opacity 0.25s;
+            }
+        }
     }
     &:hover {
-        .scroll-element.scroll-y.scroll-scrolly_visible {
-            opacity: 0.7;
+        .scroll-element {
+            &.scroll-y {
+                &.scroll-scrolly_visible {
+                    opacity: 0.7;
+                }
+            }
         }
     }
 }
@@ -669,9 +678,9 @@ body {
     }
 }
 
-.course-remaining-time{
-    .lp-label{
-        &.label-enrolled{
+.course-remaining-time {
+    .lp-label {
+        &.label-enrolled {
             font-size: inherit;
         }
     }
@@ -690,13 +699,11 @@ body {
         }
         .lp-progress-bar {
             height: 10px;
-            background: #DDD;
             border-radius: 5px;
             overflow: hidden;
             position: relative;
             .lp-progress-value {
                 height: 10px;
-                background-color: #3eadff;
                 border-radius: 5px;
                 margin-left: -100%;
                 position: absolute;
@@ -769,10 +776,10 @@ body {
             line-height: 30px;
             font-size: 15px;
             right: 15px;
+            color: #777;
             &:after {
                 font-family: fontawesome;
                 content: "\f002";
-                color: #777;
             }
         }
         &.has-keyword {

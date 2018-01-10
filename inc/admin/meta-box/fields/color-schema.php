@@ -8,38 +8,41 @@
 class RWMB_Color_Schema_Field extends RWMB_Field {
 
 	public static function init() {
+		add_action( 'init', array( __CLASS__, 'reset' ) );
 		add_action( 'learn-press/update-settings/updated', array( __CLASS__, 'update' ) );
+	}
+
+	public static function reset() {
+		if ( ( $nonce = LP_Request::get_string( 'reset-color' ) ) && wp_verify_nonce( $nonce, 'reset-color' ) ) {
+			if ( $schemas = get_option( 'learn_press_color_schemas' ) ) {
+				foreach ( $schemas as $k => $schema ) {
+
+					$colors = self::get_colors();
+					foreach ( $colors as $m => $options ) {
+						if ( array_key_exists( $options['id'], $schema ) ) {
+							$schemas[ $k ][ $options['id'] ] = isset( $options['std'] ) ? $options['std'] : '';
+						}
+					}
+
+					// Clear the first schema only!
+					break;
+				}
+				update_option( 'learn_press_color_schemas', $schemas );
+			}
+
+			wp_redirect( remove_query_arg( 'reset-color' ) );
+			exit();
+		}
 	}
 
 	public static function update() {
 		if ( ! empty( $_REQUEST['color_schema'] ) ) {
 			update_option( 'learn_press_color_schemas', $_REQUEST['color_schema'] );
 		}
-		//learn_press_debug( $_REQUEST['color_schema'] );
-		//die();
 	}
 
 	protected static function get_colors() {
-		$colors = array(
-			array(
-				'title' => __( 'Popup heading background', 'learnpress' ),
-				'id'    => 'popup-heading-bg'
-			),
-			array(
-				'title' => __( 'Section heading background', 'learnpress' ),
-				'id'    => 'section-heading-bg'
-			),
-			array(
-				'title' => __( 'Lines color', 'learnpress' ),
-				'id'    => 'lines-color'
-			),
-			array(
-				'title' => __( 'Section heading color', 'learnpress' ),
-				'id'    => 'section-heading-color'
-			)
-		);
-
-		return $colors;
+		return learn_press_get_color_schemas();
 	}
 
 	/**
@@ -69,7 +72,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 			}
 		}
 
-		$schemas = array_values($schemas);
+		$schemas = array_values( $schemas );
 
 		?>
         <div id="color-schemas">
@@ -94,6 +97,8 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
                     <p>
                         <button class="button clone-schema"
                                 type="button"><?php _e( 'Save as new', 'learnpress' ); ?></button>
+                        <a class="button reset-schema"
+                           href="<?php echo add_query_arg( 'reset-color', wp_create_nonce( 'reset-color' ) ); ?>"><?php _e( 'Reset', 'learnpress' ); ?></a>
                         <a class="apply-schema" href=""><?php _e( 'Use this colors', 'learnpress' ); ?></a>
                         <a class="remove-schema" href=""><?php _e( 'Delete', 'learnpress' ); ?></a>
                     </p>
@@ -118,7 +123,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 
                 });
 
-                $($btn[0].form).on('submit', function () {
+                $('form').on('submit', function () {
                     $('.color-schemas').each(function (i, el) {
                         $(el).find('input').each(function () {
                             var $input = $(this),
@@ -137,9 +142,6 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
                     var $current = $('.color-schemas.current:first'),
                         $btn = $(this),
                         $new = $btn.closest('.color-schemas');
-
-                    //$btn.closest('.color-schemas').insertAfter($current);
-
                     $current.insertAfter($new).removeClass('current');
                     $current.parent().prepend($new.addClass('current'));
                 });
