@@ -497,7 +497,9 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = false ) {
 	$force=false;
 	if ( did_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" ) && ! $force ) {
-		return;
+		// Fixed issue with quiz status when 2 user do a quiz at the same time
+		// @since 2.1.9.5
+		//return;
 	}
 	global $wpdb;
 	if ( ! $course_id ) {
