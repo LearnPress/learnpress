@@ -47,7 +47,10 @@ if ( !class_exists( 'LP_Multi_Language' ) ) {
 		 *
 		 * @return array
 		 */
-		public static function plugin_links( $links ) {
+		public static function plugin_links( $links=array() ) {
+		    if(!is_array($links)){
+		        $links = $links ? array($links): array();
+		    }
 			$links[] = '<a href="https://github.com/LearnPress/LearnPress/wiki">' . __( 'Documentation', 'learnpress' ) . '</a>';
 			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn-press-addons' . '">' . __( 'Add-ons', 'learnpress' ) . '</a>';
 

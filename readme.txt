@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
 Tested up to: 4.9.1
-Stable tag: 2.1.9.5
+Stable tag: 2.1.9.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,8 +19,6 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 LearnPress is free and always be free, but it has premium high quality WordPress Plugin which will probably help you make money from your **WordPress based LMS**, try and see how it is. LearnPress WordPress Online Course plugin is lightweight but super powerful with lots of add-ons to empower its core system.
 
 > **10 Days Left - Limited Time Offer**
-
-> [Click here](http://eepurl.com/cbKSQX) to get a coupon for 25% Off all Learnpress Add-ons
 
 > Or you can buy [Education WP Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) for only $64 and get all of theme.
 
@@ -200,6 +198,12 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 = 2.1.9.6 =
 + Fixed issue when 2 users do a quiz at the same time
++ Fixed caculate pasing course grade wrong
++ Fixed number student enrolled not corect
++ Fixed bug: display wrong duration of lesson in list of lesson in admin.
++ Remove code not compatible with PHP 7
++ Fixed: conflict with Yoast SEO, content of lesson not auto add paragraph
+
 
 = 2.1.9.5 =
 + Fixed minor bug related to purchase course

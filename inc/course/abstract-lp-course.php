@@ -330,7 +330,7 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return mixed
 	 */
-	public function count_users_enrolled( $count_db = '' ) {
+	public function count_users_enrolled( $count_db = 'append' ) {
 
 		// Get students enrolled from settings of the course that owns course want to show
 		// So, if this value is set that means the result is fake ... :)
@@ -359,8 +359,14 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_users_enrolled( $force = false ) {
 		$this->_count_users = LP_Cache::get_enrolled_courses( $this->id );
-
-		return $this->_count_users;
+        if( false === $this->_count_users ) {
+            self::$course_users = _learn_press_count_users_enrolled_courses( array( $this->id ) );
+            if(isset(self::$course_users[$this->id])){
+                $this->_count_users = self::$course_users[ $this->id ];
+            }
+        }
+		
+        return $this->_count_users;
 		/*
 		if ( ( $this->_count_users === null && !array_key_exists( $this->id, self::$course_users ) ) || $force ) {
 			self::$course_users = _learn_press_count_users_enrolled_courses( array( $this->id ) );
