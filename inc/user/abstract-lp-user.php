@@ -1289,7 +1289,7 @@ class LP_Abstract_User {
 		$lp_order = learn_press_get_order( $order_id );
 
 		if ( is_object( $course )/* && $order_id && $lp_order->post_status == 'lp-completed'*/ ) {
-			if ( $this->has( 'enrolled-course', $course_id, true ) || $this->has( 'finished-course', $course_id, true ) ) {
+			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
 			} elseif ( $lesson->is( 'previewable' ) || $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
@@ -1558,12 +1558,12 @@ class LP_Abstract_User {
 		_learn_press_parse_user_item_statuses( $this->id, $course_id, $force );
 		$enrolled = false;
 		if ( $this->has_purchased_course( $course_id ) ) {
-			$item_statuses = LP_Cache::get_item_statuses( false, array() );
-			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id );
-			if ( ! array_key_exists( $key, $item_statuses ) ) {
-				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id, $order_id );
-				LP_Cache::set_item_statuses( $item_statuses );
-			} elseif ( ! empty( $item_statuses[ $key ] ) && $item_statuses[ $key ] != '' ) {
+			$enrolled_courses    = LP_Cache::get_enrolled_courses( false, array() );
+			$key                 = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id );
+			if ( ! array_key_exists( $key, $enrolled_courses ) ) {
+			    $enrolled = $enrolled_courses[ $key ] = $this->_has_enrolled_course( $course_id, $order_id );
+			    LP_Cache::set_enrolled_courses( $enrolled_courses );
+			} elseif ( ! empty( $enrolled_courses[ $key ] ) && $enrolled_courses[ $key ] != '' ) {
 				$enrolled = true;
 			}
 		}
@@ -1607,43 +1607,33 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_finished_course( $course_id, $force = false ) {
-		$item_statuses = LP_Cache::get_item_statuses( false, array() );
-		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
+		$finished_courses = LP_Cache::get_finished_courses( false, array() );
+		$key           = sprintf( '%d-%d', $this->id, $course_id );
 		$finished      = 'no';
-		if ( ! empty( $item_statuses ) && array_key_exists( $key, $item_statuses ) && ! $force ) {
-			$finished = ( $item_statuses[ $key ] == 'finished' ) ? 'yes' : 'no';
+		if ( ! empty( $finished_courses ) && array_key_exists( $key, $finished_courses ) && ! $force ) {
+		    $finished = ( $finished_courses[ $key ] == 'finished' ) ? 'yes' : 'no';
 		} else {
 			global $wpdb;
-			$query                 = $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}learnpress_user_items where user_id=%d and item_id=%d AND item_type = %s ORDER BY user_item_id DESC", $this->id, $course_id, LP_COURSE_CPT );
-			$item_statuses[ $key ] = $wpdb->get_var( $query );
-			$finished              = $item_statuses[ $key ] == 'finished' ? 'yes' : 'no';
-
-			LP_Cache::set_item_statuses( $item_statuses );
-		}
-
-		return apply_filters( 'learn_press_user_has_finished_course', $finished == 'yes', $this, $course_id );
-
-
-		//static $courses = array();
-		$finished_courses = LP_Cache::get_finished_courses( false, array() );
-		if ( empty( $finished_courses[ $course_id ] ) || $force ) {
-			global $wpdb;
-			$query                          = $wpdb->prepare( "
-				SELECT status
-				FROM {$wpdb->prefix}learnpress_user_items uc
-				INNER JOIN {$wpdb->posts} c ON c.ID = uc.item_id
-				INNER JOIN {$wpdb->posts} o ON o.ID = uc.ref_id
-				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
-				WHERE uc.user_id = %d
-				AND uc.item_id = %d
-				AND o.post_status = %s
-				ORDER BY user_item_id DESC LIMIT 0,1
-			", '_user_id', $this->id, $this->id, $course_id, 'lp-completed' );
-			$finished_courses[ $course_id ] = $wpdb->get_var( $query ) == 'finished' ? 'yes' : 'no';
+			$sql ="SELECT 
+                        `status`
+                    FROM
+                        {$wpdb->prefix}learnpress_user_items uc
+                            INNER JOIN
+                        {$wpdb->prefix}posts c ON c.ID = uc.item_id
+                            INNER JOIN
+                        {$wpdb->prefix}posts o ON o.ID = uc.ref_id
+                    WHERE
+                        uc.user_id = %d AND uc.item_id = %d
+                            AND uc.item_type = %s
+                            AND uc.ref_type = %s
+                    ORDER BY uc.user_item_id DESC";
+			$query  = $wpdb->prepare( $sql, $this->id, $course_id, LP_COURSE_CPT, LP_ORDER_CPT );
+			$finished_courses[ $key ] = $wpdb->get_var( $query );
 			LP_Cache::set_finished_courses( $finished_courses );
+			$finished  = ($finished_courses[ $key ] == 'finished') ? 'yes' : 'no';
 		}
-
-		return apply_filters( 'learn_press_user_has_finished_course', $finished_courses[ $course_id ] == 'yes', $course_id, $this->id );
+        $has_finished = $finished == 'yes'; 
+        return apply_filters( 'learn_press_user_has_finished_course', $has_finished, $this, $course_id );
 	}
 
 	public function has_passed_course( $course_id ) {
