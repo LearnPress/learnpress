@@ -13,7 +13,7 @@
         <div class="lp-box-data-actions lp-toolbar-buttons">
             <div class="lp-toolbar-btn question-actions">
                 <div class="question-types">
-                    <a href="" class="lp-btn-icon dashicons dashicons-migrate"></a>
+                    <a href="" class="lp-btn-icon dashicons dashicons-randomize"></a>
                     <ul>
                         <li v-for="(type, key) in types" :data-type="key" :class="active(key)">
                             <a href="" @click.prevent="changeType(key)">{{type}}</a>
