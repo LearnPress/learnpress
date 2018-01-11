@@ -530,7 +530,7 @@ function learn_press_get_course_id() {
 		$course_id = get_the_ID();
 	}
 
-	return $course_id;
+	return absint( $course_id );
 }
 
 function learn_press_get_the_course() {

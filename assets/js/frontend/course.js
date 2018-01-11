@@ -95,6 +95,10 @@
 
             $chk = $el.closest('.answer-option').find('input.option-check');
 
+            if(!$chk.length){
+                return;
+            }
+
             if ($chk.is(':disabled')) {
                 return;
             }

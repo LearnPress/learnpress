@@ -257,7 +257,7 @@ ul.learn-press-courses {
         border-bottom-left-radius: 5px;
     }
     &.error {
-        &:before{
+        &:before {
             background: #d85554;
         }
         &.icon {
@@ -337,6 +337,10 @@ ul.list-table-nav {
         flex: 1;
         span {
             display: block;
+            font-weight: bold;
+        }
+        a{
+            color: #999999;
         }
     }
     .next {

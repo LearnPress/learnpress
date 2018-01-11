@@ -68,8 +68,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function views_plugins( $views ) {
 			global $s;
 
-			$all_plugins = apply_filters( 'all_plugins', get_plugins() );
-			$search      = array_filter( $all_plugins, array( $this, '_search_callback' ) );
+			$search = $this->get_addons();
 
 			if ( $s && false !== stripos( $s, 'learnpress' ) ) {
 				$views['learnpress'] = sprintf(
@@ -86,7 +85,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					sizeof( $search )
 				);
 			}
+
 			return $views;
+		}
+
+		public function get_addons() {
+			$all_plugins = apply_filters( 'all_plugins', get_plugins() );
+
+			return array_filter( $all_plugins, array( $this, '_search_callback' ) );
 		}
 
 		/**
@@ -653,6 +659,23 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-updater.php';
 			include_once 'class-lp-install-sample-data.php';
 		}
+
+		/**
+		 * Get single instance of self
+		 *
+		 * @since 3.0.0
+		 *
+		 * @return bool|LP_Admin
+		 */
+		public static function instance() {
+			static $instance = false;
+			if ( ! $instance ) {
+				$instance = new self();
+			}
+
+			return $instance;
+		}
 	}
 } // End class LP_Admin
-return new LP_Admin();
+
+return LP_Admin::instance();
