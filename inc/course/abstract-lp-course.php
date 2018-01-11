@@ -1629,7 +1629,7 @@ abstract class LP_Abstract_Course {
 			unset( $course_info['items'] );
 		}
 		$output = array(
-			'root_url'     => trailingslashit( get_site_url() ),
+			'root_url'     => trailingslashit( get_home_url() ),
 			'id'           => $this->id,
 			'url'          => $this->get_permalink(),
 			'results'      => $this->evaluate_course_results( $user->id ),// $this->get_course_info( $args['user_id'] ),
@@ -1658,7 +1658,7 @@ abstract class LP_Abstract_Course {
 				'field_format' => array( '%d', '%s', '%s', '%d' )
 			)
 		);
-		$root_url = trailingslashit( get_site_url() );
+		$root_url = trailingslashit( get_home_url() );
 		if ( $items ) {
 			foreach ( $items as $k => $item ) {
 				if ( ( $view = $user->can( 'view-item', $item['id'], $this->id ) ) !== false ) {

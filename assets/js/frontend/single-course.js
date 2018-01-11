@@ -381,7 +381,6 @@ if (typeof LearnPress === 'undefined') {
 				return;
 			}
 			this.cached[hash] = Math.random();
-			//console.log('push:' + hash)
 		},
 		_expand            : function (e) {
 			e && e.preventDefault();
@@ -442,7 +441,6 @@ if (typeof LearnPress === 'undefined') {
 				$content = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />');
 				this.currentItem.set('content', $content);
 			}
-
 			that.viewItem(id);
 			this.$('#popup-content-inner').html($content);
 			if (isNew) {
