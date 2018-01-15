@@ -107,6 +107,27 @@
             }
         }
     }
+    .lp-item-assigned {
+        font-size: 14px;
+        a{
+            text-decoration: none;
+        }
+        ul {
+            margin-bottom: 0;
+            ul {
+                strong{
+                    font-weight: normal;
+                }
+            }
+        }
+        li {
+            margin: 0;
+            a {
+                margin-bottom: 10px;
+                display: inline-block;
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 1280px) {

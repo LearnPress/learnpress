@@ -533,6 +533,43 @@ function learn_press_get_course_id() {
 	return absint( $course_id );
 }
 
+/**
+ * Get the permalink of a course
+ *
+ * @since 3.0.0
+ *
+ * @param int $course_id
+ *
+ * @return string
+ */
+function learn_press_get_course_permalink( $course_id = 0 ) {
+	if ( $course = learn_press_get_course( $course_id ) ) {
+		return $course->get_permalink();
+	}
+
+	return false;
+}
+
+
+/**
+ * Get the permalink of a item in a course
+ *
+ * @since 3.0.0
+ *
+ * @param int $course_id
+ * @param int $item_id
+ *
+ * @return string
+ */
+function learn_press_get_course_item_permalink( $course_id = 0, $item_id = 0 ) {
+	if ( $course = learn_press_get_course( $course_id ) ) {
+		return $course->get_item_link( $item_id );
+	}
+
+	return false;
+}
+
+
 function learn_press_get_the_course() {
 	static $course;
 	if ( ! $course ) {
