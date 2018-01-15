@@ -1359,6 +1359,7 @@ function learn_press_get_user_courses_info( $user_id, $course_ids, $force=false 
                             AND uc.item_id IN(" . join( ',', $in ) . ") 
                             AND uc.item_type = %s 
                             AND uc.ref_type = %s
+                            AND o.post_status = 'lp-completed'
                         	ORDER BY user_item_id DESC
                     ", $format );
 		    if ( empty( $user_course_info[ $user_id ] ) ) {
