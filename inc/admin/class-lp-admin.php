@@ -115,7 +115,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function init() {
-			$this->_get_static_pages();
 		}
 
 		/**
@@ -218,7 +217,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					'learnpress'          => array(),
 					'WooCommerce'         => array(),
 					'Paid Membership Pro' => array(),
-					'BuddyPress'
+					'BuddyPress'          => array()
 				);
 				$all_pages           = array(
 					'courses'          => __( 'Courses', 'learnpress' ),
@@ -302,7 +301,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return mixed
 		 */
 		public function views_pages( $actions ) {
-
+			$this->_get_static_pages();
 			if ( $pages = $this->_get_static_pages( 'learnpress' ) ) {
 				$text = sprintf( __( 'LearnPress Pages (%d)', 'learnpress' ), sizeof( $pages ) );
 				if ( 'yes' !== LP_Request::get( 'lp-page' ) ) {

@@ -304,6 +304,10 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 			return array_key_exists( 'is_true', $this->_data ) && $this->_data['is_true'] === 'yes';
 		}
 
+		public function get_id() {
+			return isset( $this->_data['question_answer_id'] ) ? $this->_data['question_answer_id'] : 0;
+		}
+
 		/**
 		 * CSS class for option
 		 *
@@ -402,6 +406,10 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 
 		public function get_data() {
 			return $this->_data;
+		}
+
+		public function get_meta( $key, $single = true ) {
+			return learn_press_get_question_answer_meta( $this->get_id(), $key, $single );
 		}
 
 		public function __toString() {

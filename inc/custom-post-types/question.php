@@ -36,6 +36,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param mixed
 		 */
 		public function __construct( $post_type, $args = '' ) {
+
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'edit_form_after_editor', array( __CLASS__, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );

@@ -366,11 +366,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			// question data
 			$data = array(
-				'data'  => array(
-					'answer_data' => serialize( array(
-							'text'    => stripslashes( $answer['text'] ),
-							'value'   => isset( $answer['value'] ) ? $answer['value'] : '',
-							'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
+				'data'  => apply_filters(
+					'learn-press/question/update-answer-data',
+					array(
+						'answer_data' => serialize( array(
+								'text'    => stripslashes( $answer['text'] ),
+								'value'   => isset( $answer['value'] ) ? $answer['value'] : '',
+								'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
+							)
 						)
 					)
 				),
@@ -387,6 +390,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				array( '%s', '%s', '%s' ),
 				array( '%d', '%d', '%d' )
 			);
+
+			do_action( 'learn-press/question/updated-answer-data', $question_id, $answer['question_answer_id'], $answer );
 
 			return $update;
 		}
@@ -687,7 +692,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Convert default answers.
 		 *
-		 * @param $question LP_Question
+		 * @param $question     LP_Question
 		 * @param $new_question LP_Question
 		 * @param $answers
 		 *
@@ -728,7 +733,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string $question_type
-		 * @param array $args
+		 * @param array  $args
 		 *
 		 * @return array|bool
 		 */

@@ -56,7 +56,7 @@ class LP_Debug {
 	}
 
 	public function init() {
-		add_action( 'shutdown', array( $this, 'output' ) );
+		//add_action( 'shutdown', array( $this, 'output' ) );
 	}
 
 	public static function is_enable_log() {
