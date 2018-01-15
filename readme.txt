@@ -196,6 +196,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 2.1.9.7 =
++ Fixed bug: get Invalid Post Type error when click link in LearnPress Status widget in Dashboard  
++ Cannot enroll course again when order is move to trash
 
 = 2.1.9.6 =
 + Fixed issue when 2 users do a quiz at the same time
