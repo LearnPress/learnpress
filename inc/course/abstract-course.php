@@ -1666,7 +1666,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'field_format' => array( '%d', '%s', '%s', '%d' )
 				)
 			);
-			$root_url = trailingslashit( get_site_url() );
+			$root_url = trailingslashit( get_home_url() );
 			if ( $items ) {
 				foreach ( $items as $k => $item ) {
 					if ( ( $view = $user->can( 'view-item', $item['id'], $this->get_id() ) ) !== false ) {

@@ -74,12 +74,14 @@ class LP_Global {
 	}
 
 	/**
-	 * @return LP_Course|bool
+	 * @param bool $id
+	 *
+	 * @return LP_Course|bool|int
 	 */
-	public static function course() {
+	public static function course( $id = false ) {
 		global $lp_course;
 
-		return is_a( $lp_course, 'LP_Course' ) ? $lp_course : false;
+		return is_a( $lp_course, 'LP_Course' ) ? ( $id ? $lp_course->get_id() : $lp_course ) : false;
 	}
 
 	public static function set_course( $course ) {
@@ -88,7 +90,6 @@ class LP_Global {
 		if ( self::$_course === false ) {
 			self::$_course = $lp_course;
 		}
-
 		$lp_course = $course;
 	}
 
@@ -197,6 +198,7 @@ class LP_Global {
 		if ( array_key_exists( $key, self::$custom_posts ) ) {
 			return self::$custom_posts[ $key ];
 		}
+
 		return false;
 	}
 }

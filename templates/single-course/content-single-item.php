@@ -14,6 +14,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+die(__FILE__);
 
 do_action( 'learn-press/before-main-content' );
 
@@ -28,7 +29,7 @@ do_action( 'learn-press/before-single-item' );
 	 * @see learn_press_course_curriculum_tab()
 	 * @see learn_press_single_course_content_item()
 	 */
-	do_action( 'learn-press/single-item-summary' );
+	////do_action( 'learn-press/single-item-summary' );
 	?>
 </div>
 <?php

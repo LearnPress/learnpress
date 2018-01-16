@@ -691,13 +691,14 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 		if ( $question = $quiz->get_viewing_question() ) {
 			$course      = LP_Global::course();
 			$user        = LP_Global::user();
+			$answered    = false;
 			$course_data = $user->get_course_data( $course->get_id() );
-			$user_quiz   = $course_data->get_item_quiz( $quiz->get_id() );
 
-			$answered = $user_quiz->get_question_answer( $question->get_id() );
-
-			$question->show_correct_answers( $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() ) ? 'yes' : false );
-			$question->disable_answers( $user_quiz->get_status() == 'completed' ? 'yes' : false );
+			if ( $user_quiz = $course_data->get_item_quiz( $quiz->get_id() ) ) {
+				$answered = $user_quiz->get_question_answer( $question->get_id() );
+				$question->show_correct_answers( $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() ) ? 'yes' : false );
+				$question->disable_answers( $user_quiz->get_status() == 'completed' ? 'yes' : false );
+			}
 
 			$question->render( $answered );
 		}
@@ -1199,15 +1200,18 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {
 		$args = array();
+        echo 'zzzzzzzzzz',LP_Global::course( true ),','.get_the_ID();
+
+		return $args;
 		if ( $quiz = LP_Global::course_item_quiz() ) {
 			$user           = LP_Global::user();
-			$user_quiz      = $user->get_item_data( $quiz->get_id(), get_the_ID() );
+			$user_quiz      = $user->get_item_data( $quiz->get_id(), LP_Global::course( true ) );
 			$remaining_time = $user_quiz->get_time_remaining();
 			$args           = array(
 				'id'            => $quiz->get_id(),
 				'totalTime'     => $quiz->get_duration()->get(),
 				'remainingTime' => $remaining_time ? $remaining_time->get() : $quiz->get_duration()->get(),
-				'status'        => $user->get_item_status( $quiz->get_id(), get_the_ID() )
+				'status'        => $user->get_item_status( $quiz->get_id(), LP_Global::course( true ) )
 			);
 		}
 
@@ -2049,12 +2053,15 @@ function learn_press_setup_object_data( $post ) {
 	}
 
 	if ( $post->post_type == LP_COURSE_CPT ) {
+		///echo "123456";learn_press_debug($post, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
 		}
 		$object                = learn_press_get_course( $post );
 		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
 	}
+
 
 	return $object;
 }

@@ -505,7 +505,6 @@ class LP_Page_Controller {
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
 		ob_start();
-
 		/**
 		 * Display template of content item if user is viewing course's item.
 		 * Otherwise, display template of course.
@@ -518,7 +517,7 @@ class LP_Page_Controller {
 
 		$content = ob_get_clean();
 		remove_filter( 'the_content', 'wpautop' );
-		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
+		//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 
 		return $content;
 	}

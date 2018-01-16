@@ -636,7 +636,10 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return LP_User_Item_Quiz|bool
 	 */
 	public function get_item_quiz( $id ) {
-		return ! empty( $this->_items[ $id ] ) ? $this->_items[ $id ] : false;
+
+		$item = ! empty( $this->_items[ $id ] ) ? $this->_items[ $id ] : new LP_User_Item_Quiz( array() );
+
+		return $item;
 	}
 
 	/**
@@ -649,7 +652,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		if ( $course = $this->get_course() ) {
 			$item    = false;
 			$js_args = array(
-				'root_url'     => trailingslashit( get_site_url() ),
+				'root_url'     => trailingslashit( get_home_url() ),
 				'id'           => $course->get_id(),
 				'url'          => $course->get_permalink(),
 				'result'       => $this->get_results(),

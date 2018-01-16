@@ -421,18 +421,18 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			try {
 				// Validate course and quiz
 				if ( false === ( $course_id = $this->_verify_course_item( $quiz_id, $course_id ) ) ) {
-					throw new Exception( __( 'Course is not exists or does not contain the quiz', 'learnpress'  ), LP_INVALID_QUIZ_OR_COURSE );
+					throw new Exception( __( 'Course is not exists or does not contain the quiz', 'learnpress' ), LP_INVALID_QUIZ_OR_COURSE );
 				}
 
 				// If user has already finished the course
 				if ( $this->has_finished_course( $course_id ) ) {
-					throw new Exception(  __( 'User has already finished course of this quiz', 'learnpress' ), LP_COURSE_IS_FINISHED );
+					throw new Exception( __( 'User has already finished course of this quiz', 'learnpress' ), LP_COURSE_IS_FINISHED );
 
 				}
 
 				// Check if user has already started or completed quiz
 				if ( $this->has_item_status( array( 'completed' ), $quiz_id, $course_id ) ) {
-					throw new Exception(  __( 'User has completed quiz', 'learnpress' ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
+					throw new Exception( __( 'User has completed quiz', 'learnpress' ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 				}
 
 				$user_quiz = $this->get_item_data( $quiz_id, $course_id );
@@ -2957,7 +2957,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
 
-			return $quiz_data->has_checked_question( $question_id );
+			return $quiz_data ? $quiz_data->has_checked_question( $question_id ) : false;
 		}
 
 		/**
@@ -2974,7 +2974,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
 
-			return $quiz_data->has_hinted_question( $question_id );
+			return $quiz_data ? $quiz_data->has_hinted_question( $question_id ) : false;
 		}
 
 		/**
