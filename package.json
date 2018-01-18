@@ -21,7 +21,7 @@
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-copy": "^1.0.0",
-    "gulp-less": "^3.3.0",
+    "gulp-less": "^3.4.0",
     "gulp-livereload": "^3.8.1",
     "gulp-replace": "^0.5.4",
     "gulp-sourcemaps": "^2.6.0",
