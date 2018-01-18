@@ -52,8 +52,8 @@ if ( $history_count > 1 ) {
 				<tr>
 					<td align="right"><?php echo $position; ?></td>
 					<td>
-						<?php echo date( get_option( 'date_format' ), strtotime( $item->start ) ); ?>
-						<div><?php echo date( get_option( 'time_format' ), strtotime( $item->start ) ); ?></div>
+						<?php echo date_i18n( get_option( 'date_format' ), strtotime( $item->start ) ); ?>
+						<div><?php echo date_i18n( get_option( 'time_format' ), strtotime( $item->start ) ); ?></div>
 					</td>
 					<td>
 						<?php $mark_percent = !empty( $results['mark_percent'] ) ? $results['mark_percent'] : 0; ?>

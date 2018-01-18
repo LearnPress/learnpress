@@ -41,7 +41,7 @@ if ( !class_exists( 'LP_Statistic_Status' ) ) :
 					?>
 					<li>
 						<?php if ( $count ): ?>
-							<a href="<?php echo esc_url( admin_url( 'edit.php?post_status=' . LP_ORDER_CPT . '&post_type=' . $status ) ); ?>" class="<?php echo esc_attr( $status ) ?>">
+							<a href="<?php echo esc_url( admin_url( 'edit.php?post_status=' . $status . '&post_type=' . LP_ORDER_CPT ) ); ?>" class="<?php echo esc_attr( $status ) ?>">
 								<span><?php printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count ) ?></span>
 								<?php printf( '%s', $status_object->label ); ?>
 							</a>
