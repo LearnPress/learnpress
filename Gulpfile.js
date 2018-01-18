@@ -141,4 +141,29 @@ gulp.task('svn', ['scss', 'copy-trunk'], function () {
     })
 });
 
+// Create zipped version
+gulp.task('clr-zip', function () {
+    return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
+});
+
+gulp.task('copy-zip', ['clr-zip'], function () {
+    mkdirp(releasePath);
+    //process.chdir(svnTrunkPath);
+    var copyFiles = copySvnFiles;
+    copyFiles.push('readme.txt');
+    return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
+});
+
+gulp.task('mk-zip', ['copy-zip'], function () {
+    process.chdir(releasePath);
+    var zipPath = releasePath.replace(/learnpress/, '');
+    return gulp.src(zipPath + '/**/learnpress/**/*')
+        .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
+        .pipe(gulp.dest(zipPath));
+});
+
+gulp.task('zip', ['mk-zip'], function () {
+
+})
+
 // end of the world!
