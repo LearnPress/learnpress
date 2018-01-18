@@ -16,7 +16,7 @@ class LP_Gateway_Paypal_Basic extends LP_Gateway_Paypal{
 			'item_name'     => learn_press_get_cart_description(),
 			'return'        => add_query_arg( array( 'learn-press-transaction-method' => 'paypal-standard', 'paypal-nonce' => $nonce ), learn_press_get_cart_course_url() ),
 			'currency_code' => learn_press_get_currency(),
-			'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal-standard' ) . '=1',
+			'notify_url'    => get_home_url() /* SITE_URL */ . '/?' . learn_press_get_web_hook( 'paypal-standard' ) . '=1',
 			'no_note'       => '1',
 			'shipping'      => '0',
 			'email'         => $user->user_email,

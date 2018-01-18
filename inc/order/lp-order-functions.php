@@ -295,7 +295,7 @@ function learn_press_get_order_confirm_url( $order_id = 0 ) {
 			$course = reset( $items->products );
 			$url    = get_permalink( $course['id'] );
 		} else {
-			$url = get_site_url();
+			$url = get_home_url() /* SITE_URL */;
 		}
 	}
 	return $url;

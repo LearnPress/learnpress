@@ -72,7 +72,7 @@ class LP_Query {
 				if ( $user->has_quiz_status( 'completed', $quiz->ID, $course_id ) ) {
 					//remove question name from uri
 					$course   = learn_press_get_course( $course_id );
-					$redirect = $course->get_item_link( $quiz->ID );// get_site_url() . '/' . dirname( $request_match );
+					$redirect = $course->get_item_link( $quiz->ID );// get_home_url() /* SITE_URL */ . '/' . dirname( $request_match );
 					wp_redirect( $redirect );
 					exit();
 				}
@@ -167,7 +167,7 @@ class LP_Query {
 			$has_category = true;
 		}
 		$current_url        = learn_press_get_current_url();
-		$query_string       = str_replace( trailingslashit( get_site_url() ), '', $current_url );
+		$query_string       = str_replace( trailingslashit( get_home_url() /* SITE_URL */ ), '', $current_url );
 		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
 		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 

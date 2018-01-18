@@ -665,7 +665,7 @@ class LP_Assets {
 			$concat = str_split( $concat, 128 );
 			$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
 
-			$src = get_site_url() . "/" . LP_WP_CONTENT . "/plugins/learnpress/assets/load-scripts.php?" . $concat . "&c={$zip}&ver=" . $wp_scripts->default_version;
+			$src = get_home_url() /* SITE_URL */ . "/" . LP_WP_CONTENT . "/plugins/learnpress/assets/load-scripts.php?" . $concat . "&c={$zip}&ver=" . $wp_scripts->default_version;
 			echo "<script type='text/javascript' src='" . esc_attr( $src ) . "'></script>\n";
 		}
 
@@ -697,7 +697,7 @@ class LP_Assets {
 			$concat = str_split( $concat, 128 );
 			$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
 
-			$href = get_site_url() . "/" . LP_WP_CONTENT . "/plugins/learnpress/assets/load-styles.php?" . $concat . "&c={$zip}&ver=" . $ver;
+			$href = get_home_url() /* SITE_URL */ . "/" . LP_WP_CONTENT . "/plugins/learnpress/assets/load-styles.php?" . $concat . "&c={$zip}&ver=" . $ver;
 			echo "<link rel='stylesheet' href='" . esc_attr( $href ) . "' type='text/css' media='all' />\n";
 
 			if ( !empty( $wp_styles->print_code ) ) {

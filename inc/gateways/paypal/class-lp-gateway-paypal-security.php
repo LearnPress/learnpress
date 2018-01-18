@@ -43,7 +43,6 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 			$L_BUTTONVARS[] = 'return=' . add_query_arg( array( 'learn-press-transaction-method' => 'paypal-standard-secure', 'paypal-nonce' => $nonce ), learn_press_get_cart_course_url() );
 			$L_BUTTONVARS[] = 'currency_code=' . learn_press_get_currency();//$general_settings['default-currency'];
 			$L_BUTTONVARS[] = 'notify_url=' . learn_press_get_web_hook( 'paypal-standard-secure' );
-			//http://lessbugs.com/paypal/paypal_ipn.php';// . get_site_url() . '/?paypal-stardard-secure=1' ;
 			$L_BUTTONVARS[] = 'no_note=1';
 			$L_BUTTONVARS[] = 'shipping=0';
 			$L_BUTTONVARS[] = 'email=' . $user->user_email;

@@ -621,7 +621,7 @@ class LP_Email {
 			'footer'           => $footer,
 			'email_heading'    => $heading,
 			'footer_text'      => $footer_text,
-			'site_url'         => get_site_url(),
+			'site_url'         => get_home_url() /* SITE_URL */,
 			'site_title'       => $this->get_blogname(),
 			'site_admin_email' => get_option( 'admin_email' ),
 			'site_admin_name'  => learn_press_get_profile_display_name( $admin_user ),
