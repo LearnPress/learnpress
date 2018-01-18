@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
 Tested up to: 4.9.1
-Stable tag: 2.1.9.7
+Stable tag: 2.1.9.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -198,6 +198,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 2.1.9.8 =
++ Changed get_home_url() instead of get_site_url()
+
 = 2.1.9.7 =
 + Fixed bug: get Invalid Post Type error when click link in LearnPress Status widget in Dashboard  
 + Cannot enroll course again when order is move to trash
