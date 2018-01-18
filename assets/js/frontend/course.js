@@ -95,7 +95,7 @@
 
             $chk = $el.closest('.answer-option').find('input.option-check');
 
-            if(!$chk.length){
+            if (!$chk.length) {
                 return;
             }
 
@@ -149,14 +149,17 @@
          * @param form
          */
         function prepareForm(form) {
-            var data = $('.answer-options').serializeJSON(),
+            var $answerOptions = $('.answer-options'),
                 $form = $(form),
+                data = $answerOptions.serializeJSON(),
                 $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
+
             if (($form.attr('method') + '').toLowerCase() !== 'post') {
                 return;
             }
+
             $form.find('input[name="question-data"]').remove();
-            return $form.append($hidden);
+            return $form.append($hidden).append($('<div />').append($answerOptions.clone()).hide());
         }
 
         /**

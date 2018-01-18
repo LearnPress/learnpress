@@ -1311,3 +1311,22 @@
         }
     }
 }
+
+@media screen and (max-width: 1400px) {
+    #admin-editor-lp_quiz {
+        .lp-box-data-content {
+            .lp-list-questions {
+                .question-settings {
+                    &.table-row {
+                        display: block;
+                        width: auto;
+                        text-align: left;
+                        > *{
+                            width: auto;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

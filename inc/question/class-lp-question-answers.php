@@ -52,7 +52,10 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		/**
 		 * LP_Question_Answers constructor.
 		 *
-		 * @param $raw
+		 * @param LP_Question $question
+		 * @param mixed       $raw
+		 *
+		 * @param             $raw
 		 */
 		public function __construct( $question, $raw ) {
 			$this->_question = $question;
@@ -103,6 +106,42 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		}
 
 		/**
+		 * Set new option for an answer
+		 *
+		 * @param int|array $id
+		 * @param mixed     $options
+		 */
+		public function set_answer_option( $id, $options = '' ) {
+			if ( is_array( $id ) && func_num_args() == 1 ) {
+				$options = $id;
+				foreach ( $options as $id => $opts ) {
+					$this->set_answer_option( $id, $opts );
+				}
+			} else {
+				if ( ! is_a( $options, 'LP_Question_Answer_Option' ) ) {
+					$options = new LP_Question_Answer_Option( $this->_question, $options );
+				}
+				$this->_answers[ $id ] = $options;
+			}
+		}
+
+		public function remove_answer_option( $id ) {
+			if ( isset( $this->_answers[ $id ] ) ) {
+				unset( $this->_answers[ $id ] );
+
+				return true;
+			}
+
+			return false;
+		}
+
+		public function clear_answer_options() {
+			$this->_answers = array();
+
+			return true;
+		}
+
+		/**
 		 * @return LP_Question
 		 */
 		public function get_question() {
@@ -114,6 +153,10 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 */
 		public function get_question_id() {
 			return $this->_question->get_id();
+		}
+
+		public function get_ids() {
+			return array_keys( $this->_answers );
 		}
 
 		/**
@@ -230,6 +273,25 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		}
 
 		/**
+		 * Return an answer from a position.
+		 *
+		 * @param int $at
+		 *
+		 * @return LP_Question_Answer_Option|mixed
+		 */
+		public function get_answer_at( $at ) {
+			$position = 0;
+			foreach ( $this->_answers as $answer ) {
+				if ( $position == $at ) {
+					return $answer;
+				}
+				$position++;
+			}
+
+			return false;
+		}
+
+		/**
 		 * @param string $more
 		 */
 		public function answers_class( $more = '' ) {
@@ -301,7 +363,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * @return bool
 		 */
 		public function is_true() {
-			return array_key_exists( 'is_true', $this->_data ) && $this->_data['is_true'] === 'yes';
+			return apply_filters( 'learn-press/question/option-is-true', array_key_exists( 'is_true', $this->_data ) && $this->_data['is_true'] === 'yes', $this );
 		}
 
 		public function get_id() {
@@ -324,6 +386,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 			if ( $more && is_array( $more ) ) {
 				$classes = array_merge( $classes, $more );
 			}
+
 			if ( $this->get_question()->show_correct_answers() === 'yes' ) {
 				if ( $this->is_true() ) {
 					$classes[] = 'answer-correct';

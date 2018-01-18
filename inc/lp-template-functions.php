@@ -787,6 +787,10 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) 
 		$user   = LP_Global::user();
 		$quiz   = LP_Global::course_item_quiz();
 
+		if ( ! $quiz->get_show_hide_question() ) {
+			return;
+		}
+
 		if ( ! $user->has_quiz_status( array( 'started', 'completed' ), $quiz->get_id(), $course->get_id() ) ) {
 			return;
 		}
@@ -1200,9 +1204,7 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 	function learn_press_single_quiz_args() {
 		$args = array();
-        echo 'zzzzzzzzzz',LP_Global::course( true ),','.get_the_ID();
 
-		return $args;
 		if ( $quiz = LP_Global::course_item_quiz() ) {
 			$user           = LP_Global::user();
 			$user_quiz      = $user->get_item_data( $quiz->get_id(), LP_Global::course( true ) );

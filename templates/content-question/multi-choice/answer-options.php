@@ -35,7 +35,7 @@ $question->setup_data( $quiz->get_id() );
 				<?php $answer->checked(); ?>
 				<?php $answer->disabled(); ?> />
             <div class="option-title">
-                <div class="option-title-content"><?php echo apply_filters( 'learn_press_question_answer_text', $answer->get_title( 'display' ), $answer, $question ); ?></div>
+                <div class="option-title-content"><?php echo $answer->get_title( 'display' ); ?></div>
             </div>
 
 			<?php do_action( 'learn_press_after_question_answer_text', $answer, $question ); ?>

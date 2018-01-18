@@ -49,7 +49,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			'count_check_answer' => 0,
 			'show_hint'          => 'no',
 			'count_hint'         => 0,
-			'archive_history'    => 'no'
+			'archive_history'    => 'no',
+			'show_hide_question' => 'yes'
 		);
 
 		/**
@@ -126,7 +127,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'show_hide_question' => 'no',
+				'show_hide_question' => 'yes',
 				'review_questions'   => 'no',
 				'show_result'        => 'no',
 				'duration'           => '10 minute',
@@ -649,7 +650,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get question position in quiz.
 		 *
-		 * @param $question
+		 * @param     $question
 		 * @param int $user_id
 		 *
 		 * @return false|int|string
@@ -693,7 +694,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @param bool $the_quiz
+		 * @param bool  $the_quiz
 		 * @param array $args
 		 *
 		 * @return LP_Quiz|bool
@@ -746,7 +747,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_quiz
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -780,6 +781,14 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return apply_filters( 'learn-press/quiz/post-object', $the_quiz );
+		}
+
+		public function set_show_hide_question( $show_or_hide ) {
+			$this->_set_data( 'show_hide_question', $show_or_hide );
+		}
+
+		public function get_show_hide_question() {
+			return 'yes' === $this->get_data( 'show_hide_question' );
 		}
 
 		/**

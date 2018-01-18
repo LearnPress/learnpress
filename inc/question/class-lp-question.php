@@ -544,7 +544,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 		/**
 		 *
-		 * @param mixed $answers
+		 * @param mixed       $answers
 		 * @param LP_Question $q
 		 *
 		 * @return array|bool
@@ -601,10 +601,10 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 
 		/**
-		 * @param null $field
-		 * @param null $exclude
+		 * @param string $field
+		 * @param string $exclude
 		 *
-		 * @return mixed
+		 * @return LP_Question_Answers
 		 */
 		public function get_answers( $field = null, $exclude = null ) {
 			$answers = array();
@@ -616,7 +616,10 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$answers = new LP_Question_Answers( $this, $data_answers );
 			}
 
-			return apply_filters( 'learn_press_question_answers', $answers, $this );
+			// @deprecated
+			$answers = apply_filters( 'learn_press_question_answers', $answers, $this );
+
+			return apply_filters( 'learn-press/questions/answers', $answers, $this->get_id() );
 		}
 
 		/**
@@ -660,6 +663,8 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				if ( $user_quiz = $user->get_quiz_data( $quiz->get_id(), $course->get_id() ) ) {
 					$has_checked  = $user->has_checked_answer( $this->get_id(), $quiz->get_id(), $course->get_id() );
 					$show_correct = $user_quiz->is_completed() && ( $has_checked || $quiz->get_show_result() ) ? 'yes' : false;
+					$answered     = $user_quiz->get_question_answer( $this->get_id() );
+					$this->set_answered( $answered );
 				}
 			}
 
@@ -720,9 +725,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 *          - $obj->a->b
 		 *          - or $obj->a['b']
 		 *
-		 * @param   null $key string  Single or multiple level such as a.b.c
+		 * @param   null $key     string  Single or multiple level such as a.b.c
 		 * @param   null $default mixed   Return a default value if the key does not exists or is empty
-		 * @param   null $func string  The function to apply the result before return
+		 * @param   null $func    string  The function to apply the result before return
 		 *
 		 * @return  mixed|null
 		 */
@@ -783,7 +788,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Find value in answer's option and compare with value answered by user.
 		 *
 		 * @param LP_Question_Answer_Option $answer
-		 * @param mixed $answered
+		 * @param mixed                     $answered
 		 *
 		 * @return bool
 		 */
@@ -852,6 +857,19 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		}
 
 		/**
+		 * Get answer at position
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param int $at
+		 *
+		 * @return LP_Question_Answer_Option|mixed
+		 */
+		public function get_answer_at( $at ) {
+			return $this->get_answers()->get_answer_at( $at );
+		}
+
+		/**
 		 * Get user answered data.
 		 *
 		 * @param $args
@@ -893,7 +911,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get question.
 		 *
-		 * @param bool $the_question
+		 * @param bool  $the_question
 		 * @param array $args
 		 *
 		 * @return LP_Question|bool
@@ -939,7 +957,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Get the question class name.
 		 *
 		 * @param  WP_Post $the_question
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -990,6 +1008,18 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			}
 
 			return apply_filters( 'learn-press/question/post-object', $the_question );
+		}
+
+		protected function _get_checked( $user_answer = null ) {
+			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
+
+			return wp_cache_get( 'question-' . $this->get_id() . '/' . $key, 'lp-answer-checked' );
+		}
+
+		protected function _set_checked( $checked, $user_answer ) {
+			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
+
+			return wp_cache_set( 'question-' . $this->get_id() . '/' . $key, $checked, 'lp-answer-checked' );
 		}
 	}
 

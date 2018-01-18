@@ -219,6 +219,26 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
+		 * Return TRUE if user has used function for checking the question.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param int $question_id
+		 * @param int $quiz_id
+		 * @param int $course_id
+		 *
+		 * @return mixed
+		 */
+		public function has_checked_question( $question_id, $quiz_id, $course_id = 0 ) {
+			$checked = false;
+			if ( $data = $this->get_quiz_data( $quiz_id, $course_id ) ) {
+				$checked = $data->has_checked_question( $question_id );
+			}
+
+			return apply_filters( 'learn-press/user/checked-question', $checked, $question_id, $quiz_id, $course_id, $this->get_id() );
+		}
+
+		/**
 		 * Magic function to get user data
 		 *
 		 * @param $key
@@ -973,15 +993,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Get current results of a quiz
 		 *
-		 * @param int $quiz_id
-		 * @param int $course_id
+		 * @param int    $quiz_id
+		 * @param int    $course_id
+		 * @param string $prop
 		 *
 		 * @return mixed
 		 */
-		public function get_quiz_results( $quiz_id, $course_id = 0 ) {
+		public function get_quiz_results( $quiz_id, $course_id = 0, $prop = 'result' ) {
 			$user_quiz = $this->get_item_data( $quiz_id, $course_id );
 
-			return $user_quiz ? $user_quiz->get_results() : false;
+			return $user_quiz ? $user_quiz->get_results( $prop ) : false;
 		}
 
 		/**
@@ -2012,6 +2033,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function has_completed_quiz( $quiz_id, $course_id = 0 ) {
+			return $this->get_item_status( $quiz_id, $course_id ) == 'completed';
+
 			$course_id = $this->_get_course( $course_id );
 
 			$completed = $this->get_quiz_status( $quiz_id, $course_id ) == 'completed';

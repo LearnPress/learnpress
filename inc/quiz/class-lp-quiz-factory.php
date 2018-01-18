@@ -91,7 +91,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$result['result']   = 'success';
 					$result['redirect'] = apply_filters( 'learn-press/quiz/started-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 				}
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$result['message']  = $ex->getMessage();
 				$result['result']   = 'failure';
 				$result['redirect'] = apply_filters( 'learn-press/quiz/start-quiz-failure-redirect', learn_press_get_current_url(), $quiz_id, $course_id, $user->get_id() );
@@ -157,7 +158,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['html']     = learn_press_get_template_content( 'content-question/content.php' );// $question->get_html( $quiz_data->get_question_answer( $question_id ) );
 					}
 				}
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -215,7 +217,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 					}
 				}
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -272,7 +275,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['data']     = $data;
 					}
 				}
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -327,7 +331,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$result['redirect'] = apply_filters( 'learn-press/quiz/retaken-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 					$result['data']     = $data;
 				}
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 				$result['result']  = 'failure';
@@ -402,7 +407,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				}
 
 				if ( $questions = self::get_answers_posted() ) {
-
 					$user   = learn_press_get_current_user();
 					$course = learn_press_get_course( LP_Request::get_int( 'course-id' ) );
 					$quiz   = learn_press_get_quiz( LP_Request::get_int( 'quiz-id' ) );
@@ -415,7 +419,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				}
 
 
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				return $ex;
 			}
 
@@ -450,16 +455,44 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		public static function get_answers_posted( $question_id = 0 ) {
 			$questions = array();
 			try {
+
 				$post_data = stripslashes_deep( $_REQUEST );
 
-				if ( empty( $post_data['question-data'] ) ) {
-					return false;
+				/**
+				 * Find the questions in the origin $_REQUEST
+				 */
+				if ( ! $questions = self::_get_answer( $post_data ) ) {
+
+					// If there is no questions then try to find in param with key name is 'question-data'
+					if ( empty( $post_data['question-data'] ) ) {
+						return false;
+					}
+
+					$data = is_string( $post_data['question-data'] ) ? @json_decode( $post_data['question-data'] ) : $post_data['question-data'];
+					settype( $data, 'array' );
+
+					$questions = self::_get_answer( $data );
 				}
+			}
+			catch ( Exception $ex ) {
+			}
 
-				$data = is_string( $post_data['question-data'] ) ? @json_decode( $post_data['question-data'] ) : $post_data['question-data'];
-				settype( $data, 'array' );
+			return $question_id ? ( array_key_exists( $question_id, $questions ) ? $questions[ $question_id ] : false ) : $questions;
+		}
 
-				foreach ( $data as $k => $v ) {
+		/**
+		 * Get answers for questions from post data
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $post_data
+		 *
+		 * @return array
+		 */
+		protected static function _get_answer( $post_data ) {
+			$questions = array();
+			if ( is_array( $post_data ) ) {
+				foreach ( $post_data as $k => $v ) {
 					$id = absint( str_replace( 'learn-press-question-', '', $k ) );
 					if ( $id ) {
 						if ( is_object( $v ) ) {
@@ -468,10 +501,9 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$questions[ $id ] = $v;
 					}
 				}
-			} catch ( Exception $ex ) {
 			}
 
-			return $question_id ? ( array_key_exists( $question_id, $questions ) ? $questions[ $question_id ] : false ) : $questions;
+			return $questions;
 		}
 
 	}
