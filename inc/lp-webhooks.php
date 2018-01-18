@@ -61,7 +61,7 @@ function learn_press_process_web_hooks() {
 			$request_scheme                = is_ssl() ? 'https://' : 'http://';
 			$requested_web_hook_url        = untrailingslashit( $request_scheme . $_SERVER['HTTP_HOST'] ) . $_SERVER['REQUEST_URI'];
 			$parsed_requested_web_hook_url = parse_url( $requested_web_hook_url );
-			$required_web_hook_url         = add_query_arg( $param, '1', trailingslashit( get_site_url() ) );
+			$required_web_hook_url         = add_query_arg( $param, '1', trailingslashit( get_home_url() /* SITE_URL */ ) );
 			$parsed_required_web_hook_url  = parse_url( $required_web_hook_url );
 			$web_hook_diff                 = array_diff_assoc( $parsed_requested_web_hook_url, $parsed_required_web_hook_url );
 

@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) or exit;
     <a class="button"
        href="<?php echo esc_url( admin_url( 'post-new.php?post_type=lp_course' ) ); ?>"><?php _e( 'Create new course', 'learnpress' ); ?></a>
     <a class="button"
-       href="<?php echo esc_url( get_site_url() ); ?>"><?php _e( 'Visit your site', 'learnpress' ); ?></a>
+       href="<?php echo esc_url( get_home_url() /* SITE_URL */ ); ?>"><?php _e( 'Visit your site', 'learnpress' ); ?></a>
     <a class="button"
        href="<?php echo esc_url( admin_url( 'index.php' ) ); ?>"><?php _e( 'Back to Dashboard', 'learnpress' ); ?></a>
 </p>

@@ -124,7 +124,7 @@ class LP_Query {
 			$has_category = true;
 		}
 		$current_url        = learn_press_get_current_url();
-		$query_string       = str_replace( trailingslashit( get_site_url() ), '', $current_url );
+		$query_string       = str_replace( trailingslashit( get_home_url() /* SITE_URL */ ), '', $current_url );
 		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
 		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 

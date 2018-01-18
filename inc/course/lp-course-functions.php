@@ -845,7 +845,7 @@ function learn_press_get_preview_url( $post_id ) {
 			array(
 				'lp-preview' => $post_id,
 				'_wpnonce'   => wp_create_nonce( 'lp-preview' )
-			), trailingslashit( get_site_url() )
+			), trailingslashit( get_home_url() /* SITE_URL */ )
 		);
 }
 
