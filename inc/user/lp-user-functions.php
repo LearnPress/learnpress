@@ -1362,7 +1362,7 @@ function learn_press_get_user_courses_info( $user_id, $course_ids, $force=false 
                             AND o.post_status = 'lp-completed'
                         	ORDER BY user_item_id DESC
                     ", $format );
-		    if ( empty( $user_course_info[ $user_id ] ) ) {
+		    if ( !isset($user_course_info[ $user_id ]) || empty( $user_course_info[ $user_id ] ) ) {
 			    $user_course_info[ $user_id ] = array();
 		    }
 
@@ -1384,8 +1384,8 @@ function learn_press_get_user_courses_info( $user_id, $course_ids, $force=false 
 				    $info['start']                              = $row->start_time;
 				    $info['end']                                = $row->end_time;
 				    $info['status']                             = $row->status;
-				    $info['results']                            = $course->evaluate_course_results( $user_id );
-				    $info['items']                              = $course->get_items_params( $user_id );
+				    $info['results']                            = $course->evaluate_course_results( $user_id, $force, $row->user_item_id );
+				    $info['items']                              = $course->get_items_params( $user_id, $row->user_item_id );
 				    $user_course_info[ $user_id ][ $course_id ] = $info;
 			    }
 		    }

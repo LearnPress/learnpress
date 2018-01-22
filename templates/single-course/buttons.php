@@ -32,6 +32,7 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
 	$can_enroll    = $lp_user->can( 'enroll-course', $course->id );
 	$can_retake    = $lp_user->can_retake_course( $course->id, true );
 
+
 	if ( $can_purchase ) {
 		# todo dispay purchase button
 		if ( $external_link = $course->get_external_link() ) {
@@ -46,7 +47,9 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
             </div>
 			<?php do_action( 'learn_press_after_external_link_buy_course' ); ?>
 
-		<?php } else { ?>
+		<?php 
+		} else { 
+		?>
 
             <form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 				<?php do_action( 'learn_press_before_purchase_button' ); ?>
@@ -77,17 +80,14 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
 			# -------------------------------
 			# Finished Course
 			# -------------------------------
-			if ( $user->has( 'finished-course', $course->id ) ): ?>
-				<?php if ( $count = $user->can( 'retake-course', $course->id ) ): ?>
+			if ( $count = $user->can( 'retake-course', $course->id ) ): ?>
                     <button
                             class="button button-retake-course"
                             data-course_id="<?php echo esc_attr( $course->id ); ?>"
                             data-security="<?php echo esc_attr( wp_create_nonce( sprintf( 'learn-press-retake-course-%d-%d', $course->id, $user->id ) ) ); ?>">
 						<?php echo esc_html( sprintf( __( 'Retake course (+%d)', 'learnpress' ), $count ) ); ?>
                     </button>
-				<?php endif; ?>
 				<?php
-
 			# -------------------------------
 			# Enrolled Course
 			# -------------------------------
@@ -107,7 +107,9 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
                         data-security="<?php echo esc_attr( $finish_course_security ); ?>">
 					<?php esc_html_e( 'Finish course', 'learnpress' ); ?>
                 </button>
-			<?php elseif ( $user->can( 'enroll-course', $course->id ) === true ) : ?>
+			<?php 
+			
+			elseif ( $user->can( 'enroll-course', $course->id ) === true ) : ?>
                 <form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
 					<?php do_action( 'learn_press_before_enroll_button' ); ?>
 
@@ -118,7 +120,10 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
 
 					<?php do_action( 'learn_press_after_enroll_button' ); ?>
                 </form>
-			<?php elseif ( $user->can( 'purchase-course', $course->id ) && ! $can_purchase ) : ?>
+			<?php 
+			
+			
+			elseif ( $user->can( 'purchase-course', $course->id ) && ! $can_purchase ) : ?>
                 <form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 					<?php do_action( 'learn_press_before_purchase_button' ); ?>
                     <button class="button purchase-button" data-block-content="yes">
@@ -129,7 +134,10 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
                     <input type="hidden" value="user can purchase course"/>
                 </form>
 
-			<?php elseif ( $course->is_reached_limit()/* $user->can( 'enroll-course', $course->id ) === 'enough'*/ ) : ?>
+			<?php 
+			
+			
+			elseif ( $course->is_reached_limit()/* $user->can( 'enroll-course', $course->id ) === 'enough'*/ ) : ?>
                 <p class="learn-press-message"><?php echo $notice_enough_student; ?></p>
 			<?php else: ?>
 				<?php $order_status = $user->get_order_status( $course->id ); ?>
