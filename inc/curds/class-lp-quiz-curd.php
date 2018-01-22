@@ -192,8 +192,6 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 			if ( false === $questions || $quiz->get_no_cache() ) {
 				$this->load_questions( $quiz->get_id() );
-				//$this->load_question_answers( $quiz );
-				//die();
 			}
 		}
 

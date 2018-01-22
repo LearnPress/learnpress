@@ -181,9 +181,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 		$this->_updates( $order );
 
-		//print_r(get_post($order->get_id()));die();
 		return $order->get_id();
-		//$order->read_meta_data( true ); // Refresh internal meta data, in case things were hooked into `save_post` or another WP hook.
 	}
 
 	public function delete( &$object ) {

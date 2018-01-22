@@ -166,9 +166,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 
 			}
-//			learn_press_debug( $results );
-//			learn_press_debug( $answer_options );
-//			die();
+
 			foreach ( $answer_options as $question_id => $options ) {
 				wp_cache_set( 'answer-options-' . $question_id, $options, 'lp-questions' );
 			}

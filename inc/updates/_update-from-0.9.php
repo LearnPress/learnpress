@@ -1024,7 +1024,6 @@ class LP_Upgrade_From_09 {
 		}
 		foreach ( $user_meta_rows as $user_meta ) {
 			$user_meta = $this->_parse_user_meta( $user_meta );
-//                        var_dump(self::$courses_map[28]['section_items'][26], self::$courses_map, $user_meta); die();
 			$new_course_id     = 0;
 			$user_course_items = array();
 			$user_parent_items = array();
@@ -1098,7 +1097,6 @@ class LP_Upgrade_From_09 {
 						continue;
 					}
 					if ( ! isset( $user_parent_items[ $old_quiz_id ] ) ) {
-//                                            var_dump($user_parent_items, $old_quiz_id, self::$courses_map); die();
 					}
 					$item_id       = ! empty( self::$quizzes_map[ $old_quiz_id ] ) ? self::$quizzes_map[ $old_quiz_id ] : '';
 					$old_course_id = ! empty( $user_parent_items[ $old_quiz_id ] ) ? $user_parent_items[ $old_quiz_id ] : 0;

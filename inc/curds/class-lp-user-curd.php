@@ -502,9 +502,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		", $item['user_item_id'] );
 
 		update_meta_cache( 'learnpress_user_item', $item['user_item_id'] );
-		///LP_Helper_CURD::update_meta_cache( 'learnpress_user_item', $item['user_item_id'] );
 
-		//learn_press_debug($wpdb);die();
 		if ( $meta = $wpdb->get_results( $query, ARRAY_A ) ) {
 			$item['meta'] = array();
 			foreach ( $meta as $k => $v ) {

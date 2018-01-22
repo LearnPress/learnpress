@@ -63,7 +63,6 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 				$count ++;
 			}
 
-			//print_r($button_request);die();
 			$button_request = apply_filters( 'learn_press_paypal_standard_secure_button_request', $button_request );
 
 			$response = wp_remote_post( $paypal_api_url, array( 'body' => $button_request ) );
