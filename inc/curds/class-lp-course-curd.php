@@ -630,7 +630,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
                     LEFT JOIN {$wpdb->postmeta} as pmeta ON p.ID=pmeta.post_id AND pmeta.meta_key = %s
                     WHERE p.post_type = %s
 						AND p.post_status = %s
-						AND meta_value = %s
+						AND pmeta.meta_value = %s
                     ORDER BY p.{$order_by} {$order}
                     LIMIT %d
                 ", '_lp_featured', LP_COURSE_CPT, 'publish', 'yes', $limit )

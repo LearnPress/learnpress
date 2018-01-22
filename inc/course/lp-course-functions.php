@@ -645,8 +645,12 @@ if ( ! function_exists( 'learn_press_get_course_item_url' ) ) {
 	}
 }
 
-add_filter( 'get_comment_link', 'learn_press_item_comment_link', 100, 4 );
+
 function learn_press_item_comment_link( $link, $comment, $args, $cpage ) {
+
+	if ( LP_COURSE_CPT == get_post_type( $comment->comment_post_ID ) ) {
+		return $link;
+	}
 
 	if ( $course_id = learn_press_get_item_course_id( $comment->comment_post_ID, LP_QUIZ_CPT ) ) {
 		if ( $course = learn_press_get_course( $course_id ) ) {
@@ -656,6 +660,9 @@ function learn_press_item_comment_link( $link, $comment, $args, $cpage ) {
 
 	return $link;
 }
+
+add_filter( 'get_comment_link', 'learn_press_item_comment_link', 100, 4 );
+
 
 if ( ! function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
 
@@ -742,6 +749,12 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 
 	function learn_press_get_item_course_id( $post_id, $post_type ) {
 		global $wpdb;
+
+		// If the post is a course
+		if ( LP_COURSE_CPT == get_post_type( $post_id ) ) {
+			return false;
+		}
+
 		$course_id = false;
 
 		if ( false !== ( $courses = wp_cache_get( 'item-course-ids', 'learn-press' ) ) ) {
@@ -758,14 +771,6 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 		}
 
 		if ( false === $course_id ) {
-//			$query = $wpdb->prepare( "SELECT section.section_course_id FROM {$wpdb->learnpress_sections} AS section"
-//			                         . " INNER JOIN {$wpdb->learnpress_section_items} AS item ON item.section_id = section.section_id"
-//			                         . " INNER JOIN {$wpdb->posts} AS course ON course.ID = section.section_course_id"
-//			                         . " WHERE course.post_type = %s"
-//			                         . " AND course.post_status = %s"
-//			                         . " AND item.item_id = %d"
-//			                         . " LIMIT 1", LP_COURSE_CPT, 'publish', $post_id );
-
 			$query = $wpdb->prepare( "
 			    SELECT section.section_course_id
                 FROM {$wpdb->learnpress_sections} AS section

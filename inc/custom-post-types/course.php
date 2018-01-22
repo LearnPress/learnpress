@@ -647,7 +647,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc'    => $course_result_desc,
 						'options' => array(
 							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' )
-							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'] ),
+							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'] , false),
 							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' )
 							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_final_quiz'] )
 							                             . $quiz_passing_condition_html,
