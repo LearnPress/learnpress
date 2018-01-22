@@ -115,7 +115,6 @@ function learn_press_header_item_only_view_first() {
 		if ( ! ( '' == $item_status || false == $item_status ) ) {
 			return;
 		}
-		var_dump($item_status);
 		$item_status = 'viewed';
 		if ( $parent_id = learn_press_get_user_item_id( $user->id, $course->id ) ) {
 			learn_press_update_user_item_field(
