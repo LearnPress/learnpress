@@ -5,21 +5,29 @@
  */
 class LP_Addon {
 	/**
-	 * @var null
+	 * Current version of addon.
+	 *
+	 * @var string
 	 */
 	public $version = null;
 
 	/**
-	 * @var null
+	 * Required version for current version of addon.
+	 *
+	 * @var string
 	 */
 	public $require_version = null;
 
 	/**
-	 * @var null
+	 * Path to addon.
+	 *
+	 * @var string
 	 */
 	public $plugin_file = null;
 
 	/**
+	 * Addon textdomain name.
+	 *
 	 * @var string
 	 */
 	public $text_domain = '';
@@ -30,9 +38,21 @@ class LP_Addon {
 	protected $_valid = null;
 
 	/**
+	 * Singleton instance of the addon.
+	 *
 	 * @var array
 	 */
 	public static $instances = array();
+
+	/**
+	 * @var array
+	 */
+	protected static $_admin_notices = array();
+
+	/**
+	 * @var string
+	 */
+	protected $_template_path = '';
 
 	/**
 	 * LP_Addon constructor.
@@ -46,6 +66,18 @@ class LP_Addon {
 		$this->_includes();
 
 		add_action( 'init', array( $this, 'init' ) );
+	}
+
+	public static function admin_errors() {
+		if ( ! self::$_admin_notices ) {
+			return;
+		}
+
+		foreach ( self::$_admin_notices as $notice ) {
+			?>
+            <div class="error"><p><?php echo $notice; ?></p></div>
+			<?php
+		}
 	}
 
 	public function _plugin_links( $links ) {
@@ -134,7 +166,7 @@ class LP_Addon {
 			$this->_valid = true;
 			if ( $this->require_version ) {
 				if ( version_compare( $this->require_version, LEARNPRESS_VERSION, '>' ) ) {
-					add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+					add_action( 'admin_notices', array( $this, '_admin_notices' ) );
 
 					$this->_valid = false;
 				}
@@ -147,7 +179,7 @@ class LP_Addon {
 	/**
 	 * Admin notices
 	 */
-	public function admin_notices() {
+	public function _admin_notices() {
 		?>
         <div class="error">
             <p><?php printf( __( '<strong>%s</strong> addon version %s requires <strong>LearnPress</strong> version %s or higher', 'learnpress' ), $this->get_name(), $this->version, $this->require_version ); ?></p>
@@ -209,6 +241,8 @@ class LP_Addon {
 		}
 
 		if ( ! file_exists( $path ) ) {
+			self::$_admin_notices['add-on-file-no-exists'] = sprintf( __( 'Plugin file %s does not exists.', 'learnpress' ), $path );
+
 			return;
 		}
 
@@ -225,6 +259,8 @@ class LP_Addon {
 		}
 
 		if ( ! $addon_instance ) {
+			self::$_admin_notices['add-on-class-no-exists'] = sprintf( __( 'Plugin class %s does not exists.', 'learnpress' ), $addon_instance );
+
 			return;
 		}
 
@@ -237,6 +273,35 @@ class LP_Addon {
 
 	public function get_plugin_url( $sub = '/' ) {
 		return plugins_url( $sub, $this->plugin_file );
+	}
+
+	public function get_template_path() {
+		if ( empty( $this->_template_path ) ) {
+			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace( '^learnpress-', '', $this->get_plugin_slug() );
+		}
+
+		return $this->_template_path;
+	}
+
+	/**
+	 * Get content template of addon in theme or inside itself.
+	 *
+	 * @param string $template_name
+	 * @param array  $args
+	 */
+	public function get_template( $template_name, $args = array() ) {
+		learn_press_get_template( $template_name, $args, $this->get_template_path(), dirname( $this->plugin_file ) . '/templates/' );
+	}
+
+	/**
+	 * Locate template of addon in theme or inside itself.
+	 *
+	 * @param string $template_name
+	 *
+	 * @return string
+	 */
+	public function locate_template( $template_name ) {
+		return learn_press_locate_template( $template_name, $this->get_template_path(), dirname( $this->plugin_file ) . '/templates/' );
 	}
 
 	/**
@@ -276,3 +341,5 @@ class LP_Addon {
 		return $backtrace[2]['args'][0];
 	}
 }
+
+add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );
