@@ -2291,12 +2291,24 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_course_info( $course_id, $field = null, $force = false ) {
 
-			//_deprecated_function( __FUNCTION__, '3.0.0' );
-			if ( ! $course_id ) {
-				return false;
+			if ( $data = $this->get_course_data( $course_id ) ) {
+				return $data->get_results( $field );
 			}
 
 			return false;
+		}
+
+		/**
+		 * @deprecated
+		 *
+		 * @param $course_id
+		 *
+		 * @return mixed
+		 */
+		public function get_course_info2( $course_id ) {
+			_deprecated_function( __FUNCTION__, '3.0.0' );
+
+			return $this->get_course_info( $course_id );
 		}
 
 		/**
@@ -2325,12 +2337,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return apply_filters( 'learn-press/user-course-status', $status, $course_id, $this->get_id() );
-
-			//return apply_filters( 'learn_press_user_course_status', $this->get_course_info( $course_id, 'status' ), $this->get_id() );
 		}
 
 		/**
 		 * Evaluate results of a quiz for this user
+		 *
+		 * @deprecated
 		 *
 		 * @param $quiz_id
 		 * @param $progress
@@ -2767,36 +2779,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $data;
-		}
-
-		/**
-		 * @deprecated
-		 *
-		 * @param $course_id
-		 *
-		 * @return mixed
-		 */
-		public function get_course_info2(
-			$course_id
-		) {
-			$course_info = $this->get_course_info( $course_id );
-			if ( ! empty( $course_info['items'] ) ) {
-				foreach ( $course_info['items'] as $k => $item ) {
-					if ( $item['type'] == 'lp_quiz' ) {
-						$result                     = $this->get_quiz_results( $item['id'], $course_id );
-						$passing_grade_type         = get_post_meta( $item['id'], '_lp_passing_grade_type', true );
-						$course_info['items'][ $k ] = array_merge(
-							$course_info['items'][ $k ],
-							array(
-								'results'            => $result ? ( $passing_grade_type == 'point' ? sprintf( '%d/%d', $result->mark, $result->quiz_mark ) : $result->mark_percent . '%' ) : '',
-								'passing_grade_type' => $passing_grade_type
-							)
-						);
-					}
-				}
-			}
-
-			return $course_info;
 		}
 
 		/**
