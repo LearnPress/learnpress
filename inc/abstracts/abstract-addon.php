@@ -259,7 +259,7 @@ class LP_Addon {
 		}
 
 		if ( ! $addon_instance ) {
-			self::$_admin_notices['add-on-class-no-exists'] = sprintf( __( 'Plugin class %s does not exists.', 'learnpress' ), $addon_instance );
+			self::$_admin_notices['add-on-class-no-exists'] = sprintf( __( 'Plugin class %s does not exists.', 'learnpress' ), $instance );
 
 			return;
 		}
