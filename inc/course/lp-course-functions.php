@@ -755,6 +755,14 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
 			return false;
 		}
 
+		if ( ! $post_types = learn_press_course_get_support_item_types( true ) ) {
+			return false;
+		}
+
+		if ( ! in_array( get_post_type( $post_id ), $post_types ) ) {
+			return false;
+		}
+
 		$course_id = false;
 
 		if ( false !== ( $courses = wp_cache_get( 'item-course-ids', 'learn-press' ) ) ) {
