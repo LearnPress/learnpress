@@ -275,9 +275,14 @@ class LP_Addon {
 		return plugins_url( $sub, $this->plugin_file );
 	}
 
+	/**
+     * Get template path.
+     *
+	 * @return string
+	 */
 	public function get_template_path() {
 		if ( empty( $this->_template_path ) ) {
-			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace( '^learnpress-', '', $this->get_plugin_slug() );
+            $this->_template_path = learn_press_template_path() . '/addons/' . preg_replace( '!^learnpress-!', '', dirname( $this->get_plugin_slug() ) );
 		}
 
 		return $this->_template_path;

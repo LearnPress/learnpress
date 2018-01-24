@@ -390,7 +390,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					update_post_meta( $page_id, '_learn_press_page', $page );
 				}
 			}
-			flush_rewrite_rules();
+			 flush_rewrite_rules();
 		}
 
 		/**

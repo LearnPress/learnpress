@@ -78,7 +78,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 		$key = md5( serialize( $tabs ) );
 		if ( $key !== get_option( '_lp_tabs_data' ) ) {
-			flush_rewrite_rules();
+			 flush_rewrite_rules();
 			update_option( '_lp_tabs_data', $key, false );
 		}
 

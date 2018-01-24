@@ -299,7 +299,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function maybe_flush_rewrite_rules() {
 			if ( get_option( 'learn-press-flush-rewrite-rules' ) == 'yes' ) {
-				flush_rewrite_rules();
+				 flush_rewrite_rules();
 				delete_option( 'learn-press-flush-rewrite-rules' );
 			}
 		}
@@ -615,7 +615,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		public function flush_rewrite_rules() {
 			update_option( 'learn-press-flush-rewrite-rules', 'yes' );
-			flush_rewrite_rules();
+			 flush_rewrite_rules();
 		}
 
 		/**
