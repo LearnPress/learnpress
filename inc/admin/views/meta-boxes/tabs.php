@@ -83,13 +83,8 @@ $current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 				echo sprintf( '<li class="%s">', join( ' ', $classes ) );
 				?>
                 <a <?php echo ! empty( $tab['icon'] ) ? 'class="' . $tab['icon'] . '"' : ''; ?>
-                        hrefx="<?php echo add_query_arg( 'tab', $tab['id'] ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
-				<script>
-                    console.log(decodeURIComponent('<?php echo  add_query_arg( 'tab', $tab['id'] );?>'))
-
-                </script>
+                        href="<?php echo add_query_arg( 'tab', $tab['id'] ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
                 <?php
-                echo learn_press_get_current_url();
 				echo '</li>';
 				$tabs[ $k ] = $tab;
 			}

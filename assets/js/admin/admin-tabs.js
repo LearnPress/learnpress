@@ -12,9 +12,7 @@
         function selectTab($tab) {
             var index = $tabs.index($tab),
                 url = $tab.find('a').attr('href');
-            console.log(url);
 
-            return;
             $currentContent = $contents.eq(index);
 
             $tab.addClass('active').siblings('li.active').removeClass('active');
