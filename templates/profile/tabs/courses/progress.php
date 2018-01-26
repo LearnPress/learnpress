@@ -39,7 +39,6 @@ $passing_condition = round( $course->passing_condition, $num_of_decimal );
 if ( empty( $result['results'] ) ) {
     $result['results'] = 0;
 }
-var_dump($result);
 ?>
 
 <div class="learn-press-course-results-progress">
@@ -58,5 +57,4 @@ var_dump($result);
 	</div>
 </div>
 <?php 
-exit( '' . __LINE__ );
 ?>
