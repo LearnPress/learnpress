@@ -244,7 +244,7 @@ function learn_press_is_endpoint_url( $endpoint = false ) {
 }
 
 /**
- * Get current URL user is viewing
+ * Get current URL user is viewing.
  *
  * @return string
  */
@@ -253,9 +253,23 @@ function learn_press_get_current_url() {
 	if ( ! $current_url ) {
 		$url = untrailingslashit( $_SERVER['REQUEST_URI'] );
 		if ( ! preg_match( '!^https?!', $url ) ) {
-			$siteurl = trailingslashit( get_home_url() /* SITE_URL */ );
-			$segs1   = explode( '/', $siteurl );
-			$segs2   = explode( '/', $url );
+			$siteurl    = trailingslashit( get_home_url() /* SITE_URL */ );
+			$home_query = '';
+
+			if ( strpos( $siteurl, '?' ) !== false ) {
+				$parts      = explode( '?', $siteurl );
+				$home_query = $parts[1];
+				$siteurl    = $parts[0];
+			}
+
+			if ( $home_query ) {
+				parse_str( untrailingslashit( $home_query ), $home_query );
+				$url = add_query_arg( $home_query, $url );
+			}
+
+			$segs1 = explode( '/', $siteurl );
+			$segs2 = explode( '/', $url );
+
 			if ( $removed = array_intersect( $segs1, $segs2 ) ) {
 				if ( $segs2 = array_diff( $segs2, $removed ) ) {
 					$current_url = $siteurl . join( '/', $segs2 );
@@ -2753,7 +2767,8 @@ function learn_press_get_unassigned_items( $type = '' ) {
             INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
             WHERE p.post_type IN(" . join( ',', $format ) . ")
         )
-    ", array_merge( $type, $type ) );
+        AND p.post_status NOT IN(%s, %s)
+    ", array_merge( $type, $type, array( 'auto-draft', 'trash' ) ) );
 
 	return $wpdb->get_col( $query );
 }
@@ -2778,7 +2793,8 @@ function learn_press_get_unassigned_questions() {
             INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
             WHERE p.post_type = %s
         )
-    ", LP_QUESTION_CPT, LP_QUESTION_CPT );
+        AND p.post_type NOT IN(%s, %s)
+    ", LP_QUESTION_CPT, LP_QUESTION_CPT, 'auto-draft', 'trash' );
 
 	return $wpdb->get_col( $query );
 }

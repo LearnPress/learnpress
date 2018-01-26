@@ -118,7 +118,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 */
 		public static function install() {
 			self::create_options();
-			self::_create_tables();
+			self::create_tables();
 			self::_create_cron_jobs();
 			self::_delete_transients();
 			self::_create_log_path();
@@ -153,7 +153,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * Update default options for LP
 		 */
 		public static function create_options() {
-			include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-base.php';
+			//include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-base.php';
 			$settings_classes = array(
 				'LP_Settings_General'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-general.php',
 				'LP_Settings_Courses'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-courses.php',
@@ -174,7 +174,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					continue;
 				}
 
-				if ( ! $options = $class->get_settings() ) {
+				if ( ! $options = $class->get_settings( '', '' ) ) {
 					continue;
 				}
 
@@ -211,30 +211,20 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					}
 				}
 			}
-
-			return;
-			$custom_options = array(
-				'learn_press_course_base_type'   => 'custom',
-				'learn_press_paypal_email'       => get_option( 'admin_email' ),
-				'learn_press_paypal_enable'      => 'yes',
-				'learn_press_profile_endpoints'  => 'a:4:{s:15:"profile-courses";s:7:"courses";s:15:"profile-quizzes";s:7:"quizzes";s:14:"profile-orders";s:6:"orders";s:21:"profile-order-details";s:13:"order-details";}',
-				'learn_press_checkout_endpoints' => 'a:1:{s:17:"lp_order_received";s:17:"lp-order-received";}'
-			);
-			foreach ( $custom_options as $option_name => $option_value ) {
-				if ( ! get_option( $option_name ) ) {
-					update_option( $option_name, maybe_unserialize( $option_value ), 'yes' );
-				}
-			}
+			ob_get_clean();
 		}
 
 		/**
 		 * Create tables.
 		 */
-		private static function _create_tables() {
+		public static function create_tables() {
 			global $wpdb;
 
 			// Do not show errors
 			$wpdb->hide_errors();
+
+			error_reporting( 0 );
+			ini_set( 'display_errors', 0 );
 
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
@@ -249,12 +239,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		private static function _delete_transients() {
 			global $wpdb;
 			$sql = "
-			DELETE a, b FROM $wpdb->options a, $wpdb->options b
-			WHERE a.option_name LIKE %s
-			AND a.option_name NOT LIKE %s
-			AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
-			AND b.option_value < %d
-		";
+				DELETE a, b FROM $wpdb->options a, $wpdb->options b
+				WHERE a.option_name LIKE %s
+				AND a.option_name NOT LIKE %s
+				AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
+				AND b.option_value < %d
+			";
 			$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 		}
 
@@ -295,10 +285,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			// Get all pages
 			$sql = $wpdb->prepare( "
-			SELECT * 
- 			FROM {$wpdb->posts} p 
- 			INNER JOIN  {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key= %s AND p.post_type = %s
- 		", '_learn_press_page', 'page' );
+				SELECT * 
+	            FROM {$wpdb->posts} p 
+	            INNER JOIN  {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key= %s AND p.post_type = %s
+	        ", '_learn_press_page', 'page' );
 
 			$page_ids = $wpdb->get_col( $sql );
 
@@ -308,11 +298,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			// Delete pages
 			$query = $wpdb->prepare( "
-			DELETE FROM p, pm
-			USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type = %s
-			WHERE p.post_status = %s 
-			AND p.ID IN(" . implode( ',', $page_ids ) . ")
-		", 'page', 'publish' );
+				DELETE FROM p, pm
+				USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type = %s
+				WHERE p.post_status = %s 
+				AND p.ID IN(" . implode( ',', $page_ids ) . ")
+			", 'page', 'publish' );
 
 			$wpdb->query( $query );
 
@@ -390,7 +380,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					update_post_meta( $page_id, '_learn_press_page', $page );
 				}
 			}
-			 flush_rewrite_rules();
+			flush_rewrite_rules();
 		}
 
 		/**
@@ -410,11 +400,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				$args     = array_merge( $args, $types );
 				$args[]   = 'publish';
 				$query    = $wpdb->prepare( "
-				SELECT ID, pm.meta_value as type
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value IN(" . join( ',', $in_types ) . ")
-				WHERE p.post_status = %s
-			", $args );
+					SELECT ID, pm.meta_value as type
+					FROM {$wpdb->posts} p
+					INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value IN(" . join( ',', $in_types ) . ")
+					WHERE p.post_status = %s
+				", $args );
 				if ( $rows = $wpdb->get_results( $query ) ) {
 					foreach ( $rows as $row ) {
 						$pages[ $row->type ] = $row->ID;
@@ -694,7 +684,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					$collate .= " COLLATE $wpdb->collate";
 				}
 			}
-			$tables = $wpdb->get_col( $wpdb->prepare( "SHOW TABLES LIKE %s", '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
+			$tables = array();///$wpdb->get_col( $wpdb->prepare( "SHOW TABLES LIKE %s", '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
 			$query  = '';
 
 			if ( ! in_array( $wpdb->learnpress_order_itemmeta, $tables ) ) {

@@ -23,3 +23,4 @@ test list.txt
 package-lock.json
 /vendor/
 composer.lock
+script.sh

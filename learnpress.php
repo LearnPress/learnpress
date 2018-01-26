@@ -160,9 +160,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-settings.php';
 
 			// Background processes
+			require_once 'inc/abstracts/abstract-background-process.php';
 			require_once 'inc/background-process/class-lp-background-emailer.php';
 			require_once 'inc/background-process/class-lp-background-schedule-items.php';
 			require_once 'inc/background-process/class-lp-background-clear-temp-users.php';
+			require_once 'inc/background-process/class-lp-background-installer.php';
 
 			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';

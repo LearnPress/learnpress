@@ -137,7 +137,7 @@ class LP_Admin_Menu {
 
 		$addons = LP_Admin::instance()->get_addons();
 
-		add_submenu_page( 'plugins.php', '', sprintf( __( 'LearnPress %s', 'learnpress' ), sprintf( '<span class="update-plugins">%d</span>', sizeof( $addons ) ) ), 'manage_options',  'plugins.php?s=learnpress'  );
+		add_submenu_page( 'plugins.php', '', sprintf( __( 'LearnPress %s', 'learnpress' ), sprintf( '<span class="update-plugins lp-plugins-count">%d</span>', sizeof( $addons ) ) ), 'manage_options',  'plugins.php?s=learnpress'  );
 	}
 
 	/**

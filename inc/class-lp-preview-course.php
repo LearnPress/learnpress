@@ -50,9 +50,17 @@ class LP_Preview_Course {
 			} else {
 				self::$_preview_course = $course_id;
 			}
+
 		}
 
 		return self::$_preview_course;
+	}
+
+	public static function exclude( $where ) {
+		global $wpdb;
+		$where = self::get_preview_course() ? $where . $wpdb->prepare( " AND {$wpdb->posts}.ID <> %d", self::$_preview_course ) : $where;
+
+		return $where;
 	}
 
 	/**
@@ -180,6 +188,7 @@ class LP_Preview_Course {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'setup_preview' ) );
 		add_filter( 'wp_count_posts', array( __CLASS__, 'reduce_counts' ), 10, 3 );
+		add_filter( 'posts_where_paged', array( __CLASS__, 'exclude' ) );
 	}
 
 	public static function reduce_counts( $counts, $type, $perm ) {

@@ -108,6 +108,8 @@ class LP_Setup_Wizard {
 			LP_Install::create_options();
 		}
 
+		LP_Install::create_tables();
+
 		$this->save();
 
 		// Refresh new changes
