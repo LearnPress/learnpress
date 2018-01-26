@@ -200,6 +200,8 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 = 2.1.9.8 =
 + Changed get_home_url() instead of get_site_url()
++ Add limit ajax search items in admin area
++ Fixed: Course proccess status in user profile not show correct.
 
 = 2.1.9.7 =
 + Fixed bug: get Invalid Post Type error when click link in LearnPress Status widget in Dashboard  

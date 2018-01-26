@@ -13,7 +13,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $course = learn_press_get_course( $course_id );
-
+// var_dump($user);
 learn_press_setup_user_course_data( $user->id, $course_id );
 
 // Check if this page is LP Profile
@@ -32,13 +32,14 @@ if ( !$user->has_course_status( $course_id, array( 'enrolled', 'finished' ) ) &&
 $force             = isset( $force ) ? $force : false;
 $num_of_decimal    = 0;
 $result            = ( $user->get_course_info2( $course_id ) );
-$current           = $course->evaluate_course_results( null, $force );
+$current           = $course->evaluate_course_results( $user->id, $force );
 $current           = absint( $current );
 $passing_condition = round( $course->passing_condition, $num_of_decimal );
 
 if ( empty( $result['results'] ) ) {
     $result['results'] = 0;
 }
+var_dump($result);
 ?>
 
 <div class="learn-press-course-results-progress">
@@ -56,3 +57,6 @@ if ( empty( $result['results'] ) ) {
 		</div>
 	</div>
 </div>
+<?php 
+exit( '' . __LINE__ );
+?>
