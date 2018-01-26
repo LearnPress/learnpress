@@ -187,28 +187,39 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$user_id = get_current_user_id();
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_question->get_type() );
 
-
-				global $wpdb;
-
-				// duplicate question answer
-				$query          = $wpdb->prepare( " SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d", $question_id );
-				$answer_options = $wpdb->get_results( $query );
-
-				if ( $answer_options ) {
-					foreach ( $answer_options as $option ) {
-						$wpdb->insert(
-							$wpdb->learnpress_question_answers,
-							array(
-								'question_id'  => $new_question_id,
-								'answer_data'  => $option->answer_data,
-								'answer_order' => $option->answer_order
-							),
-							array( '%d', '%s', '%s' )
-						);
-					}
-				}
+				// duplicate answer
+				$this->duplicate_answer($question_id, $new_question_id);
 
 				return $new_question_id;
+			}
+		}
+
+		/**
+		 * Duplicate answer question.
+		 *
+		 * @param $question_id | origin question
+		 * @param $new_question_id | new question
+		 */
+		public function duplicate_answer( $question_id, $new_question_id ) {
+
+			global $wpdb;
+
+			// duplicate question answer
+			$query          = $wpdb->prepare( " SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d", $question_id );
+			$answer_options = $wpdb->get_results( $query );
+
+			if ( $answer_options ) {
+				foreach ( $answer_options as $option ) {
+					$wpdb->insert(
+						$wpdb->learnpress_question_answers,
+						array(
+							'question_id'  => $new_question_id,
+							'answer_data'  => $option->answer_data,
+							'answer_order' => $option->answer_order
+						),
+						array( '%d', '%s', '%s' )
+					);
+				}
 			}
 		}
 
@@ -733,7 +744,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string $question_type
-		 * @param array  $args
+		 * @param array $args
 		 *
 		 * @return array|bool
 		 */
