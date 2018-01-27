@@ -11,13 +11,13 @@ if ( ! class_exists( 'WP_Background_Process', false ) ) {
 	include_once( LP_PLUGIN_PATH . '/inc/libraries/wp-background-process.php' );
 }
 
-if ( ! class_exists( 'LP_Background_Process' ) ) {
+if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 	/**
-	 * Class LP_Background_Process
+	 * Class LP_Abstract_Background_Process
 	 *
 	 * @since 3.0.0
 	 */
-	class LP_Background_Process extends WP_Background_Process {
+	class LP_Abstract_Background_Process extends WP_Background_Process {
 
 		/**
 		 * @var int
@@ -30,7 +30,14 @@ if ( ! class_exists( 'LP_Background_Process' ) ) {
 		protected $action = '';
 
 		/**
-		 * LP_Background_Process constructor.
+		 * @var bool
+		 */
+		protected $safe = true;
+
+		protected $_safe = '';
+
+		/**
+		 * LP_Abstract_Background_Process constructor.
 		 */
 		public function __construct() {
 			parent::__construct();
@@ -47,6 +54,38 @@ if ( ! class_exists( 'LP_Background_Process' ) ) {
 			}
 		}
 
+		public function is_safe( $safe = null ) {
+			if ( is_bool( $safe ) ) {
+				if ( $this->_safe === '' ) {
+					$this->_safe = $this->safe;
+				}
+				$this->safe = $safe;
+			}
+
+			return $this->safe;
+		}
+
+		public function reset_safe() {
+			$this->safe = $this->_safe;
+		}
+
+		/**
+		 * @param mixed $data
+		 *
+		 * @return $this
+		 */
+		public function push_to_queue( $data ) {
+
+			// Check to preventing loop
+			if ( $this->safe ) {
+				if ( learn_press_is_ajax() || ! empty( $_REQUEST['action'] ) ) {
+					return $this;
+				}
+			}
+
+			return parent::push_to_queue( $data );
+		}
+
 		/**
 		 * Schedule fallback event.
 		 */
@@ -56,7 +95,8 @@ if ( ! class_exists( 'LP_Background_Process' ) ) {
 			}
 		}
 
-		protected function task($item){}
+		protected function task( $item ) {
+		}
 
 		/**
 		 * Array of singleton classes.
@@ -66,7 +106,7 @@ if ( ! class_exists( 'LP_Background_Process' ) ) {
 		protected static $instances = array();
 
 		/**
-		 * @return mixed
+		 * @return LP_Abstract_Background_Process|mixed
 		 */
 		public static function instance() {
 

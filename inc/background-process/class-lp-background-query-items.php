@@ -6,21 +6,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WP_Async_Request', false ) ) {
-	include_once( LP_PLUGIN_PATH . '/inc/libraries/wp-async-request.php' );
-}
-
-if ( ! class_exists( 'WP_Background_Process', false ) ) {
-	include_once( LP_PLUGIN_PATH . '/inc/libraries/wp-background-process.php' );
-}
-
 if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 	/**
 	 * Class LP_Background_Query_Items
 	 *
 	 * @since 3.0.0
 	 */
-	class LP_Background_Query_Items extends WP_Background_Process {
+	class LP_Background_Query_Items extends LP_Abstract_Background_Process {
 
 		/**
 		 * @var string
@@ -37,18 +29,6 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
-
-			add_action( 'shutdown', array( $this, 'dispatch_queue' ) );
-		}
-
-		/**
-		 * Dispatch queue emails
-		 */
-		public function dispatch_queue() {
-			if ( ! empty( $this->data ) ) {
-				$this->save()->dispatch();
-			}
-
 		}
 
 		/**

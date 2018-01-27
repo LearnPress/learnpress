@@ -9,7 +9,7 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 	 *
 	 * @since 3.0.0
 	 */
-	class LP_Background_Installer extends LP_Background_Process {
+	class LP_Background_Installer extends LP_Abstract_Background_Process {
 
 		/**
 		 * @var int
@@ -20,6 +20,9 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		 */
 		protected $action = 'lp_installer';
 
+		/**
+		 * LP_Background_Installer constructor.
+		 */
 		public function __construct() {
 			parent::__construct();
 
@@ -27,11 +30,6 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		}
 
 		public function check() {
-
-			if ( learn_press_is_ajax() || ! empty( $_REQUEST['action'] ) ) {
-				return;
-			}
-
 			$this->push_to_queue(
 				array(
 					'check_tables'

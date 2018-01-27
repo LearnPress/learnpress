@@ -3,26 +3,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WP_Async_Request', false ) ) {
-	include_once( LP_PLUGIN_PATH . '/inc/libraries/wp-async-request.php' );
-}
-
-if ( ! class_exists( 'WP_Background_Process', false ) ) {
-	include_once( LP_PLUGIN_PATH . '/inc/libraries/wp-background-process.php' );
-}
-
 if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 	/**
 	 * Class LP_Background_Schedule_Items
 	 *
 	 * @since 3.0.0
 	 */
-	class LP_Background_Schedule_Items extends WP_Background_Process {
-
-		/**
-		 * @var LP_Background_Schedule_Items
-		 */
-		protected static $_instance = null;
+	class LP_Background_Schedule_Items extends LP_Abstract_Background_Process {
 
 		/**
 		 * @var int
@@ -34,6 +21,9 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 */
 		protected $action = 'lp_schedule_items';
 
+		/**
+		 * @var string
+		 */
 		protected $transient_key = 'lp_schedule_complete_items';
 
 
@@ -42,17 +32,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
-
-			add_action( 'shutdown', array( $this, 'dispatch_queue' ) );
-		}
-
-		/**
-		 * Dispatch queue emails
-		 */
-		public function dispatch_queue() {
-			if ( ! empty( $this->data ) ) {
-				$this->save()->dispatch();
-			}
 		}
 
 		/**
@@ -184,7 +163,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			return $new_items;
 		}
 
-
 		/**
 		 * @param array $item
 		 */
@@ -216,7 +194,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			$user->finish_course( $item_course->get_item_id() );
 		}
 
-
 		/**
 		 * Schedule fallback event.
 		 */
@@ -224,18 +201,6 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			if ( ! wp_next_scheduled( $this->cron_hook_identifier ) ) {
 				wp_schedule_event( time() + 10, $this->cron_interval_identifier, $this->cron_hook_identifier );
 			}
-		}
-
-
-		/**
-		 * @return LP_Background_Schedule_Items
-		 */
-		public static function instance() {
-			if ( ! self::$_instance ) {
-				self::$_instance = new self();
-			}
-
-			return self::$_instance;
 		}
 	}
 }
