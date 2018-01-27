@@ -321,17 +321,15 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
 	return false;
 }
 
-
 /**
- * Check to see if user can view a lesson or not
+ * Check to see if user can view a lesson or not.
  *
- * @since 0.9.5
- *
- * @param int $lesson_id
+ * @param $lesson_id
  * @param int $course_id
- * @param int $user_id
+ * @param null $user_id
  *
- * @return boolean
+ * @return bool|mixed
+ * @throws Exception
  */
 function learn_press_user_can_view_lesson( $lesson_id, $course_id = 0, $user_id = null ) {
 	if ( $user_id ) {
@@ -344,13 +342,14 @@ function learn_press_user_can_view_lesson( $lesson_id, $course_id = 0, $user_id 
 }
 
 /**
- * Check to see if user can view a quiz or not
+ * Check to see if user can view a quiz or not.
  *
- * @param int $quiz_id
+ * @param null $quiz_id
  * @param int $course_id
- * @param int $user_id
+ * @param null $user_id
  *
- * @return boolean
+ * @return bool|mixed
+ * @throws Exception
  */
 function learn_press_user_can_view_quiz( $quiz_id = null, $course_id = 0, $user_id = null ) {
 	if ( $user_id ) {
