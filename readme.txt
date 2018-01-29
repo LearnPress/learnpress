@@ -198,10 +198,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
 = 2.1.9.8 =
 + Changed get_home_url() instead of get_site_url()
 + Add limit ajax search items in admin area
-+ Fixed: Course proccess status in user profile not show correct.
++ Fixed: Course process status in user profile not show correct
 + Improve performance 
 
 = 2.1.9.7 =
@@ -211,7 +212,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 2.1.9.6 =
 + Fixed issue when 2 users do a quiz at the same time
-+ Fixed issue with course item permalink when set the Wordpress site URL to another directory.
++ Fixed issue with course item permalink when set the Wordpress site URL to another directory
 + Fixed calculate passing course grade wrong
 + Fixed number student enrolled not correct
 + Fixed bug: display wrong duration of lesson in list of lesson in admin.

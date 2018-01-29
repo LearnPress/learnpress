@@ -4,7 +4,7 @@
  */
 $upload_dir = wp_upload_dir();
 // version
-define( 'LEARNPRESS_VERSION', '2.1.9.6' );
+define( 'LEARNPRESS_VERSION', '2.1.9.8' );
 
 define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 
