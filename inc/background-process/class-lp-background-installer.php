@@ -35,7 +35,7 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 					'check_tables'
 				)
 			);
-			LP_Install::create_tables();
+			///LP_Install::create_tables();
 		}
 
 		/**
