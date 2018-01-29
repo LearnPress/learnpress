@@ -13,9 +13,10 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php global $course; ?>
+$course = LP_Global::course();
+
+?>
 
 <div class="course-curriculum" id="learn-press-course-curriculum">
 

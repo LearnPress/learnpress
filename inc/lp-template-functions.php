@@ -505,7 +505,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		$defaults = array();
 
 		// Description tab - shows product content
-		if ( $course->get_content() ) {
+		if ( $course && $course->get_content() ) {
 			$defaults['overview'] = array(
 				'title'    => __( 'Overview', 'learnpress' ),
 				'priority' => 10,
@@ -541,7 +541,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				/**
 				 * Active Curriculum tab if user has enrolled course
 				 */
-				if ( $user->has_course_status( $course->get_id(), array(
+				if ( $course && $user->has_course_status( $course->get_id(), array(
 						'enrolled',
 						'finished'
 					) ) && ! empty( $tabs['curriculum'] )
@@ -2961,7 +2961,7 @@ function learn_press_course_the_content( $content ) {
 	_deprecated_function( __FUNCTION__, '3.0.0' );
 	global $post;
 	if ( $post && $post->post_type == 'lp_course' ) {
-		$course = LP_Course::get_course( $post->ID );
+		$course = learn_press_get_course( $post->ID );
 		if ( $course ) {
 			remove_filter( 'the_content', 'learn_press_course_the_content', 99999 );
 			$content = $course->get_content();

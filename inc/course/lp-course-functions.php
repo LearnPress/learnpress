@@ -13,43 +13,51 @@
 defined( 'ABSPATH' ) || exit();
 
 /**
- * @param $the_course
+ * @param mixed        $the_course
+ * @param array|string $args
  *
  * @return LP_Course|mixed
  */
-function learn_press_get_course( $the_course = false ) {
+function learn_press_get_course( $the_course = false, $args = '' ) {
 
 	static $courses = array();
-	$the_id = 0;
 
-	if ( is_numeric( $the_course ) ) {
-		$the_id = $the_course;
-	} elseif ( $the_course instanceof LP_Course ) {
-		$the_id = $the_course->get_id();
-	} elseif ( $the_course instanceof WP_Post ) {
-		$the_id = $the_course->ID;
-	} elseif ( isset( $the_course->ID ) ) {
-		$the_id = $the_course->ID;
+	if ( is_numeric( $the_course ) && isset( $courses[ $the_course ] ) ) {
+		return $courses[ $the_course ];
 	}
+
+	$the_id = 0;
 
 	if ( ! $the_course ) {
 		global $post;
 		if ( $post && isset( $post->ID ) && LP_COURSE_CPT === get_post_type( $post->ID ) ) {
 			$the_id = $post->ID;
-		} elseif ( $master_course = LP_Global::course() ) {
-			$the_id = $master_course->get_id();
+		} elseif ( $the_course = LP_Global::course() ) {
+			$the_id = $the_course->get_id();
+		}
+	} else {
+		if ( is_numeric( $the_course ) ) {
+			$the_id = $the_course;
+		} elseif ( $the_course instanceof LP_Course ) {
+			$the_id = $the_course->get_id();
+		} elseif ( $the_course instanceof WP_Post ) {
+			$the_id = $the_course->ID;
+		} elseif ( isset( $the_course->ID ) ) {
+			$the_id = $the_course->ID;
 		}
 	}
 
-	if ( empty( $courses[ $the_id ] ) ) {
-		if ( $the_course instanceof LP_Course ) {
-			$courses[ $the_id ] = $the_course;
-		} else {
-			$courses[ $the_id ] = LP_Course::get_course( $the_course );
+	if ( is_numeric( $the_id ) && ( $the_id > 0 ) ) {
+		if ( empty( $courses[ $the_id ] ) ) {
+			if ( $the_course instanceof LP_Course ) {
+				$courses[ $the_id ] = $the_course;
+			} else {
+				$courses[ $the_id ] = LP_Course::get_course( $the_id, $args );
+			}
 		}
 	}
 
-	return $courses[ $the_id ];
+	return isset( $courses[ $the_id ] ) ? $courses[ $the_id ] : false;
 }
 
 /**
@@ -204,7 +212,7 @@ function learn_press_get_final_quiz( $course_id ) {
 
 	if ( false === ( $final_quiz = wp_cache_get( 'final-quiz-' . $course_id, 'lp-final-quiz' ) ) ) {
 
-		$course = LP_Course::get_course( $course_id );
+		$course = learn_press_get_course( $course_id );
 		if ( ! $course ) {
 			throw new Exception( sprintf( __( 'The course %d does not exists', 'learnpress' ), $course_id ) );
 		}
@@ -269,7 +277,7 @@ function learn_press_course_item_format_exclude( $format, $item ) {
  * @return mixed
  */
 function learn_press_get_course_curriculum( $course_id ) {
-	$course = LP_Course::get_course( $course_id );
+	$course = learn_press_get_course( $course_id );
 
 	return $course->get_curriculum();
 }
@@ -283,7 +291,7 @@ function learn_press_get_course_curriculum( $course_id ) {
  * @return boolean
  */
 function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
-	if ( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
+	if ( $course = learn_press_get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
 		return $user->has_enrolled_course( $course_id );
 	}
 
@@ -316,7 +324,7 @@ function learn_press_is_free_course( $course_id = null ) {
  * @return  string
  */
 function learn_press_get_user_course_status( $user_id = null, $course_id = null ) {
-	if ( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
+	if ( $course = learn_press_get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
 		return $user->get_course_status( $course_id );
 	}
 

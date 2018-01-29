@@ -117,7 +117,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
 
 			$course_id = $args['id'];
-			$course    = LP_Course::get_course( $course_id );
+			$course    = learn_press_get_course( $course_id );
 
 			if ( ! $course ) {
 				wp_send_json_error();

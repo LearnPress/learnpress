@@ -258,7 +258,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			/**
 			 * Update all course items if set Course Author option
 			 */
-			$course = LP_Course::get_course( $course_id );
+			$course = learn_press_get_course( $course_id );
 			if ( ! $curriculum = $course->get_items() ) {
 				return;
 			}
@@ -1240,7 +1240,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function columns_content( $column, $post_id = 0 ) {
 
 			global $post;
-			$course = LP_Course::get_course( $post->ID );
+			$course = learn_press_get_course( $post->ID );
 
 			switch ( $column ) {
 

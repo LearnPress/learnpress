@@ -98,7 +98,7 @@ class LP_Request {
 	public static function purchase_course( $course_id, $action ) {
 
 		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id, $action );
-		$course    = LP_Course::get_course( $course_id );
+		$course    = learn_press_get_course( $course_id );
 
 		if ( ! $course ) {
 			return false;

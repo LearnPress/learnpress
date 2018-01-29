@@ -1655,7 +1655,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			} else {
 				$lesson = LP_Lesson::get_lesson( $lesson_id );
 
-				if ( $course = LP_Course::get_course( $course_id ) ) {
+				if ( $course = learn_press_get_course( $course_id ) ) {
 					if ( $this->has_enrolled_course( $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 						// or user has enrolled course
 						$view = 'enrolled';
@@ -1692,7 +1692,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$view = false;
 			} else {
 				if ( $course_id ) {
-					$course = LP_Course::get_course( $course_id );
+					$course = learn_press_get_course( $course_id );
 				}
 
 				if ( $course ) {
@@ -1752,7 +1752,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		public function can_finish_course( $course_id ) {
 			$return = false;
-			if ( $course = LP_Course::get_course( $course_id ) ) {
+			if ( $course = learn_press_get_course( $course_id ) ) {
 				$result = $course->evaluate_course_results();
 				$return = ( $result >= $course->get_passing_condition() ) && $this->has_course_status( $course_id, array(
 						'enrolled',
@@ -1845,7 +1845,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function finish_course( $course_id ) {
 			$return = false;
-			if ( $course = LP_Course::get_course( $course_id ) ) {
+			if ( $course = learn_press_get_course( $course_id ) ) {
 				if ( ! $this->can( 'finish-course', $course_id ) ) {
 					return false;
 				} else {
@@ -2000,7 +2000,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function has_passed_course( $course_id ) {
-			$course = LP_Course::get_course( $course_id );
+			$course = learn_press_get_course( $course_id );
 			if ( $course ) {
 				$results = $course->evaluate_course_results( $this->get_id() );
 			} else {
@@ -2264,7 +2264,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 			if ( ! empty( $updated ) ) {
-				if ( $course = LP_Course::get_course( $course_id ) ) {
+				if ( $course = learn_press_get_course( $course_id ) ) {
 					$result = $course->evaluate_course_results( $this->get_id() );
 				}
 			}
@@ -2539,7 +2539,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_course_remaining_time( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 			$remain = false;
-			if ( $course->get_id() ) {
+			if ( $course && $course->get_id() ) {
 				if ( $course_data = $this->get_course_data( $course_id, true ) ) {
 					$remain = $course_data->is_exceeded();
 				}
@@ -3160,7 +3160,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function can_do_quiz( $quiz_id, $course_id = 0 ) {
-			$course = LP_Course::get_course( $course_id );
+			$course = learn_press_get_course( $course_id );
 			if ( $course->is_required_enroll() ) {
 				$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && ! $this->has( 'started-quiz', $quiz_id, $course_id );
 			} else {
@@ -3188,7 +3188,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function get_course_grade( $course_id ) {
-			$course = LP_Course::get_course( $course_id );
+			$course = learn_press_get_course( $course_id );
 			$status = $this->get( 'course-status', $course_id );
 			$grade  = false;
 			if ( $status == 'finished' ) {

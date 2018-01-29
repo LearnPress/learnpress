@@ -112,6 +112,11 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return bool|LP_Course
 		 */
 		public static function get_course( $the_course = false, $args = array() ) {
+
+			if ( is_numeric( $the_course ) && isset( LP_Global::$courses[ $the_course ] ) ) {
+				return LP_Global::$courses[ $the_course ];
+			}
+
 			$the_course = self::get_course_object( $the_course );
 			if ( ! $the_course ) {
 				return false;

@@ -240,7 +240,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		public static function finish_course() {
 			$nonce     = LP_Request::get_string( 'finish-course-nonce' );
 			$course_id = LP_Request::get_int( 'course-id' );
-			$course    = LP_Course::get_course( $course_id );
+			$course    = learn_press_get_course( $course_id );
 			$user      = learn_press_get_current_user();
 
 			$nonce_action = sprintf( 'finish-course-%d-%d', $course_id, $user->get_id() );
@@ -280,7 +280,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			$post     = get_post( $item_id );
 			$user     = learn_press_get_current_user();
-			$course   = LP_Course::get_course( $course_id );
+			$course   = learn_press_get_course( $course_id );
 			$response = array(
 				'result'   => 'success',
 				'redirect' => $course->get_item_link( $item_id )
@@ -331,7 +331,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$security        = LP_Request::get_string( 'retake-course-nonce' );
 			$course_id       = LP_Request::get_int( 'course_id' );
 			$user            = learn_press_get_current_user();
-			$course          = LP_Course::get_course( $course_id );
+			$course          = learn_press_get_course( $course_id );
 			$response        = array(
 				'result' => 'error'
 			);

@@ -43,7 +43,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		/**
 		 * LP_Lesson constructor.
 		 *
-		 * @param $lesson
+		 * @param        $lesson
 		 * @param string $args
 		 *
 		 * @throws Exception
@@ -107,15 +107,25 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		/**
 		 * Get LP Lesson.
 		 *
-		 * @param bool $the_lesson
+		 * @param mixed $the_lesson
 		 * @param array $args
 		 *
 		 * @return LP_Lesson|bool
 		 */
 		public static function get_lesson( $the_lesson = false, $args = array() ) {
+
+			if ( is_numeric( $the_lesson ) && isset( LP_Global::$lessons[ $the_lesson ] ) ) {
+				return LP_Global::$lessons[ $the_lesson ];
+			}
+
 			$the_lesson = self::get_lesson_object( $the_lesson );
+
 			if ( ! $the_lesson ) {
 				return false;
+			}
+
+			if ( isset( LP_Global::$lessons[ $the_lesson->ID ] ) ) {
+				return LP_Global::$lessons[ $the_lesson->ID ];
 			}
 
 			if ( ! empty( $args['force'] ) ) {
@@ -130,7 +140,8 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 			$key = LP_Helper::array_to_md5( $key_args );
 
 			if ( $force ) {
-				LP_Global::$lessons[ $key ] = false;
+				LP_Global::$lessons[ $key ]            = false;
+				LP_Global::$lessons[ $the_lesson->ID ] = false;
 			}
 
 			if ( empty( LP_Global::$lessons[ $key ] ) ) {
@@ -142,7 +153,8 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 				} else {
 					$lesson = new self( $the_lesson->ID, $args );
 				}
-				LP_Global::$lessons[ $key ] = $lesson;
+				LP_Global::$lessons[ $key ]            = $lesson;
+				LP_Global::$lessons[ $the_lesson->ID ] = $lesson;
 			}
 
 			return LP_Global::$lessons[ $key ];
@@ -188,7 +200,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_lesson
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -215,7 +227,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 				$the_lesson = get_post_type() === LP_LESSON_CPT ? $GLOBALS['post'] : false;
 			} elseif ( is_numeric( $the_lesson ) ) {
 				$the_lesson = get_post( $the_lesson );
-			} elseif ( $the_lesson instanceof LP_Abstract_Course ) {
+			} elseif ( $the_lesson instanceof LP_Course_Item ) {
 				$the_lesson = get_post( $the_lesson->get_id() );
 			} elseif ( ! ( $the_lesson instanceof WP_Post ) ) {
 				$the_lesson = false;

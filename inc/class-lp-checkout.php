@@ -293,7 +293,7 @@ class LP_Checkout {
 
 			// Store the line items to the new/resumed order
 			foreach ( $cart->get_items() as $item ) {
-				if ( empty( $item['order_item_name'] ) && ! empty( $item['item_id'] ) && ( $course = LP_Course::get_course( $item['item_id'] ) ) ) {
+				if ( empty( $item['order_item_name'] ) && ! empty( $item['item_id'] ) && ( $course = learn_press_get_course( $item['item_id'] ) ) ) {
 					$item['order_item_name'] = $course->get_title();
 				} else {
 					throw new Exception( sprintf( __( 'Item does not exists!', 'learnpress' ), 402 ) );
