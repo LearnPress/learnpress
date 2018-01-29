@@ -152,8 +152,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		// delete sections cache
 		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections' );
 
-		do_action( 'learn-press/clear-course-section', $this->course_id );
-
 		return true;
 	}
 
