@@ -1608,14 +1608,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			switch ( get_post_type( $item_id ) ) {
 				case LP_QUIZ_CPT:
-					$return = $this->can( 'view-quiz', $item_id, $course_id );
+					$return = $this->can_view_quiz( $item_id, $course_id );
 					break;
 				case LP_LESSON_CPT:
-					$return = $this->can( 'view-lesson', $item_id, $course_id );
+					$return = $this->can_view_lesson( $item_id, $course_id );
 					break;
 			}
 
-			return apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->get_id() );
+			// @deprecated
+			$return = apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->get_id() );
+
+			return apply_filters( 'learn-press/can-view-item', $return, $item_id, $course_id, $this->get_id() );
 		}
 
 		public function can_edit_item( $item_id, $course_id = 0 ) {
@@ -1665,7 +1668,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->get_id(), $course_id );
+			// @deprecated
+			$view = apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->get_id(), $course_id );
+
+			return apply_filters( 'learn-press/can-view-lesson', $view, $lesson_id, $this->get_id(), $course_id );
 		}
 
 		/**
@@ -1701,7 +1707,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			}
 
-			return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->get_id(), $course_id );
+			// @deprecated
+			$view = apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->get_id(), $course_id );
+
+			return apply_filters( 'learn-press/can-view-quiz', $view, $quiz_id, $this->get_id(), $course_id );
 		}
 
 		/**

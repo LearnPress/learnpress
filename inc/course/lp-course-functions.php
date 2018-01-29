@@ -36,6 +36,8 @@ function learn_press_get_course( $the_course = false ) {
 		global $post;
 		if ( $post && isset( $post->ID ) && LP_COURSE_CPT === get_post_type( $post->ID ) ) {
 			$the_id = $post->ID;
+		} elseif ( $master_course = LP_Global::course() ) {
+			$the_id = $master_course->get_id();
 		}
 	}
 
@@ -324,8 +326,8 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
 /**
  * Check to see if user can view a lesson or not.
  *
- * @param $lesson_id
- * @param int $course_id
+ * @param      $lesson_id
+ * @param int  $course_id
  * @param null $user_id
  *
  * @return bool|mixed
@@ -345,7 +347,7 @@ function learn_press_user_can_view_lesson( $lesson_id, $course_id = 0, $user_id 
  * Check to see if user can view a quiz or not.
  *
  * @param null $quiz_id
- * @param int $course_id
+ * @param int  $course_id
  * @param null $user_id
  *
  * @return bool|mixed
