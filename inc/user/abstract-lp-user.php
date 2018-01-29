@@ -1608,14 +1608,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			switch ( get_post_type( $item_id ) ) {
 				case LP_QUIZ_CPT:
-					$return = $this->can( 'view-quiz', $item_id, $course_id );
+					$return = $this->can_view_quiz( $item_id, $course_id );
 					break;
 				case LP_LESSON_CPT:
-					$return = $this->can( 'view-lesson', $item_id, $course_id );
+					$return = $this->can_view_lesson( $item_id, $course_id );
 					break;
 			}
 
-			return apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->get_id() );
+			// @deprecated
+			$return = apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->get_id() );
+
+			return apply_filters( 'learn-press/can-view-item', $return, $item_id, $course_id, $this->get_id() );
 		}
 
 		public function can_edit_item( $item_id, $course_id = 0 ) {
@@ -1652,7 +1655,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			} else {
 				$lesson = LP_Lesson::get_lesson( $lesson_id );
 
-				if ( $course = LP_Course::get_course( $course_id ) ) {
+				if ( $course = learn_press_get_course( $course_id ) ) {
 					if ( $this->has_enrolled_course( $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 						// or user has enrolled course
 						$view = 'enrolled';
@@ -1665,7 +1668,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->get_id(), $course_id );
+			// @deprecated
+			$view = apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->get_id(), $course_id );
+
+			return apply_filters( 'learn-press/can-view-lesson', $view, $lesson_id, $this->get_id(), $course_id );
 		}
 
 		/**
@@ -1686,7 +1692,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$view = false;
 			} else {
 				if ( $course_id ) {
-					$course = LP_Course::get_course( $course_id );
+					$course = learn_press_get_course( $course_id );
 				}
 
 				if ( $course ) {
@@ -1701,7 +1707,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			}
 
-			return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->get_id(), $course_id );
+			// @deprecated
+			$view = apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->get_id(), $course_id );
+
+			return apply_filters( 'learn-press/can-view-quiz', $view, $quiz_id, $this->get_id(), $course_id );
 		}
 
 		/**
@@ -1743,7 +1752,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		public function can_finish_course( $course_id ) {
 			$return = false;
-			if ( $course = LP_Course::get_course( $course_id ) ) {
+			if ( $course = learn_press_get_course( $course_id ) ) {
 				$result = $course->evaluate_course_results();
 				$return = ( $result >= $course->get_passing_condition() ) && $this->has_course_status( $course_id, array(
 						'enrolled',
@@ -1836,7 +1845,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function finish_course( $course_id ) {
 			$return = false;
-			if ( $course = LP_Course::get_course( $course_id ) ) {
+			if ( $course = learn_press_get_course( $course_id ) ) {
 				if ( ! $this->can( 'finish-course', $course_id ) ) {
 					return false;
 				} else {
@@ -1991,7 +2000,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function has_passed_course( $course_id ) {
-			$course = LP_Course::get_course( $course_id );
+			$course = learn_press_get_course( $course_id );
 			if ( $course ) {
 				$results = $course->evaluate_course_results( $this->get_id() );
 			} else {
@@ -2255,7 +2264,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 			if ( ! empty( $updated ) ) {
-				if ( $course = LP_Course::get_course( $course_id ) ) {
+				if ( $course = learn_press_get_course( $course_id ) ) {
 					$result = $course->evaluate_course_results( $this->get_id() );
 				}
 			}
@@ -2530,7 +2539,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_course_remaining_time( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 			$remain = false;
-			if ( $course->get_id() ) {
+			if ( $course && $course->get_id() ) {
 				if ( $course_data = $this->get_course_data( $course_id, true ) ) {
 					$remain = $course_data->is_exceeded();
 				}
@@ -3151,7 +3160,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function can_do_quiz( $quiz_id, $course_id = 0 ) {
-			$course = LP_Course::get_course( $course_id );
+			$course = learn_press_get_course( $course_id );
 			if ( $course->is_required_enroll() ) {
 				$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && ! $this->has( 'started-quiz', $quiz_id, $course_id );
 			} else {
@@ -3179,7 +3188,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function get_course_grade( $course_id ) {
-			$course = LP_Course::get_course( $course_id );
+			$course = learn_press_get_course( $course_id );
 			$status = $this->get( 'course-status', $course_id );
 			$grade  = false;
 			if ( $status == 'finished' ) {

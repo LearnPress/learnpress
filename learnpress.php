@@ -261,8 +261,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-schedules.php';
 			require_once 'inc/class-lp-preview-course.php';
 
-			// widgets
-			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses', 'course-progress' ) );
+			require_once 'inc/class-lp-widget.php';
 
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
 		}

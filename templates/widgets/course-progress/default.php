@@ -1,8 +1,8 @@
 <?php
 /**
- * Template for displaying content of Recent Courses widget.
+ * Template for displaying content of Course Progress widget.
  *
- * This template can be overridden by copying it to yourtheme/learnpress/widgets/recent-courses/default.php.
+ * This template can be overridden by copying it to yourtheme/learnpress/widgets/course-progress/default.php.
  *
  * @author   ThimPress
  * @category Widgets
@@ -15,17 +15,12 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-/**
- * Prevent loading this file directly
- */
-defined( 'ABSPATH' ) || exit();
-
 if ( ! $course = LP_Global::course() ) {
 	return;
 }
 ?>
 
-<div<?php $widget->get_class($widget->instance); ?>>
+<div<?php $widget->get_class( $widget->instance ); ?>>
 
     <div class="widget-body">
 

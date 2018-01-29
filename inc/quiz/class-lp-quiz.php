@@ -694,15 +694,25 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @param bool  $the_quiz
+		 * @param mixed $the_quiz
 		 * @param array $args
 		 *
 		 * @return LP_Quiz|bool
 		 */
 		public static function get_quiz( $the_quiz = false, $args = array() ) {
+
+			if ( is_numeric( $the_quiz ) && isset( LP_Global::$quizzes[ $the_quiz ] ) ) {
+				return LP_Global::$quizzes[ $the_quiz ];
+			}
+
 			$the_quiz = self::get_quiz_object( $the_quiz );
+
 			if ( ! $the_quiz ) {
 				return false;
+			}
+
+			if ( isset( LP_Global::$quizzes[ $the_quiz->ID ] ) ) {
+				return LP_Global::$quizzes[ $the_quiz->ID ];
 			}
 
 			if ( ! empty( $args['force'] ) ) {
@@ -716,19 +726,21 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$key = LP_Helper::array_to_md5( $key_args );
 
 			if ( $force ) {
-				LP_Global::$quizzes[ $key ] = false;
+				LP_Global::$quizzes[ $key ]          = false;
+				LP_Global::$quizzes[ $the_quiz->ID ] = false;
 			}
 
 			if ( empty( LP_Global::$quizzes[ $key ] ) ) {
 				$class_name = self::get_quiz_class( $the_quiz, $args );
 				if ( is_string( $class_name ) && class_exists( $class_name ) ) {
-					$lesson = new $class_name( $the_quiz->ID, $args );
+					$quiz = new $class_name( $the_quiz->ID, $args );
 				} elseif ( $class_name instanceof LP_Course_Item ) {
-					$lesson = $class_name;
+					$quiz = $class_name;
 				} else {
-					$lesson = new self( $the_quiz->ID, $args );
+					$quiz = new self( $the_quiz->ID, $args );
 				}
-				LP_Global::$quizzes[ $key ] = $lesson;
+				LP_Global::$quizzes[ $key ]          = $quiz;
+				LP_Global::$quizzes[ $the_quiz->ID ] = $quiz;
 			}
 
 			return LP_Global::$quizzes[ $key ];
@@ -752,13 +764,13 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return string
 		 */
 		private static function get_quiz_class( $the_quiz, $args = array() ) {
-			$lesson_id = absint( $the_quiz->ID );
-			$type      = $the_quiz->post_type;
+			$quiz_id = absint( $the_quiz->ID );
+			$type    = $the_quiz->post_type;
 
 			$class_name = self::get_class_name_from_quiz_type( $type );
 
 			// Filter class name so that the class can be overridden if extended.
-			return apply_filters( 'learn-press/quiz/object-class', $class_name, $type, $lesson_id );
+			return apply_filters( 'learn-press/quiz/object-class', $class_name, $type, $quiz_id );
 		}
 
 		/**
