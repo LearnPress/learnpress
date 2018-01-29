@@ -2070,7 +2070,7 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 	public function get_course_status( $course_id ) {
-		$status = $this->get_course_info( $course_id, 'status', true );
+		$status = $this->get_course_info( $course_id, 'status' );
 		if ( ! $status && $this->has_purchased_course( $course_id ) ) {
 			$status = 'purchased';
 		}
@@ -3087,16 +3087,22 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_course_grade', $grade, $this->id, $course_id );
 	}
 	
-	public function get_course_history_id_force($course_id){
-	    global $wpdb;
-	    $sql = "SELECT `user_item_id` 
-                   FROM {$wpdb->prefix}learnpress_user_items 
-                   WHERE `item_type`= %s 
+	public function get_course_history_id_force($course_id, $force=false){
+	    $key = $this->id.'-'.$course_id;
+	    $history_id = LP_Cache::get_user_course_history_id($key, null);
+	    if( !$history_id || $force ) {
+	        global $wpdb;
+	        $sql = "SELECT `user_item_id`
+                   FROM {$wpdb->prefix}learnpress_user_items
+                   WHERE `item_type`= %s
                         AND `user_id` = %d
                         AND `item_id` = %d
                    ORDER BY `user_item_id` DESC LIMIT 1";
-	    $query = $wpdb->prepare($sql, LP_COURSE_CPT, $this->id, $course_id);
-	    return $wpdb->get_var($query);
+	        $query = $wpdb->prepare($sql, LP_COURSE_CPT, $this->id, $course_id);
+	        $history_id = $wpdb->get_var($query);
+	        LP_Cache::set_user_course_history_id($key, $history_id);
+	    }
+	    return $history_id;
 	}
 
 	public static function get_user() {

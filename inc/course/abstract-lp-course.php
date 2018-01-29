@@ -618,8 +618,11 @@ abstract class LP_Abstract_Course {
 			),
 			$args
 		);
-		$items           = $this->get_curriculum_items( $curriculum_args );
-		$lessons         = ! empty( $items['lessons'] ) ? $items['lessons'] : false;
+		$items = $this->get_curriculum_items( $curriculum_args );
+		$lessons = array();
+		if ( !empty( $items['lessons'] ) ) {
+		    $lessons = $items['lessons'];
+		}
 
 		return apply_filters( 'learn_press_course_lessons', $lessons, $this );
 	}
