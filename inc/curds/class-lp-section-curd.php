@@ -152,6 +152,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		// delete sections cache
 		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections' );
 
+		do_action( 'learn-press/clear-course-section', $this->course_id );
+
 		return true;
 	}
 
@@ -323,12 +325,10 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * @param $items      array
+	 * Add list new items to section.
 	 *
-	 * @since 3.0.0
-	 *
-	 * @param $section_id string
-	 * @param $items      array
+	 * @param $section_id
+	 * @param array $items
 	 *
 	 * @return array
 	 */
@@ -397,6 +397,22 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$item  = $wpdb->get_row( $query, ARRAY_A );
 
 		return ! ! $item;
+	}
+
+	/**
+	 * Get section id of lesson, quiz id in curriculum.
+	 *
+	 * @param $item_id
+	 *
+	 * @return array|bool|null|object
+	 */
+	public function get_item_section( $item_id ) {
+		global $wpdb;
+
+		$query   = $wpdb->prepare( "SELECT section_id, item_order FROM {$wpdb->learnpress_section_items} WHERE item_id = %d", $item_id );
+		$section = $wpdb->get_row( $query, ARRAY_A );
+
+		return $section;
 	}
 
 	/**
