@@ -1498,6 +1498,24 @@ if ( ! function_exists( 'learn_press_course_instructor' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_content_single_item' ) ) {
+	function learn_press_content_single_item() {
+
+		if ( $course_item = LP_Global::course_item() ) {
+			learn_press_get_template( 'content-single-item.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_single_course' ) ) {
+	function learn_press_content_single_course() {
+
+		if ( ! $course_item = LP_Global::course_item() ) {
+			learn_press_get_template( 'content-single-course.php' );
+		}
+	}
+}
+
 if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 	/**
 	 * Display course enroll button
