@@ -177,6 +177,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/curds/class-lp-order-curd.php';
 			require_once 'inc/curds/class-lp-user-curd.php';
 
+			require_once 'inc/class-lp-backward-plugins.php';
 			require_once 'inc/class-lp-debug.php';
 			require_once 'inc/class-lp-global.php';
 			require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
@@ -284,7 +285,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'load-post.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
-			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), 0 );
+			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), -10 );
 			add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 999 );
 		}
 
