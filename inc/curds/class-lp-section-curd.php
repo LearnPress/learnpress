@@ -139,7 +139,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		global $wpdb;
 
-		do_action( 'learn-press/clear-section-data', $this->course_id );
+		do_action( 'learn-press/before-delete-section', $this->course_id );
 
 		// Remove all items in course's sections
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $sections_ids ) . ")", 1 ) );
