@@ -77,6 +77,10 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 		public function delete( &$lesson_id ) {
 			// course curd
 			$curd = new LP_Course_CURD();
+
+			// allow hook
+			do_action( 'learn-press/before-delete-lesson', $lesson_id );
+
 			// remove lesson from course items
 			$curd->remove_item( $lesson_id );
 		}

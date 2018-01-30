@@ -133,6 +133,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			// quiz curd
 			$curd = new LP_Quiz_CURD();
 
+			// allow hook
+			do_action( 'learn-press/before-delete-question', $question_id );
+
 			// get the quizzes that a question is assigned to, return WP Post
 			$quiz = $this->get_quiz( $question_id );
 
@@ -188,7 +191,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $new_question->get_type() );
 
 				// duplicate answer
-				$this->duplicate_answer($question_id, $new_question_id);
+				$this->duplicate_answer( $question_id, $new_question_id );
 
 				return $new_question_id;
 			}
