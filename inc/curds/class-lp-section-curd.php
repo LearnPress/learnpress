@@ -139,6 +139,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		global $wpdb;
 
+		do_action( 'learn-press/clear-section-data', $this->course_id );
+
 		// Remove all items in course's sections
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $sections_ids ) . ")", 1 ) );
 		learn_press_reset_auto_increment( 'learnpress_section_items' );
@@ -151,8 +153,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		learn_press_reset_auto_increment( 'learnpress_sections' );
 		// delete sections cache
 		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections' );
-
-		do_action( 'learn-press/clear-course-section', $this->course_id );
 
 		return true;
 	}

@@ -95,8 +95,8 @@ class RWMB_Loader {
 		$media_modal->init();
 
 		// WPML Compatibility.
-		$wpml = new RWMB_WPML;
-		$wpml->init();
+//		$wpml = new RWMB_WPML;
+//		$wpml->init();
 
 		// Public functions.
 		require_once RWMB_INC_DIR . 'functions.php';

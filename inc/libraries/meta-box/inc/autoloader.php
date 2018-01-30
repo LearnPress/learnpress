@@ -87,7 +87,7 @@ class RWMB_Autoloader {
 			'validation',
 			'sanitizer',
 			'media-modal',
-			'wpml',
+//			'wpml',
 
 			// Walkers.
 			'walkers/walker',
