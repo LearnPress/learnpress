@@ -28,7 +28,7 @@ if ( ! $course = LP_Global::course() ) {
         <ul class="lp-course-info-fields">
             <li class="lp-course-info lessons">
                 <label><?php _e( 'Lessons', 'learnpress' ); ?></label>
-				<?php learn_press_label_html( $course->count_items( LP_LESSON_CPT, false ) ); ?>
+				<?php learn_press_label_html( $course->count_items( LP_LESSON_CPT, true ) ); ?>
             </li>
 
             <li class="lp-course-info quizzes">
@@ -37,7 +37,7 @@ if ( ! $course = LP_Global::course() ) {
             </li>
 
             <li class="lp-course-info preview-items">
-                <label><?php _e( 'Preview', 'learnpress' ); ?></label>
+                <label><?php _e( 'Preview Lessons', 'learnpress' ); ?></label>
 				<?php learn_press_label_html( $course->count_preview_items() ); ?>
             </li>
 

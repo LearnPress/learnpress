@@ -1096,11 +1096,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_next_item( $args = null ) {
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			$current = $this->get_current_item();
 			$items   = $this->get_items();
 			$next    = false;
+
 			if ( $count = sizeof( $items ) ) {
 				if ( $current === false ) {
 					$next = $items[0];
@@ -1112,7 +1112,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					}
 				}
 			}
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return apply_filters( 'learn-press/course/next-item', $next, $this->get_id() );
 		}

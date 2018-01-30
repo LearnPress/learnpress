@@ -54,6 +54,7 @@ class LP_Course_Section {
 
 		// All items
 		$curriculum = wp_cache_get( 'course-' . $this->get_course_id(), 'lp-course-curriculum' );
+
 		if ( ! $curriculum ) {
 			return false;
 		}

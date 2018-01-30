@@ -505,18 +505,24 @@ class LP_Page_Controller {
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
 		ob_start();
-		/**
-		 * Display template of content item if user is viewing course's item.
-		 * Otherwise, display template of course.
-		 */
-		if ( $course_item = LP_Global::course_item() ) {
-			learn_press_get_template( 'content-single-item.php' );
+
+		if ( function_exists( 'learn_press_content_single_course' ) ) {
+			do_action( 'learn-press/content-single' );
 		} else {
-			learn_press_get_template( 'content-single-course.php' );
+			/**
+			 * Display template of content item if user is viewing course's item.
+			 * Otherwise, display template of course.
+			 */
+			if ( $course_item = LP_Global::course_item() ) {
+				learn_press_get_template( 'content-single-item.php' );
+			} else {
+				learn_press_get_template( 'content-single-course.php' );
+			}
 		}
 
 		$content = ob_get_clean();
 		remove_filter( 'the_content', 'wpautop' );
+
 		//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 
 		return $content;
