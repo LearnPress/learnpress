@@ -33,7 +33,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                         <lp-quiz-questions></lp-quiz-questions>
                     </form>
 
-                    <div class="footer">
+                    <div class="footer" v-if="!disableUpdateList">
                         <div class="table-row">
                             <div class="add-new-question">
                                 <div class="title">
@@ -132,6 +132,10 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 // trigger user memorize
                 newQuestionType: function () {
                     return $store.getters['defaultNewQuestionType'];
+                },
+                // disable update list questions
+                disableUpdateList: function(){
+                    return $store.getters['lqs/disableUpdateList'];
                 }
             },
             methods: {

@@ -593,6 +593,9 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         autoDraft: function (state) {
             return state.auto_draft;
         },
+        disable_curriculum: function(state){
+            return state.disable_curriculum;
+        },
         status: function (state) {
             return state.status || 'error';
         },

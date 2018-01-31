@@ -32,11 +32,11 @@
                 <div class="lp-toolbar-btn">
                     <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit" title="Edit"></a>
                 </div>
-                <div class="lp-toolbar-btn">
+                <div class="lp-toolbar-btn" v-if="!disableUpdateList">
                     <a href="" class="lp-btn-icon dashicons dashicons-admin-page" @click.prevent="clone"
                        title="Duplicate"></a>
                 </div>
-                <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
+                <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown" v-if="!disableUpdateList">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove" title="Delete"></a>
                     <ul>
                         <li>
@@ -81,6 +81,10 @@
                 // list question types
                 questionTypes: function () {
                     return $store.getters['questionTypes'];
+                },
+                // disable update list questions
+                disableUpdateList: function () {
+                    return $store.getters['lqs/disableUpdateList'];
                 }
             },
             methods: {
@@ -125,13 +129,13 @@
                     $store.dispatch('lqs/toggleQuestion', this.question);
                 },
                 // navigation questions
-                keyUp: function (event) {
-                    var keyCode = event.keyCode;
+                keyUp: function (e) {
+                    var keyCode = e.keyCode;
                     // escape update question title
                     if (keyCode === 27) {
                         this.question.title = this.title;
                     } else {
-                        this.$emit('nav', {key: event.keyCode, order: this.index});
+                        this.$emit('nav', {key: e.keyCode, order: this.index});
                     }
                 }
             }

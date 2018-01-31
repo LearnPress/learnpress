@@ -259,6 +259,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
 
             return questions.length === hiddenQuestions.length;
         },
+        disableUpdateList: function (state) {
+            return state.disableUpdateList;
+        },
         statusUpdateQuestions: function (state) {
             return state.statusUpdateQuestions;
         },

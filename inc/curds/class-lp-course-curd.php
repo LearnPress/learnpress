@@ -528,6 +528,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			global $wpdb;
 
+			// allow hook
+			do_action( 'learn-press/before-remove-section-item', $item_id );
+
 			// delete item from course's section
 			$wpdb->query(
 				$wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE item_id = %d", $item_id )
@@ -687,7 +690,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @param int          $course_id
+		 * @param int $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int

@@ -54,6 +54,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		);
 		$section['section_id'] = $wpdb->insert_id;
 
+		// allow hook
+		do_action( 'learn-press/after-create-section', $this->course_id, $section );
+
 		return $section;
 	}
 
@@ -107,6 +110,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		global $wpdb;
 
+		// allow hook
+		do_action( 'learn-press/before-delete-section', $this->course_id, $id );
+
 		// Remove section items.
 		$wpdb->delete( $wpdb->learnpress_section_items, array( 'section_id' => $id ) );
 		learn_press_reset_auto_increment( 'learnpress_section_items' );
@@ -139,7 +145,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		global $wpdb;
 
-		do_action( 'learn-press/before-delete-section', $this->course_id );
+		do_action( 'learn-press/before-clear-section', $this->course_id );
 
 		// Remove all items in course's sections
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $sections_ids ) . ")", 1 ) );
@@ -320,6 +326,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
+		// allow hook
+		do_action( 'learn-press/after-new-section-item', $item['id'] );
+
 		// add item to section
 		return $this->add_items_section( $section_id, array( $item ) );
 	}
@@ -336,6 +345,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$order         = 1;
 		$current_items = $this->get_section_items( $section_id );
+
+		// allow hook
+		do_action( 'learn-press/before-add-items-section', $items );
 
 		global $wpdb;
 
@@ -367,8 +379,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 
 			// get WP Post
-			$post = get_post( $item['id'] );
-
+			$post     = get_post( $item['id'] );
 			$result[] = array( 'id' => $post->ID, 'title' => $post->post_title, 'type' => $post->post_type, );
 
 			$order ++;
