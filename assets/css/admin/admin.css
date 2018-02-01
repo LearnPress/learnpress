@@ -1917,7 +1917,7 @@
   #admin-editor-lp_course .lp-course-curriculum .section .section-collapse {
     overflow: hidden; }
   #admin-editor-lp_course .lp-course-curriculum .section .section-content {
-    padding: 20px 20px 0;
+    padding: 20px;
     border-top: 1px solid #e5e5e5; }
   #admin-editor-lp_course .lp-course-curriculum .section .details {
     margin-bottom: 20px; }
@@ -2106,7 +2106,7 @@
     padding: 8px 10px 8px 0; }
 
 #admin-editor-lp_course .lp-course-curriculum .section-actions {
-  padding: 20px; }
+  padding: 0 20px 20px 20px; }
   #admin-editor-lp_course .lp-course-curriculum .section-actions .remove {
     float: right;
     color: #a00;

@@ -156,7 +156,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			$hidden_questions = get_post_meta( $post->ID, '_lp_hidden_questions', true );
 
-			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', array(
+			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', apply_filters( 'learn-press/admin-localize-quiz-editor', array(
 				'root'          => array(
 					'quiz_id'     => $post->ID,
 					'ajax'        => admin_url( '' ),
@@ -179,9 +179,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				'listQuestions' => array(
 					'questions'         => $quiz->quiz_editor_get_questions(),
 					'hidden_questions'  => ! empty( $hidden_questions ) ? $hidden_questions : array(),
+					'disableUpdateList' => false,
 					'externalComponent' => apply_filters( 'learn-press/admin/external-js-component', array() )
 				)
-			) );
+			) ) );
 		}
 
 		/**
@@ -352,7 +353,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int    $post_id
+		 * @param int $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;

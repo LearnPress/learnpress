@@ -192,30 +192,32 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$course = learn_press_get_course( $post->ID );
 
 			$hidden_sections = get_post_meta( $post->ID, '_admin_hidden_sections', true );
-			wp_localize_script( 'learn-press-admin-course-editor', 'lq_course_editor', array(
-				'root'        => array(
-					'course_id'  => $post->ID,
-					'auto_draft' => get_post_status( $post->ID ) == 'auto-draft',
-					'ajax'       => admin_url( '' ),
-					'action'     => 'admin_course_editor',
-					'nonce'      => wp_create_nonce( 'learnpress_update_curriculum' ),
-				),
-				'chooseItems' => array(
-					'types'      => learn_press_course_get_support_item_types(),
-					'open'       => false,
-					'addedItems' => array(),
-					'items'      => array(),
-				),
-				'i18n'        => array(
-					'item'             => __( 'item', 'learnpress' ),
-					'new_section_item' => __( 'Create a new', 'learnpress' ),
-					'back'             => __( 'Back', 'learnpress' ),
-					'selected_items'   => __( 'Selected items', 'learnpress' ),
-				),
-				'sections'    => array(
-					'sections'        => $course->get_curriculum_raw(),
-					'hidden_sections' => ! empty( $hidden_sections ) ? $hidden_sections : array(),
-					'urlEdit'         => admin_url( 'post.php?action=edit&post=' ),
+			wp_localize_script( 'learn-press-admin-course-editor', 'lq_course_editor', apply_filters( 'learn-press/admin-localize-course-editor', array(
+					'root'        => array(
+						'course_id'          => $post->ID,
+						'auto_draft'         => get_post_status( $post->ID ) == 'auto-draft',
+						'ajax'               => admin_url( '' ),
+						'disable_curriculum' => false,
+						'action'             => 'admin_course_editor',
+						'nonce'              => wp_create_nonce( 'learnpress_update_curriculum' ),
+					),
+					'chooseItems' => array(
+						'types'      => learn_press_course_get_support_item_types(),
+						'open'       => false,
+						'addedItems' => array(),
+						'items'      => array(),
+					),
+					'i18n'        => array(
+						'item'             => __( 'item', 'learnpress' ),
+						'new_section_item' => __( 'Create a new', 'learnpress' ),
+						'back'             => __( 'Back', 'learnpress' ),
+						'selected_items'   => __( 'Selected items', 'learnpress' ),
+					),
+					'sections'    => array(
+						'sections'        => $course->get_curriculum_raw(),
+						'hidden_sections' => ! empty( $hidden_sections ) ? $hidden_sections : array(),
+						'urlEdit'         => admin_url( 'post.php?action=edit&post=' ),
+					)
 				)
 			) );
 		}
@@ -647,7 +649,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc'    => $course_result_desc,
 						'options' => array(
 							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' )
-							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'] , false),
+							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
 							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' )
 							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_final_quiz'] )
 							                             . $quiz_passing_condition_html,

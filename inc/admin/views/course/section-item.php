@@ -24,7 +24,7 @@
             <div class="actions">
                 <div class="action edit-item"><a :href="url" target="_blank"
                                                  class="lp-btn-icon dashicons dashicons-edit"></a></div>
-                <div class="action delete-item">
+                <div class="action delete-item" v-if="!disableCurriculum">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>
                         <li>
@@ -47,7 +47,7 @@
 
         Vue.component('lp-section-item', {
             template: '#tmpl-lp-section-item',
-            props: ['item', 'order'],
+            props: ['item', 'order', 'disableCurriculum'],
             data: function () {
                 return {
                     // origin course item title

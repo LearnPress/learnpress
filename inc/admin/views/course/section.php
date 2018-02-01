@@ -38,14 +38,15 @@ learn_press_admin_view( 'course/new-section-item' );
                         <!--Section items-->
                         <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id"
                                          @update="updateItem" @remove="removeItem" @delete="deleteItem" @nav="navItem"
-                                         :order="index+1" :ref="index+1"></lp-section-item>
+                                         :order="index+1" :ref="index+1"
+                                         :disableCurriculum="disableCurriculum"></lp-section-item>
                     </draggable>
 
-                    <lp-new-section-item @create="newItem"></lp-new-section-item>
+                    <lp-new-section-item @create="newItem" v-if="!disableCurriculum"></lp-new-section-item>
                 </div>
             </div>
 
-            <div class="section-actions">
+            <div class="section-actions" v-if="!disableCurriculum">
                 <button type="button" class="button button-secondary"
                         @click="openModal"><?php esc_html_e( 'Select items', 'learnpress' ); ?></button>
 
@@ -63,7 +64,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
         Vue.component('lp-section', {
             template: '#tmpl-lp-section',
-            props: ['section', 'index'],
+            props: ['section', 'index', 'disableCurriculum'],
             data: function () {
                 return {
                     changed: false,

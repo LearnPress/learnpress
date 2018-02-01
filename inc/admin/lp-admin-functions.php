@@ -63,7 +63,7 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 			$actions['lp-duplicate-row-action'] = $link;
 		}
 
-		return $actions;
+		return apply_filters( 'learn-press/row-action-links', $actions );
 	}
 
 	add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
@@ -137,7 +137,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array      $args
+ * @param array $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -172,7 +172,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array      $args
+ * @param array $args
  *
  * @return mixed|string
  */
@@ -1672,9 +1672,9 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param null  $post_id
+	 * @param null $post_id
 	 * @param array $args
-	 * @param bool  $meta
+	 * @param bool $meta
 	 *
 	 * @return bool|mixed
 	 */
