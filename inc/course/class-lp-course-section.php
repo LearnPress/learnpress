@@ -158,7 +158,7 @@ class LP_Course_Section {
 	 * Get items in this section.
 	 *
 	 * @param string|array $type
-	 * @param bool         $preview
+	 * @param bool $preview
 	 *
 	 * @return array
 	 */
@@ -180,10 +180,11 @@ class LP_Course_Section {
 
 				if ( ! $preview ) {
 					if ( $item->is_preview() ) {
+
 						continue;
 					}
 				}
-				if ( ! $type || $type && in_array( get_post_type( $item->get_post_type() ), $type ) ) {
+				if ( ! $type || $type && in_array( get_post_type( $item->get_id() ), $type ) ) {
 					$filtered_items[] = $item;
 				}
 			}
@@ -230,7 +231,7 @@ class LP_Course_Section {
 	 * Count number of items in section.
 	 *
 	 * @param string $type
-	 * @param bool   $preview
+	 * @param bool $preview
 	 *
 	 * @return int
 	 */
