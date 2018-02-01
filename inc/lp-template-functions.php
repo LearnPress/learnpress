@@ -2130,18 +2130,23 @@ function learn_press_get_messages( $clear = false ) {
  * @param array  $options
  */
 function learn_press_add_message( $message, $type = 'success', $options = array() ) {
-	if ( ! is_array( $options ) ) {
 
+	if ( is_string( $options ) ) {
+		$options = array( 'id' => $options );
 	}
+
+	$options = wp_parse_args(
+		$options,
+		array(
+			'id' => ''
+		)
+	);
+
 	$messages = learn_press_session_get( 'messages' );
 	if ( empty( $messages[ $type ] ) ) {
 		$messages[ $type ] = array();
 	}
-	if ( $options ) {
-		$messages[ $type ][] = array( 'content' => $message, 'options' => $options );
-	} else {
-		$messages[ $type ][] = $message;
-	}
+	$messages[ $type ][ $options['id'] ] = array( 'content' => $message, 'options' => $options );
 
 	learn_press_session_set( 'messages', $messages );
 }
@@ -2152,6 +2157,46 @@ function learn_press_get_message( $message, $type = 'success' ) {
 	$message = ob_get_clean();
 
 	return $message;
+}
+
+/**
+ * Remove message added into queue by id and/or type.
+ *
+ * @since 3.0.0
+ *
+ * @param string       $id
+ * @param string|array $type
+ */
+function learn_press_remove_message( $id = '', $type = '' ) {
+	if ( ! $groups = learn_press_session_get( 'messages' ) ) {
+		return;
+	}
+
+	settype( $type, 'array' );
+
+	if ( $id ) {
+		foreach ( $groups as $message_type => $messages ) {
+			if ( ! sizeof( $type ) ) {
+				if ( isset( $groups[ $message_type ][ $id ] ) ) {
+					unset( $groups[ $message_type ][ $id ] );
+				}
+			} elseif ( in_array( $message_type, $type ) ) {
+				if ( isset( $groups[ $message_type ][ $id ] ) ) {
+					unset( $groups[ $message_type ][ $id ] );
+				}
+			}
+		}
+	} elseif ( sizeof( $type ) ) {
+		foreach ( $type as $t ) {
+			if ( isset( $groups[ $t ] ) ) {
+				unset( $groups[ $t ] );
+			}
+		}
+	} else {
+		$groups = array();
+	}
+
+	learn_press_session_set( 'messages', $groups );
 }
 
 /**
@@ -2183,7 +2228,8 @@ function learn_press_message_count( $type = '' ) {
 }
 
 function learn_press_clear_messages() {
-	learn_press_session_set( 'messages', array() );
+	_deprecated_function( __FUNCTION__, '3.0.0', 'learn_press_remove_message' );
+	learn_press_remove_message();
 }
 
 /**

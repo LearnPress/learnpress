@@ -118,6 +118,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			}
 
 			$the_course = self::get_course_object( $the_course );
+
 			if ( ! $the_course ) {
 				return false;
 			}
@@ -195,6 +196,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			} elseif ( $the_course instanceof LP_Abstract_Course ) {
 				$the_course = get_post( $the_course->get_id() );
 			} elseif ( ! ( $the_course instanceof WP_Post ) ) {
+				$the_course = false;
+			}
+
+			if ( $the_course && $the_course->post_type !== LP_COURSE_CPT ) {
 				$the_course = false;
 			}
 

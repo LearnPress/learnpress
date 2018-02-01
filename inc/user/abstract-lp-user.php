@@ -1659,7 +1659,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( $this->has_enrolled_course( $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 						// or user has enrolled course
 						$view = 'enrolled';
-					} elseif ( $lesson->is_preview() || $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+					} elseif ( $lesson->is_preview() || $this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() ) ) {
 						$view = 'preview';
 					} elseif ( ! $course->is( 'required_enroll' ) ) {
 						// if course is not required enroll so the lesson is previewable
@@ -1698,7 +1698,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				if ( $course ) {
 					if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 						$view = 'enrolled';
-					} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+					} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() ) ) {
 						$view = 'preview';
 					} elseif ( ! $course->is( 'required_enroll' ) ) {
 						$view = 'no-required-enroll';
@@ -2604,6 +2604,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				if ( ! $this->get_id() ) {
 					throw new Exception( __( 'Please login to enroll course.', 'learnpress' ), 10002 );
 				}
+
+				learn_press_remove_message( '', 'error' );
 
 				$date = new LP_Datetime();
 				$data = array(

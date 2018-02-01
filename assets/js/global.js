@@ -178,14 +178,14 @@ if (typeof window.LP === 'undefined') {
         }
         return indexed;
     };
-    $.fn.tooltip = function (options) {
+    $.fn.LP_Tooltip = function (options) {
         options = $.extend({}, {
             offset: [0, 0]
         }, options || {});
         return $.each(this, function () {
             var $el = $(this),
                 content = $el.data('content');
-            if (!content || ($el.data('tooltip') !== undefined)) {
+            if (!content || ($el.data('LP_Tooltip') !== undefined)) {
                 return;
             }
             var $tooltip = null;
@@ -214,7 +214,7 @@ if (typeof window.LP === 'undefined') {
             }, function () {
                 $tooltip && $tooltip.remove();
             });
-            $el.data('tooltip', true);
+            $el.data('LP_Tooltip', true);
         });
     };
     $.fn.hasEvent = function (name) {
@@ -1246,9 +1246,9 @@ if (typeof window.LP === 'undefined') {
             LP.blockContent();
         });
 
-        $('.learn-press-tooltip, .lp-passing-conditional').tooltip({offset: [24, 24]});
+        $('.learn-press-tooltip, .lp-passing-conditional').LP_Tooltip({offset: [24, 24]});
 
-        $('.learn-press-icon').tooltip({offset: [30, 30]});
+        $('.learn-press-icon').LP_Tooltip({offset: [30, 30]});
 
         $('.learn-press-message[data-autoclose]').each(function () {
             var $el = $(this), delay = parseInt($el.data('autoclose'));

@@ -55,10 +55,15 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				$field['id']   = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
 
 				RWMB_Field::call( 'admin_enqueue_scripts', $field );
+				ob_start();
 				RWMB_Field::call( 'show', $field, true, 0 );
-				RWMB_Field::call( 'add_actions', $field );
+				$output = ob_get_clean();
 
-				///RWMB_Field::call( $field, 'add_actions' );
+				if ( preg_match( '!class=".*?(required).*?"!', $output, $matches ) ) {
+					$output = str_replace( $matches[0], preg_replace( '!required!', '', $matches[0] ), $output );
+				}
+				echo $output;
+				RWMB_Field::call( 'add_actions', $field );
 			}
 		}
 

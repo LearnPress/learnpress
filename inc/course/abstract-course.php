@@ -383,15 +383,17 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_items( $type = '', $preview = true ) {
 
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 			// get course items from cache
 
 			if ( ! $type && $preview ) {
 				$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
 			} else {
 
-				settype( $type, 'array' );
+				if ( ! $type ) {
+					$type = learn_press_course_get_support_item_types( true );
+				} else {
+					settype( $type, 'array' );
+				}
 
 				$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
 				if ( false === ( $items = wp_cache_get( 'course-' . $key, 'lp-course-items' ) ) ) {
@@ -407,39 +409,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 						$items = array_diff( $items, $preview_items );
 					}
 
-//					$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
-//					LP_Helper_CURD::update_meta_cache( 'post', $items );
-//
-//					if ( ( $type || ! $preview ) && $items ) {
-//						$item_types = array();
-//						if ( $type ) {
-//							settype( $type, 'array' );
-//						}
-//
-//						foreach ( $items as $item_id ) {
-//
-//							if ( ! $preview ) {
-//								$item = $this->get_item( $item_id );
-//
-//								if ( ! $item || $item->is_preview() ) {
-//									continue;
-//								}
-//							}
-//
-//							if ( ! $type || is_array( $type ) && in_array( get_post_type( $item_id ), $type ) ) {
-//								$item_types[] = $item_id;
-//							}
-//						}
-//
-//						$items = apply_filters( 'learn-press/course-items-by-type', $item_types, $type, $this->get_id() );
-//
-//					}
-
 					wp_cache_set( 'course-' . $key, $items, 'lp-course-items' );
 
 				}
 			}
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return $items;
 		}
@@ -877,6 +850,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function count_students() {
 			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+
+			$append_students = get_post_meta( $this->get_id(), '_lp_append_students', true );
+
+			if ( ( 'yes' == $append_students ) || ! in_array( $append_students, array( 'yes', 'no' ) ) ) {
+				$count_in_order += $this->get_fake_students();
+			}
 
 			return $count_in_order;
 		}

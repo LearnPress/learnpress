@@ -34,6 +34,7 @@ class LP_Updater {
 			return;
 		}
 		echo '<div>';
+		ob_start();
 
 		try {
 			LP_Debug::startTransaction();
@@ -47,6 +48,9 @@ class LP_Updater {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 		}
 
+		if ( ob_get_length() ) {
+			ob_get_clean();
+		}
 
 		if ( ! learn_press_message_count() ) {
 			LP_Debug::commitTransaction();

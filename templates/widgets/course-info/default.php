@@ -20,7 +20,6 @@ if ( ! $course = LP_Global::course() ) {
 }
 
 ?>
-
 <div<?php $widget->get_class( $widget->instance ); ?>>
 
     <div class="widget-body">
@@ -28,12 +27,12 @@ if ( ! $course = LP_Global::course() ) {
         <ul class="lp-course-info-fields">
             <li class="lp-course-info lessons">
                 <label><?php _e( 'Lessons', 'learnpress' ); ?></label>
-				<?php learn_press_label_html( $course->count_items( LP_LESSON_CPT, true ) ); ?>
+				<?php learn_press_label_html( $course->count_items( LP_LESSON_CPT ) ); ?>
             </li>
 
             <li class="lp-course-info quizzes">
                 <label><?php _e( 'Quizzes', 'learnpress' ); ?></label>
-				<?php learn_press_label_html( $course->count_items( LP_QUIZ_CPT, false ) ); ?>
+				<?php learn_press_label_html( $course->count_items( LP_QUIZ_CPT ) ); ?>
             </li>
 
             <li class="lp-course-info preview-items">

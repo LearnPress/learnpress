@@ -61,7 +61,7 @@ class LP_Request {
 		add_action( 'learn-press/purchase-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
 		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
 
-		add_action( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
+		add_filter( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
 		add_filter( 'learn-press/checkout-no-payment-result', array( __CLASS__, 'maybe_redirect_checkout' ), 10, 2 );
 		add_filter( 'learn-press/purchase-course-id', array( __CLASS__, 'maybe_enroll_course' ), 10, 2 );
 
@@ -257,6 +257,9 @@ class LP_Request {
 				wp_redirect( $redirect );
 				exit();
 			}
+
+			learn_press_add_message( __( 'Checkout page is not setup' ) );
+			die();
 		} else {
 			/// Need?
 			do_action( 'learn-press/add-to-cart-order-total-empty' );
@@ -273,6 +276,15 @@ class LP_Request {
 	 * @param string $action
 	 */
 	public static function do_enroll( $course_id, $order_id, $action ) {
+
+//		if ( ! LP_Nonce_Helper::verify_course( LP_Request::get_string( 'enroll-course-nonce' ), 'enroll' ) ) {
+//			wp_die( __( 'Invalid request!', 'learnpress' ) );
+//		}
+
+		if ( ! $course = learn_press_get_course( $course_id ) ) {
+			wp_die( __( 'Invalid request!', 'learnpress' ) );
+		}
+
 		$user     = LP_Global::user();
 		$redirect = get_the_permalink( $course_id );
 		$thing    = $user->enroll( $course_id, $order_id );
@@ -283,7 +295,7 @@ class LP_Request {
 			);
 
 			if ( $thing->get_error_code() == 10002 ) {
-				$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( $redirect ) );
+				$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $redirect ) ) );
 			}
 		} elseif ( $thing ) {
 			learn_press_add_message(
@@ -305,15 +317,17 @@ class LP_Request {
 	 * @return mixed
 	 */
 	public static function check_checkout_page( $url ) {
-		// Only show for admin
-		if ( current_user_can( 'manage_options' ) ) {
-			$page_id = learn_press_get_page_id( 'checkout' );
-			$page    = false;
-			if ( $page_id ) {
-				$page = get_post( $page_id );
-			}
-			if ( ! $page ) {
+		$page_id = learn_press_get_page_id( 'checkout' );
+		$page    = false;
+		if ( $page_id ) {
+			$page = get_post( $page_id );
+		}
+		if ( ! $page ) {
+			// Only show for admin
+			if ( current_user_can( 'manage_options' ) ) {
 				learn_press_add_message( __( 'Checkout page is not setup or page does not exists.', 'learnpress' ) );
+			}else{
+				learn_press_add_message( __( 'Checkout error! Please contact with admin for getting more information.', 'learnpress' ) );
 			}
 		}
 
