@@ -298,6 +298,13 @@
                 return false;
             }
         });
+
+        // Show form if there is only one form Register or Login
+        if($formRegister.length && !$formLogin.length){
+            _toggleRegisterForm()
+        }else if(!$formRegister.length && $formLogin.length){
+            _toggleLoginForm()
+        }
     }
 
     $(document).ready(function () {

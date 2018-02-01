@@ -67,34 +67,9 @@ if ( ! class_exists( 'LP_Widget_Course_Info' ) ) {
 		}
 
 		/**
-		 * Get remaining time for current course.
-		 *
-		 * @return bool|int|string
-		 */
-		public function get_remaining_time() {
-			if ( ! $course = LP_Global::course() ) {
-				return false;
-			}
-
-			if ( ! $user = LP_Global::user() ) {
-				return false;
-			}
-
-			if ( false === ( $remaining_time = $user->get_course_remaining_time( $course->get_id() ) ) ) {
-				return false;
-			}
-
-			return $remaining_time;
-		}
-
-		/**
 		 * Show widget in frontend.
 		 */
 		public function show() {
-
-			if ( false !== ( $remaining_time = $this->get_remaining_time() ) ) {
-				return;
-			}
 
 			$widget = $this;
 

@@ -352,10 +352,7 @@ class LP_Checkout {
 	public function is_enable_guest_checkout() {
 		return apply_filters(
 			'learn-press/checkout/enable-guest',
-			in_array(
-				LP()->settings()->get( 'guest_checkout' ),
-				array( '', 'yes' )
-			)
+			LP()->settings()->get( 'guest_checkout' )
 		);
 	}
 
@@ -624,7 +621,7 @@ class LP_Checkout {
 			)
 		);
 
-		learn_press_maybe_send_json( $result, 'learn_press_clear_messages' );
+		learn_press_maybe_send_json( $result, 'learn_press_remove_messages' );
 	}
 
 	/**

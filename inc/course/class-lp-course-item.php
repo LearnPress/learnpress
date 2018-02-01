@@ -73,10 +73,22 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		}
 
 		/**
+		 * @param string $context
+		 *
 		 * @return bool
 		 */
-		public function is_preview() {
-			return get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
+		public function is_preview( $context = 'display' ) {
+			$is_preview = get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
+
+			if ( $course = $this->get_course() ) {
+				$user = learn_press_get_current_user();
+
+				if ( $user->has_enrolled_course( $course->get_id() ) ) {
+					$is_preview = false;
+				}
+			}
+
+			return $context === 'display' ? apply_filters( 'learn-press/course-item-preview', $is_preview, $this->get_id() ) : $is_preview;
 		}
 
 		/**
@@ -436,7 +448,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 */
 		public function get_duration() {
 			$duration = $this->get_data( 'duration' );
-			if ( false === $duration || '' === $duration  ) {
+			if ( false === $duration || '' === $duration ) {
 				if ( $duration = get_post_meta( $this->get_id(), '_lp_duration', true ) ) {
 					$duration = new LP_Duration( $duration );
 				} else {

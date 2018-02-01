@@ -1006,3 +1006,73 @@ function learn_press_setup_pages() {
 }
 
 add_action( 'init', 'learn_press_setup_pages' );
+
+/**
+ *
+ */
+function learn_press_enroll_course_from_url() {
+	if ( ! $course_id = LP_Request::get_int( 'enroll-course' ) ) {
+		return;
+	}
+
+	$course = learn_press_get_course( $course_id );
+
+	if ( ! $course /*|| ! LP_Nonce_Helper::verify_course( LP_Request::get_string( 'enroll-course-nonce' ), 'enroll' ) */ ) {
+		wp_die( __( 'Invalid request!', 'learnpress' ) );
+	}
+
+	if ( ! $user = learn_press_get_current_user( false ) ) {
+		return;
+	}
+
+	if ( $user->has_enrolled_course( $course_id ) ) {
+
+		// If user is just logged in
+		if ( 'yes' === LP()->session->get( 'user_just_logged_in' ) ) {
+
+			// Remove all error messages
+			learn_press_remove_message( '', 'error' );
+			learn_press_add_message( sprintf( __( 'Welcome back, %s', 'learnpress' ), $user->get_display_name() ) );
+			LP()->session->remove( 'user_just_logged_in' );
+		}
+
+		wp_redirect( remove_query_arg( 'enroll-course' ) );
+		exit();
+	}
+
+
+	?>
+    <div style="display: none;">
+		<?php learn_press_get_template( 'single-course/buttons/enroll.php', array( 'course' => $course ) ); ?>
+    </div>
+    <script>
+        setTimeout(function () {
+            var forms = document.getElementsByClassName('enroll-course');
+            if (forms.length) {
+                forms[0].submit();
+            }
+        }, 300);
+    </script>
+	<?php
+	die();
+}
+
+add_action( 'get_header', 'learn_press_enroll_course_from_url' );
+
+function learn_press_remove_query_var_enrolled_course( $redirect ) {
+	return remove_query_arg( 'enroll-course', $redirect );
+}
+
+add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_enrolled_course' );
+
+/**
+ * Mark the user to know if they have just logged in
+ * for some purpose.
+ *
+ * @since 3.0.0
+ */
+function learn_press_mark_user_just_logged_in() {
+	LP()->session->set( 'user_just_logged_in', 'yes' );
+}
+
+add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );

@@ -786,7 +786,7 @@ if (typeof LearnPress === 'undefined') {
             $(document).trigger('ready');
             $(window).trigger('resize');
             LP.unblockContent();
-            $('.learn-press-tooltip').tooltip({offset: [24, 24]});
+            $('.learn-press-tooltip').LP_Tooltip({offset: [24, 24]});
         }
     }).ajaxError(function () {
         LP.unblockContent();

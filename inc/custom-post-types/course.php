@@ -545,6 +545,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => 0,
 					),
 					array(
+						'name' => __( 'Use Students Enrolled for counter', 'learnpress' ),
+						'id'   => '_lp_append_students',
+						'type' => 'yes_no',
+						'desc' => __( 'Append the value of Students Enrolled above for counting the real users enrolled course.', 'learnpress' ),
+						'std'  => 'yes',
+					),
+					array(
 						'name' => __( 'Re-take Course', 'learnpress' ),
 						'id'   => '_lp_retake_count',
 						'type' => 'number',
