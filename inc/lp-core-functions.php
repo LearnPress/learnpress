@@ -1812,24 +1812,22 @@ function learn_press_print_notices( $clear = true ) {
 /**
  * Filter the login url so third-party can be customize
  *
- * @param null $redirect
+ * @param string $redirect
  *
  * @return mixed
  */
 function learn_press_get_login_url( $redirect = null ) {
-	return apply_filters( 'learn_press_login_url', wp_login_url( $redirect ) );
-}
 
-function _learn_press_get_login_url( $url ) {
+	// @deprecated
+	$url = apply_filters( 'learn_press_login_url', wp_login_url( $redirect ) );
+
 	if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && $profile_page = learn_press_get_page_link( 'profile' ) ) {
 		$a   = parse_url( $url );
 		$url = $profile_page . ( ! empty( $a['query'] ) ? '?' . $a['query'] : '' );
 	}
 
-	return $url;
+	return apply_filters( 'learn-press/login-url', $url );
 }
-
-add_filter( 'learn_press_login_url', '_learn_press_get_login_url', 10 );
 
 function learn_press_get_endpoint_url( $name, $value, $url ) {
 	if ( ! $url ) {
