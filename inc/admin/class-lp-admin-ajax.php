@@ -320,7 +320,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$args = array(
 				'post_type'      => array( $type ),
-				'posts_per_page' => - 1,
+				'posts_per_page' => 20,
 				'post_status'    => 'publish',
 				'order'          => 'ASC',
 				'orderby'        => 'parent title',
@@ -452,7 +452,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$args = array(
 				'post_type'      => array( 'lp_question' ),
-				'posts_per_page' => - 1,
+				'posts_per_page' => 20,
 				'post_status'    => 'publish',
 				'order'          => 'ASC',
 				'orderby'        => 'parent title',

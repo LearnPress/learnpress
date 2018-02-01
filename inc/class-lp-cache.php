@@ -122,6 +122,8 @@ class LP_Cache {
 	 * @var string
 	 */
 	protected static $_quiz_grade = 'quiz-grade';
+	
+	protected static $_course_history_id = 'course_history_id';
 
 	/**
 	 * Set data to cache
@@ -644,6 +646,20 @@ class LP_Cache {
 			return $key_or_value;
 		}
 		return self::_set_cache( self::$_quiz_grade, $key_or_value, $value );
+	}
+	
+	
+	
+	public static function get_user_course_history_id($key = false, $def = false ){
+	    return self::_get_cache( self::$_course_history_id, $key, $def );
+	}
+	
+	public static function set_user_course_history_id($key_or_value, $value = false ){
+	    if ( func_num_args() == 1 ) {
+	        wp_cache_set( self::$_course_history_id, $key_or_value, self::$_group );
+	        return $key_or_value;
+	    }
+	    return self::_set_cache( self::$_course_history_id, $key_or_value, $value );
 	}
 
 	/**

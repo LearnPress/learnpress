@@ -1194,17 +1194,39 @@ function learn_press_update_user_profile_avatar() {
 	} else {
 		$data = learn_press_get_request( 'lp-user-avatar-crop' );
 		if ( $data && ( $path = $upload_dir['basedir'] . $data['name'] ) && file_exists( $path ) ) {
+		    $im = false;
 			$filetype = wp_check_filetype( $path );
 			if ( 'jpg' == $filetype['ext'] ) {
-				$im = imagecreatefromjpeg( $path );
+                if (function_exists('imagecreatefromjpeg')) {
+                    $im = imagecreatefromjpeg($path);
+                }
 			} elseif ( 'png' == $filetype['ext'] ) {
-				$im = imagecreatefrompng( $path );
+				if (function_exists('imagecreatefrompng')) {
+                    $im = imagecreatefrompng($path);
+                }
 			} else {
 				return;
 			}
-			$points  = explode( ',', $data['points'] );
-			$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
+			if( !$im ) {
+			    $user  = wp_get_current_user();
+			    $output  = dirname( $path );
+			    $newname = md5( $user->user_login );
+			    if ( 'jpg' == $filetype['ext'] ) {
+			        $newname .= '.jpg';
+			        $output  .= '/' . $newname;
+			    } elseif ( 'png' == $filetype['ext'] ) {
+			        $newname .= '.png';
+			        $output  .= '/' . $newname;
+			    }
+			    if (copy($path, $output)) {
+        			    update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
+        			    update_user_meta( get_current_user_id(), '_lp_profile_picture_changed', 'yes' );
+			    }
+			}
+			
 			if ( $im !== false ) {
+			    $points  = explode( ',', $data['points'] );
+			    $im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
 				$user  = wp_get_current_user();
 				$dst_x = 0;
 				$dst_y = 0;
@@ -1362,7 +1384,7 @@ function learn_press_get_user_courses_info( $user_id, $course_ids, $force=false 
                             AND o.post_status = 'lp-completed'
                         	ORDER BY user_item_id DESC
                     ", $format );
-		    if ( empty( $user_course_info[ $user_id ] ) ) {
+		    if ( !isset($user_course_info[ $user_id ]) || empty( $user_course_info[ $user_id ] ) ) {
 			    $user_course_info[ $user_id ] = array();
 		    }
 
@@ -1384,8 +1406,8 @@ function learn_press_get_user_courses_info( $user_id, $course_ids, $force=false 
 				    $info['start']                              = $row->start_time;
 				    $info['end']                                = $row->end_time;
 				    $info['status']                             = $row->status;
-				    $info['results']                            = $course->evaluate_course_results( $user_id );
-				    $info['items']                              = $course->get_items_params( $user_id );
+				    $info['results']                            = $course->evaluate_course_results( $user_id, $force, $row->user_item_id );
+				    $info['items']                              = $course->get_items_params( $user_id, $row->user_item_id );
 				    $user_course_info[ $user_id ][ $course_id ] = $info;
 			    }
 		    }

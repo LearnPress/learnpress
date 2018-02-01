@@ -505,7 +505,15 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	if ( ! $course_id ) {
 		$course_id = get_the_ID();
 	}
-	$course   = get_post( $course_id );
+	$course    = get_post( $course_id );
+	$user      = learn_press_get_user($user_id);
+	$course_history_id = $user->get_course_history_id_force( $course_id );
+	$key = $user_id.'-'.$course_id.'-'.$course_history_id;
+	$item_statuses = LP_Cache::get_item_statuses( $key, array() );
+	if( $item_statuses && ! $force ) {
+	    return $item_statuses;
+	}
+	
 	$item_ids = ! empty( $course->curriculum_items ) ? $course->curriculum_items : array();
 	$item_ids = maybe_unserialize( $item_ids );
 	if ( $item_ids ) {
@@ -540,11 +548,10 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 		", '_quiz_grade', $user_id, $course_id );
 	}
 	$items = $wpdb->get_results( $query );
-
 	if($force){
 
 	}
-	$item_statuses = LP_Cache::get_item_statuses( false, array() );
+// 	$item_statuses = LP_Cache::get_item_statuses( false, array() );
 	$quiz_grades   = LP_Cache::get_quiz_grade( false, array() );
 	foreach ( $item_ids as $id ) {
 		if ( ! array_key_exists( $id, $item_statuses ) || $force ) {
@@ -557,15 +564,17 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	}
 	if ( $items ) {
 		foreach ( $items as $item ) {
-			$item_statuses[ $user_id . '-' . $course_id . '-' . $item->item_id ] = learn_press_validate_item_status( $item );
-			if ( ! empty( $item->grade ) ) {
-				$quiz_grades[ $user_id . '-' . $course_id . '-' . $item->item_id ] = $item->grade;
-			} else {
-				$quiz_grades[ $user_id . '-' . $course_id . '-' . $item->item_id ] = '';
-			}
+		    if( $item->parent_id == $course_history_id ){
+        			$item_statuses[ $user_id . '-' . $course_id . '-' . $item->item_id ] = learn_press_validate_item_status( $item );
+        			if ( ! empty( $item->grade ) ) {
+        				$quiz_grades[ $user_id . '-' . $course_id . '-' . $item->item_id ] = $item->grade;
+        			} else {
+        				$quiz_grades[ $user_id . '-' . $course_id . '-' . $item->item_id ] = '';
+        			}
+		    }
 		}
 	}
-	LP_Cache::set_item_statuses( $item_statuses );
+	LP_Cache::set_item_statuses( $key, $item_statuses );
 	LP_Cache::set_quiz_grade( $quiz_grades );
 
 	do_action( "learn_press_parse_user_item_statuses", $user_id, $course_id );

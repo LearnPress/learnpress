@@ -678,7 +678,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_lesson_status', $cached[ $this->id . '-' . $course_id . '-' . $lesson_id ], $lesson_id, $this->id, $course_id );
 	}
 
-	public function get_item_status( $item_id, $course_id = 0, $force = false ) {
+	public function get_item_status( $item_id, $course_id = 0, $force = false, $course_history_id=0 ) {
 		$course_id = $this->_get_course_id( $course_id );
 
 		_learn_press_parse_user_item_statuses( $this->id, $course_id, $force );
@@ -696,8 +696,11 @@ class LP_Abstract_User {
 			if ( $item_ids = $this->get_course_items( '', 'key', $course_id ) ) {
 				global $wpdb;
 				$in   = array_fill( 0, sizeof( $item_ids ), '%d' );
+				if( !$course_history_id ) {
+				    $course_history_id = $this->get_course_history_id_force($course_id);
+				}
 				$args = array_merge(
-					array( $this->id, $course_id ),
+				    array( $this->id, $course_id, $course_history_id ),
 					$item_ids
 				);
 
@@ -705,7 +708,7 @@ class LP_Abstract_User {
                     SELECT o.item_id, o.status
                     FROM {$wpdb->prefix}learnpress_user_items o
                     WHERE user_item_id = (SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items s2 WHERE s2.item_id = o.item_id AND s2.user_id = o.user_id)
-                    AND user_id = %d AND ref_id = %d
+                    AND user_id = %d AND ref_id = %d AND parent_id = %d
                     AND item_id IN(" . join( ', ', $in ) . ")
                 ", $args );
 
@@ -808,9 +811,11 @@ class LP_Abstract_User {
 	 *
 	 * @return mixed|null|void
 	 */
-	public function get_quiz_history( $quiz_id, $course_id = 0, $history_id = null, $force = false ) {
+	public function get_quiz_history( $quiz_id, $course_id = 0, $history_id = null, $force = false, $course_history_id=0 ) {
 		$course_id = $this->_get_course_id( $course_id );
-
+		if( !$course_history_id ) {
+        		$course_history_id = $this->get_course_history_id_force($course_id);
+		}
 		$course = learn_press_get_course( $course_id );
 		if ( $course ) {
 			$quizzes = $course->get_quizzes( 'ID' );
@@ -828,16 +833,19 @@ class LP_Abstract_User {
 			$t2             = $wpdb->prefix . 'learnpress_user_itemmeta'; //{$wpdb->learnpress_user_quizzes}
 			$in             = array_fill( 0, sizeof( $quizzes ), '%d' );
 			$prepare_params = array_merge(
-				array( 'lp_quiz', $this->id, $course_id ),
+				array( 'lp_quiz', $this->id, $course_id, $course_history_id ),
 				$quizzes
 			);
 			$query          = $wpdb->prepare( "
 				SELECT *
 				FROM $t1 uq
 				WHERE uq.item_type = %s
+                    
 					AND uq.user_id = %d
 					AND uq.ref_id = %d
+                    AND uq.parent_id = %d
 					AND uq.item_id IN(" . join( ',', $in ) . ")
+                    
 				ORDER BY uq.user_item_id DESC
 			", $prepare_params );
 
@@ -2062,7 +2070,7 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 	public function get_course_status( $course_id ) {
-		$status = $this->get_course_info( $course_id, 'status', true );
+		$status = $this->get_course_info( $course_id, 'status' );
 		if ( ! $status && $this->has_purchased_course( $course_id ) ) {
 			$status = 'purchased';
 		}
@@ -2079,12 +2087,12 @@ class LP_Abstract_User {
 	 *
 	 * @return mixed
 	 */
-	public function get_quiz_results( $quiz_id, $course_id = 0, $force = false ) {
+	public function get_quiz_results( $quiz_id, $course_id = 0, $force = false, $course_history_id = 0 ) {
 		$course_id    = $this->_get_course_id( $course_id );
 		$quiz_results = LP_Cache::get_quiz_results( false, array() );
 		$key          = $this->id . '-' . $course_id . '-' . $quiz_id;
 		if ( ! array_key_exists( $key, $quiz_results ) || $force ) {
-			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
+		    if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force, $course_history_id ) ) {
 				$quiz_results[ $key ] = reset( $history );
 				$quiz_results[ $key ]->_quiz_grade = null;
 				if ( $user_results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[ $key ] ) ) {
@@ -3077,6 +3085,24 @@ class LP_Abstract_User {
 		}
 
 		return apply_filters( 'learn_press_user_course_grade', $grade, $this->id, $course_id );
+	}
+	
+	public function get_course_history_id_force($course_id, $force=false){
+	    $key = $this->id.'-'.$course_id;
+	    $history_id = LP_Cache::get_user_course_history_id($key, null);
+	    if( !$history_id || $force ) {
+	        global $wpdb;
+	        $sql = "SELECT `user_item_id`
+                   FROM {$wpdb->prefix}learnpress_user_items
+                   WHERE `item_type`= %s
+                        AND `user_id` = %d
+                        AND `item_id` = %d
+                   ORDER BY `user_item_id` DESC LIMIT 1";
+	        $query = $wpdb->prepare($sql, LP_COURSE_CPT, $this->id, $course_id);
+	        $history_id = $wpdb->get_var($query);
+	        LP_Cache::set_user_course_history_id($key, $history_id);
+	    }
+	    return $history_id;
 	}
 
 	public static function get_user() {
