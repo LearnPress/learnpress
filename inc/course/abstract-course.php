@@ -1652,7 +1652,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$duration    = $this->get_duration();
 			$user        = learn_press_get_user( $user_id );
 			$course_info = $user->get_course_info( $this->get_id() );
-			$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : intval( strtotime( $course_info['start'] ) );
+			$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : ( $course_info ? intval( strtotime( $course_info['start'] ) ) : 0 );
 			if ( $duration == 0 ) {
 				$duration = DAY_IN_SECONDS * 365 * 100;
 			}
