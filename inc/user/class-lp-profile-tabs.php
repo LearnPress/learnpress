@@ -78,7 +78,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 		$key = md5( serialize( $tabs ) );
 		if ( $key !== get_option( '_lp_tabs_data' ) ) {
-			 flush_rewrite_rules();
+			flush_rewrite_rules();
 			update_option( '_lp_tabs_data', $key, false );
 		}
 
@@ -135,7 +135,8 @@ class LP_Profile_Tabs extends LP_Array_Access {
 			}
 			if ( $tab = $this->get_tab_at( $current_tab ) ) {
 				if ( ! empty( $tab['sections'] ) ) {
-					$section = reset( $tab['sections'] );
+					$sections = $tab['sections'];
+					$section  = reset( $sections );
 					if ( array_key_exists( 'slug', $section ) ) {
 						$current = $section['slug'];
 					} else {

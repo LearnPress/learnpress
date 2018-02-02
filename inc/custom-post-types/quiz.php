@@ -353,7 +353,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;
@@ -392,7 +392,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 					printf(
 						'<span class="lp-label-counter" title="%s">%s</span>',
-						( $count ) ? sprintf( _nx( '%d question', '%d questions', $count, 'learnpress' ), $count ) : __( 'This quiz has no questions', 'learnpress' ),
+						( $count ) ? sprintf( _n( '%d question', '%d questions', $count, 'learnpress' ), $count ) : __( 'This quiz has no questions', 'learnpress' ),
 						$count
 					);
 					break;

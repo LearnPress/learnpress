@@ -2693,7 +2693,6 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/course/review-logs.php:7
 #, php-format
-msgctxt "learnpress"
 msgid "%d review"
 msgid_plural "%d reviews"
 msgstr[0] ""
@@ -4555,7 +4554,6 @@ msgstr ""
 
 #: inc/custom-post-types/course.php:1281
 #, php-format
-msgctxt "learnpress"
 msgid "%d section"
 msgid_plural "%d sections"
 msgstr[0] ""
@@ -4563,7 +4561,6 @@ msgstr[1] ""
 
 #: inc/custom-post-types/course.php:1283
 #, php-format
-msgctxt "learnpress"
 msgid "%d lesson"
 msgid_plural "%d lessons"
 msgstr[0] ""
@@ -4575,7 +4572,6 @@ msgstr ""
 
 #: inc/custom-post-types/course.php:1285
 #, php-format
-msgctxt "learnpress"
 msgid "%d quiz"
 msgid_plural "%d quizzes"
 msgstr[0] ""
@@ -4930,7 +4926,6 @@ msgstr ""
 
 #: inc/custom-post-types/quiz.php:395
 #, php-format
-msgctxt "learnpress"
 msgid "%d question"
 msgid_plural "%d questions"
 msgstr[0] ""
@@ -6692,4 +6687,7 @@ msgstr ""
 #: templates/widgets/recent-courses/default.php:86
 #, php-format
 msgid "%d lesson"
+msgstr ""
+
+msgid "Enrolled"
 msgstr ""

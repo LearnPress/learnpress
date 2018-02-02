@@ -2831,12 +2831,6 @@ if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
 			return;
 		}
 
-		if ( $lesson_item = $course_item->get_item( $lesson->get_id() ) ) {
-			if ( $lesson_item->is_completed() ) {
-				return;
-			}
-		}
-
 		learn_press_get_template( 'content-lesson/button-complete.php' );
 	}
 }
@@ -3144,7 +3138,7 @@ function learn_press_quiz_meta_final( $item ) {
  */
 function learn_press_quiz_meta_questions( $item ) {
 	$count = $item->count_questions();
-	echo '<span class="item-meta count-questions">' . sprintf( $count ? _n( '%d question', '%d questions', 'learnpress' ) : __( '%d question', 'learnpress' ), $count ) . '</span>';
+	echo '<span class="item-meta count-questions">' . sprintf( $count ? _n( '%d question', '%d questions', $count, 'learnpress' ) : __( '%d question', 'learnpress' ), $count ) . '</span>';
 }
 
 /**

@@ -16,7 +16,7 @@ if ( ! isset( $remaining_time ) ) {
 ?>
 <div class="course-remaining-time">
     <p>
-		<?php learn_press_label_html( 'Enrolled', 'enrolled' ); ?>
+		<?php learn_press_label_html( __( 'Enrolled', 'learnpress' ), 'enrolled' ); ?>
 		<?php echo sprintf( __( 'You have %s remaining for the course', 'learnpress' ), $remaining_time ); ?>
     </p>
 </div>

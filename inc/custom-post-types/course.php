@@ -1278,11 +1278,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							}
 						}
 
-						$output = sprintf( _nx( '%d section', '%d sections', $number_sections, 'learnpress' ), $number_sections );
+						$output = $number_sections ? sprintf( _n( '%d section', '%d sections', $number_sections, 'learnpress' ), $number_sections ) : __('0 section', 'learnpress');
 						$output .= ' (';
-						$output .= $number_lessons ? sprintf( _nx( '%d lesson', '%d lessons', $number_lessons, 'learnpress' ), $number_lessons ) : __( "0 lesson", 'learnpress' );
+						$output .= $number_lessons ? sprintf( _n( '%d lesson', '%d lessons', $number_lessons, 'learnpress' ), $number_lessons ) : __( "0 lesson", 'learnpress' );
 						$output .= ', ';
-						$output .= $number_quizzes ? sprintf( _nx( '%d quiz', '%d quizzes', $number_quizzes, 'learnpress' ), $number_quizzes ) : __( "0 quiz", 'learnpress' );
+						$output .= $number_quizzes ? sprintf( _n( '%d quiz', '%d quizzes', $number_quizzes, 'learnpress' ), $number_quizzes ) : __( "0 quiz", 'learnpress' );
 						$output .= ')';
 
 						echo $output;
