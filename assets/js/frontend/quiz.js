@@ -330,7 +330,11 @@
                     }, args || {}),
                     dataType: 'html',
                     success: function (response) {
-                        var $html = $(response).contents().find('.learn-press-content-item-summary');
+                        try{
+                            var $html = $(response).contents().find('.learn-press-content-item-summary');
+                        }catch(err){
+                            var $html = $(response).find('.learn-press-content-item-summary');
+                        }
                         question.set('response', $html);
                         loadedCallback();
                     }
@@ -341,7 +345,7 @@
             this.prepareQuestion(args)
         },
         prepareQuestion: function (args) {
-            return;
+        		return;
             var next = this.findNext(),
                 prev = this.findPrev();
 
@@ -372,7 +376,12 @@
                 }, args || {}),
                 dataType: 'html',
                 success: function (response) {
-                    var $html = $(response).contents().find('.learn-press-content-item-summary');
+                		var $html = '';
+                		try{
+                			var $html = $(response).contents().find('.learn-press-content-item-summary');
+                		}catch(error){
+                			var $html = $(response).find('.learn-press-content-item-summary');
+                		}
                     question.set('response', $html);
                 }
             });
