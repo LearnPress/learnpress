@@ -27,33 +27,38 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
-			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
-
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
 			add_action( 'admin_notices', array( $this, 'notice_setup_pages' ) );
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_editor' ), - 10 );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
-			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
-
+			add_action( 'init', array( $this, 'init' ), 50 );
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
-			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
 
+			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
+			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
 			add_filter( 'manage_pages_columns', array( $this, 'page_columns_head' ) );
 			add_filter( 'manage_pages_custom_column', array( $this, 'page_columns_content' ), 10, 2 );
 			add_filter( 'views_edit-page', array( $this, 'views_pages' ), 10 );
 			add_filter( 'pre_get_posts', array( $this, 'filter_pages' ), 10 );
-
 			add_filter( 'views_users', array( $this, 'views_users' ), 10, 1 );
 			add_filter( 'user_row_actions', array( $this, 'user_row_actions' ), 10, 2 );
-
-			add_action( 'init', array( $this, 'init' ), 50 );
-
+			add_filter( 'get_pages', array( $this, 'add_empty_page' ), 1000, 2 );
+			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
 			add_filter( 'views_plugins', array( $this, 'views_plugins' ) );
 
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
+		}
+
+		public function add_empty_page( $pages, $args ) {
+			if ( empty( $pages ) && ! empty( $args['class'] ) && strpos( $args['class'], 'lp-list-pages' ) !== false ) {
+				$empty_page     = get_default_post_to_edit( 'page' );
+				$empty_page->ID = '00000';
+				$pages[]        = $empty_page;
+			}
+
+			return $pages;
 		}
 
 		/**

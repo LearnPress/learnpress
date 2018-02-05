@@ -196,6 +196,9 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	if ( empty( $id ) ) {
 		$id = $name;
 	}
+
+	$class .= 'list-pages lp-list-pages';
+
 	$args    = array(
 		'name'             => $name,
 		'id'               => $id,
@@ -205,12 +208,10 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		'class'            => $class,
 		'echo'             => false,
 		'selected'         => $selected,
-		'allow_create'     => true
+		'allow_create'     => true,
 	);
 	$output  = wp_dropdown_pages( $args );
 	$replace = "";
-
-	$class .= 'list-pages';
 
 	if ( $class ) {
 		$replace .= ' class="' . $class . '"';
@@ -231,6 +232,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$before_output = join( "\n", $before_output );
 		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
 	}
+
+	$output = str_replace('<option class="level-0" value="00000">#0 (no title)</option>', '', $output);
 
 	if ( $selected && get_post_status( $selected ) !== 'publish' ) {
 		$selected = 0;

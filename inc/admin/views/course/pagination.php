@@ -15,9 +15,9 @@
                     @click.prevent="previousFirstPage">«
             </button>
             <button class="button previous" :disabled="page == 1"
-                    @click.prevent="previousPage"><?php esc_html_e( 'Previous', 'learnpress' ); ?></button>
+                    @click.prevent="previousPage"><?php echo esc_html_x( 'Previous', 'page-navigation', 'learnpress' ); ?></button>
             <button class="button next" :disabled="page == total"
-                    @click.prevent="nextPage"><?php esc_html_e( 'Next', 'learnpress' ); ?></button>
+                    @click.prevent="nextPage"><?php echo esc_html_x( 'Next', 'page-navigation', 'learnpress' ); ?></button>
             <button class="button last" :disabled="page == total"
                     v-if="total > 2 && page < total && page != (total - 1)"
                     @click.prevent="nextLastPage">»

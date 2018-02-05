@@ -633,7 +633,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$course_result_option_desc = array(
 				'evaluate_lesson'         => __( '<p>Evaluate by number of lessons completed per number of total lessons.</p>', 'learnpress' )
 				                             . __( 'E.g: Course has 10 lessons and user completed 5 lessons then the result = 5/10 = 50.%', 'learnpress' ),
-				'evaluate_final_quiz'     => __( 'Evaluate by results of final quiz in course.', 'learnpress' ),
+				'evaluate_final_quiz'     => __( 'Evaluate by results of final quiz in course. You have to add a quiz into end of course.', 'learnpress' ),
 				'evaluate_quizzes'        => __( 'Evaluate by achieved points of completed quizzes per total point of all quizzes.', 'learnpress' ),
 				'evaluate_passed_quizzes' => __( 'Evaluate by achieved points of quizzes passed per total point of all quizzes.', 'learnpress' ),
 				'evaluate_quiz'           => __( '<p>Evaluate by number of quizzes completed per number of total quizzes.</p>', 'learnpress' )

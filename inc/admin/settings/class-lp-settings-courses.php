@@ -157,7 +157,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'id'      => 'quiz_slug',
 							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-lesson/', home_url() ), 'learnpress' ),
 							'default' => 'quizzes'
-						)
+						),
+						array(
+							'title'   => __( 'Enrolled students number', 'learnpress' ),
+							'type'    => 'yes_no',
+							'id'      => 'enrolled_students_number',
+							'desc'    => __( 'Displays a fake numbers of enrolled students. Disable to show the real value.', 'learnpress' ),
+							'default' => 'quizzes'
+						),
 					)
 				),
 				// Thumbnail

@@ -179,7 +179,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				}
 
 				foreach ( $options as $option ) {
-					if ( isset( $option['default'] ) && isset( $option['id'] ) ) {
+					if ( ( isset( $option['default'] ) || isset( $option['std'] ) ) && isset( $option['id'] ) ) {
 
 						if ( ! preg_match( '~^learn_press_~', $option['id'] ) ) {
 							$option_name = 'learn_press_' . $option['id'];
@@ -191,7 +191,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 							continue;
 						}
 
-						$value = $option['default'];
+						$value = array_key_exists( 'default', $option ) ? $option['default'] : $option['std'];
 						$value = get_option( $option_name, $value );
 
 						$value = maybe_serialize( $value );

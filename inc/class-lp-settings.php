@@ -232,6 +232,12 @@ class LP_Settings {
 		return get_option( "{$prefix}{$name}", $default );
 	}
 
+	public function get_int( $key ) {
+		$value = $this->get( $key );
+
+		return intval( $value );
+	}
+
 	/**
 	 * @return bool|LP_Settings
 	 */

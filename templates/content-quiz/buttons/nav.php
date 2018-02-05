@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/buttons/nav.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -28,7 +28,7 @@ $course_id = get_the_ID();
 
 		<?php do_action( 'learn-press/quiz/begin-prev-question-button' ); ?>
 
-        <button type="submit"><?php _e( 'Prev', 'learnpress' ); ?></button>
+        <button type="submit"><?php echo esc_html_x( 'Prev', 'quiz-question-navigation', 'learnpress' ); ?></button>
 
 		<?php do_action( 'learn-press/quiz/end-prev-question-button' ); ?>
 
@@ -48,7 +48,7 @@ $course_id = get_the_ID();
 
 		<?php do_action( 'learn-press/quiz/begin-next-question-button' ); ?>
 
-        <button type="submit"><?php _e( 'Next', 'learnpress' ); ?></button>
+        <button type="submit"><?php echo esc_html_x( 'Next', 'quiz-question-navigation', 'learnpress' ); ?></button>
 
 		<?php do_action( 'learn-press/quiz/end-next-question-button' ); ?>
 
@@ -59,7 +59,7 @@ $course_id = get_the_ID();
 
 <?php } ?>
 
-<?php if ( ($next_id = $user->get_next_question( $quiz->get_id(), $course_id )) && ! $user->has_completed_quiz( $quiz->get_id(), $course_id ) ) { ?>
+<?php if ( ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) && ! $user->has_completed_quiz( $quiz->get_id(), $course_id ) ) { ?>
 
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 
@@ -68,7 +68,7 @@ $course_id = get_the_ID();
 
 		<?php do_action( 'learn-press/quiz/begin-skip-question-button' ); ?>
 
-        <button type="submit"><?php _e( 'Skip', 'learnpress' ); ?></button>
+        <button type="submit"><?php echo esc_html_x( 'Skip', 'quiz-question-navigation', 'learnpress' ); ?></button>
 
 		<?php do_action( 'learn-press/quiz/end-skip-question-button' ); ?>
 
