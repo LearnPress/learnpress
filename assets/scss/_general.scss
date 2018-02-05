@@ -74,7 +74,7 @@ $remove-icon-color: #d05d5d;
                 top: 100%;
                 right: 0;
                 background: #fdfeff;
-                margin: 0px 0;
+                margin: 0;
                 border: 1px solid #DDD;
                 display: none;
                 li {
@@ -116,6 +116,9 @@ $remove-icon-color: #d05d5d;
             }
             ul {
                 display: block;
+                &:hover {
+                    display: block;
+                }
             }
         }
     }
