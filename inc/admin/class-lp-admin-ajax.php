@@ -133,7 +133,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			switch ( $args['type'] ) {
 
 				case 'heartbeat':
-				    $result = true;
+					$result = true;
 					break;
 
 				case 'draft-course':
@@ -158,14 +158,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'hidden-sections':
-				    // get hidden sections id
+					// get hidden sections id
 					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
 					// update course post meta
 					update_post_meta( $course_id, '_admin_hidden_sections', $hidden );
 					break;
 
 				case 'sort-sections':
-				    $order = ! empty( $args['order'] ) ? $args['order'] : false;
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
 					$order = json_decode( wp_unslash( $order ), true );
 
 					if ( ! $order ) {
@@ -181,7 +181,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-section':
-				    $section = ! empty( $args['section'] ) ? $args['section'] : false;
+					$section = ! empty( $args['section'] ) ? $args['section'] : false;
 					$section = json_decode( wp_unslash( $section ), true );
 
 					if ( ! $section ) {
@@ -200,7 +200,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'remove-section':
-				    $section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 
 					if ( ! $section_id ) {
 						break;
@@ -210,7 +210,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'new-section':
-				    $section_name = ! empty( $args['section_name'] ) ? $args['section_name'] : false;
+					$section_name = ! empty( $args['section_name'] ) ? $args['section_name'] : false;
 
 					$args = array(
 						'section_course_id'   => $course_id,
@@ -233,7 +233,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-section-item':
-				    $section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
 					$item       = json_decode( wp_unslash( $item ), true );
 
@@ -246,7 +246,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'remove-section-item':
-				    $section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 					$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
 
 					if ( ! ( $section_id && $item_id ) ) {
@@ -258,7 +258,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'delete-section-item':
-				    $section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 					$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
 
 					if ( ! ( $section_id && $item_id ) ) {
@@ -269,7 +269,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'new-section-item':
-				    $section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
 					$item       = json_decode( wp_unslash( $item ), true );
 
@@ -282,7 +282,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-section-items':
-				    $section_id   = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$section_id   = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 					$last_section = ! empty( $args['last_section'] ) ? $args['last_section'] : false;
 					$items        = ! empty( $args['items'] ) ? $args['items'] : false;
 					$items        = json_decode( wp_unslash( $items ), true );
@@ -299,7 +299,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'search-items':
-				    $query   = isset( $args['query'] ) ? $args['query'] : '';
+					$query   = isset( $args['query'] ) ? $args['query'] : '';
 					$type    = isset( $args['item_type'] ) ? $args['item_type'] : '';
 					$page    = ! empty( $args['page'] ) ? $args['page'] : 1;
 					$exclude = ! empty( $args['exclude'] ) ? $args['exclude'] : '';
@@ -346,7 +346,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'add-items-to-section':
-				    $section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
 					$items      = ! empty( $args['items'] ) ? $args['items'] : false;
 					$items      = json_decode( wp_unslash( $items ), true );
 
@@ -430,7 +430,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			switch ( $args['type'] ) {
 
 				case 'change-question-type':
-				    $type = ! empty( $args['question_type'] ) ? $args['question_type'] : false;
+					$type = ! empty( $args['question_type'] ) ? $args['question_type'] : false;
 
 					if ( ! $type ) {
 						break;
@@ -472,7 +472,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-answer-title':
-				    // answers
+					// answers
 					$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
 					$answer = json_decode( wp_unslash( $answer ), true );
 
@@ -485,7 +485,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'change-correct':
-				    // correct answer
+					// correct answer
 					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
 					$correct = json_decode( wp_unslash( $correct ), true );
 
@@ -514,7 +514,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'new-answer' :
-				    // new answer
+					// new answer
 					$answer = LP_Question::get_default_answer();
 					// add new
 					$curd->new_answer( $question_id, $answer );
@@ -559,17 +559,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$result['status'] = false;
 
 			switch ( $args['type'] ) {
-			    case 'heartbeat' :
+				case 'heartbeat' :
 					$result = true;
 					break;
 
 				case 'hidden-questions':
-				    $hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
-				    update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden );
-				    break;
+					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
+					update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden );
+					break;
 
 				case 'new-question':
-				    // new question
+					// new question
 					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
@@ -607,21 +607,23 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$new_question = $question_curd->create( $args );
 
 					if ( ! is_wp_error( $new_question ) ) {
-						// add question to hidden questions in quiz meta
-						$hidden_questions = get_post_meta( $quiz_id, '_lp_hidden_questions', true );
-						if ( ! $hidden_questions ) {
-							$hidden_questions = array();
+
+						// update hidden questions in quiz meta
+						$quiz             = LP_Quiz::get_quiz( $quiz_id );
+						$hidden_questions = $quiz->get_questions();
+						if ( $hidden_questions ) {
+							unset( $hidden_questions[ $new_question->get_id() ] );
+							$hidden_questions = array_keys( $hidden_questions );
 						}
-						$hidden_questions[] = $new_question->get_id();
 						update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );
 
 						// get new question data
-						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question, true );
+						$result = LP_Admin_Ajax::get_question_data_to_quiz_editor( $new_question, true, array( 'open' => true ) );
 					}
 					break;
 
 				case 'sort-questions':
-				    $order = ! empty( $args['order'] ) ? $args['order'] : false;
+					$order = ! empty( $args['order'] ) ? $args['order'] : false;
 					$order = json_decode( wp_unslash( $order ), true );
 
 					if ( ! $order ) {
@@ -632,7 +634,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-question-title':
-				    $question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
 					if ( ! $question ) {
@@ -645,7 +647,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'change-question-type':
-				    $question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 					$type        = ! empty( $args['question_type'] ) ? $args['question_type'] : false;
 
 					if ( ! ( $question_id || $type ) ) {
@@ -661,7 +663,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'clone-question':
-				    $question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
 					if ( ! $question ) {
@@ -699,7 +701,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'delete-question':
-				    $question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
 					if ( ! $question_id ) {
 						break;
@@ -709,7 +711,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'sort-question-answers':
-				    $question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
 					$order = ! empty( $args['order'] ) ? $args['order'] : false;
 					$order = json_decode( wp_unslash( $order ), true );
@@ -724,7 +726,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-question-answer-title':
-				    // question id
+					// question id
 					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
 					// answers
@@ -740,7 +742,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'change-question-correct-answer':
-				    $question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
+					$question_id = ! empty( $args['question_id'] ) ? $args['question_id'] : false;
 
 					// correct answer
 					$correct = ! empty( $args['correct'] ) ? $args['correct'] : false;
@@ -758,7 +760,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'delete-question-answer':
-				    $question_id = isset( $_POST['question_id'] ) ? $_POST['question_id'] : false;
+					$question_id = isset( $_POST['question_id'] ) ? $_POST['question_id'] : false;
 					$answer_id   = isset( $_POST['answer_id'] ) ? intval( $_POST['answer_id'] ) : false;
 
 					if ( ! ( $question_id && $answer_id ) ) {
@@ -792,7 +794,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-question-content':
-				    $question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
 					if ( ! $question ) {
@@ -808,7 +810,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-question-meta':
-				    $question = ! empty( $args['question'] ) ? $args['question'] : false;
+					$question = ! empty( $args['question'] ) ? $args['question'] : false;
 					$question = json_decode( wp_unslash( $question ), true );
 
 					$meta_key = ! empty( $args['meta_key'] ) ? $args['meta_key'] : false;
@@ -823,7 +825,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'search-items':
-				    $query   = ! empty( $args['query'] ) ? $args['query'] : '';
+					$query   = ! empty( $args['query'] ) ? $args['query'] : '';
 					$page    = ! empty( $args['page'] ) ? intval( $args['page'] ) : 1;
 					$exclude = ! empty( $args['exclude'] ) ? intval( $args['exclude'] ) : '';
 
@@ -868,7 +870,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'add-questions-to-quiz':
-				    // added questions
+					// added questions
 					$questions = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$questions = json_decode( wp_unslash( $questions ), true );
 
@@ -1020,10 +1022,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @param       $question
 		 * @param       $object | if true, input in question object, do not need init LP_Question::get_question()
+		 * @param array $args
 		 *
 		 * @return array
 		 */
-		public static function get_question_data_to_quiz_editor( $question, $object = false ) {
+		public static function get_question_data_to_quiz_editor( $question, $object = false, $args = array() ) {
 
 			if ( ! $object ) {
 				if ( get_post_type( $question ) !== LP_QUESTION_CPT ) {
@@ -1039,7 +1042,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// question answer
 			$answers = array_values( $question->get_data( 'answer_options' ) );
 
-			$data = array(
+			$data = wp_parse_args( $args, array(
 				'id'       => $question_id,
 				'open'     => false,
 				'title'    => get_the_title( $question_id ),
@@ -1054,7 +1057,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'hint'        => get_post_meta( $question_id, '_lp_hint', true )
 				),
 				'order'    => count( $answers )
-			);
+			) );
 
 			return $data;
 		}

@@ -784,8 +784,10 @@
                             .lp-toolbar-buttons {
                                 position: relative;
                                 z-index: 10;
-                                visibility: hidden;
                                 height: 100%;
+                                > div {
+                                    visibility: hidden;
+                                }
                                 .lp-toolbar-btn {
                                     height: 100%;
                                     .lp-btn-icon {
@@ -832,7 +834,9 @@
                         }
                         &:hover {
                             .lp-toolbar-buttons {
-                                visibility: visible;
+                                > div {
+                                    visibility: visible;
+                                }
                             }
                         }
                     }
@@ -1312,7 +1316,7 @@
     }
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 900px) {
     #admin-editor-lp_quiz {
         .lp-box-data-content {
             .lp-list-questions {
@@ -1321,7 +1325,7 @@
                         display: block;
                         width: auto;
                         text-align: left;
-                        > *{
+                        > * {
                             width: auto;
                         }
                     }
