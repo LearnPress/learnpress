@@ -20,7 +20,7 @@ learn_press_admin_view( 'question/option' );
                 <th class="actions"></th>
             </tr>
             </thead>
-            <draggable :list="answers" :element="'tbody'" @end="sort" :options="{handle: '.sort'}">
+            <draggable :list="answers" :element="'tbody'" @end="sort">
                 <lp-question-answer-option v-for="(answer, index) in answers" :key="index" :index="index" :type="type"
                                            :radio="radio" :number="number" :answer="answer"
                                            @updateTitle="updateTitle"

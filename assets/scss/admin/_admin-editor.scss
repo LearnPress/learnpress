@@ -782,13 +782,11 @@
                         .actions {
                             padding: 0;
                             .lp-toolbar-buttons {
-                                position: static;
+                                position: relative;
                                 z-index: 10;
                                 height: 100%;
                                 > div {
-                                    a {
-                                        visibility: hidden;
-                                    }
+                                    visibility: hidden;
                                 }
                                 .lp-toolbar-btn {
                                     height: 100%;
@@ -802,9 +800,6 @@
                                         left: 50%;
                                         margin-left: -15px;
                                         line-height: 30px;
-                                    }
-                                    ul {
-                                        z-index: 9;
                                     }
                                 }
                                 .lp-btn-toggle {
@@ -840,9 +835,7 @@
                         &:hover {
                             .lp-toolbar-buttons {
                                 > div {
-                                    a {
-                                        visibility: visible;
-                                    }
+                                    visibility: visible;
                                 }
                             }
                         }

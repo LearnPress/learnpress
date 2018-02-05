@@ -1052,7 +1052,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 
             body.course-item-popup #learn-press-content-item {
                 position: fixed;
-                z-index: 99999;
+                z-index: 9999;
                 background: #FFF;
                 top: 60px;
                 right: 0;
