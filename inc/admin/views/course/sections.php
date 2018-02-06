@@ -44,6 +44,7 @@ learn_press_admin_view( 'course/new-section' );
                     var $el = $('.curriculum-sections');
                     $el.sortable({
                         handle: '.section-head',
+                        items: '',
                         axis: 'y',
                         update: function () {
                             _self.sort();
