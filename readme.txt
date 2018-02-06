@@ -201,6 +201,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 2.1.9.9 =
 + Fixed: Warnings at the Edit Quiz page
++ Fixed: Error when upload user avatar in case GD php extensions is not
+enabled.
++ Fixed: Next and Previous button not work when do a quiz.
 
 = 2.1.9.8 =
 + Changed get_home_url() instead of get_site_url()
