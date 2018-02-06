@@ -346,7 +346,7 @@ class LP_Query {
 	public function exclude_preview_course( $where ) {
 		global $wpdb;
 
-		if ( ! is_admin() && learn_press_is_courses()) {
+		if ( ! is_admin() && learn_press_is_courses() ) {
 			$where .= $wpdb->prepare(" AND {$wpdb->posts}.ID <> %d ", LP_Preview_Course::get_preview_course());
 		}
 

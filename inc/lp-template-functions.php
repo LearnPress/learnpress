@@ -1207,8 +1207,11 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 
 		if ( $quiz = LP_Global::course_item_quiz() ) {
 			$user           = LP_Global::user();
-			$user_quiz      = $user->get_item_data( $quiz->get_id(), LP_Global::course( true ) );
-			$remaining_time = $user_quiz->get_time_remaining();
+			if($user_quiz      = $user->get_item_data( $quiz->get_id(), LP_Global::course( true ) )) {
+				$remaining_time = $user_quiz->get_time_remaining();
+			}else{
+			    $remaining_time = false;
+            }
 			$args           = array(
 				'id'            => $quiz->get_id(),
 				'totalTime'     => $quiz->get_duration()->get(),
@@ -3450,6 +3453,7 @@ function learn_press_get_color_schemas() {
  * @since 3.0.0
  */
 function learn_press_print_custom_styles() {
+
 	if ( 'yes' !== LP()->settings()->get( 'enable_custom_colors' ) ) {
 		return;
 	}
