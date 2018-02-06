@@ -199,6 +199,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 2.1.9.9 =
++ Fixed: Warnings at the Edit Quiz page
+
 = 2.1.9.8 =
 + Changed get_home_url() instead of get_site_url()
 + Add limit ajax search items in admin area
