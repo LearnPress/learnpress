@@ -1779,39 +1779,25 @@ if (!function_exists('learn_press_duplicate_post_meta')) {
 
 }
 
-add_filter('learn_press_question_types', 'learn_press_sort_questions', 99);
+add_filter( 'learn_press_question_types', 'learn_press_sort_questions', 99 );
 if (!function_exists('learn_press_sort_questions')) {
     function learn_press_sort_questions($types)
     {
         $user_id = get_current_user_id();
         $question_types = get_user_meta($user_id, '_learn_press_memorize_question_types', true);
-        if (!empty($question_types)) {
+        if (is_array($question_types) && !empty($question_types) ) {
+            $intersect_key = array_intersect_key($types, $question_types);
             $sort = array();
-            // re-sort array descending
-            arsort($question_types);
-            $new_types = array();
-            $ktypes = array_keys($types);
-
-            for ($i = 0; $i < count($ktypes) - 1; $i++) {
-                $max = $i;
-                if (!isset($question_types[$ktypes[$i]])) {
-                    $question_types[$ktypes[$i]] = 0;
+            foreach ( $intersect_key as $key => $value ) {
+                if( isset( $question_types[$key] ) ) {
+                    $sort[$key]=$question_types[$key];
+                } else {
+                    $sort[$key]=0;
                 }
-                for ($j = $i + 1; $j < count($ktypes); $j++) {
-                    if (isset($question_types[$ktypes[$j]], $question_types[$ktypes[$max]])
-                        && $question_types[$ktypes[$j]] > $question_types[$ktypes[$max]]
-                    ) {
-                        $max = $j;
-                    }
-                }
-                $tmp = $ktypes[$i];
-                $ktypes[$i] = $ktypes[$max];
-                $ktypes[$max] = $tmp;
             }
-            $ktypes = array_flip($ktypes);
-            $types = array_merge($ktypes, $types);
+            arsort( $sort );
+            $types = array_merge($sort, $types);
         }
-
         return $types;
     }
 }
