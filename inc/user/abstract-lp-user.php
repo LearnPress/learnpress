@@ -2545,7 +2545,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			return $remain !== false ? learn_press_seconds_to_weeks( $remain ) : false;
+			return $remain > 0 ? learn_press_seconds_to_weeks( $remain ) : false;
 		}
 
 		/**
