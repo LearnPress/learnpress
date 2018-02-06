@@ -25,7 +25,8 @@ if ( ! $course = LP_Global::course() ) {
     <div class="widget-body">
 
 		<?php learn_press_get_template( 'single-course/progress.php' ); ?>
-		<?php learn_press_get_template( 'single-course/remaining-time.php', array( 'remaining_time' => $remaining_time ) ); ?>
+
+		<?php learn_press_course_remaining_time(); ?>
 
     </div>
 

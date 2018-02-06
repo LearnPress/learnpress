@@ -388,7 +388,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	/**
 	 * Return number of seconds has exceeded.
-	 * If greater than or equals to 0 that means the time is exceeded.
+	 * If less than or equals to 0 that means the time is exceeded.
 	 * Otherwise, the time is not exceeded
 	 *
 	 * @return float|int
