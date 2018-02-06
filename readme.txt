@@ -3,8 +3,8 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
-Tested up to: 4.9.1
-Stable tag: 2.1.9.8
+Tested up to: 4.9.3
+Stable tag: 2.1.9.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -200,10 +200,10 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 2.1.9.9 =
-+ Fixed: Warnings at the Edit Quiz page
-+ Fixed: Error when upload user avatar in case GD php extensions is not
-enabled.
-+ Fixed: Next and Previous button not work when do a quiz.
++ Compatible with WordPress 4.9.3
++ Fixed warnings at the Edit Quiz page
++ Fixed error when upload user avatar in case GD php extensions is not enabled
++ Fixed next and Previous button not work when do a quiz
 
 = 2.1.9.8 =
 + Changed get_home_url() instead of get_site_url()
@@ -212,18 +212,18 @@ enabled.
 + Improve performance 
 
 = 2.1.9.7 =
-+ Fixed bug: get Invalid Post Type error when click link in LearnPress Status widget in Dashboard  
++ Fixed get Invalid Post Type error when click link in LearnPress Status widget in Dashboard
 + Cannot enroll course again when order is move to trash
-+ Fixed: date time in quiz history not translated
++ Fixed date time in quiz history not translated
 
 = 2.1.9.6 =
 + Fixed issue when 2 users do a quiz at the same time
 + Fixed issue with course item permalink when set the Wordpress site URL to another directory
 + Fixed calculate passing course grade wrong
 + Fixed number student enrolled not correct
-+ Fixed bug: display wrong duration of lesson in list of lesson in admin.
++ Fixed display wrong duration of lesson in list of lesson in admin.
 + Remove code not compatible with PHP 7
-+ Fixed: conflict with Yoast SEO, content of lesson not auto add paragraph
++ Fixed conflict with Yoast SEO, content of lesson not auto add paragraph
 
 = 2.1.9.5 =
 + Fixed minor bug related to purchase course
