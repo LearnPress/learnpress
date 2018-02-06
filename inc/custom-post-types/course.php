@@ -192,7 +192,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$course = learn_press_get_course( $post->ID );
 
 			$hidden_sections = get_post_meta( $post->ID, '_admin_hidden_sections', true );
-			wp_localize_script( 'learn-press-admin-course-editor', 'lq_course_editor', apply_filters( 'learn-press/admin-localize-course-editor', array(
+			wp_localize_script( 'learn-press-admin-course-editor', 'lp_course_editor', apply_filters( 'learn-press/admin-localize-course-editor', array(
 					'root'        => array(
 						'course_id'          => $post->ID,
 						'auto_draft'         => get_post_status( $post->ID ) == 'auto-draft',
