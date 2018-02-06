@@ -49,13 +49,6 @@ learn_press_admin_view( 'course/new-section' );
                             _self.sort();
                         }
                     });
-
-                    var order = [];
-                    _self.sections.forEach(function (section, index) {
-                        order.push(parseInt(section.id));
-                    });
-                    console.log(order)
-
                 }, 1000)
 
             },
