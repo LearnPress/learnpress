@@ -12,11 +12,11 @@ learn_press_admin_view( 'course/new-section' );
 <script type="text/x-template" id="tmpl-lp-list-sections">
 
     <div class="curriculum-sections">
-<!--        <draggable :list="sections" :options="{handle: '.movable'}" @end="sort">-->
-            <lp-section v-for="(section, index) in sections"
-                        :section="section" :index="index" :disableCurriculum="disableCurriculum"
-                        :key="index"></lp-section>
-<!--        </draggable>-->
+        <!--        <draggable :list="sections" :options="{handle: '.movable'}" @end="sort">-->
+        <lp-section v-for="(section, index) in sections"
+                    :section="section" :index="index" :disableCurriculum="disableCurriculum"
+                    :key="index"></lp-section>
+        <!--        </draggable>-->
 
         <div class="add-new-section" v-if="!disableCurriculum">
             <lp-new-section></lp-new-section>
@@ -40,11 +40,13 @@ learn_press_admin_view( 'course/new-section' );
                     return $store.getters['disable_curriculum'];
                 }
             },
-            created: function(){
+            created: function () {
                 var _self = this;
                 setTimeout(function () {
                     var $el = jQuery('.curriculum-sections');
                     $el.sortable({
+                        handle: '.section-head .movable',
+                        axis: 'y',
                         update: function () {
                             _self.sort();
                         }

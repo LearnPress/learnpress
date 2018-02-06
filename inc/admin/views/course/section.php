@@ -12,7 +12,7 @@ learn_press_admin_view( 'course/new-section-item' );
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="[isOpen ? 'open' : 'close', status]" :data-section-order="index">
         <div class="section-head" @dblclick="toggle">
-            <span class="movable" ></span>
+            <span class="movable"></span>
             <!--Section title-->
             <input v-model="section.title" type="text" title="title" class="title-input"
                    @change="updating" @blur="completed" @keyup.enter="completed"
@@ -79,6 +79,19 @@ learn_press_admin_view( 'course/new-section-item' );
                 this.$watch('section.open', function (open) {
                     vm.toggleAnimation(open);
                 });
+            },
+            created: function () {
+                var _self = this;
+                setTimeout(function () {
+                    var $el = jQuery('.section-list-items > ul');
+                    $el.sortable({
+                        handle: '.drag',
+                        axis: 'y',
+                        update: function () {
+                            _self.sort();
+                        }
+                    });
+                }, 1000)
             },
             computed: {
                 status: function () {
