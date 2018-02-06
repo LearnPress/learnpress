@@ -80,19 +80,6 @@ learn_press_admin_view( 'course/new-section-item' );
                 this.$watch('section.open', function (open) {
                     vm.toggleAnimation(open);
                 });
-            // },
-            // created: function () {
-            //     var _self = this;
-            //     setTimeout(function () {
-            //         var $el = jQuery('.section-list-items > ul');
-            //         $el.sortable({
-            //             handle: '.drag',
-            //             axis: 'y',
-            //             update: function () {
-            //                 _self.sort();
-            //             }
-            //         });
-            //     }, 1000)
             },
             computed: {
                 status: function () {

@@ -21,12 +21,12 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                     <th class="actions"></th>
                 </tr>
                 </thead>
-                <draggable :list="question.answers" :element="'tbody'" @end="sort" :options="{handle: '.sort'}">
-                    <lp-quiz-question-answer-option v-for="(answer, index) in question.answers"
-                                                    :question="question" :answer="answer" :index="index" :key="index"
-                                                    @changeCorrect="changeCorrect"
-                                                    @nav="navItem"></lp-quiz-question-answer-option>
-                </draggable>
+                <tbody>
+                <lp-quiz-question-answer-option v-for="(answer, index) in question.answers"
+                                                :question="question" :answer="answer" :index="index" :key="index"
+                                                @changeCorrect="changeCorrect"
+                                                @nav="navItem"></lp-quiz-question-answer-option>
+                </tbody>
             </table>
         </div>
         <p class="question-button-actions" v-if="addableAnswer">
@@ -47,18 +47,34 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                     return !(String(this.question.type.key) === 'true_or_false');
                 }
             },
+            mounted: function () {
+                var _self = this;
+                setTimeout(function () {
+                    var $el = $('.quiz-question-data .lp-list-questions>.lp-list-options tbody');
+                    $el.sortable({
+                        handle: '.sort',
+                        axis: 'y',
+                        update: function () {
+                            _self.sort();
+                        }
+                    });
+                }, 1000)
+
+            },
             methods: {
                 // sort answer options
                 sort: function () {
-                    var order = [];
 
-                    this.question.answers.forEach(function (option, index) {
-                        order.push(parseInt(option.question_answer_id));
+                    var _items = $('.question-item[data-item-id="' + this.question.id + '"] .quiz-question-data .lp-list-questions>.lp-list-options tbody tr');
+                    var _order = [];
+                    _items.each(function (index, item) {
+                        $(item).find('.order').text(index + 1);
+                        _order.push($(item).data('answer-id'));
                     });
 
                     $store.dispatch('lqs/updateQuestionAnswersOrder', {
                         question_id: this.question.id,
-                        order: order
+                        order: _order
                     });
                 },
                 // change correct answer

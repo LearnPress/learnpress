@@ -42,7 +42,7 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
             </thead>
             <tbody>
 			<?php foreach ( $query['items'] as $user_quiz ) { ?>
-				<?php $quiz = learn_press_get_course( $user_quiz->get_id() ); ?>
+				<?php $quiz = learn_press_get_quiz( $user_quiz->get_id() ); ?>
                 <tr>
                     <td class="column-course">
                         <a href="<?php echo $quiz->get_permalink(); ?>">
