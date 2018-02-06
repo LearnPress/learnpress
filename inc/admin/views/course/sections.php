@@ -45,6 +45,7 @@ learn_press_admin_view( 'course/new-section' );
                     $el.sortable({
                         handle: '.section-head .movable',
                         axis: 'y',
+                        items: "> .section",
                         update: function () {
                             _self.sort();
                         }
