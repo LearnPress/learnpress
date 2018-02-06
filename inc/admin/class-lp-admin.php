@@ -131,9 +131,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		protected function _is_wc_page( $id ) {
 			if ( class_exists( 'WooCommerce' ) ) {
+				if ( ! class_exists( 'WC_Admin_Post_Types' ) ) {
+					include_once dirname( WC_PLUGIN_FILE ) . '/includes/admin/class-wc-admin-post-types.php';
+				}
+
 				$wc_admin_post_types = new WC_Admin_Post_Types();
-				$a                   = $wc_admin_post_types->add_display_post_states( array(), get_post( $id ) );
-				$wc_pages            = array(
+				if ( is_callable( array( $wc_admin_post_types, 'add_display_post_states' ) ) ) {
+					$a = $wc_admin_post_types->add_display_post_states( array(), get_post( $id ) );
+				} else {
+					$a = $this->wc_add_display_post_states( array(), get_post( $id ) );
+				}
+				$wc_pages = array(
 					'wc_page_for_shop',
 					'wc_page_for_cart',
 					'wc_page_for_checkout',
@@ -148,6 +156,30 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return false;
+		}
+
+		public function wc_add_display_post_states( $post_states, $post ) {
+			if ( wc_get_page_id( 'shop' ) === $post->ID ) {
+				$post_states['wc_page_for_shop'] = __( 'Shop Page', 'woocommerce' );
+			}
+
+			if ( wc_get_page_id( 'cart' ) === $post->ID ) {
+				$post_states['wc_page_for_cart'] = __( 'Cart Page', 'woocommerce' );
+			}
+
+			if ( wc_get_page_id( 'checkout' ) === $post->ID ) {
+				$post_states['wc_page_for_checkout'] = __( 'Checkout Page', 'woocommerce' );
+			}
+
+			if ( wc_get_page_id( 'myaccount' ) === $post->ID ) {
+				$post_states['wc_page_for_myaccount'] = __( 'My Account Page', 'woocommerce' );
+			}
+
+			if ( wc_get_page_id( 'terms' ) === $post->ID ) {
+				$post_states['wc_page_for_terms'] = __( 'Terms and Conditions Page', 'woocommerce' );
+			}
+
+			return $post_states;
 		}
 
 		/**

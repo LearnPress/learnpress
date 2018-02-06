@@ -9,14 +9,14 @@ learn_press_admin_view( 'quiz/question' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-questions">
-    <draggable :list="questions" class="main" :options="{handle: '.sort'}" @end="sort">
+    <div class="main">
         <lp-quiz-question-item v-for="(question, index) in questions" :question="question" :index="index"
                                :key="index"></lp-quiz-question-item>
-    </draggable>
+    </div>
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
 
         Vue.component('lp-quiz-questions', {
             template: '#tmpl-lp-quiz-questions',
@@ -26,18 +26,34 @@ learn_press_admin_view( 'quiz/question' );
                     return $store.getters['lqs/listQuestions'];
                 }
             },
+            mounted: function () {
+                var _self = this;
+                setTimeout(function () {
+                    var $el = $('.lp-list-questions .main');
+                    $el.sortable({
+                        handle: '.question-actions .sort',
+                        axis: 'y',
+                        update: function () {
+                            _self.sort();
+                        }
+                    });
+                }, 1000)
+
+            },
             methods: {
                 // sort questions
                 sort: function () {
-                    var order = [];
-                    this.questions.forEach(function (question, index) {
-                        order.push(parseInt(question.id));
+                    var _items = $('.lp-list-questions .main>div.question-item');
+                    var _order = [];
+                    _items.each(function (index, item) {
+                        $(item).find('.question-actions .order').text(index + 1);
+                        _order.push($(item).data('item-id'));
                     });
 
-                    $store.dispatch('lqs/updateQuestionsOrder', order);
+                    $store.dispatch('lqs/updateQuestionsOrder', _order);
                 }
             }
         });
 
-    })(Vue, LP_Quiz_Store)
+    })(Vue, LP_Quiz_Store, jQuery)
 </script>

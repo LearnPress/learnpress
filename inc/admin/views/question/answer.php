@@ -20,13 +20,15 @@ learn_press_admin_view( 'question/option' );
                 <th class="actions"></th>
             </tr>
             </thead>
-            <draggable :list="answers" :element="'tbody'" @end="sort">
-                <lp-question-answer-option v-for="(answer, index) in answers" :key="index" :index="index" :type="type"
-                                           :radio="radio" :number="number" :answer="answer"
-                                           @updateTitle="updateTitle"
-                                           @changeCorrect="changeCorrect"
-                                           @deleteAnswer="deleteAnswer"></lp-question-answer-option>
-            </draggable>
+            <tbody>
+            <!--            <draggable :list="answers" :element="'tbody'" @end="sort">-->
+            <lp-question-answer-option v-for="(answer, index) in answers" :key="index" :index="index" :type="type"
+                                       :radio="radio" :number="number" :answer="answer"
+                                       @updateTitle="updateTitle"
+                                       @changeCorrect="changeCorrect"
+                                       @deleteAnswer="deleteAnswer"></lp-question-answer-option>
+            </tbody>
+            <!--            </draggable>-->
         </table>
         <p class="add-answer" v-if="addable">
             <button class="button add-question-option-button" type="button"
@@ -63,17 +65,32 @@ learn_press_admin_view( 'question/option' );
                     return $store.getters['autoDraft'];
                 }
             },
+            created: function () {
+                var _self = this;
+                setTimeout(function () {
+                    var $el = $('.list-question-answers tbody');
+                    $el.sortable({
+                        handle: '.sort',
+                        axis: 'y',
+                        update: function () {
+                            _self.sort();
+                        }
+                    });
+                }, 1000)
+
+            },
             methods: {
                 // sort answer options
                 sort: function () {
-                    if (!this.draft) {
-                        // sort answer
-                        var order = [];
-                        this.answers.forEach(function (answer) {
-                            order.push(parseInt(answer.question_answer_id));
-                        });
-                        $store.dispatch('updateAnswersOrder', order);
-                    }
+                    var _items = $('.list-question-answers tbody>tr.answer-option');
+                    var _order = [];
+                    _items.each(function (index, item) {
+                        $(item).find('.order').text(index + 1);
+                        _order.push($(item).data('answer-id'));
+                    });
+
+                    $store.dispatch('updateAnswersOrder', _order);
+
                 },
                 // change answer title
                 updateTitle: function (answer) {

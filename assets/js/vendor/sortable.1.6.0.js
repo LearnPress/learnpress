@@ -441,7 +441,6 @@
 					dragStartFn();
 				}
 
-
 			}
 		},
 
@@ -477,7 +476,6 @@
 				_on(dragEl, 'dragend', this);
 				_on(rootEl, 'dragstart', this._onDragStart);
 			}
-
 			try {
 				if (document.selection) {
 					// Timeout neccessary for IE9
@@ -488,6 +486,7 @@
 					window.getSelection().removeAllRanges();
 				}
 			} catch (err) {
+				console.log(err)
 			}
 		},
 

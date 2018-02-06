@@ -10,9 +10,10 @@ learn_press_admin_view( 'course/new-section-item' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-section">
-    <div class="section" :class="[isOpen ? 'open' : 'close', status]" :data-section-order="index">
+    <div class="section" :class="[isOpen ? 'open' : 'close', status]" :data-section-order="index"
+         :data-section-id="section.id">
         <div class="section-head" @dblclick="toggle">
-            <span class="movable" @click.prevent="toggle"></span>
+            <span class="movable"></span>
             <!--Section title-->
             <input v-model="section.title" type="text" title="title" class="title-input"
                    @change="updating" @blur="completed" @keyup.enter="completed"

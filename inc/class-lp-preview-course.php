@@ -58,9 +58,28 @@ class LP_Preview_Course {
 
 	public static function exclude( $where ) {
 		global $wpdb;
-		$where = self::get_preview_course() ? $where . $wpdb->prepare( " AND {$wpdb->posts}.ID <> %d", self::$_preview_course ) : $where;
+
+		if ( ! self::is_preview() ) {
+			$where = self::get_preview_course() ? $where . $wpdb->prepare( " AND {$wpdb->posts}.ID <> %d", self::$_preview_course ) : $where;
+		}
 
 		return $where;
+	}
+
+	public static function is_preview() {
+		if ( ! $post_id = LP_Request::get_int( 'lp-preview' ) ) {
+			return false;
+		}
+
+		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'lp-preview' ) ) {
+			return false;
+		}
+
+		if ( ! $post_item = get_post( $post_id ) ) {
+			throw new Exception( __( 'Invalid preview item.', 'learnpress' ) );
+		}
+
+		return $post_item;
 	}
 
 	/**
@@ -69,16 +88,8 @@ class LP_Preview_Course {
 	public static function setup_preview() {
 		try {
 
-			if ( ! $post_id = LP_Request::get_int( 'lp-preview' ) ) {
-				return;
-			}
-
-			if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'lp-preview' ) ) {
-				return;
-			}
-
-			if ( ! $post_item = get_post( $post_id ) ) {
-				throw new Exception( __( 'Invalid preview item.', 'learnpress' ) );
+			if ( ! $post_item = self::is_preview() ) {
+				return false;
 			}
 
 			if ( ! in_array( $post_item->post_type, learn_press_course_get_support_item_types( true ) ) ) {
@@ -91,6 +102,8 @@ class LP_Preview_Course {
 					throw new Exception( __( 'Access forbidden.', 'learnpress' ) );
 				}
 			}
+
+			$post_id = $post_item->ID;
 
 			if ( empty( $post_item->post_name ) ) {
 				wp_update_post(
