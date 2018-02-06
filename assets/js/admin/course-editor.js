@@ -37,7 +37,7 @@ var LP_Curriculum_i18n_Store = (function (Vue, helpers, data) {
         getters: getters
     };
 
-})(Vue, LP_Helpers, lq_course_editor);
+})(Vue, LP_Helpers, lp_course_editor);
 
 /**
  * Sections Store.
@@ -392,7 +392,7 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         mutations: mutations,
         actions: actions
     };
-})(Vue, LP_Helpers, lq_course_editor);
+})(Vue, LP_Helpers, lp_course_editor);
 
 
 /**
@@ -566,7 +566,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         mutations: mutations,
         actions: actions
     }
-})(window, Vue, LP_Helpers, lq_course_editor);
+})(window, Vue, LP_Helpers, lp_course_editor);
 
 /**
  * Root Store
@@ -700,7 +700,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         }
     });
 
-})(window, Vue, Vuex, LP_Helpers, lq_course_editor);
+})(window, Vue, Vuex, LP_Helpers, lp_course_editor);
 
 /**
  * HTTP
