@@ -199,6 +199,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 2.2 =
++ Compatible with WordPress 4.9.4
+
 = 2.1.9.9 =
 + Compatible with WordPress 4.9.3
 + Fixed warnings at the Edit Quiz page
