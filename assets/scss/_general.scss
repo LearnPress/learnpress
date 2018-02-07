@@ -420,6 +420,11 @@ $remove-icon-color: #d05d5d;
             display: inline-block;
         }
     }
+    &.locked {
+        .remove-item {
+            display: none;
+        }
+    }
 }
 
 @-moz-keyframes spin {

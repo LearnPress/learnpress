@@ -65,20 +65,6 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	}
 
 	/**
-	 * @param string $section
-	 * @param string $tab
-	 *
-	 * @return bool|mixed
-	 */
-	public function get_settings( $section = '', $tab = '' ) {
-		if ( is_callable( array( $this, 'get_settings_' . $section ) ) ) {
-			return call_user_func( array( $this, 'get_settings_' . $section ) );
-		}
-
-		return false;
-	}
-
-	/**
 	 * Settings fields of general section.
 	 *
 	 * @return mixed
@@ -92,35 +78,35 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					'learn-press/payment-settings/general',
 					array(
 						array(
-							'title'   => __( 'Checkout page', 'learnpress' ),
-							'id' => 'checkout_page_id',
+							'title'   => __( 'Checkout page X', 'learnpress' ),
+							'id'      => 'checkout_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown'
 						),
 						array(
 							'title'   => __( 'Auto enroll', 'learnpress' ),
-							'id' => 'auto_enroll',
+							'id'      => 'auto_enroll',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Auto enroll a user after they buying a course.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Enable guest checkout', 'learnpress' ),
-							'id' => 'guest_checkout',
+							'id'      => 'guest_checkout',
 							'default' => 'no',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Enable user buy course as a Guest.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Enable login in checkout', 'learnpress' ),
-							'id' => 'enable_login_checkout',
+							'id'      => 'enable_login_checkout',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Enable login form in checkout page.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Enable registration in checkout', 'learnpress' ),
-							'id' => 'enable_registration_checkout',
+							'id'      => 'enable_registration_checkout',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Enable registration form in checkout page.', 'learnpress' )
@@ -137,7 +123,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Order received', 'learnpress' ),
-							'id' => 'checkout_endpoints[order_received]',
+							'id'      => 'checkout_endpoints[order_received]',
 							'default' => 'order-received',
 							'type'    => 'text'
 						)
@@ -152,7 +138,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					),
 					array(
 						'title'   => __( 'Payment order', 'learnpress' ),
-						'id' => 'payment_order',
+						'id'      => 'payment_order',
 						'default' => '',
 						'type'    => 'payment-order'
 					)

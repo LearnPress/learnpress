@@ -71,7 +71,7 @@ $user_ip      = $order->get_user_ip_address();
 
 				<?php if ( $order->is_multi_users() ) { ?>
                     <label><?php _e( 'Customers', 'learnpress' ); ?></label>
-                    <ul id="list-users" class="advanced-list">
+                    <ul id="list-users" class="advanced-list <?php echo $order->get_status()==='completed' ? 'locked' : '';?>">
                     </ul>
 
 					<?php if ( 'pending' === $order->get_status() ) { ?>
@@ -201,7 +201,7 @@ $user_ip      = $order->get_user_ip_address();
             <div class="order-data-field order-data-user">
                 <label><?php _e( 'Customer', 'learnpress' ); ?></label>
                 <div class="order-users">
-                    <ul id="list-users" class="advanced-list">
+                    <ul id="list-users" class="advanced-list <?php echo $order->get_status()==='completed' ? 'locked' : '';?>">
                     </ul>
                 </div>
                 <a href="" class="change-user" data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>

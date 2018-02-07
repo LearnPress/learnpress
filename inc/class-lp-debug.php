@@ -131,7 +131,7 @@ class LP_Debug {
 		}
 
 		if ( $this->_lock === null ) {
-			$this->_lock = ! ( LP()->settings->get( 'debug' ) == 'yes' );
+			$this->_lock = ! ( LP_Settings::instance()->get( 'debug' ) == 'yes' );
 		}
 
 		if ( ( ! $force && ! $this->_lock || $force ) && $this->_can_log( $handle ) ) {

@@ -152,10 +152,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			if ( $current === $section ) {
 				if ( ( $location = learn_press_locate_template( 'profile/tabs/' . $this->get_current_tab() . '/' . $section . '.php' ) ) && file_exists( $location ) ) {
 					include $location;
-				} else {
-					do_action( 'learn-press/' );
-
-					echo $location;
 				}
 			}
 		}

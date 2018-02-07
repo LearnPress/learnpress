@@ -108,12 +108,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array|mixed
 	 */
 	public function get_orders( $user_id, $args = array() ) {
-		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		// If user does not exists
 		if ( ! $user = learn_press_get_user( $user_id ) ) {
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 			return false;
 		}
 
@@ -139,7 +136,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				return $orders;
 			}
 		}
-
 		// Get orders for the user from cache
 		$orders = wp_cache_get( 'user-' . $user_id, 'lp-user-orders' );
 
