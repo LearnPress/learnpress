@@ -107,6 +107,7 @@ class LP_User_Factory {
 		catch ( Exception $ex ) {
 			//LP_Debug::rollbackTransaction();
 		}
+		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 	}
 
 	/**
@@ -145,18 +146,23 @@ class LP_User_Factory {
 	 */
 	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
 		global $wpdb;
-		$curd  = new LP_User_CURD();
-		$items = $order->get_items();
+		$curd         = new LP_User_CURD();
+		$parent_order = ! $order->is_child() ? $order->get_parent() : $order;
+		$items        = ! $order->is_child() ? $order->get_items() : $parent_order->get_items();
+
 		if ( ! $items ) {
 			return;
 		}
-		if ( ! $items ) {
+
+		if ( $order->is_multi_users() && ! $order->is_child() ) {
 			return;
 		}
+
 		foreach ( $order->get_users() as $user_id ) {
+
 			foreach ( $items as $item ) {
 
-				if ( $user_item_id = self::_get_course_item( $order->get_user_id(), $item['course_id'], $user_id ) ) {
+				if ( $user_item_id = self::_get_course_item( $order->get_id(), $item['course_id'], $user_id ) ) {
 					$user_item_id = $curd->update_user_item(
 						$user_id,
 						$item['course_id'],
@@ -196,6 +202,7 @@ class LP_User_Factory {
 				}
 			}
 		}
+
 	}
 
 	protected static function _get_course_item( $order_id, $course_id, $user_id ) {

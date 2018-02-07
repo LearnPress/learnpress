@@ -158,8 +158,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				'LP_Settings_General'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-general.php',
 				'LP_Settings_Courses'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-courses.php',
 				'LP_Settings_Pages'    => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-pages.php',
-				'LP_Settings_Checkout' => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-checkout.php',
+				///'LP_Settings_Checkout' => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-checkout.php',
 				'LP_Settings_Profile'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-profile.php',
+				'LP_Settings_Payments' => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-payments.php',
 				'LP_Settings_Emails'   => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-emails.php'
 			);
 			ob_start();
@@ -170,11 +171,21 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					$class = @new $c();
 				}
 
-				if ( ! is_callable( array( $class, 'get_settings' ) ) ) {
-					continue;
+				$options = array();
+
+				switch ( $c ) {
+					case 'LP_Settings_Emails':
+						$options = $class->get_settings_general();
+						break;
+					default:
+						if ( ! is_callable( array( $class, 'get_settings' ) ) ) {
+							continue;
+						}
+
+						$options = $class->get_settings( '', '' );
 				}
 
-				if ( ! $options = $class->get_settings( '', '' ) ) {
+				if ( ! $options ) {
 					continue;
 				}
 
@@ -200,6 +211,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					}
 				}
 			}
+
 			if ( $str ) {
 				$str     = join( '&', $str );
 				$options = array();
@@ -831,3 +843,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 	LP_Install::init();
 }
 
+if ( isset( $_REQUEST['xxxxx'] ) ) {
+	add_action( 'plugins_loaded', array( 'LP_Install', 'create_options' ) );
+}

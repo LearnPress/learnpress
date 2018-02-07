@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Debugging
-if ( ! empty( $_REQUEST['debug'] ) ) {
+if ( ! empty( $_REQUEST['debug'] ) || ( defined( 'LP_DEBUG_DEV' ) && LP_DEBUG_DEV ) ) {
 	require_once( 'debug.php' );
 }
 

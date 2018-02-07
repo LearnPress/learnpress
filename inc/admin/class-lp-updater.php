@@ -43,6 +43,9 @@ class LP_Updater {
 
 				include_once $file;
 			}
+
+			LP_Install::update_version();
+			LP_Install::update_db_version();
 		}
 		catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );

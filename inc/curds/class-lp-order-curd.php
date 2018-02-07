@@ -74,7 +74,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'_payment_method_title' => $order->get_payment_method_title(),
 			'_user_ip_address'      => $order->get_user_ip_address(),
 			'_user_agent'           => $order->get_user_agent(),
-			'_order_version'        => '3.0',
+			'_order_version'        => '3.0.0',
 			'_created_via'          => $order->get_created_via()
 		);
 

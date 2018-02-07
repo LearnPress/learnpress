@@ -11,11 +11,123 @@
  */
 class LP_Update_30 {
 	public static function update() {
-		self::add_column_user_items();
-		self::update_user_course_items();
+		LP_Debug::startTransaction();
+		try {
+			self::add_column_user_items();
+			self::upgrade_orders();
+			self::update_user_course_items();
 
-		LP_Install::update_db_version();
-		LP_Install::update_version();
+			LP_Install::update_db_version();
+			LP_Install::update_version();
+			LP_Debug::commitTransaction();
+		}
+		catch ( Exception $exception ) {
+			LP_Debug::rollbackTransaction();
+		}
+	}
+
+	public static function upgrade_orders() {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT p.ID 
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+			INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s AND pm2.meta_value <> %s
+			WHERE p.post_type = %s AND p.post_parent = 0
+			LIMIT 0, 100
+		", '_lp_multi_users', '_order_version', '3.0.0', LP_ORDER_CPT );
+
+		if ( ! $parent_orders = $wpdb->get_col( $query ) ) {
+			return false;
+		}
+
+		foreach ( $parent_orders as $parent_id ) {
+
+			if ( ! $parent_order = learn_press_get_order( $parent_id ) ) {
+				continue;
+			}
+
+			if ( $child_orders = self::get_child_orders( $parent_id ) ) {
+				continue;
+			}
+
+			if ( ! $order_users = $parent_order->get_users() ) {
+				continue;
+			}
+			if ( ! $child_orders = self::_create_child_orders( $parent_order, $order_users ) ) {
+				continue;
+			}
+
+			foreach ( $child_orders as $uid => $child_order ) {
+				$wpdb->update(
+					$wpdb->learnpress_user_items,
+					array(
+						'ref_id' => $child_order->get_id()
+					),
+					array(
+						'user_id' => $uid,
+						'ref_id'  => $parent_id
+					),
+					array( '%d' ),
+					array( '%d', '%d' )
+				);
+			}
+
+			delete_post_meta( $parent_id, '_user_id' );
+			update_post_meta( $parent_id, '_user_id', $order_users );
+			update_post_meta( $parent_id, '_order_version', '3.0.0' );
+
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param LP_Order $order
+	 * @param array    $user_ids
+	 *
+	 * @return array
+	 */
+	protected static function _create_child_orders( $order, $user_ids ) {
+		$new_orders = array();
+		if ( $child_orders = $order->get_child_orders( true ) ) {
+			foreach ( $child_orders as $child_id ) {
+				$child_order         = learn_press_get_order( $child_id );
+				$child_order_user_id = $child_order->get_user( 'id' );
+				if ( ! in_array( $child_order_user_id, $user_ids ) ) {
+					wp_delete_post( $child_id );
+					continue;
+				}
+				$order->cln_items( $child_order->get_id() );
+				$new_orders[ $child_order_user_id ] = $child_order;
+			}
+		}
+
+		foreach ( $user_ids as $uid ) {
+			if ( empty( $new_orders[ $uid ] ) ) {
+				$new_order          = $order->cln();
+				$new_orders[ $uid ] = $new_order;
+			} else {
+				$new_order = $new_orders[ $uid ];
+			}
+
+			$new_order->set_order_date( $order->get_order_date() );
+			$new_order->set_parent_id( $order->get_id() );
+			$new_order->set_user_id( $uid );
+			$new_order->set_total( $order->get_total() );
+			$new_order->set_subtotal( $order->get_subtotal() );
+			$new_order->save();
+		}
+
+		return $new_orders;
+	}
+
+	public static function get_child_orders( $parent_id ) {
+		global $wpdb;
+		$order = new LP_Order( $parent_id );
+		LP_Debug::instance()->add( $order->get_child_orders(), false, false, true );
+
+		return $order->get_child_orders();
 	}
 
 	/**
@@ -55,9 +167,6 @@ class LP_Update_30 {
 		@$wpdb->query( $sql );
 
 		ob_get_clean();
-//		if ( $wpdb->last_error !== '' ) {
-//			learn_press_add_message( $wpdb->last_error, 'error' );
-//		}
 	}
 
 	/**

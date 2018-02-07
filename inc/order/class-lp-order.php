@@ -268,7 +268,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Updates order to new status if needed
 		 *
 		 * @param mixed $new_status
-		 * @param bool $force Force to update/trigger action even the status is not changed
+		 * @param bool  $force Force to update/trigger action even the status is not changed
 		 *
 		 * @return bool
 		 * @throws Exception
@@ -507,6 +507,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return apply_filters( 'learn-press/order-items', wp_cache_get( 'order-' . $this->get_id(), 'lp-order-items' ) );
 		}
 
+		public function is_child() {
+			return $this->get_parent_id();
+		}
+
+		public function get_parent() {
+			return $this->get_parent_id() ? learn_press_get_order( $this->get_parent_id() ) : false;
+		}
+
 		/**
 		 * Get list of course ids from order.
 		 *
@@ -562,7 +570,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Add a new item to order.
 		 *
 		 * @param mixed $item
-		 * @param int $quantity
+		 * @param int   $quantity
 		 * @param array $meta
 		 *
 		 * @return bool
@@ -1048,7 +1056,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return $email;
 		}
 
-		public function get_child_orders() {
+		public function get_child_orders( $force = false ) {
+			if ( $force ) {
+				wp_cache_delete( 'order-' . $this->get_id(), 'lp-child-orders' );
+			}
+
 			return apply_filters( 'learn-press/child-orders', $this->_curd->get_child_orders( $this->get_id() ), $this->get_id() );
 		}
 
