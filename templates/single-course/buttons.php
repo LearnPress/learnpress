@@ -30,8 +30,6 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
 	$course_status = $lp_user->get_course_status( $course->id );
 	$can_purchase  = $lp_user->can_purchase_course( $course->id );
 	$can_enroll    = $lp_user->can( 'enroll-course', $course->id );
-	$can_retake    = $lp_user->can_retake_course( $course->id, true );
-
 
 	if ( $can_purchase ) {
 		# todo dispay purchase button
@@ -80,7 +78,8 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
 			# -------------------------------
 			# Finished Course
 			# -------------------------------
-			if ( $count = $user->can( 'retake-course', $course->id ) ): ?>
+			if ( $user->has( 'finished-course', $course->id ) ):
+                if ( $count = $user->can( 'retake-course', $course->id ) ): ?>
                     <button
                             class="button button-retake-course"
                             data-course_id="<?php echo esc_attr( $course->id ); ?>"
@@ -88,6 +87,7 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
 						<?php echo esc_html( sprintf( __( 'Retake course (+%d)', 'learnpress' ), $count ) ); ?>
                     </button>
 				<?php
+				endif;
 			# -------------------------------
 			# Enrolled Course
 			# -------------------------------
