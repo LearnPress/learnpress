@@ -39,6 +39,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                                 <div class="title">
                                     <form @submit.prevent="">
                                         <input type="text" v-model="new_question.title"
+                                               placeholder="<?php _e( ' Create a new question', 'learnpress' ); ?>"
                                                @keyup.enter.prevent="addItem()">
                                     </form>
                                 </div>
@@ -134,7 +135,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                     return $store.getters['defaultNewQuestionType'];
                 },
                 // disable update list questions
-                disableUpdateList: function(){
+                disableUpdateList: function () {
                     return $store.getters['lqs/disableUpdateList'];
                 }
             },

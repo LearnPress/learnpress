@@ -169,8 +169,8 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'_lp_duration' => '30 minute',
-				'_lp_preview'  => 'no'
+				'duration' => '30 minute',
+				'preview'  => 'no'
 			);
 
 			return apply_filters( 'learn-press/course/default-meta', $meta );
