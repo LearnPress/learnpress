@@ -215,7 +215,7 @@ var LP_Quiz_i18n_Store = (function (Vue, helpers, data) {
  *
  * @since 3.0.0
  */
-var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
+var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
 
     var state = helpers.cloneObject(data.listQuestions);
 
@@ -309,6 +309,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         },
         'ADD_NEW_QUESTION': function (state, question) {
             state.questions.push(question);
+
+            var _offset = $('.lp-list-questions .main > div:last-child').offset().top;
+            $('html,body').animate({scrollTop: _offset});
         },
         'CHANGE_QUESTION_TYPE': function (state, data) {
             state.questions = state.questions.map(function (question) {
@@ -722,7 +725,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data) {
         actions: actions
     }
 
-})(Vue, LP_Helpers, lp_quiz_editor);
+})(Vue, LP_Helpers, lp_quiz_editor, jQuery);
 
 /**
  * Root Store
