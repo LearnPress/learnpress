@@ -49,6 +49,15 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 			return;
 		}
 
+		// If the order contains course is processing
+		if ( ( $order = $user->get_course_order( $course->get_id() ) ) && $order->get_status() === 'processing' ) {
+			if ( $message = apply_filters( 'learn-press/order-processing-message', __( 'Your order is waiting for processing', 'learnpress' ) ) ) {
+				learn_press_display_message( $message );
+			}
+
+			return;
+		}
+
 		learn_press_get_template( 'single-course/buttons/purchase.php' );
 	}
 

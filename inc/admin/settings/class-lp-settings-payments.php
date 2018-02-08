@@ -78,7 +78,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					'learn-press/payment-settings/general',
 					array(
 						array(
-							'title'   => __( 'Checkout page X', 'learnpress' ),
+							'title'   => __( 'Checkout page', 'learnpress' ),
 							'id'      => 'checkout_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown'

@@ -1422,6 +1422,7 @@ function learn_press_update_user_profile_avatar() {
 					update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
 					update_user_meta( get_current_user_id(), '_lp_profile_picture_changed', 'yes' );
 				}
+
 			}
 			@unlink( $path );
 		}
@@ -1443,6 +1444,8 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 
 	$user_id = get_current_user_id();
 
+	$_POST['description'] = 1000;
+
 	$update_data = array(
 		'ID'           => $user_id,
 		'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
@@ -1451,7 +1454,9 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 		'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
 		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 	);
-
+	print_r($update_data);
+	print_r($_POST);
+	echo "xxxxx";
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
 	$return      = wp_update_user( $update_data );
 

@@ -1564,9 +1564,19 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function can_purchase_course( $course_id ) {
 			$course      = learn_press_get_course( $course_id );
-			$purchasable = $course->is_purchasable() && ! $this->has_ordered_course( $course_id );
+			$purchasable = $course->is_purchasable();
 
-			return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
+			if ( $purchasable && $order = $this->has_ordered_course( $course_id ) ) {
+//				if($this->has_finished_course($course_id) && in_array( $order->get_status(), array('pending', 'completed') )){
+//
+//				}
+			}
+
+			// @deprecated
+			$purchasable = apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
+
+			// since 3.0.0
+			return apply_filters( 'learn-press/user/can-purchase-course', $purchasable, $this->get_id(), $course_id );
 		}
 
 		/**
@@ -2457,7 +2467,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @param int $course_id
 		 *
-		 * @return mixed
+		 * @return mixed|LP_Order
 		 */
 		public function has_ordered_course( $course_id ) {
 			$return = apply_filters( 'learn-press/user-has-ordered-course', $this->get_course_order( $course_id ), $course_id, $this->get_id() );

@@ -77,7 +77,6 @@ learn_press_admin_view( 'question/option' );
                         }
                     });
                 }, 1000)
-
             },
             methods: {
                 // sort answer options

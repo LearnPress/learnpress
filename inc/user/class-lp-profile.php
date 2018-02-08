@@ -511,7 +511,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return false;
 			}
 			$return = false;
-
 			switch ( $action ) {
 				case 'basic-information':
 					$return = learn_press_update_user_profile_basic_information( true );

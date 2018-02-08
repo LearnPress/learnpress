@@ -22,11 +22,9 @@ class LP_Updater {
 	 * LP_Updater constructor.
 	 */
 	protected function __construct() {
-
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'update_form' ) );
 		add_action( 'admin_init', array( $this, 'do_update' ) );
-
 	}
 
 	public function do_update() {
