@@ -22,8 +22,13 @@
 
         <div class="item-actions">
             <div class="actions">
-                <div class="action edit-item"><a :href="url" target="_blank"
-                                                 class="lp-btn-icon dashicons dashicons-edit"></a></div>
+                <div class="action preview-item">
+                    <a class="lp-btn-icon dashicons" :class="previewClass" @click="togglePreview"></a>
+                </div>
+                <div class="action edit-item">
+                    <a :href="url" target="_blank"
+                       class="lp-btn-icon dashicons dashicons-edit"></a>
+                </div>
                 <div class="action delete-item" v-if="!disableCurriculum">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>
@@ -38,7 +43,6 @@
                 </div>
             </div>
         </div>
-
     </li>
 </script>
 
@@ -56,6 +60,9 @@
                     removing: false
                 };
             },
+            created: function () {
+                this.$ = jQuery;
+            },
             computed: {
                 // edit item url
                 url: function () {
@@ -69,9 +76,16 @@
                 },
                 saving: function () {
                     return this.status === 'updating';
+                },
+                previewClass: function () {
+                    return {
+                        'dashicons-unlock': this.item.preview,
+                        'dashicons-lock': !this.item.preview
+                    }
                 }
             },
             methods: {
+
                 changeTitle: function () {
                     this.changed = true;
                 },
@@ -101,6 +115,11 @@
                     } else {
                         this.$emit('nav', {key: event.keyCode, order: this.order});
                     }
+                },
+                togglePreview: function (evt) {
+                    this.item.preview = !this.item.preview;
+                    this.changed = true;
+                    this.updateTitle();
                 }
             }
         });

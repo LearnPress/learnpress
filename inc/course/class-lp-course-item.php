@@ -155,11 +155,11 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$course_id = 0;
 			$enrolled  = false;
-			if ( $this->is_preview() ) {
+			if ( $this->is_preview()) {
 				$defaults[] = 'item-preview';
 				$defaults[] = 'has-status';
 			} elseif ( $this->is_blocked() ) {
-				$defaults[] = 'item-locked';
+				$defaults[] = 'item-locked xxx';
 			} else {
 				if ( $course = $this->get_course() ) {
 					$course_id = $course->get_id();
@@ -188,6 +188,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 							$defaults[] = 'item-locked';
 						}
 					}
+
+					$defaults[] = $course->is_free() ? 'feeeeeeee' : '000000';
 				} else {
 					$defaults[] = 'item-locked';
 				}
@@ -325,9 +327,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			$post = get_post( $this->get_id() );
 
 			return array(
-				'id'    => $this->get_id(),
-				'type'  => $this->get_item_type(),
-				'title' => $post->post_title,
+				'id'      => $this->get_id(),
+				'type'    => $this->get_item_type(),
+				'title'   => $post->post_title,
+				'preview' => $this->is_preview()
 			);
 		}
 

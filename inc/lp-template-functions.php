@@ -39,8 +39,6 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 
 		// User can not purchase course
 		if ( ! $user->can_purchase_course( $course->get_id() ) ) {
-			//learn_press_display_message( __( 'You have already purchased course and the order is processing or this course is can not purchasable!' ) );
-
 			return;
 		}
 
@@ -100,9 +98,8 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 			return;
 		}
 
-		//$order_status = $user->get_order_status($course->get_id());
-
 		$purchased = $user->has_purchased_course( $course->get_id() );
+
 		// For free course and user does not purchased
 		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
@@ -140,7 +137,6 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 		}
 		learn_press_get_template( 'single-course/buttons/retake.php' );
 	}
-
 }
 
 if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
@@ -2843,7 +2839,15 @@ if ( ! function_exists( 'learn_press_content_item_lesson_complete_button' ) ) {
 		$course = LP_Global::course();
 		$lesson = LP_Global::course_item();
 
+		if ( ! $course->is_required_enroll() ) {
+			return;
+		}
+
 		if ( ( $course_item = $user->get_course_data( $course->get_id() ) ) && $course_item->is_finished() ) {
+			return;
+		}
+
+		if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
 			return;
 		}
 

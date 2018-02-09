@@ -26,6 +26,10 @@ input[type="password"] {
     @include box-sizing(border-box);
 }
 
+.hide-if-js{
+    display: none!important;
+}
+
 .clearfix {
     &:after {
         @include clear-fix();

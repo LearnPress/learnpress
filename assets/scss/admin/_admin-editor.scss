@@ -347,10 +347,10 @@
                 }
 
                 .actions {
-                    visibility: hidden;
 
                     > * {
                         margin-right: 10px;
+                        visibility: hidden;
                     }
 
                     .edit {
@@ -360,11 +360,27 @@
                     .remove {
                         color: #a00;
                     }
+
+                    .preview-item {
+                        .dashicons-unlock {
+                            visibility: visible;
+                        }
+                    }
                 }
 
                 &:hover {
                     .drag {
                         visibility: visible;
+                    }
+                }
+
+                &.lp_quiz {
+                    .item-actions {
+                        .actions {
+                            .preview-item {
+                                display: none;
+                            }
+                        }
                     }
                 }
 
@@ -499,7 +515,7 @@
 
                 &:hover {
                     .item-actions {
-                        .actions {
+                        .actions > * {
                             visibility: visible;
                             cursor: pointer;
                         }

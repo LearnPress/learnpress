@@ -16,6 +16,7 @@ class LP_Update_30 {
 			self::add_column_user_items();
 			self::upgrade_orders();
 			self::update_user_course_items();
+			self::update_option_no_require_enroll();
 
 			LP_Install::update_db_version();
 			LP_Install::update_version();
@@ -26,6 +27,18 @@ class LP_Update_30 {
 		}
 	}
 
+	public static function update_option_no_require_enroll(){
+		global $wpdb;
+
+		$query = $wpdb->prepare("
+			SELECT *
+			FROM {$wpdb->postmeta}
+			WHERE meta_key = %s 
+		",
+		'_lp_required_enroll');
+
+		$metas = $wpdb->get_results($query);
+	}
 	public static function upgrade_orders() {
 		global $wpdb;
 		$query = $wpdb->prepare( "

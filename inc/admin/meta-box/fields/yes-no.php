@@ -14,8 +14,8 @@ if ( ! class_exists( 'RWMB_Yes_No_Field' ) ) {
 		 * Get field HTML
 		 *
 		 * @param string $html
-		 * @param mixed $meta
-		 * @param mixed $field
+		 * @param mixed  $meta
+		 * @param mixed  $field
 		 *
 		 * @return string
 		 */
@@ -28,13 +28,25 @@ if ( ! class_exists( 'RWMB_Yes_No_Field' ) ) {
 
 			$value = empty( $meta ) ? $field['std'] : $meta;
 			$true  = ! learn_press_is_negative_value( $value );
+			$yes   = 'yes';
+			$no    = 'no';
+
+			if ( isset( $field['compare'] ) ) {
+				if ( in_array( $field['compare'], array( '<>', '!=' ) ) ) {
+					$true = ! $true;
+					$yes  = 'no';
+					$no   = 'yes';
+				}
+			}
 
 			return sprintf(
-				'<input type="hidden" name="%s" value="no">
-				<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="yes" %s>',
+				'<input type="hidden" name="%s" value="%s">
+				<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="%s" %s>',
 				$field['field_name'],
+				$no,
 				$field['field_name'],
 				$field['id'],
+				$yes,
 				checked( $true, true, false )
 			);
 		}
@@ -47,7 +59,7 @@ if ( ! class_exists( 'RWMB_Yes_No_Field' ) ) {
 		 *
 		 * @param mixed $new
 		 * @param mixed $old
-		 * @param int $post_id
+		 * @param int   $post_id
 		 * @param array $field
 		 *
 		 * @return int

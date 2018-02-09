@@ -317,7 +317,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		);
 
 		if ( $item['type'] == LP_LESSON_CPT ) {
-			$item['id'] = $lesson_curd->create( $args );
+			$item['id']      = $lesson_curd->create( $args );
+			$item['preview'] = get_post_meta( $item['id'], '_lp_preview', true ) == 'yes';
 		} else if ( $item['type'] == LP_QUIZ_CPT ) {
 			$item['id'] = $quiz_curd->create( $args );
 		}
@@ -336,7 +337,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Add list new items to section.
 	 *
-	 * @param $section_id
+	 * @param       $section_id
 	 * @param array $items
 	 *
 	 * @return array
@@ -380,7 +381,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// get WP Post
 			$post     = get_post( $item['id'] );
-			$result[] = array( 'id' => $post->ID, 'title' => $post->post_title, 'type' => $post->post_type, );
+			$result[] = array( 'id'      => $post->ID,
+			                   'title'   => $post->post_title,
+			                   'type'    => $post->post_type,
+			                   'preview' => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes'
+			);
 
 			$order ++;
 		}
@@ -580,6 +585,12 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$item = wp_parse_args( $item, array( 'id' => '', 'title' => '', ) );
 
 		wp_update_post( array( 'ID' => $item['id'], 'post_title' => $item['title'], ) );
+
+		if ( isset( $item['preview'] ) && $item['preview'] == 1 ) {
+			update_post_meta( $item['id'], '_lp_preview', 'yes' );
+		} else {
+			delete_post_meta( $item['id'], '_lp_preview' );
+		}
 
 		return $item;
 	}

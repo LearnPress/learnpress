@@ -544,13 +544,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc' => __( 'How many students have taken this course.', 'learnpress' ),
 						'std'  => 0,
 					),
-					array(
-						'name' => __( 'Use Students Enrolled for counter', 'learnpress' ),
-						'id'   => '_lp_append_students',
-						'type' => 'yes_no',
-						'desc' => __( 'Append the value of Students Enrolled above for counting the real users enrolled course.', 'learnpress' ),
-						'std'  => 'yes',
-					),
+//					array(
+//						'name' => __( 'Use Students Enrolled for counter', 'learnpress' ),
+//						'id'   => '_lp_append_students',
+//						'type' => 'yes_no',
+//						'desc' => __( 'Append the value of Students Enrolled above for counting the real users enrolled course.', 'learnpress' ),
+//						'std'  => 'yes',
+//					),
 					array(
 						'name' => __( 'Re-take Course', 'learnpress' ),
 						'id'   => '_lp_retake_count',
@@ -753,23 +753,23 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'state'       => 'show',
 					'conditional' => array(
 						array(
-							'field'   => '_lp_payment',
-							'compare' => '=',
-							'value'   => 'yes'
+							'field'   => '_lp_price',
+							'compare' => '>',
+							'value'   => '0'
 						)
 					)
 				);
 				array_push(
 					$meta_box['fields'],
 					array(
-						'name'       => __( 'Price', 'learnpress' ),
-						'id'         => '_lp_price',
-						'type'       => 'number',
-						'min'        => 0.01,
-						'step'       => 0.01,
-						'desc'       => $message,
-						'std'        => $price,
-						'visibility' => $conditional
+						'name' => __( 'Price', 'learnpress' ),
+						'id'   => '_lp_price',
+						'type' => 'number',
+						'min'  => 0,
+						'step' => 0.01,
+						'desc' => $message,
+						'std'  => $price,
+						//'visibility' => $conditional
 					),
 					array(
 						'name'       => __( 'Sale Price', 'learnpress' ),
@@ -825,16 +825,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				);
 
 			}
-			$conditional['conditional'][0]['compare'] = '!=';
+			$conditional['conditional'][0]['compare'] = '<=';
 			$meta_box['fields']                       = array_merge(
 				$meta_box['fields'],
 				array(
 					array(
-						'name'       => __( 'Require enrollment', 'learnpress' ),
+						'name'       => __( 'No require enrollment', 'learnpress' ),
 						'id'         => '_lp_required_enroll',
 						'type'       => 'yes_no',
 						'desc'       => __( 'Require users logged in to study or public to all.', 'learnpress' ),
 						'std'        => 'yes',
+						'compare'    => '<>',
 						'visibility' => $conditional
 					)
 				)
@@ -1179,6 +1180,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			}
 
+			if ( $price ) {
+				update_post_meta( $post->ID, '_lp_required_enroll', 'yes' );
+			}
+
 			return true;
 		}
 
@@ -1278,7 +1283,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							}
 						}
 
-						$output = $number_sections ? sprintf( _n( '%d section', '%d sections', $number_sections, 'learnpress' ), $number_sections ) : __('0 section', 'learnpress');
+						$output = $number_sections ? sprintf( _n( '%d section', '%d sections', $number_sections, 'learnpress' ), $number_sections ) : __( '0 section', 'learnpress' );
 						$output .= ' (';
 						$output .= $number_lessons ? sprintf( _n( '%d lesson', '%d lessons', $number_lessons, 'learnpress' ), $number_lessons ) : __( "0 lesson", 'learnpress' );
 						$output .= ', ';
