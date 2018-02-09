@@ -37,9 +37,11 @@ $profile = LP_Profile::instance();
         <li class="form-field">
             <label for="my-dashboard"><?php _e( 'My dashboard', 'learnpress' ); ?></label>
             <div class="form-field-input">
-                <input type="checkbox" id="my-dashboar" name="publicity[my-dashboard]"
+                <input type="checkbox" id="my-dashboard" name="publicity[my-dashboard]"
                        value="yes" <?php checked( $profile->get_publicity( 'my-dashboard' ), 'yes' ); ?>/>
-                <p class="description"><?php _e( 'Public your profile dashboard', 'learnpress' ); ?></p>
+                <p class="description">
+                    <?php _e( 'Public user profile content, if this option is turn off then other sections in profile also become invisible.', 'learnpress' ); ?>
+                </p>
             </div>
         </li>
 
@@ -48,7 +50,7 @@ $profile = LP_Profile::instance();
                 <label for="my-courses"><?php _e( 'My courses', 'learnpress' ); ?></label>
                 <div class="form-field-input">
                     <input type="checkbox" name="publicity[courses]" value="yes"
-                           id="my-course" <?php checked( $profile->get_publicity( 'courses' ), 'yes' ); ?>/>
+                           id="my-courses" <?php checked( $profile->get_publicity( 'courses' ), 'yes' ); ?>/>
                     <p class="description"><?php _e( 'Public your profile courses', 'learnpress' ); ?></p>
                 </div>
             </li>

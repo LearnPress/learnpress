@@ -1006,9 +1006,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 			}
 
-			if ( $user_id === 3 ) {
-			}
-
 			if ( empty( self::$_instances[ $user_id ] ) ) {
 				self::$_instances[ $user_id ] = new self( $user_id );
 			}
