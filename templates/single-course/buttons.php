@@ -30,16 +30,15 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
 	$course_status = $lp_user->get_course_status( $course->id );
 	$can_purchase  = $lp_user->can_purchase_course( $course->id );
 	$can_enroll    = $lp_user->can( 'enroll-course', $course->id );
-
 	if ( $can_purchase ) {
 		# todo dispay purchase button
 		if ( $external_link = $course->get_external_link() ) {
-
+		    
 			$external_button_text = apply_filters( 'learn_press_course_external_link_button_text', __( 'Buy this course', 'learnpress' ) ); ?>
 
 			<?php do_action( 'learn_press_before_external_link_buy_course' ); ?>
             <div class="purchase-course">
-                <a href="<?php echo esc_url( $external_link ); ?>" class="purchase-button">
+                <a href="<?php echo esc_url( $external_link ); ?>" class="button purchase-button">
 					<?php echo $external_button_text; ?>
                 </a>
             </div>
@@ -109,32 +108,31 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
                 </button>
 			<?php 
 			
-			elseif ( $user->can( 'enroll-course', $course->id ) === true ) : ?>
-                <form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
-					<?php do_action( 'learn_press_before_enroll_button' ); ?>
-
-                    <input type="hidden" name="lp-ajax" value="enroll-course"/>
-                    <input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>"/>
-                    <button class="button enroll-button"
-                            data-block-content="yes"><?php echo $enroll_button_text; ?></button>
-
-					<?php do_action( 'learn_press_after_enroll_button' ); ?>
-                </form>
+			elseif ( $user->can( 'enroll-course', $course->id ) === true ) : 
+                if ( !$user->has('purchased-course', $course->id ) && ($external_link = $course->get_external_link()) ) {
+                    $external_button_text = apply_filters( 'learn_press_enroll_course_external_link_button_text', __( 'Buy this course', 'learnpress' ) ); ?>
+            			<?php do_action( 'learn_press_before_external_link_buy_course' ); ?>
+                        <div class="purchase-course">
+                            <a href="<?php echo esc_url( $external_link ); ?>" class="button purchase-button">
+            					<?php echo $external_button_text; ?>
+                            </a>
+                        </div>
+            			<?php do_action( 'learn_press_after_external_link_buy_course' ); ?>
+                	<?php 
+                	} else {
+                	?>
+                    <form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
+    					<?php do_action( 'learn_press_before_enroll_button' ); ?>
+    
+                        <input type="hidden" name="lp-ajax" value="enroll-course"/>
+                        <input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>"/>
+                        <button class="button enroll-button"
+                                data-block-content="yes"><?php echo $enroll_button_text; ?></button>
+    
+    					<?php do_action( 'learn_press_after_enroll_button' ); ?>
+                    </form>
 			<?php 
-			
-			
-			elseif ( $user->can( 'purchase-course', $course->id ) && ! $can_purchase ) : ?>
-                <form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
-					<?php do_action( 'learn_press_before_purchase_button' ); ?>
-                    <button class="button purchase-button" data-block-content="yes">
-						<?php echo $course->is_free() ? $enroll_button_text : $purchase_button_text; ?>
-                    </button>
-					<?php do_action( 'learn_press_after_purchase_button' ); ?>
-                    <input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>"/>
-                    <input type="hidden" value="user can purchase course"/>
-                </form>
-
-			<?php 
+                	}
 			
 			
 			elseif ( $course->is_reached_limit()/* $user->can( 'enroll-course', $course->id ) === 'enough'*/ ) : ?>
