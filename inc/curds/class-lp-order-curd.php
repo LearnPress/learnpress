@@ -491,7 +491,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$user = learn_press_get_user( $user_id );
 
 			if ( ! $user ) {
-				throw new Exception( __( 'User is not exists.', 'learnpress' ), 1020 );
+				throw new Exception( __( 'User does not exist.', 'learnpress' ), 1020 );
 			}
 
 			global $wpdb;

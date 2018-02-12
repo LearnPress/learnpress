@@ -16,7 +16,7 @@ learn_press_admin_view( 'question/option' );
                 <th class="sort"></th>
                 <th class="order"></th>
                 <th class="answer-text"><?php _e( 'Answer Text', 'learnpress' ); ?></th>
-                <th class="answer-correct"><?php _e( 'Is Correct?', 'learnpress' ); ?></th>
+                <th class="answer-correct"><?php _e( 'Correct answer', 'learnpress' ); ?></th>
                 <th class="actions"></th>
             </tr>
             </thead>

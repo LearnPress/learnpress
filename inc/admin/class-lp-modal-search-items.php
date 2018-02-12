@@ -336,15 +336,15 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 			switch ( $type ) {
 				case LP_LESSON_CPT:
 					$message = __( 'There are no available lessons for this course, please use ', 'learnpress' );
-					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_lesson' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
+					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_lesson' ) . '">' . esc_html__( 'Add new item', 'learnpress' ) . '</a>';
 					break;
 				case LP_QUIZ_CPT:
 					$message = __( 'There are no available quizzes for this course, please use ', 'learnpress' );
-					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_quiz' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
+					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_quiz' ) . '">' . esc_html__( 'Add new item', 'learnpress' ) . '</a>';
 					break;
 				case LP_QUESTION_CPT:
 					$message = __( 'There are no available questions for this quiz, please use ', 'learnpress' );
-					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_question' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
+					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_question' ) . '">' . esc_html__( 'Add new item', 'learnpress' ) . '</a>';
 					break;
 			}
 

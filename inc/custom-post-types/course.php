@@ -80,7 +80,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'edit_item'          => __( 'Edit Course', 'learnpress' ),
 				'update_item'        => __( 'Update Course', 'learnpress' ),
 				'search_items'       => __( 'Search Courses', 'learnpress' ),
-				'not_found'          => sprintf( __( 'You have not got any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
+				'not_found'          => sprintf( __( 'You haven\'t had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
 				'not_found_in_trash' => __( 'No course found in Trash', 'learnpress' )
 			);
 			$course_base      = $settings->get( 'course_base' );
@@ -331,7 +331,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 			if ( self::$_enable_review ) {
 				if ( ! empty( $_POST ) && learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
-					LP_Admin_Notice::add_redirect( __( 'Sorry! You can not update a course while it is viewing!', 'learnpress' ), 'error' );
+					LP_Admin_Notice::add_redirect( __( 'Sorry! You can not update a course while it is being viewed!', 'learnpress' ), 'error' );
 					wp_redirect( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) );
 					exit();
 				}
@@ -556,7 +556,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'   => '_lp_retake_count',
 						'type' => 'number',
 						'min'  => - 1,
-						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable.', 'learnpress' ),
+						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable re-taking', 'learnpress' ),
 						'std'  => 0,
 					),
 					array(
@@ -570,11 +570,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Block Lessons Content', 'learnpress' ),
 						'id'   => '_lp_block_lesson_content',
 						'type' => 'yes_no',
-						'desc' => __( 'Block lessons content when course is expired.', 'learnpress' ),
+						'desc' => __( 'Block lessons content when course expired.', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(
-						'name' => __( 'External Link Buy Course', 'learnpress' ),
+						'name' => __( 'External Link to buy Course', 'learnpress' ),
 						'id'   => '_lp_external_link_buy_course',
 						'type' => 'url',
 						'desc' => __( 'Redirect to this url when you press button buy this course.', 'learnpress' ),
@@ -655,16 +655,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => $course_result_desc,
 						'options' => array(
-							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' )
+							'evaluate_lesson'         => __( 'Evaluate via lessons', 'learnpress' )
 							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
-							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' )
+							'evaluate_final_quiz'     => __( 'Evaluate via results of the final quiz', 'learnpress' )
 							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_final_quiz'] )
 							                             . $quiz_passing_condition_html,
-							'evaluate_quizzes'        => __( 'Evaluate results of quizzes', 'learnpress' )
+							'evaluate_quizzes'        => __( 'Evaluate via results of quizzes', 'learnpress' )
 							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_quizzes'] ),
-							'evaluate_passed_quizzes' => __( 'Evaluate results of quizzes passed', 'learnpress' )
+							'evaluate_passed_quizzes' => __( 'Evaluate via results of quizzes passed', 'learnpress' )
 							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_passed_quizzes'] ),
-							'evaluate_quiz'           => __( 'Evaluate quizzes', 'learnpress' )
+							'evaluate_quiz'           => __( 'Evaluate via quizzes', 'learnpress' )
 							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_quiz'] )
 						),
 						'std'     => 'evaluate_lesson',
@@ -676,7 +676,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'        => 'number',
 						'min'         => 0,
 						'max'         => 100,
-						'desc'        => __( 'The percentage of quiz result or lessons completed to finish the course.', 'learnpress' ),
+						'desc'        => __( 'The percentage of quiz result or completed lessons to finish the course.', 'learnpress' ),
 						'std'         => 80,
 						'after_input' => '&nbsp;%',
 						'visibility'  => array(
@@ -733,7 +733,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$author = get_userdata( $course->post_author );
 
 						if ( isset( $suggest_price ) && ! empty( $author->roles[0] ) && $author->roles[0] === 'lp_teacher' ) {
-							$message = sprintf( __( 'This course is requires enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
+							$message = sprintf( __( 'This course requires enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
 							$price   = $suggest_price;
 						}
 
@@ -958,7 +958,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Video ID', 'learnpress' ),
 						'id'   => '_lp_video_id',
 						'type' => 'text',
-						'desc' => __( 'The id of Youtube or Vimeo video', 'learnpress' ),
+						'desc' => __( 'The ID of Youtube or Vimeo video', 'learnpress' ),
 						'std'  => ''
 					),
 					array(
@@ -1105,22 +1105,22 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			switch ( $action ) {
 				case 'approved':
 					if ( ! $message ) {
-						$message = __( 'Course has approved by Reviewer', 'learnpress' );
+						$message = __( 'Course has been approved by Reviewer', 'learnpress' );
 					}
 					break;
 				case 'rejected':
 					if ( ! $message ) {
-						$message = __( 'Course has rejected by Reviewer', 'learnpress' );
+						$message = __( 'Course has been rejected by Reviewer', 'learnpress' );
 					}
 					break;
 				case 'for_reviewer':
 					if ( ! $message ) {
-						$message = sprintf( __( 'Course has submitted by %s', 'learnpress' ), learn_press_get_profile_display_name( $user ) );
+						$message = sprintf( __( 'Course has been submitted by %s', 'learnpress' ), learn_press_get_profile_display_name( $user ) );
 					}
 					break;
 				default:
 					if ( ! $message ) {
-						$message = __( 'Course has updated by Reviewer', 'learnpress' );
+						$message = __( 'Course has been updated by Reviewer', 'learnpress' );
 					}
 			}
 			if ( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->get_id() ) ) {

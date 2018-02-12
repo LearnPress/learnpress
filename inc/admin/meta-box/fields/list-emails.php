@@ -68,7 +68,7 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
                 </tbody>
             </table>
             <p class="email-actions">
-				<?php learn_press_quick_tip( __( 'You can enable/disable each email by clicking on the status icon or apply for all emails by clicking these buttons', 'learnpress' ) ); ?>
+				<?php learn_press_quick_tip( __( 'You can enable/disable each email by clicking on the status icon or apply status for all emails by clicking these buttons', 'learnpress' ) ); ?>
                 <button class="button"
                         id="learn-press-enable-emails"
                         data-status="yes"><?php _e( 'Enable all', 'learnpress' ); ?></button>

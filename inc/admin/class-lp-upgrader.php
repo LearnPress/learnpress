@@ -17,7 +17,7 @@ class LP_Upgrader{
         $this->strings['fs_no_plugins_dir'] = __( 'Unable to locate WordPress Plugin directory.', 'learnpress' );
         $this->strings['fs_no_themes_dir'] = __( 'Unable to locate WordPress Theme directory.', 'learnpress' );
         /* translators: %s: directory name */
-        $this->strings['fs_no_folder'] = __( 'Unable to locate needed folder (%s).', 'learnpress' );
+        $this->strings['fs_no_folder'] = __( 'Unable to locate necessary folder (%s).', 'learnpress' );
 
         $this->strings['download_failed'] = __( 'Download failed.', 'learnpress' );
         $this->strings['installing_package'] = __( 'Installing the latest version&#8230;', 'learnpress' );

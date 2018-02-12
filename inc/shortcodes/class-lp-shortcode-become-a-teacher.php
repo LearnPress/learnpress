@@ -40,7 +40,7 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 				self::add_message( sprintf( __( 'Please %s to send your request!', 'learnpress' ), sprintf( '<a href="%s">%s</a>', learn_press_get_login_url(), _x( 'login', 'become-teacher-form', 'learnpress' ) ) ), 'login' );
 			} else {
 				if ( self::has_sent() ) {
-					self::add_message( __( 'Your have already sent the request. Please wait for approving.', 'learnpress' ), 'sent' );
+					self::add_message( __( 'Your have already sent the request. Please wait for approvement.', 'learnpress' ), 'sent' );
 				} else if ( learn_press_user_maybe_is_a_teacher() ) {
 					self::add_message( __( 'You are a teacher!', 'learnpress' ), 'is-teacher' );
 				}
@@ -107,7 +107,7 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 				$message = __( "You are a teacher now.", 'learnpress' );
 				$code    = 2;
 			} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->get_id() ) == 'yes' ) {
-				$message = __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' );
+				$message = __( 'Your request has been sent! We will get back to you soon!', 'learnpress' );
 				$code    = 3;
 			} elseif ( learn_press_user_maybe_is_a_teacher() ) {
 				$message = __( 'Your role is allowed to create a course.', 'learnpress' );

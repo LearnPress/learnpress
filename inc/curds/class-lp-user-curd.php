@@ -1427,7 +1427,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		);
 
 		if ( is_wp_error( $new_user ) ) {
-			return new WP_Error( 'registration-error', __( 'Create user error.', 'learnpress' ) );
+			return new WP_Error( 'registration-error', __( 'Failed to create user', 'learnpress' ) );
 		}
 
 		return $new_user;

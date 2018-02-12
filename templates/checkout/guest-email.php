@@ -22,7 +22,7 @@ $is_exists = $checkout->checkout_email_exists();
 
 <div id="checkout-guest-email" class="<?php echo $is_exists ? ' email-exists' : ''; ?>">
     <h4 class="form-heading"><?php _e( 'Your email', 'learnpress' ); ?></h4>
-    <p class="form-desc"><?php _e( 'Your real email we will send order code.', 'learnpress' ); ?></p>
+    <p class="form-desc"><?php _e( 'Your real email we will send the order code.', 'learnpress' ); ?></p>
     <input type="email" value="<?php echo $checkout->get_checkout_email(); ?>" name="checkout-email"/>
 
     <input type="hidden" name="guest-checkout" value="<?php echo wp_create_nonce( 'guest-checkout' ); ?>">

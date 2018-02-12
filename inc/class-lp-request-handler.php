@@ -128,7 +128,7 @@ class LP_Request {
 						 * This mean user has to finish course before purchasing that course itself.
 						 */
 						if ( $order->has_status( array( 'completed' ) ) && ! $user->has_course_status( $course->get_id(), array( 'finished' ) ) ) {
-							throw new Exception( __( 'You have purchased course and has not finished.', 'learnpress' ) );
+							throw new Exception( __( 'You have already purchased this course and haven\'t finished it.', 'learnpress' ) );
 						}
 
 						/**
@@ -136,7 +136,7 @@ class LP_Request {
 						 * Just wait for order is completed.
 						 */
 						if ( $order->has_status( array( 'processing' ) ) ) {
-							throw new Exception( __( 'You have purchased course and it is processing.', 'learnpress' ) );
+							throw new Exception( __( 'You have already purchased this course and the order is still processing...', 'learnpress' ) );
 						}
 
 						/**
@@ -176,7 +176,7 @@ class LP_Request {
 								$enroll_course = true;
 
 							} else {
-								throw new Exception( __( 'You have to purchase course before enrolling.', 'learnpress' ) );
+								throw new Exception( __( 'You have to purchase the course before enrolling.', 'learnpress' ) );
 							}
 						}
 
@@ -258,7 +258,7 @@ class LP_Request {
 				exit();
 			}
 
-			learn_press_add_message( __( 'Checkout page is not setup' ) );
+			learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
 			die();
 		} else {
 			/// Need?
@@ -325,7 +325,7 @@ class LP_Request {
 		if ( ! $page ) {
 			// Only show for admin
 			if ( current_user_can( 'manage_options' ) ) {
-				learn_press_add_message( __( 'Checkout page is not setup or page does not exists.', 'learnpress' ) );
+				learn_press_add_message( __( 'Checkout page hasn\'t been setup or page does not exists.', 'learnpress' ) );
 			}else{
 				learn_press_add_message( __( 'Checkout error! Please contact with admin for getting more information.', 'learnpress' ) );
 			}

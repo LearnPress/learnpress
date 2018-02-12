@@ -68,15 +68,15 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'desc'  => __( 'General settings.', 'learnpress' )
 						),
 						array(
-							'title'   => __( 'Review course before publish', 'learnpress' ),
+							'title'   => __( 'Review course before publishing', 'learnpress' ),
 							'desc'    => __( 'The course needs to be reviewed by admin before it can be published.', 'learnpress' ),
 							'id'      => 'required_review',
 							'default' => 'yes',
 							'type'    => 'yes-no'
 						),
 						array(
-							'title'      => __( 'Enable edit published course', 'learnpress' ),
-							'desc'       => __( 'Allow instructors to edit the course that are published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
+							'title'      => __( 'Enable editing published course', 'learnpress' ),
+							'desc'       => __( 'Allow instructors to edit the course which were published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
 							'id'         => 'enable_edit_published',
 							'default'    => 'yes',
 							'type'       => 'yes-no',

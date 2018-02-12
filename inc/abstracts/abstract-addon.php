@@ -182,7 +182,7 @@ class LP_Addon {
 	public function _admin_notices() {
 		?>
         <div class="error">
-            <p><?php printf( __( '<strong>%s</strong> addon version %s requires <strong>LearnPress</strong> version %s or higher', 'learnpress' ), $this->get_name(), $this->version, $this->require_version ); ?></p>
+            <p><?php printf( __( '<strong>%s</strong> add-on version %s requires <strong>LearnPress</strong> version %s or higher', 'learnpress' ), $this->get_name(), $this->version, $this->require_version ); ?></p>
         </div>
 		<?php
 	}
@@ -241,7 +241,7 @@ class LP_Addon {
 		}
 
 		if ( ! file_exists( $path ) ) {
-			self::$_admin_notices['add-on-file-no-exists'] = sprintf( __( 'Plugin file %s does not exists.', 'learnpress' ), $path );
+			self::$_admin_notices['add-on-file-no-exists'] = sprintf( __( '%s plugin file does not exist.', 'learnpress' ), $path );
 
 			return;
 		}
@@ -259,7 +259,7 @@ class LP_Addon {
 		}
 
 		if ( ! $addon_instance ) {
-			self::$_admin_notices['add-on-class-no-exists'] = sprintf( __( 'Plugin class %s does not exists.', 'learnpress' ), $instance );
+			self::$_admin_notices['add-on-class-no-exists'] = sprintf( __( '%s plugin class does not exist.', 'learnpress' ), $instance );
 
 			return;
 		}

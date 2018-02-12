@@ -80,7 +80,7 @@ class LP_Page_Controller {
 			// Post item is not exists or get it's item failed.
 			if ( ! $post_item || ( $post_item && ( ! $lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) ) ) ) ) {
 				$this->set_404( true );
-				throw new Exception( __( 'You can not view this item or it is not exists!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
+				throw new Exception( __( 'You can not view this item or it does not exist!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
 			}
 
 			$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
@@ -106,7 +106,7 @@ class LP_Page_Controller {
 						learn_press_update_user_item_meta( $user_item_id, '_current_question', $question->ID );
 					}
 				} else {
-					throw new Exception( __( 'Question invalid!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
+					throw new Exception( __( 'Invalid question!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
 					// TODO: Process in case question does not exists.
 				}
 				//$lp_course_item->set_viewing_question( $lp_quiz_question );

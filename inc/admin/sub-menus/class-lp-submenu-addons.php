@@ -12,8 +12,8 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	 */
 	public function __construct() {
 		$this->id         = 'learn-press-addons';
-		$this->menu_title = __( 'Addons', 'learnpress' );
-		$this->page_title = __( 'LearnPress Addons', 'learnpress' );
+		$this->menu_title = __( 'Add-ons', 'learnpress' );
+		$this->page_title = __( 'LearnPress Add-ons', 'learnpress' );
 		$this->priority   = 20;
 
 		//add_action( 'plugins_loaded', array( $this, 'add_ons_tabs' ) );

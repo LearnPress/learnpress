@@ -146,7 +146,7 @@ class LP_Cart {
 
 			// Check if course is in stock
 			if ( ! $course->is_in_stock() ) {
-				throw new Exception( __( 'Sorry! Students enroll course is reached limit', 'learnpress' ) );
+				throw new Exception( __( 'Sorry! The number of enrolled students has reached limit', 'learnpress' ) );
 			}
 
 			$item_data = apply_filters( 'learn-press/cart-item-data', $item_data, $course_id );
@@ -456,7 +456,7 @@ class LP_Cart {
 
 			// Checkout page is not setting up
 			if ( ! $has_checkout ) {
-				learn_press_add_message( __( 'Checkout page is not setup', 'learnpress' ), 'error' );
+				learn_press_add_message( __( 'Checkout page hasn\'t been setup', 'learnpress' ), 'error' );
 			} else {
 				wp_redirect( apply_filters( 'learn_press_checkout_redirect', $redirect ) );
 				exit();

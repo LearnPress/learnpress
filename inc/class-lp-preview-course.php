@@ -99,7 +99,7 @@ class LP_Preview_Course {
 			// Access forbidden
 			if ( ! current_user_can( 'manage_options' ) ) {
 				if ( $post_item->post_author != get_current_user_id() ) {
-					throw new Exception( __( 'Access forbidden.', 'learnpress' ) );
+					throw new Exception( __( 'Access denied.', 'learnpress' ) );
 				}
 			}
 
@@ -152,7 +152,7 @@ class LP_Preview_Course {
 	}
 
 	public static function edit_button() {
-		learn_press_display_message( sprintf( __( 'You are in preview mode. Continue <a href="%s">edit</a>?', 'learnpress' ), get_edit_post_link( self::$_item_id ) ), 'error' );
+		learn_press_display_message( sprintf( __( 'You are in preview mode. Continue <a href="%s">editing</a>?', 'learnpress' ), get_edit_post_link( self::$_item_id ) ), 'error' );
 	}
 
 	public static function body_class( $classes ) {

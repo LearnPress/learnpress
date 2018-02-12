@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) or exit;
 
         <h2><?php _e( 'LearnPress Update Database', 'learnpress' ); ?></h2>
 
-        <p><?php _e( 'Before updating please ensure your site data is already backup!', 'learnpress' ); ?></p>
+        <p><?php _e( 'Before updating please ensure your site data is already backed up!', 'learnpress' ); ?></p>
 
         <form id="learn-press-update-form" class="lp-update-content" name="lp-update" method="post">
             <p class="finish-buttons">

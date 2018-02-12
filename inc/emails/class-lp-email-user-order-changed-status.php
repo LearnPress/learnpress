@@ -24,13 +24,13 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 		public function __construct() {
 			$this->id          = 'user_order_changed_status';
 			$this->title       = __( 'User order changed status', 'learnpress' );
-			$this->description = __( 'Send email to user when the order is changed status', 'learnpress' );
+			$this->description = __( 'Send email to user when the order status is changed', 'learnpress' );
 
 			$this->template_html  = 'emails/user-order-changed-status.php';
 			$this->template_plain = 'emails/plain/user-order-changed-status.php';
 
-			$this->default_subject = __( 'Your order {{order_date}} has just been changed status', 'learnpress' );
-			$this->default_heading = __( 'Your order {{order_number}} has just been changed status', 'learnpress' );
+			$this->default_subject = __( 'Your order {{order_date}} status has just been changed', 'learnpress' );
+			$this->default_heading = __( 'Your order {{order_number}} status has just been changed', 'learnpress' );
 
 			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{order_id}}',

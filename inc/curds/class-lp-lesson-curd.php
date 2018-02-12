@@ -107,14 +107,14 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 
 			// ensure that user can create lesson
 			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this lesson</p>', 'learnpress' ) );
+				return new WP_Error( __( '<p>Sorry! You don\'t have permission to duplicate this lesson</p>', 'learnpress' ) );
 			}
 
 			// duplicate lesson
 			$new_lesson_id = learn_press_duplicate_post( $lesson_id, $args );
 
 			if ( ! $new_lesson_id || is_wp_error( $new_lesson_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Duplicate lesson failed!</p>', 'learnpress' ) );
+				return new WP_Error( __( '<p>Sorry! Failed to duplicate lesson!</p>', 'learnpress' ) );
 			} else {
 				return $new_lesson_id;
 			}

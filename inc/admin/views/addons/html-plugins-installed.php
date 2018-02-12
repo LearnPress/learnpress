@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) or exit();
 $add_ons = LP_Plugins_Helper::get_plugins( 'installed' );
 
 if ( ! $add_ons ) {
-	_e( 'There is no add-on has installed.', 'learnpress' );
+	_e( 'There is no add-on installed.', 'learnpress' );
 
 	return;
 }

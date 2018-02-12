@@ -60,7 +60,7 @@
                                    <textarea name="hint" id="" cols="60" rows="3" class="rwmb-textarea large-text"
                                              @change="updateMeta"
                                              v-model="question.settings.hint"></textarea>
-                                    <p class="description"><?php _e( 'Instruction for user to select the right answer. The text will be shown when user clicking \'Hint\' button.', 'learnpress' ); ?></p>
+                                    <p class="description"><?php _e( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ); ?></p>
                                 </div>
                             </div>
                         </div>

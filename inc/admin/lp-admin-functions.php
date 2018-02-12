@@ -1481,7 +1481,7 @@ function learn_press_one_click_install_sample_data_notice() {
 				</div>
             </div>',
 			__( 'You haven\'t got any courses yet! Would you like to import sample data?', 'learnpress' ),
-			__( 'If yes, it requires to install addon name', 'learnpress' ),
+			__( 'If yes, please install add-on name', 'learnpress' ),
 			__( 'LearnPress Import/Export', 'learnpress' ),
 			__( 'but don\'t worry because it is completely automated.', 'learnpress' ),
 			__( 'Import now', 'learnpress' ),
@@ -1788,10 +1788,10 @@ if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
 
 	function learn_press_duplicate_question( $question_id = null, $quiz_id = null, $args = array() ) {
 		if ( ! $question_id || ! get_post( $question_id ) ) {
-			return new WP_Error( sprintf( __( 'Question id %s is not exists.', 'learnpress' ), $question_id ) );
+			return new WP_Error( sprintf( __( 'Question id %s does not exist.', 'learnpress' ), $question_id ) );
 		}
 		if ( $quiz_id && ! get_post( $quiz_id ) ) {
-			return new WP_Error( sprintf( __( 'Quiz id %s is not exists.', 'learnpress' ), $quiz_id ) );
+			return new WP_Error( sprintf( __( 'Quiz id %s does not exist.', 'learnpress' ), $quiz_id ) );
 		}
 
 		global $wpdb;

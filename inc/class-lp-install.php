@@ -472,7 +472,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 				// Notify for instructor
 				if ( learn_press_current_user_is( 'instructor' ) ) {
-					LP_Admin_Notice::add( sprintf( '<p>%s</p>', __( 'LearnPress has upgraded and need to upgrade the database before you can work with it. Please notify the site administrator.', 'learnpress' ) ), 'error' );
+					LP_Admin_Notice::add( sprintf( '<p>%s</p>', __( 'LearnPress has been updated and the database needs to be upgraded before you can work with it. Please notify the site administrator.', 'learnpress' ) ), 'error' );
 				}
 			}
 		}

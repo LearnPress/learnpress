@@ -371,7 +371,7 @@ function learn_press_get_subtabs_course() {
 		'learning'  => __( 'Learning', 'learnpress' ),
 		'purchased' => __( 'Purchased', 'learnpress' ),
 		'finished'  => __( 'Finished', 'learnpress' ),
-		'own'       => __( 'Own', 'learnpress' )
+		'own'       => __( 'Owned', 'learnpress' )
 	);
 
 	$subtabs = apply_filters( 'learn_press_profile_tab_courses_subtabs', $subtabs );

@@ -1258,7 +1258,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 			}
 		} elseif ( learn_press_is_courses() ) {
 			if ( learn_press_is_search() ) {
-				$title['title'] = __( 'Search course results', 'learnpress' );
+				$title['title'] = __( 'Course Search Results', 'learnpress' );
 			} else {
 				$title['title'] = __( 'Courses', 'learnpress' );
 			}
@@ -2337,7 +2337,7 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 	function learn_press_page_title( $echo = true ) {
 
 		if ( is_search() ) {
-			$page_title = sprintf( __( 'Search Results: &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() );
+			$page_title = sprintf( __( 'Search Results for: &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() );
 
 			if ( get_query_var( 'paged' ) ) {
 				$page_title .= sprintf( __( '&nbsp;&ndash; Page %s', 'learnpress' ), get_query_var( 'paged' ) );

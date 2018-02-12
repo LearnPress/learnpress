@@ -168,7 +168,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				$result['message'] = $order->get_error_message();
 				$result['result']  = 'error';
 			} else {
-				$result['message']  = sprintf( __( 'The order %s has been recovered successful.', 'learnpress' ), $order_key );
+				$result['message']  = sprintf( __( 'The order %s has been successfully recovered.', 'learnpress' ), $order_key );
 				$result['redirect'] = $order->get_view_order_url();
 			}
 
@@ -222,7 +222,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				unset( $result['file'] );
 			} else {
 				$result = array(
-					'error' => __( 'Upload profile avatar error.', 'learnpress' )
+					'error' => __( 'Profile picture upload failed', 'learnpress' )
 				);
 			}
 			learn_press_send_json( $result );
@@ -291,7 +291,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			try {
 				// security check
 				if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
-					throw new Exception( __( 'Error! Invalid lesson or security checked failure', 'learnpress' ), 8000 );
+					throw new Exception( __( 'Error! Invalid lesson or failed security check.', 'learnpress' ), 8000 );
 				}
 
 				$result = $user->complete_lesson( $item_id );
@@ -338,17 +338,17 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$security_action = sprintf( 'retake-course-%d-%d', $course->get_id(), $user->get_id() );
 			// security check
 			if ( ! wp_verify_nonce( $security, $security_action ) ) {
-				learn_press_add_message( __( 'Error! Invalid course or security checked failure', 'learnpress' ), 'error' );
+				learn_press_add_message( __( 'Error! Invalid course or failed security check.', 'learnpress' ), 'error' );
 			} else {
 				if ( $user->can( 'retake-course', $course_id ) ) {
 					if ( ! $result = $user->retake_course( $course_id ) ) {
 						learn_press_add_message( __( 'Error!', 'learnpress' ), 'error' );
 					} else {
-						learn_press_add_message( sprintf( __( 'You have retaken course "%s"', 'learnpress' ), $course->get_title() ) );
+						learn_press_add_message( sprintf( __( 'You have retaken the course "%s"', 'learnpress' ), $course->get_title() ) );
 						$response['result'] = 'success';
 					}
 				} else {
-					learn_press_add_message( __( 'Error! You can not retake course', 'learnpress' ), 'error' );
+					learn_press_add_message( __( 'Error! You can not retake the course', 'learnpress' ), 'error' );
 				}
 			}
 

@@ -296,7 +296,7 @@ class LP_Checkout {
 				if ( empty( $item['order_item_name'] ) && ! empty( $item['item_id'] ) && ( $course = learn_press_get_course( $item['item_id'] ) ) ) {
 					$item['order_item_name'] = $course->get_title();
 				} else {
-					throw new Exception( sprintf( __( 'Item does not exists!', 'learnpress' ), 402 ) );
+					throw new Exception( sprintf( __( 'Item does not exist!', 'learnpress' ), 402 ) );
 				}
 
 				$item_id = $order->add_item( $item );
@@ -326,7 +326,7 @@ class LP_Checkout {
 
 
 			if ( ! $order_id || is_wp_error( $order_id ) ) {
-				learn_press_add_message( __( 'Checkout. Create order failed!', 'learnpress' ) );
+				learn_press_add_message( __( 'Unable to checkout. Order creation failed.', 'learnpress' ) );
 			}
 			$wpdb->query( 'COMMIT' );
 
@@ -402,7 +402,7 @@ class LP_Checkout {
 	public function validate_fields( $validate, $field, $checkout ) {
 		if ( $field['name'] == 'user_login' && empty( $this->user_login ) ) {
 			$validate = false;
-			learn_press_add_message( __( 'Please enter user login', 'learnpress' ) );
+			learn_press_add_message( __( 'Please enter username.', 'learnpress' ) );
 		}
 		if ( $field['name'] == 'user_password' && empty( $this->user_pass ) ) {
 			$validate = false;
@@ -528,7 +528,7 @@ class LP_Checkout {
 
 			// There is no course in cart
 			if ( $cart->is_empty() ) {
-				throw new Exception( __( 'Your cart currently is empty.', 'learnpress' ) );
+				throw new Exception( __( 'Your cart is currently empty.', 'learnpress' ) );
 			}
 
 //			if ( ! is_user_logged_in() && isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {

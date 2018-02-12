@@ -34,7 +34,7 @@ learn_press_admin_view( 'course/modal-choose-items' );
                 <div class="line-lg"></div>
                 <div class="line-lgx"></div>
 
-                <div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to keep editing curriculum.', 'learnpress' ); ?></div>
+                <div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to continue editing curriculum.', 'learnpress' ); ?></div>
             </div>
         </div>
     </div>

@@ -74,7 +74,7 @@ if ( 0 != $post->ID ) {
                             <input type="checkbox" name="trigger-order-action" id="trigger-order-action" value="yes"/>
 							<?php _e( 'Trigger order status action', 'learnpress' ); ?>
                         </label>
-                        <p class="description"><?php esc_attr_e( 'Check this option to force an action to be triggered. Normally, an action only is triggered after changing to an another action.', 'learnpress' ); ?></p>
+                        <p class="description"><?php esc_attr_e( 'Check this option to force an action to be triggered. Normally, an action is triggered only after the order status was changed.', 'learnpress' ); ?></p>
                     </div>
                     <div class="misc-pub-section">
                         <label>

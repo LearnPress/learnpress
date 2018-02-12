@@ -46,7 +46,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		if ( $settings ) {
 			LP_Meta_Box_Helper::render_fields( $settings );
 		} else {
-			echo __( 'There is no settings.', 'learnpress' );
+			echo __( 'No setting available.', 'learnpress' );
 		}
 	}
 

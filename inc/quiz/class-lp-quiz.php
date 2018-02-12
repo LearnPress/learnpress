@@ -450,8 +450,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 					'message' => __( 'Are you sure you want to retake this quiz?', 'learnpress' )
 				),
 				'quiz_time_is_over'   => array(
-					'title'   => __( 'Time out!', 'learnpress' ),
-					'message' => __( 'The time is over! Your quiz will automate come to finish', 'learnpress' )
+					'title'   => __( 'Time\'s up!', 'learnpress' ),
+					'message' => __( 'The time is up! Your quiz will automate come to finish', 'learnpress' )
 				),
 				'finished_quiz'       => __( 'Congrats! You have finished this quiz', 'learnpress' ),
 				'retaken_quiz'        => __( 'Congrats! You have re-taken this quiz. Please wait a moment and the page will reload', 'learnpress' )
@@ -499,7 +499,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			if ( is_callable( $callback ) ) {
 				return call_user_func_array( $callback, $args );
 			} else {
-				throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $feature ) );
+				throw new Exception( sprintf( __( 'The function %s doesn\'t exist', 'learnpress' ), $feature ) );
 			}
 		}
 

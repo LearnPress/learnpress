@@ -11,9 +11,9 @@ defined( 'ABSPATH' ) or die();
 <div class="card">
     <h2><?php _e( 'LearnPress hard cache', 'learnpress' ); ?></h2>
     <p><?php _e( 'Hard cache is build-in tool of LearnPress for caching of static content such as course, lesson, quiz.', 'learnpress' ); ?></p>
-    <p><?php _e( 'When cache is enabled, the content will be cached when course is accessed in the first time.', 'learnpress' ); ?></p>
-    <p><?php _e( 'And it will not change for all accessing later until the cache is cleared.', 'learnpress' ); ?></p>
-    <p><?php _e( 'If the content is not changed after updating course, click button below to flush the cache for applying changes.', 'learnpress' ); ?></p>
+    <p><?php _e( 'When caching is enabled, the content will be cached when course is accessed in the first time.', 'learnpress' ); ?></p>
+    <p><?php _e( 'And it will not change in all later accesses until the cache is cleared.', 'learnpress' ); ?></p>
+    <p><?php _e( 'If the content is not changed after updating course, click the button below to flush the cache and apply changes.', 'learnpress' ); ?></p>
 
     <label>
         <input type="checkbox" name="enable_hard_cache"

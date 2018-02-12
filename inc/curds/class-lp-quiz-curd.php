@@ -26,7 +26,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 */
 		public function __construct() {
 			$this->_error_messages = array(
-				'QUIZ_NOT_EXISTS' => __( 'Quiz does not exists.', 'learnpress' )
+				'QUIZ_NOT_EXISTS' => __( 'Quiz does not exist.', 'learnpress' )
 			);
 		}
 
@@ -158,7 +158,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			$new_quiz_id = learn_press_duplicate_post( $quiz_id, $args, true );
 
 			if ( ! $new_quiz_id || is_wp_error( $new_quiz_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Duplicate quiz failed!</p>', 'learnpress' ) );
+				return new WP_Error( __( '<p>Sorry! Failed to duplicate quiz!</p>', 'learnpress' ) );
 			} else {
 
 				$quiz      = LP_Quiz::get_quiz( $quiz_id );

@@ -73,7 +73,7 @@ class LP_Forms_Handler {
 
 			if ( ( 'bat_email' === $name ) && $validate ) {
 				if ( ! $validate = get_user_by( 'email', $value ) ) {
-					throw new Exception( __( 'Your email does not exists!', 'learnpress' ) );
+					throw new Exception( __( 'Your email does not exist!', 'learnpress' ) );
 				}
 			}
 		}
@@ -150,7 +150,7 @@ class LP_Forms_Handler {
 		$result = apply_filters( 'learn-press/login-request-result', $result );
 
 		if ( $result['result'] === 'success' ) {
-			$message             = __( 'Login successful.', 'learnpress' );
+			$message             = __( 'Login successfully.', 'learnpress' );
 			$result['message'][] = learn_press_get_message( $message, 'success' );
 
 			learn_press_add_message( $message, 'success' );
@@ -236,7 +236,7 @@ class LP_Forms_Handler {
 		$result = apply_filters( 'learn-press/register-request-result', $result );
 
 		if ( $result['result'] === 'success' ) {
-			$message             = __( 'Register successful.', 'learnpress' );
+			$message             = __( 'Register successfully.', 'learnpress' );
 			$result['message'][] = learn_press_get_message( $message, 'success' );
 
 			learn_press_add_message( $message, 'success' );
@@ -263,11 +263,11 @@ class LP_Forms_Handler {
 		if ( $validate && $name === 'reg_password' ) {
 			try {
 				if ( strlen( $value ) < 6 ) {
-					throw new Exception( __( 'Password is to short!', 'learnpress' ), 100 );
+					throw new Exception( __( 'Password is too short!', 'learnpress' ), 100 );
 				}
 
 				if ( preg_match( '#\s+#', $value ) ) {
-					throw new Exception( __( 'Password can not have a spacing!', 'learnpress' ), 110 );
+					throw new Exception( __( 'Password can not have spacing!', 'learnpress' ), 110 );
 				}
 
 				if ( ! preg_match( "#[a-zA-Z]+#", $value ) ) {
@@ -275,7 +275,7 @@ class LP_Forms_Handler {
 				}
 
 				if ( ! preg_match( "#[A-Z]+#", $value ) ) {
-					throw new Exception( __( 'Password must include at least one capitalize letter!', 'learnpress' ), 125 );
+					throw new Exception( __( 'Password must include at least one capitalized letter!', 'learnpress' ), 125 );
 				}
 
 				if ( ! preg_match( "#[0-9]+#", $value ) ) {
@@ -283,7 +283,7 @@ class LP_Forms_Handler {
 				}
 
 				if ( ! preg_match( '#[~!@\#$%^&*()]#', $value ) ) {
-					throw new Exception( __( 'Password must include at least one character ~!@#$%^&*() !', 'learnpress' ), 125 );
+					throw new Exception( __( 'Password must include at least one of these characters ~!@#$%^&*() !', 'learnpress' ), 125 );
 				}
 			}
 			catch ( Exception $ex ) {

@@ -24,7 +24,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function __construct() {
 			$this->_error_messages = array(
-				'COURSE_NOT_EXISTS' => __( 'Course does not exists.', 'learnpress' )
+				'COURSE_NOT_EXISTS' => __( 'Course does not exist.', 'learnpress' )
 			);
 		}
 
@@ -111,13 +111,13 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			// ensure that user can create course
 			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
+				return new WP_Error( __( '<p>Sorry! You don\'t have permission to duplicate this course</p>', 'learnpress' ) );
 			}
 			// duplicate course
 			$new_course_id = learn_press_duplicate_post( $course_id, $args );
 
 			if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
+				return new WP_Error( __( '<p>Sorry! Failed to duplicate course!</p>', 'learnpress' ) );
 			} else {
 
 				// original course section curd

@@ -82,7 +82,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 <div class="line-lg"></div>
                 <div class="line-lgx"></div>
 
-                <div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to keep editing quiz questions.', 'learnpress' ); ?></div>
+                <div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to continue editing quiz questions.', 'learnpress' ); ?></div>
             </div>
         </div>
     </div>

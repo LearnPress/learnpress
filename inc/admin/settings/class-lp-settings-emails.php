@@ -147,7 +147,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'id'      => 'emails_general[footer_text]',
 					'default' => __( 'LearnPress', 'learnpress' ),
 					'type'    => 'textarea',
-					'desc'    => __( 'The text display in the bottom of email.', 'learnpress' )
+					'desc'    => __( 'The texts display in the bottom of email.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Emails', 'learnpress' ),

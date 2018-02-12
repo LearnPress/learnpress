@@ -14,7 +14,7 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
 ?>
 <div class="card">
     <h2><?php _e( 'Install Sample Data', 'learnpress' ); ?></h2>
-    <p><?php _e( 'Create a <strong>Sample course</strong> with lessons and quizzes. The content will fill with <strong>Lorem</strong> text.', 'learnpress' ); ?></p>
+    <p><?php _e( 'Create a <strong>Sample course</strong> with lessons and quizzes. The content will be filled with <strong>Lorem</strong> text.', 'learnpress' ); ?></p>
     <fieldset class="lp-install-sample-data-options hide-if-js">
         <legend><?php esc_html_e( 'Options', 'learnpress' ); ?></legend>
         <ul>

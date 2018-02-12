@@ -26,9 +26,9 @@ defined( 'ABSPATH' ) || exit();
 		<?php $message = __( 'LearnPress <strong>Checkout</strong> page is not set up. ', 'learnpress' );
 
 		if ( $user->is_instructor() ) {
-			$message .= __( 'Please contact to administrator for setting up this page.', 'learnpress' );
+			$message .= __( 'Please contact administrator for setting up this page.', 'learnpress' );
 		} else {
-			$message .= sprintf( __( 'Please <a href="%s" target="_blank">setup</a> it so user can purchase a course.', 'learnpress' ), admin_url( 'admin.php?page=learn-press-settings&tab=checkout' ) );
+			$message .= sprintf( __( 'Please <a href=\"%s\" target=\"_blank\">setup</a> it so users can purchase courses.', 'learnpress' ), admin_url( 'admin.php?page=learn-press-settings&tab=checkout' ) );
 		} ?>
 
 		<?php learn_press_display_message( $message, 'error' ); ?>

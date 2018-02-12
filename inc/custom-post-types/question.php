@@ -297,7 +297,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'name' => __( 'Question Hint', 'learnpress' ),
 						'id'   => '_lp_hint',
 						'type' => 'textarea',
-						'desc' => __( 'Instruction for user to select the right answer. The text will be shown when user clicking \'Hint\' button.', 'learnpress' ),
+						'desc' => __( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ),
 						'std'  => null
 					)
 				)

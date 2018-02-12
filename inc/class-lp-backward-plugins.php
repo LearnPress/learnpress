@@ -37,7 +37,7 @@ class LP_Backward_Addons {
 		?>
         <div class="notice notice-warning">
             <p><?php echo sprintf(
-					__( 'There are some addons too old and maybe crash with <strong>LearnPress</strong> %s have to deactivated. Please upgrade them to newest version to ensure your system work properly. They are listed below:', 'learnpress' ),
+					__( 'There are some add-ons had gone outdated and might conflict with <strong>LearnPress</strong> that need to be deactivated. Please upgrade them to the newest version to ensure stability and performance of your site.', 'learnpress' ),
 					LEARNPRESS_VERSION
 				); ?></p>
             <p><?php echo '<strong>' . join( '</strong>, <strong>', $plugin_names ) . '</strong>'; ?>.</p>

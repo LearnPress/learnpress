@@ -594,7 +594,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					if ( ! $quiz_id ) {
-						$result = new WP_Error( __( 'Create quiz fail.', 'learnpress' ) );
+						$result = new WP_Error( __( 'Quiz creation failed.', 'learnpress' ) );
 						break;
 					}
 
@@ -895,7 +895,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 
 					if ( ! $quiz_id ) {
-						$result = new WP_Error( __( 'Create quiz fail.', 'learnpress' ) );
+						$result = new WP_Error( __( 'Quiz creation failed.', 'learnpress' ) );
 						break;
 					}
 
@@ -940,7 +940,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$post_type = get_post_type( $args['id'] );
 
 			if ( ! $args['id'] ) {
-				LP_Admin_Notice::add_redirect( new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) ), 'error' );
+				LP_Admin_Notice::add_redirect( new WP_Error( __( '<p>Ops! ID not found</p>', 'learnpress' ) ), 'error' );
 			} else {
 
 				$new_item_id = '';
@@ -1204,7 +1204,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function remove_items_from_order() {
 			// ensure that user has permission
 			if ( ! current_user_can( 'edit_lp_orders' ) ) {
-				die( __( 'Permission denied', 'learnpress' ) );
+				die( __( 'Access denied', 'learnpress' ) );
 			}
 
 			// verify nonce
@@ -1216,7 +1216,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
 			if ( ! is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
-				die( __( 'Order invalid', 'learnpress' ) );
+				die( __( 'Invalid order', 'learnpress' ) );
 			}
 
 			// validate item
@@ -1262,7 +1262,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
 			if ( ! is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
-				die( __( 'Order invalid', 'learnpress' ) );
+				die( __( 'Invalid order', 'learnpress' ) );
 			}
 
 			// validate item
@@ -1452,7 +1452,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
 					$response['html']      .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
 				} else {
-					$response['error'] = __( 'Error! Create page failed. Please try again!', 'learnpress' );
+					$response['error'] = __( 'Error! Page creation failed. Please try again.', 'learnpress' );
 				}
 			} else {
 				$response['error'] = __( 'Empty page name!', 'learnpress' );
@@ -1489,7 +1489,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 			LP()->flush_rewrite_rules();
 
-			echo __( 'The required pages are created successful.', 'learnpress' );
+			echo __( 'The required pages are successfully created.', 'learnpress' );
 			die();
 		}
 
@@ -1499,7 +1499,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function install_sample_data() {
 			$yes            = ! empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
 			$response       = array( 'result' => 'fail' );
-			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Try again!', 'learnpress' ) );
+			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Please try again.', 'learnpress' ) );
 			$dismiss_button = sprintf( '<a href="" class="button disabled no" data-action="no">%s</a>', __( 'Cancel', 'learnpress' ) );
 			$buttons        = sprintf( '<p>%s %s</p>', $retry_button, $dismiss_button );
 			if ( 'no' == $yes ) {
@@ -1525,15 +1525,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 							);
 							$response['url']     = $url = $url . '&' . http_build_query( $postdata ) . "\n";
 							$response['result']  = 'success';
-							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>', __( 'Import sample data successes.', 'learnpress' ), __( 'View courses', 'learnpress' ) );
+							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>', __( 'Successfully import sample data.', 'learnpress' ), __( 'View courses', 'learnpress' ) );
 						}
 					}
 					if ( $response['result'] == 'fail' ) {
-						$response['message'] = sprintf( '<p>%s</p>%s', __( 'Import sample data failed. Please try again!.', 'learnpress' ), $buttons );
+						$response['message'] = sprintf( '<p>%s</p>%s', __( 'Failed to import sample data. Please try again.', 'learnpress' ), $buttons );
 					}
 				} else {
 					$response['result']  = 'fail';
-					$response['message'] = sprintf( '<p>%s</p>', __( 'Unknown error when installing/activating Import/Export addon. Please try again!', 'learnpress' ) ) . $buttons;
+					$response['message'] = sprintf( '<p>%s</p>', __( 'Unknown error when installing/activating Import/Export add-on. Please try again!', 'learnpress' ) ) . $buttons;
 				}
 			}
 			learn_press_send_json( $response );
@@ -1549,7 +1549,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$response = array( 'addons' => array() );
 
 			if ( ! current_user_can( 'activate_plugins' ) ) {
-				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
+				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.', 'learnpress' );
 			} else {
 
 				$add_ons = $learn_press_add_ons['bundle_activate'];
@@ -1570,7 +1570,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$response = array();
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
 			if ( ! current_user_can( 'activate_plugins' ) ) {
-				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
+				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.', 'learnpress' );
 			} else {
 				$slug              = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : null;
 				$response[ $slug ] = learn_press_install_and_active_add_on( $slug );
@@ -1590,7 +1590,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$t        = ! empty( $_REQUEST['t'] ) ? $_REQUEST['t'] : '';
 			$response = array();
 			if ( ! current_user_can( 'activate_plugins' ) ) {
-				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
+				$response['error'] = __( 'You do not have the permission to deactivate plugins on this site.', 'learnpress' );
 			}
 			if ( $plugin && $t ) {
 				if ( $t == 'activate' ) {
@@ -1703,7 +1703,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				unset( $result['file'] );
 			} else {
 				$result = array(
-					'error' => __( 'Upload profile avatar error.', 'learnpress' )
+					'error' => __( 'Profile picture upload failed', 'learnpress' )
 				);
 			}
 			learn_press_send_json( $result );

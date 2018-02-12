@@ -75,7 +75,7 @@ learn_press_admin_view( 'course/pagination' );
 
                 <ul class="list-items">
                     <template v-if="!items.length">
-                        <div><?php esc_html_e( 'No any item.', 'learnpress' ); ?></div>
+                        <div><?php esc_html_e( 'No item found.', 'learnpress' ); ?></div>
                     </template>
 
                     <template v-for="item in items">

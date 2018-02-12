@@ -25,7 +25,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function __construct() {
 			$this->_error_messages = array(
-				'QUESTION_NOT_EXISTS' => __( 'Question does not exists.', 'learnpress' )
+				'QUESTION_NOT_EXISTS' => __( 'Question does not exist.', 'learnpress' )
 			);
 		}
 
@@ -166,7 +166,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			// ensure that user can create question
 			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this question</p>', 'learnpress' ) );
+				return new WP_Error( __( '<p>Sorry! You don\'t have permission to duplicate this question</p>', 'learnpress' ) );
 			}
 
 			// origin question
@@ -176,7 +176,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$new_question_id = learn_press_duplicate_post( $question_id, array( 'post_status' => 'publish' ) );
 
 			if ( ! $new_question_id || is_wp_error( $new_question_id ) ) {
-				return new WP_Error( __( '<p>Sorry! Duplicate question failed!</p>', 'learnpress' ) );
+				return new WP_Error( __( '<p>Sorry! Failed to duplicate question!</p>', 'learnpress' ) );
 			} else {
 
 				// init new question

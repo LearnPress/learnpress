@@ -292,7 +292,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function error() {
 			?>
             <div class="error">
-                <p><?php printf( __( 'LearnPress plugin basename must be equal with <strong>learnpress/learnpress.php</strong> (case sensitive) to ensure all functions work correct! (currently is <strong>%s</strong>)', 'learnpress' ), $this->plugin_basename() ); ?></p>
+                <p><?php printf( __( 'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)', 'learnpress' ), $this->plugin_basename() ); ?></p>
             </div>
 			<?php
 		}

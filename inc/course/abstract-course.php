@@ -780,7 +780,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( is_callable( $callback ) ) {
 				return call_user_func_array( $callback, $args );
 			} else {
-				throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $tag ) );
+				throw new Exception( sprintf( __( 'The function %s doesn\'t exist', 'learnpress' ), $tag ) );
 			}
 		}
 
@@ -798,7 +798,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( is_callable( $callback ) ) {
 				return call_user_func_array( $callback, $args );
 			} else {
-				throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $tag ) );
+				throw new Exception( sprintf( __( 'The function %s doesn\'t exist', 'learnpress' ), $tag ) );
 			}
 		}
 
@@ -1629,7 +1629,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				if ( $start_time + $duration > $now ) {
 					$remain = $start_time + $duration - $now;
 					$remain = learn_press_seconds_to_weeks( $remain );
-					$html   = sprintf( __( 'This course will end within %s next', 'learnpress' ), $remain );
+					$html   = sprintf( __( 'This course will end within next %s', 'learnpress' ), $remain );
 				}
 			}
 

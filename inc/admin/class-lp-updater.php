@@ -56,7 +56,7 @@ class LP_Updater {
 		if ( ! learn_press_message_count() ) {
 			LP_Debug::commitTransaction();
 
-			learn_press_display_message( __( 'Your database updated successful!', 'learnpress' ) );
+			learn_press_display_message( __( 'Successfully updated your database.', 'learnpress' ) );
 		} else {
 			LP_Debug::rollbackTransaction();
 

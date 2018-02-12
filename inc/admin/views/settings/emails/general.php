@@ -47,7 +47,7 @@ $settings = LP()->settings;
 		<th scope="row"><label for="learn-press-emails-general-footer-text"><?php _e( 'Footer text', 'learnpress' ); ?></label></th>
 		<td>
 			<textarea id="learn-press-emails-general-footer-text" name="<?php echo $this->get_field_name( 'emails_general[footer_text]');?>" style="height: 100px; width: 100%;"><?php echo $settings->get( 'emails_general.footer_text' ); ?></textarea>
-			<p class="description"><?php _e( 'The text display in the bottom of email', 'learnpress' );?></p>
+			<p class="description"><?php _e( 'The texts display in the bottom of email', 'learnpress' );?></p>
 		</td>
 	</tr>
 	<?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>

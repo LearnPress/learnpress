@@ -341,7 +341,7 @@ function learn_press_user_become_teacher_registration_form() {
     <p>
         <label for="become_teacher">
             <input type="checkbox" name="become_teacher" id="become_teacher">
-			<?php _e( 'Want to be an instructor?', 'learnpress' ) ?>
+			<?php _e( 'Want to become an instructor?', 'learnpress' ) ?>
         </label>
     </p>
 	<?php
@@ -861,7 +861,7 @@ function learn_press_user_update_user_info() {
 					}
 				}
 
-				$_message = $uploaded ? __( 'Image is uploaded success', 'learnpress' ) : __( 'Error on upload image', 'learnpress' );
+				$_message = $uploaded ? __( 'Image is uploaded success', 'learnpress' ) : __( 'Error in uploading image', 'learnpress' );
 				$message  = sprintf( $message_template, 'success', $_message );
 				$return   = array(
 					'return'  => $uploaded,
@@ -905,7 +905,7 @@ function learn_press_user_update_user_info() {
 				$res            = array();
 				$res['message'] = '';
 				if ( is_wp_error( $saved ) ) {
-					$_message               = __( 'Error on crop user picture profile ', 'learnpress' );
+					$_message               = __( 'Error in cropping user picture profile', 'learnpress' );
 					$message                = sprintf( $message_template, 'error', $_message );
 					$res['return']          = false;
 					$res['message']         = $message;
@@ -1037,7 +1037,7 @@ function learn_press_user_update_user_info() {
 		update_user_option( $user->get_id(), '_lp_profile_picture_type', $profile_picture_type, true );
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
-			$_message               = __( 'Your change is saved', 'learnpress' );
+			$_message               = __( 'Your changes are saved', 'learnpress' );
 			$message                = sprintf( $message_template, 'success', $_message );
 			$return['return']       = true;
 			$return['message']      = $message;
@@ -1045,7 +1045,7 @@ function learn_press_user_update_user_info() {
 			learn_press_send_json( $return );
 			exit();
 		} else {
-			$_message               = __( 'Error on update your profile info', 'learnpress' );
+			$_message               = __( 'Error in update your profile info', 'learnpress' );
 			$message                = sprintf( $message_template, 'error', $_message );
 			$return['return']       = false;
 			$return['message']      = $message;

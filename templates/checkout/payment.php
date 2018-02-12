@@ -31,7 +31,7 @@ $count_gateways               = $available_gateways ? sizeof( $available_gateway
 
 			<?php $show_button = false; ?>
 
-			<?php if ( $message = apply_filters( 'learn_press_no_available_payment_methods_message', __( 'No payment methods is available.', 'learnpress' ) ) ) { ?>
+			<?php if ( $message = apply_filters( 'learn_press_no_available_payment_methods_message', __( 'No payment method is available.', 'learnpress' ) ) ) { ?>
 				<?php learn_press_display_message( $message, 'error' ); ?>
 			<?php } ?>
 

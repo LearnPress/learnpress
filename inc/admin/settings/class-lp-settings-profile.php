@@ -72,7 +72,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'default'     => '',
 							'type'        => 'text',
 							'placeholder' => get_post_field( 'post_title', learn_press_get_page_id( 'profile' ) ),
-							'desc'        => __( 'If empty, text is name of page used for profile.', 'learnpress' ),
+							'desc'        => __( 'If empty, please enter the name of the page used for profile.', 'learnpress' ),
 							'visibility'  => array(
 								'state'       => 'show',
 								'conditional' => array(
@@ -90,8 +90,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'default'    => 'yes',
 							'type'       => 'select',
 							'options'    => array(
-								'_self'  => __( 'Open in same window', 'learnpress' ),
-								'_blank' => __( 'Open in new window', 'learnpress' )
+								'_self'  => __( 'Open in same the window', 'learnpress' ),
+								'_blank' => __( 'Open in a new window', 'learnpress' )
 							),
 							'visibility' => array(
 								'state'       => 'show',
@@ -274,7 +274,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'         => 'profile_publicity[courses]',
 							'default'    => 'no',
 							'type'       => 'yes-no',
-							'desc'       => __( 'Public user profile courses.', 'learnpress' ) . learn_press_quick_tip( __( 'Enable user turn on/off option for sharing their profile courses.', 'learnpress' ), false ),
+							'desc'       => __( 'Public user profile courses.', 'learnpress' ) . learn_press_quick_tip( __( 'Allow user to turn on/off sharing profile course option', 'learnpress' ), false ),
 							'visibility' => array(
 								'state'       => 'show',
 								'conditional' => array(
@@ -291,7 +291,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'id'         => 'profile_publicity[quizzes]',
 							'default'    => 'no',
 							'type'       => 'yes-no',
-							'desc'       => __( 'Public user profile quizzes.', 'learnpress' ) . learn_press_quick_tip( __( 'Enable user turn on/off option for sharing their profile quizzes.', 'learnpress' ), false ),
+							'desc'       => __( 'Public user profile quizzes.', 'learnpress' ) . learn_press_quick_tip( __( 'Allow user to turn on/off sharing profile quizzes option', 'learnpress' ), false ),
 							'visibility' => array(
 								'state'       => 'show',
 								'conditional' => array(
