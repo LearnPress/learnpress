@@ -24,7 +24,7 @@ if ( !class_exists( 'LP_Statistic_Status' ) ) :
 			?>
 			<ul class="learnpress-statistic-status">
 				<li class="full-width">
-					<a href="#" class="total-raised">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=learn-press-statistics') )?>" class="total-raised">
                             <span>
                                 <?php echo _learn_press_total_raised() ?>
 								<?php _e( 'Total Raised', 'learnpress' ); ?>

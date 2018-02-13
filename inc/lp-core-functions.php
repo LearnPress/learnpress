@@ -1611,6 +1611,13 @@ add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
  */
 function learn_press_send_json( $data ) {
 	echo '<-- LP_AJAX_START -->';
+	/**
+	 * fixed bug: can't buy course with PayPal 
+	 */
+	@header('HTTP/1.0 200 OK'); 
+	/**
+	 *  end 
+	 **/
 	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 	echo wp_json_encode( $data );
 	echo '<-- LP_AJAX_END -->';
