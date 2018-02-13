@@ -198,6 +198,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 2.2.1 =
++ Fixed bug: external link for free course not working.
++ Update view of widget LearnPress status in dashboard page.
 
 = 2.2 =
 + Compatible with WordPress 4.9.4
