@@ -3,7 +3,11 @@
  * Template for display content of lesson
  *
  * @author  ThimPress
+<<<<<<< HEAD
  * @version 2.1.9.2
+=======
+ * @version 2.1.9
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
  */
 global $lp_query, $wp_query;
 $user          = learn_press_get_current_user();
@@ -21,8 +25,12 @@ if ( $user_data && in_array( 'administrator', $user_data->roles ) ) {
 $block_option = get_post_meta( $course->id, '_lp_block_lesson_content', true );
 $duration     = $course->get_user_duration_html( $user->id, true );
 
+<<<<<<< HEAD
 
 if ( ! $admin && $course->is_expired() <= 0 && ( $block_option == 'yes' ) && ( get_post_meta( $item->id, '_lp_preview', true ) !== 'yes' ) ) {
+=======
+if ( ! $admin && $course->is_expired() && ( $block_option == 'yes' ) && ( get_post_meta( $item->id, '_lp_preview', true ) !== 'yes' ) ) {
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	learn_press_get_template( 'content-lesson/block-content.php' );
 } else {
 	?>

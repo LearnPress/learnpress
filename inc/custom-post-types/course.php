@@ -34,7 +34,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 //				->add_map_method( 'save', 'before_save_curriculum', false )
 				->add_map_method( 'before_delete', 'delete_course_sections' );
 
+<<<<<<< HEAD
 			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 20, 3 );
+=======
+			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 
 			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 0 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
@@ -939,7 +943,20 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if(!is_user_logged_in()){
 				return;
 			}
+<<<<<<< HEAD
 
+=======
+			# add reset to log
+			if( learn_press_debug_enable() ) {
+				$current_user 	= learn_press_get_current_user();
+				$time 			= current_time('mysql');
+				$request 		= print_r($_REQUEST, true);
+				$new_log 		= "\nUser:{$current_user->user->user_login}\nTime:{$time}\nRequest:{$request}\n - - - - - - - - - - - - - - \n";
+				$log = get_post_meta($post->ID, 'learn-press-reset-sections', true);
+				$log = $new_log.$log;
+				update_post_meta( $post->ID, 'learn-press-reset-sections', $log );
+			}
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			# end add log
 			$wpdb->query(
 				$wpdb->prepare( "
@@ -1179,28 +1196,42 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
+<<<<<<< HEAD
 		public function before_save_curriculum( $post_id = null, $current_post = null, $update = null ) {
 
 			global $post, $pagenow;
 
 
+=======
+		public function before_save_curriculum() {
+
+			global $post, $pagenow;
+
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			// Ensure that we are editing course in admin side
 			
 			if ( ( $pagenow != 'post.php' ) || ( get_post_type() != LP_COURSE_CPT ) ) {
 				return;
 			}
+<<<<<<< HEAD
 			
 			if( LP_COURSE_CPT !== $current_post->post_type ){
 				return;
 			}
 
 			
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			$preview = filter_input( INPUT_POST, 'wp-preview', FILTER_SANITIZE_STRING );
 
 			if( 'dopreview' == $preview ) {
 				return;
 			}
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 

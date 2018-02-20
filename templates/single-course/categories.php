@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /**
  * Template for displaying the categories of a course
@@ -12,3 +13,19 @@ if ( $term_list ) {
 		$term_list
 	);
 }
+=======
+<?php
+/**
+ * Template for displaying the categories of a course
+ */
+
+defined( 'ABSPATH' ) || exit();
+
+$term_list = get_the_term_list( get_the_ID(), 'course_category', '', ', ', '' );
+if ( $term_list ) {
+	printf(
+		'<span class="cat-links">%s</span>',
+		$term_list
+	);
+}
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73

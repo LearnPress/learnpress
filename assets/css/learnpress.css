@@ -718,7 +718,11 @@ body.course-has-popup {
   left: -350px;
   right: 0;
   height: 60px;
+<<<<<<< HEAD
   background: #ffcd03;
+=======
+  background: #cc540d;
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
   border-bottom: 1px solid #ab4a10;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-menu {
@@ -932,10 +936,13 @@ body.course-has-popup {
 .button-finish-quiz {
   float: right;
 }
+<<<<<<< HEAD
 .button-finish-quiz-hide {
   float: right;
 }
 
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 .learnpress form.purchase-course {
   margin-bottom: 20px;
 }

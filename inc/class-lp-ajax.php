@@ -408,9 +408,13 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					do_action( 'learn_press_user_request_complete_item', $_REQUEST );
 				}
 			}
+<<<<<<< HEAD
 			wp_cache_flush();
 			$redirect_url = add_query_arg(array('r'=>time()),learn_press_get_current_url());
 			wp_redirect( $redirect_url );
+=======
+			wp_redirect( learn_press_get_current_url() );
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			die();
 		}
 

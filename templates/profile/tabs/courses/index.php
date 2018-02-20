@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /**
  * @author  ThimPress
@@ -14,3 +15,21 @@ if ( !defined( 'ABSPATH' ) ) {
 	<?php do_action( 'learn_press_courses_loop_item_title' ); ?>
 
 </a>
+=======
+<?php
+/**
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 2.0
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+} ?>
+
+<a href="<?php the_permalink(); ?>" class="course-title">
+
+	<?php do_action( 'learn_press_courses_loop_item_title' ); ?>
+
+</a>
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73

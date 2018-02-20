@@ -122,8 +122,11 @@ class LP_Cache {
 	 * @var string
 	 */
 	protected static $_quiz_grade = 'quiz-grade';
+<<<<<<< HEAD
 	
 	protected static $_course_history_id = 'course_history_id';
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 
 	/**
 	 * Set data to cache
@@ -647,6 +650,7 @@ class LP_Cache {
 		}
 		return self::_set_cache( self::$_quiz_grade, $key_or_value, $value );
 	}
+<<<<<<< HEAD
 	
 	
 	
@@ -661,6 +665,8 @@ class LP_Cache {
 	    }
 	    return self::_set_cache( self::$_course_history_id, $key_or_value, $value );
 	}
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 
 	/**
 	 * Flush cache by sections or LP group

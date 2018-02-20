@@ -36,6 +36,7 @@ class LP_Settings_General extends LP_Settings_Base {
 					'type'    => 'checkbox'
 				),
 				array(
+<<<<<<< HEAD
 					'title'  => __( 'Returning Customer Discount', 'learnpress' ),
 					'id'    => $this->get_field_name('returning_customer_discount'),
 					'type'  => 'number',
@@ -45,6 +46,8 @@ class LP_Settings_General extends LP_Settings_Base {
 					'std'   => 0
 				),
 				array(
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 					'title'   => __( 'Currency', 'learnpress' ),
 					'id'      => $this->get_field_name( 'currency' ),
 					'default' => 'USD',

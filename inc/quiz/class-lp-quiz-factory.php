@@ -23,7 +23,11 @@ class LP_Quiz_Factory {
 			'finish-quiz'       => 'finish_quiz',
 			'retake-quiz'       => 'retake_quiz',
 			'check-question'    => 'check_question',
+<<<<<<< HEAD
 			//'fetch-question'    => 'fetch_question',
+=======
+			'fetch-question'    => 'fetch_question',
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			'get-question-hint' => 'get_question_hint'
 		);
 		foreach ( $actions as $k => $v ) {
@@ -31,8 +35,11 @@ class LP_Quiz_Factory {
 		}
 		add_action( 'learn_press_after_single_quiz_summary', array( __CLASS__, 'output_quiz_params' ) );
 		add_action( 'delete_post', array( __CLASS__, 'delete_quiz' ), 10, 2 );
+<<<<<<< HEAD
 
 		self::fetch_question();
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	}
 
 	public static function delete_quiz( $post_id, $force=false ) {
@@ -48,8 +55,11 @@ class LP_Quiz_Factory {
 			'id'                => $quiz->id,
 			'show_hint'         => $quiz->show_hint,
 			'show_check_answer' => $quiz->show_check_answer,
+<<<<<<< HEAD
 			'show_submit_hide_next' => $quiz->show_submit_hide_next,
 			'hide_finish_until_last' => $quiz->hide_finish_until_last,
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			'duration'          => $quiz->duration,
 			'questions'         => $quiz->questions
 		);
@@ -114,7 +124,11 @@ class LP_Quiz_Factory {
 	 * Start quiz
 	 */
 	public static function start_quiz() {
+<<<<<<< HEAD
 		wp_cache_flush();
+=======
+
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 		self::_verify_nonce( __FUNCTION__ );
 
 		$course_id = learn_press_get_request( 'course_id' );
@@ -320,7 +334,10 @@ class LP_Quiz_Factory {
 	}
 
 	public static function fetch_question() {
+<<<<<<< HEAD
 		wp_cache_flush();
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 		add_filter( 'learn_press_user_current_quiz_question', array( __CLASS__, '_current_question' ), 100, 4 );
 	}
 
@@ -328,7 +345,11 @@ class LP_Quiz_Factory {
 		$user    = learn_press_get_current_user();
 		$history = $user->get_quiz_results( $quiz_id, $course_id, true );
 
+<<<<<<< HEAD
 		if ( !empty( $_REQUEST['lp-action'] ) && $_REQUEST['lp-action'] == 'fetch-question' ) {
+=======
+		if ( !empty( $_REQUEST['lp-ajax'] ) && $_REQUEST['lp-ajax'] == 'fetch-question' ) {
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			$question_id = !empty( $_REQUEST['id'] ) ? $_REQUEST['id'] : $question_id;
 			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $question_id );
 		}

@@ -373,7 +373,10 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
 		$question_ids = array_keys( $questions );
 		$format_ids   = array_fill( 0, sizeof( $question_ids ), '%d' );
 		$prepare_args = array_merge( array( '_lp_type', 'lp_question' ), $question_ids );
+<<<<<<< HEAD
 		# get answers
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 		$query        = $wpdb->prepare( "
 					SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
 					FROM {$wpdb->posts} p
@@ -382,8 +385,12 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
 					RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
 					WHERE qq.quiz_id IN (" . join( ',', $quiz_ids ) . ")
 					ORDER BY id, qq.question_order, answer_order ASC
+<<<<<<< HEAD
 				", '_lp_type' );
 
+=======
+				", $prepare_args );
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 		if ( $answers = $wpdb->get_results( $query ) ) {
 			$question_id = 0;
 			foreach ( $answers as $row ) {
@@ -497,14 +504,19 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = false ) {
 	$force=false;
 	if ( did_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" ) && ! $force ) {
+<<<<<<< HEAD
 		// Fixed issue with quiz status when 2 user do a quiz at the same time
 		// @since 2.1.9.5
 		//return;
+=======
+		return;
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	}
 	global $wpdb;
 	if ( ! $course_id ) {
 		$course_id = get_the_ID();
 	}
+<<<<<<< HEAD
 	$course    = get_post( $course_id );
 	$user      = learn_press_get_user($user_id);
 	$course_history_id = $user->get_course_history_id_force( $course_id );
@@ -514,6 +526,9 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	    return $item_statuses;
 	}
 	
+=======
+	$course   = get_post( $course_id );
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	$item_ids = ! empty( $course->curriculum_items ) ? $course->curriculum_items : array();
 	$item_ids = maybe_unserialize( $item_ids );
 	if ( $item_ids ) {
@@ -548,10 +563,18 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 		", '_quiz_grade', $user_id, $course_id );
 	}
 	$items = $wpdb->get_results( $query );
+<<<<<<< HEAD
 	if($force){
 
 	}
 // 	$item_statuses = LP_Cache::get_item_statuses( false, array() );
+=======
+
+	if($force){
+
+	}
+	$item_statuses = LP_Cache::get_item_statuses( false, array() );
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	$quiz_grades   = LP_Cache::get_quiz_grade( false, array() );
 	foreach ( $item_ids as $id ) {
 		if ( ! array_key_exists( $id, $item_statuses ) || $force ) {
@@ -564,6 +587,7 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	}
 	if ( $items ) {
 		foreach ( $items as $item ) {
+<<<<<<< HEAD
 		    if( $item->parent_id == $course_history_id ){
         			$item_statuses[ $user_id . '-' . $course_id . '-' . $item->item_id ] = learn_press_validate_item_status( $item );
         			if ( ! empty( $item->grade ) ) {
@@ -575,6 +599,17 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 		}
 	}
 	LP_Cache::set_item_statuses( $key, $item_statuses );
+=======
+			$item_statuses[ $user_id . '-' . $course_id . '-' . $item->item_id ] = learn_press_validate_item_status( $item );
+			if ( ! empty( $item->grade ) ) {
+				$quiz_grades[ $user_id . '-' . $course_id . '-' . $item->item_id ] = $item->grade;
+			} else {
+				$quiz_grades[ $user_id . '-' . $course_id . '-' . $item->item_id ] = '';
+			}
+		}
+	}
+	LP_Cache::set_item_statuses( $item_statuses );
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	LP_Cache::set_quiz_grade( $quiz_grades );
 
 	do_action( "learn_press_parse_user_item_statuses", $user_id, $course_id );

@@ -16,13 +16,21 @@ defined( 'ABSPATH' ) || exit();
  * @param $param
  */
 function learn_press_register_web_hook( $key, $param ) {
+<<<<<<< HEAD
 	if ( ! $key ) {
+=======
+	if ( !$key ) {
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 		return;
 	}
 	if ( empty ( $GLOBALS['learn_press']['web_hooks'] ) ) {
 		$GLOBALS['learn_press']['web_hooks'] = array();
 	}
+<<<<<<< HEAD
 	$GLOBALS['learn_press']['web_hooks'][ $key ] = $param;
+=======
+	$GLOBALS['learn_press']['web_hooks'][$key] = $param;
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	do_action( 'learn_press_register_web_hook', $key, $param );
 }
 
@@ -33,7 +41,10 @@ function learn_press_register_web_hook( $key, $param ) {
  */
 function learn_press_get_web_hooks() {
 	$web_hooks = empty( $GLOBALS['learn_press']['web_hooks'] ) ? array() : (array) $GLOBALS['learn_press']['web_hooks'];
+<<<<<<< HEAD
 
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	return apply_filters( 'learn_press_web_hooks', $web_hooks );
 }
 
@@ -46,8 +57,12 @@ function learn_press_get_web_hooks() {
  */
 function learn_press_get_web_hook( $key ) {
 	$web_hooks = learn_press_get_web_hooks();
+<<<<<<< HEAD
 	$web_hook  = empty( $web_hooks[ $key ] ) ? false : $web_hooks[ $key ];
 
+=======
+	$web_hook  = empty( $web_hooks[$key] ) ? false : $web_hooks[$key];
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 	return apply_filters( 'learn_press_web_hook', $web_hook, $key );
 }
 
@@ -58,12 +73,20 @@ function learn_press_process_web_hooks() {
 	$web_hooks           = learn_press_get_web_hooks();
 	$web_hooks_processed = array();
 	foreach ( $web_hooks as $key => $param ) {
+<<<<<<< HEAD
 		if ( ! empty( $_REQUEST[ $param ] ) ) {
+=======
+		if ( !empty( $_REQUEST[$param] ) ) {
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			//$web_hooks_processed           = true;
 			$request_scheme                = is_ssl() ? 'https://' : 'http://';
 			$requested_web_hook_url        = untrailingslashit( $request_scheme . $_SERVER['HTTP_HOST'] ) . $_SERVER['REQUEST_URI'];
 			$parsed_requested_web_hook_url = parse_url( $requested_web_hook_url );
+<<<<<<< HEAD
 			$required_web_hook_url         = add_query_arg( $param, '1', trailingslashit( get_home_url() /* SITE_URL */ ) );
+=======
+			$required_web_hook_url         = add_query_arg( $param, '1', trailingslashit( get_site_url() ) );
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			$parsed_required_web_hook_url  = parse_url( $required_web_hook_url );
 			$web_hook_diff                 = array_diff_assoc( $parsed_requested_web_hook_url, $parsed_required_web_hook_url );
 
@@ -72,7 +95,11 @@ function learn_press_process_web_hooks() {
 			} else {
 
 			}
+<<<<<<< HEAD
 			$web_hooks_processed[ $param ] = $_REQUEST;
+=======
+			$web_hooks_processed[$param] = $_REQUEST;
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			break;
 		}
 	}
@@ -97,7 +124,11 @@ add_action( 'wp_loaded', 'learn_press_process_web_hooks', 999 );
  * Update status of lesson when view at first time
  */
 function learn_press_header_item_only_view_first() {
+<<<<<<< HEAD
 	if ( is_admin() || ! learn_press_is_course() ) {
+=======
+	if ( is_admin() || !learn_press_is_course() ) {
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 		return;
 	}
 	global $wpdb;
@@ -111,8 +142,13 @@ function learn_press_header_item_only_view_first() {
 	if ( $status === 'enrolled' && $item ) {
 
 		// If status is not null that means user has viewed this item
+<<<<<<< HEAD
 		$item_status = learn_press_get_user_item_status_1234( $item->ID, $course->id, $user->id );// $user->get_item_status( $item->ID, $course->id );
 		if ( ! ( '' == $item_status || false == $item_status ) ) {
+=======
+		$item_status = $user->get_item_status( $item->ID, $course->id );
+		if ( !( '' == $item_status || false == $item_status ) ) {
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 			return;
 		}
 		$item_status = 'viewed';
@@ -132,6 +168,7 @@ function learn_press_header_item_only_view_first() {
 			);
 		}
 		// Update cache
+<<<<<<< HEAD
 		$item_statuses                                                    = LP_Cache::get_item_statuses( false, array() );
 		$item_statuses[ $user->id . '-' . $course->id . '-' . $item->ID ] = $item_status;
 		LP_Cache::set_item_statuses( $item_statuses );
@@ -160,6 +197,30 @@ function learn_press_get_user_item_status_1234( $item_id, $course_id, $user_id )
 	}
 
 	return $item_status;
+=======
+		$item_statuses                                                  = LP_Cache::get_item_statuses( false, array() );
+		$item_statuses[$user->id . '-' . $course->id . '-' . $item->ID] = $item_status;
+		LP_Cache::set_item_statuses( $item_statuses );
+
+
+		/* Insert status for lesson */
+		// Consume many queries :(
+		/**if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+		 *
+		 * $result = $wpdb->query( "SELECT * FROM `$wpdb->learnpress_user_items` WHERE `item_id`= $item->ID" );
+		 * if ( $result === 0 ) {
+		 * $query = $wpdb->prepare( "
+		 * INSERT INTO {$wpdb->learnpress_user_items} (`user_id`, `item_id`, `start_time`, `end_time`, `item_type`, `status`, `ref_id`, `ref_type`, `parent_id`)
+		 * VALUES ( $user->ID, $item->ID, %s, %s, %s, %s, $course->ID, %s, $user->ID )
+		 * ", current_time( 'mysql' ), current_time( 'mysql' ), $item->_item->item_type, 'view', $course->post->post_type );
+		 * $wpdb->query( $query );
+		 * }
+		 * }*/
+	}
+
+	// should not flush if we did not do anything
+	// LP_Cache::flush();
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 }
 
 add_action( 'learn_press_print_assets', 'learn_press_header_item_only_view_first' );
