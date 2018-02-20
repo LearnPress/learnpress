@@ -227,13 +227,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'  => 'no'
 							),
 							array(
-								'name' => __( 'Hide Finish Quiz until last Question', 'learnpress' ),
-								'id'   => "{$prefix}hide_finish_until_last",
-								'type' => 'yes_no',
-								'desc' => __( 'hides/disables the finish quiz button until the last question.', 'learnpress' ),
-								'std'  => 'no'
-							),
-							array(
 								'name'    => __( 'Show hint', 'learnpress' ),
 								'id'      => "{$prefix}show_hint",
 								'type'    => 'yes_no',
