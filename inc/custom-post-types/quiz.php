@@ -220,6 +220,20 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'  => 'no'
 							),
 							array(
+								'name' => __( 'Hide next until Submit Clicked', 'learnpress' ),
+								'id'   => "{$prefix}show_submit_hide_next",
+								'type' => 'yes_no',
+								'desc' => __( 'Conditionally shows the correct/incorrect answer message after clicking Submit, hides next button until then', 'learnpress' ),
+								'std'  => 'no'
+							),
+							array(
+								'name' => __( 'Hide Finish Quiz until last Question', 'learnpress' ),
+								'id'   => "{$prefix}hide_finish_until_last",
+								'type' => 'yes_no',
+								'desc' => __( 'hides/disables the finish quiz button until the last question.', 'learnpress' ),
+								'std'  => 'no'
+							),
+							array(
 								'name'    => __( 'Show hint', 'learnpress' ),
 								'id'      => "{$prefix}show_hint",
 								'type'    => 'yes_no',

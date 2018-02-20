@@ -17,6 +17,7 @@ $completed       = $user->get_quiz_status( $quiz->id, $course->id ) == 'complete
 $checked         = $user->has_checked_answer( $this->id, $quiz->id, $course->id );
 $show_result     = !$completed ? $checked : $quiz->show_result == 'yes';
 $course_finished = $user->has_finished_course( $course->id );
+$user_answer_correct = true;
 
 ?>
 <?php if ( $answers = $this->answers ) : ?>
@@ -32,13 +33,14 @@ $course_finished = $user->has_finished_course( $course->id );
 					$answer_class[] = 'answer-true';
 				}
 				if ( $answer['is_true'] == 'yes' && !$this->is_selected_option( $answer, $answered ) ) {
-					//$answer_correct = false;
+					//$answer_correct = true;
 				}
 				if ( $answer['is_true'] != 'yes' && $this->is_selected_option( $answer, $answered ) ) {
 					$answer_correct = false;
 				}
 				if ( !$answer_correct ) {
 					$answer_class[] = 'user-answer-false';
+					$user_answer_correct = false;
 				}else {
 					if ( $answer['is_true'] == 'yes' ) {
 						$answer_class[] = 'answer-true';
@@ -58,8 +60,14 @@ $course_finished = $user->has_finished_course( $course->id );
 
 			</li>
 		<?php endforeach; ?>
-		<?php if ( $checked && $explanation = $this->explanation ): ?>
-			<?php learn_press_get_template( 'content-question/explanation.php', array( 'explanation' => $explanation ) ); ?>
+		<?php if ($checked): ?>
+		<?php if ($user_answer_correct ){
+			$explanation = $this->explanation_correct;
+		} else {
+			$explanation = $this->explanation;
+		}
+	?>
+		<?php learn_press_get_template( 'content-question/explanation.php', array( 'explanation' => $explanation ) ); ?>
 		<?php endif; ?>
 	</ul>
 <?php endif; ?>

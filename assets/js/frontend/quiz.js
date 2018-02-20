@@ -645,14 +645,20 @@
         _checkAnswerCompleted: function (question) {
             this.start();
             this.$('.button-check-answer, .button-hint').hide();
+            this.$('.button-next-question-hide').show();
+            this.model.current().set('checked', true);
             windowTarget.LP.unblockContent();
         },
         updateButtons: function () {
             if (this.model.get('status') === 'started') {
+                this.$('.button-finish-quiz-hide').toggleClass('hide-if-js', !this.model.isLast());
                 this.$('.button-prev-question').toggleClass('hide-if-js', this.model.isFirst());
                 this.$('.button-next-question').toggleClass('hide-if-js', this.model.isLast());
                 var current = this.model.current();
                 if (current) {
+                    if (!this.$('.button-check-answer').is('[disabled=disabled]')){
+                        this.$('.button-next-question-hide').hide();
+                    }
                     this.$('.button-check-answer').toggleClass('hide-if-js', current.get('hasCheckAnswer') !== 'yes' && current.get('checked') !== false);
                     this.$('.button-hint').toggleClass('hide-if-js', current.get('hasHint') !== 'yes');
                 }
