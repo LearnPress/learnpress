@@ -177,7 +177,15 @@ if ( !class_exists( 'LP_Admin' ) ) {
 				'plugin_url' => learn_press_plugin_url(),
 				'siteurl'    => home_url(),
 				'localize'   => array(
+<<<<<<< HEAD
+<<<<<<< HEAD
+					'button_ok'     => __( 'Ok', 'learnpress' ),
+=======
 					'button_ok'     => __( 'OK', 'learnpress' ),
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+					'button_ok'     => __( 'Ok', 'learnpress' ),
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 					'button_cancel' => __( 'Cancel', 'learnpress' ),
 					'button_yes'    => __( 'Yes', 'learnpress' ),
 					'button_no'     => __( 'No', 'learnpress' )

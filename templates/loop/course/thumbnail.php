@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /**
  * Template for displaying course thumbnail within the loop
@@ -18,3 +19,25 @@ $course = LP()->global['course'];
 <div class="course-thumbnail">
 	<?php echo $course->get_image( 'course_thumbnail' ) ?>
 </div>
+=======
+<?php
+/**
+ * Template for displaying course thumbnail within the loop
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+$course = LP()->global['course'];
+
+?>
+
+<div class="course-thumbnail">
+	<?php echo $course->get_image( 'course_thumbnail' ) ?>
+</div>
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73

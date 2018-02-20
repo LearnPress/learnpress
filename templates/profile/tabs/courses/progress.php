@@ -13,7 +13,15 @@
 defined( 'ABSPATH' ) || exit;
 
 $course = learn_press_get_course( $course_id );
+<<<<<<< HEAD
+<<<<<<< HEAD
+// var_dump($user);
+=======
 
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+// var_dump($user);
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 learn_press_setup_user_course_data( $user->id, $course_id );
 
 // Check if this page is LP Profile
@@ -32,7 +40,15 @@ if ( !$user->has_course_status( $course_id, array( 'enrolled', 'finished' ) ) &&
 $force             = isset( $force ) ? $force : false;
 $num_of_decimal    = 0;
 $result            = ( $user->get_course_info2( $course_id ) );
+<<<<<<< HEAD
+<<<<<<< HEAD
+$current           = $course->evaluate_course_results( $user->id, $force );
+=======
 $current           = $course->evaluate_course_results( null, $force );
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+$current           = $course->evaluate_course_results( $user->id, $force );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 $current           = absint( $current );
 $passing_condition = round( $course->passing_condition, $num_of_decimal );
 
@@ -55,4 +71,16 @@ if ( empty( $result['results'] ) ) {
 			</div>
 		</div>
 	</div>
+<<<<<<< HEAD
+<<<<<<< HEAD
 </div>
+<?php 
+?>
+=======
+</div>
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+</div>
+<?php 
+?>
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f

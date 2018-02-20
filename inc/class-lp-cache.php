@@ -122,6 +122,16 @@ class LP_Cache {
 	 * @var string
 	 */
 	protected static $_quiz_grade = 'quiz-grade';
+<<<<<<< HEAD
+<<<<<<< HEAD
+	
+	protected static $_course_history_id = 'course_history_id';
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+	
+	protected static $_course_history_id = 'course_history_id';
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 
 	/**
 	 * Set data to cache
@@ -645,6 +655,29 @@ class LP_Cache {
 		}
 		return self::_set_cache( self::$_quiz_grade, $key_or_value, $value );
 	}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
+	
+	
+	
+	public static function get_user_course_history_id($key = false, $def = false ){
+	    return self::_get_cache( self::$_course_history_id, $key, $def );
+	}
+	
+	public static function set_user_course_history_id($key_or_value, $value = false ){
+	    if ( func_num_args() == 1 ) {
+	        wp_cache_set( self::$_course_history_id, $key_or_value, self::$_group );
+	        return $key_or_value;
+	    }
+	    return self::_set_cache( self::$_course_history_id, $key_or_value, $value );
+	}
+<<<<<<< HEAD
+=======
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 
 	/**
 	 * Flush cache by sections or LP group

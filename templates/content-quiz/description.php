@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /**
  * Displaying the description of single quiz
@@ -20,4 +21,28 @@ if ( !$quiz->id ) {
 
 <?php if ( false !== ( $item_quiz_content = apply_filters( 'learn_press_item_quiz_content', $quiz->get_content() ) ) ): ?>
 	<div class="quiz-description"><?php echo $item_quiz_content; ?></div>
+=======
+<?php
+/**
+ * Displaying the description of single quiz
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+$quiz_id = LP()->global['course-item'];
+$quiz    = learn_press_get_quiz( $quiz_id );
+if ( !$quiz->id ) {
+	return;
+}
+?>
+
+<?php if ( false !== ( $item_quiz_content = apply_filters( 'learn_press_item_quiz_content', $quiz->get_content() ) ) ): ?>
+	<div class="quiz-description"><?php echo $item_quiz_content; ?></div>
+>>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
 <?php endif; ?>

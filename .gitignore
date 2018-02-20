@@ -2,6 +2,7 @@
 .idea/
 __*.php
 node_modules/
+cache/
 /assets/fonts/iconfont.ttf
 /assets/fonts/iconfont.woff
 /assets/fonts/icons.eot
@@ -14,7 +15,14 @@ node_modules/
 /assets/fonts/icon.woff
 /assets/fonts/iconfont.eot
 /assets/fonts/iconfont.svg
+test.php
 
 /languages/learnpress-vi.mo
 /languages/learnpress-vi.po
 test list.txt
+/.buildpath
+/.project
+/.gitignore
+/.settings/
+.DS_Store
+.gitignore
