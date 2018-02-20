@@ -90,6 +90,23 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 		return get_the_title( $this->id );
 	}
 
+	public function get_image( $size = 'course_thumbnail', $attr = array() ) {
+		$attr  = wp_parse_args(
+			$attr,
+			array(
+				'alt' => $this->get_title()
+			)
+		);
+		$image = false;
+		if ( has_post_thumbnail( $this->id ) ) {
+			$image = get_the_post_thumbnail( $this->id, $size, $attr );
+		} elseif ( ( $parent_id = wp_get_post_parent_id( $this->id ) ) && has_post_thumbnail( $parent_id ) ) {
+			$image = get_the_post_thumbnail( $parent_id, $size, $attr );
+		}
+
+		return apply_filters( 'learn_press_course_image', $image, $this->id, $size, $attr );
+	}
+
 	public function get_content() {
 		///if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
 			global $post, $wp_query;

@@ -20,10 +20,11 @@ if ( !$item ) {
 
 		<?php echo $the_content; ?>
 
+
 	<?php else: ?>
 
 		<?php learn_press_display_message( __( 'This lesson has no content', 'learnpress' ) ); ?>
 
 	<?php endif; ?>
-
+		<div style="text-align: center;" class="img-responsive aligncenter"><?php echo $item->get_image() ?></div>
 </div>
