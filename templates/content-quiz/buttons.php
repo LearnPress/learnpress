@@ -71,7 +71,7 @@ $question = $quiz->get_current_question();
 
 	<?php if ( in_array( $status, array( 'started' ) ) ): ?>
 		<button
-			class="button-finish-quiz"
+			class="<?php echo $quiz->hide_finish_until_last === 'yes' ? 'button-finish-quiz-hide button-finish-quiz' : 'button-finish-quiz'; ?>"
 			data-action="finish-quiz"
 			data-id="<?php esc_attr_e( $quiz->id ); ?>"
 			data-security="<?php esc_attr_e( wp_create_nonce( 'finish-quiz-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
