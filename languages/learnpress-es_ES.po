@@ -1,0 +1,5640 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-08 10:37+0100\n"
+"PO-Revision-Date: 2017-05-11 11:35+0700\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.5\n"
+"Last-Translator: \n"
+"Language: es\n"
+
+#: inc/class-lp-ajax.php:101
+msgid "Invalid course"
+msgstr "Curso Inválido"
+
+#: inc/class-lp-ajax.php:113
+#, php-format
+msgid "You have enrolled in this course <strong>%s</strong>"
+msgstr "Estás inscrito en este curso <strong>%s</strong>"
+
+#: inc/class-lp-ajax.php:116
+#, php-format
+msgid ""
+"Sorry! The course <strong>%s</strong> you want to enroll has failed! Please "
+"contact site's administrator for more information."
+msgstr ""
+"¡ Lo siento! El curso <strong>%s</strong> al que deseas inscribirse ha "
+"fallado! Para más información por favor póngase en contacto con "
+"administrador del sitio."
+
+#: inc/class-lp-ajax.php:142
+msgid "Please enter username"
+msgstr "Por favor, introduce tu nombre de usuario"
+
+#: inc/class-lp-ajax.php:146
+msgid "Please enter password"
+msgstr "Introduce una contraseña"
+
+#: inc/class-lp-ajax.php:194
+msgid "Please enter your username and/or password"
+msgstr "Ingresa tu nombre de usuario y contraseña."
+
+#: inc/class-lp-ajax.php:212
+#, php-format
+msgid "Welcome back, %s. You've already enrolled this course"
+msgstr "Bienvenido de nuevo, %s. Ya te has inscrito este curso"
+
+#: inc/class-lp-ajax.php:224
+#, php-format
+msgid "Welcome back, %s! Redirecting..."
+msgstr "Bienvenido de nuevo, %s! Redirigiendo ..."
+
+#: inc/class-lp-ajax.php:260
+msgid "Access denied!"
+msgstr "Acceso denegado!"
+
+#: inc/class-lp-ajax.php:268
+#, php-format
+msgid "You have finished this course \"%s\""
+msgstr "Has completado el curso \"%s\""
+
+#: inc/class-lp-ajax.php:273
+msgid ""
+"Error! You cannot finish this course. Please contact your administrator for "
+"more information."
+msgstr ""
+"¡Error! No puedes finalizar este curso. Por favor, contacta con tu "
+"administrador para más información."
+
+#: inc/class-lp-ajax.php:292
+msgid "Bad request!"
+msgstr "Solicitud incorrecta!"
+
+#: inc/class-lp-ajax.php:297
+msgid "Error while completing lesson."
+msgstr "Error al completar la lección."
+
+#: inc/class-lp-ajax.php:299
+msgid "You have completed lesson."
+msgstr "Has completado esta lección."
+
+#: inc/class-lp-ajax.php:387
+msgid "Load question error. Try again!"
+msgstr "Error. Por favor, vuelve a intentarlo."
+
+#: inc/class-lp-ajax.php:395
+msgid "Something is wrong. Try again!"
+msgstr "Algo está mal, por favor, inténtelo de nuevo."
+
+#: inc/class-lp-ajax.php:446
+msgid "Something went wrong. Please try again!"
+msgstr "Algo salió mal. Vuelve a intentarlo."
+
+#: inc/class-lp-ajax.php:494 inc/class-lp-ajax.php:537
+msgid "Error! Invalid lesson or security checked failure"
+msgstr "¡Error! Lección inválida o fallo en la comprobación de seguridad"
+
+#: inc/class-lp-ajax.php:501 inc/admin/lp-admin-functions.php:930
+#: inc/admin/views/statistics/orders.php:63
+#: templates/content-lesson/__complete-button.php:43
+#: templates/single-course/content-item-lp_lesson.php:24
+#: templates/single-course/section/item-meta.php:34
+msgid "Completed"
+msgstr "Completado"
+
+#: inc/class-lp-ajax.php:508
+msgid ""
+"Congratulations! You have completed this lesson and you can finish course."
+msgstr ""
+"¡ Felicidades! Has completado esta lección, y puedes terminar el curso."
+
+#: inc/class-lp-ajax.php:510
+msgid "Congratulations! You have completed this lesson."
+msgstr "¡Felicidades! Has aprobado esta lección."
+
+#: inc/class-lp-ajax.php:541
+msgid "Error!"
+msgstr "Error!"
+
+#: inc/class-lp-ajax.php:543
+#, php-format
+msgid "You have retaken course \"%s\""
+msgstr "Has repetido el Curso %s"
+
+#: inc/class-lp-ajax.php:548
+msgid "Error! You can not retake course"
+msgstr "¡Error! No se puede volver a tomar curso"
+
+#: inc/class-lp-ajax.php:560
+msgid "The quiz ID is empty"
+msgstr "El ID del cuestionario está vacío"
+
+#: inc/class-lp-ajax.php:572
+msgid "Something is wrong! Please try again"
+msgstr "Algo está mal, por favor, inténtalo de nuevo."
+
+#: inc/class-lp-ajax.php:581
+msgid "Please login to take this quiz"
+msgstr "Inicie sesión para ver este cuestionario"
+
+#: inc/class-lp-ajax.php:592
+msgid "You have completed this quiz"
+msgstr "Has completado el examen"
+
+#: inc/class-lp-ajax.php:601
+msgid "You have started this quiz"
+msgstr "Has iniciado este examen"
+
+#: inc/class-lp-assets.php:791
+msgid "Password and confirmation password do not match"
+msgstr "La nueva contraseña y la confirmación de contraseña no coinciden."
+
+#: inc/class-lp-assets.php:792
+msgid "This field is required"
+msgstr "El campo es obligatorio."
+
+#: inc/class-lp-breadcrumb.php:124
+msgid "Error 404"
+msgstr "Error 404"
+
+#: inc/class-lp-breadcrumb.php:216
+#, php-format
+msgid "Products tagged &ldquo;%s&rdquo;"
+msgstr "Productos con la etiqueta &ldquo;%s&rdquo;"
+
+#: inc/class-lp-breadcrumb.php:267
+#, php-format
+msgid "Posts tagged &ldquo;%s&rdquo;"
+msgstr "Posts etiquetados &ldquo;%s&rdquo;"
+
+#: inc/class-lp-breadcrumb.php:309
+#, php-format
+msgid "Author: %s"
+msgstr "Autor: %s"
+
+#: inc/class-lp-breadcrumb.php:342
+#, php-format
+msgid "Search results for &ldquo;%s&rdquo;"
+msgstr "Resultados de la búsqueda : &ldquo;%s&rdquo;"
+
+#: inc/class-lp-breadcrumb.php:351
+#, php-format
+msgid "Page %d"
+msgstr "Página %d"
+
+#: inc/class-lp-checkout.php:55 templates/checkout/form-login.php:40
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: inc/class-lp-checkout.php:56 templates/checkout/form-login.php:44
+msgid "Password"
+msgstr "Contraseña"
+
+#: inc/class-lp-checkout.php:96 inc/class-lp-checkout.php:105
+#: inc/class-lp-checkout.php:122
+#, php-format
+msgid "Error %d: Unable to create order. Please try again."
+msgstr "Error %d: Imposible crear la órden. Por favor, inténtelo de nuevo."
+
+#: inc/class-lp-checkout.php:117
+msgid "Item does not exists!"
+msgstr "Este artículo no existe!"
+
+#: inc/class-lp-checkout.php:167
+msgid "Please enter user login"
+msgstr "Por favor, introduce tu nombre de usuario"
+
+#: inc/class-lp-checkout.php:171
+msgid "Please enter user password"
+msgstr "Por favor, introduce contraseña de usuario"
+
+#: inc/class-lp-checkout.php:221
+msgid "Please select a payment method"
+msgstr "Selecciona tu método de pago"
+
+#: inc/class-lp-checkout.php:247
+#, php-format
+msgid "Item %s does not exists."
+msgstr "Artículo %s no existe."
+
+#: inc/class-lp-checkout.php:249
+#, php-format
+msgid "Item \"%s\" is not purchasable."
+msgstr "Artículo \"%s\" no se puede comprar."
+
+#: inc/class-lp-checkout.php:260
+msgid "Invalid payment method."
+msgstr "Método de pago no válido."
+
+#: inc/class-lp-emails.php:42 inc/class-lp-emails.php:49
+msgid "Cheatin&#8217; huh?"
+msgstr "Haciendo trampa; ¿eh?"
+
+#: inc/class-lp-install.php:89
+msgid ""
+"It seems like you have updated LearnPress from an older version and there "
+"are some outdated courses or data that need to be upgraded."
+msgstr ""
+"Parece haber actualizado LearnPress de una versión anterior y hay algunos "
+"cursos obsoletos o datos que necesitan ser actualizados."
+
+#: inc/class-lp-install.php:90
+msgid "Do not ask again."
+msgstr "No volver a preguntar."
+
+#: inc/class-lp-install.php:90 inc/custom-post-types/course.php:145
+msgid "Ok"
+msgstr ""
+
+#: inc/class-lp-install.php:90 inc/lp-core-functions.php:1859
+#: inc/admin/class-lp-admin-ajax.php:851 inc/admin/class-lp-admin.php:114
+#: inc/admin/views/meta-boxes/course/loop-section.php:48
+#: inc/custom-post-types/course.php:735 templates/profile/tabs/edit.php:79
+#: templates/profile/tabs/orders.php:30
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: inc/class-lp-install.php:91
+msgid "Upgrade now"
+msgstr "Actualiza ahora"
+
+#: inc/class-lp-install.php:91
+msgid "No, thank!"
+msgstr "No, gracias!"
+
+#: inc/class-lp-install.php:98
+msgid ""
+"LearnPress has upgraded and need to upgrade the database before you can work "
+"with it. Please notify the site administrator."
+msgstr ""
+"Memtoría Online se ha actualizado y necesita actualizar la base de datos "
+"antes de que usted puede trabajar con él. Por favor notifique al "
+"administrador del sitio."
+
+#: inc/class-lp-install.php:114
+msgid "Thank you for using LearnPress"
+msgstr "Gracias por usar Mentoría online"
+
+#: inc/class-lp-multi-language.php:51 inc/libraries/meta-box/inc/common.php:48
+msgid "Documentation"
+msgstr "Documentación"
+
+#: inc/class-lp-multi-language.php:52 inc/admin/class-lp-admin-menu.php:70
+#: inc/admin/class-lp-admin-menu.php:71
+msgid "Add-ons"
+msgstr "Complementos"
+
+#: inc/class-lp-shortcodes.php:158 inc/class-lp-shortcodes.php:330
+msgid "Invalid order!"
+msgstr "Pedido no válido."
+
+#: inc/class-lp-shortcodes.php:209
+msgid "Please login to fill in this form."
+msgstr "Inicia sesión para rellenar este formulario."
+
+#: inc/class-lp-shortcodes.php:212
+msgid "You are a teacher now."
+msgstr "Eres un mentor ahora."
+
+#: inc/class-lp-shortcodes.php:215 inc/lp-core-functions.php:1302
+msgid "Your request has been sent! We will get in touch with you soon!"
+msgstr "¡Tu solicitud ha sido enviada! ¡Nos pondremos en contacto pronto!"
+
+#: inc/class-lp-shortcodes.php:218
+msgid "Your role is allowed to create a course."
+msgstr "Tu rol te permite crear un curso"
+
+#: inc/class-lp-shortcodes.php:230
+msgid "Become a Teacher"
+msgstr "Convertirte en mentor"
+
+#: inc/class-lp-shortcodes.php:231
+msgid "Fill in your information and send us to become a teacher."
+msgstr "Rellena tus datos y envíenoslo para convertirse en un mentor"
+
+#: inc/class-lp-shortcodes.php:232 templates/global/become-teacher-form.php:13
+msgid "Submit"
+msgstr "Enviar"
+
+#: inc/class-lp-shortcodes.php:233 templates/checkout/payment.php:16
+msgid "Processing"
+msgstr "Procesando"
+
+#: inc/class-lp-shortcodes.php:239 templates/profile/tabs/edit.php:92
+msgid "Name"
+msgstr "Nombre"
+
+#: inc/class-lp-shortcodes.php:241
+msgid "Your name"
+msgstr "Tu nombre"
+
+#: inc/class-lp-shortcodes.php:245
+msgid "Email"
+msgstr ""
+
+#: inc/class-lp-shortcodes.php:247
+msgid "Your email address"
+msgstr "Tu Email"
+
+#: inc/class-lp-shortcodes.php:251
+msgid "Phone"
+msgstr "Teléfono"
+
+#: inc/class-lp-shortcodes.php:253
+msgid "Your phone number"
+msgstr "Tu teléfono"
+
+#: inc/class-lp-shortcodes.php:289
+#, php-format
+msgid "The user %s is not available!"
+msgstr "El usuario %s no está disponible!"
+
+#: inc/class-lp-shortcodes.php:363
+msgid "Forgot password?"
+msgstr "¿Contraseña olvidada?"
+
+#: inc/class-lp-shortcodes.php:365
+msgid "Create new account"
+msgstr "Crear nueva cuenta"
+
+#: inc/lp-add-on-functions.php:90
+#, php-format
+msgid "Installed <span class=\"count\">(%s)</span>"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:95
+#, php-format
+msgid "Add-ons <span class=\"count\">(%s)</span>"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:100
+#, php-format
+msgid "Related Themes <span class=\"count\">(%s)</span>"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:118 inc/lp-core-functions.php:2177
+#: inc/lp-core-functions.php:2707 inc/admin/lp-admin-actions.php:50
+#: inc/admin/lp-admin-functions.php:558 inc/admin/lp-admin-functions.php:723
+#: inc/admin/lp-admin-functions.php:925 inc/admin/sub-menus/tools.php:321
+#: inc/admin/views/statistics/courses.php:27
+#: inc/admin/views/statistics/courses.php:42
+#: inc/admin/views/statistics/orders.php:28
+#: inc/admin/views/statistics/orders.php:62
+#: inc/admin/views/statistics/users.php:27
+#: inc/admin/views/statistics/users.php:42
+msgid "All"
+msgstr "Todo"
+
+#: inc/lp-add-on-functions.php:132
+msgid "Get More"
+msgstr "Obtener más"
+
+#: inc/lp-add-on-functions.php:307
+msgid ""
+"An unexpected error occurred. Something may be wrong with WordPress.org or "
+"this server&#8217;s configuration. If you continue to have problems, please "
+"try the <a href=\"https://wordpress.org/support/\">support forums</a>."
+msgstr ""
+
+#: inc/lp-add-on-functions.php:307
+msgid ""
+"(WordPress could not establish a secure connection to WordPress.org. Please "
+"contact your server administrator.)"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:426
+#, php-format
+msgid "Installing Plugin: %s"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:440
+msgid "Not install"
+msgstr "No Instalado"
+
+#: inc/lp-add-on-functions.php:445 inc/admin/lp-admin-functions.php:1342
+msgid "Installed"
+msgstr "Instalado"
+
+#: inc/lp-add-on-functions.php:455 inc/lp-add-on-functions.php:481
+#: inc/admin/class-lp-plugin-install-list-table.php:420
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: inc/lp-add-on-functions.php:455 inc/lp-add-on-functions.php:481
+#: inc/admin/class-lp-plugin-install-list-table.php:422
+msgid "Disabled"
+msgstr "No activado"
+
+#: inc/lp-add-on-functions.php:503
+msgid "All add-ons that you have installed"
+msgstr "Todos los complementos que se han instalado"
+
+#: inc/lp-add-on-functions.php:513 inc/lp-add-on-functions.php:562
+msgid "All add-ons we provide."
+msgstr "Todos los add-ons"
+
+#: inc/lp-add-on-functions.php:514 inc/lp-add-on-functions.php:563
+#, php-format
+msgid "Last checked %s ago"
+msgstr "Última comprobación hace %s."
+
+#: inc/lp-add-on-functions.php:515 inc/lp-add-on-functions.php:564
+#, php-format
+msgid "<a href=\"%s\">%s</a>"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:515 inc/lp-add-on-functions.php:564
+msgid "Check again!"
+msgstr "Comprobar de nuevo!"
+
+#: inc/lp-add-on-functions.php:710
+#: inc/admin/class-lp-plugin-install-list-table.php:362
+#, php-format
+msgid "Install %s now"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:710
+msgid "Install Now"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:717
+#: inc/admin/class-lp-plugin-install-list-table.php:369
+#, php-format
+msgid "Update %s now"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:717
+#: inc/admin/class-lp-plugin-install-list-table.php:369
+#: inc/admin/views/updates/0.9/step-repair-database.php:17
+msgid "Update Now"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:723
+msgid "This plugin is already installed and is up to date"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:723
+msgctxt "plugin"
+msgid "Installed"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:728 inc/lp-add-on-functions.php:737
+#, php-format
+msgid "Disable %s now"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:728 inc/lp-add-on-functions.php:737
+msgid "Disable Now"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:730 inc/lp-add-on-functions.php:739
+#, php-format
+msgid "Enable %s now"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:730 inc/lp-add-on-functions.php:739
+msgid "Enable Now"
+msgstr "Habilitar de nuevo"
+
+#: inc/lp-add-on-functions.php:743
+#, php-format
+msgid "Buy %s now"
+msgstr "Comprar %s ahora"
+
+#: inc/lp-add-on-functions.php:743 inc/lp-add-on-functions.php:901
+msgid "Buy Now"
+msgstr "Comprar"
+
+#: inc/lp-add-on-functions.php:747
+#, php-format
+msgid "Version: %s"
+msgstr "Versión %s"
+
+#: inc/lp-add-on-functions.php:755 inc/lp-add-on-functions.php:765
+msgid "No add-on found"
+msgstr "No se han encontrado complementos"
+
+#: inc/lp-add-on-functions.php:805
+msgid "Free Add-ons"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:830 inc/lp-add-on-functions.php:929
+#, php-format
+msgid "<cite>By %s</cite>"
+msgstr "<cite>Por %s</cite>"
+
+#: inc/lp-add-on-functions.php:846
+#: inc/admin/class-lp-plugin-install-list-table.php:454
+msgid "Last Updated:"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:847
+#: inc/admin/class-lp-plugin-install-list-table.php:455
+#: inc/custom-post-types/order.php:355
+#, php-format
+msgid "%s ago"
+msgstr "hace %s"
+
+#: inc/lp-add-on-functions.php:855
+#: inc/admin/class-lp-plugin-install-list-table.php:461
+msgctxt "Active plugin installs"
+msgid "1+ Million"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:859
+#: inc/admin/class-lp-plugin-install-list-table.php:465
+#, php-format
+msgid "%s Active Installs"
+msgstr "%s Instalaciones Activas"
+
+#: inc/lp-add-on-functions.php:867
+#: inc/admin/class-lp-plugin-install-list-table.php:471
+msgid "Untested with your version of WordPress"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:869
+#: inc/admin/class-lp-plugin-install-list-table.php:473
+msgid "<strong>Incompatible</strong> with your version of WordPress"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:871
+#: inc/admin/class-lp-plugin-install-list-table.php:475
+msgid "<strong>Compatible</strong> with your version of WordPress"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:884
+msgid "Premium Add-ons"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:940
+msgid "No theme found"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:963
+msgid "$"
+msgstr ""
+
+#: inc/lp-add-on-functions.php:966
+msgid " sales"
+msgstr " ventas"
+
+#: inc/lp-add-on-functions.php:982
+msgid "Get it now for only "
+msgstr "Consíguelo ahora por sólo "
+
+#: inc/lp-add-on-functions.php:983
+msgid "View Demo"
+msgstr "Ver Demostración"
+
+#: inc/lp-core-functions.php:234 inc/lp-template-functions.php:1395
+#: inc/course/lp-course-functions.php:484 inc/custom-post-types/lesson.php:60
+msgid "Lesson"
+msgstr "Lección"
+
+#: inc/lp-core-functions.php:235 inc/lp-template-functions.php:1385
+#: inc/admin/settings/class-lp-settings-pages.php:22
+#: inc/course/lp-course-functions.php:485
+#: inc/custom-post-types/question.php:244 inc/custom-post-types/quiz.php:90
+msgid "Quiz"
+msgstr "Examen"
+
+#: inc/lp-core-functions.php:562
+msgid "<"
+msgstr ""
+
+#: inc/lp-core-functions.php:563
+msgid ">"
+msgstr ""
+
+#: inc/lp-core-functions.php:661
+msgid "Minute(s)"
+msgstr "Minuto(s)"
+
+#: inc/lp-core-functions.php:662
+msgid "Hour(s)"
+msgstr "Hora(s)"
+
+#: inc/lp-core-functions.php:663
+msgid "Day(s)"
+msgstr "Día(s)"
+
+#: inc/lp-core-functions.php:664
+msgid "Week(s)"
+msgstr "Semana(s)"
+
+#: inc/lp-core-functions.php:724 inc/lp-template-functions.php:698
+#: inc/admin/class-lp-profile.php:77 inc/admin/lp-admin-functions.php:299
+#: inc/admin/settings/class-lp-settings-courses.php:9
+#: inc/admin/sub-menus/statistics.php:50 inc/admin/sub-menus/statistics.php:56
+#: inc/custom-post-types/course.php:451 inc/custom-post-types/course.php:453
+msgid "Courses"
+msgstr "Cursos"
+
+#: inc/lp-core-functions.php:730 inc/custom-post-types/course.php:1301
+msgid "Categories"
+msgstr "Categorías"
+
+#: inc/lp-core-functions.php:735 inc/custom-post-types/course.php:244
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: inc/lp-core-functions.php:903
+msgid "Left"
+msgstr "Izquierdo"
+
+#: inc/lp-core-functions.php:904
+msgid "Right"
+msgstr "Derecha"
+
+#: inc/lp-core-functions.php:905
+msgid "Left with space"
+msgstr "Izquierda con espacio"
+
+#: inc/lp-core-functions.php:906
+msgid "Right with space"
+msgstr "Derecho con el espacio"
+
+#: inc/lp-core-functions.php:1174
+msgid "week(s)"
+msgstr "semana(s)"
+
+#: inc/lp-core-functions.php:1178
+msgid "day(s)"
+msgstr "día(s)"
+
+#: inc/lp-core-functions.php:1183
+msgid "hour(s)"
+msgstr "hora(s)"
+
+#: inc/lp-core-functions.php:1187
+msgid "min(s)"
+msgstr "min(s)"
+
+#: inc/lp-core-functions.php:1275
+msgid "Please enter your name"
+msgstr "Por favor, dinos tu nombre:"
+
+#: inc/lp-core-functions.php:1280
+msgid "Please enter your email address"
+msgstr "Por favor, introduce un correo electrónico."
+
+#: inc/lp-core-functions.php:1287
+msgid "Please moderate"
+msgstr "Por favor, moderado"
+
+#: inc/lp-core-functions.php:1288
+#, php-format
+msgid "The user <a href=\"%s\">%s</a> wants to be a teacher."
+msgstr "El usuario <a href=\"%s\">%s</a> quiere ser un maestro."
+
+#: inc/lp-core-functions.php:1290
+#, php-format
+msgid "Name: %s"
+msgstr "Nombre: %s"
+
+#: inc/lp-core-functions.php:1291
+#, php-format
+msgid "Email: %s"
+msgstr ""
+
+#: inc/lp-core-functions.php:1292
+#, php-format
+msgid "Phone: %s"
+msgstr "Teléfono: %s"
+
+#: inc/lp-core-functions.php:1293
+#, php-format
+msgid "Accept: %s"
+msgstr "Aceptar: %s"
+
+#: inc/lp-core-functions.php:1858 inc/admin/class-lp-admin.php:113
+msgid "OK"
+msgstr ""
+
+#: inc/lp-core-functions.php:1860 inc/admin/class-lp-admin.php:115
+#: inc/custom-post-types/quiz.php:222 inc/custom-post-types/quiz.php:233
+msgid "Yes"
+msgstr "Si"
+
+#: inc/lp-core-functions.php:1861 inc/admin/class-lp-admin.php:116
+#: inc/custom-post-types/quiz.php:178 inc/custom-post-types/quiz.php:221
+#: inc/custom-post-types/quiz.php:232
+msgid "No"
+msgstr "No"
+
+#: inc/lp-core-functions.php:2178
+msgid "Learning"
+msgstr "Aprendizaje"
+
+#: inc/lp-core-functions.php:2179 inc/custom-post-types/order.php:305
+msgid "Purchased"
+msgstr "Compardo"
+
+#: inc/lp-core-functions.php:2180 inc/lp-core-functions.php:2709
+msgid "Finished"
+msgstr "Terminado"
+
+#: inc/lp-core-functions.php:2181
+msgid "Own"
+msgstr "Propio"
+
+#: inc/lp-core-functions.php:2286
+#, php-format
+msgid "Congrats! You've enrolled course \"%s\"."
+msgstr "Felicidades! Te has inscrito en el curso \"%s\"."
+
+#: inc/lp-core-functions.php:2319
+msgid "Cart"
+msgstr "Carrito"
+
+#: inc/lp-core-functions.php:2323
+msgid "Enable cart"
+msgstr "Habilitar carrito"
+
+#: inc/lp-core-functions.php:2324
+msgid "Check this option to enable user purchase multiple courses at one time."
+msgstr ""
+"Compruebe esta opción para activar el usuario puede comprar cursos múltiples "
+"al mismo tiempo"
+
+#: inc/lp-core-functions.php:2330
+msgid "Add to cart redirect"
+msgstr "Añadir a redireccion de carrito"
+
+#: inc/lp-core-functions.php:2331
+msgid "Redirect to checkout immediately after adding course to cart."
+msgstr "Redirigir a pedir inmediatamente después de añadir a la cesta"
+
+#: inc/lp-core-functions.php:2337
+msgid "AJAX add to cart"
+msgstr ""
+
+#: inc/lp-core-functions.php:2338
+msgid "Using AJAX to add course to cart."
+msgstr ""
+
+#: inc/lp-core-functions.php:2344
+msgid "Cart page"
+msgstr "Página del Carrito"
+
+#: inc/lp-core-functions.php:2469
+msgid "Are you sure you want to cancel order?"
+msgstr "¿Deseas cancelar la orden?"
+
+#: inc/lp-core-functions.php:2470
+msgid "Cancel Order"
+msgstr "Cancelar Pedido"
+
+#: inc/lp-core-functions.php:2492
+#, php-format
+msgid "Order number <strong>%s</strong> not found"
+msgstr "Número de pedido<strong>%s</strong> no encontrado"
+
+#: inc/lp-core-functions.php:2495
+msgid "Order cancelled by customer"
+msgstr "Pedido cancelado por el cliente."
+
+#: inc/lp-core-functions.php:2498
+#, php-format
+msgid "Order number <strong>%s</strong> has been cancelled"
+msgstr "Pedido número <strong>%s</strong> ha sido cancelado"
+
+#: inc/lp-core-functions.php:2501
+#, php-format
+msgid "Order number <strong>%s</strong> can not cancelled"
+msgstr "Pedido número <strong>%s</strong> no se ha cancelado"
+
+#: inc/lp-core-functions.php:2549
+msgid "Profile Page"
+msgstr "Pagina de perfil"
+
+#: inc/lp-core-functions.php:2555
+msgid "Checkout Page"
+msgstr "Página del pago"
+
+#: inc/lp-core-functions.php:2580
+msgid "Hidden"
+msgstr "Oculto"
+
+#: inc/lp-core-functions.php:2583
+msgid "Go to setup "
+msgstr "Ir a la página Configuración "
+
+#: inc/lp-core-functions.php:2595
+msgid "LP Setup Page"
+msgstr ""
+
+#: inc/lp-core-functions.php:2598
+msgid "Warning! You need setup all pages"
+msgstr "¡Advertencia! Es necesario configurar todas las páginas"
+
+#: inc/lp-core-functions.php:2708
+msgid "In Progress"
+msgstr "En progreso"
+
+#: inc/lp-js-template.php:11
+msgid "--Select a Lesson--"
+msgstr "-- Selecciona una Lección --"
+
+#: inc/lp-template-functions.php:171
+msgctxt "breadcrumb"
+msgid "Home"
+msgstr "Inicio"
+
+#: inc/lp-template-functions.php:709 inc/admin/sub-menus/statistics.php:51
+#: inc/admin/sub-menus/statistics.php:57 inc/custom-post-types/order.php:412
+#: inc/custom-post-types/order.php:413 inc/custom-post-types/order.php:417
+msgid "Orders"
+msgstr "Compras"
+
+#: inc/lp-template-functions.php:717
+#: inc/admin/views/meta-boxes/order/actions.php:77
+#: inc/admin/views/meta-boxes/question/header.php:12
+#: inc/admin/views/meta-boxes/quiz/question.php:30
+#: inc/custom-post-types/lesson.php:211 inc/custom-post-types/question.php:277
+#: inc/custom-post-types/quiz.php:347 inc/question/abstract-lp-question.php:652
+msgid "Edit"
+msgstr "Editar"
+
+#: inc/lp-template-functions.php:1061
+#: inc/admin/settings/class-lp-settings-checkout.php:76
+msgid "Order received"
+msgstr "Pedido recibido"
+
+#: inc/lp-template-functions.php:1077
+#, php-format
+msgid "Access denied \"%s\""
+msgstr "Acceso negado \"%s\""
+
+#: inc/lp-template-functions.php:1127
+#, php-format
+msgid "Search Results: &ldquo;%s&rdquo;"
+msgstr "Resultados para: &ldquo;%s&rdquo;"
+
+#: inc/lp-template-functions.php:1130
+#, php-format
+msgid "&nbsp;&ndash; Page %s"
+msgstr "&nbsp;&ndash; Página %s"
+
+#: inc/lp-template-functions.php:1389
+msgid "Final"
+msgstr ""
+
+#: inc/lp-template-functions.php:1398 inc/custom-post-types/abstract.php:456
+#: inc/custom-post-types/lesson.php:178
+#: inc/libraries/meta-box/inc/fields/oembed.php:70
+#: templates/single-course/section/item-meta.php:23
+msgid "Preview"
+msgstr "Vista previa"
+
+#: inc/lp-template-functions.php:1470
+msgid "Overview"
+msgstr "Resumen"
+
+#: inc/lp-template-functions.php:1478
+#: inc/admin/views/meta-boxes/course/curriculum.php:8
+#: inc/custom-post-types/course.php:531
+msgid "Curriculum"
+msgstr "Plan estudios"
+
+#: inc/lp-template-functions.php:1488 inc/admin/lp-admin-functions.php:568
+#: inc/admin/views/statistics/courses.php:8
+#: inc/admin/views/statistics/orders.php:8
+#: inc/admin/views/statistics/users.php:8
+#: inc/admin/views/statistics/users.php:44
+#: inc/custom-post-types/course.php:1291 inc/custom-post-types/course.php:1297
+msgid "Students"
+msgstr "Alumnos"
+
+#: inc/lp-webhooks.php:78
+msgid "LearnPress webhook process Complete"
+msgstr ""
+
+#: inc/admin/class-lp-admin-ajax.php:204
+msgid "There are no available lessons for this course, please use "
+msgstr "No hay lecciones en este curso "
+
+#: inc/admin/class-lp-admin-ajax.php:205 inc/admin/class-lp-admin-ajax.php:209
+#: inc/admin/class-lp-admin-ajax.php:213
+msgid "Adding New Item."
+msgstr "Añadiendo nuevo elemento."
+
+#: inc/admin/class-lp-admin-ajax.php:208
+msgid "There are no available quizzes for this course, please use "
+msgstr "No hay pruebas disponibles para este curso "
+
+#: inc/admin/class-lp-admin-ajax.php:212
+msgid "There are no available questions for this quiz, please use "
+msgstr "No hay preguntas disponibles para este cuestionario "
+
+#: inc/admin/class-lp-admin-ajax.php:258 inc/admin/class-lp-admin-ajax.php:367
+#: inc/admin/lp-admin-functions.php:1143 inc/quiz/class-lp-quiz-factory.php:118
+#: inc/quiz/class-lp-quiz-factory.php:127
+#: inc/quiz/class-lp-quiz-factory.php:162
+#: inc/quiz/class-lp-quiz-factory.php:174
+#: inc/quiz/class-lp-quiz-factory.php:356
+msgid "Error"
+msgstr ""
+
+#: inc/admin/class-lp-admin-ajax.php:326 inc/admin/class-lp-admin-ajax.php:436
+msgid "Untitled"
+msgstr ""
+
+#: inc/admin/class-lp-admin-ajax.php:343
+msgid "No item found"
+msgstr "Ningún producto encontrado"
+
+#: inc/admin/class-lp-admin-ajax.php:351
+msgid "A "
+msgstr ""
+
+#: inc/admin/class-lp-admin-ajax.php:351
+msgid " is just used for only one "
+msgstr " sólo se utiliza para una sola "
+
+#: inc/admin/class-lp-admin-ajax.php:396
+msgid "You have no permission to access this section."
+msgstr "No tienes permiso para acceder a esta sección"
+
+#: inc/admin/class-lp-admin-ajax.php:453 inc/custom-post-types/question.php:104
+msgid "No questions found"
+msgstr "No se encontraron preguntas"
+
+#: inc/admin/class-lp-admin-ajax.php:479 inc/admin/class-lp-admin-ajax.php:524
+msgid "Permission denied"
+msgstr "Permiso denegado"
+
+#: inc/admin/class-lp-admin-ajax.php:485
+msgid "Check nonce failed"
+msgstr "Comprobar que no haya fallado"
+
+#: inc/admin/class-lp-admin-ajax.php:491 inc/admin/class-lp-admin-ajax.php:536
+msgid "Order invalid"
+msgstr "Pedido inválido"
+
+#: inc/admin/class-lp-admin-ajax.php:498
+msgid "Course invalid"
+msgstr "Curso inválido"
+
+#: inc/admin/class-lp-admin-ajax.php:604
+msgid "Verify nonce failed"
+msgstr "No se ha podido verificar"
+
+#: inc/admin/class-lp-admin-ajax.php:747 inc/admin/class-lp-admin-ajax.php:972
+#: inc/admin/lp-admin-functions.php:132
+msgid "Edit Page"
+msgstr "Editar Pagina"
+
+#: inc/admin/class-lp-admin-ajax.php:748 inc/admin/class-lp-admin-ajax.php:973
+#: inc/admin/lp-admin-functions.php:133
+msgid "View Page"
+msgstr "Ver Página"
+
+#: inc/admin/class-lp-admin-ajax.php:750
+msgid "Error! Create page failed. Please try again!"
+msgstr "¡Error! Crear página falló. Por favor, inténtelo de nuevo!"
+
+#: inc/admin/class-lp-admin-ajax.php:753
+msgid "Empty page name!"
+msgstr "Nombre de la página vacía!"
+
+#: inc/admin/class-lp-admin-ajax.php:837
+msgid ""
+"Something went wrong! Please try again or ask <a href=\"https://wordpress."
+"org/support/\">support forums</a>."
+msgstr ""
+"¡Algo salió mal! Por favor, inténtelo de nuevo o pedir a <a href=\"https://"
+"wordpress.org/support/\">los foros de soporte</a> ."
+
+#: inc/admin/class-lp-admin-ajax.php:850
+msgid "Try again!"
+msgstr "Inténtalo de nuevo!"
+
+#: inc/admin/class-lp-admin-ajax.php:876
+msgid "Import sample data successes."
+msgstr "Importación exitosa de datos de ejemplo."
+
+#: inc/admin/class-lp-admin-ajax.php:876
+msgid "View courses"
+msgstr "Ver cursos"
+
+#: inc/admin/class-lp-admin-ajax.php:880
+msgid "Import sample data failed. Please try again!."
+msgstr ""
+"No se pudo importar los datos de la muestra. Por favor, inténtelo de nuevo."
+
+#: inc/admin/class-lp-admin-ajax.php:884
+msgid ""
+"Unknown error when installing/activating Import/Export addon. Please try "
+"again!"
+msgstr ""
+"Error desconocido durante la instalación/activación de importación/"
+"exportación complemento. Por favor, inténtelo de nuevo!"
+
+#: inc/admin/class-lp-admin-ajax.php:900 inc/admin/class-lp-admin-ajax.php:921
+#: inc/admin/class-lp-admin-ajax.php:941
+msgid ""
+"You do not have sufficient permissions to deactivate plugins for this site."
+msgstr "No tienes permisos suficientes para actualizar plugins en este sitio."
+
+#: inc/admin/class-lp-admin-ajax.php:1079
+msgid " course has duplicated"
+msgstr " curso se ha duplicado"
+
+#: inc/admin/class-lp-admin-menu.php:50
+msgid "Learning Management System"
+msgstr "Sistema de Administración de Aprendizaje"
+
+#: inc/admin/class-lp-admin-menu.php:51 inc/admin/lp-admin-functions.php:1513
+msgid "LearnPress"
+msgstr "LearnPress"
+
+#: inc/admin/class-lp-admin-menu.php:62 inc/admin/class-lp-admin-menu.php:63
+msgid "Statistics"
+msgstr "Estadísticas"
+
+#: inc/admin/class-lp-admin-menu.php:78 inc/admin/class-lp-admin-menu.php:79
+#: inc/custom-post-types/question.php:148
+msgid "Settings"
+msgstr "Ajustes"
+
+#: inc/admin/class-lp-admin-menu.php:86 inc/admin/class-lp-admin-menu.php:87
+msgid "Tools"
+msgstr "Herramientas"
+
+#: inc/admin/class-lp-admin.php:28
+#, php-format
+msgid ""
+"LearnPress requires permalink option <strong>Post name</strong> is enabled. "
+"Please enable it <a href=\"%s\">here</a> to ensure that all functions work "
+"properly."
+msgstr ""
+
+#: inc/admin/class-lp-admin.php:63
+#, php-format
+msgid ""
+"If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;"
+"&#9733;&#9733;&#9733;%s rating. A huge thanks in advance!"
+msgstr ""
+
+#: inc/admin/class-lp-admin.php:63
+msgid "Thanks :)"
+msgstr "Gracias :)"
+
+#: inc/admin/class-lp-plugin-install-list-table.php:162
+msgid "No plugin found."
+msgstr ""
+
+#: inc/admin/class-lp-plugin-install-list-table.php:296
+msgctxt "Plugin installer group title"
+msgid "Performance"
+msgstr "Gestión"
+
+#: inc/admin/class-lp-plugin-install-list-table.php:297
+msgctxt "Plugin installer group title"
+msgid "Social"
+msgstr ""
+
+#: inc/admin/class-lp-plugin-install-list-table.php:298
+msgctxt "Plugin installer group title"
+msgid "Tools"
+msgstr "Herramientas"
+
+#: inc/admin/class-lp-plugin-install-list-table.php:341
+#: templates/loop/course/instructor.php:18
+#, php-format
+msgid "By %s"
+msgstr "Por %s"
+
+#: inc/admin/class-lp-plugin-install-list-table.php:362
+msgid "Install and Active"
+msgstr "Instalar y Activar"
+
+#: inc/admin/class-lp-plugin-install-list-table.php:376
+msgctxt "plugin"
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: inc/admin/class-lp-plugin-install-list-table.php:378
+msgctxt "plugin"
+msgid "Enable"
+msgstr "Activar"
+
+#: inc/admin/class-lp-plugin-install-list-table.php:425
+msgid "Not Install"
+msgstr "No Instalado"
+
+#: inc/admin/class-lp-profile.php:49
+msgid "LearnPress Profile"
+msgstr "Perfil"
+
+#: inc/admin/class-lp-profile.php:72
+msgid "User Information"
+msgstr "Información del Usuario"
+
+#: inc/admin/class-lp-profile.php:132
+msgid "<span class=\"course-status passed\">Passed</span>"
+msgstr "<span class=\"course-status passed\">Pasado</span>"
+
+#: inc/admin/class-lp-upgrader.php:12
+msgid "Invalid Data provided."
+msgstr "Datos no válidos."
+
+#: inc/admin/class-lp-upgrader.php:13
+msgid "Could not access filesystem."
+msgstr "No se ha podido acceder al sistema de archivos."
+
+#: inc/admin/class-lp-upgrader.php:14
+msgid "Filesystem error."
+msgstr "Error del sistema de archivos."
+
+#: inc/admin/class-lp-upgrader.php:15
+msgid "Unable to locate WordPress Root directory."
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:16
+msgid "Unable to locate WordPress Content directory (wp-content)."
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:17
+msgid "Unable to locate WordPress Plugin directory."
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:18
+msgid "Unable to locate WordPress Theme directory."
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:20
+#, php-format
+msgid "Unable to locate needed folder (%s)."
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:22
+msgid "Download failed."
+msgstr "Error en la descarga!"
+
+#: inc/admin/class-lp-upgrader.php:23
+msgid "Installing the latest version&#8230;"
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:24
+msgid "The package contains no files."
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:25
+msgid "Destination folder already exists."
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:26
+msgid "Could not create directory."
+msgstr "No se puede crear el directorio."
+
+#: inc/admin/class-lp-upgrader.php:27
+msgid "The package could not be installed."
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:29
+msgid "Enabling Maintenance mode&#8230;"
+msgstr ""
+
+#: inc/admin/class-lp-upgrader.php:30
+msgid "Disabling Maintenance mode&#8230;"
+msgstr ""
+
+#: inc/admin/lp-admin-actions.php:51
+#: inc/admin/dashboard-statistics/class-lp-statistic-plugin.php:50
+msgid "Published"
+msgstr "Publicado"
+
+#: inc/admin/lp-admin-actions.php:52
+msgid "Private"
+msgstr "Privado"
+
+#: inc/admin/lp-admin-actions.php:53
+msgid "Pending Review"
+msgstr "Pendiente de revisión"
+
+#: inc/admin/lp-admin-actions.php:54
+msgid "Scheduled"
+msgstr "Programado"
+
+#: inc/admin/lp-admin-actions.php:55
+msgid "Draft"
+msgstr "Plantilla"
+
+#: inc/admin/lp-admin-actions.php:56
+msgid "Trash"
+msgstr "Papelera"
+
+#: inc/admin/lp-admin-actions.php:132
+msgid "LearnPress Plugin"
+msgstr "Plugin"
+
+#: inc/admin/lp-admin-actions.php:133
+msgid "LearnPress Status"
+msgstr "Estado"
+
+#: inc/admin/lp-admin-functions.php:79
+msgid "[ Add a new page ]"
+msgstr "[ Añadir nuevo página ]"
+
+#: inc/admin/lp-admin-functions.php:94
+msgid "Select Page"
+msgstr "Seleccionar página"
+
+#: inc/admin/lp-admin-functions.php:113
+msgid "Select a page&hellip;"
+msgstr "Selecciona una página&hellip;"
+
+#: inc/admin/lp-admin-functions.php:125
+msgid "Create"
+msgstr "Crear"
+
+#: inc/admin/lp-admin-functions.php:127
+msgid "New page title"
+msgstr "Nuevo título de página"
+
+#: inc/admin/lp-admin-functions.php:128
+msgid "Ok [Enter]"
+msgstr ""
+
+#: inc/admin/lp-admin-functions.php:129
+#: inc/admin/views/meta-boxes/course/js-template.php:5
+#: inc/admin/views/meta-boxes/course/js-template.php:13
+#: inc/custom-post-types/question.php:224 inc/custom-post-types/quiz.php:291
+msgid "Cancel [ESC]"
+msgstr "Cancelar [ESC]"
+
+#: inc/admin/lp-admin-functions.php:205
+msgid "Minutes"
+msgstr "Minutos"
+
+#: inc/admin/lp-admin-functions.php:247
+msgid "Plain text"
+msgstr "Sólo Texto"
+
+#: inc/admin/lp-admin-functions.php:248
+msgid "HTML"
+msgstr ""
+
+#: inc/admin/lp-admin-functions.php:271
+msgid "Quiz is not available"
+msgstr "Examen no disponible"
+
+#: inc/admin/lp-admin-functions.php:272
+msgid "Lesson is not available"
+msgstr "Lección no está disponible"
+
+#: inc/admin/lp-admin-functions.php:274
+msgid "Duplicate course"
+msgstr "Duplicar curso"
+
+#: inc/admin/lp-admin-functions.php:275
+msgid "Duplicate course curriculum?"
+msgstr "Duplicar programa del curso?"
+
+#: inc/admin/lp-admin-functions.php:278
+msgid "Duplicate Question"
+msgstr "Duplicar preguntas"
+
+#: inc/admin/lp-admin-functions.php:279
+msgid "Do you want to duplicate this question?"
+msgstr "Deseas duplicar esta pregunta?"
+
+#: inc/admin/lp-admin-functions.php:281
+msgid "Do you want to remove this question from quiz?"
+msgstr "Quieres eliminar esta pregunta del cuestionario?"
+
+#: inc/admin/lp-admin-functions.php:298
+#: inc/admin/settings/class-lp-settings-checkout.php:36
+#: inc/admin/settings/class-lp-settings-courses.php:18
+#: inc/admin/settings/class-lp-settings-general.php:16
+msgid "General"
+msgstr ""
+
+#: inc/admin/lp-admin-functions.php:300
+#: inc/admin/settings/class-lp-settings-pages.php:9
+msgid "Pages"
+msgstr "Páginas"
+
+#: inc/admin/lp-admin-functions.php:301
+#: inc/admin/settings/class-lp-settings-payments.php:21
+msgid "Payments"
+msgstr "Pagos"
+
+#: inc/admin/lp-admin-functions.php:302
+#: inc/admin/settings/class-lp-settings-checkout.php:22
+#: templates/cart/form.php:106
+msgid "Checkout"
+msgstr "Pago"
+
+#: inc/admin/lp-admin-functions.php:304
+#: inc/admin/settings/class-lp-settings-emails.php:25
+msgid "Emails"
+msgstr ""
+
+#: inc/admin/lp-admin-functions.php:563
+#: inc/admin/views/statistics/courses.php:9
+#: inc/admin/views/statistics/orders.php:9
+#: inc/admin/views/statistics/users.php:9
+#: inc/admin/views/statistics/users.php:43
+msgid "Instructors"
+msgstr "Profesores"
+
+#: inc/admin/lp-admin-functions.php:728
+#: inc/admin/views/meta-boxes/course/review-logs.php:25
+msgid "Publish"
+msgstr "Publicado"
+
+#: inc/admin/lp-admin-functions.php:733 inc/admin/lp-admin-functions.php:935
+#: inc/admin/views/statistics/courses.php:44
+#: inc/admin/views/statistics/orders.php:64
+#: inc/order/lp-order-functions.php:649
+msgid "Pending"
+msgstr "Pendiente"
+
+#: inc/admin/lp-admin-functions.php:738
+#: inc/admin/views/statistics/courses.php:45
+msgid "Paid"
+msgstr "Pagada"
+
+#: inc/admin/lp-admin-functions.php:743
+#: inc/admin/views/statistics/courses.php:46
+#: inc/course/abstract-lp-course.php:563 inc/custom-post-types/course.php:1349
+#: inc/order/lp-order-functions.php:511
+#: inc/shortcodes/featured-courses/templates/cards.php:61
+#: inc/shortcodes/featured-courses/templates/grids.php:69
+#: inc/shortcodes/featured-courses/templates/list.php:73
+#: inc/shortcodes/popular-courses/templates/cards.php:61
+#: inc/shortcodes/popular-courses/templates/grids.php:69
+#: inc/shortcodes/popular-courses/templates/list.php:73
+#: inc/shortcodes/recent-courses/templates/cards.php:61
+#: inc/shortcodes/recent-courses/templates/grids.php:69
+#: inc/shortcodes/recent-courses/templates/list.php:72
+msgid "Free"
+msgstr "Gratis"
+
+#: inc/admin/lp-admin-functions.php:961
+msgid "Pending Courses / Publish Courses"
+msgstr "Cursos pendientes / publicar cursos"
+
+#: inc/admin/lp-admin-functions.php:961
+msgid "Free Courses / Priced Courses"
+msgstr "Cursos gratuitos / Cursos de pago"
+
+#: inc/admin/lp-admin-functions.php:1068
+msgid "Duplicate this course"
+msgstr "Duplicar este curso"
+
+#: inc/admin/lp-admin-functions.php:1079
+#: inc/admin/views/settings/fields/course-permalink.php:31
+#: inc/admin/views/statistics/orders.php:47
+#: inc/custom-post-types/lesson.php:172 inc/custom-post-types/quiz.php:316
+#: templates/cart/form.php:29 templates/checkout/review-order.php:26
+#: templates/emails/order-items-table.php:19
+#: templates/order/order-details.php:17
+msgid "Course"
+msgstr "Curso"
+
+#: inc/admin/lp-admin-functions.php:1088
+msgid "Duplicate this quiz"
+msgstr "Duplicar esta prueba"
+
+#: inc/admin/lp-admin-functions.php:1093
+msgid "Duplicate this question"
+msgstr "Duplicar esta pregunta"
+
+#: inc/admin/lp-admin-functions.php:1098
+msgid "Duplicate this lesson"
+msgstr "Duplicar la lección"
+
+#: inc/admin/lp-admin-functions.php:1150
+msgid "Oops! The course does not exist."
+msgstr "Ups! El curso no existe."
+
+#: inc/admin/lp-admin-functions.php:1154
+msgid "Sorry! You have not permission to duplicate this course."
+msgstr "¡Lo siento! No tienes permiso para acceder a este curso."
+
+#: inc/admin/lp-admin-functions.php:1183 inc/admin/lp-admin-functions.php:1743
+msgid "<p>Sorry! Duplicate course failed!</p>"
+msgstr "<p>Lo sentimos! Error al duplicar el curso!</p>"
+
+#: inc/admin/lp-admin-functions.php:1244
+msgid "<p>Course duplicated.</p>"
+msgstr "<p>Curso duplicado.</p>"
+
+#: inc/admin/lp-admin-functions.php:1268
+msgid "Sorry! Duplicate question failed!"
+msgstr "¡Lo siento! pregunta duplicada!"
+
+#: inc/admin/lp-admin-functions.php:1269
+msgid "Question duplicated."
+msgstr "Pregunta duplicado."
+
+#: inc/admin/lp-admin-functions.php:1273
+msgid "Sorry! Duplicate lesson failed!"
+msgstr "¡Lo siento! lección duplicada!"
+
+#: inc/admin/lp-admin-functions.php:1274
+msgid "Lesson duplicated."
+msgstr "Lección duplicada."
+
+#: inc/admin/lp-admin-functions.php:1278
+msgid "Sorry! Duplicate quiz failed!"
+msgstr "¡Lo siento! examen duplicado no!"
+
+#: inc/admin/lp-admin-functions.php:1279
+msgid "Quiz duplicated."
+msgstr "Examen duplicado."
+
+#: inc/admin/lp-admin-functions.php:1372
+#, php-format
+msgid "The user %s has become a teacher"
+msgstr "El usuario %s se ha convertido en un instructor"
+
+#: inc/admin/lp-admin-functions.php:1428
+msgid "You haven't got any courses yet! Would you like to import sample data?"
+msgstr "No tienes ningún curso publicado todavía!"
+
+#: inc/admin/lp-admin-functions.php:1429
+msgid "If yes, it requires to install addon name"
+msgstr "En caso afirmativo, se requiere que se instale el nombre del addon"
+
+#: inc/admin/lp-admin-functions.php:1430
+msgid "LearnPress Import/Export"
+msgstr ""
+
+#: inc/admin/lp-admin-functions.php:1431
+msgid "but don't worry because it is completely automated."
+msgstr "pero no se preocupe, ya que es completamente automatizado."
+
+#: inc/admin/lp-admin-functions.php:1432
+msgid "Import now"
+msgstr "Importar ahora"
+
+#: inc/admin/lp-admin-functions.php:1433
+msgid "No, thanks!"
+msgstr "No, gracias!"
+
+#: inc/admin/lp-admin-functions.php:1734
+msgid "<p>Op! The course does not exist</p>"
+msgstr "<p> Op! El curso no existe </p>"
+
+#: inc/admin/lp-admin-functions.php:1738
+msgid "<p>Sorry! You have not permission to duplicate this course</p>"
+msgstr "<p> ¡Lo siento! No tienes permisos para duplicar este curso </p>"
+
+#: inc/admin/lp-admin-functions.php:1785
+#, php-format
+msgid "Question id %s is not exists."
+msgstr "Cuestionario id %s no es existe."
+
+#: inc/admin/lp-admin-functions.php:1788
+#, php-format
+msgid "Quiz id %s is not exists."
+msgstr "Examen id %s no es existe."
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-plugin.php:21
+msgid "No results found"
+msgstr "Sin resultados"
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-plugin.php:34
+msgid "Downloaded"
+msgstr "Descargado"
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-plugin.php:35
+msgid "Active Installed"
+msgstr "Instalado"
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-plugin.php:53
+msgid "Updated"
+msgstr "Actualizado"
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-plugin.php:56
+msgid "Current Version"
+msgstr "Versión actual"
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-status.php:25
+msgid "Total Raised"
+msgstr "TOTAL"
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-status.php:32
+#: inc/admin/dashboard-statistics/class-lp-statistic-status.php:41
+#, php-format
+msgid "%d order"
+msgid_plural "%d orders"
+msgstr[0] "Pedido %d"
+msgstr[1] "Pedidos %d"
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-status.php:47
+msgid "Featured: "
+msgstr "Destacado: "
+
+#: inc/admin/dashboard-statistics/class-lp-statistic-status.php:52
+msgid "Created by: "
+msgstr "Creado por: "
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:24
+msgid "Do you want to remove this lesson permanently?"
+msgstr "Deseas eliminar esta lección de forma permanente?"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:25
+msgid "Do you want to remove this quiz permanently?"
+msgstr "Deseas eliminar este exámen de forma permanente?"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:26
+msgid "Do you want to remove this section permanently?"
+msgstr "Deseas eliminar esta lección de forma permanente?"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:27
+msgid "New quiz added"
+msgstr "Nuevo exámen añadido"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:28
+msgid "New lesson added"
+msgstr "Nueva lección añadida"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:29
+msgid "New section added"
+msgstr "Nueva sección añadida"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:30
+msgid "The lesson removed"
+msgstr "La lección fue retirada"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:31
+msgid "The quiz removed"
+msgstr "Cuesionario eliminado"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:32
+msgid "The section removed"
+msgstr "Sección removida"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:33
+msgid "The ordering completed"
+msgstr "La orden completada"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:34
+msgid "Lesson added to section completed!"
+msgstr "Lección añadido a la sección completado!"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:35
+msgid "Quiz added to section completed!"
+msgstr "Examen añadido a la sección completado!"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:36
+#, php-format
+msgid "%s updated"
+msgstr "%s actualizados."
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:37
+msgid "Click to quick edit name"
+msgstr "Haz clic para editar nombre"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:38
+msgid "Save Course"
+msgstr "Guardar curso"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:39
+#: inc/admin/views/meta-boxes/course/review-log.php:31
+msgid "Submit for Review"
+msgstr "Enviar para revisión"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:152
+msgid "Add Lesson"
+msgstr "Añadir Lección"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:157
+msgid "Add Quiz"
+msgstr "Añadir Examen"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:170
+msgid "Using final quiz"
+msgstr "Cuestionario final"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:175
+msgid "User must be complete the final quiz to finish a section."
+msgstr "Usuario debe completar el cuestionario final para terminar una sección"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:259
+msgid "The course is empty"
+msgstr "El curso está vacío"
+
+#: inc/admin/meta-boxes/class-curriculum-field.php:293
+msgid "Success"
+msgstr "Correcto"
+
+#: inc/admin/meta-boxes/class-quiz-questions-field.php:86
+msgid "Can not create a question"
+msgstr "No se puede crear una pregunta"
+
+#: inc/admin/pointers/pointers.php:66 inc/custom-post-types/course.php:536
+#: templates/single-course/curriculum.php:16
+msgid "Course Curriculum"
+msgstr "Temario del Curso"
+
+#: inc/admin/pointers/pointers.php:67
+msgid ""
+"Build a course by selecting created lessons and quizzes or adding new ones. "
+"Sorting, editing, shortcuts (l and q), it never gets easier with LP."
+msgstr ""
+"Crear un curso seleccionando lecciones y exámenes o añadiendo nuevos. "
+"Ordenar, editar, atajos (l y q)"
+
+#: inc/admin/settings/class-lp-settings-checkout.php:52
+msgid "No checkout Free course"
+msgstr "Los cursos gratis no se procesan como pago"
+
+#: inc/admin/settings/class-lp-settings-checkout.php:53
+msgid ""
+"Check this option to allow user to enroll course immediately without adding "
+"to cart."
+msgstr ""
+"Marca esta opción para permitir al usuario inscribirme en el curso "
+"inmediatamente sin necesidad de añadir a la cesta."
+
+#: inc/admin/settings/class-lp-settings-checkout.php:59
+msgid "Disable auto enroll"
+msgstr "Desactivar Auto Cortar"
+
+#: inc/admin/settings/class-lp-settings-checkout.php:60
+msgid "Disable auto enroll a user after they buy a course."
+msgstr "Desactivar auto inscribir un usuario después de que compren un curso."
+
+#: inc/admin/settings/class-lp-settings-checkout.php:66
+msgid "Checkout page"
+msgstr "Página de pago"
+
+#: inc/admin/settings/class-lp-settings-checkout.php:72
+msgid "Checkout Endpoints"
+msgstr "Finalizar pedido"
+
+#: inc/admin/settings/class-lp-settings-courses.php:32
+#: inc/custom-post-types/course.php:464
+msgctxt "slug"
+msgid "courses"
+msgstr "cursos"
+
+#: inc/admin/settings/class-lp-settings-courses.php:45
+#: inc/admin/views/settings/fields/course-permalink.php:14
+msgctxt "default-slug"
+msgid "courses"
+msgstr "cursos"
+
+#: inc/admin/settings/class-lp-settings-courses.php:64
+msgid "Courses Page"
+msgstr "Página de Cursos"
+
+#: inc/admin/settings/class-lp-settings-courses.php:70
+msgid "Course category base"
+msgstr "Categoría base de curso"
+
+#: inc/admin/settings/class-lp-settings-courses.php:76
+msgid "Course tag base"
+msgstr "Etiqueta de Curso base"
+
+#: inc/admin/settings/class-lp-settings-courses.php:82
+msgid "Review course before publish"
+msgstr "Revisar curso antes de publicar"
+
+#: inc/admin/settings/class-lp-settings-courses.php:83
+msgid "The course needs to be reviewed by admin before it can be published."
+msgstr ""
+"El curso tiene que ser revisado por el administrador antes de ser publicados."
+
+#: inc/admin/settings/class-lp-settings-courses.php:89
+msgid "Enable edit published course"
+msgstr "Activar la edición de un curso publicado"
+
+#: inc/admin/settings/class-lp-settings-courses.php:90
+msgid ""
+"Allow instructors to edit the course that are published without review.<br /"
+"> If this option is disabled, the course status will be changed to Pending "
+"Review when the instructor update course."
+msgstr ""
+"Permitir a los instructores para editar el curso que se publican sin "
+"revisión. <br /> Si esta opción está desactivada, el estado del curso será "
+"cambiado a Pendiente de revisión cuando el instructor Curso de actualización."
+
+#: inc/admin/settings/class-lp-settings-courses.php:96
+msgid "Hide list of question in quiz"
+msgstr "No hay dudas en esta prueba"
+
+#: inc/admin/settings/class-lp-settings-courses.php:97
+msgid ""
+"Hide list of question in quiz<br /> If this option is enabled, the course "
+"status will be changed to Pending Review when the instructor update course"
+msgstr ""
+"Ocultar lista de preguntas en el cuestionario<br>Si esta opción está "
+"activada, el status del curso cambiará a pendiente cuando el instructor "
+"actualice el curso"
+
+#: inc/admin/settings/class-lp-settings-courses.php:103
+msgid "Archive"
+msgstr "Archivos"
+
+#: inc/admin/settings/class-lp-settings-courses.php:107
+#: inc/admin/settings/class-lp-settings-pages.php:80
+msgid "Courses limit"
+msgstr "cursos límite"
+
+#: inc/admin/settings/class-lp-settings-courses.php:108
+msgid "Number of courses displayed per page."
+msgstr "Número de cursos por página."
+
+#: inc/admin/settings/class-lp-settings-courses.php:117
+#: inc/admin/settings/class-lp-settings-courses.php:127
+#: inc/admin/settings/class-lp-settings-general.php:95
+msgid "Course thumbnail"
+msgstr "Miniatura del Curso"
+
+#: inc/admin/settings/class-lp-settings-courses.php:121
+msgid "Single course"
+msgstr "Curso único"
+
+#: inc/admin/settings/class-lp-settings-courses.php:133
+#: inc/admin/settings/class-lp-settings-courses.php:137
+msgid "Single course permalink"
+msgstr "Enlace permanente del curso único"
+
+#: inc/admin/settings/class-lp-settings-emails.php:39
+msgid "General options"
+msgstr "Opciones generales"
+
+#: inc/admin/settings/class-lp-settings-emails.php:154
+#: inc/admin/settings/class-lp-settings-profile.php:37
+msgid "Profile page"
+msgstr "Pagina de perfil"
+
+#: inc/admin/settings/class-lp-settings-general.php:32
+msgid "Instructors registration"
+msgstr "Registro de instructores"
+
+#: inc/admin/settings/class-lp-settings-general.php:33
+msgid "Create option for instructors registration."
+msgstr "Crear opción para el registro de instructores."
+
+#: inc/admin/settings/class-lp-settings-general.php:39
+msgid "Auto update post name"
+msgstr "Actualización automática del nombre de la publicación"
+
+#: inc/admin/settings/class-lp-settings-general.php:40
+msgid ""
+"The post's name will update along with the title when changes title of "
+"lesson or quiz  in course curriculum or question in quiz<br />The permalink "
+"also is changed, therefore uncheck this if you don't want to change the "
+"permalink"
+msgstr ""
+"El nombre de la publicación se actualizará con el título cuando el título de "
+"la lección o cuestionario cambie en las lecciones o en la pregunta del "
+"cuestionario<br />El permalink también cambiará, así que de-seleccione esta "
+"opción si no quiere que cambie el permalink"
+
+#: inc/admin/settings/class-lp-settings-general.php:46
+msgid "Currency"
+msgstr "Moneda"
+
+#: inc/admin/settings/class-lp-settings-general.php:53
+msgid "Currency position"
+msgstr "Moneda posición"
+
+#: inc/admin/settings/class-lp-settings-general.php:60
+msgid "Thousands Separator"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-general.php:67
+msgid "Decimals Separator"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-general.php:74
+msgid "Number of Decimals"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-general.php:81
+msgid "Load css"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-general.php:85
+msgid "Load default stylesheet for LearnPress"
+msgstr "Cargar hoja de estilo por defecto para LearnPress"
+
+#: inc/admin/settings/class-lp-settings-general.php:88
+msgid "Debug mode"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-general.php:92
+msgid "Turn on/off debug mode for developer"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-general.php:99
+msgid "Turn on/off courses extra thumbnail"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-pages.php:18
+#: inc/admin/settings/class-lp-settings-pages.php:49
+#: inc/admin/settings/class-lp-settings-profile.php:22
+msgid "Profile"
+msgstr "Perfil"
+
+#: inc/admin/settings/class-lp-settings-pages.php:26
+#: inc/admin/settings/class-lp-settings-pages.php:157
+msgid "Become a teacher"
+msgstr "Registrarse para convertirse en un Mentor"
+
+#: inc/admin/settings/class-lp-settings-pages.php:35
+msgid "Nicename"
+msgstr "Usuario"
+
+#: inc/admin/settings/class-lp-settings-pages.php:36
+msgid "First name"
+msgstr "Nombre"
+
+#: inc/admin/settings/class-lp-settings-pages.php:37
+msgid "Last name"
+msgstr "Apellido"
+
+#: inc/admin/settings/class-lp-settings-pages.php:38
+#: templates/profile/tabs/edit.php:105
+msgid "Nickname"
+msgstr "Apodo"
+
+#: inc/admin/settings/class-lp-settings-pages.php:39
+msgid "First name + Last name"
+msgstr "Nombre + Apellido"
+
+#: inc/admin/settings/class-lp-settings-pages.php:40
+msgid "Last name + First name"
+msgstr "Nombre y apellidos"
+
+#: inc/admin/settings/class-lp-settings-pages.php:56
+msgid "Add link to admin bar"
+msgstr "Añadir enlace a la barra de administración"
+
+#: inc/admin/settings/class-lp-settings-pages.php:62
+msgid "Text link"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-pages.php:66
+msgid "Default: View Course Profile"
+msgstr "Por defecto: Ver Perfil del Curso"
+
+#: inc/admin/settings/class-lp-settings-pages.php:70
+msgid "Target link"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-pages.php:75
+msgid "Self"
+msgstr "Identidad Propia"
+
+#: inc/admin/settings/class-lp-settings-pages.php:76
+msgid "New window"
+msgstr "Ventana nueva"
+
+#: inc/admin/settings/class-lp-settings-pages.php:97
+#: inc/admin/settings/class-lp-settings-pages.php:144
+msgid "Endpoints"
+msgstr "puntos externos"
+
+#: inc/admin/settings/class-lp-settings-pages.php:101
+msgid "Tab Courses"
+msgstr "Pestaña Cursos"
+
+#: inc/admin/settings/class-lp-settings-pages.php:106
+#: inc/admin/settings/class-lp-settings-pages.php:114
+#: inc/admin/settings/class-lp-settings-pages.php:122
+#: inc/admin/settings/class-lp-settings-pages.php:130
+#: inc/admin/settings/class-lp-settings-pages.php:153
+msgid "This is a slug and should be unique."
+msgstr "Este es un slug y debe ser unico."
+
+#: inc/admin/settings/class-lp-settings-pages.php:106
+#: inc/admin/settings/class-lp-settings-pages.php:114
+#: inc/admin/settings/class-lp-settings-pages.php:122
+#: inc/admin/settings/class-lp-settings-pages.php:130
+#: inc/admin/settings/class-lp-settings-pages.php:153
+msgid "Example link is"
+msgstr "El enlace de ejemplo es"
+
+#: inc/admin/settings/class-lp-settings-pages.php:109
+msgid "Tab Quizzes"
+msgstr "Pestaña de cuestionarios"
+
+#: inc/admin/settings/class-lp-settings-pages.php:117
+msgid "Tab Orders"
+msgstr "Pestaña de compras"
+
+#: inc/admin/settings/class-lp-settings-pages.php:125
+msgid "View order"
+msgstr "Ver pedido"
+
+#: inc/admin/settings/class-lp-settings-pages.php:133
+msgid "Profile picture"
+msgstr "Imagen de perfil"
+
+#: inc/admin/settings/class-lp-settings-pages.php:137
+msgid "Thumbnail size"
+msgstr ""
+
+#: inc/admin/settings/class-lp-settings-pages.php:148
+msgid "Results"
+msgstr "Resultados"
+
+#: inc/admin/sub-menus/addons.php:23
+msgid "LearnPress Add-ons"
+msgstr ""
+
+#: inc/admin/sub-menus/addons.php:24
+msgid "Features add-ons that you can add or remove depending on your needs."
+msgstr ""
+"Características complementos que se pueden agregar o quitar dependiendo de "
+"sus necesidades."
+
+#: inc/admin/sub-menus/addons.php:60
+msgid "Search..."
+msgstr "Buscar..."
+
+#: inc/admin/sub-menus/settings.php:32
+msgid "LearnPress settings updated."
+msgstr "LearnPress configuración actualizados."
+
+#: inc/admin/sub-menus/settings.php:38
+msgid "Settings changed. Updating..."
+msgstr "Configuración cambiada. Actualizando..."
+
+#: inc/admin/sub-menus/settings.php:41
+msgid "Settings updated. Redirecting..."
+msgstr "Configuración actualizada. Redirigiendo ..."
+
+#: inc/admin/sub-menus/settings.php:56
+msgid "Save settings"
+msgstr "Guardar ajustes"
+
+#: inc/admin/sub-menus/settings.php:102
+msgid "Settings saved"
+msgstr "Configuraciones guardadas"
+
+#: inc/admin/sub-menus/statistics.php:55
+msgid "Users"
+msgstr "Usuarios"
+
+#: inc/admin/sub-menus/tools.php:31
+msgid "Sorry, you are nto allowed to access this page."
+msgstr "Lo siento, no tienes permiso para acceder a esta página."
+
+#: inc/admin/sub-menus/tools.php:132
+msgid "All courses, lessons, quizzes and questions have been removed"
+msgstr "Todos los cursos, clases, pruebas y preguntas se han eliminado"
+
+#: inc/admin/sub-menus/tools.php:198
+msgid "Outdated data from version less than 1.0 have been removed"
+msgstr "datos obsoletos de la versión inferior a 1,0 se han retirado"
+
+#: inc/admin/sub-menus/tools.php:208
+msgid "Database"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:209
+msgid "Templates"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:217
+msgid "Upgrade courses"
+msgstr "Actualizar cursos"
+
+#: inc/admin/sub-menus/tools.php:218
+msgid ""
+"Upgrade courses, lessons, quizzes and questions from version less than 1.0."
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:220
+msgid ""
+"Use this action to force system to upgrade outdated data to latest version."
+msgstr ""
+"Utilice esta acción para forzar el sistema para actualizar datos obsoletos a "
+"la última versión."
+
+#: inc/admin/sub-menus/tools.php:223
+msgid ""
+"All courses will be upgraded whether you have done this action in the past. "
+"So please remove all courses before you upgrade to prevent duplicated "
+"courses."
+msgstr ""
+"Todos los cursos se actualizarán aun si han hecho esta acción en el pasado. "
+"Así que por favor retire todos los cursos antes de actualizar para evitar "
+"que los cursos se dupliquen."
+
+#: inc/admin/sub-menus/tools.php:226
+msgid "Upgrade"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:230
+msgid "Remove current data"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:231
+msgid "Remove all courses, lessons, quizzes and questions"
+msgstr "Eliminar todos los cursos, lecciones, cuestionarios y preguntas"
+
+#: inc/admin/sub-menus/tools.php:234
+msgid "Be careful before using this action!"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:238 inc/admin/sub-menus/tools.php:255
+msgid "Check this box and click this button again to confirm."
+msgstr "Marque esta casilla y haga clic en este botón de nuevo para confirmar."
+
+#: inc/admin/sub-menus/tools.php:241 inc/admin/sub-menus/tools.php:258
+#: inc/admin/views/meta-boxes/course/editor.php:18
+#: inc/admin/views/meta-boxes/course/editor.php:48
+#: inc/admin/views/meta-boxes/course/loop-section.php:44
+#: inc/admin/views/meta-boxes/question/header.php:13
+#: inc/admin/views/meta-boxes/quiz/question.php:36
+#: inc/libraries/meta-box/inc/fields/file-input.php:38
+#: inc/question/abstract-lp-question.php:653 templates/cart/form.php:72
+msgid "Remove"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:247
+msgid "Remove outdated data"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:248
+msgid ""
+"Remove all courses, lessons, quizzes and questions from version less than "
+"1.0."
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:251
+msgid ""
+"Be careful before using this action! Only use this action in case all "
+"outdated data has been upgraded."
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:311
+#, php-format
+msgid "Override Templates (%s)"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:319
+msgid "File"
+msgstr "Archivo"
+
+#: inc/admin/sub-menus/tools.php:326
+msgid "Outdated"
+msgstr "Obsoleto"
+
+#: inc/admin/sub-menus/tools.php:330
+msgid "Version"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:332
+msgid "Core version"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:357
+msgid "There is no template file has overwritten"
+msgstr ""
+
+#: inc/admin/sub-menus/tools.php:406
+msgid "LearnPress Tools"
+msgstr ""
+
+#: inc/admin/views/admin-template.php:4
+msgid "Type here to search item"
+msgstr ""
+
+#: inc/admin/views/admin-template.php:12 inc/admin/views/admin-template.php:13
+#: inc/admin/views/meta-boxes/course/editor.php:19
+msgid "Add"
+msgstr "Añadir"
+
+#: inc/admin/views/admin-template.php:15 inc/admin/views/admin-template.php:19
+msgid "Add and Close"
+msgstr "Añadir y Cerrar"
+
+#: inc/admin/views/admin-template.php:26 inc/admin/views/admin-template.php:45
+#: inc/admin/views/meta-boxes/course/js-template.php:76
+#: inc/admin/views/meta-boxes/course/js-template.php:109
+#: inc/admin/views/meta-boxes/order/details.php:104
+#: inc/admin/views/meta-boxes/quiz/js-template.php:43
+msgid "Close"
+msgstr "Cerrar"
+
+#: inc/admin/views/admin-template.php:35
+#: inc/admin/views/meta-boxes/quiz/question.php:31
+msgid "Duplicate"
+msgstr "Duplicar"
+
+#: inc/admin/views/admin-template.php:35
+msgid "course"
+msgstr "curso"
+
+#: inc/admin/views/admin-template.php:38 inc/admin/views/admin-template.php:41
+msgid "Duplicating ..."
+msgstr "Duplicando ..."
+
+#: inc/admin/views/admin-template.php:38
+msgid "Duplicate course's curriculum"
+msgstr "Duplicar plan de estudios del curso"
+
+#: inc/admin/views/admin-template.php:39
+msgid "All Content"
+msgstr "Todo el contenido"
+
+#: inc/admin/views/admin-template.php:41
+msgid "Duplicate course no curriculum"
+msgstr "Duplicar curso sin ningún plan de estudios"
+
+#: inc/admin/views/admin-template.php:42
+msgid "No Content"
+msgstr "Sin contenido"
+
+#: inc/admin/views/html-admin-notice-templates.php:13
+#, php-format
+msgid ""
+"Your theme <strong>(%s)</strong> contains outdated copies of some LearnPress "
+"template files."
+msgstr ""
+"Su tema <strong>(%s)</strong> contiene copias no actualizadas de algunos "
+"archivos de plantilla LearnPress."
+
+#: inc/admin/views/html-admin-notice-templates.php:15
+msgid ""
+"These files may need updating to ensure they are compatible with the current "
+"version of LearnPress. You can see which files are affected from the system "
+"status page. If in doubt, check with the author of the theme."
+msgstr ""
+"Estos archivos pueden ser actualizadas para garantizar que son compatibles "
+"con la versión actual de LearnPress. Usted puede ver qué archivos se ven "
+"afectados desde la página de estado del sistema. En caso de duda, consulte "
+"con el autor del tema."
+
+#: inc/admin/views/html-admin-notice-templates.php:17
+msgid "View list of outdated templates"
+msgstr "Ver lista de plantillas obsoletas"
+
+#: inc/admin/views/html-admin-notice-templates.php:18
+#: inc/custom-post-types/course.php:159 inc/custom-post-types/quiz.php:159
+msgid "Hide"
+msgstr "Ocultar"
+
+#: inc/admin/views/meta-boxes/course/curriculum.php:9
+msgid "Outline your course and add content with sections, lessons and quizzes."
+msgstr "Delinear tu curso y añadir contenido con secciones, clases y exámenes."
+
+#: inc/admin/views/meta-boxes/course/curriculum.php:12
+#: inc/admin/views/meta-boxes/quiz/questions.php:17
+msgid "Expand All"
+msgstr "Expandir todo"
+
+#: inc/admin/views/meta-boxes/course/curriculum.php:13
+#: inc/admin/views/meta-boxes/quiz/questions.php:18
+msgid "Collapse All"
+msgstr "Contraer todo"
+
+#: inc/admin/views/meta-boxes/course/editor.php:7
+msgid "Add Section"
+msgstr "Añadir Sección"
+
+#: inc/admin/views/meta-boxes/course/editor.php:15
+msgid "New section title"
+msgstr "Nuevo título de sección"
+
+#: inc/admin/views/meta-boxes/course/editor.php:29
+msgid "New quiz name"
+msgstr "Nuevo tipo de examen"
+
+#: inc/admin/views/meta-boxes/course/editor.php:30
+msgid "New lesson name"
+msgstr "Nuevo nombre lección"
+
+#: inc/admin/views/meta-boxes/course/editor.php:32
+msgid "Add Content"
+msgstr "Añadir contenido"
+
+#: inc/admin/views/meta-boxes/course/editor.php:33
+msgid "Add Existing Content"
+msgstr "Añadir el contenido existente"
+
+#: inc/admin/views/meta-boxes/course/editor.php:45
+msgid "New item title"
+msgstr "Nuevo elemento de título"
+
+#: inc/admin/views/meta-boxes/course/editor.php:49
+msgid "Quick edit"
+msgstr "Edición rápida"
+
+#: inc/admin/views/meta-boxes/course/editor.php:58
+msgid "Title"
+msgstr "Título"
+
+#: inc/admin/views/meta-boxes/course/editor.php:62
+#: inc/custom-post-types/course.php:1290 inc/custom-post-types/course.php:1296
+msgid "Content"
+msgstr "Contenido"
+
+#: inc/admin/views/meta-boxes/course/js-template.php:6
+#: inc/admin/views/meta-boxes/course/js-template.php:14
+#: inc/custom-post-types/question.php:223 inc/custom-post-types/quiz.php:290
+msgid "Add [Enter]"
+msgstr "Añadir [Enter]"
+
+#: inc/admin/views/meta-boxes/course/js-template.php:54
+msgid "Type here to search lesson"
+msgstr "Escribe aquí para buscar"
+
+#: inc/admin/views/meta-boxes/course/js-template.php:55
+#: inc/admin/views/meta-boxes/course/js-template.php:88
+#: inc/admin/views/meta-boxes/course/loop-section.php:71
+#: inc/admin/views/meta-boxes/quiz/js-template.php:6
+#: inc/admin/views/meta-boxes/quiz/questions.php:36
+#: inc/custom-post-types/course.php:456 inc/custom-post-types/lesson.php:64
+#: inc/custom-post-types/order.php:419 inc/custom-post-types/question.php:100
+msgid "Add New"
+msgstr "Añadir Nuevo"
+
+#: inc/admin/views/meta-boxes/course/js-template.php:73
+#: inc/admin/views/meta-boxes/course/js-template.php:106
+#: inc/admin/views/meta-boxes/order/details.php:102
+#: inc/admin/views/meta-boxes/quiz/js-template.php:40
+msgid "No results"
+msgstr "Sin resultados"
+
+#: inc/admin/views/meta-boxes/course/js-template.php:75
+#: inc/admin/views/meta-boxes/course/js-template.php:108
+msgid "Add to section"
+msgstr "Añadir a sección"
+
+#: inc/admin/views/meta-boxes/course/js-template.php:87
+msgid "Type here to search quiz"
+msgstr "Escribe aquí para buscar"
+
+#: inc/admin/views/meta-boxes/course/loop-item.php:32
+#, php-format
+msgid "Switch to %s"
+msgstr "Cambiar a %s"
+
+#: inc/admin/views/meta-boxes/course/loop-item.php:39
+msgid "Add new item here and press Enter"
+msgstr "Añadir un nuevo artículo aquí y pulse Intro"
+
+#: inc/admin/views/meta-boxes/course/loop-item.php:49
+#: inc/custom-post-types/course.php:405
+msgid "Are you sure you want to remove this item?"
+msgstr "Estás seguro de que desea eliminar esto?"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:33
+msgid "Enter section name and hit enter"
+msgstr "ingresa el nombre de la sección y presiona enter"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:35
+#: inc/admin/views/meta-boxes/question/header.php:14
+#: inc/admin/views/meta-boxes/quiz/question.php:28
+#: inc/question/abstract-lp-question.php:654
+msgid "Expand"
+msgstr "Expandir"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:36
+#: inc/admin/views/meta-boxes/question/header.php:15
+#: inc/admin/views/meta-boxes/quiz/question.php:29
+#: inc/question/abstract-lp-question.php:655
+msgid "Collapse"
+msgstr "Colapsar"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:37
+msgid "Are you sure you want to remove this section?"
+msgstr "¿Está seguro que quiere eliminar esta sección?"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:43
+msgid "Describe about this section"
+msgstr "Describe esta sección"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:44
+msgid "Are you sure you want to remove these items from section?"
+msgstr "¿Está seguro de que desea eliminar estos artículos de la sección?"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:46
+msgid "Delete Forever"
+msgstr "Borrar para siempre"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:69
+msgid "Add new lesson or quiz and press Enter"
+msgstr "Añadir nueva lección o un cuestionario y pulsa Enter"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:81
+#: inc/admin/views/meta-boxes/quiz/questions.php:46
+msgid "-OR-"
+msgstr "-O-"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:85
+#, php-format
+msgid "Select %s"
+msgstr "Seleccionar %s"
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:90
+msgid "Select Quizzes"
+msgstr "Seleccionar Exámenes"
+
+#: inc/admin/views/meta-boxes/course/review-log.php:25
+#: inc/custom-post-types/course.php:407
+msgid "Your course is pending for reviewing"
+msgstr "Tu curso está pendiente de revisión"
+
+#: inc/admin/views/meta-boxes/course/review-log.php:27
+msgid ""
+"Your course will not be submitted for reviewing until you check 'Submit for "
+"Review'"
+msgstr ""
+"Tu curso no se someterá a la revisión hasta que marques 'Enviar a revisión'"
+
+#: inc/admin/views/meta-boxes/course/review-log.php:34
+#: inc/admin/views/meta-boxes/course/review-log.php:42
+msgid "Message to Reviewer"
+msgstr "Mensaje para el Revisor"
+
+#: inc/admin/views/meta-boxes/course/review-log.php:40
+msgid ""
+"Warning! Your course will become Pending Review for admins to review before "
+"it can be published when you update."
+msgstr ""
+"¡Advertencia! Tu curso se convertirá en pendiente de revisión para los "
+"administradores que revisen antes de que pueda publicarse en el momento de "
+"actualizar."
+
+#: inc/admin/views/meta-boxes/course/review-log.php:48
+msgid "This course is pending for reviewing"
+msgstr "Este curso está pendiente de revisión"
+
+#: inc/admin/views/meta-boxes/course/review-log.php:51
+msgid "Message to Instructor"
+msgstr "Mensaje para el instructor"
+
+#: inc/admin/views/meta-boxes/course/review-logs.php:7
+#, php-format
+msgctxt "learnpress"
+msgid "%d review"
+msgid_plural "%d reviews"
+msgstr[0] "%d revisión"
+msgstr[1] "%d revisiones"
+
+#: inc/admin/views/meta-boxes/course/review-logs.php:9
+msgid "This course has not got any reviews yet"
+msgstr "Este curso no tiene ninguna crítica"
+
+#: inc/admin/views/meta-boxes/course/review-logs.php:25
+msgid "Rejected"
+msgstr "Rechazado"
+
+#: inc/admin/views/meta-boxes/course/review-logs.php:25
+msgid "Submit for review"
+msgstr "Enviar para revisión"
+
+#: inc/admin/views/meta-boxes/course/review-logs.php:31
+#: inc/libraries/meta-box/inc/fields/autocomplete.php:15
+#: inc/libraries/meta-box/inc/fields/autocomplete.php:66
+msgid "Delete"
+msgstr "Borrar"
+
+#: inc/admin/views/meta-boxes/course/review-logs.php:40
+msgid "View less"
+msgstr "Ver Menos"
+
+#: inc/admin/views/meta-boxes/course/review-logs.php:42
+msgid "View all"
+msgstr "Ver todo"
+
+#: inc/admin/views/meta-boxes/order/actions.php:7
+msgid "M j, Y @ H:i"
+msgstr ""
+
+#: inc/admin/views/meta-boxes/order/actions.php:10
+#, php-format
+msgid "Scheduled for: <b>%1$s</b>"
+msgstr ""
+
+#: inc/admin/views/meta-boxes/order/actions.php:12
+#, php-format
+msgid "Order date: <b>%1$s</b>"
+msgstr "Fecha de compra: <b>%1$s</b>"
+
+#: inc/admin/views/meta-boxes/order/actions.php:14
+#: inc/admin/views/meta-boxes/order/actions.php:22
+msgid "Publish <b>immediately</b>"
+msgstr "Publicar <b>inmediatamente</b>"
+
+#: inc/admin/views/meta-boxes/order/actions.php:16
+#, php-format
+msgid "Schedule for: <b>%1$s</b>"
+msgstr "Programar para: <b>%1$s</b>"
+
+#: inc/admin/views/meta-boxes/order/actions.php:18
+#, php-format
+msgid "Publish on: <b>%1$s</b>"
+msgstr "Publicar en: <b>%1$s</b>"
+
+#: inc/admin/views/meta-boxes/order/actions.php:34
+msgid "Order status"
+msgstr "Estado del pedido"
+
+#: inc/admin/views/meta-boxes/order/actions.php:54
+msgid "Customer"
+msgstr "Cliente"
+
+#: inc/admin/views/meta-boxes/order/actions.php:63
+#: inc/order/class-lp-order.php:236
+msgid "[Guest]"
+msgstr "[Invitado]"
+
+#: inc/admin/views/meta-boxes/order/actions.php:78
+msgid "Edit date and time"
+msgstr "Editar Fecha y hora"
+
+#: inc/admin/views/meta-boxes/order/actions.php:80
+msgid "Date and time"
+msgstr "Fecha y hora"
+
+#: inc/admin/views/meta-boxes/order/actions.php:91
+msgid "Delete Permanently"
+msgstr "Borrar Permanentemente"
+
+#: inc/admin/views/meta-boxes/order/actions.php:93
+msgid "Move to Trash"
+msgstr "Enviar a Papelera"
+
+#: inc/admin/views/meta-boxes/order/details.php:11
+#, php-format
+msgid "Order %s"
+msgstr "Pedido %s"
+
+#: inc/admin/views/meta-boxes/order/details.php:14
+#, php-format
+msgid "Date %s"
+msgstr "Fecha %s"
+
+#: inc/admin/views/meta-boxes/order/details.php:15
+#, php-format
+msgid "Status %s"
+msgstr "Estado %s"
+
+#: inc/admin/views/meta-boxes/order/details.php:36
+#: inc/custom-post-types/order.php:378
+#, php-format
+msgid "Pay via <strong>%s</strong>"
+msgstr "Pagar con <strong>%s</strong>"
+
+#: inc/admin/views/meta-boxes/order/details.php:43
+msgid "Order Items"
+msgstr "Elementos del pedido"
+
+#: inc/admin/views/meta-boxes/order/details.php:48
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:433
+msgid "Item"
+msgstr "Producto"
+
+#: inc/admin/views/meta-boxes/order/details.php:49
+msgid "Cost"
+msgstr "Costo"
+
+#: inc/admin/views/meta-boxes/order/details.php:50
+#: templates/emails/order-items-table.php:20
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: inc/admin/views/meta-boxes/order/details.php:51
+msgid "Amount"
+msgstr "Cantidad"
+
+#: inc/admin/views/meta-boxes/order/details.php:61
+msgid "No order items"
+msgstr "No hay elementos en el pedido"
+
+#: inc/admin/views/meta-boxes/order/details.php:66
+msgid "Sub Total"
+msgstr "Subtotal"
+
+#: inc/admin/views/meta-boxes/order/details.php:74
+#: inc/custom-post-types/order.php:307 templates/cart/form.php:31
+#: templates/cart/form.php:100 templates/checkout/order-received.php:32
+#: templates/checkout/review-order.php:27
+#: templates/checkout/review-order.php:66 templates/order/order-details.php:18
+#: templates/order/order-details.php:54 templates/profile/tabs/orders.php:18
+msgid "Total"
+msgstr ""
+
+#: inc/admin/views/meta-boxes/order/details.php:83
+msgid "Add Item"
+msgstr "Añadir elemento"
+
+#: inc/admin/views/meta-boxes/order/details.php:84
+msgid "Calculate Total"
+msgstr "Calcular total"
+
+#: inc/admin/views/meta-boxes/order/details.php:92
+msgid "Customer Note"
+msgstr "Nota del Comprador"
+
+#: inc/admin/views/meta-boxes/order/details.php:99
+msgid "Type here to search the course"
+msgstr "Escribe aquí para buscar"
+
+#: inc/admin/views/meta-boxes/question/multi-choice-options.php:18
+#: inc/admin/views/meta-boxes/question/single-choice-options.php:17
+#: inc/question/class-lp-question-multi-choice.php:119
+msgid "Answer Text"
+msgstr "Respuesta Texto."
+
+#: inc/admin/views/meta-boxes/question/multi-choice-options.php:19
+#: inc/admin/views/meta-boxes/question/single-choice-options.php:18
+#: inc/question/class-lp-question-multi-choice.php:118
+msgid "Is Correct?"
+msgstr "Es correcto?"
+
+#: inc/admin/views/meta-boxes/question/multi-choice-options.php:62
+#: inc/admin/views/meta-boxes/question/single-choice-options.php:64
+#, php-format
+msgid ""
+"<button class=\"button add-question-option-button add-question-option-button-"
+"%1$d\" data-id=\"%1$d\" type=\"button\">%2$s</button>"
+msgstr ""
+
+#: inc/admin/views/meta-boxes/question/multi-choice-options.php:64
+#: inc/admin/views/meta-boxes/question/single-choice-options.php:66
+msgid "Add Option"
+msgstr "Agregar Opción"
+
+#: inc/admin/views/meta-boxes/question/none.php:2
+msgid "Please select a type for this question"
+msgstr "Selección una pregunta"
+
+#: inc/admin/views/meta-boxes/quiz/js-template.php:4
+msgid "Type here to search the questions"
+msgstr "Escribe aquí para buscar"
+
+#: inc/admin/views/meta-boxes/quiz/js-template.php:27
+msgid "(Untitled)"
+msgstr "(Sin título)"
+
+#: inc/admin/views/meta-boxes/quiz/js-template.php:42
+msgid "Add to quiz"
+msgstr "Añadir al cuestionario"
+
+#: inc/admin/views/meta-boxes/quiz/question.php:14
+msgid "Load question failed!"
+msgstr "¡ Error en la carga de pregunta!"
+
+#: inc/admin/views/meta-boxes/quiz/question.php:35
+msgid "Are you sure you want to remove this question?"
+msgstr "Estás seguro de que quieres eliminar esta pregunta?"
+
+#: inc/admin/views/meta-boxes/quiz/questions.php:15
+#: inc/custom-post-types/question.php:97 inc/custom-post-types/quiz.php:127
+#: inc/custom-post-types/quiz.php:317
+msgid "Questions"
+msgstr "Preguntas"
+
+#: inc/admin/views/meta-boxes/quiz/questions.php:34
+msgid "Add question title and press Enter"
+msgstr "Añadir título de la pregunta y pulsar ENTER"
+
+#: inc/admin/views/meta-boxes/quiz/questions.php:47
+msgid "Add Existing Question"
+msgstr "Añadir Pregunta Existente"
+
+#: inc/admin/views/settings/payments.php:17
+#: inc/admin/views/settings/emails/become-a-teacher.php:23
+#: inc/admin/views/settings/emails/enrolled-course.php:24
+#: inc/admin/views/settings/emails/finished-course.php:24
+#: inc/admin/views/settings/emails/new-course.php:25
+#: inc/admin/views/settings/emails/new-order-customer.php:25
+#: inc/admin/views/settings/emails/new-order.php:24
+#: inc/admin/views/settings/emails/published-course.php:21
+#: inc/admin/views/settings/emails/rejected-course.php:25
+#: inc/admin/views/settings/emails/user-order-completed.php:24
+msgid "Enable"
+msgstr "Activar"
+
+#: inc/admin/views/settings/payments.php:24
+#: inc/custom-post-types/question.php:245
+msgid "Type"
+msgstr "Tipo"
+
+#: inc/admin/views/settings/payments.php:27
+msgid "Basic"
+msgstr "Básico"
+
+#: inc/admin/views/settings/payments.php:28
+msgid "Security"
+msgstr "Seguridad"
+
+#: inc/admin/views/settings/payments.php:33
+msgid "Email Address"
+msgstr "Dirección de correo electrónico"
+
+#: inc/admin/views/settings/payments.php:42
+msgid "API Username"
+msgstr "Usuario API"
+
+#: inc/admin/views/settings/payments.php:49
+msgid "API Password"
+msgstr "Contraseña API"
+
+#: inc/admin/views/settings/payments.php:56
+msgid "API Signature"
+msgstr "Firma API"
+
+#: inc/admin/views/settings/payments.php:68
+msgid "Sandbox Mode"
+msgstr ""
+
+#: inc/admin/views/settings/payments.php:76
+msgid "Sandbox Email Address"
+msgstr ""
+
+#: inc/admin/views/settings/payments.php:85
+msgid "Sandbox API Username"
+msgstr ""
+
+#: inc/admin/views/settings/payments.php:93
+msgid "Sandbox API Password"
+msgstr ""
+
+#: inc/admin/views/settings/payments.php:101
+msgid "Sandbox API Signature"
+msgstr ""
+
+#: inc/admin/views/settings/setting-field.php:96
+msgid ""
+"The settings of this image size have been disabled because its values are "
+"being overwritten by a filter."
+msgstr ""
+"Los ajustes de este tamaños de imagen se han desactivado porque sus valores "
+"los ha sobreescrito un filtro."
+
+#: inc/admin/views/settings/setting-field.php:108
+msgid "Hard Crop?"
+msgstr ""
+
+#: inc/admin/views/settings/emails/become-a-teacher.php:28
+msgid "Send notification to user when accept"
+msgstr "Enviar una notificación al usuario cuando acepte"
+
+#: inc/admin/views/settings/emails/become-a-teacher.php:32
+#: inc/admin/views/settings/emails/enrolled-course.php:32
+#: inc/admin/views/settings/emails/finished-course.php:32
+#: inc/admin/views/settings/emails/new-course.php:46
+#: inc/admin/views/settings/emails/new-order-customer.php:33
+#: inc/admin/views/settings/emails/new-order.php:45
+#: inc/admin/views/settings/emails/published-course.php:29
+#: inc/admin/views/settings/emails/rejected-course.php:33
+#: inc/admin/views/settings/emails/user-order-completed.php:32
+msgid "Subject"
+msgstr "Asunto"
+
+#: inc/admin/views/settings/emails/become-a-teacher.php:36
+msgid "Email subject"
+msgstr "Asunto del correo"
+
+#: inc/admin/views/settings/emails/become-a-teacher.php:41
+#: inc/admin/views/settings/emails/enrolled-course.php:43
+#: inc/admin/views/settings/emails/finished-course.php:43
+#: inc/admin/views/settings/emails/new-course.php:57
+#: inc/admin/views/settings/emails/new-order-customer.php:45
+#: inc/admin/views/settings/emails/new-order.php:57
+#: inc/admin/views/settings/emails/published-course.php:40
+#: inc/admin/views/settings/emails/rejected-course.php:44
+#: inc/admin/views/settings/emails/user-order-completed.php:44
+msgid "Heading"
+msgstr "Encabezado"
+
+#: inc/admin/views/settings/emails/become-a-teacher.php:46
+#: inc/admin/views/settings/emails/enrolled-course.php:48
+#: inc/admin/views/settings/emails/finished-course.php:48
+#: inc/admin/views/settings/emails/new-order-customer.php:51
+#: inc/admin/views/settings/emails/new-order.php:63
+#: inc/admin/views/settings/emails/published-course.php:45
+#: inc/admin/views/settings/emails/rejected-course.php:49
+#: inc/admin/views/settings/emails/user-order-completed.php:50
+#, php-format
+msgid "Email heading, default: <code>%s</code>"
+msgstr "Encabezado por default del email: <code>%s</code>"
+
+#: inc/admin/views/settings/emails/email-template.php:6
+#: inc/admin/views/settings/emails/_email-template.php:3
+msgid "Email content"
+msgstr "Contenido del Email"
+
+#: inc/admin/views/settings/emails/email-template.php:13
+#: inc/admin/views/settings/emails/_email-template.php:11
+msgid "HTML template"
+msgstr ""
+
+#: inc/admin/views/settings/emails/email-template.php:14
+#: inc/admin/views/settings/emails/_email-template.php:12
+msgid "Plain text template"
+msgstr ""
+
+#: inc/admin/views/settings/emails/email-template.php:44
+#: inc/admin/views/settings/emails/_email-template.php:28
+#, php-format
+msgid ""
+"This template has been overridden by your theme and can be found in: <code>"
+"%s</code>. Please open the file in an editor program to edit"
+msgstr ""
+"Esta plantilla se ha reemplazado por su tema y se puede encontrar en: <code>"
+"%s</code> . Por favor, abra el archivo en un programa de edición para editar"
+
+#: inc/admin/views/settings/emails/email-template.php:68
+msgid "Click on variables to add it into email content"
+msgstr ""
+"Haga clic sobre las variables para agregarlo a contenido del correo "
+"electrónico"
+
+#: inc/admin/views/settings/emails/email-template.php:77
+#: inc/admin/views/settings/emails/_email-template.php:70
+#, php-format
+msgid ""
+"To override and edit this email template copy <code>%s</code> to your theme "
+"folder: <code>%s</code>."
+msgstr ""
+"Para sobreescribir y editar esta plantilla de correo electrónico, copie "
+"<code>%s</code> a la carpeta de su tema: <code>%s</code>."
+
+#: inc/admin/views/settings/emails/enrolled-course.php:15
+#: inc/emails/class-lp-email-enrolled-course.php:20
+#: inc/emails/class-lp-email-enrolled-course.php:26
+msgid "Enrolled course"
+msgstr "Inscrito al Curso"
+
+#: inc/admin/views/settings/emails/enrolled-course.php:17
+msgid "Send this email to user when they enroll in the course."
+msgstr "Envíe este correo electrónico al usuario cuando se inscriban al curso"
+
+#: inc/admin/views/settings/emails/enrolled-course.php:37
+#, php-format
+msgid "Email subject , default: <code>%s</code>"
+msgstr "Asunto del correo electrónico, por defecto: <code>%s</code>"
+
+#: inc/admin/views/settings/emails/enrolled-course.php:55
+#: inc/admin/views/settings/emails/finished-course.php:54
+#: inc/admin/views/settings/emails/new-course.php:69
+#: inc/admin/views/settings/emails/new-order-customer.php:58
+#: inc/admin/views/settings/emails/new-order.php:69
+#: inc/admin/views/settings/emails/published-course.php:51
+#: inc/admin/views/settings/emails/rejected-course.php:55
+#: inc/admin/views/settings/emails/user-order-completed.php:56
+msgid "Email format"
+msgstr "Formato de Email"
+
+#: inc/admin/views/settings/emails/finished-course.php:15
+#: inc/emails/class-lp-email-finished-course.php:19
+#: inc/emails/class-lp-email-finished-course.php:25
+msgid "Finished course"
+msgstr "Finalizar Curso"
+
+#: inc/admin/views/settings/emails/finished-course.php:17
+msgid "Send this email to user when a user finished a course."
+msgstr ""
+"Enviar correo electrónico a este usuario cuando un usuario terminó un curso."
+
+#: inc/admin/views/settings/emails/finished-course.php:37
+#: inc/admin/views/settings/emails/new-course.php:63
+#: inc/admin/views/settings/emails/new-order-customer.php:39
+#: inc/admin/views/settings/emails/new-order.php:51
+#: inc/admin/views/settings/emails/published-course.php:34
+#: inc/admin/views/settings/emails/rejected-course.php:38
+#: inc/admin/views/settings/emails/user-order-completed.php:38
+#, php-format
+msgid "Email subject, default: <code>%s</code>"
+msgstr "Asunto del correo electrónico, por defecto: <code>%s</code>"
+
+#: inc/admin/views/settings/emails/general.php:15
+msgid "Email Options"
+msgstr "Opciones de Correo electrónico"
+
+#: inc/admin/views/settings/emails/general.php:17
+msgid ""
+"The following options affect the sender (email address and name) used in "
+"LearnPress emails."
+msgstr ""
+"Las siguientes opciones afectan al remitente (dirección de correo "
+"electrónico y nombre) que se utiliza en los correos electrónicos usados por "
+"Learnpress."
+
+#: inc/admin/views/settings/emails/general.php:23
+msgid "From Name"
+msgstr "Nombre del remitente"
+
+#: inc/admin/views/settings/emails/general.php:29
+msgid "From Email"
+msgstr "Correo electrónico del remitente"
+
+#: inc/admin/views/settings/emails/general.php:36
+msgid "Email Template"
+msgstr "Plantilla de Email"
+
+#: inc/admin/views/settings/emails/general.php:40
+msgid "Header image"
+msgstr "Imagen de encabezado"
+
+#: inc/admin/views/settings/emails/general.php:43
+msgid "The image will be displayed in the top of the email."
+msgstr "La imagen se mostrará en la parte superior del correo electrónico."
+
+#: inc/admin/views/settings/emails/general.php:47
+msgid "Footer text"
+msgstr "Texto de pie de página"
+
+#: inc/admin/views/settings/emails/general.php:50
+msgid "The text display in the bottom of email"
+msgstr "El texto se visualiza en la parte inferior del correo electrónico"
+
+#: inc/admin/views/settings/emails/new-course.php:16
+msgid "New course for review"
+msgstr "Nuevo curso para revisar"
+
+#: inc/admin/views/settings/emails/new-course.php:18
+msgid "Email settings when a new course is submitted for review."
+msgstr ""
+"Configuración de correo electrónico cuando un nuevo curso se presenta para "
+"su revisión."
+
+#: inc/admin/views/settings/emails/new-course.php:33
+#: inc/admin/views/settings/emails/new-order.php:32
+msgid "Recipient(s)"
+msgstr "Destinatario(s)"
+
+#: inc/admin/views/settings/emails/new-course.php:40
+#, php-format
+msgid "Email recipient(s), default: <code>%s</code>"
+msgstr "Correo electrónico del destinatario (s), por defecto: <code>%s</code>"
+
+#: inc/admin/views/settings/emails/new-course.php:51
+#, php-format
+msgid "Email subject (separated by comma), default: <code>%s</code>"
+msgstr ""
+"Asunto del correo electrónico (separados por comas), por defecto: <code>%s</"
+"code>"
+
+#: inc/admin/views/settings/emails/new-course.php:59
+#: inc/emails/class-lp-email-new-course.php:20
+#: inc/emails/class-lp-email-new-course.php:26
+msgid "New course"
+msgstr "Nuevo Curso"
+
+#: inc/admin/views/settings/emails/new-order-customer.php:16
+#: inc/emails/class-lp-email-new-order-customer.php:21
+msgid "New order customer"
+msgstr "Cliente con nueva orden"
+
+#: inc/admin/views/settings/emails/new-order-customer.php:18
+#: inc/admin/views/settings/emails/new-order.php:17
+msgid "Send email to a specific address when a new order is placed."
+msgstr ""
+"Enviar correo electrónico a la dirección específica cuando hay una nueva "
+"compra"
+
+#: inc/admin/views/settings/emails/new-order.php:15
+#: inc/emails/class-lp-email-new-order.php:19
+#: inc/emails/class-lp-email-new-order.php:25
+msgid "New order"
+msgstr "Nuevo pedido"
+
+#: inc/admin/views/settings/emails/new-order.php:39
+#, php-format
+msgid "Email recipient(s) (separated by comma), default: <code>%s</code>"
+msgstr ""
+"Correo electrónico del destinatario (s) (separados por comas), por defecto: "
+"<code>%s</code>"
+
+#: inc/admin/views/settings/emails/rejected-course.php:18
+msgid "Settings for email when a course is rejected"
+msgstr "Ajustes de correo electrónico cuando se rechaza un curso"
+
+#: inc/admin/views/settings/emails/user-order-completed.php:15
+#: inc/emails/class-lp-email-user-order-completed.php:21
+msgid "User order completed"
+msgstr "Pedido del usuario completado"
+
+#: inc/admin/views/settings/emails/user-order-completed.php:17
+msgid "Send email to user when the order is completed."
+msgstr "Enviar correo electrónico a los usuarios cuando la orden se completa."
+
+#: inc/admin/views/settings/emails/_email-template.php:55
+#, php-format
+msgid ""
+"This template has been overridden by your theme and can be found in: <code>"
+"%s</code>."
+msgstr ""
+"Esta plantilla ha sido sobreescrita por tu tema y puede encontrarse en: "
+"<code>%s</code>."
+
+#: inc/admin/views/settings/emails/_email-template.php:60
+msgid "Delete template file"
+msgstr ""
+
+#: inc/admin/views/settings/emails/_email-template.php:75
+msgid "Copy file to theme"
+msgstr ""
+
+#: inc/admin/views/settings/emails/_email-template.php:81
+msgid "File was not found."
+msgstr ""
+
+#: inc/admin/views/settings/fields/course-permalink.php:15
+msgctxt "default-slug"
+msgid "course"
+msgstr ""
+
+#: inc/admin/views/settings/fields/course-permalink.php:26
+msgid "Default"
+msgstr "Por defecto"
+
+#: inc/admin/views/settings/fields/course-permalink.php:36
+msgid "Courses base"
+msgstr "Cursos base"
+
+#: inc/admin/views/settings/fields/course-permalink.php:41
+msgid "Courses base with category"
+msgstr "Cursos base con categoría"
+
+#: inc/admin/views/settings/fields/course-permalink.php:75
+msgid "Custom Base"
+msgstr ""
+
+#: inc/admin/views/settings/fields/course-permalink.php:81
+msgid ""
+"Enter a custom base to use. A base <strong>must</strong> be set or WordPress "
+"will use default values instead."
+msgstr ""
+"Introduce la base personalizada que se usará. <strong>Debes</strong> añadir "
+"una base o WordPress utilizará la base por defecto."
+
+#: inc/admin/views/settings/fields/image-size.php:12
+msgid "px"
+msgstr ""
+
+#: inc/admin/views/settings/fields/image-size.php:17
+msgid "Crop?"
+msgstr "¿Recortar?"
+
+#: inc/admin/views/statistics/courses.php:18
+#: inc/admin/views/statistics/orders.php:19
+#: inc/admin/views/statistics/users.php:18
+msgid "Last 7 Days"
+msgstr "Ultimos 7 dias"
+
+#: inc/admin/views/statistics/courses.php:21
+#: inc/admin/views/statistics/orders.php:22
+#: inc/admin/views/statistics/users.php:21
+msgid "Last 30 Days"
+msgstr "Últimos 30 días"
+
+#: inc/admin/views/statistics/courses.php:24
+#: inc/admin/views/statistics/orders.php:25
+#: inc/admin/views/statistics/users.php:24
+msgid "Last 12 Months"
+msgstr "Últimos 12 meses."
+
+#: inc/admin/views/statistics/courses.php:31
+#: inc/admin/views/statistics/orders.php:32
+#: inc/admin/views/statistics/users.php:31
+msgid "From"
+msgstr "De"
+
+#: inc/admin/views/statistics/courses.php:33
+#: inc/admin/views/statistics/orders.php:34
+#: inc/admin/views/statistics/users.php:33
+msgid "To"
+msgstr "Para"
+
+#: inc/admin/views/statistics/courses.php:36
+#: inc/admin/views/statistics/orders.php:37
+#: inc/admin/views/statistics/users.php:36
+msgid "Go"
+msgstr "Ir"
+
+#: inc/admin/views/statistics/courses.php:43
+msgid "Public"
+msgstr "Publica"
+
+#: inc/admin/views/statistics/orders.php:44
+msgid "Sale by"
+msgstr "Venta por"
+
+#: inc/admin/views/statistics/orders.php:46 inc/custom-post-types/order.php:306
+#: templates/checkout/order-received.php:26
+#: templates/profile/tabs/orders.php:16
+msgid "Date"
+msgstr "Fecha"
+
+#: inc/admin/views/statistics/orders.php:48
+msgid "Course Category"
+msgstr "Categoría del Curso"
+
+#: inc/admin/views/statistics/orders.php:51
+msgid "Select a course"
+msgstr "Seleccionar un curso"
+
+#: inc/admin/views/statistics/orders.php:55
+msgid "Select a course category"
+msgstr "Seleccionar categoría del curso"
+
+#: inc/admin/views/updates/0.9/step-repair-database.php:1
+msgid "Update Database"
+msgstr ""
+
+#: inc/admin/views/updates/0.9/step-repair-database.php:4
+msgid "Update custom post type"
+msgstr ""
+
+#: inc/admin/views/updates/0.9/step-repair-database.php:7
+#: inc/admin/views/updates/0.9/step-repair-database.php:10
+msgid "Update post meta"
+msgstr ""
+
+#: inc/admin/views/updates/0.9/step-repair-database.php:14
+msgid "Updating! Please do not close this page until the work is done"
+msgstr ""
+"Actualizando! Por favor, no cierre esta página hasta que el trabajo esté "
+"completado"
+
+#: inc/admin/views/updates/0.9/step-repair-database.php:18
+msgid "Rollback"
+msgstr ""
+
+#: inc/admin/views/updates/0.9/step-upgraded.php:1
+msgid "Upgrade complete successfully!"
+msgstr "Actualización completada."
+
+#: inc/admin/views/updates/0.9/step-upgraded.php:2
+msgid "What's next?"
+msgstr "¿Y ahora qué?"
+
+#: inc/admin/views/updates/0.9/step-upgraded.php:5
+msgid "Manage courses"
+msgstr "Administrar Cursos"
+
+#: inc/admin/views/updates/0.9/step-upgraded.php:8
+msgid "Create a new course"
+msgstr "Crear nuevo curso"
+
+#: inc/admin/views/updates/0.9/step-upgraded.php:11
+msgid "Setting up your LearnPress"
+msgstr ""
+
+#: inc/admin/views/updates/0.9/step-upgraded.php:14
+msgid "Manage add-ons"
+msgstr ""
+
+#: inc/admin/views/updates/0.9/step-upgraded.php:16
+msgid "Dashboard"
+msgstr "Panel"
+
+#: inc/admin/views/updates/0.9/step-welcome.php:1
+msgid "Welcome to LearnPress!"
+msgstr "Bienvenido a Mentoría Online!"
+
+#: inc/admin/views/updates/0.9/step-welcome.php:2
+msgid "Thank you for choosing LearnPress to sell your courses online!"
+msgstr "Gracias por elegir Mentoiría Online para vender sus cursos en línea!"
+
+#: inc/admin/views/updates/0.9/step-welcome.php:3
+#, php-format
+msgid ""
+"In version <strong>%s</strong> of LearnPress we have a big update and need "
+"to upgrade your database to ensure system works properly."
+msgstr ""
+"En la versión <strong>%s</strong> de LearnPress tenemos una gran "
+"actualización y la necesidad de actualizar su base de datos para asegurar "
+"que el sistema funciona correctamente."
+
+#: inc/admin/views/updates/0.9/step-welcome.php:4
+msgid ""
+"We are very careful in upgrading the database but be sure to backup your "
+"database before upgrading to avoid the risks may be encountered."
+msgstr ""
+"Somos muy cuidadosos en la actualización de la base de datos pero Asegúrese "
+"de salvaguardar su base de datos antes de actualizar para evitar riesgos que "
+"se puedan encontrar."
+
+#: inc/admin/views/updates/0.9/step-welcome.php:5
+msgid "Click <strong>Yes, upgrade!</strong> button to start."
+msgstr "Haga clic en <strong>Sí, actualizar!</strong> Botón para comenzar."
+
+#: inc/admin/views/updates/0.9/step-welcome.php:7
+msgid "No, back to Admin"
+msgstr "Ir al Administrador"
+
+#: inc/admin/views/updates/0.9/step-welcome.php:8
+msgid "Yes, upgrade!"
+msgstr "Sí, actualizar!"
+
+#: inc/admin/views/updates/0.9/update-wizard.php:6
+#: inc/admin/views/updates/0.9/update-wizard.php:19
+#, php-format
+msgid "LearnPress update version %s"
+msgstr "LearnPress versión de actualización %s"
+
+#: inc/cart/class-lp-cart.php:120
+msgid "Get cart should not be called before the wp_loaded action."
+msgstr "Adquirir cesta no debería ser llamado antes de la acción wp_loaded"
+
+#: inc/cart/class-lp-cart.php:140 inc/cart/class-lp-cart.php:190
+msgid "Sorry! This course is not purchasable."
+msgstr "¡Lo siento! Este curso no esta a la venta por ahora"
+
+#: inc/cart/class-lp-cart.php:222
+msgid "Please login to continue process."
+msgstr "Por favor, inicie sesión para continuar."
+
+#: inc/cart/class-lp-cart.php:242
+msgid "Cart page is not setting up."
+msgstr "No se ha configurado la página de carrito de compra"
+
+#: inc/cart/class-lp-cart.php:245 templates/cart/empty-cart.php:19
+msgid "Back to class"
+msgstr "Regresar a clase"
+
+#: inc/cart/class-lp-cart.php:250 inc/cart/class-lp-cart.php:260
+msgid "Checkout page is not setting up."
+msgstr "La página de cobro no esta configurado."
+
+#: inc/cart/class-lp-cart.php:252
+msgid "View cart"
+msgstr "Ver mi carrito"
+
+#: inc/cart/class-lp-cart.php:255
+#, php-format
+msgid "<strong>%s</strong> has been added to your cart. %s"
+msgstr "<strong>%s</strong> ha sido añadido a tu carrito %s"
+
+#: inc/cart/class-lp-cart.php:544
+msgid "Checkout page is not setup"
+msgstr "Página de compra no está configurada"
+
+#: inc/course/abstract-lp-course.php:449
+msgid "You enrolled"
+msgstr "Te has inscrito"
+
+#: inc/course/abstract-lp-course.php:451
+#, php-format
+msgctxt ""
+msgid "You and one student enrolled"
+msgid_plural ""
+"You and <span class=\"course-students-number\">%1$s</span> students enrolled"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/course/abstract-lp-course.php:455
+#, php-format
+msgctxt ""
+msgid "One student enrolled"
+msgid_plural ""
+"<span class=\"course-students-number\">%1$s</span> students enrolled"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/course/abstract-lp-course.php:459
+msgid "No student enrolled"
+msgstr "Ningún estudiante inscrito"
+
+#: inc/course/abstract-lp-course.php:838 inc/course/abstract-lp-course.php:856
+#: inc/lesson/class-lp-lesson.php:119 inc/quiz/class-lp-quiz.php:618
+#, php-format
+msgid "The function %s doesn't exists"
+msgstr "La función %s no existe"
+
+#: inc/course/abstract-lp-course.php:1096
+#, php-format
+msgid "%d of %d items completed"
+msgstr "%d de %d elementos completados"
+
+#: inc/course/abstract-lp-course.php:1099
+#: inc/course/abstract-lp-course.php:1101
+#, php-format
+msgid "%d%% completed"
+msgstr "%d%% finalizado"
+
+#: inc/course/abstract-lp-course.php:1389
+#, php-format
+msgid "This course will end within %s next"
+msgstr "Tu acceso a este curso expirará el %s."
+
+#: inc/course/class-lp-course.php:31
+#, php-format
+msgid "Are you sure you want to finish course %s?"
+msgstr ""
+
+#: inc/course/class-lp-course.php:32 templates/single-course/buttons.php:65
+msgid "Finish course"
+msgstr "Finalizar curso"
+
+#: inc/course/class-lp-course.php:35
+#, php-format
+msgid "Are you sure you want to retake course %s"
+msgstr ""
+
+#: inc/course/class-lp-course.php:36
+msgid "Retake course"
+msgstr "Repetir curso"
+
+#: inc/course/class-lp-course.php:39 inc/quiz/class-lp-quiz.php:111
+msgid "Finish quiz"
+msgstr "Finalizar Examen"
+
+#: inc/course/class-lp-course.php:40 inc/quiz/class-lp-quiz.php:112
+msgid "Are you sure you want to finish this quiz?"
+msgstr "¿Estás seguro de que deseas terminar este examen?"
+
+#: inc/course/class-lp-course.php:43 inc/quiz/class-lp-quiz.php:115
+msgid "Retake quiz"
+msgstr "Volver a hacer la Prueba"
+
+#: inc/course/class-lp-course.php:44 inc/quiz/class-lp-quiz.php:116
+msgid "Are you sure you want to retake this quiz?"
+msgstr "¿Está seguro que quiere volver a tomar el examen?"
+
+#: inc/course/class-lp-course.php:47 inc/quiz/class-lp-quiz.php:119
+msgid "Time out!"
+msgstr "¡Se acabo el tiempo!"
+
+#: inc/course/class-lp-course.php:48 inc/quiz/class-lp-quiz.php:120
+msgid "The time is over! Your quiz will automate come to finish"
+msgstr "¡Se acabó el tiempo! El examen terminará de manera automática"
+
+#: inc/course/class-lp-course.php:50 inc/quiz/class-lp-quiz.php:122
+msgid "Congrats! You have finished this quiz"
+msgstr "¡Felicidades! Has terminado este éxamen"
+
+#: inc/course/class-lp-course.php:51 inc/quiz/class-lp-quiz.php:123
+msgid ""
+"Congrats! You have re-taken this quiz. Please wait a moment and the page "
+"will reload"
+msgstr ""
+"¡Felicidades! Ha retomado este exámen. Por favor, espere un momento y la "
+"página se recargará"
+
+#: inc/course/lp-course-functions.php:133
+msgctxt "slug"
+msgid "uncategorized"
+msgstr "sin categorizar"
+
+#: inc/course/lp-course-functions.php:178
+#, php-format
+msgid "The course %d does not exists"
+msgstr "El curso %d no existe"
+
+#: inc/course/lp-course-functions.php:612
+msgid "Course item navigation"
+msgstr "Configuración del Curso"
+
+#: inc/course/lp-course-functions.php:619 templates/content-quiz/buttons.php:31
+msgid "Previous"
+msgstr "Anterior"
+
+#: inc/course/lp-course-functions.php:619
+msgid "Previous post:"
+msgstr "Publicación anterior:"
+
+#: inc/course/lp-course-functions.php:627
+#: templates/content-lesson/__next-button.php:10
+#: templates/content-quiz/buttons.php:32
+msgid "Next"
+msgstr "Siguiente"
+
+#: inc/course/lp-course-functions.php:627
+msgid "Next post:"
+msgstr "Próxima publicación:"
+
+#: inc/custom-post-types/abstract.php:414
+#: inc/custom-post-types/abstract.php:417
+msgid "updated."
+msgstr "Actualizada"
+
+#: inc/custom-post-types/abstract.php:415
+msgid "Custom field updated."
+msgstr "Campo personalizado actualizado."
+
+#: inc/custom-post-types/abstract.php:416
+msgid "Custom field deleted."
+msgstr "Campo personalizado borrado."
+
+#: inc/custom-post-types/abstract.php:419
+#, php-format
+msgid "Lesson restored to revision from %s"
+msgstr "Lección restaurada a partir de la revisión %s"
+
+#: inc/custom-post-types/abstract.php:420
+msgid "published."
+msgstr "publicado"
+
+#: inc/custom-post-types/abstract.php:421
+msgid "saved."
+msgstr "guardada."
+
+#: inc/custom-post-types/abstract.php:422
+msgid "submitted."
+msgstr "enviado."
+
+#: inc/custom-post-types/abstract.php:424
+#, php-format
+msgid "scheduled for: <strong>%1$s</strong>."
+msgstr "Programada para: <strong>%1$s</strong>."
+
+#: inc/custom-post-types/abstract.php:426
+msgid "M j, Y @ G:i"
+msgstr ""
+
+#: inc/custom-post-types/abstract.php:428
+msgid "draft updated."
+msgstr "Borrador actualizado"
+
+#: inc/custom-post-types/abstract.php:434
+#: inc/custom-post-types/abstract.php:445 inc/custom-post-types/lesson.php:213
+#: inc/custom-post-types/question.php:279 inc/custom-post-types/quiz.php:349
+#: templates/profile/tabs/orders.php:39
+msgid "View"
+msgstr "Ver"
+
+#: inc/custom-post-types/course.php:144
+msgid "Reorder"
+msgstr "Reordenar"
+
+#: inc/custom-post-types/course.php:146
+msgid "Switch to meta boxes"
+msgstr "Cambiar a cajas de meta"
+
+#: inc/custom-post-types/course.php:156
+msgid "Would you like to see the meta boxes in tabs style?"
+msgstr "¿Te gustaría ver los cuadros de meta en el estilo de pestañas?"
+
+#: inc/custom-post-types/course.php:158
+msgid "Switch meta boxes to tabs"
+msgstr "Cambiar a la pestaña"
+
+#: inc/custom-post-types/course.php:166
+msgid "Toggle"
+msgstr "Toggle"
+
+#: inc/custom-post-types/course.php:167
+msgid "Switch to tabs"
+msgstr "Vaya a la pestaña"
+
+#: inc/custom-post-types/course.php:202 inc/custom-post-types/course.php:204
+msgid "Course Categories"
+msgstr "Categorías de cursos:"
+
+#: inc/custom-post-types/course.php:205 inc/custom-post-types/course.php:206
+msgid "Category"
+msgstr "Categoría"
+
+#: inc/custom-post-types/course.php:207
+msgid "Add New Course Category"
+msgstr "Añadir nueva categoría al curso"
+
+#: inc/custom-post-types/course.php:208
+msgid "All Categories"
+msgstr "Todas las categorías"
+
+#: inc/custom-post-types/course.php:219
+msgctxt "slug"
+msgid "course-category"
+msgstr "categoria-curso"
+
+#: inc/custom-post-types/course.php:230
+msgid "Course Tags"
+msgstr "Etiquetas de Cursos"
+
+#: inc/custom-post-types/course.php:231 inc/custom-post-types/question.php:74
+#: inc/custom-post-types/question.php:75 inc/updates/_update-from-0.9.php:1166
+#: inc/updates/_update-from-0.9.php:1167 inc/updates/_update-from-0.9.php:1168
+#: inc/updates/_update-from-0.9.php:1185 inc/updates/_update-from-0.9.php:1186
+msgid "Tag"
+msgstr "Etiqueta"
+
+#: inc/custom-post-types/course.php:232
+msgid "Search Course Tags"
+msgstr "Buscar las etiquetas de cursos"
+
+#: inc/custom-post-types/course.php:233
+msgid "Popular Course Tags"
+msgstr "Etiquetas populares de cursos"
+
+#: inc/custom-post-types/course.php:234
+msgid "All Course Tags"
+msgstr "Todas las Etiquetas de Cursos"
+
+#: inc/custom-post-types/course.php:237
+msgid "Edit Course Tag"
+msgstr "Editar etiquetas de Curso"
+
+#: inc/custom-post-types/course.php:238
+msgid "Update Course Tag"
+msgstr "Actualizar Etiqueta de curso"
+
+#: inc/custom-post-types/course.php:239
+msgid "Add New Course Tag"
+msgstr "Añadir Etiqueta Nueva de Curso"
+
+#: inc/custom-post-types/course.php:240
+msgid "New Course Tag Name"
+msgstr "Nueva Etiqueta de Curso"
+
+#: inc/custom-post-types/course.php:241
+msgid "Separate tags with commas"
+msgstr "Separar etiquetas con comas"
+
+#: inc/custom-post-types/course.php:242
+msgid "Add or remove tags"
+msgstr "Añadir o eliminar etiquetas"
+
+#: inc/custom-post-types/course.php:243
+msgid "Choose from the most used tags"
+msgstr "Elegir entre las etiquetas más usadas"
+
+#: inc/custom-post-types/course.php:253
+msgctxt "slug"
+msgid "course-tag"
+msgstr "curso-etiqueta"
+
+#: inc/custom-post-types/course.php:332
+msgid "Sorry! You can not update a course while it is viewing!"
+msgstr "¡Lo siento! No se puede actualizar un curso mientras se está viendo!"
+
+#: inc/custom-post-types/course.php:368
+msgid "Toggle Course Content"
+msgstr "Contenido del curso"
+
+#: inc/custom-post-types/course.php:385
+msgid "Please enter the title of the course"
+msgstr "Por favor, introduzca el título del curso"
+
+#: inc/custom-post-types/course.php:386
+msgid "Please add at least one section for the course"
+msgstr "Por favor añada al menos una sección para el curso"
+
+#: inc/custom-post-types/course.php:387
+msgid "Please enter the title of the section"
+msgstr "Por favor, introduzca el título de la sección"
+
+#: inc/custom-post-types/course.php:388
+msgid "Please set a price for this course"
+msgstr "Por favor, fije un precio para este curso"
+
+#: inc/custom-post-types/course.php:406
+msgid "You course will become to Pending"
+msgstr ""
+
+#: inc/custom-post-types/course.php:449
+msgctxt "Post Type General Name"
+msgid "Courses"
+msgstr "Cursos"
+
+#: inc/custom-post-types/course.php:450
+msgctxt "Post Type Singular Name"
+msgid "Course"
+msgstr "Curso"
+
+#: inc/custom-post-types/course.php:452
+msgid "Parent Item:"
+msgstr "Elemento Padre:"
+
+#: inc/custom-post-types/course.php:454
+msgid "View Course"
+msgstr "Ver cursos"
+
+#: inc/custom-post-types/course.php:455
+msgid "Add New Course"
+msgstr "Añadir Nuevo Curso"
+
+#: inc/custom-post-types/course.php:457
+msgid "Edit Course"
+msgstr "Editar Curso"
+
+#: inc/custom-post-types/course.php:458
+msgid "Update Course"
+msgstr "Actualizar curso"
+
+#: inc/custom-post-types/course.php:459
+msgid "Search Courses"
+msgstr "Buscar cursos"
+
+#: inc/custom-post-types/course.php:460
+#, php-format
+msgid ""
+"You have not got any courses yet. Click <a href=\"%s\">Add new</a> to start"
+msgstr ""
+"Aún no has subido cursos. Haz clic en <a href=\"%s\">Agregar nuevo</a> para "
+"iniciar"
+
+#: inc/custom-post-types/course.php:461
+msgid "No course found in Trash"
+msgstr "No hay cursos en la Papelera"
+
+#: inc/custom-post-types/course.php:559 inc/custom-post-types/quiz.php:145
+msgid "General Settings"
+msgstr "Ajustes generales"
+
+#: inc/custom-post-types/course.php:564 inc/custom-post-types/lesson.php:176
+#: inc/custom-post-types/quiz.php:164 inc/custom-post-types/quiz.php:318
+msgid "Duration"
+msgstr "Duración.."
+
+#: inc/custom-post-types/course.php:567
+msgid "The duration of the course (by weeks)."
+msgstr "Duración del Curso (semanas)"
+
+#: inc/custom-post-types/course.php:571
+msgid "Maximum students"
+msgstr "Máximo de estudiantes"
+
+#: inc/custom-post-types/course.php:574
+msgid "Maximum number of students who can enroll in this course."
+msgstr "Número máximo de alumnos que pueden matricularse este curso"
+
+#: inc/custom-post-types/course.php:578
+msgid "Students enrolled"
+msgstr "Estudiantes Inscritos"
+
+#: inc/custom-post-types/course.php:581
+msgid "How many students have taken this course."
+msgstr "Cuántos alumnos han tomado este curso"
+
+#: inc/custom-post-types/course.php:585
+msgid "Re-take course"
+msgstr "Tomar este Curso"
+
+#: inc/custom-post-types/course.php:588
+msgid "How many times the user can re-take this course. Set to 0 to disable."
+msgstr ""
+"¿Cuántas veces el usuario puede volver a tomar este curso. Se establece en 0 "
+"para desactivarlo."
+
+#: inc/custom-post-types/course.php:592
+msgid "Featured"
+msgstr "Destacado"
+
+#: inc/custom-post-types/course.php:595
+msgid "Set course as featured."
+msgstr "Establecer como destacado"
+
+#: inc/custom-post-types/course.php:613
+msgid "The method to assess the result of a student for a course."
+msgstr "El método para evaluar el resultado de un estudiante en un curso."
+
+#: inc/custom-post-types/course.php:615
+msgid ""
+"<br /><strong>Note! </strong>No final quiz in course, please add a final quiz"
+msgstr ""
+"<br /><strong>Nota! </strong>El curso no tiene examen final, por favor añade "
+"uno"
+
+#: inc/custom-post-types/course.php:619
+msgid "Assessment"
+msgstr "Evaluación"
+
+#: inc/custom-post-types/course.php:624
+msgid "Course result"
+msgstr "Resultado del Curso"
+
+#: inc/custom-post-types/course.php:629
+msgid "Evaluate lessons"
+msgstr "Evaluar lecciones"
+
+#: inc/custom-post-types/course.php:630
+msgid "Evaluate result of quizzes"
+msgstr "Evaluar el resultado de los exámenes"
+
+#: inc/custom-post-types/course.php:631
+msgid "Evaluate the result of the final quiz"
+msgstr "Evaluar el resultado del examen final"
+
+#: inc/custom-post-types/course.php:636
+msgid "Passing condition value"
+msgstr "Valor para pasar"
+
+#: inc/custom-post-types/course.php:641
+msgid ""
+"The percentage of quiz result or lessons completed to finish the course."
+msgstr ""
+"El porcentaje necesario de lecciones completadas o de resultado del exámen "
+"para aprobar el curso"
+
+#: inc/custom-post-types/course.php:662
+msgid "Payment Settings"
+msgstr "Configuración de pagos"
+
+#: inc/custom-post-types/course.php:667
+msgid "Course payment"
+msgstr "Pago de Cursos"
+
+#: inc/custom-post-types/course.php:670
+msgid ""
+"If it is checked, An administrator will review then set course price and "
+"commission."
+msgstr ""
+"Si se paga, Un administrador revisará a continuación, establecer el precio "
+"del curso y la comisión"
+
+#: inc/custom-post-types/course.php:680
+msgid "If free, this field is empty or set 0. (Only admin can edit this field)"
+msgstr ""
+"Si es gratis, este campo está vacío o con un 0. (Sólo el administrador puede "
+"editar este campo)"
+
+#: inc/custom-post-types/course.php:691
+#, php-format
+msgid ""
+"This course is requires enrollment and the suggested price is <strong>%s</"
+"strong>"
+msgstr ""
+"Este curso requiere inscripción y el precio sugerido es <strong>%s</strong>"
+
+#: inc/custom-post-types/course.php:699
+msgid "This course is free."
+msgstr "Este curso es gratuito."
+
+#: inc/custom-post-types/course.php:705 inc/custom-post-types/course.php:1292
+#: inc/custom-post-types/course.php:1298 templates/cart/form.php:30
+#: templates/emails/order-items-table.php:21
+msgid "Price"
+msgstr "Precio"
+
+#: inc/custom-post-types/course.php:715
+msgid "Sale Price"
+msgstr "Precio de venta"
+
+#: inc/custom-post-types/course.php:720
+msgid "Schedule"
+msgstr "Agenda"
+
+#: inc/custom-post-types/course.php:725
+msgid "Sale start date"
+msgstr "Fecha de inicio de la venta"
+
+#: inc/custom-post-types/course.php:732
+msgid "Sale end date"
+msgstr "Fecha de  fin"
+
+#: inc/custom-post-types/course.php:743
+msgid "Course Suggestion Price"
+msgstr "Precio Sugerido del Curso"
+
+#: inc/custom-post-types/course.php:748
+msgid "The course price you want to suggest for admin to set."
+msgstr ""
+"El precio del curso que desea sugerir para que el administrador configure."
+
+#: inc/custom-post-types/course.php:754
+msgid "Price set by Admin"
+msgstr "Precio fijado por Admin"
+
+#: inc/custom-post-types/course.php:758
+msgid "Not set"
+msgstr "No definido"
+
+#: inc/custom-post-types/course.php:765
+msgid "Requires enroll"
+msgstr "Requiere inscribirse"
+
+#: inc/custom-post-types/course.php:768
+msgid "Require users logged in to study or public to all."
+msgstr ""
+"Requiere que los usuarios ingresen sesión para estudiar o mantenerlo público "
+"a todos"
+
+#: inc/custom-post-types/course.php:803
+msgid "Author Settings"
+msgstr "Ajustes de autor"
+
+#: inc/custom-post-types/course.php:808 inc/custom-post-types/course.php:1289
+#: inc/custom-post-types/course.php:1295 inc/custom-post-types/lesson.php:171
+#: inc/custom-post-types/question.php:243 inc/custom-post-types/quiz.php:315
+msgid "Author"
+msgstr "Autor"
+
+#: inc/custom-post-types/course.php:814
+msgid "Select author"
+msgstr "Seleccionar autor"
+
+#: inc/custom-post-types/course.php:832
+msgid "Review Logs"
+msgstr "Revisar registros"
+
+#: inc/custom-post-types/course.php:989
+msgid "Course Curriculum only appear if course is saved"
+msgstr "Curriculum supuesto, sólo aparece si el curso se guarda"
+
+#: inc/custom-post-types/course.php:1146
+msgid "Course has approved by Reviewer"
+msgstr ""
+
+#: inc/custom-post-types/course.php:1151
+msgid "Course has rejected by Reviewer"
+msgstr ""
+
+#: inc/custom-post-types/course.php:1156
+#, php-format
+msgid "Course has submitted by %s"
+msgstr ""
+
+#: inc/custom-post-types/course.php:1161
+msgid "Course has updated by Reviewer"
+msgstr ""
+
+#: inc/custom-post-types/course.php:1198
+msgid "Your course has been published"
+msgstr "Tu curso ha sido publicado"
+
+#: inc/custom-post-types/course.php:1324
+#, php-format
+msgctxt "learnpress"
+msgid "%d section"
+msgid_plural "%d sections"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/course.php:1327
+#, php-format
+msgctxt "learnpress"
+msgid "%d lesson"
+msgid_plural "%d lessons"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/course.php:1329
+msgid "0 lesson"
+msgstr "0 lección"
+
+#: inc/custom-post-types/course.php:1333
+#, php-format
+msgctxt "learnpress"
+msgid "%d quiz"
+msgid_plural "%d quizzes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/course.php:1335
+msgid "0 quiz"
+msgstr "0 Exámen"
+
+#: inc/custom-post-types/course.php:1340
+msgid "No content"
+msgstr "No existe contenido"
+
+#: inc/custom-post-types/course.php:1500
+msgid "Course Video"
+msgstr "Video del Curso"
+
+#: inc/custom-post-types/course.php:1505
+msgid "Video ID"
+msgstr ""
+
+#: inc/custom-post-types/course.php:1508
+msgid "The id of Youtube or Vimeo video"
+msgstr "El id del vídeo de Youtube o Vimeo"
+
+#: inc/custom-post-types/course.php:1512
+msgid "Video Type"
+msgstr "Tipo de Video"
+
+#: inc/custom-post-types/course.php:1515
+msgid "Chose video type"
+msgstr "Elegir el tipo de vídeo"
+
+#: inc/custom-post-types/course.php:1518
+msgid "Youtube"
+msgstr ""
+
+#: inc/custom-post-types/course.php:1519
+msgid "Vimeo"
+msgstr ""
+
+#: inc/custom-post-types/course.php:1523
+msgid "Embed width"
+msgstr "Ancho del video a Insertar"
+
+#: inc/custom-post-types/course.php:1526
+msgid "Set width of embed"
+msgstr "Establecer el ancho de inserción"
+
+#: inc/custom-post-types/course.php:1530
+msgid "Embed height"
+msgstr "Encrustar"
+
+#: inc/custom-post-types/course.php:1533
+msgid "Set height of embed"
+msgstr "Ajuste altura de inserción"
+
+#: inc/custom-post-types/lesson.php:58 inc/custom-post-types/lesson.php:59
+#: inc/custom-post-types/lesson.php:62
+msgid "Lessons"
+msgstr "Lecciones"
+
+#: inc/custom-post-types/lesson.php:61
+msgid "Add New Lesson"
+msgstr "Agregar Nueva Lección"
+
+#: inc/custom-post-types/lesson.php:63
+msgid "View Lesson"
+msgstr "Ver Lección"
+
+#: inc/custom-post-types/lesson.php:65
+msgid "Edit Lesson"
+msgstr "Editar Lección"
+
+#: inc/custom-post-types/lesson.php:66
+msgid "Update Lesson"
+msgstr "Actualizar lección"
+
+#: inc/custom-post-types/lesson.php:67
+msgid "Search Lessons"
+msgstr "Buscar lecciones"
+
+#: inc/custom-post-types/lesson.php:68
+msgid "No lesson found"
+msgstr "No se ha encontrado ninguna lección"
+
+#: inc/custom-post-types/lesson.php:69
+msgid "No lesson found in Trash"
+msgstr "No hay lecciones en la Papelera"
+
+#: inc/custom-post-types/lesson.php:103
+msgid "Lesson Settings"
+msgstr "Configuración de la lección"
+
+#: inc/custom-post-types/lesson.php:107
+msgid "Lesson Duration"
+msgstr "Duración de la lección"
+
+#: inc/custom-post-types/lesson.php:112
+msgid "Duration of the lesson. Set 0 to disable"
+msgstr "Duración de la lección. 0 para desactivar"
+
+#: inc/custom-post-types/lesson.php:116
+msgid "Preview Lesson"
+msgstr "Vista Preliminar de Lección"
+
+#: inc/custom-post-types/lesson.php:119
+msgid ""
+"If this is a preview lesson, then student can view this lesson content "
+"without taking the course"
+msgstr ""
+"Si esta es una lección de vista previa, entonces el estudiante puede ver el "
+"contenido de la lección sin tomar el curso"
+
+#: inc/custom-post-types/lesson.php:142
+msgid "Please enter the title of the lesson"
+msgstr "Por favor, introduzca el título del exámen"
+
+#: inc/custom-post-types/lesson.php:175
+msgid "Format"
+msgstr "Formato"
+
+#: inc/custom-post-types/lesson.php:216 inc/custom-post-types/question.php:282
+#: inc/custom-post-types/quiz.php:352
+msgid "Remove Filter"
+msgstr "Borrar filtro"
+
+#: inc/custom-post-types/lesson.php:218 inc/custom-post-types/question.php:284
+#: inc/custom-post-types/quiz.php:354
+msgid "Filter"
+msgstr "Filtrar"
+
+#: inc/custom-post-types/lesson.php:224 inc/custom-post-types/question.php:290
+#: inc/custom-post-types/quiz.php:361
+msgid "Not assigned yet"
+msgstr "No asignado todavía"
+
+#: inc/custom-post-types/lesson.php:237
+msgid "Standard"
+msgstr "Estándar"
+
+#: inc/custom-post-types/order.php:122
+msgid "Order number, user name, user email, course name etc..."
+msgstr ""
+"Número de pedido, nombre de usuario, correo electrónico del usuario, etc ..."
+
+#: inc/custom-post-types/order.php:195
+msgid "Processing..."
+msgstr "Procesando..."
+
+#: inc/custom-post-types/order.php:212 inc/custom-post-types/order.php:215
+msgid "Apply"
+msgstr "Aplicar"
+
+#: inc/custom-post-types/order.php:243 inc/custom-post-types/order.php:418
+msgid "View Order"
+msgstr "Ver Pedido"
+
+#: inc/custom-post-types/order.php:303 inc/custom-post-types/order.php:414
+#: templates/profile/tabs/orders.php:15
+msgid "Order"
+msgstr "Pedido"
+
+#: inc/custom-post-types/order.php:304
+msgid "Student"
+msgstr "Alumno"
+
+#: inc/custom-post-types/order.php:308 templates/profile/tabs/orders.php:17
+msgid "Status"
+msgstr "Estado"
+
+#: inc/custom-post-types/order.php:366
+msgid "Course does not exist"
+msgstr ""
+
+#: inc/custom-post-types/order.php:415
+msgid "Add New Order"
+msgstr "Agregar Nueva Órden"
+
+#: inc/custom-post-types/order.php:416 inc/custom-post-types/order.php:563
+#: templates/order/order-details.php:13
+msgid "Order Details"
+msgstr "Información de pedido"
+
+#: inc/custom-post-types/order.php:420
+msgid "Update Order"
+msgstr "Actualizar Pedido"
+
+#: inc/custom-post-types/order.php:421
+msgid "Search Orders"
+msgstr "Buscar pedidos"
+
+#: inc/custom-post-types/order.php:422
+msgid "No order found"
+msgstr "No se ha encontrado ningún pedido"
+
+#: inc/custom-post-types/order.php:423
+msgid "No order found in Trash"
+msgstr "No hay pedidos en la Papelera"
+
+#: inc/custom-post-types/order.php:486 inc/order/lp-order-functions.php:657
+msgctxt "Order status"
+msgid "Completed"
+msgstr "Completado"
+
+#: inc/custom-post-types/order.php:491
+#, php-format
+msgid "Completed <span class=\"count\">(%s)</span>"
+msgid_plural "Completed <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/order.php:494 inc/order/lp-order-functions.php:656
+msgctxt "Order status"
+msgid "Processing"
+msgstr "Procesando"
+
+#: inc/custom-post-types/order.php:499
+#, php-format
+msgid "Processing <span class=\"count\">(%s)</span>"
+msgid_plural "Processing <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/order.php:502
+msgctxt "Order status"
+msgid "Pending Payment"
+msgstr "Pago Pendiente"
+
+#: inc/custom-post-types/order.php:507
+#, php-format
+msgid "Pending Payment <span class=\"count\">(%s)</span>"
+msgid_plural "Pending Payment <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/order.php:510 inc/order/lp-order-functions.php:658
+msgctxt "Order status"
+msgid "On Hold"
+msgstr ""
+
+#: inc/custom-post-types/order.php:515
+#, php-format
+msgid "On Hold <span class=\"count\">(%s)</span>"
+msgid_plural "On Hold <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/order.php:518 inc/order/lp-order-functions.php:661
+msgctxt "Order status"
+msgid "Cancelled"
+msgstr ""
+
+#: inc/custom-post-types/order.php:523
+#, php-format
+msgid "Cancelled <span class=\"count\">(%s)</span>"
+msgid_plural "Cancelled <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/order.php:526 inc/order/lp-order-functions.php:659
+msgctxt "Order status"
+msgid "Refunded"
+msgstr ""
+
+#: inc/custom-post-types/order.php:531
+#, php-format
+msgid "Refunded <span class=\"count\">(%s)</span>"
+msgid_plural "Refunded <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/order.php:534 inc/order/lp-order-functions.php:660
+msgctxt "Order status"
+msgid "Failed"
+msgstr ""
+
+#: inc/custom-post-types/order.php:539
+#, php-format
+msgid "Failed <span class=\"count\">(%s)</span>"
+msgid_plural "Failed <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/order.php:564
+msgid "Order Actions"
+msgstr "Acciones del Pedido"
+
+#: inc/custom-post-types/question.php:73 inc/updates/_update-from-0.9.php:1184
+msgid "Question Tag"
+msgstr "Etiqueta de la pregunta"
+
+#: inc/custom-post-types/question.php:76 inc/updates/_update-from-0.9.php:1169
+#: inc/updates/_update-from-0.9.php:1187
+msgid "Add New Tag"
+msgstr "Añadir nueva etiqueta"
+
+#: inc/custom-post-types/question.php:77 inc/updates/_update-from-0.9.php:1170
+#: inc/updates/_update-from-0.9.php:1188
+msgid "All Tags"
+msgstr "Todas las etiquetas"
+
+#: inc/custom-post-types/question.php:94 inc/custom-post-types/question.php:95
+msgid "Question Bank"
+msgstr "Banco de preguntas"
+
+#: inc/custom-post-types/question.php:96
+msgid "Question"
+msgstr "Pregunta"
+
+#: inc/custom-post-types/question.php:98
+msgid "View Question"
+msgstr "Ver Pregunta"
+
+#: inc/custom-post-types/question.php:99
+msgid "Add New Question"
+msgstr "Añadir Pregunta Nueva"
+
+#: inc/custom-post-types/question.php:101
+msgid "Edit Question"
+msgstr "Editar Pregunta"
+
+#: inc/custom-post-types/question.php:102
+msgid "Update Question"
+msgstr "Actualizar pregunta"
+
+#: inc/custom-post-types/question.php:103
+msgid "Search Questions"
+msgstr "Buscar preguntas"
+
+#: inc/custom-post-types/question.php:105
+msgid "No questions found in trash"
+msgstr "No se encontraron preguntas en papelera"
+
+#: inc/custom-post-types/question.php:127
+#: inc/question/abstract-lp-question.php:662
+msgid "Answer"
+msgstr "Respuesta"
+
+#: inc/custom-post-types/question.php:152
+msgid "Mark for this question"
+msgstr "Elegir esta pregunta"
+
+#: inc/custom-post-types/question.php:156
+msgid "Mark for choosing the right answer"
+msgstr "Marcar para elegir la respuesta correcta"
+
+#: inc/custom-post-types/question.php:161
+msgid "Question explanation"
+msgstr "Explicación pregunta"
+
+#: inc/custom-post-types/question.php:164
+msgid "Explain why an option is true and other is false"
+msgstr "Explicar por qué una opción es verdadera y la otra es falsa"
+
+#: inc/custom-post-types/question.php:168
+msgid "Question hint"
+msgstr "Pista"
+
+#: inc/custom-post-types/question.php:171
+msgid "Instruction for user to select the right answer."
+msgstr "Instrucción para el usuario seleccionar la respuesta correcta."
+
+#: inc/custom-post-types/question.php:193
+msgid "Please enter the title of the question."
+msgstr "Introduce el título de la pregunta"
+
+#: inc/custom-post-types/question.php:197
+msgid "Please enter question type."
+msgstr "Introduce el tipo de pregunta"
+
+#: inc/custom-post-types/quiz.php:88 inc/custom-post-types/quiz.php:89
+#: inc/custom-post-types/quiz.php:93
+msgid "Quizzes"
+msgstr "Exámenes"
+
+#: inc/custom-post-types/quiz.php:91
+msgid "Add New Quiz"
+msgstr "Añadir exámen"
+
+#: inc/custom-post-types/quiz.php:92
+msgid "Edit Quiz"
+msgstr "Editar exámen"
+
+#: inc/custom-post-types/quiz.php:94
+msgid "View Quiz"
+msgstr "Ver Exámen"
+
+#: inc/custom-post-types/quiz.php:95
+msgid "New Quiz"
+msgstr "Nuevo exámen"
+
+#: inc/custom-post-types/quiz.php:96
+msgid "Update Quiz"
+msgstr "Actualizar exámen"
+
+#: inc/custom-post-types/quiz.php:97
+msgid "Search Quizzes"
+msgstr "Buscar Exámenes"
+
+#: inc/custom-post-types/quiz.php:98
+#, php-format
+msgid ""
+"You have not got any quizzes yet. Click <a href=\"%s\">Add new</a> to start"
+msgstr ""
+"Aún no has conseguido ningún exámen. Hz clic en <a href=\"%s\">Agregar "
+"nuevo</a> para iniciar"
+
+#: inc/custom-post-types/quiz.php:99
+msgid "No quiz found in Trash"
+msgstr "No hay exámen en la Papelera"
+
+#: inc/custom-post-types/quiz.php:152
+msgid "Show/Hide Question"
+msgstr "Mostrar/Ocultar Pregunta"
+
+#: inc/custom-post-types/quiz.php:153
+msgid "Show/Hide list questions on this quiz."
+msgstr "Mostrar / Ocultar lista de preguntas en este examen."
+
+#: inc/custom-post-types/quiz.php:158
+msgid "Show"
+msgstr "Mostrar"
+
+#: inc/custom-post-types/quiz.php:165
+msgid "Duration of the quiz. Set 0 to disable."
+msgstr "Duración de la prueba. Establecer 0 para desactivar."
+
+#: inc/custom-post-types/quiz.php:173
+msgid "Passing Grade Type"
+msgstr "Tipo de grado de aprobación"
+
+#: inc/custom-post-types/quiz.php:174 inc/custom-post-types/quiz.php:186
+msgid "Requires user reached this point to pass the quiz."
+msgstr "Requiere que el usuario llega a este punto para aprobar la prueba."
+
+#: inc/custom-post-types/quiz.php:179
+msgid "Percentage"
+msgstr "Porcentaje"
+
+#: inc/custom-post-types/quiz.php:180
+msgid "Point"
+msgstr "Punto"
+
+#: inc/custom-post-types/quiz.php:185
+msgid "Passing Grade (<span>%</span>)"
+msgstr "Grado aprovatorio(<span>%</span>)"
+
+#: inc/custom-post-types/quiz.php:194
+msgid "Re-take"
+msgstr "Volver a tomar"
+
+#: inc/custom-post-types/quiz.php:197
+msgid "How many times the user can re-take this quiz. Set to 0 to disable"
+msgstr ""
+"Cuántas veces el usuario puede volver a tomar el examen. Se establece en 0 "
+"para desactivar"
+
+#: inc/custom-post-types/quiz.php:202
+msgid "Show correct answer"
+msgstr "Mostrar respuesta correcta"
+
+#: inc/custom-post-types/quiz.php:205
+msgid "Show the correct answer in result of the quiz."
+msgstr "Mostrar la respuesta correcta en el resultado del examen."
+
+#: inc/custom-post-types/quiz.php:209
+msgid "Show check answer"
+msgstr "Mostrar verificación de respuesta"
+
+#: inc/custom-post-types/quiz.php:212
+msgid "Show button to check answer while doing quiz."
+msgstr "Mostrar botón para verificar la respuesta mientras se hace el exámen"
+
+#: inc/custom-post-types/quiz.php:216
+msgid "Show hint"
+msgstr "Mostrar Pista"
+
+#: inc/custom-post-types/quiz.php:219
+msgid "Show button to hint answer while doing quiz."
+msgstr "Mostrar Botón pista mientras se hace el exámen."
+
+#: inc/custom-post-types/quiz.php:227
+msgid "Show explanation"
+msgstr "Mostrar explicación"
+
+#: inc/custom-post-types/quiz.php:230
+msgid "Show explanation of question after user checking answer."
+msgstr ""
+"Mostrar explicación de la pregunta después de la respuesta ddel uuario."
+
+#: inc/custom-post-types/quiz.php:256
+msgid "Please enter the title of the quiz"
+msgstr "Escribe aquí el título del archivo"
+
+#: inc/custom-post-types/quiz.php:375
+#, php-format
+msgctxt "learnpress"
+msgid "%d question"
+msgid_plural "%d questions"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/quiz.php:375
+msgid "This quiz has no questions"
+msgstr "Este examen no tiene preguntas"
+
+#: inc/emails/class-lp-email-become-an-instructor.php:16
+#: inc/emails/class-lp-email-become-an-instructor.php:22
+msgid "Become an instructor"
+msgstr "Conviértete en Mentor"
+
+#: inc/emails/class-lp-email-become-an-instructor.php:21
+msgid "[{site_title}] You have enrolled course ({course_name})"
+msgstr "[{site_title}]Te has inscrito al curso ({course_name})"
+
+#: inc/emails/class-lp-email-become-an-instructor.php:24
+#: inc/emails/class-lp-email-new-order.php:26
+msgid "Shortcodes"
+msgstr ""
+
+#: inc/emails/class-lp-email-enrolled-course.php:25
+msgid "[{{site_title}}]  You have enrolled in this course ({{course_name}})"
+msgstr "[{{site_title}}] Te has inscrito al curso ({{course_name}})"
+
+#: inc/emails/class-lp-email-finished-course.php:24
+msgid "[{{site_title}}] You have finished this course ({{course_name}})"
+msgstr "[{{site_title}}]  Has terminado este curso ({{course_name}})"
+
+#: inc/emails/class-lp-email-new-course.php:25
+msgid ""
+"[{{site_title}}] New course has been submitted for review ({{course_name}})"
+msgstr ""
+"[{{site_title}}] Se ha enviado nuevo curso para su revisión ({{course_name}})"
+
+#: inc/emails/class-lp-email-new-order-customer.php:26
+msgid "[{{site_title}}] Order placed"
+msgstr "[{{site_title}}] Nuevo pedido realizado"
+
+#: inc/emails/class-lp-email-new-order-customer.php:27
+msgid "Order placed"
+msgstr "Pedido"
+
+#: inc/emails/class-lp-email-new-order.php:24
+msgid "[{{site_title}}] New order placed"
+msgstr "[{{site_title}}] Nuevo pedido realizado"
+
+#: inc/emails/class-lp-email-published-course.php:21
+msgid "Approved course"
+msgstr "Curso aprobado"
+
+#: inc/emails/class-lp-email-published-course.php:26
+msgid "[{{site_title}}] Your course {{course_name}} has been approved"
+msgstr "[{{site_title}}] Tu curso {{course_name}} ha sido aprobado"
+
+#: inc/emails/class-lp-email-published-course.php:27
+msgid "Course approved"
+msgstr "Curso Aprobado"
+
+#: inc/emails/class-lp-email-rejected-course.php:19
+#: inc/emails/class-lp-email-rejected-course.php:25
+msgid "Rejected course"
+msgstr "Curso rechazado"
+
+#: inc/emails/class-lp-email-rejected-course.php:24
+msgid "[{{site_title}}] Your course {{course_name}} has been rejected"
+msgstr "[{{site_title}}] Tu curso {{course_name}} ha sido aprobado"
+
+#: inc/emails/class-lp-email-user-order-completed.php:26
+msgid "Your order {{order_date}} is completed"
+msgstr "Tu pedido {{order_date}} está completo"
+
+#: inc/emails/class-lp-email-user-order-completed.php:27
+msgid "Your order {{order_number}} is completed"
+msgstr "Tu pedido{{order_number}} está completado"
+
+#: inc/emails/class-lp-email.php:329
+msgid "Template file copied to theme."
+msgstr "Archivo de plantilla copiado al tema."
+
+#: inc/emails/class-lp-email.php:344
+msgid "Template file deleted from theme."
+msgstr ""
+
+#: inc/emails/class-lp-email.php:543
+msgid "Could not write to template file."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:90
+msgid "Pay with Paypal"
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:231
+msgid "Error: order ID and key were not found in \"custom\"."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:241
+#, php-format
+msgid "Error: Order Keys do not match %s and %s."
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:290
+msgid "Paypal settings is not setup"
+msgstr ""
+
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:377
+msgid "IPN payment completed"
+msgstr ""
+
+#: inc/gateways/paypal/paypal-ipn/ipn.php:52
+msgid "Order on "
+msgstr "Ordenar por "
+
+#: inc/libraries/meta-box/inc/common.php:49
+msgid "Extensions"
+msgstr ""
+
+#: inc/libraries/meta-box/inc/field.php:217
+msgid "+"
+msgstr ""
+
+#: inc/libraries/meta-box/inc/field.php:226
+msgid "&#8211;"
+msgstr ""
+
+#: inc/libraries/meta-box/inc/meta-box.php:239
+msgid "Please correct the errors highlighted below and try again."
+msgstr ""
+
+#: inc/libraries/meta-box/inc/fields/button.php:31
+msgid "Click me"
+msgstr ""
+
+#: inc/libraries/meta-box/inc/fields/file-advanced.php:20
+msgid "Select Files"
+msgstr "Selecciona archivos"
+
+#: inc/libraries/meta-box/inc/fields/file-advanced.php:59
+msgctxt "file upload"
+msgid "Select or Upload Files"
+msgstr ""
+
+#: inc/libraries/meta-box/inc/fields/file-advanced.php:95
+#: inc/libraries/meta-box/inc/fields/file.php:159
+msgctxt "file upload"
+msgid "Delete"
+msgstr ""
+
+#: inc/libraries/meta-box/inc/fields/file-advanced.php:96
+#: inc/libraries/meta-box/inc/fields/file.php:160
+msgctxt "file upload"
+msgid "Edit"
+msgstr ""
+
+#: inc/libraries/meta-box/inc/fields/file-input.php:14
+msgid "Select File"
+msgstr "Seleccionar Archivo"
+
+#: inc/libraries/meta-box/inc/fields/file-input.php:36
+msgid "Select"
+msgstr "Seleccionar"
+
+#: inc/libraries/meta-box/inc/fields/file.php:16
+#, php-format
+msgid "You may only upload maximum %d file"
+msgstr "Solo puedes subir un máximo de %d archivo"
+
+#: inc/libraries/meta-box/inc/fields/file.php:17
+#, php-format
+msgid "You may only upload maximum %d files"
+msgstr "Sólo se puede cargar un máximo de %d archivos"
+
+#: inc/libraries/meta-box/inc/fields/file.php:90
+msgid "Error: Cannot delete file"
+msgstr "Lo siento, este archivo no puede borrarse"
+
+#: inc/libraries/meta-box/inc/fields/file.php:103
+msgctxt "file upload"
+msgid "Upload Files"
+msgstr "Subir archivos"
+
+#: inc/libraries/meta-box/inc/fields/file.php:104
+msgctxt "file upload"
+msgid "+ Add new file"
+msgstr "+Añadir nuevo archivo"
+
+#: inc/libraries/meta-box/inc/fields/image-advanced.php:20
+msgid "Select Images"
+msgstr "Seleccionar Imágenes"
+
+#: inc/libraries/meta-box/inc/fields/image-advanced.php:64
+msgctxt "image upload"
+msgid "Select or Upload Images"
+msgstr "Seleccionar o cargar imágenes"
+
+#: inc/libraries/meta-box/inc/fields/image-advanced.php:100
+#: inc/libraries/meta-box/inc/fields/image.php:127
+msgctxt "image upload"
+msgid "Delete"
+msgstr "Borrar"
+
+#: inc/libraries/meta-box/inc/fields/image-advanced.php:101
+#: inc/libraries/meta-box/inc/fields/image.php:128
+msgctxt "image upload"
+msgid "Edit"
+msgstr "Editar"
+
+#: inc/libraries/meta-box/inc/fields/image.php:63
+#: inc/libraries/meta-box/inc/fields/thickbox-image.php:30
+msgctxt "image upload"
+msgid "Upload Images"
+msgstr "Subir Imágenes"
+
+#: inc/libraries/meta-box/inc/fields/image.php:64
+msgctxt "image upload"
+msgid "+ Add new image"
+msgstr "+ Añadir nueva imagen"
+
+#: inc/libraries/meta-box/inc/fields/map.php:43
+msgid "Find Address"
+msgstr "Encontrar dirección"
+
+#: inc/libraries/meta-box/inc/fields/oembed.php:49
+msgid "Embed HTML not available."
+msgstr "No disponible"
+
+#: inc/libraries/meta-box/inc/fields/plupload-image.php:96
+msgctxt "image upload"
+msgid "Drop images here"
+msgstr "Arrastrar imágenes aquí"
+
+#: inc/libraries/meta-box/inc/fields/plupload-image.php:97
+msgctxt "image upload"
+msgid "or"
+msgstr "o"
+
+#: inc/libraries/meta-box/inc/fields/plupload-image.php:98
+msgctxt "image upload"
+msgid "Select Files"
+msgstr "Selecciona archivos"
+
+#: inc/libraries/meta-box/inc/fields/plupload-image.php:172
+msgctxt "image upload"
+msgid "Allowed Image Files"
+msgstr "Archivos de imagen permitido"
+
+#: inc/libraries/meta-box/inc/fields/post.php:46
+msgid "Post"
+msgstr "Publicar"
+
+#: inc/libraries/meta-box/inc/fields/post.php:59
+#: inc/libraries/meta-box/inc/fields/taxonomy.php:36
+#: inc/libraries/meta-box/inc/fields/user.php:56
+#, php-format
+msgid "Select a %s"
+msgstr "Selecciona un %s"
+
+#: inc/libraries/meta-box/inc/fields/user.php:48
+msgid "User"
+msgstr "Usuario"
+
+#: inc/order/class-lp-order.php:125
+msgid "Error! Update order failed"
+msgstr "¡Error! Falló la actualización de la orden"
+
+#: inc/order/class-lp-order.php:372 inc/order/lp-order-functions.php:16
+msgid "Free Payment"
+msgstr "Gratuito"
+
+#: inc/order/class-lp-order.php:446
+#, php-format
+msgctxt "full name"
+msgid "%1$s"
+msgstr ""
+
+#: inc/order/lp-order-functions.php:37
+msgid "Order on"
+msgstr "Ordenar por"
+
+#: inc/order/lp-order-functions.php:44
+msgid "Invalid order status"
+msgstr "Estado de la Órden Inválida"
+
+#: inc/order/lp-order-functions.php:655
+msgctxt "Order status"
+msgid "Pending"
+msgstr "Pendiente"
+
+#: inc/order/lp-order-functions.php:670
+msgid ""
+"Order received in case user buy a course but doesn't finalise the order."
+msgstr ""
+"Orden recibida en caso que el usuario compre un curso, pero no finaliza el "
+"pedido."
+
+#: inc/order/lp-order-functions.php:671
+msgid "Payment failed or was declined (unpaid)."
+msgstr "Error en el pago o se ha rechazado (sin pagar)."
+
+#: inc/order/lp-order-functions.php:672
+msgid "Payment received and the order is awaiting fulfillment."
+msgstr "Pago recibido la orden se esta procesando."
+
+#: inc/order/lp-order-functions.php:673
+msgid "Order fulfilled and complete."
+msgstr "Pedido recibido y completado."
+
+#: inc/order/lp-order-functions.php:674
+msgid "Awaiting payment."
+msgstr "Esperando el pago."
+
+#: inc/order/lp-order-functions.php:675
+msgid "The order is cancelled by an admin or the customer."
+msgstr "La orden está cancelada por un administrador o por el cliente."
+
+#: inc/order/lp-order-functions.php:676
+msgid "Refunded is to indicate that the refund to the customer has been sent."
+msgstr ""
+"Reembolsado es para indicar que la devolución se le ha enviado al cliente ."
+
+#: inc/order/lp-order-functions.php:716
+#, php-format
+msgid "You have enrolled in this course. <a href=\"%s\">Order details</a>"
+msgstr "Te has inscrito al curso. <a href=\"%s\">Detalles del pedido</a> ."
+
+#: inc/question/abstract-lp-question.php:138
+#: inc/question/class-lp-question-multi-choice.php:62
+#: inc/question/class-lp-question-single-choice.php:129
+msgid "Option First"
+msgstr "Primera opción"
+
+#: inc/question/abstract-lp-question.php:143
+#: inc/question/class-lp-question-multi-choice.php:67
+#: inc/question/class-lp-question-single-choice.php:134
+msgid "Option Seconds"
+msgstr "Segunda opción"
+
+#: inc/question/abstract-lp-question.php:148
+#: inc/question/class-lp-question-multi-choice.php:72
+#: inc/question/class-lp-question-single-choice.php:139
+msgid "Option Third"
+msgstr "Tercera opción"
+
+#: inc/question/abstract-lp-question.php:308
+#: inc/question/abstract-lp-question.php:319
+#: inc/question/abstract-lp-question.php:706
+#: inc/question/abstract-lp-question.php:717
+#, php-format
+msgid "Function %s should override from its child"
+msgstr "La función %s sobrescribirá a la función hijo"
+
+#: inc/question/abstract-lp-question.php:683
+msgid "Change type of this question to"
+msgstr "Cambie el tipo de pregunta a"
+
+#: inc/question/abstract-lp-question.php:685
+msgid "--Select type--"
+msgstr "-- Selecciona una opción --"
+
+#: inc/question/class-lp-question-factory.php:261
+msgid "Option"
+msgstr "Opción"
+
+#: inc/question/class-lp-question-factory.php:313
+msgid "True Or False"
+msgstr "Verdadero o falso"
+
+#: inc/question/class-lp-question-factory.php:314
+msgid "Multi Choice"
+msgstr "Opción múltiple"
+
+#: inc/question/class-lp-question-factory.php:315
+msgid "Single Choice"
+msgstr "Opcion unica"
+
+#: inc/question/class-lp-question-multi-choice.php:158
+msgid "Add answer"
+msgstr "Añadir respuesta"
+
+#: inc/question/class-lp-question-multi-choice.php:188
+msgid ""
+"No answer added to question or you must select at least one the answer is "
+"correct!"
+msgstr ""
+"No se añadió respuesta a la pregunta o debes establecer la respuesta "
+"correcta!"
+
+#: inc/question/class-lp-question-single-choice.php:105
+msgid "No answer added to question or you must set an answer is correct!"
+msgstr ""
+"No se añadió respuesta a la pregunta o debes establecer la respuesta "
+"correcta!"
+
+#: inc/question/class-lp-question-true-or-false.php:50
+msgid "True"
+msgstr "Verdadero"
+
+#: inc/question/class-lp-question-true-or-false.php:55
+msgid "False"
+msgstr "Falso"
+
+#: inc/quiz/class-lp-quiz-factory.php:118
+msgid "You need to login to take this quiz."
+msgstr "Necesitas iniciar sesión para hacer esta examen."
+
+#: inc/quiz/class-lp-quiz-factory.php:127
+msgid "You can not start a quiz in preview mode."
+msgstr "No puede iniciar un examen en modo de vista previa."
+
+#: inc/quiz/class-lp-quiz-factory.php:162
+msgid "You have already completed quiz"
+msgstr "Has completado este examen"
+
+#: inc/quiz/class-lp-quiz-factory.php:174
+msgid "Error while finish quiz"
+msgstr "Error durante el examen final"
+
+#: inc/quiz/class-lp-quiz-factory.php:211
+msgid "You quiz has finished automatically"
+msgstr "Tu examen ha terminado automáticamente"
+
+#: inc/quiz/class-lp-quiz-factory.php:213
+msgid "You have finished quiz"
+msgstr "Ya ha finalizado la prueba"
+
+#: inc/quiz/class-lp-quiz-factory.php:216
+msgid "Finish quiz failed"
+msgstr "Falla al terminar el examen"
+
+#: inc/quiz/class-lp-quiz-factory.php:234
+msgid "Sorry! You can't retake quiz"
+msgstr "¡Lo siento! No puedes volver a hacer el examen"
+
+#: inc/quiz/class-lp-quiz-factory.php:249
+msgid "You have retaken quiz"
+msgstr "Has vuelto a hacer este examen"
+
+#: inc/quiz/class-lp-quiz-factory.php:252
+msgid "Retake quiz failed"
+msgstr "Retomar prueba falló"
+
+#: inc/quiz/class-lp-quiz-factory.php:356
+#, php-format
+msgid ""
+"Action %s failed! Please contact site's administrator for more information."
+msgstr ""
+"Acción%s falló! Por favor, ponte en contacto con el administrador del sitio "
+"para obtener más información."
+
+#: inc/quiz/class-lp-quiz.php:94
+msgid "Unlimited"
+msgstr "Ilimitado"
+
+#: inc/shortcodes/profile-page.php:21
+msgid "This user is not available!"
+msgstr "¡Este usuario no está disponible!"
+
+#: inc/shortcodes/featured-courses/templates/cards.php:77
+#: inc/shortcodes/featured-courses/templates/grids.php:85
+#: inc/shortcodes/featured-courses/templates/list.php:89
+#: inc/shortcodes/popular-courses/templates/cards.php:77
+#: inc/shortcodes/popular-courses/templates/grids.php:85
+#: inc/shortcodes/popular-courses/templates/list.php:89
+#: inc/shortcodes/recent-courses/templates/cards.php:77
+#: inc/shortcodes/recent-courses/templates/grids.php:85
+#: inc/shortcodes/recent-courses/templates/list.php:88
+msgid " students"
+msgstr " estudiantes"
+
+#: inc/shortcodes/featured-courses/templates/cards.php:79
+#: inc/shortcodes/featured-courses/templates/grids.php:87
+#: inc/shortcodes/featured-courses/templates/list.php:91
+#: inc/shortcodes/popular-courses/templates/cards.php:79
+#: inc/shortcodes/popular-courses/templates/grids.php:87
+#: inc/shortcodes/popular-courses/templates/list.php:91
+#: inc/shortcodes/recent-courses/templates/cards.php:79
+#: inc/shortcodes/recent-courses/templates/grids.php:87
+#: inc/shortcodes/recent-courses/templates/list.php:90
+msgid " student"
+msgstr " estudiante"
+
+#: inc/shortcodes/featured-courses/templates/cards.php:92
+#: inc/shortcodes/featured-courses/templates/grids.php:100
+#: inc/shortcodes/featured-courses/templates/list.php:104
+#: inc/shortcodes/popular-courses/templates/cards.php:92
+#: inc/shortcodes/popular-courses/templates/grids.php:100
+#: inc/shortcodes/popular-courses/templates/list.php:104
+#: inc/shortcodes/recent-courses/templates/cards.php:92
+#: inc/shortcodes/recent-courses/templates/grids.php:100
+#: inc/shortcodes/recent-courses/templates/list.php:103
+msgid " lessons"
+msgstr " lecciones"
+
+#: inc/shortcodes/featured-courses/templates/cards.php:94
+#: inc/shortcodes/featured-courses/templates/grids.php:102
+#: inc/shortcodes/featured-courses/templates/list.php:106
+#: inc/shortcodes/popular-courses/templates/cards.php:94
+#: inc/shortcodes/popular-courses/templates/grids.php:102
+#: inc/shortcodes/popular-courses/templates/list.php:106
+#: inc/shortcodes/recent-courses/templates/cards.php:94
+#: inc/shortcodes/recent-courses/templates/grids.php:102
+#: inc/shortcodes/recent-courses/templates/list.php:105
+msgid " lesson"
+msgstr " lección"
+
+#: inc/shortcodes/featured-courses/templates/cards.php:105
+#: inc/shortcodes/featured-courses/templates/grids.php:113
+#: inc/shortcodes/featured-courses/templates/list.php:117
+#: inc/shortcodes/popular-courses/templates/cards.php:105
+#: inc/shortcodes/popular-courses/templates/grids.php:113
+#: inc/shortcodes/popular-courses/templates/list.php:117
+#: inc/shortcodes/recent-courses/templates/cards.php:105
+#: inc/shortcodes/recent-courses/templates/grids.php:113
+#: inc/shortcodes/recent-courses/templates/list.php:116
+msgid "instructor: "
+msgstr "Mentor: "
+
+#: inc/updates/_update-from-0.9.php:1177
+msgctxt "Permalink Slug"
+msgid "lesson-tag"
+msgstr "etiqueta-leccion"
+
+#: inc/updates/_update-from-0.9.php:1196
+msgctxt "Permalink Slug"
+msgid "question-tag"
+msgstr "etiqueta-pregunta"
+
+#: inc/user/abstract-lp-user.php:227
+msgid "Create quiz history need pass course ID"
+msgstr "Crear la historia concurso necesario pasar Identificación curso"
+
+#: inc/user/abstract-lp-user.php:1117 inc/user/abstract-lp-user.php:1417
+#: inc/user/abstract-lp-user.php:1429
+#, php-format
+msgid "The role %s for user doesn't exists"
+msgstr "El rol %s para el usuario no existe"
+
+#: inc/user/abstract-lp-user.php:1821
+msgid "You have already completed this lesson"
+msgstr "Has completado esta lección."
+
+#: inc/user/class-lp-user-factory.php:43
+msgid "Every 3 Minutes"
+msgstr "cada 3 minutos"
+
+#: inc/user/lp-user-functions.php:87
+msgctxt "User role"
+msgid "Instructor"
+msgstr "Instructor"
+
+#: inc/user/lp-user-functions.php:304
+msgid "Want to be an instructor?"
+msgstr "Quieres ser un mentor?"
+
+#: inc/user/lp-user-functions.php:579
+msgid "Only"
+msgstr "Sólo"
+
+#: inc/user/lp-user-functions.php:579
+msgid "images accepted for upload"
+msgstr "Esperando carga"
+
+#: inc/user/lp-user-functions.php:588
+msgid "Images must be under"
+msgstr "Las imágenes deben estar bajo"
+
+#: inc/user/lp-user-functions.php:588
+msgid "MB in size"
+msgstr "MB de tamaño"
+
+#: inc/user/lp-user-functions.php:596
+msgid "Please select an image for upload"
+msgstr "Selecciona una imagen."
+
+#: inc/user/lp-user-functions.php:625
+msgid "Image is uploaded success"
+msgstr "Imagen se carga el éxito"
+
+#: inc/user/lp-user-functions.php:625
+msgid "Error on upload image"
+msgstr "Error de carga de imágenes en"
+
+#: inc/user/lp-user-functions.php:651 inc/user/lp-user-functions.php:684
+#: inc/user/lp-user-functions.php:701 inc/user/lp-user-functions.php:709
+msgid "Thumbnail of image profile not created"
+msgstr "Miniatura de imagen no creó el perfil"
+
+#: inc/user/lp-user-functions.php:669
+msgid "Error on crop user picture profile "
+msgstr "Error en la creación del usuario "
+
+#: inc/user/lp-user-functions.php:723
+msgid "Profile picture is changed"
+msgstr "foto de perfil cambiada"
+
+#: inc/user/lp-user-functions.php:770
+msgid "Old password incorrect!"
+msgstr "La contraseña anterior es incorrecta"
+
+#: inc/user/lp-user-functions.php:784
+msgid "Confirmation password incorrect!"
+msgstr "Contraseña incorrecta"
+
+#: inc/user/lp-user-functions.php:803
+msgid "Your change is saved"
+msgstr "El cambio se ha guardado"
+
+#: inc/user/lp-user-functions.php:812
+msgid "Error on update your profile info"
+msgstr "Error en la actualización de su perfil info"
+
+#: inc/user/lp-user-functions.php:928
+msgid "Please login to enroll this course"
+msgstr "Matricularse en este curso"
+
+#: inc/user/lp-user-functions.php:946
+msgid "You have already finished course"
+msgstr "Ha finalizado este curso"
+
+#: inc/user/lp-user-functions.php:949
+msgid "You have already enrolled in this course"
+msgstr "Ya te has inscrito en este curso"
+
+#: inc/widgets/featured-courses/featured-course-widget.php:65
+msgid "Featured courses"
+msgstr "cursos destacados"
+
+#: inc/widgets/featured-courses/featured-course-widget.php:76
+msgid "LearnPress - Featured Courses"
+msgstr "Cursos Destacados"
+
+#: inc/widgets/featured-courses/form.php:8
+#: inc/widgets/popular-courses/form.php:8 inc/widgets/recent-courses/form.php:8
+msgid "Title:"
+msgstr "Titulo"
+
+#: inc/widgets/featured-courses/form.php:17
+#: inc/widgets/popular-courses/form.php:17
+#: inc/widgets/recent-courses/form.php:17
+msgid "Number of posts:"
+msgstr "Número de publicaciones:"
+
+#: inc/widgets/featured-courses/form.php:26
+#: inc/widgets/popular-courses/form.php:26
+#: inc/widgets/recent-courses/form.php:26
+msgid "CSS class:"
+msgstr ""
+
+#: inc/widgets/featured-courses/form.php:35
+#: inc/widgets/popular-courses/form.php:35
+#: inc/widgets/recent-courses/form.php:35
+msgid "Choose template: "
+msgstr ""
+
+#: inc/widgets/featured-courses/form.php:50
+#: inc/widgets/popular-courses/form.php:50
+#: inc/widgets/recent-courses/form.php:50
+msgid "Show description: "
+msgstr "Mostrar descripción: "
+
+#: inc/widgets/featured-courses/form.php:58
+#: inc/widgets/popular-courses/form.php:58
+#: inc/widgets/recent-courses/form.php:58
+msgid "Description max length:"
+msgstr "Descripción longitud máxima:"
+
+#: inc/widgets/featured-courses/form.php:67
+#: inc/widgets/popular-courses/form.php:67
+#: inc/widgets/recent-courses/form.php:67
+msgid "Show thumbnail: "
+msgstr "Mostrar Foto miniatura: "
+
+#: inc/widgets/featured-courses/form.php:76
+#: inc/widgets/popular-courses/form.php:76
+#: inc/widgets/recent-courses/form.php:76
+msgid "Show Teacher name: "
+msgstr "Mostrar el nombre del profesor: "
+
+#: inc/widgets/featured-courses/form.php:84
+#: inc/widgets/popular-courses/form.php:84
+#: inc/widgets/recent-courses/form.php:84
+msgid "Show number of lessons: "
+msgstr "Mostrar número de lecciones: "
+
+#: inc/widgets/featured-courses/form.php:92
+#: inc/widgets/popular-courses/form.php:92
+#: inc/widgets/recent-courses/form.php:92
+msgid "Show enrolled number: "
+msgstr "Mostrar el número de inscritos: "
+
+#: inc/widgets/featured-courses/form.php:100
+#: inc/widgets/popular-courses/form.php:100
+#: inc/widgets/recent-courses/form.php:100
+msgid "Show price: "
+msgstr "Mostrar precio: "
+
+#: inc/widgets/featured-courses/form.php:110
+#: inc/widgets/popular-courses/form.php:110
+#: inc/widgets/recent-courses/form.php:110
+msgid "Bottom link: "
+msgstr ""
+
+#: inc/widgets/featured-courses/form.php:116
+#: inc/widgets/popular-courses/form.php:116
+#: inc/widgets/recent-courses/form.php:116
+msgid "hide bottom link"
+msgstr ""
+
+#: inc/widgets/featured-courses/form.php:119
+#: inc/widgets/popular-courses/form.php:119
+#: inc/widgets/recent-courses/form.php:119
+msgid "all courses"
+msgstr "todos los cursos"
+
+#: inc/widgets/featured-courses/form.php:124
+#: inc/widgets/popular-courses/form.php:124
+#: inc/widgets/recent-courses/form.php:124
+msgid "Bottom link text: "
+msgstr "Boton de enlace inferior: "
+
+#: inc/widgets/featured-courses/templates/default.php:26
+#: inc/widgets/popular-courses/templates/default.php:26
+#: inc/widgets/recent-courses/templates/default.php:26
+msgid "..."
+msgstr ""
+
+#: inc/widgets/featured-courses/templates/default.php:42
+#: inc/widgets/popular-courses/templates/default.php:42
+#: inc/widgets/recent-courses/templates/default.php:42
+#, php-format
+msgid "%d students"
+msgstr "%d estudiantes"
+
+#: inc/widgets/featured-courses/templates/default.php:42
+#: inc/widgets/popular-courses/templates/default.php:42
+#: inc/widgets/recent-courses/templates/default.php:42
+#, php-format
+msgid "%d student"
+msgstr "%d estudiante"
+
+#: inc/widgets/featured-courses/templates/default.php:50
+#: inc/widgets/popular-courses/templates/default.php:50
+#: inc/widgets/recent-courses/templates/default.php:50
+#, php-format
+msgid "%d lessons"
+msgstr "%d lecciones"
+
+#: inc/widgets/featured-courses/templates/default.php:50
+#: inc/widgets/popular-courses/templates/default.php:50
+#: inc/widgets/recent-courses/templates/default.php:50
+#, php-format
+msgid "%d lesson"
+msgstr "%d leccion"
+
+#: inc/widgets/popular-courses/popular-course-widget.php:65
+msgid "Popular courses"
+msgstr "Cursos populares"
+
+#: inc/widgets/popular-courses/popular-course-widget.php:76
+msgid "LearnPress - Popular Courses"
+msgstr "Cursos populares"
+
+#: inc/widgets/recent-courses/recent-course-widget.php:47
+msgid "Display most recent courses"
+msgstr "Mostrar cursos más recientes"
+
+#: inc/widgets/recent-courses/recent-course-widget.php:65
+msgid "Recent courses"
+msgstr "Cursos recientes"
+
+#: inc/widgets/recent-courses/recent-course-widget.php:76
+msgid "LearnPress - Recent Courses"
+msgstr "Cursos recientes"
+
+#: templates/content-archive-course.php:35
+msgid "No course found."
+msgstr "Curso no encontrado"
+
+#: templates/search-form.php:18
+msgid "Search course..."
+msgstr "Buscar curso.."
+
+#: templates/search-form.php:20
+msgid "Search"
+msgstr "Buscar"
+
+#: templates/cart/empty-cart.php:12
+msgid "Your cart is currently empty."
+msgstr "Tu lista esta vacía."
+
+#: templates/cart/form.php:70
+msgid "Remove this course"
+msgstr "Eliminar este curso"
+
+#: templates/cart/form.php:96 templates/checkout/review-order.php:59
+#: templates/order/order-details.php:50
+msgid "Subtotal"
+msgstr ""
+
+#: templates/checkout/form-logged-in.php:22
+#, php-format
+msgid "Logged in as <a href=\"%1$s\">%2$s</a>."
+msgstr "Conectado como <a href=\"%1$s\">%2$s</a>."
+
+#: templates/checkout/form-logged-in.php:27
+msgid "Log out of this account"
+msgstr "Desconectarse"
+
+#: templates/checkout/form-logged-in.php:27
+msgid "Log out &raquo;"
+msgstr "Salir &raquo;"
+
+#: templates/checkout/form-login.php:18
+msgid "Returning customer"
+msgstr "Cliente recurrente"
+
+#: templates/checkout/form-login.php:19
+msgid "I am a returning customer"
+msgstr "Soy un usuario ya registrado"
+
+#: templates/checkout/form-login.php:48
+msgid "Login"
+msgstr "Iniciar sesión"
+
+#: templates/checkout/form-register.php:18
+msgid "New Customer"
+msgstr "Nuevo Cliente"
+
+#: templates/checkout/form-register.php:19
+msgid "Register Account"
+msgstr "Registrar Cuenta"
+
+#: templates/checkout/form-register.php:21
+msgid "Continue"
+msgstr "Continuar"
+
+#: templates/checkout/form-register.php:22
+#, php-format
+msgid ""
+"By creating an account you will be able to keep track of the course's "
+"progress you have previously enrolled.<a href=\"%s\">%s</a>"
+msgstr ""
+"Al crear una cuenta podrás realizar un seguimiento de progreso del curso al "
+"que te has inscrito previamente. <a href=\"%s\">%s</a>"
+
+#: templates/checkout/order-comment.php:12
+msgid "Additional Information"
+msgstr "Información Adicional"
+
+#: templates/checkout/order-received.php:16
+#: templates/checkout/order-received.php:52 templates/order/confirm.php:32
+#: templates/order/confirm.php:67
+msgid "Thank you. Your order has been received."
+msgstr "Gracias! Hemos recibido tu pedido"
+
+#: templates/checkout/order-received.php:20
+msgid "Order Number"
+msgstr "Número de pedido"
+
+#: templates/checkout/order-received.php:39 templates/checkout/payment.php:14
+msgid "Payment Method"
+msgstr "Método de Pago"
+
+#: templates/checkout/payment.php:15
+msgid "Place order"
+msgstr "Realizar pedido"
+
+#: templates/checkout/payment.php:26
+msgid "No payment methods is available."
+msgstr "Ningún método de pago esta disponible"
+
+#: templates/checkout/review-order.php:14
+msgid "Your order"
+msgstr "Tu orden"
+
+#: templates/content-lesson/description.php:25
+msgid "This lesson has no content"
+msgstr "Esta lección no tiene contenido"
+
+#: templates/content-lesson/__complete-button.php:66
+#: templates/single-course/content-item-lp_lesson.php:33
+msgid "Complete"
+msgstr "Completo"
+
+#: templates/content-lesson/__prev-button.php:11
+msgid "Prev"
+msgstr "Anterior"
+
+#: templates/content-question/explanation.php:19
+msgid "Explanation:"
+msgstr "Explicación:"
+
+#: templates/content-question/hint.php:31 templates/content-quiz/buttons.php:41
+msgid "Hint"
+msgstr "Pista"
+
+#: templates/content-question/hint.php:32
+msgid "Hint:"
+msgstr "Consejo:"
+
+#: templates/content-quiz/buttons.php:39
+msgid "Check"
+msgstr "Checar"
+
+#: templates/content-quiz/buttons.php:53 templates/single-course/buttons.php:26
+msgid "Retake"
+msgstr "Retomar"
+
+#: templates/content-quiz/buttons.php:63
+msgid "Start Quiz"
+msgstr "Comenzar Examen"
+
+#: templates/content-quiz/buttons.php:73
+msgid "Finish Quiz"
+msgstr "Finalizar Examen"
+
+#: templates/content-quiz/history.php:26
+#, php-format
+msgid "Other results (newest %d items)"
+msgstr "Otros resultados (%d elementos más actuales)"
+
+#: templates/content-quiz/history.php:44
+msgid "Time"
+msgstr "Horario"
+
+#: templates/content-quiz/history.php:45
+msgid "Result"
+msgstr "Resultado"
+
+#: templates/content-quiz/history.php:70
+msgid "No history found!"
+msgstr "No hay historial"
+
+#: templates/content-quiz/intro.php:26
+msgid "Attempts allowed:"
+msgstr "Intentos permitidos:"
+
+#: templates/content-quiz/intro.php:30
+msgid "Duration:"
+msgstr "Duración:"
+
+#: templates/content-quiz/intro.php:34
+msgid "Passing grade:"
+msgstr "Pasar grado"
+
+#: templates/content-quiz/intro.php:38
+msgid "Questions:"
+msgstr "Preguntas:"
+
+#: templates/content-quiz/preview-mode.php:15
+msgid "You are currently viewing quiz in preview mode."
+msgstr "Ahora mismo estás viendo el examen en el modo de vista previa"
+
+#: templates/content-quiz/questions.php:20
+msgid "List of questions"
+msgstr "Lista de preguntas"
+
+#: templates/content-quiz/questions.php:58
+msgid "This quiz hasn't got any questions"
+msgstr "Este examen no tiene preguntas."
+
+#: templates/content-quiz/result.php:27
+#, php-format
+msgid "You have reached %d of %d points (%s)"
+msgstr "Has llegado a %d de %d puntos (%s)"
+
+#: templates/content-quiz/result.php:30
+#, php-format
+msgid "Correct %d (%0.0f%%)"
+msgstr "Correcta %d (% 0.0f%%)"
+
+#: templates/content-quiz/result.php:31
+#, php-format
+msgid "Wrong %d (%0.0f%%)"
+msgstr "Incorrecta %d (%0.0f%%)"
+
+#: templates/content-quiz/result.php:32
+#, php-format
+msgid "Empty %d (%0.0f%%)"
+msgstr "Vacíos %d (%0.0f%%)"
+
+#: templates/content-quiz/result.php:46
+#, php-format
+msgid "Your time: %s"
+msgstr "Tu tiempo: %s"
+
+#: templates/content-quiz/result.php:51
+#, php-format
+msgid "Your quiz grade <span class=\"%s\">%s</span>"
+msgstr "Tu calificación  <span class=\"%s\">%s</span>"
+
+#: templates/content-quiz/result.php:53 templates/content-quiz/result.php:55
+#, php-format
+msgid "Quiz requirement <span>%s</span>"
+msgstr "Requisito de examen <span>%s</span>"
+
+#: templates/emails/order-items-table.php:36
+#: templates/emails/plain/order-items-table.php:24
+#, php-format
+msgid "Quantity: %s"
+msgstr "Cantidad: %s"
+
+#: templates/emails/order-items-table.php:39
+#: templates/emails/plain/order-items-table.php:26
+#, php-format
+msgid "Cost: %s"
+msgstr "Costo: %s"
+
+#: templates/global/become-teacher-form.php:12
+msgid "Submitting..."
+msgstr "Enviando…"
+
+#: templates/global/restrict-access.php:18
+msgid ""
+"You have no permission to view this area. Please contact site's "
+"administrators for more details."
+msgstr "Lo sentimos. No tienes permiso para ver esta página."
+
+#: templates/order/confirm.php:14
+msgid ""
+"Unfortunately your order cannot be processed as the originating bank/"
+"merchant has declined your transaction."
+msgstr ""
+"Desgraciadamente, tu pedido no puede procesarse; el banco/comercio ha "
+"rechazado tu transacción. Por favor, intenta realizar la compra de nuevo."
+
+#: templates/order/confirm.php:18
+msgid "Please attempt your purchase again or go to your account page."
+msgstr "Intente su compra de nuevo o vaya a la página de su cuenta."
+
+#: templates/order/confirm.php:20
+msgid "Please attempt your purchase again."
+msgstr "Intente su compra de nuevo."
+
+#: templates/order/confirm.php:24
+msgid "Pay"
+msgstr "Pagar"
+
+#: templates/order/confirm.php:26
+msgid "My Account"
+msgstr "Mi cuenta"
+
+#: templates/order/confirm.php:36
+msgid "Order Number:"
+msgstr "Número de pedido:"
+
+#: templates/order/confirm.php:40
+msgid "Date:"
+msgstr "Fecha:"
+
+#: templates/order/confirm.php:44
+msgid "Total:"
+msgstr "Total:"
+
+#: templates/order/confirm.php:49
+msgid "Payment Method:"
+msgstr "Método de pago:"
+
+#: templates/order/confirm.php:54
+msgid "Status:"
+msgstr "Estado:"
+
+#: templates/order/order-details.php:37
+msgid "Free!"
+msgstr "Grátis!"
+
+#: templates/profile/info.php:29
+msgid "Edit Profile"
+msgstr "Editar Perfil"
+
+#: templates/profile/info.php:30
+msgid "Logout"
+msgstr "Cerrar Sesión"
+
+#: templates/profile/order-details.php:13
+msgid "My Profile"
+msgstr "Mi Perfil"
+
+#: templates/profile/private-area.php:8
+msgid "This is private area. Please login to view this."
+msgstr "Esta es zona privada. Por favor, regístrate para ver esto."
+
+#: templates/profile/tabs/edit.php:31
+msgid "About Yourself"
+msgstr "Cuéntanos más sobre ti"
+
+#: templates/profile/tabs/edit.php:33
+msgid "Profile Picture"
+msgstr "Foto de perfil"
+
+#: templates/profile/tabs/edit.php:44
+msgid "Change Picture"
+msgstr "Cambiar imagen"
+
+#: templates/profile/tabs/edit.php:46
+msgid "Gravatar"
+msgstr ""
+
+#: templates/profile/tabs/edit.php:47
+msgid "Picture"
+msgstr "Imagen"
+
+#: templates/profile/tabs/edit.php:51
+msgid "Use Gravatar"
+msgstr "Usar Gravatar"
+
+#: templates/profile/tabs/edit.php:53
+msgid "Use Picture"
+msgstr "Imagen"
+
+#: templates/profile/tabs/edit.php:55 templates/profile/tabs/edit.php:63
+msgid "Upload Picture"
+msgstr "Cargar imagen"
+
+#: templates/profile/tabs/edit.php:64
+msgid ""
+"Please use an image that's at least 250px in width, 250px in height and "
+"under 2MB in size"
+msgstr "Utiliza una imagen de al menos 250px de ancho y 250px de alto."
+
+#: templates/profile/tabs/edit.php:77
+msgid "Choose File"
+msgstr "Subir archivo"
+
+#: templates/profile/tabs/edit.php:78
+msgid "Apply Changes"
+msgstr "Aplicar cambios"
+
+#: templates/profile/tabs/edit.php:87
+msgid "Biographical Info"
+msgstr "Información Personal"
+
+#: templates/profile/tabs/edit.php:89
+msgid ""
+"Share a little biographical information to fill out your profile. This may "
+"be shown publicly."
+msgstr ""
+"Comparte una breve información biográfica para llenar tu perfil. Esto puede "
+"ser mostrado públicamente."
+
+#: templates/profile/tabs/edit.php:95
+msgid "First Name"
+msgstr "Nombre"
+
+#: templates/profile/tabs/edit.php:100
+msgid "Last Name"
+msgstr "Apellidos"
+
+#: templates/profile/tabs/edit.php:106
+msgid "(required)"
+msgstr "(requerido)"
+
+#: templates/profile/tabs/edit.php:112
+msgid "Display name publicly as"
+msgstr "Mostrar nombre"
+
+#: templates/profile/tabs/edit.php:147
+msgid "Account Management"
+msgstr "Gestión de Cuentas"
+
+#: templates/profile/tabs/edit.php:149
+msgid "Change Password"
+msgstr "Cambiar Contraseña"
+
+#: templates/profile/tabs/edit.php:153
+msgid "Old Password"
+msgstr "Contraseña Anterior"
+
+#: templates/profile/tabs/edit.php:156
+msgid "New Password"
+msgstr "Nueva Contraseña"
+
+#: templates/profile/tabs/edit.php:159
+msgid "Confirmation password"
+msgstr "Confirmación de contraseña"
+
+#: templates/profile/tabs/edit.php:161
+msgid "Type your new password again."
+msgstr "Vuelve a escribir la contraseña."
+
+#: templates/profile/tabs/edit.php:169
+msgid "Update Profile"
+msgstr "Actualizar perfil"
+
+#: templates/profile/tabs/orders.php:19
+msgid "Action"
+msgstr "Acción"
+
+#: templates/profile/tabs/orders.php:54
+msgid "You have not got any orders yet!"
+msgstr "No tienes ningún pedido todavía!"
+
+#: templates/profile/tabs/quizzes.php:27
+msgid "You haven't started any quiz!"
+msgstr "No has iniciado ningún examen!"
+
+#: templates/profile/tabs/courses/all.php:40
+msgid "You haven't got any courses yet!"
+msgstr "No tienes ningún curso publicado todavía!"
+
+#: templates/profile/tabs/courses/finished.php:38
+msgid "You haven't finished any courses yet!"
+msgstr "No has terminado todavía ningún curso!"
+
+#: templates/profile/tabs/courses/learning.php:38
+msgid "You haven't got any learning courses yet!"
+msgstr "No tienes ningún curso de aprendizaje todavía!"
+
+#: templates/profile/tabs/courses/own.php:49
+msgid "You haven't got any published courses yet!"
+msgstr "No tienes ningún curso publicado todavía!"
+
+#: templates/profile/tabs/courses/progress.php:41
+#: templates/single-course/progress.php:69
+#: templates/single-course/students-list.php:79
+#, php-format
+msgid "Passing condition: %s%%"
+msgstr "Valor para pasar: %s%%"
+
+#: templates/profile/tabs/courses/purchased.php:38
+msgid "You haven't purchased any courses yet!"
+msgstr "No tienes ningún curso comprado todavía!"
+
+#: templates/single-course/buttons.php:24
+msgid "Buy this course"
+msgstr "Tomar este Curso"
+
+#: templates/single-course/buttons.php:25
+msgid "Enroll"
+msgstr "Inscribir"
+
+#: templates/single-course/buttons.php:43
+#, php-format
+msgid "Retake course (+%d)"
+msgstr "Repetir curso (+%d)"
+
+#: templates/single-course/buttons.php:98
+msgid "You have purchased this course. Please wait for approval."
+msgstr "Ya has comprado este curso. Por favor, espera la aprobación"
+
+#: templates/single-course/buttons.php:100
+msgid "Sorry, you can not purchase this course"
+msgstr "¡Lo sentimos! No puedes inscribirte en este curso"
+
+#: templates/single-course/content-item-lp_quiz.php:55
+msgid "No questions"
+msgstr "Sin preguntas."
+
+#: templates/single-course/content-item-only.php:9
+#: templates/single-course/progress.php:35
+#, php-format
+msgid "%d of %d items"
+msgstr "%d de %d elementos"
+
+#: templates/single-course/content-item.php:32
+msgid "Edit this item"
+msgstr "Editar este elemento"
+
+#: templates/single-course/content-protected.php:14
+#, php-format
+msgid ""
+"This content is protected, please <a href=\"%s\">login</a> and enroll course "
+"to view this content"
+msgstr ""
+"Este contenido está protegido, por favor <a href=\"%s\">inicia sesión</a>e "
+"inscríbete en el curso para ver este contenido"
+
+#: templates/single-course/curriculum.php:41
+#: templates/single-course/tabs/curriculum.php:41
+msgid "Curriculum is empty"
+msgstr "Curriculum está vacío"
+
+#: templates/single-course/description.php:22
+msgid "Course Description"
+msgstr "Descripción del curso"
+
+#: templates/single-course/instructor.php:20
+msgid "Instructor: "
+msgstr "Instructor: "
+
+#: templates/single-course/progress.php:25
+msgid "Your results"
+msgstr "Tus resultados"
+
+#: templates/single-course/progress.php:25
+msgid "Learning progress"
+msgstr "Progreso de aprendizaje"
+
+#: templates/single-course/progress.php:33
+msgid "Items completed"
+msgstr "Artículos completados"
+
+#: templates/single-course/progress.php:47
+msgid "Course results"
+msgstr "Resultados del curso"
+
+#: templates/single-course/progress.php:50
+msgid "Evaluated by results of final quiz"
+msgstr "Evaluado por resultados de examen final"
+
+#: templates/single-course/progress.php:52
+msgid "Evaluated by average results of quizzes"
+msgstr "Evaluados por el promedio de los examenes del curso"
+
+#: templates/single-course/progress.php:54
+msgid "Evaluated by items completed"
+msgstr "Evaluado por elementos terminados"
+
+#: templates/single-course/students-list.php:16
+msgid "Students Enrolled"
+msgstr "Estudiantes Inscritos"
+
+#: templates/single-course/students-list.php:33
+msgid "Student filter"
+msgstr "filtro estudiante"
+
+#: templates/single-course/students-list.php:92
+#, php-format
+msgid "one student enrolled."
+msgid_plural "%s students enrolled."
+msgstr[0] ""
+msgstr[1] "un estudiante inscrito."
+
+#: templates/single-course/students-list.php:98
+#, php-format
+msgid "One student enrolled."
+msgid_plural "%s students enrolled."
+msgstr[0] ""
+msgstr[1] "Un estudiante"
+
+#: templates/single-course/students-list.php:100
+msgid "No student enrolled."
+msgstr "Ningún estudiante inscrito."
+
+#: templates/single-course/tags.php:16
+msgid "Tags: "
+msgstr "Etiquetas: "
+
+#: templates/single-course/section/content.php:34
+msgid "No items in this section"
+msgstr "No hay elementos en esta sección"
+
+#: templates/single-course/section/item-meta.php:21
+msgid "Viewing"
+msgstr "Viendo"
+
+#: templates/single-course/section/item-meta.php:36
+msgid "Not Completed"
+msgstr "Sin completar"
+
+#: templates/single-course/section/item-meta.php:38
+msgid "Not Started"
+msgstr "Sin Iniciar"
+
+#: templates/single-course/section/title.php:26
+#, php-format
+msgid "%d/%d"
+msgstr ""

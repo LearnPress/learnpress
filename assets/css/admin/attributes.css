@@ -1,0 +1,19 @@
+.course-attributes {
+  margin: 20px 0;
+}
+.course-attributes .learn-press-attribute {
+  border: 1px solid #DDD;
+  margin-top: -1px;
+  margin-bottom: 0;
+}
+.course-attributes .learn-press-attribute > h4 {
+  padding: 10px 15px;
+  margin: 0;
+  background: #F5F5F5;
+}
+.course-attributes .learn-press-attribute .learn-press-attribute-data {
+  padding: 15px;
+  border-top: 1px solid #DDD;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFkbWluL2F0dHJpYnV0ZXMubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGNBQUE7O0FBREosa0JBRUk7RUFDSSxzQkFBQTtFQUNBLGdCQUFBO0VBQ0EsZ0JBQUE7O0FBTFIsa0JBRUksdUJBSUk7RUFDSSxrQkFBQTtFQUNBLFNBQUE7RUFDQSxtQkFBQTs7QUFUWixrQkFFSSx1QkFTSTtFQUNJLGFBQUE7RUFDQSwwQkFBQSIsInNvdXJjZXNDb250ZW50IjpbIi5jb3Vyc2UtYXR0cmlidXRlcyB7XHJcbiAgICBtYXJnaW46IDIwcHggMDtcclxuICAgIC5sZWFybi1wcmVzcy1hdHRyaWJ1dGUge1xyXG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkICNEREQ7XHJcbiAgICAgICAgbWFyZ2luLXRvcDogLTFweDtcclxuICAgICAgICBtYXJnaW4tYm90dG9tOiAwO1xyXG4gICAgICAgID4gaDQge1xyXG4gICAgICAgICAgICBwYWRkaW5nOiAxMHB4IDE1cHg7XHJcbiAgICAgICAgICAgIG1hcmdpbjogMDtcclxuICAgICAgICAgICAgYmFja2dyb3VuZDogI0Y1RjVGNTtcclxuICAgICAgICB9XHJcbiAgICAgICAgLmxlYXJuLXByZXNzLWF0dHJpYnV0ZS1kYXRhIHtcclxuICAgICAgICAgICAgcGFkZGluZzogMTVweDtcclxuICAgICAgICAgICAgYm9yZGVyLXRvcDogMXB4IHNvbGlkICNEREQ7XHJcbiAgICAgICAgfVxyXG4gICAgfVxyXG59XHJcblxyXG4iXSwiZmlsZSI6ImFkbWluL2F0dHJpYnV0ZXMuY3NzIn0= */
