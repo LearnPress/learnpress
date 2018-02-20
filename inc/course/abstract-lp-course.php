@@ -500,6 +500,12 @@ abstract class LP_Abstract_Course {
 		if ( ! $price || 'yes' != $this->payment ) {
 			$price = 0;
 		} else {
+			$theUserID = learn_press_get_current_user();
+			$maybe_discount = LP()->settings->get( 'returning_customer_discount');
+			if (count($theUserID->get_orders()) > 0 && $maybe_discount > 0){
+				$price = floatval($price);
+				$price = $price - (($maybe_discount*$price)/100);
+			}
 			$price      = floatval( $price );
 			$sale_price = $this->get_sale_price();
 			if ( is_numeric( $sale_price ) ) {
