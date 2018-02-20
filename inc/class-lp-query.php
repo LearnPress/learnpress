@@ -73,10 +73,14 @@ class LP_Query {
 					//remove question name from uri
 					$course   = learn_press_get_course( $course_id );
 <<<<<<< HEAD
+<<<<<<< HEAD
 					$redirect = $course->get_item_link( $quiz->ID );// get_home_url() /* SITE_URL */ . '/' . dirname( $request_match );
 =======
 					$redirect = $course->get_item_link( $quiz->ID );// get_site_url() . '/' . dirname( $request_match );
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+					$redirect = $course->get_item_link( $quiz->ID );// get_home_url() /* SITE_URL */ . '/' . dirname( $request_match );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 					wp_redirect( $redirect );
 					exit();
 				}
@@ -172,10 +176,14 @@ class LP_Query {
 		}
 		$current_url        = learn_press_get_current_url();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$query_string       = str_replace( trailingslashit( get_home_url() /* SITE_URL */ ), '', $current_url );
 =======
 		$query_string       = str_replace( trailingslashit( get_site_url() ), '', $current_url );
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+		$query_string       = str_replace( trailingslashit( get_home_url() /* SITE_URL */ ), '', $current_url );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
 		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 

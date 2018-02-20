@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 msgid ""
 msgstr ""
 "Project-Id-Version: LearnPress\n"
@@ -6013,6 +6016,7 @@ msgstr "Opis kursu"
 #: templates/single-course/instructor.php:20
 msgid "Instructor: "
 msgstr "Opiekun"
+<<<<<<< HEAD
 =======
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
@@ -8488,3 +8492,5 @@ msgstr "Pozostały czas"
 msgid "mins/secs"
 msgstr "min/sec"
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f

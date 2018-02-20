@@ -138,12 +138,17 @@ class LP_Cart {
 		// course is not purchasable
 		if ( !$course->is_purchasable() ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    learn_press_add_message( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
 			if ( $redirect = apply_filters( 'learn_press_course_is_not_purchasable_redirect', get_the_permalink( $course_id ), $course_id ) ) {
 =======
 			learn_press_display_message( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
 			if ( $redirect = apply_filter( 'learn_press_course_is_not_purchasable_redirect', get_the_permalink( $course_id ), $course_id ) ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+		    learn_press_add_message( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
+			if ( $redirect = apply_filters( 'learn_press_course_is_not_purchasable_redirect', get_the_permalink( $course_id ), $course_id ) ) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				wp_redirect( $redirect );
 				exit();
 			}

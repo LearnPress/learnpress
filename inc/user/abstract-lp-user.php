@@ -679,10 +679,14 @@ class LP_Abstract_User {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public function get_item_status( $item_id, $course_id = 0, $force = false, $course_history_id=0 ) {
 =======
 	public function get_item_status( $item_id, $course_id = 0, $force = false ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+	public function get_item_status( $item_id, $course_id = 0, $force = false, $course_history_id=0 ) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		$course_id = $this->_get_course_id( $course_id );
 
 		_learn_press_parse_user_item_statuses( $this->id, $course_id, $force );
@@ -701,6 +705,7 @@ class LP_Abstract_User {
 				global $wpdb;
 				$in   = array_fill( 0, sizeof( $item_ids ), '%d' );
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if( !$course_history_id ) {
 				    $course_history_id = $this->get_course_history_id_force($course_id);
 				}
@@ -710,12 +715,20 @@ class LP_Abstract_User {
 				$args = array_merge(
 					array( $this->id, $course_id ),
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+				if( !$course_history_id ) {
+				    $course_history_id = $this->get_course_history_id_force($course_id);
+				}
+				$args = array_merge(
+				    array( $this->id, $course_id, $course_history_id ),
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 					$item_ids
 				);
 
 				$query = $wpdb->prepare( "
                     SELECT o.item_id, o.status
                     FROM {$wpdb->prefix}learnpress_user_items o
+<<<<<<< HEAD
 <<<<<<< HEAD
                     WHERE user_item_id = (SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items s2 WHERE s2.item_id = o.item_id AND s2.user_id = o.user_id)
                     AND user_id = %d AND ref_id = %d AND parent_id = %d
@@ -731,6 +744,15 @@ class LP_Abstract_User {
                 ", $args );
 
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+                    WHERE user_item_id = (SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items s2 WHERE s2.item_id = o.item_id AND s2.user_id = o.user_id)
+                    AND user_id = %d AND ref_id = %d AND parent_id = %d
+                    AND item_id IN(" . join( ', ', $in ) . ")
+                ", $args );
+
+
+
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				$item_statuses[ $key ] = false;
 				if ( $rows = $wpdb->get_results( $query ) ) {
 					foreach ( $rows as $row ) {
@@ -829,6 +851,7 @@ class LP_Abstract_User {
 	 * @return mixed|null|void
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public function get_quiz_history( $quiz_id, $course_id = 0, $history_id = null, $force = false, $course_history_id=0 ) {
 		$course_id = $this->_get_course_id( $course_id );
 		if( !$course_history_id ) {
@@ -839,6 +862,13 @@ class LP_Abstract_User {
 		$course_id = $this->_get_course_id( $course_id );
 
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+	public function get_quiz_history( $quiz_id, $course_id = 0, $history_id = null, $force = false, $course_history_id=0 ) {
+		$course_id = $this->_get_course_id( $course_id );
+		if( !$course_history_id ) {
+        		$course_history_id = $this->get_course_history_id_force($course_id);
+		}
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		$course = learn_press_get_course( $course_id );
 		if ( $course ) {
 			$quizzes = $course->get_quizzes( 'ID' );
@@ -857,16 +887,21 @@ class LP_Abstract_User {
 			$in             = array_fill( 0, sizeof( $quizzes ), '%d' );
 			$prepare_params = array_merge(
 <<<<<<< HEAD
+<<<<<<< HEAD
 				array( 'lp_quiz', $this->id, $course_id, $course_history_id ),
 =======
 				array( 'lp_quiz', $this->id, $course_id ),
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+				array( 'lp_quiz', $this->id, $course_id, $course_history_id ),
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				$quizzes
 			);
 			$query          = $wpdb->prepare( "
 				SELECT *
 				FROM $t1 uq
 				WHERE uq.item_type = %s
+<<<<<<< HEAD
 <<<<<<< HEAD
                     
 					AND uq.user_id = %d
@@ -875,10 +910,18 @@ class LP_Abstract_User {
 					AND uq.item_id IN(" . join( ',', $in ) . ")
                     
 =======
+=======
+                    
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 					AND uq.user_id = %d
 					AND uq.ref_id = %d
+                    AND uq.parent_id = %d
 					AND uq.item_id IN(" . join( ',', $in ) . ")
+<<<<<<< HEAD
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+                    
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				ORDER BY uq.user_item_id DESC
 			", $prepare_params );
 
@@ -1194,6 +1237,9 @@ class LP_Abstract_User {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
     /**
      * Return true if user can purchase a course
      *
@@ -1224,6 +1270,7 @@ class LP_Abstract_User {
         
         return apply_filters('learn_press_user_can_purchase_course', $purchasable, $this, $course_id);
     }
+<<<<<<< HEAD
 =======
 	/**
 	 * Return true if user can purchase a course
@@ -1241,6 +1288,8 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 
 	/**
 	 * Return true if user can enroll a course
@@ -1349,10 +1398,14 @@ class LP_Abstract_User {
 
 		if ( is_object( $course )/* && $order_id && $lp_order->post_status == 'lp-completed'*/ ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 =======
 			if ( $this->has( 'enrolled-course', $course_id, true ) || $this->has( 'finished-course', $course_id, true ) ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				// or user has enrolled course
 				$view = 'enrolled';
 			} elseif ( $lesson->is( 'previewable' ) || $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
@@ -1479,14 +1532,20 @@ class LP_Abstract_User {
 	public function can_retake_course( $course_id, $force = false ) {
 		$can = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		$ordered = $this->has_ordered_course( $course_id );
 		if( !$ordered ) {
 		    return false;
 		} elseif ( 'completed' !== learn_press_get_order_status( $ordered ) ) {
             return false;
 		}
+<<<<<<< HEAD
 =======
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		if ( $course = learn_press_get_course( $course_id ) ) {
 			$count = $course->retake_count;
 			if ( $count > 0 ) {
@@ -1500,9 +1559,12 @@ class LP_Abstract_User {
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		return apply_filters( 'learn_press_user_can_retake_course', $can, $course->id, $this->id );
 	}
 
@@ -1629,12 +1691,16 @@ class LP_Abstract_User {
 		$enrolled = false;
 		if ( $this->has_purchased_course( $course_id ) ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 			$enrolled_courses    = LP_Cache::get_enrolled_courses( false, array() );
 			$key                 = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id );
 			if ( ! array_key_exists( $key, $enrolled_courses ) ) {
 			    $enrolled = $enrolled_courses[ $key ] = $this->_has_enrolled_course( $course_id, $order_id );
 			    LP_Cache::set_enrolled_courses( $enrolled_courses );
 			} elseif ( ! empty( $enrolled_courses[ $key ] ) && $enrolled_courses[ $key ] != '' ) {
+<<<<<<< HEAD
 =======
 			$item_statuses = LP_Cache::get_item_statuses( false, array() );
 			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id );
@@ -1643,6 +1709,8 @@ class LP_Abstract_User {
 				LP_Cache::set_item_statuses( $item_statuses );
 			} elseif ( ! empty( $item_statuses[ $key ] ) && $item_statuses[ $key ] != '' ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				$enrolled = true;
 			}
 		}
@@ -1687,6 +1755,7 @@ class LP_Abstract_User {
 	 */
 	public function has_finished_course( $course_id, $force = false ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$finished_courses = LP_Cache::get_finished_courses( false, array() );
 		$key           = sprintf( '%d-%d', $this->id, $course_id );
 		$finished      = 'no';
@@ -1717,42 +1786,41 @@ class LP_Abstract_User {
 =======
 		$item_statuses = LP_Cache::get_item_statuses( false, array() );
 		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
+=======
+		$finished_courses = LP_Cache::get_finished_courses( false, array() );
+		$key           = sprintf( '%d-%d', $this->id, $course_id );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		$finished      = 'no';
-		if ( ! empty( $item_statuses ) && array_key_exists( $key, $item_statuses ) && ! $force ) {
-			$finished = ( $item_statuses[ $key ] == 'finished' ) ? 'yes' : 'no';
+		if ( ! empty( $finished_courses ) && array_key_exists( $key, $finished_courses ) && ! $force ) {
+		    $finished = ( $finished_courses[ $key ] == 'finished' ) ? 'yes' : 'no';
 		} else {
 			global $wpdb;
-			$query                 = $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}learnpress_user_items where user_id=%d and item_id=%d AND item_type = %s ORDER BY user_item_id DESC", $this->id, $course_id, LP_COURSE_CPT );
-			$item_statuses[ $key ] = $wpdb->get_var( $query );
-			$finished              = $item_statuses[ $key ] == 'finished' ? 'yes' : 'no';
-
-			LP_Cache::set_item_statuses( $item_statuses );
-		}
-
-		return apply_filters( 'learn_press_user_has_finished_course', $finished == 'yes', $this, $course_id );
-
-
-		//static $courses = array();
-		$finished_courses = LP_Cache::get_finished_courses( false, array() );
-		if ( empty( $finished_courses[ $course_id ] ) || $force ) {
-			global $wpdb;
-			$query                          = $wpdb->prepare( "
-				SELECT status
-				FROM {$wpdb->prefix}learnpress_user_items uc
-				INNER JOIN {$wpdb->posts} c ON c.ID = uc.item_id
-				INNER JOIN {$wpdb->posts} o ON o.ID = uc.ref_id
-				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
-				WHERE uc.user_id = %d
-				AND uc.item_id = %d
-				AND o.post_status = %s
-				ORDER BY user_item_id DESC LIMIT 0,1
-			", '_user_id', $this->id, $this->id, $course_id, 'lp-completed' );
-			$finished_courses[ $course_id ] = $wpdb->get_var( $query ) == 'finished' ? 'yes' : 'no';
+			$sql ="SELECT 
+                        `status`
+                    FROM
+                        {$wpdb->prefix}learnpress_user_items uc
+                            INNER JOIN
+                        {$wpdb->prefix}posts c ON c.ID = uc.item_id
+                            INNER JOIN
+                        {$wpdb->prefix}posts o ON o.ID = uc.ref_id
+                    WHERE
+                        uc.user_id = %d AND uc.item_id = %d
+                            AND uc.item_type = %s
+                            AND uc.ref_type = %s
+                    ORDER BY uc.user_item_id DESC";
+			$query  = $wpdb->prepare( $sql, $this->id, $course_id, LP_COURSE_CPT, LP_ORDER_CPT );
+			$finished_courses[ $key ] = $wpdb->get_var( $query );
 			LP_Cache::set_finished_courses( $finished_courses );
+			$finished  = ($finished_courses[ $key ] == 'finished') ? 'yes' : 'no';
 		}
+<<<<<<< HEAD
 
 		return apply_filters( 'learn_press_user_has_finished_course', $finished_courses[ $course_id ] == 'yes', $course_id, $this->id );
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+        $has_finished = $finished == 'yes'; 
+        return apply_filters( 'learn_press_user_has_finished_course', $has_finished, $this, $course_id );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 	}
 
 	public function has_passed_course( $course_id ) {
@@ -2145,16 +2213,23 @@ class LP_Abstract_User {
 		}
 		if ( $course_id && ! array_key_exists( $course_id, $user_course_info[ $this->id ] ) || $force ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    if ( $result = learn_press_get_user_courses_info( $this->id, array( $course_id ), $force ) ) {
 =======
 			if ( $result = learn_press_get_user_courses_info( $this->id, array( $course_id ) ) ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+		    if ( $result = learn_press_get_user_courses_info( $this->id, array( $course_id ), $force ) ) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				foreach ( $result as $cid => $data ) {
 					$user_course_info[ $this->id ][ $cid ] = $data;
 				}
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		$info = array();
 		if ( isset( $user_course_info[$this->id][$course_id] ) ) {
 			if ( $field && array_key_exists( $field, $user_course_info[$this->id][$course_id] ) ) {
@@ -2162,12 +2237,15 @@ class LP_Abstract_User {
 			} else {
 				$info = $user_course_info[$this->id][$course_id];
 			}
+<<<<<<< HEAD
 =======
 		if ( $field && array_key_exists( $field, $user_course_info[$this->id][$course_id] ) ) {
 			$info = $user_course_info[$this->id][$course_id][$field];
 		} elseif ( isset( $user_course_info[$this->id][$course_id] ) ) {
 			$info = $user_course_info[$this->id][$course_id];
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		}
 
 		$this->_parse_item_order_of_course( $course_id );
@@ -2193,10 +2271,14 @@ class LP_Abstract_User {
 	 */
 	public function get_course_status( $course_id ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$status = $this->get_course_info( $course_id, 'status' );
 =======
 		$status = $this->get_course_info( $course_id, 'status', true );
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+		$status = $this->get_course_info( $course_id, 'status' );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		if ( ! $status && $this->has_purchased_course( $course_id ) ) {
 			$status = 'purchased';
 		}
@@ -2214,14 +2296,19 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public function get_quiz_results( $quiz_id, $course_id = 0, $force = false, $course_history_id = 0 ) {
 =======
 	public function get_quiz_results( $quiz_id, $course_id = 0, $force = false ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+	public function get_quiz_results( $quiz_id, $course_id = 0, $force = false, $course_history_id = 0 ) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		$course_id    = $this->_get_course_id( $course_id );
 		$quiz_results = LP_Cache::get_quiz_results( false, array() );
 		$key          = $this->id . '-' . $course_id . '-' . $quiz_id;
 		if ( ! array_key_exists( $key, $quiz_results ) || $force ) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		    if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force, $course_history_id ) ) {
 				$quiz_results[ $key ] = reset( $history );
@@ -2230,6 +2317,11 @@ class LP_Abstract_User {
 			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
 				$quiz_results[ $key ] = reset( $history );
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+		    if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force, $course_history_id ) ) {
+				$quiz_results[ $key ] = reset( $history );
+				$quiz_results[ $key ]->_quiz_grade = null;
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				if ( $user_results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[ $key ] ) ) {
 					foreach ( $user_results as $k => $v ) {
 						$quiz_results[ $key ]->{$k} = $v;
@@ -3222,6 +3314,9 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_course_grade', $grade, $this->id, $course_id );
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 	
 	public function get_course_history_id_force($course_id, $force=false){
 	    $key = $this->id.'-'.$course_id;
@@ -3240,8 +3335,11 @@ class LP_Abstract_User {
 	    }
 	    return $history_id;
 	}
+<<<<<<< HEAD
 =======
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 
 	public static function get_user() {
 		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '2.0.7', 'LP_User_Factory::get_user' );

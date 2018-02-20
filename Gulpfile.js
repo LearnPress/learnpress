@@ -32,7 +32,7 @@ gulp.task('default', ['less', 'watch']);
  * SVN: Copy working directory to SVN and prepare something before submitting.
  */
 var rootPath = '/Users/tu/Documents/foobla',
-    svnPath = rootPath + '/svn/learnpress',
+    svnPath = rootPath + '/wporg/learnpress',
     releasePath = rootPath + '/releases/learnpress',
     svnTrunkPath = svnPath + '/trunk',
     svnTagsPath = svnPath + '/tags',
@@ -111,5 +111,30 @@ gulp.task('svn', ['less', 'copy-trunk'], function () {
         return gulp.start('release', ['copy-tag']);
     })
 });
+
+// Create zipped version
+gulp.task('clr-zip', function () {
+    return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
+});
+
+gulp.task('copy-zip', ['clr-zip'], function () {
+    mkdirp(releasePath);
+    //process.chdir(svnTrunkPath);
+    var copyFiles = copySvnFiles;
+    copyFiles.push('readme.txt');
+    return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
+});
+
+gulp.task('mk-zip', ['copy-zip'], function () {
+    process.chdir(releasePath);
+    var zipPath = releasePath.replace(/learnpress/, '');
+    return gulp.src(zipPath + '/**/learnpress/**/*')
+        .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
+        .pipe(gulp.dest(zipPath));
+});
+
+gulp.task('zip', ['mk-zip'], function () {
+
+})
 
 // end of the world!

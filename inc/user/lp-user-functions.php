@@ -1195,6 +1195,7 @@ function learn_press_update_user_profile_avatar() {
 		$data = learn_press_get_request( 'lp-user-avatar-crop' );
 		if ( $data && ( $path = $upload_dir['basedir'] . $data['name'] ) && file_exists( $path ) ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    $im = false;
 			$filetype = wp_check_filetype( $path );
 			if ( 'jpg' == $filetype['ext'] ) {
@@ -1229,18 +1230,45 @@ function learn_press_update_user_profile_avatar() {
 			    $points  = explode( ',', $data['points'] );
 			    $im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
 =======
+=======
+		    $im = false;
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 			$filetype = wp_check_filetype( $path );
 			if ( 'jpg' == $filetype['ext'] ) {
-				$im = imagecreatefromjpeg( $path );
+                if (function_exists('imagecreatefromjpeg')) {
+                    $im = imagecreatefromjpeg($path);
+                }
 			} elseif ( 'png' == $filetype['ext'] ) {
-				$im = imagecreatefrompng( $path );
+				if (function_exists('imagecreatefrompng')) {
+                    $im = imagecreatefrompng($path);
+                }
 			} else {
 				return;
 			}
-			$points  = explode( ',', $data['points'] );
-			$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
+			if( !$im ) {
+			    $user  = wp_get_current_user();
+			    $output  = dirname( $path );
+			    $newname = md5( $user->user_login );
+			    if ( 'jpg' == $filetype['ext'] ) {
+			        $newname .= '.jpg';
+			        $output  .= '/' . $newname;
+			    } elseif ( 'png' == $filetype['ext'] ) {
+			        $newname .= '.png';
+			        $output  .= '/' . $newname;
+			    }
+			    if (copy($path, $output)) {
+        			    update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
+        			    update_user_meta( get_current_user_id(), '_lp_profile_picture_changed', 'yes' );
+			    }
+			}
+			
 			if ( $im !== false ) {
+<<<<<<< HEAD
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+			    $points  = explode( ',', $data['points'] );
+			    $im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				$user  = wp_get_current_user();
 				$dst_x = 0;
 				$dst_y = 0;
@@ -1377,14 +1405,19 @@ function learn_press_get_avatar_thumb_size() {
  * @return mixed
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 function learn_press_get_user_courses_info( $user_id, $course_ids, $force=false ) {
 =======
 function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+function learn_press_get_user_courses_info( $user_id, $course_ids, $force=false ) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 	global $wpdb;
 	$user_course_info = LP_Cache::get_course_info( false, array() );
 
 	if ( $user_id ) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	    if(!array_key_exists($user_id, $user_course_info) || $force == true) {
 		    settype( $course_ids, 'array' );
@@ -1406,11 +1439,15 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 		    if ( !isset($user_course_info[ $user_id ]) || empty( $user_course_info[ $user_id ] ) ) {
 =======
 	    if(!array_key_exists($user_id, $user_course_info)) {
+=======
+	    if(!array_key_exists($user_id, $user_course_info) || $force == true) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		    settype( $course_ids, 'array' );
 		    $format = array( $user_id );
-		    $format = array_merge( $format, $course_ids, array( 'lp_course' ) );
+		    $format = array_merge( $format, $course_ids, array( LP_COURSE_CPT,LP_ORDER_CPT ) );
 		    $in     = array_fill( 0, sizeof( $course_ids ), '%d' );
 		    $query  = $wpdb->prepare( "
+<<<<<<< HEAD
 			SELECT uc.*
 			FROM {$wpdb->prefix}learnpress_user_items uc
 			INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
@@ -1420,6 +1457,20 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 		", $format );
 		    if ( empty( $user_course_info[ $user_id ] ) ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+                        	SELECT uc.*
+                        	FROM {$wpdb->prefix}learnpress_user_items uc
+                        	INNER JOIN {$wpdb->posts} c ON c.ID = uc.item_id
+                         INNER JOIN {$wpdb->posts} o ON o.ID = uc.ref_id
+                        	WHERE uc.user_id = %d AND uc.status IS NOT NULL
+                            AND uc.item_id IN(" . join( ',', $in ) . ") 
+                            AND uc.item_type = %s 
+                            AND uc.ref_type = %s
+                            AND o.post_status = 'lp-completed'
+                        	ORDER BY user_item_id DESC
+                    ", $format );
+		    if ( !isset($user_course_info[ $user_id ]) || empty( $user_course_info[ $user_id ] ) ) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 			    $user_course_info[ $user_id ] = array();
 		    }
 
@@ -1442,12 +1493,17 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 				    $info['end']                                = $row->end_time;
 				    $info['status']                             = $row->status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    $info['results']                            = $course->evaluate_course_results( $user_id, $force, $row->user_item_id );
 				    $info['items']                              = $course->get_items_params( $user_id, $row->user_item_id );
 =======
 				    $info['results']                            = $course->evaluate_course_results( $user_id );
 				    $info['items']                              = $course->get_items_params( $user_id );
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+				    $info['results']                            = $course->evaluate_course_results( $user_id, $force, $row->user_item_id );
+				    $info['items']                              = $course->get_items_params( $user_id, $row->user_item_id );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				    $user_course_info[ $user_id ][ $course_id ] = $info;
 			    }
 		    }

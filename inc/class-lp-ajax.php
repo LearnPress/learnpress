@@ -409,12 +409,18 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				}
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wp_cache_flush();
 			$redirect_url = add_query_arg(array('r'=>time()),learn_press_get_current_url());
 			wp_redirect( $redirect_url );
 =======
 			wp_redirect( learn_press_get_current_url() );
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+			wp_cache_flush();
+			$redirect_url = add_query_arg(array('r'=>time()),learn_press_get_current_url());
+			wp_redirect( $redirect_url );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 			die();
 		}
 

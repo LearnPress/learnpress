@@ -160,10 +160,14 @@ function learn_press_get_current_url() {
 		$url = untrailingslashit( $_SERVER['REQUEST_URI'] );
 		if ( ! preg_match( '!^https?!', $url ) ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			$siteurl = trailingslashit( get_home_url() /* SITE_URL */ );
 =======
 			$siteurl = trailingslashit( get_site_url() );
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+			$siteurl = trailingslashit( get_home_url() /* SITE_URL */ );
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 			$segs1   = explode( '/', $siteurl );
 			$segs2   = explode( '/', $url );
 			if ( $removed = array_intersect( $segs1, $segs2 ) ) {
@@ -1615,6 +1619,13 @@ add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
  */
 function learn_press_send_json( $data ) {
 	echo '<-- LP_AJAX_START -->';
+	/**
+	 * fixed bug: can't buy course with PayPal 
+	 */
+	@header('HTTP/1.0 200 OK'); 
+	/**
+	 *  end 
+	 **/
 	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 	echo wp_json_encode( $data );
 	echo '<-- LP_AJAX_END -->';
@@ -2021,10 +2032,14 @@ function learn_press_front_scripts() {
 		'current_url' => learn_press_get_current_url(),
 		'localize'    => array(
 <<<<<<< HEAD
+<<<<<<< HEAD
 			'button_ok'     => __( 'Ok', 'learnpress' ),
 =======
 			'button_ok'     => __( 'OK', 'learnpress' ),
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+			'button_ok'     => __( 'Ok', 'learnpress' ),
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 			'button_cancel' => __( 'Cancel', 'learnpress' ),
 			'button_yes'    => __( 'Yes', 'learnpress' ),
 			'button_no'     => __( 'No', 'learnpress' )
@@ -2176,10 +2191,14 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	if ( $tab ) {
 		$args['tab'] = $tab;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} elseif(learn_press_is_profile()) {
 =======
 	} else {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+	} elseif(learn_press_is_profile()) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 		$args['tab'] = learn_press_get_current_profile_tab();
 	}
 	$args         = array_map( '_learn_press_urlencode', $args );

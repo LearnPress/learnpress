@@ -72,9 +72,12 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 
 			if ( LP()->settings->get( 'emails_enrolled_course_admin.send_admins' ) === 'yes' ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 				// Get all users with role admin
 				$admins = get_users( array(
 					'role' => 'administrator'
@@ -86,12 +89,15 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 			}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if ( ! in_array( $user_id, $all_users_id ) ) {
 				$all_users_id[] = $user_id;
 			}
 
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 			$all_users_id = apply_filters( 'learn_press_user_admin_send_mail_enrolled_course', $all_users_id, $course_id, $user_id, $user_course_id );
 			foreach ( $all_users_id as $user ) {
 				$this->trigger( $course_id, $user, $user_course_id );

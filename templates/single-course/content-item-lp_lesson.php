@@ -4,10 +4,14 @@
  *
  * @author  ThimPress
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @version 2.1.9.2
 =======
  * @version 2.1.9
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+ * @version 2.1.9.2
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
  */
 global $lp_query, $wp_query;
 $user          = learn_press_get_current_user();
@@ -26,11 +30,16 @@ $block_option = get_post_meta( $course->id, '_lp_block_lesson_content', true );
 $duration     = $course->get_user_duration_html( $user->id, true );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 if ( ! $admin && $course->is_expired() <= 0 && ( $block_option == 'yes' ) && ( get_post_meta( $item->id, '_lp_preview', true ) !== 'yes' ) ) {
 =======
 if ( ! $admin && $course->is_expired() && ( $block_option == 'yes' ) && ( get_post_meta( $item->id, '_lp_preview', true ) !== 'yes' ) ) {
 >>>>>>> f52771a835602535f6aecafadff0e2b5763a4f73
+=======
+
+if ( ! $admin && $course->is_expired() <= 0 && ( $block_option == 'yes' ) && ( get_post_meta( $item->id, '_lp_preview', true ) !== 'yes' ) ) {
+>>>>>>> c0452c1ff55dc0d9924ec28a818e89f917285f7f
 	learn_press_get_template( 'content-lesson/block-content.php' );
 } else {
 	?>
