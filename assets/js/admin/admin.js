@@ -39,6 +39,7 @@
     $(document).ready(function () {
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
+        $('.lp-select-2 select').select2();
 
         $(document).on('click', '#field-_lp_course_result input[name="_lp_course_result"]', function () {
             var $input = $(this),

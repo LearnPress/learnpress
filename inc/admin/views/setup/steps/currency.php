@@ -22,7 +22,7 @@ $preview_price = '';
         <td>
             <select id="currency" name="settings[currency][currency]">
 				<?php
-				if ( $payment_currencies = learn_press_get_payment_currencies() ) {
+				if ( $payment_currencies = learn_press_currencies() ) {
 					foreach ( $payment_currencies as $code => $symbol ) {
 						?>
                         <option value="<?php echo $code; ?>"

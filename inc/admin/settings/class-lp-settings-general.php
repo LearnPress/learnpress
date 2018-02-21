@@ -26,6 +26,13 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 	 * @return mixed
 	 */
 	public function get_settings( $section = '', $tab = '' ) {
+
+		$currencies = learn_press_currencies();
+		foreach ( $currencies as $code => $name ) {
+			$s                   = learn_press_get_currency_symbol( $code );
+			$currencies[ $code ] = sprintf( '%s (%s)', $name, $s ? $s : 'XXXXXX' );
+		}
+
 		$settings = apply_filters(
 			'learn-press/general-settings-fields',
 			array(
@@ -56,33 +63,34 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 				),
 				array(
 					'title'   => __( 'Currency', 'learnpress' ),
-					'id' => 'currency',
+					'id'      => 'currency',
 					'default' => 'USD',
 					'type'    => 'select',
-					'options' => learn_press_get_payment_currencies()
+					'class'   => 'lp-select-2',
+					'options' => $currencies
 				),
 				array(
 					'title'   => __( 'Currency position', 'learnpress' ),
-					'id' => 'currency_pos',
+					'id'      => 'currency_pos',
 					'default' => 'left',
 					'type'    => 'select',
 					'options' => learn_press_currency_positions()
 				),
 				array(
 					'title'   => __( 'Thousands Separator', 'learnpress' ),
-					'id' => 'thousands_separator',
+					'id'      => 'thousands_separator',
 					'default' => ',',
 					'type'    => 'text'
 				),
 				array(
 					'title'   => __( 'Decimals Separator', 'learnpress' ),
-					'id' => 'decimals_separator',
+					'id'      => 'decimals_separator',
 					'default' => '.',
 					'type'    => 'text'
 				),
 				array(
 					'title'   => __( 'Number of Decimals', 'learnpress' ),
-					'id' => 'number_of_decimals',
+					'id'      => 'number_of_decimals',
 					'default' => '2',
 					'type'    => 'number'
 				)/*,
