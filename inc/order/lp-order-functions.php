@@ -865,12 +865,12 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 
 if ( !function_exists( '_learn_press_total_raised' ) ) {
 	function _learn_press_total_raised() {
-		$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
+	    $orders = learn_press_get_orders( array( 'post_status' => 'lp-completed', 'posts_per_page' => 1000 ) );
 		$total  = 0;
 		if ( $orders ) {
 			foreach ( $orders as $order ) {
 				$order = learn_press_get_order( $order->ID );
-				$total = $total + $order->order_total;
+				$total = $total + floatval( $order->order_total );
 			}
 		}
 
