@@ -502,6 +502,10 @@ class LP_Page_Controller {
 			return $content;
 		}
 
+		if ( false !== ( $_content = wp_cache_get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
+			return $_content;
+		}
+
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
 		ob_start();
@@ -523,7 +527,9 @@ class LP_Page_Controller {
 		$content = ob_get_clean();
 		remove_filter( 'the_content', 'wpautop' );
 
-		//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
+		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
+
+		wp_cache_set( 'course-' . get_the_ID(), $content, 'course-content' );
 
 		return $content;
 	}
