@@ -417,6 +417,14 @@ if (typeof LearnPress === 'undefined') {
 		},
 		_loadItem          : function (e, f) {
 			e.preventDefault();
+			var isInIframe = (window.location != window.parent.location) ? true : false;
+			if(isInIframe){
+				var ihref = window.location.href;
+				if(ihref.match(/\?content-item-only=yes/gi)){
+					window.location.reload();
+					return;
+				}
+			}
 			var that = this,
 				$target = $(e.target),
 				id = this._getItemId($target);
@@ -436,14 +444,16 @@ if (typeof LearnPress === 'undefined') {
 			this.currentItem = this.model.getItem(id);
 			this.showPopup();
 			var $content = this.currentItem.get('content'),
-				isNew = !($content && $content.length);
-			if (!$content) {
+				isNew = !( $content && $content.length );
+			var isInIframe = (window.location != window.parent.location) ? true : false;
+			console.log(isInIframe);
+			if ( !$content ) {
 				$content = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />');
 				this.currentItem.set('content', $content);
 			}
 			that.viewItem(id);
 			this.$('#popup-content-inner').html($content);
-			if (isNew) {
+			if ( isNew ) {
 				$content.attr('src', LP.addQueryVar('content-item-only', 'yes', this.currentItem.get('url')));
 			}
 			$content.unbind('load').load( function() {
@@ -462,9 +472,9 @@ if (typeof LearnPress === 'undefined') {
 			this.$('.course-item [data-id="' + item.get('id') + '"]').closest('.course-item').addClass('item-current');
 			this.$('#course-curriculum-popup').attr('data-item-id', item.get('id'));
 			this.updateUrl();
-			//this.updateItemContent(item);
+			this.updateItemContent(item);
 			this.updateFooterNav();
-			if (item.get('type') === 'lp_quiz') {
+			if ( item.get( 'type' ) === 'lp_quiz' ) {
 				this.loadQuiz();
 			}
 			return item;
