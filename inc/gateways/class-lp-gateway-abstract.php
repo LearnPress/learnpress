@@ -154,6 +154,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	public function is_enabled() {
+		///echo "[xxxxxxx",$this->id, ',',$this->enabled,"]";
 		return $this->enabled == 'yes';
 	}
 
@@ -269,6 +270,21 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		);
 		$settings = $this->sanitize_settings( $settings );
 		LP_Meta_Box_Helper::render_fields( $settings );
+	}
+
+	/**
+	 * @since 3.0.0
+	 *
+	 * return bool
+	 */
+	public function is_display() {
+		$display = apply_filters( 'learn-press/payment-method/display', true, $this->id );
+		$display = apply_filters( 'learn-press/payment-method-' . $this->id . '/display', $display );
+
+		// @deprecated
+		$display = apply_filters( 'learn_press_display_payment_method', $display, $this->id );
+
+		return $display;
 	}
 
 	/**

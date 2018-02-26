@@ -94,12 +94,13 @@
          */
         var _formSubmit = function (e) {
             e.preventDefault();
-            var $form = $payments.children('.selected'),
-                data = $formCheckout.serializeJSON();
 
             if (!($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false)) {
                 return;
             }
+
+            var $form = $payments.children('.selected'),
+                data = $formCheckout.serializeJSON();
 
             removeMessage();
 
@@ -213,7 +214,7 @@
                         email: $checkoutEmail.val()
                     },
                     success: function (res) {
-                        var res = LP.parseJSON(res);
+                        res = LP.parseJSON(res);
                         if (res && res.exists) {
                             $checkoutExistingAccount.show().find('input[name="checkout-email-option"]').prop('checked', res.waiting_payment === res.exists);
                             $checkoutNewAccount.hide().find('input[name="checkout-new-account"]').prop('checked', false);
@@ -300,9 +301,9 @@
         });
 
         // Show form if there is only one form Register or Login
-        if($formRegister.length && !$formLogin.length){
+        if ($formRegister.length && !$formLogin.length) {
             _toggleRegisterForm()
-        }else if(!$formRegister.length && $formLogin.length){
+        } else if (!$formRegister.length && $formLogin.length) {
             _toggleLoginForm()
         }
     }
