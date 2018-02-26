@@ -352,7 +352,7 @@ class LP_Checkout {
 	public function is_enable_guest_checkout() {
 		return apply_filters(
 			'learn-press/checkout/enable-guest',
-			LP()->settings()->get( 'guest_checkout' )
+			LP()->settings()->get( 'guest_checkout' ) == 'yes'
 		);
 	}
 
