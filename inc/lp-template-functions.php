@@ -90,7 +90,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 
 		// Course is not require enrolling
 		if ( ! $course->is_required_enroll() ) {
-			return;
+			//return;
 		}
 
 		// User can not enroll course
@@ -99,15 +99,15 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		}
 
 		$purchased = $user->has_purchased_course( $course->get_id() );
-
 		// For free course and user does not purchased
 		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
-			if ( 'purchased' === $course_data->get_status() ) {
+			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
 				learn_press_get_template( 'single-course/buttons/enroll.php' );
 			}
 		}
+
 	}
 
 }

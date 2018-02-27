@@ -19,7 +19,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 			array(
 				'template' => __( 'Template', 'learnpress' ),
 				'database' => __( 'Database', 'learnpress' ),
-				//'course'   => __( 'Course', 'learnpress' ),
+				'course'   => __( 'Course', 'learnpress' ),
 				'cache'    => __( 'Cache', 'learnpress' )
 			)
 		);
