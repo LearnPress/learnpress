@@ -73,20 +73,33 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function views_plugins( $views ) {
 			global $s;
 
-			$search = $this->get_addons();
+			$search          = $this->get_addons();
+			$count_activated = 0;
+
+			if ( $active_plugins = get_option( 'active_plugins' ) ) {
+				if ( $search ) {
+					foreach ( $search as $k => $v ) {
+						if ( in_array( $k, $active_plugins ) ) {
+							$count_activated ++;
+						}
+					}
+				}
+			}
 
 			if ( $s && false !== stripos( $s, 'learnpress' ) ) {
 				$views['learnpress'] = sprintf(
-					'<a href="%s" class="current">%s <span class="count">(%d)</span></a>',
+					'<a href="%s" class="current">%s <span class="count">(%d/%d)</span></a>',
 					admin_url( 'plugins.php?s=learnpress' ),
 					__( 'LearnPress', 'learnpress' ),
+					$count_activated,
 					sizeof( $search )
 				);
 			} else {
 				$views['learnpress'] = sprintf(
-					'<a href="%s">%s <span class="count">(%d)</span></a>',
+					'<a href="%s">%s <span class="count">(%d/%d)</span></a>',
 					admin_url( 'plugins.php?s=learnpress' ),
 					__( 'LearnPress', 'learnpress' ),
+					$count_activated,
 					sizeof( $search )
 				);
 			}
