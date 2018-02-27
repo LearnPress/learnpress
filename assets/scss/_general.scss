@@ -427,6 +427,20 @@ $remove-icon-color: #d05d5d;
     }
 }
 
+.lp-label-counter {
+    border-radius: 20px;
+    display: inline-block;
+    height: 20px;
+    padding: 0 10px;
+    background: #2196F3;
+    line-height: 20px;
+    color: #FFF;
+    font-weight: bold;
+    &.disabled {
+        background: #DDD;
+    }
+}
+
 @-moz-keyframes spin {
     100% {
         -moz-transform: rotate(360deg);

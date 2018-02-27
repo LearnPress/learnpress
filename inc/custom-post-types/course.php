@@ -1313,7 +1313,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 					break;
 				case 'students' :
-					echo '<span class=lp-label-counter>' . $course->count_in_order() . '</span>';
+					$count = $course->count_in_order();
+					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . $course->count_in_order() . '</span>';
 
 			}
 		}

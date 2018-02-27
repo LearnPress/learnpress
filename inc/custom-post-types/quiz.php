@@ -391,7 +391,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					}
 
 					printf(
-						'<span class="lp-label-counter" title="%s">%s</span>',
+						'<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '" title="%s">%s</span>',
 						( $count ) ? sprintf( _n( '%d question', '%d questions', $count, 'learnpress' ), $count ) : __( 'This quiz has no questions', 'learnpress' ),
 						$count
 					);

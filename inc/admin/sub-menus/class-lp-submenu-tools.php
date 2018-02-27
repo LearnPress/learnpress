@@ -19,6 +19,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 			array(
 				'template' => __( 'Template', 'learnpress' ),
 				'database' => __( 'Database', 'learnpress' ),
+				//'course'   => __( 'Course', 'learnpress' ),
 				'cache'    => __( 'Cache', 'learnpress' )
 			)
 		);
@@ -56,6 +57,10 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 
 	public function page_content_cache() {
 		learn_press_admin_view( 'tools/html-cache' );
+	}
+
+	public function page_content_course() {
+		learn_press_admin_view( 'tools/html-course' );
 	}
 
 	public function enqueue_assets() {

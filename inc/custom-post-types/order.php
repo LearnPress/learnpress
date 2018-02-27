@@ -791,7 +791,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 							$links[] = __( 'Course does not exist', 'learnpress' );
 						} else {
-							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . '</a>';
+							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
 							if ( $count > 1 ) {
 								$link = sprintf( '<li>%s</li>', $link );
 							}
