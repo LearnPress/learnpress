@@ -421,7 +421,6 @@ if (typeof LearnPress === 'undefined') {
 			if(isInIframe){
 				var ihref = window.location.href;
 				if(ihref.match(/\?content-item-only=yes/gi)){
-					window.location.reload();
 					return;
 				}
 			}
