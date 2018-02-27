@@ -6,7 +6,8 @@ class LP_Reset_Data {
 			'search-courses',
 			'search-users',
 			'reset-course-users' => 'ajax_reset_course_users',
-			'reset-user-courses' => 'ajax_reset_user_courses'
+			'reset-user-courses' => 'ajax_reset_user_courses',
+			'reset-user-item'    => 'ajax_reset_user_item'
 		);
 		foreach ( $ajax_events as $action => $callback ) {
 
@@ -27,6 +28,48 @@ class LP_Reset_Data {
 			}
 			LP_Request::register_ajax( "rs-{$action}", $callback );
 		}
+	}
+
+	public static function ajax_reset_user_item() {
+		$user_id = LP_Request::get_string( 'user_id' );
+		$item_id = LP_Request::get_int( 'item_id' );
+
+		if ( ! is_numeric( $user_id ) ) {
+			if ( $user = get_user_by( 'email', $user_id ) ) {
+				$user_id = $user->ID;
+			}
+		}
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
+			SELECT user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d AND item_id = %d
+		", $user_id, $item_id );
+
+		if ( $user_item_ids = $wpdb->get_col( $query ) ) {
+
+			$format = array_fill( 0, sizeof( $user_item_ids ), '%d' );
+			$query  = $wpdb->prepare( "
+				DELETE
+				FROM {$wpdb->learnpress_user_itemmeta}
+				WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ")
+			", $user_item_ids );
+			$wpdb->query( $query );
+
+			$query = $wpdb->prepare( "
+				DELETE
+				FROM {$wpdb->learnpress_user_items}
+				WHERE user_id = %d AND item_id = %d
+			", $user_id, $item_id );
+
+			$wpdb->query( $query );
+
+			echo __('Data deleted', 'learnpress');
+		}else{
+			echo __('No data found', 'learnpress');
+		}
+		die();
 	}
 
 	public static function search_courses() {
