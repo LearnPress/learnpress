@@ -13,7 +13,9 @@ if ( !defined( 'ABSPATH' ) ) {
 $current = learn_press_get_current_profile_tab();
 ?>
 <ul class="tabs learn-press-tabs clearfix">
-	<?php foreach ( $tabs as $key => $tab ) : ?>
+	<?php foreach ( $tabs as $key => $tab ) : 
+                $tab_base = isset( $tab['base'] ) ? $tab['base'] : $key ;
+	?>
 		<?php
 		if ( !learn_press_current_user_can_view_profile_section( $key, $user ) ) {
 			continue;
@@ -23,7 +25,7 @@ $current = learn_press_get_current_profile_tab();
 			<?php
 			$link = learn_press_user_profile_link( $user->id, $key );
 			?>
-			<a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
+			<a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>"><?php echo apply_filters( 'learn_press_profile_' . $tab_base . '_tab_title', esc_html( $tab['title'] ), $tab_base , $key ); ?></a>
 		</li>
 	<?php endforeach; ?>
 </ul>
