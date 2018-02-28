@@ -60,8 +60,8 @@ function learn_press_get_theme_name( $folder ) {
  * @since 3.0.0
  *
  * @param string $tip
- * @param bool   $echo
- * @param array  $options
+ * @param bool $echo
+ * @param array $options
  *
  * @return string
  */
@@ -138,7 +138,7 @@ function learn_press_plugin_path( $sub_dir = '' ) {
  *
  * @param string $file
  * @param string $folder
- * @param bool   $include_once
+ * @param bool $include_once
  *
  * @return bool
  */
@@ -301,7 +301,7 @@ function learn_press_is_current_url( $url ) {
  * Remove unneeded characters in an URL
  *
  * @param string $url
- * @param bool   $trailingslashit
+ * @param bool $trailingslashit
  *
  * @return string
  */
@@ -359,7 +359,7 @@ function learn_press_section_item_types() {
  * Enqueue js code to print out
  *
  * @param string $code
- * @param bool   $script_tag - wrap code between <script> tag
+ * @param bool $script_tag - wrap code between <script> tag
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
@@ -382,9 +382,9 @@ function learn_press_enqueue_script( $code, $script_tag = false ) {
  * Get terms of a course by taxonomy.
  * E.g: course_tag, course_category
  *
- * @param int    $course_id
+ * @param int $course_id
  * @param string $taxonomy
- * @param array  $args
+ * @param array $args
  *
  * @return array|mixed
  */
@@ -490,8 +490,8 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  * Get posts by it's post-name (slug).
  *
  * @param string $name
- * @param array  $type
- * @param bool   $single
+ * @param array $type
+ * @param bool $single
  *
  * @return array|bool|null|WP_Post
  */
@@ -566,7 +566,7 @@ add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
  * @param string $str
- * @param int    $lines
+ * @param int $lines
  */
 function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
@@ -689,7 +689,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 				<?php echo $links; ?>
             </div>
             <!-- .pagination -->
-			<?php
+		<?php
 		endif;
 		$output = ob_get_clean();
 		if ( $args['echo'] ) {
@@ -813,7 +813,7 @@ function learn_press_human_time_to_seconds( $time, $default = '' ) {
  *
  * @param string $to
  * @param string $action
- * @param array  $vars
+ * @param array $vars
  *
  * @return mixed
  */
@@ -1890,7 +1890,6 @@ if ( ! function_exists( 'learn_press_is_course_tag' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_is_course' ) ) {
-
 	/**
 	 * Returns true when viewing a single course.
 	 *
@@ -1901,13 +1900,26 @@ if ( ! function_exists( 'learn_press_is_course' ) ) {
 	}
 }
 
-/**
- * Returns true when viewing a single quiz.
- *
- * @return bool
- */
-function learn_press_is_quiz() {
-	return is_singular( array( LP_QUIZ_CPT ) );
+if ( ! function_exists( 'learn_press_is_lesson' ) ) {
+	/**
+	 * Returns true when viewing a single lesson.
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_lesson() {
+		return is_singular( array( LP_LESSON_CPT ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_is_quiz' ) ) {
+	/**
+	 * Returns true when viewing a single quiz.
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_quiz() {
+		return is_singular( array( LP_QUIZ_CPT ) );
+	}
 }
 
 /**
@@ -1962,7 +1974,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int  $expire
+ * @param int $expire
  * @param bool $secure
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
@@ -2531,7 +2543,7 @@ function learn_press_plugin_basename( $filepath ) {
  * Update log data for each LP version into wp option.
  *
  * @param string $version
- * @param mixed  $data
+ * @param mixed $data
  */
 function learn_press_update_log( $version, $data ) {
 	$logs = get_option( 'learn_press_update_logs' );
@@ -2752,7 +2764,7 @@ function learn_press_deprecated_function( $function, $version, $replacement = nu
  * Sanitize content of tooltip
  *
  * @param string $tooltip
- * @param bool   $html
+ * @param bool $html
  *
  * @return string
  */
@@ -2864,8 +2876,7 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
 			try {
 				$data = unserialize( $content );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				print_r( $content );
 				die();
 			}
