@@ -14,8 +14,8 @@ defined( 'ABSPATH' ) or die();
 		<?php _e( 'Search results only show users have course data.', 'learnpress' ); ?>
     </p>
     <p>
-        <input type="text" name="s" @change="updateSearch($event)">
-        <button class="button" @click="search($event)"><?php _e( 'Search', 'learnpress' ); ?></button>
+        <input class="wide-fat" type="text" name="s" @keyup="updateSearch($event)">
+        <button class="button" @click="search($event)" :disabled="s.length < 3"><?php _e( 'Search', 'learnpress' ); ?></button>
     </p>
 
     <template v-if="users.length > 0">

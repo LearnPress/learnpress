@@ -15,8 +15,8 @@ defined( 'ABSPATH' ) or die();
     </p>
     <table>
         <tr>
-            <td><?php _e( 'User ID or Email', 'learnpress' ); ?></td>
-            <td><?php _e( 'Item ID', 'learnpress' ); ?></td>
+            <td><strong><?php _e( 'User ID or Email', 'learnpress' ); ?></strong></td>
+            <td><strong><?php _e( 'Item ID (ID of quiz or lesson)', 'learnpress' ); ?></strong></td>
         </tr>
         <tr>
             <td><input type="text" v-model="user_id"></td>
@@ -50,6 +50,11 @@ $localize = array(
                 watch: {},
                 created: function () {
 
+                },
+                mounted: function () {
+                    $(this.$el).closest('form').on('submit', function () {
+                        return false;
+                    })
                 },
                 methods: {
                     reset: function (e) {
