@@ -72,6 +72,7 @@ $localize = array(
                     updateSearch: function (e) {
                         this.s = e.target.value;
                         this.status = false;
+                        e.preventDefault();
                     },
                     search: function (e) {
                         e.preventDefault();

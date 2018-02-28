@@ -19,8 +19,8 @@ defined( 'ABSPATH' ) or die();
             <td><strong><?php _e( 'Item ID (ID of quiz or lesson)', 'learnpress' ); ?></strong></td>
         </tr>
         <tr>
-            <td><input type="text" v-model="user_id"></td>
-            <td><input type="text" v-model="item_id"></td>
+            <td><input type="text" v-model="user_id" @keyup="update($event)"></td>
+            <td><input type="text" v-model="item_id" @keyup="update($event)"></td>
         </tr>
     </table>
     <p v-if="message">{{message}}</p>
@@ -80,6 +80,9 @@ $localize = array(
                                 that.message = response;
                             }
                         })
+                    },
+                    update: function (e) {
+                        e.preventDefault();
                     },
                     isValid: function () {
                         return this.user_id && this.item_id;
