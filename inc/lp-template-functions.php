@@ -1097,11 +1097,14 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 		     && $edit_post_link = get_edit_post_link( $lp_course_item->get_id() )
 		) {
 			$type = get_post_type( $lp_course_item->get_id() );
-			$wp_admin_bar->add_menu( array(
-				'id'    => 'edit-' . $type,
-				'title' => $post_type_object->labels->edit_item,
-				'href'  => $edit_post_link
-			) );
+
+			if ( apply_filters( 'learn-press/edit-admin-bar-button', true, $lp_course_item ) ) {
+				$wp_admin_bar->add_menu( array(
+					'id'    => 'edit-' . $type,
+					'title' => $post_type_object->labels->edit_item,
+					'href'  => $edit_post_link
+				) );
+			}
 		}
 
 		/**

@@ -76,6 +76,13 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		protected $_curd = null;
 
 		/**
+		 * Mark the $post object is set up to this class
+		 *
+		 * @var bool
+		 */
+		protected $_setup_postdata = false;
+
+		/**
 		 * LP_Abstract_Object_Data constructor.
 		 *
 		 * @param null $data
@@ -114,6 +121,53 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		public function get_id() {
 			return absint( $this->_id );
+		}
+
+		/**
+		 * Get post object assigned to this class.
+		 *
+		 * @since 3.0.0
+		 * @return array|null|WP_Post
+		 */
+		public function get_post() {
+			return get_post( $this->get_id() );
+		}
+
+		/**
+		 * Get global $post object and set it up with new data
+		 *
+		 * @since 3.0.0
+		 *
+		 * @return bool|WP_Post
+		 */
+		public function setup_postdata() {
+			global $post;
+
+			if ( $post = $this->get_post() ) {
+				setup_postdata( $post );
+				$this->_setup_postdata = true;
+
+				return $post;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Reset global $post to WP default.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @return bool
+		 */
+		public function reset_postdata() {
+			if ( $this->_setup_postdata ) {
+				wp_reset_postdata();
+
+				return true;
+			}
+
+			return false;
 		}
 
 		/**

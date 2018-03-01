@@ -190,7 +190,7 @@ add_action( 'learn-press/course-item-content', 'learn_press_content_item_comment
  * @see learn_press_content_item_nav
  */
 add_action( 'learn-press/after-course-item-content', 'learn_press_content_item_nav', 5 );
-add_action( 'learn_press/after-course-item-content', 'learn_press_lesson_comment_form', 10, 2 );
+add_action( 'learn-press/after-course-item-content', 'learn_press_lesson_comment_form', 10 );
 
 /**
  * @see learn_press_content_item_lesson_title
