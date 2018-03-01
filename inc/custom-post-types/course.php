@@ -1310,6 +1310,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						echo sprintf( '<a href="%s" class="price">%s%s</a>', add_query_arg( 'filter_price', $price ), $origin_price, learn_press_format_price( $course->get_price(), true ) );
 					} else {
 						echo sprintf( '<a href="%s" class="price">%s%s</a>', add_query_arg( 'filter_price', 0 ), $origin_price, __( 'Free', 'learnpress' ) );
+
+						if ( ! $course->is_required_enroll() ) {
+							printf( '<p class="description">(%s)</p>', __( 'No required enroll', 'learnpress' ) );
+						}
 					}
 					break;
 				case 'students' :

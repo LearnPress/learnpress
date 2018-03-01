@@ -123,8 +123,8 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Order received', 'learnpress' ),
-							'id'      => 'checkout_endpoints[order_received]',
-							'default' => 'order-received',
+							'id'      => 'checkout_endpoints[lp_order_received]',
+							'default' => 'lp-order-received',
 							'type'    => 'text'
 						)
 					)

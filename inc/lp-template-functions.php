@@ -90,7 +90,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 
 		// Course is not require enrolling
 		if ( ! $course->is_required_enroll() ) {
-			//return;
+			return;
 		}
 
 		// User can not enroll course

@@ -252,7 +252,7 @@ ul.learn-press-nav-tabs {
                     }
                 }
 
-                &.has-status {
+                &.has-status:not(.status-started) {
                     .course-item-status {
                         display: inline-block;
                     }

@@ -155,11 +155,11 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$course_id = 0;
 			$enrolled  = false;
-			if ( $this->is_preview()) {
+			if ( $this->is_preview() ) {
 				$defaults[] = 'item-preview';
 				$defaults[] = 'has-status';
 			} elseif ( $this->is_blocked() ) {
-				$defaults[] = 'item-locked xxx';
+				$defaults[] = 'item-locked';
 			} else {
 				if ( $course = $this->get_course() ) {
 					$course_id = $course->get_id();
@@ -173,7 +173,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 								if ( $item_status ) {
 									$defaults[] = 'has-status';
-									///$status_classes[] = 'has-status';
 									$defaults[] = 'status-' . $item_status;
 								}
 								switch ( $item_status ) {
@@ -188,8 +187,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 							$defaults[] = 'item-locked';
 						}
 					}
-
-					$defaults[] = $course->is_free() ? 'feeeeeeee' : '000000';
 				} else {
 					$defaults[] = 'item-locked';
 				}
@@ -472,8 +469,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 */
 		public function is_blocked( $course_id = 0, $user_id = 0 ) {
 
-			$blocked = false;
-
 			if ( $course_id ) {
 				$course = learn_press_get_course( $course_id );
 			} else {
@@ -487,11 +482,24 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$user = learn_press_get_user( $user_id );
 
-			if ( $user && $course ) {
-				$is_admin      = in_array( 'administrator', $user->get_data( 'roles' ) );
-				$block_content = $course->get_data( 'block_lesson_content' );
-
-				if ( ! $is_admin && $course->is_expired() <= 0 && ( $block_content == 'yes' ) && ( get_post_meta( $this->get_id(), '_lp_preview', true ) !== 'yes' ) ) {
+			if ( ! $course ) {
+				$blocked = true;
+			} else if ( ! $course->is_required_enroll() || $this->is_preview() ) {
+				$blocked = false;
+			} else {
+				if ( $user ) {
+					if ( $is_admin = in_array( 'administrator', $user->get_data( 'roles' ) ) ) {
+						$blocked = false;
+					} else if ( $user->has_course_status( $course_id, array( 'enrolled', 'finished' ) ) ) {
+						$blocked     = false;
+						$course_item = $user->get_course_data( $course_id );
+						if ( 'yes' === $course->get_data( 'block_lesson_content' ) && $course_item->is_exceeded() < 0 ) {
+							$blocked = true;
+						}
+					} else {
+						$blocked = true;
+					}
+				} else {
 					$blocked = true;
 				}
 			}

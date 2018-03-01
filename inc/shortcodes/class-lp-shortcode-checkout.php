@@ -2,7 +2,7 @@
 /**
  * Checkout Page Shortcode.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Shortcodes
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
@@ -80,3 +80,4 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 		}
 	}
 }
+
