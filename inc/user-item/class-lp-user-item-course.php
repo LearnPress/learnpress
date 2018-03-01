@@ -225,7 +225,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		if ( is_array( $results ) ) {
-			$count_items     = $course->count_items( '', false );
+			$count_items     = $course->count_items( '', true );
 			$completed_items = $this->get_completed_items();
 			$results         = array_merge(
 				$results,
@@ -493,9 +493,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 							$completed ++;
 						}
 
-						if ( ! $item->is_preview() ) {
-							$total ++;
-						}
+						//if ( ! $item->is_preview() ) {
+						$total ++;
+						//}
 					}
 				}
 			}
