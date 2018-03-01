@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/buttons/retake.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -26,7 +26,8 @@ $user   = LP_Global::user();
 
 <?php do_action( 'learn-press/before-retake-form' ); ?>
 
-    <form name="retake-course" class="retake-course" method="post" enctype="multipart/form-data">
+    <form name="retake-course" class="retake-course" method="post" enctype="multipart/form-data"
+          data-confirm="<?php LP_Strings::esc_attr_e( 'confirm-retake-course', '', array( $course->get_title() ) ); ?>">
 
 		<?php do_action( 'learn-press/before-retake-button' ); ?>
 

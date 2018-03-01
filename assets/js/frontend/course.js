@@ -175,9 +175,9 @@
             }
 
             var $tab = $(tab),
-                $parent = $tab.closest('.course-nave');
+                $parent = $tab.closest('.course-nav');
 
-            if ($tab.siblings().lengt === 0) {
+            if ($tab.siblings().length === 0) {
                 return;
             }
 
@@ -432,6 +432,7 @@
             initSections();
             initEvents();
 
+
             if (!inPopup) {
                 return;
             }
@@ -470,13 +471,78 @@
 
         }
 
+        new LP.Alerts();
+
         init();
     }
+
+    LP.Alerts = function () {
+        this.isShowing = false;
+        var $doc = $(document),
+            self = this,
+            trigger = function (action, args) {
+                var triggered = $doc.triggerHandler(action, args);
+
+                if (triggered !== undefined) {
+                    return triggered;
+                }
+
+                return $.isArray(args) ? args[0] : undefined;
+            },
+            confirmHandle = function (e) {
+
+                try {
+                    var $form = $(this),
+                        message = $form.data('confirm'),
+                        action = $form.data('action');
+
+                    message = trigger('learn-press/confirm-message', [message, action]);
+
+                    if (!message) {
+                        return true;
+                    }
+
+                    jConfirm(message, '', function (confirm) {
+                        confirm && $form.off('submit.learn-press-confirm', confirmHandle).submit();
+                        self.isShowing = false;
+                    });
+
+                    self.isShowing = true;
+
+                    return false;
+                } catch (ex) {
+                    console.log(ex)
+                }
+
+                return true;
+            }
+
+        this.watchChange('isShowing', function (prop, oldVal, newVal) {
+            if (newVal) {
+                setTimeout(function () {
+                    $.alerts._reposition();
+                    $('#popup_container').addClass('ready')
+                }, 30)
+
+                var $a = $('<a href="" class="close"><i class="fa fa-times"></i></a>')
+                $('#popup_container').append($a);
+                $a.on('click', function () {
+                    $.alerts._hide();
+                    return false;
+                });
+            }
+            $(document.body).toggleClass('confirm', newVal);
+            return newVal;
+        });
+
+        var $forms = $('form[data-confirm]').on('submit.learn-press-confirm', confirmHandle);
+    }
+
 
     $(document).ready(function () {
         $(document).ready(function () {
             new LP_Course({})
         });
-    })
+    });
 })
 (jQuery, LP, _);

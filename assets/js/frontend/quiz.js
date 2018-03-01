@@ -63,6 +63,8 @@
             }
 
             if (overtime) {
+                // Disable confirm message
+                $('form.complete-quiz').off('submit.learn-press-confirm');
                 callbackEvents.callEvent('finish');
                 return;
             }

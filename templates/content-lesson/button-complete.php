@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-lesson/button-complete.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -25,6 +25,7 @@ $security  = $item->create_nonce( 'complete' );
 ?>
 
 <form method="post" name="learn-press-form-complete-lesson"
+      data-confirm="<?php ! $completed ? LP_Strings::esc_attr_e( 'confirm-complete-lesson', '', array( $item->get_title() ) ) : ''; ?>"
       class="learn-press-form form-button<?php echo $completed ? ' completed' : ''; ?>">
 
 	<?php do_action( 'learn-press/lesson/before-complete-button' ); ?>
