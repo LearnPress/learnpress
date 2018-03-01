@@ -331,7 +331,7 @@ class LP_Settings {
 	public function get_checkout_endpoints() {
 		if ( false === ( $endpoints = wp_cache_get( 'checkout', 'learn-press-endpoints' ) ) ) {
 			$defaults = array(
-				'lp-order-received' => 'lp-order-received'
+				'order-received' => 'lp-order-received'
 			);
 
 			$endpoints = array();
@@ -363,9 +363,7 @@ class LP_Settings {
 	 */
 	public function get_profile_endpoints() {
 		if ( false === ( $endpoints = wp_cache_get( 'profile', 'learn-press-endpoints' ) ) ) {
-			$defaults = array(
-
-			);
+			$defaults = array();
 
 			$endpoints = array();
 			if ( $settings = LP()->settings->get( 'profile_endpoints' ) ) {
