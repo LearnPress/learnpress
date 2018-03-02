@@ -58,6 +58,13 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 			}
 
 			add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_current_question' ), 10, 3 );
+			add_action( 'learn-press/before-start-quiz', array( __CLASS__, 'maybe_guest_start_quiz' ), 10, 4 );
+
+		}
+
+		public static function maybe_guest_start_quiz( $true, $quiz_id, $course_id, $user_id ) {
+			$user = learn_press_get_user($user_id);
+			print_r($user);
 		}
 
 		/**

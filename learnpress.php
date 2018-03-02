@@ -286,7 +286,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'load-post.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
-			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), -10 );
+			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
 			add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 999 );
 		}
 
@@ -303,7 +303,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function maybe_flush_rewrite_rules() {
 			if ( get_option( 'learn-press-flush-rewrite-rules' ) == 'yes' ) {
-				 flush_rewrite_rules();
+				flush_rewrite_rules();
 				delete_option( 'learn-press-flush-rewrite-rules' );
 			}
 		}
@@ -619,7 +619,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		public function flush_rewrite_rules() {
 			update_option( 'learn-press-flush-rewrite-rules', 'yes' );
-			 flush_rewrite_rules();
+			flush_rewrite_rules();
 		}
 
 		/**
