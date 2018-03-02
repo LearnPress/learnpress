@@ -24,3 +24,6 @@ package-lock.json
 /vendor/
 composer.lock
 script.sh
+/.DS_Store
+/.project
+/.buildpath
