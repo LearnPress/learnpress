@@ -31,7 +31,7 @@ $course      = LP_Global::course();
 			/**
 			 * @deprecated
 			 */
-			do_action( 'learn-press/before-course-item-content' );
+			do_action( 'learn_press_before_content_item' );
 
 			/**
 			 * @since 3.0.0

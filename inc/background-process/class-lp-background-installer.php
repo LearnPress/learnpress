@@ -26,13 +26,13 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		public function __construct() {
 			parent::__construct();
 
-			add_action( 'init', array( $this, 'check' ) );
+			add_action( 'wp_loaded', array( $this, 'check' ), 100 );
 		}
 
 		public function check() {
 			$this->push_to_queue(
 				array(
-					'check_tables'
+					'check_tables' => 'yes'
 				)
 			);
 			///LP_Install::create_tables();
@@ -44,6 +44,7 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
+
 			if ( ! isset( $data['check_tables'] ) ) {
 				return false;
 			}

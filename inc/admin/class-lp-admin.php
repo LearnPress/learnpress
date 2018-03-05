@@ -173,23 +173,23 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 		public function wc_add_display_post_states( $post_states, $post ) {
 			if ( wc_get_page_id( 'shop' ) === $post->ID ) {
-				$post_states['wc_page_for_shop'] = __( 'Shop Page', 'woocommerce' );
+				$post_states['wc_page_for_shop'] = __( 'Shop Page', 'learnpress' );
 			}
 
 			if ( wc_get_page_id( 'cart' ) === $post->ID ) {
-				$post_states['wc_page_for_cart'] = __( 'Cart Page', 'woocommerce' );
+				$post_states['wc_page_for_cart'] = __( 'Cart Page', 'learnpress' );
 			}
 
 			if ( wc_get_page_id( 'checkout' ) === $post->ID ) {
-				$post_states['wc_page_for_checkout'] = __( 'Checkout Page', 'woocommerce' );
+				$post_states['wc_page_for_checkout'] = __( 'Checkout Page', 'learnpress' );
 			}
 
 			if ( wc_get_page_id( 'myaccount' ) === $post->ID ) {
-				$post_states['wc_page_for_myaccount'] = __( 'My Account Page', 'woocommerce' );
+				$post_states['wc_page_for_myaccount'] = __( 'My Account Page', 'learnpress' );
 			}
 
 			if ( wc_get_page_id( 'terms' ) === $post->ID ) {
-				$post_states['wc_page_for_terms'] = __( 'Terms and Conditions Page', 'woocommerce' );
+				$post_states['wc_page_for_terms'] = __( 'Terms and Conditions Page', 'learnpress' );
 			}
 
 			return $post_states;
