@@ -224,13 +224,7 @@ class LP_Session_Handler implements ArrayAccess {
 
 			// Mark session clean after saving
 			$this->_changed = false;
-
-			//echo "XXXXX";
 		}
-
-		//var_dump($this->_changed , $this->_has_cookie);
-
-		//echo "yyyyy";
 	}
 
 	public function destroy_session() {

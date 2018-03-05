@@ -813,7 +813,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function is_purchasable() {
 			$is_purchasable = $this->exists() && $this->is_required_enroll() && get_post_status( $this->get_id() ) == 'publish';
 
-			//var_dump($this->exists() && $this->is_required_enroll() && get_post_status( $this->get_id() ));
 			// @deprecated
 			$is_purchasable = apply_filters( 'learn_press_item_is_purchasable', $is_purchasable, $this->get_id() );
 

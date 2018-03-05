@@ -114,7 +114,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 			$user_id = get_current_user_id();
 		}
 
-		if ( ! $user_id && ! preg_match( '!wp-login.php!', $pagenow ) && isset( LP()->session ) ) {
+		if ( ! $user_id && isset( LP()->session ) ) {
 
 			if ( ! LP()->session->guest_user_id ) {
 				LP()->session->set_customer_session_cookie( 1 );
@@ -130,7 +130,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 		}
 
 		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
-			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest($user_id) : new LP_User( $user_id );
+			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest( $user_id ) : new LP_User( $user_id );
 		}
 
 		return LP_Global::$users[ $user_id ];
