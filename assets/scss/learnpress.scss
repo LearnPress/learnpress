@@ -27,8 +27,8 @@ input[type="password"] {
     @include box-sizing(border-box);
 }
 
-.hide-if-js{
-    display: none!important;
+.hide-if-js {
+    display: none !important;
 }
 
 .clearfix {
@@ -143,6 +143,7 @@ ul.learn-press-courses {
         .lp-course-buttons {
             form {
                 width: 100%;
+                margin-bottom: 10px;
                 button {
                     width: 100%;
                 }
@@ -344,7 +345,7 @@ ul.list-table-nav {
             display: block;
             font-weight: bold;
         }
-        a{
+        a {
             color: #999999;
         }
     }
