@@ -65,9 +65,9 @@ class LP_Reset_Data {
 
 			$wpdb->query( $query );
 
-			echo __('Data deleted', 'learnpress');
-		}else{
-			echo __('No data found', 'learnpress');
+			echo __( 'Data deleted', 'learnpress' );
+		} else {
+			echo __( 'No data found', 'learnpress' );
 		}
 		die();
 	}
@@ -76,12 +76,17 @@ class LP_Reset_Data {
 		global $wpdb;
 
 		$s     = LP_Request::get_string( 's' );
+		$where = '';
+		if ( $ids = LP_Preview_Course::get_preview_courses() ) {
+			$format = array_fill( 0, sizeof( $ids ), '%d' );
+			$where  = $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ") ", $ids );
+		}
 		$query = $wpdb->prepare( "
 			SELECT ID as id, post_title AS title, 'students', '' AS status
 			FROM {$wpdb->posts}
 			WHERE post_type = %s AND post_title LIKE %s
-			AND ID <> %d
-		", LP_COURSE_CPT, '%' . $wpdb->esc_like( $s ) . '%', LP_Preview_Course::get_preview_course() );
+			{$where}
+		", LP_COURSE_CPT, '%' . $wpdb->esc_like( $s ) . '%' );
 
 		$courses = array();
 		if ( $rows = $wpdb->get_results( $query ) ) {

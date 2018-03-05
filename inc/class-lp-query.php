@@ -347,7 +347,10 @@ class LP_Query {
 		global $wpdb;
 
 		if ( ! is_admin() && learn_press_is_courses() ) {
-			$where .= $wpdb->prepare(" AND {$wpdb->posts}.ID <> %d ", LP_Preview_Course::get_preview_course());
+			if ( $ids = LP_Preview_Course::get_preview_courses() ) {
+				$format = array_fill( 0, sizeof( $ids ), '%d' );
+				$where  .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ") ", $ids );
+			}
 		}
 
 		return $where;
