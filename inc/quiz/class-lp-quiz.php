@@ -191,6 +191,20 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
+		 * @param $review_questions
+		 */
+		public function set_review_questions( $review_questions ) {
+			$this->_set_data( 'review_questions', $review_questions );
+		}
+
+		/**
+		 * @return array|mixed
+		 */
+		public function get_review_questions() {
+			return $this->get_data( 'review_questions' ) === 'yes';
+		}
+
+		/**
 		 * @param $type
 		 */
 		public function set_passing_grade_type( $type ) {

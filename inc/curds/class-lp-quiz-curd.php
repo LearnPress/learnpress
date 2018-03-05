@@ -56,6 +56,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
 					'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
 					'show_hide_question' => get_post_meta( $quiz->get_id(), '_lp_show_hide_question', true ),
+					'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
 				)
 			);
 			$this->_load_questions( $quiz );
@@ -317,7 +318,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * Reorder question by indexed number.
 		 *
 		 * @param LP_Quiz|WP_Post|int $the_quiz
-		 * @param mixed $questions
+		 * @param mixed               $questions
 		 *
 		 * @return mixed
 		 */
@@ -387,7 +388,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @param LP_Quiz|int $the_quiz
 		 * @param             $question_id
-		 * @param array $args
+		 * @param array       $args
 		 *
 		 * @return mixed false on failed
 		 */
@@ -447,7 +448,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Check if a question (or batch of questions) is already added to quiz.
 		 *
-		 * @param int $the_id
+		 * @param int       $the_id
 		 * @param int|array $ids
 		 *
 		 * @return array|bool|null|object

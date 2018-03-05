@@ -51,6 +51,8 @@ class LP_Preview_Course {
 				self::$_preview_course = $course_id;
 			}
 
+
+
 		}
 
 		return self::$_preview_course;

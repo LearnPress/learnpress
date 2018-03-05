@@ -915,6 +915,10 @@ if ( ! function_exists( 'learn_press_quiz_result_button' ) ) {
 			return;
 		}
 
+		if ( ! $quiz->get_review_questions() ) {
+            return;
+		}
+
 		learn_press_get_template( 'content-quiz/buttons/review.php' );
 	}
 }

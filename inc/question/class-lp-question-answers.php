@@ -285,7 +285,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 				if ( $position == $at ) {
 					return $answer;
 				}
-				$position++;
+				$position ++;
 			}
 
 			return false;
@@ -394,6 +394,8 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 				if ( $this->is_checked() && $this->is_true() ) {
 					$classes[] = 'answered-correct';
 				} elseif ( $this->is_checked() && ! $this->is_true() ) {
+					$classes[] = 'answered-wrong';
+				} elseif ( ! $this->is_checked() && $this->is_true() ) {
 					$classes[] = 'answered-wrong';
 				}
 			}

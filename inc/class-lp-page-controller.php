@@ -41,10 +41,35 @@ class LP_Page_Controller {
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
 		add_filter( 'template_include', array( $this, 'template_content_item' ) );
+		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ) );
 		add_filter( 'the_post', array( $this, 'setup_data' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+	}
+
+	public function maybe_redirect_quiz( $template ) {
+		$course   = LP_Global::course();
+		$quiz     = LP_Global::course_item_quiz();
+		$user     = learn_press_get_current_user();
+		$redirect = false;
+
+		if ( learn_press_is_review_questions() ) {
+			if ( ! $quiz->get_review_questions() ) {
+				$redirect = $course->get_item_link( $quiz->get_id() );
+			}
+		}
+
+		if (LP_Global::quiz_question() && ! $user->has_started_quiz( $quiz->get_id(), $course->get_id() ) ) {
+			$redirect = $course->get_item_link( $quiz->get_id() );
+		}
+
+		if ( $redirect ) {
+			wp_redirect( $redirect );
+			exit();
+		}
+
+		return $template;
 	}
 
 	public function setup_data( $post ) {

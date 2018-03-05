@@ -87,7 +87,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 							$default_data
 						);
 					}
-					$course_item                                                  = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $data ), $data, $this );
+					$course_item = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $data ), $data, $this );
+
 					$this->_items[ $item_id ]                                     = $course_item;
 					$this->_items_by_item_ids[ $course_item->get_user_item_id() ] = $item_id;
 				}

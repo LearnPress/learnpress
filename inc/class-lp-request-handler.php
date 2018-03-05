@@ -271,7 +271,6 @@ class LP_Request {
 			}
 
 			learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
-			die();
 		} else {
 			/// Need?
 			do_action( 'learn-press/add-to-cart-order-total-empty', $course_id, $cart_id, $action );

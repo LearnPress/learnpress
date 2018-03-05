@@ -87,11 +87,12 @@ function learn_press_get_current_user_id() {
  */
 function learn_press_get_current_user( $create_temp = true, $force_new = false ) {
 	if ( $id = get_current_user_id() ) {
-
 		return learn_press_get_user( $id, $force_new );
 	}
 
-	return $create_temp ? new LP_User_Guest( 0 ) : false;
+	return learn_press_get_user( 0 );
+
+	//return $create_temp ? new LP_User_Guest( 0 ) : false;
 	//return $create_temp ? LP_User_Factory::get_temp_user() : false;
 }
 
@@ -106,9 +107,22 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
 
+		global $pagenow;
+
 		// Check if user is existing
 		if ( ! get_user_by( 'id', $user_id ) && $current ) {
 			$user_id = get_current_user_id();
+		}
+
+		if ( ! $user_id && ! preg_match( '!wp-login.php!', $pagenow ) && isset( LP()->session ) ) {
+
+			if ( ! LP()->session->guest_user_id ) {
+				LP()->session->set_customer_session_cookie( 1 );
+				LP()->session->guest_user_id = time();
+			}
+
+			$user_id  = LP()->session->guest_user_id;
+			$is_guest = true;
 		}
 
 		if ( ! $user_id ) {
@@ -116,7 +130,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 		}
 
 		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
-			LP_Global::$users[ $user_id ] = new LP_User( $user_id );
+			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest($user_id) : new LP_User( $user_id );
 		}
 
 		return LP_Global::$users[ $user_id ];
@@ -1454,8 +1468,8 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 		'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
 		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 	);
-	print_r($update_data);
-	print_r($_POST);
+	print_r( $update_data );
+	print_r( $_POST );
 	echo "xxxxx";
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
 	$return      = wp_update_user( $update_data );

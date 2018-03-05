@@ -44,6 +44,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 				'show_hint'          => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
 				'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
 				'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
+				'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
 			)
 		);
 		$this->_load_questions( $quiz );

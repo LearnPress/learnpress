@@ -113,7 +113,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function get_results( $prop = 'result', $force = false ) {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
-
 		if ( false === ( $result = wp_cache_get( $cache_key, 'lp-quiz-result' ) ) || $force ) {
 			$result = array(
 				'questions'         => array(),
@@ -135,6 +134,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				foreach ( $questions as $question_id ) {
 					$question = LP_Question::get_question( $question_id );
 					$answered = $this->get_question_answer( $question_id );
+
 					$check    = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
 
 					$check['type']     = $question->get_type();

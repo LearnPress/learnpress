@@ -110,18 +110,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function __construct( $the_user = 0, $args = array() ) {
 
-			$this->_curd = new LP_User_CURD();
-
 			parent::__construct( $the_user, $args );
+
+			$this->_curd = new LP_User_CURD();
 
 			if ( is_numeric( $the_user ) && $the_user > 0 ) {
 				$this->set_id( $the_user );
 			} elseif ( $the_user instanceof self ) {
 				$this->set_id( absint( $the_user->get_id() ) );
 			} elseif ( ! empty( $the_user->ID ) ) {
-				$this->set_id( absint( $the_user->gID ) );
+				$this->set_id( absint( $the_user->ID ) );
 			}
-
 			if ( $this->get_id() > 0 ) {
 				$this->load();
 			}
@@ -154,43 +153,32 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_course_data( $course_id, $check_exists = false ) {
 
-			static $course_data = array();
-
 			if ( is_a( $course_id, 'LP_Abstract_Course' ) ) {
 				$course_id = $course_id->get_id();
-			}
-
-			if ( empty( $course_data[ $this->get_id() ] ) ) {
-				$course_data[ $this->get_id() ] = array();
 			}
 
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}
 
-			if ( empty( $course_data[ $this->get_id() ][ $course_id ] ) ) {
-
+			if ( false === ( $object_course_data = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-course-data' ) ) ) {
 				$this->_curd->read_course( $this->get_id(), $course_id );
 				if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
-					$course_data[ $this->get_id() ][ $course_id ] = new LP_User_Item_Course( $course_item );
+					$object_course_data = new LP_User_Item_Course( $course_item );
 				} else {
-					$course_data[ $this->get_id() ][ $course_id ] = new LP_User_Item_Course( $course_id );
+					$object_course_data = new LP_User_Item_Course( $course_id );
 				}
+
+				wp_cache_set( 'course-' . $this->get_id() . '-' . $course_id, $object_course_data, 'lp-user-course-data' );
 			}
 
-			$data = false;
-
-			if ( ! empty( $course_data[ $this->get_id() ][ $course_id ] ) ) {
-				$data = $course_data[ $this->get_id() ][ $course_id ];
-			}
-
-			if ( $data ) {
-				if ( ! $data->get_item_id() && $check_exists ) {
+			if ( $object_course_data ) {
+				if ( ! $object_course_data->get_item_id() && $check_exists ) {
 					return false;
 				}
 			}
 
-			return $data;
+			return $object_course_data;
 		}
 
 		/**
@@ -342,7 +330,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_item_archive( $item_id, $course_id = 0, $return_last = false ) {
 			$records = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' );
-			if ( $records && $return_last ) {
+
+			if ( $records ) {
+				///$records = array_filter( $records );
+			}
+
+			if ( $return_last ) {
 				$records = reset( $records );
 			}
 
@@ -512,8 +505,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				$return = $this->_insert_quiz_item( $quiz_id, $course_id );
-
-				$quiz = learn_press_get_quiz( $quiz_id );
+				$quiz   = learn_press_get_quiz( $quiz_id );
 				if ( $questions = $quiz->get_questions() ) {
 					$user_quiz   = $this->get_quiz_data( $quiz_id, $course_id );
 					$question_id = reset( $questions );
@@ -536,13 +528,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		protected function _insert_quiz_item( $quiz_id, $course_id ) {
 			$course_data = $this->get_course_data( $course_id );
 			$start_time  = new LP_Datetime( current_time( 'mysql' ) );
-
-			$item_data = array(
+			$item_data   = array(
 				'user_id'        => $this->get_id(),
 				'item_id'        => $quiz_id,
 				'start_time'     => $start_time->toSql(),
 				'start_time_gmt' => $start_time->toSql( false ),
 				'end_time'       => '0000-00-00 00:00:00',
+				'end_time_gmt'   => '0000-00-00 00:00:00',
 				'item_type'      => LP_QUIZ_CPT,
 				'status'         => 'started',
 				'ref_id'         => $course_id,
@@ -563,14 +555,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				// If there is one record but it's status is not valid then
 				// update it as started
 				if ( in_array( $last_results['status'], array( '', 'viewed' ) ) ) {
-					$last_results['status'] = 'started';
-					$item_data              = apply_filters( 'learn-press/update-user-item-data', $last_results, $quiz_id, $course_id, $this->get_id() );
-					$set_current_question   = true;
-					//learn_press_update_user_item_field( $item_data, array( 'user_item_id' => $last_results['user_item_id'] ) );
+					$last_results['status']         = 'started';
+					$last_results['start_time']     = $start_time->toSql();
+					$last_results['start_time_gmt'] = $start_time->toSql( false );
+
+					$item_data            = apply_filters( 'learn-press/update-user-item-data', $last_results, $quiz_id, $course_id, $this->get_id() );
+					$set_current_question = true;
 				}
 			}
 
-			///learn_press_update_user_item_field( $item_data );
 			$this->_curd->update_user_item( $this->get_id(), $quiz_id, $item_data, $course_id );
 			$return = $this->get_item_archive( $quiz_id, $course_id, true );
 
@@ -848,8 +841,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						'user_id'        => $this->get_id(),
 						'item_id'        => $item_id,
 						'item_type'      => $item->get_item_type(),
-						'start_time'     => $time->toSql(),
-						'start_time_gmt' => $time->toSql( false ),
+						'start_time'     => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql() : '0000-00-00 00:00:00',
+						'start_time_gmt' => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql( false ) : '0000-00-00 00:00:00',
 						'status'         => learn_press_default_user_item_status( $item_id ),
 						'ref_id'         => $course_id,
 						'ref_type'       => LP_COURSE_CPT,
@@ -2604,41 +2597,71 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function enroll( $course_id, $order_id ) {
-
+			$return = false;
 			try {
-				if ( ! $order = learn_press_get_order( $order_id ) ) {
-					throw new Exception( __( 'Failed to enroll course.', 'learnpress' ), 10000 );
-				}
-
-				if ( ! $this->can_enroll_course( $course_id ) ) {
-					throw new Exception( __( 'Failed to enroll course.', 'learnpress' ), 10001 );
-				}
-
-				if ( ! $this->get_id() ) {
-					throw new Exception( __( 'Please login to enroll course.', 'learnpress' ), 10002 );
-				}
-
-				learn_press_remove_message( '', 'error' );
-
-				$date = new LP_Datetime();
-				$data = array(
-					//'user_id'   => $order->get_user( 'id' ),
-					//'item_id'   => $course_id,
+				global $wpdb;
+				$course = learn_press_get_course( $course_id );
+				$date   = new LP_Datetime();
+				$data   = array(
 					'item_type'      => get_post_type( $course_id ),
 					'status'         => 'enrolled',
 					'ref_id'         => $order_id,
-					'ref_type'       => get_post_type( $order_id ),
+					'ref_type'       => $order_id ? get_post_type( $order_id ) : '',
 					'parent_id'      => 0,
 					'start_time'     => $date->toSql(),
 					'start_time_gmt' => $date->toSql( false )
 				);
 
-				if ( $return = $this->_curd->update_user_item( $this->get_id(), $course_id, $data ) ) {
-					do_action( 'learn-press/user-enrolled-course', $course_id, $this->get_id(), $return );
+				if ( $course->is_required_enroll() ) {
 
-					// @deprecated
-					do_action( 'learn_press_user_enrolled_course', $course_id, $this->get_id(), $return );
+					if ( ! $order = learn_press_get_order( $order_id ) ) {
+						throw new Exception( __( 'Failed to enroll course.', 'learnpress' ), 10000 );
+					}
+
+					if ( ! $this->can_enroll_course( $course_id ) ) {
+						throw new Exception( __( 'Failed to enroll course.', 'learnpress' ), 10001 );
+					}
+
+					if ( ! $this->get_id() ) {
+						throw new Exception( __( 'Please login to enroll course.', 'learnpress' ), 10002 );
+					}
+//					$data = array_merge(
+//						array(
+//							'user_id' => $this->get_id(),
+//							'item_id' => $course_id,
+//						),
+//						$data
+//					);
+//					$wpdb->insert(
+//						$wpdb->learnpress_user_items,
+//						$data,
+//						array( '%d', '%d', '%s', '%s', '%d', '%s', '%d', '%s', '%s' )
+//					);
+//
+//					return $wpdb->insert_id;
+				} else {
+					$data = array_merge(
+						array(
+							'user_id' => $this->get_id(),
+							'item_id' => $course_id,
+						),
+						$data
+					);
 				}
+				//else {
+
+				learn_press_remove_message( '', 'error' );
+				if ( $return = $this->_curd->update_user_item( $this->get_id(), $course_id, $data ) ) {
+
+					if ( is_user_logged_in() ) {
+						do_action( 'learn-press/user-enrolled-course', $course_id, $this->get_id(), $return );
+
+						// @deprecated
+						do_action( 'learn_press_user_enrolled_course', $course_id, $this->get_id(), $return );
+					}
+				}
+
+				//}
 
 				return $return;
 			}

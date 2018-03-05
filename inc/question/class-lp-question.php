@@ -658,7 +658,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			}
 
 			$show_correct = false;
-
 			if ( $user && $quiz && $course ) {
 				if ( $user_quiz = $user->get_quiz_data( $quiz->get_id(), $course->get_id() ) ) {
 					$has_checked  = $user->has_checked_answer( $this->get_id(), $quiz->get_id(), $course->get_id() );

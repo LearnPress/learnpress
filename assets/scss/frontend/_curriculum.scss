@@ -252,17 +252,31 @@ ul.learn-press-nav-tabs {
                     }
                 }
 
-                &.has-status:not(.status-started) {
+                &.has-status {
                     .course-item-status {
                         display: inline-block;
                     }
+                }
+
+                &.has-status {
+                    &.status-viewed {
+                        .course-item-status {
+                            display: none;
+                        }
+                    }
+
+                    //&.status-started {
+                    //    .course-item-status {
+                    //        display: none;
+                    //    }
+                    //}
                 }
 
                 &.course-item-lp_quiz {
                     &.status-started {
                         .course-item-status {
                             &:before {
-                                content: "\f141";
+                                content: "\f00c";
                             }
                         }
                     }
@@ -321,13 +335,19 @@ ul.learn-press-nav-tabs {
                             //content: "\f141";
                         }
                     }
-                    &.status-completed {
+                    &.status-completed,
+                    &.status-started{
                         .course-item-status {
                             border-color: #00adff;
-                            color: #00adff;
+                            color: #DDD;
                             &:before {
                                 content: "\f00c";
                             }
+                        }
+                    }
+                    &.status-completed {
+                        .course-item-status {
+                            color: #00adff;
                         }
                     }
                     &.passed {
