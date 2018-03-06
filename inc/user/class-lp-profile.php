@@ -327,7 +327,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$defaults['settings']['sections']['publicity'] = array(
 						'title'    => __( 'Publicity', 'learnpress' ),
 						'slug'     => 'publicity',
-						'priority' => 40
+						'priority' => 40,
+						'callback' => array( $this, 'tab_order_details' )
 					);
 				}
 
