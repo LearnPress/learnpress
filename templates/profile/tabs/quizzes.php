@@ -42,12 +42,19 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
             </thead>
             <tbody>
 			<?php foreach ( $query['items'] as $user_quiz ) { ?>
-				<?php $quiz = learn_press_get_quiz( $user_quiz->get_id() ); ?>
+				<?php $quiz = learn_press_get_quiz( $user_quiz->get_id() );
+				$courses    = learn_press_get_item_courses( array( $user_quiz->get_id() ) ); ?>
                 <tr>
                     <td class="column-course">
-                        <a href="<?php echo $quiz->get_permalink(); ?>">
-							<?php echo $quiz->get_title( 'display' ); ?>
-                        </a>
+						<?php if ( $courses ) {
+							foreach ( $courses as $course ) {
+								$course = LP_Course::get_course( $course->ID ); ?>
+                                <a href="<?php echo $course->get_item_link( $user_quiz->get_id() ) ?>">
+									<?php echo $quiz->get_title( 'display' ); ?>
+                                </a>
+							<?php }
+						} ?>
+
                     </td>
                     <td class="column-date"><?php echo $user_quiz->get_start_time( 'd M Y' ); ?></td>
                     <td class="column-status">
