@@ -88,11 +88,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		public function __construct() {
 			$this->id = 'paypal';
 
-			$this->method_title       = 'Paypal';
-			$this->method_description = 'Make payment via Paypal.';
+			$this->method_title       = __( 'Paypal', 'learnpress' );
+			$this->method_description = __( 'Make payment via Paypal.', 'learnpress' );
 			$this->icon               = '';
 
-			$this->title       = 'Paypal';
+			$this->title       = __( 'Paypal', 'learnpress' );
 			$this->description = __( 'Pay with Paypal', 'learnpress' );
 
 			// live
@@ -138,17 +138,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					add_action( 'init', array( $this, 'register_web_hook' ) );
 					add_action( 'init', array( $this, 'parse_ipn' ) );
 				}
-
-				//add_action( 'learn_press_take_course_paypal', array( $this, 'process_payment' ) );
-				//add_action( 'learn_press_do_transaction_paypal-standard-secure', array( $this, 'process_order_paypal_standard_secure' ) );
-				//add_action( 'learn_press_do_transaction_paypal-standard', array( $this, 'process_order_paypal_standard' ) );
-				//add_action('learn_press_update_order_status', array($this, 'remove_transient'), 5, 2);
-				//add_action('learn_press_payment_gateway_form_paypal', array($this, 'payment_form'));
-
 				add_action( 'learn_press_web_hook_learn_press_paypal', array( $this, 'web_hook_process_paypal' ) );
 			}
 
-			add_filter( 'learn_press_payment_gateway_available_' . $this->id, array(
+			add_filter( 'learn-press/payment-gateway/' . $this->id . '/available', array(
 				$this,
 				'paypal_available'
 			), 10, 2 );
@@ -215,17 +208,17 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function paypal_available( $default, $payment ) {
 
-			if ( LP()->settings->get( "{$this->id}.enable" ) != 'yes' ) {
+			if ( ! $this->is_enabled() ) {
 				return false;
 			}
 
-
-			if ( LP()->settings->get( "{$this->id}.paypal_sandbox" ) != 'yes' && ! LP()->settings->get( "{$this->id}.paypal_email" ) ) {
+			// Empty live email and Sandbox mode also disabled
+			if ( $this->settings->get( "paypal_sandbox" ) != 'yes' && ! $this->settings->get( "paypal_email" ) ) {
 				return false;
 			}
 
-
-			if ( ! ( LP()->settings->get( "{$this->id}.paypal_sandbox_email" ) && LP()->settings->get( "{$this->id}.paypal_sandbox" ) ) ) {
+			// Enable Sandbox mode but it's email is empty
+			if ( ! $this->settings->get( "paypal_sandbox_email" ) && $this->settings->get( "paypal_sandbox" ) == 'yes' ) {
 				return false;
 			}
 
@@ -251,10 +244,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				return false;
 			}
 
-			if ( ! $order = new LP_Order( $order_id ) ) {
-				//$order_id = hb_get_order_id_by_key( $order_key );
-				//$order    = new LP_Order( $order_id );
-			}
+			$order = new LP_Order( $order_id );
 
 			if ( ! $order || $order->order_key !== $order_key ) {
 				printf( __( 'Error: Order Keys do not match %s and %s.' ), $order->order_key, $order_key );
