@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			} else {
 				// Check cart has contents
 				if ( LP()->cart->is_empty() ) {
-					learn_press_get_template( 'cart/empty-cart.php' );
+					learn_press_get_template( 'checkout/empty-cart.php' );
 				} else {
 					learn_press_get_template( 'checkout/form.php' );
 				}
