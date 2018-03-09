@@ -141,7 +141,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 				DELETE
 				FROM {$wpdb->prefix}learnpress_quiz_questions
 				WHERE quiz_id = %d
-			", $post->ID, 1 );
+			", $post->ID );
 			$wpdb->query( $query );
 			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
 			do_action( 'learn_press_remove_quiz_questions', $remove_ids, $post->ID );
