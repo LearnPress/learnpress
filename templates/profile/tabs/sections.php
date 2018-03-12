@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/tabs/sections.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -21,7 +21,7 @@ if ( ! isset( $tab_key, $tab_data ) ) {
 	return;
 }
 
-if ( empty( $tab_data['sections'] ) ) {
+if ( empty( $tab_data['sections'] ) || (sizeof( $tab_data['sections']) < 2 ) ) {
 	return;
 }
 

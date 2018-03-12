@@ -37,6 +37,7 @@ $profile = LP_Profile::instance();
 			if ( $profile->is_current_tab( $tab_key ) ) {
 				$tab_classes[] = 'active';
 			}
+
 			?>
 
             <li class="<?php echo join( ' ', $tab_classes ) ?>">
@@ -45,7 +46,8 @@ $profile = LP_Profile::instance();
 					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', esc_html( $tab_data['title'] ), $tab_key ); ?>
                 </a>
                 <!--section-->
-				<?php if ( $sections = $tab_data->sections() ) { ?>
+
+				<?php if ( ( $sections = $tab_data->sections() ) && sizeof( $sections ) > 1 ) { ?>
 
                     <ul class="profile-tab-sections">
 						<?php foreach ( $sections as $section_key => $section_data ) {
