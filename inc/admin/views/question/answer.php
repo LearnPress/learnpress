@@ -10,7 +10,7 @@ learn_press_admin_view( 'question/option' );
 
 <script type="text/x-template" id="tmpl-lp-question-answer">
     <div class="lp-box-data-content">
-        <table class="list-question-answers">
+        <table class="lp-list-options list-question-answers">
             <thead>
             <tr>
                 <th class="sort"></th>
