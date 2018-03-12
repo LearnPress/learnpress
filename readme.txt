@@ -193,6 +193,40 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 3.0.0 =
++ Reset courses data for an user has enrolled course
++ Reset course data for users has enrolled course
++ Reset data of a quiz or lesson for an user
++ Enable a Guest user can buy and checkout
++ Option to show/hide login form in user profile
++ Option to show/hide register form in user profile
++ Option to show/hide login form in checkout page
++ Option to show/hide register form in Checkout page
++ Enable sort the payment gateways to show in frontend
++ Quick turn a payment gateway on/of in a list
++ Support plugins Mathjax
++ Widget to display course info
++ Widget to display current progress of a course
++ Custom frontend colors
++ Group emails to related action
++ Run action to send the emails in background
++ Quick edit question settings in it's quiz
++ Preview mode for course/lesson/quiz
++ Option to show list of questions as numbers below quiz while doing or reviewing
++ Display duration of lesson or quiz in curriculum
++ Display number questions of quiz
+~ Improves popup for searching courses to add to an order
+~ Improves Emails system
+~ Improves Multi users order
+~ Admin settings pages
+~ No distraction mode
+~ New course editor
+~ New quiz editor
+~ User profile
+~ Improve cache for speed
+~ Improve UI/Ux for both backend and frontend
+
 = 2.1.6.2 =
 + Fixed course does not finish automatically
 + Fixed issue with WC 3.x
