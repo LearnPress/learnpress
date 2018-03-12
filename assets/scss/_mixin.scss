@@ -1,7 +1,6 @@
 //$primary-color: #0085ba;
 //$remove-icon-color: #d05d5d;
 
-
 /**
  * Mixin
  */
@@ -69,7 +68,7 @@
     max-height: $base * $line;
 }
 
-@mixin flex(){
+@mixin flex() {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -78,7 +77,12 @@
     display: flex;
 }
 
-@mixin flex-wrap($wrap: none){
+@mixin flex-wrap($wrap: none) {
     -webkit-flex-wrap: $wrap;
     flex-wrap: $wrap;
+}
+
+@mixin appearance($value) {
+    -webkit-appearance: $value;
+    -moz-appearance: $value;
 }

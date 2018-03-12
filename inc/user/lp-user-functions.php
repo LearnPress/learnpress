@@ -1642,24 +1642,24 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 /**
  * Set a fake cookie to
  */
-//function learn_press_set_user_cookie_for_guest() {
-//	if ( ! is_admin() && ! headers_sent() ) {
-//		$guest_key = 'wordpress_lp_guest';
-//		if ( is_user_logged_in() ) {
-//			if ( ! empty( $_COOKIE[ $guest_key ] ) ) {
-//				//setcookie( $guest_key, md5( time() ), - 10000 );
-//				learn_press_remove_cookie( $guest_key );
-//			}
-//		} else {
-//			if ( empty( $_COOKIE[ $guest_key ] ) ) {
-//				///setcookie( $guest_key, md5( time() ), time() + 3600 );
-//				learn_press_setcookie( $guest_key, md5( time() ), time() + 3600 );
-//			}
-//		}
-//	}
-//}
-//
-//add_action( 'wp', 'learn_press_set_user_cookie_for_guest' );
+function learn_press_set_user_cookie_for_guest() {
+	if ( ! is_admin() && ! headers_sent() ) {
+		$guest_key = 'wordpress_lp_guest';
+		if ( is_user_logged_in() ) {
+			if ( ! empty( $_COOKIE[ $guest_key ] ) ) {
+				//setcookie( $guest_key, md5( time() ), - 10000 );
+				learn_press_remove_cookie( $guest_key );
+			}
+		} else {
+			if ( empty( $_COOKIE[ $guest_key ] ) ) {
+				///setcookie( $guest_key, md5( time() ), time() + 3600 );
+				learn_press_setcookie( $guest_key, md5( time() ), time() + 3600 );
+			}
+		}
+	}
+}
+
+add_action( 'wp', 'learn_press_set_user_cookie_for_guest' );
 
 function learn_press_get_user_avatar( $user_id = 0, $size = '' ) {
 	$user = learn_press_get_user( $user_id );

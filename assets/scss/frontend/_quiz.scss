@@ -89,7 +89,7 @@
         }
         input[type="checkbox"],
         input[type="radio"] {
-            -webkit-appearance: initial;
+            @include appearance(initial);
             margin: 0 10px 0 3px;
             position: relative;
             border: 1px solid #eaeaea;
@@ -267,7 +267,7 @@ button[data-counter] {
             font-size: 36px;
             border-bottom: 2px solid #04adff;
         }
-        .result-require{
+        .result-require {
             display: block;
         }
         .result-message {

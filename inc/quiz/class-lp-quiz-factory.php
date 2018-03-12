@@ -92,6 +92,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				} else {
 					$true = false;
 				}
+
 			}
 
 			remove_action( 'learn-press/before-start-quiz', array( __CLASS__, 'maybe_guest_start_quiz' ) );

@@ -88,7 +88,7 @@ class LP_Request {
 		return $course_id;
 	}
 
-	function maybe_redirect_enroll( $course_id, $cart_id, $action ) {
+	public static function maybe_redirect_enroll( $course_id, $cart_id, $action ) {
 		if ( $course = learn_press_get_course( $course_id ) ) {
 			if ( $course->is_required_enroll() && ! get_current_user_id() ) {
 				if ( ! $redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $course->get_permalink() ) ) ) ) {
