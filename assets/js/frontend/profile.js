@@ -335,7 +335,11 @@
                         response = LP.parseJSON(response);
 
                         if (response.message) {
-                            $wrap.prepend('<div class="learn-press-message error icon"><i class="fa"></i> ' + response.message + '</div>');
+                            var $msg = $('<div class="learn-press-message icon"><i class="fa"></i> ' + response.message + '</div>');
+                            if (response.result == 'error') {
+                                $msg.addClass('error');
+                            }
+                            $wrap.prepend($msg);
                         }
 
                         if (response.redirect) {

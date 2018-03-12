@@ -529,7 +529,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function is_guest() {
-			return ! $this->get_user_id();
+			return ! get_user_by( 'ID', $this->get_user_id() );
 		}
 
 		public function get_item_meta( &$item ) {
