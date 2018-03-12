@@ -116,6 +116,9 @@ $remove-icon-color: #d05d5d;
             }
             ul {
                 display: block;
+                &:hover {
+                    display: block;
+                }
             }
         }
     }
