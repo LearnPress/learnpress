@@ -159,7 +159,7 @@ add_action( 'learn-press/content-learning-summary', 'learn_press_course_progress
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_remaining_time', 30 );
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_tabs', 35 );
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_buttons', 40 );
-add_action( 'learn-press/content-learning-summary', 'learn_press_course_instructor', 45 );
+//add_action( 'learn-press/content-learning-summary', 'learn_press_course_instructor', 45 );
 
 /**
  * Course item content
