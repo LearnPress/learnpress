@@ -124,12 +124,16 @@ class LP_Query_List_Table implements ArrayAccess {
 		$from = ( $this->get_paged() - 1 ) * $this->get_limit() + 1;
 		$to   = $from + $this->get_limit() - 1;
 		$to   = min( $to, $this->get_total() );
+		if ( $this->get_total() < 1 ) {
+			$from = 0;
+		}
 
 		return array( $from, $to );
 	}
 
 	public function get_offset_text( $format = '', $echo = false ) {
 		$offset = $this->get_offset();
+		$output = '';
 
 		if ( ! $format ) {
 			if ( $this->_data['single'] && $this->_data['plural'] ) {
@@ -149,6 +153,7 @@ class LP_Query_List_Table implements ArrayAccess {
 			),
 			$format
 		);
+
 		if ( $echo ) {
 			echo $output;
 		}
