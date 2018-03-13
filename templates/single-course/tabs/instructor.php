@@ -32,6 +32,6 @@ $course = LP_Global::course();
 		<?php echo $course->get_author()->get_description(); ?>
     </div>
 
-	<?php do_action( 'learn-press/after-single-course-instructor', $course ); ?>
+	<?php do_action( 'learn-press/after-single-course-instructor' ); ?>
 
 </div>
