@@ -30,6 +30,11 @@
         &:after {
             @include clear-fix();
         }
+
+        .list-course-instructors {
+            clear: both;
+            padding-top: 20px;
+        }
     }
     .course-price {
         margin-bottom: 10px;
@@ -336,7 +341,7 @@ ul.learn-press-nav-tabs {
                         }
                     }
                     &.status-completed,
-                    &.status-started{
+                    &.status-started {
                         .course-item-status {
                             border-color: #00adff;
                             color: #DDD;
