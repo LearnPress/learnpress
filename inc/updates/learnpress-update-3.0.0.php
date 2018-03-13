@@ -10,6 +10,10 @@
  * Helper class for updating database to 3.0.0
  */
 class LP_Update_30 {
+
+	/**
+	 * Entry point
+	 */
 	public static function update() {
 		LP_Debug::startTransaction();
 		try {
@@ -17,6 +21,7 @@ class LP_Update_30 {
 			self::upgrade_orders();
 			self::update_user_course_items();
 			self::update_option_no_require_enroll();
+			self::update_post_meta();
 
 			LP_Install::update_db_version();
 			LP_Install::update_version();
@@ -27,18 +32,83 @@ class LP_Update_30 {
 		}
 	}
 
-	public static function update_option_no_require_enroll(){
+	/**
+	 * Update/Convert post meta
+	 */
+	protected static function update_post_meta() {
 		global $wpdb;
 
-		$query = $wpdb->prepare("
+		// Update quiz meta _lp_review_questions = 'yes' if both _lp_show_hide_question = 'yes' and _lp_show_result = 'yes'
+		$query = $wpdb->prepare( "
+			SELECT p.ID, pm1.meta_value AS show_hide_question, pm2.meta_value AS show_result
+			FROM {$wpdb->posts} p 
+			LEFT JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = %s
+			LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
+			WHERE p.post_type = %s
+			ORDER BY ID
+		", '_lp_show_hide_question', '_lp_show_result', 'lp_quiz' );
+
+		if ( $rows = $wpdb->get_results( $query ) ) {
+			foreach ( $rows as $row ) {
+				if ( $row->show_hide_question == 'yes' && $row->show_result == 'yes' ) {
+					update_post_meta( $row->ID, '_lp_review_questions', 'yes' );
+				}
+			}
+		}
+
+		// Update quiz passing-grade to default 80% if passing-grade-type is set to no or point
+		$query = $wpdb->prepare( "
+			SELECT post_id, meta_value
+			FROM {$wpdb->postmeta}
+			WHERE meta_key = %s AND (meta_value = %s OR meta_value = %s)
+		", '_lp_passing_grade_type', 'no', 'point' );
+
+		if ( $rows = $wpdb->get_results( $query ) ) {
+			foreach ( $rows as $row ) {
+				update_post_meta( $row->post_id, '_lp_passing_grade', '80' );
+			}
+		}
+
+		$query = $wpdb->prepare( "
+			SELECT p.ID, pm1.meta_value AS show_check_answer, pm2.meta_value AS show_hint
+			FROM {$wpdb->posts} p 
+			LEFT JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = %s
+			LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
+			WHERE p.post_type = %s
+			ORDER BY ID
+		", '_lp_show_check_answer', '_lp_show_hint', 'lp_quiz' );
+
+		//
+		if ( $rows = $wpdb->get_results( $query ) ) {
+			foreach ( $rows as $row ) {
+				if ( $row->show_check_answer === 'yes' ) {
+					update_post_meta( $row->ID, '_lp_show_check_answer', '-1' );
+				}else{
+					update_post_meta( $row->ID, '_lp_show_check_answer', '0' );
+				}
+
+				if ( $row->show_hint === 'yes' ) {
+					update_post_meta( $row->ID, '_lp_show_hint', '-1' );
+				}else{
+					update_post_meta( $row->ID, '_lp_show_hint', '0' );
+				}
+			}
+		}
+	}
+
+	public static function update_option_no_require_enroll() {
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->postmeta}
 			WHERE meta_key = %s 
 		",
-		'_lp_required_enroll');
+			'_lp_required_enroll' );
 
-		$metas = $wpdb->get_results($query);
+		$metas = $wpdb->get_results( $query );
 	}
+
 	public static function upgrade_orders() {
 		global $wpdb;
 		$query = $wpdb->prepare( "
@@ -188,12 +258,6 @@ class LP_Update_30 {
 	public static function update_settings() {
 
 	}
-
-	public static function update_metas() {
-		$query = "
-	";
-	}
-
 
 	public static function update_user_course_items() {
 		global $wpdb;
