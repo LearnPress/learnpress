@@ -221,7 +221,7 @@ abstract class LP_Abstract_Assets {
 	 */
 	protected function _register_scripts() {
 		$wp_scripts = $this->_get_wp_scripts();
-		$wp_styles  = $this->_get_wp_scripts();
+		$wp_styles  = $this->_get_wp_styles();
 
 		// No use cache if debug mode is turn on
 		$no_cache = '';
