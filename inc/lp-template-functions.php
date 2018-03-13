@@ -525,6 +525,12 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			'callback' => 'learn_press_course_curriculum_tab'
 		);
 
+		$defaults['instructor'] = array(
+			'title'    => __( 'Instructor', 'learnpress' ),
+			'priority' => 40,
+			'callback' => 'learn_press_course_instructor_tab'
+		);
+
 
 		// Filter
 		if ( $tabs = apply_filters( 'learn-press/course-tabs', $defaults ) ) {
@@ -2684,6 +2690,17 @@ if ( ! function_exists( 'learn_press_course_curriculum_tab' ) ) {
 	 */
 	function learn_press_course_curriculum_tab() {
 		learn_press_get_template( 'single-course/tabs/curriculum.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_instructor_tab' ) ) {
+	/**
+	 * Output course curriculum
+	 *
+	 * @since 1.1
+	 */
+	function learn_press_course_instructor_tab() {
+		learn_press_get_template( 'single-course/tabs/instructor.php' );
 	}
 }
 

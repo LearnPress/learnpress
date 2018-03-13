@@ -138,7 +138,7 @@ add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_end_
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_tabs', 20 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_price', 25 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_buttons', 30 );
-add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 35 );
+//add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 35 );
 
 /**
  * @see learn_press_course_meta_start_wrapper
