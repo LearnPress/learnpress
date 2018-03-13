@@ -236,7 +236,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function __get( $key ) {
 			$return = false;
 
-			_deprecated_argument( __CLASS__ . '::' . $key, '3.0.0' );
+			if ( strtolower( $key ) !== 'id' ) {
+				_deprecated_argument( __CLASS__ . '::' . $key, '3.0.0' );
+			}
 
 			if ( ! empty( $this->user->data->{$key} ) ) {
 				$return = $this->user->data->{$key};
@@ -3259,7 +3261,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function is_guest() {
-			return ! $this->get_id() || metadata_exists( 'user', $this->get_id(), '_lp_temp_user' );
+			return ! $this->get_id() || ! get_user_by( 'id', $this->get_id() );
 		}
 
 		public function read_course( $the_course ) {
