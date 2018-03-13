@@ -196,11 +196,32 @@ abstract class LP_Abstract_Assets {
 		}
 	}
 
+	protected function _get_wp_styles() {
+		global $wp_styles;
+
+		if ( empty( $wp_styles ) ) {
+			$wp_styles = new WP_Styles();
+		}
+
+		return $wp_styles;
+	}
+
+	protected function _get_wp_scripts() {
+		global $wp_scripts;
+
+		if ( empty( $wp_scripts ) ) {
+			$wp_scripts = new WP_Scripts();
+		}
+
+		return $wp_scripts;
+	}
+
 	/**
 	 * Register scripts and styles for admin.
 	 */
 	protected function _register_scripts() {
-		global $wp_scripts, $wp_styles;
+		$wp_scripts = $this->_get_wp_scripts();
+		$wp_styles  = $this->_get_wp_scripts();
 
 		// No use cache if debug mode is turn on
 		$no_cache = '';
