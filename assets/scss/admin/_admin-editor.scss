@@ -347,6 +347,7 @@
                 }
 
                 .actions {
+                    margin: 0;
 
                     > * {
                         margin-right: 10px;
@@ -797,6 +798,7 @@
                         }
                         .actions {
                             padding: 0;
+                            margin: 0;
                             .lp-toolbar-buttons {
                                 position: static;
                                 z-index: 10;

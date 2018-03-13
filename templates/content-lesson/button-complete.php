@@ -20,6 +20,7 @@ $item   = LP_Global::course_item();
 if ( $item->is_preview() ) {
 	return;
 }
+
 $completed = $user->has_completed_item( $item->get_id(), $course->get_id() );
 $security  = $item->create_nonce( 'complete' );
 ?>
