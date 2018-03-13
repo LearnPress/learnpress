@@ -27,9 +27,9 @@ gulp.task('scss', function () {
     return gulp.src(['assets/scss/**/*.scss'])
         .pipe(sourceMaps.init())
         .pipe(scss())
-        .pipe(sourceMaps.write())
+        //.pipe(sourceMaps.write())
         .pipe(gulp.dest('assets/css'))
-        .pipe(liveReload());
+        //.pipe(liveReload());
 });
 
 gulp.task('watch', function () {
