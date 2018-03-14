@@ -402,7 +402,7 @@
 
                 .types {
                     display: inline-block;
-                    margin-left: 15px;
+                    margin-left: 17px;
 
                     &:hover, &:focus {
                         background-color: #fff;
@@ -1284,7 +1284,7 @@
 
             .search {
                 margin-bottom: 20px;
-
+                background: transparent;
                 input {
                     width: 100%;
                     font-size: 1.2em;

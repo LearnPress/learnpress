@@ -13,7 +13,7 @@ learn_press_admin_view( 'course/pagination' );
 <script type="text/x-template" id="tmpl-lp-course-choose-item">
     <li class="section-item" :class="[item.type, item.added ? 'added' : 'addable']" @click="add">
         <input type="checkbox" :checked="item.added === true">
-        <span class="title">{{item.title}}</span>
+        <span class="title">{{item.title}} <strong>(#{{item.id}})</strong></span>
     </li>
 </script>
 
@@ -69,7 +69,7 @@ learn_press_admin_view( 'course/pagination' );
             </div>
             <div class="main">
                 <form class="search" @submit.prevent="">
-                    <input placeholder="<?php esc_attr_e( 'Type here to search item', 'learnpress' ); ?>"
+                    <input type="text" placeholder="<?php esc_attr_e( 'Type here to search item', 'learnpress' ); ?>"
                            title="search" @input="onChangeQuery" v-model="query">
                 </form>
 

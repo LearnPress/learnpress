@@ -82,14 +82,14 @@ do_action( 'learn-press/before-checkout-form' );
 		 */
 		do_action( 'learn_press_checkout_after_order_review' );
 		?>
-
+        <!--
 		<?php if ( ! is_user_logged_in() ) { ?>
             <p class="button-cancel-guest-checkout">
                 <button type="button" class="lp-button lp-button"
                         id="learn-press-button-cancel-guest-checkout"><?php _e( 'Back', 'learnpress' ); ?></label></button>
             </p>
 		<?php } ?>
-
+        -->
     </form>
 
 <?php if ( ! is_user_logged_in() && ! LP()->checkout()->is_enable_login() && ! LP()->checkout()->is_enable_register() ) { ?>
