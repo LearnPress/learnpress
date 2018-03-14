@@ -13,14 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php learn_press_display_message( __( 'Your cart is currently empty.', 'learnpress' ), 'error' );
+do_action( 'learn-press/before-empty-cart-message' );
 
-$courses_link = learn_press_get_page_link( 'courses' );
-if ( ! $courses_link ) {
-	return;
-}
-?>
+learn_press_display_message( __( 'Your cart is currently empty.', 'learnpress' ), 'error' );
 
-<a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
+do_action( 'learn-press/after-empty-cart-message' );

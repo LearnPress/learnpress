@@ -391,6 +391,12 @@ add_filter( 'comments_template_query_args', 'learn_press_comments_template_query
 add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 
 /**
+ * @see learn_press_back_to_class_button
+ */
+add_action( 'learn-press/after-checkout-form', 'learn_press_back_to_class_button' );
+add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_button' );
+
+/**
  * add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_login', 5 );
  * add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_register', 10 );
  * add_action( 'learn_press_checkout_order_review', 'learn_press_order_review', 5 );
@@ -404,16 +410,7 @@ add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
  * add_action( 'learn_press/after_course_item_content', 'learn_press_lesson_comment_form', 10, 2 );
  */
 
-add_action( 'wp_head', function () {
-	if ( isset( $_REQUEST['content-only'] ) ) {
-		global $wp_filter;
-		if ( isset( $wp_filter['learn-press/single-item-summary'] ) ) {
-			unset( $wp_filter['learn-press/single-item-summary'] );
-		}
-
-		$course = learn_press_get_course();
-		$course->get_curriculum();
-
-		add_action( 'learn-press/single-item-summary', 'learn_press_single_course_content_item', 10 );
-	}
-} );
+/**
+ * @see learn_press_reset_single_item_summary_content
+ */
+add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );
