@@ -2986,8 +2986,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $completed;
 		}
 
+		/**
+		 * @return array
+		 */
 		public function get_roles() {
-			return $this->get_data( 'roles' );
+			return (array) $this->get_data( 'roles' );
 		}
 
 		/**

@@ -30,10 +30,17 @@
 .lp-notice-update-database {
     border-left-color: #FF0000;
 }
+
 #adminmenu {
-    .update-plugins{
+    .update-plugins {
         &.lp-plugins-count {
             padding: 0 5px;
         }
+    }
+}
+
+.learnpress {
+    .actions {
+        margin: 0;
     }
 }

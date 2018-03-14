@@ -488,7 +488,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$blocked = false;
 			} else {
 				if ( $user ) {
-					if ( $is_admin = in_array( 'administrator', $user->get_data( 'roles' ) ) ) {
+					if ( $is_admin = in_array( 'administrator', $user->get_roles() ) ) {
 						$blocked = false;
 					} else if ( $user->has_course_status( $course_id, array( 'enrolled', 'finished' ) ) ) {
 						$blocked     = false;
