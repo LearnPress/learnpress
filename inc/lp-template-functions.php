@@ -535,7 +535,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		// Filter
 		if ( $tabs = apply_filters( 'learn-press/course-tabs', $defaults ) ) {
 			// Sort tabs by priority
-			uasort( $tabs, '_learn_press_callback_sort_course_tabs' );
+			uasort( $tabs, 'learn_press_sort_list_by_priority_callback' );
 			$request_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 			$has_active  = false;
 			foreach ( $tabs as $k => $v ) {
@@ -571,9 +571,6 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		return $tabs;
 	}
 
-	function _learn_press_callback_sort_course_tabs( $a, $b ) {
-		return $a['priority'] > $b['priority'];
-	}
 }
 
 if ( ! function_exists( 'learn_press_content_item_quiz_title' ) ) {
@@ -2707,19 +2704,9 @@ if ( ! function_exists( 'learn_press_course_instructor_tab' ) ) {
 if ( ! function_exists( 'learn_press_sort_course_tabs' ) ) {
 
 	function learn_press_sort_course_tabs( $tabs = array() ) {
-		uasort( $tabs, '_learn_press_sort_course_tabs_callback' );
+		uasort( $tabs, 'learn_press_sort_list_by_priority_callback' );
 
 		return $tabs;
-	}
-}
-
-if ( ! function_exists( '_learn_press_sort_course_tabs_callback' ) ) {
-	function _learn_press_sort_course_tabs_callback( $a, $b ) {
-		if ( $a['priority'] === $b['priority'] ) {
-			return 0;
-		}
-
-		return ( $a['priority'] < $b['priority'] ) ? - 1 : 1;
 	}
 }
 
@@ -3053,12 +3040,7 @@ function learn_press_label_html( $label, $type = '' ) {
 	<?php
 }
 
-
-//add_action( 'get_header', 'learn_press_load_content_item_only' );
-
-
 // Fix issue with course content is duplicated if theme use the_content instead of $course->get_description()
-///add_filter( 'the_content', 'learn_press_course_the_content', 99999 );
 function learn_press_course_the_content( $content ) {
 	_deprecated_function( __FUNCTION__, '3.0.0' );
 	global $post;
@@ -3215,7 +3197,7 @@ function learn_press_course_item_edit_link( $item_id, $course_id ) {
 
 function learn_press_comments_template_query_args( $comment_args ) {
 	$post_type = get_post_type( $comment_args['post_id'] );
-	if ( $post_type == 'lp_course' ) {
+	if ( $post_type == LP_COURSE_CPT ) {
 		$comment_args['type__not_in'] = 'review';
 	}
 
@@ -3225,21 +3207,30 @@ function learn_press_comments_template_query_args( $comment_args ) {
 if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
 	function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
 		global $wpdb;
+
 		if ( ! $post_id ) {
 			$post_id = learn_press_get_course_id();
 		}
+
 		if ( ! $post_id ) {
 			return $count;
 		}
-		if ( get_post_type( $post_id ) == 'lp_course' ) {
-			$sql   = " SELECT count(*) "
-			         . " FROM {$wpdb->comments} "
-			         . " WHERE comment_post_ID=%d "
-			         . " and comment_approved=1 "
-			         . " and comment_type != 'review' ";
-			$count = $wpdb->get_var( $wpdb->prepare( $sql, $post_id ) );
 
-			return apply_filters( 'learn_press_get_comments_number', $count, $post_id );
+		if ( get_post_type( $post_id ) == LP_COURSE_CPT ) {
+			$sql = $wpdb->prepare(
+				" SELECT count(*) "
+				. " FROM {$wpdb->comments} "
+				. " WHERE comment_post_ID = %d "
+				. " AND comment_approved = 1 "
+				. " AND comment_type != %s ", $post_id, 'review' );
+
+			$count = $wpdb->get_var( $sql );
+
+			// @deprecated
+			$count = apply_filters( 'learn_press_get_comments_number', $count, $post_id );
+
+			// @since 3.0.0
+			$count = apply_filters( 'learn-press/course-comments-number', $count, $post_id );
 		}
 
 		return $count;
@@ -3583,3 +3574,19 @@ function learn_press_print_custom_styles() {
 }
 
 add_action( 'wp_head', 'learn_press_print_custom_styles' );
+
+/**
+ * Redirect to LP search page if user is searching a
+ * course but current page is not for displaying results
+ * of the courses.
+ */
+function learn_press_redirect_search() {
+	if ( learn_press_is_search() ) {
+		$search_page = learn_press_get_page_id( 'search' );
+		if ( ! is_page( $search_page ) ) {
+			global $wp_query;
+			wp_redirect( add_query_arg( 's', $wp_query->query_vars['s'], get_the_permalink( $search_page ) ) );
+			exit();
+		}
+	}
+}

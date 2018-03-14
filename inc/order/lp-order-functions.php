@@ -255,7 +255,8 @@ function learn_press_get_order_confirm_url( $order_id = 0 ) {
 			$course = reset( $items->products );
 			$url    = get_permalink( $course['id'] );
 		} else {
-			$url = get_home_url() /* SITE_URL */;
+			$url = get_home_url() /* SITE_URL */
+			;
 		}
 	}
 
@@ -732,22 +733,6 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learnpress' )
 	);
-//			$lp_order_statuses['lp-on-hold']    = array(
-//				'label'                     => _x( 'On Hold', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'On Hold <span class="count">(%s)</span>', 'On Hold <span class="count">(%s)</span>', 'learnpress' )
-//			);
-//			$lp_order_statuses['lp-refunded']   = array(
-//				'label'                     => _x( 'Refunded', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learnpress' )
-//			);
 	$order_statues['lp-failed'] = array(
 		'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
 		'public'                    => false,
@@ -767,22 +752,61 @@ function _learn_press_get_order_status_description( $status ) {
 		'lp-processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
 		'lp-completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
 		'lp-cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' )
-//		'lp-on-hold'    => __( 'Awaiting payment.', 'learnpress' ),
-//		'lp-failed'     => __( 'Payment failed or was declined (unpaid).', 'learnpress' ),
-//		'lp-refunded'   => __( 'Refunded is to indicate that the refund to the customer has been sent.', 'learnpress' )
 	);
 
 	return apply_filters( 'learn_press_order_status_description', ! empty( $descriptions[ $status ] ) ? $descriptions[ $status ] : '' );
 }
 
+/**
+ * Get status of an order by the ID.
+ *
+ * @param int $order_id
+ *
+ * @return bool|string
+ */
 function learn_press_get_order_status( $order_id ) {
 	$order = learn_press_get_order( $order_id );
+
 	if ( $order ) {
 		return $order->get_status();
 	}
 
 	return false;
 }
+
+if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
+	/**
+	 * Process action allows user to cancel an order is pending
+	 * in their profile.
+	 */
+	function learn_press_cancel_order_process() {
+		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) || ! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
+			return;
+		}
+
+		$order_id = absint( $_REQUEST['cancel-order'] );
+		$order    = learn_press_get_order( $order_id );
+		$user     = learn_press_get_current_user();
+
+		$url = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+
+		if ( ! $order ) {
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
+		} else if ( $order->has_status( 'pending' ) ) {
+			$order->update_status( 'cancelled' );
+			$order->add_note( __( 'Order cancelled by customer', 'learnpress' ) );
+
+			// set updated message
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() ) );
+			$url = $order->get_cancel_order_url( true );
+		} else {
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> can not be cancelled', 'learnpress' ), $order->get_order_number() ), 'error' );
+		}
+		wp_safe_redirect( $url );
+		exit();
+	}
+}
+add_action( 'init', 'learn_press_cancel_order_process' );
 
 /**
  * Auto enroll course after user checkout

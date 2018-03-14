@@ -15,7 +15,7 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<?php learn_press_print_notices(); ?>
+<?php learn_press_print_messages(); ?>
 
 <?php $checkout = LP()->checkout(); ?>
 
