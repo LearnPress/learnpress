@@ -122,7 +122,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * Get class of item.
 		 *
 		 * @param string $more
-		 * @param int    $user_id
+		 * @param int $user_id
 		 *
 		 * @return array
 		 */
@@ -335,8 +335,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * Create nonce for checking actions on an item.
 		 *
 		 * @param string $action
-		 * @param int    $course_id
-		 * @param int    $user_id
+		 * @param int $course_id
+		 * @param int $user_id
 		 *
 		 * @return string
 		 */
@@ -359,8 +359,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 *
 		 * @param string $nonce
 		 * @param string $action
-		 * @param int    $course_id
-		 * @param int    $user_id
+		 * @param int $course_id
+		 * @param int $user_id
 		 *
 		 * @return false|int
 		 */
@@ -488,12 +488,16 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$blocked = false;
 			} else {
 				if ( $user ) {
-					if ( $is_admin = in_array( 'administrator', $user->get_data( 'roles' ) ) ) {
-						$blocked = false;
-					} else if ( $user->has_course_status( $course_id, array( 'enrolled', 'finished' ) ) ) {
-						$blocked     = false;
-						$course_item = $user->get_course_data( $course_id );
-						if ( 'yes' === $course->get_data( 'block_lesson_content' ) && $course_item->is_exceeded() < 0 ) {
+					if ( $user->get_data( 'roles' ) ) {
+						if ( $is_admin = in_array( 'administrator', $user->get_data( 'roles' ) ) ) {
+							$blocked = false;
+						} else if ( $user->has_course_status( $course_id, array( 'enrolled', 'finished' ) ) ) {
+							$blocked     = false;
+							$course_item = $user->get_course_data( $course_id );
+							if ( 'yes' === $course->get_data( 'block_lesson_content' ) && $course_item->is_exceeded() < 0 ) {
+								$blocked = true;
+							}
+						} else {
 							$blocked = true;
 						}
 					} else {
