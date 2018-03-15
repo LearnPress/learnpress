@@ -308,21 +308,22 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$item = wp_parse_args( $item, array( 'title' => '', 'type' => '' ) );
 
-		$lesson_curd = new LP_Lesson_CURD();
-		$quiz_curd   = new LP_Quiz_CURD();
-
 		$args = array(
 			'title'  => $item['title'],
 			'author' => $author_id
 		);
 
 		if ( $item['type'] == LP_LESSON_CPT ) {
+			$lesson_curd     = new LP_Lesson_CURD();
 			$item['id']      = $lesson_curd->create( $args );
 			$item['preview'] = get_post_meta( $item['id'], '_lp_preview', true ) == 'yes';
 		} else if ( $item['type'] == LP_QUIZ_CPT ) {
+			$quiz_curd  = new LP_Quiz_CURD();
 			$item['id'] = $quiz_curd->create( $args );
+		} else {
+			do_action( 'learn-press/new-section-item', $item, $args );
 		}
-
+		
 		if ( is_wp_error( $item['id'] ) || ! $item['id'] ) {
 			return false;
 		}
@@ -381,10 +382,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// get WP Post
 			$post     = get_post( $item['id'] );
-			$result[] = array( 'id'      => $post->ID,
-			                   'title'   => $post->post_title,
-			                   'type'    => $post->post_type,
-			                   'preview' => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes'
+			$result[] = array(
+				'id'      => $post->ID,
+				'title'   => $post->post_title,
+				'type'    => $post->post_type,
+				'preview' => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes'
 			);
 
 			$order ++;
