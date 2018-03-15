@@ -696,7 +696,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					$collate .= " COLLATE $wpdb->collate";
 				}
 			}
-			$tables = array();///$wpdb->get_col( $wpdb->prepare( "SHOW TABLES LIKE %s", '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
+			$tables = $wpdb->get_col( $wpdb->prepare( "SHOW TABLES LIKE %s", '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
 			$query  = '';
 
 			if ( ! in_array( $wpdb->learnpress_order_itemmeta, $tables ) ) {
