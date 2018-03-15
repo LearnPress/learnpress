@@ -87,6 +87,13 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				return;
 			}
 
+			if ( isset( $_REQUEST['test-upgrade'] ) ) {
+				$ver = $_REQUEST['test-upgrade'];
+				if ( ! empty( self::$_update_files[ $ver ] ) ) {
+					include_once LP_PLUGIN_PATH . '/inc/updates/' . self::$_update_files[ $ver ];
+				}
+			}
+
 			if ( ! self::$_update_files ) {
 				return;
 			}

@@ -22,6 +22,7 @@ class LP_Update_30 {
 			self::update_user_course_items();
 			self::update_option_no_require_enroll();
 			self::update_post_meta();
+			self::update_settings();
 
 			LP_Install::update_db_version();
 			LP_Install::update_version();
@@ -31,6 +32,33 @@ class LP_Update_30 {
 		}
 		catch ( Exception $exception ) {
 			LP_Debug::rollbackTransaction();
+		}
+	}
+
+	protected static function update_settings() {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->options}
+			WHERE option_name LIKE %s
+		", $wpdb->esc_like( 'learn_press' ) . '%' );
+
+		$settings_defaults = array();
+		if ( $rows = $wpdb->get_results( $query ) ) {
+			foreach ( $rows as $row ) {
+				$settings_defaults[ $row->option_name ] = $row->option_value;
+			}
+		}
+
+		$new_options = array(
+			'learn_press_profile_avatar'    => 'yes',
+			'learn_press_profile_publicity' => array( 'dashboard' => 'yes' )
+		);
+
+		foreach ( $new_options as $k => $v ) {
+			if ( ! array_key_exists( $k, $settings_defaults ) ) {
+				update_option( $k, $v, 'yes' );
+			}
 		}
 	}
 
@@ -252,13 +280,6 @@ class LP_Update_30 {
 		@$wpdb->query( $sql );
 
 		ob_get_clean();
-	}
-
-	/**
-	 * Update settings.
-	 */
-	public static function update_settings() {
-
 	}
 
 	public static function update_user_course_items() {
