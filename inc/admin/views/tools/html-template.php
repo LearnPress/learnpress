@@ -30,9 +30,9 @@ if ( $template_dir != $stylesheet_dir ) {
                        data-template=""><?php printf( __( 'All (%d)', 'learnpress' ), $counts['all'] ); ?></a>
 					<?php if ( $theme_folder && $child_theme_folder ) { ?>
                         <a href="" class="learn-press-filter-template"
-                           data-template="<?php echo esc_attr( $theme_folder ); ?>"><?php echo LP_Outdated_Template_Helper::get_theme_name( $theme_folder ); ?></a>
+                           data-template="<?php echo esc_attr( $theme_folder ); ?>"><?php echo learn_press_get_theme_name( $theme_folder ); ?></a>
                         <a href="" class="learn-press-filter-template"
-                           data-template="<?php echo esc_attr( $child_theme_folder ); ?>"><?php echo LP_Outdated_Template_Helper::get_theme_name( $child_theme_folder ); ?></a>
+                           data-template="<?php echo esc_attr( $child_theme_folder ); ?>"><?php echo learn_press_get_theme_name( $child_theme_folder ); ?></a>
 					<?php } ?>
                     <a href="" class="learn-press-filter-template"
                        data-filter="outdated"><?php printf( __( 'Outdated (%d)', 'learnpress' ), $counts['outdated'] ); ?></a>
