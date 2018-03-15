@@ -769,15 +769,16 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$question_answer_id = $wpdb->insert_id;
 			if ( $question_answer_id ) {
 				// update question answer option data
-				$answer_options = $question->get_data( 'answer_options' ) ? $question->get_data( 'answer_options' ) : array();
+				$answer_options   = $question->get_data( 'answer_options' ) ? $question->get_data( 'answer_options' ) : array();
+				$unserialize_data = unserialize( $args['answer_data'] );
 
 				$new_answer_option_data = array(
 					'question_answer_id' => $question_answer_id,
 					'question_id'        => $args['question_id'],
 					'answer_order'       => $args['answer_order'],
-					'text'               => unserialize( $args['answer_data'] )['text'],
-					'value'              => unserialize( $args['answer_data'] )['value'],
-					'is_true'            => unserialize( $args['answer_data'] )['is_true']
+					'text'               => $unserialize_data['text'],
+					'value'              => $unserialize_data['value'],
+					'is_true'            => $unserialize_data['is_true']
 				);
 
 				if ( ! $answer_options ) {
