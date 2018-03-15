@@ -163,6 +163,18 @@
             $('#_lp_sale_price_schedule').show();
             $('#field-_lp_sale_start, #field-_lp_sale_end').addClass('hide-if-js').find('#_lp_sale_start, #_lp_sale_end').val('');
             $(window).trigger('resize.calculate-tab');
+        }).on('click', '.lp-upgrade-notice .close-notice', function (e) {
+            e.preventDefault();
+            var $btn = $(this);
+            $.post({
+                url: '',
+                data: {
+                    'lp-hide-upgrade-message': 'yes'
+                },
+                success: function (res) {
+                    $btn.closest('.lp-upgrade-notice').fadeOut();
+                }
+            });
         });
     });
 

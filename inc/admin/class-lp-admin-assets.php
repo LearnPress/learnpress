@@ -42,7 +42,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			'learn-press-update'         => apply_filters(
 				'learn-press/upgrade/script-data',
 				array(
-					'i18n_confirm' => __( 'Before taking this action we recommend that you should backup your site. If you aren\'t sure please contact our supporter. Do you want to continue run updater?', 'learnpress' )
+					'i18n_confirm' => __( 'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?', 'learnpress' )
 				)
 			)
 		);

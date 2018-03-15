@@ -10,10 +10,10 @@
 defined( 'ABSPATH' ) or die();
 
 ?>
-<div class="notice notice-warning lp-notice">
+<div class="notice notice-warning lp-notice lp-upgrade-notice">
     <h4><?php _e( 'Welcome to LearnPress 3.0.0', 'learnpress' ); ?></h4>
-    <p><?php _e( 'LearnPress 3.0.0 is a BIG UPDATE with a lots of features to creating, managing and selling your online courses.', 'learnpress' ); ?></p>
-    <p><?php _e( 'If you have any issue, please contact our supporters.', 'learnpres' ); ?></p>
+    <p><?php _e( 'This is a <strong>BIG UPDATE</strong> and it allows you to do so much more!', 'learnpress' ); ?></p>
+    <p><?php _e( 'If there\'s any issue, please be sure to backup your site, update your theme, contact supporter.', 'learnpres' ); ?></p>
     <p>
         <a class="button"
            href="https://thimpress.com/learnpress-3-0/"
@@ -21,4 +21,5 @@ defined( 'ABSPATH' ) or die();
         <a class="button" href="https://thimpress.com/help/"
            target="_blank"><?php _e( 'Get support now', 'learnpress' ); ?></a>
     </p>
+    <a class="close-notice" href=""><?php _e('Got it!', 'learnpress');?></a>
 </div>

@@ -32,6 +32,16 @@
         margin: 0 0 5px 0;
         padding: 0 2px;
     }
+    &.lp-upgrade-notice {
+        background: #BCEFFE;
+        border-left-color: #02B7FB;
+        position: relative;
+        .close-notice {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+        }
+    }
 }
 
 .learn-press-dropdown-pages {

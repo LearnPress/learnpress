@@ -2751,6 +2751,17 @@
   margin: 0 0 5px 0;
   padding: 0 2px; }
 
+.lp-notice.lp-upgrade-notice,
+.learn-press-notice.lp-upgrade-notice {
+  background: #BCEFFE;
+  border-left-color: #02B7FB;
+  position: relative; }
+  .lp-notice.lp-upgrade-notice .close-notice,
+  .learn-press-notice.lp-upgrade-notice .close-notice {
+    position: absolute;
+    top: 5px;
+    right: 10px; }
+
 .learn-press-dropdown-pages {
   display: inline-block; }
 

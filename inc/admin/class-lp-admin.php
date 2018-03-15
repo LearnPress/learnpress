@@ -133,6 +133,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function init() {
+			if ( 'yes' === LP_Request::get_string( 'lp-hide-upgrade-message' ) ) {
+				delete_transient( 'lp_upgraded_30' );
+			}
 		}
 
 		/**
