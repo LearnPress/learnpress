@@ -308,6 +308,19 @@
 
 		new LP_Quiz_Question_View(new LP_Quiz_Question_Model());
 
+		$('input[id="_lp_show_check_answer"]').change(function () {
+			var t = $('input[name="_lp_show_check_answer"]').is(':checked'),
+				$el = $('label[for="_lp_show_submit_hide_next"]'),
+				show_submit = $('input[name="_lp_show_submit_hide_next"]');
+				if(t){
+					$el.closest('.rwmb-field').show();
+				} else {
+					$el.closest('.rwmb-field').hide();
+					show_submit.prop("checked", false);
+				}
+			$el.find('span').html(t);
+		}).trigger('change');
+
 		$('input[name="_lp_passing_grade_type"]').change(function () {
 			var t = $('input[name="_lp_passing_grade_type"]:checked').val(),
 				$el = $('label[for="_lp_passing_grade"]'),
