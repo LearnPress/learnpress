@@ -21,6 +21,9 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
+		if ( $course->get_external_link() ) {
+			return;
+		}
 
 		// If course is not published
 		if ( ! $course->is_publish() ) {

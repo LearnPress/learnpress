@@ -1,5 +1,7 @@
 ;(function ($) {
 
+    "use strict";
+
     function makePaymentsSortable() {
         // Make payments sortable
         $('.learn-press-payments.sortable tbody').sortable({
@@ -37,146 +39,141 @@
         });
     }
 
-    // Document is already ready?
-    $(document).ready(function () {
-        $('.learn-press-dropdown-pages').dropdownPages();
-        $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
+    function _callbackFilterTemplates() {
+        var $link = $(this);
 
-        if ($.fn.select2) {
-            $('.lp-select-2 select').select2();
+        if ($link.hasClass('current')) {
+            return false;
         }
 
-        $(document).on('click', '#field-_lp_course_result input[name="_lp_course_result"]', function () {
-            var $input = $(this),
-                checked = $input.is(':checked');
+        var $templatesList = $('#learn-press-template-files'),
+            $templates = $templatesList.find('tr[data-template]'),
+            template = $link.data('template'),
+            filter = $link.data('filter');
 
-            if ($input.val() === 'evaluate_final_quiz' && checked) {
-                var $passingConditionInput = $('#_lp_passing_condition'),
-                    passingCondition = $passingConditionInput.val();
+        $link.addClass('current').siblings('a').removeClass('current');
 
+        if (!template) {
 
+            if (!filter) {
+                $templates.removeClass('hide-if-js');
+            } else {
+                $templates.map(function () {
+                    $(this).toggleClass('hide-if-js', $(this).data('filter-' + filter) !== 'yes');
+                })
+            }
+
+        } else {
+            $templates.map(function () {
+                $(this).toggleClass('hide-if-js', $(this).data('template') !== template);
+            })
+        }
+
+        $('#learn-press-no-templates').toggleClass('hide-if-js', !!$templatesList.find('tr.template-row:not(.hide-if-js):first').length);
+
+        return false;
+    }
+
+    function toggleEmails(e) {
+        e.preventDefault();
+        var $button = $(this),
+            status = $button.data('status');
+
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'update_email_status',
+                status: status
+            },
+            success: function (response) {
+                response = LP.parseJSON(response);
+                for (var i in response) {
+                    $('#email-' + i + ' .status').toggleClass('enabled', response[i]);
+                }
             }
         });
+    }
 
-        function toggleEmails(e) {
-            e.preventDefault();
-            var $button = $(this),
-                status = $button.data('status');
+    function togglePaymentStatus(e) {
+        e.preventDefault();
+        var $row = $(this).closest('tr'),
+            $button = $(this),
+            status = $row.find('.status').hasClass('enabled') ? 'no' : 'yes';
 
-            $.ajax({
-                url: '',
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'update-payment-status',
+                status: status,
+                id: $row.data('payment')
+            },
+            success: function (response) {
+                response = LP.parseJSON(response);
+                for (var i in response) {
+                    $('#payment-' + i + ' .status').toggleClass('enabled', response[i]);
+                }
+            }
+        });
+    }
+
+    /**
+     * Callback event for button to creating pages inside error message.
+     *
+     * @param {Event} e
+     */
+    function createPages(e) {
+        var $button = $(this).addClass('disabled');
+        e.preventDefault();
+        $.post({
+            url: $button.attr('href'),
+            data: {
+                'lp-ajax': 'create-pages'
+            },
+            dataType: 'text',
+            success: function (res) {
+                var $message = $button.closest('.error').html('<p>' + res + '</p>');
+                setTimeout(function () {
+                    $message.fadeOut()
+                }, 2000);
+            }
+        });
+    }
+
+    function updateEmailStatus() {
+        (function () {
+            $.post({
+                url: window.location.href,
                 data: {
                     'lp-ajax': 'update_email_status',
-                    status: status
-                },
-                success: function (response) {
-                    response = LP.parseJSON(response);
-                    for (var i in response) {
-                        $('#email-' + i + ' .status').toggleClass('enabled', response[i]);
-                    }
-                }
-            });
-        }
-
-        function togglePaymentStatus(e) {
-            e.preventDefault();
-            var $row = $(this).closest('tr'),
-                $button = $(this),
-                status = $row.find('.status').hasClass('enabled') ? 'no' : 'yes';
-
-            $.ajax({
-                url: '',
-                data: {
-                    'lp-ajax': 'update-payment-status',
-                    status: status,
-                    id: $row.data('payment')
-                },
-                success: function (response) {
-                    response = LP.parseJSON(response);
-                    for (var i in response) {
-                        $('#payment-' + i + ' .status').toggleClass('enabled', response[i]);
-                    }
-                }
-            });
-        }
-
-        /**
-         * Callback event for button to creating pages inside error message.
-         *
-         * @param {Event} e
-         */
-        function createPages(e) {
-            var $button = $(this).addClass('disabled');
-            e.preventDefault();
-            $.post({
-                url: $button.attr('href'),
-                data: {
-                    'lp-ajax': 'create-pages'
+                    status: $(this).parent().hasClass('enabled') ? 'no' : 'yes',
+                    id: $(this).data('id')
                 },
                 dataType: 'text',
-                success: function (res) {
-                    var $message = $button.closest('.error').html('<p>' + res + '</p>');
-                    setTimeout(function () {
-                        $message.fadeOut()
-                    }, 2000);
-                }
+                success: $.proxy(function (res) {
+                    res = LP.parseJSON(res);
+                    for (var i in res) {
+                        $('#email-' + i + ' .status').toggleClass('enabled', res[i]);
+                    }
+                }, this)
             });
-        }
+        }).apply(this)
+    }
 
-        $(document).on('click', '.change-email-status', function () {
-            (function () {
-                $.post({
-                    url: window.location.href,
-                    data: {
-                        'lp-ajax': 'update_email_status',
-                        status: $(this).parent().hasClass('enabled') ? 'no' : 'yes',
-                        id: $(this).data('id')
-                    },
-                    dataType: 'text',
-                    success: $.proxy(function (res) {
-                        res = LP.parseJSON(res);
-                        for (var i in res) {
-                            $('#email-' + i + ' .status').toggleClass('enabled', res[i]);
-                        }
-                    }, this)
-                });
-            }).apply(this)
-        }).on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails)
-            .on('click', '#learn-press-create-pages', createPages)
-            .on('click', '.learn-press-payments .status .dashicons', togglePaymentStatus);
-
-
-        $('.learn-press-tooltip').each(function () {
-            var $el = $(this),
-                args = $.extend({title: 'data-tooltip', offset: 10, gravity: 's'}, $el.data());
-            $el.tipsy(args);
+    function updateLessonPreview() {
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'toggle_lesson_preview',
+                lesson_id: this.value,
+                previewable: this.checked ? 'yes' : 'no',
+                nonce: $(this).attr('data-nonce')
+            },
+            dataType: 'text',
+            success: function (response) {
+                response = LP.parseJSON(response);
+            }
         });
-
-        $(document).on('click', '#_lp_sale_price_schedule', function (e) {
-            e.preventDefault();
-            $(this).hide();
-            $('#field-_lp_sale_start, #field-_lp_sale_end').removeClass('hide-if-js');
-            $(window).trigger('resize.calculate-tab');
-
-        }).on('click', '#_lp_sale_price_schedule_cancel', function (e) {
-            e.preventDefault();
-            $('#_lp_sale_price_schedule').show();
-            $('#field-_lp_sale_start, #field-_lp_sale_end').addClass('hide-if-js').find('#_lp_sale_start, #_lp_sale_end').val('');
-            $(window).trigger('resize.calculate-tab');
-        }).on('click', '.lp-upgrade-notice .close-notice', function (e) {
-            e.preventDefault();
-            var $btn = $(this);
-            $.post({
-                url: '',
-                data: {
-                    'lp-hide-upgrade-message': 'yes'
-                },
-                success: function (res) {
-                    $btn.closest('.lp-upgrade-notice').fadeOut();
-                }
-            });
-        });
-    });
+    }
 
     var LP_Admin = window.LP_Admin = {
         init: function () {
@@ -257,79 +254,109 @@
             })
         }
     };
+
+    function initTooltips() {
+        $('.learn-press-tooltip').each(function () {
+            var $el = $(this),
+                args = $.extend({title: 'data-tooltip', offset: 10, gravity: 's'}, $el.data());
+            $el.tipsy(args);
+        });
+    }
+
+    function initSelect2() {
+        if ($.fn.select2) {
+            $('.lp-select-2 select').select2();
+        }
+    }
+
+    function toggleSalePriceSchedule() {
+        var $el = $(this),
+            id = $el.attr('id');
+
+        if (id === '_lp_sale_price_schedule') {
+            $(this).hide();
+            $('#field-_lp_sale_start, #field-_lp_sale_end').removeClass('hide-if-js');
+            $(window).trigger('resize.calculate-tab');
+        } else {
+            $('#_lp_sale_price_schedule').show();
+            $('#field-_lp_sale_start, #field-_lp_sale_end').addClass('hide-if-js').find('#_lp_sale_start, #_lp_sale_end').val('');
+            $(window).trigger('resize.calculate-tab');
+        }
+
+        return false;
+    }
+
+    function hideUpgradeMessage(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        $.post({
+            url: '',
+            data: {
+                'lp-hide-upgrade-message': 'yes'
+            },
+            success: function (res) {
+                $btn.closest('.lp-upgrade-notice').fadeOut();
+            }
+        });
+    }
+
+    function pluginActions(e) {
+
+        if ($(e.target).closest('.learnpress-premium-plugin').length) {
+            return;
+        }
+
+        e.preventDefault();
+        var $plugin = $(this).closest('.plugin-card');
+        if ($(this).hasClass('updating-message')) {
+            return;
+        }
+        $(this).addClass('updating-message button-working disabled');
+        $.ajax({
+            url: $(this).attr('href'),
+            data: {},
+            success: function (r) {
+                $.ajax({
+                    url: window.location.href,
+                    success: function (r) {
+                        var $p = $(r).find('#' + $plugin.attr('id'));
+                        if ($p.length) {
+                            $plugin.replaceWith($p)
+                        } else {
+                            $plugin.find('.plugin-action-buttons a')
+                                .removeClass('updating-message button-working')
+                                .html(learn_press_admin_localize.plugin_installed);
+                        }
+                    }
+                })
+            }
+        });
+    }
+
     var $doc = $(document);
 
     function _ready() {
-        makePaymentsSortable();
-        LP_Admin.init();
-        $(document).on('click', '.plugin-action-buttons a', function (e) {
 
-            if ($(e.target).closest('.learnpress-premium-plugin').length) {
-                return;
-            }
-
-            e.preventDefault();
-            var $plugin = $(this).closest('.plugin-card');
-            if ($(this).hasClass('updating-message')) {
-                return;
-            }
-            $(this).addClass('updating-message button-working disabled');
-            $.ajax({
-                url: $(this).attr('href'),
-                data: {},
-                success: function (r) {
-                    $.ajax({
-                        url: window.location.href,
-                        success: function (r) {
-                            var $p = $(r).find('#' + $plugin.attr('id'));
-                            if ($p.length) {
-                                $plugin.replaceWith($p)
-                            } else {
-                                $plugin.find('.plugin-action-buttons a')
-                                    .removeClass('updating-message button-working')
-                                    .html(learn_press_admin_localize.plugin_installed);
-                            }
-                        }
-                    })
-                }
-            });
-        });
-        var $sandbox_mode = $('#learn_press_paypal_sandbox_mode'),
-            $paypal_type = $('#learn_press_paypal_type');
-        $paypal_type.change(function () {
-            $('.learn_press_paypal_type_security').toggleClass('hide-if-js', 'security' !== this.value);
-        });
-        $sandbox_mode.change(function () {
-            var $input = $('.sandbox input');
-            this.checked ? $input.removeAttr('readonly') : $input.attr('readonly', true);
-        });
-
-        $('#learn_press_paypal_enable').change(function () {
-            var $rows = $(this).closest('tr').siblings('tr');
-            if (this.checked) {
-                $rows.css("display", "");
-            } else {
-                $rows.css("display", "none");
-            }
-        }).trigger('change');
-
-        $('.learn-press-toggle-lesson-preview').on('change', function () {
-            $.ajax({
-                url: '',
-                data: {
-                    'lp-ajax': 'toggle_lesson_preview',
-                    lesson_id: this.value,
-                    previewable: this.checked ? 'yes' : 'no',
-                    nonce: $(this).attr('data-nonce')
-                },
-                dataType: 'text',
-                success: function (response) {
-                    response = LP.parseJSON(response);
-                }
-            });
-        });
-
+        $('.learn-press-dropdown-pages').dropdownPages();
+        $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
+        $('.learn-press-toggle-lesson-preview').on('change', updateLessonPreview);
         $('.learn-press-tip').QuickTip();
+
+        initTooltips();
+        initSelect2();
+        makePaymentsSortable();
+
+        $doc.on('click', '.change-email-status', updateEmailStatus)
+            .on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails)
+            .on('click', '#learn-press-create-pages', createPages)
+            .on('click', '.learn-press-payments .status .dashicons', togglePaymentStatus)
+            .on('click', '#_lp_sale_price_schedule', toggleSalePriceSchedule)
+            .on('click', '#_lp_sale_price_schedule_cancel', toggleSalePriceSchedule)
+            .on('click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage)
+            .on('click', '.plugin-action-buttons a', pluginActions)
+            .on('click', '.learn-press-filter-template', _callbackFilterTemplates);
+
+        LP_Admin.init();
     }
 
     $doc.ready(_ready);

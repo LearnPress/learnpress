@@ -44,7 +44,8 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 
 			// disable send mail for enable enroll course admin mail
-			if ( ! learn_press_is_negative_value( LP()->settings()->get( 'emails_enrolled-course-admin' )['enable'] ) ) {
+			$email  = LP_Emails::get_email('enrolled-course-admin');
+			if ( $email->enable() ) {
 				remove_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
 			}
 		}
