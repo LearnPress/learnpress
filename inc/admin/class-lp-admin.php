@@ -456,6 +456,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display admin notices
 		 */
 		public function admin_notices() {
+
+			if ( 'yes' === get_transient( 'lp_upgraded_30' ) ) {
+				learn_press_admin_view( 'updates/html-upgrade-message-3.0.0' );
+			}
+
 			if ( 'yes' === get_option( 'learn_press_install' ) ) {
 				learn_press_admin_view( 'setup/notice-setup' );
 			}

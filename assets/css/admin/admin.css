@@ -2742,6 +2742,15 @@
 .button.disabled {
   pointer-events: none; }
 
+.lp-notice h4,
+.learn-press-notice h4 {
+  margin: 10px 0 15px; }
+
+.lp-notice p,
+.learn-press-notice p {
+  margin: 0 0 5px 0;
+  padding: 0 2px; }
+
 .learn-press-dropdown-pages {
   display: inline-block; }
 

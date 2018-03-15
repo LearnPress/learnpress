@@ -18,9 +18,11 @@
 
             },
             update: function (event, ui) {
+
                 var order = $(this).children().map(function () {
                     return $(this).find('input[name="payment-order"]').val()
                 }).get();
+
                 $.post({
                     url: '',
                     data: {
@@ -39,7 +41,10 @@
     $(document).ready(function () {
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
-        $('.lp-select-2 select').select2();
+
+        if ($.fn.select2) {
+            $('.lp-select-2 select').select2();
+        }
 
         $(document).on('click', '#field-_lp_course_result input[name="_lp_course_result"]', function () {
             var $input = $(this),

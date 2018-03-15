@@ -117,7 +117,7 @@ function learn_press_is_hidden_post_box( $id, $user_id = 0 ) {
  * @return mixed
  */
 function learn_press_get_admin_view( $name, $plugin_file = null ) {
-	if ( ! preg_match( '/\.(.*)$/', $name ) ) {
+	if ( ! preg_match( '/\.(html|php)$/', $name ) ) {
 		$name .= '.php';
 	}
 	if ( $plugin_file ) {
@@ -144,8 +144,9 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * @return bool
  */
 function learn_press_admin_view( $name, $args = array(), $include_once = false, $return = false ) {
-	$view = learn_press_get_admin_view( $name, ! empty( $args['plugin_file'] ) ? $args['plugin_file'] : null );
-	if ( file_exists( $view ) ) {
+    $view = learn_press_get_admin_view( $name, ! empty( $args['plugin_file'] ) ? $args['plugin_file'] : null );
+
+    if ( file_exists( $view ) ) {
 		ob_start();
 		// extract parameters as local variables if passed
 		is_array( $args ) && extract( $args );

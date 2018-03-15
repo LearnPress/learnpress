@@ -25,8 +25,12 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		);
 
 		parent::__construct();
-
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 		$this->_process_actions();
+	}
+
+	public function admin_scripts() {
+		learn_press_admin_assets()->enqueue_script( 'lp-update' );
 	}
 
 	protected function _process_actions() {

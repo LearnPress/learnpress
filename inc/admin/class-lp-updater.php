@@ -33,7 +33,6 @@ class LP_Updater {
 		}
 		echo '<div>';
 		ob_start();
-
 		try {
 			LP_Debug::startTransaction();
 			foreach ( $this->get_update_files() as $version => $file ) {

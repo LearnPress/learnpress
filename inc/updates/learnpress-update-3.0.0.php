@@ -25,6 +25,8 @@ class LP_Update_30 {
 
 			LP_Install::update_db_version();
 			LP_Install::update_version();
+
+			set_transient( 'lp_upgraded_30', 'yes', DAY_IN_SECONDS );
 			LP_Debug::commitTransaction();
 		}
 		catch ( Exception $exception ) {
@@ -83,13 +85,13 @@ class LP_Update_30 {
 			foreach ( $rows as $row ) {
 				if ( $row->show_check_answer === 'yes' ) {
 					update_post_meta( $row->ID, '_lp_show_check_answer', '-1' );
-				}else{
+				} else {
 					update_post_meta( $row->ID, '_lp_show_check_answer', '0' );
 				}
 
 				if ( $row->show_hint === 'yes' ) {
 					update_post_meta( $row->ID, '_lp_show_hint', '-1' );
-				}else{
+				} else {
 					update_post_meta( $row->ID, '_lp_show_hint', '0' );
 				}
 			}
