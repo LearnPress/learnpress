@@ -853,7 +853,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$append_students = LP()->settings()->get( 'enrolled_students_number' );// get_post_meta( $this->get_id(), '_lp_append_students', true );
 
 			if ( ( 'yes' == $append_students ) || ! in_array( $append_students, array( 'yes', 'no' ) ) ) {
-				$count_in_order += $this->get_fake_students();
+			    $count_in_order += intval($this->get_fake_students());
 			}
 
 			return $count_in_order;
