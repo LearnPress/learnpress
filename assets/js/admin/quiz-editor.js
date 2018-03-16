@@ -310,8 +310,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         'ADD_NEW_QUESTION': function (state, question) {
             state.questions.push(question);
 
-            var _offset = $('.lp-list-questions .main > div:last-child').offset().top;
-            $('html,body').animate({scrollTop: _offset});
+            var _last_child = $('.lp-list-questions .main > div:last-child');
+            if (_last_child.length) {
+                var _offset = _last_child.offset().top;
+                $('html,body').animate({scrollTop: _offset});
+            }
+
+            console.log(state.questions);
         },
         'CHANGE_QUESTION_TYPE': function (state, data) {
             state.questions = state.questions.map(function (question) {

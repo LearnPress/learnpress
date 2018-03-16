@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'type'           => 'true_or_false',
 					'title'          => __( 'New Question', 'learnpress' ),
 					'content'        => '',
-					'create_answers' => true // some cases does not need create answers for new question
+					'create_answers' => true // some cases do not need create answers for new question
 				)
 			);
 
@@ -65,7 +65,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				'post_content' => $args['content'],
 			) );
 
-
 			if ( $question_id ) {
 
 				// add default meta for new lesson
@@ -84,7 +83,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 				if ( $args['create_answers'] ) {
 					$answers = $question->get_default_answers();
-
 					// insert answers data in new question
 					foreach ( $answers as $index => $answer ) {
 						$insert = array(
@@ -106,6 +104,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 						$quiz_curd->add_question( $args['quiz_id'], $question_id, $args['order'] );
 					}
 				}
+
+				// hook
+				do_action('learn-press/after-create-question', $question);
 
 				return $question;
 			}
