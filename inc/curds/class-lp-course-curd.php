@@ -377,8 +377,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			if ( false === ( $curriculum = wp_cache_get( 'course-' . $course_id, 'lp-course-curriculum-sections' ) ) ) {
 
 				if ( $sections = wp_cache_get( 'course-' . $course_id, 'lp-course-sections' ) ) {
+					$position = 0;
 					foreach ( $sections as $k => $section ) {
-						$curriculum[ $section->section_id ] = new LP_Course_Section( $section );
+						$_section = new LP_Course_Section( $section );
+						$_section->set_position( ++ $position );
+						$curriculum[ $section->section_id ] = $_section;
 					}
 
 					// Update post meta
@@ -690,7 +693,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @param int $course_id
+		 * @param int          $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
