@@ -394,7 +394,8 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return float|int
 	 */
 	public function is_exceeded() {
-		$current = ( new LP_Datetime() )->getTimestamp();
+		$time    = new LP_Datetime();
+		$current = $time->getTimestamp();
 
 		return $this->get_exceeded_time() - $current;
 	}
