@@ -3030,14 +3030,22 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
 
 	if ( is_array( $a ) && array_key_exists( 'priority', $a ) ) {
 		$a_priority = $a['priority'];
-	} elseif ( is_object( $a ) && property_exists( $a, 'priority' ) ) {
-		$a_priority = $a->priority;
+	} elseif ( is_object( $a ) ) {
+		if ( is_callable( array( $a, 'get_priority' ) ) ) {
+			$a_priority = $a->get_priority();
+		} elseif ( property_exists( $a, 'priority' ) ) {
+			$a_priority = $a->priority;
+		}
 	}
 
 	if ( is_array( $b ) && array_key_exists( 'priority', $b ) ) {
 		$b_priority = $b['priority'];
-	} elseif ( is_object( $b ) && property_exists( $b, 'priority' ) ) {
-		$b_priority = $b->priority;
+	} elseif ( is_object( $b ) ) {
+		if ( is_callable( array( $b, 'get_priority' ) ) ) {
+			$b_priority = $b->get_priority();
+		} elseif ( property_exists( $b, 'priority' ) ) {
+			$b_priority = $b->priority;
+		}
 	}
 
 	if ( $a_priority === $b_priority ) {
