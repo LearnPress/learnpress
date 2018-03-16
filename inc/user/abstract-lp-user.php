@@ -2030,14 +2030,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function has_started_quiz( $quiz_id, $course_id = 0 ) {
 			$course_id = $this->_get_course( $course_id );
-
 			$started   = false;
-			$quiz_info = $this->get_quiz_results( $quiz_id, $course_id );
-			if ( $quiz_info ) {
-				$started = in_array( $quiz_info->status, array( 'started', 'completed' ) ) ? $quiz_info->status : false;
-			}
 			$started = $this->has_quiz_status( array( 'started', 'completed' ), $quiz_id, $course_id );
-
 			return apply_filters( 'learn_press_user_started_quiz', $started, $quiz_id, $course_id, $this->get_id() );
 		}
 
