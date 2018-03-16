@@ -315,8 +315,6 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 var _offset = _last_child.offset().top;
                 $('html,body').animate({scrollTop: _offset});
             }
-
-            console.log(state.questions);
         },
         'CHANGE_QUESTION_TYPE': function (state, data) {
             state.questions = state.questions.map(function (question) {
