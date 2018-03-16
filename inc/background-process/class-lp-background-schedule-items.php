@@ -80,7 +80,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 					}
 				}
 
-				if ( ( $exceeded = $item_course->is_exceeded() ) <= 0 && ( $item_course->get_status() === 'enrolled' ) ) {
+				if ( ( ( $exceeded = $item_course->is_exceeded() ) <= 0 ) && ( $item_course->get_status() === 'enrolled' ) ) {
 					$item_course->finish();
 
 					$start_time = $item_course->get_start_time()->getTimestamp();
@@ -109,7 +109,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			$exclude_items     = $queued_course_ids ? "AND user_item_id NOT IN(" . join( ',', $queued_course_ids ) . ")" : '';
 
 			$null_time = '0000-00-00 00:00:00';
-			$query = $wpdb->prepare( "
+			$query     = $wpdb->prepare( "
 				SELECT user_item_id, user_id
 				FROM {$wpdb->learnpress_user_items}
 				WHERE item_type = %s

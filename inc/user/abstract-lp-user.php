@@ -2031,7 +2031,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function has_started_quiz( $quiz_id, $course_id = 0 ) {
 			$course_id = $this->_get_course( $course_id );
 			$started   = false;
-			$started = $this->has_quiz_status( array( 'started', 'completed' ), $quiz_id, $course_id );
+			$started   = $this->has_quiz_status( array( 'started', 'completed' ), $quiz_id, $course_id );
+
 			return apply_filters( 'learn_press_user_started_quiz', $started, $quiz_id, $course_id, $this->get_id() );
 		}
 
@@ -2150,12 +2151,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			if ( $course_data = $this->get_course_data( $course_id ) ) {
+				$course_data->delete_meta_data( array( 'grade', 'via', 'exceeded' ) );
+
 				$course_data->set_status( 'enrolled' );
+				$start_time = new LP_Datetime( current_time( 'mysql' ) );
+				$course_data->set_start_time( $start_time->toSql() );
+				$course_data->set_start_time_gmt( $start_time->toSql( false ) );
 				$course_data->set_end_time( LP_Datetime::getSqlNullDate() );
 				$course_data->set_end_time_gmt( LP_Datetime::getSqlNullDate() );
 
-				if ( $result = $course_data->update() ) {
 
+				if ( $result = $course_data->update() ) {
 					$course_data->increase_retake_count();
 
 					/*

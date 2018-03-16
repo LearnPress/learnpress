@@ -83,6 +83,19 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return $date;
 	}
 
+	public function set_start_time_gmt( $time ) {
+		$this->set_data_date( 'start_time_gmt', $time );
+	}
+
+	public function get_start_time_gmt( $format = '' ) {
+		$date = new LP_Datetime( $this->get_data( 'start_time_gmt' ) );
+		if ( $format ) {
+			return $date->format( $format );
+		}
+
+		return $date;
+	}
+
 	/**
 	 * Get end-time.
 	 *
@@ -283,12 +296,18 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'start_time_gmt':
-					$v = new LP_Datetime( $this->_data['start_time'] );
-					$v = $v->toSql( false );
+					if ( ! $this->_data['start_time_gmt'] ) {
+						$v = new LP_Datetime( $this->_data['start_time'] );
+					}
+
+					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'end_time_gmt':
-					$v = new LP_Datetime( $this->_data['end_time'] );
-					$v = $v->toSql( false );
+					if ( ! $this->_data['end_time_gmt'] ) {
+						$v = new LP_Datetime( $this->_data['end_time'] );
+					}
+
+					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 			}
 			$columns[ $k ] = $v;
@@ -459,6 +478,34 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function maybe_update_item_grade() {
 		$result = $this->get_result();
 		learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
+	}
+
+	public function delete_meta_data( $include = '', $exclude = '' ) {
+		global $wpdb;
+
+		$where = '';
+		if ( $include ) {
+			settype( $include, 'array' );
+			$format = array_fill( 0, sizeof( $include ), '%s' );
+			$where  .= $wpdb->prepare( " AND meta_key IN(" . join( ',', $format ) . ")", $include );
+		}
+
+		if ( $exclude ) {
+			settype( $exclude, 'array' );
+			$format = array_fill( 0, sizeof( $exclude ), '%s' );
+			$where  .= $wpdb->prepare( " AND meta_key IN(" . join( ',', $format ) . ")", $exclude );
+		}
+
+		$query = $wpdb->prepare( "
+			DELETE FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE learnpress_user_item_id = %d
+			{$where}
+		", $this->get_user_item_id() );
+
+		$wpdb->query( $query );
+
+		$this->_meta_data = array();
+		update_meta_cache( 'learnpress_user_item', $this->get_user_item_id() );
 	}
 
 	/**

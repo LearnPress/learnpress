@@ -284,11 +284,15 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $value
 		 */
 		public function set_data_date( $key, $value ) {
-			if ( ! $value instanceof LP_Datetime ) {
+			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
 				$value = new LP_Datetime( $value );
 			}
 
 			$this->_set_data( $key, $value );
+		}
+
+		public function set_data_null_date( $key ) {
+			$this->_set_data( $key, LP_Datetime::getSqlNullDate() );
 		}
 
 		/**

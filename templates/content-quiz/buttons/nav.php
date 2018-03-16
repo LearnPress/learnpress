@@ -63,7 +63,7 @@ $course_id = get_the_ID();
 
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 
-    <form name="skip-question" class="skip-question form-button" method="post"
+    <form name="skip-question" class="skip-question form-button lp-form" method="post"
           action="<?php echo $quiz->get_question_link( $next_id ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-skip-question-button' ); ?>
