@@ -32,11 +32,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Create question and can add to quiz.
 		 *
-		 * @param array $args
+		 * @param $args
 		 *
 		 * @return bool|int|LP_Question|WP_Error
 		 */
-		public function create( &$args = array() ) {
+		public function create( &$args ) {
 			$args = wp_parse_args( $args, array(
 					'quiz_id'        => 0,
 					'order'          => - 1,
@@ -106,7 +106,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				}
 
 				// hook
-				do_action('learn-press/after-create-question', $question);
+				do_action( 'learn-press/after-create-question', $question );
 
 				return $question;
 			}

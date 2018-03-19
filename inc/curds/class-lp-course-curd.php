@@ -33,11 +33,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param array $args
+		 * @param $args
 		 *
 		 * @return int|WP_Error
 		 */
-		public function create( &$args = array() ) {
+		public function create( &$args ) {
 
 			$args = wp_parse_args( $args, array(
 					'id'      => '',

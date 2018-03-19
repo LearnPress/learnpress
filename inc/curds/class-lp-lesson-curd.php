@@ -22,11 +22,11 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 		/**
 		 * Create lesson, with default meta.
 		 *
-		 * @param array $args
+		 * @param $args
 		 *
 		 * @return int|WP_Error
 		 */
-		public function create( &$args = array() ) {
+		public function create( &$args ) {
 
 			$args = wp_parse_args( $args, array(
 					'id'      => '',

@@ -68,11 +68,11 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Create quiz, with default meta.
 		 *
-		 * @param array $args
+		 * @param  $args
 		 *
 		 * @return int|WP_Error
 		 */
-		public function create( &$args = array() ) {
+		public function create( &$args ) {
 
 			$args = wp_parse_args( $args, array(
 					'id'      => '',
@@ -318,7 +318,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * Reorder question by indexed number.
 		 *
 		 * @param LP_Quiz|WP_Post|int $the_quiz
-		 * @param mixed               $questions
+		 * @param mixed $questions
 		 *
 		 * @return mixed
 		 */
@@ -388,7 +388,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @param LP_Quiz|int $the_quiz
 		 * @param             $question_id
-		 * @param array       $args
+		 * @param array $args
 		 *
 		 * @return mixed false on failed
 		 */
@@ -448,7 +448,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Check if a question (or batch of questions) is already added to quiz.
 		 *
-		 * @param int       $the_id
+		 * @param int $the_id
 		 * @param int|array $ids
 		 *
 		 * @return array|bool|null|object
