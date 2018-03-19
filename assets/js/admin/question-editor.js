@@ -251,6 +251,11 @@
         $store.dispatch('newRequest');
 
         next(function (response) {
+
+            if (!jQuery.isPlainObject(response.body)) {
+                response.body = LP.parseJSON(response.body);
+            }
+
             var body = response.body;
             var result = body.success || false;
 

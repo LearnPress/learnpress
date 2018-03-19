@@ -1694,15 +1694,60 @@ if ( ! function_exists( 'learn_press_send_json' ) ) {
 	/**
 	 * Convert an object|array to json format and send it to the browser.
 	 *
-	 * @param $data
+	 * @param object|array $data
 	 */
 	function learn_press_send_json( $data ) {
 		echo '<-- LP_AJAX_START -->';
-		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
+		//@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 		echo wp_json_encode( $data );
 		echo '<-- LP_AJAX_END -->';
 		die;
 	}
+}
+
+/**
+ * Send json with success signal to browser.
+ *
+ * @since 3.0.1
+ *
+ * @param array|object|WP_Error $data
+ */
+function learn_press_send_json_error( $data = '' ) {
+	$response = array( 'success' => false );
+
+	if ( isset( $data ) ) {
+		if ( is_wp_error( $data ) ) {
+			$result = array();
+			foreach ( $data->errors as $code => $messages ) {
+				foreach ( $messages as $message ) {
+					$result[] = array( 'code' => $code, 'message' => $message );
+				}
+			}
+
+			$response['data'] = $result;
+		} else {
+			$response['data'] = $data;
+		}
+	}
+
+	learn_press_send_json( $response );
+}
+
+/**
+ * Send json with error signal to browser.
+ *
+ * @since 3.0.0
+ *
+ * @param array|object|WP_Error $data
+ */
+function learn_press_send_json_success( $data = '' ) {
+	$response = array( 'success' => true );
+
+	if ( isset( $data ) ) {
+		$response['data'] = $data;
+	}
+
+	learn_press_send_json( $response );
 }
 
 /**

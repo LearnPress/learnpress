@@ -112,261 +112,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function admin_course_editor() {
 
-			check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
-
-			$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
-
-			$course_id = $args['id'];
-			$course    = learn_press_get_course( $course_id );
-
-			if ( ! $course ) {
-				wp_send_json_error();
-			}
-
-			// course curd
-			$course_curd = new LP_Course_CURD();
-			// section curd
-			$section_curd = new LP_Section_CURD( $course_id );
-
-			$result = $args['type'];
-
-			switch ( $args['type'] ) {
-
-				case 'heartbeat':
-					$result = true;
-					break;
-
-				case 'draft-course':
-					$new_course = ! empty( $args['course'] ) ? $args['course'] : false;
-					$new_course = json_decode( wp_unslash( $new_course ), true );
-
-					if ( ! $new_course ) {
-						break;
-					}
-
-					$title   = $new_course['title'] ? $new_course['title'] : __( 'New Course', 'learnpress' );
-					$content = $new_course['content'] ? $new_course['content'] : '';
-
-					$args = array(
-						'id'      => $course_id,
-						'status'  => 'draft',
-						'title'   => $title,
-						'content' => $content
-					);
-
-					$course_curd->create( $args );
-					break;
-
-				case 'hidden-sections':
-					// get hidden sections id
-					$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
-					// update course post meta
-					update_post_meta( $course_id, '_admin_hidden_sections', $hidden );
-					break;
-
-				case 'sort-sections':
-					$order = ! empty( $args['order'] ) ? $args['order'] : false;
-					$order = json_decode( wp_unslash( $order ), true );
-
-					if ( ! $order ) {
-						break;
-					}
-
-					$result = $section_curd->sort_sections( $order );
-
-					// last section
-					$last_section_id = end( $order );
-					// update final quiz
-					$section_curd->update_final_quiz( $last_section_id );
-					break;
-
-				case 'update-section':
-					$section = ! empty( $args['section'] ) ? $args['section'] : false;
-					$section = json_decode( wp_unslash( $section ), true );
-
-					if ( ! $section ) {
-						break;
-					}
-
-					$update = array(
-						'section_id'          => $section['id'],
-						'section_name'        => $section['title'],
-						'section_description' => $section['description'],
-						'section_order'       => $section['order'],
-						'section_course_id'   => $section['course_id'],
-					);
-
-					$result = $section_curd->update( $update );
-					break;
-
-				case 'remove-section':
-					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-
-					if ( ! $section_id ) {
-						break;
-					}
-
-					$section_curd->delete( $section_id );
-					break;
-
-				case 'new-section':
-					$section_name = ! empty( $args['section_name'] ) ? $args['section_name'] : false;
-
-					$args = array(
-						'section_course_id'   => $course_id,
-						'section_description' => '',
-						'section_name'        => $section_name,
-						'items'               => array(),
-					);
-
-					// create section
-					$section = $section_curd->create( $args );
-
-					$result = array(
-						'id'          => $section['section_id'],
-						'items'       => $section['items'],
-						'title'       => $section['section_name'],
-						'description' => $section['section_description'],
-						'course_id'   => $section['section_course_id'],
-						'order'       => $section['section_order'],
-					);
-					break;
-
-				case 'update-section-item':
-					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
-					$item       = json_decode( wp_unslash( $item ), true );
-
-					if ( ! ( $section_id && $item ) ) {
-						break;
-					}
-
-					// update lesson, quiz title
-					$result = $section_curd->update_item( $item );
-					break;
-
-				case 'remove-section-item':
-					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-					$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
-
-					if ( ! ( $section_id && $item_id ) ) {
-						break;
-					}
-
-					// remove item from course
-					$course_curd->remove_item( $item_id );
-					break;
-
-				case 'delete-section-item':
-					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-					$item_id    = ! empty( $args['item_id'] ) ? $args['item_id'] : false;
-
-					if ( ! ( $section_id && $item_id ) ) {
-						break;
-					}
-
-					$result = wp_delete_post( $item_id );
-					break;
-
-				case 'new-section-item':
-					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-					$item       = ! empty( $args['item'] ) ? $args['item'] : false;
-					$item       = json_decode( wp_unslash( $item ), true );
-
-					if ( ! ( $section_id && $item ) ) {
-						break;
-					}
-
-					// create new lesson, quiz and add to course
-					$result = $section_curd->new_item( $section_id, $item );
-					break;
-
-				case 'update-section-items':
-					$section_id   = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-					$last_section = ! empty( $args['last_section'] ) ? $args['last_section'] : false;
-					$items        = ! empty( $args['items'] ) ? $args['items'] : false;
-					$items        = json_decode( wp_unslash( $items ), true );
-
-					if ( ! ( $section_id && $items ) ) {
-						break;
-					}
-
-					$result = $section_curd->update_section_items( $section_id, $items );
-
-					if ( $last_section ) {
-						$section_curd->update_final_quiz( $section_id );
-					}
-					break;
-
-				case 'search-items':
-					$query   = isset( $args['query'] ) ? $args['query'] : '';
-					$type    = isset( $args['item_type'] ) ? $args['item_type'] : '';
-					$page    = ! empty( $args['page'] ) ? $args['page'] : 1;
-					$exclude = ! empty( $args['exclude'] ) ? $args['exclude'] : '';
-
-					if ( $exclude ) {
-						$exclude = json_decode( $exclude, true );
-					}
-
-					$ids_exclude = array();
-
-					if ( is_array( $exclude ) ) {
-						foreach ( $exclude as $item ) {
-							$ids_exclude[] = $item['id'];
-						}
-					}
-
-					$search = new LP_Modal_Search_Items( array(
-						'type'       => $type,
-						'context'    => 'course',
-						'context_id' => $course_id,
-						'term'       => $query,
-						'limit'      => apply_filters( 'learn-press/course-editor/choose-items-limit', 10 ),
-						'paged'      => $page,
-						'exclude'    => $ids_exclude,
-					) );
-
-					$id_items = $search->get_items();
-
-					$items = array();
-					foreach ( $id_items as $id ) {
-						$post = get_post( $id );
-
-						$items[] = array(
-							'id'    => $post->ID,
-							'title' => $post->post_title,
-							'type'  => $post->post_type,
-						);
-					}
-
-					$result = array(
-						'items'      => $items,
-						'pagination' => $search->get_pagination( false )
-					);
-					break;
-
-				case 'add-items-to-section':
-					$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-					$items      = ! empty( $args['items'] ) ? $args['items'] : false;
-					$items      = json_decode( wp_unslash( $items ), true );
-
-					if ( ! $items || ! $section_id ) {
-						break;
-					}
-
-					$result = $section_curd->add_items_section( $section_id, $items );
-					break;
-
-				default:
-					break;
-
-			}
+			$editor = LP_Admin_Editor::get_course();
+			$editor->dispatch();
+			$result = $editor->get_result();
 
 			if ( is_wp_error( $result ) ) {
-				wp_send_json_error( $result->get_error_message() );
+				learn_press_send_json_error( $result->get_error_message() );
 			}
 
-			wp_send_json_success( $result );
+			learn_press_send_json_success( $result );
 		}
 
 		/**
@@ -527,10 +281,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			if ( is_wp_error( $result ) ) {
-				wp_send_json_error( $result->get_error_message() );
+				learn_press_send_json_error( $result->get_error_message() );
 			}
 
-			wp_send_json_success( $result );
+			learn_press_send_json_success( $result );
 		}
 
 		/**
@@ -922,10 +676,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			if ( is_wp_error( $result ) ) {
-				wp_send_json_error( $result->get_error_message() );
+				learn_press_send_json_error( $result->get_error_message() );
 			}
 
-			wp_send_json_success( $result );
+			learn_press_send_json_success( $result );
 		}
 
 		/**

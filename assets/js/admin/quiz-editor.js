@@ -875,6 +875,11 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         $store.dispatch('newRequest');
 
         next(function (response) {
+
+            if (!jQuery.isPlainObject(response.body)) {
+                response.body = LP.parseJSON(response.body);
+            }
+
             var body = response.body,
                 result = body.success || false;
 

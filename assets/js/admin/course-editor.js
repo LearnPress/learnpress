@@ -593,7 +593,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         autoDraft: function (state) {
             return state.auto_draft;
         },
-        disable_curriculum: function(state){
+        disable_curriculum: function (state) {
             return state.disable_curriculum;
         },
         status: function (state) {
@@ -656,7 +656,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 Vue.http.LPRequest({
                     type: 'draft-course',
                     course: JSON.stringify(payload)
-                }).then(function(response) {
+                }).then(function (response) {
                         var result = response.body;
 
                         if (!result.success) {
@@ -732,6 +732,11 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         $store.dispatch('newRequest');
 
         next(function (response) {
+
+            if (!jQuery.isPlainObject(response.body)) {
+                response.body = LP.parseJSON(response.body);
+            }
+
             var body = response.body;
             var result = body.success || false;
 

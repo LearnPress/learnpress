@@ -201,7 +201,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Duplicate answer question.
 		 *
-		 * @param $question_id | origin question
+		 * @param $question_id     | origin question
 		 * @param $new_question_id | new question
 		 */
 		public function duplicate_answer( $question_id, $new_question_id ) {
@@ -615,7 +615,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$new_answer['question_answer_id'] = $wpdb->insert_id;
 				$new_answer['question_id']        = $question_id;
 				$new_answer['answer_order']       = $number + 1;
-				$question->set_data( 'answer_options', array_merge( $answers, array( $new_answer ) ) );
+
+				if ( is_array( $answers ) ) {
+					$answers = array_merge( $answers, array( $new_answer ) );
+				} else {
+					$answers = array( $new_answer );
+				}
+				$question->set_data( 'answer_options', $answers );
 			}
 
 			return $wpdb->insert_id;
@@ -748,7 +754,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string $question_type
-		 * @param array $args
+		 * @param array  $args
 		 *
 		 * @return array|bool
 		 */
