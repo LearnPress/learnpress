@@ -60,7 +60,7 @@ class LP_Page_Controller {
 			}
 		}
 
-		if (LP_Global::quiz_question() && ! $user->has_started_quiz( $quiz->get_id(), $course->get_id() ) ) {
+		if ( LP_Global::quiz_question() && ! $user->has_started_quiz( $quiz->get_id(), $course->get_id() ) ) {
 			$redirect = $course->get_item_link( $quiz->get_id() );
 		}
 
@@ -416,7 +416,9 @@ class LP_Page_Controller {
 	/**
 	 * Load archive courses content.
 	 *
-	 * @param $template
+	 * @param string $template
+	 *
+	 * @return string
 	 */
 	public function _load_archive_courses( $template ) {
 		define( 'LEARNPRESS_IS_COURSES', learn_press_is_courses() );
@@ -425,93 +427,99 @@ class LP_Page_Controller {
 		define( 'LEARNPRESS_IS_TAX', learn_press_is_course_tax() );
 		define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
 
-
-		global $wp_query;
-		if ( is_callable( 'clone' ) ) {
-			LP()->wp_query = clone( $wp_query );
-		} else {
-			// PHP 7
-			LP()->wp_query = clone $wp_query;
-		}
-
-		/**
-		 * Fix in case a static page is used for archive course page and
-		 * it's slug is the same with course archive slug (courses).
-		 * In this case, WP know it as a course archive page not a
-		 * single page.
-		 */
-		if ( ( $course_page_id = learn_press_get_page_id( 'courses' ) ) && ( $course_page_slug = get_post_field( 'post_name', $course_page_id ) ) ) {
-			if ( $course_page_slug == 'courses' ) {
-				$wp_query->queried_object_id = $course_page_id;
-				$this->_queried_object       = $wp_query->queried_object = get_post( $course_page_id );
-				add_filter( 'document_title_parts', array( $this, 'page_title' ) );
+		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY || LEARNPRESS_IS_SEARCH || LEARNPRESS_IS_TAX ) {
+			global $wp_query;
+			if ( is_callable( 'clone' ) ) {
+				LP()->wp_query = clone( $wp_query );
+			} else {
+				// PHP 7
+				LP()->wp_query = clone $wp_query;
 			}
+
+			/**
+			 * Fix in case a static page is used for archive course page and
+			 * it's slug is the same with course archive slug (courses).
+			 * In this case, WP know it as a course archive page not a
+			 * single page.
+			 */
+			if ( ( $course_page_id = learn_press_get_page_id( 'courses' ) ) && ( $course_page_slug = get_post_field( 'post_name', $course_page_id ) ) ) {
+				if ( $course_page_slug == 'courses' ) {
+					$wp_query->queried_object_id = $course_page_id;
+					$this->_queried_object       = $wp_query->queried_object = get_post( $course_page_id );
+					add_filter( 'document_title_parts', array( $this, 'page_title' ) );
+				}
+			}
+
+			$wp_query->posts_per_page = 1;
+			$wp_query->nopaging       = true;
+			$wp_query->post_count     = 1;
+
+			// If we don't have a post, load an empty one
+			if ( ! empty( $this->_queried_object ) ) {
+				$wp_query->post = $this->_queried_object;
+			} elseif ( empty( $wp_query->post ) ) {
+				$wp_query->post = new WP_Post( new stdClass() );
+			} elseif ( $wp_query->post->post_type != 'page' ) {
+				// Do not show content of post if it is not a page
+				$wp_query->post->post_content = '';
+			}
+			$content = $wp_query->post->post_content;
+
+			if ( ! preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content ) ) {
+				$content = $content . '[learn_press_archive_course]';
+			}
+
+			$has_filter = false;
+			if ( has_filter( 'the_content', 'wpautop' ) ) {
+				$has_filter = true;
+				remove_filter( 'the_content', 'wpautop' );
+			}
+			$content = do_shortcode( $content );
+			if ( $has_filter ) {
+				has_filter( 'the_content', 'wpautop' );
+			}
+			//$wp_query->post->ID     = 10;
+			if ( empty( $wp_query->post->ID ) || LEARNPRESS_IS_CATEGORY ) {
+				$wp_query->post->ID = 0;
+			}
+
+			$wp_query->post->filter = 'raw';
+			if ( learn_press_is_course_category() ) {
+				$wp_query->post->post_title = single_term_title( '', false );
+			}
+
+			$wp_query->post->post_content   = $content;
+			$wp_query->posts                = array( $wp_query->post );
+			$wp_query->found_posts          = 1;
+			$wp_query->is_single            = false;
+			$wp_query->is_preview           = false;
+			$wp_query->is_page              = false;
+			$wp_query->is_archive           = false;
+			$wp_query->is_date              = false;
+			$wp_query->is_year              = false;
+			$wp_query->is_month             = false;
+			$wp_query->is_day               = false;
+			$wp_query->is_time              = false;
+			$wp_query->is_author            = false;
+			$wp_query->is_category          = false;
+			$wp_query->is_tag               = false;
+			$wp_query->is_tax               = false;
+			$wp_query->is_search            = false;
+			$wp_query->is_feed              = false;
+			$wp_query->is_comment_feed      = false;
+			$wp_query->is_trackback         = false;
+			$wp_query->is_home              = false;
+			$wp_query->is_404               = false;
+			$wp_query->is_comments_popup    = false;
+			$wp_query->is_paged             = false;
+			$wp_query->is_admin             = false;
+			$wp_query->is_attachment        = false;
+			$wp_query->is_singular          = false;
+			$wp_query->is_posts_page        = false;
+			$wp_query->is_post_type_archive = false;
 		}
 
-		$wp_query->posts_per_page = 1;
-		$wp_query->nopaging       = true;
-		$wp_query->post_count     = 1;
-
-		// If we don't have a post, load an empty one
-		if ( ! empty( $this->_queried_object ) ) {
-			$wp_query->post = $this->_queried_object;
-		} elseif ( empty( $wp_query->post ) ) {
-			$wp_query->post = new WP_Post( new stdClass() );
-		} elseif ( $wp_query->post->post_type != 'page' ) {
-			// Do not show content of post if it is not a page
-			$wp_query->post->post_content = '';
-		}
-		$content = $wp_query->post->post_content;
-
-		if ( ! preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content ) ) {
-			$content = $content . '[learn_press_archive_course]';
-		}
-
-		$has_filter = false;
-		if ( has_filter( 'the_content', 'wpautop' ) ) {
-			$has_filter = true;
-			remove_filter( 'the_content', 'wpautop' );
-		}
-		$content = do_shortcode( $content );
-		if ( $has_filter ) {
-			has_filter( 'the_content', 'wpautop' );
-		}
-		//$wp_query->post->ID     = 10;
-		$wp_query->post->filter = 'raw';
-		if ( learn_press_is_course_category() ) {
-			$wp_query->post->post_title = single_term_title( '', false );
-		}
-
-		$wp_query->post->post_content   = $content;
-		$wp_query->posts                = array( $wp_query->post );
-		$wp_query->found_posts          = 1;
-		$wp_query->is_single            = false;
-		$wp_query->is_preview           = false;
-		$wp_query->is_page              = false;
-		$wp_query->is_archive           = false;
-		$wp_query->is_date              = false;
-		$wp_query->is_year              = false;
-		$wp_query->is_month             = false;
-		$wp_query->is_day               = false;
-		$wp_query->is_time              = false;
-		$wp_query->is_author            = false;
-		$wp_query->is_category          = false;
-		$wp_query->is_tag               = false;
-		$wp_query->is_tax               = false;
-		$wp_query->is_search            = false;
-		$wp_query->is_feed              = false;
-		$wp_query->is_comment_feed      = false;
-		$wp_query->is_trackback         = false;
-		$wp_query->is_home              = false;
-		$wp_query->is_404               = false;
-		$wp_query->is_comments_popup    = false;
-		$wp_query->is_paged             = false;
-		$wp_query->is_admin             = false;
-		$wp_query->is_attachment        = false;
-		$wp_query->is_singular          = false;
-		$wp_query->is_posts_page        = false;
-		$wp_query->is_post_type_archive = false;
-
+		return $template;
 	}
 
 	/**

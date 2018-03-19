@@ -30,7 +30,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 		$currencies = learn_press_currencies();
 		foreach ( $currencies as $code => $name ) {
 			$s                   = learn_press_get_currency_symbol( $code );
-			$currencies[ $code ] = sprintf( '%s (%s)', $name, $s ? $s : 'XXXXXX' );
+			$currencies[ $code ] = sprintf( '%s (%s)', $name, $s );
 		}
 
 		$settings = apply_filters(
