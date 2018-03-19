@@ -65,11 +65,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $args array
+	 * @param $args
 	 *
 	 * @return mixed
 	 */
-	public function update( &$args = array() ) {
+	public function update( &$args ) {
 
 		$section = $this->parse( $args );
 
@@ -323,7 +323,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		} else {
 			$item['id'] = apply_filters( 'learn-press/new-section-item', $item, $args );
 		}
-		
+
 		if ( is_wp_error( $item['id'] ) || ! $item['id'] ) {
 			return false;
 		}
