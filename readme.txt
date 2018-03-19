@@ -198,6 +198,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.0.1 =
+~ Improved 'External link' button if user has enrolled course
+~ Fixed category does not display courses
+~ Fixed callback issue when sorting array
+
 = 3.0.0 =
 + Reset courses data for an user has enrolled course
 + Reset course data for users has enrolled course
