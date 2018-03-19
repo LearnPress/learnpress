@@ -200,8 +200,14 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 = 3.0.1 =
 ~ Improved 'External link' button if user has enrolled course
-~ Fixed category does not display courses
-~ Fixed callback issue when sorting array
+~ Fixed category does not display courses (SO)
+~ Fixed callback issue when sorting array|object
+~ Fixed course auto finish if duration is 0
+~ Fixed warning message when counting enrolled users
+~ Fixed error when calling a method from object
++ Added position counter to course section
++ Update some default settings
++ Fixed some bugs...
 
 = 3.0.0 =
 + Reset courses data for an user has enrolled course
