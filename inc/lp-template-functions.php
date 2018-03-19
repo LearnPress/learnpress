@@ -1094,7 +1094,8 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 		}
 
 		if ( is_learnpress() && $post && $post->ID === 0 ) {
-			$wp_admin_bar->remove_node( 'edit' );
+		    // This also remove the 'Edit Category' link when viewing course category!!!
+			//$wp_admin_bar->remove_node( 'edit' );
 		}
 
 		if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
