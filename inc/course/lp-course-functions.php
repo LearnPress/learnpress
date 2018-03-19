@@ -961,16 +961,20 @@ function learn_press_get_course_results_tooltip( $course_id ) {
 	return $tooltip;
 }
 
-function learn_press_course_passing_condition( $value, $course_id ) {
+function learn_press_course_passing_condition( $value, $format, $course_id ) {
 	if ( $quiz_id = learn_press_get_final_quiz( $course_id ) ) {
 		$quiz  = learn_press_get_quiz( $quiz_id );
 		$value = absint( $quiz->get_passing_grade() );
+
+		if($format){
+		    $value = "{$value}%";
+        }
 	}
 
 	return $value;
 }
 
-add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_condition', 10, 2 );
+add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_condition', 10, 3 );
 
 /**
  * Cache static pages

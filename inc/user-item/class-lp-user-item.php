@@ -351,12 +351,13 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	public function get_status_label( $status = '' ) {
 		$statuses = array(
-			'enrolled'  => __( 'In Progress', 'learnpress' ),
-			'started'   => __( 'In Progress', 'learnpress' ),
-			'completed' => __( 'Completed', 'learnpress' ),
-			'finished'  => __( 'Finished', 'learnpress' ),
-			'passed'    => __( 'Passed', 'learnpress' ),
-			'failed'    => __( 'Failed', 'learnpress' )
+			'enrolled'    => __( 'In Progress', 'learnpress' ),
+			'started'     => __( 'In Progress', 'learnpress' ),
+			'in-progress' => __( 'In Progress', 'learnpress' ),
+			'completed'   => __( 'Completed', 'learnpress' ),
+			'finished'    => __( 'Finished', 'learnpress' ),
+			'passed'      => __( 'Passed', 'learnpress' ),
+			'failed'      => __( 'Failed', 'learnpress' )
 		);
 
 		if ( ! $status ) {

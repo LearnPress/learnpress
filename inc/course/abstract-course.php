@@ -853,7 +853,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$append_students = LP()->settings()->get( 'enrolled_students_number' );// get_post_meta( $this->get_id(), '_lp_append_students', true );
 
 			if ( ( 'yes' == $append_students ) || ! in_array( $append_students, array( 'yes', 'no' ) ) ) {
-			    $count_in_order += intval($this->get_fake_students());
+				$count_in_order += intval( $this->get_fake_students() );
 			}
 
 			return $count_in_order;
@@ -918,12 +918,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return array|mixed|string
 		 */
 		public function get_passing_condition( $format = false, $context = '' ) {
-			$value = $this->get_data( 'passing_condition' );
+			$value = absint( $this->get_data( 'passing_condition' ) );
 			if ( $format ) {
 				$value = "{$value}%";
 			}
 
-			return 'edit' === $context ? $value : apply_filters( 'learn-press/course-passing-condition', $value, $this->get_id() );
+			return 'edit' === $context ? $value : apply_filters( 'learn-press/course-passing-condition', $value, $format, $this->get_id() );
 		}
 
 		/**
@@ -1651,7 +1651,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$duration    = $this->get_duration();
 			$user        = learn_press_get_user( $user_id );
 			$course_info = $user->get_course_info( $this->get_id() );
-			$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : ( is_array($course_info) && array_key_exists('start', $course_info) ? intval( strtotime( $course_info['start'] ) ) : 0 );
+			$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : ( is_array( $course_info ) && array_key_exists( 'start', $course_info ) ? intval( strtotime( $course_info['start'] ) ) : 0 );
 			if ( $duration == 0 ) {
 				$duration = DAY_IN_SECONDS * 365 * 100;
 			}
