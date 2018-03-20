@@ -5,7 +5,7 @@
  *
  * @since 3.0.2
  */
-class LP_Admin_Editor_Course {
+class LP_Admin_Editor_Course extends LP_Admin_Editor {
 
 	/**
 	 * @var LP_Course_CURD
@@ -23,11 +23,6 @@ class LP_Admin_Editor_Course {
 	protected $course = null;
 
 	/**
-	 * @var null
-	 */
-	protected $result = null;
-
-	/**
 	 * LP_Admin_Editor_Course constructor.
 	 */
 	public function __construct() {
@@ -35,97 +30,29 @@ class LP_Admin_Editor_Course {
 	}
 
 	/**
+	 * Do the action depending on ajax calls with params
+	 *
 	 * @return bool|WP_Error
 	 */
 	public function dispatch() {
 		check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
-		$args         = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
-		$course_id    = $args['id'];
-		$this->course = learn_press_get_course( $course_id );
+		$args      = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+		$course_id = $args['id'];
+		$course    = learn_press_get_course( $course_id );
 
-		if ( ! $this->course ) {
-			learn_press_send_json_error();
+		if ( ! $course ) {
+			return false;
 		}
 
-		// course curd
-		$this->course_curd = new LP_Course_CURD();
-		// section curd
+		$this->course       = $course;
+		$this->course_curd  = new LP_Course_CURD();
 		$this->section_curd = new LP_Section_CURD( $course_id );
+		$this->result       = array( $args['type'] );
 
-		$result = $args['type'];
+		$this->call( $args['type'], array( $args ) );
 
-		switch ( $args['type'] ) {
-			case 'heartbeat':
-				$result = true;
-				break;
-			default:
-				$func = str_replace( '-', '_', $args['type'] );
-				if ( is_callable( array( $this, $func ) ) ) {
-					call_user_func( array( $this, $func ), $args );
-				}
-//			case 'draft-course':
-//				$this->draft_course( $args );
-//				break;
-//
-//			case 'hidden-sections':
-//				$this->hide_sections( $args );
-//				break;
-//
-//			case 'sort-sections':
-//				$this->sort_sections( $args );
-//				break;
-//
-//			case 'update-section':
-//				$this->update_section( $args );
-//				break;
-//
-//			case 'remove-section':
-//				$this->remove_section( $args );
-//				break;
-//
-//			case 'new-section':
-//				$this->new_section( $args );
-//				break;
-//
-//			case 'update-section-item':
-//				$this->update_section_item( $args );
-//				break;
-//
-//			case 'remove-section-item':
-//				$this->remove_section_item( $args );
-//				break;
-//
-//			case 'delete-section-item':
-//				$this->delete_section_item( $args );
-//				break;
-//
-//			case 'new-section-item':
-//				$this->new_section_item( $args );
-//				break;
-//
-//			case 'update-section-items':
-//				$this->update_section_items( $args );
-//				break;
-//
-//			case 'search-items':
-//				$this->search_items( $args );
-//				break;
-//
-//			case 'add-items-to-section':
-//				$this->add_items_to_section( $args );
-//				break;
-
-		}
-
-		return $result;
-	}
-
-	/**
-	 * @return mixed|WP_Error
-	 */
-	public function get_result() {
-		return $this->result;
+		return $this->get_result();
 	}
 
 	/**
