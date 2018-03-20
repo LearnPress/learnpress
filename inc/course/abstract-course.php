@@ -469,7 +469,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function get_fake_students() {
-			return $this->get_data( 'fake_students' );
+			$count = $this->get_data( 'fake_students' );
+
+			return is_numeric( $count ) ? absint( $count ) : 0;
 		}
 
 		/**
@@ -845,7 +847,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @return mixed
+		 * Count number of students enrolled course.
+		 * Check global settings `enrolled_students_number`
+		 * and add the fake value if both are set.
+		 *
+		 * @return int
 		 */
 		public function count_students() {
 			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
@@ -853,7 +859,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$append_students = LP()->settings()->get( 'enrolled_students_number' );// get_post_meta( $this->get_id(), '_lp_append_students', true );
 
 			if ( ( 'yes' == $append_students ) || ! in_array( $append_students, array( 'yes', 'no' ) ) ) {
-				$count_in_order += intval( $this->get_fake_students() );
+				$count_in_order += $this->get_fake_students();
 			}
 
 			return $count_in_order;

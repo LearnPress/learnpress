@@ -700,7 +700,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function count_by_orders( $course_id, $statuses = 'completed' ) {
 			global $wpdb;
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			settype( $statuses, 'array' );
 			foreach ( $statuses as $k => $v ) {
@@ -730,7 +729,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 				wp_cache_set( 'course-' . $course_id . '-' . $cache_key, $count, 'lp-course-orders' );
 			}
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return $count;
 		}
