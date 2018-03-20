@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.4
-Stable tag: 3.0.0
+Stable tag: 3.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -198,6 +198,14 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.0.2 =
+~ Fixed PHP non-numeric cast type
+~ Improved admin ajax for course/quiz/question editor
+~ Fixed error when extending method from parent
+~ Fixed invalid course progress label
+~ Fixed invalid filter to course passing grade
+~ Fixed empty course item class for other post types
+
 = 3.0.1 =
 ~ Improved 'External link' button if user has enrolled course
 ~ Fixed category does not display courses (SO)
