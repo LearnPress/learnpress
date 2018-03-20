@@ -128,6 +128,7 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 			return false;
 		}
 
+		$question = $this->question;
 		// draft question args
 		$args = $args['draft_question'] ? $args['draft_question'] : '';
 

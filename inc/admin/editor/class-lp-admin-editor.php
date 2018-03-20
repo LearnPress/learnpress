@@ -44,9 +44,10 @@ class LP_Admin_Editor {
 	}
 
 	public function call( $type, $args = array() ) {
-		$func = str_replace( '-', '_', $type );
-		if ( is_callable( array( $this, $func ) ) ) {
-			return call_user_func_array( array( $this, $func ), $args );
+		$func     = str_replace( '-', '_', $type );
+		$callback = array( $this, $func );
+		if ( is_callable( $callback ) ) {
+			return call_user_func_array( $callback, $args );
 		}
 
 		return false;
@@ -66,7 +67,7 @@ class LP_Admin_Editor {
 	/**
 	 * @return bool|WP_Error
 	 */
-	public function dispatch(){
+	public function dispatch() {
 		return false;
 	}
 
@@ -87,7 +88,7 @@ class LP_Admin_Editor {
 	/**
 	 * @return LP_Admin_Editor_Question
 	 */
-	public static function get_editor_question(){
-		return self::get('question');
+	public static function get_editor_question() {
+		return self::get( 'question' );
 	}
 }

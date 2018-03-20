@@ -42,7 +42,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$quiz    = learn_press_get_quiz( $quiz_id );
 
 		if ( ! $quiz ) {
-			return false;
+			return new WP_Error( 'INVALID_QUIZ', __( 'Invalid quiz', 'learnpress' ) );
 		}
 
 		$this->quiz          = $quiz;
@@ -128,8 +128,10 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			return false;
 		}
 
+		$quiz_id = $this->quiz->get_id();
+
 		// draft quiz
-		if ( get_post_status( $this->quiz->get_id() ) == 'auto-draft' ) {
+		if ( get_post_status( $quiz_id ) == 'auto-draft' ) {
 
 			$draft_quiz = ! empty( $args['draft_quiz'] ) ? $args['draft_quiz'] : '';
 			$draft_quiz = (array) ( json_decode( wp_unslash( $draft_quiz ), '' ) );
@@ -145,7 +147,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		}
 
 		if ( ! isset( $quiz_id ) ) {
-			$this->result = new WP_Error( __( 'Quiz creation failed.', 'learnpress' ) );
+			$this->result = new WP_Error( 'CREATE_QUIZ_FAILED', __( 'Quiz creation failed.', 'learnpress' ) );
 
 			return false;
 		}
@@ -543,14 +545,16 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			return false;
 		}
 
+		$quiz_id = $this->quiz->get_id();
+
 		// draft quiz
-		if ( get_post_status( $this->quiz->get_id() ) == 'auto-draft' ) {
+		if ( get_post_status( $quiz_id ) == 'auto-draft' ) {
 
 			$draft_quiz = ! empty( $args['draft_quiz'] ) ? $args['draft_quiz'] : '';
 			$draft_quiz = (array) ( json_decode( wp_unslash( $draft_quiz ), '' ) );
 
 			$quiz_args = array(
-				'id'      => $this->quiz->get_id(),
+				'id'      => $quiz_id,
 				'title'   => $draft_quiz['title'],
 				'content' => $draft_quiz['content'],
 				'status'  => 'draft'
