@@ -147,19 +147,19 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			switch ( $format ) {
 				case 'd':
-					$return = date( 'Y-m-d', $strtime );
+				    $return = date_i18n( 'Y-m-d', $strtime );
 					break;
 				case 'h':
-					$return = date( 'H', $strtime );
+				    $return = date_i18n( 'H', $strtime );
 					break;
 				case 'm':
-					$return = date( 'i', $strtime );
+				    $return = date_i18n( 'i', $strtime );
 					break;
 				case 'timestamp':
 					$return = $strtime;
 					break;
 				default:
-					$return = $format ? date( $format, $strtime ) : $date;
+				    $return = $format ? date_i18n( $format, $strtime ) : $date;
 			}
 
 			return $return;

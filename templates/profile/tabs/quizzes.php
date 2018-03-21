@@ -56,7 +56,10 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
 						} ?>
 
                     </td>
-                    <td class="column-date"><?php echo $user_quiz->get_start_time( 'd M Y' ); ?></td>
+                    <td class="column-date"><?php
+//                     echo $user_quiz->get_start_time( 'd M Y' );
+                    $start_time = $user_quiz->get_start_time();
+                    echo date_i18n( get_option( 'date_format' ), $start_time->getTimestamp() ); ?></td>
                     <td class="column-status">
                         <span class="result-percent"><?php echo $user_quiz->get_percent_result(); ?></span>
                         <span class="lp-label label-<?php echo esc_attr( $user_quiz->get_results( 'status' ) ); ?>">
