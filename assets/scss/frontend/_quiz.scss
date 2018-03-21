@@ -1,5 +1,6 @@
 .lp-quiz-buttons {
     margin-bottom: 20px;
+    @include clear-fix();
 }
 
 .quiz-progress {

@@ -119,8 +119,10 @@
         this.on = callbackEvents.on;
         this.off = callbackEvents.off;
 
-        this.on('tick.showTime', showTime);
-        this.on('finish.submit', submit);
+        if(thisSettings.totalTime > 0) {
+            this.on('tick.showTime', showTime);
+            this.on('finish.submit', submit);
+        }
 
         this.getRemainingTime = function () {
             return remainingTime;

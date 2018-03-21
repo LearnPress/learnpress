@@ -431,6 +431,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function finish_quiz( $quiz_id, $course_id, $wp_error = false ) {
+
 			if ( ! apply_filters( 'learn_press_before_user_finish_quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
 				return false;
 			}
@@ -1862,7 +1863,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( $return ) {
 						do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
 					}
-
 					wp_cache_flush();
 				}
 			}
