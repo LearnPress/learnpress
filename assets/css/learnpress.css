@@ -1278,7 +1278,10 @@ body .lp-quiz-buttons .form-button-finish-course {
       margin-bottom: 20px; } }
 
 .lp-quiz-buttons {
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+  clear: both;
+  display: block;
+  content: ''; }
 
 .quiz-progress {
   background: #e7f7ff;
