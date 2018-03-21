@@ -105,7 +105,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			$db_version = get_option( 'learnpress_db_version' );
 
 			// Check latest version with the value updated in db
-			if ( version_compare( $db_version, LEARNPRESS_VERSION, '=' ) ) {
+			if ( !$db_version || version_compare( $db_version, LEARNPRESS_VERSION, '=' ) ) {
 				return;
 			}
 

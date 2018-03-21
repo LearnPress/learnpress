@@ -2254,6 +2254,12 @@ function learn_press_get_current_profile_tab( $default = true ) {
 		$current = $wp->query_vars['view'];
 	} else {
 		if ( $default && $tabs = learn_press_get_user_profile_tabs() ) {
+
+			// Fixed for array_keys does not work with ArrayAccess instance
+			if ( $tabs instanceof LP_Profile_Tabs ) {
+				$tabs = $tabs->tabs();
+			}
+
 			$tab_keys = array_keys( $tabs );
 			$current  = reset( $tab_keys );
 		}
@@ -2262,6 +2268,11 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	return $current;
 }
 
+add_action( 'init', function () {
+	learn_press_get_current_profile_tab();
+
+
+} );
 function learn_press_profile_tab_exists( $tab ) {
 	if ( $tabs = learn_press_get_user_profile_tabs() ) {
 		return ! empty( $tabs[ $tab ] ) ? true : false;
