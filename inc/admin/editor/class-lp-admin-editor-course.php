@@ -86,7 +86,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	/**
 	 * @param array $args
 	 */
-	public function hide_sections( $args ) {
+	public function hidden_sections( $args ) {
 		// get hidden sections id
 		$hidden = ! empty( $args['hidden'] ) ? $args['hidden'] : false;
 		// update course post meta

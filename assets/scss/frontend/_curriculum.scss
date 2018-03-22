@@ -30,8 +30,7 @@
         &:after {
             @include clear-fix();
         }
-
-        .list-course-instructors {
+        .course-instructor-item {
             clear: both;
             padding-top: 20px;
         }

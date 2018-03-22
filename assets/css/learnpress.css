@@ -621,7 +621,7 @@
     clear: both;
     display: block;
     content: ''; }
-  .lp-single-course .course-author .list-course-instructors {
+  .lp-single-course .course-author .course-instructor-item {
     clear: both;
     padding-top: 20px; }
 
