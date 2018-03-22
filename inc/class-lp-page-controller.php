@@ -597,7 +597,7 @@ class LP_Page_Controller {
 		// Example: http://example.com/lesson/sample-lesson
 		$course_support_items = learn_press_get_course_item_types();
 
-		if ( in_array( $q->query_vars['post_type'], $course_support_items ) ) {
+		if ( isset($q->query_vars['post_type']) && in_array( $q->query_vars['post_type'], $course_support_items ) ) {
 			learn_press_404_page();
 			$q->set( 'post_type', '__unknown' );
 

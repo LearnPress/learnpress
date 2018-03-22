@@ -151,7 +151,7 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		if (! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
 			return;
 		}
 
@@ -185,7 +185,7 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		if (! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
 			return;
 		}
 

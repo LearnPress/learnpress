@@ -540,7 +540,15 @@
 
     $(document).ready(function () {
         $(document).ready(function () {
-            new LP_Course({})
+            new LP_Course({});
+
+            $(this).on('submit', 'form[name="course-external-link"]', function () {
+                var redirect = $(this).attr('action');
+                if (redirect) {
+                    window.location.href = redirect;
+                    return false;
+                }
+            })
         });
     });
 })

@@ -53,6 +53,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'complete-lesson',
 				'finish-course',
 				'retake-course',
+				'external-link'
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
@@ -80,6 +81,26 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
 			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
+		}
+
+		public static function external_link() {
+			$nonce = LP_Request::get( 'nonce' );
+			$id    = LP_Request::get( 'id' );
+
+			if ( ! $course = learn_press_get_course( $id ) ) {
+				return;
+			}
+
+			$link = $course->get_external_link();
+
+			if ( ! wp_verify_nonce( $nonce, 'external-link-' . $link ) ) {
+				return;
+			}
+
+			if ( apply_filters( 'learn-press/course-redirect-external-link', $id ) ) {
+				wp_redirect( $link );
+				exit();
+			}
 		}
 
 		public static function register_user() {
