@@ -26,6 +26,9 @@ $profile = LP_Profile::instance();
 		<?php
 		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
 
+            /**
+             * @var $tab_data LP_Profile_Tab
+             */
 			if ( $tab_data->is_hidden() || ! $tab_data->user_can_view() ) {
 				continue;
 			}
@@ -33,12 +36,18 @@ $profile = LP_Profile::instance();
 			$slug        = $profile->get_slug( $tab_data, $tab_key );
 			$link        = $profile->get_tab_link( $tab_key, true );
 			$tab_classes = array( esc_attr( $tab_key ) );
+			/**
+			 * @var $tab_data LP_Profile_Tab
+			 */
+			$sections    = $tab_data->sections();
+
+			if ( $sections && sizeof( $sections ) > 1 ) {
+				$tab_classes[] = 'has-child';
+			}
 
 			if ( $profile->is_current_tab( $tab_key ) ) {
 				$tab_classes[] = 'active';
-			}
-
-			?>
+			} ?>
 
             <li class="<?php echo join( ' ', $tab_classes ) ?>">
                 <!--tabs-->
@@ -47,7 +56,7 @@ $profile = LP_Profile::instance();
                 </a>
                 <!--section-->
 
-				<?php if ( ( $sections = $tab_data->sections() ) && sizeof( $sections ) > 1 ) { ?>
+				<?php if ( $sections && sizeof( $sections ) > 1 ) { ?>
 
                     <ul class="profile-tab-sections">
 						<?php foreach ( $sections as $section_key => $section_data ) {
