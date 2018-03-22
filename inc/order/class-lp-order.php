@@ -136,33 +136,35 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get date of this order.
 		 *
-		 * @param string $format
+		 * @param string $context
 		 *
 		 * @return string|LP_Datetime
 		 */
-		public function get_order_date( $format = '' ) {
+		public function get_order_date( $context = '' ) {
 			$date = $this->get_data( 'order_date' );
 
-			$strtime = strtotime( $date->toSql() );
+			if ( 'edit' !== $context ) {
+				$strtime = strtotime( $date->toSql() );
 
-			switch ( $format ) {
-				case 'd':
-				    $return = date_i18n( 'Y-m-d', $strtime );
-					break;
-				case 'h':
-				    $return = date_i18n( 'H', $strtime );
-					break;
-				case 'm':
-				    $return = date_i18n( 'i', $strtime );
-					break;
-				case 'timestamp':
-					$return = $strtime;
-					break;
-				default:
-				    $return = $format ? date_i18n( $format, $strtime ) : $date;
+				switch ( $context ) {
+					case 'd':
+						$date = date_i18n( 'Y-m-d', $strtime );
+						break;
+					case 'h':
+						$date = date_i18n( 'H', $strtime );
+						break;
+					case 'm':
+						$date = date_i18n( 'i', $strtime );
+						break;
+					case 'timestamp':
+						$date = $strtime;
+						break;
+					default:
+						$date = learn_press_date_i18n( $strtime );
+				}
 			}
 
-			return $return;
+			return $date;
 		}
 
 		/**
@@ -462,21 +464,29 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$customer      = false;
 			if ( 'auto-draft' === get_post_status( $this->get_id() ) ) {
 			} else {
-				$customer = learn_press_get_user( $this->get_data( 'user_id' ) );
-			}
-			if ( $customer ) {
-				if ( ! $customer->is_exists() ) {
-					$customer_name = $this->get_guest_customer_name();
-				} else {
-					if ( $customer->get_data( 'display_name' ) ) {
-						$customer_name = $customer->get_data( 'display_name' );
-					} elseif ( $customer->get_data( 'user_nicename' ) ) {
-						$customer_name = $customer->get_data( 'user_nicename' );
-					} elseif ( $customer->get_data( 'user_login' ) ) {
-						$customer_name = $customer->get_data( 'user_login' );
+				if ( $user_id = $this->get_data( 'user_id' ) ) {
+					settype( $user_id, 'array' );
+					$customer_name = array();
+					foreach ( $user_id as $uid ) {
+						$customer = learn_press_get_user( $uid );
+						if ( $customer && $customer->is_exists() ) {
+							if ( $customer->get_data( 'display_name' ) ) {
+								$customer_name[] = $customer->get_data( 'display_name' );
+							} elseif ( $customer->get_data( 'user_nicename' ) ) {
+								$customer_name[] = $customer->get_data( 'user_nicename' );
+							} elseif ( $customer->get_data( 'user_login' ) ) {
+								$customer_name[] = $customer->get_data( 'user_login' );
+							}
+						} else {
+							$customer_name[] = $this->get_guest_customer_name();
+						}
 					}
+
+					$customer_name = join( ', ', $customer_name );
 				}
-			} else {
+			}
+
+			if ( ! $customer_name ) {
 				$customer_name = $this->get_guest_customer_name();
 			}
 
@@ -764,7 +774,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function get_user( $field = '' ) {
 
-			if ( false === ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) ) {
+			$users = $this->get_users();
+			$uid = reset($users);
+
+			if ( false === ( $user = learn_press_get_user( $uid ) ) ) {
 				return false;
 			}
 
@@ -785,7 +798,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array
 		 */
 		public function get_users() {
-			$users = (array) $this->get_data( 'user_id' );
+			if ( $users = $this->get_data( 'user_id' ) ) {
+				settype( $users, 'array' );
+				$users = array_unique( $users );
+			} else {
+				$users = array();
+			}
 
 			return $users;
 		}

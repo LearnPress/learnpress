@@ -3110,3 +3110,22 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
 
 	return ( $a_priority < $b_priority ) ? - 1 : 1;
 }
+
+/**
+ * Localize date with custom format.
+ *
+ * @since 3.0.0
+ *
+ * @param string $timestamp
+ * @param string $format
+ * @param bool   $gmt
+ *
+ * @return string
+ */
+function learn_press_date_i18n( $timestamp = '', $format = '', $gmt = false ) {
+	if ( ! $format ) {
+		$format = get_option( 'date_format' );
+	}
+
+	return date_i18n( $format, $timestamp, $gmt );
+}

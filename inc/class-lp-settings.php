@@ -51,6 +51,7 @@ class LP_Settings {
 			settype( $data, 'array' );
 			$this->_options = $data;
 		}
+
 	}
 
 	/**
@@ -72,9 +73,11 @@ class LP_Settings {
 	 */
 	protected function _load_options( $force = false ) {
 		$_options = wp_load_alloptions();
-		foreach ( $_options as $k => $v ) {
-			$this->_options[ $k ] = maybe_unserialize( $v );
-		}
+//		foreach ( $_options as $k => $v ) {
+//			$this->_options[ $k ] = maybe_unserialize( $v );
+//		}
+
+		$this->_options = $_options;
 
 //		if ( ( false === ( $_options = wp_cache_get( 'options', 'lp-options' ) ) ) || $force ) {
 //			global $wpdb;
@@ -114,6 +117,7 @@ class LP_Settings {
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
 			if ( isset( $obj->{$current_var} ) ) {
+				$obj->{$current_var} = maybe_unserialize($obj->{$current_var});
 				if ( count( $var ) ) {
 					$this->_set_option( $obj->{$current_var}, join( '.', $var ), $value );
 				} else {
@@ -124,6 +128,7 @@ class LP_Settings {
 			}
 		} else {
 			if ( isset( $obj[ $current_var ] ) ) {
+				$obj[ $current_var ] = maybe_unserialize($obj[ $current_var ]);
 				if ( count( $var ) ) {
 					$this->_set_option( $obj[ $current_var ], join( '.', $var ), $value );
 				} else {
@@ -172,6 +177,7 @@ class LP_Settings {
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
 			if ( isset( $obj->{$current_var} ) ) {
+				$obj->{$current_var} = maybe_unserialize($obj->{$current_var});
 				if ( count( $var ) ) {
 					return $this->_get_option( $obj->{$current_var}, join( '.', $var ), $default );
 				} else {
@@ -182,6 +188,7 @@ class LP_Settings {
 			}
 		} else {
 			if ( isset( $obj[ $current_var ] ) ) {
+				$obj[ $current_var ] = maybe_unserialize($obj[ $current_var ]);
 				if ( count( $var ) ) {
 					return $this->_get_option( $obj[ $current_var ], join( '.', $var ), $default );
 				} else {

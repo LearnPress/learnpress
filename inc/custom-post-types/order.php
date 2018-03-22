@@ -739,8 +739,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			$the_order = learn_press_get_order( $post->ID );
 			switch ( $column ) {
 				case 'order_student':
-					if ( $user_ids = $the_order->get_data( 'user_id' ) ) {
-						settype( $user_ids, 'array' );
+					if ( $user_ids = $the_order->get_users() ) {
 						$outputs = array();
 						foreach ( $user_ids as $user_id ) {
 							if ( get_user_by( 'id', $user_id ) ) {
@@ -753,7 +752,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 									$user->get_data( 'user_email' )
 								);
 							} else {
-								$outputs[] = $the_order->get_customer_name();
+								if ( sizeof( $user_ids ) == 1 ) {
+									$outputs[] = $the_order->get_customer_name();
+								}
 							}
 						}
 						echo join( ', ', $outputs );

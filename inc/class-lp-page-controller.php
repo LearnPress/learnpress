@@ -273,6 +273,7 @@ class LP_Page_Controller {
 
 		if ( $file ) {
 			$_template = locate_template( array_unique( $find ) );
+
 			if ( ! $_template && ! in_array( $file, array( 'single-course.php', 'archive-course.php' ) ) ) {
 				$_template = learn_press_plugin_path( 'templates/' ) . $file;
 			}
@@ -477,7 +478,7 @@ class LP_Page_Controller {
 				remove_filter( 'the_content', 'wpautop' );
 			}
 
-			$content = wpautop($content);
+			$content = wpautop( $content );
 			$content = do_shortcode( $content );
 
 			if ( $has_filter ) {
@@ -493,14 +494,14 @@ class LP_Page_Controller {
 				$wp_query->post->post_title = single_term_title( '', false );
 			}
 
-			$wp_query->post->post_content   = $content;
-			$wp_query->posts                = array( $wp_query->post );
+			$wp_query->post->post_content = $content;
+			$wp_query->posts              = array( $wp_query->post );
 
-			if( is_post_type_archive( LP_COURSE_CPT ) || LEARNPRESS_IS_CATEGORY ) {
-				$wp_query->is_page = false;
-				$wp_query->is_archive           = true;
-				$wp_query->is_category          = true;
-				$wp_query->is_single            = false;
+			if ( is_post_type_archive( LP_COURSE_CPT ) || LEARNPRESS_IS_CATEGORY ) {
+				$wp_query->is_page     = false;
+				$wp_query->is_archive  = true;
+				$wp_query->is_category = true;
+				$wp_query->is_single   = false;
 			} else {
 				$wp_query->found_posts          = 1;
 				$wp_query->is_single            = true;
@@ -530,6 +531,7 @@ class LP_Page_Controller {
 				$wp_query->is_post_type_archive = false;
 			}
 		}
+
 		return $template;
 	}
 
@@ -590,6 +592,18 @@ class LP_Page_Controller {
 		if ( ! $q->is_main_query() || is_admin() ) {
 			return $q;
 		}
+
+		// Handle 404 if user are viewing course item directly.
+		// Example: http://example.com/lesson/sample-lesson
+		$course_support_items = learn_press_get_course_item_types();
+
+		if ( in_array( $q->query_vars['post_type'], $course_support_items ) ) {
+			learn_press_404_page();
+			$q->set( 'post_type', '__unknown' );
+
+			return $q;
+		}
+
 		remove_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 
 		$this->_queried_object = ! empty( $q->queried_object_id ) ? $q->queried_object : false;

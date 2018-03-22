@@ -77,7 +77,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		$date = new LP_Datetime( $time );
 
 		if ( $format ) {
-			return $date->format( $format );
+			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
 
 		return $date;
@@ -90,7 +90,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function get_start_time_gmt( $format = '' ) {
 		$date = new LP_Datetime( $this->get_data( 'start_time_gmt' ) );
 		if ( $format ) {
-			return $date->format( $format );
+			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
 
 		return $date;
@@ -115,7 +115,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function get_end_time( $format = '' ) {
 		$date = new LP_Datetime( $this->get_data( 'end_time' ) );
 		if ( $format ) {
-			return $date->format( $format );
+			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
 
 		return $date;
@@ -140,7 +140,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function get_end_time_gmt( $format = '' ) {
 		$date = new LP_Datetime( $this->get_data( 'end_time_gmt' ) );
 		if ( $format ) {
-			return $date->format( $format );
+			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
 
 		return $date;
