@@ -201,7 +201,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Duplicate answer question.
 		 *
-		 * @param $question_id     | origin question
+		 * @param $question_id | origin question
 		 * @param $new_question_id | new question
 		 */
 		public function duplicate_answer( $question_id, $new_question_id ) {
@@ -754,7 +754,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string $question_type
-		 * @param array  $args
+		 * @param array $args
 		 *
 		 * @return array|bool
 		 */
@@ -839,8 +839,12 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return $this->get_error( 'QUESTION_NOT_EXISTS' );
 			}
 
+			do_action( 'learn-press/before-clear-question', $question_id );
+
 			global $wpdb;
 			$wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
+
+			return true;
 		}
 
 		/**
