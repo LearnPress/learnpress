@@ -31,6 +31,7 @@
                 },
                 search: _.debounce(function (term) {
                     var that = this;
+                    console.log(this)
                     Vue.http.post(
                         window.location.href, {
                             type: this.postType,
@@ -111,13 +112,16 @@
                 term: '',
                 postType: '',
                 callbacks: {},
-                exclude: ''
+                exclude: '',
+                context: ''
             },
             methods: {
                 open: function (options) {
+                    console.log(options)
                     _.each(options.data, function (v, k) {
                         this[k] = v;
                     }, this);
+
                     this.callbacks = options.callbacks;
                     this.focusSearch();
                 },

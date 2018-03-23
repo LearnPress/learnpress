@@ -51,6 +51,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
 
+
 			return;
 			add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
 			add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
@@ -130,7 +131,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			self::_delete_transients();
 			self::_create_log_path();
 			///self::_create_pages();
-
+			delete_transient( 'lp_upgraded_30' );
 			$current_version    = get_option( 'learnpress_version', null );
 			$current_db_version = get_option( 'learnpress_db_version', null );
 

@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) or die();
 
 ?>
 <div class="notice notice-warning lp-notice lp-upgrade-notice">
-    <h4><?php _e( 'Welcome to LearnPress 3.0.0', 'learnpress' ); ?></h4>
+    <h4><?php printf( __( 'Welcome to LearnPress %s', 'learnpress' ), LEARNPRESS_VERSION ); ?></h4>
     <p><?php _e( 'This is a <strong>BIG UPDATE</strong> and it allows you to do so much more!', 'learnpress' ); ?></p>
     <p><?php _e( 'If there\'s any issue, please be sure to backup your site, update your theme, contact supporter.', 'learnpres' ); ?></p>
     <p>
@@ -21,5 +21,5 @@ defined( 'ABSPATH' ) or die();
         <a class="button" href="https://thimpress.com/help/"
            target="_blank"><?php _e( 'Get support now', 'learnpress' ); ?></a>
     </p>
-    <a class="close-notice" href=""><?php _e('Got it!', 'learnpress');?></a>
+    <a class="close-notice" href=""><?php _e( 'Got it!', 'learnpress' ); ?></a>
 </div>

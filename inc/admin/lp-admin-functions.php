@@ -137,16 +137,16 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array $args
+ * @param array      $args
  * @param bool|false $include_once
  * @param            bool
  *
  * @return bool
  */
 function learn_press_admin_view( $name, $args = array(), $include_once = false, $return = false ) {
-    $view = learn_press_get_admin_view( $name, ! empty( $args['plugin_file'] ) ? $args['plugin_file'] : null );
+	$view = learn_press_get_admin_view( $name, ! empty( $args['plugin_file'] ) ? $args['plugin_file'] : null );
 
-    if ( file_exists( $view ) ) {
+	if ( file_exists( $view ) ) {
 		ob_start();
 		// extract parameters as local variables if passed
 		is_array( $args ) && extract( $args );
@@ -173,7 +173,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array $args
+ * @param array      $args
  *
  * @return mixed|string
  */
@@ -234,7 +234,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
 	}
 
-	$output = str_replace('<option class="level-0" value="00000">#0 (no title)</option>', '', $output);
+	$output = str_replace( '<option class="level-0" value="00000">#0 (no title)</option>', '', $output );
 
 	if ( $selected && get_post_status( $selected ) !== 'publish' ) {
 		$selected = 0;
@@ -1676,9 +1676,9 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param null $post_id
+	 * @param null  $post_id
 	 * @param array $args
-	 * @param bool $meta
+	 * @param bool  $meta
 	 *
 	 * @return bool|mixed
 	 */
@@ -2181,3 +2181,23 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 		echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
 	}
 }
+
+/**
+ * Filter to modal search items to void filter the posts by author.
+ *
+ * @since 3.0.4
+ *
+ * @param int|string $context_id
+ * @param string     $context
+ *
+ * @return bool|int|string
+ */
+function learn_press_modal_search_items_context( $context_id, $context ) {
+	if ( 'order-items' === $context ) {
+		$context_id = false;
+	}
+
+	return $context_id;
+}
+
+add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_search_items_context', 10, 2 );

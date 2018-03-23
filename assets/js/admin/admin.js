@@ -289,13 +289,13 @@
     function hideUpgradeMessage(e) {
         e.preventDefault();
         var $btn = $(this);
+        $btn.closest('.lp-upgrade-notice').fadeOut();
         $.post({
             url: '',
             data: {
                 'lp-hide-upgrade-message': 'yes'
             },
             success: function (res) {
-                $btn.closest('.lp-upgrade-notice').fadeOut();
             }
         });
     }

@@ -216,11 +216,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function read_course_curriculum( $course_id ) {
 			global $wpdb;
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			if ( get_post_type( $course_id ) != LP_COURSE_CPT ) {
-				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 				return false;
 			}
 
@@ -229,8 +226,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			 * then ignore that course.
 			 */
 			if ( wp_cache_get( 'course-' . $course_id, 'lp-course-curriculum' ) ) {
-				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 				return false;
 			}
 
@@ -357,7 +352,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$quiz_factory = new LP_Quiz_CURD();
 				$quiz_factory->load_questions( $quiz_ids );
 			}
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return true;
 		}

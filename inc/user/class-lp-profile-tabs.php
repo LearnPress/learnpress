@@ -76,7 +76,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 		uasort( $tabs, array( $this, '_sort_tabs' ) );
 
-		$key = md5( serialize( $tabs ) );
+		$key = md5( serialize( array_keys( $tabs ) ) );
 		if ( $key !== get_option( '_lp_tabs_data' ) ) {
 			flush_rewrite_rules();
 			update_option( '_lp_tabs_data', $key, false );
