@@ -1659,9 +1659,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$course_info = $user->get_course_info( $this->get_id() );
 			$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : ( is_array( $course_info ) && array_key_exists( 'start', $course_info ) ? intval( strtotime( $course_info['start'] ) ) : 0 );
 			if ( $duration == 0 ) {
-				$duration = DAY_IN_SECONDS * 365 * 100;
+				//$duration = DAY_IN_SECONDS * 365 * 100;
+				$expired = false;
+			} else {
+				$expired = $start_time + $duration;
 			}
-			$expired = $start_time + $duration;
 
 			return apply_filters( 'learn_press_user_course_expired_time', $expired, $user_id, $this->get_id() );
 		}
@@ -1680,7 +1682,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$user_id = get_current_user_id();
 			}
 
-			return apply_filters( 'learn_press_user_course_expired', $this->get_user_expired_time( $user_id, $args ) - current_time( 'timestamp' ) );
+			$expired = $this->get_user_expired_time( $user_id, $args );
+
+			return apply_filters( 'learn_press_user_course_expired', $expired !== false ? ( $expired - current_time( 'timestamp' ) ) : false );
 		}
 
 		/**

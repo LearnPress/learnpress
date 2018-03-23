@@ -2547,6 +2547,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_course_remaining_time( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 			$remain = false;
+
 			if ( $course && $course->get_id() ) {
 				if ( $course_data = $this->get_course_data( $course_id, true ) ) {
 					$remain = $course_data->is_exceeded();

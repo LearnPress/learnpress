@@ -414,10 +414,11 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return float|int
 	 */
 	public function is_exceeded() {
-		$time    = new LP_Datetime();
-		$current = $time->getTimestamp();
+		$time     = new LP_Datetime();
+		$current  = $time->getTimestamp();
+		$exceeded = $this->get_exceeded_time();
 
-		return $this->get_exceeded_time() - $current;
+		return false !== $exceeded ? $exceeded - $current : false;
 	}
 
 	/**
@@ -434,7 +435,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 			$duration = 100 * DAY_IN_SECONDS * 360;
 		}
 
-		return $format ? date( $format, $start_time + $duration ) : $start_time + $duration;
+		return $duration !== false ? $format ? date( $format, $start_time + $duration ) : $start_time + $duration : false;
 	}
 
 	/**

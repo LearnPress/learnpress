@@ -91,7 +91,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			}
 
 			foreach ( $raw as $data ) {
-				$key                    = $data['question_answer_id'];
+				$key                    = isset( $data['question_answer_id'] ) ? $data['question_answer_id'] : 0;
 				$answer                 = new LP_Question_Answer_Option( $this->_question, $data );
 				$this->_answers[ $key ] = $answer;
 			}
