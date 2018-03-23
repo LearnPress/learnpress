@@ -548,9 +548,10 @@ class LP_Page_Controller {
 			return $content;
 		}
 
-		if ( false !== ( $_content = wp_cache_get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
-			return $_content;
-		}
+		#@NOTE: make sure current page is not lesson or quiz before return cache content of single course page
+// 		if ( function_exists( 'learn_press_content_single_course' ) && false !== ( $_content = wp_cache_get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
+// 			return $_content;
+// 		}
 
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );

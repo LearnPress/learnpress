@@ -25,7 +25,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function create( &$order ) {
 
 		$order->set_order_date( current_time( 'timestamp' ) );
-		$order->set_order_key(  learn_press_generate_order_key() );
+		$order->set_order_key( learn_press_generate_order_key() );
 
 		$order_data = array(
 			'post_author'   => '1',
@@ -34,8 +34,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'post_status'   => $order->get_order_status(),
 			'ping_status'   => 'closed',
 			'post_title'    => $order->get_title(),
-			'post_date'     => $order->get_order_date()->toSql( true ),
-			'post_date_gmt' => $order->get_order_date()->toSql( false ),
+			'post_date'     => $order->get_order_date( 'edit' )->toSql( true ),
+			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
 			'post_excerpt'  => $order->get_customer_note()
 		);
 
@@ -153,8 +153,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		$post_data = array(
-			'post_date'     => $order->get_order_date()->toSql(),
-			'post_date_gmt' => $order->get_order_date()->toSql( false ),
+			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
+			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
 			'post_status'   => 'lp-' . $status,
 			'post_parent'   => $order->get_parent_id(),
 			//'post_excerpt'      => $this->get_post_excerpt( $order ),
@@ -471,7 +471,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Recover an order checked out by Guest for an user.
 	 *
 	 * @param string $order_key
-	 * @param int    $user_id
+	 * @param int $user_id
 	 *
 	 * @return bool|LP_Order|WP_Error
 	 */
@@ -502,8 +502,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Trigger action
 			do_action( 'learn-press/order/recovered-successful', $order->get_id(), $user_id );
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			return new WP_Error( $ex->getCode(), $ex->getMessage() );
 		}
 
