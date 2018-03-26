@@ -700,7 +700,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				if ( is_numeric( $sale_price ) ) {
 					$price = $sale_price;
 				}
-			
+			}
 
 			// @deprecated
 			$price = apply_filters( 'learn_press_course_price', $price, $this );
