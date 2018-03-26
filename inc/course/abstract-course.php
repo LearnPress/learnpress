@@ -681,10 +681,26 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( ! $price /* || 'yes' != $this->get_data('payment') */ ) {
 				$price = 0;
 			} else {
-				if ( false !== ( $sale_price = $this->get_sale_price() ) ) {
+				$theUser = learn_press_get_current_user();
+				$userCourses = learn_press_get_all_courses();
+				$hasPaid = false;
+				foreach($userCourses as $c){
+					$c2 = LP_Course::get_course($c);
+					if($theUser->has_purchased_course($c) && !($c2->is_free())){
+						$hasPaid = true;
+					}
+				}
+				$maybe_discount = LP()->settings->get( 'returning_customer_discount');
+				if ($hasPaid && $maybe_discount > 0){
+					$price = floatval($price);
+					$price = $price - (($maybe_discount*$price)/100);
+				}
+				$price      = floatval( $price );
+				$sale_price = $this->get_sale_price();
+				if ( is_numeric( $sale_price ) ) {
 					$price = $sale_price;
 				}
-			}
+			
 
 			// @deprecated
 			$price = apply_filters( 'learn_press_course_price', $price, $this );
