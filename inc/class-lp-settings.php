@@ -51,7 +51,14 @@ class LP_Settings {
 			settype( $data, 'array' );
 			$this->_options = $data;
 		}
+		self::load_site_options();
+		//add_action( 'init', array( $this, 'init' ) );
+	}
 
+	public function init() {
+
+		LP_Background_Global::add( 'load-site-options', '', array( __CLASS__, 'load_site_options' ) );
+		//LP_Settings::load_site_options();
 	}
 
 	/**
@@ -117,7 +124,7 @@ class LP_Settings {
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
 			if ( isset( $obj->{$current_var} ) ) {
-				$obj->{$current_var} = maybe_unserialize($obj->{$current_var});
+				$obj->{$current_var} = maybe_unserialize( $obj->{$current_var} );
 				if ( count( $var ) ) {
 					$this->_set_option( $obj->{$current_var}, join( '.', $var ), $value );
 				} else {
@@ -128,7 +135,7 @@ class LP_Settings {
 			}
 		} else {
 			if ( isset( $obj[ $current_var ] ) ) {
-				$obj[ $current_var ] = maybe_unserialize($obj[ $current_var ]);
+				$obj[ $current_var ] = maybe_unserialize( $obj[ $current_var ] );
 				if ( count( $var ) ) {
 					$this->_set_option( $obj[ $current_var ], join( '.', $var ), $value );
 				} else {
@@ -177,7 +184,7 @@ class LP_Settings {
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
 			if ( isset( $obj->{$current_var} ) ) {
-				$obj->{$current_var} = maybe_unserialize($obj->{$current_var});
+				$obj->{$current_var} = maybe_unserialize( $obj->{$current_var} );
 				if ( count( $var ) ) {
 					return $this->_get_option( $obj->{$current_var}, join( '.', $var ), $default );
 				} else {
@@ -188,7 +195,7 @@ class LP_Settings {
 			}
 		} else {
 			if ( isset( $obj[ $current_var ] ) ) {
-				$obj[ $current_var ] = maybe_unserialize($obj[ $current_var ]);
+				$obj[ $current_var ] = maybe_unserialize( $obj[ $current_var ] );
 				if ( count( $var ) ) {
 					return $this->_get_option( $obj[ $current_var ], join( '.', $var ), $default );
 				} else {
@@ -262,6 +269,12 @@ class LP_Settings {
 	 * @since 3.0.0
 	 */
 	public static function load_site_options() {
+		static $loaded = false;
+
+		if ( $loaded ) {
+			return;
+		}
+
 		$options = array(
 			'pmpro_updates',
 			'pmpro_stripe_billingaddress',
@@ -326,6 +339,7 @@ class LP_Settings {
 		}
 
 		wp_cache_set( 'notoptions', $notoptions, 'options' );
+		$loaded = true;
 	}
 
 	/**
@@ -393,6 +407,5 @@ class LP_Settings {
 	}
 }
 
-LP_Settings::load_site_options();
 
 return LP_Settings::instance();

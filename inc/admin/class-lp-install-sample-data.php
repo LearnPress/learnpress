@@ -110,7 +110,9 @@ class LP_Install_Sample_Data {
 				unset( $wp_filter[ $key ] );
 			}
 
-			if ( ! $course_id = $this->create_course() ) {
+			$name = LP_Request::get_string( 'custom-name' );
+
+			if ( ! $course_id = $this->create_course( $name ) ) {
 				throw new Exception( 'Create course failed' );
 			}
 
@@ -128,7 +130,8 @@ class LP_Install_Sample_Data {
 
 			LP_Debug::commitTransaction();
 
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 
 			echo $ex->getMessage();
@@ -169,7 +172,8 @@ class LP_Install_Sample_Data {
 
 				$this->_delete_post( $post->ID );
 			}
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 			echo "Error: " . $ex->getMessage();
 		}
@@ -283,12 +287,14 @@ class LP_Install_Sample_Data {
 	/**
 	 * Create course.
 	 *
+	 * @param string $name
+	 *
 	 * @return int|WP_Error
 	 */
-	protected function create_course() {
+	protected function create_course( $name = '' ) {
 
 		$data = array(
-			'post_title'   => 'Sample course',
+			'post_title'   => strlen( $name ) ? $name : __( 'Sample course', 'learnpress' ),
 			'post_type'    => LP_COURSE_CPT,
 			'post_status'  => 'publish',
 			'post_content' => $this->generate_content()
@@ -341,7 +347,7 @@ class LP_Install_Sample_Data {
 	 * Create section.
 	 *
 	 * @param string $name
-	 * @param int $course_id
+	 * @param int    $course_id
 	 *
 	 * @return int
 	 */
@@ -402,8 +408,8 @@ class LP_Install_Sample_Data {
 	 * Create lesson.
 	 *
 	 * @param string $name
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param int    $section_id
+	 * @param int    $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -443,8 +449,8 @@ class LP_Install_Sample_Data {
 	 * Create quiz.
 	 *
 	 * @param string $name
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param int    $section_id
+	 * @param int    $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -546,7 +552,7 @@ class LP_Install_Sample_Data {
 	/**
 	 * Create answers for a question.
 	 *
-	 * @param int $question_id
+	 * @param int    $question_id
 	 * @param string $type
 	 */
 	protected function create_question_answers( $question_id, $type ) {

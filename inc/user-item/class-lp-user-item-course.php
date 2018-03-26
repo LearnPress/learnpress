@@ -25,9 +25,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	protected $_item = null;
 
-	protected static $_loaded = 0;
-
 	protected $_items_by_item_ids = array();
+
+	protected $_loaded = false;
 
 	/**
 	 * LP_User_Item_Course constructor.
@@ -37,19 +37,14 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function __construct( $item ) {
 		parent::__construct( $item );
 		$this->_item = $item;
-		$this->read_items();
-		$this->read_items_meta();
-
-		self::$_loaded ++;
-		if ( self::$_loaded == 1 ) {
-			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-		}
+		$this->load();
 	}
 
-	public static function log( $data ) {
-		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
-		return $data;
+	public function load() {
+		if ( ! $this->_loaded ) {
+			$this->read_items();
+			$this->read_items_meta();
+		}
 	}
 
 	/**
@@ -108,7 +103,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		if ( ! $course->get_duration() ) {
 			return $exceeded;
 		}
-
 
 		return parent::is_exceeded();
 	}
@@ -214,6 +208,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			return false;
 		}
 
+		$this->load();
 		$course_result = $course->get_data( 'course_result' );
 		$results       = false;
 

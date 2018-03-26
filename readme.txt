@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.4
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -198,6 +198,19 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.0.4 =
+~ Improved: action when clicking to close upgrade notice
+~ Fixed: can not add course from other users to order
+~ Fixed: lost quiz data after upgrading
+~ Fixed: user can view lesson/quiz with single permalink
+~ Fixed: can not view lesson
+~ Fixed: notices in admin orders
+~ Fixed: external buy this course redirect to home page
+~ Fixed: remaining time message with course duration is zero
+~ Fixed: hidden sections action ajax admin course editor
+~ Fixed: admin can not add course to order from other users
+~ More...
+
 = 3.0.3 =
 ~ Fixed quiz auto finish with duration is zero
 ~ Fixed pagination with quizzes in user profile
