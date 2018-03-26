@@ -215,6 +215,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 						$pagination = paginate_links( $pagination );
 					}
 				}
+				$this->_changed = false;
 			}
 
 			return $pagination;

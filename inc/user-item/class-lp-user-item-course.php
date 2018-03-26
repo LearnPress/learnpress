@@ -25,9 +25,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 	protected $_item = null;
 
-	protected static $_loaded = 0;
-
 	protected $_items_by_item_ids = array();
+
+	protected $_loaded = false;
 
 	/**
 	 * LP_User_Item_Course constructor.
@@ -37,19 +37,14 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function __construct( $item ) {
 		parent::__construct( $item );
 		$this->_item = $item;
-		$this->read_items();
-		$this->read_items_meta();
-
-		self::$_loaded ++;
-		if ( self::$_loaded == 1 ) {
-			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-		}
+		$this->load();
 	}
 
-	public static function log( $data ) {
-		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
-		return $data;
+	public function load() {
+		if ( ! $this->_loaded ) {
+			$this->read_items();
+			$this->read_items_meta();
+		}
 	}
 
 	/**
@@ -108,7 +103,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		if ( ! $course->get_duration() ) {
 			return $exceeded;
 		}
-
 
 		return parent::is_exceeded();
 	}
@@ -214,6 +208,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			return false;
 		}
 
+		$this->load();
 		$course_result = $course->get_data( 'course_result' );
 		$results       = false;
 
@@ -237,6 +232,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			// Points of completed (may not passed) quizzes per points of all quizzes
 			case 'evaluate_quiz':
 				$results = $this->_evaluate_course_by_completed_quizzes();
+				break;
+			default:
+				$results = apply_filters( 'learn-press/evaluate_passed_conditions', $course_result, $this );
 				break;
 		}
 
@@ -469,9 +467,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get completed items.
 	 *
-	 * @param string $type       - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
-	 * @param bool   $with_total - Optional. Include total if TRUE
-	 * @param int    $section_id - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool $with_total - Optional. Include total if TRUE
+	 * @param int $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
 	 */
@@ -525,8 +523,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get items completed by percentage.
 	 *
-	 * @param string $type       - Optional. Filter by type or not
-	 * @param int    $section_id - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type or not
+	 * @param int $section_id - Optional. Get in specific section
 	 *
 	 * @return float|int
 	 */

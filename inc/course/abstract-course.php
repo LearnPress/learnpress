@@ -81,6 +81,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			'payment'              => ''
 		);
 
+		protected $_loaded = false;
+
 		/**
 		 * Constructor gets the post object and sets the ID for the loaded course.
 		 *
@@ -109,6 +111,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * - Curriculum: sections, items, etc...
 		 */
 		public function load() {
+
+			if ( $this->_loaded ) {
+				return;
+			}
+
 			$this->_curd->load( $this );
 			$id          = $this->get_id();
 			$post_object = get_post( $id );
@@ -135,6 +142,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'external_link_text'   => get_post_meta( $id, '_lp_external_link_text', true ),
 				)
 			);
+
+			$this->_loaded = true;
 		}
 
 		/**
@@ -356,6 +365,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( ! $this->get_id() ) {
 				return false;
 			}
+
+			$this->load();
+
 			$curriculum = $this->_curd->get_curriculum( $this->get_id() );
 
 			$return = false;
@@ -382,6 +394,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return array
 		 */
 		public function get_items( $type = '', $preview = true ) {
+
+			$this->load();
 
 			// get course items from cache
 

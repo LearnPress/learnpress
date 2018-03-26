@@ -17,7 +17,13 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
     <p><?php _e( 'Create a <strong>Sample course</strong> with lessons and quizzes. The content will be filled with <strong>Lorem</strong> text.', 'learnpress' ); ?></p>
     <fieldset class="lp-install-sample-data-options hide-if-js">
         <legend><?php esc_html_e( 'Options', 'learnpress' ); ?></legend>
+
         <ul>
+            <li>
+                <p><?php esc_html_e( 'Course name', 'learnpress' ); ?></p>
+                <input type="text" class="widefat" name="custom-name" value=""
+                          placeholder="<?php esc_attr_e( 'Sample course', 'learnpress' ); ?>">
+            </li>
             <li>
                 <p><?php esc_html_e( 'Random number of sections in range', 'learnpress' ); ?></p>
                 <input type="number" size="3" value="<?php echo $section_range[0]; ?>" min="1" max="20"

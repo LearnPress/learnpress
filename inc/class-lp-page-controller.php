@@ -367,7 +367,7 @@ class LP_Page_Controller {
 		if ( empty( $wp->query_vars['user'] ) ) {
 			$viewing_user = $current_user;
 		} else {
-			if ( $wp_user = get_user_by( 'login', $wp->query_vars['user'] ) ) {
+			if ( $wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) ) ) {
 				$viewing_user = learn_press_get_user( $wp_user->ID );
 				if ( $viewing_user->is_guest() ) {
 					$viewing_user = false;
@@ -598,7 +598,7 @@ class LP_Page_Controller {
 		// Example: http://example.com/lesson/sample-lesson
 		$course_support_items = learn_press_get_course_item_types();
 
-		if ( isset($q->query_vars['post_type']) && in_array( $q->query_vars['post_type'], $course_support_items ) ) {
+		if ( isset( $q->query_vars['post_type'] ) && in_array( $q->query_vars['post_type'], $course_support_items ) ) {
 			learn_press_404_page();
 			$q->set( 'post_type', '__unknown' );
 
