@@ -313,8 +313,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'conditional' => array(
 								array(
 									'field'   => '_lp_show_check_answer',
-									'compare' => '>',
-									'value'   => '1'
+									'compare' => '!=',
+									'value'   => '0'
 								)
 							)
 						)
