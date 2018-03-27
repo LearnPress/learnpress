@@ -223,7 +223,7 @@ class LP_Page_Controller {
 		if ( false !== ( $tmpl = $this->_is_profile() ) ) {
 			return $tmpl;
 		}
-
+        
 		if ( $this->_is_archive() || learn_press_is_course() ) {
 			// If there is no template is valid in theme or plugin
 			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
@@ -499,8 +499,8 @@ class LP_Page_Controller {
 
 			if ( is_post_type_archive( LP_COURSE_CPT ) || LEARNPRESS_IS_CATEGORY ) {
 				$wp_query->is_page     = false;
-				$wp_query->is_archive  = true;
-				$wp_query->is_category = true;
+				$wp_query->is_archive  = is_post_type_archive( LP_COURSE_CPT );
+				$wp_query->is_category = LEARNPRESS_IS_CATEGORY;
 				$wp_query->is_single   = false;
 			} else {
 				$wp_query->found_posts          = 1;
