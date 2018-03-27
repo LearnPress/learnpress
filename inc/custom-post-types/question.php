@@ -294,6 +294,13 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'std'  => null
 					),
 					array(
+						'name' => __( 'Question explanation for Correct Answer', 'learnpress' ),
+						'id'   => "_lp_explanation_correct",
+						'type' => 'textarea',
+						'desc' => __( 'Write something to congratulate the student. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ),
+						'std'  => null
+						),
+					array(
 						'name' => __( 'Question Hint', 'learnpress' ),
 						'id'   => '_lp_hint',
 						'type' => 'textarea',
