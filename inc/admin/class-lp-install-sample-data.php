@@ -55,6 +55,11 @@ class LP_Install_Sample_Data {
 	}
 
 	public function i18n( $data, $handle ) {
+
+		if ( 'learn-press-global' !== $handle ) {
+			return $data;
+		}
+
 		$i18n = array(
 			'confirm_install_sample_data'   => __( 'Are you sure you want to install sample course data?', 'learnpress' ),
 			'confirm_uninstall_sample_data' => __( 'Are you sure you want to delete sample course data?', 'learnpress' )

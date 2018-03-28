@@ -302,7 +302,7 @@ abstract class LP_Abstract_Assets {
 			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
 				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
 					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
-						$data = preg_replace_callback( '~:"([0-9.,]+|true|false)"~', array(
+						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
 							$this,
 							'_valid_json_number'
 						), $data );

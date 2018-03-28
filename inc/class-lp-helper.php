@@ -208,7 +208,7 @@ class LP_Helper {
 	 */
 	public static function json_encode( $data ) {
 		$data = wp_json_encode( $data );
-		$data = preg_replace_callback( '~:"([0-9.,]+|true|false)"~', array(
+		$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
 			__CLASS__,
 			'_valid_json_value'
 		), $data );

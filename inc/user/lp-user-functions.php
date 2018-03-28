@@ -1470,9 +1470,7 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 		'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
 		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 	);
-	print_r( $update_data );
-	print_r( $_POST );
-	echo "xxxxx";
+
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
 	$return      = wp_update_user( $update_data );
 
