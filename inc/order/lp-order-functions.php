@@ -701,7 +701,7 @@ function learn_press_get_order_statuses( $prefix = true, $status_only = false ) 
 function learn_press_get_register_order_statuses() {
 	$order_statues = array();
 
-	$order_statues['lp-pending']    = array(
+	$order_statues['pending']    = array(
 		'label'                     => _x( 'Pending Payment', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
@@ -709,7 +709,7 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learnpress' )
 	);
-	$order_statues['lp-processing'] = array(
+	$order_statues['processing'] = array(
 		'label'                     => _x( 'Processing', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
@@ -717,7 +717,7 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learnpress' )
 	);
-	$order_statues['lp-completed']  = array(
+	$order_statues['completed']  = array(
 		'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
@@ -725,7 +725,7 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learnpress' )
 	);
-	$order_statues['lp-cancelled']  = array(
+	$order_statues['cancelled']  = array(
 		'label'                     => _x( 'Cancelled', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
@@ -733,7 +733,7 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learnpress' )
 	);
-	$order_statues['lp-failed'] = array(
+	$order_statues['failed'] = array(
 		'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
@@ -748,10 +748,10 @@ function learn_press_get_register_order_statuses() {
 function _learn_press_get_order_status_description( $status ) {
 	static $descriptions = null;
 	$descriptions = array(
-		'lp-pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
-		'lp-processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
-		'lp-completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
-		'lp-cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' )
+		'pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
+		'processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
+		'completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
+		'cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' )
 	);
 
 	return apply_filters( 'learn_press_order_status_description', ! empty( $descriptions[ $status ] ) ? $descriptions[ $status ] : '' );
