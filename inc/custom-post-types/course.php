@@ -617,9 +617,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$passing_grade = '';
 
 				if ( $final_quiz = $course->get_final_quiz() ) {
-					$quiz = learn_press_get_quiz( $final_quiz );
-
-					$passing_grade = $quiz->get_passing_grade();
+					if ( $quiz = learn_press_get_quiz( $final_quiz ) ) {
+						$passing_grade = $quiz->get_passing_grade();
+					}
 				}
 
 				$quiz_passing_condition_html = '

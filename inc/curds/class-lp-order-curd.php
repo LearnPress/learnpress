@@ -152,6 +152,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$status = 'pending';
 		}
 
+
 		$post_data = array(
 			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
 			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),

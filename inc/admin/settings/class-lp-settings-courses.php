@@ -127,11 +127,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 							'desc'  => __( 'Those settings are applied to single course page.', 'learnpress' )
 						),
-						array(
-							'title'   => __( 'Single course permalink', 'learnpress' ),
-							'type'    => 'course-permalink',
-							'default' => ''
-						),
+
 						array(
 							'title'   => __( 'Course category base', 'learnpress' ),
 							'id'      => 'course_category_base',
@@ -143,6 +139,12 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'id'      => 'course_tag_base',
 							'default' => 'course-tag',
 							'type'    => 'text'
+						),
+						array(
+							'title'   => __( 'Single course permalink', 'learnpress' ),
+							'type'    => 'course-permalink',
+							'default' => '',
+							'id'    => 'course_base'
 						),
 						array(
 							'title'   => __( 'Lesson', 'learnpress' ),
