@@ -1152,7 +1152,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 				SELECT count(o.ID) as c, DATE_FORMAT( o.post_date, %s) as d
 				FROM {$wpdb->posts} o {$query_join}
 				WHERE 1 {$query_where}
-				AND o.post_status IN('pending', 'processing') AND o.post_type = %s
+				AND o.post_status IN('lp-pending', 'lp-processing') AND o.post_type = %s
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
