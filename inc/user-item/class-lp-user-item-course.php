@@ -233,6 +233,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			case 'evaluate_quiz':
 				$results = $this->_evaluate_course_by_completed_quizzes();
 				break;
+			default:
+				$results = apply_filters( 'learn-press/evaluate_passed_conditions', $course_result, $this );
+				break;
 		}
 
 		if ( is_array( $results ) ) {
@@ -464,9 +467,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get completed items.
 	 *
-	 * @param string $type       - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
-	 * @param bool   $with_total - Optional. Include total if TRUE
-	 * @param int    $section_id - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool $with_total - Optional. Include total if TRUE
+	 * @param int $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
 	 */
@@ -520,8 +523,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get items completed by percentage.
 	 *
-	 * @param string $type       - Optional. Filter by type or not
-	 * @param int    $section_id - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type or not
+	 * @param int $section_id - Optional. Get in specific section
 	 *
 	 * @return float|int
 	 */

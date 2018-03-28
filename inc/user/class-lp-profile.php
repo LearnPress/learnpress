@@ -656,7 +656,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			if ( empty( $query_args['status'] ) ) {
-				$query_args['status'] = 'completed processing cancelled';
+				$query_args['status'] = 'completed processing cancelled pending';
 			}
 
 			if ( $order_ids = $this->get_user_orders( $query_args ) ) {
