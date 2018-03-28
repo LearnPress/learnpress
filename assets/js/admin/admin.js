@@ -333,6 +333,27 @@
         });
     }
 
+    function initSingleCoursePermalink() {
+        $doc.on('change', '.learn-press-single-course-permalink input[type="radio"]', function () {
+            var $check = $(this),
+                $row = $check.closest('.learn-press-single-course-permalink');
+            if ($row.hasClass('custom-base')) {
+                $row.find('input[type="text"]').prop('readonly', false);
+            } else {
+                $row.siblings('.custom-base').find('input[type="text"]').prop('readonly', true);
+            }
+        })
+            .on('change', 'input.learn-press-course-base', function () {
+                $('#course_permalink_structure').val($(this).val());
+            })
+            .on('focus', '#course_permalink_structure', function () {
+                $('#learn_press_custom_permalink').click();
+            })
+            .on('change', '#learn_press_courses_page_id', function () {
+                $('tr.learn-press-courses-page-id').toggleClass('hide-if-js', !parseInt(this.value))
+            });
+    }
+
     var $doc = $(document);
 
     function _ready() {
@@ -345,6 +366,7 @@
         initTooltips();
         initSelect2();
         makePaymentsSortable();
+        initSingleCoursePermalink();
 
         $doc.on('click', '.change-email-status', updateEmailStatus)
             .on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails)

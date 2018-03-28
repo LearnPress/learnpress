@@ -162,6 +162,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					default:
 						$date = learn_press_date_i18n( $strtime );
 				}
+			} elseif ( ! $date instanceof LP_Datetime ) {
+				$date = new LP_Datetime( $date );
 			}
 
 			return $date;
@@ -775,7 +777,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_user( $field = '' ) {
 
 			$users = $this->get_users();
-			$uid = reset($users);
+			$uid   = reset( $users );
 
 			if ( false === ( $user = learn_press_get_user( $uid ) ) ) {
 				return false;
