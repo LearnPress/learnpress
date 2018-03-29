@@ -25,6 +25,7 @@ $item   = LP_Global::course_item();
 	do_action( 'learn-press/content-item-summary/' . $item->get_item_type() );
 
 	do_action( 'learn-press/after-content-item-summary/' . $item->get_item_type() );
+
 	?>
 
 </div>

@@ -104,7 +104,13 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return bool|false|mixed|string
 		 */
 		public function get_format() {
-			return ( false !== ( $format = wp_cache_get( 'item-format-' . $this->get_id(), 'lp-item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
+			$format = ( false !== ( $format = wp_cache_get( 'item-format-' . $this->get_id(), 'lp-item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
+
+			if(!$format){
+				$format = 'standard';
+			}
+
+			return $format;
 		}
 
 		/**

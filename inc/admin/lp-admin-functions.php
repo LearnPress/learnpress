@@ -2201,3 +2201,25 @@ function learn_press_modal_search_items_context( $context_id, $context ) {
 }
 
 add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_search_items_context', 10, 2 );
+
+/**
+ * Filter to post link to change the link if it is an item inside course.
+ *
+ * @since 3.0.0
+ *
+ * @param string  $link
+ * @param WP_Post $post
+ *
+ * @return string
+ */
+function learn_press_preview_post_link( $link, $post ) {
+	$items = learn_press_course_get_support_item_types( true );
+
+	if ( in_array( $post->post_type, $items ) ) {
+        $link = learn_press_course_item_type_link($link, $post);
+	}
+
+	return $link;
+}
+
+add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );

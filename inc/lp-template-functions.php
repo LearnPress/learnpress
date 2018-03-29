@@ -2852,6 +2852,7 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 
 			return;
 		}
+
 		learn_press_get_template( 'content-lesson/content.php' );
 	}
 }

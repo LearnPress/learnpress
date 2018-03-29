@@ -339,10 +339,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_status() {
 
 			$status = $this->get_data( 'status' );
-
+// 			echo $status;
+// var_dump($status);
 			$status = apply_filters( 'learn_press_order_status', $status, $this );
-
-			return apply_filters( 'learn-press/order/status', $status, $this->get_id() );
+// 			var_dump($status);
+			apply_filters( 'learn-press/order/status', $status, $this->get_id() );
+// 			var_dump($this);
+			return $status;
 		}
 
 		/**
@@ -379,6 +382,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			if ( ! empty( $statuses[ $order_status ] ) ) {
 				$status = $statuses[ $order_status ];
+			} elseif( ! empty( $statuses[ 'lp-'.$order_status ] ) ) {
+			    $status = $statuses[ 'lp-'.$order_status ];
 			} elseif ( $order_status == 'trash' ) {
 				$status = __( 'Removed', 'learnpress' );
 			} else {

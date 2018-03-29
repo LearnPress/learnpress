@@ -748,10 +748,10 @@ function learn_press_get_register_order_statuses() {
 function _learn_press_get_order_status_description( $status ) {
 	static $descriptions = null;
 	$descriptions = array(
-		'lp-pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
-		'lp-processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
-		'lp-completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
-		'lp-cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' )
+		'pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
+		'processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
+		'completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
+		'cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' )
 	);
 
 	return apply_filters( 'learn_press_order_status_description', ! empty( $descriptions[ $status ] ) ? $descriptions[ $status ] : '' );
