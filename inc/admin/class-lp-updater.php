@@ -39,6 +39,8 @@ class LP_Updater {
 				$file = LP_PLUGIN_PATH . '/inc/updates/' . $file;
 
 				include_once $file;
+
+				echo sprintf( __( "<p>Updated version %s</p>", 'learnpress' ), $version ) . "\n";
 			}
 
 			LP_Install::update_version();
@@ -54,8 +56,9 @@ class LP_Updater {
 
 		if ( ! learn_press_message_count() ) {
 			LP_Debug::commitTransaction();
-
+			echo '<div id="message-success">';
 			learn_press_display_message( __( 'Successfully updated your database.', 'learnpress' ) );
+			echo '</div>';
 		} else {
 			LP_Debug::rollbackTransaction();
 
@@ -93,7 +96,7 @@ class LP_Updater {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
-				if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . '/inc/updates' ) ) {
+				if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . 'inc/updates' ) ) {
 					foreach ( $files as $file ) {
 						if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
 							$this->_update_files [ $matches[1] ] = $file['name'];

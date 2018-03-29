@@ -337,7 +337,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				///$records = array_filter( $records );
 			}
 
-			if ( $return_last ) {
+			if ( $return_last && is_array( $records ) ) {
 				$records = reset( $records );
 			}
 

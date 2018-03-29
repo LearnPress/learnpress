@@ -1460,8 +1460,6 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 
 	$user_id = get_current_user_id();
 
-	$_POST['description'] = 1000;
-
 	$update_data = array(
 		'ID'           => $user_id,
 		'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),

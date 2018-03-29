@@ -51,7 +51,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
 
-
 			return;
 			add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
 			add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
