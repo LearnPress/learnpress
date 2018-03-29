@@ -86,7 +86,7 @@
         /**
          * Toggle answer option check/uncheck
          */
-        function toggleAnswerOptions() {
+        function toggleAnswerOptions(event) {
             var $el = $(event.target),
                 $chk;
             if ($el.is('input.option-check')) {

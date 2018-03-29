@@ -385,6 +385,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 							'content'     => $post->post_content,
 							'mark'        => get_post_meta( $id, '_lp_mark', true ),
 							'explanation' => get_post_meta( $id, '_lp_explanation', true ),
+							'explanation_correct' => get_post_meta($id, '_lp_explanation_correct', true),
 							'hint'        => get_post_meta( $id, '_lp_hint', true )
 						),
 						'order'    => $question_order[ $index ]

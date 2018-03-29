@@ -13,12 +13,19 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
+
+$user      = LP_Global::user();
+$quiz      = LP_Global::course_item_quiz();
+$question = LP_Global::quiz_question();
+$course_id = get_the_ID();
+$hide_next = get_post_meta($quiz->get_id(), '_lp_hide_finish_until_last', true);
+
 ?>
 
 <?php $quiz = LP_Global::course_item_quiz(); ?>
 
 <?php do_action( 'learn-press/quiz/before-complete-button' ); ?>
-
+<?php if (!$hide_next == 'yes' || !( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) ) { ?>
     <form name="complete-quiz" class="complete-quiz form-button lp-form" method="post" enctype="multipart/form-data">
 
 		<?php do_action( 'learn-press/quiz/begin-complete-button' ); ?>
@@ -31,5 +38,5 @@ defined( 'ABSPATH' ) || exit();
         <input type="hidden" name="noajax" value="yes">
 
     </form>
-
+<?php } ?>
 <?php do_action( 'learn-press/quiz/after-complete-button' ); ?>
