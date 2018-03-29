@@ -25,12 +25,17 @@
 
 .lp-notice,
 .learn-press-notice {
+    position: relative;
     h4 {
         margin: 10px 0 15px
     }
     p {
-        margin: 0 0 5px 0;
         padding: 0 2px;
+    }
+    .dismiss {
+        position: absolute;
+        top: 9px;
+        right: 10px;
     }
     &.lp-upgrade-notice {
         background: #BCEFFE;

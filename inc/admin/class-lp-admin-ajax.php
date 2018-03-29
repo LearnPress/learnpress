@@ -85,7 +85,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'add_items_to_order',
 				'remove_items_from_order',
 				'update_email_status',
-				'create-pages'
+				'create-pages',
+				'hide-admin-notice'
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -102,6 +103,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 
 				LP_Request::register_ajax( $action, $callback );
+			}
+		}
+
+		public static function hide_admin_notice() {
+			$id    = LP_Request::get_string( 'id' );
+			$nonce = LP_Request::get_string( 'nonce' );
+			if ( wp_verify_nonce( $nonce, 'admin-notice-' . $id ) ) {
+				LP_Admin_Notice::clear( $id );
+				die();
 			}
 		}
 

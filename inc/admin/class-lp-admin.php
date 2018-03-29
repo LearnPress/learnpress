@@ -49,6 +49,13 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'views_plugins', array( $this, 'views_plugins' ) );
 
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
+
+			LP_Admin_Notice::show( 'How are you' );
+			if ( ! $xxx = get_transient( 'xxxxx' ) ) {
+				LP_Admin_Notice::add( 'Im fine!', '', 'iamfine', true );
+				set_transient( 'xxxxx', 1, HOUR_IN_SECONDS );
+			}
+			//LP_Admin_Notice::clear();
 		}
 
 		public function add_empty_page( $pages, $args ) {
@@ -703,6 +710,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
 
 			include_once 'class-lp-admin-assets.php';
+			include_once 'class-lp-admin-notices.php';
 			include_once 'class-lp-admin-dashboard.php';
 			include_once 'class-lp-admin-tools.php';
 			include_once 'class-lp-admin-ajax.php';

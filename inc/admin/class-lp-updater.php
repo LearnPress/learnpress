@@ -18,6 +18,8 @@ class LP_Updater {
 	 */
 	protected $_update_files = array();
 
+	protected $_background = null;
+
 	/**
 	 * LP_Updater constructor.
 	 */
@@ -25,12 +27,26 @@ class LP_Updater {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'update_form' ) );
 		add_action( 'admin_init', array( $this, 'do_update' ) );
+
+		if ( LP_Admin_Notice::has_notice( 'background-updater' ) ) {
+			$this->_background = new LP_Background_Updater();
+			$this->_background->push_to_queue( array() );
+		}
 	}
 
 	public function do_update() {
 		if ( 'yes' !== LP_Request::get_string( 'do-update-learnpress' ) ) {
 			return;
 		}
+
+		if ( 'true' === LP_Request::get_string( 'background' ) ) {
+
+			LP_Admin_Notice::add( __( 'Your site is running upgrade in background.', 'learnpress' ), 'warning', 'background-updater' );
+
+			echo LP_Admin_Notice::get_notice_html( 'background-updater' );
+			die();
+		}
+
 		echo '<div>';
 		//ob_start();
 		try {

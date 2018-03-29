@@ -6,7 +6,7 @@
  * @author     ThimPress
  * @version    1.0
  */
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -30,7 +30,7 @@ class LP_Admin_Notice {
 
 	public function dismiss_notice() {
 		$notice = learn_press_get_request( 'lp-hide-notice' );
-		if ( !$notice ) {
+		if ( ! $notice ) {
 			return;
 		}
 		if ( $transient = learn_press_get_request( 't' ) ) {
@@ -45,6 +45,36 @@ class LP_Admin_Notice {
 		}
 	}
 
+	public static function has_notice($id){
+		if ( $notices = get_option( 'learn-press-notices' ) ) {
+			return $notices[ $id ];
+		}
+
+		return false;
+	}
+
+	public static function clear( $id = '' ) {
+		if ( $id ) {
+			if ( $notices = get_option( 'learn-press-notices' ) && ! empty( $notices[ $id ] ) ) {
+				unset( $notices[ $id ] );
+			}
+		} else {
+			$notices = array();
+		}
+		update_option( 'learn-press-notices', $notices );
+	}
+
+	public static function get_notice_html( $id ) {
+		ob_start();
+		if ( $notices = get_option( 'learn-press-notices' ) ) {
+			if ( ! empty( $notices[ $id ] ) ) {
+				learn_press_admin_view( 'admin-notice.php', $notices[ $id ] );
+			}
+		}
+
+		return ob_get_clean();
+	}
+
 	/**
 	 * Add new notice to queue
 	 *
@@ -53,25 +83,31 @@ class LP_Admin_Notice {
 	 * @param string $id      Custom id for html element's ID
 	 * @param        bool
 	 */
-	public static function add( $message, $type = 'success', $id = '', $redirect = false ) {
-		if ( $redirect ) {
-			$notices = get_transient( 'learn_press_redirect_notices' );
-			if ( empty( $notices ) ) {
-				$notices = array();
-			}
-			$notices[] = array(
-				'type'    => $type,
-				'message' => $message,
-				'id'      => $id
-			);
-			set_transient( 'learn_press_redirect_notices', $notices );
-		} else {
-			self::$_notices[] = array(
-				'type'    => $type,
-				'message' => $message,
-				'id'      => $id
-			);
+	public static function add( $message, $type = 'success', $id = '', $dismiss = false ) {
+		$notices = get_option( 'learn-press-notices' );
+
+		if ( empty( $notices ) ) {
+			$notices = array();
 		}
+
+		$id = $id ? $id : uniqid( 'notice-' );
+
+		$notices[ $id ] = array(
+			'type'    => $type ? $type : 'success',
+			'message' => $message,
+			'id'      => $id,
+			'dismiss' => $dismiss
+		);
+		update_option( 'learn-press-notices', $notices );
+	}
+
+	public static function show( $message, $type = 'success', $id = '' ) {
+		self::$_notices[] = array(
+			'type'    => $type ? $type : 'success',
+			'message' => $message,
+			'id'      => $id ? $id : uniqid( 'notice-' ),
+			'dismiss' => true
+		);
 	}
 
 	public static function add_redirect( $message, $type = 'updated', $id = '' ) {
@@ -90,14 +126,14 @@ class LP_Admin_Notice {
 				learn_press_admin_view( 'admin-notice.php', $notice );
 			}
 		}
-		if ( $notices = get_transient( 'learn_press_redirect_notices' ) ) {
+
+		if ( $notices = get_option( 'learn-press-notices' ) ) {
 			foreach ( $notices as $notice ) {
 				if ( empty( $notice ) ) {
 					continue;
 				}
 				learn_press_admin_view( 'admin-notice.php', $notice );
 			}
-			delete_transient( 'learn_press_redirect_notices' );
 		}
 	}
 }

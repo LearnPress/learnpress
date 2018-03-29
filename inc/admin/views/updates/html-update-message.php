@@ -15,5 +15,8 @@ defined( 'ABSPATH' ) or exit;
         <a class="button button-primary lp-button-upgrade"
            data-context="message"
            href="<?php echo esc_url( admin_url( 'index.php?do-update-learnpress=yes' ) ); ?>"><?php _e( 'Update Now', 'learnpress' ); ?></a>
+
+        <a class="lp-background-upgrade"
+           href="<?php echo esc_url( admin_url( 'index.php?do-update-learnpress=yes&background=true' ) ); ?>"><?php _e( 'Run updater in background', 'learnpress' ); ?></a>
     </p>
 </div>

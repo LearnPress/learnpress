@@ -354,6 +354,20 @@
             });
     }
 
+    function _closeAdminNotice(e) {
+        e.preventDefault();
+        var $notice = $(e.target).closest('.learn-press-notice');
+        $notice.fadeOut();
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'hide-admin-notice',
+                id: $notice.attr('id'),
+                nonce: $notice.data('nonce')
+            }
+        })
+    }
+
     var $doc = $(document);
 
     function _ready() {
@@ -376,7 +390,8 @@
             .on('click', '#_lp_sale_price_schedule_cancel', toggleSalePriceSchedule)
             .on('click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage)
             .on('click', '.plugin-action-buttons a', pluginActions)
-            .on('click', '.learn-press-filter-template', _callbackFilterTemplates);
+            .on('click', '.learn-press-filter-template', _callbackFilterTemplates)
+            .on('click', '.learn-press-notice .dismiss', _closeAdminNotice);
 
         LP_Admin.init();
     }

@@ -41,6 +41,16 @@
                     }
                 }
             });
+        }).on('click', '.lp-background-upgrade', function (e) {
+            e.preventDefault();
+            var $notice = $(e.target).closest('.lp-notice-update-database').fadeOut();
+            $.ajax({
+                url: $(e.target).attr('href'),
+                success: function (res) {
+                    $(res).insertAfter($notice);
+                }
+            });
+
         })
     }
 

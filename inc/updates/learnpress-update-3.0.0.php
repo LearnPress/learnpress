@@ -9,14 +9,21 @@
  *
  * Helper class for updating database to 3.0.0
  */
-class LP_Update_30 {
+class LP_Update_30 extends LP_Background_Updater {
 
 	/**
 	 * Entry point
 	 */
-	public static function update() {
+	public static function run_update() {
 		LP_Debug::startTransaction();
 		try {
+
+			$upload = wp_upload_dir();
+			file_put_contents( $upload['basedir'] . '/' . date( 'd-m-Y-h-i-s-' ) . microtime( true ), 'xxx' );
+
+
+			return;
+
 			self::add_column_user_items();
 			self::upgrade_orders();
 			self::update_user_course_items();
