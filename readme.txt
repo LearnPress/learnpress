@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.4
-Stable tag: 3.0.4
+Stable tag: 3.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -198,6 +198,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.0.5 =
++ Added: missing single course permalink options
+~ Fixed: error notice when saving user profile
+~ Fixed: date translation
+~ Fixed: notice when viewing courses with Yoast SEO
+~ Fixed: can't change author of the course
+~ Fixed: preview lesson will redirect back to course
+~ Fixed: some other bugs...
+
 = 3.0.4 =
 ~ Improved: action when clicking to close upgrade notice
 ~ Fixed: can not add course from other users to order
