@@ -843,7 +843,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function is_in_stock() {
 			$in_stock = true;
 			if ( $max_allowed = $this->get_max_students() ) {
-				$in_stock = $max_allowed > $this->count_students();
+			    $in_stock = $max_allowed > $this->count_in_order();
 			}
 
 			return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );
