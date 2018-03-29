@@ -255,13 +255,24 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @param $course_id
 		 */
 		public function update_course( $course_id ) {
+
 			global $wpdb;
 
 			/**
 			 * Update all course items if set Course Author option
 			 */
-			$course = learn_press_get_course( $course_id );
+			$course      = learn_press_get_course( $course_id );
+			$post_author = $_POST['_lp_course_author'];
+
 			if ( ! $curriculum = $course->get_items() ) {
+				if ( ! empty( $post_author ) ) {
+					$wpdb->update(
+						$wpdb->posts,
+						array( 'post_author' => $post_author ),
+						array( 'ID' => $course_id )
+					);
+				}
+
 				return;
 			}
 			// course curriculum items / quiz items / questions of quiz
@@ -284,11 +295,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$ids = array_merge( (array) $course_id, $item_ids, $question_ids );
 
 			// update post author
-			if ( ! empty( $_POST['_lp_course_author'] ) ) {
+			if ( ! empty( $post_author ) ) {
 				foreach ( $ids as $id ) {
 					$wpdb->update(
 						$wpdb->posts,
-						array( 'post_author' => $_POST['_lp_course_author'] ),
+						array( 'post_author' => $post_author ),
 						array( 'ID' => $id )
 					);
 				}
@@ -716,7 +727,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$payment = get_post_meta( $course_id, '_lp_payment', true );
 
-			if ( current_user_can( 'manage_options' ) ) {
+			$current_user = learn_press_get_current_user();
+			$role         = $current_user->get_role();
+
+			if ( in_array( $role, apply_filters( 'learn-press/user-set-course-price-roles', array(
+				'admin',
+				'instructor'
+			) ) ) ) {
 				$message    = '';
 				$price      = get_post_meta( $course_id, '_lp_price', true );
 				$sale_price = '';
