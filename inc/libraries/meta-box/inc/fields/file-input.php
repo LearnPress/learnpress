@@ -14,6 +14,7 @@ class RWMB_File_Input_Field extends RWMB_Input_Field {
 	 */
 	public static function admin_enqueue_scripts() {
 		wp_enqueue_media();
+		wp_enqueue_style( 'rwmb-file-input', RWMB_CSS_URL . 'file-input.css' );
 		wp_enqueue_script( 'rwmb-file-input', RWMB_JS_URL . 'file-input.js', array( 'jquery' ), RWMB_VER, true );
 		self::localize_script('rwmb-file-input', 'rwmbFileInput', array(
 			'frameTitle' => esc_html__( 'Select File', 'meta-box' ),
@@ -32,7 +33,7 @@ class RWMB_File_Input_Field extends RWMB_Input_Field {
 		$attributes = self::get_attributes( $field, $meta );
 		return sprintf(
 			'<input %s>
-			<a href="#" class="rwmb-file-input-select button-primary">%s</a>
+			<a href="#" class="rwmb-file-input-select button">%s</a>
 			<a href="#" class="rwmb-file-input-remove button %s">%s</a>',
 			self::render_attributes( $attributes ),
 			esc_html__( 'Select', 'meta-box' ),

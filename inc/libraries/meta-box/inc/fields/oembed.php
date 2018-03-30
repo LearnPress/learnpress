@@ -14,7 +14,7 @@ class RWMB_OEmbed_Field extends RWMB_Text_Field {
 	 */
 	public static function admin_enqueue_scripts() {
 		wp_enqueue_style( 'rwmb-oembed', RWMB_CSS_URL . 'oembed.css' );
-		wp_enqueue_script( 'rwmb-oembed', RWMB_JS_URL . 'oembed.js', array(), RWMB_VER, true );
+		wp_enqueue_script( 'rwmb-oembed', RWMB_JS_URL . 'oembed.js', array( 'jquery', 'underscore' ), RWMB_VER, true );
 	}
 
 	/**
@@ -73,10 +73,8 @@ class RWMB_OEmbed_Field extends RWMB_Text_Field {
 	 */
 	public static function html( $meta, $field ) {
 		return parent::html( $meta, $field ) . sprintf(
-			'<a href="#" class="rwmb-embed-show button">%s</a>
-			<span class="spinner"></span>
+			'<span class="spinner"></span>
 			<div class="rwmb-embed-media">%s</div>',
-			esc_html__( 'Preview', 'meta-box' ),
 			$meta ? self::get_embed( $meta ) : ''
 		);
 	}
@@ -96,13 +94,16 @@ class RWMB_OEmbed_Field extends RWMB_Text_Field {
 	}
 
 	/**
-	 * Format a single value for the helper functions.
+	 * Format a single value for the helper functions. Sub-fields should overwrite this method if necessary.
 	 *
-	 * @param array  $field Field parameters.
-	 * @param string $value Meta value.
+	 * @param array    $field   Field parameters.
+	 * @param string   $value   The value.
+	 * @param array    $args    Additional arguments. Rarely used. See specific fields for details.
+	 * @param int|null $post_id Post ID. null for current post. Optional.
+	 *
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value ) {
+	public static function format_single_value( $field, $value, $args, $post_id ) {
 		return self::get_embed( $value );
 	}
 }
