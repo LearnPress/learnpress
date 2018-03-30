@@ -46,7 +46,6 @@
                 complete: null,
                 data: {}
             }, args || {});
-            console.log(that);
             this.fetch({
                 data: $.extend({
                     action: 'learnpress_load_quiz_question',
@@ -80,17 +79,15 @@
                     data: {}
                 }, args || {});
             }
-            console.log(args);
             LP.doAjax({
                 data: $.extend({
                     'lp-ajax': 'check-question',
                     question_id: this.get('id'),
-                    question_answer: $('form#learn-press-quiz-question').serializeJSON()
+                    //question_answer: $('form#learn-press-quiz-question').serializeJSON()
                 }, args.data || {}),
                 dataType: 'html',
                 success: function (response, raw) {
                     var $content = that.get('response');
-                    console.log(response);
                     if ($content) {
                         $content.find('.learn-press-question-options').replaceWith($(response).filter('.learn-press-question-options'));
                     }
@@ -439,7 +436,6 @@
             if (!args) {
                 args = {};
             }
-            console.log(args);
             args.question_answer = this.getQuestionAnswerData(this.current());
             this.current().check({
                 complete: callback,
@@ -627,7 +623,6 @@
                 security = $button.data('security');
             windowTarget.LP.blockContent();
             this.pause();
-            console.log($button.data())
             this.model.checkAnswer(this._checkAnswerCompleted, $button.data());
         },
         _checkAnswerCompleted: function (question) {
