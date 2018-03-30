@@ -667,13 +667,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-add_action( 'wp_footer', function () {
-	$q = new WP_Query( array( 'post__in' => array(257), 'post_type'=>'lp_course' ) );
-	print_r($q);
-	while ( $q->have_posts() ) {
-		echo "============";
-		$q->the_post();
-		echo "============";
-	}
-} );
