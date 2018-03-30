@@ -168,7 +168,6 @@ class LP_Preview_Course {
 				WHERE meta_key = %s AND meta_value = %s
 			", LP_COURSE_CPT, '_lp_preview_course', 'yes' );
 
-
 			$ids = $wpdb->get_col( $query );
 			wp_cache_set( 'preview-courses', $ids, 'learnpress' );
 		}
