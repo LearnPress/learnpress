@@ -161,12 +161,13 @@ class LP_Preview_Course {
 			$query = $wpdb->prepare( "
 				SELECT ID
 				FROM {$wpdb->posts} p
-				WHERE post_author = 0
+				WHERE post_author = 0 AND post_type = %s
 				UNION 
 				SELECT post_id
 				FROM {$wpdb->postmeta}
 				WHERE meta_key = %s AND meta_value = %s
-			", '_lp_preview_course', 'yes' );
+			", LP_COURSE_CPT, '_lp_preview_course', 'yes' );
+
 
 			$ids = $wpdb->get_col( $query );
 			wp_cache_set( 'preview-courses', $ids, 'learnpress' );
