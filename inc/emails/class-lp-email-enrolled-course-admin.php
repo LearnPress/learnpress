@@ -24,13 +24,13 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 		 * LP_Email_Enrolled_Course_Admin constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'enrolled-course-admin';
-			$this->title       = __( 'Admin', 'learnpress' );
-			$this->description = __( 'Send this email to admin when user has enrolled course.', 'learnpress' );
+			$this->id              = 'enrolled-course-admin';
+			$this->title           = __( 'Admin', 'learnpress' );
+			$this->description     = __( 'Send this email to admin when user has enrolled course.', 'learnpress' );
 			$this->default_subject = __( '{{user_display_name}} has enrolled course', 'learnpress' );
 			$this->default_heading = __( 'User has enrolled course', 'learnpress' );
 
-			$this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
+			$this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 
 			parent::__construct();
 		}

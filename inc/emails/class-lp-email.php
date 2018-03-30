@@ -1102,6 +1102,10 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			return $instructors;
 		}
 
+		protected function _get_admin_email() {
+			return apply_filters( 'learn-press/email/admin-email', get_option( 'admin_email' ) );
+		}
+
 		/**
 		 * @return string
 		 */

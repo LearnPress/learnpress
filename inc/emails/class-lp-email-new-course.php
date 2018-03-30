@@ -96,7 +96,7 @@ if ( ! class_exists( 'LP_Email_New_Course' ) ) {
 		public function get_recipient() {
 			$recipient = $this->recipient;
 			if ( ! $recipient ) {
-				$recipient = get_option( 'admin_email' );
+				$recipient = $this->_get_admin_email();
 			}
 			$this->recipient = $recipient;
 
