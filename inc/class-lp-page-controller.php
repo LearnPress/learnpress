@@ -74,6 +74,7 @@ class LP_Page_Controller {
 
 	public function setup_data( $post ) {
 		static $courses = array();
+		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
 
 		if ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) {
 			return $post;
@@ -85,10 +86,18 @@ class LP_Page_Controller {
 
 		$courses[ $post->ID ] = true;
 
-		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
 		$vars = $wp->query_vars;
+
 		if ( empty( $vars['course-item'] ) ) {
 			return false;
+		}
+
+		if ( ! $wp_query->is_main_query() ) {
+			return $post;
+		}
+
+		if ( $wp_query->queried_object_id !== $lp_course->get_id() ) {
+			return $post;
 		}
 
 		try {
@@ -108,15 +117,17 @@ class LP_Page_Controller {
 				throw new Exception( __( 'You can not view this item or it does not exist!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
 			}
 
-			$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
-
-			if ( ! $user_item_id ) {
-				return $post;
-			}
-
+			// If current course does not contain the item is viewing
+			// then the page should become 404
 			if ( ! $lp_course->has_item( $post_item->ID ) ) {
 				$this->set_404( true );
 
+				return $post;
+			}
+
+			$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
+
+			if ( ! $user_item_id ) {
 				return $post;
 			}
 
@@ -134,7 +145,6 @@ class LP_Page_Controller {
 					throw new Exception( __( 'Invalid question!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
 					// TODO: Process in case question does not exists.
 				}
-				//$lp_course_item->set_viewing_question( $lp_quiz_question );
 			}
 		}
 		catch ( Exception $ex ) {
@@ -498,11 +508,11 @@ class LP_Page_Controller {
 			$wp_query->posts              = array( $wp_query->post );
 
 			if ( is_post_type_archive( LP_COURSE_CPT ) || LEARNPRESS_IS_CATEGORY ) {
-				$wp_query->is_page     = false;
-				$wp_query->is_archive  = true;
+				$wp_query->is_page    = false;
+				$wp_query->is_archive = true;
 				// Fixed issue with Yoast Seo plugin
 				//$wp_query->is_category = true;
-				$wp_query->is_single   = false;
+				$wp_query->is_single = false;
 			} else {
 				$wp_query->found_posts          = 1;
 				$wp_query->is_single            = true;

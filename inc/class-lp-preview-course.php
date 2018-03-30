@@ -159,10 +159,6 @@ class LP_Preview_Course {
 		if ( false === ( $ids = wp_cache_get( 'preview-courses', 'learnpress' ) ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
-				SELECT ID
-				FROM {$wpdb->posts} p
-				WHERE post_author = 0
-				UNION 
 				SELECT post_id
 				FROM {$wpdb->postmeta}
 				WHERE meta_key = %s AND meta_value = %s
