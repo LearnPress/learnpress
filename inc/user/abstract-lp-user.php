@@ -385,10 +385,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
 				}
 
-				if ( $user->has_quiz_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
-					throw new Exception( __( 'You have started/completed quiz', 'learnpress' ), LP_INVALID_REQUEST );
-				}
-
 				/**
 				 * @see learn_press_hk_before_start_quiz
 				 */
@@ -1753,10 +1749,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 
 			return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this->get_id(), $course_id );
-		}
-
-		public function _has_quiz_status( $status, $quiz_id, $course_id = 0 ) {
-
 		}
 
 		public function can_finish_course( $course_id ) {
