@@ -255,7 +255,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		if ( $prop === 'status' ) {
-			if ( $results['grade'] ) {
+			if ( isset($results['grade']) ) {
 				$prop = 'grade';
 			}
 		}
