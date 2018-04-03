@@ -497,20 +497,16 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  */
 function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	// Ensure that post name has to be sanitized. Fixed in 2.1.6
-	$name = sanitize_title( $name );
+	$post_name = sanitize_title( $name );
 
-	if ( false === ( $id = wp_cache_get( $type . '-' . $name, 'lp-post-names' ) ) ) {
-		global $wpdb;
-		$query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->posts}
-			WHERE 1 AND post_name = %s
-		", sanitize_title( $name ) );
+	if ( false === ( $id = wp_cache_get( $type . '-' . $post_name, 'lp-post-names' ) ) ) {
 
-		$query .= " AND post_type IN ('" . $type . "' )";
+	    $args  = array( 'name' => $name, 'post_type' => array( $type ) );
+		$posts = get_posts( $args );
 
-		if ( $post = $wpdb->get_row( $query ) ) {
-			$id = $post->ID;
+		if ( $posts ) {
+			$post = $posts[0];
+			$id   = $post->ID;
 			wp_cache_set( $id, $post, 'posts' );
 			wp_cache_set( $type . '-' . $name, $id, 'lp-post-names' );
 		}

@@ -113,6 +113,7 @@ class LP_Page_Controller {
 
 			// Post item is not exists or get it's item failed.
 			if ( ! $post_item || ( $post_item && ( ! $lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post_item->ID ) ) ) ) ) {
+
 				$this->set_404( true );
 				throw new Exception( __( 'You can not view this item or it does not exist!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
 			}
