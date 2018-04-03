@@ -404,15 +404,18 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
 			$result = 0;
-
+			$result_of_items = 0;
 			if ( $items = $this->get_items() ) {
 				foreach ( $items as $item ) {
 					if ( $item->get_type() !== LP_QUIZ_CPT ) {
 						continue;
 					}
-
-					$result += $item->is_passed() ? $item->get_results( 'result' ) : 0;
+					if( $item->get_quiz()->get_data( 'passing_grade' ) ) {
+					    $result += $item->is_passed() ? $item->get_results( 'result' ) : 0;
+					    $result_of_items++;
+					}
 				}
+				$result = $result/$result_of_items;
 				$data['result'] = $result;
 
 				if ( $this->is_finished() ) {
@@ -427,7 +430,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
-	 * Evaluate course result by point of quizzes doing/done per total quizzes.
+	 * Evaluate course result by number of passed quizzes per total quizzes.
 	 *
 	 * @return array
 	 */
@@ -440,15 +443,18 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$result = 0;
 
 			if ( $items = $this->get_items() ) {
-				foreach ( $items as $item ) {
-					if ( $item->get_type() !== LP_QUIZ_CPT ) {
-						continue;
-					}
-
-					$result += $item->is_completed() ? $item->get_results( 'result' ) : 0;
-				}
+			    $result_of_items = 0;
+			    foreach ( $items as $item ) {
+			        if ( $item->get_type() !== LP_QUIZ_CPT ) {
+			            continue;
+			        }
+			        if( $item->get_quiz()->get_data( 'passing_grade' ) ) {
+			            $result += $item->is_passed() ? 1 : 0;
+			            $result_of_items++;
+			        }
+			    }
+			    $result = $result*100/$result_of_items;
 				$data['result'] = $result;
-
 				if ( $this->is_finished() ) {
 					$data['grade'] = $this->_is_passed( $result );
 				}
