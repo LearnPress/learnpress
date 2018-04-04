@@ -25,41 +25,39 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 		global $post;
 
 		if ( LP_COURSE_CPT == $post->post_type ) {
-			$duplicate_link = admin_url( 'edit.php?post_type=' . LP_COURSE_CPT . '&lp-ajax=duplicator&id=' . $post->ID );
+			$duplicate_link = '#';
 			$duplicate_link = array(
 				array(
 					'link'  => $duplicate_link,
 					'title' => __( 'Duplicate this course', 'learnpress' ),
-					'class' => 'lp-duplicate-course'
+					'class' => 'lp-duplicate-post lp-duplicate-course',
+					'data'  => $post->ID
 				)
 			);
 			$links          = apply_filters( 'learn_press_row_action_links', $duplicate_link );
 			if ( count( $links ) > 1 ) {
 				$drop_down = array( '<ul class="lpr-row-action-dropdown">' );
 				foreach ( $links as $link ) {
-					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] ) . '</li>';
+					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'], $link['data'], $link['title'] ) . '</li>';
 				};
 				$drop_down[] = '</ul>';
 				$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
 			} else {
 				$link = array_shift( $links );
-				$link = sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] );
+				$link = sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'], $link['data'], $link['title'] );
 			}
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_QUIZ_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$url                                = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-ajax=duplicator&id=' . $post->ID );
-			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this quiz', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_QUESTION_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$url                                = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-ajax=duplicator&id=' . $post->ID );
-			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this question', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_LESSON_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$url                                = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-ajax=duplicator&id=' . $post->ID );
-			$link                               = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this lesson', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		}
 
@@ -137,7 +135,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array      $args
+ * @param array $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -173,7 +171,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array      $args
+ * @param array $args
  *
  * @return mixed|string
  */
@@ -1676,9 +1674,9 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param null  $post_id
+	 * @param null $post_id
 	 * @param array $args
-	 * @param bool  $meta
+	 * @param bool $meta
 	 *
 	 * @return bool|mixed
 	 */
@@ -2188,7 +2186,7 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
  * @since 3.0.4
  *
  * @param int|string $context_id
- * @param string     $context
+ * @param string $context
  *
  * @return bool|int|string
  */
@@ -2207,7 +2205,7 @@ add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_sear
  *
  * @since 3.0.0
  *
- * @param string  $link
+ * @param string $link
  * @param WP_Post $post
  *
  * @return string
@@ -2216,7 +2214,7 @@ function learn_press_preview_post_link( $link, $post ) {
 	$items = learn_press_course_get_support_item_types( true );
 
 	if ( in_array( $post->post_type, $items ) ) {
-        $link = learn_press_course_item_type_link($link, $post);
+		$link = learn_press_course_item_type_link( $link, $post );
 	}
 
 	return $link;

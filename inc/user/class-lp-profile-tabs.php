@@ -323,6 +323,20 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	protected function _sort_tabs( $a, $b ) {
 		return $a['priority'] > $b['priority'];
 	}
+
+	public function remove_tab( $key ) {
+		$tabs = $this->_data;
+
+		foreach ( $tabs as $slug => $data ) {
+			if ( $key == $slug ) {
+				unset( $tabs[ $key ] );
+			}
+		}
+
+		$this->_data = $tabs;
+
+//		return $this->_data;
+	}
 }
 
 /**

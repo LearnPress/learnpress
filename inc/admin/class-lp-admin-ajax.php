@@ -158,13 +158,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function duplicator() {
-			$args = wp_parse_args( $_REQUEST, array( 'id' => false ) );
+			$post_id = LP_Request::get_string( 'id' );
 
 			// get post type
-			$post_type = get_post_type( $args['id'] );
+			$post_type = get_post_type( $post_id );
 
-			if ( ! $args['id'] ) {
-				LP_Admin_Notice::add_redirect( new WP_Error( __( '<p>Ops! ID not found</p>', 'learnpress' ) ), 'error' );
+			if ( ! $post_id ) {
+				learn_press_send_json_error( __( 'Ops! ID not found', 'learnpress' ) );
 			} else {
 
 				$new_item_id = '';
@@ -174,28 +174,28 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
 						$curd        = new LP_Course_CURD();
-						$new_item_id = $curd->duplicate( $args['id'], $duplicate_args );
+						$new_item_id = $curd->duplicate( $post_id, $duplicate_args );
 						break;
 					case LP_LESSON_CPT:
 						$curd        = new LP_Lesson_CURD();
-						$new_item_id = $curd->duplicate( $args['id'], $duplicate_args );
+						$new_item_id = $curd->duplicate( $post_id, $duplicate_args );
 						break;
 					case LP_QUIZ_CPT:
 						$curd        = new LP_Quiz_CURD();
-						$new_item_id = $curd->duplicate( $args['id'], $duplicate_args );
+						$new_item_id = $curd->duplicate( $post_id, $duplicate_args );
 						break;
 					case LP_QUESTION_CPT:
 						$curd        = new LP_Question_CURD();
-						$new_item_id = $curd->duplicate( $args['id'], $duplicate_args );
+						$new_item_id = $curd->duplicate( $post_id, $duplicate_args );
 						break;
 					default:
 						break;
 				}
 
 				if ( is_wp_error( $new_item_id ) ) {
-					LP_Admin_Notice::add_redirect( $new_item_id->get_error_message(), 'error' );
+					learn_press_send_json_error( __( 'Duplicate post fail, please try again', 'learnpress' ) );
 				} else {
-					wp_redirect( admin_url( 'post.php?post=' . $new_item_id . '&action=edit' ) );
+					learn_press_send_json_success( admin_url( 'post.php?post=' . $new_item_id . '&action=edit' ) );
 				}
 
 			}
@@ -456,8 +456,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

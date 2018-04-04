@@ -354,6 +354,30 @@
             });
     }
 
+    function _duplicatePost(e) {
+        e.preventDefault();
+
+        var _self = $(this),
+            _id = _self.data('post-id');
+
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'duplicator',
+                id: _id
+            },
+            success: function (response) {
+                response = LP.parseJSON(response);
+
+                if (response.success) {
+                    window.location.href = response.data;
+                } else {
+                    alert(response.data);
+                }
+            }
+        });
+    }
+
     var $doc = $(document);
 
     function _ready() {
@@ -376,7 +400,8 @@
             .on('click', '#_lp_sale_price_schedule_cancel', toggleSalePriceSchedule)
             .on('click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage)
             .on('click', '.plugin-action-buttons a', pluginActions)
-            .on('click', '.learn-press-filter-template', _callbackFilterTemplates);
+            .on('click', '.learn-press-filter-template', _callbackFilterTemplates)
+            .on('click', '.lp-duplicate-row-action .lp-duplicate-post', _duplicatePost);
 
         LP_Admin.init();
     }

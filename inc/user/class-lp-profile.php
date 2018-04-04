@@ -102,6 +102,24 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 				add_filter( 'learn-press/profile/class', array( $this, 'profile_class' ) );
 			}
+
+			add_filter( 'template_include', array( $this, 'parse_request' ) );
+		}
+
+		public function parse_request( $template ) {
+			$profile = LP_Profile::instance();
+			$user    = $profile->get_user();
+
+//			echo '<pre>';
+//			var_dump($user->get_id());
+//			echo '</pre>';
+//			die();
+
+			$tabs = $profile->get_tabs();
+
+			$profile->_tabs = $tabs->remove_tab( 'courses' );
+
+			return $template;
 		}
 
 		/**
