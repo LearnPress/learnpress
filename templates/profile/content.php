@@ -60,3 +60,5 @@ $current = $profile->get_current_tab();
 	<?php } ?>
 
 </div>
+
+<?php learn_press_debug($tabs);

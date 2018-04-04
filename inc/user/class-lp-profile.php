@@ -115,11 +115,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 //			echo '</pre>';
 //			die();
 
-			$tabs = $profile->get_tabs();
+			$tabs = $this->get_tabs();
 
-			$profile->_tabs = $tabs->remove_tab( 'courses' );
+			$tabs->remove_tab( 'courses' );
+
+			//$this->remove_tab('courses');
 
 			return $template;
+		}
+
+		function remove_tab($tab){
+			$this->get_tabs()->remove_tab($tab);
 		}
 
 		/**
@@ -990,9 +996,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
+		 * @param string $return
+		 *
 		 * @return false|WP_User
 		 */
-		public static function get_queried_user() {
+		public static function get_queried_user( $return = '' ) {
 			global $wp_query;
 			if ( isset( $wp_query->query['user'] ) ) {
 				$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
@@ -1000,7 +1008,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$user = get_user_by( 'id', get_current_user_id() );
 			}
 
-			return $user;
+			return $return === 'id' && $user ? $user->ID : $user;
 		}
 
 		/**
@@ -1024,12 +1032,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public static function instance( $user_id = 0 ) {
 
 			if ( ! $user_id ) {
-				if ( ! self::is_queried_user() ) {
+				if ( ! $user_id = self::get_queried_user( 'id' ) ) {
 					$user_id = get_current_user_id();
-				} else {
-					if ( $user = self::get_queried_user() ) {
-						$user_id = $user->ID;
-					}
 				}
 			}
 
