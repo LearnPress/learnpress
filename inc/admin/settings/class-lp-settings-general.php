@@ -36,14 +36,6 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 		$settings = apply_filters(
 			'learn-press/general-settings-fields',
 			array(
-				/*array(
-					'title'   => __( 'Instructors registration', 'learnpress' ),
-					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
-					'id' => 'instructor_registration',
-					'default' => 'no',
-					'type'    => 'checkbox'
-				),*/
-
 				array(
 					'title' => __( 'General', 'learnpress' ),
 					'type'  => 'heading',

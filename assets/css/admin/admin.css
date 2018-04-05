@@ -1793,6 +1793,30 @@
 /**
  * General style for admin editor.
  */
+@-webkit-keyframes rotating4 /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes rotating4 {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
 .lp-admin-editor {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -1870,8 +1894,6 @@
     display: inline-block; }
   #admin-editor-lp_course .lp-course-curriculum .section.sortable-ghost {
     opacity: 0.5; }
-  #admin-editor-lp_course .lp-course-curriculum .section.updating .section-head {
-    background-color: #e6f2d0; }
   #admin-editor-lp_course .lp-course-curriculum .section input {
     background-color: transparent;
     box-shadow: none; }
@@ -1970,16 +1992,14 @@
       background-color: #f4fcff; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.sortable-ghost {
       opacity: 0.5; }
-    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.updating {
-      background-color: #e6f2d0; }
-      #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.updating:before {
-        position: absolute;
-        content: '';
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 2; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.updating:before {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.removing {
       background-color: #ffeded; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .drag {
@@ -2058,6 +2078,8 @@
           content: '\f469'; }
         #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.lp_lesson:before {
           content: '\f330'; }
+        #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.empty-item:before {
+          content: "\f463"; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions {
     text-align: right; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action {
@@ -2111,6 +2133,28 @@
     content: '\f469'; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.lp_lesson .icon:before {
     content: '\f330'; }
+  #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.empty-item {
+    color: #a2a2a2;
+    position: relative; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.empty-item:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #FFF;
+      content: '';
+      opacity: 0.5; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.empty-item .item-actions {
+      display: none; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.empty-item .icon:before {
+      content: "\f463";
+      color: #a2a2a2;
+      -webkit-animation: rotating4 2s linear infinite;
+      -moz-animation: rotating4 2s linear infinite;
+      -ms-animation: rotating4 2s linear infinite;
+      -o-animation: rotating4 2s linear infinite;
+      animation: rotating4 2s linear infinite; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .icon {
     width: 38px;
     font-size: 20px;
@@ -2224,8 +2268,6 @@
     font-weight: normal;
     color: #777;
     padding: 0; }
-  #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-actions.updating {
-    background-color: #e6f2d0; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings {
     border: 1px solid #ddd;
     border-left: none;
@@ -2548,9 +2590,9 @@
             border-right: 1px solid #ddd;
             position: absolute;
             right: 0;
-            height: 20px;
+            height: 44px;
             top: 50%;
-            margin-top: -10px; }
+            margin-top: -22px; }
           #lp-modal-choose-items .lp-choose-items .header .tabs .tab.active:after {
             border: 1px solid #ddd;
             transform: rotate(45deg);
@@ -2568,10 +2610,12 @@
           #lp-modal-choose-items .lp-choose-items .header .tabs .tab.active a {
             color: #333; }
           #lp-modal-choose-items .lp-choose-items .header .tabs .tab a {
-            padding: 15px 20px;
+            padding: 0 20px;
             text-decoration: none;
             display: inline-block;
-            font-weight: 600; }
+            font-weight: 600;
+            height: 44px;
+            line-height: 44px; }
             #lp-modal-choose-items .lp-choose-items .header .tabs .tab a:focus {
               box-shadow: none; }
       #lp-modal-choose-items .lp-choose-items .header .close {
@@ -2581,12 +2625,13 @@
         right: 0;
         cursor: pointer;
         font-size: 1em;
-        padding: 9px;
-        z-index: 9; }
+        padding: 12px;
+        z-index: 30; }
     #lp-modal-choose-items .lp-choose-items .main {
       padding: 20px;
       position: relative;
-      overflow: hidden; }
+      overflow: hidden;
+      border-bottom: 1px solid #DDD; }
       #lp-modal-choose-items .lp-choose-items .main .section-item {
         cursor: pointer;
         transition: color 200ms ease-out;
@@ -2602,10 +2647,11 @@
       #lp-modal-choose-items .lp-choose-items .main .search {
         margin-bottom: 20px;
         background: transparent; }
-        #lp-modal-choose-items .lp-choose-items .main .search input {
+        #lp-modal-choose-items .lp-choose-items .main .search input.modal-search-input {
           width: 100%;
           font-size: 1.2em;
-          line-height: 1.5; }
+          line-height: 1.5;
+          padding: 10px 14px; }
       #lp-modal-choose-items .lp-choose-items .main .list-items {
         min-height: 260px;
         margin: 0; }
@@ -2625,7 +2671,7 @@
       z-index: 2;
       padding: 20px;
       transform: translate(100%, 0);
-      max-height: 400px;
+      max-height: 420px;
       overflow: auto; }
       #lp-modal-choose-items .lp-choose-items .lp-added-items-preview.show {
         transform: translate(0, 0); }
@@ -2635,6 +2681,11 @@
           margin: -10px 0 15px 0; }
     #lp-modal-choose-items .lp-choose-items .footer {
       padding: 20px; }
+
+body.moving {
+  cursor: url("../../images/closedhand.cur") 7 5, default !important; }
+  body.moving .section-item .drag {
+    cursor: url("../../images/closedhand.cur") 7 5, default !important; }
 
 @media screen and (max-width: 900px) {
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .question-settings.table-row {

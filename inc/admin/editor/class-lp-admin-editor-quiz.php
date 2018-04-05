@@ -309,7 +309,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			return false;
 		}
 
-		$this->result = wp_delete_post( $question_id );
+		$this->result = wp_trash_post( $question_id );
 
 		return true;
 	}

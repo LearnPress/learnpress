@@ -122,6 +122,9 @@
                 },
                 // delete permanently question
                 deletePermanently: function () {
+                    if (!confirm('Do you want to remove this question?')) {
+                        return;
+                    }
                     $store.dispatch('lqs/deleteQuestion', this.question);
                 },
                 // toggle question

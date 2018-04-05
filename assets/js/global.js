@@ -85,7 +85,7 @@ if (typeof window.LP === 'undefined') {
             return self;
         };
 
-        this.callEvent = function (event,callbackArgs) {
+        this.callEvent = function (event, callbackArgs) {
             if (!callbacks[event]) {
                 return;
             }
@@ -667,7 +667,7 @@ if (typeof window.LP === 'undefined') {
             return (type || "json") === "json" ? this.parseJSON(response) : response;
         },
         parseJSON: function (data) {
-            var m = (data+'').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
+            var m = (data + '').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
             try {
                 if (m) {
                     data = $.parseJSON(m[1]);
@@ -1061,16 +1061,32 @@ if (typeof window.LP === 'undefined') {
     };
 
     function QuickTip(el, options) {
-        var $el = $(el),
-            $tip = $('<div class="learn-press-tip-floating">' + $el.html() + '</div>'),
-            t = null,
-            closeInterval = 1000;
+        var $el = $(el);
 
         options = $.extend({
             event: 'hover',
             autoClose: true,
-            single: true
+            single: true,
+            closeInterval: 1000,
+            arrowOffset: null,
+            tipClass: ''
         }, options, $el.data());
+
+        var content = $el.data('content-tip') || $el.html(),
+            $tip = $('<div class="learn-press-tip-floating">' + content + '</div>'),
+            t = null,
+            closeInterval = 0,
+            useData = false,
+            arrowOffset = options.arrowOffset == 'el' ? $el.outerWidth() / 2 : 8;
+
+        $tip.addClass(options.tipClass);
+
+        if ($el.attr('data-content-tip')) {
+            $el.removeAttr('data-content-tip');
+            useData = true;
+        }
+
+        closeInterval = options.closeInterval;
 
         if (options.autoClose === false) {
             $tip.append('<a class="close"></a>');
@@ -1094,7 +1110,7 @@ if (typeof window.LP === 'undefined') {
 
             $tip.css({
                 top: pos.top - $tip.outerHeight() - 8,
-                left: pos.left - $tip.outerWidth() / 2 + 8
+                left: pos.left - $tip.outerWidth() / 2 + arrowOffset
             });
         }
 
@@ -1109,14 +1125,17 @@ if (typeof window.LP === 'undefined') {
         function close() {
             closeInterval = 0;
             hide();
-            closeInterval = 1000;
+            closeInterval = options.closeInterval;
         }
 
         function open() {
             show();
         }
 
-        $el.html('');
+        if (!useData) {
+            $el.html('');
+        }
+
         if (options.event === 'click') {
             $el.on('click', function (e) {
                 e.stopPropagation();

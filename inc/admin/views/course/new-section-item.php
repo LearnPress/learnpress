@@ -18,7 +18,7 @@
             </template>
         </div>
         <div class="title">
-            <input type="text" :placeholder="placeholderInput" @keyup.enter="createItem" @blur="createItem"
+            <input type="text" :placeholder="placeholderInput" @keyup.enter="createItem($event)" @blur="createItem($event)"
                    v-model="title">
         </div>
     </div>
@@ -59,16 +59,22 @@
                         return;
                     }
                     this.$emit('create', {
+                        id: LP.uniqueId(),
                         type: this.type,
                         title: this.title
                     });
                     this.title = '';
                 },
                 // set time out for blur change type item
-                createItem: function () {
+                createItem: function (e) {
                     if (!this.title) {
                         return;
                     }
+
+                    if(e.key === 'Enter'){
+                        return this.create();
+                    }
+
                     setTimeout(this.create, 300);
                 },
                 changeType: function (next) {
@@ -98,12 +104,15 @@
                     } else {
                         this.type = previousType;
                     }
+
                 }
             },
             computed: {
-                placeholderInput: function () {
+                placeholderInput: function (e) {
                     var i18n = $store.getters['i18n/all'];
                     var type = this.types[this.type] || '';
+
+                    $(this.$el).find('.title input').focus();
                     return i18n.new_section_item + ' ' + type.toLowerCase();
                 },
 

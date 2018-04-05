@@ -239,7 +239,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			return false;
 		}
 
-		$this->result = wp_delete_post( $item_id );
+		$this->result = wp_trash_post( $item_id );
 
 		return true;
 	}

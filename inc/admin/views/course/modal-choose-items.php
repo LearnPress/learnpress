@@ -63,13 +63,14 @@ learn_press_admin_view( 'course/pagination' );
                     </template>
                 </ul>
 
-                <div class="close" @click="close">
-                    <span class="dashicons dashicons-no-alt"></span>
-                </div>
+                <a class="close" @click="close">
+                    <span class="dashicons dashicons-no-alt" title="<?php esc_attr_e( 'Close', 'learnpress' ); ?>"></span>
+                </a>
             </div>
             <div class="main">
                 <form class="search" @submit.prevent="">
-                    <input type="text" placeholder="<?php esc_attr_e( 'Type here to search item', 'learnpress' ); ?>"
+                    <input type="text" class="modal-search-input"
+                           placeholder="<?php esc_attr_e( 'Type here to search item', 'learnpress' ); ?>"
                            title="search" @input="onChangeQuery" v-model="query">
                 </form>
 
@@ -122,6 +123,8 @@ learn_press_admin_view( 'course/pagination' );
                     adding: false
                 };
             },
+            mounted: function () {
+            },
             created: function () {
                 var vm = this;
 
@@ -138,7 +141,8 @@ learn_press_admin_view( 'course/pagination' );
                         $('body').removeClass('lp-modal-choose-items-open');
                     }
                 });
-            }, computed: {
+            },
+            computed: {
                 status: function () {
                     return $store.getters['ci/status'];
                 },
@@ -167,7 +171,13 @@ learn_press_admin_view( 'course/pagination' );
                     return $store.getters['ci/items'];
                 },
                 show: function () {
-                    return $store.getters['ci/isOpen'];
+                    var isShow = $store.getters['ci/isOpen'];
+
+                    if (isShow) {
+                        this.focusInput();
+                    }
+
+                    return isShow;
                 },
                 types: function () {
                     return $store.getters['ci/types'];
@@ -189,7 +199,12 @@ learn_press_admin_view( 'course/pagination' );
                     this.adding = false;
                     this.makeSearch();
                 },
-
+                focusInput: function () {
+                    var $input = $(this.$el).find('.main .search input[type="text"]').focus();
+                    setTimeout(function () {
+                        $input.focus();
+                    }, 300)
+                },
                 checkout: function () {
                     this.adding = true;
                     $store.dispatch('ci/addItemsToSection');
@@ -224,6 +239,7 @@ learn_press_admin_view( 'course/pagination' );
                     this.tab = key;
                     this.page = 1;
                     this.makeSearch();
+                    this.focusInput();
                 },
 
                 onChangeQuery: function () {

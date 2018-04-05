@@ -105,7 +105,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							)
 						),
 						array(
-							'title'   => __( 'Courses limit', 'learnpress' ),
+							'title'   => __( 'Courses per page', 'learnpress' ),
 							'id'      => 'profile_courses_limit',
 							'default' => '10',
 							'type'    => 'number',

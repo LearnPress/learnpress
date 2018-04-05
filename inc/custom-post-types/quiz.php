@@ -317,6 +317,20 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			return apply_filters( 'learn_press_quiz_general_meta_box', $meta_box );
 		}
 
+		protected function _get_course_column_title() {
+			$title = __( 'Course', 'learnpress' );
+
+			if ( $course_id = $this->_filter_course() ) {
+				if ( $course = learn_press_get_course( $course_id ) ) {
+					$count = $course->count_items( $this->_post_type );
+
+					$title = sprintf( _n( 'Course (%d items)', 'Course (%d items)', $count, 'learnpress' ), $count );
+				}
+			}
+
+			return $title;
+		}
+
 		/**
 		 * Add columns to admin manage quiz page
 		 *
@@ -333,7 +347,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
 						'author'          => __( 'Author', 'learnpress' ),
-						'lp_course'       => __( 'Course', 'learnpress' ),
+						'lp_course'       => $this->_get_course_column_title(),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
 						'duration'        => __( 'Duration', 'learnpress' )
 					),
@@ -362,18 +376,15 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					$courses = learn_press_get_item_courses( $post_id );
 					if ( $courses ) {
 						foreach ( $courses as $course ) {
-							echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_course' => $course->ID ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+							echo '<div><a href="' . esc_url( add_query_arg( array( 'course' => $course->ID ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 							echo '<div class="row-actions">';
 							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
 							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
-							echo "&nbsp;|&nbsp;";
 							if ( $this->_filter_course() ) {
-								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_course' ), __( 'Remove Filter', 'learnpress' ) );
-							} else {
-								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_course', $course->ID ), __( 'Filter', 'learnpress' ) );
+								echo "&nbsp;|&nbsp;";
+								printf( '<a href="%s">%s</a>', remove_query_arg( 'course' ), __( 'Remove Filter', 'learnpress' ) );
 							}
-
 							echo '</div></div>';
 						}
 
@@ -481,6 +492,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
                 ", LP_QUIZ_CPT );
 			}
 
+
 			return $where;
 		}
 
@@ -539,7 +551,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return bool|int
 		 */
 		private function _filter_course() {
-			return ! empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
+			return ! empty( $_REQUEST['course'] ) ? absint( $_REQUEST['course'] ) : false;
 		}
 
 		/**

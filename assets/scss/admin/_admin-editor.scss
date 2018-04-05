@@ -1,6 +1,46 @@
 /**
  * General style for admin editor.
  */
+
+@-webkit-keyframes rotating4 /* Safari and Chrome */
+{
+    from {
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotating4 {
+    from {
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@mixin rotating4($args: rotating4 2s linear infinite) {
+    -webkit-animation: $args;
+    -moz-animation: $args;
+    -ms-animation: $args;
+    -o-animation: $args;
+    animation: $args;
+}
+
 .lp-admin-editor {
     background-color: #fff;
     border: 1px solid #ddd;
@@ -125,11 +165,11 @@
                 }
             }
 
-            &.updating {
-                .section-head {
-                    background-color: #e6f2d0;
-                }
-            }
+            //&.updating {
+            //    .section-head {
+            //        background-color: #e6f2d0;
+            //    }
+            //}
 
             input {
                 background-color: transparent;
@@ -289,7 +329,7 @@
                 }
 
                 &.updating {
-                    background-color: #e6f2d0;
+                    ///background-color: #e6f2d0;
 
                     &:before {
                         position: absolute;
@@ -443,6 +483,11 @@
                                 content: '\f330';
                             }
                         }
+                        &.empty-item {
+                            &:before {
+                                content: "\f463";
+                            }
+                        }
                     }
                 }
             }
@@ -532,6 +577,29 @@
                 &.lp_lesson {
                     .icon:before {
                         content: '\f330';
+                    }
+                }
+
+                &.empty-item {
+                    color: #a2a2a2;
+                    position: relative;
+                    &:after {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: #FFF;
+                        content: '';
+                        opacity: 0.5;
+                    }
+                    .item-actions {
+                        display: none;
+                    }
+                    .icon:before {
+                        content: "\f463";
+                        color: #a2a2a2;
+                        @include rotating4();
                     }
                 }
 
@@ -711,9 +779,9 @@
                         }
                     }
 
-                    &.updating {
-                        background-color: #e6f2d0;
-                    }
+                    //&.updating {
+                    //    background-color: #e6f2d0;
+                    //}
                 }
                 .question-settings {
                     border: 1px solid #ddd;
@@ -1209,9 +1277,9 @@
                         border-right: 1px solid #ddd;
                         position: absolute;
                         right: 0;
-                        height: 20px;
+                        height: 44px;
                         top: 50%;
-                        margin-top: -10px;
+                        margin-top: -22px;
                     }
 
                     &.active {
@@ -1237,11 +1305,12 @@
                     }
 
                     a {
-                        padding: 15px 20px;
+                        padding: 0 20px;
                         text-decoration: none;
                         display: inline-block;
                         font-weight: 600;
-
+                        height: 44px;
+                        line-height: 44px;
                         &:focus {
                             box-shadow: none;
                         }
@@ -1256,8 +1325,8 @@
                 right: 0;
                 cursor: pointer;
                 font-size: 1em;
-                padding: 9px;
-                z-index: 9;
+                padding: 12px;
+                z-index: 30;
             }
         }
 
@@ -1265,6 +1334,7 @@
             padding: 20px;
             position: relative;
             overflow: hidden;
+            border-bottom: 1px solid #DDD;
 
             .section-item {
                 cursor: pointer;
@@ -1285,10 +1355,11 @@
             .search {
                 margin-bottom: 20px;
                 background: transparent;
-                input {
+                input.modal-search-input {
                     width: 100%;
                     font-size: 1.2em;
                     line-height: 1.5;
+                    padding: 10px 14px;
                 }
             }
 
@@ -1319,7 +1390,7 @@
             z-index: 2;
             padding: 20px;
             transform: translate(100%, 0);
-            max-height: 400px;
+            max-height: 420px;
             overflow: auto;
 
             &.show {
@@ -1338,6 +1409,17 @@
 
         .footer {
             padding: 20px;
+        }
+    }
+}
+
+body {
+    &.moving {
+        cursor: url("../../images/closedhand.cur") 7 5, default !important;
+        .section-item{
+            .drag{
+                cursor: url("../../images/closedhand.cur") 7 5, default !important;
+            }
         }
     }
 }

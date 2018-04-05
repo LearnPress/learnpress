@@ -22,7 +22,8 @@
 
         <div class="item-actions">
             <div class="actions">
-                <div class="action preview-item">
+                <div class="action preview-item"
+                     data-content-tip="<?php echo esc_attr( 'Turn on/off this item is preview', 'learnpress' ); ?>">
                     <a class="lp-btn-icon dashicons" :class="previewClass" @click="togglePreview"></a>
                 </div>
                 <div class="action edit-item">
@@ -63,6 +64,22 @@
             created: function () {
                 this.$ = jQuery;
             },
+            mounted: function () {
+                this.$nextTick(function () {
+                    var $ = jQuery;
+                    $(this.$el).find('.preview-item').QuickTip({
+                        closeInterval: 0,
+                        arrowOffset: 'el',
+                        tipClass: 'preview-item-tip'
+                    });
+                    $(document).on('mousedown', '.section-item .drag', function (e) {
+                        $('html, body').addClass('moving');
+                    }).on('mouseup', function (e) {
+                        $('html, body').removeClass('moving');
+                        console.log('xxxx')
+                    })
+                })
+            },
             computed: {
                 // edit item url
                 url: function () {
@@ -79,8 +96,8 @@
                 },
                 previewClass: function () {
                     return {
-                        'dashicons-unlock': this.item.preview,
-                        'dashicons-lock': !this.item.preview
+                        'dashicons-visibility': this.item.preview,
+                        'dashicons-hidden': !this.item.preview
                     }
                 }
             },
@@ -103,6 +120,9 @@
                 },
                 // remove item
                 deletePermanently: function () {
+                    if (!confirm('Do you want to remove this item?')) {
+                        return;
+                    }
                     this.removing = true;
                     this.$emit('delete', this.item);
                 },

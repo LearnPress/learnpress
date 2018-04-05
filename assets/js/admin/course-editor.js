@@ -195,6 +195,46 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
 
         'UPDATE_SECTION_ITEM_FAILURE': function (state, itemId) {
             Vue.set(state.statusUpdateSectionItem, itemId, 'failed');
+        },
+        'APPEND_EMPTY_ITEM_TO_SECTION': function (state, data) {
+
+            var section = state.sections.find(function (section) {
+                return parseInt(section.id) === parseInt(data.section_id);
+            });
+
+            if (!section) {
+                return;
+            }
+
+            section.items.push({id: data.item.id, title: data.item.title, type: 'empty-item'});
+        },
+        'UPDATE_ITEM_SECTION_BY_ID': function (state, data) {
+            var section = state.sections.find(function (section) {
+                return parseInt(section.id) === parseInt(data.section_id);
+            });
+
+            if (!section) {
+                return;
+            }
+
+            for (var i = 0; i < section.items.length; i++) {
+                try {
+                    if (!section.items[i]) {
+                        continue;
+                    }
+
+                    var item_id = section.items[i].id;
+                    if (item_id) {
+                        if(data.items[item_id]){
+                            Vue.set(section.items, i, data.items[item_id])
+                        }
+                    }
+                }catch(ex){
+                    console.log(ex)
+                }
+            }
+
+            //section.items.push({id: data.item.id, title: data.item.title, type: 'empty-item'});
         }
     };
 
@@ -345,6 +385,9 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
 
         newSectionItem: function (context, payload) {
+
+            context.commit('APPEND_EMPTY_ITEM_TO_SECTION', payload)
+            //context.commit('UPDATE_SECTION_ITEMS', {section_id: payload.section_id, items: result.data});
             Vue.http.LPRequest({
                 type: 'new-section-item',
                 section_id: payload.section_id,
@@ -354,7 +397,15 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                     var result = response.body;
 
                     if (result.success) {
-                        context.commit('UPDATE_SECTION_ITEMS', {section_id: payload.section_id, items: result.data});
+                        // context.commit('UPDATE_SECTION_ITEMS', {section_id: payload.section_id, items: result.data});
+                        var items = {};
+                        $.each(result.data, function (i, a) {
+                            items[a.old_id ? a.old_id : a.id] = a;
+                        });
+                        context.commit('UPDATE_ITEM_SECTION_BY_ID', {
+                            section_id: payload.section_id,
+                            items: items
+                        });
                     }
                 },
                 function (error) {
