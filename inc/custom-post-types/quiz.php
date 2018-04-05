@@ -324,7 +324,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				if ( $course = learn_press_get_course( $course_id ) ) {
 					$count = $course->count_items( $this->_post_type );
 
-					$title = sprintf( _n( 'Course (%d items)', 'Course (%d items)', $count, 'learnpress' ), $count );
+					$title = sprintf( _n( 'Course (%d quiz)', 'Course (%d quizzes)', $count, 'learnpress' ), $count );
 				}
 			}
 
