@@ -85,7 +85,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'add_items_to_order',
 				'remove_items_from_order',
 				'update_email_status',
-				'create-pages'
+				'create-pages',
+				'search-authors'
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -103,6 +104,31 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				LP_Request::register_ajax( $action, $callback );
 			}
+		}
+
+		public static function search_authors() {
+			$args  = array(
+				'orderby'        => 'name',
+				'order'          => 'ASC',
+				'search'         => sprintf( '*%s*', esc_attr( LP_Request::get_string( 'term' ) ) ),
+				'search_columns' => array( 'user_login', 'user_email' )
+			);
+			$q     = new WP_User_Query( $args );
+			$users = array();
+
+			if ( $results = $q->get_results() ) {
+				foreach ( $results as $result ) {
+					$users[] = array( 'id'   => $result->ID,
+					                  'text' => learn_press_get_profile_display_name( $result->ID )
+					);
+				}
+			}
+			echo json_encode(
+				array(
+					'results' => $users
+				)
+			);
+			die();
 		}
 
 		/**
@@ -456,7 +482,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

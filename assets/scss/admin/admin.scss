@@ -60,6 +60,15 @@
     }
 }
 
+.search-box {
+    input[name="post-search-author"],
+    .select2-container {
+        margin: 0;
+        min-width: 200px;
+        vertical-align: top;
+    }
+}
+
 .learnpress {
     .actions {
         margin: 0;

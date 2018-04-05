@@ -93,6 +93,7 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'admin_footer-post.php', array( $this, 'print_js_template' ) );
 		add_action( 'admin_footer-post-new.php', array( $this, 'print_js_template' ) );
 		add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
+		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 
@@ -113,6 +114,29 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
+	}
+
+	public function admin_footer_scripts() {
+		if ( get_post_type() !== $this->_post_type ) {
+			return;
+		}
+
+		$user = learn_press_get_current_user();
+
+		if ( ! $user->is_admin() ) {
+			return;
+		}
+		?>
+        <script>jQuery(function ($) {
+                $('<select name="author"></select>').insertAfter($('#post-search-input')).select2({
+                    ajax: {
+                        url: window.location.href + '&lp-ajax=search-authors',
+                        dataType: 'json',
+                        s: ''
+                    }
+                });
+            })</script>
+		<?php
 	}
 
 	public function maybe_remove_features() {

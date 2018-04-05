@@ -2822,5 +2822,11 @@ body.moving {
 #adminmenu .update-plugins.lp-plugins-count {
   padding: 0 5px; }
 
+.search-box input[name="post-search-author"],
+.search-box .select2-container {
+  margin: 0;
+  min-width: 200px;
+  vertical-align: top; }
+
 .learnpress .actions {
   margin: 0; }
