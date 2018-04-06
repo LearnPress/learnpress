@@ -47,7 +47,7 @@ class LP_API{
             'callback' => array($this,'get_REST_course_curriculum'),
             'args' => array(
               'id' => array(
-                'validate_callback' => function($param, $request, $key) {
+                'validate_callback' => function($param) {
                   return is_numeric( $param );
                 }
               ),
