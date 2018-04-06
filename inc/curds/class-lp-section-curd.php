@@ -246,6 +246,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function sort_sections( $sections ) {
 		global $wpdb;
 
+		$current_sections = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections' );
+		$new_sections     = array();
+
 		$orders = array();
 
 		foreach ( $sections as $index => $section_id ) {
@@ -258,7 +261,17 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				array( 'section_order' => $order ),
 				array( 'section_id' => $section_id )
 			);
+
+			foreach ( $current_sections as $current_section ) {
+				if ( $current_section->section_id == $section_id ) {
+					$new_sections[ $index ] = $current_section;
+				}
+			}
+
+			$this->get_section_items( $section_id );
 		}
+
+		wp_cache_set( 'course-' . $this->course_id, $new_sections, 'lp-course-sections' );
 
 		return $orders;
 	}
@@ -277,18 +290,21 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$sections = $course->get_curriculum_raw();
 
-		if ( empty( $sections ) ) {
-			return array();
-		}
-		foreach ( $sections as $section ) {
-			if ( $section['id'] == $section_id ) {
-				if ( isset( $section['items'] ) && is_array( $section['items'] ) ) {
-					return $section['items'];
+		$return = array();
+
+		if ( ! empty( $sections ) ) {
+			foreach ( $sections as $section ) {
+				if ( $section['id'] == $section_id ) {
+					if ( isset( $section['items'] ) && is_array( $section['items'] ) ) {
+						$return = $section['items'];
+					}
 				}
 			}
 		}
 
-		return array();
+		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $return, 'lp-course-section-items' );
+
+		return $return;
 	}
 
 	/**
@@ -434,35 +450,53 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * Update course final quiz.
+	 * Update course final item.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $section_id
-	 *
 	 * @return bool
 	 */
-	public function update_final_quiz( $section_id ) {
+	public function update_final_item() {
+
+		$sections = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections' );
+
+		if ( ! $sections ) {
+			return false;
+		}
+
+		$last_section = end( $sections );
+		$section_id   = $last_section->section_id;
 
 		// get last section items
-		$section_items = $this->get_section_items( $section_id );
+		$section_items = wp_cache_get( 'course-' . $this->course_id . '-' . $section_id, 'lp-course-section-items' );
+
+		$types = apply_filters( 'learn-press/post-types-support-assessment-by-final-item', array( LP_QUIZ_CPT ) );
 
 		if ( $section_items ) {
 			// last item in last section
 			$final = end( $section_items );
 
-			if ( $final['type'] == LP_QUIZ_CPT ) {
-				update_post_meta( $this->course_id, '_lp_final_quiz', $final['id'] );
+			if ( is_array( $types ) && in_array( $final['type'], $types ) ) {
+				update_post_meta( $this->course_id, '_' . substr_replace( $final['type'], "_final_", 2, 1 ), $final['id'] );
+				$diff = array_diff( $types, array( $final['type'] ) );
+				foreach ( $diff as $type ) {
+					// delete all other final meta
+					delete_post_meta( $this->course_id, '_' . substr_replace( $type, "_final_", 2, 1 ) );
+				}
 			} else {
-				delete_post_meta( $this->course_id, '_lp_final_quiz' );
+				// for last item is not post type need check final item
+				foreach ( $types as $type ) {
+					delete_post_meta( $this->course_id, '_' . substr_replace( $type, "_final_", 2, 1 ) );
+				}
+			}
+		} else {
+			// for last section does not has any item
+			foreach ( $types as $type ) {
+				delete_post_meta( $this->course_id, '_' . substr_replace( $type, "_final_", 2, 1 ) );
 			}
 		}
 
 		return true;
-
-	}
-
-	public function sort_section_items( $orders ) {
 
 	}
 
@@ -550,6 +584,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 			}
 		}
+
+		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $items, 'lp-course-section-items' );
 
 		return $items;
 	}

@@ -1289,7 +1289,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$items = wp_cache_get( 'course-' . $post->ID, 'lp-course-items' );
 
 						$number_lessons = $number_quizzes = 0;
-
 						if ( $items ) {
 							foreach ( $items as $item_id ) {
 								if ( get_post_type( $item_id ) == LP_LESSON_CPT ) {
@@ -1305,6 +1304,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$output .= $number_lessons ? sprintf( _n( '%d lesson', '%d lessons', $number_lessons, 'learnpress' ), $number_lessons ) : __( "0 lesson", 'learnpress' );
 						$output .= ', ';
 						$output .= $number_quizzes ? sprintf( _n( '%d quiz', '%d quizzes', $number_quizzes, 'learnpress' ), $number_quizzes ) : __( "0 quiz", 'learnpress' );
+						// @hook to add count extent course item type
+						$output .= apply_filters( 'learn-press/course-count-items', '', $items );
 						$output .= ')';
 
 						echo $output;

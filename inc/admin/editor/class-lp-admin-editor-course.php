@@ -108,10 +108,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 
 		$this->result = $this->section_curd->sort_sections( $order );
 
-		// last section
-		$last_section_id = end( $order );
 		// update final quiz
-		$this->section_curd->update_final_quiz( $last_section_id );
+		$this->section_curd->update_final_item();
 	}
 
 	/**
@@ -270,10 +268,9 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * @return mixed
 	 */
 	public function update_section_items( $args = array() ) {
-		$section_id   = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
-		$last_section = ! empty( $args['last_section'] ) ? $args['last_section'] : false;
-		$items        = ! empty( $args['items'] ) ? $args['items'] : false;
-		$items        = json_decode( wp_unslash( $items ), true );
+		$section_id = ! empty( $args['section_id'] ) ? $args['section_id'] : false;
+		$items      = ! empty( $args['items'] ) ? $args['items'] : false;
+		$items      = json_decode( wp_unslash( $items ), true );
 
 		if ( ! ( $section_id && $items ) ) {
 			return false;
@@ -281,9 +278,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 
 		$this->result = $this->section_curd->update_section_items( $section_id, $items );
 
-		if ( $last_section ) {
-			$this->section_curd->update_final_quiz( $section_id );
-		}
+		$this->section_curd->update_final_item();
 
 		return true;
 	}
