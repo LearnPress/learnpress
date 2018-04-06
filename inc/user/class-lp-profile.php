@@ -55,6 +55,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		protected $_tabs = null;
 
 		/**
+		 * @var array
+		 */
+		protected $_default_settings = array();
+
+		/**
 		 *  Constructor
 		 *
 		 * @param        $user
@@ -106,26 +111,26 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			add_filter( 'template_include', array( $this, 'parse_request' ) );
 		}
 
+		/**
+		 * Prevent access view owned course in non admin, instructor profile page.
+		 *
+		 * @param $template
+		 *
+		 * @return mixed
+		 */
 		public function parse_request( $template ) {
-			$profile = LP_Profile::instance();
-			$user    = $profile->get_user();
+			$profile  = LP_Profile::instance();
+			$user     = $profile->get_user();
+			$role     = $user->get_role();
 
-//			echo '<pre>';
-//			var_dump($user->get_id());
-//			echo '</pre>';
-//			die();
+			if ( ! in_array( $role, array( 'admin', 'instructor' ) ) ) {
+				unset( $this->_default_settings['courses']['sections']['owned'] );
 
-			$tabs = $this->get_tabs();
-
-			$tabs->remove_tab( 'courses' );
-
-			//$this->remove_tab('courses');
+				$tabs           = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
+				$profile->_tabs = new LP_Profile_Tabs( $tabs, LP_Profile::instance() );
+			}
 
 			return $template;
-		}
-
-		function remove_tab($tab){
-			$this->get_tabs()->remove_tab($tab);
 		}
 
 		/**
@@ -264,21 +269,16 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_tabs() {
 
-			$user = learn_press_get_current_user();
-			$role = $user->get_role();
-
 			if ( $this->_tabs === null ) {
 				$settings        = LP()->settings;
 				$course_sections = array();
 
-				if ( in_array( $role, array( 'admin', 'instructor' ) ) ) {
-					$course_sections['owned'] = array(
-						'title'    => __( 'Owned', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.own-courses', 'owned' ),
-						'callback' => array( $this, 'tab_order_details' ),
-						'priority' => 10
-					);
-				}
+				$course_sections['owned'] = array(
+					'title'    => __( 'Owned', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.own-courses', 'owned' ),
+					'callback' => array( $this, 'tab_order_details' ),
+					'priority' => 10
+				);
 
 				$course_sections['purchased'] = array(
 					'title'    => __( 'Purchased', 'learnpress' ),
@@ -287,7 +287,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					'priority' => 15
 				);
 
-				$defaults = array(
+
+				$this->_default_settings = array(
 					'dashboard'     => array(
 						'title'    => __( 'Dashboard', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.profile-dashboard', '' ),
@@ -343,7 +344,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				);
 
 				if ( $this->is_enable_avatar() ) {
-					$defaults['settings']['sections']['avatar'] = array(
+					$this->_default_settings['settings']['sections']['avatar'] = array(
 						'title'    => __( 'Avatar', 'learnpress' ),
 						'callback' => array( $this, 'tab_order_details' ),
 						'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
@@ -352,7 +353,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 
 				if ( 'yes' === $settings->get( 'profile_publicity.dashboard' ) ) {
-					$defaults['settings']['sections']['publicity'] = array(
+					$this->_default_settings['settings']['sections']['publicity'] = array(
 						'title'    => __( 'Publicity', 'learnpress' ),
 						'slug'     => 'publicity',
 						'priority' => 40,
@@ -360,7 +361,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					);
 				}
 
-				$tabs        = apply_filters( 'learn-press/profile-tabs', $defaults );
+				$tabs        = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
 				$this->_tabs = new LP_Profile_Tabs( $tabs, LP_Profile::instance() );
 			}
 
