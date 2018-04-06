@@ -31,7 +31,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     <input v-model="section.description" type="text" class="description-input no-submit"
                            title="description"
                            @change="updating" @blur="completed" @keyup.enter="completed" ref="description"
-                           placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
+                           placeholder="<?php esc_attr_e( 'Describe about this section', 'learnpress' ); ?>">
                 </div>
 
                 <div class="section-list-items" :class="{'no-item': !section.items.length}">
