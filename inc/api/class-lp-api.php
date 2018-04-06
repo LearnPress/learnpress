@@ -28,24 +28,75 @@ class LP_API{
               ),
             ),*/
           ) );
+         // if you have the learning path plugin installed you can use this to pull 
+         // your paths 
+          register_rest_route( $this->api_endpoint,'/learningpaths', array(
+            'methods' => 'GET',
+            'callback' => array($this,'get_REST_learningpaths'),/*
+            'args' => array(
+              'id' => array(
+                'validate_callback' => function($param, $request, $key) {
+                  return is_numeric( $param );
+                }
+              ),
+            ),*/
+          ) );
+            // gets the curriculum for a specified(id) course
+          register_rest_route( $this->api_endpoint,'/courses/(?P<id>\d+)', array(
+            'methods' => 'GET',
+            'callback' => array($this,'get_REST_course_curriculum'),
+            'args' => array(
+              'id' => array(
+                'validate_callback' => function($param, $request, $key) {
+                  return is_numeric( $param );
+                }
+              ),
+            ),
+          ) );
+    }
+
+    //get the course curriculum
+    function get_REST_course_curriculum($data){
+      $cID = $data['id'];
+      $curr = learn_press_get_course_curriculum($cID);
+      return $curr;
     }
     // returns the courses at registered endpoint
     function get_REST_courses () {
-        $all_courses = $this->get_courses();
+        $all_courses = $this->get_posts_by_type();
         return $all_courses;
     }
+    // return the learning paths
+    function get_REST_learningpaths () {
+      $all_courses = $this->get_posts_by_type('lp_learning_path_cpt');
+      return $all_courses;
+  }
     // bit of sql to get all the courses
-    function get_courses() {
+    function get_posts_by_type($type = 'lp_course') {
 		global $wpdb;
-		$post_type    = 'lp_course';
+		$post_type    =  $type;
 		$query        = $wpdb->prepare( "
-			SELECT ID, post_title
+			SELECT *
 			FROM {$wpdb->posts}
 			WHERE post_type = %s AND post_status = %s
         ", $post_type, 'publish' );
         $courses = $wpdb->get_results( $query );
         return $courses;
     }
+    // get the course by id
+    /*
+    function get_course_by_id($id = 0) {
+      global $wpdb;
+      $post_id = $id;
+      $query        = $wpdb->prepare( "
+        SELECT *
+        FROM {$wpdb->posts}
+        WHERE ID = %s AND post_status = %s
+          ", $post_id, 'publish' );
+          $courses = $wpdb->get_results( $query );
+          return $courses;
+      }
+      */
     static function instance() {
 		if ( !self::$_instance ) {
 			self::$_instance = new self();
