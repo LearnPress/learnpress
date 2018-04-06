@@ -501,14 +501,16 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 
 	if ( false === ( $id = wp_cache_get( $type . '-' . $post_name, 'lp-post-names' ) ) ) {
 
-	    $args  = array( 'name' => $name, 'post_type' => array( $type ) );
-		$posts = get_posts( $args );
-
-		if ( $posts ) {
-			$post = $posts[0];
-			$id   = $post->ID;
-			wp_cache_set( $id, $post, 'posts' );
-			wp_cache_set( $type . '-' . $name, $id, 'lp-post-names' );
+		foreach ( array( $name, urldecode( $name ) ) as $_name ) {
+			$args  = array( 'name' => $_name, 'post_type' => array( $type ) );
+			$posts = get_posts( $args );
+			if ( $posts ) {
+				$post = $posts[0];
+				$id   = $post->ID;
+				wp_cache_set( $id, $post, 'posts' );
+				wp_cache_set( $type . '-' . $name, $id, 'lp-post-names' );
+				break;
+			}
 		}
 	}
 
