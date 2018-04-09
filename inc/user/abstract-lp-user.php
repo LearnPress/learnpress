@@ -2037,13 +2037,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function has_completed_quiz( $quiz_id, $course_id = 0 ) {
-			return $this->get_item_status( $quiz_id, $course_id ) == 'completed';
+			$completed = $this->get_item_status( $quiz_id, $course_id ) == 'completed';
 
-			$course_id = $this->_get_course( $course_id );
+			// @deprecated since 3.0.0
+			$completed = apply_filters( 'learn_press_user_has_completed_quiz', $completed, $quiz_id, $this );
 
-			$completed = $this->get_quiz_status( $quiz_id, $course_id ) == 'completed';
-
-			return apply_filters( 'learn_press_user_has_completed_quiz', $completed, $quiz_id, $this );
+			return apply_filters( 'learn-press/user-completed-quiz', $completed, $quiz_id, $course_id, $this->get_id() );
 		}
 
 
@@ -2062,12 +2061,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$cached = (array) wp_cache_get( 'user-quiz-statuses', 'learnpress' );
 			if ( ! array_key_exists( $this->get_id() . '-' . $course_id . '-' . $quiz_id, $cached ) || $force ) {
 				$query                                      = $wpdb->prepare( "
-				SELECT uq.item_id as id, uqm.meta_value as `status`
-				FROM {$wpdb->prefix}learnpress_user_itemmeta uqm
-				INNER JOIN {$wpdb->prefix}learnpress_user_items uq ON uq.user_item_id = uqm.learnpress_user_item_id AND uqm.meta_key = %s
-				WHERE uq.user_id = %d
-				ORDER BY user_item_id DESC
-			", 'status', $this->get_id(), $quiz_id );
+					SELECT uq.item_id as id, uqm.meta_value as `status`
+					FROM {$wpdb->prefix}learnpress_user_itemmeta uqm
+					INNER JOIN {$wpdb->prefix}learnpress_user_items uq ON uq.user_item_id = uqm.learnpress_user_item_id AND uqm.meta_key = %s
+					WHERE uq.user_id = %d
+					ORDER BY user_item_id DESC
+				", 'status', $this->get_id(), $quiz_id );
 				$cached[ $this->get_id() . '-' . $quiz_id ] = '';
 				if ( $items = $wpdb->get_results( $query ) ) {
 					foreach ( $items as $item ) {
