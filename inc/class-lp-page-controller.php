@@ -252,7 +252,6 @@ class LP_Page_Controller {
 				$this->_load_archive_courses( $template );
 			}
 		}
-
 		return $template;
 	}
 
