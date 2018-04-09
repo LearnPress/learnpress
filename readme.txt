@@ -203,10 +203,14 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: cannot start quiz or complete lesson
 ~ Fixed: can view a quiz/lesson although it does not assign to a course
 ~ Fixed: wrong count number in courses manage
-~ Fixed: can not save some settings options
+~ Fixed: cannot save some settings options
 ~ Fixed: missing hook
 ~ Fixed: user can view lesson with single post type link
 ~ Fixed: issue with 'Buy This Course' button
+~ Fixed: cannot change course author
+~ Fixed: issue with Become a Teacher form
+~ Fixed: instructor cannot add iframe into course/lesson/quiz content
+~ Improved: auto detect video in lesson content and move it to the top (move to option)
 ~ Improved something...
 
 = 3.0.5 =
