@@ -942,14 +942,14 @@ body.course-item-popup {
     margin-bottom: 50px; }
     body.course-item-popup .content-item-summary > h3 {
       margin-bottom: 20px; }
-    body.course-item-popup .content-item-summary .entry-video {
+    body.course-item-popup .content-item-summary.content-item-video .entry-video {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       background: #000;
       line-height: 1; }
-      body.course-item-popup .content-item-summary .entry-video iframe {
+      body.course-item-popup .content-item-summary.content-item-video .entry-video iframe {
         width: 100%;
         margin-bottom: 0;
         max-width: 900px;
@@ -2013,6 +2013,14 @@ ul.list-table-nav {
       color: #999999; }
   .course-item-nav .next {
     text-align: right; }
+
+.content-item-wrap #comments {
+  margin-left: 0;
+  margin-right: 0; }
+  .content-item-wrap #comments #comment {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
 
 @media screen and (max-width: 768px) {
   ul.learn-press-courses .course {

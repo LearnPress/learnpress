@@ -503,18 +503,20 @@ body {
             & > h3 {
                 margin-bottom: 20px;
             }
-            .entry-video {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background: #000;
-                line-height: 1;
-                iframe {
+            &.content-item-video {
+                .entry-video {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
                     width: 100%;
-                    margin-bottom: 0;
-                    max-width: 900px;
-                    vertical-align: top;
+                    background: #000;
+                    line-height: 1;
+                    iframe {
+                        width: 100%;
+                        margin-bottom: 0;
+                        max-width: 900px;
+                        vertical-align: top;
+                    }
                 }
             }
         }

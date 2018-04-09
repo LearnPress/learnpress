@@ -353,13 +353,22 @@ ul.list-table-nav {
         text-align: right;
     }
 }
-
+.content-item-wrap {
+    #comments {
+        margin-left: 0;
+        margin-right: 0;
+        #comment{
+            @include box-sizing(border-box);
+        }
+    }
+}
 @media screen and (max-width: 768px) {
     ul.learn-press-courses {
         .course {
             width: 48%;
         }
     }
+
 }
 
 @media screen and (max-width: 600px) {

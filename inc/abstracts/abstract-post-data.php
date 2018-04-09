@@ -164,6 +164,11 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		}
 
 		public function get_video() {
+
+			if ( 'yes' !== LP()->settings->get( 'enable_lesson_video' ) ) {
+				return false;
+			}
+
 			if ( ( $content = $this->get_content() ) && ( $this->_video === null ) ) {
 				$video = get_media_embedded_in_content( $content, array( 'video', 'object', 'embed', 'iframe' ) );
 

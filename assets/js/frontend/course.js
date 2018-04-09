@@ -380,8 +380,13 @@
         }
 
         function fitVideo() {
-            var $wrapContent = $('.content-item-summary'),
-                $entryVideo = $wrapContent.find('.entry-video'),
+            var $wrapContent = $('.content-item-summary.content-item-video');
+
+            if (!$wrapContent.length) {
+                return;
+            }
+
+            var $entryVideo = $wrapContent.find('.entry-video'),
                 $frame = $entryVideo.find('iframe'),
                 width = $frame.attr('width'),
                 height = $frame.attr('height'),
@@ -404,8 +409,6 @@
             if (!$entryVideo.length) {
                 return false;
             }
-
-            $wrapContent.addClass('content-item-video');
 
             if (width && height) {
                 if (width.indexOf('%') === -1 && height.indexOf('%') === -1) {

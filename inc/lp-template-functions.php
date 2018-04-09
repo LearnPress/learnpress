@@ -3621,3 +3621,36 @@ function learn_press_current_user_enrolled_course() {
 
 	return $user->has_enrolled_course( $course->get_id() );
 }
+
+function learn_press_content_item_summary_class( $more = '', $echo = true ) {
+	$classes = array( 'content-item-summary' );
+	$classes = LP_Helper::merge_class( $classes, $more );
+	$classes = apply_filters( 'learn-press/content-item-summary-class', $classes );
+	$output  = 'class="' . join( ' ', $classes ) . '"';
+
+	if ( $echo ) {
+		echo $output;
+	}
+
+	return $output;
+}
+
+function learn_press_content_item_summary_classes( $classes ) {
+	if ( ! $item = LP_Global::course_item() ) {
+		return $classes;
+	}
+
+	if ( $item->get_post_type() !== LP_LESSON_CPT ) {
+		return $classes;
+	}
+
+	if ( 'yes' !== LP()->settings->get( 'enable_lesson_video' ) ) {
+		return $classes;
+	}
+
+	if ( $item->get_video() ) {
+		$classes[] = 'content-item-video';
+	}
+
+	return $classes;
+}

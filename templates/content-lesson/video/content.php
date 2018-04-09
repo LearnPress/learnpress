@@ -25,7 +25,7 @@ if ( ! $lesson->get_content() ) {
 
 if ( $video = $lesson->get_video() ) {
 	?>
-    <div class="entry-video">
+    <div class="entry-video ">
         <?php echo $video[0];?>
     </div>
 	<?php
