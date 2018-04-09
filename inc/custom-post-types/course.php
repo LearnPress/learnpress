@@ -265,7 +265,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$post_author = isset( $_POST['_lp_course_author'] ) ? $_POST['_lp_course_author'] : '';
 
 			if ( ! $curriculum = $course->get_items() ) {
-				if ( ! $post_author ) {
+				if ( $post_author ) {
 					$wpdb->update(
 						$wpdb->posts,
 						array( 'post_author' => $post_author ),
@@ -295,7 +295,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$ids = array_merge( (array) $course_id, $item_ids, $question_ids );
 
 			// update post author
-			if ( ! $post_author ) {
+			if ( $post_author ) {
 				foreach ( $ids as $id ) {
 					$wpdb->update(
 						$wpdb->posts,
@@ -581,7 +581,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Block Lessons Content', 'learnpress' ),
 						'id'   => '_lp_block_lesson_content',
 						'type' => 'yes_no',
-						'desc' => __( 'Block lessons content when course expired.', 'learnpress' ),
+						'desc' => __( 'Block lessons content when completed course.', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(
