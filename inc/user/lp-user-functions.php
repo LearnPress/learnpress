@@ -130,7 +130,6 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 		}
 
 
-
 		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
 			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest( $user_id ) : new LP_User( $user_id );
 		}
@@ -164,6 +163,7 @@ function learn_press_add_user_roles() {
 	$teacher->add_cap( 'edit_published_' . $course_cap );
 	$teacher->add_cap( 'edit_' . $course_cap );
 	$teacher->add_cap( 'delete_' . $course_cap );
+	$teacher->add_cap( 'unfiltered_html' );
 
 	$settings->get( 'required_review' );
 

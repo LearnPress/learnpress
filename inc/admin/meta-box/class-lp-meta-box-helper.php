@@ -59,8 +59,11 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				RWMB_Field::call( 'show', $field, true, 0 );
 				$output = ob_get_clean();
 
-				if ( preg_match( '!class=".*?(required).*?"!', $output, $matches ) ) {
-					$output = str_replace( $matches[0], preg_replace( '!required!', '', $matches[0] ), $output );
+				if ( preg_match( '/class="(.*)"/iSU', $output, $matches ) ) {
+					if ( preg_match( '/required/', $matches[0] ) ) {
+						$class  = preg_replace( '/\s+/', ' ', str_replace( 'required', '', $matches[0] ) );
+						$output = preg_replace( '/class="(.*)"/iSU', $class, $output );
+					}
 				}
 				echo $output;
 				RWMB_Field::call( 'add_actions', $field );

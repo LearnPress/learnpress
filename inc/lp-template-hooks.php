@@ -202,6 +202,8 @@ add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_i
 add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_complete_button', 10 );
 add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_course_finish_button', 15 );
 
+add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
+
 /**
  * @see learn_press_content_item_header
  * @see learn_press_content_item_footer

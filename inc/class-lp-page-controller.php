@@ -252,7 +252,6 @@ class LP_Page_Controller {
 				$this->_load_archive_courses( $template );
 			}
 		}
-
 		return $template;
 	}
 
@@ -512,8 +511,9 @@ class LP_Page_Controller {
 				$wp_query->is_page    = false;
 				$wp_query->is_archive = true;
 				// Fixed issue with Yoast Seo plugin
-				//$wp_query->is_category = true;
-				$wp_query->is_single = false;
+				$wp_query->is_category = learn_press_is_course_category();
+				$wp_query->is_tax      = learn_press_is_course_tax();
+				$wp_query->is_single   = false;
 			} else {
 				$wp_query->found_posts          = 1;
 				$wp_query->is_single            = true;

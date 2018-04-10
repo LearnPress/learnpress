@@ -357,12 +357,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learnpress' ) );
 						echo "&nbsp;|&nbsp;";
 						printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learnpress' ) );
-						echo "&nbsp;|&nbsp;";
-						if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
-							printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_quiz' ), __( 'Remove Filter', 'learnpress' ) );
-						} else {
-							printf( '<a href="%s">%s</a>', add_query_arg( 'filter_quiz', $quiz->ID ), __( 'Filter', 'learnpress' ) );
-						}
 						echo '</div></div>';
 					} else {
 						_e( 'Not assigned yet', 'learnpress' );
