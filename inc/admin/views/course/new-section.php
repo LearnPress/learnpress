@@ -22,39 +22,42 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    jQuery(function ($) {
 
-        Vue.component('lp-new-section', {
-            template: '#tmpl-lp-new-section',
-            data: function () {
-                return {
-                    section_title: ''
-                };
-            },
-            methods: {
-                // draft new course
-                draftCourse: function () {
-                    if ($store.getters['autoDraft']) {
-                        $store.dispatch('draftCourse', {
-                            title: $('input[name=post_title]').val(),
-                            content: $('textarea[name=content]').val()
-                        });
-                    }
+        (function (Vue, $store) {
+
+            Vue.component('lp-new-section', {
+                template: '#tmpl-lp-new-section',
+                data: function () {
+                    return {
+                        section_title: ''
+                    };
                 },
-                newSection: function () {
-                    // prevent create no title section
-                    if (this.section_title) {
+                methods: {
+                    // draft new course
+                    draftCourse: function () {
+                        if ($store.getters['autoDraft']) {
+                            $store.dispatch('draftCourse', {
+                                title: $('input[name=post_title]').val(),
+                                content: $('textarea[name=content]').val()
+                            });
+                        }
+                    },
+                    newSection: function () {
+                        // prevent create no title section
+                        if (this.section_title) {
 
-                        // create draft course if auto draft
-                        this.draftCourse();
+                            // create draft course if auto draft
+                            this.draftCourse();
 
-                        // new section
-                        $store.dispatch('ss/newSection', this.section_title);
-                        this.section_title = '';
+                            // new section
+                            $store.dispatch('ss/newSection', this.section_title);
+                            this.section_title = '';
+                        }
                     }
                 }
-            }
-        });
+            });
 
-    })(Vue, LP_Curriculum_Store, jQuery);
+        })(Vue, LP_Curriculum_Store);
+    });
 </script>

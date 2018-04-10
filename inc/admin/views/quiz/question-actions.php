@@ -45,7 +45,7 @@
                         </li>
                         <li>
                             <a @click.prevent="deletePermanently"
-                               class="delete"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
+                               class="delete"><?php esc_html_e( 'Move to trash', 'learnpress' ); ?></a>
                         </li>
                     </ul>
                 </div>

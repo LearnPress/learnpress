@@ -38,7 +38,7 @@
                         </li>
                         <li>
                             <a @click.prevent="deletePermanently"
-                               class="delete-permanently"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
+                               class="delete-permanently"><?php esc_html_e( 'Move to trash', 'learnpress' ); ?></a>
                         </li>
                     </ul>
                 </div>
@@ -48,100 +48,103 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    jQuery(function ($) {
 
-        Vue.component('lp-section-item', {
-            template: '#tmpl-lp-section-item',
-            props: ['item', 'order', 'disableCurriculum'],
-            data: function () {
-                return {
-                    // origin course item title
-                    title: this.item.title,
-                    changed: false,
-                    removing: false
-                };
-            },
-            created: function () {
-                this.$ = jQuery;
-            },
-            mounted: function () {
-                this.$nextTick(function () {
-                    var $ = jQuery;
-                    $(this.$el).find('.preview-item').QuickTip({
-                        closeInterval: 0,
-                        arrowOffset: 'el',
-                        tipClass: 'preview-item-tip'
-                    });
-                    $(document).on('mousedown', '.section-item .drag', function (e) {
-                        $('html, body').addClass('moving');
-                    }).on('mouseup', function (e) {
-                        $('html, body').removeClass('moving');
-                    })
-                })
-            },
-            computed: {
-                // edit item url
-                url: function () {
-                    return $store.getters['ss/urlEdit'] + this.item.id;
-                },
-                updating: function () {
-                    return this.removing || this.saving;
-                },
-                status: function () {
-                    return $store.getters['ss/statusUpdateSectionItem'][this.item.id] || '';
-                },
-                saving: function () {
-                    return this.status === 'updating';
-                },
-                previewClass: function () {
+        (function (Vue, $store) {
+
+            Vue.component('lp-section-item', {
+                template: '#tmpl-lp-section-item',
+                props: ['item', 'order', 'disableCurriculum'],
+                data: function () {
                     return {
-                        'dashicons-visibility': this.item.preview,
-                        'dashicons-hidden': !this.item.preview
+                        // origin course item title
+                        title: this.item.title,
+                        changed: false,
+                        removing: false
+                    };
+                },
+                created: function () {
+                    this.$ = jQuery;
+                },
+                mounted: function () {
+                    this.$nextTick(function () {
+                        var $ = jQuery;
+                        $(this.$el).find('.preview-item').QuickTip({
+                            closeInterval: 0,
+                            arrowOffset: 'el',
+                            tipClass: 'preview-item-tip'
+                        });
+                        $(document).on('mousedown', '.section-item .drag', function (e) {
+                            $('html, body').addClass('moving');
+                        }).on('mouseup', function (e) {
+                            $('html, body').removeClass('moving');
+                        })
+                    })
+                },
+                computed: {
+                    // edit item url
+                    url: function () {
+                        return $store.getters['ss/urlEdit'] + this.item.id;
+                    },
+                    updating: function () {
+                        return this.removing || this.saving;
+                    },
+                    status: function () {
+                        return $store.getters['ss/statusUpdateSectionItem'][this.item.id] || '';
+                    },
+                    saving: function () {
+                        return this.status === 'updating';
+                    },
+                    previewClass: function () {
+                        return {
+                            'dashicons-visibility': this.item.preview,
+                            'dashicons-hidden': !this.item.preview
+                        }
+                    }
+                },
+                methods: {
+
+                    changeTitle: function () {
+                        this.changed = true;
+                    },
+                    // update item title
+                    updateTitle: function () {
+                        if (this.changed) {
+                            this.$emit('update', this.item);
+                            this.changed = false;
+                        }
+                    },
+                    // remove item
+                    remove: function () {
+                        this.removing = true;
+                        this.$emit('remove', this.item);
+                    },
+                    // remove item
+                    deletePermanently: function () {
+                        if (!confirm($store.getters['i18n/all'].confirm_trash_item)) {
+                            return;
+                        }
+                        this.removing = true;
+                        this.$emit('delete', this.item);
+                    },
+                    // navigation course items
+                    keyUp: function (event) {
+                        var keyCode = event.keyCode;
+                        // escape update course item title
+                        if (keyCode === 27) {
+                            this.item.title = this.title;
+                        } else {
+                            this.$emit('nav', {key: event.keyCode, order: this.order});
+                        }
+                    },
+                    togglePreview: function (evt) {
+                        this.item.preview = !this.item.preview;
+                        this.changed = true;
+                        this.updateTitle();
                     }
                 }
-            },
-            methods: {
+            });
 
-                changeTitle: function () {
-                    this.changed = true;
-                },
-                // update item title
-                updateTitle: function () {
-                    if (this.changed) {
-                        this.$emit('update', this.item);
-                        this.changed = false;
-                    }
-                },
-                // remove item
-                remove: function () {
-                    this.removing = true;
-                    this.$emit('remove', this.item);
-                },
-                // remove item
-                deletePermanently: function () {
-                    if (!confirm('Do you want to remove this item?')) {
-                        return;
-                    }
-                    this.removing = true;
-                    this.$emit('delete', this.item);
-                },
-                // navigation course items
-                keyUp: function (event) {
-                    var keyCode = event.keyCode;
-                    // escape update course item title
-                    if (keyCode === 27) {
-                        this.item.title = this.title;
-                    } else {
-                        this.$emit('nav', {key: event.keyCode, order: this.order});
-                    }
-                },
-                togglePreview: function (evt) {
-                    this.item.preview = !this.item.preview;
-                    this.changed = true;
-                    this.updateTitle();
-                }
-            }
-        });
-
-    })(Vue, LP_Curriculum_Store);
+        })(Vue, LP_Curriculum_Store);
+    })
 </script>

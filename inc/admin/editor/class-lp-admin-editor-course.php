@@ -37,7 +37,6 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	public function dispatch() {
 		check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
-		print_r( $_REQUEST );
 		$args      = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
 		$course_id = $args['id'];
 		$course    = learn_press_get_course( $course_id );

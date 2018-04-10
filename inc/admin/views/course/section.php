@@ -62,189 +62,206 @@ learn_press_admin_view( 'course/new-section-item' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    jQuery(function ($) {
 
-        Vue.component('lp-section', {
-            template: '#tmpl-lp-section',
-            props: ['section', 'index', 'disableCurriculum'],
-            data: function () {
-                return {
-                    changed: false,
-                    confirm: false
-                };
-            },
-            mounted: function () {
-                var vm = this;
+        (function (Vue, $store) {
 
-                this.prepareToggle();
-
-                this.$watch('section.open', function (open) {
-                    vm.toggleAnimation(open);
-                });
-
-                $(this.$el).find('.section-list-items ul').sortable({
-                    axis: 'y',
-                    connectWith: '.section-list-items ul',
-                    update: function (e, ui) {
-                        var itemIds = $(this).children().map(function () {
-                            return parseInt($(this).attr('data-item-id'));
-                        }).get();
-                        vm.updateOrderItems(itemIds);
-                    }
-                });
-
-            },
-            computed: {
-
-                status: function () {
-                    return $store.getters['ss/statusUpdateSection'][this.section.id] || '';
+            Vue.component('lp-section', {
+                template: '#tmpl-lp-section',
+                props: ['section', 'index', 'disableCurriculum'],
+                data: function () {
+                    return {
+                        changed: false,
+                        confirm: false
+                    };
                 },
-                isEmpty: function () {
-                    return isNaN(this.section.id);
-                },
-                isOpen: function () {
-                    return this.section.open;
-                },
+                mounted: function () {
+                    var vm = this;
 
-                items: {
-                    get: function () {
-                        return this.section.items;
+                    this.prepareToggle();
+
+                    this.$watch('section.open', function (open) {
+                        vm.toggleAnimation(open);
+                    });
+
+                    $(this.$el).find('.section-list-items ul').sortable({
+                        axis: 'y',
+                        connectWith: '.section-list-items ul',
+                        start: function (e, ui) {
+                            var id = parseInt(ui.item.attr('data-item-id'));
+                            ui.item.data('vmItem', vm.section.items.filter(function (vmItem, i) {
+                                return vmItem.id == id
+                            }))
+                        },
+                        update: function (e, ui) {
+                            var itemIds = $(this).children().map(function () {
+                                return parseInt($(this).attr('data-item-id'));
+                            }).get();
+                            var vmItem = ui.item.data('vmItem');
+                            vm.updateOrderItems(itemIds, vmItem ? vmItem[0] : null);
+                        }
+                    });
+
+                },
+                computed: {
+
+                    status: function () {
+                        return $store.getters['ss/statusUpdateSection'][this.section.id] || '';
                     },
-                    set: function (items) {
-                        this.section.items = items;
+                    isEmpty: function () {
+                        return isNaN(this.section.id);
+                    },
+                    isOpen: function () {
+                        return this.section.open;
+                    },
 
+                    items: {
+                        get: function () {
+                            return this.section.items;
+                        },
+                        set: function (items) {
+                            this.section.items = items;
+
+                            $store.dispatch('ss/updateSectionItems', {
+                                section_id: this.section.id,
+                                items: items
+                            });
+                        }
+                    },
+
+                    optionDraggable: function () {
+                        return {
+                            handle: '.drag',
+                            draggable: '.section-item',
+                            group: {
+                                name: 'lp-section-items',
+                                put: true,
+                                pull: true
+                            }
+                        };
+                    }
+                },
+                methods: {
+                    updateOrderItems: function (orders, vmItem) {
+                        var allItems = JSON.parse(JSON.stringify(this.section.items)),
+                            items = [];
+
+                        if (vmItem) {
+                            allItems.push(vmItem);
+                        }
+
+                        for (var i = 0, n = orders.length; i < n; i++) {
+                            $.each(allItems, function (j, item) {
+                                if (orders[i] == item.id) {
+                                    items.push(JSON.parse(JSON.stringify(item)));
+                                    found = true;
+                                    return false;
+                                }
+                            });
+                        }
+
+                        this.section.items = items;
                         $store.dispatch('ss/updateSectionItems', {
                             section_id: this.section.id,
                             items: items
                         });
-                    }
-                },
-
-                optionDraggable: function () {
-                    return {
-                        handle: '.drag',
-                        draggable: '.section-item',
-                        group: {
-                            name: 'lp-section-items',
-                            put: true,
-                            pull: true
+                    },
+                    // toggle section
+                    toggle: function () {
+                        $store.dispatch('ss/toggleSection', this.section);
+                    },
+                    prepareToggle: function () {
+                        var display = 'none';
+                        if (this.isOpen) {
+                            display = 'block';
                         }
-                    };
-                }
-            },
-            methods: {
-                updateOrderItems: function (orders) {
-                    var items = [];
-                    for (var i = 0, n = orders.length; i < n; i++) {
-                        $.each(this.section.items, function (j, item) {
-                            if (orders[i] == item.id) {
-                                items.push(JSON.parse(JSON.stringify(item)));
-                                return false;
+
+                        this.$refs.collapse.style.display = display;
+                    },
+                    toggleAnimation: function (open) {
+
+                        if (open) {
+                            $(this.$refs.collapse).slideDown();
+                        } else {
+                            $(this.$refs.collapse).slideUp();
+                        }
+                    },
+                    // updating section
+                    updating: function () {
+                        this.changed = true;
+                    },
+                    // update section
+                    completed: function () {
+                        if (this.changed) {
+                            $store.dispatch('ss/updateSection', this.section);
+                            this.changed = false;
+                        }
+                    },
+                    // click remove section
+                    removing: function () {
+                        this.confirm = true;
+                        var vm = this;
+
+                        setTimeout(function () {
+                            vm.confirm = false;
+                        }, 3000);
+                    },
+                    // remove section
+                    remove: function () {
+                        if (this.confirm) {
+                            $store.dispatch('ss/removeSection', {index: this.index, section: this.section});
+                            this.confirm = false;
+                        }
+                    },
+                    // update section item
+                    updateItem: function (item) {
+                        $store.dispatch('ss/updateSectionItem', {section_id: this.section.id, item: item});
+                    },
+                    // remove section item
+                    removeItem: function (item) {
+                        $store.dispatch('ss/removeSectionItem', {section_id: this.section.id, item_id: item.id});
+                    },
+                    deleteItem: function (item) {
+                        $store.dispatch('ss/deleteSectionItem', {section_id: this.section.id, item_id: item.id});
+                    },
+                    // navigation course items
+                    navItem: function (payload) {
+
+                        var keyCode = payload.key,
+                            order = payload.order;
+
+                        if (keyCode === 38) {
+                            if (order === 1) {
+                                this.$refs.description.focus();
+                            } else {
+                                this.nav(order - 1);
                             }
-                        })
-                    }
-
-                    this.section.items = items;
-                    $store.dispatch('ss/updateSectionItems', {
-                        section_id: this.section.id,
-                        items: items
-                    });
-                },
-                // toggle section
-                toggle: function () {
-                    $store.dispatch('ss/toggleSection', this.section);
-                },
-                prepareToggle: function () {
-                    var display = 'none';
-                    if (this.isOpen) {
-                        display = 'block';
-                    }
-
-                    this.$refs.collapse.style.display = display;
-                },
-                toggleAnimation: function (open) {
-
-                    if (open) {
-                        $(this.$refs.collapse).slideDown();
-                    } else {
-                        $(this.$refs.collapse).slideUp();
-                    }
-                },
-                // updating section
-                updating: function () {
-                    this.changed = true;
-                },
-                // update section
-                completed: function () {
-                    if (this.changed) {
-                        $store.dispatch('ss/updateSection', this.section);
-                        this.changed = false;
-                    }
-                },
-                // click remove section
-                removing: function () {
-                    this.confirm = true;
-                    var vm = this;
-
-                    setTimeout(function () {
-                        vm.confirm = false;
-                    }, 3000);
-                },
-                // remove section
-                remove: function () {
-                    if (this.confirm) {
-                        $store.dispatch('ss/removeSection', {index: this.index, section: this.section});
-                        this.confirm = false;
-                    }
-                },
-                // update section item
-                updateItem: function (item) {
-                    $store.dispatch('ss/updateSectionItem', {section_id: this.section.id, item: item});
-                },
-                // remove section item
-                removeItem: function (item) {
-                    $store.dispatch('ss/removeSectionItem', {section_id: this.section.id, item_id: item.id});
-                },
-                deleteItem: function (item) {
-                    $store.dispatch('ss/deleteSectionItem', {section_id: this.section.id, item_id: item.id});
-                },
-                // navigation course items
-                navItem: function (payload) {
-
-                    var keyCode = payload.key,
-                        order = payload.order;
-
-                    if (keyCode === 38) {
-                        if (order === 1) {
-                            this.$refs.description.focus();
-                        } else {
-                            this.nav(order - 1);
                         }
-                    }
-                    if (keyCode === 40 || keyCode === 13) {
-                        if (order === this.section.items.length) {
-                            // code
-                        } else {
-                            this.nav(order + 1);
+                        if (keyCode === 40 || keyCode === 13) {
+                            if (order === this.section.items.length) {
+                                // code
+                            } else {
+                                this.nav(order + 1);
+                            }
                         }
-                    }
 
-                },
-                // focus item
-                nav: function (position) {
-                    var element = 'div[data-section-order=' + this.index + '] li[data-item-order=' + position + ']';
-                    ($(element).find('.title input')).focus();
-                },
-                // new section item
-                newItem: function (item) {
-                    $store.dispatch('ss/newSectionItem', {section_id: this.section.id, item: item});
-                    console.log(item)
-                },
-                openModal: function () {
-                    $store.dispatch('ci/open', parseInt(this.section.id));
+                    },
+                    // focus item
+                    nav: function (position) {
+                        var element = 'div[data-section-order=' + this.index + '] li[data-item-order=' + position + ']';
+                        ($(element).find('.title input')).focus();
+                    },
+                    // new section item
+                    newItem: function (item) {
+                        $store.dispatch('ss/newSectionItem', {section_id: this.section.id, item: item});
+                        console.log(item)
+                    },
+                    openModal: function () {
+                        $store.dispatch('ci/open', parseInt(this.section.id));
+                    }
                 }
-            }
-        });
+            });
 
-    })(Vue, LP_Curriculum_Store, jQuery);
+        })(Vue, LP_Curriculum_Store);
+    });
 </script>

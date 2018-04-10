@@ -22,6 +22,7 @@ learn_press_admin_view( 'course/sections' );
 </script>
 
 <script type="text/javascript">
+jQuery(function(){
 
     (function (Vue, $store) {
 
@@ -44,4 +45,6 @@ learn_press_admin_view( 'course/sections' );
         });
 
     })(Vue, LP_Curriculum_Store);
+
+})
 </script>

@@ -41,21 +41,23 @@ learn_press_admin_view( 'course/modal-choose-items' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    jQuery(function () {
+        (function (Vue, $store) {
 
-        Vue.component('lp-course-editor', {
-            template: '#tmpl-lp-course-editor',
-            created: function () {
-                setInterval(function () {
-                    $store.dispatch('heartbeat');
-                }, 60 * 1000);
-            },
-            computed: {
-                heartbeat: function () {
-                    return $store.getters['heartbeat'];
+            Vue.component('lp-course-editor', {
+                template: '#tmpl-lp-course-editor',
+                created: function () {
+                    setInterval(function () {
+                        $store.dispatch('heartbeat');
+                    }, 60 * 1000);
+                },
+                computed: {
+                    heartbeat: function () {
+                        return $store.getters['heartbeat'];
+                    }
                 }
-            }
-        });
+            });
 
-    })(Vue, LP_Curriculum_Store);
+        })(Vue, LP_Curriculum_Store);
+    })
 </script>

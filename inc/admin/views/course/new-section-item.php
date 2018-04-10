@@ -25,109 +25,112 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    jQuery(function () {
 
-        Vue.component('lp-new-section-item', {
-            template: '#tmpl-lp-new-section-item',
-            props: [],
-            data: function () {
-                return {
-                    type: '',
-                    title: '',
-                    choosingType: false
-                };
-            },
-            created: function () {
-                this.type = this.firstType;
-            },
-            methods: {
-                up: function (e) {
-                    this.changeType(true);
-                },
-                down: function (e) {
-                    this.changeType(false);
-                },
-                mouseOver: function () {
-                    this.choosingType = true;
-                },
-                mouseLeave: function () {
-                    this.choosingType = false;
-                },
-                // emit create item
-                create: function () {
-                    if (!this.title) {
-                        return;
-                    }
-                    this.$emit('create', {
-                        id: LP.uniqueId(),
-                        type: this.type,
-                        title: this.title
-                    });
-                    this.title = '';
-                },
-                // set time out for blur change type item
-                createItem: function (e) {
-                    if (!this.title) {
-                        return;
-                    }
+        (function (Vue, $store) {
 
-                    if(e.key === 'Enter'){
-                        return this.create();
-                    }
-
-                    setTimeout(this.create, 300);
+            Vue.component('lp-new-section-item', {
+                template: '#tmpl-lp-new-section-item',
+                props: [],
+                data: function () {
+                    return {
+                        type: '',
+                        title: '',
+                        choosingType: false
+                    };
                 },
-                changeType: function (next) {
-                    if (this.title) {
-                        return;
-                    }
-
-                    var types = this.types;
-                    var current = this.type;
-                    var currentIndex = false;
-
-                    var keys = [];
-                    var i = 0;
-                    for (var type in types) {
-                        if (type === current) {
-                            currentIndex = i;
+                created: function () {
+                    this.type = this.firstType;
+                },
+                methods: {
+                    up: function (e) {
+                        this.changeType(true);
+                    },
+                    down: function (e) {
+                        this.changeType(false);
+                    },
+                    mouseOver: function () {
+                        this.choosingType = true;
+                    },
+                    mouseLeave: function () {
+                        this.choosingType = false;
+                    },
+                    // emit create item
+                    create: function () {
+                        if (!this.title) {
+                            return;
                         }
-                        keys.push(type);
-                        i++;
+                        this.$emit('create', {
+                            id: LP.uniqueId(),
+                            type: this.type,
+                            title: this.title
+                        });
+                        this.title = '';
+                    },
+                    // set time out for blur change type item
+                    createItem: function (e) {
+                        if (!this.title) {
+                            return;
+                        }
+
+                        if (e.key === 'Enter') {
+                            return this.create();
+                        }
+
+                        setTimeout(this.create, 300);
+                    },
+                    changeType: function (next) {
+                        if (this.title) {
+                            return;
+                        }
+
+                        var types = this.types;
+                        var current = this.type;
+                        var currentIndex = false;
+
+                        var keys = [];
+                        var i = 0;
+                        for (var type in types) {
+                            if (type === current) {
+                                currentIndex = i;
+                            }
+                            keys.push(type);
+                            i++;
+                        }
+
+                        var nextType = keys[currentIndex + 1] || keys[0];
+                        var previousType = keys[currentIndex - 1] || keys[keys.length - 1];
+
+                        if (next) {
+                            this.type = nextType;
+                        } else {
+                            this.type = previousType;
+                        }
+
                     }
-
-                    var nextType = keys[currentIndex + 1] || keys[0];
-                    var previousType = keys[currentIndex - 1] || keys[keys.length - 1];
-
-                    if (next) {
-                        this.type = nextType;
-                    } else {
-                        this.type = previousType;
-                    }
-
-                }
-            },
-            computed: {
-                placeholderInput: function (e) {
-                    var i18n = $store.getters['i18n/all'];
-                    var type = this.types[this.type] || '';
-
-                    $(this.$el).find('.title input').focus();
-                    return i18n.new_section_item + ' ' + type.toLowerCase();
                 },
+                computed: {
+                    placeholderInput: function (e) {
+                        var i18n = $store.getters['i18n/all'];
+                        var type = this.types[this.type] || '';
 
-                types: function () {
-                    return $store.getters['ci/types'];
-                },
-                firstType: function () {
-                    for (var type in $store.getters['ci/types']) {
-                        return type;
+                        $(this.$el).find('.title input').focus();
+                        return i18n.new_section_item + ' ' + type.toLowerCase();
+                    },
+
+                    types: function () {
+                        return $store.getters['ci/types'];
+                    },
+                    firstType: function () {
+                        for (var type in $store.getters['ci/types']) {
+                            return type;
+                        }
+
+                        return false;
                     }
-
-                    return false;
                 }
-            }
-        });
+            });
 
-    })(Vue, LP_Curriculum_Store);
+        })(Vue, LP_Curriculum_Store);
+    })
 </script>
