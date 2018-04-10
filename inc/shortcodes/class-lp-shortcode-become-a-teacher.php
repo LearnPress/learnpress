@@ -35,8 +35,7 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 			parent::__construct( $atts );
 
 			$user = learn_press_get_current_user( false );
-
-			if ( ! $user ) {
+            if ( ! $user || $user instanceof LP_User_Guest ) {
 				self::add_message( sprintf( __( 'Please %s to send your request!', 'learnpress' ), sprintf( '<a href="%s">%s</a>', learn_press_get_login_url(), _x( 'login', 'become-teacher-form', 'learnpress' ) ) ), 'login' );
 			} else {
 				if ( self::has_sent() ) {
