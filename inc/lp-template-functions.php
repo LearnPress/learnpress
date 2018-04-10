@@ -216,14 +216,32 @@ if ( ! function_exists( 'learn_press_course_external_button' ) ) {
 		$user = learn_press_get_current_user();
 
 		if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
-			remove_action( 'learn-press/course-buttons', 'learn_press_course_purchase_button', 10 );
-			remove_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button', 15 );
-			remove_action( 'learn-press/course-buttons', 'learn_press_course_retake_button', 20 );
-			remove_action( 'learn-press/course-buttons', 'learn_press_course_continue_button', 25 );
-			remove_action( 'learn-press/course-buttons', 'learn_press_course_finish_button', 30 );
-
+		    // Remove all other buttons
+			learn_press_remove_course_buttons();
 			learn_press_get_template( 'single-course/buttons/external-link.php' );
+			// Add back other buttons for other courses
+			add_action( 'learn-press/after-course-buttons', 'learn_press_add_course_buttons' );
 		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
+	function learn_press_add_course_buttons() {
+		add_action( 'learn-press/course-buttons', 'learn_press_course_purchase_button', 10 );
+		add_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button', 15 );
+		add_action( 'learn-press/course-buttons', 'learn_press_course_retake_button', 20 );
+		add_action( 'learn-press/course-buttons', 'learn_press_course_continue_button', 25 );
+		add_action( 'learn-press/course-buttons', 'learn_press_course_finish_button', 30 );
+	}
+}
+
+if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
+	function learn_press_remove_course_buttons() {
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_purchase_button', 10 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button', 15 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_retake_button', 20 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_continue_button', 25 );
+		remove_action( 'learn-press/course-buttons', 'learn_press_course_finish_button', 30 );
 	}
 }
 
