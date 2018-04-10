@@ -53,7 +53,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'complete-lesson',
 				'finish-course',
 				'retake-course',
-				'external-link'
+				'external-link:nopriv'
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
