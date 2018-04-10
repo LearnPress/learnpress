@@ -394,12 +394,21 @@ class LP_Page_Controller {
 	 * @param $template
 	 */
 	public function _load_archive_courses( $template ) {
-		define( 'LEARNPRESS_IS_COURSES', learn_press_is_courses() );
-		define( 'LEARNPRESS_IS_TAG', learn_press_is_course_tag() );
-		define( 'LEARNPRESS_IS_CATEGORY', learn_press_is_course_category() );
-		define( 'LEARNPRESS_IS_TAX', learn_press_is_course_tax() );
-		define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
-
+		if(!defined('LEARNPRESS_IS_COURSES')){
+			define( 'LEARNPRESS_IS_COURSES', learn_press_is_courses() );
+		}
+		if(!defined('LEARNPRESS_IS_TAG')){
+			define( 'LEARNPRESS_IS_TAG', learn_press_is_course_tag() );
+		}
+		if(!defined('LEARNPRESS_IS_CATEGORY')){
+			define( 'LEARNPRESS_IS_CATEGORY', learn_press_is_course_category() );
+		}
+		if(!defined('LEARNPRESS_IS_TAX')){
+			define( 'LEARNPRESS_IS_TAX', learn_press_is_course_tax() );
+		}
+		if(!defined('LEARNPRESS_IS_SEARCH')){
+			define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
+		}
 
 		global $wp_query;
 		if ( is_callable( 'clone' ) ) {
