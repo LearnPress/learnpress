@@ -76,7 +76,6 @@
                         $('html, body').addClass('moving');
                     }).on('mouseup', function (e) {
                         $('html, body').removeClass('moving');
-                        console.log('xxxx')
                     })
                 })
             },

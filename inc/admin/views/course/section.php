@@ -10,7 +10,8 @@ learn_press_admin_view( 'course/new-section-item' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-section">
-    <div class="section" :class="[isOpen ? 'open' : 'close', status]" :data-section-order="index"
+    <div class="section" :class="[isOpen ? 'open' : 'close', status, isEmpty ? 'empty-section' : '']"
+         :data-section-order="index"
          :data-section-id="section.id">
         <div class="section-head" @dblclick="toggle">
             <span class="movable"></span>
@@ -35,13 +36,13 @@ learn_press_admin_view( 'course/new-section-item' );
                 </div>
 
                 <div class="section-list-items" :class="{'no-item': !section.items.length}">
-                    <draggable v-model="items" :element="'ul'" :options="optionDraggable">
+                    <ul>
                         <!--Section items-->
                         <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id"
                                          @update="updateItem" @remove="removeItem" @delete="deleteItem" @nav="navItem"
                                          :order="index+1" :ref="index+1"
                                          :disableCurriculum="disableCurriculum"></lp-section-item>
-                    </draggable>
+                    </ul>
 
                     <lp-new-section-item @create="newItem" v-if="!disableCurriculum"></lp-new-section-item>
                 </div>
@@ -80,10 +81,26 @@ learn_press_admin_view( 'course/new-section-item' );
                 this.$watch('section.open', function (open) {
                     vm.toggleAnimation(open);
                 });
+
+                $(this.$el).find('.section-list-items ul').sortable({
+                    axis: 'y',
+                    connectWith: '.section-list-items ul',
+                    update: function (e, ui) {
+                        var itemIds = $(this).children().map(function () {
+                            return parseInt($(this).attr('data-item-id'));
+                        }).get();
+                        vm.updateOrderItems(itemIds);
+                    }
+                });
+
             },
             computed: {
+
                 status: function () {
                     return $store.getters['ss/statusUpdateSection'][this.section.id] || '';
+                },
+                isEmpty: function () {
+                    return isNaN(this.section.id);
                 },
                 isOpen: function () {
                     return this.section.open;
@@ -116,6 +133,23 @@ learn_press_admin_view( 'course/new-section-item' );
                 }
             },
             methods: {
+                updateOrderItems: function (orders) {
+                    var items = [];
+                    for (var i = 0, n = orders.length; i < n; i++) {
+                        $.each(this.section.items, function (j, item) {
+                            if (orders[i] == item.id) {
+                                items.push(JSON.parse(JSON.stringify(item)));
+                                return false;
+                            }
+                        })
+                    }
+
+                    this.section.items = items;
+                    $store.dispatch('ss/updateSectionItems', {
+                        section_id: this.section.id,
+                        items: items
+                    });
+                },
                 // toggle section
                 toggle: function () {
                     $store.dispatch('ss/toggleSection', this.section);

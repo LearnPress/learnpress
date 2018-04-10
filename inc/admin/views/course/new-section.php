@@ -44,6 +44,7 @@
                 newSection: function () {
                     // prevent create no title section
                     if (this.section_title) {
+
                         // create draft course if auto draft
                         this.draftCourse();
 

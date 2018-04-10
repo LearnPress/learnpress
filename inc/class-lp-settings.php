@@ -79,34 +79,21 @@ class LP_Settings {
 	 * @param bool $force
 	 */
 	protected function _load_options( $force = false ) {
-		$_options = wp_load_alloptions();
-//		foreach ( $_options as $k => $v ) {
-//			$this->_options[ $k ] = maybe_unserialize( $v );
-//		}
 
-		$this->_options = $_options;
+		//$this->_options = wp_load_alloptions();
 
-//		if ( ( false === ( $_options = wp_cache_get( 'options', 'lp-options' ) ) ) || $force ) {
-//			global $wpdb;
-//			$query = $wpdb->prepare( "
-//				SELECT option_name, option_value
-//				FROM {$wpdb->options}
-//				WHERE option_name LIKE %s
-//			", 'learn_press_%' );
-//			if ( $options = $wpdb->get_results( $query ) ) {
-//				foreach ( $options as $option ) {
-//					$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
-//				}
-//			}
-//			foreach ( array( 'learn_press_permalink_structure', 'learn_press_install' ) as $option ) {
-//				if ( empty( $this->_options[ $option ] ) ) {
-//					$this->_options[ $option ] = '';
-//				}
-//			}
-//			wp_cache_set( 'options', $this->_options, 'lp-options' );
-//		} else {
-//			$this->_options = $_options;
-//		}
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT option_name, option_value
+			FROM {$wpdb->options}
+			WHERE option_name LIKE %s
+		", $wpdb->esc_like( $this->_prefix ) . '%' );
+
+		if ( $options = $wpdb->get_results( $query ) ) {
+			foreach ( $options as $option ) {
+				$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
+			}
+		}
 	}
 
 	/**
@@ -116,6 +103,9 @@ class LP_Settings {
 	 * @param $value
 	 */
 	public function set( $name, $value ) {
+		if ( $this->_prefix && strpos( $name, $this->_prefix ) === false ) {
+			$name = $this->_prefix . $name;
+		}
 		$this->_set_option( $this->_options, $name, $value );
 	}
 

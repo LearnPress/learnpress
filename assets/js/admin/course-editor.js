@@ -102,7 +102,30 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         'SET_SECTIONS': function (state, sections) {
             state.sections = sections;
         },
-        'ADD_NEW_SECTION': function (state, section) {
+        'ADD_NEW_SECTION': function (state, newSection) {
+            if (newSection.open === undefined) {
+                newSection.open = true;
+            }
+            var pos;
+
+            if (newSection.temp_id) {
+                console.log(newSection)
+                state.sections.map(function (section, i) {
+                    console.log(section)
+                    if (newSection.temp_id == section.id) {
+                        pos = i;
+                        return false;
+                    }
+                });
+            }
+
+            if (pos !== undefined) {
+                Vue.set(state.sections, pos, newSection);
+            } else {
+                state.sections.push(newSection);
+            }
+        },
+        'ADD_EMPTY_SECTION': function (state, section) {
             section.open = true;
             state.sections.push(section);
         },
@@ -225,11 +248,11 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
 
                     var item_id = section.items[i].id;
                     if (item_id) {
-                        if(data.items[item_id]){
+                        if (data.items[item_id]) {
                             Vue.set(section.items, i, data.items[item_id])
                         }
                     }
-                }catch(ex){
+                } catch (ex) {
                     console.log(ex)
                 }
             }
@@ -317,17 +340,27 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
 
         newSection: function (context, name) {
-
-            Vue.http.LPRequest({
+            var newSection = {
                 type: 'new-section',
-                section_name: name
-            }).then(
+                section_name: name,
+                temp_id: LP.uniqueId()
+            }
+            context.commit('ADD_NEW_SECTION', {
+                id: newSection.temp_id,
+                items: [],
+                open: false,
+                title: newSection.section_name
+            });
+
+            Vue.http.LPRequest(newSection).then(
                 function (response) {
                     var result = response.body;
 
                     if (result.success) {
+                        var section = $.extend({}, result.data, {open: true});
+
                         // update course section
-                        context.commit('ADD_NEW_SECTION', result.data);
+                        context.commit('ADD_NEW_SECTION', section);
                     }
                 },
                 function (error) {

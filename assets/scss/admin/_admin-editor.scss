@@ -143,6 +143,30 @@
                     }
                 }
             }
+            &.empty-section {
+                position: relative;
+                &:after {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: #FFF;
+                    content: '';
+                    opacity: 0.5;
+                }
+                .section-head {
+                    .movable:before {
+                        content: "\f463";
+                        color: #a2a2a2;
+                        display: inline-block;
+                        @include rotating4();
+                    }
+                }
+                .section-collapse {
+                    display: none;
+                }
+            }
 
             &:hover {
                 .section-actions {
@@ -319,7 +343,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-
+                background: #FFF;
+                &.ui-sortable-helper{
+                    border-bottom: 1px solid #EEE;
+                }
                 &:nth-child(2n+1) {
                     background-color: #f4fcff;
                 }
@@ -329,8 +356,6 @@
                 }
 
                 &.updating {
-                    ///background-color: #e6f2d0;
-
                     &:before {
                         position: absolute;
                         content: '';
@@ -649,6 +674,12 @@
                     }
                 }
             }
+        }
+        .ui-sortable-placeholder {
+            visibility: visible !important;
+            background: #bdf4fe !important;
+            display: block;
+            border-color: #bdf4fe !important;
         }
     }
 }
@@ -1416,8 +1447,8 @@
 body {
     &.moving {
         cursor: url("../../images/closedhand.cur") 7 5, default !important;
-        .section-item{
-            .drag{
+        .section-item {
+            .drag {
                 cursor: url("../../images/closedhand.cur") 7 5, default !important;
             }
         }

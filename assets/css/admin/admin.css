@@ -1890,6 +1890,28 @@
         top: 1px; }
         #admin-editor-lp_course .lp-course-curriculum .section.new-section .section-head .creatable:before {
           content: "\f132"; }
+  #admin-editor-lp_course .lp-course-curriculum .section.empty-section {
+    position: relative; }
+    #admin-editor-lp_course .lp-course-curriculum .section.empty-section:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #FFF;
+      content: '';
+      opacity: 0.5; }
+    #admin-editor-lp_course .lp-course-curriculum .section.empty-section .section-head .movable:before {
+      content: "\f463";
+      color: #a2a2a2;
+      display: inline-block;
+      -webkit-animation: rotating4 2s linear infinite;
+      -moz-animation: rotating4 2s linear infinite;
+      -ms-animation: rotating4 2s linear infinite;
+      -o-animation: rotating4 2s linear infinite;
+      animation: rotating4 2s linear infinite; }
+    #admin-editor-lp_course .lp-course-curriculum .section.empty-section .section-collapse {
+      display: none; }
   #admin-editor-lp_course .lp-course-curriculum .section:hover .section-actions .remove {
     display: inline-block; }
   #admin-editor-lp_course .lp-course-curriculum .section.sortable-ghost {
@@ -1987,7 +2009,10 @@
     transition: background 200ms ease-out;
     display: flex;
     justify-content: center;
-    align-items: center; }
+    align-items: center;
+    background: #FFF; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.ui-sortable-helper {
+      border-bottom: 1px solid #EEE; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item:nth-child(2n+1) {
       background-color: #f4fcff; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.sortable-ghost {
@@ -2183,6 +2208,12 @@
       display: inline-block; }
     #admin-editor-lp_course .lp-course-curriculum .section-actions .remove.confirm .icon {
       display: none; }
+
+#admin-editor-lp_course .lp-course-curriculum .ui-sortable-placeholder {
+  visibility: visible !important;
+  background: #bdf4fe !important;
+  display: block;
+  border-color: #bdf4fe !important; }
 
 /**
  * Quiz admin editor.
