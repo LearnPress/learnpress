@@ -221,13 +221,6 @@
 
 #learn-press-user-profile {
   position: relative; }
-  #learn-press-user-profile:before {
-    position: absolute;
-    content: '';
-    width: 200px;
-    top: 0;
-    bottom: 0;
-    background: #f5f5f5; }
   #learn-press-user-profile:after {
     clear: both;
     display: block;
@@ -252,6 +245,13 @@
   background: #f5f5f5;
   /*margin-bottom: -20000px;
     padding-bottom: 20000px;*/ }
+  #learn-press-profile-nav:before {
+    content: '';
+    width: 200px;
+    background: #F5F5F5;
+    top: 0;
+    bottom: 0;
+    position: absolute; }
   #learn-press-profile-nav .tabs {
     list-style: none;
     margin: 0;

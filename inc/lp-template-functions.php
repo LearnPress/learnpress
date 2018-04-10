@@ -372,6 +372,7 @@ if ( ! function_exists( 'learn_press_user_profile_header' ) ) {
 		if ( $profile->get_user()->is_guest() ) {
 			return;
 		}
+		
 		learn_press_get_template( 'profile/profile-cover.php', array( 'user' => $user ) );
 	}
 }

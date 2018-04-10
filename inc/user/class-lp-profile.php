@@ -119,9 +119,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function parse_request( $template ) {
-			$profile  = LP_Profile::instance();
-			$user     = $profile->get_user();
-			$role     = $user->get_role();
+			$profile = LP_Profile::instance();
+			$user    = $profile->get_user();
+			$role    = $user->get_role();
 
 			if ( ! in_array( $role, array( 'admin', 'instructor' ) ) ) {
 				unset( $this->_default_settings['courses']['sections']['owned'] );
@@ -924,6 +924,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			if ( ! is_user_logged_in() ) {
 				$classes[] = 'guest';
+			}
+
+			if ( has_action( 'learn-press/before-user-profile' ) ) {
+				$classes[] = 'has-sidebar';
 			}
 
 			$classes = LP_Helper::merge_class( $classes, $more );
