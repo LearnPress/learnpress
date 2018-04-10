@@ -66,6 +66,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function add_script_data() {
 			global $post;
+
+			if ( empty( $post ) || ( get_post_type() !== $this->_post_type ) ) {
+				return;
+			}
+
 			$course          = learn_press_get_course( $post->ID );
 			$hidden_sections = get_post_meta( $post->ID, '_admin_hidden_sections', true );
 

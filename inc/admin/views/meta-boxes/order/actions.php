@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit();
         <div id="misc-publishing-actions">
             <div class="misc-pub-section">
                 <select name="trigger-order-action">
-                    <option value=""><?php _e( 'Actions', 'learnpress' ); ?></option>
+                    <option value=""><?php _e( 'Choose an action', 'learnpress' ); ?></option>
                     <option value="current-status"><?php _e( 'Trigger action of current order status', 'learnpress' ); ?></option>
                 </select>
             </div>

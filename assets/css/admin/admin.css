@@ -1731,15 +1731,26 @@
     .post-type-lp_order #order_details .order-items table .remove-order-item {
       text-decoration: none;
       outline: none;
-      color: #FF0000;
-      display: none;
-      margin-left: 10px; }
+      color: #CCC; }
+      .post-type-lp_order #order_details .order-items table .remove-order-item .dashicons {
+        font-size: 18px; }
+      .post-type-lp_order #order_details .order-items table .remove-order-item:hover {
+        color: #FF0000; }
     .post-type-lp_order #order_details .order-items table .order-item-row:hover .remove-order-item {
       display: inline-block; }
 
 .color-schemas {
   margin: 0 20px 20px 0;
   float: left; }
+  .color-schemas .wp-color-picker {
+    width: 80px;
+    height: 24px;
+    vertical-align: top;
+    margin: 0; }
+  .color-schemas .wp-picker-holder {
+    position: absolute; }
+  .color-schemas .buttons {
+    display: none; }
   .color-schemas table {
     border-collapse: collapse;
     position: relative; }
@@ -1769,9 +1780,6 @@
     color: #FF0000; }
   .color-schemas .wp-color-result {
     margin: 0; }
-  .color-schemas .color-selector input {
-    width: 0 !important;
-    opacity: 0; }
   .color-schemas .clone-schema {
     display: none; }
   .color-schemas:first-child .remove-schema,
