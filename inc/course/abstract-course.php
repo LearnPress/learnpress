@@ -1755,7 +1755,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		public function get_external_link_text() {
-			return apply_filters( 'learn-press/course-external-link-text', __( 'Buy this course', 'learnpress' ), $this->get_id() );
+			return apply_filters( 'learn-press/course-external-link-text', _x( 'Buy this course','Text of Buy this course with external link', 'learnpress' ), $this->get_id() );
 		}
 
 		/**

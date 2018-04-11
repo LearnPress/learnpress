@@ -85,7 +85,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'add_items_to_order',
 				'remove_items_from_order',
 				'update_email_status',
-				'create-pages'
+				'create-pages',
+				'skip-notice-install'
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -103,6 +104,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				LP_Request::register_ajax( $action, $callback );
 			}
+		}
+
+		/**
+		 * Hide notice install
+		 */
+		public static function skip_notice_install() {
+			delete_option( 'learn_press_install' );
 		}
 
 		/**
@@ -456,7 +464,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

@@ -2869,6 +2869,12 @@ function learn_press_static_page_ids() {
 			'become_a_teacher' => learn_press_get_page_id( 'become_a_teacher' )
 		);
 
+		foreach ( $pages as $name => $id ) {
+			if ( ! get_post( $id ) ) {
+				$pages[ $name ] = 0;
+			}
+		}
+
 		wp_cache_set( 'static-page-ids', $pages, 'learnpress' );
 	}
 

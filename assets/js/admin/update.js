@@ -41,7 +41,16 @@
                     }
                 }
             });
-        })
+        }).on('click', '#skip-notice-install', function(){
+            $.post({
+                url: '',
+                data: {
+                    'lp-ajax': 'skip-notice-install'
+                }
+            });
+
+            $('#notice-install').fadeOut();
+        });
     }
 
     $(document).ready(init);
