@@ -514,7 +514,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 						if ( $item->get_status() == 'completed' ) {
 							$completed ++;
 						}
-
+						$completed = apply_filters('learn-press/course-item/completed', $completed, $item, $item->get_status());
 						//if ( ! $item->is_preview() ) {
 						$total ++;
 						//}
