@@ -176,29 +176,14 @@
                 }
             }
 
-            &.sortable-ghost {
-                opacity: 0.5;
-            }
-
-            &.open {
-
-            }
-
             &.close {
                 .section-collapse {
                 }
             }
 
-            //&.updating {
-            //    .section-head {
-            //        background-color: #e6f2d0;
-            //    }
-            //}
-
             input {
                 background-color: transparent;
                 box-shadow: none;
-
                 &:focus {
                     box-shadow: none;
                 }
@@ -426,12 +411,6 @@
                     .remove {
                         color: #a00;
                     }
-
-                    .preview-item {
-                        .dashicons-unlock {
-                            //visibility: visible;
-                        }
-                    }
                 }
 
                 &:hover {
@@ -449,7 +428,6 @@
                         }
                     }
                 }
-
             }
 
             .new-section-item {
@@ -688,7 +666,6 @@
  * Quiz admin editor.
  */
 #admin-editor-lp_quiz {
-
     .lp-box-data-head {
         .status {
             font-family: Dashicons;
@@ -787,10 +764,6 @@
                 .table-row {
                     & > * {
                         font-weight: bold;
-                        padding: 12px 8px 12px 0;
-                    }
-                    .sort {
-                        width: 45px;
                     }
                 }
             }
@@ -809,10 +782,6 @@
                             padding: 0;
                         }
                     }
-
-                    //&.updating {
-                    //    background-color: #e6f2d0;
-                    //}
                 }
                 .question-settings {
                     border: 1px solid #ddd;

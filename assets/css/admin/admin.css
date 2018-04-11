@@ -1922,8 +1922,6 @@
       display: none; }
   #admin-editor-lp_course .lp-course-curriculum .section:hover .section-actions .remove {
     display: inline-block; }
-  #admin-editor-lp_course .lp-course-curriculum .section.sortable-ghost {
-    opacity: 0.5; }
   #admin-editor-lp_course .lp-course-curriculum .section input {
     background-color: transparent;
     box-shadow: none; }
@@ -2294,10 +2292,7 @@
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .header {
     border-bottom: 1px solid #ddd; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .header .table-row > * {
-      font-weight: bold;
-      padding: 12px 8px 12px 0; }
-    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .header .table-row .sort {
-      width: 45px; }
+      font-weight: bold; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-actions .name input {
     width: 100%;
     font-size: 14px;
