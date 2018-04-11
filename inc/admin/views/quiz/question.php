@@ -10,7 +10,8 @@ learn_press_admin_view( 'quiz/question-settings' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-item">
-    <div :class="['question-item',question.type.key]" :data-item-id="question.id" :data-question-order="index">
+    <div :class="['question-item',question.type.key, isNew() ? 'empty-question' : '']" :data-item-id="question.id"
+         :data-question-order="index">
         <lp-quiz-question-actions :question="question" :index="index" @nav="navItem"></lp-quiz-question-actions>
         <lp-quiz-question-settings :question="question" :index="index"></lp-quiz-question-settings>
     </div>
@@ -46,6 +47,9 @@ learn_press_admin_view( 'quiz/question-settings' );
                 nav: function (position) {
                     var element = 'div[data-question-order=' + position + ']';
                     ($(element).find('.name input')).focus();
+                },
+                isNew: function () {
+                    return isNaN(this.question.id);
                 }
             }
         });

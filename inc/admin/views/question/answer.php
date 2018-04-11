@@ -14,9 +14,9 @@ learn_press_admin_view( 'question/option' );
             <thead>
             <tr>
                 <th class="sort"></th>
-                <th class="order"></th>
+                <th class="order">#</th>
                 <th class="answer-text"><?php _e( 'Answer Text', 'learnpress' ); ?></th>
-                <th class="answer-correct"><?php _e( 'Correct answer', 'learnpress' ); ?></th>
+                <th class="answer-correct"><?php _e( 'Correct?', 'learnpress' ); ?></th>
                 <th class="actions"></th>
             </tr>
             </thead>
@@ -84,7 +84,7 @@ learn_press_admin_view( 'question/option' );
                     var _items = $('.list-question-answers tbody>tr.answer-option');
                     var _order = [];
                     _items.each(function (index, item) {
-                        $(item).find('.order').text(index + 1);
+                        $(item).find('.order').text((index + 1)+'.');
                         _order.push($(item).data('answer-id'));
                     });
 

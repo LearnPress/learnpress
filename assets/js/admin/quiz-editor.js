@@ -289,7 +289,17 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         'ADD_QUESTION_ANSWER': function (state, payload) {
             state.questions = state.questions.map(function (question) {
                 if (question.id === payload.question_id) {
-                    question.answers.push(payload.answer);
+                    var found = false;
+                    if (payload.answer.temp_id) {
+                        for (var i = 0, n = question.answers.length; i < n; i++) {
+                            if (question.answers[i].question_answer_id == payload.answer.temp_id) {
+                                found = true;
+                                Vue.set(question.answers, i, payload.answer);
+                            }
+                        }
+                    }
+
+                    !found && question.answers.push(payload.answer);
                     return question;
                 } else {
                     return question;
@@ -308,7 +318,19 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             state.questions = questions;
         },
         'ADD_NEW_QUESTION': function (state, question) {
-            state.questions.push(question);
+            var found = false;
+            if (question.temp_id) {
+                for (var i = 0, n = state.questions.length; i < n; i++) {
+                    if (state.questions[i].id == question.temp_id) {
+                        Vue.set(state.questions, i, question);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                state.questions.push(question);
+            }
 
             var _last_child = $('.lp-list-questions .main > div:last-child');
             if (_last_child.length) {
@@ -420,7 +442,10 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         newQuestion: function (context, payload) {
-
+            console.log(payload);
+            var newQuestion = JSON.parse(JSON.stringify(payload.question));
+            newQuestion.settings = {};
+            context.commit('ADD_NEW_QUESTION', newQuestion);
             Vue.http.LPRequest({
                 type: 'new-question',
                 question: JSON.stringify(payload.question),
@@ -658,12 +683,17 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         newQuestionAnswer: function (context, question_id) {
+            var temp_id = LP.uniqueId();
             context.commit('UPDATE_QUESTION_REQUEST', question_id);
-
+            context.commit('ADD_QUESTION_ANSWER', {
+                question_id: question_id,
+                answer: {'text': LP_Quiz_Store.getters['i18n/all'].new_option, 'question_answer_id': temp_id}
+            });
             Vue.http
                 .LPRequest({
                     type: 'new-question-answer',
-                    question_id: question_id
+                    question_id: question_id,
+                    question_answer_id: temp_id
                 })
                 .then(
                     function (response) {

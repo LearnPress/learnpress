@@ -176,6 +176,10 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			// get new question data
 			$this->result = $this->get_question_data_to_quiz_editor( $new_question, true, array( 'open' => true ) );
 
+			if ( isset( $question['id'] ) ) {
+				$this->result['temp_id'] = $question['id'];
+			}
+
 			return true;
 		}
 
@@ -423,6 +427,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 		if ( $new_answer_id ) {
 			$this->result = array_merge( $answer, array(
+				'temp_id'            => isset( $args['question_answer_id'] ) ? $args['question_answer_id'] : 0,
 				'question_answer_id' => $new_answer_id,
 				'question_id'        => $question_id,
 				'answer_order'       => count( $question->get_data( 'answer_options' ) )

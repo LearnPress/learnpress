@@ -329,7 +329,7 @@
                 justify-content: center;
                 align-items: center;
                 background: #FFF;
-                &.ui-sortable-helper{
+                &.ui-sortable-helper {
                     border-bottom: 1px solid #EEE;
                 }
                 &:nth-child(2n+1) {
@@ -714,15 +714,14 @@
 
                 & > * {
                     width: 100%;
-                    padding: 9px 10px
+                    padding: 12px 10px
                 }
 
                 & > .sort {
-                    width: 15px;
+                    flex: 0 0 15px;
                     fill: #d5dce0;
                     cursor: url("../../images/openhand.cur") 7 5, default;
                     visibility: hidden;
-                    padding-right: 0;
                     position: relative;
                     svg {
                         width: 18px;
@@ -738,11 +737,14 @@
                 }
 
                 & > .order {
-                    width: 10px;
-                }
-
-                & > .name {
-                    padding: 10px;
+                    flex: 0 0 30px;
+                    text-align: right;
+                    font-weight: bold;
+                    font-size: 15px;
+                    padding: 12px 0;
+                    &:after {
+                        content: '.';
+                    }
                 }
 
                 & > .type {
@@ -752,9 +754,18 @@
                 & > .actions {
                     width: 300px;
                 }
+
+                & > .name {
+                    padding-left: 5px;
+                }
                 &:hover {
                     & > .sort {
                         visibility: visible;
+                    }
+                }
+                .actions {
+                    .lp-box-data-actions {
+                        text-align: right !important;
                     }
                 }
             }
@@ -764,6 +775,16 @@
                 .table-row {
                     & > * {
                         font-weight: bold;
+                    }
+
+                    & > .order {
+                        &:after {
+                            content: '';
+                        }
+                    }
+
+                    & > .actions {
+                        padding: 12px 0;
                     }
                 }
             }
@@ -793,18 +814,35 @@
                     .quiz-question-data {
                         table.lp-list-options {
                             border: 1px solid #ddd;
-                            thead {
-                                .answer-text {
-                                    width: calc(100% - 100px);
-                                }
-                                .answer-correct {
-                                    width: 65px;
+                            .sort {
+                                width: 12px;
+                                padding: 8px;
+                            }
+                            .answer-text {
+                                padding-left: 5px;
+                                width: calc(100% - 100px);
+                            }
+                            .order {
+                                width: 20px;
+                                text-align: right;
+                                padding: 0;
+                            }
+                            .answer-correct {
+                                width: 65px;
+                                text-align: center;
+                            }
+                            .actions {
+                                padding: 0;
+                                text-align: right;
+                                .lp-toolbar-btn {
+                                    height: 42px;
                                 }
                             }
                             tbody {
                                 tr {
                                     background: #fff;
                                     border: 1px solid #DDD;
+                                    position: relative;
                                     &:nth-child(2n) {
                                         background: #f4fcff;
                                     }
@@ -815,24 +853,81 @@
                                         border: none;
                                         &.sort {
                                             cursor: url("../../images/openhand.cur") 7 5, default;
+                                            width: 12px;
+                                            position: relative;
+                                        }
+                                        &.order {
+                                            font-weight: bold;
+                                            &:after {
+                                                //content: '.';
+                                            }
+                                        }
+                                        &.answer-text {
+                                            padding-left: 5px;
                                         }
                                         &.answer-correct {
                                             text-align: center;
                                         }
                                     }
-                                }
-                                .answer-option {
-                                    .answer-text {
-                                        input {
-                                            width: 100%;
-                                            font-size: 14px;
-                                            border: none;
-                                            background: transparent;
-                                            box-shadow: none;
-                                            font-weight: normal;
-                                            color: #777;
-                                            padding: 0;
+                                    &.ui-sortable-placeholder {
+                                        visibility: visible !important;
+                                        td {
+                                            height: 43px;
+                                            background: #bdf4fe !important;
                                         }
+                                    }
+                                    &.ui-sortable-helper {
+                                        border-left: none;
+                                        border-right: none;
+                                        td {
+                                            border-bottom: 1px solid #DDD;
+                                            &.sort {
+                                                border-left: 0;
+                                            }
+                                        }
+                                    }
+                                    &.empty-option {
+                                        .sort {
+                                            i {
+                                                display: none;
+                                            }
+                                            &:before {
+                                                font-family: Dashicons;
+                                                content: "\f463";
+                                                display: inline-block;
+                                                font-size: 18px;
+                                                position: absolute;
+                                                left: 4px;
+                                                top: 12px;
+                                                @include rotating4();
+                                            }
+                                        }
+                                        td {
+                                            position: relative;
+                                            &:after {
+                                                content: '';
+                                                top: 0;
+                                                left: 0;
+                                                right: 1px;
+                                                bottom: 0;
+                                                background: #FFF;
+                                                position: absolute;
+                                                opacity: 0.5;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                .answer-text {
+                                    input {
+                                        width: 100%;
+                                        font-size: 14px;
+                                        border: none;
+                                        background: transparent;
+                                        box-shadow: none;
+                                        font-weight: normal;
+                                        color: #777;
+                                        padding: 0;
                                     }
                                 }
                             }
@@ -847,6 +942,50 @@
                     border-bottom: 1px solid #f1f1f1;
                     &:nth-child(2n+1) {
                         background: #f4fcff;
+                    }
+                    &.ui-sortable-helper {
+                        border-top: 1px solid #f1f1f1;
+                    }
+                    &.ui-sortable-placeholder {
+                        visibility: visible !important;
+                        background: #bdf4fe !important;
+                        display: block;
+                        border-color: #bdf4fe !important;
+                    }
+                    &.empty-question, &.updating {
+                        position: relative;
+                        .question-actions {
+                            .sort {
+                                visibility: visible;
+                                .svg-icon {
+                                    display: none;
+                                }
+                                &:after {
+                                    font-family: Dashicons;
+                                    content: "\f463";
+                                    font-size: 20px;
+                                    display: inline-block;
+                                    position: absolute;
+                                    left: 5px;
+                                    @include rotating4();
+                                }
+                            }
+                        }
+                        &:after {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: #FFF;
+                            opacity: 0.5;
+                        }
+                    }
+                    &.empty-question {
+                        .question-settings {
+                            display: none;
+                        }
                     }
                     .cell {
                         padding: 10px;
@@ -959,25 +1098,33 @@
             }
 
             .footer {
+                border-top: 1px solid #DDD;
+                margin-top: -1px;
+                .order {
+                    line-height: 28px;
+                }
                 .table-row {
                     text-align: left;
                     .add-new-question {
-                        padding-left: 65px;
-                        margin-top: -1px;
-                        border-top: 1px solid #DDD;
                         .title {
                             position: relative;
                             display: inline-block;
                             min-width: 500px;
                             input {
-                                border: 1px solid #DDD;
+                                border: 0;
                                 width: 100%;
                                 margin: 0;
-                                padding: 6px 6px;
+                                padding: 6px 0px;
                                 @include box-shadow(none);
                                 @include border-radius(3px);
                                 &:focus {
                                     border-color: #DDD;
+                                }
+                                &::placeholder {
+                                    color: #999;
+                                    font-style: italic;
+                                    border-bottom: 1px solid #DDD;
+                                    display: inline-block;
                                 }
                             }
                         }
@@ -1052,12 +1199,13 @@
 #admin-editor-lp_question {
     background: #fff;
     .lp-box-data-head {
-        padding: 5px 15px;
+        padding: 0 10px;
         .heading {
             float: left;
+            padding: 15px 10px;
         }
         .question-actions {
-            margin-top: 8px;
+            margin-top: 10px;
             .question-types {
                 ul {
                     position: absolute;
@@ -1115,14 +1263,29 @@
                         padding: 15px;
                         background: #F5F5F5;
                         border-bottom: 1px solid #DDD;
-                        &.sort, &.order, &.actions {
-                            width: 10px;
-                        }
-                        &.answer-correct {
-                            width: 65px;
-                        }
+
                     }
                 }
+            }
+
+            .sort, .order, .actions {
+                width: 10px;
+            }
+            .sort{
+                padding:0 10px;
+            }
+            .order{
+                text-align: right;
+                padding: 0;
+                width: 30px;
+                font-weight: bold;
+            }
+            .answer-correct {
+                width: 65px;
+                text-align: center;
+            }
+            .answer-text{
+                padding-left: 5px;
             }
             tbody {
                 tr {
@@ -1134,8 +1297,11 @@
                     &:hover {
                         td {
                             &.actions {
+                                padding-right: 0;
+                                text-align: right;
                                 .remove-answer {
                                     visibility: visible;
+                                    height:42px;
                                 }
                             }
                         }
@@ -1152,7 +1318,7 @@
                             }
                         }
                         &.order {
-                            font-size: 13px;
+                            font-size: 14px;
                         }
                         &.answer-text {
                             input {
@@ -1164,14 +1330,6 @@
                                 font-weight: normal;
                                 color: #777;
                                 padding: 0;
-                            }
-                        }
-                        &.actions {
-                            .remove-answer {
-                                visibility: hidden;
-                                &:hover {
-                                    background: transparent;
-                                }
                             }
                         }
                         &.lp-toolbar-buttons {

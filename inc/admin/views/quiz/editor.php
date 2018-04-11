@@ -35,18 +35,20 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 
                     <div class="footer" v-if="!disableUpdateList">
                         <div class="table-row">
-                            <div class="add-new-question">
+                            <div class="sort"></div>
+                            <div class="order">{{countQuestions()}}</div>
+                            <div class="name add-new-question">
                                 <div class="title">
                                     <form @submit.prevent="">
                                         <input type="text" v-model="new_question.title"
-                                               placeholder="<?php _e( ' Create a new question', 'learnpress' ); ?>"
+                                               placeholder="<?php _e( 'Create a new question', 'learnpress' ); ?>"
                                                @keyup.enter.prevent="addItem()">
                                     </form>
                                 </div>
                                 <div class="add-new">
                                     <button type="button" class="button" :disabled="!addableNew"
                                             @click.prevent="addItem(new_question.type)">
-										<?php esc_html_e( 'Add as New', 'learnpress' ); ?>
+										<?php esc_html_e( 'Add as New...', 'learnpress' ); ?>
                                     </button>
                                     <ul class="question-types">
                                         <li v-for="(type, key) in questionTypes">
@@ -146,11 +148,11 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                 },
                 // add new question
                 addItem: function (type) {
-
                     if (this.new_question.title) {
                         if (!type) {
                             type = this.newQuestionType;
                         }
+                        this.new_question.id = LP.uniqueId()
 
                         // new question
                         this.new_question.type = type;
@@ -175,6 +177,9 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                         title: $('input[name=post_title]').val(),
                         content: $('textarea[name=content]').val()
                     });
+                },
+                countQuestions: function () {
+                    return $store.getters['lqs/listQuestions'].length + 1;
                 }
             }
         })

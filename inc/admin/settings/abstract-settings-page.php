@@ -42,6 +42,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	public function admin_page( $section = null, $tab = '' ) {
 		$settings = $this->get_settings( $section, $tab );
 		$settings = $this->sanitize_settings( $settings );
+		learn_press_debug($settings);
 		do_action( 'learn-press/settings-render' );
 		if ( $settings ) {
 			LP_Meta_Box_Helper::render_fields( $settings );

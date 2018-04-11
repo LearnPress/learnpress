@@ -175,6 +175,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'unique'         => learn_press_uniqid(),
 					'back'           => __( 'Back', 'learnpress' ),
 					'selected_items' => __( 'Selected items', 'learnpress' ),
+					'new_option'     => __( 'New Option', 'learnpress' ),
 				),
 				'listQuestions' => array(
 					'questions'         => $quiz->quiz_editor_get_questions(),
