@@ -78,6 +78,8 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					include "email-groups/class-lp-settings-become-teacher-emails.php"
 				);
 
+				$groups = apply_filters( 'learn-press/email-section-classes', $groups );
+
 				foreach ( $groups as $group ) {
 					$sections[ $group->group_id ] = $group;
 				}
