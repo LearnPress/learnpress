@@ -94,6 +94,16 @@
             state.answers = answers;
         },
 
+        'DELETE_ANSWER': function (state, id) {
+            for (var i = 0, n = state.answers.length; i < n; i++) {
+                if (state.answers[i].question_answer_id == id) {
+                    state.answers[i].question_answer_id = LP.uniqueId();
+                    state.answers.splice(i, 1);
+                    break;
+                }
+            }
+        },
+
         'UPDATE_ANSWERS': function (state, answers) {
             state.answers = answers;
         },
@@ -161,6 +171,9 @@
         },
 
         deleteAnswer: function (context, payload) {
+
+            context.commit('DELETE_ANSWER', payload.id);
+
             Vue.http.LPRequest({
                 type: 'delete-answer',
                 answer_id: payload.id

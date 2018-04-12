@@ -244,6 +244,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         externalComponent: function (state) {
             return state.externalComponent || [];
         },
+        hiddenQuestionsSettings: function (state) {
+            return state.hidden_questions_settings ||[];
+        },
         hiddenQuestions: function (state) {
             return state.questions
                 .filter(function (question) {
@@ -421,6 +424,15 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
         'UPDATE_QUESTION_ANSWER_FAIL': function (state, question_id) {
             Vue.set(state.statusUpdateQuestionAnswer, question_id, 'failed');
+
+        'DELETE_ANSWER': function (state, question_id, answer_id) {
+            for (var i = 0, n = state.answers.length; i < n; i++) {
+                if (state.answers[i].question_answer_id == id) {
+                    state.answers[i].question_answer_id = LP.uniqueId();
+                    state.answers.splice(i, 1);
+                    break;
+                }
+            }
         }
     };
 
@@ -441,8 +453,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             })
         },
 
+        updateQuizQuestionsHidden: function (context, data) {
+            Vue.http.LPRequest($.extend({}, data, {
+                type: 'update-quiz-questions-hidden'
+            }));
+        },
+
         newQuestion: function (context, payload) {
-            console.log(payload);
             var newQuestion = JSON.parse(JSON.stringify(payload.question));
             newQuestion.settings = {};
             context.commit('ADD_NEW_QUESTION', newQuestion);
@@ -521,6 +538,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 context.commit('UPDATE_QUESTION_FAILURE', payload.question_id);
 
             })
+        },
+
+        isHiddenQuestionsSettings: function (context, id) {
         },
 
         cloneQuestion: function (context, question) {
@@ -657,6 +677,10 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         deleteQuestionAnswer: function (context, payload) {
+
+            context.commit('DELETE_ANSWER', payload.question_id, payload.answer_id);
+
+            console.log('xxxxxx');return;
             context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
 
             Vue.http.LPRequest({

@@ -439,6 +439,19 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		return false;
 	}
 
+	public function update_quiz_questions_hidden( $args = array() ) {
+		$id        = $args['id'];
+		$questions = $args['hidden'];
+
+		if ( $questions ) {
+			update_post_meta( $id, '_hidden_questions_settings', $questions );
+		} else {
+			delete_post_meta( $id, '_hidden_questions_settings' );
+		}
+
+		return true;
+	}
+
 	/**
 	 * @param array $args
 	 *

@@ -95,7 +95,15 @@
                         $postbox.removeClass('closed');
                     }
 
-                    $root.toggleClass('closed', $postbox.hasClass('closed'));
+                    var isClosed = $postbox.hasClass('closed');
+
+                    $root.toggleClass('closed', isClosed);
+
+                    $store.dispatch('lqs/updateQuizQuestionsHidden', {
+                        hidden: $('.question-item .postbox.closed').map(function () {
+                            return $(this).closest('.question-item').data('item-id')
+                        }).get()
+                    })
                 }
             }
         })

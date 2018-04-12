@@ -53,7 +53,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
+			//add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
+			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
+			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
 
 			if ( self::$_enable_review ) {
 				add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
@@ -403,16 +405,41 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			return $fields;
 		}
 
+		public function _posts_join_paged_course_items( $join ) {
+			global $wpdb;
+
+			if ( ( $course_id = $this->_filter_items_by_course() ) || ( LP_Request::get( 'orderby' ) == 'course-name' ) ) {
+				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
+				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
+				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
+			}
+
+			return $join;
+		}
+
+		public function _posts_where_paged_course_items( $where ) {
+			global $wpdb;
+
+			if ( $course_id = $this->_filter_items_by_course() ) {
+				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
+				$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_status = %s", 'publish' );
+			}
+
+			return $where;
+		}
+
 		/**
 		 * @param $join
 		 *
 		 * @return string
 		 */
 		public function posts_join_paged( $join ) {
+			global $wpdb;
+
 			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
-			global $wpdb;
+
 			$join .= " LEFT JOIN {$wpdb->postmeta} pm_price ON pm_price.post_id = {$wpdb->posts}.ID AND pm_price.meta_key = '_lp_price'";
 
 			return $join;
@@ -424,12 +451,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return mixed|string
 		 */
 		public function posts_where_paged( $where ) {
+			global $wpdb;
 
 			if ( ! $this->_is_archive() ) {
 				return $where;
 			}
-
-			global $wpdb;
 
 			if ( array_key_exists( 'filter_price', $_REQUEST ) ) {
 				if ( $_REQUEST['filter_price'] == 0 ) {
@@ -439,7 +465,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			}
 
-			//if ( get_post_type() == LP_COURSE_CPT ) {
 			$not_in = $wpdb->prepare( "
 				SELECT ID
 				FROM {$wpdb->posts} p 
@@ -448,9 +473,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			", '_lp_preview_course', 'yes' );
 
 			$where .= " AND {$wpdb->posts}.ID NOT IN( {$not_in} )";
-
-			//}
-
 
 			return $where;
 		}

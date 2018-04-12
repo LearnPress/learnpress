@@ -154,7 +154,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			$user_id                   = get_current_user_id();
 			$default_new_question_type = get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) ? get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) : 'true_or_false';
 
-			$hidden_questions = get_post_meta( $post->ID, '_lp_hidden_questions', true );
+			$hidden_questions          = get_post_meta( $post->ID, '_lp_hidden_questions', true );
+			$hidden_questions_settings = get_post_meta( $post->ID, '_hidden_questions_settings', true );
 
 			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', apply_filters( 'learn-press/admin-localize-quiz-editor', array(
 				'root'          => array(
@@ -178,10 +179,11 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'new_option'     => __( 'New Option', 'learnpress' ),
 				),
 				'listQuestions' => array(
-					'questions'         => $quiz->quiz_editor_get_questions(),
-					'hidden_questions'  => ! empty( $hidden_questions ) ? $hidden_questions : array(),
-					'disableUpdateList' => false,
-					'externalComponent' => apply_filters( 'learn-press/admin/external-js-component', array() )
+					'questions'                 => $quiz->quiz_editor_get_questions(),
+					'hidden_questions'          => ! empty( $hidden_questions ) ? $hidden_questions : array(),
+					'hidden_questions_settings' => $hidden_questions_settings ? $hidden_questions_settings : array(),
+					'disableUpdateList'         => false,
+					'externalComponent'         => apply_filters( 'learn-press/admin/external-js-component', array() )
 				)
 			) ) );
 		}
@@ -318,20 +320,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			return apply_filters( 'learn_press_quiz_general_meta_box', $meta_box );
 		}
 
-		protected function _get_course_column_title() {
-			$title = __( 'Course', 'learnpress' );
-
-			if ( $course_id = $this->_filter_course() ) {
-				if ( $course = learn_press_get_course( $course_id ) ) {
-					$count = $course->count_items( $this->_post_type );
-
-					$title = sprintf( _n( 'Course (%d quiz)', 'Course (%d quizzes)', $count, 'learnpress' ), $count );
-				}
-			}
-
-			return $title;
-		}
-
 		/**
 		 * Add columns to admin manage quiz page
 		 *
@@ -374,24 +362,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			global $post;
 			switch ( $name ) {
 				case 'lp_course':
-					$courses = learn_press_get_item_courses( $post_id );
-					if ( $courses ) {
-						foreach ( $courses as $course ) {
-							echo '<div><a href="' . esc_url( add_query_arg( array( 'course' => $course->ID ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
-							echo '<div class="row-actions">';
-							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
-							echo "&nbsp;|&nbsp;";
-							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
-							if ( $this->_filter_course() ) {
-								echo "&nbsp;|&nbsp;";
-								printf( '<a href="%s">%s</a>', remove_query_arg( 'course' ), __( 'Remove Filter', 'learnpress' ) );
-							}
-							echo '</div></div>';
-						}
-
-					} else {
-						_e( 'Not assigned yet', 'learnpress' );
-					}
+					$this->_get_item_course( $post_id );
 					break;
 				case 'num_of_question':
 					if ( property_exists( $post, 'question_count' ) ) {
@@ -448,11 +419,11 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				return $join;
 			}
 			global $wpdb;
-			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || $this->_get_search() ) {
-				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
-				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
-				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
-			}
+//			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || $this->_get_search() ) {
+//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
+//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
+//				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
+//			}
 
 			return $join;
 		}
@@ -470,9 +441,9 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			global $wpdb;
 
-			if ( $course_id = $this->_filter_course() ) {
-				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
-			}
+//			if ( $course_id = $this->_filter_course() ) {
+//				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
+//			}
 
 			if ( isset( $_GET['s'] ) ) {
 				$s     = $_GET['s'];

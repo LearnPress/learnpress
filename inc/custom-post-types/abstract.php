@@ -358,6 +358,79 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
+     * Filter item by the course selected.
+     *
+     * @since 3.0.7
+     *
+	 * @return bool|int
+	 */
+	protected function _filter_items_by_course() {
+		$course_id = ! empty( $_REQUEST['course'] ) ? absint( $_REQUEST['course'] ) : false;
+
+		if ( ! $course_id ) {
+			global $post_type;
+			if ( ! learn_press_is_support_course_item_type( $post_type ) ) {
+				$course_id = false;
+			}
+		}
+
+		return $course_id;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	protected function _get_course_column_title() {
+		global $post_type;
+
+		if ( ! learn_press_is_support_course_item_type( $post_type ) ) {
+			return false;
+		}
+
+		$title = __( 'Course', 'learnpress' );
+
+		if ( $course_id = $this->_filter_items_by_course() ) {
+			if ( $course = learn_press_get_course( $course_id ) ) {
+				$count       = $course->count_items( $this->_post_type );
+				$post_object = get_post_type_object( $post_type );
+				$title       = sprintf( _n( 'Course (%d %s)', 'Course (%d %s)', $count, 'learnpress' ), $count, $count > 1 ? $post_object->label : $post_object->labels->singular_name );
+			}
+		}
+
+		return $title;
+	}
+
+	/**
+     * Get course that the items is contained.
+     *
+	 * @param $post_id
+	 */
+	protected function _get_item_course( $post_id ) {
+		$courses = learn_press_get_item_courses( $post_id );
+		if ( $courses ) {
+			foreach ( $courses as $course ) {
+				echo '<div><a href="' . esc_url( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+				echo '<div class="row-actions">';
+				printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
+				echo "&nbsp;|&nbsp;";
+				printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
+
+				if ( $this->_filter_items_by_course() ) {
+					echo "&nbsp;|&nbsp;";
+					printf( '<a href="%s">%s</a>', remove_query_arg( array(
+						'course',
+						'orderby'
+					) ), __( 'Remove Filter', 'learnpress' ) );
+				}
+				echo '</div></div>';
+			}
+
+		} else {
+			_e( 'Not assigned yet', 'learnpress' );
+		}
+	}
+
+	/**
 	 * @param string $fields
 	 *
 	 * @return mixed
