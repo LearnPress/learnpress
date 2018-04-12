@@ -259,6 +259,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		// create new lesson, quiz and add to course
 		$this->result = $this->section_curd->new_item( $section_id, $item );
 
+		$this->section_curd->update_final_item();
+
 		return true;
 	}
 
