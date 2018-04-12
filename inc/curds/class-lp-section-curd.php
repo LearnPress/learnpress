@@ -408,6 +408,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$order ++;
 		}
 
+		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $all_items, 'lp-course-section-items' );
+
 		return $result;
 	}
 
