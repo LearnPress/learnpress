@@ -146,6 +146,9 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 		 * @return bool
 		 */
 		public static function include_field( $field ) {
+
+			$field = RWMB_Field::map_types( $field );
+
 			if ( is_array( $field ) && ! empty( $field['type'] ) ) {
 				$type = $field['type'];
 			} else {
