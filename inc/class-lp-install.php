@@ -109,6 +109,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				return;
 			}
 
+			if(version_compare($latest_ver, LEARNPRESS_VERSION)){
+				return;
+			}
+
 			// Show message if the latest version is not already updated
 			add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ) );
 		}
