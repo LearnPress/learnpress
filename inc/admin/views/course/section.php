@@ -19,6 +19,9 @@ learn_press_admin_view( 'course/new-section-item' );
             <input v-model="section.title" type="text" title="title" class="title-input"
                    @change="updating" @blur="completed" @keyup.enter="completed"
                    placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
+            <div class="section-item-counts">
+                <span v-for="item in countItems()">{{item.count}} {{item.name}}</span>
+            </div>
             <!--Section toggle-->
             <div class="actions">
                 <span class="collapse" :class="isOpen ? 'open' : 'close'" @click.prevent="toggle"></span>
@@ -258,6 +261,15 @@ learn_press_admin_view( 'course/new-section-item' );
                     },
                     openModal: function () {
                         $store.dispatch('ci/open', parseInt(this.section.id));
+                    },
+                    countItems: function () {
+                        var count = this.section.items.length,
+                            labels = $store.getters['i18n/all'].item_labels;
+                        console.log(labels)
+                        return [{
+                            count: count,
+                            name: count > 1 ? labels.plural : labels.singular
+                        }];
                     }
                 }
             });

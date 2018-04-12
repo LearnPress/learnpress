@@ -154,6 +154,24 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'id'      => 'emails_general[list_emails]',
 					'default' => '',
 					'type'    => 'list-emails'
+				),
+				array(
+					'id'               => 'file',
+					'name'             => 'File Advanced',
+					'type'             => 'file_advanced',
+
+					// Delete file from Media Library when remove it from post meta?
+					// Note: it might affect other posts if you use same file for multiple posts
+					'force_delete'     => false,
+
+					// Maximum file uploads.
+					'max_file_uploads' => 2,
+
+					// File types.
+					// 'mime_type'        => 'application,audio,video',
+
+					// Do not show how many files uploaded/remaining.
+					'max_status'       => 'false',
 				)
 			)
 		);

@@ -8,7 +8,7 @@
 
 <script type="text/x-template" id="tmpl-lp-question-answer-option">
     <tr class="answer-option" :data-answer-id="id">
-        <td class="sort"><i class="fa fa-bars"></i></td>
+        <td class="sort"><?php  learn_press_admin_view('svg-icon');?></td>
         <td class="order">{{index +1}}.</td>
         <td class="answer-text">
             <form @submit.prevent="">

@@ -7,7 +7,7 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-meta">
-    <div class="quiz-question-options">
+    <div class="quiz-question-options" @click="openSettings">
         <div class="postbox">
             <h2 class="hndle"><span><?php _e( 'Settings', 'learnpress' ); ?></span></h2>
             <div class="inside">
@@ -86,6 +86,16 @@
                         question: this.question,
                         meta_key: e.target.name
                     });
+                },
+                openSettings: function () {
+                    var $root = $(this.$el).closest('.question-settings'),
+                        $postbox = $root.find('.postbox');
+
+                    if ($root.hasClass('closed')) {
+                        $postbox.removeClass('closed');
+                    }
+
+                    $root.toggleClass('closed', $postbox.hasClass('closed'));
                 }
             }
         })

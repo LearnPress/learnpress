@@ -9,7 +9,7 @@
 <script type="text/x-template" id="tmpl-lp-quiz-question-answer-option">
     <tr class="answer-option" :class="[isNew() ? 'empty-option' : '']" :data-answer-id="answer.question_answer_id"
         :data-order-answer="index">
-        <td class="sort"><i class="fa fa-bars"></i></td>
+        <td class="sort"><?php learn_press_admin_view( 'svg-icon' ); ?></td>
         <td class="order">{{index +1}}.</td>
         <td class="answer-text">
             <input type="text" v-model="answer.text"
