@@ -880,7 +880,7 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 		}
 		remove_filter( 'post_type_link', 'learn_press_course_item_type_link', 10 );
 
-		if ( $post->post_type !== LP_QUIZ_CPT && $post->post_type !== LP_LESSON_CPT ) {
+		if ( ! in_array( $post->post_type, learn_press_course_get_support_item_types( true ) ) ) {
 			return $permalink;
 		}
 

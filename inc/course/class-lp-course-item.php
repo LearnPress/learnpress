@@ -106,7 +106,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		public function get_format() {
 			$format = ( false !== ( $format = wp_cache_get( 'item-format-' . $this->get_id(), 'lp-item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
 
-			if(!$format){
+			if ( ! $format ) {
 				$format = 'standard';
 			}
 
@@ -186,6 +186,11 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 										break;
 									case 'completed':
 										$defaults[] = $item_grade;
+										break;
+									default:
+										if ( $item_class = apply_filters( 'learn-press/course-item-status-class', $item_status, $item_grade, $this->get_item_type(), $this->get_id(), $course_id ) ) {
+											$defaults[] = $item_class;
+										}
 								}
 							}
 						}

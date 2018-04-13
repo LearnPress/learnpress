@@ -34,6 +34,7 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
         <table class="lp-list-table profile-list-quizzes profile-list-table">
             <thead>
             <tr>
+                <th class="column-course"><?php _e( 'Course', 'learnpress' ); ?></th>
                 <th class="column-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></th>
                 <th class="column-date"><?php _e( 'Date', 'learnpress' ); ?></th>
                 <th class="column-status"><?php _e( 'Progress', 'learnpress' ); ?></th>
@@ -49,12 +50,21 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
 						<?php if ( $courses ) {
 							foreach ( $courses as $course ) {
 								$course = LP_Course::get_course( $course->ID ); ?>
+                                <a href="<?php echo $course->get_permalink(); ?>">
+									<?php echo $course->get_title( 'display' ); ?>
+                                </a>
+							<?php }
+						} ?>
+                    </td>
+                    <td class="column-quiz">
+						<?php if ( $courses ) {
+							foreach ( $courses as $course ) {
+								$course = LP_Course::get_course( $course->ID ); ?>
                                 <a href="<?php echo $course->get_item_link( $user_quiz->get_id() ) ?>">
 									<?php echo $quiz->get_title( 'display' ); ?>
                                 </a>
 							<?php }
 						} ?>
-
                     </td>
                     <td class="column-date"><?php
 						echo $user_quiz->get_start_time( 'i18n' ); ?></td>
