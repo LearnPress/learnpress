@@ -40,15 +40,50 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		/**
-		 * Filter items unassigned.
-		 *
-		 * @param string $where
+		 * @param $join
 		 *
 		 * @return string
 		 */
+		public function posts_join_paged( $join ) {
+			if ( ! $this->_is_archive() ) {
+				return $join;
+			}
+			global $wpdb;
+			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || $this->_get_search() ) {
+				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
+				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
+				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
+			}
+
+			return $join;
+		}
+
+		/**
+		 * @param $where
+		 *
+		 * @return mixed|string
+		 */
 		public function posts_where_paged( $where ) {
+
+			if ( ! $this->_is_archive() ) {
+				return $where;
+			}
+
+			global $wpdb;
+
+			if ( $course_id = $this->_filter_course() ) {
+				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
+			}
+
+			if ( isset( $_GET['s'] ) ) {
+				$s     = $_GET['s'];
+				$where = preg_replace(
+					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
+					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
+				);
+			}
+
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
-				global $wpdb;
 				$where .= $wpdb->prepare( "
                     AND {$wpdb->posts}.ID NOT IN(
                         SELECT si.item_id 
@@ -57,25 +92,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
                         WHERE p.post_type = %s
                     )
                 ", LP_LESSON_CPT );
-			}
-
-			if ( $preview = LP_Request::get( 'preview' ) ) {
-				global $wpdb;
-
-				$clause = $wpdb->prepare( "
-                    SELECT ID
-                    FROM {$wpdb->posts} p 
-                    INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
-                    WHERE pm.meta_value = %s
-                    AND p.post_type = %s
-                ", '_lp_preview', 'yes', LP_LESSON_CPT );
-
-				$in = '';
-				if ( 'no' === $preview ) {
-					$in = 'NOT';
-				}
-
-				$where .= " AND {$wpdb->posts}.ID {$in} IN({$clause})";
 			}
 
 			return $where;
