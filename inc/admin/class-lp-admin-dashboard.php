@@ -100,7 +100,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 			if ( $orders ) {
 				foreach ( $orders as $order ) {
 					$order = learn_press_get_order( $order->ID );
-					$total = $total + $order->order_total;
+					$total = $total + floatval($order->order_total);
 				}
 			}
 
