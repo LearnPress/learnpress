@@ -3,6 +3,10 @@
  */
 #admin-editor-lp_quiz {
     .lp-box-data-head {
+        padding: 12px 10px;
+        h3 {
+            padding: 0;
+        }
         .status {
             font-family: Dashicons;
             font-size: 20px;
@@ -25,7 +29,7 @@
             font-family: Dashicons;
             position: absolute;
             top: 0;
-            right: 5px;
+            right: 0;
             bottom: 0;
             font-size: 30px;
             display: flex;
@@ -33,7 +37,7 @@
             align-items: center;
             cursor: pointer;
             width: 40px;
-            height: 55px;
+            height: 46px;
             color: #999;
         }
     }
@@ -101,6 +105,7 @@
 
             .header {
                 border-bottom: 1px solid #ddd;
+                display: none;
                 .table-row {
                     & > * {
                         font-weight: bold;
@@ -305,7 +310,7 @@
                         .question-actions {
                             .sort {
                                 visibility: visible;
-                                .svg-icon {
+                                .fa {
                                     display: none;
                                 }
                                 &:after {
@@ -441,24 +446,43 @@
                                     }
                                 }
                             }
-
+                            .postbox {
+                                .hndle {
+                                    cursor: default;
+                                }
+                                .toggle {
+                                    float: right;
+                                    width: 36px;
+                                    height: 36px;
+                                    position: absolute;
+                                    top: 0;
+                                    right: 0;
+                                    line-height: 36px;
+                                    text-align: center;
+                                    &:after {
+                                        font-family: Dashicons;
+                                        content: "\f460";
+                                        font-size: 18px;
+                                    }
+                                }
+                            }
                         }
                         &.closed {
                             .quiz-question-options {
                                 width: 38px;
                             }
                             .postbox {
-                                min-width: 38px;
-                                height: 38px;
+                                min-width: 34px;
+                                height: 34px;
                                 line-height: 42px;
                                 text-align: center;
-                                font-size: 18px;
                                 .hndle {
                                     display: none;
                                 }
-                                &:after {
-                                    font-family: Dashicons;
-                                    content: "\f132";
+                                .toggle {
+                                    &:after {
+                                        content: "\f132";
+                                    }
                                 }
                             }
                         }

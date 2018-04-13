@@ -7,7 +7,7 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-section-item">
-    <li :class="['section-item',item.type, {updating: updating, removing: removing}]" :data-item-id="item.id"
+    <li :class="['section-item',item.type, isEmptyItem() ? 'empty-item' : '', {updating: updating, removing: removing}]" :data-item-id="item.id"
         :data-item-order="order">
         <div class="drag">
             <?php learn_press_admin_view('svg-icon');?>
@@ -101,7 +101,9 @@
                     }
                 },
                 methods: {
-
+                    isEmptyItem: function () {
+                        return isNaN(this.item.id)
+                    },
                     changeTitle: function () {
                         this.changed = true;
                     },
@@ -114,15 +116,16 @@
                     },
                     // remove item
                     remove: function () {
-                        this.removing = true;
+                        //this.removing = true;
+                        this.item.temp_id = LP.uniqueId();
                         this.$emit('remove', this.item);
                     },
                     // remove item
                     deletePermanently: function () {
-                        if (!confirm($store.getters['i18n/all'].confirm_trash_item)) {
+                        if (!confirm($store.getters['i18n/all'].confirm_trash_item.replace('{{ITEM_NAME}}', this.item.title))) {
                             return;
                         }
-                        this.removing = true;
+                        this.item.temp_id = LP.uniqueId();
                         this.$emit('delete', this.item);
                     },
                     // navigation course items

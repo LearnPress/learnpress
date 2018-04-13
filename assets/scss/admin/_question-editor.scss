@@ -7,11 +7,38 @@
         padding: 0 10px;
         .heading {
             float: left;
-            padding: 15px 10px;
+            padding: 12px 10px;
+            .section-item-counts{
+                right: 50px;
+                span{
+                    background: #F5F5F5;
+                    padding: 0 9px;
+                    color: #00b9ff;
+                    margin-top: 8px;
+                    display: inline-block;
+                    line-height: 30px;
+                    height: 30px;
+                    @include border-radius(3px);
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+            }
+        }
+        .lp-toolbar-buttons{
+            height:46px;
         }
         .question-actions {
-            margin-top: 10px;
+            margin-right: 10px;
+            height: 30px;
+            background: #BBB;
+            margin-top: 8px;
+            @include border-radius(3px);
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
             .question-types {
+                a{
+                    color: #FFF;
+                }
                 ul {
                     position: absolute;
                     top: 100%;
@@ -30,11 +57,11 @@
                             display: block;
                             white-space: nowrap;
                             text-decoration: none;
-                            padding: 5px 25px;
+                            padding: 5px;
                             font-size: 12px;
                             text-align: right;
                             color: #0073aa;
-                            margin: 0;
+                            min-width: 100px;
                         }
                     }
                     &:hover {
@@ -155,6 +182,53 @@
                                 .svg-icon {
                                     visibility: visible;
                                 }
+                            }
+                        }
+                    }
+
+                    &.ui-sortable-placeholder {
+                        visibility: visible !important;
+                        td {
+                            background: #bdf4fe !important;
+                            height: 43px;
+                        }
+                    }
+                    &.ui-sortable-helper {
+                        td {
+                            border-bottom: 1px solid #DDD;
+                            &.sort {
+                                border-left: 0;
+                            }
+                        }
+                    }
+                    &.new-option{
+                        .svg-icon{
+                            display: none;
+                        }
+                        td{
+                            position: relative;
+                        }
+                        .sort {
+                            &:before {
+                                content: "\f463";
+                                font-family: Dashicons;
+                                position: absolute;
+                                left: 10px;
+                                top: 12px;
+                                display: inline-block;
+                                @include rotating4();
+                            }
+                        }
+                        td{
+                            &:after{
+                                position: absolute;
+                                content: '';
+                                background: #FFF;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                opacity: 0.5;
                             }
                         }
                     }

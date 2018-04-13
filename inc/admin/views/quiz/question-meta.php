@@ -7,9 +7,11 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-meta">
-    <div class="quiz-question-options" @click="openSettings">
-        <div class="postbox">
-            <h2 class="hndle"><span><?php _e( 'Settings', 'learnpress' ); ?></span></h2>
+    <div class="quiz-question-options">
+        <div class="postbox" @click="openSettings($event)">
+            <h2 class="hndle"><span><?php _e( 'Settings', 'learnpress' ); ?></span>
+            </h2>
+            <a class="toggle" @click.prevent="openSettings($event)"></a>
             <div class="inside">
                 <div class="rwmb-meta-box">
                     <div class="rwmb-field rwmb-textarea-wrapper">
@@ -87,20 +89,19 @@
                         meta_key: e.target.name
                     });
                 },
-                openSettings: function () {
+                openSettings: function (e) {
+                    e.stopPropagation();
                     var $root = $(this.$el).closest('.question-settings'),
                         $postbox = $root.find('.postbox');
-
-                    if ($root.hasClass('closed')) {
-                        $postbox.removeClass('closed');
+                    $postbox.removeClass('closed');
+                    if (!$(e.target).hasClass('toggle')) {
+                        return;
                     }
 
-                    var isClosed = $postbox.hasClass('closed');
-
-                    $root.toggleClass('closed', isClosed);
+                    var isClosed = $root.toggleClass('closed').hasClass('closed');
 
                     $store.dispatch('lqs/updateQuizQuestionsHidden', {
-                        hidden: $('.question-item .postbox.closed').map(function () {
+                        hidden: $('.question-settings.closed').map(function () {
                             return $(this).closest('.question-item').data('item-id')
                         }).get()
                     })

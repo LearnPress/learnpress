@@ -9,7 +9,7 @@
 <script type="text/x-template" id="tmpl-lp-quiz-question-actions">
     <div class="question-actions table-row" :class="status">
         <div class="sort">
-			<i class="fa fa-bars"></i>
+            <i class="fa fa-bars"></i>
         </div>
         <div class="order">{{index +1}}</div>
         <div class="name" @dblclick="toggle">
@@ -120,7 +120,7 @@
                 },
                 // delete permanently question
                 deletePermanently: function () {
-                    if (!confirm('Do you want to remove this question?')) {
+                    if (!confirm($store.getters['i18n/all'].confirm_trash_question.replace('{{QUESTION_NAME}}', this.question.title))) {
                         return;
                     }
                     $store.dispatch('lqs/deleteQuestion', this.question);

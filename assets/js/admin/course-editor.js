@@ -15,7 +15,7 @@
     };
 })(window);
 
-jQuery(function() {
+jQuery(function () {
 
 
     /**
@@ -135,20 +135,26 @@ jQuery(function() {
                 state.sections.splice(index, 1);
             },
             'REMOVE_SECTION_ITEM': function (state, payload) {
+
                 var section = state.sections.find(function (section) {
                     return (section.id === payload.section_id);
                 });
 
-                var items = section.items || [];
-                var index = -1;
-                items.forEach(function (item, i) {
-                    if (item.id === payload.item_id) {
+                var items = section.items || [],
+                    item = payload.item,
+                    index = -1;
+                items.forEach(function (it, i) {
+                    if (it.id === item.id) {
                         index = i;
                     }
                 });
 
                 if (index !== -1) {
-                    items.splice(index, 1);
+                    if (item.temp_id) {
+                        items[index].id = item.temp_id;
+                    } else {
+                        items.splice(index, 1);
+                    }
                 }
             },
             'UPDATE_SECTION_ITEMS': function (state, payload) {
@@ -398,25 +404,35 @@ jQuery(function() {
             },
 
             removeSectionItem: function (context, payload) {
+                var id = payload.item.id;
                 context.commit('REMOVE_SECTION_ITEM', payload);
-
+                payload.item.temp_id = 0;
                 Vue.http
                     .LPRequest({
                         type: 'remove-section-item',
                         section_id: payload.section_id,
-                        item_id: payload.item_id
-                    });
+                        item_id: id
+                    }).then(
+                    function () {
+                        context.commit('REMOVE_SECTION_ITEM', payload);
+                    }
+                );
             },
 
             deleteSectionItem: function (context, payload) {
+                var id = payload.item.id;
                 context.commit('REMOVE_SECTION_ITEM', payload);
-
+                payload.item.temp_id = 0;
                 Vue.http
                     .LPRequest({
                         type: 'delete-section-item',
                         section_id: payload.section_id,
-                        item_id: payload.item_id
-                    });
+                        item_id: id
+                    }).then(
+                    function () {
+                        context.commit('REMOVE_SECTION_ITEM', payload);
+                    }
+                );
             },
 
             newSectionItem: function (context, payload) {

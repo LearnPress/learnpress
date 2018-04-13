@@ -254,7 +254,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		if ( $prop === 'status' ) {
-			if ( isset($results['grade']) ) {
+			if ( isset( $results['grade'] ) ) {
 				$prop = 'grade';
 			}
 		}
@@ -366,8 +366,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-quizzes' ) ) ) {
 
-			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
-			$result = 0;
+			$data            = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
+			$result          = 0;
 			$result_of_items = 0;
 
 			if ( $items = $this->get_items() ) {
@@ -375,12 +375,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					if ( $item->get_type() !== LP_QUIZ_CPT ) {
 						continue;
 					}
-					if( $item->get_quiz()->get_data( 'passing_grade' ) ) {
-					    $result += $item->get_results( 'result' );
-					    $result_of_items++;
+					if ( $item->get_quiz()->get_data( 'passing_grade' ) ) {
+						$result += $item->get_results( 'result' );
+						$result_of_items ++;
 					}
 				}
-				$result = $result/$result_of_items;
+				$result         = $result / $result_of_items;
 				$data['result'] = $result;
 				if ( $this->is_finished() ) {
 					$data['grade'] = $this->_is_passed( $result );
@@ -402,20 +402,20 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		if ( false === ( $data = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results/evaluate-by-passed-quizzes' ) ) ) {
 
-			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
-			$result = 0;
+			$data            = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
+			$result          = 0;
 			$result_of_items = 0;
 			if ( $items = $this->get_items() ) {
 				foreach ( $items as $item ) {
 					if ( $item->get_type() !== LP_QUIZ_CPT ) {
 						continue;
 					}
-					if( $item->get_quiz()->get_data( 'passing_grade' ) ) {
-					    $result += $item->is_passed() ? $item->get_results( 'result' ) : 0;
-					    $result_of_items++;
+					if ( $item->get_quiz()->get_data( 'passing_grade' ) ) {
+						$result += $item->is_passed() ? $item->get_results( 'result' ) : 0;
+						$result_of_items ++;
 					}
 				}
-				$result = $result/$result_of_items;
+				$result         = $result / $result_of_items;
 				$data['result'] = $result;
 
 				if ( $this->is_finished() ) {
@@ -443,17 +443,17 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$result = 0;
 
 			if ( $items = $this->get_items() ) {
-			    $result_of_items = 0;
-			    foreach ( $items as $item ) {
-			        if ( $item->get_type() !== LP_QUIZ_CPT ) {
-			            continue;
-			        }
-			        if( $item->get_quiz()->get_data( 'passing_grade' ) ) {
-			            $result += $item->is_passed() ? 1 : 0;
-			            $result_of_items++;
-			        }
-			    }
-			    $result = $result*100/$result_of_items;
+				$result_of_items = 0;
+				foreach ( $items as $item ) {
+					if ( $item->get_type() !== LP_QUIZ_CPT ) {
+						continue;
+					}
+					if ( $item->get_quiz()->get_data( 'passing_grade' ) ) {
+						$result += $item->is_passed() ? 1 : 0;
+						$result_of_items ++;
+					}
+				}
+				$result         = $result * 100 / $result_of_items;
 				$data['result'] = $result;
 				if ( $this->is_finished() ) {
 					$data['grade'] = $this->_is_passed( $result );
@@ -475,9 +475,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get completed items.
 	 *
-	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
-	 * @param bool $with_total - Optional. Include total if TRUE
-	 * @param int $section_id - Optional. Get in specific section
+	 * @param string $type       - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool   $with_total - Optional. Include total if TRUE
+	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
 	 */
@@ -531,8 +531,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get items completed by percentage.
 	 *
-	 * @param string $type - Optional. Filter by type or not
-	 * @param int $section_id - Optional. Get in specific section
+	 * @param string $type       - Optional. Filter by type or not
+	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return float|int
 	 */

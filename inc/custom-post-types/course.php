@@ -96,7 +96,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'new_section_item'   => __( 'Create a new', 'learnpress' ),
 					'back'               => __( 'Back', 'learnpress' ),
 					'selected_items'     => __( 'Selected items', 'learnpress' ),
-					'confirm_trash_item' => __( 'Do you want to remove this item?', 'learnpress' ),
+					'confirm_trash_item' => __( 'Do you want to remove item "{{ITEM_NAME}}" to trash?', 'learnpress' ),
 					'item_labels'        => array(
 						'singular' => __( 'Item', 'learnpress' ),
 						'plural'   => __( 'Items', 'learnpress' ),

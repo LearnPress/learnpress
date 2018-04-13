@@ -245,7 +245,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             return state.externalComponent || [];
         },
         hiddenQuestionsSettings: function (state) {
-            return state.hidden_questions_settings ||[];
+            return state.hidden_questions_settings || [];
         },
         hiddenQuestions: function (state) {
             return state.questions
@@ -352,11 +352,14 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             });
         },
         'REMOVE_QUESTION': function (state, item) {
-
             var questions = state.questions,
                 index = questions.indexOf(item);
 
-            state.questions.splice(index, 1);
+            if (item.temp_id) {
+                state.questions[index].id = item.temp_id;
+            } else {
+                state.questions.splice(index, 1);
+            }
         },
         'DELETE_QUESTION_ANSWER': function (state, payload) {
             var question_id = payload.question_id,
@@ -424,15 +427,21 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
         'UPDATE_QUESTION_ANSWER_FAIL': function (state, question_id) {
             Vue.set(state.statusUpdateQuestionAnswer, question_id, 'failed');
-
-        'DELETE_ANSWER': function (state, question_id, answer_id) {
-            for (var i = 0, n = state.answers.length; i < n; i++) {
-                if (state.answers[i].question_answer_id == id) {
-                    state.answers[i].question_answer_id = LP.uniqueId();
-                    state.answers.splice(i, 1);
-                    break;
+        },
+        'DELETE_ANSWER': function (state, data) {
+            state.questions.map(function (question, index) {
+                if (question.id == data.question_id) {
+                    for (var i = 0, n = question.answers.length; i < n; i++) {
+                        if (question.answers[i].question_answer_id == data.answer_id) {
+                            question.answers[i].question_answer_id = data.temp_id;
+                            //state.questions[index].answers.splice(i, 1);
+                            break;
+                        }
+                    }
+                    return false;
                 }
-            }
+            })
+
         }
     };
 
@@ -565,15 +574,20 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         removeQuestion: function (context, question) {
+            var question_id = question.id;
+            question.temp_id = LP.uniqueId();
+            context.commit('REMOVE_QUESTION', question);
 
             Vue.http.LPRequest({
                 type: 'remove-question',
-                question_id: question.id
+                question_id: question_id
             }).then(
                 function (response) {
                     var result = response.body;
 
                     if (result.success) {
+                        question.id = question.temp_id;
+                        question.temp_id = 0;
                         context.commit('REMOVE_QUESTION', question);
                     }
                 },
@@ -584,13 +598,17 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         deleteQuestion: function (context, question) {
-
+            var question_id = question.id;
+            question.temp_id = LP.uniqueId();
+            context.commit('REMOVE_QUESTION', question);
             Vue.http
                 .LPRequest({
                     type: 'delete-question',
                     question_id: question.id
                 })
                 .then(function () {
+                    question.id = question.temp_id;
+                    question.temp_id = 0;
                     context.commit('REMOVE_QUESTION', question);
                     context.commit('UPDATE_QUESTION_SUCCESS', question.id);
                 })
@@ -677,10 +695,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         deleteQuestionAnswer: function (context, payload) {
-
-            context.commit('DELETE_ANSWER', payload.question_id, payload.answer_id);
-
-            console.log('xxxxxx');return;
+            payload.temp_id = LP.uniqueId();
+            context.commit('DELETE_ANSWER', payload);
             context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
 
             Vue.http.LPRequest({
@@ -694,7 +710,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                     if (result.success) {
                         context.commit('DELETE_QUESTION_ANSWER', {
                             question_id: payload.question_id,
-                            answer_id: payload.answer_id
+                            answer_id: payload.temp_id
+                            //answer_id: payload.answer_id
                         });
                         context.commit('UPDATE_QUESTION_SUCCESS', payload.question_id);
                     }
@@ -706,8 +723,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             )
         },
 
-        newQuestionAnswer: function (context, question_id) {
-            var temp_id = LP.uniqueId();
+        newQuestionAnswer: function (context, data) {
+            var temp_id = LP.uniqueId(),
+                question_id = data.question_id;
             context.commit('UPDATE_QUESTION_REQUEST', question_id);
             context.commit('ADD_QUESTION_ANSWER', {
                 question_id: question_id,
@@ -721,14 +739,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 })
                 .then(
                     function (response) {
-
                         var result = response.body;
-
                         if (result.success) {
                             var answer = result.data;
-
                             context.commit('ADD_QUESTION_ANSWER', {question_id: question_id, answer: answer});
                             context.commit('UPDATE_QUESTION_SUCCESS', question_id);
+
+                            data.success && setTimeout(function(){data.success.apply(data.context, [answer]);}, 300);
                         }
                     },
                     function (error) {

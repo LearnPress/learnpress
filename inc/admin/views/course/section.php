@@ -90,6 +90,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     $(this.$el).find('.section-list-items ul').sortable({
                         axis: 'y',
                         connectWith: '.section-list-items ul',
+                        handle: '.drag',
                         start: function (e, ui) {
                             var id = parseInt(ui.item.attr('data-item-id'));
                             ui.item.data('vmItem', vm.section.items.filter(function (vmItem, i) {
@@ -222,10 +223,10 @@ learn_press_admin_view( 'course/new-section-item' );
                     },
                     // remove section item
                     removeItem: function (item) {
-                        $store.dispatch('ss/removeSectionItem', {section_id: this.section.id, item_id: item.id});
+                        $store.dispatch('ss/removeSectionItem', {section_id: this.section.id, item: item});
                     },
                     deleteItem: function (item) {
-                        $store.dispatch('ss/deleteSectionItem', {section_id: this.section.id, item_id: item.id});
+                        $store.dispatch('ss/deleteSectionItem', {section_id: this.section.id, item: item});
                     },
                     // navigation course items
                     navItem: function (payload) {
@@ -265,7 +266,6 @@ learn_press_admin_view( 'course/new-section-item' );
                     countItems: function () {
                         var count = this.section.items.length,
                             labels = $store.getters['i18n/all'].item_labels;
-                        console.log(labels)
                         return [{
                             count: count,
                             name: count > 1 ? labels.plural : labels.singular

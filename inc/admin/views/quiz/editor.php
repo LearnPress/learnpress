@@ -14,6 +14,9 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
         <div v-if="heartbeat">
             <div class="lp-box-data-head heading">
                 <h3><?php echo __( 'Questions', 'learnpress' ); ?><span class="status"></span></h3>
+                <div class="section-item-counts">
+                    <span>{{textCountQuestions()}}</span>
+                </div>
                 <span :class="['collapse-list-questions dashicons ' , close ? 'dashicons-arrow-down' : 'dashicons-arrow-up']"
                       @click="toggle"></span>
             </div>
@@ -36,7 +39,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                     <div class="footer" v-if="!disableUpdateList">
                         <div class="table-row">
                             <div class="sort"></div>
-                            <div class="order">{{countQuestions()}}</div>
+                            <div class="order">{{countQuestions() + 1}}</div>
                             <div class="name add-new-question">
                                 <div class="title">
                                     <form @submit.prevent="">
@@ -71,19 +74,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
         </div>
         <div v-else>
             <div class="lp-place-holder">
-                <div class="line-heading"></div>
-
-                <div class="line-sm"></div>
-                <div class="line-xs"></div>
-
-                <div class="line-df"></div>
-                <div class="line-lgx"></div>
-                <div class="line-lg"></div>
-
-                <div class="line-df"></div>
-                <div class="line-lg"></div>
-                <div class="line-lgx"></div>
-
+				<?php learn_press_admin_view( 'placeholder-animation' ); ?>
                 <div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to continue editing quiz questions.', 'learnpress' ); ?></div>
             </div>
         </div>
@@ -179,7 +170,12 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
                     });
                 },
                 countQuestions: function () {
-                    return $store.getters['lqs/listQuestions'].length + 1;
+                    return $store.getters['lqs/listQuestions'].length;
+                },
+                textCountQuestions: function () {
+                    var count = this.countQuestions(),
+                        labels = $store.getters['i18n/all'].question_labels;
+                    return count + ' ' + (count > 1 ? labels.plural : labels.singular);
                 }
             }
         })

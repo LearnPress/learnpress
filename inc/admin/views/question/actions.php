@@ -9,7 +9,10 @@
 <script type="text/x-template" id="tmpl-lp-question-actions">
 
     <div class="lp-box-data-head lp-row">
-        <h3 class="heading"><?php esc_html_e( 'Question Answers', 'learnpress' ); ?></h3>
+        <h3 class="heading">
+            <?php esc_html_e( 'Question Answers', 'learnpress' ); ?>
+            <div class="section-item-counts"><span>{{typeLabel()}}</span></div>
+        </h3>
         <div class="lp-box-data-actions lp-toolbar-buttons">
             <div class="lp-toolbar-btn question-actions">
                 <div class="question-types">
@@ -40,6 +43,10 @@
                 }
             },
             methods: {
+                typeLabel: function () {
+                    var types = this.types;
+                    return types[this.type];
+                },
                 // check question type active
                 active: function (type) {
                     return this.type === type ? 'active' : '';

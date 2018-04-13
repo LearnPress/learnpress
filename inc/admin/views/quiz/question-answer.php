@@ -55,8 +55,9 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                         handle: '.sort',
                         axis: 'y',
                         helper: function (e, ui) {
-                            var $tr = $('<tr />');
-                            $(this).find('tr:first').children().each(function () {
+                            var $tr = $('<tr />'),
+                                $row = $(e.target).closest('tr');
+                            $row.children().each(function () {
                                 var $td = $(this).clone().width($(this).width())
                                 $tr.append($td);
                             });
@@ -77,7 +78,7 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                     var _items = $('.question-item[data-item-id="' + this.question.id + '"] .quiz-question-data .lp-list-questions>.lp-list-options tbody tr');
                     var _order = [];
                     _items.each(function (index, item) {
-                        $(item).find('.order').text((index + 1)+'.');
+                        $(item).find('.order').text((index + 1) + '.');
                         _order.push($(item).data('answer-id'));
                     });
 
@@ -95,7 +96,11 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                 },
                 // new answer option
                 newAnswer: function () {
-                    $store.dispatch('lqs/newQuestionAnswer', this.question.id);
+                    $store.dispatch('lqs/newQuestionAnswer', {
+                        question_id: this.question.id, success: function (answer) {
+                            $(this.$el).find('tr[data-answer-id="' + answer.question_answer_id + '"] .answer-text input').focus();
+                        }, context: this
+                    });
                 },
                 // navigation course items
                 navItem: function (payload) {

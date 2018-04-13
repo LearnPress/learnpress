@@ -22,7 +22,8 @@
  */
 (function (exports, Vue, Vuex, helpers, data) {
 
-    var state = helpers.cloneObject(data.root);
+    var state = helpers.cloneObject(data.root),
+        i18n = helpers.cloneObject(data.i18n);
 
     state.status = 'successful';
     state.countCurrentRequest = 0;
@@ -72,6 +73,9 @@
         },
         state: function (state) {
             return state;
+        },
+        i18n: function (state) {
+            return i18n;
         }
     };
 
@@ -98,12 +102,13 @@
             for (var i = 0, n = state.answers.length; i < n; i++) {
                 if (state.answers[i].question_answer_id == id) {
                     state.answers[i].question_answer_id = LP.uniqueId();
-                    state.answers.splice(i, 1);
                     break;
                 }
             }
         },
-
+        'ADD_NEW_ANSWER': function (state, answer) {
+            state.answers.push(answer);
+        },
         'UPDATE_ANSWERS': function (state, answers) {
             state.answers = answers;
         },
@@ -173,7 +178,6 @@
         deleteAnswer: function (context, payload) {
 
             context.commit('DELETE_ANSWER', payload.id);
-
             Vue.http.LPRequest({
                 type: 'delete-answer',
                 answer_id: payload.id
@@ -189,7 +193,8 @@
                 })
         },
 
-        newAnswer: function (context) {
+        newAnswer: function (context, data) {
+            context.commit('ADD_NEW_ANSWER', data.answer);
             Vue.http.LPRequest({
                 type: 'new-answer'
             }).then(

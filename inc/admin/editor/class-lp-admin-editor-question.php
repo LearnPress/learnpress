@@ -211,7 +211,7 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 		// update correct answer
 		$this->question = $this->question_curd->change_correct_answer( $this->question, $correct );
 
-		$this->result = $this->question->get_data( 'answer_options' );
+		$this->result = $this->_get_answers();
 
 		return true;
 	}
@@ -232,9 +232,15 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 		// delete answer
 		$this->question_curd->delete_answer( $this->question->get_id(), $answer_id );
 
-		$this->result = $this->question->get_data( 'answer_options' );
+		$this->result = $this->_get_answers();
 
 		return true;
+	}
+
+	public function _get_answers() {
+		$answers = $this->question->get_data( 'answer_options' );
+
+		return $answers ? array_values( $answers ) : array();
 	}
 
 	/**
@@ -248,7 +254,7 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 		// add new
 		$this->question_curd->new_answer( $this->question->get_id(), $answer );
 
-		$this->result = $this->question->get_data( 'answer_options' );
+		$this->result = $this->_get_answers();
 
 		return true;
 	}

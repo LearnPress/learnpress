@@ -204,7 +204,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			$classes = is_array( $classes ) ? $classes : explode( ' ', $classes );
 			$classes = array_filter( $classes );
 			$classes = array_unique( $classes );
-
 			return $classes;
 		}
 

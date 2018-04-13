@@ -107,19 +107,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		public function parse_request( $template ) {
-			$profile = LP_Profile::instance();
-			$user    = $profile->get_user();
-
-//			echo '<pre>';
-//			var_dump($user->get_id());
-//			echo '</pre>';
-//			die();
-
-			$tabs = $this->get_tabs();
-
-			$tabs->remove_tab( 'courses' );
-
-			//$this->remove_tab('courses');
 
 			return $template;
 		}
@@ -271,14 +258,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$settings        = LP()->settings;
 				$course_sections = array();
 
-				if ( in_array( $role, array( 'admin', 'instructor' ) ) ) {
+				//if ( in_array( $role, array( 'admin', 'instructor' ) ) ) {
 					$course_sections['owned'] = array(
 						'title'    => __( 'Owned', 'learnpress' ),
 						'slug'     => $settings->get( 'profile_endpoints.own-courses', 'owned' ),
 						'callback' => array( $this, 'tab_order_details' ),
 						'priority' => 10
 					);
-				}
+				//}
 
 				$course_sections['purchased'] = array(
 					'title'    => __( 'Purchased', 'learnpress' ),

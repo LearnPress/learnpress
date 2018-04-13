@@ -172,11 +172,16 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'items'      => array()
 				),
 				'i18n'          => array(
-					'option'         => __( 'Option', 'learnpress' ),
-					'unique'         => learn_press_uniqid(),
-					'back'           => __( 'Back', 'learnpress' ),
-					'selected_items' => __( 'Selected items', 'learnpress' ),
-					'new_option'     => __( 'New Option', 'learnpress' ),
+					'option'                 => __( 'Option', 'learnpress' ),
+					'unique'                 => learn_press_uniqid(),
+					'back'                   => __( 'Back', 'learnpress' ),
+					'selected_items'         => __( 'Selected items', 'learnpress' ),
+					'new_option'             => __( 'New Option', 'learnpress' ),
+					'confirm_trash_question' => __( 'Do you want to move question "{{QUESTION_NAME}}" to trash?', 'learnpress' ),
+					'question_labels'        => array(
+						'singular' => __( 'Question', 'learnpress' ),
+						'plural'   => __( 'Questions', 'learnpress' )
+					)
 				),
 				'listQuestions' => array(
 					'questions'                 => $quiz->quiz_editor_get_questions(),

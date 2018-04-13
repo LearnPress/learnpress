@@ -21,19 +21,7 @@ learn_press_admin_view( 'course/modal-choose-items' );
         </div>
         <div v-else>
             <div class="lp-place-holder">
-                <div class="line-heading"></div>
-
-                <div class="line-sm"></div>
-                <div class="line-xs"></div>
-
-                <div class="line-df"></div>
-                <div class="line-lgx"></div>
-                <div class="line-lg"></div>
-
-                <div class="line-df"></div>
-                <div class="line-lg"></div>
-                <div class="line-lgx"></div>
-
+				<?php learn_press_admin_view( 'placeholder-animation' ); ?>
                 <div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to continue editing curriculum.', 'learnpress' ); ?></div>
             </div>
         </div>

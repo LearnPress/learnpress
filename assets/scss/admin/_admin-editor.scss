@@ -63,7 +63,7 @@
 
     .lp-course-curriculum {
         .heading {
-            padding: 15px;
+            padding: 12px 10px;
             position: relative;
 
             h4 {
@@ -115,36 +115,26 @@
 
         .curriculum-sections {
             margin: 0;
-            padding: 10px;
+            //padding: 10px;
             border-top: 1px solid #ddd;
         }
 
         .section {
             border: 1px solid #e5e5e5;
-            margin-bottom: 10px;
+            //margin-bottom: 10px;
             opacity: 1;
             background: #FFF;
-
-            .section-item-counts {
-                position: absolute;
-                span {
-                    position: absolute;
-                    top: 0;
-                    right: 41px;
-                    height: 44px;
-                    line-height: 42px;
-                    font-weight: bold;
-                    color: #999;
-                }
+            border-left: 0;
+            border-right: 0;
+            margin-bottom: -1px;
+            &:first-child {
+                border-top: 0;
             }
-
             &.new-section {
-                //box-shadow: 0 0 30px #ddd;
-                margin-bottom: 0;
+                margin-top: 1px;
                 form {
                     margin: 0;
                 }
-
                 .section-head {
                     background-color: #f4fcff;
                     .creatable {
@@ -204,7 +194,8 @@
             }
 
             .section-head {
-                background-color: #f9f9f9;
+                //background-color: #f9f9f9;
+                background-color: #f4fcff;
                 padding: 3px;
                 position: relative;
                 transition: background 500ms ease-out;
@@ -313,7 +304,8 @@
                 width: 100%;
                 color: #999;
                 font-style: italic;
-
+                margin: 0;
+                padding: 0;
                 &:focus {
                     color: #444;
                 }
@@ -536,7 +528,6 @@
                                     position: absolute;
                                     top: 100%;
                                     width: 165px;
-                                    padding: 2px 0;
                                     right: 0;
                                     background: #fdfeff;
                                     margin: 0;
@@ -546,11 +537,13 @@
                                     text-align: center;
                                     li {
                                         margin: 0;
-                                        padding: 8px;
                                         border-bottom: 1px solid #eee;
+                                        text-align: right;
                                         a {
                                             color: #0073aa;
                                             text-decoration: none;
+                                            padding: 8px;
+                                            display: block;
                                             &.delete-permanently {
                                                 color: #d05d5d;
                                             }
@@ -667,6 +660,19 @@
             display: block;
             border-color: #bdf4fe !important;
         }
+    }
+}
+
+.section-item-counts {
+    position: absolute;
+    top: 0;
+    right: 41px;
+    white-space: nowrap;
+    line-height: 44px;
+    font-size: 12px;
+    span {
+        font-weight: bold;
+        color: #999;
     }
 }
 
