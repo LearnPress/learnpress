@@ -42,7 +42,7 @@ class RWMB_Select_Advanced_Field extends RWMB_Select_Field {
 	public static function normalize( $field ) {
 		$field = wp_parse_args( $field, array(
 			'js_options'  => array(),
-			'placeholder' => __( 'Select an item', 'meta-box' ),
+			'placeholder' => __( 'Select an item', 'learnpress' ),
 		) );
 
 		$field = parent::normalize( $field );

@@ -32,9 +32,8 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 		$output = self::get_select_all_html( $field );
 		$output .= sprintf( '<ul class="rwmb-input-list %s %s">',
 			$field['collapse'] ? 'collapse' : '',
-			$field['inline']   ? 'inline'   : ''
+			$field['inline'] ? 'inline' : ''
 		);
-
 		$output .= $walker->walk( $options, $field['flatten'] ? - 1 : 0 );
 		$output .= '</ul>';
 
@@ -49,7 +48,6 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 	 */
 	public static function normalize( $field ) {
 		$field = $field['multiple'] ? RWMB_Multiple_Values_Field::normalize( $field ) : $field;
-
 		$field = RWMB_Input_Field::normalize( $field );
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, array(
@@ -89,7 +87,7 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 	 */
 	public static function get_select_all_html( $field ) {
 		if ( $field['multiple'] && $field['select_all_none'] ) {
-			return sprintf( '<p><button class="rwmb-input-list-select-all-none" data-name="%s">%s</button></p>', $field['id'], __( 'Select All / None','meta-box' ) );
+			return sprintf( '<p><button class="rwmb-input-list-select-all-none button" data-name="%s">%s</button></p>', $field['id'], __( 'Select All / None', 'learnpress' ) );
 		}
 		return '';
 	}

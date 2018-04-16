@@ -44,7 +44,7 @@ class RWMB_Validation {
 		wp_enqueue_script( 'rwmb-validate', RWMB_JS_URL . 'validate.js', array( 'jquery-validation', 'jquery-validation-additional-methods' ), RWMB_VER, true );
 
 		RWMB_Field::localize_script( 'rwmb-validate', 'rwmbValidate', array(
-			'summaryMessage' => esc_html__( 'Please correct the errors highlighted below and try again.', 'meta-box' ),
+			'summaryMessage' => esc_html__( 'Please correct the errors highlighted below and try again.', 'learnpress' ),
 		) );
 	}
 }
