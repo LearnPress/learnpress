@@ -239,6 +239,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				)
 			);
 			$image = false;
+
+			if ( 'yes' !== LP()->settings->get( 'archive_course_thumbnail' ) && in_array( $size, learn_press_get_custom_thumbnail_sizes() ) ) {
+				$size = '';
+			}
+
 			if ( has_post_thumbnail( $this->get_id() ) ) {
 				$image = get_the_post_thumbnail( $this->get_id(), $size, $attr );
 			} elseif ( ( $parent_id = wp_get_post_parent_id( $this->get_id() ) ) && has_post_thumbnail( $parent_id ) ) {
@@ -843,7 +848,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function is_in_stock() {
 			$in_stock = true;
 			if ( $max_allowed = $this->get_max_students() ) {
-			    $in_stock = $max_allowed > $this->count_in_order();
+				$in_stock = $max_allowed > $this->count_in_order();
 			}
 
 			return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );
@@ -1755,7 +1760,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		public function get_external_link_text() {
-			return apply_filters( 'learn-press/course-external-link-text', _x( 'Buy this course','Text of Buy this course with external link', 'learnpress' ), $this->get_id() );
+			return apply_filters( 'learn-press/course-external-link-text', _x( 'Buy this course', 'Text of Buy this course with external link', 'learnpress' ), $this->get_id() );
 		}
 
 		/**

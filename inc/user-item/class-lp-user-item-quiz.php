@@ -135,17 +135,17 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {
-					$question = LP_Question::get_question( $question_id );
-					$answered = $this->get_question_answer( $question_id );
-					$check = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
-                    $check['type']     = !isset($check['type']) || !$check['type'] ?$question->get_type() : $check['type'];
-                    $check['answered'] = !isset($check['answered']) ? $answered !== false: $check['answered'];
+					$question          = LP_Question::get_question( $question_id );
+					$answered          = $this->get_question_answer( $question_id );
+					$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
+					$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
+					$check['answered'] = ! isset( $check['answered'] ) ? $answered !== false : $check['answered'];
 
-                    if ( false !== $check['answered'] && $check['correct'] ) {
+					if ( false !== $check['answered'] && $check['correct'] ) {
 						$result['question_correct'] ++;
 						$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
 					} else {
-					    if ( false === $check['answered'] ) {
+						if ( false === $check['answered'] ) {
 							$result['question_empty'] ++;
 						} else {
 							$result['question_wrong'] ++;
@@ -227,7 +227,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function get_questions_answered( $percent = false ) {
 		$result = $this->get_results();
 		if ( $percent ) {
-			$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
+			if ( $result['question_count'] ) {
+				$return = 0;
+			} else {
+				$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
+			}
 		} else {
 			$return = $result['question_answered'];
 		}

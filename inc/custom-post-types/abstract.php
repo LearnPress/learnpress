@@ -218,6 +218,9 @@ abstract class LP_Abstract_Post_Type {
 	 * @return bool
 	 */
 	public function _do_save( $post_id, $post = null ) {
+
+	    LP_Hard_Cache::flush();
+
 		if ( get_post_type( $post_id ) != $this->_post_type ) {
 			return false;
 		}

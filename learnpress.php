@@ -378,7 +378,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				return;
 			}
 
-			$sizes = apply_filters( 'learn_press_image_sizes', array( 'single_course', 'course_thumbnail' ) );
+			$sizes = learn_press_get_custom_thumbnail_sizes();
 
 			foreach ( $sizes as $image_size ) {
 				$size           = LP()->settings->get( $image_size . '_image_size', array() );

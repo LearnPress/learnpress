@@ -176,28 +176,28 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 							'desc'  => __( 'Thumbnail generation for archive/single course.', 'learnpress' )
 						),
-						array(
-							'title'   => __( 'Single course', 'learnpress' ),
-							'id'      => 'generate_course_thumbnail',
-							'default' => 'yes',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
-						),
-						array(
-							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-							'id'         => 'single_course_image_size',
-							'default'    => array( 800, 450, 'yes' ),
-							'type'       => 'image-dimensions',
-							'visibility' => array(
-								'state' => 'show',
-
-								'conditional' => array(
-									'field'   => 'generate_course_thumbnail',
-									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						),
+//						array(
+//							'title'   => __( 'Single course', 'learnpress' ),
+//							'id'      => 'generate_course_thumbnail',
+//							'default' => 'yes',
+//							'type'    => 'yes-no',
+//							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
+//						),
+//						array(
+//							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
+//							'id'         => 'single_course_image_size',
+//							'default'    => array( 800, 450, 'yes' ),
+//							'type'       => 'image-dimensions',
+//							'visibility' => array(
+//								'state' => 'show',
+//
+//								'conditional' => array(
+//									'field'   => 'generate_course_thumbnail',
+//									'compare' => '=',
+//									'value'   => 'yes'
+//								)
+//							)
+//						),
 						array(
 							'title'   => __( 'Archive course', 'learnpress' ),
 							'id'      => 'archive_course_thumbnail',
