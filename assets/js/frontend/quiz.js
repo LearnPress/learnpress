@@ -17,7 +17,7 @@
 
         if (seconds > DAY_IN_SECONDS) {
             var days = Math.ceil(seconds / DAY_IN_SECONDS);
-            str = days + ( days > 1 ? ' day left' : ' days left' );
+            str = days + ( days > 1 ? ' days left' : ' day left' );
         } else {
             var hours = Math.floor(seconds / HOUR_IN_SECONDS),
                 minutes = 0;
