@@ -29,7 +29,7 @@ class RWMB_Button_Field extends RWMB_Field {
 	 */
 	public static function normalize( $field ) {
 		$field = wp_parse_args( $field, array(
-			'std'      => __( 'Click me', 'meta-box' ),
+			'std'      => __( 'Click me', 'learnpress' ),
 		) );
 		$field = parent::normalize( $field );
 		return $field;

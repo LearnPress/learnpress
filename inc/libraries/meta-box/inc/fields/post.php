@@ -33,12 +33,12 @@ class RWMB_Post_Field extends RWMB_Object_Choice_Field {
 		 * - If single post type: show 'Select a %post_type_name%'.
 		 */
 		if ( empty( $field['placeholder'] ) ) {
-			$field['placeholder'] = __( 'Select a post', 'meta-box' );
+			$field['placeholder'] = __( 'Select a post', 'learnpress' );
 			if ( is_string( $field['query_args']['post_type'] ) && post_type_exists( $field['query_args']['post_type'] ) ) {
 				$post_type_object = get_post_type_object( $field['query_args']['post_type'] );
 
 				// Translators: %s is the post type singular label.
-				$field['placeholder'] = sprintf( __( 'Select a %s', 'meta-box' ), $post_type_object->labels->singular_name );
+				$field['placeholder'] = sprintf( __( 'Select a %s', 'learnpress' ), $post_type_object->labels->singular_name );
 			}
 		}
 

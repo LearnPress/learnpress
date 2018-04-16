@@ -17,7 +17,7 @@ class RWMB_File_Input_Field extends RWMB_Input_Field {
 		wp_enqueue_style( 'rwmb-file-input', RWMB_CSS_URL . 'file-input.css' );
 		wp_enqueue_script( 'rwmb-file-input', RWMB_JS_URL . 'file-input.js', array( 'jquery' ), RWMB_VER, true );
 		self::localize_script('rwmb-file-input', 'rwmbFileInput', array(
-			'frameTitle' => esc_html__( 'Select File', 'meta-box' ),
+			'frameTitle' => esc_html__( 'Select File', 'learnpress' ),
 		) );
 	}
 
@@ -36,9 +36,9 @@ class RWMB_File_Input_Field extends RWMB_Input_Field {
 			<a href="#" class="rwmb-file-input-select button">%s</a>
 			<a href="#" class="rwmb-file-input-remove button %s">%s</a>',
 			self::render_attributes( $attributes ),
-			esc_html__( 'Select', 'meta-box' ),
+			esc_html__( 'Select', 'learnpress' ),
 			$meta ? '' : 'hidden',
-			esc_html__( 'Remove', 'meta-box' )
+			esc_html__( 'Remove', 'learnpress' )
 		);
 	}
 

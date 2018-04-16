@@ -18,9 +18,9 @@ class RWMB_File_Field extends RWMB_Field {
 
 		self::localize_script( 'rwmb-file', 'rwmbFile', array(
 			// Translators: %d is the number of files in singular form.
-			'maxFileUploadsSingle' => __( 'You may only upload maximum %d file', 'meta-box' ),
+			'maxFileUploadsSingle' => __( 'You may only upload maximum %d file', 'learnpress' ),
 			// Translators: %d is the number of files in plural form.
-			'maxFileUploadsPlural' => __( 'You may only upload maximum %d files', 'meta-box' ),
+			'maxFileUploadsPlural' => __( 'You may only upload maximum %d files', 'learnpress' ),
 		) );
 	}
 
@@ -50,7 +50,7 @@ class RWMB_File_Field extends RWMB_Field {
 		if ( wp_delete_attachment( $attachment_id ) ) {
 			wp_send_json_success();
 		}
-		wp_send_json_error( __( 'Error: Cannot delete file', 'meta-box' ) );
+		wp_send_json_error( __( 'Error: Cannot delete file', 'learnpress' ) );
 	}
 
 	/**
@@ -63,7 +63,7 @@ class RWMB_File_Field extends RWMB_Field {
 	 */
 	public static function html( $meta, $field ) {
 		$meta      = array_filter( (array) $meta );
-		$i18n_more = apply_filters( 'rwmb_file_add_string', _x( '+ Add new file', 'file upload', 'meta-box' ), $field );
+		$i18n_more = apply_filters( 'rwmb_file_add_string', _x( '+ Add new file', 'file upload', 'learnpress' ), $field );
 		$html      = self::get_uploaded_files( $meta, $field );
 
 		// Show form upload.
@@ -118,8 +118,8 @@ class RWMB_File_Field extends RWMB_Field {
 	 * @return string
 	 */
 	protected static function file_html( $file, $index, $field ) {
-		$i18n_delete = apply_filters( 'rwmb_file_delete_string', _x( 'Delete', 'file upload', 'meta-box' ) );
-		$i18n_edit   = apply_filters( 'rwmb_file_edit_string', _x( 'Edit', 'file upload', 'meta-box' ) );
+		$i18n_delete = apply_filters( 'rwmb_file_delete_string', _x( 'Delete', 'file upload', 'learnpress' ) );
+		$i18n_edit   = apply_filters( 'rwmb_file_edit_string', _x( 'Edit', 'file upload', 'learnpress' ) );
 		$attributes  = self::get_attributes( $field, $file );
 		$path        = get_attached_file( $file );
 		$icon        = wp_get_attachment_image( $file, array( 60, 60 ), true );

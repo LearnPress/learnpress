@@ -70,7 +70,7 @@ class RWMB_Map_Field extends RWMB_Field {
 		if ( $field['address_field'] ) {
 			$html .= sprintf(
 				'<button class="button rwmb-map-goto-address-button">%s</button>',
-				esc_html__( 'Find Address', 'meta-box' )
+				esc_html__( 'Find Address', 'learnpress' )
 			);
 		}
 

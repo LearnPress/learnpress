@@ -21,18 +21,18 @@ class RWMB_Media_Field extends RWMB_File_Field {
 		wp_enqueue_script( 'rwmb-media', RWMB_JS_URL . 'media.js', array( 'jquery-ui-sortable', 'underscore', 'backbone', 'media-grid' ), RWMB_VER, true );
 
 		self::localize_script( 'rwmb-media', 'i18nRwmbMedia', array(
-			'add'                => apply_filters( 'rwmb_media_add_string', _x( '+ Add Media', 'media', 'meta-box' ) ),
-			'single'             => apply_filters( 'rwmb_media_single_files_string', _x( ' file', 'media', 'meta-box' ) ),
-			'multiple'           => apply_filters( 'rwmb_media_multiple_files_string', _x( ' files', 'media', 'meta-box' ) ),
-			'remove'             => apply_filters( 'rwmb_media_remove_string', _x( 'Remove', 'media', 'meta-box' ) ),
-			'edit'               => apply_filters( 'rwmb_media_edit_string', _x( 'Edit', 'media', 'meta-box' ) ),
-			'view'               => apply_filters( 'rwmb_media_view_string', _x( 'View', 'media', 'meta-box' ) ),
-			'noTitle'            => _x( 'No Title', 'media', 'meta-box' ),
+			'add'                => apply_filters( 'rwmb_media_add_string', _x( '+ Add Media', 'media', 'learnpress' ) ),
+			'single'             => apply_filters( 'rwmb_media_single_files_string', _x( ' file', 'media', 'learnpress' ) ),
+			'multiple'           => apply_filters( 'rwmb_media_multiple_files_string', _x( ' files', 'media', 'learnpress' ) ),
+			'remove'             => apply_filters( 'rwmb_media_remove_string', _x( 'Remove', 'media', 'learnpress' ) ),
+			'edit'               => apply_filters( 'rwmb_media_edit_string', _x( 'Edit', 'media', 'learnpress' ) ),
+			'view'               => apply_filters( 'rwmb_media_view_string', _x( 'View', 'media', 'learnpress' ) ),
+			'noTitle'            => _x( 'No Title', 'media', 'learnpress' ),
 			'loadingUrl'         => admin_url( 'images/spinner.gif' ),
 			'extensions'         => self::get_mime_extensions(),
-			'select'             => apply_filters( 'rwmb_media_select_string', _x( 'Select Files', 'media', 'meta-box' ) ),
-			'or'                 => apply_filters( 'rwmb_media_or_string', _x( 'or', 'media', 'meta-box' ) ),
-			'uploadInstructions' => apply_filters( 'rwmb_media_upload_instructions_string', _x( 'Drop files here to upload', 'media', 'meta-box' ) ),
+			'select'             => apply_filters( 'rwmb_media_select_string', _x( 'Select Files', 'media', 'learnpress' ) ),
+			'or'                 => apply_filters( 'rwmb_media_or_string', _x( 'or', 'media', 'learnpress' ) ),
+			'uploadInstructions' => apply_filters( 'rwmb_media_upload_instructions_string', _x( 'Drop files here to upload', 'media', 'learnpress' ) ),
 		) );
 	}
 

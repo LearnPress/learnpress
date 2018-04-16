@@ -47,12 +47,12 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field {
 		 * - If single taxonomy: show 'Select a %taxonomy_name%'.
 		 */
 		if ( empty( $field['placeholder'] ) ) {
-			$field['placeholder'] = __( 'Select a term', 'meta-box' );
+			$field['placeholder'] = __( 'Select a term', 'learnpress' );
 			if ( is_string( $field['taxonomy'] ) && taxonomy_exists( $field['taxonomy'] ) ) {
 				$taxonomy_object = get_taxonomy( $field['taxonomy'] );
 
 				// Translators: %s is the taxonomy singular label.
-				$field['placeholder'] = sprintf( __( 'Select a %s', 'meta-box' ), $taxonomy_object->labels->singular_name );
+				$field['placeholder'] = sprintf( __( 'Select a %s', 'learnpress' ), $taxonomy_object->labels->singular_name );
 			}
 		}
 

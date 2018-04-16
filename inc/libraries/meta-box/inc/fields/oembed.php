@@ -61,7 +61,7 @@ class RWMB_OEmbed_Field extends RWMB_Text_Field {
 			$embed = $GLOBALS['wp_embed']->shortcode( $args, $url );
 		}
 
-		return $embed ? $embed : __( 'Embed HTML not available.', 'meta-box' );
+		return $embed ? $embed : __( 'Embed HTML not available.', 'learnpress' );
 	}
 
 	/**
