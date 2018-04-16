@@ -198,6 +198,28 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 3.0.7 =
+~ Improved: ui/ux when adding/removing course items
+~ Improved: ui/ux when adding/removing questions of a quiz
+~ Improved: auto focus mouse to input when changing type of new course item
+~ Improved: show confirm message before removing course item to trash
+~ Improved: move item to trash when delete instead of delete it permanently
+~ Improved: changed icon to turn on/off an item is preview and add tooltip
+~ Improved: removed green effect when updating via ajax
+~ Improved: focus mouse on search input when searching items
+~ Improved: show button for closing popup
+~ Improved: flush Hard Cache when updating post
+~ Improved: updated metabox to latest version and changed textdomain
+~ Fixed: pending course does not show for instructor
+~ Fixed: filter lessons/quizzes by course does not work properly
+~ Fixed: wrong currency symbol for Turkish lira
+~ Fixed: division by zero when calculating course results
+~ Fixed: get default thumbnail image for archive course if it option is turn of
+~ Removed: option thumbnail size for single course
+~ Improved somethings...
+
+
 = 3.0.6 =
 ~ Fixed: missing 'Instructors Registration' option
 ~ Fixed: cannot start quiz or complete lesson

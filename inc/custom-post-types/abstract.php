@@ -116,8 +116,17 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
 	}
 
+	public function get_post_type() {
+		$post_type = get_post_type();
+		if ( ! $post_type ) {
+			$post_type = LP_Request::get_string( 'post_type' );
+		}
+
+		return $post_type;
+	}
+
 	public function admin_footer_scripts() {
-		if ( get_post_type() !== $this->_post_type ) {
+		if ( $this->get_post_type() !== $this->_post_type ) {
 			return;
 		}
 
@@ -126,15 +135,33 @@ abstract class LP_Abstract_Post_Type {
 		if ( ! $user->is_admin() ) {
 			return;
 		}
+
+		$option = sprintf( '<option value="">%s</option>', __( 'Search by user', 'learnpress' ) );
+
+		if ( $user = get_user_by( 'id', LP_Request::get_int( 'author' ) ) ) {
+			$option = sprintf( '<option value="%d" selected="selected">%s</option>', $user->ID, $user->user_login );
+		}
 		?>
         <script>jQuery(function ($) {
-                $('<select name="author"></select>').insertAfter($('#post-search-input')).select2({
-                    ajax: {
-                        url: window.location.href + '&lp-ajax=search-authors',
-                        dataType: 'json',
-                        s: ''
-                    }
-                });
+                var $input = $('#post-search-input'),
+                    $form = $($input[0].form),
+                    $select = $('<select name="author" id="author"></select>').append('<?php echo $option;?>').insertAfter($input).select2({
+                        ajax: {
+                            url: window.location.href + '&lp-ajax=search-authors',
+                            dataType: 'json',
+                            s: ''
+                        },
+                        placeholder: '<?php echo __( 'Search by user', 'learnpress' );?>',
+                        minimumInputLength: 3,
+                        allowClear: true
+                    }).on('select2:select', function () {
+                        $('input[name="author"]').val($select.val())
+                    });
+
+                $form.on('submit', function () {
+                    var url = window.location.href.removeQueryVar('author').addQueryVar('author', $select.val());
+
+                })
             })</script>
 		<?php
 	}
@@ -219,7 +246,7 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function _do_save( $post_id, $post = null ) {
 
-	    LP_Hard_Cache::flush();
+		LP_Hard_Cache::flush();
 
 		if ( get_post_type( $post_id ) != $this->_post_type ) {
 			return false;
@@ -361,10 +388,10 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
-     * Filter item by the course selected.
-     *
-     * @since 3.0.7
-     *
+	 * Filter item by the course selected.
+	 *
+	 * @since 3.0.7
+	 *
 	 * @return bool|int
 	 */
 	protected function _filter_items_by_course() {
@@ -404,8 +431,8 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
-     * Get course that the items is contained.
-     *
+	 * Get course that the items is contained.
+	 *
 	 * @param $post_id
 	 */
 	protected function _get_item_course( $post_id ) {
