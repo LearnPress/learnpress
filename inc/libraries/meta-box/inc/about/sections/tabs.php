@@ -8,5 +8,5 @@
 
 ?>
 <h2 class="nav-tab-wrapper">
-	<a href="#getting-started" class="nav-tab nav-tab-active"><?php esc_html_e( 'Getting Started', 'meta-box' ); ?></a>
+	<a href="#getting-started" class="nav-tab nav-tab-active"><?php esc_html_e( 'Getting Started', 'learnpress' ); ?></a>
 </h2>

@@ -47,7 +47,7 @@ class RWMB_About {
 	 * @return array
 	 */
 	public function plugin_links( $links ) {
-		$links[] = '<a href="' . esc_url( admin_url( 'index.php?page=meta-box-about' ) ) . '">' . esc_html__( 'About', 'meta-box' ) . '</a>';
+		$links[] = '<a href="' . esc_url( admin_url( 'index.php?page=meta-box-about' ) ) . '">' . esc_html__( 'About', 'learnpress' ) . '</a>';
 		return $links;
 	}
 
@@ -56,8 +56,8 @@ class RWMB_About {
 	 */
 	public function register_page() {
 		add_dashboard_page(
-			__( 'Welcome to Meta Box', 'meta-box' ),
-			__( 'Welcome to Meta Box', 'meta-box' ),
+			__( 'Welcome to Meta Box', 'learnpress' ),
+			__( 'Welcome to Meta Box', 'learnpress' ),
 			'activate_plugins',
 			'meta-box-about',
 			array( $this, 'render' )
