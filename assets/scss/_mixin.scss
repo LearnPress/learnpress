@@ -86,3 +86,21 @@
     -webkit-appearance: $value;
     -moz-appearance: $value;
 }
+
+@mixin placeholder-color($color) {
+    &::-webkit-input-placeholder {
+        color: $color;
+    }
+    &::-moz-placeholder {
+        color: $color;
+    }
+    &:-ms-input-placeholder {
+        color: $color;
+    }
+    &:-moz-placeholder {
+        color: $color;
+    }
+    &::placeholder{
+        color: $color;
+    }
+}

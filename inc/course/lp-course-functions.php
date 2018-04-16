@@ -885,11 +885,13 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 		}
 
 		$course_id = learn_press_get_item_course_id( $post->ID, $post->post_type );
+
 		if ( $course_id ) {
 			$permalink = learn_press_get_course_item_url( $course_id, $post->ID );
 		} else {
 			$permalink = learn_press_get_sample_link_course_item_url( $post->ID );
 		}
+
 		LP()->global['item_permalinks'][ $post->ID ] = $permalink;
 		add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 2 );
 
@@ -966,9 +968,9 @@ function learn_press_course_passing_condition( $value, $format, $course_id ) {
 		$quiz  = learn_press_get_quiz( $quiz_id );
 		$value = absint( $quiz->get_passing_grade() );
 
-		if($format){
-		    $value = "{$value}%";
-        }
+		if ( $format ) {
+			$value = "{$value}%";
+		}
 	}
 
 	return $value;

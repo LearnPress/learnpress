@@ -7,12 +7,10 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-section-item">
-    <li :class="['section-item',item.type, {updating: updating, removing: removing}]" :data-item-id="item.id"
+    <li :class="['section-item',item.type, isEmptyItem() ? 'empty-item' : '', {updating: updating, removing: removing}]" :data-item-id="item.id"
         :data-item-order="order">
         <div class="drag">
-            <svg class="svg-icon" viewBox="0 0 32 32">
-                <path d="M 14 5.5 a 3 3 0 1 1 -3 -3 A 3 3 0 0 1 14 5.5 Z m 7 3 a 3 3 0 1 0 -3 -3 A 3 3 0 0 0 21 8.5 Z m -10 4 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 12.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 12.5 Z m -10 10 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 22.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 22.5 Z"></path>
-            </svg>
+            <?php learn_press_admin_view('svg-icon');?>
         </div>
         <div class="icon"></div>
         <div class="title">
@@ -22,7 +20,8 @@
 
         <div class="item-actions">
             <div class="actions">
-                <div class="action preview-item">
+                <div class="action preview-item"
+                     data-content-tip="<?php echo esc_attr( 'Turn on/off this item is preview', 'learnpress' ); ?>">
                     <a class="lp-btn-icon dashicons" :class="previewClass" @click="togglePreview"></a>
                 </div>
                 <div class="action edit-item">
@@ -37,7 +36,7 @@
                         </li>
                         <li>
                             <a @click.prevent="deletePermanently"
-                               class="delete-permanently"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
+                               class="delete-permanently"><?php esc_html_e( 'Move to trash', 'learnpress' ); ?></a>
                         </li>
                     </ul>
                 </div>
@@ -47,82 +46,106 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    jQuery(function ($) {
 
-        Vue.component('lp-section-item', {
-            template: '#tmpl-lp-section-item',
-            props: ['item', 'order', 'disableCurriculum'],
-            data: function () {
-                return {
-                    // origin course item title
-                    title: this.item.title,
-                    changed: false,
-                    removing: false
-                };
-            },
-            created: function () {
-                this.$ = jQuery;
-            },
-            computed: {
-                // edit item url
-                url: function () {
-                    return $store.getters['ss/urlEdit'] + this.item.id;
-                },
-                updating: function () {
-                    return this.removing || this.saving;
-                },
-                status: function () {
-                    return $store.getters['ss/statusUpdateSectionItem'][this.item.id] || '';
-                },
-                saving: function () {
-                    return this.status === 'updating';
-                },
-                previewClass: function () {
+        (function (Vue, $store) {
+
+            Vue.component('lp-section-item', {
+                template: '#tmpl-lp-section-item',
+                props: ['item', 'order', 'disableCurriculum'],
+                data: function () {
                     return {
-                        'dashicons-unlock': this.item.preview,
-                        'dashicons-lock': !this.item.preview
+                        // origin course item title
+                        title: this.item.title,
+                        changed: false,
+                        removing: false
+                    };
+                },
+                created: function () {
+                    this.$ = jQuery;
+                },
+                mounted: function () {
+                    this.$nextTick(function () {
+                        var $ = jQuery;
+                        $(this.$el).find('.preview-item').QuickTip({
+                            closeInterval: 0,
+                            arrowOffset: 'el',
+                            tipClass: 'preview-item-tip'
+                        });
+                        $(document).on('mousedown', '.section-item .drag', function (e) {
+                            $('html, body').addClass('moving');
+                        }).on('mouseup', function (e) {
+                            $('html, body').removeClass('moving');
+                        })
+                    })
+                },
+                computed: {
+                    // edit item url
+                    url: function () {
+                        return $store.getters['ss/urlEdit'] + this.item.id;
+                    },
+                    updating: function () {
+                        return this.removing || this.saving;
+                    },
+                    status: function () {
+                        return $store.getters['ss/statusUpdateSectionItem'][this.item.id] || '';
+                    },
+                    saving: function () {
+                        return this.status === 'updating';
+                    },
+                    previewClass: function () {
+                        return {
+                            'dashicons-visibility': this.item.preview,
+                            'dashicons-hidden': !this.item.preview
+                        }
+                    }
+                },
+                methods: {
+                    isEmptyItem: function () {
+                        return isNaN(this.item.id)
+                    },
+                    changeTitle: function () {
+                        this.changed = true;
+                    },
+                    // update item title
+                    updateTitle: function () {
+                        if (this.changed) {
+                            this.$emit('update', this.item);
+                            this.changed = false;
+                        }
+                    },
+                    // remove item
+                    remove: function () {
+                        //this.removing = true;
+                        this.item.temp_id = LP.uniqueId();
+                        this.$emit('remove', this.item);
+                    },
+                    // remove item
+                    deletePermanently: function () {
+                        if (!confirm($store.getters['i18n/all'].confirm_trash_item.replace('{{ITEM_NAME}}', this.item.title))) {
+                            return;
+                        }
+                        this.item.temp_id = LP.uniqueId();
+                        this.$emit('delete', this.item);
+                    },
+                    // navigation course items
+                    keyUp: function (event) {
+                        var keyCode = event.keyCode;
+                        // escape update course item title
+                        if (keyCode === 27) {
+                            this.item.title = this.title;
+                        } else {
+                            this.$emit('nav', {key: event.keyCode, order: this.order});
+                        }
+                    },
+                    togglePreview: function (evt) {
+                        this.item.preview = !this.item.preview;
+                        this.changed = true;
+                        this.updateTitle();
                     }
                 }
-            },
-            methods: {
+            });
 
-                changeTitle: function () {
-                    this.changed = true;
-                },
-                // update item title
-                updateTitle: function () {
-                    if (this.changed) {
-                        this.$emit('update', this.item);
-                        this.changed = false;
-                    }
-                },
-                // remove item
-                remove: function () {
-                    this.removing = true;
-                    this.$emit('remove', this.item);
-                },
-                // remove item
-                deletePermanently: function () {
-                    this.removing = true;
-                    this.$emit('delete', this.item);
-                },
-                // navigation course items
-                keyUp: function (event) {
-                    var keyCode = event.keyCode;
-                    // escape update course item title
-                    if (keyCode === 27) {
-                        this.item.title = this.title;
-                    } else {
-                        this.$emit('nav', {key: event.keyCode, order: this.order});
-                    }
-                },
-                togglePreview: function (evt) {
-                    this.item.preview = !this.item.preview;
-                    this.changed = true;
-                    this.updateTitle();
-                }
-            }
-        });
-
-    })(Vue, LP_Curriculum_Store);
+        })(Vue, LP_Curriculum_Store);
+    })
 </script>

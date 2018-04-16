@@ -162,6 +162,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 */
 	public function new_section( $args = array() ) {
 		$section_name = ! empty( $args['section_name'] ) ? $args['section_name'] : false;
+		$temp_id      = isset( $args['temp_id'] ) ? $args['temp_id'] : 0;
 
 		$args = array(
 			'section_course_id'   => $this->course->get_id(),
@@ -170,10 +171,12 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			'items'               => array(),
 		);
 
+
 		// create section
 		$section = $this->section_curd->create( $args );
 
 		$this->result = array(
+			'temp_id'     => $temp_id,
 			'id'          => $section['section_id'],
 			'items'       => $section['items'],
 			'title'       => $section['section_name'],
@@ -237,7 +240,7 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			return false;
 		}
 
-		$this->result = wp_delete_post( $item_id );
+		$this->result = wp_trash_post( $item_id );
 
 		return true;
 	}

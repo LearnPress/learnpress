@@ -176,6 +176,10 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			// get new question data
 			$this->result = $this->get_question_data_to_quiz_editor( $new_question, true, array( 'open' => true ) );
 
+			if ( isset( $question['id'] ) ) {
+				$this->result['temp_id'] = $question['id'];
+			}
+
 			return true;
 		}
 
@@ -309,7 +313,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			return false;
 		}
 
-		$this->result = wp_delete_post( $question_id );
+		$this->result = wp_trash_post( $question_id );
 
 		return true;
 	}
@@ -423,6 +427,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 		if ( $new_answer_id ) {
 			$this->result = array_merge( $answer, array(
+				'temp_id'            => isset( $args['question_answer_id'] ) ? $args['question_answer_id'] : 0,
 				'question_answer_id' => $new_answer_id,
 				'question_id'        => $question_id,
 				'answer_order'       => count( $question->get_data( 'answer_options' ) )
@@ -432,6 +437,19 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		}
 
 		return false;
+	}
+
+	public function update_quiz_questions_hidden( $args = array() ) {
+		$id        = $args['id'];
+		$questions = $args['hidden'];
+
+		if ( $questions ) {
+			update_post_meta( $id, '_hidden_questions_settings', $questions );
+		} else {
+			delete_post_meta( $id, '_hidden_questions_settings' );
+		}
+
+		return true;
 	}
 
 	/**

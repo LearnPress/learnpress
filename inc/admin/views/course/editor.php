@@ -21,19 +21,7 @@ learn_press_admin_view( 'course/modal-choose-items' );
         </div>
         <div v-else>
             <div class="lp-place-holder">
-                <div class="line-heading"></div>
-
-                <div class="line-sm"></div>
-                <div class="line-xs"></div>
-
-                <div class="line-df"></div>
-                <div class="line-lgx"></div>
-                <div class="line-lg"></div>
-
-                <div class="line-df"></div>
-                <div class="line-lg"></div>
-                <div class="line-lgx"></div>
-
+				<?php learn_press_admin_view( 'placeholder-animation' ); ?>
                 <div class="notify-reload"><?php esc_html_e( 'Something went wrong! Please reload to continue editing curriculum.', 'learnpress' ); ?></div>
             </div>
         </div>
@@ -41,21 +29,23 @@ learn_press_admin_view( 'course/modal-choose-items' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    jQuery(function () {
+        (function (Vue, $store) {
 
-        Vue.component('lp-course-editor', {
-            template: '#tmpl-lp-course-editor',
-            created: function () {
-                setInterval(function () {
-                    $store.dispatch('heartbeat');
-                }, 60 * 1000);
-            },
-            computed: {
-                heartbeat: function () {
-                    return $store.getters['heartbeat'];
+            Vue.component('lp-course-editor', {
+                template: '#tmpl-lp-course-editor',
+                created: function () {
+                    setInterval(function () {
+                        $store.dispatch('heartbeat');
+                    }, 60 * 1000);
+                },
+                computed: {
+                    heartbeat: function () {
+                        return $store.getters['heartbeat'];
+                    }
                 }
-            }
-        });
+            });
 
-    })(Vue, LP_Curriculum_Store);
+        })(Vue, LP_Curriculum_Store);
+    })
 </script>

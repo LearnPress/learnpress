@@ -28,11 +28,11 @@
             font-weight: lighter;
         }
 
-        .order-data-heading{
+        .order-data-heading {
             margin-top: 40px;
         }
 
-        .order-users{
+        .order-users {
             display: inline-block;
         }
 
@@ -97,16 +97,20 @@
                         padding-top: 20px;
                     }
                 }
-                .remove-order-item{
+                .remove-order-item {
                     text-decoration: none;
                     outline: none;
-                    color: #FF0000;
-                    display: none;
-                    margin-left: 10px;
+                    color: #CCC;
+                    .dashicons {
+                        font-size: 18px;
+                    }
+                    &:hover {
+                        color: #FF0000;
+                    }
                 }
 
-                .order-item-row:hover{
-                    .remove-order-item{
+                .order-item-row:hover {
+                    .remove-order-item {
                         display: inline-block;
                     }
                 }

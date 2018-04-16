@@ -93,6 +93,7 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'admin_footer-post.php', array( $this, 'print_js_template' ) );
 		add_action( 'admin_footer-post-new.php', array( $this, 'print_js_template' ) );
 		add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
+		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 
@@ -113,6 +114,29 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
+	}
+
+	public function admin_footer_scripts() {
+		if ( get_post_type() !== $this->_post_type ) {
+			return;
+		}
+
+		$user = learn_press_get_current_user();
+
+		if ( ! $user->is_admin() ) {
+			return;
+		}
+		?>
+        <script>jQuery(function ($) {
+                $('<select name="author"></select>').insertAfter($('#post-search-input')).select2({
+                    ajax: {
+                        url: window.location.href + '&lp-ajax=search-authors',
+                        dataType: 'json',
+                        s: ''
+                    }
+                });
+            })</script>
+		<?php
 	}
 
 	public function maybe_remove_features() {
@@ -331,6 +355,79 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function save() {
 
+	}
+
+	/**
+     * Filter item by the course selected.
+     *
+     * @since 3.0.7
+     *
+	 * @return bool|int
+	 */
+	protected function _filter_items_by_course() {
+		$course_id = ! empty( $_REQUEST['course'] ) ? absint( $_REQUEST['course'] ) : false;
+
+		if ( ! $course_id ) {
+			global $post_type;
+			if ( ! learn_press_is_support_course_item_type( $post_type ) ) {
+				$course_id = false;
+			}
+		}
+
+		return $course_id;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	protected function _get_course_column_title() {
+		global $post_type;
+
+		if ( ! learn_press_is_support_course_item_type( $post_type ) ) {
+			return false;
+		}
+
+		$title = __( 'Course', 'learnpress' );
+
+		if ( $course_id = $this->_filter_items_by_course() ) {
+			if ( $course = learn_press_get_course( $course_id ) ) {
+				$count       = $course->count_items( $this->_post_type );
+				$post_object = get_post_type_object( $post_type );
+				$title       = sprintf( _n( 'Course (%d %s)', 'Course (%d %s)', $count, 'learnpress' ), $count, $count > 1 ? $post_object->label : $post_object->labels->singular_name );
+			}
+		}
+
+		return $title;
+	}
+
+	/**
+     * Get course that the items is contained.
+     *
+	 * @param $post_id
+	 */
+	protected function _get_item_course( $post_id ) {
+		$courses = learn_press_get_item_courses( $post_id );
+		if ( $courses ) {
+			foreach ( $courses as $course ) {
+				echo '<div><a href="' . esc_url( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+				echo '<div class="row-actions">';
+				printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
+				echo "&nbsp;|&nbsp;";
+				printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
+
+				if ( $this->_filter_items_by_course() ) {
+					echo "&nbsp;|&nbsp;";
+					printf( '<a href="%s">%s</a>', remove_query_arg( array(
+						'course',
+						'orderby'
+					) ), __( 'Remove Filter', 'learnpress' ) );
+				}
+				echo '</div></div>';
+			}
+
+		} else {
+			_e( 'Not assigned yet', 'learnpress' );
+		}
 	}
 
 	/**

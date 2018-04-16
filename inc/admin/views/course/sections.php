@@ -24,47 +24,50 @@ learn_press_admin_view( 'course/new-section' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    jQuery(function ($) {
 
-        Vue.component('lp-list-sections', {
-            template: '#tmpl-lp-list-sections',
-            computed: {
-                // all sections
-                sections: function () {
-                    return $store.getters['ss/sections'];
+        (function (Vue, $store) {
+
+            Vue.component('lp-list-sections', {
+                template: '#tmpl-lp-list-sections',
+                computed: {
+                    // all sections
+                    sections: function () {
+                        return $store.getters['ss/sections'];
+                    },
+                    // disable edit curriculum
+                    disableCurriculum: function () {
+                        return $store.getters['disable_curriculum'];
+                    }
                 },
-                // disable edit curriculum
-                disableCurriculum: function () {
-                    return $store.getters['disable_curriculum'];
+                created: function () {
+                    var _self = this;
+                    setTimeout(function () {
+                        var $el = $('.curriculum-sections');
+                        $el.sortable({
+                            handle: '.section-head .movable',
+                            axis: 'y',
+                            items: "> .section",
+                            update: function () {
+                                _self.sort();
+                            }
+                        });
+                    }, 1000)
+
+                },
+                methods: {
+                    // sort sections
+                    sort: function () {
+
+                        var _items = $('.curriculum-sections>div.section'),
+                            order = _items.map(function () {
+                                return $(this).data('section-id');
+                            }).get();
+
+                        $store.dispatch('ss/updateSectionsOrder', order);
+                    }
                 }
-            },
-            created: function () {
-                var _self = this;
-                setTimeout(function () {
-                    var $el = $('.curriculum-sections');
-                    $el.sortable({
-                        handle: '.section-head .movable',
-                        axis: 'y',
-                        items: "> .section",
-                        update: function () {
-                            _self.sort();
-                        }
-                    });
-                }, 1000)
-
-            },
-            methods: {
-                // sort sections
-                sort: function () {
-
-                    var _items = $('.curriculum-sections>div.section'),
-                        order = _items.map(function () {
-                            return $(this).data('section-id');
-                        }).get();
-
-                    $store.dispatch('ss/updateSectionsOrder', order);
-                }
-            }
-        });
-    })(Vue, LP_Curriculum_Store, jQuery);
+            });
+        })(Vue, LP_Curriculum_Store);
+    });
 </script>

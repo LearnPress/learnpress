@@ -105,22 +105,7 @@ abstract class LP_Abstract_Settings {
 					}
 					$field['std']                  = apply_filters( 'learn-press/settings/default-field-value', $std, $field );
 					$field['learn-press-settings'] = 'yes';
-
-					// Re-format conditional logic fields
-					if ( ! empty( $field['visibility'] ) ) {
-						$conditional = $field['visibility'];
-
-						if ( ! array_key_exists( 0, $conditional['conditional'] ) ) {
-							$conditional['conditional'] = array(
-								$conditional['conditional']
-							);
-						}
-						foreach ( $conditional['conditional'] as $kk => $conditional_field ) {
-							$conditional['conditional'][ $kk ]['field'] = $this->get_admin_field_name( $conditional_field['field'] );
-						}
-
-						$field['visibility'] = $conditional;
-					}
+					$this->parse_conditional( $field );
 					$settings[ $k ] = $field;
 				}
 
@@ -128,6 +113,26 @@ abstract class LP_Abstract_Settings {
 		}
 
 		return $settings;
+	}
+
+	public function parse_conditional( &$field ) {
+		// Re-format conditional logic fields
+		if ( ! empty( $field['visibility'] ) ) {
+			$conditional = $field['visibility'];
+
+			if ( ! array_key_exists( 0, $conditional['conditional'] ) ) {
+				$conditional['conditional'] = array(
+					$conditional['conditional']
+				);
+			}
+			foreach ( $conditional['conditional'] as $kk => $conditional_field ) {
+				$conditional['conditional'][ $kk ]['field'] = $this->get_admin_field_name( $conditional_field['field'] );
+			}
+
+			$field['visibility'] = $conditional;
+		}
+
+		return $field;
 	}
 
 	/**

@@ -378,6 +378,8 @@
         });
     }
 
+
+
     var $doc = $(document);
 
     function _ready() {

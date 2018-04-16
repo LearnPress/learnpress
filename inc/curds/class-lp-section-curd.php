@@ -322,12 +322,17 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		// course author, for case co-instructor add new items
 		$author_id = get_post_field( 'post_author', $this->course_id ) ? get_post_field( 'post_author', $this->course_id ) : learn_press_get_current_user_id();
 
-		$item = wp_parse_args( $item, array( 'title' => '', 'type' => '' ) );
+		//$item = wp_parse_args( $item, array( 'title' => '', 'type' => '' ) );
+		$item = array_merge( array( 'title' => '', 'type' => '' ), $item );
 
 		$args = array(
 			'title'  => $item['title'],
 			'author' => $author_id
 		);
+
+		if ( ! empty( $item['id'] ) ) {
+			$item['old_id'] = $item ['id'];
+		}
 
 		if ( $item['type'] == LP_LESSON_CPT ) {
 			$lesson_curd     = new LP_Lesson_CURD();
@@ -398,11 +403,14 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// get WP Post
 			$post     = get_post( $item['id'] );
-			$result[] = array(
-				'id'      => $post->ID,
-				'title'   => $post->post_title,
-				'type'    => $post->post_type,
-				'preview' => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes'
+			$result[] = array_merge(
+				$item,
+				array(
+					'id'      => $post->ID,
+					'title'   => $post->post_title,
+					'type'    => $post->post_type,
+					'preview' => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes'
+				)
 			);
 
 			$order ++;

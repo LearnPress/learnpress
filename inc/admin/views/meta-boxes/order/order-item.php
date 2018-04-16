@@ -6,6 +6,11 @@
 <tr class="order-item-row" data-item_id="<?php echo $item['id']; ?>" data-id="<?php echo $item['course_id']; ?>"
     data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
     <td class="column-name">
+	    <?php if ( 'pending' === $order->get_status() ) { ?>
+            <a class="remove-order-item" href="">
+                <span class="dashicons dashicons-trash"></span>
+            </a>
+	    <?php } ?>
 		<?php do_action( 'learn_press_before_order_details_item_title', $item ); ?>
 		<?php do_action( 'learn_press/before_order_details_item_title', $item ); ?>
         <!-- <a href="" class="remove-order-item">&times;</a> -->
@@ -13,9 +18,7 @@
 		<?php do_action( 'learn_press_after_order_details_item_title', $item ); ?>
 		<?php do_action( 'learn_press/after_order_details_item_title', $item ); ?>
 
-		<?php if ( 'pending' === $order->get_status() ) { ?>
-            <a class="remove-order-item" href=""><?php _e( 'delete', 'learnpress' ); ?></a>
-		<?php } ?>
+
     </td>
     <td class="column-price align-right">
 		<?php echo learn_press_format_price( $item['total'], $currency_symbol ); ?>

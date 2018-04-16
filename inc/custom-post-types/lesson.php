@@ -34,7 +34,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			// hide View Lesson link if not assigned to course
 			add_action( 'admin_footer', array( $this, 'hide_view_lesson_link' ) );
 			add_filter( 'views_edit-' . LP_LESSON_CPT, array( $this, 'views_pages' ), 10 );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 
 			parent::__construct( $post_type );
 		}
@@ -49,19 +48,22 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				return $join;
 			}
 			global $wpdb;
-			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || $this->_get_search() ) {
-				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
-				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
-				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
-			}
+
+//			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || $this->_get_search() ) {
+//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
+//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
+//				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
+//			}
 
 			return $join;
 		}
 
 		/**
-		 * @param $where
+		 * Filter items unassigned.
 		 *
-		 * @return mixed|string
+		 * @param string $where
+		 *
+		 * @return string
 		 */
 		public function posts_where_paged( $where ) {
 
@@ -70,18 +72,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			}
 
 			global $wpdb;
-
-			if ( $course_id = $this->_filter_course() ) {
-				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
-			}
-
-			if ( isset( $_GET['s'] ) ) {
-				$s     = $_GET['s'];
-				$where = preg_replace(
-					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
-					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
-				);
-			}
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$where .= $wpdb->prepare( "
@@ -92,6 +82,23 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
                         WHERE p.post_type = %s
                     )
                 ", LP_LESSON_CPT );
+			}
+
+			if ( $preview = LP_Request::get( 'preview' ) ) {
+				$clause = $wpdb->prepare( "
+                    SELECT ID
+                    FROM {$wpdb->posts} p 
+                    INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+                    WHERE pm.meta_value = %s
+                    AND p.post_type = %s
+                ", '_lp_preview', 'yes', LP_LESSON_CPT );
+
+				$in = '';
+				if ( 'no' === $preview ) {
+					$in = 'NOT';
+				}
+
+				$where .= " AND {$wpdb->posts}.ID {$in} IN({$clause})";
 			}
 
 			return $where;
@@ -321,13 +328,16 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
 				'author'      => __( 'Author', 'learnpress' ),
-				LP_COURSE_CPT => __( 'Course', 'learnpress' )
+				LP_COURSE_CPT => $this->_get_course_column_title()
 			);
+
 			if ( current_theme_supports( 'post-formats' ) ) {
 				$new_columns['format']   = __( 'Format', 'learnpress' );
 				$new_columns['duration'] = __( 'Duration', 'learnpress' );
 			}
+
 			$new_columns['preview'] = __( 'Preview', 'learnpress' );
+
 			if ( false !== $pos && ! array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
@@ -350,25 +360,12 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			switch ( $name ) {
 				case LP_COURSE_CPT:
-					$courses = learn_press_get_item_courses( $post_id );
-					if ( $courses ) {
-						foreach ( $courses as $course ) {
-							echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_course' => $course->ID ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
-							echo '<div class="row-actions">';
-							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
-							echo "&nbsp;|&nbsp;";
-							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
-							echo '</div></div>';
-						}
-					} else {
-						_e( 'Not assigned yet', 'learnpress' );
-					}
-
+					$this->_get_item_course( $post_id );
 					break;
 				case 'preview':
 					printf(
@@ -420,10 +417,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
-		}
-
-		private function _filter_course() {
-			return ! empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
 		}
 
 		/**

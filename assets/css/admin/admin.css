@@ -1731,15 +1731,26 @@
     .post-type-lp_order #order_details .order-items table .remove-order-item {
       text-decoration: none;
       outline: none;
-      color: #FF0000;
-      display: none;
-      margin-left: 10px; }
+      color: #CCC; }
+      .post-type-lp_order #order_details .order-items table .remove-order-item .dashicons {
+        font-size: 18px; }
+      .post-type-lp_order #order_details .order-items table .remove-order-item:hover {
+        color: #FF0000; }
     .post-type-lp_order #order_details .order-items table .order-item-row:hover .remove-order-item {
       display: inline-block; }
 
 .color-schemas {
   margin: 0 20px 20px 0;
   float: left; }
+  .color-schemas .wp-color-picker {
+    width: 80px;
+    height: 24px;
+    vertical-align: top;
+    margin: 0; }
+  .color-schemas .wp-picker-holder {
+    position: absolute; }
+  .color-schemas .buttons {
+    display: none; }
   .color-schemas table {
     border-collapse: collapse;
     position: relative; }
@@ -1769,9 +1780,6 @@
     color: #FF0000; }
   .color-schemas .wp-color-result {
     margin: 0; }
-  .color-schemas .color-selector input {
-    width: 0 !important;
-    opacity: 0; }
   .color-schemas .clone-schema {
     display: none; }
   .color-schemas:first-child .remove-schema,
@@ -1793,6 +1801,30 @@
 /**
  * General style for admin editor.
  */
+@-webkit-keyframes rotating4 /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes rotating4 {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
 .lp-admin-editor {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -1809,7 +1841,7 @@
  *  Course admin editor.
  */
 #admin-editor-lp_course .lp-course-curriculum .heading {
-  padding: 15px;
+  padding: 12px 10px;
   position: relative; }
   #admin-editor-lp_course .lp-course-curriculum .heading h4 {
     margin: 0;
@@ -1847,16 +1879,19 @@
 
 #admin-editor-lp_course .lp-course-curriculum .curriculum-sections {
   margin: 0;
-  padding: 10px;
   border-top: 1px solid #ddd; }
 
 #admin-editor-lp_course .lp-course-curriculum .section {
   border: 1px solid #e5e5e5;
-  margin-bottom: 10px;
   opacity: 1;
-  background: #FFF; }
+  background: #FFF;
+  border-left: 0;
+  border-right: 0;
+  margin-bottom: -1px; }
+  #admin-editor-lp_course .lp-course-curriculum .section:first-child {
+    border-top: 0; }
   #admin-editor-lp_course .lp-course-curriculum .section.new-section {
-    margin-bottom: 0; }
+    margin-top: 1px; }
     #admin-editor-lp_course .lp-course-curriculum .section.new-section form {
       margin: 0; }
     #admin-editor-lp_course .lp-course-curriculum .section.new-section .section-head {
@@ -1866,19 +1901,37 @@
         top: 1px; }
         #admin-editor-lp_course .lp-course-curriculum .section.new-section .section-head .creatable:before {
           content: "\f132"; }
+  #admin-editor-lp_course .lp-course-curriculum .section.empty-section {
+    position: relative; }
+    #admin-editor-lp_course .lp-course-curriculum .section.empty-section:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #FFF;
+      content: '';
+      opacity: 0.5; }
+    #admin-editor-lp_course .lp-course-curriculum .section.empty-section .section-head .movable:before {
+      content: "\f463";
+      color: #a2a2a2;
+      display: inline-block;
+      -webkit-animation: rotating4 2s linear infinite;
+      -moz-animation: rotating4 2s linear infinite;
+      -ms-animation: rotating4 2s linear infinite;
+      -o-animation: rotating4 2s linear infinite;
+      animation: rotating4 2s linear infinite; }
+    #admin-editor-lp_course .lp-course-curriculum .section.empty-section .section-collapse {
+      display: none; }
   #admin-editor-lp_course .lp-course-curriculum .section:hover .section-actions .remove {
     display: inline-block; }
-  #admin-editor-lp_course .lp-course-curriculum .section.sortable-ghost {
-    opacity: 0.5; }
-  #admin-editor-lp_course .lp-course-curriculum .section.updating .section-head {
-    background-color: #e6f2d0; }
   #admin-editor-lp_course .lp-course-curriculum .section input {
     background-color: transparent;
     box-shadow: none; }
     #admin-editor-lp_course .lp-course-curriculum .section input:focus {
       box-shadow: none; }
   #admin-editor-lp_course .lp-course-curriculum .section .section-head {
-    background-color: #f9f9f9;
+    background-color: #f4fcff;
     padding: 3px;
     position: relative;
     transition: background 500ms ease-out; }
@@ -1941,13 +1994,15 @@
     font-size: 1.2em;
     border: none;
     line-height: 30px;
-    width: calc(100% - 80px);
+    width: calc(100% - 200px);
     padding-left: 0; }
   #admin-editor-lp_course .lp-course-curriculum .section .description-input {
     border: none;
     width: 100%;
     color: #999;
-    font-style: italic; }
+    font-style: italic;
+    margin: 0;
+    padding: 0; }
     #admin-editor-lp_course .lp-course-curriculum .section .description-input:focus {
       color: #444; }
 
@@ -1965,31 +2020,29 @@
     transition: background 200ms ease-out;
     display: flex;
     justify-content: center;
-    align-items: center; }
+    align-items: center;
+    background: #FFF; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.ui-sortable-helper {
+      border-bottom: 1px solid #EEE; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item:nth-child(2n+1) {
       background-color: #f4fcff; }
-    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.sortable-ghost {
-      opacity: 0.5; }
-    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.updating {
-      background-color: #e6f2d0; }
-      #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.updating:before {
-        position: absolute;
-        content: '';
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 2; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.updating:before {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.removing {
       background-color: #ffeded; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .drag {
-      width: 18px;
       height: 20px;
       cursor: url("../../images/openhand.cur") 7 5, default;
-      flex-shrink: 0;
       visibility: hidden;
       fill: #d5dce0;
-      padding-top: 3px; }
+      padding-top: 3px;
+      flex: 0 0 18px; }
       #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .drag:hover {
         fill: #0085ba; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .icon {
@@ -2030,13 +2083,14 @@
     display: flex;
     align-items: center;
     transition: all 200ms ease-out; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .drag {
+      cursor: default; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .title {
       display: inline-block;
       margin: 0;
       flex: 1; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types {
-      display: inline-block;
-      margin-left: 17px; }
+      display: inline-block; }
       #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types:hover, #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types:focus {
         background-color: #fff; }
         #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types:hover .type, #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types:focus .type {
@@ -2058,6 +2112,8 @@
           content: '\f469'; }
         #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.lp_lesson:before {
           content: '\f330'; }
+        #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item .types .type.empty-item:before {
+          content: "\f463"; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions {
     text-align: right; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action {
@@ -2083,7 +2139,6 @@
         position: absolute;
         top: 100%;
         width: 165px;
-        padding: 2px 0;
         right: 0;
         background: #fdfeff;
         margin: 0;
@@ -2093,11 +2148,13 @@
         text-align: center; }
         #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item ul li {
           margin: 0;
-          padding: 8px;
-          border-bottom: 1px solid #eee; }
+          border-bottom: 1px solid #eee;
+          text-align: right; }
           #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item ul li a {
             color: #0073aa;
-            text-decoration: none; }
+            text-decoration: none;
+            padding: 8px;
+            display: block; }
             #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item ul li a.delete-permanently {
               color: #d05d5d; }
           #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .item-actions .actions .action.delete-item ul li:hover {
@@ -2111,11 +2168,33 @@
     content: '\f469'; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.lp_lesson .icon:before {
     content: '\f330'; }
+  #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.empty-item {
+    color: #a2a2a2;
+    position: relative; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.empty-item:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #FFF;
+      content: '';
+      opacity: 0.5; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.empty-item .item-actions {
+      display: none; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.empty-item .icon:before {
+      content: "\f463";
+      color: #a2a2a2;
+      -webkit-animation: rotating4 2s linear infinite;
+      -moz-animation: rotating4 2s linear infinite;
+      -ms-animation: rotating4 2s linear infinite;
+      -o-animation: rotating4 2s linear infinite;
+      animation: rotating4 2s linear infinite; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .icon {
-    width: 38px;
     font-size: 20px;
     color: #0085ba;
-    text-align: center; }
+    text-align: center;
+    flex: 0 0 29px; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item .icon:before {
       font-family: Dashicons; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item input {
@@ -2140,37 +2219,57 @@
     #admin-editor-lp_course .lp-course-curriculum .section-actions .remove.confirm .icon {
       display: none; }
 
+#admin-editor-lp_course .lp-course-curriculum .ui-sortable-placeholder {
+  visibility: visible !important;
+  background: #bdf4fe !important;
+  display: block;
+  border-color: #bdf4fe !important; }
+
+.section-item-counts {
+  position: absolute;
+  top: 0;
+  right: 41px;
+  white-space: nowrap;
+  line-height: 44px;
+  font-size: 12px; }
+  .section-item-counts span {
+    font-weight: bold;
+    color: #999; }
+
 /**
  * Quiz admin editor.
  */
-#admin-editor-lp_quiz .lp-box-data-head .status {
-  font-family: Dashicons;
-  font-size: 20px;
-  position: relative;
-  top: 5px;
-  margin-left: 10px;
-  visibility: hidden; }
-  #admin-editor-lp_quiz .lp-box-data-head .status:before {
-    content: "\f463"; }
-  #admin-editor-lp_quiz .lp-box-data-head .status.loading {
-    visibility: visible;
-    animation: rotation 2s infinite linear;
-    display: inline-block; }
-
-#admin-editor-lp_quiz .lp-box-data-head .collapse-list-questions {
-  font-family: Dashicons;
-  position: absolute;
-  top: 0;
-  right: 5px;
-  bottom: 0;
-  font-size: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  width: 40px;
-  height: 55px;
-  color: #999; }
+#admin-editor-lp_quiz .lp-box-data-head {
+  padding: 12px 10px; }
+  #admin-editor-lp_quiz .lp-box-data-head h3 {
+    padding: 0; }
+  #admin-editor-lp_quiz .lp-box-data-head .status {
+    font-family: Dashicons;
+    font-size: 20px;
+    position: relative;
+    top: 5px;
+    margin-left: 10px;
+    visibility: hidden; }
+    #admin-editor-lp_quiz .lp-box-data-head .status:before {
+      content: "\f463"; }
+    #admin-editor-lp_quiz .lp-box-data-head .status.loading {
+      visibility: visible;
+      animation: rotation 2s infinite linear;
+      display: inline-block; }
+  #admin-editor-lp_quiz .lp-box-data-head .collapse-list-questions {
+    font-family: Dashicons;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 40px;
+    height: 46px;
+    color: #999; }
 
 #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions {
   color: #777;
@@ -2181,40 +2280,43 @@
     text-align: center; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > * {
       width: 100%;
-      padding: 9px 10px; }
+      padding: 12px 10px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .sort {
-      width: 15px;
-      fill: #d5dce0;
+      flex: 0 0 15px;
       cursor: url("../../images/openhand.cur") 7 5, default;
       visibility: hidden;
-      padding-right: 0;
-      position: relative; }
-      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .sort svg {
-        width: 18px;
-        height: 20px;
-        position: absolute;
-        top: 50%;
-        margin-top: -10px;
-        left: 4px; }
+      position: relative;
+      font-size: 18px;
+      color: #d5dce0; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .sort:hover {
-        fill: #0085ba; }
+        color: #0085ba; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .order {
-      width: 10px; }
-    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .name {
-      padding: 10px; }
+      flex: 0 0 30px;
+      text-align: right;
+      font-weight: bold;
+      font-size: 15px;
+      padding: 12px 0; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .order:after {
+        content: '.'; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .type {
       width: 150px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .actions {
       width: 300px; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .name {
+      padding-left: 5px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row:hover > .sort {
       visibility: visible; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row .actions .lp-box-data-actions {
+      text-align: right !important; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .header {
-    border-bottom: 1px solid #ddd; }
+    border-bottom: 1px solid #ddd;
+    display: none; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .header .table-row > * {
-      font-weight: bold;
-      padding: 12px 8px 12px 0; }
-    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .header .table-row .sort {
-      width: 45px; }
+      font-weight: bold; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .header .table-row > .order:after {
+      content: ''; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .header .table-row > .actions {
+      padding: 12px 0; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-actions .name input {
     width: 100%;
     font-size: 14px;
@@ -2224,8 +2326,6 @@
     font-weight: normal;
     color: #777;
     padding: 0; }
-  #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-actions.updating {
-    background-color: #e6f2d0; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings {
     border: 1px solid #ddd;
     border-left: none;
@@ -2234,13 +2334,28 @@
       padding: 20px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options {
       border: 1px solid #ddd; }
-      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options thead .answer-text {
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .sort {
+        width: 12px;
+        padding: 8px 5px; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .answer-text {
+        padding-left: 5px;
         width: calc(100% - 100px); }
-      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options thead .answer-correct {
-        width: 65px; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .order {
+        width: 30px;
+        text-align: right;
+        padding: 0; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .answer-correct {
+        width: 65px;
+        text-align: center; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .actions {
+        padding: 0;
+        text-align: right; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .actions .lp-toolbar-btn {
+          height: 42px; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr {
         background: #fff;
-        border: 1px solid #DDD; }
+        border: 1px solid #DDD;
+        position: relative; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr:nth-child(2n) {
           background: #f4fcff; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td {
@@ -2249,10 +2364,63 @@
           position: static;
           border: none; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.sort {
-            cursor: url("../../images/openhand.cur") 7 5, default; }
+            cursor: url("../../images/openhand.cur") 7 5, default;
+            width: 12px;
+            position: relative; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.order {
+            font-weight: bold; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.answer-text {
+            padding-left: 5px; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.answer-correct {
             text-align: center; }
-      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody .answer-option .answer-text input {
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr .svg-icon {
+          height: 18px;
+          vertical-align: middle;
+          visibility: hidden;
+          fill: #d5dce0; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr:hover .svg-icon {
+          visibility: visible; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr:hover .sort:hover .svg-icon {
+          fill: #0085ba; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.ui-sortable-placeholder {
+          visibility: visible !important; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.ui-sortable-placeholder td {
+            height: 43px;
+            background: #bdf4fe !important; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.ui-sortable-helper {
+          border-left: none;
+          border-right: none; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.ui-sortable-helper td {
+            border-bottom: 1px solid #DDD; }
+            #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.ui-sortable-helper td.sort {
+              border-left: 0; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.empty-option .sort i {
+          display: none; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.empty-option .sort:before {
+          font-family: Dashicons;
+          content: "\f463";
+          display: inline-block;
+          font-size: 18px;
+          position: absolute;
+          left: 4px;
+          top: 12px;
+          -webkit-animation: rotating4 2s linear infinite;
+          -moz-animation: rotating4 2s linear infinite;
+          -ms-animation: rotating4 2s linear infinite;
+          -o-animation: rotating4 2s linear infinite;
+          animation: rotating4 2s linear infinite; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.empty-option td {
+          position: relative; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr.empty-option td:after {
+            content: '';
+            top: 0;
+            left: 0;
+            right: 1px;
+            bottom: 0;
+            background: #FFF;
+            position: absolute;
+            opacity: 0.5; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody .answer-text input {
         width: 100%;
         font-size: 14px;
         border: none;
@@ -2266,6 +2434,42 @@
     border-bottom: 1px solid #f1f1f1; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item:nth-child(2n+1) {
       background: #f4fcff; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.ui-sortable-helper {
+      border-top: 1px solid #f1f1f1; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.ui-sortable-placeholder {
+      visibility: visible !important;
+      background: #bdf4fe !important;
+      display: block;
+      border-color: #bdf4fe !important; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.empty-question, #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.updating {
+      position: relative; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.empty-question .question-actions .sort, #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.updating .question-actions .sort {
+        visibility: visible; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.empty-question .question-actions .sort .fa, #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.updating .question-actions .sort .fa {
+          display: none; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.empty-question .question-actions .sort:after, #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.updating .question-actions .sort:after {
+          font-family: Dashicons;
+          content: "\f463";
+          font-size: 20px;
+          display: inline-block;
+          position: absolute;
+          left: 5px;
+          -webkit-animation: rotating4 2s linear infinite;
+          -moz-animation: rotating4 2s linear infinite;
+          -ms-animation: rotating4 2s linear infinite;
+          -o-animation: rotating4 2s linear infinite;
+          animation: rotating4 2s linear infinite; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.empty-question:after, #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.updating:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #FFF;
+        opacity: 0.5; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.empty-question .question-settings {
+      display: none; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .cell {
       padding: 10px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-actions .name input {
@@ -2320,7 +2524,8 @@
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings {
       background: #fff; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options {
-        text-align: left; }
+        text-align: left;
+        padding-left: 0; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .inside {
           margin: 0;
           padding: 0; }
@@ -2329,21 +2534,48 @@
             margin: 0; }
             #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .inside .rwmb-meta-box .rwmb-field:nth-child(2n+1) {
               background: #f4fcff; }
-  #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row {
-    text-align: left; }
-    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question {
-      padding-left: 65px;
-      margin-top: -1px;
-      border-top: 1px solid #DDD; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .hndle {
+          cursor: default; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .toggle {
+          float: right;
+          width: 36px;
+          height: 36px;
+          position: absolute;
+          top: 0;
+          right: 0;
+          line-height: 36px;
+          text-align: center; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .toggle:after {
+            font-family: Dashicons;
+            content: "\f460";
+            font-size: 18px; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings.closed .quiz-question-options {
+        width: 38px; }
+      #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings.closed .postbox {
+        min-width: 34px;
+        height: 34px;
+        line-height: 42px;
+        text-align: center; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings.closed .postbox .hndle {
+          display: none; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings.closed .postbox .toggle:after {
+          content: "\f132"; }
+  #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer {
+    border-top: 1px solid #DDD;
+    margin-top: -1px; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .order {
+      line-height: 28px; }
+    #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row {
+      text-align: left; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title {
         position: relative;
         display: inline-block;
         min-width: 500px; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title input {
-          border: 1px solid #DDD;
+          border: 0;
           width: 100%;
           margin: 0;
-          padding: 6px 6px;
+          padding: 6px 0px;
           -webkit-box-shadow: none;
           -moz-box-shadow: none;
           box-shadow: none;
@@ -2356,6 +2588,11 @@
             box-shadow: none; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title input:focus {
             border-color: #DDD; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title input::placeholder {
+            color: #999;
+            font-style: italic;
+            border-bottom: 1px solid #DDD;
+            display: inline-block; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .add-new {
         display: inline;
         position: relative; }
@@ -2399,11 +2636,39 @@
 #admin-editor-lp_question {
   background: #fff; }
   #admin-editor-lp_question .lp-box-data-head {
-    padding: 5px 15px; }
+    padding: 0 10px; }
     #admin-editor-lp_question .lp-box-data-head .heading {
-      float: left; }
+      float: left;
+      padding: 12px 10px; }
+      #admin-editor-lp_question .lp-box-data-head .heading .section-item-counts {
+        right: 50px; }
+        #admin-editor-lp_question .lp-box-data-head .heading .section-item-counts span {
+          background: #F5F5F5;
+          padding: 0 9px;
+          color: #00b9ff;
+          margin-top: 8px;
+          display: inline-block;
+          line-height: 30px;
+          height: 30px;
+          -webkit-border-radius: 3px;
+          -moz-border-radius: 3px;
+          border-radius: 3px;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0; }
+    #admin-editor-lp_question .lp-box-data-head .lp-toolbar-buttons {
+      height: 46px; }
     #admin-editor-lp_question .lp-box-data-head .question-actions {
-      margin-top: 8px; }
+      margin-right: 10px;
+      height: 30px;
+      background: #BBB;
+      margin-top: 8px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0; }
+      #admin-editor-lp_question .lp-box-data-head .question-actions .question-types a {
+        color: #FFF; }
       #admin-editor-lp_question .lp-box-data-head .question-actions .question-types ul {
         position: absolute;
         top: 100%;
@@ -2421,11 +2686,11 @@
             display: block;
             white-space: nowrap;
             text-decoration: none;
-            padding: 5px 25px;
+            padding: 5px;
             font-size: 12px;
             text-align: right;
             color: #0073aa;
-            margin: 0; }
+            min-width: 100px; }
         #admin-editor-lp_question .lp-box-data-head .question-actions .question-types ul:hover {
           display: block; }
       #admin-editor-lp_question .lp-box-data-head .question-actions:hover .question-types ul {
@@ -2443,27 +2708,43 @@
           padding: 15px;
           background: #F5F5F5;
           border-bottom: 1px solid #DDD; }
-          #admin-editor-lp_question .lp-box-data-content table.list-question-answers thead tr th.sort, #admin-editor-lp_question .lp-box-data-content table.list-question-answers thead tr th.order, #admin-editor-lp_question .lp-box-data-content table.list-question-answers thead tr th.actions {
-            width: 10px; }
-          #admin-editor-lp_question .lp-box-data-content table.list-question-answers thead tr th.answer-correct {
-            width: 65px; }
+      #admin-editor-lp_question .lp-box-data-content table.list-question-answers .sort, #admin-editor-lp_question .lp-box-data-content table.list-question-answers .order, #admin-editor-lp_question .lp-box-data-content table.list-question-answers .actions {
+        width: 10px; }
+      #admin-editor-lp_question .lp-box-data-content table.list-question-answers .sort {
+        padding: 0 10px; }
+      #admin-editor-lp_question .lp-box-data-content table.list-question-answers .order {
+        text-align: right;
+        padding: 0;
+        width: 30px;
+        font-weight: bold; }
+      #admin-editor-lp_question .lp-box-data-content table.list-question-answers .answer-correct {
+        width: 65px;
+        text-align: center; }
+      #admin-editor-lp_question .lp-box-data-content table.list-question-answers .answer-text {
+        padding-left: 5px; }
+      #admin-editor-lp_question .lp-box-data-content table.list-question-answers .actions {
+        padding-right: 0;
+        text-align: right; }
       #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr {
         background: #f4fcff;
         color: #777; }
         #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr:nth-child(2n) {
           background: #fff; }
-        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr:hover td.actions .remove-answer {
-          visibility: visible; }
         #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.sort {
           width: 15px;
           text-align: center;
           font-size: 18px;
-          color: #CCC;
-          cursor: url("../../images/openhand.cur") 7 5, default; }
-          #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.sort:hover {
-            color: #0085ba; }
+          cursor: url("../../images/openhand.cur") 7 5, default;
+          padding: 0; }
+          #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.sort .svg-icon {
+            visibility: hidden;
+            fill: #d5dce0;
+            height: 18px;
+            vertical-align: middle; }
+          #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.sort:hover .svg-icon {
+            fill: #0085ba; }
         #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.order {
-          font-size: 13px; }
+          font-size: 14px; }
         #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.answer-text input {
           width: 100%;
           font-size: 14px;
@@ -2473,12 +2754,47 @@
           font-weight: normal;
           color: #777;
           padding: 0; }
-        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.actions .remove-answer {
-          visibility: hidden; }
-          #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.actions .remove-answer:hover {
-            background: transparent; }
         #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.lp-toolbar-buttons {
           z-index: auto; }
+        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr:hover td.actions .remove-answer {
+          visibility: visible;
+          height: 42px; }
+        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr:hover td.sort .svg-icon {
+          visibility: visible; }
+        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr.ui-sortable-placeholder {
+          visibility: visible !important; }
+          #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr.ui-sortable-placeholder td {
+            background: #bdf4fe !important;
+            height: 43px; }
+        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr.ui-sortable-helper td {
+          border-bottom: 1px solid #DDD; }
+          #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr.ui-sortable-helper td.sort {
+            border-left: 0; }
+        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr.new-option .svg-icon {
+          display: none; }
+        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr.new-option td {
+          position: relative; }
+        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr.new-option .sort:before {
+          content: "\f463";
+          font-family: Dashicons;
+          position: absolute;
+          left: 10px;
+          top: 12px;
+          display: inline-block;
+          -webkit-animation: rotating4 2s linear infinite;
+          -moz-animation: rotating4 2s linear infinite;
+          -ms-animation: rotating4 2s linear infinite;
+          -o-animation: rotating4 2s linear infinite;
+          animation: rotating4 2s linear infinite; }
+        #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr.new-option td:after {
+          position: absolute;
+          content: '';
+          background: #FFF;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0.5; }
     #admin-editor-lp_question .lp-box-data-content .add-answer {
       margin: 15px 0 0 0; }
 
@@ -2548,9 +2864,9 @@
             border-right: 1px solid #ddd;
             position: absolute;
             right: 0;
-            height: 20px;
+            height: 44px;
             top: 50%;
-            margin-top: -10px; }
+            margin-top: -22px; }
           #lp-modal-choose-items .lp-choose-items .header .tabs .tab.active:after {
             border: 1px solid #ddd;
             transform: rotate(45deg);
@@ -2568,10 +2884,12 @@
           #lp-modal-choose-items .lp-choose-items .header .tabs .tab.active a {
             color: #333; }
           #lp-modal-choose-items .lp-choose-items .header .tabs .tab a {
-            padding: 15px 20px;
+            padding: 0 20px;
             text-decoration: none;
             display: inline-block;
-            font-weight: 600; }
+            font-weight: 600;
+            height: 44px;
+            line-height: 44px; }
             #lp-modal-choose-items .lp-choose-items .header .tabs .tab a:focus {
               box-shadow: none; }
       #lp-modal-choose-items .lp-choose-items .header .close {
@@ -2581,12 +2899,13 @@
         right: 0;
         cursor: pointer;
         font-size: 1em;
-        padding: 9px;
-        z-index: 9; }
+        padding: 12px;
+        z-index: 30; }
     #lp-modal-choose-items .lp-choose-items .main {
       padding: 20px;
       position: relative;
-      overflow: hidden; }
+      overflow: hidden;
+      border-bottom: 1px solid #DDD; }
       #lp-modal-choose-items .lp-choose-items .main .section-item {
         cursor: pointer;
         transition: color 200ms ease-out;
@@ -2602,10 +2921,11 @@
       #lp-modal-choose-items .lp-choose-items .main .search {
         margin-bottom: 20px;
         background: transparent; }
-        #lp-modal-choose-items .lp-choose-items .main .search input {
+        #lp-modal-choose-items .lp-choose-items .main .search input.modal-search-input {
           width: 100%;
           font-size: 1.2em;
-          line-height: 1.5; }
+          line-height: 1.5;
+          padding: 10px 14px; }
       #lp-modal-choose-items .lp-choose-items .main .list-items {
         min-height: 260px;
         margin: 0; }
@@ -2625,7 +2945,7 @@
       z-index: 2;
       padding: 20px;
       transform: translate(100%, 0);
-      max-height: 400px;
+      max-height: 420px;
       overflow: auto; }
       #lp-modal-choose-items .lp-choose-items .lp-added-items-preview.show {
         transform: translate(0, 0); }
@@ -2635,6 +2955,11 @@
           margin: -10px 0 15px 0; }
     #lp-modal-choose-items .lp-choose-items .footer {
       padding: 20px; }
+
+body.moving {
+  cursor: url("../../images/closedhand.cur") 7 5, default !important; }
+  body.moving .section-item .drag {
+    cursor: url("../../images/closedhand.cur") 7 5, default !important; }
 
 @media screen and (max-width: 900px) {
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .question-settings.table-row {
@@ -2770,6 +3095,12 @@
 
 #adminmenu .update-plugins.lp-plugins-count {
   padding: 0 5px; }
+
+.search-box input[name="post-search-author"],
+.search-box .select2-container {
+  margin: 0;
+  min-width: 200px;
+  vertical-align: top; }
 
 .learnpress .actions {
   margin: 0; }

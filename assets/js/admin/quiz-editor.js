@@ -244,6 +244,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         externalComponent: function (state) {
             return state.externalComponent || [];
         },
+        hiddenQuestionsSettings: function (state) {
+            return state.hidden_questions_settings || [];
+        },
         hiddenQuestions: function (state) {
             return state.questions
                 .filter(function (question) {
@@ -289,7 +292,17 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         'ADD_QUESTION_ANSWER': function (state, payload) {
             state.questions = state.questions.map(function (question) {
                 if (question.id === payload.question_id) {
-                    question.answers.push(payload.answer);
+                    var found = false;
+                    if (payload.answer.temp_id) {
+                        for (var i = 0, n = question.answers.length; i < n; i++) {
+                            if (question.answers[i].question_answer_id == payload.answer.temp_id) {
+                                found = true;
+                                Vue.set(question.answers, i, payload.answer);
+                            }
+                        }
+                    }
+
+                    !found && question.answers.push(payload.answer);
                     return question;
                 } else {
                     return question;
@@ -308,7 +321,19 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             state.questions = questions;
         },
         'ADD_NEW_QUESTION': function (state, question) {
-            state.questions.push(question);
+            var found = false;
+            if (question.temp_id) {
+                for (var i = 0, n = state.questions.length; i < n; i++) {
+                    if (state.questions[i].id == question.temp_id) {
+                        Vue.set(state.questions, i, question);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                state.questions.push(question);
+            }
 
             var _last_child = $('.lp-list-questions .main > div:last-child');
             if (_last_child.length) {
@@ -327,11 +352,14 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             });
         },
         'REMOVE_QUESTION': function (state, item) {
-
             var questions = state.questions,
                 index = questions.indexOf(item);
 
-            state.questions.splice(index, 1);
+            if (item.temp_id) {
+                state.questions[index].id = item.temp_id;
+            } else {
+                state.questions.splice(index, 1);
+            }
         },
         'DELETE_QUESTION_ANSWER': function (state, payload) {
             var question_id = payload.question_id,
@@ -399,6 +427,21 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
         'UPDATE_QUESTION_ANSWER_FAIL': function (state, question_id) {
             Vue.set(state.statusUpdateQuestionAnswer, question_id, 'failed');
+        },
+        'DELETE_ANSWER': function (state, data) {
+            state.questions.map(function (question, index) {
+                if (question.id == data.question_id) {
+                    for (var i = 0, n = question.answers.length; i < n; i++) {
+                        if (question.answers[i].question_answer_id == data.answer_id) {
+                            question.answers[i].question_answer_id = data.temp_id;
+                            //state.questions[index].answers.splice(i, 1);
+                            break;
+                        }
+                    }
+                    return false;
+                }
+            })
+
         }
     };
 
@@ -419,8 +462,16 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             })
         },
 
-        newQuestion: function (context, payload) {
+        updateQuizQuestionsHidden: function (context, data) {
+            Vue.http.LPRequest($.extend({}, data, {
+                type: 'update-quiz-questions-hidden'
+            }));
+        },
 
+        newQuestion: function (context, payload) {
+            var newQuestion = JSON.parse(JSON.stringify(payload.question));
+            newQuestion.settings = {};
+            context.commit('ADD_NEW_QUESTION', newQuestion);
             Vue.http.LPRequest({
                 type: 'new-question',
                 question: JSON.stringify(payload.question),
@@ -498,6 +549,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             })
         },
 
+        isHiddenQuestionsSettings: function (context, id) {
+        },
+
         cloneQuestion: function (context, question) {
             Vue.http.LPRequest({
                 type: 'clone-question',
@@ -520,15 +574,20 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         removeQuestion: function (context, question) {
+            var question_id = question.id;
+            question.temp_id = LP.uniqueId();
+            context.commit('REMOVE_QUESTION', question);
 
             Vue.http.LPRequest({
                 type: 'remove-question',
-                question_id: question.id
+                question_id: question_id
             }).then(
                 function (response) {
                     var result = response.body;
 
                     if (result.success) {
+                        question.id = question.temp_id;
+                        question.temp_id = 0;
                         context.commit('REMOVE_QUESTION', question);
                     }
                 },
@@ -539,13 +598,17 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         deleteQuestion: function (context, question) {
-
+            var question_id = question.id;
+            question.temp_id = LP.uniqueId();
+            context.commit('REMOVE_QUESTION', question);
             Vue.http
                 .LPRequest({
                     type: 'delete-question',
                     question_id: question.id
                 })
                 .then(function () {
+                    question.id = question.temp_id;
+                    question.temp_id = 0;
                     context.commit('REMOVE_QUESTION', question);
                     context.commit('UPDATE_QUESTION_SUCCESS', question.id);
                 })
@@ -632,6 +695,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         deleteQuestionAnswer: function (context, payload) {
+            payload.temp_id = LP.uniqueId();
+            context.commit('DELETE_ANSWER', payload);
             context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
 
             Vue.http.LPRequest({
@@ -645,7 +710,8 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                     if (result.success) {
                         context.commit('DELETE_QUESTION_ANSWER', {
                             question_id: payload.question_id,
-                            answer_id: payload.answer_id
+                            answer_id: payload.temp_id
+                            //answer_id: payload.answer_id
                         });
                         context.commit('UPDATE_QUESTION_SUCCESS', payload.question_id);
                     }
@@ -657,24 +723,29 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             )
         },
 
-        newQuestionAnswer: function (context, question_id) {
+        newQuestionAnswer: function (context, data) {
+            var temp_id = LP.uniqueId(),
+                question_id = data.question_id;
             context.commit('UPDATE_QUESTION_REQUEST', question_id);
-
+            context.commit('ADD_QUESTION_ANSWER', {
+                question_id: question_id,
+                answer: {'text': LP_Quiz_Store.getters['i18n/all'].new_option, 'question_answer_id': temp_id}
+            });
             Vue.http
                 .LPRequest({
                     type: 'new-question-answer',
-                    question_id: question_id
+                    question_id: question_id,
+                    question_answer_id: temp_id
                 })
                 .then(
                     function (response) {
-
                         var result = response.body;
-
                         if (result.success) {
                             var answer = result.data;
-
                             context.commit('ADD_QUESTION_ANSWER', {question_id: question_id, answer: answer});
                             context.commit('UPDATE_QUESTION_SUCCESS', question_id);
+
+                            data.success && setTimeout(function(){data.success.apply(data.context, [answer]);}, 300);
                         }
                     },
                     function (error) {

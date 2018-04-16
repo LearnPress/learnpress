@@ -1,6 +1,46 @@
 /**
  * General style for admin editor.
  */
+
+@-webkit-keyframes rotating4 /* Safari and Chrome */
+{
+    from {
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotating4 {
+    from {
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@mixin rotating4($args: rotating4 2s linear infinite) {
+    -webkit-animation: $args;
+    -moz-animation: $args;
+    -ms-animation: $args;
+    -o-animation: $args;
+    animation: $args;
+}
+
 .lp-admin-editor {
     background-color: #fff;
     border: 1px solid #ddd;
@@ -23,7 +63,7 @@
 
     .lp-course-curriculum {
         .heading {
-            padding: 15px;
+            padding: 12px 10px;
             position: relative;
 
             h4 {
@@ -75,22 +115,26 @@
 
         .curriculum-sections {
             margin: 0;
-            padding: 10px;
+            //padding: 10px;
             border-top: 1px solid #ddd;
         }
 
         .section {
             border: 1px solid #e5e5e5;
-            margin-bottom: 10px;
+            //margin-bottom: 10px;
             opacity: 1;
             background: #FFF;
+            border-left: 0;
+            border-right: 0;
+            margin-bottom: -1px;
+            &:first-child {
+                border-top: 0;
+            }
             &.new-section {
-                //box-shadow: 0 0 30px #ddd;
-                margin-bottom: 0;
+                margin-top: 1px;
                 form {
                     margin: 0;
                 }
-
                 .section-head {
                     background-color: #f4fcff;
                     .creatable {
@@ -103,6 +147,30 @@
                     }
                 }
             }
+            &.empty-section {
+                position: relative;
+                &:after {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: #FFF;
+                    content: '';
+                    opacity: 0.5;
+                }
+                .section-head {
+                    .movable:before {
+                        content: "\f463";
+                        color: #a2a2a2;
+                        display: inline-block;
+                        @include rotating4();
+                    }
+                }
+                .section-collapse {
+                    display: none;
+                }
+            }
 
             &:hover {
                 .section-actions {
@@ -112,36 +180,22 @@
                 }
             }
 
-            &.sortable-ghost {
-                opacity: 0.5;
-            }
-
-            &.open {
-
-            }
-
             &.close {
                 .section-collapse {
-                }
-            }
-
-            &.updating {
-                .section-head {
-                    background-color: #e6f2d0;
                 }
             }
 
             input {
                 background-color: transparent;
                 box-shadow: none;
-
                 &:focus {
                     box-shadow: none;
                 }
             }
 
             .section-head {
-                background-color: #f9f9f9;
+                //background-color: #f9f9f9;
+                background-color: #f4fcff;
                 padding: 3px;
                 position: relative;
                 transition: background 500ms ease-out;
@@ -241,7 +295,7 @@
                 font-size: 1.2em;
                 border: none;
                 line-height: 30px;
-                width: calc(100% - 80px);
+                width: calc(100% - 200px);
                 padding-left: 0;
             }
 
@@ -250,7 +304,8 @@
                 width: 100%;
                 color: #999;
                 font-style: italic;
-
+                margin: 0;
+                padding: 0;
                 &:focus {
                     color: #444;
                 }
@@ -279,18 +334,14 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-
+                background: #FFF;
+                &.ui-sortable-helper {
+                    border-bottom: 1px solid #EEE;
+                }
                 &:nth-child(2n+1) {
                     background-color: #f4fcff;
                 }
-
-                &.sortable-ghost {
-                    opacity: 0.5;
-                }
-
                 &.updating {
-                    background-color: #e6f2d0;
-
                     &:before {
                         position: absolute;
                         content: '';
@@ -307,13 +358,12 @@
                 }
 
                 .drag {
-                    width: 18px;
                     height: 20px;
                     cursor: url("../../images/openhand.cur") 7 5, default;
-                    flex-shrink: 0;
                     visibility: hidden;
                     fill: #d5dce0;
                     padding-top: 3px;
+                    flex: 0 0 18px;
                     &:hover {
                         fill: #0085ba;
                     }
@@ -361,12 +411,6 @@
                     .remove {
                         color: #a00;
                     }
-
-                    .preview-item {
-                        .dashicons-unlock {
-                            //visibility: visible;
-                        }
-                    }
                 }
 
                 &:hover {
@@ -384,7 +428,6 @@
                         }
                     }
                 }
-
             }
 
             .new-section-item {
@@ -393,7 +436,9 @@
                 display: flex;
                 align-items: center;
                 transition: all 200ms ease-out;
-
+                .drag {
+                    cursor: default;
+                }
                 .title {
                     display: inline-block;
                     margin: 0;
@@ -402,8 +447,6 @@
 
                 .types {
                     display: inline-block;
-                    margin-left: 17px;
-
                     &:hover, &:focus {
                         background-color: #fff;
 
@@ -443,6 +486,11 @@
                                 content: '\f330';
                             }
                         }
+                        &.empty-item {
+                            &:before {
+                                content: "\f463";
+                            }
+                        }
                     }
                 }
             }
@@ -480,7 +528,6 @@
                                     position: absolute;
                                     top: 100%;
                                     width: 165px;
-                                    padding: 2px 0;
                                     right: 0;
                                     background: #fdfeff;
                                     margin: 0;
@@ -490,11 +537,13 @@
                                     text-align: center;
                                     li {
                                         margin: 0;
-                                        padding: 8px;
                                         border-bottom: 1px solid #eee;
+                                        text-align: right;
                                         a {
                                             color: #0073aa;
                                             text-decoration: none;
+                                            padding: 8px;
+                                            display: block;
                                             &.delete-permanently {
                                                 color: #d05d5d;
                                             }
@@ -535,11 +584,34 @@
                     }
                 }
 
+                &.empty-item {
+                    color: #a2a2a2;
+                    position: relative;
+                    &:after {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: #FFF;
+                        content: '';
+                        opacity: 0.5;
+                    }
+                    .item-actions {
+                        display: none;
+                    }
+                    .icon:before {
+                        content: "\f463";
+                        color: #a2a2a2;
+                        @include rotating4();
+                    }
+                }
+
                 .icon {
-                    width: 38px;
                     font-size: 20px;
                     color: #0085ba;
                     text-align: center;
+                    flex: 0 0 29px;
                     &:before {
                         font-family: Dashicons;
                     }
@@ -582,542 +654,30 @@
                 }
             }
         }
-    }
-}
-
-/**
- * Quiz admin editor.
- */
-#admin-editor-lp_quiz {
-
-    .lp-box-data-head {
-        .status {
-            font-family: Dashicons;
-            font-size: 20px;
-            position: relative;
-            top: 5px;
-            margin-left: 10px;
-            visibility: hidden;
-
-            &:before {
-                content: "\f463";
-            }
-
-            &.loading {
-                visibility: visible;
-                animation: rotation 2s infinite linear;
-                display: inline-block;
-            }
-        }
-        .collapse-list-questions {
-            font-family: Dashicons;
-            position: absolute;
-            top: 0;
-            right: 5px;
-            bottom: 0;
-            font-size: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            width: 40px;
-            height: 55px;
-            color: #999;
-        }
-    }
-
-    .lp-box-data-content {
-        .lp-list-questions {
-            color: #777;
-            border-collapse: collapse;
-
-            .table-row {
-                display: flex;
-                flex-direction: row;
-                text-align: center;
-
-                & > * {
-                    width: 100%;
-                    padding: 9px 10px
-                }
-
-                & > .sort {
-                    width: 15px;
-                    fill: #d5dce0;
-                    cursor: url("../../images/openhand.cur") 7 5, default;
-                    visibility: hidden;
-                    padding-right: 0;
-                    position: relative;
-                    svg {
-                        width: 18px;
-                        height: 20px;
-                        position: absolute;
-                        top: 50%;
-                        margin-top: -10px;
-                        left: 4px;
-                    }
-                    &:hover {
-                        fill: #0085ba;
-                    }
-                }
-
-                & > .order {
-                    width: 10px;
-                }
-
-                & > .name {
-                    padding: 10px;
-                }
-
-                & > .type {
-                    width: 150px;
-                }
-
-                & > .actions {
-                    width: 300px;
-                }
-                &:hover {
-                    & > .sort {
-                        visibility: visible;
-                    }
-                }
-            }
-
-            .header {
-                border-bottom: 1px solid #ddd;
-                .table-row {
-                    & > * {
-                        font-weight: bold;
-                        padding: 12px 8px 12px 0;
-                    }
-                    .sort {
-                        width: 45px;
-                    }
-                }
-            }
-
-            .main {
-                .question-actions {
-                    .name {
-                        input {
-                            width: 100%;
-                            font-size: 14px;
-                            border: none;
-                            background: transparent;
-                            box-shadow: none;
-                            font-weight: normal;
-                            color: #777;
-                            padding: 0;
-                        }
-                    }
-
-                    &.updating {
-                        background-color: #e6f2d0;
-                    }
-                }
-                .question-settings {
-                    border: 1px solid #ddd;
-                    border-left: none;
-                    border-right: none;
-                    & > * {
-                        padding: 20px;
-                    }
-                    .quiz-question-data {
-                        table.lp-list-options {
-                            border: 1px solid #ddd;
-                            thead {
-                                .answer-text {
-                                    width: calc(100% - 100px);
-                                }
-                                .answer-correct {
-                                    width: 65px;
-                                }
-                            }
-                            tbody {
-                                tr {
-                                    background: #fff;
-                                    border: 1px solid #DDD;
-                                    &:nth-child(2n) {
-                                        background: #f4fcff;
-                                    }
-                                    td {
-                                        padding: 0 10px;
-                                        background: inherit;
-                                        position: static;
-                                        border: none;
-                                        &.sort {
-                                            cursor: url("../../images/openhand.cur") 7 5, default;
-                                        }
-                                        &.answer-correct {
-                                            text-align: center;
-                                        }
-                                    }
-                                }
-                                .answer-option {
-                                    .answer-text {
-                                        input {
-                                            width: 100%;
-                                            font-size: 14px;
-                                            border: none;
-                                            background: transparent;
-                                            box-shadow: none;
-                                            font-weight: normal;
-                                            color: #777;
-                                            padding: 0;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            .main {
-                .question-item {
-                    background: #fff;
-                    border-bottom: 1px solid #f1f1f1;
-                    &:nth-child(2n+1) {
-                        background: #f4fcff;
-                    }
-                    .cell {
-                        padding: 10px;
-                    }
-                    .question-actions {
-                        .name {
-                            input {
-                                width: 100%;
-                                font-size: 14px;
-                                border: none;
-                                background: transparent;
-                                box-shadow: none;
-                                font-weight: normal;
-                                color: #777;
-                                padding: 0;
-                            }
-                        }
-                        .actions {
-                            padding: 0;
-                            margin: 0;
-                            .lp-toolbar-buttons {
-                                position: static;
-                                z-index: 10;
-                                height: 100%;
-                                text-align: left;
-                                > div {
-                                    a {
-                                        visibility: hidden;
-                                    }
-                                }
-                                .lp-toolbar-btn {
-                                    height: 100%;
-                                    .lp-btn-icon {
-                                        width: 28px;
-                                        height: 30px;
-                                        text-align: center;
-                                        position: absolute;
-                                        top: 50%;
-                                        margin-top: -15px;
-                                        left: 50%;
-                                        margin-left: -15px;
-                                        line-height: 30px;
-                                    }
-                                    ul {
-                                        z-index: 9;
-                                    }
-                                }
-                                .lp-btn-toggle {
-                                    font-family: Dashicons;
-                                    line-height: 42px;
-                                    font-size: 16px;
-                                    &.open {
-                                        &::after {
-                                            content: '\f343';
-                                        }
-                                    }
-                                    &.close {
-                                        &::after {
-                                            content: '\f347';
-                                        }
-                                    }
-                                }
-                                .lp-toolbar-btn-dropdown {
-                                    ul {
-                                        li {
-                                            border-bottom: 1px solid #eee;
-                                            a {
-                                                padding: 10px 25px;
-                                                &.remove {
-                                                    color: #0073aa;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        &:hover {
-                            .lp-toolbar-buttons {
-                                > div {
-                                    a {
-                                        visibility: visible;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    .question-settings {
-                        background: #fff;
-
-                        .quiz-question-options {
-                            text-align: left;
-                            .inside {
-                                margin: 0;
-                                padding: 0;
-                                .rwmb-meta-box {
-                                    .rwmb-field {
-                                        padding: 20px;
-                                        margin: 0;
-                                        &:nth-child(2n+1) {
-                                            background: #f4fcff;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            .footer {
-                .table-row {
-                    text-align: left;
-                    .add-new-question {
-                        padding-left: 65px;
-                        margin-top: -1px;
-                        border-top: 1px solid #DDD;
-                        .title {
-                            position: relative;
-                            display: inline-block;
-                            min-width: 500px;
-                            input {
-                                border: 1px solid #DDD;
-                                width: 100%;
-                                margin: 0;
-                                padding: 6px 6px;
-                                @include box-shadow(none);
-                                @include border-radius(3px);
-                                &:focus {
-                                    border-color: #DDD;
-                                }
-                            }
-                        }
-                        .add-new {
-                            display: inline;
-                            position: relative;
-                            ul.question-types {
-                                position: absolute;
-                                margin: 6px;
-                                background-color: #FFF;
-                                top: 100%;
-                                border: 1px solid #DDD;
-                                right: -2px;
-                                width: 200px;
-                                z-index: 9999999;
-                                display: none;
-                                li {
-                                    margin: 0;
-                                    a {
-                                        display: block;
-                                        padding: 10px;
-                                        line-height: 1;
-                                        text-decoration: none;
-                                        outline: none;
-                                        box-shadow: none;
-                                    }
-                                }
-                            }
-
-                            button {
-                                &:hover {
-                                    & + .question-types {
-                                        display: block;
-                                    }
-                                }
-
-                                & + .question-types {
-                                    &:hover {
-                                        display: block;
-                                    }
-                                }
-
-                                &[disabled="disabled"] {
-                                    &:hover {
-                                        & + .question-types {
-                                            display: none;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        .select-item {
-                            display: inline;
-                        }
-                        button {
-                            height: 30px;
-                            box-shadow: 0 1px 0 #ccc !important;
-                        }
-                    }
-                }
-            }
-        }
-        .question-button-actions {
-            text-align: left;
+        .ui-sortable-placeholder {
+            visibility: visible !important;
+            background: #bdf4fe !important;
+            display: block;
+            border-color: #bdf4fe !important;
         }
     }
 }
 
-/**
- *  Question admin editor.
- */
-#admin-editor-lp_question {
-    background: #fff;
-    .lp-box-data-head {
-        padding: 5px 15px;
-        .heading {
-            float: left;
-        }
-        .question-actions {
-            margin-top: 8px;
-            .question-types {
-                ul {
-                    position: absolute;
-                    top: 100%;
-                    right: 0;
-                    height: auto;
-                    background: #fdfeff;
-                    margin: 0;
-                    border: 1px solid #DDD;
-                    display: none;
-                    li {
-                        margin: 0;
-                        &:hover, &.active {
-                            background: #dbf5ff;
-                        }
-                        a {
-                            display: block;
-                            white-space: nowrap;
-                            text-decoration: none;
-                            padding: 5px 25px;
-                            font-size: 12px;
-                            text-align: right;
-                            color: #0073aa;
-                            margin: 0;
-                        }
-                    }
-                    &:hover {
-                        display: block;
-                    }
-                }
-            }
-            &:hover {
-                .question-types {
-                    ul {
-                        display: block;
-                    }
-                }
-            }
-        }
-    }
-    .lp-box-data-content {
-        padding: 20px;
-        table.list-question-answers {
-            width: 100%;
-            border: 1px solid #ddd;
-            tr {
-                td {
-                    padding: 0 15px;
-                }
-            }
-            thead {
-                background: #F5F5F5;
-                tr {
-                    th {
-                        padding: 15px;
-                        background: #F5F5F5;
-                        border-bottom: 1px solid #DDD;
-                        &.sort, &.order, &.actions {
-                            width: 10px;
-                        }
-                        &.answer-correct {
-                            width: 65px;
-                        }
-                    }
-                }
-            }
-            tbody {
-                tr {
-                    background: #f4fcff;
-                    color: #777;
-                    &:nth-child(2n) {
-                        background: #fff;
-                    }
-                    &:hover {
-                        td {
-                            &.actions {
-                                .remove-answer {
-                                    visibility: visible;
-                                }
-                            }
-                        }
-                    }
-                    td {
-                        &.sort {
-                            width: 15px;
-                            text-align: center;
-                            font-size: 18px;
-                            color: #CCC;
-                            cursor: url("../../images/openhand.cur") 7 5, default;
-                            &:hover {
-                                color: #0085ba;
-                            }
-                        }
-                        &.order {
-                            font-size: 13px;
-                        }
-                        &.answer-text {
-                            input {
-                                width: 100%;
-                                font-size: 14px;
-                                border: none;
-                                background: transparent;
-                                box-shadow: none;
-                                font-weight: normal;
-                                color: #777;
-                                padding: 0;
-                            }
-                        }
-                        &.actions {
-                            .remove-answer {
-                                visibility: hidden;
-                                &:hover {
-                                    background: transparent;
-                                }
-                            }
-                        }
-                        &.lp-toolbar-buttons {
-                            z-index: auto;
-                        }
-                    }
-                }
-            }
-        }
-        .add-answer {
-            margin: 15px 0 0 0;
-        }
+.section-item-counts {
+    position: absolute;
+    top: 0;
+    right: 41px;
+    white-space: nowrap;
+    line-height: 44px;
+    font-size: 12px;
+    span {
+        font-weight: bold;
+        color: #999;
     }
 }
+
+@import "quiz-editor";
+@import "question-editor";
 
 /**
  * Modal choose items.
@@ -1209,9 +769,9 @@
                         border-right: 1px solid #ddd;
                         position: absolute;
                         right: 0;
-                        height: 20px;
+                        height: 44px;
                         top: 50%;
-                        margin-top: -10px;
+                        margin-top: -22px;
                     }
 
                     &.active {
@@ -1237,11 +797,12 @@
                     }
 
                     a {
-                        padding: 15px 20px;
+                        padding: 0 20px;
                         text-decoration: none;
                         display: inline-block;
                         font-weight: 600;
-
+                        height: 44px;
+                        line-height: 44px;
                         &:focus {
                             box-shadow: none;
                         }
@@ -1256,8 +817,8 @@
                 right: 0;
                 cursor: pointer;
                 font-size: 1em;
-                padding: 9px;
-                z-index: 9;
+                padding: 12px;
+                z-index: 30;
             }
         }
 
@@ -1265,6 +826,7 @@
             padding: 20px;
             position: relative;
             overflow: hidden;
+            border-bottom: 1px solid #DDD;
 
             .section-item {
                 cursor: pointer;
@@ -1285,10 +847,11 @@
             .search {
                 margin-bottom: 20px;
                 background: transparent;
-                input {
+                input.modal-search-input {
                     width: 100%;
                     font-size: 1.2em;
                     line-height: 1.5;
+                    padding: 10px 14px;
                 }
             }
 
@@ -1319,7 +882,7 @@
             z-index: 2;
             padding: 20px;
             transform: translate(100%, 0);
-            max-height: 400px;
+            max-height: 420px;
             overflow: auto;
 
             &.show {
@@ -1338,6 +901,17 @@
 
         .footer {
             padding: 20px;
+        }
+    }
+}
+
+body {
+    &.moving {
+        cursor: url("../../images/closedhand.cur") 7 5, default !important;
+        .section-item {
+            .drag {
+                cursor: url("../../images/closedhand.cur") 7 5, default !important;
+            }
         }
     }
 }

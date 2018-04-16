@@ -7,9 +7,9 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-answer-option">
-    <tr class="answer-option" :data-answer-id="id">
-        <td class="sort"><i class="fa fa-bars"></i></td>
-        <td class="order">{{index +1}}</td>
+    <tr class="answer-option" :class="[isNew() ? 'new-option' : '']" :data-answer-id="id">
+        <td class="sort"><?php learn_press_admin_view( 'svg-icon' ); ?></td>
+        <td class="order">{{index +1}}.</td>
         <td class="answer-text">
             <form @submit.prevent="">
                 <input type="text" v-model="answer.text"
@@ -76,6 +76,9 @@
                         id: this.id,
                         order: this.answer.answer_order
                     });
+                },
+                isNew: function () {
+                    return isNaN(this.answer.question_answer_id);
                 }
             }
         })

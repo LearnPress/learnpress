@@ -114,7 +114,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor',
-				apply_filters( 'learn-press/question-editor/localize-script', array(
+				apply_filters(
+					'learn-press/question-editor/localize-script',
+					array(
 						'root' => array(
 							'id'                => $post->ID,
 							'auto_draft'        => get_post_status( $post->ID ) == 'auto-draft',
@@ -130,9 +132,13 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 							'nonce'             => wp_create_nonce( 'learnpress_admin_question_editor' ),
 							'questionTypes'     => LP_Question::get_types(),
 							'externalComponent' => apply_filters( 'learn-press/admin/external-js-component', array() )
+						),
+						'i18n'              => array(
+							'new_option_label' => __( 'New Option', 'learnpress' )
 						)
 					)
-				) );
+				)
+			);
 		}
 
 		/**

@@ -107,7 +107,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'    => 'pages-dropdown'
 						),
 						array(
-							'title'             => __( 'Courses limit', 'learnpress' ),
+							'title'             => __( 'Courses per page', 'learnpress' ),
 							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
 							'id'                => 'archive_course_limit',
 							'default'           => '10',

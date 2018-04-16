@@ -38,8 +38,9 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 		$profile_slug  = 'profile';
 
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
-			$profile_post = get_post( learn_press_get_page_id( 'profile' ) );
-			$profile_slug = $profile_post->post_name;
+			if($profile_post = get_post( $profile_id )) {
+				$profile_slug = $profile_post->post_name;
+			}
 		}
 		$profile_url = site_url() . '/' . $profile_slug . '/' . $username;
 
@@ -105,7 +106,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							)
 						),
 						array(
-							'title'   => __( 'Courses limit', 'learnpress' ),
+							'title'   => __( 'Courses per page', 'learnpress' ),
 							'id'      => 'profile_courses_limit',
 							'default' => '10',
 							'type'    => 'number',
@@ -132,7 +133,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 					'learn-press/profile-settings-fields/sub-tabs',
 					array(
 						array(
-							'title' => __( 'Sub tab slugs', 'learnpress' ),
+							'title' => __( 'Sub Tab Slugs', 'learnpress' ),
 							'type'  => 'heading',
 							'desc'  => __( 'The slugs of tabs display in profile page. Each tab should be unique.', 'learnpress' )
 						),
