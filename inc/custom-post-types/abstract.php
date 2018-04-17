@@ -207,7 +207,7 @@ abstract class LP_Abstract_Post_Type {
 	        ", get_the_ID() );
 
 			if ( $course_id = $wpdb->get_var( $query ) ) {
-				return __( 'This item has already assigned to course. It will be removed from course if it is not publish.', 'learnpress' );
+				return __( 'This item has already assigned to course. It will be removed from course if it is not published.', 'learnpress' );
 			}
 		} elseif ( LP_QUESTION_CPT === $post_type ) {
 			$query = $wpdb->prepare( "
@@ -218,7 +218,7 @@ abstract class LP_Abstract_Post_Type {
 		    ", get_the_ID() );
 
 			if ( $quiz_id = $wpdb->get_var( $query ) ) {
-				return __( 'This question has already assigned to quiz. It will be removed from quiz if it is not publish.', 'learnpress' );
+				return __( 'This question has already assigned to quiz. It will be removed from quiz if it is not published.', 'learnpress' );
 			}
 		}
 
@@ -325,10 +325,59 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function maybe_remove_assigned( $post_id ) {
-		$post = get_post( $post_id );
-		if ( 'publish' === $post->post_status ) {
-			return;
+		global $wpdb;
+
+		$post        = get_post( $post_id );
+		$post_type   = $this->get_post_type();
+		$post_status = $post->post_status;
+
+		// If we are updating question
+		if ( LP_QUESTION_CPT === $post_type ) {
+
+			// If question is not published then delete it from quizzes
+			if ( $post_status !== 'publish' ) {
+				$query = $wpdb->prepare( "
+                    DELETE FROM {$wpdb->learnpress_quiz_questions}
+                    WHERE question_id = %d
+                ", $post_id );
+				$wpdb->query( $query );
+			}
+
+		} // Else
+        elseif ( learn_press_is_support_course_item_type( $post_type ) ) {
+
+			// If item is not published then delete it from courses
+			if ( $post_status !== 'publish' ) {
+				$query = $wpdb->prepare( "
+                    DELETE FROM {$wpdb->learnpress_section_items}
+                    WHERE item_id = %d
+                ", $post_id );
+				$wpdb->query( $query );
+			}
 		}
+	}
+
+	protected function _get_quizzes_by_question( $question_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+	        SELECT quiz_id
+            FROM {$wpdb->learnpress_quiz_questions}
+            WHERE question_id = %d
+	    ", $question_id );
+
+		return $wpdb->get_col( $query );
+	}
+
+	protected function _get_courses_by_item( $item_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+	        SELECT section_course_id
+            FROM {$wpdb->learnpress_sections} s
+            INNER JOIN {$wpdb->learnpress_section_items} si ON s.section_id = si.section_id
+            WHERE si.item_id = %d
+	    ", $item_id );
+
+		return $wpdb->get_col( $query );
 	}
 
 	/**
