@@ -3102,5 +3102,8 @@ body.moving {
   min-width: 200px;
   vertical-align: top; }
 
+.learn-press-notice-assigned-item {
+  color: #FF0000; }
+
 .learnpress .actions {
   margin: 0; }

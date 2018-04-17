@@ -514,7 +514,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					OR {$wpdb->posts}.ID LIKE %s
                                         OR orderItem.order_item_name LIKE %s
 				) OR ", $s, $s, $s, $s, $s, $s );
-			$where  = preg_replace( "/({$wpdb->posts}\.post_title LIKE)/", $append . '$1', $where );
+
+			if ( preg_match( "/({$wpdb->posts}\.post_title LIKE)/", $where ) ) {
+				$where = preg_replace( "/({$wpdb->posts}\.post_title LIKE)/", $append . '$1', $where );
+			} else {
+				$where .= " AND (" . $append . $wpdb->prepare( " {$wpdb->posts}\.post_title LIKE %s", $s ) . ")";
+			}
 
 			return $where;
 		}

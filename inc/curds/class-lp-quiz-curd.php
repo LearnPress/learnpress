@@ -213,14 +213,17 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 			$format    = array_fill( 0, sizeof( $quiz_ids ), '%d' );
 			$questions = array_fill_keys( $quiz_ids, array() );
+			$args      = $quiz_ids;
+			$args[]    = 'publish';
 
 			$query = $wpdb->prepare( "
 				SELECT p.*, qq.quiz_id, qq.question_order AS `order`
 				FROM {$wpdb->posts} p 
 				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
 				WHERE qq.quiz_id IN(" . join( ',', $format ) . ")
+				AND p.post_status = %s
 				ORDER BY question_order ASC
-			", $quiz_ids );
+			", $args );
 
 			$question_ids = array();
 
@@ -318,7 +321,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * Reorder question by indexed number.
 		 *
 		 * @param LP_Quiz|WP_Post|int $the_quiz
-		 * @param mixed $questions
+		 * @param mixed               $questions
 		 *
 		 * @return mixed
 		 */
@@ -388,7 +391,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @param LP_Quiz|int $the_quiz
 		 * @param             $question_id
-		 * @param array $args
+		 * @param array       $args
 		 *
 		 * @return mixed false on failed
 		 */
@@ -448,7 +451,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Check if a question (or batch of questions) is already added to quiz.
 		 *
-		 * @param int $the_id
+		 * @param int       $the_id
 		 * @param int|array $ids
 		 *
 		 * @return array|bool|null|object

@@ -417,7 +417,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
                     AND {$wpdb->posts}.ID NOT IN(
                         SELECT qq.question_id 
                         FROM {$wpdb->learnpress_quiz_questions} qq
-                        INNER JOIN wp_posts p ON p.ID = qq.question_id
+                        INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
                         WHERE p.post_type = %s
                     )
                 ", LP_QUESTION_CPT );

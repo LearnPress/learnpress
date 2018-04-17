@@ -78,7 +78,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
                     AND {$wpdb->posts}.ID NOT IN(
                         SELECT si.item_id 
                         FROM {$wpdb->learnpress_section_items} si
-                        INNER JOIN wp_posts p ON p.ID = si.item_id
+                        INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
                         WHERE p.post_type = %s
                     )
                 ", LP_LESSON_CPT );

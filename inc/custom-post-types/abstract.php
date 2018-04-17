@@ -126,6 +126,9 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function admin_footer_scripts() {
+
+		global $pagenow;
+
 		if ( $this->get_post_type() !== $this->_post_type ) {
 			return;
 		}
@@ -136,34 +139,90 @@ abstract class LP_Abstract_Post_Type {
 			return;
 		}
 
-		$option = sprintf( '<option value="">%s</option>', __( 'Search by user', 'learnpress' ) );
+		if ( $pagenow === 'edit.php' ) {
+			$option = sprintf( '<option value="">%s</option>', __( 'Search by user', 'learnpress' ) );
 
-		if ( $user = get_user_by( 'id', LP_Request::get_int( 'author' ) ) ) {
-			$option = sprintf( '<option value="%d" selected="selected">%s</option>', $user->ID, $user->user_login );
+			if ( $user = get_user_by( 'id', LP_Request::get_int( 'author' ) ) ) {
+				$option = sprintf( '<option value="%d" selected="selected">%s</option>', $user->ID, $user->user_login );
+			}
+			?>
+            <script>
+                jQuery(function ($) {
+                    var $input = $('#post-search-input'),
+                        $form = $($input[0].form),
+                        $select = $('<select name="author" id="author"></select>').append('<?php echo $option;?>').insertAfter($input).select2({
+                            ajax: {
+                                url: window.location.href + '&lp-ajax=search-authors',
+                                dataType: 'json',
+                                s: ''
+                            },
+                            placeholder: '<?php echo __( 'Search by user', 'learnpress' );?>',
+                            minimumInputLength: 3,
+                            allowClear: true
+                        }).on('select2:select', function () {
+                            $('input[name="author"]').val($select.val())
+                        });
+
+                    $form.on('submit', function () {
+                        var url = window.location.href.removeQueryVar('author').addQueryVar('author', $select.val());
+
+                    })
+                })</script>
+			<?php
 		}
-		?>
-        <script>jQuery(function ($) {
-                var $input = $('#post-search-input'),
-                    $form = $($input[0].form),
-                    $select = $('<select name="author" id="author"></select>').append('<?php echo $option;?>').insertAfter($input).select2({
-                        ajax: {
-                            url: window.location.href + '&lp-ajax=search-authors',
-                            dataType: 'json',
-                            s: ''
-                        },
-                        placeholder: '<?php echo __( 'Search by user', 'learnpress' );?>',
-                        minimumInputLength: 3,
-                        allowClear: true
-                    }).on('select2:select', function () {
-                        $('input[name="author"]').val($select.val())
+
+		if ( $pagenow === 'post.php' ) {
+			?>
+            <script>
+                jQuery(function ($) {
+                    var isAssigned = '<?php echo $this->is_assigned();?>',
+                        $postStatus = $('#post_status'),
+                        $message = $('<p class="learn-press-notice-assigned-item"></p>').html(isAssigned),
+                        currentStatus = $postStatus.val();
+
+                    (currentStatus === 'publish') && isAssigned && $postStatus.on('change', function () {
+                        if (this.value !== 'publish') {
+                            $message.insertBefore($('#post-status-select'));
+                        } else {
+                            $message.remove();
+                        }
                     });
 
-                $form.on('submit', function () {
-                    var url = window.location.href.removeQueryVar('author').addQueryVar('author', $select.val());
-
                 })
-            })</script>
-		<?php
+            </script>
+			<?php
+		}
+	}
+
+	public function is_assigned() {
+		global $wpdb;
+		$post_type = $this->get_post_type();
+		if ( learn_press_is_support_course_item_type( $post_type ) ) {
+			$query = $wpdb->prepare( "
+                SELECT s.section_course_id
+                FROM {$wpdb->learnpress_section_items} si
+                INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
+                INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
+                WHERE p.ID = %d
+	        ", get_the_ID() );
+
+			if ( $course_id = $wpdb->get_var( $query ) ) {
+				return __( 'This item has already assigned to course. It will be removed from course if it is not publish.', 'learnpress' );
+			}
+		} elseif ( LP_QUESTION_CPT === $post_type ) {
+			$query = $wpdb->prepare( "
+		        SELECT p.ID 
+                FROM {$wpdb->posts} p 
+                INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON p.ID = qq.quiz_id
+                WHERE qq.question_id = %d
+		    ", get_the_ID() );
+
+			if ( $quiz_id = $wpdb->get_var( $query ) ) {
+				return __( 'This question has already assigned to quiz. It will be removed from quiz if it is not publish.', 'learnpress' );
+			}
+		}
+
+		return 0;
 	}
 
 	public function maybe_remove_features() {
@@ -246,7 +305,11 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function _do_save( $post_id, $post = null ) {
 
+		// Flush the Hard Cache to applies new changes
 		LP_Hard_Cache::flush();
+
+		// Maybe remove
+		$this->maybe_remove_assigned( $post_id );
 
 		if ( get_post_type( $post_id ) != $this->_post_type ) {
 			return false;
@@ -259,6 +322,13 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 
 		return $post_id;
+	}
+
+	public function maybe_remove_assigned( $post_id ) {
+		$post = get_post( $post_id );
+		if ( 'publish' === $post->post_status ) {
+			return;
+		}
 	}
 
 	/**

@@ -1083,6 +1083,6 @@ function learn_press_mark_user_just_logged_in() {
 
 add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );
 
-function learn_press_get_custom_thumbnail_sizes(){
-    return apply_filters( 'learn-press/custom-thumbnail-sizes', array( 'single_course', 'course_thumbnail' ) );
+function learn_press_get_custom_thumbnail_sizes() {
+	return apply_filters( 'learn-press/custom-thumbnail-sizes', array( 'archive_course_thumbnail' => 'course_thumbnail' ) );
 }
