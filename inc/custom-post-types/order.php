@@ -406,7 +406,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				$old_status = get_post_status( $new_order->get_id() );
-				$new_order->set_order_date( $order->get_order_date() );
+				$new_order->set_order_date( $order->get_order_date('edit') );
 				$new_order->set_parent_id( $order->get_id() );
 				$new_order->set_user_id( $uid );
 				$new_order->set_total( $order->get_total() );
