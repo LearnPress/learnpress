@@ -670,12 +670,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-add_action('wp_head', function(){
-    add_filter('learn_press_user_can_finish_course', function (){
-        return true;
-    });
-   $user = learn_press_get_current_user();
-   $user->finish_course(1845);
-   die();
-});
