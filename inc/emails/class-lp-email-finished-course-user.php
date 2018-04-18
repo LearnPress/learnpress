@@ -56,8 +56,6 @@ if ( ! class_exists( 'LP_Email_Finished_Course_User' ) ) {
 			$this->recipient = $user->get_email();
 
 			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
-
-			print_r('xxxxxxxx');die();
 		}
 	}
 }
