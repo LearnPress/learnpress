@@ -1030,6 +1030,10 @@ function learn_press_enroll_course_from_url() {
 	if ( ! $user = learn_press_get_current_user( false ) ) {
 		return;
 	}
+	
+	if( !$user->can_enroll_course( $course_id ) ) {
+	    return;
+	}
 
 	if ( $user->has_enrolled_course( $course_id ) ) {
 
