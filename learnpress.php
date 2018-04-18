@@ -375,10 +375,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			foreach ( $sizes as $k => $image_size ) {
 
-				$enabled = LP()->settings->get( $k );
+				// If the key is not a string consider it is an option can be turn on/off
+				if ( ! is_numeric( $k ) ) {
+					$enabled = LP()->settings->get( $k );
 
-				if ( $enabled !== 'yes' ) {
-					continue;
+					if ( $enabled !== 'yes' ) {
+						continue;
+					}
 				}
 
 				if ( ! $size = LP()->settings->get( $image_size . '_image_size', array() ) ) {
@@ -668,8 +671,11 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-
-//add_action( 'wp_footer', function () {
-//	print_r( sizeof( $GLOBALS['xxxxxxxxxxx'] ) );
-//	echo ',', print_r( array_sum( $GLOBALS['xxxxxxxxxxx'] ) );
-//} );
+add_action('wp_head', function(){
+    add_filter('learn_press_user_can_finish_course', function (){
+        return true;
+    });
+   $user = learn_press_get_current_user();
+   $user->finish_course(1845);
+   die();
+});

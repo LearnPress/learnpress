@@ -133,7 +133,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 							'questionTypes'     => LP_Question::get_types(),
 							'externalComponent' => apply_filters( 'learn-press/admin/external-js-component', array() )
 						),
-						'i18n'              => array(
+						'i18n' => array(
 							'new_option_label' => __( 'New Option', 'learnpress' )
 						)
 					)
@@ -400,8 +400,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed|string
 		 */
 		public function posts_where_paged( $where ) {
+			static $posts_where_paged = false;
 
-			if ( ! $this->_is_archive() ) {
+			if ( $posts_where_paged || ! $this->_is_archive() ) {
 				return $where;
 			}
 
@@ -422,6 +423,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
                     )
                 ", LP_QUESTION_CPT );
 			}
+
+			$posts_where_paged = true;
 
 			return $where;
 		}

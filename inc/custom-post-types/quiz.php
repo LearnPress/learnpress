@@ -284,23 +284,23 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'min'  => 0,
 						'std'  => 0
 					),
-					array(
-						'name'       => __( 'Archive History', 'learnpress' ),
-						'id'         => '_lp_archive_history',
-						'type'       => 'yes_no',
-						'desc'       => __( 'Archive quiz results for each time.', 'learnpress' ),
-						'std'        => 'no',
-						'visibility' => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => '_lp_retake_count',
-									'compare' => '>',
-									'value'   => '1'
-								)
-							)
-						)
-					),
+//					array(
+//						'name'       => __( 'Archive History', 'learnpress' ),
+//						'id'         => '_lp_archive_history',
+//						'type'       => 'yes_no',
+//						'desc'       => __( 'Archive quiz results for each time.', 'learnpress' ),
+//						'std'        => 'no',
+//						'visibility' => array(
+//							'state'       => 'show',
+//							'conditional' => array(
+//								array(
+//									'field'   => '_lp_retake_count',
+//									'compare' => '>',
+//									'value'   => '1'
+//								)
+//							)
+//						)
+//					),
 					array(
 						'name' => __( 'Show Check Answer', 'learnpress' ),
 						'id'   => '_lp_show_check_answer',

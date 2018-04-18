@@ -30,6 +30,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	 * Constructor
 	 */
 	public function __construct() {
+		parent::__construct();
 	}
 
 	/**

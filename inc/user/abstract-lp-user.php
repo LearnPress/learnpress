@@ -1847,7 +1847,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function finish_course( $course_id ) {
 			$return = false;
 			if ( $course = learn_press_get_course( $course_id ) ) {
-				if ( ! $this->can( 'finish-course', $course_id ) ) {
+				if ( ! $this->can_finish_course( $course_id ) ) {
 					return false;
 				} else {
 					$user_course = $this->get_course_data( $course_id );
@@ -2095,7 +2095,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $course_id || ! $quiz_id ) {
 				return $count;
 			}
-
+			echo "[XXXXXXXXXX]";
 			$count     = 0;
 			$user_item = $this->get_item_data( $quiz_id, $course_id );
 			if ( $user_item ) {

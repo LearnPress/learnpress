@@ -63,9 +63,9 @@
             }
 
             if (overtime) {
-                // Disable confirm message
-                $('form.complete-quiz').off('submit.learn-press-confirm');
-                callbackEvents.callEvent('finish');
+                // console.log('Overtime')
+                // return;
+                //
                 return;
             }
             thisSettings.remainingTime--;
@@ -88,6 +88,9 @@
             callbackEvents.callEvent('tick', [newVal]);
             if (newVal <= 0) {
                 stopCountdown();
+
+                // Disable confirm message
+                $('form.complete-quiz').off('submit.learn-press-confirm');
                 callbackEvents.callEvent('finish');
             }
         }

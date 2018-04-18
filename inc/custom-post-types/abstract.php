@@ -405,6 +405,15 @@ abstract class LP_Abstract_Post_Type {
 		}
 	}
 
+	private function _is_archive() {
+		global $pagenow, $post_type;
+		if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( $this->_post_type != LP_Request::get_string( 'post_type' ) ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public function _before_delete_post( $post_id ) {
 		// TODO:
 		if ( ! $this->_check_post() ) {

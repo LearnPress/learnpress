@@ -322,10 +322,21 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			/**
 			 * Init general options
 			 */
-			$this->heading      = $this->settings->get( 'heading', $this->default_heading );
-			$this->subject      = $this->settings->get( 'subject', $this->default_subject );
-			$this->email_format = $this->settings->get( 'email_content.format' ) == 'plain_text' ? 'plain' : 'html';
-			$this->enable       = $this->settings->get( 'enable' ) === 'yes';
+			$this->heading = $this->settings->get( 'heading', $this->default_heading );
+			$this->subject = $this->settings->get( 'subject', $this->default_subject );
+			$this->enable  = $this->settings->get( 'enable' ) === 'yes';
+
+			if ( $format = $this->settings->get( 'email_content.format' ) ) {
+				$this->email_format = $format == 'plain_text' ? 'plain' : 'html';
+			} else {
+				if ( $format = LP()->settings->get( 'emails_general.default_email_content' ) ) {
+					$this->email_format = $format;
+				}
+			}
+
+			if ( empty( $this->email_format ) ) {
+				$this->email_format = 'plain';
+			}
 
 			$this->basic_variables = array(
 				'{{site_url}}',
@@ -346,6 +357,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			);
 
 			$this->support_variables = $this->general_variables;
+
+			//echo "[", get_class($this), ']';
 		}
 
 		/**
@@ -691,17 +704,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function get_image_header() {
-			$image = LP()->settings->get( 'emails_general.header_image' );
+			$image = LP_Emails::instance()->get_image_header();
 
-			if ( is_array( $image ) ) {
-				$image = reset( $image );
-			}
-
-			if ( is_numeric( $image ) ) {
-				$image = wp_get_attachment_image_url( $image, 'full' );
-			}
-
-			return $image;
+			return apply_filters( 'learn-press/email-image-header-' . $this->id, $image );
 		}
 
 		/**
@@ -900,11 +905,16 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return array
 		 */
 		public function get_common_template_data( $format = 'plain' ) {
+
+			$emails = LP_Emails::instance();
+			$emails->set_current( $this );
+
 			$heading     = strip_tags( $this->get_heading() );
 			$footer_text = strip_tags( $this->get_footer_text() );
+
 			if ( $format != 'plain' ) {
-				$header = LP_Emails::instance()->email_header( $heading, false );
-				$footer = LP_Emails::instance()->email_footer( $footer_text, false );
+				$header = $emails->email_header( $heading, false );
+				$footer = $emails->email_footer( $footer_text, false );
 			} else {
 				$header = $heading;
 				$footer = $footer_text;
@@ -923,6 +933,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 				'login_url'        => learn_press_get_login_url(),
 				'plain_text'       => $format == 'plain'
 			);
+
 			if ( ( $num = func_num_args() ) > 1 ) {
 				for ( $i = 1; $i < $num; $i ++ ) {
 					$a = func_get_arg( $i );
@@ -931,6 +942,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					}
 				}
 			}
+
+			$emails->reset_current();
 
 			return $common;
 		}

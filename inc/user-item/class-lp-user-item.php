@@ -58,11 +58,10 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	public function get_start_time( $format = '' ) {
 		$time = $this->get_data( 'start_time' );
-
 		$date = new LP_Datetime( $time );
 
 		if ( $format ) {
-			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
+			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
 		}
 
 		return $date;
@@ -75,7 +74,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function get_start_time_gmt( $format = '' ) {
 		$date = new LP_Datetime( $this->get_data( 'start_time_gmt' ) );
 		if ( $format ) {
-			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
+			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
 		}
 
 		return $date;
@@ -389,6 +388,10 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return 0;
+	}
+
+	public function remove_user_items_history( $keep = 10 ) {
+		learn_press_remove_user_items_history( $this->get_item_id(), $this->get_course( 'id' ), $this->get_user_id(), $keep );
 	}
 
 	/**

@@ -3064,7 +3064,7 @@ function learn_press_get_unassigned_questions() {
                 INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
                 WHERE p.post_type = %s
             )
-            AND p.post_type NOT IN(%s, %s)
+            AND p.post_status NOT IN(%s, %s)
         ", LP_QUESTION_CPT, LP_QUESTION_CPT, 'auto-draft', 'trash' );
 
 		$questions = $wpdb->get_col( $query );
@@ -3132,4 +3132,41 @@ function learn_press_date_i18n( $timestamp = '', $format = '', $gmt = false ) {
 	}
 
 	return date_i18n( $format, $timestamp, $gmt );
+}
+
+/**
+ * Remove user items.
+ *
+ * @since 3.0.8
+ *
+ * @param int $item_id
+ * @param int $course_id
+ * @param int $user_id
+ * @param int $keep
+ */
+function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, $keep = 10 ) {
+
+	$user = learn_press_get_user( $user_id );
+	if ( $rows = $user->get_item_archive( $item_id, $course_id ) ) {
+
+		global $wpdb;
+
+		$args  = array( $user_id, $item_id, $course_id );
+		$query = $wpdb->prepare( "
+            DELETE 
+            FROM {$wpdb->learnpress_user_items}
+            WHERE user_id = %d AND item_id = %d
+            AND ref_id = %d
+        ", $args );
+
+		if ( $keep ) {
+			$user_item_ids = array_keys( $rows );
+			$user_item_ids = array_splice( $user_item_ids, 0, $keep );
+			$format        = array_fill( 0, sizeof( $user_item_ids ), '%d' );
+
+			$query .= $wpdb->prepare( " AND user_item_id NOT IN(" . join( ',', $format ) . ")", $user_item_ids );
+		}
+
+		$wpdb->query( $query );
+	}
 }

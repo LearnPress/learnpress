@@ -9,7 +9,9 @@
 
 defined('ABSPATH') or exit();
 
-$email = LP_Emails::get_email('new-order-guest');
+if ( ! $email = LP_Emails::instance()->get_current() ) {
+	return;
+}
 ?>
 						</td>
 					</tr>

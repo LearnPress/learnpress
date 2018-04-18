@@ -135,7 +135,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array $args
+ * @param array      $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -171,7 +171,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array $args
+ * @param array      $args
  *
  * @return mixed|string
  */
@@ -360,24 +360,41 @@ function learn_press_field_question_duration( $args = array(), $question ) {
  * @return string
  */
 function learn_press_email_formats_dropdown( $args = array() ) {
-	$args    = wp_parse_args(
+	$args = wp_parse_args(
 		$args,
 		array(
-			'name'     => 'learn-press-dropdown-email-formats',
-			'id'       => '',
-			'class'    => '',
-			'selected' => '',
-			'echo'     => true
+			'name'        => 'learn-press-dropdown-email-formats',
+			'id'          => '',
+			'class'       => '',
+			'selected'    => '',
+			'option_none' => '',
+			'echo'        => true
 		)
 	);
+
 	$formats = array(
 		'plain_text' => __( 'Plain text', 'learnpress' ),
 		'html'       => __( 'HTML', 'learnpress' ),
 	);
+
 	if ( empty( $args['id'] ) ) {
 		$args['id'] = sanitize_file_name( $args['name'] );
 	}
+
 	$output = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
+
+	if ( $args['option_none'] ) {
+		if ( is_array( $args['option_none'] ) ) {
+			$text  = reset( $args['option_none'] );
+			$value = key( $args['option_none'] );
+		} else {
+			$text  = $args['option_none'];
+			$value = '';
+		}
+
+		$output .= sprintf( '<option value="%s">%s</option>', $value, $text );
+	}
+
 	foreach ( $formats as $name => $text ) {
 		$output .= sprintf( '<option value="%s" %s>%s</option>', $name, selected( $args['selected'] == $name, true, false ), $text ) . "\n";
 	}
@@ -1674,9 +1691,9 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param null $post_id
+	 * @param null  $post_id
 	 * @param array $args
-	 * @param bool $meta
+	 * @param bool  $meta
 	 *
 	 * @return bool|mixed
 	 */
@@ -2186,7 +2203,7 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
  * @since 3.0.4
  *
  * @param int|string $context_id
- * @param string $context
+ * @param string     $context
  *
  * @return bool|int|string
  */
@@ -2205,7 +2222,7 @@ add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_sear
  *
  * @since 3.0.0
  *
- * @param string $link
+ * @param string  $link
  * @param WP_Post $post
  *
  * @return string

@@ -404,7 +404,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		private function _is_archive() {
 			global $pagenow, $post_type;
-			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_LESSON_CPT != $post_type ) ) {
+			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_LESSON_CPT != LP_Request::get_string( 'post_type' ) ) ) {
 				return false;
 			}
 

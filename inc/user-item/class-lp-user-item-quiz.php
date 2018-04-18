@@ -455,7 +455,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function finish() {
-		$this->set_end_time( current_time( "mysql" ) );
+		$time = new LP_Datetime();
+		$this->set_end_time( $time->toSql() );
+		$this->set_end_time_gmt( $time->toSql( false ) );
 		$this->set_status( 'completed' );
 		$this->update();
 	}

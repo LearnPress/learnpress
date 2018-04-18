@@ -34,7 +34,6 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 		$course_base = untrailingslashit( $course_permalink );
 
 		update_option( 'learn_press_course_base', $course_base );
-
 		$courses_page_id   = learn_press_get_page_id( 'courses' );
 		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
 
@@ -157,7 +156,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'title'   => __( 'Quiz', 'learnpress' ),
 							'type'    => 'text',
 							'id'      => 'quiz_slug',
-							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-lesson/', home_url() ), 'learnpress' ),
+							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ), 'learnpress' ),
 							'default' => 'quizzes'
 						),
 						array(

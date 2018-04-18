@@ -492,7 +492,6 @@
                 return $.isArray(args) ? args[0] : undefined;
             },
             confirmHandle = function (e) {
-
                 try {
                     var $form = $(this),
                         message = $form.data('confirm'),
