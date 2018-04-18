@@ -15,32 +15,33 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	}
 
 	public function save() {
-		parent::save();
-		$course_permalink = $_POST['learn_press_course_base'];
-		if ( $course_permalink == 'custom' ) {
-			$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
+		if ( ! empty( $_POST['learn_press_course_base'] ) ) {
+			$course_permalink = $_POST['learn_press_course_base'];
+			if ( $course_permalink == 'custom' ) {
+				$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
 
-			if ( '%course_category%' == $course_permalink ) {
-				$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
+				if ( '%course_category%' == $course_permalink ) {
+					$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
+				}
+
+				$course_permalink = '/' . $course_permalink;
+				update_option( 'learn_press_course_base_type', 'custom' );
+
+			} else {
+				delete_option( 'learn_press_course_base_type' );
 			}
 
-			$course_permalink = '/' . $course_permalink;
-			update_option( 'learn_press_course_base_type', 'custom' );
+			$course_base = untrailingslashit( $course_permalink );
 
-		} else {
-			delete_option( 'learn_press_course_base_type' );
-		}
+			update_option( 'learn_press_course_base', $course_base );
+			$courses_page_id   = learn_press_get_page_id( 'courses' );
+			$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
 
-		$course_base = untrailingslashit( $course_permalink );
-
-		update_option( 'learn_press_course_base', $course_base );
-		$courses_page_id   = learn_press_get_page_id( 'courses' );
-		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
-
-		if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
-			update_option( 'learn_press_use_verbose_page_rules', 'yes' );
-		} else {
-			delete_option( 'learn_press_use_verbose_page_rules' );
+			if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
+				update_option( 'learn_press_use_verbose_page_rules', 'yes' );
+			} else {
+				delete_option( 'learn_press_use_verbose_page_rules' );
+			}
 		}
 	}
 
@@ -143,7 +144,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'title'   => __( 'Single course permalink', 'learnpress' ),
 							'type'    => 'course-permalink',
 							'default' => '',
-							'id'    => 'course_base'
+							'id'      => 'course_base'
 						),
 						array(
 							'title'   => __( 'Lesson', 'learnpress' ),

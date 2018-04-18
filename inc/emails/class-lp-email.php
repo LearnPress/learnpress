@@ -334,7 +334,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 				}
 			}
 
-			if ( empty( $this->email_format ) ) {
+			$email_formats = array( 'plain', 'html' );
+			if ( ! in_array( $this->email_format, $email_formats ) ) {
 				$this->email_format = 'plain';
 			}
 

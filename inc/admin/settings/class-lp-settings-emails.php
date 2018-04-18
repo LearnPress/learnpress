@@ -139,12 +139,12 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 				array(
 					'title'   => __( 'Default Email Content', 'learnpress' ),
 					'id'      => 'emails_general[default_email_content]',
-					'default' => 'plain_text',
+					'default' => 'plain',
 					'type'    => 'select',
-					'desc'    => __( 'The image will be displayed in the top of the email.', 'learnpress' ),
+					'desc'    => __( 'Default email content type for all emails that set content type is <strong>General Settings</strong>.', 'learnpress' ),
 					'options' => array(
-						'plain_text' => __( 'Plain Text', 'learnpress' ),
-						'html'       => __( 'HTML', 'learnpress' )
+						'plain' => __( 'Plain Text', 'learnpress' ),
+						'html'  => __( 'HTML', 'learnpress' )
 					)
 				),
 				array(
