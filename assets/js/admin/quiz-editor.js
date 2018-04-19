@@ -324,7 +324,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             var found = false;
             if (question.temp_id) {
                 for (var i = 0, n = state.questions.length; i < n; i++) {
-                    if (state.questions[i].id == question.temp_id) {
+                    if (state.questions[i].id === question.temp_id) {
                         Vue.set(state.questions, i, question);
                         found = true;
                         break;
@@ -332,13 +332,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 }
             }
             if (!found) {
-                state.questions.push(question);
-            }
+                var _last_child = $('.lp-list-questions .main > div:last-child');
+                if (_last_child.length) {
+                    var _offset = _last_child.offset().top;
+                    $('html,body').animate({scrollTop: _offset});
+                }
 
-            var _last_child = $('.lp-list-questions .main > div:last-child');
-            if (_last_child.length) {
-                var _offset = _last_child.offset().top;
-                $('html,body').animate({scrollTop: _offset});
+                state.questions.push(question);
             }
         },
         'CHANGE_QUESTION_TYPE': function (state, data) {
@@ -745,7 +745,9 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                             context.commit('ADD_QUESTION_ANSWER', {question_id: question_id, answer: answer});
                             context.commit('UPDATE_QUESTION_SUCCESS', question_id);
 
-                            data.success && setTimeout(function(){data.success.apply(data.context, [answer]);}, 300);
+                            data.success && setTimeout(function () {
+                                data.success.apply(data.context, [answer]);
+                            }, 300);
                         }
                     },
                     function (error) {
