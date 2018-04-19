@@ -338,6 +338,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 			'enrolled'    => __( 'In Progress', 'learnpress' ),
 			'started'     => __( 'In Progress', 'learnpress' ),
 			'in-progress' => __( 'In Progress', 'learnpress' ),
+			'purchased'   => __( 'Not Enrolled', 'learnpress' ),
 			'completed'   => __( 'Completed', 'learnpress' ),
 			'finished'    => __( 'Finished', 'learnpress' ),
 			'passed'      => __( 'Passed', 'learnpress' ),
@@ -348,7 +349,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 			$status = $this->get_status();
 		}
 
-		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not enrolled', 'learnpress' );
+		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not Enrolled', 'learnpress' );
 	}
 
 	/**

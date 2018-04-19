@@ -246,11 +246,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					'count_items'     => $count_items,
 					'completed_items' => $completed_items,
 					'skipped_items'   => $count_items - $completed_items,
-					'status'          => $this->get_status()
+					'status'          => $this->get_status(),
+					'grade'           => ''
 				)
 			);
 
-			$results['grade'] = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
+			if ( ! in_array( $this->get_status(), array( 'purchased', 'viewed' ) ) ) {
+				$results['grade'] = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
+			} else {
+			}
 		}
 
 		if ( $prop === 'status' ) {
@@ -417,7 +421,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 
-		if ( false === ( $cached_data = wp_cache_get( $cache_key, 'course-results' )) || ! array_key_exists( 'passed-quizzes', $cached_data ) ) {
+		if ( false === ( $cached_data = wp_cache_get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'passed-quizzes', $cached_data ) ) {
 
 			$data            = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
 			$result          = 0;

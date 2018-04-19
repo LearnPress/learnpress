@@ -230,10 +230,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( $orders ) {
 			if ( array_key_exists( 'status', $args ) && $args['status'] ) {
 				LP_Helper::sanitize_order_status( $args['status'] );
+
+				$statuses = (array) $args['status'];
 				foreach ( $orders as $course_id => $order_ids ) {
 					$orders[ $course_id ] = array();
 					foreach ( $order_ids as $order_id ) {
-						if ( in_array( get_post_status( $order_id ), $args['status'] ) ) {
+						if ( in_array( get_post_status( $order_id ), $statuses ) ) {
 							$orders[ $course_id ][] = $order_id;
 						}
 					}
@@ -1187,6 +1189,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 								'pending'
 							) );
 					}
+				} else {
+					if ( $_course_ids = $this->query_courses_by_order( $user_id ) ) {
+
+					}
 				}
 
 				$where .= $wpdb->prepare( " AND ui.status NOT IN(%s)", 'pending' );
@@ -1223,7 +1229,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$courses['total'] = $count;
 					$courses['pages'] = ceil( $count / $args['limit'] );
 					foreach ( $items as $item ) {
-						$courses['items'][] = new LP_User_Item_Course( $item );
+						$course_item        = new LP_User_Item_Course( $item );
+						$courses['items'][] = $course_item;
 					}
 				}
 			}
@@ -1237,7 +1244,56 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$courses['single'] = __( 'course', 'learnpress' );
 		$courses['plural'] = __( 'courses', 'learnpress' );
 
+
 		return new LP_Query_List_Table( $courses );
+	}
+
+	public function query_courses_by_order( $user_id ) {
+		global $wpdb;
+
+//		$query = $wpdb->prepare( "
+//			SELECT course.ID AS course_id, `order`.ID AS order_id, `order`.post_parent AS order_parent
+//			FROM {$wpdb->posts} `order`
+//			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = `order`.ID
+//			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+//			INNER JOIN {$wpdb->posts} course ON course.ID = oim.meta_value
+//			INNER JOIN {$wpdb->postmeta} pmu ON pmu.post_id = `order`.ID AND pmu.meta_key = %s
+//			WHERE pmu.meta_value = %d
+//			ORDER BY order_id DESC
+//		", '_course_id', '_user_id', $user_id );
+//		$course_ids = $wpdb->get_col( $query );
+
+		$query         = $wpdb->prepare( "
+			SELECT item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d 
+			AND item_type = %s
+		", $user_id, LP_COURSE_CPT );
+		$user_item_ids = $wpdb->get_col( $query );
+
+		$orders = $this->get_orders( $user_id, array(
+			'status'         => 'completed',
+			'group_by_order' => true
+		) );
+
+		if ( ! $orders ) {
+			return false;
+		}
+
+		$course_ids = array_shift( $orders );
+
+		foreach ( $orders as $ids ) {
+			if ( ! $ids ) {
+				continue;
+			}
+			$course_ids = array_merge( $course_ids, $ids );
+		}
+
+		if ( $user_item_ids ) {
+			$course_ids = array_diff( $course_ids, $user_item_ids );
+		}
+
+		return $course_ids;
 	}
 
 	/**

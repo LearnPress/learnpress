@@ -42,7 +42,13 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		public function __construct() {
 			parent::__construct();
 
-			add_action( 'shutdown', array( $this, 'dispatch_queue' ) );
+			/**
+			 * Priority is important that will fix issue with WC cart doesnt remove
+			 * after completing checkout and get order details
+			 *
+			 * @since 3.0.8
+			 */
+			add_action( 'shutdown', array( $this, 'dispatch_queue' ), 1000 );
 		}
 
 		/**
