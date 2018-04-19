@@ -39,9 +39,20 @@ class LP_Debug {
 		add_action( 'plugins_loaded', array( $this, 'init' ) );
 	}
 
+	/**
+	 * @var string
+	 */
 	protected static $_current_name = '';
 
+	/**
+	 * @var null
+	 */
 	protected $_lock = null;
+
+	/**
+	 * @var bool
+	 */
+	protected static $_transaction_started = false;
 
 	/**
 	 * Destructor.
@@ -250,7 +261,14 @@ class LP_Debug {
 	 */
 	public static function startTransaction() {
 		global $wpdb;
+
+		if ( self::$_transaction_started ) {
+			return;
+		}
+
 		$wpdb->query( "START TRANSACTION;" );
+
+		self::$_transaction_started = true;
 	}
 
 	/**
@@ -258,7 +276,14 @@ class LP_Debug {
 	 */
 	public static function rollbackTransaction() {
 		global $wpdb;
+
+		if ( ! self::$_transaction_started ) {
+			return;
+		}
+
 		$wpdb->query( "ROLLBACK;" );
+
+		self::$_transaction_started = false;
 	}
 
 	/**
@@ -266,7 +291,14 @@ class LP_Debug {
 	 */
 	public static function commitTransaction() {
 		global $wpdb;
+
+		if ( ! self::$_transaction_started ) {
+			return;
+		}
+
 		$wpdb->query( "COMMIT;" );
+
+		self::$_transaction_started = false;
 	}
 
 	public static function log_function( $func ) {

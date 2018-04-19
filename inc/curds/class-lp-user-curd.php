@@ -1158,6 +1158,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$having  = "HAVING 1";
 				$orderby = "ORDER BY item_id, user_item_id DESC";
 
+				$unenrolled_course_ids = array();
+
 				if ( ! empty( $args['status'] ) ) {
 					switch ( $args['status'] ) {
 						case 'finished':
@@ -1190,9 +1192,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 							) );
 					}
 				} else {
-					if ( $_course_ids = $this->query_courses_by_order( $user_id ) ) {
-
-					}
+					$unenrolled_course_ids = $this->query_courses_by_order( $user_id );
 				}
 
 				$where .= $wpdb->prepare( " AND ui.status NOT IN(%s)", 'pending' );
@@ -1204,6 +1204,30 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$args
 				);
 				list( $select, $from, $join, $where, $having, $orderby ) = array_values( $query_parts );
+
+				/**
+				 * If there are some courses user has purchased and it's order is already completed
+				 * but for some reasons it is not inserted into table user-items.
+				 *
+				 * In this case we temporary to add it to table user-items (by using a transaction)
+				 * and query it back and then restore data by rollback that transaction.
+				 */
+				if ( $unenrolled_course_ids ) {
+					LP_Debug::startTransaction();
+
+					foreach ( $unenrolled_course_ids as $unenrolled_course_id ) {
+						$wpdb->insert(
+							$wpdb->learnpress_user_items,
+							array(
+								'user_id'   => $user_id,
+								'item_id'   => $unenrolled_course_id,
+								'item_type' => LP_COURSE_CPT,
+								'status'    => 'purchased'
+							),
+							array( '%d', '%d', '%s', '%s' )
+						);
+					}
+				}
 
 				$sql = "
 					SELECT SQL_CALC_FOUND_ROWS *
@@ -1220,6 +1244,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				";
 
 				$items = $wpdb->get_results( $sql, ARRAY_A );
+
+				if ( $unenrolled_course_ids ) {
+					LP_Debug::rollbackTransaction();
+				}
 
 				if ( $items ) {
 					$count      = $wpdb->get_var( "SELECT FOUND_ROWS()" );
@@ -1248,6 +1276,14 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return new LP_Query_List_Table( $courses );
 	}
 
+	/**
+	 * Get courses user has purchased via orders are completed
+	 * but it is not already added to user-items table.
+	 *
+	 * @param int $user_id
+	 *
+	 * @return array|bool|mixed
+	 */
 	public function query_courses_by_order( $user_id ) {
 		global $wpdb;
 
