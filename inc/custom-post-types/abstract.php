@@ -307,7 +307,7 @@ abstract class LP_Abstract_Post_Type {
 
 		// Flush the Hard Cache to applies new changes
 		LP_Hard_Cache::flush();
-
+        wp_cache_flush();
 		// Maybe remove
 		$this->maybe_remove_assigned( $post_id );
 
@@ -320,7 +320,14 @@ abstract class LP_Abstract_Post_Type {
 		$func_args = func_get_args();
 		$this->_call_method( 'save', $func_args );
 		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
-
+        if (LP_COURSE_CPT == get_post_type($post_id)) {
+            // delete sections cache
+            wp_cache_delete('course-' . $post_id, 'lp-course-sections');
+            wp_cache_delete('course-' . $post_id, 'lp-course-sections-ids');
+            wp_cache_delete('course-' . $post_id, 'lp-course-curriculum');
+            wp_cache_delete('course-' . $post_id, 'lp-course-items');
+            wp_cache_delete('course-' . $post_id, 'lp-course-curriculum-sections');
+        }
 		return $post_id;
 	}
 
