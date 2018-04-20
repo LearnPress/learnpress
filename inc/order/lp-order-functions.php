@@ -821,7 +821,7 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 		$user = learn_press_get_user( $order->user_id, true );
 		if ( $order_items = $order->get_items() ) {
 			foreach ( $order_items as $item ) {
-				if ( $user->has( 'enrolled-course', $item['course_id'] ) ) {
+				if ( $user->has_enrolled_course( $item['course_id'] ) ) {
 					continue;
 				}
 				if ( $user->enroll( $item['course_id'] ) ) {

@@ -1191,7 +1191,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 								'pending'
 							) );
 					}
-				} else {
+				}
+
+				if ( empty( $args['status'] ) || $args['status'] === 'not-enrolled' ) {
 					$unenrolled_course_ids = $this->query_courses_by_order( $user_id );
 				}
 

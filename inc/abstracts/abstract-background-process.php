@@ -78,10 +78,9 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		/**
 		 * @param mixed $data
 		 *
-		 * @return $this
+		 * @return mixed
 		 */
 		public function push_to_queue( $data ) {
-
 			// Check to preventing loop
 			if ( $this->safe ) {
 				if ( learn_press_is_ajax() || ! empty( $_REQUEST['action'] ) ) {
@@ -102,6 +101,11 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		}
 
 		protected function task( $item ) {
+			ob_start();
+			print_r( $item );
+			print_r( $_REQUEST );
+			$msg = ob_get_clean();
+			LP_Debug::instance()->add( $msg, 'background-process' );
 		}
 
 		/**

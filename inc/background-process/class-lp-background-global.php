@@ -53,6 +53,7 @@ if ( ! class_exists( 'LP_Background_Global' ) ) {
 		 * @return bool
 		 */
 		protected function task( $callback ) {
+			parent::task( $callback );
 
 			if ( isset( $callback['action'] ) ) {
 				$args = isset( $callback['args'] ) ? $callback['args'] : array();

@@ -262,6 +262,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/class-lp-widget.php';
 
+			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
+				include_once 'local-debug.php';
+			}
+
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
 		}
 
@@ -670,29 +674,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-//add_action('init', function(){
-//
-//	$mysqli = new mysqli( "localhost", "root", "root", "ob_learnpress_dev" );
-//	if ( $mysqli->connect_errno ) {
-//		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-//	}
-//
-//	if ( ! $mysqli->query( "DROP PROCEDURE IF EXISTS p" ) ||
-//	     ! $mysqli->query( 'CREATE PROCEDURE p(OUT msg VARCHAR(50)) BEGIN SELECT ID FROM wp_posts INTO msg; END;' )
-//	) {
-//		echo "Stored procedure creation failed: (" . $mysqli->errno . ") " . $mysqli->error;
-//	}
-//
-//    $name = learn_press_get_current_user()->get_display_name();
-//	if ( ! $mysqli->query( "SET @msg = '" . $name . "'" ) || ! $mysqli->query( "CALL p(@msg)" ) ) {
-//		echo "CALL failed: (" . $mysqli->errno . ") " . $mysqli->error;
-//	}
-//
-//	if ( ! ( $res = $mysqli->query( "SELECT @msg as _p_out" ) ) ) {
-//		echo "Fetch failed: (" . $mysqli->errno . ") " . $mysqli->error;
-//	}
-//
-//	$row = $res->fetch_assoc();
-//	echo $row['_p_out'],',',$name;
-//});

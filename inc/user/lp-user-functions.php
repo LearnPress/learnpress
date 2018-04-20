@@ -109,9 +109,11 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 
 		global $pagenow;
 
-		// Check if user is existing
-		if ( ! get_user_by( 'id', $user_id ) && $current ) {
-			$user_id = get_current_user_id();
+		if ( $user_id != LP()->session->guest_user_id ) {
+			// Check if user is existing
+			if ( ! get_user_by( 'id', $user_id ) && $current ) {
+				$user_id = get_current_user_id();
+			}
 		}
 
 		if ( ! $user_id && isset( LP()->session ) ) {

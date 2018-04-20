@@ -93,6 +93,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 * @throws Exception
 		 */
 		public function is( $tag ) {
+			_deprecated_function( __FUNCTION__, '3.0.8' );
 			$args = func_get_args();
 			unset( $args[0] );
 			$method   = 'is_' . preg_replace( '!-!', '_', $tag );

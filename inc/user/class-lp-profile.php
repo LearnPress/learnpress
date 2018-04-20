@@ -385,7 +385,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool $key Optional. True if return the key instead of value.
+		 * @param bool   $key     Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */

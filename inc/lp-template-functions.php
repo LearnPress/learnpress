@@ -1971,7 +1971,7 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 		if ( $status = $user->get_item_status( $lesson_id ) ) {
 			$classes[] = "item-has-status item-{$status}";
 		}
-		if ( $lesson_id && $course->is( 'current-item', $lesson_id ) ) {
+		if ( $lesson_id && $course->is_current_item( $lesson_id ) ) {
 			$classes[] = 'item-current';
 		}
 		if ( learn_press_is_course() ) {
@@ -1984,7 +1984,7 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 			$classes[] = 'preview-item';
 		}
 
-		if ( $user->can( 'view-item', $lesson_id, $course_id ) ) {
+		if ( $user->can_view_item( $lesson_id, $course_id ) ) {
 			$classes[] = 'viewable';
 		}
 
@@ -2032,11 +2032,11 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 			$classes[] = "item-has-status item-{$status}";
 		}
 
-		if ( $quiz_id && $course->is( 'current-item', $quiz_id ) ) {
+		if ( $quiz_id && $course->is_current_item( $quiz_id ) ) {
 			$classes[] = 'item-current';
 		}
 
-		if ( $user->can( 'view-item', $quiz_id, $course_id ) ) {
+		if ( $user->can_view_item( $quiz_id, $course_id ) ) {
 			$classes[] = 'viewable';
 		}
 
@@ -2325,7 +2325,7 @@ if ( ! function_exists( 'learn_press_page_controller' ) ) {
 					$quiz_status   = LP()->user->get_quiz_status( get_the_ID() );
 					$redirect      = false;
 					$error_message = false;
-					if ( ! $user->can( 'view-quiz', $quiz->id ) ) {
+					if ( ! $user->can_view_quiz( $quiz->id ) ) {
 						if ( $course = $quiz->get_course() ) {
 							$redirect      = $course->permalink;
 							$error_message = sprintf( __( 'Access denied "%s"', 'learnpress' ) );
@@ -2341,8 +2341,8 @@ if ( ! function_exists( 'learn_press_page_controller' ) ) {
 					$redirect = apply_filters( 'learn_press_quiz_access_denied_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user->get_id() );
 					break;
 				case LP_COURSE_CPT:
-					if ( ( $course = learn_press_get_course() ) && $item_id = $course->is( 'viewing-item' ) ) {
-						if ( ! LP()->user->can( 'view-item', $item_id ) ) {
+					if ( ( $course = learn_press_get_course() ) && $item_id = $course->is_viewing_item( ) ) {
+						if ( ! LP()->user->can_view_item( $item_id ) ) {
 							$redirect = apply_filters( 'learn_press_lesson_access_denied_redirect_permalink', $course->permalink, $item_id, $user->get_id() );
 						}
 					}
@@ -2621,7 +2621,7 @@ function learn_press_permission_view_quiz( $template ) {
 	}
 	$user = learn_press_get_current_user();
 	// If user haven't got permission
-	if ( ! current_user_can( 'edit-lp_quiz' ) && ! $user->can( 'view-quiz', $quiz->id ) ) {
+	if ( ! current_user_can( 'edit-lp_quiz' ) && ! $user->can_view_quiz( $quiz->id ) ) {
 		switch ( LP()->settings->get( 'quiz_restrict_access' ) ) {
 			case 'custom':
 				$template = learn_press_locate_template( 'global/restrict-access.php' );

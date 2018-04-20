@@ -40,6 +40,8 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
+			parent::task( $data );
+
 			$this->_get_items();
 			if ( ! $items = get_transient( $this->transient_key ) ) {
 				return false;
@@ -204,3 +206,5 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		}
 	}
 }
+
+new LP_Background_Schedule_Items();

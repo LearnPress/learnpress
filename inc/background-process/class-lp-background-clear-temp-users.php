@@ -42,6 +42,8 @@ if ( ! class_exists( 'LP_Background_Clear_Temp_Users' ) ) {
 		protected function task( $data ) {
 			global $wpdb;
 
+			parent::task( $data );
+
 			if ( ! empty( $data['action'] ) && 'clear_temp_users' == $data['action'] ) {
 				$query = $wpdb->prepare( "
 					DELETE a.*, b.*

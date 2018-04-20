@@ -348,7 +348,7 @@ function learn_press_user_can_view_lesson( $lesson_id, $course_id = 0, $user_id 
 		$user = LP_Global::user();
 	}
 
-	return $user ? $user->can( 'view-lesson', $lesson_id, $course_id ) : false;
+	return $user ? $user->can_view_lesson( $lesson_id, $course_id ) : false;
 }
 
 /**
@@ -368,7 +368,7 @@ function learn_press_user_can_view_quiz( $quiz_id = null, $course_id = 0, $user_
 		$user = LP_Global::user();
 	}
 
-	return $user ? $user->can( 'view-quiz', $quiz_id, $course_id ) : false;
+	return $user ? $user->can_view_quiz( $quiz_id, $course_id ) : false;
 }
 
 /**

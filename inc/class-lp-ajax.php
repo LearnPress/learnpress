@@ -361,7 +361,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			if ( ! wp_verify_nonce( $security, $security_action ) ) {
 				learn_press_add_message( __( 'Error! Invalid course or failed security check.', 'learnpress' ), 'error' );
 			} else {
-				if ( $user->can( 'retake-course', $course_id ) ) {
+				if ( $user->can_retake_course( $course_id ) ) {
 					if ( ! $result = $user->retake_course( $course_id ) ) {
 						learn_press_add_message( __( 'Error!', 'learnpress' ), 'error' );
 					} else {

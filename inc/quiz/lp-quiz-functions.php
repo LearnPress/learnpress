@@ -54,7 +54,7 @@ function learn_press_get_question_answer_meta( $item_id, $meta_key, $single = tr
  *
  * @author  TuNN
  *
- * @param   int $quiz_id The ID of a quiz to get all questions
+ * @param   int     $quiz_id  The ID of a quiz to get all questions
  * @param   boolean $only_ids return an array of questions with IDs only or as post objects
  *
  * @return  array|null
@@ -257,7 +257,7 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
 function learn_press_user_has_started_quiz( $user_id = null, $quiz_id = null ) {
 	$user = $user_id ? learn_press_get_user( $user_id ) : learn_press_get_current_user();
 
-	return $user ? $user->has( 'started-quiz', $quiz_id ) : false;
+	return $user ? $user->has_started_quiz( $quiz_id ) : false;
 }
 
 /**
@@ -278,23 +278,16 @@ function learn_press_get_user_quiz_status( $quiz_id, $user_id = false ) {
 	return $user ? $user->get_quiz_status( $quiz_id ) : '';
 }
 
-
-//add_action( 'template_redirect', 'learn_press_redirect_to_question' );
-
-
 function learn_press_get_quizzes( $user_id = 0, &$args = array() ) {
-	if ( ! $user_id ) {
-		$user_id = learn_press_get_current_user_id();
-	}
-	if ( ! $user_id ) {
-		return;
-	}
-	$user = learn_press_get_user( $user_id );
-
-	return $user->get_quizzes( $args );
+	// TODO: get all quizzes by user
 }
 
-
+/**
+ * Add new type that LP question can support
+ *
+ * @param string|array $types
+ * @param string|array $supports
+ */
 function learn_press_add_question_type_support( $types, $supports ) {
 	if ( empty( $GLOBALS['learn_press_question_type_support'] ) ) {
 		$GLOBALS['learn_press_question_type_support'] = array();
@@ -325,6 +318,11 @@ function learn_press_add_question_type_support( $types, $supports ) {
 	$GLOBALS['learn_press_question_type_support'] = $_supports;
 }
 
+/**
+ * @param string $type
+ *
+ * @return array|mixed
+ */
 function learn_press_get_question_type_support( $type = '' ) {
 	$supports = ! empty( $GLOBALS['learn_press_question_type_support'] ) ? $GLOBALS['learn_press_question_type_support'] : array();
 
@@ -429,7 +427,7 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 
 function learn_press_is_review_questions() {
 	if ( ( $item = LP_Global::course_item() ) && ( $user = learn_press_get_current_user() ) ) {
-		$quiz_data = $user->get_item_data( $item->get_id(), LP_Global::course('id') );
+		$quiz_data = $user->get_item_data( $item->get_id(), LP_Global::course( 'id' ) );
 
 		return $quiz_data && $quiz_data->is_review_questions();
 	}

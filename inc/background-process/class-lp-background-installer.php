@@ -26,7 +26,9 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		public function __construct() {
 			parent::__construct();
 
-			add_action( 'wp_loaded', array( $this, 'check' ), 100 );
+			if ( 'yes' !== get_option( 'learn_press_check_tables' ) ) {
+				add_action( 'wp_loaded', array( $this, 'check' ), 100 );
+			}
 		}
 
 		public function check() {
@@ -35,7 +37,6 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 					'check_tables' => 'yes'
 				)
 			);
-			///LP_Install::create_tables();
 		}
 
 		/**
@@ -44,6 +45,7 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
+			parent::task( $data );
 
 			if ( ! isset( $data['check_tables'] ) ) {
 				return false;
@@ -51,7 +53,43 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 
 			LP_Install::create_tables();
 
+			if ( ! $this->get_missing_tables() ) {
+				update_option( 'learn_press_check_tables', 'yes', 'yes' );
+			}
+
 			return false;
+		}
+
+		/**
+		 * Get all the tables are not created
+		 *
+		 * @return array
+		 */
+		protected function get_missing_tables() {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				SHOW TABLES LIKE %s
+			", '%' . $wpdb->esc_like( 'learnpress' ) . '%' );
+
+			$tables = $wpdb->get_col( $query );
+
+			$required_tables = get_object_vars( $wpdb );
+			$required_tables = array_filter( $required_tables, array( $this, '_filter_tables' ) );
+
+			return array_diff( $required_tables, $tables );
+		}
+
+		/**
+		 * Filter callback
+		 *
+		 * @param $prop
+		 *
+		 * @return bool
+		 */
+		protected function _filter_tables( $prop ) {
+			global $wpdb;
+
+			return is_string( $prop ) && strpos( $prop, $wpdb->prefix . 'learnpress' ) !== false;
 		}
 
 		/**

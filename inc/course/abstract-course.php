@@ -181,7 +181,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 						break;
 					case 'current_lesson':
-						$lesson_id = ( ( $lesson_id = learn_press_get_request( "lesson_id" ) ) && $this->has( 'item', $lesson_id ) ) ? $lesson_id : null;
+						$lesson_id = ( ( $lesson_id = learn_press_get_request( "lesson_id" ) ) && $this->has_item( $lesson_id ) ) ? $lesson_id : null;
 						if ( $lesson_id ) {
 							$value = LP_Lesson::get_lesson( $lesson_id );
 						}
@@ -794,6 +794,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @throws Exception
 		 */
 		public function has( $tag ) {
+			_deprecated_function( __FUNCTION__, '3.0.8' );
+
 			$args = func_get_args();
 			unset( $args[0] );
 			$method   = 'has_' . preg_replace( '!-!', '_', $tag );
@@ -812,6 +814,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @throws Exception
 		 */
 		public function is( $tag ) {
+			_deprecated_function( __FUNCTION__, '3.0.8' );
 			$args = func_get_args();
 			unset( $args[0] );
 			$method   = 'is_' . preg_replace( '!-!', '_', $tag );
@@ -1733,7 +1736,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$root_url = trailingslashit( get_home_url() );
 			if ( $items ) {
 				foreach ( $items as $k => $item ) {
-					if ( ( $view = $user->can( 'view-item', $item['id'], $this->get_id() ) ) !== false ) {
+					if ( ( $view = $user->can_view_item( $item['id'], $this->get_id() ) ) !== false ) {
 						$status                = $user->get_item_status( $item['id'], $this->get_id() );
 						$items[ $k ]['url']    = str_replace( $root_url, '', $this->get_item_link( $item['id'] ) );
 						$items[ $k ]['status'] = ( $status == 'completed' && $item['type'] == LP_QUIZ_CPT ) ? $user->get_quiz_graduation( $item['id'], $this->get_id() ) : $status;

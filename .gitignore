@@ -15,6 +15,7 @@ node_modules/
 /assets/fonts/iconfont.eot
 /assets/fonts/iconfont.svg
 /inc/test.php
+/local-debug.php
 cache/
 /languages/learnpress-vi.mo
 /languages/learnpress-vi.po

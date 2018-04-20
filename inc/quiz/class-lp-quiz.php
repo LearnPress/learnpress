@@ -506,6 +506,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @throws Exception
 		 */
 		public function has( $feature ) {
+			_deprecated_function( __FUNCTION__, '3.0.8' );
+
 			$args = func_get_args();
 			unset( $args[0] );
 			$method   = 'has_' . preg_replace( '!-!', '_', $feature );
