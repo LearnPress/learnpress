@@ -467,8 +467,9 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function maybe_update_item_grade() {
-		$result = $this->get_result();
-		learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
+		$grade = $this->get_result( 'grade' );
+
+		learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $grade ? $grade : '' );
 	}
 
 	public function delete_meta_data( $include = '', $exclude = '' ) {
@@ -554,3 +555,4 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return false;
 	}
 }
+

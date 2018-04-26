@@ -184,7 +184,7 @@ add_action( 'learn-press/single-item-summary', 'learn_press_single_course_conten
  * @see learn_press_content_item_comments
  */
 add_action( 'learn-press/course-item-content', 'learn_press_course_item_content', 5 );
-add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
+//add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
 
 /**
  * @see learn_press_content_item_nav

@@ -2850,7 +2850,7 @@ if ( ! function_exists( 'learn_press_content_item_lesson_title' ) ) {
 		$item = LP_Global::course_item();
 
 		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/{$format}/title.php" ) ) ) {
-			include_once $format_template;
+			include $format_template;
 
 			return;
 		}
@@ -2867,7 +2867,7 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 		}
 
 		if ( ( 'standard' !== ( $format = $item->get_format() ) ) && file_exists( $format_template = learn_press_locate_template( "content-lesson/{$format}/content.php" ) ) ) {
-			include_once $format_template;
+			include $format_template;
 
 			return;
 		}
