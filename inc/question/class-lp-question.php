@@ -968,7 +968,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$question_type = get_post_meta( $question_id, '_lp_type', true );
 			}
 
-			$class_name = self::get_class_name_from_question_type( $question_type );
+			$class_name = self::get_class_name_from_question_type( array($question_type) );
 
 			// Filter class name so that the class can be overridden if extended.
 			return apply_filters( 'learn-press/question/object-class', $class_name, $question_type, $question_id );
@@ -982,6 +982,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return string|false
 		 */
 		public static function get_class_name_from_question_type( $question_type ) {
+
+			if ( is_array( $question_type ) ) {
+				$question_type = reset( $question_type );
+			}
+
 			return ! $question_type ? __CLASS__ : 'LP_Question_' . implode( '_', array_map( 'ucfirst', explode( '-', $question_type ) ) );
 		}
 

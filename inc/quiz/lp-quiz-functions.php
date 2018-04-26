@@ -338,6 +338,10 @@ function learn_press_get_question_type_support( $type = '' ) {
  */
 function learn_press_is_support_question_type( $type ) {
 
+	if ( is_array( $type ) ) {
+		$type = reset( $type );
+	}
+
 	$supports = learn_press_get_question_type_support();
 
 	// New type is supported?
