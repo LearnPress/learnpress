@@ -523,7 +523,16 @@ function learn_press_course_add_support_item_type( $post_type, $label = '' ) {
 function learn_press_is_support_course_item_type( $type ) {
 	$types = learn_press_course_get_support_item_types();
 
-	return $type && ! empty( $types[ $type ] );
+	if ( is_array( $type ) ) {
+		$support = true;
+		foreach ( $type as $t ) {
+			$support = $support && learn_press_is_support_course_item_type( $t );
+		}
+	} else {
+		$support = $type && ! empty( $types[ $type ] );
+	}
+
+	return $support;
 }
 
 learn_press_course_add_support_item_type(
@@ -1030,9 +1039,9 @@ function learn_press_enroll_course_from_url() {
 	if ( ! $user = learn_press_get_current_user( false ) ) {
 		return;
 	}
-	
-	if( !$user->can_enroll_course( $course_id ) ) {
-	    return;
+
+	if ( ! $user->can_enroll_course( $course_id ) ) {
+		return;
 	}
 
 	if ( $user->has_enrolled_course( $course_id ) ) {

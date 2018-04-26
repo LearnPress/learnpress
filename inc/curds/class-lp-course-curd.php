@@ -730,6 +730,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 						AND oim.meta_key = %s
 						AND oim.meta_value = %d
 					INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
+					INNER JOIN {$wpdb->postmeta} pm ON o.ID = pm.post_id
+					INNER JOIN {$wpdb->users} u ON u.ID = pm.meta_value AND pm.meta_key = '_user_id'
 					WHERE o.post_type = %s
 					AND o.post_status IN ($in_clause)
 				", $query_args );

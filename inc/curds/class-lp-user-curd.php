@@ -128,7 +128,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function get_orders( $user_id, $args = array() ) {
 
 		// If user does not exists
-		if ( ! $user = learn_press_get_user( $user_id ) ) {
+		if ( ! $user_id || ! $user = learn_press_get_user( $user_id ) ) {
 			return false;
 		}
 

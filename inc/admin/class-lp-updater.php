@@ -25,26 +25,65 @@ class LP_Updater {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'update_form' ) );
 		add_action( 'admin_init', array( $this, 'do_update' ) );
+
+		if ( $version = get_option( 'lp_updater' ) ) {
+			$this->include_update_file( $version );
+			add_action( 'admin_notices', array( $this, 'update_message' ), 10 );
+		}
+	}
+
+	public function update_message() {
+		remove_action( 'admin_notices', array( 'LP_Install', 'check_update_message' ), 20 );
+		?>
+        <div class="notice notice-warning lp-notice-update-database">
+            <p>
+				<?php _e( '<strong>LearnPress update</strong> – We are running updater to upgrade your database to the latest version.', 'learnpress' ); ?>
+            </p>
+        </div>
+		<?php
+	}
+
+	public function get_update_file( $version ) {
+		$files = $this->get_update_files();
+		if ( $files && ! empty( $files[ $version ] ) ) {
+			return LP_PLUGIN_PATH . 'inc/updates/' . $files[ $version ];
+		}
+
+		return false;
+	}
+
+	public function include_update_file( $version ) {
+		if ( $file = $this->get_update_file( $version ) ) {
+			include_once $file;
+		} else {
+			update_option( 'lp_updater', $version );
+		}
 	}
 
 	public function do_update() {
+
 		if ( 'yes' !== LP_Request::get_string( 'do-update-learnpress' ) ) {
 			return;
 		}
-		echo '<div>';
-		//ob_start();
-		try {
-			LP_Debug::startTransaction();
-			foreach ( $this->get_update_files() as $version => $file ) {
-				$file = LP_PLUGIN_PATH . '/inc/updates/' . $file;
 
+		echo '<div>';
+		ob_start();
+		try {
+
+			$db_version = get_option( 'learnpress_db_version' );
+			foreach ( $this->get_update_files() as $version => $file ) {
+
+				if ( $db_version && version_compare( $db_version, $version, '>=' ) ) {
+					continue;
+				}
+
+				echo $file = LP_PLUGIN_PATH . '/inc/updates/' . $file;
 				include_once $file;
 
-				echo sprintf( __( "<p>Updated version %s</p>", 'learnpress' ), $version ) . "\n";
+				update_option( 'lp_updater', $version, 'yes' );
+				break;
 			}
 
-			LP_Install::update_version();
-			LP_Install::update_db_version();
 		}
 		catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
@@ -55,13 +94,10 @@ class LP_Updater {
 		}
 
 		if ( ! learn_press_message_count() ) {
-			LP_Debug::commitTransaction();
 			echo '<div id="message-success">';
 			learn_press_display_message( __( 'Successfully updated your database.', 'learnpress' ) );
 			echo '</div>';
 		} else {
-			LP_Debug::rollbackTransaction();
-
 			learn_press_print_messages();
 		}
 		echo '</div>';

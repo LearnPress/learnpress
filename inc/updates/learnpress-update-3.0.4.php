@@ -17,12 +17,12 @@ class LP_Update_304 {
 	public static function update() {
 		LP_Debug::startTransaction();
 		try {
-			self::update_item_meta();
+			//self::update_item_meta();
 
-			LP_Install::update_db_version();
-			LP_Install::update_version();
+			//LP_Install::update_db_version();
+			//LP_Install::update_version();
 
-			set_transient( 'lp_upgraded_30', 'yes', DAY_IN_SECONDS );
+			//set_transient( 'lp_upgraded_30', 'yes', DAY_IN_SECONDS );
 			LP_Debug::commitTransaction();
 		}
 		catch ( Exception $exception ) {

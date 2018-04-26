@@ -2172,12 +2172,17 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
 }
 
 /**
- * @param $handle
+ * @param string $handle
+ * @param bool   $hash
  *
  * @return string
  */
-function learn_press_get_log_file_path( $handle ) {
-	return trailingslashit( LP_LOG_PATH ) . $handle . '-' . sanitize_file_name( wp_hash( $handle ) ) . '.log';
+function learn_press_get_log_file_path( $handle, $hash = false ) {
+	if ( $hash ) {
+		$hash = '-' . sanitize_file_name( wp_hash( $handle ) );
+	}
+
+	return trailingslashit( LP_LOG_PATH ) . $handle . $hash . '.log';
 }
 
 /**

@@ -24,7 +24,7 @@ if ( ! class_exists( 'LP_Background_Clear_Temp_Users' ) ) {
 		/**
 		 * @var string
 		 */
-		protected $transient_key = 'lp_schedule_complete_items';
+		protected $transient_key = 'lp_schedule_clear_temp_users';
 
 
 		/**

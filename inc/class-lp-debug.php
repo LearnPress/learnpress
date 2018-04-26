@@ -114,13 +114,29 @@ class LP_Debug {
 		}
 
 		$path = learn_press_get_log_file_path( $handle );
-		$f    = @fopen( $path, 'a' );
+		if ( ! file_exists( $path ) ) {
+			$f = fopen( $path, 'w' );
+			fclose( $f );
+		}
+		$f = @fopen( $path, 'r+' );
 
 		if ( $f ) {
-			if ( filesize( $path ) >= 1024 * 1024 * 1 ) {
+			// 3M
+			if ( filesize( $path ) >= 1024 * 1024 * 3 ) {
 				ftruncate( $f, 0 );
 			}
 			$this->_handles[ $handle ] = $f;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private function close( $handle ) {
+		if ( isset( $this->_handles[ $handle ] ) ) {
+			@fclose( $this->_handles[ $handle ] );
+			unset( $this->_handles[ $handle ] );
 
 			return true;
 		}
@@ -145,19 +161,43 @@ class LP_Debug {
 			$this->_lock = ! ( LP_Settings::instance()->get( 'debug' ) == 'yes' );
 		}
 
+
 		if ( ( ! $force && ! $this->_lock || $force ) && $this->_can_log( $handle ) ) {
 			if ( $clear ) {
 				$this->clear( $handle );
 			}
-			$time = date_i18n( 'm-d-Y @ H:i:s -' );
+			$time = date_i18n( 'm-d-Y @ H:i:s' );
 
 			if ( ! is_string( $message ) ) {
 				ob_start();
 				print_r( $message );
 				$message = ob_get_clean();
 			}
+			$backtrace = debug_backtrace();
+			ob_start();
+			echo "\n\n";
+			foreach ( array( 'file', 'line', 'function', 'class' ) as $prop ) {
+				if ( isset( $backtrace[0][ $prop ] ) ) {
+					echo "=> " . str_pad( $prop, 10 ) . ':' . $backtrace[0][ $prop ] . "\n";
+				}
+			}
+			$message .= ob_get_clean();
 			try {
-				fwrite( $this->_handles[ $handle ], "-----" . $time . "-----\n" . $message . "\n" );
+
+				$path = learn_press_get_log_file_path( $handle . '-temp' );
+				$f    = @fopen( $path, 'a' );
+				fwrite( $f, "----------" . $time . "----------\n" . $message . "-----------------------------------------\n\n\n" );
+				fseek( $this->_handles[ $handle ], 0 );
+				while ( ( $buffer = fgets( $this->_handles[ $handle ], 4096 ) ) !== false ) {
+					fwrite( $f, $buffer );
+				}
+
+				fclose( $f );
+				$this->close( $handle );
+				unlink( learn_press_get_log_file_path( $handle ) );
+				rename( $path, learn_press_get_log_file_path( $handle ) );
+
+				//fwrite( $this->_handles[ $handle ], "----------" . $time . "----------\n" . $message . "\n--------------------" );
 				do_action( 'learn_press_log_add', $handle, $message );
 			}
 			catch ( Exception $ex ) {

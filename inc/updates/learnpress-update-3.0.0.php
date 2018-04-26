@@ -10,32 +10,51 @@
  * Helper class for updating database to 3.0.0
  */
 class LP_Update_30 {
+	protected static $steps = array(
+		'add_column_user_items',
+		'upgrade_orders',
+		'update_user_course_items',
+		'update_option_no_require_enroll',
+		'update_post_meta',
+		'update_settings'
+	);
 
 	/**
 	 * Entry point
 	 */
 	public static function update() {
-		LP_Debug::startTransaction();
+		$db_version = get_option( 'learnpress_db_version' );
+
+		if ( $db_version && version_compare( $db_version, '3.0.0', '>=' ) ) {
+			return;
+		}
+
+		$step = get_option( 'learnpress_updater_step' );
 		try {
-			self::add_column_user_items();
-			self::upgrade_orders();
-			self::update_user_course_items();
-			self::update_option_no_require_enroll();
-			self::update_post_meta();
-			self::update_settings();
 
-			LP_Install::update_db_version();
-			LP_Install::update_version();
+			if ( ! $step ) {
+				$step = reset( self::$steps );
+				update_option( 'learnpress_updater_step', $step );
+			}
 
-			set_transient( 'lp_upgraded_30', 'yes', DAY_IN_SECONDS );
-			LP_Debug::commitTransaction();
+			foreach ( self::$steps as $callback ) {
+				if ( $callback == $step ) {
+					call_user_func( array( __CLASS__, $callback ) );
+					break;
+				}
+			}
 		}
 		catch ( Exception $exception ) {
 			LP_Debug::rollbackTransaction();
 		}
+
+		return false;
 	}
 
 	protected static function update_settings() {
+		LP_Debug::instance()->add(__FUNCTION__, 'lp-updater-300', false, true);
+		self::_next_step();
+		return;
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT *
@@ -66,6 +85,10 @@ class LP_Update_30 {
 	 * Update/Convert post meta
 	 */
 	protected static function update_post_meta() {
+		LP_Debug::instance()->add(__FUNCTION__, 'lp-updater-300', false, true);
+		self::_next_step();
+
+		return;
 		global $wpdb;
 
 		// Update quiz meta _lp_review_questions = 'yes' if both _lp_show_hide_question = 'yes' and _lp_show_result = 'yes'
@@ -128,7 +151,10 @@ class LP_Update_30 {
 
 	public static function update_option_no_require_enroll() {
 		global $wpdb;
+		LP_Debug::instance()->add(__FUNCTION__, 'lp-updater-300', false, true);
+		self::_next_step();
 
+		return;
 		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->postmeta}
@@ -140,6 +166,10 @@ class LP_Update_30 {
 	}
 
 	public static function upgrade_orders() {
+		LP_Debug::instance()->add(__FUNCTION__, 'lp-updater-300', false, true);
+		self::_next_step();
+
+		return;
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT p.ID 
@@ -249,10 +279,12 @@ class LP_Update_30 {
 	 */
 	public static function add_column_user_items() {
 		global $wpdb;
+
+		LP_Debug::startTransaction();
 		ob_start();
 
 		// Add columns start_time_gmt, end_time_gmt
-		$sql = $wpdb->prepare( "
+		echo $sql = $wpdb->prepare( "
 			ALTER TABLE {$wpdb->learnpress_user_items}
 			ADD COLUMN `start_time_gmt` DATETIME NULL DEFAULT %s AFTER `start_time`,
 			ADD COLUMN `end_time_gmt` DATETIME NULL DEFAULT %s AFTER `end_time`;
@@ -264,7 +296,7 @@ class LP_Update_30 {
 		$offset    = $time->getOffset( true );
 		$null_time = LP_Datetime::getSqlNullDate();
 
-		$sql = $wpdb->prepare( "
+		echo $sql = $wpdb->prepare( "
 			UPDATE {$wpdb->learnpress_user_items}
 			SET 
 				start_time_gmt = IF(start_time = %s, %s, DATE_ADD(start_time, INTERVAL %f HOUR)),
@@ -272,17 +304,38 @@ class LP_Update_30 {
 		", $null_time, $null_time, $offset, $null_time, $null_time, $offset );
 		@$wpdb->query( $sql );
 
-		$sql = $wpdb->prepare( "
+		echo $sql = $wpdb->prepare( "
 			ALTER TABLE {$wpdb->learnpress_user_items}
 			CHANGE COLUMN `user_id` `user_id` BIGINT(20) NOT NULL DEFAULT %d ,
 			CHANGE COLUMN `item_id` `item_id` BIGINT(20) NOT NULL DEFAULT %d ;
 		", - 1, - 1 );
 		@$wpdb->query( $sql );
 
-		ob_get_clean();
+		$log = ob_get_clean();
+		LP_Debug::rollbackTransaction();
+		self::_next_step();
+		LP_Debug::instance()->add( $log, 'lp-updater', false, true );
+	}
+
+	protected static function _next_step() {
+		$step = get_option( 'learnpress_updater_step' );
+		if ( false !== ( $pos = array_search( $step, self::$steps ) ) ) {
+			$pos ++;
+			if ( ! empty( self::$steps[ $pos ] ) ) {
+				update_option( 'learnpress_updater_step', self::$steps[ $pos ] );
+			} else {
+				delete_option( 'learnpress_updater_step' );
+				delete_option( 'lp_updater' );
+				LP_Install::update_db_version('3.0.0');
+			}
+		}
 	}
 
 	public static function update_user_course_items() {
+		LP_Debug::instance()->add(__FUNCTION__, 'lp-updater-300', false, true);
+		self::_next_step();
+
+		return;
 		global $wpdb;
 
 		// Get all courses in user items
@@ -380,4 +433,4 @@ class LP_Update_30 {
 	}
 }
 
-LP_Update_30::update();
+add_action( 'admin_init', array( 'LP_Update_30', 'update' ) );

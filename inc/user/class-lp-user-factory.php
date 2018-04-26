@@ -36,7 +36,7 @@ class LP_User_Factory {
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
 		add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
-		add_action( 'init', array( __CLASS__, 'clear_temp_users' ) );
+		///add_action( 'init', array( __CLASS__, 'clear_temp_users' ) );
 
 		/**
 		 * Filters into wp users manager

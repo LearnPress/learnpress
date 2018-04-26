@@ -1526,7 +1526,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function can_enroll_course( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 
-			$can_enroll = ! ! $course && $course->is_publish();
+			// Course is published and not reached limitation
+			$can_enroll = ! ! $course && $course->is_publish();// && $course->is_in_stock();
 
 			if ( $can_enroll && $course->is_free() && ! $course->is_required_enroll() && ! $course->is_in_stock() ) {
 				$can_enroll = false;

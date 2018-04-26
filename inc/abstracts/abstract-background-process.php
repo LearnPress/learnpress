@@ -41,7 +41,6 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
-
 			/**
 			 * Priority is important that will fix issue with WC cart doesnt remove
 			 * after completing checkout and get order details
@@ -105,7 +104,8 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 			print_r( $item );
 			print_r( $_REQUEST );
 			$msg = ob_get_clean();
-			LP_Debug::instance()->add( $msg, 'background-process' );
+			LP_Debug::instance()->add( $msg, 'background-process-task', false, true );
+			return false;
 		}
 
 		/**
