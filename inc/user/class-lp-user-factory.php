@@ -21,14 +21,14 @@ class LP_User_Factory {
 	/**
 	 * @var LP_Background_Clear_Temp_Users
 	 */
-	protected static $_background_clear_users = null;
+	//protected static $_background_clear_users = null;
 
 	/**
 	 *
 	 */
 	public static function init() {
-		self::$_background_clear_users = new LP_Background_Clear_Temp_Users();
-		self::$_guest_transient        = WEEK_IN_SECONDS;
+		//self::$_background_clear_users = new LP_Background_Clear_Temp_Users();
+		self::$_guest_transient = WEEK_IN_SECONDS;
 		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn_press_user_start_quiz', array( __CLASS__, 'start_quiz' ), 10, 4 );
 		add_action( 'learn_press_user_retake_quiz', array( __CLASS__, 'retake_quiz' ), 10, 4 );
@@ -50,7 +50,7 @@ class LP_User_Factory {
 	public static function clear_temp_users() {
 		global $wpdb;
 		if ( $users = learn_press_get_temp_users() ) {
-			self::$_background_clear_users->push_to_queue(
+			LP()->background( 'clear-temp-users' )->push_to_queue(
 				array(
 					'action' => 'clear_temp_users',
 					'users'  => $users

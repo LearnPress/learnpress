@@ -206,3 +206,5 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		}
 	}
 }
+
+return LP_Background_Query_Items::instance();

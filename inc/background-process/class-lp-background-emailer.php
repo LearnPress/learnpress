@@ -52,3 +52,5 @@ if ( ! class_exists( 'LP_Background_Emailer' ) ) {
 		}
 	}
 }
+
+return LP_Background_Emailer::instance();

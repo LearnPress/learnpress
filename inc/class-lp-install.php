@@ -108,14 +108,14 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			$db_version = get_option( 'learnpress_db_version' );
 
 			// Check latest version with the value updated in db
-			if ( ! $db_version || version_compare( $db_version, LEARNPRESS_VERSION, '>=' ) ) {
+			if ( ! $db_version || version_compare( $db_version, $latest_ver, '>=' ) ) {
 				return;
 			}
 
-			// If version to update is less than in db
-			if ( version_compare( $latest_ver, $db_version, '<' ) ) {
-				return;
-			}
+//			// If version to update is less than in db
+//			if ( version_compare( $latest_ver, $db_version, '<' ) ) {
+//				return;
+//			}
 
 			// Show message if the latest version is not already updated
 			add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ), 20 );
@@ -692,7 +692,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		public static function update_version( $version = null ) {
 			delete_option( 'learnpress_version' );
 			update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
-			LP_Debug::instance()->add( debug_backtrace(), 'update_db_version', false, true );
 		}
 
 

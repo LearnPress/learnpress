@@ -285,6 +285,7 @@ class LP_Query {
 	 * @param WP_Query $q
 	 */
 	public function query_taxonomy( $q ) {
+
 		// We only want to affect the main query
 		if ( ! $q->is_main_query() ) {
 			return;

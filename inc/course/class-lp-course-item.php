@@ -48,6 +48,11 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		protected $_content = null;
 
 		/**
+		 * @var bool
+		 */
+		protected $_preview = '';
+
+		/**
 		 * LP_Course_Item constructor.
 		 *
 		 * @param $item mixed
@@ -78,24 +83,27 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return bool
 		 */
 		public function is_preview( $context = 'display' ) {
-			$is_preview = get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
+			if ( '' === $this->_preview ) {
+				$is_preview = get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
 
-			if ( $course = $this->get_course() ) {
-				$user_id = get_current_user_id();
+				if ( $course = $this->get_course() ) {
+					$user_id = get_current_user_id();
 
-				if ( false === ( $cached = wp_cache_get( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), 'lp-preview-items' ) ) ) {
-					$user = learn_press_get_current_user();
+					if ( false === ( $cached = wp_cache_get( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), 'lp-preview-items' ) ) ) {
+						$user = learn_press_get_current_user();
 
-					if ( $user->has_enrolled_course( $course->get_id() ) ) {
-						$is_preview = false;
+						if ( $user->has_enrolled_course( $course->get_id() ) ) {
+							$is_preview = false;
+						}
+						wp_cache_set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), $is_preview ? 'yes' : 'no', 'lp-preview-items' );
+					} else {
+						$is_preview = $cached === 'yes' ? true : false;
 					}
-					wp_cache_set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), $is_preview ? 'yes' : 'no', 'lp-preview-items' );
-				} else {
-					$is_preview = $cached === 'yes' ? true : false;
 				}
+				$this->_preview = $is_preview;
 			}
 
-			return $context === 'display' ? apply_filters( 'learn-press/course-item-preview', $is_preview, $this->get_id() ) : $is_preview;
+			return $context === 'display' ? apply_filters( 'learn-press/course-item-preview', $this->_preview, $this->get_id() ) : $this->_preview;
 		}
 
 		/**
@@ -283,7 +291,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return LP_Course_Item
 		 */
 		public static function get_item( $post ) {
-			$item      = false;
 			$item_type = '';
 			$item_id   = 0;
 
@@ -296,30 +303,34 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$item_id   = $post->ID;
 			}
 
-			if ( $item_type ) {
-				if ( learn_press_is_support_course_item_type( $item_type ) ) {
-					$type = str_replace( 'lp_', '', $item_type );
+			if ( false === ( $item = wp_cache_get( $item_id, 'lp-object-classes' ) ) ) {
 
-					$class = apply_filters( 'learn-press/course-item-object-class', false, $type, $item_type, $item_id );
+				if ( $item_type ) {
+					if ( learn_press_is_support_course_item_type( $item_type ) ) {
+						$type = str_replace( 'lp_', '', $item_type );
 
-					if ( is_string( $class ) && class_exists( $class ) ) {
-						$item = new $class( $post->ID, $post );
-					} elseif ( $class instanceof LP_Course_Item ) {
-						$item = $class;
-					}
+						$class = apply_filters( 'learn-press/course-item-object-class', false, $type, $item_type, $item_id );
 
-					if ( ! $item ) {
+						if ( is_string( $class ) && class_exists( $class ) ) {
+							$item = new $class( $post->ID, $post );
+						} elseif ( $class instanceof LP_Course_Item ) {
+							$item = $class;
+						}
 
-						switch ( $type ) {
-							case 'lesson':
-								$item = LP_Lesson::get_lesson( $item_id );
-								break;
-							case 'quiz':
-								$item = LP_Quiz::get_quiz( $item_id );
-								break;
+						if ( ! $item ) {
+
+							switch ( $type ) {
+								case 'lesson':
+									$item = LP_Lesson::get_lesson( $item_id );
+									break;
+								case 'quiz':
+									$item = LP_Quiz::get_quiz( $item_id );
+									break;
+							}
 						}
 					}
 				}
+				wp_cache_set( $item_id, $item, 'lp-object-classes' );
 			}
 
 			return apply_filters( 'learn-press/get-course-item', $item, $item_type, $item_id );
@@ -490,6 +501,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return bool
 		 */
 		public function is_blocked( $course_id = 0, $user_id = 0 ) {
+			if ( ! $user_id ) {
+				$user_id = get_current_user_id();
+			}
+
 			$key = 'course-item-' . $user_id . '-' . $course_id;
 
 			if ( false === ( $blocked_items = wp_cache_get( $key, 'blocked-items' ) ) ) {

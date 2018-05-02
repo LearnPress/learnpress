@@ -3,38 +3,24 @@
  * Todo: update emails
  */
 
+include_once dirname( __FILE__ ) . '/learnpress-update-base.php';
 
 /**
  * Class LP_Update_304
  *
  * Helper class for updating database to 3.0.4
  */
-class LP_Update_304 {
+class LP_Update_304 extends LP_Update_Base {
 
-	/**
-	 * Entry point
-	 */
-	public static function update() {
-		LP_Debug::startTransaction();
-		try {
-			//self::update_item_meta();
+	public function __construct() {
+		$this->version = '3.0.4';
+		$this->steps   = array( 'update_item_meta' );
 
-			//LP_Install::update_db_version();
-			//LP_Install::update_version();
-
-			//set_transient( 'lp_upgraded_30', 'yes', DAY_IN_SECONDS );
-			LP_Debug::commitTransaction();
-		}
-		catch ( Exception $exception ) {
-			LP_Debug::rollbackTransaction();
-		}
+		parent::__construct();
 	}
 
-	public static function update_item_meta(){
+	public function update_item_meta() {
 
-	}
-
-	protected static function _update_item_meta() {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT pm1.learnpress_user_item_id, pm1.meta_value AS question_answers, pm2.meta_value AS _question_answers
@@ -46,7 +32,7 @@ class LP_Update_304 {
 		", '_question_answers', 'question_answers' );
 
 		if ( ! $rows = $wpdb->get_results( $query ) ) {
-			return false;
+			return $this->_next_step();
 		}
 
 		$sqlUpdate = $wpdb->prepare( "
@@ -79,4 +65,5 @@ class LP_Update_304 {
 	}
 }
 
+return new LP_Update_304();
 //LP_Update_304::update();

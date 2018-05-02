@@ -95,7 +95,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 
 			remove_action( 'shutdown', array( $this, 'dispatch_queue' ) );
 
-			LP_Debug::instance()->add('Auto completing item', 'auto-complete-items', false, true);
+			LP_Debug::instance()->add( 'Auto completing item', 'auto-complete-items', false, true );
 
 			return false;
 
@@ -209,4 +209,4 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 	}
 }
 
-new LP_Background_Schedule_Items();
+return LP_Background_Schedule_Items::instance();

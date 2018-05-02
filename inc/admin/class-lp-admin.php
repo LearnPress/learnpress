@@ -474,6 +474,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				}
 				echo '<div class="updated notice">' . __( 'User has accepted to become a teacher.', 'learnpress' ) . '</div>';
 			}
+
+			if ( LP()->session->get( 'do-update-learnpress' ) ) {
+				learn_press_admin_view( 'updates/html-updated-latest-message' );
+			}
 		}
 
 		/**

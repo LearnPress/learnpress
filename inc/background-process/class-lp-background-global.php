@@ -76,3 +76,5 @@ if ( ! class_exists( 'LP_Background_Global' ) ) {
 		}
 	}
 }
+
+return LP_Background_Global::instance();

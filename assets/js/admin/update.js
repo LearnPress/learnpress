@@ -33,7 +33,7 @@
                     context: context
                 },
                 success: function (res) {
-                    var $msg = $('<div class="notice notice-success"><p>' + $(res).find('#message-success').text() + '</p></div>');
+                    var $msg = $(res);
                     if (context == 'message') {
                         $btn.closest('.notice').replaceWith($msg);
                     } else {

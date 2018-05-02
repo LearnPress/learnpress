@@ -101,4 +101,4 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 	}
 }
 
-LP_Background_Installer::instance();
+return LP_Background_Installer::instance();

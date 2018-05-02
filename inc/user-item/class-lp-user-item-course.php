@@ -44,6 +44,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		if ( ! $this->_loaded ) {
 			$this->read_items();
 			$this->read_items_meta();
+			$this->_loaded = true;
 		}
 	}
 

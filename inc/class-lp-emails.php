@@ -35,7 +35,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		/**
 		 * @var LP_Background_Emailer
 		 */
-		protected static $_background_emailer = null;
+		//protected static $_background_emailer = null;
 
 		/**
 		 * @var LP_Email
@@ -184,7 +184,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 
 			if ( 'yes' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
 
-				self::$_background_emailer = new LP_Background_Emailer();
+				//self::$_background_emailer = new LP_Background_Emailer();
 
 				foreach ( $actions as $action ) {
 					add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );
@@ -211,7 +211,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				'filter' => current_filter(),
 				'args'   => func_get_args(),
 			);
-			self::$_background_emailer->push_to_queue( $data_queue );
+			LP()->background( 'emailer' )->push_to_queue( $data_queue );
 		}
 
 		/**
