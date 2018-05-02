@@ -73,6 +73,7 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'init', array( $this, '_do_register' ) );
 		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
+		add_action( 'deleted_post', array( $this, '_deleted_post' ) );
 
 		add_filter( 'manage_edit-' . $this->_post_type . '_sortable_columns', array( $this, 'sortable_columns' ) );
 		add_filter( 'manage_' . $this->_post_type . '_posts_columns', array( $this, 'columns_head' ) );
@@ -304,10 +305,6 @@ abstract class LP_Abstract_Post_Type {
 	 * @return bool
 	 */
 	public function _do_save( $post_id, $post = null ) {
-
-		// Flush the Hard Cache to applies new changes
-		LP_Hard_Cache::flush();
-		wp_cache_flush();
 		// Maybe remove
 		$this->maybe_remove_assigned( $post_id );
 
@@ -319,7 +316,9 @@ abstract class LP_Abstract_Post_Type {
 		remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 		$func_args = func_get_args();
 		$this->_call_method( 'save', $func_args );
+		$this->_flush_cache();
 		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+
 		return $post_id;
 	}
 
@@ -421,6 +420,16 @@ abstract class LP_Abstract_Post_Type {
 		$func_args = func_get_args();
 
 		return $this->_call_method( 'before_delete', $func_args );
+	}
+
+	public function _deleted_post( $post_id ) {
+		$this->_flush_cache();
+	}
+
+	protected function _flush_cache() {
+		// Flush the Hard Cache to applies new changes
+		LP_Hard_Cache::flush();
+		wp_cache_flush();
 	}
 
 	public function _posts_fields( $fields ) {

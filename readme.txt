@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.4
-Stable tag: 3.0.7
+Stable tag: 3.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -198,6 +198,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.0.8 =
+~ Improved: get css class name for items for performance
+~ Improved: check item is blocked for performance
+~ Improved: upgrade database feature
+~ Fixed: warning message when searching posts in frontend
+~ Fixed: show 2 comments form in lesson page
+~ Fixed: content of lesson does not show if set post-format to video
+~ Fixed: some warning when getting question class with an array of post-type
+~ Fixed: mysql error when updating item's grade with value is null
 
 = 3.0.7 =
 ~ Improved: ui/ux when adding/removing course items
