@@ -137,6 +137,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			self::_create_cron_jobs();
 			self::_delete_transients();
 			self::_create_log_path();
+			self::_clear_backgrounds();
 			///self::_create_pages();
 			delete_transient( 'lp_upgraded_30' );
 			$current_version    = get_option( 'learnpress_version', null );
@@ -163,6 +164,13 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 		}
 
+		protected static function _clear_backgrounds() {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->options} WHERE option_name LIKE %s
+			", $wpdb->esc_like( 'wp_lp_schedule_items_batch_' ) . '%' );
+			$wpdb->query( $query );
+		}
 
 		/**
 		 * Update default options for LP

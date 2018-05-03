@@ -228,7 +228,6 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Removed: option thumbnail size for single course
 ~ Improved somethings...
 
-
 = 3.0.6 =
 ~ Fixed: missing 'Instructors Registration' option
 ~ Fixed: cannot start quiz or complete lesson
