@@ -318,6 +318,113 @@ button[data-counter] {
     }
 }
 
+.question-numbers {
+    list-style: none;
+    text-align: center;
+    li {
+        display: inline-block;
+        position: relative;
+        margin-bottom: 3px;
+        a {
+            display: block;
+            padding: 8px;
+            background: #F5F5F5;
+            line-height: 1;
+            color: #999;
+            border: 1px solid #DDD;
+            font-size: 12px;
+            min-width: 20px;
+            box-shadow: none;
+            span {
+                vertical-align: middle;
+            }
+            &:hover {
+                background: #00adff;
+                color: #FFF;
+                border: 1px solid #3880a2;
+            }
+        }
+        &.current {
+            a {
+                background: #00adff;
+                color: #FFF !important;
+                border-color: #3880a2;
+            }
+            &.skipped {
+                &:after {
+                    background: #FFF;
+                }
+            }
+        }
+        &.answered {
+            a {
+                &:after {
+                    font-family: fontawesome;
+                    font-size: 8px;
+                    vertical-align: middle;
+                    margin-left: 3px;
+                }
+            }
+            &.answered-wrong {
+                a {
+                    color: #FF0000;
+                    &:after {
+                        //content: "\f05e";
+                    }
+                }
+            }
+            &.answered-true {
+                a {
+                    color: #00adff;
+                    &:after {
+                        //content: "\f00c";
+                    }
+                }
+                &.current {
+                    a {
+                        color: #FFF;
+                    }
+                }
+            }
+        }
+        &.skipped {
+            &:after {
+                content: '';
+                background: #AAA;
+                width: 10px;
+                height: 4px;
+                position: absolute;
+                border-radius: 2px;
+                left: 50%;
+                margin-left: -5px;
+                bottom: 3px;
+            }
+        }
+    }
+}
+
+.quiz-intro {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+    display: table;
+    li {
+        margin: 0;
+        display: table-row;
+        label, span {
+            display: table-cell;
+        }
+        label {
+            font-weight: bold;
+            padding: 0 20px 10px 0px;
+            line-height: 1;
+        }
+        span {
+            text-align: left;
+        }
+    }
+}
+
 .question-explanation-content,
 .question-hint-content {
     margin-bottom: 20px;

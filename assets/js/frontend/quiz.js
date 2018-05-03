@@ -106,6 +106,16 @@
             $('form.complete-quiz').submit();
         }
 
+        function beforeSubmit() {
+            var $form = $(this),
+                $input = $form.find('input[name="nav-type"]'),
+                navType = $form[0].className.match(/(prev|next|skip)-question/);
+
+            if (!$input.length) {
+                $input = $('<input type="hidden" name="nav-type" />').val(navType[0]).appendTo($form);
+            }
+        }
+
         function init() {
             if (thisSettings.onTick) {
                 self.on('tick', thisSettings.onTick);
@@ -114,6 +124,8 @@
             if (thisSettings.onFinish) {
                 self.on('finish', thisSettings.onFinish);
             }
+
+            $(document).on('submit', '.next-question, .prev-question, .skip-question', beforeSubmit);
             initCountdown();
             timeCountdown();
         }
@@ -122,7 +134,7 @@
         this.on = callbackEvents.on;
         this.off = callbackEvents.off;
 
-        if(thisSettings.totalTime > 0) {
+        if (thisSettings.totalTime > 0) {
             this.on('tick.showTime', showTime);
             this.on('finish.submit', submit);
         }

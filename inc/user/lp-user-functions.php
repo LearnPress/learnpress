@@ -22,15 +22,26 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 	// TODO: Should be deleted user's order and order data???
 
 	$query_args = array( $user_id );
+
 	if ( $course_id ) {
 		$query_args[] = $course_id;
 	}
+
+	$query = $wpdb->prepare( "
+        SELECT user_item_id
+        FROM {$wpdb->prefix}learnpress_user_items
+        WHERE user_id = %d
+        " . ( $course_id ? " AND item_id = %d" : "" ) . "
+    ", $query_args );
+
 	// delete all courses user has enrolled
 	$query = $wpdb->prepare( "
         DELETE FROM {$wpdb->prefix}learnpress_user_items
         WHERE user_id = %d
         " . ( $course_id ? " AND item_id = %d" : "" ) . "
     ", $query_args );
+
+
 	@$wpdb->query( $query );
 }
 

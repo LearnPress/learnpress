@@ -14,9 +14,10 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$user      = LP_Global::user();
-$quiz      = LP_Global::course_item_quiz();
-$course_id = get_the_ID();
+$user                = LP_Global::user();
+$quiz                = LP_Global::course_item_quiz();
+$course_id           = get_the_ID();
+$current_question_id = $quiz->get_viewing_question( 'id' );
 ?>
 
 <?php if ( $prev_id = $user->get_prev_question( $quiz->get_id(), $course_id ) ) { ?>
@@ -29,6 +30,7 @@ $course_id = get_the_ID();
 		<?php do_action( 'learn-press/quiz/begin-prev-question-button' ); ?>
 
         <button type="submit"><?php echo esc_html_x( 'Prev', 'quiz-question-navigation', 'learnpress' ); ?></button>
+        <input type="hidden" name="question-id" value="<?php echo $current_question_id; ?>">
 
 		<?php do_action( 'learn-press/quiz/end-prev-question-button' ); ?>
 
@@ -49,6 +51,7 @@ $course_id = get_the_ID();
 		<?php do_action( 'learn-press/quiz/begin-next-question-button' ); ?>
 
         <button type="submit"><?php echo esc_html_x( 'Next', 'quiz-question-navigation', 'learnpress' ); ?></button>
+        <input type="hidden" name="question-id" value="<?php echo $current_question_id; ?>">
 
 		<?php do_action( 'learn-press/quiz/end-next-question-button' ); ?>
 
@@ -69,6 +72,7 @@ $course_id = get_the_ID();
 		<?php do_action( 'learn-press/quiz/begin-skip-question-button' ); ?>
 
         <button type="submit"><?php echo esc_html_x( 'Skip', 'quiz-question-navigation', 'learnpress' ); ?></button>
+        <input type="hidden" name="question-id" value="<?php echo $current_question_id; ?>">
 
 		<?php do_action( 'learn-press/quiz/end-skip-question-button' ); ?>
 

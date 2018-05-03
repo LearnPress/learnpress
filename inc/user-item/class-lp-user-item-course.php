@@ -715,6 +715,31 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return apply_filters( 'learn-press/course/single-params', $js_args, $this->get_id() );
 	}
 
+	public function update_item_retaken_count( $item_id, $count = 0 ) {
+		$items = $this->get_meta( '_retaken_items' );
+		if ( is_string( $count ) && preg_match( '#^(\+|\-)([0-9]+)#', $count, $m ) ) {
+			$last_count = ! empty( $items[ $item_id ] ) ? $items[ $item_id ] : 0;
+			$count      = $m[1] == '+' ? ( $last_count + $m[2] ) : ( $last_count - $m[2] );
+		}
+
+		$items[ $item_id ] = $count;
+
+		learn_press_update_user_item_meta( $this->get_user_item_id(), '_retaken_items', $items );
+
+		return $count;
+	}
+
+	public function get_item_retaken_count( $item_id ) {
+		$items = $this->get_meta( '_retaken_items' );
+		$count = false;
+
+		if ( is_array( $items ) && array_key_exists( $item_id, $items ) ) {
+			$count = absint( $items[ $item_id ] );
+		}
+
+		return $count;
+	}
+
 	/**
 	 * Get number of retaken times for user course.
 	 *

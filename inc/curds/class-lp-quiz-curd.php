@@ -273,10 +273,10 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			global $wpdb;
 			$format = array_fill( 0, sizeof( $meta_ids ), '%d' );
 			$query  = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->learnpress_question_answermeta}
-			WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ")
-		", $meta_ids );
+				SELECT *
+				FROM {$wpdb->learnpress_question_answermeta}
+				WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ")
+			", $meta_ids );
 			if ( $metas = $wpdb->get_results( $query ) ) {
 				foreach ( $metas as $meta ) {
 					$key        = $meta->meta_key;

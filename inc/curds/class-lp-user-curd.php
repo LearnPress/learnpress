@@ -928,6 +928,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$query         = $wpdb->prepare( "SELECT user_item_id FROM {$wpdb->learnpress_user_items} WHERE " . join( ' AND ', $query_where ), array_values( $where ) );
 		$user_item_ids = $wpdb->get_col( $query );
+
 		$wpdb->delete(
 			$wpdb->learnpress_user_items,
 			$where,
@@ -938,6 +939,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_user_itemmeta} WHERE learnpress_user_item_id = %d", $user_item_id ) );
 			do_action( 'learn-press/deleted-user-item', $user_item_id );
 		}
+//		if($user_item_ids) {
+//			// Flush all cache to apply new changes
+//			wp_cache_flush();
+//		}
 
 		return true;
 	}

@@ -197,6 +197,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $interval;
 	}
 
+	/**
+	 * Return TRUE if user has pressed SKIP on this question
+	 *
+	 * @param int $question_id
+	 *
+	 * @return bool
+	 */
+	public function is_skipped( $question_id ) {
+		return $this->get_question_answer( $question_id ) === '__SKIPPED__';
+	}
 
 	public function is_answered( $question_id ) {
 		$result = $this->get_results();

@@ -471,18 +471,38 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 				}
 
-				if ( $questions = self::get_answers_posted() ) {
-					$user   = learn_press_get_current_user();
-					$course = learn_press_get_course( LP_Request::get_int( 'course-id' ) );
-					$quiz   = learn_press_get_quiz( LP_Request::get_int( 'quiz-id' ) );
+				$nav_type = LP_Request::get_string( 'nav-type' );
 
-					$course_data = $user->get_course_data( $course->get_id() );
-					$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+				$course_id   = LP_Request::get_int( 'course-id' );
+				$quiz_id     = LP_Request::get_int( 'quiz-id' );
+				$question_id = LP_Request::get_int( 'question-id' );
 
-					$quiz_data->add_question_answer( $questions );
-					$quiz_data->update();
+				if ( ! $questions = self::get_answers_posted() ) {
+					$questions = array();
 				}
 
+				$user   = learn_press_get_current_user();
+				$course = learn_press_get_course( $course_id );
+				$quiz   = learn_press_get_quiz( $quiz_id );
+
+				$course_data = $user->get_course_data( $course->get_id() );
+				$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+
+				// If user click 'Skip' button
+				if ( $nav_type === 'skip-question' ) {
+					if ( $quiz_data->get_question_answer( $question_id ) == '' ) {
+						$questions[ $question_id ] = '__SKIPPED__';
+					} else {
+						unset( $questions[ $question_id ] );
+					}
+				} else {
+					if ( ! array_key_exists( $question_id, $questions ) ) {
+						$questions[ $question_id ] = array();
+					}
+				}
+
+				$quiz_data->add_question_answer( $questions );
+				$quiz_data->update();
 
 			}
 			catch ( Exception $ex ) {

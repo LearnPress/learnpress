@@ -919,7 +919,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					SELECT *
 					FROM {$wpdb->prefix}learnpress_question_answers
 					WHERE question_id IN(" . join( ',', $format ) . ")
-					ORDER BY question_id, answer_order ASC
+					ORDER BY question_id, answer_order, question_answer_id ASC
 				", $question_ids );
 
 				$question_answers = array();

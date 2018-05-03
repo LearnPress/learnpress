@@ -51,7 +51,6 @@ $button_text = $checked ? __( 'Checked', 'learnpress' ) : __( 'Check', 'learnpre
 		<?php LP_Nonce_Helper::quiz_action( 'check-answer', $quiz->get_id(), get_the_ID(), true ); ?>
 
         <input type="hidden" name="question-id" value="<?php echo $question->get_id(); ?>">
-        <input type="hidden" name="question-id" value="<?php echo $question->get_id(); ?>">
 
     </form>
 

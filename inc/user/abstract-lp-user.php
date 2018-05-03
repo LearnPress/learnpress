@@ -345,6 +345,24 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
+		 * Count number of rows for an item in user-items
+		 *
+		 * @param int $item_id
+		 * @param int $course_id
+		 *
+		 * @return int
+		 */
+		public function count_item_archive( $item_id, $course_id = 0 ) {
+			$count = 0;
+
+			if ( $items = $this->get_item_archive( $item_id, $course_id ) ) {
+				$count = sizeof( $items );
+			}
+
+			return $count;
+		}
+
+		/**
 		 * Start quiz for the user.
 		 *
 		 * @param int  $quiz_id
@@ -525,9 +543,39 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		protected function _insert_quiz_item( $quiz_id, $course_id ) {
-			$course_data = $this->get_course_data( $course_id );
-			$start_time  = new LP_Datetime( current_time( 'mysql' ) );
-			$item_data   = array(
+			$course_data  = $this->get_course_data( $course_id );
+			$quiz         = learn_press_get_quiz( $quiz_id );
+			$last_results = $this->get_item_archive( $quiz_id, $course_id, true );
+
+			if ( ! $quiz->enable_archive_history() ) {
+
+				if ( $last_results ) {
+					global $wpdb;
+					$query = $wpdb->prepare( "
+						DELETE FROM {$wpdb->learnpress_user_items}
+						WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
+					", $this->get_id(), $quiz_id, $last_results['user_item_id'] );
+
+					$wpdb->query( $query );
+				} else {
+					$course_data->update_item_retaken_count( $quiz_id, 0 );
+				}
+				//var_dump($last_results);
+			}
+
+			if ( $last_results && $last_results['status'] === 'completed' ) {
+				$course_data->update_item_retaken_count( $quiz_id, '+1' );
+			}
+			//die();
+////			var_dump( $this->count_item_archive( $quiz_id, $course_id ) );
+////			var_dump( $this->can_retake_quiz( $quiz_id, $course_id ) );
+////
+////			var_dump( current_filter() );
+////			var_dump( current_action() );
+//
+//			die();
+			$start_time = new LP_Datetime( current_time( 'mysql' ) );
+			$item_data  = array(
 				'user_id'        => $this->get_id(),
 				'item_id'        => $quiz_id,
 				'start_time'     => $start_time->toSql(),
@@ -544,6 +592,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$last_results         = $this->get_item_archive( $quiz_id, $course_id, true );
 			$set_current_question = false;
+
 			// If there is no a record
 			if ( ! $last_results ) {
 				$item_data            = apply_filters( 'learn-press/insert-user-item-data', $item_data, $quiz_id, $course_id, $this->get_id() );
@@ -1666,15 +1715,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * - FALSE if user CAN NOT retake quiz
 		 * - INT (number of remain) if user CAN retake quiz
 		 *
-		 * @param         $quiz_id
-		 * @param int     $course_id
+		 * @param int $quiz_id
+		 * @param int $course_id
 		 *
-		 * @return mixed|null
+		 * @return bool|int
 		 */
 		public function can_retake_quiz( $quiz_id, $course_id = 0 ) {
 			$can    = false;
 			$course = learn_press_get_course( $course_id );
+
 			if ( $course && $course->has_item( $quiz_id ) ) {
+
 				// Check if quiz is already exists
 				if ( $quiz = learn_press_get_quiz( $quiz_id ) ) {
 					$count = $quiz->get_retake_count();
@@ -1686,10 +1737,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						} else {
 							$can = $count;
 						}
+
+						$can = absint( $can );
 					}
 				}
 			}
-
 
 			return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this->get_id(), $course_id );
 		}
@@ -2040,18 +2092,36 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return int
 		 */
 		public function count_retaken_quiz( $quiz_id, $course_id = 0, $force = false ) {
-			$count = false;
-
+			$count     = false;
 			$course_id = $this->_get_course( $course_id );
 
 			if ( ! $course_id || ! $quiz_id ) {
 				return $count;
 			}
 
-			$count     = 0;
-			$user_item = $this->get_item_data( $quiz_id, $course_id );
-			if ( $user_item ) {
-				$count = $user_item->count_history() - 1;
+			$count = 0;
+
+			if ( $course_data = $this->get_course_data( $course_id ) ) {
+
+				if ( false === ( $count = $course_data->get_item_retaken_count( $quiz_id ) ) ) {
+					//$items = $course_data->get_meta( '_retaken_items' );
+
+					//if ( false === $items || ! array_key_exists( $quiz_id, $items ) ) {
+					//settype( $items, 'array' );
+					$user_item = $this->get_item_data( $quiz_id, $course_id );
+
+					if ( $user_item ) {
+						$new_count = $user_item->count_history() - 1;
+						$count     = $course_data->update_item_retaken_count( $quiz_id, $new_count );
+					}
+					//$items[ $quiz_id ] = $count;
+					//$course_data->set_meta( '_retaken_items', $items );
+					//$course_data->update_meta();
+					///}
+
+					//$count = $items[ $quiz_id ];
+				}
+
 			}
 
 			return apply_filters( 'learn_press_user_count_retaken_quiz', $count, $quiz_id, $course_id, $this->get_id() );
