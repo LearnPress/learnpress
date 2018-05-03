@@ -252,6 +252,7 @@ class LP_Page_Controller {
 				$this->_load_archive_courses( $template );
 			}
 		}
+
 		return $template;
 	}
 
@@ -440,12 +441,8 @@ class LP_Page_Controller {
 
 		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY || LEARNPRESS_IS_SEARCH || LEARNPRESS_IS_TAX ) {
 			global $wp_query;
-			if ( is_callable( 'clone' ) ) {
-				LP()->wp_query = clone( $wp_query );
-			} else {
-				// PHP 7
-				LP()->wp_query = clone $wp_query;
-			}
+			// PHP 7
+			LP()->wp_query = clone $wp_query;
 
 			$template = get_page_template();
 

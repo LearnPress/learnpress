@@ -119,7 +119,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			$exclude_items     = $queued_course_ids ? "AND user_item_id NOT IN(" . join( ',', $queued_course_ids ) . ")" : '';
 
 			$null_time = '0000-00-00 00:00:00';
-			$query = $wpdb->prepare( "
+			$query     = $wpdb->prepare( "
 				SELECT user_item_id, user_id
 				FROM {$wpdb->learnpress_user_items}
 				WHERE item_type = %s
@@ -221,5 +221,4 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		}
 	}
 }
-LP_Background_Schedule_Items::instance()->test();
 return LP_Background_Schedule_Items::instance();

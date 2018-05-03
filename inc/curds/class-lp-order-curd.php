@@ -319,7 +319,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function cln( $order ) {
 
-		$cloned = function_exists( 'clone' ) ? clone ( $order ) : clone $order;
+		$cloned = clone $order;
 
 		$cloned->set_id( 0 );
 		$cloned->save();
@@ -444,126 +444,127 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$users = 0;
 			}
 
-		$order->set_data_via_methods(
-			array(
-				'user_id'         => $users,//get_post_meta( $order->get_id(), '_user_id', true ),
-				'order_date'      => new LP_Datetime( $post->post_date ),
-				'date_modified'   => new LP_Datetime( $post->post_modified ),
-				'status'          => str_replace( 'lp-', '', $post->post_status ),
-				'parent_id'       => $post->post_parent,
-				'created_via'     => get_post_meta( $post->ID, '_created_via', true ),
-				'total'           => get_post_meta( $post->ID, '_order_total', true ),
-				'subtotal'        => get_post_meta( $post->ID, '_order_subtotal', true ),
-				'order_key'       => get_post_meta( $post->ID, '_order_key', true ),
-				'user_ip_address' => get_post_meta( $post->ID, '_user_ip_address', true ),
-				'user_agent'      => get_post_meta( $post->ID, '_user_agent', true ),
-				'checkout_email'  => get_post_meta( $post->ID, '_checkout_email', true ),
-				'currency'        => get_post_meta( $post->ID, '_order_currency', true )
-			)
-		);
-		$this->read_items( $order );
-		$order->read_meta();
+			$order->set_data_via_methods(
+				array(
+					'user_id'         => $users,//get_post_meta( $order->get_id(), '_user_id', true ),
+					'order_date'      => new LP_Datetime( $post->post_date ),
+					'date_modified'   => new LP_Datetime( $post->post_modified ),
+					'status'          => str_replace( 'lp-', '', $post->post_status ),
+					'parent_id'       => $post->post_parent,
+					'created_via'     => get_post_meta( $post->ID, '_created_via', true ),
+					'total'           => get_post_meta( $post->ID, '_order_total', true ),
+					'subtotal'        => get_post_meta( $post->ID, '_order_subtotal', true ),
+					'order_key'       => get_post_meta( $post->ID, '_order_key', true ),
+					'user_ip_address' => get_post_meta( $post->ID, '_user_ip_address', true ),
+					'user_agent'      => get_post_meta( $post->ID, '_user_agent', true ),
+					'checkout_email'  => get_post_meta( $post->ID, '_checkout_email', true ),
+					'currency'        => get_post_meta( $post->ID, '_order_currency', true )
+				)
+			);
+			$this->read_items( $order );
+			$order->read_meta();
+		}
+
+		return true;
 	}
 
-return true;
-}
+	/**
+	 * Recover an order checked out by Guest for an user.
+	 *
+	 * @param string $order_key
+	 * @param int    $user_id
+	 *
+	 * @return bool|LP_Order|WP_Error
+	 */
+	public function recover( $order_key, $user_id ) {
+		try {
+			$order = $this->get_order_by_key( $order_key );
 
-/**
- * Recover an order checked out by Guest for an user.
- *
- * @param string $order_key
- * @param int $user_id
- *
- * @return bool|LP_Order|WP_Error
- */
-public function recover( $order_key, $user_id ) {
-	try {
-		$order = $this->get_order_by_key( $order_key );
+			// Validations
+			if ( ! $order ) {
+				throw new Exception( __( 'Invalid order.', 'learnpress' ), 1000 );
+			}
 
-		// Validations
-		if ( ! $order ) {
-			throw new Exception( __( 'Invalid order.', 'learnpress' ), 1000 );
+			if ( ! $order->is_guest() ) {
+				throw new Exception( __( 'Order is already assigned.', 'learnpress' ), 1010 );
+			}
+
+			$user = learn_press_get_user( $user_id );
+
+			if ( ! $user ) {
+				throw new Exception( __( 'User does not exist.', 'learnpress' ), 1020 );
+			}
+
+			global $wpdb;
+
+			// Set user to order and update
+			$order->set_user_id( $user_id );
+			$order->save();
+
+			// Trigger action
+			do_action( 'learn-press/order/recovered-successful', $order->get_id(), $user_id );
+		}
+		catch ( Exception $ex ) {
+			return new WP_Error( $ex->getCode(), $ex->getMessage() );
 		}
 
-		if ( ! $order->is_guest() ) {
-			throw new Exception( __( 'Order is already assigned.', 'learnpress' ), 1010 );
-		}
+		return $order;
+	}
 
-		$user = learn_press_get_user( $user_id );
-
-		if ( ! $user ) {
-			throw new Exception( __( 'User does not exist.', 'learnpress' ), 1020 );
-		}
-
+	/**
+	 * Retrieve an order by order key.
+	 *
+	 * @param string $order_key
+	 *
+	 * @return bool|LP_Order
+	 */
+	public function get_order_by_key( $order_key ) {
 		global $wpdb;
-
-		// Set user to order and update
-		$order->set_user_id( $user_id );
-		$order->save();
-
-		// Trigger action
-		do_action( 'learn-press/order/recovered-successful', $order->get_id(), $user_id );
-	} catch ( Exception $ex ) {
-		return new WP_Error( $ex->getCode(), $ex->getMessage() );
-	}
-
-	return $order;
-}
-
-/**
- * Retrieve an order by order key.
- *
- * @param string $order_key
- *
- * @return bool|LP_Order
- */
-public function get_order_by_key( $order_key ) {
-	global $wpdb;
-	$query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			SELECT ID
 			FROM {$wpdb->posts} p 
 			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value = %s
 		", '_order_key', $order_key );
 
-	$order = false;
-	if ( $order_id = $wpdb->get_var( $query ) ) {
-		$order = learn_press_get_order( $order_id );
+		$order = false;
+		if ( $order_id = $wpdb->get_var( $query ) ) {
+			$order = learn_press_get_order( $order_id );
+		}
+
+		return $order;
 	}
 
-	return $order;
-}
+	/**
+	 * Get all child orders of an order by id
+	 *
+	 * @param int $order_id
+	 *
+	 * @return array|bool|mixed
+	 */
+	public function get_child_orders( $order_id ) {
+		global $wpdb;
 
-/**
- * Get all child orders of an order by id
- *
- * @param int $order_id
- *
- * @return array|bool|mixed
- */
-public function get_child_orders( $order_id ) {
-	global $wpdb;
-
-	if ( false === ( $orders = wp_cache_get( 'order-' . $order_id, 'lp-child-orders' ) ) ) {
-		$query = $wpdb->prepare( "
+		if ( false === ( $orders = wp_cache_get( 'order-' . $order_id, 'lp-child-orders' ) ) ) {
+			$query = $wpdb->prepare( "
 				SELECT *
 				FROM {$wpdb->posts}
 				WHERE post_parent = %d
 			", $order_id );
-		if ( $posts = $wpdb->get_results( $query ) ) {
-			foreach ( $posts as $order ) {
-				new WP_Post( $order );
-				$orders[] = $order->ID;
+			if ( $posts = $wpdb->get_results( $query ) ) {
+				foreach ( $posts as $order ) {
+					new WP_Post( $order );
+					$orders[] = $order->ID;
+				}
+			} else {
+				$orders = array();
 			}
-		} else {
-			$orders = array();
+			wp_cache_set( 'order-' . $order_id, $orders, 'lp-child-orders' );
 		}
-		wp_cache_set( 'order-' . $order_id, $orders, 'lp-child-orders' );
+
+		return $orders;
 	}
 
-	return $orders;
-}
-
-public function duplicate( &$order, $args = array() ) {
-	// TODO: Implement duplicate() method.
-}
+	public function duplicate( &$order, $args = array() ) {
+		// TODO: Implement duplicate() method.
+	}
 }

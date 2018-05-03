@@ -676,8 +676,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				$user_id = learn_press_get_current_user_id();
 			}
 			$user = learn_press_get_user( $user_id );
-			if ( $user && $results = $user->get_quiz_results( $this->get_id() ) ) {
+			if ( $user && ( $results = $user->get_quiz_results( $this->get_id(), '', '' ) ) ) {
 				$questions = (array) $results->questions;
+
 			} else {
 				$questions = (array) $this->get_questions();
 				$questions = array_keys( $questions );
@@ -817,6 +818,29 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 		public function get_show_hide_question() {
 			return 'yes' === $this->get_data( 'show_hide_question' );
+		}
+
+		/**
+		 * Get css classes of question displays in a list.
+		 *
+		 * @param int  $question_id
+		 * @param null $position
+		 *
+		 * @return array
+		 */
+		public function get_question_number_class( $question_id, $position = null ) {
+
+			if ( null === $position ) {
+				$position = $this->get_question_index( $question_id );
+			}
+
+			$class = array( "question-" . $position );
+
+			if ( $this->is_viewing_question( $question_id ) ) {
+				$class[] = 'current';
+			}
+
+			return $class;
 		}
 
 		/**
