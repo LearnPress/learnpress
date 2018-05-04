@@ -1402,35 +1402,7 @@ body .lp-quiz-buttons .form-button-finish-course {
     .answer-options .answer-option.answered-wrong input[type="radio"]:before, .answer-options .answer-option.answered-wrong input[type="radio"]:after,
     .answer-options .answer-option.answered-wrong input[type="checkbox"]:before,
     .answer-options .answer-option.answered-wrong input[type="checkbox"]:after {
-      position: absolute;
-      background: #FF0000;
-      border: none;
-      content: '';
-      display: inline-block;
-      left: 50%;
-      top: 50%;
-      -webkit-border-radius: 2px;
-      -moz-border-radius: 2px;
-      border-radius: 2px;
-      -webkit-transform: rotate(-45deg);
-      -moz-transform: rotate(-45deg);
-      -ms-transform: rotate(-45deg);
-      -o-transform: rotate(-45deg);
-      transform: rotate(-45deg); }
-    .answer-options .answer-option.answered-wrong input[type="radio"]:before,
-    .answer-options .answer-option.answered-wrong input[type="checkbox"]:before {
-      width: 2px;
-      height: 18px;
-      margin-top: -9px;
-      margin-left: -1px; }
-    .answer-options .answer-option.answered-wrong input[type="radio"]:after,
-    .answer-options .answer-option.answered-wrong input[type="checkbox"]:after {
-      width: 18px;
-      height: 2px;
-      margin-top: -1px;
-      margin-left: -9px;
-      border: none;
-      opacity: 1; }
+      border-color: #FF0000; }
     .answer-options .answer-option.answered-wrong input[type="radio"]:checked ~ .option-title:before,
     .answer-options .answer-option.answered-wrong input[type="checkbox"]:checked ~ .option-title:before {
       background: #FF0000; }

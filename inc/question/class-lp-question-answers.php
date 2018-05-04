@@ -269,7 +269,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			// sanitize unwanted classes
 			$classes = LP_Helper::sanitize_array( $classes );
 
-			return apply_filters( 'learn-press/question/answer-option/classes', $classes, $this );
+			return apply_filters( 'learn-press/question/answer-options/classes', $classes, $this );
 		}
 
 		/**
@@ -388,16 +388,26 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 			}
 
 			if ( $this->get_question()->show_correct_answers() === 'yes' ) {
-				if ( $this->is_true() ) {
+
+				$is_checked = $this->is_checked();
+				$is_true    = $this->is_true();
+
+				if ( $is_true ) {
 					$classes[] = 'answer-correct';
 				}
-				if ( $this->is_checked() && $this->is_true() ) {
+
+				if ( $is_checked ) {
+					$classes[] = 'answer-selected';
+				}
+
+				if ( $is_checked && $is_true ) {
 					$classes[] = 'answered-correct';
-				} elseif ( $this->is_checked() && ! $this->is_true() ) {
+				} elseif ( $is_checked && ! $is_true ) {
 					$classes[] = 'answered-wrong';
-				} elseif ( ! $this->is_checked() && $this->is_true() ) {
+				} elseif ( ! $is_checked && $is_true ) {
 					$classes[] = 'answered-wrong';
 				}
+
 			}
 
 			// sanitize unwanted classes

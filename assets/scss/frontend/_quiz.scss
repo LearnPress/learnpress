@@ -155,12 +155,15 @@
                 border-radius: 50%;
             }
         }
+
         .option-title {
             margin: 0;
         }
+
         &:hover {
             background: #e1f5ff;
         }
+
         &.answer-correct {
             background: #e1f5ff;
             input[type="radio"]:checked,
@@ -189,33 +192,40 @@
             input[type="checkbox"] {
                 &:before,
                 &:after {
-                    position: absolute;
-                    background: #FF0000;
-                    border: none;
-                    content: '';
-                    display: inline-block;
-                    left: 50%;
-                    top: 50%;
-                    @include border-radius(2px);
-                    @include transform(rotate(-45deg));
-                }
-
-                &:before {
-                    width: 2px;
-                    height: 18px;
-                    margin-top: -9px;
-                    margin-left: -1px;
-                }
-
-                &:after {
-                    width: 18px;
-                    height: 2px;
-                    margin-top: -1px;
-                    margin-left: -9px;
-                    border: none;
-                    opacity: 1;
+                    border-color: #FF0000;
                 }
             }
+            //input[type="radio"],
+            //input[type="checkbox"] {
+            //    &:before,
+            //    &:after {
+            //        position: absolute;
+            //        _background: #FF0000;
+            //        border: none;
+            //        content: '';
+            //        display: inline-block;
+            //        left: 50%;
+            //        top: 50%;
+            //        @include border-radius(2px);
+            //        @include transform(rotate(-45deg));
+            //    }
+            //
+            //    &:before {
+            //        width: 2px;
+            //        height: 18px;
+            //        margin-top: -9px;
+            //        margin-left: -1px;
+            //    }
+            //
+            //    &:after {
+            //        width: 18px;
+            //        height: 2px;
+            //        margin-top: -1px;
+            //        margin-left: -9px;
+            //        border: none;
+            //        opacity: 1;
+            //    }
+            //}
 
             input[type="radio"]:checked,
             input[type="checkbox"]:checked {
