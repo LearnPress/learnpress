@@ -151,7 +151,7 @@ abstract class LP_Abstract_Post_Type {
                 jQuery(function ($) {
                     var $input = $('#post-search-input'),
                         $form = $($input[0].form),
-                        $select = $('<select name="author" id="author"></select>').append('<?php echo $option;?>').insertAfter($input).select2({
+                        $select = $('<select name="author" id="author"></select>').append('<?php echo esc_js($option);?>').insertAfter($input).select2({
                             ajax: {
                                 url: window.location.href + '&lp-ajax=search-authors',
                                 dataType: 'json',
@@ -176,7 +176,7 @@ abstract class LP_Abstract_Post_Type {
 			?>
             <script>
                 jQuery(function ($) {
-                    var isAssigned = '<?php echo $this->is_assigned();?>',
+                    var isAssigned = '<?php echo esc_js( $this->is_assigned() );?>',
                         $postStatus = $('#post_status'),
                         $message = $('<p class="learn-press-notice-assigned-item"></p>').html(isAssigned),
                         currentStatus = $postStatus.val();
