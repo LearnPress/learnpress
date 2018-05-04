@@ -9,13 +9,16 @@ defined( 'ABSPATH' ) or die();
 
 ?>
 <div id="learn-press-reset-user-courses" class="card">
-    <h2><?php _e( 'Reset course data by user', 'learnpress' ); ?></h2>
-    <p class="description">
-		<?php _e( 'Search results only show users have course data.', 'learnpress' ); ?>
-    </p>
+    <h2><?php _e( 'Reset user progress', 'learnpress' ); ?></h2>
+    <div class="description">
+        <p><?php _e( 'This action will reset progress of all courses that an user has enrolled.', 'learnpress' ); ?></p>
+        <p><?php _e( 'Search results only show users have course data.', 'learnpress' ); ?></p>
+    </div>
     <p>
-        <input class="wide-fat" type="text" name="s" @keyup="updateSearch($event)">
-        <button class="button" @click="search($event)" :disabled="s.length < 3"><?php _e( 'Search', 'learnpress' ); ?></button>
+        <input class="wide-fat" type="text" name="s" @keyup="updateSearch($event)"
+               placeholder="<?php esc_attr_e( 'Search user by login name or email', 'learnpress' ); ?>">
+        <button class="button" @click="search($event)"
+                :disabled="s.length < 3"><?php _e( 'Search', 'learnpress' ); ?></button>
     </p>
 
     <template v-if="users.length > 0">
@@ -37,15 +40,17 @@ defined( 'ABSPATH' ) or die();
                         <li v-for="course in user.courses">
                             <a :href="course.url" target="_blank">{{course.title}} (#{{course.id}})</a>
                             <a href=""
-                               @click="reset($event, user, course.id);"><?php _e( 'Reset', 'learnpress' ); ?></a>
+                               class="action-reset dashicons"
+                               @click="reset($event, user, course.id);"
+                               :class="resetActionClass(user, course)"></a>
                         </li>
                     </ul>
                 </td>
                 <td>
-                    <a v-if="!user.status" href=""
-                       @click="reset($event, user);"><?php _e( 'Reset all', 'learnpress' ); ?></a>
-                    <span v-else-if="user.status=='done'"><?php _e( 'Done', 'learnpress' ); ?></span>
-                    <span v-else-if="user.status=='resetting'"><?php _e( 'Resetting...', 'learnpress' ); ?></span>
+                    <a href=""
+                       class="action-reset dashicons"
+                       :class="resetActionClass(user)"
+                       @click="reset($event, user);"></a>
                 </td>
             </tr>
             </tbody>
@@ -62,7 +67,7 @@ defined( 'ABSPATH' ) or die();
 
 // Translation
 $localize = array(
-	'reset_course_users' => __( 'Remove all users from this course?', 'learnpress' )
+	'reset_course_users' => __( 'Are you sure to reset course progress of all users enrolled this course?', 'learnpress' )
 );
 ?>
 <script>
@@ -77,6 +82,14 @@ $localize = array(
                     users: []
                 },
                 methods: {
+                    resetActionClass: function (user, course) {
+                        var status = course ? course.status : user.status;
+                        return {
+                            'dashicons-trash': !status,
+                            'dashicons-yes': status === 'done',
+                            'dashicons-update': status === 'resetting'
+                        }
+                    },
                     updateSearch: function (e) {
                         this.s = e.target.value;
                         this.status = false;
@@ -102,7 +115,13 @@ $localize = array(
                                 s: this.s
                             },
                             success: function (response) {
-                                that.users = LP.parseJSON(response);
+                                var users = LP.parseJSON(response);
+                                for(var i = 0; i < users.length; i++) {
+                                    for (var j in users[i].courses) {
+                                        users[i].courses[j].status = ''
+                                    }
+                                }
+                                that.users = users;
                                 that.status = 'result';
                             }
                         })
@@ -115,7 +134,17 @@ $localize = array(
                             return;
                         }
                         var that = this;
-                        user.status = 'resetting';
+                        if(course_id){
+                            user.courses[course_id].status = 'resetting'
+                        }else{
+                            for(var j in user.courses ){
+                                user.courses[j].status = 'resetting'
+                            }
+                            user.status = 'resetting';
+                        }
+
+                        console.log(user.courses);
+
                         $.ajax({
                             url: '',
                             data: {
@@ -128,7 +157,14 @@ $localize = array(
                                 //if (response.id == user.id) {
                                 for (var i = 0, n = that.users.length; i < n; i++) {
                                     if (that.users[i].id === user.id) {
-                                        that.users[i].status = 'done';
+                                        if(course_id){
+                                            that.users[i].courses[course_id].status = 'done'
+                                        }else{
+                                            for(var j in that.users[i].courses ){
+                                                that.users[i].courses[j].status = 'done'
+                                            }
+                                            user.status = 'done';
+                                        }
                                         break;
                                     }
                                 }

@@ -2985,9 +2985,21 @@ body.moving {
   #learn-press-reset-course-users input[type="text"],
   #learn-press-reset-user-courses input[type="text"],
   #learn-press-reset-user-item input[type="text"] {
-    min-width: 200px;
+    min-width: 300px;
     height: 28px;
     margin-left: 0; }
+  #learn-press-reset-course-users .action-reset.dashicons-trash,
+  #learn-press-reset-user-courses .action-reset.dashicons-trash,
+  #learn-press-reset-user-item .action-reset.dashicons-trash {
+    color: #FF0000; }
+  #learn-press-reset-course-users .action-reset.dashicons-update,
+  #learn-press-reset-user-courses .action-reset.dashicons-update,
+  #learn-press-reset-user-item .action-reset.dashicons-update {
+    -webkit-animation: rotating4 2s linear infinite;
+    -moz-animation: rotating4 2s linear infinite;
+    -ms-animation: rotating4 2s linear infinite;
+    -o-animation: rotating4 2s linear infinite;
+    animation: rotating4 2s linear infinite; }
 
 .learn-press-tip {
   display: none;

@@ -37,10 +37,13 @@ class LP_Reset_Data {
 		if ( ! is_numeric( $user_id ) ) {
 			if ( $user = get_user_by( 'email', $user_id ) ) {
 				$user_id = $user->ID;
+			} elseif ( $user = get_user_by( 'login', $user_id ) ) {
+				$user_id = $user->ID;
 			}
 		}
 		global $wpdb;
 
+		//LP_Debug::startTransaction();
 		$query = $wpdb->prepare( "
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
@@ -48,6 +51,12 @@ class LP_Reset_Data {
 		", $user_id, $item_id );
 
 		if ( $user_item_ids = $wpdb->get_col( $query ) ) {
+			$query   = "
+				SELECT DISTINCT parent_id AS parent, item_id
+				FROM {$wpdb->learnpress_user_items}
+				WHERE user_item_id IN(" . join( ',', $user_item_ids ) . ")
+			";
+			$parents = $wpdb->get_results( $query );
 
 			$format = array_fill( 0, sizeof( $user_item_ids ), '%d' );
 			$query  = $wpdb->prepare( "
@@ -65,11 +74,29 @@ class LP_Reset_Data {
 
 			$wpdb->query( $query );
 
-			echo __( 'Data deleted', 'learnpress' );
+			if ( $parents ) {
+				foreach ( $parents as $parent ) {
+					if ( $retaken_items = learn_press_get_user_item_meta( $parent->parent, '_retaken_items', true ) ) {
+						if ( !isset( $retaken_items[ $parent->item_id ] ) ) {
+							continue;
+						}
+
+						unset( $retaken_items[ $parent->item_id ] );
+						learn_press_update_user_item_meta( $parent->parent, '_retaken_items', $retaken_items );
+					}
+				}
+			}
+
+			echo __( 'Item progress deleted', 'learnpress' );
 		} else {
 			echo __( 'No data found', 'learnpress' );
 		}
+		//LP_Debug::rollbackTransaction();
 		die();
+	}
+
+	public static function remove_item_data() {
+
 	}
 
 	public static function search_courses() {
@@ -190,7 +217,6 @@ class LP_Reset_Data {
 		$course_id = LP_Request::get_int( 'course_id' );
 
 		global $wpdb;
-
 		if ( $course_id ) {
 
 			self::reset_course_users( $course_id, $user_id );
@@ -220,7 +246,6 @@ class LP_Reset_Data {
 				$wpdb->query( $query );
 			}
 		}
-
 		die();
 	}
 
@@ -231,7 +256,7 @@ class LP_Reset_Data {
 			return false;
 		}
 
-		LP_Debug::startTransaction();
+		//LP_Debug::startTransaction();
 
 		try {
 			// Delete course items
@@ -249,7 +274,7 @@ class LP_Reset_Data {
 			self::delete_user_items_by_id( $user_item_ids );
 		}
 		catch ( Exception $ex ) {
-			LP_Debug::rollbackTransaction();
+			//LP_Debug::rollbackTransaction();
 		}
 
 		$removed = false;
@@ -257,7 +282,7 @@ class LP_Reset_Data {
 			$removed = $course_id;
 		}
 
-		LP_Debug::commitTransaction();
+		//LP_Debug::commitTransaction();
 
 		return $removed;
 	}

@@ -10,8 +10,16 @@
         margin: 0;
     }
     input[type="text"] {
-        min-width: 200px;
+        min-width: 300px;
         height: 28px;
         margin-left: 0;
+    }
+    .action-reset {
+        &.dashicons-trash {
+            color: #FF0000;
+        }
+        &.dashicons-update {
+            @include rotating4();
+        }
     }
 }

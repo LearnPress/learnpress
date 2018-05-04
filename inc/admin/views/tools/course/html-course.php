@@ -9,13 +9,16 @@ defined( 'ABSPATH' ) or die();
 
 ?>
 <div id="learn-press-reset-course-users" class="card">
-    <h2><?php _e( 'Reset course user data', 'learnpress' ); ?></h2>
-    <p class="description">
-		<?php _e( 'Search results only show course have user data.', 'learnpress' ); ?>
-    </p>
+    <h2><?php _e( 'Reset course progress', 'learnpress' ); ?></h2>
+    <div class="description">
+        <p><?php _e( 'This action will reset progress of a course for all users have enrolled.', 'learnpress' ); ?></p>
+        <p><?php _e( 'Search results only show course have user data.', 'learnpress' ); ?></p>
+    </div>
     <p>
-        <input type="text" name="s" @keyup="updateSearch($event)" autocomplete="off">
-        <button class="button" @click="search($event)" :disabled="s.length < 3"><?php _e( 'Search', 'learnpress' ); ?></button>
+        <input type="text" name="s" @keyup="updateSearch($event)" autocomplete="off"
+               placeholder="<?php esc_attr_e( 'Search course by name', 'learnpress' ); ?>">
+        <button class="button" @click="search($event)"
+                :disabled="s.length < 3"><?php _e( 'Search', 'learnpress' ); ?></button>
     </p>
 
     <template v-if="courses.length > 0">
@@ -34,10 +37,12 @@ defined( 'ABSPATH' ) or die();
                 <td>{{course.title}}</td>
                 <td>{{course.students}}</td>
                 <td>
-                    <a v-if="!course.status" href=""
-                       @click="reset($event, course);"><?php _e( 'Reset', 'learnpress' ); ?></a>
-                    <span v-else-if="course.status=='done'"><?php _e( 'Done', 'learnpress' ); ?></span>
-                    <span v-else-if="course.status=='resetting'"><?php _e( 'Resetting...', 'learnpress' ); ?></span>
+                    <a class="action-reset dashicons"
+                       href=""
+                       @click="reset($event, course);"
+                       :class="resetActionClass(course)"></a>
+<!--                    <span v-else-if="course.status=='done'">--><?php //_e( 'Done', 'learnpress' ); ?><!--</span>-->
+<!--                    <span v-else-if="course.status=='resetting'">--><?php //_e( 'Resetting...', 'learnpress' ); ?><!--</span>-->
                 </td>
             </tr>
             </tbody>
@@ -54,7 +59,7 @@ defined( 'ABSPATH' ) or die();
 
 // Translation
 $localize = array(
-	'reset_course_users' => __( 'Remove all users from this course?', 'learnpress' )
+	'reset_course_users' => __( 'Are you sure to reset course progress of all users enrolled this course?', 'learnpress' )
 );
 ?>
 <script>
@@ -69,6 +74,13 @@ $localize = array(
                     courses: []
                 },
                 methods: {
+                    resetActionClass: function (course) {
+                        return {
+                            'dashicons-trash': !course.status,
+                            'dashicons-yes': course.status === 'done',
+                            'dashicons-update': course.status === 'resetting'
+                        }
+                    },
                     updateSearch: function (e) {
                         this.s = e.target.value;
                         this.status = false;

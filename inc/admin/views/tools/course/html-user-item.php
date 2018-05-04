@@ -9,10 +9,10 @@ defined( 'ABSPATH' ) or die();
 
 ?>
 <div id="learn-press-reset-user-item" class="card">
-    <h2><?php _e( 'Reset item data for an user', 'learnpress' ); ?></h2>
-    <p class="description">
-		<?php _e( 'Search results only show users have course data.', 'learnpress' ); ?>
-    </p>
+    <h2><?php _e( 'Reset item progress for an user', 'learnpress' ); ?></h2>
+    <div class="description">
+		<?php _e( 'This action will reset progress of specific lesson or quiz.', 'learnpress' ); ?>
+    </div>
     <table>
         <tr>
             <td><strong><?php _e( 'User ID or Email', 'learnpress' ); ?></strong></td>
@@ -32,7 +32,7 @@ defined( 'ABSPATH' ) or die();
 
 // Translation
 $localize = array(
-	'reset_course_users' => __( 'Remove all users from this course?', 'learnpress' )
+	'reset_course_users' => __( 'Are you sure to reset progress of this item?', 'learnpress' )
 );
 ?>
 <script>
