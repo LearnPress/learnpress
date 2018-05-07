@@ -154,83 +154,92 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 /**
  * Add more 2 user roles teacher and student
  *
- * @access public
- * @return void
  */
 function learn_press_add_user_roles() {
 
 	$settings = LP()->settings;
+
 	/* translators: user role */
 	_x( 'Instructor', 'User role' );
+
 	add_role(
 		LP_TEACHER_ROLE,
 		'Instructor',
 		array()
 	);
+
 	$course_cap = LP_COURSE_CPT . 's';
 	$lesson_cap = LP_LESSON_CPT . 's';
 	$order_cap  = LP_ORDER_CPT . 's';
+
 	// teacher
-	$teacher = get_role( LP_TEACHER_ROLE );
-	$teacher->add_cap( 'delete_published_' . $course_cap );
-	$teacher->add_cap( 'edit_published_' . $course_cap );
-	$teacher->add_cap( 'edit_' . $course_cap );
-	$teacher->add_cap( 'delete_' . $course_cap );
-	$teacher->add_cap( 'unfiltered_html' );
+	if ( $teacher = get_role( LP_TEACHER_ROLE ) ) {
+		$teacher->add_cap( 'delete_published_' . $course_cap );
+		$teacher->add_cap( 'edit_published_' . $course_cap );
+		$teacher->add_cap( 'edit_' . $course_cap );
+		$teacher->add_cap( 'delete_' . $course_cap );
+		$teacher->add_cap( 'unfiltered_html' );
 
-	$settings->get( 'required_review' );
+		$settings->get( 'required_review' );
 
-	if ( $settings->get( 'required_review' ) == 'yes' ) {
-		$teacher->remove_cap( 'publish_' . $course_cap );
-	} else {
-		$teacher->add_cap( 'publish_' . $course_cap );
+		if ( $settings->get( 'required_review' ) == 'yes' ) {
+			$teacher->remove_cap( 'publish_' . $course_cap );
+		} else {
+			$teacher->add_cap( 'publish_' . $course_cap );
+		}
+
+		$teacher->add_cap( 'delete_published_' . $lesson_cap );
+		$teacher->add_cap( 'edit_published_' . $lesson_cap );
+		$teacher->add_cap( 'edit_' . $lesson_cap );
+		$teacher->add_cap( 'delete_' . $lesson_cap );
+		$teacher->add_cap( 'publish_' . $lesson_cap );
+		$teacher->add_cap( 'upload_files' );
+		$teacher->add_cap( 'read' );
+		$teacher->add_cap( 'edit_posts' );
 	}
-	//
-
-
-	$teacher->add_cap( 'delete_published_' . $lesson_cap );
-	$teacher->add_cap( 'edit_published_' . $lesson_cap );
-	$teacher->add_cap( 'edit_' . $lesson_cap );
-	$teacher->add_cap( 'delete_' . $lesson_cap );
-	$teacher->add_cap( 'publish_' . $lesson_cap );
-	$teacher->add_cap( 'upload_files' );
-	$teacher->add_cap( 'read' );
-	$teacher->add_cap( 'edit_posts' );
 
 	// administrator
-	$admin = get_role( 'administrator' );
-	$admin->add_cap( 'delete_' . $course_cap );
-	$admin->add_cap( 'delete_published_' . $course_cap );
-	$admin->add_cap( 'edit_' . $course_cap );
-	$admin->add_cap( 'edit_published_' . $course_cap );
-	$admin->add_cap( 'publish_' . $course_cap );
-	$admin->add_cap( 'delete_private_' . $course_cap );
-	$admin->add_cap( 'edit_private_' . $course_cap );
-	$admin->add_cap( 'delete_others_' . $course_cap );
-	$admin->add_cap( 'edit_others_' . $course_cap );
+	if ( $admin = get_role( 'administrator' ) ) {
+		$admin->add_cap( 'delete_' . $course_cap );
+		$admin->add_cap( 'delete_published_' . $course_cap );
+		$admin->add_cap( 'edit_' . $course_cap );
+		$admin->add_cap( 'edit_published_' . $course_cap );
+		$admin->add_cap( 'publish_' . $course_cap );
+		$admin->add_cap( 'delete_private_' . $course_cap );
+		$admin->add_cap( 'edit_private_' . $course_cap );
+		$admin->add_cap( 'delete_others_' . $course_cap );
+		$admin->add_cap( 'edit_others_' . $course_cap );
 
-	$admin->add_cap( 'delete_' . $lesson_cap );
-	$admin->add_cap( 'delete_published_' . $lesson_cap );
-	$admin->add_cap( 'edit_' . $lesson_cap );
-	$admin->add_cap( 'edit_published_' . $lesson_cap );
-	$admin->add_cap( 'publish_' . $lesson_cap );
-	$admin->add_cap( 'delete_private_' . $lesson_cap );
-	$admin->add_cap( 'edit_private_' . $lesson_cap );
-	$admin->add_cap( 'delete_others_' . $lesson_cap );
-	$admin->add_cap( 'edit_others_' . $lesson_cap );
+		$admin->add_cap( 'delete_' . $lesson_cap );
+		$admin->add_cap( 'delete_published_' . $lesson_cap );
+		$admin->add_cap( 'edit_' . $lesson_cap );
+		$admin->add_cap( 'edit_published_' . $lesson_cap );
+		$admin->add_cap( 'publish_' . $lesson_cap );
+		$admin->add_cap( 'delete_private_' . $lesson_cap );
+		$admin->add_cap( 'edit_private_' . $lesson_cap );
+		$admin->add_cap( 'delete_others_' . $lesson_cap );
+		$admin->add_cap( 'edit_others_' . $lesson_cap );
 
-	$admin->add_cap( 'delete_' . $order_cap );
-	$admin->add_cap( 'delete_published_' . $order_cap );
-	$admin->add_cap( 'edit_' . $order_cap );
-	$admin->add_cap( 'edit_published_' . $order_cap );
-	$admin->add_cap( 'publish_' . $order_cap );
-	$admin->add_cap( 'delete_private_' . $order_cap );
-	$admin->add_cap( 'edit_private_' . $order_cap );
-	$admin->add_cap( 'delete_others_' . $order_cap );
-	$admin->add_cap( 'edit_others_' . $order_cap );
+		$admin->add_cap( 'delete_' . $order_cap );
+		$admin->add_cap( 'delete_published_' . $order_cap );
+		$admin->add_cap( 'edit_' . $order_cap );
+		$admin->add_cap( 'edit_published_' . $order_cap );
+		$admin->add_cap( 'publish_' . $order_cap );
+		$admin->add_cap( 'delete_private_' . $order_cap );
+		$admin->add_cap( 'edit_private_' . $order_cap );
+		$admin->add_cap( 'delete_others_' . $order_cap );
+		$admin->add_cap( 'edit_others_' . $order_cap );
+	}
 }
 
-add_action( 'learn_press_ready', 'learn_press_add_user_roles' );
+add_action( 'init', 'learn_press_add_user_roles' );
+
+/**
+ * @param null  $user_id
+ * @param array $args
+ *
+ * @return mixed
+ */
 function learn_press_get_user_questions( $user_id = null, $args = array() ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
