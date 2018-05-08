@@ -35,10 +35,10 @@ class LP_Update_304 extends LP_Update_Base {
 			return $this->_next_step();
 		}
 
-		$sqlUpdate = $wpdb->prepare( "
+		$sqlUpdate = "
 			INSERT INTO {$wpdb->learnpress_user_itemmeta}(learnpress_user_item_id, meta_key, meta_value)
 			VALUES
-		" );
+		";
 
 		$updateRows = array();
 		$count      = 0;
