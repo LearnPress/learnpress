@@ -250,7 +250,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * Set course parent of this item.
 		 *
-		 * @param LP_Course|int $course
+		 * @param LP_Course|LP_Abstract_Course|int $course
 		 */
 		public function set_course( $course ) {
 			if ( is_numeric( $course ) ) {
@@ -286,11 +286,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * Get instance of an item from post
 		 *
-		 * @param WP_Post|int $post
+		 * @param WP_Post|int                      $post
+		 * @param LP_Course|LP_Abstract_Course|int $course
 		 *
 		 * @return LP_Course_Item
 		 */
-		public static function get_item( $post ) {
+		public static function get_item( $post, $course = null ) {
 			$item_type = '';
 			$item_id   = 0;
 
@@ -331,6 +332,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 					}
 				}
 				wp_cache_set( $item_id, $item, 'lp-object-classes' );
+
+				if ( $course ) {
+					$item->set_course( $course );
+				}
 			}
 
 			return apply_filters( 'learn-press/get-course-item', $item, $item_type, $item_id );

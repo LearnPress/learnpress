@@ -932,6 +932,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$item = false;
 			if ( $this->has_item( $item_id ) ) {
 				$item = LP_Course_Item::get_item( $item_id );
+				$item->set_course( $this );
 			}
 
 			return apply_filters( 'learn-press/course-item', $item, $item_id, $this->get_id() );
