@@ -37,6 +37,10 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 
 			// new free order
 			// add_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
+
+			// email for new order
+			add_action( 'learn-press/checkout-order-processed', array( $this, 'trigger' ) );
+
 			// new paid order
 			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 
@@ -46,11 +50,14 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			add_action( 'init', array( $this, 'init' ) );
 		}
 
-		public function init(){
+		public function init() {
 			// disable send mail for enable enroll course admin mail
-			$email  = LP_Emails::get_email('enrolled-course-admin');
+			$email = LP_Emails::get_email( 'enrolled-course-admin' );
 			if ( $email->enable() ) {
-				remove_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
+				remove_action( 'learn-press/order/status-pending-to-completed/notification', array(
+					$this,
+					'trigger'
+				) );
 			}
 		}
 

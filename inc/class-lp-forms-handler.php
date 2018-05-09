@@ -158,7 +158,7 @@ class LP_Forms_Handler {
 
 		learn_press_maybe_send_json( $result, 'learn_press_print_messages' );
 
-		if ( ( $result['result'] === 'success' ) && $redirect = LP_Request::get_redirect( learn_press_get_current_url() ) ) {
+		if ( ( $result['result'] === 'success' ) && $redirect = LP_Request::get( 'redirect_to' ) ) {
 			wp_redirect( $redirect );
 			exit();
 		}
