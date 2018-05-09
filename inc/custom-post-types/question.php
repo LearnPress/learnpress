@@ -126,15 +126,17 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 								'key'   => $question->get_type(),
 								'label' => $question->get_type_label()
 							),
-							'answers'           => $answers,
+							'answers'           => apply_filters( 'learn-press/question-editor/question-answers-data', $answers, $post->ID ),
 							'ajax'              => admin_url( '' ),
 							'action'            => 'admin_question_editor',
 							'nonce'             => wp_create_nonce( 'learnpress_admin_question_editor' ),
 							'questionTypes'     => LP_Question::get_types(),
 							'externalComponent' => apply_filters( 'learn-press/admin/external-js-component', array() )
 						),
-						'i18n' => array(
-							'new_option_label' => __( 'New Option', 'learnpress' )
+						'i18n' => apply_filters( 'learn-press/question-editor/i18n',
+							array(
+								'new_option_label' => __( 'New Option', 'learnpress' )
+							)
 						)
 					)
 				)

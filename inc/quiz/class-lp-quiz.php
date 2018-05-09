@@ -386,7 +386,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 					}
 
 					$post     = get_post( $id );
-					$result[] = array(
+					$result[] = apply_filters( 'learn-press/quiz-editor/question-data', array(
 						'id'       => $id,
 						'open'     => false,
 						'title'    => $post->post_title,
@@ -394,7 +394,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 							'key'   => $question->get_type(),
 							'label' => $question->get_type_label()
 						),
-						'answers'  => $answers,
+						'answers'  => apply_filters( 'learn-press/quiz-editor/question-answers-data', $answers, $id, $this->get_id() ),
 						'settings' => array(
 							'content'     => $post->post_content,
 							'mark'        => get_post_meta( $id, '_lp_mark', true ),
@@ -402,7 +402,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 							'hint'        => get_post_meta( $id, '_lp_hint', true )
 						),
 						'order'    => $question_order[ $index ]
-					);
+					), $id, $this->get_id() );
 				}
 			}
 

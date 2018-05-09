@@ -23,7 +23,7 @@ learn_press_admin_view( 'course/sections' );
 </script>
 
 <script type="text/javascript">
-    jQuery(function () {
+    jQuery(function ($) {
 
         (function (Vue, $store) {
 

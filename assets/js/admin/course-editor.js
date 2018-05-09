@@ -15,7 +15,7 @@
     };
 })(window);
 
-jQuery(function () {
+jQuery(function ($) {
 
 
     /**

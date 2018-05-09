@@ -19,7 +19,7 @@ learn_press_admin_view( 'course/pagination' );
 
 <script type="text/javascript">
 
-    jQuery(function () {
+    jQuery(function ($) {
         (function (Vue, $store) {
             Vue.component('lp-course-choose-item', {
                 template: '#tmpl-lp-course-choose-item',

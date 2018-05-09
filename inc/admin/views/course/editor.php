@@ -29,7 +29,7 @@ learn_press_admin_view( 'course/modal-choose-items' );
 </script>
 
 <script type="text/javascript">
-    jQuery(function () {
+    jQuery(function ($) {
         (function (Vue, $store) {
 
             Vue.component('lp-course-editor', {
@@ -45,8 +45,6 @@ learn_press_admin_view( 'course/modal-choose-items' );
                     }
                 }
             });
-
-            console.log('xxxxxx')
 
         })(Vue, LP_Curriculum_Store);
     })

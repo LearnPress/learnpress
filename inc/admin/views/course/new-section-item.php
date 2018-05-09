@@ -26,7 +26,7 @@
 </script>
 
 <script type="text/javascript">
-    jQuery(function () {
+    jQuery(function ($) {
 
         (function (Vue, $store) {
 

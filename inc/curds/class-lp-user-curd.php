@@ -1159,7 +1159,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$from   = "FROM {$wpdb->learnpress_user_items} ui";
 				$join   = $wpdb->prepare( "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s", LP_COURSE_CPT );
 				//$where   = $wpdb->prepare( "WHERE 1 AND user_id = %d AND ref_id IN(" . join( ',', $order_format ) . ")", array_merge( array( $user_id ), $valid_orders ) );
-				$where   = $wpdb->prepare( "WHERE 1 AND user_id = %d", $user_id );
+				$where   = $wpdb->prepare( "WHERE 1 AND user_id = %d AND c.post_status = %s", $user_id, 'publish' );
 				$having  = "HAVING 1";
 				$orderby = "ORDER BY item_id, user_item_id DESC";
 

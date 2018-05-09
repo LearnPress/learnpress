@@ -25,7 +25,7 @@ learn_press_admin_view( 'quiz/question-meta' );
 
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function ($, Vue, $store) {
         Vue.component('lp-quiz-question-settings', {
             template: '#tmpl-lp-quiz-question-settings',
             props: ['question', 'index'],
@@ -41,5 +41,5 @@ learn_press_admin_view( 'quiz/question-meta' );
                 }
             }
         })
-    })(Vue, LP_Quiz_Store)
+    })(jQuery, Vue, LP_Quiz_Store)
 </script>

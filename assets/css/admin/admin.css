@@ -2233,7 +2233,6 @@
   line-height: 44px;
   font-size: 12px; }
   .section-item-counts span {
-    font-weight: bold;
     color: #999; }
 
 /**
@@ -2630,7 +2629,7 @@
 #admin-editor-lp_quiz .lp-box-data-content .question-button-actions {
   text-align: left; }
 
-/**
+/**.section-item-counts span
  *  Question admin editor.
  */
 #admin-editor-lp_question {
