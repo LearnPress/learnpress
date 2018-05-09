@@ -126,7 +126,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 								'key'   => $question->get_type(),
 								'label' => $question->get_type_label()
 							),
-							'answers'           => apply_filters( 'learn-press/question-editor/question-answers-data', $answers, $post->ID ),
+							'answers'           => apply_filters( 'learn-press/question-editor/question-answers-data', $answers, $post->ID, 0 ),
 							'ajax'              => admin_url( '' ),
 							'action'            => 'admin_question_editor',
 							'nonce'             => wp_create_nonce( 'learnpress_admin_question_editor' ),
