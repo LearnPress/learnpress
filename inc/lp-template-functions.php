@@ -3056,6 +3056,10 @@ if ( ! function_exists( 'learn_press_content_item_nav' ) ) {
 	}
 }
 
+function learn_press_disable_course_comment_form() {
+	add_filter( 'comments_template', 'learn_press_blank_comments_template', 999 );
+}
+
 if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 	function learn_press_profile_mobile_menu() {
 		learn_press_get_template( 'profile/mobile-menu.php' );

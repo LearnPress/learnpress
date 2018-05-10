@@ -76,14 +76,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_current_question( $return = '' ) {
 		$question_id = $this->get_meta( '_current_question', true );
-		$question = learn_press_get_question( $question_id );
+		$question    = learn_press_get_question( $question_id );
 
-		if ( ! $question || !$question->is_publish() ) {
+		if ( ! $question || ! $question->is_publish() ) {
 			if ( $questions = $this->get_quiz()->get_questions() ) {
 				$question_id = reset( $questions );
 				$this->set_meta( '_current_question', $question_id );
 				$this->update_meta();
-			}else{
+			} else {
 				$question_id = 0;
 			}
 		}
@@ -169,7 +169,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 				$result['question_count'] = sizeof( $questions );
 
-				if ( false === learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
+				if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
 					learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
 				}
 			}

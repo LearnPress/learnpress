@@ -1449,9 +1449,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						{$from}
 						{$join}
 						{$where}
-						{$having}
 						{$orderby}
 					) X GROUP BY item_id
+					{$having}
 					LIMIT {$offset}, {$limit}
 				";
 

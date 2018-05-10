@@ -2768,31 +2768,33 @@ if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
  * @return string
  */
 function learn_press_comment_reply_link( $link, $args = array(), $comment = null, $post = null ) {
-	$post_types = array( LP_LESSON_CPT, LP_QUIZ_CPT );
-	$post_type  = get_post_type( $post );
 
-	if ( in_array( $post_type, $post_types ) ) {
+	$post_type = get_post_type( $post );
 
-		if ( get_option( 'comment_registration' ) && ! is_user_logged_in() ) {
-			$link = sprintf( '<a rel="nofollow" class="comment-reply-login" href="%s">%s</a>',
-				esc_url( wp_login_url( get_permalink() ) ),
-				$args['login_text']
-			);
-		} else {
-			$onclick = sprintf( 'return addComment.moveForm( "%1$s-%2$s", "%2$s", "%3$s", "%4$s" )',
-				$args['add_below'], $comment->comment_ID, $args['respond_id'], $post->ID
-			);
+	if ( ! learn_press_is_support_course_item_type( $post_type ) ) {
+		return $link;
+	}
 
-			$link = sprintf( "<a rel='nofollow' class='comment-reply-link' href='%s' onclick='%s' aria-label='%s'>%s</a>",
-				esc_url( add_query_arg( array(
-					'replytocom'        => $comment->comment_ID,
-					'content-item-only' => 'yes'
-				), get_permalink( $post->ID ) ) ) . "#" . $args['respond_id'],
-				$onclick,
-				esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
-				$args['reply_text']
-			);
-		}
+	$course_item = LP_Global::course_item();
+
+	if ( get_option( 'comment_registration' ) && ! is_user_logged_in() ) {
+		$link = sprintf( '<a rel="nofollow" class="comment-reply-login" href="%s">%s</a>',
+			esc_url( wp_login_url( get_permalink() ) ),
+			$args['login_text']
+		);
+	} else {
+		$onclick = sprintf( 'return addComment.moveForm( "%1$s-%2$s", "%2$s", "%3$s", "%4$s" )',
+			$args['add_below'], $comment->comment_ID, $args['respond_id'], $post->ID
+		);
+
+		$link = sprintf( "<a rel='nofollow' class='comment-reply-link' href='%s' onclick='%s' aria-label='%s'>%s</a>",
+			esc_url( add_query_arg( array(
+				'replytocom' => $comment->comment_ID
+			), $course_item->get_permalink() ) ) . "#" . $args['respond_id'],
+			$onclick,
+			esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
+			$args['reply_text']
+		);
 	}
 
 	return $link;

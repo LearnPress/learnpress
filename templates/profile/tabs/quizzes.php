@@ -56,7 +56,7 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
 							<?php }
 						} ?>
                     </td>
-                    <td class="column-quiz">
+                    <td class="column-quiz column-quiz-<?php echo $user_quiz->get_id();?>">
 						<?php if ( $courses ) {
 							foreach ( $courses as $course ) {
 								$course = LP_Course::get_course( $course->ID ); ?>

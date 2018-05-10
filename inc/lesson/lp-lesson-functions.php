@@ -52,15 +52,19 @@ function learn_press_lesson_comment_form() {
 		if ( comments_open() || get_comments_number() ) {
 			comments_template();
 		}
-
 		$lesson->reset_postdata();
 	}
+
+}
+
+function learn_press_blank_comments_template() {
+	return learn_press_locate_template( 'global/blank-comments.php' );
 }
 
 /**
  * Add class css js-action to element comment reply
  */
-add_filter( 'comment_reply_link', 'lesson_comment_reply_link', 10, 4 );
+///add_filter( 'comment_reply_link', 'lesson_comment_reply_link', 10, 4 );
 
 if ( ! function_exists( 'lesson_comment_reply_link' ) ) {
 
@@ -75,7 +79,7 @@ if ( ! function_exists( 'lesson_comment_reply_link' ) ) {
 /**
  * Add class css js-action to element cancel comment reply link
  */
-add_filter( 'cancel_comment_reply_link', 'lesson_cancel_comment_reply_link', 10, 3 );
+///add_filter( 'cancel_comment_reply_link', 'lesson_cancel_comment_reply_link', 10, 3 );
 
 if ( ! function_exists( 'lesson_cancel_comment_reply_link' ) ) {
 	function lesson_cancel_comment_reply_link( $formatted_link, $link, $text ) {

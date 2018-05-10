@@ -467,6 +467,10 @@
             setTimeout(function () {
                 var $cs = $body.find('.curriculum-sections').parent();
                 $cs.scrollTo($cs.find('.course-item.current'), 100);
+
+                if (window.location.hash) {
+                    $('.content-item-scrollable:last').scrollTo($(window.location.hash));
+                }
             }, 300);
 
             $body.css('opacity', 1);
