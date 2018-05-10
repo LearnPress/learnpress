@@ -46,14 +46,16 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 		public function get_default_answers() {
 			$answers = array(
 				array(
-					'is_true' => 'yes',
-					'value'   => 'true',
-					'text'    => __( 'True', 'learnpress' )
+					'question_answer_id' => - 1,
+					'is_true'            => 'yes',
+					'value'              => 'true',
+					'text'               => __( 'True', 'learnpress' )
 				),
 				array(
-					'is_true' => 'no',
-					'value'   => 'false',
-					'text'    => __( 'False', 'learnpress' )
+					'question_answer_id' => - 2,
+					'is_true'            => 'no',
+					'value'              => 'false',
+					'text'               => __( 'False', 'learnpress' )
 				)
 			);
 

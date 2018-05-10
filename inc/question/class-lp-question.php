@@ -564,9 +564,10 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 */
 		public static function get_default_answer() {
 			$answer = array(
-				'text'    => __( 'New Option', 'learnpress' ),
-				'is_true' => false,
-				'value'   => learn_press_uniqid()
+				'question_answer_id' => - 1,
+				'text'               => __( 'New Option', 'learnpress' ),
+				'is_true'            => false,
+				'value'              => learn_press_uniqid()
 			);
 
 			return $answer;
@@ -1008,10 +1009,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			} elseif ( $the_question instanceof LP_Course_Item ) {
 				$the_question = get_post( $the_question->get_id() );
 			} elseif ( ! ( $the_question instanceof WP_Post ) ) {
-				$the_question = false;
-			}
-
-			if ( get_post_status( $the_question ) !== 'publish' ) {
 				$the_question = false;
 			}
 

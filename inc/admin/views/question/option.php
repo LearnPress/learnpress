@@ -58,6 +58,12 @@
                     return !(this.number < 3 || (this.correct && $store.getters['numberCorrect'] === 1) || this.type === 'true_or_false');
                 }
             },
+            mounted: function () {
+                if (this.isNew()) {
+                    this.changed = true;
+                    this.updateTitle();
+                }
+            },
             methods: {
                 changeTitle: function () {
                     this.changed = true;

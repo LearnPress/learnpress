@@ -75,22 +75,26 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return int|LP_Question
 	 */
 	public function get_current_question( $return = '' ) {
-		$question = $this->get_meta( '_current_question', true );
-		if ( ! learn_press_get_question( $question ) ) {
+		$question_id = $this->get_meta( '_current_question', true );
+		$question = learn_press_get_question( $question_id );
+
+		if ( ! $question || !$question->is_publish() ) {
 			if ( $questions = $this->get_quiz()->get_questions() ) {
-				$question = reset( $questions );
-				$this->set_meta( '_current_question', $question );
+				$question_id = reset( $questions );
+				$this->set_meta( '_current_question', $question_id );
 				$this->update_meta();
+			}else{
+				$question_id = 0;
 			}
 		}
 
-		if ( $question ) {
+		if ( $question_id ) {
 			if ( $return == 'object' ) {
-				$question = learn_press_get_question( $question );
+				return learn_press_get_question( $question_id );
 			}
 		}
 
-		return $question;
+		return $question_id;
 	}
 
 	/**
