@@ -280,6 +280,7 @@
             ul {
                 margin: 0;
                 min-height: 5px;
+                position: relative;
             }
 
             &.no-item {
@@ -866,13 +867,13 @@
 }
 
 body {
-    &.moving {
+    &.lp-item-moving {
         cursor: url("../../images/closedhand.cur") 7 5, default !important;
-        .section-item {
-            .drag {
-                cursor: url("../../images/closedhand.cur") 7 5, default !important;
-            }
-        }
+        //.section-item {
+        //    .drag {
+        //        cursor: url("../../images/closedhand.cur") 7 5, default !important;
+        //    }
+        //}
     }
 }
 

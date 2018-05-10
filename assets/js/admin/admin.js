@@ -379,7 +379,6 @@
     }
 
 
-
     var $doc = $(document);
 
     function _ready() {
@@ -403,8 +402,15 @@
             .on('click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage)
             .on('click', '.plugin-action-buttons a', pluginActions)
             .on('click', '.learn-press-filter-template', _callbackFilterTemplates)
-            .on('click', '.lp-duplicate-row-action .lp-duplicate-post', _duplicatePost);
-
+            .on('click', '.lp-duplicate-row-action .lp-duplicate-post', _duplicatePost)
+            .on('mousedown', '.lp-sortable-handle', function (e) {
+                $('html, body').addClass('lp-item-moving');
+                $(e.target).closest('.lp-sortable-handle').css('cursor', 'inherit');
+            })
+            .on('mouseup', function (e) {
+                $('html, body').removeClass('lp-item-moving');
+                $('.lp-sortable-handle').css('cursor', '');
+            })
         LP_Admin.init();
     }
 

@@ -9,7 +9,7 @@
 <script type="text/x-template" id="tmpl-lp-section-item">
     <li :class="['section-item',item.type, isEmptyItem() ? 'empty-item' : '', {updating: updating, removing: removing}]" :data-item-id="item.id"
         :data-item-order="order">
-        <div class="drag">
+        <div class="drag lp-sortable-handle">
             <?php learn_press_admin_view('svg-icon');?>
         </div>
         <div class="icon"></div>
@@ -72,11 +72,6 @@
                             arrowOffset: 'el',
                             tipClass: 'preview-item-tip'
                         });
-                        $(document).on('mousedown', '.section-item .drag', function (e) {
-                            $('html, body').addClass('moving');
-                        }).on('mouseup', function (e) {
-                            $('html, body').removeClass('moving');
-                        })
                     })
                 },
                 computed: {

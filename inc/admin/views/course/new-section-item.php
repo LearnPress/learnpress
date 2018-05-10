@@ -10,7 +10,7 @@
 
 <script type="text/x-template" id="tmpl-lp-new-section-item">
     <div class="new-section-item section-item" @keyup.up="up" @keyup.down="down" :class="{choosing: choosingType}">
-        <div class="drag"></div>
+        <div class="drag lp-sortable-handle"></div>
         <div class="types" @mouseleave="mouseLeave" @mouseover="mouseOver">
             <template v-for="(_type, key) in types">
                 <label class="type" :title="_type" :class="[key, {current: (type==key)}]">

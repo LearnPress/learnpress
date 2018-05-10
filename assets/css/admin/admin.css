@@ -2011,7 +2011,8 @@
   border-collapse: collapse; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items ul {
     margin: 0;
-    min-height: 5px; }
+    min-height: 5px;
+    position: relative; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item {
     border: 1px solid #eee;
     position: relative;
@@ -2955,10 +2956,8 @@
     #lp-modal-choose-items .lp-choose-items .footer {
       padding: 20px; }
 
-body.moving {
+body.lp-item-moving {
   cursor: url("../../images/closedhand.cur") 7 5, default !important; }
-  body.moving .section-item .drag {
-    cursor: url("../../images/closedhand.cur") 7 5, default !important; }
 
 @media screen and (max-width: 900px) {
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .question-settings.table-row {

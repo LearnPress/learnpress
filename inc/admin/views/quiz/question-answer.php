@@ -49,7 +49,7 @@ learn_press_admin_view( 'quiz/question-answer-option' );
             },
             mounted: function () {
                 var _self = this;
-                setTimeout(function () {
+                //setTimeout(function () {
                     var $el = $(_self.$el).find('.lp-list-options tbody');
                     $el.sortable({
                         handle: '.sort',
@@ -68,7 +68,7 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                             _self.sort();
                         }
                     });
-                }, 1000)
+                //}, 1000)
 
             },
             methods: {

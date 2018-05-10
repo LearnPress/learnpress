@@ -38,7 +38,7 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 
                     <div class="footer" v-if="!disableUpdateList">
                         <div class="table-row">
-                            <div class="sort"></div>
+                            <div class="sort lp-sortable-handle"></div>
                             <div class="order">{{countQuestions() + 1}}</div>
                             <div class="name add-new-question">
                                 <div class="title">

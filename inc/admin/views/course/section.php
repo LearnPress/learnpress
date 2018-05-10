@@ -14,7 +14,7 @@ learn_press_admin_view( 'course/new-section-item' );
          :data-section-order="index"
          :data-section-id="section.id">
         <div class="section-head" @dblclick="toggle">
-            <span class="movable"></span>
+            <span class="movable lp-sortable-handle"></span>
             <!--Section title-->
             <input v-model="section.title" type="text" title="title" class="title-input"
                    @change="updating" @blur="completed" @keyup.enter="completed"
