@@ -1540,6 +1540,15 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * Return TRUE if option to block course's items after course is exceeded turn on.
+		 *
+		 * @return bool
+		 */
+		public function is_block_item_content() {
+			return $this->get_data( 'block_lesson_content' ) === 'yes';
+		}
+
+		/**
 		 * Calculate results of course by final quiz
 		 *
 		 * @param int     $user_id

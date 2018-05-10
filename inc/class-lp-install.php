@@ -168,7 +168,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				DELETE FROM {$wpdb->options} WHERE option_name LIKE %s
-			", $wpdb->esc_like( 'wp_lp_schedule_items_batch_' ) . '%' );
+			", $wpdb->esc_like( 'lp_schedule_items_batch_' ) . '%' );
+			$wpdb->query( $query );
+
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->options} WHERE option_name LIKE %s
+			", $wpdb->esc_like( 'lp_installer_batch_' ) . '%' );
 			$wpdb->query( $query );
 		}
 
@@ -866,8 +871,4 @@ if ( ! function_exists( 'LP_Install' ) ) {
 	}
 
 	LP_Install::init();
-}
-
-if ( isset( $_REQUEST['xxxxx'] ) ) {
-	add_action( 'plugins_loaded', array( 'LP_Install', 'create_options' ) );
 }

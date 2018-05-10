@@ -672,6 +672,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		public function get_current_question_id( $quiz_id = 0 ) {
+
+			_deprecated_function( __CLASS__ . "::" . __FUNCTION__, '3.0.8' );
 			$current               = false;
 			$quiz_current_question = $this->quiz_current_question;
 			if ( is_array( $quiz_current_question ) && ! empty( $quiz_current_question[ $quiz_id ] ) ) {
@@ -972,6 +974,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_current_question( $quiz_id, $course_id, $permalink = false ) {
 			$data = $this->get_course_data( $course_id );
+
 			if ( empty( $data[ $quiz_id ] ) ) {
 				return false;
 			}

@@ -3175,3 +3175,19 @@ function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, 
 		$wpdb->query( $query );
 	}
 }
+
+/**
+ * Get item types of course support for blocking. Default is lp_lesson
+ *
+ * @since 3.0.0
+ *
+ * @return array
+ */
+function learn_press_get_block_course_item_types() {
+	return apply_filters( 'learn-press/block-course-item-types', array( LP_LESSON_CPT ) );
+}
+
+//add_filter('learn-press/block-course-item-types', function ($a){
+//    $a[] = LP_QUIZ_CPT;
+//    return $a;
+//});

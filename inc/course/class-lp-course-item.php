@@ -510,6 +510,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$user_id = get_current_user_id();
 			}
 
+			if ( ! $course_id ) {
+				$course_id = get_the_ID();
+			}
+
 			$key = 'course-item-' . $user_id . '-' . $course_id;
 
 			if ( false === ( $blocked_items = wp_cache_get( $key, 'blocked-items' ) ) ) {
@@ -538,17 +542,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 					$blocked = 'no';
 				} else {
 					if ( $user ) {
-						if ( $is_admin = in_array( 'administrator', $user->get_roles() ) ) {
-							$blocked = 'no';
-						} else if ( $user->has_course_status( $course_id, array( 'enrolled', 'finished' ) ) ) {
-							$blocked     = 'yes';
-							$course_item = $user->get_course_data( $course_id );
-							if ( 'yes' === $course->get_data( 'block_lesson_content' ) && $course_item->is_exceeded() < 0 ) {
-								$blocked = 'yes';
-							}
-						} else {
-							$blocked = 'yes';
-						}
+						$blocked = $this->_item_is_blocked( $user, $course, $user->get_course_data( $course_id ) );
 					} else {
 						$blocked = 'yes';
 					}
@@ -581,22 +575,16 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			} elseif ( ! $user || $user->is_guest() ) {
 				$blocked_items = array_fill_keys( $course_items, 'yes' );
 			} else {
-				if ( $is_admin = in_array( 'administrator', $user->get_roles() ) ) {
-					$blocked = 'no';
-				} else if ( $user->has_course_status( $course_id, array( 'enrolled', 'finished' ) ) ) {
-					$blocked = 'yes';
-					if ( 'yes' === $course->get_data( 'block_lesson_content' ) && $course_item_data->is_exceeded() < 0 ) {
-						$blocked = 'yes';
-					}
-				} else {
-					$blocked = 'yes';
-				}
+				$blocked       = $this->_item_is_blocked( $user, $course, $course_item_data );
 				$blocked_items = array_fill_keys( $course_items, $blocked );
 			}
+			$block_item_types = learn_press_get_block_course_item_types();
 
 			foreach ( $course_items as $course_item ) {
 				if ( $item = $course->get_item( $course_item ) ) {
 					if ( $item->is_preview() ) {
+						$blocked_items[ $course_item ] = 'no';
+					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array( $item->get_post_type(), $block_item_types ) ) {
 						$blocked_items[ $course_item ] = 'no';
 					}
 				}
@@ -607,6 +595,29 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			wp_cache_set( $cache_key, $blocked_items, 'blocked-items' );
 
 			return $blocked_items;
+		}
+
+		/**
+		 * @param LP_User             $user
+		 * @param LP_Course           $course
+		 * @param LP_User_Item_Course $course_item_data
+		 *
+		 * @return string
+		 */
+		protected function _item_is_blocked( $user, $course, $course_item_data ) {
+			if ( $is_admin = in_array( 'administrator', $user->get_roles() ) ) {
+				$blocked = 'no';
+			} else if ( $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
+				$blocked = 'no';
+
+				if ( $course->is_block_item_content() && $course_item_data->get_finishing_type() !== 'click'/*$course_item_data->is_exceeded() < 0*/ ) {
+					$blocked = 'yes';
+				}
+			} else {
+				$blocked = 'yes';
+			}
+
+			return $blocked;
 		}
 
 		public function offsetExists( $offset ) {

@@ -968,7 +968,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$question_type = get_post_meta( $question_id, '_lp_type', true );
 			}
 
-			$class_name = self::get_class_name_from_question_type( array($question_type) );
+			$class_name = self::get_class_name_from_question_type( array( $question_type ) );
 
 			// Filter class name so that the class can be overridden if extended.
 			return apply_filters( 'learn-press/question/object-class', $class_name, $question_type, $question_id );
@@ -1008,6 +1008,10 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			} elseif ( $the_question instanceof LP_Course_Item ) {
 				$the_question = get_post( $the_question->get_id() );
 			} elseif ( ! ( $the_question instanceof WP_Post ) ) {
+				$the_question = false;
+			}
+
+			if ( get_post_status( $the_question ) !== 'publish' ) {
 				$the_question = false;
 			}
 

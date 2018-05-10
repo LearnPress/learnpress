@@ -811,6 +811,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				$the_quiz = false;
 			}
 
+			if ( get_post_status( $the_quiz ) !== 'publish' ) {
+				$the_quiz = false;
+			}
+
 			return apply_filters( 'learn-press/quiz/post-object', $the_quiz );
 		}
 

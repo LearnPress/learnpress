@@ -76,13 +76,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_current_question( $return = '' ) {
 		$question = $this->get_meta( '_current_question', true );
-		if ( ! $question ) {
+		if ( ! learn_press_get_question( $question ) ) {
 			if ( $questions = $this->get_quiz()->get_questions() ) {
 				$question = reset( $questions );
 				$this->set_meta( '_current_question', $question );
 				$this->update_meta();
 			}
 		}
+
 		if ( $question ) {
 			if ( $return == 'object' ) {
 				$question = learn_press_get_question( $question );

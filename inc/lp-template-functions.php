@@ -216,7 +216,7 @@ if ( ! function_exists( 'learn_press_course_external_button' ) ) {
 		$user = learn_press_get_current_user();
 
 		if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
-		    // Remove all other buttons
+			// Remove all other buttons
 			learn_press_remove_course_buttons();
 			learn_press_get_template( 'single-course/buttons/external-link.php' );
 			// Add back other buttons for other courses
@@ -372,7 +372,7 @@ if ( ! function_exists( 'learn_press_user_profile_header' ) ) {
 		if ( $profile->get_user()->is_guest() ) {
 			return;
 		}
-		
+
 		learn_press_get_template( 'profile/profile-cover.php', array( 'user' => $user ) );
 	}
 }
@@ -514,10 +514,19 @@ if ( ! function_exists( 'learn_press_course_item_content' ) ) {
 	 */
 	function learn_press_course_item_content() {
 		global $lp_course, $lp_course_item;
-		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $lp_course_item->get_item_type() . '.php' );
+
+		$item = LP_Global::course_item();
+
+		if ( $item->is_blocked() ) {
+			learn_press_get_template( 'global/block-content.php' );
+
+			return;
+		}
+
+		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
 
 		if ( file_exists( $item_template_name ) ) {
-			learn_press_get_template( 'single-course/content-item-' . $lp_course_item->get_item_type() . '.php' );
+			learn_press_get_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
 		}
 	}
 }
@@ -2341,7 +2350,7 @@ if ( ! function_exists( 'learn_press_page_controller' ) ) {
 					$redirect = apply_filters( 'learn_press_quiz_access_denied_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user->get_id() );
 					break;
 				case LP_COURSE_CPT:
-					if ( ( $course = learn_press_get_course() ) && $item_id = $course->is_viewing_item( ) ) {
+					if ( ( $course = learn_press_get_course() ) && $item_id = $course->is_viewing_item() ) {
 						if ( ! LP()->user->can_view_item( $item_id ) ) {
 							$redirect = apply_filters( 'learn_press_lesson_access_denied_redirect_permalink', $course->permalink, $item_id, $user->get_id() );
 						}
@@ -2873,6 +2882,18 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 		}
 
 		learn_press_get_template( 'content-lesson/content.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_lesson_content_blocked' ) ) {
+	function learn_press_content_item_lesson_content_blocked() {
+		$item = LP_Global::course_item();
+
+		if ( ! $item->is_blocked() ) {
+			return;
+		}
+
+		learn_press_get_template( 'global/block-content.php' );
 	}
 }
 

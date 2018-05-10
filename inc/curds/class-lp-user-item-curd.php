@@ -85,8 +85,9 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 				FROM {$wpdb->posts} p 
 				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
 				WHERE qq.quiz_id = %d
+				AND p.post_status = %s
 				ORDER BY question_order ASC
-			", $id );
+			", $id, 'publish' );
 			if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
 				foreach ( $results as $k => $v ) {
 					wp_cache_set( $v->ID, $v, 'posts' );

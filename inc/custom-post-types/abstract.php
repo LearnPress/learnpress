@@ -313,7 +313,7 @@ abstract class LP_Abstract_Post_Type {
 		}
 		// TODO: check more here
 		// prevent loop action
-		remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+		remove_action( 'save_post', array( $this, '_do_save' ), 10 );
 		$func_args = func_get_args();
 		$this->_call_method( 'save', $func_args );
 		$this->_flush_cache();
