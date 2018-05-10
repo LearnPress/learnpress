@@ -2159,15 +2159,15 @@ if ( ! is_admin() ) {
 function learn_press_display_message( $message, $type = 'success' ) {
 
 	// get all messages added into queue
-	$messages = learn_press_session_get( 'messages' );
-	learn_press_session_set( 'messages', null );
+	$messages = learn_press_session_get( learn_press_session_message_id() );
+	learn_press_session_set( learn_press_session_message_id(), null );
 
 	// add new notice and display
 	learn_press_add_message( $message, $type );
 	echo learn_press_get_messages( true );
 
 	// store back messages
-	learn_press_session_set( 'messages', $messages );
+	learn_press_session_set( learn_press_session_message_id(), $messages );
 }
 
 /**
@@ -2187,11 +2187,12 @@ function learn_press_get_messages( $clear = false ) {
 /**
  * Add new message into queue for displaying.
  *
- * @param string $message
- * @param string $type
- * @param array  $options
+ * @param string   $message
+ * @param string   $type
+ * @param array    $options
+ * @param int|bool $current_user . @since 3.0.9 - add for current user only
  */
-function learn_press_add_message( $message, $type = 'success', $options = array() ) {
+function learn_press_add_message( $message, $type = 'success', $options = array(), $current_user = true ) {
 
 	if ( is_string( $options ) ) {
 		$options = array( 'id' => $options );
@@ -2204,13 +2205,23 @@ function learn_press_add_message( $message, $type = 'success', $options = array(
 		)
 	);
 
-	$messages = learn_press_session_get( 'messages' );
+	if ( $current_user ) {
+		if ( true === $current_user ) {
+			$current_user = get_current_user_id();
+		}
+	}
+
+	$key = "messages{$current_user}";
+
+	$messages = learn_press_session_get( $key );
+
 	if ( empty( $messages[ $type ] ) ) {
 		$messages[ $type ] = array();
 	}
+
 	$messages[ $type ][ $options['id'] ] = array( 'content' => $message, 'options' => $options );
 
-	learn_press_session_set( 'messages', $messages );
+	learn_press_session_set( $key, $messages );
 }
 
 function learn_press_get_message( $message, $type = 'success' ) {
@@ -2230,7 +2241,7 @@ function learn_press_get_message( $message, $type = 'success' ) {
  * @param string|array $type
  */
 function learn_press_remove_message( $id = '', $type = '' ) {
-	if ( ! $groups = learn_press_session_get( 'messages' ) ) {
+	if ( ! $groups = learn_press_session_get( learn_press_session_message_id() ) ) {
 		return;
 	}
 
@@ -2258,7 +2269,7 @@ function learn_press_remove_message( $id = '', $type = '' ) {
 		$groups = array();
 	}
 
-	learn_press_session_set( 'messages', $groups );
+	learn_press_session_set( learn_press_session_message_id(), $groups );
 }
 
 /**
@@ -2267,16 +2278,16 @@ function learn_press_remove_message( $id = '', $type = '' ) {
  * @param bool
  */
 function learn_press_print_messages( $clear = true ) {
-	$messages = learn_press_session_get( 'messages' );
+	$messages = learn_press_session_get( learn_press_session_message_id() );
 	learn_press_get_template( 'global/message.php', array( 'messages' => $messages ) );
 	if ( $clear ) {
-		learn_press_session_set( 'messages', array() );
+		learn_press_session_set( learn_press_session_message_id(), array() );
 	}
 }
 
 function learn_press_message_count( $type = '' ) {
 	$count    = 0;
-	$messages = learn_press_session_get( 'messages', array() );
+	$messages = learn_press_session_get( learn_press_session_message_id(), array() );
 
 	if ( isset( $messages[ $type ] ) ) {
 		$count = absint( sizeof( $messages[ $type ] ) );
@@ -2287,6 +2298,10 @@ function learn_press_message_count( $type = '' ) {
 	}
 
 	return $count;
+}
+
+function learn_press_session_message_id() {
+	return "messages" . get_current_user_id();
 }
 
 function learn_press_clear_messages() {
