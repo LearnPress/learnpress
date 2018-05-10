@@ -756,7 +756,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'       => 'course_payment',
-				'title'    => __( 'Payment', 'learnpress' ),
+				'title'    => __( 'Pricing', 'learnpress' ),
 				'priority' => 'high',
 				'pages'    => array( LP_COURSE_CPT ),
 				'icon'     => 'dashicons-clipboard',
