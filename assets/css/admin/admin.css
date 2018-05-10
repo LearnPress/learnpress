@@ -518,7 +518,7 @@
   .learn-press-payments th, .learn-press-payments td,
   .learn-press-emails th,
   .learn-press-emails td {
-    padding: 8px 10px; }
+    padding: 10px; }
   .learn-press-payments .order,
   .learn-press-emails .order {
     width: 30px;
@@ -2292,7 +2292,6 @@
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .order {
       flex: 0 0 30px;
       text-align: right;
-      font-weight: bold;
       font-size: 15px;
       padding: 12px 0; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .table-row > .order:after {
@@ -2353,8 +2352,7 @@
           height: 42px; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr {
         background: #fff;
-        border: 1px solid #DDD;
-        position: relative; }
+        border: 1px solid #DDD; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr:nth-child(2n) {
           background: #f4fcff; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td {
@@ -2364,10 +2362,7 @@
           border: none; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.sort {
             cursor: url("../../images/openhand.cur") 7 5, default;
-            width: 12px;
-            position: relative; }
-          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.order {
-            font-weight: bold; }
+            width: 12px; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.answer-text {
             padding-left: 5px; }
           #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options tbody tr td.answer-correct {
@@ -2714,8 +2709,7 @@
       #admin-editor-lp_question .lp-box-data-content table.list-question-answers .order {
         text-align: right;
         padding: 0;
-        width: 30px;
-        font-weight: bold; }
+        width: 30px; }
       #admin-editor-lp_question .lp-box-data-content table.list-question-answers .answer-correct {
         width: 65px;
         text-align: center; }
