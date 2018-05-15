@@ -378,6 +378,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function is_enable_avatar() {
+			if ( ! $profile_avatar = get_option( 'learn_press_profile_avatar' ) ) {
+				update_option( 'learn_press_profile_avatar', 'yes' );
+			}
+			$settings = LP()->settings;
+			if ( ! $setting_avatar = $settings->get( 'profile_endpoints.settings-avatar' ) ) {
+				$profile_endpoints['settings-basic-information'] = 'basic-information';
+				$profile_endpoints['settings-avatar']            = 'avatar';
+				$profile_endpoints['settings-change-password']   = 'change-password';
+				update_option( 'learn_press_profile_endpoints', $profile_endpoints, 'yes' );
+				add_rewrite_rule( '(.?.+?)/avatar(/(.*))?/?$', 'index.php?pagename=$matches[1]&section=avatar', 'top' );
+			}
+
 			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
 		}
 
@@ -385,7 +397,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool   $key     Optional. True if return the key instead of value.
+		 * @param bool $key Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -397,7 +409,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool   $key
+		 * @param bool $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -445,8 +457,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get current link of profile
 		 *
-		 * @param string $args           - Optional. Add more query args to url.
-		 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
+		 * @param string $args - Optional. Add more query args to url.
+		 * @param bool $with_permalink - Optional. TRUE to build url as friendly url.
 		 *
 		 * @return mixed|string
 		 */
@@ -745,7 +757,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Query user's courses
 		 *
 		 * @param string $type - Optional. [own, purchased, enrolled, etc]
-		 * @param mixed  $args - Optional.
+		 * @param mixed $args - Optional.
 		 *
 		 * @return array|LP_Query_List_Table
 		 */
@@ -911,7 +923,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Echo class for main div.
 		 *
-		 * @param bool   $echo
+		 * @param bool $echo
 		 * @param string $more
 		 *
 		 * @return string
@@ -944,7 +956,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the tab is visible for current user.
 		 *
 		 * @param string $tab_key
-		 * @param array  $tab_data
+		 * @param array $tab_data
 		 *
 		 * @return bool
 		 */
@@ -956,7 +968,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the section is visible for current user.
 		 *
 		 * @param string $section_key
-		 * @param array  $section_data
+		 * @param array $section_data
 		 *
 		 * @return bool
 		 */
