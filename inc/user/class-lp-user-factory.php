@@ -97,14 +97,14 @@ class LP_User_Factory {
 				case 'pending':
 				case 'processing':
 				case 'cancelled':
-					//self::_update_user_item_pending( $order, $new_status );
+				case 'failed':
+					self::_update_user_item_pending( $order, $old_status, $new_status );
 					break;
 				case'completed':
 					self::_update_user_item_purchased( $order, $old_status, $new_status );
 			}
 			//LP_Debug::commitTransaction();
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			//LP_Debug::rollbackTransaction();
 		}
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
@@ -112,8 +112,8 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
-	 * @param string   $old_status
-	 * @param string   $new_status
+	 * @param string $old_status
+	 * @param string $new_status
 	 */
 	protected static function _update_user_item_pending( $order, $old_status, $new_status ) {
 		$curd  = new LP_User_CURD();
@@ -133,7 +133,7 @@ class LP_User_Factory {
 					} else {
 						$item_id = $item;
 					}
-					$curd->update_user_item_status( $item_id, 'pending' );
+					$curd->update_user_item_status( $item_id, $new_status );
 				}
 			}
 		}
@@ -141,8 +141,8 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
-	 * @param string   $old_status
-	 * @param string   $new_status
+	 * @param string $old_status
+	 * @param string $new_status
 	 */
 	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
 		global $wpdb;
@@ -190,6 +190,9 @@ class LP_User_Factory {
 					$item        = $curd->get_user_item_by_id( $user_item_id );
 					$last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
 					$args        = array( 'status' => $last_status );
+					if ( $new_status == 'completed' ) {
+						$args['status'] = 'enrolled';
+					}
 					if ( ! $last_status ) {
 						if ( 'enrolled' == ( $args['status'] = LP()->settings->get( 'auto_enroll' ) == 'no' ? 'purchased' : 'enrolled' ) ) {
 							$time                   = new LP_Datetime();
