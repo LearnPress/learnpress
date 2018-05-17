@@ -1565,24 +1565,6 @@ if ( ! function_exists( 'learn_press_content_single_course' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
-	/**
-	 * Display course enroll button
-	 */
-	function learn_press_course_enroll_button() {
-		learn_press_get_template( 'single-course/enroll-button.php' );
-	}
-}
-
-if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
-	/**
-	 * Display course retake button
-	 */
-	function learn_press_course_retake_button() {
-		learn_press_get_template( 'single-course/retake-button.php' );
-	}
-}
-
 if ( ! function_exists( 'learn_press_course_buttons' ) ) {
 	/**
 	 * Display course retake button
