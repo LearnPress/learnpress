@@ -11,12 +11,11 @@ if ( isset( $order_items ) ) {
 } else {
 	$currency_symbol = learn_press_get_currency_symbol();
 }
-global $post;
 
 if ( ! isset( $order ) || ! ( $order instanceof LP_Order ) ) {
 	return;
 }
-
+$post = $order->get_post();
 $method_title = $order->get_payment_method_title();
 $user_ip      = $order->get_user_ip_address();
 
@@ -184,7 +183,7 @@ $user_ip      = $order->get_user_ip_address();
             </tfoot>
         </table>
     </div>
-	<?php if ( $note = get_the_excerpt() ) { ?>
+	<?php if ( $note = $post->post_excerpt ) { ?>
         <br/>
         <h3><?php _e( 'Customer Note', 'learnpress' ); ?></h3>
         <p class="order-note description"><?php echo $note; ?></p>
