@@ -56,3 +56,8 @@ define( 'LP_COURSE_IS_FINISHED', 150 );
 define( 'LP_QUIZ_HAS_STARTED_OR_COMPLETED', 160 );
 define( 'LP_ERROR_NO_PAYMENT_METHOD_SELECTED', 1000 );
 define( 'LP_DEBUG_DEV', false );
+
+/**
+ * Thim Market library
+ */
+define( 'TMP_ROOT', LP_PLUGIN_PATH . 'inc/libraries/' );

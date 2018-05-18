@@ -78,15 +78,12 @@ $query         = $profile->query_quizzes( array( 'status' => $filter_status ) );
 						<?php echo( $user_quiz->get_time_interval( 'display' ) ); ?>
                     </td>
                 </tr>
-				<?php continue; ?>
-                <tr>
-                    <td colspan="4"></td>
-                </tr>
+
 			<?php } ?>
             </tbody>
             <tfoot>
             <tr class="list-table-nav">
-                <td colspan="2" class="nav-text">
+                <td colspan="3" class="nav-text">
 					<?php echo $query->get_offset_text(); ?>
                 </td>
                 <td colspan="2" class="nav-pages">

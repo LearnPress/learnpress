@@ -378,6 +378,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function is_enable_avatar() {
+
 			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
 		}
 

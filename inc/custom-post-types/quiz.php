@@ -452,13 +452,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 //				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
 //			}
 
-			if ( isset( $_GET['s'] ) ) {
-				$s     = $_GET['s'];
-				$where = preg_replace(
-					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
-					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
-				);
-			}
+//			if ( isset( $_GET['s'] ) ) {
+//				$s     = $_GET['s'];
+//				$where = preg_replace(
+//					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
+//					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
+//				);
+//			}
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$where .= $wpdb->prepare( "

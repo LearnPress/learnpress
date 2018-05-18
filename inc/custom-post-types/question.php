@@ -113,6 +113,15 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 			}
 
+			if ( empty( $answers ) ) {
+				$answers = array(
+					array(
+						'question_answer_id' => 0,
+						'text'               => ''
+					)
+				);
+			}
+
 			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor',
 				apply_filters(
 					'learn-press/question-editor/localize-script',
