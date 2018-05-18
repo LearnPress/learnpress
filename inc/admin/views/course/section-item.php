@@ -7,7 +7,8 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-section-item">
-    <li :class="['section-item',item.type, isEmptyItem() ? 'empty-item' : '', {updating: updating, removing: removing}]" :data-item-id="item.id"
+    <li :class="['section-item',item.type, isEmptyItem() ? 'empty-item' : '', {updating: updating, removing: removing}]"
+        :data-item-id="item.id"
         :data-item-order="order">
         <div class="drag lp-sortable-handle">
             <?php learn_press_admin_view('svg-icon');?>
@@ -20,15 +21,16 @@
 
         <div class="item-actions">
             <div class="actions">
-                <div class="action preview-item"
+                <div class="action preview-item lp-title-attr-tip"
                      data-content-tip="<?php echo esc_attr( 'Turn on/off this item is preview', 'learnpress' ); ?>">
                     <a class="lp-btn-icon dashicons" :class="previewClass" @click="togglePreview"></a>
                 </div>
-                <div class="action edit-item">
-                    <a :href="url" target="_blank"
-                       class="lp-btn-icon dashicons dashicons-edit"></a>
+                <div class="action edit-item lp-title-attr-tip"
+                     data-content-tip="<?php echo esc_attr( 'Edit item', 'learnpress' ); ?>">
+                    <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a>
                 </div>
-                <div class="action delete-item" v-if="!disableCurriculum">
+                <div class="action delete-item lp-title-attr-tip" v-if="!disableCurriculum"
+                     data-content-tip="<?php echo esc_attr( 'Delete', 'learnpress' ); ?>">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>
                         <li>
@@ -67,7 +69,7 @@
                 mounted: function () {
                     this.$nextTick(function () {
                         var $ = jQuery;
-                        $(this.$el).find('.preview-item').QuickTip({
+                        $(this.$el).find('.lp-title-attr-tip').QuickTip({
                             closeInterval: 0,
                             arrowOffset: 'el',
                             tipClass: 'preview-item-tip'

@@ -1664,6 +1664,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					} elseif ( ! $course->is_required_enroll() ) {
 						// if course is not required enroll so the lesson is previewable
 						$view = 'no-required-enroll';
+					} elseif( ! $this->is_logged_in() ){
+						$view = 'not-logged-in';
+					} elseif( ! $this->has_enrolled_course( $course_id ) ){
+						$view = 'not-enrolled';
 					}
 				}
 			}

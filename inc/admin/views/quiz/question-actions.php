@@ -19,23 +19,28 @@
         <div class="type">{{question.type.label}}</div>
         <div class="actions">
             <div class="lp-box-data-actions lp-toolbar-buttons">
-                <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
-                    <a class="lp-btn-icon dashicons dashicons-randomize" title="Change type"></a>
+                <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type lp-title-attr-tip"
+                     data-content-tip="<?php echo esc_attr( 'Change type', 'learnpress' ); ?>">
+                    <a class="lp-btn-icon dashicons dashicons-randomize"></a>
                     <ul>
                         <li v-for="(type, key) in questionTypes" :class="active(key)">
                             <a href="" :data-type="key" @click.prevent="changeType(key)">{{type}}</a>
                         </li>
                     </ul>
                 </div>
-                <div class="lp-toolbar-btn">
-                    <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit" title="Edit"></a>
+                <div class="lp-toolbar-btn lp-title-attr-tip" v-if="!disableUpdateList"
+                     data-content-tip="<?php echo esc_attr( 'Duplicate', 'learnpress' ); ?>">
+                    <a href="" class="lp-btn-icon dashicons dashicons-admin-page"
+                       @click.prevent="clone"></a>
                 </div>
-                <div class="lp-toolbar-btn" v-if="!disableUpdateList">
-                    <a href="" class="lp-btn-icon dashicons dashicons-admin-page" @click.prevent="clone"
-                       title="Duplicate"></a>
+                <div class="lp-toolbar-btn lp-title-attr-tip"
+                     data-content-tip="<?php echo esc_attr( 'Edit item', 'learnpress' ); ?>">
+                    <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a>
                 </div>
-                <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown" v-if="!disableUpdateList">
-                    <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove" title="Delete"></a>
+                <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown lp-title-attr-tip"
+                     v-if="!disableUpdateList"
+                     data-content-tip="<?php echo esc_attr( 'Delete', 'learnpress' ); ?>">
+                    <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>
                         <li>
                             <a @click.prevent="remove"
@@ -47,8 +52,7 @@
                         </li>
                     </ul>
                 </div>
-                <span :class="['lp-toolbar-btn lp-btn-toggle', question.open ?'open' : 'close']" @click="toggle"
-                      title="Toggle"></span>
+                <span :class="['lp-toolbar-btn lp-btn-toggle', question.open ?'open' : 'close']" @click="toggle"></span>
             </div>
         </div>
     </div>
@@ -66,6 +70,21 @@
                     title: this.question.title,
                     changed: false
                 };
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    var $ = jQuery;
+                    $(this.$el).find('.lp-title-attr-tip').QuickTip({
+                        closeInterval: 0,
+                        arrowOffset: 'el',
+                        tipClass: 'preview-item-tip'
+                    });
+                    $(document).on('mousedown', '.section-item .drag', function (e) {
+                        $('html, body').addClass('moving');
+                    }).on('mouseup', function (e) {
+                        $('html, body').removeClass('moving');
+                    })
+                })
             },
             computed: {
                 // question status

@@ -179,7 +179,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 			}
 
-			return;
+			//return;
 
 			$user_curd  = new LP_User_CURD();
 			$order_data = array();
@@ -190,7 +190,19 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				foreach ( $items as $item ) {
-					$item_course = $user->get_course_data( $item['course_id'] );
+					$item = $user_curd->get_user_item(
+						$user_id,
+						$item['course_id']
+					);
+					if ( $item ) {
+						if ( is_array( $item ) ) {
+							$item_id = $item['user_item_id'];
+						} else {
+							$item_id = $item;
+						}
+						$user_curd->update_user_item_status( $item_id, 'trash' );
+					}
+					$item_course = $user->get_course_data( $item['item_id'] );
 
 					if ( ! $item_course ) {
 						continue;
@@ -260,7 +272,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				if ( ! $item_course = $user_curd->get_user_item_by_id( $user_item_id ) ) {
 					continue;
 				}
-
+				$order_status = $order->get_order_status();
+				$last_status = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'enrolled';
+				$user_curd->update_user_item_status( $user_item_id, $last_status );
 				// Restore data
 				$user_curd->update_user_item_by_id(
 					$user_item_id,

@@ -616,14 +616,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => 'no',
 					),
 					array(
-						'name' => __( 'Block Lessons Content', 'learnpress' ),
+						'name' => __( 'Block Lessons', 'learnpress' ),
 						'id'   => '_lp_block_lesson_content',
 						'type' => 'yes_no',
 						'desc' => __( 'Block lessons content when completed course.', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(
-						'name' => __( 'External Link to buy Course', 'learnpress' ),
+						'name' => __( 'External Link', 'learnpress' ),
 						'id'   => '_lp_external_link_buy_course',
 						'type' => 'url',
 						'desc' => __( 'Redirect to this url when you press button buy this course.', 'learnpress' ),
@@ -756,7 +756,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'       => 'course_payment',
-				'title'    => __( 'Payment', 'learnpress' ),
+				'title'    => __( 'Pricing', 'learnpress' ),
 				'priority' => 'high',
 				'pages'    => array( LP_COURSE_CPT ),
 				'icon'     => 'dashicons-clipboard',

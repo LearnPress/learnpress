@@ -378,6 +378,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function is_enable_avatar() {
+			if ( ! $profile_avatar = get_option( 'learn_press_profile_avatar' ) ) {
+				update_option( 'learn_press_profile_avatar', 'yes' );
+			}
+			$settings = LP()->settings;
+			if ( ! $setting_avatar = $settings->get( 'profile_endpoints.settings-avatar' ) ) {
+				$profile_endpoints['settings-basic-information'] = 'basic-information';
+				$profile_endpoints['settings-avatar']            = 'avatar';
+				$profile_endpoints['settings-change-password']   = 'change-password';
+				update_option( 'learn_press_profile_endpoints', $profile_endpoints, 'yes' );
+				add_rewrite_rule( '(.?.+?)/avatar(/(.*))?/?$', 'index.php?pagename=$matches[1]&section=avatar', 'top' );
+			}
 
 			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
 		}

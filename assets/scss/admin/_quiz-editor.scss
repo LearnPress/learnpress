@@ -72,7 +72,6 @@
                 & > .order {
                     flex: 0 0 30px;
                     text-align: right;
-                    font-weight: bold;
                     font-size: 15px;
                     padding: 12px 0;
                     &:after {
@@ -176,7 +175,6 @@
                                 tr {
                                     background: #fff;
                                     border: 1px solid #DDD;
-                                    position: relative;
                                     &:nth-child(2n) {
                                         background: #f4fcff;
                                     }
@@ -188,14 +186,7 @@
                                         &.sort {
                                             cursor: url("../../images/openhand.cur") 7 5, default;
                                             width: 12px;
-                                            position: relative;
 
-                                        }
-                                        &.order {
-                                            font-weight: bold;
-                                            &:after {
-                                                //content: '.';
-                                            }
                                         }
                                         &.answer-text {
                                             padding-left: 5px;
