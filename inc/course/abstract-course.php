@@ -1820,6 +1820,23 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * Get author's display name
+		 *
+		 * @since 3.0.9
+		 *
+		 * @return string
+		 */
+		public function get_author_display_name() {
+			$display_name = '';
+
+			if ( $user = $this->get_author() ) {
+				$display_name = $user->get_display_name();
+			}
+
+			return $display_name;
+		}
+
+		/**
 		 * @return mixed
 		 */
 		public function get_tags() {

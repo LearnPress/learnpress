@@ -415,6 +415,9 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+
+
+	/**
 	 * Get WP_Object.
 	 *
 	 * @param $code

@@ -90,6 +90,26 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
+		 * Delete course itself and sections.
+		 *
+		 * @param int|object $course_id
+		 * @param bool       $delete_item - Optional. TRUE will delete all items assigned to course
+		 */
+		public function delete_course( $course_id, $delete_item = false ) {
+			if ( $delete_item ) {
+				if($course = learn_press_get_course( $course_id )) {
+					if ( $items = $course->get_items() ) {
+						foreach ( $items as $item ) {
+							wp_delete_post( $item );
+						}
+					}
+				}
+			}
+
+			wp_delete_post( $course_id );
+		}
+
+		/**
 		 * Duplicate course.
 		 *
 		 * @since 3.0.0

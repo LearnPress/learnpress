@@ -120,7 +120,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *  )
 	 *
 	 * @param int   $user_id
-	 * @param bool  $group_by_order - Optional. Group by order id instead of by course id
 	 * @param array $args
 	 *
 	 * @return array|mixed
@@ -939,10 +938,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_user_itemmeta} WHERE learnpress_user_item_id = %d", $user_item_id ) );
 			do_action( 'learn-press/deleted-user-item', $user_item_id );
 		}
-//		if($user_item_ids) {
-//			// Flush all cache to apply new changes
-//			wp_cache_flush();
-//		}
+
 
 		return true;
 	}
@@ -1046,7 +1042,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					} else {
 						if ( 'pending' === $args['status'] ) {
 							$where .= $wpdb->prepare( " AND post_status IN( %s, %s )", array( 'draft', 'pending' ) );
-						} else {
+						} elseif ( $args['status'] !== '*' ) {
 							$where .= $wpdb->prepare( " AND post_status = %s", $args['status'] );
 						}
 					}
@@ -1564,4 +1560,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		return $new_user;
 	}
+
+
 }
