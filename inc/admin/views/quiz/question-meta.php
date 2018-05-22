@@ -51,7 +51,6 @@
                                 <p class="description"><?php _e( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ); ?></p>
                             </div>
                         </div>
-<<<<<<< HEAD
                         <div class="rwmb-field rwmb-textarea-wrapper">
                             <div class="rwmb-label">
                                 <label for=""><?php _e( 'Question Explanation (Correct)', 'learnpress' ); ?></label>
@@ -72,7 +71,6 @@
                             </div>
                             <div class="rwml-input">
                                 <div>
-=======
                     </div>
                     <div class="rwmb-field rwmb-textarea-wrapper">
                         <div class="rwmb-label">
@@ -80,7 +78,6 @@
                         </div>
                         <div class="rwml-input">
                             <div>
->>>>>>> develop
                                    <textarea name="hint" id="" cols="60" rows="3" class="rwmb-textarea large-text"
                                              @change="updateMeta"
                                              v-model="question.settings.hint"></textarea>

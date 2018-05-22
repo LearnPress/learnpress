@@ -82,7 +82,7 @@
             LP.doAjax({
                 data: $.extend({
                     'lp-ajax': 'check-question',
-                    question_id: this.get('id'),
+                    question_id: this.get('id')
                     //question_answer: $('form#learn-press-quiz-question').serializeJSON()
                 }, args.data || {}),
                 dataType: 'html',
