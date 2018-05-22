@@ -15,33 +15,33 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	}
 
 	public function save() {
-		parent::save();
-		$course_permalink = $_POST['learn_press_course_base'];
-		if ( $course_permalink == 'custom' ) {
-			$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
+		if ( ! empty( $_POST['learn_press_course_base'] ) ) {
+			$course_permalink = $_POST['learn_press_course_base'];
+			if ( $course_permalink == 'custom' ) {
+				$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
 
-			if ( '%course_category%' == $course_permalink ) {
-				$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
+				if ( '%course_category%' == $course_permalink ) {
+					$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
+				}
+
+				$course_permalink = '/' . $course_permalink;
+				update_option( 'learn_press_course_base_type', 'custom' );
+
+			} else {
+				delete_option( 'learn_press_course_base_type' );
 			}
 
-			$course_permalink = '/' . $course_permalink;
-			update_option( 'learn_press_course_base_type', 'custom' );
+			$course_base = untrailingslashit( $course_permalink );
 
-		} else {
-			delete_option( 'learn_press_course_base_type' );
-		}
+			update_option( 'learn_press_course_base', $course_base );
+			$courses_page_id   = learn_press_get_page_id( 'courses' );
+			$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
 
-		$course_base = untrailingslashit( $course_permalink );
-
-		update_option( 'learn_press_course_base', $course_base );
-
-		$courses_page_id   = learn_press_get_page_id( 'courses' );
-		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
-
-		if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
-			update_option( 'learn_press_use_verbose_page_rules', 'yes' );
-		} else {
-			delete_option( 'learn_press_use_verbose_page_rules' );
+			if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
+				update_option( 'learn_press_use_verbose_page_rules', 'yes' );
+			} else {
+				delete_option( 'learn_press_use_verbose_page_rules' );
+			}
 		}
 	}
 
@@ -107,7 +107,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'    => 'pages-dropdown'
 						),
 						array(
-							'title'             => __( 'Courses limit', 'learnpress' ),
+							'title'             => __( 'Courses per page', 'learnpress' ),
 							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
 							'id'                => 'archive_course_limit',
 							'default'           => '10',
@@ -127,11 +127,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 							'desc'  => __( 'Those settings are applied to single course page.', 'learnpress' )
 						),
-						array(
-							'title'   => __( 'Single course permalink', 'learnpress' ),
-							'type'    => 'course-permalink',
-							'default' => ''
-						),
+
 						array(
 							'title'   => __( 'Course category base', 'learnpress' ),
 							'id'      => 'course_category_base',
@@ -145,6 +141,12 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'    => 'text'
 						),
 						array(
+							'title'   => __( 'Single course permalink', 'learnpress' ),
+							'type'    => 'course-permalink',
+							'default' => '',
+							'id'      => 'course_base'
+						),
+						array(
 							'title'   => __( 'Lesson', 'learnpress' ),
 							'type'    => 'text',
 							'id'      => 'lesson_slug',
@@ -155,7 +157,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'title'   => __( 'Quiz', 'learnpress' ),
 							'type'    => 'text',
 							'id'      => 'quiz_slug',
-							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-lesson/', home_url() ), 'learnpress' ),
+							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ), 'learnpress' ),
 							'default' => 'quizzes'
 						),
 						array(
@@ -174,28 +176,28 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 							'desc'  => __( 'Thumbnail generation for archive/single course.', 'learnpress' )
 						),
-						array(
-							'title'   => __( 'Single course', 'learnpress' ),
-							'id'      => 'generate_course_thumbnail',
-							'default' => 'yes',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
-						),
-						array(
-							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-							'id'         => 'single_course_image_size',
-							'default'    => array( 800, 450, 'yes' ),
-							'type'       => 'image-dimensions',
-							'visibility' => array(
-								'state' => 'show',
-
-								'conditional' => array(
-									'field'   => 'generate_course_thumbnail',
-									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						),
+//						array(
+//							'title'   => __( 'Single course', 'learnpress' ),
+//							'id'      => 'generate_course_thumbnail',
+//							'default' => 'yes',
+//							'type'    => 'yes-no',
+//							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
+//						),
+//						array(
+//							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
+//							'id'         => 'single_course_image_size',
+//							'default'    => array( 800, 450, 'yes' ),
+//							'type'       => 'image-dimensions',
+//							'visibility' => array(
+//								'state' => 'show',
+//
+//								'conditional' => array(
+//									'field'   => 'generate_course_thumbnail',
+//									'compare' => '=',
+//									'value'   => 'yes'
+//								)
+//							)
+//						),
 						array(
 							'title'   => __( 'Archive course', 'learnpress' ),
 							'id'      => 'archive_course_thumbnail',

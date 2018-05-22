@@ -41,8 +41,13 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
-
-			add_action( 'shutdown', array( $this, 'dispatch_queue' ) );
+			/**
+			 * Priority is important that will fix issue with WC cart doesnt remove
+			 * after completing checkout and get order details
+			 *
+			 * @since 3.0.8
+			 */
+			add_action( 'shutdown', array( $this, 'dispatch_queue' ), 1000 );
 		}
 
 		/**
@@ -72,10 +77,9 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		/**
 		 * @param mixed $data
 		 *
-		 * @return $this
+		 * @return mixed
 		 */
 		public function push_to_queue( $data ) {
-
 			// Check to preventing loop
 			if ( $this->safe ) {
 				if ( learn_press_is_ajax() || ! empty( $_REQUEST['action'] ) ) {
@@ -96,6 +100,12 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		}
 
 		protected function task( $item ) {
+			ob_start();
+			print_r( $item );
+			print_r( $_REQUEST );
+			$msg = ob_get_clean();
+			LP_Debug::instance()->add( $msg, 'background-process-task', false, true );
+			return false;
 		}
 
 		/**

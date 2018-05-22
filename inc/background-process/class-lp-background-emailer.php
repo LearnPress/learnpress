@@ -37,6 +37,7 @@ if ( ! class_exists( 'LP_Background_Emailer' ) ) {
 		 * @return bool
 		 */
 		protected function task( $callback ) {
+			parent::task( $callback );
 
 			if ( isset( $callback['filter'], $callback['args'] ) ) {
 				try {
@@ -51,3 +52,5 @@ if ( ! class_exists( 'LP_Background_Emailer' ) ) {
 		}
 	}
 }
+
+return LP_Background_Emailer::instance();

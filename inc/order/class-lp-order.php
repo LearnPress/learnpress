@@ -136,33 +136,37 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get date of this order.
 		 *
-		 * @param string $format
+		 * @param string $context
 		 *
 		 * @return string|LP_Datetime
 		 */
-		public function get_order_date( $format = '' ) {
+		public function get_order_date( $context = '' ) {
 			$date = $this->get_data( 'order_date' );
 
-			$strtime = strtotime( $date->toSql() );
+			if ( 'edit' !== $context ) {
+				$strtime = strtotime( $date->toSql() );
 
-			switch ( $format ) {
-				case 'd':
-					$return = date( 'Y-m-d', $strtime );
-					break;
-				case 'h':
-					$return = date( 'H', $strtime );
-					break;
-				case 'm':
-					$return = date( 'i', $strtime );
-					break;
-				case 'timestamp':
-					$return = $strtime;
-					break;
-				default:
-					$return = $format ? date( $format, $strtime ) : $date;
+				switch ( $context ) {
+					case 'd':
+						$date = date_i18n( 'Y-m-d', $strtime );
+						break;
+					case 'h':
+						$date = date_i18n( 'H', $strtime );
+						break;
+					case 'm':
+						$date = date_i18n( 'i', $strtime );
+						break;
+					case 'timestamp':
+						$date = $strtime;
+						break;
+					default:
+						$date = learn_press_date_i18n( $strtime );
+				}
+			} elseif ( ! $date instanceof LP_Datetime ) {
+				$date = new LP_Datetime( $date );
 			}
 
-			return $return;
+			return $date;
 		}
 
 		/**
@@ -335,10 +339,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_status() {
 
 			$status = $this->get_data( 'status' );
-
+// 			echo $status;
+// var_dump($status);
 			$status = apply_filters( 'learn_press_order_status', $status, $this );
+// 			var_dump($status);
+			apply_filters( 'learn-press/order/status', $status, $this->get_id() );
 
-			return apply_filters( 'learn-press/order/status', $status, $this->get_id() );
+// 			var_dump($this);
+			return $status;
 		}
 
 		/**
@@ -375,6 +383,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 			if ( ! empty( $statuses[ $order_status ] ) ) {
 				$status = $statuses[ $order_status ];
+			} elseif ( ! empty( $statuses[ 'lp-' . $order_status ] ) ) {
+				$status = $statuses[ 'lp-' . $order_status ];
 			} elseif ( $order_status == 'trash' ) {
 				$status = __( 'Removed', 'learnpress' );
 			} else {
@@ -462,21 +472,29 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$customer      = false;
 			if ( 'auto-draft' === get_post_status( $this->get_id() ) ) {
 			} else {
-				$customer = learn_press_get_user( $this->get_data( 'user_id' ) );
-			}
-			if ( $customer ) {
-				if ( ! $customer->is_exists() ) {
-					$customer_name = $this->get_guest_customer_name();
-				} else {
-					if ( $customer->get_data( 'display_name' ) ) {
-						$customer_name = $customer->get_data( 'display_name' );
-					} elseif ( $customer->get_data( 'user_nicename' ) ) {
-						$customer_name = $customer->get_data( 'user_nicename' );
-					} elseif ( $customer->get_data( 'user_login' ) ) {
-						$customer_name = $customer->get_data( 'user_login' );
+				if ( $user_id = $this->get_data( 'user_id' ) ) {
+					settype( $user_id, 'array' );
+					$customer_name = array();
+					foreach ( $user_id as $uid ) {
+						$customer = learn_press_get_user( $uid );
+						if ( $customer && $customer->is_exists() ) {
+							if ( $customer->get_data( 'display_name' ) ) {
+								$customer_name[] = $customer->get_data( 'display_name' );
+							} elseif ( $customer->get_data( 'user_nicename' ) ) {
+								$customer_name[] = $customer->get_data( 'user_nicename' );
+							} elseif ( $customer->get_data( 'user_login' ) ) {
+								$customer_name[] = $customer->get_data( 'user_login' );
+							}
+						} else {
+							$customer_name[] = $this->get_guest_customer_name();
+						}
 					}
+
+					$customer_name = join( ', ', $customer_name );
 				}
-			} else {
+			}
+
+			if ( ! $customer_name ) {
 				$customer_name = $this->get_guest_customer_name();
 			}
 
@@ -529,7 +547,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function is_guest() {
-			return ! $this->get_user_id();
+			return ! get_user_by( 'ID', $this->get_user_id() );
 		}
 
 		public function get_item_meta( &$item ) {
@@ -764,7 +782,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function get_user( $field = '' ) {
 
-			if ( false === ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) ) {
+			$users = $this->get_users();
+			$uid   = reset( $users );
+
+			if ( false === ( $user = learn_press_get_user( $uid ) ) ) {
 				return false;
 			}
 
@@ -785,7 +806,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array
 		 */
 		public function get_users() {
-			$users = (array) $this->get_data( 'user_id' );
+			if ( $users = $this->get_data( 'user_id' ) ) {
+				settype( $users, 'array' );
+				$users = array_unique( $users );
+			} else {
+				$users = array();
+			}
 
 			return $users;
 		}
@@ -850,7 +876,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			if ( ! $view_order_endpoint ) {
 				$view_order_endpoint = 'order-details';
 			}
-
 			$view_order_endpoint = urlencode( $view_order_endpoint );
 			if ( get_option( 'permalink_structure' ) ) {
 				$view_order_url = learn_press_get_page_link( 'profile' ) . $user->get_data( 'user_login' ) . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
@@ -1016,19 +1041,21 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			if ( $user_ids = $this->get_data( 'user_id' ) ) {
 				if ( is_array( $user_ids ) ) {
 					foreach ( $user_ids as $user_id ) {
-						$user             = learn_press_get_user( $user_id );
-						$data[ $user_id ] = $user->get_data(
-							array(
-								'id',
-								'email',
-								'user_login',
-								'description',
-								'first_name',
-								'last_name',
-								'nickname',
-								'display_name'
-							)
-						);
+						$user = learn_press_get_user( $user_id );
+						if ( $user->is_exists() ) {
+							$data[ $user_id ] = $user->get_data(
+								array(
+									'id',
+									'email',
+									'user_login',
+									'description',
+									'first_name',
+									'last_name',
+									'nickname',
+									'display_name'
+								)
+							);
+						}
 					}
 				}
 //			global $wpdb;

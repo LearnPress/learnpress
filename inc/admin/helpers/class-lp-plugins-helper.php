@@ -140,7 +140,7 @@ class LP_Plugins_Helper {
 	public static function get_plugins_from_wp( $args = null ) {
 
 		if ( ! ( $plugins = get_transient( 'lp_plugins_wp' ) ) ) {
-			self::$_background_query_items->push_to_queue(
+			LP()->background('query-items')->push_to_queue(
 				array(
 					'callback' => array( 'LP_Background_Query_Items', 'query_free_addons' )
 				)
@@ -160,7 +160,7 @@ class LP_Plugins_Helper {
 	public static function get_premium_plugins() {
 
 		if ( ! ( $plugins = get_transient( 'lp_plugins_tp' ) ) ) {
-			self::$_background_query_items->push_to_queue(
+			LP()->background('query-items')->push_to_queue(
 				array(
 					'callback' => array( 'LP_Background_Query_Items', 'query_premium_addons' )
 				)
@@ -183,7 +183,7 @@ class LP_Plugins_Helper {
 		self::$themes = get_transient( 'lp_related_themes' );
 
 		if ( ! self::$themes ) {
-			self::$_background_query_items->push_to_queue(
+			LP()->background('query-items')->push_to_queue(
 				array(
 					'callback' => array( 'LP_Background_Query_Items', 'get_related_themes' )
 				)
@@ -426,9 +426,9 @@ class LP_Plugins_Helper {
 		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
 		add_filter( 'extra_plugin_headers', array( __CLASS__, 'add_on_header' ) );
 
-		if ( ! is_a( self::$_background_query_items, 'LP_Background_Query_Addons' ) ) {
-			self::$_background_query_items = new LP_Background_Query_Items();
-		}
+//		if ( ! is_a( self::$_background_query_items, 'LP_Background_Query_Addons' ) ) {
+//			self::$_background_query_items = new LP_Background_Query_Items();
+//		}
 	}
 }
 

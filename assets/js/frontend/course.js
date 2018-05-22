@@ -175,13 +175,12 @@
             }
 
             var $tab = $(tab),
-                $parent = $tab.closest('.course-nave');
+                $parent = $tab.closest('.course-nav');
 
-            if ($tab.siblings().lengt === 0) {
+            if ($parent.siblings().length === 0) {
                 return;
             }
-
-            LP.setUrl($(tab).attr('href'));
+            LP.setUrl($tab.attr('href'))
         }
 
         /**
@@ -381,8 +380,13 @@
         }
 
         function fitVideo() {
-            var $wrapContent = $('.content-item-summary'),
-                $entryVideo = $wrapContent.find('.entry-video'),
+            var $wrapContent = $('.content-item-summary.content-item-video');
+
+            if (!$wrapContent.length) {
+                return;
+            }
+
+            var $entryVideo = $wrapContent.find('.entry-video'),
                 $frame = $entryVideo.find('iframe'),
                 width = $frame.attr('width'),
                 height = $frame.attr('height'),
@@ -405,8 +409,6 @@
             if (!$entryVideo.length) {
                 return false;
             }
-
-            $wrapContent.addClass('content-item-video');
 
             if (width && height) {
                 if (width.indexOf('%') === -1 && height.indexOf('%') === -1) {
@@ -431,6 +433,7 @@
             inPopup = $body.hasClass('course-item-popup');
             initSections();
             initEvents();
+
 
             if (!inPopup) {
                 return;
@@ -464,19 +467,95 @@
             setTimeout(function () {
                 var $cs = $body.find('.curriculum-sections').parent();
                 $cs.scrollTo($cs.find('.course-item.current'), 100);
+
+                if (window.location.hash) {
+                    $('.content-item-scrollable:last').scrollTo($(window.location.hash));
+                }
             }, 300);
 
             $body.css('opacity', 1);
 
         }
 
+        new LP.Alerts();
+
         init();
     }
 
+    LP.Alerts = function () {
+        this.isShowing = false;
+        var $doc = $(document),
+            self = this,
+            trigger = function (action, args) {
+                var triggered = $doc.triggerHandler(action, args);
+
+                if (triggered !== undefined) {
+                    return triggered;
+                }
+
+                return $.isArray(args) ? args[0] : undefined;
+            },
+            confirmHandle = function (e) {
+                try {
+                    var $form = $(this),
+                        message = $form.data('confirm'),
+                        action = $form.data('action');
+
+                    message = trigger('learn-press/confirm-message', [message, action]);
+
+                    if (!message) {
+                        return true;
+                    }
+
+                    jConfirm(message, '', function (confirm) {
+                        confirm && $form.off('submit.learn-press-confirm', confirmHandle).submit();
+                        self.isShowing = false;
+                    });
+
+                    self.isShowing = true;
+
+                    return false;
+                } catch (ex) {
+                    console.log(ex)
+                }
+
+                return true;
+            }
+
+        this.watchChange('isShowing', function (prop, oldVal, newVal) {
+            if (newVal) {
+                setTimeout(function () {
+                    $.alerts._reposition();
+                    $('#popup_container').addClass('ready')
+                }, 30)
+
+                var $a = $('<a href="" class="close"><i class="fa fa-times"></i></a>')
+                $('#popup_container').append($a);
+                $a.on('click', function () {
+                    $.alerts._hide();
+                    return false;
+                });
+            }
+            $(document.body).toggleClass('confirm', newVal);
+            return newVal;
+        });
+
+        var $forms = $('form[data-confirm]').on('submit.learn-press-confirm', confirmHandle);
+    }
+
+
     $(document).ready(function () {
         $(document).ready(function () {
-            new LP_Course({})
+            new LP_Course({});
+
+            $(this).on('submit', 'form[name="course-external-link"]', function () {
+                var redirect = $(this).attr('action');
+                if (redirect) {
+                    window.location.href = redirect;
+                    return false;
+                }
+            })
         });
-    })
+    });
 })
 (jQuery, LP, _);

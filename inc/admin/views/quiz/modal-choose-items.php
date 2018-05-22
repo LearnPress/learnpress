@@ -12,7 +12,7 @@ learn_press_admin_view( 'quiz/pagination' );
 <script type="text/x-template" id="tmpl-lp-quiz-choose-item">
     <li class="question-item" :class="[item.type, item.added ? 'added': 'addable']" @click="add">
         <input type="checkbox" :checked="item.added === true">
-        <span class="title">{{item.title}}</span>
+        <span class="title">{{item.title}} <strong>(#{{item.id}})</strong></span>
     </li>
 </script>
 
@@ -54,14 +54,15 @@ learn_press_admin_view( 'quiz/pagination' );
                 <ul class="tabs">
                     <li class="tab active"><a href="#"><?php esc_html_e( 'Questions', 'learnpress' ); ?></a></li>
                 </ul>
-                <div class="close" @click="close">
-                    <span class="dashicons dashicons-no-alt"></span>
-                </div>
+                <a class="close" @click="close">
+                    <span class="dashicons dashicons-no-alt" title="<?php esc_attr_e('Close', 'learnpress');?>"></span>
+                </a>
             </div>
 
             <div class="main">
                 <form class="search" @submit.prevent="">
-                    <input placeholder="<?php esc_attr_e( 'Type here to search item', 'learnpress' ); ?>"
+                    <input type="text" class="modal-search-input"
+                           placeholder="<?php esc_attr_e( 'Type here to search question', 'learnpress' ); ?>"
                            title="search" @input="onChangeQuery" v-model="query">
                 </form>
                 <ul class="list-items">
@@ -132,6 +133,9 @@ learn_press_admin_view( 'quiz/pagination' );
                     }
                 })
             },
+            mounted: function () {
+
+            },
             computed: {
                 status: function () {
                     return $store.getters['cqi/status'];
@@ -161,7 +165,11 @@ learn_press_admin_view( 'quiz/pagination' );
                     return $store.getters['cqi/items'];
                 },
                 show: function () {
-                    return $store.getters['cqi/isOpen'];
+                    var isShow = $store.getters['cqi/isOpen'];
+
+                    isShow && this.focusInput();
+
+                    return isShow;
                 },
                 // check new quiz
                 new_quiz: function () {
@@ -175,6 +183,12 @@ learn_press_admin_view( 'quiz/pagination' );
                     this.showPreview = false;
                     this.adding = false;
                     this.makeSearch();
+                },
+                focusInput: function () {
+                    var $input = $(this.$el).find('.main .search input[type="text"]').focus();
+                    setTimeout(function () {
+                        $input.focus();
+                    }, 300)
                 },
                 // add items to quiz
                 checkout: function () {

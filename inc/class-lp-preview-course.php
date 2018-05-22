@@ -51,6 +51,7 @@ class LP_Preview_Course {
 				self::$_preview_course = $course_id;
 			}
 
+
 		}
 
 		return self::$_preview_course;
@@ -60,7 +61,10 @@ class LP_Preview_Course {
 		global $wpdb;
 
 		if ( ! self::is_preview() ) {
-			$where = self::get_preview_course() ? $where . $wpdb->prepare( " AND {$wpdb->posts}.ID <> %d", self::$_preview_course ) : $where;
+			if ( $ids = LP_Preview_Course::get_preview_courses() ) {
+				$format = array_fill( 0, sizeof( $ids ), '%d' );
+				$where  .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ") ", $ids );
+			}
 		}
 
 		return $where;
@@ -151,6 +155,22 @@ class LP_Preview_Course {
 		}
 	}
 
+	public static function get_preview_courses() {
+		if ( false === ( $ids = wp_cache_get( 'preview-courses', 'learnpress' ) ) ) {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				SELECT post_id
+				FROM {$wpdb->postmeta}
+				WHERE meta_key = %s AND meta_value = %s
+			", '_lp_preview_course', 'yes' );
+
+			$ids = $wpdb->get_col( $query );
+			wp_cache_set( 'preview-courses', $ids, 'learnpress' );
+		}
+
+		return $ids;
+	}
+
 	public static function edit_button() {
 		learn_press_display_message( sprintf( __( 'You are in preview mode. Continue <a href="%s">editing</a>?', 'learnpress' ), get_edit_post_link( self::$_item_id ) ), 'error' );
 	}
@@ -205,8 +225,8 @@ class LP_Preview_Course {
 	}
 
 	public static function reduce_counts( $counts, $type, $perm ) {
-		if ( LP_COURSE_CPT === $type && self::get_preview_course() ) {
-			$counts->publish --;
+		if ( ( LP_COURSE_CPT === $type ) && ( $ids = self::get_preview_courses() ) ) {
+			$counts->publish -= sizeof( $ids );
 		}
 
 		return $counts;

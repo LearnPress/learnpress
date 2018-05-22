@@ -2,7 +2,7 @@
 /**
  * Checkout Page Shortcode.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @category Shortcodes
  * @package  Learnpress/Shortcodes
  * @version  3.0.0
@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			} else {
 				// Check cart has contents
 				if ( LP()->cart->is_empty() ) {
-					learn_press_get_template( 'cart/empty-cart.php' );
+					learn_press_get_template( 'checkout/empty-cart.php' );
 				} else {
 					learn_press_get_template( 'checkout/form.php' );
 				}
@@ -80,3 +80,4 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 		}
 	}
 }
+

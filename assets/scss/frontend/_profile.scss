@@ -1,13 +1,13 @@
 #learn-press-user-profile {
     position: relative;
-    &:before {
-        position: absolute;
-        content: '';
-        width: 200px;
-        top: 0;
-        bottom: 0;
-        background: #f5f5f5;
-    }
+    //&:before {
+    //    position: absolute;
+    //    content: '';
+    //    width: 200px;
+    //    top: 0;
+    //    bottom: 0;
+    //    background: #f5f5f5;
+    //}
 
     &:after {
         @include clear-fix();
@@ -36,6 +36,14 @@
     background: #f5f5f5;
     /*margin-bottom: -20000px;
     padding-bottom: 20000px;*/
+    &:before{
+        content: '';
+        width: 200px;
+        background: #F5F5F5;
+        top: 0;
+        bottom: 0;
+        position: absolute;
+    }
     .tabs {
         list-style: none;
         margin: 0;

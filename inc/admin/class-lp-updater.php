@@ -25,45 +25,91 @@ class LP_Updater {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'update_form' ) );
 		add_action( 'admin_init', array( $this, 'do_update' ) );
+
+		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
+			add_action( 'admin_notices', array( $this, 'update_message' ), 10 );
+		}
+
+		LP_Request::register_ajax( 'check-updated', array( $this, 'check_updated' ) );
+	}
+
+	public function check_updated() {
+
+		$this->do_update();
+		$db_version     = get_option( 'learnpress_db_version' );
+		$latest_version = $this->get_latest_version();
+		$response       = array(
+			'result' => 'error'
+		);
+
+		if ( version_compare( $db_version, $latest_version, '>=' ) ) {
+			$response['result']  = 'success';
+			$response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
+		} else {
+			$response['step'] = get_option( 'learnpress_updater_step' );
+		}
+
+		learn_press_send_json( $response );
+		die();
+	}
+
+	public function update_message() {
+		remove_action( 'admin_notices', array( 'LP_Install', 'check_update_message' ), 20 );
+		learn_press_admin_view( 'updates/html-updating-message' );
 	}
 
 	public function do_update() {
-		if ( 'yes' !== LP_Request::get_string( 'do-update-learnpress' ) ) {
-			return;
+
+		if ( 'yes' === get_option( 'do-update-learnpress' ) ) {
+			return $this->_do_update();
 		}
-		echo '<div>';
-		ob_start();
+
+		if ( 'yes' !== LP_Request::get_string( 'do-update-learnpress' ) ) {
+			return false;
+		}
+
+		update_option( 'do-update-learnpress', 'yes', 'yes' );
+
+		if ( ! learn_press_message_count() ) {
+			$this->update_message();
+		} else {
+			learn_press_print_messages();
+		}
+		die();
+	}
+
+	protected function _do_update() {
 
 		try {
-			LP_Debug::startTransaction();
-			foreach ( $this->get_update_files() as $version => $file ) {
-				$file = LP_PLUGIN_PATH . '/inc/updates/' . $file;
+			$db_version     = get_option( 'learnpress_db_version' );
+			$latest_version = true;
 
+			foreach ( $this->get_update_files() as $version => $file ) {
+
+				if ( $db_version && version_compare( $db_version, $version, '>=' ) ) {
+					continue;
+				}
+
+				$file = LP_PLUGIN_PATH . '/inc/updates/' . $file;
 				include_once $file;
+				update_option( 'learnpress_updater', $version, 'yes' );
+				$latest_version = false;
+				break;
 			}
 
-			LP_Install::update_version();
-			LP_Install::update_db_version();
+			if ( $latest_version ) {
+				delete_option( 'do-update-learnpress' );
+				delete_option( 'learnpress_updater' );
+				LP_Install::update_version();
+				remove_action( 'admin_notices', array( $this, 'update_message' ), 10 );
+				LP()->session->set( 'do-update-learnpress', 'yes' );
+			}
 		}
 		catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 		}
 
-		if ( ob_get_length() ) {
-			ob_get_clean();
-		}
-
-		if ( ! learn_press_message_count() ) {
-			LP_Debug::commitTransaction();
-
-			learn_press_display_message( __( 'Successfully updated your database.', 'learnpress' ) );
-		} else {
-			LP_Debug::rollbackTransaction();
-
-			learn_press_print_messages();
-		}
-		echo '</div>';
-		die();
+		return true;
 	}
 
 	/**
@@ -87,6 +133,22 @@ class LP_Updater {
 	}
 
 	/**
+	 * Get latest version from updates
+	 *
+	 * @return bool|mixed
+	 */
+	public function get_latest_version() {
+		if ( ! $this->get_update_files() ) {
+			return false;
+		}
+
+		$versions       = array_keys( $this->_update_files );
+		$latest_version = end( $versions );
+
+		return $latest_version;
+	}
+
+	/**
 	 * Scan folder updates to get update patches.
 	 */
 	public function get_update_files() {
@@ -94,7 +156,7 @@ class LP_Updater {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
-				if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . '/inc/updates' ) ) {
+				if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . 'inc/updates' ) ) {
 					foreach ( $files as $file ) {
 						if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
 							$this->_update_files [ $matches[1] ] = $file['name'];

@@ -61,7 +61,6 @@ if ( ! class_exists( 'RWMB_List_Emails_Field' ) ) {
                             <span class="change-email-status dashicons dashicons-yes"
                                   data-status="<?php echo $email->enable ? 'on' : 'off'; ?>"
                                   data-id="<?php echo $email->id; ?>"></span>
-                            <a href="<?php echo $url; ?>"><?php _e( 'Settings', 'learnpress' ); ?></a>
                         </td>
                     </tr>
 				<?php } ?>

@@ -17,7 +17,7 @@
 
         if (seconds > DAY_IN_SECONDS) {
             var days = Math.ceil(seconds / DAY_IN_SECONDS);
-            str = days + ( days > 1 ? ' day left' : ' days left' );
+            str = days + ( days > 1 ? ' days left' : ' day left' );
         } else {
             var hours = Math.floor(seconds / HOUR_IN_SECONDS),
                 minutes = 0;
@@ -63,7 +63,9 @@
             }
 
             if (overtime) {
-                callbackEvents.callEvent('finish');
+                // console.log('Overtime')
+                // return;
+                //
                 return;
             }
             thisSettings.remainingTime--;
@@ -86,6 +88,9 @@
             callbackEvents.callEvent('tick', [newVal]);
             if (newVal <= 0) {
                 stopCountdown();
+
+                // Disable confirm message
+                $('form.complete-quiz').off('submit.learn-press-confirm');
                 callbackEvents.callEvent('finish');
             }
         }
@@ -101,6 +106,16 @@
             $('form.complete-quiz').submit();
         }
 
+        function beforeSubmit() {
+            var $form = $(this),
+                $input = $form.find('input[name="nav-type"]'),
+                navType = $form[0].className.match(/(prev|next|skip)-question/);
+
+            if (!$input.length) {
+                $input = $('<input type="hidden" name="nav-type" />').val(navType[0]).appendTo($form);
+            }
+        }
+
         function init() {
             if (thisSettings.onTick) {
                 self.on('tick', thisSettings.onTick);
@@ -109,6 +124,8 @@
             if (thisSettings.onFinish) {
                 self.on('finish', thisSettings.onFinish);
             }
+
+            $(document).on('submit', '.next-question, .prev-question, .skip-question', beforeSubmit);
             initCountdown();
             timeCountdown();
         }
@@ -117,8 +134,10 @@
         this.on = callbackEvents.on;
         this.off = callbackEvents.off;
 
-        this.on('tick.showTime', showTime);
-        this.on('finish.submit', submit);
+        if (thisSettings.totalTime > 0) {
+            this.on('tick.showTime', showTime);
+            this.on('finish.submit', submit);
+        }
 
         this.getRemainingTime = function () {
             return remainingTime;

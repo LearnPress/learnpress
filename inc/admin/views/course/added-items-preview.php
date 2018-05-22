@@ -22,22 +22,24 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
-        Vue.component('lp-added-items-preview', {
-            template: '#tmpl-lp-added-items-preview',
-            props: {
-                show: true
-            },
-            methods: {
-                removeItem: function (item) {
-                    $store.dispatch('ci/removeItem', item);
+    jQuery(function() {
+        (function (Vue, $store) {
+            Vue.component('lp-added-items-preview', {
+                template: '#tmpl-lp-added-items-preview',
+                props: {
+                    show: true
+                },
+                methods: {
+                    removeItem: function (item) {
+                        $store.dispatch('ci/removeItem', item);
+                    }
+                },
+                computed: {
+                    addedItems: function () {
+                        return $store.getters['ci/addedItems'];
+                    }
                 }
-            },
-            computed: {
-                addedItems: function () {
-                    return $store.getters['ci/addedItems'];
-                }
-            }
-        });
-    })(Vue, LP_Curriculum_Store);
+            });
+        })(Vue, LP_Curriculum_Store);
+    });
 </script>

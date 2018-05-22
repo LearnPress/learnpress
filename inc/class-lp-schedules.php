@@ -17,13 +17,14 @@ class LP_Schedules {
 	 */
 	public function __construct() {
 
-		$this->background_schedule_items = new LP_Background_Schedule_Items();
+		//$this->background_schedule_items = new LP_Background_Schedule_Items();
 
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
 			//$this->_update_user_course_expired();
 		}
-		add_filter( 'template_include', array( $this, 'queue_items' ), 10 );
-		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
+		//add_filter( 'init', array( $this, 'queue_items' ), 10 );
+
+//		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
 
 		return;
 		if ( ! wp_next_scheduled( 'learn_press_schedule_update_user_items' ) ) {
@@ -60,13 +61,10 @@ class LP_Schedules {
 	 *
 	 * @return mixed
 	 */
-	public function queue_items( $template ) {
+	public function queue_items() {
+		LP()->add_background_task( array( 'auto-complete-item' => rand() ), 'schedule-items' );
 
-		$this->background_schedule_items->push_to_queue(
-			array( 'auto-complete-item' => rand() )
-		);
-
-		return $template;
+		return false;
 		if ( ! $items = $this->_get_items() ) {
 			return $template;
 		}

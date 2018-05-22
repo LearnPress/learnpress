@@ -138,7 +138,7 @@ add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_end_
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_tabs', 20 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_price', 25 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_buttons', 30 );
-add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 35 );
+//add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 35 );
 
 /**
  * @see learn_press_course_meta_start_wrapper
@@ -159,7 +159,7 @@ add_action( 'learn-press/content-learning-summary', 'learn_press_course_progress
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_remaining_time', 30 );
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_tabs', 35 );
 add_action( 'learn-press/content-learning-summary', 'learn_press_course_buttons', 40 );
-add_action( 'learn-press/content-learning-summary', 'learn_press_course_instructor', 45 );
+//add_action( 'learn-press/content-learning-summary', 'learn_press_course_instructor', 45 );
 
 /**
  * Course item content
@@ -184,22 +184,29 @@ add_action( 'learn-press/single-item-summary', 'learn_press_single_course_conten
  * @see learn_press_content_item_comments
  */
 add_action( 'learn-press/course-item-content', 'learn_press_course_item_content', 5 );
-add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
+//add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
 
 /**
  * @see learn_press_content_item_nav
+ * @see learn_press_disable_course_comment_form
  */
 add_action( 'learn-press/after-course-item-content', 'learn_press_content_item_nav', 5 );
+add_action( 'learn-press/after-course-item-content', 'learn_press_lesson_comment_form', 10 );
+add_action( 'learn-press/after-course-item-content', 'learn_press_disable_course_comment_form', 1000 );
 
 /**
  * @see learn_press_content_item_lesson_title
  * @see learn_press_content_item_lesson_content
+ * @see learn_press_content_item_lesson_content_blocked
  * @see learn_press_content_item_lesson_complete_button
  */
 add_action( 'learn-press/before-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_title', 10 );
 add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content', 10 );
+add_action( 'learn-press/content-item-summary/lp_lesson', 'learn_press_content_item_lesson_content_blocked', 15 );
 add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_content_item_lesson_complete_button', 10 );
 add_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_course_finish_button', 15 );
+
+add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
 
 /**
  * @see learn_press_content_item_header
@@ -390,6 +397,12 @@ add_filter( 'comments_template_query_args', 'learn_press_comments_template_query
 add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 
 /**
+ * @see learn_press_back_to_class_button
+ */
+add_action( 'learn-press/after-checkout-form', 'learn_press_back_to_class_button' );
+add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_button' );
+
+/**
  * add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_login', 5 );
  * add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_register', 10 );
  * add_action( 'learn_press_checkout_order_review', 'learn_press_order_review', 5 );
@@ -403,16 +416,7 @@ add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
  * add_action( 'learn_press/after_course_item_content', 'learn_press_lesson_comment_form', 10, 2 );
  */
 
-add_action( 'wp_head', function () {
-	if ( isset( $_REQUEST['content-only'] ) ) {
-		global $wp_filter;
-		if ( isset( $wp_filter['learn-press/single-item-summary'] ) ) {
-			unset( $wp_filter['learn-press/single-item-summary'] );
-		}
-
-		$course = learn_press_get_course();
-		$course->get_curriculum();
-
-		add_action( 'learn-press/single-item-summary', 'learn_press_single_course_content_item', 10 );
-	}
-} );
+/**
+ * @see learn_press_reset_single_item_summary_content
+ */
+add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );

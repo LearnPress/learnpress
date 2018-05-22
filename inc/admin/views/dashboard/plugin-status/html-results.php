@@ -3,7 +3,7 @@
  * Template for displaying LP information.
  */
 defined( 'ABSPATH' ) || exit();
-if ( ! isset( $plugin_data ) ) {
+if ( ! isset( $plugin_data ) || is_wp_error($plugin_data) ) {
 	return;
 }
 ?>

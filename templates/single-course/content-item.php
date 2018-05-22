@@ -14,9 +14,14 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$user        = LP_Global::user();
-$course_item = LP_Global::course_item();
-$course      = LP_Global::course();
+$user           = LP_Global::user();
+$course_item    = LP_Global::course_item();
+$course         = LP_Global::course();
+$can_view_item  = $user->can_view_item( $course_item->get_id(), $course->get_id() );
+$exclude_cases  = apply_filters( 'learn_press/exclude_view_cases', array(
+	'not-logged-in',
+	'not-enrolled'
+) );
 ?>
 
 <div id="learn-press-content-item">
@@ -31,7 +36,7 @@ $course      = LP_Global::course();
 			/**
 			 * @deprecated
 			 */
-			do_action( 'learn-press/before_course_item_content' );
+			do_action( 'learn_press_before_content_item' );
 
 			/**
 			 * @since 3.0.0
@@ -39,7 +44,7 @@ $course      = LP_Global::course();
 			 */
 			do_action( 'learn-press/before-course-item-content' );
 
-			if ( $user->can_view_item( $course_item->get_id(), $course->get_id() ) ) {
+			if ( $can_view_item && ! in_array( $can_view_item, $exclude_cases ) ) {
 				/**
 				 * @deprecated
 				 */
@@ -51,7 +56,7 @@ $course      = LP_Global::course();
 				do_action( 'learn-press/course-item-content' );
 
 			} else {
-				learn_press_get_template( 'single-course/content-protected.php' );
+				learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item'=>$can_view_item ) );
 			}
 
 			/**

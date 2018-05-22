@@ -53,16 +53,19 @@ if ( ! class_exists( 'LP_Background_Global' ) ) {
 		 * @return bool
 		 */
 		protected function task( $callback ) {
+			parent::task( $callback );
 
 			if ( isset( $callback['action'] ) ) {
 				$args = isset( $callback['args'] ) ? $callback['args'] : array();
 				try {
 
 					if ( is_callable( $callback['callback'] ) ) {
-						call_user_func_array( $callback['callback'], $args );
+						//call_user_func_array( $callback['callback'], $args );
+						call_user_func( $callback['callback'], $callback );
 					}
 
-					do_action_ref_array( 'learn-press/background/' . $callback['action'], $args );
+					//do_action_ref_array( 'learn-press/background/' . $callback['action'], $args );
+					do_action( 'learn-press/background/' . $callback['action'], $callback );
 				}
 				catch ( Exception $e ) {
 
@@ -73,3 +76,5 @@ if ( ! class_exists( 'LP_Background_Global' ) ) {
 		}
 	}
 }
+
+return LP_Background_Global::instance();

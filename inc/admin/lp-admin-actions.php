@@ -18,7 +18,12 @@ function _learn_press_set_user_items( $query ) {
 	if ( current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
 		return $query;
 	}
-	if ( ! in_array( $post_type, array( 'lp_course', LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
+	if ( ! in_array( $post_type, apply_filters( 'lear-press/filter-user-access-types', array(
+		LP_COURSE_CPT,
+		LP_LESSON_CPT,
+		LP_QUIZ_CPT,
+		LP_QUESTION_CPT
+	) ) ) ) {
 		return;
 	}
 	$items = $wpdb->get_col(

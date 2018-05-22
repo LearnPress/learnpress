@@ -23,7 +23,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	/**
 	 * LP_Profile_Tabs constructor.
 	 *
-	 * @param array      $tabs
+	 * @param array $tabs
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $tabs, $profile = null ) {
@@ -76,7 +76,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 		uasort( $tabs, array( $this, '_sort_tabs' ) );
 
-		$key = md5( serialize( $tabs ) );
+		$key = md5( serialize( array_keys( $tabs ) ) );
 		if ( $key !== get_option( '_lp_tabs_data' ) ) {
 			flush_rewrite_rules();
 			update_option( '_lp_tabs_data', $key, false );
@@ -169,8 +169,8 @@ class LP_Profile_Tabs extends LP_Array_Access {
 
 
 	/**
-	 * @param bool    $tab
-	 * @param bool    $with_section
+	 * @param bool $tab
+	 * @param bool $with_section
 	 * @param LP_User $user
 	 *
 	 * @return string
@@ -225,7 +225,7 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	/**
 	 * Get the slug of tab or section if defined.
 	 *
-	 * @param array  $tab_or_section
+	 * @param array $tab_or_section
 	 * @param string $default
 	 *
 	 * @return string
@@ -245,8 +245,8 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	/**
 	 * Get current link of profile
 	 *
-	 * @param string $args           - Optional. Add more query args to url.
-	 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
+	 * @param string $args - Optional. Add more query args to url.
+	 * @param bool $with_permalink - Optional. TRUE to build url as friendly url.
 	 *
 	 * @return mixed|string
 	 */
@@ -323,6 +323,23 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	protected function _sort_tabs( $a, $b ) {
 		return $a['priority'] > $b['priority'];
 	}
+
+	/**
+	 * Remove tab.
+	 *
+	 * @param $key
+	 */
+	public function remove_tab( $key ) {
+		$tabs = $this->_data;
+
+		foreach ( $tabs as $slug => $data ) {
+			if ( $key == $slug ) {
+				unset( $tabs[ $key ] );
+			}
+		}
+
+		$this->_data = $tabs;
+	}
 }
 
 /**
@@ -345,8 +362,8 @@ class LP_Profile_Tab extends LP_Array_Access {
 	/**
 	 * LP_Profile_Tab constructor.
 	 *
-	 * @param string     $id
-	 * @param array      $data
+	 * @param string $id
+	 * @param array $data
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $id, $data, $profile ) {

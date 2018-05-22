@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.8
  */
 
 /**
@@ -44,15 +44,13 @@ $percent = $quiz_data->get_questions_answered( true );
             </span>
         </div>
         <div class="progress-item quiz-countdown">
-            <span class="progress-number"> --:--:-- </span>
+            <span class="progress-number"> <?php _e( 'Unlimited', 'learnpress' ); ?> </span>
             <span class="progress-label">
-				<?php
-				if ( $duration = $quiz_data->get_time_remaining() ) {
+				<?php if ( $quiz->get_duration()->get_seconds() ) {
 					_e( 'Time remaining', 'learnpress' );
 				} else {
-					echo __( 'Unlimited', 'learnpress' );
-				}
-				?>
+					_e( 'Duration Unlimited', 'learnpress' );
+				} ?>
             </span>
         </div>
     </div>

@@ -25,7 +25,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function create( &$order ) {
 
 		$order->set_order_date( current_time( 'timestamp' ) );
-		$order->set_order_key(  learn_press_generate_order_key() );
+		$order->set_order_key( learn_press_generate_order_key() );
 
 		$order_data = array(
 			'post_author'   => '1',
@@ -34,8 +34,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'post_status'   => $order->get_order_status(),
 			'ping_status'   => 'closed',
 			'post_title'    => $order->get_title(),
-			'post_date'     => $order->get_order_date()->toSql( true ),
-			'post_date_gmt' => $order->get_order_date()->toSql( false ),
+			'post_date'     => $order->get_order_date( 'edit' )->toSql( true ),
+			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
 			'post_excerpt'  => $order->get_customer_note()
 		);
 
@@ -152,9 +152,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$status = 'pending';
 		}
 
+
 		$post_data = array(
-			'post_date'     => $order->get_order_date()->toSql(),
-			'post_date_gmt' => $order->get_order_date()->toSql( false ),
+			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
+			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
 			'post_status'   => 'lp-' . $status,
 			'post_parent'   => $order->get_parent_id(),
 			//'post_excerpt'      => $this->get_post_excerpt( $order ),
@@ -318,7 +319,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function cln( $order ) {
 
-		$cloned = function_exists( 'clone' ) ? clone ( $order ) : clone $order;
+		$cloned = clone $order;
 
 		$cloned->set_id( 0 );
 		$cloned->save();
@@ -430,19 +431,19 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 		if ( $post = get_post( $the_id ) ) {
-			$_users = get_post_meta( $order->get_id(), '_user_id' );
-			settype( $_users, 'array' );
+			if ( $_users = get_post_meta( $order->get_id(), '_user_id' ) ) {
+				settype( $_users, 'array' );
+			} else {
+				$_users = array();
+			}
 			if ( sizeof( $_users ) > 1 ) {
-				$users = array();
-
-				foreach ( $_users as $user ) {
-					$users[] = $user[0];
-				}
+				$users = $_users;
 			} elseif ( sizeof( $_users ) == 1 ) {
 				$users = $_users[0];
 			} else {
 				$users = 0;
 			}
+
 			$order->set_data_via_methods(
 				array(
 					'user_id'         => $users,//get_post_meta( $order->get_id(), '_user_id', true ),

@@ -32,11 +32,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Create question and can add to quiz.
 		 *
-		 * @param array $args
+		 * @param $args
 		 *
 		 * @return bool|int|LP_Question|WP_Error
 		 */
-		public function create( &$args = array() ) {
+		public function create( &$args ) {
 			$args = wp_parse_args( $args, array(
 					'quiz_id'        => 0,
 					'order'          => - 1,
@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'type'           => 'true_or_false',
 					'title'          => __( 'New Question', 'learnpress' ),
 					'content'        => '',
-					'create_answers' => true // some cases does not need create answers for new question
+					'create_answers' => true // some cases do not need create answers for new question
 				)
 			);
 
@@ -65,7 +65,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				'post_content' => $args['content'],
 			) );
 
-
 			if ( $question_id ) {
 
 				// add default meta for new lesson
@@ -84,7 +83,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 				if ( $args['create_answers'] ) {
 					$answers = $question->get_default_answers();
-
 					// insert answers data in new question
 					foreach ( $answers as $index => $answer ) {
 						$insert = array(
@@ -106,6 +104,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 						$quiz_curd->add_question( $args['quiz_id'], $question_id, $args['order'] );
 					}
 				}
+
+				// hook
+				do_action( 'learn-press/after-create-question', $question );
 
 				return $question;
 			}
@@ -614,7 +615,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$new_answer['question_answer_id'] = $wpdb->insert_id;
 				$new_answer['question_id']        = $question_id;
 				$new_answer['answer_order']       = $number + 1;
-				$question->set_data( 'answer_options', array_merge( $answers, array( $new_answer ) ) );
+
+				if ( is_array( $answers ) ) {
+					$answers = array_merge( $answers, array( $new_answer ) );
+				} else {
+					$answers = array( $new_answer );
+				}
+				$question->set_data( 'answer_options', $answers );
 			}
 
 			return $wpdb->insert_id;
@@ -769,15 +776,16 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$question_answer_id = $wpdb->insert_id;
 			if ( $question_answer_id ) {
 				// update question answer option data
-				$answer_options = $question->get_data( 'answer_options' ) ? $question->get_data( 'answer_options' ) : array();
+				$answer_options   = $question->get_data( 'answer_options' ) ? $question->get_data( 'answer_options' ) : array();
+				$unserialize_data = unserialize( $args['answer_data'] );
 
 				$new_answer_option_data = array(
 					'question_answer_id' => $question_answer_id,
 					'question_id'        => $args['question_id'],
 					'answer_order'       => $args['answer_order'],
-					'text'               => unserialize( $args['answer_data'] )['text'],
-					'value'              => unserialize( $args['answer_data'] )['value'],
-					'is_true'            => unserialize( $args['answer_data'] )['is_true']
+					'text'               => $unserialize_data['text'],
+					'value'              => $unserialize_data['value'],
+					'is_true'            => $unserialize_data['is_true']
 				);
 
 				if ( ! $answer_options ) {
@@ -831,8 +839,12 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return $this->get_error( 'QUESTION_NOT_EXISTS' );
 			}
 
+			do_action( 'learn-press/before-clear-question', $question_id );
+
 			global $wpdb;
 			$wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
+
+			return true;
 		}
 
 		/**
@@ -907,7 +919,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					SELECT *
 					FROM {$wpdb->prefix}learnpress_question_answers
 					WHERE question_id IN(" . join( ',', $format ) . ")
-					ORDER BY question_id, answer_order ASC
+					ORDER BY question_id, answer_order, question_answer_id ASC
 				", $question_ids );
 
 				$question_answers = array();

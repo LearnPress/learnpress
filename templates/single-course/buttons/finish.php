@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/buttons/finish.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -18,7 +18,8 @@ $course = LP_Global::course();
 $user   = LP_Global::user();
 ?>
 
-<form class="lp-form form-button form-button-finish-course" method="post">
+<form class="lp-form form-button form-button-finish-course" method="post"
+      data-confirm="<?php LP_Strings::esc_attr_e( 'confirm-finish-course', '', array( $course->get_title() ) ); ?>">
 
     <button class="lp-button"><?php _e( 'Finish course', 'learnpress' ); ?></button>
     <input type="hidden" name="course-id" value="<?php echo $course->get_id(); ?>"/>

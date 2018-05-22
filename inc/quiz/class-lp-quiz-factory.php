@@ -37,7 +37,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 			// Handle user do quiz actions in frontend
 			$actions = array(
-				'start-quiz'        => 'start_quiz',
+				'start-quiz:nopriv' => 'start_quiz',
 				'nav-question-quiz' => 'nav_question',
 				'check-answer-quiz' => 'check_answer',
 				'show-hint-quiz'    => 'hint_answer',
@@ -58,6 +58,72 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 			}
 
 			add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_current_question' ), 10, 3 );
+			add_action( 'learn-press/before-start-quiz', array( __CLASS__, 'before_start_quiz' ), 10, 4 );
+			add_action( 'learn-press/user/before-retake-quiz', array( __CLASS__, 'before_retake_quiz' ), 10, 4 );
+
+		}
+
+		/**
+		 * Function called before user start a quiz. We will check if course of quiz
+		 * is not required enroll (and maybe user is a Guest) then we will enroll user to
+		 * the course automatically. And finally, start this quiz for the user.
+		 *
+		 * @param bool $true
+		 * @param int  $quiz_id
+		 * @param int  $course_id
+		 * @param int  $user_id
+		 *
+		 * @return bool
+		 */
+		public static function before_start_quiz( $true, $quiz_id, $course_id, $user_id ) {
+			if ( is_user_logged_in() ) {
+				$user = learn_press_get_user( $user_id );
+			} else {
+				$user = learn_press_get_current_user( true );
+			}
+
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course->is_required_enroll() && ! $user->has_course_status( $course_id, 'enrolled' ) ) {
+				$ret = $user->enroll( $course_id, 0 );
+
+				if ( $ret ) {
+					$true = true;
+				} else {
+					$true = false;
+				}
+
+			}
+
+			remove_action( 'learn-press/before-start-quiz', array( __CLASS__, 'maybe_guest_start_quiz' ) );
+
+			return $true;
+		}
+
+		/**
+		 * @param bool $true
+		 * @param int  $quiz_id
+		 * @param int  $course_id
+		 * @param int  $user_id
+		 *
+		 * @return bool
+		 */
+		public static function before_retake_quiz( $true, $quiz_id, $course_id, $user_id ) {
+			$user   = learn_press_get_user( $user_id );
+			$course = learn_press_get_course( $course_id );
+
+			if ( ! $course->is_required_enroll() ) {
+//
+//				if ( $ret ) {
+//					$true = true;
+//				} else {
+//					$true = false;
+//				}
+			}
+
+			remove_action( 'learn-press/user/before-retake-quiz', array( __CLASS__, 'before_retake_quiz' ) );
+
+			return $true;
 		}
 
 		/**
@@ -340,7 +406,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 			// Filter
 			$result = apply_filters( 'learn-press/quiz/redo-result', $result );
-
 			// Send ajax json
 			learn_press_maybe_send_json( $result );
 
@@ -406,18 +471,38 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 				}
 
-				if ( $questions = self::get_answers_posted() ) {
-					$user   = learn_press_get_current_user();
-					$course = learn_press_get_course( LP_Request::get_int( 'course-id' ) );
-					$quiz   = learn_press_get_quiz( LP_Request::get_int( 'quiz-id' ) );
+				$nav_type = LP_Request::get_string( 'nav-type' );
 
-					$course_data = $user->get_course_data( $course->get_id() );
-					$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+				$course_id   = LP_Request::get_int( 'course-id' );
+				$quiz_id     = LP_Request::get_int( 'quiz-id' );
+				$question_id = LP_Request::get_int( 'question-id' );
 
-					$quiz_data->add_question_answer( $questions );
-					$quiz_data->update();
+				if ( ! $questions = self::get_answers_posted() ) {
+					$questions = array();
 				}
 
+				$user   = learn_press_get_current_user();
+				$course = learn_press_get_course( $course_id );
+				$quiz   = learn_press_get_quiz( $quiz_id );
+
+				$course_data = $user->get_course_data( $course->get_id() );
+				$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+
+				// If user click 'Skip' button
+				if ( $nav_type === 'skip-question' ) {
+					if ( $quiz_data->get_question_answer( $question_id ) == '' ) {
+						$questions[ $question_id ] = '__SKIPPED__';
+					} else {
+						unset( $questions[ $question_id ] );
+					}
+				} else {
+					if ( ! array_key_exists( $question_id, $questions ) ) {
+						$questions[ $question_id ] = array();
+					}
+				}
+
+				$quiz_data->add_question_answer( $questions );
+				$quiz_data->update();
 
 			}
 			catch ( Exception $ex ) {

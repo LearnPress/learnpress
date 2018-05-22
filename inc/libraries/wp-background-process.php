@@ -276,11 +276,12 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		ORDER BY {$key_column} ASC
 		LIMIT 1
 		", $key ) );
-
-		$batch       = new stdClass();
-		$batch->key  = $query->$column;
-		$batch->data = maybe_unserialize( $query->$value_column );
-
+		$batch = null;
+		if( $query ){
+		    $batch       = new stdClass();
+		    $batch->key  = $query->$column;
+		    $batch->data = maybe_unserialize( $query->$value_column );
+		}
 		return $batch;
 	}
 
@@ -295,20 +296,20 @@ abstract class WP_Background_Process extends WP_Async_Request {
 
 		do {
 			$batch = $this->get_batch();
-
-			foreach ( $batch->data as $key => $value ) {
-				$task = $this->task( $value );
-
-				if ( false !== $task ) {
-					$batch->data[ $key ] = $task;
-				} else {
-					unset( $batch->data[ $key ] );
-				}
-
-				if ( $this->time_exceeded() || $this->memory_exceeded() ) {
-					// Batch limits reached.
-					break;
-				}
+			if( $batch && isset($batch->data) && !empty($batch->data) ) {
+    			foreach ( $batch->data as $key => $value ) {
+    				$task = $this->task( $value );
+    				if ( false !== $task ) {
+    					$batch->data[ $key ] = $task;
+    				} else {
+    					unset( $batch->data[ $key ] );
+    				}
+    
+    				if ( $this->time_exceeded() || $this->memory_exceeded() ) {
+    					// Batch limits reached.
+    					break;
+    				}
+    			}
 			}
 
 			// Update or delete current batch.
@@ -417,7 +418,7 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		// Adds every 5 minutes to the existing schedules.
 		$schedules[ $this->identifier . '_cron_interval' ] = array(
 			'interval' => MINUTE_IN_SECONDS * $interval,
-			'display'  => sprintf( __( 'Every %d minutes', 'woocommerce' ), $interval ),
+			'display'  => sprintf( __( 'Every %d minutes', 'learnpress' ), $interval ),
 		);
 
 		return $schedules;

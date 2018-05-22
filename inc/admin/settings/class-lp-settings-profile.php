@@ -38,8 +38,9 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 		$profile_slug  = 'profile';
 
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
-			$profile_post = get_post( learn_press_get_page_id( 'profile' ) );
-			$profile_slug = $profile_post->post_name;
+			if($profile_post = get_post( $profile_id )) {
+				$profile_slug = $profile_post->post_name;
+			}
 		}
 		$profile_url = site_url() . '/' . $profile_slug . '/' . $username;
 
@@ -105,7 +106,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							)
 						),
 						array(
-							'title'   => __( 'Courses limit', 'learnpress' ),
+							'title'   => __( 'Courses per page', 'learnpress' ),
 							'id'      => 'profile_courses_limit',
 							'default' => '10',
 							'type'    => 'number',
@@ -132,7 +133,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 					'learn-press/profile-settings-fields/sub-tabs',
 					array(
 						array(
-							'title' => __( 'Sub tab slugs', 'learnpress' ),
+							'title' => __( 'Sub Tab Slugs', 'learnpress' ),
 							'type'  => 'heading',
 							'desc'  => __( 'The slugs of tabs display in profile page. Each tab should be unique.', 'learnpress' )
 						),
@@ -201,7 +202,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'basic-information',
 							'placeholder' => 'basic-information',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ) . "</code>" )
+							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Avatar', 'learnpress' ),
@@ -209,7 +210,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'avatar',
 							'placeholder' => 'avatar',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ) . "</code>" )
+							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Change Password', 'learnpress' ),
@@ -217,7 +218,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'change-password',
 							'placeholder' => 'change-password',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ) . "</code>" )
+							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ) . "</code>" )
 						)
 					)
 				),

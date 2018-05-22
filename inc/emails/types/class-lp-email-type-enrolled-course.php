@@ -1,4 +1,17 @@
 <?php
+/**
+ * LP_Email_Type_Enrolled_Course.
+ *
+ * @author  ThimPress
+ * @package Learnpress/Classes
+ * @extends LP_Email
+ * @version 3.0.9
+ */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 /**
  * Class LP_Email_Type_Enrolled_Course
@@ -42,6 +55,10 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 				'{{user_email}}'
 			)
 		);
+
+		if ( LP()->settings->get( 'auto_enroll' ) == 'yes' ) {
+			add_action( 'learn-press/order/status-completed', array( $this, 'auto_enroll_trigger' ), 10, 2 );
+		}
 
 		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
 		add_action( 'learn-press/user-enrolled-course/notification', array( $this, 'trigger' ), 99, 3 );
@@ -117,5 +134,28 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 		$this->user_item_id = $user_item_id;
 
 		LP_Emails::instance()->set_current( $this->id );
+	}
+
+	/**
+	 * @param $order_id
+	 */
+	public function auto_enroll_trigger( $order_id, $status ) {
+
+		if ( ! $this->enable ) {
+			return;
+		}
+
+		$order   = learn_press_get_order( $order_id );
+		$user    = $order->get_user();
+		$courses = $order->get_items();
+
+		if ( $courses ) {
+			foreach ( $courses as $course ) {
+				$course_id = $course['course_id'];
+
+				$course_data = new LP_User_Item_Course( $course_id );
+				$this->trigger( $course_id, $user->get_id(), $course_data->get_item_id() );
+			}
+		}
 	}
 }

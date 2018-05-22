@@ -12,7 +12,8 @@ defined( 'ABSPATH' ) or exit;
 		<?php _e( '<strong>LearnPress update</strong> – We need to update your database to the latest version.', 'learnpress' ); ?>
     </p>
     <p>
-        <a class="button button-primary"
-           href="<?php echo esc_url( untrailingslashit( admin_url( 'index.php?page=lp-database-updater&redirect=' . urlencode( learn_press_get_current_url() ) ) ) ); ?>"><?php _e( 'Update Now', 'learnpress' ); ?></a>
+        <a class="button button-primary lp-button-upgrade"
+           data-context="message"
+           href="<?php echo esc_url( admin_url( 'index.php?do-update-learnpress=yes' ) ); ?>"><?php _e( 'Update Now', 'learnpress' ); ?></a>
     </p>
 </div>

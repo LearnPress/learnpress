@@ -35,12 +35,17 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		/**
 		 * @var LP_Background_Emailer
 		 */
-		protected static $_background_emailer = null;
+		//protected static $_background_emailer = null;
 
 		/**
 		 * @var LP_Email
 		 */
 		protected $_current = null;
+
+		/**
+		 * @var null
+		 */
+		protected $_last_current = null;
 
 		/**
 		 * LP_Emails constructor.
@@ -50,6 +55,27 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				return;
 			}
 			include LP_PLUGIN_PATH . 'inc/emails/class-lp-email.php';
+
+			$this->register_emails();
+
+			add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
+			add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10, 2 );
+			add_action( 'learn_press_course_submit_approved_notification', array( $this, 'course_approved' ), 10, 2 );
+			add_action( 'learn_press_user_finish_course_notification', array( $this, 'finish_course' ), 10, 3 );
+			// Send email customer when order created
+			add_filter( 'learn_press_checkout_success_result_notification', array(
+				$this,
+				'customer_new_order'
+			), 10, 2 );
+			add_action( 'set_user_role_notification', array( $this, 'become_an_teacher' ), 10, 3 );
+
+			//add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
+			//add_action( 'learn_press_email_footer', array( $this, 'email_footer' ) );
+
+			do_action( 'learn-press/emails-init', $this );
+		}
+
+		public function register_emails() {
 			include LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-order.php';
 			include LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-enrolled-course.php';
 			include LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-type-finished-course.php';
@@ -98,22 +124,6 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			//$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );
 
 			//$this->emails['LP_Email_Enrolled_Course_Admin']     = include( 'emails/class-lp-email-enrolled-course-admin.php' );
-
-			add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
-			add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10, 2 );
-			add_action( 'learn_press_course_submit_approved_notification', array( $this, 'course_approved' ), 10, 2 );
-			add_action( 'learn_press_user_finish_course_notification', array( $this, 'finish_course' ), 10, 3 );
-			// Send email customer when order created
-			add_filter( 'learn_press_checkout_success_result_notification', array(
-				$this,
-				'customer_new_order'
-			), 10, 2 );
-			add_action( 'set_user_role_notification', array( $this, 'become_an_teacher' ), 10, 3 );
-
-			add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
-			add_action( 'learn_press_email_footer', array( $this, 'email_footer' ) );
-
-			do_action( 'learn-press/emails-init', $this );
 		}
 
 
@@ -174,7 +184,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 
 			if ( 'yes' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
 
-				self::$_background_emailer = new LP_Background_Emailer();
+				//self::$_background_emailer = new LP_Background_Emailer();
 
 				foreach ( $actions as $action ) {
 					add_action( $action, array( __CLASS__, 'queue_email' ), 10, 10 );
@@ -201,7 +211,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				'filter' => current_filter(),
 				'args'   => func_get_args(),
 			);
-			self::$_background_emailer->push_to_queue( $data_queue );
+			LP()->background( 'emailer' )->push_to_queue( $data_queue );
 		}
 
 		/**
@@ -313,6 +323,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		}
 
 		public function set_current( $id ) {
+			$this->_last_current = $this->_current;
+
 			if ( $id instanceof LP_Email ) {
 				$this->_current = $id->id;
 			} else {
@@ -320,8 +332,15 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			}
 		}
 
+		/**
+		 * @return bool|LP_Email
+		 */
 		public function get_current() {
 			return self::get_email( $this->_current );
+		}
+
+		public function reset_current() {
+			$this->_current = $this->_last_current;
 		}
 
 		/**
@@ -338,6 +357,25 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			}
 
 			return ! empty( $emails[ $id ] ) ? self::instance()->emails[ $emails[ $id ] ] : false;
+		}
+
+		/**
+		 * Get image header in general settings.
+		 *
+		 * @return string
+		 */
+		public function get_image_header() {
+			$image = LP()->settings->get( 'emails_general.header_image' );
+
+			if ( is_array( $image ) ) {
+				$image = reset( $image );
+			}
+
+			if ( is_numeric( $image ) ) {
+				$image = wp_get_attachment_image_url( $image, 'full' );
+			}
+
+			return $image;
 		}
 
 		/**

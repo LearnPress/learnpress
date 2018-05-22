@@ -105,6 +105,11 @@ class LP_Checkout {
 
 					$order->set_meta( '_create_account', 'yes' );
 					LP()->session->set( 'user_waiting_payment', $this->get_checkout_email() );
+
+					$user_id = $this->_create_account();
+					if ( ! is_wp_error( $user_id ) ) {
+						wp_new_user_notification( $user_id, null, apply_filters( 'learn-press/email-create-new-user-when-checkout', 'user' ) );
+					}
 					break;
 			}
 
@@ -352,7 +357,7 @@ class LP_Checkout {
 	public function is_enable_guest_checkout() {
 		return apply_filters(
 			'learn-press/checkout/enable-guest',
-			LP()->settings()->get( 'guest_checkout' )
+			LP()->settings()->get( 'guest_checkout' ) == 'yes'
 		);
 	}
 

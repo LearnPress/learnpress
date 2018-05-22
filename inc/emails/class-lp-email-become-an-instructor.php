@@ -55,7 +55,7 @@ if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 
 			LP_Emails::instance()->set_current( $this->id );
 
-			$this->recipient = get_option( 'admin_email' );
+			$this->recipient = $this->_get_admin_email();// get_option( 'admin_email' );
 
 			$this->get_object( null, array(
 				'request_email' => $email

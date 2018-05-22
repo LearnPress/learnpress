@@ -73,6 +73,7 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'init', array( $this, '_do_register' ) );
 		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
+		add_action( 'deleted_post', array( $this, '_deleted_post' ) );
 
 		add_filter( 'manage_edit-' . $this->_post_type . '_sortable_columns', array( $this, 'sortable_columns' ) );
 		add_filter( 'manage_' . $this->_post_type . '_posts_columns', array( $this, 'columns_head' ) );
@@ -93,6 +94,7 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'admin_footer-post.php', array( $this, 'print_js_template' ) );
 		add_action( 'admin_footer-post-new.php', array( $this, 'print_js_template' ) );
 		add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
+		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 
@@ -113,6 +115,115 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
+	}
+
+	public function get_post_type() {
+		$post_type = get_post_type();
+		if ( ! $post_type ) {
+			$post_type = LP_Request::get_string( 'post_type' );
+		}
+
+		return $post_type;
+	}
+
+	public function admin_footer_scripts() {
+
+		global $pagenow;
+
+		if ( $this->get_post_type() !== $this->_post_type ) {
+			return;
+		}
+
+		$user = learn_press_get_current_user();
+
+		if ( ! $user->is_admin() ) {
+			return;
+		}
+
+		if ( $pagenow === 'edit.php' ) {
+			$option = sprintf( '<option value="">%s</option>', __( 'Search by user', 'learnpress' ) );
+
+			if ( $user = get_user_by( 'id', LP_Request::get_int( 'author' ) ) ) {
+				$option = sprintf( '<option value="%d" selected="selected">%s</option>', $user->ID, $user->user_login );
+			}
+			?>
+            <script>
+                jQuery(function ($) {
+                    var $input = $('#post-search-input'),
+                        $form = $($input[0].form),
+                        $select = $('<select name="author" id="author"></select>').append('<?php echo esc_js($option);?>').insertAfter($input).select2({
+                            ajax: {
+                                url: window.location.href + '&lp-ajax=search-authors',
+                                dataType: 'json',
+                                s: ''
+                            },
+                            placeholder: '<?php echo __( 'Search by user', 'learnpress' );?>',
+                            minimumInputLength: 3,
+                            allowClear: true
+                        }).on('select2:select', function () {
+                            $('input[name="author"]').val($select.val())
+                        });
+
+                    $form.on('submit', function () {
+                        var url = window.location.href.removeQueryVar('author').addQueryVar('author', $select.val());
+
+                    })
+                })</script>
+			<?php
+		}
+
+		if ( $pagenow === 'post.php' ) {
+			?>
+            <script>
+                jQuery(function ($) {
+                    var isAssigned = '<?php echo esc_js( $this->is_assigned() );?>',
+                        $postStatus = $('#post_status'),
+                        $message = $('<p class="learn-press-notice-assigned-item"></p>').html(isAssigned),
+                        currentStatus = $postStatus.val();
+
+                    (currentStatus === 'publish') && isAssigned && $postStatus.on('change', function () {
+                        if (this.value !== 'publish') {
+                            $message.insertBefore($('#post-status-select'));
+                        } else {
+                            $message.remove();
+                        }
+                    });
+
+                })
+            </script>
+			<?php
+		}
+	}
+
+	public function is_assigned() {
+		global $wpdb;
+		$post_type = $this->get_post_type();
+		if ( learn_press_is_support_course_item_type( $post_type ) ) {
+			$query = $wpdb->prepare( "
+                SELECT s.section_course_id
+                FROM {$wpdb->learnpress_section_items} si
+                INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
+                INNER JOIN {$wpdb->posts} p ON p.ID = si.item_id
+                WHERE p.ID = %d
+	        ", get_the_ID() );
+
+			if ( $course_id = $wpdb->get_var( $query ) ) {
+				return __( 'This item has already assigned to course. It will be removed from course if it is not published.', 'learnpress' );
+			}
+		} elseif ( LP_QUESTION_CPT === $post_type ) {
+			$query = $wpdb->prepare( "
+		        SELECT p.ID 
+                FROM {$wpdb->posts} p 
+                INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON p.ID = qq.quiz_id
+                WHERE qq.question_id = %d
+		    ", get_the_ID() );
+
+			if ( $quiz_id = $wpdb->get_var( $query ) ) {
+				return __( 'This question has already assigned to quiz. It will be removed from quiz if it is not published.', 'learnpress' );
+			}
+		}
+
+		return 0;
 	}
 
 	public function maybe_remove_features() {
@@ -194,17 +305,77 @@ abstract class LP_Abstract_Post_Type {
 	 * @return bool
 	 */
 	public function _do_save( $post_id, $post = null ) {
+		// Maybe remove
+		$this->maybe_remove_assigned( $post_id );
+
 		if ( get_post_type( $post_id ) != $this->_post_type ) {
 			return false;
 		}
 		// TODO: check more here
 		// prevent loop action
-		remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
+		remove_action( 'save_post', array( $this, '_do_save' ), 10 );
 		$func_args = func_get_args();
 		$this->_call_method( 'save', $func_args );
+		$this->_flush_cache();
 		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 
 		return $post_id;
+	}
+
+	public function maybe_remove_assigned( $post_id ) {
+		global $wpdb;
+
+		$post        = get_post( $post_id );
+		$post_type   = $this->get_post_type();
+		$post_status = $post->post_status;
+
+		// If we are updating question
+		if ( LP_QUESTION_CPT === $post_type ) {
+
+			// If question is not published then delete it from quizzes
+			if ( $post_status !== 'publish' ) {
+				$query = $wpdb->prepare( "
+                    DELETE FROM {$wpdb->learnpress_quiz_questions}
+                    WHERE question_id = %d
+                ", $post_id );
+				$wpdb->query( $query );
+			}
+
+		} // Else
+        elseif ( learn_press_is_support_course_item_type( $post_type ) ) {
+
+			// If item is not published then delete it from courses
+			if ( $post_status !== 'publish' ) {
+				$query = $wpdb->prepare( "
+                    DELETE FROM {$wpdb->learnpress_section_items}
+                    WHERE item_id = %d
+                ", $post_id );
+				$wpdb->query( $query );
+			}
+		}
+	}
+
+	protected function _get_quizzes_by_question( $question_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+	        SELECT quiz_id
+            FROM {$wpdb->learnpress_quiz_questions}
+            WHERE question_id = %d
+	    ", $question_id );
+
+		return $wpdb->get_col( $query );
+	}
+
+	protected function _get_courses_by_item( $item_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+	        SELECT section_course_id
+            FROM {$wpdb->learnpress_sections} s
+            INNER JOIN {$wpdb->learnpress_section_items} si ON s.section_id = si.section_id
+            WHERE si.item_id = %d
+	    ", $item_id );
+
+		return $wpdb->get_col( $query );
 	}
 
 	/**
@@ -232,6 +403,15 @@ abstract class LP_Abstract_Post_Type {
 		}
 	}
 
+	private function _is_archive() {
+		global $pagenow, $post_type;
+		if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( $this->_post_type != LP_Request::get_string( 'post_type' ) ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public function _before_delete_post( $post_id ) {
 		// TODO:
 		if ( ! $this->_check_post() ) {
@@ -240,6 +420,16 @@ abstract class LP_Abstract_Post_Type {
 		$func_args = func_get_args();
 
 		return $this->_call_method( 'before_delete', $func_args );
+	}
+
+	public function _deleted_post( $post_id ) {
+		$this->_flush_cache();
+	}
+
+	protected function _flush_cache() {
+		// Flush the Hard Cache to applies new changes
+		LP_Hard_Cache::flush();
+		wp_cache_flush();
 	}
 
 	public function _posts_fields( $fields ) {
@@ -331,6 +521,79 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function save() {
 
+	}
+
+	/**
+	 * Filter item by the course selected.
+	 *
+	 * @since 3.0.7
+	 *
+	 * @return bool|int
+	 */
+	protected function _filter_items_by_course() {
+		$course_id = ! empty( $_REQUEST['course'] ) ? absint( $_REQUEST['course'] ) : false;
+
+		if ( ! $course_id ) {
+			global $post_type;
+			if ( ! learn_press_is_support_course_item_type( $post_type ) ) {
+				$course_id = false;
+			}
+		}
+
+		return $course_id;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	protected function _get_course_column_title() {
+		global $post_type;
+
+		if ( ! learn_press_is_support_course_item_type( $post_type ) ) {
+			return false;
+		}
+
+		$title = __( 'Course', 'learnpress' );
+
+		if ( $course_id = $this->_filter_items_by_course() ) {
+			if ( $course = learn_press_get_course( $course_id ) ) {
+				$count       = $course->count_items( $this->_post_type );
+				$post_object = get_post_type_object( $post_type );
+				$title       = sprintf( _n( 'Course (%d %s)', 'Course (%d %s)', $count, 'learnpress' ), $count, $count > 1 ? $post_object->label : $post_object->labels->singular_name );
+			}
+		}
+
+		return $title;
+	}
+
+	/**
+	 * Get course that the items is contained.
+	 *
+	 * @param $post_id
+	 */
+	protected function _get_item_course( $post_id ) {
+		$courses = learn_press_get_item_courses( $post_id );
+		if ( $courses ) {
+			foreach ( $courses as $course ) {
+				echo '<div><a href="' . esc_url( remove_query_arg( 'orderby', add_query_arg( array( 'course' => $course->ID ) ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+				echo '<div class="row-actions">';
+				printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
+				echo "&nbsp;|&nbsp;";
+				printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
+
+				if ( $this->_filter_items_by_course() ) {
+					echo "&nbsp;|&nbsp;";
+					printf( '<a href="%s">%s</a>', remove_query_arg( array(
+						'course',
+						'orderby'
+					) ), __( 'Remove Filter', 'learnpress' ) );
+				}
+				echo '</div></div>';
+			}
+
+		} else {
+			_e( 'Not assigned yet', 'learnpress' );
+		}
 	}
 
 	/**

@@ -13,24 +13,42 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	protected $_meta_type = 'user';
 
 	/**
+	 * @var int
+	 */
+	protected $_user_id = 0;
+
+	/**
+	 * @var int
+	 */
+	protected $_course_id = 0;
+
+	/**
 	 * LP_User_CURD constructor.
 	 *
 	 * @param int $the_user
 	 * @param int $the_course
 	 */
 	public function __construct( $the_user = 0, $the_course = 0 ) {
-		if ( $the_user || $the_course ) {
-			if ( ! $the_course ) {
-				$the_course = get_the_ID();
+		$this->_user_id   = $the_user;
+		$this->_course_id = $the_course;
+		add_action( 'init', array( $this, 'init' ) );
+	}
+
+	public function init() {
+		if ( $this->_user_id || $this->_course_id ) {
+			if ( ! $this->_course_id ) {
+				$this->_course_id = get_the_ID();
 			}
 
-			if ( ! $the_user ) {
-				$the_user = get_current_user_id();
+			if ( ! $this->_user_id ) {
+				$this->_user_id = get_current_user_id();
 			}
 		}
-		if ( $user = learn_press_get_user( $the_user ) ) {
+
+
+		if ( $user = learn_press_get_user( $this->_user_id ) ) {
 			$this->load( $user );
-			$this->read_course( $user->get_id(), $the_course );
+			$this->read_course( $user->get_id(), $this->_course_id );
 		}
 	}
 
@@ -110,7 +128,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function get_orders( $user_id, $args = array() ) {
 
 		// If user does not exists
-		if ( ! $user = learn_press_get_user( $user_id ) ) {
+		if ( ! $user_id || ! $user = learn_press_get_user( $user_id ) ) {
 			return false;
 		}
 
@@ -212,10 +230,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( $orders ) {
 			if ( array_key_exists( 'status', $args ) && $args['status'] ) {
 				LP_Helper::sanitize_order_status( $args['status'] );
+
+				$statuses = (array) $args['status'];
 				foreach ( $orders as $course_id => $order_ids ) {
 					$orders[ $course_id ] = array();
 					foreach ( $order_ids as $order_id ) {
-						if ( in_array( get_post_status( $order_id ), $args['status'] ) ) {
+						if ( in_array( get_post_status( $order_id ), $statuses ) ) {
 							$orders[ $course_id ][] = $order_id;
 						}
 					}
@@ -300,6 +320,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
+		for ( $n = sizeof( $fetch_ids ), $i = $n - 1; $i >= 0; $i -- ) {
+			if ( ! $fetch_ids[ $i ] ) {
+				unset( $fetch_ids[ $i ] );
+			}
+		}
+
 		// There is no course ids to read
 		if ( ! $fetch_ids ) {
 			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
@@ -369,6 +395,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				if ( false !== wp_cache_get( 'course-' . $user_id . '-' . $result['item_id'], 'lp-user-courses' ) ) {
 					continue;
 				}
+
 				$result['items'] = array();
 				$this->_read_course_items( $result, $force );
 				wp_cache_set( 'course-' . $user_id . '-' . $result['item_id'], $result, 'lp-user-courses' );
@@ -379,27 +406,27 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		// Cache the courses is not read
-		if ( $fetch_ids ) {
-			$defaults = array(
-				'user_item_id'   => 0,
-				'user_id'        => $user_id,
-				'item_id'        => 0,
-				'start_time'     => '0000-00-00 00:00',
-				'start_time_gmt' => '0000-00-00 00:00',
-				'end_time'       => '0000-00-00 00:00',
-				'end_time_gmt'   => '0000-00-00 00:00',
-				'item_type'      => '',
-				'status'         => '',
-				'ref_type'       => '',
-				'ref_id'         => '',
-				'parent_id'      => 0,
-				'ext_status'     => '',
-				'items'          => array()
-			);
-			foreach ( $fetch_ids as $fetch_id ) {
-				wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, $defaults, 'lp-user-courses' );
-			}
-		}
+//		if ( $fetch_ids ) {
+//			$defaults = array(
+//				'user_item_id'   => 0,
+//				'user_id'        => $user_id,
+//				'item_id'        => 0,
+//				'start_time'     => '0000-00-00 00:00',
+//				'start_time_gmt' => '0000-00-00 00:00',
+//				'end_time'       => '0000-00-00 00:00',
+//				'end_time_gmt'   => '0000-00-00 00:00',
+//				'item_type'      => '',
+//				'status'         => '',
+//				'ref_type'       => '',
+//				'ref_id'         => '',
+//				'parent_id'      => 0,
+//				'ext_status'     => '',
+//				'items'          => array()
+//			);
+//			foreach ( $fetch_ids as $fetch_id ) {
+//				wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, $defaults, 'lp-user-courses' );
+//			}
+//		}
 		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		return true;
@@ -527,7 +554,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function update_user_item( $user_id, $item_id, $item_data = array(), $course_id = 0 ) {
 		global $wpdb;
 
-		if ( false == get_user_by( 'id', $user_id ) ) {
+		$user = learn_press_get_user( $user_id );
+		if ( ! $user || ( $user->get_id() != $user_id ) ) {
 			return false;
 		}
 
@@ -615,7 +643,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			);
 			$user_item_id = $wpdb->insert_id;
 			$item         = $this->get_user_item_by_id( $user_item_id );
-
 		} else {
 			$user_item_id = $item['user_item_id'];
 			$wpdb->update(
@@ -625,17 +652,13 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$data_format,
 				array( '%d' )
 			);
+
 			$item = array_merge( $item, $data );
 		}
 
 		$is_course = ( ! $course_id ) && ( get_post_type( $item['item_id'] ) === LP_COURSE_CPT );
 
 		if ( $user_item_id ) {
-			if ( $is_course ) {
-				$course_id = $item['item_id'];
-				// Update cache to effect the change right way!
-				wp_cache_set( 'course-' . $user_id . '-' . $course_id, $item, 'lp-user-courses' );
-			}
 
 			// Track last status if it is updated new status.
 			if ( $new_status !== false ) {
@@ -644,23 +667,35 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 			}
 
-			$user        = learn_press_get_user( $user_id );
-			$user_course = $user->get_course_data( $course_id );
-
-			$user_course->set_item( $item );
-
-			// Update cache
-			$existed = false !== ( $items = wp_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) );
-
-			if ( false === $items || ! empty( $items[ $user_item_id ] ) ) {
-				settype( $items, 'array' );
-				$items[ $user_item_id ] = $item;
+			if ( $is_course ) {
+				$course_id = $item['item_id'];
+				// Update cache to effect the change right way!
+				wp_cache_set( 'course-' . $user_id . '-' . $course_id, $item, 'lp-user-courses' );
 			} else {
-				$items = array( $user_item_id => $item ) + $items;
+
+				$user        = learn_press_get_user( $user_id );
+				$user_course = $user->get_course_data( $course_id );
+
+				$user_course->set_item( $item );
+
+				// Update cache
+				$existed = false !== ( $items = wp_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) );
+
+				if ( false === $items || ! empty( $items[ $user_item_id ] ) ) {
+					if ( is_array( $items ) ) {
+						$items[ $user_item_id ] = $item;
+					} else {
+						$items = array( $user_item_id => $item );
+					}
+				} else {
+					$items = array( $user_item_id => $item ) + $items;
+				}
+
+				wp_cache_set( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
+
 			}
 
-			wp_cache_set( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
-
+			wp_cache_delete( 'course-' . $user_id . '-' . $course_id, 'lp-user-course-data' );
 
 			/*if ( $existed ) {
 				wp_cache_replace( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
@@ -893,6 +928,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$query         = $wpdb->prepare( "SELECT user_item_id FROM {$wpdb->learnpress_user_items} WHERE " . join( ' AND ', $query_where ), array_values( $where ) );
 		$user_item_ids = $wpdb->get_col( $query );
+
 		$wpdb->delete(
 			$wpdb->learnpress_user_items,
 			$where,
@@ -903,6 +939,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_user_itemmeta} WHERE learnpress_user_item_id = %d", $user_item_id ) );
 			do_action( 'learn-press/deleted-user-item', $user_item_id );
 		}
+//		if($user_item_ids) {
+//			// Flush all cache to apply new changes
+//			wp_cache_flush();
+//		}
 
 		return true;
 	}
@@ -1119,9 +1159,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$from   = "FROM {$wpdb->learnpress_user_items} ui";
 				$join   = $wpdb->prepare( "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s", LP_COURSE_CPT );
 				//$where   = $wpdb->prepare( "WHERE 1 AND user_id = %d AND ref_id IN(" . join( ',', $order_format ) . ")", array_merge( array( $user_id ), $valid_orders ) );
-				$where   = $wpdb->prepare( "WHERE 1 AND user_id = %d", $user_id );
+				$where   = $wpdb->prepare( "WHERE 1 AND user_id = %d AND c.post_status = %s", $user_id, 'publish' );
 				$having  = "HAVING 1";
 				$orderby = "ORDER BY item_id, user_item_id DESC";
+
+				$unenrolled_course_ids = array();
 
 				if ( ! empty( $args['status'] ) ) {
 					switch ( $args['status'] ) {
@@ -1156,6 +1198,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 
+				if ( empty( $args['status'] ) || $args['status'] === 'not-enrolled' ) {
+					$unenrolled_course_ids = $this->query_courses_by_order( $user_id );
+				}
+
 				$where .= $wpdb->prepare( " AND ui.status NOT IN(%s)", 'pending' );
 
 				$query_parts = apply_filters(
@@ -1165,6 +1211,30 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$args
 				);
 				list( $select, $from, $join, $where, $having, $orderby ) = array_values( $query_parts );
+
+				/**
+				 * If there are some courses user has purchased and it's order is already completed
+				 * but for some reasons it is not inserted into table user-items.
+				 *
+				 * In this case we temporary to add it to table user-items (by using a transaction)
+				 * and query it back and then restore data by rollback that transaction.
+				 */
+				if ( $unenrolled_course_ids ) {
+					LP_Debug::startTransaction();
+
+					foreach ( $unenrolled_course_ids as $unenrolled_course_id ) {
+						$wpdb->insert(
+							$wpdb->learnpress_user_items,
+							array(
+								'user_id'   => $user_id,
+								'item_id'   => $unenrolled_course_id,
+								'item_type' => LP_COURSE_CPT,
+								'status'    => 'purchased'
+							),
+							array( '%d', '%d', '%s', '%s' )
+						);
+					}
+				}
 
 				$sql = "
 					SELECT SQL_CALC_FOUND_ROWS *
@@ -1182,6 +1252,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 				$items = $wpdb->get_results( $sql, ARRAY_A );
 
+				if ( $unenrolled_course_ids ) {
+					LP_Debug::rollbackTransaction();
+				}
+
 				if ( $items ) {
 					$count      = $wpdb->get_var( "SELECT FOUND_ROWS()" );
 					$course_ids = wp_list_pluck( $items, 'item_id' );
@@ -1190,7 +1264,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$courses['total'] = $count;
 					$courses['pages'] = ceil( $count / $args['limit'] );
 					foreach ( $items as $item ) {
-						$courses['items'][] = new LP_User_Item_Course( $item );
+						$course_item        = new LP_User_Item_Course( $item );
+						$courses['items'][] = $course_item;
 					}
 				}
 			}
@@ -1204,7 +1279,64 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$courses['single'] = __( 'course', 'learnpress' );
 		$courses['plural'] = __( 'courses', 'learnpress' );
 
+
 		return new LP_Query_List_Table( $courses );
+	}
+
+	/**
+	 * Get courses user has purchased via orders are completed
+	 * but it is not already added to user-items table.
+	 *
+	 * @param int $user_id
+	 *
+	 * @return array|bool|mixed
+	 */
+	public function query_courses_by_order( $user_id ) {
+		global $wpdb;
+
+//		$query = $wpdb->prepare( "
+//			SELECT course.ID AS course_id, `order`.ID AS order_id, `order`.post_parent AS order_parent
+//			FROM {$wpdb->posts} `order`
+//			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = `order`.ID
+//			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+//			INNER JOIN {$wpdb->posts} course ON course.ID = oim.meta_value
+//			INNER JOIN {$wpdb->postmeta} pmu ON pmu.post_id = `order`.ID AND pmu.meta_key = %s
+//			WHERE pmu.meta_value = %d
+//			ORDER BY order_id DESC
+//		", '_course_id', '_user_id', $user_id );
+//		$course_ids = $wpdb->get_col( $query );
+
+		$query         = $wpdb->prepare( "
+			SELECT item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d 
+			AND item_type = %s
+		", $user_id, LP_COURSE_CPT );
+		$user_item_ids = $wpdb->get_col( $query );
+
+		$orders = $this->get_orders( $user_id, array(
+			'status'         => 'completed',
+			'group_by_order' => true
+		) );
+
+		if ( ! $orders ) {
+			return false;
+		}
+
+		$course_ids = array_shift( $orders );
+
+		foreach ( $orders as $ids ) {
+			if ( ! $ids ) {
+				continue;
+			}
+			$course_ids = array_merge( $course_ids, $ids );
+		}
+
+		if ( $user_item_ids ) {
+			$course_ids = array_diff( $course_ids, $user_item_ids );
+		}
+
+		return $course_ids;
 	}
 
 	/**
@@ -1317,9 +1449,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						{$from}
 						{$join}
 						{$where}
-						{$having}
 						{$orderby}
 					) X GROUP BY item_id
+					{$having}
 					LIMIT {$offset}, {$limit}
 				";
 

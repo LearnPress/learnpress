@@ -33,11 +33,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param array $args
+		 * @param $args
 		 *
 		 * @return int|WP_Error
 		 */
-		public function create( &$args = array() ) {
+		public function create( &$args ) {
 
 			$args = wp_parse_args( $args, array(
 					'id'      => '',
@@ -216,21 +216,18 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function read_course_curriculum( $course_id ) {
 			global $wpdb;
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			if ( get_post_type( $course_id ) != LP_COURSE_CPT ) {
-				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 				return false;
 			}
+
+			//return false;
 
 			/**
 			 * Get course's data from cache and if it is already existed
 			 * then ignore that course.
 			 */
 			if ( wp_cache_get( 'course-' . $course_id, 'lp-course-curriculum' ) ) {
-				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 				return false;
 			}
 
@@ -241,6 +238,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$meta_cache_ids = array( $course_id );
 			$quiz_ids       = array();
 			$lesson_ids     = array();
+			$group_items    = array();
 			$preview_ids    = array();
 
 			$section_ids = array();
@@ -298,20 +296,32 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 							$meta_cache_ids[] = $row->item_id;
 
-							if ( $row->item_type === LP_QUIZ_CPT ) {
-								$quiz_ids[] = $row->item_id;
-							} elseif ( $row->item_type === LP_LESSON_CPT ) {
-								$lesson_ids[] = $row->item_id;
+//							if ( $row->item_type === LP_QUIZ_CPT ) {
+//								$quiz_ids[] = $row->item_id;
+//							} elseif ( $row->item_type === LP_LESSON_CPT ) {
+//								$lesson_ids[] = $row->item_id;
+//							}
+
+							if ( empty( $group_items[ $row->item_type ] ) ) {
+								$group_items[ $row->item_type ] = array();
 							}
+							$group_items[ $row->item_type ][] = $row->item_id;
 
 							if ( $row->preview === 'yes' ) {
 								$preview_ids[] = $row->item_id;
 							}
 						}
 
+						//wp_cache_set( 'course-' . $cur_id, $quiz_ids, 'lp-course-' . LP_QUIZ_CPT );
+						//wp_cache_set( 'course-' . $cur_id, $lesson_ids, 'lp-course-' . LP_LESSON_CPT );
+
+						if ( $group_items ) {
+							foreach ( $group_items as $type => $group_item_ids ) {
+								wp_cache_set( 'course-' . $cur_id, $group_item_ids, 'lp-course-' . $type );
+							}
+						}
+
 						wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
-						wp_cache_set( 'course-' . $cur_id, $quiz_ids, 'lp-course-' . LP_QUIZ_CPT );
-						wp_cache_set( 'course-' . $cur_id, $lesson_ids, 'lp-course-' . LP_LESSON_CPT );
 						wp_cache_set( 'course-' . $cur_id, $preview_ids, 'lp-course-preview-items' );
 
 						// Cache items ids for using in some cases
@@ -357,7 +367,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$quiz_factory = new LP_Quiz_CURD();
 				$quiz_factory->load_questions( $quiz_ids );
 			}
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return true;
 		}
@@ -377,8 +386,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			if ( false === ( $curriculum = wp_cache_get( 'course-' . $course_id, 'lp-course-curriculum-sections' ) ) ) {
 
 				if ( $sections = wp_cache_get( 'course-' . $course_id, 'lp-course-sections' ) ) {
+					$position = 0;
 					foreach ( $sections as $k => $section ) {
-						$curriculum[ $section->section_id ] = new LP_Course_Section( $section );
+						$_section = new LP_Course_Section( $section );
+						$_section->set_position( ++ $position );
+						$curriculum[ $section->section_id ] = $_section;
 					}
 
 					// Update post meta
@@ -690,14 +702,13 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @param int $course_id
+		 * @param int          $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
 		 */
 		public function count_by_orders( $course_id, $statuses = 'completed' ) {
 			global $wpdb;
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			settype( $statuses, 'array' );
 			foreach ( $statuses as $k => $v ) {
@@ -727,7 +738,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 				wp_cache_set( 'course-' . $course_id . '-' . $cache_key, $count, 'lp-course-orders' );
 			}
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return $count;
 		}

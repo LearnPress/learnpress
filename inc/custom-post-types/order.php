@@ -179,7 +179,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 			}
 
-			return;
+			//return;
 
 			$user_curd  = new LP_User_CURD();
 			$order_data = array();
@@ -190,7 +190,19 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				foreach ( $items as $item ) {
-					$item_course = $user->get_course_data( $item['course_id'] );
+					$item = $user_curd->get_user_item(
+						$user_id,
+						$item['course_id']
+					);
+					if ( $item ) {
+						if ( is_array( $item ) ) {
+							$item_id = $item['user_item_id'];
+						} else {
+							$item_id = $item;
+						}
+						$user_curd->update_user_item_status( $item_id, 'trash' );
+					}
+					$item_course = $user->get_course_data( $item['item_id'] );
 
 					if ( ! $item_course ) {
 						continue;
@@ -260,7 +272,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				if ( ! $item_course = $user_curd->get_user_item_by_id( $user_item_id ) ) {
 					continue;
 				}
-
+				$order_status = $order->get_order_status();
+				$last_status = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'enrolled';
+				$user_curd->update_user_item_status( $user_item_id, $last_status );
 				// Restore data
 				$user_curd->update_user_item_by_id(
 					$user_item_id,
@@ -406,7 +420,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				$old_status = get_post_status( $new_order->get_id() );
-				$new_order->set_order_date( $order->get_order_date() );
+				$new_order->set_order_date( $order->get_order_date('edit') );
 				$new_order->set_parent_id( $order->get_id() );
 				$new_order->set_user_id( $uid );
 				$new_order->set_total( $order->get_total() );
@@ -514,7 +528,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					OR {$wpdb->posts}.ID LIKE %s
                                         OR orderItem.order_item_name LIKE %s
 				) OR ", $s, $s, $s, $s, $s, $s );
-			$where  = preg_replace( "/({$wpdb->posts}\.post_title LIKE)/", $append . '$1', $where );
+
+			if ( preg_match( "/({$wpdb->posts}\.post_title LIKE)/", $where ) ) {
+				$where = preg_replace( "/({$wpdb->posts}\.post_title LIKE)/", $append . '$1', $where );
+			} else {
+				$where .= " AND (" . $append . $wpdb->prepare( " {$wpdb->posts}\.post_title LIKE %s", $s ) . ")";
+			}
 
 			return $where;
 		}
@@ -739,8 +758,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			$the_order = learn_press_get_order( $post->ID );
 			switch ( $column ) {
 				case 'order_student':
-					if ( $user_ids = $the_order->get_data( 'user_id' ) ) {
-						settype( $user_ids, 'array' );
+					if ( $user_ids = $the_order->get_users() ) {
 						$outputs = array();
 						foreach ( $user_ids as $user_id ) {
 							if ( get_user_by( 'id', $user_id ) ) {
@@ -753,7 +771,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 									$user->get_data( 'user_email' )
 								);
 							} else {
-								$outputs[] = $the_order->get_customer_name();
+								if ( sizeof( $user_ids ) == 1 ) {
+									$outputs[] = $the_order->get_customer_name();
+								}
 							}
 						}
 						echo join( ', ', $outputs );
@@ -791,7 +811,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 							$links[] = __( 'Course does not exist', 'learnpress' );
 						} else {
-							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . '</a>';
+							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
 							if ( $count > 1 ) {
 								$link = sprintf( '<li>%s</li>', $link );
 							}

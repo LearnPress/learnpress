@@ -2,7 +2,10 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$email = LP_Emails::instance()->get_current();
+
+if ( ! $email = LP_Emails::instance()->get_current() ) {
+	return;
+}
 ?>
 <!DOCTYPE html>
 <html dir="<?php echo is_rtl() ? 'rtl' : 'ltr' ?>">
@@ -29,7 +32,7 @@ $email = LP_Emails::instance()->get_current();
                     <tr>
                         <td align="center" valign="top">
                             <h2 class="order-heading">
-                                <?php echo $email->get_heading(); ?>
+								<?php echo $email->get_heading(); ?>
                             </h2>
                         </td>
                     </tr>

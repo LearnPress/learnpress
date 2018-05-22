@@ -1,3 +1,36 @@
+** 3.0.0 **
++ Reset courses data for an user has enrolled course
++ Reset course data for users has enrolled course
++ Reset data of a quiz or lesson for an user
++ Enable a Guest user can buy and checkout
++ Option to show/hide login form in user profile
++ Option to show/hide register form in user profile
++ Option to show/hide login form in checkout page
++ Option to show/hide register form in Checkout page
++ Enable sort the payment gateways to show in frontend
++ Quick turn a payment gateway on/of in a list
++ Support plugins Mathjax
++ Widget to display course info
++ Widget to display current progress of a course
++ Custom frontend colors
++ Group emails to related action
++ Run action to send the emails in background
++ Quick edit question settings in it's quiz
++ Preview mode for course/lesson/quiz
++ Option to show list of questions as numbers below quiz while doing or reviewing
++ Display duration of lesson or quiz in curriculum
++ Display number questions of quiz
+~ Improves popup for searching courses to add to an order
+~ Improves Emails system
+~ Improves Multi users order
+~ Admin settings pages
+~ No distraction mode
+~ New course editor
+~ New quiz editor
+~ User profile
+~ Improve cache for speed
+~ Improve UI/Ux for both backend and frontend
+
 **2.0 Beta 1**
 - Updated database structure for new functions
 - Removed "Cart" outside LearnPress core and separated to addon
@@ -18,8 +51,6 @@
 - Show answer's explanation right away after user checking question's answer
 - Added tab Edit in user profile to edit their information
 - Supported shortcode inside content of lesson/quiz
-
-
 
 **0.9.14**
 - Fixed can not start a quiz for guest.
@@ -87,7 +118,6 @@ Fixed wrong query of quizzes result in Profile.
  - Option to display the full name with {firstname}=User first name and {lastname}=User last name  
  - Option to format date  
  - Created a sample Certificate when plugin is activated  
-
 
 **0.9.5**
 - Added showing question answer and explaination feature

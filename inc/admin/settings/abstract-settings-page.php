@@ -30,7 +30,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	 * Constructor
 	 */
 	public function __construct() {
-
+		parent::__construct();
 	}
 
 	/**
@@ -75,7 +75,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		return preg_replace( array( '!\[|(\]\[)!', '!\]!' ), array( '_', '' ), $this->get_field_name( $name ) );
 	}
 
-	public function get_sections(){
+	public function get_sections() {
 		return array();
 	}
 
@@ -89,7 +89,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 
 		if ( ! $section ) {
 			$section = $this->get_sections();
-			$section = array_keys($section);
+			$section = array_keys( $section );
 		}
 
 		settype( $section, 'array' );

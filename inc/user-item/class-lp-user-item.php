@@ -6,11 +6,6 @@
  */
 class LP_User_Item extends LP_Abstract_Object_Data {
 	/**
-	 * @var int
-	 */
-	protected static $_loaded = 0;
-
-	/**
 	 * @var bool
 	 */
 	protected $_is_available = null;
@@ -34,16 +29,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		if ( ! empty( $item['end_time'] ) ) {
 			$this->set_end_time( $item['end_time'] );
 		}
-		self::$_loaded ++;
-		if ( self::$_loaded == 1 ) {
-			add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-		}
-	}
-
-	public static function log( $data ) {
-		$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
-		return $data;
 	}
 
 	/**
@@ -73,11 +58,23 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	public function get_start_time( $format = '' ) {
 		$time = $this->get_data( 'start_time' );
-
 		$date = new LP_Datetime( $time );
 
 		if ( $format ) {
-			return $date->format( $format );
+			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
+		}
+
+		return $date;
+	}
+
+	public function set_start_time_gmt( $time ) {
+		$this->set_data_date( 'start_time_gmt', $time );
+	}
+
+	public function get_start_time_gmt( $format = '' ) {
+		$date = new LP_Datetime( $this->get_data( 'start_time_gmt' ) );
+		if ( $format ) {
+			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
 		}
 
 		return $date;
@@ -102,7 +99,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function get_end_time( $format = '' ) {
 		$date = new LP_Datetime( $this->get_data( 'end_time' ) );
 		if ( $format ) {
-			return $date->format( $format );
+			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
 
 		return $date;
@@ -127,7 +124,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	public function get_end_time_gmt( $format = '' ) {
 		$date = new LP_Datetime( $this->get_data( 'end_time_gmt' ) );
 		if ( $format ) {
-			return $date->format( $format );
+			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
 
 		return $date;
@@ -283,12 +280,18 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'start_time_gmt':
-					$v = new LP_Datetime( $this->_data['start_time'] );
-					$v = $v->toSql( false );
+					if ( ! $this->_data['start_time_gmt'] ) {
+						$v = new LP_Datetime( $this->_data['start_time'] );
+					}
+
+					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'end_time_gmt':
-					$v = new LP_Datetime( $this->_data['end_time'] );
-					$v = $v->toSql( false );
+					if ( ! $this->_data['end_time_gmt'] ) {
+						$v = new LP_Datetime( $this->_data['end_time'] );
+					}
+
+					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 			}
 			$columns[ $k ] = $v;
@@ -332,19 +335,21 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	public function get_status_label( $status = '' ) {
 		$statuses = array(
-			'enrolled'  => __( 'In Progress', 'learnpress' ),
-			'started'   => __( 'In Progress', 'learnpress' ),
-			'completed' => __( 'Completed', 'learnpress' ),
-			'finished'  => __( 'Finished', 'learnpress' ),
-			'passed'    => __( 'Passed', 'learnpress' ),
-			'failed'    => __( 'Failed', 'learnpress' )
+			'enrolled'    => __( 'In Progress', 'learnpress' ),
+			'started'     => __( 'In Progress', 'learnpress' ),
+			'in-progress' => __( 'In Progress', 'learnpress' ),
+			'purchased'   => __( 'Not Enrolled', 'learnpress' ),
+			'completed'   => __( 'Completed', 'learnpress' ),
+			'finished'    => __( 'Finished', 'learnpress' ),
+			'passed'      => __( 'Passed', 'learnpress' ),
+			'failed'      => __( 'Failed', 'learnpress' )
 		);
 
 		if ( ! $status ) {
 			$status = $this->get_status();
 		}
 
-		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not enrolled', 'learnpress' );
+		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not Enrolled', 'learnpress' );
 	}
 
 	/**
@@ -386,6 +391,10 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return 0;
 	}
 
+	public function remove_user_items_history( $keep = 10 ) {
+		learn_press_remove_user_items_history( $this->get_item_id(), $this->get_course( 'id' ), $this->get_user_id(), $keep );
+	}
+
 	/**
 	 * Return number of seconds has exceeded.
 	 * If less than or equals to 0 that means the time is exceeded.
@@ -394,9 +403,11 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return float|int
 	 */
 	public function is_exceeded() {
-		$current = ( new LP_Datetime() )->getTimestamp();
+		$time     = new LP_Datetime();
+		$current  = $time->getTimestamp();
+		$exceeded = $this->get_exceeded_time();
 
-		return $this->get_exceeded_time() - $current;
+		return false !== $exceeded ? $exceeded - $current : false;
 	}
 
 	/**
@@ -413,7 +424,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 			$duration = 100 * DAY_IN_SECONDS * 360;
 		}
 
-		return $format ? date( $format, $start_time + $duration ) : $start_time + $duration;
+		return $duration !== false ? $format ? date( $format, $start_time + $duration ) : $start_time + $duration : false;
 	}
 
 	/**
@@ -456,8 +467,37 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function maybe_update_item_grade() {
-		$result = $this->get_result();
-		learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
+		$grade = $this->get_result( 'grade' );
+
+		learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $grade ? $grade : '' );
+	}
+
+	public function delete_meta_data( $include = '', $exclude = '' ) {
+		global $wpdb;
+
+		$where = '';
+		if ( $include ) {
+			settype( $include, 'array' );
+			$format = array_fill( 0, sizeof( $include ), '%s' );
+			$where  .= $wpdb->prepare( " AND meta_key IN(" . join( ',', $format ) . ")", $include );
+		}
+
+		if ( $exclude ) {
+			settype( $exclude, 'array' );
+			$format = array_fill( 0, sizeof( $exclude ), '%s' );
+			$where  .= $wpdb->prepare( " AND meta_key IN(" . join( ',', $format ) . ")", $exclude );
+		}
+
+		$query = $wpdb->prepare( "
+			DELETE FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE learnpress_user_item_id = %d
+			{$where}
+		", $this->get_user_item_id() );
+
+		$wpdb->query( $query );
+
+		$this->_meta_data = array();
+		update_meta_cache( 'learnpress_user_item', $this->get_user_item_id() );
 	}
 
 	/**
@@ -515,3 +555,4 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return false;
 	}
 }
+

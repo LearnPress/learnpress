@@ -56,6 +56,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
 					'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
 					'show_hide_question' => get_post_meta( $quiz->get_id(), '_lp_show_hide_question', true ),
+					'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
 				)
 			);
 			$this->_load_questions( $quiz );
@@ -67,11 +68,11 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Create quiz, with default meta.
 		 *
-		 * @param array $args
+		 * @param  $args
 		 *
 		 * @return int|WP_Error
 		 */
-		public function create( &$args = array() ) {
+		public function create( &$args ) {
 
 			$args = wp_parse_args( $args, array(
 					'id'      => '',
@@ -212,14 +213,17 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 			$format    = array_fill( 0, sizeof( $quiz_ids ), '%d' );
 			$questions = array_fill_keys( $quiz_ids, array() );
+			$args      = $quiz_ids;
+			$args[]    = 'publish';
 
 			$query = $wpdb->prepare( "
 				SELECT p.*, qq.quiz_id, qq.question_order AS `order`
 				FROM {$wpdb->posts} p 
 				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
 				WHERE qq.quiz_id IN(" . join( ',', $format ) . ")
-				ORDER BY question_order ASC
-			", $quiz_ids );
+				AND p.post_status = %s
+				ORDER BY question_order, quiz_question_id ASC
+			", $args );
 
 			$question_ids = array();
 
@@ -269,10 +273,10 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			global $wpdb;
 			$format = array_fill( 0, sizeof( $meta_ids ), '%d' );
 			$query  = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->learnpress_question_answermeta}
-			WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ")
-		", $meta_ids );
+				SELECT *
+				FROM {$wpdb->learnpress_question_answermeta}
+				WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ")
+			", $meta_ids );
 			if ( $metas = $wpdb->get_results( $query ) ) {
 				foreach ( $metas as $meta ) {
 					$key        = $meta->meta_key;
@@ -317,7 +321,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * Reorder question by indexed number.
 		 *
 		 * @param LP_Quiz|WP_Post|int $the_quiz
-		 * @param mixed $questions
+		 * @param mixed               $questions
 		 *
 		 * @return mixed
 		 */
@@ -387,7 +391,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @param LP_Quiz|int $the_quiz
 		 * @param             $question_id
-		 * @param array $args
+		 * @param array       $args
 		 *
 		 * @return mixed false on failed
 		 */
@@ -447,7 +451,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Check if a question (or batch of questions) is already added to quiz.
 		 *
-		 * @param int $the_id
+		 * @param int       $the_id
 		 * @param int|array $ids
 		 *
 		 * @return array|bool|null|object

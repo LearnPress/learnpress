@@ -73,20 +73,33 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function views_plugins( $views ) {
 			global $s;
 
-			$search = $this->get_addons();
+			$search          = $this->get_addons();
+			$count_activated = 0;
+
+			if ( $active_plugins = get_option( 'active_plugins' ) ) {
+				if ( $search ) {
+					foreach ( $search as $k => $v ) {
+						if ( in_array( $k, $active_plugins ) ) {
+							$count_activated ++;
+						}
+					}
+				}
+			}
 
 			if ( $s && false !== stripos( $s, 'learnpress' ) ) {
 				$views['learnpress'] = sprintf(
-					'<a href="%s" class="current">%s <span class="count">(%d)</span></a>',
+					'<a href="%s" class="current">%s <span class="count">(%d/%d)</span></a>',
 					admin_url( 'plugins.php?s=learnpress' ),
 					__( 'LearnPress', 'learnpress' ),
+					$count_activated,
 					sizeof( $search )
 				);
 			} else {
 				$views['learnpress'] = sprintf(
-					'<a href="%s">%s <span class="count">(%d)</span></a>',
+					'<a href="%s">%s <span class="count">(%d/%d)</span></a>',
 					admin_url( 'plugins.php?s=learnpress' ),
 					__( 'LearnPress', 'learnpress' ),
+					$count_activated,
 					sizeof( $search )
 				);
 			}
@@ -120,6 +133,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function init() {
+			if ( 'yes' === LP_Request::get_string( 'lp-hide-upgrade-message' ) ) {
+				delete_transient( 'lp_upgraded_30' );
+			}
 		}
 
 		/**
@@ -160,23 +176,23 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 		public function wc_add_display_post_states( $post_states, $post ) {
 			if ( wc_get_page_id( 'shop' ) === $post->ID ) {
-				$post_states['wc_page_for_shop'] = __( 'Shop Page', 'woocommerce' );
+				$post_states['wc_page_for_shop'] = __( 'Shop Page', 'learnpress' );
 			}
 
 			if ( wc_get_page_id( 'cart' ) === $post->ID ) {
-				$post_states['wc_page_for_cart'] = __( 'Cart Page', 'woocommerce' );
+				$post_states['wc_page_for_cart'] = __( 'Cart Page', 'learnpress' );
 			}
 
 			if ( wc_get_page_id( 'checkout' ) === $post->ID ) {
-				$post_states['wc_page_for_checkout'] = __( 'Checkout Page', 'woocommerce' );
+				$post_states['wc_page_for_checkout'] = __( 'Checkout Page', 'learnpress' );
 			}
 
 			if ( wc_get_page_id( 'myaccount' ) === $post->ID ) {
-				$post_states['wc_page_for_myaccount'] = __( 'My Account Page', 'woocommerce' );
+				$post_states['wc_page_for_myaccount'] = __( 'My Account Page', 'learnpress' );
 			}
 
 			if ( wc_get_page_id( 'terms' ) === $post->ID ) {
-				$post_states['wc_page_for_terms'] = __( 'Terms and Conditions Page', 'woocommerce' );
+				$post_states['wc_page_for_terms'] = __( 'Terms and Conditions Page', 'learnpress' );
 			}
 
 			return $post_states;
@@ -443,6 +459,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display admin notices
 		 */
 		public function admin_notices() {
+
+			if ( 'yes' === get_transient( 'lp_upgraded_30' ) ) {
+				learn_press_admin_view( 'updates/html-upgrade-message-3.0.0' );
+			}
+
 			if ( 'yes' === get_option( 'learn_press_install' ) ) {
 				learn_press_admin_view( 'setup/notice-setup' );
 			}
@@ -452,6 +473,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
 				}
 				echo '<div class="updated notice">' . __( 'User has accepted to become a teacher.', 'learnpress' ) . '</div>';
+			}
+
+			if ( LP()->session->get( 'do-update-learnpress' ) ) {
+				learn_press_admin_view( 'updates/html-updated-latest-message' );
 			}
 		}
 
@@ -685,6 +710,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-admin-dashboard.php';
 			include_once 'class-lp-admin-tools.php';
 			include_once 'class-lp-admin-ajax.php';
+			include_once 'editor/class-lp-admin-editor.php';
 			include_once 'class-lp-admin-menu.php';
 			include_once 'class-lp-meta-box-tabs.php';
 			include_once 'helpers/class-lp-outdated-template-helper.php';
@@ -694,6 +720,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'class-lp-setup-wizard.php';
 			include_once 'class-lp-updater.php';
 			include_once 'class-lp-install-sample-data.php';
+			include_once 'class-lp-reset-data.php';
 		}
 
 		/**

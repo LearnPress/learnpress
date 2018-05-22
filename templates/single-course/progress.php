@@ -35,10 +35,10 @@ $passing_condition = $course->get_passing_condition();
     <div class="items-progress">
 
 		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/items-completed-heading', __( 'Items completed', 'learnpress' ) ) ) ) { ?>
-            <h4 class="lp-course-progress-heading"><?php esc_html( $heading ); ?></h4>
+            <h4 class="lp-course-progress-heading"><?php echo esc_html( $heading ); ?></h4>
 		<?php } ?>
 
-        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items('', false) ); ?></span>
+        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items('', true) ); ?></span>
 
         <div class="learn-press-progress lp-course-progress">
             <div class="progress-bg lp-progress-bar">
@@ -54,7 +54,7 @@ $passing_condition = $course->get_passing_condition();
 
 		<?php if ( false !== ( $heading = apply_filters( 'learn-press/course/result-heading', __( 'Course results', 'learnpress' ) ) ) ) { ?>
             <h4 class="lp-course-progress-heading">
-				<?php esc_html( $heading ); ?>
+				<?php echo esc_html( $heading ); ?>
             </h4>
 		<?php } ?>
 

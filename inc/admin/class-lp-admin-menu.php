@@ -108,7 +108,8 @@ class LP_Admin_Menu {
 		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
 		// Sort menu items by it's priority
-		uasort( $menu_items, array( $this, 'sort_menu_items' ) );
+		//uasort( $menu_items, array( $this, 'sort_menu_items' ) );
+		uasort( $menu_items, 'learn_press_sort_list_by_priority_callback' );
 
 		if ( $menu_items ) {
 			foreach ( $menu_items as $item ) {
@@ -136,8 +137,6 @@ class LP_Admin_Menu {
 		}
 
 		$addons = LP_Admin::instance()->get_addons();
-
-		add_submenu_page( 'plugins.php', '', sprintf( __( 'LearnPress %s', 'learnpress' ), sprintf( '<span class="update-plugins lp-plugins-count">%d</span>', sizeof( $addons ) ) ), 'manage_options',  'plugins.php?s=learnpress'  );
 	}
 
 	/**

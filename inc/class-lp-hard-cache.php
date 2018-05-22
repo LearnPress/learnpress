@@ -24,6 +24,9 @@ class LP_Hard_Cache {
 	 */
 	protected static $_lock = false;
 
+	/**
+	 * @var bool
+	 */
 	protected static $_hard_lock = false;
 
 	/**

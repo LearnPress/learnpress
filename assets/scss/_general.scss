@@ -116,6 +116,9 @@ $remove-icon-color: #d05d5d;
             }
             ul {
                 display: block;
+                &:hover {
+                    display: block;
+                }
             }
         }
     }
@@ -202,7 +205,7 @@ $remove-icon-color: #d05d5d;
     th, td {
         padding: 10px 15px;
         background: #F5F5F5;
-        border-bottom: 1px solid #DDD;
+        border-top: 1px solid #DDD;
     }
     thead {
         tr {
@@ -424,6 +427,20 @@ $remove-icon-color: #d05d5d;
         .remove-item {
             display: none;
         }
+    }
+}
+
+.lp-label-counter {
+    border-radius: 20px;
+    display: inline-block;
+    height: 20px;
+    padding: 0 10px;
+    background: #2196F3;
+    line-height: 20px;
+    color: #FFF;
+    font-weight: bold;
+    &.disabled {
+        background: #DDD;
     }
 }
 

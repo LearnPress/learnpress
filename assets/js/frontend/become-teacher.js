@@ -37,6 +37,40 @@ if (typeof jQuery === 'undefined') {
                     blockForm = function (block) {
                         return $form.find('input, select, button, textarea')
                             .prop('disabled', !!block)
+                    },
+                    beforeSend = function () {
+                        hideMessages();
+
+                        blockForm(true)
+                            .filter($submit)
+                            .data('origin-text', $submit.text())
+                            .html($submit.data('text'));
+
+                    },
+                    ajaxSuccess = function (response) {
+                        response = LP.parseJSON(response);
+                        if (response.message) {
+                            showMessages(response.message)
+                        }
+
+                        blockForm().filter($submit).html($submit.data('origin-text'));
+
+                        if (response.result === 'success') {
+                            $form.remove();
+                        } else {
+                            $submit.prop('disabled', false);
+                            $submit.html($submit.data('text'));
+                        }
+
+                    },
+                    ajaxError = function (response) {
+                        response = LP.parseJSON(response);
+
+                        if (response.message) {
+                            showMessages(response.message)
+                        }
+
+                        blockForm().filter($submit).html($submit.data('origin-text'));
                     };
 
                 $form.submit(function () {
@@ -46,40 +80,9 @@ if (typeof jQuery === 'undefined') {
                             data: $form.serialize(),
                             dataType: 'text',
                             type: 'post',
-                            beforeSend: function () {
-                                hideMessages();
-
-                                blockForm(true)
-                                    .filter($submit)
-                                    .data('origin-text', $submit.text())
-                                    .html($submit.data('text'));
-
-                            },
-                            success: function (response) {
-                                response = LP.parseJSON(response);
-                                if (response.message) {
-                                    showMessages(response.message)
-                                }
-
-                                blockForm().filter($submit).html($submit.data('origin-text'));
-
-                                if (response.result === 'success') {
-                                    $form.remove();
-                                } else {
-                                    $submit.prop('disabled', false);
-                                    $submit.html($submit.data('text'));
-                                }
-
-                            },
-                            error: function (response) {
-                                response = LP.parseJSON(response);
-
-                                if (response.message) {
-                                    showMessages(response.message)
-                                }
-
-                                blockForm().filter($submit).html($submit.data('origin-text'));
-                            }
+                            beforeSend: beforeSend,
+                            success: ajaxSuccess,
+                            error: ajaxError
                         });
                     }
                     return false;

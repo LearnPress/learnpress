@@ -87,6 +87,17 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				return;
 			}
 
+			/**
+			 * For test upgrade
+			 */
+			if ( isset( $_REQUEST['test-upgrade'] ) ) {
+				$ver = $_REQUEST['test-upgrade'];
+				if ( ! empty( self::$_update_files[ $ver ] ) ) {
+					include_once LP_PLUGIN_PATH . '/inc/updates/' . self::$_update_files[ $ver ];
+				}
+			}
+
+			// There is no file to update
 			if ( ! self::$_update_files ) {
 				return;
 			}
@@ -94,16 +105,20 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			// Get versions
 			$versions   = array_keys( self::$_update_files );
 			$latest_ver = end( $versions );
-
 			$db_version = get_option( 'learnpress_db_version' );
 
 			// Check latest version with the value updated in db
-			if ( version_compare( $db_version, LEARNPRESS_VERSION, '=' ) ) {
+			if ( ! $db_version || version_compare( $db_version, $latest_ver, '>=' ) ) {
 				return;
 			}
 
+//			// If version to update is less than in db
+//			if ( version_compare( $latest_ver, $db_version, '<' ) ) {
+//				return;
+//			}
+
 			// Show message if the latest version is not already updated
-			add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ) );
+			add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ), 20 );
 		}
 
 		/**
@@ -122,8 +137,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			self::_create_cron_jobs();
 			self::_delete_transients();
 			self::_create_log_path();
+			self::_clear_backgrounds();
 			///self::_create_pages();
-
+			delete_transient( 'lp_upgraded_30' );
 			$current_version    = get_option( 'learnpress_version', null );
 			$current_db_version = get_option( 'learnpress_db_version', null );
 
@@ -148,6 +164,18 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 		}
 
+		protected static function _clear_backgrounds() {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->options} WHERE option_name LIKE %s
+			", $wpdb->esc_like( 'lp_schedule_items_batch_' ) . '%' );
+			$wpdb->query( $query );
+
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->options} WHERE option_name LIKE %s
+			", $wpdb->esc_like( 'lp_installer_batch_' ) . '%' );
+			$wpdb->query( $query );
+		}
 
 		/**
 		 * Update default options for LP
@@ -670,6 +698,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		public static function update_db_version( $version = null ) {
 			delete_option( 'learnpress_db_version' );
 			update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
+
+			LP_Debug::instance()->add( debug_backtrace(), 'update_db_version', false, true );
 		}
 
 		public static function update_version( $version = null ) {
@@ -696,7 +726,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					$collate .= " COLLATE $wpdb->collate";
 				}
 			}
-			$tables = array();///$wpdb->get_col( $wpdb->prepare( "SHOW TABLES LIKE %s", '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
+			$tables = $wpdb->get_col( $wpdb->prepare( "SHOW TABLES LIKE %s", '%' . $wpdb->esc_like( 'learnpress' ) . '%' ) );
 			$query  = '';
 
 			if ( ! in_array( $wpdb->learnpress_order_itemmeta, $tables ) ) {
@@ -841,8 +871,4 @@ if ( ! function_exists( 'LP_Install' ) ) {
 	}
 
 	LP_Install::init();
-}
-
-if ( isset( $_REQUEST['xxxxx'] ) ) {
-	add_action( 'plugins_loaded', array( 'LP_Install', 'create_options' ) );
 }

@@ -133,7 +133,9 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 				'offset'         => ( $paged - 1 ) * $this->_options['limit']
 			);
 
-			$args['author'] = get_post_field( 'post_author', $context_id );
+			if ( $context_id = apply_filters( 'learn-press/modal-search-items/context-id', $context_id, $context ) ) {
+				$args['author'] = get_post_field( 'post_author', $context_id );
+			}
 
 			if ( $term ) {
 				$args['s'] = $term;
@@ -213,6 +215,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 						$pagination = paginate_links( $pagination );
 					}
 				}
+				$this->_changed = false;
 			}
 
 			return $pagination;

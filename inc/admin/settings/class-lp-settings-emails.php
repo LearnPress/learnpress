@@ -78,6 +78,8 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					include "email-groups/class-lp-settings-become-teacher-emails.php"
 				);
 
+				$groups = apply_filters( 'learn-press/email-section-classes', $groups );
+
 				foreach ( $groups as $group ) {
 					$sections[ $group->group_id ] = $group;
 				}
@@ -133,6 +135,17 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 				array(
 					'title' => __( 'Email template', 'learnpress' ),
 					'type'  => 'heading'
+				),
+				array(
+					'title'   => __( 'Default Email Content', 'learnpress' ),
+					'id'      => 'emails_general[default_email_content]',
+					'default' => 'plain',
+					'type'    => 'select',
+					'desc'    => __( 'Default email content type for all emails that set content type is <strong>General Settings</strong>.', 'learnpress' ),
+					'options' => array(
+						'plain' => __( 'Plain Text', 'learnpress' ),
+						'html'  => __( 'HTML', 'learnpress' )
+					)
 				),
 				array(
 					'title'            => __( 'Header image', 'learnpress' ),

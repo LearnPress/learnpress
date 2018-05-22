@@ -94,7 +94,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 						<?php } ?>
                         </tbody>
                     </table>
-                    <p>
+                    <p class="buttons">
                         <button class="button clone-schema"
                                 type="button"><?php _e( 'Save as new', 'learnpress' ); ?></button>
                         <a class="button reset-schema"

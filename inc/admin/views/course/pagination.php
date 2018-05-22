@@ -28,50 +28,52 @@
 </script>
 
 <script type="text/javascript">
+    jQuery(function ($) {
 
-    (function (Vue, $store, $) {
+        (function (Vue, $store) {
 
-        Vue.component('lp-pagination', {
-            template: '#tmpl-lp-pagination',
-            props: ['total'],
-            data: function () {
-                return {page: 1}
-            },
-            methods: {
-                update: function () {
-                    this.$emit('update', this.page);
+            Vue.component('lp-pagination', {
+                template: '#tmpl-lp-pagination',
+                props: ['total'],
+                data: function () {
+                    return {page: 1}
                 },
+                methods: {
+                    update: function () {
+                        this.$emit('update', this.page);
+                    },
 
-                nextPage: function () {
-                    if (this.page < this.total) {
-                        this.page++;
-                        this.update();
-                    }
-                },
+                    nextPage: function () {
+                        if (this.page < this.total) {
+                            this.page++;
+                            this.update();
+                        }
+                    },
 
-                nextLastPage: function () {
-                    if (this.page < this.total) {
-                        this.page = this.total;
-                        this.update();
-                    }
-                },
+                    nextLastPage: function () {
+                        if (this.page < this.total) {
+                            this.page = this.total;
+                            this.update();
+                        }
+                    },
 
-                previousPage: function () {
-                    if (this.page > 1) {
-                        this.page--;
-                        this.update();
-                    }
-                },
+                    previousPage: function () {
+                        if (this.page > 1) {
+                            this.page--;
+                            this.update();
+                        }
+                    },
 
-                previousFirstPage: function () {
-                    if (this.page > 1) {
-                        this.page = 1;
-                        this.update();
+                    previousFirstPage: function () {
+                        if (this.page > 1) {
+                            this.page = 1;
+                            this.update();
+                        }
                     }
                 }
-            }
-        });
+            });
 
-    })(Vue, LP_Curriculum_Store, jQuery);
+        })(Vue, LP_Curriculum_Store);
 
+    })
 </script>

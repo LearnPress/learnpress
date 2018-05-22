@@ -36,9 +36,13 @@ if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 
 			// remove order complete for free order ( default new free order auto create pending from pending to completed )
 			remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
+			add_action( 'init', array( $this, 'init' ) );
+		}
 
+		public function init() {
 			// disable send mail for enable enroll course instructor mail
-			if ( ! learn_press_is_negative_value( LP()->settings()->get( 'emails_enrolled-course-user' )['enable'] ) ) {
+			$email = LP_Emails::get_email( 'enrolled-course-user' );
+			if ( $email->enable() ) {
 				remove_action( 'learn-press/order/status-pending-to-completed/notification', array(
 					$this,
 					'trigger'

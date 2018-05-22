@@ -51,6 +51,14 @@ class LP_Settings {
 			settype( $data, 'array' );
 			$this->_options = $data;
 		}
+		self::load_site_options();
+		//add_action( 'init', array( $this, 'init' ) );
+	}
+
+	public function init() {
+
+		LP_Background_Global::add( 'load-site-options', '', array( __CLASS__, 'load_site_options' ) );
+		//LP_Settings::load_site_options();
 	}
 
 	/**
@@ -71,32 +79,21 @@ class LP_Settings {
 	 * @param bool $force
 	 */
 	protected function _load_options( $force = false ) {
-		$_options = wp_load_alloptions();
-		foreach ( $_options as $k => $v ) {
-			$this->_options[ $k ] = maybe_unserialize( $v );
-		}
 
-//		if ( ( false === ( $_options = wp_cache_get( 'options', 'lp-options' ) ) ) || $force ) {
-//			global $wpdb;
-//			$query = $wpdb->prepare( "
-//				SELECT option_name, option_value
-//				FROM {$wpdb->options}
-//				WHERE option_name LIKE %s
-//			", 'learn_press_%' );
-//			if ( $options = $wpdb->get_results( $query ) ) {
-//				foreach ( $options as $option ) {
-//					$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
-//				}
-//			}
-//			foreach ( array( 'learn_press_permalink_structure', 'learn_press_install' ) as $option ) {
-//				if ( empty( $this->_options[ $option ] ) ) {
-//					$this->_options[ $option ] = '';
-//				}
-//			}
-//			wp_cache_set( 'options', $this->_options, 'lp-options' );
-//		} else {
-//			$this->_options = $_options;
-//		}
+		//$this->_options = wp_load_alloptions();
+
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT option_name, option_value
+			FROM {$wpdb->options}
+			WHERE option_name LIKE %s
+		", $wpdb->esc_like( $this->_prefix ) . '%' );
+
+		if ( $options = $wpdb->get_results( $query ) ) {
+			foreach ( $options as $option ) {
+				$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
+			}
+		}
 	}
 
 	/**
@@ -106,6 +103,9 @@ class LP_Settings {
 	 * @param $value
 	 */
 	public function set( $name, $value ) {
+		if ( $this->_prefix && strpos( $name, $this->_prefix ) === false ) {
+			$name = $this->_prefix . $name;
+		}
 		$this->_set_option( $this->_options, $name, $value );
 	}
 
@@ -114,6 +114,7 @@ class LP_Settings {
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
 			if ( isset( $obj->{$current_var} ) ) {
+				$obj->{$current_var} = maybe_unserialize( $obj->{$current_var} );
 				if ( count( $var ) ) {
 					$this->_set_option( $obj->{$current_var}, join( '.', $var ), $value );
 				} else {
@@ -124,6 +125,7 @@ class LP_Settings {
 			}
 		} else {
 			if ( isset( $obj[ $current_var ] ) ) {
+				$obj[ $current_var ] = maybe_unserialize( $obj[ $current_var ] );
 				if ( count( $var ) ) {
 					$this->_set_option( $obj[ $current_var ], join( '.', $var ), $value );
 				} else {
@@ -172,6 +174,7 @@ class LP_Settings {
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
 			if ( isset( $obj->{$current_var} ) ) {
+				$obj->{$current_var} = maybe_unserialize( $obj->{$current_var} );
 				if ( count( $var ) ) {
 					return $this->_get_option( $obj->{$current_var}, join( '.', $var ), $default );
 				} else {
@@ -182,6 +185,7 @@ class LP_Settings {
 			}
 		} else {
 			if ( isset( $obj[ $current_var ] ) ) {
+				$obj[ $current_var ] = maybe_unserialize( $obj[ $current_var ] );
 				if ( count( $var ) ) {
 					return $this->_get_option( $obj[ $current_var ], join( '.', $var ), $default );
 				} else {
@@ -255,6 +259,12 @@ class LP_Settings {
 	 * @since 3.0.0
 	 */
 	public static function load_site_options() {
+		static $loaded = false;
+
+		if ( $loaded ) {
+			return;
+		}
+
 		$options = array(
 			'pmpro_updates',
 			'pmpro_stripe_billingaddress',
@@ -319,9 +329,73 @@ class LP_Settings {
 		}
 
 		wp_cache_set( 'notoptions', $notoptions, 'options' );
+		$loaded = true;
+	}
+
+	/**
+	 * Get settings endpoints for checkout page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array
+	 */
+	public function get_checkout_endpoints() {
+		if ( false === ( $endpoints = wp_cache_get( 'checkout', 'learn-press-endpoints' ) ) ) {
+			$defaults = array(
+				'lp-order-received' => 'lp-order-received'
+			);
+
+			$endpoints = array();
+			if ( $settings = LP()->settings->get( 'checkout_endpoints' ) ) {
+				foreach ( $settings as $k => $v ) {
+					$k               = preg_replace( '!_!', '-', $k );
+					$endpoints[ $k ] = $v;
+				}
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( empty( $endpoints[ $k ] ) ) {
+					$endpoints[ $k ] = $v;
+				}
+			}
+
+			wp_cache_set( 'checkout', $endpoints, 'learn-press-endpoints' );
+		}
+
+		return apply_filters( 'learn-press/endpoints/checkout', $endpoints );
+	}
+
+	/**
+	 * Get settings endpoints for profile page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array
+	 */
+	public function get_profile_endpoints() {
+		if ( false === ( $endpoints = wp_cache_get( 'profile', 'learn-press-endpoints' ) ) ) {
+			$defaults = array();
+
+			$endpoints = array();
+			if ( $settings = LP()->settings->get( 'profile_endpoints' ) ) {
+				foreach ( $settings as $k => $v ) {
+					$k               = preg_replace( '!_!', '-', $k );
+					$endpoints[ $k ] = $v;
+				}
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( empty( $endpoints[ $k ] ) ) {
+					$endpoints[ $k ] = $v;
+				}
+			}
+
+			wp_cache_set( 'profile', $endpoints, 'learn-press-endpoints' );
+		}
+
+		return apply_filters( 'learn-press/endpoints/profile', $endpoints );
 	}
 }
 
-LP_Settings::load_site_options();
 
 return LP_Settings::instance();

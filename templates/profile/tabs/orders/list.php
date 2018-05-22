@@ -42,7 +42,7 @@ if ( ! $query_orders['items'] ) {
 		$order = learn_press_get_order( $order_id ); ?>
         <tr class="order-row">
             <td class="column-order-number"><?php echo $order->get_order_number(); ?></td>
-            <td class="column-order-date"><?php echo $order->get_order_date( get_option( 'date_format' ) ); ?></td>
+            <td class="column-order-date"><?php echo $order->get_order_date(); ?></td>
             <td class="column-order-status">
                 <span class="lp-label label-<?php echo esc_attr( $order->get_status() ); ?>"><?php echo $order->get_order_status_html(); ?></span>
             </td>

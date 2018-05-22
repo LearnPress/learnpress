@@ -84,7 +84,7 @@ class RWMB_Select_Field extends RWMB_Choice_Field {
 	 */
 	public static function get_select_all_html( $field ) {
 		if ( $field['multiple'] && $field['select_all_none'] ) {
-			return '<div class="rwmb-select-all-none">' . __( 'Select', 'meta-box' ) . ': <a data-type="all" href="#">' . __( 'All', 'meta-box' ) . '</a> | <a data-type="none" href="#">' . __( 'None', 'meta-box' ) . '</a></div>';
+			return '<div class="rwmb-select-all-none">' . __( 'Select', 'learnpress' ) . ': <a data-type="all" href="#">' . __( 'All', 'learnpress' ) . '</a> | <a data-type="none" href="#">' . __( 'None', 'learnpress' ) . '</a></div>';
 		}
 		return '';
 	}

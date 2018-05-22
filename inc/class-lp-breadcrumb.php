@@ -59,9 +59,6 @@ class LP_Breadcrumb {
 	 */
 	public function generate() {
 		$conditionals = array(
-			'is_home',
-			'is_404',
-			'is_attachment',
 			'is_single',
 			'learn_press_is_course_category',
 			'learn_press_is_course_tag',
@@ -72,11 +69,15 @@ class LP_Breadcrumb {
 			'is_tag',
 			'is_author',
 			'is_date',
-			'is_tax'
+			'is_tax',
+		    'is_home',
+		    'is_404',
+		    'is_attachment',
 		);
 
 		if ( ( ! is_front_page() && ! ( is_post_type_archive() && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) ) || is_paged() ) {
 			foreach ( $conditionals as $conditional ) {
+			    
 				if ( is_callable( $conditional ) && call_user_func( $conditional ) ) {
 					$conditional = preg_replace( '/^learn_press_/', '', $conditional );
 					$conditional = preg_replace( '/^is_/', '', $conditional );

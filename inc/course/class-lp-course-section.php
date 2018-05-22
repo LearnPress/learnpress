@@ -5,7 +5,7 @@
  *
  * @since 3.0.0
  */
-class LP_Course_Section {
+class LP_Course_Section extends LP_Abstract_Object_Data {
 
 	/**
 	 * Store section data
@@ -20,6 +20,7 @@ class LP_Course_Section {
 	 * @param $data
 	 */
 	public function __construct( $data ) {
+		parent::__construct( $data );
 		$data = wp_parse_args(
 			$data,
 			array(
@@ -28,6 +29,7 @@ class LP_Course_Section {
 				'section_course_id'   => 0,
 				'section_order'       => 1,
 				'section_description' => '',
+				'position'            => 0,
 				'items'               => array()
 			)
 		);
@@ -158,7 +160,7 @@ class LP_Course_Section {
 	 * Get items in this section.
 	 *
 	 * @param string|array $type
-	 * @param bool $preview
+	 * @param bool         $preview
 	 *
 	 * @return array
 	 */
@@ -231,7 +233,7 @@ class LP_Course_Section {
 	 * Count number of items in section.
 	 *
 	 * @param string $type
-	 * @param bool $preview
+	 * @param bool   $preview
 	 *
 	 * @return int
 	 */
@@ -274,5 +276,13 @@ class LP_Course_Section {
 		echo " " . $output;
 
 		return $output;
+	}
+
+	public function set_position( $position ) {
+		$this->data['position'] = $position;
+	}
+
+	public function get_position() {
+		return ! empty( $this->data['position'] ) ? absint( $this->data['position'] ) : 0;
 	}
 }

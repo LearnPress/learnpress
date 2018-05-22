@@ -71,12 +71,14 @@ if ( ! class_exists( 'LP_Email_Completed_Order_User' ) ) {
 
 			// disable for enroll free course
 			if ( $free == sizeof( $items ) ) {
+
 				return false;
 			}
 
 			$this->recipient = $order->get_user_email();
 
 			if ( ! $this->recipient ) {
+
 				return false;
 			}
 

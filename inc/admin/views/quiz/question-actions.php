@@ -8,10 +8,8 @@
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-actions">
     <div class="question-actions table-row" :class="status">
-        <div class="sort">
-            <svg class="svg-icon" viewBox="0 0 32 32">
-                <path d="M 14 5.5 a 3 3 0 1 1 -3 -3 A 3 3 0 0 1 14 5.5 Z m 7 3 a 3 3 0 1 0 -3 -3 A 3 3 0 0 0 21 8.5 Z m -10 4 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 12.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 12.5 Z m -10 10 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 22.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 22.5 Z"></path>
-            </svg>
+        <div class="sort lp-sortable-handle">
+            <i class="fa fa-bars"></i>
         </div>
         <div class="order">{{index +1}}</div>
         <div class="name" @dblclick="toggle">
@@ -21,23 +19,28 @@
         <div class="type">{{question.type.label}}</div>
         <div class="actions">
             <div class="lp-box-data-actions lp-toolbar-buttons">
-                <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
-                    <a class="lp-btn-icon dashicons dashicons-randomize" title="Change type"></a>
+                <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type lp-title-attr-tip"
+                     data-content-tip="<?php echo esc_attr( 'Change type', 'learnpress' ); ?>">
+                    <a class="lp-btn-icon dashicons dashicons-randomize"></a>
                     <ul>
                         <li v-for="(type, key) in questionTypes" :class="active(key)">
                             <a href="" :data-type="key" @click.prevent="changeType(key)">{{type}}</a>
                         </li>
                     </ul>
                 </div>
-                <div class="lp-toolbar-btn">
-                    <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit" title="Edit"></a>
+                <div class="lp-toolbar-btn lp-title-attr-tip" v-if="!disableUpdateList"
+                     data-content-tip="<?php echo esc_attr( 'Duplicate', 'learnpress' ); ?>">
+                    <a href="" class="lp-btn-icon dashicons dashicons-admin-page"
+                       @click.prevent="clone"></a>
                 </div>
-                <div class="lp-toolbar-btn" v-if="!disableUpdateList">
-                    <a href="" class="lp-btn-icon dashicons dashicons-admin-page" @click.prevent="clone"
-                       title="Duplicate"></a>
+                <div class="lp-toolbar-btn lp-title-attr-tip"
+                     data-content-tip="<?php echo esc_attr( 'Edit item', 'learnpress' ); ?>">
+                    <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a>
                 </div>
-                <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown" v-if="!disableUpdateList">
-                    <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove" title="Delete"></a>
+                <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown lp-title-attr-tip"
+                     v-if="!disableUpdateList"
+                     data-content-tip="<?php echo esc_attr( 'Delete', 'learnpress' ); ?>">
+                    <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>
                         <li>
                             <a @click.prevent="remove"
@@ -45,12 +48,11 @@
                         </li>
                         <li>
                             <a @click.prevent="deletePermanently"
-                               class="delete"><?php esc_html_e( 'Delete permanently', 'learnpress' ); ?></a>
+                               class="delete"><?php esc_html_e( 'Move to trash', 'learnpress' ); ?></a>
                         </li>
                     </ul>
                 </div>
-                <span :class="['lp-toolbar-btn lp-btn-toggle', question.open ?'open' : 'close']" @click="toggle"
-                      title="Toggle"></span>
+                <span :class="['lp-toolbar-btn lp-btn-toggle', question.open ?'open' : 'close']" @click="toggle"></span>
             </div>
         </div>
     </div>
@@ -68,6 +70,21 @@
                     title: this.question.title,
                     changed: false
                 };
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    var $ = jQuery;
+                    $(this.$el).find('.lp-title-attr-tip').QuickTip({
+                        closeInterval: 0,
+                        arrowOffset: 'el',
+                        tipClass: 'preview-item-tip'
+                    });
+                    $(document).on('mousedown', '.section-item .drag', function (e) {
+                        $('html, body').addClass('moving');
+                    }).on('mouseup', function (e) {
+                        $('html, body').removeClass('moving');
+                    })
+                })
             },
             computed: {
                 // question status
@@ -122,6 +139,9 @@
                 },
                 // delete permanently question
                 deletePermanently: function () {
+                    if (!confirm($store.getters['i18n/all'].confirm_trash_question.replace('{{QUESTION_NAME}}', this.question.title))) {
+                        return;
+                    }
                     $store.dispatch('lqs/deleteQuestion', this.question);
                 },
                 // toggle question

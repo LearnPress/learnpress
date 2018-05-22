@@ -19,7 +19,6 @@ if (!Object.prototype.watchChange) {
                             return newval;
                         },
                         setter = function (val) {
-                            oldval = newval;
                             return newval = handler.call(obj, prop, oldval, val);
                         };
 

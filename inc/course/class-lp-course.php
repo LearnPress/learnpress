@@ -18,10 +18,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 	 * Class LP_Course
 	 */
 	class LP_Course extends LP_Abstract_Course {
-		/**
-		 * @var int
-		 */
-		protected static $_loaded = 0;
 
 		/**
 		 * LP_Course constructor.
@@ -30,11 +26,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function __construct( $course ) {
 			parent::__construct( $course );
-
-			self::$_loaded ++;
-			if ( self::$_loaded == 1 ) {
-				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-			}
 		}
 
 		/**
@@ -45,8 +36,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return array
 		 */
 		public static function log( $data ) {
-			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
 			return $data;
 		}
 

@@ -131,7 +131,7 @@ class LP_Gateways {
 						$is_selected          = $gateway;
 					}
 					$_available_gateways[ $slug ] = $gateway;
-				};
+				}
 			}
 
 		}

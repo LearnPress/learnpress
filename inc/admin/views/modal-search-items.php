@@ -25,7 +25,7 @@
     </div>
 </script>
 <div id="vue-modal-search-items" style="position: relative;z-index: 10000;">
-    <learn-press-modal-search-items v-if="show" :post-type="postType" :term="term" :contex="context"
+    <learn-press-modal-search-items v-if="show" :post-type="postType" :term="term" :context="context"
                                     :context-id="contextId" :show="show" :callbacks="callbacks"
                                     :exclude="exclude"
                                     v-on:close="close">

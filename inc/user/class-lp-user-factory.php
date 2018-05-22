@@ -21,14 +21,14 @@ class LP_User_Factory {
 	/**
 	 * @var LP_Background_Clear_Temp_Users
 	 */
-	protected static $_background_clear_users = null;
+	//protected static $_background_clear_users = null;
 
 	/**
 	 *
 	 */
 	public static function init() {
-		self::$_background_clear_users = new LP_Background_Clear_Temp_Users();
-		self::$_guest_transient        = WEEK_IN_SECONDS;
+		//self::$_background_clear_users = new LP_Background_Clear_Temp_Users();
+		self::$_guest_transient = WEEK_IN_SECONDS;
 		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn_press_user_start_quiz', array( __CLASS__, 'start_quiz' ), 10, 4 );
 		add_action( 'learn_press_user_retake_quiz', array( __CLASS__, 'retake_quiz' ), 10, 4 );
@@ -36,7 +36,7 @@ class LP_User_Factory {
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
 		add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
-		add_action( 'init', array( __CLASS__, 'clear_temp_users' ) );
+		///add_action( 'init', array( __CLASS__, 'clear_temp_users' ) );
 
 		/**
 		 * Filters into wp users manager
@@ -50,7 +50,7 @@ class LP_User_Factory {
 	public static function clear_temp_users() {
 		global $wpdb;
 		if ( $users = learn_press_get_temp_users() ) {
-			self::$_background_clear_users->push_to_queue(
+			LP()->background( 'clear-temp-users' )->push_to_queue(
 				array(
 					'action' => 'clear_temp_users',
 					'users'  => $users
@@ -97,14 +97,14 @@ class LP_User_Factory {
 				case 'pending':
 				case 'processing':
 				case 'cancelled':
-					//self::_update_user_item_pending( $order, $new_status );
+				case 'failed':
+					self::_update_user_item_pending( $order, $old_status, $new_status );
 					break;
 				case'completed':
 					self::_update_user_item_purchased( $order, $old_status, $new_status );
 			}
 			//LP_Debug::commitTransaction();
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			//LP_Debug::rollbackTransaction();
 		}
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
@@ -112,8 +112,8 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
-	 * @param string   $old_status
-	 * @param string   $new_status
+	 * @param string $old_status
+	 * @param string $new_status
 	 */
 	protected static function _update_user_item_pending( $order, $old_status, $new_status ) {
 		$curd  = new LP_User_CURD();
@@ -133,7 +133,7 @@ class LP_User_Factory {
 					} else {
 						$item_id = $item;
 					}
-					$curd->update_user_item_status( $item_id, 'pending' );
+					$curd->update_user_item_status( $item_id, $new_status );
 				}
 			}
 		}
@@ -141,8 +141,8 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
-	 * @param string   $old_status
-	 * @param string   $new_status
+	 * @param string $old_status
+	 * @param string $new_status
 	 */
 	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
 		global $wpdb;
@@ -190,6 +190,9 @@ class LP_User_Factory {
 					$item        = $curd->get_user_item_by_id( $user_item_id );
 					$last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
 					$args        = array( 'status' => $last_status );
+					if ( $new_status == 'completed' ) {
+						$args['status'] = 'enrolled';
+					}
 					if ( ! $last_status ) {
 						if ( 'enrolled' == ( $args['status'] = LP()->settings->get( 'auto_enroll' ) == 'no' ? 'purchased' : 'enrolled' ) ) {
 							$time                   = new LP_Datetime();

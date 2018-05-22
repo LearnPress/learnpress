@@ -18,6 +18,7 @@ $primary-bg-color-after: #000;
 @import "frontend/widget";
 @import "quick-tip";
 @import "frontend/preview-course";
+@import "frontend/alerts";
 
 input[type="text"],
 input[type="email"],
@@ -26,8 +27,8 @@ input[type="password"] {
     @include box-sizing(border-box);
 }
 
-.hide-if-js{
-    display: none!important;
+.hide-if-js {
+    display: none !important;
 }
 
 .clearfix {
@@ -142,6 +143,7 @@ ul.learn-press-courses {
         .lp-course-buttons {
             form {
                 width: 100%;
+                margin-bottom: 10px;
                 button {
                     width: 100%;
                 }
@@ -343,7 +345,7 @@ ul.list-table-nav {
             display: block;
             font-weight: bold;
         }
-        a{
+        a {
             color: #999999;
         }
     }
@@ -351,13 +353,22 @@ ul.list-table-nav {
         text-align: right;
     }
 }
-
+.content-item-wrap {
+    #comments {
+        margin-left: 0;
+        margin-right: 0;
+        #comment{
+            @include box-sizing(border-box);
+        }
+    }
+}
 @media screen and (max-width: 768px) {
     ul.learn-press-courses {
         .course {
             width: 48%;
         }
     }
+
 }
 
 @media screen and (max-width: 600px) {

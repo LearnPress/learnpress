@@ -55,11 +55,13 @@ class LP_Backward_Addons {
 		$valid_plugins   = wp_get_active_and_valid_plugins();
 		$active_plugins  = get_option( 'active_plugins' );
 		$invalid_plugins = array();
+		$invalid_slug    = false;
 
 		foreach ( $valid_plugins as $file ) {
 
 			// Ensure plugin name is started with learnpress-
 			$base_name = plugin_basename( $file );
+
 			if ( strpos( $base_name, 'learnpress-' ) !== 0 ) {
 				continue;
 			}
@@ -75,12 +77,28 @@ class LP_Backward_Addons {
 			if ( false !== ( $at = array_search( $base_name, $active_plugins ) ) ) {
 				unset( $active_plugins[ $at ] );
 				$invalid_plugins[] = array( 'slug' => $base_name, 'path' => $file );
+
+				if ( preg_match( '!learnpress-(.*)/learnpress.php!', $base_name ) ) {
+					$invalid_slug = $base_name;
+					break;
+				}
 			}
 		}
 
 		if ( sizeof( $invalid_plugins ) ) {
 			// Re-update
 			update_option( 'active_plugins', $active_plugins );
+
+			if ( $invalid_slug ) {
+				wp_die(
+					sprintf(
+						__( 'LearnPress plugin slug should be <strong>%s</strong> to make sure it works properly. Currently, it is <strong>%s</strong>. Please correct it\'s name and active again. <a href="%s">Back</a>', 'learnpress' ),
+						'learnpress/learnpress.php',
+						$invalid_slug,
+						admin_url( 'plugins.php' )
+					)
+				);
+			}
 
 			set_transient( 'lp-deactivated-addons', $invalid_plugins );
 

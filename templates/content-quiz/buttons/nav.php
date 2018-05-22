@@ -14,12 +14,19 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+<<<<<<< HEAD
 $user      = LP_Global::user();
 $quiz      = LP_Global::course_item_quiz();
 $question = LP_Global::quiz_question();
 $course_id = get_the_ID();
 $hide_next = get_post_meta($quiz->get_id(), '_lp_show_submit_hide_next', true);
 $has_checked =  $user->has_checked_answer( $question->get_id(), $quiz->get_id(), get_the_ID() ); 
+=======
+$user                = LP_Global::user();
+$quiz                = LP_Global::course_item_quiz();
+$course_id           = get_the_ID();
+$current_question_id = $quiz->get_viewing_question( 'id' );
+>>>>>>> develop
 ?>
 
 <?php if ( $prev_id = $user->get_prev_question( $quiz->get_id(), $course_id ) ) { ?>
@@ -32,6 +39,7 @@ $has_checked =  $user->has_checked_answer( $question->get_id(), $quiz->get_id(),
 		<?php do_action( 'learn-press/quiz/begin-prev-question-button' ); ?>
 
         <button type="submit"><?php echo esc_html_x( 'Prev', 'quiz-question-navigation', 'learnpress' ); ?></button>
+        <input type="hidden" name="question-id" value="<?php echo $current_question_id; ?>">
 
 		<?php do_action( 'learn-press/quiz/end-prev-question-button' ); ?>
 
@@ -52,6 +60,7 @@ $has_checked =  $user->has_checked_answer( $question->get_id(), $quiz->get_id(),
 		<?php do_action( 'learn-press/quiz/begin-next-question-button' ); ?>
 
         <button type="submit"><?php echo esc_html_x( 'Next', 'quiz-question-navigation', 'learnpress' ); ?></button>
+        <input type="hidden" name="question-id" value="<?php echo $current_question_id; ?>">
 
 		<?php do_action( 'learn-press/quiz/end-next-question-button' ); ?>
 
@@ -66,12 +75,13 @@ $has_checked =  $user->has_checked_answer( $question->get_id(), $quiz->get_id(),
 
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 
-    <form name="skip-question" class="skip-question form-button" method="post"
+    <form name="skip-question" class="skip-question form-button lp-form" method="post"
           action="<?php echo $quiz->get_question_link( $next_id ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-skip-question-button' ); ?>
 
         <button type="submit"><?php echo esc_html_x( 'Skip', 'quiz-question-navigation', 'learnpress' ); ?></button>
+        <input type="hidden" name="question-id" value="<?php echo $current_question_id; ?>">
 
 		<?php do_action( 'learn-press/quiz/end-skip-question-button' ); ?>
 

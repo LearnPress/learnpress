@@ -5,7 +5,7 @@
  * 2/ Run "npm install gulp --save-dev" to install gulp in your project directory.
  * 3/ Run "npm install package-name[ package-name...] --save-dev
  *
- * EX: npm install gulp-zip gulp-copy gulp-clean gulp-sass gulp-livereload gulp-sourcemaps read-file gulp-replace mkdirp gulp-concat gulp-uglify pump --save-dev
+ * EX: npm install gulp-zip gulp-copy gulp-clean gulp-sass gulp-livereload gulp-sourcemaps read-file gulp-replace mkdirp gulp-concat gulp-uglify gulp-clean-css pump --save-dev
 
  */
 'use strict';
@@ -27,9 +27,9 @@ gulp.task('scss', function () {
     return gulp.src(['assets/scss/**/*.scss'])
         .pipe(sourceMaps.init())
         .pipe(scss())
-        .pipe(sourceMaps.write())
+        //.pipe(sourceMaps.write())
         .pipe(gulp.dest('assets/css'))
-        .pipe(liveReload());
+        //.pipe(liveReload());
 });
 
 gulp.task('watch', function () {

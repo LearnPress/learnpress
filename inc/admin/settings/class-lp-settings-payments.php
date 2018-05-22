@@ -122,10 +122,12 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 						),
 						array(
-							'title'   => __( 'Order received', 'learnpress' ),
-							'id'      => 'checkout_endpoints[order_received]',
-							'default' => 'order-received',
-							'type'    => 'text'
+							'title'       => __( 'Order received', 'learnpress' ),
+							'id'          => 'checkout_endpoints[lp_order_received]',
+							'default'     => 'lp-order-received',
+							'placeholder' => __( 'lp-order-received', 'learnpress' ),
+							'type'        => 'text',
+							'desc'        => sprintf( __( 'Unique slug in checkout page to displays order details. Example: http://example.com/lp-checkout/%s/', 'learnpress' ), LP()->settings()->get( 'checkout_endpoints.lp_order_received', 'lp-order-received' ) )
 						)
 					)
 				),

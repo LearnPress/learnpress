@@ -60,12 +60,14 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 			ob_start();
 			learn_press_email_formats_dropdown(
 				array(
-					'name'     => $field['field_name'] . '[format]',
-					'class'    => 'lp-email-format',
-					'selected' => $email_format
+					'name'        => $field['field_name'] . '[format]',
+					'class'       => 'lp-email-format',
+					'selected'    => $email_format,
+					'option_none' => array( '' => __( 'General setting', 'learnpress' ) )
 				)
 			);
 			?>
+            <p class="description"><?php printf( __( 'Choose <strong>General setting</strong> to apply the setting from Email <a href="%s">General Options</a> ', 'learnpress' ), admin_url( 'admin.php?page=learn-press-settings&tab=emails&section=general' ) ); ?></p>
             <div class="lp-email-templates">
 				<?php
 				$templates = learn_press_email_formats();
@@ -78,7 +80,7 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 					}
 
 					$local_file    = ! empty( $field["template_{$template_type}_local"] ) ? $field["template_{$template_type}_local"] : null;//$this->get_theme_template_file( $template, $this->template_path );
-                    $template_file = $field['template_base'] . $template;//$this->template_base . $template;
+					$template_file = $field['template_base'] . $template;//$this->template_base . $template;
 					$template_dir  = $field['template_path'];//$this->template_path;//learn_press_template_path();
 					$classes       = array( 'learn-press-email-template' );
 					//extract( $field['extra'] );
@@ -149,9 +151,6 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 									<?php esc_html_e( 'Click on variables to add it into email content.', 'learnpress' ); ?>
                                 </p>
 							<?php endif; ?>
-                            <!--                            <p class="description">-->
-                            <!--								--><?php //printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
-                            <!--                            </p>-->
 						<?php endif; ?>
                     </div>
 					<?php

@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || exit();
 <div class="lp-course-buttons">
 
 	<?php do_action( 'learn-press/before-course-buttons' ); ?>
-
 	<?php
 	/**
 	 * @see learn_press_course_purchase_button - 10
@@ -27,7 +26,6 @@ defined( 'ABSPATH' ) || exit();
 	 */
 	do_action( 'learn-press/course-buttons' );
 	?>
-
 	<?php do_action( 'learn-press/after-course-buttons' ); ?>
 
 </div>

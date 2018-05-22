@@ -17,7 +17,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		/**
 		 * @var string
 		 */
-		protected $action = 'lp_mailer';
+		protected $action = 'lp_query_items';
 
 		/**
 		 * @var int
@@ -37,6 +37,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
+			parent::task( $data );
 
 			if ( ! isset( $data['callback'] ) ) {
 				return false;
@@ -205,3 +206,5 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		}
 	}
 }
+
+return LP_Background_Query_Items::instance();

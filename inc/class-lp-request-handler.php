@@ -64,6 +64,7 @@ class LP_Request {
 		add_filter( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
 		add_filter( 'learn-press/checkout-no-payment-result', array( __CLASS__, 'maybe_redirect_checkout' ), 10, 2 );
 		add_filter( 'learn-press/purchase-course-id', array( __CLASS__, 'maybe_enroll_course' ), 10, 2 );
+		add_action( 'learn-press/add-to-cart-order-total-empty', array( __CLASS__, 'maybe_redirect_enroll' ), 10, 3 );
 
 		add_action( 'init', array( 'LP_Forms_Handler', 'init' ), 10 );
 	}
@@ -85,6 +86,18 @@ class LP_Request {
 		}
 
 		return $course_id;
+	}
+
+	public static function maybe_redirect_enroll( $course_id, $cart_id, $action ) {
+		if ( $course = learn_press_get_course( $course_id ) ) {
+			if ( $course->is_required_enroll() && ! get_current_user_id() ) {
+				if ( ! $redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $course->get_permalink() ) ) ) ) {
+					$redirect = $course->get_permalink();
+				}
+				wp_redirect( $redirect );
+				exit();
+			}
+		}
 	}
 
 	/**
@@ -166,7 +179,6 @@ class LP_Request {
 								$enroll_course = true;
 							}
 						}
-
 						//
 						if ( $order->has_status( array( 'pending', 'processing' ) ) ) {
 							// If course is FREE
@@ -238,11 +250,22 @@ class LP_Request {
 	 */
 	public static function do_checkout( $course_id, $cart_id, $action ) {
 
+	    $user = learn_press_get_current_user();
 		$course = learn_press_get_course( $course_id );
 		if ( ! $course ) {
 			return false;
 		}
-
+		
+		if( 'enroll-course' == $action){
+		    if(!$user->can_enroll_course($course_id)){
+		        learn_press_add_message(
+		            sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+		            'error'
+		            );
+		        return false;
+		    }
+		}
+		
 		$cart = LP()->cart;
 
 		if ( ! $cart->get_items() ) {
@@ -259,10 +282,9 @@ class LP_Request {
 			}
 
 			learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
-			die();
 		} else {
 			/// Need?
-			do_action( 'learn-press/add-to-cart-order-total-empty' );
+			do_action( 'learn-press/add-to-cart-order-total-empty', $course_id, $cart_id, $action );
 			$checkout = LP()->checkout();
 			$checkout->process_checkout();
 		}
@@ -287,23 +309,30 @@ class LP_Request {
 
 		$user     = LP_Global::user();
 		$redirect = get_the_permalink( $course_id );
-		$thing    = $user->enroll( $course_id, $order_id );
-		if ( is_wp_error( $thing ) ) {
-			learn_press_add_message(
-				$thing->get_error_message(),
-				'error'
-			);
-
-			if ( $thing->get_error_code() == 10002 ) {
-				$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $redirect ) ) );
-			}
-		} elseif ( $thing ) {
-			learn_press_add_message(
-				sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-				'success'
-			);
+		if ( !$user->can_enroll_course( $course_id ) && 'enroll-course' == $action ){
+		    learn_press_add_message(
+		        sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+		        'error'
+		        );
+		} else {
+    		$thing    = $user->enroll( $course_id, $order_id );
+    
+    		if ( is_wp_error( $thing ) ) {
+    			learn_press_add_message(
+    				$thing->get_error_message(),
+    				'error'
+    			);
+    
+    			if ( $thing->get_error_code() == 10002 ) {
+    				$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $redirect ) ) );
+    			}
+    		} elseif ( $thing ) {
+    			learn_press_add_message(
+    				sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+    				'success'
+    			);
+    		}
 		}
-
 		wp_redirect( apply_filters( 'learn-press/enroll-course-redirect', $redirect ) );
 		exit();
 	}
@@ -326,7 +355,7 @@ class LP_Request {
 			// Only show for admin
 			if ( current_user_can( 'manage_options' ) ) {
 				learn_press_add_message( __( 'Checkout page hasn\'t been setup or page does not exists.', 'learnpress' ) );
-			}else{
+			} else {
 				learn_press_add_message( __( 'Checkout error! Please contact with admin for getting more information.', 'learnpress' ) );
 			}
 		}

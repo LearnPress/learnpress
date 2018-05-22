@@ -40,10 +40,16 @@ class LP_Assets extends LP_Abstract_Assets {
 	public function _get_script_data() {
 		return array(
 			'global'       => array(
-				'url'     => learn_press_get_current_url(),
-				'siteurl' => site_url(),
-				'ajax'    => admin_url( 'admin-ajax.php' ),
-				'theme'   => get_stylesheet()
+				'url'      => learn_press_get_current_url(),
+				'siteurl'  => site_url(),
+				'ajax'     => admin_url( 'admin-ajax.php' ),
+				'theme'    => get_stylesheet(),
+				'localize' => array(
+					'button_ok'     => __( 'OK', 'learnpress' ),
+					'button_cancel' => __( 'Cancel', 'learnpress' ),
+					'button_yes'    => __( 'Yes', 'learnpress' ),
+					'button_no'     => __( 'No', 'learnpress' )
+				)
 			),
 			'checkout'     => array(
 				'ajaxurl'              => site_url(),
@@ -71,6 +77,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'learn-press/frontend-default-scripts',
 			array(
 				'watchjs'          => self::url( 'js/vendor/watch.js' ),
+				'jalerts'          => self::url( 'js/vendor/jquery.alert.js' ),
 				'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
 				'lp-vue'           => array(
 					'url'     => self::url( 'js/vendor/vue.js' ),
@@ -107,7 +114,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'course'           => array(
 					'url'  => self::url( 'js/frontend/course.js' ),
-					'deps' => array( 'global', 'jquery-scrollbar', 'watchjs' )
+					'deps' => array( 'global', 'jquery-scrollbar', 'watchjs', 'jalerts' )
 				),
 				'quiz'             => array(
 					'url'     => self::url( 'js/frontend/quiz.js' ),

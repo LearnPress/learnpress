@@ -53,6 +53,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'complete-lesson',
 				'finish-course',
 				'retake-course',
+				'external-link:nopriv'
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
@@ -80,6 +81,26 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
 			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
+		}
+
+		public static function external_link() {
+			$nonce = LP_Request::get( 'nonce' );
+			$id    = LP_Request::get( 'id' );
+
+			if ( ! $course = learn_press_get_course( $id ) ) {
+				return;
+			}
+
+			$link = $course->get_external_link();
+
+			if ( ! wp_verify_nonce( $nonce, 'external-link-' . $link ) ) {
+				return;
+			}
+
+			if ( apply_filters( 'learn-press/course-redirect-external-link', $id ) ) {
+				wp_redirect( $link );
+				exit();
+			}
 		}
 
 		public static function register_user() {
@@ -247,14 +268,13 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			if ( ! $user->get_id() || ! $course || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
-			//LP_Debug::startTransaction();
 			$finished = $user->finish_course( $course_id );
-			//LP_Debug::rollbackTransaction();
 			$response = array(
 				'redirect' => get_the_permalink( $course_id )
 			);
 
 			if ( $finished ) {
+				learn_press_update_user_item_meta( $finished, 'finishing_type', 'click' );
 				learn_press_add_message( sprintf( __( 'You have finished this course "%s"', 'learnpress' ), $course->get_title() ) );
 				$response['result'] = 'success';
 			} else {
@@ -340,7 +360,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			if ( ! wp_verify_nonce( $security, $security_action ) ) {
 				learn_press_add_message( __( 'Error! Invalid course or failed security check.', 'learnpress' ), 'error' );
 			} else {
-				if ( $user->can( 'retake-course', $course_id ) ) {
+				if ( $user->can_retake_course( $course_id ) ) {
 					if ( ! $result = $user->retake_course( $course_id ) ) {
 						learn_press_add_message( __( 'Error!', 'learnpress' ), 'error' );
 					} else {

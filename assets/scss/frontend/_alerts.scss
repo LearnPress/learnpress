@@ -1,0 +1,60 @@
+/**
+ * CSS for jAlerts
+ */
+@import "../mixin.scss";
+
+#popup_container {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+body.confirm {
+    #popup_overlay {
+        z-index: 999998 !important;
+    }
+
+    #popup_container {
+        z-index: 999999 !important;
+        max-width: 90% !important;
+        min-width: 300px !important;
+        padding: 10px !important;
+        background: #F5F5F5;
+        transition: opacity 0.25s;
+        @include border-radius(3px);
+
+        #popup_title {
+            display: none !important;
+        }
+
+        #popup_message {
+            margin: -10px;
+            background: #FFF;
+            padding: 20px;
+            @include border-radius(3px);
+        }
+
+        .close {
+            position: absolute;
+            top: 3px;
+            right: 10px;
+        }
+        #popup_panel {
+            margin-top: 20px;
+            text-align: center;
+            button, input[type="button"], input[type="submit"] {
+                height: 30px;
+                line-height: 30px;
+                padding: 0 25px;
+            }
+        }
+
+        #popup_cancel {
+            display: none;
+        }
+
+        &.ready {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+}

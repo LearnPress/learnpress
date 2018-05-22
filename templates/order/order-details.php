@@ -92,4 +92,8 @@ if ( ! isset( $order ) ) {
 	<?php printf( __( '<strong>Order key:</strong> %s', 'learnpress' ), $order->get_order_key() ); ?>
 </p>
 
+<p>
+    <strong><?php _e( 'Order status:', 'learnpress' ); ?></strong> <span class="lp-label label-<?php echo esc_attr( $order->get_status() ); ?>"><?php echo $order->get_order_status_html(); ?></span>
+</p>
+
 <?php do_action( 'learn-press/order/after-table-details', $order ); ?>

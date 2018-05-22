@@ -31,21 +31,33 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 			$this->default_heading = __( 'New user order', 'learnpress' );
 
 			$this->recipients = get_option( 'admin_email' );
-			$this->recipient  = LP()->settings->get( 'emails_' . $this->id . '.recipients', $this->recipients );
+			$this->recipient  = LP()->settings->get( 'emails_' . $this->id . '.recipients', $this->_get_admin_email() );
 
 			parent::__construct();
 
 			// new free order
 			// add_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
+
+			// email for new order
+			add_action( 'learn-press/checkout-order-processed', array( $this, 'trigger' ) );
+
 			// new paid order
 			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 
 			// remove complete order hook for free course ( default new free order auto create pending from pending to completed )
 			remove_action( 'learn-press/order/status-completed/notification', array( $this, 'trigger' ) );
 
+			add_action( 'init', array( $this, 'init' ) );
+		}
+
+		public function init() {
 			// disable send mail for enable enroll course admin mail
-			if ( ! learn_press_is_negative_value( LP()->settings()->get( 'emails_enrolled-course-admin' )['enable'] ) ) {
-				remove_action( 'learn-press/order/status-pending-to-completed/notification', array( $this, 'trigger' ) );
+			$email = LP_Emails::get_email( 'enrolled-course-admin' );
+			if ( $email->enable() ) {
+				remove_action( 'learn-press/order/status-pending-to-completed/notification', array(
+					$this,
+					'trigger'
+				) );
 			}
 		}
 

@@ -23,6 +23,7 @@ if ( ! $answers = $question->get_answers() ) {
 $quiz = LP_Global::course_item_quiz();
 $question->setup_data( $quiz->get_id() );
 
+
 ?>
 
 <ul id="answer-options-<?php echo $question->get_id(); ?>" <?php echo $answers->answers_class(); ?>>

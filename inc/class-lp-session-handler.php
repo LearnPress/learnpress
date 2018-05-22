@@ -225,7 +225,6 @@ class LP_Session_Handler implements ArrayAccess {
 			// Mark session clean after saving
 			$this->_changed = false;
 		}
-
 	}
 
 	public function destroy_session() {
@@ -321,12 +320,17 @@ class LP_Session_Handler implements ArrayAccess {
 	 * Remove a value from session by key.
 	 *
 	 * @param string $key
+	 * @param bool   $force_change
 	 */
-	public function remove( $key ) {
+	public function remove( $key, $force_change = false ) {
 		if ( ! array_key_exists( $key, $this->_data ) ) {
 			return;
 		}
 		unset( $this->_data[ $key ] );
+		$this->_changed = true;
+		if ( $force_change ) {
+			$this->save_data();
+		}
 	}
 
 	/**
@@ -348,11 +352,16 @@ class LP_Session_Handler implements ArrayAccess {
 	 *
 	 * @param string $key
 	 * @param mixed  $value
+	 * @param bool   $force_change
 	 */
-	public function set( $key, $value ) {
+	public function set( $key, $value, $force_change = false ) {
 		if ( $value !== $this->get( $key ) ) {
 			$this->_data[ sanitize_key( $key ) ] = maybe_serialize( $value );
 			$this->_changed                      = true;
+
+			if ( $force_change ) {
+				$this->save_data();
+			}
 		}
 	}
 

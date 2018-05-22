@@ -87,6 +87,17 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'type'    => 'yes-no',
 					'desc'    => sprintf( __( 'Enable cache for static content such as content and settings of course, lesson, quiz. <a href="%s">%s</a>', 'learnpress' ), admin_url('admin.php?page=learn-press-tools&tab=cache'), __('Advanced', 'learnpress'))
 				),
+				array(
+					'title'   => __( 'Others', 'learnpress' ),
+					'type'    => 'heading',
+				),
+				array(
+					'title'   => __( 'Enable lesson video', 'learnpress' ),
+					'id'      => 'enable_lesson_video',
+					'default' => 'no',
+					'type'    => 'yes-no',
+					'desc'    => __( 'When this option is enabled, the first video embed in lesson content will be detected and move to the top.', 'learnpress' )
+				),
 			)
 		);
 	}

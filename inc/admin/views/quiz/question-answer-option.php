@@ -7,9 +7,10 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-answer-option">
-    <tr class="answer-option" :data-answer-id="answer.question_answer_id" :data-order-answer="index">
-        <td class="sort"><i class="fa fa-bars"></i></td>
-        <td class="order">{{index +1}}</td>
+    <tr class="answer-option" :class="[isNew() ? 'empty-option' : '']" :data-answer-id="answer.question_answer_id"
+        :data-order-answer="index">
+        <td class="sort lp-sortable-handle"><?php learn_press_admin_view( 'svg-icon' ); ?></td>
+        <td class="order">{{index +1}}.</td>
         <td class="answer-text">
             <input type="text" v-model="answer.text"
                    @change="changeTitle" @keyup.enter="updateTitle" @blur="updateTitle" @keyup="keyUp"/>
@@ -69,6 +70,9 @@
                 }
             },
             methods: {
+                isNew: function () {
+                    return isNaN(this.answer.question_answer_id)
+                },
                 changeCorrect: function (e) {
                     this.answer.is_true = (e.target.checked) ? 'yes' : '';
                     this.$emit('changeCorrect', this.answer);

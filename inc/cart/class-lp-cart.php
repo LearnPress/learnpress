@@ -83,9 +83,9 @@ class LP_Cart {
 
 	private function set_cart_cookies( $set = true ) {
 		if ( $set ) {
-			learn_press_setcookie( 'learn_press_items_in_cart', 1 );
-		} elseif ( isset( $_COOKIE['learn_press_items_in_cart'] ) ) {
-			learn_press_setcookie( 'learn_press_items_in_cart', 0, time() - HOUR_IN_SECONDS );
+			learn_press_setcookie( 'wordpress_lp_cart', 1 );
+		} elseif ( isset( $_COOKIE['wordpress_lp_cart'] ) ) {
+			learn_press_setcookie( 'wordpress_lp_cart', 0, time() - HOUR_IN_SECONDS );
 		}
 		do_action( 'learn_press_set_cart_cookies', $set );
 	}

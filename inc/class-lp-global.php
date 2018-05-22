@@ -74,6 +74,21 @@ class LP_Global {
 	}
 
 	/**
+	 * Check if current course item is viewing is a $type
+	 *
+	 * @param string $type
+	 *
+	 * @return bool
+	 */
+	public static function is_course_item_type( $type ) {
+		if ( $item = self::course_item() ) {
+			return $type === get_post_type( $item->get_id() );
+		}
+
+		return false;
+	}
+
+	/**
 	 * @param bool $id
 	 *
 	 * @return LP_Course|bool|int

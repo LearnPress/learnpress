@@ -113,8 +113,19 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 			}
 
+			if ( empty( $answers ) ) {
+				$answers = array(
+					array(
+						'question_answer_id' => 0,
+						'text'               => ''
+					)
+				);
+			}
+
 			wp_localize_script( 'learn-press-admin-question-editor', 'lp_question_editor',
-				apply_filters( 'learn-press/question-editor/localize-script', array(
+				apply_filters(
+					'learn-press/question-editor/localize-script',
+					array(
 						'root' => array(
 							'id'                => $post->ID,
 							'auto_draft'        => get_post_status( $post->ID ) == 'auto-draft',
@@ -124,15 +135,21 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 								'key'   => $question->get_type(),
 								'label' => $question->get_type_label()
 							),
-							'answers'           => $answers,
+							'answers'           => apply_filters( 'learn-press/question-editor/question-answers-data', $answers, $post->ID, 0 ),
 							'ajax'              => admin_url( '' ),
 							'action'            => 'admin_question_editor',
 							'nonce'             => wp_create_nonce( 'learnpress_admin_question_editor' ),
 							'questionTypes'     => LP_Question::get_types(),
 							'externalComponent' => apply_filters( 'learn-press/admin/external-js-component', array() )
+						),
+						'i18n' => apply_filters( 'learn-press/question-editor/i18n',
+							array(
+								'new_option_label' => __( 'New Option', 'learnpress' )
+							)
 						)
 					)
-				) );
+				)
+			);
 		}
 
 		/**
@@ -364,12 +381,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learnpress' ) );
 						echo "&nbsp;|&nbsp;";
 						printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learnpress' ) );
-						echo "&nbsp;|&nbsp;";
-						if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
-							printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_quiz' ), __( 'Remove Filter', 'learnpress' ) );
-						} else {
-							printf( '<a href="%s">%s</a>', add_query_arg( 'filter_quiz', $quiz->ID ), __( 'Filter', 'learnpress' ) );
-						}
 						echo '</div></div>';
 					} else {
 						_e( 'Not assigned yet', 'learnpress' );
@@ -407,8 +418,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed|string
 		 */
 		public function posts_where_paged( $where ) {
+			static $posts_where_paged = false;
 
-			if ( ! $this->_is_archive() ) {
+			if ( $posts_where_paged || ! $this->_is_archive() ) {
 				return $where;
 			}
 
@@ -424,11 +436,13 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
                     AND {$wpdb->posts}.ID NOT IN(
                         SELECT qq.question_id 
                         FROM {$wpdb->learnpress_quiz_questions} qq
-                        INNER JOIN wp_posts p ON p.ID = qq.question_id
+                        INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id
                         WHERE p.post_type = %s
                     )
                 ", LP_QUESTION_CPT );
 			}
+
+			$posts_where_paged = true;
 
 			return $where;
 		}

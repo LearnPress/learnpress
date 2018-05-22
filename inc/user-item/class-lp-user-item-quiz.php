@@ -25,8 +25,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 *
 	 */
 	protected function _parse_answers() {
-		if ( $answers = learn_press_get_user_item_meta( $this->get_user_item_id(), '_question_answers', true ) ) {
-			$this->_answers = $answers;
+		foreach ( array( '_question_answers', 'question_answers' ) as $k ) {
+			if ( $answers = learn_press_get_user_item_meta( $this->get_user_item_id(), $k, true ) ) {
+				$this->_answers = $answers;
+				break;
+			}
 		}
 	}
 
@@ -72,21 +75,26 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return int|LP_Question
 	 */
 	public function get_current_question( $return = '' ) {
-		$question = $this->get_meta( '_current_question', true );
-		if ( ! $question ) {
+		$question_id = $this->get_meta( '_current_question', true );
+		$question    = learn_press_get_question( $question_id );
+
+		if ( ! $question || ! $question->is_publish() ) {
 			if ( $questions = $this->get_quiz()->get_questions() ) {
-				$question = reset( $questions );
-				$this->set_meta( '_current_question', $question );
+				$question_id = reset( $questions );
+				$this->set_meta( '_current_question', $question_id );
 				$this->update_meta();
-			}
-		}
-		if ( $question ) {
-			if ( $return == 'object' ) {
-				$question = learn_press_get_question( $question );
+			} else {
+				$question_id = 0;
 			}
 		}
 
-		return $question;
+		if ( $question_id ) {
+			if ( $return == 'object' ) {
+				return learn_press_get_question( $question_id );
+			}
+		}
+
+		return $question_id;
 	}
 
 	/**
@@ -113,7 +121,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function get_results( $prop = 'result', $force = false ) {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
-
 		if ( false === ( $result = wp_cache_get( $cache_key, 'lp-quiz-result' ) ) || $force ) {
 			$result = array(
 				'questions'         => array(),
@@ -133,18 +140,17 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 			if ( $questions = $quiz->get_questions() ) {
 				foreach ( $questions as $question_id ) {
-					$question = LP_Question::get_question( $question_id );
-					$answered = $this->get_question_answer( $question_id );
-					$check    = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
+					$question          = LP_Question::get_question( $question_id );
+					$answered          = $this->get_question_answer( $question_id );
+					$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
+					$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
+					$check['answered'] = ! isset( $check['answered'] ) ? $answered !== false : $check['answered'];
 
-					$check['type']     = $question->get_type();
-					$check['answered'] = $answered !== false;
-
-					if ( false !== $answered && $check['correct'] ) {
+					if ( false !== $check['answered'] && $check['correct'] ) {
 						$result['question_correct'] ++;
 						$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
 					} else {
-						if ( false === $answered ) {
+						if ( false === $check['answered'] ) {
 							$result['question_empty'] ++;
 						} else {
 							$result['question_wrong'] ++;
@@ -163,7 +169,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 				$result['question_count'] = sizeof( $questions );
 
-				if ( false === learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
+				if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
 					learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
 				}
 			}
@@ -196,6 +202,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $interval;
 	}
 
+	/**
+	 * Return TRUE if user has pressed SKIP on this question
+	 *
+	 * @param int $question_id
+	 *
+	 * @return bool
+	 */
+	public function is_skipped( $question_id ) {
+		return $this->get_question_answer( $question_id ) === '__SKIPPED__';
+	}
 
 	public function is_answered( $question_id ) {
 		$result = $this->get_results();
@@ -226,7 +242,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function get_questions_answered( $percent = false ) {
 		$result = $this->get_results();
 		if ( $percent ) {
-			$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
+			if ( $result['question_count'] ) {
+				$return = 0;
+			} else {
+				$return = $result['question_answered'] ? ( $result['question_answered'] / $result['question_count'] ) * 100 : 0;
+			}
 		} else {
 			$return = $result['question_answered'];
 		}
@@ -450,7 +470,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function finish() {
-		$this->set_end_time( current_time( "mysql" ) );
+		$time = new LP_Datetime();
+		$this->set_end_time( $time->toSql() );
+		$this->set_end_time_gmt( $time->toSql( false ) );
 		$this->set_status( 'completed' );
 		$this->update();
 	}

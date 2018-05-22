@@ -19,6 +19,6 @@ $course = LP_Global::course();
 
 <div class="course-thumbnail">
 
-	<?php echo $course->get_image( 'course_thumbnail' ) ?>
+	<?php echo $course->get_image( 'course_thumbnail' ); ?>
 
 </div>

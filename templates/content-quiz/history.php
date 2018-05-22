@@ -21,7 +21,7 @@ $course = learn_press_get_the_course();
 $quiz   = LP()->global['course-item'];
 ?>
 
-<?php if ( ! $quiz->retake_count || ! $user->has( 'completed-quiz', $quiz->id, $course->get_id() ) ) {
+<?php if ( ! $quiz->retake_count || ! $user->has_completed_quiz( $quiz->id, $course->get_id() ) ) {
 	return;
 } ?>
 

@@ -11,12 +11,11 @@ if ( isset( $order_items ) ) {
 } else {
 	$currency_symbol = learn_press_get_currency_symbol();
 }
-global $post;
 
 if ( ! isset( $order ) || ! ( $order instanceof LP_Order ) ) {
 	return;
 }
-
+$post = $order->get_post();
 $method_title = $order->get_payment_method_title();
 $user_ip      = $order->get_user_ip_address();
 
@@ -71,7 +70,8 @@ $user_ip      = $order->get_user_ip_address();
 
 				<?php if ( $order->is_multi_users() ) { ?>
                     <label><?php _e( 'Customers', 'learnpress' ); ?></label>
-                    <ul id="list-users" class="advanced-list <?php echo $order->get_status()==='completed' ? 'locked' : '';?>">
+                    <ul id="list-users"
+                        class="advanced-list <?php echo $order->get_status() === 'completed' ? 'locked' : ''; ?>">
                     </ul>
 
 					<?php if ( 'pending' === $order->get_status() ) { ?>
@@ -104,6 +104,8 @@ $user_ip      = $order->get_user_ip_address();
 					echo '<p class="description">';
 					_e( 'In order to change the order user, please change the order status to \'Pending\'.', 'learnpress' );
 					echo '</p>';
+
+					learn_press_admin_view( 'meta-boxes/order/child-order', array( 'order' => $order ) );
 				} ?>
 
             </div>
@@ -181,7 +183,7 @@ $user_ip      = $order->get_user_ip_address();
             </tfoot>
         </table>
     </div>
-	<?php if ( $note = get_the_excerpt() ) { ?>
+	<?php if ( $note = $post->post_excerpt ) { ?>
         <br/>
         <h3><?php _e( 'Customer Note', 'learnpress' ); ?></h3>
         <p class="order-note description"><?php echo $note; ?></p>
@@ -201,7 +203,8 @@ $user_ip      = $order->get_user_ip_address();
             <div class="order-data-field order-data-user">
                 <label><?php _e( 'Customer', 'learnpress' ); ?></label>
                 <div class="order-users">
-                    <ul id="list-users" class="advanced-list <?php echo $order->get_status()==='completed' ? 'locked' : '';?>">
+                    <ul id="list-users"
+                        class="advanced-list <?php echo $order->get_status() === 'completed' ? 'locked' : ''; ?>">
                     </ul>
                 </div>
                 <a href="" class="change-user" data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>

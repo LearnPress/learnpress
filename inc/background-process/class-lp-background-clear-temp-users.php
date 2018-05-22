@@ -24,7 +24,7 @@ if ( ! class_exists( 'LP_Background_Clear_Temp_Users' ) ) {
 		/**
 		 * @var string
 		 */
-		protected $transient_key = 'lp_schedule_complete_items';
+		protected $transient_key = 'lp_schedule_clear_temp_users';
 
 
 		/**
@@ -41,6 +41,8 @@ if ( ! class_exists( 'LP_Background_Clear_Temp_Users' ) ) {
 		 */
 		protected function task( $data ) {
 			global $wpdb;
+
+			parent::task( $data );
 
 			if ( ! empty( $data['action'] ) && 'clear_temp_users' == $data['action'] ) {
 				$query = $wpdb->prepare( "
