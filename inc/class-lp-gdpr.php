@@ -460,6 +460,14 @@ class LP_GDPR {
 		);
 	}
 
+	/**
+	 * Eraser personal data
+	 *
+	 * @param string $email
+	 * @param int    $page
+	 *
+	 * @return array
+	 */
 	public function personal_data_eraser( $email, $page ) {
 		$number = 500;
 		$page   = (int) $page;
@@ -485,6 +493,12 @@ class LP_GDPR {
 		return $eraser_data;
 	}
 
+	/**
+	 * Eraser orders
+	 *
+	 * @param int $user_id
+	 * @param int $page
+	 */
 	protected function _eraser_orders( $user_id, $page ) {
 
 		$curd       = new LP_User_CURD();
@@ -502,11 +516,23 @@ class LP_GDPR {
 
 	}
 
+	/**
+	 * Eraser user items
+	 *
+	 * @param int $user_id
+	 * @param int $page
+	 */
 	protected function _eraser_user_items( $user_id, $page ) {
 		$curd = new LP_User_CURD();
 		$curd->delete_user_item( array( 'user_id' => $user_id ) );
 	}
 
+	/**
+	 * Eraser courses
+	 *
+	 * @param int $user_id
+	 * @param int $page
+	 */
 	protected function _eraser_courses( $user_id, $page ) {
 
 		global $wpdb;
