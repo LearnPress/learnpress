@@ -262,7 +262,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';
 			require_once( 'inc/abstract-settings.php' );
-			require_once( 'inc/class-lp-market-products.php' );
+			//require_once( 'inc/class-lp-market-products.php' );
 
 			if ( is_admin() ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
