@@ -228,10 +228,12 @@ class LP_GDPR {
 				);
 				$export_items[] = array(
 					'group_id'    => 'lp-owned-course',
-					'group_label' => __( 'Owned Courses', 'learnpress' ),
+					'group_label' => __( 'Owned Course', 'learnpress' ),
 					'item_id'     => "course-{$course->get_id()}",
 					'data'        => $data
 				);
+
+				$this->_export_course_items( $export_items, $course_id );
 			}
 		}
 		$done = count( $courses ) < $number;
@@ -240,6 +242,47 @@ class LP_GDPR {
 			'data' => $export_items,
 			'done' => $done
 		);
+	}
+
+	/**
+	 * @param array $export_items
+	 */
+	protected function _export_course_items( &$export_items, $course_id ) {
+		global $post;
+		$post = get_post( $course_id );
+		setup_postdata( $post );
+		$course = learn_press_get_course( $course_id );
+
+		if ( ! $items = $course->get_items() ) {
+			return;
+		}
+
+		foreach ( $items as $item_id ) {
+			$item             = $course->get_item( $item_id );
+			$export_item_data = array(
+				array(
+					'name'  => __( 'Item Name', 'learnpress' ),
+					'value' => $item->get_title()
+				),
+				array(
+					'name'  => __( 'Item Type', 'learnpress' ),
+					'value' => $item->get_item_type( 'display' )
+				),
+				array(
+					'name'  => __( 'Item URL', 'learnpress' ),
+					'value' => $item->get_permalink()
+				)
+			);
+
+			$export_items[] = array(
+				'group_id'    => 'lp-owned-course-items-' . $course_id,
+				'group_label' => __( 'Course Items', 'learnpress' ),
+				'item_id'     => "course-items-{$course_id}-{$item_id}",
+				'data'        => $export_item_data
+			);
+		}
+
+		wp_reset_postdata();
 	}
 
 	/**
@@ -325,7 +368,7 @@ class LP_GDPR {
 					'data'        => $data
 				);
 
-				$this->_export_course_items( $export_items, $course_data );
+				$this->_export_purchased_course_items( $export_items, $course_data );
 			}
 		}
 
@@ -340,12 +383,11 @@ class LP_GDPR {
 	 * @param array               $export_items
 	 * @param LP_User_Item_Course $course_data
 	 */
-	protected function _export_course_items( &$export_items, $course_data ) {
+	protected function _export_purchased_course_items( &$export_items, $course_data ) {
 		global $post;
 		$post = get_post( $course_data->get_id() );
 		setup_postdata( $post );
 		$course = learn_press_get_course( $course_data->get_id() );
-		echo __FUNCTION__;
 
 		if ( ! $items = $course_data->get_items() ) {
 			return;
@@ -477,10 +519,10 @@ class LP_GDPR {
 		if ( ! $post_ids = $wpdb->get_col( $query ) ) {
 			return;
 		}
-		////$api = new LP_Course_CURD();
+
+		$api = new LP_Course_CURD();
 		foreach ( $post_ids as $post_id ) {
-			//$api->delete_course( $post_id, true );
-			wp_delete_post( $post_id );
+			$api->delete_course( $post_id, true );
 		}
 	}
 
