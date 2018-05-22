@@ -296,7 +296,7 @@ if (typeof window.LP === 'undefined') {
         quickConfirm: function (elem, args) {
             var $e = $(elem);
             $('[learn-press-quick-confirm]').each(function () {
-                ( $ins = $(this).data('quick-confirm') ) && ( console.log($ins), $ins.destroy() );
+                ($ins = $(this).data('quick-confirm')) && (console.log($ins), $ins.destroy());
             });
             !$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
                 new (function (elem, args) {
@@ -355,7 +355,7 @@ if (typeof window.LP === 'undefined') {
                     });
                     //$div.parent().css('position', 'relative');
                     $div.css({
-                        left: ( ( offset.left + $elem.outerWidth() ) - $div.outerWidth() ) + args.offset.left,
+                        left: ((offset.left + $elem.outerWidth()) - $div.outerWidth()) + args.offset.left,
                         top: offset.top + $elem.outerHeight() + args.offset.top + 5
                     }).hide().fadeIn('fast');
                     start();
@@ -415,7 +415,7 @@ if (typeof window.LP === 'undefined') {
         },
         blockUI: function (message) {
 
-            message = (message !== false ? ( message ? message : 'Wait a moment' ) : '') + '<div class="message-box-animation"></div>';
+            message = (message !== false ? (message ? message : 'Wait a moment') : '') + '<div class="message-box-animation"></div>';
             this.show(message);
         },
         hide: function (delay, instance) {
@@ -462,7 +462,7 @@ if (typeof window.LP === 'undefined') {
                         $content.css("height", "").css('overflow', '');
                     }
                     $wrap.css({
-                        marginTop: ( $(window).height() - height ) / 2
+                        marginTop: ($(window).height() - height) / 2
                     });
                     LP.Hook.doAction('learn_press_message_box_resize', height, that);
                 };
@@ -520,7 +520,7 @@ if (typeof window.LP === 'undefined') {
         },
         _createButton: function (title, type) {
             var $button = $('<button type="button" class="button message-box-button message-box-button-' + type + '">' + title + '</button>'),
-                callback = 'on' + ( type.substr(0, 1).toUpperCase() + type.substr(1) );
+                callback = 'on' + (type.substr(0, 1).toUpperCase() + type.substr(1));
             $button.data('callback', callback).click(function () {
                 var instance = $(this).data('instance'),
                     callback = instance.events[$(this).data('callback')];
@@ -684,7 +684,7 @@ if (typeof window.LP === 'undefined') {
                 dataType = args.dataType || 'json',
                 data = args.action ? $.extend(args.data, {'lp-ajax': args.action}) : args.data,
                 beforeSend = args.beforeSend || function () {
-                    },
+                },
                 url = args.url || window.location.href;
 //                        console.debug( beforeSend );
             $.ajax({
@@ -705,12 +705,12 @@ if (typeof window.LP === 'undefined') {
         doAjax: function (args) {
             var type = args.type || 'post',
                 dataType = args.dataType || 'json',
-                action = ( ( args.prefix === undefined ) || 'learnpress_') + args.action,
+                action = ((args.prefix === undefined) || 'learnpress_') + args.action,
                 data = args.action ? $.extend(args.data, {action: action}) : args.data;
 
             $.ajax({
                 data: data,
-                url: ( args.url || window.location.href ),
+                url: (args.url || window.location.href),
                 type: type,
                 dataType: 'html',
                 success: function (raw) {
@@ -815,7 +815,7 @@ if (typeof window.LP === 'undefined') {
                 }
                 if (reqWidth > seed.length) { // so short we pad
                     return new Array(1 + (reqWidth - seed.length))
-                            .join('0') + seed;
+                        .join('0') + seed;
                 }
                 return seed;
             };
@@ -832,7 +832,7 @@ if (typeof window.LP === 'undefined') {
 
             retId = prefix; // start with prefix, add current milliseconds hex string
             retId += formatSeed(parseInt(new Date()
-                    .getTime() / 1000, 10), 8);
+                .getTime() / 1000, 10), 8);
             retId += formatSeed(this.php_js.uniqidSeed, 5); // add seed hex string
             if (more_entropy) {
                 // for more entropy we add a float lower to 10
@@ -1218,10 +1218,62 @@ if (typeof window.LP === 'undefined') {
                 if (options.delayOut) {
                     setTimeout(function () {
                         $el.fadeOut();
-                    }, options.delayOut + ( options.delayIn || 0));
+                    }, options.delayOut + (options.delayIn || 0));
                 }
             })($el, options);
 
+        });
+
+
+        $(document).on('input', '#meta-box-tab-course_payment', function (e) {
+            var _self = $(this),
+                _price = $('#_lp_price'),
+                _sale_price = $('#_lp_sale_price'),
+                _target = $(e.target).attr('id');
+            _self.find('#field-_lp_price div, #field-_lp_sale_price div').remove('.learn-press-tip-floating');
+            if (parseInt(_sale_price.val()) >= parseInt(_price.val())) {
+                if (_target === '_lp_price') {
+                    _price.parent('.rwmb-input').append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_price + '</div>');
+                } else if (_target === '_lp_sale_price') {
+                    _sale_price.parent('.rwmb-input').append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_price + '</div>');
+                }
+            }
+        });
+
+        $(document).on('change', '#_lp_sale_start', function (e) {
+            var _sale_start_date = $(this),
+                _sale_end_date = $('#_lp_sale_end'),
+                _start_date = Date.parse(_sale_start_date.val()),
+                _end_date = Date.parse(_sale_end_date.val()),
+                _parent_start = _sale_start_date.parent('.rwmb-input'),
+                _parent_end = _sale_end_date.parent('.rwmb-input');
+
+            if (!_start_date) {
+                _parent_start.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_invalid_date + '</div>')
+            }
+
+            $('#field-_lp_sale_start div, #field-_lp_sale_end div').remove('.learn-press-tip-floating');
+            if (_start_date < _end_date) {
+                _parent_start.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_start_date + '</div>')
+            }
+        });
+
+        $(document).on('change', '#_lp_sale_end', function (e) {
+            var _sale_end_date = $(this),
+                _sale_start_date = $('#_lp_sale_start'),
+                _start_date = Date.parse(_sale_start_date.val()),
+                _end_date = Date.parse(_sale_end_date.val()),
+                _parent_start = _sale_start_date.parent('.rwmb-input'),
+                _parent_end = _sale_end_date.parent('.rwmb-input');
+
+            if (!_end_date) {
+                _parent_end.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_invalid_date + '</div>')
+            }
+
+            $('#field-_lp_sale_start div, #field-_lp_sale_end div').remove('.learn-press-tip-floating');
+            if (_start_date < _end_date) {
+                _parent_end.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_end_date + '</div>')
+            }
         });
 
         $('body')

@@ -857,7 +857,6 @@ jQuery(function ($) {
      */
     (function ($, Vue, $store) {
         $(document).ready(function () {
-            console.log($('#admin-editor-lp_course'))
             window.LP_Course_Editor = new Vue({
                 el: '#admin-editor-lp_course',
                 template: '<lp-course-editor></lp-course-editor>'
