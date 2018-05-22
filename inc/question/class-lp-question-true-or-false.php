@@ -67,6 +67,7 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 		 *
 		 * @return array
 		 */
+		 
 		public function check( $user_answer = null ) {
 			$return = parent::check();
 

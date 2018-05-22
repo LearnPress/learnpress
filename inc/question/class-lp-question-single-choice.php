@@ -55,6 +55,7 @@ if ( ! class_exists( 'LP_Question_Single_Choice' ) ) {
 					if ( ( $option['is_true'] == 'yes' ) && ( $this->is_selected_option( $option, $user_answer ) ) ) {
 						$return['correct'] = true;
 						$return['mark']    = floatval( $this->get_mark() );
+						$return['userAnswer'] = $user_answer;
 						break;
 					}
 				}
