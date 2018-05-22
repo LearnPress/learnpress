@@ -40,10 +40,16 @@ class LP_Assets extends LP_Abstract_Assets {
 	public function _get_script_data() {
 		return array(
 			'global'       => array(
-				'url'     => learn_press_get_current_url(),
-				'siteurl' => site_url(),
-				'ajax'    => admin_url( 'admin-ajax.php' ),
-				'theme'   => get_stylesheet()
+				'url'      => learn_press_get_current_url(),
+				'siteurl'  => site_url(),
+				'ajax'     => admin_url( 'admin-ajax.php' ),
+				'theme'    => get_stylesheet(),
+				'localize' => array(
+					'button_ok'     => __( 'OK', 'learnpress' ),
+					'button_cancel' => __( 'Cancel', 'learnpress' ),
+					'button_yes'    => __( 'Yes', 'learnpress' ),
+					'button_no'     => __( 'No', 'learnpress' )
+				)
 			),
 			'checkout'     => array(
 				'ajaxurl'              => site_url(),
