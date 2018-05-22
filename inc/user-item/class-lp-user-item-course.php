@@ -596,7 +596,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get all items in course.
 	 *
-	 * @return array
+	 * @return LP_User_Item[]
 	 */
 	public function get_items() {
 		return $this->_items;

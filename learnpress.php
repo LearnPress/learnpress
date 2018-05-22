@@ -296,6 +296,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/lesson/lp-lesson-functions.php';
 			require_once 'inc/order/lp-order-functions.php';
 			require_once 'inc/order/class-lp-order.php';
+			require_once 'inc/class-lp-gdpr.php';
 
 			// user API
 			require_once 'inc/user/lp-user-functions.php';

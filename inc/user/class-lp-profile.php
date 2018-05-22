@@ -671,7 +671,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @param string $args
 		 *
-		 * @return array
+		 * @return LP_Query_List_Table
 		 */
 		public function query_orders( $args = '' ) {
 			global $wp_query;
@@ -748,6 +748,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					);
 				}
 
+			}else{
+				$query = new LP_Query_List_Table($query);
 			}
 
 			return $query;

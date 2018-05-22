@@ -21,6 +21,7 @@ if ( ! isset( $user ) ) {
 $profile = learn_press_get_profile();
 $tabs    = $profile->get_tabs();
 $current = $profile->get_current_tab();
+
 ?>
 <div id="learn-press-profile-content" class="lp-profile-content">
 
