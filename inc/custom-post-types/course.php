@@ -92,15 +92,20 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'items'      => array(),
 				),
 				'i18n'        => array(
-					'item'               => __( 'item', 'learnpress' ),
-					'new_section_item'   => __( 'Create a new', 'learnpress' ),
-					'back'               => __( 'Back', 'learnpress' ),
-					'selected_items'     => __( 'Selected items', 'learnpress' ),
-					'confirm_trash_item' => __( 'Do you want to remove item "{{ITEM_NAME}}" to trash?', 'learnpress' ),
-					'item_labels'        => array(
+					'item'                   => __( 'item', 'learnpress' ),
+					'new_section_item'       => __( 'Create a new', 'learnpress' ),
+					'back'                   => __( 'Back', 'learnpress' ),
+					'selected_items'         => __( 'Selected items', 'learnpress' ),
+					'confirm_trash_item'     => __( 'Do you want to remove item "{{ITEM_NAME}}" to trash?', 'learnpress' ),
+					'item_labels'            => array(
 						'singular' => __( 'Item', 'learnpress' ),
 						'plural'   => __( 'Items', 'learnpress' ),
-					)
+					),
+					'notice_sale_price'      => __( 'Course sale price must less than the regular price', 'learnpress' ),
+					'notice_price'           => __( 'Course price must greater than the sale price', 'learnpress' ),
+					'notice_sale_start_date' => __( 'Sale start date must before sale end date', 'learnpress' ),
+					'notice_sale_end_date'   => __( 'Sale end date must before sale start date', 'learnpress' ),
+					'notice_invalid_date'    => __( 'Invalid date', 'learnpress' ),
 				),
 				'sections'    => array(
 					'sections'        => $course->get_curriculum_raw(),

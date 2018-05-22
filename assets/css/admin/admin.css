@@ -2226,6 +2226,17 @@
   display: block;
   border-color: #bdf4fe !important; }
 
+.wp-admin.post-type-lp_course #meta-box-tab-course_payment .learn-press-tip-floating {
+  top: 40px;
+  left: 100px;
+  background: #a00;
+  opacity: 0.8; }
+  .wp-admin.post-type-lp_course #meta-box-tab-course_payment .learn-press-tip-floating::before {
+    top: -7px;
+    border: 7px solid transparent;
+    border-bottom-color: #a00;
+    border-top-width: 0; }
+
 .section-item-counts {
   position: absolute;
   top: 0;
