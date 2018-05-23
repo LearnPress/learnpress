@@ -1234,7 +1234,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 							if ( ! $obj_key ) {
 								continue;
 							}
-							$history[ $_key ][ $v->user_item_id ]->{$obj_key} = maybe_unserialize( $v->meta_value );
+							$history[ $_key ][ $v->user_item_id ]->{$obj_key} = LP_Helper::maybe_unserialize( $v->meta_value );
 						}
 					}
 				}

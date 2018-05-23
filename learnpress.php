@@ -215,6 +215,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Includes needed files.
 		 */
 		public function includes() {
+			require_once 'inc/class-lp-helper.php';
 			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-factory.php';
 			require_once 'inc/class-lp-datetime.php';

@@ -870,7 +870,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {
 					foreach ( $answer_options as $k => $v ) {
 						$answer_options[ $k ] = (array) $answer_options[ $k ];
-						if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
+						if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
 							foreach ( $answer_data as $data_key => $data_value ) {
 								$answer_options[ $k ][ $data_key ] = $data_value;
 							}
@@ -932,7 +932,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 							$question_answers[ $qid ] = array();
 						}
 
-						if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
+						if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
 							foreach ( $answer_data as $data_key => $data_value ) {
 								$v->{$data_key} = $data_value;
 							}

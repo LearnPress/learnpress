@@ -6,6 +6,32 @@
 defined( 'ABSPATH' ) || exit;
 
 class LP_Helper {
+	public static function maybe_unserialize( $string ) {
+		if ( is_string( $string ) ) {
+
+			$unserialized = maybe_unserialize( $string );
+			if ( ! $unserialized && strlen( $string ) ) {
+				$string = preg_replace_callback(
+					'!s:(\d+):"(.*?)";!s',
+					array( __CLASS__, '_unserialize_replace_callback' ),
+					$string );
+
+				$unserialized = maybe_unserialize( $string );
+			}
+
+			$string = $unserialized;
+		}
+
+		return $string;
+	}
+
+	public static function _unserialize_replace_callback( $m ) {
+		$len    = strlen( $m[2] );
+		$result = "s:$len:\"{$m[2]}\";";
+
+		return $result;
+	}
+
 	/**
 	 * Shuffle array and keep the keys
 	 *

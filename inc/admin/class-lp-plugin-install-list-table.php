@@ -77,7 +77,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
         $cache = WP_CONTENT_DIR . '/upgrade/' . md5( serialize( $add_ons ) ) . '.cache';
         $timeover = HOUR_IN_SECONDS * 24;
         if( file_exists( $cache ) && ( time() - filemtime( $cache ) ) < $timeover  ){
-            $items = maybe_unserialize( file_get_contents( $cache ) );
+            $items = LP_Helper::maybe_unserialize( file_get_contents( $cache ) );
         }else {
             $repo_url = 'http://thimpress.com/lprepo/';
 
