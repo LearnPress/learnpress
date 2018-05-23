@@ -14,19 +14,13 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-<<<<<<< HEAD
 $user      = LP_Global::user();
 $quiz      = LP_Global::course_item_quiz();
+$current_question_id = $quiz->get_viewing_question( 'id' );
 $question = LP_Global::quiz_question();
 $course_id = get_the_ID();
 $hide_next = get_post_meta($quiz->get_id(), '_lp_show_submit_hide_next', true);
-$has_checked =  $user->has_checked_answer( $question->get_id(), $quiz->get_id(), get_the_ID() ); 
-=======
-$user                = LP_Global::user();
-$quiz                = LP_Global::course_item_quiz();
-$course_id           = get_the_ID();
-$current_question_id = $quiz->get_viewing_question( 'id' );
->>>>>>> develop
+$has_checked =  $user->has_checked_answer( $current_question_id, $quiz->get_id(), get_the_ID() ); 
 ?>
 
 <?php if ( $prev_id = $user->get_prev_question( $quiz->get_id(), $course_id ) ) { ?>
