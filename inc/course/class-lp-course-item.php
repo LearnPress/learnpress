@@ -526,6 +526,14 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$course_id = get_the_ID();
 			}
 
+			$course_author = learn_press_get_course_user( $course_id );
+			if ( $course_author ) {
+				$author_id = $course_author->get_id();
+				if ( $author_id == $user_id ) {
+					return false;
+				}
+			}
+
 			$key = 'course-item-' . $user_id . '-' . $course_id;
 
 			if ( false === ( $blocked_items = wp_cache_get( $key, 'blocked-items' ) ) ) {

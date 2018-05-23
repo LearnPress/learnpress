@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.9
  */
 
 /**
@@ -14,11 +14,11 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$user           = LP_Global::user();
-$course_item    = LP_Global::course_item();
-$course         = LP_Global::course();
-$can_view_item  = $user->can_view_item( $course_item->get_id(), $course->get_id() );
-$exclude_cases  = apply_filters( 'learn_press/exclude_view_cases', array(
+$user          = LP_Global::user();
+$course_item   = LP_Global::course_item();
+$course        = LP_Global::course();
+$can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id() );
+$exclude_cases = apply_filters( 'learn_press/exclude_view_cases', array(
 	'not-logged-in',
 	'not-enrolled'
 ) );
@@ -44,7 +44,7 @@ $exclude_cases  = apply_filters( 'learn_press/exclude_view_cases', array(
 			 */
 			do_action( 'learn-press/before-course-item-content' );
 
-			if ( $can_view_item && ! in_array( $can_view_item, $exclude_cases ) ) {
+			if ( $can_view_item ) {
 				/**
 				 * @deprecated
 				 */
@@ -56,7 +56,7 @@ $exclude_cases  = apply_filters( 'learn_press/exclude_view_cases', array(
 				do_action( 'learn-press/course-item-content' );
 
 			} else {
-				learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item'=>$can_view_item ) );
+				learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
 			}
 
 			/**

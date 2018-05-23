@@ -56,6 +56,7 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 			print_r( $this );
 			die();
 		}
+		wp_cache_delete( 'course-' . $user->get_id() . '-' . $this->course_id, 'lp-user-course-data' );
 		$course      = learn_press_get_course( $this->course_id );
 		$course_data = $user->get_course_data( $this->course_id );
 		$object      = array();
