@@ -6,6 +6,15 @@
 defined( 'ABSPATH' ) || exit;
 
 class LP_Helper {
+
+	/**
+	 * Wrap function unserialize to fix issues with UTF-8 chars when encoding/decoding
+	 * of serialize function.
+	 *
+	 * @param string $string
+	 *
+	 * @return mixed
+	 */
 	public static function maybe_unserialize( $string ) {
 		if ( is_string( $string ) ) {
 
