@@ -224,7 +224,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 		if ( $results = $wpdb->get_results( $query ) ) {
 			foreach ( $results as $result ) {
-				$result->meta_value = maybe_unserialize( $result->meta_value );
+				$result->meta_value = LP_Helper::maybe_unserialize( $result->meta_value );
 				$this->_meta_data[] = $result;
 			}
 		}

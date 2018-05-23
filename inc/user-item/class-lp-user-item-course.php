@@ -154,7 +154,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					$this->add_meta( $result );
 				} else {
 					$item               = $this->get_item( $item_id );
-					$result->meta_value = maybe_unserialize( $result->meta_value );
+					$result->meta_value = LP_Helper::maybe_unserialize( $result->meta_value );
 
 					$item->add_meta( $result );
 				}

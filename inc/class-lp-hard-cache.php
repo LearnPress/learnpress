@@ -132,7 +132,7 @@ class LP_Hard_Cache {
 				return false;
 			}
 
-			return maybe_unserialize( $content );
+			return LP_Helper::maybe_unserialize( $content );
 		}
 
 		return false;

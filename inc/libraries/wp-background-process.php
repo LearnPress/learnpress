@@ -280,7 +280,7 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		if( $query ){
 		    $batch       = new stdClass();
 		    $batch->key  = $query->$column;
-		    $batch->data = maybe_unserialize( $query->$value_column );
+		    $batch->data = LP_Helper::maybe_unserialize( $query->$value_column );
 		}
 		return $batch;
 	}

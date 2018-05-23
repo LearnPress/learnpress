@@ -553,7 +553,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_item_meta( &$item ) {
 			if ( $metas = get_metadata( 'learnpress_order_item', $item['id'] ) ) {
 				foreach ( $metas as $k => $v ) {
-					$item[ preg_replace( '!^_!', '', $k ) ] = maybe_unserialize( $v[0] );
+					$item[ preg_replace( '!^_!', '', $k ) ] = LP_Helper::maybe_unserialize( $v[0] );
 				}
 			};
 		}

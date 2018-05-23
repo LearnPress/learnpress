@@ -284,7 +284,7 @@ class LP_Session_Handler implements ArrayAccess {
 			wp_cache_add( $this->get_cache_prefix() . $customer_id, $value, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
 		}
 
-		return maybe_unserialize( $value );
+		return LP_Helper::maybe_unserialize( $value );
 	}
 
 	public function delete_session( $customer_id ) {
@@ -344,7 +344,7 @@ class LP_Session_Handler implements ArrayAccess {
 	public function get( $key, $default = null ) {
 		$key = sanitize_key( $key );
 
-		return isset( $this->_data[ $key ] ) ? maybe_unserialize( $this->_data[ $key ] ) : $default;
+		return isset( $this->_data[ $key ] ) ? LP_Helper::maybe_unserialize( $this->_data[ $key ] ) : $default;
 	}
 
 	/**

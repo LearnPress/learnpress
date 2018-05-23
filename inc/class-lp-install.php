@@ -246,7 +246,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				parse_str( $str, $options );
 				if ( $options ) {
 					foreach ( $options as $name => $value ) {
-						$value = maybe_unserialize( $value );
+						$value = LP_Helper::maybe_unserialize( $value );
 						update_option( $name, $value, 'yes' );
 					}
 				}

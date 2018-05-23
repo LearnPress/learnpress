@@ -91,7 +91,7 @@ class LP_Settings {
 
 		if ( $options = $wpdb->get_results( $query ) ) {
 			foreach ( $options as $option ) {
-				$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
+				$this->_options[ $option->option_name ] = LP_Helper::maybe_unserialize( $option->option_value );
 			}
 		}
 	}
@@ -114,7 +114,7 @@ class LP_Settings {
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
 			if ( isset( $obj->{$current_var} ) ) {
-				$obj->{$current_var} = maybe_unserialize( $obj->{$current_var} );
+				$obj->{$current_var} = LP_Helper::maybe_unserialize( $obj->{$current_var} );
 				if ( count( $var ) ) {
 					$this->_set_option( $obj->{$current_var}, join( '.', $var ), $value );
 				} else {
@@ -125,7 +125,7 @@ class LP_Settings {
 			}
 		} else {
 			if ( isset( $obj[ $current_var ] ) ) {
-				$obj[ $current_var ] = maybe_unserialize( $obj[ $current_var ] );
+				$obj[ $current_var ] = LP_Helper::maybe_unserialize( $obj[ $current_var ] );
 				if ( count( $var ) ) {
 					$this->_set_option( $obj[ $current_var ], join( '.', $var ), $value );
 				} else {
@@ -174,7 +174,7 @@ class LP_Settings {
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
 			if ( isset( $obj->{$current_var} ) ) {
-				$obj->{$current_var} = maybe_unserialize( $obj->{$current_var} );
+				$obj->{$current_var} = LP_Helper::maybe_unserialize( $obj->{$current_var} );
 				if ( count( $var ) ) {
 					return $this->_get_option( $obj->{$current_var}, join( '.', $var ), $default );
 				} else {
@@ -185,7 +185,7 @@ class LP_Settings {
 			}
 		} else {
 			if ( isset( $obj[ $current_var ] ) ) {
-				$obj[ $current_var ] = maybe_unserialize( $obj[ $current_var ] );
+				$obj[ $current_var ] = LP_Helper::maybe_unserialize( $obj[ $current_var ] );
 				if ( count( $var ) ) {
 					return $this->_get_option( $obj[ $current_var ], join( '.', $var ), $default );
 				} else {
@@ -318,7 +318,7 @@ class LP_Settings {
 
 		foreach ( $options as $o_name ) {
 			if ( ! empty( $alloptions_db[ $o_name ] ) ) {
-				$o_value = maybe_unserialize( $alloptions_db[ $o_name ]->option_value );
+				$o_value = LP_Helper::maybe_unserialize( $alloptions_db[ $o_name ]->option_value );
 				wp_cache_set( $o_name, $o_value, 'options' );
 			} else {
 				if ( ! is_array( $notoptions ) ) {
