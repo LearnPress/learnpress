@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.9
+ * @version  3.0.0
  */
 
 /**
@@ -14,14 +14,11 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$course   = LP_Global::course();
-$quiz     = LP_Global::course_item_quiz();
-$user     = LP_Global::user();
-$enrolled = $user->has_course_status( $course->get_id(), array( 'enrolled' ) );
+$course = LP_Global::course();
+$quiz   = LP_Global::course_item_quiz();
 ?>
 
-<?php if ( $enrolled ) { ?>
-	<?php do_action( 'learn-press/before-quiz-start-button' ); ?>
+<?php do_action( 'learn-press/before-quiz-start-button' ); ?>
 
     <form name="start-quiz" class="start-quiz" method="post" enctype="multipart/form-data">
 
@@ -36,5 +33,4 @@ $enrolled = $user->has_course_status( $course->get_id(), array( 'enrolled' ) );
 
     </form>
 
-	<?php do_action( 'learn-press/after-quiz-start-button' ); ?>
-<?php } ?>
+<?php do_action( 'learn-press/after-quiz-start-button' ); ?>
