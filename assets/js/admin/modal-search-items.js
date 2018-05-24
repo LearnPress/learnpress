@@ -1,5 +1,5 @@
 /*global jQuery, Backbone, _ */
-( function ($, Vue, _) {
+(function ($, Vue, _) {
     'use strict';
 
     $(document).ready(function () {
@@ -31,7 +31,6 @@
                 },
                 search: _.debounce(function (term) {
                     var that = this;
-                    console.log(this)
                     Vue.http.post(
                         window.location.href, {
                             type: this.postType,
