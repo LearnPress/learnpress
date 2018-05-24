@@ -235,30 +235,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return learn_press_get_user_item_meta( $this->get_user_item_id(), $key, $single );
 	}
 
-//	public function set_meta_data( $key, $value ) {
-//		if ( empty( $this->_meta_data ) ) {
-//			$this->_meta_data = array();
-//		}
-//		$set = false;
-//		if ( $this->_meta_data ) {
-//			foreach ( $this->_meta_data as $k => $v ) {
-//				if ( $k === $v->meta_key ) {
-//					$this->_meta_data[ $k ]->meta_value = $value;
-//					$set                                = true;
-//					break;
-//				}
-//			}
-//		}
-//
-//		if ( ! $set ) {
-//			$this->_meta_data[] = (object) array(
-//				'meta_key'   => $key,
-//				'meta_value' => $value
-//			);
-//		}
-//
-//	}
-
 	public function update_meta() {
 		if ( $this->_meta_data ) {
 			foreach ( $this->_meta_data as $meta_data ) {
