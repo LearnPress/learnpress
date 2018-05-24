@@ -2497,13 +2497,11 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 	// Allow 3rd party plugin filter template file from their plugin
 	$located = apply_filters( 'learn_press_get_template', $located, $template_name, $args, $template_path, $default_path );
 	if ( $located != '' ) {
-
 		do_action( 'learn_press_before_template_part', $template_name, $template_path, $located, $args );
 
 		include( $located );
 
 		do_action( 'learn_press_after_template_part', $template_name, $template_path, $located, $args );
-
 	}
 }
 
