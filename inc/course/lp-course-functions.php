@@ -710,7 +710,7 @@ if ( ! function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 	function learn_press_get_nav_course_item_url( $course_id = null, $item_id = null, $content_only = false ) {
 
 		$course           = learn_press_get_course( $course_id );
-		$curriculum_items = $course->get_items();// maybe_unserialize( $course->post->curriculum_items );
+		$curriculum_items = $course->get_items();// LP_Helper::maybe_unserialize( $course->post->curriculum_items );
 		$index            = array_search( $item_id, $curriculum_items );
 		$return           = array( 'back' => '', 'next' => '' );
 		if ( is_array( $curriculum_items ) ) {

@@ -528,7 +528,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( $meta = $wpdb->get_results( $query, ARRAY_A ) ) {
 			$item['meta'] = array();
 			foreach ( $meta as $k => $v ) {
-				$v['meta_value']               = maybe_unserialize( $v['meta_value'] );
+				$v['meta_value']               = LP_Helper::maybe_unserialize( $v['meta_value'] );
 				$item['meta'][ $v['meta_id'] ] = $v;
 			}
 		}

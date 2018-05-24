@@ -912,7 +912,7 @@ class LP_Upgrade_From_09 {
 		if ( $order_meta ) {
 			foreach ( $order_meta as $meta ) {
 				if ( '_learn_press_order_items' == $meta['meta_key'] ) {
-					$order_data = maybe_unserialize( $meta['meta_value'] );
+					$order_data = LP_Helper::maybe_unserialize( $meta['meta_value'] );
 					if ( isset( $order_data->total ) ) {
 						add_post_meta( $new_id, '_order_total', $order_data->total );
 					} else {
@@ -1155,7 +1155,7 @@ class LP_Upgrade_From_09 {
 		$origin_type = gettype( $meta );
 		$meta        = (array) $meta;
 		foreach ( $meta as $k => $v ) {
-			$meta[ $k ] = maybe_unserialize( $v );
+			$meta[ $k ] = LP_Helper::maybe_unserialize( $v );
 		}
 		settype( $meta, $origin_type );
 
