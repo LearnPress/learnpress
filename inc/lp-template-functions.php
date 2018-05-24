@@ -1933,10 +1933,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $lesson_id
-	 * @param int          $course_id
+	 * @param int $lesson_id
+	 * @param int $course_id
 	 * @param array|string $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -1996,10 +1996,10 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int          $quiz_id
-	 * @param int          $course_id
+	 * @param int $quiz_id
+	 * @param int $course_id
 	 * @param string|array $class
-	 * @param boolean      $echo
+	 * @param boolean $echo
 	 *
 	 * @return mixed
 	 */
@@ -2173,9 +2173,9 @@ function learn_press_get_messages( $clear = false ) {
 /**
  * Add new message into queue for displaying.
  *
- * @param string   $message
- * @param string   $type
- * @param array    $options
+ * @param string $message
+ * @param string $type
+ * @param array $options
  * @param int|bool $current_user . @since 3.0.9 - add for current user only
  */
 function learn_press_add_message( $message, $type = 'success', $options = array(), $current_user = true ) {
@@ -2223,7 +2223,7 @@ function learn_press_get_message( $message, $type = 'success' ) {
  *
  * @since 3.0.0
  *
- * @param string       $id
+ * @param string $id
  * @param string|array $type
  */
 function learn_press_remove_message( $id = '', $type = '' ) {
@@ -2472,9 +2472,9 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name
- * @param array  $args          (default: array())
+ * @param array $args (default: array())
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return void
  */
@@ -2511,7 +2511,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
  * @uses learn_press_get_template();
  *
  * @param        $template_name
- * @param array  $args
+ * @param array $args
  * @param string $template_path
  * @param string $default_path
  *
@@ -2537,7 +2537,7 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
  *
  * @param string $template_name
  * @param string $template_path (default: '')
- * @param string $default_path  (default: '')
+ * @param string $default_path (default: '')
  *
  * @return string
  */
@@ -3712,7 +3712,11 @@ add_action( 'wp_enqueue_scripts', 'learn_press_maybe_load_comment_js' );
 add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
 
 function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id ) {
-	$user           = learn_press_get_user( $user_id );
+	$user = learn_press_get_user( $user_id );
+
+	if ( ! get_post_meta( $course_id, '_lp_submission', true ) ) {
+		update_post_meta( $course_id, '_lp_submission', 'yes' );
+	}
 	$_lp_submission = get_post_meta( $course_id, '_lp_submission', true );
 	if ( $_lp_submission === 'yes' ) {
 		if ( ! $user->is_logged_in() ) {
