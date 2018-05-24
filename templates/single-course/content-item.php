@@ -18,10 +18,6 @@ $user          = LP_Global::user();
 $course_item   = LP_Global::course_item();
 $course        = LP_Global::course();
 $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id() );
-$exclude_cases = apply_filters( 'learn_press/exclude_view_cases', array(
-	'not-logged-in',
-	'not-enrolled'
-) );
 ?>
 
 <div id="learn-press-content-item">

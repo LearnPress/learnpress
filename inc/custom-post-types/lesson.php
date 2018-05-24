@@ -261,23 +261,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 							'type' => 'yes-no',
 							'desc' => __( 'If this is a preview lesson, then student can view this lesson content without taking the course.', 'learnpress' ),
 							'std'  => 'no'
-						),
-						array(
-							'name' => __( 'Submission Form', 'learnpress' ),
-							'id'   => '_lp_submission',
-							'type' => 'yes-no',
-							'desc' => __( 'If this option is ON, then guess can click on the link of this lesson but only see the submission form.', 'learnpress' ),
-							'std'  => 'no',
-							'visibility' => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => '_lp_preview',
-										'compare' => '!=',
-										'value'   => 'yes'
-									)
-								)
-							)
 						)
 					)
 				)

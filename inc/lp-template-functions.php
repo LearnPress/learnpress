@@ -2496,12 +2496,15 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 	}
 	// Allow 3rd party plugin filter template file from their plugin
 	$located = apply_filters( 'learn_press_get_template', $located, $template_name, $args, $template_path, $default_path );
+	if ( $located != '' ) {
 
-	do_action( 'learn_press_before_template_part', $template_name, $template_path, $located, $args );
+		do_action( 'learn_press_before_template_part', $template_name, $template_path, $located, $args );
 
-	include( $located );
+		include( $located );
 
-	do_action( 'learn_press_after_template_part', $template_name, $template_path, $located, $args );
+		do_action( 'learn_press_after_template_part', $template_name, $template_path, $located, $args );
+
+	}
 }
 
 /**
@@ -3698,4 +3701,37 @@ function learn_press_content_item_summary_classes( $classes ) {
 	}
 
 	return $classes;
+}
+
+add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
+
+function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id ) {
+	$user           = learn_press_get_user( $user_id );
+	$_lp_submission = get_post_meta( $course_id, '_lp_submission', true );
+	if ( $_lp_submission === 'yes' ) {
+		if ( ! $user->is_logged_in() ) {
+			return 'not-logged-in';
+		} else if ( ! $user->has_enrolled_course( $course_id ) ) {
+			return 'not-enrolled';
+		}
+	}
+
+	return $view;
+}
+
+add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_template', 10, 5 );
+
+function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
+
+	if ( $template_name == 'global/block-content.php' ) {
+		if ( ! is_user_logged_in() ) {
+			$can_view_item = 'not-logged-in';
+		} elseif ( ! learn_press_current_user_enrolled_course() ) {
+			$can_view_item = 'not-enrolled';
+		}
+		$located = learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
+	}
+
+	return $located;
+
 }

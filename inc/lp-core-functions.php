@@ -3186,7 +3186,7 @@ function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, 
  * @return array
  */
 function learn_press_get_block_course_item_types() {
-	return apply_filters( 'learn-press/block-course-item-types', array( LP_LESSON_CPT ) );
+	return apply_filters( 'learn-press/block-course-item-types', array( LP_LESSON_CPT, LP_QUIZ_CPT ) );
 }
 
 //add_filter('learn-press/block-course-item-types', function ($a){

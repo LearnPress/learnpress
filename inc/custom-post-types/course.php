@@ -633,6 +633,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type' => 'url',
 						'desc' => __( 'Redirect to this url when you press button buy this course.', 'learnpress' ),
 						'std'  => '',
+					),
+					array(
+						'name' => __( 'Submission Form', 'learnpress' ),
+						'id'   => '_lp_submission',
+						'type' => 'yes-no',
+						'desc' => __( 'If this option is ON, then guess can click on the link of items but only see the submission form.', 'learnpress' ),
+						'std'  => 'no'
 					)
 				)
 			);
