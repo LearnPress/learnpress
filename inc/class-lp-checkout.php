@@ -64,7 +64,7 @@ class LP_Checkout {
 	 */
 	public function __construct() {
 		add_filter( 'learn_press_checkout_validate_field', array( $this, 'validate_fields' ), 10, 3 );
-		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_guest_email' ), 10, 3 );
+		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10, 3 );
 		add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
 
 		$this->_checkout_email = LP()->session->get( 'checkout-email' );
@@ -152,12 +152,16 @@ class LP_Checkout {
 	 *
 	 * @return array
 	 */
-	public function check_guest_email( $errors, $fields, $checkout ) {
-
+	public function check_validate_fields( $errors, $fields, $checkout ) {
+		/* check guest email */
 		if ( wp_verify_nonce( LP_Request::get_string( 'guest-checkout' ), 'guest-checkout' ) ) {
 			if ( $this->is_enable_guest_checkout() && ! is_user_logged_in() && empty( $this->_checkout_email ) ) {
 				$errors[] = __( 'Please enter your email.', 'learnpress' );
 			}
+		}
+		/* check chose term and conditions or not */
+		if(isset($fields['terms_conditions']) && $fields['terms_conditions'] == ''){
+			$errors[] = __( 'You must accept our Terms & Conditions.', 'learnpress' );
 		}
 
 		return $errors;
@@ -444,6 +448,9 @@ class LP_Checkout {
 		$this->user_pass       = LP_Request::get_string( 'user_password' );
 		$this->order_comment   = LP_Request::get_string( 'order_comments' );
 		$this->_checkout_email = LP_Request::get_email( 'checkout-email' );
+		if( LP_Request::get_int( 'terms_conditions_field', 0 ) ){
+			$this->checkout_fields['terms_conditions'] = LP_Request::get_string( 'terms_conditions', '' );
+		}
 
 		if ( $this->_checkout_email ) {
 			LP()->session->set( 'checkout-email', $this->_checkout_email );

@@ -3745,3 +3745,13 @@ function learn_press_filter_block_content_template( $located, $template_name, $a
 	return $located;
 
 }
+
+function learn_press_term_conditions_template() {
+	$page_id = learn_press_get_page_id( 'term_conditions' );
+	if ( $page_id ) {
+		$page_link =  get_page_link($page_id);
+		learn_press_get_template( 'checkout/term-conditions.php', array( 'page_link' => $page_link ) );
+	}
+}
+
+add_action( 'learn-press/after-payment-methods', 'learn_press_term_conditions_template' );

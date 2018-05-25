@@ -110,6 +110,12 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Enable registration form in checkout page.', 'learnpress' )
+						),
+						array(
+						'title'   => __( 'Terms & conditions page', 'learnpress' ),
+						'id'      => 'term_conditions_page_id',
+						'default' => '',
+						'type'    => 'pages-dropdown'
 						)
 					)
 				),
