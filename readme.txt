@@ -3,7 +3,7 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
-Tested up to: 4.9.4
+Tested up to: 4.9.5
 Stable tag: 3.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -85,6 +85,7 @@ We are developing and improving LearnPress day by day and bringing new features 
 
 ###Premium add-ons for LearnPress WordPress LMS Plugin###
 
+- [Assignments add-on for LearnPress](https://thimpress.com/product/assignments-add-on-for-learnpress/) - Newly released - Allowing instructors to give assignments, homework for students and they can grade the students' work later on. The Assignments add-on is a great supplement to LearnPress and will make your course more interactive.
 - [myCRED add-on for LearnPress](http://thimpress.com/product/mycred-add-on-for-learnpress/) - adding myCRED support for LearnPress WordPress LMS plugin, you can add point system to your eLearning WordPress site using LearnPress + myCRED add-on.
 - [Certificates add-on for LearnPress](http://thimpress.com/product/certificates-add-on-for-learnpress/) - adding drag & drop certificates builder as well as selecting designed certificate for each LMS course, your student will get particular certificate when they finished a course.
 - [Co-instructors add-on for LearnPress](http://thimpress.com/product/co-instructors-add-on-for-learnpress/) - multiple instructors support for each LMS course.
@@ -124,7 +125,7 @@ We are developing and improving LearnPress day by day and bringing new features 
 	- Braintree
 	- Samurai by FeeFighters
 	- WePay
-- Assignment
+- Assignment - **DONE** - [check LearnPress Assignments Add-on HERE](https://thimpress.com/product/assignments-add-on-for-learnpress/)
 - Events
 - Share Grade
 - BadgeOS
@@ -198,9 +199,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
-
 = 3.0.9 =
 + GDPR compliance
+~ Improved Start quiz button
+~ Load js for complete-reply if it does not load by default
+~ Fixed missing param when sending email for user who finished course
 
 = 3.0.8 =
 ~ Improved: get css class name for items for performance
