@@ -31,14 +31,14 @@
             overflow: hidden;
             @include box-sizing();
         }
-        header{
+        header {
             font-size: 16px;
             padding: 15px 20px;
             border-bottom: 1px solid #DDD;
         }
-        article{
-            margin: 20px;
-            input[name="search"]{
+        article {
+            margin: 45px 20px;
+            input[name="search"] {
                 width: 100%;
                 font-size: 16px;
                 box-sizing: border-box;
@@ -50,18 +50,19 @@
                 border-color: #e4e4e4;
                 font-weight: lighter;
             }
-            .search-results{
-                li > label{
+            .search-results {
+                li > label {
                     display: block;
                 }
             }
         }
-        footer{
-            padding: 0 20px 20px;
+        footer {
+            padding: 15px 20px;
             overflow: hidden;
-            .search-nav{
+            border: 1px solid #eee;
+            .search-nav {
                 float: left;
-                a, span{
+                a, span {
                     display: inline-block;
                     line-height: 26px;
                     height: 28px;
@@ -69,7 +70,7 @@
                     padding: 0 10px 1px;
                 }
             }
-            button{
+            button {
                 float: right;
                 margin-left: 3px;
             }
@@ -77,7 +78,21 @@
     }
 }
 
-
+#modal-search-items.loading {
+    .search-results {
+        &:before {
+            position: absolute;
+            top: 75px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: block;
+            content: '';
+            z-index: 9;
+            background: url('../../images/spinner.gif') no-repeat center center;
+        }
+    }
+}
 
 .modal-search {
     position: relative;

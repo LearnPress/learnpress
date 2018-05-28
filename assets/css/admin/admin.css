@@ -1452,7 +1452,7 @@
       padding: 15px 20px;
       border-bottom: 1px solid #DDD; }
     .modal .modal-wrapper article {
-      margin: 20px; }
+      margin: 45px 20px; }
       .modal .modal-wrapper article input[name="search"] {
         width: 100%;
         font-size: 16px;
@@ -1467,8 +1467,9 @@
       .modal .modal-wrapper article .search-results li > label {
         display: block; }
     .modal .modal-wrapper footer {
-      padding: 0 20px 20px;
-      overflow: hidden; }
+      padding: 15px 20px;
+      overflow: hidden;
+      border: 1px solid #eee; }
       .modal .modal-wrapper footer .search-nav {
         float: left; }
         .modal .modal-wrapper footer .search-nav a, .modal .modal-wrapper footer .search-nav span {
@@ -1480,6 +1481,17 @@
       .modal .modal-wrapper footer button {
         float: right;
         margin-left: 3px; }
+
+#modal-search-items.loading .search-results:before {
+  position: absolute;
+  top: 75px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  content: '';
+  z-index: 9;
+  background: url("../../images/spinner.gif") no-repeat center center; }
 
 .modal-search {
   position: relative;

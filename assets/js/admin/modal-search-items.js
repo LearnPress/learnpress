@@ -23,6 +23,11 @@
             props: ['postType', 'context', 'contextId', 'show', 'callbacks', 'exclude'],
             created: function () {
             },
+            mounted: function () {
+                this.term = '';
+                this.paged = 1;
+                this.search();
+            },
             methods: {
                 doSearch: function (e) {
                     this.term = e.target.value;
@@ -30,6 +35,7 @@
                     this.search();
                 },
                 search: _.debounce(function (term) {
+                    $('#modal-search-items').addClass('loading');
                     var that = this;
                     Vue.http.post(
                         window.location.href, {
@@ -47,6 +53,8 @@
                     ).then(function (response) {
                         var result = LP.parseJSON(response.body || response.bodyText);
                         that.hasItems = !!_.size(result.items);
+
+                        $('#modal-search-items').removeClass('loading');
 
                         $(that.$el).find('.search-results').html(result.html).find('input[type="checkbox"]').each(function () {
                             var id = parseInt($(this).val());
@@ -116,7 +124,6 @@
             },
             methods: {
                 open: function (options) {
-                    console.log(options)
                     _.each(options.data, function (v, k) {
                         this[k] = v;
                     }, this);
