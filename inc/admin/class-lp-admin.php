@@ -49,6 +49,19 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'views_plugins', array( $this, 'views_plugins' ) );
 
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
+
+			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
+		}
+
+		/**
+		 * @param $options
+		 *
+		 * @return array
+		 */
+		public function filter_modal_search( $options ) {
+			$options = wp_parse_args( array( 'title' => __( 'Available Courses', 'learnpress' ) ), $options );
+
+			return $options;
 		}
 
 		public function add_empty_page( $pages, $args ) {
@@ -326,7 +339,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int    $post
+		 * @param int $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -389,7 +402,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
