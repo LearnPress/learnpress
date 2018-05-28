@@ -135,8 +135,7 @@ class LP_Install_Sample_Data {
 
 			LP_Debug::commitTransaction();
 
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 
 			echo $ex->getMessage();
@@ -177,8 +176,7 @@ class LP_Install_Sample_Data {
 
 				$this->_delete_post( $post->ID );
 			}
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 			echo "Error: " . $ex->getMessage();
 		}
@@ -352,7 +350,7 @@ class LP_Install_Sample_Data {
 	 * Create section.
 	 *
 	 * @param string $name
-	 * @param int    $course_id
+	 * @param int $course_id
 	 *
 	 * @return int
 	 */
@@ -413,8 +411,8 @@ class LP_Install_Sample_Data {
 	 * Create lesson.
 	 *
 	 * @param string $name
-	 * @param int    $section_id
-	 * @param int    $course_id
+	 * @param int $section_id
+	 * @param int $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -454,8 +452,8 @@ class LP_Install_Sample_Data {
 	 * Create quiz.
 	 *
 	 * @param string $name
-	 * @param int    $section_id
-	 * @param int    $course_id
+	 * @param int $section_id
+	 * @param int $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -474,16 +472,18 @@ class LP_Install_Sample_Data {
 		if ( $quiz_id ) {
 
 			$metas = array(
-				'_lp_show_hide_question' => 'no',
-				'_lp_review_questions'   => 'yes',
-				'_lp_show_result'        => 'yes',
-				'_lp_duration'           => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
-				'_lp_passing_grade'      => rand( 5, 9 ) * 10,
-				'_lp_retake_count'       => rand( 0, 10 ),
-				'_lp_archive_history'    => 'no',
-				'_lp_show_check_answer'  => '0',
-				'_lp_show_hint'          => '0',
-				'_lp_sample_data'        => 'yes'
+				'_lp_minus_points'         => 0,
+				'_lp_minus_skip_questions' => 'no',
+				'_lp_show_hide_question'   => 'no',
+				'_lp_review_questions'     => 'yes',
+				'_lp_show_result'          => 'yes',
+				'_lp_duration'             => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
+				'_lp_passing_grade'        => rand( 5, 9 ) * 10,
+				'_lp_retake_count'         => rand( 0, 10 ),
+				'_lp_archive_history'      => 'no',
+				'_lp_show_check_answer'    => '0',
+				'_lp_show_hint'            => '0',
+				'_lp_sample_data'          => 'yes'
 			);
 
 			foreach ( $metas as $key => $value ) {
@@ -557,7 +557,7 @@ class LP_Install_Sample_Data {
 	/**
 	 * Create answers for a question.
 	 *
-	 * @param int    $question_id
+	 * @param int $question_id
 	 * @param string $type
 	 */
 	protected function create_question_answers( $question_id, $type ) {

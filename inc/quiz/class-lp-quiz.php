@@ -41,16 +41,18 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @var array
 		 */
 		protected $_data = array(
-			'retake_count'       => 0,
-			'show_result'        => 'no',
-			'passing_grade_type' => '',
-			'passing_grade'      => 0,
-			'show_check_answer'  => 'no',
-			'count_check_answer' => 0,
-			'show_hint'          => 'no',
-			'count_hint'         => 0,
-			'archive_history'    => 'no',
-			'show_hide_question' => 'yes'
+			'retake_count'         => 0,
+			'show_result'          => 'no',
+			'passing_grade_type'   => '',
+			'passing_grade'        => 0,
+			'show_check_answer'    => 'no',
+			'count_check_answer'   => 0,
+			'show_hint'            => 'no',
+			'count_hint'           => 0,
+			'archive_history'      => 'no',
+			'show_hide_question'   => 'yes',
+			'minus_points'         => 0,
+			'minus_skip_questions' => 'no'
 		);
 
 		/**
@@ -127,15 +129,17 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'show_hide_question' => 'yes',
-				'review_questions'   => 'no',
-				'show_result'        => 'no',
-				'duration'           => '10 minute',
-				'passing_grade'      => 80,
-				'retake_count'       => 0,
-				'archive_history'    => 'no',
-				'show_check_answer'  => 0,
-				'show_hint'          => 0
+				'minus_points'         => 0,
+				'minus_skip_questions' => 'no',
+				'show_hide_question'   => 'yes',
+				'review_questions'     => 'no',
+				'show_result'          => 'no',
+				'duration'             => '10 minute',
+				'passing_grade'        => 80,
+				'retake_count'         => 0,
+				'archive_history'      => 'no',
+				'show_check_answer'    => 0,
+				'show_hint'            => 0
 			);
 
 			return apply_filters( 'learn-press/quiz/default-meta', $meta );
@@ -778,7 +782,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_quiz
-		 * @param  array   $args (default: array())
+		 * @param  array $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -818,14 +822,30 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$this->_set_data( 'show_hide_question', $show_or_hide );
 		}
 
+		public function set_minus_points( $points ) {
+			$this->_set_data( 'minus_points', $points );
+		}
+
+		public function set_minus_skip_questions( $skip ) {
+			$this->_set_data( 'minus_skip_questions', $skip );
+		}
+
 		public function get_show_hide_question() {
 			return 'yes' === $this->get_data( 'show_hide_question' );
+		}
+
+		public function get_minus_points() {
+			return $this->get_data( 'minus_points' );
+		}
+
+		public function get_minus_skip_questions() {
+			return 'yes' === $this->get_data( 'minus_skip_questions' );
 		}
 
 		/**
 		 * Get css classes of question displays in a list.
 		 *
-		 * @param int  $question_id
+		 * @param int $question_id
 		 * @param null $position
 		 *
 		 * @return array
