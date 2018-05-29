@@ -887,7 +887,7 @@ if ( ! function_exists( 'learn_press_quiz_start_button' ) ) {
 			return;
 		}
 
-		if ( ! $user->has_course_status( $course->get_id(), array( 'enrolled' ) ) && $course->is_required_enroll() ) {
+		if ( ! $user->has_course_status( $course->get_id(), array( 'enrolled' ) ) && $course->is_required_enroll() && ! $quiz->get_preview() ) {
 			return;
 		}
 		learn_press_get_template( 'content-quiz/buttons/start.php' );
@@ -3749,7 +3749,7 @@ function learn_press_filter_block_content_template( $located, $template_name, $a
 function learn_press_term_conditions_template() {
 	$page_id = learn_press_get_page_id( 'term_conditions' );
 	if ( $page_id ) {
-		$page_link =  get_page_link($page_id);
+		$page_link = get_page_link( $page_id );
 		learn_press_get_template( 'checkout/term-conditions.php', array( 'page_link' => $page_link ) );
 	}
 }

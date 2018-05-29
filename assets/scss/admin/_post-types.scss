@@ -67,7 +67,7 @@
     }
 }
 
-.post-type-lp_lesson {
+.wp-list-table {
     .column-preview {
         text-align: left;
         float: none;
@@ -104,25 +104,23 @@
     .column-lp-page {
         width: 200px;
     }
-    .for-plugin-page{
+    .for-plugin-page {
         color: #FF0000;
         font-size: 11px;
         margin: 0;
     }
 }
 
-
-
-#learn-press-box-edit-slug{
+#learn-press-box-edit-slug {
     background: #FFF;
     padding: 10px;
     border: 1px solid #DDD;
     margin: 0 -10px;
-    overflow:hidden;
+    overflow: hidden;
     color: #b79186;
-    .button{
+    .button {
         float: right;
-            height: 24px;
-            line-height: 22px;
+        height: 24px;
+        line-height: 22px;
     }
 }

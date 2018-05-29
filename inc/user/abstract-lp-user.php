@@ -397,9 +397,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				$course = learn_press_get_course( $course_id );
+				$quiz   = learn_press_get_quiz( $quiz_id );
 				$user   = LP_Global::user();
 
-				if ( $course->is_required_enroll() && $user->is_guest() ) {
+				if ( $course->is_required_enroll() && $user->is_guest() && ! $quiz->get_preview() ) {
 					throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
 				}
 
@@ -408,7 +409,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				 */
 				$do_start = apply_filters( 'learn-press/before-start-quiz', true, $quiz_id, $course_id, $this->get_id() );
 
-				//@deprecated
+//				//@deprecated
 				$do_start = apply_filters( 'learn_press_before_user_start_quiz', $do_start, $quiz_id, $course_id, $this->get_id() );
 
 				if ( ! $do_start ) {
@@ -557,7 +558,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				} else {
 					$course_data->update_item_retaken_count( $quiz_id, 0 );
 				}
-				//var_dump($last_results);
 			}
 
 			if ( $last_results && $last_results['status'] === 'completed' ) {
@@ -580,7 +580,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				'user_item_id'   => 0//insert
 			);
 
-			$last_results         = $this->get_item_archive( $quiz_id, $course_id, true );
+//			$last_results         = $this->get_item_archive( $quiz_id, $course_id, true );
 			$set_current_question = false;
 
 			// If there is no a record
@@ -621,11 +621,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$progress  = $this->get_quiz_progress( $quiz_id, $course_id );
 
 			if ( $progress && $progress->status != 'completed' ) {
-				$quiz = LP_Quiz::get_quiz( $quiz_id );
+				$quiz           = LP_Quiz::get_quiz( $quiz_id );
 				$current_time   = learn_press_get_current_time();
 				$progress_start = strtotime( $progress->start, $current_time );
 				$remaining      = intval( $quiz->get_duration() ) + $progress_start - $current_time;
 			}
+
 			return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $quiz_id, $course_id, $this->get_id() );
 		}
 
@@ -1589,7 +1590,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 				}
 			}
-
 			// @deprecated
 			$view = apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->get_id(), $course_id );
 
@@ -1618,9 +1618,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				if ( $course ) {
+
+					$quiz = LP_Quiz::get_quiz( $quiz_id );
+
 					if ( $this->has_enrolled_course( $course_id ) || $this->has_finished_course( $course_id ) ) {
 						$view = 'enrolled';
-					} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() ) ) {
+					} elseif ( $quiz->is_preview() || $this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() ) ) {
 						$view = 'preview';
 					} elseif ( ! $course->is_required_enroll() ) {
 						$view = 'no-required-enroll';
@@ -2471,7 +2474,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed|WP_Error
 		 * @throws Exception
 		 */
-		public function enroll( $course_id, $order_id ) {
+		/**
+		 * Enroll this user to a course.
+		 *
+		 * @param $course_id
+		 * @param $order_id
+		 * @param bool $force | Force create db record for preview quiz case
+		 *
+		 * @return bool|mixed|WP_Error
+		 */
+		public function enroll( $course_id, $order_id, $force = false ) {
 			$return = false;
 			try {
 				global $wpdb;
@@ -2487,7 +2499,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					'start_time_gmt' => $date->toSql( false )
 				);
 
-				if ( $course->is_required_enroll() ) {
+				if ( $course->is_required_enroll() && ! $force ) {
 
 					if ( ! $order = learn_press_get_order( $order_id ) ) {
 						throw new Exception( __( 'Failed to enroll course.', 'learnpress' ), 10000 );

@@ -378,7 +378,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'author'          => __( 'Author', 'learnpress' ),
 						'lp_course'       => $this->_get_course_column_title(),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
-						'duration'        => __( 'Duration', 'learnpress' )
+						'duration'        => __( 'Duration', 'learnpress' ),
+						'preview'         => __( 'Preview', 'learnpress' )
 					),
 					array_slice( $columns, $pos + 1 )
 				);
@@ -428,6 +429,18 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					} else {
 						echo '-';
 					}
+					break;
+				case 'preview':
+					printf(
+						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-item-preview" %s value="%s" data-nonce="%s" />',
+						get_post_meta( $post_id, '_lp_preview', true ) == 'yes' ? ' checked="checked"' : '',
+						$post_id,
+						wp_create_nonce( 'learn-press-toggle-item-preview' )
+					);
+					break;
+				default:
+					break;
+
 			}
 		}
 

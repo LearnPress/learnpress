@@ -159,12 +159,12 @@
         }).apply(this)
     }
 
-    function updateLessonPreview() {
+    function updateItemPreview() {
         $.ajax({
             url: '',
             data: {
-                'lp-ajax': 'toggle_lesson_preview',
-                lesson_id: this.value,
+                'lp-ajax': 'toggle_item_preview',
+                item_id: this.value,
                 previewable: this.checked ? 'yes' : 'no',
                 nonce: $(this).attr('data-nonce')
             },
@@ -385,7 +385,7 @@
 
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
-        $('.learn-press-toggle-lesson-preview').on('change', updateLessonPreview);
+        $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
         $('.learn-press-tip').QuickTip();
 
         initTooltips();
