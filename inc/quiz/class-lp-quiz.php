@@ -51,6 +51,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			'count_hint'           => 0,
 			'archive_history'      => 'no',
 			'show_hide_question'   => 'yes',
+			'preview'              => 'no',
 			'minus_points'         => 0,
 			'minus_skip_questions' => 'no'
 		);
@@ -129,6 +130,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
+				'preview'              => 'no',
 				'minus_points'         => 0,
 				'minus_skip_questions' => 'no',
 				'show_hide_question'   => 'yes',
@@ -822,12 +824,20 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$this->_set_data( 'show_hide_question', $show_or_hide );
 		}
 
+		public function set_preview( $preview ) {
+			$this->_set_data( 'preview', $preview );
+		}
+
 		public function set_minus_points( $points ) {
 			$this->_set_data( 'minus_points', $points );
 		}
 
 		public function set_minus_skip_questions( $skip ) {
 			$this->_set_data( 'minus_skip_questions', $skip );
+		}
+
+		public function get_preview() {
+			return 'yes' === $this->get_data( 'preview' );
 		}
 
 		public function get_show_hide_question() {

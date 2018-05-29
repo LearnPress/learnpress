@@ -57,6 +57,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					'count_hint'           => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
 					'show_hide_question'   => get_post_meta( $quiz->get_id(), '_lp_show_hide_question', true ),
 					'review_questions'     => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
+					'preview'              => get_post_meta( $quiz->get_id(), '_lp_preview', true ),
 					'minus_points'         => get_post_meta( $quiz->get_id(), '_lp_minus_points', true ),
 					'minus_skip_questions' => get_post_meta( $quiz->get_id(), '_lp_minus_skip_questions', true ),
 				)
