@@ -93,11 +93,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * Delete course itself and sections.
 		 *
 		 * @param int|object $course_id
-		 * @param bool       $delete_item - Optional. TRUE will delete all items assigned to course
+		 * @param bool $delete_item - Optional. TRUE will delete all items assigned to course
 		 */
 		public function delete_course( $course_id, $delete_item = false ) {
 			if ( $delete_item ) {
-				if($course = learn_press_get_course( $course_id )) {
+				if ( $course = learn_press_get_course( $course_id ) ) {
 					if ( $items = $course->get_items() ) {
 						foreach ( $items as $item ) {
 							wp_delete_post( $item );
@@ -141,31 +141,33 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			} else {
 
 				// original course section curd
-				$curd = new LP_Section_CURD( $course_id );
+				$course = LP_Course::get_course( $course_id );
 
-				// get course sections
-				$sections = $this->get_course_sections( $course_id );
 				// new course section curd
 				$new_course_section_curd = new LP_Section_CURD( $new_course_id );
 
+				// curriculum course
+				$curriculum = $course->get_curriculum_raw();
+
+				// quiz curd
 				$quiz_curd = new LP_Quiz_CURD();
 
-				if ( is_array( $sections ) ) {
+				if ( is_array( $curriculum ) ) {
 
-					foreach ( $sections as $section ) {
+					foreach ( $curriculum as $section ) {
 
 						$data = array(
-							'section_name'        => $section->section_name,
+							'section_name'        => $section['title'],
 							'section_course_id'   => $new_course_id,
-							'section_order'       => $section->section_order,
-							'section_description' => $section->section_description
+							'section_order'       => $section['order'],
+							'section_description' => $section['description']
 						);
 
 						// clone sections to new course
 						$new_section = $new_course_section_curd->create( $data );
 
 						// get section items of original course
-						$items = $curd->get_section_items( $section->section_id );
+						$items = $section['items'];
 
 						$new_items = array();
 
@@ -722,7 +724,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @param int          $course_id
+		 * @param int $course_id
 		 * @param string|array $statuses
 		 *
 		 * @return int
