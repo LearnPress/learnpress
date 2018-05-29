@@ -476,7 +476,7 @@ class LP_Page_Controller {
 			$content = $wp_query->post->post_content;
 
 			if ( ! preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content ) ) {
-				$content = $content . '[learn_press_archive_course]';
+				$content = wpautop( $content ) . '[learn_press_archive_course]';
 			}
 
 			$has_filter = false;
@@ -485,7 +485,6 @@ class LP_Page_Controller {
 				remove_filter( 'the_content', 'wpautop' );
 			}
 
-			$content = wpautop( $content );
 			$content = do_shortcode( $content );
 
 			if ( $has_filter ) {
