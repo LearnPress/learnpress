@@ -1,5 +1,3 @@
-<?php ?>
-
 {{header}}
 
 <p>User {{request_email}} has requested to become an Instructor at {{site_title}}</p>

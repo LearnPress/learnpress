@@ -1,5 +1,3 @@
-<?php ?>
-
 {{header}}
 
 <p>Dear <strong>{{course_user_name}},</strong></p>

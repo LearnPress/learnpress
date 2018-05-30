@@ -91,6 +91,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_Processing_Order_Guest'] = include( 'emails/class-lp-email-processing-order-guest.php' );
 
 			// Completed order
+			$this->emails['LP_Email_Completed_Order_Admin']  = include( 'emails/class-lp-email-completed-order-admin.php' );
 			$this->emails['LP_Email_Completed_Order_User']  = include( 'emails/class-lp-email-completed-order-user.php' );
 			$this->emails['LP_Email_Completed_Order_Guest'] = include( 'emails/class-lp-email-completed-order-guest.php' );
 

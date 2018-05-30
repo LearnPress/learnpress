@@ -1,5 +1,3 @@
-<?php ?>
-
 {{header}}
 
 <p>Dear <strong>{{user_name}},</strong></p>
