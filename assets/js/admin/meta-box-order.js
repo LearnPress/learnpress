@@ -91,7 +91,6 @@
         });
 
         $('#learn-press-add-order-item').on('click', function () {
-            console.log(getAddedItems())
             LP.$modalSearchItems.open({
                 data: {
                     postType: 'lp_course',

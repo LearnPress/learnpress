@@ -46,17 +46,19 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 			$quiz->set_data_via_methods(
 				array(
-					'retake_count'       => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),
-					'show_result'        => get_post_meta( $quiz->get_id(), '_lp_show_result', true ),
-					'passing_grade_type' => get_post_meta( $quiz->get_id(), '_lp_passing_grade_type', true ),
-					'passing_grade'      => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true ),
-					'show_check_answer'  => get_post_meta( $quiz->get_id(), '_lp_show_check_answer', true ),
-					'count_check_answer' => get_post_meta( $quiz->get_id(), '_lp_check_answer_count', true ),
-					'show_hint'          => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
-					'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
-					'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
-					'show_hide_question' => get_post_meta( $quiz->get_id(), '_lp_show_hide_question', true ),
-					'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
+					'retake_count'         => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),
+					'show_result'          => get_post_meta( $quiz->get_id(), '_lp_show_result', true ),
+					'passing_grade_type'   => get_post_meta( $quiz->get_id(), '_lp_passing_grade_type', true ),
+					'passing_grade'        => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true ),
+					'show_check_answer'    => get_post_meta( $quiz->get_id(), '_lp_show_check_answer', true ),
+					'count_check_answer'   => get_post_meta( $quiz->get_id(), '_lp_check_answer_count', true ),
+					'show_hint'            => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
+					'archive_history'      => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
+					'count_hint'           => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
+					'show_hide_question'   => get_post_meta( $quiz->get_id(), '_lp_show_hide_question', true ),
+					'review_questions'     => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
+					'minus_points'         => get_post_meta( $quiz->get_id(), '_lp_minus_points', true ),
+					'minus_skip_questions' => get_post_meta( $quiz->get_id(), '_lp_minus_skip_questions', true ),
 				)
 			);
 			$this->_load_questions( $quiz );
@@ -321,7 +323,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * Reorder question by indexed number.
 		 *
 		 * @param LP_Quiz|WP_Post|int $the_quiz
-		 * @param mixed               $questions
+		 * @param mixed $questions
 		 *
 		 * @return mixed
 		 */
@@ -391,7 +393,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @param LP_Quiz|int $the_quiz
 		 * @param             $question_id
-		 * @param array       $args
+		 * @param array $args
 		 *
 		 * @return mixed false on failed
 		 */
@@ -451,7 +453,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Check if a question (or batch of questions) is already added to quiz.
 		 *
-		 * @param int       $the_id
+		 * @param int $the_id
 		 * @param int|array $ids
 		 *
 		 * @return array|bool|null|object

@@ -269,6 +269,32 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'          => 10,
 					),
 					array(
+						'name' => __( 'Minus Points', 'learnpress' ),
+						'id'   => '_lp_minus_points',
+						'type' => 'number',
+						'desc' => __( 'How many points minus for each wrong question in quiz.', 'learnpress' ),
+						'min'  => 0,
+						'std'  => 0,
+						'step' => 0.01
+					),
+					array(
+						'name'       => __( 'Minus For Skip', 'learnpress' ),
+						'id'         => '_lp_minus_skip_questions',
+						'type'       => 'yes-no',
+						'desc'       => __( 'Minus points for skip questions.', 'learnpress' ),
+						'std'        => 'no',
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => '_lp_minus_points',
+									'compare' => '>',
+									'value'   => '0'
+								)
+							)
+						)
+					),
+					array(
 						'name'        => __( 'Passing Grade (<span>%</span>)', 'learnpress' ),
 						'desc'        => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
 						'id'          => '_lp_passing_grade',
@@ -282,7 +308,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'name' => __( 'Re-take', 'learnpress' ),
 						'id'   => '_lp_retake_count',
 						'type' => 'number',
-						'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable re-taking', 'learnpress' ),
+						'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable re-taking.', 'learnpress' ),
 						'min'  => 0,
 						'std'  => 0
 					),
@@ -363,7 +389,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int    $post_id
+		 * @param int $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;

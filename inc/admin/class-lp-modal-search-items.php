@@ -47,20 +47,21 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 */
 		public function __construct( $options = '' ) {
 			add_action( 'admin_print_footer_scripts', array( $this, 'js_template' ) );
-			$this->_options = wp_parse_args(
-				$options,
-				array(
-					'type'         => '',
-					'context'      => '',
-					'context_id'   => '',
-					'exclude'      => '',
-					'term'         => '',
-					'add_button'   => __( 'Add', 'learnpress' ),
-					'close_button' => __( 'Close', 'learnpress' ),
-					'title'        => __( 'Search items', 'learnpress' ),
-					'limit'        => 10,
-					'paged'        => 1
-				)
+
+			$this->_options = apply_filters( 'learn-press/modal-search-items-args', wp_parse_args(
+					$options,
+					array(
+						'type'         => '',
+						'context'      => '',
+						'context_id'   => '',
+						'exclude'      => '',
+						'term'         => '',
+						'add_button'   => __( 'Add', 'learnpress' ),
+						'close_button' => __( 'Close', 'learnpress' ),
+						'title'        => __( 'Search items', 'learnpress' ),
+						'limit'        => 10,
+						'paged'        => 1
+					) )
 			);
 
 			if ( is_string( $this->_options['exclude'] ) ) {
@@ -265,7 +266,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		}
 
 		/**
-		 * @param array  $args
+		 * @param array $args
 		 * @param string $context
 		 * @param string $context_id
 		 *
@@ -288,7 +289,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */
