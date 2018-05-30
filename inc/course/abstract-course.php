@@ -106,6 +106,13 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 		}
 
+		public function refresh() {
+			$this->_loaded = false;
+			if ( $this->get_id() > 0 ) {
+				$this->load();
+			}
+		}
+
 		/**
 		 * Read course data.
 		 * - Curriculum: sections, items, etc...
@@ -1047,14 +1054,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return string
 		 */
 		public function get_item_link( $item_id ) {
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 			$item_link = '';
 			if ( false !== ( $item_links = $this->get_item_links() ) ) {
 				if ( ! empty( $item_links[ $item_id ] ) ) {
 					$item_link = $item_links[ $item_id ];
 				}
 			}
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return apply_filters( 'learn-press/course/item-link', $item_link, $item_id, $this );
 		}

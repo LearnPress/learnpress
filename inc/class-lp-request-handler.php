@@ -309,6 +309,7 @@ class LP_Request {
 
 		$user     = LP_Global::user();
 		$redirect = get_the_permalink( $course_id );
+
 		if ( !$user->can_enroll_course( $course_id ) && 'enroll-course' == $action ){
 		    learn_press_add_message(
 		        sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
@@ -332,6 +333,7 @@ class LP_Request {
     				'success'
     			);
     		}
+
 		}
 		wp_redirect( apply_filters( 'learn-press/enroll-course-redirect', $redirect ) );
 		exit();

@@ -753,4 +753,3 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-

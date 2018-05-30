@@ -304,7 +304,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 				update_post_meta( $id, '_lp_preview', $previewable );
 			}
-			die();
+			die(__FILE__ . '::'.__FUNCTION__);;
 		}
 
 		/**
@@ -541,7 +541,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$term = stripslashes( $_REQUEST['term'] );
 
 			if ( empty( $term ) ) {
-				die();
+				die(__FILE__ . '::'.__FUNCTION__);;
 			}
 
 			$found_customers = array();
@@ -597,7 +597,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					update_option( 'learn_press_dismiss_notice_' . $context, 'off' );
 				}
 			}
-			die();
+			die(__FILE__ . '::'.__FUNCTION__);;
 		}
 
 		public static function plugin_action() {

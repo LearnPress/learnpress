@@ -663,17 +663,49 @@ if ( ! function_exists( 'learn_press_get_course_item_url' ) ) {
 	}
 }
 
+/**
+ * Add filter to WP comment form of lesson or quiz to output ID of current course.
+ *
+ * @since 3.0.10
+ *
+ * @param $post_id
+ */
+function learn_press_comment_post_item_course( $post_id ) {
+	if ( ! $course = LP_Global::course() ) {
+		return;
+	}
+
+	echo sprintf( '<input type="hidden" name="comment-post-item-course" value="%d" />', $course->get_id() );
+}
+
+add_action( 'comment_form', 'learn_press_comment_post_item_course' );
 
 function learn_press_item_comment_link( $link, $comment, $args, $cpage ) {
 
-	if ( LP_COURSE_CPT == get_post_type( $comment->comment_post_ID ) ) {
+	$comment_post_ID = $comment->comment_post_ID;
+
+	/**
+	 * Validate if comment post is an item of course
+	 */
+	if ( ! learn_press_is_support_course_item_type( get_post_type( $comment_post_ID ) ) ) {
 		return $link;
 	}
 
-	if ( $course_id = learn_press_get_item_course_id( $comment->comment_post_ID, LP_QUIZ_CPT ) ) {
-		if ( $course = learn_press_get_course( $course_id ) ) {
-			$link = str_replace( get_the_permalink( $comment->comment_post_ID ), $course->get_item_link( $comment->comment_post_ID ), $link );
+	$post_id = 0;
+
+	/**
+	 * Ensure there is a course
+	 */
+	if ( empty( $_POST['comment-post-item-course'] ) ) {
+		if ( $course = LP_Global::course() ) {
+			$post_id = $course->get_id();
 		}
+	} else {
+		$post_id = absint( $_POST['comment-post-item-course'] );
+	}
+
+	if ( $course = learn_press_get_course( $post_id ) ) {
+		$link = str_replace( get_the_permalink( $comment_post_ID ), $course->get_item_link( $comment_post_ID ), $link );
 	}
 
 	return $link;
@@ -681,6 +713,27 @@ function learn_press_item_comment_link( $link, $comment, $args, $cpage ) {
 
 add_filter( 'get_comment_link', 'learn_press_item_comment_link', 100, 4 );
 
+/**
+ * Fix redirection invalid when SG Cache is installed
+ *
+ * @since 3.0.10
+ *
+ * @param int    $comment_id
+ * @param string $status
+ */
+function learn_press_force_refresh_course( $comment_id, $status ) {
+
+	if ( empty( $_POST['comment-post-item-course'] ) ) {
+		return;
+	}
+
+	$course_id = $_POST['comment-post-item-course'];
+	$course    = learn_press_get_course( $course_id );
+	$curd      = new LP_Course_CURD();
+	$curd->load( $course );
+}
+
+add_action( 'comment_post', 'learn_press_force_refresh_course', 1000, 2 );
 
 if ( ! function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
 
@@ -881,33 +934,31 @@ function learn_press_get_preview_url( $post_id ) {
 }
 
 if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
+	/**
+	 * Add filter to WP custom post-type-link to edit the link of item
+	 * with the link of it's course.
+	 *
+	 * @param string  $post_link
+	 * @param WP_Post $post
+	 * @param bool    $leavename
+	 * @param bool    $sample
+	 *
+	 * @return string
+	 */
+	function learn_press_course_item_type_link( $post_link, $post, $leavename, $sample ) {
 
-	function learn_press_course_item_type_link( $permalink, $post ) {
-
-		if ( ! empty( LP()->global['item_permalinks'][ $post->ID ] ) ) {
-			return LP()->global['item_permalinks'][ $post->ID ];
-		}
 		remove_filter( 'post_type_link', 'learn_press_course_item_type_link', 10 );
 
-		if ( ! in_array( $post->post_type, learn_press_course_get_support_item_types( true ) ) ) {
-			return $permalink;
+		if ( learn_press_is_support_course_item_type( $post->post_type ) && $course = LP_Global::course() ) {
+			$post_link = $course->get_item_link( $post->ID );
 		}
 
-		$course_id = learn_press_get_item_course_id( $post->ID, $post->post_type );
+		add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
 
-		if ( $course_id ) {
-			$permalink = learn_press_get_course_item_url( $course_id, $post->ID );
-		} else {
-			$permalink = learn_press_get_sample_link_course_item_url( $post->ID );
-		}
-
-		LP()->global['item_permalinks'][ $post->ID ] = $permalink;
-		add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 2 );
-
-		return $permalink;
+		return $post_link;
 	}
 }
-add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 2 );
+add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
 
 
 add_filter( 'template_include', 'learn_press_prepare_archive_courses' );

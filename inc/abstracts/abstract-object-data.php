@@ -263,7 +263,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 					catch ( Exception $ex ) {
 						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
-						die();
+						die(__FILE__ . '::'.__FUNCTION__);;
 					}
 				}
 			}
