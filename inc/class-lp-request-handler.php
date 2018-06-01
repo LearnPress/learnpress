@@ -58,8 +58,8 @@ class LP_Request {
 		/**
 		 * @see LP_Request::do_enroll()
 		 */
-		add_action( 'learn-press/purchase-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
-		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
+		add_action( 'learn-press/purchase-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 4 );
+		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 4 );
 
 		add_filter( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
 		add_filter( 'learn-press/checkout-no-payment-result', array( __CLASS__, 'maybe_redirect_checkout' ), 10, 2 );
@@ -72,7 +72,10 @@ class LP_Request {
 	public static function maybe_redirect_checkout( $result, $order_id ) {
 
 		if ( $course_id = get_transient( 'checkout_enroll_course_id' ) ) {
-			self::do_enroll( $course_id, $order_id, 'enroll-course' );
+			$course = learn_press_get_course( $course_id );
+			$course_items = $course->get_items();
+			$first_item = ($course_items[0]) ? $course_items[0] : 0;
+			self::do_enroll( $course_id, $order_id, 'enroll-course', $first_item );
 			delete_transient( 'checkout_enroll_course_id' );
 			unset( $result['redirect'] );
 		}
@@ -111,7 +114,7 @@ class LP_Request {
 	public static function purchase_course( $course_id, $action ) {
 
 		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id, $action );
-		$course    = learn_press_get_course( $course_id );
+		$course    = learn_press_get_course( $course_id );//echo'<pre>dsad';print_r($course->get_items());die;
 
 		if ( ! $course ) {
 			return false;
@@ -219,7 +222,9 @@ class LP_Request {
 				/**
 				 * @see LP_Request::do_enroll()
 				 */
-				do_action( "learn-press/{$action}-handler/enroll", $course_id, $order->get_id(), $action );
+				$course_items = $course->get_items();
+				$first_item = ($course_items[0]) ? $course_items[0] : 0;
+				do_action( "learn-press/{$action}-handler/enroll", $course_id, $order->get_id(), $action, $first_item );
 			}
 
 			if ( ! $add_to_cart && ! $enroll_course ) {
@@ -297,7 +302,7 @@ class LP_Request {
 	 * @param int    $order_id
 	 * @param string $action
 	 */
-	public static function do_enroll( $course_id, $order_id, $action ) {
+	public static function do_enroll( $course_id, $order_id, $action, $item_id = 0 ) {
 
 //		if ( ! LP_Nonce_Helper::verify_course( LP_Request::get_string( 'enroll-course-nonce' ), 'enroll' ) ) {
 //			wp_die( __( 'Invalid request!', 'learnpress' ) );
@@ -332,6 +337,9 @@ class LP_Request {
     				sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
     				'success'
     			);
+			    if( $item_id ){
+			    	$redirect = learn_press_get_course_item_permalink( $course_id, $item_id );
+			    }
     		}
 
 		}
