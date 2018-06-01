@@ -275,7 +275,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'desc' => __( 'How many points minus for each wrong question in quiz.', 'learnpress' ),
 						'min'  => 0,
 						'std'  => 0,
-						'step' => 0.01
+						'step' => 0.25
 					),
 					array(
 						'name'       => __( 'Minus For Skip', 'learnpress' ),

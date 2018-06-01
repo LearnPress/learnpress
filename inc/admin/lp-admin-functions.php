@@ -2231,7 +2231,7 @@ function learn_press_preview_post_link( $link, $post ) {
 	$items = learn_press_course_get_support_item_types( true );
 
 	if ( in_array( $post->post_type, $items ) ) {
-		$link = learn_press_course_item_type_link( $link, $post );
+		$link = learn_press_course_item_type_link( $link, $post, false, false );
 	}
 
 	return $link;

@@ -452,7 +452,7 @@ class LP_Page_Controller {
 			 * In this case, WP know it as a course archive page not a
 			 * single page.
 			 */
-			if ( !LEARNPRESS_IS_CATEGORY && ( $course_page_id = learn_press_get_page_id( 'courses' ) ) && ( $course_page_slug = get_post_field( 'post_name', $course_page_id ) ) ) {
+			if ( ! LEARNPRESS_IS_CATEGORY && ( $course_page_id = learn_press_get_page_id( 'courses' ) ) && ( $course_page_slug = get_post_field( 'post_name', $course_page_id ) ) ) {
 				if ( $course_page_slug == 'courses' ) {
 					$wp_query->queried_object_id = $course_page_id;
 					$this->_queried_object       = $wp_query->queried_object = get_post( $course_page_id );

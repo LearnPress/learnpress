@@ -137,9 +137,20 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$course = new self( $the_course->ID );
 				}
 				LP_Global::$courses[ $key ] = $course;
+			} else {
+				$course = LP_Global::$courses[ $key ];
 			}
 
-			return LP_Global::$courses[ $key ];
+			/**
+			 * Force to reload course data into cache if it is not
+			 * loaded or has been deleted for some reasons.
+			 */
+			if ( false === wp_cache_get( 'course-' . $course->get_id(), 'lp-course-curriculum' ) ) {
+				$curd = new LP_Course_CURD();
+				$curd->load( $course );
+			}
+
+			return $course;
 		}
 
 		/**

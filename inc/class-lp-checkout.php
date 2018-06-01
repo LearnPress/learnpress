@@ -74,7 +74,7 @@ class LP_Checkout {
 	 * Process customer when checking out.
 	 *
 	 * @param array $result
-	 * @param int $order_id
+	 * @param int   $order_id
 	 *
 	 * @return mixed
 	 */
@@ -118,7 +118,8 @@ class LP_Checkout {
 			}
 
 			$order->save();
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			if ( $ex->getCode() && $message = $ex->getMessage() ) {
 				$result['message'] = $message;
 			}
@@ -146,8 +147,8 @@ class LP_Checkout {
 	}
 
 	/**
-	 * @param array $errors
-	 * @param array $fields
+	 * @param array       $errors
+	 * @param array       $fields
 	 * @param LP_Checkout $checkout
 	 *
 	 * @return array
@@ -160,7 +161,7 @@ class LP_Checkout {
 			}
 		}
 		/* check chose term and conditions or not */
-		if(isset($fields['terms_conditions']) && $fields['terms_conditions'] == ''){
+		if ( isset( $fields['terms_conditions'] ) && $fields['terms_conditions'] == '' ) {
 			$errors[] = __( 'You must accept our Terms & Conditions.', 'learnpress' );
 		}
 
@@ -339,7 +340,8 @@ class LP_Checkout {
 			}
 			$wpdb->query( 'COMMIT' );
 
-		} catch ( Exception $e ) {
+		}
+		catch ( Exception $e ) {
 			// There was an error adding order data!
 			$wpdb->query( 'ROLLBACK' );
 			learn_press_add_message( $e->getMessage() );
@@ -448,7 +450,7 @@ class LP_Checkout {
 		$this->user_pass       = LP_Request::get_string( 'user_password' );
 		$this->order_comment   = LP_Request::get_string( 'order_comments' );
 		$this->_checkout_email = LP_Request::get_email( 'checkout-email' );
-		if( LP_Request::get_int( 'terms_conditions_field', 0 ) ){
+		if ( LP_Request::get_int( 'terms_conditions_field', 0 ) ) {
 			$this->checkout_fields['terms_conditions'] = LP_Request::get_string( 'terms_conditions', '' );
 		}
 
@@ -619,7 +621,8 @@ class LP_Checkout {
 					}
 				}
 			}
-		} catch ( Exception $e ) {
+		}
+		catch ( Exception $e ) {
 			$has_error = $e->getMessage();
 			learn_press_add_message( $has_error, 'error' );
 		}
