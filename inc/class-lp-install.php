@@ -48,6 +48,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			add_action( 'learn-press/activate', array( __CLASS__, 'install' ) );
 			add_action( 'admin_init', array( __CLASS__, 'do_update' ) );
 			add_action( 'admin_init', array( __CLASS__, 'check_update' ) );
+			add_action( 'admin_init', array( __CLASS__, 'subsciption_button' ) );
 
 			//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
 
@@ -75,6 +76,23 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
 				wp_redirect( urldecode( $_REQUEST['redirect'] ) );
 			}
+		}
+
+		public static function subsciption_button() {
+			// Only administrator of the site can do this
+			if ( ! current_user_can( 'administrator' ) ) {
+				return;
+			}
+			$is_dismiss_newsletter_button = get_option( 'learn-press-dismissed-newsletter-button', 0 );
+			if ( $is_dismiss_newsletter_button ) {
+				return;
+			}
+			// Show message if the latest version is not already updated
+			add_action( 'admin_notices', array( __CLASS__, 'show_subscription_button' ), 20 );
+		}
+
+		public static function show_subscription_button() {
+			learn_press_admin_view( 'tools/subscription-button' );
 		}
 
 		/**
