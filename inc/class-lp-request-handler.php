@@ -256,16 +256,6 @@ class LP_Request {
 			return false;
 		}
 		
-		if( 'enroll-course' == $action){
-		    if(!$user->can_enroll_course($course_id)){
-		        learn_press_add_message(
-		            sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-		            'error'
-		            );
-		        return false;
-		    }
-		}
-		
 		$cart = LP()->cart;
 
 		if ( ! $cart->get_items() ) {
@@ -284,6 +274,15 @@ class LP_Request {
 			learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
 		} else {
 			/// Need?
+			if( 'enroll-course' == $action){
+				if(!$user->can_enroll_course($course_id)){
+					learn_press_add_message(
+						sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+						'error'
+						);
+					return false;
+				}
+			}
 			do_action( 'learn-press/add-to-cart-order-total-empty', $course_id, $cart_id, $action );
 			$checkout = LP()->checkout();
 			$checkout->process_checkout();
