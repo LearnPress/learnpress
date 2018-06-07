@@ -1,17 +1,23 @@
 <?php
-
 /**
  * Class LP_Email_User_Order_Completed
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
-
+_deprecated_file( __FILE__, '3.0.0' );
+die();
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 
+	/**
+	 * Class LP_Email_User_Order_Completed
+	 */
 	class LP_Email_User_Order_Completed extends LP_Email {
 		/**
 		 * LP_Email_User_Order_Completed constructor.
@@ -36,7 +42,6 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 				'{{order_number}}',
 			) );
 
-			// $this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 
 			add_action( 'learn_press_order_status_completed_notification', array( $this, 'trigger' ) );
 
@@ -132,19 +137,19 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => 'emails_user_order_completed[enable]'
+						'id'      => $this->get_field_name( 'enable' )
 					),
 					array(
 						'title'      => __( 'Subject', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_subject,
-						'id'         => 'emails_user_order_completed[subject]',
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'id'         => $this->get_field_name( 'subject' ),
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_completed[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -155,13 +160,13 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 						'title'      => __( 'Heading', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_heading,
-						'id'         => 'emails_user_order_completed[heading]',
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'id'         => $this->get_field_name( 'heading' ),
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_completed[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -172,7 +177,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 						'title'                => __( 'Email content', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
-						'id'                   => 'emails_user_order_completed[email_content]',
+						'id'                   => $this->get_field_name( 'email_content' ),
 						'template_base'        => $this->template_base,
 						'template_path'        => $this->template_path,//default learnpress
 						'template_html'        => $this->template_html,
@@ -184,7 +189,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Completed' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_completed[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)

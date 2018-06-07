@@ -83,6 +83,17 @@ abstract class LP_Abstract_Submenu {
 	public function __construct() {
 		add_action( 'learn-press/admin/page-content-sections', array( $this, 'output_section_nav' ) );
 		add_filter( 'admin_body_class', array( $this, 'body_class' ) );
+		//add_action('admin_enqueue_scripts', array($this))
+
+		if ( $this->is_displaying() ) {
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		}
+	}
+
+	public function enqueue_assets(){}
+
+	public function is_displaying() {
+		return $this->get_id() === LP_Request::get_string( 'page' );
 	}
 
 	/**
@@ -305,7 +316,7 @@ abstract class LP_Abstract_Submenu {
                             <span class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo $tab_title; ?></span>
 						<?php } else { ?>
                             <a class="nav-tab"
-                               href="?page=<?php echo $this->id;?>&tab=<?php echo $tab; ?>"><?php echo $tab_title; ?></a>
+                               href="?page=<?php echo $this->id; ?>&tab=<?php echo $tab; ?>"><?php echo $tab_title; ?></a>
 						<?php } ?>
 					<?php } ?>
                 </h2>
@@ -371,7 +382,7 @@ abstract class LP_Abstract_Submenu {
 					<?php if ( $active_class ) { ?>
                         <span><?php echo $section_title; ?></span>
 					<?php } else { ?>
-                        <a href="<?php echo esc_url( add_query_arg( 'section', $slug ) ); ?>"><?php echo $section_title; ?></a>
+                        <a href="<?php echo esc_url( remove_query_arg( 'sub-section', add_query_arg( 'section', $slug ) ) ); ?>"><?php echo $section_title; ?></a>
 					<?php } ?>
                 </li>
 			<?php } ?>

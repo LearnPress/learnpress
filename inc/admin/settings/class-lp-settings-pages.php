@@ -2,8 +2,15 @@
 
 /**
  * Class LP_Settings_Pages
+ *
+ * Settings pages
+ *
+ * @since 3.0
  */
 class LP_Settings_Pages extends LP_Abstract_Settings_Page {
+	/**
+	 * LP_Settings_Pages constructor.
+	 */
 	public function __construct() {
 		$this->id   = 'pages';
 		$this->text = __( 'Pages', 'learnpress' );
@@ -11,6 +18,11 @@ class LP_Settings_Pages extends LP_Abstract_Settings_Page {
 		parent::__construct();
 	}
 
+	/**
+	 * Main sections
+	 *
+	 * @return array
+	 */
 	public function get_sections() {
 		$sections = array(
 			'become_a_teacher' => __( 'Become a teacher', 'learnpress' )
@@ -29,11 +41,25 @@ class LP_Settings_Pages extends LP_Abstract_Settings_Page {
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
+				array(
+					'title'   => __( 'Instructors registration', 'learnpress' ),
+					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
+					'id' => 'instructor_registration',
+					'default' => 'no',
+					'type'    => 'yes-no'
+				)
 			),
 			$this
 		);
 	}
 
+	/**
+	 * Setting fields.
+	 *
+	 * @param string $section
+	 *
+	 * @return array
+	 */
 	public function _get_settings( $section ) {
 		$settings = $this->get_settings();
 		$get      = false;

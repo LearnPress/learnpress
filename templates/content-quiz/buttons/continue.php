@@ -1,19 +1,24 @@
 <?php
 /**
- * Template for displaying Continue button.
+ * Template for displaying Continue button in quiz.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.x.x
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/buttons/complete.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or die();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-$user = LP_Global::user();
-?>
+$user = LP_Global::user(); ?>
+
 <?php do_action( 'learn-press/quiz/before-continue-button' ); ?>
 
-    <form name="continue-quiz" class="continue-quiz form-button" method="post"
+    <form name="continue-quiz" class="continue-quiz form-button lp-form" method="post"
           action="<?php echo $user->get_current_question( $user->get_current_item( get_the_ID() ), get_the_ID(), true ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-continue-button' ); ?>

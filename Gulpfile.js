@@ -4,6 +4,9 @@
  * 1/ Run "npm install gulp -g" if you did not run it any time in the past.
  * 2/ Run "npm install gulp --save-dev" to install gulp in your project directory.
  * 3/ Run "npm install package-name[ package-name...] --save-dev
+ *
+ * EX: npm install gulp gulp-zip gulp-copy gulp-clean gulp-sass gulp-livereload gulp-sourcemaps read-file gulp-replace mkdirp gulp-concat gulp-uglify gulp-clean-css pump --save-dev
+
  */
 'use strict';
 const zip = require('gulp-zip');
@@ -17,15 +20,16 @@ var gulp = require('gulp'),
     readFile = require('read-file'),
     replace = require('gulp-replace'),
     mkdirp = require("mkdirp"),
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    cleanCSS = require('gulp-clean-css');
 
 gulp.task('scss', function () {
     return gulp.src(['assets/scss/**/*.scss'])
         .pipe(sourceMaps.init())
         .pipe(scss())
-        .pipe(sourceMaps.write())
+        //.pipe(sourceMaps.write())
         .pipe(gulp.dest('assets/css'))
-        .pipe(liveReload());
+        //.pipe(liveReload());
 });
 
 gulp.task('watch', function () {
@@ -46,6 +50,13 @@ gulp.task('compress-js', function (cb) {
         .pipe(uglify())
         .pipe(gulp.dest('assets/js/admin'))
 });
+
+gulp.task('minify-css', function () {
+    return gulp.src('./assets/**/*.css')
+        .pipe(cleanCSS())
+        .pipe(gulp.dest('./assets'));
+});
+
 /*
  * SVN: Copy working directory to SVN and prepare something before submitting.
  */
@@ -124,35 +135,35 @@ gulp.task('release', ['copy-release'], function () {
 });
 
 // main task
-gulp.task('svn', ['less', 'copy-trunk'], function () {
+gulp.task('svn', ['scss', 'copy-trunk'], function () {
     updateReadme(getCurrentVer(true), function () {
         return gulp.start('release', ['copy-tag']);
     })
 });
 
-// end of the world!
-
-gulp.task("compile-sass-to-css", function (project) {
-    return gulp.src([
-        'sources/' + project + '/assets/sass/style.scss',
-        'sources/' + project + '/shortcodes/**/assets/sass/*.scss',
-        '!sources/' + project + '/shortcodes/**/assets/sass/*-options.scss',
-        'sources/' + project + '/inc/widgets/**/assets/sass/*.scss',
-        '!sources/' + project + '/inc/widgets/**/assets/sass/*-options.scss',
-    ])
-
-        .pipe(concat('_tmp-options.scss'))
-        .pipe(gulp.dest('sources/' + project + '/assets/sass/'))
-        .pipe(sourcemaps.init())
-        .pipe(rename('style.unminify.css'))
-        .pipe(sass())
-        .pipe(sourcemaps.write({includeContent: false, sourceRoot: 'src'}))
-        .pipe(lec())
-        .pipe(gulp.dest('sources/' + project + '/'))
-        .pipe(rename('style.css'))
-        .pipe(cssmin())
-        .pipe(lec())
-
-        .pipe(gulp.dest('sources/' + project + '/'))
-        .pipe(livereload());
+// Create zipped version
+gulp.task('clr-zip', function () {
+    return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
 });
+
+gulp.task('copy-zip', ['clr-zip'], function () {
+    mkdirp(releasePath);
+    //process.chdir(svnTrunkPath);
+    var copyFiles = copySvnFiles;
+    copyFiles.push('readme.txt');
+    return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
+});
+
+gulp.task('mk-zip', ['copy-zip'], function () {
+    process.chdir(releasePath);
+    var zipPath = releasePath.replace(/learnpress/, '');
+    return gulp.src(zipPath + '/**/learnpress/**/*')
+        .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
+        .pipe(gulp.dest(zipPath));
+});
+
+gulp.task('zip', ['mk-zip'], function () {
+
+})
+
+// end of the world!

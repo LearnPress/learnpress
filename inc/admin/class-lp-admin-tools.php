@@ -26,8 +26,6 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 					default:
 						break;
 				}
-			} else {
-				wp_die( __( 'Sorry, you are nto allowed to access this page.', 'learnpress' ) );
 			}
 		}
 
@@ -191,7 +189,7 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 			", '%' . $wpdb->esc_like( 'lpr_' ) . '%', $wpdb->esc_like( 'lpr_' ) . '%' )
 			);
 
-			LP_Admin_Notice::add( __( 'Outdated data from version less than 1.0 have been removed', 'learnpress' ), 'updated', '', true );
+			LP_Admin_Notice::add( __( 'Outdated data from version older than 1.0 has been removed', 'learnpress' ), 'updated', '', true );
 
 			wp_redirect( admin_url( 'admin.php?page=learn-press-tools' ) );
 			exit();

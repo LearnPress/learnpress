@@ -13,38 +13,51 @@
         <form @submit.prevent="">
             <div class="section-head">
                 <span class="creatable"></span>
-                <input
-                        v-model="title"
-                        type="text"
-                        title="title"
-                        class="title-input"
-                        @keyup.enter.prevent="addNewSection"
-                        placeholder="<?php esc_attr_e( 'Create a new section', 'learnpress' ); ?>">
+                <input v-model="section_title" type="text" title="title" class="title-input"
+                       placeholder="<?php esc_attr_e( 'Create a new section', 'learnpress' ); ?>"
+                       @keyup.enter.prevent="newSection">
             </div>
         </form>
     </div>
 </script>
 
-<script>
-    (function (Vue, $store) {
+<script type="text/javascript">
+    jQuery(function ($) {
 
-        Vue.component('lp-new-section', {
-            template: '#tmpl-lp-new-section',
-            data: function () {
-                return {
-                    title: ''
-                };
-            },
-            methods: {
-                addNewSection: function () {
-                    $store.dispatch('ss/addNewSection', {
-                        title: this.title
-                    });
+        (function (Vue, $store) {
 
-                    this.title = '';
+            Vue.component('lp-new-section', {
+                template: '#tmpl-lp-new-section',
+                data: function () {
+                    return {
+                        section_title: ''
+                    };
+                },
+                methods: {
+                    // draft new course
+                    draftCourse: function () {
+                        if ($store.getters['autoDraft']) {
+                            $store.dispatch('draftCourse', {
+                                title: $('input[name=post_title]').val(),
+                                content: $('textarea[name=content]').val()
+                            });
+                        }
+                    },
+                    newSection: function () {
+                        // prevent create no title section
+                        if (this.section_title) {
+
+                            // create draft course if auto draft
+                            this.draftCourse();
+
+                            // new section
+                            $store.dispatch('ss/newSection', this.section_title);
+                            this.section_title = '';
+                        }
+                    }
                 }
-            }
-        });
+            });
 
-    })(Vue, LP_Curriculum_Store);
+        })(Vue, LP_Curriculum_Store);
+    });
 </script>

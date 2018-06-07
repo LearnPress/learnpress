@@ -4,51 +4,33 @@
  *
  * @author  ThimPress
  * @package LearnPress/Admin/Views
- * @version 3.x.x
+ * @version 3.0.0
  */
 if ( isset( $order_items ) ) {
 	$currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
 } else {
 	$currency_symbol = learn_press_get_currency_symbol();
 }
-global $post;
 
+if ( ! isset( $order ) || ! ( $order instanceof LP_Order ) ) {
+	return;
+}
+$post = $order->get_post();
 $method_title = $order->get_payment_method_title();
+$user_ip      = $order->get_user_ip_address();
 
-
-//$wc = new WC_Order(0);
-//$wc->set_date_created(current_time('timestamp', true));
-//
-//$wc->get_date_created()->set_utc_offset(1);
-//
-//echo $wc->get_date_created(), ',', $wc->get_date_created()->getOffset(), "<br />";
-//learn_press_debug($wc->get_date_created()->getTimezone());echo  "<br />";
-//learn_press_debug( $wc->get_date_created());echo  "<br />";
-//echo gmdate('Y-m-d H:i:s', $wc->get_date_created()->getOffsetTimestamp()), "<br />";
-//echo gmdate('Y-m-d H:i:s', $wc->get_date_created()->getTimestamp());
-//
-//learn_press_debug($order);
-//learn_press_debug($wc->get_date_created()->getOffsetTimestamp());
-//
-//$a = new LP_Datetime();
-//echo $a->toSql(), "<br />";
-//echo $a->getOffset(), "<br />";
-//echo $a->getOffset(true), "<br />";
-//echo $a;
-//die();
-
-
-//echo $order->get_meta('xx');
 ?>
 <div id="learn-press-order" class="order-details">
     <div class="order-data">
         <h3 class="order-data-number"><?php echo sprintf( __( 'Order %s', 'learnpress' ), $order->get_order_number() ); ?></h3>
         <div class="order-data-field payment-method-title">
 			<?php
-			if ( $order->order_total == 0 ) {
-				printf( '<strong>%s</strong> at <strong>%s</strong>', $method_title, $order->get_data( 'user_ip' ) );
-			} else {
-				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', $method_title, $order->get_data( 'user_ip' ) );
+			if ( $method_title && $user_ip ) {
+				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', $method_title, $user_ip );
+			} elseif ( $method_title ) {
+				printf( 'Pay via <strong>%s</strong>', $method_title );
+			} elseif ( $user_ip ) {
+				printf( 'User IP <strong>%s</strong>', $user_ip );
 			} ?>
         </div>
         <h3 class="order-data-heading"><?php _e( 'Order details', 'learnpress' ); ?></h3>
@@ -81,21 +63,23 @@ $method_title = $order->get_payment_method_title();
 				}
 				?>
             </select>
-            <label><input type="checkbox"><?php _e( 'Force to trigger order action', 'learnpress' ); ?></label>
         </div>
 
         <div class="order-data-field order-data-user">
-			<?php if ( $order->is_multi_users() ) { ?>
-                <label><?php _e( 'Customers', 'learnpress' ); ?></label>
-                <div class="order-users">
-                    <ul id="list-users" class="advanced-list">
+            <div class="order-users">
+
+				<?php if ( $order->is_multi_users() ) { ?>
+                    <label><?php _e( 'Customers', 'learnpress' ); ?></label>
+                    <ul id="list-users"
+                        class="advanced-list <?php echo $order->get_status() === 'completed' ? 'locked' : ''; ?>">
                     </ul>
-                    <a href="" class="change-user"
-                       data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>
-                </div>
-			<?php } else { ?>
-                <label><?php _e( 'Customer', 'learnpress' ); ?></label>
-                <div class="order-users">
+
+					<?php if ( 'pending' === $order->get_status() ) { ?>
+                        <a href="" class="change-user"
+                           data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>
+					<?php } ?>
+				<?php } else { ?>
+                    <label><?php _e( 'Customer', 'learnpress' ); ?></label>
 					<?php
 					if ( $user_email = $order->get_user( 'email' ) ) {
 						printf( '%s (%s)', $order->get_customer_name(), $order->get_user( 'email' ) );
@@ -105,13 +89,32 @@ $method_title = $order->get_payment_method_title();
 					?>
                     <input type="hidden" name="order-customer" id="order-customer"
                            value="<?php echo $order->get_user( 'id' ); ?>"/>
-                </div>
-                <a href="" class="change-user"><?php _e( 'Change', 'learnpress' ); ?></a>
-			<?php } ?>
-			<?php if ( $order->get_status() == 'auto-draft' ) { ?>
-				<?php _e( '- Or -', 'learnpress' ); ?>
-                <a href="" class="change-user" data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>
-			<?php } ?>
+					<?php if ( 'pending' === $order->get_status() ) { ?>
+                        <a href="" class="change-user"><?php _e( 'Change', 'learnpress' ); ?></a>
+					<?php } ?>
+				<?php } ?>
+
+				<?php if ( $order->get_post_status() == 'auto-draft' ) { ?>
+					<?php _e( '- Or -', 'learnpress' ); ?>
+                    <a href="" class="change-user"
+                       data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>
+				<?php } ?>
+
+				<?php if ( 'pending' !== $order->get_status() ) {
+					echo '<p class="description">';
+					_e( 'In order to change the order user, please change the order status to \'Pending\'.', 'learnpress' );
+					echo '</p>';
+
+					learn_press_admin_view( 'meta-boxes/order/child-order', array( 'order' => $order ) );
+				} ?>
+
+            </div>
+
+        </div>
+
+        <div class="order-data-field order-data-key">
+            <label><?php _e( 'Order key', 'learnpress' ); ?></label>
+			<?php echo $order->get_order_key(); ?>
         </div>
     </div>
     <h3 class="order-data-heading"><?php _e( 'Order Items', 'learnpress' ); ?></h3>
@@ -137,15 +140,23 @@ $method_title = $order->get_payment_method_title();
             </tbody>
             <tfoot>
             <tr class="row-subtotal">
-                <td width="300" colspan="3" class="align-right"><?php _e( 'Sub Total', 'learnpress' ); ?></td>
+                <td width="300" colspan="3" class="align-right">
+                    <strong><?php _e( 'Sub Total', 'learnpress' ); ?></strong>
+                </td>
                 <td width="100" class="align-right">
 					<span class="order-subtotal">
 						<?php echo learn_press_format_price( $order->order_subtotal, $currency_symbol ); ?>
 					</span>
                 </td>
             </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="2" style="border-bottom: 1px dashed #DDD;"></td>
+            </tr>
             <tr class="row-total">
-                <td class="align-right" colspan="3"><?php _e( 'Total', 'learnpress' ); ?></td>
+                <td class="align-right" colspan="3">
+                    <strong><?php _e( 'Total', 'learnpress' ); ?></strong>
+                </td>
                 <td class="align-right total">
 					<span class="order-total">
 						<?php echo learn_press_format_price( $order->order_total, $currency_symbol ); ?>
@@ -153,16 +164,26 @@ $method_title = $order->get_payment_method_title();
                 </td>
             </tr>
             <tr>
-                <td class="align-right" colspan="4">
-                    <button class="button" type="button"
-                            id="learn-press-add-order-item"><?php _e( 'Add Item', 'learnpress' ); ?></button>
+                <td colspan="2"></td>
+                <td colspan="2" style="border-bottom: 1px dashed #DDD;"></td>
+            </tr>
+            <tr>
+                <td class="align-right" colspan="4" style="border-top: 1px solid #DDD;">
+					<?php if ( 'pending' === $order->get_status() ) { ?>
+                        <button class="button" type="button"
+                                id="learn-press-add-order-item"><?php _e( 'Add Item', 'learnpress' ); ?></button>
+					<?php } else {
+						echo '<p class="description">';
+						_e( 'In order to change the order item, please change the order status to \'Pending\'.', 'learnpress' );
+						echo '</p>';
+					} ?>
                     <!--<button class="button" type="button" id="learn-press-calculate-order-total"><?php _e( 'Calculate Total', 'learnpress' ); ?></button>-->
                 </td>
             </tr>
             </tfoot>
         </table>
     </div>
-	<?php if ( $note = get_the_excerpt() ) { ?>
+	<?php if ( $note = $post->post_excerpt ) { ?>
         <br/>
         <h3><?php _e( 'Customer Note', 'learnpress' ); ?></h3>
         <p class="order-note description"><?php echo $note; ?></p>
@@ -182,7 +203,8 @@ $method_title = $order->get_payment_method_title();
             <div class="order-data-field order-data-user">
                 <label><?php _e( 'Customer', 'learnpress' ); ?></label>
                 <div class="order-users">
-                    <ul id="list-users" class="advanced-list">
+                    <ul id="list-users"
+                        class="advanced-list <?php echo $order->get_status() === 'completed' ? 'locked' : ''; ?>">
                     </ul>
                 </div>
                 <a href="" class="change-user" data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>

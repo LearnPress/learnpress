@@ -13,10 +13,9 @@
             'click #lp-upload-photo': '_upload',
             'click .lp-cancel-upload': '_cancel'
         },
-        el: '#lp-user-profile-form',
+        el: '#lp-user-edit-avatar',
         uploader: null,
         initialize: function () {
-            console.log()
             _.bindAll(this, 'filesAdded', 'uploadProgress', 'uploadError', 'fileUploaded', 'crop');
             this._getUploader();
         },
@@ -78,7 +77,7 @@
                 runtimes: 'html5,flash,silverlight,html4',
                 browse_button: 'lp-upload-photo',
                 container: $('#lp-user-edit-avatar').get(0),
-                url: (typeof LP_Settings !== 'undefined' ? LP_Settings.ajax : window.location.href).addQueryVar('action', 'learnpress_upload-user-avatar'),
+                url: (typeof lpGlobalSettings !== 'undefined' ? lpGlobalSettings.ajax : '').addQueryVar('action', 'learnpress_upload-user-avatar'),
                 filters: {
                     max_file_size: '10mb',
                     mime_types: [
@@ -199,6 +198,8 @@
                         left: nl
                     });
                     $(document.body).addClass('profile-resizing');
+
+                    console.log(ui.value, data)
                 },
                 stop: function () {
                     $(document.body).removeClass('profile-resizing');
@@ -307,12 +308,54 @@
             });
         }
         var args = {};
-        if (typeof LP_Settings !== 'undefined') {
-            args.viewWidth = parseInt(LP_Settings.avatar_size['width']);
-            args.viewHeight = parseInt(LP_Settings.avatar_size['height']);
+        if (typeof lpProfileUserSettings !== 'undefined') {
+            args.viewWidth = parseInt(lpProfileUserSettings.avatar_size['width']);
+            args.viewHeight = parseInt(lpProfileUserSettings.avatar_size['height']);
         }
         // avatar
         new UserProfile(args);
+
+        Profile.recoverOrder();
+
     });
+
+    var Profile = {
+        recoverOrder: function (e) {
+            var $wrap = $('.order-recover'),
+                $buttonRecoverOrder = $wrap.find('.button-recover-order'),
+                $input = $wrap.find('input[name="order-key"]');
+
+            function recoverOrder() {
+                $buttonRecoverOrder.addClass('disabled').attr('disabled', 'disabled');
+                $wrap.find('.learn-press-message').remove();
+                $.post({
+                    url: '',
+                    data: $wrap.serializeJSON(),
+                    success: function (response) {
+                        response = LP.parseJSON(response);
+
+                        if (response.message) {
+                            var $msg = $('<div class="learn-press-message icon"><i class="fa"></i> ' + response.message + '</div>');
+                            if (response.result == 'error') {
+                                $msg.addClass('error');
+                            }
+                            $wrap.prepend($msg);
+                        }
+
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                        $buttonRecoverOrder.removeClass('disabled').removeAttr('disabled', '');
+                    }
+                })
+            }
+
+            $buttonRecoverOrder.on('click', recoverOrder);
+            $input.on('change', function () {
+                $buttonRecoverOrder.prop('disabled', !this.value);
+            })
+        }
+    }
+
 
 })(jQuery);

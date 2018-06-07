@@ -27,13 +27,18 @@ $theme_name = implode( ' & ', $theme_name );
 
 $readmore = 'https://thimpress.com/knowledge-base/outdated-template-fix/';
 ?>
-<div id="message" class="learn-press-message notice notice-warning">
-    <p><?php printf( __( 'There is a new update of LearnPress. You may need to update your theme <strong>(%s)</strong> to avoid outdated template files.', 'learnpress' ), $theme_name ); ?></p>
-    <p class="outdated-readmore-link"><?php echo sprintf( __( 'This is not a bug, don\'t worry. Read more about Outdated template files notice <a href="%s" target="_blank">here</a>.', 'learnpress' ), esc_url( $readmore ) ); ?>  </p>
+<div id="message" class="learn-press-message notice-warning notice">
+    <p><?php printf( wp_kses( __( 'There is a new update of LearnPress. You may need to update your theme <strong>(%s)</strong> to avoid outdated template files.', 'learnpress' ), array( 'strong' => array() ) ), $theme_name ); ?></p>
+    <p class="outdated-readmore-link"><?php echo sprintf( wp_kses( __( 'This is not a bug, don\'t worry. Read more about Outdated template files notice <a href="%s" target="_blank">here</a>.', 'learnpress' ), array(
+			'a' => array(
+				'href'   => array(),
+				'target' => array()
+			)
+		) ), esc_url( $readmore ) ); ?>  </p>
     <p>
         <a class="button"
-           href="http://localhost/foobla/learnpress/dev/wp-admin/admin.php?page=learn-press-tools&amp;tab=templates"><?php esc_attr_e( 'View list of outdated templates', 'learnpress' ); ?></a>
+           href="<?php echo admin_url( 'admin.php?page=learn-press-tools&amp;tab=templates' ); ?>"><?php esc_attr_e( 'View list of outdated templates', 'learnpress' ); ?></a>
     </p>
-    <a href="http://localhost/foobla/learnpress/dev/wp-admin/themes.php/?lp-hide-notice=template-files"
+    <a href="<?php echo admin_url( 'themes.php/?lp-hide-notice=template-files' ); ?>"
        class="learn-press-admin-notice-dismiss"></a>
 </div>

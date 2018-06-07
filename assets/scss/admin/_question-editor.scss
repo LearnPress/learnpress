@@ -1,0 +1,241 @@
+/**.section-item-counts span
+ *  Question admin editor.
+ */
+#admin-editor-lp_question {
+    background: #fff;
+    .lp-box-data-head {
+        padding: 0 10px;
+        .heading {
+            float: left;
+            padding: 12px 10px;
+            .section-item-counts{
+                right: 50px;
+                span{
+                    background: #F5F5F5;
+                    padding: 0 9px;
+                    color: #00b9ff;
+                    margin-top: 8px;
+                    display: inline-block;
+                    line-height: 30px;
+                    height: 30px;
+                    @include border-radius(3px);
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+            }
+        }
+        .lp-toolbar-buttons{
+            height:46px;
+        }
+        .question-actions {
+            margin-right: 10px;
+            height: 30px;
+            background: #BBB;
+            margin-top: 8px;
+            @include border-radius(3px);
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            .question-types {
+                a{
+                    color: #FFF;
+                }
+                ul {
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    height: auto;
+                    background: #fdfeff;
+                    margin: 0;
+                    border: 1px solid #DDD;
+                    display: none;
+                    li {
+                        margin: 0;
+                        &:hover, &.active {
+                            background: #dbf5ff;
+                        }
+                        a {
+                            display: block;
+                            white-space: nowrap;
+                            text-decoration: none;
+                            padding: 5px;
+                            font-size: 12px;
+                            text-align: right;
+                            color: #0073aa;
+                            min-width: 100px;
+                        }
+                    }
+                    &:hover {
+                        display: block;
+                    }
+                }
+            }
+            &:hover {
+                .question-types {
+                    ul {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+    .lp-box-data-content {
+        padding: 20px;
+        table.list-question-answers {
+            width: 100%;
+            border: 1px solid #ddd;
+            tr {
+                td {
+                    padding: 0 15px;
+                }
+            }
+            thead {
+                background: #F5F5F5;
+                tr {
+                    th {
+                        padding: 15px;
+                        background: #F5F5F5;
+                        border-bottom: 1px solid #DDD;
+
+                    }
+                }
+            }
+
+            .sort, .order, .actions {
+                width: 10px;
+            }
+            .sort {
+                padding: 0 10px;
+            }
+            .order {
+                text-align: right;
+                padding: 0;
+                width: 30px;
+            }
+            .answer-correct {
+                width: 65px;
+                text-align: center;
+            }
+            .answer-text {
+                padding-left: 5px;
+            }
+            .actions {
+                padding-right: 0;
+                text-align: right;
+            }
+            tbody {
+                tr {
+                    background: #f4fcff;
+                    color: #777;
+                    &:nth-child(2n) {
+                        background: #fff;
+                    }
+
+                    td {
+                        &.sort {
+                            width: 15px;
+                            text-align: center;
+                            font-size: 18px;
+                            cursor: url("../../images/openhand.cur") 7 5, default;
+                            padding: 0;
+                            .svg-icon {
+                                visibility: hidden;
+                                fill: #d5dce0;
+                                height: 18px;
+                                vertical-align: middle;
+                            }
+                            &:hover {
+                                .svg-icon {
+                                    fill: #0085ba;
+                                }
+                            }
+                        }
+                        &.order {
+                            font-size: 14px;
+                        }
+                        &.answer-text {
+                            input {
+                                width: 100%;
+                                font-size: 14px;
+                                border: none;
+                                background: transparent;
+                                box-shadow: none;
+                                font-weight: normal;
+                                color: #777;
+                                padding: 0;
+                            }
+                        }
+                        &.lp-toolbar-buttons {
+                            z-index: auto;
+                        }
+                    }
+
+                    &:hover {
+                        td {
+                            &.actions {
+                                .remove-answer {
+                                    visibility: visible;
+                                    height: 42px;
+                                }
+                            }
+                            &.sort {
+                                .svg-icon {
+                                    visibility: visible;
+                                }
+                            }
+                        }
+                    }
+
+                    &.ui-sortable-placeholder {
+                        visibility: visible !important;
+                        td {
+                            background: #bdf4fe !important;
+                            height: 43px;
+                        }
+                    }
+                    &.ui-sortable-helper {
+                        td {
+                            border-bottom: 1px solid #DDD;
+                            &.sort {
+                                border-left: 0;
+                            }
+                        }
+                    }
+                    &.new-option{
+                        .svg-icon{
+                            display: none;
+                        }
+                        td{
+                            position: relative;
+                        }
+                        .sort {
+                            &:before {
+                                content: "\f463";
+                                font-family: Dashicons;
+                                position: absolute;
+                                left: 10px;
+                                top: 12px;
+                                display: inline-block;
+                                @include rotating4();
+                            }
+                        }
+                        td{
+                            &:after{
+                                position: absolute;
+                                content: '';
+                                background: #FFF;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                opacity: 0.5;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .add-answer {
+            margin: 15px 0 0 0;
+        }
+    }
+}

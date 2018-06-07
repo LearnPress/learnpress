@@ -1,25 +1,32 @@
 <?php
-
 /**
  * Class LP_Email_Rejected_Course
  *
+ * Rejected new course email.
+ *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 
+	/**
+	 * Class LP_Email_Rejected_Course
+	 */
 	class LP_Email_Rejected_Course extends LP_Email {
 		/**
 		 * LP_Email_Rejected_Course constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'rejected_course';
+			$this->id          = 'rejected-course';
 			$this->title       = __( 'Rejected course', 'learnpress' );
-			$this->description = __( 'Settings for email when a course is rejected', 'learnpress' );
+			$this->description = __( 'Settings for email when a course is rejected.', 'learnpress' );
 
 			$this->template_html  = 'emails/rejected-course.php';
 			$this->template_plain = 'emails/plain/rejected-course.php';
@@ -112,19 +119,19 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => 'emails_rejected_course[enable]'
+						'id'      => $this->get_field_name( 'enable' )
 					),
 					array(
 						'title'      => __( 'Subject', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_subject,
-						'id'         => 'emails_rejected_course[subject]',
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'id'         => $this->get_field_name( 'subject' ),
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_rejected_course[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -135,13 +142,13 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 						'title'      => __( 'Heading', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_heading,
-						'id'         => 'emails_rejected_course[heading]',
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'id'         => $this->get_field_name( 'heading' ),
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_rejected_course[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -152,7 +159,7 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 						'title'                => __( 'Email content', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
-						'id'                   => 'emails_rejected_course[email_content]',
+						'id'                   => $this->get_field_name( 'email_content' ),
 						'template_base'        => $this->template_base,
 						'template_path'        => $this->template_path,//default learnpress
 						'template_html'        => $this->template_html,
@@ -164,7 +171,7 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_rejected_course[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)

@@ -30,29 +30,41 @@ if ( ! function_exists( 'learn_press_get_only_content_permalink' ) ) {
 	}
 }
 
-function learn_press_lesson_comment_form( $lesson_id, $course_id, $deprecated = false ) {
+function learn_press_lesson_comment_form() {
 	global $post;
-	if ( get_post_type( $lesson_id ) != LP_LESSON_CPT ) {
+
+	if ( ! $course = LP_Global::course() ) {
+		return;
+	}
+
+	if ( ! $lesson = LP_Global::course_item() ) {
 		return;
 	}
 
 	$user = learn_press_get_current_user();
-	if ( ! $user->has_enrolled_course( $course_id ) ) {
+
+	if ( ! $user->is_admin() && ! $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
 		return;
 	}
 
-	$post = get_post( $lesson_id );
-	setup_postdata( $post );
-	if ( comments_open() || get_comments_number() ) {
-		comments_template();
+	if ( $lesson->setup_postdata() ) {
+
+		if ( comments_open() || get_comments_number() ) {
+			comments_template();
+		}
+		$lesson->reset_postdata();
 	}
-	wp_reset_postdata();
+
+}
+
+function learn_press_blank_comments_template() {
+	return learn_press_locate_template( 'global/blank-comments.php' );
 }
 
 /**
  * Add class css js-action to element comment reply
  */
-add_filter( 'comment_reply_link', 'lesson_comment_reply_link', 10, 4 );
+///add_filter( 'comment_reply_link', 'lesson_comment_reply_link', 10, 4 );
 
 if ( ! function_exists( 'lesson_comment_reply_link' ) ) {
 
@@ -67,7 +79,7 @@ if ( ! function_exists( 'lesson_comment_reply_link' ) ) {
 /**
  * Add class css js-action to element cancel comment reply link
  */
-add_filter( 'cancel_comment_reply_link', 'lesson_cancel_comment_reply_link', 10, 3 );
+///add_filter( 'cancel_comment_reply_link', 'lesson_cancel_comment_reply_link', 10, 3 );
 
 if ( ! function_exists( 'lesson_cancel_comment_reply_link' ) ) {
 	function lesson_cancel_comment_reply_link( $formatted_link, $link, $text ) {

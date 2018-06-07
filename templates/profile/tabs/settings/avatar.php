@@ -1,28 +1,31 @@
 <?php
 /**
- * User avatar editor for changing avatar in user profile.
+ * Template for displaying user avatar editor for changing avatar in user profile.
  *
- * @package LearnPress/Templates
- * @author  ThimPress
- * @version 3.x.x
+ * This template can be overridden by copying it to yourtheme/learnpress/settings/tabs/avatar.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-defined( 'ABSPATH' ) or die;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-global $profile;
-
+$profile      = LP_Profile::instance();
 $user         = $profile->get_user();
 $custom_img   = $user->get_upload_profile_src();
 $gravatar_img = $user->get_profile_picture( 'gravatar' );
 $thumb_size   = learn_press_get_avatar_thumb_size();
-
 ?>
 
 <form name="profile-avatar" method="post" enctype="multipart/form-data">
 
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/before-profile-avatar-fields', $profile );
 	?>
@@ -61,7 +64,7 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
 
 	<?php
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/after-profile-avatar-fields', $profile );
 	?>
@@ -79,6 +82,7 @@ $thumb_size   = learn_press_get_avatar_thumb_size();
         <img src="{{data.url}}?r={{data.r}}"/>
         <div class="lp-crop-controls">
             <div class="lp-zoom">
+                <div></div>
             </div>
             <a href="" class="lp-cancel-upload dashicons dashicons-no-alt"></a>
         </div>

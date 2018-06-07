@@ -1,24 +1,30 @@
 <?php
 /**
- * Template for displaying all notices from queue
+ * Template for displaying all notices from queue.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/global/notices.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-if( ! $notices ){
-	return;
-}
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
+<?php if ( ! $notices ) {
+	return;
+} ?>
+
 <ul class="learn-press-error">
-	<?php foreach ( $notices as $notice ) : ?>
-	<li><?php echo wp_kses_post( $notice ); ?></li>
-	<?php endforeach; ?>
+
+	<?php foreach ( $notices as $notice ) { ?>
+
+        <li><?php echo wp_kses_post( $notice ); ?></li>
+
+	<?php } ?>
+
 </ul>

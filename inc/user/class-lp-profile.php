@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+include_once "class-lp-profile-tabs.php";
+
 if ( ! class_exists( 'LP_Profile' ) ) {
 	/**
 	 * Class LP_Profile
@@ -48,6 +50,16 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		protected $_curd = null;
 
 		/**
+		 * @var null
+		 */
+		protected $_tabs = null;
+
+		/**
+		 * @var array
+		 */
+		protected $_default_settings = array();
+
+		/**
 		 *  Constructor
 		 *
 		 * @param        $user
@@ -64,12 +76,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$this->_role = $this->get_role();
 			}
 
+			$this->maybe_logout_redirect();
+
 			$this->_default_actions = apply_filters(
 				'learn-press/profile-default-actions',
 				array(
-					'basic-information' => __( 'Account information updated successfully.', 'learnpress' ),
-					'avatar'            => __( 'Account avatar updated successfully.', 'learnpress' ),
-					'password'          => __( 'Password updated successfully.', 'learnpress' )
+					'basic-information' => __( 'Account information updated successful.', 'learnpress' ),
+					'avatar'            => __( 'Account avatar updated successful.', 'learnpress' ),
+					'password'          => __( 'Password updated successful.', 'learnpress' ),
+					'publicity'         => __( 'Account publicity updated successful.', 'learnpress' ),
 				)
 			);
 
@@ -89,7 +104,65 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					 */
 					LP_Request_Handler::register( 'save-profile-' . $action, array( $this, 'save' ) );
 				}
+
+				add_filter( 'learn-press/profile/class', array( $this, 'profile_class' ) );
 			}
+
+			add_filter( 'template_include', array( $this, 'parse_request' ) );
+		}
+
+		/**
+		 * Prevent access view owned course in non admin, instructor profile page.
+		 *
+		 * @param $template
+		 *
+		 * @return mixed
+		 */
+		public function parse_request( $template ) {
+			$profile = LP_Profile::instance();
+			$user    = $profile->get_user();
+			$role    = $user->get_role();
+
+			if ( ! in_array( $role, array( 'admin', 'instructor' ) ) ) {
+				unset( $this->_default_settings['courses']['sections']['owned'] );
+
+				$tabs           = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
+				$profile->_tabs = new LP_Profile_Tabs( $tabs, LP_Profile::instance() );
+			}
+
+			return $template;
+		}
+
+		/**
+		 * Maybe logout wp if there is a logout sign
+		 */
+		public function maybe_logout_redirect() {
+			if ( ( 'true' !== LP_Request::get_string( 'lp-logout' ) ) || ! wp_verify_nonce( LP_Request::get_string( 'nonce' ), 'lp-logout' ) ) {
+				return;
+			}
+
+			wp_logout();
+			if ( ! $redirect = LP_Request::get_redirect() ) {
+				$redirect = learn_press_get_current_url();
+			}
+			wp_redirect( $redirect );
+			exit();
+		}
+
+		public function is_guest() {
+			return ! $this->_user || $this->_user && $this->_user->is_guest();
+		}
+
+		public function profile_class( $classes ) {
+			if ( 'yes' === LP()->settings()->get( 'enable_login_profile' ) && 'yes' === LP()->settings()->get( 'enable_register_profile' ) ) {
+				//$classes[] = 'enable-login-register';
+			}
+
+			if ( $this->is_public() ) {//} ! $this->is_guest() && ( $this->is_public() || $this->is_current_user() ) ) {
+				//$classes[] = 'has-content';
+			}
+
+			return $classes;
 		}
 
 		public function output( $tab, $args, $user ) {
@@ -104,15 +177,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		public function output_section_content( $section, $args, $user ) {
 			global $wp;
-			$current = $this->get_current_section();// ! empty( $wp->query_vars['section'] ) ? $wp->query_vars['section'] : false;
+			$current = $this->get_current_section();
 			if ( $current === $section ) {
-				if ( ( $location = learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ) ) && file_exists( $location ) ) {
+				if ( ( $location = learn_press_locate_template( 'profile/tabs/' . $this->get_current_tab() . '/' . $section . '.php' ) ) && file_exists( $location ) ) {
 					include $location;
-				} else {
-					echo $location;
 				}
 			}
-
 		}
 
 		/**
@@ -121,7 +191,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return string
 		 */
 		protected function get_role() {
-			if ( $user = learn_press_get_current_user( false ) ) {
+			if ( $user = $this->get_user() ) {///learn_press_get_current_user( false ) ) {
 				if ( ! $user->is_guest() ) {
 					if ( $this->_user->is_admin() ) {
 						return 'admin';
@@ -147,18 +217,30 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			if ( ! $this->_user instanceof LP_Abstract_User ) {
 				if ( is_numeric( $this->_user ) ) {
 					$this->_user = learn_press_get_user( $this->_user );
-				} elseif ( empty( $this->_user ) ) {
-					$this->_user = learn_press_get_current_user( true );
+				} elseif ( is_string( $this->_user ) ) {
+					if ( $user = get_user_by( 'login', $this->_user ) ) {
+						$this->_user = learn_press_get_user( $user->ID );
+					}
+				}
+
+				if ( ! $this->_user && ! is_user_logged_in() ) {
+					$this->_user = learn_press_get_current_user();
 				}
 
 				$settings         = LP()->settings;
 				$this->_publicity = array(
-					'view-tab-courses'           => $settings->get( 'profile_publicity.courses' ) === 'yes',
-					'view-tab-basic-information' => $settings->get( 'profile_publicity.basic-information' ) === 'yes',
+					'view-tab-dashboard'         => $this->get_publicity( 'my-dashboard' ) == 'yes',
+					'view-tab-basic-information' => $this->get_publicity( 'dashboard' ) == 'yes',
+					'view-tab-courses'           => $this->get_publicity( 'courses' ) == 'yes',
+					'view-tab-quizzes'           => $this->get_publicity( 'quizzes' ) == 'yes'
 				);
 			}
 
 			return $this->_user;
+		}
+
+		public function is_current_user() {
+			return ( $user = $this->get_user() ) ? $user->is( 'current' ) : false;
 		}
 
 		/**
@@ -176,82 +258,139 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			learn_press_get_template( 'profile/dashboard.php', array( 'user' => $this->_user ) );
 		}
 
+		public function get_login_url( $redirect = false ) {
+			return learn_press_get_login_url( $redirect !== false ? $redirect : $this->get_current_url() );
+		}
+
 		/**
 		 * Get default tabs for profile.
 		 *
-		 * @return mixed
+		 * @return LP_Profile_Tabs
 		 */
 		public function get_tabs() {
-			$settings = LP()->settings;
-			$defaults = array(
-				''              => array(
-					'title'    => __( 'Dashboard', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-dashboard', '' ),
-					'callback' => array( $this, 'tab_dashboard' )
-				),
-				'courses'       => array(
-					'title'    => __( 'Courses', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-courses', 'courses' ),
-					'callback' => array( $this, 'tab_courses' )
-				),
-				'quizzes'       => array(
-					'title'    => __( 'Quizzes', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-quizzes', 'quizzes' ),
-					'callback' => array( $this, 'tab_quizzes' )
-				),
-				'orders'        => array(
-					'title'    => __( 'Orders', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-orders', 'orders' ),
-					'callback' => array( $this, 'tab_orders' )
-				),
-				'order-details' => array(
-					'title'    => __( 'Order details', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-order-details', 'order-details' ),
-					'hidden'   => true,
-					'callback' => array( $this, 'tab_order_details' )
-				),
-				'settings'      => array(
-					'title'    => __( 'Settings', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.profile-settings', 'settings' ),
-					'callback' => array( $this, 'tab_settings' ),
-					'sections' => array(
-						'basic-information' => array(
-							'title'    => __( 'General', 'learnpress' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ),
-							'callback' => array( $this, 'tab_order_details' )
+
+			if ( $this->_tabs === null ) {
+				$settings        = LP()->settings;
+				$course_sections = array();
+
+				$course_sections['owned'] = array(
+					'title'    => __( 'Owned', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.own-courses', 'owned' ),
+					'callback' => array( $this, 'tab_order_details' ),
+					'priority' => 10
+				);
+
+				$course_sections['purchased'] = array(
+					'title'    => __( 'Purchased', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.purchased-courses', 'purchased' ),
+					'callback' => array( $this, 'tab_order_details' ),
+					'priority' => 15
+				);
+
+
+				$this->_default_settings = array(
+					'dashboard'     => array(
+						'title'    => __( 'Dashboard', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-dashboard', '' ),
+						'callback' => array( $this, 'tab_dashboard' ),
+						'priority' => 10
+					),
+					'courses'       => array(
+						'title'    => __( 'Courses', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-courses', 'courses' ),
+						'callback' => array( $this, 'tab_courses' ),
+						'priority' => 15,
+						'sections' => $course_sections
+					),
+					'quizzes'       => array(
+						'title'    => __( 'Quizzes', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-quizzes', 'quizzes' ),
+						'callback' => array( $this, 'tab_quizzes' ),
+						'priority' => 20
+					),
+					'orders'        => array(
+						'title'    => __( 'Orders', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-orders', 'orders' ),
+						'callback' => array( $this, 'tab_orders' ),
+						'priority' => 25
+					),
+					'order-details' => array(
+						'title'    => __( 'Order details', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-order-details', 'order-details' ),
+						'hidden'   => true,
+						'callback' => array( $this, 'tab_order_details' ),
+						'priority' => 30
+					),
+					'settings'      => array(
+						'title'    => __( 'Settings', 'learnpress' ),
+						'slug'     => $settings->get( 'profile_endpoints.profile-settings', 'settings' ),
+						'callback' => array( $this, 'tab_settings' ),
+						'sections' => array(
+							'basic-information' => array(
+								'title'    => __( 'General', 'learnpress' ),
+								'slug'     => $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ),
+								'callback' => array( $this, 'tab_order_details' ),
+								'priority' => 10
+							),
+							'change-password'   => array(
+								'title'    => __( 'Password', 'learnpress' ),
+								'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
+								'callback' => array( $this, 'tab_order_details' ),
+								'priority' => 30
+							)
 						),
-						'avatar'            => array(
-							'title'    => __( 'Avatar', 'learnpress' ),
-							'callback' => array( $this, 'tab_order_details' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
-						),
-						'change-password'   => array(
-							'title'    => __( 'Password', 'learnpress' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
-							'hidden'   => true,
-							'callback' => array( $this, 'tab_order_details' )
-						)
+						'priority' => 35
 					)
-				)
-			);
+				);
 
-			$tabs = apply_filters( 'learn-press/profile-tabs', $defaults );
+				if ( $this->is_enable_avatar() ) {
+					$this->_default_settings['settings']['sections']['avatar'] = array(
+						'title'    => __( 'Avatar', 'learnpress' ),
+						'callback' => array( $this, 'tab_order_details' ),
+						'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
+						'priority' => 20
+					);
+				}
 
-			foreach ( $tabs as $slug => $data ) {
-				if ( ! array_key_exists( 'slug', $data ) ) {
-					$data['slug'] = $slug;
+				if ( 'yes' === $settings->get( 'profile_publicity.dashboard' ) ) {
+					$this->_default_settings['settings']['sections']['publicity'] = array(
+						'title'    => __( 'Publicity', 'learnpress' ),
+						'slug'     => 'publicity',
+						'priority' => 40,
+						'callback' => array( $this, 'tab_order_details' )
+					);
 				}
-				if ( empty( $data['sections'] ) ) {
-					continue;
-				}
-				foreach ( $data['sections'] as $section_slug => $section_data ) {
-					if ( ! array_key_exists( 'slug', $section_data ) ) {
-						$tabs[ $slug ]['sections'][ $section_slug ]['slug'] = $section_slug;
-					}
-				}
+
+				$tabs        = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
+				$this->_tabs = new LP_Profile_Tabs( $tabs, LP_Profile::instance() );
 			}
 
-			return $tabs;
+			return $this->_tabs;
+		}
+
+		public function get_slug( $data, $default = '' ) {
+			return $this->get_tabs()->get_slug( $data, $default );
+		}
+
+		/**
+		 * Enable custom avatar?
+		 *
+		 * @return bool
+		 */
+		public function is_enable_avatar() {
+			if ( ! $profile_avatar = get_option( 'learn_press_profile_avatar' ) ) {
+				update_option( 'learn_press_profile_avatar', 'yes' );
+			}
+			$settings = LP()->settings;
+			if ( ! $setting_avatar = $settings->get( 'profile_endpoints.settings-avatar' ) ) {
+				$profile_endpoints['settings-basic-information'] = 'basic-information';
+				$profile_endpoints['settings-avatar']            = 'avatar';
+				$profile_endpoints['settings-change-password']   = 'change-password';
+				update_option( 'learn_press_profile_endpoints', $profile_endpoints, 'yes' );
+				add_rewrite_rule( '(.?.+?)/avatar(/(.*))?/?$', 'index.php?pagename=$matches[1]&section=avatar', 'top' );
+			}
+
+			return LP()->settings()->get( 'profile_avatar' ) === 'yes';
 		}
 
 		/**
@@ -263,29 +402,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return string
 		 */
 		public function get_current_tab( $default = '', $key = true ) {
-			global $wp;
-			$current = $default;
-			if ( ! empty( $_REQUEST['view'] ) ) {
-				$current = $_REQUEST['view'];
-			} else if ( ! empty( $wp->query_vars['view'] ) ) {
-				$current = $wp->query_vars['view'];
-			} else {
-				if ( $tab = $this->get_tab_at() ) {
-					$current = $tab['slug'];
-				}
-			}
-			if ( $key ) {
-				$current_display = $current;
-				$current         = false;
-				foreach ( $this->get_tabs() as $_slug => $data ) {
-					if ( array_key_exists( 'slug', $data ) && ( $data['slug'] === $current_display ) ) {
-						$current = $_slug;
-						break;
-					}
-				}
-			}
-
-			return $current;
+			return $this->get_tabs()->get_current_tab( $default, $key );
 		}
 
 		/**
@@ -298,49 +415,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool|int|mixed|string
 		 */
 		public function get_current_section( $default = '', $key = true, $tab = '' ) {
-			global $wp;
-			$current = $default;
-			if ( ! empty( $_REQUEST['section'] ) ) {
-				$current = $_REQUEST['section'];
-			} else if ( ! empty( $wp->query_vars['section'] ) ) {
-				$current = $wp->query_vars['section'];
-			} else {
-				if ( false === $tab ) {
-					$current_tab = $this->get_current_tab();
-				} else {
-					$current_tab = $tab;
-				}
-				if ( $tab = $this->get_tab_at( $current_tab ) ) {
-					if ( ! empty( $tab['sections'] ) ) {
-						$section = reset( $tab['sections'] );
-						if ( array_key_exists( 'slug', $section ) ) {
-							$current = $section['slug'];
-						} else {
-							$sections = array_keys( $tab['sections'] );
-							$current  = reset( $sections );
-						}
-					}
-				}
-			}
-
-			// If find the key instead of value from settings
-			if ( $key ) {
-				$current_display = $current;
-				$current         = false;
-				foreach ( $this->get_tabs() as $_slug => $data ) {
-					if ( empty( $data['sections'] ) ) {
-						continue;
-					}
-					foreach ( $data['sections'] as $_slug => $data ) {
-						if ( array_key_exists( 'slug', $data ) && ( $data['slug'] === $current_display ) ) {
-							$current = $_slug;
-							break 2;
-						}
-					}
-				}
-			}
-
-			return $current;
+			return $this->get_tabs()->get_current_section( $default, $key, $tab );
 		}
 
 		/**
@@ -351,20 +426,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function get_tab_at( $position = 0 ) {
-			if ( $tabs = $this->get_tabs() ) {
-				if ( is_numeric( $position ) ) {
-					$tabs = array_values( $tabs );
-					if ( ! empty( $tabs[ $position ] ) ) {
-						return $tabs[ $position ];
-					}
-				} else {
-					if ( ! empty( $tabs[ $position ] ) ) {
-						return $tabs[ $position ];
-					}
-				}
-			}
-
-			return false;
+			return $this->get_tabs()->get_tab_at( $position );
 		}
 
 		/**
@@ -376,49 +438,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed|string
 		 */
 		public function get_tab_link( $tab = false, $with_section = false ) {
-
 			$user = $this->get_user();
 
 			if ( ! $user ) {
 				return '';
 			}
-			$args = array(
-				'user' => $user->get_data( 'user_login' )
-			);
-			if ( isset( $args['user'] ) ) {
-				if ( false === $tab ) {
-					$tab = $this->get_current_tab( null, false );
-				}
 
-				$tab_data = $this->get_tab_at( $tab );
-				$tab      = $this->get_slug( $tab_data, $tab );
-
-				if ( $tab ) {
-					$args['tab'] = $tab;
-				} else {
-					unset( $args['user'] );
-				}
-
-				if ( $with_section && ! empty( $tab_data['sections'] ) ) {
-					if ( $with_section === true ) {
-						$section_keys  = array_keys( $tab_data['sections'] );
-						$first_section = reset( $section_keys );
-						$with_section  = $this->get_slug( $tab_data['sections'][ $first_section ], $first_section );
-					}
-					$args['section'] = $with_section;
-				}
-			}
-			$args         = array_map( '_learn_press_urlencode', $args );
-			$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
-			if ( $profile_link ) {
-				if ( get_option( 'permalink_structure' ) ) {
-					$url = trailingslashit( $profile_link . join( "/", array_values( $args ) ) );
-				} else {
-					$url = add_query_arg( $args, $profile_link );
-				}
-			} else {
-				$url = get_author_posts_url( $user->get_id() );
-			}
+			$url = $this->get_tabs()->get_tab_link( $tab, $with_section, $user->get_username() );
 
 			/**
 			 * @deprecated
@@ -426,6 +452,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$url = apply_filters( 'learn_press_user_profile_link', $url, $user->get_id(), $tab );
 
 			return apply_filters( 'learn-press/user-profile-url', $url, $user->get_id(), $tab );
+		}
+
+		/**
+		 * Get current link of profile
+		 *
+		 * @param string $args           - Optional. Add more query args to url.
+		 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
+		 *
+		 * @return mixed|string
+		 */
+		public function get_current_url( $args = '', $with_permalink = false ) {
+			return $this->get_tabs()->get_current_url( $args, $with_permalink );
 		}
 
 		/**
@@ -459,19 +497,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool
 		 */
 		public function is_hidden( $tab_or_section ) {
-			return array_key_exists( 'hidden', $tab_or_section ) && $tab_or_section['hidden'];
+			return is_array( $tab_or_section ) && array_key_exists( 'hidden', $tab_or_section ) && $tab_or_section['hidden'];
 		}
 
-		/**
-		 * Get the slug of tab or section if defined.
-		 *
-		 * @param array  $tab_or_section
-		 * @param string $default
-		 *
-		 * @return string
-		 */
-		public function get_slug( $tab_or_section, $default = '' ) {
-			return array_key_exists( 'slug', $tab_or_section ) ? $tab_or_section['slug'] : $default;
+		public function is_public() {
+			return $this->current_user_can( 'view-tab-dashboard' );
 		}
 
 		/**
@@ -482,18 +512,20 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function current_user_can( $capability ) {
-
 			$tab         = substr( $capability, strlen( 'view-tab-' ) );
-			$public_tabs = array( 'courses', 'quizzes' );
-
+			$public_tabs = apply_filters( 'learn-press/profile/publicity-tabs', array() );
 			// public profile courses and quizzes tab
 			if ( in_array( $tab, $public_tabs ) ) {
 				$can = true;
 			} else {
-				if ( get_current_user_id() === $this->_user->get_id() ) {
+				if ( $this->_user && $this->_user->get_id() && ( get_current_user_id() === $this->_user->get_id() ) ) {
 					$can = true;
 				} else {
-					$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+					if ( empty( $this->_publicity['view-tab-dashboard'] ) || ( false === $this->_publicity['view-tab-dashboard'] ) ) {
+						$can = false;
+					} else {
+						$can = ! empty( $this->_publicity[ $capability ] ) && ( $this->_publicity[ $capability ] == true );
+					}
 				}
 			}
 
@@ -511,13 +543,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			$action  = '';
 			$message = '';
-
 			// Find the action by checking the nonce
 			foreach ( $this->_default_actions as $_action => $message ) {
 				if ( wp_verify_nonce( $nonce, 'learn-press-save-profile-' . $_action ) ) {
 					$action = $_action;
 					break;
 				}
+				$action = '';
 			}
 
 			// If none of actions found.
@@ -530,11 +562,28 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$return = learn_press_update_user_profile_basic_information( true );
 					break;
 				case 'avatar':
-					$return = learn_press_update_user_profile_avatar( true );
+					if ( $this->is_enable_avatar() ) {
+						$return = learn_press_update_user_profile_avatar( true );
+					}
 					break;
 				case 'password':
 					$return = learn_press_update_user_profile_change_password( true );
 					break;
+				case 'publicity':
+					$publicity = LP_Request::get_array( 'publicity' );
+
+					if ( empty( $publicity['my-dashboard'] ) ) {
+						$publicity = false;
+					} elseif ( 'yes' !== $publicity['my-dashboard'] ) {
+						$publicity = false;
+					}
+
+					if ( ! $publicity ) {
+						update_user_meta( get_current_user_id(), '_lp_profile_publicity', array() );
+					} else {
+						update_user_meta( get_current_user_id(), '_lp_profile_publicity', $publicity );
+					}
+
 			}
 			if ( is_wp_error( $return ) ) {
 				learn_press_add_message( $return->get_error_message() );
@@ -561,16 +610,60 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
+		 * Get publicity profile settings.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $tab
+		 *
+		 * @return array|mixed
+		 */
+		public function get_publicity( $tab = '' ) {
+
+			$publicity = false;
+			/**
+			 * For first time user did not save anything from profile then get default
+			 * from settings in admin.
+			 */
+			if ( ( $user = $this->get_user() ) && ( '' === ( $publicity = $user->get_data( 'profile_publicity' ) ) ) ) {
+				$publicity = apply_filters( 'learn-press/get-publicity-setting', array(
+					'my-dashboard' => LP()->settings()->get( 'profile_publicity.dashboard' ),
+					'courses'      => LP()->settings()->get( 'profile_publicity.courses' ),
+					'quizzes'      => LP()->settings()->get( 'profile_publicity.quizzes' )
+				) );
+			}
+
+			if ( $publicity && $tab ) {
+				if ( array_key_exists( $tab, $publicity ) ) {
+					return $publicity[ $tab ];
+				} else {
+					return false;
+				}
+			}
+
+			return $publicity ? $publicity : false;
+		}
+
+		/**
 		 * Get all orders of profile's user.
 		 *
+		 * @param mixed $args
 		 *
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 *
 		 * @return array
 		 */
-		public function get_user_orders() {
+		public function get_user_orders( $args = '' ) {
 
-			return $this->_curd->get_orders( $this->get_user_data( 'id' ), true );
+			$args = wp_parse_args(
+				$args,
+				array(
+					'group_by_order' => true,
+					'status'         => ''
+				)
+			);
+
+			return $this->_curd->get_orders( $this->get_user_data( 'id' ), $args );
 		}
 
 		/**
@@ -578,17 +671,32 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @param string $args
 		 *
-		 * @return array
+		 * @return LP_Query_List_Table
 		 */
 		public function query_orders( $args = '' ) {
 			global $wp_query;
 			$query = array(
-				'orders'     => array(),
+				'items'      => array(),
 				'total'      => 0,
 				'num_pages'  => 0,
 				'pagination' => ''
 			);
-			if ( $order_ids = $this->get_user_orders() ) {
+
+			$query_args = array();
+
+			if ( is_array( $args ) ) {
+				foreach ( array( 'status', 'group_by_order' ) as $k ) {
+					if ( isset( $args[ $k ] ) ) {
+						$query_args[ $k ] = $args[ $k ];
+					}
+				}
+			}
+
+			if ( empty( $query_args['status'] ) ) {
+				$query_args['status'] = 'completed processing cancelled pending';
+			}
+
+			if ( $order_ids = $this->get_user_orders( $query_args ) ) {
 				$default_args = array(
 					'paged' => 1,
 					'limit' => 10
@@ -628,15 +736,55 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'echo'      => false,
 						'paged'     => $args['paged']
 					) );
+
+					$query = new LP_Query_List_Table(
+						array(
+							'total' => $query_order->found_posts,
+							'paged' => $args['paged'],
+							'limit' => $args['limit'],
+							'pages' => $query['num_pages'],
+							'items' => $orders
+						)
+					);
 				}
 
+			}else{
+				$query = new LP_Query_List_Table($query);
 			}
 
 			return $query;
 		}
 
-		public function query_courses() {
-			return $this->_curd->query_courses( $this->get_user_data( 'id' ) );
+		/**
+		 * Query user's courses
+		 *
+		 * @param string $type - Optional. [own, purchased, enrolled, etc]
+		 * @param mixed  $args - Optional.
+		 *
+		 * @return array|LP_Query_List_Table
+		 */
+		public function query_courses( $type = 'own', $args = '' ) {
+			$query = false;
+			switch ( $type ) {
+				case 'purchased':
+					$query = $this->_curd->query_purchased_courses( $this->get_user_data( 'id' ), $args );
+					break;
+				case 'enrolled':
+					break;
+				default:
+					$query = $this->_curd->query_own_courses( $this->get_user_data( 'id' ), $args );
+			}
+
+			return $query;
+		}
+
+		/**
+		 * @param mixed $args
+		 *
+		 * @return array|LP_Query_List_Table
+		 */
+		public function query_quizzes( $args = '' ) {
+			return $this->_curd->query_quizzes( $this->get_user_data( 'id' ), $args );
 		}
 
 		/**
@@ -653,6 +801,247 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
+		 * Get filters for own courses tab.
+		 *
+		 * @param string $current_filter
+		 *
+		 * @return array
+		 */
+		public function get_own_courses_filters( $current_filter = '' ) {
+			$url      = $this->get_current_url();
+			$defaults = array(
+				'all'     => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
+				'publish' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'publish', $url ) ), __( 'Publish', 'learnpress' ) ),
+				'pending' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'pending', $url ) ), __( 'Pending', 'learnpress' ) )
+			);
+
+			if ( ! $current_filter ) {
+				$keys           = array_keys( $defaults );
+				$current_filter = reset( $keys );
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( $k === $current_filter ) {
+					$defaults[ $k ] = sprintf( '<span>%s</span>', strip_tags( $v ) );
+				}
+			}
+
+			return apply_filters(
+				'learn-press/profile/own-courses-filters',
+				$defaults
+			);
+		}
+
+		/**
+		 * Get filters for purchased courses tab.
+		 *
+		 * @param string $current_filter
+		 *
+		 * @return array
+		 */
+		public function get_purchased_courses_filters( $current_filter = '' ) {
+			$url      = $this->get_current_url( false );
+			$defaults = array(
+				'all'          => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
+				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
+				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) )
+			);
+
+			if ( ! $current_filter ) {
+				$keys           = array_keys( $defaults );
+				$current_filter = reset( $keys );
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( $k === $current_filter ) {
+					$defaults[ $k ] = sprintf( '<span>%s</span>', strip_tags( $v ) );
+				}
+			}
+
+			return apply_filters(
+				'learn-press/profile/purchased-courses-filters',
+				$defaults
+			);
+		}
+
+		/**
+		 * Get filters for purchased courses tab.
+		 *
+		 * @param string $current_filter
+		 *
+		 * @return array
+		 */
+		public function get_quizzes_filters( $current_filter = '' ) {
+			$url      = $this->get_current_url( false );
+			$defaults = array(
+				'all'       => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),
+				'completed' => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
+				'passed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
+				'failed'    => sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) )
+			);
+
+			if ( ! $current_filter ) {
+				$keys           = array_keys( $defaults );
+				$current_filter = reset( $keys );
+			}
+
+			foreach ( $defaults as $k => $v ) {
+				if ( $k === $current_filter ) {
+					$defaults[ $k ] = sprintf( '<span>%s</span>', strip_tags( $v ) );
+				}
+			}
+
+			return apply_filters(
+				'learn-press/profile/quizzes-filters',
+				$defaults
+			);
+		}
+
+		/**
+		 * @param bool $redirect
+		 *
+		 * @return string
+		 */
+		public function logout_url( $redirect = false ) {
+			if ( $this->enable_login() ) {
+				$profile_url = learn_press_get_page_link( 'profile' );
+				$url         = add_query_arg( array(
+					'lp-logout' => 'true',
+					'nonce'     => wp_create_nonce( 'lp-logout' )
+				), untrailingslashit( $profile_url ) );
+
+				if ( $redirect !== false ) {
+					$url = add_query_arg( 'redirect', urlencode( $redirect ), $url );
+				}
+			} else {
+				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );
+			}
+
+			return apply_filters( 'learn-press/logout-url', $url );
+		}
+
+		/**
+		 * Echo class for main div.
+		 *
+		 * @param bool   $echo
+		 * @param string $more
+		 *
+		 * @return string
+		 */
+		public function main_class( $echo = true, $more = '' ) {
+			$classes = array( 'lp-user-profile' );
+			if ( $this->is_current_user() ) {
+				$classes[] = 'current-user';
+			}
+
+			if ( ! is_user_logged_in() ) {
+				$classes[] = 'guest';
+			}
+
+			if ( has_action( 'learn-press/before-user-profile' ) ) {
+				$classes[] = 'has-sidebar';
+			}
+
+			$classes = LP_Helper::merge_class( $classes, $more );
+
+			$class = ' class="' . join( ' ', apply_filters( 'learn-press/profile/class', $classes ) ) . '"';
+			if ( $echo ) {
+				echo $class;
+			}
+
+			return $class;
+		}
+
+		/**
+		 * Return true if the tab is visible for current user.
+		 *
+		 * @param string $tab_key
+		 * @param array  $tab_data
+		 *
+		 * @return bool
+		 */
+		public function tab_is_visible_for_user( $tab_key, $tab_data = null ) {
+			return $this->is_current_tab( $tab_key ) && $this->current_user_can( "view-tab-{$tab_key}" );
+		}
+
+		/**
+		 * Return true if the section is visible for current user.
+		 *
+		 * @param string $section_key
+		 * @param array  $section_data
+		 *
+		 * @return bool
+		 */
+		public function section_is_visible_for_user( $section_key, $section_data = array() ) {
+			return $this->current_user_can( "view-section-{$section_key}" ) && ! $this->is_hidden( $section_data );
+		}
+
+		/**
+		 * @return array
+		 */
+		public function get_login_fields() {
+			return LP_Shortcode_Login_Form::get_login_fields();
+		}
+
+		/**
+		 * @return array
+		 */
+		public function get_register_fields() {
+			return LP_Shortcode_Register_Form::get_register_fields();
+		}
+
+		/**
+		 * TRUE if enable show login form in user profile if user is not logged in.
+		 *
+		 * @return bool
+		 */
+		public function enable_login() {
+			return 'yes' === LP()->settings()->get( 'enable_login_profile' );
+		}
+
+		/**
+		 * TRUE if enable show register form in user profile if user is not logged in.
+		 *
+		 * @return bool
+		 */
+		public function enable_register() {
+			return 'yes' === LP()->settings()->get( 'enable_register_profile' );
+		}
+
+		/**
+		 * Get queried user in profile link.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $return
+		 *
+		 * @return false|WP_User
+		 */
+		public static function get_queried_user( $return = '' ) {
+			global $wp_query;
+			if ( isset( $wp_query->query['user'] ) ) {
+				$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
+			} else {
+				$user = get_user_by( 'id', get_current_user_id() );
+			}
+
+			return $return === 'id' && $user ? $user->ID : $user;
+		}
+
+		/**
+		 * Return true if there is a name of user in profile link.
+		 *
+		 * @return bool
+		 */
+		public static function is_queried_user() {
+			global $wp_query;
+
+			return isset( $wp_query->query['user'] ) ? $wp_query->query['user'] : false;
+		}
+
+		/**
 		 * Get an instance of LP_Profile for a user id
 		 *
 		 * @param $user_id
@@ -660,9 +1049,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return LP_Profile mixed
 		 */
 		public static function instance( $user_id = 0 ) {
+
 			if ( ! $user_id ) {
-				$user_id = get_current_user_id();
+				if ( ! $user_id = self::get_queried_user( 'id' ) ) {
+					$user_id = get_current_user_id();
+				}
 			}
+
 			if ( empty( self::$_instances[ $user_id ] ) ) {
 				self::$_instances[ $user_id ] = new self( $user_id );
 			}

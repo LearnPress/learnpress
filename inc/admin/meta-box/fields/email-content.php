@@ -14,7 +14,6 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 		public static function admin_enqueue_scripts() {
 			wp_enqueue_script( 'learn-press-email-content-field', LP()->plugin_url( 'inc/admin/meta-box/assets/email-content.js' ) );
 			wp_enqueue_style( 'learn-press-email-content-field', LP()->plugin_url( 'inc/admin/meta-box/assets/email-content.css' ) );
-
 		}
 
 		/**
@@ -27,7 +26,7 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 			$meta  = wp_parse_args(
 				$meta,
 				array(
-					'format' => 'plain',
+					'format' => 'plain_text',
 					'html'   => '',
 					'plain'  => ''
 				)
@@ -61,14 +60,14 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 			ob_start();
 			learn_press_email_formats_dropdown(
 				array(
-					'name'     => $field['field_name'] . '[format]',
-					'class'    => 'lp-email-format',
-					'selected' => $email_format
+					'name'        => $field['field_name'] . '[format]',
+					'class'       => 'lp-email-format',
+					'selected'    => $email_format,
+					'option_none' => array( '' => __( 'General setting', 'learnpress' ) )
 				)
 			);
-
-
 			?>
+            <p class="description"><?php printf( __( 'Choose <strong>General setting</strong> to apply the setting from Email <a href="%s">General Options</a> ', 'learnpress' ), admin_url( 'admin.php?page=learn-press-settings&tab=emails&section=general' ) ); ?></p>
             <div class="lp-email-templates">
 				<?php
 				$templates = learn_press_email_formats();
@@ -79,6 +78,7 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 					if ( empty( $template ) ) {
 						continue;
 					}
+
 					$local_file    = ! empty( $field["template_{$template_type}_local"] ) ? $field["template_{$template_type}_local"] : null;//$this->get_theme_template_file( $template, $this->template_path );
 					$template_file = $field['template_base'] . $template;//$this->template_base . $template;
 					$template_dir  = $field['template_path'];//$this->template_path;//learn_press_template_path();
@@ -140,9 +140,6 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 
 						<?php if ( ! $has_local_file ): ?>
 							<?php if ( $field['support_variables'] /*$this->get_variables_support() */ ): ?>
-                                <p>
-                                    <strong><?php esc_html_e( 'Click on variables to add it into email content', 'learnpress' ); ?></strong>
-                                </p>
                                 <ol class="learn-press-email-variables<?php echo $template_type == 'html' ? ' has-editor' : ''; ?>"
                                     data-target="<?php echo esc_attr( sanitize_key( $field['field_name'] . '-' . $template_type ) ); ?>">
 									<?php foreach ( $field['support_variables'] as $variable ): ?>
@@ -150,10 +147,10 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
                                             <code><?php echo $variable; ?></code></li>
 									<?php endforeach; ?>
                                 </ol>
+                                <p class="description">
+									<?php esc_html_e( 'Click on variables to add it into email content.', 'learnpress' ); ?>
+                                </p>
 							<?php endif; ?>
-                            <p class="description">
-								<?php printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
-                            </p>
 						<?php endif; ?>
                     </div>
 					<?php
@@ -163,6 +160,30 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 			<?php
 
 			return ob_get_clean();
+		}
+
+		/**
+		 * Get content of an email.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $format
+		 * @param array  $meta
+		 * @param array  $field
+		 *
+		 * @return bool|string
+		 */
+		public static function get_email_content( $format, $meta = array(), $field = array() ) {
+
+			if ( $meta && isset( $meta[ $format ] ) ) {
+				$content = stripslashes( $meta[ $format ] );
+			} else {
+				$template      = ! empty( $field["template_{$format}"] ) ? $field["template_{$format}"] : null;
+				$template_file = $field['template_base'] . $template;
+				$content       = @file_get_contents( $template_file );
+			}
+
+			return $content;
 		}
 	}
 }

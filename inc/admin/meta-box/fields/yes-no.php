@@ -8,7 +8,7 @@
 // Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
 
-if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
+if ( ! class_exists( 'RWMB_Yes_No_Field' ) ) {
 	class RWMB_Yes_No_Field extends RWMB_Field {
 		/**
 		 * Get field HTML
@@ -25,11 +25,29 @@ if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
 				$field = $meta;
 				$meta  = $html;
 			}
+
+			$value = empty( $meta ) ? $field['std'] : $meta;
+			$true  = ! learn_press_is_negative_value( $value );
+			$yes   = 'yes';
+			$no    = 'no';
+
+			if ( isset( $field['compare'] ) ) {
+				if ( in_array( $field['compare'], array( '<>', '!=' ) ) ) {
+					$true = ! $true;
+					$yes  = 'no';
+					$no   = 'yes';
+				}
+			}
+
 			return sprintf(
-				'<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="1" %s>',
+				'<input type="hidden" name="%s" value="%s">
+				<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="%s" %s>',
+				$field['field_name'],
+				$no,
 				$field['field_name'],
 				$field['id'],
-				empty( $meta ) ? checked( $field['std'], 'yes', false ) : checked( $meta, 'yes', false )
+				$yes,
+				checked( $true, true, false )
 			);
 		}
 
@@ -47,7 +65,7 @@ if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
 		 * @return int
 		 */
 		static function value( $new, $old, $post_id, $field ) {
-			return empty( $new ) ? 'no' : 'yes';
+			return ! empty( $new ) && $new == 'yes' ? 'yes' : 'no';
 		}
 
 		static function begin_html( $html, $meta, $field = '' ) {

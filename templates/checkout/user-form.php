@@ -1,14 +1,21 @@
 <?php
 /**
+ * Template for displaying user form.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/user-form.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 if ( is_user_logged_in() ) {
 	return;
 }
@@ -18,5 +25,6 @@ if ( is_user_logged_in() ) {
 
 	<?php do_action( 'learn_press_checkout_user_form' ); ?>
 
-	<div class="clearfix"></div>
+    <div class="clearfix"></div>
+
 </div>

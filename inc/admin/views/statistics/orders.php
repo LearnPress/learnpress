@@ -9,7 +9,7 @@ $sections       = array(
 	'instructors' => __( 'Instructors', 'learnpress' ),
 );
 
-$section        = $this->section ? $this->section : 'students';
+$section        = 'students';
 $sections_count = sizeof( $sections );
 $count          = 0;
 ?>

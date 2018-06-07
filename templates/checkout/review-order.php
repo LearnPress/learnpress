@@ -1,28 +1,30 @@
 <?php
 /**
- * Template for displaying or detail for reviewing before placing order.
+ * Template for displaying reviewing before placing order.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/review-order.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.x.x
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-$cart = learn_press_get_checkout_cart();
-print_r( LP()->session->get('order_awaiting_payment') );
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
+<?php $cart = learn_press_get_checkout_cart(); ?>
 
 <h4><?php _e( 'Your order', 'learnpress' ) ?></h4>
 
-<table class="learn-press-checkout-review-order-table">
+<table class="learn-press-checkout-review-order-table lp-list-table">
     <thead>
     <tr>
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/before-heading-row' );
 		?>
@@ -32,7 +34,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/after-heading-row' );
 		?>
@@ -47,7 +49,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
 	do_action( 'learn_press_review_order_before_cart_contents' );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 
 	do_action( 'learn-press/review-order/before-cart-contents' );
@@ -62,15 +64,14 @@ print_r( LP()->session->get('order_awaiting_payment') );
 			if ( $_course && 0 < $cart_item['quantity'] ) {
 				?>
                 <tr class="<?php echo esc_attr( apply_filters( 'learn-press/review-order/cart-item-class', 'cart-item', $cart_item, $cart_item_key ) ); ?>">
-
-					<?php
+                    <?php
 					/**
 					 * @deprecated
 					 */
 					do_action( 'learn_press_review_order_before_cart_item', $cart_item );
 
 					/**
-					 * @since 3.x.x
+					 * @since 3.0.0
 					 */
 					do_action( 'learn-press/review-order/before-cart-item', $cart_item, $cart_item_key );
 					?>
@@ -84,9 +85,8 @@ print_r( LP()->session->get('order_awaiting_payment') );
 						<?php echo apply_filters( 'learn-press/review-order/cart-item-subtotal', $cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item, $cart_item_key ); ?>
                     </td>
 					<?php
-
 					/**
-					 * @since 3.x.x
+					 * @since 3.0.0
 					 */
 					do_action( 'learn-press/review-order/after-cart-item', $cart_item, $cart_item_key );
 
@@ -95,7 +95,6 @@ print_r( LP()->session->get('order_awaiting_payment') );
 					 */
 					do_action( 'learn_press_review_order_after_cart_item', $cart_item );
 					?>
-
                 </tr>
 				<?php
 			}
@@ -103,7 +102,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
 	}
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 
 	do_action( 'learn-press/review-order/after-cart-contents' );
@@ -123,7 +122,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/before-subtotal-row' );
 		?>
@@ -133,7 +132,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/after-subtotal-row' );
 		?>
@@ -146,7 +145,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
 	do_action( 'learn_press_review_order_before_order_total' );
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/review-order/before-order-total' );
 
@@ -155,7 +154,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
     <tr class="order-total">
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/before-total-row' );
 		?>
@@ -165,7 +164,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.0.0
 		 */
 		do_action( 'learn-press/review-order/after-total-row' );
 		?>
@@ -174,7 +173,7 @@ print_r( LP()->session->get('order_awaiting_payment') );
 	<?php
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/review-order/after-order-total' );
 

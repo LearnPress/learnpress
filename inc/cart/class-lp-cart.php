@@ -75,16 +75,17 @@ class LP_Cart {
 	}
 
 	public function maybe_set_cart_cookies() {
+
 		if ( ! headers_sent()/* && did_action( 'wp_loaded' )*/ ) {
-			$this->set_cart_cookies( ! $this->is_empty() );
+			//$this->set_cart_cookies( ! $this->is_empty() );
 		}
 	}
 
 	private function set_cart_cookies( $set = true ) {
 		if ( $set ) {
-			learn_press_setcookie( 'learn_press_items_in_cart', 1 );
-		} elseif ( isset( $_COOKIE['learn_press_items_in_cart'] ) ) {
-			learn_press_setcookie( 'learn_press_items_in_cart', 0, time() - HOUR_IN_SECONDS );
+			learn_press_setcookie( 'wordpress_lp_cart', 1 );
+		} elseif ( isset( $_COOKIE['wordpress_lp_cart'] ) ) {
+			learn_press_setcookie( 'wordpress_lp_cart', 0, time() - HOUR_IN_SECONDS );
 		}
 		do_action( 'learn_press_set_cart_cookies', $set );
 	}
@@ -114,8 +115,10 @@ class LP_Cart {
 	 */
 	public function get_cart() {
 		if ( ! did_action( 'wp_loaded' ) ) {
+			learn_press_debug( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
 			_doing_it_wrong( __FUNCTION__, __( 'Get cart should not be called before the wp_loaded action.', 'learnpress' ), '2.3' );
 		}
+
 		if ( ! did_action( 'learn_press_cart_loaded_from_session' ) ) {
 			$this->get_cart_from_session();
 		}
@@ -143,7 +146,7 @@ class LP_Cart {
 
 			// Check if course is in stock
 			if ( ! $course->is_in_stock() ) {
-				throw new Exception( __( 'Sorry! Students enroll course is reached limit', 'learnpress' ) );
+				throw new Exception( __( 'Sorry! The number of enrolled students has reached limit', 'learnpress' ) );
 			}
 
 			$item_data = apply_filters( 'learn-press/cart-item-data', $item_data, $course_id );
@@ -271,14 +274,16 @@ class LP_Cart {
 
 			if ( $cart = learn_press_session_get( $this->_cart_session_key ) ) {
 				foreach ( $cart as $cart_id => $values ) {
-					$course = learn_press_get_course( $values['item_id'] );
-					if ( $course && $course->exists() && $values['quantity'] > 0 ) {
-						if ( ! $course->is_purchasable() ) {
-							learn_press_add_message( sprintf( __( '%s has been removed from your cart because it can no longer be purchased.', 'learnpress' ), $course->get_title() ), 'error' );
-							do_action( 'learn-press/remove-cart-item-from-session', $cart, $values );
-						} else {
-							$data                            = array_merge( $values, array( 'data' => $course ) );
-							$this->_cart_content[ $cart_id ] = apply_filters( 'learn-press/get-cart-item-from-session', $data, $values, $cart_id );
+					if ( ! empty( $values['item_id'] ) ) {
+						$course = learn_press_get_course( $values['item_id'] );
+						if ( $course && $course->exists() && $values['quantity'] > 0 ) {
+							if ( ! $course->is_purchasable() ) {
+								learn_press_add_message( sprintf( __( '%s has been removed from your cart because it can no longer be purchased.', 'learnpress' ), $course->get_title() ), 'error' );
+								do_action( 'learn-press/remove-cart-item-from-session', $cart, $values );
+							} else {
+								$data                            = array_merge( $values, array( 'data' => $course ) );
+								$this->_cart_content[ $cart_id ] = apply_filters( 'learn-press/get-cart-item-from-session', $data, $values, $cart_id );
+							}
 						}
 					}
 				}
@@ -357,7 +362,7 @@ class LP_Cart {
 		$row_price       = $price * $quantity;
 		$course_subtotal = learn_press_format_price( $row_price, true );
 
-		return apply_filters( 'learn_press_cart_item_subtotal', $course_subtotal, $course, $quantity, $this );
+		return apply_filters( 'learn-press/cart/item-subtotal', $course_subtotal, $course, $quantity, $this );
 	}
 
 	/**
@@ -367,13 +372,14 @@ class LP_Cart {
 	 */
 	public function empty_cart() {
 
-		do_action( 'learn_press_before_empty_cart' );
+		do_action( 'learn-press/cart/before-empty' );
 
 		$this->_cart_content = array();
 
 		unset( LP()->session->order_awaiting_payment );
+		unset( LP()->session->cart );
 
-		do_action( 'learn_press_emptied_cart' );
+		do_action( 'learn-press/cart/emptied' );
 
 		return $this;
 	}
@@ -450,7 +456,7 @@ class LP_Cart {
 
 			// Checkout page is not setting up
 			if ( ! $has_checkout ) {
-				learn_press_add_message( __( 'Checkout page is not setup', 'learnpress' ), 'error' );
+				learn_press_add_message( __( 'Checkout page hasn\'t been setup', 'learnpress' ), 'error' );
 			} else {
 				wp_redirect( apply_filters( 'learn_press_checkout_redirect', $redirect ) );
 				exit();

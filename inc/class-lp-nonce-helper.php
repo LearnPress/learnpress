@@ -12,7 +12,7 @@ class LP_Nonce_Helper {
 	 * @param int    $course_id
 	 * @param int    $user_id
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @return string
 	 */
@@ -36,7 +36,7 @@ class LP_Nonce_Helper {
 	 * @param int    $course_id
 	 * @param int    $user_id
 	 *
-	 * @since 3.x.x
+	 * @since 3.0.0
 	 *
 	 * @return bool
 	 */

@@ -23,6 +23,10 @@ jQuery( function ( $ ) {
 		if ( $inline.length ) {
 			options.altField = '#' + $this.attr( 'id' );
 			$this.on( 'keydown', _.debounce( function () {
+				// if val is empty, return to allow empty datepicker input.
+				if ( !$this.val() ) {
+					return;
+				}
 				$picker
 					.datepicker( 'setDate', $this.val() )
 					.find( ".ui-datepicker-current-day" )
@@ -55,6 +59,6 @@ jQuery( function ( $ ) {
 		return Math.floor( milliseconds / 1000 );
 	}
 
-	$( ':input.rwmb-date' ).each( update );
-	$( '.rwmb-input' ).on( 'clone', ':input.rwmb-date', update );
+	$( '.rwmb-date' ).each( update );
+	$( document ).on( 'clone', '.rwmb-date', update );
 } );

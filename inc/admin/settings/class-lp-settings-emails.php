@@ -10,6 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+include_once 'email-groups/class-lp-settings-emails-group.php';
 
 class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	/**
@@ -43,6 +44,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 				$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( $tooltip ) );
 			}
 		}
+		$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( 'ádsadasdsadasd' ) );
 
 		return $title;
 	}
@@ -54,19 +56,47 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 */
 	public function get_sections() {
 
-		$emails = LP_Emails::instance()->emails;
+		static $sections = false;
+		if ( ! $sections ) {
+			$emails = LP_Emails::instance()->emails;
 
-		$sections = array(
-			'general' => __( 'General options', 'learnpress' )
-		);
+			$sections = array(
+				'general' => __( 'General options', 'learnpress' )
+			);
 
-		if ( $emails ) {
-			foreach ( $emails as $email ) {
-				$sections[ $email->id ] = $email;
+			if ( $emails ) {
+
+				// Merge emails to group
+				$groups = array(
+					include "email-groups/class-lp-settings-new-order-emails.php",
+					include "email-groups/class-lp-settings-processing-order-emails.php",
+					include "email-groups/class-lp-settings-completed-order-emails.php",
+					include "email-groups/class-lp-settings-cancelled-order-emails.php",
+					include "email-groups/class-lp-settings-enrolled-course-emails.php",
+					include "email-groups/class-lp-settings-finished-course-emails.php",
+					//include "email-groups/class-lp-settings-course-review-emails.php",
+					include "email-groups/class-lp-settings-become-teacher-emails.php"
+				);
+
+				$groups = apply_filters( 'learn-press/email-section-classes', $groups );
+
+				foreach ( $groups as $group ) {
+					$sections[ $group->group_id ] = $group;
+				}
+
+				foreach ( $emails as $email ) {
+					foreach ( $groups as $group ) {
+						if ( ! empty( $group->items[ $email->id ] ) ) {
+							continue 2;
+						}
+					}
+					$sections[ $email->id ] = $email;
+				}
+
 			}
 		}
 
-		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
+		return apply_filters( 'learn-press/settings/section/' . $this->id, $sections );
 	}
 
 	/**
@@ -96,23 +126,48 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'type'    => 'text'
 				),
 				array(
+					'title'   => __( 'Send email in background', 'learnpress' ),
+					'id'      => 'emails_general[send_email_background]',
+					'default' => 'no',
+					'type'    => 'yes-no',
+					'desc'    => __( 'Defer transaction email and runs in background.', 'learnpress' )
+				),
+				array(
 					'title' => __( 'Email template', 'learnpress' ),
 					'type'  => 'heading'
 				),
 				array(
-					'title'   => __( 'Header image', 'learnpress' ),
-					'id'      => 'emails_general[header_image]',
-					'default' => '',
-					'type'    => 'text',
-					'desc'    => __( 'The image will be displayed in the top of the email.', 'learnpress' )
+					'title'   => __( 'Default Email Content', 'learnpress' ),
+					'id'      => 'emails_general[default_email_content]',
+					'default' => 'plain',
+					'type'    => 'select',
+					'desc'    => __( 'Default email content type for all emails that set content type is <strong>General Settings</strong>.', 'learnpress' ),
+					'options' => array(
+						'plain' => __( 'Plain Text', 'learnpress' ),
+						'html'  => __( 'HTML', 'learnpress' )
+					)
+				),
+				array(
+					'title'            => __( 'Header image', 'learnpress' ),
+					'id'               => 'emails_general[header_image]',
+					'default'          => '',
+					'type'             => 'image_advanced',
+					'max_file_uploads' => 1,
+					'desc'             => __( 'The image will be displayed in the top of the email.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Footer text', 'learnpress' ),
 					'id'      => 'emails_general[footer_text]',
-					'default' => '',
+					'default' => __( 'LearnPress', 'learnpress' ),
 					'type'    => 'textarea',
-					'desc'    => __( 'The text display in the bottom of email.', 'learnpress' )
+					'desc'    => __( 'The texts display in the bottom of email.', 'learnpress' )
 				),
+				array(
+					'title'   => __( 'Emails', 'learnpress' ),
+					'id'      => 'emails_general[list_emails]',
+					'default' => '',
+					'type'    => 'list-emails'
+				)
 			)
 		);
 	}

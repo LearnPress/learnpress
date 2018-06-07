@@ -35,7 +35,7 @@ class LP_Gateways {
 	}
 
 	/**
-	 *
+	 * Init gateways
 	 */
 	public function init() {
 		if ( ! $this->payment_gateways ) {
@@ -44,12 +44,15 @@ class LP_Gateways {
 			);
 			// Filter
 			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
+
+			// 3.0.0
+			$gateways = apply_filters( 'learn-press/payment-methods', $gateways );
 			if ( $gateways ) {
 				foreach ( $gateways as $k => $gateway ) {
 					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
 						$gateway = new $gateway();
 					}
-					$this->payment_gateways[ $k ] = apply_filters( 'learn_press_payment_method_init', $gateway );
+					$this->payment_gateways[ $k ] = apply_filters( 'learn-press/payment-gateway/init', $gateway );
 				}
 			}
 		}
@@ -88,8 +91,8 @@ class LP_Gateways {
 	/**
 	 * Callback function for sorting payment gateways.
 	 *
-	 * @param $a
-	 * @param $b
+	 * @param LP_Gateway_Abstract $a
+	 * @param LP_Gateway_Abstract $b
 	 *
 	 * @return bool|int
 	 */
@@ -113,16 +116,23 @@ class LP_Gateways {
 
 		foreach ( $this->payment_gateways as $slug => $gateway ) {
 
-			// Let custom addon can define how is enable/disable
-			if ( apply_filters( 'learn_press_payment_gateway_available_' . $slug, true, $gateway ) ) {
+			/**
+			 * @deprecated
+			 */
+			$gateway_available = apply_filters( 'learn_press_payment_gateway_available_' . $slug, true, $gateway );
 
-				// If gateway has already selected before
-				if ( LP()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
-					$gateway->is_selected = true;
-					$is_selected          = $gateway;
+			if ( $gateway_available ) {
+				// Let custom addon can define how is enable/disable
+				if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
+
+					// If gateway has already selected before
+					if ( LP()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
+						$gateway->is_selected = true;
+						$is_selected          = $gateway;
+					}
+					$_available_gateways[ $slug ] = $gateway;
 				}
-				$_available_gateways[ $slug ] = $gateway;
-			};
+			}
 
 		}
 
@@ -132,7 +142,12 @@ class LP_Gateways {
 			$gateway->is_selected = true;
 		}
 
-		return apply_filters( 'learn_press_available_payment_gateways', $_available_gateways );
+		/**
+		 * @deprecated
+		 */
+		$_available_gateways = apply_filters( 'learn_press_available_payment_gateways', $_available_gateways );
+
+		return apply_filters( 'learn-press/payment-gateways/available', $_available_gateways );
 	}
 
 	/**
@@ -140,6 +155,23 @@ class LP_Gateways {
 	 */
 	public function get_availabe_gateways() {
 		return $this->payment_gateways;
+	}
+
+	/**
+	 * @param string $id
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool|LP_Gateway_Abstract
+	 */
+	public function get_gateway( $id ) {
+		if ( $gateways = $this->get_gateways() ) {
+			if ( isset( $gateways[ $id ] ) ) {
+				return $gateways[ $id ];
+			}
+		}
+
+		return false;
 	}
 
 	/**

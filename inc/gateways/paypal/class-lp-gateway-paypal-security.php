@@ -1,4 +1,6 @@
 <?php
+die(__FILE__);
+
 class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 	public function get_request_url( $order_id ) {
 		$user    = learn_press_get_current_user();
@@ -43,7 +45,6 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 			$L_BUTTONVARS[] = 'return=' . add_query_arg( array( 'learn-press-transaction-method' => 'paypal-standard-secure', 'paypal-nonce' => $nonce ), learn_press_get_cart_course_url() );
 			$L_BUTTONVARS[] = 'currency_code=' . learn_press_get_currency();//$general_settings['default-currency'];
 			$L_BUTTONVARS[] = 'notify_url=' . learn_press_get_web_hook( 'paypal-standard-secure' );
-			//http://lessbugs.com/paypal/paypal_ipn.php';// . get_site_url() . '/?paypal-stardard-secure=1' ;
 			$L_BUTTONVARS[] = 'no_note=1';
 			$L_BUTTONVARS[] = 'shipping=0';
 			$L_BUTTONVARS[] = 'email=' . $user->user_email;
@@ -62,7 +63,6 @@ class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
 				$count ++;
 			}
 
-			//print_r($button_request);die();
 			$button_request = apply_filters( 'learn_press_paypal_standard_secure_button_request', $button_request );
 
 			$response = wp_remote_post( $paypal_api_url, array( 'body' => $button_request ) );

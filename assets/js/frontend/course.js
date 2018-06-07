@@ -1,110 +1,358 @@
-;(function ($, _, Vue) {
+;
+/**
+ * LearnPress frontend course app.
+ *
+ * @version 3.x.x
+ * @author ThimPress
+ * @package LearnPress/JS/Course
+ */
+(function ($, LP, _) {
 
     'use strict';
 
-    $(document).ready(function () {
-        /*Vue.component('learn-press-modal-search-items', {
-         template: '#learn-press-modal-search-items',
-         data: function () {
-         return {
-         paged: 1,
-         term: '',
-         hasItems: false,
-         selected: []
-         }
-         },
-         watch: {
-         show: function (value) {
-         if (value) {
-         $(this.$refs.search).focus();
-         }
-         }
-         },
-         props: ['postType', 'context', 'contextId', 'show', 'callbacks'],
-         created: function () {
-         },
-         methods: {
-         doSearch: function (e) {
-         this.term = e.target.value;
-         this.paged = 1;
-         this.search();
-         },
-         search: _.debounce(function (term) {
-         var that = this;
-         Vue.http.post(
-         window.location.href, {
-         type: this.postType,
-         context: this.context,
-         context_id: this.contextId,
-         term: term || this.term,
-         paged: this.paged,
-         'lp-ajax': 'modal-search-items'
-         }, {
-         emulateJSON: true,
-         params: {}
-         }
-         ).then(function (response) {
-         var result = LP.parseJSON(response.body);
-         that.hasItems = !!_.size(result.items);
+    function LP_Storage(key) {
+        var storage = window.localStorage;
+        this.key = key;
+        this.get = function (id) {
+            var val = storage.getItem(this.key) || '',
+                sections = val.split(',');
+            if (id) {
+                id = id + '';
+                var pos = sections.indexOf(id);
+                if (pos >= 0) {
+                    return sections[pos];
+                }
+            }
+            return sections;
+        }
+        this.set = function (sections) {
+            if (typeof sections !== 'string') {
+                sections = sections.join(',');
+            }
+            storage.setItem(this.key, sections);
+            return sections.split(',');
+        }
+        this.hasSection = function (id) {
+            id = id + '';
+            var sections = this.get(),
+                at = sections.indexOf(id);
 
-         $(that.$el).find('.search-results').html(result.html).find('input[type="checkbox"]').each(function () {
-         var id = parseInt($(this).val());
-         if (_.indexOf(that.selected, id) >= 0) {
-         this.checked = true;
-         }
-         });
-         _.debounce(function () {
-         $(that.$el).find('.search-nav').html(result.nav).find('a, span').addClass('button').filter('span').addClass('disabled');
-         }, 10)();
-         });
-         }, 500),
-         loadPage: function (e) {
-         e.preventDefault();
-         var $button = $(e.target);
-         if ($button.is('span')) {
-         return;
-         }
-         if ($button.hasClass('next')) {
-         this.paged++;
-         } else if ($button.hasClass('prev')) {
-         this.paged--;
-         } else {
-         var paged = $button.html();
-         this.paged = parseInt(paged);
-         }
-         this.search();
-         },
-         selectItem: function (e) {
-         var $select = $(e.target).closest('li'),
-         $chk = $select.find('input[type="checkbox"]'),
-         id = parseInt($chk.val()),
-         pos = _.indexOf(this.selected, id);
+            return at >= 0 ? at : false;
+        }
+        this.add = function (id) {
+            id = id + '';
+            var sections = this.get();
+            if (this.hasSection(id)) {
+                return;
+            }
+            sections.push(id);
+            this.set(sections);
+            return sections;
+        }
+        this.remove = function (id) {
+            id = id + '';
+            var at = this.hasSection(id);
+            if (at !== false) {
+                var sections = this.get();
+                sections.splice(at, 1);
+                this.set(sections);
+                return sections;
+            }
+            return false;
+        }
+    }
 
-         if ($chk.is(':checked')) {
-         if (pos === -1) {
-         this.selected.push(id);
-         }
-         } else {
-         if (pos >= 0) {
-         this.selected.splice(pos, 1);
-         }
-         }
-         },
-         addItems:function(){
-         var close = true;
-         if(this.callbacks && this.callbacks.addItems){
-         this.callbacks.addItems.call(this);
-         }
-         $(document).triggerHandler('learn-press/add-order-items', this.selected);
-         },
-         close: function () {
-         this.$emit('close');
-         }
-         }
-         });
+    /**
+     * LP_Course
+     *
+     * @param settings
+     * @constructor
+     */
+    function LP_Course(settings) {
+
+        var sectionStorage = new LP_Storage('sections'),
+            $body = $('body'),
+            $content = $('.content-item-scrollable'),
+            $curriculum = $('#learn-press-course-curriculum'),
+            $contentItem = $('#learn-press-content-item'),
+            $curriculumScrollable = $curriculum.find('.curriculum-scrollable'),
+            $header = $('#course-item-content-header'),
+            $footer = $('#course-item-content-footer'),
+            $courseItems = $curriculum.find('.course-item'),
+            isShowingHeader = true,
+            fullScreen, contentTop = 0, headerTimer,
+            inPopup = false;
+
+        /**
+         * Toggle answer option check/uncheck
          */
-        $(document).ready(function () {
-            var $content = $('.content-item-scrollable');
+        function toggleAnswerOptions(event) {
+            var $el = $(event.target),
+                $chk;
+            if ($el.is('input.option-check')) {
+                return;
+            }
+
+            $chk = $el.closest('.answer-option').find('input.option-check');
+
+            if (!$chk.length) {
+                return;
+            }
+
+            if ($chk.is(':disabled')) {
+                return;
+            }
+            if ($chk.is(':checkbox')) {
+                $chk[0].checked = !$chk[0].checked;
+            } else {
+                $chk[0].checked = true;
+            }
+        }
+
+        /**
+         * Show/Hide section content
+         */
+        function toggleSection() {
+            var id = $(this).closest('.section').data('section-id');
+            $(this).siblings('.section-content').slideToggle(function () {
+                if ($(this).is(':visible')) {
+                    sectionStorage.remove(id);
+                } else {
+                    sectionStorage.add(id);
+                }
+            });
+        }
+
+        /**
+         * Init sections
+         */
+        function initSections() {
+            var $activeSection = $('.course-item.current').closest('.section'),
+                sections = $('.curriculum-sections').find('.section'),
+                sectionId = $activeSection.data('section-id'),
+                hiddenSections = [];
+
+            if ($activeSection) {
+                hiddenSections = sectionStorage.remove(sectionId);
+            } else {
+                hiddenSections = sectionStorage.get();
+            }
+
+            for (var i = 0; i < hiddenSections.length; i++) {
+                sections.filter('[data-section-id="' + hiddenSections[i] + '"]').find('.section-content').hide();
+            }
+        }
+
+        /**
+         * Prepare form before submitting
+         *
+         * @param form
+         */
+        function prepareForm(form) {
+            var $answerOptions = $('.answer-options'),
+                $form = $(form),
+                data = $answerOptions.serializeJSON(),
+                $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
+
+            if (($form.attr('method') + '').toLowerCase() !== 'post') {
+                return;
+            }
+
+            $form.find('input[name="question-data"]').remove();
+            return $form.append($hidden).append($('<div />').append($answerOptions.clone()).hide());
+        }
+
+        /**
+         * Tab course event
+         *
+         * @param e
+         * @param tab
+         */
+        function onTabCourseClick(e, tab) {
+
+            if ($(document.body).hasClass('course-item-popup')) {
+                return;
+            }
+
+            var $tab = $(tab),
+                $parent = $tab.closest('.course-nav');
+
+            if ($parent.siblings().length === 0) {
+                return;
+            }
+            LP.setUrl($tab.attr('href'))
+        }
+
+        /**
+         * Event on press any key into search
+         *
+         * @param e
+         * @returns {boolean}
+         */
+        function onSearchInputKeypress(e) {
+
+            if (e.type === 'keypress' && e.keyCode === 13) {
+                return false;
+            }
+
+            var s = this.value,
+                r = new RegExp(s, 'ig');
+            $courseItems.map(function () {
+                var $item = $(this),
+                    itemName = $item.find('.item-name').text();
+                if (itemName.match(r) || !s.length) {
+                    $item.show();
+                } else {
+                    $item.hide();
+                }
+            });
+
+            $('.section').show().each(function () {
+                if (s.length) {
+                    if (!$(this).find('.section-content').children(':visible').length) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                } else {
+                    $(this).show();
+                }
+            });
+            $(this).closest('.course-item-search').toggleClass('has-keyword', !!this.value.length);
+        }
+
+        function onClearSearchInputClick(e) {
+            var $form = $(this).closest('.course-item-search');
+            $form.find('input').val('').trigger('keyup')
+        }
+
+        function onClickQM() {
+            $('#qm').css({'z-index': 999999999, position: 'relative'});
+            $('html, body').css('overflow', 'auto');
+        }
+
+        function getCurriculumWidth() {
+            return $curriculum.outerWidth();
+        }
+
+        function maybeShowCurriculum(e) {
+            var offset = $(this).offset(),
+                offsetX = e.pageX - offset.left,
+                curriculumWidth = getCurriculumWidth();
+
+            if (!fullScreen || (offsetX > 50)) {
+                return;
+            }
+
+            timeoutToClose();
+
+            if (!isShowingHeader) {
+                $curriculum.stop().animate({
+                    left: 0
+                });
+
+                $contentItem.stop().animate({
+                    left: curriculumWidth
+                });
+
+                $footer.stop().animate({
+                    left: curriculumWidth
+                }, function () {
+                    $(document, window).trigger('learn-press/toggle-content-item');
+                });
+
+                $header.find('.course-item-search').show();
+                toggleEventShowCurriculum(true);
+                isShowingHeader = true;
+            }
+        }
+
+        function toggleEventShowCurriculum(b) {
+            $(document)[b ? 'off' : 'on']('mousemove.maybe-show-curriculum', 'body', maybeShowCurriculum);
+        }
+
+        function timeoutToClose() {
+            headerTimer && clearTimeout(headerTimer);
+            headerTimer = setTimeout(function () {
+                var curriculumWidth = getCurriculumWidth();
+
+                if (!fullScreen) {
+                    return;
+                }
+
+                $curriculum.stop().animate({
+                    left: -curriculumWidth
+                });
+
+                $contentItem.stop().animate({
+                    left: 0
+                });
+
+                $footer.stop().animate({
+                    left: 0
+                }, function () {
+                    $(document, window).trigger('learn-press/toggle-content-item');
+                });
+
+                $header.find('.course-item-search').hide();
+
+                isShowingHeader = false;
+                toggleEventShowCurriculum();
+            }, 3000);
+        }
+
+        function toggleContentItem(e) {
+            e.preventDefault();
+            var curriculumWidth = getCurriculumWidth();
+            fullScreen = $body.toggleClass('full-screen-content-item').hasClass('full-screen-content-item');
+            $curriculum
+                .stop()
+                .animate({
+                    left: fullScreen ? -curriculumWidth : 0
+                });
+
+            $contentItem
+                .stop()
+                .animate({
+                    left: fullScreen ? 0 : curriculumWidth
+                });
+
+            $footer.stop().animate({
+                left: fullScreen ? 0 : curriculumWidth
+            }, function () {
+                $(document, window).trigger('learn-press/toggle-content-item');
+            });
+
+            isShowingHeader = !fullScreen;
+            window.localStorage && window.localStorage.setItem('lp-full-screen', fullScreen ? 'yes' : 'no');
+
+            fullScreen && toggleEventShowCurriculum();
+            $header.find('.course-title').stop().animate({marginLeft: fullScreen ? -curriculumWidth : 0})
+            $header.find('.course-item-search').stop().animate({opacity: fullScreen ? 0 : 1});
+        }
+
+        function initEvents() {
+            // Live events
+            $(document)
+                .on('learn-press/nav-tabs/clicked', onTabCourseClick)
+                .on('keyup keypress', '.course-item-search input', onSearchInputKeypress)
+                .on('click', '.course-item-search button', onClearSearchInputClick)
+                .on('click', '#wp-admin-bar-query-monitor', onClickQM)
+                .on('click', '.answer-options .answer-option', toggleAnswerOptions)
+                .on('click', '.section-header', toggleSection)
+                .on('submit', 'form.lp-form', function () {
+                    prepareForm(this);
+                }).on('click', '.toggle-content-item', toggleContentItem);
+
+            $curriculum.hover(function () {
+                headerTimer && clearTimeout(headerTimer);
+            }, function () {
+                if (fullScreen) timeoutToClose();
+            })
+
+        }
+
+        function initScrollbar() {
             $content.addClass('scrollbar-light')
                 .scrollbar({
                     scrollx: false
@@ -113,117 +361,201 @@
             $content.parent().css({
                 position: 'absolute',
                 top: 0,
-                bottom: 60,
+                bottom: $('#course-item-content-footer:visible').outerHeight() || 0,
                 width: '100%'
             }).css('opacity', 1).end().css('opacity', 1);
 
-            var $curriculum = $('.course-item-popup').find('.curriculum-scrollable');
-            $curriculum.addClass('scrollbar-light')
+
+            $curriculumScrollable.addClass('scrollbar-light')
                 .scrollbar({
                     scrollx: false
                 });
 
-            $curriculum.parent().css({
+            $curriculumScrollable.parent().css({
                 position: 'absolute',
                 top: 0,
                 bottom: 0,
                 width: '100%'
             }).css('opacity', 1).end().css('opacity', 1);
+        }
 
-            // $('.course-item-popup').find('#learn-press-course-curriculum').addClass('scrollbar-light').scrollbar({scrollx: false});
+        function fitVideo() {
+            var $wrapContent = $('.content-item-summary.content-item-video');
 
-            $('body').css('opacity', 1);
-        })
-        window.LP.$courseXYZ = new Vue({
-            el: '#learn-press-course',
-            data: {
-                show: false,
-                term: '',
-                postType: '',
-                callbacks: {}
-            },
-            methods: {
-                nextQuestion: function (event) {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                },
-                prevQuestion: function () {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                },
-                redoQuiz: function () {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                },
-                startQuiz: function () {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                },
-                completeItem: function (event) {
-                    event.preventDefault();
-                    var $form = this._prepareForm(event);
-                    $form.submit();
-                    return false;
-                },
-                _prepareForm: function (event) {
-                    var data = $('.answer-options').serializeJSON(),
-                        $target = $(event.target),
-                        $form = $target.is('form') ? $target : $(event.target.form),
-                        $hidden = $('<input type="hidden" name="question-data" />').val(JSON.stringify(data));
-                    $form.find('input[name="question-data"]').remove();
-                    return $form.append($hidden);
-                },
-                toggle: function (event) {
-                    var $el = $(event.target),
-                        $chk = false;
-                    if ($el.is('input.option-check')) {
-                        return;
-                    }
-                    $chk = $el.closest('.answer-option').find('input.option-check');
-                    if ($chk.is(':checkbox')) {
-                        $chk[0].checked = !$chk[0].checked;
-                    } else {
-                        $chk[0].checked = true;
-                    }
+            if (!$wrapContent.length) {
+                return;
+            }
+
+            var $entryVideo = $wrapContent.find('.entry-video'),
+                $frame = $entryVideo.find('iframe'),
+                width = $frame.attr('width'),
+                height = $frame.attr('height'),
+                ratio = 1,
+                contentHeight, timer;
+
+            function resizeVideo() {
+                var frameWidth = $frame.width();
+                contentHeight = frameWidth * ratio;
+                $frame.css({
+                    height: contentHeight,
+                    marginLeft: ( $entryVideo.width() - frameWidth) / 2
+                });
+
+                $wrapContent.css({
+                    paddingTop: contentHeight
+                });
+            }
+
+            if (!$entryVideo.length) {
+                return false;
+            }
+
+            if (width && height) {
+                if (width.indexOf('%') === -1 && height.indexOf('%') === -1) {
+                    ratio = height / width;
                 }
             }
+
+            $(window).on('resize.fit-content-video learn-press/toggle-content-item', function () {
+                timer && clearTimeout(timer);
+                timer = setTimeout(resizeVideo, 250);
+            }).trigger('resize.fit-content-video');
+
+            $('.content-item-scrollable').scroll(function () {
+                $(this).find('.entry-video').css('padding-top', this.scrollTop);
+            });
+        }
+
+        /**
+         * Init
+         */
+        function init() {
+            inPopup = $body.hasClass('course-item-popup');
+            initSections();
+            initEvents();
+
+
+            if (!inPopup) {
+                return;
+            }
+
+            $contentItem.appendTo($body);
+            $curriculum.appendTo($body);
+
+            if ($('#wpadminbar').length) {
+                $body.addClass('wpadminbar');
+                contentTop = 32;
+            }
+
+            initScrollbar();
+            fitVideo();
+
+            fullScreen = window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
+
+            if (fullScreen) {
+                var curriculumWidth = getCurriculumWidth();
+                $body.addClass('full-screen-content-item');
+                $contentItem.css('left', 0);
+                $curriculum.css('left', -curriculumWidth);
+                $footer.css('left', 0);
+                isShowingHeader = !fullScreen;
+                $header.find('.course-title').css({marginLeft: fullScreen ? -curriculumWidth : 0})
+                $header.find('.course-item-search').css({opacity: fullScreen ? 0 : 1});
+                toggleEventShowCurriculum();
+            }
+
+            setTimeout(function () {
+                var $cs = $body.find('.curriculum-sections').parent();
+                $cs.scrollTo($cs.find('.course-item.current'), 100);
+
+                if (window.location.hash) {
+                    $('.content-item-scrollable:last').scrollTo($(window.location.hash));
+                }
+            }, 300);
+
+            $body.css('opacity', 1);
+
+        }
+
+        new LP.Alerts();
+
+        init();
+    }
+
+    LP.Alerts = function () {
+        this.isShowing = false;
+        var $doc = $(document),
+            self = this,
+            trigger = function (action, args) {
+                var triggered = $doc.triggerHandler(action, args);
+
+                if (triggered !== undefined) {
+                    return triggered;
+                }
+
+                return $.isArray(args) ? args[0] : undefined;
+            },
+            confirmHandle = function (e) {
+                try {
+                    var $form = $(this),
+                        message = $form.data('confirm'),
+                        action = $form.data('action');
+
+                    message = trigger('learn-press/confirm-message', [message, action]);
+
+                    if (!message) {
+                        return true;
+                    }
+
+                    jConfirm(message, '', function (confirm) {
+                        confirm && $form.off('submit.learn-press-confirm', confirmHandle).submit();
+                        self.isShowing = false;
+                    });
+
+                    self.isShowing = true;
+
+                    return false;
+                } catch (ex) {
+                    console.log(ex)
+                }
+
+                return true;
+            }
+
+        this.watchChange('isShowing', function (prop, oldVal, newVal) {
+            if (newVal) {
+                setTimeout(function () {
+                    $.alerts._reposition();
+                    $('#popup_container').addClass('ready')
+                }, 30)
+
+                var $a = $('<a href="" class="close"><i class="fa fa-times"></i></a>')
+                $('#popup_container').append($a);
+                $a.on('click', function () {
+                    $.alerts._hide();
+                    return false;
+                });
+            }
+            $(document.body).toggleClass('confirm', newVal);
+            return newVal;
+        });
+
+        var $forms = $('form[data-confirm]').on('submit.learn-press-confirm', confirmHandle);
+    }
+
+
+    $(document).ready(function () {
+        $(document).ready(function () {
+            new LP_Course({});
+
+            $(this).on('submit', 'form[name="course-external-link"]', function () {
+                var redirect = $(this).attr('action');
+                if (redirect) {
+                    window.location.href = redirect;
+                    return false;
+                }
+            })
         });
     });
-    $('htmlv').one('click.xxxx', '.course-item', function (e) {
-        var $target = $(e.target),
-            $a = $target.closest('.course-item').find('a');
-
-        jQuery.ajax({
-            url: $a.attr('href'),
-            success: function (res) {
-                var $dom = $(document.createElement("html"));
-                $dom[0].innerHTML = res;
-
-                var $head = $dom.find("head"),
-                    $body = $dom.find("body");
-
-                var $oldHead = $('head'),
-                    $oldBody = $('body');
-
-                jQuery('html').append($head).append($body).load(function () {
-                    alert();
-                });
-                setTimeout(function ($a, $b) {
-                    $a.remove();
-                    $b.remove();
-                }, 300, $oldHead, $oldBody)
-                //$oldHead.remove();
-                //$oldBody.remove();
-
-                LP.setUrl($a.attr('href'))
-            }
-        });
-        e.preventDefault();
-    })
-
-
-})(jQuery, _, Vue);
+})
+(jQuery, LP, _);

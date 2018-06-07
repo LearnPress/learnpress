@@ -1,11 +1,14 @@
 <?php
 /**
- * Common functions to manipulate with the quiz
+ * Common functions to manipulate with the quiz.
+ *
+ * @since 3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 /**
  * Get quiz from anything is passed
@@ -27,10 +30,6 @@ function learn_press_get_quiz( $the_quiz ) {
  */
 function learn_press_get_question( $the_question ) {
 	return LP_Question::get_question( $the_question );
-}
-
-function learn_press_get_build_in_question_types() {
-	return array( 'true_or_false', 'single_choice', 'multi_choice' );
 }
 
 function learn_press_add_question_answer_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
@@ -128,32 +127,20 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 	}
 }
 
-function learn_press_get_user_quiz_meta( $quiz_user_id, $meta_key, $single = true ) {
-	return get_metadata( 'learnpress_user_item', $quiz_user_id, $meta_key, $single );
-}
-
-function learn_press_add_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
-	return add_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
-}
-
-function learn_press_update_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
-	return update_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
-}
-
 /**
  * @param int
  * @param int - since 0.9.5
  *
  * @return bool|int
  */
-function learn_press_get_current_question( $quiz_id = null, $user_id = 0 ) {
+function learn_press_get_current_question( $quiz_id = null, $course_id = 0, $user_id = 0 ) {
 	if ( $user_id ) {
 		$user = learn_press_get_user( $user_id );
 	} else {
-		$user = LP()->user;
+		$user = learn_press_get_current_user();
 	}
 
-	return $user->get_current_question( $quiz_id );
+	return $user->get_current_question( $quiz_id, $course_id );
 }
 
 /**
@@ -259,17 +246,18 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
 }
 
 /**
- * Check if user has started a quiz or not
+ * Check if user has started a quiz or not.
  *
- * @param int $user_id
- * @param int $quiz_id
+ * @param null $user_id
+ * @param null $quiz_id
  *
- * @return boolean
+ * @return bool|mixed
+ * @throws Exception
  */
 function learn_press_user_has_started_quiz( $user_id = null, $quiz_id = null ) {
-	$user = $user_id ? learn_press_get_user( $user_id ) : LP()->user;
+	$user = $user_id ? learn_press_get_user( $user_id ) : learn_press_get_current_user();
 
-	return $user ? $user->has( 'started-quiz', $quiz_id ) : false;
+	return $user ? $user->has_started_quiz( $quiz_id ) : false;
 }
 
 /**
@@ -285,69 +273,21 @@ function learn_press_user_has_started_quiz( $user_id = null, $quiz_id = null ) {
  * @return string
  */
 function learn_press_get_user_quiz_status( $quiz_id, $user_id = false ) {
-	$user = $user_id ? learn_press_get_user( $user_id ) : LP()->user;
+	$user = $user_id ? learn_press_get_user( $user_id ) : learn_press_get_current_user();
 
 	return $user ? $user->get_quiz_status( $quiz_id ) : '';
 }
 
-/**
- * Redirect to question if user access to a quiz that user has started
- *
- * @param string
- *
- * @return string
- */
-function learn_press_redirect_to_question( $template ) {
-	global $post_type;
-	if ( is_single() && $post_type == LP_QUIZ_CPT ) {
-		$user        = learn_press_get_current_user();
-		$quiz_id     = get_the_ID();
-		$quiz_status = $user->get_quiz_status( $quiz_id );
-		if ( $quiz_status == 'started' && learn_press_get_quiz_time_remaining( $user->get_id(), $quiz_id ) == 0 && get_post_meta( $quiz_id, '_lpr_duration', true ) ) {
-			$user->finish_quiz( $quiz_id );
-			$quiz_status = 'completed';
-		}
-		$redirect = null;
-		if ( learn_press_get_request( 'question' ) && $quiz_status == '' ) {
-			$redirect = get_the_permalink( $quiz_id );
-		} elseif ( $quiz_status == 'started' ) {
-			if ( learn_press_get_request( 'question' ) ) {
-			} else {
-				$redirect = learn_press_get_user_question_url( $quiz_id );
-			}
-		} elseif ( $quiz_status == 'completed' && learn_press_get_request( 'question' ) ) {
-			$redirect = get_the_permalink( $quiz_id );
-		}
-		if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
-			wp_redirect( $redirect );
-			exit();
-		}
-	}
-
-	return $template;
-}
-
-//add_action( 'template_redirect', 'learn_press_redirect_to_question' );
-
-
 function learn_press_get_quizzes( $user_id = 0, &$args = array() ) {
-	if ( ! $user_id ) {
-		$user_id = learn_press_get_current_user_id();
-	}
-	if ( ! $user_id ) {
-		return;
-	}
-	$user = learn_press_get_user( $user_id );
-
-	return $user->get_quizzes( $args );
+	// TODO: get all quizzes by user
 }
 
-function learn_press_output_question_nonce( $question ) {
-	printf( '<input type="hidden" name="update-question-nonce" value="%s" />', wp_create_nonce( 'current-question-nonce-' . $question->id ) );
-}
-
-add_action( 'learn_press_after_question_wrap', 'learn_press_output_question_nonce' );
-
+/**
+ * Add new type that LP question can support
+ *
+ * @param string|array $types
+ * @param string|array $supports
+ */
 function learn_press_add_question_type_support( $types, $supports ) {
 	if ( empty( $GLOBALS['learn_press_question_type_support'] ) ) {
 		$GLOBALS['learn_press_question_type_support'] = array();
@@ -378,6 +318,11 @@ function learn_press_add_question_type_support( $types, $supports ) {
 	$GLOBALS['learn_press_question_type_support'] = $_supports;
 }
 
+/**
+ * @param string $type
+ *
+ * @return array|mixed
+ */
 function learn_press_get_question_type_support( $type = '' ) {
 	$supports = ! empty( $GLOBALS['learn_press_question_type_support'] ) ? $GLOBALS['learn_press_question_type_support'] : array();
 
@@ -392,6 +337,10 @@ function learn_press_get_question_type_support( $type = '' ) {
  * @return bool
  */
 function learn_press_is_support_question_type( $type ) {
+
+	if ( is_array( $type ) ) {
+		$type = reset( $type );
+	}
 
 	$supports = learn_press_get_question_type_support();
 
@@ -417,7 +366,7 @@ function learn_press_question_type_support( $type, $features ) {
 	return $has_support;
 }
 
-function _learn_press_add_question_type_support() {
+function learn_press_default_question_type_support() {
 	learn_press_add_question_type_support(
 		array(
 			'multi_choice',
@@ -428,7 +377,7 @@ function _learn_press_add_question_type_support() {
 	);
 }
 
-add_action( 'plugins_loaded', '_learn_press_add_question_type_support' );
+add_action( 'plugins_loaded', 'learn_press_default_question_type_support' );
 
 if ( ! function_exists( 'learn_press_quiz_is_hide_question' ) ) {
 	function learn_press_quiz_is_hide_question( $quiz_id = null ) {
@@ -436,7 +385,7 @@ if ( ! function_exists( 'learn_press_quiz_is_hide_question' ) ) {
 			return false;
 		}
 		$meta = get_post_meta( $quiz_id, '_lp_show_hide_question', true );
-		if ( $meta === 'hide' || $meta == '' || is_null( $meta )
+		if ( $meta === 'hide' || $meta == '' || $meta === 'no' || is_null( $meta )
 			// Removed from 2.1.4
 			/* || ( $meta === 'global' && LP()->settings->get( 'disable_question_in_quiz' ) === 'yes' ) */
 		) {
@@ -445,4 +394,47 @@ if ( ! function_exists( 'learn_press_quiz_is_hide_question' ) ) {
 
 		return false;
 	}
+}
+
+if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
+	/**
+	 * Get question order in quiz.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $questions
+	 *
+	 * @return array
+	 */
+	function learn_press_quiz_get_questions_order( $questions = array() ) {
+
+		if ( ! $questions ) {
+			return array();
+		}
+
+		global $wpdb;
+		$ids = $orders = array();
+		foreach ( $questions as $id => $question ) {
+			$ids[] = $id;
+		}
+
+		if ( $order = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q", ARRAY_A ) ) {
+			foreach ( $order as $id => $_order ) {
+				$orders[ $_order['q_id'] ] = $_order['q_order'];
+			}
+		}
+
+		return $orders;
+	}
+
+}
+
+function learn_press_is_review_questions() {
+	if ( ( $item = LP_Global::course_item() ) && ( $user = learn_press_get_current_user() ) ) {
+		$quiz_data = $user->get_item_data( $item->get_id(), LP_Global::course( 'id' ) );
+
+		return $quiz_data && $quiz_data->is_review_questions();
+	}
+
+	return false;
 }

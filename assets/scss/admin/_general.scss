@@ -1,0 +1,412 @@
+@-moz-keyframes lp-spinner {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes lp-spinner {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes lp-spinner {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.lp-modal-choose-items-open {
+    overflow: hidden;
+}
+
+.lp-modal-search {
+    background-color: red;
+    color: #777;
+    padding: 20px;
+    height: 100%;
+    li.selected {
+        display: none;
+    }
+}
+
+/* message box */
+#learn-press-message-box-block {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #000;
+    z-index: 99999;
+    opacity: 0.8;
+}
+
+#learn-press-message-box-window {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100000;
+    color: #FFF;
+    text-align: center;
+}
+
+#message-box-wrap {
+    margin: 0 auto;
+    /* text-align: center; */
+    display: inline-block;
+    text-align: left;
+    max-width: 70%;
+}
+
+.message-box-title {
+    color: #FFF;
+    margin: 0 0 40px 0;
+    font-size: 34px;
+}
+
+.message-box-content {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.message-box-animation {
+    background-image: url("../../images/animation.gif");
+    width: 220px;
+    height: 20px;
+    margin: 20px 0 0;
+}
+
+.message-box-buttons {
+    margin: 20px 0 0;
+    border-top: 1px solid #929292;
+    padding-top: 20px;
+}
+
+.message-box-button {
+    margin-right: 10px !important;
+}
+
+.tipsy {
+    position: absolute;
+}
+
+.learnpress {
+    a, a:active {
+        outline: none;
+        box-shadow: none;
+    }
+    .lp-install-sample-data-options {
+        border: 1px solid #DDD;
+        padding: 0 20px 10px 20px;
+        legend {
+            font-size: 16px;
+        }
+    }
+}
+
+/* Metabox email template field */
+.lp-email-templates {
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.learn-press-email-variables {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+    li {
+        display: inline-block;
+        cursor: pointer;
+    }
+}
+
+/* Metabox dropdown pages field */
+.learn-press-dropdown-pages {
+    input[type="text"] {
+        min-width: 300px;
+        height: 29px;
+        vertical-align: top;
+        margin: 0;
+    }
+    .select2-selection__rendered {
+        line-height: 26px !important;
+    }
+    .quick-add-page-inline {
+        margin-top: 0;
+    }
+}
+
+/* Tooltip */
+.learn-press-tooltip {
+    display: inline-block;
+    font-size: 17px;
+    vertical-align: middle;
+    margin: 0 5px;
+    color: #999;
+    &.icon:after {
+        font-family: Dashicons;
+        content: "\f223";
+    }
+    &:hover {
+        color: #0073aa;
+        opacity: 1;
+    }
+}
+
+/* Metabox payment order field */
+.rwmb-payment-order-wrapper {
+    .rwmb-label {
+        margin-bottom: 20px !important;
+    }
+    .rwmb-input {
+        margin-left: 0 !important;
+    }
+}
+
+.learn-press-payments,
+.learn-press-emails {
+    border-collapse: collapse;
+    border: 1px solid #DDD;
+    width: 100%;
+    font-size: 14px;
+    th, td {
+        padding: 10px;
+    }
+    .order {
+        width: 30px;
+        text-align: center;
+        padding-right: 0;
+        cursor: not-allowed;
+        color: #DDD;
+    }
+    .name {
+        font-weight: normal;
+        text-transform: capitalize;
+        min-width: 250px;
+        a {
+            text-decoration: none;
+        }
+    }
+    .status {
+        width: 100px;
+        text-align: center;
+        cursor: pointer;
+        .dashicons {
+            background: #DDD;
+            border-radius: 50%;
+            color: #FFF;
+        }
+        a{
+            display: block;
+            font-size: 12px;
+            text-decoration: none;
+            margin-top: 5px;
+        }
+        &.enabled {
+            .dashicons {
+                background: #0085ba;
+            }
+        }
+        &.config {
+            a {
+            }
+        }
+    }
+    thead {
+        th {
+            text-align: left;
+            border-bottom: 1px solid #DDD;
+        }
+    }
+    tbody {
+        tr:nth-child(even) {
+            td {
+                background: #FFF;
+            }
+        }
+
+        tr:nth-child(odd) {
+            td {
+                background: #F5F5F5;
+            }
+        }
+
+        td {
+            border-bottom: 1px solid #EEE;
+        }
+
+        .ui-sortable-helper {
+            border: 1px solid #DDD;
+            margin-left: -1px;
+        }
+        .ui-sortable-placeholder {
+            visibility: visible !important;
+            border: 1px solid #DDD;
+            td {
+                background: #F7F7F7;
+                height: 35px;
+                padding: 0;
+            }
+        }
+    }
+    ~ .email-actions{
+        text-align: right;
+    }
+    &.sortable {
+        .order:hover {
+            cursor: ns-resize;
+            color: #0073aa;
+        }
+    }
+}
+
+/* Submenu tools/templates */
+.lp-template-overrides {
+    margin-top: 20px;
+    thead th h4 {
+        margin: 0;
+    }
+    tbody th {
+        font-weight: bold;
+        p {
+            margin: 0 0 0 10px;
+            display: inline-block;
+            a {
+                font-weight: normal;
+                outline: none;
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 2px 8px;
+                border-radius: 3px;
+                &.current {
+                    background: #00aadc;
+                    color: #FFF
+                }
+            }
+        }
+
+    }
+    .template-row {
+        &.outdated, &.up-to-date {
+            code:before {
+                font-family: Dashicons;
+                vertical-align: middle;
+                margin-top: -2px;
+                display: inline-block;
+                margin-right: 3px;
+            }
+        }
+        &.outdated {
+            .template-version {
+                color: #FF0000;
+            }
+            .template-file {
+                code:before {
+                    content: "\f534";
+                    color: #FF0000;
+                }
+            }
+        }
+        &.up-to-date {
+            .template-version {
+                color: #1859ff;
+            }
+            .template-file {
+                code:before {
+                    content: "\f147";
+                    color: #0085ba;
+                }
+            }
+        }
+    }
+
+    .template-version, .core-version {
+        width: 100px;
+    }
+    #learn-press-no-templates td p {
+        color: #0073aa;
+    }
+}
+
+/* General */
+.description {
+    code {
+        font-size: smaller;
+    }
+}
+
+#field-_lp_course_result {
+    input[name="_lp_course_result"] ~ #passing-condition-quiz-result {
+        display: none;
+        background: #F5F5F5;
+        padding: 10px;
+        input {
+            width: 80px;
+            margin: 0;
+            @include box-sizing(border-box);
+        }
+        p {
+            margin: 7px 0 0;
+            color: #777;
+            font-style: italic;
+        }
+    }
+    input[name="_lp_course_result"]:checked ~ #passing-condition-quiz-result {
+        display: block;
+    }
+}
+
+//admin widget
+.widget {
+    .widget-content {
+        .rwmb-field {
+            &:not(:last-of-type) {
+                margin: 0 0 10px;
+                &:first-child {
+                    margin-top: 10px;
+                }
+            }
+            &:last-child {
+                margin-bottom: 10px;
+            }
+            .rwmb-label, .rwmb-input {
+                width: 100%;
+            }
+            .rwmb-label {
+                margin-bottom: 2px;
+                label {
+                    font-weight: 400;
+                }
+            }
+            .rwmb-input {
+                input[type="text"] {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+.course-attributes {
+    margin: 20px 0;
+    .learn-press-attribute {
+        border: 1px solid #DDD;
+        margin-top: -1px;
+        margin-bottom: 0;
+        > h4 {
+            padding: 10px 15px;
+            margin: 0;
+            background: #F5F5F5;
+        }
+        .learn-press-attribute-data {
+            padding: 15px;
+            border-top: 1px solid #DDD;
+        }
+    }
+}
+

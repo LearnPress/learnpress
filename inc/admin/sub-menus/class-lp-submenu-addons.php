@@ -2,6 +2,8 @@
 
 /**
  * Class LP_Submenu_Addons
+ *
+ * @since 3.0.0
  */
 class LP_Submenu_Addons extends LP_Abstract_Submenu {
 
@@ -10,11 +12,12 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	 */
 	public function __construct() {
 		$this->id         = 'learn-press-addons';
-		$this->menu_title = __( 'Addons', 'learnpress' );
-		$this->page_title = __( 'LearnPress Addons', 'learnpress' );
+		$this->menu_title = __( 'Add-ons', 'learnpress' );
+		$this->page_title = __( 'LearnPress Add-ons', 'learnpress' );
 		$this->priority   = 20;
 
-		add_action( 'plugins_loaded', array( $this, 'add_ons_tabs' ) );
+		//add_action( 'plugins_loaded', array( $this, 'add_ons_tabs' ) );
+        $this->add_ons_tabs();
 //
 		//$this->sections = apply_filters( 'learn-press/admin/page-addons/sections', $sections );
 		parent::__construct();

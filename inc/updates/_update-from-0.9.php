@@ -3,7 +3,7 @@
  * Helper tool to uprgade database from 0.9.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -17,7 +17,8 @@ class LP_Upgrade_From_09 {
 	 * @var array
 	 */
 	protected $_steps = array(
-		'welcome', 'upgraded'
+		'welcome',
+		'upgraded'
 	);
 
 	/**
@@ -81,14 +82,15 @@ class LP_Upgrade_From_09 {
 	 * @return bool
 	 */
 	private function check_post_types() {
-		$post_type = !empty( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : '';
-		if ( !$post_type ) {
-			$post_id = !empty( $_REQUEST['post'] ) ? absint( $_REQUEST['post'] ) : 0;
+		$post_type = ! empty( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : '';
+		if ( ! $post_type ) {
+			$post_id = ! empty( $_REQUEST['post'] ) ? absint( $_REQUEST['post'] ) : 0;
 			if ( $post_id ) {
 				$post_type = get_post_field( $post_id, 'post_type' );
 			}
 		}
 		$old_post_types = array( 'lpr_course', 'lpr_lesson', 'lpr_quiz', 'lpr_question', 'lpr_order' );
+
 		return in_array( $post_type, $old_post_types );
 	}
 
@@ -98,7 +100,8 @@ class LP_Upgrade_From_09 {
 	 * @return bool
 	 */
 	private function check_admin_menu() {
-		$admin_page = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
+		$admin_page = ! empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
+
 		return preg_match( '!^learn_press_!', $admin_page );
 	}
 
@@ -115,7 +118,8 @@ class LP_Upgrade_From_09 {
 		} elseif ( is_string( $value ) ) {
 			return ( empty( $value ) || is_null( $value ) || in_array( $value, array( 'no', 'off', 'false' ) ) );
 		}
-		return !!$value;
+
+		return ! ! $value;
 	}
 
 	/**
@@ -144,10 +148,12 @@ class LP_Upgrade_From_09 {
 				);
 				if ( $result ) {
 					$section_id  = $wpdb->insert_id;
-					$lesson_quiz = !empty( $section['lesson_quiz'] ) ? $section['lesson_quiz'] : array();
+					$lesson_quiz = ! empty( $section['lesson_quiz'] ) ? $section['lesson_quiz'] : array();
 					$post_ids    = array_merge( $post_ids, $lesson_quiz );
 					$lesson_quiz = self::get_posts_by_ids( $lesson_quiz, array( 'lpr_lesson', 'lpr_quiz' ) );
-					if ( !$lesson_quiz ) continue;
+					if ( ! $lesson_quiz ) {
+						continue;
+					}
 					$order = 1;
 					foreach ( $lesson_quiz as $obj ) {
 						if ( $obj['post_type'] == 'lpr_quiz' ) {
@@ -171,17 +177,17 @@ class LP_Upgrade_From_09 {
 							$return['id'] = $new_obj_id;
 							if ( $obj['post_type'] == LP_QUIZ_CPT ) {
 								$this->_create_quiz_meta( $obj_id, $new_obj_id );
-								$new_questions              = $this->_create_quiz_questions( $obj_id, $new_obj_id );
-								$return['questions']        = $new_questions;
-								self::$quizzes_map[$obj_id] = $new_obj_id;
+								$new_questions                = $this->_create_quiz_questions( $obj_id, $new_obj_id );
+								$return['questions']          = $new_questions;
+								self::$quizzes_map[ $obj_id ] = $new_obj_id;
 							} elseif ( $obj['post_type'] == LP_LESSON_CPT ) {
 								$this->_create_lesson_meta( $obj_id, $new_obj_id );
 								$this->_update_lesson_tag( $obj_id, $new_obj_id );
 								$this->_update_lesson_format( $obj_id, $new_obj_id );
-								self::$lessons_map[$obj_id] = $new_obj_id;
+								self::$lessons_map[ $obj_id ] = $new_obj_id;
 							}
 						}
-						$section_items[$obj_id] = $return;
+						$section_items[ $obj_id ] = $return;
 					}
 				}
 			}
@@ -209,10 +215,10 @@ class LP_Upgrade_From_09 {
 			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
 			WHERE post_type IN (%s, %s)
 			" . ( $exclude ? "AND ID NOT IN(" . join( ',', $exclude ) . ")" : "" ) . "
-			" . ( !$force ? "HAVING upgraded IS NULL" : "" ) . "
+			" . ( ! $force ? "HAVING upgraded IS NULL" : "" ) . "
 		", '_learn_press_upgraded', 'lpr_quiz', 'lpr_lesson' );
 
-		if ( !$items = $wpdb->get_results( $query, OBJECT_K ) ) {
+		if ( ! $items = $wpdb->get_results( $query, OBJECT_K ) ) {
 			return;
 		}
 		foreach ( $items as $obj ) {
@@ -228,14 +234,14 @@ class LP_Upgrade_From_09 {
 			if ( $new_obj_id = wp_insert_post( $obj ) ) {
 				if ( $obj['post_type'] == LP_QUIZ_CPT ) {
 					$this->_create_quiz_meta( $obj_id, $new_obj_id );
-					$new_questions              = $this->_create_quiz_questions( $obj_id, $new_obj_id );
-					$return['questions']        = $new_questions;
-					self::$quizzes_map[$obj_id] = $new_obj_id;
+					$new_questions                = $this->_create_quiz_questions( $obj_id, $new_obj_id );
+					$return['questions']          = $new_questions;
+					self::$quizzes_map[ $obj_id ] = $new_obj_id;
 				} elseif ( $obj['post_type'] == LP_LESSON_CPT ) {
 					$this->_create_lesson_meta( $obj_id, $new_obj_id );
 					$this->_update_lesson_tag( $obj_id, $new_obj_id );
 					$this->_update_lesson_format( $obj_id, $new_obj_id );
-					self::$lessons_map[$obj_id] = $new_obj_id;
+					self::$lessons_map[ $obj_id ] = $new_obj_id;
 				}
 			}
 		}
@@ -257,10 +263,10 @@ class LP_Upgrade_From_09 {
 			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
 			WHERE post_type IN (%s)
 			" . ( $exclude ? "AND ID NOT IN(" . join( ',', $exclude ) . ")" : "" ) . "
-			" . ( !$force ? "HAVING upgraded IS NULL" : "" ) . "
+			" . ( ! $force ? "HAVING upgraded IS NULL" : "" ) . "
 		", '_learn_press_upgraded', 'lpr_question' );
 
-		if ( !$items = $wpdb->get_results( $query, OBJECT_K ) ) {
+		if ( ! $items = $wpdb->get_results( $query, OBJECT_K ) ) {
 			return;
 		}
 		foreach ( $items as $obj ) {
@@ -271,7 +277,7 @@ class LP_Upgrade_From_09 {
 			if ( $new_obj_id = wp_insert_post( $obj ) ) {
 				$this->_create_question_meta( $obj_id, $new_obj_id );
 				$this->_update_question_tag( $obj_id, $new_obj_id );
-				self::$questions_map[$obj_id] = $new_obj_id;
+				self::$questions_map[ $obj_id ] = $new_obj_id;
 			}
 		}
 	}
@@ -286,7 +292,7 @@ class LP_Upgrade_From_09 {
 			foreach ( $terms as $term ) {
 				if ( $term->taxonomy == 'lesson-tag' ) {
 					$_term = term_exists( $term->name, 'lesson_tag' );
-					if ( $_term === 0 || $_term === NULL ) {
+					if ( $_term === 0 || $_term === null ) {
 						$_term = wp_insert_term(
 							$term->name, // the term
 							'lesson_tag', // the taxonomy
@@ -297,7 +303,7 @@ class LP_Upgrade_From_09 {
 							)
 						);
 					}
-					if ( !is_wp_error( $_term ) ) {
+					if ( ! is_wp_error( $_term ) ) {
 						$tags[] = absint( $_term['term_id'] );
 					}
 				} else {
@@ -336,52 +342,54 @@ class LP_Upgrade_From_09 {
 			'_lpr_course_certificate'        => '_lp_cert'
 		);
 		$course_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
-		if ( $course_meta ) foreach ( $course_meta as $meta ) {
-			$new_key   = $keys[$meta['meta_key']];
-			$new_value = $meta['meta_value'];
-			switch ( $new_key ) {
-				//
-				case '_lp_payment':
-					if ( $new_value == 'free' ) {
-						$new_value = 'no';
-					} elseif ( $new_value == 'not_free' ) {
-						$new_value = 'yes';
-					}
-					break;
-				case '_lp_required_enroll':
-					if ( $this->_is_false_value( $new_value ) ) {
-						$new_value = 'no';
-					} else {
-						$new_value = 'yes';
-					}
-					break;
-				case '_lp_cert': // update certificate
-					$cert_id   = absint( $new_value );
-					$cert_data = get_post_meta( $cert_id, '_lpr_cert', true );
-					$cert_post = get_post( $cert_id );
-					if ( $cert_post && $cert_post->post_type == 'lpr_certificate' ) {
-						$cert_post = get_object_vars( $cert_post );
-
-						unset( $cert_post['ID'] );
-						$cert_post['post_type'] = 'lp_cert';
-						$new_cert_id            = wp_insert_post( $cert_post );
-						if ( $new_cert_id ) {
-
-							if ( !empty( $cert_data['id'] ) ) {
-								$attachment_id = $cert_data['id'];
-								$attachment    = wp_get_attachment_url( $attachment_id );
-								update_post_meta( $new_cert_id, '_lp_cert_template', $attachment );
-
-								if ( !empty( $cert_data['layers'] ) ) {
-									update_post_meta( $new_cert_id, '_lp_cert_layers', $cert_data['layers'] );
-								}
-							}
-							update_post_meta( $new_id, '_lp_cert', $new_cert_id );
+		if ( $course_meta ) {
+			foreach ( $course_meta as $meta ) {
+				$new_key   = $keys[ $meta['meta_key'] ];
+				$new_value = $meta['meta_value'];
+				switch ( $new_key ) {
+					//
+					case '_lp_payment':
+						if ( $new_value == 'free' ) {
+							$new_value = 'no';
+						} elseif ( $new_value == 'not_free' ) {
+							$new_value = 'yes';
 						}
-					}
-					continue;
+						break;
+					case '_lp_required_enroll':
+						if ( $this->_is_false_value( $new_value ) ) {
+							$new_value = 'no';
+						} else {
+							$new_value = 'yes';
+						}
+						break;
+					case '_lp_cert': // update certificate
+						$cert_id   = absint( $new_value );
+						$cert_data = get_post_meta( $cert_id, '_lpr_cert', true );
+						$cert_post = get_post( $cert_id );
+						if ( $cert_post && $cert_post->post_type == 'lpr_certificate' ) {
+							$cert_post = get_object_vars( $cert_post );
+
+							unset( $cert_post['ID'] );
+							$cert_post['post_type'] = 'lp_cert';
+							$new_cert_id            = wp_insert_post( $cert_post );
+							if ( $new_cert_id ) {
+
+								if ( ! empty( $cert_data['id'] ) ) {
+									$attachment_id = $cert_data['id'];
+									$attachment    = wp_get_attachment_url( $attachment_id );
+									update_post_meta( $new_cert_id, '_lp_cert_template', $attachment );
+
+									if ( ! empty( $cert_data['layers'] ) ) {
+										update_post_meta( $new_cert_id, '_lp_cert_layers', $cert_data['layers'] );
+									}
+								}
+								update_post_meta( $new_id, '_lp_cert', $new_cert_id );
+							}
+						}
+						continue;
+				}
+				add_post_meta( $new_id, $new_key, $new_value );
 			}
-			add_post_meta( $new_id, $new_key, $new_value );
 		}
 
 		/**
@@ -423,22 +431,24 @@ class LP_Upgrade_From_09 {
 			'_lpr_course'               => null
 		);
 		$quiz_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
-		if ( $quiz_meta ) foreach ( $quiz_meta as $meta ) {
-			if ( !$keys[$meta['meta_key']] ) {
-				continue;
+		if ( $quiz_meta ) {
+			foreach ( $quiz_meta as $meta ) {
+				if ( ! $keys[ $meta['meta_key'] ] ) {
+					continue;
+				}
+				$new_key   = $keys[ $meta['meta_key'] ];
+				$new_value = $meta['meta_value'];
+				switch ( $new_key ) {
+					case '_lp_show_result':
+					case '_lp_show_check_answer':
+						if ( $this->_is_false_value( $new_value ) ) {
+							$new_value = 'no';
+						} else {
+							$new_value = 'yes';
+						}
+				}
+				add_post_meta( $new_id, $new_key, $new_value );
 			}
-			$new_key   = $keys[$meta['meta_key']];
-			$new_value = $meta['meta_value'];
-			switch ( $new_key ) {
-				case '_lp_show_result':
-				case '_lp_show_check_answer':
-					if ( $this->_is_false_value( $new_value ) ) {
-						$new_value = 'no';
-					} else {
-						$new_value = 'yes';
-					}
-			}
-			add_post_meta( $new_id, $new_key, $new_value );
 		}
 		//update_post_meta( $new_id, '_lp_show_explanation', 'no' );
 		update_post_meta( $new_id, '_lp_show_hint', 'yes' );
@@ -460,21 +470,23 @@ class LP_Upgrade_From_09 {
 			'_lpr_course'          => null
 		);
 		$quiz_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
-		if ( $quiz_meta ) foreach ( $quiz_meta as $meta ) {
-			if ( !$keys[$meta['meta_key']] ) {
-				continue;
+		if ( $quiz_meta ) {
+			foreach ( $quiz_meta as $meta ) {
+				if ( ! $keys[ $meta['meta_key'] ] ) {
+					continue;
+				}
+				$new_key   = $keys[ $meta['meta_key'] ];
+				$new_value = $meta['meta_value'];
+				switch ( $new_key ) {
+					case '_lp_preview':
+						if ( $this->_is_false_value( $new_value ) || $new_value == 'not_preview' ) {
+							$new_value = 'no';
+						} else {
+							$new_value = 'yes';
+						}
+				}
+				add_post_meta( $new_id, $new_key, $new_value );
 			}
-			$new_key   = $keys[$meta['meta_key']];
-			$new_value = $meta['meta_value'];
-			switch ( $new_key ) {
-				case '_lp_preview':
-					if ( $this->_is_false_value( $new_value ) || $new_value == 'not_preview' ) {
-						$new_value = 'no';
-					} else {
-						$new_value = 'yes';
-					}
-			}
-			add_post_meta( $new_id, $new_key, $new_value );
 		}
 		if ( $post_thumbnail_id = get_post_thumbnail_id( $old_id ) ) {
 			set_post_thumbnail( $new_id, $post_thumbnail_id );
@@ -493,12 +505,12 @@ class LP_Upgrade_From_09 {
 
 	private function _create_quiz_questions( $old_quiz_id, $new_quiz_id ) {
 		$_items = get_post_meta( $old_quiz_id, '_lpr_quiz_questions', true );
-		if ( !$_items ) {
+		if ( ! $_items ) {
 			return 0;
 		}
 		$_items     = array_keys( $_items );
 		$_questions = $this->get_posts_by_ids( $_items );
-		if ( !$_questions ) {
+		if ( ! $_questions ) {
 			return 0;
 		}
 		global $wpdb;
@@ -523,11 +535,12 @@ class LP_Upgrade_From_09 {
 				$this->_create_question_meta( $old_question_id, $new_question_id );
 				$this->_update_question_tag( $old_question_id, $new_question_id );
 
-				$new_questions[$old_question_id]       = $new_question_id;
-				self::$questions_map[$old_question_id] = $new_question_id;
+				$new_questions[ $old_question_id ]       = $new_question_id;
+				self::$questions_map[ $old_question_id ] = $new_question_id;
 
 			}
 		}
+
 		return $new_questions;
 	}
 
@@ -542,23 +555,30 @@ class LP_Upgrade_From_09 {
 			'_lpr_duration'      => null
 		);
 		$question_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
-		if ( $question_meta ) foreach ( $question_meta as $meta ) {
-			if ( !$keys[$meta['meta_key']] ) {
-				continue;
+		if ( $question_meta ) {
+			foreach ( $question_meta as $meta ) {
+				if ( ! $keys[ $meta['meta_key'] ] ) {
+					continue;
+				}
+				$new_key   = $keys[ $meta['meta_key'] ];
+				$new_value = $meta['meta_value'];
+				add_post_meta( $new_id, $new_key, $new_value );
 			}
-			$new_key   = $keys[$meta['meta_key']];
-			$new_value = $meta['meta_value'];
-			add_post_meta( $new_id, $new_key, $new_value );
 		}
 
 		$meta = get_post_meta( $old_id, '_lpr_question', true );
 		if ( $meta ) {
 			global $wpdb;
-			if ( !empty( $meta['type'] ) ) {
+			if ( ! empty( $meta['type'] ) ) {
 				add_post_meta( $new_id, '_lp_type', $meta['type'] );
 			}
-			if ( !empty( $meta['answer'] ) ) {
-				if ( in_array( $meta['type'], array( 'true_or_false', 'single_choice', 'multi_choice', 'sorting_choice' ) ) ) {
+			if ( ! empty( $meta['answer'] ) ) {
+				if ( in_array( $meta['type'], array(
+					'true_or_false',
+					'single_choice',
+					'multi_choice',
+					'sorting_choice'
+				) ) ) {
 					$ordering = 0;
 					foreach ( $meta['answer'] as $order => $answer ) {
 						$question_data = array(
@@ -586,7 +606,7 @@ class LP_Upgrade_From_09 {
 					$wpdb->prefix . 'learnpress_question_answers',
 					array(
 						'question_id'  => $new_id,
-						'answer_data'  => maybe_serialize( array( 'passage' => !empty( $meta['passage'] ) ? $meta['passage'] : '' ) ),
+						'answer_data'  => maybe_serialize( array( 'passage' => ! empty( $meta['passage'] ) ? $meta['passage'] : '' ) ),
 						'answer_order' => 0
 					),
 					array( '%d', '%s', '%d' )
@@ -615,7 +635,7 @@ class LP_Upgrade_From_09 {
 			foreach ( $terms as $term ) {
 				if ( $term->taxonomy == 'question-tag' ) {
 					$_term = term_exists( $term->name, 'question_tag' );
-					if ( $_term === 0 || $_term === NULL ) {
+					if ( $_term === 0 || $_term === null ) {
 						$_term = wp_insert_term(
 							$term->name, // the term
 							'question_tag', // the taxonomy
@@ -627,7 +647,7 @@ class LP_Upgrade_From_09 {
 						);
 					} else {
 					}
-					if ( !is_wp_error( $_term ) ) {
+					if ( ! is_wp_error( $_term ) ) {
 						$tags[] = absint( $_term['term_id'] );
 					}
 				} else {
@@ -655,6 +675,7 @@ class LP_Upgrade_From_09 {
 			$this->_update_course_comments( $old_course->ID, $new_course_id );
 
 		}
+
 		return array( 'id' => $new_course_id, 'section_items' => $section_items );
 	}
 
@@ -729,15 +750,15 @@ class LP_Upgrade_From_09 {
 			FROM {$wpdb->posts} p
 			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
 			WHERE post_type = %s
-			" . ( !$force ? "HAVING upgraded IS NULL" : "" ) . "
+			" . ( ! $force ? "HAVING upgraded IS NULL" : "" ) . "
 		", '_learn_press_upgraded', 'lpr_course' );
 
 		$new_courses = array();
 
 		if ( $old_courses = $wpdb->get_results( $query ) ) {
 			foreach ( $old_courses as $old_course ) {
-				$return                       = $this->_upgrade_course( $old_course );
-				$new_courses[$old_course->ID] = $return;
+				$return                         = $this->_upgrade_course( $old_course );
+				$new_courses[ $old_course->ID ] = $return;
 				if ( $return['id'] ) {
 					$this->_mark_upgraded( $old_course->ID, $return['id'] );
 				}
@@ -748,10 +769,12 @@ class LP_Upgrade_From_09 {
 		$posts             = array();
 		foreach ( $new_courses as $c ) {
 			$posts[] = $c['id'];
-			if ( $c['section_items'] ) foreach ( $c['section_items'] as $si ) {
-				$posts[] = $si['id'];
-				if ( !empty( $si['questions'] ) ) {
-					$posts = array_merge( $posts, $si['questions'] );
+			if ( $c['section_items'] ) {
+				foreach ( $c['section_items'] as $si ) {
+					$posts[] = $si['id'];
+					if ( ! empty( $si['questions'] ) ) {
+						$posts = array_merge( $posts, $si['questions'] );
+					}
 				}
 			}
 		}
@@ -781,11 +804,12 @@ class LP_Upgrade_From_09 {
 		$posts = array();
 		if ( $rows = $wpdb->get_results( $query, OBJECT_K ) ) {
 			foreach ( $ids as $id ) {
-				if ( !empty( $rows[$id] ) ) {
-					$posts[$id] = (array) $rows[$id];
+				if ( ! empty( $rows[ $id ] ) ) {
+					$posts[ $id ] = (array) $rows[ $id ];
 				}
 			}
 		}
+
 		return $posts;
 	}
 
@@ -800,6 +824,7 @@ class LP_Upgrade_From_09 {
 			AND pm.post_id = %d
 		", absint( $post_id ) );
 		$metas = (array) $wpdb->get_results( $query, ARRAY_A );
+
 		return $metas;
 	}
 
@@ -828,22 +853,22 @@ class LP_Upgrade_From_09 {
 			$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN(" . join( ",", $ids ) . ")" );
 			$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE ID IN(" . join( ",", $ids ) . ")" );
 
-                        $table = $wpdb->prefix . 'learnpress_sections';
-                        if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-                            $wpdb->query( "DELETE FROM {$wpdb->learnpress_sections}" );
-                        }
-                        $table = $wpdb->prefix . 'learnpress_section_items';
-                        if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-                            $wpdb->query( "DELETE FROM {$wpdb->learnpress_section_items}" );
-                        }
-                        $table = $wpdb->prefix . 'learnpress_quiz_history';
-                        if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-                            $wpdb->query( "DELETE FROM {$wpdb->learnpress_quiz_history}" );
-                        }
-                        $table = $wpdb->prefix . 'learnpress_user_course';
-                        if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-                            $wpdb->query( "DELETE FROM {$wpdb->learnpress_user_course}" );
-                        }
+			$table = $wpdb->prefix . 'learnpress_sections';
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+				$wpdb->query( "DELETE FROM {$wpdb->learnpress_sections}" );
+			}
+			$table = $wpdb->prefix . 'learnpress_section_items';
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+				$wpdb->query( "DELETE FROM {$wpdb->learnpress_section_items}" );
+			}
+			$table = $wpdb->prefix . 'learnpress_quiz_history';
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+				$wpdb->query( "DELETE FROM {$wpdb->learnpress_quiz_history}" );
+			}
+			$table = $wpdb->prefix . 'learnpress_user_course';
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+				$wpdb->query( "DELETE FROM {$wpdb->learnpress_user_course}" );
+			}
 		}
 		delete_option( 'learnpress_db_version' );
 		die();
@@ -858,7 +883,7 @@ class LP_Upgrade_From_09 {
 			INNER JOIN {$wpdb->users} u ON u.ID = um.user_id
 		", '_lpr_order_id' );
 		$orders = $wpdb->get_results( $query );
-		if ( !$orders ) {
+		if ( ! $orders ) {
 			return;
 		}
 
@@ -870,7 +895,7 @@ class LP_Upgrade_From_09 {
 			if ( $new_order_id = wp_insert_post( $order_data ) ) {
 				$this->_create_order_meta( $old_order_id, $new_order_id );
 			}
-			self::$orders_map[$old_order_id] = $new_order_id;
+			self::$orders_map[ $old_order_id ] = $new_order_id;
 		}
 	}
 
@@ -884,69 +909,71 @@ class LP_Upgrade_From_09 {
 			'_learn_press_transaction_method_id' => '_transaction_id'
 		);
 		$order_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
-		if ( $order_meta ) foreach ( $order_meta as $meta ) {
-			if ( '_learn_press_order_items' == $meta['meta_key'] ) {
-				$order_data = maybe_unserialize( $meta['meta_value'] );
-				if ( isset( $order_data->total ) ) {
-					add_post_meta( $new_id, '_order_total', $order_data->total );
-				} else {
-					add_post_meta( $new_id, '_order_total', 0 );
-				}
-
-				if ( isset( $order_data->sub_total ) ) {
-					add_post_meta( $new_id, '_order_subtotal', $order_data->sub_total );
-				} else {
-					add_post_meta( $new_id, '_order_subtotal', 0 );
-				}
-
-				if ( isset( $order_data->currency ) ) {
-					add_post_meta( $new_id, '_order_currency', $order_data->currency );
-				} else {
-					add_post_meta( $new_id, '', 'USD' );
-				}
-
-				if ( isset( $order_data->products ) ) {
-					foreach ( $order_data->products as $order_item ) {
-						$old_course_id = $order_item['id'];
-						$new_course_id = isset( self::$courses_map[$old_course_id] ) ? self::$courses_map[$old_course_id]['id'] : 0;
-						if ( $new_course_id ) {
-							$new_course    = get_post( $new_course_id );
-							$r             = $wpdb->insert(
-								$wpdb->prefix . 'learnpress_order_items',
-								array(
-									'order_item_name' => isset( $order_item['product_name'] ) ? $order_item['product_name'] : $new_course->post_title,
-									'order_id'        => $new_id
-								)
-							);
-							$order_item_id = $wpdb->insert_id;
-							learn_press_add_order_item_meta( $order_item_id, '_course_id', $new_course->ID );
-							learn_press_add_order_item_meta( $order_item_id, '_quantity', $order_item['quantity'] );
-							learn_press_add_order_item_meta( $order_item_id, '_subtotal', $order_item['product_subtotal'] );
-							learn_press_add_order_item_meta( $order_item_id, '_total', $order_item['product_subtotal'] );
-						}
-						if ( empty( self::$course_order_map[$old_course_id] ) ) {
-							self::$course_order_map[$old_course_id] = array();
-						}
-						self::$course_order_map[$old_course_id][] = $old_id;
+		if ( $order_meta ) {
+			foreach ( $order_meta as $meta ) {
+				if ( '_learn_press_order_items' == $meta['meta_key'] ) {
+					$order_data = LP_Helper::maybe_unserialize( $meta['meta_value'] );
+					if ( isset( $order_data->total ) ) {
+						add_post_meta( $new_id, '_order_total', $order_data->total );
+					} else {
+						add_post_meta( $new_id, '_order_total', 0 );
 					}
+
+					if ( isset( $order_data->sub_total ) ) {
+						add_post_meta( $new_id, '_order_subtotal', $order_data->sub_total );
+					} else {
+						add_post_meta( $new_id, '_order_subtotal', 0 );
+					}
+
+					if ( isset( $order_data->currency ) ) {
+						add_post_meta( $new_id, '_order_currency', $order_data->currency );
+					} else {
+						add_post_meta( $new_id, '', 'USD' );
+					}
+
+					if ( isset( $order_data->products ) ) {
+						foreach ( $order_data->products as $order_item ) {
+							$old_course_id = $order_item['id'];
+							$new_course_id = isset( self::$courses_map[ $old_course_id ] ) ? self::$courses_map[ $old_course_id ]['id'] : 0;
+							if ( $new_course_id ) {
+								$new_course    = get_post( $new_course_id );
+								$r             = $wpdb->insert(
+									$wpdb->prefix . 'learnpress_order_items',
+									array(
+										'order_item_name' => isset( $order_item['product_name'] ) ? $order_item['product_name'] : $new_course->post_title,
+										'order_id'        => $new_id
+									)
+								);
+								$order_item_id = $wpdb->insert_id;
+								learn_press_add_order_item_meta( $order_item_id, '_course_id', $new_course->ID );
+								learn_press_add_order_item_meta( $order_item_id, '_quantity', $order_item['quantity'] );
+								learn_press_add_order_item_meta( $order_item_id, '_subtotal', $order_item['product_subtotal'] );
+								learn_press_add_order_item_meta( $order_item_id, '_total', $order_item['product_subtotal'] );
+							}
+							if ( empty( self::$course_order_map[ $old_course_id ] ) ) {
+								self::$course_order_map[ $old_course_id ] = array();
+							}
+							self::$course_order_map[ $old_course_id ][] = $old_id;
+						}
+					}
+
+					add_post_meta( $new_id, '_prices_include_tax', 'no' );
+					add_post_meta( $new_id, '_user_agent', '' );
+					add_post_meta( $new_id, '_order_key', '' );
+					add_post_meta( $new_id, '_transaction_fee', '0' );
+
+					continue;
+				}
+				$new_key   = $keys[ $meta['meta_key'] ];
+				$new_value = $meta['meta_value'];
+				if ( '_payment_method' == $new_key ) {
+					$method_title = preg_replace( '!-!', ' ', $new_value );
+					$method_title = ucwords( $method_title );
+					add_post_meta( $new_id, '_payment_method_title', $method_title );
 				}
 
-				add_post_meta( $new_id, '_prices_include_tax', 'no' );
-				add_post_meta( $new_id, '_user_agent', '' );
-				add_post_meta( $new_id, '_order_key', '' );
-				add_post_meta( $new_id, '_transaction_fee', '0' );
-
-				continue;
+				add_post_meta( $new_id, $new_key, $new_value );
 			}
-			$new_key   = $keys[$meta['meta_key']];
-			$new_value = $meta['meta_value'];
-			if ( '_payment_method' == $new_key ) {
-				$method_title = preg_replace( '!-!', ' ', $new_value );
-				$method_title = ucwords( $method_title );
-				add_post_meta( $new_id, '_payment_method_title', $method_title );
-			}
-
-			add_post_meta( $new_id, $new_key, $new_value );
 		}
 
 		/**
@@ -992,125 +1019,125 @@ class LP_Upgrade_From_09 {
 				%s
 			)", join( ",\n", $fields ), join( "\n", $join ), join( "\nOR ", $having ) );
 		$user_meta_rows = $wpdb->get_results( $query );
-		if ( !$user_meta_rows ) {
+		if ( ! $user_meta_rows ) {
 			return;
 		}
 		foreach ( $user_meta_rows as $user_meta ) {
-			$user_meta     = $this->_parse_user_meta( $user_meta );
-//                        var_dump(self::$courses_map[28]['section_items'][26], self::$courses_map, $user_meta); die();
-			$new_course_id = 0;
-                        $user_course_items = array();
-                        $user_parent_items = array();
-			if ( !empty( $user_meta->user_course ) && !empty( $user_meta->course_time ) ) {
-                                $user_meta->user_course = array_unique( $user_meta->user_course );
+			$user_meta = $this->_parse_user_meta( $user_meta );
+			$new_course_id     = 0;
+			$user_course_items = array();
+			$user_parent_items = array();
+			if ( ! empty( $user_meta->user_course ) && ! empty( $user_meta->course_time ) ) {
+				$user_meta->user_course = array_unique( $user_meta->user_course );
 				foreach ( $user_meta->user_course as $course_id ) {
-					if ( !empty( self::$courses_map[$course_id] ) && !empty( $user_meta->course_time[$course_id] ) ) {
-						$new_course_id   = self::$courses_map[$course_id]['id'];
-						$course_time     = $user_meta->course_time[$course_id];
-						$course_end_time = !empty( $course_time['end'] ) ? $course_time['end'] : '';
-						if ( !empty( self::$course_order_map[$course_id] ) ) {
-							$course_order = reset( self::$course_order_map[$course_id] );
+					if ( ! empty( self::$courses_map[ $course_id ] ) && ! empty( $user_meta->course_time[ $course_id ] ) ) {
+						$new_course_id   = self::$courses_map[ $course_id ]['id'];
+						$course_time     = $user_meta->course_time[ $course_id ];
+						$course_end_time = ! empty( $course_time['end'] ) ? $course_time['end'] : '';
+						if ( ! empty( self::$course_order_map[ $course_id ] ) ) {
+							$course_order = reset( self::$course_order_map[ $course_id ] );
 						} else {
 							$course_order = 0;
 						}
-                                                $user = learn_press_get_user( $user_meta->user_id );
-                                                $user_item_id = learn_press_update_user_item_field( array(
-                                                                        'user_id'    => $user_meta->user_id,
-                                                                        'status'     => $course_end_time ? 'completed' : 'started',
-                                                                        'start_time' => isset( $course_time['start'] ) ? date( 'Y-m-d H:i:s', $course_time['start'] ) : '0000-00-00 00:00:00',
-                                                                        'end_time'   => $course_end_time ? date( 'Y-m-d H:i:s', $course_end_time ) : '0000-00-00 00:00:00',
-                                                                        'item_id'    => $new_course_id,
-                                                                        'item_type'  => LP_COURSE_CPT,
-                                                                        'ref_id'     => $course_order,
-                                                                        'ref_type'   => LP_ORDER_CPT,
-                                                                        'parent_id'  => 0
-                                                                ) );
-                                                $user_course_items[$course_id] = $user_item_id;
-                                                if ( ! empty( self::$courses_map[$course_id]['section_items'] ) ) {
-                                                        foreach ( self::$courses_map[$course_id]['section_items'] as $old_item_id => $new ) {
-                                                                $user_parent_items[$old_item_id] = $course_id;
-                                                        }
-                                                }
+						$user                            = learn_press_get_user( $user_meta->user_id );
+						$user_item_id                    = learn_press_update_user_item_field( array(
+							'user_id'    => $user_meta->user_id,
+							'status'     => $course_end_time ? 'completed' : 'started',
+							'start_time' => isset( $course_time['start'] ) ? date( 'Y-m-d H:i:s', $course_time['start'] ) : '0000-00-00 00:00:00',
+							'end_time'   => $course_end_time ? date( 'Y-m-d H:i:s', $course_end_time ) : '0000-00-00 00:00:00',
+							'item_id'    => $new_course_id,
+							'item_type'  => LP_COURSE_CPT,
+							'ref_id'     => $course_order,
+							'ref_type'   => LP_ORDER_CPT,
+							'parent_id'  => 0
+						) );
+						$user_course_items[ $course_id ] = $user_item_id;
+						if ( ! empty( self::$courses_map[ $course_id ]['section_items'] ) ) {
+							foreach ( self::$courses_map[ $course_id ]['section_items'] as $old_item_id => $new ) {
+								$user_parent_items[ $old_item_id ] = $course_id;
+							}
+						}
 					}
 				}
 			}
-                        $user_lesson_items = array();
-			if ( !empty( $user_meta->lesson_completed ) ) {
+			$user_lesson_items = array();
+			if ( ! empty( $user_meta->lesson_completed ) ) {
 				foreach ( $user_meta->lesson_completed as $old_course_id => $_lessons ) {
 					$lesson_start_time = null;
 					$lesson_end_time   = null;
-					if ( !empty( $user_meta->course_time ) && !empty( $user_meta->course_time[$old_course_id] ) ) {
-						$lesson_start_time = !empty( $user_meta->course_time[$old_course_id]['start'] ) ? $user_meta->course_time[$old_course_id]['start'] : '';
-						$lesson_end_time   = !empty( $user_meta->course_time[$old_course_id]['end'] ) ? $user_meta->course_time[$old_course_id]['end'] : '';
+					if ( ! empty( $user_meta->course_time ) && ! empty( $user_meta->course_time[ $old_course_id ] ) ) {
+						$lesson_start_time = ! empty( $user_meta->course_time[ $old_course_id ]['start'] ) ? $user_meta->course_time[ $old_course_id ]['start'] : '';
+						$lesson_end_time   = ! empty( $user_meta->course_time[ $old_course_id ]['end'] ) ? $user_meta->course_time[ $old_course_id ]['end'] : '';
 					}
-                                        if ( ! empty( self::$courses_map[$old_course_id] ) ) {
-                                            $new_course_id   = self::$courses_map[$old_course_id]['id'];
-                                        }
-					if ( $_lessons ) foreach ( $_lessons as $old_lesson_id ) {
-                                                $item_id = !empty( self::$lessons_map[$old_lesson_id] ) ? self::$lessons_map[$old_lesson_id] : '';
-                                                $user_item_id = learn_press_update_user_item_field( array(
-                                                                        'status'     => $lesson_end_time ? 'completed' : 'started',
-                                                                        'start_time' => $lesson_start_time ? date( 'Y-m-d H:i:s', $lesson_start_time ) : '0000-00-00 00:00:00',
-                                                                        'end_time'   => $lesson_end_time ? date( 'Y-m-d H:i:s', $lesson_end_time ) : '0000-00-00 00:00:00',
-                                                                        'item_id'    => !empty( self::$lessons_map[$old_lesson_id] ) ? self::$lessons_map[$old_lesson_id] : '',
-                                                                        'user_id'    => $user_meta->user_id,
-                                                                        'item_type'  => LP_LESSON_CPT,
-                                                                        'ref_id'     => $new_course_id,
-                                                                        'ref_type'   => LP_COURSE_CPT,
-                                                                        'parent_id'  => isset( $user_course_items[$old_course_id] ) ? $user_course_items[$old_course_id] : 0
-                                                                ) );
-                                                $user_lesson_items[$old_lesson_id] = $user_item_id;
+					if ( ! empty( self::$courses_map[ $old_course_id ] ) ) {
+						$new_course_id = self::$courses_map[ $old_course_id ]['id'];
+					}
+					if ( $_lessons ) {
+						foreach ( $_lessons as $old_lesson_id ) {
+							$item_id                             = ! empty( self::$lessons_map[ $old_lesson_id ] ) ? self::$lessons_map[ $old_lesson_id ] : '';
+							$user_item_id                        = learn_press_update_user_item_field( array(
+								'status'     => $lesson_end_time ? 'completed' : 'started',
+								'start_time' => $lesson_start_time ? date( 'Y-m-d H:i:s', $lesson_start_time ) : '0000-00-00 00:00:00',
+								'end_time'   => $lesson_end_time ? date( 'Y-m-d H:i:s', $lesson_end_time ) : '0000-00-00 00:00:00',
+								'item_id'    => ! empty( self::$lessons_map[ $old_lesson_id ] ) ? self::$lessons_map[ $old_lesson_id ] : '',
+								'user_id'    => $user_meta->user_id,
+								'item_type'  => LP_LESSON_CPT,
+								'ref_id'     => $new_course_id,
+								'ref_type'   => LP_COURSE_CPT,
+								'parent_id'  => isset( $user_course_items[ $old_course_id ] ) ? $user_course_items[ $old_course_id ] : 0
+							) );
+							$user_lesson_items[ $old_lesson_id ] = $user_item_id;
+						}
 					}
 				}
 			}
-			if ( !empty( $user_meta->quiz_start_time ) ) {
+			if ( ! empty( $user_meta->quiz_start_time ) ) {
 				foreach ( $user_meta->quiz_start_time as $old_quiz_id => $time ) {
-					if ( empty( self::$quizzes_map[$old_quiz_id] ) ) {
+					if ( empty( self::$quizzes_map[ $old_quiz_id ] ) ) {
 						continue;
 					}
-                                        if ( !isset( $user_parent_items[$old_quiz_id] ) ) {
-//                                            var_dump($user_parent_items, $old_quiz_id, self::$courses_map); die();
-                                        }
-                                        $item_id = !empty( self::$quizzes_map[$old_quiz_id] ) ? self::$quizzes_map[$old_quiz_id] : '';
-                                        $old_course_id = ! empty( $user_parent_items[$old_quiz_id] ) ? $user_parent_items[$old_quiz_id] : 0;
-                                        $new_course_id   = ! empty( self::$courses_map[$old_course_id] ) ? self::$courses_map[$old_course_id]['id'] : 0;
-                                        $user_quiz_id = learn_press_update_user_item_field( array(
-                                                                        'status'     => !empty( $user_meta->quiz_completed[$old_quiz_id] ) ? 'completed' : 'started',
-                                                                        'start_time' => date( 'Y-m-d H:i:s', $time ),
-                                                                        'end_time'   => !empty( $user_meta->quiz_completed[$old_quiz_id] ) ? date( 'Y-m-d H:i:s', $user_meta->quiz_completed[$old_quiz_id] ) : '0000-00-00 00:00:00',
-                                                                        'user_id'    => $user_meta->user_id,
-                                                                        'item_id'    => $item_id,
-                                                                        'item_type'  => LP_QUIZ_CPT,
-                                                                        'ref_id'     => $new_course_id,
-                                                                        'ref_type'   => LP_COURSE_CPT,
-                                                                        'parent_id'  => isset( $user_course_items[$old_course_id] ) ? $user_course_items[$old_course_id] : 0
-                                                                ) );
+					if ( ! isset( $user_parent_items[ $old_quiz_id ] ) ) {
+					}
+					$item_id       = ! empty( self::$quizzes_map[ $old_quiz_id ] ) ? self::$quizzes_map[ $old_quiz_id ] : '';
+					$old_course_id = ! empty( $user_parent_items[ $old_quiz_id ] ) ? $user_parent_items[ $old_quiz_id ] : 0;
+					$new_course_id = ! empty( self::$courses_map[ $old_course_id ] ) ? self::$courses_map[ $old_course_id ]['id'] : 0;
+					$user_quiz_id  = learn_press_update_user_item_field( array(
+						'status'     => ! empty( $user_meta->quiz_completed[ $old_quiz_id ] ) ? 'completed' : 'started',
+						'start_time' => date( 'Y-m-d H:i:s', $time ),
+						'end_time'   => ! empty( $user_meta->quiz_completed[ $old_quiz_id ] ) ? date( 'Y-m-d H:i:s', $user_meta->quiz_completed[ $old_quiz_id ] ) : '0000-00-00 00:00:00',
+						'user_id'    => $user_meta->user_id,
+						'item_id'    => $item_id,
+						'item_type'  => LP_QUIZ_CPT,
+						'ref_id'     => $new_course_id,
+						'ref_type'   => LP_COURSE_CPT,
+						'parent_id'  => isset( $user_course_items[ $old_course_id ] ) ? $user_course_items[ $old_course_id ] : 0
+					) );
 
-                                        if ( !empty( $user_meta->quiz_current_question ) ) {
-						if ( !empty( $user_meta->quiz_current_question[$old_quiz_id] ) ) {
-							learn_press_update_user_item_meta( $user_quiz_id, 'current_question', self::$questions_map[$user_meta->quiz_current_question[$old_quiz_id]] );
+					if ( ! empty( $user_meta->quiz_current_question ) ) {
+						if ( ! empty( $user_meta->quiz_current_question[ $old_quiz_id ] ) ) {
+							learn_press_update_user_item_meta( $user_quiz_id, 'current_question', self::$questions_map[ $user_meta->quiz_current_question[ $old_quiz_id ] ] );
 						}
 					}
-                                        if ( !empty( $user_meta->quiz_question_answer ) ) {
-						if ( !empty( $user_meta->quiz_question_answer[$old_quiz_id] ) ) {
+					if ( ! empty( $user_meta->quiz_question_answer ) ) {
+						if ( ! empty( $user_meta->quiz_question_answer[ $old_quiz_id ] ) ) {
 							$question_answers = array();
-							foreach ( $user_meta->quiz_question_answer[$old_quiz_id] as $old_question_id => $answer ) {
-								if ( !empty( self::$questions_map[$old_question_id] ) ) {
-									$question_answers[self::$questions_map[$old_question_id]] = $answer;
+							foreach ( $user_meta->quiz_question_answer[ $old_quiz_id ] as $old_question_id => $answer ) {
+								if ( ! empty( self::$questions_map[ $old_question_id ] ) ) {
+									$question_answers[ self::$questions_map[ $old_question_id ] ] = $answer;
 								}
 							}
 							learn_press_update_user_item_meta( $user_quiz_id, 'question_answers', $question_answers );
 						}
 					}
-                                        if ( !empty( $user_meta->quiz_questions ) ) {
-						if ( !empty( $user_meta->quiz_questions[$old_quiz_id] ) ) {
+					if ( ! empty( $user_meta->quiz_questions ) ) {
+						if ( ! empty( $user_meta->quiz_questions[ $old_quiz_id ] ) ) {
 							$quiz_questions = array();
-							foreach ( $user_meta->quiz_questions[$old_quiz_id] as $old_question_id ) {
-								if ( !empty( self::$questions_map[$old_question_id] ) ) {
-									$quiz_questions[] = self::$questions_map[$old_question_id];
+							foreach ( $user_meta->quiz_questions[ $old_quiz_id ] as $old_question_id ) {
+								if ( ! empty( self::$questions_map[ $old_question_id ] ) ) {
+									$quiz_questions[] = self::$questions_map[ $old_question_id ];
 								}
 							}
-                                                        learn_press_update_user_item_meta( $user_quiz_id, 'question_answers', $quiz_questions );
+							learn_press_update_user_item_meta( $user_quiz_id, 'question_answers', $quiz_questions );
 						}
 					}
 				}
@@ -1128,9 +1155,10 @@ class LP_Upgrade_From_09 {
 		$origin_type = gettype( $meta );
 		$meta        = (array) $meta;
 		foreach ( $meta as $k => $v ) {
-			$meta[$k] = maybe_unserialize( $v );
+			$meta[ $k ] = LP_Helper::maybe_unserialize( $v );
 		}
 		settype( $meta, $origin_type );
+
 		return $meta;
 	}
 
@@ -1174,7 +1202,11 @@ class LP_Upgrade_From_09 {
 				'show_ui'           => true,
 				'show_admin_column' => 'true',
 				'show_in_nav_menus' => true,
-				'rewrite'           => array( 'slug' => _x( 'lesson-tag', 'Permalink Slug', 'learnpress' ), 'hierarchical' => true, 'with_front' => false ),
+				'rewrite'           => array(
+					'slug'         => _x( 'lesson-tag', 'Permalink Slug', 'learnpress' ),
+					'hierarchical' => true,
+					'with_front'   => false
+				),
 			)
 		);
 
@@ -1210,7 +1242,7 @@ class LP_Upgrade_From_09 {
 			$options = explode( ' ', 'currency currency_pos thousands_separator decimals_separator number_of_decimals instructor_registration' );
 			foreach ( $options as $o ) {
 				if ( array_key_exists( $o, $_lpr_settings_general ) ) {
-					add_option( 'learn_press_' . $o, $_lpr_settings_general[$o] );
+					add_option( 'learn_press_' . $o, $_lpr_settings_general[ $o ] );
 				}
 			}
 		}
@@ -1219,14 +1251,14 @@ class LP_Upgrade_From_09 {
 		if ( $payments = get_option( '_lpr_settings_payment' ) ) {
 			foreach ( $payments as $payment => $options ) {
 				if ( $payment == 'paypal' ) {
-					if ( !empty( $options['enable'] ) && $options['enable'] == 'on' ) {
+					if ( ! empty( $options['enable'] ) && $options['enable'] == 'on' ) {
 						add_option( 'learn_press_paypal_enable', 'yes' );
 					} else {
 						add_option( 'learn_press_paypal_enable', 'no' );
 					}
-					add_option( 'learn_press_paypal_email', !empty( $options['paypal_email'] ) ? $options['paypal_email'] : '' );
-					add_option( 'learn_press_paypal_sandbox_email', !empty( $options['paypal_sandbox_email'] ) ? $options['paypal_sandbox_email'] : '' );
-					add_option( 'learn_press_paypal_sandbox', !empty( $options['sandbox'] ) ? 'yes' : 'no' );
+					add_option( 'learn_press_paypal_email', ! empty( $options['paypal_email'] ) ? $options['paypal_email'] : '' );
+					add_option( 'learn_press_paypal_sandbox_email', ! empty( $options['paypal_sandbox_email'] ) ? $options['paypal_sandbox_email'] : '' );
+					add_option( 'learn_press_paypal_sandbox', ! empty( $options['sandbox'] ) ? 'yes' : 'no' );
 				}
 			}
 		}
@@ -1251,7 +1283,7 @@ class LP_Upgrade_From_09 {
 			foreach ( $_lpr_settings_emails as $email_type => $email ) {
 				if ( in_array( $email_type, array( 'published_course', 'enrolled_course', 'passed_course' ) ) ) {
 					$new_email = wp_parse_args(
-						get_option( $emails[$email_type][0] ),
+						get_option( $emails[ $email_type ][0] ),
 						array(
 							'enable'       => '',
 							'subject'      => '',
@@ -1260,9 +1292,9 @@ class LP_Upgrade_From_09 {
 						)
 					);
 
-					$new_email['enable']  = !empty( $email['enable'] ) ? 'yes' : 'no';
-					$new_email['subject'] = !empty( $email['subject'] ) ? $email['subject'] : $new_email['subject'];
-					if ( !empty( $email['message'] ) ) {
+					$new_email['enable']  = ! empty( $email['enable'] ) ? 'yes' : 'no';
+					$new_email['subject'] = ! empty( $email['subject'] ) ? $email['subject'] : $new_email['subject'];
+					if ( ! empty( $email['message'] ) ) {
 
 						$templates = array( 'learnpress' );
 						if ( get_template() == 'eduma' ) {
@@ -1274,15 +1306,15 @@ class LP_Upgrade_From_09 {
 							} else {
 								$template_path = get_template_directory() . '/' . $_template . '/emails/plain/';
 							}
-							if ( wp_mkdir_p( $template_path ) && !file_exists( $template_path . $emails[$email_type][1] . '.php' ) ) {
-								if ( $file_handle = @fopen( $template_path . $emails[$email_type][1] . '.php', 'w' ) ) {
+							if ( wp_mkdir_p( $template_path ) && ! file_exists( $template_path . $emails[ $email_type ][1] . '.php' ) ) {
+								if ( $file_handle = @fopen( $template_path . $emails[ $email_type ][1] . '.php', 'w' ) ) {
 									fwrite( $file_handle, $email['message'] );
 									fclose( $file_handle );
 								}
 							}
 						}
 					}
-					add_option( $emails[$email_type][0], $new_email );
+					add_option( $emails[ $email_type ][0], $new_email );
 				} elseif ( $email_type == 'general' ) {
 					$new_email               = wp_parse_args(
 						get_option( 'learn_press_emails_general' ),
@@ -1291,8 +1323,8 @@ class LP_Upgrade_From_09 {
 							'from_email' => ''
 						)
 					);
-					$new_email['from_name']  = !empty( $email['from_name'] ) ? $email['from_name'] : $new_email['from_name'];
-					$new_email['from_email'] = !empty( $email['from_email'] ) ? $email['from_email'] : $new_email['from_email'];
+					$new_email['from_name']  = ! empty( $email['from_name'] ) ? $email['from_name'] : $new_email['from_name'];
+					$new_email['from_email'] = ! empty( $email['from_email'] ) ? $email['from_email'] : $new_email['from_email'];
 					add_option( 'learn_press_emails_general', $new_email );
 				}
 			}
@@ -1332,7 +1364,8 @@ class LP_Upgrade_From_09 {
 			$this->upgrade_settings();
 			// update database
 			$this->upgrade_database();
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			$wpdb->query( "ROLLBACK;" );
 			wp_die( $ex->getMessage() );
 		}
@@ -1345,6 +1378,7 @@ class LP_Upgrade_From_09 {
 		delete_transient( 'learn_press_is_old_version' );
 
 		learn_press_update_log( '1.0.x', array( 'time' => time() ) );
+
 		return true;
 	}
 
@@ -1352,25 +1386,30 @@ class LP_Upgrade_From_09 {
 	 * Display update page content
 	 */
 	public function learn_press_upgrade_10_page() {
-		if ( empty( $_REQUEST['page'] ) || $_REQUEST['page'] != 'learn_press_upgrade_from_09' ) return;
-		if ( empty( $_REQUEST['_wpnonce'] ) || !wp_verify_nonce( $_REQUEST['_wpnonce'], 'learn-press-upgrade-09' ) ) {
+		if ( empty( $_REQUEST['page'] ) || $_REQUEST['page'] != 'learn_press_upgrade_from_09' ) {
+			return;
+		}
+		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'learn-press-upgrade-09' ) ) {
 			wp_redirect( admin_url() );
 			exit();
 		}
-		if ( !empty( $_POST['action'] ) && $_POST['action'] == 'upgrade' ) {
+		if ( ! empty( $_POST['action'] ) && $_POST['action'] == 'upgrade' ) {
 			if ( $this->do_upgrade() ) {
 				$_REQUEST['step'] = 'upgraded';
 			}
 		}
 
-		wp_enqueue_style( 'learn-press-upgrade-x', LP()->plugin_url( 'inc/updates/09/style.css' ), array( 'dashicons', 'install' ) );
+		wp_enqueue_style( 'learn-press-upgrade-x', LP()->plugin_url( 'inc/updates/09/style.css' ), array(
+			'dashicons',
+			'install'
+		) );
 		wp_enqueue_script( 'learn-press-upgrade-x', LP()->plugin_url( 'inc/updates/09/script.js' ), array( 'jquery' ) );
 
 		add_action( 'learn_press_update_step_welcome', array( $this, 'update_welcome' ) );
 		add_action( 'learn_press_update_step_upgraded', array( $this, 'update_upgraded' ) );
 
-		$step = !empty( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'welcome';
-		if ( !in_array( $step, $this->_steps ) ) {
+		$step = ! empty( $_REQUEST['step'] ) ? $_REQUEST['step'] : 'welcome';
+		if ( ! in_array( $step, $this->_steps ) ) {
 			$step = reset( $this->_steps );
 		}
 		$this->_current_step = $step;
@@ -1412,10 +1451,12 @@ class LP_Upgrade_From_09 {
 			if ( ( $pos = array_search( $this->_current_step, $this->_steps ) ) !== false ) {
 				if ( $pos < sizeof( $this->_steps ) - 1 ) {
 					$pos ++;
-					return admin_url( 'admin.php?page=learn_press_upgrade_from_09&step=' . $this->_steps[$pos] );
+
+					return admin_url( 'admin.php?page=learn_press_upgrade_from_09&step=' . $this->_steps[ $pos ] );
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -1424,10 +1465,12 @@ class LP_Upgrade_From_09 {
 			if ( ( $pos = array_search( $this->_current_step, $this->_steps ) ) !== false ) {
 				if ( $pos > 0 ) {
 					$pos --;
-					return admin_url( 'admin.php?page=learn_press_upgrade_from_09&step=' . $this->_steps[$pos] );
+
+					return admin_url( 'admin.php?page=learn_press_upgrade_from_09&step=' . $this->_steps[ $pos ] );
 				}
 			}
 		}
+
 		return false;
 	}
 }

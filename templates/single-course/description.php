@@ -1,30 +1,35 @@
 <?php
 /**
- * Displaying the description of single course
+ * Template for displaying description of single course.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 2.0.6
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/description.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-$course = LP()->global['course'];
+$course = LP_Global::course();
 
-if ( $course->is( 'viewing-item' ) ) {
+if ( $course->is_viewing_item() ) {
 	if ( false === apply_filters( 'learn_press_display_course_description_on_viewing_item', false ) ) {
 		return;
 	}
 }
 
-$description_heading = apply_filters( 'learn_press_single_course_description_heading', __( 'Course Description', 'learnpress' ), $course );
+$description_heading = apply_filters( 'learn_press_single_course_description_heading', __( 'Course description', 'learnpress' ), $course );
 ?>
 
 <?php if ( $description_heading ) { ?>
 
-	<h3 class="course-description-heading" id="learn-press-course-description-heading"><?php echo $description_heading; ?></h3>
+    <h3 class="course-description-heading"
+        id="learn-press-course-description-heading"><?php echo $description_heading; ?>
+    </h3>
 
 <?php } ?>
 

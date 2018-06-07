@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return mixed
  */
 function learn_press_generate_order_key() {
-	return apply_filters( 'learn-press/order-key', uniqid( 'order_' ) );
+	return apply_filters( 'learn-press/order-key', strtoupper( uniqid( 'ORDER' ) ) );
 }
 
 /**
@@ -48,91 +48,18 @@ function learn_press_create_order( $order_data ) {
 
 	$order = new LP_Order();
 	$order->save();
+
 	return $order;
-
-	$order_data_defaults = array(
-		'ID'          => 0,
-		'post_author' => '1',
-		'post_parent' => '0',
-		'post_type'   => LP_ORDER_CPT,
-		'post_status' => learn_press_default_order_status( 'lp-' ),
-		'ping_status' => 'closed',
-		'post_title'  => __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" )
-	);
-	// @deprecated
-	$order_data_defaults = apply_filters( 'learn_press_defaults_order_data', $order_data_defaults );
-
-	/// @since 3.x.x
-	$order_data_defaults = apply_filters( 'learn-press/order/default-data', $order_data_defaults );
-	$order_data          = wp_parse_args( $order_data, $order_data_defaults );
-
-	if ( isset( $order_data['status'] ) ) {
-		if ( ! in_array( 'lp-' . $order_data['status'], array_keys( learn_press_get_order_statuses() ) ) ) {
-			return new WP_Error( 'learn-press/order/invalid-status', __( 'Invalid order status', 'learnpress' ) );
-		}
-		$order_data['post_status'] = 'lp-' . $order_data['status'];
-	}
-
-	if ( isset( $order_data['user_note'] ) ) {
-		$order_data['post_excerpt'] = $order_data['user_note'];
-	}
-
-	if ( $order_data['ID'] ) {
-		$order_data = apply_filters( 'learn-press/order/update-data', $order_data );
-		$order_id   = wp_update_post( $order_data, true );
-	} else {
-		$order_data = apply_filters( 'learn-press/order/new-data', $order_data );
-		$order_id   = wp_insert_post( $order_data, true );
-	}
-
-	if ( ! is_wp_error( $order_id ) ) {
-
-		$cart = LP()->cart ? LP()->cart : false;
-
-		$meta_default = array(
-			'_order_currency'       => learn_press_get_currency(),
-			'_prices_include_tax'   => 'no',
-			'_user_ip_address'      => learn_press_get_ip(),
-			'_user_agent'           => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '',
-			'_user_id'              => get_current_user_id(),
-			'_order_subtotal'       => $cart ? $cart->subtotal : 0,
-			'_order_total'          => $cart ? $cart->total : 0,
-			'_order_key'            => learn_press_generate_order_key(),
-			'_payment_method'       => '',
-			'_payment_method_title' => '',
-			'_order_version'        => '1.0',
-			'_created_via'          => 'checkout'
-		);
-		$order_meta   = array();
-
-		foreach ( $meta_default as $k => $v ) {
-			if ( array_key_exists( $k, $order_data ) ) {
-				$order_meta[ $k ] = $order_data[ $k ];
-			}
-		}
-
-		$order_meta = wp_parse_args(
-			$order_meta,
-			$meta_default
-		);
-
-		if ( $order_meta = apply_filters( 'learn-press/new-order-meta', $order_meta ) ) {
-			foreach ( $order_meta as $k => $v ) {
-				update_post_meta( $order_id, $k, $v );
-			}
-		}
-		return new LP_Order( $order_id );
-	}
-
-	return $order_id;
 }
 
 /**
  * Create a new order or update an existing
  *
- * @param array
+ * @param array $order_data
  *
- * @return LP_Order instance
+ * @return LP_Order|WP_Error
+ *
+ * @throws Exception
  */
 
 function learn_press_update_order( $order_data ) {
@@ -280,35 +207,6 @@ function learn_press_get_order_item_meta( $item_id, $meta_key, $single = true ) 
 	return get_metadata( 'learnpress_order_item', $item_id, $meta_key, $single );
 }
 
-/*******************************/
-
-/*
- * Check to see if a user can view the order
- *
- * @param      $order_id
- * @param null $user_id
- * @return bool
- */
-function learn_press_user_can_view_order( $order_id, $user_id = null ) {
-	if ( ! intval( $order_id ) ) {
-		return false;
-	}
-	if ( ! $user_id && ! ( $user_id = get_current_user_id() ) ) {
-		return false;
-	}
-	if ( ! get_post( $order_id ) ) {
-		return false;
-	}
-
-	$orders = get_user_meta( $user_id, '_lpr_order_id' );
-
-	if ( ! in_array( $order_id, $orders ) ) {
-		return false;
-	}
-
-	return true;
-}
-
 /**
  * Get order
  *
@@ -357,7 +255,8 @@ function learn_press_get_order_confirm_url( $order_id = 0 ) {
 			$course = reset( $items->products );
 			$url    = get_permalink( $course['id'] );
 		} else {
-			$url = get_site_url();
+			$url = get_home_url() /* SITE_URL */
+			;
 		}
 	}
 
@@ -549,7 +448,7 @@ function learn_press_cart_order_instructor() {
 }
 
 function learn_press_get_orders( $args = array() ) {
-	//_deprecated_function( __FUNCTION__, '3.x.x', 'get_posts' );
+	//_deprecated_function( __FUNCTION__, '3.0.0', 'get_posts' );
 	$args['post_type'] = LP_ORDER_CPT;
 	$orders            = get_posts( $args );
 
@@ -788,7 +687,7 @@ function learn_press_get_order_statuses( $prefix = true, $status_only = false ) 
 	// @deprecated
 	$order_statuses = apply_filters( 'learn_press_order_statuses', $order_statuses );
 
-	// @since 3.x.x
+	// @since 3.0.0
 	return apply_filters( 'learn-press/order-statues', $order_statuses );
 }
 
@@ -834,56 +733,80 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learnpress' )
 	);
-//			$lp_order_statuses['lp-on-hold']    = array(
-//				'label'                     => _x( 'On Hold', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'On Hold <span class="count">(%s)</span>', 'On Hold <span class="count">(%s)</span>', 'learnpress' )
-//			);
-//			$lp_order_statuses['lp-refunded']   = array(
-//				'label'                     => _x( 'Refunded', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learnpress' )
-//			);
-//			$lp_order_statuses['lp-failed']     = array(
-//				'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' )
-//			);
+	$order_statues['lp-failed'] = array(
+		'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' )
+	);
+
 	return $order_statues;
 }
 
 function _learn_press_get_order_status_description( $status ) {
 	static $descriptions = null;
 	$descriptions = array(
-		'lp-pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
-		'lp-processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
-		'lp-completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
-		'lp-cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' )
-//		'lp-on-hold'    => __( 'Awaiting payment.', 'learnpress' ),
-//		'lp-failed'     => __( 'Payment failed or was declined (unpaid).', 'learnpress' ),
-//		'lp-refunded'   => __( 'Refunded is to indicate that the refund to the customer has been sent.', 'learnpress' )
+		'pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
+		'processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
+		'completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
+		'cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' )
 	);
 
 	return apply_filters( 'learn_press_order_status_description', ! empty( $descriptions[ $status ] ) ? $descriptions[ $status ] : '' );
 }
 
+/**
+ * Get status of an order by the ID.
+ *
+ * @param int $order_id
+ *
+ * @return bool|string
+ */
 function learn_press_get_order_status( $order_id ) {
 	$order = learn_press_get_order( $order_id );
+
 	if ( $order ) {
 		return $order->get_status();
 	}
 
 	return false;
 }
+
+if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
+	/**
+	 * Process action allows user to cancel an order is pending
+	 * in their profile.
+	 */
+	function learn_press_cancel_order_process() {
+		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) || ! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
+			return;
+		}
+
+		$order_id = absint( $_REQUEST['cancel-order'] );
+		$order    = learn_press_get_order( $order_id );
+		$user     = learn_press_get_current_user();
+
+		$url = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+
+		if ( ! $order ) {
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
+		} else if ( $order->has_status( 'pending' ) ) {
+			$order->update_status( 'cancelled' );
+			$order->add_note( __( 'Order cancelled by customer', 'learnpress' ) );
+
+			// set updated message
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() ) );
+			$url = $order->get_cancel_order_url( true );
+		} else {
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> can not be cancelled', 'learnpress' ), $order->get_order_number() ), 'error' );
+		}
+		wp_safe_redirect( $url );
+		exit();
+	}
+}
+add_action( 'init', 'learn_press_cancel_order_process' );
 
 /**
  * Auto enroll course after user checkout
@@ -898,7 +821,7 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 		$user = learn_press_get_user( $order->user_id, true );
 		if ( $order_items = $order->get_items() ) {
 			foreach ( $order_items as $item ) {
-				if ( $user->has( 'enrolled-course', $item['course_id'] ) ) {
+				if ( $user->has_enrolled_course( $item['course_id'] ) ) {
 					continue;
 				}
 				if ( $user->enroll( $item['course_id'] ) ) {

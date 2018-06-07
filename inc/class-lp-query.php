@@ -36,61 +36,10 @@ class LP_Query {
 		if ( did_action( 'learn_press_parse_query' ) ) {
 			return $q;
 		}
-		$user    = learn_press_get_current_user();
-		$request = $this->get_request();
-		if ( ! $request || is_admin() ) {
-			return $q;
-		}
-		remove_filter( 'do_parse_request', array( $this, 'get_current_quiz_question' ), 1010, 3 );
-		$course_type = 'lp_course';
-		$post_types  = get_post_types( '', 'objects' );
 
-		if ( empty( $post_types[ $course_type ] ) ) {
-			return;
-		}
-		/********************/
-		if ( empty( $q->query_vars[ LP_COURSE_CPT ] ) ) {
-			return;
-		}
-		$this->query_vars['course'] = $q->query_vars[ LP_COURSE_CPT ];
-		$course_id                  = learn_press_setup_course_data( $this->query_vars['course'] );
-		$quiz_name                  = '';
-		$question_name              = '';
-		$lesson_name                = '';
-		if ( ! empty( $q->query_vars['quiz'] ) ) {
-			$quiz_name                     = $this->query_vars['quiz'] = $q->query_vars['quiz'];
-			$this->query_vars['item_type'] = LP_QUIZ_CPT;
-			if ( ! empty( $q->query_vars['question'] ) ) {
-				$question_name = $this->query_vars['question'] = $q->query_vars['question'];
-			}
-		} elseif ( ! empty( $q->query_vars['lesson'] ) ) {
-			$lesson_name                   = $this->query_vars['lesson'] = $q->query_vars['lesson'];
-			$this->query_vars['item_type'] = LP_LESSON_CPT;
-		}
-		if ( $quiz_name && $question_name ) {
-			if ( $quiz = learn_press_get_post_by_name( $quiz_name, LP_QUIZ_CPT ) ) {
-				if ( $user->has_quiz_status( 'completed', $quiz->ID, $course_id ) ) {
-					//remove question name from uri
-					$course   = learn_press_get_course( $course_id );
-					$redirect = $course->get_item_link( $quiz->ID );// get_site_url() . '/' . dirname( $request_match );
-					wp_redirect( $redirect );
-					exit();
-				}
-				if ( $question = learn_press_get_post_by_name( $question_name, 'lp_question' ) ) {
-					global $wpdb;
-					$query = $wpdb->prepare( "
-						SELECT MAX(user_item_id)
-						FROM {$wpdb->prefix}learnpress_user_items
-						WHERE user_id = %d AND item_id = %d AND item_type = %s and status <> %s
-					", learn_press_get_current_user_id(), $quiz->ID, 'lp_quiz', 'completed' );
-					if ( $history_id = $wpdb->get_var( $query ) ) {
-						learn_press_update_user_item_meta( $history_id, 'current_question', $question->ID );
-					}
-				}
-			}
-		}
-		$this->query_vars['course_id'] = $course_id;
 		do_action_ref_array( 'learn_press_parse_query', array( &$this ) );
+
+		return $q;
 	}
 
 	/**
@@ -154,6 +103,8 @@ class LP_Query {
 		add_rewrite_tag( '%view%', '([^/]*)' );
 		add_rewrite_tag( '%view_id%', '(.*)' );
 		add_rewrite_tag( '%section%', '(.*)' );
+
+		add_rewrite_tag( '%content-item-only%', '(.*)' );
 		do_action( 'learn_press_add_rewrite_tags' );
 	}
 
@@ -164,7 +115,7 @@ class LP_Query {
 
 		$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
 		// lesson
-		$course_type  = 'lp_course';
+		$course_type  = LP_COURSE_CPT;
 		$post_types   = get_post_types( '', 'objects' );
 		$slug         = preg_replace( '!^/!', '', $post_types[ $course_type ]->rewrite['slug'] );
 		$has_category = false;
@@ -173,7 +124,7 @@ class LP_Query {
 			$has_category = true;
 		}
 		$current_url        = learn_press_get_current_url();
-		$query_string       = str_replace( trailingslashit( get_site_url() ), '', $current_url );
+		$query_string       = str_replace( trailingslashit( get_home_url() /* SITE_URL */ ), '', $current_url );
 		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
 		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 
@@ -188,6 +139,8 @@ class LP_Query {
 		if ( ! empty( $custom_slug_quiz ) ) {
 			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
 		}
+
+		$popup_slug = 'popup';
 		if ( $has_category ) {
 			add_rewrite_rule(
 				'^' . $slug . '(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
@@ -199,6 +152,20 @@ class LP_Query {
 				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
 				'top'
 			);
+
+			/* Test */
+//			if ( $popup_slug ) {
+//				add_rewrite_rule(
+//					'^' . $slug . '/(' . $popup_slug . ')(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
+//					'index.php?content-item-only=yes&' . $course_type . '=$matches[3]&course_category=$matches[2]&course-item=$matches[4]&item-type=lp_lesson',
+//					'top'
+//				);
+//				add_rewrite_rule(
+//					'^' . $slug . '/(' . $popup_slug . ')(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
+//					'index.php?content-item-only=yes&' . $course_type . '=$matches[3]&course_category=$matches[2]&course-item=$matches[4]&question=$matches[5]&item-type=lp_quiz',
+//					'top'
+//				);
+//			}
 		} else {
 
 			add_rewrite_rule(
@@ -211,6 +178,20 @@ class LP_Query {
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
 				'top'
 			);
+
+			/* Test */
+//			if ( $popup_slug ) {
+//				add_rewrite_rule(
+//					'^' . $slug . '/(' . $popup_slug . ')/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
+//					'index.php?content-item-only=yes&' . $course_type . '=$matches[2]&course-item=$matches[3]&item-type=lp_lesson',
+//					'top'
+//				);
+//				add_rewrite_rule(
+//					'^' . $slug . '/(' . $popup_slug . ')/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
+//					'index.php?content-item-only=yes&' . $course_type . '=$matches[2]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
+//					'top'
+//				);
+//			}
 		}
 
 		// Profile
@@ -223,9 +204,9 @@ class LP_Query {
 			);
 
 			$profile = learn_press_get_profile();
-			if ( $tabs = $profile->get_tabs() ) {
+			if ( $tabs = $profile->get_tabs()->get() ) {
 				foreach ( $tabs as $slug => $args ) {
-					$tab_slug = $profile->get_slug( $args, $slug );
+					$tab_slug = isset( $args['slug'] ) ? $args['slug'] : $slug;
 					add_rewrite_rule(
 						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/?([0-9]*)/?$',
 						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
@@ -234,10 +215,10 @@ class LP_Query {
 
 					if ( ! empty( $args['sections'] ) ) {
 						foreach ( $args['sections'] as $section_slug => $section ) {
-							$section_slug = $profile->get_slug( $section, $section_slug );
+							$section_slug = isset( $section['slug'] ) ? $section['slug'] : $section_slug;
 							add_rewrite_rule(
-								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?$',
-								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
+								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?([0-9]*)?$',
+								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
 								'top'
 							);
 						}
@@ -300,19 +281,30 @@ class LP_Query {
 		return $item;
 	}
 
-
+	/**
+	 * @param WP_Query $q
+	 */
 	public function query_taxonomy( $q ) {
+
 		// We only want to affect the main query
 		if ( ! $q->is_main_query() ) {
 			return;
 		}
+
 		if ( is_search() ) {
 			add_filter( 'posts_where', array( $this, 'add_tax_search' ) );
 			add_filter( 'posts_join', array( $this, 'join_term' ) );
 			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
 		}
+
+		add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
 	}
 
+	/**
+	 * @param string $join
+	 *
+	 * @return string
+	 */
 	public function join_term( $join ) {
 		global $wp_query, $wpdb;
 
@@ -327,6 +319,11 @@ class LP_Query {
 		return $join;
 	}
 
+	/**
+	 * @param string $where
+	 *
+	 * @return string
+	 */
 	public function add_tax_search( $where ) {
 		global $wp_query, $wpdb;
 
@@ -338,6 +335,33 @@ class LP_Query {
 		return $where;
 	}
 
+	/**
+	 * Exclude 'Preview course' from main query.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $where
+	 *
+	 * @return string
+	 */
+	public function exclude_preview_course( $where ) {
+		global $wpdb;
+
+		if ( ! is_admin() && learn_press_is_courses() ) {
+			if ( $ids = LP_Preview_Course::get_preview_courses() ) {
+				$format = array_fill( 0, sizeof( $ids ), '%d' );
+				$where  .= $wpdb->prepare( " AND {$wpdb->posts}.ID NOT IN(" . join( ',', $format ) . ") ", $ids );
+			}
+		}
+
+		return $where;
+	}
+
+	/**
+	 * @param string $groupby
+	 *
+	 * @return string
+	 */
 	public function tax_groupby( $groupby ) {
 		global $wpdb;
 		$groupby = "{$wpdb->posts}.ID";
@@ -347,6 +371,9 @@ class LP_Query {
 		return $groupby;
 	}
 
+	/**
+	 * Remove filter query
+	 */
 	public function remove_query_tax() {
 		remove_filter( 'posts_where', 'learn_press_add_tax_search' );
 		remove_filter( 'posts_join', 'learn_press_join_term' );

@@ -13,16 +13,21 @@ class RWMB_Image_Dimensions_Field extends RWMB_Field {
 	 *
 	 * @return string
 	 */
-	static function html( $meta, $field ) {
+	public static function html( $meta, $field ) {
 		$meta = self::sanitize_meta( $meta );
+
+		// default value
+		$width  = array_key_exists( 'width', $meta ) ? $meta['width'] : 10;
+		$height = array_key_exists( 'height', $meta ) ? $meta['height'] : 10;
+
 		ob_start();
 		?>
         <input type="text" size="4" name="<?php echo $field['id']; ?>[width]"
-               value="<?php echo $meta['width']; ?>"
+               value="<?php echo $width; ?>"
                placeholder=""/>
         <span class="lp-sign-times">&times;</span>
         <input type="text" size="4" name="<?php echo $field['id']; ?>[height]"
-               value="<?php echo $meta['height']; ?>"
+               value="<?php echo $height; ?>"
                placeholder=""/>
         <span><?php _e( 'px', 'learnpress' ); ?></span>
         <span class="lp-sign-times">&nbsp;&nbsp;&nbsp;</span>
@@ -31,11 +36,11 @@ class RWMB_Image_Dimensions_Field extends RWMB_Field {
 		return ob_get_clean();
 	}
 
-	static function value( $new, $old, $post_id, $field ) {
+	public static function value( $new, $old, $post_id, $field ) {
 		return empty( $new ) ? 'no' : 'yes';
 	}
 
-	static function begin_html( $html, $meta, $field = '' ) {
+	public static function begin_html( $html, $meta, $field = '' ) {
 		if ( is_array( $field ) && isset( $field['field_name'] ) ) {
 			return RW_Meta_Box::begin_html( $html, $meta, $field );
 		} else {
@@ -44,9 +49,9 @@ class RWMB_Image_Dimensions_Field extends RWMB_Field {
 
 	}
 
-	protected function sanitize_meta( $meta ) {
+	protected static function sanitize_meta( $meta ) {
 		settype( $meta, 'array' );
-		if ( sizeof( $meta ) === 3 && empty( $meta['width'] ) ) {
+		if ( sizeof( $meta ) === 3 && ! array_key_exists( 'width', $meta ) ) {
 			$meta = array(
 				'width'  => $meta[0],
 				'height' => $meta[1],

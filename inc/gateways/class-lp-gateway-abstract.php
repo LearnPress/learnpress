@@ -52,7 +52,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $enabled = 'yes';
+	public $enabled = 'no';
 
 	/**
 	 * @var null
@@ -79,10 +79,13 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		if ( ! $this->admin_name ) {
 			$this->admin_name = preg_replace( '!LP_Gateway_!', '', get_class( $this ) );
 		}
+
 		if ( ! $this->id ) {
 			$this->id = sanitize_title( $this->title );
 		}
 
+		$this->settings = LP()->settings()->get_group( $this->id, '' );
+		$this->enabled  = $this->settings->get( 'enable' );
 		// Load settings
 		$this->_load();
 	}
@@ -91,6 +94,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * Load stored settings from database.
 	 */
 	protected function _load() {
+		return;
 		if ( false !== ( $this->stored = get_option( 'learn_press_' . $this->id ) ) ) {
 			foreach ( $this->stored as $prop => $value ) {
 				$prop   = preg_replace( '~[-]+~', '_', $prop );
@@ -150,6 +154,21 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	}
 
 	public function is_enabled() {
+		///echo "[xxxxxxx",$this->id, ',',$this->enabled,"]";
+		return $this->enabled == 'yes';
+	}
+
+	public function enable( $status ) {
+		if ( is_bool( $status ) ) {
+			$this->enabled = $status;
+			if ( ! $options = get_option( 'learn_press_' . $this->get_id() ) ) {
+				$options = array();
+			}
+
+			$options['enable'] = $status ? 'yes' : 'no';
+			update_option( 'learn_press_' . $this->get_id(), $options );
+		}
+
 		return $this->enabled == 'yes';
 	}
 
@@ -251,6 +270,21 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		);
 		$settings = $this->sanitize_settings( $settings );
 		LP_Meta_Box_Helper::render_fields( $settings );
+	}
+
+	/**
+	 * @since 3.0.0
+	 *
+	 * return bool
+	 */
+	public function is_display() {
+		$display = apply_filters( 'learn-press/payment-method/display', true, $this->id );
+		$display = apply_filters( 'learn-press/payment-method-' . $this->id . '/display', $display );
+
+		// @deprecated
+		$display = apply_filters( 'learn_press_display_payment_method', $display, $this->id );
+
+		return $display;
 	}
 
 	/**

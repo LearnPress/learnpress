@@ -625,7 +625,6 @@
                 }
                 if (instance[command]) {
                     instance[command].apply(instance, args);
-                    console.log(command)
                 }
             }
         });

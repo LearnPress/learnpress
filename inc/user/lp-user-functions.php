@@ -22,15 +22,26 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 	// TODO: Should be deleted user's order and order data???
 
 	$query_args = array( $user_id );
+
 	if ( $course_id ) {
 		$query_args[] = $course_id;
 	}
+
+	$query = $wpdb->prepare( "
+        SELECT user_item_id
+        FROM {$wpdb->prefix}learnpress_user_items
+        WHERE user_id = %d
+        " . ( $course_id ? " AND item_id = %d" : "" ) . "
+    ", $query_args );
+
 	// delete all courses user has enrolled
 	$query = $wpdb->prepare( "
         DELETE FROM {$wpdb->prefix}learnpress_user_items
         WHERE user_id = %d
         " . ( $course_id ? " AND item_id = %d" : "" ) . "
     ", $query_args );
+
+
 	@$wpdb->query( $query );
 }
 
@@ -46,7 +57,7 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
  *
  * @return bool
  */
-function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* added 3.x.x */ ) {
+function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* added 3.0.0 */ ) {
 
 	// If $course_id is not passed consider $item_id is ID of a course
 	if ( ! $course_id ) {
@@ -83,125 +94,152 @@ function learn_press_get_current_user_id() {
  *
  * @param bool $create_temp - Optional. Create temp user if user is not logged in.
  *
- * @return bool|LP_User
+ * @return bool|LP_User|LP_User_Guest
  */
 function learn_press_get_current_user( $create_temp = true, $force_new = false ) {
 	if ( $id = get_current_user_id() ) {
-
-		return learn_press_get_user($id, $force_new);
+		return learn_press_get_user( $id, $force_new );
 	}
 
-	return $create_temp ? LP_User_Factory::get_temp_user() : false;
+	return learn_press_get_user( 0 );
+
+	//return $create_temp ? new LP_User_Guest( 0 ) : false;
+	//return $create_temp ? LP_User_Factory::get_temp_user() : false;
 }
 
+if ( ! function_exists( 'learn_press_get_user' ) ) {
+	/**
+	 * Get user by ID. Return false if the user does not exists.
+	 *
+	 * @param int  $user_id
+	 * @param bool $current
+	 *
+	 * @return LP_User|mixed
+	 */
+	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
 
-/**
- * Get user by ID. Return false if the user does not exists.
- *
- * @param int  $user_id
- * @param bool $current
- *
- * @return LP_User|mixed
- */
-function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
+		global $pagenow;
 
-	// Check if user is existing
-	if ( ! get_user_by( 'id', $user_id ) && $current ) {
-		$user_id = get_current_user_id();
+		if ( $user_id != LP()->session->guest_user_id ) {
+			// Check if user is existing
+			if ( ! get_user_by( 'id', $user_id ) && $current ) {
+				$user_id = get_current_user_id();
+			}
+		}
+
+		if ( ! $user_id && isset( LP()->session ) ) {
+
+			if ( ! LP()->session->guest_user_id ) {
+				LP()->session->set_customer_session_cookie( 1 );
+				LP()->session->guest_user_id = time();
+			}
+
+			$user_id  = LP()->session->guest_user_id;
+			$is_guest = true;
+		}
+
+		if ( ! $user_id ) {
+			return false;
+		}
+
+
+		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
+			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest( $user_id ) : new LP_User( $user_id );
+		}
+
+		return LP_Global::$users[ $user_id ];
 	}
-
-	if ( ! $user_id ) {
-		return false;
-	}
-
-	if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
-		LP_Global::$users[ $user_id ] = new LP_User( $user_id );
-	}
-
-	return LP_Global::$users[ $user_id ];
-
-	//return new LP_User( $user_id );
 }
 
 /**
  * Add more 2 user roles teacher and student
  *
- * @access public
- * @return void
  */
 function learn_press_add_user_roles() {
 
 	$settings = LP()->settings;
+
 	/* translators: user role */
 	_x( 'Instructor', 'User role' );
+
 	add_role(
 		LP_TEACHER_ROLE,
 		'Instructor',
 		array()
 	);
+
 	$course_cap = LP_COURSE_CPT . 's';
 	$lesson_cap = LP_LESSON_CPT . 's';
 	$order_cap  = LP_ORDER_CPT . 's';
+
 	// teacher
-	$teacher = get_role( LP_TEACHER_ROLE );
-	$teacher->add_cap( 'delete_published_' . $course_cap );
-	$teacher->add_cap( 'edit_published_' . $course_cap );
-	$teacher->add_cap( 'edit_' . $course_cap );
-	$teacher->add_cap( 'delete_' . $course_cap );
+	if ( $teacher = get_role( LP_TEACHER_ROLE ) ) {
+		$teacher->add_cap( 'delete_published_' . $course_cap );
+		$teacher->add_cap( 'edit_published_' . $course_cap );
+		$teacher->add_cap( 'edit_' . $course_cap );
+		$teacher->add_cap( 'delete_' . $course_cap );
+		$teacher->add_cap( 'unfiltered_html' );
 
-	$settings->get( 'required_review' );
+		$settings->get( 'required_review' );
 
-	if ( $settings->get( 'required_review' ) == 'yes' ) {
-		$teacher->remove_cap( 'publish_' . $course_cap );
-	} else {
-		$teacher->add_cap( 'publish_' . $course_cap );
+		if ( $settings->get( 'required_review' ) == 'yes' ) {
+			$teacher->remove_cap( 'publish_' . $course_cap );
+		} else {
+			$teacher->add_cap( 'publish_' . $course_cap );
+		}
+
+		$teacher->add_cap( 'delete_published_' . $lesson_cap );
+		$teacher->add_cap( 'edit_published_' . $lesson_cap );
+		$teacher->add_cap( 'edit_' . $lesson_cap );
+		$teacher->add_cap( 'delete_' . $lesson_cap );
+		$teacher->add_cap( 'publish_' . $lesson_cap );
+		$teacher->add_cap( 'upload_files' );
+		$teacher->add_cap( 'read' );
+		$teacher->add_cap( 'edit_posts' );
 	}
-	//
-
-
-	$teacher->add_cap( 'delete_published_' . $lesson_cap );
-	$teacher->add_cap( 'edit_published_' . $lesson_cap );
-	$teacher->add_cap( 'edit_' . $lesson_cap );
-	$teacher->add_cap( 'delete_' . $lesson_cap );
-	$teacher->add_cap( 'publish_' . $lesson_cap );
-	$teacher->add_cap( 'upload_files' );
-	$teacher->add_cap( 'read' );
-	$teacher->add_cap( 'edit_posts' );
 
 	// administrator
-	$admin = get_role( 'administrator' );
-	$admin->add_cap( 'delete_' . $course_cap );
-	$admin->add_cap( 'delete_published_' . $course_cap );
-	$admin->add_cap( 'edit_' . $course_cap );
-	$admin->add_cap( 'edit_published_' . $course_cap );
-	$admin->add_cap( 'publish_' . $course_cap );
-	$admin->add_cap( 'delete_private_' . $course_cap );
-	$admin->add_cap( 'edit_private_' . $course_cap );
-	$admin->add_cap( 'delete_others_' . $course_cap );
-	$admin->add_cap( 'edit_others_' . $course_cap );
+	if ( $admin = get_role( 'administrator' ) ) {
+		$admin->add_cap( 'delete_' . $course_cap );
+		$admin->add_cap( 'delete_published_' . $course_cap );
+		$admin->add_cap( 'edit_' . $course_cap );
+		$admin->add_cap( 'edit_published_' . $course_cap );
+		$admin->add_cap( 'publish_' . $course_cap );
+		$admin->add_cap( 'delete_private_' . $course_cap );
+		$admin->add_cap( 'edit_private_' . $course_cap );
+		$admin->add_cap( 'delete_others_' . $course_cap );
+		$admin->add_cap( 'edit_others_' . $course_cap );
 
-	$admin->add_cap( 'delete_' . $lesson_cap );
-	$admin->add_cap( 'delete_published_' . $lesson_cap );
-	$admin->add_cap( 'edit_' . $lesson_cap );
-	$admin->add_cap( 'edit_published_' . $lesson_cap );
-	$admin->add_cap( 'publish_' . $lesson_cap );
-	$admin->add_cap( 'delete_private_' . $lesson_cap );
-	$admin->add_cap( 'edit_private_' . $lesson_cap );
-	$admin->add_cap( 'delete_others_' . $lesson_cap );
-	$admin->add_cap( 'edit_others_' . $lesson_cap );
+		$admin->add_cap( 'delete_' . $lesson_cap );
+		$admin->add_cap( 'delete_published_' . $lesson_cap );
+		$admin->add_cap( 'edit_' . $lesson_cap );
+		$admin->add_cap( 'edit_published_' . $lesson_cap );
+		$admin->add_cap( 'publish_' . $lesson_cap );
+		$admin->add_cap( 'delete_private_' . $lesson_cap );
+		$admin->add_cap( 'edit_private_' . $lesson_cap );
+		$admin->add_cap( 'delete_others_' . $lesson_cap );
+		$admin->add_cap( 'edit_others_' . $lesson_cap );
 
-	$admin->add_cap( 'delete_' . $order_cap );
-	$admin->add_cap( 'delete_published_' . $order_cap );
-	$admin->add_cap( 'edit_' . $order_cap );
-	$admin->add_cap( 'edit_published_' . $order_cap );
-	$admin->add_cap( 'publish_' . $order_cap );
-	$admin->add_cap( 'delete_private_' . $order_cap );
-	$admin->add_cap( 'edit_private_' . $order_cap );
-	$admin->add_cap( 'delete_others_' . $order_cap );
-	$admin->add_cap( 'edit_others_' . $order_cap );
+		$admin->add_cap( 'delete_' . $order_cap );
+		$admin->add_cap( 'delete_published_' . $order_cap );
+		$admin->add_cap( 'edit_' . $order_cap );
+		$admin->add_cap( 'edit_published_' . $order_cap );
+		$admin->add_cap( 'publish_' . $order_cap );
+		$admin->add_cap( 'delete_private_' . $order_cap );
+		$admin->add_cap( 'edit_private_' . $order_cap );
+		$admin->add_cap( 'delete_others_' . $order_cap );
+		$admin->add_cap( 'edit_others_' . $order_cap );
+	}
 }
 
-add_action( 'learn_press_ready', 'learn_press_add_user_roles' );
+add_action( 'init', 'learn_press_add_user_roles' );
+
+/**
+ * @param null  $user_id
+ * @param array $args
+ *
+ * @return mixed
+ */
 function learn_press_get_user_questions( $user_id = null, $args = array() ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
@@ -264,19 +302,13 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
 	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
-		if ( $tabs = learn_press_get_user_profile_tabs() ) {
-			$keys      = array_keys( $tabs );
-			$first_tab = reset( $keys );
-		} else {
-			$first_tab = '';
-		}
 		$text                             = LP()->settings->get( 'admin_bar_link_text' );
 		$user_id                          = learn_press_get_current_user_id();
 		$course_profile                   = array();
 		$course_profile['id']             = 'course_profile';
 		$course_profile['parent']         = 'user-actions';
 		$course_profile['title']          = $text ? $text : get_the_title( $profile );
-		$course_profile['href']           = learn_press_user_profile_link( $user_id, $first_tab );
+		$course_profile['href']           = learn_press_user_profile_link( $user_id, false );
 		$course_profile['meta']['target'] = LP()->settings->get( 'admin_bar_link_target' );
 		$wp_admin_bar->add_menu( $course_profile );
 	}
@@ -324,15 +356,15 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 	) );
 }
 
+/**
+ * Get queried user in profile link
+ *
+ * @since 3.0.0
+ *
+ * @return false|WP_User
+ */
 function learn_press_get_profile_user() {
-	global $wp_query;
-	if ( isset( $wp_query->query['user'] ) ) {
-		$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
-	} else {
-		$user = get_user_by( 'id', get_current_user_id() );
-	}
-
-	return $user;
+	return LP_Profile::get_queried_user();
 }
 
 
@@ -347,7 +379,7 @@ function learn_press_user_become_teacher_registration_form() {
     <p>
         <label for="become_teacher">
             <input type="checkbox" name="become_teacher" id="become_teacher">
-			<?php _e( 'Want to be an instructor?', 'learnpress' ) ?>
+			<?php _e( 'Want to become an instructor?', 'learnpress' ) ?>
         </label>
     </p>
 	<?php
@@ -385,7 +417,7 @@ add_action( 'user_register', 'learn_press_update_user_teacher_role', 10, 1 );
  *                                  field_name_n => value n
  *                                  )
  * @param mixed $where              - Optional. Fields with values for conditional update with the same format of $fields.
- * @param bool  $update_cache       - Optional. Should be update to cache or not (since 3.x.x).
+ * @param bool  $update_cache       - Optional. Should be update to cache or not (since 3.0.0).
  *
  * @return mixed
  */
@@ -394,15 +426,17 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 
 	// Table fields
 	$table_fields = array(
-		'user_id'    => '%d',
-		'item_id'    => '%d',
-		'ref_id'     => '%d',
-		'start_time' => '%s',
-		'end_time'   => '%s',
-		'item_type'  => '%s',
-		'status'     => '%s',
-		'ref_type'   => '%s',
-		'parent_id'  => '%d'
+		'user_id'        => '%d',
+		'item_id'        => '%d',
+		'ref_id'         => '%d',
+		'start_time'     => '%s',
+		'start_time_gmt' => '%s',
+		'end_time'       => '%s',
+		'end_time_gmt'   => '%s',
+		'item_type'      => '%s',
+		'status'         => '%s',
+		'ref_type'       => '%s',
+		'parent_id'      => '%d'
 	);
 
 	/**
@@ -431,6 +465,13 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 			$data[ $field ] = $value;
 			$data_format[]  = $table_fields[ $field ];
 		}
+	}
+
+	if ( ! empty( $fields['user_item_id'] ) ) {
+		$where = wp_parse_args(
+			$where,
+			array( 'user_item_id' => $fields['user_item_id'] )
+		);
 	}
 
 	//
@@ -499,6 +540,13 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		$extra_fields = array_diff_key( $fields, $table_fields );
 		if ( $extra_fields ) {
 			foreach ( $extra_fields as $meta_key => $meta_value ) {
+				if ( $meta_value == 'user_item_id' ) {
+					continue;
+				}
+
+				if ( empty( $meta_value ) ) {
+					$meta_value = '';
+				}
 				learn_press_update_user_item_meta( $updated_item->user_item_id, $meta_key, $meta_value );
 			}
 		}
@@ -624,20 +672,35 @@ function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_valu
 	return update_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $meta_value, $prev_value );
 }
 
+
+/**
+ * Update user item meta to table user_itemmeta
+ *
+ * @param int    $object_id
+ * @param string $meta_key
+ * @param mixed  $meta_value
+ * @param bool   $delete_all
+ *
+ * @return bool|int
+ */
+function learn_press_delete_user_item_meta( $object_id, $meta_key, $meta_value = '', $delete_all = false ) {
+	return delete_metadata( 'learnpress_user_item', $object_id, $meta_key, $meta_value, $delete_all );
+}
+
 /**
  * Exclude the temp users from query.
  *
  * @param WP_User_Query $q
  */
 function learn_press_filter_temp_users( $q ) {
-	if ( $temp_users = learn_press_get_temp_users() ) {
-		$exclude = (array) $q->get( 'exclude' );
-		$exclude = array_merge( $exclude, $temp_users );
-		$q->set( 'exclude', $exclude );
-	}
+//	if ( $temp_users = learn_press_get_temp_users() ) {
+//		$exclude = (array) $q->get( 'exclude' );
+//		$exclude = array_merge( $exclude, $temp_users );
+//		$q->set( 'exclude', $exclude );
+//	}
 }
 
-add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
+//add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
 
 /**
  * Get temp users.
@@ -645,15 +708,22 @@ add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
  * @return array
  */
 function learn_press_get_temp_users() {
-	global $wpdb;
-	$query = $wpdb->prepare( "
+	return false;
+	if ( false === ( $temp_users = wp_cache_get( 'learn-press/temp-users' ) ) ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
 			SELECT ID
 			FROM {$wpdb->users} u 
 			INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
 			LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
 		", '_lp_temp_user', 'yes', '_lp_expiration' );
 
-	return $wpdb->get_col( $query );
+		$temp_users = $wpdb->get_col( $query );
+
+		wp_cache_set( 'learn-press/temp-users', $temp_users );
+	}
+
+	return $temp_users;
 }
 
 /**
@@ -829,7 +899,7 @@ function learn_press_user_update_user_info() {
 					}
 				}
 
-				$_message = $uploaded ? __( 'Image is uploaded success', 'learnpress' ) : __( 'Error on upload image', 'learnpress' );
+				$_message = $uploaded ? __( 'Image is uploaded success', 'learnpress' ) : __( 'Error in uploading image', 'learnpress' );
 				$message  = sprintf( $message_template, 'success', $_message );
 				$return   = array(
 					'return'  => $uploaded,
@@ -873,7 +943,7 @@ function learn_press_user_update_user_info() {
 				$res            = array();
 				$res['message'] = '';
 				if ( is_wp_error( $saved ) ) {
-					$_message               = __( 'Error on crop user picture profile ', 'learnpress' );
+					$_message               = __( 'Error in cropping user picture profile', 'learnpress' );
 					$message                = sprintf( $message_template, 'error', $_message );
 					$res['return']          = false;
 					$res['message']         = $message;
@@ -1005,7 +1075,7 @@ function learn_press_user_update_user_info() {
 		update_user_option( $user->get_id(), '_lp_profile_picture_type', $profile_picture_type, true );
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
-			$_message               = __( 'Your change is saved', 'learnpress' );
+			$_message               = __( 'Your changes are saved', 'learnpress' );
 			$message                = sprintf( $message_template, 'success', $_message );
 			$return['return']       = true;
 			$return['message']      = $message;
@@ -1013,7 +1083,7 @@ function learn_press_user_update_user_info() {
 			learn_press_send_json( $return );
 			exit();
 		} else {
-			$_message               = __( 'Error on update your profile info', 'learnpress' );
+			$_message               = __( 'Error in update your profile info', 'learnpress' );
 			$message                = sprintf( $message_template, 'error', $_message );
 			$return['return']       = false;
 			$return['message']      = $message;
@@ -1030,20 +1100,34 @@ function learn_press_user_update_user_info() {
 
 if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	/**
-	 * @param        $avatar
+	 * Filter the avatar
+	 *
+	 * @param string $avatar
 	 * @param string $id_or_email
 	 * @param array  $size
 	 *
-	 * @return string|void
+	 * @return string
 	 */
 	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size ) {
+
+		$profile = LP_Profile::instance();
+
+		if ( ! $profile->is_enable_avatar() ) {
+			return $avatar;
+		}
+
 		if ( ( isset( $size['gravatar'] ) && $size['gravatar'] ) || ( $size['default'] && $size['force_default'] ) ) {
 			return $avatar;
 		}
+
 		$user_id = 0;
+
+		/**
+		 * Get the ID of user from $id_or_email
+		 */
 		if ( ! is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
 			if ( $user = get_user_by( 'email', $id_or_email ) ) {
-				$user_id = $user->get_id();
+				$user_id = $user->ID;
 			}
 		} elseif ( is_numeric( $id_or_email ) ) {
 			$user_id = $id_or_email;
@@ -1051,18 +1135,23 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 			$user_id = $id_or_email->user_id;
 		} elseif ( is_object( $id_or_email ) && $id_or_email instanceof WP_Comment ) {
 			if ( $user = get_user_by( 'email', $id_or_email->comment_author_email ) ) {
-				$user_id = $user->get_id();
+				$user_id = $user->ID;
 			}
 		}
+
 		if ( ! $user_id ) {
 			return $avatar;
 		}
+
 		$user = LP_User_Factory::get_user( $user_id );
-		if ( $profile_picture_src = $user->get_upload_profile_src() ) {// $user_profile_picture_url . $profile_picture;
+
+		if ( $profile_picture_src = $user->get_upload_profile_src() ) {
 			$lp           = LP();
 			$lp_setting   = $lp->settings;
 			$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );
 			$img_size     = '';
+
+			// Get avatar size
 			if ( ! is_array( $size ) ) {
 				if ( $size === 'thumbnail' ) {
 					$img_size = '';
@@ -1188,18 +1277,22 @@ function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 }
 
 function _learn_press_redirect_logout_redirect() {
-	$redirect_to = $_REQUEST['redirect_to'];
+	$redirect_to = LP_Request::get_string( 'redirect_to' );
 	$admin_url   = admin_url();
 	$pos         = strpos( $redirect_to, $admin_url );
-	if ( $pos === false ) {
-		$page_id  = LP()->settings->get( 'logout_redirect_page_id' );
+
+	if ( $pos !== false ) {
+		return;
+	}
+
+	if ( ( $page_id = LP()->settings->get( 'logout_redirect_page_id' ) ) && get_post( $page_id ) ) {
 		$page_url = get_page_link( $page_id );
-		if ( $page_id && $page_url ) {
-			wp_redirect( $page_url );
-			exit();
-		}
+		wp_redirect( $page_url );
+		exit();
 	}
 }
+
+add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
 
 function learn_press_get_profile_endpoints() {
 	$endpoints = (array) LP()->settings->get( 'profile_endpoints' );
@@ -1214,7 +1307,6 @@ function learn_press_get_profile_endpoints() {
 	return apply_filters( 'learn_press_profile_tab_endpoints', $endpoints );
 }
 
-add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
 
 function learn_press_update_user_option( $name, $value, $id = 0 ) {
 	if ( ! $id ) {
@@ -1326,7 +1418,6 @@ add_action( 'init', 'learn_press_update_user_profile' );
  * Update user avatar
  */
 function learn_press_update_user_profile_avatar() {
-	return true;
 	$upload_dir = learn_press_user_profile_picture_upload_dir();
 	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
 		delete_user_meta( get_current_user_id(), '_lp_profile_picture' );
@@ -1369,16 +1460,16 @@ function learn_press_update_user_profile_avatar() {
 					update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
 					update_user_meta( get_current_user_id(), '_lp_profile_picture_changed', 'yes' );
 				}
+
 			}
 			@unlink( $path );
 		}
 	}
-	learn_press_add_message( __( 'Your avatar updated', 'learnpress' ) );
 
 	return true;
 }
 
-add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
+//add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
 
 /**
  * Update user basic information.
@@ -1568,16 +1659,21 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 	return $user_course_info[ $user_id ];
 }
 
+/**
+ * Set a fake cookie to
+ */
 function learn_press_set_user_cookie_for_guest() {
-	if ( ! is_admin() && ! headers_sent() && learn_press_is_course() ) {
-		$guest_key = 'wordpress_logged_in_' . md5( 'guest' );
+	if ( ! is_admin() && ! headers_sent() ) {
+		$guest_key = 'wordpress_lp_guest';
 		if ( is_user_logged_in() ) {
 			if ( ! empty( $_COOKIE[ $guest_key ] ) ) {
-				setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), - 10000 );
+				//setcookie( $guest_key, md5( time() ), - 10000 );
+				learn_press_remove_cookie( $guest_key );
 			}
 		} else {
 			if ( empty( $_COOKIE[ $guest_key ] ) ) {
-				setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), time() + 3600 );
+				///setcookie( $guest_key, md5( time() ), time() + 3600 );
+				learn_press_setcookie( $guest_key, md5( time() ), time() + 3600 );
 			}
 		}
 	}
@@ -1599,29 +1695,6 @@ function learn_press_get_user_avatar( $user_id = 0, $size = '' ) {
  * @return LP_Profile|WP_Error
  */
 function learn_press_get_profile( $for_user = 0 ) {
-	global $wp;
-	try {
-		if ( $for_user ) {
-			if ( ! get_user_by( 'id', $for_user ) ) {
-				throw new Exception( sprintf( __( 'The user %s does not exists.', 'learnpress' ), $for_user ) );
-			}
-		} else {
-			// If empty query user consider you are viewing of yours.
-			if ( empty( $wp->query_vars['user'] ) ) {
-				$for_user = get_current_user_id();
-			} else {
-				if ( $wp_user = get_user_by( 'login', $wp->query_vars['user'] ) ) {
-					$for_user = $wp_user->ID;
-				} else {
-					throw new Exception( sprintf( __( 'The user %s does not exists.', 'learnpress' ), $wp->query_vars['user'] ) );
-				}
-			}
-		}
-	}
-	catch ( Exception $ex ) {
-		return new WP_Error( $ex->getMessage() );
-	}
-
 	return LP_Profile::instance( $for_user );
 }
 
@@ -1718,22 +1791,30 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		LP_User_Factory::$_deleted_users[] = $user_id;
 	}
 
-	$user = learn_press_get_current_user( false );
+	$user = learn_press_get_user( $user_id );
 
 	if ( ! $user ) {
 		return '';
 	}
+
 	global $wp_query;
 	$args = array(
-		'user' => $user->get_data( 'user_login' )
+		'user' => $user->get_username()
 	);
+
 	if ( isset( $args['user'] ) ) {
 		if ( '' === $tab ) {
 			$tab = learn_press_get_current_profile_tab();
 		}
 		if ( $tab ) {
 			$args['tab'] = $tab;
-		} else {
+		}
+
+		/**
+		 * If no tab is selected in profile and is current user
+		 * then no need the username in profile link.
+		 */
+		if ( ( $user_id == get_current_user_id() ) && ! isset( $args['tab'] ) ) {
 			unset( $args['user'] );
 		}
 	}
@@ -1766,3 +1847,19 @@ function learn_press_hk_before_start_quiz( $true, $quiz_id, $course_id, $user_id
 }
 
 add_filter( 'learn-press/before-start-quiz', 'learn_press_hk_before_start_quiz', 10, 4 );
+
+function learn_press_default_user_item_status( $item_id ) {
+	$status = '';
+	switch ( get_post_type( $item_id ) ) {
+		case LP_LESSON_CPT:
+			$status = 'started';
+			break;
+		case LP_QUIZ_CPT:
+			$status = 'viewed';
+			break;
+		case LP_COURSE_CPT:
+			$status = 'enrolled';
+	}
+
+	return apply_filters( 'learn-press/default-user-item-status', $status, $item_id );
+}

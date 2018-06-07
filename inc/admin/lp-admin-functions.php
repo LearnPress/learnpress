@@ -7,32 +7,90 @@
  * @version   1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
- * Default admin settings pages
- *
- * @return mixed
+ * Prevent loading this file directly
  */
-function learn_press_settings_tabs_array() {
-	$default_tabs = array(
-		'general'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
-		'courses'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
-		'profile'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
-		'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
-		'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
-		'emails'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
-		'assets'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-assets.php",
-	);
+defined( 'ABSPATH' ) || exit();
 
-	// Deprecated
-	$tabs = apply_filters( 'learn_press_settings_tabs_array', $default_tabs );
+if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
+	/**
+	 * Setup action links to the admin course, lesson, quiz, question. e.g: Add Duplicate link, hide View link for lesson, quiz so on.
+	 *
+	 * @param $actions
+	 *
+	 * @return mixed
+	 */
+	function learn_press_add_row_action_link( $actions ) {
 
-	return apply_filters( 'learn-press/admin/settings-tabs-array', $tabs );
+		global $post;
+
+		if ( LP_COURSE_CPT == $post->post_type ) {
+			$duplicate_link = '#';
+			$duplicate_link = array(
+				array(
+					'link'  => $duplicate_link,
+					'title' => __( 'Duplicate this course', 'learnpress' ),
+					'class' => 'lp-duplicate-post lp-duplicate-course',
+					'data'  => $post->ID
+				)
+			);
+			$links          = apply_filters( 'learn_press_row_action_links', $duplicate_link );
+			if ( count( $links ) > 1 ) {
+				$drop_down = array( '<ul class="lpr-row-action-dropdown">' );
+				foreach ( $links as $link ) {
+					$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'], $link['data'], $link['title'] ) . '</li>';
+				};
+				$drop_down[] = '</ul>';
+				$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
+			} else {
+				$link = array_shift( $links );
+				$link = sprintf( '<a href="%s" class="%s" data-post-id="%s">%s</a>', $link['link'], $link['class'], $link['data'], $link['title'] );
+			}
+			$actions['lp-duplicate-row-action'] = $link;
+		} else if ( LP_QUIZ_CPT === $post->post_type ) {
+			unset( $actions['view'] );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this quiz', 'learnpress' ) );
+			$actions['lp-duplicate-row-action'] = $link;
+		} else if ( LP_QUESTION_CPT === $post->post_type ) {
+			unset( $actions['view'] );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this question', 'learnpress' ) );
+			$actions['lp-duplicate-row-action'] = $link;
+		} else if ( LP_LESSON_CPT === $post->post_type ) {
+			unset( $actions['view'] );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this lesson', 'learnpress' ) );
+			$actions['lp-duplicate-row-action'] = $link;
+		}
+
+		return apply_filters( 'learn-press/row-action-links', $actions );
+	}
+
+	add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
+	add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 }
 
+if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
+	/**
+	 * Default admin settings pages
+	 *
+	 * @return mixed
+	 */
+	function learn_press_settings_tabs_array() {
+		$default_tabs = array(
+			'general'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
+			'courses'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
+			'profile'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
+			'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
+			'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
+			'emails'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
+			'advanced' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-advanced.php",
+		);
+
+		// Deprecated
+		$tabs = apply_filters( 'learn_press_settings_tabs_array', $default_tabs );
+
+		return apply_filters( 'learn-press/admin/settings-tabs-array', $tabs );
+	}
+}
 
 /*******************************/
 
@@ -57,7 +115,7 @@ function learn_press_is_hidden_post_box( $id, $user_id = 0 ) {
  * @return mixed
  */
 function learn_press_get_admin_view( $name, $plugin_file = null ) {
-	if ( ! preg_match( '/\.(.*)$/', $name ) ) {
+	if ( ! preg_match( '/\.(html|php)$/', $name ) ) {
 		$name .= '.php';
 	}
 	if ( $plugin_file ) {
@@ -77,7 +135,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array $args
+ * @param array      $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -85,6 +143,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  */
 function learn_press_admin_view( $name, $args = array(), $include_once = false, $return = false ) {
 	$view = learn_press_get_admin_view( $name, ! empty( $args['plugin_file'] ) ? $args['plugin_file'] : null );
+
 	if ( file_exists( $view ) ) {
 		ob_start();
 		// extract parameters as local variables if passed
@@ -112,7 +171,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array $args
+ * @param array      $args
  *
  * @return mixed|string
  */
@@ -136,6 +195,9 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	if ( empty( $id ) ) {
 		$id = $name;
 	}
+
+	$class .= 'list-pages lp-list-pages';
+
 	$args    = array(
 		'name'             => $name,
 		'id'               => $id,
@@ -145,12 +207,10 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		'class'            => $class,
 		'echo'             => false,
 		'selected'         => $selected,
-		'allow_create'     => true
+		'allow_create'     => true,
 	);
 	$output  = wp_dropdown_pages( $args );
 	$replace = "";
-
-	$class .= 'list-pages';
 
 	if ( $class ) {
 		$replace .= ' class="' . $class . '"';
@@ -162,6 +222,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	$replace .= ' data-selected="' . $selected . '"';
 	$replace .= " data-placeholder='" . __( 'Select a page&hellip;', 'learnpress' ) . "' id=";
 	$output  = '<div class="list-pages-wrapper">' . str_replace( ' id=', $replace, $output );
+
 	if ( $before ) {
 		$before_output = array();
 		foreach ( $before as $v => $l ) {
@@ -170,6 +231,13 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$before_output = join( "\n", $before_output );
 		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
 	}
+
+	$output = str_replace( '<option class="level-0" value="00000">#0 (no title)</option>', '', $output );
+
+	if ( $selected && get_post_status( $selected ) !== 'publish' ) {
+		$selected = 0;
+	}
+
 	if ( $allow_create ) {
 		ob_start(); ?>
         <button class="button button-quick-add-page" data-id="<?php echo $id; ?>"
@@ -190,7 +258,9 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	} else {
 		$output .= '</div>';
 	}
+
 	$output = sprintf( '<div class="learn-press-dropdown-pages">%s</div>', $output );
+
 	if ( $echo ) {
 		echo $output;
 	}
@@ -290,24 +360,41 @@ function learn_press_field_question_duration( $args = array(), $question ) {
  * @return string
  */
 function learn_press_email_formats_dropdown( $args = array() ) {
-	$args    = wp_parse_args(
+	$args = wp_parse_args(
 		$args,
 		array(
-			'name'     => 'learn-press-dropdown-email-formats',
-			'id'       => '',
-			'class'    => '',
-			'selected' => '',
-			'echo'     => true
+			'name'        => 'learn-press-dropdown-email-formats',
+			'id'          => '',
+			'class'       => '',
+			'selected'    => '',
+			'option_none' => '',
+			'echo'        => true
 		)
 	);
+
 	$formats = array(
 		'plain_text' => __( 'Plain text', 'learnpress' ),
 		'html'       => __( 'HTML', 'learnpress' ),
 	);
+
 	if ( empty( $args['id'] ) ) {
 		$args['id'] = sanitize_file_name( $args['name'] );
 	}
+
 	$output = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
+
+	if ( $args['option_none'] ) {
+		if ( is_array( $args['option_none'] ) ) {
+			$text  = reset( $args['option_none'] );
+			$value = key( $args['option_none'] );
+		} else {
+			$text  = $args['option_none'];
+			$value = '';
+		}
+
+		$output .= sprintf( '<option value="%s">%s</option>', $value, $text );
+	}
+
 	foreach ( $formats as $name => $text ) {
 		$output .= sprintf( '<option value="%s" %s>%s</option>', $name, selected( $args['selected'] == $name, true, false ), $text ) . "\n";
 	}
@@ -361,6 +448,7 @@ function learn_press_get_education_themes() {
 	return apply_filters(
 		'learn-press/education-themes',
 		array(
+			'20370918' => 'wordpress-lms',
 			'14058034' => 'eduma',
 			'17097658' => 'coach',
 			'11797847' => 'lms'
@@ -438,9 +526,13 @@ function learn_press_footer_advertisement() {
 	$query_arg = learn_press_get_item_referral();
 
 	?>
+
     <div id="learn-press-advertisement" class="learn-press-advertisement-slider">
 		<?php
 		foreach ( $list_themes as $theme ) {
+			if ( empty( $theme['url'] ) ) {
+				continue;
+			}
 			$theme['url'] = add_query_arg( $query_arg, $theme['url'] );
 			//$theme['description'] = learn_press_trim_content( $theme['description'], 10 );
 			$full_description  = learn_press_trim_content( $theme['description'] );
@@ -486,36 +578,6 @@ function learn_press_footer_advertisement() {
 /**************************************************/
 /**************************************************/
 /**************************************************/
-
-/**
- * Translate javascript text
- */
-function learn_press_admin_localize_script() {
-	if ( defined( 'LP_DOING_AJAX' ) || ! is_admin() ) {
-		return;
-	}
-	$translate = array(
-		'quizzes_is_not_available' => __( 'Quiz is not available', 'learnpress' ),
-		'lessons_is_not_available' => __( 'Lesson is not available', 'learnpress' ),
-		'duplicate_course'         => array(
-			'title'   => __( 'Duplicate course', 'learnpress' ),
-			'message' => __( 'Duplicate course curriculum?', 'learnpress' )
-		),
-		'duplicate_question'       => array(
-			'title'   => __( 'Duplicate Question', 'learnpress' ),
-			'message' => __( 'Do you want to duplicate this question?', 'learnpress' )
-		),
-		'remove_question'          => __( 'Do you want to remove this question from quiz?', 'learnpress' ),
-		'nonces'                   => array(
-			'duplicate_question' => wp_create_nonce( 'duplicate-question' )
-		),
-		'plugin_installed'         => __( 'Installed', 'learnpress' )
-	);
-	//LP_Assets::add_localize( $translate );
-}
-
-add_action( 'init', 'learn_press_admin_localize_script' );
-
 
 /**
  * Count number of orders between to dates
@@ -1066,7 +1128,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 		               . " AND CAST(loim.meta_value AS SIGNED) IN("
 		               //sub query
 		               . " SELECT tr.object_id "
-		               . " FROM wp_term_taxonomy tt INNER JOIN wp_term_relationships tr "
+		               . " FROM {$wpdb->prefix}term_taxonomy tt INNER JOIN {$wpdb->prefix}term_relationships tr "
 		               . " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
 		               . " WHERE tt.term_id=%d)";
 		$query_join .= $wpdb->prepare( $sql_join, $cat_id );
@@ -1279,59 +1341,6 @@ function set_post_order_in_admin( $wp_query ) {
 }
 
 add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
-/**
- * Add actions to the list of the course. e.g: Duplicate link
- *
- * @param $actions
- *
- * @return mixed
- */
-function learn_press_add_row_action_link( $actions ) {
-	global $post;
-	if ( LP_COURSE_CPT == $post->post_type ) {
-		$duplicate_link = admin_url( 'edit.php?post_type=lp_course&action=lp-duplicate-course&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
-		$duplicate_link = array(
-			array(
-				'link'  => $duplicate_link,
-				'title' => __( 'Duplicate this course', 'learnpress' ),
-				'class' => 'lp-duplicate-course'
-			)
-		);
-		$links          = apply_filters( 'learn_press_row_action_links', $duplicate_link );
-		if ( count( $links ) > 1 ) {
-			$drop_down = array( '<ul class="lpr-row-action-dropdown">' );
-			foreach ( $links as $link ) {
-				$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] ) . '</li>';
-			};
-			$drop_down[] = '</ul>';
-			$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
-		} else {
-			$link = array_shift( $links );
-			$link = sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] );
-		}
-		$actions['lpr-course-row-action'] = $link;
-	} else if ( LP_QUIZ_CPT === $post->post_type ) {
-		unset( $actions['view'] );
-		$url                              = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
-		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
-		$actions['lpr-course-row-action'] = $link;
-	} else if ( LP_QUESTION_CPT === $post->post_type ) {
-		unset( $actions['view'] );
-		$url                              = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
-		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
-		$actions['lpr-course-row-action'] = $link;
-	} else if ( LP_LESSON_CPT === $post->post_type ) {
-		unset( $actions['view'] );
-		$url                              = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
-		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
-		$actions['lpr-course-row-action'] = $link;
-	}
-
-	return $actions;
-}
-
-add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
-add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 
 function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;
@@ -1353,181 +1362,6 @@ function learn_press_copy_post_meta( $from_id, $to_id ) {
 		$wpdb->query( $sql_query );
 	}
 }
-
-/**
- * Duplicate a course when user hit "Duplicate" button
- *
- * @author  TuNN
- */
-function learn_press_process_duplicate_action() {
-
-	$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
-	$action        = $wp_list_table->current_action();
-
-	if ( isset( $_REQUEST['action'] ) && $action == 'lp-duplicate-course' ) {
-		// current is not usefully because this feature using ajax action
-		$post_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
-		$nonce   = ! empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
-		if ( ! wp_verify_nonce( $nonce, 'lp-duplicate-' . $post_id ) ) {
-			wp_die( __( 'Error', 'learnpress' ) );
-		}
-		if ( $post_id && is_array( $post_id ) ) {
-			$post_id = array_shift( $post_id );
-		}
-		// check for post is exists
-		if ( ! ( $post_id && $post = get_post( $post_id ) ) ) {
-			wp_die( __( 'Oops! The course does not exist.', 'learnpress' ) );
-		}
-		// ensure that user can create course
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_die( __( 'Sorry! You have not permission to duplicate this course.', 'learnpress' ) );
-		}
-
-		// assign course to current user
-		$current_user      = wp_get_current_user();
-		$new_course_author = $current_user->ID;
-
-		// setup course data
-		$new_course_title = $post->post_title . ' - Copy';
-		$args             = array(
-			'comment_status' => $post->comment_status,
-			'ping_status'    => $post->ping_status,
-			'post_author'    => $new_course_author,
-			'post_content'   => $post->post_content,
-			'post_excerpt'   => $post->post_excerpt,
-			'post_name'      => $post->post_name,
-			'post_parent'    => $post->post_parent,
-			'post_password'  => $post->post_password,
-			'post_status'    => 'draft',
-			'post_title'     => $new_course_title,
-			'post_type'      => $post->post_type,
-			'to_ping'        => $post->to_ping,
-			'menu_order'     => $post->menu_order
-		);
-		// insert new course and get it ID
-		$new_post_id = wp_insert_post( $args );
-
-		if ( ! $new_post_id ) {
-			LP_Admin_Notice::add_redirect( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
-			wp_redirect( admin_url( 'edit.php?post_type=lp_course' ) );
-			exit();
-		}
-		// assign related tags/categories to new course
-		$taxonomies = get_object_taxonomies( $post->post_type );
-		foreach ( $taxonomies as $taxonomy ) {
-			$post_terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'slugs' ) );
-			wp_set_object_terms( $new_post_id, $post_terms, $taxonomy, false );
-		}
-
-		// duplicate course data
-		global $wpdb;
-		//learn_press_copy_post_meta( $post_id, $new_post_id );
-
-		$query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_sections s
-			INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
-			WHERE c.ID = %d
-		", $post->ID );
-		if ( $sections = $wpdb->get_results( $query ) ) {
-			foreach ( $sections as $section ) {
-				$new_section_id = $wpdb->insert(
-					$wpdb->prefix . 'learnpress_sections',
-					array(
-						'section_name'        => $section->section_name,
-						'section_course_id'   => $new_post_id,
-						'section_order'       => $section->section_order,
-						'section_description' => $section->section_description
-					),
-					array( '%s', '%d', '%d', '%s' )
-				);
-				if ( $new_section_id ) {
-					$query = $wpdb->prepare( "
-						SELECT i.*
-						FROM {$wpdb->posts} i
-						INNER JOIN {$wpdb->prefix}learnpress_sections s ON i.item_id = i.ID
-						WHERE s.section_id = %d
-					", $section->section_id );
-					if ( $items = $wpdb->get_results( $query ) ) {
-						foreach ( $items as $item ) {
-							$item_args = (array) $item;
-							unset(
-								$item_args['ID'],
-								$item_args['post_author'],
-								$item_args['post_date'],
-								$item_args['post_date_gmt'],
-								$item_args['post_modified'],
-								$item_args['post_modified_gmt'],
-								$item_args['comment_count']
-							);
-							$new_item_id = $wpdb->insert(
-								$wpdb->posts,
-								$item_args
-							);
-						}
-					}
-				}
-			}
-		}
-		LP_Admin_Notice::add_redirect( __( '<p>Course duplicated.</p>', 'learnpress' ) );
-		wp_redirect( admin_url( "post.php?post={$new_post_id}&action=edit" ) );
-		die();
-	}
-
-	// duplicate action
-	$action  = ! empty( $_REQUEST['lp-action'] ) ? $_REQUEST['lp-action'] : '';
-	$actions = array(
-		'lp-duplicate-question',
-		'lp-duplicate-lesson',
-		'lp-duplicate-quiz'
-	);
-	if ( ! in_array( $action, $actions ) ) {
-		return;
-	}
-
-	$post_id = ! empty ( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
-	$nonce   = ! empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
-	if ( ! $post_id || ! wp_verify_nonce( $nonce, 'lp-duplicate-' . $post_id ) ) {
-		return;
-	}
-	// only duplicate question. not assign any data
-	$new_post_id = 0;
-	if ( $action === 'lp-duplicate-question' ) {
-		$new_post_id = learn_press_duplicate_question( $post_id );
-		$post_type   = LP_QUESTION_CPT;
-		$error       = __( 'Sorry! Duplicate question failed!', 'learnpress' );
-		$success     = __( 'Question duplicated.', 'learnpress' );
-	} else if ( $action === 'lp-duplicate-lesson' ) {
-		$new_post_id = learn_press_duplicate_lesson( $post_id );
-		$post_type   = LP_LESSON_CPT;
-		$error       = __( 'Sorry! Duplicate lesson failed!', 'learnpress' );
-		$success     = __( 'Lesson duplicated.', 'learnpress' );
-	} else if ( $action === 'lp-duplicate-quiz' ) {
-		$new_post_id = learn_press_duplicate_quiz( $post_id );
-		$post_type   = LP_QUIZ_CPT;
-		$error       = __( 'Sorry! Duplicate quiz failed!', 'learnpress' );
-		$success     = __( 'Quiz duplicated.', 'learnpress' );
-	}
-
-	if ( ! $new_post_id ) {
-		return;
-	}
-	$redirect = 0;
-	if ( is_wp_error( $new_post_id ) ) {
-		LP_Admin_Notice::add_redirect( $error, 'error' );
-		$redirect = admin_url( 'edit.php?post_type=' . $post_type );
-	} else {
-		LP_Admin_Notice::add_redirect( $success, 'updated' );
-		$redirect = admin_url( 'post.php?post=' . $new_post_id . '&action=edit' );
-	}
-
-	if ( $redirect ) {
-		wp_safe_redirect( $redirect );
-		exit();
-	}
-}
-
-add_action( 'load-edit.php', 'learn_press_process_duplicate_action' );
 
 /**
  * Install a plugin
@@ -1663,7 +1497,7 @@ function learn_press_one_click_install_sample_data_notice() {
 				</div>
             </div>',
 			__( 'You haven\'t got any courses yet! Would you like to import sample data?', 'learnpress' ),
-			__( 'If yes, it requires to install addon name', 'learnpress' ),
+			__( 'If yes, please install add-on name', 'learnpress' ),
 			__( 'LearnPress Import/Export', 'learnpress' ),
 			__( 'but don\'t worry because it is completely automated.', 'learnpress' ),
 			__( 'Import now', 'learnpress' ),
@@ -1735,12 +1569,6 @@ function learn_press_disable_checked_ontop( $args ) {
 
 add_filter( 'wp_terms_checklist_args', 'learn_press_disable_checked_ontop' );
 
-function learn_press_output_admin_template() {
-	learn_press_admin_view( 'admin-template.php' );
-}
-
-add_action( 'admin_print_scripts', 'learn_press_output_admin_template' );
-
 function learn_press_output_screen_id() {
 	$screen = get_current_screen();
 	if ( $screen ) {
@@ -1765,16 +1593,6 @@ function learn_press_get_screens() {
 	}
 
 	return apply_filters( 'learn_press_screen_ids', $screens );
-}
-
-function learn_press_get_admin_pages() {
-	return apply_filters(
-		'learn_press_admin_pages',
-		array(
-			'learn-press-settings',
-			'learn-press-settings'
-		)
-	);
 }
 
 function learn_press_is_post_type_screen( $post_type, $union = 'OR' ) {
@@ -1868,13 +1686,23 @@ if ( ! function_exists( 'learn_press_course_insert_section_item' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
-
+	/**
+	 * Duplicate post.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param null  $post_id
+	 * @param array $args
+	 * @param bool  $meta
+	 *
+	 * @return bool|mixed
+	 */
 	function learn_press_duplicate_post( $post_id = null, $args = array(), $meta = true ) {
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			return;
+			return false;
 		}
-		$defalts     = array(
+		$default = array(
 			'comment_status' => $post->comment_status,
 			'ping_status'    => $post->ping_status,
 			'post_author'    => get_current_user_id(),
@@ -1883,13 +1711,15 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 			'post_parent'    => $post->post_parent,
 			'post_password'  => $post->post_password,
 			'post_status'    => 'draft',
-			'post_title'     => $post->post_title . ' - Copy',
+			'post_title'     => $post->post_title . __( ' Copy', 'learnpress' ),
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order
 		);
-		$args        = wp_parse_args( $args, $defalts );
+		$args    = wp_parse_args( $args, $default );
+
 		$new_post_id = wp_insert_post( $args );
+
 		if ( ! is_wp_error( $new_post_id ) && $meta ) {
 			learn_press_duplicate_post_meta( $post_id, $new_post_id );
 			// assign related tags/categories to new course
@@ -1934,7 +1764,7 @@ if ( ! function_exists( 'learn_press_duplicate_post_meta' ) ) {
 
 }
 
-add_filter( 'learn_press_question_types', 'learn_press_sort_questions', 99 );
+//add_filter( 'learn_press_question_types', 'learn_press_sort_questions', 99 );
 if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 	function learn_press_sort_questions( $types ) {
 		$user_id        = get_current_user_id();
@@ -1942,7 +1772,7 @@ if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 		if ( ! empty( $question_types ) ) {
 			$sort = array();
 			// re-sort array descending
-			arsort( $question_types );
+			arsort( $types );
 			$new_types = array();
 			$ktypes    = array_keys( $types );
 
@@ -1970,79 +1800,18 @@ if ( ! function_exists( 'learn_press_sort_questions' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_duplicate_course' ) ) {
-
-	function learn_press_duplicate_course( $course_id = null, $force = true ) {
-		if ( ! function_exists( '_learn_press_get_course_curriculum' ) ) {
-			require_once LP_PLUGIN_PATH . 'inc/lp-init.php';
-		}
-		global $wpdb;
-
-		if ( $course_id && is_array( $course_id ) ) {
-			$course_id = array_shift( $course_id );
-		}
-		// check for post is exists
-		if ( ! $course_id || ! ( $post = get_post( $course_id ) ) ) {
-			return new WP_Error( __( '<p>Op! The course does not exist</p>', 'learnpress' ) );
-		} else {
-			// ensure that user can create course
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
-			} else {
-				// duplicate course
-				$new_course_id = learn_press_duplicate_post( $course_id );
-				if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
-					return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
-				} else {
-					$curriculums = _learn_press_get_course_curriculum( $course_id );
-					foreach ( $curriculums as $section_id => $section ) {
-						$new_section_id = learn_press_course_insert_section( array(
-							'section_name'        => $section->section_name,
-							'section_course_id'   => $new_course_id,
-							'section_order'       => $section->section_order,
-							'section_description' => $section->section_description
-						) );
-
-						if ( $section->items ) {
-							foreach ( $section->items as $item ) {
-								// duplicate item
-								if ( $force && $item->post_type === LP_QUIZ_CPT ) {
-									$item_id = learn_press_duplicate_quiz( $item->ID, array( 'post_status' => 'publish' ) );
-								} else {
-									$item_id = learn_press_duplicate_post( $item->ID, array( 'post_status' => 'publish' ) );
-								}
-								if ( $force ) {
-									$section_item_id = learn_press_course_insert_section_item( array(
-										'section_id' => $new_section_id,
-										'item_id'    => $item_id,
-										'item_order' => $item->item_order,
-										'item_type'  => $item->item_type
-									) );
-								}
-							}
-						}
-					}
-
-					return $new_course_id;
-				}
-			}
-		}
-	}
-
-}
-
 if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
 
-	function learn_press_duplicate_question( $question_id = null, $quiz_id = null ) {
+	function learn_press_duplicate_question( $question_id = null, $quiz_id = null, $args = array() ) {
 		if ( ! $question_id || ! get_post( $question_id ) ) {
-			return new WP_Error( sprintf( __( 'Question id %s is not exists.', 'learnpress' ), $question_id ) );
+			return new WP_Error( sprintf( __( 'Question id %s does not exist.', 'learnpress' ), $question_id ) );
 		}
 		if ( $quiz_id && ! get_post( $quiz_id ) ) {
-			return new WP_Error( sprintf( __( 'Quiz id %s is not exists.', 'learnpress' ), $quiz_id ) );
+			return new WP_Error( sprintf( __( 'Quiz id %s does not exist.', 'learnpress' ), $quiz_id ) );
 		}
 
 		global $wpdb;
-		$new_question_id = learn_press_duplicate_post( $question_id );
+		$new_question_id = learn_press_duplicate_post( $question_id, $args );
 		if ( $quiz_id ) {
 			// learnpress_quiz_questions
 			$sql                = $wpdb->prepare( "
@@ -2160,16 +1929,6 @@ if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
 
 }
 
-
-if ( ! function_exists( 'learn_press_duplicate_lesson' ) ) {
-
-	function learn_press_duplicate_lesson( $lesson_id = null ) {
-		return learn_press_duplicate_post( $lesson_id );
-	}
-
-}
-
-
 /**
  * Get general data to render in chart
  *
@@ -2209,12 +1968,12 @@ function learn_press_get_chart_general( $from = null, $by = null, $time_ago ) {
 		'teacher' => array(),
 		'revenue' => array()
 	);
-	var_dump( $results );
-	exit();
-	// get
 
-	$from_time = is_numeric( $from ) ? $from : strtotime( $from );
-
+	$from_time   = is_numeric( $from ) ? $from : strtotime( $from );
+	$_from       = '';
+	$_to         = '';
+	$_sql_format = '';
+	$date_format = '';
 	switch ( $by ) {
 		case 'days':
 			$date_format = 'M d Y';
@@ -2382,3 +2141,100 @@ function learn_press_get_default_section( $section = null ) {
 
 	return $section;
 }
+
+/**
+ * Display time fields for a post in editing mode.
+ *
+ * @param int $edit
+ * @param int $for_post
+ * @param int $tab_index
+ * @param int $multi
+ */
+function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
+	global $wp_locale;
+	$post = get_post();
+
+	if ( $for_post ) {
+		$edit = ! ( in_array( $post->post_status, array(
+				'draft',
+				'pending'
+			) ) && ( ! $post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
+	}
+
+	$tab_index_attribute = '';
+	if ( (int) $tab_index > 0 ) {
+		$tab_index_attribute = " tabindex=\"$tab_index\"";
+	}
+
+	$time_adj  = current_time( 'timestamp' );
+	$post_date = ( $for_post ) ? $post->post_date : get_comment()->comment_date;
+	$jj        = ( $edit ) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
+	$mm        = ( $edit ) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
+	$aa        = ( $edit ) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
+	$hh        = ( $edit ) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
+	$mn        = ( $edit ) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
+	$ss        = ( $edit ) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
+
+	$cur_jj = gmdate( 'd', $time_adj );
+	$cur_mm = gmdate( 'm', $time_adj );
+	$cur_aa = gmdate( 'Y', $time_adj );
+	$cur_hh = gmdate( 'H', $time_adj );
+	$cur_mn = gmdate( 'i', $time_adj );
+
+	$map = array(
+		'mm' => array( $mm, $cur_mm ),
+		'jj' => array( $jj, $cur_jj ),
+		'aa' => array( $aa, $cur_aa ),
+		'hh' => array( $hh, $cur_hh ),
+		'mn' => array( $mn, $cur_mn ),
+	);
+	foreach ( $map as $timeunit => $value ) {
+		list( $unit, $curr ) = $value;
+
+		echo '<input type="hidden" id="hidden_' . $timeunit . '" name="hidden_' . $timeunit . '" value="' . $unit . '" />' . "\n";
+		$cur_timeunit = 'cur_' . $timeunit;
+		echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
+	}
+}
+
+/**
+ * Filter to modal search items to void filter the posts by author.
+ *
+ * @since 3.0.4
+ *
+ * @param int|string $context_id
+ * @param string     $context
+ *
+ * @return bool|int|string
+ */
+function learn_press_modal_search_items_context( $context_id, $context ) {
+	if ( 'order-items' === $context ) {
+		$context_id = false;
+	}
+
+	return $context_id;
+}
+
+add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_search_items_context', 10, 2 );
+
+/**
+ * Filter to post link to change the link if it is an item inside course.
+ *
+ * @since 3.0.0
+ *
+ * @param string  $link
+ * @param WP_Post $post
+ *
+ * @return string
+ */
+function learn_press_preview_post_link( $link, $post ) {
+	$items = learn_press_course_get_support_item_types( true );
+
+	if ( in_array( $post->post_type, $items ) ) {
+		$link = learn_press_course_item_type_link( $link, $post, false, false );
+	}
+
+	return $link;
+}
+
+add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );

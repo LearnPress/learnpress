@@ -1,3 +1,5 @@
+$primary-color: #0085ba;
+$remove-icon-color: #d05d5d;
 /**
  * Styles for displaying list of table
  */
@@ -114,6 +116,9 @@
             }
             ul {
                 display: block;
+                &:hover {
+                    display: block;
+                }
             }
         }
     }
@@ -200,7 +205,7 @@
     th, td {
         padding: 10px 15px;
         background: #F5F5F5;
-        border-bottom: 1px solid #DDD;
+        border-top: 1px solid #DDD;
     }
     thead {
         tr {
@@ -391,32 +396,51 @@
     }
 }
 
-.advanced-list{
+.advanced-list {
     list-style: none;
-    li{
+    li {
         display: inline-block;
         background: #EEE;
         padding: 3px 8px;
         @include border-radius(2px);
-        .remove-item{
+        .remove-item {
             display: inline-block;
             text-decoration: none;
             line-height: 1;
             vertical-align: middle;
             margin-right: 5px;
             cursor: pointer;
-            &:hover{
+            &:hover {
                 color: #0085ba;
             }
-            &:before{
+            &:before {
                 font-family: dashicons;
                 content: "\f335";
                 text-decoration: none;
             }
         }
-        span{
+        span {
             display: inline-block;
         }
+    }
+    &.locked {
+        .remove-item {
+            display: none;
+        }
+    }
+}
+
+.lp-label-counter {
+    border-radius: 20px;
+    display: inline-block;
+    height: 20px;
+    padding: 0 10px;
+    background: #2196F3;
+    line-height: 20px;
+    color: #FFF;
+    font-weight: bold;
+    &.disabled {
+        background: #DDD;
     }
 }
 
@@ -437,4 +461,8 @@
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
     }
+}
+
+.rwmb-duration {
+    border: 1px solid #ddd;
 }

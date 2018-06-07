@@ -1,46 +1,48 @@
 <?php
 /**
- * Template for displaying user profile.
- * Main page which wrap all content in user profile.
+ * Template for displaying main user profile page.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.x.x
+ * This template can be overridden by copying it to yourtheme/learnpress/profile/profile.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
 /**
  * Prevent loading this file directly
  */
-defined( 'ABSPATH' ) || exit;
-?>
+defined( 'ABSPATH' ) || exit();
 
-<?php
-/**
- * If $user is not set then get the current user.
- */
-global $wp, $wp_rewrite;
+$profile = LP_Global::profile();
 
-if ( ! isset( $profile ) ) {
-	$profile = learn_press_get_profile();
-}
-?>
-<div id="learn-press-user-profile" class="lp-user-profile">
-
-	<?php
-	/**
-	 * @since 3.x.x
-	 */
-	do_action( 'learn-press/before-user-profile', $profile );
-
-	/**
-	 * @since 3.x.x
-	 */
-	do_action( 'learn-press/user-profile', $profile );
-
-	/**
-	 * @since 3.x.x
-	 */
-	do_action( 'learn-press/after-user-profile', $profile );
+if ( $profile->is_public() ) {
 	?>
 
-</div>
+    <div id="learn-press-user-profile"<?php $profile->main_class(); ?>>
+
+		<?php
+
+
+		/**
+		 * @since 3.0.0
+		 */
+		do_action( 'learn-press/before-user-profile', $profile );
+
+		/**
+		 * @since 3.0.0
+		 */
+		do_action( 'learn-press/user-profile', $profile );
+
+		/**
+		 * @since 3.0.0
+		 */
+		do_action( 'learn-press/after-user-profile', $profile );
+
+		?>
+
+    </div>
+
+<?php } else {
+	_e( 'This user does not public their profile.', 'learnpress' );
+}

@@ -1,11 +1,110 @@
 /**
  * Common functions/utils used in all page
  */
-if (typeof window.LP == 'undefined') {
+
+
+if (typeof window.LP === 'undefined') {
     window.LP = window.LearnPress = {};
 }
 
+
 (function ($) {
+    /**
+     * Manage event callbacks.
+     * Allow add/remove a callback function into custom event of an object.
+     *
+     * @constructor
+     */
+    window.LP.Event_Callback = function (self) {
+        var callbacks = {};
+
+        this.on = function (event, callback) {
+            var namespaces = event.split('.'),
+                namespace = '';
+
+            if (namespaces.length > 1) {
+                event = namespaces[0];
+                namespace = namespaces[1];
+            }
+
+            if (!callbacks[event]) {
+                callbacks[event] = [[], {}];
+            }
+
+            if (namespace) {
+                if (!callbacks[event][1][namespace]) {
+                    callbacks[event][1][namespace] = [];
+                }
+                callbacks[event][1][namespace].push(callback);
+            } else {
+                callbacks[event][0].push(callback);
+            }
+
+            return self;
+        };
+
+        this.off = function (event, callback) {
+            var namespaces = event.split('.'),
+                namespace = '';
+
+            if (namespaces.length > 1) {
+                event = namespaces[0];
+                namespace = namespaces[1];
+            }
+
+            if (!callbacks[event]) {
+                return self;
+            }
+            var at = -1;
+            if (!namespace) {
+                if ($.isFunction(callback)) {
+                    at = callbacks[event][0].indexOf(callback);
+                    if (at < 0) {
+                        return self;
+                    }
+                    callbacks[event][0].splice(at, 1);
+                } else {
+                    callbacks[event][0] = [];
+                }
+            } else {
+                if (!callbacks[event][1][namespace]) {
+                    return self;
+                }
+
+                if ($.isFunction(callback)) {
+                    at = callbacks[event][1][namespace].indexOf(callback);
+                    if (at < 0) {
+                        return self;
+                    }
+                    callbacks[event][1][namespace].splice(at, 1);
+                } else {
+                    callbacks[event][1][namespace] = [];
+                }
+            }
+
+            return self;
+        };
+
+        this.callEvent = function (event, callbackArgs) {
+            if (!callbacks[event]) {
+                return;
+            }
+
+            if (callbacks[event][0]) {
+                for (var i = 0; i < callbacks[event][0].length; i++) {
+                    $.isFunction(callbacks[event][0][i]) && callbacks[event][i][0].apply(self, callbackArgs);
+                }
+            }
+
+            if (callbacks[event][1]) {
+                for (var i in callbacks[event][1]) {
+                    for (var j = 0; j < callbacks[event][1][i].length; j++) {
+                        $.isFunction(callbacks[event][1][i][j]) && callbacks[event][1][i][j].apply(self, callbackArgs);
+                    }
+                }
+            }
+        }
+    };
     $.fn.serializeJSON = function (path) {
         var isInput = $(this).is('input') || $(this).is('select') || $(this).is('textarea');
         var unIndexed = isInput ? $(this).serializeArray() : $(this).find('input, select, textarea').serializeArray(),
@@ -23,7 +122,7 @@ if (typeof window.LP == 'undefined') {
                 objPath = "indexed['" + match[0] + "']";
 
             if (keys) {
-                if (typeof indexed[match[0]] != 'object') {
+                if (typeof indexed[match[0]] !== 'object') {
                     indexed[match[0]] = {};
                 }
 
@@ -33,8 +132,8 @@ if (typeof window.LP == 'undefined') {
                         objExp = '',
                         preObjPath = objPath;
 
-                    if (prop == '') {
-                        if (arrayKeys[rawPath] == undefined) {
+                    if (prop === '') {
+                        if (arrayKeys[rawPath] === undefined) {
                             arrayKeys[rawPath] = 0;
                         } else {
                             arrayKeys[rawPath]++;
@@ -47,8 +146,8 @@ if (typeof window.LP == 'undefined') {
                         objPath += "['" + prop + "']";
                     }
                     try {
-                        if (i == keys.length - 1) {
-                            objExp = objPath + "=isNaN(that.value) ? that.value : Number(that.value);";
+                        if (i === keys.length - 1) {
+                            objExp = objPath + "= !(that.value + '').length || isNaN(that.value) ? that.value : Number(that.value);";
                             end = true;
                         } else {
                             objExp = objPath + "={}";
@@ -79,14 +178,14 @@ if (typeof window.LP == 'undefined') {
         }
         return indexed;
     };
-    $.fn.tooltip = function (options) {
+    $.fn.LP_Tooltip = function (options) {
         options = $.extend({}, {
             offset: [0, 0]
         }, options || {});
         return $.each(this, function () {
             var $el = $(this),
                 content = $el.data('content');
-            if (!content || ($el.data('tooltip') != undefined)) {
+            if (!content || ($el.data('LP_Tooltip') !== undefined)) {
                 return;
             }
             var $tooltip = null;
@@ -115,16 +214,16 @@ if (typeof window.LP == 'undefined') {
             }, function () {
                 $tooltip && $tooltip.remove();
             });
-            $el.data('tooltip', true);
+            $el.data('LP_Tooltip', true);
         });
     };
     $.fn.hasEvent = function (name) {
         var events = $(this).data('events');
-        if (typeof events.LP == 'undefined') {
+        if (typeof events.LP === 'undefined') {
             return false;
         }
         for (i = 0; i < events.LP.length; i++) {
-            if (events.LP[i].namespace == name) {
+            if (events.LP[i].namespace === name) {
                 return true;
             }
         }
@@ -155,7 +254,7 @@ if (typeof window.LP == 'undefined') {
             url += url.match(/\?/) ? '&' : '?';
             url += name + '=' + value;
         } else {
-            if ((url.indexOf('&' + name + '=') != -1) || (url.indexOf('?' + name + '=') != -1)) {
+            if ((url.indexOf('&' + name + '=') !== -1) || (url.indexOf('?' + name + '=') !== -1)) {
                 url = url.replace(new RegExp(name + "=([^&#]*)", 'g'), name + '=' + value);
             } else {
                 url += url.match(/\?/) ? '&' : '?';
@@ -174,7 +273,7 @@ if (typeof window.LP == 'undefined') {
         return url + (m[1] ? '#' + m[1] : '');
     };
 
-    if ($.isEmptyObject("") == false) {
+    if ($.isEmptyObject("") === false) {
         $.isEmptyObject = function (a) {
             for (prop in a) {
                 if (a.hasOwnProperty(prop)) {
@@ -197,7 +296,7 @@ if (typeof window.LP == 'undefined') {
         quickConfirm: function (elem, args) {
             var $e = $(elem);
             $('[learn-press-quick-confirm]').each(function () {
-                ( $ins = $(this).data('quick-confirm') ) && ( console.log($ins), $ins.destroy() );
+                ($ins = $(this).data('quick-confirm')) && (console.log($ins), $ins.destroy());
             });
             !$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
                 new (function (elem, args) {
@@ -221,7 +320,7 @@ if (typeof window.LP == 'undefined') {
                         },
                         start = function () {
                             timerOut = setInterval(function () {
-                                if (--n == 0) {
+                                if (--n === 0) {
                                     hide.call($div[0]);
                                     $.isFunction(args.onCancel) && args.onCancel(args.data);
                                     stop();
@@ -230,7 +329,7 @@ if (typeof window.LP == 'undefined') {
                             }, 1000);
 
                             timerHide = setInterval(function () {
-                                if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
+                                if (!$elem.is(':visible') || $elem.css("visibility") === 'hidden') {
                                     stop();
                                     $div.remove();
                                     $div.parent().css('position', '');
@@ -256,7 +355,7 @@ if (typeof window.LP == 'undefined') {
                     });
                     //$div.parent().css('position', 'relative');
                     $div.css({
-                        left: ( ( offset.left + $elem.outerWidth() ) - $div.outerWidth() ) + args.offset.left,
+                        left: ((offset.left + $elem.outerWidth()) - $div.outerWidth()) + args.offset.left,
                         top: offset.top + $elem.outerHeight() + args.offset.top + 5
                     }).hide().fadeIn('fast');
                     start();
@@ -264,7 +363,6 @@ if (typeof window.LP == 'undefined') {
                     this.destroy = function () {
                         $div.remove();
                         $elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
-                        ;
                         stop();
 
                     };
@@ -317,7 +415,7 @@ if (typeof window.LP == 'undefined') {
         },
         blockUI: function (message) {
 
-            message = (message !== false ? ( message ? message : 'Wait a moment' ) : '') + '<div class="message-box-animation"></div>';
+            message = (message !== false ? (message ? message : 'Wait a moment') : '') + '<div class="message-box-animation"></div>';
             this.show(message);
         },
         hide: function (delay, instance) {
@@ -326,7 +424,7 @@ if (typeof window.LP == 'undefined') {
             } else if (this.instance) {
                 this._removeInstance(this.instance.id);
             }
-            if (this.instances.length == 0) {
+            if (this.instances.length === 0) {
                 if (this.$block) {
                     this.$block.hide();
                 }
@@ -364,7 +462,7 @@ if (typeof window.LP == 'undefined') {
                         $content.css("height", "").css('overflow', '');
                     }
                     $wrap.css({
-                        marginTop: ( $(window).height() - height ) / 2
+                        marginTop: ($(window).height() - height) / 2
                     });
                     LP.Hook.doAction('learn_press_message_box_resize', height, that);
                 };
@@ -374,7 +472,7 @@ if (typeof window.LP == 'undefined') {
         },
         _removeInstance: function (id) {
             for (var i = 0; i < this.instances.length; i++) {
-                if (this.instances[i].id == id) {
+                if (this.instances[i].id === id) {
 
                     this.instances.splice(i, 1);
 
@@ -392,9 +490,8 @@ if (typeof window.LP == 'undefined') {
         },
         _getInstance: function (id) {
             for (var i = 0; i < this.instances.length; i++) {
-                if (this.instances[i].id == id) {
+                if (this.instances[i].id === id) {
                     return this.instances[i];
-                    break;
                 }
             }
         },
@@ -423,13 +520,13 @@ if (typeof window.LP == 'undefined') {
         },
         _createButton: function (title, type) {
             var $button = $('<button type="button" class="button message-box-button message-box-button-' + type + '">' + title + '</button>'),
-                callback = 'on' + ( type.substr(0, 1).toUpperCase() + type.substr(1) );
+                callback = 'on' + (type.substr(0, 1).toUpperCase() + type.substr(1));
             $button.data('callback', callback).click(function () {
                 var instance = $(this).data('instance'),
                     callback = instance.events[$(this).data('callback')];
-                if ($.type(callback) == 'function') {
+                if ($.type(callback) === 'function') {
                     if (callback.apply(LP.MessageBox, [instance]) === false) {
-                        return;
+                        // return;
                     } else {
                         LP.MessageBox.hide(null, instance);
                     }
@@ -466,11 +563,11 @@ if (typeof window.LP == 'undefined') {
             return this;
         },
         addHook: function (hookType, action, callable, priority, tag) {
-            if (undefined == this.hooks[hookType][action]) {
+            if (undefined === this.hooks[hookType][action]) {
                 this.hooks[hookType][action] = [];
             }
             var hooks = this.hooks[hookType][action];
-            if (undefined == tag) {
+            if (undefined === tag) {
                 tag = action + '_' + hooks.length;
             }
             this.hooks[hookType][action].push({tag: tag, callable: callable, priority: priority});
@@ -481,7 +578,7 @@ if (typeof window.LP == 'undefined') {
             // splice args from object into array and remove first index which is the hook name
             args = Array.prototype.slice.call(args, 1);
 
-            if (undefined != this.hooks[hookType][action]) {
+            if (undefined !== this.hooks[hookType][action]) {
                 var hooks = this.hooks[hookType][action], hook;
                 //sort by priority
                 hooks.sort(function (a, b) {
@@ -489,25 +586,25 @@ if (typeof window.LP == 'undefined') {
                 });
                 for (var i = 0; i < hooks.length; i++) {
                     hook = hooks[i].callable;
-                    if (typeof hook != 'function')
+                    if (typeof hook !== 'function')
                         hook = window[hook];
-                    if ('action' == hookType) {
+                    if ('action' === hookType) {
                         hook.apply(null, args);
                     } else {
                         args[0] = hook.apply(null, args);
                     }
                 }
             }
-            if ('filter' == hookType) {
+            if ('filter' === hookType) {
                 return args[0];
             }
             return this;
         },
         removeHook: function (hookType, action, priority, tag) {
-            if (undefined != this.hooks[hookType][action]) {
+            if (undefined !== this.hooks[hookType][action]) {
                 var hooks = this.hooks[hookType][action];
                 for (var i = hooks.length - 1; i >= 0; i--) {
-                    if ((undefined == tag || tag == hooks[i].tag) && (undefined == priority || priority == hooks[i].priority)) {
+                    if ((undefined === tag || tag === hooks[i].tag) && (undefined === priority || priority === hooks[i].priority)) {
                         hooks.splice(i, 1);
                     }
                 }
@@ -550,10 +647,10 @@ if (typeof window.LP == 'undefined') {
             return window.location.href;
         },
         addQueryVar: function (name, value, url) {
-            return (url == undefined ? window.location.href : url).addQueryVar(name, value);
+            return (url === undefined ? window.location.href : url).addQueryVar(name, value);
         },
         removeQueryVar: function (name, url) {
-            return (url == undefined ? window.location.href : url).removeQueryVar(name);
+            return (url === undefined ? window.location.href : url).removeQueryVar(name);
         },
         reload: function (url) {
             if (!url) {
@@ -567,10 +664,10 @@ if (typeof window.LP == 'undefined') {
             if (m) {
                 response = m[1];
             }
-            return (type || "json") == "json" ? this.parseJSON(response) : response;
+            return (type || "json") === "json" ? this.parseJSON(response) : response;
         },
         parseJSON: function (data) {
-            var m = data.match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
+            var m = (data + '').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
             try {
                 if (m) {
                     data = $.parseJSON(m[1]);
@@ -587,7 +684,7 @@ if (typeof window.LP == 'undefined') {
                 dataType = args.dataType || 'json',
                 data = args.action ? $.extend(args.data, {'lp-ajax': args.action}) : args.data,
                 beforeSend = args.beforeSend || function () {
-                    },
+                },
                 url = args.url || window.location.href;
 //                        console.debug( beforeSend );
             $.ajax({
@@ -608,12 +705,12 @@ if (typeof window.LP == 'undefined') {
         doAjax: function (args) {
             var type = args.type || 'post',
                 dataType = args.dataType || 'json',
-                action = ( ( args.prefix == undefined ) || 'learnpress_') + args.action,
+                action = ((args.prefix === undefined) || 'learnpress_') + args.action,
                 data = args.action ? $.extend(args.data, {action: action}) : args.data;
 
             $.ajax({
                 data: data,
-                url: ( args.url || window.location.href ),
+                url: (args.url || window.location.href),
                 type: type,
                 dataType: 'html',
                 success: function (raw) {
@@ -663,7 +760,7 @@ if (typeof window.LP == 'undefined') {
             }
         },
         toElement: function (element, args) {
-            if ($(element).length == 0) {
+            if ($(element).length === 0) {
                 return;
             }
             args = $.extend({
@@ -676,7 +773,7 @@ if (typeof window.LP == 'undefined') {
             }, args || {});
             var $container = $(args.container),
                 rootTop = 0;
-            if ($container.length == 0) {
+            if ($container.length === 0) {
                 $container = $('body, html');
             }
             rootTop = $container.offset().top;
@@ -717,8 +814,8 @@ if (typeof window.LP == 'undefined') {
                     return seed.slice(seed.length - reqWidth);
                 }
                 if (reqWidth > seed.length) { // so short we pad
-                    return Array(1 + (reqWidth - seed.length))
-                            .join('0') + seed;
+                    return new Array(1 + (reqWidth - seed.length))
+                        .join('0') + seed;
                 }
                 return seed;
             };
@@ -735,7 +832,7 @@ if (typeof window.LP == 'undefined') {
 
             retId = prefix; // start with prefix, add current milliseconds hex string
             retId += formatSeed(parseInt(new Date()
-                    .getTime() / 1000, 10), 8);
+                .getTime() / 1000, 10), 8);
             retId += formatSeed(this.php_js.uniqidSeed, 5); // add seed hex string
             if (more_entropy) {
                 // for more entropy we add a float lower to 10
@@ -754,7 +851,7 @@ if (typeof window.LP == 'undefined') {
             //}
         },
         blockContent: function () {
-            if ($('#learn-press-block-content').length == 0) {
+            if ($('#learn-press-block-content').length === 0) {
                 $(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
             }
             LP.hideMainScrollbar().addClass('block-content');
@@ -810,13 +907,13 @@ if (typeof window.LP == 'undefined') {
         alert: function (localize, callback) {
             var title = '',
                 message = '';
-            if (typeof localize == 'string') {
+            if (typeof localize === 'string') {
                 message = localize;
             } else {
-                if (typeof localize['title'] != 'undefined') {
+                if (typeof localize['title'] !== 'undefined') {
                     title = localize['title'];
                 }
-                if (typeof localize['message'] != 'undefined') {
+                if (typeof localize['message'] !== 'undefined') {
                     message = localize['message'];
                 }
             }
@@ -830,13 +927,13 @@ if (typeof window.LP == 'undefined') {
             var title = '',
                 message = '';
 
-            if (typeof localize == 'string') {
+            if (typeof localize === 'string') {
                 message = localize;
             } else {
-                if (typeof localize['title'] != 'undefined') {
+                if (typeof localize['title'] !== 'undefined') {
                     title = localize['title'];
                 }
-                if (typeof localize['message'] != 'undefined') {
+                if (typeof localize['message'] !== 'undefined') {
                     message = localize['message'];
                 }
             }
@@ -881,7 +978,7 @@ if (typeof window.LP == 'undefined') {
             var target = event.origin || event.originalEvent.origin,
                 data = event.data || event.originalEvent.data || '';
             if (typeof data === 'string' || data instanceof String) {
-                if (data.indexOf('{') == 0) {
+                if (data.indexOf('{') === 0) {
                     data = LP.parseJSON(data);
                 }
             }
@@ -963,6 +1060,124 @@ if (typeof window.LP == 'undefined') {
         });
     };
 
+    function QuickTip(el, options) {
+        var $el = $(el);
+
+        options = $.extend({
+            event: 'hover',
+            autoClose: true,
+            single: true,
+            closeInterval: 1000,
+            arrowOffset: null,
+            tipClass: ''
+        }, options, $el.data());
+
+        var content = $el.data('content-tip') || $el.html(),
+            $tip = $('<div class="learn-press-tip-floating">' + content + '</div>'),
+            t = null,
+            closeInterval = 0,
+            useData = false,
+            arrowOffset = options.arrowOffset == 'el' ? $el.outerWidth() / 2 : 8;
+
+        $tip.addClass(options.tipClass);
+
+        if ($el.attr('data-content-tip')) {
+            $el.removeAttr('data-content-tip');
+            useData = true;
+        }
+
+        closeInterval = options.closeInterval;
+
+        if (options.autoClose === false) {
+            $tip.append('<a class="close"></a>');
+            $tip.on('click', '.close', function () {
+                close();
+            })
+        }
+
+        function show() {
+            if (t) {
+                clearTimeout(t);
+                return;
+            }
+
+            if (options.single) {
+                $('.learn-press-tip').not($el).QuickTip('close');
+            }
+
+            $tip.appendTo(document.body);
+            var pos = $el.offset();
+
+            $tip.css({
+                top: pos.top - $tip.outerHeight() - 8,
+                left: pos.left - $tip.outerWidth() / 2 + arrowOffset
+            });
+        }
+
+        function hide() {
+            t && clearTimeout(t);
+            t = setTimeout(function () {
+                $tip.detach();
+                t = null;
+            }, closeInterval);
+        }
+
+        function close() {
+            closeInterval = 0;
+            hide();
+            closeInterval = options.closeInterval;
+        }
+
+        function open() {
+            show();
+        }
+
+        if (!useData) {
+            $el.html('');
+        }
+
+        if (options.event === 'click') {
+            $el.on('click', function (e) {
+                e.stopPropagation();
+                show();
+            })
+        }
+        $el.hover(
+            function (e) {
+                e.stopPropagation();
+                if (options.event !== 'click') {
+                    show();
+                }
+            },
+            function (e) {
+                e.stopPropagation();
+                if (options.autoClose) {
+                    hide();
+                }
+            }
+        ).addClass('ready');
+
+        return {
+            close: close,
+            open: open
+        }
+    }
+
+    $.fn.QuickTip = function (options) {
+        return $.each(this, function () {
+            var $tip = $(this).data('quick-tip');
+
+            if (!$tip) {
+                $tip = new QuickTip(this, options);
+                $(this).data('quick-tip', $tip);
+            }
+
+            if ($.type(options) === 'string') {
+                $tip[options] && $tip[options].apply($tip);
+            }
+        })
+    }
+
     function __initSubtabs() {
         $('.learn-press-subtabs').each(function () {
             var $tabContainer = $(this),
@@ -977,7 +1192,7 @@ if (typeof window.LP == 'undefined') {
                 //LP.setUrl($contentID);
                 e.preventDefault();
             }).filter(function () {
-                return $(this).attr('href') == window.location.hash;
+                return $(this).attr('href') === window.location.hash;
             }).trigger('click');
             if (!current) {
                 $tabs.first().trigger('click');
@@ -986,9 +1201,11 @@ if (typeof window.LP == 'undefined') {
     }
 
     $(document).ready(function () {
-        if (typeof $.alerts != 'undefined') {
+        if (typeof $.alerts !== 'undefined') {
             $.alerts.overlayColor = '#000';
             $.alerts.overlayOpacity = 0.5;
+            $.alerts.okButton = lpGlobalSettings.localize.button_ok;
+            $.alerts.cancelButton = lpGlobalSettings.localize.button_cancel;
         }
 
         $('.learn-press-message.fixed').each(function () {
@@ -1003,10 +1220,62 @@ if (typeof window.LP == 'undefined') {
                 if (options.delayOut) {
                     setTimeout(function () {
                         $el.fadeOut();
-                    }, options.delayOut + ( options.delayIn || 0));
+                    }, options.delayOut + (options.delayIn || 0));
                 }
             })($el, options);
 
+        });
+
+
+        $(document).on('input', '#meta-box-tab-course_payment', function (e) {
+            var _self = $(this),
+                _price = $('#_lp_price'),
+                _sale_price = $('#_lp_sale_price'),
+                _target = $(e.target).attr('id');
+            _self.find('#field-_lp_price div, #field-_lp_sale_price div').remove('.learn-press-tip-floating');
+            if (parseInt(_sale_price.val()) >= parseInt(_price.val())) {
+                if (_target === '_lp_price') {
+                    _price.parent('.rwmb-input').append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_price + '</div>');
+                } else if (_target === '_lp_sale_price') {
+                    _sale_price.parent('.rwmb-input').append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_price + '</div>');
+                }
+            }
+        });
+
+        $(document).on('change', '#_lp_sale_start', function (e) {
+            var _sale_start_date = $(this),
+                _sale_end_date = $('#_lp_sale_end'),
+                _start_date = Date.parse(_sale_start_date.val()),
+                _end_date = Date.parse(_sale_end_date.val()),
+                _parent_start = _sale_start_date.parent('.rwmb-input'),
+                _parent_end = _sale_end_date.parent('.rwmb-input');
+
+            if (!_start_date) {
+                _parent_start.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_invalid_date + '</div>')
+            }
+
+            $('#field-_lp_sale_start div, #field-_lp_sale_end div').remove('.learn-press-tip-floating');
+            if (_start_date < _end_date) {
+                _parent_start.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_start_date + '</div>')
+            }
+        });
+
+        $(document).on('change', '#_lp_sale_end', function (e) {
+            var _sale_end_date = $(this),
+                _sale_start_date = $('#_lp_sale_start'),
+                _start_date = Date.parse(_sale_start_date.val()),
+                _end_date = Date.parse(_sale_end_date.val()),
+                _parent_start = _sale_start_date.parent('.rwmb-input'),
+                _parent_end = _sale_end_date.parent('.rwmb-input');
+
+            if (!_end_date) {
+                _parent_end.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_invalid_date + '</div>')
+            }
+
+            $('#field-_lp_sale_start div, #field-_lp_sale_end div').remove('.learn-press-tip-floating');
+            if (_start_date < _end_date) {
+                _parent_end.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_end_date + '</div>')
+            }
         });
 
         $('body')
@@ -1015,15 +1284,12 @@ if (typeof window.LP == 'undefined') {
                 var $tab = $(this), url = '';
                 $tab.closest('li').addClass('active').siblings().removeClass('active');
                 $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
-                //if (!$tab.closest('li').hasClass('default')) {
-                url = $tab.attr('href');
-                //} else {
-                //    url = window.location.href.removeQueryVar('tab');
-                //}
-                LP.setUrl(url);
-
+                $(document).trigger('learn-press/nav-tabs/clicked', $tab);
             });
-        $('.learn-press-nav-tabs li.active a').trigger('click');
+
+        setTimeout(function () {
+            $('.learn-press-nav-tabs li.active:not(.default) a').trigger('click');
+        }, 300);
 
         $('body.course-item-popup').parent().css('overflow', 'hidden');
         ///
@@ -1053,9 +1319,9 @@ if (typeof window.LP == 'undefined') {
             LP.blockContent();
         });
 
-        $('.learn-press-tooltip, .lp-passing-conditional').tooltip({offset: [24, 24]});
+        $('.learn-press-tooltip, .lp-passing-conditional').LP_Tooltip({offset: [24, 24]});
 
-        $('.learn-press-icon').tooltip({offset: [30, 30]});
+        $('.learn-press-icon').LP_Tooltip({offset: [30, 30]});
 
         $('.learn-press-message[data-autoclose]').each(function () {
             var $el = $(this), delay = parseInt($el.data('autoclose'));
@@ -1065,10 +1331,9 @@ if (typeof window.LP == 'undefined') {
                 }, delay, $el);
             }
         });
-
-        //$(window).on("message onmessage", LP.receiveMessage, false);
-        window.addEventListener("message", LP.receiveMessage, false);
-
     });
     LearnPress = LP;
+
 })(jQuery);
+
+

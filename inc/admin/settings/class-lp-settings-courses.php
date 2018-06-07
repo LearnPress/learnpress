@@ -15,33 +15,33 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	}
 
 	public function save() {
-		parent::save();
-		$course_permalink = $_POST['learn_press_course_base'];
-		if ( $course_permalink == 'custom' ) {
-			$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
+		if ( ! empty( $_POST['learn_press_course_base'] ) ) {
+			$course_permalink = $_POST['learn_press_course_base'];
+			if ( $course_permalink == 'custom' ) {
+				$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
 
-			if ( '%course_category%' == $course_permalink ) {
-				$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
+				if ( '%course_category%' == $course_permalink ) {
+					$course_permalink = _x( 'courses', 'slug', 'learnpress' ) . '/' . $course_permalink;
+				}
+
+				$course_permalink = '/' . $course_permalink;
+				update_option( 'learn_press_course_base_type', 'custom' );
+
+			} else {
+				delete_option( 'learn_press_course_base_type' );
 			}
 
-			$course_permalink = '/' . $course_permalink;
-			update_option( 'learn_press_course_base_type', 'custom' );
+			$course_base = untrailingslashit( $course_permalink );
 
-		} else {
-			delete_option( 'learn_press_course_base_type' );
-		}
+			update_option( 'learn_press_course_base', $course_base );
+			$courses_page_id   = learn_press_get_page_id( 'courses' );
+			$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
 
-		$course_base = untrailingslashit( $course_permalink );
-
-		update_option( 'learn_press_course_base', $course_base );
-
-		$courses_page_id   = learn_press_get_page_id( 'courses' );
-		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
-
-		if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
-			update_option( 'learn_press_use_verbose_page_rules', 'yes' );
-		} else {
-			delete_option( 'learn_press_use_verbose_page_rules' );
+			if ( $courses_page_id && trim( $course_base, '/' ) === $courses_permalink ) {
+				update_option( 'learn_press_use_verbose_page_rules', 'yes' );
+			} else {
+				delete_option( 'learn_press_use_verbose_page_rules' );
+			}
 		}
 	}
 
@@ -59,29 +59,31 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 			'learn-press/courses-settings-fields',
 			array_merge(
 			// General
-				apply_filters( 'learn-press/course-settings-fields/general', array(
+				apply_filters(
+					'learn-press/course-settings-fields/general',
+					array(
 						array(
 							'title' => __( 'General', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'  => __( 'General settings', 'learnpress' )
+							'desc'  => __( 'General settings.', 'learnpress' )
 						),
 						array(
-							'title'   => __( 'Review course before publish', 'learnpress' ),
+							'title'   => __( 'Review course before publishing', 'learnpress' ),
 							'desc'    => __( 'The course needs to be reviewed by admin before it can be published.', 'learnpress' ),
-							'id' => 'required_review',
+							'id'      => 'required_review',
 							'default' => 'yes',
 							'type'    => 'yes-no'
 						),
 						array(
-							'title'      => __( 'Enable edit published course', 'learnpress' ),
-							'desc'       => __( 'Allow instructors to edit the course that are published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
-							'id' => 'enable_edit_published',
+							'title'      => __( 'Enable editing published course', 'learnpress' ),
+							'desc'       => __( 'Allow instructors to edit the course which were published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
+							'id'         => 'enable_edit_published',
 							'default'    => 'yes',
 							'type'       => 'yes-no',
 							'visibility' => array(
-								'state'          => 'show',
-								'conditional'    => array(
-									'field' => 'required_review',
+								'state'       => 'show',
+								'conditional' => array(
+									'field'   => 'required_review',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -90,7 +92,9 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 					)
 				),
 				// Archive
-				apply_filters( 'learn-press/course-settings-fields/archive', array(
+				apply_filters(
+					'learn-press/course-settings-fields/archive',
+					array(
 						array(
 							'title' => __( 'Archive', 'learnpress' ),
 							'type'  => 'heading',
@@ -98,14 +102,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Courses Page', 'learnpress' ),
-							'id' => 'courses_page_id',
+							'id'      => 'courses_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown'
 						),
 						array(
-							'title'             => __( 'Courses limit', 'learnpress' ),
+							'title'             => __( 'Courses per page', 'learnpress' ),
 							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
-							'id' => 'archive_course_limit',
+							'id'                => 'archive_course_limit',
 							'default'           => '10',
 							'type'              => 'number',
 							'custom_attributes' => array(
@@ -115,43 +119,54 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 					)
 				),
 				// Single course
-				apply_filters( 'learn-press/course-settings-fields/single', array(
+				apply_filters(
+					'learn-press/course-settings-fields/single',
+					array(
 						array(
 							'title' => __( 'Single course', 'learnpress' ),
 							'type'  => 'heading',
 							'desc'  => __( 'Those settings are applied to single course page.', 'learnpress' )
 						),
-						array(
-							'title'   => __( 'Single course permalink', 'learnpress' ),
-							'type'    => 'course-permalink',
-							'default' => ''
-						),
+
 						array(
 							'title'   => __( 'Course category base', 'learnpress' ),
-							'id' => 'course_category_base',
+							'id'      => 'course_category_base',
 							'default' => 'course-category',
 							'type'    => 'text'
 						),
 						array(
 							'title'   => __( 'Course tag base', 'learnpress' ),
-							'id' => 'course_tag_base',
+							'id'      => 'course_tag_base',
 							'default' => 'course-tag',
 							'type'    => 'text'
 						),
 						array(
+							'title'   => __( 'Single course permalink', 'learnpress' ),
+							'type'    => 'course-permalink',
+							'default' => '',
+							'id'      => 'course_base'
+						),
+						array(
 							'title'   => __( 'Lesson', 'learnpress' ),
 							'type'    => 'text',
-							'id' => 'lesson_slug',
+							'id'      => 'lesson_slug',
 							'desc'    => __( sprintf( '%s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
 							'default' => 'lessons'
 						),
 						array(
 							'title'   => __( 'Quiz', 'learnpress' ),
 							'type'    => 'text',
-							'id' => 'quiz_slug',
-							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-lesson/', home_url() ), 'learnpress' ),
+							'id'      => 'quiz_slug',
+							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-quiz/', home_url() ), 'learnpress' ),
 							'default' => 'quizzes'
-						)
+						),
+						array(
+							'title'   => __( 'Enrolled students number', 'learnpress' ),
+							'type'    => 'yes_no',
+							'id'      => 'enrolled_students_number',
+							'desc'    => __( 'Displays a fake numbers of enrolled students. Disable to show the real value.', 'learnpress' ),
+							'default' => 'quizzes'
+						),
 					)
 				),
 				// Thumbnail
@@ -161,46 +176,46 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 							'desc'  => __( 'Thumbnail generation for archive/single course.', 'learnpress' )
 						),
-						array(
-							'title'   => __( 'Single course', 'learnpress' ),
-							'id' => 'generate_course_thumbnail',
-							'default' => 'yes',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
-						),
-						array(
-							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-							'id' => 'single_course_image_size',
-							'default'    => array( 800, 450, 'yes' ),
-							'type'       => 'image-dimensions',
-							'visibility' => array(
-								'state'       => 'show',
-
-								'conditional' => array(
-									'field' => 'generate_course_thumbnail',
-									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						),
+//						array(
+//							'title'   => __( 'Single course', 'learnpress' ),
+//							'id'      => 'generate_course_thumbnail',
+//							'default' => 'yes',
+//							'type'    => 'yes-no',
+//							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
+//						),
+//						array(
+//							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
+//							'id'         => 'single_course_image_size',
+//							'default'    => array( 800, 450, 'yes' ),
+//							'type'       => 'image-dimensions',
+//							'visibility' => array(
+//								'state' => 'show',
+//
+//								'conditional' => array(
+//									'field'   => 'generate_course_thumbnail',
+//									'compare' => '=',
+//									'value'   => 'yes'
+//								)
+//							)
+//						),
 						array(
 							'title'   => __( 'Archive course', 'learnpress' ),
-							'id' => 'archive_course_thumbnail',
+							'id'      => 'archive_course_thumbnail',
 							'default' => 'yes',
 							'type'    => 'yes-no',
-							'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
+							'desc'    => __( 'Turn on/off courses extra thumbnail.', 'learnpress' ),
 						),
 						array(
 							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-							'id' => 'course_thumbnail_image_size',
+							'id'         => 'course_thumbnail_image_size',
 							'default'    => array( 400, 250, 'yes' ),
 							'type'       => 'image-dimensions',
 							'visibility' => array(
-								'state'       => 'show',
+								'state' => 'show',
 
 								'conditional' => array(
 									array(
-										'field' => 'archive_course_thumbnail',
+										'field'   => 'archive_course_thumbnail',
 										'compare' => '=',
 										'value'   => 'yes'
 									)

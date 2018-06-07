@@ -26,6 +26,8 @@ class LP_Datetime extends DateTime {
 	 */
 	protected $tz;
 
+	protected $raw_date = null;
+
 	/**
 	 * Constructor.
 	 *
@@ -38,28 +40,84 @@ class LP_Datetime extends DateTime {
 			self::$stz = new DateTimeZone( @date_default_timezone_get() );
 		}
 
+		if ( $date instanceof LP_Datetime ) {
+			$this->raw_date = $date->get_raw_date();
+		} else {
+			$this->raw_date = $date;
+		}
+
 		if ( empty( $date ) ) {
 			$date = current_time( 'mysql' );
 		}
 
 		if ( ! ( $tz instanceof DateTimeZone ) ) {
-			if ( ( $tz === null ) && $tz = get_option( 'timezone_string' ) ) {
-				$tz = new DateTimeZone( $tz );
+
+			if ( ( $tz === null ) ) {
+				$tz = new DateTimeZone( self::timezone_string() );
 			} elseif ( is_string( $tz ) && $tz ) {
 				$tz = new DateTimeZone( $tz );
 			}
 		}
-		if(!$tz){
+
+		if ( ! $tz ) {
 			$tz = null;
 		}
+
+		if ( $this->raw_date === '0000-00-00 00:00:00' ) {
+			//$date = '1969-01-01 00:00:00';
+		}
+
 		date_default_timezone_set( 'UTC' );
-		$date = is_numeric( $date ) ? date( 'c', $date ) : $date;
+		$date = is_numeric( $date ) ? date( 'Y-m-d H:i:s', $date ) : $date;
 
 		parent::__construct( $date, $tz );
 
 		date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
+	}
+
+	/**
+	 * Check if time is exceeded with current time
+	 */
+	public function is_exceeded( $interval = 0 ) {
+		return $this->getTimestamp() >= current_time( 'timestamp' ) + $interval;
+	}
+
+	public static function timezone_string() {
+
+		if ( $timezone = get_option( 'timezone_string' ) ) {
+			return $timezone;
+		}
+
+		if ( 0 === ( $utc_offset = intval( get_option( 'gmt_offset', 0 ) ) ) ) {
+			return 'UTC';
+		}
+
+		$utc_offset *= 3600;
+
+
+		if ( $timezone = timezone_name_from_abbr( '', $utc_offset ) ) {
+			return $timezone;
+		}
+
+		foreach ( timezone_abbreviations_list() as $abbr ) {
+			foreach ( $abbr as $city ) {
+				if ( ( (bool) date( 'I' ) === (bool) $city['dst'] ) && $city['timezone_id'] && ( intval( $city['offset'] ) === $utc_offset ) ) {
+					return $city['timezone_id'];
+				}
+			}
+		}
+
+		return 'UTC';
+	}
+
+	public function is_null() {
+		return $this->raw_date === '0000-00-00 00:00:00';
+	}
+
+	public function get_raw_date() {
+		return $this->raw_date;
 	}
 
 	/**
@@ -129,7 +187,7 @@ class LP_Datetime extends DateTime {
 	 * @return  string  The date as a formatted string.
 	 */
 	public function __toString() {
-		return (string) parent::format( self::$format );
+		return (string) $this->format( self::$format, true );
 	}
 
 	/**
@@ -141,6 +199,10 @@ class LP_Datetime extends DateTime {
 	 * @return  string   The date string in the specified format format.
 	 */
 	public function format( $format, $local = true ) {
+		if ( '0000-00-00 00:00:00' === $this->raw_date ) {
+			return '';
+		}
+
 		if ( $local == false && ! empty( self::$gmt ) ) {
 			parent::setTimezone( self::$gmt );
 		}
@@ -160,7 +222,7 @@ class LP_Datetime extends DateTime {
 	 * @return float
 	 */
 	public function getOffset( $hours = false ) {
-		return (float) $hours ? ( $this->tz->getOffset( $this ) / 3600 ) : $this->tz->getOffset( $this );
+		return $this->tz ? (float) $hours ? ( $this->tz->getOffset( $this ) / 3600 ) : $this->tz->getOffset( $this ) : 0;
 	}
 
 	/**
@@ -213,5 +275,33 @@ class LP_Datetime extends DateTime {
 	 */
 	public function toUnix() {
 		return (int) parent::format( 'U' );
+	}
+
+	public function getTimestamp( $local = true ) {
+		$this->setGMT( $local );
+		$timestamp = parent::getTimestamp();
+		$this->setGMT( $local, false );
+
+		if ( $local ) {
+			$timestamp += $this->getOffset();
+		}
+
+		return $timestamp;
+	}
+
+	protected function setGMT( $local = false, $gmt = true ) {
+		if ( $gmt ) {
+			if ( $local == false && ! empty( self::$gmt ) ) {
+				parent::setTimezone( self::$gmt );
+			}
+		} else {
+			if ( $local == false && ! empty( $this->tz ) ) {
+				parent::setTimezone( $this->tz );
+			}
+		}
+	}
+
+	public static function getSqlNullDate() {
+		return '0000-00-00 00:00:00';
 	}
 }

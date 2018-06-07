@@ -4,27 +4,33 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 
+	/**
+	 * Class LP_Email_User_Order_Changed_Status
+	 */
 	class LP_Email_User_Order_Changed_Status extends LP_Email {
-
 		/**
 		 * LP_Email_User_Order_Changed_Status constructor.
 		 */
 		public function __construct() {
-
 			$this->id          = 'user_order_changed_status';
 			$this->title       = __( 'User order changed status', 'learnpress' );
-			$this->description = __( 'Send email to user when the order is changed status', 'learnpress' );
+			$this->description = __( 'Send email to user when the order status is changed', 'learnpress' );
 
 			$this->template_html  = 'emails/user-order-changed-status.php';
 			$this->template_plain = 'emails/plain/user-order-changed-status.php';
 
-			$this->default_subject = __( 'Your order {{order_date}} has just been changed status', 'learnpress' );
-			$this->default_heading = __( 'Your order {{order_number}} has just been changed status', 'learnpress' );
+			$this->default_subject = __( 'Your order {{order_date}} status has just been changed', 'learnpress' );
+			$this->default_heading = __( 'Your order {{order_number}} status has just been changed', 'learnpress' );
 
 			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{order_id}}',
@@ -130,19 +136,19 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => 'emails_user_order_changed_status[enable]'
+						'id'      => $this->get_field_name( 'enable' )
 					),
 					array(
 						'title'      => __( 'Subject', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_subject,
-						'id'         => 'emails_user_order_changed_status[subject]',
-						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'id'         => $this->get_field_name( 'subject' ),
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_changed_status[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -153,13 +159,13 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 						'title'      => __( 'Heading', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_heading,
-						'id'         => 'emails_user_order_changed_status[heading]',
-						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'id'         => $this->get_field_name( 'heading' ),
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_changed_status[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -170,7 +176,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 						'title'                => __( 'Email content', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
-						'id'                   => 'emails_user_order_changed_status[email_content]',
+						'id'                   => $this->get_field_name( 'email_content' ),
 						'template_base'        => $this->template_base,
 						'template_path'        => $this->template_path,//default learnpress
 						'template_html'        => $this->template_html,
@@ -182,7 +188,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_changed_status[enable]',
+									'field'   => $this->get_field_name( 'enable' ),
 									'compare' => '=',
 									'value'   => 'yes'
 								)

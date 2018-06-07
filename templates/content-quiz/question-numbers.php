@@ -1,23 +1,37 @@
 <?php
-$course    = LP_Global::course();
-$quiz      = LP_Global::course_item_quiz();
-$questions = $quiz->get_questions();
-$position  = 0;
+/**
+ * Template for displaying number question in quiz.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/question-numbers.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
+ */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
+$quiz = LP_Global::course_item_quiz();
+
+if ( ! $questions = $quiz->get_questions() ) {
+	return;
+}
+
+$questions = array_values( $questions );
 ?>
+
 <ul class="question-numbers">
-	<?php foreach ( $questions as $question_id ) {
-		$position ++; ?>
-        <li<?php echo $quiz->is_viewing_question( $question_id ) ? ' class="current"' : ''; ?> >
-            <a href="<?php echo $quiz->get_question_link( $question_id ); ?>"><?php echo $position; ?></a>
+
+	<?php foreach ( $questions as $position => $question_id ) {
+		$class = $quiz->get_question_number_class( $question_id, ++ $position ); ?>
+        <li class="<?php echo join( ' ', $class ); ?>">
+            <a href="<?php echo $quiz->get_question_link( $question_id ); ?>">
+                <span><?php echo $position; ?></span>
+            </a>
         </li>
 	<?php } ?>
-</ul>
 
-<div id="content-item-nav">
-    <div class="content-item-nav-wrap">
-        <form>
-            <a href="<?php echo $course->get_next_item(); ?>">Prev</a>
-            <button>Next</button>
-        </form>
-    </div>
-</div>
+</ul>

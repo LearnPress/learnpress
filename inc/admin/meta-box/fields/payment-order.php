@@ -22,19 +22,19 @@ if ( ! class_exists( 'RWMB_Payment_Order_Field' ) ) {
 			$gateways = LP_Gateways::instance()->get_gateways( true );
 			ob_start();
 			?>
-            <table class="learn-press-payments<?php echo sizeof($gateways) > 1 ? ' sortable' : '';?>">
+            <table class="learn-press-payments<?php echo sizeof( $gateways ) > 1 ? ' sortable' : ''; ?>">
                 <thead>
                 <tr>
-                    <th></th>
-                    <th><?php _e( 'Payment', 'learnpress' ); ?></th>
-                    <th><?php _e( 'ID', 'learnpress' ); ?></th>
-                    <th><?php _e( 'Description', 'learnpress' ); ?></th>
+                    <th class="order"></th>
+                    <th class="name"><?php _e( 'Payment', 'learnpress' ); ?></th>
+                    <th class="id"><?php _e( 'ID', 'learnpress' ); ?></th>
+                    <th class="description"><?php _e( 'Description', 'learnpress' ); ?></th>
                     <th class="status"><?php _e( 'Status', 'learnpress' ); ?></th>
                 </tr>
                 </thead>
                 <tbody>
 				<?php foreach ( $gateways as $gateway ) { ?>
-                    <tr>
+                    <tr id="payment-<?php echo $gateway->get_id(); ?>" data-payment="<?php echo $gateway->get_id(); ?>">
                         <td class="order"><span class="dashicons dashicons-menu"></span></td>
                         <td class="name">
                             <a href="<?php echo esc_url( admin_url( 'admin.php?page=learn-press-settings&tab=payments&section=' . $gateway->get_id() ) ); ?>"><?php echo $gateway->get_method_title(); ?></a>

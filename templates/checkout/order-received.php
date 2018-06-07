@@ -1,17 +1,23 @@
 <?php
 /**
- * Template for displaying order details
+ * Template for displaying order detail.
  *
- * @author        ThimPress
- * @package       LearnPress/Templates
- * @version       3.x.x
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/order-received.php.
+ *
+ * @author  ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.9
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
+<?php
 if ( isset( $order ) ) {
+
 	if ( is_int( $order ) ) {
 		$order = learn_press_get_order( $order );
 	}
@@ -23,6 +29,33 @@ if ( isset( $order ) ) {
             <th><?php _e( 'Order Number', 'learnpress' ); ?></th>
             <td>
 				<?php echo $order->get_order_number(); ?>
+            </td>
+        </tr>
+        <tr class="item">
+            <th><?php _e( 'Item', 'learnpress' ); ?></th>
+            <td>
+				<?php
+				$links = array();
+				$items = $order->get_items();
+				$count = sizeof( $items );
+				foreach ( $items as $item ) {
+					if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+						$links[] = __( 'Course does not exist', 'learnpress' );
+					} else {
+						$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
+						if ( $count > 1 ) {
+							$link = sprintf( '<li>%s</li>', $link );
+						}
+						$links[] = $link;
+					}
+				}
+				if ( $count > 1 ) {
+					echo sprintf( '<ol>%s</ol>', join( "", $links ) );
+				} elseif ( 1 == $count ) {
+					echo join( "", $links );
+				} else {
+					echo __( '(No item)', 'learnpress' );
+				} ?>
             </td>
         </tr>
         <tr class="date">
@@ -47,8 +80,8 @@ if ( isset( $order ) ) {
 		<?php endif; ?>
     </table>
 
-	<?php do_action( 'learn_press_order_received_' . $order->payment_method, $order->id ); ?>
-	<?php do_action( 'learn_press_order_received', $order ); ?>
+	<?php do_action( 'learn-press/order/received/' . $order->payment_method, $order->id ); ?>
+	<?php do_action( 'learn-press/order/received', $order ); ?>
 
 <?php } else { ?>
 

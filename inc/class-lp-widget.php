@@ -1,7 +1,18 @@
 <?php
 /**
- * Define base class of LearnPress widgets and helper functions
+ * Base class of LearnPress widgets and helper function.
+ *
+ * @author   ThimPress
+ * @category Widgets
+ * @package  Learnpress/Shortcodes
+ * @version  3.0.0
+ * @extends  LP_Widget
  */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Widget' ) ) {
 	/**
@@ -39,6 +50,11 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 		 * @var string
 		 */
 		private $_name_prefix = 'LearnPress - ';
+
+		/**
+		 * @var string
+		 */
+		protected $_option_prefix = '';
 
 		/**
 		 * @var array
@@ -98,7 +114,13 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			);
 			list( $id_base, $name, $widget_options, $control_options ) = $args;
 
-			if ( $this->options ) {
+			// filter widget option prefix
+			$this->_option_prefix = apply_filters( 'learn-press/widget/option_prefix', '' );
+			// set prefix to widget option id
+			$this->options = array_map( array( $this, 'set_option_id' ), $this->options );
+
+			if ( is_array( $this->options ) ) {
+				// set default value for options
 				foreach ( $this->options as $id => $field ) {
 					if ( is_array( $field ) && array_key_exists( 'std', $field ) ) {
 						$this->defaults[ $id ] = $field['std'];
@@ -108,6 +130,19 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 				}
 			}
 			parent::__construct( $id_base, $this->_name_prefix . $name, $widget_options, $control_options );
+		}
+
+		/**
+		 * Set prefix to widget option id
+		 *
+		 * @param $options
+		 *
+		 * @return mixed
+		 */
+		public function set_option_id( $options ) {
+			$options['id'] = $this->_option_prefix . $options['id'];
+
+			return $options;
 		}
 
 		public function before_checkbox_html( $begin, $field, $meta ) {
@@ -145,13 +180,14 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			$this->args     = $args;
 			$this->instance = $this->sanitize_instance( $instance );
 
-			if ( ! apply_filters( 'learn_press_widget_display_content', true, $this ) ) {
+			if ( ! apply_filters( 'learn-press/widget/display', true, $this ) ) {
 				return;
 			}
 
-			if ( ! apply_filters( 'learn_press_widget_display_content-' . $this->id_base, true, $this ) ) {
+			if ( ! apply_filters( 'learn-press/widget/display-' . $this->id_base, true, $this ) ) {
 				return;
 			}
+
 			$this->before_widget();
 			$this->show();
 			$this->after_widget();
@@ -170,6 +206,9 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			echo $this->args['after_widget'];
 		}
 
+		/**
+		 * Show widget.
+		 */
 		public function show() {
 			printf( __( 'Function %s should be overwritten in child class', 'learnpress' ), __FUNCTION__ );
 		}
@@ -183,16 +222,21 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 		 */
 		public function form( $instance ) {
 			$this->instance = $this->sanitize_instance( $instance );
+
 			if ( ! $this->options ) {
-				return;
+				return false;
 			}
+
 			global $post;
+
 			add_filter( 'get_post_metadata', array( $this, 'field_data' ), 10, 4 );
 			add_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
 			//
 
 			$post = (object) array( 'ID' => 1, 'post_type' => 'lp-post-widget' );
+
 			setup_postdata( $post );
+
 			if ( ! class_exists( 'RW_Meta_Box' ) ) {
 				require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
 			}
@@ -201,18 +245,24 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 
 			$this->options = $this->normalize_options();
 
-			foreach ( $this->options as $field ) {
+			foreach ( $this->options as $key => $field ) {
 				$origin_id           = $field['id'];
 				$field['field_name'] = $this->get_field_name( $field['id'] );
 				$field['id']         = $this->get_field_id( $field['id'] );
-				$field['value']      = md5( $field['std'] );
-				//learn_press_debug( $field );
+
+				# If there is old value, bind it to field as init value
+				if ( $this->instance[ $key ] ) {
+					$field['saved'] = $this->instance[ $key ];
+				}
+				//$field['value']      = md5( $field['std'] );
 				$this->map_fields[ $field['id'] ] = $origin_id;
 				$this->_show_field( $field );
 			}
 			wp_reset_postdata();
 			remove_filter( 'get_post_metadata', array( $this, 'field_data' ) );
-			remove_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
+			remove_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10 );
+
+			return true;
 		}
 
 		/**
@@ -240,26 +290,6 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 		 */
 		public function normalize_options() {
 			return ! is_array( $this->options ) ? array() : $this->options;
-		}
-
-		/**
-		 * Find template and display it
-		 */
-		public function get_template() {
-			learn_press_get_widget_template( $this->get_slug(), 'default.php' );
-		}
-
-		/**
-		 * Get path to template files inside widget
-		 *
-		 * @return string
-		 */
-		public function get_template_path() {
-			if ( file_exists( $this->file ) ) {
-				$this->template_path = dirname( $this->file ) . '/tmpl/';
-			}
-
-			return $this->template_path;
 		}
 
 		/**
@@ -301,20 +331,24 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 		 * Tell WP register our widgets
 		 */
 		public static function do_register() {
+
 			if ( ! self::$_widgets ) {
 				return;
 			}
 			global $wp_widget_factory;
+
+
 			foreach ( self::$_widgets as $type => $args ) {
 				$widget_file = LP_PLUGIN_PATH . "inc/widgets/{$type}/{$type}.php";
+
 				if ( ! file_exists( $widget_file ) ) {
 					continue;
 				}
+
 				include_once $widget_file;
 				$widget_class = self::get_widget_class( $type );
+
 				if ( class_exists( $widget_class ) ) {
-					//$widget       = new $widget_class();
-					//$widget->file = $widget_file;
 					register_widget( $widget_class );
 					if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
 						$wp_widget_factory->widgets[ $widget_class ]->file = $widget_file;
@@ -323,6 +357,23 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			}
 
 			return;
+		}
+
+		/**
+		 * Display a template of a widget.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $slug
+		 * @param string $template_name
+		 *
+		 * @return string
+		 */
+		public function get_locate_template( $slug, $template_name = '' ) {
+			// get widget template
+			$template = "widgets/{$slug}/" . ( $template_name ? $template_name : 'default.php' );
+
+			return learn_press_locate_template( $template );
 		}
 
 		/**
@@ -353,52 +404,37 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 			return array( $id_base, $name, $widget_options, $control_options );
 		}
 
+		/**
+		 * @param string $instance
+		 * @param string $more
+		 *
+		 * @return array|mixed
+		 */
+		public function get_class( $instance = '', $more = '' ) {
+			$classes = array( 'lp-widget' );
+			if ( is_array( $instance ) && ! empty( $instance['css_class'] ) ) {
+				$classes[] = $instance['css_class'];
+			}
+			$classes = LP_Helper::merge_class( $classes, $more );
+
+			if ( $classes ) {
+				echo ' class="' . join( ' ', $classes ) . '"';
+			}
+
+			return $classes;
+		}
+
 		private function sanitize_instance( $instance ) {
 			return wp_parse_args( $instance, $this->defaults );
 		}
 	}
 }
 
-/**
- * Get template path of a widget
- *
- * @param $slug
- *
- * @return string
- */
-function learn_press_get_widget_template_path( $slug ) {
-	return LP_WIDGET_PATH . "/{$slug}/tmpl/";
-}
-
-function learn_press_get_widget_theme_template_path( $slug ) {
-
-}
-
-/**
- * Display a template of a widget
- *
- * @param       $slug
- * @param       $template_name
- * @param array $args
- */
-function learn_press_get_widget_template( $slug, $template_name = 'default.php', $args = array() ) {
-	//$template_path = learn_press_get_widget_template_path( $slug );
-	$template = "widgets/{$slug}/" . ( $template_name ? $template_name : 'default.php' );
-	die();
-	learn_press_get_template( $template );// $template_name ? $template_name : 'default.php', $args, learn_press_template_path() . "/widgets/{$slug}", LP_PLUGIN_PATH . "/widgets/{$slug}" );
-}
-
-/**
- * Display a template of a widget
- *
- * @param string $slug
- * @param string $template_name
- *
- * @return string
- */
-function learn_press_locate_widget_template( $slug, $template_name = 'default.php' ) {
-	//$template_path = learn_press_get_widget_template_path( $slug );
-	$template = "widgets/{$slug}/" . ( $template_name ? $template_name : 'default.php' );
-
-	return learn_press_locate_template( $template );
-}
+// Register core widgets
+LP_Widget::register( array(
+	'featured-courses',
+	'popular-courses',
+	'recent-courses',
+	'course-progress',
+	'course-info'
+) );

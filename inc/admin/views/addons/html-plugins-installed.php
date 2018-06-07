@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Views
- * @version 3.x.x
+ * @version 3.0.0
  */
 
 defined( 'ABSPATH' ) or exit();
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) or exit();
 $add_ons = LP_Plugins_Helper::get_plugins( 'installed' );
 
 if ( ! $add_ons ) {
-	_e( 'There is no add-on has installed.', 'learnpress' );
+	_e( 'There is no add-on installed.', 'learnpress' );
 
 	return;
 }

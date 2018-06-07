@@ -1,21 +1,23 @@
 <?php
 /**
- * Template for displaying buttons of the course.
+ * Template for displaying buttons of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/buttons.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.x.x
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
 <div class="lp-course-buttons">
 
 	<?php do_action( 'learn-press/before-course-buttons' ); ?>
-
 	<?php
 	/**
 	 * @see learn_press_course_purchase_button - 10
@@ -24,7 +26,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 */
 	do_action( 'learn-press/course-buttons' );
 	?>
-
 	<?php do_action( 'learn-press/after-course-buttons' ); ?>
 
 </div>

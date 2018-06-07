@@ -48,46 +48,41 @@ class LP_Modal_Search_Users {
 				'text_format'  => '{{display_name}} ({{email}})',
 				'add_button'   => __( 'Add', 'learnpress' ),
 				'close_button' => __( 'Close', 'learnpress' ),
-				'title'        => __( 'Search user', 'learnpress' ),
-				'number'       => 2,
+				'title'        => __( 'Search users', 'learnpress' ),
+				'number'       => 10,
 				'paged'        => 1
 			)
 		);
+		if ( is_string( $this->_options['exclude'] ) ) {
+			$this->_options['exclude'] = explode( ',', $this->_options['exclude'] );
+		}
 	}
 
 	protected function _get_items() {
-		global $wpdb;
-
-		$current_items          = array();
-		$current_items_in_order = learn_press_get_request( 'current_items' );
-		$user                   = learn_press_get_current_user();
-
 		$term       = $this->_options['term'];
 		$type       = $this->_options['type'];
 		$context    = $this->_options['context'];
 		$context_id = $this->_options['context_id'];
 
+		$exclude = array_unique( (array) apply_filters( 'learn-press/modal-search-user/exclude', $this->_options['exclude'], $type, $context, $context_id ) );
 
-		$exclude = array();
-
-		if ( ! empty( $this->_options['exclude'] ) ) {
-			$exclude = array_map( 'intval', $this->_options['exclude'] );
+		if ( ! empty( $exclude ) ) {
+			$exclude = array_map( 'intval', $exclude );
 		}
-		$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
-		$exclude = array_map( 'intval', $exclude );
-		$args    = array(
-			'number' => $this->_options['number'],
-			'offset' => ( $this->_options['paged'] - 1 ) * $this->_options['number']
+
+		$args = array(
+			'number'  => $this->_options['number'],
+			'offset'  => ( $this->_options['paged'] - 1 ) * $this->_options['number'],
+			'exclude' => $exclude
 		);
 		if ( $term ) {
 			$args['search']         = sprintf( '*%s*', esc_attr( $term ) );
 			$args['search_columns'] = array( 'user_login', 'user_email' );
 		}
-		$this->_query_args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
+		$this->_query_args = apply_filters( 'learn-press/modal-search-users/args', $args, $context, $context_id );
 
 		// The Query
 		$this->_query = new WP_User_Query( $args );
-
 		$this->_items = array();
 
 		if ( $results = $this->_query->get_results() ) {
@@ -186,7 +181,7 @@ class LP_Modal_Search_Users {
 				echo '</li>';
 			}
 		} else {
-			echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $this->_options['type'] ) . '</li>';
+			echo '<li>' . apply_filters( 'learn-press/modal-search-users/not-found', __( 'No item found', 'learnpress' ), $this->_options['type'] ) . '</li>';
 		}
 
 		return ob_get_clean();

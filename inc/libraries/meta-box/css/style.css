@@ -1,4 +1,4 @@
-/* =Styles for 'normal' meta boxes
+/* Styles for 'normal' meta boxes
 -------------------------------------------------------------- */
 
 /* Clearfix for field */
@@ -26,8 +26,8 @@
 .rwmb-label > label {
 	font-weight: 600;
 }
-.rwmb-label.required > span {
-	color: #c00;
+.rwmb-required {
+	color: #dc3232;
 	font-weight: bold;
 	margin-left: 3px;
 }
@@ -90,32 +90,54 @@
 	left: 0;
 	top: 0;
 }
-.rwmb-clone-placeholder {
-	background: #fcf8e3;
-	border: 1px solid #faebcc;
-	display: block;
-}
 .rwmb-sort-clone {
 	padding-left: 15px;
 }
 
 /* jQuery validation */
-label.error {
-	padding-left: 3px;
-	color: red;
+p.rwmb-error {
+	color: #dc3232;
+	margin: 2px 0 5px;
 }
-input.error,
-textarea.error,
-select.error {
-	border-color: #c00 !important;
-	background: #ffebe8 !important;
+input.rwmb-error.rwmb-error,
+textarea.rwmb-error,
+select.rwmb-error {
+	border-color: #dc3232;
+	background: #ffebe8;
+}
+
+/* Utilities
+-------------------------------------------------------------- */
+.rwmb-sortable-placeholder {
+	background: #fcf8e3;
+	border: 1px solid #faebcc;
+	display: block;
 }
 
 
-/* =Styles for 'side' meta boxes
+/* Styles for 'side' meta boxes
 -------------------------------------------------------------- */
 
 #side-sortables .rwmb-label,
 #side-sortables .rwmb-input {
 	width: 100%;
+}
+
+/* Seamless style
+--------------------------------------------------------------*/
+.rwmb-seamless {
+	background: none;
+	border: none;
+	box-shadow: none;
+}
+.rwmb-seamless .inside {
+	padding-left: 0;
+	padding-right: 0;
+}
+.postbox.rwmb-seamless .hndle,
+.postbox.rwmb-seamless .handlediv {
+	display: none;
+}
+.rwmb-seamless .rwmb-clone {
+	background: none;
 }

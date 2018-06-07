@@ -1,36 +1,36 @@
 <?php
 /**
- * Template for displaying the price of a course.
+ * Template for displaying price of single course.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.x.x
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/price.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-$lp_user   = learn_press_get_current_user();
-$lp_course = learn_press_get_course();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-if ( $lp_user->has_enrolled_course( $lp_course->get_id() ) ) {
+$user   = LP_Global::user();
+$course = LP_Global::course();
+
+if ( ! $price = $course->get_price_html() ) {
 	return;
 }
-
-if ( ! $price = $lp_course->get_price_html() ) {
-	return;
-}
-
-if ( $lp_course->has_sale_price() ) {
-	?>
-    <span class="course-origin-price">
-		<?php echo $lp_course->get_origin_price_html(); ?>
-	</span>
-	<?php
-}
-
 ?>
-<span class="course-price">
-	<?php echo $price; ?>
-</span>
+
+<div class="course-price">
+
+	<?php if ( $course->has_sale_price() ) { ?>
+
+        <span class="origin-price"> <?php echo $course->get_origin_price_html(); ?></span>
+
+	<?php } ?>
+
+    <span class="price"><?php echo $price; ?></span>
+
+</div>
 

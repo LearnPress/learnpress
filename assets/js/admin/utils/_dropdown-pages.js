@@ -39,7 +39,7 @@
             if (this.value !== 'add_new_page') {
                 if (parseInt(this.value)) {
                     $actions.find('a.edit-page').attr('href', 'post.php?post=' + this.value + '&action=edit');
-                    $actions.find('a.view-page').attr('href', LP_Settings.siteurl + '?page_id=' + this.value);
+                    $actions.find('a.view-page').attr('href', lpGlobalSettings.siteurl + '?page_id=' + this.value);
                     $actions.removeClass('hide-if-js');
                     $select.attr('data-selected', this.value);
                 }
@@ -55,10 +55,13 @@
             .find('option').each(function () {
             $(this).html($(this).html().replace(/&nbsp;&nbsp;&nbsp;/g, ''));
         });
+
         $select.select2({
-            allowClear: true, unselect: function () {
-                alert('sadasd')
-            }
+            allowClear: true
+        });
+
+        $select.on('select2:select', function (e) {
+            var data = e.params.data;
         });
 
         $element.on('click', '.quick-add-page-inline button', function () {
@@ -72,7 +75,7 @@
             }
             $button.prop('disabled', true);
             $.ajax({
-                url: LP_Settings.ajax,
+                url: lpGlobalSettings.ajax,
                 data: {
                     action: 'learnpress_create_page',
                     page_name: page_name
@@ -124,3 +127,5 @@
         })
     }
 })(jQuery);
+
+

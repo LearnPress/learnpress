@@ -16,7 +16,7 @@
                 template: '#tmpl-order-advanced-list-item',
                 onRemove: function () {
                     if (this.$el.children().length === 0) {
-                        this.$el.append('<li class="user-guest">Guest</li>')
+                        this.$el.append('<li class="user-guest">' + orderOptions.i18n_guest + '</li>')
                     }
                     console.log(this.$el)
                 },
@@ -24,13 +24,24 @@
                     this.$el.find('.user-guest').remove();
                 }
             },
-            orderOptions = lpLearnPressMetaBoxOrderSettings;
+            orderOptions = lpMetaBoxOrderSettings;
+
+        function getAddedUsers() {
+            return $('#list-users').children().map(function () {
+                return $(this).data('id')
+            }).get();
+        }
+
+        function getAddedItems() {
+            return $('.list-order-items tbody').children('.order-item-row').map(function () {
+                return $(this).data('id')
+            }).get();
+        }
 
         if ($listUsers.length) {
             $listUsers.advancedList(advancedListOptions);
             if (orderOptions.users) {
                 _.forEach(orderOptions.users, function (userData, userId) {
-                    console.log(template(orderOptions.userTextFormat, userData));
                     $listUsers.advancedList('add', [
                         template(orderOptions.userTextFormat, userData),
                         userId
@@ -53,13 +64,13 @@
                 window.location.href, {
                     order_id: $('#post_ID').val(),
                     items: [item_id],
-                    'lp-ajax': 'remove-items-from-order'
+                    'lp-ajax': 'remove_items_from_order'
                 }, {
                     emulateJSON: true,
                     params: {}
                 }
             ).then(function (response) {
-                var result = LP.parseJSON(response.body);
+                var result = LP.parseJSON(response.body || response.bodyText);
                 $('.order-subtotal').html(result.order_data.subtotal_html);
                 $('.order-total').html(result.order_data.total_html);
             });
@@ -79,13 +90,13 @@
             }
         });
 
-
         $('#learn-press-add-order-item').on('click', function () {
             LP.$modalSearchItems.open({
                 data: {
                     postType: 'lp_course',
                     context: 'order-items',
                     contextId: $('#post_ID').val(),
+                    exclude: getAddedItems(),
                     show: true
                 },
                 callbacks: {
@@ -95,13 +106,13 @@
                             window.location.href, {
                                 order_id: this.contextId,
                                 items: this.selected,
-                                'lp-ajax': 'add-items-to-order'
+                                'lp-ajax': 'add_items_to_order'
                             }, {
                                 emulateJSON: true,
                                 params: {}
                             }
                         ).then(function (response) {
-                            var result = LP.parseJSON(response.body),
+                            var result = LP.parseJSON(response.body || response.bodyText),
                                 $noItem = $listItems.find('.no-order-items').hide();
                             $(result.item_html).insertBefore($noItem);
                             $('.order-subtotal').html(result.order_data.subtotal_html);
@@ -121,6 +132,7 @@
                     contextId: $('#post_ID').val(),
                     show: true,
                     multiple: $(this).data('multiple') === 'yes',
+                    exclude: getAddedUsers(),
                     textFormat: orderOptions.userTextFormat
                 },
                 callbacks: {
@@ -149,9 +161,8 @@
                 }
             });
         });
-    })
-    return;
-
+    });
+/*
     var LP_Order_View = window.LP_Order_View = Backbone.View.extend({
         el: 'body',
         events: {
@@ -444,5 +455,5 @@
 
     $(document).ready(function () {
         new LP_Order_View();
-    });
+    });*/
 })(jQuery);

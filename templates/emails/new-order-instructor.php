@@ -1,6 +1,4 @@
-<?php
-
-?>
+<?php ?>
 
 {{header}}
 
@@ -8,6 +6,4 @@
 
 {{order_items_table}}
 
-<p>View order: <a href="{{order_edit_url}}">{{order_number}}</a>
-
-	{{footer}}
+{{footer}}

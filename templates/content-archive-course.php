@@ -1,39 +1,85 @@
 <?php
 /**
- * Template for displaying archive course content
+ * Template for displaying archive course content.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-archive-course.php
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.0.6
+ * @version 3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-global $post, $wp_query, $lp_tax_query;
-?>
-<?php do_action( 'learn_press_before_main_content' ); ?>
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-<?php do_action( 'learn_press_archive_description' ); ?>
+global $post, $wp_query, $lp_tax_query, $wp_query;
 
-<?php if ( LP()->wp_query->have_posts() ) : ?>
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_before_main_content' );
 
-	<?php do_action( 'learn_press_before_courses_loop' ); ?>
+/**
+ * @since 3.0.0
+ */
+do_action( 'learn-press/before-main-content' );
 
-	<?php learn_press_begin_courses_loop(); ?>
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_archive_description' );
 
+/**
+ * @since 3.0.0
+ */
+do_action( 'learn-press/archive-description' );
 
-	<?php while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post(); ?>
+if ( LP()->wp_query->have_posts() ) :
 
-		<?php learn_press_get_template_part( 'content', 'course' ); ?>
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_before_courses_loop' );
 
-	<?php endwhile; ?>
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn-press/before-courses-loop' );
 
-	<?php learn_press_end_courses_loop(); ?>
+	learn_press_begin_courses_loop();
 
-	<?php do_action( 'learn_press_after_courses_loop' ); ?>
-<?php else: ?>
-	<?php learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' ); ?>
-<?php endif; ?>
+	while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
 
-<?php do_action( 'learn_press_after_main_content' ); ?>
+		learn_press_get_template_part( 'content', 'course' );
+
+	endwhile;
+
+	learn_press_end_courses_loop();
+
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn_press_after_courses_loop' );
+
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn-press/after-courses-loop' );
+
+	wp_reset_postdata();
+
+else:
+	learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' );
+endif;
+
+/**
+ * @since 3.0.0
+ */
+do_action( 'learn-press/after-main-content' );
+
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_after_main_content' );

@@ -25,18 +25,23 @@ class LP_Request {
 	protected static $_head = null;
 
 	/**
+	 * @var bool
+	 */
+	public static $ajax_shutdown = true;
+
+	/**
 	 * Constructor
 	 */
 	public static function init() {
+
+		self::$ajax_shutdown = learn_press_is_ajax();
 		if ( is_admin() ) {
 			add_action( 'init', array( __CLASS__, 'process_request' ), 50 );
 		} else {
-			//add_action( 'wp', array( __CLASS__, 'process_request' ), 50 );
 			add_action( 'template_include', array( __CLASS__, 'process_request' ), 50 );
 		}
 
-		add_action( 'get_header', array( __CLASS__, 'clean_cache' ), 1000000 );
-		add_action( 'save_post', array( __CLASS__, 'clean_cache' ), 1000000 );
+		self::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
 
 		/**
 		 * @see LP_Request::purchase_course()
@@ -53,15 +58,53 @@ class LP_Request {
 		/**
 		 * @see LP_Request::do_enroll()
 		 */
-		add_action( 'learn-press/purchase-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
-		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
+		add_action( 'learn-press/purchase-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 4 );
+		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 4 );
 
-		add_action( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
+		add_filter( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
+		add_filter( 'learn-press/checkout-no-payment-result', array( __CLASS__, 'maybe_redirect_checkout' ), 10, 2 );
+		add_filter( 'learn-press/purchase-course-id', array( __CLASS__, 'maybe_enroll_course' ), 10, 2 );
+		add_action( 'learn-press/add-to-cart-order-total-empty', array( __CLASS__, 'maybe_redirect_enroll' ), 10, 3 );
+
+		add_action( 'init', array( 'LP_Forms_Handler', 'init' ), 10 );
+	}
+
+	public static function maybe_redirect_checkout( $result, $order_id ) {
+
+		if ( $course_id = get_transient( 'checkout_enroll_course_id' ) ) {
+			$course = learn_press_get_course( $course_id );
+			$course_items = $course->get_items();
+			$first_item = ($course_items[0]) ? $course_items[0] : 0;
+			self::do_enroll( $course_id, $order_id, 'enroll-course', $first_item );
+			delete_transient( 'checkout_enroll_course_id' );
+			unset( $result['redirect'] );
+		}
+
+		return $result;
+	}
+
+	public static function maybe_enroll_course( $course_id, $action ) {
+		if ( 'enroll-course' === $action ) {
+			set_transient( 'checkout_enroll_course_id', $course_id );
+		}
+
+		return $course_id;
+	}
+
+	public static function maybe_redirect_enroll( $course_id, $cart_id, $action ) {
+		if ( $course = learn_press_get_course( $course_id ) ) {
+			if ( $course->is_required_enroll() && ! get_current_user_id() ) {
+				if ( ! $redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $course->get_permalink() ) ) ) ) {
+					$redirect = $course->get_permalink();
+				}
+				wp_redirect( $redirect );
+				exit();
+			}
+		}
 	}
 
 	/**
-	 * Purchase course action.
-	 * Perform this action when user clicking on "Buy this course" or "Enroll" button.
+	 * Purchase course action, when user clicking on "Buy this course" or "Enroll" button.
 	 *
 	 * @param int    $course_id
 	 * @param string $action
@@ -69,9 +112,9 @@ class LP_Request {
 	 * @return bool
 	 */
 	public static function purchase_course( $course_id, $action ) {
-		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id );
-		$course    = learn_press_get_course( $course_id );
 
+		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id, $action );
+		$course    = learn_press_get_course( $course_id );//echo'<pre>dsad';print_r($course->get_items());die;
 
 		if ( ! $course ) {
 			return false;
@@ -83,11 +126,12 @@ class LP_Request {
 		$order         = $user->get_course_order( $course_id );
 		$add_to_cart   = false;
 		$enroll_course = false;
+
 		try {
 			/**
 			 * If there is no order of user related to course.
 			 */
-			if ( ! $order ) {
+			if ( ! $order || $order->has_invalid_status() ) {
 				$add_to_cart = true;
 			} else {
 
@@ -100,7 +144,7 @@ class LP_Request {
 						 * This mean user has to finish course before purchasing that course itself.
 						 */
 						if ( $order->has_status( array( 'completed' ) ) && ! $user->has_course_status( $course->get_id(), array( 'finished' ) ) ) {
-							throw new Exception( __( 'You have purchased course and has not finished.', 'learnpress' ) );
+							throw new Exception( __( 'You have already purchased this course and haven\'t finished it.', 'learnpress' ) );
 						}
 
 						/**
@@ -108,7 +152,7 @@ class LP_Request {
 						 * Just wait for order is completed.
 						 */
 						if ( $order->has_status( array( 'processing' ) ) ) {
-							throw new Exception( __( 'You have purchased course and it is processing.', 'learnpress' ) );
+							throw new Exception( __( 'You have already purchased this course and the order is still processing...', 'learnpress' ) );
 						}
 
 						/**
@@ -138,7 +182,6 @@ class LP_Request {
 								$enroll_course = true;
 							}
 						}
-
 						//
 						if ( $order->has_status( array( 'pending', 'processing' ) ) ) {
 							// If course is FREE
@@ -148,7 +191,7 @@ class LP_Request {
 								$enroll_course = true;
 
 							} else {
-								throw new Exception( __( 'You have to purchase course before enrolling.', 'learnpress' ) );
+								throw new Exception( __( 'You have to purchase the course before enrolling.', 'learnpress' ) );
 							}
 						}
 
@@ -179,7 +222,9 @@ class LP_Request {
 				/**
 				 * @see LP_Request::do_enroll()
 				 */
-				do_action( "learn-press/{$action}-handler/enroll", $course_id, $order->get_id(), $action );
+				$course_items = $course->get_items();
+				$first_item = ($course_items[0]) ? $course_items[0] : 0;
+				do_action( "learn-press/{$action}-handler/enroll", $course_id, $order->get_id(), $action, $first_item );
 			}
 
 			if ( ! $add_to_cart && ! $enroll_course ) {
@@ -210,11 +255,22 @@ class LP_Request {
 	 */
 	public static function do_checkout( $course_id, $cart_id, $action ) {
 
+	    $user = learn_press_get_current_user();
 		$course = learn_press_get_course( $course_id );
 		if ( ! $course ) {
 			return false;
 		}
-
+		
+		if( 'enroll-course' == $action){
+		    if(!$user->can_enroll_course($course_id)){
+		        learn_press_add_message(
+		            sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+		            'error'
+		            );
+		        return false;
+		    }
+		}
+		
 		$cart = LP()->cart;
 
 		if ( ! $cart->get_items() ) {
@@ -229,9 +285,11 @@ class LP_Request {
 				wp_redirect( $redirect );
 				exit();
 			}
+
+			learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
 		} else {
 			/// Need?
-			do_action( 'learn-press/add-to-cart-order-total-empty' );
+			do_action( 'learn-press/add-to-cart-order-total-empty', $course_id, $cart_id, $action );
 			$checkout = LP()->checkout();
 			$checkout->process_checkout();
 		}
@@ -239,19 +297,53 @@ class LP_Request {
 		return true;
 	}
 
-	public static function do_enroll( $course_id, $order_id, $action ) {
-		$user = LP_Global::user();
-		$user->enroll( $course_id, $order_id );
-		learn_press_add_message(
-			sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-			'success',
-			array(
-				'position'  => 'fixedInOut',
-				'delay-in'  => 10,
-				'delay-out' => 5000
-			)
-		);
-		wp_redirect( get_the_permalink( $course_id ) );
+	/**
+	 * @param int    $course_id
+	 * @param int    $order_id
+	 * @param string $action
+	 */
+	public static function do_enroll( $course_id, $order_id, $action, $item_id = 0 ) {
+
+//		if ( ! LP_Nonce_Helper::verify_course( LP_Request::get_string( 'enroll-course-nonce' ), 'enroll' ) ) {
+//			wp_die( __( 'Invalid request!', 'learnpress' ) );
+//		}
+
+		if ( ! $course = learn_press_get_course( $course_id ) ) {
+			wp_die( __( 'Invalid request!', 'learnpress' ) );
+		}
+
+		$user     = LP_Global::user();
+		$redirect = get_the_permalink( $course_id );
+
+		if ( !$user->can_enroll_course( $course_id ) && 'enroll-course' == $action ){
+		    learn_press_add_message(
+		        sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+		        'error'
+		        );
+		} else {
+    		$thing    = $user->enroll( $course_id, $order_id );
+    
+    		if ( is_wp_error( $thing ) ) {
+    			learn_press_add_message(
+    				$thing->get_error_message(),
+    				'error'
+    			);
+    
+    			if ( $thing->get_error_code() == 10002 ) {
+    				$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $redirect ) ) );
+    			}
+    		} elseif ( $thing ) {
+    			learn_press_add_message(
+    				sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+    				'success'
+    			);
+			    if( $item_id ){
+			    	$redirect = learn_press_get_course_item_permalink( $course_id, $item_id );
+			    }
+    		}
+
+		}
+		wp_redirect( apply_filters( 'learn-press/enroll-course-redirect', $redirect ) );
 		exit();
 	}
 
@@ -264,32 +356,21 @@ class LP_Request {
 	 * @return mixed
 	 */
 	public static function check_checkout_page( $url ) {
-		// Only show for admin
-		if ( current_user_can( 'manage_options' ) ) {
-			$page_id = learn_press_get_page_id( 'checkout' );
-			$page    = false;
-			if ( $page_id ) {
-				$page = get_post( $page_id );
-			}
-			if ( ! $page ) {
-				learn_press_add_message( __( 'Checkout page is not setup or page does not exists.', 'learnpress' ) );
+		$page_id = learn_press_get_page_id( 'checkout' );
+		$page    = false;
+		if ( $page_id ) {
+			$page = get_post( $page_id );
+		}
+		if ( ! $page ) {
+			// Only show for admin
+			if ( current_user_can( 'manage_options' ) ) {
+				learn_press_add_message( __( 'Checkout page hasn\'t been setup or page does not exists.', 'learnpress' ) );
+			} else {
+				learn_press_add_message( __( 'Checkout error! Please contact with admin for getting more information.', 'learnpress' ) );
 			}
 		}
 
 		return $url;
-	}
-
-	public static function clean_cache() {
-		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) == 'post' ) {
-			add_filter( 'wp_redirect', array( __CLASS__, 'redirect' ) );
-			LP_Cache::flush();
-		}
-	}
-
-	public static function redirect( $url ) {
-		remove_filter( 'wp_redirect', array( __CLASS__, 'redirect' ) );
-
-		return add_query_arg( 'lp-reload', 'yes', $url );
 	}
 
 	public static function get_header() {
@@ -309,6 +390,7 @@ class LP_Request {
 				do_action( 'learn_press_request_handler_' . $key, $value, $key );
 			}
 		}
+
 		return $template;
 	}
 
@@ -334,10 +416,122 @@ class LP_Request {
 		}
 	}
 
+	/**
+	 * Register ajax action.
+	 * Add ajax into queue by an action and then LP check if there is a request
+	 * with key lp-ajax=action-name then do the action "action-name". By default,
+	 * ajax action is called if user is logged. But, it can be call in case user
+	 * is not logged in if the action is passed with key :nopriv at the end.
+	 *
+	 * E.g:
+	 *      + Only for user is logged in
+	 *      LP_Request::register_ajax( 'action', 'function_to_call', 5 )
+	 *
+	 *      + For guest
+	 *      LP_Request::register_ajax( 'action:nopriv', 'function_to_call', 5 )
+	 *
+	 * @param string $action
+	 * @param mixed  $function
+	 * @param int    $priority
+	 */
 	public static function register_ajax( $action, $function, $priority = 5 ) {
-		//$action, $function, $priority = 5
-		add_action( 'learn_press_ajax_handler_' . $action, $function, $priority );
 
+		if ( is_array( $action ) ) {
+			foreach ( $action as $args ) {
+				if ( ! empty( $args['action'] ) && ! empty( $args['callback'] ) ) {
+					self::register_ajax( $args['action'], $args['callback'], ! empty( $args['priority'] ) ? $args['priority'] : 5 );
+				}
+			}
+
+			return;
+		}
+		$actions = self::parse_action( $action );
+
+		if ( isset( $actions['nonce'] ) ) {
+			add_filter( 'learn-press/ajax/verify-none/' . $actions['action'], array( __CLASS__, 'verify_nonce' ) );
+		}
+
+		//$action, $function, $priority = 5
+		add_action( 'learn-press/ajax/' . $actions['action'], $function, $priority );
+
+		/**
+		 * No requires logged in?
+		 */
+		if ( isset( $actions['nopriv'] ) ) {
+			//$action, $function, $priority = 5
+			add_action( 'learn-press/ajax/no-priv/' . $actions['action'], $function, $priority );
+		}
+
+		/**
+		 * @deprecated
+		 */
+		add_action( 'learn_press_ajax_handler_' . $action, $function, $priority );
+	}
+
+	/**
+	 * Do ajax if there is a 'lp-ajax' in $_REQUEST
+	 *
+	 * @param string $action
+	 */
+	public static function do_ajax( $action ) {
+
+		if ( ! defined( 'LP_DOING_AJAX' ) ) {
+			define( 'LP_DOING_AJAX', true );
+		}
+
+		LP_Gateways::instance()->get_available_payment_gateways();
+
+		if ( has_filter( 'learn-press/ajax/verify-none/' . $action ) ) {
+			if ( ! self::verify_nonce( $action ) ) {
+				die( '0' );
+			}
+		}
+
+		if ( is_user_logged_in() ) {
+			/**
+			 * @deprecated
+			 */
+			do_action( 'learn_press_ajax_handler_' . $action );
+
+			$has_action = has_action( 'learn-press/ajax/' . $action );
+
+			/**
+			 * @since 3.0
+			 */
+			do_action( 'learn-press/ajax/' . $action );
+		} else {
+
+			$has_action = has_action( 'learn-press/ajax/no-priv/' . $action );
+
+			/**
+			 * @since 3.0
+			 */
+			do_action( 'learn-press/ajax/no-priv/' . $action );
+		}
+
+		if ( $has_action && self::$ajax_shutdown ) {
+			die( '{END_AJAX}' );
+		}
+	}
+
+	public static function verify_nonce( $action, $nonce = '' ) {
+		return wp_verify_nonce( $nonce ? $nonce : self::get_string( "{$action}-nonce" ), $action );
+	}
+
+	public static function parse_action( $action ) {
+		$args    = explode( ':', $action );
+		$actions = array(
+			'action' => $args[0]
+		);
+
+		if ( sizeof( $args ) > 1 ) {
+			array_shift( $args );
+			foreach ( $args as $arg ) {
+				$actions[ $arg ] = $arg;
+			}
+		}
+
+		return $actions;
 	}
 
 	/**
@@ -357,6 +551,10 @@ class LP_Request {
 				break;
 			case 'get':
 				$env = $_GET;
+				break;
+			case 'wp':
+				global $wp;
+				$env = $wp->query_vars;
 				break;
 			default:
 				$env = $_REQUEST;
@@ -519,11 +717,87 @@ class LP_Request {
 	public static function get_post_array( $var, $default = false ) {
 		return self::get_post( $var, $default, 'array' );
 	}
+
+	/**
+	 * Get email field and validate.
+	 *
+	 * @param string $var
+	 * @param bool   $default
+	 *
+	 * @return bool|string
+	 */
+	public static function get_email( $var, $default = false ) {
+		$email = self::get_string( $var, $default );
+		if ( ! is_email( $email ) ) {
+			$email = $default;
+		}
+
+		return $email;
+	}
+
+	/**
+	 * Get a batch of params from request into an array.
+	 *
+	 * @return array
+	 */
+	public static function get_list() {
+		if ( func_num_args() < 1 ) {
+			return array();
+		}
+
+		$list = array();
+		foreach ( func_get_args() as $key ) {
+			$list[ $key ] = self::get( $key );
+		}
+
+		return $list;
+	}
+
+	/**
+	 * Parse string from request to array by comma.
+	 *
+	 * @param string $var
+	 * @param string $separator
+	 *
+	 * @return array
+	 */
+	public static function get_list_array( $var, $separator = ',' ) {
+		$list = self::get_string( $var );
+
+		if ( ! $list ) {
+			return array();
+		}
+
+		if ( $separator === ',' ) {
+			$list = preg_split( '!\s?,\s?!', $list );
+		} else {
+			$list = explode( $separator, $list );
+		}
+
+		return array_map( 'trim', $list );
+	}
+
+	/**
+	 * Get param 'redirect' in request.
+	 *
+	 * @param string $default
+	 *
+	 * @return string
+	 */
+	public static function get_redirect( $default = '' ) {
+		if ( $redirect = self::get_string( 'redirect' ) ) {
+			$redirect = urldecode( $redirect );
+		} else {
+			$redirect = $default;
+		}
+
+		return $redirect;
+	}
 }
 
 LP_Request::init();
 
-// Backward compatibility
+// Backward compatibility for 2.x.x
 class LP_Request_Handler extends LP_Request {
 
 }

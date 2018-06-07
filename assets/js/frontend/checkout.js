@@ -1,4 +1,4 @@
-;(function ($) {
+;(function ($, settings) {
     "use strict";
 
     if (window.LP === undefined) {
@@ -24,14 +24,14 @@
              *
              * @type {form}
              */
-            $formLogin = $('#learn-press-checkout-register'),
+            $formLogin = $('#learn-press-checkout-login'),
 
             /**
              * Login form
              *
              * @type {form}
              */
-            $formRegister = $('#learn-press-checkout-login'),
+            $formRegister = $('#learn-press-checkout-register'),
 
             /**
              * Payment method wrap
@@ -52,58 +52,99 @@
              *
              * @type {string}
              */
-            selectedMethod = ''
+            selectedMethod = '',
+
+            /**
+             * Checkout email field.
+             *
+             * @type {DOM}
+             */
+            $checkoutEmail = $('input[name="checkout-email"]'),
+
+            /**
+             * Checkout existing account option.
+             *
+             * @type {DOM}
+             */
+            $checkoutExistingAccount = $('#checkout-existing-account'),
+
+            /**
+             * Checkout new account option.
+             *
+             * @type {DOM}
+             */
+            $checkoutNewAccount = $('#checkout-new-account')
         ;
 
+        /**
+         * Add function to checking a string is in valid format of an email.
+         */
+        if (String.prototype.isEmail === undefined) {
+            String.prototype.isEmail = function () {
+                return new RegExp('^[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'*+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+$').test(this);
+            }
+        }
+
+        /**
+         * Callback function for submitting form.
+         *
+         * @param e
+         * @returns {boolean}
+         * @private
+         */
         var _formSubmit = function (e) {
             e.preventDefault();
+
+            if (!($formCheckout.triggerHandler('learn_press_checkout_place_order') !== false && $formCheckout.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false)) {
+                return;
+            }
+
             var $form = $payments.children('.selected'),
-                data = $form.serializeJSON()
+                data = $formCheckout.serializeJSON();
 
-            if ($form.triggerHandler('learn_press_checkout_place_order') !== false && $form.triggerHandler('learn_press_checkout_place_order_' + selectedMethod) !== false) {
+            removeMessage();
 
-                removeMessage();
+            if (options.i18n_processing) {
+                $buttonCheckout.html(options.i18n_processing);
+            }
 
-                if (options.i18n_processing) {
-                    $buttonCheckout.html(options.i18n_processing);
-                }
-                $buttonCheckout.prop('disabled', true);
+            $buttonCheckout.prop('disabled', true);
 
-                //LP.blockContent();
-                $.ajax({
-                    url: options.ajaxurl + '/?lp-ajax=checkout',
-                    dataType: 'html',
-                    data: data,
-                    type: 'post',
-                    success: function (response) {
-                        response = LP.parseJSON(response);
-                        try {
-                            if ('success' === response.result) {
-                                if (response.redirect.match(/https?/)) {
-                                    window.location = response.redirect;
-                                }
-                            } else {
-                                throw "ERROR";
+            //LP.blockContent();
+            $.ajax({
+                url: options.ajaxurl + '/?lp-ajax=checkout',
+                dataType: 'html',
+                data: data,
+                type: 'post',
+                success: function (response) {
+                    response = LP.parseJSON(response);
+                    try {
+                        if ('success' === response.result) {
+                            if (response.redirect.match(/https?/)) {
+                                window.location = response.redirect;
                             }
-                        } catch (error) {
-                            if (!response.messages) {
-                                showMessage('<div class="learn-press-error">' + options.i18n_invalid_field + '</div>');
-                            } else {
-                                showMessage(response.messages);
-                            }
-                            $buttonCheckout.html(options.i18n_place_order);
-                            $buttonCheckout.prop('disabled', false);
-                            LP.unblockContent();
+                        } else {
+                            throw "ERROR";
                         }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        showMessage('<div class="learn-press-error">' + errorThrown + '</div>');
+                    } catch (error) {
+                        if (!response.messages) {
+                            showMessage('<div class="learn-press-message error">' + options.i18n_unknown_error + '</div>');
+                        } else {
+                            showMessage(response.messages);
+                        }
                         $buttonCheckout.html(options.i18n_place_order);
                         $buttonCheckout.prop('disabled', false);
                         LP.unblockContent();
                     }
-                });
-            }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    showMessage('<div class="learn-press-message error">' + errorThrown + '</div>');
+                    $buttonCheckout.html(options.i18n_place_order);
+                    $buttonCheckout.prop('disabled', false);
+                    LP.unblockContent();
+                }
+            });
+
             return false;
         }
 
@@ -136,6 +177,11 @@
             $('#learn-press-button-guest-checkout').toggle(!showOrHide);
         }
 
+        /**
+         * Append messages into document.
+         *
+         * @param messages
+         */
         var showMessage = function (messages) {
             removeMessage();
             $formCheckout.prepend(messages);
@@ -145,8 +191,77 @@
             $(document).trigger('learn-press/checkout-error');
         }
 
+        /**
+         * Callback function for checking email.
+         *
+         * @private
+         */
+        var _checkEmail = function () {
+
+            if (!this.value.isEmail()) {
+                $buttonCheckout.prop('disabled', true);
+                $('#checkout-guest-options').hide();
+                return;
+            }
+            $buttonCheckout.prop('disabled', false);
+
+            this.timer && clearTimeout(this.timer);
+            this.timer = setTimeout(function () {
+                $.post({
+                    url: window.location.href,
+                    data: {
+                        'lp-ajax': 'checkout-user-email-exists',
+                        email: $checkoutEmail.val()
+                    },
+                    success: function (res) {
+                        res = LP.parseJSON(res);
+                        if (res && res.exists) {
+                            $checkoutExistingAccount.show().find('input[name="checkout-email-option"]').prop('checked', res.waiting_payment === res.exists);
+                            $checkoutNewAccount.hide().find('input[name="checkout-new-account"]').prop('checked', false);
+                        } else {
+                            $checkoutExistingAccount.hide().find('input[name="checkout-email-option"]').prop('checked', false);
+                            $checkoutNewAccount.show();
+                        }
+                        $('#checkout-guest-options').show();
+                    }
+                });
+            }, 500);
+        }
+
+        /**
+         * Remove all messages
+         */
         var removeMessage = function () {
             $('.learn-press-error, .learn-press-notice, .learn-press-message').remove();
+        }
+
+        /**
+         * Callback function for showing/hiding register form.
+         *
+         * @param e {Event}
+         * @param toggle {boolean}
+         * @private
+         */
+        var _toggleRegisterForm = function (e, toggle) {
+
+            toggle = $formRegister.find('.learn-press-form-register').toggle(toggle).is(':visible');
+            $formRegister.find('.checkout-form-register-toggle[data-toggle="show"]').toggle(!toggle);
+
+            e && (e.preventDefault(), _toggleLoginForm(null, !toggle));
+        }
+
+        /**
+         * Callback function for showing/hiding login form.
+         *
+         * @param e {Event}
+         * @param toggle {boolean}
+         * @private
+         */
+        var _toggleLoginForm = function (e, toggle) {
+            toggle = $formLogin.find('.learn-press-form-login').toggle(toggle).is(':visible');
+            $formLogin.find('.checkout-form-login-toggle[data-toggle="show"]').toggle(!toggle);
+
+            e && (e.preventDefault(), _toggleRegisterForm(null, !toggle));
         }
 
         /**
@@ -157,14 +272,46 @@
         });
 
         $('.lp-button-guest-checkout').on('click', _guestCheckoutClick);
+        $('#learn-press-button-cancel-guest-checkout').on('click', _guestCheckoutClick)
+
+
+        $checkoutEmail.on('keyup changex', _checkEmail).trigger('changex');
         $payments.on('change select', 'input[name="payment_method"]', _selectPaymentChange);
         $formCheckout.on('submit', _formSubmit);
-
         $payments.children('.selected').find('input[name="payment_method"]').trigger('select');
+        $formLogin.on('click', '.checkout-form-login-toggle', _toggleLoginForm);
+        $formRegister.on('click', '.checkout-form-register-toggle', _toggleRegisterForm);
+
+        if (options.user_waiting_payment === options.user_checkout) {
+            //$checkoutExistingAccount.hide();
+        }
+
+        $formRegister.find('input').each(function () {
+            if ((-1 !== $.inArray($(this).attr('type').toLowerCase(), ['text', 'email', 'number'])) && $(this).val()) {
+                _toggleRegisterForm();
+                return false;
+            }
+        });
+
+        $formLogin.find('input:not([type="hidden"])').each(function () {
+            if ((-1 !== $.inArray($(this).attr('type').toLowerCase(), ['text', 'email', 'number'])) && $(this).val()) {
+                _toggleLoginForm();
+                return false;
+            }
+        });
+
+        // Show form if there is only one form Register or Login
+        if ($formRegister.length && !$formLogin.length) {
+            _toggleRegisterForm()
+        } else if (!$formRegister.length && $formLogin.length) {
+            _toggleLoginForm()
+        }
     }
 
     $(document).ready(function () {
-        LP.$checkout = new Checkout(lpCheckoutSettings);
+        if (typeof lpCheckoutSettings !== 'undefined') {
+            LP.$checkout = new Checkout(lpCheckoutSettings);
+        }
     })
 
 })(jQuery);

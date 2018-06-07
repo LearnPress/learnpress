@@ -1,14 +1,18 @@
 <?php
 /**
- * Template for displaying quiz's introduction
+ * Template for displaying introduction of quiz.
  *
- * @package LearnPress/Templates
- * @author  ThimPress
- * @version 3.x.x
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/intro.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 $course = LP_Global::course();
 $quiz   = LP_Global::course_item_quiz();
@@ -17,19 +21,19 @@ $count  = $quiz->get_retake_count();
 
 <ul class="quiz-intro">
     <li>
-        <label><?php _e( 'Attempts allowed:', 'learnpress' ); ?></label>
-		<?php echo ( null == $count || 0 > $count ) ? __( 'Unlimited', 'learnpress' ) : ( $count ? $count : __( 'No', 'learnpress' ) ); ?>
+        <label><?php _e( 'Attempts allowed', 'learnpress' ); ?></label>
+        <span><?php echo ( null == $count || 0 > $count ) ? __( 'Unlimited', 'learnpress' ) : ( $count ? $count : __( 'No', 'learnpress' ) ); ?></span>
     </li>
     <li>
-        <label><?php _e( 'Duration:', 'learnpress' ); ?></label>
-		<?php echo $quiz->get_duration_html(); ?>
+        <label><?php _e( 'Duration', 'learnpress' ); ?></label>
+        <span><?php echo $quiz->get_duration_html(); ?></span>
     </li>
     <li>
-        <label><?php _e( 'Passing grade:', 'learnpress' ); ?></label>
-		<?php echo sprintf( '%d%%', $quiz->get_passing_grade() ); ?>
+        <label><?php _e( 'Passing grade', 'learnpress' ); ?></label>
+        <span><?php echo sprintf( '%d%%', $quiz->get_passing_grade() ); ?></span>
     </li>
     <li>
-        <label><?php _e( 'Questions:', 'learnpress' ); ?></label>
-		<?php echo $quiz->get_total_questions(); ?>
+        <label><?php _e( 'Questions', 'learnpress' ); ?></label>
+        <span><?php echo $quiz->count_questions(); ?></span>
     </li>
 </ul>

@@ -6,18 +6,27 @@
  * Manage all schedules
  */
 class LP_Schedules {
+
+	/**
+	 * @var LP_Background_Schedule_Items
+	 */
+	protected $background_schedule_items = null;
+
 	/**
 	 * LP_Schedules constructor.
 	 */
 	public function __construct() {
 
-		return;
+		//$this->background_schedule_items = new LP_Background_Schedule_Items();
+
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
 			//$this->_update_user_course_expired();
 		}
-		add_filter( 'template_include', array( $this, 'auto_complete_course' ), 10 );
-		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
+		//add_filter( 'init', array( $this, 'queue_items' ), 10 );
 
+//		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
+
+		return;
 		if ( ! wp_next_scheduled( 'learn_press_schedule_update_user_items' ) ) {
 			wp_schedule_event( time(), 'ten_minutes', 'learn_press_schedule_update_user_items' );
 		}
@@ -29,18 +38,69 @@ class LP_Schedules {
 		add_action( 'learn_press_delete_user_guest_transient', array( $this, 'delete_user_guest_transient' ) );
 	}
 
-	public function auto_complete_course( $template ) {
-		if ( learn_press_is_course() && is_user_logged_in() ) {
-			$course = learn_press_get_course();
-			$user   = learn_press_get_current_user();
-			if ( $user->has_enrolled_course( $course->get_id() ) && ! $user->has_finished_course( $course->get_id() ) && $course->is_expired( $user->get_id() ) <= 0 ) {
-				$this->schedule_update_user_items();
-				wp_redirect( get_permalink( $course->get_id() ) );
+	/**
+	 * @param int $user_item_id
+	 *
+	 * @return bool|LP_User_Item_Course
+	 */
+	protected function _get_item_course( $user_item_id ) {
+		$curd = new LP_User_CURD();
+
+		if ( $item = $curd->get_user_item_by_id( $user_item_id ) ) {
+			return new LP_User_Item_Course( $item );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Add the items need to mark as completed into queue
+	 * for running in background.
+	 *
+	 * @param string $template
+	 *
+	 * @return mixed
+	 */
+	public function queue_items() {
+		LP()->add_background_task( array( 'auto-complete-item' => rand() ), 'schedule-items' );
+
+		return false;
+		if ( ! $items = $this->_get_items() ) {
+			return $template;
+		}
+
+		foreach ( $items as $user_item_id => $course_items ) {
+
+			if ( ! $item_course = $this->_get_item_course( $user_item_id ) ) {
+				continue;
 			}
+
+			if ( $item_course->is_exceeded() <= 0 ) {
+				$this->background_schedule_items->push_to_queue( $data );
+
+			}
+
+			$data = array(
+				'user_item_id' => $user_item_id,
+				'items'        => isset( $course_items['items'] ) ? $course_items['items'] : array()
+			);
+
+			/**
+			 * if ( isset( $course_items['items'] ) ) {
+			 * foreach ( $course_items['items'] as $user_item_id ) {
+			 * if ( $item = $item_course->get_item( $user_item_id ) ) {
+			 * if ( $item->is_exceeded() ) {
+			 * $data['items'][] = $user_item_id;
+			 * }
+			 * }
+			 * }
+			 * }*/
+			// Add to queue for processing in background
 		}
 
 		return $template;
 	}
+
 
 	function add_custom_cron_intervals( $schedules ) {
 		$schedules['ten_minutes'] = array(
@@ -92,7 +152,6 @@ class LP_Schedules {
 
 	public function schedule_update_user_items() {
 		$this->_update_user_course_expired();
-		LP_Debug::instance()->add( __FUNCTION__ );
 	}
 
 	/**
@@ -141,8 +200,6 @@ class LP_Schedules {
 			foreach ( $results as $row ) {
 				$ids[] = $row->item_id;
 			}
-			_learn_press_get_courses_curriculum( $ids );
-			_learn_press_count_users_enrolled_courses( $ids );
 			foreach ( $results as $row ) {
 				$course = learn_press_get_course( $row->item_id );
 				if ( ! $course ) {
@@ -211,7 +268,6 @@ class LP_Schedules {
 	}
 
 	public function user_course_expired( $user_id, $course_id ) {
-		LP_Debug::instance()->add( sprintf( 'User %d has finish course %s', $user_id, get_the_title( $course_id ) ) );
 	}
 }
 

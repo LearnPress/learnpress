@@ -9,14 +9,29 @@ abstract class LP_Abstract_Assets {
 
 	protected $_cache = '';
 
+	/**
+	 * @var array
+	 */
 	protected $_scripts = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_styles = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_enqueue_scripts = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_enqueue_styles = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_script_data = array();
 
 	/**
@@ -27,23 +42,19 @@ abstract class LP_Abstract_Assets {
 
 		$priory = 1000;
 		if ( is_admin() ) {
-			add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
+			//add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_admin_scripts' ), $priory + 10 );
 
 		} else {
-			add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
+			//add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+			//add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 		}
 	}
 
 	abstract function load_scripts();
-
-	public function do_register() {
-
-	}
 
 	/**
 	 * Default scripts
@@ -147,7 +158,7 @@ abstract class LP_Abstract_Assets {
 	 * @param string $media
 	 */
 	public function enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
-		$this->register_script( $handle, $src, $deps, $ver, $media );
+		$this->register_style( $handle, $src, $deps, $ver, $media );
 		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
 			call_user_func_array( 'wp_enqueue_style', $this->_styles[ $handle ] );
 		} else {
@@ -164,7 +175,7 @@ abstract class LP_Abstract_Assets {
 	 * @param bool  $ver
 	 * @param bool  $in_footer
 	 */
-	public function enqueue_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false ) {
+	public function enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
 		$this->register_script( $handle, $src, $deps, $ver, $in_footer );
 		if ( did_action( 'init' ) || did_action( 'admin_enqueue_scripts' ) || did_action( 'wp_enqueue_scripts' ) || did_action( 'login_enqueue_scripts' ) ) {
 			call_user_func_array( 'wp_enqueue_script', $this->_scripts[ $handle ] );
@@ -173,11 +184,44 @@ abstract class LP_Abstract_Assets {
 		}
 	}
 
+	public function add_script_data( $handle, $key_or_array, $value = '' ) {
+		if ( empty( $this->_script_data[ $handle ] ) ) {
+			$this->_script_data[ $handle ] = array();
+		}
+
+		if ( func_num_args() == 2 && is_array( $key_or_array ) ) {
+			$this->_script_data[ $handle ] = LP_Helper::array_merge_recursive( $this->_script_data[ $handle ], $key_or_array );
+		} else {
+			$this->_script_data[ $handle ][ $key_or_array ] = $value;
+		}
+	}
+
+	protected function _get_wp_styles() {
+		global $wp_styles;
+
+		if ( empty( $wp_styles ) ) {
+			$wp_styles = new WP_Styles();
+		}
+
+		return $wp_styles;
+	}
+
+	protected function _get_wp_scripts() {
+		global $wp_scripts;
+
+		if ( empty( $wp_scripts ) ) {
+			$wp_scripts = new WP_Scripts();
+		}
+
+		return $wp_scripts;
+	}
+
 	/**
 	 * Register scripts and styles for admin.
 	 */
 	protected function _register_scripts() {
-		global $wp_scripts, $wp_styles;
+		$wp_scripts = $this->_get_wp_scripts();
+		$wp_styles  = $this->_get_wp_styles();
 
 		// No use cache if debug mode is turn on
 		$no_cache = '';
@@ -199,7 +243,7 @@ abstract class LP_Abstract_Assets {
 						'ver'  => LEARNPRESS_VERSION
 					)
 				);
-				$wp_scripts->add( $handle, add_query_arg( 'nocache', $no_cache, $data['url'] ), $data['deps'], $data['ver'] );
+				$wp_scripts->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
 			}
 
 		}
@@ -218,49 +262,66 @@ abstract class LP_Abstract_Assets {
 						'ver'  => LEARNPRESS_VERSION
 					)
 				);
-				$wp_styles->add( $handle, add_query_arg( 'nocache', $no_cache, $data['url'] ), $data['deps'], $data['ver'] );
+				$wp_styles->add( $handle, $no_cache ? add_query_arg( 'nocache', $no_cache, $data['url'] ) : $data['url'], $data['deps'], $data['ver'] );
 			}
 
 		}
-		// admin
-
-		//$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, $ver, 1 );
-		//$scripts->add( 'learn-press-utils', $default_path . 'js/admin/utils' . $suffix . '.js', $deps, $ver, 1 );
-
-		/*
-		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-question', $default_path . 'js/admin/meta-box-question' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-course', $default_path . 'js/admin/meta-box-course' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-quiz', $default_path . 'js/admin/meta-box-quiz' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), $ver, 1 );
-		$scripts->add( 'learn-press-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-admin-tabs', $default_path . 'js/admin/admin-tabs' . $suffix . '.js', $deps, $ver, 1 );*/
-
-		//$scripts->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, $ver, 1 );
-		//$scripts->add( 'learn-press-tipsy', $default_path . 'js/vendor/jquery-tipsy/jquery.tipsy.js' );
 	}
 
 	public function get_script_var_name( $handle ) {
-		$handle = str_replace( array( '_', '-' ), ' ', $handle );
+		$handle = str_replace( array( 'learn-press', '_', '-' ), ' ', $handle );
 		$handle = ucwords( $handle );
 
 		return 'lp' . str_replace( ' ', '', $handle ) . 'Settings';
 	}
 
-	public function localize_printed_scripts() {
-		if ( ! ( $scripts_data = $this->_get_script_data() ) ) {
+	public function _get_admin_script_data() {
+		return false;
+	}
+
+	public function localize_printed_scripts( $side = '' ) {
+		$scripts_data = ( $side == 'admin' ) ? $this->_get_script_data() : $this->_get_script_data();
+
+		if ( is_array( $scripts_data ) && is_array( $this->_script_data ) ) {
+			$scripts_data = LP_Helper::array_merge_recursive( $scripts_data, $this->_script_data );
+		} elseif ( is_array( $this->_script_data ) ) {
+			$scripts_data = $this->_script_data;
+		}
+		if ( ! $scripts_data ) {
 			return;
 		}
 		global $wp_scripts;
+
+		if ( ! $wp_scripts ) {
+			$wp_scripts = new WP_Scripts();
+		}
 		foreach ( $scripts_data as $handle => $data ) {
-			if ( ! empty( $this->_script_data[ $handle ] ) ) {
-				$data = array_merge( $data, $this->_script_data[ $handle ] );
-			}
+			$data = apply_filters( 'learn-press/script-data', $data, $handle );
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
+
+			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
+				if ( isset( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
+					if ( $data = $wp_scripts->registered[ $handle ]->extra['data'] ) {
+						$data = preg_replace_callback( '~:"(([0-9]+)([.,]?)([0-9]?)|true|false)"~', array(
+							$this,
+							'_valid_json_number'
+						), $data );
+
+						$wp_scripts->registered[ $handle ]->extra['data'] = $data;
+					}
+				}
+			}
 			$wp_scripts->print_extra_script( $handle );
 		}
 
+	}
+
+	public function localize_printed_admin_scripts() {
+		$this->localize_printed_scripts( 'admin' );
+	}
+
+	protected function _valid_json_number( $m ) {
+		return str_replace( array( ':"', '"' ), array( ':', '' ), $m[0] );
 	}
 
 	protected function _get_script_data() {
@@ -302,5 +363,17 @@ abstract class LP_Abstract_Assets {
 		}
 
 		return $url;
+	}
+
+	public static function add_param() {
+
+	}
+
+	public static function add_var() {
+
+	}
+
+	public static function add_script_tag() {
+
 	}
 }

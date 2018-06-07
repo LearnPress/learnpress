@@ -2,29 +2,28 @@
 /**
  * Template for displaying user profile cover image.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.x.x
+ * This template can be overridden by copying it to yourtheme/learnpress/profile/profile-cover.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
 /**
  * Prevent loading this file directly
  */
-defined( 'ABSPATH' ) || exit;
-?>
+defined( 'ABSPATH' ) || exit();
 
-<?php
-global $profile;
+$profile = LP_Profile::instance();
 
 $user = $profile->get_user();
-learn_press_get_course();
 ?>
 
 <div id="learn-press-profile-header" class="lp-profile-header">
     <div class="lp-profile-cover">
         <div class="lp-profile-avatar">
 			<?php echo $user->get_profile_picture(); ?>
-            <span class="profile-name"><?php echo $user->get_data( 'user_login' ); ?></span>
+            <span class="profile-name"><?php echo $user->get_display_name(); ?></span>
         </div>
     </div>
 </div>

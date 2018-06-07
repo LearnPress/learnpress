@@ -112,6 +112,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	public function maybe_save_settings() {
 		// Verify nonce
 		$nonce = learn_press_get_request( 'lp-settings-nonce' );
+
 		if ( ! wp_verify_nonce( $nonce, 'lp-settings' ) ) {
 			return;
 		}
@@ -131,9 +132,11 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 					}
 				}
 			}
+
+			flush_rewrite_rules();
 		}
 		do_action( 'learn-press/update-settings/updated', $this );
-		add_settings_error( 'sdfdsfsdf', 'saved', __( 'Settings saved.', 'learnpress' ), 'updated' );
+
 		// Filter redirect
 		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );
 		if ( $redirect ) {

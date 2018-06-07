@@ -1,76 +1,74 @@
 <?php
 /**
- * Display the content of a section including the items.
+ * Template for displaying content and items of section in single course.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 3.x.x
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/section/content.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $section ) ) {
 	return;
 }
 
-global $lp_user;
+$user = LP_Global::user();
 
-if ( $items = $section->get_items() ) { ?>
+?>
+
+<?php if ( $items = $section->get_items() ) { ?>
 
     <ul class="section-content">
 
 		<?php foreach ( $items as $item ) { ?>
+
             <li class="<?php echo join( ' ', $item->get_class() ); ?>">
-
 				<?php
-				if ( ! $item->is_visible() ) {
-					continue;
-				}
+				if ( $item->is_visible() ) {
+					/**
+					 * @since 3.0.0
+					 */
+					do_action( 'learn-press/begin-section-loop-item', $item );
 
-				/**
-				 * @since 3.x.x
-				 */
-				do_action( 'learn-press/begin-section-loop-item', $item );
-				?>
+					if ( $user->can_view_item( $item->get_id() ) ) {
+						?>
+                        <a class="section-item-link" href="<?php echo $item->get_permalink(); ?>">
+							<?php learn_press_get_template( 'single-course/section/content-item.php', array(
+								'item'    => $item,
+								'section' => $section
+							) ); ?>
+                        </a>
+					<?php } else { ?>
+                        <div class="section-item-link">
+							<?php learn_press_get_template( 'single-course/section/content-item.php', array(
+								'item'    => $item,
+								'section' => $section
+							) ); ?>
+                        </div>
+					<?php } ?>
 
-                <a href="<?php echo $item->get_permalink(); ?>">
 					<?php
-					$args = array(
-						'item'    => $item,
-						'section' => $section
-					);
-
 					/**
-					 * @since 3.x.x
+					 * @since 3.0.0
 					 */
-					do_action( 'learn-press/before-section-loop-item', $item );
-
-					learn_press_get_template( "single-course/section/" . $item->get_template(), $args );
-
-					/**
-					 * @since 3.x.x
-					 *
-					 * @see   learn_press_section_item_meta()
-					 */
-					do_action( 'learn-press/after-section-loop-item', $item, $section );
-
-					?>
-                </a>
-
-				<?php
-				/**
-				 * @since 3.x.x
-				 */
-				do_action( 'learn-press/end-section-loop-item', $item );
+					do_action( 'learn-press/end-section-loop-item', $item );
+				}
 				?>
 
             </li>
+
 		<?php } ?>
+
     </ul>
+
 <?php } else { ?>
 
-    <?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) ); ?>
 
 <?php } ?>

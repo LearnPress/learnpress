@@ -1,77 +1,80 @@
 <?php
 /**
- * Template for displaying checkout form
+ * Template for displaying checkout form.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/form.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
-learn_press_print_notices();
+<?php learn_press_print_messages(); ?>
 
-$checkout = LP()->checkout();
+<?php $checkout = LP()->checkout(); ?>
 
+<?php
 /**
  * @deprecated
  */
 do_action( 'learn_press_before_checkout_form', $checkout );
+?>
 
+<?php
 /**
- * @since 3.x.x
+ * @since 3.0.0
  *
  * @see   learn_press_checkout_form_login()
  * @see   learn_press_checkout_form_register()
  */
 do_action( 'learn-press/before-checkout-form' );
+?>
 
-// Guest checkout is disabled
-if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
-	echo apply_filters( 'learn-press/checkout-require-login-message', __( 'Please login to checkout.', 'learnpress' ) );
-} else {
-	?>
 
     <form method="post" id="learn-press-checkout" name="learn-press-checkout"
           class="learn-press-checkout checkout<?php echo ! is_user_logged_in() ? " guest-checkout" : ""; ?>"
           action="<?php echo esc_url( learn_press_get_checkout_url() ); ?>" enctype="multipart/form-data">
 
 		<?php
-
 		/**
 		 * @deprecated
 		 */
 		do_action( 'learn_press_checkout_before_order_review' );
+		?>
 
-		// @since 3.x.x
+		<?php
+		// @since 3.0.0
 		do_action( 'learn-press/before-checkout-order-review' );
 		?>
 
-        <div id="order_review" class="learn-press-checkout-review-order">
+        <div id="learn-press-order-review" class="checkout-review-order">
 
 			<?php
-
 			/**
 			 * @deprecated
 			 */
 			do_action( 'learn_press_checkout_order_review' );
 
 			/**
-			 * @since 3.x.x
-             *
-             * @see learn_press_order_review()
-             * @see learn_press_order_comment()
-             * @see learn_press_order_payment()
-             */
+			 * @since 3.0.0
+			 *
+			 * @see   learn_press_order_review()
+			 * @see   learn_press_order_comment()
+			 * @see   learn_press_order_payment()
+			 */
 			do_action( 'learn-press/checkout-order-review' );
 			?>
 
         </div>
 
 		<?php
-		// @since 3.x.x
+		// @since 3.0.0
 		do_action( 'learn-press/after-checkout-order-review' );
 
 		/**
@@ -79,18 +82,31 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 		 */
 		do_action( 'learn_press_checkout_after_order_review' );
 		?>
-
+        <!--
+		<?php if ( ! is_user_logged_in() ) { ?>
+            <p class="button-cancel-guest-checkout">
+                <button type="button" class="lp-button lp-button"
+                        id="learn-press-button-cancel-guest-checkout"><?php _e( 'Back', 'learnpress' ); ?></label></button>
+            </p>
+		<?php } ?>
+        -->
     </form>
 
-	<?php if ( ! is_user_logged_in() ) { ?>
-        <p>
-            <button type="button" class="lp-button lp-button-guest-checkout" id="learn-press-button-guest-checkout"><?php _e( 'Continue checkout as Guest?', 'learnpress' ); ?></label></button>
-        </p>
-	<?php } ?>
+<?php if ( ! is_user_logged_in() && ! LP()->checkout()->is_enable_login() && ! LP()->checkout()->is_enable_register() ) { ?>
+    <p><?php printf( __( 'Please login to continue checkout. %s', 'learnpress' ), sprintf( '<a href="%s">%s</a>', learn_press_get_login_url(), __( 'Login?', 'learnpress' ) ) ); ?></p>
+<?php } ?>
 
-	<?php
-}
-// @since 3.x.x
+<?php if ( ! is_user_logged_in() && LP()->checkout()->is_enable_guest_checkout() ) { ?>
+
+    <p class="button-continue-guest-checkout">
+        <button type="button" class="lp-button lp-button-guest-checkout"
+                id="learn-press-button-guest-checkout"><?php _e( 'Continue checkout as Guest?', 'learnpress' ); ?></label></button>
+    </p>
+<?php } ?>
+
+<?php
+
+// @since 3.0.0
 do_action( 'learn-press/after-checkout-form' );
 
 /**

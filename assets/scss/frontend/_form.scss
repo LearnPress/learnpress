@@ -1,0 +1,148 @@
+.lp-list-table {
+    border: none;
+    width: 100%;
+    margin-bottom: 20px;
+    th, td {
+        border: 0 solid #DDD;
+        border-bottom-width: 1px;
+        line-height: 1;
+        font-size: 16px;
+        padding: 15px 15px;
+        background: #FFF;
+        text-align: left;
+    }
+    tr {
+        border: 0;
+    }
+    thead {
+        tr {
+            color: #444;
+            th {
+                background: #00adff;
+                color: #FFF;
+                border-bottom: none;
+            }
+        }
+    }
+    tbody {
+        tr {
+            color: #777;
+            td, th {
+                border-bottom: 1px solid #DDD;
+                font-size: 14px;
+                background: #FFF;
+                a {
+                    text-decoration: none;
+                    border-bottom: none;
+                }
+            }
+
+            &:nth-child(odd) {
+                background: #F5F5F5;
+            }
+        }
+    }
+    .list-table-nav {
+        td {
+            font-size: 14px;
+            &.nav-text {
+                text-align: left;
+                //padding-left: 0;
+            }
+            &.nav-pages {
+                text-align: right;
+                //padding-right: 0;
+                .learn-press-pagination {
+                    text-align: right;
+                }
+                .page-numbers {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
+
+.lp-label {
+    font-size: 12px;
+    display: inline-block;
+    padding: 3px 5px;
+    background: #DDD;
+    border-radius: 4px;
+    line-height: 1;
+    color: #FFF;
+    &.label-finished,
+    &.label-completed {
+        background: #ffdc1e;
+    }
+
+    &.label-passed {
+        background: #14c4ff;
+    }
+
+    &.label-failed {
+        background: #ff4d66;
+    }
+
+    &.label-enrolled,
+    &.label-started {
+        background: #d243ff;
+    }
+}
+
+.learn-press-form {
+    .form-fields {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        .form-field {
+            margin: 0 0 20px 0;
+            label {
+                display: block;
+                margin: 0 0 10px 0;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="number"],
+            input[type="password"],
+            textarea {
+                padding: 8px;
+                width: 100%;
+                @include box-sizing(border-box);
+            }
+            .description {
+                font-style: italic;
+                margin-top: 10px;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+            .asterisk {
+                color: #FF0000;
+            }
+        }
+    }
+}
+
+.form-heading {
+
+}
+
+.form-desc {
+    font-size: smaller;
+    font-style: italic;
+}
+
+.become-teacher-form {
+    margin: 0 auto;
+    width: 90%;
+    max-width: 500px;
+    .form-field {
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="password"] {
+            width: 100%;
+        }
+    }
+}

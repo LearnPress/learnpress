@@ -27,6 +27,7 @@
                     box-sizing: border-box;
                     border-top: 1px solid transparent;
                     border-bottom: 1px solid transparent;
+                    text-transform: capitalize;
                 }
                 &.icon {
                     a:before {
@@ -69,6 +70,19 @@
         }
         &:after {
             @include clear-fix();
+        }
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .learnpress {
+        .rwmb-field {
+            .rwmb-label {
+                float: none;
+            }
+            .rwmb-input {
+                margin-left: 0;
+            }
         }
     }
 }

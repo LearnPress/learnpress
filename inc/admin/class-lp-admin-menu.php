@@ -42,26 +42,15 @@ class LP_Admin_Menu {
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_menus' ), 50 );
 		}
 
-		// auto include file for admin page
-		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
-		/*$page = ! empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
-		if ( $page ) {
-			if ( strpos( $page, 'learn-press-' ) !== false ) {
-				$file = preg_replace( '!^learn-press-!', '', $page );
-				$file = str_replace( '_', '-', $file );
-				if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
-					$this->_submenu = require_once $file;
-				}
-			}
-		}*/
 		/**
-		 * @since 3.x
+		 * @since 3.0.0
 		 */
 		$this->capability = 'edit_' . LP_COURSE_CPT . 's';
 		include_once 'sub-menus/abstract-submenu.php';
 	}
 
 	public function admin_bar_menus( $wp_admin_bar ) {
+
 		if ( ! is_admin() || ! is_user_logged_in() ) {
 			return;
 		}
@@ -119,7 +108,8 @@ class LP_Admin_Menu {
 		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
 		// Sort menu items by it's priority
-		uasort( $menu_items, array( $this, 'sort_menu_items' ) );
+		//uasort( $menu_items, array( $this, 'sort_menu_items' ) );
+		uasort( $menu_items, 'learn_press_sort_list_by_priority_callback' );
 
 		if ( $menu_items ) {
 			foreach ( $menu_items as $item ) {
@@ -128,21 +118,25 @@ class LP_Admin_Menu {
 				if ( is_string( $item ) && class_exists( $item ) ) {
 					$item = new $item();
 				}
+
 				if ( ! $item instanceof LP_Abstract_Submenu ) {
 					continue;
 				}
+
 				add_submenu_page(
 					'learn_press',
 					$item->get_page_title(),
 					$item->get_menu_title(),
 					$item->get_capability(),
 					$item->get_id(),
-					array( $item, 'display' ),
-					$item->get_icon()
+					array( $item, 'display' )
 				);
+
 			}
 			$this->menu_items = $menu_items;
 		}
+
+		$addons = LP_Admin::instance()->get_addons();
 	}
 
 	/**

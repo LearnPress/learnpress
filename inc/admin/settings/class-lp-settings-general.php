@@ -26,16 +26,28 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 	 * @return mixed
 	 */
 	public function get_settings( $section = '', $tab = '' ) {
+
+		$currencies = learn_press_currencies();
+		foreach ( $currencies as $code => $name ) {
+			$s                   = learn_press_get_currency_symbol( $code );
+			$currencies[ $code ] = sprintf( '%s (%s)', $name, $s );
+		}
+
 		$settings = apply_filters(
 			'learn-press/general-settings-fields',
 			array(
-				/*array(
-					'title'   => __( 'Instructors registration', 'learnpress' ),
-					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
-					'id' => 'instructor_registration',
-					'default' => 'no',
-					'type'    => 'checkbox'
-				),*/
+				array(
+					'title' => __( 'General', 'learnpress' ),
+					'type'  => 'heading',
+					'desc'  => __( 'General settings.', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'Logout redirect', 'learnpress' ),
+					'id'      => 'logout_redirect_page_id',
+					'default' => '',
+					'type'    => 'pages-dropdown',
+					'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
+				),
 				array(
 					'title' => __( 'Currency', 'learnpress' ),
 					'type'  => 'heading',
@@ -43,33 +55,34 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 				),
 				array(
 					'title'   => __( 'Currency', 'learnpress' ),
-					'id' => 'currency',
+					'id'      => 'currency',
 					'default' => 'USD',
 					'type'    => 'select',
-					'options' => $this->_get_currency_options()
+					'class'   => 'lp-select-2',
+					'options' => $currencies
 				),
 				array(
 					'title'   => __( 'Currency position', 'learnpress' ),
-					'id' => 'currency_pos',
+					'id'      => 'currency_pos',
 					'default' => 'left',
 					'type'    => 'select',
-					'options' => $this->_get_currency_positions()
+					'options' => learn_press_currency_positions()
 				),
 				array(
 					'title'   => __( 'Thousands Separator', 'learnpress' ),
-					'id' => 'thousands_separator',
+					'id'      => 'thousands_separator',
 					'default' => ',',
 					'type'    => 'text'
 				),
 				array(
 					'title'   => __( 'Decimals Separator', 'learnpress' ),
-					'id' => 'decimals_separator',
+					'id'      => 'decimals_separator',
 					'default' => '.',
 					'type'    => 'text'
 				),
 				array(
 					'title'   => __( 'Number of Decimals', 'learnpress' ),
-					'id' => 'number_of_decimals',
+					'id'      => 'number_of_decimals',
 					'default' => '2',
 					'type'    => 'number'
 				)/*,
@@ -91,40 +104,6 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 		return $settings;
 	}
 
-	private function _get_currency_options() {
-		$currencies = array();
-
-		if ( $payment_currencies = learn_press_get_payment_currencies() ) {
-			foreach ( $payment_currencies as $code => $symbol ) {
-				$currencies[ $code ] = $symbol;
-			}
-		}
-
-		return $currencies;
-	}
-
-	private function _get_currency_positions() {
-		$positions = array();
-		foreach ( learn_press_currency_positions() as $pos => $text ) {
-			switch ( $pos ) {
-				case 'left':
-					$text = sprintf( '%s ( %s%s )', $text, learn_press_get_currency_symbol(), '69.99' );
-					break;
-				case 'right':
-					$text = sprintf( '%s ( %s%s )', $text, '69.99', learn_press_get_currency_symbol() );
-					break;
-				case 'left_with_space':
-					$text = sprintf( '%s ( %s %s )', $text, learn_press_get_currency_symbol(), '69.99' );
-					break;
-				case 'right_with_space':
-					$text = sprintf( '%s ( %s %s )', $text, '69.99', learn_press_get_currency_symbol() );
-					break;
-			}
-			$positions[ $pos ] = $text;
-		}
-
-		return $positions;
-	}
 }
 
 return new LP_Settings_General();
