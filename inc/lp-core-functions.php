@@ -3193,3 +3193,19 @@ function learn_press_get_block_course_item_types() {
 //    $a[] = LP_QUIZ_CPT;
 //    return $a;
 //});
+
+function add_category_links_to_blacklist( $list, $sitepress ){
+	$learn_press_course_category_base = get_option( 'learn_press_course_category_base', 'course-category' );
+	$url_info = parse_url( learn_press_get_current_url() );
+	if( !isset( $url_info['path'] ) || strpos( $url_info['path'], $learn_press_course_category_base ) === false ){
+
+		return $list;
+	}
+	if( strpos( get_option( 'learn_press_course_base' ), '/courses/%course_category%' ) !== false ){
+		$list[] = '/^' . $learn_press_course_category_base . '/';
+	}
+
+	return $list;
+}
+
+add_filter( 'wpml_sl_blacklist_requests', 'add_category_links_to_blacklist', 1, 2 );
