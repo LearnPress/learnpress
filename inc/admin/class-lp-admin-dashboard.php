@@ -31,61 +31,17 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * Order status widget
 		 */
 		public function order_statuses() {
-			$order_statuses    = learn_press_get_order_statuses( true, true );
-			$eduma_data        = $this->_get_theme_info( 14058034 );
-			$specific_statuses = array( 'lp-completed', 'lp-failed', 'lp-on-hold' );
-
-			foreach ( $order_statuses as $status ) {
-				if ( ! in_array( $status, $specific_statuses ) ) {
-					$specific_statuses[] = $status;
-				}
-			}
-
-			$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
 			?>
-            <ul class="lp-order-statuses">
-                <li class="count-number total-raised">
-                    <strong><?php echo $this->_get_order_total_raised(); ?></strong>
-                    <p><?php _e( 'Total Raised', 'learnpress' ); ?></p>
-                </li>
-				<?php foreach ( $specific_statuses as $status ) : ?>
-					<?php
-					$status_object = get_post_status_object( $status );
-					if ( ! $status_object ) {
-						continue;
-					}
-					$count = $counts[ $status ];
-					$url   = $count ? admin_url( 'edit.php?post_type=' . LP_ORDER_CPT . '&post_status=' . $status ) : '#';
-					?>
-                    <li class="counter-number order-<?php echo str_replace( 'lp-', '', $status ); ?>">
-                        <div class="counter-inner">
-                            <a href="<?php echo esc_url( $url ); ?>">
-                                <strong>
-									<?php if ( $count ) {
-										printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count );
-									} else {
-										printf( __( '%d order', 'learnpress' ), 0 );
-									} ?>
-                                </strong>
-                                <p><?php printf( '%s', $status_object->label ); ?></p>
-                            </a>
-                        </div>
-                    </li>
-				<?php endforeach; ?>
-                <li class="clear"></li>
-                <li class="featured-theme">
-                    <p>
-                        <a href="<?php echo esc_url( $eduma_data['item']['url'] ) ?>">
-							<?php echo esc_html( $eduma_data['item']['item'] ) ?>
-                        </a> - <?php printf( '%s%s', '$', $eduma_data['item']['cost'] ) ?>
-                    </p>
-                    <p>
-						<?php _e( 'Created by: ', 'learnpress' ) ?>
-                        <a href="https://thimpress.com/"
-                           class="author"><?php echo esc_html( $eduma_data['item']['user'] ); ?></a>
-                    </p>
-                </li>
-            </ul>
+            <div id="lp-dashboard-order-status">
+				<?php esc_html_e( 'Loading...', 'learnpress' ); ?>
+                <script>
+                    jQuery(function ($) {
+                        setTimeout(function () {
+                            $(document).trigger('learn-press/load-dashboard-order-status');
+                        }, 300)
+                    })
+                </script>
+            </div>
 			<?php
 		}
 
@@ -94,13 +50,13 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 *
 		 * @return int|string
 		 */
-		private function _get_order_total_raised() {
-			$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
+		public function get_order_total_raised() {
+			$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed', 'fields' => 'ids' ) );
 			$total  = 0;
 			if ( $orders ) {
-				foreach ( $orders as $order ) {
-					$order = learn_press_get_order( $order->ID );
-					$total = $total + floatval( $order->order_total );
+				foreach ( $orders as $order_id ) {
+					$order = learn_press_get_order( $order_id );
+					$total = $total + floatval( $order->get_total() );
 				}
 			}
 
@@ -112,7 +68,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 *
 		 * @returns mixed
 		 */
-		private function _get_theme_info( $item_id ) {
+		public function get_theme_info( $item_id ) {
 
 			/* Data cache timeout in seconds - It send a new request each hour instead of each page refresh */
 			$CACHE_EXPIRATION = 3600;
@@ -165,7 +121,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 *
 		 * @since 2.0
 		 */
-		private function _get_data() {
+		public function get_data() {
 
 			if ( ! function_exists( 'plugins_api' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
@@ -192,12 +148,18 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * Plugin status widget
 		 */
 		public function plugin_status() {
-			$plugin_data = $this->_get_data();
-			if ( ! $plugin_data || is_wp_error( $plugin_data ) ) {
-				learn_press_admin_view( 'dashboard/plugin-status/html-no-data' );
-			} else {
-				learn_press_admin_view( 'dashboard/plugin-status/html-results', array( 'plugin_data' => $plugin_data ) );
-			}
+			?>
+            <div id="lp-dashboard-plugin-status">
+				<?php esc_html_e( 'Loading...', 'learnpress' ); ?>
+                <script>
+                    jQuery(function ($) {
+                        setTimeout(function () {
+                            $(document).trigger('learn-press/load-dashboard-plugin-status');
+                        }, 300)
+                    })
+                </script>
+            </div>
+			<?php
 		}
 	}
 }

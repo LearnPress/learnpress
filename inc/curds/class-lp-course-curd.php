@@ -97,7 +97,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function delete_course( $course_id, $delete_item = false ) {
 			if ( $delete_item ) {
-				if($course = learn_press_get_course( $course_id )) {
+				if ( $course = learn_press_get_course( $course_id ) ) {
 					if ( $items = $course->get_items() ) {
 						foreach ( $items as $item ) {
 							wp_delete_post( $item );
@@ -630,12 +630,12 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * Get all users enrolled course ID.
+		 * Get all ID of users enrolled course ID.
 		 *
-		 * @param     $course_id
+		 * @param int $course_id
 		 * @param int $limit
 		 *
-		 * @return array|null|object
+		 * @return array
 		 */
 		public function get_user_enrolled( $course_id, $limit = - 1 ) {
 			global $wpdb;
@@ -653,6 +653,44 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			return $wpdb->get_results( $query );
 		}
 
+		public function count_enrolled_users( $course_ids ) {
+			global $wpdb;
+
+			if ( ! $course_ids ) {
+				return 0;
+			}
+
+			$results = wp_cache_get( 'enrolled-users', 'lp-course' );
+
+			if ( $results && is_numeric( $course_ids ) && array_key_exists( $course_ids, $results ) ) {
+				return $results[ $course_ids ];
+			}
+			settype( $course_ids, 'array' );
+			$sql = $wpdb->prepare( "
+					SELECT item_id cid, count(ID) `count`
+					FROM(SELECT DISTINCT user.ID,user_item.item_id FROM wp_users user
+						INNER JOIN wp_learnpress_user_items user_item ON user_item.user_id = user.ID
+						WHERE user_item.item_id IN(" . join( ',', $course_ids ) . ")
+						AND user_item.item_type = %s
+					) AS X GROUP BY item_id", LP_COURSE_CPT );
+
+			if ( $rows = $wpdb->get_results( $sql ) ) {
+				foreach ( $rows as $row ) {
+					$results[ $row->cid ] = $row->count;
+				}
+			}
+
+			$total = 0;
+			foreach ( $course_ids as $course_id ) {
+				if ( empty( $results[ $course_id ] ) ) {
+					$results[ $course_id ] = 0;
+				}
+				$total += $results[ $course_id ];
+			}
+			wp_cache_set( 'enrolled-users', $results, 'lp-course' );
+
+			return $total;
+		}
 
 		/**
 		 * Get feature courses.

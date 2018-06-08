@@ -51,7 +51,7 @@ class LP_Settings {
 			settype( $data, 'array' );
 			$this->_options = $data;
 		}
-		self::load_site_options();
+		//self::load_site_options();
 		//add_action( 'init', array( $this, 'init' ) );
 	}
 

@@ -498,6 +498,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
 			do_action( 'learn-press/ready' );
+
+//			for ( $i = 0; $i < 10000; $i ++ ) {
+//				wp_cache_set( 'xxx' . $i, str_repeat( 'I', 10000 ) );
+//			}
 		}
 
 		/**

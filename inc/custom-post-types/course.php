@@ -80,7 +80,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'root'        => array(
 					'course_id'          => $post->ID,
 					'auto_draft'         => get_post_status( $post->ID ) == 'auto-draft',
-					'ajax'               => admin_url( '' ),
+					'ajax'               => admin_url( 'index.php' ),
 					'disable_curriculum' => false,
 					'action'             => 'admin_course_editor',
 					'nonce'              => wp_create_nonce( 'learnpress_update_curriculum' ),

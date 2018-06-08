@@ -378,6 +378,29 @@
         });
     }
 
+    function loadDashboardOrderStatus() {
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'dashboard-order-status'
+            },
+            success: function (response) {
+                $('#lp-dashboard-order-status').html(response);
+            }
+        });
+    }
+
+    function loadDashboardPluginStatus() {
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'dashboard-plugin-status'
+            },
+            success: function (response) {
+                $('#lp-dashboard-plugin-status').html(response);
+            }
+        });
+    }
 
     var $doc = $(document);
 
@@ -410,6 +433,12 @@
             .on('mouseup', function (e) {
                 $('html, body').removeClass('lp-item-moving');
                 $('.lp-sortable-handle').css('cursor', '');
+            })
+            .on('learn-press/load-dashboard-order-status', function () {
+                loadDashboardOrderStatus();
+            })
+            .on('learn-press/load-dashboard-plugin-status', function () {
+                loadDashboardPluginStatus();
             })
         LP_Admin.init();
     }

@@ -87,7 +87,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'update_email_status',
 				'create-pages',
 				'search-authors',
-				'skip-notice-install'
+				'skip-notice-install',
+				'dashboard-order-status',
+				'dashboard-plugin-status'
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -107,6 +109,25 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
+		/**
+		 * Get html of order status to display in WP Dashboad
+		 */
+		public function dashboard_order_status() {
+			learn_press_admin_view( 'dashboard/order-status' );
+			die();
+		}
+
+		public function dashboard_plugin_status() {
+			$dashboard   = new LP_Admin_Dashboard();
+			$plugin_data = $dashboard->get_data();
+			if ( ! $plugin_data || is_wp_error( $plugin_data ) ) {
+				learn_press_admin_view( 'dashboard/plugin-status/html-no-data' );
+			} else {
+				learn_press_admin_view( 'dashboard/plugin-status/html-results', array( 'plugin_data' => $plugin_data ) );
+			}
+			die();
+		}
+
 		public static function search_authors() {
 			$args  = array(
 				'orderby'        => 'name',
@@ -119,8 +140,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			if ( $results = $q->get_results() ) {
 				foreach ( $results as $result ) {
-					$users[] = array( 'id'   => $result->ID,
-					                  'text' => learn_press_get_profile_display_name( $result->ID )
+					$users[] = array(
+						'id'   => $result->ID,
+						'text' => learn_press_get_profile_display_name( $result->ID )
 					);
 				}
 			}
@@ -304,7 +326,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 				update_post_meta( $id, '_lp_preview', $previewable );
 			}
-			die(__FILE__ . '::'.__FUNCTION__);;
+			die( __FILE__ . '::' . __FUNCTION__ );;
 		}
 
 		/**
@@ -490,7 +512,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -541,7 +564,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$term = stripslashes( $_REQUEST['term'] );
 
 			if ( empty( $term ) ) {
-				die(__FILE__ . '::'.__FUNCTION__);;
+				die( __FILE__ . '::' . __FUNCTION__ );;
 			}
 
 			$found_customers = array();
@@ -597,7 +620,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					update_option( 'learn_press_dismiss_notice_' . $context, 'off' );
 				}
 			}
-			die(__FILE__ . '::'.__FUNCTION__);;
+			die( __FILE__ . '::' . __FUNCTION__ );;
 		}
 
 		public static function plugin_action() {

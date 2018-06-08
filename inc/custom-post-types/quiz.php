@@ -160,7 +160,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', apply_filters( 'learn-press/admin-localize-quiz-editor', array(
 				'root'          => array(
 					'quiz_id'     => $post->ID,
-					'ajax'        => admin_url( '' ),
+					'ajax'        => admin_url( 'index.php' ),
 					'action'      => 'admin_quiz_editor',
 					'nonce'       => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
 					'types'       => LP_Question::get_types(),

@@ -96,6 +96,10 @@ class LP_Helper {
 	public static function cache_posts( $ids ) {
 		global $wpdb;
 
+		if ( ! $ids ) {
+			return;
+		}
+
 		settype( $ids, 'array' );
 		$format = array_fill( 0, sizeof( $ids ), '%d' );
 		$query  = $wpdb->prepare( "

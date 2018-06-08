@@ -452,6 +452,8 @@ function learn_press_get_orders( $args = array() ) {
 	$args['post_type'] = LP_ORDER_CPT;
 	$orders            = get_posts( $args );
 
+	LP_Helper::cache_posts( $orders );
+
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
 }
 
@@ -733,7 +735,7 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learnpress' )
 	);
-	$order_statues['lp-failed'] = array(
+	$order_statues['lp-failed']     = array(
 		'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
