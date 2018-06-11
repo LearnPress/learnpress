@@ -430,11 +430,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$new_order->save();
 				$new_status = get_post_status( $new_order->get_id() );
 
-				if ( ( $new_status === $old_status ) && $trigger_action ) {
+				if ( ( $new_status !== $old_status ) || $trigger_action ) {
 					$status = str_replace( 'lp-', '', $new_status );
+					$old_status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $new_order->get_id(), $status );
-					do_action( 'learn-press/order/status-' . $status . '-to-' . $status, $new_order->get_id() );
-					do_action( 'learn-press/order/status-changed', $new_order->get_id(), $status, $status );
+					do_action( 'learn-press/order/status-' . $old_status . '-to-' . $status, $new_order->get_id() );
+					do_action( 'learn-press/order/status-changed', $new_order->get_id(), $status, $old_status );
 				}
 			}
 		}
@@ -461,7 +462,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				if ( is_array( $user_id ) ) {
 					$this->_update_child( $order, $user_id, $trigger_action );
-					$order->set_user_id( $user_id );
+					$order->set_user_id( absint( $user_id ) );
 				} else {
 					$order->set_user_id( absint( $user_id ) );
 				}
