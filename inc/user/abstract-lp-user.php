@@ -621,11 +621,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$progress  = $this->get_quiz_progress( $quiz_id, $course_id );
 
 			if ( $progress && $progress->status != 'completed' ) {
-				$quiz = LP_Quiz::get_quiz( $quiz_id );
+				$quiz           = LP_Quiz::get_quiz( $quiz_id );
 				$current_time   = learn_press_get_current_time();
 				$progress_start = strtotime( $progress->start, $current_time );
 				$remaining      = intval( $quiz->get_duration() ) + $progress_start - $current_time;
 			}
+
 			return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $quiz_id, $course_id, $this->get_id() );
 		}
 
@@ -2289,6 +2290,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$status = false;
 			if ( false !== ( $data = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
 				$status = $data['status'];
+			} else {
+				$course_data = $this->get_course_data( $course_id );
+				$status      = $course_data->get_status();
 			}
 
 			return apply_filters( 'learn-press/user-course-status', $status, $course_id, $this->get_id() );

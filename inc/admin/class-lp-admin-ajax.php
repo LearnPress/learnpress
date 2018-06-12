@@ -87,7 +87,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'update_email_status',
 				'create-pages',
 				'search-authors',
-				'skip-notice-install'
+				'skip-notice-install',
+				'join_newsletter'
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -119,8 +120,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			if ( $results = $q->get_results() ) {
 				foreach ( $results as $result ) {
-					$users[] = array( 'id'   => $result->ID,
-					                  'text' => learn_press_get_profile_display_name( $result->ID )
+					$users[] = array(
+						'id'   => $result->ID,
+						'text' => learn_press_get_profile_display_name( $result->ID )
 					);
 				}
 			}
@@ -184,6 +186,48 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			learn_press_send_json_success( $result );
+		}
+
+		/**
+		 * Send data to join newsletter or dismiss
+		 *
+		 * @since 3.0.10
+		 */
+		public static function join_newsletter() {
+			$context = LP_Request::get_string( 'context' );
+			if ( ! $context || $context != 'newsletter' ) {
+				update_option( 'learn-press-dismissed-newsletter-button', 1 );
+				learn_press_send_json_success( __( 'Dismissed!', 'learnpress' ) );
+			}
+			$user = learn_press_get_current_user();
+			if ( ! $user || $user->get_email() == '' ) {
+				learn_press_send_json_error( __( 'Fail while joining newsletter! Please try again!', 'learnpress' ) );
+			}
+			$url      = 'https://thimpress.com/mailster/subscribe';
+			$response = wp_remote_post( $url, array(
+					'method'      => 'POST',
+					'timeout'     => 45,
+					'redirection' => 5,
+					'httpversion' => '1.0',
+					'blocking'    => true,
+					'headers'     => array(),
+					'body'        => array(
+						'_referer' => 'extern',
+						'_nonce'   => '4b266caf7b',
+						'formid'   => '19',
+						'email'    => $user->get_email(),
+						'website'  => site_url(),
+					),
+					'cookies'     => array()
+				)
+			);
+			if ( is_wp_error( $response ) ) {
+				$error_message = $response->get_error_message();
+				learn_press_send_json_error( __( 'Something went wrong: ', 'learnpress' ) . $error_message );
+			} else {
+				update_option( 'learn-press-dismissed-newsletter-button', 1 );
+				learn_press_send_json_success( __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.', 'learnpress' ) );
+			}
 		}
 
 		/**

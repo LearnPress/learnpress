@@ -3749,9 +3749,24 @@ function learn_press_filter_block_content_template( $located, $template_name, $a
 function learn_press_term_conditions_template() {
 	$page_id = learn_press_get_page_id( 'term_conditions' );
 	if ( $page_id ) {
-		$page_link =  get_page_link($page_id);
+		$page_link = get_page_link( $page_id );
 		learn_press_get_template( 'checkout/term-conditions.php', array( 'page_link' => $page_link ) );
 	}
 }
 
 add_action( 'learn-press/after-payment-methods', 'learn_press_term_conditions_template' );
+
+function learn_press_get_link_current_question_instead_of_continue_button( $link, $item ) {
+	if ( get_post_type( $item->get_id() ) === LP_QUIZ_CPT ) {
+		$user      = LP_Global::user();
+		$course    = $item->get_course();
+		$quiz_data = $user->get_item_data( $item->get_id(), $course->get_id() );
+		if ( $quiz_data->get_status() === 'started' ) {
+			$link = $item->get_question_link( $quiz_data->get_current_question() );
+		}
+	}
+
+	return $link;
+}
+
+add_filter( 'learn-press/course-item-link', 'learn_press_get_link_current_question_instead_of_continue_button', 10, 2 );

@@ -378,6 +378,29 @@
         });
     }
 
+    function send_newsletter_info(e){
+        var $notice = $(e.target),
+            context = $notice.attr('data-context');
+        $(this).addClass('updating-message button-working disabled');
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'join_newsletter',
+                context: context
+            },
+            success: function (response) {
+                response = LP.parseJSON(response);
+                $(this).removeClass('updating-message button-working');
+                if (response.success) {
+                    $('#learn-press-newsletter-button').fadeOut();
+                    alert(response.data);
+                } else {
+                    alert(response.data);
+                }
+            }
+        });
+    }
+
 
     var $doc = $(document);
 
@@ -403,6 +426,7 @@
             .on('click', '.plugin-action-buttons a', pluginActions)
             .on('click', '.learn-press-filter-template', _callbackFilterTemplates)
             .on('click', '.lp-duplicate-row-action .lp-duplicate-post', _duplicatePost)
+            .on('click', '#learn-press-newsletter-button button', send_newsletter_info)
             .on('mousedown', '.lp-sortable-handle', function (e) {
                 $('html, body').addClass('lp-item-moving');
                 $(e.target).closest('.lp-sortable-handle').css('cursor', 'inherit');

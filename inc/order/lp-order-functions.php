@@ -788,8 +788,6 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 		$order    = learn_press_get_order( $order_id );
 		$user     = learn_press_get_current_user();
 
-		$url = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
-
 		if ( ! $order ) {
 			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
 		} else if ( $order->has_status( 'pending' ) ) {
@@ -801,6 +799,9 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 			$url = $order->get_cancel_order_url( true );
 		} else {
 			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> can not be cancelled', 'learnpress' ), $order->get_order_number() ), 'error' );
+		}
+		if( !$url ){
+			$url = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders', 'orders' ) );
 		}
 		wp_safe_redirect( $url );
 		exit();
