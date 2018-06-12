@@ -1,0 +1,83 @@
+.rtl {
+
+    .section-item-counts {
+        left: 41px;
+        right: auto;
+    }
+
+    #admin-editor-lp_course {
+        .lp-course-curriculum {
+            .heading {
+                .status {
+                    margin-right: 10px;
+                }
+            }
+            .collapse-sections {
+                left: 0;
+                right: unset !important;
+            }
+            .section-list-items {
+                .section-item {
+                    .title {
+                        margin-right: 5px;
+                    }
+                    .item-actions {
+                        left: 0;
+                        right: unset !important;
+                        .actions {
+                            .ui-sortable {
+                                right: unset !important;
+                                left: 0;
+                                li {
+                                    text-align: left;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .section-actions {
+                .remove {
+                    float: left;
+                }
+            }
+            .actions {
+                right: unset !important;
+                left: 0;
+            }
+        }
+    }
+
+    #admin-editor-lp_quiz {
+        .lp-list-questions {
+            .question-item {
+                .lp-toolbar-btn-dropdown {
+                    ul {
+                        left: 0;
+                        right: unset !important;
+                        li {
+                            a {
+                                text-align: left;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .add-new-question{
+            text-align: right;
+        }
+    }
+
+    #lp-modal-choose-items {
+        .header {
+            .preview-title {
+                padding-right: 20px;
+            }
+            .close {
+                left: 0;
+                right: unset;
+            }
+        }
+    }
+}

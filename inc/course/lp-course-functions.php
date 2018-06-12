@@ -945,7 +945,7 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 	 *
 	 * @return string
 	 */
-	function learn_press_course_item_type_link( $post_link, $post, $leavename, $sample ) {
+	function learn_press_course_item_type_link( $post_link, $post, $leavename = false, $sample = false ) {
 
 		remove_filter( 'post_type_link', 'learn_press_course_item_type_link', 10 );
 
