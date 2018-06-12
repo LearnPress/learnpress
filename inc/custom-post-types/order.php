@@ -27,6 +27,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_action( 'trashed_post', array( $this, 'trashed_order' ) );
 			add_action( 'transition_post_status', array( $this, 'restore_order' ), 10, 3 );
+			add_action( 'transition_post_status', array( $this, 'recount_enrolled_users' ), 10, 3 );
 
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 			//add_action( 'add_meta_boxes', array( $this, 'post_new' ) );
@@ -42,6 +43,44 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			parent::__construct( $post_type );
 
+		}
+
+		/**
+		 * Re-count enrolled users to the courses in current order
+		 * is being changed status
+		 *
+		 * @since 3.0.10
+		 *
+		 * @param string  $new
+		 * @param string  $old
+		 * @param WP_Post $post
+		 *
+		 * @return bool
+		 */
+		public function recount_enrolled_users( $new, $old, $post ) {
+			if ( LP_ORDER_CPT !== get_post_type( $post ) ) {
+				return false;
+			}
+
+			$order = learn_press_get_order( $post->ID );
+			$curd  = new LP_Course_CURD();
+			if ( $items = $order->get_items() ) {
+				$course_ids = wp_list_pluck( $items, 'course_id' );
+
+				$curd->count_enrolled_users_by_orders( $course_ids );
+
+				$statuses = array( 'lp-completed', 'lp-processing' );
+				sort( $statuses );
+				$cache_key = md5( serialize( $statuses ) );
+
+				foreach ( $course_ids as $cid ) {
+					if ( LP_COURSE_CPT === get_post_type( $cid ) ) {
+						update_post_meta( $cid, 'count_enrolled_users', wp_cache_get( 'course-' . $cid . '-' . $cache_key, 'lp-course-orders' ) );
+					}
+				}
+			}
+
+			return true;
 		}
 
 		/**
@@ -273,7 +312,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					continue;
 				}
 				$order_status = $order->get_order_status();
-				$last_status = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'enrolled';
+				$last_status  = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'enrolled';
 				$user_curd->update_user_item_status( $user_item_id, $last_status );
 				// Restore data
 				$user_curd->update_user_item_by_id(
@@ -297,7 +336,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function delete_order_data( $post_id ) {
 
-			if ( get_post_type( $post_id ) != 'lp_order' ) {
+			if ( learn_press_get_post_type( $post_id ) != 'lp_order' ) {
 				return false;
 			}
 
@@ -420,7 +459,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				$old_status = get_post_status( $new_order->get_id() );
-				$new_order->set_order_date( $order->get_order_date('edit') );
+				$new_order->set_order_date( $order->get_order_date( 'edit' ) );
 				$new_order->set_parent_id( $order->get_id() );
 				$new_order->set_user_id( $uid );
 				$new_order->set_total( $order->get_total() );
@@ -449,7 +488,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( wp_is_post_revision( $post_id ) ) {
 				return;
 			}
-			if ( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
+			if ( $action == 'editpost' && learn_press_get_post_type( $post_id ) == 'lp_order' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
 				remove_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 
@@ -808,7 +847,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$items = $the_order->get_items();
 					$count = sizeof( $items );
 					foreach ( $items as $item ) {
-						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+						if ( empty( $item['course_id'] ) || learn_press_get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 							$links[] = __( 'Course does not exist', 'learnpress' );
 						} else {
 							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
@@ -916,7 +955,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function preparing_to_trash_order( $post_id ) {
-			if ( LP_ORDER_CPT != get_post_type( $post_id ) ) {
+			if ( LP_ORDER_CPT != learn_press_get_post_type( $post_id ) ) {
 				return;
 			}
 		}

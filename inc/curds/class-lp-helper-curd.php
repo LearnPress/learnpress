@@ -16,11 +16,11 @@ class LP_Helper_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $type - E.g: post, user, ...
 	 * @param array  $ids
+	 * @param string $type - E.g: post, user, ...
 	 * @param int    $limit
 	 */
-	public static function update_meta_cache( $type, $ids, $limit = 100 ) {
+	public static function update_meta_cache( $ids, $type = 'post', $limit = 100 ) {
 
 		if ( ! $ids ) {
 			return;
@@ -68,7 +68,7 @@ class LP_Helper_CURD {
 
 		// Remove the posts has already cached
 		for ( $n = sizeof( $post_ids ), $i = $n - 1; $i >= 0; $i -- ) {
-			if ( false !== wp_cache_get( $post_ids[ $i ], 'post' ) ) {
+			if ( false !== wp_cache_get( $post_ids[ $i ], 'posts' ) ) {
 				unset( $post_ids[ $i ] );
 			}
 		}
@@ -84,12 +84,20 @@ class LP_Helper_CURD {
 			WHERE ID IN(" . join( ',', $format ) . ")
 		", $post_ids );
 
+		if ( false === ( $post_types = wp_cache_get( 'post-types', 'learnpress' ) ) ) {
+			$post_types = array();
+		}
+
 		if ( $posts = $wpdb->get_results( $query ) ) {
 			foreach ( $posts as $post ) {
-				$post = sanitize_post( $post, 'raw' );
+				$post                    = sanitize_post( $post, 'raw' );
+				$post_types[ $post->ID ] = $post->post_type;
 				wp_cache_set( $post->ID, $post, 'posts' );
 			}
 		}
+
+		self::update_meta_cache( $post_ids );
+		wp_cache_set( 'post-types', $post_types, 'learnpress' );
 
 		return $posts;
 	}

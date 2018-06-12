@@ -301,7 +301,7 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
  */
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
-	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
+	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && learn_press_get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
 		$text                             = LP()->settings->get( 'admin_bar_link_text' );
 		$user_id                          = learn_press_get_current_user_id();
 		$course_profile                   = array();
@@ -443,7 +443,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	 * Validate item status
 	 */
 	if ( ! empty( $fields['item_id'] ) && ! empty( $fields['status'] ) ) {
-		$item_type = get_post_type( $fields['item_id'] );
+		$item_type = learn_press_get_post_type( $fields['item_id'] );
 		if ( LP_COURSE_CPT === $item_type ) {
 			if ( 'completed' === $fields['status'] ) {
 				$fields['status'] = 'finished';
@@ -556,7 +556,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	if ( $update_cache && $updated_item ) {
 
 		// Get course id
-		if ( LP_COURSE_CPT === get_post_type( $updated_item->item_id ) ) {
+		if ( LP_COURSE_CPT === learn_press_get_post_type( $updated_item->item_id ) ) {
 			$course_id = $updated_item->item_id;
 		} else {
 			$course_id = $updated_item->ref_id;
@@ -1850,7 +1850,7 @@ add_filter( 'learn-press/before-start-quiz', 'learn_press_hk_before_start_quiz',
 
 function learn_press_default_user_item_status( $item_id ) {
 	$status = '';
-	switch ( get_post_type( $item_id ) ) {
+	switch ( learn_press_get_post_type( $item_id ) ) {
 		case LP_LESSON_CPT:
 			$status = 'started';
 			break;

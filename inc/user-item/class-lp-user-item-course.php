@@ -65,7 +65,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 					'item_id'   => 0,
 					'item_type' => '',
 					'ref_id'    => $course->get_id(),
-					'ref_type'  => get_post_type( $this->get_id() ),
+					'ref_type'  => learn_press_get_post_type( $this->get_id() ),
 					'parent_id' => $this->get_data( 'parent_id' ),
 					'status'    => ''
 				);
@@ -78,7 +78,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 						$data = wp_parse_args(
 							array(
 								'item_id'   => $item_id,
-								'item_type' => get_post_type( $item_id )
+								'item_type' => learn_press_get_post_type( $item_id )
 							),
 							$default_data
 						);

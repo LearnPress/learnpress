@@ -30,7 +30,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function load( &$quiz ) {
 		$the_id = $quiz->get_id();
-		if ( ! $the_id || LP_QUIZ_CPT !== get_post_type( $the_id ) ) {
+		if ( ! $the_id || LP_QUIZ_CPT !== learn_press_get_post_type( $the_id ) ) {
 			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 		}
 		$quiz->set_data_via_methods(
@@ -114,7 +114,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		} else {
 			$meta_ids[] = $quiz->get_id();
 		}
-		LP_Helper_CURD::update_meta_cache( 'post', $meta_ids );
+		LP_Helper_CURD::update_meta_cache( $meta_ids );
 	}
 
 	/**

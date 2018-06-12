@@ -188,7 +188,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		if ( $scripts = $this->_get_scripts() ) {
 			foreach ( $scripts as $handle => $data ) {
 				do_action( 'learn-press/enqueue-script/' . $handle );
-				if ( empty( $data['screens'] ) || ! empty( $data['screens'] ) && in_array( $screen_id, $data['screens'] ) ) {
+
+				$screens = ! empty( $data['screens'] ) ? $data['screens'] : array();
+
+				if ( ! is_array( $screens ) ) {
+					settype( $screens, 'array' );
+				}
+
+				if ( empty( $screens ) || ! empty( $screens ) && in_array( $screen_id, $screens ) ) {
 					wp_enqueue_script( $handle );
 				}
 			}

@@ -131,7 +131,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return bool|false|mixed|string
 		 */
 		public function get_format() {
-			$format = ( false !== ( $format = wp_cache_get( 'item-format-' . $this->get_id(), 'lp-item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
+
+			if ( ! metadata_exists( 'post', $this->get_id(), 'post_format' ) ) {
+				$curd = new LP_Course_CURD();
+				$curd->update_items_format( $this->get_course()->get_id() );
+			}
+			$format = get_post_meta( $this->get_id(), 'post_format', true );// ( false !== ( $format = wp_cache_get( 'item-format-' . $this->get_id(), 'lp-item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
 
 			if ( ! $format ) {
 				$format = 'standard';

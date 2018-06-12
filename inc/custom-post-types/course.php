@@ -306,7 +306,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$item_ids[] = (int) $item_id;
 
 				// filter quiz item
-				if ( get_post_type( $item_id ) == LP_QUIZ_CPT ) {
+				if ( learn_press_get_post_type( $item_id ) == LP_QUIZ_CPT ) {
 					$quiz = LP_Quiz::get_quiz( $item_id );
 					if ( $questions = $quiz->get_questions() ) {
 						$question_ids = array_merge( $question_ids, $questions );
@@ -982,7 +982,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function post_review_message_box() {
 			global $post;
 
-			if ( get_post_type( $post->ID ) != 'lp_course' ) {
+			if ( learn_press_get_post_type( $post->ID ) != 'lp_course' ) {
 				return false;
 			}
 
@@ -1341,9 +1341,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$number_lessons = $number_quizzes = 0;
 						if ( $items ) {
 							foreach ( $items as $item_id ) {
-								if ( get_post_type( $item_id ) == LP_LESSON_CPT ) {
+								if ( learn_press_get_post_type( $item_id ) == LP_LESSON_CPT ) {
 									$number_lessons ++;
-								} else if ( get_post_type( $item_id ) == LP_QUIZ_CPT ) {
+								} else if ( learn_press_get_post_type( $item_id ) == LP_QUIZ_CPT ) {
 									$number_quizzes ++;
 								}
 							}
@@ -1386,7 +1386,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 				case 'students' :
 					$count = $course->count_in_order();
-					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . $course->count_in_order() . '</span>';
+					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . $count . '</span>';
 
 			}
 		}

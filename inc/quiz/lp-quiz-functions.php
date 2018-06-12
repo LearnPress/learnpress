@@ -232,7 +232,7 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
 		$current_question_id = learn_press_get_current_question( $quiz_id, $user_id );
 	}
 	$permalink = get_the_permalink( $quiz_id );
-	if ( $current_question_id && get_post_type( $current_question_id ) == 'lp_question' ) {
+	if ( $current_question_id && learn_press_get_post_type( $current_question_id ) == 'lp_question' ) {
 		$question_name = get_post_field( 'post_name', $current_question_id );
 		if ( '' != get_option( 'permalink_structure' ) ) {
 			$permalink .= $question_name;

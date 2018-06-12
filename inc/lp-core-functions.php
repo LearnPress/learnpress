@@ -2688,7 +2688,7 @@ function learn_press_get_requested_post_type() {
 		$post_type = $_REQUEST['post_type'];
 	} else {
 		$post_id   = learn_press_get_post();
-		$post_type = get_post_type( $post_id );
+		$post_type = learn_press_get_post_type( $post_id );
 	}
 
 	return $post_type;
@@ -2769,7 +2769,7 @@ if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
  */
 function learn_press_comment_reply_link( $link, $args = array(), $comment = null, $post = null ) {
 
-	$post_type = get_post_type( $post );
+	$post_type = learn_press_get_post_type( $post );
 
 	if ( ! learn_press_is_support_course_item_type( $post_type ) ) {
 		return $link;
@@ -3187,6 +3187,28 @@ function learn_press_remove_user_items_history( $item_id, $course_id, $user_id, 
  */
 function learn_press_get_block_course_item_types() {
 	return apply_filters( 'learn-press/block-course-item-types', array( LP_LESSON_CPT, LP_QUIZ_CPT ) );
+}
+
+function learn_press_get_post_type( $post ) {
+	if ( false === ( $post_types = wp_cache_get( 'post-types', 'learnpress' ) ) ) {
+		$post_types = array();
+	}
+
+	if ( is_object( $post ) ) {
+		$post_id = $post->ID;
+	} else {
+		$post_id = absint( $post );
+	}
+
+	if ( empty( $post_types[ $post_id ] ) ) {
+		$post_type              = get_post_type( $post_id );
+		$post_types[ $post_id ] = $post_type;
+		wp_cache_set( 'post-types', $post_types, 'learnpress' );
+	} else {
+		$post_type = $post_types[ $post_id ];
+	}
+
+	return $post_type;
 }
 
 //add_filter('learn-press/block-course-item-types', function ($a){

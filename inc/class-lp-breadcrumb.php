@@ -147,7 +147,7 @@ class LP_Breadcrumb {
 		} else {
 			$post = get_post( $post_id );
 		}
-		if ( 'lp_course' === get_post_type( $post ) ) {
+		if ( 'lp_course' === learn_press_get_post_type( $post ) ) {
 			$this->prepend_courses_page();
 			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array(
 				'orderby' => 'parent',
@@ -158,9 +158,9 @@ class LP_Breadcrumb {
 				$this->term_ancestors( $main_term->term_id, 'course_category' );
 				$this->add_crumb( $main_term->name, get_term_link( $main_term ) );
 			}
-		} elseif ( 'post' != get_post_type( $post ) ) {
-			$post_type = get_post_type_object( get_post_type( $post ) );
-			$this->add_crumb( $post_type->labels->singular_name, get_post_type_archive_link( get_post_type( $post ) ) );
+		} elseif ( 'post' != learn_press_get_post_type( $post ) ) {
+			$post_type = get_post_type_object( learn_press_get_post_type( $post ) );
+			$this->add_crumb( $post_type->labels->singular_name, get_post_type_archive_link( learn_press_get_post_type( $post ) ) );
 		} else {
 			$cat = current( get_the_category( $post ) );
 			if ( $cat ) {

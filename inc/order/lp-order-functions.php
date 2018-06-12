@@ -217,7 +217,7 @@ function learn_press_get_order_item_meta( $item_id, $meta_key, $single = true ) 
 function learn_press_get_order( $the_order = false ) {
 	global $post;
 	$the_id = 0;
-	if ( false === $the_order && is_a( $post, 'WP_Post' ) && LP_ORDER_CPT === get_post_type( $post ) ) {
+	if ( false === $the_order && is_a( $post, 'WP_Post' ) && LP_ORDER_CPT === learn_press_get_post_type( $post ) ) {
 		$the_id = $post->ID;
 	} elseif ( is_numeric( $the_order ) ) {
 		$the_id = $the_order;
@@ -227,7 +227,7 @@ function learn_press_get_order( $the_order = false ) {
 		$the_id = $the_order->ID;
 	}
 
-	if ( LP_ORDER_CPT != get_post_type( $the_id ) ) {
+	if ( LP_ORDER_CPT != learn_press_get_post_type( $the_id ) ) {
 		return false;
 	}
 

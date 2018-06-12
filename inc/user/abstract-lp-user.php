@@ -1528,7 +1528,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			switch ( get_post_type( $item_id ) ) {
+			switch ( learn_press_get_post_type( $item_id ) ) {
 				case LP_QUIZ_CPT:
 					$return = $this->can_view_quiz( $item_id, $course_id );
 					break;
@@ -2392,12 +2392,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 			if ( $item_id ) {
 				if ( empty( $item['item_type'] ) ) {
-					$type = get_post_type( $item_id );
+					$type = learn_press_get_post_type( $item_id );
 				} else {
 					$type = $item['item_type'];
 				}
 				if ( ! $type ) {
-					$type = get_post_type( $item_id );
+					$type = learn_press_get_post_type( $item_id );
 				}
 				if ( $type == 'lp_lesson' ) {
 					$return = $this->has_completed_lesson( $item_id, $course_id, $force );
@@ -2478,10 +2478,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course = learn_press_get_course( $course_id );
 				$date   = new LP_Datetime();
 				$data   = array(
-					'item_type'      => get_post_type( $course_id ),
+					'item_type'      => learn_press_get_post_type( $course_id ),
 					'status'         => 'enrolled',
 					'ref_id'         => $order_id,
-					'ref_type'       => $order_id ? get_post_type( $order_id ) : '',
+					'ref_type'       => $order_id ? learn_press_get_post_type( $order_id ) : '',
 					'parent_id'      => 0,
 					'start_time'     => $date->toSql(),
 					'start_time_gmt' => $date->toSql( false )

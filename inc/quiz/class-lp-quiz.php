@@ -550,7 +550,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			$course    = LP_Global::course();
 			$permalink = $course->get_item_link( $this->get_id() );
 			if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->get_id() ) != 'draft' ) {
-				if ( get_post_type( $question_id ) === LP_QUESTION_CPT ) {
+				if ( learn_press_get_post_type( $question_id ) === LP_QUESTION_CPT ) {
 					$question_name = get_post_field( 'post_name', $question_id );
 					$permalink     = $permalink . $question_name;
 				}

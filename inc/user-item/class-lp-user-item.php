@@ -291,7 +291,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		$item = false;
-		switch ( get_post_type( $item_id ) ) {
+		switch ( learn_press_get_post_type( $item_id ) ) {
 			case LP_LESSON_CPT:
 				$item = new LP_User_Item( $data );
 				break;
@@ -482,7 +482,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return string
 	 */
 	public function get_post_type() {
-		return get_post_type( $this->get_item_id() );
+		return learn_press_get_post_type( $this->get_item_id() );
 	}
 
 	public function is_passed() {

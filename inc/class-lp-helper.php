@@ -94,23 +94,7 @@ class LP_Helper {
 	 * @param array|int $ids
 	 */
 	public static function cache_posts( $ids ) {
-		global $wpdb;
-
-		if ( ! $ids ) {
-			return;
-		}
-
-		settype( $ids, 'array' );
-		$format = array_fill( 0, sizeof( $ids ), '%d' );
-		$query  = $wpdb->prepare( "
-			SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $format ) . ")
-		", $ids );
-
-		if ( $posts = $wpdb->get_results( $query ) ) {
-			foreach ( $posts as $post ) {
-				wp_cache_set( $post->ID, $post, 'posts' );
-			}
-		}
+		LP_Helper_CURD::cache_posts($ids);
 	}
 
 	/**

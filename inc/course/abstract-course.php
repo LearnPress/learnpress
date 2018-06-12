@@ -320,7 +320,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool
 		 */
 		public function exists() {
-			return LP_COURSE_CPT === get_post_type( $this->get_id() );
+			return LP_COURSE_CPT === learn_press_get_post_type( $this->get_id() );
 		}
 
 		/**
@@ -372,7 +372,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool|LP_Course_Section
 		 */
 		public function get_curriculum( $section_id = 0, $force = false ) {
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			if ( ! $this->get_id() ) {
 				return false;
@@ -390,7 +389,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			} else {
 				$return = $curriculum;
 			}
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return apply_filters( 'learn-press/course/curriculum', $return, $this->get_id(), $section_id );
 		}
@@ -506,7 +504,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function get_users_enrolled() {
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			$enrolled = $this->get_data( 'students' );
 
@@ -520,7 +517,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			// @deprecated
 			$enrolled = apply_filters( 'learn_press_count_users_enrolled', $enrolled, $this );
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return apply_filters( 'learn-press/course/users-enrolled', $enrolled, $this );
 		}
@@ -883,7 +879,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function count_students() {
-			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+
+			if ( metadata_exists( 'post', $this->get_id(), 'count_enrolled_users' ) ) {
+				$count_in_order = get_post_meta( $this->get_id(), 'count_enrolled_users' );
+			} else {
+				$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+			}
 
 			$append_students = LP()->settings()->get( 'enrolled_students_number' );// get_post_meta( $this->get_id(), '_lp_append_students', true );
 
@@ -1020,7 +1021,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 					foreach ( $items as $item_id ) {
 						$item_permalink = $permalink;
-						$item_type      = get_post_type( $item_id );
+						$item_type      = learn_press_get_post_type( $item_id );
 						if ( ! empty( $slugs[ $item_type ] ) ) {
 							$post_name = get_post_field( 'post_name', $item_id );
 							$prefix    = $custom_prefixes[ $item_type ];

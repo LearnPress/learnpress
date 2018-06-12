@@ -161,7 +161,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
 			}
 
-			if ( get_post_type( $question_id ) != LP_QUESTION_CPT ) {
+			if ( learn_press_get_post_type( $question_id ) != LP_QUESTION_CPT ) {
 				return new WP_Error( __( '<p>Op! The question does not exist</p>', 'learnpress' ) );
 			}
 
@@ -237,7 +237,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			// question id
 			$id = $question->get_id();
 
-			if ( ! $id || ! in_array( get_post_type( $id ), array( 'revision', LP_QUESTION_CPT ) ) ) {
+			if ( ! $id || ! in_array( learn_press_get_post_type( $id ), array( 'revision', LP_QUESTION_CPT ) ) ) {
 				throw new Exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $id ) );
 			}
 
@@ -312,7 +312,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|int|LP_Question
 		 */
 		public function change_question_type( $question, $new_type ) {
-			if ( get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
+			if ( learn_press_get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -373,7 +373,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|false|int
 		 */
 		public function update_answer_title( $question_id, $answer ) {
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+			if ( learn_press_get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -420,7 +420,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool | LP_Question
 		 */
 		public function change_correct_answer( $question, $correct ) {
-			if ( get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
+			if ( learn_press_get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -501,7 +501,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function sort_answers( $question_id, $order = array() ) {
 
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+			if ( learn_press_get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -542,7 +542,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function delete_answer( $question_id, $answer_id, $force = false ) {
 
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+			if ( learn_press_get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -589,7 +589,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function new_answer( $question_id, $new_answer ) {
 
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+			if ( learn_press_get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -812,7 +812,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|false|int
 		 */
 		public function delete_question_answer( $question_id, $answer_id ) {
-			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT || ! $answer_id ) {
+			if ( learn_press_get_post_type( $question_id ) !== LP_QUESTION_CPT || ! $answer_id ) {
 				return false;
 			}
 

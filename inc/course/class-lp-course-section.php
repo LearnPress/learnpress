@@ -55,24 +55,18 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		}
 
 		// All items
-		$curriculum = learn_press_cache_get( 'course-' . $this->get_course_id(), 'lp-course-curriculum' );
+		$curriculum = wp_cache_get( 'section-' . $this->get_id(), 'lp-section-items' );
 
 		if ( ! $curriculum ) {
 			return false;
 		}
 
 		foreach ( $curriculum as $item ) {
-
-			// Find the items with in this section only
-			if ( $item->section_id != $this->get_id() ) {
-				continue;
-			}
-
 			// Create item
 			if ( $item_class = $this->_get_item( $item ) ) {
 				$item_class->set_course( $this->get_course_id() );
 				$item_class->set_section( $this );
-				$this->data['items'][ $item->item_id ] = $item_class;
+				$this->data['items'][ $item ] = $item_class;
 			}
 		}
 
@@ -87,8 +81,13 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return bool|LP_Course_Item
 	 */
 	protected function _get_item( $item ) {
+		if ( ! is_numeric( $item ) ) {
+			$item_id = $item->item_id;
+		} else {
+			$item_id = absint( $item );
+		}
 
-		return LP_Course_Item::get_item( $item->item_id );
+		return LP_Course_Item::get_item( $item_id );
 	}
 
 	/**
@@ -186,7 +185,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 						continue;
 					}
 				}
-				if ( ! $type || $type && in_array( get_post_type( $item->get_id() ), $type ) ) {
+				if ( ! $type || $type && in_array( learn_press_get_post_type( $item->get_id() ), $type ) ) {
 					$filtered_items[] = $item;
 				}
 			}

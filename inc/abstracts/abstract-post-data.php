@@ -76,7 +76,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @return bool
 		 */
 		public function is_exists() {
-			return get_post_type( $this->get_id() ) === $this->_post_type;
+			return learn_press_get_post_type( $this->get_id() ) === $this->_post_type;
 		}
 
 		/**
@@ -209,7 +209,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @return false|string
 		 */
 		public function get_post_type() {
-			return get_post_type( $this->get_id() );
+			return learn_press_get_post_type( $this->get_id() );
 		}
 
 		/**

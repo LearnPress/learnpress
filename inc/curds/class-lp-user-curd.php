@@ -655,7 +655,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$item = array_merge( $item, $data );
 		}
 
-		$is_course = ( ! $course_id ) && ( get_post_type( $item['item_id'] ) === LP_COURSE_CPT );
+		$is_course = ( ! $course_id ) && ( learn_press_get_post_type( $item['item_id'] ) === LP_COURSE_CPT );
 
 		if ( $user_item_id ) {
 

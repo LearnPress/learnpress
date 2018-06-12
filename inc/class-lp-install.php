@@ -370,7 +370,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 				// If page already existed
 				$page_id = get_option( "learn_press_{$page}_page_id" );
-				if ( $page_id && get_post_type( $page_id ) == 'page' && get_post_status( $page_id ) == 'publish' ) {
+				if ( $page_id && learn_press_get_post_type( $page_id ) == 'page' && get_post_status( $page_id ) == 'publish' ) {
 					continue;
 				}
 

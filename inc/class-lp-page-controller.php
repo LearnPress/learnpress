@@ -76,7 +76,7 @@ class LP_Page_Controller {
 		static $courses = array();
 		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
 
-		if ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) {
+		if ( LP_COURSE_CPT !== learn_press_get_post_type( $post->ID ) ) {
 			return $post;
 		}
 

@@ -217,7 +217,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$post_id = LP_Request::get_string( 'id' );
 
 			// get post type
-			$post_type = get_post_type( $post_id );
+			$post_type = learn_press_get_post_type( $post_id );
 
 			if ( ! $post_id ) {
 				learn_press_send_json_error( __( 'Ops! ID not found', 'learnpress' ) );
@@ -319,7 +319,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function toggle_lesson_preview() {
 			$id = learn_press_get_request( 'lesson_id' );
-			if ( get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ) {
+			if ( learn_press_get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
 					$previewable = '0';
@@ -410,7 +410,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
-			if ( ! is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
+			if ( ! is_numeric( $order_id ) || learn_press_get_post_type( $order_id ) != 'lp_order' ) {
 				die( __( 'Invalid order', 'learnpress' ) );
 			}
 
@@ -456,7 +456,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
-			if ( ! is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
+			if ( ! is_numeric( $order_id ) || learn_press_get_post_type( $order_id ) != 'lp_order' ) {
 				die( __( 'Invalid order', 'learnpress' ) );
 			}
 
