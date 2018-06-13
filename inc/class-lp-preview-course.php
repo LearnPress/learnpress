@@ -37,12 +37,14 @@ class LP_Preview_Course {
 			", '_lp_preview_course', 'yes' );
 
 			if ( ! $course_id = $wpdb->get_var( $query ) ) {
+				$title                 = __( 'Preview Course', 'learnpress' );
 				self::$_preview_course = wp_insert_post(
 					array(
 						'post_author' => 0,
 						'post_type'   => LP_COURSE_CPT,
-						'post_title'  => __( 'Preview Course', 'learnpress' ),
-						'post_status' => 'publish',
+						'post_title'  => $title,
+						'post_status' => 'draft',
+						'post_name'   => sanitize_title( $title )
 					)
 				);
 
@@ -50,8 +52,6 @@ class LP_Preview_Course {
 			} else {
 				self::$_preview_course = $course_id;
 			}
-
-
 		}
 
 		return self::$_preview_course;
@@ -147,6 +147,9 @@ class LP_Preview_Course {
 
 			// Edit button
 			add_action( 'learn-press/before-course-item-content', array( __CLASS__, 'edit_button' ) );
+
+			//learn_press_debug($_SERVER);die();
+
 		}
 		catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );

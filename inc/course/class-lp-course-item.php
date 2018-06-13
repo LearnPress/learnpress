@@ -586,8 +586,11 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				return false;
 			}
 
+			if ( ! $course_items = $course->get_items() ) {
+				return false;
+			}
+
 			$user             = learn_press_get_user( $user_id );
-			$course_items     = $course->get_items();
 			$course_item_data = $user->get_course_data( $course_id );
 
 			if ( ! $course->is_required_enroll() ) {
