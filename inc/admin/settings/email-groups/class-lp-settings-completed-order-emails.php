@@ -11,7 +11,7 @@ class LP_Settings_Completed_Order_Emails extends LP_Settings_Emails_Group {
 	public function __construct() {
 		$this->group_id = 'completed-order-emails';
 		$this->items    = array(
-			//'completed-order-admin',
+			'completed-order-admin',
 			'completed-order-user',
 			'completed-order-guest'
 		);
