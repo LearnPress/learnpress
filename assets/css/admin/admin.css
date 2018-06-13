@@ -1363,10 +1363,10 @@
   margin-right: 10px;
   color: #FF0000; }
 
-.post-type-lp_lesson .column-preview {
+.wp-list-table .column-preview {
   text-align: left;
   float: none; }
-  .post-type-lp_lesson .column-preview input[type="checkbox"] {
+  .wp-list-table .column-preview input[type="checkbox"] {
     border: none;
     width: 30px;
     height: auto;
@@ -1379,20 +1379,20 @@
     -ms-transform: rotate(-180deg);
     -o-transform: rotate(-180deg);
     transform: rotate(-180deg); }
-    .post-type-lp_lesson .column-preview input[type="checkbox"]:before, .post-type-lp_lesson .column-preview input[type="checkbox"]:checked:before {
+    .wp-list-table .column-preview input[type="checkbox"]:before, .wp-list-table .column-preview input[type="checkbox"]:checked:before {
       font: 400 21px/1 fontawesome;
       content: "\f205";
       font-size: 24px;
       width: 30px;
       margin: 0;
       text-align: center; }
-    .post-type-lp_lesson .column-preview input[type="checkbox"]:checked {
+    .wp-list-table .column-preview input[type="checkbox"]:checked {
       -webkit-transform: rotate(0deg);
       -moz-transform: rotate(0deg);
       -ms-transform: rotate(0deg);
       -o-transform: rotate(0deg);
       transform: rotate(0deg); }
-      .post-type-lp_lesson .column-preview input[type="checkbox"]:checked:before {
+      .wp-list-table .column-preview input[type="checkbox"]:checked:before {
         margin-top: -1px; }
 
 .post-type-page .column-lp-page {
@@ -2088,8 +2088,6 @@
         color: #a00; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item:hover .drag {
       visibility: visible; }
-    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.lp_quiz .item-actions .actions .preview-item {
-      display: none; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item {
     border-bottom-width: 1px;
     position: relative;

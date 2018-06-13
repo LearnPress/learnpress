@@ -380,16 +380,6 @@
                         visibility: visible;
                     }
                 }
-
-                &.lp_quiz {
-                    .item-actions {
-                        .actions {
-                            .preview-item {
-                                display: none;
-                            }
-                        }
-                    }
-                }
             }
 
             .new-section-item {
@@ -641,7 +631,6 @@
         }
     }
 }
-
 
 .section-item-counts {
     position: absolute;

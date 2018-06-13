@@ -155,7 +155,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * Get class of item.
 		 *
 		 * @param string $more
-		 * @param int    $user_id
+		 * @param int $user_id
 		 *
 		 * @return array
 		 */
@@ -298,7 +298,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * Get instance of an item from post
 		 *
-		 * @param WP_Post|int                      $post
+		 * @param WP_Post|int $post
 		 * @param LP_Course|LP_Abstract_Course|int $course
 		 *
 		 * @return LP_Course_Item
@@ -386,8 +386,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * Create nonce for checking actions on an item.
 		 *
 		 * @param string $action
-		 * @param int    $course_id
-		 * @param int    $user_id
+		 * @param int $course_id
+		 * @param int $user_id
 		 *
 		 * @return string
 		 */
@@ -410,8 +410,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 *
 		 * @param string $nonce
 		 * @param string $action
-		 * @param int    $course_id
-		 * @param int    $user_id
+		 * @param int $course_id
+		 * @param int $user_id
 		 *
 		 * @return false|int
 		 */
@@ -605,7 +605,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			foreach ( $course_items as $course_item ) {
 				if ( $item = $course->get_item( $course_item ) ) {
-					if ( $item->is_preview() ) {
+					if ( $item->is_preview() || get_post_meta( $item->get_id(), '_lp_preview', true ) ) {
 						$blocked_items[ $course_item ] = 'no';
 					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array( $item->get_post_type(), $block_item_types ) ) {
 						$blocked_items[ $course_item ] = 'no';
@@ -621,8 +621,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		}
 
 		/**
-		 * @param LP_User             $user
-		 * @param LP_Course           $course
+		 * @param LP_User $user
+		 * @param LP_Course $course
 		 * @param LP_User_Item_Course $course_item_data
 		 *
 		 * @return string

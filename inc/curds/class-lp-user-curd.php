@@ -119,7 +119,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *      ...
 	 *  )
 	 *
-	 * @param int   $user_id
+	 * @param int $user_id
 	 * @param array $args
 	 *
 	 * @return array|mixed
@@ -274,9 +274,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Read course data for an user.
 	 *
-	 * @param int       $user_id
+	 * @param int $user_id
 	 * @param int|array $course_id
-	 * @param bool      $force - Optional. Force to read new data from DB (ignore caching).
+	 * @param bool $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
 	 */
@@ -436,7 +436,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Load user items by item_id of course item
 	 *
 	 * @param object $parent_item
-	 * @param bool   $force - Optional. Force to read new data from DB (ignore caching).
+	 * @param bool $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
 	 */
@@ -543,10 +543,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * @param int   $user_id
-	 * @param int   $item_id
+	 * @param int $user_id
+	 * @param int $item_id
 	 * @param array $item_data
-	 * @param int   $course_id
+	 * @param int $course_id
 	 *
 	 * @return mixed
 	 */
@@ -711,9 +711,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * If course_id is not passed then return course,
 	 * otherwise return item in that course.
 	 *
-	 * @param int  $user_id
-	 * @param int  $item_id
-	 * @param int  $course_id - Optional. If passed then $item_id should be id of a course's item (such as lesson, quiz, etc...)
+	 * @param int $user_id
+	 * @param int $item_id
+	 * @param int $course_id - Optional. If passed then $item_id should be id of a course's item (such as lesson, quiz, etc...)
 	 * @param bool $last
 	 *
 	 * @return bool|mixed
@@ -739,7 +739,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * @param int    $user_item_id
+	 * @param int $user_item_id
 	 * @param string $type
 	 *
 	 * @return array
@@ -782,7 +782,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Update user item data by id.
 	 *
-	 * @param int   $user_item_id
+	 * @param int $user_item_id
 	 * @param array $item_data
 	 *
 	 * @return bool
@@ -852,7 +852,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Update status of an user item by id.
 	 *
-	 * @param int    $user_item_id
+	 * @param int $user_item_id
 	 * @param string $new_status
 	 *
 	 * @return mixed
@@ -981,7 +981,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Query own courses of an user.
 	 *
-	 * @param int    $user_id
+	 * @param int $user_id
 	 * @param string $args
 	 *
 	 * @return LP_Query_List_Table
@@ -1071,8 +1071,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						$courses['items'][] = $item->ID;
 					}
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				learn_press_add_message( $ex->getMessage() );
 			}
 
@@ -1088,7 +1087,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Query courses by user
 	 *
-	 * @param int    $user_id
+	 * @param int $user_id
 	 * @param string $args
 	 *
 	 * @return LP_Query_List_Table
@@ -1264,8 +1263,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						$courses['items'][] = $course_item;
 					}
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 
 			}
 
@@ -1338,7 +1336,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Query quizzes by user.
 	 *
-	 * @param int    $user_id
+	 * @param int $user_id
 	 * @param string $args
 	 *
 	 * @return LP_Query_List_Table
@@ -1464,8 +1462,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						$quizzes['items'][] = new LP_User_Item_Quiz( $item );
 					}
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 
 			}
 			wp_cache_set( $cache_key, $quizzes, 'lp-user-course' );

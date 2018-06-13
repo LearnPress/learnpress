@@ -68,7 +68,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'search_items' => 'modal_search_items',
 				'update-payment-order',
 				'update-payment-status',
-				'toggle_lesson_preview',
+				'toggle_item_preview',
 
 				// admin editor
 				'admin_course_editor',
@@ -339,9 +339,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Toggle lesson preview.
 		 */
-		public static function toggle_lesson_preview() {
-			$id = learn_press_get_request( 'lesson_id' );
-			if ( get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ) {
+		public static function toggle_item_preview() {
+			$id = learn_press_get_request( 'item_id' );
+			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
+					'lp_lesson',
+					'lp_quiz'
+				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' ) ) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
 					$previewable = '0';

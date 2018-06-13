@@ -171,7 +171,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
                         for (var i = 0, n = orders.length; i < n; i++) {
                             $.each(allItems, function (j, item) {
-                                if (orders[i] == item.id) {
+                                if (orders[i] === item.id) {
                                     items.push(JSON.parse(JSON.stringify(item)));
                                     found = true;
                                     return false;
