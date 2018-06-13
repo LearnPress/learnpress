@@ -381,11 +381,11 @@ function learn_press_user_can_view_quiz( $quiz_id = null, $course_id = 0, $user_
  * @return boolean
  */
 function learn_press_course_enroll_required( $course_id = null ) {
-	$course_id = learn_press_get_course_id( $course_id );
+	if ( $course = learn_press_get_course( $course_id ) ) {
+		return $course->is_require_enrollment();
+	}
 
-	$required = ( 'yes' == get_post_meta( $course_id, '_lpr_course_enrolled_require', true ) );
-
-	return apply_filters( 'learn_press_course_enroll_required', $required, $course_id );
+	return false;
 }
 
 /**
