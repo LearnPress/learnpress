@@ -202,6 +202,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 3.1.0 =
 + Add quiz option to minus a number of point for each wrong question in quiz
++ Improve become a teacher processes
 
 = 3.0.9 =
 + GDPR compliance

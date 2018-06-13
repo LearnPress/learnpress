@@ -41,7 +41,7 @@ class LP_User_Factory {
 		/**
 		 * Filters into wp users manager
 		 */
-		//add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
+		add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
 
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 		add_action( 'learn-press/deleted-order-item', array( __CLASS__, 'delete_user_item' ), 10, 2 );

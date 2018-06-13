@@ -100,21 +100,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			if ( $s && false !== stripos( $s, 'learnpress' ) ) {
-				$views['learnpress'] = sprintf(
-					'<a href="%s" class="current">%s <span class="count">(%d/%d)</span></a>',
-					admin_url( 'plugins.php?s=learnpress' ),
-					__( 'LearnPress', 'learnpress' ),
-					$count_activated,
-					sizeof( $search )
-				);
+				$views['learnpress'] = sprintf( '<a href="%s" class="current">%s <span class="count">(%d/%d)</span></a>', admin_url( 'plugins.php?s=learnpress' ), __( 'LearnPress', 'learnpress' ), $count_activated, sizeof( $search ) );
 			} else {
-				$views['learnpress'] = sprintf(
-					'<a href="%s">%s <span class="count">(%d/%d)</span></a>',
-					admin_url( 'plugins.php?s=learnpress' ),
-					__( 'LearnPress', 'learnpress' ),
-					$count_activated,
-					sizeof( $search )
-				);
+				$views['learnpress'] = sprintf( '<a href="%s">%s <span class="count">(%d/%d)</span></a>', admin_url( 'plugins.php?s=learnpress' ), __( 'LearnPress', 'learnpress' ), $count_activated, sizeof( $search ) );
 			}
 
 			return $views;
@@ -371,11 +359,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			if ( $pages = $this->_get_static_pages( 'learnpress' ) ) {
 				$text = sprintf( __( 'LearnPress Pages (%d)', 'learnpress' ), sizeof( $pages ) );
 				if ( 'yes' !== LP_Request::get( 'lp-page' ) ) {
-					$actions['lp-page'] = sprintf(
-						'<a href="%s">%s</a>',
-						admin_url( 'edit.php?post_type=page&lp-page=yes' ),
-						$text
-					);
+					$actions['lp-page'] = sprintf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=page&lp-page=yes' ), $text );
 				} else {
 					$actions['lp-page'] = $text;
 				}
@@ -408,9 +392,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return mixed
 		 */
 		public function user_row_actions( $actions, $user ) {
-			if ( $pending_request = LP_User_Factory::get_pending_requests() ) {
+			$pending_request = LP_User_Factory::get_pending_requests();
+			if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' && $pending_request ) {
+				$actions = array();
 				if ( in_array( $user->ID, $pending_request ) ) {
-					$actions['accept'] = sprintf( '<a href="' . admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Accept', 'pending-request', 'learnpress' ) );
+					$actions['accept']      = sprintf( '<a href="' . admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Accept', 'pending-request', 'learnpress' ) );
+					$actions['delete deny'] = sprintf( '<a class="submitdelete" href="' . admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Deny', 'pending-request', 'learnpress' ) );
 				}
 			}
 
@@ -423,21 +410,31 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @param string $action
 		 */
 		public function filter_users( $action ) {
-			switch ( $action ) {
-				case 'accept-request':
-					if ( ( $user_id = LP_Request::get_int( 'user_id' ) ) && $user = get_user_by( 'id', $user_id ) ) {
+			$user_id = LP_Request::get_int( 'user_id' );
+
+			if ( ! $user_id || ! get_user_by( 'id', $user_id ) ) {
+				return;
+			}
+
+			$user_data = get_userdata( $user_id );
+
+			if ( in_array( $action, array( 'accept-request', 'deny-request' ) ) ) {
+
+				delete_user_meta( $user_id, '_requested_become_teacher' );
+
+				switch ( $action ) {
+					case 'accept-request':
 						$be_teacher = new WP_User( $user_id );
 						$be_teacher->set_role( LP_TEACHER_ROLE );
-						delete_user_meta( $user_id, '_requested_become_teacher' );
 
-						do_action( 'learn-press/user-become-a-teacher', $user_id );
-
+						do_action( 'learn-press/user-become-a-teacher-accept', $user_data->user_email );
 						wp_redirect( admin_url( 'users.php?lp-action=accepted-request&user_id=' . $user_id ) );
 						exit();
-					}
-					break;
-				case 'deny-request':
-					break;
+					case 'deny-request':
+						do_action( 'learn-press/user-become-a-teacher-deny', $user_data->user_email );
+						wp_redirect( admin_url( 'users.php?lp-action=denied-request&user_id=' . $user_id ) );
+						exit();
+				}
 			}
 		}
 
@@ -481,11 +478,21 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				learn_press_admin_view( 'setup/notice-setup' );
 			}
 
-			if ( ( 'accepted-request' === LP_Request::get( 'lp-action' ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id ) ) {
+			$action = LP_Request::get( 'lp-action' );
+
+			if ( ( in_array( $action, array(
+					'accepted-request',
+					'denied-request'
+				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id ) ) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
-				}
-				echo '<div class="updated notice">' . __( 'User has accepted to become a teacher.', 'learnpress' ) . '</div>';
+				} ?>
+
+                <div class="updated notice">
+                    <p><?php echo sprintf( __( 'User has %s to become a teacher.', 'learnpress' ), $action == 'accepted-request' ? 'accepted' : 'denied' ); ?></p>
+                </div>
+
+				<?php
 			}
 
 			if ( LP()->session->get( 'do-update-learnpress' ) ) {
@@ -585,19 +592,16 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			$missing_pages = array();
-			$pages         = apply_filters(
-				'learn-press/required-pages',
-				array(
-					'profile'  => array(
-						'title'    => __( 'Profile Page', 'learnpress' ),
-						'settings' => admin_url( 'admin.php?page=learn-press-settings&tab=profile' )
-					),
-					'checkout' => array(
-						'title'    => __( 'Checkout Page', 'learnpress' ),
-						'settings' => admin_url( 'admin.php?page=learn-press-settings&tab=payments' )
-					)
+			$pages         = apply_filters( 'learn-press/required-pages', array(
+				'profile'  => array(
+					'title'    => __( 'Profile Page', 'learnpress' ),
+					'settings' => admin_url( 'admin.php?page=learn-press-settings&tab=profile' )
+				),
+				'checkout' => array(
+					'title'    => __( 'Checkout Page', 'learnpress' ),
+					'settings' => admin_url( 'admin.php?page=learn-press-settings&tab=payments' )
 				)
-			);
+			) );
 
 			foreach ( $pages as $id => $page ) {
 
