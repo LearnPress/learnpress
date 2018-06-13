@@ -73,8 +73,8 @@ if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 				'request_phone'      => $phone,
 				'request_message'    => $message ? $message : '',
 				'admin_user_manager' => admin_url( 'users.php?lp-action=pending-request' ),
-				'accept_url'         => wp_nonce_url( admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ), 'lp-manager-user-request' ),
-				'deny_url'           => wp_nonce_url( admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ), 'lp-manager-user-request' ),
+				'accept_url'         => admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ),
+				'deny_url'           => admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID )
 			) );
 			$this->get_variable();
 
