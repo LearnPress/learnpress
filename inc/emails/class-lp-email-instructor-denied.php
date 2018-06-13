@@ -26,7 +26,7 @@ if ( ! class_exists( 'LP_Email_Instructor_Denied' ) ) {
 			$this->title       = __( 'Denied', 'learnpress' );
 			$this->description = __( 'Become an instructor email denied.', 'learnpress' );
 
-			$this->default_subject = __( '[{{site_title}}] Request to become an instructor', 'learnpress' );
+			$this->default_subject = __( '[{{site_title}}] Your request to become an instructor denied', 'learnpress' );
 			$this->default_heading = __( 'Become an instructor denied', 'learnpress' );
 
 			add_action( 'learn-press/user-become-a-teacher-deny', array( $this, 'trigger' ) );

@@ -392,13 +392,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return mixed
 		 */
 		public function user_row_actions( $actions, $user ) {
-			if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' && LP_User_Factory::get_pending_requests() ) {
+			$pending_request = LP_User_Factory::get_pending_requests();
+			if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' && $pending_request ) {
 				$actions = array();
-				if ( $pending_request = LP_User_Factory::get_pending_requests() ) {
-					if ( in_array( $user->ID, $pending_request ) ) {
-						$actions['accept']      = sprintf( '<a href="' . admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Accept', 'pending-request', 'learnpress' ) );
-						$actions['delete deny'] = sprintf( '<a class="submitdelete" href="' . admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ) . '">%s</a>', _x( 'Deny', 'pending-request', 'learnpress' ) );
-					}
+				if ( in_array( $user->ID, $pending_request ) ) {
+					$actions['accept']      = sprintf( '<a href="' . wp_nonce_url( admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ), 'lp-manager-user-request' ) . '">%s</a>', _x( 'Accept', 'pending-request', 'learnpress' ) );
+					$actions['delete deny'] = sprintf( '<a class="submitdelete" href="' . wp_nonce_url( admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ), 'lp-manager-user-request' ) . '">%s</a>', _x( 'Deny', 'pending-request', 'learnpress' ) );
 				}
 			}
 
@@ -412,6 +411,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		public function filter_users( $action ) {
 			$user_id = LP_Request::get_int( 'user_id' );
+			$nonce   = LP_Request::get_string( '_wpnonce' );
+
+			if ( $nonce && ! wp_verify_nonce( $nonce, 'lp-manager-user-request' ) ) {
+				wp_die( __( 'You have not permission to do this action.' ) );
+			}
 
 			if ( ! $user_id || ! get_user_by( 'id', $user_id ) ) {
 				return;
@@ -421,14 +425,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			if ( in_array( $action, array( 'accept-request', 'deny-request' ) ) ) {
 
-				delete_user_meta( $user_id, '_requested_become_teacher' );
+				//				delete_user_meta( $user_id, '_requested_become_teacher' );
 
 				switch ( $action ) {
 					case 'accept-request':
-						$be_teacher = new WP_User( $user_id );
-						$be_teacher->set_role( LP_TEACHER_ROLE );
+						//						$be_teacher = new WP_User( $user_id );
+						//						$be_teacher->set_role( LP_TEACHER_ROLE );
 
-						do_action( 'learn-press/user-become-a-teacher-accept', $user_data->user_email );
+						//						do_action( 'learn-press/user-become-a-teacher-accept', $user_data->user_email );
 						wp_redirect( admin_url( 'users.php?lp-action=accepted-request&user_id=' . $user_id ) );
 						exit();
 					case 'deny-request':
@@ -480,14 +484,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			$action = LP_Request::get( 'lp-action' );
+
 			if ( ( in_array( $action, array(
 					'accepted-request',
 					'denied-request'
 				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id ) ) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
-				}
-				?>
+				} ?>
 
                 <div class="updated notice">
                     <p><?php echo sprintf( __( 'User has %s to become a teacher.', 'learnpress' ), $action == 'accepted-request' ? 'accepted' : 'denied' ); ?></p>

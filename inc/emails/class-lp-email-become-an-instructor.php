@@ -37,7 +37,10 @@ if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 			$this->support_variables = array_merge( $this->general_variables, array(
 				'{{request_email}}',
 				'{{request_phone}}',
-				'{{request_message}}'
+				'{{request_message}}',
+				'{{admin_user_manager}}',
+				'{{accept_url}}',
+				'{{deny_url}}'
 			) );
 		}
 
@@ -69,7 +72,9 @@ if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 				'request_email'      => $email,
 				'request_phone'      => $phone,
 				'request_message'    => $message ? $message : '',
-				'admin_user_manager' => admin_url( 'users.php?lp-action=pending-request' )
+				'admin_user_manager' => admin_url( 'users.php?lp-action=pending-request' ),
+				'accept_url'         => wp_nonce_url( admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ), 'lp-manager-user-request' ),
+				'deny_url'           => wp_nonce_url( admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ), 'lp-manager-user-request' ),
 			) );
 			$this->get_variable();
 
