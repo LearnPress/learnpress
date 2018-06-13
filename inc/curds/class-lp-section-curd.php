@@ -370,7 +370,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$current_items = $this->get_section_items( $section_id );
 
 		// allow hook
-		do_action( 'learn-press/before-add-items-section', $items );
+		do_action( 'learn-press/before-add-items-section', $items, $section_id, $this->course_id );
 
 		global $wpdb;
 
@@ -417,6 +417,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $all_items, 'lp-course-section-items' );
+
+		// allow hook
+		do_action( 'learn-press/after-add-items-section', $items, $section_id, $this->course_id, $result );
 
 		return $result;
 	}
