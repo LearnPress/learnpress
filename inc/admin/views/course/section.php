@@ -273,7 +273,6 @@ learn_press_admin_view( 'course/new-section-item' );
                     // new section item
                     newItem: function (item) {
                         $store.dispatch('ss/newSectionItem', {section_id: this.section.id, item: item});
-                        console.log(item)
                     },
                     openModal: function () {
                         $store.dispatch('ci/open', parseInt(this.section.id));
