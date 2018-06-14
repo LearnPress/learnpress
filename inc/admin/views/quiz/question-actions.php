@@ -37,9 +37,8 @@
                      data-content-tip="<?php echo esc_attr( 'Edit item', 'learnpress' ); ?>">
                     <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a>
                 </div>
-                <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown lp-title-attr-tip"
-                     v-if="!disableUpdateList"
-                     data-content-tip="<?php echo esc_attr( 'Delete', 'learnpress' ); ?>">
+                <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown"
+                     v-if="!disableUpdateList">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>
                         <li>

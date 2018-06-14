@@ -47,11 +47,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'section_description' => $section['section_description'],
 		);
 
-		$wpdb->insert(
-			$wpdb->learnpress_sections,
-			$insert_data,
-			array( '%d', '%s', '%d', '%s' )
-		);
+		$wpdb->insert( $wpdb->learnpress_sections, $insert_data, array( '%d', '%s', '%d', '%s' ) );
 		$section['section_id'] = $wpdb->insert_id;
 
 		// allow hook
@@ -87,11 +83,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		global $wpdb;
 
-		$wpdb->update(
-			$wpdb->learnpress_sections,
-			$update_data,
-			array( 'section_id' => $section_id )
-		);
+		$wpdb->update( $wpdb->learnpress_sections, $update_data, array( 'section_id' => $section_id ) );
 		$section['section_id'] = $section_id;
 
 		return $section;
@@ -256,11 +248,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			$orders[ $section_id ] = $order;
 
-			$wpdb->update(
-				$wpdb->learnpress_sections,
-				array( 'section_order' => $order ),
-				array( 'section_id' => $section_id )
-			);
+			$wpdb->update( $wpdb->learnpress_sections, array( 'section_order' => $order ), array( 'section_id' => $section_id ) );
 
 			foreach ( $current_sections as $current_section ) {
 				if ( $current_section->section_id == $section_id ) {
@@ -366,16 +354,24 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function add_items_section( $section_id, $items = array() ) {
 
-		$order         = 1;
-		$current_items = $this->get_section_items( $section_id );
-
 		// allow hook
 		do_action( 'learn-press/before-add-items-section', $items, $section_id, $this->course_id );
 
 		global $wpdb;
 
+		$course     = LP_Course::get_course( $this->course_id );
+		$curriculum = $course->get_curriculum_raw();
+
+		$current_items = array();
+		foreach ( $curriculum as $section ) {
+			if($section['id'] == $section_id){
+				$current_items = $section['items'];
+			}
+		}
+
 		$all_items = array_merge( $current_items, $items );
 		$result    = array();
+		$order         = 1;
 
 		foreach ( $all_items as $item ) {
 
@@ -383,35 +379,27 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
 
 			if ( $exist ) {
-				$wpdb->update( $wpdb->learnpress_section_items,
-					array( 'item_order' => $order ),
-					array(
-						'section_id' => $section_id,
-						'item_id'    => $item['id']
-					)
-				);
+				$wpdb->update( $wpdb->learnpress_section_items, array( 'item_order' => $order ), array(
+					'section_id' => $section_id,
+					'item_id'    => $item['id']
+				) );
 			} else {
-				$wpdb->insert( $wpdb->learnpress_section_items,
-					array(
-						'section_id' => $section_id,
-						'item_id'    => $item['id'],
-						'item_order' => $order,
-						'item_type'  => $item['type'],
-					)
-				);
+				$wpdb->insert( $wpdb->learnpress_section_items, array(
+					'section_id' => $section_id,
+					'item_id'    => $item['id'],
+					'item_order' => $order,
+					'item_type'  => $item['type'],
+				) );
 			}
 
 			// get WP Post
 			$post     = get_post( $item['id'] );
-			$result[] = array_merge(
-				$item,
-				array(
-					'id'      => $post->ID,
-					'title'   => $post->post_title,
-					'type'    => $post->post_type,
-					'preview' => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes'
-				)
-			);
+			$result[] = array_merge( $item, array(
+				'id'      => $post->ID,
+				'title'   => $post->post_title,
+				'type'    => $post->post_type,
+				'preview' => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes'
+			) );
 
 			$order ++;
 		}
@@ -526,17 +514,13 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function remove_section_item( $section_id, $item_id ) {
 		global $wpdb;
 
-		$result = $wpdb->delete(
-			$wpdb->learnpress_section_items,
-			array(
-				'section_id' => $section_id,
-				'item_id'    => $item_id
-			),
-			array(
-				'%d',
-				'%d'
-			)
-		);
+		$result = $wpdb->delete( $wpdb->learnpress_section_items, array(
+			'section_id' => $section_id,
+			'item_id'    => $item_id
+		), array(
+			'%d',
+			'%d'
+		) );
 
 		return ! ! $result;
 	}
@@ -562,22 +546,17 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
 
 			if ( $exist ) {
-				$wpdb->update( $wpdb->learnpress_section_items,
-					array( 'item_order' => $order ),
-					array(
-						'section_id' => $section_id,
-						'item_id'    => $item['id']
-					)
-				);
+				$wpdb->update( $wpdb->learnpress_section_items, array( 'item_order' => $order ), array(
+					'section_id' => $section_id,
+					'item_id'    => $item['id']
+				) );
 			} else {
-				$wpdb->insert( $wpdb->learnpress_section_items,
-					array(
-						'section_id' => $section_id,
-						'item_id'    => $item['id'],
-						'item_order' => $order,
-						'item_type'  => $item['type'],
-					)
-				);
+				$wpdb->insert( $wpdb->learnpress_section_items, array(
+					'section_id' => $section_id,
+					'item_id'    => $item['id'],
+					'item_order' => $order,
+					'item_type'  => $item['type'],
+				) );
 			}
 		}
 
@@ -588,13 +567,10 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$find = $this->check_item_exist( $items, $item['id'] );
 
 			if ( ! $find ) {
-				$wpdb->delete(
-					$wpdb->learnpress_section_items,
-					array(
-						'section_id' => $section_id,
-						'item_id'    => $item['id'],
-					)
-				);
+				$wpdb->delete( $wpdb->learnpress_section_items, array(
+					'section_id' => $section_id,
+					'item_id'    => $item['id'],
+				) );
 			}
 		}
 
