@@ -12,13 +12,13 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 == Description ==
 
-**<a href="http://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, just like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface, we really made it for lazy people.
+**<a href="http://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, just like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface. With this WordPress LMS plugin, you can quickly and easily create education, online school, online-course websites with no coding-knowledge required.
 
 <a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/wordpress/themes/learnpress-premium-theme/" target="_blank">LearnPress Themes</a>
 
 LearnPress is free and always be free, but it has premium high quality WordPress Plugin which will probably help you make money from your **WordPress based LMS**, try and see how it is. LearnPress WordPress Online Course plugin is lightweight but super powerful with lots of add-ons to empower its core system.
 
-> **New Year Sale - 10 Days Left - Limited Time Offer**
+> **One-Off Sale - 10 Days Left - Limited Time Offer**
 
 > [Click here](https://goo.gl/JzwYkj) to get a coupon for 20% Off all Learnpress Add-ons
 
@@ -199,17 +199,17 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
-
 = 3.1.0 =
-+ Add quiz option to minus a number of point for each wrong question in quiz
-+ Add completed order admin email setting
-+ Improve become a teacher processes
-+ Add option to preview quiz
++ Added option to quiz so non-logged user can do a quiz (Preview)
++ Added quiz option to minus a number of point for each wrong question in quiz
++ Added admin email to send to admin when an order is completed
+~ Improved UI of course editor for RTL
+~ Improved content of email sending to admin and instructor
 
 = 3.0.9 =
 + GDPR compliance
 ~ Improved Start quiz button
-~ Load js for complete-reply if it does not load by default
+~ Load js for comment-reply if it does not load by default
 ~ Fixed missing param when sending email for user who finished course
 
 = 3.0.8 =
