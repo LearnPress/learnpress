@@ -54,12 +54,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_scripts() {
+		$min = defined( 'LP_DEBUG_DEV' ) && LP_DEBUG_DEV ? '' : '.min';
+
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
 				'select2'                           => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
 				'lp-vue'                            => array(
-					'url' => self::url( 'js/vendor/vue.min.js' ),
+					'url' => self::url( 'js/vendor/vue' . $min . '.js' ),
 					'ver' => '2.5.16'
 				),
 				'lp-vuex'                           => array(

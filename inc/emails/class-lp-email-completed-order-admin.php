@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.1.0
+ * @version 3.0.10
  */
 
 /**

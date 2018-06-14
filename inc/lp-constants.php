@@ -4,7 +4,7 @@
  */
 $upload_dir = wp_upload_dir();
 // version
-define( 'LEARNPRESS_VERSION', '3.0.9' );
+define( 'LEARNPRESS_VERSION', '3.0.10' );
 
 define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 
@@ -55,7 +55,7 @@ define( 'LP_INVALID_QUIZ_OR_COURSE', 140 );
 define( 'LP_COURSE_IS_FINISHED', 150 );
 define( 'LP_QUIZ_HAS_STARTED_OR_COMPLETED', 160 );
 define( 'LP_ERROR_NO_PAYMENT_METHOD_SELECTED', 1000 );
-define( 'LP_DEBUG_DEV', false );
+define( 'LP_DEBUG_DEV', true );
 
 /**
  * Thim Market library

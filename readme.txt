@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.5
-Stable tag: 3.0.9
+Stable tag: 3.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,8 @@ We are developing and improving LearnPress day by day and bringing new features 
 - [LearnPress Prerequisites Courses](https://wordpress.org/plugins/learnpress-prerequisites-courses) - require student to pass some courses in order to enroll other course.
 - [LearnPress bbPress Integration](https://wordpress.org/plugins/learnpress-bbpress) - add bbPress Forum support for LearnPress WordPress LMS Plugin.
 - [LearnPress BuddyPress Integration](https://wordpress.org/plugins/learnpress-buddypress) - add BuddyPress support for LearnPress WordPress LMS Plugin, turn your WordPress BuddyPress website into *BuddyPress LMS* (*BuddyPress Learning Management System*)".
+- [LearnPress Offline Payment](https://wordpress.org/plugins/learnpress-offline-payment) - help you to manually create order for offline payment instead of paying via any payment gateways to sell course.
+- [LearnPress Fill In Blank](https://wordpress.org/plugins/learnpress-fill-in-blank) - Fill in Blank question type for LearnPress WordPress LMS Plugin.
 
 ###Premium add-ons for LearnPress WordPress LMS Plugin###
 
@@ -100,7 +102,7 @@ We are developing and improving LearnPress day by day and bringing new features 
 - [Gradebook add-on for LearnPress](https://thimpress.com/product/gradebook-add-on-for-learnpress/) - provides you features to view your class result, export these result to csv, post those to frontend.
 - [Random Quiz add-on for LearnPress](https://thimpress.com/product/random-quiz-add-on-for-learnpress/) - allows you to create a random questions quiz. Each student will get different quiz within a same course.
 - [Paid Membership Pro add-on for LearnPress](https://thimpress.com/product/paid-membership-pro-add-learnpress/) - integrates Paid Membership Pro with LearnPress, bring membership feature to your powerful WordPress based LMS system.
-
+- [Announcement add-on for LearnPress](https://thimpress.com/product/announcement-add-on-for-learnpress/) - Announcement is a great way to promote your courses and update new features + contents to your courses, including email notification.
 
 
 ###LearnPress has been translated into the following languages###
@@ -132,7 +134,6 @@ We are developing and improving LearnPress day by day and bringing new features 
 - Manually reset quiz for retake
 - Create quiz from randoms questions in question bank (DONE)
 - Attachment restriction for lesson
-- Mathjax support
 - Presentation support (maybe support SlideShare)
 - Show enrolled user
 - Student ranks
@@ -143,7 +144,6 @@ We are developing and improving LearnPress day by day and bringing new features 
 - Instructor's note
 - Private message from Admin to teacher
 - Group payment
-- Announcement (come up with email)
 
 Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>
 
@@ -199,7 +199,7 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
-= 3.1.0 =
+= 3.0.10 =
 + Added option to quiz so non-logged user can do a quiz (Preview)
 + Added quiz option to minus a number of point for each wrong question in quiz
 + Added admin email to send to admin when an order is completed
