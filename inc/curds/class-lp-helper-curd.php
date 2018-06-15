@@ -84,7 +84,7 @@ class LP_Helper_CURD {
 			WHERE ID IN(" . join( ',', $format ) . ")
 		", $post_ids );
 
-		if ( false === ( $post_types = wp_cache_get( 'post-types', 'learnpress' ) ) ) {
+		if ( false === ( $post_types = wp_cache_get( 'post-types', 'learn-press' ) ) ) {
 			$post_types = array();
 		}
 
@@ -97,7 +97,7 @@ class LP_Helper_CURD {
 		}
 
 		self::update_meta_cache( $post_ids );
-		wp_cache_set( 'post-types', $post_types, 'learnpress' );
+		wp_cache_set( 'post-types', $post_types, 'learn-press' );
 
 		return $posts;
 	}

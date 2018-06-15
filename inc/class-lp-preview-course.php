@@ -156,7 +156,7 @@ class LP_Preview_Course {
 	}
 
 	public static function get_preview_courses() {
-		if ( false === ( $ids = wp_cache_get( 'preview-courses', 'learnpress' ) ) ) {
+		if ( false === ( $ids = wp_cache_get( 'preview-courses', 'learn-press' ) ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT post_id
@@ -165,7 +165,7 @@ class LP_Preview_Course {
 			", '_lp_preview_course', 'yes' );
 
 			$ids = $wpdb->get_col( $query );
-			wp_cache_set( 'preview-courses', $ids, 'learnpress' );
+			wp_cache_set( 'preview-courses', $ids, 'learn-press' );
 		}
 
 		return $ids;

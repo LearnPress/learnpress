@@ -179,7 +179,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_data( $name = '', $default = '' ) {
-			if ( is_string( $name ) ) {
+			if ( is_string( $name ) && $name ) {
 				// Check in data first then check in extra data
 				return
 					array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :
@@ -191,11 +191,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				}
 
 				return $data;
-			} elseif ( true === $name ) {
-				return array_merge( $this->_data, $this->_extra_data );
 			}
 
-			return false;
+			return array_merge( $this->_data, $this->_extra_data );
 		}
 
 		/**
@@ -261,12 +259,13 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 					}
 					catch ( Exception $ex ) {
-						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
-						die(__FILE__ . '::'.__FUNCTION__);;
+						die( __FILE__ . '::' . __FUNCTION__ );
 					}
 				}
+				$this->_changes[] = $key_or_data;
 			}
+
 		}
 
 		/**
@@ -283,7 +282,11 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $key
 		 * @param $value
 		 */
-		public function set_data_date( $key, $value ) {
+		public function set_data_date( $key, $value = 'current_time' ) {
+			if ( $value === 'current_time' || '' === $value ) {
+				$value = current_time( 'timestamp' );
+			}
+
 			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
 				$value = new LP_Datetime( $value );
 			}

@@ -10,6 +10,8 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	protected $_is_available = null;
 
+	protected $_data_key = '';
+
 	/**
 	 * LP_User_Item constructor.
 	 *
@@ -17,6 +19,10 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	public function __construct( $item ) {
 		settype( $item, 'array' );
+
+		ksort( $item );
+		$this->_data_key = md5( serialize( $item ) );
+
 		parent::__construct( $item );
 		if ( ! empty( $item['item_id'] ) ) {
 			$this->set_id( $item['item_id'] );
@@ -29,6 +35,8 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		if ( ! empty( $item['end_time'] ) ) {
 			$this->set_end_time( $item['end_time'] );
 		}
+
+		$this->_changes = array();
 	}
 
 	/**
@@ -44,9 +52,14 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * Set start-time.
 	 *
 	 * @param mixed $time
+	 * @param bool  $bound_to_gmt - Optional. TRUE to auto update for start-time gmt
 	 */
-	public function set_start_time( $time ) {
+	public function set_start_time( $time, $bound_to_gmt = false ) {
 		$this->set_data_date( 'start_time', $time );
+
+		if ( $bound_to_gmt ) {
+			$this->set_start_time_gmt( $this->get_start_time()->toSql( false ) );
+		}
 	}
 
 	/**
@@ -81,12 +94,17 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * Get end-time.
+	 * Set end-time for item.
 	 *
+	 * @param bool  $bound_to_gmt - Optional. Calculate gmt of end-time and update
 	 * @param mixed $time
 	 */
-	public function set_end_time( $time ) {
+	public function set_end_time( $time, $bound_to_gmt = false ) {
 		$this->set_data_date( 'end_time', $time );
+
+		if ( $bound_to_gmt ) {
+			$this->set_end_time_gmt( $this->get_end_time()->toSql( false ) );
+		}
 	}
 
 	/**
@@ -287,7 +305,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		} elseif ( isset( $data->item_id ) ) {
 			$item_id = $data->item_id;
 		} else {
-			return false;
+			$item_id = absint( $data );
 		}
 
 		$item = false;
@@ -304,9 +322,19 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function update() {
-		$data = $this->get_mysql_data();
 
-		return learn_press_update_user_item_field( $data );
+		if ( ! $this->is_change() ) {
+			return false;
+		}
+
+		$data   = $this->get_mysql_data();
+		$return = learn_press_update_user_item_field( $data );
+
+		if ( $return ) {
+			$this->_changes = array();
+		}
+
+		return $return;
 	}
 
 	public function get_status_label( $status = '' ) {
@@ -356,7 +384,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function get_history() {
-		return wp_cache_get( sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_course( 'id' ), $this->get_id() ), 'lp-user-course-items' );
+		return wp_cache_get( sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_course( 'id' ), $this->get_id() ), 'learn-press/user-course-items' );
 	}
 
 	public function count_history() {
@@ -491,6 +519,16 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	public function get_percent_result( $decimal = 1 ) {
 		return apply_filters( 'learn-press/user/item-percent-result', sprintf( '%s%%', round( $this->get_result( 'result' ), $decimal ), $this->get_user_id(), $this->get_item_id() ) );
+	}
+
+	public function is_change() {
+
+		//return sizeof( $this->_changes );
+
+		$new_data = $this->get_mysql_data();
+		ksort( $new_data );
+
+		return $this->_data_key !== md5( serialize( $new_data ) );
 	}
 
 	public function get_js_args() {

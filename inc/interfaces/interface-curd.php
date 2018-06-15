@@ -141,7 +141,7 @@ class LP_Object_Data_CURD {
 	public function read_meta( &$object ) {
 		global $wpdb;
 
-		if ( false === ( $meta_data = wp_cache_get( $object->get_id(), 'object-meta' ) ) ) {
+		if ( false === ( $meta_data = wp_cache_get( $object->get_id(), 'learn-press/object-meta' ) ) ) {
 			$id_column        = ( 'user' == $this->_meta_type ) ? 'umeta_id' : 'meta_id';
 			$object_id_column = $this->_meta_type . '_id';
 			$table            = _get_meta_table( $this->_meta_type );
@@ -154,7 +154,7 @@ class LP_Object_Data_CURD {
 			", $object->get_id() );
 			$meta_data = $wpdb->get_results( $query );
 
-			wp_cache_set( $object->get_id(), $meta_data, 'object-meta' );
+			wp_cache_set( $object->get_id(), $meta_data, 'learn-press/object-meta' );
 		}
 
 		return $meta_data;

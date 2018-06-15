@@ -75,7 +75,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				foreach ( $course_ids as $cid ) {
 					if ( LP_COURSE_CPT === get_post_type( $cid ) ) {
-						update_post_meta( $cid, 'count_enrolled_users', wp_cache_get( 'course-' . $cid . '-' . $cache_key, 'lp-course-orders' ) );
+						update_post_meta( $cid, 'count_enrolled_users', wp_cache_get( 'course-' . $cid . '-' . $cache_key, 'learn-press/course-orders' ) );
 					}
 				}
 			}

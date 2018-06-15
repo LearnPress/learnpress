@@ -1336,7 +1336,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 					if ( $number_sections ) {
 						// get items
-						$items = wp_cache_get( 'course-' . $post->ID, 'lp-course-items' );
+						$items = wp_cache_get( 'course-' . $post->ID, 'learn-press/course-items' );
 
 						$number_lessons = $number_quizzes = 0;
 						if ( $items ) {

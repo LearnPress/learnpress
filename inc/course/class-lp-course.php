@@ -145,7 +145,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			 * Force to reload course data into cache if it is not
 			 * loaded or has been deleted for some reasons.
 			 */
-			if ( false === wp_cache_get( 'course-' . $course->get_id(), 'lp-course-curriculum' ) ) {
+			if ( false === wp_cache_get( 'course-' . $course->get_id(), 'learn-press/course-curriculum' ) ) {
 				$curd = new LP_Course_CURD();
 				$curd->load( $course );
 			}

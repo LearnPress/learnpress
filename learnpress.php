@@ -228,6 +228,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
+			require_once 'inc/class-lp-thumbnail-helper.php';
 
 			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';
@@ -256,7 +257,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/lp-deprecated.php';
-			require_once 'inc/class-lp-cache.php';
+			//require_once 'inc/class-lp-cache.php';
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/class-lp-autoloader.php';
 			require_once 'inc/class-lp-install.php';
@@ -756,4 +757,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-

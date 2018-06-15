@@ -147,14 +147,14 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			/**
 			 * Get orders from cache by args
 			 */
-			if ( false !== ( $orders = wp_cache_get( "user-{$user_id}-" . $cache_key, 'lp-user-orders' ) ) ) {
+			if ( false !== ( $orders = wp_cache_get( "user-{$user_id}-" . $cache_key, 'learn-press/user-orders' ) ) ) {
 				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 				return $orders;
 			}
 		}
 		// Get orders for the user from cache
-		$orders = wp_cache_get( 'user-' . $user_id, 'lp-user-orders' );
+		$orders = wp_cache_get( 'user-' . $user_id, 'learn-press/user-orders' );
 
 		if ( false === $orders ) {
 			global $wpdb;
@@ -165,7 +165,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Get order by user
 			$sql_orders = $wpdb->prepare( "
-				SELECT p.* 
+				SELECT ID, post_title, post_name, post_status, post_type, post_parent, post_date 
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %d
 			", '_user_id', $user_id );
@@ -174,7 +174,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			 * Get order checked out by Guest but with the email of the user are getting
 			 */
 			$sql_guest_orders = $wpdb->prepare( "
-				SELECT p.* 
+				SELECT ID, post_title, post_name, post_status, post_type, post_parent, post_date 
 				FROM {$wpdb->posts} p 
 				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
 				LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
@@ -223,7 +223,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 			}
 			// Store to cache
-			wp_cache_set( 'user-' . $user_id, $orders, 'lp-user-orders' );
+			wp_cache_set( 'user-' . $user_id, $orders, 'learn-press/user-orders' );
 		}
 
 		if ( $orders ) {
@@ -247,7 +247,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		if ( $cache_key ) {
-			wp_cache_set( "user-{$user_id}-" . $cache_key, $orders, 'lp-user-orders' );
+			wp_cache_set( "user-{$user_id}-" . $cache_key, $orders, 'learn-press/user-orders' );
 		}
 
 		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
@@ -310,12 +310,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Refresh
 			if ( $force ) {
-				wp_cache_delete( 'course-' . $user_id . '-' . $id, 'lp-user-courses' );
+				wp_cache_delete( 'course-' . $user_id . '-' . $id, 'learn-press/user-courses' );
 			}
 
-			if ( false === wp_cache_get( 'course-' . $user_id . '-' . $id, 'lp-user-courses' ) ) {
+			if ( false === wp_cache_get( 'course-' . $user_id . '-' . $id, 'learn-press/user-courses' ) ) {
 				$fetch_ids[] = $id;
-				//wp_cache_set( 'course-' . $user_id . '-' . $id, array( 'items' => array() ), 'lp-user-courses' );
+				//wp_cache_set( 'course-' . $user_id . '-' . $id, array( 'items' => array() ), 'learn-press/user-courses' );
 			}
 		}
 
@@ -384,20 +384,20 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			foreach ( $results as $result ) {
 				// Refresh
 				if ( $force ) {
-					wp_cache_delete( 'course-' . $user_id . '-' . $result['item_id'], 'lp-user-courses' );
+					wp_cache_delete( 'course-' . $user_id . '-' . $result['item_id'], 'learn-press/user-courses' );
 				}
 
 				/**
 				 * Ignore row if it is already added. We sort the rows by newest user_item_id
 				 * therefore the first row in a group of item_id is row we need.
 				 */
-				if ( false !== wp_cache_get( 'course-' . $user_id . '-' . $result['item_id'], 'lp-user-courses' ) ) {
+				if ( false !== wp_cache_get( 'course-' . $user_id . '-' . $result['item_id'], 'learn-press/user-courses' ) ) {
 					continue;
 				}
 
 				$result['items'] = array();
 				$this->_read_course_items( $result, $force );
-				wp_cache_set( 'course-' . $user_id . '-' . $result['item_id'], $result, 'lp-user-courses' );
+				wp_cache_set( 'course-' . $user_id . '-' . $result['item_id'], $result, 'learn-press/user-courses' );
 
 				// Remove the course has already read!
 				$fetch_ids = array_diff( $fetch_ids, array( $result['item_id'] ) );
@@ -423,7 +423,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 //				'items'          => array()
 //			);
 //			foreach ( $fetch_ids as $fetch_id ) {
-//				wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, $defaults, 'lp-user-courses' );
+//				wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, $defaults, 'learn-press/user-courses' );
 //			}
 //		}
 		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
@@ -478,7 +478,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			foreach ( $items as $user_item_id => $_items ) {
 				$cache_name = sprintf( 'course-item-%d-%d-%d', $parent_item['user_id'], $parent_item['item_id'], $user_item_id );
 				// Refresh caching
-				wp_cache_set( $cache_name, $_items, 'lp-user-course-items' );
+				wp_cache_set( $cache_name, $_items, 'learn-press/user-course-items' );
 			}
 		}
 
@@ -494,7 +494,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 */
 	public function get_user_items( $user_id, $course_id ) {
-		if ( false === ( $course_data = wp_cache_get( 'course-' . $user_id . '-' . $course_id, 'lp-user-courses' ) ) ) {
+		if ( false === ( $course_data = wp_cache_get( 'course-' . $user_id . '-' . $course_id, 'learn-press/user-courses' ) ) ) {
 			return false;
 		}
 
@@ -669,7 +669,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			if ( $is_course ) {
 				$course_id = $item['item_id'];
 				// Update cache to effect the change right way!
-				wp_cache_set( 'course-' . $user_id . '-' . $course_id, $item, 'lp-user-courses' );
+				wp_cache_set( 'course-' . $user_id . '-' . $course_id, $item, 'learn-press/user-courses' );
 			} else {
 
 				$user        = learn_press_get_user( $user_id );
@@ -678,7 +678,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$user_course->set_item( $item );
 
 				// Update cache
-				$existed = false !== ( $items = wp_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) );
+				$existed = false !== ( $items = wp_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'learn-press/user-course-items' ) );
 
 				if ( false === $items || ! empty( $items[ $user_item_id ] ) ) {
 					if ( is_array( $items ) ) {
@@ -690,16 +690,16 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$items = array( $user_item_id => $item ) + $items;
 				}
 
-				wp_cache_set( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
+				wp_cache_set( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'learn-press/user-course-items' );
 
 			}
 
-			wp_cache_delete( 'course-' . $user_id . '-' . $course_id, 'lp-user-course-data' );
+			wp_cache_delete( 'course-' . $user_id . '-' . $course_id, 'learn-press/user-course-data' );
 
 			/*if ( $existed ) {
-				wp_cache_replace( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
+				wp_cache_replace( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'learn-press/user-course-items' );
 			} else {
-				wp_cache_add( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'lp-user-course-items' );
+				wp_cache_add( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, $items, 'learn-press/user-course-items' );
 			}*/
 		}
 
@@ -724,11 +724,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		if ( $num_args == 2 ) {
 			$this->read_course( $user_id, $item_id );
-			$item = wp_cache_get( 'course-' . $user_id . '-' . $item_id, 'lp-user-courses' );
+			$item = wp_cache_get( 'course-' . $user_id . '-' . $item_id, 'learn-press/user-courses' );
 		} else {
 			$this->read_course( $user_id, $course_id );
 			$cache_name = sprintf( 'course-item-%d-%d-%d', $user_id, $course_id, $item_id );
-			$item       = wp_cache_get( $cache_name, 'lp-user-course-items' );
+			$item       = wp_cache_get( $cache_name, 'learn-press/user-course-items' );
 
 			if ( $last && $item ) {
 				$item = reset( $item );
@@ -1009,7 +1009,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$cache_key = sprintf( 'own-courses-%d-%s', $user_id, md5( build_query( $args ) ) );
 
-		if ( false === ( $courses = wp_cache_get( $cache_key, 'lp-user-courses' ) ) ) {
+		if ( false === ( $courses = wp_cache_get( $cache_key, 'learn-press/user-courses' ) ) ) {
 
 			$courses = array(
 				'total' => 0,
@@ -1076,7 +1076,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				learn_press_add_message( $ex->getMessage() );
 			}
 
-			wp_cache_set( $cache_key, $courses, 'lp-user-courses' );
+			wp_cache_set( $cache_key, $courses, 'learn-press/user-courses' );
 		}
 
 		$courses['single'] = __( 'course', 'learnpress' );
@@ -1118,7 +1118,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$cache_key = sprintf( 'purchased-courses-%d-%s', $user_id, md5( build_query( $args ) ) );
 
-		if ( false === ( $courses = wp_cache_get( $cache_key, 'lp-user-courses' ) ) ) {
+		if ( false === ( $courses = wp_cache_get( $cache_key, 'learn-press/user-courses' ) ) ) {
 
 			$courses = array(
 				'total' => 0,
@@ -1269,7 +1269,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			}
 
-			wp_cache_set( $cache_key, $courses, 'lp-user-courses' );
+			wp_cache_set( $cache_key, $courses, 'learn-press/user-courses' );
 		}
 
 		$courses['single'] = __( 'course', 'learnpress' );
@@ -1364,7 +1364,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$cache_key = sprintf( 'quizzes-%d-%s', $user_id, md5( build_query( $args ) ) );
 
-		if ( false === ( $quizzes = wp_cache_get( $cache_key, 'lp-user-quizzes' ) ) ) {
+		if ( false === ( $quizzes = wp_cache_get( $cache_key, 'learn-press/user-quizzes' ) ) ) {
 
 			$orders = $this->get_orders( $user_id );
 			$query  = array( 'total' => 0, 'pages' => 0, 'items' => false );
@@ -1468,7 +1468,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			catch ( Exception $ex ) {
 
 			}
-			wp_cache_set( $cache_key, $quizzes, 'lp-user-course' );
+			wp_cache_set( $cache_key, $quizzes, 'learn-press/user-course' );
 		}
 
 		$quizzes['single'] = __( 'quiz', 'learnpress' );

@@ -28,7 +28,7 @@ function learn_press_get_course( $the_course = false, $args = '' ) {
 		}
 	}
 
-	if ( false === ( $courses = wp_cache_get( 'object', 'lp-courses' ) ) ) {
+	if ( false === ( $courses = wp_cache_get( 'object', 'learn-press/courses' ) ) ) {
 		$courses = array();
 	}
 
@@ -65,7 +65,7 @@ function learn_press_get_course( $the_course = false, $args = '' ) {
 //			    $courses[] = $courses[$the_id];
 //            }
 
-			//wp_cache_set( 'object', $courses, 'lp-courses' );
+			//wp_cache_set( 'object', $courses, 'learn-press/courses' );
 			//echo "XXXXXX";
 		}
 	}
@@ -74,7 +74,7 @@ function learn_press_get_course( $the_course = false, $args = '' ) {
 }
 
 function learn_press_get_course_by_id( $id ) {
-	if ( false !== ( $courses = wp_cache_get( 'object', 'lp-courses' ) ) ) {
+	if ( false !== ( $courses = wp_cache_get( 'object', 'learn-press/courses' ) ) ) {
 		return ! empty( $courses[ $id ] ) ? $courses[ $id ] : false;
 	}
 
@@ -231,7 +231,7 @@ add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
  */
 function learn_press_get_final_quiz( $course_id ) {
 
-	if ( false === ( $final_quiz = wp_cache_get( 'final-quiz-' . $course_id, 'lp-final-quiz' ) ) ) {
+	if ( false === ( $final_quiz = wp_cache_get( 'final-quiz-' . $course_id, 'learn-press/final-quiz' ) ) ) {
 
 		$course = learn_press_get_course( $course_id );
 		if ( ! $course ) {
@@ -258,7 +258,7 @@ function learn_press_get_final_quiz( $course_id ) {
 			delete_post_meta( $course_id, '_lp_final_quiz' );
 		}
 
-		wp_cache_set( 'final-quiz-' . $course_id, $final_quiz ? $final_quiz : 0, 'lp-final-quiz' );
+		wp_cache_set( 'final-quiz-' . $course_id, $final_quiz ? $final_quiz : 0, 'learn-press/final-quiz' );
 	}
 
 	return $final_quiz;
@@ -1058,41 +1058,6 @@ function learn_press_course_passing_condition( $value, $format, $course_id ) {
 }
 
 add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_condition', 10, 3 );
-
-/**
- * Cache static pages
- */
-function learn_press_setup_pages() {
-	global $wpdb;
-	static $pages = false;
-	if ( $pages == false ) {
-		$pages    = array( 'courses', 'profile', 'become_a_teacher', 'checkout' );
-		$page_ids = array();
-		foreach ( $pages as $page ) {
-			$id = get_option( 'learn_press_' . $page . '_page_id' );
-			if ( $id ) {
-				$page_ids[] = $id;
-			}
-		}
-		if ( ! $page_ids ) {
-			return;
-		}
-		$query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->posts}
-			WHERE %d AND ID IN(" . join( ',', $page_ids ) . ")
-			AND post_status <> %s
-		", 1, 'trash' );
-		if ( ! $pages = $wpdb->get_results( $query ) ) {
-			return;
-		}
-		foreach ( $pages as $page ) {
-			wp_cache_add( $page->ID, $page, 'posts' );
-		}
-	}
-}
-
-add_action( 'init', 'learn_press_setup_pages' );
 
 /**
  *

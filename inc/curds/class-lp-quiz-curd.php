@@ -195,7 +195,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 */
 		protected function _load_questions( &$quiz ) {
 			$id        = $quiz->get_id();
-			$questions = wp_cache_get( 'questions-' . $id, 'lp-quizzes' );
+			$questions = wp_cache_get( 'questions-' . $id, 'learn-press/quizzes' );
 
 			if ( false === $questions || $quiz->get_no_cache() ) {
 				$this->load_questions( $quiz->get_id() );
@@ -249,7 +249,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			//}
 
 			foreach ( $questions as $quiz_id => $quiz_questions ) {
-				wp_cache_set( 'questions-' . $quiz_id, $quiz_questions, 'lp-quizzes' );
+				wp_cache_set( 'questions-' . $quiz_id, $quiz_questions, 'learn-press/quizzes' );
 			}
 
 			LP_Helper_CURD::update_meta_cache( $question_ids );
@@ -261,7 +261,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * @param LP_Quiz $quiz
 		 */
 		protected function _update_meta_cache( &$quiz ) {
-			$meta_ids = wp_cache_get( 'questions-' . $quiz->get_id(), 'lp-quizzes' );
+			$meta_ids = wp_cache_get( 'questions-' . $quiz->get_id(), 'learn-press/quizzes' );
 
 			if ( false === $meta_ids ) {
 				$meta_ids = array( $quiz->get_id() );
@@ -385,7 +385,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				return $this->get_error( 'QUIZ_NOT_EXISTS' );
 			}
 
-			return wp_cache_get( 'questions-' . $the_quiz->get_id(), 'lp-quizzes' );
+			return wp_cache_get( 'questions-' . $the_quiz->get_id(), 'learn-press/quizzes' );
 		}
 
 		/**
@@ -413,7 +413,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			$list_questions = $this->get_questions( $the_quiz );
 			// add new question and set to cache
 			$list_questions[ $question_id ] = strval( $question_id );
-			wp_cache_set( 'questions-' . $the_quiz->get_id(), $list_questions, 'lp-quizzes' );
+			wp_cache_set( 'questions-' . $the_quiz->get_id(), $list_questions, 'learn-press/quizzes' );
 
 			global $wpdb;
 			$id   = $the_quiz->get_id();

@@ -12,33 +12,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * Init common ajax events
 		 */
 		public static function init() {
-			/*$ajaxEvents = array(
-				'load_quiz_question'  => true,
-				'load_prev_question'  => false,
-				'load_next_question'  => false,
-				'finish_quiz'         => true,
-				'retake_quiz'         => true, // anonymous user can retake quiz
-				'take_free_course'    => false,
-				'load_lesson_content' => false,
-				'load_next_lesson'    => false,
-				'load_prev_lesson'    => false,
-				'finish_course'       => false,
-				'not_going'           => false,
-				'take_course'         => true,
-				'start_quiz'          => true,
-				'fetch_question'      => true,
-				'upload-user-avatar'  => false,
-				'check-user-email'    => true
-			);
 
-			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
-				$ajax_func = preg_replace( '/-/', '_', $ajax_event );
-				add_action( 'wp_ajax_learnpress_' . $ajax_event, array( __CLASS__, $ajax_func ) );
-
-				if ( $nopriv ) {
-					add_action( 'wp_ajax_nopriv_learnpress_' . $ajax_event, array( __CLASS__, $ajax_func ) );
-				}
-			}*/
 			/**
 			 * action-name
 			 *      :nopriv => Allows calling AJAX with user is not logged in
@@ -78,11 +52,12 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
-
-			//LP_Request::register_ajax( 'checkout-user-email-exists', array( __CLASS__, 'checkout_user_email_exists' ) );
-			//LP_Request::register_ajax( 'recover-order', array( __CLASS__, 'recover_order' ) );
 		}
 
+		/**
+		 * Redirect user to external link setup in course
+		 * when user clicking on Buy Now button
+		 */
 		public static function external_link() {
 			$nonce = LP_Request::get( 'nonce' );
 			$id    = LP_Request::get( 'id' );
@@ -160,20 +135,26 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 		public static function login_user() {
 			LP_Forms_Handler::process_login();
-			print_r( learn_press_message_count( 'error' ) );
-			//print_r( learn_press_get_messages() );
-			//print_r( $_REQUEST );
 			die();
 		}
 
+		/**
+		 * Process checkout
+		 */
 		public static function checkout() {
 			LP()->checkout()->process_checkout_handler();
 		}
 
+		/**
+		 * Process become-a-teacher form
+		 */
 		public static function request_become_a_teacher() {
 			LP_Forms_Handler::process_become_teacher();
 		}
 
+		/**
+		 * Process action to recover order
+		 */
 		public static function recover_order() {
 			if ( ! LP_Request::verify_nonce( 'recover-order' ) ) {
 				return;
@@ -291,7 +272,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		}
 
 		/**
-		 * Complete lesson
+		 * Ajax action to complete lesson
 		 */
 		public static function complete_lesson() {
 			$nonce     = LP_Request::get_string( 'complete-lesson-nonce' );
@@ -308,13 +289,14 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			$item         = $course->get_item( $item_id );
 			$nonce_action = $item->get_nonce_action( 'complete', $course_id, $user->get_id() );
+
 			try {
 				// security check
 				if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
 					throw new Exception( __( 'Error! Invalid lesson or failed security check.', 'learnpress' ), 8000 );
 				}
 
-				$result = $user->complete_lesson( $item_id );
+				$result = $user->complete_lesson( $item_id, $course_id, true );
 
 				if ( ! is_wp_error( $result ) ) {
 					if ( $next = $course->get_next_item() ) {

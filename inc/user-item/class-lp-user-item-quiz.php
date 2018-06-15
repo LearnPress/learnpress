@@ -121,7 +121,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function get_results( $prop = 'result', $force = false ) {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
-		if ( false === ( $result = wp_cache_get( $cache_key, 'lp-quiz-result' ) ) || $force ) {
+		if ( false === ( $result = wp_cache_get( $cache_key, 'learn-press/quiz-result' ) ) || $force ) {
 			$result = array(
 				'questions'         => array(),
 				'mark'              => $quiz->get_mark(),
@@ -183,7 +183,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
 				}
 			}
-			wp_cache_set( $cache_key, $result, 'lp-quiz-result' );
+			wp_cache_set( $cache_key, $result, 'learn-press/quiz-result' );
 		}
 
 		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;

@@ -137,7 +137,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function clear() {
 
-		$sections_ids = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections-ids' );
+		$sections_ids = wp_cache_get( 'course-' . $this->course_id, 'learn-press/course-sections-ids' );
 
 		if ( ! $sections_ids ) {
 			return false;
@@ -151,14 +151,14 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $sections_ids ) . ")", 1 ) );
 		learn_press_reset_auto_increment( 'learnpress_section_items' );
 		// delete sections ids cache
-		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections-ids' );
+		wp_cache_delete( 'course-' . $this->course_id, 'learn-press/course-sections-ids' );
 
 
 		// delete sections in course
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $this->course_id ) );
 		learn_press_reset_auto_increment( 'learnpress_sections' );
 		// delete sections cache
-		wp_cache_delete( 'course-' . $this->course_id, 'lp-course-sections' );
+		wp_cache_delete( 'course-' . $this->course_id, 'learn-press/course-sections' );
 
 		return true;
 	}
@@ -207,14 +207,14 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function read_sections_ids() {
 
 		// Get course's sections id data from cache
-		$ids = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections-ids' );
+		$ids = wp_cache_get( 'course-' . $this->course_id, 'learn-press/course-sections-ids' );
 
 		if ( ! $ids ) {
 			global $wpdb;
 			// get sections id
 			$ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $this->course_id ) );
 			// Set cache
-			wp_cache_set( 'course-' . $this->course_id, $ids, 'lp-course-sections-ids' );
+			wp_cache_set( 'course-' . $this->course_id, $ids, 'learn-press/course-sections-ids' );
 		}
 
 		return $ids;
@@ -246,7 +246,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function sort_sections( $sections ) {
 		global $wpdb;
 
-		$current_sections = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections' );
+		$current_sections = wp_cache_get( 'course-' . $this->course_id, 'learn-press/course-sections' );
 		$new_sections     = array();
 
 		$orders = array();
@@ -271,7 +271,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$this->get_section_items( $section_id );
 		}
 
-		wp_cache_set( 'course-' . $this->course_id, $new_sections, 'lp-course-sections' );
+		wp_cache_set( 'course-' . $this->course_id, $new_sections, 'learn-press/course-sections' );
 
 		return $orders;
 	}
@@ -302,7 +302,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $return, 'lp-course-section-items' );
+		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $return, 'learn-press/course-section-items' );
 
 		return $return;
 	}
@@ -416,7 +416,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$order ++;
 		}
 
-		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $all_items, 'lp-course-section-items' );
+		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $all_items, 'learn-press/course-section-items' );
 
 		return $result;
 	}
@@ -468,7 +468,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function update_final_item() {
 
-		$sections = wp_cache_get( 'course-' . $this->course_id, 'lp-course-sections' );
+		$sections = wp_cache_get( 'course-' . $this->course_id, 'learn-press/course-sections' );
 
 		if ( ! $sections ) {
 			return false;
@@ -478,7 +478,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$section_id   = $last_section->section_id;
 
 		// get last section items
-		$section_items = wp_cache_get( 'course-' . $this->course_id . '-' . $section_id, 'lp-course-section-items' );
+		$section_items = wp_cache_get( 'course-' . $this->course_id . '-' . $section_id, 'learn-press/course-section-items' );
 
 		$types = apply_filters( 'learn-press/post-types-support-assessment-by-final-item', array( LP_QUIZ_CPT ) );
 
@@ -595,7 +595,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $items, 'lp-course-section-items' );
+		wp_cache_set( 'course-' . $this->course_id . '-' . $section_id, $items, 'learn-press/course-section-items' );
 
 		return $items;
 	}

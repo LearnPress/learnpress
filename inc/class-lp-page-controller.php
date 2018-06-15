@@ -584,7 +584,7 @@ class LP_Page_Controller {
 
 		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 
-		wp_cache_set( 'course-' . get_the_ID(), $content, 'course-content' );
+		wp_cache_set( 'course-' . get_the_ID(), $content, 'learn-press/course-content' );
 
 		return $content;
 	}
