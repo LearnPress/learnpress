@@ -86,7 +86,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			if ( $this->get_id() > 0 ) {
-				$this->load();
+				//$this->load_data();
+				//$this->load();
 			}
 		}
 
@@ -107,7 +108,13 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				return;
 			}
 
-			$this->_curd->load( $this );
+			$this->load_data();
+			$this->load_curriculum();
+
+			$this->_loaded = true;
+		}
+
+		public function load_data() {
 			$id          = $this->get_id();
 			$post_object = get_post( $id );
 			$this->_set_data(
@@ -133,8 +140,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'external_link_text'   => get_post_meta( $id, '_lp_external_link_text', true ),
 				)
 			);
+		}
 
-			$this->_loaded = true;
+		public function load_curriculum() {
+			$this->_curd->load( $this );
 		}
 
 		/**
@@ -156,7 +165,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function __get( $key ) {
-			_deprecated_argument( __CLASS__ . '::id', '3.0.11' );
+			_deprecated_argument( __CLASS__ . '::' . $key, '3.0.11' );
 
 			return false;
 		}
@@ -281,8 +290,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$this->load();
 
 			$curriculum = $this->_curd->get_curriculum( $this->get_id() );
+			$return     = false;
 
-			$return = false;
 			if ( $section_id ) {
 				if ( ! empty( $curriculum[ $section_id ] ) ) {
 					$return = $curriculum[ $section_id ];
@@ -1370,7 +1379,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function is_final_quiz( $quiz_id ) {
-			return apply_filters( 'learn_press_is_final_quiz', $this->final_quiz == $quiz_id, $quiz_id, $this->get_id() );
+			return apply_filters( 'learn_press_is_final_quiz', $this->get_final_quiz() == $quiz_id, $quiz_id, $this->get_id() );
 		}
 
 		public function get_final_quiz() {
