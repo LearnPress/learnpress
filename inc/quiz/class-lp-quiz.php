@@ -118,6 +118,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function load() {
 			$this->_curd->load( $this );
+
 		}
 
 		/**
@@ -359,7 +360,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return mixed
 		 */
 		public function get_questions() {
-			$questions = $this->_curd->get_questions( $this );
+
+			if ( false === ( $questions = wp_cache_get( 'questions-' . $this->get_id(), 'learn-press/quizzes' ) ) ) {
+				$questions = $this->_curd->read_questions( $this->get_id() );
+				wp_cache_set( 'questions-' . $this->get_id(), $questions, 'learn-press/quizzes' );
+			}
 
 			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
 		}
@@ -435,12 +440,24 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return int
 		 */
 		public function count_questions() {
-			$size = 0;
-			if ( ( $questions = $this->get_questions() ) ) {
-				$size = sizeof( $questions );
+			if ( ! $size = get_post_meta( $this->get_id(), '_question_count', true ) ) {
+				$size = 0;
+
+				if ( $ids = $this->get_question_ids() ) {
+					$size = sizeof( $ids );
+				}
 			}
 
-			return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/count-questions', absint( $size ), $this->get_id(), $this->get_course_id() );
+		}
+
+		public function get_question_ids() {
+			if ( false === ( $ids = wp_cache_get( 'quiz-' . $this->get_id(), 'quiz-questions' ) ) ) {
+				$ids = $this->_curd->read_question_ids( $this->get_id() );
+				wp_cache_set( 'quiz-' . $this->get_id(), $ids, 'quiz-questions' );
+			}
+
+			return apply_filters( 'learn-press/quiz-question-ids', $ids, $this->get_id(), $this->get_course_id() );
 		}
 
 		/**
@@ -782,7 +799,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_quiz
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -845,7 +862,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get css classes of question displays in a list.
 		 *
-		 * @param int $question_id
+		 * @param int  $question_id
 		 * @param null $position
 		 *
 		 * @return array

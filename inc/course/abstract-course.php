@@ -279,9 +279,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @param int  $section_id
 		 * @param bool $force
 		 *
-		 * @return bool|LP_Course_Section
+		 * @return bool|LP_Course_Section[]
 		 */
 		public function get_curriculum( $section_id = 0, $force = false ) {
+			_deprecated_function( __CLASS__ . '->get_curriculum()', '3.0.12', __CLASS__ . '->get_sections()' );
+
+			return $this->get_sections( 'object', $section_id );
 
 			if ( ! $this->get_id() ) {
 				return false;
@@ -349,6 +352,59 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return $items;
+		}
+
+		public function get_item_types( $group = false ) {
+			$cache_key = $group ? 'course-item-group-types' : 'course-item-types';
+
+			if ( false === ( $items = wp_cache_get( 'course-' . $this->get_id(), "learn-press/{$cache_key}" ) ) ) {
+				$item_types = array();
+				$items      = array();
+				$sections   = array();
+
+				if ( $all_items = $this->_curd->read_course_items( $this->get_id() ) ) {
+					foreach ( $all_items as $item ) {
+						if ( empty( $item_types[ $item->type ] ) ) {
+							$item_types[ $item->type ] = array();
+						}
+						$item_types[ $item->type ][] = $item->id;
+						$items[ $item->id ]          = $item->type;
+
+						if ( empty( $sections[ $item->section_id ] ) ) {
+							$sections[ $item->section_id ] = array();
+						}
+						$sections[ $item->section_id ][] = $item->id;
+					}
+				}
+
+				wp_cache_set( 'course-' . $this->get_id(), $item_types, 'learn-press/course-item-group-types' );
+				wp_cache_set( 'course-' . $this->get_id(), $items, 'learn-press/course-item-types' );
+
+				foreach ( $sections as $section_id => $section_items ) {
+					wp_cache_set( 'section-' . $section_id, $section_items, 'learn-press/section-items' );
+				}
+
+				learn_press_cache_add_post_type( $items );
+
+				$items = $group ? $item_types : $items;
+			}
+
+			return apply_filters( "learn-press/{$cache_key}", $items, $this->get_id() );
+		}
+
+		/**
+		 * Get all items in a course.
+		 *
+		 * @return array
+		 */
+		public function get_item_ids() {
+			if ( $items = $this->get_item_types() ) {
+				$item_ids = array_keys( $items );
+			} else {
+				$item_ids = array();
+			}
+
+			return apply_filters( 'learn-press/course-item-ids', $item_ids, $this->get_id() );
 		}
 
 		/**
@@ -820,7 +876,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function has_item( $item_id ) {
 			$found = false;
 
-			if ( $items = $this->get_items() ) {
+			if ( $items = $this->get_item_ids() ) {
 				$found = in_array( $item_id, $items );
 			}
 
@@ -873,7 +929,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			if ( false === ( $item_links = wp_cache_get( 'course-' . $this->get_id(), 'learn-press/course-item-links' ) ) ) {
 
-				if ( $items = $this->get_items() ) {
+				if ( $items = $this->get_item_ids() ) {
 
 					$permalink    = trailingslashit( $this->get_permalink() );
 					$post_types   = get_post_types( null, 'objects' );
@@ -933,7 +989,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 						$item_links[ $item_id ] = $item_permalink;
 					}
 				}
-
 				wp_cache_set( 'course-' . $this->get_id(), $item_links, 'learn-press/course-item-links' );
 			}
 
@@ -1622,6 +1677,42 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_tags() {
 			return apply_filters( 'learn-press/course-tags', get_the_term_list( $this->get_id(), 'course_tag', __( 'Tags: ', 'learnpress' ), ', ', '' ) );
+		}
+
+		/**
+		 * Get sections of course.
+		 *
+		 * @param string $return     - Optional.
+		 * @param int    $section_id - Optional.
+		 *
+		 * @return array|LP_Course_Section[]|LP_Course_Section
+		 */
+		public function get_sections( $return = 'object', $section_id = 0 ) {
+
+			if ( false === ( $sections = wp_cache_get( 'course-' . $this->get_id(), 'learn-press/course-sections' ) ) ) {
+				$sections = $this->_curd->read_course_sections( $this->get_id() );
+				wp_cache_set( 'course-' . $this->get_id(), $sections, 'learn-press/course-sections' );
+			}
+
+			if ( $return == 'object' && $sections ) {
+				$position        = 0;
+				$object_sections = array();
+
+				foreach ( $sections as $k => $section ) {
+					$sid = $section->section_id;
+					$section = new LP_Course_Section( $section );
+					$section->set_position( ++ $position );
+
+					$object_sections[ $sid ] = $section;
+				}
+				$sections = $object_sections;
+			}
+
+			if ( $section_id ) {
+				$sections = ! empty( $sections[ $section_id ] ) ? $sections[ $section_id ] : false;
+			}
+
+			return apply_filters( 'learn-press/course-sections', $sections, $this->get_id(), $return, $section_id );
 		}
 	}
 }

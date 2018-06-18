@@ -227,8 +227,35 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 		}
 
+		/**
+		 * Read all items in a course from database with an array in pair of
+		 * post ID and post type.
+		 *
+		 * @param int $course_id
+		 *
+		 * @return array
+		 */
+		public function read_course_items( $course_id ) {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				SELECT item_id id, it.post_type `type`, si.section_id
+				FROM {$wpdb->learnpress_section_items} si 
+				INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id
+				INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
+				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
+				WHERE c.ID = %d
+				AND c.post_status = %s 
+				AND it.post_status = %s
+				ORDER BY s.section_order, si.item_order DESC
+			", $course_id, 'publish', 'publish' );
+
+			return $wpdb->get_results( $query );
+		}
+
 		protected function _read_course_section_items( $section_ids, $course_id ) {
 			global $wpdb;
+
+			return false;
 
 			if ( false === ( $group_items = LP_Hard_Cache::get( 'course-' . $course_id, 'lp-course-item-types' ) ) ) {
 
@@ -276,7 +303,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 
 				//foreach ( $group_items as $type => $group_item_ids ) {
-				wp_cache_set( 'course-' . $course_id, $group_items, 'learn-press/course-item-types' );
+				wp_cache_set( 'course-' . $course_id, $group_items, 'learn-press/x-course-item-types' );
 				LP_Hard_Cache::set( 'course-' . $course_id, $group_items, 'lp-course-item-types' );
 				//}
 
@@ -315,7 +342,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			} else {
 
-				wp_cache_set( 'course-' . $course_id, $group_items, 'learn-press/course-item-types' );
+				wp_cache_set( 'course-' . $course_id, $group_items, 'learn-press/x-course-item-types' );
 
 				foreach ( $section_ids as $section_id ) {
 					$items = LP_Hard_Cache::get( 'section-' . $section_id, 'lp-section-items' );
@@ -666,7 +693,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function get_course_sections( $course_id, $return = '' ) {
 			if ( false === ( $sections = wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections' ) ) ) {
-				$sections = $this->read_course_sections( $course_id );
+				//$sections = $this->read_course_sections( $course_id );
 			}
 
 			return $return === 'ids' ? wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections-ids' ) : $sections;
@@ -685,78 +712,32 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return mixed|array
 		 */
 		public function read_course_sections( $course_id ) {
-
 			global $wpdb;
-
 			settype( $course_id, 'array' );
-			sort( $course_id );
-			$fetch_ids = array();
+			$first_course_sections = false;
 
-			LP_Helper::cache_posts( $course_id );
+			foreach ( $course_id as $cid ) {
+				if ( false === ( $course_sections = LP_Hard_Cache::get( $cid, 'course-sections' ) ) ) {
+					$query = $wpdb->prepare( "
+						SELECT s.* FROM {$wpdb->posts} p
+						INNER JOIN {$wpdb->learnpress_sections} s ON p.ID = s.section_course_id
+						WHERE p.ID = %d
+						ORDER BY p.ID, `section_order` ASC
+					", $cid );
 
-			foreach ( $course_id as $fetch_id ) {
-				if ( learn_press_get_post_type( $fetch_id ) != LP_COURSE_CPT ) {
-					continue;
-				}
-
-				/**
-				 * Get course's data from cache and if it is already existed
-				 * then ignore that course.
-				 */
-				if ( false !== wp_cache_get( 'course-' . $fetch_id, 'learn-press/course-sections' ) ) {
-					continue;
-				}
-
-				wp_cache_set( 'course-' . $fetch_id, array(), 'learn-press/course-sections' );
-
-				$section_curd = new LP_Section_CURD( $fetch_id );
-				$section_curd->read_sections_ids();
-
-				$fetch_ids[] = $fetch_id;
-			}
-
-			if ( ! $fetch_ids ) {
-				return false;
-			}
-
-			$cache_key = md5( serialize( $fetch_ids ) );
-
-			if ( false === ( $course_sections = LP_Hard_Cache::get( $cache_key, 'lp-course-sections' ) ) ) {
-				$format = array_fill( 0, sizeof( $fetch_ids ), '%d' );
-				$query  = $wpdb->prepare( "
-					SELECT s.* FROM {$wpdb->posts} p
-					INNER JOIN {$wpdb->learnpress_sections} s ON p.ID = s.section_course_id
-					WHERE p.ID IN(" . join( ',', $format ) . ")
-					ORDER BY p.ID, `section_order` ASC
-				", $fetch_ids );
-
-				$course_sections = array();
-
-				if ( $results = $wpdb->get_results( $query ) ) {
-					$cur_id = 0;
-					foreach ( $results as $row ) {
-						if ( $row->section_course_id !== $cur_id ) {
-							if ( $cur_id ) {
-								wp_cache_set( 'course-' . $cur_id, $course_sections, 'learn-press/course-sections' );
-							}
-							$cur_id          = $row->section_course_id;
-							$course_sections = array();
-						}
-						$course_sections[] = $row;
+					if ( ! $course_sections = $wpdb->get_results( $query ) ) {
+						$course_sections = array();
 					}
-					wp_cache_set( 'course-' . $cur_id, $course_sections, 'learn-press/course-sections' );
-				}
 
-				LP_Hard_Cache::set( $cache_key, $course_sections, 'lp-course-sections' );
-			} else {
-				foreach ( $fetch_ids as $cid ) {
-					wp_cache_set( 'course-' . $cid, $course_sections, 'learn-press/course-sections' );
+					if ( false === $first_course_sections ) {
+						$first_course_sections = $course_sections;
+					}
+
+					LP_Hard_Cache::set( $cid, $course_sections, 'course-sections' );
 				}
 			}
-			unset( $course_sections );
-			$course_id = reset( $fetch_ids );
 
-			return wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections' );
+			return $first_course_sections;
 		}
 
 		/**
@@ -766,7 +747,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @param $item_id
 		 */
-		public function remove_item( $item_id ) {
+		public
+		function remove_item(
+			$item_id
+		) {
 
 			global $wpdb;
 
@@ -786,7 +770,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @param $course_id
 		 */
-		public function remove_course( $course_id ) {
+		public
+		function remove_course(
+			$course_id
+		) {
 			global $wpdb;
 
 			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $course_id ) );
@@ -814,7 +801,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_recent_courses( $args = array() ) {
+		public
+		function get_recent_courses(
+			$args = array()
+		) {
 			global $wpdb;
 
 			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
@@ -847,7 +837,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_user_enrolled( $course_id, $limit = - 1 ) {
+		public
+		function get_user_enrolled(
+			$course_id, $limit = - 1
+		) {
 			global $wpdb;
 			if ( $limit < 0 ) {
 				$limit = PHP_INT_MAX;
@@ -863,7 +856,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			return $wpdb->get_results( $query );
 		}
 
-		public function count_enrolled_users( $course_ids ) {
+		public
+		function count_enrolled_users(
+			$course_ids
+		) {
 			global $wpdb;
 
 			if ( ! $course_ids ) {
@@ -909,7 +905,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_featured_courses( $args = array() ) {
+		public
+		function get_featured_courses(
+			$args = array()
+		) {
 			global $wpdb;
 
 			$limit    = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
@@ -943,7 +942,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_popular_courses( $args = array() ) {
+		public
+		function get_popular_courses(
+			$args = array()
+		) {
 			global $wpdb;
 
 			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
@@ -975,7 +977,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return int
 		 */
-		public function count_by_orders( $course_id, $statuses = 'completed' ) {
+		public
+		function count_by_orders(
+			$course_id, $statuses = 'completed'
+		) {
 			global $wpdb;
 
 			settype( $statuses, 'array' );
@@ -1041,7 +1046,10 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return int
 		 */
-		public function count_enrolled_users_by_orders( $course_id ) {
+		public
+		function count_enrolled_users_by_orders(
+			$course_id
+		) {
 			$statuses = array( 'completed', 'processing' );
 			$count    = $this->count_by_orders( $course_id, $statuses );
 

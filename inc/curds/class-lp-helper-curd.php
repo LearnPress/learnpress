@@ -16,9 +16,9 @@ class LP_Helper_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array  $ids
-	 * @param string $type - E.g: post, user, ...
-	 * @param int    $limit
+	 * @param array|int $ids
+	 * @param string    $type - E.g: post, user, ...
+	 * @param int       $limit
 	 */
 	public static function update_meta_cache( $ids, $type = 'post', $limit = 100 ) {
 
@@ -26,6 +26,7 @@ class LP_Helper_CURD {
 			return;
 		}
 
+		settype( $ids, 'array' );
 		sort( $ids );
 		$cache_key = md5( serialize( $ids ) );
 
@@ -58,14 +59,15 @@ class LP_Helper_CURD {
 	/**
 	 * Load posts from database into cache.
 	 *
-	 * @param int|array $post_ids
+	 * @param int|array    $post_ids
+	 * @param array|string $fields
 	 *
 	 * @return mixed
 	 */
-	public static function cache_posts( $post_ids ) {
+	public static function cache_posts( $post_ids, $fields = 'ID, post_title, post_content, post_status, post_type, post_author, post_date, post_name' ) {
 		global $wpdb;
 		settype( $post_ids, 'array' );
-
+		$post_ids = array_values( $post_ids );
 		// Remove the posts has already cached
 		for ( $n = sizeof( $post_ids ), $i = $n - 1; $i >= 0; $i -- ) {
 			if ( false !== wp_cache_get( $post_ids[ $i ], 'posts' ) ) {
@@ -77,9 +79,19 @@ class LP_Helper_CURD {
 			return false;
 		}
 
+		if ( $fields ) {
+			if ( is_array( $fields ) ) {
+				$post_fields = join( ',', $fields );
+			} else {
+				$post_fields = $fields;
+			}
+		} else {
+			$post_fields = "*";
+		}
+
 		$format = array_fill( 0, sizeof( $post_ids ), '%d' );
 		$query  = $wpdb->prepare( "
-			SELECT *
+			SELECT {$post_fields}
 			FROM {$wpdb->posts}
 			WHERE ID IN(" . join( ',', $format ) . ")
 		", $post_ids );
@@ -97,7 +109,7 @@ class LP_Helper_CURD {
 		}
 
 		self::update_meta_cache( $post_ids );
-		wp_cache_set( 'post-types', $post_types, 'learn-press' );
+		learn_press_cache_add_post_type( $post_types );
 
 		return $posts;
 	}

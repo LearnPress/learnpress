@@ -15,12 +15,26 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	protected $data = null;
 
 	/**
+	 * @var int
+	 */
+	protected $course_id = 0;
+
+	/**
+	 * @var LP_Section_CURD
+	 */
+	protected $_curd = null;
+
+	/**
+	 * @var array
+	 */
+	protected $items = array();
+
+	/**
 	 * LP_Course_Section constructor.
 	 *
 	 * @param $data
 	 */
 	public function __construct( $data ) {
-		parent::__construct( $data );
 		$data = wp_parse_args(
 			$data,
 			array(
@@ -36,10 +50,17 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 
 		// Set data
 		foreach ( $data as $k => $v ) {
-			$k                = str_replace( 'section_', '', $k );
-			$this->data[ $k ] = $v;
+			$k = str_replace( 'section_', '', $k );
+
+			if ( $k === 'course_id' ) {
+				$this->course_id = absint( $v );
+				continue;
+			}
+			$this->_data[ $k ] = $v;
 		}
 
+		$this->_curd = new LP_Section_CURD(0);
+		$this->set_id( $this->_data['id'] );
 		// Load section items
 		$this->_load_items();
 	}
@@ -55,18 +76,19 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		}
 
 		// All items
-		$curriculum = wp_cache_get( 'section-' . $this->get_id(), 'learn-press/section-items' );
+		if ( false === ( $items = wp_cache_get( 'section-' . $this->get_id(), 'learn-press/section-items' ) ) ) {
 
-		if ( ! $curriculum ) {
-			return false;
+			$items = $this->_curd->read_items( $this->get_id() );
+			LP_Helper_CURD::cache_posts($items);
+			wp_cache_set( 'section-' . $this->get_id(), $items, 'learn-press/section-items' );
 		}
 
-		foreach ( $curriculum as $item ) {
+		foreach ( $items as $item ) {
 			// Create item
 			if ( $item_class = $this->_get_item( $item ) ) {
 				$item_class->set_course( $this->get_course_id() );
 				$item_class->set_section( $this );
-				$this->data['items'][ $item ] = $item_class;
+				$this->items[ $item ] = $item_class;
 			}
 		}
 
@@ -116,7 +138,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_id() {
-		return $this->data['id'];
+		return $this->_data['id'];
 	}
 
 	/**
@@ -125,7 +147,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_title() {
-		return apply_filters( 'learn-press/section-title', $this->data['name'], $this );
+		return apply_filters( 'learn-press/section-title', $this->_data['name'], $this );
 	}
 
 	/**
@@ -134,7 +156,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_course_id() {
-		return $this->data['course_id'];
+		return $this->course_id;
 	}
 
 	/**
@@ -143,7 +165,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_order() {
-		return $this->data['order'];
+		return $this->_data['order'];
 	}
 
 	/**
@@ -152,7 +174,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_description() {
-		return apply_filters( 'learn-press/section-description', $this->data['description'], $this );
+		return apply_filters( 'learn-press/section-description', $this->_data['description'], $this );
 	}
 
 	/**
@@ -164,7 +186,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return array
 	 */
 	public function get_items( $type = '', $preview = true ) {
-		$items = apply_filters( 'learn-press/section-items', $this->data['items'], $this );
+		$items = apply_filters( 'learn-press/section-items', $this->items, $this );
 
 		if ( ! $items ) {
 			return $items;
@@ -278,10 +300,10 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	}
 
 	public function set_position( $position ) {
-		$this->data['position'] = $position;
+		$this->_data['position'] = $position;
 	}
 
 	public function get_position() {
-		return ! empty( $this->data['position'] ) ? absint( $this->data['position'] ) : 0;
+		return ! empty( $this->_data['position'] ) ? absint( $this->_data['position'] ) : 0;
 	}
 }

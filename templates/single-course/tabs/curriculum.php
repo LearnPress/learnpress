@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.1.0
  */
 
 /**
@@ -34,7 +34,7 @@ $course = LP_Global::course();
 		do_action( 'learn-press/before-single-course-curriculum' );
 		?>
 
-		<?php if ( $curriculum = $course->get_curriculum() ) { ?>
+		<?php if ( $curriculum = $course->get_sections() ) { ?>
 
             <ul class="curriculum-sections">
 				<?php foreach ( $curriculum as $section ) {

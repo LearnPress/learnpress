@@ -160,7 +160,8 @@ class LP_Preview_Course {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT post_id
-				FROM {$wpdb->postmeta}
+				FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 				WHERE meta_key = %s AND meta_value = %s
 			", '_lp_preview_course', 'yes' );
 

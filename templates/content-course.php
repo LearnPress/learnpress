@@ -41,7 +41,7 @@ $course = LP_Global::course();
     </a>
 
 	<?php
-	//echo "[", $course->count_items(), "]";
+	echo "[", sizeof( $course->get_item_ids() ), "]";
 	// @since 3.0.0
 	do_action( 'learn-press/after-courses-loop-item' );
 

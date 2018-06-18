@@ -757,3 +757,30 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+//$a = array(100=>'a', 200=>'b');
+//$b = array(200=>'c', 300=>'d');
+//
+//print_r($a+$b);
+//add_action( 'template_include', function ( $template ) {
+//	if ( empty( $_REQUEST['output-cache'] ) ) {
+//		return $template;
+//	}
+//	ob_start();
+//
+//	//return $template;
+//} );
+add_action( 'shutdown', function () {
+	if ( empty( $_REQUEST['output-cache'] ) ) {
+		return;
+	}
+	//ob_get_clean();
+	global $wp_object_cache;
+	foreach ( $wp_object_cache->cache as $k => $cache ) {
+//		if ( strpos( $k, 'learn-press' ) === false ) {
+//			continue;
+//		}
+		echo "======== {$k} ========";
+		learn_press_debug( $cache );
+	}
+} );

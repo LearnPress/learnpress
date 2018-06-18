@@ -44,6 +44,8 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				throw new Exception( sprintf( __( 'Invalid quiz with ID "%d".', 'learnpress' ), $id ) );
 			}
 
+			LP_Helper_CURD::update_meta_cache( $quiz->get_id() );
+
 			$quiz->set_data_via_methods(
 				array(
 					'retake_count'         => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),
@@ -198,8 +200,80 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			$questions = wp_cache_get( 'questions-' . $id, 'learn-press/quizzes' );
 
 			if ( false === $questions || $quiz->get_no_cache() ) {
-				$this->load_questions( $quiz->get_id() );
+				//$this->load_questions( $quiz->get_id() );
 			}
+		}
+
+		public function read_questions( $quiz_id ) {
+			if ( ! $quiz = learn_press_get_quiz( $quiz_id ) ) {
+				return false;
+			}
+
+			if ( ! $question_ids = $quiz->get_question_ids() ) {
+				LP_Helper_CURD::cache_posts( $question_ids );
+				$question_factory = new LP_Question_CURD();
+				$question_factory->load_answer_options( $question_ids );
+			}
+
+			return $question_ids;
+		}
+
+		/**
+		 * Read all question ids of a quiz.
+		 *
+		 * @param int $quiz_id
+		 *
+		 * @return array
+		 */
+		public function read_question_ids( $quiz_id ) {
+			global $wpdb;
+
+			$query = $wpdb->prepare( "
+				SELECT question_id
+				FROM {$wpdb->posts} p 
+				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.quiz_id = p.ID 
+				AND p.ID = %d
+				AND p.post_status = %s
+				ORDER BY question_order
+			", $quiz_id, 'publish' );
+
+			$ids = $wpdb->get_col( $query );
+
+			return $ids;
+		}
+
+		public function update_question_ids( $quiz_id ) {
+			wp_cache_delete( 'quiz-' . $quiz_id, 'quiz-questions' );
+
+			if ( $quiz = learn_press_get_quiz( $quiz_id ) ) {
+				$question_ids = $quiz->get_question_ids();
+			} else {
+				$question_ids = array();
+			}
+
+			update_post_meta( $quiz_id, '_questions', $question_ids );
+			update_post_meta( $quiz_id, '_question_count', sizeof( $question_ids ) );
+		}
+
+		/**
+		 * Get quiz ids that contains a question.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param int $question_id
+		 *
+		 * @return array
+		 */
+		public function get_quiz_by_question( $question_id ) {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				SELECT ID
+				FROM {$wpdb->posts} p 
+				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.quiz_id = p.ID
+				WHERE qq.question_id = %d
+			", $question_id );
+
+			return $wpdb->get_col( $query );
 		}
 
 		public function load_questions( $quiz_ids ) {
@@ -252,7 +326,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				wp_cache_set( 'questions-' . $quiz_id, $quiz_questions, 'learn-press/quizzes' );
 			}
 
-			LP_Helper_CURD::update_meta_cache( $question_ids );
+			LP_Helper_CURD::cache_posts( $question_ids );
 			$question_factory = new LP_Question_CURD();
 			$question_factory->load_answer_options( $question_ids );
 		}
@@ -323,7 +397,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 * Reorder question by indexed number.
 		 *
 		 * @param LP_Quiz|WP_Post|int $the_quiz
-		 * @param mixed $questions
+		 * @param mixed               $questions
 		 *
 		 * @return mixed
 		 */
@@ -393,7 +467,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 *
 		 * @param LP_Quiz|int $the_quiz
 		 * @param             $question_id
-		 * @param array $args
+		 * @param array       $args
 		 *
 		 * @return mixed false on failed
 		 */
@@ -447,13 +521,17 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				array( '%d', '%d', '%d' )
 			);
 
-			return $inserted ? $wpdb->insert_id : $inserted;
+			$return = $inserted ? $wpdb->insert_id : $inserted;
+
+			do_action( 'learn-press/quiz-added-question', $inserted, $question_id, $the_quiz->get_id() );
+
+			return $return;
 		}
 
 		/**
 		 * Check if a question (or batch of questions) is already added to quiz.
 		 *
-		 * @param int $the_id
+		 * @param int       $the_id
 		 * @param int|array $ids
 		 *
 		 * @return array|bool|null|object

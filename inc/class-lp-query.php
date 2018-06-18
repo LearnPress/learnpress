@@ -297,7 +297,7 @@ class LP_Query {
 			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
 		}
 
-		add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
+		//add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
 	}
 
 	/**
@@ -345,6 +345,7 @@ class LP_Query {
 	 * @return string
 	 */
 	public function exclude_preview_course( $where ) {
+		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.11' );
 		global $wpdb;
 
 		if ( ! is_admin() && learn_press_is_courses() ) {

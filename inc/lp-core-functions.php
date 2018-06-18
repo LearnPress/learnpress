@@ -89,7 +89,7 @@ function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
  * @return bool
  */
 function learn_press_is_debug() {
-	return defined( 'WP_DEBUG' ) && WP_DEBUG;
+	return defined( 'LP_DEBUG_DEV' ) && LP_DEBUG_DEV;
 }
 
 /**
@@ -3253,6 +3253,27 @@ function learn_press_get_post_type( $post ) {
 	return $post_type;
 }
 
+function learn_press_cache_add_post_type( $id, $type = '' ) {
+	if ( false === ( $post_types = wp_cache_get( 'post-types', 'learn-press' ) ) ) {
+		$post_types = array();
+	}
+
+	if ( func_num_args() == 1 && is_array( $id ) ) {
+		$post_types = $post_types + $id;
+	} else {
+		$post_types[ $id ] = $type;
+	}
+
+	wp_cache_set( 'post-types', $post_types, 'learn-press' );
+}
+
+
+function _learn_press_deprecated_function( $function, $version, $replacement = null ) {
+	if ( ! learn_press_is_debug() ) {
+		return;
+	}
+	_deprecated_function( $function, $version, $replacement = null );
+}
 //add_filter('learn-press/block-course-item-types', function ($a){
 //    $a[] = LP_QUIZ_CPT;
 //    return $a;

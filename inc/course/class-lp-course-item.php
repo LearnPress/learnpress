@@ -286,6 +286,13 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			return $this->_course;
 		}
 
+		public function get_course_id(){
+			if($course = $this->get_course()){
+				return $course->get_id();
+			}
+			return false;
+		}
+
 		/**
 		 * @param LP_Course_Section $section
 		 */
@@ -592,7 +599,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			}
 
 			$user             = learn_press_get_user( $user_id );
-			$course_items     = $course->get_items();
+			$course_items     = $course->get_item_ids();
 			$course_item_data = $user->get_course_data( $course_id );
 
 			if ( ! $course->is_required_enroll() ) {

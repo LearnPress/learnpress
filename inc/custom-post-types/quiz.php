@@ -46,8 +46,33 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			add_filter( 'views_edit-' . LP_QUIZ_CPT, array( $this, 'views_pages' ), 10 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
+			add_filter( 'save_post', array( $this, 'save_post' ), 10 );
+			add_action( 'learn-press/quiz-added-question', array( $this, 'added_question' ), 10, 3 );
 
 			parent::__construct( $post_type, $args );
+		}
+
+		public function save_post( $post_id ) {
+
+			$curd = new LP_Quiz_CURD();
+
+			if ( LP_QUIZ_CPT === get_post_type( $post_id ) ) {
+				$curd->update_question_ids( $post_id );
+
+				return;
+			}
+
+			if ( LP_QUESTION_CPT === get_post_type( $post_id ) && $quiz_ids = $curd->get_quiz_by_question( $post_id ) ) {
+				foreach ( $quiz_ids as $quiz_id ) {
+					$curd->update_question_ids( $quiz_id );
+				}
+			}
+		}
+
+		public function added_question( $inserted, $question_id, $quiz_id ) {
+			if ( $inserted ) {
+				$this->save_post( $quiz_id );
+			}
 		}
 
 		/**
@@ -389,7 +414,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;

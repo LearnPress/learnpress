@@ -534,7 +534,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$total         = 0;
 			$section_items = array();
 
-			if ( $section_id && $section = $this->_course->get_curriculum( $section_id ) ) {
+			if ( $section_id && $section = $this->_course->get_sections( 'object', $section_id ) ) {
 				$section_items = $section->get_items();
 
 				if ( $section_items ) {

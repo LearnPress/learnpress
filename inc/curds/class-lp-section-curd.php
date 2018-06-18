@@ -221,6 +221,31 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Read all items from DB
+	 *
+	 * @param int $section_id
+	 *
+	 * @return array
+	 */
+	public function read_items( $section_id ) {
+
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT item_id id
+			FROM {$wpdb->learnpress_section_items} si 
+			INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id
+			INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
+			INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
+			WHERE s.section_id = %d
+			AND c.post_status = %s
+			AND it.post_status = %s
+			ORDER BY si.item_order DESC
+		", $section_id, 'publish', 'publish' );
+
+		return $wpdb->get_col($query);
+	}
+
+	/**
 	 * @param $course_id
 	 *
 	 * @return int

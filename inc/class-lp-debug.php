@@ -253,6 +253,10 @@ class LP_Debug {
 	}
 
 	public static function timeStart( $name = '' ) {
+		if ( ! learn_press_is_debug() ) {
+			return;
+		}
+
 		if ( ! $name ) {
 			self::$_current_name = md5( uniqid() );
 			$name                = self::$_current_name;
