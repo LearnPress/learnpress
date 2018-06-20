@@ -522,10 +522,9 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
  */
 function learn_press_setup_pages() {
 	global $wpdb;
-	static $pages = false;
 
-	if ( $pages == false ) {
-		$pages    = array( 'courses', 'profile', 'become_a_teacher', 'checkout' );
+	if ( false === ( $page_ids = wp_cache_get( 'static-page-ids', 'learn-press' ) ) ) {
+		$pages    = learn_press_static_pages( true );
 		$page_ids = array();
 
 		foreach ( $pages as $page ) {
@@ -540,22 +539,26 @@ function learn_press_setup_pages() {
 		}
 
 		$query = $wpdb->prepare( "
-			SELECT ID, post_title, post_name, post_content, post_parent
+			SELECT ID, post_title, post_name, post_content, post_parent, post_type
 			FROM {$wpdb->posts}
 			WHERE %d AND ID IN(" . join( ',', $page_ids ) . ")
 			AND post_status <> %s
 		", 1, 'trash' );
 
-		if ( ! $pages = $wpdb->get_results( $query ) ) {
+		if ( ! $rows = $wpdb->get_results( $query ) ) {
 			return;
 		}
 
-		foreach ( $pages as $page ) {
+		foreach ( $rows as $page ) {
 			$page = sanitize_post( $page, 'raw' );
 			wp_cache_add( $page->ID, $page, 'posts' );
 		}
+
+		wp_cache_set( 'static-page-ids', $page_ids, 'learn-press' );
 	}
 }
+
+add_action( 'init', 'learn_press_setup_pages' );
 
 //add_action( 'init', 'learn_press_setup_pages' );
 
@@ -2313,11 +2316,7 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	return $current;
 }
 
-add_action( 'init', function () {
-	learn_press_get_current_profile_tab();
-
-
-} );
+add_action( 'init', 'learn_press_get_current_profile_tab' );
 function learn_press_profile_tab_exists( $tab ) {
 	if ( $tabs = learn_press_get_user_profile_tabs() ) {
 		return ! empty( $tabs[ $tab ] ) ? true : false;
@@ -2933,12 +2932,14 @@ function learn_press_static_page_ids() {
 /**
  * Get default static pages of LP.
  *
+ * @param bool $name - Optional. TRUE will return name only.
+ *
  * @return array
  *
  * @since 3.0.0
  */
-function learn_press_static_pages() {
-	return apply_filters(
+function learn_press_static_pages( $name = false ) {
+	$pages = apply_filters(
 		'learn-press/static-pages',
 		array(
 			'checkout'         => _x( 'Checkout', 'static-page-name', 'learnpress' ),
@@ -2947,6 +2948,12 @@ function learn_press_static_pages() {
 			'become_a_teacher' => _x( 'Become a Teacher', 'static-page-name', 'learnpress' )
 		)
 	);
+
+	if ( $name ) {
+		return array_keys( $pages );
+	}
+
+	return $pages;
 }
 
 function learn_press_cache_path( $group, $key = '' ) {

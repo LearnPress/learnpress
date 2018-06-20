@@ -330,9 +330,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			// update passing grade for final quiz meta
 			if ( 'evaluate_final_quiz' === LP_Request::get_string( '_lp_course_result' ) ) {
-				$passing_grade = LP_Request::get_string( '_lp_course_result_final_quiz_passing_condition' );
 
-				$quiz_id = $course->get_final_quiz();
+				$api = LP_Repair_Database::instance();
+				$api->sync_course_final_quiz($course->get_id());
+
+				$passing_grade = LP_Request::get_string( '_lp_course_result_final_quiz_passing_condition' );
+				$quiz_id       = $course->get_final_quiz();
 
 				update_post_meta( $quiz_id, '_lp_passing_grade', $passing_grade );
 			}
@@ -1385,7 +1388,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 					break;
 				case 'students' :
-					$count = $course->count_in_order();
+					$count = $course->count_completed_orders();
 					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . $count . '</span>';
 
 			}

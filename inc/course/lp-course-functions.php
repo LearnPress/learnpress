@@ -1045,7 +1045,10 @@ function learn_press_get_course_results_tooltip( $course_id ) {
 }
 
 function learn_press_course_passing_condition( $value, $format, $course_id ) {
-	if ( $quiz_id = learn_press_get_final_quiz( $course_id ) ) {
+
+    $course = learn_press_get_course($course_id);
+
+	if ( $quiz_id = $course->get_final_quiz()) {
 		$quiz  = learn_press_get_quiz( $quiz_id );
 		$value = absint( $quiz->get_passing_grade() );
 

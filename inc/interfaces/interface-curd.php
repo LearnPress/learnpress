@@ -141,7 +141,11 @@ class LP_Object_Data_CURD {
 	public function read_meta( &$object ) {
 		global $wpdb;
 
-		if ( false === ( $meta_data = wp_cache_get( $object->get_id(), 'learn-press/object-meta' ) ) ) {
+		$object_id = is_object( $object ) ? $object->get_id() : $object;
+
+		/*** TEST CACHE ***/
+		return false;
+		if ( false === ( $meta_data = wp_cache_get( $object_id, 'learn-press/object-meta' ) ) ) {
 			$id_column        = ( 'user' == $this->_meta_type ) ? 'umeta_id' : 'meta_id';
 			$object_id_column = $this->_meta_type . '_id';
 			$table            = _get_meta_table( $this->_meta_type );
@@ -151,13 +155,24 @@ class LP_Object_Data_CURD {
 				FROM {$table}
 				WHERE {$object_id_column} = %d
 				ORDER BY {$id_column}
-			", $object->get_id() );
+			", $object_id );
 			$meta_data = $wpdb->get_results( $query );
 
-			wp_cache_set( $object->get_id(), $meta_data, 'learn-press/object-meta' );
+			wp_cache_set( $object_id, $meta_data, 'learn-press/object-meta' );
 		}
 
 		return $meta_data;
+	}
+
+	public function read_meta_by_ids( $ids, $type = 'post' ) {
+		$this->_meta_type = $type;
+		foreach ( $ids as $id ) {
+			$this->read_meta( $id );
+		}
+	}
+
+	public function _filter_meta_by_object( $v, $k ) {
+		return $v->{$this->_filter_object_name} == $this->_filter_object;
 	}
 
 	/**

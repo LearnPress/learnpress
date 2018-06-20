@@ -239,7 +239,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			WHERE s.section_id = %d
 			AND c.post_status = %s
 			AND it.post_status = %s
-			ORDER BY si.item_order DESC
+			ORDER BY si.item_order ASC
 		", $section_id, 'publish', 'publish' );
 
 		return $wpdb->get_col($query);

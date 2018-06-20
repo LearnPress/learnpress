@@ -89,7 +89,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'search-authors',
 				'skip-notice-install',
 				'dashboard-order-status',
-				'dashboard-plugin-status'
+				'dashboard-plugin-status',
+				'sync-course-orders',
+				'sync-user-orders',
+				'sync-course-final-quiz',
+				'sync-remove-older-data',
+				//'sync-user-courses',
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -107,6 +112,93 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				LP_Request::register_ajax( $action, $callback );
 			}
+		}
+
+		/**
+		 * Sync orders for each course
+		 *
+		 * @since 3.1.0
+		 */
+		public function sync_course_orders() {
+			if ( empty( $_REQUEST['sync'] ) ) {
+				die();
+			}
+
+			global $wpdb;
+			$api  = LP_Repair_Database::instance();
+			$sync = $_REQUEST['sync'];
+
+			if ( $sync === 'get-courses' ) {
+				learn_press_send_json( array( 'courses' => $api->get_all_courses() ) );
+			}
+
+			$api->sync_course_orders( $sync );
+			learn_press_send_json( array( 'result' => 'success' ) );
+
+			die();
+		}
+
+		/**
+		 * Sync orders for each user
+		 *
+		 * @since 3.1.0
+		 */
+		public function sync_user_orders() {
+			if ( empty( $_REQUEST['sync'] ) ) {
+				die();
+			}
+
+			global $wpdb;
+			$api  = LP_Repair_Database::instance();
+			$sync = $_REQUEST['sync'];
+
+			if ( $sync === 'get-users' ) {
+				$query = $wpdb->prepare( "
+                    SELECT ID
+                    FROM {$wpdb->users}
+                    WHERE 1
+                ", 1 );
+
+				$users = $wpdb->get_col( $query );
+
+				learn_press_send_json( array( 'users' => $users ) );
+			}
+
+			$api->sync_user_orders( $sync );
+			learn_press_send_json( array( 'result' => 'success' ) );
+
+			die();
+		}
+
+		/**
+		 * Remap final quiz for each course
+		 *
+		 * @since 3.1.0
+		 */
+		public function sync_course_final_quiz() {
+			if ( empty( $_REQUEST['sync'] ) ) {
+				die();
+			}
+
+			global $wpdb;
+			$api  = LP_Repair_Database::instance();
+			$sync = $_REQUEST['sync'];
+
+			if ( $sync === 'get-courses' ) {
+				learn_press_send_json( array( 'courses' => $api->get_all_courses() ) );
+			}
+
+			$api->sync_course_final_quiz( $sync );
+			learn_press_send_json( array( 'result' => 'success' ) );
+
+			die();
+		}
+
+		public function sync_remove_older_data() {
+		    $api = LP_Repair_Database::instance();
+		    $api->remove_older_post_meta();
+			learn_press_send_json( array( 'result' => 'success' ) );
+			die();
 		}
 
 		/**

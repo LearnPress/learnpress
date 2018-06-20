@@ -54,6 +54,8 @@ class LP_Debug {
 	 */
 	protected static $_transaction_started = false;
 
+	protected static $log_times = array();
+
 	/**
 	 * Destructor.
 	 */
@@ -280,6 +282,24 @@ class LP_Debug {
 		unset( self::$_time[ $name ] );
 
 		return $time;
+	}
+
+	public static function logTime( $name ) {
+		if ( empty( self::$log_times[ $name ] ) ) {
+			self::$log_times[ $name ] = array();
+		}
+
+		static $time;
+		if ( ! $time ) {
+			$time = microtime( true );
+		} else {
+			self::$log_times[ $name ][] = microtime( true ) - $time;
+			$time                     = 0;
+		}
+	}
+
+	public static function getLogTimes(){
+		return self::$log_times;
 	}
 
 	/**

@@ -14,13 +14,36 @@ defined( 'ABSPATH' ) or die();
     <ul>
         <li>
             <label>
-                <input type="checkbox">
+                <input type="checkbox" name="lp-repair[sync-remove-older-data]" value="yes">
+			    <?php esc_html_e('Remove older meta data such as: post meta, ...', 'learnpress');?>
+            </label>
+        </li>
+        <li>
+            <label>
+                <input type="checkbox" name="lp-repair[sync-course-orders]" value="yes">
+			    <?php esc_html_e('Re-count orders in each course', 'learnpress');?>
+            </label>
+        </li>
+        <li>
+            <label>
+                <input type="checkbox" name="lp-repair[sync-user-orders]" value="yes">
+			    <?php esc_html_e('Re-count orders for each user', 'learnpress');?>
+            </label>
+        </li>
+        <li>
+            <label>
+                <input type="checkbox" name="lp-repair[sync-user-courses]" value="yes">
+			    <?php esc_html_e('Re-count courses for each user', 'learnpress');?>
+            </label>
+        </li>
+        <li>
+            <label>
+                <input type="checkbox" name="lp-repair[sync-course-final-quiz]" value="yes">
+			    <?php esc_html_e('Re-map final quiz for each course', 'learnpress');?>
             </label>
         </li>
     </ul>
     <p class="tools-button">
-        <a class="button lp-button-upgrade"
-           data-context="tool"
-           href="<?php echo esc_url( admin_url( 'index.php?do-update-learnpress=yes' ) ); ?>"><?php esc_html_e( 'Repair now', 'learnpress' ); ?></a>
+        <button type="button" class="button lp-button-repair"><?php esc_html_e( 'Repair now', 'learnpress' ); ?></button>
     </p>
 </div>

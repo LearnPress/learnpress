@@ -270,7 +270,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 				require_once 'inc/admin/class-lp-admin-notice.php';
 				require_once 'inc/admin/class-lp-admin.php';
-				require_once( 'inc/admin/settings/abstract-settings-page.php' );
+				require_once 'inc/admin/settings/abstract-settings-page.php' ;
+				require_once 'inc/admin/class-lp-repair-database.php' ;
 			}
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-assets.php';
@@ -378,9 +379,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Maybe flush rewrite rules
 		 */
 		public function wp_init() {
-			if ( get_option( 'learn-press-flush-rewrite-rules' ) == 'yes' ) {
+			if ( LP()->session->flush_rewrite_rules ) {
 				flush_rewrite_rules();
-				delete_option( 'learn-press-flush-rewrite-rules' );
+				unset(LP()->session->flush_rewrite_rules);
 			}
 		}
 
@@ -557,6 +558,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 						'instance'
 					) ) ? call_user_func( array( $session_class, 'instance' ) ) : new $session_class();
 				}
+
 			}
 
 			return $this->session;
@@ -708,7 +710,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		public function flush_rewrite_rules() {
-			update_option( 'learn-press-flush-rewrite-rules', 'yes' );
+			LP()->session->flush_rewrite_rules = true;
 			flush_rewrite_rules();
 		}
 

@@ -485,13 +485,18 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function save_order( $post_id ) {
 			global $action, $wpdb;
+
 			if ( wp_is_post_revision( $post_id ) ) {
 				return;
 			}
-			if ( $action == 'editpost' && learn_press_get_post_type( $post_id ) == 'lp_order' ) {
+
+			if ( learn_press_get_post_type( $post_id ) !== LP_ORDER_CPT ) {
+				return;
+			}
+
+			if ( $action == 'editpost' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
 				remove_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
-
 
 				$user_id        = learn_press_get_request( 'order-customer' );
 				$order          = learn_press_get_order( $post_id );
@@ -521,7 +526,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					do_action( 'learn-press/order/status-' . $status . '-to-' . $status, $order->get_id() );
 					do_action( 'learn-press/order/status-changed', $order->get_id(), $status, $status );
 				}
+
+				add_action( 'save_post', array( $this, 'save_order' ) );
+				add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 			}
+
+			$order = learn_press_get_order( $post_id );
+			if ( $users = $order->get_users() ) {
+				$api = LP_Repair_Database::instance();
+				$api->sync_user_orders( $users );
+			}
+
 		}
 
 		/**

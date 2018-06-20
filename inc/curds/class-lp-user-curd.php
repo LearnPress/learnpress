@@ -125,7 +125,42 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array|mixed
 	 */
 	public function get_orders( $user_id, $args = array() ) {
+		if ( ! $orders = get_user_meta( $user_id, 'orders', true ) ) {
+			return false;
+		}
 
+		/*** TEST CACHE ***/
+		$all_orders = call_user_func_array( 'array_merge', $orders );
+		LP_Helper_CURD::cache_posts($all_orders);
+
+		if ( array_key_exists( 'status', $args ) && $args['status'] ) {
+			LP_Helper::sanitize_order_status( $args['status'] );
+
+			$statuses = (array) $args['status'];
+			foreach ( $orders as $course_id => $order_ids ) {
+				$orders[ $course_id ] = array();
+				foreach ( $order_ids as $order_id ) {
+					if ( in_array( get_post_status( $order_id ), $statuses ) ) {
+						$orders[ $course_id ][] = $order_id;
+					}
+				}
+			}
+		}
+
+		if ( array_key_exists( 'group_by_order', $args ) && $args['group_by_order'] ) {
+			$this->_group_orders( $orders );
+		}
+
+		return $orders;
+	}
+
+	/**
+	 * @param       $user_id
+	 * @param array $args
+	 *
+	 * @return array|bool|mixed
+	 */
+	public function read_orders( $user_id, $args = array() ) {
 		// If user does not exists
 		if ( ! $user_id || ! $user = learn_press_get_user( $user_id ) ) {
 			return false;
@@ -227,6 +262,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		if ( $orders ) {
+
+			/*** TEST CACHE ***/
+			$all_orders = call_user_func_array( 'array_merge', $orders );
+			$curd       = new LP_Object_Data_CURD();
+			$curd->read_meta_by_ids( $all_orders, 'post' );
+
 			if ( array_key_exists( 'status', $args ) && $args['status'] ) {
 				LP_Helper::sanitize_order_status( $args['status'] );
 
@@ -281,7 +322,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return bool
 	 */
 	public function read_course( $user_id = null, $course_id = null, $force = false ) {
-		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+		LP_Debug::logTime( __FUNCTION__ );
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
@@ -295,8 +336,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		if ( ! $user_id ) {
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 			return false;
 		}
 
@@ -327,58 +366,23 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// There is no course ids to read
 		if ( ! $fetch_ids ) {
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 			return false;
 		}
 
 		global $wpdb;
 
-		$format = array_fill( 0, sizeof( $fetch_ids ), '%d' );
-		$args   = array( '_status', LP_COURSE_CPT );
-		$args   = array_merge( $args, $fetch_ids );
-		$args[] = $user_id;
-
-
-//		$user         = learn_press_get_user( $user_id );
-//		$order_format = array();
-//		if ( $user_orders = $user->get_orders( false ) ) {
-//			if ( isset( $user_orders[ $course_id ] ) ) {
-//				$order_ids    = $user_orders[ $course_id ];
-//				$order_format = array_fill( 0, sizeof( $order_ids ), '%d' );
-//				$args         = array_merge( $args, $order_ids );
-//			}
-//		}
-//		print_r( $args );
-//		echo "
-//		SELECT *
-//			FROM(
-//				SELECT ui.*, uim.meta_value as `ext_status`
-//				FROM {$wpdb->learnpress_user_items} ui
-//				LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = ui.user_item_id AND uim.meta_key = %s
-//				WHERE item_type = %s AND item_id IN(" . join( ',', $format ) . ") AND user_id = %d
-//				" . ( $order_format ? "OR ref_id IN(" . join( ',', $order_format ) . ")" : '' ) . "
-//			) X
-//		";
-//		echo
+		$format    = array_fill( 0, sizeof( $fetch_ids ), '%d' );
+		$in_clause = $wpdb->prepare( join( ',', $format ), $fetch_ids );
+		$args      = array( LP_COURSE_CPT, $user_id );
 
 		$query = $wpdb->prepare( "
-			SELECT *
-			FROM(
-				SELECT ui.*, uim.meta_value as `ext_status`
-				FROM {$wpdb->learnpress_user_items} ui
-				LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = ui.user_item_id AND uim.meta_key = %s
-				WHERE item_type = %s AND item_id IN(" . join( ',', $format ) . ") AND user_id = %d
-			) X
+			SELECT ui.*
+			FROM {$wpdb->learnpress_user_items} ui
+			WHERE item_type = %s 
+				AND user_id = %d
+				AND item_id IN({$in_clause}) 
 			ORDER BY item_id, user_item_id DESC
 		", $args );
-		/*	SELECT *
-			FROM {$wpdb->learnpress_user_items}
-			WHERE item_type = %s
-			AND item_id IN()
-			AND user_id = %d
-			ORDER BY item_id, user_item_id DESC
-		", $args );*/
 
 		if ( $results = $wpdb->get_results( $query, ARRAY_A ) ) {
 			foreach ( $results as $result ) {
@@ -396,7 +400,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 
 				$result['items'] = array();
-				$this->_read_course_items( $result, $force );
+
+				/*** TEST CACHE ***/
+				//$this->_read_course_items( $result, $force );
+
 				wp_cache_set( 'course-' . $user_id . '-' . $result['item_id'], $result, 'learn-press/user-courses' );
 
 				// Remove the course has already read!
@@ -404,29 +411,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		// Cache the courses is not read
-//		if ( $fetch_ids ) {
-//			$defaults = array(
-//				'user_item_id'   => 0,
-//				'user_id'        => $user_id,
-//				'item_id'        => 0,
-//				'start_time'     => '0000-00-00 00:00',
-//				'start_time_gmt' => '0000-00-00 00:00',
-//				'end_time'       => '0000-00-00 00:00',
-//				'end_time_gmt'   => '0000-00-00 00:00',
-//				'item_type'      => '',
-//				'status'         => '',
-//				'ref_type'       => '',
-//				'ref_id'         => '',
-//				'parent_id'      => 0,
-//				'ext_status'     => '',
-//				'items'          => array()
-//			);
-//			foreach ( $fetch_ids as $fetch_id ) {
-//				wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, $defaults, 'learn-press/user-courses' );
-//			}
-//		}
-		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
+		LP_Debug::logTime( __FUNCTION__ );
 
 		return true;
 	}

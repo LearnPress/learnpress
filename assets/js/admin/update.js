@@ -41,7 +41,7 @@
                     }
                 }
             });
-        }).on('click', '#skip-notice-install', function(){
+        }).on('click', '#skip-notice-install', function () {
             $.post({
                 url: '',
                 data: {
@@ -50,7 +50,7 @@
             });
 
             $('#notice-install').fadeOut();
-        });
+        })
     }
 
     $(document).ready(init);

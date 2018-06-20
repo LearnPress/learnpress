@@ -815,7 +815,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function is_in_stock() {
 			$in_stock = true;
 			if ( $max_allowed = $this->get_max_students() ) {
-				$in_stock = $max_allowed > $this->count_in_order();
+				$in_stock = $max_allowed > $this->count_completed_orders();
 			}
 
 			return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );
@@ -862,7 +862,34 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function count_in_order( $statuses = 'completed' ) {
-			return $this->_curd->count_by_orders( $this->get_id(), $statuses );
+			settype( $statuses, 'array' );
+			$count = 0;
+			foreach ( $statuses as $status ) {
+				if ( $orders = get_post_meta( $this->get_id(), 'order-' . $status, true ) ) {
+					$count += sizeof( $orders );
+				}
+			}
+
+			return $count;
+		}
+
+		public function count_completed_orders() {
+			LP_Debug::logTime( __FUNCTION__ );
+
+			static $count = false;
+			//if ( false === ( $count = wp_cache_get( 'course-' . $this->get_id(), 'learn-press/completed-orders' ) ) ) {
+			if ( false === $count && $orders = $this->get_meta( 'order-completed' ) ) {
+				$count = sizeof( $orders );
+			} else {
+				$count = 0;
+			}
+
+			//wp_cache_set( 'course-' . $this->get_id(), $count, 'learn-press/completed-orders' );
+			//}
+
+			LP_Debug::logTime( __FUNCTION__ );
+
+			return $count;
 		}
 
 		/**
@@ -1699,7 +1726,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$object_sections = array();
 
 				foreach ( $sections as $k => $section ) {
-					$sid = $section->section_id;
+					$sid     = $section->section_id;
 					$section = new LP_Course_Section( $section );
 					$section->set_position( ++ $position );
 

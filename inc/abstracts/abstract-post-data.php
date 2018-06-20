@@ -223,6 +223,16 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 			return array();
 		}
 
+		/**
+		 * @param      $key
+		 * @param bool $single
+		 *
+		 * @return mixed
+		 */
+		public function get_meta( $key, $single = true ) {
+			return get_post_meta( $this->get_id(), $key, $single );
+		}
+
 		public function get_edit_link() {
 			return get_edit_post_link( $this->get_id() );
 		}
