@@ -1112,7 +1112,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 top: 60px;
                 right: 0;
                 bottom: 0;
-                overflow: hidden;
+                overflow: visible;
             }
         </style>
 		<?php
