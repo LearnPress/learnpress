@@ -349,12 +349,13 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 */
 		public static function retake_course() {
 			$security        = LP_Request::get_string( 'retake-course-nonce' );
-			$course_id       = LP_Request::get_int( 'course_id' );
+			$course_id       = LP_Request::get_int( 'retake-course' );
 			$user            = learn_press_get_current_user();
 			$course          = learn_press_get_course( $course_id );
 			$response        = array(
 				'result' => 'error'
 			);
+
 			$security_action = sprintf( 'retake-course-%d-%d', $course->get_id(), $user->get_id() );
 			// security check
 			if ( ! wp_verify_nonce( $security, $security_action ) ) {
