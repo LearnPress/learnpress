@@ -55,9 +55,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function update() {
-		parent::update();
+		$return = parent::update();
 
 		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
+
+		return $return;
 	}
 
 	/**
@@ -114,7 +116,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * Calculate result of quiz.
 	 *
 	 * @param string $prop
-	 * @param bool $force - Optional. Force to refresh cache.
+	 * @param bool   $force - Optional. Force to refresh cache.
 	 *
 	 * @return array|bool|mixed
 	 */
@@ -151,7 +153,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 						$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
 					} else {
 						if ( false === $check['answered'] ) {
-							if ( $quiz->get_minus_skip_questions()) {
+							if ( $quiz->get_minus_skip_questions() ) {
 								// minus for each wrong, empty question
 								$result['user_mark'] -= $quiz->get_minus_points();
 							}
@@ -366,7 +368,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					throw new Exception( __( 'You have already checked this question.', 'learnpress' ), 1010 );
 				}
 			}
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			return new WP_Error( $ex->getCode(), $ex->getMessage() );
 		}
 

@@ -3238,6 +3238,17 @@ function learn_press_get_block_course_item_types() {
 	return apply_filters( 'learn-press/block-course-item-types', array( LP_LESSON_CPT, LP_QUIZ_CPT ) );
 }
 
+/**
+ * Get post type of a post from cache.
+ * If there is no data stored in cache then
+ * get it from WP API.
+ *
+ * @since 3.1.0
+ *
+ * @param int|WP_Post $post
+ *
+ * @return string
+ */
 function learn_press_get_post_type( $post ) {
 	if ( false === ( $post_types = wp_cache_get( 'post-types', 'learn-press' ) ) ) {
 		$post_types = array();
@@ -3260,6 +3271,14 @@ function learn_press_get_post_type( $post ) {
 	return $post_type;
 }
 
+/**
+ * Add post type of a post into cache
+ *
+ * @since 3.1.0
+ *
+ * @param int|array $id
+ * @param string    $type
+ */
 function learn_press_cache_add_post_type( $id, $type = '' ) {
 	if ( false === ( $post_types = wp_cache_get( 'post-types', 'learn-press' ) ) ) {
 		$post_types = array();
@@ -3273,7 +3292,6 @@ function learn_press_cache_add_post_type( $id, $type = '' ) {
 
 	wp_cache_set( 'post-types', $post_types, 'learn-press' );
 }
-
 
 function _learn_press_deprecated_function( $function, $version, $replacement = null ) {
 	if ( ! learn_press_is_debug() ) {

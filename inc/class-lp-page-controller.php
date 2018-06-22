@@ -74,6 +74,14 @@ class LP_Page_Controller {
 
 	public function setup_data( $post ) {
 		static $courses = array();
+
+		/**
+		 * @var WP             $wp
+		 * @var WP_Query       $wp_query
+		 * @var LP_Course      $lp_course
+		 * @var LP_Course_Item $lp_course_item
+		 * @var LP_Question    $lp_quiz_question
+		 */
 		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
 
 		if ( LP_COURSE_CPT !== learn_press_get_post_type( $post->ID ) ) {
@@ -85,8 +93,7 @@ class LP_Page_Controller {
 		}
 
 		$courses[ $post->ID ] = true;
-
-		$vars = $wp->query_vars;
+		$vars                 = $wp->query_vars;
 
 		if ( empty( $vars['course-item'] ) ) {
 			return false;
@@ -125,6 +132,7 @@ class LP_Page_Controller {
 
 				return $post;
 			}
+			
 			$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
 
 			if ( ! $user_item_id ) {

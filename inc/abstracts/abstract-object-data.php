@@ -88,10 +88,10 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param null $data
 		 */
 		public function __construct( $data = null ) {
+
 			$this->_data = (array) $data;
 			if ( array_key_exists( 'id', $this->_data ) ) {
 				$this->set_id( absint( $this->_data['id'] ) );
-				unset( $this->_data['id'] );
 			}
 			$this->load_curd();
 		}

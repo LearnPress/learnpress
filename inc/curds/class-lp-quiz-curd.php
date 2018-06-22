@@ -209,7 +209,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				return false;
 			}
 
-			if ( ! $question_ids = $quiz->get_question_ids() ) {
+			if ( $question_ids = $quiz->get_question_ids() ) {
 				LP_Helper_CURD::cache_posts( $question_ids );
 				$question_factory = new LP_Question_CURD();
 				$question_factory->load_answer_options( $question_ids );
@@ -227,7 +227,6 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		 */
 		public function read_question_ids( $quiz_id ) {
 			global $wpdb;
-
 			$query = $wpdb->prepare( "
 				SELECT question_id
 				FROM {$wpdb->posts} p 

@@ -10,6 +10,9 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	protected $_is_available = null;
 
+	/**
+	 * @var string
+	 */
 	protected $_data_key = '';
 
 	/**
@@ -18,25 +21,100 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @param array $item . A record fetched from table _learnpress_user_items
 	 */
 	public function __construct( $item ) {
-		settype( $item, 'array' );
-
-		ksort( $item );
-		$this->_data_key = md5( serialize( $item ) );
+		if ( is_numeric( $item ) ) {
+			$item = array( 'item_id' => $item );
+		} else {
+			$item = (array) $item;
+		}
 
 		parent::__construct( $item );
+
+		$this->set_default_data( $item );
+	}
+
+	/**
+	 * Set data from passed args
+	 *
+	 * @param array $item
+	 */
+	protected function set_default_data( $item ) {
+
+		ksort( $item );
+
+		$this->_data_key = md5( serialize( $item ) );
+		$this->_changes  = array();
+		$item_id         = 0;
+
+		if ( ! empty( $item['user_item_id'] ) ) {
+			$this->set_data( 'user_item_id', $item['user_item_id'] );
+		}
+
 		if ( ! empty( $item['item_id'] ) ) {
 			$this->set_id( $item['item_id'] );
+			$this->set_data( 'item_id', $item['item_id'] );
+			$this->set_data( 'item_type', learn_press_get_post_type( $item['item_id'] ) );
+			$item_id = $item['item_id'];
 		}
 
 		if ( ! empty( $item['start_time'] ) ) {
-			$this->set_start_time( $item['start_time'] );
+			$this->set_start_time( $item['start_time'], true );
+		} else {
+			$this->set_start_time( current_time( 'mysql' ), true );
 		}
 
 		if ( ! empty( $item['end_time'] ) ) {
-			$this->set_end_time( $item['end_time'] );
+			$this->set_end_time( $item['end_time'], true );
+		} else {
+			$this->set_end_time( LP_Datetime::getSqlNullDate(), true );
 		}
 
-		$this->_changes = array();
+		if ( ! empty( $item['user_id'] ) ) {
+			$this->set_user_id( $item['user_id'] );
+		} else {
+			$this->set_user_id( get_current_user_id() );
+		}
+
+		if ( ! empty( $item['status'] ) ) {
+			$this->set_status( $item['status'] );
+		} else {
+			$this->set_status( learn_press_default_user_item_status( $item_id ) );
+		}
+
+		if ( ! empty( $item['ref_id'] ) ) {
+			$this->set_ref_id( $item['ref_id'] );
+			if ( empty( $item['ref_type'] ) ) {
+				$this->set_data( 'ref_type', learn_press_get_post_type( $item['ref_id'] ) );
+			}
+		}
+
+		if ( ! empty( $item['ref_type'] ) ) {
+			$this->set_data( 'ref_type', $item['ref_type'] );
+		}
+
+		if ( ! empty( $item['parent_id'] ) ) {
+			$this->set_parent_id( $item['parent_id'] );
+		}
+	}
+
+	public function set_user_id( $user_id ) {
+		$this->set_data( 'user_id', $user_id );
+	}
+
+	public function get_user_id() {
+		return $this->get_data( 'user_id' );
+	}
+
+	public function set_ref_id( $ref_id ) {
+		$this->set_data( 'ref_id', $ref_id );
+		$this->set_data( 'ref_type', learn_press_get_post_type( $ref_id ) );
+	}
+
+	public function get_parent_id() {
+		return $this->get_data( 'parent_id' );
+	}
+
+	public function set_parent_id( $parent_id ) {
+		$this->set_data( 'parent_id', $parent_id );
 	}
 
 	/**
@@ -101,7 +179,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 */
 	public function set_end_time( $time, $bound_to_gmt = false ) {
 		$this->set_data_date( 'end_time', $time );
-
 		if ( $bound_to_gmt ) {
 			$this->set_end_time_gmt( $this->get_end_time()->toSql( false ) );
 		}
@@ -167,6 +244,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function is_available() {
+
 		if ( null === $this->_is_available ) {
 			$user                = $this->get_user();
 			$order               = $user->get_course_order( $this->get_item_id() );
@@ -174,15 +252,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return $this->_is_available;
-	}
-
-	/**
-	 * Get user-id.
-	 *
-	 * @return int
-	 */
-	public function get_user_id() {
-		return $this->get_user( 'id' );
 	}
 
 	/**
@@ -267,22 +336,22 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 	public function get_mysql_data() {
 		$columns = array();
-		foreach ( $this->_data as $k => $v ) {
+		foreach ( $this->get_data() as $k => $v ) {
 			switch ( $k ) {
 				case 'start_time':
 				case 'end_time':
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'start_time_gmt':
-					if ( ! $this->_data['start_time_gmt'] ) {
-						$v = new LP_Datetime( $this->_data['start_time'] );
+					if ( ! $v ) {
+						$v = new LP_Datetime( $v );
 					}
 
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'end_time_gmt':
-					if ( ! $this->_data['end_time_gmt'] ) {
-						$v = new LP_Datetime( $this->_data['end_time'] );
+					if ( ! $v ) {
+						$v = new LP_Datetime( $v );
 					}
 
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
@@ -322,7 +391,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function update() {
-
 		if ( ! $this->is_change() ) {
 			return false;
 		}
@@ -331,6 +399,9 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		$return = learn_press_update_user_item_field( $data );
 
 		if ( $return ) {
+			foreach ( (array) $return as $k => $v ) {
+				$this->_set_data( $k, $v );
+			}
 			$this->_changes = array();
 		}
 

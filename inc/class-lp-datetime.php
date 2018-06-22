@@ -253,7 +253,7 @@ class LP_Datetime extends DateTime {
 	 * @return  string
 	 */
 	public function toSql( $local = true ) {
-		return $this->format( 'Y-m-d H:i:s', $local );
+		return $this->raw_date === self::getSqlNullDate() || is_null( $this->raw_date ) ? self::getSqlNullDate() : $this->format( 'Y-m-d H:i:s', $local );
 	}
 
 	/**

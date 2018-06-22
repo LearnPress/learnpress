@@ -183,10 +183,14 @@ class LP_Repair_Database {
 	public function remove_older_post_meta() {
 		global $wpdb;
 		$query = $wpdb->prepare( "
-			DELETE FROM {$wpdb->postmeta} WHERE meta_key = %s
-		", '_lpr_course_final' );
+			DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s
+		", $wpdb->esc_like( '_lpr_' ) . '%' );
 		$wpdb->query( $query );
 
+		$query = $wpdb->prepare( "
+			DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s
+		", '%' . $wpdb->esc_like( '_lpr_' ) . '%' );
+		$wpdb->query( $query );
 	}
 
 	/**

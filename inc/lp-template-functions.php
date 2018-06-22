@@ -72,7 +72,8 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+		// Course is not require enrolling
+		if ( ! $course->is_required_enroll() ) {
 			return;
 		}
 
@@ -81,18 +82,28 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 			return;
 		}
 
-		// Locked course for user
-		if ( $user->is_locked_course( $course->get_id() ) ) {
-			return;
-		}
-
 		// Course out of stock (full students)
 		if ( ! $course->is_in_stock() ) {
 			return;
 		}
 
-		// Course is not require enrolling
-		if ( ! $course->is_required_enroll() ) {
+		if ( $course->is_free() && ! is_user_logged_in() ) {
+			learn_press_get_template( 'single-course/buttons/enroll.php' );
+
+			return;
+		}
+
+		/*** TEST CACHE ***/
+		if ( ! learn_press_current_user_enrolled_course() ) {
+			//return;
+		}
+
+		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+			return;
+		}
+
+		// Locked course for user
+		if ( $user->is_locked_course( $course->get_id() ) ) {
 			return;
 		}
 
@@ -148,6 +159,11 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_continue_button() {
+
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
@@ -182,6 +198,10 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_finish_button() {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
@@ -3678,6 +3698,10 @@ function learn_press_current_user_enrolled_course() {
 	$course = LP_Global::course();
 
 	if ( ! $course ) {
+		return false;
+	}
+
+	if ( ! $user->is_logged_in() ) {
 		return false;
 	}
 
