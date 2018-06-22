@@ -224,7 +224,7 @@ class LP_Cart {
 				if ( ! $course ) {
 					continue;
 				}
-				$subtotal = $course->get_price() * $item['quantity'];
+				$subtotal = apply_filters( 'learn-press/calculate_sub_total', $course->get_price() * $item['quantity'], $item);
 				$total    = $subtotal;
 
 				$this->_cart_content[ $cart_id ]['subtotal'] = $subtotal;
