@@ -28,6 +28,8 @@ class LP_Datetime extends DateTime {
 
 	protected $raw_date = null;
 
+	protected static $timezone = null;
+
 	/**
 	 * Constructor.
 	 *
@@ -50,12 +52,18 @@ class LP_Datetime extends DateTime {
 			$date = current_time( 'mysql' );
 		}
 
-		if ( ! ( $tz instanceof DateTimeZone ) ) {
+		if ( 1 == 1 ) {
+			if ( ! ( $tz instanceof DateTimeZone ) ) {
 
-			if ( ( $tz === null ) ) {
-				$tz = new DateTimeZone( self::timezone_string() );
-			} elseif ( is_string( $tz ) && $tz ) {
-				$tz = new DateTimeZone( $tz );
+				if ( ( $tz === null ) ) {
+					$tz = new DateTimeZone( self::timezone_string() );
+				} elseif ( is_string( $tz ) && $tz ) {
+					$tz = new DateTimeZone( $tz );
+				}
+			}
+		} else {
+			if ( ! ( $tz instanceof DateTimeZone ) ) {
+				$tz = self::get_default_timezone( $tz );
 			}
 		}
 
@@ -75,6 +83,19 @@ class LP_Datetime extends DateTime {
 		date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
+	}
+
+	public static function get_default_timezone( $tz ) {
+		if ( empty( self::$timezone ) ) {
+			if ( ( $tz === null ) ) {
+				$tz = new DateTimeZone( self::timezone_string() );
+			} elseif ( is_string( $tz ) && $tz ) {
+				$tz = new DateTimeZone( $tz );
+			}
+			self::$timezone = $tz;
+		}
+
+		return self::$timezone;
 	}
 
 	/**
