@@ -636,7 +636,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				if ( $sections = wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections' ) ) {
 					$position = 0;
 					foreach ( $sections as $k => $section ) {
-						$_section = new LP_Course_Section( $section );
+						$_section = new LP_Course_Section( $section );die(__FUNCTION__);
 						$_section->set_position( ++ $position );
 						$curriculum[ $section->section_id ] = $_section;
 					}

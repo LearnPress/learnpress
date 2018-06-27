@@ -24,9 +24,24 @@ class LP_Unit_Test {
 
 	public static function shutdown() {
 		if ( $times = LP_Debug::getLogTimes() ) {
+			$styles = array(
+				'position'   => 'fixed',
+				'bottom'     => 0,
+				'left'       => 0,
+				'right'      => 0,
+				'background' => '#000',
+				'z-index'    => 100,
+				'font-size'  => '12px',
+				'color'      => '#FFF'
+			);
+			foreach ( $styles as $k => $v ) {
+				$styles[ $k ] = "$k: $v";
+			}
+			echo '<div style="' . join( ';', $styles ) . '">';
 			foreach ( $times as $key => $time ) {
 				echo "Execute Time ({$key}) = " . array_sum( $time ) . '(' . sizeof( $time ) . ')';
 			}
+			echo '</div>';
 		}
 	}
 }

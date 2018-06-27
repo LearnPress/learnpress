@@ -46,6 +46,14 @@ define( 'LP_USE_ATTRIBUTES', false );
 define( 'LP_WIDGET_PATH', LP_PLUGIN_PATH . 'inc/widgets' );
 define( 'LP_WIDGET_URL', LP_PLUGIN_URL . 'inc/widgets' );
 
+// Course access level
+define('LP_COURSE_ACCESS_LEVEL_0', 0); // No access
+define('LP_COURSE_ACCESS_LEVEL_10', 10); // Related order is pending
+define('LP_COURSE_ACCESS_LEVEL_20', 20); // Related order is processing
+define('LP_COURSE_ACCESS_LEVEL_30', 30); // Related order is completed
+define('LP_COURSE_ACCESS_LEVEL_40', 40); // User has already enrolled course
+define('LP_COURSE_ACCESS_LEVEL_50', 50); // User has already finished course
+
 // Error codes
 define( 'LP_INVALID_REQUEST', 100 );
 define( 'LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS', 110 );

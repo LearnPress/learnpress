@@ -486,24 +486,24 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$quiz   = learn_press_get_quiz( $quiz_id );
 
 				$course_data = $user->get_course_data( $course->get_id() );
-				$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+				if($quiz_data   = $course_data->get_item_quiz( $quiz->get_id() )) {
 
-				// If user click 'Skip' button
-				if ( $nav_type === 'skip-question' ) {
-					if ( $quiz_data->get_question_answer( $question_id ) == '' ) {
-						$questions[ $question_id ] = '__SKIPPED__';
+					// If user click 'Skip' button
+					if ( $nav_type === 'skip-question' ) {
+						if ( $quiz_data->get_question_answer( $question_id ) == '' ) {
+							$questions[ $question_id ] = '__SKIPPED__';
+						} else {
+							unset( $questions[ $question_id ] );
+						}
 					} else {
-						unset( $questions[ $question_id ] );
+						if ( ! array_key_exists( $question_id, $questions ) ) {
+							$questions[ $question_id ] = array();
+						}
 					}
-				} else {
-					if ( ! array_key_exists( $question_id, $questions ) ) {
-						$questions[ $question_id ] = array();
-					}
+
+					$quiz_data->add_question_answer( $questions );
+					$quiz_data->update();
 				}
-
-				$quiz_data->add_question_answer( $questions );
-				$quiz_data->update();
-
 			}
 			catch ( Exception $ex ) {
 				return $ex;

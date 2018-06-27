@@ -44,13 +44,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 *
 		 * @param LP_Course_Item $item
 		 *
-		 * @return int
+		 * @return int|LP_Course_Item
 		 */
 		public function set_viewing_item( $item ) {
-
-//			if ( ! $this->has_item( $item->get_id() ) ) {
-//				return false;
-//			}
 
 			if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
 				return 0;
@@ -60,7 +56,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$this->_viewing_item = $item;
 			$item->set_course( $this );
 
-			return $user->maybe_update_item( $item->get_id(), $this->get_id() );
+			$user->maybe_update_item( $item->get_id(), $this->get_id() );
+
+			return $item;
 		}
 
 		/**

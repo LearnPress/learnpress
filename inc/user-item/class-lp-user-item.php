@@ -4,7 +4,7 @@
  * Class LP_User_Item
  * @since 3.0.0
  */
-class LP_User_Item extends LP_Abstract_Object_Data {
+class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * @var bool
 	 */
@@ -28,8 +28,8 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		parent::__construct( $item );
-
 		$this->set_default_data( $item );
+
 	}
 
 	/**
@@ -369,12 +369,15 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return LP_User_Item|bool
 	 */
 	public static function get_item_object( $data ) {
-		if ( isset( $data['item_id'] ) ) {
+		$item_id = 0;
+		if ( is_array( $data ) && isset( $data['item_id'] ) ) {
 			$item_id = $data['item_id'];
-		} elseif ( isset( $data->item_id ) ) {
+		} elseif ( is_object( $data ) && isset( $data->item_id ) ) {
 			$item_id = $data->item_id;
-		} else {
+		} elseif ( is_numeric( $data ) ) {
 			$item_id = absint( $data );
+		} elseif ( $data instanceof LP_User_Item ) {
+			$item_id = $data->get_id();
 		}
 
 		$item = false;
@@ -406,6 +409,10 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return $return;
+	}
+
+	public function is_course_item() {
+		return learn_press_is_support_course_item_type( $this->get_data( 'item_type' ) );
 	}
 
 	public function get_status_label( $status = '' ) {
@@ -603,10 +610,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function get_js_args() {
-		$course = $this->get_course();
-//		$args = array(
-//			'url'=>$course->get_item_link( $item->get_id() )
-//		)
+		$course  = $this->get_course();
 		$item_js = array(
 			'status'   => '',
 			'url'      => $course->get_item_link( $this->get_id() ),
@@ -638,6 +642,26 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return false;
+	}
+
+	public function offsetSet( $offset, $value ) {
+		// TODO: Implement offsetSet() method.
+	}
+
+	public function offsetGet( $offset ) {
+		if ( is_callable( array( $this, 'get_' . $offset ) ) ) {
+			return call_user_func( array( $this, 'get_' . $offset ) );
+		}
+
+		return false;
+	}
+
+	public function offsetUnset( $offset ) {
+		// TODO: Implement offsetUnset() method.
+	}
+
+	public function offsetExists( $offset ) {
+		// TODO: Implement offsetExists() method.
 	}
 }
 

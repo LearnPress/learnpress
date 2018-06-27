@@ -415,6 +415,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function set_viewing_item( $item ) {
+			die(__FUNCTION__);
 			if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
 				return 0;
 			}
@@ -1197,7 +1198,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function evaluate_course_results( $user_id = 0, $force = false ) {
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			if ( ! $user_id ) {
 				$user_id = get_current_user_id();
@@ -1208,7 +1208,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			$result = isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
-			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return $result;
 		}
@@ -1369,6 +1368,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_completed_items( $user_id = 0, $force = false, $type = '' ) {
 
+
 			if ( ! $user_id ) {
 				$user_id = get_current_user_id();
 			}
@@ -1386,6 +1386,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function count_completed_items( $user_id = 0, $force = false, $type = '' ) {
+
+
 			$items = $this->get_completed_items( $user_id, $force, $type );
 			$count = 0;
 			if ( $items ) {
@@ -1426,6 +1428,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function count_preview_items() {
+
 
 			if ( false === ( $count_preview = $this->get_preview_items() ) ) {
 
@@ -1722,17 +1725,23 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			if ( $return == 'object' && $sections ) {
-				$position        = 0;
-				$object_sections = array();
+				if ( empty( $this->sections ) ) {
 
-				foreach ( $sections as $k => $section ) {
-					$sid     = $section->section_id;
-					$section = new LP_Course_Section( $section );
-					$section->set_position( ++ $position );
+					$position        = 0;
+					$object_sections = array();
 
-					$object_sections[ $sid ] = $section;
+					foreach ( $sections as $k => $section ) {
+						$sid     = $section->section_id;
+						$section = new LP_Course_Section( $section );
+						$section->set_position( ++ $position );
+
+						$object_sections[ $sid ] = $section;
+					}
+					$sections       = $object_sections;
+					$this->sections = $sections;
+				} else {
+					$sections = $this->sections;
 				}
-				$sections = $object_sections;
 			}
 
 			if ( $section_id ) {

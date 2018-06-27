@@ -229,6 +229,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-thumbnail-helper.php';
+			require_once 'inc/cache.php';
 
 			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';
@@ -270,8 +271,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 				require_once 'inc/admin/class-lp-admin-notice.php';
 				require_once 'inc/admin/class-lp-admin.php';
-				require_once 'inc/admin/settings/abstract-settings-page.php' ;
-				require_once 'inc/admin/class-lp-repair-database.php' ;
+				require_once 'inc/admin/settings/abstract-settings-page.php';
+				require_once 'inc/admin/class-lp-repair-database.php';
 			}
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-assets.php';
@@ -381,7 +382,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function wp_init() {
 			if ( LP()->session->flush_rewrite_rules ) {
 				flush_rewrite_rules();
-				unset(LP()->session->flush_rewrite_rules);
+				unset( LP()->session->flush_rewrite_rules );
 			}
 		}
 
@@ -786,3 +787,8 @@ add_action( 'shutdown', function () {
 		learn_press_debug( $cache );
 	}
 } );
+
+add_filter('wp_redirectx', function ($url){
+    var_dump(debug_backtrace());
+   echo $url;die();
+});

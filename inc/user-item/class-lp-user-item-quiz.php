@@ -16,8 +16,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function __construct( $data ) {
 		$this->_curd = new LP_Quiz_CURD();
-		parent::__construct( $data );
 
+		parent::__construct( $data );
 		$this->_parse_answers();
 	}
 

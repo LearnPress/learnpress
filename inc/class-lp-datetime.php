@@ -28,6 +28,8 @@ class LP_Datetime extends DateTime {
 
 	protected $raw_date = null;
 
+	protected static $timezone = null;
+
 	/**
 	 * Constructor.
 	 *
@@ -35,6 +37,7 @@ class LP_Datetime extends DateTime {
 	 * @param   mixed  $tz
 	 */
 	public function __construct( $date = '', $tz = null ) {
+
 		if ( empty( self::$gmt ) || empty( self::$stz ) ) {
 			self::$gmt = new DateTimeZone( 'GMT' );
 			self::$stz = new DateTimeZone( @date_default_timezone_get() );
@@ -51,20 +54,11 @@ class LP_Datetime extends DateTime {
 		}
 
 		if ( ! ( $tz instanceof DateTimeZone ) ) {
-
-			if ( ( $tz === null ) ) {
-				$tz = new DateTimeZone( self::timezone_string() );
-			} elseif ( is_string( $tz ) && $tz ) {
-				$tz = new DateTimeZone( $tz );
-			}
+			$tz = self::get_default_timezone( $tz );
 		}
 
 		if ( ! $tz ) {
 			$tz = null;
-		}
-
-		if ( $this->raw_date === '0000-00-00 00:00:00' ) {
-			//$date = '1969-01-01 00:00:00';
 		}
 
 		date_default_timezone_set( 'UTC' );
@@ -75,6 +69,20 @@ class LP_Datetime extends DateTime {
 		date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
+	}
+
+	public static function get_default_timezone( $tz ) {
+		if ( empty( self::$timezone ) ) {
+			if ( ( $tz === null ) ) {
+				$tz = new DateTimeZone( self::timezone_string() );
+			} elseif ( is_string( $tz ) && $tz ) {
+				$tz = new DateTimeZone( $tz );
+			}
+
+			self::$timezone = $tz;
+		}
+
+		return self::$timezone;
 	}
 
 	/**

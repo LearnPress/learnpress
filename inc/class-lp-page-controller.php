@@ -76,11 +76,11 @@ class LP_Page_Controller {
 		static $courses = array();
 
 		/**
-		 * @var WP             $wp
-		 * @var WP_Query       $wp_query
-		 * @var LP_Course      $lp_course
-		 * @var LP_Course_Item $lp_course_item
-		 * @var LP_Question    $lp_quiz_question
+		 * @var WP                               $wp
+		 * @var WP_Query                         $wp_query
+		 * @var LP_Course                        $lp_course
+		 * @var LP_Course_Item|LP_Quiz|LP_Lesson $lp_course_item
+		 * @var LP_Question                      $lp_quiz_question
 		 */
 		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
 
@@ -132,28 +132,78 @@ class LP_Page_Controller {
 
 				return $post;
 			}
-			
-			$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
 
-			if ( ! $user_item_id ) {
-				return $post;
-			}
+			$lp_course->set_viewing_item( $lp_course_item );
 
 			// If item viewing is a QUIZ and have a question...
-			if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
+			if ( LP_QUIZ_CPT === $item_type ) {
+				$question = false;
+				// If has question in request but it seems the question does not exists
+				if ( ! empty( $vars['question'] && ! $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) ) {
+					$this->set_404( true );
+					throw new Exception( '404' );
+				}
 
-				if ( $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) {
-					$lp_quiz_question = LP_Question::get_question( $question->ID );
+				// If we are requesting to a question but current quiz does not contain it
+				if ( $question && ! $lp_course_item->has_question( $question->ID ) ) {
+					$this->set_404( true );
+					throw new Exception( '404' );
+				}
 
-					// Update current question for user
-					if ( $user_item_id && learn_press_get_user_item_meta( $user_item_id, '_current_question', true ) != $question->ID ) {
-						learn_press_update_user_item_meta( $user_item_id, '_current_question', $question->ID );
+//				$lp_quiz_question = LP_Question::get_question( $question->ID );
+//				$user             = learn_press_get_current_user();
+//				$quiz_data        = $user->get_quiz_data( $post_item->ID, $lp_course->get_id() );
+//
+//				// Update current question for user
+//				if ( $quiz_data && learn_press_get_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', true ) != $question->ID ) {
+//					learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question->ID );
+//				}
+
+				$user        = learn_press_get_current_user();
+				$quiz_data   = $user->get_quiz_data( $post_item->ID, $lp_course->get_id() );
+				$redirect    = false;
+				$quiz_status = $quiz_data ? $quiz_data->get_status() : false;
+
+				if ( $quiz_status === 'started' ) {
+					$current_question = 0;
+					if ( empty( $vars['question'] ) ) {
+						$current_question = learn_press_get_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', true );
+					} elseif ( $question ) {
+						$current_question = $question->ID;
 					}
-				} else {
-					throw new Exception( __( 'Invalid question!', 'learnpress' ), LP_ACCESS_FORBIDDEN_OR_ITEM_IS_NOT_EXISTS );
-					// TODO: Process in case question does not exists.
+
+					if ( $current_question && ! $lp_course_item->has_question( $current_question ) ) {
+						$this->set_404( true );
+						throw new Exception( '404' );
+					}
+
+					if ( ! $current_question ) {
+						$current_question = $lp_course_item->get_question_at( 0 );
+						learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $current_question );
+					}
+
+					if ( ! $question ) {
+						$redirect = $lp_course_item->get_question_link( $current_question );
+					}
+
+				} elseif ( $quiz_status !== 'completed' ) {
+					if ( $question ) {
+						$this->set_404( true );
+						throw new Exception( '404' );
+					}
+				}
+
+				if ( isset( $current_question ) && $current_question ) {
+					$lp_quiz_question = learn_press_get_question( $current_question );
+				}
+
+				if ( $redirect ) {
+					//var_dump($redirect);
+					wp_redirect( $redirect );
+					exit();
 				}
 			}
+
 		}
 		catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );

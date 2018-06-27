@@ -42,6 +42,12 @@ defined( 'ABSPATH' ) or die();
 			    <?php esc_html_e('Re-map final quiz for each course', 'learnpress');?>
             </label>
         </li>
+        <li>
+            <label>
+                <input type="checkbox" name="lp-repair[sync-user-completed-items]" value="yes">
+			    <?php esc_html_e('Re-calculate completed items for each users', 'learnpress');?>
+            </label>
+        </li>
     </ul>
     <p class="tools-button">
         <button type="button" class="button lp-button-repair"><?php esc_html_e( 'Repair now', 'learnpress' ); ?></button>

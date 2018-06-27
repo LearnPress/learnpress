@@ -18,6 +18,7 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 	 * Purchase course button.
 	 */
 	function learn_press_course_purchase_button() {
+
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
@@ -69,6 +70,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 	 * Enroll course button.
 	 */
 	function learn_press_course_enroll_button() {
+
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
@@ -183,7 +185,7 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 			return;
 		}
 
-		if ( ! $course_data->get_item_at( 0 ) ) {
+		if ( ! $course->count_items() ) {
 			return;
 		}
 
@@ -198,6 +200,7 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_finish_button() {
+
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
@@ -227,6 +230,7 @@ if ( ! function_exists( 'learn_press_course_external_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_external_button() {
+
 		$course = LP_Global::course();
 
 		if ( ! $link = $course->get_external_link() ) {
@@ -726,10 +730,11 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_question' ) ) {
 
 	function learn_press_content_item_summary_quiz_question() {
 		$quiz = LP_Global::course_item_quiz();
-
 		if ( $question = $quiz->get_viewing_question() ) {
 			learn_press_get_template( 'content-question/content.php' );
 		}
+
+		var_dump($question);
 	}
 }
 
@@ -3773,6 +3778,7 @@ add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_templa
 
 function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
 
+    $can_view_item = '';
 	if ( $template_name == 'global/block-content.php' ) {
 		if ( ! is_user_logged_in() ) {
 			$can_view_item = 'not-logged-in';

@@ -587,7 +587,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 				wp_cache_set( $key, $blocked_items, 'learn-press/blocked-items' );
 				$is_blocked = $blocked;
-				//return apply_filters( 'learn-press/course-item/is-blocked', $blocked === 'yes' ? true : false, $this->get_id(), $course_id, $user_id );
 			}
 
 			return apply_filters( 'learn-press/course-item/is-blocked', $is_blocked === 'yes' ? true : false, $this->get_id(), $course_id, $user_id );
@@ -648,7 +647,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			} else {
 				$blocked = 'yes';
 			}
-
 			return $blocked;
 		}
 

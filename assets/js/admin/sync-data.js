@@ -127,6 +127,14 @@
         chunkSize: 500
     });
 
+    var Sync_Calculate_Course_Results = $.extend({}, Sync_Base, {
+        id: 'sync-calculate-course-results',
+        methodGetItems: 'calculate-course-results',
+        itemsKey: '_nothin_here',
+        chunkSize: 500
+    });
+
+
     window.LP_Sync_Data = {
         syncs: [],
         syncing: 0,

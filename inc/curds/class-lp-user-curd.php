@@ -554,6 +554,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function update_user_item( $user_id, $item_id, $item_data = array(), $course_id = 0 ) {
 		global $wpdb;
 
+		die(__FUNCTION__);
 		$user = learn_press_get_user( $user_id );
 		if ( ! $user || ( $user->get_id() != $user_id ) ) {
 			return false;
@@ -708,6 +709,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	public function update_user_item2( $item_id, $course_id ) {
+		die(__FUNCTION__);
 		if ( ! $item_id ) {
 			return false;
 		}
@@ -791,6 +793,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function get_user_item( $user_id, $item_id, $course_id = 0, $last = true ) {
 
+		die(__FUNCTION__);
 		$num_args = func_num_args();
 
 		if ( $num_args == 2 ) {

@@ -728,6 +728,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return LP_Question|int
 		 */
 		public function get_viewing_question( $return = '' ) {
+			/**
+			 * @var LP_Question $lp_quiz_question
+			 */
 			global $lp_quiz_question;
 
 			return $return !== 'id' ? $lp_quiz_question : ( $lp_quiz_question ? $lp_quiz_question->get_id() : 0 );
