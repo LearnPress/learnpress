@@ -599,7 +599,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$answers = $question->get_data( 'answer_options' );
 			// number answer options
 			$number = count( $question->get_data( 'answer_options' ) );
-
+			unset($new_answer['question_answer_id']);
 			global $wpdb;
 
 			$insert = $wpdb->insert(
