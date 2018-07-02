@@ -995,10 +995,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		$paged = max( $paged, 1 );
+		$limit_global = LP()->settings->get('learn_press_profile_courses_limit');
 		$args  = wp_parse_args(
 			$args, array(
 				'paged'  => $paged,
-				'limit'  => 10,
+				'limit'  => $limit_global,
 				'status' => ''
 			)
 		);
@@ -1100,11 +1101,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$paged = absint( $wp->query_vars['view_id'] );
 		}
 
+		$limit_global = LP()->settings->get('learn_press_profile_courses_limit');
 		$args = wp_parse_args(
 			$args,
 			array(
 				'paged'  => $paged,
-				'limit'  => 10,
+			    'limit'  => $limit_global,
 				'status' => ''
 			)
 		);
