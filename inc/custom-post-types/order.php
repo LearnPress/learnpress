@@ -835,7 +835,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$count = sizeof( $items );
 					foreach ( $items as $item ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-							$links[] = __( 'Course does not exist', 'learnpress' );
+							$links[] = apply_filters( 'learn-press/get_info_item_order', __( 'Course does not exist', 'learnpress' ), $item );
 						} else {
 							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
 							if ( $count > 1 ) {

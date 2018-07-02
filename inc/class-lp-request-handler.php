@@ -123,7 +123,7 @@ class LP_Request {
 		LP()->session->set( 'order_awaiting_payment', '' );
 
 		$user          = learn_press_get_current_user();
-		$order         = $user->get_course_order( $course_id );
+		$order         = apply_filters( 'learn-press/get-course-order', $user->get_course_order( $course_id ), $action, $user );
 		$add_to_cart   = false;
 		$enroll_course = false;
 
