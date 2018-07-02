@@ -425,6 +425,8 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 			}
 		}
 
+		echo "XXXX"; learn_press_debug($orders);
+
 		return $orders;
 	}
 

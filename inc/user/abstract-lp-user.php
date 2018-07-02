@@ -1304,6 +1304,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @throws Exception
 		 */
 		public function can_view_item( $item_id, $course_id = 0 ) {
+			LP_Debug::logTime( __FUNCTION__ );
+
 			$return    = false;
 			$course_id = $this->_get_course( $course_id );
 
@@ -1326,6 +1328,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			// @deprecated
 			$return = apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->get_id() );
+			LP_Debug::logTime( __FUNCTION__ );
 
 			return apply_filters( 'learn-press/can-view-item', $return, $item_id, $course_id, $this->get_id() );
 		}
