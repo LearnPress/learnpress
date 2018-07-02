@@ -1470,7 +1470,7 @@ if ( ! function_exists( 'learn_press_search_form' ) ) {
 	 */
 	function learn_press_search_form() {
 		if ( ! empty( $_REQUEST['s'] ) && ! empty( $_REQUEST['ref'] ) && 'course' == $_REQUEST['ref'] ) {
-			$s = $_REQUEST['s'];
+			$s = stripslashes_deep( $_REQUEST['s'] );
 		} else {
 			$s = '';
 		}

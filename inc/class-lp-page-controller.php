@@ -319,6 +319,7 @@ class LP_Page_Controller {
 				}
 			}
 			if ( $_GET ) {
+				$_GET = array_map( 'stripslashes_deep', $_GET );
 				foreach ( $_GET as $k => $v ) {
 					$redirect = add_query_arg( $k, urlencode( $v ), $redirect );
 				}
