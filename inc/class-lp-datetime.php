@@ -28,7 +28,7 @@ class LP_Datetime extends DateTime {
 
 	protected $raw_date = null;
 
-	protected static $timezone = null;
+	protected static $def_timezone = null;
 
 	/**
 	 * Constructor.
@@ -52,19 +52,9 @@ class LP_Datetime extends DateTime {
 			$date = current_time( 'mysql' );
 		}
 
-		if ( 1 == 1 ) {
-			if ( ! ( $tz instanceof DateTimeZone ) ) {
 
-				if ( ( $tz === null ) ) {
-					$tz = new DateTimeZone( self::timezone_string() );
-				} elseif ( is_string( $tz ) && $tz ) {
-					$tz = new DateTimeZone( $tz );
-				}
-			}
-		} else {
-			if ( ! ( $tz instanceof DateTimeZone ) ) {
-				$tz = self::get_default_timezone( $tz );
-			}
+		if ( ! ( $tz instanceof DateTimeZone ) ) {
+			$tz = self::get_default_timezone( $tz );
 		}
 
 		if ( ! $tz ) {
@@ -85,17 +75,26 @@ class LP_Datetime extends DateTime {
 		$this->tz = $tz;
 	}
 
+	/**
+	 * Get default timezone from param and wp settings
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param mixed $tz
+	 *
+	 * @return DateTimeZone|null|string
+	 */
 	public static function get_default_timezone( $tz ) {
-		if ( empty( self::$timezone ) ) {
+		if ( empty( self::$def_timezone ) ) {
 			if ( ( $tz === null ) ) {
 				$tz = new DateTimeZone( self::timezone_string() );
 			} elseif ( is_string( $tz ) && $tz ) {
 				$tz = new DateTimeZone( $tz );
 			}
-			self::$timezone = $tz;
+			self::$def_timezone = $tz;
 		}
 
-		return self::$timezone;
+		return self::$def_timezone;
 	}
 
 	/**

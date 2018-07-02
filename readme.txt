@@ -203,8 +203,18 @@ https://www.transifex.com/projects/p/learnpress/
 + Added option to quiz so non-logged user can do a quiz (Preview)
 + Added quiz option to minus a number of point for each wrong question in quiz
 + Added admin email to send to admin when an order is completed
++ Added button allows wp admin can send a request to subscriber
+~ Improved auto redirecting to current question when user go to a quiz
 ~ Improved UI of course editor for RTL
 ~ Improved content of email sending to admin and instructor
+~ Fixed page show 404 with pagination in courses page (conflict with WPML)
+~ Fixed course price is still showing after user enrolled course
+~ Fixed not auto redirecting to checkout after logged in
+~ Fixed some issues made question can't edit
+~ Fixed issue for requesting to get related themes/addons in admin
+~ Fixed some issues with content header when viewing in Safari
+~ Fixed wrong ordering of course item when adding new
+
 
 = 3.0.9 =
 + GDPR compliance

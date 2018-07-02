@@ -55,7 +55,7 @@ define( 'LP_INVALID_QUIZ_OR_COURSE', 140 );
 define( 'LP_COURSE_IS_FINISHED', 150 );
 define( 'LP_QUIZ_HAS_STARTED_OR_COMPLETED', 160 );
 define( 'LP_ERROR_NO_PAYMENT_METHOD_SELECTED', 1000 );
-define( 'LP_DEBUG_DEV', true );
+define( 'LP_DEBUG_DEV', false );
 
 /**
  * Thim Market library
