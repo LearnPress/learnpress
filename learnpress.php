@@ -248,6 +248,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/curds/class-lp-question-curd.php';
 			require_once 'inc/curds/class-lp-order-curd.php';
 			require_once 'inc/curds/class-lp-user-curd.php';
+			require_once 'inc/curds/class-lp-user-item-curd.php';
 
 			require_once 'inc/class-lp-backward-plugins.php';
 			require_once 'inc/class-lp-debug.php';
@@ -272,11 +273,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once 'inc/admin/class-lp-admin-notice.php';
 				require_once 'inc/admin/class-lp-admin.php';
 				require_once 'inc/admin/settings/abstract-settings-page.php';
-				require_once 'inc/admin/class-lp-repair-database.php';
 			}
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-assets.php';
 			}
+			require_once 'inc/admin/class-lp-repair-database.php';
 			require_once 'inc/question/class-lp-question.php';
 
 			// Register custom-post-type and taxonomies

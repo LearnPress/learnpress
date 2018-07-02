@@ -60,13 +60,6 @@ function learn_press_get_course( $the_course = false, $args = '' ) {
 			} else {
 				$courses[ $the_id ] = LP_Course::get_course( $the_id, $args );
 			}
-
-//			for($i = 0; $i<10; $i++){
-//			    $courses[] = $courses[$the_id];
-//            }
-
-			//wp_cache_set( 'object', $courses, 'learn-press/courses' );
-			//echo "XXXXXX";
 		}
 	}
 

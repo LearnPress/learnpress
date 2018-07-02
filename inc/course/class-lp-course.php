@@ -104,6 +104,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				return LP_Global::$courses[ $the_course ];
 			}
 
+			LP_Debug::logTime(__FUNCTION__);
 			$the_course = self::get_course_object( $the_course );
 
 			if ( ! $the_course ) {
@@ -144,6 +145,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			 * loaded or has been deleted for some reasons.
 			 */
 			$course->load();
+			LP_Debug::logTime(__FUNCTION__);
 
 			return $course;
 		}

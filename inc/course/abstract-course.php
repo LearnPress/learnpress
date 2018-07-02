@@ -415,7 +415,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function set_viewing_item( $item ) {
-			die(__FUNCTION__);
+			die( __FUNCTION__ );
 			if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
 				return 0;
 			}
@@ -878,15 +878,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			LP_Debug::logTime( __FUNCTION__ );
 
 			static $count = false;
-			//if ( false === ( $count = wp_cache_get( 'course-' . $this->get_id(), 'learn-press/completed-orders' ) ) ) {
 			if ( false === $count && $orders = $this->get_meta( 'order-completed' ) ) {
 				$count = sizeof( $orders );
 			} else {
 				$count = 0;
 			}
-
-			//wp_cache_set( 'course-' . $this->get_id(), $count, 'learn-press/completed-orders' );
-			//}
 
 			LP_Debug::logTime( __FUNCTION__ );
 
@@ -1199,6 +1195,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function evaluate_course_results( $user_id = 0, $force = false ) {
 
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__ . '()', '3.1.0', 'LP_User::evaluate_course_results()' );
+
+			LP_Debug::logTime( __FUNCTION__ );
 			if ( ! $user_id ) {
 				$user_id = get_current_user_id();
 			}
@@ -1208,6 +1207,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			$result = isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
+			LP_Debug::logTime( __FUNCTION__ );
 
 			return $result;
 		}
@@ -1328,34 +1328,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			return apply_filters( 'learn_press_user_completed_lessons', $completed_lessons[ $key ], $this->get_id(), $user_id );
 		}
 
-		/**
-		 * Calculate results of course by lessons user completed.
-		 *
-		 * @param int     $user_id
-		 * @param boolean $force
-		 *
-		 * @return int|mixed|null|void
-		 */
-		public function _evaluate_course_by_lesson( $user_id, $force = false ) {
-			if ( func_num_args() > 1 ) {
-				_deprecated_argument( '$force', '3.0.0' );
-			}
-			//static $evaluate_course_by_lesson = array();
-			$evaluate_course_by_lesson = LP_Cache::get_evaluate_course_by_lesson( false, array() );
-			$key                       = $user_id . '-' . $this->get_id();
-			if ( ! array_key_exists( $key, $evaluate_course_by_lesson ) || $force ) {
-				$course_lessons    = $this->get_items( LP_LESSON_CPT );
-				$completed_lessons = $this->get_completed_lessons( $user_id );
-				if ( $size = sizeof( $course_lessons ) ) {
-					$evaluate_course_by_lesson[ $key ] = min( $completed_lessons / sizeof( $course_lessons ), 1 ) * 100;
-				} else {
-					$evaluate_course_by_lesson[ $key ] = 0;
-				}
-				LP_Cache::set_evaluate_course_by_lesson( $key, $evaluate_course_by_lesson[ $key ] );
-			}
-
-			return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[ $key ], $this->get_id(), $user_id );
-		}
 
 		/**
 		 * Get number of lessons user has completed
@@ -1400,26 +1372,40 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Count all items in a course.
 		 *
-		 * @param string|array $type    - Optional. Filter item by it's post-type, e.g: lp_lesson
-		 * @param bool         $preview - Optional. False to exclude if item is preview
+		 * @param string|array $type            - Optional. Filter item by it's post-type, e.g: lp_lesson
+		 * @param bool         $include_preview - Optional. False to exclude if item is preview
 		 *
 		 * @return int
 		 */
-		public function count_items( $type = '', $preview = true ) {
+		public function count_items( $type = '', $include_preview = true ) {
 
-			$key = md5( serialize( array( 'course' => $this->get_id(), 'type' => $type, 'preview' => $preview ) ) );
-
-			if ( false === ( $count_items = wp_cache_get( $key, 'learn-press/count-items' ) ) ) {
-				$count_items = 0;
-
-				if ( $items = $this->get_items( $type, $preview ) ) {
+			LP_Debug::logTime( __FUNCTION__ );
+			if ( $type === '' && $include_preview === true ) {
+				if ( false === ( $count_items = $this->get_meta( 'count_items' ) ) ) {
+					$items       = $this->get_item_ids();
 					$count_items = sizeof( $items );
+					$this->update_meta('count_items', $count_items);
 				}
+			} else {
+				$key = md5( serialize( array(
+					'course'  => $this->get_id(),
+					'type'    => $type,
+					'preview' => $include_preview
+				) ) );
 
-				wp_cache_set( $key, $count_items, 'learn-press/count-items' );
+				if ( false === ( $count_items = wp_cache_get( $key, 'learn-press/count-items' ) ) ) {
+					$count_items = 0;
+
+					if ( $items = $this->get_items( $type, $include_preview ) ) {
+						$count_items = sizeof( $items );
+					}
+
+					wp_cache_set( $key, $count_items, 'learn-press/count-items' );
+				}
 			}
+			LP_Debug::logTime( __FUNCTION__ );
 
-			return apply_filters( 'learn-press/count-items', $count_items, $type, $preview, $this->get_id() );
+			return apply_filters( 'learn-press/count-items', $count_items, $type, $include_preview, $this->get_id() );
 		}
 
 		/**

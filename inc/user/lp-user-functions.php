@@ -97,8 +97,14 @@ function learn_press_get_current_user_id() {
  * @return bool|LP_User|LP_User_Guest
  */
 function learn_press_get_current_user( $create_temp = true, $force_new = false ) {
+	static $current_user = false;
+
 	if ( $id = get_current_user_id() ) {
-		return learn_press_get_user( $id, $force_new );
+		if ( ! $current_user || $force_new ) {
+			$current_user = learn_press_get_user( $id, $force_new );
+		}
+
+		return $current_user;
 	}
 
 	return learn_press_get_user( 0 );
@@ -117,12 +123,11 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	 * @return LP_User|mixed
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
-
-		global $pagenow;
+		LP_Debug::logTime( __FUNCTION__ );
 
 		if ( $user_id != LP()->session->guest_user_id ) {
 			// Check if user is existing
-			if ( ! get_user_by( 'id', $user_id ) && $current ) {
+			if ( $current && ! get_user_by( 'id', $user_id ) ) {
 				$user_id = get_current_user_id();
 			}
 		}
@@ -142,10 +147,10 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 			return false;
 		}
 
-
 		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
 			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest( $user_id ) : new LP_User( $user_id );
 		}
+		LP_Debug::logTime( __FUNCTION__ );
 
 		return LP_Global::$users[ $user_id ];
 	}
@@ -409,16 +414,16 @@ add_action( 'user_register', 'learn_press_update_user_teacher_role', 10, 1 );
 /**
  * Update data into table learnpress_user_items.
  *
- * @param array $fields                      - Fields and values to be updated.
- *                                           Format: array(
+ * @param array $fields                         - Fields and values to be updated.
+ *                                              Format: array(
  *                                              field_name_1 => value 1,
  *                                              field_name_2 => value 2,
  *                                              ....
  *                                              field_name_n => value n
- *                                           )
- * @param mixed $where                       - Optional. Fields with values for conditional update with the same format of $fields.
- * @param bool  $update_cache                - Optional. Should be update to cache or not (since 3.0.0).
- * @param bool  $update_extra_fields_as_meta - Optional. Update extra fields as item meta (since 3.1.0).
+ *                                              )
+ * @param mixed $where                          - Optional. Fields with values for conditional update with the same format of $fields.
+ * @param bool  $update_cache                   - Optional. Should be update to cache or not (since 3.0.0).
+ * @param bool  $update_extra_fields_as_meta    - Optional. Update extra fields as item meta (since 3.1.0).
  *
  * @return mixed
  */
@@ -537,7 +542,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	 * If there is some fields does not contain in the main table
 	 * then consider update them as meta data.
 	 */
-	if ( $updated_item && $update_extra_fields_as_meta) {
+	if ( $updated_item && $update_extra_fields_as_meta ) {
 		$extra_fields = array_diff_key( $fields, $table_fields );
 		if ( $extra_fields ) {
 			foreach ( $extra_fields as $meta_key => $meta_value ) {

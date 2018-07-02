@@ -183,7 +183,15 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function nav_question() {
-			self::maybe_save_questions( 'nav-question' );
+			$return = self::maybe_save_questions( 'nav-question' );
+
+			if ( is_array( $return ) ) {
+				if ( ! empty( $return['next_question'] ) ) {
+					$quiz = learn_press_get_quiz( $return['quiz_id'] );
+					wp_redirect( $quiz->get_question_link( $return['next_question'] ) );
+					exit();
+				}
+			}
 		}
 
 		/**
@@ -203,7 +211,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$check = self::maybe_save_questions( 'check-answer' );
 
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( false === $check ) {
 					throw $check;
 				}
 
@@ -262,7 +270,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$check = self::maybe_save_questions( 'show-hint' );
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( false === $check ) {
 					throw $check;
 				}
 
@@ -318,7 +326,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$check = self::maybe_save_questions( 'complete' );
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( false === $check ) {
 					throw $check;
 				}
 
@@ -378,7 +386,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$check = self::maybe_save_questions( 'redo' );
 
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( false === $check ) {
 					throw $check;
 				}
 
@@ -466,13 +474,13 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function maybe_save_questions( $action = '', $nonce = '' ) {
+			$return = false;
 			try {
 				if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce ) ) {
 					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 				}
 
-				$nav_type = LP_Request::get_string( 'nav-type' );
-
+				$nav_type    = LP_Request::get_string( 'nav-type' );
 				$course_id   = LP_Request::get_int( 'course-id' );
 				$quiz_id     = LP_Request::get_int( 'quiz-id' );
 				$question_id = LP_Request::get_int( 'question-id' );
@@ -481,12 +489,12 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$questions = array();
 				}
 
-				$user   = learn_press_get_current_user();
-				$course = learn_press_get_course( $course_id );
-				$quiz   = learn_press_get_quiz( $quiz_id );
-
+				$user        = learn_press_get_current_user();
+				$course      = learn_press_get_course( $course_id );
+				$quiz        = learn_press_get_quiz( $quiz_id );
 				$course_data = $user->get_course_data( $course->get_id() );
-				if($quiz_data   = $course_data->get_item_quiz( $quiz->get_id() )) {
+
+				if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {
 
 					// If user click 'Skip' button
 					if ( $nav_type === 'skip-question' ) {
@@ -502,14 +510,22 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					}
 
 					$quiz_data->add_question_answer( $questions );
+					$quiz_data->update_meta( '_current_question', $question_id );
 					$quiz_data->update();
 				}
+
+				$return = array(
+					'quiz_id'       => $quiz_id,
+					'course_id'     => $course_id,
+					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
+					'next_question' => $user->get_next_question( $quiz_id, $course_id )
+				);
 			}
 			catch ( Exception $ex ) {
 				return $ex;
 			}
 
-			return true;
+			return $return;
 		}
 
 		/**

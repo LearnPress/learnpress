@@ -68,6 +68,7 @@ function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
 }
 
 function learn_press_question_class( $question = null, $args = array() /*, $classes = null, $user_id = null, $context = null*/ ) {
+	die( __FUNCTION__ );
 	$course  = LP()->global['course'];
 	$args    = wp_parse_args(
 		$args,

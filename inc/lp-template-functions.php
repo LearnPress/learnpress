@@ -70,7 +70,6 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 	 * Enroll course button.
 	 */
 	function learn_press_course_enroll_button() {
-
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
@@ -134,7 +133,6 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_retake_button() {
-
 		if ( ! isset( $course ) ) {
 			$course = learn_press_get_course();
 		}
@@ -161,7 +159,6 @@ if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_continue_button() {
-
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
@@ -200,7 +197,6 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_finish_button() {
-
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
@@ -733,8 +729,6 @@ if ( ! function_exists( 'learn_press_content_item_summary_quiz_question' ) ) {
 		if ( $question = $quiz->get_viewing_question() ) {
 			learn_press_get_template( 'content-question/content.php' );
 		}
-
-		var_dump($question);
 	}
 }
 
@@ -1537,15 +1531,6 @@ if ( ! function_exists( 'learn_press_course_progress' ) ) {
 	 */
 	function learn_press_course_progress() {
 		learn_press_get_template( 'single-course/progress.php' );
-	}
-}
-
-if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
-	/**
-	 * Display course curriculum
-	 */
-	function learn_press_course_finish_button() {
-		learn_press_get_template( 'single-course/buttons/finish.php' );
 	}
 }
 
@@ -2520,6 +2505,7 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * @return void
  */
 function learn_press_get_template( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
+    LP_Debug::logTime(__FUNCTION__);
 	if ( $args && is_array( $args ) ) {
 		extract( $args );
 	}
@@ -2544,6 +2530,8 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 
 		do_action( 'learn_press_after_template_part', $template_name, $template_path, $located, $args );
 	}
+	LP_Debug::logTime(__FUNCTION__);
+
 }
 
 /**

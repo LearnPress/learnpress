@@ -28,6 +28,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 */
 	protected $_items_by_item_ids = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_items_by_order = array();
 
 	/**
@@ -78,7 +81,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			return $items;
 		}
 
-		LP_Debug::logTime( __FUNCTION__ . $this->get_id() );
+		LP_Debug::logTime( __FUNCTION__ );
 		$course_items = $this->_course->get_item_ids();
 
 		if ( ! $course_items ) {
@@ -123,7 +126,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			}
 		}
 		wp_cache_set( 'course-' . $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
-		LP_Debug::logTime( __FUNCTION__ . $this->get_id() );
+		LP_Debug::logTime( __FUNCTION__ );
 
 		return $items;
 	}
@@ -248,7 +251,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
-	 * Get result of course.
+	 * Get current progress of course for an user.
+	 * Firstly, get data from cache if it is already loaded.
+	 * If data is not loaded to cache then get from meta data.
+	 * If meta data is not updated then calculate and update it
+	 *
+	 * @updated 3.1.0
 	 *
 	 * @param string $prop
 	 *
@@ -260,9 +268,35 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			return false;
 		}
 
-		$this->load();
+		$results = LP_Object_Cache::get( 'course-' . $this->get_item_id() . '-' . $this->get_user_id(), 'course-results' );
+
+		if ( $results === false ) {
+			$course_result = $course->get_data( 'course_result' );
+
+			if ( false === ( $results = $this->get_meta( 'course_results_' . $course_result ) ) ) {
+				$results = $this->calculate_course_results();
+			}
+
+			LP_Object_Cache::set( 'course-' . $this->get_item_id() . '-' . $this->get_user_id(), $results, 'course-results' );
+		}
+
+		if ( $prop === 'status' ) {
+			if ( isset( $results['grade'] ) ) {
+				$prop = 'grade';
+			}
+		}
+
+		return $prop && $results && array_key_exists( $prop, $results ) ? $results[ $prop ] : $results;
+	}
+
+	public function calculate_course_results() {
+		if ( ! $course = $this->get_course() ) {
+			return false;
+		}
+
 		$course_result = $course->get_data( 'course_result' );
-		$results       = false;
+
+		$this->load();
 		switch ( $course_result ) {
 			// Completed lessons per total
 			case 'evaluate_lesson':
@@ -289,34 +323,31 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				break;
 		}
 
-
-		if ( is_array( $results ) ) {
-			$count_items     = $course->count_items( '', true );
-			$completed_items = $this->get_completed_items();
-			$results         = array_merge(
-				$results,
-				array(
-					'count_items'     => $count_items,
-					'completed_items' => $completed_items,
-					'skipped_items'   => $count_items - $completed_items,
-					'status'          => $this->get_status(),
-					'grade'           => ''
-				)
-			);
-
-			if ( ! in_array( $this->get_status(), array( 'purchased', 'viewed' ) ) ) {
-				$results['grade'] = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
-			} else {
-			}
+		if ( ! is_array( $results ) ) {
+			$results = array();
 		}
 
-		if ( $prop === 'status' ) {
-			if ( isset( $results['grade'] ) ) {
-				$prop = 'grade';
-			}
+		$count_items     = $course->count_items();
+		$completed_items = $this->get_completed_items();
+		$results         = array_merge(
+			$results,
+			array(
+				'count_items'     => $count_items,
+				'completed_items' => $completed_items,
+				'skipped_items'   => $count_items - $completed_items,
+				'status'          => $this->get_status(),
+				'grade'           => ''
+			)
+		);
+
+		if ( ! in_array( $this->get_status(), array( 'purchased', 'viewed' ) ) ) {
+			$results['grade'] = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
+		} else {
 		}
 
-		return $prop && $results && array_key_exists( $prop, $results ) ? $results[ $prop ] : $results;
+		$this->update_meta( 'course_results_' . $course_result, $results );
+
+		return $results;
 	}
 
 	/**

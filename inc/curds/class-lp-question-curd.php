@@ -201,7 +201,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		/**
 		 * Duplicate answer question.
 		 *
-		 * @param $question_id | origin question
+		 * @param $question_id     | origin question
 		 * @param $new_question_id | new question
 		 */
 		public function duplicate_answer( $question_id, $new_question_id ) {
@@ -247,7 +247,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'hint'        => get_post_meta( $id, '_lp_hint', true )
 				)
 			);
-			$this->_load_answer_options( $question );
+			//$this->_load_answer_options( $question );
 			$this->_load_meta( $question );
 
 			return true;
@@ -754,7 +754,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param string $question_type
-		 * @param array $args
+		 * @param array  $args
 		 *
 		 * @return array|bool
 		 */
@@ -852,107 +852,73 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * Load from cache if data is already loaded into cache.
 		 * Otherwise, load from database and put to cache.
 		 *
-		 * @param $question LP_Question
+		 * @param int $question_id
+		 *
+		 * @return array
 		 */
-		protected function _load_answer_options( &$question ) {
+		protected function _read_answers( $question_id ) {
+			global $wpdb;
 
-			$id             = $question->get_id();
-			$answer_options = wp_cache_get( 'answer-options-' . $id, 'learn-press/questions' );
+			$query = $wpdb->prepare( "
+				SELECT *
+				FROM {$wpdb->prefix}learnpress_question_answers
+				WHERE question_id = %d
+				ORDER BY answer_order ASC
+			", $question_id );
 
-			if ( false === $answer_options ) {
-				global $wpdb;
-				$query = $wpdb->prepare( "
-					SELECT *
-					FROM {$wpdb->prefix}learnpress_question_answers
-					WHERE question_id = %d
-					ORDER BY answer_order ASC
-				", $id );
-				if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {
-					foreach ( $answer_options as $k => $v ) {
-						$answer_options[ $k ] = (array) $answer_options[ $k ];
-						if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
-							foreach ( $answer_data as $data_key => $data_value ) {
-								$answer_options[ $k ][ $data_key ] = $data_value;
-							}
+			$answer_options = array();
+
+			if ( $results = $wpdb->get_results( $query ) ) {
+				foreach ( $results as $k => $v ) {
+
+					if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
+						foreach ( $answer_data as $data_key => $data_value ) {
+							$v->{$data_key} = $data_value;
 						}
-						unset( $answer_options[ $k ]['answer_data'] );
 					}
+
+					unset( $v->answer_data );
+
+					$answer_options[ $v->question_answer_id ] = (array) $v;
 				}
-
-				$answer_options = $this->load_answer_options( $question->get_id() );
 			}
-			$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
 
-			if ( ! empty( $answer_options['question_answer_id'] ) && $answer_options['question_answer_id'] > 0 ) {
-				$this->_load_answer_option_meta( $answer_options );
-			}
-			wp_cache_set( 'answer-options-' . $id, $answer_options, 'learn-press/questions' );
-
-			$question->set_data( 'answer_options', $answer_options );
+			return $answer_options;
 		}
 
 		/**
-		 * @param array|int $question_ids
+		 * Load question answers
+		 *
+		 * @updated 3.1.0
+		 *
+		 * @param array|int $question_id
 		 *
 		 * @return array|bool
 		 */
-		public function load_answer_options( $question_ids ) {
+		public function load_answer_options( $question_id ) {
 
 			global $wpdb;
 
-			if ( is_numeric( $question_ids ) ) {
-				$return_id = $question_ids;
-			}
+			$return_id = 0;
 
-			settype( $question_ids, 'array' );
+			if ( is_array( $question_id ) ) {
 
-			if ( ! sizeof( $question_ids ) ) {
-				return false;
-			}
-
-			$cache_key = md5( serialize( $question_ids ) );
-
-			if ( false === ( $question_answers = LP_Hard_Cache::get( $cache_key, 'lp-questions' ) ) ) {
-				$format = array_fill( 0, sizeof( $question_ids ), '%d' );
-
-				$query = $wpdb->prepare( "
-					SELECT *
-					FROM {$wpdb->prefix}learnpress_question_answers
-					WHERE question_id IN(" . join( ',', $format ) . ")
-					ORDER BY question_id, answer_order, question_answer_id ASC
-				", $question_ids );
-
-				$question_answers = array();
-
-				if ( $answer_options = $wpdb->get_results( $query ) ) {
-					foreach ( $answer_options as $k => $v ) {
-						$qid = $v->question_id;
-
-						if ( empty( $question_answers[ $qid ] ) ) {
-							$question_answers[ $qid ] = array();
-						}
-
-						if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
-							foreach ( $answer_data as $data_key => $data_value ) {
-								$v->{$data_key} = $data_value;
-							}
-						}
-
-						unset( $v->answer_data );
-
-						$question_answers[ $qid ][ $v->question_answer_id ] = (array) $v;
+				foreach ( $question_id as $q_id ) {
+					$this->load_answer_options( $q_id );
+					if ( ! $return_id ) {
+						$return_id = $q_id;
 					}
 				}
-				LP_Hard_Cache::set( $cache_key, $question_answers, 'lp-questions' );
+				$question_id = $return_id;
 			}
 
-			if ( $question_answers ) {
-				foreach ( $question_answers as $question_id => $answer ) {
-					wp_cache_set( 'answer-options-' . $question_id, $answer, 'learn-press/questions' );
-				}
+			if ( false === ( $answer_options = LP_Hard_Cache::get( 'question-' . $question_id, 'question-answers' ) ) ) {
+
+				$answer_options = $this->_read_answers( $question_id );
+				LP_Hard_Cache::set( 'question-' . $question_id, $answer_options, 'question-answers' );
 			}
 
-			return isset( $return_id ) ? ( array_key_exists( $return_id, $question_answers ) ? $question_answers[ $return_id ] : false ) : $question_answers;
+			return $answer_options;
 		}
 
 		/**

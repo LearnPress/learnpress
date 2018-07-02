@@ -110,7 +110,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function get_parent_id() {
-		return $this->get_data( 'parent_id' );
+		return absint( $this->get_data( 'parent_id' ) );
 	}
 
 	public function set_parent_id( $parent_id ) {
@@ -148,8 +148,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return string|LP_Datetime
 	 */
 	public function get_start_time( $format = '' ) {
-		$time = $this->get_data( 'start_time' );
-		$date = new LP_Datetime( $time );
+		$date = $this->get_data_date( 'start_time' );
 
 		if ( $format ) {
 			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
@@ -163,7 +162,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function get_start_time_gmt( $format = '' ) {
-		$date = new LP_Datetime( $this->get_data( 'start_time_gmt' ) );
+		$date = $this->get_data_date( 'start_time_gmt' );
 		if ( $format ) {
 			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
 		}
@@ -192,7 +191,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return string|LP_Datetime
 	 */
 	public function get_end_time( $format = '' ) {
-		$date = new LP_Datetime( $this->get_data( 'end_time' ) );
+		$date = $this->get_data_date( 'end_time' );
 		if ( $format ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
@@ -217,7 +216,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return string|LP_Datetime
 	 */
 	public function get_end_time_gmt( $format = '' ) {
-		$date = new LP_Datetime( $this->get_data( 'end_time_gmt' ) );
+		$date = $this->get_data( 'end_time_gmt' );
 		if ( $format ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
@@ -289,7 +288,14 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function get_parent() {
-		return intval( $this->get_data( 'parent_id' ) );
+		$user   = learn_press_get_user( $this->get_user_id() );
+		$ref_id = $this->get_data( 'ref_id' );
+
+		if ( get_post_type( $ref_id ) === LP_COURSE_CPT ) {
+			return $user->get_course_data( $ref_id );
+		}
+
+		return false;
 	}
 
 	public function get_result( $prop = 'result' ) {
@@ -318,19 +324,71 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 	}
 
+	/**
+	 * Get structure of an user item.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return array
+	 */
+	public static function get_empty_item() {
+		return array(
+			'user_item_id'   => 0,
+			'user_id'        => 0,
+			'item_id'        => 0,
+			'start_time'     => '0000-00-00 00:00:00',
+			'start_time_gmt' => '0000-00-00 00:00:00',
+			'end_time'       => '0000-00-00 00:00:00',
+			'end_time_gmt'   => '0000-00-00 00:00:00',
+			'item_type'      => '',
+			'status'         => '',
+			'ref_id'         => '',
+			'ref_type'       => '',
+			'parent_id'      => 0,
+		);
+	}
+
+	/**
+	 * Get user-item meta data.
+	 * Check if meta data does not exist then return FALSE.
+	 *
+	 * @updated 3.1.0
+	 *
+	 * @param string $key
+	 * @param bool   $single
+	 *
+	 * @return bool|mixed
+	 */
 	public function get_meta( $key, $single = true ) {
+		if ( ! metadata_exists( 'learnpress_user_item', $this->get_user_item_id(), $key ) ) {
+			return false;
+		}
+
 		return learn_press_get_user_item_meta( $this->get_user_item_id(), $key, $single );
 	}
 
-	public function update_meta() {
-		if ( $this->_meta_data ) {
-			foreach ( $this->_meta_data as $meta_data ) {
-				if ( $meta_data->meta_value ) {
-					learn_press_update_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key, $meta_data->meta_value );
-				} else {
-					learn_press_delete_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key );
+	/**
+	 * Update meta data
+	 *
+	 * @updated 3.1.0
+	 *
+	 * @param string $key
+	 * @param string $value
+	 * @param string $prev_value
+	 */
+	public function update_meta( $key = '', $value = '', $prev_value = '' ) {
+		if ( func_num_args() === 0 ) {
+			if ( $this->_meta_data ) {
+				foreach ( $this->_meta_data as $meta_data ) {
+					if ( $meta_data->meta_value ) {
+						learn_press_update_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key, $meta_data->meta_value );
+					} else {
+						learn_press_delete_user_item_meta( $this->get_user_item_id(), $meta_data->meta_key );
+					}
 				}
 			}
+		} else {
+			learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value, $prev_value );
 		}
 	}
 
@@ -393,7 +451,16 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return apply_filters( 'learn-press/user-item-object', $item, $data );
 	}
 
-	public function update() {
+	/**
+	 * Update data from memory to database.
+	 *
+	 * @updated 3.1.0
+	 *
+	 * @param bool $force - Optional. Added from 3.1.0 to force update if even the data is not changed.
+	 *
+	 * @return bool|mixed
+	 */
+	public function update( $force = false ) {
 		if ( ! $this->is_change() ) {
 			return false;
 		}
@@ -406,6 +473,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 				$this->_set_data( $k, $v );
 			}
 			$this->_changes = array();
+		}
+		if ( $data_course = $this->get_parent() ) {
+			$data_course->calculate_course_results();
 		}
 
 		return $return;

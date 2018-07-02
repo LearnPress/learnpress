@@ -415,7 +415,57 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Get single user item by values of fields.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string|array $field
+	 * @param string       $value
+	 *
+	 * @return mixed
+	 */
+	public function get_item_by( $field, $value = '' ) {
+		if ( $rows = $this->get_items_by( $field, $value ) ) {
+			return $rows[0];
+		}
 
+		return false;
+	}
+
+	/**
+	 * Get multiple rows of user item by values of fields.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string|array $field
+	 * @param string       $value
+	 *
+	 * @return array
+	 */
+	public function get_items_by( $field, $value = '' ) {
+		global $wpdb;
+		$where = "";
+
+		if ( is_array( $field ) ) {
+			foreach ( $field as $k => $v ) {
+				if ( is_string( $v ) ) {
+					$where .= $wpdb->prepare( " AND {$k} = %s", $v );
+				} else {
+					$where .= $wpdb->prepare( " AND {$k} = %d", $v );
+				}
+			}
+		} else {
+			if ( is_string( $value ) ) {
+				$where .= $wpdb->prepare( " AND {$field} = %s", $value );
+			} else {
+				$where .= $wpdb->prepare( " AND {$field} = %s", $value );
+			}
+		}
+
+		$query = "SELECT * FROM {$wpdb->learnpress_user_items} WHERE 1 {$where}";
+
+		return $wpdb->get_results( $query );
+	}
 
 	/**
 	 * Get WP_Object.

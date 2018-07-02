@@ -17,6 +17,9 @@ defined( 'ABSPATH' ) || exit();
 if ( ! isset( $section ) ) {
 	return;
 }
+
+do_action( 'learn-press/section-summary', $section );
+
 ?>
 
 <li<?php $section->main_class();?> id="section-<?php echo $section->get_slug(); ?>" data-id="<?php echo $section->get_slug(); ?>" data-section-id="<?php echo $section->get_id();?>">

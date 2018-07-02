@@ -18,7 +18,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$this->_curd = new LP_Quiz_CURD();
 
 		parent::__construct( $data );
-		$this->_parse_answers();
+		//$this->_parse_answers();
 	}
 
 	/**
@@ -34,6 +34,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function add_question_answer( $id, $values = null ) {
+		if ( ! $this->_answers ) {
+			$this->_parse_answers();
+		}
+
 		if ( is_array( $id ) ) {
 			foreach ( $id as $k => $v ) {
 				if ( is_object( $v ) ) {
@@ -51,10 +55,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function get_question_answer( $id ) {
+		if ( ! $this->_answers ) {
+			$this->_parse_answers();
+		}
+
 		return ! empty( $this->_answers[ $id ] ) ? $this->_answers[ $id ] : false;
 	}
 
-	public function update() {
+	public function update($force = false) {
 		$return = parent::update();
 
 		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
@@ -121,6 +129,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return array|bool|mixed
 	 */
 	public function get_results( $prop = 'result', $force = false ) {
+		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
 		if ( false === ( $result = wp_cache_get( $cache_key, 'learn-press/quiz-result' ) ) || $force ) {
@@ -187,6 +196,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			}
 			wp_cache_set( $cache_key, $result, 'learn-press/quiz-result' );
 		}
+		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
 
 		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
 	}
@@ -513,7 +523,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				'item_type'      => 'lp_quiz',
 				'status'         => 'started',
 				'ref_type'       => 'lp_course',
-				'parent_id'      => $user_quiz ? $user_quiz->get_parent() : 0
+				'parent_id'      => $user_quiz ? $user_quiz->get_parent_id() : 0
 			)
 		);
 		if ( $return ) {

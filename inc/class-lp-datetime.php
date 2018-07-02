@@ -38,6 +38,8 @@ class LP_Datetime extends DateTime {
 	 */
 	public function __construct( $date = '', $tz = null ) {
 
+		$d = md5( serialize( func_get_args() ) );
+		LP_Debug::logTime( __CLASS__  );
 		if ( empty( self::$gmt ) || empty( self::$stz ) ) {
 			self::$gmt = new DateTimeZone( 'GMT' );
 			self::$stz = new DateTimeZone( @date_default_timezone_get() );
@@ -69,6 +71,8 @@ class LP_Datetime extends DateTime {
 		date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
+		LP_Debug::logTime( __CLASS__ );
+
 	}
 
 	public static function get_default_timezone( $tz ) {

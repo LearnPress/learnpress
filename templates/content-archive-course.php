@@ -50,12 +50,16 @@ if ( LP()->wp_query->have_posts() ) :
 
 	learn_press_begin_courses_loop();
 
+	$total = 0;
 	while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
 
 		learn_press_get_template_part( 'content', 'course' );
 
+		$total += LP_Global::course()->count_items();
+
 	endwhile;
 
+	echo "Total items = " . $total;
 	learn_press_end_courses_loop();
 
 	/**

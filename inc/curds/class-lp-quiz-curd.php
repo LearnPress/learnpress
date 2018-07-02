@@ -63,8 +63,8 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					'minus_skip_questions' => get_post_meta( $quiz->get_id(), '_lp_minus_skip_questions', true ),
 				)
 			);
-			$this->_load_questions( $quiz );
-			$this->_update_meta_cache( $quiz );
+			//$this->_load_questions( $quiz );
+			//$this->_update_meta_cache( $quiz );
 
 			return $quiz;
 		}
@@ -200,19 +200,23 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			$questions = wp_cache_get( 'questions-' . $id, 'learn-press/quizzes' );
 
 			if ( false === $questions || $quiz->get_no_cache() ) {
-				//$this->load_questions( $quiz->get_id() );
+				$this->load_questions( $quiz->get_id() );
 			}
 		}
 
+		/**
+		 * Read question of a quiz from database
+		 */
 		public function read_questions( $quiz_id ) {
+
 			if ( ! $quiz = learn_press_get_quiz( $quiz_id ) ) {
 				return false;
 			}
 
 			if ( $question_ids = $quiz->get_question_ids() ) {
 				LP_Helper_CURD::cache_posts( $question_ids );
-				$question_factory = new LP_Question_CURD();
-				$question_factory->load_answer_options( $question_ids );
+				//$question_factory = new LP_Question_CURD();
+				//$question_factory->load_answer_options( $question_ids );
 			}
 
 			return $question_ids;
@@ -275,55 +279,39 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			return $wpdb->get_col( $query );
 		}
 
-		public function load_questions( $quiz_ids ) {
+		public function load_questions( $quiz_id ) {
 
 			global $wpdb;
 
-			settype( $quiz_ids, 'array' );
-			sort( $quiz_ids );
+			if ( is_array( $quiz_id ) ) {
+				foreach ( $quiz_id as $q_id ) {
+					$this->load_questions( $q_id );
+				}
 
-			$cache_key = md5( serialize( $quiz_ids ) );
-
-			//if ( false === ( $questions = LP_Hard_Cache::get( $cache_key, 'lp-quizzes' ) ) ) {
-
-			$format    = array_fill( 0, sizeof( $quiz_ids ), '%d' );
-			$questions = array_fill_keys( $quiz_ids, array() );
-			$args      = $quiz_ids;
-			$args[]    = 'publish';
+				return;
+			}
 
 			$query = $wpdb->prepare( "
-				SELECT p.*, qq.quiz_id, qq.question_order AS `order`
+				SELECT ID, post_title, post_content, post_status, post_type, post_author, post_date, post_name 
 				FROM {$wpdb->posts} p 
 				INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON p.ID = qq.question_id
-				WHERE qq.quiz_id IN(" . join( ',', $format ) . ")
+				WHERE qq.quiz_id = %d
 				AND p.post_status = %s
 				ORDER BY question_order, quiz_question_id ASC
-			", $args );
+			", $quiz_id, 'publish' );
 
 			$question_ids = array();
 
 			if ( $results = $wpdb->get_results( $query ) ) {
 				foreach ( $results as $k => $v ) {
 					settype( $v, 'object' );
-
-					$quiz_id = $v->quiz_id;
-
 					wp_cache_set( $v->ID, $v, 'posts' );
 
-					if ( empty( $questions[ $quiz_id ] ) ) {
-						$questions[ $quiz_id ] = array();
-					}
-
-					$questions[ $quiz_id ][ $v->ID ] = $v->ID;
 					$question_ids[]                  = $v->ID;
 				}
 			}
 
-			//}
-
-			foreach ( $questions as $quiz_id => $quiz_questions ) {
 				wp_cache_set( 'questions-' . $quiz_id, $quiz_questions, 'learn-press/quizzes' );
-			}
 
 			LP_Helper_CURD::cache_posts( $question_ids );
 			$question_factory = new LP_Question_CURD();

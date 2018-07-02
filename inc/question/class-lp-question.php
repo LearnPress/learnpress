@@ -609,8 +609,14 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 */
 		public function get_answers( $field = null, $exclude = null ) {
 			$answers = array();
+			LP_Debug::logTime( __FUNCTION__ );
 			if ( false === ( $data_answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'learn-press/questions' ) ) ) {
-				$data_answers = $this->get_default_answers();
+
+				if ( ! $data_answers = $this->_curd->load_answer_options( $this->get_id() ) ) {
+					$data_answers = $this->get_default_answers();
+				}
+
+				wp_cache_set( 'answer-options-' . $this->get_id(), $data_answers, 'learn-press/questions' );
 			};
 
 			if ( $data_answers ) {
@@ -619,6 +625,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			// @deprecated
 			$answers = apply_filters( 'learn_press_question_answers', $answers, $this );
+			LP_Debug::logTime( __FUNCTION__ );
 
 			return apply_filters( 'learn-press/questions/answers', $answers, $this->get_id() );
 		}

@@ -13,7 +13,6 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
 $user        = learn_press_get_current_user();
 $course      = learn_press_get_the_course();
 $user_course = $user->get_course_data( get_the_ID() );

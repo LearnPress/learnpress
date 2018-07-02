@@ -71,7 +71,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * CURD class to manipulation with database.
 		 *
-		 * @var null
+		 * @var LP_Object_Data_CURD
 		 */
 		protected $_curd = null;
 
@@ -197,6 +197,19 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		}
 
 		/**
+		 * Get data as LP_Datetime object
+		 *
+		 * @param string $name
+		 *
+		 * @return array|LP_Datetime|mixed
+		 */
+		public function get_data_date( $name ) {
+			$data = $this->get_data( $name );
+
+			return is_a( $data, 'LP_Datetime' ) ? $data : new LP_Datetime( $data );
+		}
+
+		/**
 		 * @param string $name
 		 * @param string $default
 		 *
@@ -228,6 +241,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param bool  $extra
 		 */
 		protected function _set_data( $key_or_data, $value = '', $extra = false ) {
+			LP_Debug::logTime( __FUNCTION__ );
+
 			if ( is_array( $key_or_data ) ) {
 				foreach ( $key_or_data as $key => $value ) {
 					$this->_set_data( $key, $value, $extra );
@@ -265,6 +280,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				}
 				$this->_changes[] = $key_or_data;
 			}
+			LP_Debug::logTime( __FUNCTION__ );
 
 		}
 
@@ -283,15 +299,19 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $value
 		 */
 		public function set_data_date( $key, $value = 'current_time' ) {
+			LP_Debug::logTime( __FUNCTION__ );
+
 			if ( $value === 'current_time' || '' === $value ) {
 				$value = current_time( 'timestamp' );
 			}
 
 			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
-				$value = new LP_Datetime( $value );
+				//$value = new LP_Datetime( $value );
 			}
 
 			$this->_set_data( $key, $value );
+			LP_Debug::logTime( __FUNCTION__ );
+
 		}
 
 		public function set_data_null_date( $key ) {
@@ -532,11 +552,27 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 		/**
 		 * Update meta.
+		 *
+		 * @updated 3.1.0
+		 *
+		 * @param string $key
+		 * @param mixed  $value
+		 * @param mixed  $prev_value
 		 */
-		public function update_meta() {
-			if ( $this->_meta_data ) {
-				foreach ( $this->_meta_data as $meta_data ) {
-					$this->_curd->update_meta( $this, $meta_data );
+		public function update_meta( $key = '', $value = '', $prev_value = '' ) {
+			if ( func_num_args() == 0 ) {
+				if ( $this->_meta_data ) {
+					foreach ( $this->_meta_data as $meta_data ) {
+						$this->_curd->update_meta( $this, $meta_data );
+					}
+				}
+			} else {
+				$update = update_post_meta( $this->get_id(), $key, $value, $prev_value );
+				if ( ! is_bool( $update ) && $update ) {
+					$this->_meta_data = (object) array(
+						'meta_key'   => $key,
+						'meta_value' => $value
+					);
 				}
 			}
 		}

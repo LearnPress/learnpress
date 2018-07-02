@@ -19,14 +19,12 @@ defined( 'ABSPATH' ) || exit();
 
 	<?php do_action( 'learn-press/before-course-buttons' ); ?>
 	<?php
-    LP_Debug::logTime('what-the-hell');
 	/**
 	 * @see learn_press_course_purchase_button - 10
 	 * @see learn_press_course_enroll_button - 10
 	 * @see learn_press_course_retake_button - 10
 	 */
 	do_action( 'learn-press/course-buttons' );
-	LP_Debug::logTime('what-the-hell');
 
 	?>
 	<?php do_action( 'learn-press/after-course-buttons' ); ?>

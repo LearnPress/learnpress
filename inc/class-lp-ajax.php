@@ -27,7 +27,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'complete-lesson',
 				'finish-course',
 				'retake-course',
-				'external-link:nopriv'
+				'external-link:nopriv',
+				'continue-course',
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
@@ -52,6 +53,26 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
+		}
+
+		/**
+		 * Continue course button.
+		 * Check if user is learning course then redirect
+		 * user to current item
+		 *
+		 * @since 3.1.0
+		 */
+		public static function continue_course() {
+			$id   = LP_Request::get( 'id' );
+			$user = LP_Global::user();
+			if ( ! $course = learn_press_get_course( $id ) ) {
+				return;
+			}
+
+			if ( $user->get_course_access_level( $id ) === LP_COURSE_ACCESS_LEVEL_40 ) {
+				wp_redirect( $user->get_current_item( $id, true ) );
+				exit();
+			}
 		}
 
 		/**
