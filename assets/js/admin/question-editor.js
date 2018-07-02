@@ -35,6 +35,10 @@
         type: function (state) {
             return state.type;
         },
+        code: function(state){
+        	return Date.now();
+        }
+        ,
         autoDraft: function (state) {
             return state.auto_draft;
         },
@@ -154,9 +158,13 @@
         },
 
         updateAnswerTitle: function (context, answer) {
+        	answer = JSON.stringify(answer);
+        	if(typeof answer.question_answer_id == 'undefined'){
+        		return;
+        	}
             Vue.http.LPRequest({
                 type: 'update-answer-title',
-                answer: JSON.stringify(answer)
+                answer: answer
             })
         },
 
@@ -249,13 +257,18 @@
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
-
+        payload['code'] = $store.getters.code;
+        $( '#publishing-action #publish' ).addClass( 'disabled' );
+        $( '#publishing-action .spinner' ).addClass( 'is-active' );
+        $( '#publishing-action' ).addClass( 'code-'+payload['code'] );
+        
         return Vue.http.post($store.getters.urlAjax,
             payload,
             {
                 emulateJSON: true,
                 params: {
-                    namespace: 'LPQuestionEditorRequest'
+                    namespace: 'LPQuestionEditorRequest',
+                    code: payload['code'],
                 }
             });
     };
@@ -269,7 +282,6 @@
         $store.dispatch('newRequest');
 
         next(function (response) {
-
             if (!jQuery.isPlainObject(response.body)) {
                 response.body = LP.parseJSON(response.body);
             }
@@ -282,6 +294,13 @@
             } else {
                 $store.dispatch('requestCompleted', 'failed');
             }
+
+            $( '#publishing-action' ).removeClass( 'code-'+request.params.code );
+            if(!$( '#publishing-action' ).attr('class')){
+            	$( '#publishing-action #publish' ).removeClass( 'disabled' );
+                $( '#publishing-action .spinner' ).removeClass( 'is-active' );
+            }
+            
         });
     });
 })(window, Vue, LP_Question_Store);

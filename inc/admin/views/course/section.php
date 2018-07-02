@@ -55,7 +55,7 @@ learn_press_admin_view( 'course/new-section-item' );
                 <button type="button" class="button button-secondary"
                         @click="openModal"><?php esc_html_e( 'Select items', 'learnpress' ); ?></button>
 
-                <div class="remove lp-title-attr-tip" :class="{confirm: confirm}" data-content-tip="<?php echo esc_attr( 'Delete section', 'learnpress' ); ?>">
+                <div class="remove" :class="{confirm: confirm}" title="<?php echo esc_attr( 'Delete section', 'learnpress' ); ?>">
                     <span class="icon" @click="removing"><span
                                 class="dashicons dashicons-trash"></span></span>
                     <div class="confirm" @click="remove"><?php esc_html_e( 'Are you sure?', 'learnpress' ); ?></div>
