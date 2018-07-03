@@ -4,6 +4,10 @@
  * Class LP_Page_Controller
  */
 class LP_Page_Controller {
+    
+    protected $_shortcode_exists = false;
+    protected $_shortcode_tag = '[learn_press_archive_course]'; 
+    protected $_archive_contents = null; 
 
 	/**
 	 * Store the object has queried by WP.
@@ -491,8 +495,12 @@ class LP_Page_Controller {
 			}
 			$content = $wp_query->post->post_content;
 
-			if ( ! preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content ) ) {
-				$content = wpautop( $content ) . '[learn_press_archive_course]';
+			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
+			$this->_shortcode_exists = !empty($results);
+			if ( empty($results) )  {
+				$content = wpautop( $content ) . $this->_shortcode_tag;
+			} else{
+				$this->_shortcode_tag = $results[0];
 			}
 
 			$has_filter = false;
@@ -501,10 +509,20 @@ class LP_Page_Controller {
 				remove_filter( 'the_content', 'wpautop' );
 			}
 
-			$content = do_shortcode( $content );
+// 			$content = do_shortcode( $content );
 
 			if ( $has_filter ) {
 				//add_filter( 'the_content', 'wpautop' );
+			}
+
+			$this->_archive_contents = do_shortcode($this->_shortcode_tag);
+			if( class_exists('SiteOrigin_Panels') ) {
+				if ( class_exists('SiteOrigin_Panels') && has_filter( 'the_content', array(SiteOrigin_Panels::single(),'generate_post_content') ) ) {
+					remove_shortcode('learn_press_archive_course');
+					add_filter('the_content', array($this, 'the_content_callback'), $this->_filter_content_priority);
+				}
+			} else {
+			    $content = do_shortcode( $content );
 			}
 
 			if ( empty( $wp_query->post->ID ) || LEARNPRESS_IS_CATEGORY ) {
@@ -705,6 +723,20 @@ class LP_Page_Controller {
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 
 		return $q;
+	}
+
+	public function the_content_callback( $content ) {
+		if( $this->_archive_contents ) { 
+			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
+			$this->_shortcode_exists = !empty($results);
+			$this->_shortcode_tag = $results[0];
+			if( $this->_shortcode_exists ) {
+				$content = str_replace($this->_shortcode_tag, $this->_archive_contents, $content);
+			} else {
+				$content .= $this->_archive_contents;
+			}
+		}
+		return $content;
 	}
 
 	public static function instance() {
