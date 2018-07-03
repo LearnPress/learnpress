@@ -729,8 +729,8 @@ class LP_Page_Controller {
 		if( $this->_archive_contents ) { 
 			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
 			$this->_shortcode_exists = !empty($results);
-			$this->_shortcode_tag = $results[0];
 			if( $this->_shortcode_exists ) {
+				$this->_shortcode_tag = $results[0];
 				$content = str_replace($this->_shortcode_tag, $this->_archive_contents, $content);
 			} else {
 				$content .= $this->_archive_contents;
