@@ -32,6 +32,10 @@ if ( ! class_exists( 'LP_Email_New_Order_User' ) ) {
 
 			parent::__construct();
 
+			// email for new order
+			add_action( 'learn-press/checkout-order-processed', array( $this, 'trigger' ) );
+			
+			// new paid order
 			add_action( 'learn-press/order/status-pending-to-processing/notification', array( $this, 'trigger' ) );
 
 			// remove order complete for free order ( default new free order auto create pending from pending to completed )
