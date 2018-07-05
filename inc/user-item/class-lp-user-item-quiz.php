@@ -130,8 +130,18 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_results( $prop = 'result', $force = false ) {
 		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
+
+		/**
+		 * Do nothing if user is not started quiz
+		 */
+		if ( in_array( $this->get_status(), array( '', 'viewed' ) ) ) {
+			return false;
+		}
+
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
+
+
 		if ( false === ( $result = wp_cache_get( $cache_key, 'learn-press/quiz-result' ) ) || $force ) {
 			if ( false === ( $result = $this->_get_results() ) ) {
 

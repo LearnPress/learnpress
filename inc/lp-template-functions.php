@@ -2505,7 +2505,7 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * @return void
  */
 function learn_press_get_template( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
-    LP_Debug::logTime(__FUNCTION__);
+	LP_Debug::logTime( __FUNCTION__ );
 	if ( $args && is_array( $args ) ) {
 		extract( $args );
 	}
@@ -2530,7 +2530,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 
 		do_action( 'learn_press_after_template_part', $template_name, $template_path, $located, $args );
 	}
-	LP_Debug::logTime(__FUNCTION__);
+	LP_Debug::logTime( __FUNCTION__ );
 
 }
 
@@ -2757,7 +2757,11 @@ if ( ! function_exists( 'learn_press_course_curriculum_tab' ) ) {
 	 * @since 1.1
 	 */
 	function learn_press_course_curriculum_tab() {
-		learn_press_get_template( 'single-course/tabs/curriculum.php' );
+		$is_ajax = LP_Request::get( 'get-raw-content' ) === 'curriculum';
+		learn_press_get_template( 'single-course/tabs/curriculum.php', array(
+			'use_ajax' => apply_filters( 'learn-press/use-ajax-curriculum', true ),
+			'is_ajax'  => apply_filters( 'learn-press/get-raw-content-curriculum', $is_ajax )
+		) );
 	}
 }
 
@@ -3766,7 +3770,7 @@ add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_templa
 
 function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
 
-    $can_view_item = '';
+	$can_view_item = '';
 	if ( $template_name == 'global/block-content.php' ) {
 		if ( ! is_user_logged_in() ) {
 			$can_view_item = 'not-logged-in';

@@ -918,6 +918,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$item = false;
 
 			if ( $this->has_item( $item_id ) ) {
+				if ( false === wp_cache_get( $item_id, 'posts' ) ) {
+					LP_Helper_CURD::cache_posts( $this->get_item_ids() );die();
+				}
 				$item = LP_Course_Item::get_item( $item_id );
 				$item->set_course( $this );
 			}
@@ -1384,7 +1387,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				if ( false === ( $count_items = $this->get_meta( 'count_items' ) ) ) {
 					$items       = $this->get_item_ids();
 					$count_items = sizeof( $items );
-					$this->update_meta('count_items', $count_items);
+					$this->update_meta( 'count_items', $count_items );
 				}
 			} else {
 				$key = md5( serialize( array(

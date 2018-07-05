@@ -144,7 +144,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$check = self::maybe_save_questions( 'start' );
 
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( false === $check ) {
 					throw $check;
 				}
 

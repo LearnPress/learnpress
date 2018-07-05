@@ -365,7 +365,7 @@
                 width: '100%'
             }).css('opacity', 1).end().css('opacity', 1);
 
-
+            $curriculumScrollable = $curriculum.find('.curriculum-scrollable')
             $curriculumScrollable.addClass('scrollbar-light')
                 .scrollbar({
                     scrollx: false
@@ -426,6 +426,19 @@
             });
         }
 
+        function getCurriculum() {
+            if ($curriculum.data('use_ajax') === 'yes') {
+                $.ajax({
+                    url: window.location.href.addQueryVar('get-raw-content', 'curriculum'),
+                    success: function (response) {
+                        var $content = $(response).find('#learn-press-course-curriculum');
+                        $curriculum.html($content.html()).attr('data-loaded', 'true');
+                        initScrollbar();
+                    }
+                })
+            }
+        }
+
         /**
          * Init
          */
@@ -433,7 +446,7 @@
             inPopup = $body.hasClass('course-item-popup');
             initSections();
             initEvents();
-
+            getCurriculum();
 
             if (!inPopup) {
                 return;

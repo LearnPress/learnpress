@@ -106,7 +106,6 @@ class LP_Page_Controller {
 		if ( $wp_query->queried_object_id !== $lp_course->get_id() ) {
 			return $post;
 		}
-
 		try {
 
 			// If item name is set in query vars
@@ -149,15 +148,6 @@ class LP_Page_Controller {
 					$this->set_404( true );
 					throw new Exception( '404' );
 				}
-
-//				$lp_quiz_question = LP_Question::get_question( $question->ID );
-//				$user             = learn_press_get_current_user();
-//				$quiz_data        = $user->get_quiz_data( $post_item->ID, $lp_course->get_id() );
-//
-//				// Update current question for user
-//				if ( $quiz_data && learn_press_get_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', true ) != $question->ID ) {
-//					learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question->ID );
-//				}
 
 				$user        = learn_press_get_current_user();
 				$quiz_data   = $user->get_quiz_data( $post_item->ID, $lp_course->get_id() );

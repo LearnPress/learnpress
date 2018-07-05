@@ -13,7 +13,6 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
 $user          = LP_Global::user();
 $course_item   = LP_Global::course_item();
 $course        = LP_Global::course();

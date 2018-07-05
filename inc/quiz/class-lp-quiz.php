@@ -330,6 +330,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function get_mark() {
 			$mark = $this->get_data( 'mark' );
+
 			if ( false === $mark || '' === $mark ) {
 				$questions = $this->get_questions();
 				$mark      = 0;
