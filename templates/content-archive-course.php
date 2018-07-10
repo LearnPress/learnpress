@@ -16,8 +16,6 @@ defined( 'ABSPATH' ) || exit();
 
 global $post, $wp_query, $lp_tax_query, $wp_query;
 
-echo "[",
-learn_press_single_term_title('', true), "]";
 /**
  * @deprecated
  */
