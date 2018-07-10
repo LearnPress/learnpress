@@ -469,7 +469,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				if ( is_array( $user_id ) ) {
 					$this->_update_child( $order, $user_id, $trigger_action );
-					$order->set_user_id( absint( $user_id ) );
+					$res = $order->set_user_id( $user_id );
 				} else {
 					$order->set_user_id( absint( $user_id ) );
 				}

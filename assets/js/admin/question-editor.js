@@ -158,10 +158,10 @@
         },
 
         updateAnswerTitle: function (context, answer) {
-        	answer = JSON.stringify(answer);
         	if(typeof answer.question_answer_id == 'undefined'){
         		return;
         	}
+        	answer = JSON.stringify(answer);
             Vue.http.LPRequest({
                 type: 'update-answer-title',
                 answer: answer
