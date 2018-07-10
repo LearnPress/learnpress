@@ -60,7 +60,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 			add_action( 'learn-press/quiz-started', array( __CLASS__, 'update_user_current_question' ), 10, 3 );
 			add_action( 'learn-press/before-start-quiz', array( __CLASS__, 'before_start_quiz' ), 10, 4 );
 			add_action( 'learn-press/user/before-retake-quiz', array( __CLASS__, 'before_retake_quiz' ), 10, 4 );
-
 		}
 
 		/**
@@ -187,11 +186,21 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 			if ( is_array( $return ) ) {
 				if ( ! empty( $return['next_question'] ) ) {
-					$quiz = learn_press_get_quiz( $return['quiz_id'] );
-					wp_redirect( $quiz->get_question_link( $return['next_question'] ) );
-					exit();
+					$quiz               = learn_press_get_quiz( $return['quiz_id'] );
+					$return['redirect'] = $quiz->get_question_link( $return['next_question'] );
+					//wp_redirect( $quiz->get_question_link( $return['next_question'] ) );
+					//exit();
 				}
+			} else {
+				$return = array(
+					'result' => 'failed'
+				);
 			}
+
+			learn_press_send_json( $return );
+
+
+			die();
 		}
 
 		/**
@@ -476,14 +485,17 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		public static function maybe_save_questions( $action = '', $nonce = '' ) {
 			$return = false;
 			try {
-				if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce ) ) {
-					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
-				}
 
 				$nav_type    = LP_Request::get_string( 'nav-type' );
 				$course_id   = LP_Request::get_int( 'course-id' );
 				$quiz_id     = LP_Request::get_int( 'quiz-id' );
 				$question_id = LP_Request::get_int( 'question-id' );
+
+				learn_press_setup_object_data( get_post( $course_id ) );
+
+				if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce, $quiz_id, $course_id ) ) {
+					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
+				}
 
 				if ( ! $questions = self::get_answers_posted() ) {
 					$questions = array();

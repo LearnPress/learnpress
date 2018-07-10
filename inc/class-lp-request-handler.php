@@ -20,11 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LP_Request {
 
 	/**
-	 * @var null
-	 */
-	protected static $_head = null;
-
-	/**
 	 * @var bool
 	 */
 	public static $ajax_shutdown = true;
@@ -35,6 +30,7 @@ class LP_Request {
 	public static function init() {
 
 		self::$ajax_shutdown = learn_press_is_ajax();
+
 		if ( is_admin() ) {
 			add_action( 'init', array( __CLASS__, 'process_request' ), 50 );
 		} else {

@@ -887,7 +887,7 @@ if (typeof window.LP === 'undefined') {
             });
             return $el;
         },
-        template: _.memoize(function (id, data) {
+        template: typeof _ !== 'undefined' ? _.memoize(function (id, data) {
             var compiled,
                 options = {
                     evaluate: /<#([\s\S]+?)#>/g,
@@ -903,7 +903,9 @@ if (typeof window.LP === 'undefined') {
             return data ? tmpl(data) : tmpl;
         }, function (a, b) {
             return a + '-' + JSON.stringify(b);
-        }),
+        }) : function () {
+            return '';
+        },
         alert: function (localize, callback) {
             var title = '',
                 message = '';

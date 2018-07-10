@@ -388,11 +388,28 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 				}
 			}
 		} else {
-			learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value, $prev_value );
+			if ( is_array( $key ) ) {
+				foreach ( $key as $k => $v ) {
+					if ( $v === false ) {
+						learn_press_delete_user_item_meta( $this->get_user_item_id(), $k );
+					} else {
+						learn_press_update_user_item_meta( $this->get_user_item_id(), $k, $v );
+					}
+				}
+			} else {
+				if ( $value === false ) {
+					learn_press_delete_user_item_meta( $this->get_user_item_id(), $key );
+				} else {
+					learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value, $prev_value );
+				}
+			}
 		}
 	}
 
 	public function get_mysql_data() {
+		/**
+		 * @var LP_Datetime $v
+		 */
 		$columns = array();
 		foreach ( $this->get_data() as $k => $v ) {
 			switch ( $k ) {

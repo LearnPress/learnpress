@@ -102,6 +102,8 @@ ul.learn-press-nav-tabs {
 }
 
 .course-curriculum {
+    position: relative;
+    min-height: 50px;
     &[data-use_ajax="yes"]:not([data-loaded]) {
         &:after {
             font-family: fontawesome;

@@ -36,7 +36,8 @@ class LP_Unit_Test {
 				'font-size'  => '12px',
 				'color'      => '#FFF',
 				'max-height' => '200px',
-				'overflow'   => 'auto'
+				'overflow'   => 'auto',
+				'opacity'    => 0.5
 			);
 			foreach ( $styles as $k => $v ) {
 				$styles[ $k ] = "$k: $v";
@@ -79,7 +80,7 @@ function get_files( $dir ) {
 	return $return;
 }
 
-if(empty($_REQUEST['test-hooks'])){
+if ( empty( $_REQUEST['test-hooks'] ) ) {
 	return;
 }
 
@@ -102,6 +103,6 @@ foreach ( $files as $file ) {
 	}
 
 }
-arsort($hooks);
+arsort( $hooks );
 print_r( $hooks );
 die();

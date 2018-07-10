@@ -2666,6 +2666,7 @@ function learn_press_debug() {
 	if ( $args ) {
 		foreach ( $args as $arg ) {
 			print_r( $arg );
+			echo "\n=============================\n";
 		}
 	}
 	echo '</pre>';

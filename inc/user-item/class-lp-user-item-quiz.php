@@ -18,7 +18,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$this->_curd = new LP_Quiz_CURD();
 
 		parent::__construct( $data );
-		//$this->_parse_answers();
+		$this->_parse_answers();
 	}
 
 	/**
@@ -35,7 +35,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function add_question_answer( $id, $values = null ) {
 		if ( ! $this->_answers ) {
-			$this->_parse_answers();
+			//$this->_parse_answers();
 		}
 
 		if ( is_array( $id ) ) {
@@ -56,18 +56,40 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function get_question_answer( $id ) {
 		if ( ! $this->_answers ) {
-			$this->_parse_answers();
+			//$this->_parse_answers();
 		}
 
 		return ! empty( $this->_answers[ $id ] ) ? $this->_answers[ $id ] : false;
 	}
 
+	/**
+	 * Update data to database
+	 *
+	 * @param bool $force
+	 *
+	 * @return bool|mixed
+	 */
 	public function update( $force = false ) {
 		$return = parent::update();
-
 		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
-
+		$this->calculate_results();
 		return $return;
+	}
+
+	/**
+	 * Get list of data to update to database
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return array
+	 */
+	public function get_mysql_data() {
+		$columns                      = parent::get_mysql_data();
+//		$columns['_question_answers'] = false;
+//		$columns['_grade']            = false;
+//		$columns['results']           = false;
+
+		return apply_filters( 'learn-press/update-user-item-quiz-data', $columns, $this->get_item_id(), $this->get_course_id(), $this->get_user_id() );
 	}
 
 	/**
@@ -144,75 +166,90 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		if ( false === ( $result = wp_cache_get( $cache_key, 'learn-press/quiz-result' ) ) || $force ) {
 			if ( false === ( $result = $this->_get_results() ) ) {
-
-				$result = array(
-					'questions'         => array(),
-					'mark'              => $quiz->get_mark(),
-					'user_mark'         => 0,
-					'question_count'    => 0,
-					'question_empty'    => 0,
-					'question_answered' => 0,
-					'question_wrong'    => 0,
-					'question_correct'  => 0,
-					'status'            => $this->get_status(),
-					'grade'             => '',
-					'result'            => 0,
-					'time_spend'        => $this->get_time_interval( 'display' ),
-					'retake_count'      => 0
-				);
-
-				if ( $questions = $quiz->get_questions() ) {
-					foreach ( $questions as $question_id ) {
-						$question          = LP_Question::get_question( $question_id );
-						$answered          = $this->get_question_answer( $question_id );
-						$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
-						$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
-						$check['answered'] = ! isset( $check['answered'] ) ? $answered !== false : $check['answered'];
-
-						if ( false !== $check['answered'] && $check['correct'] ) {
-							$result['question_correct'] ++;
-							$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
-						} else {
-							if ( false === $check['answered'] ) {
-								if ( $quiz->get_minus_skip_questions() ) {
-									// minus for each wrong, empty question
-									$result['user_mark'] -= $quiz->get_minus_points();
-								}
-								$result['question_empty'] ++;
-							} else {
-								// minus for each wrong, empty question
-								$result['user_mark'] -= $quiz->get_minus_points();
-								$result['question_wrong'] ++;
-							}
-						}
-
-						$result['questions'][ $question_id ] = $check;
-
-						if ( $check['answered'] ) {
-							$result['question_answered'] ++;
-						}
-					}
-
-					// make sure user mark greater than 0
-					$result['user_mark'] = ( $result['user_mark'] >= 0 ) ? $result['user_mark'] : 0;
-
-					$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
-					$result['result'] = $percent;
-					$result['grade']  = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
-
-					$result['question_count'] = sizeof( $questions );
-
-					if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
-						learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
-					}
-				}
-				wp_cache_set( $cache_key, $result, 'learn-press/quiz-result' );
+				$result = $this->calculate_results();
 			}
-			$this->update_meta( 'results', $result );
+			wp_cache_set( $cache_key, $result, 'learn-press/quiz-result' );
 		}
 		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
 
 		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
+	}
+
+	/**
+	 * Calculate results of quiz.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return array
+	 */
+	public function calculate_results() {
+		$quiz = learn_press_get_quiz( $this->get_item_id() );
+
+		$result = array(
+			'questions'         => array(),
+			'mark'              => $quiz->get_mark(),
+			'user_mark'         => 0,
+			'question_count'    => 0,
+			'question_empty'    => 0,
+			'question_answered' => 0,
+			'question_wrong'    => 0,
+			'question_correct'  => 0,
+			'status'            => $this->get_status(),
+			'grade'             => '',
+			'result'            => 0,
+			'time_spend'        => $this->get_time_interval( 'display' ),
+			'retake_count'      => 0
+		);
+
+		if ( $questions = $quiz->get_questions() ) {
+			foreach ( $questions as $question_id ) {
+				$question          = LP_Question::get_question( $question_id );
+				$answered          = $this->get_question_answer( $question_id );
+				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
+				$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
+				$check['answered'] = ! isset( $check['answered'] ) ? $answered !== false : $check['answered'];
+
+				if ( false !== $check['answered'] && $check['correct'] ) {
+					$result['question_correct'] ++;
+					$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
+				} else {
+					if ( false === $check['answered'] ) {
+						if ( $quiz->get_minus_skip_questions() ) {
+							// minus for each wrong, empty question
+							$result['user_mark'] -= $quiz->get_minus_points();
+						}
+						$result['question_empty'] ++;
+					} else {
+						// minus for each wrong, empty question
+						$result['user_mark'] -= $quiz->get_minus_points();
+						$result['question_wrong'] ++;
+					}
+				}
+
+				$result['questions'][ $question_id ] = $check;
+
+				if ( $check['answered'] ) {
+					$result['question_answered'] ++;
+				}
+			}
+
+			// make sure user mark greater than 0
+			$result['user_mark'] = ( $result['user_mark'] >= 0 ) ? $result['user_mark'] : 0;
+
+			$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
+			$result['result'] = $percent;
+			$result['grade']  = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
+
+			$result['question_count'] = sizeof( $questions );
+
+			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
+				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
+			}
+		}
+
+		$this->update_meta( 'results', $result );
+
+		return $result;
 	}
 
 	protected function _get_results() {

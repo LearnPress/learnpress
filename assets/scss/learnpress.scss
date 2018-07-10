@@ -362,6 +362,25 @@ ul.list-table-nav {
         }
     }
 }
+
+body{
+    &.lp-loading{
+        #learn-press-content-item {
+            &:after {
+                content: '';
+                position: fixed;
+                background: #FFF;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 999;
+                opacity: 0.1;
+            }
+        }
+    }
+}
+
 @media screen and (max-width: 768px) {
     ul.learn-press-courses {
         .course {

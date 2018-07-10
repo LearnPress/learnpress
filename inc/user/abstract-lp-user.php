@@ -530,10 +530,23 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$course_data->update_item_retaken_count( $quiz_id, '+1' );
 				$quiz_data->set_status( 'started' );
+				$quiz_data->set_start_time( current_time('mysql'), true );
+				$quiz_data->set_end_time( '0000-00-00 00:00:00' );
+				$quiz_data->set_end_time_gmt( '0000-00-00 00:00:00' );
+				$quiz_data->set_status( 'started' );
 
 				if ( $quiz_data->update() ) {
+					$quiz_data->update_meta(
+						array(
+							'_question_answers' => false,
+							'_grade'            => false,
+							'results'           => false
+						)
+					);
+
 					$course_data->set_item( $quiz_data );
 				}
+
 
 				if ( $questions = $quiz->get_questions() ) {
 					$question_id = reset( $questions );

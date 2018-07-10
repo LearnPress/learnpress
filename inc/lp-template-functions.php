@@ -1105,8 +1105,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
             }
 
             body {
-                opacity: 0;
-
+                opacity: 1;
             }
 
             body.course-item-popup #wpadminbar {
@@ -1143,6 +1142,12 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 	 * Add edit links for course item question to admin bar.
 	 */
 	function learn_press_content_item_edit_links() {
+
+		/**
+		 * @var WP_Admin_Bar   $wp_admin_bar
+		 * @var LP_Course_Item $lp_course_item
+		 * @var LP_Question    $lp_quiz_question
+		 */
 		global $wp_admin_bar, $post, $lp_course_item, $lp_quiz_question;
 
 		if ( ! ( ! is_admin() && is_user_logged_in() ) ) {
@@ -1218,6 +1223,7 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 		}
 
 		foreach ( $hooks as $hook ) {
+
 			if ( isset( $wp_filter["learn-press/{$hook}"] ) ) {
 				// Move to backup to restore it if needed.
 				$wp_filter['learn-press-backup-hooks']["learn-press/{$hook}"] = $wp_filter["learn-press/{$hook}"];
@@ -2758,6 +2764,9 @@ if ( ! function_exists( 'learn_press_course_curriculum_tab' ) ) {
 	 */
 	function learn_press_course_curriculum_tab() {
 		$is_ajax = LP_Request::get( 'get-raw-content' ) === 'curriculum';
+
+		//LP_Background_Global::add('cache-curriculum', array('course_id' => get_the_ID()), 'xxxxxx');
+
 		learn_press_get_template( 'single-course/tabs/curriculum.php', array(
 			'use_ajax' => apply_filters( 'learn-press/use-ajax-curriculum', true ),
 			'is_ajax'  => apply_filters( 'learn-press/get-raw-content-curriculum', $is_ajax )
@@ -3793,3 +3802,33 @@ function learn_press_term_conditions_template() {
 }
 
 add_action( 'learn-press/after-payment-methods', 'learn_press_term_conditions_template' );
+
+/**
+ * This function detect to see if there is a sign to
+ * load a part of page content then load it.
+ *
+ * @since 3.1.0
+ *
+ * @param string $template
+ *
+ * @return string
+ */
+function learn_press_get_raw_content( $template ) {
+	/**
+	 * @var WP_Query $wp_query
+	 */
+	switch ( LP_Request::get( 'get-raw-content' ) ) {
+		case 'curriculum':
+			global $wp_query;
+
+			if ( $wp_query->have_posts() ) {
+				$wp_query->the_post();
+			}
+			learn_press_course_curriculum_tab();
+			exit();
+	}
+
+	return $template;
+}
+
+add_action( 'wp', 'learn_press_get_raw_content', 100 );

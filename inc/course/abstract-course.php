@@ -919,7 +919,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			if ( $this->has_item( $item_id ) ) {
 				if ( false === wp_cache_get( $item_id, 'posts' ) ) {
-					LP_Helper_CURD::cache_posts( $this->get_item_ids() );die();
+					LP_Helper_CURD::cache_posts( $this->get_item_ids() );
 				}
 				$item = LP_Course_Item::get_item( $item_id );
 				$item->set_course( $this );

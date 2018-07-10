@@ -6,7 +6,7 @@
  * @author ThimPress
  * @package LearnPress/JS/Course
  */
-(function ($, LP, _) {
+(function ($, LP) {
 
     'use strict';
 
@@ -81,7 +81,8 @@
             $courseItems = $curriculum.find('.course-item'),
             isShowingHeader = true,
             fullScreen, contentTop = 0, headerTimer,
-            inPopup = false;
+            inPopup = false,
+            isRTL = $body.hasClass('rtl');
 
         /**
          * Toggle answer option check/uncheck
@@ -249,6 +250,8 @@
             if (!isShowingHeader) {
                 $curriculum.stop().animate({
                     left: 0
+                }, function () {
+                    getCurriculum();
                 });
 
                 $contentItem.stop().animate({
@@ -309,6 +312,8 @@
                 .stop()
                 .animate({
                     left: fullScreen ? -curriculumWidth : 0
+                }, function () {
+                    getCurriculum();
                 });
 
             $contentItem
@@ -426,14 +431,25 @@
             });
         }
 
+        function curriculumIsVisible() {
+            return !isRTL ? parseInt($curriculum.css('left')) >= 0 : parseInt($curriculum.css('right')) >= 0;
+        }
+
         function getCurriculum() {
-            if ($curriculum.data('use_ajax') === 'yes') {
+            if (curriculumIsVisible() && $curriculum.attr('data-loaded') !== 'true' && $curriculum.data('use_ajax') === 'yes') {
                 $.ajax({
                     url: window.location.href.addQueryVar('get-raw-content', 'curriculum'),
                     success: function (response) {
-                        var $content = $(response).find('#learn-press-course-curriculum');
+                        var $content = $(response);
+
+                        if (!$content.is('.course-curriculum')) {
+                            $content = $content.find('.course-curriculum')
+                        }
                         $curriculum.html($content.html()).attr('data-loaded', 'true');
-                        initScrollbar();
+
+                        if (inPopup) {
+                            initScrollbar();
+                        }
                     }
                 })
             }
@@ -446,9 +462,9 @@
             inPopup = $body.hasClass('course-item-popup');
             initSections();
             initEvents();
-            getCurriculum();
 
             if (!inPopup) {
+                getCurriculum();
                 return;
             }
 
@@ -477,6 +493,8 @@
                 toggleEventShowCurriculum();
             }
 
+            getCurriculum();
+
             setTimeout(function () {
                 var $cs = $body.find('.curriculum-sections').parent();
                 $cs.scrollTo($cs.find('.course-item.current'), 100);
@@ -489,6 +507,21 @@
             $body.css('opacity', 1);
 
         }
+
+        $('.lp-form').submit(function () {
+            $body.addClass('lp-loading');
+            var data = $.extend({}, $('.answer-options').serializeJSON(), $(this).serializeJSON());
+            $.ajax({
+                url: 'http://localhost/eduma/',
+                data: data,
+                type: 'post',
+                success: function (response) {
+                    response = LP.parseJSON(response);
+                    window.location.href = response.redirect;
+                }
+            });
+            return false;
+        });
 
         new LP.Alerts();
 
@@ -558,6 +591,8 @@
 
 
     $(document).ready(function () {
+
+
         $(document).ready(function () {
             new LP_Course({});
 
@@ -571,4 +606,4 @@
         });
     });
 })
-(jQuery, LP, _);
+(jQuery, LP);

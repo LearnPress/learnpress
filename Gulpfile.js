@@ -29,7 +29,7 @@ gulp.task('scss', function () {
         .pipe(scss())
         //.pipe(sourceMaps.write())
         .pipe(gulp.dest('assets/css'))
-        //.pipe(liveReload());
+    //.pipe(liveReload());
 });
 
 gulp.task('watch', function () {
@@ -51,7 +51,7 @@ gulp.task('compress-js', function (cb) {
         .pipe(gulp.dest('assets/js/admin'))
 });
 
-gulp.task('minify-css', function () {
+gulp.task('compress-css', function () {
     return gulp.src('./assets/**/*.css')
         .pipe(cleanCSS())
         .pipe(gulp.dest('./assets'));
@@ -164,6 +164,40 @@ gulp.task('mk-zip', ['copy-zip'], function () {
 
 gulp.task('zip', ['mk-zip'], function () {
 
+});
+
+/**
+ * Join and compress front-end script
+ */
+gulp.task('cfjs', function () {
+    return gulp.src([
+        'assets/js/vendor/watch.js',
+        'assets/js/vendor/jquery.alert.js',
+        'assets/js/vendor/jquery-scrollbar/jquery.scrollbar.js',
+        'assets/js/vendor/jquery.scrollTo.js',
+        'assets/js/learnpress.js',
+        'assets/js/frontend/course.js',
+        'assets/js/frontend/quiz.js',
+        //'assets/js/frontend/profile.js',
+        //'assets/js/frontend/become-teacher.js',
+    ])
+        .pipe(concat('learnpress-frontend.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('assets/js/frontend'))
+});
+
+/**
+ * Join and compress frontend css
+ */
+gulp.task('cfcss', function () {
+    return gulp.src([
+        'assets/css/font-awesome.min.css',
+        'assets/js/vendor/jquery-scrollbar/jquery.scrollbar.css',
+        'assets/css/learnpress.css',
+    ])
+        .pipe(concat('learnpress-frontend.min.css'))
+        .pipe(cleanCSS())
+        .pipe(gulp.dest('assets/css'))
 })
 
 // end of the world!

@@ -593,6 +593,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		}
 
 		protected function _parse_item_block_status( $course_id, $user_id, $cache_key ) {
+
 			if ( ! $course = learn_press_get_course( $course_id ) ) {
 				return false;
 			}
