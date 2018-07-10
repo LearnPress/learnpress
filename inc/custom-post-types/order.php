@@ -348,6 +348,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
+		 * @return string
+		 */
+		private function _get_orderby() {
+			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
+		}
+
+		/**
 		 * Process when saving order with multi users
 		 *
 		 * @param $post_id
@@ -469,11 +476,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$new_order->save();
 				$new_status = get_post_status( $new_order->get_id() );
 
-				if ( ( $new_status === $old_status ) && $trigger_action ) {
+				if ( ( $new_status !== $old_status ) || $trigger_action ) {
 					$status = str_replace( 'lp-', '', $new_status );
+					$old_status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $new_order->get_id(), $status );
-					do_action( 'learn-press/order/status-' . $status . '-to-' . $status, $new_order->get_id() );
-					do_action( 'learn-press/order/status-changed', $new_order->get_id(), $status, $status );
+					do_action( 'learn-press/order/status-' . $old_status . '-to-' . $status, $new_order->get_id() );
+					do_action( 'learn-press/order/status-changed', $new_order->get_id(), $status, $old_status );
 				}
 			}
 		}
@@ -586,7 +594,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( preg_match( "/({$wpdb->posts}\.post_title LIKE)/", $where ) ) {
 				$where = preg_replace( "/({$wpdb->posts}\.post_title LIKE)/", $append . '$1', $where );
 			} else {
-				$where .= " AND (" . $append . $wpdb->prepare( " {$wpdb->posts}\.post_title LIKE %s", $s ) . ")";
+				$where .= " AND (" . $append . $wpdb->prepare( " {$wpdb->posts}.post_title LIKE %s", $s ) . ")";
 			}
 
 			return $where;
@@ -602,21 +610,37 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function posts_orderby( $orderby ) {
-			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
+			if ( ! $this->_is_archive() ) {
 				return $orderby;
+			}
+            global $wpdb;
+			switch ( $this->_get_orderby() ) {
+				case 'title':
+					$orderby = "{$wpdb->posts}.ID {$_GET['order']}";
+					break;
+				case 'student':
+					$orderby = "uu.user_login {$_GET['order']}";
+					break;
+				case 'date':
+					$orderby = "{$wpdb->posts}.post_date {$_GET['order']}";
+					break;
+                case 'order_total':
+					$orderby = " orderItemmeta.meta_value {$_GET['order']}";
+					break;
 			}
 
 			return $orderby;
 		}
 
 		public function posts_join_paged( $join ) {
-			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
+			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
 			global $wpdb;
 			$join .= " INNER JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
-			$join .= " INNER JOIN {$wpdb->users} uu ON uu.ID = {$wpdb->postmeta}.meta_value";
+			$join .= " INNER JOIN {$wpdb->users} uu ON {$wpdb->postmeta}.meta_key LIKE '_user_id' AND {$wpdb->postmeta}.meta_value = uu.ID";
 			$join .= " INNER JOIN {$wpdb->learnpress_order_items} AS orderItem ON orderItem.order_id = {$wpdb->posts}.ID";
+			$join .= " INNER JOIN {$wpdb->learnpress_order_itemmeta} AS orderItemmeta ON orderItem.order_item_id = orderItemmeta.learnpress_order_item_id AND orderItemmeta.meta_key LIKE '_total'";
 
 			return $join;
 		}
@@ -630,6 +654,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns['order_student'] = 'student';
+			$columns['order_date']  = 'date';
+			$columns['order_total']  = 'order_total';
 
 			return $columns;
 		}
@@ -862,8 +888,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$items = $the_order->get_items();
 					$count = sizeof( $items );
 					foreach ( $items as $item ) {
-						if ( empty( $item['course_id'] ) || learn_press_get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-							$links[] = __( 'Course does not exist', 'learnpress' );
+						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+							$links[] = apply_filters( 'learn-press/get_info_item_order', __( 'Course does not exist', 'learnpress' ), $item );
 						} else {
 							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
 							if ( $count > 1 ) {

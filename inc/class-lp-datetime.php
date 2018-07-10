@@ -28,7 +28,7 @@ class LP_Datetime extends DateTime {
 
 	protected $raw_date = null;
 
-	protected static $timezone = null;
+	protected static $def_timezone = null;
 
 	/**
 	 * Constructor.
@@ -37,9 +37,6 @@ class LP_Datetime extends DateTime {
 	 * @param   mixed  $tz
 	 */
 	public function __construct( $date = '', $tz = null ) {
-
-		$d = md5( serialize( func_get_args() ) );
-		LP_Debug::logTime( __CLASS__  );
 		if ( empty( self::$gmt ) || empty( self::$stz ) ) {
 			self::$gmt = new DateTimeZone( 'GMT' );
 			self::$stz = new DateTimeZone( @date_default_timezone_get() );
@@ -71,22 +68,28 @@ class LP_Datetime extends DateTime {
 		date_default_timezone_set( self::$stz->getName() );
 
 		$this->tz = $tz;
-		LP_Debug::logTime( __CLASS__ );
-
 	}
 
+	/**
+	 * Get default timezone from param and wp settings
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param mixed $tz
+	 *
+	 * @return DateTimeZone|null|string
+	 */
 	public static function get_default_timezone( $tz ) {
-		if ( empty( self::$timezone ) ) {
+		if ( empty( self::$def_timezone ) ) {
 			if ( ( $tz === null ) ) {
 				$tz = new DateTimeZone( self::timezone_string() );
 			} elseif ( is_string( $tz ) && $tz ) {
 				$tz = new DateTimeZone( $tz );
 			}
-
-			self::$timezone = $tz;
+			self::$def_timezone = $tz;
 		}
 
-		return self::$timezone;
+		return self::$def_timezone;
 	}
 
 	/**

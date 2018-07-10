@@ -147,7 +147,7 @@ class LP_Breadcrumb {
 		} else {
 			$post = get_post( $post_id );
 		}
-		if ( 'lp_course' === learn_press_get_post_type( $post ) ) {
+		if ( LP_COURSE_CPT === get_post_type( $post ) ) {
 			$this->prepend_courses_page();
 			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array(
 				'orderby' => 'parent',
@@ -228,19 +228,20 @@ class LP_Breadcrumb {
 	 * Courses archive breadcrumb
 	 */
 	private function add_crumbs_courses() {
-		if ( get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
+		$course_page_id = learn_press_get_page_id( 'courses' );
+		if ( get_option( 'page_on_front' ) == $course_page_id ) {
 			return;
 		}
 
-		$_name = learn_press_get_page_id( 'courses' ) ? get_the_title( learn_press_get_page_id( 'courses' ) ) : '';
+		$_name = $course_page_id ? get_the_title( $course_page_id ) : '';
 
 		if ( ! $_name ) {
-			if ( $course_post_type = get_post_type_object( 'course' ) ) {
+			if ( $course_post_type = get_post_type_object( LP_COURSE_CPT ) ) {
 				$_name = $course_post_type->labels->singular_name;
 			}
 		}
 
-		$this->add_crumb( $_name, get_post_type_archive_link( 'lp_course' ) );
+		$this->add_crumb( $_name, get_post_type_archive_link( LP_COURSE_CPT ) );
 	}
 
 	/**

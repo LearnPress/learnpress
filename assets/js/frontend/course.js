@@ -178,10 +178,13 @@
             var $tab = $(tab),
                 $parent = $tab.closest('.course-nav');
 
+            getCurriculum();
+            
             if ($parent.siblings().length === 0) {
                 return;
             }
-            LP.setUrl($tab.attr('href'))
+
+            LP.setUrl($tab.attr('href'));
         }
 
         /**

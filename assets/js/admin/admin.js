@@ -159,12 +159,12 @@
         }).apply(this)
     }
 
-    function updateLessonPreview() {
+    function updateItemPreview() {
         $.ajax({
             url: '',
             data: {
-                'lp-ajax': 'toggle_lesson_preview',
-                lesson_id: this.value,
+                'lp-ajax': 'toggle_item_preview',
+                item_id: this.value,
                 previewable: this.checked ? 'yes' : 'no',
                 nonce: $(this).attr('data-nonce')
             },
@@ -378,6 +378,29 @@
         });
     }
 
+    function send_newsletter_info(e){
+        var $notice = $(e.target),
+            context = $notice.attr('data-context');
+        $(this).addClass('updating-message button-working disabled');
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'join_newsletter',
+                context: context
+            },
+            success: function (response) {
+                response = LP.parseJSON(response);
+                $(this).removeClass('updating-message button-working');
+                if (response.success) {
+                    $('#learn-press-newsletter-button').fadeOut();
+                    alert(response.data);
+                } else {
+                    alert(response.data);
+                }
+            }
+        });
+    }
+
     function loadDashboardOrderStatus() {
         $.ajax({
             url: '',
@@ -408,7 +431,7 @@
 
         $('.learn-press-dropdown-pages').dropdownPages();
         $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
-        $('.learn-press-toggle-lesson-preview').on('change', updateLessonPreview);
+        $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
         $('.learn-press-tip').QuickTip();
 
         initTooltips();
@@ -426,6 +449,7 @@
             .on('click', '.plugin-action-buttons a', pluginActions)
             .on('click', '.learn-press-filter-template', _callbackFilterTemplates)
             .on('click', '.lp-duplicate-row-action .lp-duplicate-post', _duplicatePost)
+            .on('click', '#learn-press-newsletter-button button', send_newsletter_info)
             .on('mousedown', '.lp-sortable-handle', function (e) {
                 $('html, body').addClass('lp-item-moving');
                 $(e.target).closest('.lp-sortable-handle').css('cursor', 'inherit');

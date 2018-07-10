@@ -68,7 +68,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'search_items' => 'modal_search_items',
 				'update-payment-order',
 				'update-payment-status',
-				'toggle_lesson_preview',
+				'toggle_item_preview',
 
 				// admin editor
 				'admin_course_editor',
@@ -87,6 +87,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'update_email_status',
 				'create-pages',
 				'search-authors',
+				'skip-notice-install',
+				'join_newsletter',
 				'skip-notice-install',
 				'dashboard-order-status',
 				'dashboard-plugin-status',
@@ -301,6 +303,48 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
+		 * Send data to join newsletter or dismiss
+		 *
+		 * @since 3.0.10
+		 */
+		public static function join_newsletter() {
+			$context = LP_Request::get_string( 'context' );
+			if ( ! $context || $context != 'newsletter' ) {
+				update_option( 'learn-press-dismissed-newsletter-button', 1 );
+				learn_press_send_json_success( __( 'Dismissed!', 'learnpress' ) );
+			}
+			$user = learn_press_get_current_user();
+			if ( ! $user || $user->get_email() == '' ) {
+				learn_press_send_json_error( __( 'Fail while joining newsletter! Please try again!', 'learnpress' ) );
+			}
+			$url      = 'https://thimpress.com/mailster/subscribe';
+			$response = wp_remote_post( $url, array(
+					'method'      => 'POST',
+					'timeout'     => 45,
+					'redirection' => 5,
+					'httpversion' => '1.0',
+					'blocking'    => true,
+					'headers'     => array(),
+					'body'        => array(
+						'_referer' => 'extern',
+						'_nonce'   => '4b266caf7b',
+						'formid'   => '19',
+						'email'    => $user->get_email(),
+						'website'  => site_url(),
+					),
+					'cookies'     => array()
+				)
+			);
+			if ( is_wp_error( $response ) ) {
+				$error_message = $response->get_error_message();
+				learn_press_send_json_error( __( 'Something went wrong: ', 'learnpress' ) . $error_message );
+			} else {
+				update_option( 'learn-press-dismissed-newsletter-button', 1 );
+				learn_press_send_json_success( __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.', 'learnpress' ) );
+			}
+		}
+
+		/**
 		 * Duplicate course, lesson, quiz, question.
 		 *
 		 * @since 3.0.0
@@ -409,16 +453,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Toggle lesson preview.
 		 */
-		public static function toggle_lesson_preview() {
-			$id = learn_press_get_request( 'lesson_id' );
-			if ( learn_press_get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ) {
+		public static function toggle_item_preview() {
+			$id = learn_press_get_request( 'item_id' );
+			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
+					'lp_lesson',
+					'lp_quiz'
+				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' ) ) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
 					$previewable = '0';
 				}
 				update_post_meta( $id, '_lp_preview', $previewable );
 			}
-			die( __FILE__ . '::' . __FUNCTION__ );;
+			die( __FILE__ . '::' . __FUNCTION__ );
 		}
 
 		/**

@@ -5,6 +5,10 @@
  */
 class LP_Page_Controller {
 
+	protected $_shortcode_exists = false;
+	protected $_shortcode_tag = '[learn_press_archive_course]';
+	protected $_archive_contents = null;
+
 	/**
 	 * Store the object has queried by WP.
 	 *
@@ -106,6 +110,7 @@ class LP_Page_Controller {
 		if ( $wp_query->queried_object_id !== $lp_course->get_id() ) {
 			return $post;
 		}
+
 		try {
 
 			// If item name is set in query vars
@@ -366,6 +371,7 @@ class LP_Page_Controller {
 				}
 			}
 			if ( $_GET ) {
+				$_GET = array_map( 'stripslashes_deep', $_GET );
 				foreach ( $_GET as $k => $v ) {
 					$redirect = add_query_arg( $k, urlencode( $v ), $redirect );
 				}
@@ -480,11 +486,26 @@ class LP_Page_Controller {
 	 * @return string
 	 */
 	public function _load_archive_courses( $template ) {
-		define( 'LEARNPRESS_IS_COURSES', learn_press_is_courses() );
-		define( 'LEARNPRESS_IS_TAG', learn_press_is_course_tag() );
-		define( 'LEARNPRESS_IS_CATEGORY', learn_press_is_course_category() );
-		define( 'LEARNPRESS_IS_TAX', learn_press_is_course_tax() );
-		define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
+
+		if ( ! defined( 'LEARNPRESS_IS_COURSES' ) ) {
+			define( 'LEARNPRESS_IS_COURSES', learn_press_is_courses() );
+		}
+
+		if ( ! defined( 'LEARNPRESS_IS_TAG' ) ) {
+			define( 'LEARNPRESS_IS_TAG', learn_press_is_course_tag() );
+		}
+
+		if ( ! defined( 'LEARNPRESS_IS_CATEGORY' ) ) {
+			define( 'LEARNPRESS_IS_CATEGORY', learn_press_is_course_category() );
+		}
+
+		if ( ! defined( 'LEARNPRESS_IS_TAX' ) ) {
+			define( 'LEARNPRESS_IS_TAX', learn_press_is_course_tax() );
+		}
+
+		if ( ! defined( 'LEARNPRESS_IS_SEARCH' ) ) {
+			define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
+		}
 
 		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY || LEARNPRESS_IS_SEARCH || LEARNPRESS_IS_TAX ) {
 			global $wp_query;
@@ -514,7 +535,7 @@ class LP_Page_Controller {
 			// If we don't have a post, load an empty one
 			if ( ! empty( $this->_queried_object ) ) {
 				$wp_query->post = $this->_queried_object;
-			} elseif ( empty( $wp_query->post ) ) {
+			} elseif ( empty( $wp_query->post ) || learn_press_is_courses() /* -> Fixed: archive course page displays name of first course */ ) {
 				$wp_query->post = new WP_Post( new stdClass() );
 			} elseif ( $wp_query->post->post_type != 'page' ) {
 				// Do not show content of post if it is not a page
@@ -522,8 +543,12 @@ class LP_Page_Controller {
 			}
 			$content = $wp_query->post->post_content;
 
-			if ( ! preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content ) ) {
-				$content = $content . '[learn_press_archive_course]';
+			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
+			$this->_shortcode_exists = ! empty( $results );
+			if ( empty( $results ) ) {
+				$content = wpautop( $content ) . $this->_shortcode_tag;
+			} else {
+				$this->_shortcode_tag = $results[0];
 			}
 
 			$has_filter = false;
@@ -532,11 +557,27 @@ class LP_Page_Controller {
 				remove_filter( 'the_content', 'wpautop' );
 			}
 
-			$content = wpautop( $content );
-			$content = do_shortcode( $content );
+// 			$content = do_shortcode( $content );
 
 			if ( $has_filter ) {
 				//add_filter( 'the_content', 'wpautop' );
+			}
+
+			$this->_archive_contents = do_shortcode( $this->_shortcode_tag );
+			if ( class_exists( 'SiteOrigin_Panels' ) ) {
+				if ( class_exists( 'SiteOrigin_Panels' ) && has_filter( 'the_content', array(
+						SiteOrigin_Panels::single(),
+						'generate_post_content'
+					) )
+				) {
+					remove_shortcode( 'learn_press_archive_course' );
+					add_filter( 'the_content', array(
+						$this,
+						'the_content_callback'
+					), $this->_filter_content_priority );
+				}
+			} else {
+				$content = do_shortcode( $content );
 			}
 
 			if ( empty( $wp_query->post->ID ) || LEARNPRESS_IS_CATEGORY ) {
@@ -737,6 +778,21 @@ class LP_Page_Controller {
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 
 		return $q;
+	}
+
+	public function the_content_callback( $content ) {
+		if ( $this->_archive_contents ) {
+			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
+			$this->_shortcode_exists = ! empty( $results );
+			if ( $this->_shortcode_exists ) {
+				$this->_shortcode_tag = $results[0];
+				$content              = str_replace( $this->_shortcode_tag, $this->_archive_contents, $content );
+			} else {
+				$content .= $this->_archive_contents;
+			}
+		}
+
+		return $content;
 	}
 
 	public static function instance() {

@@ -106,8 +106,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				'jalerts'          => self::url( 'js/vendor/jquery.alert.js' ),
 				//'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
 				'lp-vue'           => array(
-					'url'     => self::url( 'js/vendor/vue.js' ),
-					'ver'     => '2.4.0',
+					'url'     => self::url( 'js/vendor/vue.min.js' ),
+					'ver'     => '2.5.16',
 					'enqueue' => false
 				),
 				'lp-vuex'          => array(

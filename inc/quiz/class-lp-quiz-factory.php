@@ -73,6 +73,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @param int  $user_id
 		 *
 		 * @return bool
+		 * @throws Exception
 		 */
 		public static function before_start_quiz( $true, $quiz_id, $course_id, $user_id ) {
 			if ( is_user_logged_in() ) {
@@ -81,17 +82,19 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$user = learn_press_get_current_user( true );
 			}
 
-			$course = learn_press_get_course( $course_id );
+			$course  = learn_press_get_course( $course_id );
+			$quiz    = learn_press_get_quiz( $quiz_id );
+			$preview = $quiz->get_preview();
 
-			if ( ! $course->is_required_enroll() && ! $user->has_course_status( $course_id, 'enrolled' ) ) {
-				$ret = $user->enroll( $course_id, 0 );
+			if ( ( ! $course->is_required_enroll() && ! $user->has_course_status( $course_id, 'enrolled' ) ) || $preview ) {
+				// if quiz is previewable, $preview = true, force create enroll course record notwithstanding course require enroll or not
+				$ret = $user->enroll( $course_id, 0, $preview );
 
 				if ( $ret ) {
 					$true = true;
 				} else {
 					$true = false;
 				}
-
 			}
 
 			remove_action( 'learn-press/before-start-quiz', array( __CLASS__, 'maybe_guest_start_quiz' ) );
@@ -156,8 +159,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$result['result']   = 'success';
 					$result['redirect'] = apply_filters( 'learn-press/quiz/started-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$result['message']  = $ex->getMessage();
 				$result['result']   = 'failure';
 				$result['redirect'] = apply_filters( 'learn-press/quiz/start-quiz-failure-redirect', learn_press_get_current_url(), $quiz_id, $course_id, $user->get_id() );
@@ -241,8 +243,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['html']     = learn_press_get_template_content( 'content-question/content.php' );// $question->get_html( $quiz_data->get_question_answer( $question_id ) );
 					}
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -300,8 +301,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 					}
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -358,8 +358,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 						$result['data']     = $data;
 					}
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -414,8 +413,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$result['redirect'] = apply_filters( 'learn-press/quiz/retaken-redirect', $redirect, $quiz_id, $course_id, $user->get_id() );
 					$result['data']     = $data;
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 				$result['result']  = 'failure';
@@ -586,8 +584,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 					$questions = self::_get_answer( $data );
 				}
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 			}
 
 			return $question_id ? ( array_key_exists( $question_id, $questions ) ? $questions[ $question_id ] : false ) : $questions;

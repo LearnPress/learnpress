@@ -593,7 +593,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		}
 
 		protected function _parse_item_block_status( $course_id, $user_id, $cache_key ) {
-
 			if ( ! $course = learn_press_get_course( $course_id ) ) {
 				return false;
 			}
@@ -614,7 +613,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			foreach ( $course_items as $course_item ) {
 				if ( $item = $course->get_item( $course_item ) ) {
-					if ( $item->is_preview() ) {
+					if ( $item->is_preview() || get_post_meta( $item->get_id(), '_lp_preview', true ) ) {
 						$blocked_items[ $course_item ] = 'no';
 					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array( $item->get_post_type(), $block_item_types ) ) {
 						$blocked_items[ $course_item ] = 'no';
@@ -648,6 +647,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			} else {
 				$blocked = 'yes';
 			}
+
 			return $blocked;
 		}
 

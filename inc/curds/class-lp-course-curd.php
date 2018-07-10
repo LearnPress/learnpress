@@ -141,31 +141,33 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			} else {
 
 				// original course section curd
-				$curd = new LP_Section_CURD( $course_id );
+				$course = LP_Course::get_course( $course_id );
 
-				// get course sections
-				$sections = $this->get_course_sections( $course_id );
 				// new course section curd
 				$new_course_section_curd = new LP_Section_CURD( $new_course_id );
 
+				// curriculum course
+				$curriculum = $course->get_curriculum_raw();
+
+				// quiz curd
 				$quiz_curd = new LP_Quiz_CURD();
 
-				if ( is_array( $sections ) ) {
+				if ( is_array( $curriculum ) ) {
 
-					foreach ( $sections as $section ) {
+					foreach ( $curriculum as $section ) {
 
 						$data = array(
-							'section_name'        => $section->section_name,
+							'section_name'        => $section['title'],
 							'section_course_id'   => $new_course_id,
-							'section_order'       => $section->section_order,
-							'section_description' => $section->section_description
+							'section_order'       => $section['order'],
+							'section_description' => $section['description']
 						);
 
 						// clone sections to new course
 						$new_section = $new_course_section_curd->create( $data );
 
 						// get section items of original course
-						$items = $curd->get_section_items( $section->section_id );
+						$items = $section['items'];
 
 						$new_items = array();
 
@@ -659,6 +661,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 									AND tr.object_id IN (" . join( ',', $items ) . ")
 								ORDER BY t.name ASC
 							", 'post_format' );
+
 							if ( $terms = $wpdb->get_results( $query ) ) {
 								foreach ( $terms as $term ) {
 									$item_formats[ $term->object_id ] = $term->format;
@@ -699,11 +702,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			return $return === 'ids' ? wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections-ids' ) : $sections;
 		}
 
-//			$this->read_course_sections( $course_id );
-//
-//			return wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections' );
-//		}
-
 		/**
 		 * Read sections of a bundle of courses by ids
 		 *
@@ -713,6 +711,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function read_course_sections( $course_id ) {
 			global $wpdb;
+
 			settype( $course_id, 'array' );
 			$first_course_sections = false;
 
@@ -747,9 +746,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @param $item_id
 		 */
-		public function remove_item(
-			$item_id
-		) {
+		public function remove_item( $item_id ) {
 
 			global $wpdb;
 
@@ -769,9 +766,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @param $course_id
 		 */
-		public function remove_course(
-			$course_id
-		) {
+		public function remove_course( $course_id ) {
 			global $wpdb;
 
 			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $course_id ) );
@@ -799,9 +794,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_recent_courses(
-			$args = array()
-		) {
+		public function get_recent_courses( $args = array() ) {
 			global $wpdb;
 
 			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
@@ -834,9 +827,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_user_enrolled(
-			$course_id, $limit = - 1
-		) {
+		public function get_user_enrolled( $course_id, $limit = - 1 ) {
 			global $wpdb;
 			if ( $limit < 0 ) {
 				$limit = PHP_INT_MAX;
@@ -900,9 +891,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_featured_courses(
-			$args = array()
-		) {
+		public function get_featured_courses( $args = array() ) {
 			global $wpdb;
 
 			$limit    = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
@@ -936,9 +925,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_popular_courses(
-			$args = array()
-		) {
+		public function get_popular_courses( $args = array() ) {
 			global $wpdb;
 
 			$limit = ! empty( $args['limit'] ) ? $args['limit'] : - 1;
@@ -1109,7 +1096,3 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 	}
 }
-//add_action( 'init', function () {
-//	$c = new LP_Course_CURD();
-//	$c->update_course_orders( 5428 );
-//} );

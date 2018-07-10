@@ -502,10 +502,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
 			do_action( 'learn-press/ready' );
-
-//			for ( $i = 0; $i < 10000; $i ++ ) {
-//				wp_cache_set( 'xxx' . $i, str_repeat( 'I', 10000 ) );
-//			}
 		}
 
 		/**
@@ -560,7 +556,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 						'instance'
 					) ) ? call_user_func( array( $session_class, 'instance' ) ) : new $session_class();
 				}
-
 			}
 
 			return $this->session;
@@ -762,34 +757,3 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-//$a = array(100=>'a', 200=>'b');
-//$b = array(200=>'c', 300=>'d');
-//
-//print_r($a+$b);
-//add_action( 'template_include', function ( $template ) {
-//	if ( empty( $_REQUEST['output-cache'] ) ) {
-//		return $template;
-//	}
-//	ob_start();
-//
-//	//return $template;
-//} );
-add_action( 'shutdown', function () {
-	if ( empty( $_REQUEST['output-cache'] ) ) {
-		return;
-	}
-	//ob_get_clean();
-	global $wp_object_cache;
-	foreach ( $wp_object_cache->cache as $k => $cache ) {
-//		if ( strpos( $k, 'learn-press' ) === false ) {
-//			continue;
-//		}
-		echo "======== {$k} ========";
-		learn_press_debug( $cache );
-	}
-} );
-
-add_filter('wp_redirectx', function ($url){
-    var_dump(debug_backtrace());
-   echo $url;die();
-});
