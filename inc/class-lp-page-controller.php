@@ -488,7 +488,7 @@ class LP_Page_Controller {
 			// If we don't have a post, load an empty one
 			if ( ! empty( $this->_queried_object ) ) {
 				$wp_query->post = $this->_queried_object;
-			} elseif ( empty( $wp_query->post ) || learn_press_is_courses() ) {
+			} elseif ( empty( $wp_query->post ) || learn_press_is_courses() /* -> Fixed: archive course page displays name of first course */ ) {
 				$wp_query->post = new WP_Post( new stdClass() );
 			} elseif ( $wp_query->post->post_type != 'page' ) {
 				// Do not show content of post if it is not a page
