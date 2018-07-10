@@ -4,10 +4,10 @@
  * Class LP_Page_Controller
  */
 class LP_Page_Controller {
-    
-    protected $_shortcode_exists = false;
-    protected $_shortcode_tag = '[learn_press_archive_course]'; 
-    protected $_archive_contents = null; 
+
+	protected $_shortcode_exists = false;
+	protected $_shortcode_tag = '[learn_press_archive_course]';
+	protected $_archive_contents = null;
 
 	/**
 	 * Store the object has queried by WP.
@@ -78,6 +78,7 @@ class LP_Page_Controller {
 
 	public function setup_data( $post ) {
 		static $courses = array();
+
 		global $wp, $wp_query, $lp_course, $lp_course_item, $lp_quiz_question;
 
 		if ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) {
@@ -487,7 +488,7 @@ class LP_Page_Controller {
 			// If we don't have a post, load an empty one
 			if ( ! empty( $this->_queried_object ) ) {
 				$wp_query->post = $this->_queried_object;
-			} elseif ( empty( $wp_query->post ) ) {
+			} elseif ( empty( $wp_query->post ) || learn_press_is_courses() ) {
 				$wp_query->post = new WP_Post( new stdClass() );
 			} elseif ( $wp_query->post->post_type != 'page' ) {
 				// Do not show content of post if it is not a page
@@ -496,10 +497,10 @@ class LP_Page_Controller {
 			$content = $wp_query->post->post_content;
 
 			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
-			$this->_shortcode_exists = !empty($results);
-			if ( empty($results) )  {
+			$this->_shortcode_exists = ! empty( $results );
+			if ( empty( $results ) ) {
 				$content = wpautop( $content ) . $this->_shortcode_tag;
-			} else{
+			} else {
 				$this->_shortcode_tag = $results[0];
 			}
 
@@ -515,14 +516,21 @@ class LP_Page_Controller {
 				//add_filter( 'the_content', 'wpautop' );
 			}
 
-			$this->_archive_contents = do_shortcode($this->_shortcode_tag);
-			if( class_exists('SiteOrigin_Panels') ) {
-				if ( class_exists('SiteOrigin_Panels') && has_filter( 'the_content', array(SiteOrigin_Panels::single(),'generate_post_content') ) ) {
-					remove_shortcode('learn_press_archive_course');
-					add_filter('the_content', array($this, 'the_content_callback'), $this->_filter_content_priority);
+			$this->_archive_contents = do_shortcode( $this->_shortcode_tag );
+			if ( class_exists( 'SiteOrigin_Panels' ) ) {
+				if ( class_exists( 'SiteOrigin_Panels' ) && has_filter( 'the_content', array(
+						SiteOrigin_Panels::single(),
+						'generate_post_content'
+					) )
+				) {
+					remove_shortcode( 'learn_press_archive_course' );
+					add_filter( 'the_content', array(
+						$this,
+						'the_content_callback'
+					), $this->_filter_content_priority );
 				}
 			} else {
-			    $content = do_shortcode( $content );
+				$content = do_shortcode( $content );
 			}
 
 			if ( empty( $wp_query->post->ID ) || LEARNPRESS_IS_CATEGORY ) {
@@ -544,6 +552,7 @@ class LP_Page_Controller {
 				$wp_query->is_category = learn_press_is_course_category();
 				$wp_query->is_tax      = learn_press_is_course_tax();
 				$wp_query->is_single   = false;
+
 			} else {
 				$wp_query->found_posts          = 1;
 				$wp_query->is_single            = true;
@@ -726,16 +735,17 @@ class LP_Page_Controller {
 	}
 
 	public function the_content_callback( $content ) {
-		if( $this->_archive_contents ) { 
+		if ( $this->_archive_contents ) {
 			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
-			$this->_shortcode_exists = !empty($results);
-			if( $this->_shortcode_exists ) {
+			$this->_shortcode_exists = ! empty( $results );
+			if ( $this->_shortcode_exists ) {
 				$this->_shortcode_tag = $results[0];
-				$content = str_replace($this->_shortcode_tag, $this->_archive_contents, $content);
+				$content              = str_replace( $this->_shortcode_tag, $this->_archive_contents, $content );
 			} else {
 				$content .= $this->_archive_contents;
 			}
 		}
+
 		return $content;
 	}
 
