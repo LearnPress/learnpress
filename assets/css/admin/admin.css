@@ -1415,14 +1415,14 @@
     height: 24px;
     line-height: 22px; }
 
-.modal {
+.learn-press-modal {
   position: fixed;
   z-index: 1000000;
   width: 100%;
   height: 100%;
   top: 0;
   display: table; }
-  .modal .modal-overlay {
+  .learn-press-modal .modal-overlay {
     position: fixed;
     z-index: 1000000;
     background: #000;
@@ -1430,12 +1430,12 @@
     width: 100%;
     height: 100%;
     top: 0; }
-  .modal .modal-wrapper {
+  .learn-press-modal .modal-wrapper {
     display: table-cell;
     vertical-align: middle;
     z-index: 1000010;
     position: relative; }
-    .modal .modal-wrapper .modal-container {
+    .learn-press-modal .modal-wrapper .modal-container {
       max-width: 800px;
       width: 90%;
       margin: 0px auto;
@@ -1447,13 +1447,13 @@
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
       box-sizing: border-box; }
-    .modal .modal-wrapper header {
+    .learn-press-modal .modal-wrapper header {
       font-size: 16px;
       padding: 15px 20px;
       border-bottom: 1px solid #DDD; }
-    .modal .modal-wrapper article {
+    .learn-press-modal .modal-wrapper article {
       margin: 45px 20px; }
-      .modal .modal-wrapper article input[name="search"] {
+      .learn-press-modal .modal-wrapper article input[name="search"] {
         width: 100%;
         font-size: 16px;
         box-sizing: border-box;
@@ -1464,21 +1464,21 @@
         border-radius: 2px;
         border-color: #e4e4e4;
         font-weight: lighter; }
-      .modal .modal-wrapper article .search-results li > label {
+      .learn-press-modal .modal-wrapper article .search-results li > label {
         display: block; }
-    .modal .modal-wrapper footer {
+    .learn-press-modal .modal-wrapper footer {
       padding: 15px 20px;
       overflow: hidden;
       border: 1px solid #eee; }
-      .modal .modal-wrapper footer .search-nav {
+      .learn-press-modal .modal-wrapper footer .search-nav {
         float: left; }
-        .modal .modal-wrapper footer .search-nav a, .modal .modal-wrapper footer .search-nav span {
+        .learn-press-modal .modal-wrapper footer .search-nav a, .learn-press-modal .modal-wrapper footer .search-nav span {
           display: inline-block;
           line-height: 26px;
           height: 28px;
           margin: 0;
           padding: 0 10px 1px; }
-      .modal .modal-wrapper footer button {
+      .learn-press-modal .modal-wrapper footer button {
         float: right;
         margin-left: 3px; }
 
