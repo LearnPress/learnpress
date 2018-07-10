@@ -379,6 +379,12 @@ body{
             }
         }
     }
+
+    &.distraction-on{
+        #learn-press-course-curriculum{
+            left: -800px;
+        }
+    }
 }
 
 @media screen and (max-width: 768px) {

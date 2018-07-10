@@ -1795,3 +1795,18 @@ function learn_press_default_user_item_status( $item_id ) {
 
 	return apply_filters( 'learn-press/default-user-item-status', $status, $item_id );
 }
+
+/**
+ * Get current state of distraction mode
+ *
+ * @since 3.1.0
+ *
+ * @return mixed
+ */
+function learn_press_get_user_distraction() {
+	if ( is_user_logged_in() ) {
+		return get_user_option( 'distraction_mode', get_current_user_id() );
+	} else {
+		return LP()->session->distraction_mode;
+	}
+}

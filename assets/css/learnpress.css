@@ -2087,6 +2087,9 @@ body.lp-loading #learn-press-content-item:after {
   z-index: 999;
   opacity: 0.1; }
 
+body.distraction-on #learn-press-course-curriculum {
+  left: -800px; }
+
 @media screen and (max-width: 768px) {
   ul.learn-press-courses .course {
     width: 48%; } }

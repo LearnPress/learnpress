@@ -29,6 +29,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'retake-course',
 				'external-link:nopriv',
 				'continue-course',
+				'toggle-distraction-mode'
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
@@ -53,6 +54,21 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
+		}
+
+		/**
+		 * Update current state of distraction mode when user viewing content of course's item
+		 *
+		 * @since 3.0.1
+		 */
+		public static function toggle_distraction_mode() {
+			$distraction = LP_Request::get( 'distraction' );
+			if ( is_user_logged_in() ) {
+				update_user_option( get_current_user_id(), 'distraction_mode', $distraction );
+			} else {
+				LP()->session->set( 'distraction_mode', $distraction );
+			}
+			die();
 		}
 
 		/**

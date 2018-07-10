@@ -490,7 +490,7 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  * Get posts by it's post-name (slug).
  *
  * @param string $name
- * @param array  $type
+ * @param string $type
  * @param bool   $single
  *
  * @return array|bool|null|WP_Post

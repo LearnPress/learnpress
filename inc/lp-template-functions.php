@@ -1124,6 +1124,14 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 z-index: 99999;
             }
 
+            body.course-item-popup.distraction-on #learn-press-course-curriculum{
+                left: -800px;
+            }
+
+            body.course-item-popup.distraction-on #course-item-content-header .course-title {
+                margin-left: -800px;
+            }
+
             body.course-item-popup #learn-press-content-item {
                 position: fixed;
                 z-index: 9999;
@@ -1132,6 +1140,10 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 right: 0;
                 bottom: 0;
                 overflow: visible;
+            }
+
+            body.course-item-popup.distraction-on #learn-press-content-item {
+                left: 0;
             }
         </style>
 		<?php
@@ -3423,10 +3435,15 @@ function learn_press_body_classes( $classes ) {
 		}
 	}
 
+	if ( $item = LP_Global::course_item() ) {
+		if ( learn_press_get_user_distraction() === 'yes' ) {
+			$classes[] = 'distraction-on';
+		}
+	}
+
+
 	return $classes;
 }
-
-add_filter( 'body_class', 'learn_press_body_classes', 10 );
 
 /**
  * Return true if user is learning a course
@@ -3831,7 +3848,14 @@ function learn_press_get_raw_content( $template ) {
 
 add_action( 'wp', 'learn_press_get_raw_content', 100 );
 
+/**
+ * @param string  $link
+ * @param LP_Quiz $item
+ *
+ * @return mixed
+ */
 function learn_press_get_link_current_question_instead_of_continue_button( $link, $item ) {
+
 	if ( get_post_type( $item->get_id() ) === LP_QUIZ_CPT ) {
 		$user      = LP_Global::user();
 		$course    = $item->get_course();

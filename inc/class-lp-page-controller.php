@@ -217,6 +217,11 @@ class LP_Page_Controller {
 	}
 
 	public function template_content_item( $template ) {
+		/**
+		 * @var LP_Course      $lp_course
+		 * @var LP_Course_Item $lp_course_item
+		 * @var LP_User        $lp_user
+		 */
 		global $lp_course, $lp_course_item, $lp_user;
 
 		if ( $this->is_404() ) {
@@ -359,6 +364,10 @@ class LP_Page_Controller {
 			return false;
 		}
 
+		/**
+		 * @var WP_Query   $wp_query
+		 * @var WP_Rewrite $wp_rewrite
+		 */
 		global $wp_query, $wp_rewrite;
 		if ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && ( empty( $wp_query->queried_object_id ) || ! empty( $wp_query->queried_object_id ) && $page_id != $wp_query->queried_object_id ) ) {
 			$redirect = trailingslashit( learn_press_get_page_link( 'courses' ) );
