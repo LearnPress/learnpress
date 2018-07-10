@@ -24,7 +24,7 @@ $current_question_id = $quiz->get_viewing_question( 'id' );
 
 	<?php do_action( 'learn-press/quiz/before-prev-question-button' ); ?>
 
-    <form name="prev-question" class="prev-question form-button lp-form" method="post"
+    <form name="prev-question" class="prev-question form-button lp-form lp-form-ajax" method="post"
           action="<?php echo $quiz->get_question_link( $prev_id ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-prev-question-button' ); ?>
@@ -45,7 +45,7 @@ $current_question_id = $quiz->get_viewing_question( 'id' );
 
 	<?php do_action( 'learn-press/quiz/before-next-question-button' ); ?>
 
-    <form name="next-question" class="next-question form-button lp-form" method="post"
+    <form name="next-question" class="next-question form-button lp-form lp-form-ajax" method="post"
           action="<?php echo $quiz->get_question_link( $next_id ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-next-question-button' ); ?>
@@ -66,7 +66,7 @@ $current_question_id = $quiz->get_viewing_question( 'id' );
 
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 
-    <form name="skip-question" class="skip-question form-button lp-form" method="post"
+    <form name="skip-question" class="skip-question form-button lp-form lp-form-ajax" method="post"
           action="<?php echo $quiz->get_question_link( $next_id ); ?>">
 
 		<?php do_action( 'learn-press/quiz/begin-skip-question-button' ); ?>

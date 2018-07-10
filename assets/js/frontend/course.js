@@ -500,7 +500,7 @@
             $('.course-summary.item-summary').appendTo($body);
 
             if ($('#wpadminbar').length) {
-                $body.addClass('wpadminbar');
+                //$body.addClass('wpadminbar');
                 contentTop = 32;
             }
 
@@ -536,7 +536,7 @@
 
         }
 
-        $('.lp-form').submit(function () {
+        $('.lp-form.lp-form-ajax').submit(function () {
             $body.addClass('lp-loading');
             var data = $.extend({}, $('.answer-options').serializeJSON(), $(this).serializeJSON());
             $.ajax({
@@ -545,7 +545,9 @@
                 type: 'post',
                 success: function (response) {
                     response = LP.parseJSON(response);
-                    window.location.href = response.redirect;
+                    if (response.redirect) {
+                        window.location.href = response.redirect;
+                    }
                 }
             });
             return false;

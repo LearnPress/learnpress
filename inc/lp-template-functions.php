@@ -3441,15 +3441,46 @@ function learn_press_body_classes( $classes ) {
 		}
 	}
 
+
+	/**
+	 * If user is viewing content of the item instead of the whole course.
+	 */
 	if ( $item = LP_Global::course_item() ) {
+
+		// Distraction mode is turn on or off?
 		if ( learn_press_get_user_distraction() === 'yes' ) {
 			$classes[] = 'distraction-on';
 		}
-	}
 
+		/**
+		 * wp-admin-bar is enabled or disabled?
+		 */
+		if ( LP()->session->show_admin_bar ) {
+			$classes[] = 'wpadminbar';
+		}
+	}
 
 	return $classes;
 }
+
+/**
+ * Filter to detect wp-admin-bar is turn on or off.
+ * This function should be added in the last of queue
+ * to be ensure the value is not change any more.
+ *
+ * @since 3.1.0
+ *
+ * @param bool $show
+ *
+ * @return bool
+ */
+function learn_press_maybe_show_admin_bar( $show ) {
+	LP()->session->show_admin_bar = $show;
+
+	return $show;
+}
+
+add_filter( 'show_admin_bar', 'learn_press_maybe_show_admin_bar', 1000 );
 
 /**
  * Return true if user is learning a course

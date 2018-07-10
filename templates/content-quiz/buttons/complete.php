@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit();
     <form name="complete-quiz"
           data-confirm="<?php LP_Strings::esc_attr_e( 'confirm-complete-quiz', '', array( $quiz->get_title() ) ); ?>"
           data-action="complete-quiz"
-          class="complete-quiz form-button lp-form" method="post" enctype="multipart/form-data">
+          class="complete-quiz form-button lp-form lp-form-ajax" method="post" enctype="multipart/form-data">
 
 		<?php do_action( 'learn-press/quiz/begin-complete-button' ); ?>
 
