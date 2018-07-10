@@ -437,6 +437,7 @@ body {
             border-right: 1px solid #DDD;
             overflow: auto;
             z-index: 9999;
+            transition: left 0.25s;
             .section-header {
                 padding: 0 15px;
                 .section-desc {
@@ -462,6 +463,7 @@ body {
             right: 0;
             bottom: 0;
             overflow: hidden;
+            transition: left 0.25s;
             .content-item-wrap {
                 margin: 10px auto;
                 max-width: 900px;
@@ -703,9 +705,13 @@ body {
     .course-item-search {
         float: left;
         width: 400px;
-        padding: 15px;
+        padding: 15px 0;
         box-sizing: border-box;
         position: relative;
+        transition: all 0.25s;
+        form {
+            margin: 0 15px;
+        }
         input {
             height: 30px;
             width: 385px;

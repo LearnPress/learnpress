@@ -166,6 +166,12 @@ gulp.task('zip', ['mk-zip'], function () {
 
 });
 
+gulp.task('scss-popup', function () {
+    return gulp.src(['assets/scss/frontend/_item-popup.scss'])
+        .pipe(scss())
+        .pipe(gulp.dest('assets/css/frontend'))
+});
+
 /**
  * Join and compress front-end script
  */

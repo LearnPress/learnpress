@@ -926,7 +926,8 @@ body.course-item-popup {
     background: #FFF;
     border-right: 1px solid #DDD;
     overflow: auto;
-    z-index: 9999; }
+    z-index: 9999;
+    transition: left 0.25s; }
     body.course-item-popup #learn-press-course-curriculum .section-header {
       padding: 0 15px; }
       body.course-item-popup #learn-press-course-curriculum .section-header .section-desc {
@@ -944,7 +945,8 @@ body.course-item-popup {
     left: 400px;
     right: 0;
     bottom: 0;
-    overflow: hidden; }
+    overflow: hidden;
+    transition: left 0.25s; }
     body.course-item-popup #learn-press-content-item .content-item-wrap {
       margin: 10px auto;
       max-width: 900px; }
@@ -1113,9 +1115,12 @@ body .lp-quiz-buttons .form-button-finish-course {
   #course-item-content-header .course-item-search {
     float: left;
     width: 400px;
-    padding: 15px;
+    padding: 15px 0;
     box-sizing: border-box;
-    position: relative; }
+    position: relative;
+    transition: all 0.25s; }
+    #course-item-content-header .course-item-search form {
+      margin: 0 15px; }
     #course-item-content-header .course-item-search input {
       height: 30px;
       width: 385px;

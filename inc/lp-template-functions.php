@@ -1099,6 +1099,8 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
 		if ( ! $lp_course_item ) {
 			return;
 		}
+
+		return;
 		?>
         <style type="text/css">
             html, body {
@@ -1124,12 +1126,16 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 z-index: 99999;
             }
 
-            body.course-item-popup.distraction-on #learn-press-course-curriculum{
-                left: -800px;
+            body.course-item-popup.distraction-on #learn-press-course-curriculum {
+                left: -400px;
             }
 
             body.course-item-popup.distraction-on #course-item-content-header .course-title {
-                margin-left: -800px;
+                margin-left: 0;
+            }
+
+            body.course-item-popup.distraction-on #course-item-content-header .course-item-search {
+                width: 0;
             }
 
             body.course-item-popup #learn-press-content-item {
@@ -3869,3 +3875,24 @@ function learn_press_get_link_current_question_instead_of_continue_button( $link
 }
 
 add_filter( 'learn-press/course-item-link', 'learn_press_get_link_current_question_instead_of_continue_button', 10, 2 );
+
+/**
+ * Load css for page when viewing lesson or quiz
+ *
+ * @since 3.1.0
+ *
+ * @param array $styles
+ *
+ * @return array
+ */
+function learn_press_content_item_scripts( $styles ) {
+	global $lp_course_item;
+
+	if ( $lp_course_item ) {
+		$styles['content-popup'] = learn_press_assets()->url( 'css/item-popup.css' );
+	}
+
+	return $styles;
+}
+
+add_filter( 'learn-press/frontend-default-styles', 'learn_press_content_item_scripts' );
