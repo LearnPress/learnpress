@@ -323,7 +323,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			// get course items from cache
 
 			if ( ! $type && $preview ) {
-				$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'learn-press/course-items' ) );
+				$items = apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'learn-press/course-curriculum' /*'learn-press/course-items'*/ ) );
 			} else {
 
 				if ( ! $type ) {
@@ -955,8 +955,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function get_item_links() {
 
 			if ( false === ( $item_links = wp_cache_get( 'course-' . $this->get_id(), 'learn-press/course-item-links' ) ) ) {
-
 				if ( $items = $this->get_item_ids() ) {
+
+					if ( false === wp_cache_get( $items[0], 'posts' ) ) {
+						LP_Helper_CURD::cache_posts( $items );
+					}
 
 					$permalink    = trailingslashit( $this->get_permalink() );
 					$post_types   = get_post_types( null, 'objects' );

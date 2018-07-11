@@ -22,23 +22,24 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 */
 	protected $quiz = null;
 
+	protected $args = array();
+
 	/**
 	 * LP_Admin_Editor_Quiz constructor.
 	 */
 	public function __construct() {
+		if ( did_action( 'admin_init' ) ) {
+			$this->init();
+		} else {
+			add_action( 'admin_init', array( $this, 'init' ) );
+		}
 	}
 
-	/**
-	 * Do the action depending on ajax calls with params
-	 *
-	 * @return bool|mixed|WP_Error
-	 */
-	public function dispatch() {
-		check_ajax_referer( 'learnpress_admin_quiz_editor', 'nonce' );
-		$args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
+	public function init() {
+		$this->args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
 
 		// get quiz
-		$quiz_id = $args['id'];
+		$quiz_id = $this->args['id'];
 		$quiz    = learn_press_get_quiz( $quiz_id );
 
 		if ( ! $quiz ) {
@@ -49,8 +50,17 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$this->quiz_curd     = new LP_Quiz_CURD();
 		$this->question_curd = new LP_Question_CURD();
 		$this->result        = array( 'status' => false );
+	}
 
-		$this->call( $args['type'], array( $args ) );
+	/**
+	 * Do the action depending on ajax calls with params
+	 *
+	 * @return bool|mixed|WP_Error
+	 */
+	public function dispatch() {
+		check_ajax_referer( 'learnpress_admin_quiz_editor', 'nonce' );
+
+		$this->call( $this->args['type'], array( $this->args ) );
 
 		return $this->get_result();
 	}
@@ -608,5 +618,100 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		}
 
 		return false;
+	}
+
+	public function editor_data() {
+		if ( LP_QUIZ_CPT !== get_post_type() ) {
+			return;
+		}
+
+		global $post;
+		//$quiz = LP_Quiz::get_quiz( $post->ID );
+
+		// trigger user memorize question types
+		$user_id                   = get_current_user_id();
+		$default_new_question_type = get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) ? get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) : 'true_or_false';
+
+		$hidden_questions          = get_post_meta( $post->ID, '_lp_hidden_questions', true );
+		$hidden_questions_settings = get_post_meta( $post->ID, '_hidden_questions_settings', true );
+
+		wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', apply_filters( 'learn-press/admin-localize-quiz-editor', array(
+			'root'          => array(
+				'quiz_id'     => $post->ID,
+				'ajax'        => admin_url( 'index.php' ),
+				'action'      => 'admin_quiz_editor',
+				'nonce'       => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
+				'types'       => LP_Question::get_types(),
+				'default_new' => $default_new_question_type
+			),
+			'chooseItems'   => array(
+				'open'       => false,
+				'addedItems' => array(),
+				'items'      => array()
+			),
+			'i18n'          => apply_filters( 'learn-press/quiz-editor/i18n',
+				array(
+					'option'                 => __( 'Option', 'learnpress' ),
+					'unique'                 => learn_press_uniqid(),
+					'back'                   => __( 'Back', 'learnpress' ),
+					'selected_items'         => __( 'Selected items', 'learnpress' ),
+					'new_option'             => __( 'New Option', 'learnpress' ),
+					'confirm_trash_question' => __( 'Do you want to move question "{{QUESTION_NAME}}" to trash?', 'learnpress' ),
+					'question_labels'        => array(
+						'singular' => __( 'Question', 'learnpress' ),
+						'plural'   => __( 'Questions', 'learnpress' )
+					)
+				)
+			),
+			'listQuestions' => array(
+				'questions'                 => $this->get_questions(),
+				'hidden_questions'          => ! empty( $hidden_questions ) ? $hidden_questions : array(),
+				'hidden_questions_settings' => $hidden_questions_settings ? $hidden_questions_settings : array(),
+				'disableUpdateList'         => false,
+				'externalComponent'         => apply_filters( 'learn-press/admin/external-js-component', array() )
+			)
+		) ) );
+	}
+
+	/**
+	 * Quiz editor get questions.
+	 *
+	 * @return mixed
+	 */
+	public function get_questions() {
+		// list questions
+		$questions = $this->quiz->get_questions();
+		// order questions in quiz
+		$question_order = learn_press_quiz_get_questions_order( $questions );
+
+		$result = array();
+		if ( is_array( $questions ) ) {
+			foreach ( $questions as $index => $id ) {
+
+				$question = LP_Question::get_question( $id );
+
+				$answers = $question->get_answers()->get();
+				$post     = get_post( $id );
+				$result[] = apply_filters( 'learn-press/quiz-editor/question-data', array(
+					'id'       => $id,
+					'open'     => false,
+					'title'    => $post->post_title,
+					'type'     => array(
+						'key'   => $question->get_type(),
+						'label' => $question->get_type_label()
+					),
+					'answers'  => apply_filters( 'learn-press/quiz-editor/question-answers-data', $answers, $id, $this->quiz->get_id() ),
+					'settings' => array(
+						'content'     => $post->post_content,
+						'mark'        => get_post_meta( $id, '_lp_mark', true ),
+						'explanation' => get_post_meta( $id, '_lp_explanation', true ),
+						'hint'        => get_post_meta( $id, '_lp_hint', true )
+					),
+					'order'    => $question_order[ $index ]
+				), $id, $this->quiz->get_id() );
+			}
+		}
+
+		return apply_filters( 'learn-press/quiz/quiz_editor_questions', $result, $this->quiz->get_id() );
 	}
 }

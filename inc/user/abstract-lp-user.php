@@ -881,6 +881,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $quiz_id ) {
 				return false;
 			}
+
 			$current = $this->get_current_question( $quiz_id, $course_id );
 			$quiz    = learn_press_get_quiz( $quiz_id );
 

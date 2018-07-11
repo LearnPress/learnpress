@@ -2779,12 +2779,11 @@ if ( ! function_exists( 'learn_press_course_curriculum_tab' ) ) {
 	 * @since 1.1
 	 */
 	function learn_press_course_curriculum_tab() {
-		$is_ajax = LP_Request::get( 'get-raw-content' ) === 'curriculum';
-
-		//LP_Background_Global::add('cache-curriculum', array('course_id' => get_the_ID()), 'xxxxxx');
+		$is_ajax  = LP_Request::get( 'get-raw-content' ) === 'curriculum';
+		$use_ajax = true;
 
 		learn_press_get_template( 'single-course/tabs/curriculum.php', array(
-			'use_ajax' => apply_filters( 'learn-press/use-ajax-curriculum', true ),
+			'use_ajax' => apply_filters( 'learn-press/use-ajax-curriculum', $use_ajax ),
 			'is_ajax'  => apply_filters( 'learn-press/get-raw-content-curriculum', $is_ajax )
 		) );
 	}

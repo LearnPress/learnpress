@@ -548,6 +548,11 @@
                     if (response.redirect) {
                         window.location.href = response.redirect;
                     }
+
+                    $body.removeClass('lp-loading');
+                },
+                error: function () {
+                    $body.removeClass('lp-loading');
                 }
             });
             return false;

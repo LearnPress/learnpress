@@ -414,18 +414,13 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 		}
 
 		global $wpdb;
-		$ids = $orders = array();
-		foreach ( $questions as $id => $question ) {
-			$ids[] = $id;
-		}
+		$orders = array();
 
-		if ( $order = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q", ARRAY_A ) ) {
-			foreach ( $order as $id => $_order ) {
-				$orders[ $_order['q_id'] ] = $_order['q_order'];
+		if ( $results = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q" ) ) {
+			foreach ( $results as $result ) {
+				$orders[ $result->q_id ] = $result->q_order;
 			}
 		}
-
-		echo "XXXX"; learn_press_debug($orders);
 
 		return $orders;
 	}

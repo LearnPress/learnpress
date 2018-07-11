@@ -168,56 +168,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public function data_quiz_editor() {
-			if ( LP_QUIZ_CPT !== get_post_type() ) {
-				return;
-			}
-
-			global $post;
-			$quiz = LP_Quiz::get_quiz( $post->ID );
-
-			// trigger user memorize question types
-			$user_id                   = get_current_user_id();
-			$default_new_question_type = get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) ? get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) : 'true_or_false';
-
-			$hidden_questions          = get_post_meta( $post->ID, '_lp_hidden_questions', true );
-			$hidden_questions_settings = get_post_meta( $post->ID, '_hidden_questions_settings', true );
-
-			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', apply_filters( 'learn-press/admin-localize-quiz-editor', array(
-				'root'          => array(
-					'quiz_id'     => $post->ID,
-					'ajax'        => admin_url( 'index.php' ),
-					'action'      => 'admin_quiz_editor',
-					'nonce'       => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
-					'types'       => LP_Question::get_types(),
-					'default_new' => $default_new_question_type
-				),
-				'chooseItems'   => array(
-					'open'       => false,
-					'addedItems' => array(),
-					'items'      => array()
-				),
-				'i18n'          => apply_filters( 'learn-press/quiz-editor/i18n',
-					array(
-						'option'                 => __( 'Option', 'learnpress' ),
-						'unique'                 => learn_press_uniqid(),
-						'back'                   => __( 'Back', 'learnpress' ),
-						'selected_items'         => __( 'Selected items', 'learnpress' ),
-						'new_option'             => __( 'New Option', 'learnpress' ),
-						'confirm_trash_question' => __( 'Do you want to move question "{{QUESTION_NAME}}" to trash?', 'learnpress' ),
-						'question_labels'        => array(
-							'singular' => __( 'Question', 'learnpress' ),
-							'plural'   => __( 'Questions', 'learnpress' )
-						)
-					)
-				),
-				'listQuestions' => array(
-					'questions'                 => $quiz->quiz_editor_get_questions(),
-					'hidden_questions'          => ! empty( $hidden_questions ) ? $hidden_questions : array(),
-					'hidden_questions_settings' => $hidden_questions_settings ? $hidden_questions_settings : array(),
-					'disableUpdateList'         => false,
-					'externalComponent'         => apply_filters( 'learn-press/admin/external-js-component', array() )
-				)
-			) ) );
+			LP_Admin_Editor::get_editor_quiz()->editor_data();
 		}
 
 		/**
