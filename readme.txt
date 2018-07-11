@@ -214,6 +214,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed issue for requesting to get related themes/addons in admin
 ~ Fixed some issues with content header when viewing in Safari
 ~ Fixed wrong ordering of course item when adding new
+~ Fixed order for multiple user is not show in list of orders
+~ Fixed some text is not translatable
 
 
 = 3.0.9 =
