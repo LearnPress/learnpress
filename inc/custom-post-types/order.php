@@ -70,7 +70,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				global $wpdb;
 				$query = "
-				        SELECT post_status, COUNT( * ) AS num_posts 
+				        SELECT post_status, COUNT( ID ) AS num_posts 
                         FROM {$wpdb->posts}
                         WHERE post_type = %s
                         AND post_parent = %d
@@ -528,19 +528,56 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return $where;
 			}
 
-			$s      = '%' . $wpdb->esc_like( $wp_query->get( 's' ) ) . '%';
-			$append = $wpdb->prepare( " (uu.user_login LIKE %s
-					OR uu.user_nicename LIKE %s
-					OR uu.user_email LIKE %s
-					OR uu.display_name LIKE %s
-					OR {$wpdb->posts}.ID LIKE %s
-                                        OR orderItem.order_item_name LIKE %s
-				) OR ", $s, $s, $s, $s, $s, $s );
+			# filter by user id
+			preg_match( "#{$wpdb->posts}\.post_author IN\s*\((\d+)\)#", $where, $matches );
+			if ( !empty($matches) && isset($matches[1]) ) {
 
-			if ( preg_match( "/({$wpdb->posts}\.post_title LIKE)/", $where ) ) {
-				$where = preg_replace( "/({$wpdb->posts}\.post_title LIKE)/", $append . '$1', $where );
-			} else {
-				$where .= " AND (" . $append . $wpdb->prepare( " {$wpdb->posts}.post_title LIKE %s", $s ) . ")";
+				$author_id = intval($matches[1]);
+				$sql = " {$wpdb->posts}.ID IN ( SELECT 
+						IF( p.post_parent >0, p.post_parent, p.ID)
+					FROM
+						{$wpdb->posts} AS p
+							INNER JOIN
+						{$wpdb->postmeta} m ON p.ID = m.post_id and p.post_type = %s 
+								AND m.meta_key = %s
+							INNER JOIN 
+						{$wpdb->users} u on m.meta_value = u.ID
+					WHERE
+						p.post_type = 'lp_order'
+							AND u.ID = %d ) ";
+
+				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $author_id));
+				$where = str_replace( $matches[0], $sql, $where );
+			}
+			
+			$s = $wp_query->get( 's' );
+
+			if ( $s ) {
+				$s 	= '%' . $wpdb->esc_like( $s ) . '%';
+				preg_match( "#{$wpdb->posts}\.post_title LIKE#", $where, $matches2 );
+				$sql = " {$wpdb->posts}.ID IN (
+					SELECT
+						IF( p.post_parent >0, p.post_parent, p.ID)
+					FROM
+						{$wpdb->posts} AS p
+							INNER JOIN
+						{$wpdb->postmeta} m ON p.ID = m.post_id and p.post_type = %s
+								AND m.meta_key = %s
+							INNER JOIN
+						{$wpdb->users} u on m.meta_value = u.ID
+					WHERE
+						u.user_login LIKE %s
+						OR u.user_nicename LIKE %s
+						OR u.user_email LIKE %s
+						OR u.display_name LIKE %s
+						OR {$wpdb->posts}.ID LIKE %s
+					) ";
+				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ));
+				if( !empty($matches2) && isset($matches2[0]) ) {
+					$where = str_replace( $matches2[0], $sql. ' OR '.$matches2[0], $where );
+				} else {
+					$where .= " AND ".$sql;
+				}
 			}
 
 			return $where;
@@ -559,7 +596,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! $this->_is_archive() ) {
 				return $orderby;
 			}
-            global $wpdb;
+			global $wpdb;
 			switch ( $this->_get_orderby() ) {
 				case 'title':
 					$orderby = "{$wpdb->posts}.ID {$_GET['order']}";
@@ -570,8 +607,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				case 'date':
 					$orderby = "{$wpdb->posts}.post_date {$_GET['order']}";
 					break;
-                case 'order_total':
-					$orderby = " orderItemmeta.meta_value {$_GET['order']}";
+				case 'order_total':
+					$orderby = " pm2.meta_value {$_GET['order']}";
 					break;
 			}
 
@@ -583,11 +620,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return $join;
 			}
 			global $wpdb;
-			$join .= " INNER JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
-			$join .= " INNER JOIN {$wpdb->users} uu ON {$wpdb->postmeta}.meta_key LIKE '_user_id' AND {$wpdb->postmeta}.meta_value = uu.ID";
-			$join .= " INNER JOIN {$wpdb->learnpress_order_items} AS orderItem ON orderItem.order_id = {$wpdb->posts}.ID";
-			$join .= " INNER JOIN {$wpdb->learnpress_order_itemmeta} AS orderItemmeta ON orderItem.order_item_id = orderItemmeta.learnpress_order_item_id AND orderItemmeta.meta_key LIKE '_total'";
-
+			$join .= " INNER JOIN {$wpdb->postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+			$join .= " INNER JOIN {$wpdb->postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
+			$join .= " LEFT JOIN {$wpdb->users} uu ON pm1.meta_value = uu.ID";
+// 			$join .= " INNER JOIN {$wpdb->learnpress_order_items} AS orderItem ON orderItem.order_id = {$wpdb->posts}.ID";
+// 			$join .= " INNER JOIN {$wpdb->learnpress_order_itemmeta} AS orderItemmeta ON orderItem.order_item_id = orderItemmeta.learnpress_order_item_id AND orderItemmeta.meta_key LIKE '_total'";
+// var_dump($join);
 			return $join;
 		}
 
