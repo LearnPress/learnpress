@@ -176,7 +176,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
 				$result['result'] = $percent;
 				$result['grade']  = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
-
+				$result['grade_text'] = ( $result['grade'] == 'passed' ) ? __('passed', 'learnpress'): __('failed', 'learnpress');
 				$result['question_count'] = sizeof( $questions );
 
 				if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
