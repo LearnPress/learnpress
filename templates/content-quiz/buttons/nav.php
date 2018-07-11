@@ -24,8 +24,7 @@ $current_question_id = $quiz->get_viewing_question( 'id' );
 
 	<?php do_action( 'learn-press/quiz/before-prev-question-button' ); ?>
 
-    <form name="prev-question" class="prev-question form-button lp-form lp-form-ajax" method="post"
-          action="<?php echo $quiz->get_question_link( $prev_id ); ?>">
+    <form name="prev-question" class="prev-question form-button lp-form lp-form-ajax" method="post">
 
 		<?php do_action( 'learn-press/quiz/begin-prev-question-button' ); ?>
 
@@ -45,12 +44,12 @@ $current_question_id = $quiz->get_viewing_question( 'id' );
 
 	<?php do_action( 'learn-press/quiz/before-next-question-button' ); ?>
 
-    <form name="next-question" class="next-question form-button lp-form lp-form-ajax" method="post"
-          action="<?php echo $quiz->get_question_link( $next_id ); ?>">
+    <form name="next-question" class="next-question form-button lp-form lp-form-ajax" method="post">
 
 		<?php do_action( 'learn-press/quiz/begin-next-question-button' ); ?>
 
         <button type="submit"><?php echo esc_html_x( 'Next', 'quiz-question-navigation', 'learnpress' ); ?></button>
+        <input type="hidden" name="question-id" value="<?php echo $current_question_id; ?>">
         <input type="hidden" name="question-id" value="<?php echo $current_question_id; ?>">
 
 		<?php do_action( 'learn-press/quiz/end-next-question-button' ); ?>
@@ -66,8 +65,7 @@ $current_question_id = $quiz->get_viewing_question( 'id' );
 
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 
-    <form name="skip-question" class="skip-question form-button lp-form lp-form-ajax" method="post"
-          action="<?php echo $quiz->get_question_link( $next_id ); ?>">
+    <form name="skip-question" class="skip-question form-button lp-form lp-form-ajax" method="post">
 
 		<?php do_action( 'learn-press/quiz/begin-skip-question-button' ); ?>
 

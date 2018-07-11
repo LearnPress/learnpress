@@ -505,7 +505,7 @@ body {
             @include box-sizing(border-box);
         }
 
-        &.wpadminbar {
+        &.admin-bar {
             #learn-press-course-curriculum,
             #learn-press-content-item {
                 top: 92px;
@@ -570,7 +570,7 @@ body {
         z-index: 999999;
         background: #FFF;
     }
-    &.full-screen-content-item {
+    &.distraction-on {
         #course-item-content-header {
             .toggle-content-item {
                 &:before {
@@ -911,7 +911,7 @@ body {
                 }
             }
 
-            &.wpadminbar {
+            &.admin-bar {
                 #learn-press-content-item,
                 #learn-press-course-curriculum {
                     top: 106px;

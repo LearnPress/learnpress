@@ -977,12 +977,12 @@ body.course-item-popup {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box; }
-  body.course-item-popup.wpadminbar #learn-press-course-curriculum,
-  body.course-item-popup.wpadminbar #learn-press-content-item {
+  body.course-item-popup.admin-bar #learn-press-course-curriculum,
+  body.course-item-popup.admin-bar #learn-press-content-item {
     top: 92px; }
-  body.course-item-popup.wpadminbar #course-item-content-header {
+  body.course-item-popup.admin-bar #course-item-content-header {
     top: 32px; }
-  body.course-item-popup.wpadminbar .content-item-description {
+  body.course-item-popup.admin-bar .content-item-description {
     margin-bottom: 20px; }
   body.course-item-popup .content-item-summary {
     margin-bottom: 50px; }
@@ -1024,7 +1024,7 @@ body #ifr-course-item {
   z-index: 999999;
   background: #FFF; }
 
-body.full-screen-content-item #course-item-content-header .toggle-content-item:before {
+body.distraction-on #course-item-content-header .toggle-content-item:before {
   font: 28px/60px fontawesome;
   content: "\f066"; }
 
@@ -1258,10 +1258,10 @@ body .lp-quiz-buttons .form-button-finish-course {
   body.course-item-popup #learn-press-content-item .content-item-nav-wrap,
   body.course-item-popup #learn-press-content-item .content-item-wrap {
     width: 90%; }
-  body.course-item-popup.wpadminbar #learn-press-content-item,
-  body.course-item-popup.wpadminbar #learn-press-course-curriculum {
+  body.course-item-popup.admin-bar #learn-press-content-item,
+  body.course-item-popup.admin-bar #learn-press-course-curriculum {
     top: 106px; }
-  body.course-item-popup.wpadminbar #course-item-content-header {
+  body.course-item-popup.admin-bar #course-item-content-header {
     top: 46px; }
   .learn-press-course-results-progress {
     margin-right: 0%; }
