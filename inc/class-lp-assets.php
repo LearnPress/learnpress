@@ -27,11 +27,18 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_styles() {
-		$default_styles = LP()->settings()->get( 'load_css' ) === 'yes' ? array(
-			'font-awesome'     => self::url( 'css/font-awesome.min.css' ),
-			'learn-press'      => self::url( 'css/learnpress.css' ),
-			'jquery-scrollbar' => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.css' )
-		) : array();
+		$default_styles = array();
+		$load_fa        = LP()->settings()->get( 'load_fa' );
+		$load_css       = LP()->settings()->get( 'load_css' );
+
+		if ( $load_fa === 'yes' || ! $load_fa ) {
+			$default_styles['font-awesome'] = self::url( 'css/font-awesome.min.css' );
+		}
+
+		if ( $load_css === 'yes' || ! $load_css ) {
+			$default_styles['learn-press']      = self::url( 'css/learnpress.css' );
+			$default_styles['jquery-scrollbar'] = self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.css' );
+		}
 
 		return apply_filters(
 			'learn-press/frontend-default-styles',

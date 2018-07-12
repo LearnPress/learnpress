@@ -2238,7 +2238,8 @@ function learn_press_add_message( $message, $type = 'success', $options = array(
 	$options = wp_parse_args(
 		$options,
 		array(
-			'id' => ''
+			'id'   => '',
+			'icon' => true
 		)
 	);
 
@@ -3050,6 +3051,9 @@ if ( ! function_exists( 'learn_press_become_teacher_button' ) ) {
 
 if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 
+	/**
+	 * Displays comments form for item course
+	 */
 	function learn_press_content_item_comments() {
 
 		$item = LP_Global::course_item();
@@ -3836,6 +3840,7 @@ function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id
 
 	return $view;
 }
+
 add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
 
 function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {

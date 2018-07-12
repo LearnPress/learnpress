@@ -887,7 +887,7 @@ ul.learn-press-nav-tabs {
           .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.status-completed .course-item-status {
             color: #00adff; }
           .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.passed {
-            border-color: #00adff;
+            _border-color: #00adff;
             color: #00adff; }
           .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.item-failed .course-item-status, .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.failed .course-item-status {
             border-color: #FF0000;
@@ -1166,7 +1166,7 @@ body .lp-quiz-buttons .form-button-finish-course {
     float: right;
     margin-right: 15px; }
     #course-item-content-header .form-button.lp-button-back button {
-      line-height: 34px; }
+      _line-height: 34px; }
   #course-item-content-header .toggle-content-item {
     display: inline-block;
     width: 60px;
@@ -1826,9 +1826,9 @@ input[type="password"] {
   margin-bottom: 20px; }
 
 .learnpress-page .lp-button {
-  line-height: 45px;
   padding: 0 12px;
-  height: 45px; }
+  height: 40px;
+  line-height: 42px; }
 
 .course-meta {
   margin-bottom: 20px; }
@@ -1980,52 +1980,64 @@ ul.learn-press-courses {
 
 .learn-press-message {
   padding: 10px 12px 10px 15px;
-  background: #F5F5F5;
+  background: #cfeaff;
   position: relative;
   margin: 0 0 20px 0;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px; }
-  .learn-press-message.icon {
-    padding-left: 45px; }
-    .learn-press-message.icon:after {
-      font-size: 20px;
-      vertical-align: baseline;
-      margin-right: 10px;
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      margin-top: -13px;
-      height: 26px;
-      line-height: 26px;
-      background: #04adff;
-      width: 26px;
-      text-align: center;
-      border-radius: 50%;
-      color: #FFF;
-      font-family: FontAwesome; }
+  color: #83878a;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px; }
+  .learn-press-message .icon {
+    display: none; }
+  .learn-press-message.has-icon {
+    padding-left: 55px; }
+    .learn-press-message.has-icon .icon {
+      display: inline-block; }
+      .learn-press-message.has-icon .icon:after {
+        font-size: 20px;
+        vertical-align: baseline;
+        margin-right: 10px;
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        margin-top: -13px;
+        height: 26px;
+        line-height: 26px;
+        width: 26px;
+        text-align: center;
+        border-radius: 50%;
+        color: #FFF;
+        font-family: FontAwesome;
+        background: #FFF;
+        font-style: normal; }
   .learn-press-message:before {
     position: absolute;
     content: '';
     top: 0;
     left: 0;
-    width: 5px;
+    width: 0px;
     height: 100%;
     background: #00adff;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px; }
-  .learn-press-message.error:before {
-    background: #d85554; }
-  .learn-press-message.error.icon:before {
-    background: #d85554; }
-  .learn-press-message.error.icon:after {
-    content: "\f00d";
-    background: #d85554; }
-  .learn-press-message.success.icon:before {
-    background: #00adff; }
-  .learn-press-message.success.icon:after {
+  .learn-press-message.error {
+    background: #ffd4d4;
+    _color: #f78f90; }
+    .learn-press-message.error .icon:after {
+      content: "\f00d";
+      color: #ff9090; }
+  .learn-press-message.success .icon:after {
+    content: "\f00c";
+    color: #00adff; }
+  .learn-press-message.notice .icon:after {
     content: "\f129";
-    background: #00adff; }
+    color: #00adff; }
+  .learn-press-message.warning {
+    background: #ffe2b0;
+    _color: #f8b058; }
+    .learn-press-message.warning .icon:after {
+      content: "\f129";
+      color: #ffb058; }
 
 ul.list-table-nav {
   display: flex;

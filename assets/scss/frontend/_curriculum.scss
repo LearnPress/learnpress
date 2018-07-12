@@ -373,7 +373,7 @@ ul.learn-press-nav-tabs {
                         }
                     }
                     &.passed {
-                        border-color: #00adff;
+                        _border-color: #00adff;
                         color: #00adff;
                     }
                     &.item-failed,
@@ -770,7 +770,7 @@ body {
             float: right;
             margin-right: 15px;
             button {
-                line-height: 34px;
+                _line-height: 34px;
             }
         }
     }

@@ -1087,25 +1087,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function get_next_item( $args = null ) {
+			$item_nav = $this->get_item_nav();
 
-			$current = $this->get_current_item();
-			$items   = $this->get_items();
-			$next    = false;
-
-			if ( $count = sizeof( $items ) ) {
-				if ( $current === false ) {
-					$next = $items[0];
-				} else {
-					$current_position = $this->get_item_position( $current );
-
-					if ( $current_position < $count - 1 ) {
-						$current_position ++;
-						$next = $items[ $current_position ];
-					}
-				}
-			}
-
-			return apply_filters( 'learn-press/course/next-item', $next, $this->get_id(), $args );
+			return apply_filters( 'learn-press/course/next-item', $item_nav[2], $this->get_id(), $args );
 		}
 
 		/**
@@ -1116,24 +1100,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return int
 		 */
 		public function get_prev_item( $args = null ) {
-			$current = $this->get_current_item();
-			$items   = $this->get_items();
-			$prev    = false;
+			$item_nav = $this->get_item_nav();
 
-			if ( $count = sizeof( $items ) ) {
-				if ( $current !== false ) {
-					$current_position = $this->get_item_position( $current );
-
-					if ( $current_position > 0 ) {
-						$current_position --;
-						$prev = $items[ $current_position ];
-					}
-				}
-			}
-
-			var_dump( $this->get_items() );
-
-			return apply_filters( 'learn-press/course/prev-item', $prev, $this->get_id(), $args );
+			return apply_filters( 'learn-press/course/prev-item', $item_nav[0], $this->get_id(), $args );
 		}
 
 		/**
@@ -1422,7 +1391,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function count_items( $type = '', $include_preview = true ) {
 
-			LP_Debug::logTime( __FUNCTION__ );
 			if ( $type === '' && $include_preview === true ) {
 				if ( false === ( $count_items = $this->get_meta( 'count_items' ) ) ) {
 					$items       = $this->get_item_ids();
@@ -1446,7 +1414,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					wp_cache_set( $key, $count_items, 'learn-press/count-items' );
 				}
 			}
-			LP_Debug::logTime( __FUNCTION__ );
 
 			return apply_filters( 'learn-press/count-items', $count_items, $type, $include_preview, $this->get_id() );
 		}
