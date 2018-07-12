@@ -22,22 +22,22 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 */
 	protected $quiz = null;
 
+
 	protected $args = array();
 
 	/**
 	 * LP_Admin_Editor_Quiz constructor.
 	 */
 	public function __construct() {
-		if ( did_action( 'admin_init' ) ) {
+		if ( did_action( 'init' ) ) {
 			$this->init();
 		} else {
-			add_action( 'admin_init', array( $this, 'init' ) );
+			add_action( 'init', array( $this, 'init' ) );
 		}
 	}
 
 	public function init() {
-		$this->args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
-
+		$this->args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => 'heartbeat' ) );
 		// get quiz
 		$quiz_id = $this->args['id'];
 		$quiz    = learn_press_get_quiz( $quiz_id );

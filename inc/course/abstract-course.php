@@ -444,9 +444,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return array
 		 */
 		public function get_curriculum_raw() {
-			$sections = $this->get_curriculum();
-
+			$sections = $this->get_sections( 'object' );
 			$sections_data = array();
+
 			if ( is_array( $sections ) ) {
 				foreach ( $sections as $section ) {
 					$sections_data[] = $section->to_array();

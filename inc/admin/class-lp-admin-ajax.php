@@ -299,8 +299,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				learn_press_send_json_error();
 			}
 
-			print_r($result);
-
 			learn_press_send_json_success( $result );
 		}
 
