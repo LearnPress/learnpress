@@ -67,9 +67,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		public function add_script_data() {
-			global $post;
+			global $post, $pagenow;
 
-			if ( empty( $post ) || ( get_post_type() !== $this->_post_type ) ) {
+			if ( empty( $post ) || ( get_post_type() !== $this->_post_type ) || $pagenow !== 'post.php' ) {
 				return;
 			}
 
@@ -332,7 +332,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( 'evaluate_final_quiz' === LP_Request::get_string( '_lp_course_result' ) ) {
 
 				$api = LP_Repair_Database::instance();
-				$api->sync_course_final_quiz($course->get_id());
+				$api->sync_course_final_quiz( $course->get_id() );
 
 				$passing_grade = LP_Request::get_string( '_lp_course_result_final_quiz_passing_condition' );
 				$quiz_id       = $course->get_final_quiz();
@@ -1323,7 +1323,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function columns_content( $column, $post_id = 0 ) {
 
+			/**
+			 * @var WP_Post_Type[] $post_types
+			 */
 			global $post;
+
 			$course = learn_press_get_course( $post->ID );
 
 			switch ( $column ) {
@@ -1331,35 +1335,29 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				case 'sections':
 
 					// course curd
-					$curd = new LP_Course_CURD();
-
-					// course section
-					$sections        = $curd->get_course_sections( $post->ID );
-					$number_sections = count( $sections );
+					$curd            = new LP_Course_CURD();
+					$number_sections = $curd->count_sections( $post_id );
 
 					if ( $number_sections ) {
-						// get items
-						$items = wp_cache_get( 'course-' . $post->ID, 'learn-press/course-items' );
+						$output     = sprintf( _n( '<strong>%d</strong> section', '<strong>%d</strong> sections', $number_sections, 'learnpress' ), $number_sections );
+						$html_items = array();
+						$post_types = get_post_types( null, 'objects' );
 
-						$number_lessons = $number_quizzes = 0;
-						if ( $items ) {
-							foreach ( $items as $item_id ) {
-								if ( learn_press_get_post_type( $item_id ) == LP_LESSON_CPT ) {
-									$number_lessons ++;
-								} else if ( learn_press_get_post_type( $item_id ) == LP_QUIZ_CPT ) {
-									$number_quizzes ++;
+						if ( $stats_objects = $curd->count_items( $post_id ) ) {
+							foreach ( $stats_objects as $type => $count ) {
+								if ( ! $count || ! isset( $post_types[ $type ] ) ) {
+									continue;
 								}
+								$post_type_object = $post_types[ $type ];
+								$singular_name    = strtolower( $post_type_object->labels->singular_name );
+								$plural_name      = strtolower( $post_type_object->label );
+								$html_items[]     = sprintf( _n( '<strong>%d</strong> ' . $singular_name, '<strong>%d</strong> ' . $plural_name, $count, 'learnpress' ), $count );
 							}
 						}
 
-						$output = $number_sections ? sprintf( _n( '%d section', '%d sections', $number_sections, 'learnpress' ), $number_sections ) : __( '0 section', 'learnpress' );
-						$output .= ' (';
-						$output .= $number_lessons ? sprintf( _n( '%d lesson', '%d lessons', $number_lessons, 'learnpress' ), $number_lessons ) : __( "0 lesson", 'learnpress' );
-						$output .= ', ';
-						$output .= $number_quizzes ? sprintf( _n( '%d quiz', '%d quizzes', $number_quizzes, 'learnpress' ), $number_quizzes ) : __( "0 quiz", 'learnpress' );
-						// @hook to add count extent course item type
-						$output .= apply_filters( 'learn-press/course-count-items', '', $items );
-						$output .= ')';
+						if ( $html_items = apply_filters( 'learn-press/course-count-items', $html_items ) ) {
+							$output .= ' (' . join( ', ', $html_items ) . ')';
+						}
 
 						echo $output;
 					} else {

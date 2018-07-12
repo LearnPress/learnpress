@@ -299,6 +299,11 @@ add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 45 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_course_finish_button', 50 );
 
 /**
+ * @see learn_press_content_item_footer_button_finish_course
+ */
+add_action( 'learn-press/content-item-footer', 'learn_press_content_item_footer_button_finish_course', 10 );
+
+/**
  * @see learn_press_control_displaying_course_item
  */
 add_action( 'learn-press/parse-course-item', 'learn_press_control_displaying_course_item', 5 );

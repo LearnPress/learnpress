@@ -373,7 +373,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @return bool|false|int
 		 */
 		public function update_answer_title( $question_id, $answer ) {
-			if ( learn_press_get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
 				return false;
 			}
 
@@ -394,8 +395,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				),
 				'where' => array(
 					'question_answer_id' => $answer['question_answer_id'],
-					'question_id'        => $question_id,
-					'answer_order'       => $answer['answer_order']
+					'question_id'        => $question_id
 				)
 			);
 
@@ -403,8 +403,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$data['data'],
 				$data['where'],
 				array( '%s', '%s', '%s' ),
-				array( '%d', '%d', '%d' )
+				array( '%d', '%d' )
 			);
+
 
 			do_action( 'learn-press/question/updated-answer-data', $question_id, $answer['question_answer_id'], $answer );
 
@@ -872,6 +873,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				foreach ( $results as $k => $v ) {
 
 					if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
+						unset($answer_data['question_answer_id']);
 						foreach ( $answer_data as $data_key => $data_value ) {
 							$v->{$data_key} = $data_value;
 						}
@@ -884,6 +886,50 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			}
 
 			return $answer_options;
+		}
+
+		/**
+		 * Load answer options for the question from database.
+		 * Load from cache if data is already loaded into cache.
+		 * Otherwise, load from database and put to cache.
+		 *
+		 * @param $question LP_Question
+		 */
+		protected function _load_answer_options( &$question ) {
+
+			$id             = $question->get_id();
+			$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
+
+			if ( false === $answer_options ) {
+				global $wpdb;
+				$query = $wpdb->prepare( "
+					SELECT *
+					FROM {$wpdb->prefix}learnpress_question_answers
+					WHERE question_id = %d
+					ORDER BY answer_order ASC
+				", $id );
+				if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {
+					foreach ( $answer_options as $k => $v ) {
+						$answer_options[ $k ] = (array) $answer_options[ $k ];
+						if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
+							foreach ( $answer_data as $data_key => $data_value ) {
+								$answer_options[ $k ][ $data_key ] = $data_value;
+							}
+						}
+						unset( $answer_options[ $k ]['answer_data'] );
+					}
+				}
+
+				$answer_options = $this->load_answer_options( $question->get_id() );
+			}
+			$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
+
+			if ( ! empty( $answer_options['question_answer_id'] ) && $answer_options['question_answer_id'] > 0 ) {
+				$this->_load_answer_option_meta( $answer_options );
+			}
+			wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
+
+			$question->set_data( 'answer_options', $answer_options );
 		}
 
 		/**

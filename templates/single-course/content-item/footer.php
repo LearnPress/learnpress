@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.1.0
  */
 
 /**
@@ -16,14 +16,17 @@ defined( 'ABSPATH' ) || exit();
 
 $course = LP_Global::course();
 $user   = LP_Global::user();
-?>
 
+ob_start();
+do_action( 'learn-press/content-item-footer' );
+$content = ob_get_clean();
+
+if ( ! $content ) {
+	return;
+}
+?>
 <div id="course-item-content-footer">
 
-	<?php if ( $user->can_finish_course( $course->get_id() ) ) { ?>
-
-		<?php learn_press_get_template( 'single-course/buttons/finish.php' ); ?>
-
-	<?php } ?>
+	<?php echo $content; ?>
 
 </div>

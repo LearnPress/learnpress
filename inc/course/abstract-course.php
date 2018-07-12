@@ -444,7 +444,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return array
 		 */
 		public function get_curriculum_raw() {
-			$sections = $this->get_sections( 'object' );
+			$sections      = $this->get_sections( 'object' );
 			$sections_data = array();
 
 			if ( is_array( $sections ) ) {
@@ -877,8 +877,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function count_completed_orders() {
 			LP_Debug::logTime( __FUNCTION__ );
 
-			static $count = false;
-			if ( false === $count && $orders = $this->get_meta( 'order-completed' ) ) {
+			if ( $orders = $this->get_meta( 'order-completed' ) ) {
 				$count = sizeof( $orders );
 			} else {
 				$count = 0;
@@ -1132,7 +1131,45 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				}
 			}
 
+			var_dump( $this->get_items() );
+
 			return apply_filters( 'learn-press/course/prev-item', $prev, $this->get_id(), $args );
+		}
+
+		/**
+		 * Get item standing before and after an item.
+		 * If the item is not passed consider it is item viewing.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param bool $current_item
+		 *
+		 * @return array|bool
+		 */
+		public function get_item_nav( $current_item = false ) {
+			if ( false === $current_item ) {
+				$current_item = $this->get_current_item();
+			}
+
+			if ( false === $current_item ) {
+				return false;
+			}
+
+			$prev_id = $next_id = 0;
+
+			if ( $item_ids = $this->get_item_ids() ) {
+				if ( false !== ( $pos = array_search( $current_item, $item_ids ) ) ) {
+					if ( sizeof( $item_ids ) - 1 > $pos ) {
+						$next_id = $item_ids[ $pos + 1 ];
+					}
+
+					if ( $pos > 0 ) {
+						$prev_id = $item_ids[ $pos - 1 ];
+					}
+				}
+			}
+
+			return array( $prev_id, $current_item, $next_id );
 		}
 
 		/**

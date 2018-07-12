@@ -306,7 +306,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get() {
+		public function to_array() {
 			$data = array();
 
 			/**
@@ -314,7 +314,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			 */
 			if ( $this->_answers ) {
 				foreach ( $this->_answers as $answer ) {
-					$data[] = $answer->get();
+					$data[] = $answer->to_array();
 				}
 			}
 
@@ -360,7 +360,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get() {
+		public function to_array() {
 			return $this->_data;
 		}
 

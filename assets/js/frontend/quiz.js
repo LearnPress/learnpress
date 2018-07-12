@@ -63,10 +63,10 @@
             }
 
             if (overtime) {
-                // console.log('Overtime')
-                // return;
-                //
-                return;
+                if (settings.status === 'started') {
+                    thisSettings.remainingTime = 1;
+                }
+                //return;
             }
             thisSettings.remainingTime--;
             timerCountdown = setTimeout(timeCountdown, 1000);

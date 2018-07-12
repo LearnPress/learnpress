@@ -110,7 +110,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$answers  = $question->get_default_answers();
 			} else {
 				$question = LP_Question::get_question( $post->ID );
-				$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
+				$answers  = $question->get_answers()->to_array();//  ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 			}
 
 			if ( empty( $answers ) ) {

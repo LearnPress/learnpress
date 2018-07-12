@@ -43,7 +43,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$quiz    = learn_press_get_quiz( $quiz_id );
 
 		if ( ! $quiz ) {
-			return new WP_Error( 'INVALID_QUIZ', __( 'Invalid quiz', 'learnpress' ) );
+			return;
 		}
 
 		$this->quiz          = $quiz;
@@ -612,7 +612,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 				// add question to quiz
 				$this->quiz_curd->add_question( $quiz_id, $question['id'] );
 			}
-			$this->result = $this->quiz->quiz_editor_get_questions();
+			$this->result = $this->get_questions();
 
 			return true;
 		}
@@ -690,7 +690,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 				$question = LP_Question::get_question( $id );
 
-				$answers = $question->get_answers()->get();
+				$answers = $question->get_answers()->to_array();
 				$post     = get_post( $id );
 				$result[] = apply_filters( 'learn-press/quiz-editor/question-data', array(
 					'id'       => $id,

@@ -70,15 +70,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
 					'ver' => '1.3.4'
 				),
-				'lp-sortable'                       => array(
-					'url' => self::url( 'js/vendor/sortable.1.6.0.js' ),
-					'ver' => '1.6.0'
-				),
-				'lp-vuedraggable'                   => array(
-					'url'  => self::url( 'js/vendor/vuedraggable.2.14.1.js' ),
-					'ver'  => '2.14.1',
-					'deps' => array( 'lp-sortable' )
-				),
+//				'lp-sortable'                       => array(
+//					'url' => self::url( 'js/vendor/sortable.1.6.0.js' ),
+//					'ver' => '1.6.0'
+//				),
+//				'lp-vuedraggable'                   => array(
+//					'url'  => self::url( 'js/vendor/vuedraggable.2.14.1.js' ),
+//					'ver'  => '2.14.1',
+//					'deps' => array( 'lp-sortable' )
+//				),
 				'learn-press-global'                => array(
 					'url'  => $this->url( 'js/global.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' )
@@ -105,7 +105,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'lp-vue',
 						'lp-vuex',
 						'lp-vue-resource',
-						'lp-vuedraggable',
+						//'lp-vuedraggable',
 					),
 					'screens' => array( LP_COURSE_CPT )
 				),
@@ -115,7 +115,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'lp-vue',
 						'lp-vuex',
 						'lp-vue-resource',
-						'lp-vuedraggable',
+						//'lp-vuedraggable',
 					),
 					'screens' => array( LP_QUIZ_CPT )
 				),
@@ -125,7 +125,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'lp-vue',
 						'lp-vuex',
 						'lp-vue-resource',
-						'lp-vuedraggable',
+						//'lp-vuedraggable',
 					),
 					'screens' => array( LP_QUESTION_CPT )
 				),

@@ -3079,15 +3079,28 @@ if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_content_item_nav' ) ) {
+
+	/**
+	 * Displays link of item standing before and after the item is viewing.
+	 *
+	 * @updated 3.1.0
+	 */
 	function learn_press_content_item_nav() {
 		$course    = LP_Global::course();
 		$next_item = $prev_item = false;
 
-		if ( $next_id = $course->get_next_item() ) {
-			$next_item = $course->get_item( $next_id );
+		if ( $item_nav = $course->get_item_nav() ) {
+			if ( $item_nav[0] ) {
+				$prev_item = $course->get_item( $item_nav[0] );
+			}
+
+			if ( $item_nav[2] ) {
+				$next_item = $course->get_item( $item_nav[2] );
+			}
 		}
-		if ( $prev_id = $course->get_prev_item() ) {
-			$prev_item = $course->get_item( $prev_id );
+
+		if ( ! $next_item && ! $prev_item ) {
+			return;
 		}
 
 		learn_press_get_template(
@@ -3806,8 +3819,6 @@ function learn_press_maybe_load_comment_js() {
 
 add_action( 'wp_enqueue_scripts', 'learn_press_maybe_load_comment_js' );
 
-add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
-
 function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id ) {
 	$user = learn_press_get_user( $user_id );
 
@@ -3825,8 +3836,7 @@ function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id
 
 	return $view;
 }
-
-add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_template', 10, 5 );
+add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
 
 function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
 
@@ -3841,8 +3851,9 @@ function learn_press_filter_block_content_template( $located, $template_name, $a
 	}
 
 	return $located;
-
 }
+
+add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_template', 10, 5 );
 
 function learn_press_term_conditions_template() {
 	$page_id = learn_press_get_page_id( 'term_conditions' );
@@ -3926,3 +3937,17 @@ function learn_press_content_item_scripts( $styles ) {
 }
 
 add_filter( 'learn-press/frontend-default-styles', 'learn_press_content_item_scripts' );
+
+/**
+ * Displays button allow finishing course in popup
+ *
+ * @since 3.1.0
+ */
+function learn_press_content_item_footer_button_finish_course() {
+	$course = LP_Global::course();
+	$user   = LP_Global::user();
+
+	if ( $user->can_finish_course( $course->get_id() ) ) {
+		learn_press_get_template( 'single-course/buttons/finish.php' );
+	}
+}

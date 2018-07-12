@@ -638,7 +638,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				if ( $sections = wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections' ) ) {
 					$position = 0;
 					foreach ( $sections as $k => $section ) {
-						$_section = new LP_Course_Section( $section );die(__FUNCTION__);
+						$_section = new LP_Course_Section( $section );
+						die( __FUNCTION__ );
 						$_section->set_position( ++ $position );
 						$curriculum[ $section->section_id ] = $_section;
 					}
@@ -696,10 +697,67 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 */
 		public function get_course_sections( $course_id, $return = '' ) {
 			if ( false === ( $sections = wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections' ) ) ) {
-				//$sections = $this->read_course_sections( $course_id );
+				$sections = $this->read_course_sections( $course_id );
+				wp_cache_set( 'course-' . $course_id, $sections, 'learn-press/course-sections' );
 			}
 
 			return $return === 'ids' ? wp_cache_get( 'course-' . $course_id, 'learn-press/course-sections-ids' ) : $sections;
+		}
+
+		/**
+		 * Retrieve total sections of a course.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param int $course_id
+		 *
+		 * @return int
+		 */
+		public function count_sections( $course_id ) {
+			global $wpdb;
+
+			$query = $wpdb->prepare( "
+				SELECT COUNT(section_id)
+				FROM wp_learnpress_sections
+				WHERE section_course_id = %d
+			", $course_id );
+
+			return $wpdb->get_var( $query );
+		}
+
+		/**
+		 * Retrieve total items of a course.
+		 *
+		 * @param int $course_id
+		 *
+		 * @since 3.1.0
+		 *
+		 * @return array
+		 */
+		public function count_items( $course_id ) {
+			global $wpdb;
+
+			$query = $wpdb->prepare( "
+				SELECT COUNT(it.ID) `count`, it.post_type 
+				FROM {$wpdb->learnpress_section_items} si 
+				INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id 
+				INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id 
+				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id 
+				WHERE s.section_course_id = %d 
+				AND c.post_status = %s 
+				AND it.post_status = %s 
+				GROUP BY it.post_type
+			", $course_id, 'publish', 'publish' );
+
+			$stats_object = array();
+
+			if ( $results = $wpdb->get_results( $query ) ) {
+				foreach ( $results as $result ) {
+					$stats_object[ $result->post_type ] = $result->count;
+				}
+			}
+
+			return $stats_object;
 		}
 
 		/**

@@ -9,7 +9,7 @@
 class LP_Unit_Test {
 	public static function init() {
 		//add_action( 'get_header', array( __CLASS__, 'test_emails' ) );
-		add_action( 'shutdown', array( __CLASS__, 'shutdown' ) );
+		//add_action( 'shutdown', array( __CLASS__, 'shutdown' ) );
 	}
 
 	public static function test_emails() {

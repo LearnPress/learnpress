@@ -195,6 +195,32 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		}
 
 		/**
+		 * Do something before get data.
+		 * Some data now is not auto loading when object is created
+		 * therefore, we will load it here.
+		 *
+		 * @param string $name
+		 * @param string $default
+		 *
+		 * @return array|mixed
+		 */
+		public function get_data( $name = '', $default = '' ) {
+			switch ( $name ) {
+				case 'answer_options':
+					$answer_options = parent::get_data( $name, $default );
+
+					if ( ! $answer_options ) {
+						$answer_options = $this->_curd->load_answer_options( $this->get_id() );
+						$this->set_data( $name, $answer_options );
+					}
+
+					break;
+			}
+
+			return parent::get_data( $name, $default );
+		}
+
+		/**
 		 * @param string $yes_or_no
 		 *
 		 * @return array|mixed
