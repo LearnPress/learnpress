@@ -199,6 +199,7 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
 = 3.0.10 =
 + Added option to quiz so non-logged user can do a quiz (Preview)
 + Added quiz option to minus a number of point for each wrong question in quiz
@@ -216,7 +217,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed wrong ordering of course item when adding new
 ~ Fixed order for multiple user is not show in list of orders
 ~ Fixed some text is not translatable
-
+~ Fixed breadcrumb not show page name when viewing archive course
+~ Fixed archive course show header is title of first course
 
 = 3.0.9 =
 + GDPR compliance
