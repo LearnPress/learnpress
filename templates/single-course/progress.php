@@ -29,7 +29,6 @@ $course_data       = $user->get_course_data( $course->get_id() );
 $course_results    = $course_data->get_results( false );
 $passing_condition = $course->get_passing_condition();
 
-var_dump($course_results);
 ?>
 
 <div class="learn-press-course-results-progress">

@@ -138,7 +138,7 @@ class LP_Repair_Database {
 	 * @since 3.1.0
 	 */
 	public function sync_user_courses() {
-		echo __FUNCTION__;
+		//echo __FUNCTION__;
 
 	}
 
