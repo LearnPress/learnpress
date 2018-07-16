@@ -22,7 +22,7 @@ if ( ! $course || ! $course->is_required_enroll() ) {
 }
 ?>
 
-<span class="course-students" title="<?php echo esc_html( $course->get_students_html() ); ?>">
+<span class="course-students" title="<?php echo esc_attr( $course->get_students_html() ); ?>">
 
     <?php $count = $course->count_students();
 
