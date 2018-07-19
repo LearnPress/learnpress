@@ -268,13 +268,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'min'          => 0,
 						'std'          => 10,
 					),
-					array(
-						'name' => __( 'Preview Quiz', 'learnpress' ),
-						'id'   => '_lp_preview',
-						'type' => 'yes-no',
-						'desc' => __( 'If this is a preview quiz, then student can do this quiz without taking the course.', 'learnpress' ),
-						'std'  => 'no'
-					),
+//					array(
+//						'name' => __( 'Preview Quiz', 'learnpress' ),
+//						'id'   => '_lp_preview',
+//						'type' => 'yes-no',
+//						'desc' => __( 'If this is a preview quiz, then student can do this quiz without taking the course.', 'learnpress' ),
+//						'std'  => 'no'
+//					),
 					array(
 						'name' => __( 'Minus Points', 'learnpress' ),
 						'id'   => '_lp_minus_points',

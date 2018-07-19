@@ -2088,6 +2088,8 @@
         color: #a00; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item:hover .drag {
       visibility: visible; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item:not(.lp_lesson) .item-actions .actions .preview-item {
+      display: none; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item {
     border-bottom-width: 1px;
     position: relative;
