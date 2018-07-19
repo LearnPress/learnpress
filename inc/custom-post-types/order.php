@@ -27,7 +27,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_action( 'trashed_post', array( $this, 'trashed_order' ) );
 			add_action( 'transition_post_status', array( $this, 'restore_order' ), 10, 3 );
-			add_action( 'transition_post_status', array( $this, 'recount_enrolled_users' ), 10, 3 );
+			add_action( 'save_post', array( $this, 'recount_enrolled_users' ), 10, 3 );
 
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 			//add_action( 'add_meta_boxes', array( $this, 'post_new' ) );
@@ -51,32 +51,25 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @since 3.0.10
 		 *
-		 * @param string  $new
-		 * @param string  $old
-		 * @param WP_Post $post
+		 * @param int $post_id
 		 *
 		 * @return bool
 		 */
-		public function recount_enrolled_users( $new, $old, $post ) {
-			if ( LP_ORDER_CPT !== get_post_type( $post ) ) {
+		public function recount_enrolled_users( $post_id ) {
+			if ( LP_ORDER_CPT !== get_post_type( $post_id ) ) {
 				return false;
 			}
 
-			$order = learn_press_get_order( $post->ID );
+			$order = learn_press_get_order( $post_id );
 			$curd  = new LP_Course_CURD();
+
 			if ( $items = $order->get_items() ) {
-				$course_ids = wp_list_pluck( $items, 'course_id' );
 
-				$curd->count_enrolled_users_by_orders( $course_ids );
-
-				$statuses = array( 'lp-completed', 'lp-processing' );
-				sort( $statuses );
-				$cache_key = md5( serialize( $statuses ) );
-
-				foreach ( $course_ids as $cid ) {
-					if ( LP_COURSE_CPT === get_post_type( $cid ) ) {
-						update_post_meta( $cid, 'count_enrolled_users', wp_cache_get( 'course-' . $cid . '-' . $cache_key, 'learn-press/course-orders' ) );
-					}
+				foreach ( $items as $item ) {
+					$course_id = $item['course_id'];
+					LP_Repair_Database::instance()->sync_course_orders( $course_id );
+					$count     = $curd->count_enrolled_users_by_orders( $course_id );
+					update_post_meta( $course_id, 'count_enrolled_users', $count );
 				}
 			}
 
@@ -229,33 +222,43 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				foreach ( $items as $item ) {
-					$item = $user_curd->get_user_item(
-						$user_id,
-						$item['course_id']
-					);
-					if ( $item ) {
-						if ( is_array( $item ) ) {
-							$item_id = $item['user_item_id'];
-						} else {
-							$item_id = $item;
-						}
-						$user_curd->update_user_item_status( $item_id, 'trash' );
-					}
-					$item_course = $user->get_course_data( $item['item_id'] );
 
-					if ( ! $item_course ) {
+					$user_course = $user->get_course_data( $item['course_id'] );
+
+					if ( ! $user_course || ! $user_course->get_user_item_id() ) {
 						continue;
 					}
 
+					$user_course->set_status( 'trash' );
+					$user_course->update();
+
+//					$item = $user_curd->get_user_item(
+//						$user_id,
+//						$item['course_id']
+//					);
+//					if ( $item ) {
+//						if ( is_array( $item ) ) {
+//							$item_id = $item['user_item_id'];
+//						} else {
+//							$item_id = $item;
+//						}
+//						$user_curd->update_user_item_status( $item_id, 'trash' );
+//					}
+//					$item_course = $user->get_course_data( $item['item_id'] );
+//
+//					if ( ! $item_course ) {
+//						continue;
+//					}
+
 					// Store user_id and item_id of current user item into the order
-					$order_data[ $item_course->get_user_item_id() ] = array(
-						'user_id' => $item_course->get_user_id(),
-						'item_id' => $item_course->get_item_id()
+					$order_data[ $user_course->get_user_item_id() ] = array(
+						'user_id' => $user_course->get_user_id(),
+						'item_id' => $user_course->get_item_id()
 					);
 
 					// And remove it from user item
 					$user_curd->update_user_item_by_id(
-						$item_course->get_user_item_id(),
+						$user_course->get_user_item_id(),
 						array(
 							'user_id' => - 1,
 							'item_id' => - 1
@@ -477,7 +480,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$new_status = get_post_status( $new_order->get_id() );
 
 				if ( ( $new_status !== $old_status ) || $trigger_action ) {
-					$status = str_replace( 'lp-', '', $new_status );
+					$status     = str_replace( 'lp-', '', $new_status );
 					$old_status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $new_order->get_id(), $status );
 					do_action( 'learn-press/order/status-' . $old_status . '-to-' . $status, $new_order->get_id() );
@@ -613,7 +616,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! $this->_is_archive() ) {
 				return $orderby;
 			}
-            global $wpdb;
+			global $wpdb;
 			switch ( $this->_get_orderby() ) {
 				case 'title':
 					$orderby = "{$wpdb->posts}.ID {$_GET['order']}";
@@ -624,7 +627,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				case 'date':
 					$orderby = "{$wpdb->posts}.post_date {$_GET['order']}";
 					break;
-                case 'order_total':
+				case 'order_total':
 					$orderby = " orderItemmeta.meta_value {$_GET['order']}";
 					break;
 			}
@@ -654,8 +657,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns['order_student'] = 'student';
-			$columns['order_date']  = 'date';
-			$columns['order_total']  = 'order_total';
+			$columns['order_date']    = 'date';
+			$columns['order_total']   = 'order_total';
 
 			return $columns;
 		}
@@ -890,6 +893,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					foreach ( $items as $item ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 							$links[] = apply_filters( 'learn-press/get_info_item_order', __( 'Course does not exist', 'learnpress' ), $item );
+						} else if ( get_post_status( $item['course_id'] ) !== 'publish' ) {
+							$links[] = get_the_title( $item['course_id'] ) . sprintf( ' (#%d - %s)', $item['course_id'], __( 'Deleted', 'learnpress' ) );
 						} else {
 							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
 							if ( $count > 1 ) {
@@ -898,6 +903,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 							$links[] = $link;
 						}
 					}
+
 					if ( $count > 1 ) {
 						echo sprintf( '<ol>%s</ol>', join( "", $links ) );
 					} elseif ( 1 == $count ) {

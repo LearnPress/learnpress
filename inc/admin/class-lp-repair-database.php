@@ -19,6 +19,83 @@ class LP_Repair_Database {
 	 * @access protected
 	 */
 	protected function __construct() {
+		add_action( 'save_post', array( $this, 'save_post' ), 0 );
+		add_action( 'deleted_post', array( $this, 'save_post' ), 0 );
+		add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 5000, 3 );
+		add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_course' ), 5000, 2 );
+
+	}
+
+	/**
+	 * @param int $item_id
+	 * @param int $section_id
+	 * @param int $course_id
+	 */
+	public function added_item_to_section( $item_id, $section_id, $course_id ) {
+		$this->sync_course_data( $course_id );
+	}
+
+	/**
+	 * @param int $item_id
+	 * @param int $course_id
+	 */
+	public function removed_item_from_course( $item_id, $course_id ) {
+		$this->sync_course_data( $course_id );
+	}
+
+	/**
+	 * @param int $post_id
+	 */
+	public function save_post( $post_id ) {
+		global $wpdb;
+		$post_type   = get_post_type( $post_id );
+		$action      = preg_replace( '!_post$!', '', current_action() );
+		$course_curd = new LP_Course_CURD();
+		$course_ids  = array();
+
+		switch ( $post_type ) {
+			case LP_COURSE_CPT:
+				$course_ids = array( $post_id );
+				break;
+			default:
+
+				// Course is support type of this item?
+				if ( learn_press_is_support_course_item_type( $post_type ) ) {
+
+					// Find it course
+					$course_ids = $course_curd->get_course_by_item( $post_id );
+				}
+		}
+
+		foreach ( $course_ids as $course_id ) {
+			$this->sync_course_data( $course_id );
+		}
+
+//		LP_Background_Sync_Data::instance()->push_to_queue(
+//			array(
+//				'action' => 'sync_course_data',
+//				'args'   => array( 'course_id' => $course_id )
+//			)
+//		);
+	}
+
+	/**
+	 * Sync course data when saving post.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int $course_id
+	 */
+	public function sync_course_data( $course_id ) {
+		$user_curd   = new LP_User_CURD();
+		$course_curd = new LP_Course_CURD();
+
+		$count_items = 0;
+		if ( $counts = $course_curd->count_items( $course_id ) ) {
+			$count_items = array_sum( $counts );
+		}
+
+		update_post_meta( $course_id, 'count_items', $count_items );
 	}
 
 	/**
@@ -142,6 +219,7 @@ class LP_Repair_Database {
 
 	}
 
+
 	/**
 	 * Sync final quiz for each course.
 	 *
@@ -221,3 +299,5 @@ class LP_Repair_Database {
 		return self::$instance;
 	}
 }
+
+LP_Repair_Database::instance();

@@ -104,7 +104,8 @@ class LP_User_Factory {
 					self::_update_user_item_purchased( $order, $old_status, $new_status );
 			}
 			//LP_Debug::commitTransaction();
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			//LP_Debug::rollbackTransaction();
 		}
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
@@ -112,8 +113,8 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
-	 * @param string $old_status
-	 * @param string $new_status
+	 * @param string   $old_status
+	 * @param string   $new_status
 	 */
 	protected static function _update_user_item_pending( $order, $old_status, $new_status ) {
 		$curd  = new LP_User_CURD();
@@ -123,6 +124,17 @@ class LP_User_Factory {
 		}
 		foreach ( $order->get_users() as $user_id ) {
 			foreach ( $items as $item ) {
+
+				$user        = learn_press_get_user( $user_id );
+				$user_course = $user->get_course_data( $item['course_id'] );
+
+				if ( $user_course->get_status() ) {
+					$user_course->set_status( $new_status );
+					$user_course->update();
+				}
+
+				continue;
+
 				$item = $curd->get_user_item(
 					$user_id,
 					$item['course_id']
@@ -141,8 +153,8 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_Order $order
-	 * @param string $old_status
-	 * @param string $new_status
+	 * @param string   $old_status
+	 * @param string   $new_status
 	 */
 	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
 		global $wpdb;
@@ -163,15 +175,30 @@ class LP_User_Factory {
 			foreach ( $items as $item ) {
 
 				if ( $user_item_id = self::_get_course_item( $order->get_id(), $item['course_id'], $user_id ) ) {
-					$user_item_id = $curd->update_user_item(
-						$user_id,
-						$item['course_id'],
+//					$user_item_id = $curd->update_user_item(
+//						$user_id,
+//						$item['course_id'],
+//						array(
+//							'ref_id'    => $order->get_id(),
+//							'ref_type'  => LP_ORDER_CPT,
+//							'parent_id' => 0
+//						)
+//					);
+
+					$wpdb->update(
+						$wpdb->learnpress_user_items,
 						array(
 							'ref_id'    => $order->get_id(),
 							'ref_type'  => LP_ORDER_CPT,
 							'parent_id' => 0
-						)
+						),
+						array(
+							'user_item_id' => $user_item_id
+						),
+						array( '%d', '%s', '%d' ),
+						array( '%d' )
 					);
+
 				} else {
 					$wpdb->insert(
 						$wpdb->learnpress_user_items,

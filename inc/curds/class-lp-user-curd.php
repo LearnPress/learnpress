@@ -567,7 +567,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$item = false;
 		} else {
 			if ( func_num_args() == 4 ) {
-				$item = $this->get_user_item( $user_id, $item_id, $course_id );
+				//$item = $this->get_user_item( $user_id, $item_id, $course_id );
+				$item = $this->read_course($user_id, $course_id);
 			} else {
 				$item = $this->get_user_item( $user_id, $item_id );
 			}

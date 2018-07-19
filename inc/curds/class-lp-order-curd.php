@@ -96,33 +96,25 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function read_items( $order ) {
 
-		if ( false === ( $items = learn_press_cache_get( 'order-' . $order->get_id(), 'lp-order-items' ) ) ) {
+		global $wpdb;
 
-			global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT order_item_id as id, order_item_name as name
+			FROM {$wpdb->learnpress_order_items} oi 
+			WHERE order_id = %d 
+		", $order->get_id() );
 
-			$query = $wpdb->prepare( "
-				SELECT order_item_id as id, order_item_name as name
-				FROM {$wpdb->learnpress_order_items} oi 
-				WHERE order_id = %d 
-			", $order->get_id() );
-
-			$_items = $wpdb->get_results( $query );
-			$items  = array();
-			// Loop items
-			if ( $_items ) {
-				foreach ( $_items as $item ) {
-					$item = (array) $item;
-					$this->get_item_meta( $item );
-					if ( ! empty( $item['course_id'] ) ) {
-						//$items[ $item['id'] ]['name'] = $item['name'];
-						//$items[ $item['id'] ]['id']   = $item['id'];
-
-						$items[ $item['id'] ] = $item;
-					}
+		$_items = $wpdb->get_results( $query );
+		$items  = array();
+		// Loop items
+		if ( $_items ) {
+			foreach ( $_items as $item ) {
+				$item = (array) $item;
+				$this->get_item_meta( $item );
+				if ( ! empty( $item['course_id'] ) ) {
+					$items[ $item['id'] ] = $item;
 				}
 			}
-
-			learn_press_cache_set( 'order-' . $order->get_id(), $items, 'lp-order-items' );
 		}
 
 		return $items;// apply_filters( 'learn_press_order_get_items', $items, $this );
@@ -461,7 +453,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'currency'        => get_post_meta( $post->ID, '_order_currency', true )
 				)
 			);
-			$this->read_items( $order );
+			//$this->read_items( $order );
+			$order->get_items();
 			$order->read_meta();
 		}
 

@@ -1638,7 +1638,7 @@ if ( ! function_exists( 'learn_press_course_remaining_time' ) ) {
 			return;
 		}
 
-		if ( $user->has_finished_course( $course->get_id() ) ) {
+		if ( ! $user->is_access_level( LP_COURSE_ACCESS_LEVEL_40, $course->get_id() ) ) {
 			return;
 		}
 

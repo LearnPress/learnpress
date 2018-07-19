@@ -587,12 +587,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				die( __( 'Permission denied', 'learnpress' ) );
 			}
 
-			// verify nonce
-//			$nonce = learn_press_get_request( 'nonce' );
-//			if ( !wp_verify_nonce( $nonce, 'add_item_to_order' ) ) {
-//				die( __( 'Check nonce failed', 'learnpress' ) );
-//			}
-
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
 			if ( ! is_numeric( $order_id ) || learn_press_get_post_type( $order_id ) != 'lp_order' ) {
@@ -604,9 +598,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$order    = learn_press_get_order( $order_id );
 
 			global $wpdb;
+
 			$response = array(
 				'result' => 'error'
 			);
+
 			if ( $order_item_ids = $order->add_items( $item_ids ) ) {
 				$html        = '';
 				$order_items = $order->get_items();
@@ -622,6 +618,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						if ( ! in_array( $item['id'], $order_item_ids ) ) {
 							continue;
 						}
+
 						ob_start();
 						include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
 						$html .= ob_get_clean();

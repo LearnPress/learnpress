@@ -522,7 +522,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_items() {
-			return apply_filters( 'learn-press/order-items', wp_cache_get( 'order-' . $this->get_id(), 'learn-press/order-items' ) );
+			if ( false === ( $items = LP_Object_Cache::get( 'order-' . $this->get_id(), 'learn-press/order-items' ) ) ) {
+				$items = $this->_curd->read_items( $this );
+
+				LP_Object_Cache::set( 'order-' . $this->get_id(), $items, 'learn-press/order-items' );
+			}
+
+			return apply_filters( 'learn-press/order-items', $items );
 		}
 
 		public function is_child() {
@@ -606,9 +612,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					'order_item_name' => get_the_title( $item )
 				);
 			}
+
 			if ( ! $course = learn_press_get_course( $item['item_id'] ) ) {
 				return false;
 			}
+
 			$item = wp_parse_args(
 				$item,
 				array(
@@ -668,8 +676,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			// Refresh cache
-			wp_cache_delete( 'order-' . $this->get_id(), 'learn-press/order-items' );
-			$this->_curd->read_items( $this );
+			LP_Object_Cache::delete( 'order-' . $this->get_id(), 'learn-press/order-items' );
 
 			do_action( 'learn-press/added-order-item-data', $item_id, $item, $this->get_id() );
 

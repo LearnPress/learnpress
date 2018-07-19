@@ -69,7 +69,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function add_script_data() {
 			global $post, $pagenow;
 
-			if ( empty( $post ) || ( get_post_type() !== $this->_post_type ) || $pagenow !== 'post.php' ) {
+			if ( empty( $post ) || ( get_post_type() !== $this->_post_type ) || ! in_array( $pagenow, array(
+					'post.php',
+					'post-new.php'
+				) )
+			) {
 				return;
 			}
 

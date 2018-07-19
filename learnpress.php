@@ -98,7 +98,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Manage all processes run in background.
 		 *
-		 * @var array
+		 * @var LP_Abstract_Background_Process[]
 		 */
 		public $backgrounds = array();
 
@@ -127,7 +127,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					'query-items'      => 'query-items',
 					'schedule-items'   => 'schedule-items',
 					'global'           => 'global',
-					'clear-temp-users' => 'clear-temp-users'
+					'clear-temp-users' => 'clear-temp-users',
+					'sync-data'        => 'sync-data'
 				)
 			);
 
@@ -152,7 +153,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return LP_Abstract_Background_Process|bool
 		 */
-		public function add_background_task( $data, $background = '' ) {
+		public function add_background_task( $data, $background = 'global' ) {
 			if ( isset( $this->backgrounds[ $background ] ) ) {
 				$this->backgrounds[ $background ]->push_to_queue( $data );
 

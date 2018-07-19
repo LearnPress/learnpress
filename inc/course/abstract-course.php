@@ -843,7 +843,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function count_students() {
 
 			if ( metadata_exists( 'post', $this->get_id(), 'count_enrolled_users' ) ) {
-				$count_in_order = get_post_meta( $this->get_id(), 'count_enrolled_users' );
+				$count_in_order = get_post_meta( $this->get_id(), 'count_enrolled_users', true );
 			} else {
 				$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
 			}

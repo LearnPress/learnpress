@@ -403,6 +403,36 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
+		 * Get all courses that contains an item by item id.
+		 * Data returned is an array of all courses found.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param int  $item_id       - ID of any item
+		 * @param bool $check_support - Optional. TRUE will check if course is support that item
+		 *
+		 * @return array|bool
+		 */
+		public function get_course_by_item( $item_id, $check_support = true ) {
+
+			if ( $check_support && ! learn_press_is_support_course_item_type( get_post_type( $item_id ) ) ) {
+				return false;
+			}
+
+			global $wpdb;
+
+			$query = $wpdb->prepare( "
+				SELECT c.ID
+				FROM {$wpdb->posts} c
+				INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
+				INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+				WHERE si.item_id = %d
+			", $item_id );
+
+			return $wpdb->get_col( $query );
+		}
+
+		/**
 		 * @param int $course_id
 		 */
 		public function bg_update_items_format( $course_id ) {
@@ -802,19 +832,31 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param $item_id
+		 * @param int $item_id
+		 * @param int $course_id - Optional. Added since 3.1.0
 		 */
-		public function remove_item( $item_id ) {
+		public function remove_item( $item_id, $course_id = 0 ) {
 
 			global $wpdb;
-
 			// allow hook
-			do_action( 'learn-press/before-remove-section-item', $item_id );
+			do_action( 'learn-press/before-remove-section-item', $item_id, $course_id );
+
+			if ( $course_id ) {
+				$query = $wpdb->prepare( "
+					DELETE si
+					FROM {$wpdb->prefix}learnpress_section_items si 
+					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
+					WHERE item_id = %d
+					AND s.section_course_id = %d
+				", $item_id, $course_id );
+			} else {
+				$query = $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE item_id = %d", $item_id );
+			}
 
 			// delete item from course's section
-			$wpdb->query(
-				$wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE item_id = %d", $item_id )
-			);
+			$wpdb->query( $query );
+
+			do_action( 'learn-press/removed-item-from-section', $item_id, $course_id );
 
 			learn_press_reset_auto_increment( 'learnpress_section_items' );
 		}
@@ -1137,6 +1179,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return int
 		 */
 		public function count_enrolled_users_by_orders( $course_id ) {
+
+
 
 			$completed  = get_post_meta( $course_id, 'order-completed', true );
 			$processing = get_post_meta( $course_id, 'order-processing', true );

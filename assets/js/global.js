@@ -1144,6 +1144,11 @@ if (typeof window.LP === 'undefined') {
                 show();
             })
         }
+
+        $(document).on('learn-press/close-all-quick-tip', function () {
+            close();
+        });
+
         $el.hover(
             function (e) {
                 e.stopPropagation();
@@ -1333,6 +1338,10 @@ if (typeof window.LP === 'undefined') {
                 }, delay, $el);
             }
         });
+
+        $(document).on('click', function () {
+            $(document).trigger('learn-press/close-all-quick-tip')
+        })
     });
     LearnPress = LP;
 

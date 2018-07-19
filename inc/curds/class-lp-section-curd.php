@@ -242,7 +242,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			ORDER BY si.item_order ASC
 		", $section_id, 'publish', 'publish' );
 
-		return $wpdb->get_col($query);
+		return $wpdb->get_col( $query );
 	}
 
 	/**
@@ -337,8 +337,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $section_id
-	 * @param $item
+	 * @param int $section_id
+	 * @param int $item
 	 *
 	 * @return array | bool
 	 */
@@ -360,22 +360,23 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		if ( $item['type'] == LP_LESSON_CPT ) {
-			$lesson_curd     = new LP_Lesson_CURD();
-			$item['id']      = $lesson_curd->create( $args );
-			$item['preview'] = get_post_meta( $item['id'], '_lp_preview', true ) == 'yes';
+			$lesson_curd = new LP_Lesson_CURD();
+			$item['id']  = $lesson_curd->create( $args );
 		} else if ( $item['type'] == LP_QUIZ_CPT ) {
 			$quiz_curd  = new LP_Quiz_CURD();
 			$item['id'] = $quiz_curd->create( $args );
 		} else {
-			$item['id'] = apply_filters( 'learn-press/new-section-item', $item, $args );
+			$item['id'] = apply_filters( 'learn-press/new-section-item-data', $item, $args, $this->course_id );
 		}
 
 		if ( is_wp_error( $item['id'] ) || ! $item['id'] ) {
 			return false;
 		}
 
+		$item['preview'] = get_post_meta( $item['id'], '_lp_preview', true ) == 'yes';
+
 		// allow hook
-		do_action( 'learn-press/after-new-section-item', $item['id'] );
+		do_action( 'learn-press/after-new-section-item', $item['id'], $section_id, $this->course_id );
 
 		// add item to section
 		return $this->add_items_section( $section_id, array( $item ) );
@@ -395,7 +396,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$current_items = $this->get_section_items( $section_id );
 
 		// allow hook
-		do_action( 'learn-press/before-add-items-section', $items );
+		do_action( 'learn-press/before-add-items-section', $items, $section_id, $this->course_id );
 
 		global $wpdb;
 
@@ -427,8 +428,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 
 			// get WP Post
-			$post     = get_post( $item['id'] );
-			$result[] = array_merge(
+			$post = get_post( $item['id'] );
+			$item = array_merge(
 				$item,
 				array(
 					'id'      => $post->ID,
@@ -438,6 +439,13 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				)
 			);
 
+			if ( ! $exist ) {
+				do_action( 'learn-press/added-item-to-section', $item, $section_id, $this->course_id );
+			} else {
+				do_action( 'learn-press/updated-item-to-section', $item, $section_id, $this->course_id );
+			}
+
+			$result[] = $item;
 			$order ++;
 		}
 
