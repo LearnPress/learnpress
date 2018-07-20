@@ -2790,7 +2790,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 			esc_url( wp_login_url( get_permalink() ) ),
 			$args['login_text']
 		);
-	} else {
+	} elseif( $course_item ) {
 		$onclick = sprintf( 'return addComment.moveForm( "%1$s-%2$s", "%2$s", "%3$s", "%4$s" )',
 			$args['add_below'], $comment->comment_ID, $args['respond_id'], $post->ID
 		);
