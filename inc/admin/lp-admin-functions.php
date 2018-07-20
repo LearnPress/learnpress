@@ -2260,3 +2260,5 @@ function learn_press_maybe_sync_data( $post_id ) {
 }
 
 add_action( 'save_post', 'learn_press_maybe_sync_data' );
+
+include_once "class-lp-post-type-actions.php";

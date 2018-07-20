@@ -306,7 +306,7 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function _do_save( $post_id, $post = null ) {
 		// Maybe remove
-		$this->maybe_remove_assigned( $post_id );
+		//$this->maybe_remove_assigned( $post_id );
 
 		if ( learn_press_get_post_type( $post_id ) != $this->_post_type ) {
 			return false;

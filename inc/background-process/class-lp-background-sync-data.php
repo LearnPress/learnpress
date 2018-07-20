@@ -44,10 +44,35 @@ if ( ! class_exists( 'LP_Background_Sync_Data' ) ) {
 		 * @return bool
 		 */
 		protected function task( $data ) {
+			$user_ids = array();
+			if ( $queue_user_ids = get_option( $data['option_key'] ) ) {
+				$user_ids  = array_splice( $queue_user_ids, 0, 50 );
+				$course_id = $data['course_id'];
 
-			return false;
+				foreach ( $user_ids as $user_id ) {
+					$user        = learn_press_get_user( $user_id );
+					$course_data = $user->get_course_data( $course_id );
+					$course_data->calculate_course_results();
+				}
+			}
+
+			if ( $user_ids ) {
+				LP_Debug::instance()->add( $user_ids, 'sync-data', false, true );
+			}
+
+			if ( ! $queue_user_ids ) {
+				delete_option( $data['option_key'] );
+				delete_option( 'doing-sync-user-course-results' );
+
+				return false;
+			} else {
+				update_option( $data['option_key'], $queue_user_ids, 'no' );
+			}
+
+			return $data;
 		}
 
 	}
 }
+
 return LP_Background_Sync_Data::instance();

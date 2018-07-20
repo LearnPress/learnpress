@@ -19,19 +19,33 @@ class LP_Repair_Database {
 	 * @access protected
 	 */
 	protected function __construct() {
-		add_action( 'save_post', array( $this, 'save_post' ), 0 );
-		add_action( 'deleted_post', array( $this, 'save_post' ), 0 );
-		add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 5000, 3 );
-		add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_course' ), 5000, 2 );
+		//add_action( 'save_post', array( $this, 'save_post' ), 0 );
+		//add_action( 'deleted_post', array( $this, 'save_post' ), 0 );
+		//add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 5000, 3 );
+		//add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_course' ), 5000, 2 );
+		add_action( 'learn-press/save-course', array( $this, 'save_course' ), 5000, 1 );
+		add_action( 'learn-press/added-course-item', array( $this, 'added_course_item' ), 10, 2 );
+		add_action( 'learn-press/removed-course-item', array( $this, 'removed_course_item' ), 10, 2 );
+		add_action( 'learn-press/transition-course-item-status', array(
+			$this,
+			'transition_course_item_status'
+		), 10, 4 );
+	}
 
+	public function save_course( $course_id ) {
+		$this->sync_course_data( $course_id );
+	}
+
+	public function removed_course_item( $item_id, $course_id ) {
+		$this->sync_course_data( $course_id );
+		$this->remove_user_item( $item_id );
 	}
 
 	/**
 	 * @param int $item_id
-	 * @param int $section_id
 	 * @param int $course_id
 	 */
-	public function added_item_to_section( $item_id, $section_id, $course_id ) {
+	public function added_course_item( $item_id, $course_id ) {
 		$this->sync_course_data( $course_id );
 	}
 
@@ -41,6 +55,62 @@ class LP_Repair_Database {
 	 */
 	public function removed_item_from_course( $item_id, $course_id ) {
 		$this->sync_course_data( $course_id );
+	}
+
+	public function transition_course_item_status( $item_id, $course_id, $old, $new ) {
+		if ( $old === $new ) {
+			return;
+		}
+		$this->sync_course_data( $course_id );
+	}
+
+	public function get_user_item_type( $item_id ) {
+		global $wpdb;
+		if ( ! $item_type = get_post_type( $item_id ) ) {
+			$query     = $wpdb->prepare( "
+				SELECT item_type
+				FROM {$wpdb->learnpress_user_items}
+				WHERE item_id = %d
+				LIMIT 0,1
+			", $item_id );
+			$item_type = $wpdb->get_var( $query );
+		}
+
+		return $item_type;
+	}
+
+	public function remove_user_item( $item_id ) {
+		global $wpdb;
+
+		$query = "
+			DELETE items, meta
+			FROM {$wpdb->learnpress_user_items} items
+			INNER JOIN {$wpdb->learnpress_user_itemmeta} meta ON items.user_item_id = meta.learnpress_user_item_id
+		";
+
+		$where = "";
+
+		if ( $this->get_user_item_type( $item_id ) === LP_COURSE_CPT ) {
+			$_query = $wpdb->prepare( "
+				SELECT user_item_id
+				FROM {$wpdb->learnpress_user_items}
+				WHERE item_id = %d 
+				AND parent_id = 0
+			", $item_id );
+
+			$user_item_ids = $wpdb->get_col( $_query );
+			$format        = array_fill( 0, sizeof( $user_item_ids ), '%d' );
+
+			$where = $wpdb->prepare( "
+				WHERE parent_id IN(" . join( ',', $format ) . ")
+			", $user_item_ids );
+
+			$where .= $wpdb->prepare( "AND ref_id = %d", $item_id );
+		} else {
+			$where = $wpdb->prepare( "item_id = %d", $item_id );
+		}
+
+		$query .= $where;
 	}
 
 	/**
@@ -96,6 +166,8 @@ class LP_Repair_Database {
 		}
 
 		update_post_meta( $course_id, 'count_items', $count_items );
+		$this->queue_sync_user_course_results( $course_id );
+
 	}
 
 	/**
@@ -119,6 +191,45 @@ class LP_Repair_Database {
 		return sizeof( $args ) ?
 			call_user_func_array( array( $this, $func ), $args ) :
 			call_user_func( array( $this, $func ) );
+	}
+
+	public function queue_sync_user_course_results( $course_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT DISTINCT user_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE item_id = %d
+		", $course_id );
+
+		if ( $user_ids = $wpdb->get_col( $query ) ) {
+			$queue_user_ids = get_option( 'sync-user-course-results' );
+			$first_time     = ! $queue_user_ids;
+
+			if ( $first_time ) {
+				$queue_user_ids = $user_ids;
+			} else {
+				settype( $queue_user_ids, 'array' );
+				$queue_user_ids = array_merge( $queue_user_ids, $user_ids );
+				$queue_user_ids = array_unique( $queue_user_ids );
+			}
+			$option_key = 'sync-user-course-results';
+			update_option( $option_key, $queue_user_ids, 'no' );
+
+			if ( $first_time || ! get_option( 'doing-sync-user-course-results' ) ) {
+				$bg = LP_Background_Sync_Data::instance();
+				$bg->is_safe( false );
+				$bg->push_to_queue(
+					array(
+						'action'     => 'sync-user-course-results',
+						'course_id'  => $course_id,
+						'option_key' => $option_key
+					)
+				)->save();
+				$bg->reset_safe();
+
+				update_option( 'doing-sync-user-course-results', 'yes' );
+			}
+		}
 	}
 
 	/**

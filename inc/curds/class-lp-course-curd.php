@@ -842,13 +842,19 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			do_action( 'learn-press/before-remove-section-item', $item_id, $course_id );
 
 			if ( $course_id ) {
+				if ( is_array( $course_id ) ) {
+					$format = array_fill( 0, sizeof( $course_id ), '%d' );
+					$where  = $wpdb->prepare( "AND s.section_course_id IN(" . join( ',', $format ) . ")", $course_id );
+				} else {
+					$where = $wpdb->prepare( "AND s.section_course_id = %d", $course_id );
+				}
 				$query = $wpdb->prepare( "
 					DELETE si
 					FROM {$wpdb->prefix}learnpress_section_items si 
 					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
 					WHERE item_id = %d
-					AND s.section_course_id = %d
-				", $item_id, $course_id );
+					{$where}
+				", $item_id );
 			} else {
 				$query = $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE item_id = %d", $item_id );
 			}
@@ -1179,7 +1185,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * @return int
 		 */
 		public function count_enrolled_users_by_orders( $course_id ) {
-
 
 
 			$completed  = get_post_meta( $course_id, 'order-completed', true );
