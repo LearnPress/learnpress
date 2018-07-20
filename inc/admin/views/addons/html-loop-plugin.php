@@ -32,8 +32,9 @@ defined( 'ABSPATH' ) or exit();
 				echo '<ul class="plugin-action-buttons"><li>' . implode( '</li><li>', $action_links ) . '</li></ul>';
 			} ?>
         </div>
-        <div class="desc column-description">
-            <p><?php echo strip_tags( $add_on['short_description'] ); ?></p>
+		<?php $short_desc = preg_replace( '!\s+!', ' ', trim( strip_tags( $add_on['short_description'] ) ) ); ?>
+        <div class="desc column-description" title="<?php echo esc_attr( $short_desc ); ?>">
+            <p><?php echo strip_tags( $short_desc ); ?></p>
             <p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learnpress' ), $add_on['author'] ); ?></p>
         </div>
     </div>
