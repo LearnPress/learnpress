@@ -52,7 +52,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				)
 			),
 			'checkout'     => array(
-				'ajaxurl'              => site_url(),
+				'ajaxurl'              => home_url(),
 				'user_waiting_payment' => LP()->checkout()->get_user_waiting_payment(),
 				'user_checkout'        => LP()->checkout()->get_checkout_email(),
 				'i18n_processing'      => __( 'Processing', 'learnpress' ),
@@ -69,6 +69,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'course'       => learn_press_single_course_args(),
 			'quiz'         => learn_press_single_quiz_args()
 		);
+
 	}
 
 	public function _get_scripts() {
