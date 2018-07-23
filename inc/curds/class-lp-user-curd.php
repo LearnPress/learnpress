@@ -130,6 +130,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			return false;
 		}
 
+		learn_press_debug($orders);
 		/*** TEST CACHE ***/
 		$all_orders = call_user_func_array( 'array_merge', $orders );
 		LP_Helper_CURD::cache_posts( $all_orders );

@@ -13,6 +13,8 @@ class LP_Repair_Database {
 	 */
 	protected static $instance = null;
 
+	protected $deleting_posts = array();
+
 	/**
 	 * LP_Repair_Database constructor.
 	 *
@@ -30,6 +32,77 @@ class LP_Repair_Database {
 			$this,
 			'transition_course_item_status'
 		), 10, 4 );
+
+		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
+		add_action( 'deleted_post', array( $this, 'deleted_post' ) );
+	}
+
+	public function before_delete_post( $post_id ) {
+		$post_type = get_post_type( $post_id );
+		$data      = array(
+			'post_type' => $post_type
+		);
+
+		switch ( $post_type ) {
+			case LP_ORDER_CPT:
+
+				$order         = learn_press_get_order( $post_id );
+				$data['users'] = $order->get_users();
+
+				break;
+		}
+
+		$this->deleting_posts[ $post_id ] = $data;
+
+	}
+
+	public function deleted_post( $post_id ) {
+		try {
+			if ( ! empty( $this->deleting_posts[ $post_id ] ) ) {
+				$data      = $this->deleting_posts[ $post_id ];
+				$post_type = ! empty( $data['post_type'] ) ? $data['post_type'] : '';
+
+				switch ( $post_type ) {
+					case LP_ORDER_CPT:
+						$this->remove_order_from_user_meta( $post_id, $data );
+						break;
+				}
+			}
+		}
+		catch ( Exception $ex ) {
+			echo $ex->getMessage();
+		}
+
+	}
+
+	public function remove_child_orders(){
+
+	}
+
+	public function remove_order_from_user_meta( $order_id, $data ) {
+		if ( ! empty( $data['users'] ) ) {
+			foreach ( $data['users'] as $user_id ) {
+				$user_orders = get_user_meta( $user_id, 'orders', true );
+
+				if ( $user_orders ) {
+					foreach ( $user_orders as $course_id => $course_orders ) {
+						$course_orders = array_unique( $course_orders );
+						if ( false !== ( $in_pos = array_search( $order_id, $course_orders ) ) ) {
+							unset( $course_orders[ $in_pos ] );
+						}
+
+						if ( ! $course_orders ) {
+							unset( $user_orders[ $course_id ] );
+						} else {
+							$user_orders[ $course_id ] = $course_orders;
+						}
+
+					}
+				}
+
+				update_user_meta( $user_id, 'order', $user_orders );
+			}
+		}
 	}
 
 	public function save_course( $course_id ) {
@@ -313,6 +386,8 @@ class LP_Repair_Database {
 			if ( ! $orders = $api->read_orders( $user ) ) {
 				continue;
 			}
+
+			$orders = array_unique( $orders );
 
 			update_user_meta( $user, 'orders', $orders );
 		}

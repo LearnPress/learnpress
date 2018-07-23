@@ -90,11 +90,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @return array|object
 		 */
 		public function filter_count_posts( $counts, $type, $perm ) {
-
 			if ( LP_ORDER_CPT === $type ) {
 				$cache_key = 'lp-' . _count_posts_cache_key( $type, $perm );
 
-				$counts = learn_press_cache_get( $cache_key, 'counts' );
+				$counts = LP_Object_Cache::get( $cache_key, 'counts' );
 
 				if ( false !== $counts ) {
 					return $counts;
@@ -116,9 +115,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						);
 					}
 				}
-				$query .= ' GROUP BY post_status';
-
-				$results = (array) $wpdb->get_results( $wpdb->prepare( $query, $type, 0 ), ARRAY_A );
+				$query   .= ' GROUP BY post_status';
+				$query   = $wpdb->prepare( $query, $type, 0 );
+				$results = (array) $wpdb->get_results( $query, ARRAY_A );
 				$counts  = array_fill_keys( get_post_stati(), 0 );
 
 				foreach ( $results as $row ) {
@@ -126,7 +125,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				$counts = (object) $counts;
-				learn_press_cache_set( $cache_key, $counts, 'counts' );
+				LP_Object_Cache::set( $cache_key, $counts, 'counts' );
 			}
 
 			return $counts;
