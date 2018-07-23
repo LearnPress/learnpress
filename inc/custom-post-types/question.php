@@ -25,7 +25,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		protected static $_instance = null;
 
 		/**
-		 * @var array
+		 * @var RW_Meta_Box[]
 		 */
 		public static $metaboxes = array();
 
@@ -288,7 +288,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public static function settings_meta_box() {
-
 			$meta_box = array(
 				'id'     => 'question_settings',
 				'title'  => __( 'Settings', 'learnpress' ),
