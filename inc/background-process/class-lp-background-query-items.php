@@ -288,6 +288,13 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 
 			return $themes;
 		}
+
+		/**
+		 * @return LP_Background_Query_Items
+		 */
+		public static function instance(){
+			return parent::instance();
+		}
 	}
 }
 

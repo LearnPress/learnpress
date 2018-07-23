@@ -28,11 +28,11 @@
                     </div>
                     <div class="rwmb-field rwmb-number-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Mark for this question', 'learnpress' ); ?></label>
+                            <label for=""><?php _e( 'Mark for this question X', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>
-                                <input name="mark" type="number" v-model="question.settings.mark"
+                                <input name="mark" type="number" min="1" v-model="question.settings.mark"
                                        @change="updateMeta">
                                 <p class="description"><?php _e( 'Mark for choosing the right answer.', 'learnpress' ); ?></p>
                             </div>
