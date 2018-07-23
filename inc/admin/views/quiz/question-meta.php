@@ -28,7 +28,7 @@
                     </div>
                     <div class="rwmb-field rwmb-number-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Mark for this question X', 'learnpress' ); ?></label>
+                            <label for=""><?php _e( 'Mark for this question', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>
