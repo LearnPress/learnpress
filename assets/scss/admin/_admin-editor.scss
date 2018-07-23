@@ -380,6 +380,16 @@
                         visibility: visible;
                     }
                 }
+
+                &:not(.lp_lesson) {
+                    .item-actions {
+                        .actions {
+                            .preview-item {
+                                display: none;
+                            }
+                        }
+                    }
+                }
             }
 
             .new-section-item {

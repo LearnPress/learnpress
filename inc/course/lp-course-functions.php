@@ -542,6 +542,24 @@ learn_press_course_add_support_item_type(
 	)
 );
 
+function learn_press_add_course_item_feature( $type, $feature ) {
+	$features = array();
+	if ( ! empty( $GLOBALS['learn_press_course_item_features'] ) ) {
+		$features = $GLOBALS['learn_press_course_item_features'];
+	}
+
+	if ( empty( $features[ $type ] ) ) {
+		$features[ $type ] = array();
+	}
+
+	if ( array_search( $feature, $features ) === false ) {
+		$features[ $type ] = $feature;
+	}
+
+	$GLOBALS['learn_press_course_item_features'] = $features;
+}
+
+
 function learn_press_get_course_id() {
 	$course_id = 0;
 	if ( learn_press_is_course() ) {

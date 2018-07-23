@@ -400,7 +400,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$quiz   = learn_press_get_quiz( $quiz_id );
 				$user   = LP_Global::user();
 
-				if ( $course->is_required_enroll() && $user->is_guest() && ! $quiz->get_preview() ) {
+				if ( $course->is_required_enroll() && $user->is_guest()/* && ! $quiz->get_preview() */) {
 					throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
 				}
 
@@ -1623,7 +1623,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 					if ( $this->has_enrolled_course( $course_id ) || $this->has_finished_course( $course_id ) ) {
 						$view = 'enrolled';
-					} elseif ( $quiz->is_preview() || $this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() ) ) {
+					} elseif ( /*$quiz->is_preview() ||*/ $this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() ) ) {
 						$view = 'preview';
 					} elseif ( ! $course->is_required_enroll() ) {
 						$view = 'no-required-enroll';

@@ -31,7 +31,7 @@
         .plugin-card {
             .column-description {
                 p:not(.authors) {
-                    @include text-overflow();
+                    @include text-overflow(1.6, 3);
                     color: #777;
                 }
             }
@@ -41,7 +41,7 @@
         }
         .plugin-card-top {
             h3 {
-                @include text-overflow(1.3em, 3);
+                @include text-overflow(1.3em, 2);
             }
             .desc {
                 min-height: 90px;

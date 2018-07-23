@@ -17,7 +17,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		/**
 		 * @var string
 		 */
-		protected $action = 'lp_query_items';
+		protected $action = 'query_items';
 
 		/**
 		 * @var int
@@ -25,10 +25,16 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		protected $queue_lock_time = 3600;
 
 		/**
+		 * @var float|int
+		 */
+		protected $transient_time = 0;
+
+		/**
 		 * LP_Background_Query_Items constructor.
 		 */
 		public function __construct() {
 			parent::__construct();
+			$this->transient_time = DAY_IN_SECONDS / 2;
 		}
 
 		/**
@@ -43,13 +49,81 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 				return false;
 			}
 
-			if ( ! is_callable( $data['callback'] ) ) {
+			if ( ! is_callable( array( $this, $data['callback'] ) ) ) {
 				return false;
 			}
 
-			call_user_func( $data['callback'] );
+			call_user_func( array( $this, $data['callback'] ) );
+
+			delete_option( 'doing_' . $data['callback'] );
+
 
 			return false;
+		}
+
+		public function get_plugins_from_wp() {
+			$method = 'query_free_addons';
+			if ( ! ( $plugins = get_transient( 'lp_plugins_wp' ) ) && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
+				update_option( 'doing_' . $method, 'yes', 'no' );
+				$this->clear_queue()->push_to_queue(
+					array(
+						'callback' => $method
+					)
+				)->save()->dispatch();
+			}
+
+			return is_array( $plugins ) ? $plugins : false;
+		}
+
+		public function get_plugins_from_tp() {
+			$method = 'query_premium_addons';
+			if ( ! ( $plugins = get_transient( 'lp_plugins_tp' ) ) && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
+				update_option( 'doing_' . $method, 'yes', 'no' );
+				$this->clear_queue()->push_to_queue(
+					array(
+						'callback' => $method
+					)
+				)->save()->dispatch();
+			}
+
+			return is_array( $plugins ) ? $plugins : false;
+		}
+
+		public function get_related_themes() {
+			$method = 'query_related_themes';
+
+			if ( ! ( $themes = get_transient( 'lp_related_themes' ) ) && ( 'yes' !== get_option( 'doing_' . $method ) ) ) {
+				update_option( 'doing_' . $method, 'yes', 'no' );
+				$this->clear_queue()->push_to_queue(
+					array(
+						'callback' => $method
+					)
+				)->save()->dispatch();
+			}
+
+			return is_array( $themes ) ? $themes : false;
+		}
+
+		public function get_last_checked( $type ) {
+			$next = get_option( '_transient_timeout_' . $this->prefix . '_' . $type );
+
+			if ( $next ) {
+				return $next - $this->transient_time;
+			}
+
+			return 0;
+		}
+
+		public function force_update() {
+			$transients = array( 'lp_plugins_wp', 'lp_plugins_tp', 'lp_related_themes' );
+
+			foreach ( $transients as $transient ) {
+				delete_transient( $transient );
+			}
+
+			$this->query_free_addons();
+			$this->query_premium_addons();
+			$this->query_related_themes();
 		}
 
 		/**
@@ -57,7 +131,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 *
 		 * @return array|string
 		 */
-		public static function query_free_addons() {
+		public function query_free_addons() {
 			LP_Plugins_Helper::require_plugins_api();
 			// the number of plugins on each page queried,
 			// when we can reach to this figure?
@@ -78,6 +152,9 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 				'author'            => 'thimpress'
 			);
 			$plugins    = array();
+
+			set_transient( 'lp_plugins_wp', __( 'There is no items found!', 'learnpress' ), $this->transient_time );
+
 			try {
 				$api = plugins_api( 'query_plugins', $query_args );
 				if ( is_wp_error( $api ) ) {
@@ -106,8 +183,10 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 					$plugins[ $key ] = (array) $plugin;
 				}
 
-				// Cache in a half of day
-				set_transient( 'lp_plugins_wp', $plugins, DAY_IN_SECONDS / 2 );
+				if ( sizeof( $plugins ) ) {
+					// Cache in a half of day
+					set_transient( 'lp_plugins_wp', $plugins, $this->transient_time );
+				}
 			}
 			catch ( Exception $ex ) {
 			}
@@ -120,10 +199,12 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 *
 		 * @return array|bool
 		 */
-		public static function query_premium_addons() {
+		public function query_premium_addons() {
 			$plugins  = array();
 			$url      = 'https://thimpress.com/?thimpress_get_addons=premium';
 			$response = wp_remote_get( esc_url_raw( $url ), array( 'decompress' => false ) );
+
+			set_transient( 'lp_plugins_tp', __( 'There is no items found!', 'learnpress' ), $this->transient_time );
 
 			if ( is_wp_error( $response ) ) {
 				return false;
@@ -148,7 +229,9 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 					'collections-add-on-for-learnpress'    => 'learnpress-collections',
 					'woocommerce-add-on-for-learnpress'    => 'learnpress-woo-payment',
 					'stripe-add-on-for-learnpress'         => 'learnpress-stripe',
-					'certificates-add-on-for-learnpress'   => 'learnpress-certificates'
+					'certificates-add-on-for-learnpress'   => 'learnpress-certificates',
+					'assignments-add-on-for-learnpress'    => 'learnpress-assignments',
+					'announcement-add-on-for-learnpress'   => 'learnpress-announcements'
 				);
 
 				foreach ( $response as $key => $item ) {
@@ -159,9 +242,10 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 					}
 				}
 
-				// Cache in a half of day
-				set_transient( 'lp_plugins_tp', $plugins, DAY_IN_SECONDS / 2 );
-
+				if ( sizeof( $plugins ) ) {
+					// Cache in a half of day
+					set_transient( 'lp_plugins_tp', $plugins, $this->transient_time );
+				}
 			}
 
 			return $plugins;
@@ -170,7 +254,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		/**
 		 * @return array|bool
 		 */
-		public static function get_related_themes() {
+		public function query_related_themes() {
 			$themes   = array();
 			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
 			$args     = array(
@@ -199,10 +283,17 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 				} else {
 					$themes['other'] = $all_themes;
 				}
-				set_transient( 'lp_related_themes', $themes, DAY_IN_SECONDS / 2 );
+				set_transient( 'lp_related_themes', $themes, $this->transient_time );
 			}
 
 			return $themes;
+		}
+
+		/**
+		 * @return LP_Background_Query_Items
+		 */
+		public static function instance(){
+			return parent::instance();
 		}
 	}
 }
