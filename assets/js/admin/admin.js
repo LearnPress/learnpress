@@ -393,9 +393,9 @@
                 $(this).removeClass('updating-message button-working');
                 if (response.success) {
                     $('#learn-press-newsletter-button').fadeOut();
-                    alert(response.data);
+                    //alert(response.data);
                 } else {
-                    alert(response.data);
+                    //alert(response.data);
                 }
             }
         });
