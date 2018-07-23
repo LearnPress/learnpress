@@ -64,7 +64,7 @@ class LP_Helper_CURD {
 	 *
 	 * @return mixed
 	 */
-	public static function cache_posts( $post_ids, $fields = 'ID, post_title, post_content, post_status, post_type, post_author, post_date, post_name' ) {
+	public static function cache_posts( $post_ids, $fields = 'ID, post_title, post_content, post_status, post_type, post_author, post_date, post_date_gmt, post_name' ) {
 		global $wpdb;
 		settype( $post_ids, 'array' );
 		$post_ids = array_values( $post_ids );

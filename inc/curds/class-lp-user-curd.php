@@ -146,11 +146,23 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 			}
+
 		}
 
+		// Remove courses are not published
+		foreach ( $orders as $course_id => $course_orders ) {
+			if ( get_post_status( $course_id ) !== 'publish' ) {
+				unset( $orders[ $course_id ] );
+			}
+		}
+
+		// Group array with keys is order_id instead of course_id
 		if ( array_key_exists( 'group_by_order', $args ) && $args['group_by_order'] ) {
 			$this->_group_orders( $orders );
 		}
+
+		// Remove empty values
+		$orders = array_filter( $orders );
 
 		return $orders;
 	}
@@ -381,7 +393,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $result;
 	}
 
-	public function get_course_access_level($user_id, $course_id){
+	public function get_course_access_level( $user_id, $course_id ) {
 
 	}
 
@@ -568,7 +580,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		} else {
 			if ( func_num_args() == 4 ) {
 				//$item = $this->get_user_item( $user_id, $item_id, $course_id );
-				$item = $this->read_course($user_id, $course_id);
+				$item = $this->read_course( $user_id, $course_id );
 			} else {
 				$item = $this->get_user_item( $user_id, $item_id );
 			}
@@ -713,7 +725,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	public function update_user_item2( $item_id, $course_id ) {
-		die(__FUNCTION__);
+		die( __FUNCTION__ );
 		if ( ! $item_id ) {
 			return false;
 		}
@@ -796,8 +808,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return bool|mixed
 	 */
 	public function get_user_item( $user_id, $item_id, $course_id = 0, $last = true ) {
-		learn_press_debug(debug_backtrace());
-		die(__FUNCTION__);
+		learn_press_debug( debug_backtrace() );
+		die( __FUNCTION__ );
 		$num_args = func_num_args();
 
 		if ( $num_args == 2 ) {
@@ -1208,15 +1220,26 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			try {
 
-				$orders = $this->get_orders( $user_id, array( 'status' => 'completed processing cancelled' ) );
-				$query  = array( 'total' => 0, 'pages' => 0, 'items' => false );
-
-				$orders = $this->get_orders( $user_id, array(
-					'status'         => 'completed processing cancelled',
-					'group_by_order' => true
-				) );
+				/**
+				 * Get an array of all orders are completed with keys are id of
+				 * courses
+				 */
+				$orders     = $this->get_orders( $user_id, array( 'status' => 'completed' ) );
 
 				if ( ! $orders ) {
+					throw new Exception( "", 0 );
+				}
+
+				$course_ids = array_keys( $orders );
+
+				$query = array( 'total' => 0, 'pages' => 0, 'items' => false );
+
+//				$orders = $this->get_orders( $user_id, array(
+//					'status'         => 'completed processing cancelled',
+//					'group_by_order' => true
+//				) );
+
+				if ( ! $course_ids ) {
 					throw new Exception( "", 0 );
 				}
 
@@ -1227,15 +1250,47 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$limit        = $args['limit'];
 				$offset       = ( $args['paged'] - 1 ) * $limit;
 
-				$order_format = array_fill( 0, sizeof( $valid_orders ), '%d' );
+				// SELECT
+				$select = "SELECT c.ID, c.post_title, ui.*";
 
-				$select = "SELECT ui.* ";
-				$from   = "FROM {$wpdb->learnpress_user_items} ui";
-				$join   = $wpdb->prepare( "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s", LP_COURSE_CPT );
-				//$where   = $wpdb->prepare( "WHERE 1 AND user_id = %d AND ref_id IN(" . join( ',', $order_format ) . ")", array_merge( array( $user_id ), $valid_orders ) );
-				$where   = $wpdb->prepare( "WHERE 1 AND user_id = %d AND c.post_status = %s", $user_id, 'publish' );
-				$having  = "HAVING 1";
-				$orderby = "ORDER BY item_id, user_item_id DESC";
+				// FROM
+				$from = "FROM {$wpdb->learnpress_user_items} ui";
+
+				// JOIN
+				$join = "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id";
+
+				// WHERE
+				$where = $wpdb->prepare( "
+					WHERE ui.user_id = %d 
+					AND c.ID IN(" . join( ',', $course_ids ) . ")
+				", $user_id );
+
+				// HAVING
+				$having = "HAVING 1";
+
+//				learn_press_debug( $wpdb->get_results( $query ) );
+//
+//				$order_format = array_fill( 0, sizeof( $valid_orders ), '%d' );
+//
+//				// SELECT
+//				$select = "SELECT ui.* ";
+//
+//				// FROM
+//				$from = "FROM {$wpdb->learnpress_user_items} ui";
+//
+//				// JOIN
+//				$join = $wpdb->prepare( "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s", LP_COURSE_CPT );
+//				$join .= $wpdb->prepare( "INNER JOIN {$wpdb->posts} o ON o.ID = ui.ref_id AND o.post_type = %s", LP_ORDER_CPT );
+//
+//				// WHERE
+//				$where = $wpdb->prepare( "WHERE 1 AND user_id = %d AND c.post_status = %s", $user_id, 'publish' );
+//				$where .= $wpdb->prepare( "AND o.post_status IN(%s)", 'lp-completed' );
+//
+//				// HAVING
+//				$having = "HAVING 1";
+//
+				// ORDER BY
+				$orderby = "ORDER BY start_time DESC";
 
 				$unenrolled_course_ids = array();
 
@@ -1276,7 +1331,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$unenrolled_course_ids = $this->query_courses_by_order( $user_id );
 				}
 
-				$where .= $wpdb->prepare( " AND ui.status NOT IN(%s)", 'pending' );
+				$where .= $wpdb->prepare( " AND ui.status NOT IN(%s) ", 'pending' );
 
 				$query_parts = apply_filters(
 					'learn-press/query/user-purchased-courses',
@@ -1284,6 +1339,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$user_id,
 					$args
 				);
+
 				list( $select, $from, $join, $where, $having, $orderby ) = array_values( $query_parts );
 
 				/**
@@ -1319,12 +1375,14 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						{$join}
 						{$where}
 						{$having}
-						{$orderby}
-					) X GROUP BY item_id
+						ORDER BY item_id, user_item_id DESC
+					) X 
+					GROUP BY item_id
+					{$orderby}
 					LIMIT {$offset}, {$limit}
 				";
 
-				$items = $wpdb->get_results( $sql, ARRAY_A );
+				$items = $wpdb->get_results( $sql );
 
 				if ( $unenrolled_course_ids ) {
 					LP_Debug::rollbackTransaction();
@@ -1338,6 +1396,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$courses['total'] = $count;
 					$courses['pages'] = ceil( $count / $args['limit'] );
 					foreach ( $items as $item ) {
+						$item               = (array) $item;
 						$course_item        = new LP_User_Item_Course( $item );
 						$courses['items'][] = $course_item;
 					}
@@ -1477,7 +1536,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						case 'passed':
 						case 'failed':
 
-							$where .= $wpdb->prepare( " AND ui.status IN( %s )", array(
+							$having .= $wpdb->prepare( " AND X.status IN( %s )", array(
 								'completed'
 							) );
 
@@ -1496,13 +1555,19 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 							break;
 						case 'not-started':
-							$where .= $wpdb->prepare( " AND ui.status NOT IN( %s, %s )", array(
+							$having .= $wpdb->prepare( " AND X.status NOT IN( %s, %s )", array(
 								'started',
 								'completed'
 							) );
+							break;
 					}
-				}
+				}else {
 
+					$having .= $wpdb->prepare( " AND X.status IN( %s, %s )", array(
+						'started',
+						'completed'
+					) );
+				}
 				$limit  = $args['limit'];
 				$offset = ( $args['paged'] - 1 ) * $limit;
 
@@ -1524,7 +1589,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						{$join}
 						{$where}
 						{$orderby}
-					) X GROUP BY item_id
+					) X 
+					INNER JOIN {$wpdb->learnpress_section_items} si ON si.item_id = X.item_id
+					GROUP BY X.item_id
 					{$having}
 					LIMIT {$offset}, {$limit}
 				";

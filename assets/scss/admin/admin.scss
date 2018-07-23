@@ -81,12 +81,52 @@
     }
 }
 
-.learn-press-notice-assigned-item{
+.learn-press-notice-assigned-item {
     color: #FF0000;
 }
 
 .learnpress {
     .actions {
         margin: 0;
+    }
+}
+
+#learn-press-syncs {
+    li {
+        position: relative;
+        &.syncing,
+        &.synced {
+            padding-left: 24px;
+            input[type="checkbox"] {
+                display: none;
+            }
+        }
+
+        &.syncing {
+            &:after {
+                content: "\f463";
+                @include rotating4();
+            }
+        }
+
+        &.synced {
+            &:after {
+                content: "\f147";
+                color: #2773aa;
+            }
+        }
+
+        &:after {
+            font-family: dashicons;
+            display: block;
+            position: absolute;
+            left: -3px;
+            top: 0px;
+            height: 24px;
+            width: 24px;
+            font-size: 19px;
+            text-align: center;
+            line-height: 24px;
+        }
     }
 }

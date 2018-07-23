@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) or die();
 <div class="card">
     <h2><?php _e( 'Repair Database', 'learnpress' ); ?></h2>
     <p><?php _e( 'Remove unwanted data and re-calculate relationship.', 'learnpress' ); ?></p>
-    <ul>
+    <ul id="learn-press-syncs">
         <li>
             <label>
                 <input type="checkbox" name="lp-repair[sync-remove-older-data]" value="yes">

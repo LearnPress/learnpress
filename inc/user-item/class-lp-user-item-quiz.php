@@ -73,6 +73,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$return = parent::update();
 		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
 		$this->calculate_results();
+
 		return $return;
 	}
 
@@ -84,7 +85,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return array
 	 */
 	public function get_mysql_data() {
-		$columns                      = parent::get_mysql_data();
+		$columns = parent::get_mysql_data();
 //		$columns['_question_answers'] = false;
 //		$columns['_grade']            = false;
 //		$columns['results']           = false;
@@ -97,6 +98,22 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_quiz() {
 		return learn_press_get_quiz( $this->get_item_id() );
+	}
+
+	public function get_status_label( $status = '' ) {
+		$statuses = array(
+			'started'     => __( 'In Progress', 'learnpress' ),
+			'in-progress' => __( 'In Progress', 'learnpress' ),
+			'completed'   => __( 'Completed', 'learnpress' ),
+			'passed'      => __( 'Passed', 'learnpress' ),
+			'failed'      => __( 'Failed', 'learnpress' )
+		);
+
+		if ( ! $status ) {
+			$status = $this->get_status();
+		}
+
+		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not Started', 'learnpress' );
 	}
 
 	/**

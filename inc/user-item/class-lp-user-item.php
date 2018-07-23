@@ -140,6 +140,24 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 	}
 
+	public function get_time( $field, $format = '', $human_diff_time = false ) {
+		if ( ! $format ) {
+			$format = get_option( 'date_format' );
+		}
+
+		$m_time    = call_user_func( array( $this, 'get_' . $field ) );
+		$time      = mysql2date( 'G', call_user_func( array( $this, 'get_' . $field . '_gmt' ) ) );
+		$time_diff = time() - $time;
+
+		if ( $human_diff_time && $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
+			$h_time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
+		} else {
+			$h_time = mysql2date( $format, $m_time );
+		}
+
+		return $h_time;
+	}
+
 	/**
 	 * Get start-time.
 	 *

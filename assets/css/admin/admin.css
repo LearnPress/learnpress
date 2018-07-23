@@ -3147,3 +3147,31 @@ body.lp-item-moving {
 
 .learnpress .actions {
   margin: 0; }
+
+#learn-press-syncs li {
+  position: relative; }
+  #learn-press-syncs li.syncing, #learn-press-syncs li.synced {
+    padding-left: 24px; }
+    #learn-press-syncs li.syncing input[type="checkbox"], #learn-press-syncs li.synced input[type="checkbox"] {
+      display: none; }
+  #learn-press-syncs li.syncing:after {
+    content: "\f463";
+    -webkit-animation: rotating4 2s linear infinite;
+    -moz-animation: rotating4 2s linear infinite;
+    -ms-animation: rotating4 2s linear infinite;
+    -o-animation: rotating4 2s linear infinite;
+    animation: rotating4 2s linear infinite; }
+  #learn-press-syncs li.synced:after {
+    content: "\f147";
+    color: #2773aa; }
+  #learn-press-syncs li:after {
+    font-family: dashicons;
+    display: block;
+    position: absolute;
+    left: -3px;
+    top: 0px;
+    height: 24px;
+    width: 24px;
+    font-size: 19px;
+    text-align: center;
+    line-height: 24px; }

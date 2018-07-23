@@ -123,14 +123,14 @@
     var Sync_Remove_Older_Data = $.extend({}, Sync_Base, {
         id: 'sync-remove-older-data',
         methodGetItems: 'remove-older-data',
-        itemsKey: '_nothin_here',
+        itemsKey: '_nothing_here',
         chunkSize: 500
     });
 
     var Sync_Calculate_Course_Results = $.extend({}, Sync_Base, {
         id: 'sync-calculate-course-results',
         methodGetItems: 'calculate-course-results',
-        itemsKey: '_nothin_here',
+        itemsKey: '_nothing_here',
         chunkSize: 500
     });
 
@@ -138,15 +138,28 @@
     window.LP_Sync_Data = {
         syncs: [],
         syncing: 0,
-        init: function () {
+        options: {},
+        start: function (options) {
             this.syncs = [];
+            this.options = $.extend({
+                onInit: function () {
+                },
+                onStart: function () {
+
+                },
+                onCompleted: function () {
+
+                },
+                onCompletedAll: function () {
+
+                }
+            }, options || {});
 
             if (!this.get_syncs()) {
                 return;
             }
-
             this.reset();
-            $('input[name^="lp-repair"]').prop('disabled', true);
+            this.options.onInit.call(this);
             var that = this,
                 syncing = 0,
                 totalSyncs = this.syncs.length,
@@ -154,10 +167,10 @@
 
                     if ($sync.is_completed()) {
                         syncing++;
-                        console.log('Done ', $sync.id);
+                        that.options.onCompleted.call(that, $sync)
                         if (syncing >= totalSyncs) {
-                            $('input[name^="lp-repair"]').prop('disabled', false);
 
+                            that.options.onCompletedAll.call(that)
                             return;
                         }
                         that.sync(syncing, syncCallback)
@@ -176,8 +189,7 @@
         sync: function (sync, callback) {
             var that = this,
                 $sync = this[this.syncs[sync]];
-            var $input = $('input[name^="lp-repair"]').eq(sync);
-            $input.closest('li').css('opacity', '0.5')
+            that.options.onStart.call(that, $sync);
             $sync.sync(function () {
                 callback.call(that, $sync)
             })
@@ -204,6 +216,10 @@
 
             return this.syncs;
         },
+        get_sync: function (id) {
+            id = id.replace(/[-]+/g, '_');
+            return this[id];
+        },
         sync_course_orders: Sync_Course_Orders,
         sync_user_orders: Sync_User_Orders,
         sync_user_courses: Sync_User_Courses,
@@ -212,7 +228,27 @@
     }
 
     $(document).on('click', '.lp-button-repair', function () {
-        LP_Sync_Data.init();
+        function getInput(sync) {
+            return $('ul#learn-press-syncs').find('input[name*="' + sync + '"]')
+        }
+
+
+        LP_Sync_Data.start({
+            onInit: function () {
+                $('ul#learn-press-syncs').children().removeClass('syncing synced');
+                $('.lp-button-repair').prop('disabled', true);
+            },
+            onStart: function ($sync) {
+                getInput($sync.id).closest('li').addClass('syncing');
+            },
+            onCompleted: function ($sync) {
+                getInput($sync.id).closest('li').removeClass('syncing').addClass('synced');
+            },
+            onCompletedAll: function () {
+                $('ul#learn-press-syncs').children().removeClass('syncing synced');
+                $('.lp-button-repair').prop('disabled', false);
+            }
+        });
     });
 
 })(jQuery);

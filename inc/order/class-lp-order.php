@@ -160,7 +160,17 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						$date = $strtime;
 						break;
 					default:
-						$date = learn_press_date_i18n( $strtime );
+						$post      = get_post( $this->get_id() );
+						$m_time    = $post->post_date;
+						$time      = get_post_time( 'G', true, $post );
+						$time_diff = time() - $time;
+
+						if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
+							$date = sprintf( __( '%s ago' ), human_time_diff( $time ) );
+						} else {
+							$date = mysql2date( get_option( 'date_format' ), $m_time );
+						}
+
 				}
 			} elseif ( ! $date instanceof LP_Datetime ) {
 				$date = new LP_Datetime( $date );

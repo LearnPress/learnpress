@@ -530,7 +530,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$course_data->update_item_retaken_count( $quiz_id, '+1' );
 				$quiz_data->set_status( 'started' );
-				$quiz_data->set_start_time( current_time('mysql'), true );
+				$quiz_data->set_start_time( current_time( 'mysql' ), true );
 				$quiz_data->set_end_time( '0000-00-00 00:00:00' );
 				$quiz_data->set_end_time_gmt( '0000-00-00 00:00:00' );
 				$quiz_data->set_status( 'started' );
@@ -557,7 +557,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user/quiz-redone', $quiz_id, $course_id, $this->get_id() );
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 				do_action( 'learn-press/user/retake-quiz-failure', $quiz_id, $course_id, $this->get_id() );
 			}
@@ -946,8 +947,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param int $question_id
-		 * @param int   $quiz_id
-		 * @param int   $course_id
+		 * @param int $quiz_id
+		 * @param int $course_id
 		 *
 		 * @return WP_Error|mixed
 		 */
@@ -977,8 +978,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @since 3.0.0
 		 *
 		 * @param   int $question_id
-		 * @param int $quiz_id
-		 * @param int $course_id
+		 * @param int   $quiz_id
+		 * @param int   $course_id
 		 *
 		 * @return WP_Error|mixed
 		 */
@@ -2253,8 +2254,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Enroll this user to a course.
 		 *
-		 * @param $course_id
-		 * @param $order_id
+		 * @param      $course_id
+		 * @param      $order_id
 		 * @param bool $force | Force create db record for preview quiz case
 		 *
 		 * @return bool|mixed|WP_Error
@@ -2264,7 +2265,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			try {
 				global $wpdb;
 
-				$course = learn_press_get_course( $course_id );
+				$course  = learn_press_get_course( $course_id );
+				$user_id = get_current_user_id();
 
 				if ( $course->is_required_enroll() && ! $force ) {
 
@@ -2292,7 +2294,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 
 				$date                          = new LP_Datetime();
-				$course_item['user_id']        = get_current_user_id();
+				$course_item['user_id']        = $user_id;
 				$course_item['item_id']        = $course_id;
 				$course_item['item_type']      = learn_press_get_post_type( $course_id );
 				$course_item['ref_id']         = $order_id;
