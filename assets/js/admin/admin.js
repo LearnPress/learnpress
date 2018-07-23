@@ -401,6 +401,10 @@
         });
     }
 
+    function checkUpdates(e){
+        //e.preventDefault();
+    }
+
 
     var $doc = $(document);
 
@@ -427,6 +431,7 @@
             .on('click', '.learn-press-filter-template', _callbackFilterTemplates)
             .on('click', '.lp-duplicate-row-action .lp-duplicate-post', _duplicatePost)
             .on('click', '#learn-press-newsletter-button button', send_newsletter_info)
+            .on('click','#learn-press-check-update-addons', checkUpdates)
             .on('mousedown', '.lp-sortable-handle', function (e) {
                 $('html, body').addClass('lp-item-moving');
                 $(e.target).closest('.lp-sortable-handle').css('cursor', 'inherit');

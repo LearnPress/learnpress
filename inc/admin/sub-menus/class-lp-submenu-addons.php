@@ -24,24 +24,15 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	}
 
 	public function add_ons_tabs() {
-// 	    $tabs = array(
-// 	        'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
-// 	        'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
-// 	        'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() )
-// 	    );
-		$tabs = array(
-			'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), 0 ),
-			'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), 0 ),
-			'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), 0 )
-		);
+ 	    $tabs = array(
+ 	        'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
+ 	        'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
+ 	        'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() )
+ 	    );
+
 		$this->tabs = apply_filters(
 			'learn-press/admin/page-addons-tabs',
-// 			$tabs,
-			array(
-				'installed' => __( 'Installed', 'learnpress' ),
-				'more'      => __( 'Get more', 'learnpress' ),
-				'themes'    => __( 'Themes', 'learnpress' ),
-			)
+ 			$tabs
 		);
 	}
 
