@@ -201,7 +201,6 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 3.0.10 =
-+ Added option to quiz so non-logged user can do a quiz (Preview)
 + Added quiz option to minus a number of point for each wrong question in quiz
 + Added admin email to send to admin when an order is completed
 + Added button allows wp admin can send a request to subscriber
