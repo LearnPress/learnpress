@@ -278,7 +278,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-assets.php';
 			}
-			require_once 'inc/admin/class-lp-repair-database.php';
+			require_once 'inc/class-lp-repair-database.php';
 			require_once 'inc/question/class-lp-question.php';
 
 			// Register custom-post-type and taxonomies

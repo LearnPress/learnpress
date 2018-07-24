@@ -117,7 +117,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
-			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
+			if ( ! $course_data->is_exists() || in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
 				learn_press_get_template( 'single-course/buttons/enroll.php' );
 			}
 		}
@@ -463,7 +463,7 @@ if ( ! function_exists( 'learn_press_course_price' ) ) {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
+		if ( $user && $user->get_course_access_level( $course->get_id() ) >= 30 ) {
 			return;
 		}
 

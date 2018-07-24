@@ -161,21 +161,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return $where;
 			}
 
+			global $wpdb;
+
 			if ( isset( $_REQUEST['parent'] ) ) {
 				$where .= sprintf( " AND post_parent = %d ", absint( $_REQUEST['parent'] ) );
 			} else {
+				//$where .= $wpdb->prepare( " AND (post_parent = 0 OR {$wpdb->posts}.ID IN( SELECT post_parent FROM {$wpdb->posts} X WHERE X.post_parent <> 0 AND X.post_type = %s) )", LP_ORDER_CPT );
 				$where .= " AND post_parent = 0 ";
 			}
 
 			return $where;
 		}
-
-//		public function post_new() {
-//			global $post;
-//			if ( $post && $post->post_type == 'lp_order' && $post->post_status == 'auto-draft' && learn_press_get_request( 'multi-users' ) == 'yes' ) {
-//				update_post_meta( $post->ID, '_lp_multi_users', 'yes' );
-//			}
-//		}
 
 		public function enqueue_scripts() {
 			if ( get_post_type() != 'lp_order' ) {
@@ -590,7 +586,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					OR uu.user_email LIKE %s
 					OR uu.display_name LIKE %s
 					OR {$wpdb->posts}.ID LIKE %s
-                                        OR orderItem.order_item_name LIKE %s
+                    OR orderItem.order_item_name LIKE %s
 				) OR ", $s, $s, $s, $s, $s, $s );
 
 			if ( preg_match( "/({$wpdb->posts}\.post_title LIKE)/", $where ) ) {
@@ -639,10 +635,16 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return $join;
 			}
 			global $wpdb;
-			$join .= " INNER JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
-			$join .= " INNER JOIN {$wpdb->users} uu ON {$wpdb->postmeta}.meta_key LIKE '_user_id' AND {$wpdb->postmeta}.meta_value = uu.ID";
-			$join .= " INNER JOIN {$wpdb->learnpress_order_items} AS orderItem ON orderItem.order_id = {$wpdb->posts}.ID";
-			$join .= " INNER JOIN {$wpdb->learnpress_order_itemmeta} AS orderItemmeta ON orderItem.order_item_id = orderItemmeta.learnpress_order_item_id AND orderItemmeta.meta_key LIKE '_total'";
+
+			if ( $this->_is_search() ) {
+				$join .= " INNER JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
+				$join .= " INNER JOIN {$wpdb->users} uu ON {$wpdb->postmeta}.meta_key LIKE '_user_id' AND {$wpdb->postmeta}.meta_value = uu.ID";
+			}
+
+			if ( $this->_is_search() || 'order_total' === LP_Request::get( 'orderby' ) ) {
+				$join .= " INNER JOIN {$wpdb->learnpress_order_items} AS orderItem ON orderItem.order_id = {$wpdb->posts}.ID";
+				$join .= " INNER JOIN {$wpdb->learnpress_order_itemmeta} AS orderItemmeta ON orderItem.order_item_id = orderItemmeta.learnpress_order_item_id AND orderItemmeta.meta_key LIKE '_total'";
+			}
 
 			return $join;
 		}
@@ -863,8 +865,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						echo __( '(Guest)', 'learnpress' );
 					}
 					break;
-				case
-				'order_status' :
+				case 'order_status' :
 
 					echo sprintf( '<span class="learn-press-tooltip %s" data-tooltip="%s">%s</span>', $the_order->get_status(), learn_press_get_order_status_label( $the_order->get_id() ), '' );
 					break;
@@ -912,7 +913,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					}
 					break;
 				case 'order_total' :
-					echo $the_order->get_formatted_order_total();// learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
+					echo $the_order->get_formatted_order_total();
 					if ( $title = $the_order->get_payment_method_title() ) {
 						?>
                         <div class="payment-method-title">

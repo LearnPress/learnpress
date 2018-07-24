@@ -269,32 +269,29 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		if ( 1 == 0 ) {
-			print_r( $user_item_id );
 
-			// Delete user course items
-			echo $query = $wpdb->prepare( "
+		// Delete user course items
+		echo $query = $wpdb->prepare( "
 				DELETE
 				FROM ui, uim
 				USING {$wpdb->prefix}learnpress_user_items AS ui
 				LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
 				WHERE ref_id = %d AND user_id = %d AND ref_type = %s
 			", $order->get_id(), $user_id, LP_ORDER_CPT );
-			$wpdb->query( $query );
+		$wpdb->query( $query );
 
-			// Delete other items
-			$format = array_fill( 0, sizeof( $course_ids ), '%d' );
-			$args   = array_merge( $course_ids, array( $user_id ) );
-			echo $query = $wpdb->prepare( "
+		// Delete other items
+		$format = array_fill( 0, sizeof( $course_ids ), '%d' );
+		$args   = array_merge( $course_ids, array( $user_id ) );
+		echo $query = $wpdb->prepare( "
 						DELETE
 						FROM ui, uim
 						USING {$wpdb->prefix}learnpress_user_items AS ui
 						LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
 						WHERE ref_id IN(" . join( ',', $format ) . ") AND user_id = %d
 					", $args );
-			$wpdb->query( $query );
+		$wpdb->query( $query );
 
-		}
 
 		// delete all data related user order
 		if ( $user_id ) {
@@ -537,7 +534,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function get_child_orders( $order_id ) {
 		global $wpdb;
 
-		if ( false === ( $orders = learn_press_cache_get( 'order-' . $order_id, 'lp-child-orders' ) ) ) {
+		if ( false === ( $orders = LP_Object_Cache::get( 'order-' . $order_id, 'lp-child-orders' ) ) ) {
 			$query = $wpdb->prepare( "
 				SELECT *
 				FROM {$wpdb->posts}
@@ -551,7 +548,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			} else {
 				$orders = array();
 			}
-			learn_press_cache_set( 'order-' . $order_id, $orders, 'lp-child-orders' );
+			LP_Object_Cache::set( 'order-' . $order_id, $orders, 'lp-child-orders' );
 		}
 
 		return $orders;

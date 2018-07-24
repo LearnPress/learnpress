@@ -77,7 +77,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['status'] ) ) {
 			$this->set_status( $item['status'] );
 		} else {
-			$this->set_status( learn_press_default_user_item_status( $item_id ) );
+			$status = $this->get_user_item_id() ? learn_press_default_user_item_status( $item_id ) : '';
+			$this->set_status( $status );
 		}
 
 		if ( ! empty( $item['ref_id'] ) ) {
@@ -260,12 +261,16 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $this->get_data( 'status' );
 	}
 
+	public function is_exists() {
+		return ! ! $this->get_user_item_id();
+	}
+
 	public function is_available() {
 
 		if ( null === $this->_is_available ) {
 			$user                = $this->get_user();
 			$order               = $user->get_course_order( $this->get_item_id() );
-			$this->_is_available = $order && $order->get_status() === 'completed';
+			$this->_is_available = $order && ( $order->get_status() === 'completed' ) && $this->is_exists();
 		}
 
 		return $this->_is_available;

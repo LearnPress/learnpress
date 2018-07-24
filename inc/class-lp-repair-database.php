@@ -21,7 +21,7 @@ class LP_Repair_Database {
 	 * @access protected
 	 */
 	protected function __construct() {
-		//add_action( 'save_post', array( $this, 'save_post' ), 0 );
+		add_action( 'save_post', array( $this, 'save_post' ), 0 );
 		//add_action( 'deleted_post', array( $this, 'save_post' ), 0 );
 		//add_action( 'learn-press/added-item-to-section', array( $this, 'added_item_to_section' ), 5000, 3 );
 		//add_action( 'learn-press/removed-item-from-section', array( $this, 'removed_item_from_course' ), 5000, 2 );
@@ -35,9 +35,12 @@ class LP_Repair_Database {
 
 		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
 		add_action( 'deleted_post', array( $this, 'deleted_post' ) );
+		//add_action( 'save_post', array( $this, 'save_post' ) );
 	}
 
 	public function before_delete_post( $post_id ) {
+		global $wpdb;
+		//LP_Debug::startTransaction();
 		$post_type = get_post_type( $post_id );
 		$data      = array(
 			'post_type' => $post_type
@@ -48,6 +51,7 @@ class LP_Repair_Database {
 
 				$order         = learn_press_get_order( $post_id );
 				$data['users'] = $order->get_users();
+				$data['child'] = $order->get_child_orders();
 
 				break;
 		}
@@ -64,7 +68,13 @@ class LP_Repair_Database {
 
 				switch ( $post_type ) {
 					case LP_ORDER_CPT:
-						$this->remove_order_from_user_meta( $post_id, $data );
+						if ( ! empty( $data['users'] ) ) {
+							$this->remove_order_from_user_meta( $data['users'], $post_id );
+						}
+
+						if ( ! empty( $data['child'] ) ) {
+							$this->remove_child_orders( $data['child'] );
+						}
 						break;
 				}
 			}
@@ -73,36 +83,144 @@ class LP_Repair_Database {
 			echo $ex->getMessage();
 		}
 
+		//LP_Debug::rollbackTransaction();
+
+		//die();
 	}
 
-	public function remove_child_orders(){
+	public function remove_child_orders( $order_ids ) {
+		global $wpdb;
+
+		foreach ( $order_ids as $order_id ) {
+			wp_delete_post( $order_id );
+		}
 
 	}
 
-	public function remove_order_from_user_meta( $order_id, $data ) {
-		if ( ! empty( $data['users'] ) ) {
-			foreach ( $data['users'] as $user_id ) {
-				$user_orders = get_user_meta( $user_id, 'orders', true );
+	public function remove_user_items_by_order_id( $order_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE ref_id = %d AND ref_type = %s
+		", $order_id, LP_ORDER_CPT );
 
-				if ( $user_orders ) {
-					foreach ( $user_orders as $course_id => $course_orders ) {
-						$course_orders = array_unique( $course_orders );
-						if ( false !== ( $in_pos = array_search( $order_id, $course_orders ) ) ) {
-							unset( $course_orders[ $in_pos ] );
-						}
+		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
+			return false;
+		}
 
-						if ( ! $course_orders ) {
-							unset( $user_orders[ $course_id ] );
-						} else {
-							$user_orders[ $course_id ] = $course_orders;
-						}
+		if ( $child_user_item_ids = $this->get_user_items_by_parent_id( $user_item_ids ) ) {
+			$this->remove_user_items_by_user_item_id( $child_user_item_ids );
+		}
 
+		$this->remove_user_items_by_user_item_id( $user_item_ids );
+
+		return true;
+	}
+
+	public function remove_user_items_by_user_item_id( $user_item_id ) {
+		global $wpdb;
+		settype( $user_item_id, 'array' );
+		$format = array_fill( 0, sizeof( $user_item_id ), '%d' );
+
+		echo $query = $wpdb->prepare( "
+			DELETE 
+			FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ")
+		", $user_item_id );
+
+		$wpdb->query( $query );
+
+		echo $query = $wpdb->prepare( "
+			DELETE 
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_item_id IN(" . join( ',', $format ) . ")
+		", $user_item_id );
+
+		$wpdb->query( $query );
+	}
+
+	public function get_user_items_by_parent_id( $parent_ids ) {
+		global $wpdb;
+		settype( $parent_ids, 'array' );
+		$format = array_fill( 0, sizeof( $parent_ids ), '%d' );
+
+		$query = $wpdb->prepare( "
+			SELECT user_item_id 
+			FROM {$wpdb->learnpress_user_items}
+			WHERE parent_id IN(" . join( ',', $format ) . ")
+		", $parent_ids );
+
+		return $wpdb->get_col( $query );
+	}
+
+	public function remove_order_from_user_meta( $user_ids, $order_id ) {
+		if ( ! $user_ids ) {
+			return;
+		}
+
+		settype( $user_ids, 'array' );
+		foreach ( $user_ids as $user_id ) {
+			$user_orders = get_user_meta( $user_id, 'orders', true );
+
+			if ( $user_orders ) {
+				foreach ( $user_orders as $course_id => $course_orders ) {
+					$course_orders = array_unique( $course_orders );
+					if ( false !== ( $in_pos = array_search( $order_id, $course_orders ) ) ) {
+						unset( $course_orders[ $in_pos ] );
 					}
+
+					if ( ! $course_orders ) {
+						unset( $user_orders[ $course_id ] );
+					} else {
+						$user_orders[ $course_id ] = $course_orders;
+					}
+
+				}
+			}
+
+			update_user_meta( $user_id, 'order', $user_orders );
+		}
+	}
+
+	public function add_order_to_user_meta( $order_id ) {
+		if ( ! $order = learn_press_get_order( $order_id ) ) {
+			return false;
+		}
+
+		if ( $order->is_multi_users() ) {
+			if ( ! $child = $order->get_child_orders() ) {
+				return false;
+			}
+
+			foreach ( $child as $child_order_id ) {
+				$child_order = learn_press_get_order( $child_order_id );
+
+			}
+
+			return true;
+		}
+
+		$user_id     = $order->get_user_id();
+		$user_orders = get_user_meta( $user_id, 'orders', true );
+
+		if ( $user_orders ) {
+			foreach ( $user_orders as $course_id => $course_orders ) {
+				$course_orders = array_unique( $course_orders );
+				if ( false !== ( $in_pos = array_search( $order_id, $course_orders ) ) ) {
+					unset( $course_orders[ $in_pos ] );
 				}
 
-				update_user_meta( $user_id, 'order', $user_orders );
+				if ( ! $course_orders ) {
+					unset( $user_orders[ $course_id ] );
+				} else {
+					$user_orders[ $course_id ] = $course_orders;
+				}
+
 			}
 		}
+
+		return true;
 	}
 
 	public function save_course( $course_id ) {
@@ -192,14 +310,20 @@ class LP_Repair_Database {
 	public function save_post( $post_id ) {
 		global $wpdb;
 		$post_type   = get_post_type( $post_id );
-		$action      = preg_replace( '!_post$!', '', current_action() );
 		$course_curd = new LP_Course_CURD();
-		$course_ids  = array();
 
 		switch ( $post_type ) {
-			case LP_COURSE_CPT:
-				$course_ids = array( $post_id );
+			case LP_ORDER_CPT:
+				if ( $order = learn_press_get_order( $post_id ) ) {
+					$user_ids   = $order->get_users();
+					$course_ids = $order->get_item_ids();
+
+					$this->sync_course_orders( $course_ids );
+					$this->sync_user_orders( $user_ids );
+				}
+
 				break;
+			case LP_COURSE_CPT:
 			default:
 
 				// Course is support type of this item?
@@ -207,19 +331,14 @@ class LP_Repair_Database {
 
 					// Find it course
 					$course_ids = $course_curd->get_course_by_item( $post_id );
+				} else {
+					$course_ids = array( $post_id );
+				}
+
+				foreach ( $course_ids as $course_id ) {
+					$this->sync_course_data( $course_id );
 				}
 		}
-
-		foreach ( $course_ids as $course_id ) {
-			$this->sync_course_data( $course_id );
-		}
-
-//		LP_Background_Sync_Data::instance()->push_to_queue(
-//			array(
-//				'action' => 'sync_course_data',
-//				'args'   => array( 'course_id' => $course_id )
-//			)
-//		);
 	}
 
 	/**
@@ -381,17 +500,14 @@ class LP_Repair_Database {
 	public function sync_user_orders( $users = array() ) {
 		global $wpdb;
 		$api = new LP_User_CURD();
-		LP_Debug::logTime( __FUNCTION__ );
+
 		foreach ( $users as $user ) {
 			if ( ! $orders = $api->read_orders( $user ) ) {
 				continue;
 			}
-
-			$orders = array_unique( $orders );
-
+			$orders = array_map( 'array_unique', $orders );
 			update_user_meta( $user, 'orders', $orders );
 		}
-		LP_Debug::logTime( __FUNCTION__ );
 
 	}
 

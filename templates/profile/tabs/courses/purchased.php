@@ -58,7 +58,7 @@ $query         = $profile->query_courses( 'purchased', array( 'status' => $filte
 					<?php //echo $user_course->get_start_time( 'd M Y' ); ?><!--</td>-->
                     <td class="column-date">
 						<?php
-						echo $user_course->get_time( 'start_time', '', true );
+						echo $user_course->get_level() >= 20 ? $user_course->get_time( 'start_time', '', true ) : '-';
 						?></td>
                     <td class="column-passing-grade"><?php echo $course->get_passing_condition( true ); ?></td>
                     <td class="column-status">

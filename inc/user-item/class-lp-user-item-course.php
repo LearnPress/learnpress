@@ -423,6 +423,30 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return $return;
 	}
 
+	public function is_enrolled() {
+		return in_array( $this->get_status(), array( 'enrolled', 'finished' ) );
+	}
+
+	public function get_level() {
+		if ( ! $this->is_exists() ) {
+			return 0;
+		}
+
+		$level = 10;
+
+		switch ( $this->get_status() ) {
+			case 'enrolled':
+				$level = 20;
+				break;
+			case 'finished':
+				$level = 30;
+				break;
+
+		}
+
+		return $level;
+	}
+
 	/**
 	 * Evaluate course result by final quiz.
 	 *

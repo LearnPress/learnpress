@@ -820,7 +820,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get user id in array.
 		 *
-		 * @return array
+		 * @return int[]
 		 */
 		public function get_users() {
 			if ( $users = $this->get_data( 'user_id' ) ) {
