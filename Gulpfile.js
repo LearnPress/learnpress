@@ -179,6 +179,21 @@ gulp.task('mk-zip', ['copy-zip'], function () {
 
 gulp.task('zip', ['mk-zip'], function () {
 
+});
+
+gulp.task('mk-zip', ['copy-zip'], function () {
+    process.chdir(releasePath);
+    var zipPath = releasePath.replace(/learnpress/, '');
+    return gulp.src(zipPath + '/**/learnpress/**/*')
+        .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
+        .pipe(gulp.dest(zipPath));
+});
+
+gulp.task('zipx', ['mk-zip'], function () {
+    var zipPath = releasePath + '.' + currentVer + '.zip';
+    console.log(zipPath)
+    return gulp.src([zipPath])
+        .pipe(gulpCopy("/Users/tu/Documents/htdocs/"));
 })
 
 // end of the world!
