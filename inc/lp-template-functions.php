@@ -1564,6 +1564,8 @@ if ( ! function_exists( 'learn_press_content_single_item' ) ) {
 	function learn_press_content_single_item() {
 
 		if ( $course_item = LP_Global::course_item() ) {
+			// remove course comment form on singler item
+			add_filter( 'comments_open', 'learn_press_course_comments_open', 10, 2 );
 			learn_press_get_template( 'content-single-item.php' );
 		}
 	}
@@ -3046,6 +3048,15 @@ if ( ! function_exists( 'learn_press_content_item_nav' ) ) {
 function learn_press_disable_course_comment_form() {
 	add_filter( 'comments_template', 'learn_press_blank_comments_template', 999 );
 }
+
+function learn_press_course_comments_open( $open, $post_id ) {
+	$post = get_post( $post_id );
+	if ( LP_COURSE_CPT == $post->post_type ) {
+		$open = false;
+	}
+	return $open;
+}
+
 
 if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 	function learn_press_profile_mobile_menu() {
