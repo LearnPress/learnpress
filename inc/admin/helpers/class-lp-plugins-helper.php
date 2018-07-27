@@ -161,8 +161,11 @@ class LP_Plugins_Helper {
 	 * @return array|mixed
 	 */
 	public static function get_related_themes( $type = '', $args = array() ) {
+		$themes = array();
 
-		$themes = array_filter( self::$themes );
+		if ( self::$themes ) {
+			$themes = array_filter( self::$themes );
+		}
 
 		if ( ! $themes ) {
 			self::$themes = LP_Background_Query_Items::instance()->get_related_themes();

@@ -255,6 +255,9 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		 * @return array|bool
 		 */
 		public function query_related_themes() {
+
+			set_transient( 'lp_related_themes', __( 'There is no item found!', 'learnpress' ), $this->transient_time );
+
 			$themes   = array();
 			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
 			$args     = array(
@@ -265,6 +268,8 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			$response = wp_remote_request( $url, $args );
 
 			if ( is_wp_error( $response ) ) {
+				error_log( $response->get_error_message() );
+
 				return false;
 			}
 
@@ -284,6 +289,8 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 					$themes['other'] = $all_themes;
 				}
 				set_transient( 'lp_related_themes', $themes, $this->transient_time );
+			} elseif ( ! empty( $response['message'] ) ) {
+				set_transient( 'lp_related_themes', $response['message'], $this->transient_time );
 			}
 
 			return $themes;
@@ -292,7 +299,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		/**
 		 * @return LP_Background_Query_Items
 		 */
-		public static function instance(){
+		public static function instance() {
 			return parent::instance();
 		}
 	}

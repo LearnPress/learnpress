@@ -113,21 +113,37 @@ class LP_Debug {
 			return true;
 		}
 
-		$path = learn_press_get_log_file_path( $handle );
-		if ( ! file_exists( $path ) ) {
-			$f = fopen( $path, 'w' );
-			fclose( $f );
-		}
-		$f = @fopen( $path, 'r+' );
+		try {
+			$path = learn_press_get_log_file_path( $handle );
+			$dir  = dirname( $path );
 
-		if ( $f ) {
-			// 3M
-			if ( filesize( $path ) >= 1024 * 1024 * 3 ) {
-				ftruncate( $f, 0 );
+			// Try to create path
+			if ( ! is_writeable( $dir ) ) {
+				@mkdir( $dir, 0777, true );
 			}
-			$this->_handles[ $handle ] = $f;
 
-			return true;
+			// Create file if does not exists
+			if ( ! file_exists( $path ) ) {
+				$f = @fopen( $path, 'w' );
+				fclose( $f );
+			}
+
+			// Open to read/write
+			$f = @fopen( $path, 'r+' );
+
+			if ( $f ) {
+				// 3M
+				if ( filesize( $path ) >= 1024 * 1024 * 3 ) {
+					ftruncate( $f, 0 );
+				}
+
+				$this->_handles[ $handle ] = $f;
+
+				return true;
+			}
+		}
+		catch ( Exception $ex ) {
+			error_log( $ex->getMessage() );
 		}
 
 		return false;

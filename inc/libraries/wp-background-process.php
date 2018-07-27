@@ -98,8 +98,6 @@ abstract class WP_Background_Process extends WP_Async_Request {
 
 		if ( ! empty( $this->data ) ) {
 			update_site_option( $key, $this->data );
-			LP_Debug::instance()->add(debug_backtrace(), 'yyyy', false, true);
-
 		}
 
 		return $this;
