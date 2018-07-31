@@ -2884,7 +2884,7 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 
 			return;
 		}
-
+		do_action( 'learn-press/lesson-start', $item );
 		learn_press_get_template( 'content-lesson/content.php' );
 	}
 }
@@ -3054,6 +3054,7 @@ function learn_press_course_comments_open( $open, $post_id ) {
 	if ( LP_COURSE_CPT == $post->post_type ) {
 		$open = false;
 	}
+
 	return $open;
 }
 
