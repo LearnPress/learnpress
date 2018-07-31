@@ -16,14 +16,16 @@ class LP_Update_30 extends LP_Update_Base {
 		$this->version = '3.0.0';
 		$this->steps   = array(
 			'add_column_user_items',
-			'upgrade_orders',
-			'update_user_course_items',
-			'update_option_no_require_enroll',
-			'update_post_meta',
-			'update_settings'
+//			'upgrade_orders',
+//			'update_user_course_items',
+//			'update_option_no_require_enroll',
+//			'update_post_meta',
+//			'update_settings'
 		);
 
 		parent::__construct();
+
+		add_action( 'learn-press/update-completed', array( $this, 'update_completed' ) );
 	}
 
 	/**
@@ -36,8 +38,6 @@ class LP_Update_30 extends LP_Update_Base {
 	public function add_column_user_items() {
 		global $wpdb;
 
-		LP_Debug::startTransaction();
-		ob_start();
 
 		// Add columns start_time_gmt, end_time_gmt
 		echo $sql = $wpdb->prepare( "
@@ -51,13 +51,6 @@ class LP_Update_30 extends LP_Update_Base {
 		$time      = new LP_Datetime();
 		$offset    = $time->getOffset( true );
 		$null_time = LP_Datetime::getSqlNullDate();
-
-//		$query = $wpdb->prepare("
-//			select user_item_id
-//			from wp_learnpress_user_items
-//			where start_time <> '0000:00:00 00:00:00'
-//			      AND start_time_gmt = '' OR start_time_gmt = '0000:00:00 00:00:00'
-//			LIMIT 0, 100");
 
 		echo $sql = $wpdb->prepare( "
 			UPDATE {$wpdb->learnpress_user_items}
@@ -73,11 +66,9 @@ class LP_Update_30 extends LP_Update_Base {
 			CHANGE COLUMN `item_id` `item_id` BIGINT(20) NOT NULL DEFAULT %d ;
 		", - 1, - 1 );
 		@$wpdb->query( $sql );
-		$log = ob_get_clean();
-		LP_Debug::rollbackTransaction();
 
-		$this->_next_step();
-		LP_Debug::instance()->add( $log, 'lp-updater', false, true );
+
+		return true;
 	}
 
 	/**
@@ -91,7 +82,7 @@ class LP_Update_30 extends LP_Update_Base {
 		LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
 
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 			SELECT p.ID 
 			FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
@@ -101,7 +92,7 @@ class LP_Update_30 extends LP_Update_Base {
 		", '_lp_multi_users', '_order_version', '3.0.0', LP_ORDER_CPT );
 
 		if ( ! $parent_orders = $wpdb->get_col( $query ) ) {
-			return $this->_next_step();
+			return true;//$this->_next_step();
 		}
 
 		foreach ( $parent_orders as $parent_id ) {
@@ -153,12 +144,12 @@ class LP_Update_30 extends LP_Update_Base {
 	public function update_user_course_items() {
 		LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
 
-		return $this->_next_step();
+		//return $this->_next_step();
 		// Get all courses in user items
 		$item_courses = $this->_get_item_courses( $this->get_min_user_item_id() );
 
 		if ( ! $item_courses ) {
-			return $this->_next_step();
+			return true;//$this->_next_step();
 		}
 
 		$item_course_ids = wp_list_pluck( $item_courses, 'item_id' );
@@ -166,6 +157,8 @@ class LP_Update_30 extends LP_Update_Base {
 
 		if ( ! $current_item_courses = $this->_get_current_item_courses( $item_course_ids ) ) {
 			//return $this->_next_step();
+
+			return true;
 		}
 
 		global $wpdb;
@@ -240,7 +233,7 @@ class LP_Update_30 extends LP_Update_Base {
 
 		$metas = $wpdb->get_results( $query );
 
-		return $this->_next_step();
+		return true;//$this->_next_step();
 	}
 
 	/**
@@ -309,7 +302,7 @@ class LP_Update_30 extends LP_Update_Base {
 			}
 		}
 
-		return $this->_next_step();
+		return true;//$this->_next_step();
 	}
 
 	/**
@@ -343,7 +336,7 @@ class LP_Update_30 extends LP_Update_Base {
 			}
 		}
 
-		return $this->_next_step();
+		return true;//$this->_next_step();
 	}
 
 	/**
@@ -474,6 +467,17 @@ class LP_Update_30 extends LP_Update_Base {
 		// create table _learnpress_users
 		// insert new row
 	}
+
+	public function update_completed( $version ) {
+		if ( $version != $this->version ) {
+			return;
+		}
+
+		delete_option( 'lp_update_min_user_item_id' );
+	}
 }
 
 $updater = new LP_Update_30();
+$return  = $updater->update();
+
+return array( 'done' => $return, 'percent' => $updater->get_percent() );

@@ -196,6 +196,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function delete_order_data( $order ) {
 		global $wpdb;
 
+		return '';
 		// Get order items
 		$query = $wpdb->prepare( "
 			SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items

@@ -24,13 +24,6 @@ $is_ajax  = isset( $is_ajax ) && $is_ajax ? 'yes' : 'no';
 
 	<?php if ( $use_ajax === 'no' || ($use_ajax === 'yes' && $is_ajax === 'yes') ) { ?>
 
-<!--        <div class="course-item-search">-->
-<!--            <form>-->
-<!--                <input type="text" placeholder="--><?php //esc_attr_e( 'Search item', 'learnpress' ); ?><!--"/>-->
-<!--                <button type="button"></button>-->
-<!--            </form>-->
-<!--        </div>-->
-
         <div class="curriculum-scrollable">
 
 			<?php

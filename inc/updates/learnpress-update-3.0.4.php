@@ -32,7 +32,7 @@ class LP_Update_304 extends LP_Update_Base {
 		", '_question_answers', 'question_answers' );
 
 		if ( ! $rows = $wpdb->get_results( $query ) ) {
-			return $this->_next_step();
+			return true;
 		}
 
 		$sqlUpdate = "
@@ -61,9 +61,11 @@ class LP_Update_304 extends LP_Update_Base {
 			}
 		}
 
-		return true;
+		return false;
 	}
 }
 
-return new LP_Update_304();
-//LP_Update_304::update();
+$updater = new LP_Update_304();
+$return  = $updater->update();
+
+return array( 'done' => $return, 'percent' => $updater->get_percent() );

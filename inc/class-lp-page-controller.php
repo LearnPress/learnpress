@@ -137,6 +137,15 @@ class LP_Page_Controller {
 				return $post;
 			}
 
+			$user = learn_press_get_current_user();
+
+			if ( false === $user->can_view_item( $lp_course_item->get_id() ) && ! $user->get_item_url( $lp_course_item->get_id() ) ) {
+				if ( false !== ( $redirect = apply_filters( 'learn-press/redirect-forbidden-access-item-url', $lp_course->get_permalink() ) ) ) {
+					wp_redirect( $redirect );
+					exit();
+				}
+			}
+
 			$lp_course->set_viewing_item( $lp_course_item );
 
 			// If item viewing is a QUIZ and have a question...
@@ -154,7 +163,6 @@ class LP_Page_Controller {
 					throw new Exception( '404' );
 				}
 
-				$user        = learn_press_get_current_user();
 				$quiz_data   = $user->get_quiz_data( $post_item->ID, $lp_course->get_id() );
 				$redirect    = false;
 				$quiz_status = $quiz_data ? $quiz_data->get_status() : false;

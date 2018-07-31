@@ -85,7 +85,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				return;
 			}
 
-			if ( $user->get_course_access_level( $id ) === LP_COURSE_ACCESS_LEVEL_40 ) {
+			if ( $user->get_course_access_level( $id ) === LP_COURSE_ACCESS_LEVEL_60 ) {
 				wp_redirect( $user->get_current_item( $id, true ) );
 				exit();
 			}

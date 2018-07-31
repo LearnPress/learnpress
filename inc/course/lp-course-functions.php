@@ -19,7 +19,11 @@ defined( 'ABSPATH' ) || exit();
  * @return LP_Course|mixed
  */
 function learn_press_get_course( $the_course = false, $args = '' ) {
-    //wp_cache_set('xxxx', str_repeat('asdasdasd', 1000));
+
+	if ( $the_course === 0 ) {
+		$the_course = get_the_ID();
+	}
+
 	return LP_Course::get_course( $the_course, $args );
 
 	if ( is_numeric( $the_course ) ) {
@@ -346,6 +350,26 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
 }
 
 /**
+ * Wrap function can-view-item of user object.
+ *
+ * @since 3.1.0
+ *
+ * @param int $item_id
+ * @param int $course_id
+ * @param int $user_id
+ *
+ * @return mixed
+ */
+function learn_press_can_view_item( $item_id, $course_id = 0, $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+	$user = learn_press_get_user( $user_id );
+
+	return $user->can_view_item( $item_id, $course_id );
+}
+
+/**
  * Check to see if user can view a lesson or not.
  *
  * @param      $lesson_id
@@ -356,6 +380,7 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
  * @throws Exception
  */
 function learn_press_user_can_view_lesson( $lesson_id, $course_id = 0, $user_id = null ) {
+	_deprecated_function( __FUNCTION__, '3.1.0', 'learn_press_can_view_item' );
 	if ( $user_id ) {
 		$user = learn_press_get_user( $user_id );
 	} else {
@@ -376,13 +401,15 @@ function learn_press_user_can_view_lesson( $lesson_id, $course_id = 0, $user_id 
  * @throws Exception
  */
 function learn_press_user_can_view_quiz( $quiz_id = null, $course_id = 0, $user_id = null ) {
+	_deprecated_function( __FUNCTION__, '3.1.0', 'learn_press_can_view_item' );
+
 	if ( $user_id ) {
 		$user = learn_press_get_user( $user_id );
 	} else {
 		$user = LP_Global::user();
 	}
 
-	return $user ? $user->can_view_quiz( $quiz_id, $course_id ) : false;
+	return $user ? $user->can_view_item( $quiz_id, $course_id ) : false;
 }
 
 /**
@@ -1039,9 +1066,9 @@ function learn_press_get_course_results_tooltip( $course_id ) {
 
 function learn_press_course_passing_condition( $value, $format, $course_id ) {
 
-    $course = learn_press_get_course($course_id);
+	$course = learn_press_get_course( $course_id );
 
-	if ( $quiz_id = $course->get_final_quiz()) {
+	if ( $quiz_id = $course->get_final_quiz() ) {
 		$quiz  = learn_press_get_quiz( $quiz_id );
 		$value = absint( $quiz->get_passing_grade() );
 

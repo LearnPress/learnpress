@@ -47,12 +47,15 @@ define( 'LP_WIDGET_PATH', LP_PLUGIN_PATH . 'inc/widgets' );
 define( 'LP_WIDGET_URL', LP_PLUGIN_URL . 'inc/widgets' );
 
 // Course access level
-define( 'LP_COURSE_ACCESS_LEVEL_0', 0 ); // No access
-define( 'LP_COURSE_ACCESS_LEVEL_10', 10 ); // Related order is pending
-define( 'LP_COURSE_ACCESS_LEVEL_20', 20 ); // Related order is processing
-define( 'LP_COURSE_ACCESS_LEVEL_30', 30 ); // Related order is completed
-define( 'LP_COURSE_ACCESS_LEVEL_40', 40 ); // User has already enrolled course
-define( 'LP_COURSE_ACCESS_LEVEL_50', 50 ); // User has already finished course
+define( 'LP_COURSE_ACCESS_LEVEL_0', 0 ); // No accessible
+define( 'LP_COURSE_ACCESS_LEVEL_10', 10 ); // Normal users
+define( 'LP_COURSE_ACCESS_LEVEL_20', 20 ); // Author of course
+define( 'LP_COURSE_ACCESS_LEVEL_30', 30 ); // Admin site
+define( 'LP_COURSE_ACCESS_LEVEL_35', 35 ); // No require enrollment
+define( 'LP_COURSE_ACCESS_LEVEL_40', 40 ); // Ordered but not completed
+define( 'LP_COURSE_ACCESS_LEVEL_50', 50 ); // Order completed but not enrolled
+define( 'LP_COURSE_ACCESS_LEVEL_60', 60 ); // User has already enrolled course
+define( 'LP_COURSE_ACCESS_LEVEL_70', 70 ); // User has already finished course
 
 // Error codes
 define( 'LP_INVALID_REQUEST', 100 );

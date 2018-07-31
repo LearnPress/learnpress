@@ -118,7 +118,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 //			}
 
 			// Show message if the latest version is not already updated
-			add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ), 20 );
+			//add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ), 20 );
 		}
 
 		/**
@@ -531,6 +531,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * Scan folder updates to get update patches.
 		 */
 		public static function get_update_files() {
+			/**
+			 * @var WP_Filesystem_Base $wp_filesystem
+			 */
 			if ( ! self::$_update_files ) {
 				require_once ABSPATH . 'wp-admin/includes/file.php';
 				if ( WP_Filesystem() ) {
@@ -542,15 +545,17 @@ if ( ! function_exists( 'LP_Install' ) ) {
 								self::$_update_files [ $matches[1] ] = $file['name'];
 							}
 						}
+
 					}
 
 				}
 				/**
-				 * Sort files by version
+				 * Sort files by version number
 				 */
 				if ( self::$_update_files ) {
-					ksort( self::$_update_files );
+					uksort( self::$_update_files, 'version_compare' );
 				}
+
 			}
 		}
 

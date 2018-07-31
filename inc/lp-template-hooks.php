@@ -187,6 +187,11 @@ add_action( 'learn-press/course-item-content', 'learn_press_course_item_content'
 //add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
 
 /**
+ * @see learn_press_content_item_access_forbidden
+ */
+add_action( 'learn-press/course-item-content-access-forbidden', 'learn_press_content_item_access_forbidden', 10 );
+
+/**
  * @see learn_press_content_item_nav
  * @see learn_press_disable_course_comment_form
  */

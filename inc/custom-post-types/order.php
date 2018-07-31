@@ -186,7 +186,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param int $order_id
 		 */
 		public function trashed_order( $order_id ) {
-
+            return;
 			if ( ! $order = learn_press_get_order( $order_id ) ) {
 				return;
 			}

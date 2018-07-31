@@ -1810,3 +1810,11 @@ function learn_press_get_user_distraction() {
 		return LP()->session->distraction_mode;
 	}
 }
+
+function learn_press_get_user_role($user_id){
+    if($user = learn_press_get_user($user_id)){
+        return $user->get_role();
+    }
+
+    return false;
+}

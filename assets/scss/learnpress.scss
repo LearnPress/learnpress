@@ -237,26 +237,27 @@ ul.learn-press-courses {
     }
     &.has-icon {
         padding-left: 55px;
-        .icon {
+        &:before {
             display: inline-block;
-            &:after {
-                font-size: 20px;
-                vertical-align: baseline;
-                margin-right: 10px;
-                position: absolute;
-                left: 15px;
-                top: 50%;
-                margin-top: -13px;
-                height: 26px;
-                line-height: 26px;
-                width: 26px;
-                text-align: center;
-                border-radius: 50%;
-                color: #FFF;
-                font-family: FontAwesome;
-                background: #FFF;
-                font-style: normal;
-            }
+            content: '';
+        }
+        &:after {
+            font-size: 20px;
+            vertical-align: baseline;
+            margin-right: 10px;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            margin-top: -13px;
+            height: 26px;
+            line-height: 26px;
+            width: 26px;
+            text-align: center;
+            border-radius: 50%;
+            color: #FFF;
+            font-family: FontAwesome;
+            background: #FFF;
+            font-style: normal;
         }
     }
     &:before {
@@ -264,7 +265,7 @@ ul.learn-press-courses {
         content: '';
         top: 0;
         left: 0;
-        width: 0px;
+        width: 0;
         height: 100%;
         background: #00adff;
         border-top-left-radius: 5px;
@@ -272,12 +273,9 @@ ul.learn-press-courses {
     }
     &.error {
         background: #ffd4d4;
-        _color: #f78f90;
-        .icon {
-            &:after {
-                content: "\f00d";
-                color: #ff9090;
-            }
+        &:after {
+            content: "\f00d";
+            color: #ff9090;
         }
     }
     &.success {
@@ -288,22 +286,17 @@ ul.learn-press-courses {
             }
         }
     }
-    &.notice{
-        .icon {
-            &:after {
-                content: "\f129";
-                color: #00adff;
-            }
+    &.notice {
+        &:after {
+            content: "\f129";
+            color: #00adff;
         }
     }
-    &.warning{
+    &.warning {
         background: #ffe2b0;
-        _color: #f8b058;
-        .icon {
-            &:after {
-                content: "\f129";
-                color: #ffb058;
-            }
+        &:after {
+            content: "\f129";
+            color: #ffb058;
         }
     }
 }

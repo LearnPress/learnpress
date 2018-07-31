@@ -13,6 +13,11 @@ class LP_Repair_Database {
 	 */
 	protected static $instance = null;
 
+	/**
+	 * Posts are being deleted.
+	 *
+	 * @var array
+	 */
 	protected $deleting_posts = array();
 
 	/**
@@ -38,6 +43,14 @@ class LP_Repair_Database {
 		//add_action( 'save_post', array( $this, 'save_post' ) );
 	}
 
+	/**
+	 * Stores some information of the post is being deleted.
+	 * Eg post-type will be lost after deleted post.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int $post_id
+	 */
 	public function before_delete_post( $post_id ) {
 		global $wpdb;
 		//LP_Debug::startTransaction();
@@ -57,9 +70,15 @@ class LP_Repair_Database {
 		}
 
 		$this->deleting_posts[ $post_id ] = $data;
-
 	}
 
+	/**
+	 * Do stuff after post deleted.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int $post_id
+	 */
 	public function deleted_post( $post_id ) {
 		try {
 			if ( ! empty( $this->deleting_posts[ $post_id ] ) ) {
@@ -71,6 +90,9 @@ class LP_Repair_Database {
 						if ( ! empty( $data['users'] ) ) {
 							$this->remove_order_from_user_meta( $data['users'], $post_id );
 						}
+
+						$this->remove_order_items( $post_id );
+						$this->remove_user_items_by_order_id( $post_id );
 
 						if ( ! empty( $data['child'] ) ) {
 							$this->remove_child_orders( $data['child'] );
@@ -84,10 +106,62 @@ class LP_Repair_Database {
 		}
 
 		//LP_Debug::rollbackTransaction();
-
 		//die();
 	}
 
+	/**
+	 * Remove order items and it meta data from tables
+	 * learnpress_user_items and learnpress_user_itemmeta
+	 * by order id.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int $order_id
+	 *
+	 * @return bool|int[]
+	 */
+	public function remove_order_items( $order_id ) {
+		global $wpdb;
+
+		if ( is_array( $order_id ) ) {
+			foreach ( $order_id as $oid ) {
+				$this->remove_order_items( $oid );
+			}
+
+			return true;
+		}
+
+		$order_item_id = $wpdb->get_col( $wpdb->prepare( "SELECT order_item_id FROM {$wpdb->learnpress_order_items} WHERE order_id = %d", $order_id ) );
+
+		if ( ! $order_item_id ) {
+			return false;
+		}
+
+		$format = array_fill( 0, sizeof( $order_item_id ), '%d' );
+
+		// Delete rows from order-items and order-itemmeta
+		$query = $wpdb->prepare( "
+			DELETE
+			FROM {$wpdb->learnpress_order_itemmeta}
+			WHERE learnpress_order_item_id IN(" . join( ',', $format ) . ")
+		", $order_item_id );
+
+		$wpdb->query( $query );
+
+		$query = $wpdb->prepare( "
+			DELETE
+			FROM {$wpdb->learnpress_order_items}
+			WHERE order_item_id  IN(" . join( ',', $format ) . ")
+		", $order_item_id );
+
+		$wpdb->query( $query );
+
+		return $order_item_id;
+	}
+
+	/**
+	 * @param int[] $order_ids
+	 */
 	public function remove_child_orders( $order_ids ) {
 		global $wpdb;
 
@@ -97,7 +171,28 @@ class LP_Repair_Database {
 
 	}
 
+	/**
+	 * Remove user items from table learnpress_user_items
+	 * and it's meta data from table learnpress_user_itemmeta
+	 * by order id. Uses this function when we want to remove
+	 * a course-item and all child-items reference to a an order.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int[] $order_id
+	 *
+	 * @return bool
+	 */
 	public function remove_user_items_by_order_id( $order_id ) {
+
+		if ( is_array( $order_id ) ) {
+			foreach ( $order_id as $oid ) {
+				$this->remove_user_items_by_order_id( $oid );
+			}
+
+			return true;
+		}
+
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT user_item_id
@@ -109,30 +204,40 @@ class LP_Repair_Database {
 			return false;
 		}
 
-		if ( $child_user_item_ids = $this->get_user_items_by_parent_id( $user_item_ids ) ) {
-			$this->remove_user_items_by_user_item_id( $child_user_item_ids );
-		}
-
-		$this->remove_user_items_by_user_item_id( $user_item_ids );
+		$this->remove_user_items_by_user_item_id( $user_item_ids, true );
 
 		return true;
 	}
 
-	public function remove_user_items_by_user_item_id( $user_item_id ) {
+	/**
+	 * Remove user item from table user-items by primary key user_item_id.
+	 * This function also remove row's meta data and/or child rows.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int[] $user_item_id
+	 * @param bool  $remove_child - Optional. TRUE will remove it's child
+	 */
+	public function remove_user_items_by_user_item_id( $user_item_id, $remove_child = true ) {
 		global $wpdb;
 		settype( $user_item_id, 'array' );
 		$format = array_fill( 0, sizeof( $user_item_id ), '%d' );
 
-		echo $query = $wpdb->prepare( "
-			DELETE 
+		// Remove child
+		if ( $remove_child && $child_user_item_ids = $this->get_user_items_by_parent_id( $user_item_id ) ) {
+			$this->remove_user_items_by_user_item_id( $child_user_item_ids, $remove_child );
+		}
+
+		$query = $wpdb->prepare( "
+			DELETE
 			FROM {$wpdb->learnpress_user_itemmeta}
 			WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ")
 		", $user_item_id );
 
 		$wpdb->query( $query );
 
-		echo $query = $wpdb->prepare( "
-			DELETE 
+		$query = $wpdb->prepare( "
+			DELETE
 			FROM {$wpdb->learnpress_user_items}
 			WHERE user_item_id IN(" . join( ',', $format ) . ")
 		", $user_item_id );
@@ -140,6 +245,113 @@ class LP_Repair_Database {
 		$wpdb->query( $query );
 	}
 
+	/**
+	 * Remove user item from table user-items by specific user-id and item-id.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int $user_id
+	 * @param int $item_id
+	 *
+	 * @return array|bool
+	 */
+	public function remove_user_item( $user_id, $item_id ) {
+		global $wpdb;
+
+		// Find user-item-id for passed user-id and item-id
+		$query = $wpdb->prepare( "
+			SELECT user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d
+				AND item_id = %d
+		", $user_id, $item_id );
+
+		if ( $user_item_ids = $wpdb->get_col( $query ) ) {
+			return false;
+		}
+
+		// Remove by user-item-ids
+		$this->remove_user_items_by_user_item_id( $user_item_ids );
+
+		return $user_item_ids;
+	}
+
+	/**
+	 * Remove user item from table user-items by user-id.
+	 * Uses this function in case we want to remove all item
+	 * from an user (such as when an user will be deleted).
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int[] $user_id
+	 *
+	 * @return bool
+	 */
+	public function remove_user_item_by_user( $user_id ) {
+		global $wpdb;
+
+		// If multi users passed, loop through each user
+		if ( is_array( $user_id ) ) {
+			foreach ( $user_id as $uid ) {
+				$this->remove_user_item_by_user( $uid );
+			}
+
+			return true;
+		}
+
+		$query = $wpdb->prepare( "
+			SELECT user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d
+		", $user_id );
+
+		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
+			return false;
+		}
+
+		$this->remove_user_items_by_user_item_id( $user_item_ids );
+
+		return true;
+	}
+
+	/**
+	 * Remove user item from table user-items by item-id.
+	 * Uses this function in case want to remove an item
+	 * from all users (such as an item like course/lesson/quiz will be deleted).
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int $item_id
+	 *
+	 * @return array|bool
+	 */
+	public function remove_user_item_by_item_id( $item_id ) {
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
+			SELECT user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE item_id = %d
+		", $item_id );
+
+		if ( ! $user_item_ids = $wpdb->get_col( $query ) ) {
+			return false;
+		}
+
+		$this->remove_user_items_by_user_item_id( $user_item_ids );
+
+		return $user_item_ids;
+	}
+
+	/**
+	 * Retrieve child items from an user-item-id.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int[] $parent_ids
+	 *
+	 * @return array
+	 */
 	public function get_user_items_by_parent_id( $parent_ids ) {
 		global $wpdb;
 		settype( $parent_ids, 'array' );
@@ -154,6 +366,14 @@ class LP_Repair_Database {
 		return $wpdb->get_col( $query );
 	}
 
+	/**
+	 * Remove an order from user-meta.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param int[] $user_ids
+	 * @param int   $order_id
+	 */
 	public function remove_order_from_user_meta( $user_ids, $order_id ) {
 		if ( ! $user_ids ) {
 			return;
@@ -229,7 +449,7 @@ class LP_Repair_Database {
 
 	public function removed_course_item( $item_id, $course_id ) {
 		$this->sync_course_data( $course_id );
-		$this->remove_user_item( $item_id );
+		//$this->remove_user_item( $item_id );
 	}
 
 	/**
@@ -270,7 +490,7 @@ class LP_Repair_Database {
 		return $item_type;
 	}
 
-	public function remove_user_item( $item_id ) {
+	public function remove_user_itemx( $item_id ) {
 		global $wpdb;
 
 		$query = "

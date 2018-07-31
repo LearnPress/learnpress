@@ -26,11 +26,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected function _get_script_data() {
 		return array(
 			'learn-press-global'         => array(
-				'i18n'    => array(
+				'i18n'      => array(
 					'test_message' => 'This is global script for both admin and site'
 				),
-				'ajax'    => admin_url( 'admin-ajax.php' ),
-				'siteurl' => site_url()
+				'ajax'      => admin_url( 'admin-ajax.php' ),
+				'admin_url' => admin_url(),
+				'siteurl'   => site_url(),
+				'_wpnonce'  => wp_create_nonce()
 			),
 			'learn-press-meta-box-order' => apply_filters(
 				'learn-press/meta-box-order/script-data',

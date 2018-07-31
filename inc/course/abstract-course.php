@@ -920,8 +920,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				if ( false === wp_cache_get( $item_id, 'posts' ) ) {
 					LP_Helper_CURD::cache_posts( $this->get_item_ids() );
 				}
-				$item = LP_Course_Item::get_item( $item_id );
-				$item->set_course( $this );
+				$item = LP_Course_Item::get_item( $item_id, $this );
 			}
 
 			return apply_filters( 'learn-press/course-item', $item, $item_id, $this->get_id() );
@@ -1112,10 +1111,11 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @since 3.1.0
 		 *
 		 * @param bool $current_item
+		 * @param bool $viewable - Optional. TRUE will get next item is viewable.
 		 *
 		 * @return array|bool
 		 */
-		public function get_item_nav( $current_item = false ) {
+		public function get_item_nav( $current_item = false, $viewable = false ) {
 			if ( false === $current_item ) {
 				$current_item = $this->get_current_item();
 			}
@@ -1128,13 +1128,32 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			if ( $item_ids = $this->get_item_ids() ) {
 				if ( false !== ( $pos = array_search( $current_item, $item_ids ) ) ) {
-					if ( sizeof( $item_ids ) - 1 > $pos ) {
-						$next_id = $item_ids[ $pos + 1 ];
+					$max     = sizeof( $item_ids ) - 1;
+					$user    = learn_press_get_current_user();
+					$pos_tmp = $pos;
+
+					while ( $pos_tmp < $max ) {
+						$pos_tmp ++;
+
+						if ( ! $viewable || $user->can_view_item( $item_ids[ $pos_tmp ], $this->get_id() ) ) {
+							$next_id = $item_ids[ $pos_tmp ];
+
+							break;
+						}
 					}
 
-					if ( $pos > 0 ) {
-						$prev_id = $item_ids[ $pos - 1 ];
+					$pos_tmp = $pos;
+
+					while ( $pos_tmp > 0 ) {
+						$pos_tmp --;
+
+						if ( ! $viewable || $user->can_view_item( $item_ids[ $pos_tmp ], $this->get_id() ) ) {
+							$prev_id = $item_ids[ $pos_tmp ];
+
+							break;
+						}
 					}
+
 				}
 			}
 
@@ -1675,10 +1694,16 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @return LP_User|mixed
+		 * Get main author of course.
+		 *
+		 * @param string $field
+		 *
+		 * @return LP_User|int
 		 */
-		public function get_author() {
-			return learn_press_get_user( get_post_field( 'post_author', $this->get_id() ) );
+		public function get_author( $field = '' ) {
+			$author_id = absint( get_post_field( 'post_author', $this->get_id() ) );
+
+			return strtolower( $field ) === 'id' ? $author_id : learn_press_get_user( $author_id );
 		}
 
 		/**
@@ -1745,6 +1770,17 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn-press/course-sections', $sections, $this->get_id(), $return, $section_id );
+		}
+
+		/**
+		 * Enable item link in case user can not view content of them
+		 *
+		 * @since 3.1.0
+		 *
+		 * @return bool
+		 */
+		public function is_enable_item_link() {
+			return get_post_meta( $this->get_id(), '_lp_submission', true ) === 'yes';
 		}
 	}
 }

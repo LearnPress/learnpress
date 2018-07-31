@@ -14,6 +14,10 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_Order $order
+ */
+
 if ( ! isset( $order ) ) {
 	echo __( 'Invalid order', 'learnpress' );
 
@@ -88,11 +92,13 @@ if ( ! isset( $order ) ) {
     </tfoot>
 </table>
 
-<p>
+<p class="order-meta">
+	<?php printf( __( '<strong>Order ID:</strong> %s', 'learnpress' ), $order->get_order_number() ); ?>
+</p>
+<p class="order-meta">
 	<?php printf( __( '<strong>Order key:</strong> %s', 'learnpress' ), $order->get_order_key() ); ?>
 </p>
-
-<p>
+<p class="order-meta">
     <strong><?php _e( 'Order status:', 'learnpress' ); ?></strong> <span class="lp-label label-<?php echo esc_attr( $order->get_status() ); ?>"><?php echo $order->get_order_status_html(); ?></span>
 </p>
 

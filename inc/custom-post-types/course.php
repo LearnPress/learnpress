@@ -642,10 +642,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => '',
 					),
 					array(
-						'name' => __( 'Submission Form', 'learnpress' ),
+						'name' => __( 'Show item links', 'learnpress' ),
 						'id'   => '_lp_submission',
 						'type' => 'yes-no',
-						'desc' => __( 'If this option is ON, then guess can click on the link of items but only see the submission form.', 'learnpress' ),
+						'desc' => __( 'Enable link of course items in case user can not view content of them.', 'learnpress' ),
 						'std'  => 'yes'
 					)
 				)

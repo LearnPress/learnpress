@@ -257,6 +257,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 */
 		public function get_permalink() {
 			$link = false;
+
 			if ( $this->_course ) {
 				$link = $this->_course->get_item_link( $this->get_id() );
 			}
@@ -357,9 +358,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				}
 				wp_cache_set( $item_id, $item, 'learn-press/object-classes' );
 
-				if ( $course ) {
-					$item->set_course( $course );
-				}
+			}
+
+			if ( $course ) {
+				$item->set_course( $course );
 			}
 
 			return apply_filters( 'learn-press/get-course-item', $item, $item_type, $item_id );

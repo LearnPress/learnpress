@@ -474,6 +474,15 @@
                             $courseItems = $curriculum.find('.course-item')
                             if (inPopup) {
                                 initScrollbar();
+
+                                setTimeout(function () {
+                                    var $cs = $body.find('.curriculum-sections').parent();
+                                    $cs.scrollTo($cs.find('.course-item.current'), 100);
+
+                                    if (window.location.hash) {
+                                        $('.content-item-scrollable:last').scrollTo($(window.location.hash));
+                                    }
+                                }, 300);
                             }
                         }
                     })
@@ -523,15 +532,6 @@
 
             getCurriculum();
 
-            setTimeout(function () {
-                var $cs = $body.find('.curriculum-sections').parent();
-                $cs.scrollTo($cs.find('.course-item.current'), 100);
-
-                if (window.location.hash) {
-                    $('.content-item-scrollable:last').scrollTo($(window.location.hash));
-                }
-            }, 300);
-
             $body.css('opacity', 1);
 
         }
@@ -540,7 +540,7 @@
             $body.addClass('lp-loading');
             var data = $.extend({}, $('.answer-options').serializeJSON(), $(this).serializeJSON());
             $.ajax({
-                url: 'http://localhost/eduma/',
+                url: lpCourseSettings.root_url,
                 data: data,
                 type: 'post',
                 success: function (response) {
