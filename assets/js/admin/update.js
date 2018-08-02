@@ -64,7 +64,8 @@
         el: '#learn-press-updater',
         data: {
             packages: null,
-            status: ''
+            status: '',
+            force: false,
         },
         watch: {
             packages: function (newPackages, oldPackages) {
@@ -80,6 +81,7 @@
                     url: lpGlobalSettings.admin_url,
                     data: {
                         'lp-ajax': 'get-update-packages',
+                        force: this.force,
                         _wpnonce: lpGlobalSettings._wpnonce
                     },
                     success: function (res) {
@@ -89,8 +91,9 @@
                     }
                 })
             },
-            start: function () {
+            start: function (e, force) {
                 this.packages = null;
+                this.force = force;
                 this.getUpdatePackages(function () {
                     if (this.packages.hasPackage()) {
                         var p = this.packages.next();
@@ -126,6 +129,7 @@
                             package: p,
                             version: this.packages.currentVersion(),
                             _wpnonce: lpGlobalSettings._wpnonce,
+                            force: this.force,
                             i: i
                         },
                         success: function (res) {
@@ -145,6 +149,10 @@
                                 that.update(newWidth * 100);
                                 that.doUpdate(p, ++i);
                             }
+                        },
+                        error: function () {
+                            console.log('Update Error: Retry!');
+                            that.doUpdate(p, i);
                         }
                     });
 

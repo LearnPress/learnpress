@@ -56,12 +56,16 @@ class LP_Update_Base {
 
 	/**
 	 * Entry point
+	 *
+	 * @param bool $force
+	 *
+	 * @return mixed
 	 */
-	public function update() {
+	public function update( $force = false ) {
 		$return = true;
 
 		$db_version = get_option( 'learnpress_db_version' );
-		if ( $db_version && version_compare( $db_version, $this->version, '>' ) ) {
+		if ( ! $force && $db_version && version_compare( $db_version, $this->version, '>' ) ) {
 			return $return;
 		}
 
@@ -72,6 +76,8 @@ class LP_Update_Base {
 				$step = reset( $this->steps );
 				update_option( 'learnpress_updater_step', $step );
 			}
+
+			$called = false;
 
 			$running_step = get_option( 'learnpress_updater_running_step' );
 
@@ -87,15 +93,27 @@ class LP_Update_Base {
 						update_option( 'learnpress_updater_running_step', $step );
 						if ( $return = call_user_func( array( $this, $callback ) ) ) {
 							$this->_next_step();
-							//delete_option( 'learnpress_updater_running_step' );
 						}
+
+					} else {
+						echo "$callback failed";
+						$this->_next_step();
 					}
+
+					$called = true;
+
 					break;
 				}
 			}
 
+			if ( ! $called ) {
+				echo "Step {$step} not found";
+				$this->_next_step();
+			}
+
 		}
 		catch ( Exception $exception ) {
+			echo $exception->getMessage();
 			LP_Debug::rollbackTransaction();
 		}
 
@@ -123,9 +141,6 @@ class LP_Update_Base {
 
 		$end_step = end( $this->steps );
 
-		print_r( $step );
-		print_r( $end_step );
-
 		return $step === $end_step;
 	}
 
@@ -137,15 +152,18 @@ class LP_Update_Base {
 		if ( false !== ( $pos = array_search( $step, $this->steps ) ) ) {
 			$pos ++;
 			$next_step = ! empty( $this->steps[ $pos ] ) ? $this->steps[ $pos ] : '';
-
-			if ( $next_step ) {
-				update_option( 'learnpress_updater_step', $next_step );
-			} else {
-				delete_option( 'learnpress_updater_step' );
-				delete_option( 'learnpress_updater' );
-				LP_Install::update_db_version( $this->version );
-			}
+		} else {
+			$next_step = end( $this->steps );
 		}
+		if ( $next_step ) {
+			update_option( 'learnpress_updater_step', $next_step );
+		} else {
+			delete_option( 'learnpress_updater_step' );
+			delete_option( 'learnpress_updater' );
+			LP_Install::update_db_version( $this->version );
+		}
+
+		var_dump( $step );
 
 		return true;
 	}

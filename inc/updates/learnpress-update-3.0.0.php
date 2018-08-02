@@ -16,7 +16,8 @@ class LP_Update_30 extends LP_Update_Base {
 		$this->version = '3.0.0';
 		$this->steps   = array(
 			'add_column_user_items',
-//			'upgrade_orders',
+			//'upgrade_orders',
+			'delete_retake_course_count',
 //			'update_user_course_items',
 //			'update_option_no_require_enroll',
 //			'update_post_meta',
@@ -86,10 +87,12 @@ class LP_Update_30 extends LP_Update_Base {
 			SELECT p.ID 
 			FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
-			INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s AND pm2.meta_value <> %s
+			LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s AND pm2.meta_value <> %s
 			WHERE p.post_type = %s AND p.post_parent = 0
 			LIMIT 0, 20
 		", '_lp_multi_users', '_order_version', '3.0.0', LP_ORDER_CPT );
+
+		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 		if ( ! $parent_orders = $wpdb->get_col( $query ) ) {
 			return true;//$this->_next_step();
@@ -136,6 +139,36 @@ class LP_Update_30 extends LP_Update_Base {
 		return false;
 	}
 
+	public function delete_retake_course_count() {
+		global $wpdb;
+		echo $query = $wpdb->prepare( "
+			DELETE
+			FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE meta_key = %s
+			LIMIT 10000
+		", '_lp_retaken_count' );
+
+		LP_Debug::timeStart( 'a' );
+		$wpdb->query( $query );
+
+		$query = $wpdb->prepare( "
+			SELECT COUNT(item_id)
+			FROM {$wpdb->learnpress_user_items} ui
+			INNER JOIN  {$wpdb->learnpress_user_itemmeta} uim on ui.user_item_id = uim.learnpress_user_item_id
+			WHERE uim.meta_key = %s
+		", '_lp_retaken_count' );
+
+		$count = absint( $wpdb->get_var( $query ) );
+		var_dump( $count );
+		LP_Debug::timeEnd( 'a' );
+
+		if ( $count ) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * ========== STEP #3 ==========
 	 *
@@ -144,22 +177,28 @@ class LP_Update_30 extends LP_Update_Base {
 	public function update_user_course_items() {
 		LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
 
-		//return $this->_next_step();
+		LP_Debug::timeStart( 'a' );
 		// Get all courses in user items
 		$item_courses = $this->_get_item_courses( $this->get_min_user_item_id() );
 
 		if ( ! $item_courses ) {
+			LP_Debug::timeEnd( 'a' );
+
 			return true;//$this->_next_step();
 		}
+
+		LP_Debug::timeStart( 'b' );
 
 		$item_course_ids = wp_list_pluck( $item_courses, 'item_id' );
 		$item_course_ids = array_unique( $item_course_ids );
 
 		if ( ! $current_item_courses = $this->_get_current_item_courses( $item_course_ids ) ) {
 			//return $this->_next_step();
+			LP_Debug::timeEnd( 'b' );
 
 			return true;
 		}
+		LP_Debug::timeEnd( 'b' );
 
 		global $wpdb;
 
@@ -173,26 +212,30 @@ class LP_Update_30 extends LP_Update_Base {
 		$format       = array_fill( 0, sizeof( $item_course_ids ), '%d' );
 		$query_args[] = LP_COURSE_CPT;
 		$query_args[] = '_lp_retaken_count';
+		LP_Debug::timeStart( 'c' );
 
-		$query = $wpdb->prepare( "
-				DELETE FROM {$wpdb->learnpress_user_itemmeta} 
-				WHERE learnpress_user_item_id IN (
-					SELECT MAX(user_item_id)
-					FROM {$wpdb->learnpress_user_items}
-					WHERE item_id IN(" . join( ',', $format ) . ")
-						AND item_type = %s
-					GROUP BY user_id, item_id
-				)
-				AND meta_key = %s;
-			", $query_args );
-		$wpdb->query( $query );
+//		echo $query = $wpdb->prepare( "
+//				DELETE FROM {$wpdb->learnpress_user_itemmeta}
+//				WHERE learnpress_user_item_id IN (
+//					SELECT MAX(user_item_id)
+//					FROM {$wpdb->learnpress_user_items}
+//					WHERE item_id IN(" . join( ',', $format ) . ")
+//						AND item_type = %s
+//					GROUP BY user_id, item_id
+//				)
+//				AND meta_key = %s;
+//			", $query_args );
+//		$wpdb->query( $query );
+//		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
+		LP_Debug::timeEnd( 'c' );
+		LP_Debug::timeStart( 'd' );
 
 		/**
 		 * Re-Calculate number of retaken count and update again.
 		 */
 		$query_args = array( '_lp_retaken_count', LP_COURSE_CPT );
 		$query_args = array_merge( $query_args, $item_course_ids );
-		$query      = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 				INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
 				SELECT MAX( user_item_id ), %s, COUNT(*) - 1
 				FROM {$wpdb->learnpress_user_items}
@@ -201,8 +244,10 @@ class LP_Update_30 extends LP_Update_Base {
 				GROUP BY user_id, item_id
 			", $query_args );
 		$wpdb->query( $query );
+		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 		$user_item_ids = wp_list_pluck( $item_courses, 'user_item_id' );
+		LP_Debug::timeEnd( 'd' );
 
 //		foreach ( $user_item_ids as $user_item_id ) {
 //			learn_press_update_user_item_meta( $user_item_id, 'upgrade', 'yes' );
@@ -210,8 +255,6 @@ class LP_Update_30 extends LP_Update_Base {
 
 		$min_user_item_id = end( $user_item_ids ) + 1;
 		update_option( 'lp_update_min_user_item_id', $min_user_item_id );
-
-		//}
 
 		return false;
 	}
@@ -223,7 +266,6 @@ class LP_Update_30 extends LP_Update_Base {
 	 */
 	public function update_option_no_require_enroll() {
 		global $wpdb;
-		LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
 
 		$query = $wpdb->prepare( "
 			SELECT *
@@ -241,7 +283,6 @@ class LP_Update_30 extends LP_Update_Base {
 	 * Update/Convert post meta
 	 */
 	public function update_post_meta() {
-		LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
 
 		global $wpdb;
 
@@ -254,6 +295,7 @@ class LP_Update_30 extends LP_Update_Base {
 			WHERE p.post_type = %s
 			ORDER BY ID
 		", '_lp_show_hide_question', '_lp_show_result', 'lp_quiz' );
+		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 		if ( $rows = $wpdb->get_results( $query ) ) {
 			foreach ( $rows as $row ) {
@@ -269,6 +311,8 @@ class LP_Update_30 extends LP_Update_Base {
 			FROM {$wpdb->postmeta}
 			WHERE meta_key = %s AND (meta_value = %s OR meta_value = %s)
 		", '_lp_passing_grade_type', 'no', 'point' );
+		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
+
 
 		if ( $rows = $wpdb->get_results( $query ) ) {
 			foreach ( $rows as $row ) {
@@ -284,6 +328,7 @@ class LP_Update_30 extends LP_Update_Base {
 			WHERE p.post_type = %s
 			ORDER BY ID
 		", '_lp_show_check_answer', '_lp_show_hint', 'lp_quiz' );
+		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 		//
 		if ( $rows = $wpdb->get_results( $query ) ) {
@@ -309,8 +354,6 @@ class LP_Update_30 extends LP_Update_Base {
 	 * ========== STEP #6 ==========
 	 */
 	public function update_settings() {
-		LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
-
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT *
@@ -382,7 +425,6 @@ class LP_Update_30 extends LP_Update_Base {
 	public function get_child_orders( $parent_id ) {
 		global $wpdb;
 		$order = new LP_Order( $parent_id );
-		LP_Debug::instance()->add( $order->get_child_orders(), false, false, true );
 
 		return $order->get_child_orders();
 	}
@@ -411,6 +453,7 @@ class LP_Update_30 extends LP_Update_Base {
 			) X
 			GROUP BY user_id, item_id
 		", $query_args );
+		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 		return $wpdb->get_results( $query );
 	}
@@ -439,6 +482,7 @@ class LP_Update_30 extends LP_Update_Base {
 				ORDER BY user_item_id ASC
 				LIMIT 0, 50
 			", LP_COURSE_CPT, $min_user_item_id );
+			LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 			return $wpdb->get_results( $query );
 		}
@@ -478,6 +522,6 @@ class LP_Update_30 extends LP_Update_Base {
 }
 
 $updater = new LP_Update_30();
-$return  = $updater->update();
+$return  = $updater->update( LP_Request::get( 'force' ) == 'true' );
 
-return array( 'done' => $return, 'percent' => $updater->get_percent() );
+return array( 'done' => $return, 'percent' => $updater->get_percent(), 'step' => $updater->x );

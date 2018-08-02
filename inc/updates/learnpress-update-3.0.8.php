@@ -25,6 +25,6 @@ class LP_Update_308 extends LP_Update_Base {
 }
 
 $updater = new LP_Update_308();
-$return  = $updater->update();
+$return  = $updater->update( LP_Request::get( 'force' ) == 'true' );
 
 return array( 'done' => $return, 'percent' => $updater->get_percent() );

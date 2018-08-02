@@ -28,6 +28,8 @@ class LP_Updater {
 	 */
 	protected $version = '';
 
+	protected $has_notice = false;
+
 	/**
 	 * LP_Updater constructor.
 	 */
@@ -86,22 +88,27 @@ class LP_Updater {
 	}
 
 	public function get_update_packages() {
+
 		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ) ) ) {
 			die( __( 'Invalid request.', 'learnpress' ) );
 		}
+
+		$force      = LP_Request::get( 'force' );
 		$packages   = $this->get_update_files();
 		$versions   = array_keys( $packages );
 		$latest_ver = end( $versions );
 		$db_version = get_option( 'learnpress_db_version' );
 
-		// Check latest version with the value updated in db
-		if ( ! $db_version || version_compare( $db_version, $latest_ver, '>=' ) ) {
-			$packages = array();
-		} else {
-			if ( $packages ) {
-				foreach ( $packages as $package_version => $package ) {
-					if ( version_compare( $db_version, $package_version, '>' ) ) {
-						unset( $packages[ $package_version ] );
+		if ( $force !== 'true' ) {
+			// Check latest version with the value updated in db
+			if ( ! $db_version || version_compare( $db_version, $latest_ver, '>=' ) ) {
+				$packages = array();
+			} else {
+				if ( $packages ) {
+					foreach ( $packages as $package_version => $package ) {
+						if ( version_compare( $db_version, $package_version, '>' ) ) {
+							unset( $packages[ $package_version ] );
+						}
 					}
 				}
 			}
@@ -347,6 +354,8 @@ class LP_Updater {
 			return;
 		}
 
+		$this->has_notice = true;
+
 //			// If version to update is less than in db
 //			if ( version_compare( $latest_ver, $db_version, '<' ) ) {
 //				return;
@@ -354,6 +363,10 @@ class LP_Updater {
 
 		// Show message if the latest version is not already updated
 		add_action( 'admin_notices', array( $this, 'require_update_message' ), 20 );
+	}
+
+	public function has_update() {
+		return $this->has_notice;
 	}
 
 	/**

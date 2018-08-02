@@ -7,6 +7,7 @@
 
 defined( 'ABSPATH' ) or exit;
 ?>
+
 <div id="learn-press-updater" class="notice notice-warning lp-notice-update-database">
     <p v-show="!status">
 		<?php _e( '<strong>LearnPress update</strong> – We need to update your database to the latest version.', 'learnpress' ); ?>
