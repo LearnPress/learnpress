@@ -98,6 +98,8 @@ class LP_Updater {
 		$versions   = array_keys( $packages );
 		$latest_ver = end( $versions );
 		$db_version = get_option( 'learnpress_db_version' );
+		delete_option('learnpress_updater_step');
+		delete_option('learnpress_updater_running_step');
 
 		if ( $force !== 'true' ) {
 			// Check latest version with the value updated in db
