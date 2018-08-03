@@ -249,19 +249,10 @@ class LP_Update_30 extends LP_Update_Base {
 	 * Upgrade user course items
 	 */
 	public function update_user_course_items() {
+
 		LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
 
-		// Get all courses in user items
-		$item_courses = $this->_get_item_courses( $this->get_min_user_item_id() );
-
-		if ( ! $item_courses ) {
-			return true;
-		}
-
-		$item_course_ids = wp_list_pluck( $item_courses, 'item_id' );
-		$item_course_ids = array_unique( $item_course_ids );
-
-		if ( ! $current_item_courses = $this->_get_current_item_courses( $item_course_ids ) ) {
+		if ( ! $course_id = $this->get_course() ) {
 			return true;
 		}
 
@@ -270,29 +261,49 @@ class LP_Update_30 extends LP_Update_Base {
 		LP_Debug::timeStart( 'c' );
 
 
-		/**
-		 * Re-Calculate number of retaken count and update again.
-		 */
-		$format       = array_fill( 0, sizeof( $item_course_ids ), '%d' );
-		$query_args = array( '_lp_retaken_count', LP_COURSE_CPT );
-		$query_args = array_merge( $query_args, $item_course_ids );
 		echo $query = $wpdb->prepare( "
 				INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
-				SELECT MAX( user_item_id ), %s, COUNT(*) - 1
-				FROM {$wpdb->learnpress_user_items}
-				WHERE item_type = %s
-					AND item_id IN(" . join( ',', $format ) . ")
+				SELECT user_item_id, %s, COUNT(user_item_id) - 1 Y
+				FROM (
+					SELECT user_item_id, user_id, item_id
+					FROM wp_learnpress_user_items
+					WHERE item_id = %d
+	                ORDER BY user_item_id DESC
+		      	) X
 				GROUP BY user_id, item_id
-			", $query_args );
+			", '_lp_retaken_count', $course_id );
+
 		$wpdb->query( $query );
 
-		$user_item_ids    = wp_list_pluck( $item_courses, 'user_item_id' );
-		$min_user_item_id = end( $user_item_ids ) + 1;
 
-		update_option( 'lp_update_min_user_item_id', $min_user_item_id );
 		LP_Debug::timeEnd( 'c' );
 
 		return false;
+	}
+
+	public function get_course() {
+		global $wpdb;
+
+		$current_course = absint( get_option( 'lp_update_current_course', 0 ) );
+		echo $query = $wpdb->prepare( "
+			SELECT ID
+			FROM {$wpdb->posts}
+			WHERE ID > %d 
+				AND post_status = %s
+				AND post_type = %s
+			ORDER BY ID ASC
+			LIMIT 1
+		", $current_course, 'publish', LP_COURSE_CPT );
+
+		$course_id = $wpdb->get_var( $query );
+
+		if ( $course_id ) {
+			update_option( 'lp_update_current_course', $course_id );
+		} else {
+			delete_option( 'lp_update_current_course' );
+		}
+
+		return $course_id;
 	}
 
 	/**
