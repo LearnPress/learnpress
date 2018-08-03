@@ -204,9 +204,23 @@ class LP_Assets extends LP_Abstract_Assets {
 				$enqueue = apply_filters( 'learn-press/enqueue-script', $enqueue, $handle );
 				if ( $handle == 'font-awesome' || $enqueue ) {
 					wp_enqueue_script( $handle );
+				} else {
+					$args = wp_parse_args( $data, array(
+						'url'       => '',
+						'deps'      => array(),
+						'ver'       => '',
+						'in_footer' => false
+					) );
+					list( $url, $deps, $ver, $in_footer ) = array_values( $args );
+
+					//wp_register_script($handle);
+
+					wp_register_script( $handle, $url, $deps, $ver, $in_footer );
 				}
 			}
 		}
+
+		do_action( 'learn-press/frontend-enqueue-scripts' );
 
 		/**
 		 * Enqueue scripts
@@ -218,6 +232,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				wp_enqueue_style( $handle );
 			}
 		}
+
+		do_action( 'learn-press/frontend-enqueue-styles' );
 	}
 
 
