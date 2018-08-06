@@ -713,7 +713,7 @@ function learn_press_get_temp_users() {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT ID
-			FROM {$wpdb->users} u 
+			FROM {$wpdb->users} u
 			INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
 			LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
 		", '_lp_temp_user', 'yes', '_lp_expiration' );
@@ -913,13 +913,13 @@ function learn_press_user_update_user_info() {
 			}
 			exit();
 		}
-# 
+#
 # END OF UPLOAD TEMP PROFILE PICTURE
 # - - - - - - - - - - - - - - - - - - - -
 
 # - - - - - - - - - - - - - - - - - - - -
 # CREATE PROFILE PICTURE & THUMBNAIL
-#	
+#
 		if ( isset( $_POST['sub_action'] ) && 'crop_avatar' === $_POST['sub_action'] && isset( $_POST['avatar_filename'] ) ) {
 			$avatar_filename = filter_input( INPUT_POST, 'avatar_filename', FILTER_SANITIZE_STRING );
 			$avatar_filepath = $upload_dir . DIRECTORY_SEPARATOR . $avatar_filename;
@@ -1009,14 +1009,14 @@ function learn_press_user_update_user_info() {
 			}
 			exit();
 		}
-#		
+#
 # CREATE PROFILE PICTURE & THUMBNAIL
 # - - - - - - - - - - - - - - - - - - - -
 
 
 # - - - - - - - - - - - - - - - - - - - -
 # UPDATE USER INFO
-#	
+#
 		$return      = array();
 		$update_data = array(
 			'ID'           => $user_id,
@@ -1293,6 +1293,24 @@ function _learn_press_redirect_logout_redirect() {
 }
 
 add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
+
+function _learn_press_redirect_login_redirect() {
+  $redirect_to = LP_Request::get_string( 'redirect_to' );
+  $admin_url   = admin_url();
+  $pos         = strpos( $redirect_to, $admin_url );
+
+  if ( $pos !== false ) {
+    return;
+  }
+
+  if ( ( $page_id = LP()->settings->get( 'login_redirect_page_id' ) ) && get_post( $page_id ) ) {
+    $page_url = get_page_link( $page_id );
+    wp_redirect( $page_url );
+    exit();
+  }
+}
+
+add_action( 'wp_login', '_learn_press_redirect_login_redirect' );
 
 function learn_press_get_profile_endpoints() {
 	$endpoints = (array) LP()->settings->get( 'profile_endpoints' );
@@ -1758,7 +1776,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
 	$query = $wpdb->prepare( "
         DELETE
         FROM {$wpdb->learnpress_user_items}
-        WHERE user_id = %d 
+        WHERE user_id = %d
         AND ( item_id IN(" . join( ',', $format ) . ")
         $where )
     ", $args );
