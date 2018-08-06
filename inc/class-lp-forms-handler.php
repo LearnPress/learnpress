@@ -152,10 +152,13 @@ class LP_Forms_Handler {
 
 			learn_press_add_message( $message, 'success' );
 		}
+		if ( ! $redirect = LP_Request::get( 'redirect_to' ) ) {
+			$redirect = LP_Request::get_redirect( learn_press_get_current_url() );
+		}
 
 		learn_press_maybe_send_json( $result, 'learn_press_print_messages' );
 
-		if ( ( $result['result'] === 'success' ) && $redirect = LP_Request::get( 'redirect_to' ) ) {
+		if ( ( $result['result'] === 'success' ) && $redirect ) {
 			wp_redirect( $redirect );
 			exit();
 		}
