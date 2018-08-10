@@ -3773,7 +3773,7 @@ function learn_press_get_link_current_question_instead_of_continue_button( $link
 		$user      = LP_Global::user();
 		$course    = $item->get_course();
 		$quiz_data = $user->get_item_data( $item->get_id(), $course->get_id() );
-		if ( $quiz_data->get_status() === 'started' ) {
+		if ( $quiz_data && $quiz_data->get_status() === 'started' ) {
 			$link = $item->get_question_link( $quiz_data->get_current_question() );
 		}
 	}
