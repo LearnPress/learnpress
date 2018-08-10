@@ -49,8 +49,7 @@ $query         = $profile->query_courses( 'own', array( 'status' => $filter_stat
 			wp_reset_postdata();
 			?>
         </ul>
-
-		<?php $query->get_nav( '', true ); ?>
+		<?php $query->get_nav( '', true, $profile->get_current_url() ); ?>
 
 	<?php } ?>
 </div>

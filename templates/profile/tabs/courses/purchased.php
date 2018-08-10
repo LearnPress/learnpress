@@ -73,7 +73,7 @@ $query         = $profile->query_courses( 'purchased', array( 'status' => $filte
 					<?php echo $query->get_offset_text(); ?>
                 </td>
                 <td colspan="2" class="nav-pages">
-					<?php $query->get_nav_numbers( true ); ?>
+					<?php $query->get_nav_numbers( true, $profile->get_current_url() ); ?>
                 </td>
             </tr>
             </tfoot>
