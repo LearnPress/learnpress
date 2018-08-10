@@ -278,12 +278,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$hasPaid = false;
 			$filter_status = LP_Request::get_string( 'filter-status' );
 			$query = $this->get_purchased_courses();
-			if(sizeof($query['items']) > 1){
+			if(sizeof($query['items']) > 0){
 				$hasPaid = true;
 			}
 			return $hasPaid;
 		}
-		
+
 		/**
 		 * Check if a course is exists then return it's ID.
 		 * Try to get it from global.
