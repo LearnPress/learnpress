@@ -681,12 +681,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( ! $price /* || 'yes' != $this->get_data('payment') */ ) {
 				$price = 0;
 			} else {
-				$theUser = learn_press_get_current_user();
-				$userCourses = learn_press_get_all_courses();
-				$hasPaid = false;
-				if (sizeof($theUser->get_purchased_courses()) > 0){
-					$hasPaid = true;
-				}
+				$hasPaid = learn_press_get_current_user()->is_returning();
 				$maybe_discount = LP()->settings->get( 'returning_customer_discount');
 				if ($hasPaid && $maybe_discount > 0){
 					$price = floatval($price);
