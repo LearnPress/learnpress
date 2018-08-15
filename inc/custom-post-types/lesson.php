@@ -185,7 +185,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$query = $wpdb->prepare( "
 		        SELECT COUNT(ID)
 		        FROM {$wpdb->posts} p 
-		        WHERE p.post_type = %s
+		        WHERE p.post_type = %s AND p.post_status NOT LIKE 'auto-draft'
 		    ", LP_LESSON_CPT );
 
 			return $wpdb->get_var( $query ) - $this->get_preview_items();
