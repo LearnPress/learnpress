@@ -170,11 +170,11 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 */
 		public static function get_default_meta() {
 			$meta = array(
-				'duration' => '30 minute',
+				'duration' => '0 minute',
 				'preview'  => 'no'
 			);
 
-			return apply_filters( 'learn-press/course/default-meta', $meta );
+			return apply_filters( 'learn-press/course/lesson/default-meta', $meta );
 		}
 
 		/**
