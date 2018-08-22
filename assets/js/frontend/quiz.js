@@ -63,9 +63,8 @@
             }
 
             if (overtime) {
-                // console.log('Overtime')
-                // return;
-                //
+                $('form.complete-quiz').off('submit.learn-press-confirm');
+                callbackEvents.callEvent('finish');
                 return;
             }
             thisSettings.remainingTime--;
@@ -141,6 +140,12 @@
 
         this.getRemainingTime = function () {
             return remainingTime;
+        }
+
+        if(thisSettings.remainingTime <= 0){
+            // Disable confirm message
+            $('form.complete-quiz').off('submit.learn-press-confirm');
+            callbackEvents.callEvent('finish');
         }
 
         init();
