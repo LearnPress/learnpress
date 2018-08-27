@@ -579,6 +579,8 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				if ( $request_tab === $v['id'] ) {
 					$v['active'] = true;
 					$has_active  = $k;
+				} elseif(isset($v['active']) && $v['active'] ){
+					$has_active = true;
 				}
 				$tabs[ $k ] = $v;
 			}
