@@ -547,9 +547,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'icon'     => 'dashicons-format-chat'
 				);
 			}
-			if ( is_super_admin() ) {
-				$default_tabs['author'] = new RW_Meta_Box( self::author_meta_box() );
-			}
+			
+			$default_tabs['author'] = new RW_Meta_Box( self::author_meta_box() );
+			
 
 			$course_tabs = apply_filters( 'learn-press/admin-course-tabs', $default_tabs );
 			new LP_Meta_Box_Tabs(
@@ -937,28 +937,32 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 				}
 			}
-
+			$fields = array ();
+			if (is_super_admin ()) {
+				$fields [] = array (
+						'name' => __ ( 'Author', 'learnpress' ),
+						'id' => '_lp_course_author',
+						'desc' => '',
+						'multiple' => false,
+						'allowClear' => false,
+						'type' => 'select',
+						'options' => $include,
+						'std' => $author 
+				);
+			}
 			$meta_box = array(
 				'id'       => 'course_authors',
 				'title'    => __( 'Author', 'learnpress' ),
 				'pages'    => array( LP_COURSE_CPT ),
 				'icon'     => 'dashicons-businessman',
 				'priority' => 'default',
-				'fields'   => array(
-					array(
-						'name'       => __( 'Author', 'learnpress' ),
-						'id'         => '_lp_course_author',
-						'desc'       => '',
-						'multiple'   => false,
-						'allowClear' => false,
-						'type'       => 'select',
-						'options'    => $include,
-						'std'        => $author
-					)
-				)
+				'fields'   => $fields
 			);
-
-			return apply_filters( 'learn_press_course_author_meta_box', $meta_box );
+			$meta_box = apply_filters( 'learn_press_course_author_meta_box', $meta_box );
+			if(empty($meta_box['fields'])){
+				return false;
+			}
+			return $meta_box;
 
 		}
 
