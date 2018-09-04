@@ -43,9 +43,9 @@ function learn_press_lesson_comment_form() {
 
 	$user = learn_press_get_current_user();
 
-	if ( ! $user->is_admin() && ! $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
-		return;
-	}
+// 	if ( ! $user->is_admin() && ! $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
+// 		return;
+// 	}
 
 	if ( $lesson->setup_postdata() ) {
 

@@ -933,7 +933,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
         
-        payload['code'] = $store.getters.code;
+        payload['code'] = Date.now();
         $( '#publishing-action #publish' ).addClass( 'disabled' );
         $( '#publishing-action .spinner' ).addClass( 'is-active' );
         $( '#publishing-action' ).addClass( 'code-'+payload['code'] );

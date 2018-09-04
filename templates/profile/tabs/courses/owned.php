@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.11.2
  */
 
 /**
@@ -49,8 +49,7 @@ $query         = $profile->query_courses( 'own', array( 'status' => $filter_stat
 			wp_reset_postdata();
 			?>
         </ul>
-
-		<?php $query->get_nav( '', true ); ?>
+		<?php $query->get_nav( '', true, $profile->get_current_url() ); ?>
 
 	<?php } ?>
 </div>

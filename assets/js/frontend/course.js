@@ -451,7 +451,9 @@
             fitVideo();
 
             fullScreen = window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
-
+            if($(window).width()<=768){
+                fullScreen = true;
+            }
             if (fullScreen) {
                 var curriculumWidth = getCurriculumWidth();
                 $body.addClass('full-screen-content-item');

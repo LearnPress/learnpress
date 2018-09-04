@@ -191,11 +191,16 @@ class LP_User_Factory {
 					$item        = $curd->get_user_item_by_id( $user_item_id );
 					$last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
 					$args        = array( 'status' => $last_status );
-					if ( $new_status == 'completed' ) {
+					$user 		= learn_press_get_user($user_id);
+					$course_id 	= $item['item_id'];
+					$can_enroll 	= $user->can_enroll_course($course_id);
+					$auto_enroll 	= LP()->settings->get( 'auto_enroll' ) == 'yes';
+					if ( $new_status == 'completed' && $can_enroll && $auto_enroll) {
 						$args['status'] = 'enrolled';
 					}
 					if ( ! $last_status ) {
-						if ( 'enrolled' == ( $args['status'] = LP()->settings->get( 'auto_enroll' ) == 'no' ? 'purchased' : 'enrolled' ) ) {
+						$args['status'] = $auto_enroll && $can_enroll ? 'enrolled' : 'purchased';
+						if ( 'enrolled' == $args['status'] ) {
 							$time                   = new LP_Datetime();
 							$args['start_time']     = $time->toSql();
 							$args['start_time_gmt'] = $time->toSql( false );

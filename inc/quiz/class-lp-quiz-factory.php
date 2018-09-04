@@ -359,6 +359,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 			// Redirecting...
 			if ( ! empty( $result['redirect'] ) ) {
+				wp_cache_flush();
 				wp_redirect( $result['redirect'] );
 				exit();
 			}

@@ -150,8 +150,7 @@ class LP_Preview_Course {
 
 			//learn_press_debug($_SERVER);die();
 
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 			wp_redirect( get_home_url() );
 			exit();
@@ -229,7 +228,16 @@ class LP_Preview_Course {
 
 	public static function reduce_counts( $counts, $type, $perm ) {
 		if ( ( LP_COURSE_CPT === $type ) && ( $ids = self::get_preview_courses() ) ) {
-			$counts->publish -= sizeof( $ids );
+			foreach ( $ids as $id ) {
+				switch ( get_post_status( $id ) ) {
+					case 'draft':
+						$counts->draft -= 1;
+						break;
+					default:
+						$counts->publish -= 1;
+						break;
+				}
+			}
 		}
 
 		return $counts;

@@ -137,7 +137,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				}
 
 				if ( file_exists( $file ) ) {
-					$this->backgrounds[ $name ] = include $file;
+					$this->backgrounds[ $name ] = include_once $file;
 				}
 			}
 		}
