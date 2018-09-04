@@ -19,7 +19,6 @@ jQuery( function ( $ ) {
 				$timestamp.val( getTimestamp( $picker.datetimepicker( 'getDate' ) ) );
 			};
 		}
-
 		if ( $inline.length ) {
 			options.altField = '#' + $this.attr( 'id' );
 			$this.on( 'keydown', _.debounce( function () {
@@ -35,10 +34,12 @@ jQuery( function ( $ ) {
 				.prop( 'id', '' )
 				.datetimepicker( options )
 				.datetimepicker( 'setDate', current );
-		}
+
+
+        }
 		else {
 			$this.removeClass( 'hasDatepicker' ).datetimepicker( options );
-		}
+        }
 	}
 
 	/**

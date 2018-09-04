@@ -282,7 +282,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @param $course_id
 		 */
 		public function update_course( $course_id ) {
-
 			global $wpdb;
 
 			/**
@@ -343,6 +342,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 				update_post_meta( $quiz_id, '_lp_passing_grade', $passing_grade );
 			}
+
 		}
 
 		/**
@@ -708,7 +708,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				                             . __( '<p>E.g: Course has 10 quizzes and user completed 5 quizzes then the result = 5/10 = 50%.</p>', 'learnpress' ),
 			);
 
-			$course_result_option_tip = '<span class="learn-press-tip">%s</span>';
+			$course_result_option_tip = '<span class="learn-press-tip" data-x="1234">%s</span>';
 
 			$meta_box = array(
 				'id'       => 'course_assessment',
@@ -818,9 +818,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$message = __( 'This course is free.', 'learnpress' );
 					};
 				}
-				$sale_price_dates_class = 'lp-course-sale_end-field';
+				$sale_price_dates_class = '';
 				if ( ! $start_date && ! $end_date ) {
-					$sale_price_dates_class .= ' hide-if-js';
+					$sale_price_dates_class .= 'hide-if-js';
 				}
 				$message     .= sprintf( __( 'Course price in <strong>%s</strong> currency.', 'learnpress' ), learn_press_get_currency() );
 				$conditional = array(
@@ -852,11 +852,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'min'        => 0,
 						'step'       => 0.01,
 						'desc'       => sprintf(
-							                '<p class="description">%s %s</p>',
+							                '%s %s',
 							                sprintf( __( 'Course sale price in <strong>%s</strong> currency.', 'learnpress' ), learn_press_get_currency() ),
 							                __( 'Leave blank to remove sale price.', 'learnpress' )
 						                )
-						                . '<a href="#"' . ( $start_date || $end_date ? ' style="display:none;"' : '' ) . ' id="_lp_sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
+						                . ' <a href="#"' . ( $start_date || $end_date ? ' style="display:none;"' : '' ) . ' id="_lp_sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
 						'std'        => $sale_price,
 						'visibility' => $conditional
 					),
@@ -865,7 +865,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'         => '_lp_sale_start',
 						'type'       => 'datetime',
 						'std'        => $start_date,
-						'class'      => $sale_price_dates_class,
+						'class'      => $sale_price_dates_class . ' lp-course-sale_start-field',
 						'visibility' => $conditional
 					),
 					array(
@@ -874,7 +874,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'       => 'datetime',
 						'desc'       => '<a href="#" id="_lp_sale_price_schedule_cancel">' . __( 'Cancel', 'learnpress' ) . '</a>',
 						'std'        => $end_date,
-						'class'      => $sale_price_dates_class,
+						'class'      => $sale_price_dates_class . ' lp-course-sale_end-field',
 						'visibility' => $conditional
 					)
 				);
