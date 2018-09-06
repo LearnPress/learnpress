@@ -140,7 +140,7 @@ class LP_Plugins_Helper {
 	public static function get_plugins_from_wp( $args = null ) {
 
 		if ( ! ( $plugins = get_transient( 'lp_plugins_wp' ) ) ) {
-			LP()->background('query-items')->push_to_queue(
+			LP()->background( 'query-items' )->push_to_queue(
 				array(
 					'callback' => array( 'LP_Background_Query_Items', 'query_free_addons' )
 				)
@@ -160,7 +160,7 @@ class LP_Plugins_Helper {
 	public static function get_premium_plugins() {
 
 		if ( ! ( $plugins = get_transient( 'lp_plugins_tp' ) ) ) {
-			LP()->background('query-items')->push_to_queue(
+			LP()->background( 'query-items' )->push_to_queue(
 				array(
 					'callback' => array( 'LP_Background_Query_Items', 'query_premium_addons' )
 				)
@@ -183,7 +183,7 @@ class LP_Plugins_Helper {
 		self::$themes = get_transient( 'lp_related_themes' );
 
 		if ( ! self::$themes ) {
-			LP()->background('query-items')->push_to_queue(
+			LP()->background( 'query-items' )->push_to_queue(
 				array(
 					'callback' => array( 'LP_Background_Query_Items', 'get_related_themes' )
 				)
@@ -220,7 +220,7 @@ class LP_Plugins_Helper {
 	public static function count_themes( $type = '' ) {
 		$count = 0;
 
-		if ( $themes = self::get_related_themes() ) {
+		if ( ( $themes = self::get_related_themes() ) && is_array( $themes ) ) {
 			if ( array_key_exists( $type, $themes ) ) {
 				$count = ! empty( $themes[ $type ] ) ? sizeof( $themes[ $type ] ) : 0;
 			} else {
