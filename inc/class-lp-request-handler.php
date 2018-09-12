@@ -286,12 +286,13 @@ class LP_Request {
 			learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
 		} else {
 			/// Need?
-			if( 'enroll-course' == $action){
-				if(!$user->can_enroll_course($course_id)){
+			if ( 'enroll-course' == $action ) {
+				if ( ! $user->can_enroll_course( $course_id ) ) {
 					learn_press_add_message(
 						sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
 						'error'
-						);
+					);
+
 					return false;
 				}
 			}
@@ -575,7 +576,20 @@ class LP_Request {
 				$return = floatval( $return );
 				break;
 			case 'bool':
-				$return = ! ! $return;
+				try {
+					$value = strtolower( $return );
+				}
+				catch ( Exception $e ) {
+					$value = $return;
+				}
+
+				if ( in_array( $value, array( 'true', 'yes', 'on', 'enable' ) ) ) {
+					$return = true;
+				} elseif ( in_array( $value, array( 'false', 'no', 'off', 'disable' ) ) ) {
+					$return = false;
+				} else {
+					$return = ! ! $return;
+				}
 				break;
 			case 'string':
 				$return = (string) $return;

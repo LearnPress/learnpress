@@ -98,8 +98,8 @@ class LP_Updater {
 		$versions   = array_keys( $packages );
 		$latest_ver = end( $versions );
 		$db_version = get_option( 'learnpress_db_version' );
-		delete_option('learnpress_updater_step');
-		delete_option('learnpress_updater_running_step');
+		delete_option( 'learnpress_updater_step' );
+		delete_option( 'learnpress_updater_running_step' );
 
 		if ( $force !== 'true' ) {
 			// Check latest version with the value updated in db
@@ -133,11 +133,15 @@ class LP_Updater {
 			'result' => 'error'
 		);
 
-		if ( version_compare( $db_version, $latest_version, '>=' ) ) {
+		$nextStep = get_option( 'learnpress_updater_step' );
+
+		if ( version_compare( $db_version, $latest_version, '>=' ) || ! $nextStep ) {
 			$response['result']  = 'success';
 			$response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
+
+			delete_option( 'do-update-learnpress' );
 		} else {
-			$response['step'] = get_option( 'learnpress_updater_step' );
+			$response['step'] = $nextStep;
 		}
 
 		learn_press_send_json( $response );

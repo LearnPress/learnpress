@@ -29,6 +29,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 * LP_Admin_Editor_Quiz constructor.
 	 */
 	public function __construct() {
+
 		if ( did_action( 'init' ) ) {
 			$this->init();
 		} else {
@@ -40,7 +41,12 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$this->args = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => 'heartbeat' ) );
 		// get quiz
 		$quiz_id = $this->args['id'];
-		$quiz    = learn_press_get_quiz( $quiz_id );
+
+		if ( $quiz_id && get_post_type( $quiz_id ) !== LP_QUIZ_CPT ) {
+			return;
+		}
+
+		$quiz = learn_press_get_quiz( $quiz_id );
 
 		if ( ! $quiz ) {
 			return;
@@ -690,7 +696,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 				$question = LP_Question::get_question( $id );
 
-				$answers = $question->get_answers()->to_array();
+				$answers  = $question->get_answers()->to_array();
 				$post     = get_post( $id );
 				$result[] = apply_filters( 'learn-press/quiz-editor/question-data', array(
 					'id'       => $id,

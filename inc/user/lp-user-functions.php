@@ -165,11 +165,11 @@ function learn_press_add_user_roles() {
 	$settings = LP()->settings;
 
 	/* translators: user role */
-	_x( 'Instructor', 'User role' );
+	_x( 'LP Instructor', 'User role' );
 
 	add_role(
 		LP_TEACHER_ROLE,
-		'Instructor',
+		'LP Instructor',
 		array()
 	);
 

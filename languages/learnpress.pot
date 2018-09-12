@@ -6815,7 +6815,7 @@ msgstr ""
 
 #: inc/user/lp-user-functions.php:163
 msgctxt "User role"
-msgid "Instructor"
+msgid "LP Instructor"
 msgstr ""
 
 #: inc/user/lp-user-functions.php:382

@@ -1653,7 +1653,7 @@ function _learn_press_translate_user_roles( $translations, $text, $context, $dom
 
 	$plugin_domain = 'learnpress';
 	$roles         = array(
-		'Instructor'
+		'LP Instructor'
 	);
 
 	if (
