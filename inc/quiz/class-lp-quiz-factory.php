@@ -470,6 +470,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 				}
 
+				var_dump($_REQUEST);
 				$nav_type = LP_Request::get_string( 'nav-type' );
 
 				$course_id   = LP_Request::get_int( 'course-id' );
@@ -486,6 +487,9 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$course_data = $user->get_course_data( $course->get_id() );
 				$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
+				if('completed' === $quiz_data->get_status()){
+					return true;
+				}
 
 				// If user click 'Skip' button
 				if ( $nav_type === 'skip-question' ) {
