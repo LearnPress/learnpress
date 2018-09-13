@@ -20,10 +20,11 @@ class LP_Update_308 extends LP_Update_Base {
 	}
 
 	public function update_item_meta() {
-		$this->_next_step();
-
-		return;
+		return true;
 	}
 }
 
-return new LP_Update_308();
+$updater = new LP_Update_308();
+$return  = $updater->update( LP_Request::get( 'force' ) == 'true' );
+
+return array( 'done' => $return, 'percent' => $updater->get_percent() );
