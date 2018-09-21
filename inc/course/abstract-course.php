@@ -446,7 +446,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function get_curriculum_raw() {
 			$sections      = $this->get_sections( 'object' );
 			$sections_data = array();
-
 			if ( is_array( $sections ) ) {
 				foreach ( $sections as $section ) {
 					$sections_data[] = $section->to_array();
@@ -1739,12 +1738,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return array|LP_Course_Section[]|LP_Course_Section
 		 */
 		public function get_sections( $return = 'object', $section_id = 0 ) {
-
 			if ( false === ( $sections = wp_cache_get( 'course-' . $this->get_id(), 'learn-press/course-sections' ) ) ) {
 				$sections = $this->_curd->read_course_sections( $this->get_id() );
 				wp_cache_set( 'course-' . $this->get_id(), $sections, 'learn-press/course-sections' );
 			}
-
 			if ( $return == 'object' && $sections ) {
 				if ( empty( $this->sections ) ) {
 

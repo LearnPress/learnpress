@@ -227,9 +227,10 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array
 	 */
-	public function read_items( $section_id ) {
+	public function read_items( $section_id  ) {
 
 		global $wpdb;
+
 		$query = $wpdb->prepare( "
 			SELECT item_id id
 			FROM {$wpdb->learnpress_section_items} si 
@@ -237,10 +238,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
 			INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
 			WHERE s.section_id = %d
-			AND c.post_status = %s
 			AND it.post_status = %s
 			ORDER BY si.item_order, si.section_item_id ASC
-		", $section_id, 'publish', 'publish' );
+		", $section_id, /*'publish',*/ 'publish' );
 
 		return $wpdb->get_col( $query );
 	}
@@ -337,8 +337,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $section_id
-	 * @param int $item
+	 * @param int   $section_id
+	 * @param array $item
 	 *
 	 * @return array | bool
 	 */
@@ -358,7 +358,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( ! empty( $item['id'] ) ) {
 			$item['old_id'] = $item ['id'];
 		}
-
 		if ( $item['type'] == LP_LESSON_CPT ) {
 			$lesson_curd = new LP_Lesson_CURD();
 			$item['id']  = $lesson_curd->create( $args );
@@ -391,10 +390,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array
 	 */
 	public function add_items_section( $section_id, $items = array() ) {
-
 		$order         = 1;
 		$current_items = $this->get_section_items( $section_id );
-
 		// allow hook
 		do_action( 'learn-press/before-add-items-section', $items, $section_id, $this->course_id );
 
@@ -402,14 +399,13 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$all_items = array_merge( $current_items, $items );
 		$result    = array();
-
 		foreach ( $all_items as $item ) {
 
 			$item  = (array) $item;
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
 
 			if ( $exist ) {
-				$wpdb->update( $wpdb->learnpress_section_items,
+				$a = $wpdb->update( $wpdb->learnpress_section_items,
 					array( 'item_order' => $order ),
 					array(
 						'section_id' => $section_id,
@@ -417,7 +413,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					)
 				);
 			} else {
-				$wpdb->insert( $wpdb->learnpress_section_items,
+				$a = $wpdb->insert( $wpdb->learnpress_section_items,
 					array(
 						'section_id' => $section_id,
 						'item_id'    => $item['id'],
@@ -426,9 +422,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					)
 				);
 			}
-
-			learn_press_debug($wpdb);
-
 			// get WP Post
 			$post = get_post( $item['id'] );
 			$item = array_merge(

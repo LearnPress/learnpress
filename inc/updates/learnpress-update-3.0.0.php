@@ -40,33 +40,28 @@ class LP_Update_30 extends LP_Update_Base {
 	public function add_column_user_items() {
 		global $wpdb;
 
-		LP_Debug::timeStart( 'a' );
 		// Add columns start_time_gmt, end_time_gmt
-		echo $sql = $wpdb->prepare( "
+		$sql = $wpdb->prepare( "
 			ALTER TABLE {$wpdb->learnpress_user_items}
 			ADD COLUMN `start_time_gmt` DATETIME NULL DEFAULT %s AFTER `start_time`,
 			ADD COLUMN `end_time_gmt` DATETIME NULL DEFAULT %s AFTER `end_time`;
 		", '0000-00-00 00:00:00', '0000-00-00 00:00:00' );
 		@$wpdb->query( $sql );
-		LP_Debug::timeEnd( 'a' );
 
 		// Update start_time_gmt, end_time_gmt with offset time from start_time, end_time
 		$time      = new LP_Datetime();
 		$offset    = $time->getOffset( true );
 		$null_time = LP_Datetime::getSqlNullDate();
 
-		LP_Debug::timeStart( 'b' );
-
-		echo $sql = $wpdb->prepare( "
+		$sql = $wpdb->prepare( "
 			UPDATE {$wpdb->learnpress_user_items}
 			SET 
 				start_time_gmt = IF(start_time = %s, %s, DATE_ADD(start_time, INTERVAL %f HOUR)),
 				end_time_gmt = IF(end_time = %s, %s, DATE_ADD(end_time, INTERVAL %f HOUR))
 		", $null_time, $null_time, $offset, $null_time, $null_time, $offset );
 		@$wpdb->query( $sql );
-		LP_Debug::timeStart( 'b' );
 
-		echo $sql = $wpdb->prepare( "
+		$sql = $wpdb->prepare( "
 			ALTER TABLE {$wpdb->learnpress_user_items}
 			CHANGE COLUMN `user_id` `user_id` BIGINT(20) NOT NULL DEFAULT %d ,
 			CHANGE COLUMN `item_id` `item_id` BIGINT(20) NOT NULL DEFAULT %d ;
@@ -79,7 +74,6 @@ class LP_Update_30 extends LP_Update_Base {
 
 	public function add_table_indexes() {
 		global $wpdb;
-
 
 		// Change data size, drop and re-add index for tables
 		$wpdb->query( "
@@ -149,9 +143,8 @@ class LP_Update_30 extends LP_Update_Base {
 	 * @return bool
 	 */
 	public function upgrade_orders() {
-		LP_Debug::timeStart( __FUNCTION__ );
 		global $wpdb;
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			SELECT p.ID 
 			FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
@@ -165,12 +158,9 @@ class LP_Update_30 extends LP_Update_Base {
 		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 		if ( ! $parent_orders = $wpdb->get_col( $query ) ) {
-			LP_Debug::timeEnd( __FUNCTION__ );
-
 			return true;
 		}
 
-		print_r( $parent_orders );
 		foreach ( $parent_orders as $parent_id ) {
 			update_post_meta( $parent_id, '_order_version', '3.0.0' );
 
@@ -208,21 +198,18 @@ class LP_Update_30 extends LP_Update_Base {
 			update_post_meta( $parent_id, '_user_id', $order_users );
 
 		}
-		LP_Debug::timeEnd( __FUNCTION__ );
-
 		return sizeof( $parent_orders ) < 20 ? true : false;
 	}
 
 	public function delete_retake_course_count() {
 		global $wpdb;
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			DELETE
 			FROM {$wpdb->learnpress_user_itemmeta}
 			WHERE meta_key = %s
 			LIMIT 10000
 		", '_lp_retaken_count' );
 
-		LP_Debug::timeStart( 'a' );
 		$wpdb->query( $query );
 
 		$query = $wpdb->prepare( "
@@ -233,8 +220,6 @@ class LP_Update_30 extends LP_Update_Base {
 		", '_lp_retaken_count' );
 
 		$count = absint( $wpdb->get_var( $query ) );
-		var_dump( $count );
-		LP_Debug::timeEnd( 'a' );
 
 		if ( $count ) {
 			return false;
@@ -258,10 +243,7 @@ class LP_Update_30 extends LP_Update_Base {
 
 		global $wpdb;
 
-		LP_Debug::timeStart( 'c' );
-
-
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 				INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
 				SELECT user_item_id, %s, COUNT(user_item_id) - 1 Y
 				FROM (
@@ -275,9 +257,6 @@ class LP_Update_30 extends LP_Update_Base {
 
 		$wpdb->query( $query );
 
-
-		LP_Debug::timeEnd( 'c' );
-
 		return false;
 	}
 
@@ -285,7 +264,7 @@ class LP_Update_30 extends LP_Update_Base {
 		global $wpdb;
 
 		$current_course = absint( get_option( 'lp_update_current_course', 0 ) );
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			SELECT ID
 			FROM {$wpdb->posts}
 			WHERE ID > %d 
@@ -506,7 +485,7 @@ class LP_Update_30 extends LP_Update_Base {
 
 		if ( $min_user_item_id > 0 ) {
 
-			echo $query = $wpdb->prepare( "
+			$query = $wpdb->prepare( "
 				SELECT DISTINCT user_item_id, item_id
 				FROM {$wpdb->learnpress_user_items} ui
 				WHERE item_type = %s AND parent_id = 0
@@ -556,4 +535,4 @@ class LP_Update_30 extends LP_Update_Base {
 $updater = new LP_Update_30();
 $return  = $updater->update( LP_Request::get( 'force' ) == 'true' );
 
-return array( 'done' => $return, 'percent' => $updater->get_percent(), 'step' => $updater->x );
+return array( 'done' => $return, 'percent' => $updater->get_percent() );

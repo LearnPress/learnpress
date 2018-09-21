@@ -233,12 +233,22 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 * Read all items in a course from database with an array in pair of
 		 * post ID and post type.
 		 *
-		 * @param int $course_id
+		 * @param int  $course_id
+		 * @param bool $publish_only
 		 *
 		 * @return array
 		 */
-		public function read_course_items( $course_id ) {
+		public function read_course_items( $course_id, $publish_only = true ) {
 			global $wpdb;
+			$where = '';
+
+			if ( $publish_only ) {
+				$where = $wpdb->prepare( "
+					AND c.post_status = %s 
+					AND it.post_status = %s
+				", 'publish', 'publish' );
+			}
+
 			$query = $wpdb->prepare( "
 				SELECT item_id id, item_type `type`, si.section_id
 				FROM {$wpdb->learnpress_section_items} si 
@@ -246,10 +256,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
 				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
 				WHERE c.ID = %d
-				AND c.post_status = %s 
-				AND it.post_status = %s
+				{$where}
 				ORDER BY s.section_order, si.item_order ASC
-			", $course_id, 'publish', 'publish' );
+			", $course_id );
 
 			return $wpdb->get_results( $query );
 		}

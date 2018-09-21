@@ -85,10 +85,6 @@ class LP_Update_Base {
 				if ( $callback == $step ) {
 					if ( is_callable( array( $this, $callback ) ) ) {
 
-//						if ( $running_step === $step ) {
-//							break;
-//						}
-
 						echo "Running " . get_class( $this ) . '::' . $callback, "\n";
 						update_option( 'learnpress_updater_running_step', $step );
 						if ( $return = call_user_func( array( $this, $callback ) ) ) {
@@ -162,8 +158,6 @@ class LP_Update_Base {
 			delete_option( 'learnpress_updater' );
 			LP_Install::update_db_version( $this->version );
 		}
-
-		var_dump( $step );
 
 		return true;
 	}

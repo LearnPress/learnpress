@@ -1411,19 +1411,22 @@ function learn_press_get_display_name_publicly( $user_id ) {
  * Check and update user information from request in user profile page
  */
 function learn_press_update_user_profile() {
+
 	if ( ! LP()->is_request( 'post' ) ) {
 		return;
 	}
 	$nonce = learn_press_get_request( 'profile-nonce' );
+
 	if ( ! wp_verify_nonce( $nonce, 'learn-press-update-user-profile-' . get_current_user_id() ) ) {
 		return;
 	}
 	$section = learn_press_get_request( 'lp-profile-section' );
+
 	do_action( 'learn_press_update_user_profile_' . $section );
 	do_action( 'learn_press_update_user_profile', $section );
 }
 
-add_action( 'init', 'learn_press_update_user_profile' );
+//add_action( 'init', 'learn_press_update_user_profile' );
 
 /**
  * Update user avatar
@@ -1499,7 +1502,7 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 		'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
 		'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
 		'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
-		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
+		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING )
 	);
 
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );
