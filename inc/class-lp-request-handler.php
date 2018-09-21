@@ -70,8 +70,13 @@ class LP_Request {
 	}
 
 	public static function maybe_redirect_checkout( $result, $order_id ) {
-
-		if ( $course_id = get_transient( 'checkout_enroll_course_id' ) ) {
+		$course_id = get_transient( 'checkout_enroll_course_id' );
+		if(!$course_id){
+			if(isset($_REQUEST['enroll-course']) && $_REQUEST['enroll-course']){
+				$course_id = $_REQUEST['enroll-course'];
+			}
+		}
+		if ( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 			$course_items = $course->get_items();
 			$first_item = ($course_items[0]) ? $course_items[0] : 0;
