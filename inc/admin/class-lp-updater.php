@@ -41,10 +41,13 @@ class LP_Updater {
 		$response       = array();
 		$next_step      = get_option( 'learnpress_updater_step' );
 
-		if ( version_compare( $db_version, $latest_version, '>=' ) || ( version_compare( $db_version, '3.0.0', '>=' ) && ! $next_step ) ) {
+		if ( version_compare( $db_version, $latest_version, '>=' ) ) {
 			$response['result']  = 'success';
 			$response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
 		} else {
+			if ( ! $next_step ) {
+				LP_Install::update_db_version( $latest_version );
+			}
 			$response['step'] = $next_step;
 		}
 
@@ -67,6 +70,10 @@ class LP_Updater {
 			return false;
 		}
 
+		if ( 'true' === LP_Request::get_string( 'force' ) ) {
+			LP_Install::update_db_version( '2.9.9.9' );
+		}
+
 		update_option( 'do-update-learnpress', 'yes', 'yes' );
 
 		if ( ! learn_press_message_count() ) {
@@ -82,7 +89,6 @@ class LP_Updater {
 		try {
 			$db_version     = get_option( 'learnpress_db_version' );
 			$latest_version = true;
-
 			foreach ( $this->get_update_files() as $version => $file ) {
 
 				if ( $db_version && version_compare( $db_version, $version, '>=' ) ) {
@@ -168,11 +174,15 @@ class LP_Updater {
 			 * Sort files by version
 			 */
 			if ( $this->_update_files ) {
-				ksort( $this->_update_files );
+				uksort( $this->_update_files, array( $this, '_sort_file_versions' ) );
 			}
 		}
 
 		return $this->_update_files;
+	}
+
+	protected function _sort_file_versions( $a, $b ) {
+		return version_compare( $a, $b );
 	}
 
 	/**

@@ -35,6 +35,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
 			add_action( 'init', array( $this, 'init' ), 50 );
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
+			add_action( 'admin_init', array( __CLASS__, 'subscription_button' ) );
+
 
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
@@ -51,6 +53,23 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
 
 			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
+		}
+
+		public static function subscription_button() {
+			// Only administrator of the site can do this
+			if ( ! current_user_can( 'administrator' ) ) {
+				return;
+			}
+			$is_dismiss_newsletter_button = get_option( 'learn-press-dismissed-newsletter-button', 0 );
+			if ( $is_dismiss_newsletter_button ) {
+				return;
+			}
+			// Show message if the latest version is not already updated
+			add_action( 'admin_notices', array( __CLASS__, 'show_subscription_button' ), 20 );
+		}
+
+		public static function show_subscription_button() {
+			learn_press_admin_view( 'tools/subscription-button' );
 		}
 
 		/**
@@ -327,7 +346,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int $post
+		 * @param int    $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -386,7 +405,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array $actions
+		 * @param array   $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -483,7 +502,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			if ( ( in_array( $action, array(
 					'accepted-request',
 					'denied-request'
-				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id ) ) {
+				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id )
+			) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
 				} ?>

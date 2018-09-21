@@ -48,21 +48,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			add_action( 'learn-press/activate', array( __CLASS__, 'install' ) );
 			add_action( 'admin_init', array( __CLASS__, 'do_update' ) );
 			add_action( 'admin_init', array( __CLASS__, 'check_update' ) );
-			add_action( 'admin_init', array( __CLASS__, 'subsciption_button' ) );
-
-			//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
-
-			return;
-			add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
-			add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'db_update_notices' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'update_actions' ), 5 );
-			add_action( 'wp_ajax_lp_repair_database', array( __CLASS__, 'repair_database' ) );
-			add_action( 'wp_ajax_lp_rollback_database', array( __CLASS__, 'rollback_database' ) );
-			add_action( 'wp_ajax_learn_press_hide_upgrade_notice', array( __CLASS__, 'hide_upgrade_notice' ) );
-			add_action( 'admin_init', array( __CLASS__, 'upgrade_wizard' ) );
-			add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		}
 
 		/**
@@ -76,23 +61,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
 				wp_redirect( urldecode( $_REQUEST['redirect'] ) );
 			}
-		}
-
-		public static function subsciption_button() {
-			// Only administrator of the site can do this
-			if ( ! current_user_can( 'administrator' ) ) {
-				return;
-			}
-			$is_dismiss_newsletter_button = get_option( 'learn-press-dismissed-newsletter-button', 0 );
-			if ( $is_dismiss_newsletter_button ) {
-				return;
-			}
-			// Show message if the latest version is not already updated
-			add_action( 'admin_notices', array( __CLASS__, 'show_subscription_button' ), 20 );
-		}
-
-		public static function show_subscription_button() {
-			learn_press_admin_view( 'tools/subscription-button' );
 		}
 
 		/**
@@ -130,11 +98,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				return;
 			}
 
-//			// If version to update is less than in db
-//			if ( version_compare( $latest_ver, $db_version, '<' ) ) {
-//				return;
-//			}
-
 			// Show message if the latest version is not already updated
 			add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ), 20 );
 		}
@@ -170,15 +133,17 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			// Force to show notice outdated template
 			learn_press_delete_user_option( 'hide-notice-template-files' );
 
-			self::update_db_version();
+			if ( is_null( $current_db_version ) ) {
+				self::update_db_version();
+			}
 			self::update_version();
 
-			return;
-			// Fix for WP 4.7
-			if ( did_action( 'admin_init' ) ) {
-				self::_auto_update();
-			} else {
-				add_action( 'admin_init', array( __CLASS__, '_auto_update' ), - 15 );
+			if ( $current_version && $current_version !== LEARNPRESS_VERSION ) {
+				update_option( 'learnpress_old_version', $current_version );
+			}
+
+			if ( $current_db_version && $current_db_version !== LP_Updater::instance()->get_latest_version() ) {
+				update_option( 'learnpress_old_db_version', $current_db_version );
 			}
 		}
 
@@ -199,12 +164,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * Update default options for LP
 		 */
 		public static function create_options() {
-			//include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-base.php';
 			$settings_classes = array(
 				'LP_Settings_General'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-general.php',
 				'LP_Settings_Courses'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-courses.php',
 				'LP_Settings_Pages'    => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-pages.php',
-				///'LP_Settings_Checkout' => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-checkout.php',
 				'LP_Settings_Profile'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-profile.php',
 				'LP_Settings_Payments' => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-payments.php',
 				'LP_Settings_Emails'   => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-emails.php'
@@ -752,9 +715,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				CREATE TABLE {$wpdb->learnpress_order_itemmeta} (
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					learnpress_order_item_id bigint(20) unsigned NOT NULL DEFAULT '0',
-					meta_key varchar(45) NOT NULL DEFAULT '',
+					meta_key varchar(255) NOT NULL DEFAULT '',
 					meta_value longtext NOT NULL,
-					PRIMARY KEY  (meta_id)
+					PRIMARY KEY  (meta_id),
+					KEY learnpress_order_item_id (learnpress_order_item_id),
+  					KEY meta_key (meta_key(191))
 				) $collate;";
 			}
 
@@ -865,9 +830,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				CREATE TABLE {$wpdb->prefix}learnpress_user_itemmeta (
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					learnpress_user_item_id bigint(20) unsigned NOT NULL,
-					meta_key varchar(45) NOT NULL DEFAULT '',
+					meta_key varchar(255) NOT NULL DEFAULT '',
 					meta_value text NOT NULL,
-					PRIMARY KEY  (meta_id)
+					PRIMARY KEY  (meta_id),
+					KEY learnpress_user_item_id (learnpress_user_item_id),
+  					KEY meta_key (meta_key(191))
 				) $collate;
 				";
 			}
@@ -877,9 +844,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				CREATE TABLE {$wpdb->learnpress_question_answermeta} (
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					learnpress_question_answer_id bigint(20) unsigned NOT NULL,
-					meta_key varchar(45) NOT NULL DEFAULT '',
+					meta_key varchar(255) NOT NULL DEFAULT '',
 					meta_value text NOT NULL,
-					PRIMARY KEY  (meta_id)
+					PRIMARY KEY  (meta_id),
+					KEY learnpress_question_answer_id (learnpress_question_answer_id),
+  					KEY meta_key (meta_key(191))
 				) $collate;
 				";
 			}

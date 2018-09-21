@@ -30,7 +30,7 @@
             $.post({
                 url: url,
                 data: {
-                    context: context
+                    force: context == 'tool' ? 'true' : ''
                 },
                 success: function (res) {
                     var $msg = $(res);
@@ -39,9 +39,11 @@
                     } else {
                         $msg.insertBefore($btn);
                     }
+
+                    $btn.removeClass('disabled')
                 }
             });
-        }).on('click', '#skip-notice-install', function(){
+        }).on('click', '#skip-notice-install', function () {
             $.post({
                 url: '',
                 data: {
