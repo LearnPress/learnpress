@@ -541,7 +541,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			}
 
 			$is_blocked = isset( $blocked_items[ $this->get_id() ] ) ? $blocked_items[ $this->get_id() ] : false;
-
 			if ( false === $is_blocked ) {
 				if ( $course_id ) {
 					$course = learn_press_get_course( $course_id );
@@ -632,7 +631,6 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$blocked = 'no';
 			} else if ( $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
 				$blocked = 'no';
-
 				if ( $course->is_block_item_content() && $course_item_data->get_finishing_type() !== 'click'/*$course_item_data->is_exceeded() < 0*/ ) {
 					$blocked = 'yes';
 				}

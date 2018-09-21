@@ -53,6 +53,18 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 			$links[] = '<a href="https://github.com/LearnPress/LearnPress/wiki">' . __( 'Documentation', 'learnpress' ) . '</a>';
 			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn-press-addons' . '">' . __( 'Add-ons', 'learnpress' ) . '</a>';
 
+//			ob_start();?>
+<!--			<ul>-->
+<!--				<li><a href="">2.1.1</a></li>-->
+<!--				<li><a href="">2.1.1</a></li>-->
+<!--				<li><a href="">2.1.1</a></li>-->
+<!--				<li><a href="">2.1.1</a></li>-->
+<!--				<li><a href="">2.1.1</a></li>-->
+<!--			</ul>-->
+<!--			--><?php
+//
+//			$links[] = sprintf('<span>' . __( 'Add-ons', 'learnpress' ) . '%s</a>', ob_get_clean());
+
 			return $links;
 		}
 

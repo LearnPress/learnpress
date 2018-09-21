@@ -21,6 +21,7 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     mkdirp = require("mkdirp"),
     concat = require('gulp-concat'),
+    argv = require('yargs').argv,
     cleanCSS = require('gulp-clean-css');
 
 gulp.task('scss', function () {
@@ -194,6 +195,18 @@ gulp.task('zipx', ['mk-zip'], function () {
     console.log(zipPath)
     return gulp.src([zipPath])
         .pipe(gulpCopy("/Users/tu/Documents/htdocs/"));
-})
+});
+
+gulp.task('make-test', ['zip'], function () {
+    //mkdirp(releasePath);
+    //process.chdir(svnTrunkPath);
+    //var copyFiles = copySvnFiles;
+    //copyFiles.push('readme.txt');
+    var p = argv.p ? argv.p : 'learnpress/test';
+
+    p = '/Users/tu/Documents/htdocs/'+p+'/wp-content/plugins/learnpress';
+    mkdirp(p);
+    return gulp.src(copySvnFiles).pipe(gulpCopy(p));
+});
 
 // end of the world!
