@@ -41,7 +41,7 @@ class LP_Updater {
 		$response       = array();
 		$next_step      = get_option( 'learnpress_updater_step' );
 
-		if ( version_compare( $db_version, $latest_version, '>=' ) || ! $next_step ) {
+		if ( version_compare( $db_version, $latest_version, '>=' ) || ( version_compare( $db_version, '3.0.0', '>=' ) && ! $next_step ) ) {
 			$response['result']  = 'success';
 			$response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
 		} else {
@@ -100,6 +100,7 @@ class LP_Updater {
 				delete_option( 'do-update-learnpress' );
 				delete_option( 'learnpress_updater' );
 				LP_Install::update_version();
+				LP_Install::update_db_version();
 				remove_action( 'admin_notices', array( $this, 'update_message' ), 10 );
 				LP()->session->set( 'do-update-learnpress', 'yes' );
 			}
