@@ -17,13 +17,14 @@ class LP_Update_Base {
 	 */
 	protected $version = '';
 
+	protected $percent = 0;
+
 	/**
 	 * LP_Update_Base constructor.
 	 */
 	public function __construct() {
 		add_filter( 'query', array( $this, 'log_query' ) );
 		$this->_get_version();
-		$this->update();
 	}
 
 	/**
@@ -55,12 +56,17 @@ class LP_Update_Base {
 
 	/**
 	 * Entry point
+	 *
+	 * @param bool $force
+	 *
+	 * @return mixed
 	 */
-	public function update() {
+	public function update( $force = false ) {
+		$return = true;
 
 		$db_version = get_option( 'learnpress_db_version' );
-		if ( $db_version && version_compare( $db_version, $this->version, '>' ) ) {
-			return false;
+		if ( ! $force && $db_version && version_compare( $db_version, $this->version, '>' ) ) {
+			return $return;
 		}
 
 		$step = get_option( 'learnpress_updater_step' );
@@ -71,31 +77,67 @@ class LP_Update_Base {
 				update_option( 'learnpress_updater_step', $step );
 			}
 
+			$called = false;
+
 			$running_step = get_option( 'learnpress_updater_running_step' );
 
 			foreach ( $this->steps as $callback ) {
 				if ( $callback == $step ) {
 					if ( is_callable( array( $this, $callback ) ) ) {
 
-//						if ( $running_step === $step ) {
-//							break;
-//						}
-
 						echo "Running " . get_class( $this ) . '::' . $callback, "\n";
 						update_option( 'learnpress_updater_running_step', $step );
-						call_user_func( array( $this, $callback ) );
-						delete_option( 'learnpress_updater_running_step' );
+						if ( $return = call_user_func( array( $this, $callback ) ) ) {
+							$this->_next_step();
+						}
+
+					} else {
+						echo "$callback failed";
+						$this->_next_step();
 					}
+
+					$called = true;
+
 					break;
 				}
 			}
 
+			if ( ! $called ) {
+				echo "Step {$step} not found";
+				$this->_next_step();
+			}
+
 		}
 		catch ( Exception $exception ) {
+			echo $exception->getMessage();
 			LP_Debug::rollbackTransaction();
 		}
 
-		return false;
+		$this->percent = array_search( $step, $this->steps );
+		$return        = $this->is_last_step( $step ) ? $return : false;
+
+		if ( $return == true ) {
+			delete_option( 'learnpress_updater_running_step' );
+			delete_option( 'learnpress_updater_step' );
+			update_option( 'learnpress_db_version', $this->version );
+			do_action( 'learn-press/update-completed', $this->version );
+		}
+
+		return $return;
+	}
+
+	public function get_percent() {
+		return $this->percent / sizeof( $this->steps ) * 100;
+	}
+
+	public function is_last_step( $step = '' ) {
+		if ( ! $step ) {
+			$step = get_option( 'learnpress_updater_step' );
+		}
+
+		$end_step = end( $this->steps );
+
+		return $step === $end_step;
 	}
 
 	/**
@@ -106,14 +148,15 @@ class LP_Update_Base {
 		if ( false !== ( $pos = array_search( $step, $this->steps ) ) ) {
 			$pos ++;
 			$next_step = ! empty( $this->steps[ $pos ] ) ? $this->steps[ $pos ] : '';
-
-			if ( $next_step ) {
-				update_option( 'learnpress_updater_step', $next_step );
-			} else {
-				delete_option( 'learnpress_updater_step' );
-				delete_option( 'learnpress_updater' );
-				LP_Install::update_db_version( $this->version );
-			}
+		} else {
+			$next_step = end( $this->steps );
+		}
+		if ( $next_step ) {
+			update_option( 'learnpress_updater_step', $next_step );
+		} else {
+			delete_option( 'learnpress_updater_step' );
+			delete_option( 'learnpress_updater' );
+			LP_Install::update_db_version( $this->version );
 		}
 
 		return true;

@@ -93,6 +93,7 @@ $current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
         <ul class="tabs-content-container" data-text="<?php esc_attr_e( 'Initializing...', 'learnpress' ); ?>">
 			<?php
 			foreach ( $tabs as $tab ) {
+			    $tab = (array)$tab;
 				if ( empty( $tab['title'] ) ) {
 					continue;
 				}

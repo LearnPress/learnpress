@@ -36,8 +36,8 @@ Take a look at Premium **[Education WordPress Theme](http://themeforest.net/item
 
 - **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)**
 
-- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=zTtZ_CpWDOY)**
-[youtube https://www.youtube.com/watch?v=zTtZ_CpWDOY&hd=1&&cc_load_policy=1]
+- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=Z9QT_CGevhg)**
+[youtube https://www.youtube.com/watch?v=Z9QT_CGevhg&hd=1&&cc_load_policy=1]
 
 Are you looking for *best LMS WordPress plugin*?
 
@@ -199,6 +199,25 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.0.12 =
+~ Fixed minor bug in gradebook list in admin
+~ Made hook learn-press/course-tabs work
+~ Fixed bug: not auto complete quiz. Add 1 more filter hook for checking publicity in profile page
+~ Fixed bug: auto enroll course without permission to enroll course
+~ Changed filter tag for get_default_meta of lesson
+~ Auto fullscreen in mobile view
+~ Fixed bug: wrong count number in No Preview at Lessons List back end page
+~ Fixed bug: Instructor user cannot see comments of lesson
+~ Changed version for template files
+~ Added base url for construct nav in user profile
+~ Added param for get_nav method
+~ Fixed bug: answer correct all question but quiz result is failse with 0%
+~ Fixed small bug in quiz editor
+~ Fixed bug: wrong count number of the courses in back end because of the status of preview course
+~ Fixed bug: not redirect to correct page after logged in in Profile page
+~ Fixed bug faltal error include file
+~ Added icon for chat-type-format of content item
+~ Fixed header-sent when log file
 
 = 3.0.10 =
 + Added quiz option to minus a number of point for each wrong question in quiz
