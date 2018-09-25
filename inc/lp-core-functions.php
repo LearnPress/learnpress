@@ -3300,6 +3300,14 @@ function _learn_press_deprecated_function( $function, $version, $replacement = n
 	}
 	_deprecated_function( $function, $version, $replacement = null );
 }
+
+function learn_press_has_option( $name ) {
+	global $wpdb;
+
+	$query = $wpdb->prepare( "SELECT option_id FROM {$wpdb->options} WHERE option_name = %s", $name );
+
+	return $wpdb->get_var( $query ) > 0;
+}
 //add_filter('learn-press/block-course-item-types', function ($a){
 //    $a[] = LP_QUIZ_CPT;
 //    return $a;

@@ -129,9 +129,9 @@
 
     var Sync_Calculate_Course_Results = $.extend({}, Sync_Base, {
         id: 'sync-calculate-course-results',
-        methodGetItems: 'calculate-course-results',
-        itemsKey: '_nothing_here',
-        chunkSize: 500
+        methodGetItems: 'get-users',
+        itemsKey: 'users',
+        chunkSize: 1
     });
 
 
@@ -224,7 +224,8 @@
         sync_user_orders: Sync_User_Orders,
         sync_user_courses: Sync_User_Courses,
         sync_course_final_quiz: Sync_Course_Final_Quiz,
-        sync_remove_older_data: Sync_Remove_Older_Data
+        sync_remove_older_data: Sync_Remove_Older_Data,
+        sync_calculate_course_results: Sync_Calculate_Course_Results
     }
 
     $(document).on('click', '.lp-button-repair', function () {

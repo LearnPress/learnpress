@@ -195,10 +195,10 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
 		$count = $wpdb->get_var( $wpdb->prepare( "
-		SELECT COUNT(*)
-		FROM {$table}
-		WHERE {$column} LIKE %s
-	", $key ) );
+			SELECT COUNT(*)
+			FROM {$table}
+			WHERE {$column} LIKE %s
+		", $key ) );
 
 		return ( $count > 0 ) ? false : true;
 	}

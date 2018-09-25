@@ -32,10 +32,23 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
+			//add_action( 'learn-press/background-process-completed', array( $this, 'run' ) );
+			$this->run();
 		}
 
 		public function test() {
 			$this->task( 0 );
+		}
+
+		public function run() {
+			if ( $this->is_queue_empty() ) {
+				$this->push_to_queue( array() );
+				$this->save()->dispatch();
+			}
+		}
+
+		public function process() {
+			$this->task( array() );
 		}
 
 		/**
@@ -45,65 +58,121 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 */
 		protected function task( $data ) {
 			parent::task( $data );
+			$queue = $this->get_item_courses();
 
-			$x = ! empty( $_REQUEST['xxx'] );
-			if ( $x ) {
-				$this->_get_items();
-				if ( ! $items = get_transient( $this->transient_key ) ) {
-					return false;
-				}
+			if ( $queue['pending'] ) {
 
-				$curd = new LP_User_CURD();
+				$processed_ids = array();
+				$remove_ids    = array();
+				$process_ids   = array_splice( $queue['pending'], 0, 1 );
+				$curd          = new LP_User_CURD();
 
-				foreach ( $items as $course_item_id => $item_data ) {
+				foreach ( $process_ids as $course_item_id ) {
 
 					if ( ! $item_course = $curd->get_user_item_course( $course_item_id ) ) {
+						$remove_ids[] = $course_item_id;
 						continue;
 					}
 
 					$course_exceeded = $item_course->is_exceeded() <= 0;
 
-					if ( ! empty( $item_data ) ) {
-						foreach ( $item_data as $user_item_id ) {
-
-							if ( ! $user_item = $item_course->get_item_by_user_item_id( $user_item_id ) ) {
-								continue;
-							}
-							switch ( $user_item->get_post_type() ) {
-								case LP_QUIZ_CPT:
-									if ( $user_item->get_status() == 'started' ) {
-										if ( ( $item_course->is_finished() || $course_exceeded ) || $user_item->is_exceeded() <= 0 ) {
-											$user_item->complete();
-										}
-									}
-									break;
-								case LP_LESSON_CPT:
-									if ( $user_item->is_exceeded() <= 0 ) {
-										$user_item->complete();
-									}
-									break;
-								default:
-									do_action( 'learn-press/schedule/auto-complete-item', $user_item_id );
-							}
-						}
-					}
-
+//					if ( ! empty( $item_data ) ) {
+//						foreach ( $item_data as $user_item_id ) {
+//
+//							if ( ! $user_item = $item_course->get_item_by_user_item_id( $user_item_id ) ) {
+//								continue;
+//							}
+//							switch ( $user_item->get_post_type() ) {
+//								case LP_QUIZ_CPT:
+//									if ( $user_item->get_status() == 'started' ) {
+//										if ( ( $item_course->is_finished() || $course_exceeded ) || $user_item->is_exceeded() <= 0 ) {
+//											$user_item->complete();
+//										}
+//									}
+//									break;
+//								case LP_LESSON_CPT:
+//									if ( $user_item->is_exceeded() <= 0 ) {
+//										$user_item->complete();
+//									}
+//									break;
+//								default:
+//									do_action( 'learn-press/schedule/auto-complete-item', $user_item_id );
+//							}
+//						}
+//					}
+					global $wpdb;
+					define( 'SAVEQUERIES', true );
 					if ( ( ( $exceeded = $item_course->is_exceeded() ) <= 0 ) && ( $item_course->get_status() === 'enrolled' ) ) {
 						$item_course->finish();
+
+						LP_Debug::instance()->add( $item_course, 'def.txt', '', true );
 
 						$start_time = $item_course->get_start_time()->getTimestamp();
 						$duration   = $item_course->get_course()->get_duration();
 
 						learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'via', 'schedule' );
 						learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'exceeded', $exceeded );
+
+						$processed_ids[] = $course_item_id;
 					}
+					LP_Debug::instance()->add( $wpdb->queries, 'abc', '', true );
 				}
 
-				remove_action( 'shutdown', array( $this, 'dispatch_queue' ) );
+				$queue['processed'] = array_diff( array_merge( $queue['processed'], $processed_ids ), $remove_ids );
+				$queue['all']       = array_diff( $queue['all'], $remove_ids );
+				$queue['pending']   = array_diff( $queue['pending'], $processed_ids );
+
+				update_option( 'learnpress_schedule_courses', $queue );
+				//remove_action( 'shutdown', array( $this, 'dispatch_queue' ) );
 			}
-			LP_Debug::instance()->add( 'Auto completing item', 'auto-complete-items', false, true );
 
 			return false;
+		}
+
+		public function get_item_courses() {
+			global $wpdb;
+			$course_ids = $this->get_queued_courses();
+
+			$exclude_items = $course_ids['all'] ? "AND user_item_id NOT IN(" . join( ',', $course_ids['all'] ) . ")" : '';
+
+			$null_time = '0000-00-00 00:00:00';
+			$query     = $wpdb->prepare( "
+				SELECT user_item_id
+				FROM {$wpdb->learnpress_user_items}
+				WHERE item_type = %s
+				AND ( end_time IS NULL OR end_time = %s OR status <> %s )
+				{$exclude_items}
+				LIMIT 0, 1
+			", LP_COURSE_CPT, $null_time, 'finished' );
+
+			if ( $item_courses = $wpdb->get_col( $query ) ) {
+				$course_ids['pending'] = array_merge( $course_ids['pending'], $item_courses );
+				$course_ids['all']     = array_merge( $course_ids['pending'], $course_ids['processed'] );
+			}
+
+			update_option( 'learnpress_schedule_courses', $course_ids );
+
+
+			LP_Debug::instance()->add( $course_ids, 'auto-complete-items', false, true );
+
+			return $course_ids;
+		}
+
+		public function get_queued_courses() {
+			$queued_courses = get_option( 'learnpress_schedule_courses' );
+			if ( ! $queued_courses ) {
+				$queued_courses = array(
+					'processed' => array(),
+					'pending'   => array(),
+					'all'       => array()
+				);
+			}
+
+			return $queued_courses;
+		}
+
+		protected function _filter_processed_courses( $v, $k ) {
+			return $v;
 		}
 
 		/**
@@ -120,7 +189,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 
 			$null_time = '0000-00-00 00:00:00';
 			$query     = $wpdb->prepare( "
-				SELECT user_item_id, user_id
+				SELECT user_item_id
 				FROM {$wpdb->learnpress_user_items}
 				WHERE item_type = %s
 				AND ( end_time IS NULL OR end_time = %s OR status <> %s )
@@ -128,7 +197,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 				LIMIT 0, 1
 			", LP_COURSE_CPT, $null_time, 'finished' );
 
-			if ( ! $item_courses = $wpdb->get_results( $query ) ) {
+			if ( ! $item_courses = $wpdb->get_col( $query ) ) {
 				return false;
 			}
 

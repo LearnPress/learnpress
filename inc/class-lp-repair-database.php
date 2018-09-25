@@ -780,6 +780,45 @@ class LP_Repair_Database {
 		}
 	}
 
+	public function calculate_course_results( $user_id ) {
+		settype( $user_id, 'array' );
+
+		global $wpdb;
+
+		foreach ( $user_id as $uid ) {
+			$query = $wpdb->prepare( "
+				SELECT DISTINCT item_id 
+				FROM {$wpdb->learnpress_user_items} ui
+				INNER JOIN {$wpdb->posts} p ON p.ID = ui.item_id 
+				WHERE user_id = %d
+				AND p.post_type = %s
+			", $uid, LP_COURSE_CPT );
+
+			if ( $course_ids = $wpdb->get_col( $query ) ) {
+				$user = learn_press_get_user( $uid );
+				foreach ( $course_ids as $course_id ) {
+					$item_course     = $user->get_course_data( $course_id );
+					$course_exceeded = $item_course->is_exceeded();
+
+					if ( $course_exceeded <= 0 && ( $item_course->get_status() === 'enrolled' ) ) {
+						$item_course->finish();
+
+						$start_time = $item_course->get_start_time()->getTimestamp();
+						$duration   = $item_course->get_course()->get_duration();
+
+						learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'via', 'schedule' );
+						learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'exceeded', $course_exceeded );
+					} else {
+						$item_course->calculate_course_results();
+						print_r( $course_ids );
+
+					}
+				}
+			}
+
+		}
+	}
+
 	public function remove_older_post_meta() {
 		global $wpdb;
 		$query = $wpdb->prepare( "

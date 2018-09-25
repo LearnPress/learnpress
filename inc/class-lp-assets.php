@@ -32,7 +32,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		$load_css       = LP()->settings()->get( 'load_css' );
 
 		if ( $load_fa === 'yes' || ! $load_fa ) {
-			$default_styles['font-awesome'] = self::url( 'css/font-awesome.min.css' );
+			$default_styles['font-awesome'] = self::url( 'css/fontawesome.all.css' );
 		}
 
 		if ( $load_css === 'yes' || ! $load_css ) {

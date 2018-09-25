@@ -419,6 +419,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function finish() {
 
 		$return = parent::complete( 'finished' );
+		$this->calculate_course_results();
 
 		return $return;
 	}

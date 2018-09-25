@@ -482,7 +482,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 
 	//
 	if ( $where && empty( $where['user_id'] ) ) {
-		$where['user_id'] = learn_press_get_current_user_id();
+		$where['user_id'] = ! empty( $fields['user_id'] ) ? $fields['user_id'] : learn_press_get_current_user_id();
 	}
 
 	$where_format = array();
@@ -1814,10 +1814,10 @@ function learn_press_get_user_distraction() {
 	}
 }
 
-function learn_press_get_user_role($user_id){
-    if($user = learn_press_get_user($user_id)){
-        return $user->get_role();
-    }
+function learn_press_get_user_role( $user_id ) {
+	if ( $user = learn_press_get_user( $user_id ) ) {
+		return $user->get_role();
+	}
 
-    return false;
+	return false;
 }

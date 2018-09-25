@@ -96,6 +96,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'sync-user-orders',
 				'sync-course-final-quiz',
 				'sync-remove-older-data',
+				'sync-calculate-course-results'
 				//'sync-user-courses',
 			);
 			foreach ( $ajax_events as $action => $callback ) {
@@ -115,6 +116,33 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				LP_Request::register_ajax( $action, $callback );
 			}
 		}
+
+		public function sync_calculate_course_results(){
+			if ( empty( $_REQUEST['sync'] ) ) {
+				die();
+			}
+
+			global $wpdb;
+			$api  = LP_Repair_Database::instance();
+			$sync = $_REQUEST['sync'];
+
+			if ( $sync === 'get-users' ) {
+				$query = $wpdb->prepare( "
+                    SELECT ID
+                    FROM {$wpdb->users}
+                    WHERE 1
+                ", 1 );
+
+				$users = $wpdb->get_col( $query );
+
+				learn_press_send_json( array( 'users' => $users ) );
+			}
+
+			$api->calculate_course_results( $sync );
+			learn_press_send_json( array( 'result' => 'success' ) );
+
+			die();
+        }
 
 		/**
 		 * Sync orders for each course

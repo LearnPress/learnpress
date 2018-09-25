@@ -1904,6 +1904,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						WHERE parent_id = %d
 					", $result->user_item_id )
 					);
+
+					$course_data->calculate_course_results();
 					do_action( 'learn-press/user/retaken-course', $result, $course_id, $this->get_id() );
 				}
 

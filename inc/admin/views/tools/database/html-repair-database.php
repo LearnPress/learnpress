@@ -12,12 +12,12 @@ defined( 'ABSPATH' ) or die();
     <h2><?php _e( 'Repair Database', 'learnpress' ); ?></h2>
     <p><?php _e( 'Remove unwanted data and re-calculate relationship.', 'learnpress' ); ?></p>
     <ul id="learn-press-syncs">
-        <li>
-            <label>
-                <input type="checkbox" name="lp-repair[sync-remove-older-data]" value="yes">
-			    <?php esc_html_e('Remove older meta data such as: post meta, ...', 'learnpress');?>
-            </label>
-        </li>
+<!--        <li>-->
+<!--            <label>-->
+<!--                <input type="checkbox" name="lp-repair[sync-remove-older-data]" value="yes">-->
+<!--			    --><?php //esc_html_e('Remove older meta data such as: post meta, ...', 'learnpress');?>
+<!--            </label>-->
+<!--        </li>-->
         <li>
             <label>
                 <input type="checkbox" name="lp-repair[sync-course-orders]" value="yes">
@@ -44,6 +44,12 @@ defined( 'ABSPATH' ) or die();
         </li>
         <li>
             <label>
+                <input type="checkbox" name="lp-repair[sync-calculate-course-results]" value="yes">
+			    <?php esc_html_e('Re-calculate course result for users', 'learnpress');?>
+            </label>
+        </li>
+        <li>
+            <label>
                 <input type="checkbox" name="lp-repair[sync-user-completed-items]" value="yes">
 			    <?php esc_html_e('Re-calculate completed items for each users', 'learnpress');?>
             </label>
@@ -51,5 +57,9 @@ defined( 'ABSPATH' ) or die();
     </ul>
     <p class="tools-button">
         <button type="button" class="button lp-button-repair"><?php esc_html_e( 'Repair now', 'learnpress' ); ?></button>
+        <label>
+            <input type="checkbox" id="learn-press-check-all-syncs">
+            <?php esc_html_e('Check All', 'learnpress');?>
+        </label>
     </p>
 </div>

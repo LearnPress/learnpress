@@ -106,7 +106,7 @@ ul.learn-press-nav-tabs {
     min-height: 50px;
     &[data-use_ajax="yes"]:not([data-loaded]) {
         &:after {
-            font-family: fontawesome;
+            font-family: 'Font Awesome 5 Free';
             content: '\f110';
             width: 48px;
             height: 48px;
@@ -117,6 +117,7 @@ ul.learn-press-nav-tabs {
             font-size: 48px;
             line-height: 1;
             color: #3eadff;
+            font-weight: 900;
             @include rotating4();
         }
     }
@@ -197,7 +198,7 @@ ul.learn-press-nav-tabs {
                     width: 100%;
                     line-height: 1.5;
                     &:before {
-                        font-family: fontawesome;
+                        font-family: 'Font Awesome 5 Free';
                         font-size: 18px;
                         /*position: absolute;*/
                         //height: 50px;
@@ -310,6 +311,8 @@ ul.learn-press-nav-tabs {
                     .section-item-link {
                         &:before {
                             content: "\f0f6";
+                            content: "\f02d";
+                            font-weight: 900;
                         }
                     }
                     &.course-item-type-video {
@@ -415,7 +418,7 @@ ul.learn-press-nav-tabs {
 
                 &:not(.item-preview) {
                     .course-item-status {
-                        font-family: fontawesome;
+                        font-family: 'Font Awesome 5 Free';
                     }
                 }
             }
@@ -574,8 +577,9 @@ body {
         #course-item-content-header {
             .toggle-content-item {
                 &:before {
-                    font: 28px/60px fontawesome;
-                    content: "\f066";
+                    font: 28px/60px 'Font Awesome 5 Free';
+                    content: "\f06d";
+
                 }
             }
         }
@@ -593,7 +597,7 @@ body {
     #wp-admin-bar-edit-lp_lesson,
     #wp-admin-bar-edit-lp_question {
         .ab-item:before {
-            font-family: fontawesome;
+            font-family: 'Font Awesome 5 Free';
             top: 2px;
         }
     }
@@ -741,7 +745,7 @@ body {
             right: 15px;
             color: #777;
             &:after {
-                font-family: fontawesome;
+                font-family: 'Font Awesome 5 Free';
                 content: "\f002";
             }
         }
@@ -782,8 +786,11 @@ body {
         text-align: center;
         border-left: 1px solid #DDD;
         &:before {
-            font: 28px/60px fontawesome;
+            font: 28px/60px 'Font Awesome 5 Free';
             content: "\f065";
+
+            content: "\f00d";
+            font-weight: 900;
         }
     }
 }
@@ -807,7 +814,7 @@ body {
     &.completed {
         button {
             &:before {
-                font-family: fontawesome;
+                font-family: 'Font Awesome 5 Free';
                 content: '\f00c';
                 font-size: 18px;
                 margin-right: 10px;

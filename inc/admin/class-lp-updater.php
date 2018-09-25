@@ -270,6 +270,10 @@ class LP_Updater {
 			}
 		}
 
+		if ( get_option( 'learnpress_data_synced', '' ) === 'yes' && ! empty( $this->_update_files['10.10.10'] ) ) {
+			unset( $this->_update_files['10.10.10'] );
+		}
+
 		return $this->_update_files;
 	}
 

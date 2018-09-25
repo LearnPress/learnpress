@@ -169,10 +169,24 @@
         }
     };
 
+    function initSyncs() {
+        var $chkAll = $('#learn-press-check-all-syncs'),
+            $chks = $('#learn-press-syncs').find('[name^="lp-repair"]');
+
+        $chkAll.on('click', function () {
+            $chks.prop('checked', this.checked)
+        });
+
+        $chks.on('click', function () {
+            $chkAll.prop('checked', $chks.filter(':checked').length === $chks.length);
+        })
+    }
+
     function init() {
         window.lpGlobalSettings = window.lpGlobalSettings || {};
         var Updater = new Vue(UpdaterSettings);
 
+        initSyncs();
         return;
         var i18n = window.lpUpdateSettings || {};
 

@@ -47,7 +47,7 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 			 *
 			 * @since 3.0.8
 			 */
-			add_action( 'shutdown', array( $this, 'dispatch_queue' ), 1000 );
+			///add_action( 'shutdown', array( $this, 'dispatch_queue' ), 1000 );
 		}
 
 		/**
@@ -133,6 +133,11 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 			}
 
 			return self::$instances[ $name ];
+		}
+
+		public function complete(){
+			parent::complete();
+			do_action('learn-press/background-process-completed', $this->identifier);
 		}
 
 		/**
