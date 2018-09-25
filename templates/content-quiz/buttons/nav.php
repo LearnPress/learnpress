@@ -14,10 +14,13 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$user                = LP_Global::user();
-$quiz                = LP_Global::course_item_quiz();
-$course_id           = get_the_ID();
+$user      = LP_Global::user();
+$quiz      = LP_Global::course_item_quiz();
 $current_question_id = $quiz->get_viewing_question( 'id' );
+$question = LP_Global::quiz_question();
+$course_id = get_the_ID();
+$hide_next = get_post_meta($quiz->get_id(), '_lp_show_submit_hide_next', true);
+$has_checked =  $user->has_checked_answer( $current_question_id, $quiz->get_id(), get_the_ID() ); 
 ?>
 
 <?php if ( $prev_id = $user->get_prev_question( $quiz->get_id(), $course_id ) ) { ?>
@@ -42,7 +45,7 @@ $current_question_id = $quiz->get_viewing_question( 'id' );
 <?php } ?>
 
 <?php if ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) { ?>
-
+<?php if (!$hide_next || $has_checked) { ?>
 	<?php do_action( 'learn-press/quiz/before-next-question-button' ); ?>
 
     <form name="next-question" class="next-question form-button lp-form" method="post"
@@ -59,7 +62,7 @@ $current_question_id = $quiz->get_viewing_question( 'id' );
     </form>
 
 	<?php do_action( 'learn-press/quiz/after-prev-question-button' ); ?>
-
+<?php } ?>
 <?php } ?>
 
 <?php if ( ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) && ! $user->has_completed_quiz( $quiz->get_id(), $course_id ) ) { ?>

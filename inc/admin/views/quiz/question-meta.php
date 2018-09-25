@@ -51,6 +51,26 @@
                                 <p class="description"><?php _e( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ); ?></p>
                             </div>
                         </div>
+                        <div class="rwmb-field rwmb-textarea-wrapper">
+                            <div class="rwmb-label">
+                                <label for=""><?php _e( 'Question Explanation (Correct)', 'learnpress' ); ?></label>
+                            </div>
+                            <div class="rwml-input">
+                                <div>
+                                   <textarea name="explanation_correct" id="" cols="60" rows="3"
+                                             class="rwmb-textarea large-text"
+                                             @change="updateMeta"
+                                             v-model="question.settings.explanation_correct"></textarea>
+                                    <p class="description"><?php _e( 'Congratulate the Student', 'learnpress' ); ?></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rwmb-field rwmb-textarea-wrapper">
+                            <div class="rwmb-label">
+                                <label for=""><?php _e( 'Question Hint', 'learnpress' ); ?></label>
+                            </div>
+                            <div class="rwml-input">
+                                <div>
                     </div>
                     <div class="rwmb-field rwmb-textarea-wrapper">
                         <div class="rwmb-label">
