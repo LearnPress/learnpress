@@ -930,13 +930,22 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
 
-        return Vue.http.post($store.getters.urlAjax,
-            payload, {
+        return LP_Request.push($store.getters.urlAjax,
+            payload,
+            {
                 emulateJSON: true,
                 params: {
                     namespace: 'LPListQuizQuestionsRequest'
                 }
             });
+
+        // return Vue.http.post($store.getters.urlAjax,
+        //     payload, {
+        //         emulateJSON: true,
+        //         params: {
+        //             namespace: 'LPListQuizQuestionsRequest'
+        //         }
+        //     });
     };
 
     Vue.http.interceptors.push(function (request, next) {

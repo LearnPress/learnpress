@@ -250,7 +250,8 @@
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
 
-        return Vue.http.post($store.getters.urlAjax,
+
+        return LP_Request.push($store.getters.urlAjax,
             payload,
             {
                 emulateJSON: true,
@@ -258,6 +259,15 @@
                     namespace: 'LPQuestionEditorRequest'
                 }
             });
+
+        // return Vue.http.post($store.getters.urlAjax,
+        //     payload,
+        //     {
+        //         emulateJSON: true,
+        //         params: {
+        //             namespace: 'LPQuestionEditorRequest'
+        //         }
+        //     });
     };
 
     Vue.http.interceptors.push(function (request, next) {
