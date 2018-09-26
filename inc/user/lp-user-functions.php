@@ -720,7 +720,7 @@ function learn_press_filter_temp_users( $q ) {
  */
 function learn_press_get_temp_users() {
 	return false;
-	if ( false === ( $temp_users = wp_cache_get( 'learn-press/temp-users' ) ) ) {
+	if ( false === ( $temp_users = LP_Object_Cache::get( 'learn-press/temp-users' ) ) ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT ID
@@ -731,7 +731,7 @@ function learn_press_get_temp_users() {
 
 		$temp_users = $wpdb->get_col( $query );
 
-		wp_cache_set( 'learn-press/temp-users', $temp_users );
+		LP_Object_Cache::set( 'learn-press/temp-users', $temp_users );
 	}
 
 	return $temp_users;

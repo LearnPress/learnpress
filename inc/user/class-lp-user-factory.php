@@ -266,7 +266,7 @@ class LP_User_Factory {
 	}
 
 	public static function get_pending_requests() {
-		if ( false === ( $pending_requests = wp_cache_get( 'pending-requests', 'learn-press/users' ) ) ) {
+		if ( false === ( $pending_requests = LP_Object_Cache::get( 'pending-requests', 'learn-press/users' ) ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT ID
@@ -276,7 +276,7 @@ class LP_User_Factory {
 			", '_requested_become_teacher', 'yes' );
 
 			$pending_requests = $wpdb->get_col( $query );
-			wp_cache_set( 'pending-requests', $pending_requests, 'learn-press/users' );
+			LP_Object_Cache::set( 'pending-requests', $pending_requests, 'learn-press/users' );
 		}
 
 		return $pending_requests;

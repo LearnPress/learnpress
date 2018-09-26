@@ -111,7 +111,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_id = get_the_ID();
 			}
 
-			if ( false === ( $object_course_data = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'learn-press/user-item-object-courses' ) ) ) {
+			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'learn-press/user-item-object-courses' ) ) ) {
 				$result = $this->_curd->read_course( $this->get_id(), $course_id );
 
 				if ( $result ) {
@@ -120,7 +120,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$object_course_data = new LP_User_Item_Course( $course_id );
 				}
 
-				wp_cache_set( 'course-' . $this->get_id() . '-' . $course_id, $object_course_data, 'learn-press/user-item-object-courses' );
+				LP_Object_Cache::set( 'course-' . $this->get_id() . '-' . $course_id, $object_course_data, 'learn-press/user-item-object-courses' );
 			}
 
 			if ( $object_course_data ) {
@@ -287,7 +287,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_item_archive( $item_id, $course_id = 0, $return_last = false ) {
 			learn_press_debug( debug_backtrace() );
 			die( __FUNCTION__ );
-			$records = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'learn-press/user-course-items' );
+			$records = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'learn-press/user-course-items' );
 
 			if ( $return_last && is_array( $records ) ) {
 				$records = reset( $records );
@@ -686,7 +686,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			return false;
 			$item = false;
-			if ( false !== ( $items = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'learn-press/user-course-items' ) ) ) {
+			if ( false !== ( $items = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'learn-press/user-course-items' ) ) ) {
 				// Only get status of a newest record.
 				if ( $last ) {
 					$item = reset( $items );
@@ -1086,7 +1086,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$key = $this->get_id() . '-' . $course_id . '-' . $quiz_id;
 
 
-			$cached = LP_Cache::get_quiz_history( false, array() );// wp_cache_get( 'user-quiz-history', 'learnpress' );
+			$cached = LP_Cache::get_quiz_history( false, array() );// LP_Object_Cache::get( 'user-quiz-history', 'learnpress' );
 
 			if ( ( ! array_key_exists( $key, $cached ) || $force ) && $quizzes && in_array( $quiz_id, $quizzes ) ) {
 				global $wpdb;
@@ -1697,7 +1697,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_orders( $last_order = true ) {
 
 			if ( $last_order ) {
-				if ( false !== ( $cached_last_order = wp_cache_get( 'user-' . $this->get_id(), 'learn-press/user-last-order' ) ) ) {
+				if ( false !== ( $cached_last_order = LP_Object_Cache::get( 'user-' . $this->get_id(), 'learn-press/user-last-order' ) ) ) {
 					return $cached_last_order;
 				}
 			}
@@ -1709,7 +1709,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				foreach ( $my_orders as $course_id => $orders ) {
 					$last_orders[ $course_id ] = reset( $orders );
 				}
-				wp_cache_set( 'user-' . $this->get_id(), $last_orders, 'learn-press/user-last-order' );
+				LP_Object_Cache::set( 'user-' . $this->get_id(), $last_orders, 'learn-press/user-last-order' );
 			} else {
 				$last_orders = $my_orders;
 			}

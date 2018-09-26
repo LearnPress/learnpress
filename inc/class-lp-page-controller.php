@@ -663,7 +663,7 @@ class LP_Page_Controller {
 		}
 
 		#@NOTE: make sure current page is not lesson or quiz before return cache content of single course page
-// 		if ( function_exists( 'learn_press_content_single_course' ) && false !== ( $_content = wp_cache_get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
+// 		if ( function_exists( 'learn_press_content_single_course' ) && false !== ( $_content = LP_Object_Cache::get( 'course-' . get_the_ID(), 'course-content' ) ) ) {
 // 			return $_content;
 // 		}
 
@@ -690,7 +690,7 @@ class LP_Page_Controller {
 
 		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 
-		wp_cache_set( 'course-' . get_the_ID(), $content, 'learn-press/course-content' );
+		LP_Object_Cache::set( 'course-' . get_the_ID(), $content, 'learn-press/course-content' );
 
 		return $content;
 	}

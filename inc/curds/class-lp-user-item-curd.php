@@ -76,7 +76,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		$id        = $quiz->get_id();
-		$questions = wp_cache_get( 'questions-' . $id, 'learn-press/quizzes' );
+		$questions = LP_Object_Cache::get( 'questions-' . $id, 'learn-press/quizzes' );
 		if ( false === $questions || $quiz->get_no_cache() ) {
 			global $wpdb;
 			$questions = array();
@@ -94,7 +94,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$questions[ $v->ID ] = $v->ID;
 				}
 			}
-			wp_cache_set( 'questions-' . $id, $questions, 'learn-press/quizzes' );
+			LP_Object_Cache::set( 'questions-' . $id, $questions, 'learn-press/quizzes' );
 
 			$this->_load_question_answers( $quiz );
 		}
@@ -107,7 +107,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * @param LP_Quiz $quiz
 	 */
 	protected function _update_meta_cache( &$quiz ) {
-		$meta_ids = wp_cache_get( 'questions-' . $quiz->get_id(), 'learn-press/quizzes' );
+		$meta_ids = LP_Object_Cache::get( 'questions-' . $quiz->get_id(), 'learn-press/quizzes' );
 
 		if ( false === $meta_ids ) {
 			$meta_ids = array( $quiz->get_id() );
@@ -170,7 +170,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 
 			foreach ( $answer_options as $question_id => $options ) {
-				wp_cache_set( 'answer-options-' . $question_id, $options, 'learn-press/questions' );
+				LP_Object_Cache::set( 'answer-options-' . $question_id, $options, 'learn-press/questions' );
 			}
 
 			foreach ( $meta_ids as $meta_id ) {
@@ -185,7 +185,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 		if ( $un_fetched ) {
 			foreach ( $un_fetched as $question_id ) {
-				wp_cache_set( 'answer-options-' . $question_id, array(), 'learn-press/questions' );
+				LP_Object_Cache::set( 'answer-options-' . $question_id, array(), 'learn-press/questions' );
 			}
 		}
 		//
@@ -306,7 +306,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			return $this->get_error( 'QUESTION_NOT_EXISTS' );
 		}
 
-		return wp_cache_get( 'questions-' . $the_quiz->get_id(), 'learn-press/quizzes' );
+		return LP_Object_Cache::get( 'questions-' . $the_quiz->get_id(), 'learn-press/quizzes' );
 	}
 
 	/**

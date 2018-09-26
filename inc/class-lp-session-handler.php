@@ -177,7 +177,7 @@ class LP_Session_Handler implements ArrayAccess {
 
 		if ( false === $prefix ) {
 			$prefix = 1;
-			wp_cache_set( 'learn_press_' . $group . '_cache_prefix', $prefix, $group );
+			LP_Object_Cache::set( 'learn_press_' . $group . '_cache_prefix', $prefix, $group );
 		}
 
 		return 'learn_press_cache_' . $prefix . '_';
@@ -213,7 +213,7 @@ class LP_Session_Handler implements ArrayAccess {
 			);
 
 			// Set cache
-			wp_cache_set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
+			LP_Object_Cache::set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
 
 			// Mark session clean after saving
 			$this->_changed = false;

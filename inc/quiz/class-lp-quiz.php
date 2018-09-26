@@ -413,9 +413,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		public function get_question_ids() {
-			if ( false === ( $ids = wp_cache_get( 'quiz-' . $this->get_id(), 'quiz-question-ids' ) ) ) {
+			if ( false === ( $ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids' ) ) ) {
 				$ids = $this->_curd->read_question_ids( $this->get_id() );
-				wp_cache_set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids' );
+				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids' );
 			}
 
 			return apply_filters( 'learn-press/quiz-question-ids', $ids, $this->get_id(), $this->get_course_id() );

@@ -51,6 +51,11 @@ class LP_Object_Cache {
 	private $multisite;
 
 	/**
+	 * @var bool
+	 */
+	protected static $_use_core = false;
+
+	/**
 	 * @var LP_Object_Cache
 	 */
 	protected static $instance = null;
@@ -64,6 +69,14 @@ class LP_Object_Cache {
 		}
 
 		return self::$instance;
+	}
+
+	public static function init() {
+		add_action( 'shutdown', array( __CLASS__, 'wp_cache_flush' ), 9999 );
+	}
+
+	public static function wp_cache_flush() {
+
 	}
 
 	/**
@@ -134,6 +147,11 @@ class LP_Object_Cache {
 	 * @return bool False if cache key and group already exist, true on success
 	 */
 	public static function add( $key, $data, $group = 'default', $expire = 0 ) {
+
+		if ( self::$_use_core ) {
+			return wp_cache_add( $key, $data, $group, $expire );
+		}
+
 		if ( wp_suspend_cache_addition() ) {
 			return false;
 		}
@@ -226,6 +244,11 @@ class LP_Object_Cache {
 	 * @return bool False if the contents weren't deleted and true on success.
 	 */
 	public static function delete( $key, $group = 'default', $deprecated = false ) {
+
+		if ( self::$_use_core ) {
+			return wp_cache_delete( $key, $group );
+		}
+
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}
@@ -253,6 +276,10 @@ class LP_Object_Cache {
 	 * @return true Always returns true.
 	 */
 	public static function flush() {
+		if ( self::$_use_core ) {
+			return wp_cache_flush();
+		}
+
 		$self = self::instance();
 
 		$self->cache = array();
@@ -281,6 +308,11 @@ class LP_Object_Cache {
 	 * @return false|mixed False on failure to retrieve contents or the cache contents on success.
 	 */
 	public static function get( $key, $group = 'default', $force = false, &$found = null ) {
+
+		if ( self::$_use_core ) {
+			return wp_cache_get( $key, $group, $force, $found );
+		}
+
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}
@@ -362,6 +394,11 @@ class LP_Object_Cache {
 	 * @return bool False if not exists, true if contents were replaced.
 	 */
 	public static function replace( $key, $data, $group = 'default', $expire = 0 ) {
+
+		if ( self::$_use_core ) {
+			return wp_cache_replace( $key, $data, $group, $expire );
+		}
+
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}
@@ -424,6 +461,11 @@ class LP_Object_Cache {
 	 * @return true Always returns true.
 	 */
 	public static function set( $key, $data, $group = 'default', $expire = 0 ) {
+
+		if ( self::$_use_core ) {
+			return wp_cache_set( $key, $data, $group, $expire );
+		}
+
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}
@@ -526,3 +568,5 @@ class LP_Object_Cache {
 		return true;
 	}
 }
+
+LP_Object_Cache::init();

@@ -96,7 +96,7 @@ class LP_Helper_CURD {
 			WHERE ID IN(" . join( ',', $format ) . ")
 		", $post_ids );
 
-		if ( false === ( $post_types = wp_cache_get( 'post-types', 'learn-press' ) ) ) {
+		if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
 			$post_types = array();
 		}
 

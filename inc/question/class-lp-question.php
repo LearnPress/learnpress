@@ -636,13 +636,13 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		public function get_answers( $field = null, $exclude = null ) {
 			$answers = array();
 			LP_Debug::logTime( __FUNCTION__ );
-			if ( false === ( $answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'learn-press/questions' ) ) ) {
+			if ( false === ( $answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'learn-press/questions' ) ) ) {
 
 				if ( ! $answers = $this->_curd->load_answer_options( $this->get_id() ) ) {
 					$answers = $this->get_default_answers();
 				}
 
-				wp_cache_set( 'answer-options-' . $this->get_id(), $answers, 'learn-press/questions' );
+				LP_Object_Cache::set( 'answer-options-' . $this->get_id(), $answers, 'learn-press/questions' );
 			};
 
 			if ( $answers ) {
@@ -1051,13 +1051,13 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		protected function _get_checked( $user_answer = null ) {
 			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
 
-			return wp_cache_get( 'question-' . $this->get_id() . '/' . $key, 'learn-press/answer-checked' );
+			return LP_Object_Cache::get( 'question-' . $this->get_id() . '/' . $key, 'learn-press/answer-checked' );
 		}
 
 		protected function _set_checked( $checked, $user_answer ) {
 			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
 
-			return wp_cache_set( 'question-' . $this->get_id() . '/' . $key, $checked, 'learn-press/answer-checked' );
+			return LP_Object_Cache::set( 'question-' . $this->get_id() . '/' . $key, $checked, 'learn-press/answer-checked' );
 		}
 	}
 
