@@ -35,8 +35,8 @@
         type: function (state) {
             return state.type;
         },
-        code: function(state){
-        	return Date.now();
+        code: function (state) {
+            return Date.now();
         }
         ,
         autoDraft: function (state) {
@@ -158,10 +158,10 @@
         },
 
         updateAnswerTitle: function (context, answer) {
-        	if(typeof answer.question_answer_id == 'undefined'){
-        		return;
-        	}
-        	answer = JSON.stringify(answer);
+            if (typeof answer.question_answer_id == 'undefined') {
+                return;
+            }
+            answer = JSON.stringify(answer);
             Vue.http.LPRequest({
                 type: 'update-answer-title',
                 answer: answer
@@ -252,16 +252,19 @@
  * @since 3.0.0
  */
 (function (exports, Vue, $store) {
+    var $ = jQuery;
 
     Vue.http.LPRequest = function (payload) {
+        var $publishingAction = $('#publishing-action');
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
         payload['code'] = $store.getters.code;
-        $( '#publishing-action #publish' ).addClass( 'disabled' );
-        $( '#publishing-action .spinner' ).addClass( 'is-active' );
-        $( '#publishing-action' ).addClass( 'code-'+payload['code'] );
-        
+
+        $publishingAction.find('#publish').addClass('disabled');
+        $publishingAction.find('.spinner').addClass('is-active');
+        $publishingAction.addClass('code-' + payload['code']);
+
         return Vue.http.post($store.getters.urlAjax,
             payload,
             {
@@ -294,13 +297,12 @@
             } else {
                 $store.dispatch('requestCompleted', 'failed');
             }
-
-            $( '#publishing-action' ).removeClass( 'code-'+request.params.code );
-            if(!$( '#publishing-action' ).attr('class')){
-            	$( '#publishing-action #publish' ).removeClass( 'disabled' );
-                $( '#publishing-action .spinner' ).removeClass( 'is-active' );
+            var $publishingAction = $('#publishing-action').removeClass('code-' + request.params.code);
+            if (!$publishingAction.attr('class')) {
+                $publishingAction.find('#publish').removeClass('disabled');
+                $publishingAction.find('.spinner').removeClass('is-active');
             }
-            
+
         });
     });
 })(window, Vue, LP_Question_Store);

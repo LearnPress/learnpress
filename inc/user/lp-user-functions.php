@@ -1430,6 +1430,9 @@ function learn_press_update_user_profile_avatar() {
 			} elseif ( 'png' == $filetype['ext'] ) {
 				$im = imagecreatefrompng( $path );
 			} else {
+				print_r( $_REQUEST );
+				die();
+
 				return;
 			}
 			$points  = explode( ',', $data['points'] );
@@ -1445,7 +1448,7 @@ function learn_press_update_user_profile_avatar() {
 				$src_w = $points[2] - $points[0];
 				$src_h = $points[3] - $points[1];
 				imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
-				$newname = md5( $user->user_login );
+				$newname = md5( $user->user_login . microtime( true ) );
 				$output  = dirname( $path );
 				if ( 'jpg' == $filetype['ext'] ) {
 					$newname .= '.jpg';
@@ -1455,14 +1458,27 @@ function learn_press_update_user_profile_avatar() {
 					$newname .= '.png';
 					$output  .= '/' . $newname;
 					imagepng( $im_crop, $output );
+				} else {
+					echo 'Crop avatar failed';
+					die();
 				}
 				if ( file_exists( $output ) ) {
 					update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
 					update_user_meta( get_current_user_id(), '_lp_profile_picture_changed', 'yes' );
+				} else {
+					echo 'File ' . $output . ' does not exists';
+					die();
 				}
 
+			} else {
+				echo 'Create image failed';
+				die();
 			}
 			@unlink( $path );
+		} else {
+			echo "XXXX";
+			print_r( $_REQUEST );
+			die();
 		}
 	}
 
