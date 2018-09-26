@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -5197,7 +5197,7 @@ msgid "Login"
 msgstr ""
 
 #: templates/checkout/review-order.php:20
-msgid "Your order"
+msgid "Your Order"
 msgstr ""
 
 #: templates/checkout/order-comment.php:20
@@ -5218,7 +5218,7 @@ msgstr ""
 
 #: templates/checkout/term-conditions.php:20
 #, php-format
-msgid "I’ve read and accept the <a href=\"%s\">terms &amp; conditions.</a>"
+msgid "I have read and agree to the <a href=\"%s\">Terms &amp; Conditions</a>."
 msgstr ""
 
 #: templates/checkout/payment.php:34
@@ -5276,7 +5276,7 @@ msgid "Sign out"
 msgstr ""
 
 #: templates/profile/profile.php:47
-msgid "This user does not public their profile."
+msgid "This user's profile is not public."
 msgstr ""
 
 #: templates/single-course/progress.php:37

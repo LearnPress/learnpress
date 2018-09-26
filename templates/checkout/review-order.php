@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit();
 
 <?php $cart = learn_press_get_checkout_cart(); ?>
 
-<h4><?php _e( 'Your order', 'learnpress' ) ?></h4>
+<h4><?php _e( 'Your Order', 'learnpress' ) ?></h4>
 
 <table class="learn-press-checkout-review-order-table lp-list-table">
     <thead>
