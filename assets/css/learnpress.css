@@ -726,7 +726,7 @@ ul.learn-press-nav-tabs {
   position: relative;
   min-height: 50px; }
   .course-curriculum[data-use_ajax="yes"]:not([data-loaded]):after {
-    font-family: 'Font Awesome 5 Free';
+    font-family: 'fontawesome';
     content: '\f110';
     width: 48px;
     height: 48px;
@@ -737,7 +737,6 @@ ul.learn-press-nav-tabs {
     font-size: 48px;
     line-height: 1;
     color: #3eadff;
-    font-weight: 900;
     -webkit-animation: rotating4 2s linear infinite;
     -moz-animation: rotating4 2s linear infinite;
     -ms-animation: rotating4 2s linear infinite;
@@ -809,7 +808,7 @@ ul.learn-press-nav-tabs {
           width: 100%;
           line-height: 1.5; }
           .course-curriculum ul.curriculum-sections .section-content .course-item .section-item-link:before {
-            font-family: 'Font Awesome 5 Free';
+            font-family: 'fontawesome';
             font-size: 18px;
             /*position: absolute;*/
             left: 0;
@@ -874,9 +873,7 @@ ul.learn-press-nav-tabs {
         .course-curriculum ul.curriculum-sections .section-content .course-item.course-item-lp_quiz .section-item-link:before {
           content: "\f017"; }
         .course-curriculum ul.curriculum-sections .section-content .course-item.course-item-lp_lesson .section-item-link:before {
-          content: "\f0f6";
-          content: "\f02d";
-          font-weight: 900; }
+          content: "\f0f6"; }
         .course-curriculum ul.curriculum-sections .section-content .course-item.course-item-lp_lesson.course-item-type-video .section-item-link:before {
           content: "\f03d"; }
         .course-curriculum ul.curriculum-sections .section-content .course-item.course-item-lp_lesson.course-item-type-audio .section-item-link:before {
@@ -931,7 +928,7 @@ ul.learn-press-nav-tabs {
             top: 0;
             height: 100%; }
         .course-curriculum ul.curriculum-sections .section-content .course-item:not(.item-preview) .course-item-status {
-          font-family: 'Font Awesome 5 Free'; }
+          font-family: 'fontawesome'; }
 
 body.course-item-popup {
   overflow: hidden;
@@ -1044,7 +1041,7 @@ body #ifr-course-item {
   background: #FFF; }
 
 body.distraction-on #course-item-content-header .toggle-content-item:before {
-  font: 28px/60px 'Font Awesome 5 Free';
+  font: 28px/60px 'fontawesome';
   content: "\f06d"; }
 
 body .content-item-summary .form-button-finish-course,
@@ -1054,7 +1051,7 @@ body .lp-quiz-buttons .form-button-finish-course {
 #wpadminbar #wp-admin-bar-edit-lp_quiz .ab-item:before,
 #wpadminbar #wp-admin-bar-edit-lp_lesson .ab-item:before,
 #wpadminbar #wp-admin-bar-edit-lp_question .ab-item:before {
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'fontawesome';
   top: 2px; }
 
 #wpadminbar #wp-admin-bar-edit-lp_quiz .ab-item:before {
@@ -1167,7 +1164,7 @@ body .lp-quiz-buttons .form-button-finish-course {
       right: 15px;
       color: #777; }
       #course-item-content-header .course-item-search button:after {
-        font-family: 'Font Awesome 5 Free';
+        font-family: 'fontawesome';
         content: "\f002"; }
     #course-item-content-header .course-item-search.has-keyword button:after {
       content: "\f00d"; }
@@ -1194,10 +1191,8 @@ body .lp-quiz-buttons .form-button-finish-course {
     text-align: center;
     border-left: 1px solid #DDD; }
     #course-item-content-header .toggle-content-item:before {
-      font: 28px/60px 'Font Awesome 5 Free';
-      content: "\f065";
-      content: "\f00d";
-      font-weight: 900; }
+      font: 28px/60px 'fontawesome';
+      content: "\f065"; }
 
 #course-item-content-footer {
   border-top: 1px solid #DDD;
@@ -1213,7 +1208,7 @@ body .lp-quiz-buttons .form-button-finish-course {
     font-size: 14px; }
 
 .learn-press-form.completed button:before {
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'fontawesome';
   content: '\f00c';
   font-size: 18px;
   margin-right: 10px; }

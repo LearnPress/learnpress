@@ -3271,3 +3271,6 @@ body.lp-item-moving {
 
 #learn-press-updater .completed-message {
   color: #3c8eb7; }
+
+#learn-press-updater {
+  display: none; }

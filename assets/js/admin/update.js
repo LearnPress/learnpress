@@ -74,6 +74,9 @@
                 }
             }
         },
+        mounted: function () {
+            $(this.$el).show();
+        },
         methods: {
             getUpdatePackages: function (callback) {
                 var that = this;

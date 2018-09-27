@@ -505,8 +505,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			return false;
 		}
 
-		$data = $this->get_mysql_data();
-		$return = learn_press_update_user_item_field( $data, array( 'user_item_id' => $this->get_user_item_id() ) );
+		$data  = $this->get_mysql_data();
+		$where = array();
+
+		if ( $this->get_user_item_id() ) {
+			$where = array( 'user_item_id' => $this->get_user_item_id() );
+		}
+		$return = learn_press_update_user_item_field( $data, $where );
 
 		if ( $return ) {
 			foreach ( (array) $return as $k => $v ) {
