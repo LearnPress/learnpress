@@ -63,9 +63,6 @@ class LP_Session_Handler implements ArrayAccess {
 	 * @param mixed $value
 	 */
 	public function __set( $key, $value ) {
-		//if ( $key === 'order_awaiting_payment' ) {
-
-		//}
 		$this->set( $key, $value );
 	}
 
@@ -118,10 +115,6 @@ class LP_Session_Handler implements ArrayAccess {
 		add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
 		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
-
-		if ( ! is_user_logged_in() ) {
-			//add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
-		}
 	}
 
 	public function set_customer_session_cookie( $set ) {
@@ -184,7 +177,7 @@ class LP_Session_Handler implements ArrayAccess {
 
 		if ( false === $prefix ) {
 			$prefix = 1;
-			wp_cache_set( 'learn_press_' . $group . '_cache_prefix', $prefix, $group );
+			LP_Object_Cache::set( 'learn_press_' . $group . '_cache_prefix', $prefix, $group );
 		}
 
 		return 'learn_press_cache_' . $prefix . '_';
@@ -220,7 +213,7 @@ class LP_Session_Handler implements ArrayAccess {
 			);
 
 			// Set cache
-			wp_cache_set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
+			LP_Object_Cache::set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
 
 			// Mark session clean after saving
 			$this->_changed = false;
@@ -342,9 +335,16 @@ class LP_Session_Handler implements ArrayAccess {
 	 * @return mixed|null
 	 */
 	public function get( $key, $default = null ) {
-		$key = sanitize_key( $key );
+		if ( empty( $GLOBALS['Session::get'] ) ) {
+			$GLOBALS['Session::get'] = array();
+		}
+		$time   = microtime( true );
+		$key    = sanitize_key( $key );
+		$return = isset( $this->_data[ $key ] ) ? LP_Helper::maybe_unserialize( $this->_data[ $key ] ) : $default;
 
-		return isset( $this->_data[ $key ] ) ? LP_Helper::maybe_unserialize( $this->_data[ $key ] ) : $default;
+		$GLOBALS['Session::get'][] = microtime( true ) - $time;
+
+		return $return;
 	}
 
 	/**

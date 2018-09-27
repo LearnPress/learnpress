@@ -26,46 +26,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public $user = false;
 
 		/**
-		 * @var LP_Quiz object
-		 */
-		public $quiz = false;
-
-		/**
-		 * @var array
-		 */
-		static protected $_order_items = array();
-
-		/**
-		 * @var array
-		 */
-		static protected $_lessons = array();
-
-		/**
-		 * @var null
-		 */
-		protected $_quiz_history_id = null;
-
-		/**
-		 * @var int
-		 */
-		protected $_FOUND_ROWS = 0;
-
-		/**
-		 * @var array
-		 */
-		protected $_courses = array();
-
-		/**
-		 * @var array
-		 */
-		protected $_course_items = array();
-
-		/**
-		 * @var array
-		 */
-		protected static $_users = array();
-
-		/**
 		 * @var null
 		 */
 		public $profile_picture_src = null;
@@ -93,14 +53,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		);
 
 		/**
-		 * @var LP_User_CURL|null
+		 * @var LP_User_CURD
 		 */
 		protected $_curd = null;
-
-		/**
-		 * @var int
-		 */
-		protected static $_loaded = 0;
 
 		/**
 		 * LP_Abstract_User constructor.
@@ -121,19 +76,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			} elseif ( ! empty( $the_user->ID ) ) {
 				$this->set_id( absint( $the_user->ID ) );
 			}
+
 			if ( $this->get_id() > 0 ) {
 				$this->load();
 			}
-			self::$_loaded ++;
-			if ( self::$_loaded == 1 ) {
-				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-			}
-		}
 
-		public static function log( $data ) {
-			$data[] = 'LP_User( ' . self::$_loaded . ' )';
-
-			return $data;
 		}
 
 		/**
@@ -145,6 +92,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * Get data for a course user has enrolled.
+		 *
+		 * @updated 3.1.0
 		 *
 		 * @param int|LP_Abstract_Course $course_id
 		 * @param bool                   $check_exists
@@ -160,19 +109,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}
-			/**
-			 * @BUG : Cache enable => Not store all user answer of quiz, only store the last use answer for question
-			 * @TODO: need improve this proccess
-			 */
-			if ( false === ( $object_course_data = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-course-data' ) ) ) {
-				$this->_curd->read_course( $this->get_id(), $course_id );
-				if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
-					$object_course_data = new LP_User_Item_Course( $course_item );
+
+			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'learn-press/user-item-object-courses' ) ) ) {
+				$result = $this->_curd->read_course( $this->get_id(), $course_id );
+
+				if ( $result ) {
+					$object_course_data = new LP_User_Item_Course( $result );
 				} else {
 					$object_course_data = new LP_User_Item_Course( $course_id );
 				}
 
-				wp_cache_set( 'course-' . $this->get_id() . '-' . $course_id, $object_course_data, 'lp-user-course-data' );
+				LP_Object_Cache::set( 'course-' . $this->get_id() . '-' . $course_id, $object_course_data, 'learn-press/user-item-object-courses' );
 			}
 
 			if ( $object_course_data ) {
@@ -195,6 +142,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
+		 * Get data for a item user started in table user-items
+		 *
 		 * @param int $item_id
 		 * @param int $course_id
 		 *
@@ -202,6 +151,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function get_user_item( $item_id, $course_id ) {
 			$data = false;
+
 			if ( $course_data = $this->get_course_data( $course_id ) ) {
 				$data = $course_data->get_item( $item_id );
 			}
@@ -334,11 +284,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|mixed
 		 */
 		public function get_item_archive( $item_id, $course_id = 0, $return_last = false ) {
-			$records = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' );
-
-			if ( $records ) {
-				///$records = array_filter( $records );
-			}
+			learn_press_debug( debug_backtrace() );
+			die( __FUNCTION__ );
+			$records = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'learn-press/user-course-items' );
 
 			if ( $return_last && is_array( $records ) ) {
 				$records = reset( $records );
@@ -388,10 +336,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( __( 'Course does not exist or does not contain the quiz', 'learnpress' ), LP_INVALID_QUIZ_OR_COURSE );
 				}
 
-				// If user has already finished the course
-				if ( $this->has_finished_course( $course_id ) ) {
-					throw new Exception( __( 'User has already finished the course of this quiz', 'learnpress' ), LP_COURSE_IS_FINISHED );
+				$access_level = $this->get_course_access_level( $course_id );
 
+				// If user has already finished the course
+				if ( $access_level === LP_COURSE_ACCESS_LEVEL_70 ) {
+					throw new Exception( __( 'You have already finished the course of this quiz', 'learnpress' ), LP_COURSE_IS_FINISHED );
+				}
+
+				if ( $access_level < LP_COURSE_ACCESS_LEVEL_60 ) {
+					throw new Exception( __( 'Please enroll course before starting quiz.', 'learnpress' ), LP_COURSE_IS_FINISHED );
 				}
 
 				// Check if user has already started or completed quiz
@@ -419,18 +372,47 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					return false;
 				}
 
-				if ( ! $return = $this->_insert_quiz_item( $quiz_id, $course_id ) ) {
-					do_action( 'learn-press/user/start-quiz-failed', $quiz_id, $course_id, $this->get_id() );
-					throw new Exception( __( 'Start quiz failed!', 'learnpress' ), 99 );
+				$course_data = $this->get_course_data( $course_id );
+				$quiz        = learn_press_get_quiz( $quiz_id );
+				$quiz_data   = $course_data->get_item( $quiz_id );
+
+				if ( ! $enable_history = $quiz->enable_archive_history() ) {
+					if ( $quiz_data->get_user_item_id() ) {
+						global $wpdb;
+						$query = $wpdb->prepare( "
+						DELETE FROM {$wpdb->learnpress_user_items}
+						WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
+					", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
+
+						$wpdb->query( $query );
+					} else {
+						$course_data->update_item_retaken_count( $quiz_id, 0 );
+					}
+				} else {
+					$count_history = $course_data->count_history_items( $quiz_id );
+				}
+
+				$course_data->update_item_retaken_count( $quiz_id, '+1' );
+				$quiz_data->set_status( 'started' );
+
+				if ( $quiz_data->update() ) {
+					$course_data->set_item( $quiz_data );
+				}
+
+				if ( $questions = $quiz->get_questions() ) {
+					$question_id = reset( $questions );
+					learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
 				}
 
 				// @deprecated
-				do_action( 'learn_press_user_start_quiz', $return, $quiz_id, $course_id, $this->get_id() );
+				do_action( 'learn_press_user_start_quiz', $quiz_data, $quiz_id, $course_id, $this->get_id() );
 
 				/**
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user/quiz-started', $quiz_id, $course_id, $this->get_id() );
+
+				$return = $quiz_data->get_mysql_data();
 			}
 			catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
@@ -482,8 +464,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->get_id() );
 
 				do_action( 'learn-press/user/quiz-finished', $quiz_id, $course_id, $this->get_id() );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 			}
 
@@ -525,20 +506,56 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( sprintf( __( '%s::%s - User has not completed quiz.', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 				}
 
-				$return = $this->_insert_quiz_item( $quiz_id, $course_id );
-				$quiz   = learn_press_get_quiz( $quiz_id );
+				$course_data = $this->get_course_data( $course_id );
+				$quiz        = learn_press_get_quiz( $quiz_id );
+				$quiz_data   = $course_data->get_item( $quiz_id );
+
+				if ( ! $enable_history = $quiz->enable_archive_history() ) {
+					if ( $quiz_data->get_user_item_id() ) {
+						global $wpdb;
+						$query = $wpdb->prepare( "
+						DELETE FROM {$wpdb->learnpress_user_items}
+						WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
+					", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
+
+						$wpdb->query( $query );
+					} else {
+						$course_data->update_item_retaken_count( $quiz_id, 0 );
+					}
+				} else {
+					$count_history = $course_data->count_history_items( $quiz_id );
+				}
+
+				$course_data->update_item_retaken_count( $quiz_id, '+1' );
+				$quiz_data->set_status( 'started' );
+				$quiz_data->set_start_time( current_time( 'mysql' ), true );
+				$quiz_data->set_end_time( '0000-00-00 00:00:00' );
+				$quiz_data->set_end_time_gmt( '0000-00-00 00:00:00' );
+				$quiz_data->set_status( 'started' );
+
+				if ( $quiz_data->update() ) {
+					$quiz_data->update_meta(
+						array(
+							'_question_answers' => false,
+							'_grade'            => false,
+							'results'           => false
+						)
+					);
+
+					$course_data->set_item( $quiz_data );
+				}
+
+
 				if ( $questions = $quiz->get_questions() ) {
-					$user_quiz   = $this->get_quiz_data( $quiz_id, $course_id );
 					$question_id = reset( $questions );
-					learn_press_update_user_item_meta( $user_quiz->get_user_item_id(), '_current_question', $question_id );
+					learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
 				}
 
 				/**
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user/quiz-redone', $quiz_id, $course_id, $this->get_id() );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 				do_action( 'learn-press/user/retake-quiz-failure', $quiz_id, $course_id, $this->get_id() );
 			}
@@ -547,18 +564,18 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		protected function _insert_quiz_item( $quiz_id, $course_id ) {
-			$course_data  = $this->get_course_data( $course_id );
-			$quiz         = learn_press_get_quiz( $quiz_id );
-			$last_results = $this->get_item_archive( $quiz_id, $course_id, true );
-
+			_deprecated_function( __FUNCTION__, '3.1.0' );
+			$course_data   = $this->get_course_data( $course_id );
+			$quiz          = learn_press_get_quiz( $quiz_id );
+			$quiz_data     = $course_data->get_item( $quiz_id );
+			$count_history = $course_data->count_history_items( $quiz_id );
 			if ( ! $quiz->enable_archive_history() ) {
-
-				if ( $last_results ) {
+				if ( $quiz_data->get_user_item_id() ) {
 					global $wpdb;
 					$query = $wpdb->prepare( "
 						DELETE FROM {$wpdb->learnpress_user_items}
 						WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
-					", $this->get_id(), $quiz_id, $last_results['user_item_id'] );
+					", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
 
 					$wpdb->query( $query );
 				} else {
@@ -566,7 +583,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			if ( $last_results && $last_results['status'] === 'completed' ) {
+			if ( $quiz_data->get_status() === 'completed' ) {
 				$course_data->update_item_retaken_count( $quiz_id, '+1' );
 			}
 
@@ -586,7 +603,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				'user_item_id'   => 0//insert
 			);
 
-//			$last_results         = $this->get_item_archive( $quiz_id, $course_id, true );
+			$last_results         = $this->get_item_archive( $quiz_id, $course_id, true );
 			$set_current_question = false;
 
 			// If there is no a record
@@ -620,38 +637,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			return $return;
 		}
-
-		public function get_quiz_time_remaining( $quiz_id, $course_id = 0 ) {
-			$course_id = $this->_get_course( $course_id );
-			$remaining = false;
-			$progress  = $this->get_quiz_progress( $quiz_id, $course_id );
-
-			if ( $progress && $progress->status != 'completed' ) {
-				$quiz           = LP_Quiz::get_quiz( $quiz_id );
-				$current_time   = learn_press_get_current_time();
-				$progress_start = strtotime( $progress->start, $current_time );
-				$remaining      = intval( $quiz->get_duration() ) + $progress_start - $current_time;
-			}
-
-			return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $quiz_id, $course_id, $this->get_id() );
-		}
-
-		public function get_question_answers( $question_id, $quiz_id, $course_id = 0 ) {
-			$course_id = $this->_get_course( $course_id );
-
-			$progress = $this->get_quiz_progress( $quiz_id, $course_id );
-
-			$question_answers = null;
-			if ( $progress ) {
-				$answers = (array) $progress->quiz_question_answers;
-				if ( array_key_exists( $question_id, $answers ) ) {
-					$question_answers = $answers[ $question_id ];
-				}
-			}
-
-			return $question_answers;
-		}
-
 
 		/**
 		 * Get quiz status for the user
@@ -690,8 +675,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}
+
+			if ( $course_data = $this->get_course_data( $course_id ) ) {
+				return $course_data->get_item( $item_id );
+			}
+
+			return false;
 			$item = false;
-			if ( false !== ( $items = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) ) {
+			if ( false !== ( $items = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'learn-press/user-course-items' ) ) ) {
 				// Only get status of a newest record.
 				if ( $last ) {
 					$item = reset( $items );
@@ -773,73 +764,23 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function maybe_update_item( $item_id, $course_id ) {
-			if ( ! $item_id ) {
-				return false;
-			}
-			if ( ! $course = learn_press_get_course( $course_id ) ) {
-				return false;
-			}
+			$return = false;
 
-			if ( ! $course_data = $this->get_course_data( $course_id ) ) {
-				return false;
-			}
+			if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
 
-			if ( ! ( $user_course_item_id = $course_data->get_data( 'user_item_id' ) ) ) {
-				return false;
-			}
+				if ( $item = $course_data->get_item( $item_id ) ) {
+				} else {
+					$item = LP_User_Item::get_item_object( $item_id );
+					$item->set_ref_id( $course_id );
+					$item->set_parent_id( $course_data->get_user_item_id() );
+				}
 
-			$user_item = $this->get_item( $item_id, $course_id, true );
-
-			/**
-			 * Update current item id is viewing in course
-			 */
-			if ( $item_id && $item_id != learn_press_get_user_item_meta( $user_course_item_id, '_current_item', true ) ) {
-				learn_press_update_user_item_meta( $user_course_item_id, '_current_item', $item_id );
+				if ( $return = $item->update() ) {
+					$course_data->set_item( $item );
+				}
 			}
 
-			if ( $user_item ) {
-				return $user_item['user_item_id'];
-			}
-
-			global $wpdb;
-			$item     = LP_Course_Item::get_item( $item_id );
-			$time     = new LP_Datetime();
-			$inserted = $wpdb->insert(
-				$wpdb->learnpress_user_items,
-				apply_filters(
-					'learn-press/default-user-item-data',
-					array(
-						'user_id'        => $this->get_id(),
-						'item_id'        => $item_id,
-						'item_type'      => $item->get_item_type(),
-						'start_time'     => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql() : '0000-00-00 00:00:00',
-						'start_time_gmt' => $item->get_post_type() === LP_LESSON_CPT ? $time->toSql( false ) : '0000-00-00 00:00:00',
-						'status'         => learn_press_default_user_item_status( $item_id ),
-						'ref_id'         => $course_id,
-						'ref_type'       => LP_COURSE_CPT,
-						'parent_id'      => $course_data->get_data( 'user_item_id' )
-					)
-				)
-			);
-
-			if ( $inserted ) {
-				$user_item_id = $wpdb->insert_id;
-			} else {
-				return false;
-			}
-
-			// Update new changes to cache
-			$items = array(
-				$user_item_id => $this->_curd->get_user_item_by_id( $user_item_id )
-			);
-
-			$cache_name = sprintf( 'course-item-%d-%d-%d', $this->get_id(), $course_id, $item_id );
-
-			wp_cache_set( $cache_name, $items, 'lp-user-course-items' );
-
-			do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items[ $user_item_id ] );
-
-			return $user_item_id;
+			return $return;
 		}
 
 		/**
@@ -894,6 +835,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|int|string
 		 */
 		public function get_current_question( $quiz_id, $course_id, $permalink = false ) {
+
+			/**
+			 * @var LP_User_Item_Quiz $quiz_item
+			 */
 			$data = $this->get_course_data( $course_id );
 
 			if ( empty( $data[ $quiz_id ] ) ) {
@@ -933,6 +878,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $quiz_id ) {
 				return false;
 			}
+
 			$current = $this->get_current_question( $quiz_id, $course_id );
 			$quiz    = learn_press_get_quiz( $quiz_id );
 
@@ -996,9 +942,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param   int $question_id
-		 * @param int   $quiz_id
-		 * @param int   $course_id
+		 * @param int $question_id
+		 * @param int $quiz_id
+		 * @param int $course_id
 		 *
 		 * @return WP_Error|mixed
 		 */
@@ -1027,9 +973,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param   int $question_id
-		 * @param int   $quiz_id
-		 * @param int   $course_id
+		 * @param int $question_id
+		 * @param int $quiz_id
+		 * @param int $course_id
 		 *
 		 * @return WP_Error|mixed
 		 */
@@ -1114,41 +1060,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return apply_filters( 'learn_press_user_quiz_last_results', $results, $quiz_id, $this );
 		}
 
-		public function get_quiz_info( $quiz_id, $course_id = 0, $field = null ) {
-			$course_id = $this->_get_course( $course_id );
-
-			static $quizzes = array();
-			if ( empty( $quizzes[ $quiz_id ] ) ) {
-				global $wpdb;
-				$table     = $wpdb->prefix . 'learnpress_user_items';//{$wpdb->learnpress_user_quizzes}
-				$query     = $wpdb->prepare( "
-				SELECT *
-				FROM $table
-				WHERE user_id = %d
-				AND item_id = %d
-			", $this->get_id(), $quiz_id, '' );
-				$user_quiz = (array) $wpdb->get_row( $query );
-				if ( ! empty( $user_quiz['user_quiz_id'] ) ) {
-					$user_quiz['history'] = $this->get_quiz_history( $quiz_id, $course_id );
-				}
-				$quizzes[ $quiz_id ] = $user_quiz;
-			}
-			if ( $field ) {
-				if ( array_key_exists( $field, $quizzes[ $quiz_id ] ) ) {
-					$info = $quizzes[ $quiz_id ][ $field ];
-				} else {
-					$info = '';
-				}
-
-				return apply_filters( 'learn_press_user_quiz_' . $field, $info, $this );
-			} else {
-				$info = $quizzes[ $quiz_id ];
-
-				return apply_filters( 'learn_press_user_quiz_info', $info, $this );
-			}
-
-		}
-
 		/**
 		 * Get history of a quiz for an user
 		 *
@@ -1171,7 +1082,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$key = $this->get_id() . '-' . $course_id . '-' . $quiz_id;
 
 
-			$cached = LP_Cache::get_quiz_history( false, array() );// wp_cache_get( 'user-quiz-history', 'learnpress' );
+			$cached = LP_Cache::get_quiz_history( false, array() );// LP_Object_Cache::get( 'user-quiz-history', 'learnpress' );
 
 			if ( ( ! array_key_exists( $key, $cached ) || $force ) && $quizzes && in_array( $quiz_id, $quizzes ) ) {
 				global $wpdb;
@@ -1288,31 +1199,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * Get current progress for a quiz
-		 *
-		 * @param     $quiz_id
-		 * @param int $course_id
-		 *
-		 * @return mixed|void
-		 */
-		public function get_quiz_progress( $quiz_id, $course_id = 0 ) {
-			return $this->get_quiz_results( $quiz_id, $course_id );
-			/**
-			 *
-			 * if ( !$course_id ) {
-			 * $course_id = get_the_ID();
-			 * }
-			 * $history  = $this->get_quiz_history( $quiz_id, $course_id );
-			 * $progress = false;
-			 * if ( $history ) {
-			 * $progress = reset( $history );
-			 * }
-			 * return apply_filters( 'learn_press_user_quiz_progress', $progress, $quiz_id, $course_id, $this->get_id() );
-			 *
-			 **/
-		}
-
-		/**
 		 * Check if user has at least one role.
 		 *
 		 * @param array|string $roles
@@ -1323,63 +1209,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			settype( $roles, 'array' );
 
 			return array_intersect( $roles, $this->get_roles() );
-		}
-
-		/**
-		 * Get current question user doing for a quiz
-		 *
-		 * @param int $quiz_id
-		 * @param int $course_id
-		 *
-		 * @return mixed|void
-		 */
-		public function get_current_quiz_question( $quiz_id, $course_id = 0 ) {
-			$course_id = $this->_get_course( $course_id );
-
-			$question_id = 0;
-			if ( $progress = $this->get_quiz_results( $quiz_id, $course_id ) ) {
-				if ( ! empty( $progress->question ) ) {
-					$question_id = $progress->question;
-				} elseif ( ! empty( $progress->questions ) && is_array( $progress->questions ) ) {
-					$question_id = reset( $progress->questions );
-				}
-			}
-			if ( ! $question_id ) {
-				$quiz = LP_Quiz::get_quiz( $quiz_id );
-				if ( $quiz ) {
-					$questions = $quiz->get_questions();
-					if ( $questions ) {
-						$question    = reset( $questions );
-						$question_id = $question->ID;
-					}
-				}
-
-			}
-			$user                = learn_press_get_current_user();
-			$history             = $user->get_quiz_results( $quiz_id, $course_id, true );
-			$current_question_id = $history ? learn_press_get_user_item_meta( $history->history_id, 'lp_current_question_after_close', true ) : array();
-			if ( ! empty( $current_question_id ) ) {
-				$question_id = $current_question_id;
-			}
-
-			return apply_filters( 'learn_press_user_current_quiz_question', absint( $question_id ), $quiz_id, $course_id, $this->get_id() );
-		}
-
-		public function get_finished_courses() {
-			global $wpdb;
-			$query = $wpdb->prepare( "
-				SELECT p.*, uc.start_time, uc.end_time, uc.ref_id
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON p.ID = uc.item_id
-				WHERE uc.user_id = %d
-				AND uc.status = %s
-			", $this->get_id(), 'finished' );
-
-			return apply_filters( 'learn_press_user_finished_courses', $wpdb->get_results( $query ) );
-		}
-
-		public function save_quiz_question( $question_id, $answer ) {
-
 		}
 
 		/**
@@ -1401,49 +1230,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $is;
-		}
-
-		/**
-		 * Get all a type of post for the user
-		 *
-		 * @param array $args - actually, it as the same with WP_Query args
-		 *
-		 * @return array
-		 */
-		public function get_posts( $args = array() ) {
-			settype( $args, 'array' );
-			$args['author'] = $this->get_id();
-
-			$args  = apply_filters( 'learn_press_get_user_posts', $args, $this );
-			$query = new WP_Query( $args );
-			$posts = array();
-			if ( $query->have_posts() ) {
-				while ( $query->have_posts() ) {
-					$p       = $query->next_post();
-					$posts[] = $p;
-				}
-			}
-
-			return $posts;
-		}
-
-		/**
-		 * Get all quizzes of the user
-		 *
-		 * @param array $args - actually, it as the same with WP_Query args
-		 * @param       bool
-		 *
-		 * @return array
-		 */
-		public function get_lessons( $args = array(), $force = false ) {
-			static $lessons = array();
-			if ( ! $lessons || $force ) {
-				settype( $args, 'array' );
-				$args['post_type'] = LP_LESSON_CPT;
-				$lessons           = $this->get_posts( $args );
-			}
-
-			return apply_filters( 'learn_press_get_user_lessons', $lessons );
 		}
 
 		/**
@@ -1479,9 +1265,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$course      = learn_press_get_course( $course_id );
 			$purchasable = $course->is_purchasable();
 
-			if ( $purchasable && $order = $this->has_ordered_course( $course_id ) ) {
-			}
-
 			// @deprecated
 			$purchasable = apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 
@@ -1515,39 +1298,79 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * User can view item.
+		 * Check if the user can access to an item inside course.
 		 *
-		 * @param     $item_id
+		 * @updated 3.1.0
+		 *
+		 * @param int $item_id
 		 * @param int $course_id
 		 *
 		 * @return mixed
-		 * @throws Exception
 		 */
 		public function can_view_item( $item_id, $course_id = 0 ) {
-			$return    = false;
-			$course_id = $this->_get_course( $course_id );
 
-			$course_author = learn_press_get_course_user( $course_id );
-			if ( $course_author ) {
-				$author_id = $course_author->get_id();
-				if ( $author_id == $this->get_id() ) {
-					return true;
+			$view   = false;
+			$course = learn_press_get_course( $course_id );
+
+			// Disable preview course when course status is pending
+			if ( $course && $course->is_publish() && ( $item = $course->get_item( $item_id ) ) ) {
+				if ( $this->has_course_access_level( array(
+					LP_COURSE_ACCESS_LEVEL_60,
+					LP_COURSE_ACCESS_LEVEL_70
+				), $course_id, 'any' )
+				) {
+					$view = 'enrolled';
+				} elseif ( ! $course->is_required_enroll() ) {
+					$view = 'no-required-enroll';
+				} elseif ( $item->is_preview() ) {
+					$view = 'preview';
+				} elseif ( $this->is_admin() ) {
+					$view = 'admin';
+				} elseif ( $this->is_author_of( $item_id ) ) {
+					$view = 'author';
 				}
 			}
 
-			switch ( get_post_type( $item_id ) ) {
-				case LP_QUIZ_CPT:
-					$return = $this->can_view_quiz( $item_id, $course_id );
-					break;
-				case LP_LESSON_CPT:
-					$return = $this->can_view_lesson( $item_id, $course_id );
-					break;
+			// @deprecated
+			$view = apply_filters( 'learn_press_user_view_quiz', $view, $item_id, $this->get_id(), $course_id );
+
+			return apply_filters( 'learn-press/can-view-item', $view, $item_id, $this->get_id(), $course_id );
+
+//			$return    = false;
+//			$course_id = $this->_get_course( $course_id );
+//
+//			$course_author = learn_press_get_course_user( $course_id );
+//			if ( $course_author ) {
+//				$author_id = $course_author->get_id();
+//				if ( $author_id == $this->get_id() ) {
+//					return true;
+//				}
+//			}
+//
+//			switch ( learn_press_get_post_type( $item_id ) ) {
+//				case LP_QUIZ_CPT:
+//					$return = $this->can_view_quiz( $item_id, $course_id );
+//					break;
+//				case LP_LESSON_CPT:
+//					$return = $this->can_view_lesson( $item_id, $course_id );
+//					break;
+//			}
+//
+//			// @deprecated
+//			$return = apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->get_id() );
+//
+//			return apply_filters( 'learn-press/can-view-item', $return, $item_id, $course_id, $this->get_id() );
+		}
+
+		public function get_item_url( $item_id, $course_id = 0 ) {
+			$course = learn_press_get_course( $course_id );
+			if ( $this->can_view_item( $item_id ) || $course->is_enable_item_link() ) {
+				$url = $course->get_item_link( $item_id );
+			} else {
+				$url = false;
 			}
 
-			// @deprecated
-			$return = apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->get_id() );
-
-			return apply_filters( 'learn-press/can-view-item', $return, $item_id, $course_id, $this->get_id() );
+			return $url;
 		}
 
 		public function can_edit_item( $item_id, $course_id = 0 ) {
@@ -1574,6 +1397,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function can_view_lesson( $lesson_id, $course_id = 0 ) {
+			_deprecated_function( __CLASS__ . '->' . __FUNCTION__, '3.1.0', __CLASS__ . '->can_view_item' );
+
+			return $this->can_view_item( $lesson_id, $course_id );
 			$view = false;
 			// else, find the course of this lesson
 			$course_id = $this->_get_course( $course_id );
@@ -1585,7 +1411,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$lesson = LP_Lesson::get_lesson( $lesson_id );
 
 				if ( $course = learn_press_get_course( $course_id ) ) {
-					if ( $this->has_enrolled_course( $course_id ) || $this->has_finished_course( $course_id ) ) {
+					if ( $this->get_course_access_level( $course_id ) >= 60 ) {
 						// or user has enrolled course
 						$view = 'enrolled';
 					} elseif ( $lesson->is_preview() || $this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() ) ) {
@@ -1596,6 +1422,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 				}
 			}
+
 			// @deprecated
 			$view = apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->get_id(), $course_id );
 
@@ -1611,6 +1438,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function can_view_quiz( $quiz_id, $course_id = 0 ) {
+			_deprecated_function( __CLASS__ . '->' . __FUNCTION__, '3.1.0', __CLASS__ . '->can_view_item' );
+
+			return $this->can_view_item( $quiz_id, $course_id );
 			$course    = false;
 			$view      = false;
 			$course_id = $this->_get_course( $course_id );
@@ -1629,9 +1459,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 					if ( $this->has_enrolled_course( $course_id ) || $this->has_finished_course( $course_id ) ) {
 						$view = 'enrolled';
-					} elseif ( /*$quiz->is_preview() ||*/
-						$this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() )
-					) {
+					} elseif ( $quiz->is_preview() || $this->is_admin() || ( $this->is_instructor() && $course->get_instructor( 'id' ) == $this->get_id() ) ) {
 						$view = 'preview';
 					} elseif ( ! $course->is_required_enroll() ) {
 						$view = 'no-required-enroll';
@@ -1682,17 +1510,31 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this->get_id(), $course_id );
 		}
 
+		/**
+		 * Check if user can finished course by getting current progress
+		 * and compares with course passing condition.
+		 *
+		 * @param int $course_id
+		 *
+		 * @return bool
+		 */
 		public function can_finish_course( $course_id ) {
 			$return = false;
 			if ( $course = learn_press_get_course( $course_id ) ) {
-				$result = $course->evaluate_course_results();
-				$return = ( $result >= $course->get_passing_condition() ) && $this->has_course_status( $course_id, array(
-						'enrolled',
-						'started'
-					) );
+
+				$access_level = $this->get_course_access_level( $course_id );
+
+				if ( $access_level === LP_COURSE_ACCESS_LEVEL_60 ) {
+					$result = $this->evaluate_course_results( $course_id );
+					$return = $result >= $course->get_passing_condition();
+				}
 			}
 
-			return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->get_id() );
+			// @deprecated
+			$return = apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->get_id() );
+			LP_Debug::logTime( __FUNCTION__ );
+
+			return apply_filters( 'learn-press/can-finished-course', $return, $course, $this->get_id() );
 		}
 
 		/**
@@ -1754,20 +1596,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return apply_filters( 'learn_press_user_can_retake_course', $can, $course->get_id(), $this->get_id() );
 		}
 
-		public function get_incomplete_items( $course_id ) {
-			global $wpdb;
-			$query    = $wpdb->prepare( "
-			SELECT user_item_id
-				FROM {$wpdb->learnpress_user_items}
-				WHERE user_id = %d
-				AND (item_id = %d OR ref_id = %d)
-				AND `status` NOT IN(%s, %s)
-			", $this->get_id(), $course_id, $course_id, 'completed', 'finished' );
-			$item_ids = $wpdb->get_col( $query );
-
-			return apply_filters( 'learn_press_user_incomplete_items', $item_ids, $course_id, $this->get_id() );
-		}
-
 		/**
 		 * Finish course
 		 *
@@ -1816,6 +1644,19 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return in_array( 'administrator', $roles );
 		}
 
+		/**
+		 * Wrap function to check this user is author of a post.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param int $post_id
+		 *
+		 * @return bool
+		 */
+		public function is_author_of( $post_id ) {
+			return absint( get_post_field( 'post_author', $post_id ) ) === $this->get_id();
+		}
+
 		public function has( $role ) {
 			_deprecated_function( __FUNCTION__, '3.0.8' );
 
@@ -1852,7 +1693,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_orders( $last_order = true ) {
 
 			if ( $last_order ) {
-				if ( false !== ( $cached_last_order = wp_cache_get( 'user-' . $this->get_id(), 'lp-user-last-order' ) ) ) {
+				if ( false !== ( $cached_last_order = LP_Object_Cache::get( 'user-' . $this->get_id(), 'learn-press/user-last-order' ) ) ) {
 					return $cached_last_order;
 				}
 			}
@@ -1864,7 +1705,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				foreach ( $my_orders as $course_id => $orders ) {
 					$last_orders[ $course_id ] = reset( $orders );
 				}
-				wp_cache_set( 'user-' . $this->get_id(), $last_orders, 'lp-user-last-order' );
+				LP_Object_Cache::set( 'user-' . $this->get_id(), $last_orders, 'learn-press/user-last-order' );
 			} else {
 				$last_orders = $my_orders;
 			}
@@ -1882,21 +1723,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function has_enrolled_course( $course_id, $force = false ) {
-			$enrolled  = 'no';
-			$cache_key = 'course-' . $this->get_id() . '-' . $course_id;
-
-			if ( false === ( $enrolled = wp_cache_get( $cache_key, 'enrolled-courses' ) ) ) {
-				// No new order is pending and has already enrolled or finished course
-				if ( 'lp-pending' !== $this->get_order_status( $course_id ) ) {
-					$enrolled = $this->has_course_status( $course_id, array(
-						'enrolled',
-						'finished'
-					) ) ? 'yes' : 'no';
-				}
-				wp_cache_set( $cache_key, $enrolled, 'enrolled-courses' );
-			}
-
-			$enrolled = $enrolled === 'yes' ? true : false;
+			$enrolled = $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_60;
 
 			// @deprecated
 			$enrolled = apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
@@ -1905,15 +1732,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			 * @since 3.0.0
 			 */
 			return apply_filters( 'learn-press/has-enrolled-course', $enrolled, $this->get_id(), $course_id );
-		}
-
-		public function is_activated_course( $course_id ) {
-			$activated = false;
-			if ( $course_data = $this->get_course_data( $course_id ) ) {
-				$activated = $course_data->is_available() && $this->has_purchased_course( $course_id );
-			}
-
-			return $activated;
 		}
 
 		/**
@@ -1929,7 +1747,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				_deprecated_argument( '$force', '3.0.0' );
 			}
 
-			return apply_filters( 'learn-press/user-has-finished-course', $this->get_course_status( $course_id ) == 'finished', $this, $course_id );
+			$finished = $this->get_course_access_level( $course_id ) === LP_COURSE_ACCESS_LEVEL_70;
+
+			return apply_filters( 'learn-press/user-has-finished-course', $finished, $this->get_id(), $course_id );
 		}
 
 		/**
@@ -1942,7 +1762,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function has_passed_course( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 			if ( $course ) {
-				$results = $course->evaluate_course_results( $this->get_id() );
+				$results = $this->evaluate_course_results( $this->get_id() );
 			} else {
 				$results = 0;
 			}
@@ -1987,38 +1807,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 
 		/**
-		 * @param int  $quiz_id
-		 * @param int  $course_id
-		 * @param bool $force
-		 *
-		 * @return mixed
-		 */
-		public function current_quiz_status( $quiz_id, $course_id = 0, $force = false ) {
-			$course_id = $this->_get_course( $course_id );
-
-			global $wpdb;
-			//$key_format = '%d-%d';
-			$cached = (array) wp_cache_get( 'user-quiz-statuses', 'learnpress' );
-			if ( ! array_key_exists( $this->get_id() . '-' . $course_id . '-' . $quiz_id, $cached ) || $force ) {
-				$query                                      = $wpdb->prepare( "
-					SELECT uq.item_id as id, uqm.meta_value as `status`
-					FROM {$wpdb->prefix}learnpress_user_itemmeta uqm
-					INNER JOIN {$wpdb->prefix}learnpress_user_items uq ON uq.user_item_id = uqm.learnpress_user_item_id AND uqm.meta_key = %s
-					WHERE uq.user_id = %d
-					ORDER BY user_item_id DESC
-				", 'status', $this->get_id(), $quiz_id );
-				$cached[ $this->get_id() . '-' . $quiz_id ] = '';
-				if ( $items = $wpdb->get_results( $query ) ) {
-					foreach ( $items as $item ) {
-						$cached[ $this->get_id() . '-' . $item->ID ] = $item->status;
-					}
-				}
-			}
-
-			return $cached[ $this->get_id() . '-' . $quiz_id ];
-		}
-
-		/**
 		 * Count number of time user has retaken a quiz
 		 *
 		 * @param int  $quiz_id
@@ -2040,22 +1828,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( $course_data = $this->get_course_data( $course_id ) ) {
 
 				if ( false === ( $count = $course_data->get_item_retaken_count( $quiz_id ) ) ) {
-					//$items = $course_data->get_meta( '_retaken_items' );
-
-					//if ( false === $items || ! array_key_exists( $quiz_id, $items ) ) {
-					//settype( $items, 'array' );
 					$user_item = $this->get_item_data( $quiz_id, $course_id );
 
 					if ( $user_item ) {
 						$new_count = $user_item->count_history() - 1;
 						$count     = $course_data->update_item_retaken_count( $quiz_id, $new_count );
 					}
-					//$items[ $quiz_id ] = $count;
-					//$course_data->set_meta( '_retaken_items', $items );
-					//$course_data->update_meta();
-					///}
-
-					//$count = $items[ $quiz_id ];
 				}
 
 			}
@@ -2122,38 +1900,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						WHERE parent_id = %d
 					", $result->user_item_id )
 					);
+
+					$course_data->calculate_course_results();
 					do_action( 'learn-press/user/retaken-course', $result, $course_id, $this->get_id() );
 				}
 
 			}
 
 			return $result;
-		}
-
-		/**
-		 * Checks if user has started a lesson
-		 *
-		 * @param $lesson_id
-		 * @param $course_id
-		 *
-		 * @return null|string
-		 */
-		public function is_exists_lesson( $lesson_id, $course_id ) {
-			global $wpdb;
-			$query   = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_user_items
-			WHERE user_id = %d
-				AND ref_id = %d
-				AND item_id = %d
-			ORDER BY user_item_id DESC
-		", $this->get_id(), $course_id, $lesson_id );
-			$results = $wpdb->get_row( $query );
-			if ( $results ) {
-				return $results;
-			}
-
-			return false;
 		}
 
 		/**
@@ -2164,69 +1918,52 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return bool|WP_Error
 		 */
-		public function complete_lesson( $lesson_id, $course_id = 0 ) {
+		public function complete_lesson( $lesson_id, $course_id = 0, $return_wp_error = true ) {
 			global $wpdb;
-			do_action( 'learn_press_before_user_complete_lesson', $lesson_id, $this );
-			$course_id = $this->_get_course( $course_id );
 
-			if ( $this->can_view_lesson( $lesson_id, $course_id ) == 'preview' ) {
-				return new WP_Error( 'complete-lesson-failed', __( 'You can not complete a preview lesson.', 'learnpress' ) );
-			}
-			$result = false;
+			try {
+				// @deprecated
+				do_action( 'learn_press_before_user_complete_lesson', $lesson_id, $this );
 
-			/**
-			 * If user has stared a lesson, get user lesson information
-			 */
-			if ( $item = $this->is_exists_lesson( $lesson_id, $course_id ) ) {
+				do_action( 'learn-press/before-complete-lesson', $lesson_id, $course_id, $this->get_id() );
+				$course_id = $this->_get_course( $course_id );
 
-				// Update lesson status if it's not 'completed'
-				if ( $item->status !== 'completed' ) {
-					$updated = $wpdb->update(
-						$wpdb->prefix . 'learnpress_user_items',
-						array(
-							'end_time' => current_time( 'mysql' ),
-							'status'   => 'completed'
-						),
-						array(
-							'user_item_id' => $item->user_item_id
-						),
-						array( '%s', '%s' ),
-						array( '%d' )
-					);
-					if ( ! $updated ) {
-						$result = new WP_Error( 'lesson-completed', $wpdb->last_error );
+				if ( $this->can_view_item( $lesson_id, $course_id ) == 'preview' ) {
+					throw new Exception( __( 'You can not complete a preview lesson.', 'learnpress' ), LP_COMPLETE_ITEM_FAIL );
+				}
+
+				$course_data = $this->get_course_data( $course_id );
+
+				if ( ! $course_data || ! $course_data->get_user_item_id() ) {
+					throw new Exception( __( 'You have to enroll course to complete lesson.', 'learnpress', LP_COMPLETE_ITEM_FAIL ) );
+				}
+
+				$result = false;
+
+				/**
+				 * If user has stared a lesson, get user lesson information
+				 */
+				if ( $item = $course_data->get_item( $lesson_id ) ) {
+
+					if ( $item->is_completed() ) {
+						throw new Exception( __( 'You have already completed this lesson.', 'learnpress' ), LP_COMPLETE_ITEM_FAIL );
 					}
-				} else {
-					$result = new WP_Error( 'lesson-completed', __( 'You have already completed this lesson', 'learnpress' ) );
-				}
-			} else {
-				$wpdb->insert(
-					$wpdb->prefix . 'learnpress_user_items',
-					array(
-						'user_id'    => $this->get_id(),
-						'item_id'    => $lesson_id,
-						'item_type'  => LP_LESSON_CPT,
-						'ref_id'     => $course_id,
-						'ref_type'   => LP_COURSE_CPT,
-						'start_time' => current_time( 'mysql' ),
-						'end_time'   => current_time( 'mysql' ),
-						'status'     => 'completed',
-						'parent_id'  => learn_press_get_user_item_id( $this->get_id(), $course_id )
-					),
-					array( '%d', '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%d' )
-				);
-				$updated = $wpdb->insert_id;
-				if ( ! $updated ) {
-					$result = new WP_Error( 'lesson-completed', $wpdb->last_error );
-				}
-			}
-			if ( ! empty( $updated ) ) {
-				if ( $course = learn_press_get_course( $course_id ) ) {
-					$result = $course->evaluate_course_results( $this->get_id() );
-				}
-			}
+					//$item->set_end_time( '', true );
+					$item->set_status( 'completed' );
 
-			do_action( 'learn_press_user_complete_lesson', $lesson_id, $result, $this->get_id() );
+					$course_data->save();
+
+					$result = $this->evaluate_course_results( $this->get_id() );
+				}
+
+				// @deprecated
+				do_action( 'learn_press_user_complete_lesson', $lesson_id, $result, $this->get_id() );
+
+				do_action( 'learn-press/user-completed-lesson', $lesson_id, $course_id, $this->get_id() );
+			}
+			catch ( Exception $ex ) {
+				$result = $return_wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
+			}
 
 			return $result;
 		}
@@ -2298,14 +2035,162 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_course_status( $course_id ) {
 
 			$status = false;
-			if ( false !== ( $data = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
-				$status = $data['status'];
-			} else {
-				$course_data = $this->get_course_data( $course_id );
-				$status      = $course_data->get_status();
+
+			if ( $data = $this->get_course_data( $course_id ) ) {
+				$status = $data->get_status();
 			}
 
 			return apply_filters( 'learn-press/user-course-status', $status, $course_id, $this->get_id() );
+		}
+
+		/**
+		 * Controls what this user can do with a course.
+		 *
+		 * 0    => No accessible
+		 * 10   => Normal users (like not logged in)
+		 * 20   => Author of course
+		 * 30   => Admin site
+		 * 35   => No require enrollment
+		 * 40   => Ordered but not completed
+		 * 50   => Order is completed but not enrolled
+		 * 60   => User has already enrolled course
+		 * 70   => User has already finished course
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param int $course_id
+		 *
+		 * @return int
+		 */
+		public function get_course_access_level( $course_id ) {
+
+			if ( false === ( $access_level = LP_Object_Cache::get( 'course-' . $course_id . '-' . $this->get_id(), 'learn-press/course-access-levels' ) ) ) {
+
+				$course = learn_press_get_course( $course_id );
+
+				if ( ! $course ) {
+					$access_level = LP_COURSE_ACCESS_LEVEL_0;
+				} elseif ( $course->is_required_enroll() ) {
+					$access_level = LP_COURSE_ACCESS_LEVEL_35;
+				} elseif ( $this->is_admin() ) {
+					$access_level = LP_COURSE_ACCESS_LEVEL_30;
+				} elseif ( $this->is_author_of( $course_id ) ) {
+					$access_level = LP_COURSE_ACCESS_LEVEL_20;
+				} else {
+					$access_level = LP_COURSE_ACCESS_LEVEL_10;
+				}
+
+				// Default level
+				$access_level = apply_filters( 'learn-press/course-access-level-default', $access_level, $course_id, $this->get_id() );
+
+				if ( ( $order = $this->get_course_order( $course_id ) ) ) {
+
+					switch ( $order->get_status() ) {
+						case 'completed':
+							$access_level = LP_COURSE_ACCESS_LEVEL_50;
+							break;
+						default:
+							$access_level = LP_COURSE_ACCESS_LEVEL_40;
+					}
+
+					if ( $access_level === LP_COURSE_ACCESS_LEVEL_50 ) {
+						if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
+							switch ( $course_data->get_status() ) {
+								case 'enrolled':
+									$access_level = LP_COURSE_ACCESS_LEVEL_60;
+									break;
+								case 'finished':
+									$access_level = LP_COURSE_ACCESS_LEVEL_70;
+									break;
+							}
+						}
+					}
+				}
+
+				LP_Object_Cache::set( 'course-' . $course_id . '-' . $this->get_id(), $access_level, 'learn-press/course-access-levels' );
+			}
+
+			return apply_filters( 'learn-press/course-access-level', $access_level, $course_id, $this->get_id() );
+		}
+
+		public function get_item_access_level( $item_id, $course_id ) {
+			$access_level = 0;
+
+			if ( $course = learn_press_get_course( $course_id ) ) {
+				if ( $course->has_item( $item_id ) ) {
+					if ( 10 < $this->get_course_access_level( $course_id ) ) {
+						$access_level = 10;
+					} else {
+						$item = $course->get_item( $item_id );
+						if ( $item->is_preview() ) {
+							$access_level = 10;
+						}
+					}
+				}
+			}
+
+			return apply_filters( 'learn-press/course-item-access-level', $access_level, $item_id, $course_id, $this->get_id() );
+		}
+
+		/**
+		 * Set new access-level of an user with a course.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param int $access_level
+		 * @param int $course_id
+		 *
+		 * @return mixed
+		 */
+		public function set_course_access_level( $access_level, $course_id ) {
+			if ( $access_level !== $this->get_course_access_level( $course_id ) ) {
+				LP_Object_Cache::set( 'course-' . $course_id . '-' . $this->get_id(), $access_level, 'learn-press/course-access-levels' );
+			}
+
+			return $access_level;
+		}
+
+		/**
+		 * Check if user have an access-level.
+		 * Consider the passed access-level is max level user have.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param int[]  $access_level
+		 * @param int    $course_id
+		 * @param string $compare
+		 *
+		 * @return bool
+		 */
+		public function has_course_access_level( $access_level, $course_id, $compare = '<=' ) {
+			$user_access_level = $this->get_course_access_level( $course_id );
+
+			switch ( $compare ) {
+				case 'any':
+					settype( $access_level, 'array' );
+					$has = in_array( $user_access_level, $access_level );
+					break;
+				default:
+					$has = version_compare( $user_access_level, $access_level );
+			}
+
+			return $has;
+		}
+
+		/**
+		 * Check if user has an access-level with a course.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param int $access_level
+		 * @param int $course_id
+		 *
+		 * @return bool
+		 */
+		public function is_access_level( $access_level, $course_id ) {
+			$user_access_level = $this->get_course_access_level( $course_id );
+
+			return $user_access_level === $access_level;
 		}
 
 		/**
@@ -2333,16 +2218,22 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function has_purchased_course( $course_id ) {
-			return apply_filters( 'learn_press_user_has_purchased_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->get_id() );
+			$purchased = apply_filters( 'learn-press/user-purchased-course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->get_id() );
+
+			// @deprecated
+			$purchased = apply_filters( 'learn_press_user_has_purchased_course', $purchased, $course_id, $this->get_id() );
+
+			return $purchased;
 		}
 
 		public function is_locked_course( $course_id ) {
-			$locked = false;
-			if ( $course_item = $this->get_course_data( $course_id ) ) {
+			$locked = apply_filters( 'learn-press/course-is-locked-for-guest', ! is_user_logged_in() );
+
+			if ( ! $locked && $course_item = $this->get_course_data( $course_id ) ) {
 				$locked = 'locked' === learn_press_get_user_item_meta( $course_item->get_user_item_id(), '_status', true );
 			}
 
-			return $locked;
+			return apply_filters( 'learn-press/course-is-locked', $locked, $course_id, $this->get_id() );
 		}
 
 		/**
@@ -2369,16 +2260,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function get_order_status( $course_id ) {
-			//LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
 			$order_id = $this->get_course_order( $course_id, false );
-
-			$return = apply_filters( 'learn-press/course-order-status', $order_id ? get_post_status( $order_id ) : false, $course_id, $this->get_id() );
+			$return   = apply_filters( 'learn-press/course-order-status', $order_id ? get_post_status( $order_id ) : false, $course_id, $this->get_id() );
 
 			// Deprecated since 3.0.0
 			$return = apply_filters( 'learn_press_user_has_ordered_course', $return, $course_id, $this->get_id() );
-
-			//LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 			return $return;
 		}
@@ -2406,12 +2292,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 			if ( $item_id ) {
 				if ( empty( $item['item_type'] ) ) {
-					$type = get_post_type( $item_id );
+					$type = learn_press_get_post_type( $item_id );
 				} else {
 					$type = $item['item_type'];
 				}
 				if ( ! $type ) {
-					$type = get_post_type( $item_id );
+					$type = learn_press_get_post_type( $item_id );
 				}
 				if ( $type == 'lp_lesson' ) {
 					$return = $this->has_completed_lesson( $item_id, $course_id, $force );
@@ -2459,24 +2345,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * Get the order of an item in a course
-		 * Uses this function to verify permission for this user
-		 * with an item such as when user view a lesson or quiz
-		 *
-		 * @param int
-		 * @param string type of order to return LP_Order|ID
-		 *
-		 * @return int
-		 */
-		public function get_item_order( $item_id ) {
-			if ( ! empty( self::$_order_items[ $item_id ] ) ) {
-				return self::$_order_items[ $item_id ];
-			}
-
-			return false;
-		}
-
-		/**
 		 * Enroll this user to a course.
 		 *
 		 * @param int $course_id
@@ -2498,17 +2366,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$return = false;
 			try {
 				global $wpdb;
-				$course = learn_press_get_course( $course_id );
-				$date   = new LP_Datetime();
-				$data   = array(
-					'item_type'      => get_post_type( $course_id ),
-					'status'         => 'enrolled',
-					'ref_id'         => $order_id,
-					'ref_type'       => $order_id ? get_post_type( $order_id ) : '',
-					'parent_id'      => 0,
-					'start_time'     => $date->toSql(),
-					'start_time_gmt' => $date->toSql( false )
-				);
+
+				$course  = learn_press_get_course( $course_id );
+				$user_id = get_current_user_id();
 
 				if ( $course->is_required_enroll() && ! $force ) {
 
@@ -2523,43 +2383,38 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( ! $this->get_id() ) {
 						throw new Exception( __( 'Please login to enroll course.', 'learnpress' ), 10002 );
 					}
-//					$data = array_merge(
-//						array(
-//							'user_id' => $this->get_id(),
-//							'item_id' => $course_id,
-//						),
-//						$data
-//					);
-//					$wpdb->insert(
-//						$wpdb->learnpress_user_items,
-//						$data,
-//						array( '%d', '%d', '%s', '%s', '%d', '%s', '%d', '%s', '%s' )
-//					);
-//
-//					return $wpdb->insert_id;
-				} else {
-					$data = array_merge(
-						array(
-							'user_id' => $this->get_id(),
-							'item_id' => $course_id,
-						),
-						$data
-					);
+
 				}
-				//else {
+
+				$user_item_api = new LP_User_Item_CURD();
+				$course_item   = $user_item_api->get_item_by( array( 'item_id' => $course_id, 'ref_id' => $order_id ) );
+
+				if ( ! $course_item ) {
+					$course_item = LP_User_Item::get_empty_item();
+				} else {
+					settype( $course_item, 'array' );
+				}
+
+				$date                          = new LP_Datetime();
+				$course_item['user_id']        = $user_id;
+				$course_item['item_id']        = $course_id;
+				$course_item['item_type']      = learn_press_get_post_type( $course_id );
+				$course_item['ref_id']         = $order_id;
+				$course_item['ref_type']       = learn_press_get_post_type( $order_id );
+				$course_item['start_time']     = $date->toSql();
+				$course_item['start_time_gmt'] = $date->toSql( false );
+
+				$user_course = new LP_User_Item_Course( $course_item );
+				$user_course->set_status( 'enrolled' );
+				$user_course->update();
 
 				learn_press_remove_message( '', 'error' );
-				if ( $return = $this->_curd->update_user_item( $this->get_id(), $course_id, $data ) ) {
+				$user_id = is_user_logged_in() ? $this->get_id() : 0;
 
-					if ( is_user_logged_in() ) {
-						do_action( 'learn-press/user-enrolled-course', $course_id, $this->get_id(), $return );
+				do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
 
-						// @deprecated
-						do_action( 'learn_press_user_enrolled_course', $course_id, $this->get_id(), $return );
-					}
-				}
-
-				//}
+				// @deprecated
+				do_action( 'learn_press_user_enrolled_course', $course_id, $user_id, $user_course );
 
 				return $return;
 			}
@@ -2648,13 +2503,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * @return int
-		 */
-		public function _get_found_rows() {
-			return $this->_FOUND_ROWS;
-		}
-
-		/**
 		 * @param     $question_id
 		 * @param     $quiz_id
 		 * @param int $course_id
@@ -2715,28 +2563,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return string
 		 */
 		public function get_upload_profile_src( $size = '' ) {
-			$uploaded_profile_src = $this->get_data( 'uploaded_profile_src' );
-			if ( empty( $uploaded_profile_src ) ) {
-				if ( $profile_picture = $this->get_data( 'profile_picture' ) ) {
-					$upload    = learn_press_user_profile_picture_upload_dir();
-					$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
-					if ( file_exists( $file_path ) ) {
-						$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
-						// no cache for first time after avatar changed
-						//if ( $this->get_data( 'profile_picture_changed' ) == 'yes' ) {
-						$uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ), $uploaded_profile_src );// $this->get_data( 'uploaded_profile_src' ) );
-						//delete_user_meta( $this->get_id(), '_lp_profile_picture_changed' );
-						//}
-					} else {
-						$uploaded_profile_src = false;
-					}
-
-					$this->_set_data( 'uploaded_profile_src', $uploaded_profile_src );
-
-				}
-			}
-
-			return $uploaded_profile_src;
+			return LP_Profile::instance( $this->get_id() )->get_upload_profile_src( $size );
 		}
 
 		/**
@@ -2746,53 +2573,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return false|string
 		 */
 		public function get_profile_picture( $type = '', $size = 96 ) {
-			if ( $type == 'gravatar' ) {
-				remove_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
-			}
-			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
-				$this->profile_picture_src = $profile_picture_src;
-			}
-			$avatar = get_avatar( $this->get_id(), $size, '', '', array( 'gravatar' => false ) );
-			if ( $type == 'gravatar' ) {
-				add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
-			}
-
-			return $avatar;
-		}
-
-		/**
-		 * @return string
-		 */
-		public function get_profile_picture_src() {
-			$profile_picture_type = $this->profile_picture_type;
-			if ( $profile_picture_type == 'picture' ) {
-				if ( $profile_picture_src = $this->get_upload_profile_src() ) {
-					$this->profile_picture_src = $profile_picture_src;
-				}
-			} else {
-				$avatar_data               = get_avatar_data( $this->get_id() );
-				$this->profile_picture_src = $avatar_data['url'];
-			}
-
-			return $this->profile_picture_src;
-		}
-
-		/**
-		 * @param $url
-		 * @param $id_or_email
-		 * @param $args
-		 *
-		 * @return bool
-		 */
-		public function get_avatar_url( $url, $id_or_email, $args ) {
-			if ( is_numeric( $id_or_email ) && $id_or_email == $this->get_id() ) {
-				$url = $this->get_data( 'profile_picture_src' );
-			}
-			if ( $id_or_email == $this->get_data( 'user_login' ) ) {
-				$url = $this->get_data( 'profile_picture_src' );
-			}
-
-			return $url;
+			return LP_Profile::instance( $this->get_id() )->get_profile_picture( $type, $size );
 		}
 
 		/**
@@ -2829,6 +2610,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return apply_filters( 'learn_press_user_can_do_quiz', $can, $quiz_id, $this->get_id(), $course_id );
+		}
+
+		public function evaluate_course_results( $course_id ) {
+			LP_Debug::logTime( __FUNCTION__ );
+
+			$user_course = $this->get_course_data( $course_id );
+
+			$result = isset( $user_course ) ? $user_course->get_results( 'result' ) : 0;
+			LP_Debug::logTime( __FUNCTION__ );
+
+			return $result;
 		}
 
 		public function get_role() {

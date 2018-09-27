@@ -84,7 +84,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 
 		public function add_attribute_value( $course_id ) {
 
-			if ( LP_COURSE_CPT != get_post_type( $course_id ) ) {
+			if ( LP_COURSE_CPT != learn_press_get_post_type( $course_id ) ) {
 				return;
 			}
 
@@ -112,7 +112,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		public function add_attribute_to_course( $course_id ) {
 			$taxonomy = learn_press_get_request( 'taxonomy' );
 
-			if ( LP_COURSE_CPT != get_post_type( $course_id ) ) {
+			if ( LP_COURSE_CPT != learn_press_get_post_type( $course_id ) ) {
 				return;
 			}
 

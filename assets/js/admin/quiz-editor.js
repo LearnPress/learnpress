@@ -942,14 +942,23 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         $publishingAction.find('.spinner').addClass('is-active');
         $publishingAction.addClass('code-' + payload['code']);
 
-        return Vue.http.post($store.getters.urlAjax,
-            payload, {
+        return LP_Request.push($store.getters.urlAjax,
+            payload,
+            {
                 emulateJSON: true,
                 params: {
                     namespace: 'LPListQuizQuestionsRequest',
                     code: payload['code'],
                 }
             });
+
+        // return Vue.http.post($store.getters.urlAjax,
+        //     payload, {
+        //         emulateJSON: true,
+        //         params: {
+        //             namespace: 'LPListQuizQuestionsRequest'
+        //         }
+        //     });
     };
 
     Vue.http.interceptors.push(function (request, next) {

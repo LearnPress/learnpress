@@ -26,7 +26,7 @@ $button_text = $checked ? __( 'Checked', 'learnpress' ) : __( 'Check', 'learnpre
 
 <?php do_action( 'learn-press/quiz/before-check-answer-button' ); ?>
 
-    <form name="check-answer-question" class="check-answer-question form-button lp-form" method="post"
+    <form name="check-answer-question" class="check-answer-question form-button lp-form lp-form-ajax" method="post"
           enctype="multipart/form-data" @submit="checkQuestion">
 
 		<?php do_action( 'learn-press/quiz/begin-check-answer-button' ); ?>

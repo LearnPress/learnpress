@@ -111,7 +111,9 @@
                 }
             }
         });
-
+        if (!window.LP) {
+            window.LP = {};
+        }
         window.LP.$modalSearchItems = new Vue({
             el: '#vue-modal-search-items',
             data: {

@@ -52,7 +52,7 @@ class LP_Forms_Handler {
 			$result['message'][] = learn_press_get_message( __( 'Thank you! Your message has been sent.', 'learnpress' ), 'success' );
 			$user                = get_user_by( 'email', $args['bat_email'] );
 			update_user_meta( $user->ID, '_requested_become_teacher', 'yes' );
-			do_action( 'learn-press/become-a-teacher-sent', $args );
+			do_action( 'learn-press/become-a-teacher-sent', $args['bat_email'] );
 		}
 
 		learn_press_maybe_send_json( $result );
@@ -62,8 +62,8 @@ class LP_Forms_Handler {
 	 * Basic filtering for become-teacher fields if it is required.
 	 *
 	 * @param string $name
-	 * @param array $field
-	 * @param mixed $value
+	 * @param array  $field
+	 * @param mixed  $value
 	 *
 	 * @return bool|WP_Error
 	 */
@@ -76,7 +76,8 @@ class LP_Forms_Handler {
 					throw new Exception( __( 'Your email does not exist!', 'learnpress' ) );
 				}
 			}
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			$validate = new WP_Error( 'invalid_email', $ex->getMessage() );
 		}
 
@@ -128,11 +129,13 @@ class LP_Forms_Handler {
 		) );
 
 		if ( $result['result'] === 'success' ) {
-			$logged = wp_signon( array(
-				'user_login'    => $args['username'],
-				'user_password' => $args['password'],
-				'rememberme'    => LP_Request::get_string( 'rememberme' )
-			) );
+			$logged = wp_signon(
+				array(
+					'user_login'    => $args['username'],
+					'user_password' => $args['password'],
+					'rememberme'    => LP_Request::get_string( 'rememberme' )
+				)
+			);
 
 			if ( is_wp_error( $logged ) ) {
 				$result['result'] = 'error';
@@ -241,10 +244,12 @@ class LP_Forms_Handler {
 
 			learn_press_add_message( $message, 'success' );
 
-			$logged = wp_signon( array(
-				'user_login'    => $args['reg_username'],
-				'user_password' => $args['reg_password']
-			) );
+			$logged = wp_signon(
+				array(
+					'user_login'    => $args['reg_username'],
+					'user_password' => $args['reg_password']
+				)
+			);
 		}
 
 		learn_press_maybe_send_json( $result, 'learn_press_print_messages' );
@@ -283,7 +288,8 @@ class LP_Forms_Handler {
 				if ( ! preg_match( '#[~!@\#$%^&*()]#', $value ) ) {
 					throw new Exception( __( 'Password must include at least one of these characters ~!@#$%^&*() !', 'learnpress' ), 125 );
 				}
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$validate = new WP_Error( $ex->getCode(), $ex->getMessage() );
 			}
 		}

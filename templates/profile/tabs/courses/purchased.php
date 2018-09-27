@@ -14,6 +14,10 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_User_Item_Course $user_course
+ */
+
 $profile       = learn_press_get_profile();
 $filter_status = LP_Request::get_string( 'filter-status' );
 $query         = $profile->query_courses( 'purchased', array( 'status' => $filter_status ) );
@@ -36,7 +40,7 @@ $query         = $profile->query_courses( 'purchased', array( 'status' => $filte
             <thead>
             <tr>
                 <th class="column-course"><?php _e( 'Course', 'learnpress' ); ?></th>
-                <th class="column-date"><?php _e( 'Date', 'learnpress' ); ?></th>
+                <th class="column-date"><?php _e( 'Enrolled', 'learnpress' ); ?></th>
                 <th class="column-passing-grade"><?php _e( 'Passing Grade', 'learnpress' ); ?></th>
                 <th class="column-status"><?php _e( 'Progress', 'learnpress' ); ?></th>
             </tr>
@@ -50,7 +54,12 @@ $query         = $profile->query_courses( 'purchased', array( 'status' => $filte
 							<?php echo $course->get_title(); ?>
                         </a>
                     </td>
-                    <td class="column-date"><?php echo $user_course->get_start_time( 'd M Y' ); ?></td>
+                    <!--                    <td class="column-date">-->
+					<?php //echo $user_course->get_start_time( 'd M Y' ); ?><!--</td>-->
+                    <td class="column-date">
+						<?php
+						echo $user_course->get_level() >= 20 ? $user_course->get_time( 'start_time', '', true ) : '-';
+						?></td>
                     <td class="column-passing-grade"><?php echo $course->get_passing_condition( true ); ?></td>
                     <td class="column-status">
 						<?php if ( $user_course->get_results( 'status' ) !== 'purchased' ) { ?>
@@ -60,7 +69,7 @@ $query         = $profile->query_courses( 'purchased', array( 'status' => $filte
                             </span>
 						<?php } else { ?>
                             <span class="lp-label label-<?php echo esc_attr( $user_course->get_results( 'status' ) ); ?>">
-                                <?php echo $user_course->get_status_label( $user_course->get_results( 'status' ) ); ?>
+                                <?php echo $user_course->get_status_label(); ?>
                             </span>
 						<?php } ?>
                     </td>

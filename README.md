@@ -45,8 +45,6 @@ We are developing and improving LearnPress day by day and bringing new features 
 - [LearnPress Prerequisites Courses](https://wordpress.org/plugins/learnpress-prerequisites-courses) - require student to pass some courses in order to enroll other course.
 - [LearnPress bbPress Integration](https://wordpress.org/plugins/learnpress-bbpress) - add bbPress Forum support for LearnPress WordPress LMS Plugin.
 - [LearnPress BuddyPress Integration](https://wordpress.org/plugins/learnpress-buddypress) - add BuddyPress support for LearnPress WordPress LMS Plugin.
-- [LearnPress Offline Payment](https://wordpress.org/plugins/learnpress-offline-payment) - help you to manually create order for offline payment instead of paying via any payment gateways to sell course.
-- [LearnPress Fill In Blank](https://wordpress.org/plugins/learnpress-fill-in-blank) - Fill in Blank question type for LearnPress WordPress LMS Plugin.
 
 **Premium add-ons for LearnPress WordPress LMS Plugin:**
 
@@ -55,42 +53,41 @@ We are developing and improving LearnPress day by day and bringing new features 
 - [Collections add-on for LearnPress](http://thimpress.com/shop/collections-add-on-for-learnpress/) - making LMS courses collection by selecting number of courses, this is helpful if you want to combine multiple LMS courses into a collection for a group of skills.
 - [Stripe Payment method for LearnPress](http://thimpress.com/shop/stripe-add-on-for-learnpress/) - Stripe payment method for LearnPress WordPress LMS Plugin.
 - [WooCommerce add-on for LearnPress](http://thimpress.com/shop/woocommerce-add-on-for-learnpress/) - using WooCommerce as payment gateway for LearnPrss WordPress LMS Plugin.
-- [2Checkout add-on for LearnPress](https://thimpress.com/product/2checkout-add-learnpress/) - 2Checkout add-on for LearnPress provides another way for transaction to be done in the best convenient way for both parties.
-- [Announcement add-on for LearnPress](https://thimpress.com/product/announcement-add-on-for-learnpress/) - Announcement is a great way to promote your courses and update new features + contents to your courses, including email notification.
-- [Assignments add-on for LearnPress](https://thimpress.com/product/assignments-add-on-for-learnpress/) - Assignment Add-on for LearnPress is a great way to assign tasks, essays for your students so they can do at home and submit. Instructors can check students' work after that and grade the assignment.
-- [Authorize.Net add-on for LearnPress](https://thimpress.com/product/authorize-net-add-on-learnpress/) - Authorize.net add-on for LearnPress provides another way for transaction to be done in the best convenient way for both parties.
-- [Commission add-on for LearnPress](https://thimpress.com/product/commission-add-on-for-learnpress/) - Commission add-on for LearnPress provides an easy way to manage courses commission and withdrawal request.
-- [Gradebook add-on for LearnPress](https://thimpress.com/product/gradebook-add-on-for-learnpress/) - Gradebook add-on for LearnPress makes it easier to track the students learning progress and result.
-- [Sorting Choice add-on for LearnPress](https://thimpress.com/product/sorting-choice-add-on-for-learnpress/) - Sorting Choice add-on for LearnPress makes the question interesting but also challenging
-- [myCRED add-on for LearnPress](https://thimpress.com/product/mycred-add-on-for-learnpress/) - myCRED add-on for LearnPress can bring reward site interactions, build store reward programs, offer community games or use as analytics, it's all up to you
-- [Content Drip add-on for LearnPress](https://thimpress.com/product/content-drip-add-on-for-learnpress/) - Content Drip add-on for LearnPress allows you to manage course's opening time for your best convenience.
-- [Random Quiz add-on for LearnPress](https://thimpress.com/product/random-quiz-add-on-for-learnpress/) - Random Quiz add-on for LearnPress helps to ensure fairness for everyone when taking quizzes.
-- [Paid Memberships Pro add-on for LearnPress](https://thimpress.com/product/paid-memberships-pro-add-learnpress/) - Paid Membership Pro add-on for LearnPress creates subscriptions for better management of learning and budget needs.
 
 **WordPress LMS Plugin - LearnPress ROADMAP:**
 
 - Payment Method support (first priority)
+	- Authorize.net
 	- Google Checkout
 	- Amazon Payments
 	- Dwolla
 	- Braintree
 	- Samurai by FeeFighters
 	- WePay
+	- 2Checkout
+- Assignment
+- Gradebook
+- Paid MemberShip Pro
 - Events
+- myCRED integration
 - Share Grade
 - BadgeOS
+- Content Drip
 - Manually reset quiz for retake
 - Create quiz from randoms questions in question bank
 - Attachment restriction for lesson
+- Mathjax support
 - Presentation support (maybe support SlideShare)
 - Show enrolled user
 - Student ranks
 - REST API for mobile app
+- No distraction mode (when doing quiz)
 - Report/feedback about a question/quiz/lesson
 - Commission for payment method
 - Instructor's note
 - Private message from Admin to teacher
 - Group payment
+- Announcement (come up with email)
 
 Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>
 

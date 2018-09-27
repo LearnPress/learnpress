@@ -16,7 +16,8 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $course ) ) {
 	$course = learn_press_get_course();
-} ?>
+}
+?>
 
 <?php do_action( 'learn-press/before-enroll-form' ); ?>
 

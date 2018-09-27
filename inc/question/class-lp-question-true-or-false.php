@@ -71,7 +71,6 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 		 */
 		public function check( $user_answer = null ) {
 			$return = parent::check();
-
 			if ( $answers = $this->get_answers() ) {
 				foreach ( $answers as $key => $option ) {
 					if ( ( $option['is_true'] == 'yes' ) && ( $option['value'] == $user_answer ) ) {

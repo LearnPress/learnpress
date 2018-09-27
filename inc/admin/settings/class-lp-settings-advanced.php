@@ -70,6 +70,13 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'desc'    => __( 'Load default stylesheet for LearnPress.', 'learnpress' )
 				),
 				array(
+					'title'   => __( 'Load font awesome', 'learnpress' ),
+					'id'      => 'load_fa',
+					'default' => 'yes',
+					'type'    => 'yes-no',
+					'desc'    => __( 'Load font awesome css library, disable this option if you sure it was loaded elsewhere.', 'learnpress' )
+				),
+				array(
 					'title'   => __( 'Debug mode', 'learnpress' ),
 					'id'      => 'debug',
 					'default' => 'yes',

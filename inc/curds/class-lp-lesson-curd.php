@@ -101,7 +101,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 				return new WP_Error( __( '<p>Op! ID not found</p>', 'learnpress' ) );
 			}
 
-			if ( get_post_type( $lesson_id ) != LP_LESSON_CPT ) {
+			if ( learn_press_get_post_type( $lesson_id ) != LP_LESSON_CPT ) {
 				return new WP_Error( __( '<p>Op! The lesson does not exist</p>', 'learnpress' ) );
 			}
 
@@ -134,7 +134,7 @@ if ( ! class_exists( 'LP_Lesson_CURD' ) ) {
 			// lesson id
 			$id = $lesson->get_id();
 
-			if ( ! $id || get_post_type( $id ) !== LP_LESSON_CPT ) {
+			if ( ! $id || learn_press_get_post_type( $id ) !== LP_LESSON_CPT ) {
 				throw new Exception( sprintf( __( 'Invalid lesson with ID "%d".', 'learnpress' ), $id ) );
 			}
 

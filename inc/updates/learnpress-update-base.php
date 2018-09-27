@@ -25,6 +25,7 @@ class LP_Update_Base {
 	public function __construct() {
 		add_filter( 'query', array( $this, 'log_query' ) );
 		$this->_get_version();
+		$this->update();
 	}
 
 	/**

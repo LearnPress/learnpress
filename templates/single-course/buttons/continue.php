@@ -18,7 +18,7 @@ $user = LP_Global::user();
 ?>
 
 <form name="continue-course" class="continue-course form-button lp-form" method="post"
-      action="<?php echo $user->get_current_item( get_the_ID(), true ); ?>">
+      action="?lp-ajax=continue-course&id=<?php echo get_the_ID();?><?php //echo $user->get_current_item( get_the_ID(), true ); ?>">
 
     <button type="submit" class="lp-button button"><?php _e( 'Continue', 'learnpress' ); ?></button>
 

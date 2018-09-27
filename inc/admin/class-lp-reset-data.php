@@ -136,7 +136,7 @@ class LP_Reset_Data {
 			if ( $rows ) {
 				foreach ( $rows as $k => $row ) {
 					$course = learn_press_get_course( $row->id );
-					if ( $row->students = $course->count_in_order() ) {
+					if ( $row->students = $course->count_completed_orders() ) {
 						$courses[] = $row;
 					}
 				}

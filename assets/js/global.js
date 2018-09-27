@@ -188,6 +188,8 @@ if (typeof window.LP === 'undefined') {
             if (!content || ($el.data('LP_Tooltip') !== undefined)) {
                 return;
             }
+
+            console.log(content);
             var $tooltip = null;
             $el.hover(function (e) {
                 $tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();
@@ -684,7 +686,7 @@ if (typeof window.LP === 'undefined') {
                 dataType = args.dataType || 'json',
                 data = args.action ? $.extend(args.data, {'lp-ajax': args.action}) : args.data,
                 beforeSend = args.beforeSend || function () {
-                },
+                    },
                 url = args.url || window.location.href;
 //                        console.debug( beforeSend );
             $.ajax({
@@ -815,7 +817,7 @@ if (typeof window.LP === 'undefined') {
                 }
                 if (reqWidth > seed.length) { // so short we pad
                     return new Array(1 + (reqWidth - seed.length))
-                        .join('0') + seed;
+                            .join('0') + seed;
                 }
                 return seed;
             };
@@ -832,7 +834,7 @@ if (typeof window.LP === 'undefined') {
 
             retId = prefix; // start with prefix, add current milliseconds hex string
             retId += formatSeed(parseInt(new Date()
-                .getTime() / 1000, 10), 8);
+                    .getTime() / 1000, 10), 8);
             retId += formatSeed(this.php_js.uniqidSeed, 5); // add seed hex string
             if (more_entropy) {
                 // for more entropy we add a float lower to 10
@@ -887,7 +889,7 @@ if (typeof window.LP === 'undefined') {
             });
             return $el;
         },
-        template: _.memoize(function (id, data) {
+        template: typeof _ !== 'undefined' ? _.memoize(function (id, data) {
             var compiled,
                 options = {
                     evaluate: /<#([\s\S]+?)#>/g,
@@ -903,7 +905,9 @@ if (typeof window.LP === 'undefined') {
             return data ? tmpl(data) : tmpl;
         }, function (a, b) {
             return a + '-' + JSON.stringify(b);
-        }),
+        }) : function () {
+            return '';
+        },
         alert: function (localize, callback) {
             var title = '',
                 message = '';
@@ -1060,8 +1064,11 @@ if (typeof window.LP === 'undefined') {
         });
     };
 
+    var xxx = 0;
+
     function QuickTip(el, options) {
-        var $el = $(el);
+        var $el = $(el),
+            uniId = $el.attr('data-id') || LP.uniqueId();
 
         options = $.extend({
             event: 'hover',
@@ -1072,17 +1079,27 @@ if (typeof window.LP === 'undefined') {
             tipClass: ''
         }, options, $el.data());
 
-        var content = $el.data('content-tip') || $el.html(),
+        $el.attr('data-id', uniId);
+
+        var content = $el.attr('data-content-tip') || $el.html(),
             $tip = $('<div class="learn-press-tip-floating">' + content + '</div>'),
             t = null,
             closeInterval = 0,
             useData = false,
-            arrowOffset = options.arrowOffset == 'el' ? $el.outerWidth() / 2 : 8;
+            arrowOffset = options.arrowOffset === 'el' ? $el.outerWidth() / 2 : 8,
+            $content = $('#__' + uniId);
+
+        if ($content.length === 0) {
+            $(document.body).append($('<div />').attr('id', '__' + uniId).html(content).css('display', 'none'))
+        }
+
+        content = $content.html();
 
         $tip.addClass(options.tipClass);
 
+        $el.data('content-tip', content);
         if ($el.attr('data-content-tip')) {
-            $el.removeAttr('data-content-tip');
+            //$el.removeAttr('data-content-tip');
             useData = true;
         }
 
@@ -1142,6 +1159,10 @@ if (typeof window.LP === 'undefined') {
                 show();
             })
         }
+
+        $(document).on('learn-press/close-all-quick-tip', function () {
+            close();
+        });
         $el.hover(
             function (e) {
                 e.stopPropagation();
@@ -1156,7 +1177,6 @@ if (typeof window.LP === 'undefined') {
                 }
             }
         ).addClass('ready');
-
         return {
             close: close,
             open: open
@@ -1331,6 +1351,10 @@ if (typeof window.LP === 'undefined') {
                 }, delay, $el);
             }
         });
+
+        $(document).on('click', function () {
+            $(document).trigger('learn-press/close-all-quick-tip')
+        })
     });
     LearnPress = LP;
 

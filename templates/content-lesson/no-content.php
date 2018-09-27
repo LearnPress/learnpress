@@ -22,4 +22,7 @@ if ( $lesson->current_user_can_edit() ) {
 	$message .= sprintf( '<a href="%s" class="edit-content">%s</a>', $lesson->get_edit_link(), __( 'Edit', 'learnpress' ) );
 }
 
+//learn_press_display_message( $message, 'success' );
 learn_press_display_message( $message, 'notice' );
+//learn_press_display_message( $message, 'error' );
+//learn_press_display_message( $message, 'warning' );

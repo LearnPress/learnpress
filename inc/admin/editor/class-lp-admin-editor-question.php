@@ -18,25 +18,39 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	protected $question_curd = null;
 
 	/**
+	 * @var array
+	 */
+	protected $args = array();
+
+	/**
 	 * LP_Admin_Editor_Question constructor.
 	 */
 	public function __construct() {
+		if ( did_action( 'init' ) ) {
+			$this->init();
+		} else {
+			add_action( 'init', array( $this, 'init' ) );
+		}
 	}
 
-	public function dispatch() {
-		check_ajax_referer( 'learnpress_admin_question_editor', 'nonce' );
-
-		$args        = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => '' ) );
-		$question_id = $args['id'];
+	public function init() {
+		$this->args  = wp_parse_args( $_REQUEST, array( 'id' => false, 'type' => 'heartbeat' ) );
+		$question_id = $this->args['id'];
 		$question    = LP_Question::get_question( $question_id );
 
 		if ( ! $question ) {
-			return false;
+			return;
 		}
 
 		$this->question      = $question;
 		$this->question_curd = new LP_Question_CURD();
 		$this->result        = array( 'status' => false );
+	}
+
+	public function dispatch() {
+		check_ajax_referer( 'learnpress_admin_question_editor', 'nonce' );
+
+		$args = $this->args;
 
 		$this->call( $args['type'], array( $args ) );
 
@@ -56,7 +70,7 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	public function get_question_data_to_question_editor( $question, $object = false ) {
 
 		if ( ! $object ) {
-			if ( get_post_type( $question ) !== LP_QUESTION_CPT ) {
+			if ( learn_press_get_post_type( $question ) !== LP_QUESTION_CPT ) {
 				return array();
 			}
 

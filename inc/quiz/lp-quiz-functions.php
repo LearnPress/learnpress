@@ -68,6 +68,7 @@ function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
 }
 
 function learn_press_question_class( $question = null, $args = array() /*, $classes = null, $user_id = null, $context = null*/ ) {
+	die( __FUNCTION__ );
 	$course  = LP()->global['course'];
 	$args    = wp_parse_args(
 		$args,
@@ -232,7 +233,7 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
 		$current_question_id = learn_press_get_current_question( $quiz_id, $user_id );
 	}
 	$permalink = get_the_permalink( $quiz_id );
-	if ( $current_question_id && get_post_type( $current_question_id ) == 'lp_question' ) {
+	if ( $current_question_id && learn_press_get_post_type( $current_question_id ) == 'lp_question' ) {
 		$question_name = get_post_field( 'post_name', $current_question_id );
 		if ( '' != get_option( 'permalink_structure' ) ) {
 			$permalink .= $question_name;
@@ -413,14 +414,11 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 		}
 
 		global $wpdb;
-		$ids = $orders = array();
-		foreach ( $questions as $id => $question ) {
-			$ids[] = $id;
-		}
+		$orders = array();
 
-		if ( $order = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q", ARRAY_A ) ) {
-			foreach ( $order as $id => $_order ) {
-				$orders[ $_order['q_id'] ] = $_order['q_order'];
+		if ( $results = $wpdb->get_results( "SELECT q.question_id AS q_id, q.question_order AS q_order FROM $wpdb->learnpress_quiz_questions AS q" ) ) {
+			foreach ( $results as $result ) {
+				$orders[ $result->q_id ] = $result->q_order;
 			}
 		}
 

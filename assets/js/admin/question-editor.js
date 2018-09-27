@@ -164,7 +164,7 @@
             answer = JSON.stringify(answer);
             Vue.http.LPRequest({
                 type: 'update-answer-title',
-                answer: answer
+                answer: JSON.stringify(answer)
             })
         },
 
@@ -267,7 +267,7 @@
         $publishingAction.find('.spinner').addClass('is-active');
         $publishingAction.addClass('code-' + payload['code']);
 
-        return Vue.http.post($store.getters.urlAjax,
+        return LP_Request.push($store.getters.urlAjax,
             payload,
             {
                 emulateJSON: true,
@@ -276,6 +276,15 @@
                     code: payload['code'],
                 }
             });
+
+        // return Vue.http.post($store.getters.urlAjax,
+        //     payload,
+        //     {
+        //         emulateJSON: true,
+        //         params: {
+        //             namespace: 'LPQuestionEditorRequest'
+        //         }
+        //     });
     };
 
     Vue.http.interceptors.push(function (request, next) {

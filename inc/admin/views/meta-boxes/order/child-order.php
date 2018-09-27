@@ -12,7 +12,7 @@ if ( ! $order->is_multi_users() ) {
 }
 ?>
 
-<h4><?php echo esc_html( 'Child orders', 'learnpress' ); ?></h4>
+<h4><?php esc_html_e( 'Child orders', 'learnpress' ); ?></h4>
 
 <table class="wp-list-table widefat fixed striped posts">
     <thead>

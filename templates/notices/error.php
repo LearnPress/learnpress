@@ -13,9 +13,8 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php if ( ! $messages ) {
+if ( ! isset($messages )) {
 	return;
 } ?>
 

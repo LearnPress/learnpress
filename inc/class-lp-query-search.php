@@ -70,7 +70,7 @@ class LP_Query_Search {
 		}
 
 		if ( $context && $context_id ) {
-			if ( get_post_type( $context_id ) == $context ) {
+			if ( learn_press_get_post_type( $context_id ) == $context ) {
 				$post_author = get_post_field( 'post_author', $context_id );
 				$authors[]   = $post_author;
 				if ( $post_author != $user->get_id() ) {

@@ -52,17 +52,12 @@ class LP_Datetime extends DateTime {
 			$date = current_time( 'mysql' );
 		}
 
-
 		if ( ! ( $tz instanceof DateTimeZone ) ) {
 			$tz = self::get_default_timezone( $tz );
 		}
 
 		if ( ! $tz ) {
 			$tz = null;
-		}
-
-		if ( $this->raw_date === '0000-00-00 00:00:00' ) {
-			//$date = '1969-01-01 00:00:00';
 		}
 
 		date_default_timezone_set( 'UTC' );
@@ -273,7 +268,7 @@ class LP_Datetime extends DateTime {
 	 * @return  string
 	 */
 	public function toSql( $local = true ) {
-		return $this->format( 'Y-m-d H:i:s', $local );
+		return $this->raw_date === self::getSqlNullDate() || is_null( $this->raw_date ) ? self::getSqlNullDate() : $this->format( 'Y-m-d H:i:s', $local );
 	}
 
 	/**

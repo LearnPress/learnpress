@@ -51,7 +51,7 @@ gulp.task('compress-js', function (cb) {
         .pipe(gulp.dest('assets/js/admin'))
 });
 
-gulp.task('minify-css', function () {
+gulp.task('compress-css', function () {
     return gulp.src('./assets/**/*.css')
         .pipe(cleanCSS())
         .pipe(gulp.dest('./assets'));
@@ -145,9 +145,7 @@ gulp.task('release', ['copy-release'], function () {
 // main task
 gulp.task('svn', ['scss', 'copy-trunk'], function () {
     updateReadme(getCurrentVer(true), function () {
-        removeConst(function () {
-            return gulp.start('release', ['copy-tag']);
-        })
+        return gulp.start('release', ['copy-tag']);
     })
 });
 
@@ -163,12 +161,6 @@ gulp.task('copy-zip', ['clr-zip'], function () {
     return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
 });
 
-gulp.task('xxx', function () {
-    removeConst(function () {
-        return gulp.start('release', ['copy-tag']);
-    })
-});
-
 gulp.task('mk-zip', ['copy-zip'], function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
@@ -179,6 +171,46 @@ gulp.task('mk-zip', ['copy-zip'], function () {
 
 gulp.task('zip', ['mk-zip'], function () {
 
+});
+
+gulp.task('scss-popup', function () {
+    return gulp.src(['assets/scss/frontend/_item-popup.scss'])
+        .pipe(scss())
+        .pipe(gulp.dest('assets/css/frontend'))
+});
+
+/**
+ * Join and compress front-end script
+ */
+gulp.task('cfjs', function () {
+    return gulp.src([
+        'assets/js/vendor/watch.js',
+        'assets/js/vendor/jquery.alert.js',
+        'assets/js/vendor/jquery-scrollbar/jquery.scrollbar.js',
+        'assets/js/vendor/jquery.scrollTo.js',
+        'assets/js/learnpress.js',
+        'assets/js/frontend/course.js',
+        'assets/js/frontend/quiz.js',
+        //'assets/js/frontend/profile.js',
+        //'assets/js/frontend/become-teacher.js',
+    ])
+        .pipe(concat('learnpress-frontend.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('assets/js/frontend'))
+});
+
+/**
+ * Join and compress frontend css
+ */
+gulp.task('cfcss', function () {
+    return gulp.src([
+        'assets/css/font-awesome.min.css',
+        'assets/js/vendor/jquery-scrollbar/jquery.scrollbar.css',
+        'assets/css/learnpress.css',
+    ])
+        .pipe(concat('learnpress-frontend.min.css'))
+        .pipe(cleanCSS())
+        .pipe(gulp.dest('assets/css'))
 });
 
 gulp.task('mk-zip', ['copy-zip'], function () {

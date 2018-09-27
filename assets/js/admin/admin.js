@@ -378,7 +378,7 @@
         });
     }
 
-    function send_newsletter_info(e){
+    function send_newsletter_info(e) {
         var $notice = $(e.target),
             context = $notice.attr('data-context');
         $(this).addClass('updating-message button-working disabled');
@@ -405,6 +405,75 @@
         //e.preventDefault();
     }
 
+    function loadDashboardOrderStatus() {
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'dashboard-order-status'
+            },
+            success: function (response) {
+                $('#lp-dashboard-order-status').html(response);
+            }
+        });
+    }
+
+    function loadDashboardPluginStatus() {
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'dashboard-plugin-status'
+            },
+            success: function (response) {
+                $('#lp-dashboard-plugin-status').html(response);
+            }
+        });
+    }
+
+    var LP_Request = {
+        queue: [],
+        sending: false,
+        timer: null,
+        push: function () {
+            var _resolve = null,
+                _reject = null,
+                $promise = new Promise(function (resolve, reject) {
+                    _resolve = resolve;
+                    _reject = reject;
+                })
+
+            this.queue.push([arguments, $promise, _resolve, _reject]);
+            this.send();
+            return $promise;
+        },
+        send: function () {
+            if (this.sending || !this.queue.length) {
+                return;
+            }
+
+            this.sending = true;
+            var that = this,
+                args = this.queue.pop(),
+                f = function () {
+                    that.sending = false;
+                    that.send();
+                };
+
+            Vue.http.post(args[0][0], args[0][1], args[0][2]).then(function (r) {
+                f();
+                args[2].call(null, r);
+            }, function (r) {
+                f();
+                args[3].call(null, r);
+            });
+
+            // this.timer && clearTimeout(this.timer);
+            // this.timer = setTimeout(function(){
+            //     f();
+            // }, 300)
+        }
+    };
+
+    window.LP_Request = LP_Request;
 
     var $doc = $(document);
 
@@ -439,6 +508,12 @@
             .on('mouseup', function (e) {
                 $('html, body').removeClass('lp-item-moving');
                 $('.lp-sortable-handle').css('cursor', '');
+            })
+            .on('learn-press/load-dashboard-order-status', function () {
+                loadDashboardOrderStatus();
+            })
+            .on('learn-press/load-dashboard-plugin-status', function () {
+                loadDashboardPluginStatus();
             })
         LP_Admin.init();
     }

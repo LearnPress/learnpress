@@ -1,18 +1,13 @@
 <?php
 /**
- * Template for displaying email order items table.
- *
- * This template can be overridden by copying it to yourtheme/learnpress/emails/order-items-table.php
- *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.0
+ * @version 1.0
  */
 
-/**
- * Prevent loading this file directly
- */
-defined( 'ABSPATH' ) || exit();
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 $email = LP_Emails::instance()->get_current();
 
@@ -20,10 +15,6 @@ if ( ! $email ) {
 	return;
 }
 
-/**
- * @var $order LP_Order
- * @var $email LP_Email_Type_Order
- */
 $order = $email->get_order();
 $items = $email->get_order_items_table();
 
@@ -95,7 +86,9 @@ if ( ! $items ) {
     <tr>
         <td colspan="2" class="column-number"><?php _e( 'Total', 'learnpress' ); ?></td>
         <td class="column-number">
-			<?php echo $email->get_order_total(); ?>
+			<?php
+			echo $email->get_order_total();
+			?>
         </td>
     </tr>
     </tfoot>

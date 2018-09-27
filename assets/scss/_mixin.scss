@@ -145,3 +145,34 @@
     -o-animation: $args;
     animation: $args;
 }
+
+@-webkit-keyframes animation4 /* Safari and Chrome */
+{
+    from {
+        left: -40%;
+        width: 40%;
+    }
+    to {
+        left: 100%;
+        width: 10%;
+    }
+}
+
+@keyframes animation4 {
+    from {
+        left: -40%;
+        width: 40%;
+    }
+    to {
+        left: 100%;
+        width: 10%;
+    }
+}
+
+@mixin animation4($args: animation4 2s linear infinite) {
+    -webkit-animation: $args;
+    -moz-animation: $args;
+    -ms-animation: $args;
+    -o-animation: $args;
+    animation: $args;
+}
