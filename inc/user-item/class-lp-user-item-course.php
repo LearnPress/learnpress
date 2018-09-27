@@ -56,7 +56,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		$user_curd->read_course( $this->get_user_id(), $this->get_id() );
 
 		$this->_set_data( $this->_item );
-		if ( $course = learn_press_get_course( $this->get_id() ) ) {
+		$course = learn_press_get_course( $this->get_id() );
+		if ( $course ) {
 			$this->_course = $course;
 			$course_items  = $course->get_items();
 			if ( $course_items ) {
