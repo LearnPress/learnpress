@@ -48,7 +48,7 @@
         }
 
         this.getPercentCompleted = function () {
-            return (currentIndex + 1) / versions.length;
+            return (currentIndex) / versions.length;
         }
 
         this.getTotal = function () {
@@ -142,14 +142,13 @@
                                 that.update(that.packages.getPercentCompleted() * 100);
                                 that.doUpdate();
                             } else {
-                                var newWidth = that.packages.getPercentCompleted();
+                                var newWidth = that.packages.getPercentCompleted() * 100;
                                 if (response.percent) {
                                     var stepWidth = 1 / that.packages.getTotal();
-
-                                    newWidth += (stepWidth * response.percent) / 100;
+                                    newWidth += (stepWidth * response.percent);
                                 }
 
-                                that.update(newWidth * 100);
+                                that.update(newWidth);
                                 that.doUpdate(p, ++i);
                             }
                         },

@@ -186,7 +186,7 @@
             -o-transition: width 0.25s;
             transition: width 0.25s;
             &:before {
-                content: attr(data-value) "%";
+                _content: attr(data-value) "%";
                 position: absolute;
                 top: -20px;
                 right: 0;

@@ -27,8 +27,14 @@ class LP_Update_101010 extends LP_Update_Base {
 			'calculate_user_course_results',
 			//'remove_older_post_meta'
 		);
-
+		add_action( 'learn-press/update-completed', array( $this, 'update_completed' ) );
 		parent::__construct();
+	}
+
+	public function update_completed( $version ) {
+		if ( version_compare( $this->version, $version, '=' ) ) {
+			update_option( 'learnpress_data_synced', 'yes' );
+		}
 	}
 
 	public function calculate_user_course_results() {
@@ -53,7 +59,7 @@ class LP_Update_101010 extends LP_Update_Base {
 			return true;
 		}
 
-		$users         = (array) $users;
+		$users      = (array) $users;
 		$exec_users = array_splice( $users, 0, $this->batch_items );
 		update_option( $key, $users );
 

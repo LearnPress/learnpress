@@ -255,6 +255,7 @@ class LP_Updater {
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
 				if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . 'inc/updates' ) ) {
+
 					foreach ( $files as $file ) {
 						if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
 							$this->_update_files [ $matches[1] ] = $file['name'];

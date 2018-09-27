@@ -188,6 +188,8 @@ if (typeof window.LP === 'undefined') {
             if (!content || ($el.data('LP_Tooltip') !== undefined)) {
                 return;
             }
+
+            console.log(content);
             var $tooltip = null;
             $el.hover(function (e) {
                 $tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();
@@ -1079,20 +1081,23 @@ if (typeof window.LP === 'undefined') {
 
         $el.attr('data-id', uniId);
 
-        var content = $('#__' + uniId).html() || $el.html(),
+        var content = $el.attr('data-content-tip') || $el.html(),
             $tip = $('<div class="learn-press-tip-floating">' + content + '</div>'),
             t = null,
             closeInterval = 0,
             useData = false,
-            arrowOffset = options.arrowOffset == 'el' ? $el.outerWidth() / 2 : 8;
+            arrowOffset = options.arrowOffset === 'el' ? $el.outerWidth() / 2 : 8,
+            $content = $('#__' + uniId);
 
-        if ($('#__' + uniId).length === 0) {
+        if ($content.length === 0) {
             $(document.body).append($('<div />').attr('id', '__' + uniId).html(content).css('display', 'none'))
         }
 
+        content = $content.html();
+
         $tip.addClass(options.tipClass);
 
-        $el.data('content-tip', content).attr('data-x', ++xxx);
+        $el.data('content-tip', content);
         if ($el.attr('data-content-tip')) {
             //$el.removeAttr('data-content-tip');
             useData = true;
@@ -1106,7 +1111,6 @@ if (typeof window.LP === 'undefined') {
                 close();
             })
         }
-
 
         function show() {
             if (t) {
@@ -1165,7 +1169,6 @@ if (typeof window.LP === 'undefined') {
                 if (options.event !== 'click') {
                     show();
                 }
-                console.log('1234')
             },
             function (e) {
                 e.stopPropagation();

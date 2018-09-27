@@ -3238,7 +3238,7 @@ body.lp-item-moving {
     -o-transition: width 0.25s;
     transition: width 0.25s; }
     #learn-press-updater .updater-progress .updater-progress-status:before {
-      content: attr(data-value) "%";
+      _content: attr(data-value) "%";
       position: absolute;
       top: -20px;
       right: 0;

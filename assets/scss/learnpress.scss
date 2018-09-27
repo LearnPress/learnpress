@@ -234,8 +234,26 @@ ul.learn-press-courses {
     @include border-radius(4px);
     .icon {
         display: none;
+        font-family: fontawesome;
+        position: absolute;
+        left: 20px;
+        font-style: normal;
     }
     &.has-icon {
+        .icon {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: #FFF;
+            position: absolute;
+            border-radius: 50%;
+            z-index: 0;
+            left: 15px;
+            text-align: center;
+            &:before {
+                content: '';
+            }
+        }
         padding-left: 55px;
         &:before {
             display: inline-block;
@@ -273,9 +291,11 @@ ul.learn-press-courses {
     }
     &.error {
         background: #ffd4d4;
-        &:after {
-            content: "\f00d";
-            color: #ff9090;
+        .icon {
+            &:after {
+                content: "\f00d";
+                color: #ff9090;
+            }
         }
     }
     &.success {
@@ -287,16 +307,20 @@ ul.learn-press-courses {
         }
     }
     &.notice {
-        &:after {
-            content: "\f129";
-            color: #00adff;
+        .icon {
+            &:after {
+                content: "\f129";
+                color: #00adff;
+            }
         }
     }
     &.warning {
         background: #ffe2b0;
-        &:after {
-            content: "\f129";
-            color: #ffb058;
+        .icon {
+            &:after {
+                content: "\f129";
+                color: #ffb058;
+            }
         }
     }
 }

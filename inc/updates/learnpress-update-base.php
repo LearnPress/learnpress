@@ -127,7 +127,7 @@ class LP_Update_Base {
 	}
 
 	public function get_percent() {
-		return $this->percent / sizeof( $this->steps ) * 100;
+		return ($this->percent + 1) / sizeof( $this->steps ) * 100;
 	}
 
 	public function is_last_step( $step = '' ) {

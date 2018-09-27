@@ -2020,9 +2020,25 @@ ul.learn-press-courses {
   -moz-border-radius: 4px;
   border-radius: 4px; }
   .learn-press-message .icon {
-    display: none; }
+    display: none;
+    font-family: fontawesome;
+    position: absolute;
+    left: 20px;
+    font-style: normal; }
   .learn-press-message.has-icon {
     padding-left: 55px; }
+    .learn-press-message.has-icon .icon {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      background: #FFF;
+      position: absolute;
+      border-radius: 50%;
+      z-index: 0;
+      left: 15px;
+      text-align: center; }
+      .learn-press-message.has-icon .icon:before {
+        content: ''; }
     .learn-press-message.has-icon:before {
       display: inline-block;
       content: ''; }
@@ -2055,18 +2071,18 @@ ul.learn-press-courses {
     border-bottom-left-radius: 5px; }
   .learn-press-message.error {
     background: #ffd4d4; }
-    .learn-press-message.error:after {
+    .learn-press-message.error .icon:after {
       content: "\f00d";
       color: #ff9090; }
   .learn-press-message.success .icon:after {
     content: "\f00c";
     color: #00adff; }
-  .learn-press-message.notice:after {
+  .learn-press-message.notice .icon:after {
     content: "\f129";
     color: #00adff; }
   .learn-press-message.warning {
     background: #ffe2b0; }
-    .learn-press-message.warning:after {
+    .learn-press-message.warning .icon:after {
       content: "\f129";
       color: #ffb058; }
 
