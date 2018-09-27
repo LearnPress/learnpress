@@ -941,13 +941,23 @@ add_filter( 'get_sample_permalink', 'learn_press_item_sample_permalink', 10, 5 )
  * @return string
  */
 function learn_press_get_preview_url( $post_id ) {
-	return
-		add_query_arg(
-			array(
-				'lp-preview' => $post_id,
-				'_wpnonce'   => wp_create_nonce( 'lp-preview' )
-			), trailingslashit( get_home_url() /* SITE_URL */ )
-		);
+	if( get_post_type($post_id) == LP_COURSE_CPT ) {
+		$preview_url = add_query_arg (
+				array(
+						'post_type' => LP_COURSE_CPT,
+						'p' => $post_id,
+						'preview'   => true,
+				), trailingslashit( get_home_url() /* SITE_URL */ )
+				);
+	} else {
+		$preview_url = add_query_arg(
+				array(
+						'lp-preview' => $post_id,
+						'_wpnonce'   => wp_create_nonce( 'lp-preview' )
+				), trailingslashit( get_home_url() /* SITE_URL */ )
+			);
+	}
+	return $preview_url;
 }
 
 if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
