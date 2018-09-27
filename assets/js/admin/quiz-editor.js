@@ -927,16 +927,20 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
  * @since 3.0.0
  */
 (function (exports, Vue, $store) {
+    var $ = jQuery,
+        $publishingAction = null;
 
     Vue.http.LPRequest = function (payload) {
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
-
         payload['code'] = Date.now();
-        jQuery('#publishing-action #publish').addClass('disabled');
-        jQuery('#publishing-action .spinner').addClass('is-active');
-        jQuery('#publishing-action').addClass('code-' + payload['code']);
+
+        $publishingAction = $('#publishing-action');
+
+        $publishingAction.find('#publish').addClass('disabled');
+        $publishingAction.find('.spinner').addClass('is-active');
+        $publishingAction.addClass('code-' + payload['code']);
 
         return Vue.http.post($store.getters.urlAjax,
             payload, {
@@ -971,10 +975,10 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 $store.dispatch('requestComplete', 'fail');
             }
 
-            jQuery('#publishing-action').removeClass('code-' + request.params.code);
-            if (!jQuery('#publishing-action').attr('class')) {
-                jQuery('#publishing-action #publish').removeClass('disabled');
-                jQuery('#publishing-action .spinner').removeClass('is-active');
+            $publishingAction.removeClass('code-' + request.params.code);
+            if (!$publishingAction.attr('class')) {
+                $publishingAction.find('#publish').removeClass('disabled');
+                $publishingAction.find('.spinner').removeClass('is-active');
             }
 
         });

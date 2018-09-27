@@ -252,10 +252,12 @@
  * @since 3.0.0
  */
 (function (exports, Vue, $store) {
-    var $ = jQuery;
+    var $ = jQuery,
+        $publishingAction = null;
 
     Vue.http.LPRequest = function (payload) {
-        var $publishingAction = $('#publishing-action');
+        $publishingAction = $('#publishing-action');
+
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
@@ -297,7 +299,7 @@
             } else {
                 $store.dispatch('requestCompleted', 'failed');
             }
-            var $publishingAction = $('#publishing-action').removeClass('code-' + request.params.code);
+            $publishingAction.removeClass('code-' + request.params.code);
             if (!$publishingAction.attr('class')) {
                 $publishingAction.find('#publish').removeClass('disabled');
                 $publishingAction.find('.spinner').removeClass('is-active');
