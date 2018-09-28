@@ -33,7 +33,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		public function __construct() {
 			parent::__construct();
 			//add_action( 'learn-press/background-process-completed', array( $this, 'run' ) );
-			$this->run();
+			//$this->run();
 		}
 
 		public function test() {
