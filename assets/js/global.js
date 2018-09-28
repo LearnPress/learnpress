@@ -1315,9 +1315,9 @@ if (typeof window.LP === 'undefined') {
             });
         })();
 
-        $(document).on('click', '[data-block-content="yes"]', function () {
-            LP.blockContent();
-        });
+//        $(document).on('click', '[data-block-content="yes"]', function () {
+//            LP.blockContent();
+//        });
 
         $('.learn-press-tooltip, .lp-passing-conditional').LP_Tooltip({offset: [24, 24]});
 

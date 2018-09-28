@@ -1101,7 +1101,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$paged = absint( $wp->query_vars['view_id'] );
 		}
 
-		$limit_global = LP()->settings->get('learn_press_profile_courses_limit');
+		$limit_global = LP()->settings->get('learn_press_profile_courses_limit', 10);
 		$args = wp_parse_args(
 			$args,
 			array(
