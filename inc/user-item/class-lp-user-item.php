@@ -383,9 +383,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return bool|mixed
 	 */
 	public function get_meta( $key, $single = true ) {
-		if ( ! metadata_exists( 'learnpress_user_item', $this->get_user_item_id(), $key ) ) {
-			return false;
-		}
 
 		return learn_press_get_user_item_meta( $this->get_user_item_id(), $key, $single );
 	}

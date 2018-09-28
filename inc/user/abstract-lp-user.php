@@ -109,7 +109,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}
-
+			/** 
+						 * @BUG: Cache enable => Not store all user answer of quiz, only store the last use answer for question  
+						 * @TODO: need improve this proccess
+						 */
 			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'learn-press/user-item-object-courses' ) ) ) {
 				$result = $this->_curd->read_course( $this->get_id(), $course_id );
 

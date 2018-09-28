@@ -1217,9 +1217,10 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5;
-    line-height: 1.6em;
-    max-height: 8em;
+    -webkit-line-clamp: 3;
+    line-height: 1.6;
+    max-height: 4.8;
+    min-height: 4.8;
     color: #777; }
   .learn-press-addons .addons-browse .plugin-card .search-highlight {
     text-decoration: underline; }
@@ -1228,9 +1229,10 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     line-height: 1.3em;
-    max-height: 3.9em; }
+    max-height: 2.6em;
+    min-height: 2.6em; }
   .learn-press-addons .addons-browse .plugin-card-top .desc {
     min-height: 90px;
     margin-right: 0; }
@@ -1274,6 +1276,7 @@
   -webkit-line-clamp: 5;
   line-height: 1.6em;
   max-height: 8em;
+  min-height: 8em;
   color: #777; }
 
 .related-themes .theme-title {
@@ -2104,6 +2107,8 @@
         color: #a00; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item:hover .drag {
       visibility: visible; }
+    #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item:not(.lp_lesson) .item-actions .actions .preview-item {
+      display: none; }
     #admin-editor-lp_course .lp-course-curriculum .section-list-items .section-item.lp_quiz .item-actions .actions .preview-item {
       display: none; }
   #admin-editor-lp_course .lp-course-curriculum .section-list-items .new-section-item {

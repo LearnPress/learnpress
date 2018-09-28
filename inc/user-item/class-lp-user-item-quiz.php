@@ -124,23 +124,49 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return int|LP_Question
 	 */
 	public function get_current_question( $return = '' ) {
-		$question_id = $this->get_meta( '_current_question', true );
-		$question    = learn_press_get_question( $question_id );
 
-		if ( ! $question || ! $question->is_publish() ) {
-			if ( $questions = $this->get_quiz()->get_questions() ) {
-				$question_id = reset( $questions );
+		$question_id = $this->get_meta( '_current_question', true );
+
+		if ( $question_id ) {
+			$question = learn_press_get_question( $question_id );
+			if ( ! $question || ! $question->is_publish() ) {
+				$question_id = $this->_get_first_question();
 				$this->set_meta( '_current_question', $question_id );
 				$this->update_meta();
-			} else {
-				$question_id = 0;
 			}
+		} else {
+			$question_id = $this->_get_first_question();
+			$this->set_meta( '_current_question', $question_id );
+			$this->update_meta();
 		}
+
+
+//		if ( ! $question || ! $question->is_publish() ) {
+//			if ( $questions = $this->get_quiz()->get_questions() ) {
+//				$question_id = reset( $questions );
+//				$this->set_meta( '_current_question', $question_id );
+//				$this->update_meta();
+//			} else {
+//				$question_id = 0;
+//			}
+//
+//			var_dump($questions);
+//		}
 
 		if ( $question_id ) {
 			if ( $return == 'object' ) {
 				return learn_press_get_question( $question_id );
 			}
+		}
+
+		return $question_id;
+	}
+
+	protected function _get_first_question() {
+		if ( $questions = $this->get_quiz()->get_questions() ) {
+			$question_id = reset( $questions );
+		} else {
+			$question_id = 0;
 		}
 
 		return $question_id;
@@ -253,11 +279,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			// make sure user mark greater than 0
 			$result['user_mark'] = ( $result['user_mark'] >= 0 ) ? $result['user_mark'] : 0;
 
-				$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
-				$result['result'] = $percent;
-				$result['grade']  = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
-				$result['grade_text'] = ( $result['grade'] == 'passed' ) ? __('passed', 'learnpress'): __('failed', 'learnpress');
-				$result['question_count'] = sizeof( $questions );
+			$percent                  = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
+			$result['result']         = $percent;
+			$result['grade']          = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
+			$result['grade_text']     = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
+			$result['question_count'] = sizeof( $questions );
 
 			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
 				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
@@ -454,7 +480,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					throw new Exception( __( 'You have already checked this question.', 'learnpress' ), 1010 );
 				}
 			}
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			return new WP_Error( $ex->getCode(), $ex->getMessage() );
 		}
 

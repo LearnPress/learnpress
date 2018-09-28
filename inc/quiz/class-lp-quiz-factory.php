@@ -145,8 +145,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				// Actually, no save question here. Just check nonce here.
 				$check = self::maybe_save_questions( 'start' );
 
-				// PHP Exception
-				if ( true !== $check ) {
+				if ( is_a( $check, 'Exception' ) ) {
 					throw $check;
 				}
 
@@ -224,8 +223,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$check = self::maybe_save_questions( 'check-answer' );
 
-				// PHP Exception
-				if ( true !== $check ) {
+				if ( is_a( $check, 'Exception' ) ) {
 					throw $check;
 				}
 
@@ -283,8 +281,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$result = array( 'result' => 'failure' );
 
 				$check = self::maybe_save_questions( 'show-hint' );
-				// PHP Exception
-				if ( true !== $check ) {
+				if ( is_a( $check, 'Exception' ) ) {
 					throw $check;
 				}
 
@@ -339,8 +336,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$result = array( 'result' => 'failure' );
 
 				$check = self::maybe_save_questions( 'complete' );
-				// PHP Exception
-				if ( true !== $check ) {
+				if ( is_a( $check, 'Exception' ) ) {
 					throw $check;
 				}
 
@@ -401,8 +397,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$check = self::maybe_save_questions( 'redo' );
 
 				// PHP Exception
-				if ( true !== $check ) {
-					throw $check;
+				if ( is_a( $check, 'Exception' ) ) {
+					//throw $check;
 				}
 
 				$course_id = LP_Request::get_int( 'course-id' );
@@ -484,7 +480,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @param string $action
 		 * @param string $nonce
 		 *
-		 * @return bool|Exception
+		 * @return array|Exception
 		 *
 		 * @since 3.0.0
 		 */
@@ -499,7 +495,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				learn_press_setup_object_data( get_post( $course_id ) );
 
 				if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce, $quiz_id, $course_id ) ) {
-					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
+					throw new Exception( __( '#1. Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 				}
 
 				if ( ! $questions = self::get_answers_posted() ) {
@@ -514,7 +510,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {
 
 					if ( 'completed' === $quiz_data->get_status() ) {
-						return true;
+						throw new Exception( __( '#2. Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 					}
 
 					// If user click 'Skip' button
@@ -541,12 +537,12 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
 					'next_question' => $user->get_next_question( $quiz_id, $course_id )
 				);
+
+				return $return;
 			}
 			catch ( Exception $ex ) {
 				return $ex;
 			}
-
-			return $return;
 		}
 
 		/**
