@@ -376,7 +376,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $questions, 'learn-press/questions' );
 			}
 
-			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $this->get_course_id() );
 		}
 
 		/**
@@ -565,14 +565,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool
 		 */
 		public function get_prev_question( $id ) {
-			$prev = false;
-			if ( ( $questions = $this->get_question_ids() ) ) {
-				if ( 0 < ( $at = array_search( $id, $questions ) ) ) {
-					$prev = $questions[ $at - 1 ];
-				}
-			}
+			$nav = $this->get_question_nav( $id );
 
-			return apply_filters( 'learn-press/quiz/prev-question-id', $prev, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/prev-question-id', isset( $nav[0] ) ? $nav[0] : false, $this->get_id() );
 		}
 
 		/**
@@ -583,20 +578,16 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool
 		 */
 		public function get_next_question( $id ) {
-			$next = false;
-			if ( ( $questions = $this->get_question_ids() ) ) {
-				if ( sizeof( $questions ) - 1 > ( $at = array_search( $id, $questions ) ) ) {
-					$next = $questions[ $at + 1 ];
-				}
-			}
+			$nav = $this->get_question_nav( $id );
 
-			return apply_filters( 'learn-press/quiz/next-question-id', $next, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/next-question-id', isset( $nav[2] ) ? $nav[2] : false, $this->get_id() );
 		}
 
 		public function get_question_nav( $current_id ) {
 			$next = $prev = false;
 
 			if ( ( $questions = $this->get_question_ids() ) ) {
+				$questions = array_values( $questions );
 
 				if ( false !== ( $at = array_search( $current_id, $questions ) ) ) {
 					if ( sizeof( $questions ) - 1 > $at ) {

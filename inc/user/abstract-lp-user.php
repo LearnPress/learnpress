@@ -109,10 +109,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}
-			/** 
-						 * @BUG: Cache enable => Not store all user answer of quiz, only store the last use answer for question  
-						 * @TODO: need improve this proccess
-						 */
+			/**
+			 * @BUG : Cache enable => Not store all user answer of quiz, only store the last use answer for question
+			 * @TODO: need improve this proccess
+			 */
 			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'learn-press/user-item-object-courses' ) ) ) {
 				$result = $this->_curd->read_course( $this->get_id(), $course_id );
 
@@ -467,7 +467,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->get_id() );
 
 				do_action( 'learn-press/user/quiz-finished', $quiz_id, $course_id, $this->get_id() );
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 			}
 
@@ -558,7 +559,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user/quiz-redone', $quiz_id, $course_id, $this->get_id() );
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 				do_action( 'learn-press/user/retake-quiz-failure', $quiz_id, $course_id, $this->get_id() );
 			}
@@ -933,7 +935,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_quiz_data( $quiz_id, $course_id = 0 ) {
 			$result = false;
 			if ( $course_result = $this->get_course_data( $course_id ) ) {
-
 				$result = $course_result->get_item( $quiz_id );
 			}
 

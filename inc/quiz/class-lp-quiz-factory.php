@@ -502,9 +502,10 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$questions = array();
 				}
 
-				$user        = learn_press_get_current_user();
-				$course      = learn_press_get_course( $course_id );
-				$quiz        = learn_press_get_quiz( $quiz_id );
+				$user   = learn_press_get_current_user();
+				$course = learn_press_get_course( $course_id );
+				$quiz   = learn_press_get_quiz( $quiz_id );
+				$quiz->set_course( $course_id );
 				$course_data = $user->get_course_data( $course->get_id() );
 
 				if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {

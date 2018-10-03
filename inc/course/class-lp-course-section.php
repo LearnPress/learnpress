@@ -79,6 +79,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		if ( false === ( $items = LP_Object_Cache::get( 'section-' . $this->get_id(), 'learn-press/section-items' ) ) ) {
 			$items = $this->_curd->read_items( $this->get_id() );
 			LP_Object_Cache::set( 'section-' . $this->get_id(), $items, 'learn-press/section-items' );
+		}else{
 		}
 
 		LP_Helper_CURD::cache_posts($items);
