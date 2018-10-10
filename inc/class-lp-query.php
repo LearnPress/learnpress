@@ -12,6 +12,8 @@ class LP_Query {
 	 */
 	public $query_vars = array();
 
+	protected $rewrite_rules = array();
+
 	/**
 	 * LP_Query constructor.
 	 */
@@ -157,21 +159,8 @@ class LP_Query {
 				'top'
 			);
 
-			/* Test */
-//			if ( $popup_slug ) {
-//				add_rewrite_rule(
-//					'^' . $slug . '/(' . $popup_slug . ')(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
-//					'index.php?content-item-only=yes&' . $course_type . '=$matches[3]&course_category=$matches[2]&course-item=$matches[4]&item-type=lp_lesson',
-//					'top'
-//				);
-//				add_rewrite_rule(
-//					'^' . $slug . '/(' . $popup_slug . ')(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
-//					'index.php?content-item-only=yes&' . $course_type . '=$matches[3]&course_category=$matches[2]&course-item=$matches[4]&question=$matches[5]&item-type=lp_quiz',
-//					'top'
-//				);
-//			}
 		} else {
-			if(!empty($_REQUEST['xxx'])){
+			if ( ! empty( $_REQUEST['xxx'] ) ) {
 				echo '^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$';
 			}
 			$rules[] = array(
@@ -185,19 +174,6 @@ class LP_Query {
 				'top'
 			);
 
-			/* Test */
-//			if ( $popup_slug ) {
-//				add_rewrite_rule(
-//					'^' . $slug . '/(' . $popup_slug . ')/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
-//					'index.php?content-item-only=yes&' . $course_type . '=$matches[2]&course-item=$matches[3]&item-type=lp_lesson',
-//					'top'
-//				);
-//				add_rewrite_rule(
-//					'^' . $slug . '/(' . $popup_slug . ')/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
-//					'index.php?content-item-only=yes&' . $course_type . '=$matches[2]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
-//					'top'
-//				);
-//			}
 		}
 
 		// Profile
@@ -228,18 +204,8 @@ class LP_Query {
 								'top'
 							);
 						}
-//						add_rewrite_rule(
-//							'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/([^/]*)/?$',
-//							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
-//							'top'
-//						);
 					}
 				}
-//				add_rewrite_rule(
-//					'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([0-9]*)/?$',
-//					'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&lp-paged=$matches[3]',
-//					'top'
-//				);
 			}
 		}
 
@@ -252,7 +218,40 @@ class LP_Query {
 			);
 		}
 
-		foreach ( $rules as $rule ) {
+		$this->rewrite_rules = $rules;
+		global $wp_rewrite;
+
+		/**
+		 * Polylang compatibility
+		 */
+		if ( function_exists( 'pll_languages_list' ) ) {
+			$pll           = PLL();
+			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
+
+			if ( $pll->options['hide_default'] ) {
+				$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
+			}
+
+			if ( ! empty( $pll_languages ) ) {
+				$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
+			}
+
+		}
+
+		foreach ( $rules as $k => $rule ) {
+
+			/**
+			 * Modify rewrite rule
+			 */
+			if ( isset( $pll_languages ) ) {
+				$rule[0] = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
+				$rule[1] = str_replace(
+					array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
+					array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
+					$rule[1]
+				);
+			}
+			$rules[ $k ] = $rule;
 			call_user_func_array( 'add_rewrite_rule', $rule );
 		}
 
@@ -264,12 +263,11 @@ class LP_Query {
 			flush_rewrite_rules();
 		}
 
-		if ( ! empty( $_REQUEST['x'] ) ) {
-			learn_press_debug( $rules, $post_types );
-			flush_rewrite_rules();
-		}
-
 		do_action( 'learn_press_add_rewrite_rules' );
+	}
+
+	public function pll_rewrite_rules( $rules ) {
+		return $rules;
 	}
 
 

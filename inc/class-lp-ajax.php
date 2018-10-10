@@ -29,7 +29,9 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'retake-course',
 				'external-link:nopriv',
 				'continue-course',
-				'toggle-distraction-mode'
+				'toggle-distraction-mode',
+				'get_question_data',
+				'load_course_curriculum'
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
@@ -54,6 +56,93 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
+		}
+
+		public static function load_course_curriculum() {
+			$course_id = LP_Request::get_int( 'course_ID' );
+			learn_press_send_json( learn_press_get_course_curriculum_for_js( $course_id ) );
+		}
+
+		public static function get_question_data() {
+			/**
+			 * @var LP_Question               $question
+			 * @var LP_Question_Answers       $answers
+			 * @var LP_Question_Answer_Option $answer
+			 */
+			LP_Debug::startTransaction();
+			$course      = LP_Global::course();
+			$user        = LP_Global::user();
+			$quiz        = LP_Global::course_item_quiz();
+			$question_id = LP_Request::get_int( 'question_id' );
+
+			$extraAction = LP_Request::get( 'extraAction' );
+			$extraData   = LP_Request::get( 'extraData' );
+			$extraReturn = false;
+			$question    = learn_press_get_question( $question_id );
+			$checkResult = false;
+
+			switch ( $extraAction ) {
+				case 'check-answer':
+					if ( $extraData && array_key_exists( 'answers', $extraData ) ) {
+
+
+						$quiz->set_course( $course );
+						$course_data = $user->get_course_data( $course->get_id() );
+
+						if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {
+
+							if ( 'completed' === $quiz_data->get_status() ) {
+								throw new Exception( __( '#2. Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
+							}
+
+							$quiz_data->add_question_answer( array( $question_id => $extraData['answers'] ) );
+							$quiz_data->update();
+
+
+							$question->setup_data( $quiz->get_id() );
+							$checkResult = true;
+						}
+
+
+						$extraReturn = array(
+							'quiz_id'       => $quiz->get_id(),
+							'course_id'     => $course->get_id(),
+							'prev_question' => $user->get_prev_question( $quiz->get_id(), $course->get_id() ),
+							'next_question' => $user->get_next_question( $quiz->get_id(), $course->get_id() )
+						);
+					}
+					$r = $user->check_question( $question_id, $quiz->get_id(), $course->get_id() );
+
+					break;
+				case 'do_hint':
+					$user->hint( $question_id, $quiz->get_id(), $course->get_id() );
+			}
+			LP_Object_Cache::flush();
+			$checked = $user->has_checked_answer( $question_id, $quiz->get_id(), $course->get_id() );
+			$json    = array(
+				'explanation'  => $checked ? $question->get_explanation() : '__NONE__',
+				'extra_result' => $extraReturn,
+				'userAnswers'  => array()
+			);
+
+			if ( $checkResult ) {
+				if ( $answers = $question->get_answers() ) {
+					foreach ( $answers as $answer ) {
+
+
+						$json['userAnswers'][] = array(
+							'id'      => $answer->get_id(),
+							'checked' => $answer->is_checked(),
+							'is_true' => $answer->is_true()
+						);
+
+
+					}
+				}
+			}
+
+			LP_Debug::rollbackTransaction();
+			learn_press_send_json( $json );
 		}
 
 		/**

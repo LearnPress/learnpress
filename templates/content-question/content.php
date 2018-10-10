@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-question/content.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -14,14 +14,392 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$question = LP_Global::quiz_question(); ?>
+global $lp_quiz_question;
 
-<div class="content-question-summary" id="content-question-<?php echo $question->get_id(); ?>">
-	<?php
-	/**
-	 * @see learn_press_content_item_summary_question_title()
-	 * @see learn_press_content_item_summary_question_content()
-	 * @see learn_press_content_item_summary_question()
-	 */
-	do_action( 'learn-press/question-content-summary' ); ?>
-</div>
+$user         = LP_Global::user();
+$quiz         = LP_Global::course_item_quiz();
+$old_question = LP_Global::quiz_question(); ?>
+
+    <div class="content-question-summary" id="content-question-<?php echo $old_question->get_id(); ?>">
+		<?php
+		/**
+		 * @see learn_press_content_item_summary_question_title()
+		 * @see learn_press_content_item_summary_question_content()
+		 * @see learn_press_content_item_summary_question()
+		 */
+		//do_action( 'learn-press/question-content-summary' ); ?>
+    </div>
+    <style>
+        #learn-press-quiz {
+            opacity: 0;
+        }
+
+        #learn-press-quiz.is-loaded {
+            opacity: 1;
+        }
+    </style>
+    <div id="learn-press-quiz" :class="mainClass()">
+        <ul id="learn-press-quiz-list-questions">
+			<?php
+			$json = array(
+				'checkCount'      => $user->can_check_answer( $quiz->get_id() ),
+				'hintCount'       => $user->can_hint_answer( $quiz->get_id() ),
+				'currentQuestion' => $user->get_current_question( $quiz->get_id(), get_the_ID() ),
+				'questions'       => array()
+			);
+
+			$questions = $quiz->get_question_ids();
+			foreach ( $questions as $question_id ) {
+				$question = learn_press_get_question( $question_id );
+
+				$lp_quiz_question = $question;
+				?>
+                <li v-show="isLoading || currentQuestion==<?php echo $question_id; ?>" class="quiz-question"
+                    id="quiz-question-<?php echo $question_id; ?>" :data-id="<?php echo $question_id; ?>">
+					<?php
+					do_action( 'learn-press/question-content-summary' );
+					?>
+                    <template v-if="isCheckedQuestion(<?php echo $question_id; ?>) && getQuestionExplanation()">
+                        <div class="question-explanation-content">
+                            <strong class="explanation-title"><?php esc_html_e( 'Explanation:', 'learnpress' ); ?></strong>
+                            {{getQuestionExplanation(<?php echo $question_id; ?>)}}
+                        </div>
+                    </template>
+                    <template v-if="isHintedQuestion(<?php echo $question_id; ?>) && getQuestionHint()">
+                        {{getQuestionHint(<?php echo $question_id; ?>)}}
+                    </template>
+                </li>
+				<?php
+
+				$checked             = $user->has_checked_answer( $question->get_id(), $quiz->get_id(), get_the_ID() );
+				$hinted              = $user->has_hinted_answer( $question->get_id(), $quiz->get_id(), get_the_ID() );
+				$json['questions'][] = array(
+					'id'             => absint( $question_id ),
+					'checked'        => $checked,
+					'hinted'         => $hinted,
+					'explanation'    => $checked ? $question->get_explanation() : '',
+					'hint'           => $checked || $hinted ? $question->get_hint() : '',
+					'hasExplanation' => ! ! $question->get_explanation(),
+					'hasHint'        => ! ! $question->get_hint(),
+					'permalink'      => $quiz->get_question_link( $question_id ),
+					'userAnswers'    => false
+				);
+			}
+			?>
+        </ul>
+        <div id="question-nav">
+            <button type="button" @click="_prev($event)"
+                    v-show="!isFirst"><?php esc_html_e( 'Prev', 'learnpress' ); ?></button>
+            <button type="button" @click="_next($event)"
+                    v-show="!isLast"><?php esc_html_e( 'Next', 'learnpress' ); ?></button>
+
+            <form v-show="hasExplanation()" name="check-answer-question"
+                  class="check-answer-question form-button lp-form lp-form-ajax"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <button type="button" :data-counter="checkCount"
+                        :disabled="!canCheckQuestion()"
+                        @click="_doCheckAnswer">
+                    {{buttonCheckLabel()}}
+                </button>
+
+            </form>
+
+            <form v-show="hasHint()" name="question-hint" class="question-hint form-button lp-form" method="post"
+                  enctype="multipart/form-data">
+
+                <button type="button" :data-counter="hintCount" :disabled="!canHintQuestion()"
+                        @click="_doHintAnswer">
+                    {{buttonHintLabel()}}
+                </button>
+            </form>
+
+            <form name="complete-quiz"
+                  data-confirm="<?php LP_Strings::esc_attr_e( 'confirm-complete-quiz', '', array( $quiz->get_title() ) ); ?>"
+                  data-action="complete-quiz"
+                  class="complete-quiz form-button lp-form" method="post" enctype="multipart/form-data">
+
+				<?php do_action( 'learn-press/quiz/begin-complete-button' ); ?>
+
+                <button type="button" @click="_complete($event)"><?php _e( 'Complete', 'learnpress' ); ?></button>
+
+				<?php do_action( 'learn-press/quiz/end-complete-button' ); ?>
+
+				<?php LP_Nonce_Helper::quiz_action( 'complete', $quiz->get_id(), get_the_ID() ); ?>
+                <input type="hidden" name="noajax" value="yes">
+
+            </form>
+        </div>
+        <ul class="question-numbers">
+            <template v-for="(question, index) in questionIds">
+                <li :class="{current: currentQuestion == question}"><a
+                            @click="_moveToQuestion($event, index)">{{index+1}}</a></li>
+
+            </template>
+        </ul>
+
+		<?php //learn_press_debug( unserialize( 'a:3:{i:0;a:0:{}i:10130;a:1:{i:0;s:25:"1538117737245badd0693a070";}i:10131;a:1:{i:0;s:25:"1538117739465badd06b703d3";}}' ) ); ?>
+        {{answers}}
+        {{questions}}
+    </div>
+    <script>
+        var lpQuizQuestions = <?php echo json_encode( $json, JSON_PRETTY_PRINT );?>;
+console.log(lpQuizQuestions)
+        jQuery(function ($) {
+            //$(document).ready(function () {
+            new Vue({
+                el: '#learn-press-quiz',
+                data: function () {
+                    return $.extend({}, {
+                        currentQuestion: 0,
+                        isLoading: true,
+                        questionIds: [],
+                        answers: {},
+                        isFirst: false,
+                        isLast: false
+                    }, lpQuizQuestions)
+                },
+                watch: {
+                    questions: {
+                        handler: function (v) {
+                            console.log(arguments)
+                            return v;
+                        },
+                        deep: true
+                    }
+                },
+                mounted: function () {
+                    var $vm = this;
+                    this.$questions = this.$('.quiz-question');
+                    this.questionIds = $(this.questions).map(function () {
+                        return this.id;
+                    }).get();
+
+                    if (!this.currentQuestion) {
+                        this.currentQuestion = this.questionIds[0];
+                    }
+
+                    this.toggleButtons();
+                    this.$questions.each(function () {
+                        var $q = $(this),
+                            id = $q.attr('data-id');
+                        $vm.fillAnswers($q);
+                    });
+
+                    $(document).ready(function () {
+                        $vm.isLoading = false;
+
+                        $('.answer-option').on('change', 'input, textarea, select', function () {
+                            var $q = $(this).closest('.quiz-question');
+                            $vm.fillAnswers($q);
+                        })
+                    }).on('change', '.answer-option input, .answer-option', function () {
+
+                    })
+
+                    console.log(this.currentQuestion)
+                },
+                methods: {
+                    fillAnswers: function ($q) {
+                        var $vm = this,
+                            id = $q.attr('data-id'),
+                            answers = [];
+
+
+                        //Vue.set($vm.answers[id], [1]);
+
+                        $q.find('.answer-option').find('input[type="checkbox"], input[type="radio"]').filter(':checked').each(function () {
+                            answers.push($(this).val());
+                        });
+
+                        $q.find('.answer-option').find('input, select, textarea').each(function () {
+                            if ($.inArray($(this).attr('type'), ['checkbox', 'radio']) !== -1) {
+                                return;
+                            }
+                            answers.push($(this).val());
+                        });
+
+
+                        Vue.set($vm.answers, id, answers);
+
+                        console.log(answers);
+                    },
+                    toggleButtons: function () {
+                        var $vm = this;
+                        if (this.questionIds.length > 1) {
+                            this.isFirst = this.questionIds.findIndex(function (e) {
+                                    return e == $vm.currentQuestion;
+                                }) === 0;
+
+                            this.isLast = this.questionIds.findIndex(function (e) {
+                                    return e == $vm.currentQuestion;
+                                }) === this.questionIds.length - 1;
+                        }
+                    },
+                    getQuestionIndex: function (id) {
+                        return (function (theQuestions, theId) {
+                            return theQuestions.findIndex(function (q) {
+                                return q == theId;
+                            })
+                        })(this.questionIds, id || this.currentQuestion);
+                    },
+                    $: function (selector) {
+                        return selector ? $(this.$el).find(selector) : $(this.$el)
+                    },
+                    mainClass: function () {
+                        var cls = [this.isLoading ? '' : 'is-loaded'];
+
+                        return cls;
+                    },
+                    hasHint: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+
+                        return q && q.hasHint;
+                    },
+                    hasExplanation: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+
+                        return q && q.hasExplanation;
+                    },
+                    canHintQuestion: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+
+                        return this.hintCount && (q && !q.hinted && q.hasHint);
+                    },
+                    canCheckQuestion: function (questionId) {
+                        questionId = questionId || this.currentQuestion;
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+                        return this.checkCount && (this.answers[questionId] && this.answers[questionId].length) && (q && !q.checked && q.hasExplanation);
+                    },
+                    buttonHintLabel: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+                        return q && !q.hinted ? 'Hint' : 'Hinted';
+                    },
+                    buttonCheckLabel: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+                        return q && !q.checked ? 'Check' : 'Checked';
+                    },
+                    isCheckedQuestion: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+                        return q && q.checked;
+                    },
+                    isHintedQuestion: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+                        return q && q.hinted;
+                    },
+                    getQuestionExplanation: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+                        return q ? q.explanation : '';
+                    },
+                    getQuestionHint: function (questionId) {
+                        var q = this.questions[this.getQuestionIndex(questionId)];
+                        return q ? q.hint : '';
+                    },
+                    getQuestionData: function (data, questionId) {
+                        questionId = questionId || this.currentQuestion;
+                        return Vue.http.post('',
+                            $.extend({}, data || {}, {
+                                'lp-ajax': 'get_question_data',
+                                question_id: questionId
+                            }),
+                            {
+                                emulateJSON: true,
+                                params: {
+                                    namespace: 'LPCurriculumRequest'
+                                }
+                            })
+                    },
+                    checkAnswers: function (questionId, userAnswers) {
+                        var q = isNaN(questionId) ? questionId : this.getQuestionById(questionId);
+
+                        if (q) {
+                            q.userAnswers = userAnswers;
+                            var $answers = this.$questions.filter('#quiz-question-' + q.id).find('.answer-option').addClass('disabled');
+                            $.each(userAnswers, function (i, answer) {
+
+                                var answerClass = [];
+
+
+                                if (answer.is_true) {
+                                    answerClass.push('answer-correct');
+                                }
+
+                                if (answer.checked) {
+                                    answerClass.push('answer-selected');
+                                }
+
+                                if (answer.checked && answer.is_true) {
+                                    answerClass.push('answered-correct');
+                                } else if (answer.checked && !answer.is_true) {
+                                    answerClass.push('answered-wrong');
+                                } else if (!answer.checked && answer.is_true) {
+                                    answerClass.push('answered-wrong');
+                                }
+
+                                $answers.eq(i).addClass(answerClass.join(' ')).find('input.option-check').prop('checked', answer.checked).prop('disabled', true);
+                            })
+                        }
+                    },
+                    getQuestionById: function (questionId) {
+                        questionId = questionId || this.currentQuestion;
+                        return this.questions[this.getQuestionIndex(questionId)]
+                    },
+                    _prev: function () {
+                        var at = this.getQuestionIndex();
+
+                        if (at > 0) {
+                            at--;
+                        }
+                        this._moveToQuestion(null, at)
+                    },
+                    _next: function () {
+                        var at = this.getQuestionIndex();
+
+                        if (at < this.questionIds.length - 1) {
+                            at++;
+                        }
+
+                        this._moveToQuestion(null, at)
+                    },
+                    _moveToQuestion: function ($e, at) {
+                        this.currentQuestion = this.questionIds[at];
+                        this.toggleButtons();
+
+                        var q = this.questions[at];
+
+                        if (q && q.permalink) {
+                            LP.setUrl(q.permalink)
+                        }
+                    },
+                    _complete: function () {
+                        this.$('form.complete-quiz').submit();
+                    },
+                    _doCheckAnswer: function () {
+                        var $vm = this,
+                            q = this.questions[this.getQuestionIndex()];
+                        q.checked = true;
+
+                        this.getQuestionData({
+                            extraAction: 'check-answer',
+                            extraData: $.extend({}, q, {answers: this.answers[q.id]})
+                        }).then(function (r) {
+                            var response = LP.parseJSON(r.body);
+                            q.explanation = response.explanation;
+                            $vm.checkAnswers(q, response.userAnswers)
+                            $vm.checkCount--;
+                        });
+
+                    },
+                    _doHintAnswer: function () {
+                        var q = this.questions[this.getQuestionIndex()];
+                        q.hinted = true;
+                        q.hint = 'Hint: ' + Math.random();
+                        this.hintCount--;
+                    }
+                }
+            })
+            // });
+        })
+    </script>
+<?php $lp_quiz_question = $old_question;

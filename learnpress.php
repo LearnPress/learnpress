@@ -231,6 +231,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
+			include_once 'inc/admin/helpers/class-lp-plugins-helper.php';
 
 			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';
@@ -757,3 +758,10 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+//add_action( 'template_include', function () {
+//	global $wp, $wp_rewrite;
+//
+//	learn_press_debug( pll_languages_list() );
+//	learn_press_debug( $wp, $wp_rewrite );
+//} ,9999999);

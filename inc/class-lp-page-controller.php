@@ -48,6 +48,12 @@ class LP_Page_Controller {
 		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ) );
 		add_filter( 'the_post', array( $this, 'setup_data' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
+		add_action( 'wp_enqueue_scripts', function () {
+			if ( is_learnpress()) {
+				learn_press_assets()->enqueue_script('lp-vue-resource');
+				//wp_enqueue_script( 'lp-vue' );
+			}
+		}, 1000 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
 	}
@@ -57,6 +63,8 @@ class LP_Page_Controller {
 		$quiz     = LP_Global::course_item_quiz();
 		$user     = learn_press_get_current_user();
 		$redirect = false;
+
+
 
 		if ( learn_press_is_review_questions() ) {
 			if ( ! $quiz->get_review_questions() ) {

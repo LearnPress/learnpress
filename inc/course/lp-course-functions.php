@@ -1177,3 +1177,75 @@ add_action( 'wp_login', 'learn_press_mark_user_just_logged_in' );
 function learn_press_get_custom_thumbnail_sizes() {
 	return apply_filters( 'learn-press/custom-thumbnail-sizes', array( 'archive_course_thumbnail' => 'course_thumbnail' ) );
 }
+
+function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
+	array_fill( 0, 10,
+		array(
+			'name'    => 'Section 1',
+			'id'      => 0,
+			'desc'    => 'Section 1 description',
+			'classes' => 'section',
+			'items'   => array_fill( 0, 100,
+				array(
+					'type'       => 'lp-lesson',
+					'name'       => 'Lesson 1',
+					'slug'       => 'lesson-1',
+					'is_preview' => false,
+					'completed'  => false,
+				)
+			)
+		)
+	);
+
+	/**
+	 * @var LP_Course_Section[] $sections
+	 * @var LP_Course_Section   $sec
+	 * @var LP_Course_Item[]    $items
+	 * @var LP_Course_Item      $item
+	 */
+	$user        = learn_press_get_current_user();
+	$course      = learn_press_get_course( $course_id );
+	$course_data = $user->get_course_data( $course_id );
+	$curriculum  = array(
+		'currentItem'    => $course_data->get_meta( '_current_item' ),
+		'totalItems'     => 0,
+		'completedItems' => 0,
+		'ready'          => false,
+		'sections'       => array()
+	);
+
+	if ( $sections = $course->get_sections() ) {
+		foreach ( $sections as $sec ) {
+			$section = array(
+				'id'             => $sec->get_id(),
+				'name'           => $sec->get_title(),
+				'desc'           => $sec->get_description(),
+				'classes'        => $sec->get_class(),
+				'items'          => array(),
+				'completedItems' => 0
+			);
+
+			if ( $items = $sec->get_items() ) {
+				foreach ( $items as $it ) {
+
+					$item = array(
+						'id'        => $it->get_id(),
+						'name'      => $it->get_title(),
+						'content'   => $it->get_content(),
+						'type'      => $it->get_post_type(),
+						'slug'      => '',
+						'completed' => rand( 100, 200 ) % 2 == 0,
+						'permalink' => $it->get_permalink()
+					);
+
+					$section['items'][] = $item;
+				}
+			}
+
+
+			$curriculum['sections'][] = $section;
+		}
+	}
+
+	return $curriculum;
+}

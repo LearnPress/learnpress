@@ -519,7 +519,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( $data_course = $this->get_parent() ) {
 			$data_course->calculate_course_results();
 		}
-
 		return $return;
 	}
 

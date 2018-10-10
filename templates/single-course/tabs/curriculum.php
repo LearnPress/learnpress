@@ -14,6 +14,11 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+if(empty($_REQUEST['x'])) {
+	learn_press_get_template( 'single-course/template.php' );
+
+	return;
+}
 $course   = LP_Global::course();
 $use_ajax = isset( $use_ajax ) && $use_ajax ? 'yes' : 'no';
 $is_ajax  = isset( $is_ajax ) && $is_ajax ? 'yes' : 'no';

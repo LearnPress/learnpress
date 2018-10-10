@@ -59,7 +59,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 			$this->_data[ $k ] = $v;
 		}
 
-		$this->_curd = new LP_Section_CURD(0);
+		$this->_curd = new LP_Section_CURD( 0 );
 		$this->set_id( $this->_data['id'] );
 		// Load section items
 		$this->_load_items();
@@ -79,10 +79,10 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		if ( false === ( $items = LP_Object_Cache::get( 'section-' . $this->get_id(), 'learn-press/section-items' ) ) ) {
 			$items = $this->_curd->read_items( $this->get_id() );
 			LP_Object_Cache::set( 'section-' . $this->get_id(), $items, 'learn-press/section-items' );
-		}else{
+		} else {
 		}
 
-		LP_Helper_CURD::cache_posts($items);
+		LP_Helper_CURD::cache_posts( $items );
 
 		foreach ( $items as $item ) {
 			// Create item
@@ -287,17 +287,22 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	}
 
 	public function main_class() {
+		$class  = $this->get_class();
+		$output = 'class="' . join( ' ', $class ) . '"';
+
+		echo " " . $output;
+
+		return $output;
+	}
+
+	public function get_class() {
 		$class = array( 'section' );
 
 		if ( ! $this->count_items() ) {
 			$class[] = 'section-empty';
 		}
 
-		$output = 'class="' . join( ' ', $class ) . '"';
-
-		echo " " . $output;
-
-		return $output;
+		return $class;
 	}
 
 	public function set_position( $position ) {

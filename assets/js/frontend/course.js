@@ -108,6 +108,8 @@
             } else {
                 $chk[0].checked = true;
             }
+
+            $chk.trigger('change');
         }
 
         /**

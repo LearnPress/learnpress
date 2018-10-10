@@ -773,12 +773,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
 
-				if ( $item = $course_data->get_item( $item_id ) ) {
-				} else {
+				if ( ! $item = $course_data->get_item( $item_id ) ) {
 					$item = LP_User_Item::get_item_object( $item_id );
-					$item->set_ref_id( $course_id );
-					$item->set_parent_id( $course_data->get_user_item_id() );
+				}else{
+					$course_data->update_meta('_current_item', $item_id);
 				}
+
+				$item->set_ref_id( $course_id );
+				$item->set_parent_id( $course_data->get_user_item_id() );
 
 				if ( $return = $item->update() ) {
 					$course_data->set_item( $item );

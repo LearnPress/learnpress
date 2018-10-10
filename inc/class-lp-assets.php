@@ -121,12 +121,14 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp-vuex'          => array(
 					'url'     => self::url( 'js/vendor/vuex.2.3.1.js' ),
 					'ver'     => '2.3.1',
-					'enqueue' => false
+					'enqueue' => false,
+					'deps'    => array( 'lp-vue')
 				),
 				'lp-vue-resource'  => array(
 					'url'     => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
 					'ver'     => '1.3.4',
-					'enqueue' => false
+					'enqueue' => false,
+					'deps'    => array( 'lp-vue', 'lp-vuex' )
 				),
 				'global'           => array(
 					'url'  => self::url( 'js/global.js' ),
