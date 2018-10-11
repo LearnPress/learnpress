@@ -1,33 +1,75 @@
 <?php
 /**
- * Display content item
+ * Template for displaying item content in single course.
  *
- * @author  ThimPress
- * @version 2.1.7
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/content-item.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.9
  */
-$course = learn_press_get_the_course();
-$item   = LP()->global['course-item'];
-$user   = learn_press_get_current_user();
-if ( ! $item ) {
-	return;
-}
-$item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0 );
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
+$user          = LP_Global::user();
+$course_item   = LP_Global::course_item();
+$course        = LP_Global::course();
+$can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id() );
 ?>
+
 <div id="learn-press-content-item">
-	<?php do_action( 'learn_press/before_course_item_content', $item_id, $course->id ); ?>
-	<?php if ( $item ) { ?>
-		<?php if ( $user->can( 'view-item', $item->id, $course->id ) ) { ?>
 
-			<?php do_action( 'learn_press_course_item_content', $item ); ?>
+	<?php do_action( 'learn-press/course-item-content-header' ); ?>
 
-		<?php } else { ?>
+    <div class="content-item-scrollable">
 
-			<?php learn_press_get_template( 'single-course/content-protected.php', array( 'item' => $item ) ); ?>
+        <div class="content-item-wrap">
 
-		<?php } ?>
+			<?php
+			/**
+			 * @deprecated
+			 */
+			do_action( 'learn_press_before_content_item' );
 
-	<?php } ?>
-	<?php //do_action( 'learn_press_after_content_item', $item_id, $course->id, true ); ?>
-	<?php do_action( 'learn_press/after_course_item_content', $item_id, $course->id ); ?>
+			/**
+			 * @since 3.0.0
+			 *
+			 */
+			do_action( 'learn-press/before-course-item-content' );
+
+			if ( $can_view_item ) {
+				/**
+				 * @deprecated
+				 */
+				do_action( 'learn_press_course_item_content' );
+
+				/**
+				 * @since 3.0.0
+				 */
+				do_action( 'learn-press/course-item-content' );
+
+			} else {
+				learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
+			}
+
+			/**
+			 * @since 3.0.0
+			 */
+			do_action( 'learn-press/after-course-item-content' );
+
+			/**
+			 * @deprecated
+			 */
+			do_action( 'learn_press_after_content_item' );
+			?>
+
+        </div>
+
+    </div>
+
+	<?php do_action( 'learn-press/course-item-content-footer' ); ?>
 
 </div>

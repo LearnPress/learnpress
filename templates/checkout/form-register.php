@@ -1,47 +1,62 @@
 <?php
 /**
- * Output register form
+ * Template for displaying register form.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/form-register.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
 if ( is_user_logged_in() ) {
 	return;
 }
-
-$heading              = apply_filters( 'learn_press_checkout_register_heading', __( 'New Customer', 'learnpress' ) );
-$subheading           = apply_filters( 'learn_press_checkout_register_subheading', __( 'Register Account', 'learnpress' ) );
-$register_url         = learn_press_get_register_url();
-$register_button_text = apply_filters( 'learn_press_checkout_register_button_text', __( 'Continue', 'learnpress' ) );
-$content              = sprintf( __( 'By creating an account you will be able to keep track of the course\'s progress you have previously enrolled.<a href="%s">%s</a>', 'learnpress' ), $register_url, $register_button_text );
-$content              = apply_filters( 'learn_press_checkout_register_content', $content );
-
 ?>
 
-<div id="learn-press-checkout-user-register" class="learn-press-user-form">
+<div id="learn-press-checkout-register" class="learn-press-form register">
 
-	<?php do_action( 'learn_press_checkout_before_user_register_form' ); ?>
+	<?php
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_checkout_before_user_register_form' );
 
-	<?php if ( $heading ) { ?>
-		<h3 class="form-heading"><?php echo $heading; ?></h3>
-	<?php } ?>
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn-press/before-checkout-form-register' );
+	?>
 
-	<?php if ( $subheading ) { ?>
-		<p class="form-subheading"><?php echo $subheading; ?></p>
-	<?php } ?>
+    <h4><?php echo __( 'New Customer', 'learnpress' ); ?></h4>
 
-	<?php if ( $content ) { ?>
-		<div class="form-content">
-			<?php echo $content; ?>
-		</div>
-	<?php } ?>
+    <p><?php echo __( 'Register Account', 'learnpress' ); ?></p>
 
-	<?php do_action( 'learn_press_checkout_after_user_register_form' ); ?>
+    <p><?php _e( 'By creating an account you will be able to keep track of the course\'s progress you have previously enrolled.', 'learnpress' ); ?></p>
+
+    <div id="checkout-form-register">
+
+		<?php learn_press_get_template( 'global/form-register.php' ); ?>
+
+        <p>
+            <a href="" class="checkout-form-register-toggle"
+               data-toggle="show"><?php _e( 'Register', 'learnpress' ); ?></a>
+        </p>
+    </div>
+
+	<?php
+	// @deprecated
+	do_action( 'learn_press_checkout_after_user_register_form' );
+
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn-press/after-checkout-form-register' );
+	?>
 
 </div>

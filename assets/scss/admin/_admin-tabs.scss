@@ -1,0 +1,88 @@
+.learn-press-tabs {
+    &.vertical {
+        .tabs-heading {
+            background: #FFF;
+            border: 1px solid #DDD;
+            h4 {
+                padding: 15px;
+                margin: 0;
+            }
+        }
+        .tabs-nav {
+            float: left;
+            width: 220px;
+            margin: 10px 0;
+            background: #F5F5F5;
+            position: relative;
+            z-index: 100;
+            li {
+                margin: 0;
+                position: relative;
+                a {
+                    display: block;
+                    padding: 10px 15px;
+                    text-decoration: none;
+                    background: #F5F5F5;
+                    box-shadow: none;
+                    box-sizing: border-box;
+                    border-top: 1px solid transparent;
+                    border-bottom: 1px solid transparent;
+                    text-transform: capitalize;
+                }
+                &.icon {
+                    a:before {
+                        font-family: dashicons;
+                        font-size: 18px;
+                        vertical-align: top;
+                        margin-right: 8px;
+                    }
+                }
+                &.active {
+                    a {
+                        background: #FFF;
+                        font-weight: bold;
+                        width: 221px;
+                        border-color: #DDD;
+                    }
+                }
+            }
+        }
+        .tabs-container {
+            overflow: hidden;
+            background: #F5F5F5;
+            border: 1px solid #DDD;
+            border-top: none;
+            position: relative;
+            .tabs-content-container {
+                margin: 0 0 0 220px;
+                > li {
+                    padding: 20px;
+                    float: left;
+                    width: 100%;
+                    margin-right: -100%;
+                    background: #FFF;
+                    border-left: 1px solid #DDD;
+                    margin-bottom: 0;
+                    display: none;
+                    @include box-sizing(border-box);
+                }
+            }
+        }
+        &:after {
+            @include clear-fix();
+        }
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .learnpress {
+        .rwmb-field {
+            .rwmb-label {
+                float: none;
+            }
+            .rwmb-input {
+                margin-left: 0;
+            }
+        }
+    }
+}

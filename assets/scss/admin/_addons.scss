@@ -1,0 +1,166 @@
+.learn-press-addons {
+    .lp-search-addon {
+        margin: 0;
+        width: 280px;
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.5;
+        padding: 3px 5px;
+        height: 32px;
+    }
+    .addons-browse {
+        margin: 20px 0 0;
+        .lp-addon-hidden {
+            display: none !important;
+        }
+        .lp-active:nth-of-type(2n+1) {
+            clear: none;
+            margin-right: 0;
+            margin-left: 8px;
+        }
+        .lp-active:nth-of-type(2n) {
+            clear: both;
+            margin-right: 8px;
+            margin-left: 0;
+        }
+        .plugin-icon {
+            img {
+                max-width: 100%;
+            }
+        }
+        .plugin-card {
+            .column-description {
+                p:not(.authors) {
+                    @include text-overflow(1.6, 3);
+                    color: #777;
+                }
+            }
+            .search-highlight {
+                text-decoration: underline;
+            }
+        }
+        .plugin-card-top {
+            h3 {
+                @include text-overflow(1.3em, 2);
+            }
+            .desc {
+                min-height: 90px;
+                margin-right: 0;
+            }
+            .button {
+                &.activate-plugin, &.install-now, &.enable-now {
+                    background: #0085ba;
+                    border-color: #0073aa #006799 #006799;
+                    -webkit-box-shadow: 0 1px 0 #006799;
+                    box-shadow: 0 1px 0 #006799;
+                    color: #fff;
+                    text-decoration: none;
+                    text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
+                }
+                &.button-working {
+                    padding-right: 4px;
+                    span {
+                        display: none;
+                    }
+                }
+            }
+        }
+        .plugin-card-bottom {
+            .plugin-version {
+                display: inline-block;
+            }
+            .column-compatibility {
+
+            }
+        }
+        &.premium {
+            .column-description {
+                p:not(.authors) {
+                    margin: 0;
+                    line-height: inherit;
+                }
+            }
+        }
+        &:after {
+            @include clear-fix();
+        }
+    }
+}
+
+.related-themes {
+    .plugin-card-top {
+        padding-bottom: 0;
+    }
+    .theme-content {
+        position: relative;
+    }
+    .image-thumbnail img {
+        width: 100%;
+    }
+    .theme-description {
+        margin: 0 0 25px 0;
+        @include text-overflow(1.6em, 5);
+        color: #777;
+    }
+    .theme-title {
+        margin-right: 100px;
+        font-size: 1.2em;
+        line-height: 1.3em;
+        margin-bottom: 0;
+        min-height: 3.2em;
+    }
+    .theme-title a {
+        color: #545454;
+    }
+    .theme-rating {
+        float: right;
+        display: inline-block;
+    }
+    .star-rating {
+        display: inline-block;
+    }
+    .count-rating {
+        font-size: 15px;
+        position: relative;
+        top: 2px;
+    }
+    .theme-detail {
+        position: absolute;
+        right: 3px;
+        top: -3px;
+        text-align: right;
+        line-height: 1.6em;
+
+        &:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        .theme-price {
+            display: inline-block;
+            font-size: 24px;
+            color: #545454;
+            font-weight: 700;
+            line-height: 1.3em;
+        }
+    }
+    .theme-footer {
+        clear: both;
+        margin-left: -20px;
+        margin-right: -20px;
+        padding: 20px;
+        background-color: #fafafa;
+        border-top: 1px solid #ddd;
+        overflow: hidden;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .plugin-card:not(.hide-if-js):nth-child(even) {
+        margin-right: 8px;
+    }
+    .plugin-card:not(.hide-if-js):nth-child(3n) {
+        margin-right: 0;
+    }
+}

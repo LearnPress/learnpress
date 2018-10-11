@@ -28,9 +28,11 @@ jQuery( function ( $ ) {
 		updateDom( $wrapper, id );
 
 		// TinyMCE
-		var settings = tinyMCEPreInit.mceInit[originalId];
-		settings.selector = '#' + id;
-		tinymce.init( settings );
+		if ( tinyMCEPreInit.mceInit.hasOwnProperty( originalId ) ) {
+			var settings = tinyMCEPreInit.mceInit[originalId],
+				editor = new tinymce.Editor(id, settings, tinymce.EditorManager);
+			editor.render();
+		}
 
 		// Quick tags
 		if ( typeof quicktags === 'function' && tinyMCEPreInit.qtInit.hasOwnProperty( originalId ) ) {
@@ -47,19 +49,17 @@ jQuery( function ( $ ) {
 	 * @param $el Current cloned textarea
 	 */
 	function getOriginalId( $el ) {
-		var $clones = $el.closest( '.rwmb-clone' ).siblings( '.rwmb-clone' ),
-			id = '';
-		$clones.each( function () {
-			var currentId = $( this ).find( '.rwmb-wysiwyg' ).attr( 'id' );
-			if ( /_\d+$/.test( currentId ) ) {
-				currentId = currentId.replace( /_\d+$/, '' );
-			}
-			if ( tinyMCEPreInit.mceInit.hasOwnProperty( currentId ) ) {
-				id = currentId;
-				return false; // Immediately stop the .each() loop
-			}
-		} );
-		return id;
+		var $clone = $el.closest( '.rwmb-clone' ),
+			currentId = $clone.find( '.rwmb-wysiwyg' ).attr( 'id' );
+
+		if ( /_\d+$/.test( currentId ) ) {
+			currentId = currentId.replace( /_\d+$/, '' );
+		}
+		if ( tinyMCEPreInit.mceInit.hasOwnProperty( currentId ) || tinyMCEPreInit.qtInit.hasOwnProperty( currentId ) ) {
+			return currentId;
+		}
+
+		return '';
 	}
 
 	/**
@@ -89,6 +89,6 @@ jQuery( function ( $ ) {
 		        .find( '.quicktags-toolbar' ).attr( 'id', 'qt_' + id + '_toolbar' ).html( '' );
 	}
 
-	$( ':input.rwmb-wysiwyg' ).each( update );
-	$( '.rwmb-input' ).on( 'clone', ':input.rwmb-wysiwyg', update );
+	$( '.rwmb-wysiwyg' ).each( update );
+	$( document ).on( 'clone', '.rwmb-wysiwyg', update );
 } );

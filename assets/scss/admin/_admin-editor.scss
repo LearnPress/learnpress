@@ -1,0 +1,914 @@
+/**
+ * General style for admin editor.
+ */
+
+.lp-admin-editor {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin: 20px 0 0 0;
+    position: relative;
+    .heading,
+    .lp-box-data-content {
+        padding: 0;
+    }
+}
+
+#learn-press-admin-editor-metabox-settings {
+    margin-top: 20px;
+}
+
+/**
+ *  Course admin editor.
+ */
+#admin-editor-lp_course {
+
+    .lp-course-curriculum {
+        .heading {
+            padding: 12px 10px;
+            position: relative;
+
+            h4 {
+                margin: 0;
+                font-size: 18px;
+            }
+
+            .collapse-sections {
+                font-family: Dashicons;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                font-size: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                width: 40px;
+                color: #999;
+                &.close:before {
+                    content: '\f140';
+                }
+
+                &.open:before {
+                    content: '\f142';
+                }
+            }
+
+            .status {
+                font-family: Dashicons;
+                font-size: 20px;
+                position: relative;
+                top: 5px;
+                margin-left: 10px;
+                visibility: hidden;
+
+                &:before {
+                    content: "\f463";
+                }
+
+                &.loading {
+                    visibility: visible;
+                    animation: rotation 2s infinite linear;
+                    display: inline-block;
+                }
+            }
+        }
+
+        .curriculum-sections {
+            margin: 0;
+            //padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .section {
+            border: 1px solid #e5e5e5;
+            //margin-bottom: 10px;
+            opacity: 1;
+            background: #FFF;
+            border-left: 0;
+            border-right: 0;
+            margin-bottom: -1px;
+            &:first-child {
+                border-top: 0;
+            }
+            &.new-section {
+                margin-top: 1px;
+                form {
+                    margin: 0;
+                }
+                .section-head {
+                    background-color: #f4fcff;
+                    .creatable {
+                        position: relative;
+                        top: 1px;
+
+                        &:before {
+                            content: "\f132";
+                        }
+                    }
+                }
+            }
+            &.empty-section {
+                position: relative;
+                &:after {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: #FFF;
+                    content: '';
+                    opacity: 0.5;
+                }
+                .section-head {
+                    .movable:before {
+                        content: "\f463";
+                        color: #a2a2a2;
+                        display: inline-block;
+                        @include rotating4();
+                    }
+                }
+                .section-collapse {
+                    display: none;
+                }
+            }
+
+            &:hover {
+                .section-actions {
+                    .remove {
+                        display: inline-block;
+                    }
+                }
+            }
+
+            &.close {
+                .section-collapse {
+                }
+            }
+
+            input {
+                background-color: transparent;
+                box-shadow: none;
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+
+            .section-head {
+                //background-color: #f9f9f9;
+                background-color: #f4fcff;
+                padding: 3px;
+                position: relative;
+                transition: background 500ms ease-out;
+
+                .movable, .creatable {
+                    display: inline-block;
+                    font-family: Dashicons;
+                    font-size: 20px;
+                    vertical-align: middle;
+                    width: 30px;
+                    text-align: center;
+                    margin-top: -4px;
+                    color: #999;
+                }
+
+                .movable {
+                    cursor: url("../../images/openhand.cur") 7 5, default;
+
+                    &:before {
+                        content: "\f333";
+                    }
+                    &:hover {
+                        color: #0085ba;
+                    }
+                }
+
+                .actions {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    color: #444;
+                    height: 100%;
+
+                    > * {
+                        cursor: pointer;
+                        display: inline-block;
+                        text-align: center;
+                        height: 100%;
+                    }
+
+                    .collapse {
+                        &:hover {
+                            color: #0085ba;
+                        }
+
+                        &:before {
+                            display: inline-block;
+                            width: 40px;
+                            font-size: 30px;
+                            font-family: Dashicons;
+                            line-height: 42px;
+                            color: #999;
+                        }
+
+                        &.open {
+                            &:before {
+                                content: '\f142';
+                            }
+                        }
+
+                        &.close {
+                            &:before {
+                                content: '\f140';
+                            }
+                        }
+                    }
+                }
+            }
+
+            .name {
+                font-size: 24px;
+                width: 100%;
+                border: none;
+                color: #777;
+                font-weight: 600;
+                line-height: 50px;
+
+                &:focus {
+                    color: #444;
+                }
+            }
+
+            .section-collapse {
+                overflow: hidden;
+            }
+
+            .section-content {
+                padding: 20px;
+                border-top: 1px solid #e5e5e5;
+            }
+
+            .details {
+                margin-bottom: 20px;
+            }
+
+            .title-input {
+                font-size: 1.2em;
+                border: none;
+                line-height: 30px;
+                width: calc(100% - 200px);
+                padding-left: 0;
+            }
+
+            .description-input {
+                border: none;
+                width: 100%;
+                color: #999;
+                font-style: italic;
+                margin: 0;
+                padding: 0;
+                &:focus {
+                    color: #444;
+                }
+            }
+        }
+
+        .section-list-items {
+            width: 100%;
+            border-collapse: collapse;
+
+            ul {
+                margin: 0;
+                min-height: 5px;
+                position: relative;
+            }
+
+            &.no-item {
+
+            }
+
+            .section-item {
+                border: 1px solid #eee;
+                position: relative;
+                margin: 0;
+                border-bottom-width: 0;
+                transition: background 200ms ease-out;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #FFF;
+                &.ui-sortable-helper {
+                    border-bottom: 1px solid #EEE;
+                }
+                &:nth-child(2n+1) {
+                    background-color: #f4fcff;
+                }
+                &.updating {
+                    &:before {
+                        position: absolute;
+                        content: '';
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        z-index: 2;
+                    }
+                }
+
+                &.removing {
+                    background-color: #ffeded;
+                }
+
+                .drag {
+                    height: 20px;
+                    cursor: url("../../images/openhand.cur") 7 5, default;
+                    visibility: hidden;
+                    fill: #d5dce0;
+                    padding-top: 3px;
+                    flex: 0 0 18px;
+                    &:hover {
+                        fill: #0085ba;
+                    }
+                }
+
+                .icon {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .title {
+                    margin-left: 5px;
+                    margin-right: 120px;
+                    flex-grow: 1;
+                    flex-basis: 100%;
+
+                    input {
+                        color: inherit;
+                    }
+                }
+
+                .item-actions {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .actions {
+                    margin: 0;
+
+                    > * {
+                        margin-right: 10px;
+                        visibility: hidden;
+                    }
+
+                    .edit {
+                        text-decoration: none;
+                    }
+
+                    .remove {
+                        color: #a00;
+                    }
+                }
+
+                &:hover {
+                    .drag {
+                        visibility: visible;
+                    }
+                }
+
+                &:not(.lp_lesson) {
+                    .item-actions {
+                        .actions {
+                            .preview-item {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .new-section-item {
+                border-bottom-width: 1px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                transition: all 200ms ease-out;
+                .drag {
+                    cursor: default;
+                }
+                .title {
+                    display: inline-block;
+                    margin: 0;
+                    flex: 1;
+                }
+
+                .types {
+                    display: inline-block;
+                    &:hover, &:focus {
+                        background-color: #fff;
+
+                        .type {
+                            display: inline-block;
+                        }
+                    }
+
+                    .type {
+                        display: inline-block;
+                        padding: 8px 5px;
+                        color: #ccc;
+
+                        input {
+                            display: none;
+                        }
+
+                        &.current {
+                            color: #0085ba;
+                        }
+
+                        &:before {
+                            font-family: Dashicons;
+                            font-size: 20px;
+                            position: relative;
+                            top: 2px;
+                        }
+
+                        &.lp_quiz {
+                            &:before {
+                                content: '\f469';
+                            }
+                        }
+
+                        &.lp_lesson {
+                            &:before {
+                                content: '\f330';
+                            }
+                        }
+                        &.empty-item {
+                            &:before {
+                                content: "\f463";
+                            }
+                        }
+                    }
+                }
+            }
+
+            .section-item {
+                .item-actions {
+                    text-align: right;
+                    .actions {
+                        .action {
+                            width: 30px;
+                            height: 30px;
+                            padding: 0;
+                            text-align: center;
+                            position: relative;
+                            vertical-align: middle;
+                            cursor: pointer;
+                            display: inline-block;
+                            margin: 0;
+                            > a {
+                                width: 30px;
+                                height: 30px;
+                                line-height: 30px;
+                                color: #999;
+                                &:hover {
+                                    color: #0073aa;
+                                }
+                            }
+                            &.delete-item {
+                                > a {
+                                    &:hover {
+                                        color: #d05d5d;
+                                    }
+                                }
+                                ul {
+                                    position: absolute;
+                                    top: 100%;
+                                    width: 165px;
+                                    right: 0;
+                                    background: #fdfeff;
+                                    margin: 0;
+                                    border: 1px solid #DDD;
+                                    z-index: 9;
+                                    display: none;
+                                    text-align: center;
+                                    li {
+                                        margin: 0;
+                                        border-bottom: 1px solid #eee;
+                                        text-align: right;
+                                        a {
+                                            color: #0073aa;
+                                            text-decoration: none;
+                                            padding: 8px;
+                                            display: block;
+                                            &.delete-permanently {
+                                                color: #d05d5d;
+                                            }
+                                        }
+                                        &:hover {
+                                            background: #dbf5ff;
+                                        }
+                                    }
+                                }
+                                &:hover {
+                                    ul {
+                                        display: block;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                &:hover {
+                    .item-actions {
+                        .actions > * {
+                            visibility: visible;
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                &.lp_quiz {
+                    .icon:before {
+                        content: '\f469';
+                    }
+                }
+
+                &.lp_lesson {
+                    .icon:before {
+                        content: '\f330';
+                    }
+                }
+
+                &.empty-item {
+                    color: #a2a2a2;
+                    position: relative;
+                    &:after {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: #FFF;
+                        content: '';
+                        opacity: 0.5;
+                    }
+                    .item-actions {
+                        display: none;
+                    }
+                    .icon:before {
+                        content: "\f463";
+                        color: #a2a2a2;
+                        @include rotating4();
+                    }
+                }
+
+                .icon {
+                    font-size: 20px;
+                    color: #0085ba;
+                    text-align: center;
+                    flex: 0 0 29px;
+                    &:before {
+                        font-family: Dashicons;
+                    }
+                }
+
+                input {
+                    font-size: 14px;
+                    border: none;
+                    width: 100%;
+                    padding: 8px 10px 8px 0;
+                }
+            }
+        }
+
+        .section-actions {
+            padding: 0 20px 20px 20px;
+
+            .remove {
+                float: right;
+                color: #a00;
+                cursor: pointer;
+                display: none;
+
+                .icon {
+                    display: inline-block;
+                }
+
+                .confirm {
+                    display: none;
+                }
+
+                &.confirm {
+                    .confirm {
+                        display: inline-block;
+                    }
+
+                    .icon {
+                        display: none;
+                    }
+                }
+            }
+        }
+        .ui-sortable-placeholder {
+            visibility: visible !important;
+            background: #bdf4fe !important;
+            display: block;
+            border-color: #bdf4fe !important;
+        }
+    }
+}
+
+.wp-admin.post-type-lp_course {
+    #meta-box-tab-course_payment {
+        .learn-press-tip-floating {
+            top: 40px;
+            left: 100px;
+            background: #a00;
+            opacity: 0.8;
+            &::before {
+                top: -7px;
+                border: 7px solid transparent;
+                border-bottom-color: #a00;;
+                border-top-width: 0;
+            }
+        }
+    }
+}
+
+.section-item-counts {
+    position: absolute;
+    top: 0;
+    right: 41px;
+    white-space: nowrap;
+    line-height: 44px;
+    font-size: 12px;
+    span {
+        color: #999;
+    }
+}
+
+@import "quiz-editor";
+@import "question-editor";
+
+/**
+ * Modal choose items.
+ */
+#lp-modal-choose-items {
+    opacity: 0;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    &.show {
+        display: block;
+        opacity: 1;
+        z-index: 99999;
+    }
+
+    &.loading {
+        .lp-choose-items {
+
+            &:before {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: block;
+                content: '';
+                z-index: 9;
+                background: url('../../images/spinner.gif') no-repeat center center;
+            }
+        }
+    }
+
+    .lp-choose-items {
+        background-color: #fff;
+        max-width: 800px;
+        margin: 50px auto;
+        border: 1px solid #ddd;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        position: relative;
+        transition: all 200ms ease-out;
+
+        &.show-preview {
+            .header {
+                .preview-title {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+        }
+
+        .header {
+            position: relative;
+
+            .preview-title {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+                padding-left: 20px;
+                background-color: #fff;
+                border-bottom: 1px solid #ddd;
+                display: none;
+                font-weight: 600;
+
+                h3 {
+                    margin: 0;
+                }
+            }
+
+            .tabs {
+                margin: 0;
+                border-bottom: 1px solid #ddd;
+
+                .tab {
+                    display: inline-block;
+                    margin: 0;
+                    position: relative;
+
+                    &:not(:last-child):before {
+                        content: '';
+                        border-right: 1px solid #ddd;
+                        position: absolute;
+                        right: 0;
+                        height: 44px;
+                        top: 50%;
+                        margin-top: -22px;
+                    }
+
+                    &.active {
+                        &:after {
+                            border: 1px solid #ddd;
+                            transform: rotate(45deg);
+                            display: inline-block;
+                            width: 10px;
+                            height: 10px;
+                            content: '';
+                            position: absolute;
+                            left: 50%;
+                            margin-left: -6px;
+                            bottom: -6px;
+                            background: #FFF;
+                            border-bottom: 0;
+                            border-right: 0;
+                        }
+
+                        a {
+                            color: #333;
+                        }
+                    }
+
+                    a {
+                        padding: 0 20px;
+                        text-decoration: none;
+                        display: inline-block;
+                        font-weight: 600;
+                        height: 44px;
+                        line-height: 44px;
+                        &:focus {
+                            box-shadow: none;
+                        }
+                    }
+                }
+            }
+
+            .close {
+                display: inline-block;
+                position: absolute;
+                top: 0;
+                right: 0;
+                cursor: pointer;
+                font-size: 1em;
+                padding: 12px;
+                z-index: 30;
+            }
+        }
+
+        .main {
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #DDD;
+
+            .section-item {
+                cursor: pointer;
+                transition: color 200ms ease-out;
+                max-width: 100%;
+                display: block;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+
+                &:before {
+                    font-family: Dashicons;
+                    position: relative;
+                    top: 3px;
+                }
+            }
+
+            .search {
+                margin-bottom: 20px;
+                background: transparent;
+                input.modal-search-input {
+                    width: 100%;
+                    font-size: 1.2em;
+                    line-height: 1.5;
+                    padding: 10px 14px;
+                }
+            }
+
+            .list-items {
+                min-height: 260px;
+                margin: 0;
+                li {
+                    margin: 15px 0;
+                    cursor: pointer;
+                }
+            }
+
+            .pagination {
+                .index {
+                    line-height: 28px;
+                    margin-left: 20px;
+                }
+            }
+        }
+
+        .lp-added-items-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #fff;
+            z-index: 2;
+            padding: 20px;
+            transform: translate(100%, 0);
+            max-height: 420px;
+            overflow: auto;
+
+            &.show {
+                transform: translate(0, 0);
+            }
+
+            .list-added-items {
+                li {
+                    margin: 15px 0;
+                    &:first-child {
+                        margin: -10px 0 15px 0;
+                    }
+                }
+            }
+        }
+
+        .footer {
+            padding: 20px;
+        }
+    }
+}
+
+body {
+    &.lp-item-moving {
+        cursor: url("../../images/closedhand.cur") 7 5, default !important;
+        //.section-item {
+        //    .drag {
+        //        cursor: url("../../images/closedhand.cur") 7 5, default !important;
+        //    }
+        //}
+    }
+}
+
+@media screen and (max-width: 900px) {
+    #admin-editor-lp_quiz {
+        .lp-box-data-content {
+            .lp-list-questions {
+                .question-settings {
+                    &.table-row {
+                        display: block;
+                        width: auto;
+                        text-align: left;
+                        > * {
+                            width: auto;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,83 @@
+/**
+ * CSS for overriding some style defaults of themes
+ */
+// Twenty Fifteen
+/**/
+
+// Twenty Sixteen
+body {
+    &.twentysixteen {
+        &.learnpress-page {
+            .entry-footer {
+                display: none;
+            }
+            .entry-content {
+                float: none;
+                width: auto;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 61.5625em) {
+    body {
+        &.twentysixteen {
+            &.learnpress-page {
+                .entry-footer {
+                    display: none;
+                }
+                .entry-content {
+                    float: none;
+                    width: auto;
+                }
+            }
+        }
+
+        &:not(.search-results) {
+            article:not(.type-page) {
+                .entry-footer {
+                    display: none;
+                }
+                .entry-content {
+                    float: none;
+                    width: auto;
+                }
+            }
+        }
+    }
+}
+
+// Twenty Seventeen
+body.twentyseventeen.learnpress-page {
+    #primary {
+        article {
+            &.page {
+                .entry-header,
+                .entry-content {
+                    width: 100%;
+                    float: none;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 48em) {
+    body {
+        &.twentyseventeen {
+            &.learnpress-page {
+                #primary {
+                    article {
+                        &.page {
+                            .entry-header,
+                            .entry-content {
+                                width: 100%;
+                                float: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

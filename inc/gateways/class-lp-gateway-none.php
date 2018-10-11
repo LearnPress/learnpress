@@ -18,7 +18,7 @@ class LP_Gateway_None extends LP_Gateway_Abstract {
 	 * @return mixed
 	 */
 	public function process_payment( $order_id ) {
-		$order = LP_Order::instance( $order_id );
+		$order = new LP_Order( $order_id );
 		$order->payment_complete();
 		return array( 'result' => 'success' );
 	}

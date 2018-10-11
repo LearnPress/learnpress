@@ -1,42 +1,62 @@
 <?php
 /**
- * The template for display the content of single course
+ * Template for displaying course content within the loop.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/content-single-course.php
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-$course = learn_press_get_the_course();
-$user   = learn_press_get_current_user();
 if ( post_password_required() ) {
 	echo get_the_password_form();
+
 	return;
 }
 
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_before_main_content' );
+do_action( 'learn_press_before_single_course' );
+do_action( 'learn_press_before_single_course_summary' );
+
+/**
+ * @since 3.0.0
+ */
+do_action( 'learn-press/before-main-content' );
+
+do_action( 'learn-press/before-single-course' );
+
 ?>
-<?php do_action( 'learn_press_before_main_content' ); ?>
-
-<?php do_action( 'learn_press_before_single_course' ); ?>
-
-<?php do_action( 'learn_press_before_single_course_summary' ); ?>
-
-<div class="course-summary">
-
-	<?php if ( $user->has_course_status( $course->id, array( 'enrolled', 'finished' ) ) || !$course->is_require_enrollment() ) { ?>
-		<?php learn_press_get_template( 'single-course/content-learning.php' ); ?>
-	<?php } else { ?>
-		<?php learn_press_get_template( 'single-course/content-landing.php' ); ?>
-	<?php } ?>
-
+<div id="learn-press-course" class="course-summary">
+	<?php
+	/**
+	 * @since 3.0.0
+	 *
+	 * @see learn_press_single_course_summary()
+	 */
+	do_action( 'learn-press/single-course-summary' );
+	?>
 </div>
+<?php
 
-<?php do_action( 'learn_press_after_single_course_summary' ); ?>
+/**
+ * @since 3.0.0
+ */
+do_action( 'learn-press/after-main-content' );
 
-<?php do_action( 'learn_press_after_single_course' ); ?>
+do_action( 'learn-press/after-single-course' );
 
-<?php do_action( 'learn_press_after_main_content' ); ?>
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_after_single_course_summary' );
+do_action( 'learn_press_after_single_course' );
+do_action( 'learn_press_after_main_content' );

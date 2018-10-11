@@ -1,0 +1,183 @@
+.learn-press-modal {
+    position: fixed;
+    z-index: 1000000;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    display: table;
+    .modal-overlay {
+        position: fixed;
+        z-index: 1000000;
+        background: #000;
+        opacity: 0.5;
+        width: 100%;
+        height: 100%;
+        top: 0;
+    }
+
+    .modal-wrapper {
+        display: table-cell;
+        vertical-align: middle;
+        z-index: 1000010;
+        position: relative;
+        .modal-container {
+            max-width: 800px;
+            width: 90%;
+            margin: 0px auto;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+            transition: all .3s ease;
+            overflow: hidden;
+            @include box-sizing();
+        }
+        header {
+            font-size: 16px;
+            padding: 15px 20px;
+            border-bottom: 1px solid #DDD;
+        }
+        article {
+            margin: 45px 20px;
+            input[name="search"] {
+                width: 100%;
+                font-size: 16px;
+                box-sizing: border-box;
+                margin: 0;
+                box-shadow: none;
+                color: #999;
+                padding: 8px 10px;
+                border-radius: 2px;
+                border-color: #e4e4e4;
+                font-weight: lighter;
+            }
+            .search-results {
+                li > label {
+                    display: block;
+                }
+            }
+        }
+        footer {
+            padding: 15px 20px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            .search-nav {
+                float: left;
+                a, span {
+                    display: inline-block;
+                    line-height: 26px;
+                    height: 28px;
+                    margin: 0;
+                    padding: 0 10px 1px;
+                }
+            }
+            button {
+                float: right;
+                margin-left: 3px;
+            }
+        }
+    }
+}
+
+#modal-search-items.loading {
+    .search-results {
+        &:before {
+            position: absolute;
+            top: 75px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: block;
+            content: '';
+            z-index: 9;
+            background: url('../../images/spinner.gif') no-repeat center center;
+        }
+    }
+}
+
+.modal-search {
+    position: relative;
+    display: inline-block;
+    min-width: 300px;
+
+    .search-input {
+        border: 1px solid #DDD;
+        width: 100%;
+        margin: 0;
+        padding: 5px 10px;
+        @include box-shadow(none);
+        &:focus {
+            border-color: #DDD;
+        }
+    }
+    .search-results-content {
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        left: 0;
+        background: #FFF;
+        border: 1px solid #DDD;
+        border-top: none;
+        z-index: 1000;
+        margin-top: -1px;
+        @include box-sizing();
+        .search-results {
+            margin: 0;
+            .result-item {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                label {
+                    display: block;
+                    padding: 6px 10px;
+                    text-decoration: none;
+                    cursor: pointer;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                &:hover {
+                    background: #f4fcff;
+                }
+            }
+        }
+    }
+
+    .has-items {
+        .search-input {
+            border-bottom-color: transparent;
+        }
+        .search-results-content {
+            border-top: none;
+        }
+    }
+    .checked-items {
+        text-align: center;
+        .clear-items {
+
+        }
+        .add-items {
+
+        }
+        .button {
+            font-size: 12px;
+            height: 20px;
+            line-height: 20px;
+        }
+        .disabled {
+            color: #777;
+        }
+    }
+    .search-navigator {
+        margin: 5px 0;
+        text-align: center;
+        .page-numbers {
+            display: inline-block;
+            padding: 2px 5px;
+            text-decoration: none;
+            line-height: 1;
+            &.next, &.prev {
+                display: none;
+            }
+        }
+    }
+}

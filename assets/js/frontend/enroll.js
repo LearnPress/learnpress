@@ -22,18 +22,18 @@ if (typeof window.LP == 'undefined') {
 					dataType: 'html',
 					data    : $form.serialize(),
 					type    : 'post',
-					success : function ( response ) {
-						response = LP.parseJSON( response );
-						if ( response.result == 'fail' ) {
-							if ( LP.Hook.applyFilters( 'learn_press_user_enroll_course_failed', course_id ) !== false ) {
-								if ( response.redirect ) {
-									LP.reload( response.redirect );
+					success : function (response) {
+						response = LP.parseJSON(response);
+						if (response.result == 'fail') {
+							if (LP.Hook.applyFilters('learn_press_user_enroll_course_failed', course_id) !== false) {
+								if (response.redirect) {
+									LP.reload(response.redirect);
 								}
 							}
 						} else {
-							if ( LP.Hook.applyFilters( 'learn_press_user_enrolled_course', course_id ) !== false ) {
-								if ( response.redirect ) {
-									LP.reload( response.redirect );
+							if (LP.Hook.applyFilters('learn_press_user_enrolled_course', course_id) !== false) {
+								if (response.redirect) {
+									LP.reload(response.redirect);
 								}
 							}
 						}

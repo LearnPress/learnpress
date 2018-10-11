@@ -14,7 +14,7 @@ class RWMB_Select_Field extends RWMB_Choice_Field {
 	 */
 	public static function admin_enqueue_scripts() {
 		wp_enqueue_style( 'rwmb-select', RWMB_CSS_URL . 'select.css', array(), RWMB_VER );
-		wp_enqueue_script( 'rwmb-select', RWMB_JS_URL . 'select.js', array(), RWMB_VER, true );
+		wp_enqueue_script( 'rwmb-select', RWMB_JS_URL . 'select.js', array( 'jquery' ), RWMB_VER, true );
 	}
 
 	/**
@@ -84,7 +84,7 @@ class RWMB_Select_Field extends RWMB_Choice_Field {
 	 */
 	public static function get_select_all_html( $field ) {
 		if ( $field['multiple'] && $field['select_all_none'] ) {
-			return '<div class="rwmb-select-all-none">' . __( 'Select', 'meta-box' ) . ': <a data-type="all" href="#">' . __( 'All', 'meta-box' ) . '</a> | <a data-type="none" href="#">' . __( 'None', 'meta-box' ) . '</a></div>';
+			return '<div class="rwmb-select-all-none">' . __( 'Select', 'learnpress' ) . ': <a data-type="all" href="#">' . __( 'All', 'learnpress' ) . '</a> | <a data-type="none" href="#">' . __( 'None', 'learnpress' ) . '</a></div>';
 		}
 		return '';
 	}

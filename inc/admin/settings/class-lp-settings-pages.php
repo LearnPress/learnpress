@@ -2,8 +2,15 @@
 
 /**
  * Class LP_Settings_Pages
+ *
+ * Settings pages
+ *
+ * @since 3.0
  */
-class LP_Settings_Pages extends LP_Settings_Base {
+class LP_Settings_Pages extends LP_Abstract_Settings_Page {
+	/**
+	 * LP_Settings_Pages constructor.
+	 */
 	public function __construct() {
 		$this->id   = 'pages';
 		$this->text = __( 'Pages', 'learnpress' );
@@ -11,174 +18,54 @@ class LP_Settings_Pages extends LP_Settings_Base {
 		parent::__construct();
 	}
 
+	/**
+	 * Main sections
+	 *
+	 * @return array
+	 */
 	public function get_sections() {
 		$sections = array(
-			'profile'          => array(
-				'id'    => 'profile',
-				'title' => __( 'Profile', 'learnpress' )
-			),
-			'quiz'             => array(
-				'id'    => 'quiz',
-				'title' => __( 'Quiz', 'learnpress' )
-			),
-			'become_a_teacher' => array(
-				'id'    => 'become_a_teacher',
-				'title' => __( 'Become a teacher', 'learnpress' )
-			)
+			'become_a_teacher' => __( 'Become a teacher', 'learnpress' )
 		);
-		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
+
+		return apply_filters( 'learn-press/admin/settings-pages/sections', $sections, $this );
 	}
 
-	public function get_settings() {
-
-		$display_name = array(
-			'nice'      => esc_html__( 'Nicename', 'learnpress' ),
-			'first'     => esc_html__( 'First name', 'learnpress' ),
-			'last'      => esc_html__( 'Last name', 'learnpress' ),
-			'nick'      => esc_html__( 'Nickname', 'learnpress' ),
-			'firstlast' => esc_html__( 'First name + Last name', 'learnpress' ),
-			'lastfirst' => esc_html__( 'Last name + First name', 'learnpress' ),
-
-		);
-
+	public function get_settings_become_a_teacher() {
 		return apply_filters(
-			'learn_press_page_settings',
+			'learn-press/admin/settings-pages/become-a-teacher',
 			array(
-				array( 'section' => 'profile' ),
 				array(
-					'title' => __( 'General', 'learnpress' ),
-					'type'  => 'title'
-				),
-				array(
-					'title'   => __( 'Profile', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_page_id' ),
+					'title'   => __( 'Become a teacher page', 'learnpress' ),
+					'id'      => 'become_a_teacher_page_id',
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
-
 				array(
-					'title'   => __( 'Add link to admin bar', 'learnpress' ),
-					'id'      => $this->get_field_name( 'admin_bar_link' ),
-					'default' => 'yes',
-					'type'    => 'checkbox'
-				),
-				array(
-					'title'       => __( 'Text link', 'learnpress' ),
-					'id'          => $this->get_field_name( 'admin_bar_link_text' ),
-					'default'     => '',
-					'type'        => 'text',
-					'placeholder' => __( 'Default: View Course Profile', 'learnpress' ),
-					'class'       => 'regular-text'
-				),
-				array(
-					'title'   => __( 'Target link', 'learnpress' ),
-					'id'      => $this->get_field_name( 'admin_bar_link_target' ),
-					'default' => 'yes',
-					'type'    => 'select',
-					'options' => array(
-						'_self'  => __( 'Self', 'learnpress' ),
-						'_blank' => __( 'New window', 'learnpress' )
-					)
-				),
-				array(
-					'title'   => __( 'Courses limit', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_courses_limit' ),
-					'default' => '10',
-					'type'    => 'number',
-					'min'     => 1
-				),
-				/*array(
-					'title'   => __( 'Access level', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_access_level' ),
-					'default' => 'private',
-					'type'    => 'select',
-					'options' => array(
-						'private' => __( 'Private (Only account own)', 'learnpress' ),
-						'public'  => __( 'Public', 'learnpress' )
-					)
-				),*/
-				array(
-					'title' => __( 'Page slug', 'learnpress' ),
-					'type'  => 'title'
-				),
-				array(
-					'title'       => __( 'Courses', 'learnpress' ),
-					'id'          => $this->get_field_name( 'profile_endpoints[profile-courses]' ),
-					'default'     => 'courses',
-					'type'        => 'text',
-					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/courses]</code>', __( 'Example link is', 'learnpress' ) )
-				),
-				array(
-					'title'       => __( 'Quizzes', 'learnpress' ),
-					'id'          => $this->get_field_name( 'profile_endpoints[profile-quizzes]' ),
-					'default'     => 'quizzes',
-					'type'        => 'text',
-					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/quizzes]</code>', __( 'Example link is', 'learnpress' ) )
-				),
-				array(
-					'title'       => __( 'Orders', 'learnpress' ),
-					'id'          => $this->get_field_name( 'profile_endpoints[profile-orders]' ),
-					'default'     => 'orders',
-					'type'        => 'text',
-					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/orders]</code>', __( 'Example link is', 'learnpress' ) )
-				),
-				array(
-					'title'       => __( 'View order', 'learnpress' ),
-					'id'          => $this->get_field_name( 'profile_endpoints[profile-order-details]' ),
-					'default'     => 'order-details',
-					'type'        => 'text',
-					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/order-details/123]</code>', __( 'Example link is', 'learnpress' ) )
-				),
-				array(
-					'title' => __( 'User avatar', 'learnpress' ),
-					'type'  => 'title'
-				),
-				array(
-					'title'   => __( 'Ratio', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_picture_thumbnail_size' ),
-					'default' => array( 150, 150, 'yes' ),
-					'type'    => 'image-size'
-				),
-				/*array(
-					'title'   => __( 'Crop', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_picture_crop' ),
-					'default' => 'yes',
-					'type'    => 'checkbox'
-				),*/
-				array( 'section' => 'quiz' ),
-				array(
-					'title' => __( 'Endpoints', 'learnpress' ),
-					'type'  => 'title'
-				),
-				array(
-					'title'       => __( 'Results', 'learnpress' ),
-					'id'          => $this->get_field_name( 'quiz_endpoints[results]' ),
-					'default'     => 'results',
-					'type'        => 'text',
-					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[quizzes/sample-quiz/results]</code>', __( 'Example link is', 'learnpress' ) )
-				),
-				array( 'section' => 'become_a_teacher' ),
-				array(
-					'title'   => __( 'Become a teacher', 'learnpress' ),
-					'id'      => $this->get_field_name( 'become_a_teacher_page_id' ),
-					'default' => '',
-					'type'    => 'pages-dropdown'
+					'title'   => __( 'Instructors registration', 'learnpress' ),
+					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
+					'id' => 'instructor_registration',
+					'default' => 'no',
+					'type'    => 'yes-no'
 				)
-			), $this
+			),
+			$this
 		);
 	}
 
+	/**
+	 * Setting fields.
+	 *
+	 * @param string $section
+	 *
+	 * @return array
+	 */
 	public function _get_settings( $section ) {
 		$settings = $this->get_settings();
 		$get      = false;
 		$return   = array();
 		foreach ( $settings as $k => $v ) {
-			if ( !empty( $v['section'] ) ) {
+			if ( ! empty( $v['section'] ) ) {
 				if ( $get ) {
 					break;
 				}
@@ -191,6 +78,7 @@ class LP_Settings_Pages extends LP_Settings_Base {
 				$return[] = $v;
 			}
 		}
+
 		return $return;
 	}
 

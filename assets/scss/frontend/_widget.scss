@@ -1,0 +1,22 @@
+.lp-widget {
+    .items-progress,
+    .course-progress {
+        width: 100%;
+    }
+
+    .course-remaining-time {
+        font-size: 14px;
+    }
+
+    .lp-course-info-fields {
+        margin: 0;
+        .lp-course-info {
+            list-style: none;
+            margin: 0 0 10px 0;
+            .lp-label {
+                float: right;
+                background: #03a9f4;
+            }
+        }
+    }
+}

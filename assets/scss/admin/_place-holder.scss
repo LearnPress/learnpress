@@ -1,0 +1,68 @@
+.lp-place-holder {
+	background: #fff;
+	padding: 10px;
+	display: block;
+	margin: 0 auto;
+	box-shadow: 0 0 0 rgba(0, 0, 0, 0.1);
+	border-radius: 3px;
+
+	[class*="line-"] {
+		height: 6px;
+		width: 400px;
+		background: #f6f7f9;
+		margin-bottom: 13px;
+		margin-right: 5px;
+	}
+
+	.thumbnail {
+		height: 40px;
+		width: 40px;
+		float: left;
+		margin-right: 20px;
+		display: inline-block;
+	}
+
+	.line {
+		&-heading {
+			width: 80%;
+			height: 20px;
+		}
+		&-sm {
+			width: 30%;
+			margin-top: 10px;
+		}
+		&-xs {
+			width: 50%;
+		}
+		&-df {
+			margin-top: 30px;
+			width: 380px;
+		}
+		&-lg {
+			width: 200px;
+		}
+		&-lgx {
+			width: 450px;
+		}
+	}
+
+	[class*="line"],
+	.thumbnail {
+		animation: lpTimeLine;
+		animation-duration: 1s;
+		animation-timing-function: linear;
+		animation-iteration-count: infinite;
+		background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+		background-size: 800px auto;
+		background-position: 100px 0;
+	}
+}
+
+@keyframes lpTimeLine {
+	0% {
+		background-position: -350px 0;
+	}
+	100% {
+		background-position: 400px 0;
+	}
+}

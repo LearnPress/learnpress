@@ -1,37 +1,46 @@
 <?php
 /**
- * Displaying the description of single course
+ * Template for displaying overview tab of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/tabs/overview.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-$course = LP()->global['course'];
-
-if ( !$course ) {
-	return;
-}
-
-$description_heading = apply_filters( 'learn_press_single_course_description_heading', '', $course );
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
-<?php if ( $description_heading ) { ?>
-
-	<h2 class="course-description-heading" id="learn-press-course-description-heading"><?php echo $description_heading; ?></h2>
-
-<?php } ?>
+<?php global $course; ?>
 
 <div class="course-description" id="learn-press-course-description">
 
-	<?php do_action( 'learn_press_begin_single_course_description' ); ?>
+	<?php
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_begin_single_course_description' );
 
-	<?php echo $course->get_description(); ?>
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn-press/before-single-course-description' );
 
-	<?php do_action( 'learn_press_end_single_course_description' ); ?>
+	echo $course->get_content();
+
+	/**
+	 * @since 3.0.0
+	 */
+	do_action( 'learn-press/after-single-course-description' );
+
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_end_single_course_description' );
+	?>
 
 </div>

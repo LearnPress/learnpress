@@ -1,15 +1,21 @@
 <?php
 /**
- * Archive courses breadcrumb
+ * Template for displaying archive courses breadcrumb.
  *
- * @author 		ThimPress
- * @package 	LearnPress/Templates
- * @version     1.0
+ * This template can be overridden by copying it to yourtheme/learnpress/global/breadcrumb.php.
+ *
+ * @author  ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
+
+<?php
 
 if ( ! empty( $breadcrumb ) ) {
 

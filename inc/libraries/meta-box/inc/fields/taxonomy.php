@@ -30,8 +30,11 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field {
 		// Set default field args.
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, array(
-			'taxonomy'   => 'category',
+			'taxonomy' => 'category',
 		) );
+
+		// Force taxonomy to be an array.
+		$field['taxonomy'] = (array) $field['taxonomy'];
 
 		// Set default query args.
 		$field['query_args'] = wp_parse_args( $field['query_args'], array(
@@ -44,12 +47,12 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field {
 		 * - If single taxonomy: show 'Select a %taxonomy_name%'.
 		 */
 		if ( empty( $field['placeholder'] ) ) {
-			$field['placeholder'] = __( 'Select a term', 'meta-box' );
+			$field['placeholder'] = __( 'Select a term', 'learnpress' );
 			if ( is_string( $field['taxonomy'] ) && taxonomy_exists( $field['taxonomy'] ) ) {
 				$taxonomy_object = get_taxonomy( $field['taxonomy'] );
 
 				// Translators: %s is the taxonomy singular label.
-				$field['placeholder'] = sprintf( __( 'Select a %s', 'meta-box' ), $taxonomy_object->labels->singular_name );
+				$field['placeholder'] = sprintf( __( 'Select a %s', 'learnpress' ), $taxonomy_object->labels->singular_name );
 			}
 		}
 
@@ -95,28 +98,27 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field {
 	public static function save( $new, $old, $post_id, $field ) {
 		$new = array_unique( array_map( 'intval', (array) $new ) );
 		$new = empty( $new ) ? null : $new;
-		wp_set_object_terms( $post_id, $new, $field['taxonomy'] );
+
+		foreach ( $field['taxonomy'] as $taxonomy ) {
+			wp_set_object_terms( $post_id, $new, $taxonomy );
+		}
 	}
 
 	/**
 	 * Get raw meta value.
 	 *
-	 * @param int   $post_id The post ID.
-	 * @param array $field   The field parameters.
+	 * @param int   $object_id Object ID.
+	 * @param array $field     Field parameters.
+	 * @param array $args      Arguments of {@see rwmb_meta()} helper.
 	 *
 	 * @return mixed
 	 */
-	public static function raw_meta( $post_id, $field ) {
+	public static function raw_meta( $object_id, $field, $args = array() ) {
 		if ( empty( $field['id'] ) ) {
 			return '';
 		}
 
-		$meta = get_the_terms( $post_id, $field['taxonomy'] );
-
-		if ( ! is_array( $meta ) || empty( $meta ) ) {
-			return $field['multiple'] ? array() : '';
-		}
-
+		$meta = wp_get_object_terms( $object_id, $field['taxonomy'] );
 		$meta = wp_list_pluck( $meta, 'term_id' );
 
 		return $field['multiple'] ? $meta : reset( $meta );
@@ -133,7 +135,7 @@ class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field {
 	 * @return array List of post term objects.
 	 */
 	public static function get_value( $field, $args = array(), $post_id = null ) {
-		$value = get_the_terms( $post_id, $field['taxonomy'] );
+		$value = wp_get_object_terms( $post_id, $field['taxonomy'] );
 
 		// Get single value if necessary.
 		if ( ! $field['clone'] && ! $field['multiple'] && is_array( $value ) ) {

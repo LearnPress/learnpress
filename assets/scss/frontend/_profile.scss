@@ -1,0 +1,528 @@
+#learn-press-user-profile {
+    position: relative;
+    //&:before {
+    //    position: absolute;
+    //    content: '';
+    //    width: 200px;
+    //    top: 0;
+    //    bottom: 0;
+    //    background: #f5f5f5;
+    //}
+
+    &:after {
+        @include clear-fix();
+    }
+}
+
+#learn-press-profile-header {
+    height: 100px;
+    background: #f0defb;
+    position: relative;
+    z-index: 100;
+    .lp-profile-avatar {
+        position: absolute;
+        bottom: -10px;
+        left: 10px;
+        img {
+            border-radius: 0;
+        }
+    }
+}
+
+#learn-press-profile-nav {
+    float: left;
+    min-width: 200px;
+    padding-top: 40px;
+    background: #f5f5f5;
+    /*margin-bottom: -20000px;
+    padding-bottom: 20000px;*/
+    &:before{
+        content: '';
+        width: 200px;
+        background: #F5F5F5;
+        top: 0;
+        bottom: 0;
+        position: absolute;
+    }
+    .tabs {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        > li {
+            margin-bottom: 0;
+            position: relative;
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 8px 0;
+                display: none;
+                li {
+                    a {
+                        padding-left: 20px;
+
+                    }
+                    &.active {
+                        a {
+                            color: #FFF;
+                        }
+                    }
+                    &:hover {
+                        a {
+                            background: transparent;
+                            color: #FFF;
+                        }
+                    }
+                }
+            }
+            a {
+                display: block;
+                text-decoration: none;
+                padding: 5px 10px;
+                border: none;
+                box-shadow: none;
+                outline: none;
+                &:hover {
+                    background: #FFF;
+                }
+            }
+            &.active {
+                ul {
+                    background: #EAEAEA;
+                    display: block;
+                }
+                > a {
+                    background: #D9D9D9;
+                }
+            }
+            &:hover:not(.active) {
+                > a {
+                    background: #D0D0D0;
+                    color: #FFF;
+                }
+                ul {
+                    background: #EAEAEA;
+                    display: block;
+                    position: absolute;
+                    width: 200px;
+                    top: 0;
+                    margin: 0;
+                    padding: 0;
+                    left: 100%;
+                    z-index: 100;
+                }
+            }
+        }
+    }
+
+}
+
+#learn-press-profile-content {
+    float: right;
+    width: calc(100% - 230px);
+    margin-top: 30px;
+    overflow: hidden;
+    .lp-sections {
+        list-style: none;
+        overflow: hidden;
+        li {
+            float: left;
+            a {
+                text-decoration: none;
+                display: block;
+                padding: 3px 5px;
+                border: none;
+                box-shadow: none;
+            }
+            &.active {
+                a {
+                    border-bottom: 2px solid #DDD;
+                }
+            }
+        }
+    }
+}
+
+#learn-press-profile-footer {
+    clear: both;
+    background: #FFF;
+    z-index: 10;
+    position: relative;
+}
+
+.lp-user-profile {
+    .profile-name {
+        display: block;
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+    }
+}
+
+.profile-list-table {
+    td {
+        &.column-actions {
+            white-space: nowrap;
+        }
+    ;
+    }
+    .result-percent {
+        font-size: 12px;
+        font-weight: bold;
+        min-width: 40px;
+        display: inline-block;
+    }
+}
+
+.profile-list-courses,
+.profile-list-quizzes {
+    .column-course {
+
+    }
+    .column-passing-grade,
+    .column-time-interval,
+    .column-date,
+    .column-status {
+        width: 150px;
+    }
+}
+
+.profile-recover-order {
+    padding: 20px;
+    border: 1px solid #DDD;
+    @include border-radius(4px);
+    p {
+        margin-bottom: 10px;
+    }
+    input[name="order-key"] {
+        width: 250px;
+        display: inline-block;
+    }
+}
+
+.order-recover {
+    input[name="order-key"], button {
+        vertical-align: middle;
+    }
+}
+
+.column-order-action {
+    a {
+        display: inline-block;
+        margin-right: 5px;
+    }
+}
+
+.lp-tab-sections {
+    list-style: none;
+    margin: 0 0 20px 0;
+    padding: 0;
+    background: #eaeaea;
+    .section-tab {
+        float: left;
+        list-style: none;
+        a, span {
+            display: inline-block;
+            padding: 8px 10px;
+            line-height: 1;
+            box-shadow: none;
+        }
+        &.active {
+            span {
+                border-bottom: 2px solid #00adff;
+                padding-bottom: 6px;
+            }
+        }
+    }
+    &:after {
+        @include clear-fix();
+    }
+}
+
+.profile-heading {
+    font-size: 18px;
+}
+
+.lp-sub-menu {
+    list-style: none;
+    margin: 0 0 10px 0;
+    li {
+        display: inline-block;
+        a, span {
+            display: inline-block;
+            margin: 0 10px 0 0;
+        }
+    }
+}
+
+.learn-press-nav-items {
+    .learn-press-pagination {
+        float: right;
+    }
+
+    &:after {
+        @include clear-fix();
+    }
+}
+
+.lp-avatar-preview {
+    position: relative;
+    float: left;
+    background-color: #DDD;
+    margin-bottom: 20px;
+    overflow: hidden;
+
+    .profile-picture {
+        float: left;
+        margin-right: -100%;
+        width: 100%;
+        margin-top: -25%;
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+        }
+        &.profile-avatar-hidden {
+            display: none;
+        }
+    }
+    .lp-avatar-preview-actions {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        margin-top: -14px;
+        text-align: center;
+        a {
+            text-decoration: none;
+            font-size: 12px;
+            background: #FFF;
+            display: inline-block;
+            box-shadow: none;
+            padding: 5px 10px;
+        }
+    }
+    .lp-avatar-upload-progress {
+        position: absolute;
+        height: 10px;
+        background: #FFF;
+        top: 50%;
+        margin-top: -5px;
+        left: 10px;
+        right: 10px;
+        display: none;
+        .lp-avatar-upload-progress-value {
+            width: 0;
+            height: 10px;
+            background: #563d7c;
+        }
+    }
+    .lp-avatar-upload-error {
+        display: none;
+    }
+    .lp-avatar-preview-actions {
+        display: none;
+    }
+    &:hover {
+        .lp-avatar-preview-actions {
+            display: block;
+        }
+    }
+    &.uploading, &.upload-error {
+        .lp-avatar-preview-actions {
+            display: none;
+        }
+        .lp-avatar-upload-progress {
+            display: block;
+        }
+        &:before {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #FFF;
+            opacity: 0.4;
+            content: '';
+        }
+    }
+    &.upload-error {
+        .lp-avatar-upload-error {
+            display: block;
+        }
+    }
+    &.croping {
+        .lp-avatar-preview-actions {
+            display: none;
+        }
+        .lp-avatar-crop-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            img {
+                max-width: inherit;
+                cursor: move;
+            }
+            .lp-crop-controls {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 30px;
+                .lp-zoom {
+                    position: absolute;
+                    height: 10px;
+                    bottom: 10px;
+                    left: 10px;
+                    right: 30px;
+                    background: #563d7a;
+                    .ui-slider {
+                        position: absolute;
+                        left: 0;
+                        right: 10px;
+                        height: 100%;
+                        .ui-slider-handle {
+                            display: inline-block;
+                            width: 10px;
+                            height: 14px;
+                            background: #FFF;
+                            position: absolute;
+                            margin-top: -2px;
+                            border: 1px solid #563d7a;
+                            box-shadow: none;
+                            outline: none;
+                            cursor: ew-resize;
+                        }
+                    }
+                }
+                .lp-cancel-upload {
+                    text-decoration: none;
+                    position: absolute;
+                    bottom: 5px;
+                    right: 5px;
+                    box-shadow: none;
+                }
+                &:before {
+                    position: absolute;
+                    height: 30px;
+                    width: 100%;
+                    content: '';
+                    background: #FFF;
+                    opacity: 0.4;
+                }
+            }
+        }
+    }
+    &:after {
+        @include clear-fix();
+    }
+}
+
+#profile-mobile-menu {
+    display: none;
+}
+
+@media screen and (max-width: 480px) {
+    #learn-press-user-profile {
+        &:before {
+            display: none;
+        }
+    }
+    #learn-press-profile-header {
+
+    }
+    #learn-press-profile-nav {
+        height: 40px;
+        z-index: 90;
+        /* position: relative; */
+        padding-top: 0;
+        min-width: 40px;
+        width: 40px;
+        float: right;
+        margin-bottom: 20px;
+        #profile-mobile-menu {
+            display: block;
+            width: 40px;
+            height: 40px;
+            float: right;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: none;
+        }
+        .learn-press-tabs {
+            right: 0;
+            width: 100%;
+            display: none;
+            background: #03A9F4;
+            color: #FFF;
+            position: absolute;
+            margin-top: 40px;
+            li {
+                a {
+                    color: #FFF;
+                }
+                &:hover:not(.active) {
+                    > a {
+                        background: #D0D0D0;
+                        color: #FFF;
+                    }
+                    ul {
+                        position: relative;
+                        left: 0;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+        &:hover {
+            #profile-mobile-menu {
+                background: #03a8f4;
+                /* border: 1px solid #DDD; */
+                color: #FFF;
+            }
+            .learn-press-tabs {
+                display: block;
+            }
+        }
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 40px;
+            height: 40px;
+            background: #F5F5F5;
+        }
+
+        .tabs {
+
+            > li.active, > li:hover {
+
+                ul, a {
+                    background: #0191d4;
+                }
+            }
+        }
+    }
+    #learn-press-profile-content {
+        float: none;
+        width: 100%;
+    }
+}
+
+#learn-press-user-profile {
+    .learn-press-form-login,
+    .learn-press-form-register {
+        border: 1px solid #DDD;
+        padding: 20px 20px 0 20px;
+        margin-bottom: 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #learn-press-user-profile,
+    #learn-press-user-profile.enable-login-register {
+
+    }
+}
+

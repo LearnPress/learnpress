@@ -1,0 +1,16 @@
+.learn-press-message {
+    &.fixed {
+        position: fixed;
+        top: 32px;
+        left: 0;
+        right: 0;
+        background: rgba(0, 173, 255, 0.6);
+        text-align: center;
+        z-index: 100;
+        color: #FFF;
+        padding: 10px;
+        &[data-delay-in] {
+            display: none;
+        }
+    }
+}

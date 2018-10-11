@@ -10,6 +10,13 @@
  */
 class RWMB_Fieldset_Text_Field extends RWMB_Text_Field {
 	/**
+	 * Enqueue field scripts and styles.
+	 */
+	public static function admin_enqueue_scripts() {
+		wp_enqueue_style( 'rwmb-fieldset-text', RWMB_CSS_URL . 'fieldset-text.css', '', RWMB_VER );
+	}
+
+	/**
 	 * Get field HTML.
 	 *
 	 * @param mixed $meta  Meta value.
@@ -19,7 +26,7 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field {
 	 */
 	public static function html( $meta, $field ) {
 		$html = array();
-		$tpl  = '<label>%s %s</label>';
+		$tpl  = '<p><label>%s</label> %s</p>';
 
 		foreach ( $field['options'] as $key => $label ) {
 			$value                       = isset( $meta[ $key ] ) ? $meta[ $key ] : '';
@@ -36,6 +43,7 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field {
 	 * Do not show field description.
 	 *
 	 * @param array $field Field parameters.
+	 *
 	 * @return string
 	 */
 	public static function input_description( $field ) {
@@ -46,6 +54,7 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field {
 	 * Do not show field description.
 	 *
 	 * @param array $field Field parameters.
+	 *
 	 * @return string
 	 */
 	public static function label_description( $field ) {
@@ -70,22 +79,25 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field {
 	/**
 	 * Format value for the helper functions.
 	 *
-	 * @param array        $field Field parameters.
-	 * @param string|array $value Meta value.
+	 * @param array        $field   Field parameters.
+	 * @param string|array $value   The field meta value.
+	 * @param array        $args    Additional arguments. Rarely used. See specific fields for details.
+	 * @param int|null     $post_id Post ID. null for current post. Optional.
+	 *
 	 * @return string
 	 */
-	public static function format_value( $field, $value ) {
+	public static function format_value( $field, $value, $args, $post_id ) {
 		$output = '<table><thead><tr>';
 		foreach ( $field['options'] as $label ) {
 			$output .= "<th>$label</th>";
 		}
-		$output .= '<tr>';
+		$output .= '</tr></thead></tbody>';
 
 		if ( ! $field['clone'] ) {
-			$output .= self::format_single_value( $field, $value );
+			$output .= self::format_single_value( $field, $value, $args, $post_id );
 		} else {
 			foreach ( $value as $subvalue ) {
-				$output .= self::format_single_value( $field, $subvalue );
+				$output .= self::format_single_value( $field, $subvalue, $args, $post_id );
 			}
 		}
 		$output .= '</tbody></table>';
@@ -93,13 +105,16 @@ class RWMB_Fieldset_Text_Field extends RWMB_Text_Field {
 	}
 
 	/**
-	 * Format a single value for the helper functions.
+	 * Format a single value for the helper functions. Sub-fields should overwrite this method if necessary.
 	 *
-	 * @param array $field Field parameters.
-	 * @param array $value The value.
+	 * @param array    $field   Field parameters.
+	 * @param array    $value   The value.
+	 * @param array    $args    Additional arguments. Rarely used. See specific fields for details.
+	 * @param int|null $post_id Post ID. null for current post. Optional.
+	 *
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value ) {
+	public static function format_single_value( $field, $value, $args, $post_id ) {
 		$output = '<tr>';
 		foreach ( $value as $subvalue ) {
 			$output .= "<td>$subvalue</td>";

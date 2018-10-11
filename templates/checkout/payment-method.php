@@ -1,33 +1,38 @@
 <?php
 /**
- * Checkout Payment Section
+ * Template for displaying single method payment in checkout form.
  *
- * @author        ThimPress
- * @package       LearnPress/Templates
- * @version       1.0
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/payment-method.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
+if ( ! isset( $gateway ) || ! $gateway->is_display() ) {
+	return;
 }
+
 ?>
+<li class="lp-payment-method lp-payment-method-<?php echo $gateway->id; ?><?php echo $gateway->is_selected ? ' selected' : ''; ?>"
+    id="learn-press-payment-method-<?php echo $gateway->id; ?>">
+    <label for="payment_method_<?php echo $gateway->id; ?>">
+        <input type="radio" class="input-radio" name="payment_method"
+               id="payment_method_<?php echo $gateway->id; ?>"
+               value="<?php echo esc_attr( $gateway->id ); ?>" <?php checked( $gateway->is_selected, true ); ?>
+               data-order_button_text="<?php echo esc_attr( $gateway->order_button_text ); ?>"/>
+		<?php echo $gateway->get_title(); ?>
+		<?php echo $gateway->get_icon(); ?>
+    </label>
 
-<?php if ( $gateway instanceof LP_Gateway_Abstract ) : ?>
-
-	<?php if ( apply_filters( 'learn_press_display_payment_method', true, $gateway->id ) ) { ?>
-		<li>
-			<label>
-				<input id="payment_method_<?php echo $gateway->id; ?>" type="radio" class="input-radio" <?php checked( $selected, $gateway->id, true ); ?> name="payment_method" value="<?php echo esc_attr( $gateway->id ); ?>" <?php checked( LP()->session->get( 'chosen_payment_method' ) == $gateway->id, true ); ?> data-order_button_text="<?php echo esc_attr( $gateway->order_button_text ); ?>" />
-				<?php echo( $gateway->get_title() ); ?>
-			</label>
-			<?php if ( ( $payment_form = $gateway->get_payment_form() ) || ( $payment_form = $gateway->get_description() ) ) { ?>
-				<div class="payment-method-form payment_method_<?php echo $gateway->id; ?>"><?php echo $payment_form; ?></div>
-			<?php } ?>
-		</li>
+	<?php if ( ( $payment_form = $gateway->get_payment_form() ) || ( $payment_form = $gateway->get_description() ) ) { ?>
+        <div class="payment-method-form payment_method_<?php echo $gateway->id; ?>">
+			<?php echo $payment_form; ?>
+        </div>
 	<?php } ?>
-
-<?php else: ?>
-
-	<?php do_action( 'learn_press_display_payment_method_form', $gateway ); ?>
-
-<?php endif; ?>
+</li>

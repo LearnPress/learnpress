@@ -1,6 +1,6 @@
 <?php
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -59,9 +59,6 @@ class LP_Breadcrumb {
 	 */
 	public function generate() {
 		$conditionals = array(
-			'is_home',
-			'is_404',
-			'is_attachment',
 			'is_single',
 			'learn_press_is_course_category',
 			'learn_press_is_course_tag',
@@ -72,15 +69,19 @@ class LP_Breadcrumb {
 			'is_tag',
 			'is_author',
 			'is_date',
-			'is_tax'
+			'is_tax',
+			'is_home',
+			'is_404',
+			'is_attachment',
 		);
 
-		if ( ( !is_front_page() && !( is_post_type_archive() && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) ) || is_paged() ) {
+		if ( ( ! is_front_page() && ! ( is_post_type_archive() && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) ) || is_paged() ) {
 			foreach ( $conditionals as $conditional ) {
+
 				if ( is_callable( $conditional ) && call_user_func( $conditional ) ) {
 					$conditional = preg_replace( '/^learn_press_/', '', $conditional );
 					$conditional = preg_replace( '/^is_/', '', $conditional );
-					if( is_callable( array( $this, 'add_crumbs_' . $conditional ) ) ) {
+					if ( is_callable( array( $this, 'add_crumbs_' . $conditional ) ) ) {
 						call_user_func( array( $this, 'add_crumbs_' . $conditional ) );
 					}
 					break;
@@ -100,7 +101,6 @@ class LP_Breadcrumb {
 	 * Prepend the courses page to courses breadcrumbs
 	 */
 	private function prepend_courses_page() {
-		$permalinks      = get_option( 'learn_press_permalinks' );
 		$courses_page_id = learn_press_get_page_id( 'courses' );
 		$courses_page    = get_post( $courses_page_id );
 
@@ -141,14 +141,18 @@ class LP_Breadcrumb {
 	 * @param string $permalink
 	 */
 	private function add_crumbs_single( $post_id = 0, $permalink = '' ) {
-		if ( !$post_id ) {
+		if ( ! $post_id ) {
 			global $post;
 		} else {
 			$post = get_post( $post_id );
 		}
-		if ( 'lp_course' === get_post_type( $post ) ) {
+		if ( LP_COURSE_CPT === get_post_type( $post ) ) {
 			$this->prepend_courses_page();
-			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array( 'orderby' => 'parent', 'order' => 'DESC' ) ) ) {
+			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array(
+				'orderby' => 'parent',
+				'order'   => 'DESC'
+			) )
+			) {
 				$main_term = apply_filters( 'learn_press_breadcrumb_main_term', $terms[0], $terms );
 				$this->term_ancestors( $main_term->term_id, 'course_category' );
 				$this->add_crumb( $main_term->name, get_term_link( $main_term ) );
@@ -195,21 +199,25 @@ class LP_Breadcrumb {
 	}
 
 	/**
-	 * Product category trail
+	 * Course category trail
 	 */
 	private function add_crumbs_course_category() {
-		$current_term = $GLOBALS['wp_query']->get_queried_object();
+		global $wp_query;
+		$current_term = $this->get_queried_object();
 
-		$this->prepend_courses_page();
-		$this->term_ancestors( $current_term->term_id, 'course_category' );
-		$this->add_crumb( $current_term->name );
+		if ( isset( $current_term->term_id ) ) {
+			$this->prepend_courses_page();
+			$this->term_ancestors( $current_term->term_id, 'course_category' );
+			$this->add_crumb( $current_term->name );
+		}
 	}
 
 	/**
 	 * Course tag trail
 	 */
 	private function add_crumbs_course_tag() {
-		$current_term = $GLOBALS['wp_query']->get_queried_object();
+		global $wp_query;
+		$current_term = $this->get_queried_object();
 
 		$this->prepend_courses_page();
 		$this->add_crumb( sprintf( __( 'Courses tagged &ldquo;%s&rdquo;', 'learnpress' ), $current_term->name ) );
@@ -219,18 +227,20 @@ class LP_Breadcrumb {
 	 * Courses archive breadcrumb
 	 */
 	private function add_crumbs_courses() {
-		if ( get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
+		$course_page_id = learn_press_get_page_id( 'courses' );
+		if ( get_option( 'page_on_front' ) == $course_page_id ) {
 			return;
 		}
 
-		$_name = learn_press_get_page_id( 'courses' ) ? get_the_title( learn_press_get_page_id( 'courses' ) ) : '';
+		$_name = $course_page_id ? get_the_title( $course_page_id ) : '';
 
-		if ( !$_name ) {
-			$course_post_type = get_post_type_object( 'course' );
-			$_name             = $course_post_type->labels->singular_name;
+		if ( ! $_name ) {
+			if ( $course_post_type = get_post_type_object( LP_COURSE_CPT ) ) {
+				$_name = $course_post_type->labels->singular_name;
+			}
 		}
 
-		$this->add_crumb( $_name, get_post_type_archive_link( 'lp_course' ) );
+		$this->add_crumb( $_name, get_post_type_archive_link( LP_COURSE_CPT ) );
 	}
 
 	/**
@@ -248,7 +258,8 @@ class LP_Breadcrumb {
 	 * Category trail
 	 */
 	private function add_crumbs_category() {
-		$this_category = get_category( $GLOBALS['wp_query']->get_queried_object() );
+		global $wp_query;
+		$this_category = get_category( $this->get_queried_object() );
 
 		if ( 0 != $this_category->parent ) {
 			$this->term_ancestors( $this_category->parent, 'post_category' );
@@ -262,7 +273,8 @@ class LP_Breadcrumb {
 	 * Tag trail
 	 */
 	private function add_crumbs_tag() {
-		$queried_object = $GLOBALS['wp_query']->get_queried_object();
+		global $wp_query;
+		$queried_object = $this->get_queried_object();
 		$this->add_crumb( sprintf( __( 'Posts tagged &ldquo;%s&rdquo;', 'learnpress' ), single_tag_title( '', false ) ), get_tag_link( $queried_object->term_id ) );
 	}
 
@@ -285,7 +297,8 @@ class LP_Breadcrumb {
 	 * Add crumbs for date based archives
 	 */
 	private function add_crumbs_tax() {
-		$this_term = $GLOBALS['wp_query']->get_queried_object();
+		global $wp_query;
+		$this_term = $this->get_queried_object();
 		$taxonomy  = get_taxonomy( $this_term->taxonomy );
 
 		$this->add_crumb( $taxonomy->labels->name );
@@ -296,6 +309,40 @@ class LP_Breadcrumb {
 		}
 
 		$this->add_crumb( single_term_title( '', false ), get_term_link( $this_term->term_id, $this_term->taxonomy ) );
+	}
+
+	/**
+	 * Get default queried object by WP.
+	 * Fixed issue when viewing course category the text in breadcrumb is blank.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return object
+	 */
+	private function get_queried_object() {
+		static $default_queried_object;
+
+		if ( $default_queried_object ) {
+			return $default_queried_object;
+		}
+
+		global $wp_query;
+
+		// Store the current queried object
+		$queried_object    = $wp_query->queried_object;
+		$queried_object_id = $wp_query->queried_object_id;
+
+		// Clear the current queried object to ensure we get the default.
+		$wp_query->queried_object    = null;
+		$wp_query->queried_object_id = null;
+
+		$default_queried_object = $wp_query->get_queried_object();
+
+		// Restore current queried object
+		$wp_query->queried_object    = $queried_object;
+		$wp_query->queried_object_id = $queried_object_id;
+
+		return $default_queried_object;
 	}
 
 	/**
@@ -320,7 +367,7 @@ class LP_Breadcrumb {
 		foreach ( $ancestors as $ancestor ) {
 			$ancestor = get_term( $ancestor, $taxonomy );
 
-			if ( !is_wp_error( $ancestor ) && $ancestor ) {
+			if ( ! is_wp_error( $ancestor ) && $ancestor ) {
 				$this->add_crumb( $ancestor->name, get_term_link( $ancestor ) );
 			}
 		}

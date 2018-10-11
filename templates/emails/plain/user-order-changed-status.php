@@ -1,3 +1,4 @@
+
 == {{email_heading}} ==
 
 {{order_items_table}}

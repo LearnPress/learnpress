@@ -1,120 +1,88 @@
 <?php
-
 /**
- * Class LP_Email_Enrolled_Course
+ * Class LP_Email_Become_An_Instructor
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
-class LP_Email_Become_An_Instructor extends LP_Email {
-	public function __construct() {
-		$this->id    = 'become_an_instructor';
-		$this->title = __( 'Become an instructor', 'learnpress' );
+if ( ! class_exists( 'LP_Email_Become_An_Instructor' ) ) {
 
-		$this->template_html  = 'emails/enrolled-course.php';
-		$this->template_plain = 'emails/plain/enrolled-course.php';
+	/**
+	 * Class LP_Email_Become_An_Instructor
+	 */
+	class LP_Email_Become_An_Instructor extends LP_Email {
 
-		$this->default_subject = __( '[{site_title}] You have enrolled course ({course_name})', 'learnpress' );
-		$this->default_heading = __( 'Become an instructor', 'learnpress' );
+		/**
+		 * LP_Email_Become_An_Instructor constructor.
+		 */
+		public function __construct() {
+			$this->id          = 'become-an-instructor';
+			$this->title       = __( 'Request', 'learnpress' );
+			$this->description = __( 'Become an instructor email.', 'learnpress' );
 
-		$this->email_text_message_description = sprintf( '%s [course_id], [course_title], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
+			$this->default_subject = __( '[{{site_title}}] Request to become an instructor', 'learnpress' );
+			$this->default_heading = __( 'Become an instructor', 'learnpress' );
 
-		$this->support_variables = array(
-			'{{site_url}}',
-			'{{site_title}}',
-			'{{login_url}}',
-			'{{email_heading}}',
-			'{{user_email}}',
-			'{{user_nicename}}'
-		);
-		parent::__construct();
-	}
+			add_action( 'learn-press/become-a-teacher-sent', array( $this, 'trigger' ) );
 
-	public function admin_options( $settings_class ) {
-		$view = learn_press_get_admin_view( 'settings/emails/become-a-teacher.php' );
-		include_once $view;
-	}
+			parent::__construct();
 
-	public function trigger( $user ) {
-		if ( !$this->enable ) {
-			return;
+			$this->support_variables = array_merge( $this->general_variables, array(
+				'{{request_email}}',
+				'{{request_phone}}',
+				'{{request_message}}',
+				'{{admin_user_manager}}',
+				'{{accept_url}}',
+				'{{deny_url}}'
+			) );
 		}
 
-		$user            = get_user_by( 'id', $user );
-		$this->recipient = $user->user_email;
-		$this->object    = $this->get_common_template_data(
-			$this->email_format == 'plain_text' ? 'plain' : 'html',
-			array(
-				'site_url'      => $user->id,
-				'site_title'    => learn_press_get_profile_display_name( get_user_by( 'id', $user ) ),
-				'login_url'     => wp_login_url(),
-				'user_nicename' => $user->user_nincename,
-				'user_email'    => $user->user_email,
-				'email_heading' => $this->get_heading(),
-				'footer_text'   => $this->get_footer_text(),
-				'site_title'    => $this->get_blogname(),
-				'plain_text'    => $this->email_format == 'plain_text',
-			)
-		);
+		/**
+		 * Trigger email.
+		 *
+		 * @param string $email
+		 *
+		 * @return bool
+		 */
+		public function trigger( $args ) {
+			if ( ! $this->enable ) {
+				return false;
+			}
 
-		$this->variables = $this->data_to_variables( $this->object );
+			$email   = $args['bat_email'];
+			$phone   = $args['bat_phone'];
+			$message = $args['bat_message'];
 
-		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
-		return $return;
+			if ( ! $user = get_user_by( 'email', $email ) ) {
+				return false;
+			}
+
+			LP_Emails::instance()->set_current( $this->id );
+
+			$this->recipient = $this->_get_admin_email();// get_option( 'admin_email' );
+
+			$this->get_object( null, array(
+				'request_email'      => $email,
+				'request_phone'      => $phone,
+				'request_message'    => $message ? $message : '',
+				'admin_user_manager' => admin_url( 'users.php?lp-action=pending-request' ),
+				'accept_url'         => admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ),
+				'deny_url'           => admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID )
+			) );
+			$this->get_variable();
+
+			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
+			return $return;
+		}
 	}
-
-	/*public function get_content_html() {
-		ob_start();
-		learn_press_get_template( $this->template_html, array(
-			'email_heading' => $this->get_heading(),
-			'footer_text'   => $this->get_footer_text(),
-			'site_title'    => $this->get_blogname(),
-			'course_id'     => $this->object['course'],
-			'login_url'     => learn_press_get_login_url(),
-			'plain_text'    => false
-		) );
-		return ob_get_clean();
-	}
-
-	public function get_content_plain() {
-		ob_start();
-		learn_press_get_template( $this->template_plain, array(
-			'email_heading' => $this->get_heading(),
-			'footer_text'   => $this->get_footer_text(),
-			'site_title'    => $this->get_blogname(),
-			'course_id'     => $this->object['course'],
-			'login_url'     => learn_press_get_login_url(),
-			'plain_text'    => true
-		) );
-		return ob_get_clean();
-	}
-
-        public function _prepare_content_text_message() {
-            $course = isset( $this->object['course'] ) ? $this->object['course'] : null;
-            $user = isset( $this->object['user'] ) ? $this->object['user'] : null;
-            if ( $course && $user ) {
-                $this->text_search = array(
-                    "/\{\{course\_id\}\}/",
-                    "/\{\{course\_title\}\}/",
-                    "/\{\{course\_url\}\}/",
-                    "/\{\{user\_email\}\}/",
-                    "/\{\{user\_name\}\}/",
-                    "/\{\{user\_profile\_url\}\}/",
-                );
-                $this->text_replace = array(
-                    $course->id,
-                    get_the_title( $course->id ),
-                    get_the_permalink( $course->id ),
-                    $user->user_email,
-                    $user->user_nicename,
-                    learn_press_user_profile_link( $user->id )
-                );
-            }
-        }*/
 }
 
 return new LP_Email_Become_An_Instructor();

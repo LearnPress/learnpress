@@ -1,0 +1,65 @@
+#learn-press-statistic {
+  margin-top: 20px; }
+
+.learn-press-chart {
+  position: relative; }
+
+.learn-press-chart canvas {
+  height: 70vh;
+  width: 100vw; }
+
+.chart-buttons form {
+  display: inline-block;
+  vertical-align: top; }
+
+.chart-buttons form input[type="text"] {
+  width: 105px;
+  font-size: 14px;
+  vertical-align: top;
+  margin: 0;
+  text-align: center;
+  font-weight: bold;
+  padding: 4px; }
+
+.chart-buttons form span {
+  display: inline-block;
+  vertical-align: middle;
+  font-weight: bold;
+  padding: 5px; }
+
+.learn-press-chart.loading:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: #FFF;
+  opacity: 0.5; }
+
+.chart-description li {
+  display: inline-block;
+  margin-right: 15px; }
+
+.chart-description li:before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  vertical-align: middle;
+  margin-right: 5px; }
+
+.chart-description li span {
+  display: inline-block;
+  vertical-align: middle;
+  font-weight: bold; }
+
+.chart-description li.all:before {
+  background: #2FA7FF; }
+
+.chart-description li.instructors:before {
+  background: #EAC79B; }
+
+.chart-description li.students:before {
+  background: #D4D0CB; }

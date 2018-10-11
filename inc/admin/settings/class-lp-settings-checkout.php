@@ -8,11 +8,11 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class LP_Settings_Checkout extends LP_Settings_Base {
+class LP_Settings_Checkout extends LP_Abstract_Settings_Page {
 
 	/**
 	 * Constructor
@@ -36,6 +36,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 				'title' => __( 'General', 'learnpress' )
 			)
 		);
+
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
 
@@ -44,20 +45,26 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 		include_once $view;
 	}
 
-	public function get_settings() {
+	/**
+	 * @param string $section
+	 * @param string $tab
+	 *
+	 * @return array
+	 */
+	public function get_settings( $section = '', $tab = '' ) {
 		return apply_filters(
 			'learn_press_checkout_settings',
 			array(
 				array(
 					'title'   => __( 'Auto enroll', 'learnpress' ),
 					'desc'    => __( 'Auto enroll a user after they buy a course.', 'learnpress' ),
-					'id'      => $this->get_field_name( 'auto_enroll' ),
+					'id'      => 'auto_enroll',
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
 					'title'   => __( 'Checkout page', 'learnpress' ),
-					'id'      => $this->get_field_name( 'checkout_page_id' ),
+					'id'      => 'checkout_page_id',
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
@@ -67,7 +74,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 				),
 				array(
 					'title'   => __( 'Order received', 'learnpress' ),
-					'id'      => $this->get_field_name( 'checkout_endpoints[lp_order_received]' ),
+					'id'      => 'checkout_endpoints[lp_order_received]',
 					'default' => 'lp-order-received',
 					'type'    => 'text'
 				),

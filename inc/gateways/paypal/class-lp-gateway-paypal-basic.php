@@ -1,11 +1,12 @@
 <?php
+die(__FILE__);
 class LP_Gateway_Paypal_Basic extends LP_Gateway_Paypal{
 	public function get_request_url( $order_id ) {
 
 		$user = learn_press_get_current_user();
 
 		$nonce = wp_create_nonce( 'learn-press-paypal-nonce' );
-		$order = LP_Order::instance( $order_id );
+		$order = new LP_Order( $order_id );
 		$custom = array( 'order_id' => $order_id, 'order_key' => $order->order_key );
 
 		$query = array(
