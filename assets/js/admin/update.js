@@ -186,10 +186,11 @@
 
     function init() {
         window.lpGlobalSettings = window.lpGlobalSettings || {};
-        var Updater = new Vue(UpdaterSettings);
 
-        initSyncs();
-        return;
+        if($('#learn-press-updater').length) {
+            var Updater = new Vue(UpdaterSettings);
+            initSyncs();
+        }
         var i18n = window.lpUpdateSettings || {};
 
         var getUpdatePackages = function (callback) {

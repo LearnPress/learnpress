@@ -2410,7 +2410,7 @@ function learn_press_search_template( $template ) {
  * @return mixed
  */
 function learn_press_auto_enroll_user_to_courses( $order_id ) {
-	if ( LP()->settings->get( 'auto_enroll' ) == 'no' ) {
+	if ( LP()->settings->get( 'auto_enroll', 'yes' ) == 'no' ) {
 		return false;
 	}
 

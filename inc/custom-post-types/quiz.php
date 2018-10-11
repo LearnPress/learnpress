@@ -434,12 +434,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
-			global $wpdb;
-//			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || $this->_get_search() ) {
-//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
-//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
-//				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
-//			}
 
 			return $join;
 		}
@@ -457,18 +451,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			global $wpdb;
 
-//			if ( $course_id = $this->_filter_course() ) {
-//				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
-//			}
-
-//			if ( isset( $_GET['s'] ) ) {
-//				$s     = $_GET['s'];
-//				$where = preg_replace(
-//					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
-//					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
-//				);
-//			}
-
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$where .= $wpdb->prepare( "
                     AND {$wpdb->posts}.ID NOT IN(
@@ -480,7 +462,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
                 ", LP_QUIZ_CPT );
 			}
 
-
 			return $where;
 		}
 
@@ -490,20 +471,25 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_orderby( $order_by_statement ) {
+			global $wpdb;
+
 			if ( ! $this->_is_archive() ) {
 				return $order_by_statement;
 			}
-			global $wpdb;
-			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
-				switch ( $_GET['orderby'] ) {
+
+			$orderby = $this->_get_orderby();
+			$order = LP_Request::get('order') === 'desc' ? 'desc' : 'asc';
+
+			if ( $orderby ) {
+				switch ( $orderby ) {
 					case 'course-name':
-						$order_by_statement = "c.post_title {$_GET['order']}";
+						$order_by_statement = "c.post_title {$order}";
 						break;
 					case 'question-count':
-						$order_by_statement = "question_count {$_GET['order']}";
+						$order_by_statement = "question_count {$order}";
 						break;
 					default:
-						$order_by_statement = "{$wpdb->posts}.post_title {$_GET['order']}";
+						$order_by_statement = "{$wpdb->posts}.post_title {$order}";
 				}
 			}
 
@@ -540,20 +526,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		private function _filter_course() {
 			return ! empty( $_REQUEST['course'] ) ? absint( $_REQUEST['course'] ) : false;
-		}
-
-		/**
-		 * @return string
-		 */
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
-
-		/**
-		 * @return bool
-		 */
-		private function _get_search() {
-			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
 		/**

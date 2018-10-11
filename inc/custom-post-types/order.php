@@ -346,13 +346,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
-		 * @return string
-		 */
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
-
-		/**
 		 * Process when saving order with multi users
 		 *
 		 * @param $post_id

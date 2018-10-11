@@ -220,7 +220,7 @@ class LP_User_Factory {
 					$user 		= learn_press_get_user($user_id);
 					$course_id 	= $item['item_id'];
 					$can_enroll 	= $user->can_enroll_course($course_id);
-					$auto_enroll 	= LP()->settings->get( 'auto_enroll' ) == 'yes';
+					$auto_enroll 	= LP()->settings->get( 'auto_enroll', 'yes' ) == 'yes';
 					if ( $new_status == 'completed' && $can_enroll && $auto_enroll) {
 						$args['status'] = 'enrolled';
 					}

@@ -411,14 +411,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			return true;
 		}
 
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
-
-		private function _get_search() {
-			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
-		}
-
 		/**
 		 * Admin scripts.
 		 */

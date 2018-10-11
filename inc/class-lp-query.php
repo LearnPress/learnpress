@@ -213,13 +213,12 @@ class LP_Query {
 			);
 		}
 
-		$this->rewrite_rules = $rules;
 		global $wp_rewrite;
 
 		/**
 		 * Polylang compatibility
 		 */
-		if ( function_exists( 'pll_languages_list' ) ) {
+		if ( function_exists( 'PLL' ) ) {
 			$pll           = PLL();
 			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
 
@@ -232,25 +231,28 @@ class LP_Query {
 			}
 
 		}
-
+		$new_rules = array();
 		foreach ( $rules as $k => $rule ) {
+			$new_rules[] = $rule;
+			call_user_func_array( 'add_rewrite_rule', $rule );
 
 			/**
 			 * Modify rewrite rule
 			 */
 			if ( isset( $pll_languages ) ) {
-				$rule[0] = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
-				$rule[1] = str_replace(
+
+				$rule[0]     = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
+				$rule[1]     = str_replace(
 					array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
 					array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
 					$rule[1]
 				);
+				$new_rules[] = $rule;
+				call_user_func_array( 'add_rewrite_rule', $rule );
 			}
-			$rules[ $k ] = $rule;
-			call_user_func_array( 'add_rewrite_rule', $rule );
 		}
 
-		$new_rules = md5( serialize( $rules ) );
+		$new_rules = md5( serialize( $new_rules ) );
 		$old_rules = get_transient( 'lp_rewrite_rules_hash' );
 
 		if ( $old_rules !== $new_rules ) {

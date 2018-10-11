@@ -56,7 +56,7 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 			)
 		);
 
-		if ( LP()->settings->get( 'auto_enroll' ) == 'yes' ) {
+		if ( LP()->settings->get( 'auto_enroll', 'yes' ) == 'yes' ) {
 			add_action( 'learn-press/order/status-completed', array( $this, 'auto_enroll_trigger' ), 10, 2 );
 		}
 

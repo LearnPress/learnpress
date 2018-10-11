@@ -230,15 +230,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-thumbnail-helper.php';
+			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
 			require_once 'inc/cache.php';
 
 			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';
-			//require_once 'inc/background-process/class-lp-background-emailer.php';
-			//require_once 'inc/background-process/class-lp-background-schedule-items.php';
-			//require_once 'inc/background-process/class-lp-background-clear-temp-users.php';
-			//require_once 'inc/background-process/class-lp-background-installer.php';
-			//require_once 'inc/background-process/class-lp-background-global.php';
 
 			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';
@@ -260,14 +256,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/lp-deprecated.php';
-			//require_once 'inc/class-lp-cache.php';
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/class-lp-autoloader.php';
 			require_once 'inc/class-lp-install.php';
 			require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';
 			require_once( 'inc/abstract-settings.php' );
-			//require_once( 'inc/class-lp-market-products.php' );
 
 			if ( is_admin() ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
