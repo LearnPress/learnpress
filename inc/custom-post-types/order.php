@@ -29,7 +29,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'transition_post_status', array( $this, 'restore_order' ), 10, 3 );
 
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
-			//add_action( 'add_meta_boxes', array( $this, 'post_new' ) );
 
 			$this
 				->add_map_method( 'before_delete', 'delete_order_data' )
@@ -130,21 +129,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return $where;
 			}
 
-			if ( isset( $_REQUEST['parent'] ) ) {
-				$where .= sprintf( " AND post_parent = %d ", absint( $_REQUEST['parent'] ) );
+			if ( $parent = LP_Request::get_int( 'parent' ) ) {
+				$where .= sprintf( " AND post_parent = %d ", $parent );
 			} else {
 				$where .= " AND post_parent = 0 ";
 			}
 
 			return $where;
 		}
-
-//		public function post_new() {
-//			global $post;
-//			if ( $post && $post->post_type == 'lp_order' && $post->post_status == 'auto-draft' && learn_press_get_request( 'multi-users' ) == 'yes' ) {
-//				update_post_meta( $post->ID, '_lp_multi_users', 'yes' );
-//			}
-//		}
 
 		public function enqueue_scripts() {
 			if ( get_post_type() != 'lp_order' ) {
@@ -178,8 +170,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					wp_trash_post( $child_order );
 				}
 			}
-
-			//return;
 
 			$user_curd  = new LP_User_CURD();
 			$order_data = array();
@@ -273,7 +263,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					continue;
 				}
 				$order_status = $order->get_order_status();
-				$last_status = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'enrolled';
+				$last_status  = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'enrolled';
 				$user_curd->update_user_item_status( $user_item_id, $last_status );
 				// Restore data
 				$user_curd->update_user_item_by_id(
@@ -309,96 +299,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
-		 * @return string
-		 */
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
-
-		/**
-		 * Process when saving order with multi users
-		 *
-		 * @param $post_id
-		 * @param $user_id
-		 */
-		private function _save_order_multi_users( $post_id, $user_id ) {
-			global $wpdb;
-			settype( $user_id, 'array' );
-
-			update_post_meta( $post_id, '_user_id', $user_id );
-
-//			return;
-//
-//			$sql = "
-//				SELECT meta_id, meta_value
-//				FROM {$wpdb->postmeta}
-//				WHERE post_id = %d
-//				AND meta_key = %s
-//			";
-//			$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
-//			/**
-//			 * A simpler way is remove all meta_key are _user_id and then
-//			 * add new user_id as new meta_key but this maybe make our database
-//			 * increase the auto-increment each time order is updated
-//			 * in case the user_id is not changed
-//			 */
-//			if ( $existed = $wpdb->get_results( $sql ) ) {
-//				$cases      = array();
-//				$edited     = array();
-//				$meta_ids   = array();
-//				$remove_ids = array( 0 );
-//				foreach ( $existed as $k => $r ) {
-//					if ( empty( $user_id[ $k ] ) ) {
-//						$remove_ids[] = $r->meta_id;
-//						continue;
-//					}
-//					$cases[]    = $wpdb->prepare( "WHEN meta_id = %d THEN %d", $r->meta_id, $user_id[ $k ] );
-//					$edited[]   = $user_id[ $k ];
-//					$meta_ids[] = $r->meta_id;
-//				}
-//				$sql = "
-//					UPDATE {$wpdb->postmeta}
-//					SET meta_value = CASE
-//					" . join( "\n", $cases ) . "
-//					ELSE meta_value
-//					END
-//					WHERE meta_id IN(" . join( ', ', $meta_ids ) . ")
-//					AND post_id = %d
-//					AND meta_key = %s
-//				";
-//				$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
-//				$wpdb->query( $sql );
-//				$user_id = array_diff( $user_id, $edited );
-//			}
-//			if ( $user_id ) {
-//				$values = array();
-//				foreach ( $user_id as $id ) {
-//					$values[] = sprintf( "(%d, '%s', %d)", $post_id, '_user_id', $id );
-//				}
-//				$sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
-//				$wpdb->query( $sql );
-//			}
-//			$sql        = "
-//				SELECT meta_id FROM {$wpdb->postmeta} WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
-//			";
-//			$sql        = $wpdb->prepare( $sql, $post_id, '_user_id' );
-//			$keep_users = $wpdb->get_col( $sql );
-//			if ( $keep_users ) {
-//				$sql = "
-//					DELETE
-//					FROM {$wpdb->postmeta}
-//					WHERE post_id = %d
-//					AND meta_key = %s
-//					AND ( meta_id NOT IN(" . join( ',', $keep_users ) . ") OR meta_value = 0)
-//				";
-//				$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
-//				$wpdb->query( $sql );
-//			}
-//			update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
-//			learn_press_reset_auto_increment( 'postmeta' );
-		}
-
-		/**
 		 * @param LP_Order $order
 		 * @param array    $user_ids
 		 * @param bool     $trigger_action
@@ -427,7 +327,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 
 				$old_status = get_post_status( $new_order->get_id() );
-				$new_order->set_order_date( $order->get_order_date('edit') );
+				$new_order->set_order_date( $order->get_order_date( 'edit' ) );
 				$new_order->set_parent_id( $order->get_id() );
 				$new_order->set_user_id( $uid );
 				$new_order->set_total( $order->get_total() );
@@ -438,7 +338,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$new_status = get_post_status( $new_order->get_id() );
 
 				if ( ( $new_status !== $old_status ) || $trigger_action ) {
-					$status = str_replace( 'lp-', '', $new_status );
+					$status     = str_replace( 'lp-', '', $new_status );
 					$old_status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $new_order->get_id(), $status );
 					do_action( 'learn-press/order/status-' . $old_status . '-to-' . $status, $new_order->get_id() );
@@ -530,10 +430,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			# filter by user id
 			preg_match( "#{$wpdb->posts}\.post_author IN\s*\((\d+)\)#", $where, $matches );
-			if ( !empty($matches) && isset($matches[1]) ) {
+			if ( ! empty( $matches ) && isset( $matches[1] ) ) {
 
-				$author_id = intval($matches[1]);
-				$sql = " {$wpdb->posts}.ID IN ( SELECT 
+				$author_id = intval( $matches[1] );
+				$sql       = " {$wpdb->posts}.ID IN ( SELECT 
 						IF( p.post_parent >0, p.post_parent, p.ID)
 					FROM
 						{$wpdb->posts} AS p
@@ -546,14 +446,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						p.post_type = 'lp_order'
 							AND u.ID = %d ) ";
 
-				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $author_id));
+				$sql   = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $author_id ) );
 				$where = str_replace( $matches[0], $sql, $where );
 			}
-			
+
 			$s = $wp_query->get( 's' );
 
 			if ( $s ) {
-				$s 	= '%' . $wpdb->esc_like( $s ) . '%';
+				$s = '%' . $wpdb->esc_like( $s ) . '%';
 				preg_match( "#{$wpdb->posts}\.post_title LIKE#", $where, $matches2 );
 				$sql = " {$wpdb->posts}.ID IN (
 					SELECT
@@ -572,11 +472,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						OR u.display_name LIKE %s
 						OR {$wpdb->posts}.ID LIKE %s
 					) ";
-				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ));
-				if( !empty($matches2) && isset($matches2[0]) ) {
-					$where = str_replace( $matches2[0], $sql. ' OR '.$matches2[0], $where );
+				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ) );
+				if ( ! empty( $matches2 ) && isset( $matches2[0] ) ) {
+					$where = str_replace( $matches2[0], $sql . ' OR ' . $matches2[0], $where );
 				} else {
-					$where .= " AND ".$sql;
+					$where .= " AND " . $sql;
 				}
 			}
 
@@ -593,22 +493,26 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function posts_orderby( $orderby ) {
+			global $wpdb;
+
 			if ( ! $this->_is_archive() ) {
 				return $orderby;
 			}
-			global $wpdb;
+
+			$order = $this->_get_order();
+
 			switch ( $this->_get_orderby() ) {
 				case 'title':
-					$orderby = "{$wpdb->posts}.ID {$_GET['order']}";
+					$orderby = "{$wpdb->posts}.ID {$order}";
 					break;
 				case 'student':
-					$orderby = "uu.user_login {$_GET['order']}";
+					$orderby = "uu.user_login {$order}";
 					break;
 				case 'date':
-					$orderby = "{$wpdb->posts}.post_date {$_GET['order']}";
+					$orderby = "{$wpdb->posts}.post_date {$order}";
 					break;
 				case 'order_total':
-					$orderby = " pm2.meta_value {$_GET['order']}";
+					$orderby = " pm2.meta_value {$order}";
 					break;
 			}
 
@@ -623,9 +527,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			$join .= " INNER JOIN {$wpdb->postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
 			$join .= " INNER JOIN {$wpdb->postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
 			$join .= " LEFT JOIN {$wpdb->users} uu ON pm1.meta_value = uu.ID";
-// 			$join .= " INNER JOIN {$wpdb->learnpress_order_items} AS orderItem ON orderItem.order_id = {$wpdb->posts}.ID";
-// 			$join .= " INNER JOIN {$wpdb->learnpress_order_itemmeta} AS orderItemmeta ON orderItem.order_item_id = orderItemmeta.learnpress_order_item_id AND orderItemmeta.meta_key LIKE '_total'";
-// var_dump($join);
+
 			return $join;
 		}
 
@@ -638,8 +540,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns['order_student'] = 'student';
-			$columns['order_date']  = 'date';
-			$columns['order_total']  = 'order_total';
+			$columns['order_date']    = 'date';
+			$columns['order_total']   = 'order_total';
 
 			return $columns;
 		}

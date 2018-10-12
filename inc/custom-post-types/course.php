@@ -491,9 +491,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( ! $this->_is_archive() ) {
 				return $order_by_statement;
 			}
+
+			$order = $this->_get_order();
 			switch ( $this->_get_orderby() ) {
 				case 'price':
-					$order_by_statement = "pm_price.meta_value {$_GET['order']}";
+					$order_by_statement = "pm_price.meta_value {$order}";
 			}
 
 			return $order_by_statement;
@@ -518,14 +520,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			return true;
-		}
-
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
-
-		private function _get_search() {
-			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
 		/**
@@ -598,13 +592,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc' => __( 'How many students have taken this course.', 'learnpress' ),
 						'std'  => 0,
 					),
-//					array(
-//						'name' => __( 'Use Students Enrolled for counter', 'learnpress' ),
-//						'id'   => '_lp_append_students',
-//						'type' => 'yes_no',
-//						'desc' => __( 'Append the value of Students Enrolled above for counting the real users enrolled course.', 'learnpress' ),
-//						'std'  => 'yes',
-//					),
 					array(
 						'name' => __( 'Re-take Course', 'learnpress' ),
 						'id'   => '_lp_retake_count',
@@ -657,15 +644,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$post_id = LP_Request::get_int( 'post' );
 			$post_id = $post_id ? $post_id : ( ! empty( $post ) ? $post->ID : 0 );
 
+			$course_results     = get_post_meta( $post_id, '_lp_course_result', true );
 			$course_result_desc = '';
-
-			if ( $course_results = get_post_meta( $post_id, '_lp_course_result', true ) ) {
-				if ( in_array( $course_results, array( '', 'evaluate_lesson', 'evaluate_final_quiz' ) ) ) {
-					//$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>', __( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
-				}
-			}
-
-			//$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
 			$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
 
 			if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
@@ -920,7 +900,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function author_meta_box() {
 
-			$course_id = ! empty( $_GET['post'] ) ? $_GET['post'] : 0;
+			$course_id = LP_Request::get_int('post');
 			$post      = get_post( $course_id );
 			$author    = $post ? $post->post_author : get_current_user_id();
 
@@ -1277,6 +1257,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return array
 		 */
 		public function columns_head( $columns ) {
+
+			/**
+			 * @var WP_Query $wp_query
+			 */
 			$user = wp_get_current_user();
 			if ( in_array( 'lp_teacher', $user->roles ) ) {
 				unset( $columns['author'] );
@@ -1301,13 +1285,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			$columns['taxonomy-course_category'] = __( 'Categories', 'learnpress' );
-
-			global $wp_query;
-			if ( $wp_query->is_main_query() ) {
-				if ( LP_COURSE_CPT == $wp_query->query['post_type'] && $wp_query->posts ) {
-					$post_ids = wp_list_pluck( $wp_query->posts, 'ID' );
-				}
-			}
 
 			return $columns;
 		}
@@ -1404,7 +1381,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
-			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
 			$user                  = learn_press_get_current_user();
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
@@ -1437,7 +1413,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$this->_review_log();
 			delete_post_meta( $post->ID, '_lp_curriculum' );
-			//add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 		}
 
 		public function currency_symbol( $input_html, $field, $sub_meta ) {

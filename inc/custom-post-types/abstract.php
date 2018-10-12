@@ -151,7 +151,7 @@ abstract class LP_Abstract_Post_Type {
                 jQuery(function ($) {
                     var $input = $('#post-search-input'),
                         $form = $($input[0].form),
-                        $select = $('<select name="author" id="author"></select>').append('<?php echo esc_js($option);?>').insertAfter($input).select2({
+                        $select = $('<select name="author" id="author"></select>').append('<?php echo esc_js( $option );?>').insertAfter($input).select2({
                             ajax: {
                                 url: window.location.href + '&lp-ajax=search-authors',
                                 dataType: 'json',
@@ -631,12 +631,30 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function columns_content( $column, $post_id = 0 ) {
-		return;
-		$callback = array( $this, "column_{$column}" );
-		if ( is_callable( $callback ) ) {
-			$func_args = func_get_args();
-			call_user_func_array( $callback, $func_args );
-		}
+
+	}
+
+	/**
+     * Get string for searching
+     *
+	 * @return string
+	 */
+	protected function _get_search() {
+		return LP_Request::get( 's' );
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function _get_order() {
+		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
+	}
+
+	/**
+	 * @return mixed
+	 */
+	protected function _get_orderby() {
+		return LP_Request::get( 'orderby' );
 	}
 
 	public function _post_row_actions( $actions, $post ) {
