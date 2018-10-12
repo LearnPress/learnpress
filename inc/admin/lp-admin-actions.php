@@ -167,7 +167,7 @@ function learn_press_active_course_menu() {
     <script type="text/javascript">
         jQuery(function ($) {
             var $lpMainMenu = $('#toplevel_page_learn_press'),
-                href = 'edit.php?post_type=<?php echo $_GET['post_type']; ?>',
+                href = 'edit.php?post_type=<?php echo esc_js($_GET['post_type']); ?>',
                 $current = $('a[href="' + href + '"]', $lpMainMenu);
 
             if ($current.length) {

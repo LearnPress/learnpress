@@ -17,7 +17,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 	/**
 	 * Class LP_Course_Post_Type
 	 */
-	final class LP_Course_Post_Type extends LP_Abstract_Post_Type {
+	final class LP_Course_Post_Type extends LP_Abstract_Post_Type_Core {
 		/**
 		 * New version of course editor
 		 *

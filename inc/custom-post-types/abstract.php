@@ -275,7 +275,7 @@ abstract class LP_Abstract_Post_Type {
 	public function remove_auto_save_script() {
 		global $post;
 
-		if ( $post && in_array( learn_press_get_post_type( $post->ID ), array( $this->_post_type ) ) ) {
+		if ( $post && in_array( get_post_type( $post->ID ), array( $this->_post_type ) ) ) {
 			wp_dequeue_script( 'autosave' );
 		}
 	}
@@ -306,9 +306,9 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function _do_save( $post_id, $post = null ) {
 		// Maybe remove
-		//$this->maybe_remove_assigned( $post_id );
+		$this->maybe_remove_assigned( $post_id );
 
-		if ( learn_press_get_post_type( $post_id ) != $this->_post_type ) {
+		if ( get_post_type( $post_id ) != $this->_post_type ) {
 			return false;
 		}
 		// TODO: check more here
@@ -631,12 +631,30 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function columns_content( $column, $post_id = 0 ) {
-		return;
-		$callback = array( $this, "column_{$column}" );
-		if ( is_callable( $callback ) ) {
-			$func_args = func_get_args();
-			call_user_func_array( $callback, $func_args );
-		}
+
+	}
+
+	/**
+	 * Get string for searching
+	 *
+	 * @return string
+	 */
+	private function _get_search() {
+		return LP_Request::get( 's' );
+	}
+
+	/**
+	 * @return string
+	 */
+	private function _get_order() {
+		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
+	}
+
+	/**
+	 * @return mixed
+	 */
+	private function _get_orderby() {
+		return LP_Request::get( 'orderby' );
 	}
 
 	public function _post_row_actions( $actions, $post ) {
@@ -726,7 +744,7 @@ abstract class LP_Abstract_Post_Type {
 
 	public function updated_messages( $messages ) {
 		$post             = get_post();
-		$post_type        = learn_press_get_post_type( $post );
+		$post_type        = get_post_type( $post );
 		$post_type_object = get_post_type_object( $this->_post_type );
 		if ( $this->_post_type !== $post_type ) {
 			return $messages;
@@ -781,12 +799,16 @@ abstract class LP_Abstract_Post_Type {
 
 		return $messages;
 	}
+}
 
+class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type{
 	/**
+	 * Get string for searching
+	 *
 	 * @return string
 	 */
-	protected function _get_orderby() {
-		return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
+	protected function _get_search() {
+		return LP_Request::get( 's' );
 	}
 
 	/**
@@ -796,7 +818,10 @@ abstract class LP_Abstract_Post_Type {
 		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
 	}
 
-	protected function _get_search() {
-		return LP_Request::get( 's' );
+	/**
+	 * @return mixed
+	 */
+	protected function _get_orderby() {
+		return LP_Request::get( 'orderby' );
 	}
 }

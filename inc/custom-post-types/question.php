@@ -18,7 +18,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 	/**
 	 * Class LP_Question_Post_Type
 	 */
-	class LP_Question_Post_Type extends LP_Abstract_Post_Type {
+	class LP_Question_Post_Type extends LP_Abstract_Post_Type_Core {
 		/**
 		 * @var null
 		 */

@@ -17,7 +17,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 	/**
 	 * Class LP_Lesson_Post_Type
 	 */
-	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type {
+	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type_Core {
 		/**
 		 * @var null
 		 */

@@ -507,11 +507,17 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$quiz   = learn_press_get_quiz( $quiz_id );
 				$quiz->set_course( $course_id );
 				$course_data = $user->get_course_data( $course->get_id() );
+				$return      = array(
+					'quiz_id'       => $quiz_id,
+					'course_id'     => $course_id,
+					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
+					'next_question' => $user->get_next_question( $quiz_id, $course_id )
+				);
 
 				if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {
 
-					if ( 'completed' === $quiz_data->get_status() ) {
-						throw new Exception( __( '#2. Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
+					if ( $course_data->is_finished() || $quiz_data->is_completed() ) {
+						return $return;
 					}
 
 					// If user click 'Skip' button
@@ -531,13 +537,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$quiz_data->update_meta( '_current_question', $question_id );
 					$quiz_data->update();
 				}
-
-				$return = array(
-					'quiz_id'       => $quiz_id,
-					'course_id'     => $course_id,
-					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
-					'next_question' => $user->get_next_question( $quiz_id, $course_id )
-				);
 
 				return $return;
 			}
