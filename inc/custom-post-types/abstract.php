@@ -639,21 +639,21 @@ abstract class LP_Abstract_Post_Type {
      *
 	 * @return string
 	 */
-	protected function _get_search() {
+	private function _get_search() {
 		return LP_Request::get( 's' );
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function _get_order() {
+	private function _get_order() {
 		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
 	}
 
 	/**
 	 * @return mixed
 	 */
-	protected function _get_orderby() {
+	private function _get_orderby() {
 		return LP_Request::get( 'orderby' );
 	}
 
@@ -798,5 +798,30 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		return $messages;
+	}
+}
+
+class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type{
+	/**
+	 * Get string for searching
+	 *
+	 * @return string
+	 */
+	protected function _get_search() {
+		return LP_Request::get( 's' );
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function _get_order() {
+		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
+	}
+
+	/**
+	 * @return mixed
+	 */
+	protected function _get_orderby() {
+		return LP_Request::get( 'orderby' );
 	}
 }
