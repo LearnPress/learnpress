@@ -3,6 +3,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+include_once 'user-item/ajax.php';
 if ( ! class_exists( 'LP_AJAX' ) ) {
 	/**
 	 * Class LP_AJAX
@@ -31,7 +33,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'continue-course',
 				'toggle-distraction-mode',
 				'get_question_data',
-				'load_course_curriculum'
+				'load_course_curriculum',
+
 				//'register-user:nopriv',
 				//'login-user:nopriv'
 			);
@@ -55,6 +58,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				LP_Request::register_ajax( $action, $callback );
 			}
 
+			$user = learn_press_get_current_user();
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
 		}
 
@@ -62,6 +66,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$course_id = LP_Request::get_int( 'course_ID' );
 			learn_press_send_json( learn_press_get_course_curriculum_for_js( $course_id ) );
 		}
+
 
 		public static function get_question_data() {
 			/**

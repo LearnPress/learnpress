@@ -931,7 +931,7 @@ ul.learn-press-nav-tabs {
           font-family: 'fontawesome'; }
 
 body.course-item-popup {
-  overflow: hidden;
+  _overflow: hidden;
   _opacity: 0; }
   body.course-item-popup #learn-press-course-curriculum {
     position: fixed;
@@ -1287,6 +1287,20 @@ body .lp-quiz-buttons .form-button-finish-course {
       margin-right: 0%;
       width: 100%;
       margin-bottom: 20px; } }
+
+.content-single-item {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999; }
+  .content-single-item #course-item-content-header {
+    position: absolute; }
+  .content-single-item #learn-press-course-curriculum {
+    position: absolute !important; }
+  .content-single-item #learn-press-content-item {
+    position: absolute !important; }
 
 .lp-quiz-buttons {
   margin-bottom: 20px;

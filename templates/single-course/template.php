@@ -75,7 +75,9 @@ $context     = $course_item ? 'course-item' : 'course';
                 }, 0);
             }
         }
-        console.time('render curriculum');
+
+        window.LP_Event_Bus = new Vue();
+        var $request = null;
         var vueConfig = {
             el: '#learn-press-course-curriculum',
             data: function () {
@@ -90,12 +92,40 @@ $context     = $course_item ? 'course-item' : 'course';
                     return this.$courseStore('currentItem');
                 }
             },
+            watch: {
+//                currentItem: {
+//                    handler: function (a, b) {
+//                        console.log(a, b)
+//                        if (a.id == b.id) {
+//                            if (a.completed && !b.completed) {
+//                                this.completeItem();
+//                            }
+//                        }
+//
+//                        return a;
+//                    }, deep: true
+//                }
+            },
             mounted: function () {
                 this.totalItems = $.map(this.sections, function (a) {
                     return a.items.length;
                 }).sum();
+
+                LP_Event_Bus.$on('complete-item', this._completeItem);
             },
             methods: {
+                completeItem: function (item) {
+                    item = item || this.currentItem;
+
+                    $request('', 'complete-course-item', {itemId: item.id}).then(function (r) {
+                        if (r.classes) {
+                            item.classes = $(r.classes).filter(function (a, b) {
+                                return -1 === $.inArray(b, ['current']);
+                            }).get();
+                            item.completed = true;
+                        }
+                    });
+                },
                 sectionClass: function (section) {
                     var cls = ['section'];
 
@@ -130,18 +160,47 @@ $context     = $course_item ? 'course-item' : 'course';
                     return this.countCompletedItems(section) + '/' + this.countItems(section);
                 },
                 sectionItemClass: function (item, section) {
-                    var cls = ['course-item'];
+                    var cls = $(this.vmArray2Array(item.classes)).filter(function (a, b) {
+                        return -1 === $.inArray(b, ['current']);
+                    }).get();
+
                     cls.push('course-item-' + item.type);
                     cls.push('course-item-' + item.id);
 
                     if (this.currentItem && this.currentItem.id == item.id) {
                         cls.push('current');
+                    } else {
+
                     }
+
+//                    if (item.completed) {
+//                        cls.push('has-status status-completed');
+//                    }
                     return cls;
                 },
+                vmArray2Array: function (a) {
+                    var r = [];
+                    for (var i in a) {
+                        if (isNaN(i)) {
+                            break;
+                        }
+                        r.push(a[i])
+                    }
+
+                    return r;
+                },
                 _openItem: function (e, item) {
-                    e.preventDefault();
                     this.$courseStore().currentItem = item;
+                    if (undefined !== $(document).triggerHandler('LP.click-curriculum-item', {
+                            $event: e,
+                            item: item,
+                            $vm: this
+                        })) {
+                        e.preventDefault();
+                    }
+                },
+                _completeItem: function (data) {
+                    this.completeItem(data.item || this.currentItem);
                 },
                 $courseStore: function (prop, value) {
                     var $store = window.$courseStore;
@@ -156,16 +215,15 @@ $context     = $course_item ? 'course-item' : 'course';
                     return $store.getters['all'];
                 },
                 endTime: function (sectionIndex, itemIndex) {
-                    if (!this.ready && sectionIndex == this.$courseStore().sections.length - 1 && itemIndex == this.$courseStore().sections[sectionIndex].items.length - 1) {
+                    var sections = this.$courseStore().sections;
+                    if (!this.ready && sectionIndex == sections.length - 1 && itemIndex == sections[sectionIndex].items.length - 1) {
                         this.ready = true;
-                        console.timeEnd('render curriculum');
-
                         $(document).trigger('course-ready')
                     }
                 }
             }
         };
-
+        console.time('Load curriculum data')
         $.ajax({
             url: '',
             data: {
@@ -186,7 +244,6 @@ $context     = $course_item ? 'course-item' : 'course';
                                         return a.id == state.currentItem;
                                     });
 
-                                    console.log(item)
                                     if (item) {
                                         state.currentItem = item;
                                         break;
@@ -195,12 +252,16 @@ $context     = $course_item ? 'course-item' : 'course';
                             }
                             return state.currentItem;
                         },
+                        identify: function (state) {
+                            return state.identify;
+                        },
                         all: function (state) {
                             return state;
                         }
                     };
                     var mutations = {};
                     var actions = {};
+
 
                     return new Vuex.Store({
                         state: state,
@@ -210,7 +271,13 @@ $context     = $course_item ? 'course-item' : 'course';
                     });
                 })(LP_Course_Settings);
 
+                $request = window.$request = new LP.Request($courseStore, {courseId: LP_Course_Settings.courseId});
+
                 window.$lpCourseApp = new Vue(vueConfig);
+
+
+                console.timeEnd('Load curriculum data')
+
             }
         });
 

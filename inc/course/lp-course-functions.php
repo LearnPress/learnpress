@@ -1207,6 +1207,8 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 	$course      = learn_press_get_course( $course_id );
 	$course_data = $user->get_course_data( $course_id );
 	$curriculum  = array(
+		'identify'       => wp_create_nonce( 'lp-' . $user->get_id() . '-' . $course_id ),
+		'courseId'       => $course_id,
 		'currentItem'    => $course_data->get_meta( '_current_item' ),
 		'totalItems'     => 0,
 		'completedItems' => 0,
@@ -1227,15 +1229,17 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 
 			if ( $items = $sec->get_items() ) {
 				foreach ( $items as $it ) {
-
-					$item = array(
+					$it_data = $course_data->get_item( $it->get_id() );
+					$item    = array(
 						'id'        => $it->get_id(),
 						'name'      => $it->get_title(),
 						'content'   => $it->get_content(),
 						'type'      => $it->get_post_type(),
 						'slug'      => '',
-						'completed' => rand( 100, 200 ) % 2 == 0,
-						'permalink' => $it->get_permalink()
+						'completed' => $it_data ? $it_data->is_completed() : false,
+						'preview'   => $it->is_preview(),
+						'permalink' => $it->get_permalink(),
+						'classes'   => $it->get_class()
 					);
 
 					$section['items'][] = $item;

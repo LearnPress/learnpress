@@ -224,7 +224,7 @@ class LP_Query {
 		/**
 		 * Polylang compatibility
 		 */
-		if ( function_exists( 'pll_languages_list' ) ) {
+		if ( function_exists( 'PLL' ) ) {
 			$pll           = PLL();
 			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
 

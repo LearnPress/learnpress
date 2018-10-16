@@ -178,7 +178,11 @@ add_action( 'learn-press/content-single', 'learn_press_content_single_course', 1
  */
 add_action( 'learn-press/single-item-summary', 'learn_press_course_curriculum_tab', 5 );
 add_action( 'learn-press/single-item-summary', 'learn_press_single_course_content_item', 10 );
+add_action( 'learn-press/single-item-summary', 'learn_press_single_content_item_head', 0 );
 
+function learn_press_single_content_item_head(){
+	learn_press_get_template('single-course/content-item/header');
+}
 /**
  * @see learn_press_course_item_content
  * @see learn_press_content_item_comments
@@ -218,8 +222,8 @@ add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_
  * @see learn_press_content_item_footer
  * @see learn_press_section_item_meta
  */
-add_action( 'learn-press/course-item-content-header', 'learn_press_content_item_header', 10 );
-add_action( 'learn-press/course-item-content-footer', 'learn_press_content_item_footer', 10 );
+//add_action( 'learn-press/course-item-content-header', 'learn_press_content_item_header', 10 );
+//add_action( 'learn-press/course-item-content-footer', 'learn_press_content_item_footer', 10 );
 add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
 
 /**
@@ -429,4 +433,4 @@ add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_b
 /**
  * @see learn_press_reset_single_item_summary_content
  */
-add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );
+//add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );

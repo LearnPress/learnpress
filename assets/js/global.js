@@ -681,6 +681,81 @@ if (typeof window.LP === 'undefined') {
             }
             return data;
         },
+        debounce: function (func, wait) {
+            var timeout;
+
+            return function () {
+                var context = this,
+                    args = arguments;
+
+                var executeFunction = function () {
+                    func.apply(context, args);
+                };
+
+                clearTimeout(timeout);
+                timeout = setTimeout(executeFunction, wait);
+            };
+        },
+
+        Request: function ($store, defaultData) {
+
+            var identify = $store.getters.identify || 'lp_' + LP.uniqueId();
+
+            Vue.http.interceptors.push(function (request, next) {
+                if (request.params['namespace'] !== identify) {
+                    next();
+                    return;
+                }
+
+                if ($store._actions['newRequest']) {
+                    $store.dispatch('newRequest');
+                }
+
+                next(function (response) {
+                    var result = true;
+                    if (request.params.dataType !== 'raw') {
+
+                        if (!jQuery.isPlainObject(response.body)) {
+                            response.body = LP.parseJSON(response.body) || {};
+                        }
+
+                        var body = response.body;
+
+                        result = body.success || false;
+                    }
+
+                    if ($store._actions['requestComplete']) {
+                        if (result) {
+                            $store.dispatch('requestComplete', 'success');
+                        } else {
+                            $store.dispatch('requestComplete', 'failed');
+                        }
+                    }
+                });
+            });
+
+            return function (url, action, data, params, context) {
+                data = $.extend({}, defaultData, data);
+                return new Promise(function (resolve, reject) {
+                    Vue.http.post(
+                        url || '',
+                        data,
+                        {
+                            emulateJSON: true,
+                            params: $.extend({
+                                namespace: identify,
+                                'lp-ajax': action
+                            }, params || {})
+                        }
+                    ).then(function (response) {
+                        resolve(response.body);
+                    }, function (response) {
+                        reject(response.body)
+                    });
+                })
+            };
+        },
+
         ajax: function (args) {
             var type = args.type || 'post',
                 dataType = args.dataType || 'json',
@@ -1311,7 +1386,7 @@ if (typeof window.LP === 'undefined') {
             $('.learn-press-nav-tabs li.active:not(.default) a').trigger('click');
         }, 300);
 
-        $('body.course-item-popup').parent().css('overflow', 'hidden');
+        ///$('body.course-item-popup').parent().css('overflow', 'hidden');
         ///
         (function () {
             var timer = null,

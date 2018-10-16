@@ -49,8 +49,8 @@ class LP_Page_Controller {
 		add_filter( 'the_post', array( $this, 'setup_data' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 		add_action( 'wp_enqueue_scripts', function () {
-			if ( is_learnpress()) {
-				learn_press_assets()->enqueue_script('lp-vue-resource');
+			if ( is_learnpress() ) {
+				learn_press_assets()->enqueue_script( 'lp-vue-resource' );
 				//wp_enqueue_script( 'lp-vue' );
 			}
 		}, 1000 );
@@ -63,7 +63,6 @@ class LP_Page_Controller {
 		$quiz     = LP_Global::course_item_quiz();
 		$user     = learn_press_get_current_user();
 		$redirect = false;
-
 
 
 		if ( learn_press_is_review_questions() ) {
@@ -250,6 +249,16 @@ class LP_Page_Controller {
 						wp_redirect( $redirect );
 						exit();
 					}
+				} else {
+
+//					$map_post_types = array(
+//						LP_LESSON_CPT => 'lesson',
+//						LP_QUIZ_CPT   => 'quiz'
+//					);
+//
+//					$post_type = $lp_course_item->get_post_type();
+//					$type      = isset( $map_post_types[ $post_type ] ) ? $map_post_types[ $post_type ] : $post_type;
+//					echo $template  = learn_press_locate_template( 'content-single-' . $type );
 				}
 				do_action( 'learn-press/parse-course-item', $lp_course_item, $lp_course );
 			}
@@ -679,6 +688,9 @@ class LP_Page_Controller {
 		add_filter( 'the_content', 'wpautop' );
 		ob_start();
 
+		/**
+		 * @see learn_press_content_single_course
+		 */
 		if ( function_exists( 'learn_press_content_single_course' ) ) {
 			do_action( 'learn-press/content-single' );
 		} else {
@@ -686,6 +698,7 @@ class LP_Page_Controller {
 			 * Display template of content item if user is viewing course's item.
 			 * Otherwise, display template of course.
 			 */
+
 			if ( $course_item = LP_Global::course_item() ) {
 				learn_press_get_template( 'content-single-item.php' );
 			} else {

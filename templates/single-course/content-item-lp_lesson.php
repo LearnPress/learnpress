@@ -11,72 +11,33 @@
 
 /**
  * Prevent loading this file directly
+ *
+ * @var LP_Course_Item $itemx
  */
 defined( 'ABSPATH' ) || exit();
 
 $item   = LP_Global::course_item();
 $course = LP_Global::course();
+
 ?>
 
-<div <?php learn_press_content_item_summary_class(); ?>>
-    <div class="content-item-scrollable">
-        <div class="content-item-wrap">
-			<?php
-
-			foreach ( $course->get_sections() as $section ) {
-				foreach ( $section->get_items() as $itemx ) {
-					?>
-                    <div v-show="isShowItem(<?php echo $itemx->get_id(); ?>)">
-                        <div class="content-item-summary"><?php echo $itemx->get_content(); ?></div>
-                    </div>
-					<?php
-				}
-			}
+<div :class="mainClass()" data-classes="<?php echo join( ' ', learn_press_content_item_summary_main_classes() ); ?>">
+    <!--    <div class="content-item-scrollable">-->
+    <!--        <div class="content-item-wrap">-->
+    [[{{currentItem.id}}, {{courseLoaded}}]]
+	<?php
+	foreach ( $course->get_sections() as $section ) {
+		foreach ( $section->get_items() as $itemx ) {
 			?>
-        </div>
-    </div>
-    <template v-if="loaded && 0">
-        <div class="content-item-scrollable">
-            <div class="content-item-wrap">
-                <div class="content-item-summary">
-
-                    <h3 class="course-item-title question-title">{{currentItem.name}}</h3>
-                    <div class="content-item-description lesson-description" v-html="currentItem.content">
-                    </div>
-                    <!--                    <form method="post" name="learn-press-form-complete-lesson"-->
-                    <!--                          data-confirm="Do you want to complete lesson &quot;Lesson 1&quot;?"-->
-                    <!--                          class="learn-press-form form-button"><input type="hidden" name="id" value="10135"> <input-->
-                    <!--                                type="hidden" name="course_id" value="10134"> <input type="hidden"-->
-                    <!--                                                                                     name="complete-lesson-nonce"-->
-                    <!--                                                                                     value="9a355e25cb"> <input-->
-                    <!--                                type="hidden" name="type" value="lp_lesson"> <input type="hidden" name="lp-ajax"-->
-                    <!--                                                                                    value="complete-lesson"> <input-->
-                    <!--                                type="hidden" name="noajax" value="yes">-->
-                    <!--                        <button class="lp-button button button-complete-item button-complete-lesson">Complete-->
-                    <!--                        </button>-->
-                    <!--                    </form>-->
-                </div>
-                <!--                <div class="course-item-nav">-->
-                <!--                    <div class="next"><span>Next</span> <a-->
-                <!--                                href="http://localhost/learnpress/dev/courses/course-no-69/lessonses/lesson-2-3/">-->
-                <!--                            Lesson 2 </a></div>-->
-                <!--                </div>-->
+            <div v-show="isShowItem(<?php echo $itemx->get_id(); ?>)">
+				<?php echo $itemx->get_content(); ?>
             </div>
-        </div>
-    </template>
-    <template v-else="loaded && 0">
-		<?php
+			<?php
+		}
+	}
+	?>
 
-		//do_action( 'learn-press/before-content-item-summary/' . $item->get_item_type() );
-
-		//do_action( 'learn-press/content-item-summary/' . $item->get_item_type() );
-
-		//do_action( 'learn-press/after-content-item-summary/' . $item->get_item_type() );
-
-		?>
-    </template>
-
-    <button type="button" @click="_completeItem" :disabled="currentItem.completed">
+    <button type="button" @click="_completeItem($event)" :disabled="currentItem.completed">
         <template v-if="currentItem.completed">{{'<?php esc_html_e( 'Completed', 'learnpress' ); ?>'}}</template>
         <template v-else>{{'<?php esc_html_e( 'Complete', 'learnpress' ); ?>'}}</template>
     </button>
@@ -84,31 +45,86 @@ $course = LP_Global::course();
 
 <script>
     (function ($) {
-        $(document).on('course-ready', function () {
-            new Vue({
+        function xxx() {
+            return new Vue({
                 el: '#learn-press-content-item',
                 data: function () {
                     return {
-                        loaded: false
+                        loaded: false,
+                        courseLoaded: false,
+                        currentItem: {}
                     }
                 },
                 computed: {
-                    currentItem: function () {
-                        return this.$courseStore().currentItem;
+//                    currentItem: function () {
+//                        console.log('currentItem')
+//                        return this.$courseStore() ? this.$courseStore().currentItem : {};
+//                    },
+                    abcx: function () {
+                        return this.abc();
+                    }
+                },
+                watch: {
+                    courseLoaded: function (newValue) {
+                        this.currentItem = this.$courseStore('currentItem');
+
+                        return newValue;
+                    },
+                    'currentItem.id': function (a, b) {
+                        if (a != b) {
+                            LP.setUrl(this.currentItem.permalink);
+                            this.$('.content-item-scrollable').scrollTop(0);
+                        }
+                        return a;
                     }
                 },
                 mounted: function () {
-                    this.loaded = true;
+                    var $vm = this;
+                    //this.loaded = true;
+                    $(document).on('LP.click-curriculum-item', function (e, data) {
+                        data.$event.preventDefault();
+                        $vm.currentItem = data.item;
+                    }).ready(function () {
+                        setTimeout(function () {
+                            $vm.loaded = true;
+                        }, 100);
+                        //
+                    });
                 },
                 methods: {
-                    isShowItem: function (itemId) {
-                        return this.currentItem.id == itemId;
+                    abc: function () {
+                        return Math.random();
                     },
-                    _completeItem: function () {
-                        this.currentItem.completed = true;
+                    isShowItem: function (itemId) {
+                        return !this.loaded || this.currentItem.id == itemId;
+                    },
+                    mainClass: function () {
+                        var cls = [this.$().attr('data-classes') || '']
+
+                        if (this.loaded) {
+                            cls.push('ready');
+                        }
+
+                        cls.push(this.abcx)
+
+                        return cls;
+                    },
+                    _completeItem: function (e) {
+                        //$(document).trigger('LP.complete-item', {$event: e, item: this.currentItem});
+                        LP_Event_Bus.$emit('complete-item', {$event: e, item: this.currentItem});
+                    },
+                    $: function (selector) {
+                        return selector ? $(this.$el).find(selector) : $(this.$el);
                     },
                     $courseStore: function (prop, value) {
                         var $store = window.$courseStore;
+
+                        console.log('$Store', $store)
+
+                        if (!$store) {
+                            return undefined;
+                        }
+
                         if (prop) {
                             if (arguments.length == 2) {
                                 $store.getters['all'][prop] = value;
@@ -121,6 +137,14 @@ $course = LP_Global::course();
                     }
                 }
             });
-        })
+        }
+
+        var $vm = xxx();
+
+        $(document).on('course-ready', function () {
+            $vm.courseLoaded = true;
+        });
+
+        window.$vmLesson = $vm;
     })(jQuery);
 </script>
