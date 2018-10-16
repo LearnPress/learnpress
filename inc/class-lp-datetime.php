@@ -101,7 +101,7 @@ class LP_Datetime extends DateTime {
 	 * Check if time is exceeded with current time
 	 */
 	public function is_exceeded( $interval = 0 ) {
-		return $this->getTimestamp() >= current_time( 'timestamp' ) + $interval;
+		return $this->getTimestamp() > current_time( 'timestamp' ) + $interval;
 	}
 
 	public static function timezone_string() {
