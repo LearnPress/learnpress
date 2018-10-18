@@ -112,6 +112,7 @@ class LP_Query {
 	 * Add more custom rewrite rules
 	 */
 	function add_rewrite_rules() {
+
 		// lesson
 		$course_type  = LP_COURSE_CPT;
 		$post_types   = get_post_types( '', 'objects' );
@@ -222,12 +223,16 @@ class LP_Query {
 			$pll           = PLL();
 			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
 
-			if ( $pll->options['hide_default'] ) {
-				$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
+			if ( isset( $pll->options['hide_default'] ) ) {
+				if ( isset( $pll->options['default_lang'] ) ) {
+					$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
+				}
 			}
 
 			if ( ! empty( $pll_languages ) ) {
 				$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
+			} else {
+				$pll_languages = '';
 			}
 
 		}
@@ -261,6 +266,7 @@ class LP_Query {
 		}
 
 		do_action( 'learn_press_add_rewrite_rules' );
+
 	}
 
 
@@ -310,7 +316,7 @@ class LP_Query {
 			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
 		}
 
-		//add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
+		add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
 	}
 
 	/**
@@ -358,7 +364,6 @@ class LP_Query {
 	 * @return string
 	 */
 	public function exclude_preview_course( $where ) {
-		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.11' );
 		global $wpdb;
 
 		if ( ! is_admin() && learn_press_is_courses() ) {
