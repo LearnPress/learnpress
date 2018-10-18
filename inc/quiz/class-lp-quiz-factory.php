@@ -470,7 +470,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 				}
 
-				var_dump($_REQUEST);
 				$nav_type = LP_Request::get_string( 'nav-type' );
 
 				$course_id   = LP_Request::get_int( 'course-id' );

@@ -301,7 +301,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		$fetch_ids = array();
-
+		if(!is_array($course_id)){
+			return;
+		}
 		/**
 		 * Get course's data from cache and if it is already existed
 		 * then ignore that course.

@@ -49,7 +49,7 @@ abstract class LP_Abstract_Assets {
 		} else {
 			//add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-			//add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 		}
 	}

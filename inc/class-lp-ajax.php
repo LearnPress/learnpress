@@ -339,6 +339,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			learn_press_maybe_send_json( $response );
 
 			if ( ! empty( $response['redirect'] ) ) {
+				wp_cache_flush();
 				wp_redirect( $response['redirect'] );
 				exit();
 			}

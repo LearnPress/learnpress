@@ -459,7 +459,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 			if ( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
-				remove_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
+// 				remove_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 
 
 				$user_id        = learn_press_get_request( 'order-customer' );
@@ -484,7 +484,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				 * user. If the order is for multi users then it will trigger in
 				 * each child order
 				 */
-				if ( ! is_array( $user_id ) && ( $new_status === $old_status ) && $trigger_action ) {
+				if ( ! is_array( $user_id ) && (( $new_status !== $old_status ) || $trigger_action )) {
 					$status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $order->get_id(), $status );
 					do_action( 'learn-press/order/status-' . $status . '-to-' . $status, $order->get_id() );
