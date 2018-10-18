@@ -77,22 +77,24 @@ $context     = $course_item ? 'course-item' : 'course';
         }
 
         window.LP_Event_Bus = new Vue();
-        var $request = null;
-        var vueConfig = {
-            el: '#learn-press-course-curriculum',
-            data: function () {
-                return {
-                    ready: false
-                }
-            },
-            created: function () {
-            },
-            computed: {
-                currentItem: function () {
-                    return this.$courseStore('currentItem');
-                }
-            },
-            watch: {
+
+        function xxx() {
+            var $request = null;
+            var vueConfig = {
+                el: '#learn-press-course-curriculum',
+                data: function () {
+                    return {
+                        ready: false
+                    }
+                },
+                created: function () {
+                },
+                computed: {
+                    currentItem: function () {
+                        return this.$courseStore('currentItem');
+                    }
+                },
+                watch: {
 //                currentItem: {
 //                    handler: function (a, b) {
 //                        console.log(a, b)
@@ -105,182 +107,187 @@ $context     = $course_item ? 'course-item' : 'course';
 //                        return a;
 //                    }, deep: true
 //                }
-            },
-            mounted: function () {
-                this.totalItems = $.map(this.sections, function (a) {
-                    return a.items.length;
-                }).sum();
+                },
+                mounted: function () {
+                    this.totalItems = $.map(this.sections, function (a) {
+                        return a.items.length;
+                    }).sum();
+                    this._$request = $request;
+                    LP_Event_Bus.$on('complete-item', this._completeItem);
+                },
+                methods: {
+                    completeItem: function (item) {
+                        item = item || this.currentItem;
 
-                LP_Event_Bus.$on('complete-item', this._completeItem);
-            },
-            methods: {
-                completeItem: function (item) {
-                    item = item || this.currentItem;
+                        $request('', 'complete-course-item', {itemId: item.id}).then(function (r) {
+                            if (r.classes) {
+                                item.classes = $(r.classes).filter(function (a, b) {
+                                    return -1 === $.inArray(b, ['current']);
+                                }).get();
+                                item.completed = true;
+                            }
+                        });
+                    },
+                    sectionClass: function (section) {
+                        var cls = ['section'];
 
-                    $request('', 'complete-course-item', {itemId: item.id}).then(function (r) {
-                        if (r.classes) {
-                            item.classes = $(r.classes).filter(function (a, b) {
-                                return -1 === $.inArray(b, ['current']);
-                            }).get();
-                            item.completed = true;
+                        return cls;
+                    },
+                    sectionHtmlId: function (section) {
+                        return 'section-' + section.slug;
+                    },
+                    countItems: function (section) {
+                        if (!section) {
+                            return this.totalItems;
                         }
-                    });
-                },
-                sectionClass: function (section) {
-                    var cls = ['section'];
 
-                    return cls;
-                },
-                sectionHtmlId: function (section) {
-                    return 'section-' + section.slug;
-                },
-                countItems: function (section) {
-                    if (!section) {
-                        return this.totalItems;
-                    }
+                        return $.map([section], function (s) {
+                            return s.items.length;
+                        }).sum()
+                    },
+                    countCompletedItems: function (section) {
+                        if (!section) {
+                            section = this.sections;
+                        } else {
+                            section = [section];
+                        }
 
-                    return $.map([section], function (s) {
-                        return s.items.length;
-                    }).sum()
-                },
-                countCompletedItems: function (section) {
-                    if (!section) {
-                        section = this.sections;
-                    } else {
-                        section = [section];
-                    }
+                        return $.map(section, function (s) {
+                            return $.grep(s.items, function (i) {
+                                return i.completed;
+                            }).length;
+                        }).sum()
+                    },
+                    getSectionCountItemsHtml: function (section) {
+                        return this.countCompletedItems(section) + '/' + this.countItems(section);
+                    },
+                    sectionItemClass: function (item, section) {
+                        var cls = $(this.vmArray2Array(item.classes)).filter(function (a, b) {
+                            return -1 === $.inArray(b, ['current']);
+                        }).get();
 
-                    return $.map(section, function (s) {
-                        return $.grep(s.items, function (i) {
-                            return i.completed;
-                        }).length;
-                    }).sum()
-                },
-                getSectionCountItemsHtml: function (section) {
-                    return this.countCompletedItems(section) + '/' + this.countItems(section);
-                },
-                sectionItemClass: function (item, section) {
-                    var cls = $(this.vmArray2Array(item.classes)).filter(function (a, b) {
-                        return -1 === $.inArray(b, ['current']);
-                    }).get();
+                        cls.push('course-item-' + item.type);
+                        cls.push('course-item-' + item.id);
 
-                    cls.push('course-item-' + item.type);
-                    cls.push('course-item-' + item.id);
+                        if (this.currentItem && this.currentItem.id == item.id) {
+                            cls.push('current');
+                        } else {
 
-                    if (this.currentItem && this.currentItem.id == item.id) {
-                        cls.push('current');
-                    } else {
-
-                    }
+                        }
 
 //                    if (item.completed) {
 //                        cls.push('has-status status-completed');
 //                    }
-                    return cls;
-                },
-                vmArray2Array: function (a) {
-                    var r = [];
-                    for (var i in a) {
-                        if (isNaN(i)) {
-                            break;
+                        return cls;
+                    },
+                    vmArray2Array: function (a) {
+                        var r = [];
+                        for (var i in a) {
+                            if (isNaN(i)) {
+                                break;
+                            }
+                            r.push(a[i])
                         }
-                        r.push(a[i])
-                    }
 
-                    return r;
-                },
-                _openItem: function (e, item) {
-                    this.$courseStore().currentItem = item;
-                    if (undefined !== $(document).triggerHandler('LP.click-curriculum-item', {
-                            $event: e,
-                            item: item,
-                            $vm: this
-                        })) {
-                        e.preventDefault();
-                    }
-                },
-                _completeItem: function (data) {
-                    this.completeItem(data.item || this.currentItem);
-                },
-                $courseStore: function (prop, value) {
-                    var $store = window.$courseStore;
-                    if (prop) {
-                        if (arguments.length == 2) {
-                            $store.getters[prop] = value;
-                        } else {
-                            return $store.getters[prop];
+                        return r;
+                    },
+                    _openItem: function (e, item) {
+                        this.$courseStore().currentItem = item;
+                        if (undefined !== $(document).triggerHandler('LP.click-curriculum-item', {
+                                $event: e,
+                                item: item,
+                                $vm: this
+                            })) {
+                            e.preventDefault();
                         }
-                    }
+                    },
+                    _completeItem: function (data) {
+                        this.completeItem(data.item || this.currentItem);
+                    },
+                    $courseStore: function (prop, value) {
+                        var $store = window.$courseStore;
+                        if (prop) {
+                            if (arguments.length == 2) {
+                                $store.getters[prop] = value;
+                            } else {
+                                return $store.getters[prop];
+                            }
+                        }
 
-                    return $store.getters['all'];
-                },
-                endTime: function (sectionIndex, itemIndex) {
-                    var sections = this.$courseStore().sections;
-                    if (!this.ready && sectionIndex == sections.length - 1 && itemIndex == sections[sectionIndex].items.length - 1) {
-                        this.ready = true;
-                        $(document).trigger('course-ready')
+                        return $store.getters['all'];
+                    },
+                    endTime: function (sectionIndex, itemIndex) {
+                        var sections = this.$courseStore().sections;
+                        if (!this.ready && sectionIndex == sections.length - 1 && itemIndex == sections[sectionIndex].items.length - 1) {
+                            this.ready = true;
+                            $(document).trigger('course-ready')
+                        }
                     }
                 }
-            }
-        };
-        console.time('Load curriculum data')
-        $.ajax({
-            url: '',
-            data: {
-                'lp-ajax': 'load_course_curriculum',
-                course_ID: <?php echo $course->get_id();?>
-            },
-            success: function (r) {
-                window.LP_Course_Settings = LP.parseJSON(r);
+            };
+            console.time('Load curriculum data')
+            $.ajax({
+                url: '',
+                data: {
+                    'lp-ajax': 'load_course_curriculum',
+                    course_ID: <?php echo $course->get_id();?>
+                },
+                success: function (r) {
+                    window.LP_Course_Settings = LP.parseJSON(r);
 
-                window.$courseStore = (function (data) {
-                    var state = data;
+                    window.$courseStore = (function (data) {
+                        var state = data;
 
-                    var getters = {
-                        currentItem: function (state) {
-                            if (!$.isPlainObject(state.currentItem)) {
-                                for (var i = 0, n = state.sections.length; i < n; i++) {
-                                    var item = state.sections[i].items.find(function (a) {
-                                        return a.id == state.currentItem;
-                                    });
+                        var getters = {
+                            currentItem: function (state) {
+                                if (!$.isPlainObject(state.currentItem)) {
+                                    for (var i = 0, n = state.sections.length; i < n; i++) {
+                                        var item = state.sections[i].items.find(function (a) {
+                                            return a.id == state.currentItem;
+                                        });
 
-                                    if (item) {
-                                        state.currentItem = item;
-                                        break;
+                                        if (item) {
+                                            state.currentItem = item;
+                                            break;
+                                        }
                                     }
                                 }
+                                return state.currentItem;
+                            },
+                            identify: function (state) {
+                                return state.identify;
+                            },
+                            all: function (state) {
+                                return state;
                             }
-                            return state.currentItem;
-                        },
-                        identify: function (state) {
-                            return state.identify;
-                        },
-                        all: function (state) {
-                            return state;
-                        }
-                    };
-                    var mutations = {};
-                    var actions = {};
+                        };
+                        var mutations = {};
+                        var actions = {};
 
 
-                    return new Vuex.Store({
-                        state: state,
-                        getters: getters,
-                        mutations: mutations,
-                        actions: actions
-                    });
-                })(LP_Course_Settings);
+                        return new Vuex.Store({
+                            state: state,
+                            getters: getters,
+                            mutations: mutations,
+                            actions: actions
+                        });
+                    })(LP_Course_Settings);
 
-                $request = window.$request = new LP.Request($courseStore, {courseId: LP_Course_Settings.courseId});
+                    $request = window.$request = new LP.Request($courseStore, {courseId: LP_Course_Settings.courseId});
 
-                window.$lpCourseApp = new Vue(vueConfig);
+                    window.$vmCourse = new Vue(vueConfig);
 
 
-                console.timeEnd('Load curriculum data')
+                    console.timeEnd('Load curriculum data')
 
-            }
-        });
+                }
+            });
 
+        }
+
+        $(document).ready(function () {
+            xxx();
+        })
 
         if (!window.$)
             window.$ = jQuery

@@ -70,6 +70,7 @@ define( 'LP_COMPLETE_ITEM_FAIL', 170 );
 define( 'LP_DEBUG_DEV', true );
 define( 'LP_COMPRESS_ASSETS', false );
 define( 'LP_USE_TEMPLATE', true );
+define( 'LP_DEV', true );
 /**
  * Thim Market library
  */

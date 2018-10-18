@@ -58,7 +58,6 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				LP_Request::register_ajax( $action, $callback );
 			}
 
-			$user = learn_press_get_current_user();
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
 		}
 

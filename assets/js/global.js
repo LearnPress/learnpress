@@ -1296,11 +1296,14 @@ if (typeof window.LP === 'undefined') {
     }
 
     $(document).ready(function () {
-        if (typeof $.alerts !== 'undefined') {
-            $.alerts.overlayColor = '#000';
-            $.alerts.overlayOpacity = 0.5;
-            $.alerts.okButton = lpGlobalSettings.localize.button_ok;
-            $.alerts.cancelButton = lpGlobalSettings.localize.button_cancel;
+
+        if (window.lpGlobalSettings) {
+            if (typeof $.alerts !== 'undefined') {
+                $.alerts.overlayColor = '#000';
+                $.alerts.overlayOpacity = 0.5;
+                $.alerts.okButton = lpGlobalSettings.localize.button_ok;
+                $.alerts.cancelButton = lpGlobalSettings.localize.button_cancel;
+            }
         }
 
         $('.learn-press-message.fixed').each(function () {

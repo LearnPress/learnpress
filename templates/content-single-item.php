@@ -29,8 +29,6 @@ do_action( 'learn-press/before-single-item' );
 	 */
 	do_action( 'learn-press/single-item-summary' );
 	?>
-    SINGLE ITEM
-
 </div>
 <?php
 
