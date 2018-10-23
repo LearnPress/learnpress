@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/tabs/tabs.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,33 +13,31 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $tabs = learn_press_get_course_tabs(); ?>
-
-<?php if ( empty( $tabs ) ) {
+if ( ! $tabs = learn_press_get_course_tabs() ) {
 	return;
-} ?>
+}
+
+?>
 
 <div id="learn-press-course-tabs" class="course-tabs">
 
-    <ul class="learn-press-nav-tabs course-nav-tabs">
+    <div class="learn-press-nav-tabs course-nav-tabs">
 
-        <?php foreach ( $tabs as $key => $tab ) { ?>
-
-            <?php $classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
+		<?php
+		foreach ( $tabs as $key => $tab ) {
+			$classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
 			if ( ! empty( $tab['active'] ) && $tab['active'] ) {
 				$classes[] = 'active default';
-			} ?>
-
-            <li class="<?php echo join( ' ', $classes ); ?>">
-                <a href="?tab=<?php echo esc_attr( $tab['id'] ); ?>"
-                   data-tab="#<?php echo esc_attr( $tab['id'] ); ?>"><?php echo $tab['title']; ?></a>
-            </li>
+			}
+			?>
+            <a href="?tab=<?php echo esc_attr( $tab['id'] ); ?>"
+               class="<?php echo join( ' ', $classes ); ?>"
+               data-tab="#<?php echo esc_attr( $tab['id'] ); ?>"><?php echo $tab['title']; ?></a>
 
 		<?php } ?>
 
-    </ul>
+    </div>
 
 	<?php foreach ( $tabs as $key => $tab ) { ?>
 

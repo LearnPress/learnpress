@@ -27,31 +27,7 @@ class LP_Preview_Course {
 	public static function get_preview_course() {
 
 		if ( empty( self::$_preview_course ) ) {
-			global $wpdb;
 
-			$query = $wpdb->prepare( "
-				SELECT ID
-				FROM {$wpdb->posts} p 
-				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s 
-				WHERE pm.meta_value = %s
-			", '_lp_preview_course', 'yes' );
-
-			if ( ! $course_id = $wpdb->get_var( $query ) ) {
-				$title                 = __( 'Preview Course', 'learnpress' );
-				self::$_preview_course = wp_insert_post(
-					array(
-						'post_author' => 0,
-						'post_type'   => LP_COURSE_CPT,
-						'post_title'  => $title,
-						'post_status' => 'draft',
-						'post_name'   => sanitize_title( $title )
-					)
-				);
-
-				update_post_meta( self::$_preview_course, '_lp_preview_course', 'yes' );
-			} else {
-				self::$_preview_course = $course_id;
-			}
 		}
 
 		return self::$_preview_course;
@@ -123,12 +99,17 @@ class LP_Preview_Course {
 
 			self::$_item_id = $post_id;
 
-			$preview_course = self::get_preview_course();
-			$post_course    = get_post( $preview_course );
+			if ( $preview_courses = self::get_preview_courses() ) {
+				$preview_course = $preview_courses[0];
+			} else {
+				$preview_course = - 1;
+			}
 
-			$post              = wp_cache_get( self::$_preview_course, 'posts' );
+			$post_course = get_post( $preview_course );
+
+			$post              = wp_cache_get( $preview_course, 'posts' );
 			$post->post_status = 'publish';
-			wp_cache_set( self::$_preview_course, $post, 'posts' );
+			wp_cache_set( $preview_course, $post, 'posts' );
 
 			/**
 			 * Set FAKE url of preview course to request uri so WP will parse
@@ -150,7 +131,8 @@ class LP_Preview_Course {
 
 			//learn_press_debug($_SERVER);die();
 
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 			wp_redirect( get_home_url() );
 			exit();
@@ -168,7 +150,7 @@ class LP_Preview_Course {
 			", '_lp_preview_course', 'yes' );
 
 			$ids = $wpdb->get_col( $query );
-			LP_Object_Cache::set( 'preview-courses', $ids, 'learnpress' );
+			LP_Object_Cache::set( 'preview-courses', $ids, 'learn-press' );
 		}
 
 		return $ids;

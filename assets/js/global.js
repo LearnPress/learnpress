@@ -9,6 +9,77 @@ if (typeof window.LP === 'undefined') {
 
 
 (function ($) {
+
+    /**
+     * Translator
+     *
+     * @param strings
+     * @constructor
+     */
+    var Translator = function (strings) {
+        this.strings = strings;
+    };
+
+    Translator.prototype = $.extend({}, Translator.prototype, {
+
+        /**
+         * Get translated string and prints with placeholders.
+         *
+         * @param string
+         * @returns {*}
+         */
+        translate: function (string) {
+            var s = this.strings[string],
+                reg = /(%([1-9]+\$)?[d|s])/g,
+                args = arguments,
+                m = null,
+                p = 0;
+
+            if (s === undefined) {
+                s = string;
+            }
+
+            if (args.length < 2) {
+                return s;
+            }
+
+            m = s.match(reg);
+
+            if (!m) {
+                return s;
+            }
+
+            for (var i = 0, n = m.length; i < n; i++) {
+
+                switch (m[i]) {
+                    case '%s':
+                        s = s.replace(/%s/, arguments[i + 1 - p]);
+                        break;
+                    case '%d':
+                        s = s.replace(/%d/, arguments[i + 1 - p] * 1);
+                        break;
+                    default:
+                        var k = m[i].match(/%([1-9])\$([sd])/);
+                        p++;
+                        switch (k[2]) {
+                            case 's':
+                                s = s.replace(k[0], args[k[1]]);
+                                break;
+                            case 'd':
+                                s = s.replace(k[0], args[k[1]] * 1);
+                                break;
+                        }
+                }
+            }
+
+            return s;
+        }
+    });
+
+    $(document).ready(function () {
+        window.LP.l10n = new Translator(window.lp_l10n || {});
+    });
+
     /**
      * Manage event callbacks.
      * Allow add/remove a callback function into custom event of an object.
@@ -736,9 +807,12 @@ if (typeof window.LP === 'undefined') {
 
             return function (url, action, data, params, context) {
                 data = $.extend({}, defaultData, data);
+
+                url = url ? url : (url !== false ? url : $store.getters.rootUrl || '');
+
                 return new Promise(function (resolve, reject) {
                     Vue.http.post(
-                        url || '',
+                        url,
                         data,
                         {
                             emulateJSON: true,
@@ -763,7 +837,6 @@ if (typeof window.LP === 'undefined') {
                 beforeSend = args.beforeSend || function () {
                     },
                 url = args.url || window.location.href;
-//                        console.debug( beforeSend );
             $.ajax({
                 data: data,
                 url: url,

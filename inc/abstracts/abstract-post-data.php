@@ -148,6 +148,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 					setup_postdata( $post );
 					ob_start();
 					the_content();
+
 					$this->_content = ob_get_clean();
 					wp_reset_postdata();
 				}

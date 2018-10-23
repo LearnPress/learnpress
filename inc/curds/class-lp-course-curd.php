@@ -813,24 +813,31 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$first_course_sections = false;
 
 			foreach ( $course_id as $cid ) {
-				if ( false === ( $course_sections = LP_Hard_Cache::get( $cid, 'course-sections' ) ) ) {
-					$query = $wpdb->prepare( "
-						SELECT s.* FROM {$wpdb->posts} p
-						INNER JOIN {$wpdb->learnpress_sections} s ON p.ID = s.section_course_id
-						WHERE p.ID = %d
-						ORDER BY p.ID, `section_order` ASC
-					", $cid );
+				//if ( false === ( $course_sections = LP_Object_Cache::get( $cid, 'course-sections' ) ) ) {
+				$query = $wpdb->prepare( "
+					SELECT s.section_id id, s.section_name name, s.section_description description 
+					FROM {$wpdb->posts} p
+					INNER JOIN {$wpdb->learnpress_sections} s ON p.ID = s.section_course_id
+					WHERE p.ID = %d
+					ORDER BY p.ID, `section_order`, `section_id` ASC
+				", $cid );
 
-					if ( ! $course_sections = $wpdb->get_results( $query ) ) {
-						$course_sections = array();
-					}
-
-					if ( false === $first_course_sections ) {
-						$first_course_sections = $course_sections;
-					}
-
-					LP_Hard_Cache::set( $cid, $course_sections, 'course-sections' );
+				if ( ! $course_sections = $wpdb->get_results( $query ) ) {
+					$course_sections = array();
 				}
+
+				$tmp = array();
+				foreach ( $course_sections as $section ) {
+					$tmp[ $section->id ] = $section;
+				}
+				$course_sections = $tmp;
+
+				if ( false === $first_course_sections ) {
+					$first_course_sections = $course_sections;
+				}
+
+				//LP_Object_Cache::set( $cid, $course_sections, 'course-sections' );
+				//}
 			}
 
 			return $first_course_sections;

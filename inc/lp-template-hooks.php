@@ -200,7 +200,7 @@ add_action( 'learn-press/single-item-summary', function () {
 		remove_action( 'learn-press/after-content-item-summary/lp_lesson', 'learn_press_course_finish_button', 15 );
 		remove_action( 'learn-press/single-item-summary', 'learn_press_single_course_content_item', 10 );
 
-		learn_press_get_template('single-course/content-items');
+		learn_press_get_template( 'single-course/content-items' );
 	}
 }, 0 );
 
@@ -450,11 +450,48 @@ add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_b
 //add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );
 
 
-add_action('learn-press/tmpl-course-item-content', function ($type){
-	switch($type){
+add_action( 'learn-press/tmpl-course-item-content', function ( $type ) {
+	switch ( $type ) {
 		case LP_LESSON_CPT:
 			break;
 		case LP_QUIZ_CPT:
-			learn_press_get_template('content-question/content.php');
+			learn_press_get_template( 'content-question/content.php' );
 	}
-});
+} );
+
+add_action( 'learn-press/tmpl-course-item-content-description', function ( $itemId, $courseId ) {
+	$course = learn_press_get_course( $courseId );
+	$item   = $course->get_item( $itemId );
+	$user   = learn_press_get_current_user();
+
+	switch ( $item->get_post_type() ) {
+		case LP_QUIZ_CPT:
+
+			$itemData = $user->get_item_data( $itemId, $courseId );
+			if ( $itemData ) {
+				switch ( $itemData->get_status() ) {
+					case 'started':
+						//echo 'Started';
+						break;
+					case 'completed':
+						echo 'Completed';
+						break;
+					default:
+						echo $item->get_content();
+				}
+			} else {
+				echo $item->get_content();
+			}
+
+			break;
+		default:
+			printf( '<div>%s</div>', $item->get_content() );
+			?>
+            <button type="button" @click="_completeItem($event)" :disabled="currentItem.completed">
+                <template v-if="currentItem.completed">{{'<?php esc_html_e( 'Completed', 'learnpress' ); ?>'}}
+                </template>
+                <template v-else>{{'<?php esc_html_e( 'Complete', 'learnpress' ); ?>'}}</template>
+            </button>
+			<?php
+	}
+}, 10, 2 );

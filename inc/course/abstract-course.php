@@ -1738,10 +1738,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return array|LP_Course_Section[]|LP_Course_Section
 		 */
 		public function get_sections( $return = 'object', $section_id = 0 ) {
+
 			if ( false === ( $sections = LP_Object_Cache::get( 'course-' . $this->get_id(), 'learn-press/course-sections' ) ) ) {
 				$sections = $this->_curd->read_course_sections( $this->get_id() );
 				LP_Object_Cache::set( 'course-' . $this->get_id(), $sections, 'learn-press/course-sections' );
 			}
+
 			if ( $return == 'object' && $sections ) {
 				if ( empty( $this->sections ) ) {
 
@@ -1749,14 +1751,16 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$object_sections = array();
 
 					foreach ( $sections as $k => $section ) {
-						$sid     = $section->section_id;
-						$section = new LP_Course_Section( $section );
+						$sid     = $section->id;
+						$section = new LP_Course_Section( $sid );
 						$section->set_position( ++ $position );
+						$section->set_course_id( $this->get_id() );
 
 						$object_sections[ $sid ] = $section;
 					}
 					$sections       = $object_sections;
 					$this->sections = $sections;
+
 				} else {
 					$sections = $this->sections;
 				}

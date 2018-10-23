@@ -35,6 +35,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 */
 		public static function init() {
 
+			return;
 			// Handle user do quiz actions in frontend
 			$actions = array(
 				'start-quiz:nopriv' => 'start_quiz',

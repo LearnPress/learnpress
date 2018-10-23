@@ -37,7 +37,7 @@ do_action( 'learn_press_before_content_learning' );
 	 * @see   learn_press_course_instructor
 	 * @see   learn_press_course_students
 	 * @see   learn_press_course_meta_end_wrapper
-	 * @see   learn_press_single_course_content_lesson
+	 * @see   //learn_press_single_course_content_lesson
 	 * @see   learn_press_single_course_content_item
 	 * @see   learn_press_course_progress
 	 * @see   learn_press_course_tabs

@@ -45,7 +45,7 @@ foreach ( $item_types as $item_type => $name ) {
                              class="learn-press-content-item content-item-<?php echo $item->get_post_type(); ?>">
                             <lp-course-item :item="currentItem">
                                 <div class="content-item-content">
-									<?php echo $item->get_content(); ?>
+									<?php do_action( 'learn-press/tmpl-course-item-content-description', $item->get_id(), $course->get_id() ) ?>
                                 </div>
                                 <component :is="getComponent('<?php echo $item->get_post_type(); ?>')"
                                            :item="currentItem"
@@ -56,12 +56,6 @@ foreach ( $item_types as $item_type => $name ) {
 					}
 				}
 				?>
-
-                <button type="button" @click="_completeItem($event)" :disabled="currentItem.completed">
-                    <template v-if="currentItem.completed">{{'<?php esc_html_e( 'Completed', 'learnpress' ); ?>'}}
-                    </template>
-                    <template v-else>{{'<?php esc_html_e( 'Complete', 'learnpress' ); ?>'}}</template>
-                </button>
             </div>
 
         </div>
@@ -166,8 +160,6 @@ $lp_course_item = $global_course_item;
                     $courseStore: function (prop, value) {
                         var $store = window.$courseStore;
 
-                        console.log('$Store', $store)
-
                         if (!$store) {
                             return undefined;
                         }
@@ -241,8 +233,7 @@ $lp_course_item = $global_course_item;
             watch: {
                 questions: {
                     handler: function (v) {
-                        console.log(arguments)
-                        return v;
+                        return v || [];
                     },
                     deep: true
                 },
@@ -273,11 +264,19 @@ $lp_course_item = $global_course_item;
                 }
             },
             mounted: function () {
-
-
-                console.log(this.currentQuestion)
+                if (this.item.id) {
+                    this.init();
+                }
             },
             methods: {
+                loadScript: function (url) {
+                    var script = document.createElement('script');
+                    script.onload = function () {
+                    };
+                    script.src = url;
+
+                    document.head.appendChild(script);
+                },
                 init: function () {
                     var $vm = this;
                     this.$questions = this.$('.quiz-question');
@@ -298,29 +297,44 @@ $lp_course_item = $global_course_item;
 
                     $(document).ready(LP.debounce(function () {
                         $vm.isLoading = false;
-                        console.log($vm.$('.answer-option'));
 
                         $vm.$('.answer-option').on('change', 'input, textarea, select', function () {
                             var $q = $(this).closest('.quiz-question');
                             $vm.fillAnswers($q);
-                        })
-                    }, 300)).on('change', '.answer-option input, .answer-option', function () {
+                        });
+                        var scripts = [];
+                        $vm.$('#learn-press-quiz-' + $vm.item.id).find('script').each(function () {
+                            var $script = $(this);
 
-                    })
+                            if ($script.attr('src')) {
+                                $vm.loadScript($script.attr('src'));
+                                $script.remove();
+                            } else {
+                                scripts.push($(this).text());
+                            }
+                        });
+
+                        if (scripts) {
+                            eval.apply(window, [scripts.join("\n\n")]);
+                        }
+
+                    }, 3000))
                 },
                 load: function () {
                     var $vm = this;
-                    $vmCourse._$request('', 'get-quiz', {itemId: this.item.id}).then(function (r) {
+                    $vmCourse._$request(false, 'get-quiz', {itemId: this.item.id, xxx: 1}).then(function (r) {
                         $vm.$set($vm.item, 'quiz', r);
 
-                        $.each('checkCount hintCount currentQuestion status questions'.split(' '), function (a, b) {
+                        $.each('checkCount hintCount currentQuestion status questions answers'.split(' '), function (a, b) {
                             $vm[b] = r[b];
                         })
-
 
                         $vm.init();
                     });
 
+                },
+                hasQuestions: function () {
+                    return this.questions && this.questions.length;
                 },
                 isShowContent: function () {
                     return this.item.quiz ? !this.item.quiz.status : true;
@@ -329,10 +343,6 @@ $lp_course_item = $global_course_item;
                     var $vm = this,
                         id = $q.attr('data-id'),
                         answers = [];
-
-
-                    //Vue.set($vm.answers[id], [1]);
-
                     $q.find('.answer-option').find('input[type="checkbox"], input[type="radio"]').filter(':checked').each(function () {
                         answers.push($(this).val());
                     });
@@ -344,9 +354,7 @@ $lp_course_item = $global_course_item;
                         answers.push($(this).val());
                     });
 
-
                     Vue.set($vm.answers, id, answers);
-
                 },
                 toggleButtons: function () {
                     var $vm = this;
@@ -477,7 +485,7 @@ $lp_course_item = $global_course_item;
                 getQuestionById: function (questionId) {
                     questionId = questionId || this.currentQuestion;
                     var at = this.getQuestionIndex(questionId);
-                    return this.questions[at]
+                    return this.questions ? this.questions[at] : false;
                 },
                 _prev: function () {
                     var at = this.getQuestionIndex();
@@ -507,7 +515,28 @@ $lp_course_item = $global_course_item;
                     }
                 },
                 _complete: function () {
-                    this.$('form.complete-quiz').submit();
+                    jConfirm(LP.l10n.translate('Do you want to finish quiz %s?', this.item.name), '', $.proxy(function (confirm) {
+                        $vmCourse._$request(false, 'complete-quiz', {
+                            itemId: this.item.id,
+                            answers: this.answers
+                        });
+                    }, this));
+
+                    setTimeout(function () {
+                        $.alerts._reposition();
+                        $('#popup_container').addClass('ready')
+                    }, 30)
+
+                    var $a = $('<a href="" class="close"><i class="fa fa-times"></i></a>')
+                    $('#popup_container').append($a);
+                    $a.on('click', function () {
+                        $.alerts._hide();
+                        return false;
+                    });
+
+                    $(document.body).toggleClass('confirm', true);
+
+
                 },
                 _doCheckAnswer: function () {
                     var $vm = this,

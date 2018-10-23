@@ -18,6 +18,15 @@ Domain Path: /languages/
  */
 defined( 'ABSPATH' ) || exit();
 
+//$GLOBALS['xxxx'] = microtime( true );
+//
+//add_action( 'template_include', function () {
+//	global $wpdb;
+//	learn_press_debug( $wpdb->queries );
+//	echo microtime( true ) - $GLOBALS['xxxx'];
+//	die();
+//}, 9999999 );
+
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
@@ -232,6 +241,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
 			include_once 'inc/admin/helpers/class-lp-plugins-helper.php';
+			require_once 'inc/class-lp-strings.php';
 
 			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';
@@ -759,9 +769,6 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-//add_action( 'template_include', function () {
-//	global $wp, $wp_rewrite;
-//
-//	learn_press_debug( pll_languages_list() );
-//	learn_press_debug( $wp, $wp_rewrite );
-//} ,9999999);
+//add_filter('template_include', function ($tmpl){
+//	echo $tmpl;
+//}, 9999);

@@ -12,12 +12,17 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 *
 	 * @var null
 	 */
-	protected $data = null;
+	protected $id = 0;
 
 	/**
 	 * @var int
 	 */
 	protected $course_id = 0;
+
+	/**
+	 * @var int
+	 */
+	protected $position = 0;
 
 	/**
 	 * @var LP_Section_CURD
@@ -32,35 +37,37 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	/**
 	 * LP_Course_Section constructor.
 	 *
-	 * @param $data
+	 * @param int $section_id
+	 * @param int $course_id
 	 */
-	public function __construct( $data ) {
-		$data = wp_parse_args(
-			$data,
-			array(
-				'section_id'          => 0,
-				'section_name'        => '0',
-				'section_course_id'   => 0,
-				'section_order'       => 1,
-				'section_description' => '',
-				'position'            => 0,
-				'items'               => array()
-			)
-		);
-
-		// Set data
-		foreach ( $data as $k => $v ) {
-			$k = str_replace( 'section_', '', $k );
-
-			if ( $k === 'course_id' ) {
-				$this->course_id = absint( $v );
-				continue;
-			}
-			$this->_data[ $k ] = $v;
-		}
+	public function __construct( $section_id, $course_id = 0 ) {
+//		$data = wp_parse_args(
+//			$data,
+//			array(
+//				'id'          => 0,
+//				'name'        => '0',
+//				//'section_course_id'   => 0,
+//				//'order'       => 1,
+//				'description' => '',
+//				'position'    => 0,
+//				'items'       => array()
+//			)
+//		);
+//
+//		// Set data
+//		foreach ( $data as $k => $v ) {
+////			$k = str_replace( 'section_', '', $k );
+////
+////			if ( $k === 'course_id' ) {
+////				$this->course_id = absint( $v );
+////				continue;
+////			}
+//			$this->_data[ $k ] = $v;
+//		}
 
 		$this->_curd = new LP_Section_CURD( 0 );
-		$this->set_id( $this->_data['id'] );
+		$this->set_id( $section_id );
+		$this->set_course_id( $course_id );
 		// Load section items
 		$this->_load_items();
 	}
@@ -94,6 +101,10 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		}
 
 		return true;
+	}
+
+	public function get_item( $item_id ) {
+		return $this->items[ $item_id ];
 	}
 
 	/**
@@ -133,13 +144,19 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		return $data;
 	}
 
-	/**
-	 * Return section id
-	 *
-	 * @return mixed
-	 */
-	public function get_id() {
-		return $this->_data['id'];
+	public function get_data( $name = '', $default = '' ) {
+		$sections = LP_Object_Cache::get( 'course-' . $this->get_course_id(), 'learn-press/course-sections' );
+		$return   = $default;
+
+		if ( $sections && ! empty( $sections[ $this->get_id() ] ) ) {
+			$section = $sections[ $this->get_id() ];
+
+			if ( $name && isset( $section->{$name} ) ) {
+				$return = $section->{$name};
+			}
+		}
+
+		return $return;
 	}
 
 	/**
@@ -148,13 +165,17 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_title() {
-		return apply_filters( 'learn-press/section-title', $this->_data['name'], $this );
+		return apply_filters( 'learn-press/section-title', $this->get_data( 'name' ), $this );
+	}
+
+	public function set_course_id( $course_id ) {
+		$this->course_id = absint( $course_id );
 	}
 
 	/**
 	 * Return section course id
 	 *
-	 * @return mixed
+	 * @return int
 	 */
 	public function get_course_id() {
 		return $this->course_id;
@@ -166,7 +187,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_order() {
-		return $this->_data['order'];
+		return $this->get_position();
 	}
 
 	/**
@@ -175,7 +196,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_description() {
-		return apply_filters( 'learn-press/section-description', $this->_data['description'], $this );
+		return apply_filters( 'learn-press/section-description', $this->get_data( 'description' ), $this );
 	}
 
 	/**
@@ -183,11 +204,13 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 *
 	 * @param string|array $type
 	 * @param bool         $preview
+	 * @param string       $return
 	 *
 	 * @return array
 	 */
-	public function get_items( $type = '', $preview = true ) {
-		$items = apply_filters( 'learn-press/section-items', $this->items, $this );
+	public function get_items( $type = '', $preview = true, $return = 'object' ) {
+		$cached_items = LP_Object_Cache::get( 'section-' . $this->get_id(), 'learn-press/section-items' );
+		$items        = apply_filters( 'learn-press/section-items', $cached_items, $this );
 
 		if ( ! $items ) {
 			return $items;
@@ -202,19 +225,25 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 
 			foreach ( $items as $item ) {
 
+				$it = $this->get_item( $item );
+
 				if ( ! $preview ) {
-					if ( $item->is_preview() ) {
+					if ( $it->is_preview() ) {
 
 						continue;
 					}
 				}
-				if ( ! $type || $type && in_array( learn_press_get_post_type( $item->get_id() ), $type ) ) {
-					$filtered_items[] = $item;
+
+				if ( ! $type || $type && in_array( learn_press_get_post_type( $it->get_id() ), $type ) ) {
+					$filtered_items[] = $return === 'object' ? $it : $it->get_id();
 				}
 			}
 
 			$items = $filtered_items;
+		} else {
+			$items = $return === 'object' ? $this->items : $items;
 		}
+
 
 		return $items;
 	}
@@ -305,11 +334,19 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		return $class;
 	}
 
+	/**
+	 * @param int $position
+	 */
 	public function set_position( $position ) {
-		$this->_data['position'] = $position;
+		$this->position = absint( $position );
 	}
 
+	/**
+	 * Get section position in the course
+	 *
+	 * @return int
+	 */
 	public function get_position() {
-		return ! empty( $this->_data['position'] ) ? absint( $this->_data['position'] ) : 0;
+		return $this->position;
 	}
 }

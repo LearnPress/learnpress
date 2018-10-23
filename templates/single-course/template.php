@@ -7,15 +7,15 @@ $course_item = LP_Global::course_item();
 $context     = $course_item ? 'course-item' : 'course';
 ?>
 <style>
-    #learn-press-course-curriculum {
+    #learn-press-course-curriculum .curriculum-sections{
         opacity: 0;
     }
 
-    #learn-press-course-curriculum.ready {
+    #learn-press-course-curriculum.ready .curriculum-sections{
         opacity: 1;
     }
 </style>
-[
+
 <div :class="['course-curriculum', ready ? 'ready' : '']" id="learn-press-course-curriculum"
      data-context="<?php echo $context; ?>">
     <div class="curriculum-scrollable">
@@ -53,12 +53,8 @@ $context     = $course_item ? 'course-item' : 'course';
             </li>
         </ul>
     </div>
-</div>]
-
-
-<div id="app">
-    XXXX
 </div>
+
 <?php
 
 
@@ -119,7 +115,7 @@ $context     = $course_item ? 'course-item' : 'course';
                     completeItem: function (item) {
                         item = item || this.currentItem;
 
-                        $request('', 'complete-course-item', {itemId: item.id}).then(function (r) {
+                        $request(false, 'complete-course-item', {itemId: item.id}).then(function (r) {
                             if (r.classes) {
                                 item.classes = $(r.classes).filter(function (a, b) {
                                     return -1 === $.inArray(b, ['current']);
@@ -226,62 +222,71 @@ $context     = $course_item ? 'course-item' : 'course';
                 }
             };
             console.time('Load curriculum data')
-            $.ajax({
-                url: '',
-                data: {
-                    'lp-ajax': 'load_course_curriculum',
-                    course_ID: <?php echo $course->get_id();?>
-                },
-                success: function (r) {
-                    window.LP_Course_Settings = LP.parseJSON(r);
 
-                    window.$courseStore = (function (data) {
-                        var state = data;
+            console.log('aaaa')
+            window.LP_Course_Settings = <?php echo json_encode( learn_press_get_course_curriculum_for_js( $course->get_id() ) );?>
 
-                        var getters = {
-                            currentItem: function (state) {
-                                if (!$.isPlainObject(state.currentItem)) {
-                                    for (var i = 0, n = state.sections.length; i < n; i++) {
-                                        var item = state.sections[i].items.find(function (a) {
-                                            return a.id == state.currentItem;
-                                        });
+            var yyy = function (data) {
+                window.$courseStore = (function (data) {
+                    var state = data;
 
-                                        if (item) {
-                                            state.currentItem = item;
-                                            break;
-                                        }
+                    var getters = {
+                        currentItem: function (state) {
+                            if (!$.isPlainObject(state.currentItem)) {
+                                for (var i = 0, n = state.sections.length; i < n; i++) {
+                                    var item = state.sections[i].items.find(function (a) {
+                                        return a.id == state.currentItem;
+                                    });
+
+                                    if (item) {
+                                        state.currentItem = item;
+                                        break;
                                     }
                                 }
-                                return state.currentItem;
-                            },
-                            identify: function (state) {
-                                return state.identify;
-                            },
-                            all: function (state) {
-                                return state;
                             }
-                        };
-                        var mutations = {};
-                        var actions = {};
+                            return state.currentItem;
+                        },
+                        identify: function (state) {
+                            return state.identify;
+                        },
+                        rootUrl: function (state) {
+                            return state.rootUrl || '';
+                        },
+                        all: function (state) {
+                            return state;
+                        }
+                    };
+                    var mutations = {};
+                    var actions = {};
 
 
-                        return new Vuex.Store({
-                            state: state,
-                            getters: getters,
-                            mutations: mutations,
-                            actions: actions
-                        });
-                    })(LP_Course_Settings);
+                    return new Vuex.Store({
+                        state: state,
+                        getters: getters,
+                        mutations: mutations,
+                        actions: actions
+                    });
+                })(data);
 
-                    $request = window.$request = new LP.Request($courseStore, {courseId: LP_Course_Settings.courseId});
+                $request = window.$request = new LP.Request($courseStore, {courseId: LP_Course_Settings.courseId});
+                window.$vmCourse = new Vue(vueConfig);
+                console.timeEnd('Load curriculum data')
+            };
 
-                    window.$vmCourse = new Vue(vueConfig);
 
+            yyy(LP_Course_Settings)
 
-                    console.timeEnd('Load curriculum data')
-
-                }
-            });
+//            $.ajax({
+//                url: '',
+//                data: {
+//                    'lp-ajax': 'load_course_curriculum',
+//                    course_ID: <?php //echo $course->get_id();?>
+//                },
+//                success: function (r) {
+//                    window.LP_Course_Settings = LP.parseJSON(r);
+//
+//                }
+//            });
 
         }
 

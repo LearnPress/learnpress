@@ -321,7 +321,7 @@ class LP_Page_Controller {
 			// If there is no template is valid in theme or plugin
 			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
 				// Get template of wp page.
-				$template = get_page_template();
+				$template = get_single_template();// get_page_template();
 			} else {
 				$template = $lp_template;
 			}

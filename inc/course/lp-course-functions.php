@@ -1179,23 +1179,6 @@ function learn_press_get_custom_thumbnail_sizes() {
 }
 
 function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
-	array_fill( 0, 10,
-		array(
-			'name'    => 'Section 1',
-			'id'      => 0,
-			'desc'    => 'Section 1 description',
-			'classes' => 'section',
-			'items'   => array_fill( 0, 100,
-				array(
-					'type'       => 'lp-lesson',
-					'name'       => 'Lesson 1',
-					'slug'       => 'lesson-1',
-					'is_preview' => false,
-					'completed'  => false,
-				)
-			)
-		)
-	);
 
 	/**
 	 * @var LP_Course_Section[] $sections
@@ -1207,6 +1190,7 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 	$course      = learn_press_get_course( $course_id );
 	$course_data = $user->get_course_data( $course_id );
 	$curriculum  = array(
+		'rootUrl'        => trailingslashit( site_url() ),
 		'identify'       => wp_create_nonce( 'lp-' . $user->get_id() . '-' . $course_id ),
 		'courseId'       => $course_id,
 		'currentItem'    => $course_data->get_meta( '_current_item' ),
@@ -1215,7 +1199,7 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 		'ready'          => false,
 		'sections'       => array()
 	);
-
+	//LP_Debug::timeStart( __FUNCTION__ );
 	if ( $sections = $course->get_sections() ) {
 		foreach ( $sections as $sec ) {
 			$section = array(
@@ -1233,7 +1217,7 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 					$item    = array(
 						'id'        => $it->get_id(),
 						'name'      => $it->get_title(),
-						'content'   => $it->get_content(),
+						//'content'   => $it->get_content(),
 						'type'      => $it->get_post_type(),
 						'slug'      => '',
 						'completed' => $it_data ? $it_data->is_completed() : false,
@@ -1251,5 +1235,9 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 		}
 	}
 
+	//LP_Debug::timeEnd( __FUNCTION__ );
+
 	return $curriculum;
 }
+
+//echo sprintf('This is %s %3$s and %d and %1$s and %1$d and %2$s', 12, 14, 13);die();

@@ -561,10 +561,19 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 	/**
 	 * Return an array of tabs display in single course page.
 	 *
+     * Callbacks:
+     *
+     * @see learn_press_course_overview_tab
+     * @see learn_press_course_curriculum_tab
+     * @see learn_press_course_instructor_tab
+     *
 	 * @return array
 	 */
 	function learn_press_get_course_tabs() {
-
+		/**
+		 * @use learn_press_course_overview_tab
+		 */
+		LP_Debug::timeStart( __FUNCTION__ );
 		$course = learn_press_get_course();
 		$user   = learn_press_get_current_user();
 
@@ -630,6 +639,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				}
 			}
 		}
+		LP_Debug::timeEnd( __FUNCTION__ );
 
 		return $tabs;
 	}
@@ -1618,7 +1628,7 @@ if ( ! function_exists( 'learn_press_content_single_course' ) ) {
 
 		if ( ! $course_item = LP_Global::course_item() ) {
 			learn_press_get_template( 'content-single-course.php' );
-		}else{
+		} else {
 			learn_press_get_template( 'content-single-item.php' );
 		}
 	}
@@ -1689,7 +1699,7 @@ if ( ! function_exists( 'learn_press_single_course_content_item' ) ) {
 	 * Display lesson content
 	 */
 	function learn_press_single_course_content_item() {
-		learn_press_get_template( 'single-course/content-item.php' );
+		//learn_press_get_template( 'single-course/content-item.php' );
 	}
 }
 
@@ -3533,23 +3543,49 @@ add_filter( 'show_admin_bar', 'learn_press_maybe_show_admin_bar', 10000 );
  * @return bool|mixed
  */
 function learn_press_is_learning_course( $course_id = 0 ) {
-	$user        = learn_press_get_current_user();
-	$course      = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
-	$is_learning = false;
-	$has_status  = false;
+//	LP_Debug::timeStart( __FUNCTION__ . '-1' );
+//
+//	if ( ! defined( 'LEARNPRESS_IS_LEARNING' ) ) {
+//		global $wpdb;
+//		$query = $wpdb->prepare( "
+//            SELECT `status`
+//            FROM {$wpdb->prefix}learnpress_user_items ui
+//            INNER JOIN {$wpdb->prefix}posts c ON c.ID = ui.item_id
+//            INNER JOIN {$wpdb->prefix}posts o ON o.ID = ui.ref_id
+//            INNER JOIN {$wpdb->prefix}users u ON u.ID = ui.user_id
+//            WHERE ui.user_id = %d AND ui.item_id = %d AND ui.status IN(%s, %s)
+//            ORDER BY user_item_id DESC
+//            LIMIT 0,1
+//        ", get_current_user_id(), get_the_ID(), 'enrolled', 'finished' );
+//
+//		define( 'LEARNPRESS_IS_LEARNING', $wpdb->get_var( $query ) );
+//	}
+//	LP_Debug::timeEnd( __FUNCTION__ . '-1' );
 
-	if ( $user && $course ) {
-		$has_status = $user->has_course_status( $course->get_id(), array(
-			'enrolled',
-			'finished'
-		) );
+	LP_Debug::timeStart( __FUNCTION__ . '-2' );
+	if ( ! defined( 'LEARNPRESS_IS_LEARNING_2' ) ) {
+
+		$user        = learn_press_get_current_user();
+		$course      = $course_id ? learn_press_get_course( $course_id ) : LP_Global::course();
+		$is_learning = false;
+		$has_status  = false;
+
+		if ( $user && $course ) {
+			$has_status = $user->has_course_status( $course->get_id(), array(
+				'enrolled',
+				'finished'
+			) );
+		}
+
+		if ( $course && ( ! $course->is_required_enroll() || $has_status ) ) {
+			$is_learning = true;
+		}
+
+		define( 'LEARNPRESS_IS_LEARNING_2', $is_learning );
 	}
+	LP_Debug::timeEnd( __FUNCTION__ . '-2' );
 
-	if ( $course && ( ! $course->is_required_enroll() || $has_status ) ) {
-		$is_learning = true;
-	}
-
-	return apply_filters( 'learn-press/is-learning-course', $is_learning );
+	return apply_filters( 'learn-press/is-learning-course', LEARNPRESS_IS_LEARNING_2 );
 }
 
 function learn_press_get_color_schemas() {
