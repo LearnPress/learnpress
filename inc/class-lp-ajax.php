@@ -34,6 +34,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'toggle-distraction-mode',
 				'get_question_data',
 				'load_course_curriculum',
+				'get_notifications'
 
 				//'register-user:nopriv',
 				//'login-user:nopriv'
@@ -59,6 +60,17 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 
 			add_action( 'wp_ajax_learnpress_upload-user-avatar', array( __CLASS__, 'upload_user_avatar' ) );
+		}
+
+		/**
+		 * Get notifications
+		 *
+		 * @since 3.2.0
+		 */
+		public static function get_notifications() {
+			echo $noti = LP_Notifications::instance();
+
+			learn_press_send_json( $noti->get( '', true ) );
 		}
 
 		public static function load_course_curriculum() {

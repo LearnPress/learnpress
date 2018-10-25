@@ -242,6 +242,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache.php';
 			include_once 'inc/admin/helpers/class-lp-plugins-helper.php';
 			require_once 'inc/class-lp-strings.php';
+			require_once 'inc/class-lp-notifications.php';
 
 			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';

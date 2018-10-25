@@ -115,18 +115,15 @@ class LP_Query {
 	 */
 	function add_rewrite_rules() {
 
-		$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
-		// lesson
 		$course_type  = LP_COURSE_CPT;
 		$post_types   = get_post_types( '', 'objects' );
 		$slug         = preg_replace( '!^/!', '', $post_types[ $course_type ]->rewrite['slug'] );
 		$has_category = false;
+
 		if ( preg_match( '!(%?course_category%?)!', $slug ) ) {
 			$slug         = preg_replace( '!(%?course_category%?)!', '(.+?)/([^/]+)', $slug );
 			$has_category = true;
 		}
-		$current_url        = learn_press_get_current_url();
-		$query_string       = str_replace( trailingslashit( get_home_url() /* SITE_URL */ ), '', $current_url );
 		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
 		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 
@@ -141,8 +138,6 @@ class LP_Query {
 		if ( ! empty( $custom_slug_quiz ) ) {
 			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
 		}
-
-		$popup_slug = 'popup';
 
 		$rules = array();
 
@@ -160,9 +155,6 @@ class LP_Query {
 			);
 
 		} else {
-			if ( ! empty( $_REQUEST['xxx'] ) ) {
-				echo '^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$';
-			}
 			$rules[] = array(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
@@ -173,7 +165,6 @@ class LP_Query {
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
 				'top'
 			);
-
 		}
 
 		// Profile

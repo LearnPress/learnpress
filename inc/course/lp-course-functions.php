@@ -1194,9 +1194,10 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 		'identify'       => wp_create_nonce( 'lp-' . $user->get_id() . '-' . $course_id ),
 		'courseId'       => $course_id,
 		'currentItem'    => $course_data->get_meta( '_current_item' ),
-		'totalItems'     => 0,
+		'totalItems'     => $course->count_items(),
 		'completedItems' => 0,
 		'ready'          => false,
+		'results'        => $course_data->get_percent_result(),
 		'sections'       => array()
 	);
 	//LP_Debug::timeStart( __FUNCTION__ );

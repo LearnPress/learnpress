@@ -1450,16 +1450,16 @@ if (typeof window.LP === 'undefined') {
         });
 
         $('body')
-            .on('click', '.learn-press-nav-tabs li a', function (e) {
+            .on('click', '.learn-press-nav-tabs > a', function (e) {
                 e.preventDefault();
                 var $tab = $(this), url = '';
-                $tab.closest('li').addClass('active').siblings().removeClass('active');
+                $tab.addClass('active').siblings().removeClass('active');
                 $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
                 $(document).trigger('learn-press/nav-tabs/clicked', $tab);
             });
 
         setTimeout(function () {
-            $('.learn-press-nav-tabs li.active:not(.default) a').trigger('click');
+            $('.learn-press-nav-tabs > .active:not(.default)').trigger('click');
         }, 300);
 
         ///$('body.course-item-popup').parent().css('overflow', 'hidden');
@@ -1507,6 +1507,44 @@ if (typeof window.LP === 'undefined') {
             $(document).trigger('learn-press/close-all-quick-tip')
         })
     });
+
+    !Number.prototype.toTime && (Number.prototype.toTime = function () {
+
+        var MINUTE_IN_SECONDS = 60,
+            HOUR_IN_SECONDS = 3600,
+            DAY_IN_SECONDS = 24 * 3600,
+            seconds = this + 0,
+            str = '';
+
+        if (seconds > DAY_IN_SECONDS) {
+            var days = Math.ceil(seconds / DAY_IN_SECONDS);
+            str = days + ( days > 1 ? ' days left' : ' day left' );
+        } else {
+            var hours = Math.floor(seconds / HOUR_IN_SECONDS),
+                minutes = 0;
+            seconds = hours ? seconds % (hours * HOUR_IN_SECONDS) : seconds;
+            minutes = Math.floor(seconds / MINUTE_IN_SECONDS);
+            seconds = minutes ? seconds % (minutes * MINUTE_IN_SECONDS) : seconds;
+
+
+            if (hours && hours < 10) {
+                hours = '0' + hours;
+            }
+
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+
+            if (seconds < 10) {
+                seconds = '0' + seconds;
+            }
+
+            str = hours + ':' + minutes + ':' + seconds;
+        }
+
+        return str;
+    });
+
     LearnPress = LP;
 
 })(jQuery);

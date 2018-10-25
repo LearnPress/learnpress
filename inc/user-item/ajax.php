@@ -23,6 +23,7 @@ class LP_User_Item_Ajax {
 		$ajaxEvents = array(
 			'complete-course-item',
 			'get-quiz',
+			'start-quiz',
 			'complete-quiz',
 		);
 
@@ -48,7 +49,7 @@ class LP_User_Item_Ajax {
 	public static function complete_course_item() {
 
 		self::verify();
-		LP_Debug::startTransaction();
+		//LP_Debug::startTransaction();
 		$itemId      = LP_Request::get_int( 'itemId' );
 		$course_data = self::$course_data;
 		$response    = array();
@@ -58,13 +59,25 @@ class LP_User_Item_Ajax {
 			$course = $course_data->get_course();
 			$it     = $course->get_item( $itemId );
 
-			$response['result']  = $item->complete();
-			$response['classes'] = array_values( $it->get_class() );
+			if ( $item->is_completed() ) {
+				$item->set_status( 'started' );
+				$item->update();
+			} else {
+				$item->complete();
+			}
+			$response['completed'] = $item->is_completed();
+			$response['classes']   = array_values( $it->get_class() );
+			$response['results']   = $course_data->get_percent_result();
 		}
-		LP_Debug::rollbackTransaction();
+		//LP_Debug::rollbackTransaction();
 		learn_press_send_json( $response );
 	}
 
+	/**
+	 * Load quiz data
+	 *
+	 * @since 3.2.0
+	 */
 	public static function get_quiz() {
 		self::verify();
 		global $post, $wp_query, $lp_course_item;
@@ -77,16 +90,28 @@ class LP_User_Item_Ajax {
 		$quizData       = self::$course_data->get_item( $itemId );
 		$lp_course_item = $quiz;
 
+		if ( $quizData ) {
+			$remainingTime = $quizData->get_time_remaining();
+		} else {
+			$remainingTime = false;
+		}
+
+		$totalTime = $quiz->get_duration()->get();
+
 		$json = array(
 			'checkCount'      => $user->can_check_answer( $quiz->get_id() ),
 			'hintCount'       => $user->can_hint_answer( $quiz->get_id() ),
 			'currentQuestion' => $user->get_current_question( $quiz->get_id(), get_the_ID() ),
 			'questions'       => array(),
 			'status'          => $quizData->get_status(),
-			'answers'         => $quizData->get_meta( '_question_answers' )
+			'answers'         => $quizData->get_meta( '_question_answers' ),
+			'totalTime'       => $totalTime,
+			'timeRemaining'   => $remainingTime ? $remainingTime->get() : $totalTime
 		);
 
+		// Load questions
 		$questions = $quiz->get_question_ids();
+
 		foreach ( $questions as $question_id ) {
 			$question = learn_press_get_question( $question_id );
 			$checked  = $user->has_checked_answer( $question->get_id(), $quiz->get_id(), get_the_ID() );
@@ -120,7 +145,6 @@ class LP_User_Item_Ajax {
 			wp_reset_postdata();
 			$questionContent = ob_get_clean();
 
-
 			$json['questions'][] = array(
 				'id'             => absint( $question_id ),
 				'checked'        => $checked,
@@ -138,6 +162,18 @@ class LP_User_Item_Ajax {
 		wp_reset_postdata();
 
 		learn_press_send_json( $json );
+	}
+
+	public static function start_quiz() {
+		self::verify();
+
+		if ( ! self::$course_data ) {
+			die( '-3' );
+		}
+
+		LP_Notifications::instance()->add( __( 'You have started quiz', 'learnpress' ) );
+
+		learn_press_send_json( array( 'notifications' => __( 'WOW!' ) ) );
 	}
 
 	public static function complete_quiz() {
@@ -165,6 +201,9 @@ class LP_User_Item_Ajax {
 		learn_press_send_json( $_REQUEST );
 	}
 
+	/**
+	 * Verify requesting
+	 */
 	public static function verify() {
 		$courseId = LP_Request::get_int( 'courseId' );
 		$user     = learn_press_get_current_user();

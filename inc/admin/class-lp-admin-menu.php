@@ -59,7 +59,9 @@ class LP_Admin_Menu {
 			return;
 		}
 
-		if ( get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
+		$page_id = learn_press_get_page_id( 'courses' );
+
+		if ( get_option( 'page_on_front' ) == $page_id ) {
 			return;
 		}
 
@@ -67,7 +69,7 @@ class LP_Admin_Menu {
 			'parent' => 'site-name',
 			'id'     => 'courses-page',
 			'title'  => __( 'View Courses', 'learnpress' ),
-			'href'   => learn_press_get_page_link( 'courses' )
+			'href'   => $page_id ? learn_press_get_page_link( 'courses' ) : get_post_type_archive_link( LP_COURSE_CPT )
 		) );
 	}
 

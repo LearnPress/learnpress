@@ -269,11 +269,11 @@ add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_cont
  * @see learn_press_content_item_summary_quiz_question
  *
  */
-//add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_progress', 5 );
-//add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_result', 10 );
-//add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_content', 15 );
-//add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 20 );
-//add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_question', 25 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_progress', 5 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_result', 10 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_content', 15 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 20 );
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_question', 25 );
 
 /**
  * @see learn_press_content_item_summary_quiz_buttons
@@ -459,6 +459,30 @@ add_action( 'learn-press/tmpl-course-item-content', function ( $type ) {
 	}
 } );
 
+/**
+ * VM
+ */
+
+/**
+ * @see learn_press_course_item_content
+ * @see learn_press_content_item_comments
+ */
+add_action( 'learn-press/vm/course-item-content', 'learn_press_course_item_content', 5 );
+//add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
+
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_progress', 5 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_result', 10 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_content', 15 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 20 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_question', 25 );
+
+add_action( 'learn-press/vm/after-content-item-summary/lp_quiz', function (){
+    ?>
+    <button @click="_startQuiz"><?php esc_html_e('Start', 'learnpress');?></button>
+    <?php
+}, 10 );
+add_action( 'learn-press/vm/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_questions', 15 );
+
 add_action( 'learn-press/tmpl-course-item-content-description', function ( $itemId, $courseId ) {
 	$course = learn_press_get_course( $courseId );
 	$item   = $course->get_item( $itemId );
@@ -471,7 +495,7 @@ add_action( 'learn-press/tmpl-course-item-content-description', function ( $item
 			if ( $itemData ) {
 				switch ( $itemData->get_status() ) {
 					case 'started':
-						//echo 'Started';
+						echo 'Started';
 						break;
 					case 'completed':
 						echo 'Completed';
@@ -485,13 +509,16 @@ add_action( 'learn-press/tmpl-course-item-content-description', function ( $item
 
 			break;
 		default:
-			printf( '<div>%s</div>', $item->get_content() );
+			echo $item->get_content();
+//
 			?>
-            <button type="button" @click="_completeItem($event)" :disabled="currentItem.completed">
-                <template v-if="currentItem.completed">{{'<?php esc_html_e( 'Completed', 'learnpress' ); ?>'}}
-                </template>
-                <template v-else>{{'<?php esc_html_e( 'Complete', 'learnpress' ); ?>'}}</template>
-            </button>
-			<?php
+            <!--            <button type="button" @click="_completeItem($event)" :disabled="currentItem.completed">-->
+            <!--                <template v-if="currentItem.completed">{{'--><?php //esc_html_e( 'Completed', 'learnpress' );
+			?><!--'}}-->
+            <!--                </template>-->
+            <!--                <template v-else>{{'--><?php //esc_html_e( 'Complete', 'learnpress' );
+			?><!--'}}</template>-->
+            <!--            </button>-->
+            <!--			--><?php
 	}
 }, 10, 2 );

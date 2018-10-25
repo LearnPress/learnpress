@@ -86,6 +86,7 @@ class LP_L10n {
 			'confirm-complete-lesson' => __( 'Do you want to complete lesson "%s"?', 'learnpress' ),
 			'confirm-finish-course'   => __( 'Do you want to finish course "%s"?', 'learnpress' ),
 			'confirm-retake-course'   => __( 'Do you want to retake course "%s"?', 'learnpress' ),
+			'%d of %d items'          => __( '%d of %d items', 'learnpress' )
 		);
 
 		add_action( 'admin_print_scripts', array( $this, 'output' ) );

@@ -183,6 +183,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					'deps' => array(
 						'jquery'
 					)
+				),
+				'notifications'    => array(
+					'url'  => self::url( 'js/frontend/notifications.js' ),
+					'deps' => array(
+						'jquery'
+					)
 				)
 			);
 
