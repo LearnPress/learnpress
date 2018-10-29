@@ -393,8 +393,14 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				 * Ignore row if it is already added. We sort the rows by newest user_item_id
 				 * therefore the first row in a group of item_id is row we need.
 				 */
-				if ( false !== wp_cache_get( 'course-' . $user_id . '-' . $result['item_id'], 'lp-user-courses' ) ) {
-					continue;
+				$result_cache = wp_cache_get( 'course-' . $user_id . '-' . $result['item_id'], 'lp-user-courses' );
+				if ( false !== $result_cache ) {
+					if(!in_array($result_cache['status'], array('completed','enrolled'))){
+
+					} else {
+						continue;
+					}
+					
 				}
 
 				$result['items'] = array();
