@@ -62,6 +62,14 @@
     .quiz-countdown {
 
     }
+
+    .quiz-countdown {
+        &.timeover {
+            .progress-number {
+                color: #FF0000;
+            }
+        }
+    }
 }
 
 .answer-options {
@@ -345,10 +353,11 @@ button[data-counter] {
 .question-numbers {
     list-style: none;
     text-align: center;
+    margin-bottom: 10px;
     li {
         display: inline-block;
         position: relative;
-        margin-bottom: 3px;
+        margin: 0 2px;
         a {
             display: block;
             padding: 8px;
@@ -460,6 +469,10 @@ button[data-counter] {
     button[type="submit"] {
         content: attr(data-counter);
     }
+}
+
+.question-nav {
+    margin-bottom: 10px;
 }
 
 .circle-bar {

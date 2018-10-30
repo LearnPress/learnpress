@@ -395,6 +395,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param string $key
 	 * @param string $value
 	 * @param string $prev_value
+	 *
+	 * @return mixed
 	 */
 	public function update_meta( $key = '', $value = '', $prev_value = '' ) {
 		if ( func_num_args() === 0 ) {
@@ -418,12 +420,14 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 				}
 			} else {
 				if ( $value === false ) {
-					learn_press_delete_user_item_meta( $this->get_user_item_id(), $key );
+					return learn_press_delete_user_item_meta( $this->get_user_item_id(), $key );
 				} else {
-					learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value, $prev_value );
+					return learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value, $prev_value );
 				}
 			}
 		}
+
+		return false;
 	}
 
 	public function get_mysql_data() {

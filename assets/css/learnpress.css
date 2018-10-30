@@ -1353,6 +1353,8 @@ body .lp-quiz-buttons .form-button-finish-course {
         clear: both;
         display: block;
         content: ''; }
+  .quiz-progress .quiz-countdown.timeover .progress-number {
+    color: #FF0000; }
 
 .answer-options {
   list-style: none;
@@ -1518,11 +1520,12 @@ button[data-counter] {
 
 .question-numbers {
   list-style: none;
-  text-align: center; }
+  text-align: center;
+  margin-bottom: 10px; }
   .question-numbers li {
     display: inline-block;
     position: relative;
-    margin-bottom: 3px; }
+    margin: 0 2px; }
     .question-numbers li a {
       display: block;
       padding: 8px;
@@ -1592,6 +1595,9 @@ button[data-counter] {
 
 .redo-quiz button[type="submit"] {
   content: attr(data-counter); }
+
+.question-nav {
+  margin-bottom: 10px; }
 
 .circle-bar {
   position: relative;
@@ -1997,9 +2003,9 @@ ul.learn-press-courses {
   position: relative; }
 
 #learn-press-bubble-notifications {
-  position: absolute;
-  top: 50px;
-  right: 30px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   width: 300px;
   z-index: 9999; }
   #learn-press-bubble-notifications > div {
@@ -2013,11 +2019,14 @@ ul.learn-press-courses {
     color: #999; }
     #learn-press-bubble-notifications > div .icon {
       font-style: normal;
-      flex: 0 0 16px;
+      flex: 0 0 24px;
       text-align: center;
-      margin-right: 8px; }
+      margin-right: 8px;
+      font-size: 24px; }
       #learn-press-bubble-notifications > div .icon:after {
         font-family: fontawesome; }
+    #learn-press-bubble-notifications > div .message {
+      margin-top: 5px; }
     #learn-press-bubble-notifications > div.error {
       background: #ffd4d4; }
       #learn-press-bubble-notifications > div.error .icon:after {
@@ -2039,7 +2048,8 @@ ul.learn-press-courses {
   _background: #e2e2e2;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 2px #a2a2a2; }
+  box-shadow: 0 0 2px #a2a2a2;
+  margin-bottom: 20px; }
   .learn-press-quiz-content .quiz-progress {
     _background: #e7f7ff;
     margin-bottom: 30px;

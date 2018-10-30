@@ -186,9 +186,9 @@ ul.learn-press-courses {
 }
 
 #learn-press-bubble-notifications {
-    position: absolute;
-    top: 50px;
-    right: 30px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     width: 300px;
     z-index: 9999;
     > div {
@@ -202,12 +202,16 @@ ul.learn-press-courses {
         color: #999;
         .icon {
             font-style: normal;
-            flex: 0 0 16px;
+            flex: 0 0 24px;
             text-align: center;
             margin-right: 8px;
+            font-size: 24px;
             &:after {
                 font-family: fontawesome;
             }
+        }
+        .message {
+            margin-top: 5px;
         }
         &.error {
             background: #ffd4d4;
@@ -251,6 +255,7 @@ ul.learn-press-courses {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 2px #a2a2a2;
+    margin-bottom: 20px;
     .quiz-progress {
         _background: #e7f7ff;
         margin-bottom: 30px;

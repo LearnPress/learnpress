@@ -50,6 +50,8 @@ class LP_Notifications {
 		if ( $notis ) {
 			if ( $uid && ! empty( $notis[ $uid ] ) ) {
 				$notis = $notis[ $uid ];
+			} else {
+				$notis = array_values( $notis );
 			}
 
 			if ( $clear ) {

@@ -16,18 +16,18 @@ defined( 'ABSPATH' ) || exit();
 
 ?>
 
-<div :id="'learn-press-quiz-'+item.id" :class="mainClass()">
+<div v-show="hasAccessLevel(20, '=') || isReviewing" :id="'learn-press-quiz-'+item.id" :class="mainClass()" tabindex="0" @keypress="_questionsNav($event)">
     <div class="quiz-progress">
         <div class="progress-items">
             <div class="progress-item quiz-current-question">
                 <span class="progress-number">{{getQuestionIndex()+1}} / {{countQuestions()}}</span>
                 <span class="progress-label"><?php esc_html_e( 'Question', 'learnpress' ); ?></span>
             </div>
-            <div class="progress-item quiz-countdown">
+            <div class="progress-item quiz-countdown" :class="timeWarningClass()">
                 <span class="progress-number">
                     <span v-if="clock.d">{{clock.d}}</span>
                     <template v-else>
-                        <span class="h" v-show="clock.h !== '00'">{{clock.h}}</span>
+                        <span class="h" v-show="totalTime >= 3600">{{clock.h}}</span>
                         <span class="m">{{clock.m}}</span>
                         <span class="s">{{clock.s}}</span>
                     </template>
@@ -39,8 +39,9 @@ defined( 'ABSPATH' ) || exit();
     <div class="learn-press-quiz-list-questions">
         <template v-for="(question, questionIndex) in questions" name="" @after-enter="_transitionEnter">
             <div v-show="isLoading || currentQuestion==question.id"
-                 class="quiz-question"
+                 class="quiz-question" :class="[question.type]"
                  :key="questionIndex"
+                 :data-type="question.type"
                  :id="'quiz-question-' + question.id" :data-id="question.id">
 				<?php
 				do_action( 'learn-press/question-content-summary' );
@@ -64,24 +65,26 @@ defined( 'ABSPATH' ) || exit();
         <button type="button" @click="_next($event)"
                 v-show="!isLast"><?php esc_html_e( 'Next', 'learnpress' ); ?></button>
 
-        <button type="button" :data-counter="checkCount"
+        <button v-if="status!=='completed'" type="button" :data-counter="checkCount"
                 :disabled="!canCheckQuestion()"
                 @click="_doCheckAnswer">
             {{buttonCheckLabel()}}
         </button>
 
-        <button v-show="hasHint()" type="button" :data-counter="hintCount" :disabled="!canHintQuestion()"
+        <button v-if="status!=='completed'" v-show="hasHint()" type="button" :data-counter="hintCount"
+                :disabled="!canHintQuestion()"
                 @click="_doHintAnswer">
             {{buttonHintLabel()}}
         </button>
 
-        <button type="button" @click="_complete($event)"><?php _e( 'Complete', 'learnpress' ); ?></button>
+        <button v-if="status!=='completed'" type="button"
+                @click="_complete($event)"><?php _e( 'Complete', 'learnpress' ); ?></button>
     </div>
     <ul v-show="hasQuestions()" class="question-numbers">
         <template v-for="(question, index) in questionIds">
             <li :class="{current: currentQuestion == question}"><a
-                        @click="_moveToQuestion($event, index)">{{index+1}}</a></li>
-
+                        @click="_moveToQuestion($event, index)">{{index+1}}</a>
+            </li>
         </template>
     </ul>
 </div>

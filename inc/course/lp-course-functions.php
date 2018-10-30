@@ -1179,7 +1179,6 @@ function learn_press_get_custom_thumbnail_sizes() {
 }
 
 function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
-
 	/**
 	 * @var LP_Course_Section[] $sections
 	 * @var LP_Course_Section   $sec
@@ -1200,39 +1199,44 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 		'results'        => $course_data->get_percent_result(),
 		'sections'       => array()
 	);
-	//LP_Debug::timeStart( __FUNCTION__ );
-	if ( $sections = $course->get_sections() ) {
-		foreach ( $sections as $sec ) {
-			$section = array(
-				'id'             => $sec->get_id(),
-				'name'           => $sec->get_title(),
-				'desc'           => $sec->get_description(),
-				'classes'        => $sec->get_class(),
-				'items'          => array(),
-				'completedItems' => 0
-			);
 
-			if ( $items = $sec->get_items() ) {
-				foreach ( $items as $it ) {
-					$it_data = $course_data->get_item( $it->get_id() );
-					$item    = array(
-						'id'        => $it->get_id(),
-						'name'      => $it->get_title(),
-						//'content'   => $it->get_content(),
-						'type'      => $it->get_post_type(),
-						'slug'      => '',
-						'completed' => $it_data ? $it_data->is_completed() : false,
-						'preview'   => $it->is_preview(),
-						'permalink' => $it->get_permalink(),
-						'classes'   => $it->get_class()
-					);
+	if ( $sections = LP_Object_Cache::get( 'course-curriculum' ) ) {
+		$curriculum['sections'] = $sections;
+	} else {
+		//LP_Debug::timeStart( __FUNCTION__ );
+		if ( $sections = $course->get_sections() ) {
+			foreach ( $sections as $sec ) {
+				$section = array(
+					'id'             => $sec->get_id(),
+					'name'           => $sec->get_title(),
+					'desc'           => $sec->get_description(),
+					'classes'        => $sec->get_class(),
+					'items'          => array(),
+					'completedItems' => 0
+				);
 
-					$section['items'][] = $item;
+				if ( $items = $sec->get_items() ) {
+					foreach ( $items as $it ) {
+						$it_data = $course_data->get_item( $it->get_id() );
+						$item    = array(
+							'id'        => $it->get_id(),
+							'name'      => $it->get_title(),
+							//'content'   => $it->get_content(),
+							'type'      => $it->get_post_type(),
+							'slug'      => '',
+							'completed' => $it_data ? $it_data->is_completed() : false,
+							'preview'   => $it->is_preview(),
+							'permalink' => $it->get_permalink(),
+							'classes'   => $it->get_class()
+						);
+
+						$section['items'][] = $item;
+					}
 				}
+
+
+				$curriculum['sections'][] = $section;
 			}
-
-
-			$curriculum['sections'][] = $section;
 		}
 	}
 

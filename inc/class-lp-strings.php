@@ -86,7 +86,11 @@ class LP_L10n {
 			'confirm-complete-lesson' => __( 'Do you want to complete lesson "%s"?', 'learnpress' ),
 			'confirm-finish-course'   => __( 'Do you want to finish course "%s"?', 'learnpress' ),
 			'confirm-retake-course'   => __( 'Do you want to retake course "%s"?', 'learnpress' ),
-			'%d of %d items'          => __( '%d of %d items', 'learnpress' )
+			'%d of %d items'          => __( '%d of %d items', 'learnpress' ),
+			'Hint'                    => __( 'Goi Y', 'learnpress' ),
+			'Hinted'                  => __( 'Da Goi Y', 'learnpress' ),
+			'Check'                   => __( 'Kiem Tra', 'learnpress' ),
+			'Checked'                 => __( 'Da Kiem Tra', 'learnpress' ),
 		);
 
 		add_action( 'admin_print_scripts', array( $this, 'output' ) );

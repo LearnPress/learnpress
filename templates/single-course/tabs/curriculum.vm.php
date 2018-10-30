@@ -168,6 +168,9 @@ $context     = $course_item ? 'course-item' : 'course';
 
                         return cls;
                     },
+                    getItem: function (itemId) {
+                        return this.$courseStore('getItem')(itemId);
+                    },
                     vmArray2Array: function (a) {
                         var r = [];
                         for (var i in a) {
@@ -265,6 +268,19 @@ $context     = $course_item ? 'course-item' : 'course';
                                 }
                             }
                             return state.currentItem;
+                        },
+                        getItem: function (state) {
+                            return function (itemId) {
+                                for (var i = 0, n = state.sections.length; i < n; i++) {
+                                    var item = state.sections[i].items.find(function (a) {
+                                        return a.id == state.currentItem;
+                                    });
+
+                                    if (item) {
+                                        return item;
+                                    }
+                                }
+                            }
                         },
                         identify: function (state) {
                             return state.identify;

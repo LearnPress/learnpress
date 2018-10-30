@@ -31,6 +31,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				break;
 			}
 		}
+
 	}
 
 	public function add_question_answer( $id, $values = null ) {
@@ -206,12 +207,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$quiz      = learn_press_get_quiz( $this->get_item_id() );
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
 
-
 		if ( false === ( $result = LP_Object_Cache::get( $cache_key, 'learn-press/quiz-result' ) ) || $force ) {
 			if ( false === ( $result = $this->_get_results() ) ) {
 				$result = $this->calculate_results();
 			}
-			LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
+
 		}
 		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
 
@@ -246,8 +246,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		if ( $questions = $quiz->get_questions() ) {
 			foreach ( $questions as $question_id ) {
-				$question          = LP_Question::get_question( $question_id );
-				$answered          = $this->get_question_answer( $question_id );
+				$question = LP_Question::get_question( $question_id );
+				$answered = $this->get_question_answer( $question_id );
+
 				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
 				$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
 				$check['answered'] = ! isset( $check['answered'] ) ? $answered !== false : $check['answered'];
@@ -290,7 +291,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			}
 		}
 
-		$this->update_meta( 'results', $result );
+		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
+		LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
+
+		///print_r($result);
 
 		return $result;
 	}
@@ -591,6 +595,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		return apply_filters( 'learn-press/user-quiz/can-hint-answer', $can, $this->get_id(), $this->get_course_id() );
+	}
+
+	public function reset() {
+		$this->_answers = '';
+		$this->_data    = array();
 	}
 
 	public function finish() {

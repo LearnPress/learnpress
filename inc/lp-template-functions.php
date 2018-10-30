@@ -3229,6 +3229,7 @@ function learn_press_label_html( $label, $type = '' ) {
 
 // Fix issue with course content is duplicated if theme use the_content instead of $course->get_description()
 function learn_press_course_the_content( $content ) {
+	return $content;
 	_deprecated_function( __FUNCTION__, '3.0.0' );
 	global $post;
 	if ( $post && $post->post_type == 'lp_course' ) {
@@ -4026,10 +4027,49 @@ function learn_press_content_item_footer_button_finish_course() {
 	}
 }
 
+//// Vue templates
+
+/**
+ * @param string $hook
+ *
+ * @return int
+ */
 function learn_press_is_vm_hook( $hook = '' ) {
 	if ( ! $hook ) {
 		$hook = current_action();
 	}
 
 	return preg_match( '!^learn-press\/vm\/.*!', $hook );
+}
+
+function learn_press_vm_content_item_summary_quiz_progress() {
+
+}
+
+function learn_press_vm_content_item_summary_quiz_result() {
+	learn_press_get_template( '_vm/content-quiz/result.php' );
+}
+
+
+function learn_press_vm_content_item_summary_quiz_content() {
+	learn_press_get_template( '_vm/content-quiz/description.php' );
+}
+
+
+function learn_press_vm_content_item_summary_quiz_countdown() {
+
+}
+
+function learn_press_vm_content_item_summary_quiz_question() {
+	learn_press_get_template( '_vm/content-question/content.php' );
+}
+
+function learn_press_vm_quiz_buttons() {
+	?>
+    <button v-show="canRetake() && status=='completed' && !isReviewing" @click="_retakeQuiz()"><?php esc_html_e( 'Retake', 'learnpress' ); ?></button>
+    <button v-show="status=='completed' && !isReviewing"
+            @click="_reviewQuestions()"><?php esc_html_e( 'Review', 'learnpress' ); ?></button>
+    <button v-show="status=='completed' && isReviewing"
+            @click="_reviewQuestions()"><?php esc_html_e( 'Results', 'learnpress' ); ?></button>
+	<?php
 }

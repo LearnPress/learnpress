@@ -76,8 +76,89 @@ if (typeof window.LP === 'undefined') {
         }
     });
 
+    (function (exports) {
+
+        exports.Heartbeat = function (options) {
+            var timer, callback, proxy;
+
+            var start = function () {
+                timer = setInterval(queue, options.period || 3000)
+            }
+
+            var stop = function () {
+                clearInterval(timer);
+            }
+
+            var queue = function () {
+                stop();
+                callback.call(proxy, start);
+            }
+
+            this.run = function (cb, p) {
+                callback = cb;
+                proxy = p || window;
+                start();
+            }
+        };
+
+        // $.extend(Heartbeat.prototype, {
+        //     timer: null,
+        //     start: function () {
+        //         this.timer = setInterval(this.queue, 3000)
+        //     },
+        //     queue: function () {
+        //         console.log('Queue', this)
+        //     }
+        // });
+
+        // exports.heartbeat = new Heartbeat({
+        //     period: 3000
+        // }).run(function (next) {
+        //     console.time('heartbeat');
+        //     $.ajax({
+        //         url: '',
+        //         data: {
+        //             'lp-ajax': 'test-heartbeat'
+        //         },
+        //         success: function (r) {
+        //             console.log(r)
+        //
+        //             console.timeEnd('heartbeat');
+        //             next();
+        //         }
+        //     })
+        //
+        // });
+
+    })(LP);
+
+
     $(document).ready(function () {
         window.LP.l10n = new Translator(window.lp_l10n || {});
+        // window.LP.heartbeat = new Heartbeat({
+        //     period: 3000
+        // });
+    });
+
+    /**
+     * If toFixed function is not defined in Number
+     */
+    !Number.prototype.toFixed && (Number.prototype.toFixed = function (fractionDigit) {
+
+        var x = parseFloat(this),
+            reg = new RegExp('\\d+(\.\\d{1,' + fractionDigit + '})');
+
+        if (fractionDigit) {
+            if ((x + '').indexOf('.') === -1) {
+                x = x + '.0000000000';
+            } else {
+                x = x + '000000000';
+            }
+            var m = reg.exec(x);
+            return m[0];
+        }
+
+        return parseInt(x) + '';
     });
 
     /**

@@ -9,7 +9,7 @@
     $(document).ready(load);
 
     function load() {
-        var $notifications = $('<div id="learn-press-bubble-notifications"><div v-for="(noti, index) in messages" :class="noti.type"><i class="icon"></i>{{noti.message}}</div></div>').appendTo(document.body);
+        var $notifications = $('<div id="learn-press-bubble-notifications" v-show="messages.length"><div v-for="(noti, index) in messages" :class="noti.type"><i class="icon"></i><div class="message" v-html="noti.message"></div></div></div>').appendTo(document.body);
 
         if (!LP.$vms) {
             LP.$vms = {};
@@ -62,7 +62,7 @@
                             if (index > -1) {
                                 $vm.messages.splice(index, 1);
                             }
-                        }, 3000);
+                        }, it.duration || 3000);
                     }
                 },
                 add: function (messages) {
@@ -87,7 +87,9 @@
                         }
 
                         this.messages.push(messages[i]);
-                        //new (this.scheduleItem())(this, messages[i]);
+
+                        // close in 3 secs
+                        new (this.scheduleItem())(this, messages[i]);
                     }
                 },
                 iconClass: function (m) {

@@ -470,17 +470,20 @@ add_action( 'learn-press/tmpl-course-item-content', function ( $type ) {
 add_action( 'learn-press/vm/course-item-content', 'learn_press_course_item_content', 5 );
 //add_action( 'learn-press/course-item-content', 'learn_press_content_item_comments', 10 );
 
-add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_progress', 5 );
-add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_result', 10 );
-add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_content', 15 );
-add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 20 );
-add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_question', 25 );
+
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_vm_content_item_summary_quiz_progress', 5 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_vm_content_item_summary_quiz_result', 10 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_vm_content_item_summary_quiz_content', 15 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_vm_content_item_summary_quiz_countdown', 20 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_vm_content_item_summary_quiz_question', 25 );
+add_action( 'learn-press/vm/content-item-summary/lp_quiz', 'learn_press_vm_quiz_buttons', 30 );
 
 add_action( 'learn-press/vm/after-content-item-summary/lp_quiz', function (){
     ?>
-    <button @click="_startQuiz"><?php esc_html_e('Start', 'learnpress');?></button>
+    <button v-show="hasAccessLevel(10, '=')" @click="_startQuiz"><?php esc_html_e('Start', 'learnpress');?></button>
     <?php
 }, 10 );
+
 add_action( 'learn-press/vm/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_questions', 15 );
 
 add_action( 'learn-press/tmpl-course-item-content-description', function ( $itemId, $courseId ) {

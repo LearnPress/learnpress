@@ -19,14 +19,10 @@ $course             = LP_Global::course();
 $global_course_item = $lp_course_item;
 
 $item_types = learn_press_course_get_support_item_types();
-//foreach ( $item_types as $item_type => $name ) {
-//	?>
-<!--    <script type="text/html" id="tmpl-course-item-content---><?php //echo $item_type; ?><!--">-->
-<!--        <div>-->
-<!--			--><?php //do_action( 'learn-press/tmpl-course-item-content', $item_type ); ?>
-<!--        </div>-->
-<!--    </script>-->
-<?php //} ?>
+$tabindex   = 0;
+$sections   = array();
+
+?>
 <div id="learn-press-content-item">
 
     <div class="content-item-scrollable">
@@ -37,24 +33,52 @@ $item_types = learn_press_course_get_support_item_types();
                  data-classes="<?php echo join( ' ', learn_press_content_item_summary_main_classes() ); ?>">
 				<?php
 				foreach ( $course->get_sections() as $section ) {
+
+					$sec = array(
+						'id'             => $section->get_id(),
+						'name'           => $section->get_title(),
+						'desc'           => $section->get_description(),
+						'classes'        => $section->get_class(),
+						'items'          => array(),
+						'completedItems' => 0
+					);
+
 					foreach ( $section->get_items() as $item ) {
 						$lp_course_item = $item;
 						?>
                         <div id="content-item-<?php echo $item->get_id(); ?>"
                              v-show="isShowItem(<?php echo $item->get_id(); ?>)"
+
                              class="learn-press-content-item content-item-<?php echo $item->get_post_type(); ?>">
                             <component :is="getComponent('<?php echo $item->get_post_type(); ?>')"
                                        :item="currentItem"
+                                       :item-id="<?php echo $item->get_id(); ?>"
                                        :current-item="currentItem"
                                        :is-current="currentItem.id==<?php echo $item->get_id(); ?>" inline-template>
-                                <div class="content-item-content">
-									<?php do_action( 'learn-press/vm/course-item-content',  $item->get_id(), $course->get_id() ); ?>
-									<?php //do_action( 'learn-press/tmpl-course-item-content-description', $item->get_id(), $course->get_id() ) ?>
+                                <div class="content-item-content" tabindex="<?php echo ++ $tabindex; ?>"
+                                     @keyup="_questionsNav($event)">
+									<?php do_action( 'learn-press/vm/course-item-content', $item->get_id(), $course->get_id() ); ?>
                                 </div>
                             </component>
                         </div>
 						<?php
+						$it_data = learn_press_get_user_item_data( $item->get_id(), '', $course->get_id() );//->get_item( $item->get_id() );
+						$it      = array(
+							'id'        => $item->get_id(),
+							'name'      => $item->get_title(),
+							//'content'   => $it->get_content(),
+							'type'      => $item->get_post_type(),
+							'slug'      => '',
+							'completed' => $it_data ? $it_data->is_completed() : false,
+							'preview'   => $item->is_preview(),
+							'permalink' => $item->get_permalink(),
+							'classes'   => $item->get_class()
+						);
+
+						$sec['items'][] = $it;
 					}
+
+					$sections[] = $sec;
 				}
 				?>
             </div>
@@ -66,6 +90,7 @@ $item_types = learn_press_course_get_support_item_types();
 </div>
 
 <?php
+LP_Object_Cache::set( 'course-curriculum', $sections );
 // Reset global course item
 $lp_course_item = $global_course_item;
 ?>
@@ -138,7 +163,12 @@ $lp_course_item = $global_course_item;
                         return Math.random();
                     },
                     isShowItem: function (itemId) {
-                        return !this.loaded || this.currentItem.id == itemId;
+
+                        if (!this.loaded) {
+                            return false;
+                        }
+
+                        return this.currentItem.id == itemId;
                     },
                     mainClass: function () {
                         var cls = [this.$().attr('data-classes') || '']
@@ -151,6 +181,9 @@ $lp_course_item = $global_course_item;
 
                         return cls;
                     },
+                    getItem: function (itemId) {
+                        return this.$courseStore('getItem')(itemId) || {};
+                    },
                     _completeItem: function (e) {
                         //$(document).trigger('LP.complete-item', {$event: e, item: this.currentItem});
                         LP_Event_Bus.$emit('complete-item', {$event: e, item: this.currentItem});
@@ -159,6 +192,18 @@ $lp_course_item = $global_course_item;
                         return selector ? $(this.$el).find(selector) : $(this.$el);
                     },
                     $courseStore: function (prop, value) {
+
+                        var $store = window.$courseStore;
+                        if (prop) {
+                            if (arguments.length == 2) {
+                                $store.getters[prop] = value;
+                            } else {
+                                return $store.getters[prop];
+                            }
+                        }
+
+                        return $store.getters['all'];
+
                         var $store = window.$courseStore;
 
                         if (!$store) {

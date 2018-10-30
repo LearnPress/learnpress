@@ -51,14 +51,23 @@ class LP_Page_Controller {
 		add_action( 'wp_enqueue_scripts', function () {
 			if ( is_learnpress() ) {
 				learn_press_assets()->enqueue_script( 'lp-vue-resource' );
-				//wp_enqueue_script( 'lp-vue' );
 			}
 		}, 1000 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+
+//		add_action( 'wp_enqueue_scripts', function () {
+//			echo "2/", microtime( true ) - TIMESTART;
+//		}, 9999 );
+//
+//		add_filter( 'the_post', function () {
+//			echo "3333/", microtime( true ) - TIMESTART;
+//		}, 9999 );
 	}
 
 	public function maybe_redirect_quiz( $template ) {
+		//echo "1/", microtime( true ) - TIMESTART, "\n";
+
 		$course   = LP_Global::course();
 		$quiz     = LP_Global::course_item_quiz();
 		$user     = learn_press_get_current_user();
@@ -325,9 +334,9 @@ class LP_Page_Controller {
 			} else {
 				$template = $lp_template;
 			}
+			global $post;
+			if ( $this->_is_single() && LP_COURSE_CPT === get_post_type( $post ) ) {
 
-			if ( $this->_is_single() ) {
-				global $post;
 				setup_postdata( $post );
 				add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 			} elseif ( $this->_is_archive() ) {
