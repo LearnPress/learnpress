@@ -592,7 +592,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data->update_item_retaken_count( $quiz_id, '+1' );
 			}
 
-			$start_time = new LP_Datetime( current_time( 'mysql' ) );
+			$start_time = LP_Datetime::instance( current_time( 'mysql' ) );
 			$item_data  = array(
 				'user_id'        => $this->get_id(),
 				'item_id'        => $quiz_id,
@@ -1887,7 +1887,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data->delete_meta_data( array( 'grade', 'via', 'exceeded' ) );
 
 				$course_data->set_status( 'enrolled' );
-				$start_time = new LP_Datetime( current_time( 'mysql' ) );
+				$start_time = LP_Datetime::instance( current_time( 'mysql' ) );
 				$course_data->set_start_time( $start_time->toSql() );
 				$course_data->set_start_time_gmt( $start_time->toSql( false ) );
 				$course_data->set_end_time( LP_Datetime::getSqlNullDate() );
@@ -2401,7 +2401,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					settype( $course_item, 'array' );
 				}
 
-				$date                          = new LP_Datetime();
+				$date                          = LP_Datetime::instance();
 				$course_item['user_id']        = $user_id;
 				$course_item['item_id']        = $course_id;
 				$course_item['item_type']      = learn_press_get_post_type( $course_id );

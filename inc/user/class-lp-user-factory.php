@@ -227,7 +227,7 @@ class LP_User_Factory {
 					if ( ! $last_status ) {
 						$args['status'] = $auto_enroll && $can_enroll ? 'enrolled' : 'purchased';
 						if ( 'enrolled' == $args['status'] ) {
-							$time                   = new LP_Datetime();
+							$time                   = LP_Datetime::instance();
 							$args['start_time']     = $time->toSql();
 							$args['start_time_gmt'] = $time->toSql( false );
 						}

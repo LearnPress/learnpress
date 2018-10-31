@@ -206,7 +206,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		public function get_data_date( $name ) {
 			$data = $this->get_data( $name );
 
-			return is_a( $data, 'LP_Datetime' ) ? $data : new LP_Datetime( $data );
+			return is_a( $data, 'LP_Datetime' ) ? $data : LP_Datetime::instance( $data );
 		}
 
 		/**
@@ -306,7 +306,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			}
 
 			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
-				//$value = new LP_Datetime( $value );
+				//$value = LP_Datetime::instance( $value );
 			}
 
 			$this->_set_data( $key, $value );

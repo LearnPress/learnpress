@@ -603,7 +603,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	public function finish() {
-		$time = new LP_Datetime();
+		$time = LP_Datetime::instance();
 		$this->set_end_time( $time->toSql() );
 		$this->set_end_time_gmt( $time->toSql( false ) );
 		$this->set_status( 'completed' );
@@ -622,7 +622,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$course_id = $this->_get_course( $course_id );
 
 		$user_quiz  = $this->get_item_data( $quiz_id, $course_id );
-		$start_time = new LP_Datetime( current_time( 'mysql' ) );
+		$start_time = LP_Datetime::instance( current_time( 'mysql' ) );
 
 		$return = learn_press_update_user_item_field(
 			array(

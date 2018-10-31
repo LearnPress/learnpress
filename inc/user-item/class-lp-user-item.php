@@ -443,14 +443,14 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 					break;
 				case 'start_time_gmt':
 					if ( ! $v ) {
-						$v = new LP_Datetime( $v );
+						$v = LP_Datetime::instance( $v );
 					}
 
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'end_time_gmt':
 					if ( ! $v ) {
-						$v = new LP_Datetime( $v );
+						$v = LP_Datetime::instance( $v );
 					}
 
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
@@ -600,7 +600,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return float|int
 	 */
 	public function is_exceeded() {
-		$time     = new LP_Datetime();
+		$time     = LP_Datetime::instance();
 		$current  = $time->getTimestamp();
 		$exceeded = $this->get_exceeded_time();
 
@@ -639,7 +639,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		global $wpdb;
 
-		$end_time  = new LP_Datetime();
+		$end_time  = LP_Datetime::instance();
 		$null_time = '0000-00-00 00:00';
 
 		$this->set_end_time( $end_time->toSql() );

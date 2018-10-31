@@ -117,25 +117,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			$this->_options = $args;
 			$this->_init();
-			self::$_loaded ++;
-			if ( self::$_loaded == 1 ) {
-				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-			}
-		}
-
-		/**
-		 * Debug log.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param $data
-		 *
-		 * @return array
-		 */
-		public static function log( $data ) {
-			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
-			return $data;
 		}
 
 		/**
@@ -634,8 +615,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return LP_Question_Answers
 		 */
 		public function get_answers( $field = null, $exclude = null ) {
-			$answers = array();
-			LP_Debug::logTime( __FUNCTION__ );
 			if ( false === ( $answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'learn-press/questions' ) ) ) {
 
 				if ( ! $answers = $this->_curd->load_answer_options( $this->get_id() ) ) {
@@ -651,7 +630,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			// @deprecated
 			$answers = apply_filters( 'learn_press_question_answers', $answers, $this );
-			LP_Debug::logTime( __FUNCTION__ );
 
 			return apply_filters( 'learn-press/questions/answers', $answers, $this->get_id() );
 		}

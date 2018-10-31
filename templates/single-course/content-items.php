@@ -66,7 +66,6 @@ $sections   = array();
 						$it      = array(
 							'id'        => $item->get_id(),
 							'name'      => $item->get_title(),
-							//'content'   => $it->get_content(),
 							'type'      => $item->get_post_type(),
 							'slug'      => '',
 							'completed' => $it_data ? $it_data->is_completed() : false,

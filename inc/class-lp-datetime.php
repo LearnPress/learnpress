@@ -26,9 +26,20 @@ class LP_Datetime extends DateTime {
 	 */
 	protected $tz;
 
+	/**
+	 * @var null|string
+	 */
 	protected $raw_date = null;
 
+	/**
+	 * @var null
+	 */
 	protected static $def_timezone = null;
+
+	/**
+	 * @var array
+	 */
+	protected static $instances = array();
 
 	/**
 	 * Constructor.
@@ -60,14 +71,41 @@ class LP_Datetime extends DateTime {
 			$tz = null;
 		}
 
-		date_default_timezone_set( 'UTC' );
 		$date = is_numeric( $date ) ? date( 'Y-m-d H:i:s', $date ) : $date;
+
+		$selfTimezone = self::$stz->getName();
+
+		if ( $selfTimezone !== 'UTC' ) {
+			date_default_timezone_set( 'UTC' );
+		}
 
 		parent::__construct( $date, $tz );
 
-		date_default_timezone_set( self::$stz->getName() );
+		if ( $selfTimezone !== 'UTC' ) {
+			date_default_timezone_set( $selfTimezone );
+		}
 
 		$this->tz = $tz;
+
+	}
+
+	/**
+	 * @since 3.2.0
+	 *
+	 * @param string $date
+	 *
+	 * @return LP_Datetime
+	 */
+	public static function instance( $date = '' ) {
+		if ( empty( $date ) ) {
+			$date = current_time( 'mysql' );
+		}
+
+		if ( empty( self::$instances[ $date ] ) ) {
+			self::$instances[ $date ] = new self( $date );
+		}
+
+		return self::$instances[ $date ];
 	}
 
 	/**
