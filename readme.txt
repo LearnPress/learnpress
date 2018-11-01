@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.5
-Stable tag: 3.0.12.1
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.1.0 =
+~ Fixed issue vulnerabilities.
+~ Fixed issue related to object cache when doing quiz.
+~ Fixed lesson 404 with Polylang.
+~ Fixed PHP Fatal error class ‘LP_Plugins_Helper’ not found
+
 = 3.0.12 =
 ~ Fixed minor bug in gradebook list in admin
 ~ Made hook learn-press/course-tabs work
