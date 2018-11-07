@@ -16,7 +16,8 @@ defined( 'ABSPATH' ) || exit();
 
 ?>
 
-<div v-show="hasAccessLevel(20, '=') || isReviewing" :id="'learn-press-quiz-'+item.id" :class="mainClass()" tabindex="0" @keypress="_questionsNav($event)">
+<div v-show="hasAccessLevel(20, '=') || isReviewing" :id="'learn-press-quiz-'+item.id" :class="mainClass()" tabindex="0"
+     @keypress="_questionsNav($event)">
     <div class="quiz-progress">
         <div class="progress-items">
             <div class="progress-item quiz-current-question">
@@ -36,6 +37,7 @@ defined( 'ABSPATH' ) || exit();
             </div>
         </div>
     </div>
+    [{{item.quizData ? item.quizData.historyId : ''}}]
     <div class="learn-press-quiz-list-questions">
         <template v-for="(question, questionIndex) in questions" name="" @after-enter="_transitionEnter">
             <div v-show="isLoading || currentQuestion==question.id"
@@ -47,6 +49,25 @@ defined( 'ABSPATH' ) || exit();
 				do_action( 'learn-press/question-content-summary' );
 				?>
                 <div v-html="question.content"></div>
+                <component :is="getQuestionTypeAnswers(question.type)" :question="question" inline-template>
+                    <div>
+                        {{question.optionAnswers}}
+                        <ul v-show="$parent.isDefaultQuestionType(question.type)" :id="'answer-options-'+question.id"
+                            :class="question.answersClass">
+                            <li v-for="(answer, answerId) in question.optionAnswers" :class="getAnswerClass(answer)" @click="_triggerEvent($event)">
+                                <input v-if="question.type==='multi_choice'" type="checkbox" class="option-check"
+                                       :name="'learn-press-question-'+question.id" :value="answer.value"
+                                       v-model="answer.checked" :key="answerId">
+                                <input v-else type="radio" class="option-check"
+                                       :name="'learn-press-question-'+question.id"
+                                       :value="answer.value" v-model="answer.checked" :key="answerId">
+                                <div class="option-title">
+                                    <div class="option-title-content" v-html="answer.text"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </component>
                 <template v-if="isCheckedQuestion(question.id) && getQuestionExplanation()">
                     <div class="question-explanation-content">
                         <strong class="explanation-title"><?php esc_html_e( 'Explanation:', 'learnpress' ); ?></strong>
@@ -66,7 +87,7 @@ defined( 'ABSPATH' ) || exit();
                 v-show="!isLast"><?php esc_html_e( 'Next', 'learnpress' ); ?></button>
 
         <button v-if="status!=='completed'" type="button" :data-counter="checkCount"
-                :disabled="!canCheckQuestion()"
+                :disabled="false && !canCheckQuestion()"
                 @click="_doCheckAnswer">
             {{buttonCheckLabel()}}
         </button>

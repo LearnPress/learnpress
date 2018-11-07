@@ -36,9 +36,9 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		protected $_item_type = LP_LESSON_CPT;
 
 		/**
-		 * @var int
+		 * @var null
 		 */
-		protected static $_loaded = 0;
+		protected static $curd = null;
 
 		/**
 		 * LP_Lesson constructor.
@@ -50,15 +50,13 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 */
 		public function __construct( $lesson, $args = '' ) {
 			parent::__construct( $lesson, $args );
-			$this->_curd = new LP_Lesson_CURD();
+
+			if ( empty( self::$curd ) ) {
+				self::$curd = new LP_Lesson_CURD();
+			}
 
 			if ( $this->get_id() > 0 ) {
 				$this->load();
-			}
-
-			self::$_loaded ++;
-			if ( self::$_loaded == 1 ) {
-				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
 			}
 		}
 
@@ -70,20 +68,7 @@ if ( ! function_exists( 'LP_Lesson' ) ) {
 		 * @throws Exception
 		 */
 		public function load() {
-			$this->_curd->load( $this );
-		}
-
-		/**
-		 * Debug log.
-		 *
-		 * @param $data
-		 *
-		 * @return array
-		 */
-		public static function log( $data ) {
-			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
-			return $data;
+			self::$curd->load( $this );
 		}
 
 		/**

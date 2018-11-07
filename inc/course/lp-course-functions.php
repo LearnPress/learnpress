@@ -1203,7 +1203,6 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 	if ( $sections = LP_Object_Cache::get( 'course-curriculum' ) ) {
 		$curriculum['sections'] = $sections;
 	} else {
-		//LP_Debug::timeStart( __FUNCTION__ );
 		if ( $sections = $course->get_sections() ) {
 			foreach ( $sections as $sec ) {
 				$section = array(
@@ -1221,7 +1220,6 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 						$item    = array(
 							'id'        => $it->get_id(),
 							'name'      => $it->get_title(),
-							//'content'   => $it->get_content(),
 							'type'      => $it->get_post_type(),
 							'slug'      => '',
 							'completed' => $it_data ? $it_data->is_completed() : false,
@@ -1230,19 +1228,156 @@ function learn_press_get_course_curriculum_for_js( $course_id = 0 ) {
 							'classes'   => $it->get_class()
 						);
 
-						$section['items'][] = $item;
+						if ( $it->get_post_type() === LP_QUIZ_CPT ) {
+							$item['quizData'] = learn_press_get_quiz_data_json( $it->get_id(), $course_id );
+						}
+						$section['items'][] = apply_filters( 'learn-press/course-item-data-js', $item, $it->get_id() );
 					}
 				}
 
-
-				$curriculum['sections'][] = $section;
+				$curriculum['sections'][] = apply_filters( 'learn-press/course-section-data-js', $section, $course_id );
 			}
 		}
 	}
 
 	//LP_Debug::timeEnd( __FUNCTION__ );
 
-	return $curriculum;
+	return apply_filters( 'learn-press/course-data-js', $curriculum, $course_id );
+}
+
+/**
+ * Get user quiz data for js
+ *
+ * @since 3.2.0
+ *
+ * @param int $quizId
+ * @param int $courseId
+ *
+ * @return array
+ */
+function learn_press_get_quiz_data_json( $quizId, $courseId ) {
+	global $post, $wp_query, $lp_course_item;
+
+	$user           = learn_press_get_current_user();
+	$itemId         = $quizId;//LP_Request::get_int( 'itemId' );
+	$course         = learn_press_get_course( $courseId );
+	$courseData     = $user->get_course_data( $courseId );
+	$quiz           = $course->get_item( $itemId );
+	$quizData       = $courseData->get_item( $itemId );
+	$lp_course_item = $quiz;
+
+	if ( $quizData ) {
+		$remainingTime = $quizData->get_time_remaining();
+	} else {
+		$remainingTime = false;
+	}
+
+	$totalTime = $quiz->get_duration()->get();
+
+	$json = array(
+		'historyId'       => $quizData->get_user_item_id(),
+		'checkCount'      => $quizData->can_check_answer( $quiz->get_id() ),
+		'hintCount'       => $quizData->can_hint_answer( $quiz->get_id() ),
+		'currentQuestion' => $quizData->get_current_question( $quiz->get_id(), get_the_ID() ),
+		'questions'       => array(),
+		'status'          => $quizData->get_status(),
+		'answers'         => $quizData->get_meta( '_question_answers' ),
+		'totalTime'       => $totalTime,
+		'timeRemaining'   => $remainingTime ? $remainingTime->get() : $totalTime,
+		'timeSpend'       => $quizData->get_meta( '_time_spend' ),
+		'passingGrade'    => $quiz->get_passing_grade(),
+		'results'         => $quizData->calculate_results(),
+	);
+
+	// Load questions
+	$questions = $quiz->get_question_ids();
+
+	remove_filter( 'the_content', array( LP_Page_Controller::instance(), 'single_content' ), 10000 );
+	foreach ( $questions as $question_id ) {
+		$question = learn_press_get_question( $question_id );
+		$checked  = $user->has_checked_answer( $question->get_id(), $quiz->get_id(), get_the_ID() );
+		$hinted   = $user->has_hinted_answer( $question->get_id(), $quiz->get_id(), get_the_ID() );
+
+		$answered    = false;
+		$course_data = $user->get_course_data( $course->get_id() );
+
+		if ( $user_quiz = $course_data->get_item_quiz( $quiz->get_id() ) ) {
+			if ( in_array( $user_quiz->get_status(), array( 'started', 'completed' ) ) ) {
+				$answered = $user_quiz->get_question_answer( $question->get_id() );
+				$question->show_correct_answers( $user->has_checked_answer( $question->get_id(), $quiz->get_id(), $course->get_id() ) ? 'yes' : false );
+				$question->disable_answers( $user_quiz->get_status() == 'completed' ? 'yes' : false );
+			}
+		}
+
+		ob_start();
+
+		$posts = apply_filters_ref_array( 'the_posts', array(
+			array( get_post( $question_id ) ),
+			&$wp_query
+		) );
+
+		$questionContent = '';
+
+		if ( $posts ) {
+			$post = $posts[0];
+			setup_postdata( $post );
+			ob_start();
+			the_content();
+			//$question->render( $answered );
+			$questionContent = ob_get_clean();
+		}
+
+		$answers             = $question->get_answers();
+		$json['questions'][] = array(
+			'id'             => absint( $question_id ),
+			'checked'        => $checked,
+			'hinted'         => $hinted,
+			'explanation'    => $checked ? $question->get_explanation() : '',
+			'hint'           => $checked || $hinted ? $question->get_hint() : '',
+			'hasExplanation' => ! ! $question->get_explanation(),
+			'hasHint'        => ! ! $question->get_hint(),
+			'permalink'      => $quiz->get_question_link( $question_id ),
+			'userAnswers'    => learn_press_get_user_answers( $question_id, $itemId, $courseId ),
+			'content'        => $questionContent,
+			'optionAnswers'  => learn_press_get_user_answers( $question_id, $itemId, $courseId ),//$answers->to_array(),
+			'answersClass'   => $answers->get_class( 'vm' ),
+			'type'           => $question->get_type(),
+		);
+	}
+
+	wp_reset_postdata();
+
+	return apply_filters( 'learn-press/quiz-data-json', $json, $quizId, $courseId, $user->get_id() );
+}
+
+function learn_press_get_user_answers( $questionId, $quizId, $courseId ) {
+	/**
+	 * @var LP_Question_Answer_Option $answer
+	 */
+	$answers  = array();
+	$question = learn_press_get_question( $questionId );
+
+	//$question->setup_data( $quizId, $courseId );
+	if ( $_answers = $question->get_answers() ) {
+		$exclude_fields = array( 'question_id', 'answer_order', 'is_true' );
+
+		foreach ( $_answers as $answer ) {
+
+			$answerData = $answer->to_array();
+
+			foreach ( $exclude_fields as $field ) {
+				if ( array_key_exists( $field, $answerData ) ) {
+					unset( $answerData[ $field ] );
+				}
+			}
+
+			$answerData['checked'] = $answer->is_checked();
+			$answers[]             = $answerData;
+
+		}
+	}
+
+	return $answers;
 }
 
 //echo sprintf('This is %s %3$s and %d and %1$s and %1$d and %2$s', 12, 14, 13);die();

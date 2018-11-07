@@ -170,7 +170,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 
 			foreach ( $answer_options as $question_id => $options ) {
-				LP_Object_Cache::set( 'answer-options-' . $question_id, $options, 'learn-press/questions' );
+				LP_Object_Cache::set( $question_id, $options, 'question-answers' );
 			}
 
 			foreach ( $meta_ids as $meta_id ) {
@@ -185,7 +185,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 		if ( $un_fetched ) {
 			foreach ( $un_fetched as $question_id ) {
-				LP_Object_Cache::set( 'answer-options-' . $question_id, array(), 'learn-press/questions' );
+				LP_Object_Cache::set( $question_id, array(), 'question-answers' );
 			}
 		}
 		//

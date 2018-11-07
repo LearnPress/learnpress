@@ -253,6 +253,11 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			LP_Helper::shuffle_assoc( $this->_answers );
 		}
 
+		/**
+		 * @param string $more
+		 *
+		 * @return array
+		 */
 		public function get_class( $more = '' ) {
 			$classes = array( 'answer-options' );
 			if ( $more && is_string( $more ) ) {
@@ -361,7 +366,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * @return array
 		 */
 		public function to_array() {
-			return $this->_data;
+			return array_merge( $this->_data, array( 'classes' => $this->get_class() ) );
 		}
 
 		/**

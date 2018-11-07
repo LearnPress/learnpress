@@ -35,6 +35,11 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		protected $_video = null;
 
 		/**
+		 * @var string
+		 */
+		protected $_item_type = '';
+
+		/**
 		 * LP_Abstract_Post_Data constructor.
 		 *
 		 * @since 3.0.0
@@ -55,6 +60,25 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 			settype( $args, 'array' );
 			$args['id'] = $id;
 			parent::__construct( $args );
+		}
+
+		/**
+		 * Get type of item.
+		 *
+		 * @param string $context
+		 *
+		 * @return string
+		 */
+		public function get_item_type( $context = '' ) {
+			$post_type = $this->_item_type;
+
+			if ( $context === 'display' ) {
+				if ( $post_type_object = get_post_type_object( $post_type ) ) {
+					$post_type = $post_type_object->labels->singular_name;
+				}
+			}
+
+			return $post_type;
 		}
 
 		/**

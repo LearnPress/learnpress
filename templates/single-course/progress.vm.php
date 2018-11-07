@@ -119,7 +119,5 @@ $passing_condition = $course->get_passing_condition();
                 }
             }
         });
-        //LP_Course_Settings
-
     })
 </script>

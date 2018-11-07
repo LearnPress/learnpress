@@ -19,13 +19,6 @@ Domain Path: /languages/
 defined( 'ABSPATH' ) || exit();
 
 //$GLOBALS['xxxx'] = microtime( true );
-//
-//add_action( 'template_include', function () {
-//	global $wpdb;
-//	learn_press_debug( $wpdb->queries );
-//	echo microtime( true ) - $GLOBALS['xxxx'];
-//	die();
-//}, 9999999 );
 
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );

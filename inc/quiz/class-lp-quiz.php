@@ -38,6 +38,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		protected $_questions = array();
 
 		/**
+		 * @var null
+		 */
+		protected static $curd = null;
+
+		/**
 		 * @var array
 		 */
 		protected $_data = array(
@@ -57,11 +62,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		);
 
 		/**
-		 * @var int
-		 */
-		protected static $_loaded = 0;
-
-		/**
 		 * Constructor gets the post object and sets the ID for the loaded course.
 		 *
 		 * @param mixed $the_quiz
@@ -70,8 +70,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		public function __construct( $the_quiz, $args = array() ) {
 
 			//parent::__construct( $the_quiz, $args );
-
-			$this->_curd = new LP_Quiz_CURD();
+			if ( empty( self::$curd ) ) {
+				self::$curd = new LP_Quiz_CURD();
+			}
 
 			if ( is_numeric( $the_quiz ) && $the_quiz > 0 ) {
 				$this->set_id( $the_quiz );
@@ -80,29 +81,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			} elseif ( ! empty( $the_quiz->ID ) ) {
 				$this->set_id( absint( $the_quiz->ID ) );
 			}
+
 			if ( $this->get_id() > 0 ) {
 				$this->load();
 			}
 
-			self::$_loaded ++;
-			if ( self::$_loaded == 1 ) {
-				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-			}
-		}
-
-		/**
-		 * Log debug data.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param $data
-		 *
-		 * @return array
-		 */
-		public static function log( $data ) {
-			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
-			return $data;
 		}
 
 		/**
@@ -118,7 +101,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Load quiz data
 		 */
 		public function load() {
-			$this->_curd->load( $this );
+			self::$curd->load( $this );
 
 		}
 
@@ -157,9 +140,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function save() {
 			if ( $this->get_id() ) {
-				$return = $this->_curd->update( $this );
+				$return = self::$curd->update( $this );
 			} else {
-				$return = $this->_curd->create( $this );
+				$return = self::$curd->create( $this );
 			}
 
 			return $return;
@@ -360,20 +343,33 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get quiz questions.
 		 *
-		 * @return mixed
+		 * @param string $return. Added 3.2.0
+		 *
+		 * @return LP_Question[]|int[]
 		 */
-		public function get_questions() {
+		public function get_questions( $return = '' ) {
 
-			if ( false === ( $questions = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'learn-press/questions' ) ) ) {
+			if ( $return ) {
+				$namespace = "/{$return}";
+			} else {
+				$namespace = '';
+			}
+
+			if ( false === ( $questions = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'learn-press/questions' . $namespace ) ) ) {
 				$questions = array();
 
-				if ( $ids = $this->_curd->read_questions( $this->get_id() ) ) {
+				if ( $ids = self::$curd->read_questions( $this->get_id() ) ) {
 					foreach ( $ids as $id ) {
-						$questions[ $id ] = $id;
+						if ( $return === 'object' ) {
+							$questions[ $id ] = LP_Question::get_question( $id );
+							$questions[ $id ]->set_quiz( $this->get_id() );
+						} else {
+							$questions[ $id ] = $id;
+						}
 					}
 				}
 
-				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $questions, 'learn-press/questions' );
+				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $questions, 'learn-press/questions' . $namespace );
 			}
 
 			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $this->get_course_id() );
@@ -414,7 +410,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 
 		public function get_question_ids() {
 			if ( false === ( $ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids' ) ) ) {
-				$ids = $this->_curd->read_question_ids( $this->get_id() );
+				$ids = self::$curd->read_question_ids( $this->get_id() );
 				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids' );
 			}
 

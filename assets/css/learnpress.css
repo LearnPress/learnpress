@@ -2049,7 +2049,8 @@ ul.learn-press-courses {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 2px #a2a2a2;
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+  outline: none; }
   .learn-press-quiz-content .quiz-progress {
     _background: #e7f7ff;
     margin-bottom: 30px;

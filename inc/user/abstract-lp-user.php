@@ -55,7 +55,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * @var LP_User_CURD
 		 */
-		protected $_curd = null;
+		protected static $curd = null;
 
 		/**
 		 * LP_Abstract_User constructor.
@@ -67,7 +67,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			parent::__construct( $the_user, $args );
 
-			$this->_curd = new LP_User_CURD();
+			if ( empty( self::$curd ) ) {
+				self::$curd = new LP_User_CURD();
+			}
 
 			if ( is_numeric( $the_user ) && $the_user > 0 ) {
 				$this->set_id( $the_user );
@@ -87,7 +89,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * Load user data from curd
 		 */
 		public function load() {
-			$this->_curd->load( $this );
+			self::$curd->load( $this );
 		}
 
 		/**
@@ -111,10 +113,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 			/**
 			 * @BUG : Cache enable => Not store all user answer of quiz, only store the last use answer for question
-			 * @TODO: need improve this proccess
+			 * @TODO: need improve this process
 			 */
 			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'learn-press/user-item-object-courses' ) ) ) {
-				$result = $this->_curd->read_course( $this->get_id(), $course_id );
+				$result = self::$curd->read_course( $this->get_id(), $course_id );
 
 				if ( $result ) {
 					$object_course_data = new LP_User_Item_Course( $result );
@@ -630,7 +632,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			$this->_curd->update_user_item( $this->get_id(), $quiz_id, $item_data, $course_id );
+			self::$curd->update_user_item( $this->get_id(), $quiz_id, $item_data, $course_id );
 			$return = $this->get_item_archive( $quiz_id, $course_id, true );
 
 			if ( $return && $set_current_question ) {
@@ -775,8 +777,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				if ( ! $item = $course_data->get_item( $item_id ) ) {
 					$item = LP_User_Item::get_item_object( $item_id );
-				}else{
-					$course_data->update_meta('_current_item', $item_id);
+				} else {
+					$course_data->update_meta( '_current_item', $item_id );
 				}
 
 				$item->set_ref_id( $course_id );
@@ -1571,9 +1573,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		public function get_completed_items( $course_id ) {
-			$this->_curd->get_user_items( $this->get_id(), $course_id );
+			self::$curd->get_user_items( $this->get_id(), $course_id );
 
-			return $this->_curd->get_user_completed_items( $this->get_id(), $course_id );
+			return self::$curd->get_user_completed_items( $this->get_id(), $course_id );
 		}
 
 		/**
@@ -1704,7 +1706,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			$my_orders = $this->_curd->get_orders( $this->get_id() );// _learn_press_get_user_course_orders( $this->get_id() );
+			$my_orders = self::$curd->get_orders( $this->get_id() );// _learn_press_get_user_course_orders( $this->get_id() );
 
 			if ( $last_order && $my_orders ) {
 				$last_orders = array();
@@ -2498,7 +2500,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return LP_Query_List_Table
 		 */
 		public function get_purchased_courses( $args = array() ) {
-			return $this->_curd->query_purchased_courses( $this->get_id(), $args );
+			return self::$curd->query_purchased_courses( $this->get_id(), $args );
 		}
 
 		/**
@@ -2629,7 +2631,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $result;
 		}
 
-		public function complete_item($item_id, $course_id){
+		public function complete_item( $item_id, $course_id ) {
 
 		}
 
@@ -2674,7 +2676,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param mixed $the_course
 		 */
 		public function read_course( $the_course ) {
-			$this->_curd->read_course( $this->get_id(), $the_course );
+			self::$curd->read_course( $this->get_id(), $the_course );
 		}
 
 		/**

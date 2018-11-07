@@ -55,8 +55,7 @@ $sections   = array();
                                        :item-id="<?php echo $item->get_id(); ?>"
                                        :current-item="currentItem"
                                        :is-current="currentItem.id==<?php echo $item->get_id(); ?>" inline-template>
-                                <div class="content-item-content" tabindex="<?php echo ++ $tabindex; ?>"
-                                     @keyup="_questionsNav($event)">
+                                <div class="content-item-content">
 									<?php do_action( 'learn-press/vm/course-item-content', $item->get_id(), $course->get_id() ); ?>
                                 </div>
                             </component>
@@ -74,10 +73,14 @@ $sections   = array();
 							'classes'   => $item->get_class()
 						);
 
-						$sec['items'][] = $it;
+						if ( $item->get_post_type() === LP_QUIZ_CPT ) {
+							$it['quizData'] = learn_press_get_quiz_data_json( $item->get_id(), $course->get_id() );
+						}
+
+						$sec['items'][] = apply_filters( 'learn-press/course-item-data-js', $it, $item->get_id() );
 					}
 
-					$sections[] = $sec;
+					$sections[] = apply_filters( 'learn-press/course-section-data-js', $sec, $course->get_id() );
 				}
 				?>
             </div>

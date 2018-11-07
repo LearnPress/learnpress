@@ -1626,6 +1626,33 @@ if (typeof window.LP === 'undefined') {
         return str;
     });
 
+    LP.listPluck = function (arr, field, c) {
+        var r = [];
+
+        for (var i = 0, n = arr.length; i < n; i++) {
+
+            if (c) {
+                var o = false;
+                for (var j in c) {
+                    if (c.hasOwnProperty(j)) {
+                        if (arr[i][j] != c[j]) {
+                            o = true;
+                            break;
+                        }
+                    }
+                }
+                if (o) {
+                    continue
+                }
+                r.push(arr[i][field]);
+            } else {
+                r.push(arr[i][field]);
+            }
+        }
+        return r;
+    }
+
+
     LearnPress = LP;
 
 })(jQuery);

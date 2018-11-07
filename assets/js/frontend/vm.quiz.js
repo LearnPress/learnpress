@@ -14,6 +14,18 @@
         return LP.l10n ? LP.l10n.translate(text, a, b, c, d, e, f) : text;
     };
 
+    Vue.component('lp-question-type-__default-answers', {
+        props: ['question'],
+        methods: {
+            getAnswerClass: function (answer) {
+                return answer.classes || ['answer-option'];
+            },
+            _triggerEvent: function (e) {
+            },
+        }
+    });
+
+
     Vue.component('lp-course-item-lp_quiz', {
         //template: '#tmpl-course-item-content-lp_quiz',
         props: ['item', 'isCurrent', 'currentItem', 'itemId'],
@@ -33,6 +45,7 @@
                 timeRemaining: 0,
                 isReviewing: false,
                 passingGrade: 0,
+                quizData: '',
                 results: {
                     result: 0,
                     time_spend: 0,
@@ -85,6 +98,8 @@
                 if (this.status === 'completed') {
                     this.checkAnswers(v);
                 }
+
+                this.updateCurrentQuestion();
             },
             answers: {
                 handler: function (v) {
@@ -135,7 +150,7 @@
                     minutes = Math.floor(seconds / MINUTE_IN_SECONDS);
                     seconds = minutes ? seconds % (minutes * MINUTE_IN_SECONDS) : seconds;
 
-                    if (hours && hours < 10) {
+                    if (hours < 10) {
                         hours = '0' + hours;
                     }
 
@@ -166,6 +181,13 @@
                 script.src = url;
 
                 document.head.appendChild(script);
+            },
+            getQuestionTypeAnswers: function (type) {
+                type = this.isDefaultQuestionType(type) ? '__default' : type;
+                return 'lp-question-type-' + type + '-answers';
+            },
+            isDefaultQuestionType: function (type) {
+                return $.inArray(type, ['single_choice', 'true_or_false', 'multi_choice']) !== -1;
             },
             init: function () {
                 var $vm = this;
@@ -217,38 +239,43 @@
 
                 if (this.status === 'started') {
                     this.startCounter();
-                    !this.heartbeat && (this.heartbeat = new LP.Heartbeat({
-                        period: 10000
-                    }).run(function (next) {
-                        if (this.isActivate() && this.status === 'started') {
-                            $vmCourse._$request(false, 'update-quiz-state', {
-                                itemId: this.item.id,
-                                answers: this.answers,
-                                timeSpend: this.timeSpend || 0
-                            }).then(function (r) {
-                                console.log(this, r);
-                                next();
-                            }.bind(this));
-                        } else {
-                            next();
-                        }
-                    }, this));
+                    // !this.heartbeat && (this.heartbeat = new LP.Heartbeat({
+                    //     period: 10000
+                    // }).run(function (next) {
+                    //     if (this.isActivate() && this.status === 'started') {
+                    //         $vmCourse._$request(false, 'update-quiz-state', {
+                    //             itemId: this.item.id,
+                    //             answers: this.answers,
+                    //             timeSpend: this.timeSpend || 0
+                    //         }).then(function (r) {
+                    //             console.log(this, r);
+                    //             next();
+                    //         }.bind(this));
+                    //     } else {
+                    //         next();
+                    //     }
+                    // }, this));
                 }
             },
 
             load: function () {
-                var $vm = this;
-                $vmCourse._$request(false, 'get-quiz', {itemId: this.item.id, xxx: 1}).then(function (r) {
-                    var assignFields = $vm.getAjaxFields();
-                    $vm.$set($vm.item, 'quiz', r);
+                var $vm = this,
+                    _then = function (r) {
+                        var assignFields = $vm.getAjaxFields();
+                        $vm.$set($vm.item, 'quizData', r);
 
-                    $.each(assignFields, function (a, b) {
-                        $vm[b] = r[b];
-                    });
+                        $.each(assignFields, function (a, b) {
+                            $vm[b] = r[b];
+                        });
 
-                    $vm.init();
-                });
+                        $vm.init();
+                    };
 
+                if (this.item.quizData) {
+                    _then(this.item.quizData);
+                } else {
+                    $vmCourse._$request(false, 'get-quiz', {itemId: this.item.id, xxx: 1}).then(_then);
+                }
             },
             complete: function () {
                 var $vm = this;
@@ -270,7 +297,7 @@
                     this.timeRemaining > 0 ? this.timeRemaining-- : this.complete();
                     this.timeSpend++;
 
-                    console.log('Counting #', this.itemId, '...', this.timeRemaining, ':', this.timeSpend)
+                    //console.log('Counting #', this.itemId, '...', this.timeRemaining, ':', this.timeSpend)
                 }.bind(this), 1000);
             },
             stopCounter: function () {
@@ -379,7 +406,7 @@
             canCheckQuestion: function (questionId) {
                 questionId = questionId || this.currentQuestion;
                 var q = this.getQuestionById(questionId);
-                return this.checkCount && (this.answers[questionId] && this.answers[questionId].length) && (q && !q.checked && q.hasExplanation);
+                return this.checkCount && (this.answers[questionId] && this.answers[questionId].length) && (q && !q.checked /*&& q.hasExplanation*/);
             },
             canRetake: function () {
                 return true;
@@ -410,17 +437,12 @@
             },
             getQuestionData: function (data, questionId) {
                 questionId = questionId || this.currentQuestion;
-                return Vue.http.post('',
+                return $vmCourse._$request(false, 'get-question-data',
                     $.extend({}, data || {}, {
-                        'lp-ajax': 'get_question_data',
+                        itemId: this.itemId,
                         question_id: questionId
-                    }),
-                    {
-                        emulateJSON: true,
-                        params: {
-                            namespace: 'LPCurriculumRequest'
-                        }
                     })
+                );
             },
             countQuestions: function () {
                 return this.questionIds ? this.questionIds.length : 0;
@@ -440,7 +462,6 @@
                     $.each(userAnswers, function (i, answer) {
 
                         var answerClass = [];
-
 
                         if (answer.is_true) {
                             answerClass.push('answer-correct');
@@ -512,6 +533,13 @@
                     this.stopCounter();
                 }
             },
+            updateCurrentQuestion: function () {
+                window.$request('', 'update-current-question', {
+                    itemId: this.item.id,
+                    questionId: this.currentQuestion
+                }).then(function (r) {
+                })
+            },
             _questionsNav: function ($event) {
                 switch ($event.keyCode) {
                     case 37:
@@ -576,14 +604,19 @@
             },
             _doCheckAnswer: function () {
                 var $vm = this,
-                    q = this.questions[this.getQuestionIndex()];
+                    q = this.questions[this.getQuestionIndex()],
+                    answers = LP.listPluck(q.optionAnswers, 'value', {checked: true});
                 q.checked = true;
+
+                if(q.type !== 'multi_choice'){
+                    answers = answers[0];
+                }
 
                 this.getQuestionData({
                     extraAction: 'check-answer',
-                    extraData: $.extend({}, q, {answers: this.answers[q.id]})
+                    extraData: $.extend({}, {answers: answers})
                 }).then(function (r) {
-                    var response = LP.parseJSON(r.body);
+                    var response = r || {};
                     q.explanation = response.explanation;
                     $vm.checkAnswers(q, response.userAnswers)
                     $vm.checkCount--;
@@ -607,7 +640,7 @@
                     LP.$vms['notifications'].add(r.notifications);
 
                     var assignFields = this.getAjaxFields();
-                    $vm.$set($vm.item, 'quiz', r.quizData);
+                    $vm.$set($vm.item, 'quizData', r.quizData);
 
                     $.each(assignFields, function (a, b) {
                         $vm[b] = r.quizData[b];
@@ -628,7 +661,7 @@
                     LP.$vms['notifications'].add(r.notifications);
 
                     var assignFields = $vm.getAjaxFields()
-                    $vm.$set($vm.item, 'quiz', r.quizData);
+                    $vm.$set($vm.item, 'quizData', r.quizData);
 
                     $.each(assignFields, function (a, b) {
                         $vm[b] = r.quizData[b];

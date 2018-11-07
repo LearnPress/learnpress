@@ -6,7 +6,7 @@
  * @version 3.2.0
  */
 ;(function ($) {
-    $(document).ready(load);
+   // $(document).ready(load);
 
     function load() {
         var $notifications = $('<div id="learn-press-bubble-notifications" v-show="messages.length"><div v-for="(noti, index) in messages" :class="noti.type"><i class="icon"></i><div class="message" v-html="noti.message"></div></div></div>').appendTo(document.body);

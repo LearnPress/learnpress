@@ -51,6 +51,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			if ( ! $this->get_user()->has_checked_answer( $id, $this->get_id(), $this->get_course_id() ) ) {
 				$this->_answers[ $id ] = $values;
 				$this->set_meta( '_question_answers', $this->_answers );
+			}else{
 			}
 		}
 	}
@@ -72,7 +73,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function update( $force = false ) {
 		$return = parent::update();
-		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
+		$a = learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
+
 		$this->calculate_results();
 
 		return $return;
@@ -141,19 +143,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$this->update_meta();
 		}
 
-
-//		if ( ! $question || ! $question->is_publish() ) {
-//			if ( $questions = $this->get_quiz()->get_questions() ) {
-//				$question_id = reset( $questions );
-//				$this->set_meta( '_current_question', $question_id );
-//				$this->update_meta();
-//			} else {
-//				$question_id = 0;
-//			}
-//
-//			var_dump($questions);
-//		}
-
 		if ( $question_id ) {
 			if ( $return == 'object' ) {
 				return learn_press_get_question( $question_id );
@@ -161,6 +150,17 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 
 		return $question_id;
+	}
+
+	/**
+	 * Update current question
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param int $question_id
+	 */
+	public function set_current_question( $question_id ) {
+		$this->update_meta( '_current_question', $question_id );
 	}
 
 	protected function _get_first_question() {
@@ -195,7 +195,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return array|bool|mixed
 	 */
 	public function get_results( $prop = 'result', $force = false ) {
-		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
 
 		/**
 		 * Do nothing if user is not started quiz
@@ -213,7 +212,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			}
 
 		}
-		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
 
 		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
 	}
@@ -244,10 +242,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'retake_count'      => 0
 		);
 
-		if ( $questions = $quiz->get_questions() ) {
-			foreach ( $questions as $question_id ) {
-				$question = LP_Question::get_question( $question_id );
-				$answered = $this->get_question_answer( $question_id );
+		if ( $questions = $quiz->get_questions( 'object' ) ) {
+			foreach ( $questions as $question ) {
+				$question_id = $question->get_id();
+				$answered    = $this->get_question_answer( $question_id );
 
 				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
 				$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
@@ -599,7 +597,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function reset() {
 		$this->_answers = '';
-		$this->_data    = array();
 	}
 
 	public function finish() {
@@ -618,34 +615,34 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $this->get_user()->can_retake_quiz( $this->get_id(), $this->get_course() );
 	}
 
-	public function redo() {
-		$course_id = $this->_get_course( $course_id );
-
-		$user_quiz  = $this->get_item_data( $quiz_id, $course_id );
-		$start_time = LP_Datetime::instance( current_time( 'mysql' ) );
-
-		$return = learn_press_update_user_item_field(
-			array(
-				'user_id'        => learn_press_get_current_user_id(),
-				'item_id'        => $quiz_id,
-				'ref_id'         => $course_id,
-				'start_time'     => $start_time,
-				'start_time_gmt' => $start_time->toSql( false ),
-				'item_type'      => 'lp_quiz',
-				'status'         => 'started',
-				'ref_type'       => 'lp_course',
-				'parent_id'      => $user_quiz ? $user_quiz->get_parent_id() : 0
-			)
-		);
-		if ( $return ) {
-
-			// Update user quiz meta data
-			learn_press_update_user_item_meta( $return, 'questions', $questions );
-			learn_press_update_user_item_meta( $return, 'current_question', $question );
-			learn_press_update_user_item_meta( $return, 'question_answers', array() );
-			LP_Cache::flush();
-			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
-		}
-		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $course_id, $this->get_id() );
-	}
+//	public function redo() {
+//		$course_id = $this->_get_course( $course_id );
+//
+//		$user_quiz  = $this->get_item_data( $quiz_id, $course_id );
+//		$start_time = LP_Datetime::instance( current_time( 'mysql' ) );
+//
+//		$return = learn_press_update_user_item_field(
+//			array(
+//				'user_id'        => learn_press_get_current_user_id(),
+//				'item_id'        => $quiz_id,
+//				'ref_id'         => $course_id,
+//				'start_time'     => $start_time,
+//				'start_time_gmt' => $start_time->toSql( false ),
+//				'item_type'      => 'lp_quiz',
+//				'status'         => 'started',
+//				'ref_type'       => 'lp_course',
+//				'parent_id'      => $user_quiz ? $user_quiz->get_parent_id() : 0
+//			)
+//		);
+//		if ( $return ) {
+//
+//			// Update user quiz meta data
+//			learn_press_update_user_item_meta( $return, 'questions', $questions );
+//			learn_press_update_user_item_meta( $return, 'current_question', $question );
+//			learn_press_update_user_item_meta( $return, 'question_answers', array() );
+//			LP_Cache::flush();
+//			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
+//		}
+//		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $course_id, $this->get_id() );
+//	}
 }
