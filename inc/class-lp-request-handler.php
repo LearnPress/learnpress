@@ -265,7 +265,7 @@ class LP_Request {
 		if ( ! $course ) {
 			return false;
 		}
-		
+
 		$cart = LP()->cart;
 
 		if ( ! $cart->get_items() ) {
@@ -326,13 +326,13 @@ class LP_Request {
 		        );
 		} else {
     		$thing    = $user->enroll( $course_id, $order_id );
-    
+
     		if ( is_wp_error( $thing ) ) {
     			learn_press_add_message(
     				$thing->get_error_message(),
     				'error'
     			);
-    
+
     			if ( $thing->get_error_code() == 10002 ) {
     				$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $redirect ) ) );
     			}

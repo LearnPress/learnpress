@@ -21,7 +21,6 @@ if ( ! isset( $section ) ) {
 }
 
 $user = $profile->get_user();
-$user->get_id();
 ?>
 
 <form method="post" id="learn-press-profile-basic-information" name="profile-basic-information"

@@ -152,49 +152,42 @@ if ( ! function_exists( 'learnpress_dashboard_widgets' ) ) {
 }
 
 /**
- * Add js to footer for activating course menu if user is viewing/editing course
+ * Active Courses menu under LearnPress
+ * when user is editing course and course
+ * category.
  */
-function learn_press_show_menu() {
-	if ( ( isset( $_GET['post_type'] ) && $_GET['post_type'] == 'lp_course' ) ) {
-		?>
-        <script type="text/javascript">
-            jQuery(window).load(function ($) {
-				<?php
-				if ( isset ( $_GET['taxonomy'] ) ) {
-				?>
-                jQuery("body").removeClass("sticky-menu");
-                jQuery("#toplevel_page_learn_press").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
-                jQuery("#toplevel_page_learn_press > a").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
-				<?php
-				}
-				?>
-                jQuery("#toplevel_page_learn_press .wp-first-item").addClass('current');
-            });
-        </script>
-		<?php
+function learn_press_active_course_menu() {
+
+	if ( ! $post_type = LP_Request::get( 'post_type' ) ) {
+		return;
 	}
 
-	if ( isset( $_GET['post_type'] ) ) {
-		?>
-        <script type="text/javascript">
-            (function ($) {
+	?>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            var $lpMainMenu = $('#toplevel_page_learn_press'),
+                href = 'edit.php?post_type=<?php echo esc_js( $_GET['post_type'] ); ?>',
+                $current = $('a[href="' + href + '"]', $lpMainMenu);
 
-                var $lpMainMenu = $('#toplevel_page_learn_press'),
-                    href = 'edit.php?post_type=<?php echo $_GET['post_type']; ?>',
-                    $current = $('a[href="' + href + '"]', $lpMainMenu);
+            if ($current.length) {
+                $current.addClass('current');
+                $current.parent('li').addClass('current');
+            }
 
-                if ($current.length) {
-                    $current.addClass('current');
-                    $current.parent('li').addClass('current');
-                }
-            })(jQuery)
-        </script>
-		<?php
-
-	}
+			<?php if ( $post_type === LP_COURSE_CPT && LP_Request::get( 'taxonomy' ) === 'course_category' ) {?>
+            $("body").removeClass('sticky-menu');
+            $lpMainMenu.addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
+            $lpMainMenu.children('a').addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
+			<?php
+			}
+			?>
+            $lpMainMenu.find('.wp-first-item').addClass('current');
+        });
+    </script>
+	<?php
 }
 
-add_action( 'admin_footer', 'learn_press_show_menu' );
+add_action( 'admin_footer', 'learn_press_active_course_menu' );
 
 /*
  * Display tabs related to course in admin when user

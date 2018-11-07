@@ -101,13 +101,13 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				if ( $course = $this->get_course() ) {
 					$user_id = get_current_user_id();
 
-					if ( false === ( $cached = wp_cache_get( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), 'lp-preview-items' ) ) ) {
+					if ( false === ( $cached = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), 'lp-preview-items' ) ) ) {
 						$user = learn_press_get_current_user();
 
 						if ( $user->has_enrolled_course( $course->get_id() ) ) {
 							$is_preview = false;
 						}
-						wp_cache_set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), $is_preview ? 'yes' : 'no', 'lp-preview-items' );
+						LP_Object_Cache::set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), $is_preview ? 'yes' : 'no', 'lp-preview-items' );
 					} else {
 						$is_preview = $cached === 'yes' ? true : false;
 					}
@@ -131,7 +131,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return bool|false|mixed|string
 		 */
 		public function get_format() {
-			$format = ( false !== ( $format = wp_cache_get( 'item-format-' . $this->get_id(), 'lp-item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
+			$format = ( false !== ( $format = LP_Object_Cache::get( 'item-format-' . $this->get_id(), 'lp-item-formats' ) ) ) ? $format : get_post_format( $this->get_id() );
 
 			if ( ! $format ) {
 				$format = 'standard';
@@ -164,7 +164,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$course_id = get_the_ID();
 
-			if ( false === ( $classes = wp_cache_get( 'item-' . $user_id . '-' . $this->get_id(), 'lp-post-classes' ) ) ) {
+			if ( false === ( $classes = LP_Object_Cache::get( 'item-' . $user_id . '-' . $this->get_id(), 'lp-post-classes' ) ) ) {
 				if ( ! $user_id ) {
 					$user_id = get_current_user_id();
 				}
@@ -239,7 +239,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$classes = array_filter( $classes );
 				$classes = array_unique( $classes );
 
-				wp_cache_set( 'item-' . $user_id . '-' . $this->get_id(), $classes, 'lp-post-classes' );
+				LP_Object_Cache::set( 'item-' . $user_id . '-' . $this->get_id(), $classes, 'lp-post-classes' );
 			}
 
 			return apply_filters( 'learn-press/course-item-class-cached', $classes, $this->get_item_type(), $this->get_id(), $course_id );
@@ -316,7 +316,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$item_id   = $post->ID;
 			}
 
-			if ( false === ( $item = wp_cache_get( $item_id, 'lp-object-classes' ) ) ) {
+			if ( false === ( $item = LP_Object_Cache::get( $item_id, 'lp-object-classes' ) ) ) {
 
 				if ( $item_type ) {
 					if ( learn_press_is_support_course_item_type( $item_type ) ) {
@@ -343,7 +343,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 						}
 					}
 				}
-				wp_cache_set( $item_id, $item, 'lp-object-classes' );
+				LP_Object_Cache::set( $item_id, $item, 'lp-object-classes' );
 
 				if ( $course ) {
 					$item->set_course( $course );
@@ -536,7 +536,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$key = 'course-item-' . $user_id . '-' . $course_id;
 
-			if ( false === ( $blocked_items = wp_cache_get( $key, 'blocked-items' ) ) ) {
+			if ( false === ( $blocked_items = LP_Object_Cache::get( $key, 'blocked-items' ) ) ) {
 				$blocked_items = $this->_parse_item_block_status( $course_id, $user_id, $key );
 			}
 
@@ -573,7 +573,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				}
 				$blocked_items[ $this->get_id() ] = $blocked;
 
-				wp_cache_set( $key, $blocked_items, 'blocked-items' );
+				LP_Object_Cache::set( $key, $blocked_items, 'blocked-items' );
 				$is_blocked = $blocked;
 				//return apply_filters( 'learn-press/course-item/is-blocked', $blocked === 'yes' ? true : false, $this->get_id(), $course_id, $user_id );
 			}
@@ -615,7 +615,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			$blocked_items = apply_filters( 'learn-press/course-item/parse-block-statuses', $blocked_items, $course_id, $user_id );
 
-			wp_cache_set( $cache_key, $blocked_items, 'blocked-items' );
+			LP_Object_Cache::set( $cache_key, $blocked_items, 'blocked-items' );
 
 			return $blocked_items;
 		}

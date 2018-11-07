@@ -74,7 +74,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
-				wp_redirect( urldecode( $_REQUEST['redirect'] ) );
+				wp_safe_redirect( urldecode( $_REQUEST['redirect'] ) );
 			}
 		}
 
@@ -172,14 +172,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			self::update_db_version();
 			self::update_version();
-
-			return;
-			// Fix for WP 4.7
-			if ( did_action( 'admin_init' ) ) {
-				self::_auto_update();
-			} else {
-				add_action( 'admin_init', array( __CLASS__, '_auto_update' ), - 15 );
-			}
 		}
 
 		protected static function _clear_backgrounds() {

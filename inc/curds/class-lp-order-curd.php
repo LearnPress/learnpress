@@ -96,7 +96,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function read_items( $order ) {
 
-		if ( false === ( $items = wp_cache_get( 'order-' . $order->get_id(), 'lp-order-items' ) ) ) {
+		if ( false === ( $items = LP_Object_Cache::get( 'order-' . $order->get_id(), 'lp-order-items' ) ) ) {
 
 			global $wpdb;
 
@@ -122,7 +122,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 			}
 
-			wp_cache_set( 'order-' . $order->get_id(), $items, 'lp-order-items' );
+			LP_Object_Cache::set( 'order-' . $order->get_id(), $items, 'lp-order-items' );
 		}
 
 		return $items;// apply_filters( 'learn_press_order_get_items', $items, $this );
@@ -544,7 +544,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function get_child_orders( $order_id ) {
 		global $wpdb;
 
-		if ( false === ( $orders = wp_cache_get( 'order-' . $order_id, 'lp-child-orders' ) ) ) {
+		if ( false === ( $orders = LP_Object_Cache::get( 'order-' . $order_id, 'lp-child-orders' ) ) ) {
 			$query = $wpdb->prepare( "
 				SELECT *
 				FROM {$wpdb->posts}
@@ -558,7 +558,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			} else {
 				$orders = array();
 			}
-			wp_cache_set( 'order-' . $order_id, $orders, 'lp-child-orders' );
+			LP_Object_Cache::set( 'order-' . $order_id, $orders, 'lp-child-orders' );
 		}
 
 		return $orders;

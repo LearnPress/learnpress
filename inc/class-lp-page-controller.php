@@ -476,7 +476,7 @@ class LP_Page_Controller {
 			if ( ! LEARNPRESS_IS_CATEGORY && ( $course_page_id = learn_press_get_page_id( 'courses' ) ) && ( $course_page_slug = get_post_field( 'post_name', $course_page_id ) ) ) {
 				if ( $course_page_slug == 'courses' ) {
 					$wp_query->queried_object_id = $course_page_id;
-					$this->_queried_object       = $wp_query->queried_object = get_post( $course_page_id );
+					$this->queried_object        = $wp_query->queried_object = get_post( $course_page_id );
 					add_filter( 'document_title_parts', array( $this, 'page_title' ) );
 				}
 			}
@@ -627,13 +627,13 @@ class LP_Page_Controller {
 
 		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 
-		wp_cache_set( 'course-' . get_the_ID(), $content, 'course-content' );
+		LP_Object_Cache::set( 'course-' . get_the_ID(), $content, 'course-content' );
 
 		return $content;
 	}
 
 	/**
-	 * Controls WP displays the courses in a page which setup to display on homepage.
+	 * Controls WP displays the courses in a page which setup to display on homepage
 	 *
 	 * @param $q WP_Query
 	 *

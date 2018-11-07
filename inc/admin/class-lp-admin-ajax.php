@@ -247,7 +247,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				$new_item_id = '';
 
-				$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => get_post_status( $post_id ) ) );
+				$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => 'publish' ) );
 
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
@@ -344,15 +344,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
 					'lp_lesson',
 					'lp_quiz'
-				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' )
-			) {
+				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' ) ) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
 					$previewable = '0';
 				}
 				update_post_meta( $id, '_lp_preview', $previewable );
 			}
-			die( __FILE__ . '::' . __FUNCTION__ );;
+			die(__FILE__ . '::'.__FUNCTION__);;
 		}
 
 		/**
@@ -538,8 +537,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -590,7 +588,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$term = stripslashes( $_REQUEST['term'] );
 
 			if ( empty( $term ) ) {
-				die( __FILE__ . '::' . __FUNCTION__ );;
+				die(__FILE__ . '::'.__FUNCTION__);;
 			}
 
 			$found_customers = array();
@@ -646,7 +644,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					update_option( 'learn_press_dismiss_notice_' . $context, 'off' );
 				}
 			}
-			die( __FILE__ . '::' . __FUNCTION__ );;
+			die(__FILE__ . '::'.__FUNCTION__);;
 		}
 
 		public static function plugin_action() {

@@ -522,7 +522,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_items() {
-			return apply_filters( 'learn-press/order-items', wp_cache_get( 'order-' . $this->get_id(), 'lp-order-items' ) );
+			return apply_filters( 'learn-press/order-items', LP_Object_Cache::get( 'order-' . $this->get_id(), 'lp-order-items' ) );
 		}
 
 		public function is_child() {

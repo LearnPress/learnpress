@@ -499,7 +499,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	// Ensure that post name has to be sanitized. Fixed in 2.1.6
 	$post_name = sanitize_title( $name );
 
-	if ( false === ( $id = wp_cache_get( $type . '-' . $post_name, 'lp-post-names' ) ) ) {
+	if ( false === ( $id = LP_Object_Cache::get( $type . '-' . $post_name, 'lp-post-names' ) ) ) {
 
 		foreach ( array( $name, urldecode( $name ) ) as $_name ) {
 			$args  = array( 'name' => $_name, 'post_type' => array( $type ) );
@@ -508,7 +508,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 				$post = $posts[0];
 				$id   = $post->ID;
 				wp_cache_set( $id, $post, 'posts' );
-				wp_cache_set( $type . '-' . $name, $id, 'lp-post-names' );
+				LP_Object_Cache::set( $type . '-' . $name, $id, 'lp-post-names' );
 				break;
 			}
 		}
@@ -2879,7 +2879,7 @@ function learn_press_timezone_offset() {
  */
 function learn_press_static_page_ids() {
 
-	if ( false === ( $pages = wp_cache_get( 'static-page-ids', 'learnpress' ) ) ) {
+	if ( false === ( $pages = LP_Object_Cache::get( 'static-page-ids', 'learnpress' ) ) ) {
 		$pages = array(
 			'checkout'         => learn_press_get_page_id( 'checkout' ),
 			'courses'          => learn_press_get_page_id( 'courses' ),
@@ -2893,7 +2893,7 @@ function learn_press_static_page_ids() {
 			}
 		}
 
-		wp_cache_set( 'static-page-ids', $pages, 'learnpress' );
+		LP_Object_Cache::set( 'static-page-ids', $pages, 'learnpress' );
 	}
 
 	return apply_filters( 'learn-press/static-page-ids', $pages );
@@ -3038,7 +3038,7 @@ function learn_press_get_unassigned_items( $type = '' ) {
 	settype( $type, 'array' );
 	$key = 'items-' . md5( serialize( $type ) );
 
-	if ( false === ( $items = wp_cache_get( $key, 'lp-unassigned' ) ) ) {
+	if ( false === ( $items = LP_Object_Cache::get( $key, 'lp-unassigned' ) ) ) {
 		$format = array_fill( 0, sizeof( $type ), '%s' );
 
 		$query = $wpdb->prepare( "
@@ -3055,7 +3055,7 @@ function learn_press_get_unassigned_items( $type = '' ) {
         ", array_merge( $type, $type, array( 'auto-draft', 'trash' ) ) );
 
 		$items = $wpdb->get_col( $query );
-		wp_cache_set( $key, $items, 'lp-unassigned' );
+		LP_Object_Cache::set( $key, $items, 'lp-unassigned' );
 	}
 
 	return $items;
@@ -3071,7 +3071,7 @@ function learn_press_get_unassigned_items( $type = '' ) {
 function learn_press_get_unassigned_questions() {
 	global $wpdb;
 
-	if ( false === ( $questions = wp_cache_get( 'questions', 'lp-unassigned' ) ) ) {
+	if ( false === ( $questions = LP_Object_Cache::get( 'questions', 'lp-unassigned' ) ) ) {
 		$query = $wpdb->prepare( "
             SELECT p.ID
             FROM {$wpdb->posts} p
@@ -3086,7 +3086,7 @@ function learn_press_get_unassigned_questions() {
         ", LP_QUESTION_CPT, LP_QUESTION_CPT, 'auto-draft', 'trash' );
 
 		$questions = $wpdb->get_col( $query );
-		wp_cache_set( 'questions', $questions, 'lp-unassigned' );
+		LP_Object_Cache::set( 'questions', $questions, 'lp-unassigned' );
 	}
 
 	return $questions;
