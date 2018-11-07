@@ -224,11 +224,15 @@ class LP_Query {
 			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
 
 			if ( $pll->options['hide_default'] ) {
-				$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
+				if ( isset( $pll->options['default_lang'] ) ) {
+					$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
+				}
 			}
 
 			if ( ! empty( $pll_languages ) ) {
 				$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
+			}else{
+				$pll_languages = '';
 			}
 
 		}

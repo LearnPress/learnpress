@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.5
-Stable tag: 3.0.12.1
+Stable tag: 3.1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,8 +36,8 @@ Take a look at Premium **[Education WordPress Theme](http://themeforest.net/item
 
 - **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)**
 
-- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=Z9QT_CGevhg)**
-[youtube https://www.youtube.com/watch?v=Z9QT_CGevhg&hd=1&&cc_load_policy=1]
+- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=3LDa8vtDIAk)**
+[youtube https://www.youtube.com/watch?v=3LDa8vtDIAk&hd=1&&cc_load_policy=1]
 
 Are you looking for *best LMS WordPress plugin*?
 
@@ -199,6 +199,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.1.0 =
+~ Fixed issue vulnerabilities.
+~ Fixed issue related to object cache when doing quiz.
+~ Fixed lesson 404 with Polylang.
+~ Fixed PHP Fatal error class ‘LP_Plugins_Helper’ not found
+
 = 3.0.12 =
 ~ Fixed minor bug in gradebook list in admin
 ~ Made hook learn-press/course-tabs work
@@ -238,142 +244,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed breadcrumb not show page name when viewing archive course
 ~ Fixed archive course show header is title of first course
 
-= 3.0.9 =
-+ GDPR compliance
-~ Improved Start quiz button
-~ Load js for comment-reply if it does not load by default
-~ Fixed missing param when sending email for user who finished course
-
-= 3.0.8 =
-~ Improved: get css class name for items for performance
-~ Improved: check item is blocked for performance
-~ Improved: upgrade database feature
-~ Fixed: warning message when searching posts in frontend
-~ Fixed: show 2 comments form in lesson page
-~ Fixed: content of lesson does not show if set post-format to video
-~ Fixed: some warning when getting question class with an array of post-type
-~ Fixed: mysql error when updating item's grade with value is null
-
-= 3.0.7 =
-~ Improved: ui/ux when adding/removing course items
-~ Improved: ui/ux when adding/removing questions of a quiz
-~ Improved: auto focus mouse to input when changing type of new course item
-~ Improved: show confirm message before removing course item to trash
-~ Improved: move item to trash when delete instead of delete it permanently
-~ Improved: changed icon to turn on/off an item is preview and add tooltip
-~ Improved: removed green effect when updating via ajax
-~ Improved: focus mouse on search input when searching items
-~ Improved: show button for closing popup
-~ Improved: flush Hard Cache when updating post
-~ Improved: updated metabox to latest version and changed textdomain
-~ Fixed: pending course does not show for instructor
-~ Fixed: filter lessons/quizzes by course does not work properly
-~ Fixed: wrong currency symbol for Turkish lira
-~ Fixed: division by zero when calculating course results
-~ Fixed: get default thumbnail image for archive course if it option is turn of
-~ Removed: option thumbnail size for single course
-~ Improved somethings...
-
-= 3.0.6 =
-~ Fixed: missing 'Instructors Registration' option
-~ Fixed: cannot start quiz or complete lesson
-~ Fixed: can view a quiz/lesson although it does not assign to a course
-~ Fixed: wrong count number in courses manage
-~ Fixed: cannot save some settings options
-~ Fixed: missing hook
-~ Fixed: user can view lesson with single post type link
-~ Fixed: issue with 'Buy This Course' button
-~ Fixed: cannot change course author
-~ Fixed: issue with Become a Teacher form
-~ Fixed: instructor cannot add iframe into course/lesson/quiz content
-~ Improved: auto detect video in lesson content and move it to the top (move to option)
-~ Improved something...
-
-= 3.0.5 =
-+ Added: missing single course permalink options
-~ Fixed: error notice when saving user profile
-~ Fixed: date translation
-~ Fixed: notice when viewing courses with Yoast SEO
-~ Fixed: can't change author of the course
-~ Fixed: preview lesson will redirect back to course
-~ Fixed: some other bugs...
-
-= 3.0.4 =
-~ Improved: action when clicking to close upgrade notice
-~ Fixed: can not add course from other users to order
-~ Fixed: lost quiz data after upgrading
-~ Fixed: user can view lesson/quiz with single permalink
-~ Fixed: can not view lesson
-~ Fixed: notices in admin orders
-~ Fixed: external buy this course redirect to home page
-~ Fixed: remaining time message with course duration is zero
-~ Fixed: hidden sections action ajax admin course editor
-~ Fixed: admin can not add course to order from other users
-~ More...
-
-= 3.0.3 =
-~ Fixed quiz auto finish with duration is zero
-~ Fixed pagination with quizzes in user profile
-~ Fixed warning notice when getting current tab in profile
-~ Fixed some issue in addons
-
-
-= 3.0.2 =
-~ Fixed PHP non-numeric cast type
-~ Improved admin ajax for course/quiz/question editor
-~ Fixed error when extending method from parent
-~ Fixed invalid course progress label
-~ Fixed invalid filter to course passing grade
-~ Fixed empty course item class for other post types
-
-= 3.0.1 =
-~ Improved 'External link' button if user has enrolled course
-~ Fixed category does not display courses (SO)
-~ Fixed callback issue when sorting array|object
-~ Fixed course auto finish if duration is 0
-~ Fixed warning message when counting enrolled users
-~ Fixed error when calling a method from object
-+ Added position counter to course section
-+ Update some default settings
-+ Fixed some bugs...
-
-= 3.0.0 =
-+ Reset courses data for an user has enrolled course
-+ Reset course data for users has enrolled course
-+ Reset data of a quiz or lesson for an user
-+ Enable a Guest user can buy and checkout
-+ Option to show/hide login form in user profile
-+ Option to show/hide register form in user profile
-+ Option to show/hide login form in checkout page
-+ Option to show/hide register form in Checkout page
-+ Enable sort the payment gateways to show in frontend
-+ Quick turn a payment gateway on/of in a list
-+ Support plugins Mathjax
-+ Widget to display course info
-+ Widget to display current progress of a course
-+ Custom frontend colors
-+ Group emails to related action
-+ Run action to send the emails in background
-+ Quick edit question settings in it's quiz
-+ Preview mode for course/lesson/quiz
-+ Option to show list of questions as numbers below quiz while doing or reviewing
-+ Display duration of lesson or quiz in curriculum
-+ Display number questions of quiz
-~ Improves popup for searching courses to add to an order
-~ Improves Emails system
-~ Improves Multi users order
-~ Admin settings pages
-~ No distraction mode
-~ New course editor
-~ New quiz editor
-~ User profile
-~ Improve cache for speed
-~ Improve UI/Ux for both backend and frontend
-
 == Upgrade Notice ==
-
-= 0.9.19 =
-In this version, we have changed a little bit about LearnPress Plugin directory structure and moved all add-ons to become independence plugins. If you face any problems relate to add-ons, please completely remove old version and re-install LearnPress. It does not affect your current data. Thank you.
 
 == Other note ==
 <a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
