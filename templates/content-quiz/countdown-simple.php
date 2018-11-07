@@ -1,30 +1,22 @@
 <?php
 /**
- * Template for displaying countdown of the quiz
+ * Template for displaying simple countdown quiz.
  *
- * @package LearnPress/Templates
+ * This template can be overridden by copying it to yourtheme/learnpress/content-quiz/countdown-simple.php.
+ *
  * @author  ThimPress
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-$user   = learn_press_get_current_user();
-$course = LP()->global['course'];
-$quiz   = isset( $item ) ? $item : LP()->global['course-item'];
-if ( !$quiz ) {
-	return;
-}
-$duration = $quiz->get_duration_html();
-if ( strpos( $duration, ':' ) === false ) {
-	return;
-}
-if ( $user->has_completed_quiz( $quiz->id, $course->id ) || $user->has_finished_course( $course->id ) ) {
-	return;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
 <div id="quiz-countdown" class="quiz-countdown hide-if-js" data-value="100">
-	<div class="countdown"><span><?php echo $quiz->get_duration_html(); ?></span></div>
+
+    <div class="countdown"><span><?php echo $quiz->get_duration_html(); ?></span></div>
+
 </div>

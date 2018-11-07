@@ -316,7 +316,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 					'show_in_menu' => 'learn_press',
 					'public'       => false,
 					'rewrite'      => array(
-						'slug'         => LP_COURSE_ATTRIBUTE,//empty( $permalinks['category_base'] ) ? _x( 'product - category', 'slug', 'woocommerce' ) : $permalinks['category_base'],
+						'slug'         => LP_COURSE_ATTRIBUTE,
 						'with_front'   => false,
 						'hierarchical' => true,
 					),

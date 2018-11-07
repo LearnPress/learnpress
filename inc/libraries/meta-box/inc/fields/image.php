@@ -14,51 +14,80 @@ class RWMB_Image_Field extends RWMB_File_Field {
 	 */
 	public static function admin_enqueue_scripts() {
 		parent::admin_enqueue_scripts();
+		wp_enqueue_media();
 		wp_enqueue_style( 'rwmb-image', RWMB_CSS_URL . 'image.css', array(), RWMB_VER );
 	}
 
 	/**
-	 * Get HTML markup for ONE uploaded image.
+	 * Get HTML for uploaded file.
 	 *
-	 * @param int $image Image ID.
+	 * @param int   $file  Attachment (file) ID.
+	 * @param int   $index File index.
+	 * @param array $field Field data.
+	 *
 	 * @return string
 	 */
-	public static function file_html( $image ) {
-		list( $src ) = wp_get_attachment_image_src( $image, 'thumbnail' );
+	protected static function file_html( $file, $index, $field ) {
+		$attributes = self::get_attributes( $field, $file );
+
 		return sprintf(
-			'<li id="item_%s">
-				<img src="%s">
-				<div class="rwmb-image-bar">
-					<a href="%s" target="_blank"><span class="dashicons dashicons-edit"></span></a> |
-					<a class="rwmb-delete-file" href="#" data-attachment_id="%s">&times;</a>
+			'<li class="rwmb-image-item attachment %s">
+				<input type="hidden" name="%s[%s]" value="%s">
+				<div class="attachment-preview">
+					<div class="thumbnail">
+						<div class="centered">
+							%s
+						</div>
+					</div>
+				</div>
+				<div class="rwmb-image-overlay"></div>
+				<div class="rwmb-image-actions">
+					<a href="%s" class="rwmb-image-edit" target="_blank"><span class="dashicons dashicons-edit"></span></a>
+					<a href="#" class="rwmb-image-delete rwmb-file-delete" data-attachment_id="%s"><span class="dashicons dashicons-no-alt"></span></a>
 				</div>
 			</li>',
-			$image,
-			$src,
-			get_edit_post_link( $image ),
-			$image
+			esc_attr( $field['image_size'] ),
+			$attributes['name'], $index, $file,
+			wp_get_attachment_image( $file, $field['image_size'] ),
+			get_edit_post_link( $file ),
+			$file
 		);
 	}
 
+
 	/**
-	 * Format a single value for the helper functions.
+	 * Normalize field settings.
 	 *
-	 * @param array $field Field parameters.
-	 * @param array $value The value.
+	 * @param array $field Field settings.
+	 *
+	 * @return array
+	 */
+	public static function normalize( $field ) {
+		$field = parent::normalize( $field );
+		$field = wp_parse_args( $field, array(
+			'image_size' => 'thumbnail',
+		) );
+
+		return $field;
+	}
+
+	/**
+	 * Format a single value for the helper functions. Sub-fields should overwrite this method if necessary.
+	 *
+	 * @param array    $field   Field parameters.
+	 * @param array    $value   The value.
+	 * @param array    $args    Additional arguments. Rarely used. See specific fields for details.
+	 * @param int|null $post_id Post ID. null for current post. Optional.
+	 *
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value ) {
-		$output = '<ul>';
-		foreach ( $value as $file ) {
-			$img = sprintf( '<img src="%s" alt="%s">', esc_url( $file['url'] ), esc_attr( $file['alt'] ) );
+	public static function format_single_value( $field, $value, $args, $post_id ) {
+		$output = sprintf( '<img src="%s" alt="%s">', esc_url( $value['url'] ), esc_attr( $value['alt'] ) );
 
-			// Link thumbnail to full size image?
-			if ( isset( $args['link'] ) && $args['link'] ) {
-				$img = sprintf( '<a href="%s" title="%s">%s</a>', esc_url( $file['full_url'] ), esc_attr( $file['title'] ), $img );
-			}
-			$output .= "<li>$img</li>";
+		// Link thumbnail to full size image?
+		if ( ! empty( $args['link'] ) ) {
+			$output = sprintf( '<a href="%s" title="%s">%s</a>', esc_url( $value['full_url'] ), esc_attr( $value['title'] ), $output );
 		}
-		$output .= '</ul>';
 		return $output;
 	}
 

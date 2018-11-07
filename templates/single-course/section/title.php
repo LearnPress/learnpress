@@ -1,32 +1,58 @@
 <?php
 /**
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * Template for displaying title of section in single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/section/title.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-$user         = learn_press_get_current_user();
-$course       = learn_press_get_the_course();
-$section_name = apply_filters( 'learn_press_curriculum_section_name', $section->section_name, $section );
-$force        = isset( $force ) ? $force : false;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-if ( $section_name === false ) {
+$user        = learn_press_get_current_user();
+$course      = learn_press_get_the_course();
+$user_course = $user->get_course_data( get_the_ID() );
+
+if ( ! isset( $section ) ) {
 	return;
 }
+
+$title = $section->get_title();
 ?>
 
 <div class="section-header">
-	<?php if ( $section_name ) { ?>
-        <h4><?php echo $section_name; ?>&nbsp;</h4>
-	<?php } ?>
-	<?php if ( $section_description = apply_filters( 'learn_press_curriculum_section_description', $section->section_description, $section ) ) { ?>
-        <p><?php echo $section_description; ?></p>
-	<?php } ?>
-    <div class="meta">
-        <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $user->get_completed_items_in_section( $course->id, $section->section_id, $force ), sizeof( $section->items ) ); ?></span>
-        <span class="collapse"></span>
+
+    <div class="section-left">
+
+		<?php if ( $title ) { ?>
+            <h5 class="section-title"><?php echo $title; ?></h5>
+		<?php } ?>
+
+		<?php if ( $description = $section->get_description() ) { ?>
+            <p class="section-desc"><?php echo $description; ?></p>
+		<?php } ?>
+
     </div>
+
+	<?php if ( $user->has_enrolled_course( $section->get_course_id() ) ) { ?>
+
+		<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
+
+        <div class="section-meta">
+            <div class="learn-press-progress section-progress" title="<?php echo intval( $percent ); ?>%">
+                <div class="progress-bg">
+                    <div class="progress-active primary-background-color" style="left: <?php echo $percent; ?>%;"></div>
+                </div>
+            </div>
+            <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items( '', false ) ); ?></span>
+            <span class="collapse"></span>
+        </div>
+
+	<?php } ?>
+
 </div>

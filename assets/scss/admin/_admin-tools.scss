@@ -1,0 +1,25 @@
+#learn-press-reset-course-users,
+#learn-press-reset-user-courses,
+#learn-press-reset-user-item {
+    max-width: 100%;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .courses-list {
+        margin: 0;
+    }
+    input[type="text"] {
+        min-width: 300px;
+        height: 28px;
+        margin-left: 0;
+    }
+    .action-reset {
+        &.dashicons-trash {
+            color: #FF0000;
+        }
+        &.dashicons-update {
+            @include rotating4();
+        }
+    }
+}

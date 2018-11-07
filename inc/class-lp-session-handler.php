@@ -3,7 +3,7 @@
 /**
  * Class LP_Session_Handler
  */
-class LP_Session_Handler {
+class LP_Session_Handler implements ArrayAccess {
 
 	/**
 	 * @var int $_customer_id
@@ -63,6 +63,9 @@ class LP_Session_Handler {
 	 * @param mixed $value
 	 */
 	public function __set( $key, $value ) {
+		//if ( $key === 'order_awaiting_payment' ) {
+
+		//}
 		$this->set( $key, $value );
 	}
 
@@ -74,7 +77,7 @@ class LP_Session_Handler {
 	 * @return bool
 	 */
 	public function __isset( $key ) {
-		return isset( $this->_data[sanitize_key( $key )] );
+		return isset( $this->_data[ sanitize_key( $key ) ] );
 	}
 
 	/**
@@ -83,8 +86,8 @@ class LP_Session_Handler {
 	 * @param mixed $key
 	 */
 	public function __unset( $key ) {
-		if ( isset( $this->_data[$key] ) ) {
-			unset( $this->_data[$key] );
+		if ( isset( $this->_data[ $key ] ) ) {
+			unset( $this->_data[ $key ] );
 			$this->_changed = true;
 		}
 	}
@@ -116,7 +119,7 @@ class LP_Session_Handler {
 		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 
-		if ( !is_user_logged_in() ) {
+		if ( ! is_user_logged_in() ) {
 			//add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
 		}
 	}
@@ -135,7 +138,7 @@ class LP_Session_Handler {
 	}
 
 	public function has_session() {
-		return isset( $_COOKIE[$this->_cookie] ) || $this->_has_cookie || is_user_logged_in();
+		return isset( $_COOKIE[ $this->_cookie ] ) || $this->_has_cookie || is_user_logged_in();
 	}
 
 	public function set_session_expiration() {
@@ -148,25 +151,24 @@ class LP_Session_Handler {
 		} else {
 			require_once( ABSPATH . 'wp-includes/class-phpass.php' );
 			$hasher = new PasswordHash( 12, false );
+
 			return md5( $hasher->get_random_bytes( 32 ) );
 		}
 	}
 
 	public function get_session_cookie() {
 
-		if ( empty( $_COOKIE[$this->_cookie] ) || !is_string( $_COOKIE[$this->_cookie] ) ) {
-
-
+		if ( empty( $_COOKIE[ $this->_cookie ] ) || ! is_string( $_COOKIE[ $this->_cookie ] ) ) {
 			return false;
 		}
 
-		list( $customer_id, $session_expiration, $cookie_hash ) = explode( '||', $_COOKIE[$this->_cookie] );
+		list( $customer_id, $session_expiration, $cookie_hash ) = explode( '||', $_COOKIE[ $this->_cookie ] );
 
 
 		$to_hash = $customer_id . '|' . $session_expiration;
 		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
 
-		if ( empty( $cookie_hash ) || !hash_equals( $hash, $cookie_hash ) ) {
+		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
 			return false;
 		}
 
@@ -178,11 +180,11 @@ class LP_Session_Handler {
 	}
 
 	public function get_cache_prefix( $group = LP_SESSION_CACHE_GROUP ) {
-		$prefix = wp_cache_get( 'learn_press_' . $group . '_cache_prefix', $group );
+		$prefix = LP_Object_Cache::get( 'learn_press_' . $group . '_cache_prefix', $group );
 
 		if ( false === $prefix ) {
 			$prefix = 1;
-			wp_cache_set( 'learn_press_' . $group . '_cache_prefix', $prefix, $group );
+			LP_Object_Cache::set( 'learn_press_' . $group . '_cache_prefix', $prefix, $group );
 		}
 
 		return 'learn_press_cache_' . $prefix . '_';
@@ -218,22 +220,26 @@ class LP_Session_Handler {
 			);
 
 			// Set cache
-			wp_cache_set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
+			LP_Object_Cache::set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
 
 			// Mark session clean after saving
 			$this->_changed = false;
 		}
-
 	}
 
 	public function destroy_session() {
+		if ( $id = $this->get( 'temp_user' ) ) {
+			delete_user_meta( $id, '_lp_expiration' );
+		}
+
 		// Clear cookie
 		learn_press_setcookie( $this->_cookie, '', time() - YEAR_IN_SECONDS, apply_filters( 'learn_press_session_secure_cookie', false ) );
 
 		$this->delete_session( $this->_customer_id );
 
 		// Clear cart
-		learn_press_session_set( 'cart', '' );
+		$this->set( 'cart', '' );
+		$this->set( 'temp_user', '' );
 
 		// Clear data
 		$this->_data        = array();
@@ -248,7 +254,7 @@ class LP_Session_Handler {
 	public function cleanup_sessions() {
 		global $wpdb;
 
-		if ( !defined( 'WP_SETUP_CONFIG' ) && !defined( 'WP_INSTALLING' ) ) {
+		if ( ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
 
 			// Delete expired sessions
 			$wpdb->query( $wpdb->prepare( "DELETE FROM $this->_table WHERE session_expiry < %d", time() ) );
@@ -266,7 +272,7 @@ class LP_Session_Handler {
 		}
 
 		// Try get it from the cache, it will return false if not present or if object cache not in use
-		$value = wp_cache_get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
+		$value = LP_Object_Cache::get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
 		///echo "KEY:" . $this->get_cache_prefix() . $customer_id . "]";
 		if ( false === $value ) {
 			$q     = $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id );
@@ -278,7 +284,7 @@ class LP_Session_Handler {
 			wp_cache_add( $this->get_cache_prefix() . $customer_id, $value, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
 		}
 
-		return maybe_unserialize( $value );
+		return LP_Helper::maybe_unserialize( $value );
 	}
 
 	public function delete_session( $customer_id ) {
@@ -296,7 +302,6 @@ class LP_Session_Handler {
 
 	public function update_session_timestamp( $customer_id, $timestamp ) {
 		global $wpdb;
-
 		$wpdb->update(
 			$this->_table,
 			array(
@@ -311,15 +316,52 @@ class LP_Session_Handler {
 		);
 	}
 
-	public function get( $key, $default = null ) {
-		$key = sanitize_key( $key );
-		return isset( $this->_data[$key] ) ? maybe_unserialize( $this->_data[$key] ) : $default;
+	/**
+	 * Remove a value from session by key.
+	 *
+	 * @param string $key
+	 * @param bool   $force_change
+	 */
+	public function remove( $key, $force_change = false ) {
+		if ( ! array_key_exists( $key, $this->_data ) ) {
+			return;
+		}
+		unset( $this->_data[ $key ] );
+		$this->_changed = true;
+		if ( $force_change ) {
+			$this->save_data();
+		}
 	}
 
-	public function set( $key, $value ) {
+	/**
+	 * Get session value.
+	 *
+	 * @param string $key
+	 * @param mixed  $default
+	 *
+	 * @return mixed|null
+	 */
+	public function get( $key, $default = null ) {
+		$key = sanitize_key( $key );
+
+		return isset( $this->_data[ $key ] ) ? LP_Helper::maybe_unserialize( $this->_data[ $key ] ) : $default;
+	}
+
+	/**
+	 * Set session value.
+	 *
+	 * @param string $key
+	 * @param mixed  $value
+	 * @param bool   $force_change
+	 */
+	public function set( $key, $value, $force_change = false ) {
 		if ( $value !== $this->get( $key ) ) {
-			$this->_data[sanitize_key( $key )] = maybe_serialize( $value );
-			$this->_changed                    = true;
+			$this->_data[ sanitize_key( $key ) ] = maybe_serialize( $value );
+			$this->_changed                      = true;
+
+			if ( $force_change ) {
+				$this->save_data();
+			}
 		}
 	}
 
@@ -327,11 +369,32 @@ class LP_Session_Handler {
 		return $this->_customer_id;
 	}
 
+	public function get_session_expiration() {
+		return $this->_session_expiration;
+	}
+
 	public static function instance() {
-		if ( !self::$_instance ) {
+		if ( ! self::$_instance ) {
 			self::$_instance = new self();
 		}
+
 		return self::$_instance;
+	}
+
+	public function offsetExists( $offset ) {
+		return array_key_exists( $offset, $this->_data );
+	}
+
+	public function offsetGet( $offset ) {
+		return $this->get( $offset );
+	}
+
+	public function offsetUnset( $offset ) {
+		$this->remove( $offset );
+	}
+
+	public function offsetSet( $offset, $value ) {
+		$this->set( $offset, $value );
 	}
 }
 
@@ -350,9 +413,5 @@ function learn_press_session_get( $key, $default = null ) {
  * @param $value
  */
 function learn_press_session_set( $key, $value ) {
-	return LP_Session_Handler::instance()->set( $key, $value );
-}
-
-function learn_press_session_remove( $key ) {
-
+	LP_Session_Handler::instance()->set( $key, $value );
 }

@@ -1,24 +1,30 @@
 <?php
 /**
- * Template for displaying all error messages from queue
+ * Template for displaying all error messages from queue.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/notices/error.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-if( ! $messages ){
-	return;
-}
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
+<?php if ( ! $messages ) {
+	return;
+} ?>
+
 <ul class="learn-press-message error">
-	<?php foreach ( $messages as $message ) : ?>
-		<li><?php echo /*wp_kses_post*/( $message ); ?></li>
-	<?php endforeach; ?>
+
+	<?php foreach ( $messages as $message ) { ?>
+
+        <li><?php echo $message; ?></li>
+
+	<?php } ?>
+
 </ul>

@@ -16,8 +16,8 @@ foreach ( $lp_map_deprecated_filters as $old => $new ) {
 function lp_deprecated_filter_mapping( $data, $arg_1 = '', $arg_2 = '', $arg_3 = '' ) {
 	global $lp_map_deprecated_filters, $wp_filter;
 	$filter = current_filter();
-	if ( !empty( $wp_filter[$filter] ) && count( $wp_filter[$filter] ) > 1 ) {
-		_deprecated_function( 'The ' . $filter . ' hook', '1.0', $lp_map_deprecated_filters[$filter] );
+	if ( ! empty( $wp_filter[ $filter ] ) && count( $wp_filter[ $filter ] ) > 1 ) {
+		_deprecated_function( 'The ' . $filter . ' hook', '1.0', $lp_map_deprecated_filters[ $filter ] );
 	}
 
 	return $data;
@@ -78,6 +78,7 @@ function learn_press_text_image( $text = null, $args = array() ) {
 	//readfile( $cache );
 	imagedestroy( $im );
 }
+
 /**
  * Get all lessons in a course
  *
@@ -131,7 +132,7 @@ function learn_press_get_course_quizzes( $course_id ) {
 // Deprecated template functions
 
 
-if ( !function_exists( 'learn_press_course_content_lesson' ) ) {
+if ( ! function_exists( 'learn_press_course_content_lesson' ) ) {
 	/**
 	 * Display course description
 	 */
@@ -140,25 +141,25 @@ if ( !function_exists( 'learn_press_course_content_lesson' ) ) {
 	}
 }
 
-if ( !function_exists( 'learn_press_course_lesson_data' ) ) {
+if ( ! function_exists( 'learn_press_course_lesson_data' ) ) {
 	/**
 	 * Display course lesson description
 	 */
 	function learn_press_course_lesson_data() {
 		$course = LP()->course;
-		if ( !$course ) {
+		if ( ! $course ) {
 			return;
 		}
-		if ( !( $lesson = $course->current_lesson ) ) {
+		if ( ! ( $lesson = $course->current_lesson ) ) {
 			return;
 		}
 		?>
-		<input type="hidden" name="learn-press-lesson-viewing" value="<?php echo $lesson->id; ?>" />
+        <input type="hidden" name="learn-press-lesson-viewing" value="<?php echo $lesson->id; ?>"/>
 		<?php
 	}
 }
 
-if ( !function_exists( 'learn_press_course_lesson_description' ) ) {
+if ( ! function_exists( 'learn_press_course_lesson_description' ) ) {
 	/**
 	 * Display course lesson description
 	 */
@@ -167,7 +168,7 @@ if ( !function_exists( 'learn_press_course_lesson_description' ) ) {
 	}
 }
 
-if ( !function_exists( 'learn_press_course_quiz_description' ) ) {
+if ( ! function_exists( 'learn_press_course_quiz_description' ) ) {
 	/**
 	 * Display lesson content
 	 */
@@ -177,7 +178,7 @@ if ( !function_exists( 'learn_press_course_quiz_description' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_course_lesson_complete_button' ) ) {
+if ( ! function_exists( 'learn_press_course_lesson_complete_button' ) ) {
 	/**
 	 * Display lesson complete button
 	 */
@@ -187,7 +188,7 @@ if ( !function_exists( 'learn_press_course_lesson_complete_button' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_course_lesson_navigation' ) ) {
+if ( ! function_exists( 'learn_press_course_lesson_navigation' ) ) {
 	/**
 	 * Display lesson navigation
 	 */
@@ -197,7 +198,7 @@ if ( !function_exists( 'learn_press_course_lesson_navigation' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_preview_mode' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_preview_mode' ) ) {
 	/**
 	 * Output the title of the quiz
 	 */
@@ -207,14 +208,14 @@ if ( !function_exists( 'learn_press_single_quiz_preview_mode' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_left_start_wrap' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_left_start_wrap' ) ) {
 	function learn_press_single_quiz_left_start_wrap() {
 		learn_press_get_template( 'content-quiz/left-start-wrap.php' );
 	}
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_question' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_question' ) ) {
 	/**
 	 * Output the single question for quiz
 	 */
@@ -224,7 +225,7 @@ if ( !function_exists( 'learn_press_single_quiz_question' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_result' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_result' ) ) {
 	/**
 	 * Output the result for the quiz
 	 */
@@ -234,7 +235,7 @@ if ( !function_exists( 'learn_press_single_quiz_result' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_questions_nav' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_questions_nav' ) ) {
 	/**
 	 * Output the navigation to next and previous questions
 	 */
@@ -244,7 +245,7 @@ if ( !function_exists( 'learn_press_single_quiz_questions_nav' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_questions' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_questions' ) ) {
 	/**
 	 * Output the list of questions for quiz
 	 */
@@ -254,7 +255,7 @@ if ( !function_exists( 'learn_press_single_quiz_questions' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_history' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_history' ) ) {
 	/**
 	 * Output the history of a quiz
 	 */
@@ -264,16 +265,14 @@ if ( !function_exists( 'learn_press_single_quiz_history' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_left_end_wrap' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_left_end_wrap' ) ) {
 	function learn_press_single_quiz_left_end_wrap() {
 		learn_press_get_template( 'content-quiz/left-end-wrap.php' );
 	}
 }
 
 
-
-
-if ( !function_exists( 'learn_press_single_quiz_sidebar' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_sidebar' ) ) {
 	/**
 	 * Output the sidebar for a quiz
 	 */
@@ -283,7 +282,7 @@ if ( !function_exists( 'learn_press_single_quiz_sidebar' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_information' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_information' ) ) {
 	/**
 	 *
 	 */
@@ -293,7 +292,7 @@ if ( !function_exists( 'learn_press_single_quiz_information' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_timer' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_timer' ) ) {
 	/**
 	 * Output the quiz countdown timer
 	 */
@@ -303,7 +302,7 @@ if ( !function_exists( 'learn_press_single_quiz_timer' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_single_quiz_buttons' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_buttons' ) ) {
 	/**
 	 * Output the buttons for quiz actions
 	 */
@@ -312,7 +311,7 @@ if ( !function_exists( 'learn_press_single_quiz_buttons' ) ) {
 	}
 }
 
-if ( !function_exists( 'learn_press_single_quiz_description' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_description' ) ) {
 	/**
 	 * Output the content of the quiz
 	 */
@@ -322,8 +321,7 @@ if ( !function_exists( 'learn_press_single_quiz_description' ) ) {
 }
 
 
-
-if ( !function_exists( 'learn_press_single_quiz_information' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_information' ) ) {
 	/**
 	 *
 	 */
@@ -333,13 +331,165 @@ if ( !function_exists( 'learn_press_single_quiz_information' ) ) {
 }
 
 
-
-
-if ( !function_exists( 'learn_press_single_quiz_sidebar_buttons' ) ) {
+if ( ! function_exists( 'learn_press_single_quiz_sidebar_buttons' ) ) {
 	/**
 	 *
 	 */
 	function learn_press_single_quiz_sidebar_buttons() {
 		learn_press_get_template( 'content-quiz/sidebar-buttons.php' );
+	}
+}
+
+if ( ! function_exists( '_learn_press_default_course_tabs' ) ) {
+
+	/**
+	 * Add default tabs to course
+	 *
+	 * @param array $tabs
+	 *
+	 * @return array
+	 */
+	function _learn_press_default_course_tabs( $tabs = array() ) {
+		_deprecated_function( __FUNCTION__, '3.0.0', 'learn_press_get_course_tabs' );
+
+		return learn_press_get_course_tabs();
+	}
+}
+
+
+function learn_press_sanitize_json( $string ) {
+
+	echo json_encode( $string );
+
+	return $string;
+}
+
+
+function learn_press_get_subtabs_course() {
+	$subtabs = array(
+		'all'       => __( 'All', 'learnpress' ),
+		'learning'  => __( 'Learning', 'learnpress' ),
+		'purchased' => __( 'Purchased', 'learnpress' ),
+		'finished'  => __( 'Finished', 'learnpress' ),
+		'own'       => __( 'Owned', 'learnpress' )
+	);
+
+	$subtabs = apply_filters( 'learn_press_profile_tab_courses_subtabs', $subtabs );
+
+	return $subtabs;
+}
+
+
+# -------------------------------
+# Validation Data Settings Page Before Save
+add_filter( 'learn_press_update_option_value', 'learn_press_validation_data_before_save', 10, 2 );
+
+function learn_press_validation_data_before_save( $value = '', $name = '' ) {
+	if ( $name === 'learn_press_profile_endpoints' ) {
+
+		if ( empty( $value['profile-courses'] ) ) {
+			$value['profile-courses'] = 'courses';
+		}
+	}
+
+	return $value;
+}
+
+
+// Show filters for students list
+function learn_press_get_students_list_filter() {
+	$filter = array(
+		'all'         => esc_html__( 'All', 'learnpress' ),
+		'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
+		'finished'    => esc_html__( 'Finished', 'learnpress' )
+	);
+
+	return apply_filters( 'learn_press_get_students_list_filter', $filter );
+}
+
+
+function learn_press_get_request_args( $args = array() ) {
+	$request = array();
+	if ( $args ) {
+		foreach ( $args as $key ) {
+			$request[] = array_key_exists( $key, $_REQUEST ) ? $_REQUEST[ $key ] : false;
+		}
+	}
+
+	return $request;
+}
+
+
+/**
+ * Redirect to question if user access to a quiz that user has started
+ *
+ * @param string
+ *
+ * @return string
+ */
+function learn_press_redirect_to_question( $template ) {
+	global $post_type;
+	if ( is_single() && $post_type == LP_QUIZ_CPT ) {
+		$user        = learn_press_get_current_user();
+		$quiz_id     = get_the_ID();
+		$quiz_status = $user->get_quiz_status( $quiz_id );
+		if ( $quiz_status == 'started' && learn_press_get_quiz_time_remaining( $user->get_id(), $quiz_id ) == 0 && get_post_meta( $quiz_id, '_lpr_duration', true ) ) {
+			$user->finish_quiz( $quiz_id );
+			$quiz_status = 'completed';
+		}
+		$redirect = null;
+		if ( learn_press_get_request( 'question' ) && $quiz_status == '' ) {
+			$redirect = get_the_permalink( $quiz_id );
+		} elseif ( $quiz_status == 'started' ) {
+			if ( learn_press_get_request( 'question' ) ) {
+			} else {
+				$redirect = learn_press_get_user_question_url( $quiz_id );
+			}
+		} elseif ( $quiz_status == 'completed' && learn_press_get_request( 'question' ) ) {
+			$redirect = get_the_permalink( $quiz_id );
+		}
+		if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
+			wp_redirect( $redirect );
+			exit();
+		}
+	}
+
+	return $template;
+}
+
+
+function learn_press_output_question_nonce( $question ) {
+	printf( '<input type="hidden" name="update-question-nonce" value="%s" />', wp_create_nonce( 'current-question-nonce-' . $question->id ) );
+}
+
+add_action( 'learn_press_after_question_wrap', 'learn_press_output_question_nonce' );
+
+
+if ( ! function_exists( 'learn_press_course_nav_items' ) ) {
+	/**
+	 * Displaying course items navigation
+	 *
+	 * @param null $item_id
+	 * @param null $course_id
+	 */
+	function learn_press_course_nav_items( $item_id = null, $course_id = null ) {
+		learn_press_get_template( 'single-course/nav-items.php', array(
+			'course_id'    => $course_id,
+			'item_id'      => $item_id,
+			'content_only' => learn_press_is_content_item_only()
+		) );
+	}
+}
+
+/**
+ * Load course item content only
+ */
+function learn_press_load_content_item_only( $name ) {
+	if ( learn_press_is_content_item_only() ) {
+		if ( LP()->global['course-item'] ) {
+			remove_action( 'get_header', 'learn_press_load_content_item_only' );
+			learn_press_get_template( 'single-course/content-item-only.php' );
+			die();
+		}
 	}
 }

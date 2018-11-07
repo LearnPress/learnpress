@@ -1,0 +1,120 @@
+.post-type-lp_order {
+    #post-body-content {
+        display: none;
+    }
+
+    #order_details {
+        .hndle, .handlediv {
+            display: none;
+        }
+
+        .inside {
+            padding: 30px 30px;
+            margin: 0;
+        }
+
+        .order-data-field {
+            margin-bottom: 20px;
+            label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+        }
+
+        .order-data-number {
+            margin: 0 0 10px;
+            font-size: 24px;
+            font-weight: lighter;
+        }
+
+        .order-data-heading {
+            margin-top: 40px;
+        }
+
+        .order-users {
+            display: inline-block;
+        }
+
+        .order-data-date {
+            .order-date {
+                width: 100px;
+            }
+            .order-hour, .order-minute {
+                width: 50px;
+            }
+        }
+
+        .order-items {
+            margin: 0 -30px;
+            border-top: 2px solid #DDD;
+            padding: 0 30px;
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                thead {
+                    th {
+                        border-bottom: 1px solid #DDD;
+                        text-align: left;
+                        padding: 12px 10px;
+                        font-size: 16px;
+                        font-weight: lighter;
+                    }
+                }
+
+                tbody, tfoot {
+                    td {
+                        border-bottom: 1px solid #DDD;
+                        text-align: left;
+                        padding: 10px;
+                    }
+                }
+
+                tbody {
+                    tr:nth-child(odd) {
+                        td {
+                            background: #F5F5F5;
+                        }
+                    }
+                }
+
+                tfoot {
+                    td {
+                        border: none;
+                        padding-bottom: 0;
+                        text-align: right;
+                        font-size: 14px;
+                    }
+                }
+                .column-price,
+                .column-total,
+                .column-quantity {
+                    text-align: right;
+                    width: 150px;
+                }
+                .row-subtotal {
+                    td {
+                        padding-top: 20px;
+                    }
+                }
+                .remove-order-item {
+                    text-decoration: none;
+                    outline: none;
+                    color: #CCC;
+                    .dashicons {
+                        font-size: 18px;
+                    }
+                    &:hover {
+                        color: #FF0000;
+                    }
+                }
+
+                .order-item-row:hover {
+                    .remove-order-item {
+                        display: inline-block;
+                    }
+                }
+            }
+        }
+    }
+}

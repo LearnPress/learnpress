@@ -1,4 +1,4 @@
-<h2><?php _e( 'Upgrade complete successfully!', 'learnpress' ); ?></h2>
+<h2><?php _e( 'Upgrade completed successfully!', 'learnpress' ); ?></h2>
 <h3 style="font-size: 14px;"><?php _e( 'What\'s next?', 'learnpress' ); ?></h3>
 <ul>
 	<li>

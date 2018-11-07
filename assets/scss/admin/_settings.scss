@@ -1,0 +1,96 @@
+
+.color-schemas {
+    margin: 0 20px 20px 0;
+    float: left;
+    .wp-color-picker {
+        width: 80px;
+        height: 24px;
+        vertical-align: top;
+        margin: 0;
+    }
+    .wp-picker-holder{
+        position: absolute;
+    }
+    .buttons{
+        display: none;
+    }
+    table {
+        border-collapse: collapse;
+        position: relative;
+        td, th {
+            padding: 10px 10px;
+        }
+        tbody {
+            border: 1px solid transparent;
+            position: relative;
+            td, th {
+                text-align: left;
+                background: #F5F5F5;
+            }
+            tr:first-child {
+                td, th {
+                    padding-bottom: 0;
+                }
+            }
+        }
+        &:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+        }
+    }
+    tfoot {
+        td, th {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+    .remove-schema {
+        float: right;
+        color: #FF0000;
+    }
+    .wp-color-result {
+        margin: 0;
+    }
+    .color-selector input {
+        //width: 0 !important;
+        //opacity: 0;
+    }
+    .clone-schema {
+        display: none;
+    }
+    &:first-child {
+        .remove-schema,
+        .apply-schema {
+            display: none;
+        }
+    }
+    &:nth-child(2) {
+        clear: both;
+    }
+    &:hover {
+        tbody {
+            opacity: 1;
+        }
+    }
+    &.current {
+        tbody {
+            border-color: #DDD;
+            td, th {
+                background: rgba(5, 215, 255, 0.26);
+            }
+        }
+        table {
+            &:after {
+                display: none;
+            }
+        }
+        .clone-schema {
+            display: inline-block;
+        }
+    }
+}

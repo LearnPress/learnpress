@@ -1,25 +1,25 @@
 <?php
 /**
+ * Template for displaying order comment.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/checkout/order-comment.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-$comment_heading = apply_filters( 'learn_press_order_comment_heading', __( 'Additional Information', 'learnpress' ) );
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="learn-press-checkout-comment">
 
-	<?php if ( $comment_heading ) { ?>
+    <h4><?php _e( 'Additional Information', 'learnpress' ); ?></h4>
 
-		<h3 class="learn-press-order-comment-heading"><?php echo $comment_heading; ?></h3>
-
-	<?php } ?>
-	<textarea name="order_comments"></textarea>
+    <textarea name="order_comments" class="order-comments"
+              placeholder="<?php _e( 'Note to administrator', 'learnpress' ); ?>"></textarea>
 
 </div>

@@ -1,46 +1,65 @@
 <?php
 /**
- * Template for displaying the curriculum of a course
+ * Template for displaying curriculum tab of single course.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/tabs/curriculum.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-$course = LP()->global['course'];
+$course = LP_Global::course();
 
-$curriculum_heading = apply_filters( 'learn_press_curriculum_heading', '' );
 ?>
+
 <div class="course-curriculum" id="learn-press-course-curriculum">
 
-	<?php if ( $curriculum_heading ) { ?>
+    <div class="curriculum-scrollable">
 
-		<h2 class="course-curriculum-title"><?php echo $curriculum_heading; ?></h2>
+		<?php
+		/**
+		 * @deprecated
+		 */
+		do_action( 'learn_press_before_single_course_curriculum' );
 
-	<?php } ?>
+		/**
+		 * @since 3.0.0
+		 */
+		do_action( 'learn-press/before-single-course-curriculum' );
+		?>
 
-	<?php do_action( 'learn_press_before_single_course_curriculum' ); ?>
+		<?php if ( $curriculum = $course->get_curriculum() ) { ?>
 
-	<?php if ( $curriculum = $course->get_curriculum() ): ?>
+            <ul class="curriculum-sections">
+				<?php foreach ( $curriculum as $section ) {
+					learn_press_get_template( 'single-course/loop-section.php', array( 'section' => $section ) );
+				} ?>
+            </ul>
 
-		<ul class="curriculum-sections">
+		<?php } else { ?>
 
-			<?php foreach ( $curriculum as $section ) : ?>
+			<?php echo apply_filters( 'learn_press_course_curriculum_empty', __( 'Curriculum is empty', 'learnpress' ) ); ?>
 
-				<?php learn_press_get_template( 'single-course/loop-section.php', array( 'section' => $section ) ); ?>
+		<?php } ?>
 
-			<?php endforeach; ?>
+		<?php
+		/**
+		 * @since 3.0.0
+		 */
+		do_action( 'learn-press/after-single-course-curriculum' );
 
-		</ul>
+		/**
+		 * @deprecated
+		 */
+		do_action( 'learn_press_after_single_course_curriculum' );
+		?>
 
-	<?php else: ?>
-		<?php echo apply_filters( 'learn_press_course_curriculum_empty', __( 'Curriculum is empty', 'learnpress' ) ); ?>
-	<?php endif; ?>
-
-	<?php do_action( 'learn_press_after_single_course_curriculum' ); ?>
+    </div>
 
 </div>

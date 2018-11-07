@@ -1,0 +1,93 @@
+@import "../mixin";
+@import "../general";
+@import "general";
+@import "advertisment";
+@import "submenu";
+@import "meta-box";
+@import "admin-tabs";
+@import "addons";
+@import "post-types";
+@import "modal-search";
+@import "dashboard";
+@import "place-holder";
+@import "order";
+@import "settings";
+@import "admin-editor";
+@import "admin-tools";
+@import "../quick-tip";
+@import "responsive";
+@import "rtl";
+
+.button {
+    &.disabled {
+        pointer-events: none;
+    }
+}
+
+.lp-notice,
+.learn-press-notice {
+    h4 {
+        margin: 10px 0 15px
+    }
+    p {
+        margin: 0 0 5px 0;
+        padding: 0 2px;
+    }
+    &.lp-upgrade-notice {
+        background: #BCEFFE;
+        border-left-color: #02B7FB;
+        position: relative;
+        .close-notice {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+        }
+    }
+}
+
+.learn-press-dropdown-pages {
+    display: inline-block;
+}
+
+.lp-notice-update-database {
+    border-left-color: #FF0000;
+    &.do-updating {
+        &:before {
+            display: inline-block;
+            content: "\f463";
+            font-family: dashicons;
+            font-size: 20px;
+            float: left;
+            margin: 9px 5px 0 -5px;
+            color: #2773aa;
+            @include rotating4();
+        }
+    }
+}
+
+#adminmenu {
+    .update-plugins {
+        &.lp-plugins-count {
+            padding: 0 5px;
+        }
+    }
+}
+
+.search-box {
+    input[name="post-search-author"],
+    .select2-container {
+        margin: 0;
+        min-width: 200px;
+        vertical-align: top;
+    }
+}
+
+.learn-press-notice-assigned-item{
+    color: #FF0000;
+}
+
+.learnpress {
+    .actions {
+        margin: 0;
+    }
+}

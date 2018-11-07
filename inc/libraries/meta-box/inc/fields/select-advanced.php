@@ -30,7 +30,6 @@ class RWMB_Select_Advanced_Field extends RWMB_Select_Field {
 			$dependencies[] = 'rwmb-select2-i18n';
 		}
 
-		wp_enqueue_script( 'rwmb-select', RWMB_JS_URL . 'select.js', array( 'jquery' ), RWMB_VER, true );
 		wp_enqueue_script( 'rwmb-select-advanced', RWMB_JS_URL . 'select-advanced.js', $dependencies, RWMB_VER, true );
 	}
 
@@ -43,7 +42,7 @@ class RWMB_Select_Advanced_Field extends RWMB_Select_Field {
 	public static function normalize( $field ) {
 		$field = wp_parse_args( $field, array(
 			'js_options'  => array(),
-			'placeholder' => __( 'Select an item', 'meta-box' ),
+			'placeholder' => __( 'Select an item', 'learnpress' ),
 		) );
 
 		$field = parent::normalize( $field );

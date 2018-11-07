@@ -7,7 +7,7 @@
  * @version     1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -15,7 +15,20 @@ if ( !defined( 'ABSPATH' ) ) {
  * Class LP_Admin_Menu
  */
 class LP_Admin_Menu {
-	protected $_submenu = null;
+
+	/**
+	 * Array of submenu items.
+	 *
+	 * @var array
+	 */
+	protected $menu_items = array();
+
+	/**
+	 * Main menu capability.
+	 *
+	 * @var string
+	 */
+	protected $capability = '';
 
 	/**
 	 * LP_Admin_Menu Construct
@@ -24,32 +37,25 @@ class LP_Admin_Menu {
 		// admin menu
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
-		add_action( 'init', array( $this, 'menu_content' ) );
-		add_action( 'init', 'learn_press_admin_update_settings', 1000 );
+		//add_action( 'init', 'learn_press_admin_update_settings', 1000 );
 		if ( apply_filters( 'learn_press_show_admin_bar_courses_page', true ) ) {
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_menus' ), 50 );
 		}
 
-		// auto include file for admin page
-		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
-		$page = !empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
-		if ( $page ) {
-			if ( strpos( $page, 'learn-press-' ) !== false ) {
-				$file = preg_replace( '!^learn-press-!', '', $page );
-				$file = str_replace( '_', '-', $file );
-				if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
-					$this->_submenu = require_once $file;
-				}
-			}
-		}
+		/**
+		 * @since 3.0.0
+		 */
+		$this->capability = 'edit_' . LP_COURSE_CPT . 's';
+		include_once 'sub-menus/abstract-submenu.php';
 	}
 
 	public function admin_bar_menus( $wp_admin_bar ) {
-		if ( !is_admin() || !is_user_logged_in() ) {
+
+		if ( ! is_admin() || ! is_user_logged_in() ) {
 			return;
 		}
 
-		if ( !is_user_member_of_blog() && !is_super_admin() ) {
+		if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
 			return;
 		}
 
@@ -66,61 +72,87 @@ class LP_Admin_Menu {
 	}
 
 	/**
+	 * Get main menu capability.
+	 *
+	 * @return string
+	 */
+	public function get_capability() {
+		return $this->capability;
+	}
+
+	/**
 	 * Register for menu for admin
 	 */
 	public function admin_menu() {
-		$capacity = 'edit_' . LP_COURSE_CPT . 's';
+
 		add_menu_page(
 			__( 'Learning Management System', 'learnpress' ),
-			'LearnPress',
-			$capacity,
+			__( 'LearnPress', 'learnpress' ),
+			$this->get_capability(),
 			'learn_press',
 			'',
 			'dashicons-welcome-learn-more',
 			'3.14'
 		);
 
-		$menu_items = array(
-			'statistics' => array(
-				'learn_press',
-				__( 'Statistics', 'learnpress' ),
-				__( 'Statistics', 'learnpress' ),
-				$capacity,
-				'learn-press-statistics',
-				array( $this, 'menu_page' )
-			),
-			'addons'     => array(
-				'learn_press',
-				__( 'Add-ons', 'learnpress' ),
-				__( 'Add-ons', 'learnpress' ),
-				'manage_options',
-				'learn-press-addons',
-				'learn_press_addons_page'
-			),
-			'settings'   => array(
-				'learn_press',
-				__( 'Settings', 'learnpress' ),
-				__( 'Settings', 'learnpress' ),
-				'manage_options',
-				'learn-press-settings',
-				'learn_press_settings_page'
-			),
-			'tools' => array(
-				'learn_press',
-				__( 'Tools', 'learnpress' ),
-				__( 'Tools', 'learnpress' ),
-				'manage_options',
-				'learn-press-tools',
-				'learn_press_tools_page'
-			)
-		);
+		// Default submenu items
+		$menu_items              = array();
+		$menu_items['statistic'] = include_once "sub-menus/class-lp-submenu-statistics.php";
+		$menu_items['addons']    = include_once "sub-menus/class-lp-submenu-addons.php";
+		$menu_items['settings']  = include_once "sub-menus/class-lp-submenu-settings.php";
+		$menu_items['tools']     = include_once "sub-menus/class-lp-submenu-tools.php";
 
-		// Third-party can be add more items
+		// Deprecated hooks
 		$menu_items = apply_filters( 'learn_press_menu_items', $menu_items );
 
-		if ( $menu_items ) foreach ( $menu_items as $item ) {
-			call_user_func_array( 'add_submenu_page', $item );
+		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
+
+		// Sort menu items by it's priority
+		//uasort( $menu_items, array( $this, 'sort_menu_items' ) );
+		uasort( $menu_items, 'learn_press_sort_list_by_priority_callback' );
+
+		if ( $menu_items ) {
+			foreach ( $menu_items as $item ) {
+
+				// Construct submenu if it is a name of a class
+				if ( is_string( $item ) && class_exists( $item ) ) {
+					$item = new $item();
+				}
+
+				if ( ! $item instanceof LP_Abstract_Submenu ) {
+					continue;
+				}
+
+				add_submenu_page(
+					'learn_press',
+					$item->get_page_title(),
+					$item->get_menu_title(),
+					$item->get_capability(),
+					$item->get_id(),
+					array( $item, 'display' )
+				);
+
+			}
+			$this->menu_items = $menu_items;
 		}
+
+		$addons = LP_Admin::instance()->get_addons();
+	}
+
+	/**
+	 * Callback function using for "usort".
+	 *
+	 * @param LP_Abstract_Submenu $a
+	 * @param LP_Abstract_Submenu $b
+	 *
+	 * @return mixed
+	 */
+	public function sort_menu_items( $a, $b ) {
+		return $a->get_priority() > $b->get_priority();
+	}
+
+	public function get_menu_items() {
+		return $this->menu_items;
 	}
 
 	/*
@@ -129,25 +161,22 @@ class LP_Admin_Menu {
 	public function notify_new_course() {
 		global $menu;
 		$current_user = wp_get_current_user();
-		if ( !in_array( 'administrator', $current_user->roles ) ) {
+		if ( ! in_array( 'administrator', $current_user->roles ) ) {
 			return;
 		}
-		$count_courses = wp_count_posts( LP_COURSE_CPT );
-		$awaiting_mod  = $count_courses->pending;
+		$count_courses   = wp_count_posts( LP_COURSE_CPT );
+		$awaiting_mod    = $count_courses->pending;
 		$menu['3.14'][0] .= " <span class='awaiting-mod count-$awaiting_mod'><span class='pending-count'>" . number_format_i18n( $awaiting_mod ) . "</span></span>";
 	}
 
-	public function menu_page() {
-		if ( $this->_submenu ) {
-			$this->_submenu->display();
+	public static function instance() {
+		static $instance = false;
+		if ( ! $instance ) {
+			$instance = new self();
 		}
-	}
 
-	public function menu_content() {
-		if ( !function_exists( 'learn_press_admin_update_settings' ) ) {
-			remove_action( 'init', 'learn_press_admin_update_settings', 1000 );
-		}
+		return $instance;
 	}
 }
 
-return new LP_Admin_Menu();
+return LP_Admin_Menu::instance();

@@ -1,18 +1,39 @@
 <?php
 /**
- * Template for displaying loop of section
+ * Template for displaying loop course of section.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/single-course/loop-section.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
+if ( ! isset( $section ) ) {
+	return;
 }
 ?>
-<li class="section" id="section-<?php echo $section->section_id; ?>" data-id="<?php echo $section->section_id; ?>">
 
-	<?php do_action( 'learn_press_curriculum_section_summary', $section ); ?>
+<li<?php $section->main_class();?> id="section-<?php echo $section->get_slug(); ?>" data-id="<?php echo $section->get_slug(); ?>" data-section-id="<?php echo $section->get_id();?>">
+
+	<?php
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_curriculum_section_summary', $section );
+
+	/**
+	 * @since  3.0.0
+	 *
+	 * @see learn_press_curriculum_section_title - 5
+	 * @see learn_press_curriculum_section_content - 10
+	 */
+	do_action( 'learn-press/section-summary', $section );
+	?>
 
 </li>

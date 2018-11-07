@@ -1,24 +1,30 @@
 <?php
 /**
- * Template for displaying all success messages from queue
+ * Template for displaying all success messages from queue.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/notices/success.php.
  *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-if ( !$messages ) {
-	return;
-}
-
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
 
-<?php foreach ( $messages as $message ) : ?>
-	<div class="learn-press-message">
-		<?php echo /*wp_kses_post*/( $message ); ?>
-	</div>
-<?php endforeach; ?>
+<?php if ( ! $messages ) {
+	return;
+} ?>
+
+<?php foreach ( $messages as $message ) { ?>
+
+    <div class="learn-press-message">
+
+		<?php echo $message; ?>
+
+    </div>
+
+<?php } ?>

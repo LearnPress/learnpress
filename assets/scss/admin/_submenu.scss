@@ -1,0 +1,102 @@
+.lp-admin-tabs {
+    position: relative;
+    margin-top: 20px;
+    .lp-admin-tab-navs {
+        margin: 0 -250px 0 0;
+        width: 250px;
+        float: left;
+        padding: 10px 0px;
+        position: relative;
+        z-index: 5;
+        display: none;
+        @include box-sizing(border-box);
+        .nav-section {
+            margin: 0;
+            > a, > span {
+                display: block;
+                padding: 8px 20px;
+                outline: none;
+                box-shadow: none;
+                text-decoration: none;
+                text-transform: capitalize;
+            }
+            .learn-press-tooltip {
+                float: right;
+                margin-right: 0;
+            }
+            &.nav-section-active,
+            &:hover {
+                border-left: 2px solid #563d7c;
+                color: #563d7c;
+                > a, > span {
+                    padding-left: 18px;
+                }
+            }
+        }
+    }
+
+    &.has-sections {
+        .lp-admin-tab-navs {
+            display: block;
+        }
+        .lp-admin-tab-content {
+            padding-left: 271px !important;
+            float: left;
+            width: 100%;
+            z-index: 0;
+            position: relative;
+            @include box-sizing(border-box);
+        }
+        &:before {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 250px;
+            border-left: 1px solid #DDD;
+            content: '';
+            z-index: 10;
+        }
+    }
+    &:after {
+        @include clear-fix();
+        z-index: 10;
+    }
+}
+
+.wrap {
+    &.learn-press-settings {
+        .lp-admin-tab-content {
+            background: #FFF;
+            padding: 18px;
+            .subsubsub {
+                float: none;
+                margin: 0 0 20px 0;
+                border-bottom: 1px solid #DDD;
+                padding-bottom: 20px;
+                .active {
+                    font-weight: bold;
+                }
+
+                li {
+                    text-transform: capitalize;
+                    &:after {
+                        content: '|';
+                        display: inline-block;
+                        padding: 0 10px;
+                    }
+                    &:last-child:after {
+                        content: '';
+                    }
+                }
+            }
+        }
+    }
+
+    #learn-press-uninstall-sample-data {
+        float: right;
+        opacity: 0.5;
+        &:hover{
+            opacity: 1;
+        }
+    }
+}

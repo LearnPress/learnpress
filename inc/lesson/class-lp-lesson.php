@@ -1,233 +1,240 @@
 <?php
-
 /**
- * Class LP_Lesson
+ * Class LP_Lesson.
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0.0
  */
 
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
-class LP_Lesson extends LP_Abstract_Course_Item {
-	/**
-	 * The lesson (post) ID.
-	 *
-	 * @var int
-	 */
-	public $id = 0;
+if ( ! function_exists( 'LP_Lesson' ) ) {
 
 	/**
-	 * $post Stores post data
-	 *
-	 * @var $post WP_Post
+	 * Class LP_Lesson.
 	 */
-	public $post = null;
+	class LP_Lesson extends LP_Course_Item {
 
-	/**
-	 * @var mixed|string|void
-	 */
-	public $content = '';
+		/**
+		 * @var mixed|string|void
+		 */
+		public $content = '';
 
-	/**
-	 *
-	 * @var string
-	 */
-	public $lesson_type = null;
+		/**
+		 *
+		 * @var string
+		 */
+		public $lesson_type = null;
 
-	/**
-	 * LP_Lesson constructor.
-	 *
-	 * @param $lesson
-	 */
-	public function __construct( $lesson ) {
-		if ( is_numeric( $lesson ) ) {
-			$this->id   = absint( $lesson );
-			$this->post = get_post( $this->id );
-		} elseif ( $lesson instanceof LP_Lesson ) {
-			$this->id   = absint( $lesson->id );
-			$this->post = $lesson->post;
-		} elseif ( isset( $lesson->ID ) ) {
-			$this->id   = absint( $lesson->ID );
-			$this->post = $lesson;
+		/**
+		 * @var string
+		 */
+		protected $_item_type = LP_LESSON_CPT;
+
+		/**
+		 * @var int
+		 */
+		protected static $_loaded = 0;
+
+		/**
+		 * LP_Lesson constructor.
+		 *
+		 * @param        $lesson
+		 * @param string $args
+		 *
+		 * @throws Exception
+		 */
+		public function __construct( $lesson, $args = '' ) {
+			parent::__construct( $lesson, $args );
+			$this->_curd = new LP_Lesson_CURD();
+
+			if ( $this->get_id() > 0 ) {
+				$this->load();
+			}
+
+			self::$_loaded ++;
+			if ( self::$_loaded == 1 ) {
+				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+			}
 		}
-		parent::__construct( $this->post );
-	}
 
-	/**
-	 * __get function.
-	 *
-	 * @param string $key
-	 *
-	 * @return mixed
-	 */
-	public function __get( $key ) {
-		if ( isset( $this->{$key} ) ) {
-			return $this->{$key};
+		/**
+		 * Read course data, curriculum: sections, items, etc...
+		 *
+		 * @since 3.0.0
+		 *
+		 * @throws Exception
+		 */
+		public function load() {
+			$this->_curd->load( $this );
 		}
-		$value = null;
-		switch ( $key ) {
-			case 'ID':
-				$value = $this->id;
-				break;
-			/*case 'title':
-				$value = $this->post->post_title;
-				break;
-			case 'content':
-				$value = $this->get_content();
-				break;*/
-			default:
-				$value = get_post_meta( $this->id, '_lp_' . $key, true );
-				if ( !empty( $value ) ) {
-					$this->$key = $value;
+
+		/**
+		 * Debug log.
+		 *
+		 * @param $data
+		 *
+		 * @return array
+		 */
+		public static function log( $data ) {
+			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
+			return $data;
+		}
+
+		/**
+		 * @param $tag
+		 *
+		 * @return mixed
+		 * @throws Exception
+		 */
+		public function is( $tag ) {
+			_deprecated_function( __FUNCTION__, '3.0.8' );
+			$args = func_get_args();
+			unset( $args[0] );
+			$method   = 'is_' . preg_replace( '!-!', '_', $tag );
+			$callback = array( $this, $method );
+			if ( is_callable( $callback ) ) {
+				return call_user_func_array( $callback, $args );
+			} else {
+				throw new Exception( sprintf( __( 'The function %s doesn\'t exist', 'learnpress' ), $tag ) );
+			}
+		}
+
+		/**
+		 * Get LP Lesson.
+		 *
+		 * @param mixed $the_lesson
+		 * @param array $args
+		 *
+		 * @return LP_Lesson|bool
+		 */
+		public static function get_lesson( $the_lesson = false, $args = array() ) {
+
+			if ( is_numeric( $the_lesson ) && isset( LP_Global::$lessons[ $the_lesson ] ) ) {
+				return LP_Global::$lessons[ $the_lesson ];
+			}
+
+			$the_lesson = self::get_lesson_object( $the_lesson );
+
+			if ( ! $the_lesson ) {
+				return false;
+			}
+
+			if ( isset( LP_Global::$lessons[ $the_lesson->ID ] ) ) {
+				return LP_Global::$lessons[ $the_lesson->ID ];
+			}
+
+			if ( ! empty( $args['force'] ) ) {
+				$force = ! ! $args['force'];
+				unset( $args['force'] );
+			} else {
+				$force = false;
+			}
+
+			$key_args = wp_parse_args( $args, array( 'id' => $the_lesson->ID, 'type' => $the_lesson->post_type ) );
+
+			$key = LP_Helper::array_to_md5( $key_args );
+
+			if ( $force ) {
+				LP_Global::$lessons[ $key ]            = false;
+				LP_Global::$lessons[ $the_lesson->ID ] = false;
+			}
+
+			if ( empty( LP_Global::$lessons[ $key ] ) ) {
+				$class_name = self::get_lesson_class( $the_lesson, $args );
+				if ( is_string( $class_name ) && class_exists( $class_name ) ) {
+					$lesson = new $class_name( $the_lesson->ID, $args );
+				} elseif ( $class_name instanceof LP_Course_Item ) {
+					$lesson = $class_name;
+				} else {
+					$lesson = new self( $the_lesson->ID, $args );
 				}
-		}
-		return $value;
-	}
-
-	public function get_title() {
-		return get_the_title( $this->id );
-	}
-
-	public function get_content() {
-		///if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
-			global $post, $wp_query;
-			$post  = get_post( $this->id );
-			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
-
-			if ( $posts ) {
-				$post = $posts[0];
-			}
-			setup_postdata( $post );
-			ob_start();
-			the_content();
-			$this->content = ob_get_clean();
-			$has_filter = false;
-			if ( has_filter( 'the_content', 'wpautop' ) ) {
-			    $has_filter = true;
-			} else {
-			    $this->content = wpautop($this->content);
-			}
-			wp_reset_postdata();
-			do_action( 'learn_press_get_content_' . $this->id );
-		//}
-		return $this->content;
-	}
-
-	public function is( $tag ) {
-		$args = func_get_args();
-		unset( $args[0] );
-		$method   = 'is_' . preg_replace( '!-!', '_', $tag );
-		$callback = array( $this, $method );
-		if ( is_callable( $callback ) ) {
-			return call_user_func_array( $callback, $args );
-		} else {
-			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $tag ) );
-		}
-	}
-
-	public function is_previewable() {
-		return apply_filters( 'learn_press_lesson_preview', ($this->preview == 1||$this->preview === 'yes'), $this );
-	}
-
-	public function get_settings( $user_id, $course_id ) {
-		$item_statuses = LP_Cache::get_item_statuses( false, array() );
-		return array(
-			'userId'   => $user_id,
-			'courseId' => $course_id,
-			'id'       => $this->id,
-			'status'   => !empty( $item_statuses[$this->id] ) ? $item_statuses[$this->id] : '',
-			'type'     => LP_LESSON_CPT
-		);
-	}
-
-	/**
-	 * @param       mixed
-	 * @param array $args
-	 *
-	 * @return bool
-	 */
-	public static function get_lesson( $the_lesson = false, $args = array() ) {
-		$the_lesson = self::get_lesson_object( $the_lesson );
-		if ( !$the_lesson ) {
-			return false;
-		}
-
-		static $lessons = array();
-
-		if ( empty( $lessons[$the_lesson->ID] ) || ( !empty( $args['force'] ) && $args['force'] ) ) {
-			$class_name = self::get_lesson_class( $the_lesson, $args );
-			if ( !class_exists( $class_name ) ) {
-				$class_name = 'LP_Lesson';
+				LP_Global::$lessons[ $key ]            = $lesson;
+				LP_Global::$lessons[ $the_lesson->ID ] = $lesson;
 			}
 
-			$lessons[$the_lesson->ID] = new $class_name( $the_lesson, $args );
+			return LP_Global::$lessons[ $key ];
 		}
-		return $lessons[$the_lesson->ID];
-	}
 
-	/**
-	 * Get the lesson class name
-	 *
-	 * @param  WP_Post $the_lesson
-	 * @param  array   $args (default: array())
-	 *
-	 * @return string
-	 */
-	private static function get_lesson_class( $the_lesson, $args = array() ) {
-		$lesson_id = absint( $the_lesson->ID );
-		$post_type = $the_lesson->post_type;
+		/**
+		 * Get default meta.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @return mixed
+		 */
+		public static function get_default_meta() {
+			$meta = array(
+				'duration' => '0 minute',
+				'preview'  => 'no'
+			);
 
-		if ( LP_LESSON_CPT === $post_type ) {
-			if ( isset( $args['lesson_type'] ) ) {
-				$lesson_type = $args['lesson_type'];
-			} else {
-				/*$terms          = get_the_terms( $course_id, 'course_type' );
-				$course_type    = ! empty( $terms ) ? sanitize_title( current( $terms )->name ) : 'simple';
-				*/
-				$lesson_type = '';
+			return apply_filters( 'learn-press/course/lesson/default-meta', $meta );
+		}
+
+		/**
+		 * Get duration of lesson
+		 *
+		 * @return LP_Duration
+		 */
+		public function get_duration() {
+			$duration = parent::get_duration();
+
+			return apply_filters( 'learn-press/lesson-duration', $duration, $this->get_id() );
+		}
+
+		/**
+		 * @param  string $lesson_type
+		 *
+		 * @return string|false
+		 */
+		private static function get_class_name_from_lesson_type( $lesson_type ) {
+			return LP_LESSON_CPT === $lesson_type ? __CLASS__ : 'LP_Lesson_' . implode( '_', array_map( 'ucfirst', explode( '-', $lesson_type ) ) );
+		}
+
+		/**
+		 * Get the lesson class name
+		 *
+		 * @param  WP_Post $the_lesson
+		 * @param  array   $args (default: array())
+		 *
+		 * @return string
+		 */
+		private static function get_lesson_class( $the_lesson, $args = array() ) {
+			$lesson_id = absint( $the_lesson->ID );
+			$type      = $the_lesson->post_type;
+
+			$class_name = self::get_class_name_from_lesson_type( $type );
+
+			// Filter class name so that the class can be overridden if extended.
+			return apply_filters( 'learn-press/lesson/object-class', $class_name, $type, $lesson_id );
+		}
+
+		/**
+		 * Get the lesson object
+		 *
+		 * @param  mixed $the_lesson
+		 *
+		 * @uses   WP_Post
+		 * @return WP_Post|bool false on failure
+		 */
+		private static function get_lesson_object( $the_lesson ) {
+			if ( false === $the_lesson ) {
+				$the_lesson = get_post_type() === LP_LESSON_CPT ? $GLOBALS['post'] : false;
+			} elseif ( is_numeric( $the_lesson ) ) {
+				$the_lesson = get_post( $the_lesson );
+			} elseif ( $the_lesson instanceof LP_Course_Item ) {
+				$the_lesson = get_post( $the_lesson->get_id() );
+			} elseif ( ! ( $the_lesson instanceof WP_Post ) ) {
+				$the_lesson = false;
 			}
-		} else {
-			$lesson_type = false;
+
+			return apply_filters( 'learn-press/lesson/post-object', $the_lesson );
 		}
-
-		$class_name = self::get_class_name_from_lesson_type( $lesson_type );
-
-		// Filter class name so that the class can be overridden if extended.
-		return apply_filters( 'learn_press_lesson_class', $class_name, $lesson_type, $post_type, $lesson_id );
-	}
-
-	/**
-	 * Get the lesson object
-	 *
-	 * @param  mixed $the_lesson
-	 *
-	 * @uses   WP_Post
-	 * @return WP_Post|bool false on failure
-	 */
-	private static function get_lesson_object( $the_lesson ) {
-		if ( false === $the_lesson ) {
-			$the_lesson = $GLOBALS['post'];
-		} elseif ( is_numeric( $the_lesson ) ) {
-			$the_lesson = get_post( $the_lesson );
-		} elseif ( $the_lesson instanceof LP_Lesson ) {
-			$the_lesson = get_post( $the_lesson->id );
-		} elseif ( !empty( $the_lesson->ID ) ) {
-			$the_lesson = get_post( $the_lesson->id );
-		} elseif ( !( $the_lesson instanceof WP_Post ) ) {
-			$the_lesson = false;
-		}
-
-		return apply_filters( 'learn_press_lesson_object', $the_lesson );
-	}
-
-	/**
-	 * @param  string $lesson_type
-	 *
-	 * @return string|false
-	 */
-	private static function get_class_name_from_lesson_type( $lesson_type ) {
-		return $lesson_type ? 'LP_Course_' . implode( '_', array_map( 'ucfirst', explode( '-', $lesson_type ) ) ) : false;
 	}
 }

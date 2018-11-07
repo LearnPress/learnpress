@@ -26,7 +26,7 @@ $default_message = '<strong>Dear Administrator</strong>,
 		<td>
 			<input id="lpr_email_enable" type="checkbox" name="lpr_settings[<?php echo $this->id; ?>][enable]" value="1" <?php checked( $settings->get( 'become_a_teacher_request.enable' ), 1 ); ?> />
 
-			<p class="description"><?php _e( 'Send notification when a user want to be a teacher', 'learnpress' ); ?></p>
+			<p class="description"><?php _e( 'Send notification when a user signs up to be a teacher', 'learnpress' ); ?></p>
 		</td>
 	</tr>
 	<tr>

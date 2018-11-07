@@ -1,45 +1,90 @@
 <?php
 /**
- * User Profile tabs
+ * Template for displaying user profile tabs.
  *
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
+ * This template can be overridden by copying it to yourtheme/learnpress/profile/tabs.php.
+ *
+ * @author   ThimPress
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit;
-}
-$current = learn_press_get_current_profile_tab();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+
+$profile = LP_Profile::instance();
 ?>
-<ul class="tabs learn-press-tabs clearfix">
-	<?php foreach ( $tabs as $key => $tab ) : 
-                $tab_base = isset( $tab['base'] ) ? $tab['base'] : $key ;
-	?>
+
+<div id="learn-press-profile-nav">
+
+	<?php do_action( 'learn-press/before-profile-nav', $profile ); ?>
+
+    <ul class="learn-press-tabs tabs">
+
 		<?php
-		if ( !learn_press_current_user_can_view_profile_section( $key, $user ) ) {
-			continue;
-		}
-		?>
-		<li class="<?php echo esc_attr( $key ); ?>_tab<?php echo $current == $key ? ' current' : ''; ?>">
-			<?php
-			$link = learn_press_user_profile_link( $user->id, $key );
-			?>
-			<a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>"><?php echo apply_filters( 'learn_press_profile_' . $tab_base . '_tab_title', esc_html( $tab['title'] ), $tab_base , $key ); ?></a>
-		</li>
-	<?php endforeach; ?>
-</ul>
-<div class="user-profile-tabs learn-press-tabs-wrapper-x">
-	<?php foreach ( $tabs as $key => $tab ) : ?>
-		<?php if ( $current == $key && learn_press_current_user_can_view_profile_section( $key, $user ) ) { ?>
-			<div class="learn-press-tab" id="tab-<?php echo esc_attr( $key ); ?>">
-				<div class="entry-tab-inner">
-					<?php if ( is_callable( $tab['callback'] ) ): ?>
-						<?php echo call_user_func_array( $tab['callback'], array( $key, $tab, $user ) ); ?>
-					<?php endif; ?>
-				</div>
-			</div>
+		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
+
+            /**
+             * @var $tab_data LP_Profile_Tab
+             */
+			if ( $tab_data->is_hidden() || ! $tab_data->user_can_view() ) {
+				continue;
+			}
+
+			$slug        = $profile->get_slug( $tab_data, $tab_key );
+			$link        = $profile->get_tab_link( $tab_key, true );
+			$tab_classes = array( esc_attr( $tab_key ) );
+			/**
+			 * @var $tab_data LP_Profile_Tab
+			 */
+			$sections    = $tab_data->sections();
+
+			if ( $sections && sizeof( $sections ) > 1 ) {
+				$tab_classes[] = 'has-child';
+			}
+
+			if ( $profile->is_current_tab( $tab_key ) ) {
+				$tab_classes[] = 'active';
+			} ?>
+
+            <li class="<?php echo join( ' ', $tab_classes ) ?>">
+                <!--tabs-->
+                <a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
+					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', esc_html( $tab_data['title'] ), $tab_key ); ?>
+                </a>
+                <!--section-->
+
+				<?php if ( $sections && sizeof( $sections ) > 1 ) { ?>
+
+                    <ul class="profile-tab-sections">
+						<?php foreach ( $sections as $section_key => $section_data ) {
+
+							$classes = array( esc_attr( $section_key ) );
+							if ( $profile->is_current_section( $section_key, $section_key ) ) {
+								$classes[] = 'active';
+							}
+
+							$section_slug = $profile->get_slug( $section_data, $section_key );
+							$section_link = $profile->get_tab_link( $tab_key, $section_slug );
+							?>
+
+                            <li class="<?php echo join( ' ', $classes ); ?>">
+                                <a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a>
+                            </li>
+
+						<?php } ?>
+
+                    </ul>
+
+				<?php } ?>
+
+            </li>
 		<?php } ?>
-	<?php endforeach; ?>
+
+    </ul>
+
+	<?php do_action( 'learn-press/after-profile-nav', $profile ); ?>
+
 </div>
-<div class="clearfix"></div>

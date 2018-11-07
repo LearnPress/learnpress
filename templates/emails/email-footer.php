@@ -1,18 +1,28 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Tu
- * Date: 11/16/2015
- * Time: 2:03 PM
+ * Template for displaying email footer.
+ *
+ * @author ThimPress
+ * @package LearnPress/Templates
+ * @version 3.0.0
  */
+
+defined('ABSPATH') or exit();
+
+if ( ! $email = LP_Emails::instance()->get_current() ) {
+	return;
+}
 ?>
 						</td>
 					</tr>
+                    </tbody>
+                    <tfoot id="email-footer">
 					<tr>
 						<td>
-							<?php echo  wpautop( wp_kses_post( wptexturize( $footer_text ) ) ); ?>
+                            <?php echo $email->get_footer_text(); ?>
 						</td>
 					</tr>
+                    </tfoot>
 				</table>
 			</td>
 		</tr>

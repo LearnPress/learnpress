@@ -1,0 +1,21 @@
+body {
+    &.lp-preview {
+        &.admin-bar {
+            #learn-press-content-item {
+                top: 32px !important;
+            }
+        }
+        #learn-press-course-curriculum {
+            display: none;
+        }
+
+        #learn-press-content-item {
+            top: 0 !important;
+            left: 0 !important;
+        }
+
+        #course-item-content-header {
+            display: none;
+        }
+    }
+}

@@ -53,7 +53,7 @@ class RWMB_WPML {
 		}
 
 		$field = rwmb_get_registry( 'field' )->get( $meta_data['key'], get_post_type( $meta_data['master_post_id'] ) );
-		if ( false !== $field || ! in_array( $field['type'], $this->field_types, true ) ) {
+		if ( false === $field || ! in_array( $field['type'], $this->field_types, true ) ) {
 			return $value;
 		}
 
@@ -103,7 +103,7 @@ class RWMB_WPML {
 		}
 
 		// If the post is the original one: do nothing.
-		if ( ! $wpml_post_translations->get_source_lang_code( $post_id ) ) {
+		if ( ! method_exists( $wpml_post_translations, 'get_source_lang_code' ) || ! $wpml_post_translations->get_source_lang_code( $post_id ) ) {
 			return $field;
 		}
 

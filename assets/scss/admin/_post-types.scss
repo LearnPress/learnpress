@@ -1,0 +1,126 @@
+/**
+ * Order
+ */
+.post-type-lp_order {
+    .wp-list-table {
+        .column-order_status {
+            width: 100px;
+        }
+        .order_status {
+            span {
+                display: inline-block;
+                &:after {
+                    font-family: fontawesome;
+                    display: inline-block;
+                    font-size: 20px;
+                    color: #FFF;
+                    text-align: center;
+                    line-height: 20px;
+                    width: 20px;
+                    height: 20px;
+                }
+                &.completed:after {
+                    content: "\f00c";
+                    color: $primary-color;
+                }
+                &.processing:after {
+                    content: "\f251";
+                    color: #563F7A;
+                }
+                &.pending:after {
+                    content: "\f017";
+                    color: #AAA;
+                }
+                &.cancelled:after {
+                    content: "\f057";
+                    color: #FF0000;
+                }
+                &.draft:after {
+                    content: "\f223";
+                    color: #69b391;
+                }
+            }
+        }
+        .column-title,
+        .column-order_total,
+        .column-order_date {
+            width: 150px;
+        }
+        .column-order_items {
+            ol {
+                margin: 0;
+                padding: 0;
+                list-style-position: inside;
+            }
+        }
+    }
+}
+
+.post-type-lp_course {
+    .column-price {
+        .origin-price {
+            font-size: 12px;
+            text-decoration: line-through;
+            margin-right: 10px;
+            color: #FF0000;
+        }
+    }
+}
+
+.wp-list-table {
+    .column-preview {
+        text-align: left;
+        float: none;
+        input[type="checkbox"] {
+            border: none;
+            width: 30px;
+            height: auto;
+            box-shadow: none;
+            margin: 0;
+            text-align: center;
+            background: transparent;
+            @include transform(rotate(-180deg));
+            &:before,
+            &:checked:before {
+                font: 400 21px/1 fontawesome;
+                content: "\f205";
+                font-size: 24px;
+                width: 30px;
+                margin: 0;
+                text-align: center;
+            }
+
+            &:checked {
+                @include transform(rotate(0deg));
+                &:before {
+                    margin-top: -1px;
+                }
+            }
+        }
+    }
+}
+
+.post-type-page {
+    .column-lp-page {
+        width: 200px;
+    }
+    .for-plugin-page {
+        color: #FF0000;
+        font-size: 11px;
+        margin: 0;
+    }
+}
+
+#learn-press-box-edit-slug {
+    background: #FFF;
+    padding: 10px;
+    border: 1px solid #DDD;
+    margin: 0 -10px;
+    overflow: hidden;
+    color: #b79186;
+    .button {
+        float: right;
+        height: 24px;
+        line-height: 22px;
+    }
+}

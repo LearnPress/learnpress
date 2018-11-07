@@ -11,7 +11,7 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 					'name' => __( 'Title', 'learnpress' ),
 					'id'   => "{$prefix}title",
 					'type' => 'text',
-					'std'  => ''
+					'std'  => __( 'Course filters', 'learnpress' )
 				),
 				'filter_by'           => array(
 					'name'    => __( 'Filter by', 'learnpress' ),

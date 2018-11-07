@@ -1,13 +1,19 @@
 <?php
 /**
+ * Template for displaying index of courses tab of user profile page.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/courses/index.php.
+ *
  * @author  ThimPress
- * @package LearnPress/Templates
- * @version 2.0
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit;
-} ?>
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
+?>
 
 <a href="<?php the_permalink(); ?>" class="course-title">
 

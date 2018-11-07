@@ -86,7 +86,7 @@
 							</p>
 						<?php } else { ?>
 
-							<p><?php _e( 'File was not found.', 'learnpress' ); ?></p>
+							<p><?php _e( 'File not found.', 'learnpress' ); ?></p>
 
 						<?php } ?>
 					</div>

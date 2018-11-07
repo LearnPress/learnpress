@@ -3,9 +3,9 @@
  * Plugin Name: Meta Box
  * Plugin URI: https://metabox.io
  * Description: Create custom meta boxes and custom fields in WordPress.
- * Version: 4.11
- * Author: Anh Tran
- * Author URI: http://www.deluxeblogtips.com
+ * Version: 4.14.2
+ * Author: MetaBox.io
+ * Author URI: https://metabox.io
  * License: GPL2+
  * Text Domain: meta-box
  * Domain Path: /languages/
@@ -33,8 +33,9 @@ if ( defined( 'ABSPATH' ) && ! defined( 'RWMB_VER' ) ) {
 	$loader = new RWMB_Loader;
 	$loader->init();
 }
-
 // Field classes
-foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-boxes/*.php' ) as $file ) {
+foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-box/fields/*.php' ) as $file ) {
 	require_once $file;
 }
+
+do_action('learn-press/meta-box-loaded');

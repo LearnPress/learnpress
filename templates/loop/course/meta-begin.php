@@ -1,9 +1,18 @@
 <?php
 /**
- * Template for display wrap start of courses list
+ * Template for displaying course meta begin within the loop.
+ *
+ * This template can be overridden by copying it to yourtheme/learnpress/loop/course/meta-begin.php.
  *
  * @author  ThimPress
- * @version 1.1
+ * @package  Learnpress/Templates
+ * @version  3.0.0
  */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 ?>
+
 <div class="course-info">

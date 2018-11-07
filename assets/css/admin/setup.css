@@ -1,0 +1,216 @@
+/* The animation code */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  50% {
+    transform: rotate(180deg); }
+  100% {
+    transform: rotate(360deg); } }
+
+@keyframes spin-back {
+  0% {
+    transform: rotate(0deg); }
+  50% {
+    transform: rotate(-180deg); }
+  100% {
+    transform: rotate(-360deg); } }
+
+.lp-setup, .lp-update-database {
+  color: #777; }
+  .lp-setup h1, .lp-setup h2, .lp-setup h3, .lp-setup h4, .lp-setup h5, .lp-setup h6, .lp-update-database h1, .lp-update-database h2, .lp-update-database h3, .lp-update-database h4, .lp-update-database h5, .lp-update-database h6 {
+    color: #777;
+    font-weight: normal; }
+  .lp-setup h2, .lp-update-database h2 {
+    font-size: 24px;
+    border-bottom: 1px solid #EEE;
+    padding-bottom: 20px; }
+  .lp-setup p.large-text, .lp-update-database p.large-text {
+    font-size: 16px;
+    margin: 0 0 20px 0; }
+  .lp-setup a, .lp-update-database a {
+    font-size: 13px; }
+  .lp-setup .logo, .lp-update-database .logo {
+    text-align: center; }
+  .lp-setup #content, .lp-update-database #content {
+    max-width: 90%;
+    width: 900px;
+    margin: 40px auto 20px auto; }
+  .lp-setup #main, .lp-update-database #main {
+    background: #FFF;
+    padding: 20px;
+    border: 1px solid #ececec;
+    margin-bottom: 20px;
+    position: relative; }
+    .lp-setup #main .description, .lp-update-database #main .description {
+      font-size: 13px;
+      font-style: italic; }
+    .lp-setup #main.loading:after, .lp-update-database #main.loading:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      background: #FFF;
+      opacity: 0.5; }
+    .lp-setup #main.loading .icon-loading, .lp-update-database #main.loading .icon-loading {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin-left: -10px;
+      margin-top: -10px;
+      z-index: 15; }
+      .lp-setup #main.loading .icon-loading:before, .lp-setup #main.loading .icon-loading:after, .lp-update-database #main.loading .icon-loading:before, .lp-update-database #main.loading .icon-loading:after {
+        width: 20px;
+        height: 20px;
+        top: 0;
+        left: 0;
+        content: '';
+        position: absolute; }
+      .lp-setup #main.loading .icon-loading:before, .lp-update-database #main.loading .icon-loading:before {
+        background: #e2e2e2;
+        animation-name: spin;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+        animation-delay: 0s; }
+      .lp-setup #main.loading .icon-loading:after, .lp-update-database #main.loading .icon-loading:after {
+        background: #39a1e5;
+        animation-name: spin-back;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+        animation-delay: 0s; }
+  .lp-setup .lp-setup-nav, .lp-update-database .lp-setup-nav {
+    position: relative; }
+  .lp-setup .lp-setup-steps, .lp-update-database .lp-setup-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 20px 0;
+    display: flex;
+    position: relative; }
+    .lp-setup .lp-setup-steps li, .lp-update-database .lp-setup-steps li {
+      list-style: none;
+      flex: 1;
+      text-align: center;
+      margin: 0;
+      position: relative; }
+      .lp-setup .lp-setup-steps li.active span, .lp-update-database .lp-setup-steps li.active span {
+        font-weight: bold;
+        color: #39a1e5; }
+      .lp-setup .lp-setup-steps li.active:before, .lp-update-database .lp-setup-steps li.active:before {
+        content: '';
+        height: 6px;
+        width: 100%;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        background: #05B3FF;
+        left: 0;
+        position: absolute;
+        bottom: -20px;
+        z-index: 10; }
+      .lp-setup .lp-setup-steps li.active:after, .lp-update-database .lp-setup-steps li.active:after {
+        width: 8px;
+        height: 8px;
+        position: absolute;
+        background: #41b3ff;
+        transform: rotate(45deg);
+        left: 50%;
+        bottom: -18px;
+        margin-left: -5px;
+        content: ''; }
+  .lp-setup .lp-setup-progress,
+  .lp-setup .lp-setup-progress .active, .lp-update-database .lp-setup-progress,
+  .lp-update-database .lp-setup-progress .active {
+    width: 100%;
+    height: 6px;
+    left: 0;
+    bottom: 0;
+    background: #DDD;
+    position: absolute;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px; }
+  .lp-setup .lp-setup-progress .active, .lp-update-database .lp-setup-progress .active {
+    background: #00a1e6;
+    width: 50%; }
+  .lp-setup footer, .lp-update-database footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: center; }
+  .lp-setup .buttons, .lp-update-database .buttons {
+    text-align: right;
+    border-top: 1px solid #EEE;
+    padding-top: 20px; }
+  .lp-setup .button-skip-next,
+  .lp-setup .button-skip-prev, .lp-update-database .button-skip-next,
+  .lp-update-database .button-skip-prev {
+    opacity: 0.7;
+    float: left;
+    margin-right: 4px; }
+    .lp-setup .button-skip-next:hover,
+    .lp-setup .button-skip-prev:hover, .lp-update-database .button-skip-next:hover,
+    .lp-update-database .button-skip-prev:hover {
+      opacity: 1; }
+  .lp-setup .button-dashboard-page, .lp-update-database .button-dashboard-page {
+    vertical-align: middle;
+    margin: 5px;
+    display: inline-block; }
+  .lp-setup table, .lp-update-database table {
+    width: 100%;
+    font-size: 14px; }
+    .lp-setup table th, .lp-setup table td, .lp-update-database table th, .lp-update-database table td {
+      padding: 8px 8px 8px 0;
+      font-weight: normal;
+      vertical-align: top;
+      text-align: left; }
+    .lp-setup table th, .lp-update-database table th {
+      width: 33%;
+      text-align: left; }
+  .lp-setup .browse-payments, .lp-update-database .browse-payments {
+    list-style: none;
+    margin: 0;
+    padding: 0; }
+    .lp-setup .browse-payments li.payment, .lp-update-database .browse-payments li.payment {
+      padding: 0 0 10px 0;
+      margin: 0; }
+      .lp-setup .browse-payments li.payment > h3, .lp-update-database .browse-payments li.payment > h3 {
+        padding: 20px 0;
+        margin: 0; }
+      .lp-setup .browse-payments li.payment .payment-settings, .lp-update-database .browse-payments li.payment .payment-settings {
+        padding: 0 0 20px 0; }
+      .lp-setup .browse-payments li.payment .payment-name img, .lp-update-database .browse-payments li.payment .payment-name img {
+        max-height: 32px;
+        vertical-align: middle;
+        margin-left: 0px; }
+      .lp-setup .browse-payments li.payment .payment-desc, .lp-update-database .browse-payments li.payment .payment-desc {
+        font-style: italic; }
+  .lp-setup .finish-buttons .button, .lp-update-database .finish-buttons .button {
+    width: 300px;
+    display: block;
+    margin-bottom: 20px;
+    font-size: 18px;
+    height: 40px;
+    line-height: 40px;
+    color: #777;
+    text-align: center; }
+    .lp-setup .finish-buttons .button.button-primary, .lp-update-database .finish-buttons .button.button-primary {
+      color: #FFF; }
+  .lp-setup .learn-press-message, .lp-update-database .learn-press-message {
+    background: #FAFAFA;
+    padding: 15px;
+    border-left: 3px solid #05B3FF;
+    margin: 0 0 20px 0;
+    font-size: 14px;
+    border-radius: 4px; }
+    .lp-setup .learn-press-message.error, .lp-update-database .learn-press-message.error {
+      border-left-color: #FF0000; }
+  .lp-setup #preview-price, .lp-update-database #preview-price {
+    font-size: 18px;
+    color: #FF0000; }
+  .lp-setup .form-field th .learn-press-tip, .lp-update-database .form-field th .learn-press-tip {
+    float: right; }

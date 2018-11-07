@@ -1,0 +1,50 @@
+@keyframes lp-rotating {
+    from {
+        transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes lp-rotating {
+    from {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.ajaxload {
+    background: #7b7b7b;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    content: '';
+    @include border-radius(50%);
+    @include animation(lp-rotating 1s linear infinite);
+    &:after {
+        @include border-radius(50%);
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: #DEDEDE;
+        position: absolute;
+        content: '';
+        top: 2px;
+        left: 50%;
+        margin-left: -3px;
+    }
+}
