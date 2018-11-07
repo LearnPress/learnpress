@@ -61,13 +61,13 @@ function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* add
 
 	// If $course_id is not passed consider $item_id is ID of a course
 	if ( ! $course_id ) {
-		if ( $item = wp_cache_get( 'course-' . $user_id . '-' . $item_id, 'lp-user-courses' ) ) {
+		if ( $item = LP_Object_Cache::get( 'course-' . $user_id . '-' . $item_id, 'lp-user-courses' ) ) {
 			return $item['user_item_id'];
 		}
 	} else {
 
 		// Otherwise, get item of the course
-		if ( $items = wp_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) {
+		if ( $items = LP_Object_Cache::get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) {
 			$item = reset( $items );
 
 			return $item['user_item_id'];
@@ -709,7 +709,7 @@ function learn_press_filter_temp_users( $q ) {
  */
 function learn_press_get_temp_users() {
 	return false;
-	if ( false === ( $temp_users = wp_cache_get( 'learn-press/temp-users' ) ) ) {
+	if ( false === ( $temp_users = LP_Object_Cache::get( 'learn-press/temp-users' ) ) ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT ID
@@ -720,7 +720,7 @@ function learn_press_get_temp_users() {
 
 		$temp_users = $wpdb->get_col( $query );
 
-		wp_cache_set( 'learn-press/temp-users', $temp_users );
+		LP_Object_Cache::set( 'learn-press/temp-users', $temp_users );
 	}
 
 	return $temp_users;
@@ -1430,9 +1430,6 @@ function learn_press_update_user_profile_avatar() {
 			} elseif ( 'png' == $filetype['ext'] ) {
 				$im = imagecreatefrompng( $path );
 			} else {
-				print_r( $_REQUEST );
-				die();
-
 				return;
 			}
 			$points  = explode( ',', $data['points'] );
@@ -1458,27 +1455,13 @@ function learn_press_update_user_profile_avatar() {
 					$newname .= '.png';
 					$output  .= '/' . $newname;
 					imagepng( $im_crop, $output );
-				} else {
-					echo 'Crop avatar failed';
-					die();
 				}
 				if ( file_exists( $output ) ) {
 					update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
 					update_user_meta( get_current_user_id(), '_lp_profile_picture_changed', 'yes' );
-				} else {
-					echo 'File ' . $output . ' does not exists';
-					die();
 				}
-
-			} else {
-				echo 'Create image failed';
-				die();
 			}
 			@unlink( $path );
-		} else {
-			echo "XXXX";
-			print_r( $_REQUEST );
-			die();
 		}
 	}
 

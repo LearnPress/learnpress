@@ -249,12 +249,12 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			 * Get course's data from cache and if it is already existed
 			 * then ignore that course.
 			 */
-			if ( wp_cache_get( 'course-' . $course_id, 'lp-course-curriculum' ) ) {
+			if ( LP_Object_Cache::get( 'course-' . $course_id, 'lp-course-curriculum' ) ) {
 				return false;
 			}
 
 			// Set cache
-			wp_cache_set( 'course-' . $course_id, array(), 'lp-course-curriculum' );
+			LP_Object_Cache::set( 'course-' . $course_id, array(), 'lp-course-curriculum' );
 
 			$item_ids       = array();
 			$meta_cache_ids = array( $course_id );
@@ -298,7 +298,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 								// If $cur_id is already set to a course
 								if ( $cur_id ) {
-									wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
+									LP_Object_Cache::set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
 								}
 
 								// Set $cur_id to new course and reset $curriculum
@@ -334,21 +334,21 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 							}
 						}
 
-						//wp_cache_set( 'course-' . $cur_id, $quiz_ids, 'lp-course-' . LP_QUIZ_CPT );
-						//wp_cache_set( 'course-' . $cur_id, $lesson_ids, 'lp-course-' . LP_LESSON_CPT );
+						//LP_Object_Cache::set( 'course-' . $cur_id, $quiz_ids, 'lp-course-' . LP_QUIZ_CPT );
+						//LP_Object_Cache::set( 'course-' . $cur_id, $lesson_ids, 'lp-course-' . LP_LESSON_CPT );
 
 						if ( $group_items ) {
 							foreach ( $group_items as $type => $group_item_ids ) {
-								wp_cache_set( 'course-' . $cur_id, $group_item_ids, 'lp-course-' . $type );
+								LP_Object_Cache::set( 'course-' . $cur_id, $group_item_ids, 'lp-course-' . $type );
 							}
 						}
 
-						wp_cache_set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
-						wp_cache_set( 'course-' . $cur_id, $preview_ids, 'lp-course-preview-items' );
+						LP_Object_Cache::set( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
+						LP_Object_Cache::set( 'course-' . $cur_id, $preview_ids, 'lp-course-preview-items' );
 
 						// Cache items ids for using in some cases
 						foreach ( $item_ids as $cid => $ids ) {
-							wp_cache_set( 'course-' . $cid, $ids, 'lp-course-items' );
+							LP_Object_Cache::set( 'course-' . $cid, $ids, 'lp-course-items' );
 						}
 
 						LP_Hard_Cache::set( $course_id, $curriculum, 'lp-course-curriculum' );
@@ -372,11 +372,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				}
 
 				// Set cache
-				wp_cache_set( 'course-' . $course_id, $curriculum, 'lp-course-curriculum' );
-				wp_cache_set( 'course-' . $course_id, $item_ids, 'lp-course-items' );
-				wp_cache_set( 'course-' . $course_id, $lesson_ids, 'lp-course-' . LP_LESSON_CPT );
-				wp_cache_set( 'course-' . $course_id, $quiz_ids, 'lp-course-' . LP_QUIZ_CPT );
-				wp_cache_set( 'course-' . $course_id, $preview_ids, 'lp-course-preview-items' );
+				LP_Object_Cache::set( 'course-' . $course_id, $curriculum, 'lp-course-curriculum' );
+				LP_Object_Cache::set( 'course-' . $course_id, $item_ids, 'lp-course-items' );
+				LP_Object_Cache::set( 'course-' . $course_id, $lesson_ids, 'lp-course-' . LP_LESSON_CPT );
+				LP_Object_Cache::set( 'course-' . $course_id, $quiz_ids, 'lp-course-' . LP_QUIZ_CPT );
+				LP_Object_Cache::set( 'course-' . $course_id, $preview_ids, 'lp-course-preview-items' );
 
 			}
 
@@ -405,9 +405,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			$course = learn_press_get_course( $course_id );
 
-			if ( false === ( $curriculum = wp_cache_get( 'course-' . $course_id, 'lp-course-curriculum-sections' ) ) ) {
+			if ( false === ( $curriculum = LP_Object_Cache::get( 'course-' . $course_id, 'lp-course-curriculum-sections' ) ) ) {
 
-				if ( $sections = wp_cache_get( 'course-' . $course_id, 'lp-course-sections' ) ) {
+				if ( $sections = LP_Object_Cache::get( 'course-' . $course_id, 'lp-course-sections' ) ) {
 					$position = 0;
 					foreach ( $sections as $k => $section ) {
 						$_section = new LP_Course_Section( $section );
@@ -447,11 +447,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 							if ( empty( $item_formats[ $item_id ] ) ) {
 								$item_formats[ $item_id ] = 'standard';
 							}
-							wp_cache_set( 'item-format-' . $item_id, $item_formats[ $item_id ], 'lp-item-formats' );
+							LP_Object_Cache::set( 'item-format-' . $item_id, $item_formats[ $item_id ], 'lp-item-formats' );
 						}
 					}
 				}
-				wp_cache_set( 'course-' . $course_id, $curriculum, 'lp-course-curriculum-sections' );
+				LP_Object_Cache::set( 'course-' . $course_id, $curriculum, 'lp-course-curriculum-sections' );
 
 			}
 			LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
@@ -469,7 +469,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		public function get_course_sections( $course_id ) {
 			$this->read_course_sections( $course_id );
 
-			return wp_cache_get( 'course-' . $course_id, 'lp-course-sections' );
+			return LP_Object_Cache::get( 'course-' . $course_id, 'lp-course-sections' );
 		}
 
 		/**
@@ -496,11 +496,11 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				 * Get course's data from cache and if it is already existed
 				 * then ignore that course.
 				 */
-				if ( false !== wp_cache_get( 'course-' . $fetch_id, 'lp-course-sections' ) ) {
+				if ( false !== LP_Object_Cache::get( 'course-' . $fetch_id, 'lp-course-sections' ) ) {
 					continue;
 				}
 
-				wp_cache_set( 'course-' . $fetch_id, array(), 'lp-course-sections' );
+				LP_Object_Cache::set( 'course-' . $fetch_id, array(), 'lp-course-sections' );
 
 				$section_curd = new LP_Section_CURD( $fetch_id );
 				$section_curd->read_sections_ids();
@@ -530,20 +530,20 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 					foreach ( $results as $row ) {
 						if ( $row->section_course_id !== $cur_id ) {
 							if ( $cur_id ) {
-								wp_cache_set( 'course-' . $cur_id, $course_sections, 'lp-course-sections' );
+								LP_Object_Cache::set( 'course-' . $cur_id, $course_sections, 'lp-course-sections' );
 							}
 							$cur_id          = $row->section_course_id;
 							$course_sections = array();
 						}
 						$course_sections[] = $row;
 					}
-					wp_cache_set( 'course-' . $cur_id, $course_sections, 'lp-course-sections' );
+					LP_Object_Cache::set( 'course-' . $cur_id, $course_sections, 'lp-course-sections' );
 				}
 
 				LP_Hard_Cache::set( $cache_key, $course_sections, 'lp-course-sections' );
 			} else {
 				foreach ( $fetch_ids as $cid ) {
-					wp_cache_set( 'course-' . $cid, $course_sections, 'lp-course-sections' );
+					LP_Object_Cache::set( 'course-' . $cid, $course_sections, 'lp-course-sections' );
 				}
 			}
 			unset( $course_sections );
@@ -741,7 +741,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			sort( $statuses );
 			$cache_key = md5( serialize( $statuses ) );
 
-			if ( false === ( $count = wp_cache_get( 'course-' . $course_id . '-' . $cache_key, 'lp-course-orders' ) ) ) {
+			if ( false === ( $count = LP_Object_Cache::get( 'course-' . $course_id . '-' . $cache_key, 'lp-course-orders' ) ) ) {
 				$in_clause  = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
 				$query_args = array_merge( array( '_course_id', $course_id, LP_ORDER_CPT ), $statuses );
 
@@ -758,7 +758,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 				$count = absint( $wpdb->get_var( $query ) );
 
-				wp_cache_set( 'course-' . $course_id . '-' . $cache_key, $count, 'lp-course-orders' );
+				LP_Object_Cache::set( 'course-' . $course_id . '-' . $cache_key, $count, 'lp-course-orders' );
 			}
 
 			return $count;

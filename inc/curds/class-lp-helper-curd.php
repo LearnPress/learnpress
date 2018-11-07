@@ -50,7 +50,7 @@ class LP_Helper_CURD {
 				$meta_data[ $id ] = array();
 			}
 
-			wp_cache_set( $id, $meta_data[ $id ], "{$type}_meta" );
+			LP_Object_Cache::set( $id, $meta_data[ $id ], "{$type}_meta" );
 		}
 
 	}

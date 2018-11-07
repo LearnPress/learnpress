@@ -56,8 +56,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		$user_curd->read_course( $this->get_user_id(), $this->get_id() );
 
 		$this->_set_data( $this->_item );
-		$course = learn_press_get_course( $this->get_id() );
-		if ( $course ) {
+		if ( $course = learn_press_get_course( $this->get_id() ) ) {
 			$this->_course = $course;
 			$course_items  = $course->get_items();
 			if ( $course_items ) {
@@ -73,7 +72,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				foreach ( $course_items as $item_id ) {
 
 					$cache_name = sprintf( 'course-item-%s-%s-%s', $this->get_user_id(), $this->get_id(), $item_id );
-					if ( false !== ( $data = wp_cache_get( $cache_name, 'lp-user-course-items' ) ) ) {
+					if ( false !== ( $data = LP_Object_Cache::get( $cache_name, 'lp-user-course-items' ) ) ) {
 						$data = reset( $data );
 					} else {
 						$data = wp_parse_args(
@@ -275,7 +274,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			}
 		}
 
-		///$result = wp_cache_get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' );
+		///$result = LP_Object_Cache::get( 'user-course-' . $this->get_user_id() . '-' . $this->get_id(), 'lp-user-course-results' );
 
 		return $prop && $results && array_key_exists( $prop, $results ) ? $results[ $prop ] : $results;
 	}
@@ -316,7 +315,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 
-		if ( false === ( $cached_data = wp_cache_get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'lessons', $cached_data ) ) {
+		if ( false === ( $cached_data = LP_Object_Cache::get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'lessons', $cached_data ) ) {
 			$completing = $this->get_completed_items( LP_LESSON_CPT, true );
 			if ( $completing[1] ) {
 				$result = $completing[0] / $completing[1];
@@ -333,7 +332,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			settype( $cached_data, 'array' );
 			$cached_data['lessons'] = $data;
 
-			wp_cache_set( $cache_key, $cached_data, 'course-results' );
+			LP_Object_Cache::set( $cache_key, $cached_data, 'course-results' );
 		}
 
 		return isset( $cached_data['lessons'] ) ? $cached_data['lessons'] : array();
@@ -360,7 +359,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 
-		if ( false === ( $cached_data = wp_cache_get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'final-quiz', $cached_data ) ) {
+		if ( false === ( $cached_data = LP_Object_Cache::get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'final-quiz', $cached_data ) ) {
 			$course     = $this->get_course();
 			$final_quiz = $course->get_final_quiz();
 			$result     = false;
@@ -377,7 +376,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			settype( $cached_data, 'array' );
 			$cached_data['final-quiz'] = $data;
 
-			wp_cache_set( $cache_key, $cached_data, 'course-results' );
+			LP_Object_Cache::set( $cache_key, $cached_data, 'course-results' );
 		}
 
 		return isset( $cached_data['final-quiz'] ) ? $cached_data['final-quiz'] : array();
@@ -392,7 +391,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 
-		if ( ( false === ( $cached_data = wp_cache_get( $cache_key, 'course-results' ) ) ) || ! array_key_exists( 'quizzes', $cached_data ) ) {
+		if ( ( false === ( $cached_data = LP_Object_Cache::get( $cache_key, 'course-results' ) ) ) || ! array_key_exists( 'quizzes', $cached_data ) ) {
 
 			$data            = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
 			$result          = 0;
@@ -418,7 +417,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			settype( $cached_data, 'array' );
 			$cached_data['quizzes'] = $data;
 
-			wp_cache_set( $cache_key, $cached_data, 'course-results' );
+			LP_Object_Cache::set( $cache_key, $cached_data, 'course-results' );
 		}
 
 		return isset( $cached_data['quizzes'] ) ? $cached_data['quizzes'] : array();
@@ -433,7 +432,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 
-		if ( false === ( $cached_data = wp_cache_get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'passed-quizzes', $cached_data ) ) {
+		if ( false === ( $cached_data = LP_Object_Cache::get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'passed-quizzes', $cached_data ) ) {
 
 			$data            = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
 			$result          = 0;
@@ -459,7 +458,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			settype( $cached_data, 'array' );
 			$cached_data['passed-quizzes'] = $data;
 
-			wp_cache_set( $cache_key, $cached_data, 'course-results' );
+			LP_Object_Cache::set( $cache_key, $cached_data, 'course-results' );
 		}
 
 		return isset( $cached_data['passed-quizzes'] ) ? $cached_data['passed-quizzes'] : array();
@@ -473,7 +472,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	protected function _evaluate_course_by_completed_quizzes() {
 		$cache_key = 'user-course-' . $this->get_user_id() . '-' . $this->get_id();
 
-		if ( false === ( $cached_data = wp_cache_get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'completed-quizzes', $cached_data ) ) {
+		if ( false === ( $cached_data = LP_Object_Cache::get( $cache_key, 'course-results' ) ) || ! array_key_exists( 'completed-quizzes', $cached_data ) ) {
 			$course = $this->get_course();
 
 			$data   = array( 'result' => 0, 'grade' => '', 'status' => $this->get_status() );
@@ -500,7 +499,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			settype( $cached_data, 'array' );
 			$cached_data['completed-quizzes'] = $data;
 
-			wp_cache_set( $cache_key, $cached_data, 'course-results' );
+			LP_Object_Cache::set( $cache_key, $cached_data, 'course-results' );
 		}
 
 		return isset( $cached_data['completed-quizzes'] ) ? $cached_data['completed-quizzes'] : array();
@@ -524,7 +523,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function get_completed_items( $type = '', $with_total = false, $section_id = 0 ) {
 		$key = sprintf( '%d-%d-%s', $this->get_user_id(), $this->_course->get_id(), md5( build_query( func_get_args() ) ) );
 
-		if ( false === ( $completed_items = wp_cache_get( $key, 'lp-user-completed-items' ) ) ) {
+		if ( false === ( $completed_items = LP_Object_Cache::get( $key, 'lp-user-completed-items' ) ) ) {
 			$completed     = 0;
 			$total         = 0;
 			$section_items = array();
@@ -562,7 +561,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				}
 			}
 			$completed_items = array( $completed, $total );
-			wp_cache_set( $key, $completed_items, 'lp-user-completed-items' );
+			LP_Object_Cache::set( $key, $completed_items, 'lp-user-completed-items' );
 		}
 
 		return $with_total ? $completed_items : $completed_items[0];

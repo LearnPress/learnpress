@@ -154,7 +154,7 @@ class LP_Object_Data_CURD {
 			", $object->get_id() );
 			$meta_data = $wpdb->get_results( $query );
 
-			wp_cache_set( $object->get_id(), $meta_data, 'object-meta' );
+			LP_Object_Cache::set( $object->get_id(), $meta_data, 'object-meta' );
 		}
 
 		return $meta_data;

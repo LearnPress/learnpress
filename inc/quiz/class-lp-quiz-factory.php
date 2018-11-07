@@ -105,9 +105,9 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 		/**
 		 * @param bool $true
-		 * @param int $quiz_id
-		 * @param int $course_id
-		 * @param int $user_id
+		 * @param int  $quiz_id
+		 * @param int  $course_id
+		 * @param int  $user_id
 		 *
 		 * @return bool
 		 */

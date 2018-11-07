@@ -609,7 +609,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 */
 		public function get_answers( $field = null, $exclude = null ) {
 			$answers = array();
-			if ( false === ( $data_answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'lp-questions' ) ) ) {
+			if ( false === ( $data_answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'lp-questions' ) ) ) {
 				$data_answers = $this->get_default_answers();
 			};
 
@@ -1022,13 +1022,13 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		protected function _get_checked( $user_answer = null ) {
 			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
 
-			return wp_cache_get( 'question-' . $this->get_id() . '/' . $key, 'lp-answer-checked' );
+			return LP_Object_Cache::get( 'question-' . $this->get_id() . '/' . $key, 'lp-answer-checked' );
 		}
 
 		protected function _set_checked( $checked, $user_answer ) {
 			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
 
-			return wp_cache_set( 'question-' . $this->get_id() . '/' . $key, $checked, 'lp-answer-checked' );
+			return LP_Object_Cache::set( 'question-' . $this->get_id() . '/' . $key, $checked, 'lp-answer-checked' );
 		}
 	}
 

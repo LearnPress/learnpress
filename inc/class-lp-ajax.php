@@ -399,4 +399,3 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 }
 // Call class
 LP_AJAX::init();
-

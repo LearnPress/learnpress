@@ -355,7 +355,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					) );
 				}
 
-				wp_cache_set( 'answer-options-' . $question_id, $answer_options, 'lp-questions' );
+				LP_Object_Cache::set( 'answer-options-' . $question_id, $answer_options, 'lp-questions' );
 				$new_question->set_data( 'answer_options', $answer_options );
 
 				return $new_question;
@@ -857,7 +857,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		protected function _load_answer_options( &$question ) {
 
 			$id             = $question->get_id();
-			$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
+			$answer_options = LP_Object_Cache::get( 'answer-options-' . $id, 'lp-questions' );
 
 			if ( false === $answer_options ) {
 				global $wpdb;
@@ -886,7 +886,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			if ( ! empty( $answer_options['question_answer_id'] ) && $answer_options['question_answer_id'] > 0 ) {
 				$this->_load_answer_option_meta( $answer_options );
 			}
-			wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
+			LP_Object_Cache::set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
 
 			$question->set_data( 'answer_options', $answer_options );
 		}
@@ -948,7 +948,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			if ( $question_answers ) {
 				foreach ( $question_answers as $question_id => $answer ) {
-					wp_cache_set( 'answer-options-' . $question_id, $answer, 'lp-questions' );
+					LP_Object_Cache::set( 'answer-options-' . $question_id, $answer, 'lp-questions' );
 				}
 			}
 

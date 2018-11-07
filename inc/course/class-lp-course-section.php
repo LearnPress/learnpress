@@ -55,7 +55,7 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 		}
 
 		// All items
-		$curriculum = wp_cache_get( 'course-' . $this->get_course_id(), 'lp-course-curriculum' );
+		$curriculum = LP_Object_Cache::get( 'course-' . $this->get_course_id(), 'lp-course-curriculum' );
 
 		if ( ! $curriculum ) {
 			return false;

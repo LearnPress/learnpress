@@ -2,10 +2,10 @@
 global $wp_meta_boxes, $post;
 
 $tabs = $this->get_tabs( 'tabs' );
-if ( ! $tabs ) {
+if ( !$tabs ) {
 	return;
 }
-$current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+$current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 ?>
 <div id="learn-press-admin-editor-metabox-settings" class="learn-press-tabs vertical initialize">
     <div class="tabs-heading">
@@ -93,7 +93,6 @@ $current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
         <ul class="tabs-content-container" data-text="<?php esc_attr_e( 'Initializing...', 'learnpress' ); ?>">
 			<?php
 			foreach ( $tabs as $tab ) {
-			    $tab = (array)$tab;
 				if ( empty( $tab['title'] ) ) {
 					continue;
 				}

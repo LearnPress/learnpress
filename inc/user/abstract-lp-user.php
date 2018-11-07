@@ -1998,7 +1998,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			global $wpdb;
 			//$key_format = '%d-%d';
-			$cached = (array) wp_cache_get( 'user-quiz-statuses', 'learnpress' );
+			$cached = (array) LP_Object_Cache::get( 'user-quiz-statuses', 'learnpress' );
 			if ( ! array_key_exists( $this->get_id() . '-' . $course_id . '-' . $quiz_id, $cached ) || $force ) {
 				$query                                      = $wpdb->prepare( "
 					SELECT uq.item_id as id, uqm.meta_value as `status`
@@ -2021,8 +2021,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Count number of time user has retaken a quiz
 		 *
-		 * @param int  $quiz_id
-		 * @param int  $course_id
+		 * @param int $quiz_id
+		 * @param int $course_id
 		 * @param bool $force
 		 *
 		 * @return int
@@ -2249,9 +2249,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Return current status of course for user
 		 *
-		 * @param int    $course_id
+		 * @param int $course_id
 		 * @param string $field
-		 * @param bool   $force
+		 * @param bool $force
 		 *
 		 * @return mixed
 		 */
@@ -2298,7 +2298,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_course_status( $course_id ) {
 
 			$status = false;
-			if ( false !== ( $data = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
+			if ( false !== ( $data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
 				$status = $data['status'];
 			} else {
 				$course_data = $this->get_course_data( $course_id );
@@ -2385,7 +2385,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * @param      $item
-		 * @param int  $course_id
+		 * @param int $course_id
 		 * @param bool $force
 		 *
 		 * @return mixed|void
@@ -2446,7 +2446,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Get the order that contains the course.
 		 *
-		 * @param int    $course_id
+		 * @param int $course_id
 		 * @param string $return type of order to return LP_Order|ID
 		 *
 		 * @return int|LP_Order|mixed
@@ -2562,8 +2562,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				//}
 
 				return $return;
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				return new WP_Error( $ex->getCode(), $ex->getMessage() );
 			}
 		}
@@ -2723,10 +2722,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( file_exists( $file_path ) ) {
 						$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
 						// no cache for first time after avatar changed
-						//if ( $this->get_data( 'profile_picture_changed' ) == 'yes' ) {
-						$uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ), $uploaded_profile_src );// $this->get_data( 'uploaded_profile_src' ) );
-						//delete_user_meta( $this->get_id(), '_lp_profile_picture_changed' );
-						//}
+						if ( $this->get_data( 'profile_picture_changed' ) == 'yes' ) {
+							$uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ), $this->get_data( 'uploaded_profile_src' ) );
+							delete_user_meta( $this->get_id(), '_lp_profile_picture_changed' );
+						}
 					} else {
 						$uploaded_profile_src = false;
 					}
@@ -2741,7 +2740,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * @param string $type
-		 * @param int    $size
+		 * @param int $size
 		 *
 		 * @return false|string
 		 */
