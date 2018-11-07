@@ -757,7 +757,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			$query = $wpdb->prepare( "
 				SELECT COUNT(section_id)
-				FROM wp_learnpress_sections
+				FROM {$wpdb->learnpress_sections}
 				WHERE section_course_id = %d
 			", $course_id );
 
