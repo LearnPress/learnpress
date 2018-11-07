@@ -3200,10 +3200,38 @@ function learn_press_get_block_course_item_types() {
 	return apply_filters( 'learn-press/block-course-item-types', array( LP_LESSON_CPT, LP_QUIZ_CPT ) );
 }
 
-//add_filter('learn-press/block-course-item-types', function ($a){
-//    $a[] = LP_QUIZ_CPT;
-//    return $a;
-//});
+/**
+ * Get post type of a post from cache.
+ * If there is no data stored in cache then
+ * get it from WP API.
+ *
+ * @since 3.1.0
+ *
+ * @param int|WP_Post $post
+ *
+ * @return string
+ */
+function learn_press_get_post_type( $post ) {
+	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
+		$post_types = array();
+	}
+
+	if ( is_object( $post ) ) {
+		$post_id = $post->ID;
+	} else {
+		$post_id = absint( $post );
+	}
+
+	if ( empty( $post_types[ $post_id ] ) ) {
+		$post_type              = get_post_type( $post_id );
+		$post_types[ $post_id ] = $post_type;
+		LP_Object_Cache::set( 'post-types', $post_types, 'learn-press' );
+	} else {
+		$post_type = $post_types[ $post_id ];
+	}
+
+	return $post_type;
+}
 
 function add_category_links_to_blacklist( $list, $sitepress ){
 	$learn_press_course_category_base = get_option( 'learn_press_course_category_base', 'course-category' );
