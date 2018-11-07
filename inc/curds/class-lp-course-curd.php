@@ -382,7 +382,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			if ( $meta_cache_ids ) {
 				LP_Helper_CURD::cache_posts( $meta_cache_ids );
-				LP_Helper_CURD::update_meta_cache( 'post', $meta_cache_ids );
+				LP_Helper_CURD::update_meta_cache( $meta_cache_ids );
 			}
 
 			if ( $quiz_ids ) {

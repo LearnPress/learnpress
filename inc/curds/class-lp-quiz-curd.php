@@ -253,7 +253,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				LP_Object_Cache::set( 'questions-' . $quiz_id, $quiz_questions, 'lp-quizzes' );
 			}
 
-			LP_Helper_CURD::update_meta_cache( 'post', $question_ids );
+			LP_Helper_CURD::update_meta_cache($question_ids );
 			$question_factory = new LP_Question_CURD();
 			$question_factory->load_answer_options( $question_ids );
 		}
@@ -269,7 +269,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 			} else {
 				$meta_ids[] = $quiz->get_id();
 			}
-			LP_Helper_CURD::update_meta_cache( 'post', $meta_ids );
+			LP_Helper_CURD::update_meta_cache(  $meta_ids );
 		}
 
 		protected function _load_question_answer_meta( $meta_ids ) {

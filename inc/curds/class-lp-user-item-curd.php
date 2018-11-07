@@ -114,7 +114,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		} else {
 			$meta_ids[] = $quiz->get_id();
 		}
-		LP_Helper_CURD::update_meta_cache( 'post', $meta_ids );
+		LP_Helper_CURD::update_meta_cache( $meta_ids );
 	}
 
 	/**
