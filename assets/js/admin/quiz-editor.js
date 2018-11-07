@@ -927,38 +927,25 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
  * @since 3.0.0
  */
 (function (exports, Vue, $store) {
-    var $ = jQuery,
-        $publishingAction = null;
 
     Vue.http.LPRequest = function (payload) {
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
+
         payload['code'] = Date.now();
+        $( '#publishing-action #publish' ).addClass( 'disabled' );
+        $( '#publishing-action .spinner' ).addClass( 'is-active' );
+        $( '#publishing-action' ).addClass( 'code-'+payload['code'] );
 
-        $publishingAction = $('#publishing-action');
-
-        $publishingAction.find('#publish').addClass('disabled');
-        $publishingAction.find('.spinner').addClass('is-active');
-        $publishingAction.addClass('code-' + payload['code']);
-
-        return LP_Request.push($store.getters.urlAjax,
-            payload,
-            {
+        return Vue.http.post($store.getters.urlAjax,
+            payload, {
                 emulateJSON: true,
                 params: {
                     namespace: 'LPListQuizQuestionsRequest',
                     code: payload['code'],
                 }
             });
-
-        // return Vue.http.post($store.getters.urlAjax,
-        //     payload, {
-        //         emulateJSON: true,
-        //         params: {
-        //             namespace: 'LPListQuizQuestionsRequest'
-        //         }
-        //     });
     };
 
     Vue.http.interceptors.push(function (request, next) {
@@ -984,10 +971,10 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 $store.dispatch('requestComplete', 'fail');
             }
 
-            $publishingAction.removeClass('code-' + request.params.code);
-            if (!$publishingAction.attr('class')) {
-                $publishingAction.find('#publish').removeClass('disabled');
-                $publishingAction.find('.spinner').removeClass('is-active');
+            $( '#publishing-action' ).removeClass( 'code-'+request.params.code );
+            if(!$( '#publishing-action' ).attr('class')){
+            	$( '#publishing-action #publish' ).removeClass( 'disabled' );
+                $( '#publishing-action .spinner' ).removeClass( 'is-active' );
             }
 
         });

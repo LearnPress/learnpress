@@ -635,8 +635,8 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
-	 * Get string for searching
-	 *
+     * Get string for searching
+     *
 	 * @return string
 	 */
 	private function _get_search() {

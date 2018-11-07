@@ -28,3 +28,6 @@ script.sh
 /.DS_Store
 /.project
 /.buildpath
+/.settings
+.gitignore
+

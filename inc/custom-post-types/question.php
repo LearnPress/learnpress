@@ -62,6 +62,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function views_pages( $views ) {
 			$unassigned_items = learn_press_get_unassigned_questions();
 			$text             = sprintf( __( 'Unassigned %s', 'learnpress' ), '<span class="count">(' . sizeof( $unassigned_items ) . ')</span>' );
+
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$views['unassigned'] = sprintf(
 					'<a href="%s" class="current">%s</a>',
@@ -110,7 +111,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$answers  = $question->get_default_answers();
 			} else {
 				$question = LP_Question::get_question( $post->ID );
-				$answers  = $question->get_answers()->to_array();//  ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
+				$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 			}
 
 			if ( empty( $answers ) ) {
@@ -332,12 +333,12 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				'author'  => __( 'Author', 'learnpress' ),
-				'lp_quiz' => __( 'Quiz', 'learnpress' ),
-				'type'    => __( 'Type', 'learnpress' )
+				'author' => __( 'Author', 'learnpress' ),
+				LP_QUIZ_CPT => __( 'Quiz', 'learnpress' ),
+				'type'      => __( 'Type', 'learnpress' )
 			);
 
-			if ( false !== $pos && ! array_key_exists( 'lp_quiz', $columns ) ) {
+			if ( false !== $pos && !array_key_exists( LP_QUIZ_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					$new_columns,
@@ -452,8 +453,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				return $order_by_statement;
 			}
 
-			if ( $order = $this->_get_orderby() ) {
-				switch ( $this->_get_order() ) {
+			if ( $orderby = $this->_get_orderby() && $order = $this->_get_order() ) {
+				switch ( $orderby ) {
 					case 'quiz-name':
 						$order_by_statement = "q.post_title {$order}";
 						break;
@@ -469,9 +470,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['author']  = 'author';
-			$columns['lp_quiz'] = 'quiz-name';
-
+			$columns['author'] = 'author';
+			$columns[LP_QUIZ_CPT] = 'quiz-name';
 			return $columns;
 		}
 
@@ -491,9 +491,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return bool|int
 		 */
 		private function _filter_quiz() {
-			return ! empty( $_REQUEST['filter_quiz'] ) ? absint( $_REQUEST['filter_quiz'] ) : false;
+			return LP_Request::get_int( 'filter_quiz' );
 		}
-
 
 		/**
 		 * Quiz assigned view.

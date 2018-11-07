@@ -20,6 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LP_Request {
 
 	/**
+	 * @var null
+	 */
+	protected static $_head = null;
+
+	/**
 	 * @var bool
 	 */
 	public static $ajax_shutdown = true;
@@ -30,7 +35,6 @@ class LP_Request {
 	public static function init() {
 
 		self::$ajax_shutdown = learn_press_is_ajax();
-
 		if ( is_admin() ) {
 			add_action( 'init', array( __CLASS__, 'process_request' ), 50 );
 		} else {
@@ -256,21 +260,10 @@ class LP_Request {
 	 */
 	public static function do_checkout( $course_id, $cart_id, $action ) {
 
-		$user   = learn_press_get_current_user();
+	    $user = learn_press_get_current_user();
 		$course = learn_press_get_course( $course_id );
 		if ( ! $course ) {
 			return false;
-		}
-
-		if ( 'enroll-course' == $action ) {
-			if ( ! $user->can_enroll_course( $course_id ) ) {
-				learn_press_add_message(
-					sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-					'error'
-				);
-
-				return false;
-			}
 		}
 
 		$cart = LP()->cart;
@@ -291,13 +284,12 @@ class LP_Request {
 			learn_press_add_message( __( 'Checkout page hasn\'t been setup' ) );
 		} else {
 			/// Need?
-			if ( 'enroll-course' == $action ) {
-				if ( ! $user->can_enroll_course( $course_id ) ) {
+			if( 'enroll-course' == $action){
+				if(!$user->can_enroll_course($course_id)){
 					learn_press_add_message(
 						sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
 						'error'
-					);
-
+						);
 					return false;
 				}
 			}
@@ -327,32 +319,32 @@ class LP_Request {
 		$user     = LP_Global::user();
 		$redirect = get_the_permalink( $course_id );
 
-		if ( ! $user->can_enroll_course( $course_id ) && 'enroll-course' == $action ) {
-			learn_press_add_message(
-				sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-				'error'
-			);
+		if ( !$user->can_enroll_course( $course_id ) && 'enroll-course' == $action ){
+		    learn_press_add_message(
+		        sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+		        'error'
+		        );
 		} else {
-			$thing = $user->enroll( $course_id, $order_id );
+    		$thing    = $user->enroll( $course_id, $order_id );
 
-			if ( is_wp_error( $thing ) ) {
-				learn_press_add_message(
-					$thing->get_error_message(),
-					'error'
-				);
+    		if ( is_wp_error( $thing ) ) {
+    			learn_press_add_message(
+    				$thing->get_error_message(),
+    				'error'
+    			);
 
-				if ( $thing->get_error_code() == 10002 ) {
-					$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $redirect ) ) );
-				}
-			} elseif ( $thing ) {
-				learn_press_add_message(
-					sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-					'success'
-				);
-				if ( $item_id ) {
-					$redirect = learn_press_get_course_item_permalink( $course_id, $item_id );
-				}
-			}
+    			if ( $thing->get_error_code() == 10002 ) {
+    				$redirect = apply_filters( 'learn-press/enroll-course-redirect-login', learn_press_get_login_url( add_query_arg( 'enroll-course', $course_id, $redirect ) ) );
+    			}
+    		} elseif ( $thing ) {
+    			learn_press_add_message(
+    				sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+    				'success'
+    			);
+			    if( $item_id ){
+			    	$redirect = learn_press_get_course_item_permalink( $course_id, $item_id );
+			    }
+    		}
 
 		}
 		wp_redirect( apply_filters( 'learn-press/enroll-course-redirect', $redirect ) );
@@ -397,7 +389,6 @@ class LP_Request {
 	 * @return string
 	 */
 	public static function process_request( $template ) {
-
 		if ( ! empty( $_REQUEST ) ) {
 			foreach ( $_REQUEST as $key => $value ) {
 				do_action( 'learn_press_request_handler_' . $key, $value, $key );
@@ -581,20 +572,7 @@ class LP_Request {
 				$return = floatval( $return );
 				break;
 			case 'bool':
-				try {
-					$value = strtolower( $return );
-				}
-				catch ( Exception $e ) {
-					$value = $return;
-				}
-
-				if ( in_array( $value, array( 'true', 'yes', 'on', 'enable' ) ) ) {
-					$return = true;
-				} elseif ( in_array( $value, array( 'false', 'no', 'off', 'disable' ) ) ) {
-					$return = false;
-				} else {
-					$return = ! ! $return;
-				}
+				$return = ! ! $return;
 				break;
 			case 'string':
 				$return = (string) $return;

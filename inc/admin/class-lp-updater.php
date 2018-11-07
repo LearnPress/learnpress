@@ -193,7 +193,6 @@ class LP_Updater {
 				delete_option( 'do-update-learnpress' );
 				delete_option( 'learnpress_updater' );
 				LP_Install::update_version();
-				LP_Install::update_db_version();
 				remove_action( 'admin_notices', array( $this, 'update_message' ), 10 );
 				LP()->session->set( 'do-update-learnpress', 'yes' );
 			}

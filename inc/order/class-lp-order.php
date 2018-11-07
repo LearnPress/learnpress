@@ -160,17 +160,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						$date = $strtime;
 						break;
 					default:
-						$post      = get_post( $this->get_id() );
-						$m_time    = $post->post_date;
-						$time      = get_post_time( 'G', true, $post );
-						$time_diff = time() - $time;
-
-						if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-							$date = sprintf( __( '%s ago' ), human_time_diff( $time ) );
-						} else {
-							$date = mysql2date( get_option( 'date_format' ), $m_time );
-						}
-
+						$date = learn_press_date_i18n( $strtime );
 				}
 			} elseif ( ! $date instanceof LP_Datetime ) {
 				$date = new LP_Datetime( $date );
@@ -532,13 +522,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_items() {
-			if ( false === ( $items = LP_Object_Cache::get( 'order-' . $this->get_id(), 'learn-press/order-items' ) ) ) {
-				$items = $this->_curd->read_items( $this );
-
-				LP_Object_Cache::set( 'order-' . $this->get_id(), $items, 'learn-press/order-items' );
-			}
-
-			return apply_filters( 'learn-press/order-items', $items );
+			return apply_filters( 'learn-press/order-items', LP_Object_Cache::get( 'order-' . $this->get_id(), 'lp-order-items' ) );
 		}
 
 		public function is_child() {
@@ -622,11 +606,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					'order_item_name' => get_the_title( $item )
 				);
 			}
-
 			if ( ! $course = learn_press_get_course( $item['item_id'] ) ) {
 				return false;
 			}
-
 			$item = wp_parse_args(
 				$item,
 				array(
@@ -686,7 +668,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			// Refresh cache
-			LP_Object_Cache::delete( 'order-' . $this->get_id(), 'learn-press/order-items' );
+			wp_cache_delete( 'order-' . $this->get_id(), 'lp-order-items' );
+			$this->_curd->read_items( $this );
 
 			do_action( 'learn-press/added-order-item-data', $item_id, $item, $this->get_id() );
 
@@ -761,7 +744,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
 
-			wp_cache_delete( 'order-' . $this->get_id(), 'learn-press/order-items' );
+			wp_cache_delete( 'order-' . $this->get_id(), 'lp-order-items' );
 
 			/**
 			 * @since 3.0.0
@@ -820,7 +803,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Get user id in array.
 		 *
-		 * @return int[]
+		 * @return array
 		 */
 		public function get_users() {
 			if ( $users = $this->get_data( 'user_id' ) ) {
@@ -1102,7 +1085,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 		public function get_child_orders( $force = false ) {
 			if ( $force ) {
-				wp_cache_delete( 'order-' . $this->get_id(), 'learn-press/child-orders' );
+				wp_cache_delete( 'order-' . $this->get_id(), 'lp-child-orders' );
 			}
 
 			return apply_filters( 'learn-press/child-orders', $this->_curd->get_child_orders( $this->get_id() ), $this->get_id() );

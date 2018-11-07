@@ -1724,6 +1724,7 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 		$args    = wp_parse_args( $args, $default );
 
 		$new_post_id = wp_insert_post( $args );
+
 		if ( ! is_wp_error( $new_post_id ) && $meta ) {
 			learn_press_duplicate_post_meta( $post_id, $new_post_id );
 			// assign related tags/categories to new course

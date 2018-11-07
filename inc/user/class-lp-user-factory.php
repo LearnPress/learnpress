@@ -27,7 +27,6 @@ class LP_User_Factory {
 	 *
 	 */
 	public static function init() {
-		//self::$_background_clear_users = new LP_Background_Clear_Temp_Users();
 		self::$_guest_transient = WEEK_IN_SECONDS;
 		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn_press_user_start_quiz', array( __CLASS__, 'start_quiz' ), 10, 4 );

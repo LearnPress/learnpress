@@ -39,26 +39,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		/**
-		 * @param $join
-		 *
-		 * @return string
-		 */
-		public function posts_join_paged( $join ) {
-			if ( ! $this->_is_archive() ) {
-				return $join;
-			}
-			global $wpdb;
-
-//			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || $this->_get_search() ) {
-//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
-//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
-//				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
-//			}
-
-			return $join;
-		}
-
-		/**
 		 * Filter items unassigned.
 		 *
 		 * @param string $where

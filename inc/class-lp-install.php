@@ -48,6 +48,21 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			add_action( 'learn-press/activate', array( __CLASS__, 'install' ) );
 			add_action( 'admin_init', array( __CLASS__, 'do_update' ) );
 			add_action( 'admin_init', array( __CLASS__, 'check_update' ) );
+			add_action( 'admin_init', array( __CLASS__, 'subsciption_button' ) );
+
+			//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
+
+			return;
+			add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
+			add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
+			add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
+			add_action( 'admin_init', array( __CLASS__, 'db_update_notices' ), 5 );
+			add_action( 'admin_init', array( __CLASS__, 'update_actions' ), 5 );
+			add_action( 'wp_ajax_lp_repair_database', array( __CLASS__, 'repair_database' ) );
+			add_action( 'wp_ajax_lp_rollback_database', array( __CLASS__, 'rollback_database' ) );
+			add_action( 'wp_ajax_learn_press_hide_upgrade_notice', array( __CLASS__, 'hide_upgrade_notice' ) );
+			add_action( 'admin_init', array( __CLASS__, 'upgrade_wizard' ) );
+			add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		}
 
 		/**
@@ -61,6 +76,23 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
 				wp_safe_redirect( urldecode( $_REQUEST['redirect'] ) );
 			}
+		}
+
+		public static function subsciption_button() {
+			// Only administrator of the site can do this
+			if ( ! current_user_can( 'administrator' ) ) {
+				return;
+			}
+			$is_dismiss_newsletter_button = get_option( 'learn-press-dismissed-newsletter-button', 0 );
+			if ( $is_dismiss_newsletter_button ) {
+				return;
+			}
+			// Show message if the latest version is not already updated
+			add_action( 'admin_notices', array( __CLASS__, 'show_subscription_button' ), 20 );
+		}
+
+		public static function show_subscription_button() {
+			learn_press_admin_view( 'tools/subscription-button' );
 		}
 
 		/**
@@ -104,7 +136,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 //			}
 
 			// Show message if the latest version is not already updated
-			//add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ), 20 );
+			add_action( 'admin_notices', array( __CLASS__, 'check_update_message' ), 20 );
 		}
 
 		/**
@@ -140,14 +172,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			self::update_db_version();
 			self::update_version();
-
-			return;
-			// Fix for WP 4.7
-			if ( did_action( 'admin_init' ) ) {
-				self::_auto_update();
-			} else {
-				add_action( 'admin_init', array( __CLASS__, '_auto_update' ), - 15 );
-			}
 		}
 
 		protected static function _clear_backgrounds() {
@@ -356,7 +380,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 				// If page already existed
 				$page_id = get_option( "learn_press_{$page}_page_id" );
-				if ( $page_id && learn_press_get_post_type( $page_id ) == 'page' && get_post_status( $page_id ) == 'publish' ) {
+				if ( $page_id && get_post_type( $page_id ) == 'page' && get_post_status( $page_id ) == 'publish' ) {
 					continue;
 				}
 
@@ -517,9 +541,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * Scan folder updates to get update patches.
 		 */
 		public static function get_update_files() {
-			/**
-			 * @var WP_Filesystem_Base $wp_filesystem
-			 */
 			if ( ! self::$_update_files ) {
 				require_once ABSPATH . 'wp-admin/includes/file.php';
 				if ( WP_Filesystem() ) {
@@ -531,17 +552,15 @@ if ( ! function_exists( 'LP_Install' ) ) {
 								self::$_update_files [ $matches[1] ] = $file['name'];
 							}
 						}
-
 					}
 
 				}
 				/**
-				 * Sort files by version number
+				 * Sort files by version
 				 */
 				if ( self::$_update_files ) {
-					uksort( self::$_update_files, 'version_compare' );
+					ksort( self::$_update_files );
 				}
-
 			}
 		}
 

@@ -156,9 +156,7 @@ class LP_Query {
 			);
 
 		} else {
-			if ( ! empty( $_REQUEST['xxx'] ) ) {
-				echo '^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$';
-			}
+
 			$rules[] = array(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
@@ -169,7 +167,6 @@ class LP_Query {
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
 				'top'
 			);
-
 		}
 
 		// Profile
@@ -223,16 +220,12 @@ class LP_Query {
 			$pll           = PLL();
 			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
 
-			if ( isset( $pll->options['hide_default'] ) ) {
-				if ( isset( $pll->options['default_lang'] ) ) {
-					$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
-				}
+			if ( $pll->options['hide_default'] ) {
+				$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
 			}
 
 			if ( ! empty( $pll_languages ) ) {
 				$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
-			} else {
-				$pll_languages = '';
 			}
 
 		}

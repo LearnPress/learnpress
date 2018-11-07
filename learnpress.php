@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 3.2.0
+Version: 3.1.0
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 4.9.6
@@ -98,7 +98,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Manage all processes run in background.
 		 *
-		 * @var LP_Abstract_Background_Process[]
+		 * @var array
 		 */
 		public $backgrounds = array();
 
@@ -127,8 +127,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					'query-items'      => 'query-items',
 					'schedule-items'   => 'schedule-items',
 					'global'           => 'global',
-					'clear-temp-users' => 'clear-temp-users',
-					'sync-data'        => 'sync-data'
+					'clear-temp-users' => 'clear-temp-users'
 				)
 			);
 
@@ -138,7 +137,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				}
 
 				if ( file_exists( $file ) ) {
-					$this->backgrounds[ $name ] = include $file;
+					$this->backgrounds[ $name ] = include_once $file;
 				}
 			}
 		}
@@ -153,7 +152,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return LP_Abstract_Background_Process|bool
 		 */
-		public function add_background_task( $data, $background = 'global' ) {
+		public function add_background_task( $data, $background = '' ) {
 			if ( isset( $this->backgrounds[ $background ] ) ) {
 				$this->backgrounds[ $background ]->push_to_queue( $data );
 
@@ -229,12 +228,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
-			require_once 'inc/class-lp-thumbnail-helper.php';
-			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
 			require_once 'inc/cache.php';
 
 			// Background processes
 			require_once 'inc/abstracts/abstract-background-process.php';
+			//require_once 'inc/background-process/class-lp-background-emailer.php';
+			//require_once 'inc/background-process/class-lp-background-schedule-items.php';
+			//require_once 'inc/background-process/class-lp-background-clear-temp-users.php';
+			//require_once 'inc/background-process/class-lp-background-installer.php';
+			//require_once 'inc/background-process/class-lp-background-global.php';
 
 			// curds
 			require_once 'inc/curds/class-lp-helper-curd.php';
@@ -245,7 +247,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/curds/class-lp-question-curd.php';
 			require_once 'inc/curds/class-lp-order-curd.php';
 			require_once 'inc/curds/class-lp-user-curd.php';
-			require_once 'inc/curds/class-lp-user-item-curd.php';
 
 			require_once 'inc/class-lp-backward-plugins.php';
 			require_once 'inc/class-lp-debug.php';
@@ -256,23 +257,26 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/lp-deprecated.php';
+			require_once 'inc/class-lp-cache.php';
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/class-lp-autoloader.php';
 			require_once 'inc/class-lp-install.php';
 			require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';
-			require_once( 'inc/abstract-settings.php' );
+			require_once 'inc/abstract-settings.php';
+			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
+
+			//require_once( 'inc/class-lp-market-products.php' );
 
 			if ( is_admin() ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 				require_once 'inc/admin/class-lp-admin-notice.php';
 				require_once 'inc/admin/class-lp-admin.php';
-				require_once 'inc/admin/settings/abstract-settings-page.php';
+				require_once( 'inc/admin/settings/abstract-settings-page.php' );
 			}
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-assets.php';
 			}
-			require_once 'inc/class-lp-repair-database.php';
 			require_once 'inc/question/class-lp-question.php';
 
 			// Register custom-post-type and taxonomies
@@ -376,9 +380,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Maybe flush rewrite rules
 		 */
 		public function wp_init() {
-			if ( LP()->session->flush_rewrite_rules ) {
+			if ( get_option( 'learn-press-flush-rewrite-rules' ) == 'yes' ) {
 				flush_rewrite_rules();
-				unset( LP()->session->flush_rewrite_rules );
+				delete_option( 'learn-press-flush-rewrite-rules' );
 			}
 		}
 
@@ -702,7 +706,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		public function flush_rewrite_rules() {
-			LP()->session->flush_rewrite_rules = true;
+			update_option( 'learn-press-flush-rewrite-rules', 'yes' );
 			flush_rewrite_rules();
 		}
 
