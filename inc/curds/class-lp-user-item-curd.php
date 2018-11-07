@@ -30,7 +30,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function load( &$quiz ) {
 		$the_id = $quiz->get_id();
-		if ( ! $the_id || LP_QUIZ_CPT !== learn_press_get_post_type( $the_id ) ) {
+		if ( ! $the_id || LP_QUIZ_CPT !== get_post_type( $the_id ) ) {
 			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 		}
 		$quiz->set_data_via_methods(
@@ -76,7 +76,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		$id        = $quiz->get_id();
-		$questions = LP_Object_Cache::get( 'questions-' . $id, 'learn-press/quizzes' );
+		$questions = LP_Object_Cache::get( 'questions-' . $id, 'lp-quizzes' );
 		if ( false === $questions || $quiz->get_no_cache() ) {
 			global $wpdb;
 			$questions = array();
@@ -94,7 +94,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$questions[ $v->ID ] = $v->ID;
 				}
 			}
-			LP_Object_Cache::set( 'questions-' . $id, $questions, 'learn-press/quizzes' );
+			LP_Object_Cache::set( 'questions-' . $id, $questions, 'lp-quizzes' );
 
 			$this->_load_question_answers( $quiz );
 		}
@@ -107,7 +107,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * @param LP_Quiz $quiz
 	 */
 	protected function _update_meta_cache( &$quiz ) {
-		$meta_ids = LP_Object_Cache::get( 'questions-' . $quiz->get_id(), 'learn-press/quizzes' );
+		$meta_ids = LP_Object_Cache::get( 'questions-' . $quiz->get_id(), 'lp-quizzes' );
 
 		if ( false === $meta_ids ) {
 			$meta_ids = array( $quiz->get_id() );
@@ -170,7 +170,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 
 			foreach ( $answer_options as $question_id => $options ) {
-				LP_Object_Cache::set( 'answer-options-' . $question_id, $options, 'learn-press/questions' );
+				LP_Object_Cache::set( 'answer-options-' . $question_id, $options, 'lp-questions' );
 			}
 
 			foreach ( $meta_ids as $meta_id ) {
@@ -185,7 +185,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 		if ( $un_fetched ) {
 			foreach ( $un_fetched as $question_id ) {
-				LP_Object_Cache::set( 'answer-options-' . $question_id, array(), 'learn-press/questions' );
+				LP_Object_Cache::set( 'answer-options-' . $question_id, array(), 'lp-questions' );
 			}
 		}
 		//
@@ -306,7 +306,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			return $this->get_error( 'QUESTION_NOT_EXISTS' );
 		}
 
-		return LP_Object_Cache::get( 'questions-' . $the_quiz->get_id(), 'learn-press/quizzes' );
+		return LP_Object_Cache::get( 'questions-' . $the_quiz->get_id(), 'lp-quizzes' );
 	}
 
 	/**
@@ -415,57 +415,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * Get single user item by values of fields.
-	 *
-	 * @since 3.1.0
-	 *
-	 * @param string|array $field
-	 * @param string       $value
-	 *
-	 * @return mixed
-	 */
-	public function get_item_by( $field, $value = '' ) {
-		if ( $rows = $this->get_items_by( $field, $value ) ) {
-			return $rows[0];
-		}
 
-		return false;
-	}
-
-	/**
-	 * Get multiple rows of user item by values of fields.
-	 *
-	 * @since 3.1.0
-	 *
-	 * @param string|array $field
-	 * @param string       $value
-	 *
-	 * @return array
-	 */
-	public function get_items_by( $field, $value = '' ) {
-		global $wpdb;
-		$where = "";
-
-		if ( is_array( $field ) ) {
-			foreach ( $field as $k => $v ) {
-				if ( is_string( $v ) ) {
-					$where .= $wpdb->prepare( " AND {$k} = %s", $v );
-				} else {
-					$where .= $wpdb->prepare( " AND {$k} = %d", $v );
-				}
-			}
-		} else {
-			if ( is_string( $value ) ) {
-				$where .= $wpdb->prepare( " AND {$field} = %s", $value );
-			} else {
-				$where .= $wpdb->prepare( " AND {$field} = %s", $value );
-			}
-		}
-
-		$query = "SELECT * FROM {$wpdb->learnpress_user_items} WHERE 1 {$where}";
-
-		return $wpdb->get_results( $query );
-	}
 
 	/**
 	 * Get WP_Object.

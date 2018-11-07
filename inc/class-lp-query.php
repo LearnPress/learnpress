@@ -113,18 +113,17 @@ class LP_Query {
 	 */
 	function add_rewrite_rules() {
 
-		$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
 		// lesson
 		$course_type  = LP_COURSE_CPT;
 		$post_types   = get_post_types( '', 'objects' );
 		$slug         = preg_replace( '!^/!', '', $post_types[ $course_type ]->rewrite['slug'] );
 		$has_category = false;
+
 		if ( preg_match( '!(%?course_category%?)!', $slug ) ) {
 			$slug         = preg_replace( '!(%?course_category%?)!', '(.+?)/([^/]+)', $slug );
 			$has_category = true;
 		}
-		$current_url        = learn_press_get_current_url();
-		$query_string       = str_replace( trailingslashit( get_home_url() /* SITE_URL */ ), '', $current_url );
+
 		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
 		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 
@@ -136,68 +135,44 @@ class LP_Query {
 		if ( ! empty( $custom_slug_lesson ) ) {
 			$post_types['lp_lesson']->rewrite['slug'] = urldecode( $custom_slug_lesson );
 		}
+
 		if ( ! empty( $custom_slug_quiz ) ) {
 			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
 		}
 
-		$popup_slug = 'popup';
+		$rules = array();
+
 		if ( $has_category ) {
-			add_rewrite_rule(
+			$rules[] = array(
 				'^' . $slug . '(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
 				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_lesson',
 				'top'
 			);
-			add_rewrite_rule(
+
+			$rules[] = array(
 				'^' . $slug . '(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
 				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
 				'top'
 			);
 
-			/* Test */
-//			if ( $popup_slug ) {
-//				add_rewrite_rule(
-//					'^' . $slug . '/(' . $popup_slug . ')(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
-//					'index.php?content-item-only=yes&' . $course_type . '=$matches[3]&course_category=$matches[2]&course-item=$matches[4]&item-type=lp_lesson',
-//					'top'
-//				);
-//				add_rewrite_rule(
-//					'^' . $slug . '/(' . $popup_slug . ')(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
-//					'index.php?content-item-only=yes&' . $course_type . '=$matches[3]&course_category=$matches[2]&course-item=$matches[4]&question=$matches[5]&item-type=lp_quiz',
-//					'top'
-//				);
-//			}
 		} else {
 
-			add_rewrite_rule(
+			$rules[] = array(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
 				'top'
 			);
-			add_rewrite_rule(
+			$rules[] = array(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
 				'top'
 			);
-
-			/* Test */
-//			if ( $popup_slug ) {
-//				add_rewrite_rule(
-//					'^' . $slug . '/(' . $popup_slug . ')/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
-//					'index.php?content-item-only=yes&' . $course_type . '=$matches[2]&course-item=$matches[3]&item-type=lp_lesson',
-//					'top'
-//				);
-//				add_rewrite_rule(
-//					'^' . $slug . '/(' . $popup_slug . ')/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
-//					'index.php?content-item-only=yes&' . $course_type . '=$matches[2]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
-//					'top'
-//				);
-//			}
 		}
 
 		// Profile
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 
-			add_rewrite_rule(
+			$rules[] = array(
 				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?$',
 				'index.php?page_id=' . $profile_id . '&user=$matches[1]',
 				'top'
@@ -207,7 +182,7 @@ class LP_Query {
 			if ( $tabs = $profile->get_tabs()->get() ) {
 				foreach ( $tabs as $slug => $args ) {
 					$tab_slug = isset( $args['slug'] ) ? $args['slug'] : $slug;
-					add_rewrite_rule(
+					$rules[]  = array(
 						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/?([0-9]*)/?$',
 						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
 						'top'
@@ -216,38 +191,75 @@ class LP_Query {
 					if ( ! empty( $args['sections'] ) ) {
 						foreach ( $args['sections'] as $section_slug => $section ) {
 							$section_slug = isset( $section['slug'] ) ? $section['slug'] : $section_slug;
-							add_rewrite_rule(
+							$rules[]      = array(
 								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?([0-9]*)?$',
 								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
 								'top'
 							);
 						}
-//						add_rewrite_rule(
-//							'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/([^/]*)/?$',
-//							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
-//							'top'
-//						);
 					}
 				}
-//				add_rewrite_rule(
-//					'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([0-9]*)/?$',
-//					'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&lp-paged=$matches[3]',
-//					'top'
-//				);
 			}
-
-
 		}
 
 		// Archive course
 		if ( $course_page_id = learn_press_get_page_id( 'courses' ) ) {
-			add_rewrite_rule(
+			$rules[] = array(
 				'^' . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
 				'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
 				'top'
 			);
 		}
+
+		global $wp_rewrite;
+
+		/**
+		 * Polylang compatibility
+		 */
+		if ( function_exists( 'PLL' ) ) {
+			$pll           = PLL();
+			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
+
+			if ( $pll->options['hide_default'] ) {
+				$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
+			}
+
+			if ( ! empty( $pll_languages ) ) {
+				$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
+			}
+
+		}
+		$new_rules = array();
+		foreach ( $rules as $k => $rule ) {
+			$new_rules[] = $rule;
+			call_user_func_array( 'add_rewrite_rule', $rule );
+
+			/**
+			 * Modify rewrite rule
+			 */
+			if ( isset( $pll_languages ) ) {
+
+				$rule[0]     = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
+				$rule[1]     = str_replace(
+					array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
+					array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
+					$rule[1]
+				);
+				$new_rules[] = $rule;
+				call_user_func_array( 'add_rewrite_rule', $rule );
+			}
+		}
+
+		$new_rules = md5( serialize( $new_rules ) );
+		$old_rules = get_transient( 'lp_rewrite_rules_hash' );
+
+		if ( $old_rules !== $new_rules ) {
+			set_transient( 'lp_rewrite_rules_hash', $new_rules, DAY_IN_SECONDS );
+			flush_rewrite_rules();
+		}
+
 		do_action( 'learn_press_add_rewrite_rules' );
+
 	}
 
 
@@ -297,7 +309,7 @@ class LP_Query {
 			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
 		}
 
-		//add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
+		add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
 	}
 
 	/**
@@ -345,7 +357,6 @@ class LP_Query {
 	 * @return string
 	 */
 	public function exclude_preview_course( $where ) {
-		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.11' );
 		global $wpdb;
 
 		if ( ! is_admin() && learn_press_is_courses() ) {

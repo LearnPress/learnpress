@@ -209,7 +209,6 @@
                 } else {
                     $item.hide();
                 }
-
             });
 
             $('.section').show().each(function () {
@@ -518,6 +517,10 @@
 
             fullScreen = $body.hasClass('distraction-on');// window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
 
+            if($(window).width()<=768){
+                fullScreen = true;
+            }
+
             if (fullScreen) {
                 var curriculumWidth = getCurriculumWidth();
                 //$body.addClass('distraction-on');
@@ -630,8 +633,6 @@
 
 
     $(document).ready(function () {
-
-
         $(document).ready(function () {
             new LP_Course({});
 

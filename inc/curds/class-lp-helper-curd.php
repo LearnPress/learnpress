@@ -36,7 +36,8 @@ class LP_Helper_CURD {
 			if ( $limit > 0 ) {
 				$chunks = array_chunk( $ids, $limit );
 				foreach ( $chunks as $chunk ) {
-					$cache     = update_meta_cache( $type, $chunk );
+					$cache = update_meta_cache( $type, $chunk );
+
 					$meta_data = $meta_data + $cache;// array_merge( $meta_data, $cache );
 				}
 			} else {
@@ -51,7 +52,7 @@ class LP_Helper_CURD {
 				$meta_data[ $id ] = array();
 			}
 
-			wp_cache_set( $id, $meta_data[ $id ], "{$type}_meta" );
+			LP_Object_Cache::set( $id, $meta_data[ $id ], "{$type}_meta" );
 		}
 
 	}

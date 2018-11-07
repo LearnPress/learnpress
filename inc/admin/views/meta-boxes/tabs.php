@@ -2,10 +2,10 @@
 global $wp_meta_boxes, $post;
 
 $tabs = $this->get_tabs( 'tabs' );
-if ( ! $tabs ) {
+if ( !$tabs ) {
 	return;
 }
-$current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+$current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 ?>
 <div id="learn-press-admin-editor-metabox-settings" class="learn-press-tabs vertical initialize">
     <div class="tabs-heading">

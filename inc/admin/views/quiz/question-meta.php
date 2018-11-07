@@ -32,7 +32,7 @@
                         </div>
                         <div class="rwml-input">
                             <div>
-                                <input name="mark" type="number" v-model="question.settings.mark"
+                                <input name="mark" type="number" min="1" v-model="question.settings.mark"
                                        @change="updateMeta">
                                 <p class="description"><?php _e( 'Mark for choosing the right answer.', 'learnpress' ); ?></p>
                             </div>

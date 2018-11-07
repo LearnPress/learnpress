@@ -17,7 +17,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 	/**
 	 * Class LP_Quiz_Post_Type
 	 */
-	final class LP_Quiz_Post_Type extends LP_Abstract_Post_Type {
+	final class LP_Quiz_Post_Type extends LP_Abstract_Post_Type_Core {
 
 		/**
 		 * @var null
@@ -46,33 +46,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			add_filter( 'views_edit-' . LP_QUIZ_CPT, array( $this, 'views_pages' ), 10 );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
-			add_filter( 'save_post', array( $this, 'save_post' ), 10 );
-			add_action( 'learn-press/quiz-added-question', array( $this, 'added_question' ), 10, 3 );
 
 			parent::__construct( $post_type, $args );
-		}
-
-		public function save_post( $post_id ) {
-
-			$curd = new LP_Quiz_CURD();
-
-			if ( LP_QUIZ_CPT === get_post_type( $post_id ) ) {
-				$curd->update_question_ids( $post_id );
-
-				return;
-			}
-
-			if ( LP_QUESTION_CPT === get_post_type( $post_id ) && $quiz_ids = $curd->get_quiz_by_question( $post_id ) ) {
-				foreach ( $quiz_ids as $quiz_id ) {
-					$curd->update_question_ids( $quiz_id );
-				}
-			}
-		}
-
-		public function added_question( $inserted, $question_id, $quiz_id ) {
-			if ( $inserted ) {
-				$this->save_post( $quiz_id );
-			}
 		}
 
 		/**
@@ -168,7 +143,56 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public function data_quiz_editor() {
-			LP_Admin_Editor::get_editor_quiz()->editor_data();
+			if ( LP_QUIZ_CPT !== get_post_type() ) {
+				return;
+			}
+
+			global $post;
+			$quiz = LP_Quiz::get_quiz( $post->ID );
+
+			// trigger user memorize question types
+			$user_id                   = get_current_user_id();
+			$default_new_question_type = get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) ? get_user_meta( $user_id, '_learn_press_memorize_question_types', true ) : 'true_or_false';
+
+			$hidden_questions          = get_post_meta( $post->ID, '_lp_hidden_questions', true );
+			$hidden_questions_settings = get_post_meta( $post->ID, '_hidden_questions_settings', true );
+
+			wp_localize_script( 'learn-press-admin-quiz-editor', 'lp_quiz_editor', apply_filters( 'learn-press/admin-localize-quiz-editor', array(
+				'root'          => array(
+					'quiz_id'     => $post->ID,
+					'ajax'        => admin_url( '' ),
+					'action'      => 'admin_quiz_editor',
+					'nonce'       => wp_create_nonce( 'learnpress_admin_quiz_editor' ),
+					'types'       => LP_Question::get_types(),
+					'default_new' => $default_new_question_type
+				),
+				'chooseItems'   => array(
+					'open'       => false,
+					'addedItems' => array(),
+					'items'      => array()
+				),
+				'i18n'          => apply_filters( 'learn-press/quiz-editor/i18n',
+					array(
+						'option'                 => __( 'Option', 'learnpress' ),
+						'unique'                 => learn_press_uniqid(),
+						'back'                   => __( 'Back', 'learnpress' ),
+						'selected_items'         => __( 'Selected items', 'learnpress' ),
+						'new_option'             => __( 'New Option', 'learnpress' ),
+						'confirm_trash_question' => __( 'Do you want to move question "{{QUESTION_NAME}}" to trash?', 'learnpress' ),
+						'question_labels'        => array(
+							'singular' => __( 'Question', 'learnpress' ),
+							'plural'   => __( 'Questions', 'learnpress' )
+						)
+					)
+				),
+				'listQuestions' => array(
+					'questions'                 => $quiz->quiz_editor_get_questions(),
+					'hidden_questions'          => ! empty( $hidden_questions ) ? $hidden_questions : array(),
+					'hidden_questions_settings' => $hidden_questions_settings ? $hidden_questions_settings : array(),
+					'disableUpdateList'         => false,
+					'externalComponent'         => apply_filters( 'learn-press/admin/external-js-component', array() )
+				)
+			) ) );
 		}
 
 		/**
@@ -244,6 +268,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'min'          => 0,
 						'std'          => 10,
 					),
+//					array(
+//						'name' => __( 'Preview Quiz', 'learnpress' ),
+//						'id'   => '_lp_preview',
+//						'type' => 'yes-no',
+//						'desc' => __( 'If this is a preview quiz, then student can do this quiz without taking the course.', 'learnpress' ),
+//						'std'  => 'no'
+//					),
 					array(
 						'name' => __( 'Minus Points', 'learnpress' ),
 						'id'   => '_lp_minus_points',
@@ -340,14 +371,15 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
-			if ( false !== $pos && ! array_key_exists( 'lp_course', $columns ) ) {
+			if ( false !== $pos && !array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
 						'author'          => __( 'Author', 'learnpress' ),
-						'lp_course'       => $this->_get_course_column_title(),
+						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
-						'duration'        => __( 'Duration', 'learnpress' )
+						'duration'        => __( 'Duration', 'learnpress' ),
+						'preview'         => __( 'Preview', 'learnpress' )
 					),
 					array_slice( $columns, $pos + 1 )
 				);
@@ -365,7 +397,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int    $post_id
+		 * @param int $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;
@@ -397,6 +429,18 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					} else {
 						echo '-';
 					}
+					break;
+				case 'preview':
+					printf(
+						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-item-preview" %s value="%s" data-nonce="%s" />',
+						get_post_meta( $post_id, '_lp_preview', true ) == 'yes' ? ' checked="checked"' : '',
+						$post_id,
+						wp_create_nonce( 'learn-press-toggle-item-preview' )
+					);
+					break;
+				default:
+					break;
+
 			}
 		}
 
@@ -424,15 +468,9 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_join_paged( $join ) {
-			if ( ! $this->_is_archive() ) {
+			if ( !$this->_is_archive() ) {
 				return $join;
 			}
-			global $wpdb;
-//			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || $this->_get_search() ) {
-//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
-//				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
-//				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
-//			}
 
 			return $join;
 		}
@@ -449,18 +487,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 
 			global $wpdb;
-
-//			if ( $course_id = $this->_filter_course() ) {
-//				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
-//			}
-
-//			if ( isset( $_GET['s'] ) ) {
-//				$s     = $_GET['s'];
-//				$where = preg_replace(
-//					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
-//					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
-//				);
-//			}
 
 			if ( 'yes' === LP_Request::get( 'unassigned' ) ) {
 				$where .= $wpdb->prepare( "
@@ -483,20 +509,22 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_orderby( $order_by_statement ) {
+			global $wpdb;
+
 			if ( ! $this->_is_archive() ) {
 				return $order_by_statement;
 			}
-			global $wpdb;
-			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
-				switch ( $_GET['orderby'] ) {
+
+			if ( $orderby = $this->_get_orderby() && $order = $this->_get_order() ) {
+				switch ( $orderby ) {
 					case 'course-name':
-						$order_by_statement = "c.post_title {$_GET['order']}";
+						$order_by_statement = "c.post_title {$order}";
 						break;
 					case 'question-count':
-						$order_by_statement = "question_count {$_GET['order']}";
+						$order_by_statement = "question_count {$order}";
 						break;
 					default:
-						$order_by_statement = "{$wpdb->posts}.post_title {$_GET['order']}";
+						$order_by_statement = "{$wpdb->posts}.post_title {$order}";
 				}
 			}
 
@@ -510,7 +538,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns['author']          = 'author';
-			$columns['lp_course']       = 'course-name';
+			$columns[LP_COURSE_CPT]     = 'course-name';
 			$columns['num_of_question'] = 'question-count';
 
 			return $columns;
@@ -526,27 +554,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 
 			return true;
-		}
-
-		/**
-		 * @return bool|int
-		 */
-		private function _filter_course() {
-			return ! empty( $_REQUEST['course'] ) ? absint( $_REQUEST['course'] ) : false;
-		}
-
-		/**
-		 * @return string
-		 */
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
-
-		/**
-		 * @return bool
-		 */
-		private function _get_search() {
-			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
 		/**

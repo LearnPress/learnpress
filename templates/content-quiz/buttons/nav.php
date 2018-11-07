@@ -18,9 +18,8 @@ $user                = LP_Global::user();
 $quiz                = LP_Global::course_item_quiz();
 $course_id           = get_the_ID();
 $current_question_id = $quiz->get_viewing_question( 'id' );
-$next_id             = $quiz->get_next_question( $current_question_id );
-$prev_id             = $quiz->get_prev_question( $current_question_id );
-$question_nav = $quiz->get_question_nav($current_question_id);
+$question_nav        = $quiz->get_question_nav( $current_question_id );
+
 ?>
 
 <?php if ( $prev_id = $question_nav[0] ) { ?>
@@ -44,7 +43,7 @@ $question_nav = $quiz->get_question_nav($current_question_id);
 
 <?php } ?>
 
-<?php if ( $next_id = $question_nav[2]) { ?>
+<?php if ( $next_id = $question_nav[2] ) { ?>
 
 	<?php do_action( 'learn-press/quiz/before-next-question-button' ); ?>
 
@@ -65,7 +64,7 @@ $question_nav = $quiz->get_question_nav($current_question_id);
 
 <?php } ?>
 
-<?php if ( ( $next_id = $user->get_next_question( $quiz->get_id(), $course_id ) ) && ! $user->has_completed_quiz( $quiz->get_id(), $course_id ) ) { ?>
+<?php if ( $next_id && ! $user->has_completed_quiz( $quiz->get_id(), $course_id ) ) { ?>
 
 	<?php do_action( 'learn-press/quiz/before-skip-question-button' ); ?>
 

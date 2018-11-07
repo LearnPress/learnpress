@@ -17,3 +17,7 @@ if ( ! empty( $user_id ) && $user->profile_picture_type == 'picture' ) {
 		delete_user_meta( $user->get_id(), '_lp_profile_picture_type' );
 	}
 }
+delete_option( 'learnpress_updater_step' );
+delete_option( 'learnpress_updater' );
+LP_Install::update_db_version('2.1.1');
+return array( 'done' => true, 'percent' => 100 );

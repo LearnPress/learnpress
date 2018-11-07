@@ -173,7 +173,7 @@ class LP_Session_Handler implements ArrayAccess {
 	}
 
 	public function get_cache_prefix( $group = LP_SESSION_CACHE_GROUP ) {
-		$prefix = wp_cache_get( 'learn_press_' . $group . '_cache_prefix', $group );
+		$prefix = LP_Object_Cache::get( 'learn_press_' . $group . '_cache_prefix', $group );
 
 		if ( false === $prefix ) {
 			$prefix = 1;
@@ -265,7 +265,7 @@ class LP_Session_Handler implements ArrayAccess {
 		}
 
 		// Try get it from the cache, it will return false if not present or if object cache not in use
-		$value = wp_cache_get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
+		$value = LP_Object_Cache::get( $this->get_cache_prefix() . $customer_id, LP_SESSION_CACHE_GROUP );
 		///echo "KEY:" . $this->get_cache_prefix() . $customer_id . "]";
 		if ( false === $value ) {
 			$q     = $wpdb->prepare( "SELECT session_value FROM $this->_table WHERE session_key = %s", $customer_id );

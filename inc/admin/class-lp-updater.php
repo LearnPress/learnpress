@@ -129,19 +129,16 @@ class LP_Updater {
 		$this->do_update();
 		$db_version     = get_option( 'learnpress_db_version' );
 		$latest_version = $this->get_latest_version();
-		$response       = array(
-			'result' => 'error'
-		);
+		$response       = array();
+		$next_step      = get_option( 'learnpress_updater_step' );
 
-		$nextStep = get_option( 'learnpress_updater_step' );
-
-		if ( version_compare( $db_version, $latest_version, '>=' ) || ! $nextStep ) {
+		if ( version_compare( $db_version, $latest_version, '>=' ) ||  ! $next_step ) {
 			$response['result']  = 'success';
 			$response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
 
 			delete_option( 'do-update-learnpress' );
 		} else {
-			$response['step'] = $nextStep;
+			$response['step'] = $next_step;
 		}
 
 		learn_press_send_json( $response );

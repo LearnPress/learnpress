@@ -195,32 +195,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		}
 
 		/**
-		 * Do something before get data.
-		 * Some data now is not auto loading when object is created
-		 * therefore, we will load it here.
-		 *
-		 * @param string $name
-		 * @param string $default
-		 *
-		 * @return array|mixed
-		 */
-		public function get_data( $name = '', $default = '' ) {
-			switch ( $name ) {
-				case 'answer_options':
-					$answer_options = parent::get_data( $name, $default );
-
-					if ( ! $answer_options ) {
-						$answer_options = $this->_curd->load_answer_options( $this->get_id() );
-						$this->set_data( $name, $answer_options );
-					}
-
-					break;
-			}
-
-			return parent::get_data( $name, $default );
-		}
-
-		/**
 		 * @param string $yes_or_no
 		 *
 		 * @return array|mixed
@@ -570,7 +544,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 		/**
 		 *
-		 * @param mixed       $answers
+		 * @param mixed $answers
 		 * @param LP_Question $q
 		 *
 		 * @return array|bool
@@ -635,23 +609,16 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 */
 		public function get_answers( $field = null, $exclude = null ) {
 			$answers = array();
-			LP_Debug::logTime( __FUNCTION__ );
-			if ( false === ( $answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'learn-press/questions' ) ) ) {
-
-				if ( ! $answers = $this->_curd->load_answer_options( $this->get_id() ) ) {
-					$answers = $this->get_default_answers();
-				}
-
-				LP_Object_Cache::set( 'answer-options-' . $this->get_id(), $answers, 'learn-press/questions' );
+			if ( false === ( $data_answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'lp-questions' ) ) ) {
+				$data_answers = $this->get_default_answers();
 			};
 
-			if ( $answers ) {
-				$answers = new LP_Question_Answers( $this, $answers );
+			if ( $data_answers ) {
+				$answers = new LP_Question_Answers( $this, $data_answers );
 			}
 
 			// @deprecated
 			$answers = apply_filters( 'learn_press_question_answers', $answers, $this );
-			LP_Debug::logTime( __FUNCTION__ );
 
 			return apply_filters( 'learn-press/questions/answers', $answers, $this->get_id() );
 		}
@@ -758,9 +725,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 *          - $obj->a->b
 		 *          - or $obj->a['b']
 		 *
-		 * @param   null $key     string  Single or multiple level such as a.b.c
+		 * @param   null $key string  Single or multiple level such as a.b.c
 		 * @param   null $default mixed   Return a default value if the key does not exists or is empty
-		 * @param   null $func    string  The function to apply the result before return
+		 * @param   null $func string  The function to apply the result before return
 		 *
 		 * @return  mixed|null
 		 */
@@ -821,7 +788,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Find value in answer's option and compare with value answered by user.
 		 *
 		 * @param LP_Question_Answer_Option $answer
-		 * @param mixed                     $answered
+		 * @param mixed $answered
 		 *
 		 * @return bool
 		 */
@@ -944,7 +911,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get question.
 		 *
-		 * @param bool  $the_question
+		 * @param bool $the_question
 		 * @param array $args
 		 *
 		 * @return LP_Question|bool
@@ -990,7 +957,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Get the question class name.
 		 *
 		 * @param  WP_Post $the_question
-		 * @param  array   $args (default: array())
+		 * @param  array $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -1011,7 +978,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get question class from question type.
 		 *
-		 * @param  string $question_type
+		 * @param  array $question_type
 		 *
 		 * @return string|false
 		 */
@@ -1019,6 +986,10 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			if ( is_array( $question_type ) ) {
 				$question_type = reset( $question_type );
+			}
+			if ( is_array( $question_type ) ) {
+				reset( $question_type );
+				$question_type = key( $question_type );
 			}
 
 			return ! $question_type ? __CLASS__ : 'LP_Question_' . implode( '_', array_map( 'ucfirst', explode( '-', $question_type ) ) );
@@ -1051,13 +1022,13 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		protected function _get_checked( $user_answer = null ) {
 			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
 
-			return LP_Object_Cache::get( 'question-' . $this->get_id() . '/' . $key, 'learn-press/answer-checked' );
+			return LP_Object_Cache::get( 'question-' . $this->get_id() . '/' . $key, 'lp-answer-checked' );
 		}
 
 		protected function _set_checked( $checked, $user_answer ) {
 			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
 
-			return LP_Object_Cache::set( 'question-' . $this->get_id() . '/' . $key, $checked, 'learn-press/answer-checked' );
+			return LP_Object_Cache::set( 'question-' . $this->get_id() . '/' . $key, $checked, 'lp-answer-checked' );
 		}
 	}
 

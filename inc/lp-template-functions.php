@@ -226,7 +226,6 @@ if ( ! function_exists( 'learn_press_course_external_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_external_button() {
-
 		$course = LP_Global::course();
 
 		if ( ! $link = $course->get_external_link() ) {
@@ -606,6 +605,8 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				if ( $request_tab === $v['id'] ) {
 					$v['active'] = true;
 					$has_active  = $k;
+				} elseif ( isset( $v['active'] ) && $v['active'] ) {
+					$has_active = true;
 				}
 				$tabs[ $k ] = $v;
 			}
@@ -1249,7 +1250,6 @@ if ( ! function_exists( 'learn_press_control_displaying_course_item' ) ) {
 		}
 
 		foreach ( $hooks as $hook ) {
-
 			if ( isset( $wp_filter["learn-press/{$hook}"] ) ) {
 				// Move to backup to restore it if needed.
 				$wp_filter['learn-press-backup-hooks']["learn-press/{$hook}"] = $wp_filter["learn-press/{$hook}"];
@@ -1606,6 +1606,8 @@ if ( ! function_exists( 'learn_press_content_single_item' ) ) {
 	function learn_press_content_single_item() {
 
 		if ( $course_item = LP_Global::course_item() ) {
+			// remove course comment form on singler item
+			add_filter( 'comments_open', 'learn_press_course_comments_open', 10, 2 );
 			learn_press_get_template( 'content-single-item.php' );
 		}
 	}
@@ -2951,7 +2953,7 @@ if ( ! function_exists( 'learn_press_content_item_lesson_content' ) ) {
 
 			return;
 		}
-
+		do_action( 'learn-press/lesson-start', $item );
 		learn_press_get_template( 'content-lesson/content.php' );
 	}
 }
@@ -3131,6 +3133,16 @@ if ( ! function_exists( 'learn_press_content_item_nav' ) ) {
 function learn_press_disable_course_comment_form() {
 	add_filter( 'comments_template', 'learn_press_blank_comments_template', 999 );
 }
+
+function learn_press_course_comments_open( $open, $post_id ) {
+	$post = get_post( $post_id );
+	if ( LP_COURSE_CPT == $post->post_type ) {
+		$open = false;
+	}
+
+	return $open;
+}
+
 
 if ( ! function_exists( 'learn_press_profile_mobile_menu' ) ) {
 	function learn_press_profile_mobile_menu() {
@@ -3920,7 +3932,6 @@ add_action( 'wp', 'learn_press_get_raw_content', 100 );
  * @return mixed
  */
 function learn_press_get_link_current_question_instead_of_continue_button( $link, $item ) {
-
 	if ( get_post_type( $item->get_id() ) === LP_QUIZ_CPT ) {
 		$user = LP_Global::user();
 		if ( $course = $item->get_course() ) {

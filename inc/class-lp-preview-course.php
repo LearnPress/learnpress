@@ -37,12 +37,14 @@ class LP_Preview_Course {
 			", '_lp_preview_course', 'yes' );
 
 			if ( ! $course_id = $wpdb->get_var( $query ) ) {
+				$title                 = __( 'Preview Course', 'learnpress' );
 				self::$_preview_course = wp_insert_post(
 					array(
 						'post_author' => 0,
 						'post_type'   => LP_COURSE_CPT,
-						'post_title'  => __( 'Preview Course', 'learnpress' ),
-						'post_status' => 'publish',
+						'post_title'  => $title,
+						'post_status' => 'draft',
+						'post_name'   => sanitize_title( $title )
 					)
 				);
 
@@ -50,8 +52,6 @@ class LP_Preview_Course {
 			} else {
 				self::$_preview_course = $course_id;
 			}
-
-
 		}
 
 		return self::$_preview_course;
@@ -147,8 +147,10 @@ class LP_Preview_Course {
 
 			// Edit button
 			add_action( 'learn-press/before-course-item-content', array( __CLASS__, 'edit_button' ) );
-		}
-		catch ( Exception $ex ) {
+
+			//learn_press_debug($_SERVER);die();
+
+		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 			wp_redirect( get_home_url() );
 			exit();
@@ -156,17 +158,16 @@ class LP_Preview_Course {
 	}
 
 	public static function get_preview_courses() {
-		if ( false === ( $ids = LP_Object_Cache::get( 'preview-courses', 'learn-press' ) ) ) {
+		if ( false === ( $ids = LP_Object_Cache::get( 'preview-courses', 'learnpress' ) ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT post_id
-				FROM {$wpdb->postmeta} pm
-				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				FROM {$wpdb->postmeta}
 				WHERE meta_key = %s AND meta_value = %s
 			", '_lp_preview_course', 'yes' );
 
 			$ids = $wpdb->get_col( $query );
-			wp_cache_set( 'preview-courses', $ids, 'learn-press' );
+			LP_Object_Cache::set( 'preview-courses', $ids, 'learnpress' );
 		}
 
 		return $ids;
@@ -227,7 +228,16 @@ class LP_Preview_Course {
 
 	public static function reduce_counts( $counts, $type, $perm ) {
 		if ( ( LP_COURSE_CPT === $type ) && ( $ids = self::get_preview_courses() ) ) {
-			$counts->publish -= sizeof( $ids );
+			foreach ( $ids as $id ) {
+				switch ( get_post_status( $id ) ) {
+					case 'draft':
+						$counts->draft -= 1;
+						break;
+					default:
+						$counts->publish -= 1;
+						break;
+				}
+			}
 		}
 
 		return $counts;

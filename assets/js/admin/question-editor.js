@@ -35,6 +35,10 @@
         type: function (state) {
             return state.type;
         },
+        code: function (state) {
+            return Date.now();
+        }
+        ,
         autoDraft: function (state) {
             return state.auto_draft;
         },
@@ -154,6 +158,10 @@
         },
 
         updateAnswerTitle: function (context, answer) {
+            if (typeof answer.question_answer_id == 'undefined') {
+                return;
+            }
+            answer = JSON.stringify(answer);
             Vue.http.LPRequest({
                 type: 'update-answer-title',
                 answer: JSON.stringify(answer)
@@ -244,19 +252,28 @@
  * @since 3.0.0
  */
 (function (exports, Vue, $store) {
+    var $ = jQuery,
+        $publishingAction = null;
 
     Vue.http.LPRequest = function (payload) {
+        $publishingAction = $('#publishing-action');
+
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
+        payload['code'] = $store.getters.code;
 
+        $publishingAction.find('#publish').addClass('disabled');
+        $publishingAction.find('.spinner').addClass('is-active');
+        $publishingAction.addClass('code-' + payload['code']);
 
         return LP_Request.push($store.getters.urlAjax,
             payload,
             {
                 emulateJSON: true,
                 params: {
-                    namespace: 'LPQuestionEditorRequest'
+                    namespace: 'LPQuestionEditorRequest',
+                    code: payload['code'],
                 }
             });
 
@@ -279,7 +296,6 @@
         $store.dispatch('newRequest');
 
         next(function (response) {
-
             if (!jQuery.isPlainObject(response.body)) {
                 response.body = LP.parseJSON(response.body);
             }
@@ -292,6 +308,12 @@
             } else {
                 $store.dispatch('requestCompleted', 'failed');
             }
+            $publishingAction.removeClass('code-' + request.params.code);
+            if (!$publishingAction.attr('class')) {
+                $publishingAction.find('#publish').removeClass('disabled');
+                $publishingAction.find('.spinner').removeClass('is-active');
+            }
+
         });
     });
 })(window, Vue, LP_Question_Store);
