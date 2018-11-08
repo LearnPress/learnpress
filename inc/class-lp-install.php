@@ -48,20 +48,6 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			add_action( 'learn-press/activate', array( __CLASS__, 'install' ) );
 			add_action( 'admin_init', array( __CLASS__, 'do_update' ) );
 			add_action( 'admin_init', array( __CLASS__, 'check_update' ) );
-
-			//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
-
-			return;
-			add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
-			add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'db_update_notices' ), 5 );
-			add_action( 'admin_init', array( __CLASS__, 'update_actions' ), 5 );
-			add_action( 'wp_ajax_lp_repair_database', array( __CLASS__, 'repair_database' ) );
-			add_action( 'wp_ajax_lp_rollback_database', array( __CLASS__, 'rollback_database' ) );
-			add_action( 'wp_ajax_learn_press_hide_upgrade_notice', array( __CLASS__, 'hide_upgrade_notice' ) );
-			add_action( 'admin_init', array( __CLASS__, 'upgrade_wizard' ) );
-			add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		}
 
 		/**
@@ -73,7 +59,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
-				wp_redirect( urldecode( $_REQUEST['redirect'] ) );
+				wp_safe_redirect( urldecode( $_REQUEST['redirect'] ) );
 			}
 		}
 

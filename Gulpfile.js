@@ -89,6 +89,14 @@ var rootPath = '/Users/tu/Documents/foobla',
             .on('end', function () {
                 callback ? callback() : 'do nothing';
             });
+    },
+    removeConst = function (callback) {
+        return gulp.src(['inc/lp-constants.php'])
+            .pipe(replace(/define\( 'LP_DEBUG_DEV'(.*)/g, ''))
+            .pipe(gulp.dest(svnTrunkPath, {overwrite: true}))
+            .on('end', function () {
+                callback ? callback() : 'do nothing';
+            });
     };
 // Clear trunk/tag path
 gulp.task('clr-tag', function () {
@@ -148,7 +156,6 @@ gulp.task('clr-zip', function () {
 
 gulp.task('copy-zip', ['clr-zip'], function () {
     mkdirp(releasePath);
-    //process.chdir(svnTrunkPath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');
     return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
@@ -204,6 +211,21 @@ gulp.task('cfcss', function () {
         .pipe(concat('learnpress-frontend.min.css'))
         .pipe(cleanCSS())
         .pipe(gulp.dest('assets/css'))
+});
+
+gulp.task('mk-zip', ['copy-zip'], function () {
+    process.chdir(releasePath);
+    var zipPath = releasePath.replace(/learnpress/, '');
+    return gulp.src(zipPath + '/**/learnpress/**/*')
+        .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
+        .pipe(gulp.dest(zipPath));
+});
+
+gulp.task('zipx', ['mk-zip'], function () {
+    var zipPath = releasePath + '.' + currentVer + '.zip';
+    console.log(zipPath)
+    return gulp.src([zipPath])
+        .pipe(gulpCopy("/Users/tu/Documents/htdocs/"));
 })
 
 // end of the world!

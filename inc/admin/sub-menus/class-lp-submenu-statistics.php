@@ -203,9 +203,15 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 	 *
 	 */
 	public function scripts() {
+		if ( LP_Request::get( 'page' ) !== 'learn-press-statistics' ) {
+			return;
+		}
 		wp_enqueue_style( 'learn-press-statistic', LP_CSS_URL . 'admin/statistic.css' );
 
-		wp_enqueue_script( 'learn-press-chart', LP_JS_URL . 'vendor/chart.min.js', array( 'jquery', 'jquery-ui-datepicker' ) );
+		wp_enqueue_script( 'learn-press-chart', LP_JS_URL . 'vendor/chart.min.js', array(
+			'jquery',
+			'jquery-ui-datepicker'
+		) );
 		wp_enqueue_script( 'learn-press-statistic', LP_JS_URL . 'admin/statistic.js' );
 	}
 

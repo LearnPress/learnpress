@@ -197,7 +197,7 @@ add_action( 'learn-press/course-item-content-access-forbidden', 'learn_press_con
  */
 add_action( 'learn-press/after-course-item-content', 'learn_press_content_item_nav', 5 );
 add_action( 'learn-press/after-course-item-content', 'learn_press_lesson_comment_form', 10 );
-add_action( 'learn-press/after-course-item-content', 'learn_press_disable_course_comment_form', 1000 );
+// add_action( 'learn-press/after-course-item-content', 'learn_press_disable_course_comment_form', 1000 );
 
 /**
  * @see learn_press_content_item_lesson_title

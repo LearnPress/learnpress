@@ -95,7 +95,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return bool
 		 */
 		public function is_preview( $context = 'display' ) {
-			if ( '' === $this->_preview ) {
+			if ( $this->get_post_type() === LP_LESSON_CPT && '' === $this->_preview ) {
 				$is_preview = get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
 
 				if ( $course = $this->get_course() ) {
@@ -615,7 +615,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			foreach ( $course_items as $course_item ) {
 				if ( $item = $course->get_item( $course_item ) ) {
-					if ( $item->is_preview() || get_post_meta( $item->get_id(), '_lp_preview', true ) ) {
+					if ( $item->is_preview() /*|| get_post_meta( $item->get_id(), '_lp_preview', true ) */) {
 						$blocked_items[ $course_item ] = 'no';
 					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array( $item->get_post_type(), $block_item_types ) ) {
 						$blocked_items[ $course_item ] = 'no';

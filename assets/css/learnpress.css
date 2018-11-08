@@ -1042,7 +1042,7 @@ body #ifr-course-item {
 
 body.distraction-on #course-item-content-header .toggle-content-item:before {
   font: 28px/60px 'fontawesome';
-  content: "\f06d"; }
+  content: "\f066"; }
 
 body .content-item-summary .form-button-finish-course,
 body .lp-quiz-buttons .form-button-finish-course {

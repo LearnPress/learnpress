@@ -17,7 +17,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 	/**
 	 * Class LP_Course_Post_Type
 	 */
-	final class LP_Course_Post_Type extends LP_Abstract_Post_Type {
+	final class LP_Course_Post_Type extends LP_Abstract_Post_Type_Core {
 		/**
 		 * New version of course editor
 		 *
@@ -527,14 +527,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			return true;
 		}
 
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
-
-		private function _get_search() {
-			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
-		}
-
 		/**
 		 * Add meta boxes to course post type page
 		 */
@@ -555,6 +547,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'icon'     => 'dashicons-format-chat'
 				);
 			}
+
 			if ( is_super_admin() ) {
 				$default_tabs['author'] = new RW_Meta_Box( self::author_meta_box() );
 			}
@@ -945,32 +938,36 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 				}
 			}
-
+			$fields = array ();
+			if (is_super_admin ()) {
+				$fields [] = array (
+						'name' => __ ( 'Author', 'learnpress' ),
+						'id' => '_lp_course_author',
+						'desc' => '',
+						'multiple' => false,
+						'allowClear' => false,
+						'type' => 'select',
+						'options' => $include,
+						'std' => $author 
+				);
+			}
 			$meta_box = array(
 				'id'       => 'course_authors',
 				'title'    => __( 'Author', 'learnpress' ),
 				'pages'    => array( LP_COURSE_CPT ),
 				'icon'     => 'dashicons-businessman',
 				'priority' => 'default',
-				'fields'   => array(
-					array(
-						'name'       => __( 'Author', 'learnpress' ),
-						'id'         => '_lp_course_author',
-						'desc'       => '',
-						'multiple'   => false,
-						'allowClear' => false,
-						'type'       => 'select',
-						'options'    => $include,
-						'std'        => $author
-					)
-				)
+				'fields'   => $fields
 			);
-
-			return apply_filters( 'learn_press_course_author_meta_box', $meta_box );
+			$meta_box = apply_filters( 'learn_press_course_author_meta_box', $meta_box );
+			if(empty($meta_box['fields'])){
+				return false;
+			}
+			return $meta_box;
 
 		}
 
-		/**
+		/**add_meta_boxes
 		 * Course review logs.
 		 */
 		public function review_logs_meta_box() {
@@ -1310,12 +1307,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$columns['taxonomy-course_category'] = __( 'Categories', 'learnpress' );
 
-			global $wp_query;
-			if ( $wp_query->is_main_query() ) {
-				if ( LP_COURSE_CPT == $wp_query->query['post_type'] && $wp_query->posts ) {
-					$post_ids = wp_list_pluck( $wp_query->posts, 'ID' );
-				}
-			}
+//			global $wp_query;
+//			if ( $wp_query->is_main_query() ) {
+//				if ( LP_COURSE_CPT == $wp_query->query['post_type'] && $wp_query->posts ) {
+//					$post_ids = wp_list_pluck( $wp_query->posts, 'ID' );
+//				}
+//			}
 
 			return $columns;
 		}

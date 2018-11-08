@@ -138,16 +138,7 @@ class LP_Plugins_Helper {
 	 * @return mixed
 	 */
 	public static function get_plugins_from_wp( $args = null ) {
-
-		if ( ! ( $plugins = get_transient( 'lp_plugins_wp' ) ) ) {
-			LP()->background( 'query-items' )->push_to_queue(
-				array(
-					'callback' => array( 'LP_Background_Query_Items', 'query_free_addons' )
-				)
-			);
-		}
-
-		return $plugins;
+		return LP_Background_Query_Items::instance()->get_plugins_from_wp();
 	}
 
 	/**
@@ -158,16 +149,7 @@ class LP_Plugins_Helper {
 	 * @return mixed
 	 */
 	public static function get_premium_plugins() {
-
-		if ( ! ( $plugins = get_transient( 'lp_plugins_tp' ) ) ) {
-			LP()->background( 'query-items' )->push_to_queue(
-				array(
-					'callback' => array( 'LP_Background_Query_Items', 'query_premium_addons' )
-				)
-			);
-		}
-
-		return $plugins;
+		return LP_Background_Query_Items::instance()->get_plugins_from_tp();
 	}
 
 	/**
@@ -179,15 +161,14 @@ class LP_Plugins_Helper {
 	 * @return array|mixed
 	 */
 	public static function get_related_themes( $type = '', $args = array() ) {
+		$themes = array();
 
-		self::$themes = get_transient( 'lp_related_themes' );
+		if ( self::$themes ) {
+			$themes = array_filter( self::$themes );
+		}
 
-		if ( ! self::$themes ) {
-			LP()->background( 'query-items' )->push_to_queue(
-				array(
-					'callback' => array( 'LP_Background_Query_Items', 'get_related_themes' )
-				)
-			);
+		if ( ! $themes ) {
+			self::$themes = LP_Background_Query_Items::instance()->get_related_themes();
 		}
 
 		if ( $type && self::$themes && array_key_exists( $type, self::$themes ) ) {
@@ -426,11 +407,15 @@ class LP_Plugins_Helper {
 		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
 		add_filter( 'extra_plugin_headers', array( __CLASS__, 'add_on_header' ) );
 
-//		if ( ! is_a( self::$_background_query_items, 'LP_Background_Query_Addons' ) ) {
-//			self::$_background_query_items = new LP_Background_Query_Items();
-//		}
+		if ( ( LP_Request::get( 'force-check-update' ) !== 'yes' ) || ! wp_verify_nonce( LP_Request::get( '_wpnonce' ), 'lp-check-updates' ) ) {
+			return;
+		}
+
+		LP_Background_Query_Items::instance()->force_update();
+		wp_redirect( remove_query_arg( array( 'force-check-update', '_wpnonce' ) ) );
+		exit();
 	}
 }
 
 // Init hooks, etc...
-LP_Plugins_Helper::init();
+add_action( 'init', array( 'LP_Plugins_Helper', 'init' ) );

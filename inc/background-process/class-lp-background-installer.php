@@ -36,7 +36,7 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 				array(
 					'check_tables' => 'yes'
 				)
-			);
+			)->save()->dispatch();
 		}
 
 		/**

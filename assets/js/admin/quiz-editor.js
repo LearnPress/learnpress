@@ -45,6 +45,9 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 return item;
             });
         },
+        code: function (state) {
+            return Date.now();
+        },
         addedItems: function (state) {
             return state.addedItems;
         },
@@ -924,18 +927,28 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
  * @since 3.0.0
  */
 (function (exports, Vue, $store) {
+    var $ = jQuery,
+        $publishingAction = null;
 
     Vue.http.LPRequest = function (payload) {
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
+        payload['code'] = Date.now();
+
+        $publishingAction = $('#publishing-action');
+
+        $publishingAction.find('#publish').addClass('disabled');
+        $publishingAction.find('.spinner').addClass('is-active');
+        $publishingAction.addClass('code-' + payload['code']);
 
         return LP_Request.push($store.getters.urlAjax,
             payload,
             {
                 emulateJSON: true,
                 params: {
-                    namespace: 'LPListQuizQuestionsRequest'
+                    namespace: 'LPListQuizQuestionsRequest',
+                    code: payload['code'],
                 }
             });
 
@@ -970,6 +983,13 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             } else {
                 $store.dispatch('requestComplete', 'fail');
             }
+
+            $publishingAction.removeClass('code-' + request.params.code);
+            if (!$publishingAction.attr('class')) {
+                $publishingAction.find('#publish').removeClass('disabled');
+                $publishingAction.find('.spinner').removeClass('is-active');
+            }
+
         });
     });
 

@@ -25,6 +25,7 @@ class LP_Update_Base {
 	public function __construct() {
 		add_filter( 'query', array( $this, 'log_query' ) );
 		$this->_get_version();
+		$this->update();
 	}
 
 	/**
@@ -127,7 +128,7 @@ class LP_Update_Base {
 	}
 
 	public function get_percent() {
-		return ($this->percent + 1) / sizeof( $this->steps ) * 100;
+		return $this->percent / sizeof( $this->steps ) * 100;
 	}
 
 	public function is_last_step( $step = '' ) {

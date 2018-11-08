@@ -228,12 +228,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 
 				$settings         = LP()->settings;
-				$this->_publicity = array(
+				$this->_publicity = apply_filters( 'learn-press/check-publicity-setting', array(
 					'view-tab-dashboard'         => $this->get_publicity( 'my-dashboard' ) == 'yes',
 					'view-tab-basic-information' => $this->get_publicity( 'dashboard' ) == 'yes',
 					'view-tab-courses'           => $this->get_publicity( 'courses' ) == 'yes',
 					'view-tab-quizzes'           => $this->get_publicity( 'quizzes' ) == 'yes'
-				);
+				), $this );
 			}
 
 			return $this->_user;
@@ -397,7 +397,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool   $key     Optional. True if return the key instead of value.
+		 * @param bool $key Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -409,7 +409,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool   $key
+		 * @param bool $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -457,8 +457,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get current link of profile
 		 *
-		 * @param string $args           - Optional. Add more query args to url.
-		 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
+		 * @param string $args - Optional. Add more query args to url.
+		 * @param bool $with_permalink - Optional. TRUE to build url as friendly url.
 		 *
 		 * @return mixed|string
 		 */
@@ -759,7 +759,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Query user's courses
 		 *
 		 * @param string $type - Optional. [own, purchased, enrolled, etc]
-		 * @param mixed  $args - Optional.
+		 * @param mixed $args - Optional.
 		 *
 		 * @return array|LP_Query_List_Table
 		 */
@@ -925,7 +925,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Echo class for main div.
 		 *
-		 * @param bool   $echo
+		 * @param bool $echo
 		 * @param string $more
 		 *
 		 * @return string
@@ -958,7 +958,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the tab is visible for current user.
 		 *
 		 * @param string $tab_key
-		 * @param array  $tab_data
+		 * @param array $tab_data
 		 *
 		 * @return bool
 		 */
@@ -970,7 +970,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the section is visible for current user.
 		 *
 		 * @param string $section_key
-		 * @param array  $section_data
+		 * @param array $section_data
 		 *
 		 * @return bool
 		 */

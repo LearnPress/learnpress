@@ -98,11 +98,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int|LP_Abstract_Course $course_id
 		 * @param bool                   $check_exists
 		 *
-		 * @return LP_User_Item_Course|bool
+		 * @return LP_User_Item_Course|LP_User_Item_Quiz|bool
 		 */
 		public function get_course_data( $course_id, $check_exists = false ) {
 
-			LP_Debug::logTime( __FUNCTION__ );
 			if ( is_a( $course_id, 'LP_Abstract_Course' ) ) {
 				$course_id = $course_id->get_id();
 			}
@@ -110,7 +109,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}
-
+			/**
+			 * @BUG : Cache enable => Not store all user answer of quiz, only store the last use answer for question
+			 * @TODO: need improve this proccess
+			 */
 			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'learn-press/user-item-object-courses' ) ) ) {
 				$result = $this->_curd->read_course( $this->get_id(), $course_id );
 
@@ -357,7 +359,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$quiz   = learn_press_get_quiz( $quiz_id );
 				$user   = LP_Global::user();
 
-				if ( $course->is_required_enroll() && $user->is_guest() && ! $quiz->get_preview() ) {
+				if ( $course->is_required_enroll() && $user->is_guest()/* && ! $quiz->get_preview() */ ) {
 					throw new Exception( __( 'You have to login for starting quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
 				}
 
@@ -589,7 +591,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( $quiz_data->get_status() === 'completed' ) {
 				$course_data->update_item_retaken_count( $quiz_id, '+1' );
 			}
-
 
 			$start_time = new LP_Datetime( current_time( 'mysql' ) );
 			$item_data  = array(
@@ -934,7 +935,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_quiz_data( $quiz_id, $course_id = 0 ) {
 			$result = false;
 			if ( $course_result = $this->get_course_data( $course_id ) ) {
-
 				$result = $course_result->get_item( $quiz_id );
 			}
 
@@ -977,9 +977,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param   int $question_id
-		 * @param int   $quiz_id
-		 * @param int   $course_id
+		 * @param int $question_id
+		 * @param int $quiz_id
+		 * @param int $course_id
 		 *
 		 * @return WP_Error|mixed
 		 */

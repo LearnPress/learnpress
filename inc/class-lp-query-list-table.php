@@ -92,8 +92,10 @@ class LP_Query_List_Table implements ArrayAccess {
 	 *
 	 * @return string
 	 */
-	public function get_nav_numbers( $echo = true ) {
-
+	public function get_nav_numbers( $echo = true, $base_url='' ) {
+		if( !$base_url ) {
+			$base_url = learn_press_get_current_url();
+		}
 		if ( ! empty( $this->_data['nav_base'] ) ) {
 			if ( is_callable( $this->_data['nav_base'] ) ) {
 				$base = call_user_func_array( $this->_data['nav_base'], array( $this->_data['nav_format'] ) );
@@ -101,7 +103,7 @@ class LP_Query_List_Table implements ArrayAccess {
 				$base = $this->_data['nav_base'];
 			}
 		} else {
-			$base = trailingslashit( preg_replace( '~\/[0-9]+\/?$~', '', learn_press_get_current_url() ) );
+			$base = trailingslashit( preg_replace( '~\/[0-9]+\/?$~', '', $base_url ) );
 		}
 
 		return learn_press_paging_nav(
@@ -161,10 +163,10 @@ class LP_Query_List_Table implements ArrayAccess {
 		return $output;
 	}
 
-	public function get_nav( $format = '', $echo = false ) {
+	public function get_nav( $format = '', $echo = false, $base_url = '' ) {
 		$output  = '';
 		$offset  = $this->get_offset_text( empty( $format ) ? $this->_data['format'] : $format, false );
-		$numbers = $this->get_nav_numbers( false );
+		$numbers = $this->get_nav_numbers( false, $base_url );
 
 		if ( $offset && $numbers ) {
 			$output = sprintf( '<div class="learn-press-nav-items">%s%s</div>', $offset, $numbers );

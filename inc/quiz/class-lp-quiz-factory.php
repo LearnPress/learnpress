@@ -145,8 +145,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				// Actually, no save question here. Just check nonce here.
 				$check = self::maybe_save_questions( 'start' );
 
-				// PHP Exception
-				if ( false === $check ) {
+				if ( is_a( $check, 'Exception' ) ) {
 					throw $check;
 				}
 
@@ -224,8 +223,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$check = self::maybe_save_questions( 'check-answer' );
 
-				// PHP Exception
-				if ( false === $check ) {
+				if ( is_a( $check, 'Exception' ) ) {
 					throw $check;
 				}
 
@@ -283,8 +281,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$result = array( 'result' => 'failure' );
 
 				$check = self::maybe_save_questions( 'show-hint' );
-				// PHP Exception
-				if ( false === $check ) {
+				if ( is_a( $check, 'Exception' ) ) {
 					throw $check;
 				}
 
@@ -339,8 +336,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$result = array( 'result' => 'failure' );
 
 				$check = self::maybe_save_questions( 'complete' );
-				// PHP Exception
-				if ( false === $check ) {
+				if ( is_a( $check, 'Exception' ) ) {
 					throw $check;
 				}
 
@@ -382,6 +378,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 			// Redirecting...
 			if ( ! empty( $result['redirect'] ) ) {
+				wp_cache_flush();
 				wp_redirect( $result['redirect'] );
 				exit();
 			}
@@ -400,8 +397,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$check = self::maybe_save_questions( 'redo' );
 
 				// PHP Exception
-				if ( false === $check ) {
-					throw $check;
+				if ( is_a( $check, 'Exception' ) ) {
+					//throw $check;
 				}
 
 				$course_id = LP_Request::get_int( 'course-id' );
@@ -483,12 +480,11 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @param string $action
 		 * @param string $nonce
 		 *
-		 * @return bool|Exception
+		 * @return array|Exception
 		 *
 		 * @since 3.0.0
 		 */
 		public static function maybe_save_questions( $action = '', $nonce = '' ) {
-			$return = false;
 			try {
 
 				$nav_type    = LP_Request::get_string( 'nav-type' );
@@ -499,19 +495,30 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				learn_press_setup_object_data( get_post( $course_id ) );
 
 				if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce, $quiz_id, $course_id ) ) {
-					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
+					throw new Exception( __( '#1. Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 				}
 
 				if ( ! $questions = self::get_answers_posted() ) {
 					$questions = array();
 				}
 
-				$user        = learn_press_get_current_user();
-				$course      = learn_press_get_course( $course_id );
-				$quiz        = learn_press_get_quiz( $quiz_id );
+				$user   = learn_press_get_current_user();
+				$course = learn_press_get_course( $course_id );
+				$quiz   = learn_press_get_quiz( $quiz_id );
+				$quiz->set_course( $course_id );
 				$course_data = $user->get_course_data( $course->get_id() );
+				$return      = array(
+					'quiz_id'       => $quiz_id,
+					'course_id'     => $course_id,
+					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
+					'next_question' => $user->get_next_question( $quiz_id, $course_id )
+				);
 
 				if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {
+
+					if ( $course_data->is_finished() || $quiz_data->is_completed() ) {
+						return $return;
+					}
 
 					// If user click 'Skip' button
 					if ( $nav_type === 'skip-question' ) {
@@ -531,18 +538,11 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$quiz_data->update();
 				}
 
-				$return = array(
-					'quiz_id'       => $quiz_id,
-					'course_id'     => $course_id,
-					'prev_question' => $user->get_prev_question( $quiz_id, $course_id ),
-					'next_question' => $user->get_next_question( $quiz_id, $course_id )
-				);
+				return $return;
 			}
 			catch ( Exception $ex ) {
 				return $ex;
 			}
-
-			return $return;
 		}
 
 		/**

@@ -12,13 +12,13 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 == Description ==
 
-**<a href="http://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, just like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface, we really made it for lazy people.
+**<a href="http://thimpress.com/learnpress" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress, just like WordPress Moodle or Moodle for WordPress if you know what Moodle is. This is one of the best WordPress LMS Plugins can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface. With this WordPress LMS plugin, you can quickly and easily create education, online school, online-course websites with no coding-knowledge required.
 
 <a href="https://demo-learnpress.thimpress.com/" target="_blank">Live Demo</a> | <a href="https://thimpress.com/wordpress/themes/learnpress-premium-theme/" target="_blank">LearnPress Themes</a>
 
 LearnPress is free and always be free, but it has premium high quality WordPress Plugin which will probably help you make money from your **WordPress based LMS**, try and see how it is. LearnPress WordPress Online Course plugin is lightweight but super powerful with lots of add-ons to empower its core system.
 
-> **New Year Sale - 10 Days Left - Limited Time Offer**
+> **One-Off Sale - 10 Days Left - Limited Time Offer**
 
 > [Click here](https://goo.gl/JzwYkj) to get a coupon for 20% Off all Learnpress Add-ons
 
@@ -36,8 +36,8 @@ Take a look at Premium **[Education WordPress Theme](http://themeforest.net/item
 
 - **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)**
 
-- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=zTtZ_CpWDOY)**
-[youtube https://www.youtube.com/watch?v=zTtZ_CpWDOY&hd=1&&cc_load_policy=1]
+- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=Z9QT_CGevhg)**
+[youtube https://www.youtube.com/watch?v=Z9QT_CGevhg&hd=1&&cc_load_policy=1]
 
 Are you looking for *best LMS WordPress plugin*?
 
@@ -82,6 +82,8 @@ We are developing and improving LearnPress day by day and bringing new features 
 - [LearnPress Prerequisites Courses](https://wordpress.org/plugins/learnpress-prerequisites-courses) - require student to pass some courses in order to enroll other course.
 - [LearnPress bbPress Integration](https://wordpress.org/plugins/learnpress-bbpress) - add bbPress Forum support for LearnPress WordPress LMS Plugin.
 - [LearnPress BuddyPress Integration](https://wordpress.org/plugins/learnpress-buddypress) - add BuddyPress support for LearnPress WordPress LMS Plugin, turn your WordPress BuddyPress website into *BuddyPress LMS* (*BuddyPress Learning Management System*)".
+- [LearnPress Offline Payment](https://wordpress.org/plugins/learnpress-offline-payment) - help you to manually create order for offline payment instead of paying via any payment gateways to sell course.
+- [LearnPress Fill In Blank](https://wordpress.org/plugins/learnpress-fill-in-blank) - Fill in Blank question type for LearnPress WordPress LMS Plugin.
 
 ###Premium add-ons for LearnPress WordPress LMS Plugin###
 
@@ -100,7 +102,7 @@ We are developing and improving LearnPress day by day and bringing new features 
 - [Gradebook add-on for LearnPress](https://thimpress.com/product/gradebook-add-on-for-learnpress/) - provides you features to view your class result, export these result to csv, post those to frontend.
 - [Random Quiz add-on for LearnPress](https://thimpress.com/product/random-quiz-add-on-for-learnpress/) - allows you to create a random questions quiz. Each student will get different quiz within a same course.
 - [Paid Membership Pro add-on for LearnPress](https://thimpress.com/product/paid-membership-pro-add-learnpress/) - integrates Paid Membership Pro with LearnPress, bring membership feature to your powerful WordPress based LMS system.
-
+- [Announcement add-on for LearnPress](https://thimpress.com/product/announcement-add-on-for-learnpress/) - Announcement is a great way to promote your courses and update new features + contents to your courses, including email notification.
 
 
 ###LearnPress has been translated into the following languages###
@@ -132,7 +134,6 @@ We are developing and improving LearnPress day by day and bringing new features 
 - Manually reset quiz for retake
 - Create quiz from randoms questions in question bank (DONE)
 - Attachment restriction for lesson
-- Mathjax support
 - Presentation support (maybe support SlideShare)
 - Show enrolled user
 - Student ranks
@@ -143,7 +144,6 @@ We are developing and improving LearnPress day by day and bringing new features 
 - Instructor's note
 - Private message from Admin to teacher
 - Group payment
-- Announcement (come up with email)
 
 Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>
 
@@ -199,14 +199,49 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.0.12 =
+~ Fixed minor bug in gradebook list in admin
+~ Made hook learn-press/course-tabs work
+~ Fixed bug: not auto complete quiz. Add 1 more filter hook for checking publicity in profile page
+~ Fixed bug: auto enroll course without permission to enroll course
+~ Changed filter tag for get_default_meta of lesson
+~ Auto fullscreen in mobile view
+~ Fixed bug: wrong count number in No Preview at Lessons List back end page
+~ Fixed bug: Instructor user cannot see comments of lesson
+~ Changed version for template files
+~ Added base url for construct nav in user profile
+~ Added param for get_nav method
+~ Fixed bug: answer correct all question but quiz result is failse with 0%
+~ Fixed small bug in quiz editor
+~ Fixed bug: wrong count number of the courses in back end because of the status of preview course
+~ Fixed bug: not redirect to correct page after logged in in Profile page
+~ Fixed bug faltal error include file
+~ Added icon for chat-type-format of content item
+~ Fixed header-sent when log file
 
-= 3.1.0 =
-+ Add quiz option to minus a number of point for each wrong question in quiz
+= 3.0.10 =
++ Added quiz option to minus a number of point for each wrong question in quiz
++ Added admin email to send to admin when an order is completed
++ Added button allows wp admin can send a request to subscriber
+~ Improved auto redirecting to current question when user go to a quiz
+~ Improved UI of course editor for RTL
+~ Improved content of email sending to admin and instructor
+~ Fixed page show 404 with pagination in courses page (conflict with WPML)
+~ Fixed course price is still showing after user enrolled course
+~ Fixed not auto redirecting to checkout after logged in
+~ Fixed some issues made question can't edit
+~ Fixed issue for requesting to get related themes/addons in admin
+~ Fixed some issues with content header when viewing in Safari
+~ Fixed wrong ordering of course item when adding new
+~ Fixed order for multiple user is not show in list of orders
+~ Fixed some text is not translatable
+~ Fixed breadcrumb not show page name when viewing archive course
+~ Fixed archive course show header is title of first course
 
 = 3.0.9 =
 + GDPR compliance
 ~ Improved Start quiz button
-~ Load js for complete-reply if it does not load by default
+~ Load js for comment-reply if it does not load by default
 ~ Fixed missing param when sending email for user who finished course
 
 = 3.0.8 =

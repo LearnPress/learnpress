@@ -257,7 +257,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
 				WHERE c.ID = %d
 				{$where}
-				ORDER BY s.section_order, si.item_order ASC
+				ORDER BY s.section_order, si.item_order, si.section_item_id ASC
 			", $course_id );
 
 			return $wpdb->get_results( $query );

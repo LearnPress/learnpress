@@ -389,7 +389,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				$new_item_id = '';
 
-				$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => 'publish' ) );
+				$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => get_post_status( $post_id ) ) );
 
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
@@ -486,7 +486,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
 					'lp_lesson',
 					'lp_quiz'
-				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' ) ) {
+				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' )
+			) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
 					$previewable = '0';
@@ -676,8 +677,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {

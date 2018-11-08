@@ -381,6 +381,16 @@
                     }
                 }
 
+                &:not(.lp_lesson) {
+                    .item-actions {
+                        .actions {
+                            .preview-item {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+
                 &.lp_quiz {
                     .item-actions {
                         .actions {
@@ -641,7 +651,6 @@
         }
     }
 }
-
 
 .section-item-counts {
     position: absolute;

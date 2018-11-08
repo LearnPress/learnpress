@@ -18,14 +18,14 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 	/**
 	 * Class LP_Question_Post_Type
 	 */
-	class LP_Question_Post_Type extends LP_Abstract_Post_Type {
+	class LP_Question_Post_Type extends LP_Abstract_Post_Type_Core {
 		/**
 		 * @var null
 		 */
 		protected static $_instance = null;
 
 		/**
-		 * @var array
+		 * @var RW_Meta_Box[]
 		 */
 		public static $metaboxes = array();
 
@@ -288,7 +288,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public static function settings_meta_box() {
-
 			$meta_box = array(
 				'id'     => 'question_settings',
 				'title'  => __( 'Settings', 'learnpress' ),
@@ -396,7 +395,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
+
 			global $wpdb;
+
 			if ( $quiz_id = $this->_filter_quiz() || ( $this->_get_orderby() == 'quiz-name' ) ) {
 				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON {$wpdb->posts}.ID = qq.question_id";
 				$join .= " LEFT JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id";
@@ -446,13 +447,15 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_orderby( $order_by_statement ) {
+
 			if ( ! $this->_is_archive() ) {
 				return $order_by_statement;
 			}
-			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
-				switch ( $_GET['orderby'] ) {
+
+			if ( $order = $this->_get_orderby() ) {
+				switch ( $this->_get_order() ) {
 					case 'quiz-name':
-						$order_by_statement = "q.post_title {$_GET['order']}";
+						$order_by_statement = "q.post_title {$order}";
 						break;
 				}
 			}
@@ -491,12 +494,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			return ! empty( $_REQUEST['filter_quiz'] ) ? absint( $_REQUEST['filter_quiz'] ) : false;
 		}
 
-		/**
-		 * @return string
-		 */
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
 
 		/**
 		 * Quiz assigned view.

@@ -17,7 +17,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 	/**
 	 * Class LP_Lesson_Post_Type
 	 */
-	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type {
+	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type_Core {
 		/**
 		 * @var null
 		 */
@@ -185,7 +185,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$query = $wpdb->prepare( "
 		        SELECT COUNT(ID)
 		        FROM {$wpdb->posts} p 
-		        WHERE p.post_type = %s
+		        WHERE p.post_type = %s AND p.post_status NOT LIKE 'auto-draft'
 		    ", LP_LESSON_CPT );
 
 			return $wpdb->get_var( $query ) - $this->get_preview_items();
@@ -409,14 +409,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			}
 
 			return true;
-		}
-
-		private function _get_orderby() {
-			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
-		}
-
-		private function _get_search() {
-			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
 		/**

@@ -2410,7 +2410,7 @@ function learn_press_search_template( $template ) {
  * @return mixed
  */
 function learn_press_auto_enroll_user_to_courses( $order_id ) {
-	if ( LP()->settings->get( 'auto_enroll' ) == 'no' ) {
+	if ( LP()->settings->get( 'auto_enroll', 'yes' ) == 'no' ) {
 		return false;
 	}
 
@@ -2438,6 +2438,9 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 				continue;
 			}
 			if ( $user->has_enrolled_course( $course->get_id() ) ) {
+				continue;
+			}
+			if( !$user->can_enroll_course($course->get_id()) ) {
 				continue;
 			}
 			// error. this scripts will create new order each course item
@@ -2824,7 +2827,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 			esc_url( wp_login_url( get_permalink() ) ),
 			$args['login_text']
 		);
-	} else {
+	} elseif( $course_item ) {
 		$onclick = sprintf( 'return addComment.moveForm( "%1$s-%2$s", "%2$s", "%3$s", "%4$s" )',
 			$args['add_below'], $comment->comment_ID, $args['respond_id'], $post->ID
 		);

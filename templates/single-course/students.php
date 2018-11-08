@@ -22,10 +22,10 @@ if ( ! $course || ! $course->is_required_enroll() ) {
 }
 ?>
 
-<span class="course-students" title="<?php echo esc_html( $course->get_students_html() ); ?>">
+<span class="course-students" title="<?php echo esc_attr( $course->get_students_html() ); ?>">
 
-    <?php $count = $course->count_students();
+    <?php $count = intval($course->count_students());
 
-    echo $count > 1 ? sprintf( _n( '%d student', '%d students', $count, 'learnpress' ), $count ) : sprintf( __( '%d student', 'learnpress' ), $count ); ?>
+    echo $count > 1 ? sprintf( __('%d students', 'learnpress' ), $count ) : sprintf( __( '%d student', 'learnpress' ), $count ); ?>
 
 </span>

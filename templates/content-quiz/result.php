@@ -30,7 +30,7 @@ if ( $quiz_data->is_review_questions() ) {
     <div class="result-grade">
         <span class="result-achieved"><?php echo $quiz_data->get_percent_result(); ?></span>
         <span class="result-require"><?php echo $quiz->get_passing_grade(); ?></span>
-        <p class="result-message"><?php echo sprintf( __( 'Your grade is <strong>%s</strong>', 'learnpress' ), $result['grade'] == '' ? __( 'Ungraded', 'learnpress' ) : $result['grade'] ); ?> </p>
+        <p class="result-message"><?php echo sprintf( __( 'Your grade is <strong>%s</strong>', 'learnpress' ), $result['grade'] == '' ? __( 'Ungraded', 'learnpress' ) : $result['grade_text'] ); ?> </p>
     </div>
 
     <ul class="result-statistic">

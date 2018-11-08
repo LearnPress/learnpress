@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/global/become-teacher-form/button.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -15,6 +15,4 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<button type="submit" data-text="<?php esc_attr_e( 'Submitting', 'learnpress' ); ?>">
-	<?php _e( 'Submit', 'learnpress' ); ?>
-</button>
+<button type="submit" data-text="<?php esc_attr_e( 'Submitting', 'learnpress' ); ?>"><?php _e( 'Submit', 'learnpress' ); ?></button>

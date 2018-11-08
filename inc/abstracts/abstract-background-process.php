@@ -34,7 +34,15 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		 */
 		protected $safe = true;
 
+		/**
+		 * @var string
+		 */
 		protected $_safe = '';
+
+		/**
+		 * @var string
+		 */
+		protected $prefix = 'lp';
 
 		/**
 		 * LP_Abstract_Background_Process constructor.
@@ -108,8 +116,12 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 			print_r( $_REQUEST );
 			$msg = ob_get_clean();
 			LP_Debug::instance()->add( $msg, 'background-process-task', false, true );
-
 			return false;
+		}
+
+		public function clear_queue() {
+			$this->data = array();
+			return $this;
 		}
 
 		/**
