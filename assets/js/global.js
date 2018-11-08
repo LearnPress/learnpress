@@ -1293,9 +1293,9 @@ if (typeof window.LP == 'undefined') {
 //            LP.blockContent();
 //        });
 
-		$('.learn-press-tooltip, .lp-passing-conditional').tooltip({offset: [24, 24]});
+		$('.learn-press-tooltip, .lp-passing-conditional').LP_Tooltip({offset: [24, 24]});
 
-		$('.learn-press-icon').tooltip({offset: [30, 30]});
+		$('.learn-press-icon').LP_Tooltip({offset: [30, 30]});
 
         $('.learn-press-message[data-autoclose]').each(function () {
             var $el = $(this), delay = parseInt($el.data('autoclose'));
