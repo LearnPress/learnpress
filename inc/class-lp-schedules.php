@@ -20,7 +20,8 @@ class LP_Schedules {
 		//$this->background_schedule_items = new LP_Background_Schedule_Items();
 
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
-			//$this->_update_user_course_expired();
+// 			add_filter('init', array($this,'schedule_update_user_items'));
+			add_filter('init', array($this,'_update_current_user_course_expired'));
 		}
 		//add_filter( 'init', array( $this, 'queue_items' ), 10 );
 
@@ -36,6 +37,58 @@ class LP_Schedules {
 			wp_schedule_event( time(), 'twicedaily', 'learn_press_delete_user_guest_transient' );
 		}
 		add_action( 'learn_press_delete_user_guest_transient', array( $this, 'delete_user_guest_transient' ) );
+	}
+	
+	/**
+	 * Auto finished course when time is expired for users
+	 */
+	public function _update_current_user_course_expired() {
+		global $wpdb, $post;
+		$user_id = get_current_user_id();
+		if ( empty( $wpdb->learnpress_user_items ) ) {
+			return;
+		}
+		$course = learn_press_get_course();
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->prefix}learnpress_user_items
+			WHERE end_time = %s
+				AND item_type = %s
+				AND status <> %s
+				AND user_id = %s
+			LIMIT 0, 10
+		", '0000-00-00 00:00:00', 'lp_course', 'finished', $user_id );
+		$results = $wpdb->get_results( $query );
+		
+		if ( !empty($results) ) {
+			$ids = array();
+			foreach ( $results as $row ) {
+				$ids[] = $row->item_id;
+			}
+			foreach ( $results as $row ) {
+				$course = learn_press_get_course( $row->item_id );
+				if ( ! $course ) {
+					continue;
+				}
+				$check_args = array(
+					'start_time' => strtotime( $row->start_time )
+				);
+				$expired    = $course->is_expired( $row->user_id, $check_args );
+				if ( $expired && 0 >= $expired ) {
+					
+					$user = learn_press_get_user( $row->user_id );
+					if ( ! $user ) {
+						return;
+					}
+					$this->_update_user_course_items_expired( $course, $user );
+					$item_meta_id = $user->finish_course( $course->get_id(), true );
+					if ( $item_meta_id ) {
+						learn_press_update_user_item_meta( $item_meta_id, 'finishing_type', 'automation' );
+						do_action( 'learn_press_user_finish_course_automation', $course->get_id(), $item_meta_id, $user->get_id() );
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -216,9 +269,10 @@ class LP_Schedules {
 						return;
 					}
 					$this->_update_user_course_items_expired( $course, $user );
-					$item_meta_id = $user->finish_course( $course->get_id() );
+					$item_meta_id = $user->finish_course( $course->get_id(), true );
 					if ( $item_meta_id ) {
-						learn_press_update_user_item_meta( $item_meta_id, '_finish_type', 'automation' );
+// 						learn_press_update_user_item_meta( $item_meta_id, '_finish_type', 'automation' );
+						learn_press_update_user_item_meta( $item_meta_id, 'finishing_type', 'automation' );
 						do_action( 'learn_press_user_finish_course_automation', $course->get_id(), $item_meta_id, $user->get_id() );
 					}
 				}

@@ -292,7 +292,7 @@ class LP_Helper {
 				// Update cache
 				$page_ids               = learn_press_static_page_ids();
 				$page_ids[ $assign_to ] = $page_id;
-				wp_cache_set( 'static-page-ids', $page_ids, 'learnpress' );
+				LP_Object_Cache::set( 'static-page-ids', $page_ids, 'learnpress' );
 			}
 		}
 

@@ -397,7 +397,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;
@@ -468,7 +468,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_join_paged( $join ) {
-			if ( !$this->_is_archive() ) {
+			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
 

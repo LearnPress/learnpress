@@ -164,15 +164,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			 * @BUG : Cache enable => Not store all user answer of quiz, only store the last use answer for question
 			 * @TODO: need improve this proccess
 			 */
-			if ( false === ( $object_course_data = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-course-data' ) ) ) {
+			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-course-data' ) ) ) {
 				$this->_curd->read_course( $this->get_id(), $course_id );
-				if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
+				if ( false !== ( $course_item = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
 					$object_course_data = new LP_User_Item_Course( $course_item );
 				} else {
 					$object_course_data = new LP_User_Item_Course( $course_id );
 				}
 
-				wp_cache_set( 'course-' . $this->get_id() . '-' . $course_id, $object_course_data, 'lp-user-course-data' );
+				LP_Object_Cache::set( 'course-' . $this->get_id() . '-' . $course_id, $object_course_data, 'lp-user-course-data' );
 			}
 
 			if ( $object_course_data ) {
@@ -334,7 +334,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|mixed
 		 */
 		public function get_item_archive( $item_id, $course_id = 0, $return_last = false ) {
-			$records = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' );
+			$records = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' );
 
 			if ( $records ) {
 				///$records = array_filter( $records );
@@ -691,7 +691,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_id = get_the_ID();
 			}
 			$item = false;
-			if ( false !== ( $items = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) ) {
+			if ( false !== ( $items = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) ) {
 				// Only get status of a newest record.
 				if ( $last ) {
 					$item = reset( $items );
@@ -835,7 +835,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$cache_name = sprintf( 'course-item-%d-%d-%d', $this->get_id(), $course_id, $item_id );
 
-			wp_cache_set( $cache_name, $items, 'lp-user-course-items' );
+			LP_Object_Cache::set( $cache_name, $items, 'lp-user-course-items' );
 
 			do_action( 'learn-press/set-viewing-item', $item_id, $course_id, $items[ $user_item_id ] );
 
@@ -1775,10 +1775,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return int|bool
 		 */
-		public function finish_course( $course_id ) {
+		public function finish_course( $course_id, $force=false ) {
 			$return = false;
 			if ( $course = learn_press_get_course( $course_id ) ) {
-				if ( ! $this->can_finish_course( $course_id ) ) {
+				if ( ! $this->can_finish_course( $course_id ) && !$force ) {
 					return false;
 				} else {
 					$user_course = $this->get_course_data( $course_id );
@@ -1852,7 +1852,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_orders( $last_order = true ) {
 
 			if ( $last_order ) {
-				if ( false !== ( $cached_last_order = wp_cache_get( 'user-' . $this->get_id(), 'lp-user-last-order' ) ) ) {
+				if ( false !== ( $cached_last_order = LP_Object_Cache::get( 'user-' . $this->get_id(), 'lp-user-last-order' ) ) ) {
 					return $cached_last_order;
 				}
 			}
@@ -1864,7 +1864,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				foreach ( $my_orders as $course_id => $orders ) {
 					$last_orders[ $course_id ] = reset( $orders );
 				}
-				wp_cache_set( 'user-' . $this->get_id(), $last_orders, 'lp-user-last-order' );
+				LP_Object_Cache::set( 'user-' . $this->get_id(), $last_orders, 'lp-user-last-order' );
 			} else {
 				$last_orders = $my_orders;
 			}
@@ -1885,7 +1885,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$enrolled  = 'no';
 			$cache_key = 'course-' . $this->get_id() . '-' . $course_id;
 
-			if ( false === ( $enrolled = wp_cache_get( $cache_key, 'enrolled-courses' ) ) ) {
+			if ( false === ( $enrolled = LP_Object_Cache::get( $cache_key, 'enrolled-courses' ) ) ) {
 				// No new order is pending and has already enrolled or finished course
 				if ( 'lp-pending' !== $this->get_order_status( $course_id ) ) {
 					$enrolled = $this->has_course_status( $course_id, array(
@@ -1893,7 +1893,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						'finished'
 					) ) ? 'yes' : 'no';
 				}
-				wp_cache_set( $cache_key, $enrolled, 'enrolled-courses' );
+				LP_Object_Cache::set( $cache_key, $enrolled, 'enrolled-courses' );
 			}
 
 			$enrolled = $enrolled === 'yes' ? true : false;
