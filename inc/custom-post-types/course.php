@@ -644,15 +644,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$post_id = LP_Request::get_int( 'post' );
 			$post_id = $post_id ? $post_id : ( ! empty( $post ) ? $post->ID : 0 );
 
+			$course_results     = get_post_meta( $post_id, '_lp_course_result', true );
 			$course_result_desc = '';
-
-			if ( $course_results = get_post_meta( $post_id, '_lp_course_result', true ) ) {
-				if ( in_array( $course_results, array( '', 'evaluate_lesson', 'evaluate_final_quiz' ) ) ) {
-					//$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>', __( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
-				}
-			}
-
-			//$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
 			$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
 
 			if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $post_id, '_lp_final_quiz', true ) ) {

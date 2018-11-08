@@ -2380,7 +2380,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 	if ( LP()->settings->get( 'auto_enroll' ) == 'no' ) {
 		return false;
 	}
-
+	LP_Object_Cache::delete( 'order-' . $order_id , 'lp-order-items' );
 	if ( ! $order = learn_press_get_order( $order_id ) ) {
 		return false;
 	}

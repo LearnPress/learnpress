@@ -430,7 +430,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			# filter by user id
 			preg_match( "#{$wpdb->posts}\.post_author IN\s*\((\d+)\)#", $where, $matches );
-			if ( !empty($matches) && isset($matches[1]) ) {
+			if ( ! empty( $matches ) && isset( $matches[1] ) ) {
 
 				$author_id = intval($matches[1]);
 				$sql = " {$wpdb->posts}.ID IN ( SELECT 
@@ -472,11 +472,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						OR u.display_name LIKE %s
 						OR {$wpdb->posts}.ID LIKE %s
 					) ";
-				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ));
-				if( !empty($matches2) && isset($matches2[0]) ) {
-					$where = str_replace( $matches2[0], $sql. ' OR '.$matches2[0], $where );
+				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ) );
+				if ( ! empty( $matches2 ) && isset( $matches2[0] ) ) {
+					$where = str_replace( $matches2[0], $sql . ' OR ' . $matches2[0], $where );
 				} else {
-					$where .= " AND ".$sql;
+					$where .= " AND " . $sql;
 				}
 			}
 

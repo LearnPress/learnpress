@@ -95,11 +95,9 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 */
 	public function read_items( $order ) {
-
-		if ( false === ( $items = LP_Object_Cache::get( 'order-' . $order->get_id(), 'lp-order-items' ) ) ) {
-
+		$items = LP_Object_Cache::get( 'order-' . $order->get_id(), 'lp-order-items' );
+		if ( ! $items || empty($items) ) {
 			global $wpdb;
-
 			$query = $wpdb->prepare( "
 				SELECT order_item_id as id, order_item_name as name
 				FROM {$wpdb->learnpress_order_items} oi 

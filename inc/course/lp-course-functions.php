@@ -999,7 +999,6 @@ function learn_press_get_item_course( $item_id ) {
 	return $wpdb->get_var( $query );
 }
 
-
 add_filter( 'template_include', 'learn_press_prepare_archive_courses' );
 function learn_press_prepare_archive_courses( $template ) {
 	global $wp_query;

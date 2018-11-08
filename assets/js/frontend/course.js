@@ -236,6 +236,7 @@
         }
 
         function maybeShowCurriculum(e) {
+            return;
             var offset = $(this).offset(),
                 offsetX = e.pageX - offset.left,
                 curriculumWidth = getCurriculumWidth();

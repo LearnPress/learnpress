@@ -486,7 +486,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$course_data = $user->get_course_data( $course->get_id() );
 				$quiz_data   = $course_data->get_item_quiz( $quiz->get_id() );
-				if('completed' === $quiz_data->get_status()){
+
+				if ( $course_data->is_finished() || $quiz_data->is_completed() ) {
 					return true;
 				}
 
