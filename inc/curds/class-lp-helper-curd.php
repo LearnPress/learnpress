@@ -20,7 +20,7 @@ class LP_Helper_CURD {
 	 * @param array  $ids
 	 * @param int    $limit
 	 */
-	public static function update_meta_cache( $type, $ids, $limit = 100 ) {
+	public static function update_meta_cache( $ids, $type = 'post', $limit = 100 ) {
 
 		if ( ! $ids ) {
 			return;
