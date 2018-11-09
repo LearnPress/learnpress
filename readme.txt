@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.5
-Stable tag: 3.1.0
+Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,8 @@ LearnPress is free and always be free, but it has premium high quality WordPress
 > Or you can [buy Education WP theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) for only 64$ and get all of them.
 
 > **HOT!!** [WordPress theme for Coaches, Trainers, Teachers - Coaching WP](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) is also FOR SALE at only $59, LearnPress included.
+
+> [Course Builder Wordpress Theme](https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) - WordPress LMS theme for online courses is also FOR SALE at only $64, Learnpress included.
 
 ###LMS & Education WordPress Themes###
 

@@ -158,11 +158,12 @@ class LP_Preview_Course {
 	}
 
 	public static function get_preview_courses() {
-		if ( false === ( $ids = LP_Object_Cache::get( 'preview-courses', 'learnpress' ) ) ) {
+		if ( false === ( $ids = LP_Object_Cache::get( 'preview-courses', 'learn-press' ) ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT post_id
-				FROM {$wpdb->postmeta}
+				FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 				WHERE meta_key = %s AND meta_value = %s
 			", '_lp_preview_course', 'yes' );
 
