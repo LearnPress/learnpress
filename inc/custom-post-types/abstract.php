@@ -275,7 +275,7 @@ abstract class LP_Abstract_Post_Type {
 	public function remove_auto_save_script() {
 		global $post;
 
-		if ( $post && in_array( get_post_type( $post->ID ), array( $this->_post_type ) ) ) {
+		if ( $post && in_array( learn_press_get_post_type( $post->ID ), array( $this->_post_type ) ) ) {
 			wp_dequeue_script( 'autosave' );
 		}
 	}
@@ -306,9 +306,9 @@ abstract class LP_Abstract_Post_Type {
 	 */
 	public function _do_save( $post_id, $post = null ) {
 		// Maybe remove
-		$this->maybe_remove_assigned( $post_id );
+		//$this->maybe_remove_assigned( $post_id );
 
-		if ( get_post_type( $post_id ) != $this->_post_type ) {
+		if ( learn_press_get_post_type( $post_id ) != $this->_post_type ) {
 			return false;
 		}
 		// TODO: check more here
@@ -744,7 +744,7 @@ abstract class LP_Abstract_Post_Type {
 
 	public function updated_messages( $messages ) {
 		$post             = get_post();
-		$post_type        = get_post_type( $post );
+		$post_type        = learn_press_get_post_type( $post );
 		$post_type_object = get_post_type_object( $this->_post_type );
 		if ( $this->_post_type !== $post_type ) {
 			return $messages;

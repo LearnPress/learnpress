@@ -1,5 +1,5 @@
 <script type="text/x-template" id="learn-press-modal-search-items">
-    <div id="modal-search-items" class="learn-press-modal">
+    <div id="modal-search-items" class="modal">
         <div class="modal-overlay">
 
         </div>

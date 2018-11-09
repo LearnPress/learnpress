@@ -22,7 +22,7 @@ if ( ! function_exists( 'learn_press_get_only_content_permalink' ) ) {
 		if ( empty( $_REQUEST['content-item-only-redirect'] ) ) {
 			return $redirect;
 		}
-		if ( get_post_type( $comment->comment_post_ID ) != 'lp_lesson' ) {
+		if ( learn_press_get_post_type( $comment->comment_post_ID ) != 'lp_lesson' ) {
 			return $redirect;
 		}
 
@@ -96,7 +96,7 @@ if ( ! function_exists( 'lesson_cancel_comment_reply_link' ) ) {
 add_action( 'delete_post', 'learn_press_lesson_before_delete_post', 10, 2 );
 function learn_press_lesson_before_delete_post( $post_id, $force = false ) {
 	global $wpdb;
-	if ( 'lp_lesson' === get_post_type( $post_id ) ) {
+	if ( 'lp_lesson' === learn_press_get_post_type( $post_id ) ) {
 		$sql = 'DELETE FROM `' . $wpdb->prefix . 'learnpress_section_items` WHERE `item_id` = ' . $post_id . ' AND `item_type` = "lp_lesson"';
 		$wpdb->query( $sql );
 	}

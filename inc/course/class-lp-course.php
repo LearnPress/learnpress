@@ -44,13 +44,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 *
 		 * @param LP_Course_Item $item
 		 *
-		 * @return int
+		 * @return int|LP_Course_Item
 		 */
 		public function set_viewing_item( $item ) {
-
-//			if ( ! $this->has_item( $item->get_id() ) ) {
-//				return false;
-//			}
 
 			if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
 				return 0;
@@ -60,7 +56,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$this->_viewing_item = $item;
 			$item->set_course( $this );
 
-			return $user->maybe_update_item( $item->get_id(), $this->get_id() );
+			$user->maybe_update_item( $item->get_id(), $this->get_id() );
+
+			return $item;
 		}
 
 		/**
@@ -106,6 +104,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				return LP_Global::$courses[ $the_course ];
 			}
 
+			LP_Debug::logTime(__FUNCTION__);
 			$the_course = self::get_course_object( $the_course );
 
 			if ( ! $the_course ) {
@@ -145,10 +144,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			 * Force to reload course data into cache if it is not
 			 * loaded or has been deleted for some reasons.
 			 */
-			if ( false === LP_Object_Cache::get( 'course-' . $course->get_id(), 'lp-course-curriculum' ) ) {
-				$curd = new LP_Course_CURD();
-				$curd->load( $course );
-			}
+			$course->load();
+			LP_Debug::logTime(__FUNCTION__);
 
 			return $course;
 		}

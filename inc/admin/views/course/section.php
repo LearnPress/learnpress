@@ -55,7 +55,7 @@ learn_press_admin_view( 'course/new-section-item' );
                 <button type="button" class="button button-secondary"
                         @click="openModal"><?php esc_html_e( 'Select items', 'learnpress' ); ?></button>
 
-                <div class="remove" :class="{confirm: confirm}" title="<?php echo esc_attr( 'Delete section', 'learnpress' ); ?>">
+                <div class="remove lp-title-attr-tip" :class="{confirm: confirm}" data-content-tip="<?php echo esc_attr( 'Delete section', 'learnpress' ); ?>">
                     <span class="icon" @click="removing"><span
                                 class="dashicons dashicons-trash"></span></span>
                     <div class="confirm" @click="remove"><?php esc_html_e( 'Are you sure?', 'learnpress' ); ?></div>
@@ -171,7 +171,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
                         for (var i = 0, n = orders.length; i < n; i++) {
                             $.each(allItems, function (j, item) {
-                                if (orders[i] === item.id) {
+                                if (orders[i] == item.id) {
                                     items.push(JSON.parse(JSON.stringify(item)));
                                     found = true;
                                     return false;
@@ -273,6 +273,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     // new section item
                     newItem: function (item) {
                         $store.dispatch('ss/newSectionItem', {section_id: this.section.id, item: item});
+                        console.log(item)
                     },
                     openModal: function () {
                         $store.dispatch('ci/open', parseInt(this.section.id));

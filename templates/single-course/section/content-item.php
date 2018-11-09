@@ -29,4 +29,3 @@ learn_press_get_template( "single-course/section/" . $item->get_template(), $arg
  * @see   learn_press_section_item_meta()
  */
 do_action( 'learn-press/after-section-loop-item', $item, $section );
-?>

@@ -24,6 +24,11 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 
 		global $post;
 
+		// No duplicate post if it was trashed
+		if ( get_post_status( $post ) === 'trash' ) {
+			return $actions;
+		}
+
 		if ( LP_COURSE_CPT == $post->post_type ) {
 			$duplicate_link = '#';
 			$duplicate_link = array(
@@ -2238,3 +2243,22 @@ function learn_press_preview_post_link( $link, $post ) {
 }
 
 add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
+
+function learn_press_maybe_sync_data( $post_id ) {
+	$post_type = get_post_type( $post_id );
+
+	switch ( $post_type ) {
+		case LP_COURSE_CPT:
+			LP_Repair_Database::instance()->sync_user_courses();
+			break;
+		case LP_LESSON_CPT:
+			break;
+		case LP_QUIZ_CPT:
+			break;
+		default:
+	}
+}
+
+add_action( 'save_post', 'learn_press_maybe_sync_data' );
+
+include_once "class-lp-post-type-actions.php";

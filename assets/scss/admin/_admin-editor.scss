@@ -390,6 +390,16 @@
                         }
                     }
                 }
+
+                &.lp_quiz {
+                    .item-actions {
+                        .actions {
+                            .preview-item {
+                                display: none;
+                            }
+                        }
+                    }
+                }
             }
 
             .new-section-item {

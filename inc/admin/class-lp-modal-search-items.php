@@ -231,7 +231,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 			ob_start();
 			if ( $items = $this->get_items() ) {
 				foreach ( $items as $id => $item ) {
-					$type        = get_post_type( $item );
+					$type        = learn_press_get_post_type( $item );
 					$type_object = get_post_type_object( $type );
 					$type_name   = $type_object ? $type_object->labels->singular_name : '';
 					printf( '
@@ -273,7 +273,7 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 * @return mixed
 		 */
 		public static function query_args( $args, $context, $context_id ) {
-			if ( ( LP_ORDER_CPT === get_post_type( $context_id ) ) && ( LP_COURSE_CPT === $args['post_type'] ) ) {
+			if ( ( LP_ORDER_CPT === learn_press_get_post_type( $context_id ) ) && ( LP_COURSE_CPT === $args['post_type'] ) ) {
 				if ( ! empty( $args['author'] ) ) {
 					unset( $args['author'] );
 				}

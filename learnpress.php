@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 3.1.0
+Version: 3.2.0
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 4.9.6
@@ -98,7 +98,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Manage all processes run in background.
 		 *
-		 * @var array
+		 * @var LP_Abstract_Background_Process[]
 		 */
 		public $backgrounds = array();
 
@@ -127,7 +127,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					'query-items'      => 'query-items',
 					'schedule-items'   => 'schedule-items',
 					'global'           => 'global',
-					'clear-temp-users' => 'clear-temp-users'
+					'clear-temp-users' => 'clear-temp-users',
+					'sync-data'        => 'sync-data'
 				)
 			);
 
@@ -137,7 +138,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				}
 
 				if ( file_exists( $file ) ) {
-					$this->backgrounds[ $name ] = include_once $file;
+					$this->backgrounds[ $name ] = include $file;
 				}
 			}
 		}
@@ -152,7 +153,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return LP_Abstract_Background_Process|bool
 		 */
-		public function add_background_task( $data, $background = '' ) {
+		public function add_background_task( $data, $background = 'global' ) {
 			if ( isset( $this->backgrounds[ $background ] ) ) {
 				$this->backgrounds[ $background ]->push_to_queue( $data );
 
@@ -228,6 +229,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
+			require_once 'inc/class-lp-thumbnail-helper.php';
 			require_once 'inc/cache.php';
 
 			// Background processes
@@ -247,6 +249,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/curds/class-lp-question-curd.php';
 			require_once 'inc/curds/class-lp-order-curd.php';
 			require_once 'inc/curds/class-lp-user-curd.php';
+			require_once 'inc/curds/class-lp-user-item-curd.php';
 
 			require_once 'inc/class-lp-backward-plugins.php';
 			require_once 'inc/class-lp-debug.php';
@@ -257,26 +260,25 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/lp-deprecated.php';
-			require_once 'inc/class-lp-cache.php';
+			//require_once 'inc/class-lp-cache.php';
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/class-lp-autoloader.php';
 			require_once 'inc/class-lp-install.php';
 			require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';
-			require_once 'inc/abstract-settings.php';
-			require_once 'inc/admin/helpers/class-lp-plugins-helper.php';
-
+			require_once( 'inc/abstract-settings.php' );
 			//require_once( 'inc/class-lp-market-products.php' );
 
 			if ( is_admin() ) {
 				require_once 'inc/admin/meta-box/class-lp-meta-box-helper.php';
 				require_once 'inc/admin/class-lp-admin-notice.php';
 				require_once 'inc/admin/class-lp-admin.php';
-				require_once( 'inc/admin/settings/abstract-settings-page.php' );
+				require_once 'inc/admin/settings/abstract-settings-page.php';
 			}
 			if ( ! is_admin() ) {
 				require_once 'inc/class-lp-assets.php';
 			}
+			require_once 'inc/class-lp-repair-database.php';
 			require_once 'inc/question/class-lp-question.php';
 
 			// Register custom-post-type and taxonomies
@@ -380,9 +382,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Maybe flush rewrite rules
 		 */
 		public function wp_init() {
-			if ( get_option( 'learn-press-flush-rewrite-rules' ) == 'yes' ) {
+			if ( LP()->session->flush_rewrite_rules ) {
 				flush_rewrite_rules();
-				delete_option( 'learn-press-flush-rewrite-rules' );
+				unset( LP()->session->flush_rewrite_rules );
 			}
 		}
 
@@ -706,7 +708,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		public function flush_rewrite_rules() {
-			update_option( 'learn-press-flush-rewrite-rules', 'yes' );
+			LP()->session->flush_rewrite_rules = true;
 			flush_rewrite_rules();
 		}
 

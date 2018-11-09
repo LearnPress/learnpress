@@ -349,10 +349,10 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					break;
 				case 'preview':
 					printf(
-						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-item-preview" %s value="%s" data-nonce="%s" />',
+						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-lesson-preview" %s value="%s" data-nonce="%s" />',
 						get_post_meta( $post_id, '_lp_preview', true ) == 'yes' ? ' checked="checked"' : '',
 						$post_id,
-						wp_create_nonce( 'learn-press-toggle-item-preview' )
+						wp_create_nonce( 'learn-press-toggle-lesson-preview' )
 					);
 					break;
 				case 'format':

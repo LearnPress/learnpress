@@ -472,7 +472,6 @@ class LP_Install_Sample_Data {
 		if ( $quiz_id ) {
 
 			$metas = array(
-				'_lp_preview'              => 'no',
 				'_lp_minus_points'         => 0,
 				'_lp_minus_skip_questions' => 'no',
 				'_lp_show_hide_question'   => 'no',

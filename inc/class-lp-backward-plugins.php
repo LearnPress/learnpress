@@ -69,7 +69,7 @@ class LP_Backward_Addons {
 			$path = dirname( $file );
 
 			// LP 3 addons usually have a file load.php in inc/incs folder
-			if ( file_exists( "$path/inc/load.php" ) || file_exists( "$path/incs/load.php" ) ) {
+			if ( file_exists( "$path/inc/load.php" ) || file_exists( "$path/incs/load.php" ) || file_exists( "$path/includes/load.php" )) {
 				continue;
 			}
 

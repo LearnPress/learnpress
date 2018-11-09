@@ -19,10 +19,23 @@ class LP_Updater {
 	protected $_update_files = array();
 
 	/**
+	 * @var array
+	 */
+	protected $packages = array();
+
+	/**
+	 * @var string
+	 */
+	protected $version = '';
+
+	protected $has_notice = false;
+
+	/**
 	 * LP_Updater constructor.
 	 */
 	protected function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'admin_init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this, 'update_form' ) );
 		add_action( 'admin_init', array( $this, 'do_update' ) );
 
@@ -31,6 +44,84 @@ class LP_Updater {
 		}
 
 		LP_Request::register_ajax( 'check-updated', array( $this, 'check_updated' ) );
+		LP_Request::register_ajax( 'get-update-packages', array( $this, 'get_update_packages' ) );
+		LP_Request::register_ajax( 'do-update-package', array( $this, 'do_update_package' ) );
+	}
+
+	public function do_update_package() {
+		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ) ) ) {
+			die( __( 'Invalid request.', 'learnpress' ) );
+		}
+
+		$this->packages = $this->get_update_files();
+		$this->version  = LP_Request::get( 'version' );
+		$done           = false;
+		$percent        = 0;
+
+		if ( $package = $this->get_package_update( $this->version ) ) {
+			$status = include $package;
+
+			if ( is_array( $status ) ) {
+				$done    = $status['done'];
+				$percent = $status['percent'];
+			} else {
+				$done    = $status;
+				$percent = 100;
+			}
+		}
+
+		if ( $done && $this->is_last_version() ) {
+			update_option( 'learnpress_db_version', LEARNPRESS_VERSION );
+		}
+
+		learn_press_send_json( array(
+			'package' => $package,
+			'done'    => $done ? 'yes' : 'no',
+			'percent' => $percent
+		) );
+	}
+
+	public function is_last_version() {
+		$versions = array_keys( $this->packages );
+
+		return end( $versions ) === $this->version;
+	}
+
+	public function get_update_packages() {
+
+		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ) ) ) {
+			die( __( 'Invalid request.', 'learnpress' ) );
+		}
+
+		$force      = LP_Request::get( 'force' );
+		$packages   = $this->get_update_files();
+		$versions   = array_keys( $packages );
+		$latest_ver = end( $versions );
+		$db_version = get_option( 'learnpress_db_version' );
+		delete_option( 'learnpress_updater_step' );
+		delete_option( 'learnpress_updater_running_step' );
+
+		if ( $force !== 'true' ) {
+			// Check latest version with the value updated in db
+			if ( ! $db_version || version_compare( $db_version, $latest_ver, '>=' ) ) {
+				$packages = array();
+			} else {
+				if ( $packages ) {
+					foreach ( $packages as $package_version => $package ) {
+						if ( version_compare( $db_version, $package_version, '>' ) ) {
+							unset( $packages[ $package_version ] );
+						}
+					}
+				}
+			}
+		}
+
+		learn_press_send_json( $packages );
+	}
+
+	public function init() {
+		$this->get_update_files();
+		$this->check_update();
 	}
 
 	public function check_updated() {
@@ -41,9 +132,11 @@ class LP_Updater {
 		$response       = array();
 		$next_step      = get_option( 'learnpress_updater_step' );
 
-		if ( version_compare( $db_version, $latest_version, '>=' ) || ( version_compare( $db_version, '3.0.0', '>=' ) && ! $next_step ) ) {
+		if ( version_compare( $db_version, $latest_version, '>=' ) ||  ! $next_step ) {
 			$response['result']  = 'success';
 			$response['message'] = learn_press_admin_view_content( 'updates/html-updated-latest-message' );
+
+			delete_option( 'do-update-learnpress' );
 		} else {
 			$response['step'] = $next_step;
 		}
@@ -151,11 +244,15 @@ class LP_Updater {
 	 * Scan folder updates to get update patches.
 	 */
 	public function get_update_files() {
+		/**
+		 * @var WP_Filesystem_Base $wp_filesystem
+		 */
 		if ( ! $this->_update_files ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
 				if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . 'inc/updates' ) ) {
+
 					foreach ( $files as $file ) {
 						if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
 							$this->_update_files [ $matches[1] ] = $file['name'];
@@ -167,11 +264,22 @@ class LP_Updater {
 			 * Sort files by version
 			 */
 			if ( $this->_update_files ) {
-				ksort( $this->_update_files );
+				uksort( $this->_update_files, 'version_compare' );
 			}
 		}
 
+		if ( get_option( 'learnpress_data_synced', '' ) === 'yes' && ! empty( $this->_update_files['10.10.10'] ) ) {
+			unset( $this->_update_files['10.10.10'] );
+		}
+
 		return $this->_update_files;
+	}
+
+	public function get_package_update( $version ) {
+		$packages = $this->get_update_files();
+		$package  = ! empty( $packages[ $version ] ) ? $packages[ $version ] : false;
+
+		return file_exists( LP_PLUGIN_PATH . 'inc/updates/' . $package ) ? LP_PLUGIN_PATH . 'inc/updates/' . $package : false;
 	}
 
 	/**
@@ -217,6 +325,63 @@ class LP_Updater {
 
 		learn_press_admin_view( 'updates/update-screen' );
 		die(); // Ignore all thing in the rest.
+	}
+
+	/**
+	 * Check new update and show message in admin
+	 */
+	public function check_update() {
+
+		// Only administrator of the site can do this
+		if ( ! current_user_can( 'administrator' ) ) {
+			return;
+		}
+
+		/**
+		 * For test upgrade
+		 */
+		if ( isset( $_REQUEST['test-upgrade'] ) ) {
+			$ver = $_REQUEST['test-upgrade'];
+			if ( ! empty( $this->_update_files[ $ver ] ) ) {
+				include_once LP_PLUGIN_PATH . '/inc/updates/' . $this->_update_files[ $ver ];
+			}
+		}
+
+		// There is no file to update
+		if ( ! $this->_update_files ) {
+			return;
+		}
+
+		// Get versions
+		$versions   = array_keys( $this->_update_files );
+		$latest_ver = end( $versions );
+		$db_version = get_option( 'learnpress_db_version' );
+
+		// Check latest version with the value updated in db
+		if ( ! $db_version || version_compare( $db_version, $latest_ver, '>=' ) ) {
+			return;
+		}
+
+		$this->has_notice = true;
+
+//			// If version to update is less than in db
+//			if ( version_compare( $latest_ver, $db_version, '<' ) ) {
+//				return;
+//			}
+
+		// Show message if the latest version is not already updated
+		add_action( 'admin_notices', array( $this, 'require_update_message' ), 20 );
+	}
+
+	public function has_update() {
+		return $this->has_notice;
+	}
+
+	/**
+	 * Show message for new update
+	 */
+	public static function require_update_message() {
+		learn_press_admin_view( 'updates/html-update-message' );
 	}
 
 	/**

@@ -76,7 +76,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @return bool
 		 */
 		public function is_exists() {
-			return get_post_type( $this->get_id() ) === $this->_post_type;
+			return learn_press_get_post_type( $this->get_id() ) === $this->_post_type;
 		}
 
 		/**
@@ -209,7 +209,7 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 * @return false|string
 		 */
 		public function get_post_type() {
-			return get_post_type( $this->get_id() );
+			return learn_press_get_post_type( $this->get_id() );
 		}
 
 		/**
@@ -221,6 +221,25 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		 */
 		public static function get_default_meta() {
 			return array();
+		}
+
+		/**
+		 * Get post meta data.
+		 * Check if the meta is not stored on database then return FALSE
+		 *
+		 * @updated 3.1.0
+		 *
+		 * @param string $key
+		 * @param bool   $single
+		 *
+		 * @return mixed
+		 */
+		public function get_meta( $key, $single = true ) {
+			if ( ! metadata_exists( 'post', $this->get_id(), $key ) ) {
+				return false;
+			}
+
+			return get_post_meta( $this->get_id(), $key, $single );
 		}
 
 		public function get_edit_link() {

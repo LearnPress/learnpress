@@ -1,3 +1,5 @@
+<?php ?>
+
 {{header}}
 
 {{order_items_table}}

@@ -1,0 +1,30 @@
+html, body {
+  overflow: hidden; }
+
+body.course-item-popup {
+  opacity: 1; }
+  body.course-item-popup #learn-press-course-curriculum {
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    background: #FFF;
+    border-right: 1px solid #DDD;
+    overflow: auto;
+    z-index: 99999; }
+  body.course-item-popup #learn-press-content-item {
+    position: fixed;
+    z-index: 9999;
+    background: #FFF;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    overflow: visible; }
+  body.course-item-popup.distraction-on #learn-press-course-curriculum {
+    left: -400px; }
+  body.course-item-popup.distraction-on #course-item-content-header .course-title {
+    margin-left: 0; }
+  body.course-item-popup.distraction-on #course-item-content-header .course-item-search {
+    width: 0; }
+  body.course-item-popup.distraction-on #learn-press-content-item {
+    left: 0; }

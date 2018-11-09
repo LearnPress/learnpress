@@ -16,7 +16,6 @@
 @import "admin-tools";
 @import "../quick-tip";
 @import "responsive";
-@import "rtl";
 
 .button {
     &.disabled {
@@ -82,7 +81,7 @@
     }
 }
 
-.learn-press-notice-assigned-item{
+.learn-press-notice-assigned-item {
     color: #FF0000;
 }
 
@@ -90,4 +89,142 @@
     .actions {
         margin: 0;
     }
+}
+
+#learn-press-syncs {
+    li {
+        position: relative;
+        &.syncing,
+        &.synced {
+            padding-left: 24px;
+            input[type="checkbox"] {
+                display: none;
+            }
+        }
+
+        &.syncing {
+            &:after {
+                content: "\f463";
+                @include rotating4();
+            }
+        }
+
+        &.synced {
+            &:after {
+                content: "\f147";
+                color: #2773aa;
+            }
+        }
+
+        &:after {
+            font-family: dashicons;
+            display: block;
+            position: absolute;
+            left: -3px;
+            top: 0px;
+            height: 24px;
+            width: 24px;
+            font-size: 19px;
+            text-align: center;
+            line-height: 24px;
+        }
+    }
+}
+
+#learn-press-updater {
+    .updater-progress {
+        position: relative;
+        margin: 0 2px;
+        ul {
+            display: flex;
+            height: 5px;
+            position: relative;
+            background: #EEE;
+            li {
+                flex: 1;
+                position: relative;
+                margin: 0;
+                &:after {
+                    content: attr(data-version);
+                    background: #DDD;
+                    padding: 3px 5px;
+                    border-radius: 3px;
+                    font-size: 12px;
+                    color: #FFF;
+                    position: absolute;
+                    right: 0;
+                    top: -30px;
+                    display: none;
+                }
+                &:before {
+                    content: '';
+                }
+                &:last-child {
+                    &:after {
+                        _display: block;
+                    }
+                }
+            }
+            &:after {
+                height: 20px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 0;
+            }
+        }
+        .updater-progress-status {
+            position: absolute;
+            height: 5px;
+            top: 0;
+            left: 0;
+            width: 0;
+            background: #5bc4f9;
+            -webkit-transition: width 0.25s;
+            -moz-transition: width 0.25s;
+            -ms-transition: width 0.25s;
+            -o-transition: width 0.25s;
+            transition: width 0.25s;
+            &:before {
+                _content: attr(data-value) "%";
+                position: absolute;
+                top: -20px;
+                right: 0;
+                background: #5bc4f9;
+                padding: 0 5px;
+                font-size: 12px;
+                color: #FFF;
+                border-radius: 3px;
+            }
+            .updater-progress-animation {
+                position: absolute;
+                height: 5px;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: #5bc4f9;
+                overflow: hidden;
+
+                &:not(.completed) {
+                    &:after {
+                        content: '';
+                        height: 5px;
+                        background: #8dd9ff;
+                        position: absolute;
+                        @include animation4(animation4 1.5s ease-out infinite);
+                    }
+                }
+            }
+        }
+    }
+    .updating-message {
+        color: #a24666;
+    }
+    .completed-message {
+        color: #3c8eb7;
+    }
+}
+
+#learn-press-updater {
+    display: none;
 }

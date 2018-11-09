@@ -12,8 +12,7 @@ class LP_Settings_Become_Teacher_Emails extends LP_Settings_Emails_Group {
 		$this->group_id = 'become-teacher-emails';
 		$this->items    = array(
 			'become-an-instructor',
-			'instructor-accepted',
-			'instructor-denied',
+			'instructor-accepted'
 		);
 
 		parent::__construct();

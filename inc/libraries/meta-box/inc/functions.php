@@ -47,7 +47,7 @@ if ( ! function_exists( 'rwmb_get_field_settings' ) ) {
 		$args = wp_parse_args( $args, array(
 			'object_type' => 'post',
 		) );
-		$type = get_post_type( $object_id );
+		$type = learn_press_get_post_type( $object_id );
 
 		/**
 		 * Filter meta type from object type and object id.

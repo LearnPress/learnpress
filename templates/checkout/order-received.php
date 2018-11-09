@@ -39,7 +39,7 @@ if ( isset( $order ) ) {
 				$items = $order->get_items();
 				$count = sizeof( $items );
 				foreach ( $items as $item ) {
-					if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+					if ( empty( $item['course_id'] ) || learn_press_get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 						$links[] = __( 'Course does not exist', 'learnpress' );
 					} else {
 						$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';

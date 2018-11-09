@@ -29,7 +29,8 @@
                      data-content-tip="<?php echo esc_attr( 'Edit item', 'learnpress' ); ?>">
                     <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a>
                 </div>
-                <div class="action delete-item" v-if="!disableCurriculum">
+                <div class="action delete-item lp-title-attr-tip" v-if="!disableCurriculum"
+                     data-content-tip="<?php echo esc_attr( 'Delete', 'learnpress' ); ?>">
                     <a class="lp-btn-icon dashicons dashicons-trash" @click.prevent="remove"></a>
                     <ul>
                         <li>

@@ -91,7 +91,6 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_Processing_Order_Guest'] = include( 'emails/class-lp-email-processing-order-guest.php' );
 
 			// Completed order
-			$this->emails['LP_Email_Completed_Order_Admin']  = include( 'emails/class-lp-email-completed-order-admin.php' );
 			$this->emails['LP_Email_Completed_Order_User']  = include( 'emails/class-lp-email-completed-order-user.php' );
 			$this->emails['LP_Email_Completed_Order_Guest'] = include( 'emails/class-lp-email-completed-order-guest.php' );
 
@@ -120,7 +119,6 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			//$this->emails['LP_Email_Update_Course']        = include( 'emails/class-lp-email-updated-course.php' );
 			$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
 			$this->emails['LP_Email_Instructor_Accepted']  = include( 'emails/class-lp-email-instructor-accepted.php' );
-			$this->emails['LP_Email_Instructor_Denied']    = include( 'emails/class-lp-email-instructor-denied.php' );
 
 			//$this->emails['LP_Email_User_Order_Completed']      = include( 'emails/class-lp-email-user-order-completed.php' );
 			//$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );
@@ -150,36 +148,39 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 */
 		public static function init_email_notifications() {
 			// mail notification actions
-			$actions = apply_filters( 'learn-press/email-actions', array(
-				// preview course
-				'learn_press_course_submit_rejected',
-				'learn_press_course_submit_approved',
-				'learn_press_course_submit_for_reviewer',
-				'learn_press_user_enrolled_course',
+			$actions = apply_filters(
+				'learn-press/email-actions',
+				array(
+					// preview course
+					'learn_press_course_submit_rejected',
+					'learn_press_course_submit_approved',
+					'learn_press_course_submit_for_reviewer',
+					'learn_press_user_enrolled_course',
 
-				// New order
-				'learn-press/order/status-pending-to-processing',
-				'learn-press/order/status-pending-to-completed',
+					// New order
+					'learn-press/order/status-pending-to-processing',
+					'learn-press/order/status-pending-to-completed',
 
-				// Completed order
-				'learn-press/order/status-completed',
+					// Completed order
+					'learn-press/order/status-completed',
 
-				// Cancelled order
-				'learn-press/order/status-cancelled',
+					// Cancelled order
+					'learn-press/order/status-cancelled',
 
-				// User become an teacher
-				'set_user_role',
+					// User become an teacher
+					'set_user_role',
 
-				// User enrolled course
-				'learn-press/user-enrolled-course',
+					// User enrolled course
+					'learn-press/user-enrolled-course',
 
-				// User finished course
-				'learn-press/user-course-finished'
+					// User finished course
+					'learn-press/user-course-finished'
 
-				// Create order
-				//'learn_press_checkout_success_result',
-				//'learn_press_user_finish_course',
-			) );
+					// Create order
+					//'learn_press_checkout_success_result',
+					//'learn_press_user_finish_course',
+				)
+			);
 
 			if ( 'yes' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
 
@@ -221,7 +222,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				$args = func_get_args();
 				self::instance();
 				do_action_ref_array( current_filter() . '/notification', $args );
-			} catch ( Exception $e ) {
+			}
+			catch ( Exception $e ) {
 			}
 		}
 
@@ -229,7 +231,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * Email header.
 		 *
 		 * @param string $heading
-		 * @param bool $echo
+		 * @param bool   $echo
 		 *
 		 * @return string
 		 */
@@ -248,7 +250,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * Email footer.
 		 *
 		 * @param string $footer_text
-		 * @param bool $echo
+		 * @param bool   $echo
 		 *
 		 * @return string
 		 */

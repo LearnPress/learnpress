@@ -20,7 +20,7 @@ do_action( 'learn-press/before-main-content' );
 do_action( 'learn-press/before-single-item' );
 
 ?>
-<div id="learn-press-course" class="course-summary">
+<div id="learn-press-course" class="course-summary item-summary">
 	<?php
 	/**
 	 * @since 3.0.0

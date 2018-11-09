@@ -70,14 +70,14 @@ class LP_Breadcrumb {
 			'is_author',
 			'is_date',
 			'is_tax',
-			'is_home',
-			'is_404',
-			'is_attachment',
+		    'is_home',
+		    'is_404',
+		    'is_attachment',
 		);
 
 		if ( ( ! is_front_page() && ! ( is_post_type_archive() && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) ) || is_paged() ) {
 			foreach ( $conditionals as $conditional ) {
-
+			    
 				if ( is_callable( $conditional ) && call_user_func( $conditional ) ) {
 					$conditional = preg_replace( '/^learn_press_/', '', $conditional );
 					$conditional = preg_replace( '/^is_/', '', $conditional );
@@ -101,6 +101,7 @@ class LP_Breadcrumb {
 	 * Prepend the courses page to courses breadcrumbs
 	 */
 	private function prepend_courses_page() {
+		$permalinks      = get_option( 'learn_press_permalinks' );
 		$courses_page_id = learn_press_get_page_id( 'courses' );
 		$courses_page    = get_post( $courses_page_id );
 
@@ -157,9 +158,9 @@ class LP_Breadcrumb {
 				$this->term_ancestors( $main_term->term_id, 'course_category' );
 				$this->add_crumb( $main_term->name, get_term_link( $main_term ) );
 			}
-		} elseif ( 'post' != get_post_type( $post ) ) {
-			$post_type = get_post_type_object( get_post_type( $post ) );
-			$this->add_crumb( $post_type->labels->singular_name, get_post_type_archive_link( get_post_type( $post ) ) );
+		} elseif ( 'post' != learn_press_get_post_type( $post ) ) {
+			$post_type = get_post_type_object( learn_press_get_post_type( $post ) );
+			$this->add_crumb( $post_type->labels->singular_name, get_post_type_archive_link( learn_press_get_post_type( $post ) ) );
 		} else {
 			$cat = current( get_the_category( $post ) );
 			if ( $cat ) {

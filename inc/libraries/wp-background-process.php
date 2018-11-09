@@ -106,7 +106,7 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	/**
 	 * Update queue
 	 *
-	 * @param string $key Key.
+	 * @param string $key  Key.
 	 * @param array  $data Data.
 	 *
 	 * @return $this
@@ -195,10 +195,10 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
 		$count = $wpdb->get_var( $wpdb->prepare( "
-		SELECT COUNT(*)
-		FROM {$table}
-		WHERE {$column} LIKE %s
-	", $key ) );
+			SELECT COUNT(*)
+			FROM {$table}
+			WHERE {$column} LIKE %s
+		", $key ) );
 
 		return ( $count > 0 ) ? false : true;
 	}
@@ -277,11 +277,12 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		LIMIT 1
 		", $key ) );
 		$batch = null;
-		if( $query ){
-		    $batch       = new stdClass();
-		    $batch->key  = $query->$column;
-		    $batch->data = LP_Helper::maybe_unserialize( $query->$value_column );
+		if ( $query ) {
+			$batch       = new stdClass();
+			$batch->key  = $query->$column;
+			$batch->data = maybe_unserialize( $query->$value_column );
 		}
+
 		return $batch;
 	}
 
@@ -293,23 +294,23 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	 */
 	protected function handle() {
 		$this->lock_process();
-
+		$a = 1;
 		do {
 			$batch = $this->get_batch();
-			if( $batch && isset($batch->data) && !empty($batch->data) ) {
-    			foreach ( $batch->data as $key => $value ) {
-    				$task = $this->task( $value );
-    				if ( false !== $task ) {
-    					$batch->data[ $key ] = $task;
-    				} else {
-    					unset( $batch->data[ $key ] );
-    				}
-    
-    				if ( $this->time_exceeded() || $this->memory_exceeded() ) {
-    					// Batch limits reached.
-    					break;
-    				}
-    			}
+			if ( $batch && isset( $batch->data ) && ! empty( $batch->data ) ) {
+				foreach ( $batch->data as $key => $value ) {
+					$task = $this->task( $value );
+					if ( false !== $task ) {
+						$batch->data[ $key ] = $task;
+					} else {
+						unset( $batch->data[ $key ] );
+					}
+
+					if ( $this->time_exceeded() || $this->memory_exceeded() ) {
+						// Batch limits reached.
+						break;
+					}
+				}
 			}
 
 			// Update or delete current batch.
@@ -318,7 +319,9 @@ abstract class WP_Background_Process extends WP_Async_Request {
 			} else {
 				$this->delete( $batch->key );
 			}
-		} while ( ! $this->time_exceeded() && ! $this->memory_exceeded() && ! $this->is_queue_empty() );
+
+			$a = 0;
+		} while ( $a );// ! $this->time_exceeded() && ! $this->memory_exceeded() && ! $this->is_queue_empty() );
 
 		$this->unlock_process();
 
@@ -363,7 +366,7 @@ abstract class WP_Background_Process extends WP_Async_Request {
 			$memory_limit = '128M';
 		}
 
-		if ( ! $memory_limit || -1 === intval( $memory_limit ) ) {
+		if ( ! $memory_limit || - 1 === intval( $memory_limit ) ) {
 			// Unlimited, set to 32GB.
 			$memory_limit = '32000M';
 		}
@@ -405,7 +408,9 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	 * Schedule cron healthcheck
 	 *
 	 * @access public
+	 *
 	 * @param mixed $schedules Schedules.
+	 *
 	 * @return mixed
 	 */
 	public function schedule_cron_healthcheck( $schedules ) {

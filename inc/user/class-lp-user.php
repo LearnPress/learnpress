@@ -14,7 +14,7 @@ class LP_User extends LP_Abstract_User {
 	public static function read_course_x( $the_post ) {
 		///$this->_curd->read_course( $this->get_id(), $the_course );
 		/// learn
-		if ( LP_COURSE_CPT != get_post_type( $the_post->ID ) ) {
+		if ( LP_COURSE_CPT != learn_press_get_post_type( $the_post->ID ) ) {
 			return;
 		}
 

@@ -24,12 +24,12 @@ if ( ! class_exists( 'LP_Email_Instructor_Accepted' ) ) {
 		public function __construct() {
 			$this->id          = 'instructor-accepted';
 			$this->title       = __( 'Accepted', 'learnpress' );
-			$this->description = __( 'Become an instructor email accepted.', 'learnpress' );
+			$this->description = __( 'Become an instructor email.', 'learnpress' );
 
-			$this->default_subject = __( '[{{site_title}}] Your request to become an instructor accepted', 'learnpress' );
-			$this->default_heading = __( 'Become an instructor accepted', 'learnpress' );
+			$this->default_subject = __( '[{{site_title}}] Request to become an instructor', 'learnpress' );
+			$this->default_heading = __( 'Become an instructor', 'learnpress' );
 
-			add_action( 'learn-press/user-become-a-teacher-accept', array( $this, 'trigger' ) );
+			add_action( 'learn-press/user-become-a-teacher', array( $this, 'trigger' ) );
 			add_action( 'set_user_role', array( $this, 'set_user_role' ), 10, 3 );
 
 			parent::__construct();

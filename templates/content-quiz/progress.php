@@ -20,7 +20,7 @@ $course_data = $user->get_course_data( get_the_ID() );
 $quiz_item   = $course_data->get_item_quiz( $quiz->get_id() );
 $quiz_data   = $user->get_quiz_data( $quiz->get_id() );
 
-if ( $quiz_data->is_review_questions() ) {
+if (!$quiz_data || $quiz_data->is_review_questions() ) {
 	return;
 }
 

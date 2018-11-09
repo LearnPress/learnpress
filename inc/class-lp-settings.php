@@ -51,7 +51,7 @@ class LP_Settings {
 			settype( $data, 'array' );
 			$this->_options = $data;
 		}
-		self::load_site_options();
+		//self::load_site_options();
 		//add_action( 'init', array( $this, 'init' ) );
 	}
 
@@ -340,7 +340,7 @@ class LP_Settings {
 	 * @return array
 	 */
 	public function get_checkout_endpoints() {
-		if ( false === ( $endpoints = wp_cache_get( 'checkout', 'learn-press-endpoints' ) ) ) {
+		if ( false === ( $endpoints = LP_Object_Cache::get( 'checkout', 'learn-press/endpoints' ) ) ) {
 			$defaults = array(
 				'lp-order-received' => 'lp-order-received'
 			);
@@ -359,7 +359,7 @@ class LP_Settings {
 				}
 			}
 
-			wp_cache_set( 'checkout', $endpoints, 'learn-press-endpoints' );
+			LP_Object_Cache::set( 'checkout', $endpoints, 'learn-press/endpoints' );
 		}
 
 		return apply_filters( 'learn-press/endpoints/checkout', $endpoints );
@@ -373,7 +373,7 @@ class LP_Settings {
 	 * @return array
 	 */
 	public function get_profile_endpoints() {
-		if ( false === ( $endpoints = wp_cache_get( 'profile', 'learn-press-endpoints' ) ) ) {
+		if ( false === ( $endpoints = LP_Object_Cache::get( 'profile', 'learn-press/endpoints' ) ) ) {
 			$defaults = array();
 
 			$endpoints = array();
@@ -390,7 +390,7 @@ class LP_Settings {
 				}
 			}
 
-			wp_cache_set( 'profile', $endpoints, 'learn-press-endpoints' );
+			LP_Object_Cache::set( 'profile', $endpoints, 'learn-press/endpoints' );
 		}
 
 		return apply_filters( 'learn-press/endpoints/profile', $endpoints );

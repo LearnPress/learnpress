@@ -1041,6 +1041,51 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return isset( $wp_query->query['user'] ) ? $wp_query->query['user'] : false;
 		}
 
+		public function get_upload_profile_src( $size = '' ) {
+			$user = $this->get_user();
+
+			$uploaded_profile_src = $user->get_data( 'uploaded_profile_src' );
+			if ( empty( $uploaded_profile_src ) ) {
+				if ( $profile_picture = $user->get_data( 'profile_picture' ) ) {
+					$upload    = learn_press_user_profile_picture_upload_dir();
+					$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
+					if ( file_exists( $file_path ) ) {
+						$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
+						// no cache for first time after avatar changed
+						if ( $user->get_data( 'profile_picture_changed' ) == 'yes' ) {
+							$uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ), $user->get_data( 'uploaded_profile_src' ) );
+							delete_user_meta( $user->get_id(), '_lp_profile_picture_changed' );
+						}
+					} else {
+						$uploaded_profile_src = false;
+					}
+
+					$user->set_data( 'uploaded_profile_src', $uploaded_profile_src );
+				}
+			}
+
+			return $uploaded_profile_src;
+		}
+
+		public function get_profile_picture( $type = '', $size = 96 ) {
+			$user = $this->get_user();
+			if ( $type == 'gravatar' ) {
+				remove_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1 );
+			}
+
+			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
+				$user->set_data( 'profile_picture_src', $profile_picture_src );
+			}
+
+			$avatar = get_avatar( $user->get_id(), $size, '', '', array( 'gravatar' => false ) );
+
+			if ( $type == 'gravatar' ) {
+				add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
+			}
+
+			return $avatar;
+		}
+
 		/**
 		 * Get an instance of LP_Profile for a user id
 		 *

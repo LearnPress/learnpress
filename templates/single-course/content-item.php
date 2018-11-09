@@ -6,14 +6,13 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.9
+ * @version  3.1.0
  */
 
 /**
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
 $user          = LP_Global::user();
 $course_item   = LP_Global::course_item();
 $course        = LP_Global::course();
@@ -52,7 +51,7 @@ $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id()
 				do_action( 'learn-press/course-item-content' );
 
 			} else {
-				learn_press_get_template( 'single-course/content-protected.php', array( 'can_view_item' => $can_view_item ) );
+				do_action( 'learn-press/course-item-content-access-forbidden' );
 			}
 
 			/**

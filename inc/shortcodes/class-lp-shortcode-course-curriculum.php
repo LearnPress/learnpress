@@ -40,7 +40,7 @@ if ( ! class_exists( 'LP_Shortcode_Course_Curriculum' ) ) {
 			global $post;
 			$post = get_post( $this->_atts['id'] );
 
-			if ( ! $post || ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) ) {
+			if ( ! $post || ( LP_COURSE_CPT !== learn_press_get_post_type( $post->ID ) ) ) {
 				learn_press_display_message( __( 'Invalid course.', 'learnpress' ), 'error' );
 			} else {
 				setup_postdata( $post );

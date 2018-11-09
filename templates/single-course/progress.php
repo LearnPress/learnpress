@@ -28,6 +28,7 @@ if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
 $course_data       = $user->get_course_data( $course->get_id() );
 $course_results    = $course_data->get_results( false );
 $passing_condition = $course->get_passing_condition();
+
 ?>
 
 <div class="learn-press-course-results-progress">
@@ -38,7 +39,7 @@ $passing_condition = $course->get_passing_condition();
             <h4 class="lp-course-progress-heading"><?php echo esc_html( $heading ); ?></h4>
 		<?php } ?>
 
-        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items('', true) ); ?></span>
+        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $course_results['completed_items'], $course->count_items( '', true ) ); ?></span>
 
         <div class="learn-press-progress lp-course-progress">
             <div class="progress-bg lp-progress-bar">

@@ -10,7 +10,7 @@ if ( isset( $strings ) ) {
 	$__strings = $strings;
 }
 
-if ( false === ( $strings = LP_Object_Cache::get( 'strings', 'learnpress' ) ) ) {
+if ( false === ( $strings = LP_Object_Cache::get( 'strings', 'learn-press' ) ) ) {
 
 	$strings = array(
 		'confirm-redo-quiz'       => __( 'Do you want to redo quiz "%s"?', 'learnpress' ),
@@ -20,7 +20,7 @@ if ( false === ( $strings = LP_Object_Cache::get( 'strings', 'learnpress' ) ) ) 
 		'confirm-retake-course'   => __( 'Do you want to retake course "%s"?', 'learnpress' ),
 	);
 
-	LP_Object_Cache::set( 'strings', $strings, 'learnpress' );
+	LP_Object_Cache::set( 'strings', $strings, 'learn-press' );
 }
 
 /**
@@ -33,7 +33,7 @@ if ( isset( $__strings ) ) {
 class LP_Strings {
 	public static function get( $str, $context = '', $args = '' ) {
 		$string = $str;
-		if ( $strings = LP_Object_Cache::get( 'strings', 'learnpress' ) ) {
+		if ( $strings = LP_Object_Cache::get( 'strings', 'learn-press' ) ) {
 			if ( array_key_exists( $str, $strings ) ) {
 				$texts = $strings[ $str ];
 

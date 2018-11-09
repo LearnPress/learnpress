@@ -24,15 +24,13 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	}
 
 	public function add_ons_tabs() {
- 	    $tabs = array(
- 	        'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
- 	        'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
- 	        'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() )
- 	    );
-
 		$this->tabs = apply_filters(
 			'learn-press/admin/page-addons-tabs',
- 			$tabs
+			array(
+				'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins( 'installed' ) ),
+				'more'      => sprintf( __( 'Get more (%d)', 'learnpress' ), LP_Plugins_Helper::count_plugins() ),
+				'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() )
+			)
 		);
 	}
 

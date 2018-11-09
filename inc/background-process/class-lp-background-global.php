@@ -61,7 +61,7 @@ if ( ! class_exists( 'LP_Background_Global' ) ) {
 
 					if ( is_callable( $callback['callback'] ) ) {
 						//call_user_func_array( $callback['callback'], $args );
-						call_user_func( $callback['callback'], $callback );
+						return call_user_func( $callback['callback'], $callback );
 					}
 
 					//do_action_ref_array( 'learn-press/background/' . $callback['action'], $args );

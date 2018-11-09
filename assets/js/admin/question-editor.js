@@ -164,7 +164,7 @@
             answer = JSON.stringify(answer);
             Vue.http.LPRequest({
                 type: 'update-answer-title',
-                answer: answer
+                answer: JSON.stringify(answer)
             })
         },
 
@@ -252,10 +252,12 @@
  * @since 3.0.0
  */
 (function (exports, Vue, $store) {
-    var $ = jQuery;
+    var $ = jQuery,
+        $publishingAction = null;
 
     Vue.http.LPRequest = function (payload) {
-        var $publishingAction = $('#publishing-action');
+        $publishingAction = $('#publishing-action');
+
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
@@ -265,7 +267,7 @@
         $publishingAction.find('.spinner').addClass('is-active');
         $publishingAction.addClass('code-' + payload['code']);
 
-        return Vue.http.post($store.getters.urlAjax,
+        return LP_Request.push($store.getters.urlAjax,
             payload,
             {
                 emulateJSON: true,
@@ -274,6 +276,15 @@
                     code: payload['code'],
                 }
             });
+
+        // return Vue.http.post($store.getters.urlAjax,
+        //     payload,
+        //     {
+        //         emulateJSON: true,
+        //         params: {
+        //             namespace: 'LPQuestionEditorRequest'
+        //         }
+        //     });
     };
 
     Vue.http.interceptors.push(function (request, next) {
@@ -297,7 +308,7 @@
             } else {
                 $store.dispatch('requestCompleted', 'failed');
             }
-            var $publishingAction = $('#publishing-action').removeClass('code-' + request.params.code);
+            $publishingAction.removeClass('code-' + request.params.code);
             if (!$publishingAction.attr('class')) {
                 $publishingAction.find('#publish').removeClass('disabled');
                 $publishingAction.find('.spinner').removeClass('is-active');
