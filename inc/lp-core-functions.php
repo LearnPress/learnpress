@@ -3311,7 +3311,14 @@ function learn_press_has_option( $name ) {
 
 	return $wpdb->get_var( $query ) > 0;
 }
-//add_filter('learn-press/block-course-item-types', function ($a){
-//    $a[] = LP_QUIZ_CPT;
-//    return $a;
-//});
+
+/**
+ * Update option to enable shuffle themes for ad.
+ *
+ * @since 3.2.1
+ */
+function _learn_press_schedule_enable_shuffle_themes() {
+	update_option( 'learn_press_ad_shuffle_themes', 'yes' );
+}
+
+add_action( 'learn-press/schedule-enable-shuffle-themes', '_learn_press_schedule_enable_shuffle_themes' );
