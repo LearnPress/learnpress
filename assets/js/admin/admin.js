@@ -302,11 +302,13 @@
 
     function pluginActions(e) {
 
-        if ($(e.target).closest('.learnpress-premium-plugin').length) {
+        // Premium addon
+        if ($(e.target).hasClass('buy-now')) {
             return;
         }
 
         e.preventDefault();
+
         var $plugin = $(this).closest('.plugin-card');
         if ($(this).hasClass('updating-message')) {
             return;
