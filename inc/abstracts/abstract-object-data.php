@@ -199,6 +199,22 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		}
 
 		/**
+		 * Get data as LP_Datetime object
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param string $name
+		 *
+		 * @return array|LP_Datetime|mixed
+		 */
+		public function get_data_date( $name ) {
+			$data = $this->get_data( $name );
+
+			return is_a( $data, 'LP_Datetime' ) ? $data : new LP_Datetime( $data );
+		}
+
+
+		/**
 		 * @param string $name
 		 * @param string $default
 		 *

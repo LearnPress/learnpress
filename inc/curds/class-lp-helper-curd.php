@@ -26,10 +26,13 @@ class LP_Helper_CURD {
 			return;
 		}
 
+		//@since 3.3.0
+		settype( $ids, 'array' );
+
 		sort( $ids );
 		$cache_key = md5( serialize( $ids ) );
 
-		if ( false === ( $meta_data = LP_Hard_Cache::get( $cache_key, "{$type}-meta" ) ) ) {
+		if ( false === ( $meta_data = LP_Object_Cache::get( $cache_key, "{$type}-meta" ) ) ) {
 			$meta_data = array();
 
 			if ( $limit > 0 ) {
@@ -42,7 +45,7 @@ class LP_Helper_CURD {
 				$meta_data = update_meta_cache( $type, $ids );
 			}
 
-			LP_Hard_Cache::set( $cache_key, $meta_data, "{$type}-meta" );
+			LP_Object_Cache::set( $cache_key, $meta_data, "{$type}-meta" );
 		}
 
 		foreach ( $ids as $id ) {
@@ -50,7 +53,7 @@ class LP_Helper_CURD {
 				$meta_data[ $id ] = array();
 			}
 
-			LP_Object_Cache::set( $id, $meta_data[ $id ], "{$type}_meta" );
+			wp_cache_set( $id, $meta_data[ $id ], "{$type}_meta" );
 		}
 
 	}
@@ -84,12 +87,20 @@ class LP_Helper_CURD {
 			WHERE ID IN(" . join( ',', $format ) . ")
 		", $post_ids );
 
+		if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
+			$post_types = array();
+		}
+
 		if ( $posts = $wpdb->get_results( $query ) ) {
 			foreach ( $posts as $post ) {
-				$post = sanitize_post( $post, 'raw' );
+				$post                    = sanitize_post( $post, 'raw' );
+				$post_types[ $post->ID ] = $post->post_type;
 				wp_cache_set( $post->ID, $post, 'posts' );
 			}
 		}
+
+		self::update_meta_cache( $post_ids );
+		learn_press_cache_add_post_type( $post_types );
 
 		return $posts;
 	}
