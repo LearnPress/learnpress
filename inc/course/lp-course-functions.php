@@ -997,6 +997,8 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 	 * Add filter to WP custom post-type-link to edit the link of item
 	 * with the link of it's course.
 	 *
+	 * @updated 12 Nov 2018
+	 *
 	 * @param string  $post_link
 	 * @param WP_Post $post
 	 * @param bool    $leavename
@@ -1008,8 +1010,22 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 
 		remove_filter( 'post_type_link', 'learn_press_course_item_type_link', 10 );
 
-		if ( learn_press_is_support_course_item_type( $post->post_type ) && $course = LP_Global::course() ) {
-			$post_link = $course->get_item_link( $post->ID );
+		// if ( learn_press_is_support_course_item_type( $post->post_type ) && $course = LP_Global::course() ) {
+// 			$post_link = $course->get_item_link( $post->ID );
+// 		}
+
+		$course = LP_Global::course();
+
+		if ( ! $course && ( $course_id = learn_press_get_item_course( $post->ID ) ) ) {
+			$course = learn_press_get_course( $course_id );
+		}
+
+		if ( learn_press_is_support_course_item_type( $post->post_type ) ) {
+			if ( $course ) {
+				$post_link = $course->get_item_link( $post->ID );
+			} else {
+				$post_link = learn_press_get_sample_link_course_item_url( $post->ID );
+			}
 		}
 
 		add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
@@ -1018,6 +1034,27 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 	}
 }
 add_filter( 'post_type_link', 'learn_press_course_item_type_link', 10, 4 );
+
+/**
+ * Get course of the item is assigned to.
+ *
+ * @since 3.2.1
+ *
+ * @param int $item_id
+ *
+ * @return int
+ */
+function learn_press_get_item_course( $item_id ) {
+	global $wpdb;
+	$query = $wpdb->prepare( "
+        SELECT section_course_id
+        FROM {$wpdb->learnpress_sections} s 
+        INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+        WHERE si.item_id = %d
+    ", $item_id );
+
+	return (int) $wpdb->get_var( $query );
+}
 
 
 add_filter( 'template_include', 'learn_press_prepare_archive_courses' );
