@@ -16,7 +16,7 @@ add_action( 'admin_footer', 'learn_press_footer_advertisement', - 10 );
 function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
 
-	if ( current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
+	if ( !did_action('plugin_loaded') || current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
 		return $query;
 	}
 	if ( ! in_array( $post_type, apply_filters( 'learn-press/filter-user-access-types', array(
