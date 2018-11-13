@@ -398,6 +398,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param string $key
 	 * @param string $value
 	 * @param string $prev_value
+	 *
+	 * @return mixed
 	 */
 	public function update_meta( $key = '', $value = '', $prev_value = '' ) {
 		if ( func_num_args() === 0 ) {
@@ -421,12 +423,14 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 				}
 			} else {
 				if ( $value === false ) {
-					learn_press_delete_user_item_meta( $this->get_user_item_id(), $key );
+					return learn_press_delete_user_item_meta( $this->get_user_item_id(), $key );
 				} else {
-					learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value, $prev_value );
+					return learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value, $prev_value );
 				}
 			}
 		}
+
+		return false;
 	}
 
 	public function get_mysql_data() {
@@ -443,14 +447,14 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 					break;
 				case 'start_time_gmt':
 					if ( ! $v ) {
-						$v = new LP_Datetime( $v );
+						$v = LP_Datetime::instance( $v );
 					}
 
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'end_time_gmt':
 					if ( ! $v ) {
-						$v = new LP_Datetime( $v );
+						$v = LP_Datetime::instance( $v );
 					}
 
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
@@ -523,7 +527,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( $data_course = $this->get_parent() ) {
 			$data_course->calculate_course_results();
 		}
-
 		return $return;
 	}
 
@@ -601,7 +604,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return float|int
 	 */
 	public function is_exceeded() {
-		$time     = new LP_Datetime();
+		$time     = LP_Datetime::instance();
 		$current  = $time->getTimestamp();
 		$exceeded = $this->get_exceeded_time();
 
@@ -640,7 +643,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		global $wpdb;
 
-		$end_time  = new LP_Datetime();
+		$end_time  = LP_Datetime::instance();
 		$null_time = '0000-00-00 00:00';
 
 		$this->set_end_time( $end_time->toSql() );

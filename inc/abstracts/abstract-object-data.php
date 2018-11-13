@@ -71,7 +71,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * CURD class to manipulation with database.
 		 *
-		 * @var null
+		 * @var LP_Object_Data_CURD
 		 */
 		protected $_curd = null;
 
@@ -88,6 +88,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param null $data
 		 */
 		public function __construct( $data = null ) {
+
 			$this->_data = (array) $data;
 			if ( array_key_exists( 'id', $this->_data ) ) {
 				$this->set_id( absint( $this->_data['id'] ) );
@@ -211,9 +212,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		public function get_data_date( $name ) {
 			$data = $this->get_data( $name );
 
-			return is_a( $data, 'LP_Datetime' ) ? $data : new LP_Datetime( $data );
+			return is_a( $data, 'LP_Datetime' ) ? $data : LP_Datetime::instance( $data );
 		}
-
 
 		/**
 		 * @param string $name
@@ -278,11 +278,11 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 					}
 					catch ( Exception $ex ) {
-						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
-						die( __FILE__ . '::' . __FUNCTION__ );;
+						die( __FILE__ . '::' . __FUNCTION__ );
 					}
 				}
+				$this->_changes[] = $key_or_data;
 			}
 		}
 
@@ -300,12 +300,18 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $key
 		 * @param $value
 		 */
-		public function set_data_date( $key, $value ) {
+		public function set_data_date( $key, $value = 'current_time' ) {
+
+			if ( $value === 'current_time' || '' === $value ) {
+				$value = current_time( 'timestamp' );
+			}
+
 			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
-				$value = new LP_Datetime( $value );
+				//$value = LP_Datetime::instance( $value );
 			}
 
 			$this->_set_data( $key, $value );
+
 		}
 
 		public function set_data_null_date( $key ) {
@@ -546,11 +552,27 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 		/**
 		 * Update meta.
+		 *
+		 * @updated 3.1.0
+		 *
+		 * @param string $key
+		 * @param mixed  $value
+		 * @param mixed  $prev_value
 		 */
-		public function update_meta() {
-			if ( $this->_meta_data ) {
-				foreach ( $this->_meta_data as $meta_data ) {
-					$this->_curd->update_meta( $this, $meta_data );
+		public function update_meta( $key = '', $value = '', $prev_value = '' ) {
+			if ( func_num_args() == 0 ) {
+				if ( $this->_meta_data ) {
+					foreach ( $this->_meta_data as $meta_data ) {
+						$this->_curd->update_meta( $this, $meta_data );
+					}
+				}
+			} else {
+				$update = update_post_meta( $this->get_id(), $key, $value, $prev_value );
+				if ( ! is_bool( $update ) && $update ) {
+					$this->_meta_data = (object) array(
+						'meta_key'   => $key,
+						'meta_value' => $value
+					);
 				}
 			}
 		}

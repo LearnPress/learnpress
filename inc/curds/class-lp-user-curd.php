@@ -613,13 +613,13 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		if ( ! empty( $item_data['start_time'] ) && empty( $item_data['start_time_gmt'] ) ) {
-			$start_time = new LP_Datetime( $item_data['start_time'] );
+			$start_time = LP_Datetime::instance( $item_data['start_time'] );
 
 			$item_data['start_time_gmt'] = $start_time->toSql( false );
 		}
 
 		if ( ! empty( $item_data['end_time'] ) && empty( $item_data['end_time_gmt'] ) ) {
-			$start_time = new LP_Datetime( $item_data['end_time'] );
+			$start_time = LP_Datetime::instance( $item_data['end_time'] );
 
 			$item_data['end_time_gmt'] = $start_time->toSql( false );
 		}
@@ -756,7 +756,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		global $wpdb;
 		$item     = LP_Course_Item::get_item( $item_id );
-		$time     = new LP_Datetime();
+		$time     = LP_Datetime::instance();
 		$inserted = $wpdb->insert(
 			$wpdb->learnpress_user_items,
 			apply_filters(

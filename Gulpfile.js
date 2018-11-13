@@ -21,13 +21,22 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     mkdirp = require("mkdirp"),
     concat = require('gulp-concat'),
-    cleanCSS = require('gulp-clean-css');
+    cleanCSS = require('gulp-clean-css'),
+    through = require('through2');
 
 gulp.task('scss', function () {
     return gulp.src(['assets/scss/**/*.scss'])
         .pipe(sourceMaps.init())
         .pipe(scss())
-        //.pipe(sourceMaps.write())
+        .pipe(function (destPath, options) {
+            function sourceMapWrite(file, encoding, callback) {
+                console.log('xxxxx', file)
+
+                this.push(file);
+                callback();
+            }
+            return through.obj(sourceMapWrite);
+        }())
         .pipe(gulp.dest('assets/css'))
     //.pipe(liveReload());
 });
@@ -228,4 +237,7 @@ gulp.task('zipx', ['mk-zip'], function () {
         .pipe(gulpCopy("/Users/tu/Documents/htdocs/"));
 })
 
+gulp.task('format', ['scss'], function () {
+
+})
 // end of the world!

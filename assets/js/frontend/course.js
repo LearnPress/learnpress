@@ -6,7 +6,7 @@
  * @author ThimPress
  * @package LearnPress/JS/Course
  */
-(function ($, LP, _) {
+(function ($, LP) {
 
     'use strict';
 
@@ -81,7 +81,56 @@
             $courseItems = $curriculum.find('.course-item'),
             isShowingHeader = true,
             fullScreen, contentTop = 0, headerTimer,
-            inPopup = false;
+            inPopup = false,
+            isRTL = $body.hasClass('rtl');
+
+        /**
+         * fire native event of a DOM
+         *
+         * @param node
+         * @param eventName
+         */
+        function fireNativeEvent(node, eventName) {
+            var doc, event;
+            if (node.ownerDocument) {
+                doc = node.ownerDocument;
+            } else if (node.nodeType == 9) {
+                doc = node;
+            } else {
+                throw new Error("Invalid node passed to fireEvent: " + node.id);
+            }
+
+            if (node.dispatchEvent) {
+                var eventClass = "";
+
+                switch (eventName) {
+                    case "click":
+                    case "mousedown":
+                    case "mouseup":
+                        eventClass = "MouseEvents";
+                        break;
+
+                    case "focus":
+                    case "change":
+                    case "blur":
+                    case "select":
+                        eventClass = "HTMLEvents";
+                        break;
+
+                    default:
+                        throw "fireEvent: Couldn't find an event class for event '" + eventName + "'.";
+                        break;
+                }
+                event = doc.createEvent(eventClass);
+                event.initEvent(eventName, true, true);
+                event.synthetic = true;
+                node.dispatchEvent(event, true);
+            } else if (node.fireEvent) {
+                event = doc.createEventObject();
+                event.synthetic = true;
+                node.fireEvent("on" + eventName, event);
+            }
+        }
 
         /**
          * Toggle answer option check/uncheck
@@ -102,11 +151,8 @@
             if ($chk.is(':disabled')) {
                 return;
             }
-            if ($chk.is(':checkbox')) {
-                $chk[0].checked = !$chk[0].checked;
-            } else {
-                $chk[0].checked = true;
-            }
+
+            fireNativeEvent($chk[0], 'click');
         }
 
         /**
@@ -177,6 +223,8 @@
             var $tab = $(tab),
                 $parent = $tab.closest('.course-nav');
 
+            //getCurriculum();
+
             if ($parent.siblings().length === 0) {
                 return;
             }
@@ -197,6 +245,7 @@
 
             var s = this.value,
                 r = new RegExp(s, 'ig');
+
             $courseItems.map(function () {
                 var $item = $(this),
                     itemName = $item.find('.item-name').text();
@@ -218,6 +267,7 @@
                     $(this).show();
                 }
             });
+
             $(this).closest('.course-item-search').toggleClass('has-keyword', !!this.value.length);
         }
 
@@ -236,7 +286,7 @@
         }
 
         function maybeShowCurriculum(e) {
-            return;
+            //return;
             var offset = $(this).offset(),
                 offsetX = e.pageX - offset.left,
                 curriculumWidth = getCurriculumWidth();
@@ -248,21 +298,27 @@
             timeoutToClose();
 
             if (!isShowingHeader) {
-                $curriculum.stop().animate({
-                    left: 0
-                });
+                $body.removeClass('distraction-on').addClass('distraction-auto-close');
 
-                $contentItem.stop().animate({
-                    left: curriculumWidth
-                });
+                /*
+                 $curriculum.stop().animate({
+                 left: 0
+                 }, function () {
+                 getCurriculum();
+                 });
 
-                $footer.stop().animate({
-                    left: curriculumWidth
-                }, function () {
-                    $(document, window).trigger('learn-press/toggle-content-item');
-                });
+                 $contentItem.stop().animate({
+                 //left: curriculumWidth
+                 });
 
-                $header.find('.course-item-search').show();
+                 $footer.stop().animate({
+                 left: curriculumWidth
+                 }, function () {
+                 $(document, window).trigger('learn-press/toggle-content-item');
+                 });
+
+                 $header.find('.course-item-search').show();*/
+                getCurriculum();
                 toggleEventShowCurriculum(true);
                 isShowingHeader = true;
             }
@@ -281,55 +337,72 @@
                     return;
                 }
 
-                $curriculum.stop().animate({
+                /**
+                 $curriculum.stop().animate({
                     left: -curriculumWidth
                 });
 
-                $contentItem.stop().animate({
-                    left: 0
+                 $contentItem.stop().animate({
+                    //left: 0
                 });
 
-                $footer.stop().animate({
+                 $footer.stop().animate({
                     left: 0
                 }, function () {
                     $(document, window).trigger('learn-press/toggle-content-item');
                 });
 
-                $header.find('.course-item-search').hide();
+                 $header.find('.course-item-search').hide();
+                 */
 
+                $body.addClass('distraction-on').removeClass('distraction-auto-close');
                 isShowingHeader = false;
                 toggleEventShowCurriculum();
-            }, 3000);
+            }, 2000);
         }
 
         function toggleContentItem(e) {
             e.preventDefault();
             var curriculumWidth = getCurriculumWidth();
-            fullScreen = $body.toggleClass('full-screen-content-item').hasClass('full-screen-content-item');
-            $curriculum
-                .stop()
-                .animate({
-                    left: fullScreen ? -curriculumWidth : 0
-                });
-
-            $contentItem
-                .stop()
-                .animate({
-                    left: fullScreen ? 0 : curriculumWidth
-                });
-
-            $footer.stop().animate({
-                left: fullScreen ? 0 : curriculumWidth
-            }, function () {
-                $(document, window).trigger('learn-press/toggle-content-item');
-            });
+            fullScreen = $body.toggleClass('distraction-on').hasClass('distraction-on');
+            // $curriculum
+            //     .stop()
+            //     .animate({
+            //         left: fullScreen ? -curriculumWidth : 0
+            //     }, 750, function () {
+            //         getCurriculum();
+            //     });
+            //
+            // $contentItem
+            //     .stop()
+            //     .animate({
+            //         left: fullScreen ? 0 : curriculumWidth
+            //     }, 750);
+            //
+            // $footer.stop().animate({
+            //     left: fullScreen ? 0 : curriculumWidth
+            // }, function () {
+            //     $(document, window).trigger('learn-press/toggle-content-item');
+            // });
 
             isShowingHeader = !fullScreen;
             window.localStorage && window.localStorage.setItem('lp-full-screen', fullScreen ? 'yes' : 'no');
+            getCurriculum();
+            $.ajax({
+                url: '',
+                data: {
+                    'lp-ajax': 'toggle-distraction-mode',
+                    distraction: fullScreen ? 'yes' : 'no'
+                },
+                success: function () {
+
+                }
+            });
 
             fullScreen && toggleEventShowCurriculum();
-            $header.find('.course-title').stop().animate({marginLeft: fullScreen ? -curriculumWidth : 0})
-            $header.find('.course-item-search').stop().animate({opacity: fullScreen ? 0 : 1});
+            //$header.find('.course-title').stop().animate({marginLeft: fullScreen ? -curriculumWidth : 0})
+            //$header.find('.course-item-search').stop().animate({opacity: fullScreen ? 0 : 1});
+            //$body.toggleClass('distraction-on', fullScreen);
         }
 
         function initEvents() {
@@ -366,7 +439,7 @@
                 width: '100%'
             }).css('opacity', 1).end().css('opacity', 1);
 
-
+            $curriculumScrollable = $curriculum.find('.curriculum-scrollable')
             $curriculumScrollable.addClass('scrollbar-light')
                 .scrollbar({
                     scrollx: false
@@ -427,6 +500,41 @@
             });
         }
 
+        function curriculumIsVisible() {
+            return !isRTL ? parseInt($curriculum.css('left')) >= 0 : parseInt($curriculum.css('right')) >= 0;
+        }
+
+        function getCurriculum() {
+            setTimeout(function () {
+                if (curriculumIsVisible() && $curriculum.attr('data-loaded') !== 'true' && $curriculum.data('use_ajax') === 'yes') {
+                    $.ajax({
+                        url: window.location.href.addQueryVar('get-raw-content', 'curriculum'),
+                        success: function (response) {
+                            var $content = $(response);
+
+                            if (!$content.is('.course-curriculum')) {
+                                $content = $content.find('.course-curriculum')
+                            }
+                            $curriculum.html($content.html()).attr('data-loaded', 'true');
+                            $courseItems = $curriculum.find('.course-item')
+                            if (inPopup) {
+                                initScrollbar();
+
+                                setTimeout(function () {
+                                    var $cs = $body.find('.curriculum-sections').parent();
+                                    $cs.scrollTo($cs.find('.course-item.current'), 100);
+
+                                    if (window.location.hash) {
+                                        $('.content-item-scrollable:last').scrollTo($(window.location.hash));
+                                    }
+                                }, 300);
+                            }
+                        }
+                    })
+                }
+            }, 300)
+        }
+
         /**
          * Init
          */
@@ -435,35 +543,39 @@
             initSections();
             initEvents();
 
-
             if (!inPopup) {
+                getCurriculum();
                 return;
             }
 
-            $contentItem.appendTo($body);
-            $curriculum.appendTo($body);
+            //$contentItem.appendTo($body);
+            //$curriculum.appendTo($body);
+
+            $('.course-summary.item-summary').appendTo($body);
 
             if ($('#wpadminbar').length) {
-                $body.addClass('wpadminbar');
+                //$body.addClass('wpadminbar');
                 contentTop = 32;
             }
 
             initScrollbar();
             fitVideo();
 
-            fullScreen = window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
+            fullScreen = $body.hasClass('distraction-on');// window.localStorage && 'yes' === window.localStorage.getItem('lp-full-screen');
+
             if($(window).width()<=768){
                 fullScreen = true;
             }
+
             if (fullScreen) {
                 var curriculumWidth = getCurriculumWidth();
-                $body.addClass('full-screen-content-item');
-                $contentItem.css('left', 0);
-                $curriculum.css('left', -curriculumWidth);
-                $footer.css('left', 0);
+                //$body.addClass('distraction-on');
+                //$contentItem.css('left', 0);
+                //$curriculum.css('left', -curriculumWidth);
+                //$footer.css('left', 0);
                 isShowingHeader = !fullScreen;
-                $header.find('.course-title').css({marginLeft: fullScreen ? -curriculumWidth : 0})
-                $header.find('.course-item-search').css({opacity: fullScreen ? 0 : 1});
+                // $header.find('.course-title').css({marginLeft: fullScreen ? -curriculumWidth : 0})
+                // $header.find('.course-item-search').css({opacity: fullScreen ? 0 : 1});
                 toggleEventShowCurriculum();
             }
 
@@ -479,6 +591,32 @@
             $body.css('opacity', 1);
 
         }
+
+        $('.lp-form.lp-form-ajax').submit(function () {
+            $body.addClass('lp-loading');
+            var data = $.extend({}, $('.answer-options').serializeJSON(), $(this).serializeJSON());
+            $.ajax({
+                url: lpCourseSettings.root_url,
+                data: data,
+                type: 'post',
+                success: function (response) {
+                    response = LP.parseJSON(response);
+                    if (response.redirect) {
+                        window.location.href = response.redirect;
+                    }
+
+                    $body.removeClass('lp-loading');
+                },
+                error: function () {
+                    $body.removeClass('lp-loading');
+                }
+            });
+            return false;
+        });
+
+        $(document).on('learn-press/toggle-content-item', function () {
+
+        })
 
         new LP.Alerts();
 
@@ -561,4 +699,4 @@
         });
     });
 })
-(jQuery, LP, _);
+(jQuery, LP);

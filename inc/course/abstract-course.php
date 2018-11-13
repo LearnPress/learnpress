@@ -34,7 +34,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * @var LP_Course_CURD|null
 		 */
-		protected $_curd = null;
+		protected static $curd = null;
 
 		/**
 		 * Post type
@@ -75,7 +75,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function __construct( $the_course, $deprecated = '' ) {
 
-			$this->_curd = new LP_Course_CURD();
+			if ( empty( self::$curd ) ) {
+				self::$curd = new LP_Course_CURD();
+			}
 
 			if ( is_numeric( $the_course ) && $the_course > 0 ) {
 				$this->set_id( $the_course );
@@ -143,7 +145,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		public function load_curriculum() {
-			$this->_curd->load( $this );
+			self::$curd->load( $this );
 		}
 
 		/**
@@ -282,9 +284,28 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool|LP_Course_Section[]
 		 */
 		public function get_curriculum( $section_id = 0, $force = false ) {
-			//_deprecated_function( __CLASS__ . '->get_curriculum()', '3.0.12', __CLASS__ . '->get_sections()' );
+			_deprecated_function( __CLASS__ . '->get_curriculum()', '3.0.12', __CLASS__ . '->get_sections()' );
 
 			return $this->get_sections( 'object', $section_id );
+
+			if ( ! $this->get_id() ) {
+				return false;
+			}
+
+			$this->load();
+
+			$curriculum = self::$curd->get_curriculum( $this->get_id() );
+			$return     = false;
+
+			if ( $section_id ) {
+				if ( ! empty( $curriculum[ $section_id ] ) ) {
+					$return = $curriculum[ $section_id ];
+				}
+			} else {
+				$return = $curriculum;
+			}
+
+			return apply_filters( 'learn-press/course/curriculum', $return, $this->get_id(), $section_id );
 		}
 
 		/**
@@ -343,7 +364,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$items      = array();
 				$sections   = array();
 
-				if ( $all_items = $this->_curd->read_course_items( $this->get_id() ) ) {
+				if ( $all_items = self::$curd->read_course_items( $this->get_id() ) ) {
 					foreach ( $all_items as $item ) {
 						if ( empty( $item_types[ $item->type ] ) ) {
 							$item_types[ $item->type ] = array();
@@ -1719,8 +1740,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return array|LP_Course_Section[]|LP_Course_Section
 		 */
 		public function get_sections( $return = 'object', $section_id = 0 ) {
+
 			if ( false === ( $sections = LP_Object_Cache::get( 'course-' . $this->get_id(), 'learn-press/course-sections' ) ) ) {
-				$sections = $this->_curd->read_course_sections( $this->get_id() );
+				$sections = self::$curd->read_course_sections( $this->get_id() );
 				LP_Object_Cache::set( 'course-' . $this->get_id(), $sections, 'learn-press/course-sections' );
 			}
 
@@ -1731,14 +1753,16 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$object_sections = array();
 
 					foreach ( $sections as $k => $section ) {
-						$sid     = $section->section_id;
-						$section = new LP_Course_Section( $section );
+						$sid     = $section->id;
+						$section = new LP_Course_Section( $sid );
 						$section->set_position( ++ $position );
+						$section->set_course_id( $this->get_id() );
 
 						$object_sections[ $sid ] = $section;
 					}
 					$sections       = $object_sections;
 					$this->sections = $sections;
+
 				} else {
 					$sections = $this->sections;
 				}

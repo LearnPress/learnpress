@@ -73,6 +73,9 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 			$return = parent::check();
 
 			if ( $answers = $this->get_answers() ) {
+				if ( is_array( $user_answer ) ) {
+					$user_answer = reset( $user_answer );
+				}
 				foreach ( $answers as $key => $option ) {
 					if ( ( $option['is_true'] == 'yes' ) && ( $option['value'] == $user_answer ) ) {
 						$return['correct'] = true;
@@ -80,7 +83,11 @@ if ( ! class_exists( 'LP_Question_True_Or_False ' ) ) {
 						break;
 					}
 				}
+				//var_dump( $this->get_id(), $return );
+
+				//echo "[$this->get_id()]"; print_r($user_answer); print_r($answers);
 			}
+
 
 			return $return;
 		}
