@@ -30,10 +30,37 @@ if ( isset( $__strings ) ) {
 	$strings = $__strings;
 }
 
+/**
+ * Class LP_Strings
+ */
 class LP_Strings {
+
+	/**
+	 * @since 3.x.x
+	 *
+	 * @var array
+	 */
+	protected static $strings = array();
+
+	/**
+	 * @since 3.x.x
+	 */
+	public static function load() {
+		$strings = array();
+		include_once "lp-strings.php";
+		self::$strings = $strings;
+	}
+
+	/**
+	 * @param string $str
+	 * @param string $context
+	 * @param string $args
+	 *
+	 * @return mixed|string
+	 */
 	public static function get( $str, $context = '', $args = '' ) {
 		$string = $str;
-		if ( $strings = LP_Object_Cache::get( 'strings', 'learn-press' ) ) {
+		if ( $strings = self::$strings ) {
 			if ( array_key_exists( $str, $strings ) ) {
 				$texts = $strings[ $str ];
 
@@ -62,3 +89,5 @@ class LP_Strings {
 
 	}
 }
+
+LP_Strings::load();

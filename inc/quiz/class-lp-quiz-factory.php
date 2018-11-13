@@ -146,7 +146,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$check = self::maybe_save_questions( 'start' );
 
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( learn_press_is_exception( $check ) ) {
 					throw $check;
 				}
 
@@ -204,7 +204,6 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 			learn_press_send_json( $return );
 
-
 			die();
 		}
 
@@ -225,7 +224,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$check = self::maybe_save_questions( 'check-answer' );
 
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( learn_press_is_exception( $check ) ) {
 					throw $check;
 				}
 
@@ -284,7 +283,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$check = self::maybe_save_questions( 'show-hint' );
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( learn_press_is_exception( $check ) ) {
 					throw $check;
 				}
 
@@ -340,7 +339,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 
 				$check = self::maybe_save_questions( 'complete' );
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( learn_press_is_exception( $check ) ) {
 					throw $check;
 				}
 
@@ -352,7 +351,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$data = $user->finish_quiz( $quiz_id, $course_id, true );
 
 				if ( is_wp_error( $data ) ) {
-					throw new Exception( $data->get_error_message(), $data->get_error_code() );
+					throw new LP_Exception( $data->get_error_message(), $data->get_error_code() );
 				} else {
 					if ( $course = learn_press_get_course( $course_id ) ) {
 						$quiz     = $course->get_item( $quiz_id );
@@ -364,7 +363,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					}
 				}
 			}
-			catch ( Exception $ex ) {
+			catch ( LP_Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 			}
@@ -401,7 +400,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$check = self::maybe_save_questions( 'redo' );
 
 				// PHP Exception
-				if ( true !== $check ) {
+				if ( learn_press_is_exception( $check ) && $check->getCode() === 'user_completed_quiz' ) {
 					throw $check;
 				}
 
@@ -412,7 +411,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				$data      = $user->retake_quiz( $quiz_id, $course_id, true );
 
 				if ( is_wp_error( $data ) ) {
-					throw new Exception( $data->get_error_message(), $data->get_error_code() );
+					throw new LP_Exception( $data->get_error_message(), $data->get_error_code() );
 				} else {
 					$redirect = $quiz->get_question_link( learn_press_get_user_item_meta( $data['user_item_id'], '_current_question' ) );
 
@@ -421,12 +420,11 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					$result['data']     = $data;
 				}
 			}
-			catch ( Exception $ex ) {
+			catch ( LP_Exception $ex ) {
 				$result['message'] = $ex->getMessage();
 				$result['code']    = $ex->getCode();
 				$result['result']  = 'failure';
 			}
-
 			// Filter
 			$result = apply_filters( 'learn-press/quiz/redo-result', $result );
 			// Send ajax json
@@ -484,11 +482,12 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 * @param string $action
 		 * @param string $nonce
 		 *
-		 * @return bool|Exception
+		 * @return array|bool|LP_Exception
 		 *
 		 * @since 3.0.0
 		 */
 		public static function maybe_save_questions( $action = '', $nonce = '' ) {
+
 			try {
 
 				$nav_type    = LP_Request::get_string( 'nav-type' );
@@ -499,7 +498,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				learn_press_setup_object_data( get_post( $course_id ) );
 
 				if ( ! LP_Nonce_Helper::verify_quiz_action( $action, $nonce, $quiz_id, $course_id ) ) {
-					throw new Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
+					throw new LP_Exception( __( 'Something went wrong!', 'learnpress' ), LP_INVALID_REQUEST );
 				}
 
 				if ( ! $questions = self::get_answers_posted() ) {
@@ -514,7 +513,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				if ( $quiz_data = $course_data->get_item_quiz( $quiz->get_id() ) ) {
 
 					if ( 'completed' === $quiz_data->get_status() ) {
-						return true;
+						throw new LP_Exception( LP_Strings::get( 'you_have_completed_quiz' ), 'user_completed_quiz' );
 					}
 
 					// If user click 'Skip' button
@@ -542,8 +541,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 					'next_question' => $user->get_next_question( $quiz_id, $course_id )
 				);
 			}
-			catch ( Exception $ex ) {
-				return $ex;
+			catch ( LP_Exception $ex ) {
+				$return = $ex;
 			}
 
 			return $return;

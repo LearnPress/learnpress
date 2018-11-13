@@ -125,7 +125,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_current_question( $return = '' ) {
 		$question_id = $this->get_meta( '_current_question', true );
-		$question    = learn_press_get_question( $question_id );
+		$question    = false;
+		if ( learn_press_get_post_type( $question_id ) === LP_QUESTION_CPT ) {
+			$question = learn_press_get_question( $question_id );
+		}
 
 		if ( ! $question || ! $question->is_publish() ) {
 			if ( $questions = $this->get_quiz()->get_questions() ) {
@@ -219,8 +222,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		);
 
 		if ( $questions = $quiz->get_questions() ) {
+
 			foreach ( $questions as $question_id ) {
-				$question          = LP_Question::get_question( $question_id );
+
+				$question = LP_Question::get_question( $question_id );
+
 				$answered          = $this->get_question_answer( $question_id );
 				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
 				$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
@@ -253,11 +259,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			// make sure user mark greater than 0
 			$result['user_mark'] = ( $result['user_mark'] >= 0 ) ? $result['user_mark'] : 0;
 
-				$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
-				$result['result'] = $percent;
-				$result['grade']  = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
-				$result['grade_text'] = ( $result['grade'] == 'passed' ) ? __('passed', 'learnpress'): __('failed', 'learnpress');
-				$result['question_count'] = sizeof( $questions );
+			$percent                  = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
+			$result['result']         = $percent;
+			$result['grade']          = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
+			$result['grade_text']     = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
+			$result['question_count'] = sizeof( $questions );
 
 			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
 				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
@@ -454,7 +460,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					throw new Exception( __( 'You have already checked this question.', 'learnpress' ), 1010 );
 				}
 			}
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			return new WP_Error( $ex->getCode(), $ex->getMessage() );
 		}
 

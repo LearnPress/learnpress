@@ -2440,7 +2440,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			if ( $user->has_enrolled_course( $course->get_id() ) ) {
 				continue;
 			}
-			if( !$user->can_enroll_course($course->get_id()) ) {
+			if ( ! $user->can_enroll_course( $course->get_id() ) ) {
 				continue;
 			}
 			// error. this scripts will create new order each course item
@@ -2827,7 +2827,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 			esc_url( wp_login_url( get_permalink() ) ),
 			$args['login_text']
 		);
-	} elseif( $course_item ) {
+	} elseif ( $course_item ) {
 		$onclick = sprintf( 'return addComment.moveForm( "%1$s-%2$s", "%2$s", "%3$s", "%4$s" )',
 			$args['add_below'], $comment->comment_ID, $args['respond_id'], $post->ID
 		);
@@ -3322,3 +3322,7 @@ function _learn_press_schedule_enable_shuffle_themes() {
 }
 
 add_action( 'learn-press/schedule-enable-shuffle-themes', '_learn_press_schedule_enable_shuffle_themes' );
+
+function learn_press_is_exception( $thing ) {
+	return $thing instanceof LP_Exception;
+}
