@@ -171,7 +171,10 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		}
 
 		/**
-		 * Get object data
+		 * Get object data.
+		 *
+		 * @updated 3.x.x
+		 * @date    13 Nov 2018
 		 *
 		 * @param string $name - Optional. Name of data want to get, true if return all.
 		 * @param mixed  $default
@@ -179,7 +182,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_data( $name = '', $default = '' ) {
-			if ( is_string( $name ) ) {
+			if ( is_string( $name ) && $name ) {
 				// Check in data first then check in extra data
 				return
 					array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :
@@ -191,11 +194,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				}
 
 				return $data;
-			} elseif ( true === $name ) {
-				return array_merge( $this->_data, $this->_extra_data );
 			}
 
-			return false;
+			return array_merge( $this->_data, $this->_extra_data );
 		}
 
 		/**
@@ -279,7 +280,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 					catch ( Exception $ex ) {
 						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
-						die(__FILE__ . '::'.__FUNCTION__);;
+						die( __FILE__ . '::' . __FUNCTION__ );;
 					}
 				}
 			}

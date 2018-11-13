@@ -434,6 +434,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		 * @var LP_Datetime $v
 		 */
 		$columns = array();
+
 		foreach ( $this->get_data() as $k => $v ) {
 			switch ( $k ) {
 				case 'start_time':

@@ -361,7 +361,17 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return mixed
 		 */
 		public function get_questions() {
-			$questions = $this->_curd->get_questions( $this );
+			if ( false === ( $questions = LP_Object_Cache::get( $this->get_id(), 'quiz-questions' ) ) ) {
+				$questions = array();
+
+				if ( $ids = $this->_curd->read_questions( $this->get_id() ) ) {
+					foreach ( $ids as $id ) {
+						$questions[ $id ] = $id;
+					}
+				}
+
+				LP_Object_Cache::set( $this->get_id(), $questions, 'quiz-questions' );
+			}
 
 			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
 		}
@@ -443,6 +453,24 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
+		}
+
+		/**
+		 * Get all question's ids of the quiz.
+		 *
+		 * @since 3.x.x
+		 *
+		 * @return int[]
+		 */
+		public function get_question_ids() {
+			if ( false === ( $ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids' ) ) ) {
+				$ids = $this->_curd->read_question_ids( $this->get_id() );
+				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids' );
+			}
+
+			$ids = apply_filters( 'learn-press/quiz-question-ids', $ids, $this->get_id(), $this->get_course_id() );
+
+			return apply_filters( 'learn-press/quiz/get-question-ids', $ids, $this->get_id(), $this->get_course_id() );
 		}
 
 		/**
@@ -784,7 +812,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_quiz
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -855,7 +883,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get css classes of question displays in a list.
 		 *
-		 * @param int $question_id
+		 * @param int  $question_id
 		 * @param null $position
 		 *
 		 * @return array
