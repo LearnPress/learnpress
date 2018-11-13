@@ -2,11 +2,10 @@
     z-index: 20;
 }
 .learn-press-advertisement-slider {
-    margin: 0px 20px 0px 180px;
+    margin: 50px 20px 0 0;
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
-    padding-bottom: 50px;
     z-index: 10;
     .slider-items {
         &:after {
@@ -19,12 +18,11 @@
         width: 100%;
         margin-right: -100%;
         padding: 20px;
-        visibility: hidden;
         opacity: 0;
         background: #FFF;
         @include box-sizing(border-box);
-        -webkit-transition: visibility 0.5s linear, opacity 0.5s linear;
-        transition: visibility 0.5s linear, opacity 0.5s linear;
+        -webkit-transition: opacity 0.5s linear;
+        transition: opacity 0.5s linear;
         .slide-thumbnail {
             float: left;
             width: 35%;
@@ -48,13 +46,12 @@
             }
         }
         &.slide-active {
-            visibility: visible;
             opacity: 1;
         }
     }
     .slider-controls {
         position: absolute;
-        bottom: 70px;
+        bottom: 20px;
         right: 20px;
         .next-item,
         .prev-item {
@@ -77,10 +74,10 @@
             }
         }
         .next-item:before {
-            content: "\f341";
+            content: "\f345";
         }
         .prev-item:before {
-            content: "\f345";
+            content: "\f341";
         }
     }
 }

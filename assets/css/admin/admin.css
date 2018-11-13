@@ -688,11 +688,10 @@
   z-index: 20; }
 
 .learn-press-advertisement-slider {
-  margin: 0px 20px 0px 180px;
+  margin: 50px 20px 0 0;
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  padding-bottom: 50px;
   z-index: 10; }
   .learn-press-advertisement-slider .slider-items:after {
     clear: both;
@@ -704,14 +703,13 @@
     width: 100%;
     margin-right: -100%;
     padding: 20px;
-    visibility: hidden;
     opacity: 0;
     background: #FFF;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    -webkit-transition: visibility 0.5s linear, opacity 0.5s linear;
-    transition: visibility 0.5s linear, opacity 0.5s linear; }
+    -webkit-transition: opacity 0.5s linear;
+    transition: opacity 0.5s linear; }
     .learn-press-advertisement-slider .slide-item .slide-thumbnail {
       float: left;
       width: 35%; }
@@ -729,11 +727,10 @@
       .learn-press-advertisement-slider .slide-item .slide-detail .description-short {
         display: none; }
     .learn-press-advertisement-slider .slide-item.slide-active {
-      visibility: visible;
       opacity: 1; }
   .learn-press-advertisement-slider .slider-controls {
     position: absolute;
-    bottom: 70px;
+    bottom: 20px;
     right: 20px; }
     .learn-press-advertisement-slider .slider-controls .next-item,
     .learn-press-advertisement-slider .slider-controls .prev-item {
@@ -755,9 +752,9 @@
         .learn-press-advertisement-slider .slider-controls .prev-item:hover:before {
           color: #0085ba; }
     .learn-press-advertisement-slider .slider-controls .next-item:before {
-      content: "\f341"; }
-    .learn-press-advertisement-slider .slider-controls .prev-item:before {
       content: "\f345"; }
+    .learn-press-advertisement-slider .slider-controls .prev-item:before {
+      content: "\f341"; }
 
 @media only screen and (max-width: 1200px) {
   .learn-press-advertisement-slider .slide-item .slide-thumbnail {

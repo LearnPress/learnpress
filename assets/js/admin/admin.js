@@ -413,7 +413,7 @@
     function _ready() {
 
         $('.learn-press-dropdown-pages').dropdownPages();
-        $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
+        $('.learn-press-advertisement-slider').LP_Advertisement_Slider().appendTo($('#wpbody-content'));
         $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
         $('.learn-press-tip').QuickTip();
 
