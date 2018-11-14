@@ -866,7 +866,7 @@ ul.learn-press-nav-tabs {
             content: "\f00c"; }
         .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.status-completed .course-item-status {
           color: #00adff; }
-        .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.passed {
+        .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.passed .course-item-status {
           border-color: #00adff;
           color: #00adff; }
         .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.item-failed .course-item-status, .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.failed .course-item-status {

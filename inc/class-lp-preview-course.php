@@ -29,14 +29,9 @@ class LP_Preview_Course {
 		if ( empty( self::$_preview_course ) ) {
 			global $wpdb;
 
-			$query = $wpdb->prepare( "
-				SELECT ID
-				FROM {$wpdb->posts} p 
-				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s 
-				WHERE pm.meta_value = %s
-			", '_lp_preview_course', 'yes' );
+			$ids = self::get_preview_courses();
 
-			if ( ! $course_id = $wpdb->get_var( $query ) ) {
+			if ( $ids === false ) {
 				$title                 = __( 'Preview Course', 'learnpress' );
 				self::$_preview_course = wp_insert_post(
 					array(
@@ -49,8 +44,10 @@ class LP_Preview_Course {
 				);
 
 				update_post_meta( self::$_preview_course, '_lp_preview_course', 'yes' );
+
+				LP_Object_Cache::set( 'preview-courses', array( self::$_preview_course ), 'learnpress' );
 			} else {
-				self::$_preview_course = $course_id;
+				self::$_preview_course = $ids[0];
 			}
 		}
 
@@ -150,7 +147,8 @@ class LP_Preview_Course {
 
 			//learn_press_debug($_SERVER);die();
 
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 			wp_redirect( get_home_url() );
 			exit();
@@ -158,7 +156,7 @@ class LP_Preview_Course {
 	}
 
 	public static function get_preview_courses() {
-		if ( false === ( $ids = LP_Object_Cache::get( 'preview-courses', 'learn-press' ) ) ) {
+		if ( false === ( $ids = LP_Object_Cache::get( 'preview-courses' ) ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT post_id
@@ -168,7 +166,7 @@ class LP_Preview_Course {
 			", '_lp_preview_course', 'yes' );
 
 			$ids = $wpdb->get_col( $query );
-			LP_Object_Cache::set( 'preview-courses', $ids, 'learnpress' );
+			LP_Object_Cache::set( 'preview-courses', $ids );
 		}
 
 		return $ids;

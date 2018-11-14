@@ -36,7 +36,7 @@ if ( isset( $__strings ) ) {
 class LP_Strings {
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @var array
 	 */

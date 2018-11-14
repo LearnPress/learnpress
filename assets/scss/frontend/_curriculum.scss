@@ -355,8 +355,10 @@ ul.learn-press-nav-tabs {
                         }
                     }
                     &.passed {
-                        border-color: #00adff;
-                        color: #00adff;
+                        .course-item-status {
+                            border-color: #00adff;
+                            color: #00adff;
+                        }
                     }
                     &.item-failed,
                     &.failed {

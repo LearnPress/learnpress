@@ -546,14 +546,31 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 		/**
 		 * Update meta.
+		 *
+		 * @updated 3.1.0
+		 *
+		 * @param string $key
+		 * @param mixed  $value
+		 * @param mixed  $prev_value
 		 */
-		public function update_meta() {
-			if ( $this->_meta_data ) {
-				foreach ( $this->_meta_data as $meta_data ) {
-					$this->_curd->update_meta( $this, $meta_data );
+		public function update_meta( $key = '', $value = '', $prev_value = '' ) {
+			if ( func_num_args() == 0 ) {
+				if ( $this->_meta_data ) {
+					foreach ( $this->_meta_data as $meta_data ) {
+						$this->_curd->update_meta( $this, $meta_data );
+					}
+				}
+			} else {
+				$update = update_post_meta( $this->get_id(), $key, $value, $prev_value );
+				if ( ! is_bool( $update ) && $update ) {
+					$this->_meta_data = (object) array(
+						'meta_key'   => $key,
+						'meta_value' => $value
+					);
 				}
 			}
 		}
+
 
 		/**
 		 * Get meta keys.
