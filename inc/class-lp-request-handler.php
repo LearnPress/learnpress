@@ -261,7 +261,7 @@ class LP_Request {
 		if ( ! $course ) {
 			return false;
 		}
-
+/** # comment because maybe conflict with eduma
 		if ( 'enroll-course' == $action ) {
 			if ( ! $user->can_enroll_course( $course_id ) ) {
 				learn_press_add_message(
@@ -272,7 +272,7 @@ class LP_Request {
 				return false;
 			}
 		}
-
+**/
 		$cart = LP()->cart;
 
 		if ( ! $cart->get_items() ) {
