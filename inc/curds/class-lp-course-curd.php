@@ -756,7 +756,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			$query = $wpdb->prepare( "
 				SELECT COUNT(section_id)
-				FROM wp_learnpress_sections
+				FROM {$wpdb->learnpress_sections}
 				WHERE section_course_id = %d
 			", $course_id );
 
@@ -865,13 +865,13 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				}
 				$query = $wpdb->prepare( "
 					DELETE si
-					FROM {$wpdb->prefix}learnpress_section_items si 
+					FROM {$wpdb->learnpress_section_items} si 
 					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
 					WHERE item_id = %d
 					{$where}
 				", $item_id );
 			} else {
-				$query = $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE item_id = %d", $item_id );
+				$query = $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_section_items} WHERE item_id = %d", $item_id );
 			}
 
 			// delete item from course's section
@@ -955,7 +955,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 			$query = $wpdb->prepare( "
 				SELECT DISTINCT user.ID FROM {$wpdb->users} user
-				INNER JOIN {$wpdb->prefix}learnpress_user_items user_item ON user_item.user_id = user.ID
+				INNER JOIN {$wpdb->learnpress_user_items} user_item ON user_item.user_id = user.ID
 				WHERE user_item.item_id = %d
 				AND user_item.item_type = %s
 				LIMIT %d
@@ -981,8 +981,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			settype( $course_ids, 'array' );
 			$sql = $wpdb->prepare( "
 					SELECT item_id cid, count(ID) `count`
-					FROM(SELECT DISTINCT user.ID,user_item.item_id FROM wp_users user
-						INNER JOIN wp_learnpress_user_items user_item ON user_item.user_id = user.ID
+					FROM(SELECT DISTINCT user.ID,user_item.item_id FROM {$wpdb->users} user
+						INNER JOIN {$wpdb->learnpress_user_items} user_item ON user_item.user_id = user.ID
 						WHERE user_item.item_id IN(" . join( ',', $course_ids ) . ")
 						AND user_item.item_type = %s
 					) AS X GROUP BY item_id", LP_COURSE_CPT );
