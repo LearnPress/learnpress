@@ -180,7 +180,7 @@ class LP_Object_Data_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $object LP_Course|LP_Lesson|LP_Quiz|LP_Question
+	 * @param $object LP_Course|LP_Lesson|LP_Quiz|LP_Question|LP_Abstract_Object_Data
 	 * @param $meta
 	 */
 	public function update_meta( &$object, $meta ) {
