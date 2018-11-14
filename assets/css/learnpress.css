@@ -25,6 +25,22 @@
     -o-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
+@-webkit-keyframes animation4 /* Safari and Chrome */ {
+  from {
+    left: -40%;
+    width: 40%; }
+  to {
+    left: 100%;
+    width: 10%; } }
+
+@keyframes animation4 {
+  from {
+    left: -40%;
+    width: 40%; }
+  to {
+    left: 100%;
+    width: 10%; } }
+
 @keyframes lp-rotating {
   from {
     transform: rotate(0deg);
@@ -1737,6 +1753,22 @@ body.lp-preview #course-item-content-header {
     -webkit-transform: rotate(360deg);
     -o-transform: rotate(360deg);
     transform: rotate(360deg); } }
+
+@-webkit-keyframes animation4 /* Safari and Chrome */ {
+  from {
+    left: -40%;
+    width: 40%; }
+  to {
+    left: 100%;
+    width: 10%; } }
+
+@keyframes animation4 {
+  from {
+    left: -40%;
+    width: 40%; }
+  to {
+    left: 100%;
+    width: 10%; } }
 
 #popup_container {
   opacity: 0;
