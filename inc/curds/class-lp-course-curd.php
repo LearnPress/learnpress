@@ -866,13 +866,27 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 					{$where}
 				", $item_id );
 			} else {
-				$query = $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_section_items} WHERE item_id = %d", $item_id );
+
+				$query = $wpdb->prepare( "
+					SELECT s.section_course_id
+					FROM {$wpdb->learnpress_sections} s
+					INNER JOIN {$wpdb->learnpress_section_items} si ON s.section_id = si.section_id
+					WHERE si.item_id = %d 
+				", $item_id );
+
+				$course_id = $wpdb->get_col( $query );
+				$query     = $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_section_items} WHERE item_id = %d", $item_id );
 			}
 
 			// delete item from course's section
 			$wpdb->query( $query );
 
-			do_action( 'learn-press/removed-item-from-section', $item_id, $course_id );
+			if ( $course_id ) {
+				settype( $course_id, 'array' );
+				foreach ( $course_id as $cid ) {
+					do_action( 'learn-press/removed-item-from-section', $item_id, $cid );
+				}
+			}
 
 			learn_press_reset_auto_increment( 'learnpress_section_items' );
 		}

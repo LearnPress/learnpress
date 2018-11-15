@@ -58,9 +58,6 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 			//add_action( 'shutdown', array( $this, 'dispatch_queue' ), 1000 );
 		}
 
-		/**
-		 * Dispatch queue emails
-		 */
 		public function dispatch_queue() {
 			if ( ! empty( $this->data ) ) {
 				$this->save()->dispatch();
