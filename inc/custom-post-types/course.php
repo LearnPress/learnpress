@@ -1331,13 +1331,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					// course curd
 					$curd            = new LP_Course_CURD();
 					$number_sections = $curd->count_sections( $post_id );
-
 					if ( $number_sections ) {
 						$output     = sprintf( _n( '<strong>%d</strong> section', '<strong>%d</strong> sections', $number_sections, 'learnpress' ), $number_sections );
 						$html_items = array();
 						$post_types = get_post_types( null, 'objects' );
 
-						if ( $stats_objects = $curd->count_items( $post_id ) ) {
+						if ( $stats_objects = $curd->count_items( $post_id, 'edit' ) ) {
 							foreach ( $stats_objects as $type => $count ) {
 								if ( ! $count || ! isset( $post_types[ $type ] ) ) {
 									continue;
