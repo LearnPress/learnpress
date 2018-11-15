@@ -772,23 +772,25 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 */
-		public function count_items( $course_id ) {
+		public function count_items( $course_id, $context='view' ) {
 			global $wpdb;
-
-			$query = $wpdb->prepare( "
-				SELECT COUNT(it.ID) `count`, it.post_type 
-				FROM {$wpdb->learnpress_section_items} si 
-				INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id 
-				INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id 
-				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id 
-				WHERE s.section_course_id = %d 
-				AND c.post_status = %s 
-				AND it.post_status = %s 
-				GROUP BY it.post_type
-			", $course_id, 'publish', 'publish' );
-
+			$params = array($course_id);
+			$sql = "
+				SELECT COUNT(it.ID) `count`, it.post_type
+				FROM {$wpdb->learnpress_section_items} si
+				INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id
+				INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
+				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
+				WHERE s.section_course_id = %d";
+			if($context == 'view'){
+				$sql .= " AND c.post_status = %s
+					AND it.post_status = %s ";
+				$params = array_merge($params, array('publish', 'publish'));
+			}
+			$sql .= " GROUP BY it.post_type ";
+			$query = $wpdb->prepare( $sql, $params );
+			
 			$stats_object = array();
-
 			if ( $results = $wpdb->get_results( $query ) ) {
 				foreach ( $results as $result ) {
 					$stats_object[ $result->post_type ] = $result->count;
