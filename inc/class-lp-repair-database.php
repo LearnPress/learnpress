@@ -718,8 +718,8 @@ class LP_Repair_Database {
 	 * @param array $users
 	 */
 	public function sync_user_orders( $users = array() ) {
-		global $wpdb;
 		$api = new LP_User_CURD();
+		settype( $users, 'array' );
 
 		foreach ( $users as $user ) {
 			if ( ! $orders = $api->read_orders( $user ) ) {

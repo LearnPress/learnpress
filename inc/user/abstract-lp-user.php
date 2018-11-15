@@ -1700,7 +1700,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			$my_orders = $this->_curd->get_orders( $this->get_id() );// _learn_press_get_user_course_orders( $this->get_id() );
+			$my_orders = $this->_curd->get_orders( $this->get_id() );
 
 			if ( $last_order && $my_orders ) {
 				$last_orders = array();

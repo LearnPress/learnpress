@@ -196,7 +196,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			 * Get orders from cache by args
 			 */
 			if ( false !== ( $orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'learn-press/user-orders' ) ) ) {
-				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 				return $orders;
 			}
