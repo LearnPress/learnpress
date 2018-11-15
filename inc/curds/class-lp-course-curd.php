@@ -519,7 +519,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				return false;
 			}
 
-			return $this->_read_course_curriculum( $course_id );
+// 			return $this->_read_course_curriculum( $course_id );# cái này có vẻ chưa hoạt động đúng, ảnh hưởng tới contentdrip addon
 
 			/**
 			 * Get course's data from cache and if it is already existed
