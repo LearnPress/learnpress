@@ -2229,7 +2229,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		public function is_locked_course( $course_id ) {
-			$locked = apply_filters( 'learn-press/course-is-locked-for-guest', ! is_user_logged_in() );
+			$locked = false;//apply_filters( 'learn-press/course-is-locked-for-guest', ! is_user_logged_in() );
 
 			if ( ! $locked && $course_item = $this->get_course_data( $course_id ) ) {
 				$locked = 'locked' === learn_press_get_user_item_meta( $course_item->get_user_item_id(), '_status', true );
