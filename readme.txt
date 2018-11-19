@@ -199,6 +199,13 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 3.2.0 =
+~ Fixed issue info of order added manual not correct.
+~ Fixed issue course duplicated is published.
+~ Fixed issue Course content column show as "No Content".
+~ Fixed some issues related to cache.
+
 = 3.1.0 =
 ~ Fixed issue vulnerabilities.
 ~ Fixed issue related to object cache when doing quiz.
