@@ -8,7 +8,7 @@
  */
 class LP_Unit_Test {
 	public static function init() {
-		add_action( 'get_header', array( __CLASS__, 'test_emails' ) );
+		//add_action( 'get_header', array( __CLASS__, 'test_emails' ) );
 	}
 
 	public static function test_emails() {

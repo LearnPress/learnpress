@@ -20,7 +20,7 @@ class LP_Helper_CURD {
 	 * @param array  $ids
 	 * @param int    $limit
 	 */
-	public static function update_meta_cache( $ids, $type = 'post', $limit = 100 ) {
+	public static function update_meta_cache( $ids, $type = 'post', $limit = 500 ) {
 
 		if ( ! $ids ) {
 			return;
@@ -71,7 +71,7 @@ class LP_Helper_CURD {
 
 		// Remove the posts has already cached
 		for ( $n = sizeof( $post_ids ), $i = $n - 1; $i >= 0; $i -- ) {
-			if ( false !== wp_cache_get( $post_ids[ $i ], 'post' ) ) {
+			if ( false !== wp_cache_get( $post_ids[ $i ], 'posts' ) ) {
 				unset( $post_ids[ $i ] );
 			}
 		}

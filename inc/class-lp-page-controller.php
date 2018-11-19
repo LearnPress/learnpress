@@ -152,7 +152,7 @@ class LP_Page_Controller {
 			if ( LP_QUIZ_CPT === $item_type ) {
 				$question = false;
 				// If has question in request but it seems the question does not exists
-				if ( ! empty( $vars['question'] && ! $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) ) {
+				if ( ! empty( $vars['question'] ) && ! $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) {
 					$this->set_404( true );
 					throw new Exception( '404' );
 				}

@@ -481,4 +481,105 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 		return false;
 	}
+
+	/**
+	 * @since 3.x.x
+	 *
+	 * @param int          $course_id
+	 * @param int          $user_id
+	 * @param array|string $more
+	 *
+	 * @return array
+	 */
+	public function parse_items_classes( $course_id, $user_id = 0, $more = array() ) {
+		$items = array();
+
+		if ( ! $course = learn_press_get_course( $course_id ) ) {
+			return $items;
+		}
+
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
+
+		$user            = learn_press_get_user( $user_id, false );
+		$current_item    = LP_Global::course_item();
+		$get_item_ids    = $course->get_item_ids();
+		$enrolled        = $user ? $user->has_enrolled_course( $course_id ) : false;
+		$is_free         = $course->is_free();
+		$required_enroll = $course->is_required_enroll();
+
+		foreach ( $get_item_ids as $item_id ) {
+			$item = $course->get_item( $item_id );
+
+			$defaults = array_merge(
+				array(
+					'course-item',
+					'course-item-' . $item->get_item_type(),
+					'course-item-' . $item_id
+				), (array) $more
+			);
+
+			if ( ( 'standard' !== ( $post_format = $item->get_format() ) ) && $post_format ) {
+				$defaults[] = 'course-item-type-' . $post_format;
+			}
+
+			if ( $current_item && $current_item->get_id() == $item->get_id() ) {
+				$defaults[] = 'current';
+			}
+
+			if ( $item->is_preview() ) {
+				$defaults[] = 'item-preview';
+				$defaults[] = 'has-status';
+			} elseif ( $item->is_blocked() ) {
+				$defaults[] = 'item-locked';
+			} else {
+				if ( $course ) {
+					if ( $is_free && ! $required_enroll ) {
+						$defaults[] = 'item-free';
+					} else {
+						if ( $user ) {
+							if ( $enrolled ) {
+								$item_status = $user->get_item_status( $item_id, $course_id );
+								$item_grade  = $user->get_item_grade( $item_id, $course_id );
+
+								if ( $item_status ) {
+									$defaults[] = 'has-status';
+									$defaults[] = 'status-' . $item_status;
+								}
+								switch ( $item_status ) {
+									case 'started':
+										break;
+									case 'completed':
+										$defaults[] = $item_grade;
+										break;
+									default:
+										if ( $item_class = apply_filters( 'learn-press/course-item-status-class', $item_status, $item_grade, $item->get_item_type(), $item_id, $course_id ) ) {
+											$defaults[] = $item_class;
+										}
+								}
+							}
+						}
+
+						if ( ! $enrolled ) {
+							$defaults[] = 'item-locked';
+						}
+					}
+				} else {
+					$defaults[] = 'item-locked';
+				}
+			}
+			$classes = apply_filters( 'learn-press/course-item-class', $defaults, $item->get_item_type(), $item_id, $course_id );
+
+			// Filter unwanted values
+			$classes = is_array( $classes ) ? $classes : explode( ' ', $classes );
+			$classes = array_filter( $classes );
+			$classes = array_unique( $classes );
+
+			LP_Object_Cache::set( 'item-' . $user_id . '-' . $item_id, $classes, 'learn-press/post-classes' );
+			$items[ $item_id ] = $classes;
+		}
+
+		return $items;
+	}
 }

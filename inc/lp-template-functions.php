@@ -1108,7 +1108,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 background: #FFF;
                 border-right: 1px solid #DDD;
                 overflow: auto;
-                z-index: 99999;
+                z-index: 9999;
             }
 
             body.course-item-popup #learn-press-content-item {
