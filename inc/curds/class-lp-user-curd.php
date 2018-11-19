@@ -807,8 +807,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return bool|mixed
 	 */
 	public function get_user_item( $user_id, $item_id, $course_id = 0, $last = true ) {
-		learn_press_debug( debug_backtrace() );
-		die( __FUNCTION__ );
 		$num_args = func_num_args();
 
 		if ( $num_args == 2 ) {
