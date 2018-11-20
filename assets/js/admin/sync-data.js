@@ -228,11 +228,25 @@
         sync_calculate_course_results: Sync_Calculate_Course_Results
     }
 
-    $(document).on('click', '.lp-button-repair', function () {
+    $(document).ready(function () {
+        function initSyncs() {
+            var $chkAll = $('#learn-press-check-all-syncs'),
+                $chks = $('#learn-press-syncs').find('[name^="lp-repair"]');
+
+            $chkAll.on('click', function () {
+                $chks.prop('checked', this.checked)
+            });
+
+            $chks.on('click', function () {
+                $chkAll.prop('checked', $chks.filter(':checked').length === $chks.length);
+            })
+        }
+
+        initSyncs();
+    }).on('click', '.lp-button-repair', function () {
         function getInput(sync) {
             return $('ul#learn-press-syncs').find('input[name*="' + sync + '"]')
         }
-
 
         LP_Sync_Data.start({
             onInit: function () {

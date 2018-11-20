@@ -185,7 +185,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param int $order_id
 		 */
 		public function trashed_order( $order_id ) {
-            return;
+			return;
 			if ( ! $order = learn_press_get_order( $order_id ) ) {
 				return;
 			}
@@ -392,7 +392,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
-		 * Save order data
+		 * Save order data.
+         *
+         * @updated 15 Nov 2018
 		 *
 		 * @param int $post_id
 		 */
@@ -433,7 +435,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				 * user. If the order is for multi users then it will trigger in
 				 * each child order
 				 */
-				if ( ! is_array( $user_id ) && (( $new_status !== $old_status ) || $trigger_action )) {
+				if ( ! is_array( $user_id ) && ( ( $new_status !== $old_status ) || $trigger_action ) ) {
 					$status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $order->get_id(), $status );
 					do_action( 'learn-press/order/status-' . $status . '-to-' . $status, $order->get_id() );
@@ -442,12 +444,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				add_action( 'save_post', array( $this, 'save_order' ) );
 				add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
+			} else {
+				$order   = learn_press_get_order( $post_id );
+				$user_id = $order->get_users();
 			}
 
-			$order = learn_press_get_order( $post_id );
-			if ( $users = $order->get_users() ) {
+			if ( $user_id ) {
 				$api = LP_Repair_Database::instance();
-				$api->sync_user_orders( $users );
+				$api->sync_user_orders( $user_id );
 			}
 
 		}
@@ -489,10 +493,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			# filter by user id
 			preg_match( "#{$wpdb->posts}\.post_author IN\s*\((\d+)\)#", $where, $matches );
-			if ( !empty($matches) && isset($matches[1]) ) {
+			if ( ! empty( $matches ) && isset( $matches[1] ) ) {
 
-				$author_id = intval($matches[1]);
-				$sql = " {$wpdb->posts}.ID IN ( SELECT 
+				$author_id = intval( $matches[1] );
+				$sql       = " {$wpdb->posts}.ID IN ( SELECT 
 						IF( p.post_parent >0, p.post_parent, p.ID)
 					FROM
 						{$wpdb->posts} AS p
@@ -505,14 +509,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						p.post_type = 'lp_order'
 							AND u.ID = %d ) ";
 
-				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $author_id));
+				$sql   = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $author_id ) );
 				$where = str_replace( $matches[0], $sql, $where );
 			}
 
 			$s = $wp_query->get( 's' );
 
 			if ( $s ) {
-				$s 	= '%' . $wpdb->esc_like( $s ) . '%';
+				$s = '%' . $wpdb->esc_like( $s ) . '%';
 				preg_match( "#{$wpdb->posts}\.post_title LIKE#", $where, $matches2 );
 				$sql = " {$wpdb->posts}.ID IN (
 					SELECT
@@ -531,11 +535,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						OR u.display_name LIKE %s
 						OR {$wpdb->posts}.ID LIKE %s
 					) ";
-				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ));
-				if( !empty($matches2) && isset($matches2[0]) ) {
-					$where = str_replace( $matches2[0], $sql. ' OR '.$matches2[0], $where );
+				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ) );
+				if ( ! empty( $matches2 ) && isset( $matches2[0] ) ) {
+					$where = str_replace( $matches2[0], $sql . ' OR ' . $matches2[0], $where );
 				} else {
-					$where .= " AND ".$sql;
+					$where .= " AND " . $sql;
 				}
 			}
 
@@ -557,7 +561,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! $this->_is_archive() ) {
 				return $orderby;
 			}
-            global $wpdb;
+			global $wpdb;
 
 			$order = $this->_get_order();
 

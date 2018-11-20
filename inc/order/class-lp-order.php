@@ -68,11 +68,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		protected $_status = array();
 
 		/**
-		 * @var int
-		 */
-		protected static $_loaded = 0;
-
-		/**
 		 * LP_Order constructor.
 		 *
 		 * @param bool $order_id
@@ -89,26 +84,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$this->set_id( absint( $order_id->ID ) );
 			}
 
-			//parent::__construct($order_id);
-
 			if ( $this->get_id() > 0 ) {
 				$this->load();
 			}
-			self::$_loaded ++;
-			if ( self::$_loaded == 1 ) {
-				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
-			}
-		}
-
-		/**
-		 * @param $data
-		 *
-		 * @return array
-		 */
-		public static function log( $data ) {
-			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
-
-			return $data;
 		}
 
 		/**

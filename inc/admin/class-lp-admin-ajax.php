@@ -394,7 +394,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
 						$curd        = new LP_Course_CURD();
-						$new_item_id = $curd->duplicate( $post_id, $duplicate_args );
+						$new_item_id = $curd->duplicate( $post_id, array() );
 						break;
 					case LP_LESSON_CPT:
 						$curd        = new LP_Lesson_CURD();

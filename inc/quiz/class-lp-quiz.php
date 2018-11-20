@@ -617,7 +617,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool|mixed
 		 */
 		public function get_question_index( $id, $start = 0 ) {
-			$index = false;
+			$index = 0;
+
 			if ( ( $questions = $this->get_questions() ) ) {
 				$questions = array_values( $questions );
 				$index     = array_search( $id, $questions );

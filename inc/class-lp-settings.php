@@ -57,7 +57,7 @@ class LP_Settings {
 
 	public function init() {
 
-		LP_Background_Global::add( 'load-site-options', '', array( __CLASS__, 'load_site_options' ) );
+		//LP_Background_Global::add( 'load-site-options', '', array( __CLASS__, 'load_site_options' ) );
 		//LP_Settings::load_site_options();
 	}
 

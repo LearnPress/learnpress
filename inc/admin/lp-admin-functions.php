@@ -2253,3 +2253,29 @@ function learn_press_preview_post_link( $link, $post ) {
 }
 
 add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
+
+/**
+ * Sync post meta when saving post type.
+ *
+ * @since 3.x.x
+ *
+ * @param int $post_id
+ */
+function learn_press_maybe_sync_data( $post_id ) {
+	$post_type = get_post_type( $post_id );
+
+	switch ( $post_type ) {
+		case LP_COURSE_CPT:
+			LP_Repair_Database::instance()->sync_user_courses();
+			break;
+		case LP_LESSON_CPT:
+			break;
+		case LP_QUIZ_CPT:
+			break;
+		default:
+	}
+}
+
+add_action( 'save_post', 'learn_press_maybe_sync_data' );
+
+include_once "class-lp-post-type-actions.php";

@@ -27,7 +27,28 @@ class LP_Preview_Course {
 	public static function get_preview_course() {
 
 		if ( empty( self::$_preview_course ) ) {
+			global $wpdb;
 
+			$ids = self::get_preview_courses();
+
+			if ( $ids === false ) {
+				$title                 = __( 'Preview Course', 'learnpress' );
+				self::$_preview_course = wp_insert_post(
+					array(
+						'post_author' => 0,
+						'post_type'   => LP_COURSE_CPT,
+						'post_title'  => $title,
+						'post_status' => 'draft',
+						'post_name'   => sanitize_title( $title )
+					)
+				);
+
+				update_post_meta( self::$_preview_course, '_lp_preview_course', 'yes' );
+
+				LP_Object_Cache::set( 'preview-courses', array( self::$_preview_course ), 'learnpress' );
+			} else {
+				self::$_preview_course = $ids[0];
+			}
 		}
 
 		return self::$_preview_course;
@@ -131,8 +152,7 @@ class LP_Preview_Course {
 
 			//learn_press_debug($_SERVER);die();
 
-		}
-		catch ( Exception $ex ) {
+		} catch ( Exception $ex ) {
 			learn_press_add_message( $ex->getMessage(), 'error' );
 			wp_redirect( get_home_url() );
 			exit();
@@ -150,7 +170,7 @@ class LP_Preview_Course {
 			", '_lp_preview_course', 'yes' );
 
 			$ids = $wpdb->get_col( $query );
-			LP_Object_Cache::set( 'preview-courses', $ids, 'learn-press' );
+			LP_Object_Cache::set( 'preview-courses', $ids, 'learnpress' );
 		}
 
 		return $ids;

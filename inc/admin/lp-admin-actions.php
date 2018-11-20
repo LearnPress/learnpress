@@ -182,7 +182,6 @@ function learn_press_active_course_menu() {
 			<?php
 			}
 			?>
-            $lpMainMenu.find('.wp-first-item').addClass('current');
         });
     </script>
 	<?php

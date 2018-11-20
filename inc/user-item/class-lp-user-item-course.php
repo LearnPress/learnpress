@@ -80,7 +80,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			return $items;
 		}
 
-		LP_Debug::logTime( __FUNCTION__ );
 		$course_items = $this->_course->get_item_ids();
 
 		if ( ! $course_items ) {
@@ -93,7 +92,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		if ( $user_course_items ) {
-
 			// Convert keys of array from numeric to keys is item id
 			foreach ( array_keys( $user_course_items ) as $key ) {
 				$user_course_item                                = $user_course_items[ $key ];
@@ -117,15 +115,17 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				);
 			}
 
-			if ( $course_item = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $user_course_item ), $user_course_item, $this ) ) {
-				$this->_items[ $item_id ]                                     = $item_id;//$course_item;
+			$course_item = apply_filters( 'learn-press/user-course-item', LP_User_Item::get_item_object( $user_course_item ), $user_course_item, $this );
+
+			if ( $course_item ) {
+				$this->_items[ $item_id ]                                     = $item_id;
 				$this->_items_by_item_ids[ $course_item->get_user_item_id() ] = $item_id;
-				$items[ $item_id ]                                            = $course_item;
 				$this->_items_by_order[]                                      = $item_id;
+
+				$items[ $item_id ]                                            = $course_item;
 			}
 		}
-		LP_Object_Cache::set( 'course-' . $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
-		LP_Debug::logTime( __FUNCTION__ );
+		LP_Object_Cache::set( $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
 
 		return $items;
 	}
@@ -703,7 +703,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function get_items() {
 		$this->read_items();
 
-		return LP_Object_Cache::get( 'course-' . $this->get_user_id() . '-' . $this->get_id(), 'learn-press/user-course-item-objects' );
+		return LP_Object_Cache::get( $this->get_user_id() . '-' . $this->get_id(), 'learn-press/user-course-item-objects' );
 	}
 
 	/**
@@ -807,11 +807,11 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$items = array();
 		}
 		$items[ $item->get_item_id() ] = $item;
-		LP_Object_Cache::set( 'course-' . $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
+		LP_Object_Cache::set( $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
 	}
 
 	public function cache_get_items() {
-		return LP_Object_Cache::get( 'course-' . $this->get_user_id() . '-' . $this->get_id(), 'learn-press/user-course-item-objects' );
+		return LP_Object_Cache::get( $this->get_user_id() . '-' . $this->get_id(), 'learn-press/user-course-item-objects' );
 	}
 
 	/**

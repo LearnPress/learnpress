@@ -26,9 +26,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		} else {
 			$item = (array) $item;
 		}
+		//$t = microtime( true );
 
 		parent::__construct( $item );
 		$this->set_default_data( $item );
+		//echo "xxxxxx=", microtime( true ) - $t, "\n";
 
 	}
 
@@ -39,9 +41,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	protected function set_default_data( $item ) {
 
-		ksort( $item );
+		//ksort( $item );
 
-		$this->_data_key = md5( serialize( $item ) );
+		//$this->_data_key = md5( serialize( $item ) );
 		$this->_changes  = array();
 		$item_id         = 0;
 
@@ -95,6 +97,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['parent_id'] ) ) {
 			$this->set_parent_id( $item['parent_id'] );
 		}
+
+		$new_data = $this->get_mysql_data();
+		ksort( $new_data );
+		$this->_data_key = md5( serialize( $new_data ) );
 	}
 
 	public function set_user_id( $user_id ) {
@@ -472,6 +478,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return LP_User_Item|bool
 	 */
 	public static function get_item_object( $data ) {
+
 		$item_id = 0;
 		if ( is_array( $data ) && isset( $data['item_id'] ) ) {
 			$item_id = $data['item_id'];
@@ -483,8 +490,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$item_id = $data->get_id();
 		}
 
-		$item = false;
-		switch ( learn_press_get_post_type( $item_id ) ) {
+		$item      = false;
+		$item_type = learn_press_get_post_type( $item_id );
+		switch ( $item_type ) {
 			case LP_LESSON_CPT:
 				$item = new LP_User_Item( $data );
 				break;
@@ -493,7 +501,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 				break;
 		}
 
-		return apply_filters( 'learn-press/user-item-object', $item, $data );
+		return apply_filters( 'learn-press/user-item-object', $item, $data, $item_type );
 	}
 
 	/**
@@ -719,8 +727,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	public function is_change() {
-
-		//return sizeof( $this->_changes );
 
 		$new_data = $this->get_mysql_data();
 		ksort( $new_data );

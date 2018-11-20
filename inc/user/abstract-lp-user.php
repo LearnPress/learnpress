@@ -289,9 +289,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|mixed
 		 */
 		public function get_item_archive( $item_id, $course_id = 0, $return_last = false ) {
-			learn_press_debug( debug_backtrace() );
-			die( __FUNCTION__ );
-			$records = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'learn-press/user-course-items' );
+			$records = LP_Object_Cache::get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' );
+
+			if ( $records ) {
+				///$records = array_filter( $records );
+			}
 
 			if ( $return_last && is_array( $records ) ) {
 				$records = reset( $records );
@@ -469,8 +471,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->get_id() );
 
 				do_action( 'learn-press/user/quiz-finished', $quiz_id, $course_id, $this->get_id() );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 			}
 
@@ -561,8 +562,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user/quiz-redone', $quiz_id, $course_id, $this->get_id() );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 				do_action( 'learn-press/user/retake-quiz-failure', $quiz_id, $course_id, $this->get_id() );
 			}
@@ -2235,7 +2235,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		public function is_locked_course( $course_id ) {
-			$locked = apply_filters( 'learn-press/course-is-locked-for-guest', ! is_user_logged_in() );
+			$locked = false;//apply_filters( 'learn-press/course-is-locked-for-guest', ! is_user_logged_in() );
 
 			if ( ! $locked && $course_item = $this->get_course_data( $course_id ) ) {
 				$locked = 'locked' === learn_press_get_user_item_meta( $course_item->get_user_item_id(), '_status', true );
@@ -2425,8 +2425,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				do_action( 'learn_press_user_enrolled_course', $course_id, $user_id, $user_course );
 
 				return $return;
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				return new WP_Error( $ex->getCode(), $ex->getMessage() );
 			}
 		}

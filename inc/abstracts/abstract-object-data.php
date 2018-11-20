@@ -88,7 +88,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param null $data
 		 */
 		public function __construct( $data = null ) {
-
 			$this->_data = (array) $data;
 			if ( array_key_exists( 'id', $this->_data ) ) {
 				$this->set_id( absint( $this->_data['id'] ) );
@@ -278,8 +277,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 					}
 					catch ( Exception $ex ) {
+						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
-						die( __FILE__ . '::' . __FUNCTION__ );
+						die( __FILE__ . '::' . __FUNCTION__ );;
 					}
 				}
 				$this->_changes[] = $key_or_data;
@@ -307,11 +307,10 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			}
 
 			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
-				//$value = LP_Datetime::instance( $value );
+				$value = new LP_Datetime( $value );
 			}
 
 			$this->_set_data( $key, $value );
-
 		}
 
 		public function set_data_null_date( $key ) {

@@ -50,7 +50,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			if ( ! $this->get_user()->has_checked_answer( $id, $this->get_id(), $this->get_course_id() ) ) {
 				$this->_answers[ $id ] = $values;
 				$this->set_meta( '_question_answers', $this->_answers );
-			}else{
 			}
 		}
 	}
@@ -126,7 +125,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return int|LP_Question
 	 */
 	public function get_current_question( $return = '' ) {
-
 		$question_id = $this->get_meta( '_current_question', true );
 		$question    = false;
 		if ( learn_press_get_post_type( $question_id ) === LP_QUESTION_CPT ) {
@@ -290,6 +288,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
 			}
 		}
+
+		$this->update_meta( 'results', $result );
 
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
 		LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
@@ -616,35 +616,4 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function can_retake_quiz() {
 		return $this->get_user()->can_retake_quiz( $this->get_id(), $this->get_course() );
 	}
-
-//	public function redo() {
-//		$course_id = $this->_get_course( $course_id );
-//
-//		$user_quiz  = $this->get_item_data( $quiz_id, $course_id );
-//		$start_time = LP_Datetime::instance( current_time( 'mysql' ) );
-//
-//		$return = learn_press_update_user_item_field(
-//			array(
-//				'user_id'        => learn_press_get_current_user_id(),
-//				'item_id'        => $quiz_id,
-//				'ref_id'         => $course_id,
-//				'start_time'     => $start_time,
-//				'start_time_gmt' => $start_time->toSql( false ),
-//				'item_type'      => 'lp_quiz',
-//				'status'         => 'started',
-//				'ref_type'       => 'lp_course',
-//				'parent_id'      => $user_quiz ? $user_quiz->get_parent_id() : 0
-//			)
-//		);
-//		if ( $return ) {
-//
-//			// Update user quiz meta data
-//			learn_press_update_user_item_meta( $return, 'questions', $questions );
-//			learn_press_update_user_item_meta( $return, 'current_question', $question );
-//			learn_press_update_user_item_meta( $return, 'question_answers', array() );
-//			LP_Cache::flush();
-//			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
-//		}
-//		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $course_id, $this->get_id() );
-//	}
 }

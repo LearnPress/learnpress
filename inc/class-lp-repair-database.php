@@ -616,6 +616,10 @@ class LP_Repair_Database {
 		if ( $user_ids = $wpdb->get_col( $query ) ) {
 			$queue_user_ids = get_option( 'sync-user-course-results' );
 			$first_time     = ! $queue_user_ids;
+			$n              = time();
+			for ( $i = $n; $i < $n + 100; $i ++ ) {
+				$user_ids[] = $i;
+			}
 
 			if ( $first_time ) {
 				$queue_user_ids = $user_ids;
@@ -624,6 +628,7 @@ class LP_Repair_Database {
 				$queue_user_ids = array_merge( $queue_user_ids, $user_ids );
 				$queue_user_ids = array_unique( $queue_user_ids );
 			}
+
 			$option_key = 'sync-user-course-results';
 			update_option( $option_key, $queue_user_ids, 'no' );
 
@@ -636,7 +641,7 @@ class LP_Repair_Database {
 						'course_id'  => $course_id,
 						'option_key' => $option_key
 					)
-				)->save();
+				)->save()->dispatch();
 				$bg->reset_safe();
 
 				update_option( 'doing-sync-user-course-results', 'yes' );
@@ -718,8 +723,8 @@ class LP_Repair_Database {
 	 * @param array $users
 	 */
 	public function sync_user_orders( $users = array() ) {
-		global $wpdb;
 		$api = new LP_User_CURD();
+		settype( $users, 'array' );
 
 		foreach ( $users as $user ) {
 			if ( ! $orders = $api->read_orders( $user ) ) {
@@ -810,7 +815,6 @@ class LP_Repair_Database {
 						learn_press_update_user_item_meta( $item_course->get_user_item_id(), 'exceeded', $course_exceeded );
 					} else {
 						$item_course->calculate_course_results();
-						print_r( $course_ids );
 
 					}
 				}

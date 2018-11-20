@@ -18,8 +18,6 @@ Domain Path: /languages/
  */
 defined( 'ABSPATH' ) || exit();
 
-//$GLOBALS['xxxx'] = microtime( true );
-
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
@@ -765,7 +763,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-//add_filter('template_include', function ($tmpl){
-//	echo $tmpl;
-//}, 9999);
