@@ -1728,6 +1728,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				LP_Object_Cache::set( 'course-' . $this->get_id(), $sections, 'learn-press/course-sections' );
 			}
 
+			print_r($sections);die();
 			if ( $return == 'object' && $sections ) {
 				if ( empty( $this->sections ) ) {
 
