@@ -60,4 +60,3 @@ do_action( 'learn-press/after-single-course' );
 do_action( 'learn_press_after_single_course_summary' );
 do_action( 'learn_press_after_single_course' );
 do_action( 'learn_press_after_main_content' );
-

@@ -55,7 +55,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * @var LP_User_CURD
 		 */
-		protected static $curd = null;
+		protected $_curd = null;
 
 		/**
 		 * LP_Abstract_User constructor.
@@ -67,9 +67,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			parent::__construct( $the_user, $args );
 
-			if ( empty( self::$curd ) ) {
-				self::$curd = new LP_User_CURD();
-			}
+			$this->_curd = new LP_User_CURD();
 
 			if ( is_numeric( $the_user ) && $the_user > 0 ) {
 				$this->set_id( $the_user );
@@ -89,7 +87,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * Load user data from curd
 		 */
 		public function load() {
-			self::$curd->load( $this );
+			$this->_curd->load( $this );
 		}
 
 		/**
@@ -111,12 +109,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! $course_id ) {
 				$course_id = get_the_ID();
 			}
-			/**
-			 * @BUG : Cache enable => Not store all user answer of quiz, only store the last use answer for question
-			 * @TODO: need improve this process
-			 */
+
 			if ( false === ( $object_course_data = LP_Object_Cache::get( 'course-' . $this->get_id() . '-' . $course_id, 'learn-press/user-item-object-courses' ) ) ) {
-				$result = self::$curd->read_course( $this->get_id(), $course_id );
+				$result = $this->_curd->read_course( $this->get_id(), $course_id );
 
 				if ( $result ) {
 					$object_course_data = new LP_User_Item_Course( $result );
@@ -594,7 +589,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data->update_item_retaken_count( $quiz_id, '+1' );
 			}
 
-			$start_time = LP_Datetime::instance( current_time( 'mysql' ) );
+			$start_time = new LP_Datetime( current_time( 'mysql' ) );
 			$item_data  = array(
 				'user_id'        => $this->get_id(),
 				'item_id'        => $quiz_id,
@@ -632,7 +627,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			self::$curd->update_user_item( $this->get_id(), $quiz_id, $item_data, $course_id );
+			$this->_curd->update_user_item( $this->get_id(), $quiz_id, $item_data, $course_id );
 			$return = $this->get_item_archive( $quiz_id, $course_id, true );
 
 			if ( $return && $set_current_question ) {
@@ -774,15 +769,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$return = false;
 
 			if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
+				//learn_press_show_log($course_data, $course_data->get_item( $item_id ));
 
-				if ( ! $item = $course_data->get_item( $item_id ) ) {
-					$item = LP_User_Item::get_item_object( $item_id );
+				if ( $item = $course_data->get_item( $item_id ) ) {
+					learn_press_show_log('HERE');
 				} else {
-					$course_data->update_meta( '_current_item', $item_id );
+					$item = LP_User_Item::get_item_object( $item_id );
+					$item->set_ref_id( $course_id );
+					$item->set_parent_id( $course_data->get_user_item_id() );
 				}
-
-				$item->set_ref_id( $course_id );
-				$item->set_parent_id( $course_data->get_user_item_id() );
 
 				if ( $return = $item->update() ) {
 					$course_data->set_item( $item );
@@ -939,6 +934,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_quiz_data( $quiz_id, $course_id = 0 ) {
 			$result = false;
 			if ( $course_result = $this->get_course_data( $course_id ) ) {
+
 				$result = $course_result->get_item( $quiz_id );
 			}
 
@@ -1573,9 +1569,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		public function get_completed_items( $course_id ) {
-			self::$curd->get_user_items( $this->get_id(), $course_id );
+			$this->_curd->get_user_items( $this->get_id(), $course_id );
 
-			return self::$curd->get_user_completed_items( $this->get_id(), $course_id );
+			return $this->_curd->get_user_completed_items( $this->get_id(), $course_id );
 		}
 
 		/**
@@ -1706,7 +1702,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				}
 			}
 
-			$my_orders = self::$curd->get_orders( $this->get_id() );// _learn_press_get_user_course_orders( $this->get_id() );
+			$my_orders = $this->_curd->get_orders( $this->get_id() );
 
 			if ( $last_order && $my_orders ) {
 				$last_orders = array();
@@ -1817,8 +1813,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Count number of time user has retaken a quiz
 		 *
-		 * @param int  $quiz_id
-		 * @param int  $course_id
+		 * @param int $quiz_id
+		 * @param int $course_id
 		 * @param bool $force
 		 *
 		 * @return int
@@ -1889,7 +1885,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data->delete_meta_data( array( 'grade', 'via', 'exceeded' ) );
 
 				$course_data->set_status( 'enrolled' );
-				$start_time = LP_Datetime::instance( current_time( 'mysql' ) );
+				$start_time = new LP_Datetime( current_time( 'mysql' ) );
 				$course_data->set_start_time( $start_time->toSql() );
 				$course_data->set_start_time_gmt( $start_time->toSql( false ) );
 				$course_data->set_end_time( LP_Datetime::getSqlNullDate() );
@@ -1994,9 +1990,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Return current status of course for user
 		 *
-		 * @param int    $course_id
+		 * @param int $course_id
 		 * @param string $field
-		 * @param bool   $force
+		 * @param bool $force
 		 *
 		 * @return mixed
 		 */
@@ -2279,7 +2275,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * @param      $item
-		 * @param int  $course_id
+		 * @param int $course_id
 		 * @param bool $force
 		 *
 		 * @return mixed|void
@@ -2340,7 +2336,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Get the order that contains the course.
 		 *
-		 * @param int    $course_id
+		 * @param int $course_id
 		 * @param string $return type of order to return LP_Order|ID
 		 *
 		 * @return int|LP_Order|mixed
@@ -2403,7 +2399,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					settype( $course_item, 'array' );
 				}
 
-				$date                          = LP_Datetime::instance();
+				$date                          = new LP_Datetime();
 				$course_item['user_id']        = $user_id;
 				$course_item['item_id']        = $course_id;
 				$course_item['item_type']      = learn_press_get_post_type( $course_id );
@@ -2499,7 +2495,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return LP_Query_List_Table
 		 */
 		public function get_purchased_courses( $args = array() ) {
-			return self::$curd->query_purchased_courses( $this->get_id(), $args );
+			return $this->_curd->query_purchased_courses( $this->get_id(), $args );
 		}
 
 		/**
@@ -2575,7 +2571,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * @param string $type
-		 * @param int    $size
+		 * @param int $size
 		 *
 		 * @return false|string
 		 */
@@ -2630,10 +2626,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $result;
 		}
 
-		public function complete_item( $item_id, $course_id ) {
-
-		}
-
 		public function get_role() {
 			return $this->is_admin() ? 'admin' : ( $this->is_instructor() ? 'instructor' : 'user' );
 		}
@@ -2675,7 +2667,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param mixed $the_course
 		 */
 		public function read_course( $the_course ) {
-			self::$curd->read_course( $this->get_id(), $the_course );
+			$this->_curd->read_course( $this->get_id(), $the_course );
 		}
 
 		/**

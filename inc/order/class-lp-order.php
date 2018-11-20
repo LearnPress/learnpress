@@ -151,7 +151,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 				}
 			} elseif ( ! $date instanceof LP_Datetime ) {
-				$date = LP_Datetime::instance( $date );
+				$date = new LP_Datetime( $date );
 			}
 
 			return $date;
@@ -1034,7 +1034,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_user_data() {
 			$data = array();
 			if ( $user_ids = $this->get_data( 'user_id' ) ) {
-				$user_ids = (array)$user_ids; // cast $user_ids to array if it is not.
 				if ( is_array( $user_ids ) ) {
 					foreach ( $user_ids as $user_id ) {
 						$user = learn_press_get_user( $user_id );

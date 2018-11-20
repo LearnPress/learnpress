@@ -53,6 +53,10 @@ input[type="password"] {
     margin-bottom: 20px;
 }
 
+#learn-press-course-tabs {
+    margin-bottom: 40px;
+}
+
 /* Archive */
 form[name="search-course"] {
     margin-bottom: 20px;
@@ -168,121 +172,8 @@ ul.learn-press-courses {
             left: 50%;
             margin-left: -100%;
             background: #00adff;
-            transition: left 0.25s linear;
             @include border-radius(5px);
         }
-    }
-}
-
-.learn-press-quiz-list-questions {
-    position: relative;
-    .quiz-question {
-        //background: #e2e2e2;
-        //position: absolute;
-        //top: 0;
-        //left: 0;
-        //right: 0;
-    }
-}
-
-#learn-press-bubble-notifications {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 300px;
-    z-index: 9999;
-    > div {
-        background: #FFF;
-        font-size: 14px;
-        padding: 10px;
-        line-height: 1;
-        box-shadow: 0 0 11px #DDD;
-        margin-bottom: 10px;
-        display: flex;
-        color: #999;
-        .icon {
-            font-style: normal;
-            flex: 0 0 24px;
-            text-align: center;
-            margin-right: 8px;
-            font-size: 24px;
-            &:after {
-                font-family: fontawesome;
-            }
-        }
-        .message {
-            margin-top: 5px;
-        }
-        &.error {
-            background: #ffd4d4;
-            .icon {
-                &:after {
-                    content: "\f00d";
-                    color: #ff9090;
-                }
-            }
-        }
-        &.success {
-            .icon {
-                &:after {
-                    content: "\f00c";
-                    color: #00adff;
-                }
-            }
-        }
-        &.notice {
-            .icon {
-                &:after {
-                    content: "\f129";
-                    color: #00adff;
-                }
-            }
-        }
-        &.warning {
-            background: #ffe2b0;
-            .icon {
-                &:after {
-                    content: "\f129";
-                    color: #ffb058;
-                }
-            }
-        }
-    }
-}
-
-.learn-press-quiz-content {
-    _background: #e2e2e2;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 2px #a2a2a2;
-    margin-bottom: 20px;
-    outline: none;
-    .quiz-progress {
-        _background: #e7f7ff;
-        margin-bottom: 30px;
-        position: relative;
-        margin: -19px -19px 10px -19px;
-        border-radius: 10px;
-    }
-}
-
-.bounce-enter-active {
-    animation: bounce-in .5s;
-}
-
-.bounce-leave-active {
-    animation: bounce-in .5s reverse;
-}
-
-@keyframes bounce-in {
-    0% {
-        opacity: 0;
-    }
-    50% {
-        opacity: 0.25;
-    }
-    100% {
-        opacity: 1;
     }
 }
 

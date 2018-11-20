@@ -7,61 +7,6 @@
  * @version 1.0
  */
 
-
-/**
- * Get course data of an user.
- *
- * @since 3.2.0
- *
- * @param int $user_id
- * @param int $course_id
- *
- * @return bool|LP_User_Item_Course|LP_User_Item_Quiz
- */
-function learn_press_get_user_course_data( $user_id = 0, $course_id = 0 ) {
-	if ( empty( $user_id ) ) {
-		$user_id = get_current_user_id();
-	}
-
-	if ( empty( $course_id ) ) {
-		$course_id = get_the_ID();
-	}
-
-	$user = learn_press_get_user( $user_id );
-
-	return $user->get_course_data( $course_id );
-}
-
-/**
- * Get course item data of an user.
- *
- * @since 3.2.0
- *
- * @param int $item_id
- * @param int $user_id
- * @param int $course_id
- *
- * @return bool|LP_User_Item_Course|LP_User_Item_Quiz
- */
-function learn_press_get_user_item_data( $item_id, $user_id = 0, $course_id = 0 ) {
-	if ( empty( $user_id ) ) {
-		$user_id = get_current_user_id();
-	}
-
-	if ( empty( $course_id ) ) {
-		$course_id = get_the_ID();
-	}
-
-	$user = learn_press_get_user( $user_id );
-
-	return $user->get_item_data( $item_id, $course_id );
-}
-
-/**
- * Get tabs for displaying in user profile.
- *
- * @return LP_Profile_Tabs
- */
 function learn_press_get_user_profile_tabs() {
 	return LP_Profile::instance()->get_tabs();
 }

@@ -27,22 +27,13 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_styles() {
-		$default_styles = array();
-		$load_fa        = LP()->settings()->get( 'load_fa' );
-		$load_css       = LP()->settings()->get( 'load_css' );
-
-		if ( $load_fa === 'yes' || ! $load_fa ) {
-			$default_styles['font-awesome'] = self::url( 'css/font-awesome.min.css' );
-		}
-
-		if ( $load_css === 'yes' || ! $load_css ) {
-			$default_styles['learn-press']      = self::url( 'css/learnpress.css' );
-			$default_styles['jquery-scrollbar'] = self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.css' );
-		}
-
 		return apply_filters(
 			'learn-press/frontend-default-styles',
-			$default_styles
+			array(
+				'font-awesome'     => self::url( 'css/font-awesome.min.css' ),
+				'learn-press'      => self::url( 'css/learnpress.css' ),
+				'jquery-scrollbar' => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.css' )
+			)
 		);
 	}
 
@@ -82,61 +73,30 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	public function _get_scripts() {
-		$suffix          = defined( 'LP_DEV' ) && LP_DEV ? '' : '';
-		$default_scripts = learn_press_is_compress_assets()
-			? array(
-				'global'           => array(
-					'url'  => self::url( 'js/global.js' ),
-					'deps' => array(
-						'jquery'
-					)
-				),
-				'learnpress'       => self::url( 'js/frontend/learnpress-frontend.min.js' ),
-				'profile-user'     => array(
-					'url'     => self::url( 'js/frontend/profile.js' ),
-					'deps'    => array(
-						'global',
-						'plupload',
-						'backbone',
-						'jquery-ui-slider',
-						'jquery-ui-draggable'
-					),
-					'enqueue' => learn_press_is_profile()
-				),
-				'become-a-teacher' => array(
-					'url'  => self::url( 'js/frontend/become-teacher.js' ),
-					'deps' => array(
-						'jquery'
-					)
-				)
-			)
-			: array(
+		return apply_filters(
+			'learn-press/frontend-default-scripts',
+			array(
 				'watchjs'          => self::url( 'js/vendor/watch.js' ),
 				'jalerts'          => self::url( 'js/vendor/jquery.alert.js' ),
-				//'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
+				'circle-bar'       => self::url( 'js/vendor/circle-bar.js' ),
 				'lp-vue'           => array(
-					'url'     => self::url( 'js/vendor/vue' . $suffix . '.js' ),
+					'url'     => self::url( 'js/vendor/vue.min.js' ),
 					'ver'     => '2.5.16',
 					'enqueue' => false
 				),
 				'lp-vuex'          => array(
 					'url'     => self::url( 'js/vendor/vuex.2.3.1.js' ),
 					'ver'     => '2.3.1',
-					'enqueue' => false,
-					'deps'    => array( 'lp-vue' )
+					'enqueue' => false
 				),
 				'lp-vue-resource'  => array(
 					'url'     => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
 					'ver'     => '1.3.4',
-					'enqueue' => false,
-					'deps'    => array( 'lp-vue', 'lp-vuex' )
+					'enqueue' => false
 				),
 				'global'           => array(
 					'url'  => self::url( 'js/global.js' ),
-					'deps' => array(
-						'jquery', /*'underscore',*/
-						'utils'
-					)
+					'deps' => array( 'jquery', 'underscore', 'utils' )
 				),
 				'jquery-scrollbar' => array(
 					'url'  => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.js' ),
@@ -183,17 +143,10 @@ class LP_Assets extends LP_Abstract_Assets {
 					'deps' => array(
 						'jquery'
 					)
-				),
-				'notifications'    => array(
-					'url'  => self::url( 'js/frontend/notifications.js' ),
-					'deps' => array(
-						'jquery'
-					)
 				)
-			);
+			)
+		);
 
-
-		return apply_filters( 'learn-press/frontend-default-scripts', $default_scripts );
 	}
 
 	/**
@@ -211,26 +164,20 @@ class LP_Assets extends LP_Abstract_Assets {
 		if ( $scripts = $this->_get_scripts() ) {
 			foreach ( $scripts as $handle => $data ) {
 				$enqueue = is_array( $data ) && array_key_exists( 'enqueue', $data ) ? $data['enqueue'] : true;
+				/*switch ( $handle ) {
+					case 'checkout':
+						$enqueue = false;
+						if ( learn_press_is_course() || learn_press_is_checkout() ) {
+							$enqueue = true;
+						}
+
+				}*/
 				$enqueue = apply_filters( 'learn-press/enqueue-script', $enqueue, $handle );
 				if ( $handle == 'font-awesome' || $enqueue ) {
 					wp_enqueue_script( $handle );
-				} else {
-					$args = wp_parse_args( $data, array(
-						'url'       => '',
-						'deps'      => array(),
-						'ver'       => '',
-						'in_footer' => false
-					) );
-					list( $url, $deps, $ver, $in_footer ) = array_values( $args );
-
-					//wp_register_script($handle);
-
-					wp_register_script( $handle, $url, $deps, $ver, $in_footer );
 				}
 			}
 		}
-
-		do_action( 'learn-press/frontend-enqueue-scripts' );
 
 		/**
 		 * Enqueue scripts
@@ -242,8 +189,6 @@ class LP_Assets extends LP_Abstract_Assets {
 				wp_enqueue_style( $handle );
 			}
 		}
-
-		do_action( 'learn-press/frontend-enqueue-styles' );
 	}
 
 
@@ -261,15 +206,6 @@ function learn_press_assets() {
 	}
 
 	return $assets;
-}
-
-/**
- * Compress js/css or not?
- *
- * @return bool
- */
-function learn_press_is_compress_assets() {
-	return apply_filters( 'learn-press/compress-assets', ! defined( 'LP_COMPRESS_ASSETS' ) || defined( 'LP_COMPRESS_ASSETS' ) && LP_COMPRESS_ASSETS );
 }
 
 /**

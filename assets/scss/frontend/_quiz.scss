@@ -22,20 +22,6 @@
             .progress-number {
                 font-size: 20px;
                 margin: 15px 0 10px 0;
-                .h, .m, .s {
-                    display: inline-block;
-                    width: 40px;
-                    text-align: center;
-                    margin-left: -4px;
-                    position: relative;
-                }
-                .h, .m {
-                    &:after {
-                        content: ':';
-                        position: absolute;
-                        right: -4px;
-                    }
-                }
             }
             .progress-label {
                 font-size: 14px;
@@ -61,14 +47,6 @@
     .quiz-current-question,
     .quiz-countdown {
 
-    }
-
-    .quiz-countdown {
-        &.timeover {
-            .progress-number {
-                color: #FF0000;
-            }
-        }
     }
 }
 
@@ -353,11 +331,10 @@ button[data-counter] {
 .question-numbers {
     list-style: none;
     text-align: center;
-    margin-bottom: 10px;
     li {
         display: inline-block;
         position: relative;
-        margin: 0 2px;
+        margin-bottom: 3px;
         a {
             display: block;
             padding: 8px;
@@ -469,10 +446,6 @@ button[data-counter] {
     button[type="submit"] {
         content: attr(data-counter);
     }
-}
-
-.question-nav {
-    margin-bottom: 10px;
 }
 
 .circle-bar {

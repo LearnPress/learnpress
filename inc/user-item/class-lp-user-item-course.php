@@ -967,7 +967,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			$item_data['user_id'] = $user_id ? $user_id : get_current_user_id();
 		}
 
-		$current_time = LP_Datetime::instance();
+		$current_time = new LP_Datetime();
 		$defaults     = array(
 			'start_time'     => $current_time,
 			'start_time_gtm' => $current_time->toSql( false ),

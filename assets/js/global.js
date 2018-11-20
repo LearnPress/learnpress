@@ -7,158 +7,6 @@ if (typeof window.LP == 'undefined') {
 
 
 (function ($) {
-
-    /**
-     * Translator
-     *
-     * @param strings
-     * @constructor
-     */
-    var Translator = function (strings) {
-        this.strings = strings;
-    };
-
-    Translator.prototype = $.extend({}, Translator.prototype, {
-
-        /**
-         * Get translated string and prints with placeholders.
-         *
-         * @param string
-         * @returns {*}
-         */
-        translate: function (string) {
-            var s = this.strings[string],
-                reg = /(%([1-9]+\$)?[d|s])/g,
-                args = arguments,
-                m = null,
-                p = 0;
-
-            if (s === undefined) {
-                s = string;
-            }
-
-            if (args.length < 2) {
-                return s;
-            }
-
-            m = s.match(reg);
-
-            if (!m) {
-                return s;
-            }
-
-            for (var i = 0, n = m.length; i < n; i++) {
-
-                switch (m[i]) {
-                    case '%s':
-                        s = s.replace(/%s/, arguments[i + 1 - p]);
-                        break;
-                    case '%d':
-                        s = s.replace(/%d/, arguments[i + 1 - p] * 1);
-                        break;
-                    default:
-                        var k = m[i].match(/%([1-9])\$([sd])/);
-                        p++;
-                        switch (k[2]) {
-                            case 's':
-                                s = s.replace(k[0], args[k[1]]);
-                                break;
-                            case 'd':
-                                s = s.replace(k[0], args[k[1]] * 1);
-                                break;
-                        }
-                }
-            }
-
-            return s;
-        }
-    });
-
-    (function (exports) {
-
-        exports.Heartbeat = function (options) {
-            var timer, callback, proxy;
-
-            var start = function () {
-                timer = setInterval(queue, options.period || 3000)
-            }
-
-            var stop = function () {
-                clearInterval(timer);
-            }
-
-            var queue = function () {
-                stop();
-                callback.call(proxy, start);
-            }
-
-            this.run = function (cb, p) {
-                callback = cb;
-                proxy = p || window;
-                start();
-            }
-        };
-
-        // $.extend(Heartbeat.prototype, {
-        //     timer: null,
-        //     start: function () {
-        //         this.timer = setInterval(this.queue, 3000)
-        //     },
-        //     queue: function () {
-        //         console.log('Queue', this)
-        //     }
-        // });
-
-        // exports.heartbeat = new Heartbeat({
-        //     period: 3000
-        // }).run(function (next) {
-        //     console.time('heartbeat');
-        //     $.ajax({
-        //         url: '',
-        //         data: {
-        //             'lp-ajax': 'test-heartbeat'
-        //         },
-        //         success: function (r) {
-        //             console.log(r)
-        //
-        //             console.timeEnd('heartbeat');
-        //             next();
-        //         }
-        //     })
-        //
-        // });
-
-    })(LP);
-
-
-    $(document).ready(function () {
-        window.LP.l10n = new Translator(window.lp_l10n || {});
-        // window.LP.heartbeat = new Heartbeat({
-        //     period: 3000
-        // });
-    });
-
-    /**
-     * If toFixed function is not defined in Number
-     */
-    !Number.prototype.toFixed && (Number.prototype.toFixed = function (fractionDigit) {
-
-        var x = parseFloat(this),
-            reg = new RegExp('\\d+(\.\\d{1,' + fractionDigit + '})');
-
-        if (fractionDigit) {
-            if ((x + '').indexOf('.') === -1) {
-                x = x + '.0000000000';
-            } else {
-                x = x + '000000000';
-            }
-            var m = reg.exec(x);
-            return m[0];
-        }
-
-        return parseInt(x) + '';
-    });
-
     /**
      * Manage event callbacks.
      * Allow add/remove a callback function into custom event of an object.
@@ -831,84 +679,6 @@ if (typeof window.LP == 'undefined') {
             }
             return data;
         },
-        debounce: function (func, wait) {
-            var timeout;
-
-            return function () {
-                var context = this,
-                    args = arguments;
-
-                var executeFunction = function () {
-                    func.apply(context, args);
-                };
-
-                clearTimeout(timeout);
-                timeout = setTimeout(executeFunction, wait);
-            };
-        },
-
-        Request: function ($store, defaultData) {
-
-            var identify = $store.getters.identify || 'lp_' + LP.uniqueId();
-
-            Vue.http.interceptors.push(function (request, next) {
-                if (request.params['namespace'] !== identify) {
-                    next();
-                    return;
-                }
-
-                if ($store._actions['newRequest']) {
-                    $store.dispatch('newRequest');
-                }
-
-                next(function (response) {
-                    var result = true;
-                    if (request.params.dataType !== 'raw') {
-
-                        if (!jQuery.isPlainObject(response.body)) {
-                            response.body = LP.parseJSON(response.body) || {};
-                        }
-
-                        var body = response.body;
-
-                        result = body.success || false;
-                    }
-
-                    if ($store._actions['requestComplete']) {
-                        if (result) {
-                            $store.dispatch('requestComplete', 'success');
-                        } else {
-                            $store.dispatch('requestComplete', 'failed');
-                        }
-                    }
-                });
-            });
-
-            return function (url, action, data, params, context) {
-                data = $.extend({}, defaultData, data);
-
-                url = url ? url : (url !== false ? url : $store.getters.rootUrl || '');
-
-                return new Promise(function (resolve, reject) {
-                    Vue.http.post(
-                        url,
-                        data,
-                        {
-                            emulateJSON: true,
-                            params: $.extend({
-                                namespace: identify,
-                                'lp-ajax': action
-                            }, params || {})
-                        }
-                    ).then(function (response) {
-                        resolve(response.body);
-                    }, function (response) {
-                        reject(response.body)
-                    });
-                })
-            };
-        },
-
         ajax: function (args) {
             var type = args.type || 'post',
                 dataType = args.dataType || 'json',
@@ -916,6 +686,7 @@ if (typeof window.LP == 'undefined') {
                 beforeSend = args.beforeSend || function () {
                     },
                 url = args.url || window.location.href;
+//                        console.debug( beforeSend );
             $.ajax({
                 data: data,
                 url: url,
@@ -1448,14 +1219,11 @@ if (typeof window.LP == 'undefined') {
     }
 
     $(document).ready(function () {
-
-        if (window.lpGlobalSettings) {
-            if (typeof $.alerts !== 'undefined') {
-                $.alerts.overlayColor = '#000';
-                $.alerts.overlayOpacity = 0.5;
-                $.alerts.okButton = lpGlobalSettings.localize.button_ok;
-                $.alerts.cancelButton = lpGlobalSettings.localize.button_cancel;
-            }
+        if (typeof $.alerts !== 'undefined') {
+            $.alerts.overlayColor = '#000';
+            $.alerts.overlayOpacity = 0.5;
+            $.alerts.okButton = lpGlobalSettings.localize.button_ok;
+            $.alerts.cancelButton = lpGlobalSettings.localize.button_cancel;
         }
 
         $('.learn-press-message.fixed').each(function () {
@@ -1529,19 +1297,19 @@ if (typeof window.LP == 'undefined') {
         });
 
         $('body')
-            .on('click', '.learn-press-nav-tabs > a', function (e) {
+            .on('click', '.learn-press-nav-tabs li a', function (e) {
                 e.preventDefault();
                 var $tab = $(this), url = '';
-                $tab.addClass('active').siblings().removeClass('active');
+                $tab.closest('li').addClass('active').siblings().removeClass('active');
                 $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
                 $(document).trigger('learn-press/nav-tabs/clicked', $tab);
             });
 
         setTimeout(function () {
-            $('.learn-press-nav-tabs > .active:not(.default)').trigger('click');
+            $('.learn-press-nav-tabs li.active:not(.default) a').trigger('click');
         }, 300);
 
-        ///$('body.course-item-popup').parent().css('overflow', 'hidden');
+        $('body.course-item-popup').parent().css('overflow', 'hidden');
         ///
         (function () {
             var timer = null,
@@ -1586,71 +1354,6 @@ if (typeof window.LP == 'undefined') {
             $(document).trigger('learn-press/close-all-quick-tip')
         })
     });
-
-    !Number.prototype.toTime && (Number.prototype.toTime = function () {
-
-        var MINUTE_IN_SECONDS = 60,
-            HOUR_IN_SECONDS = 3600,
-            DAY_IN_SECONDS = 24 * 3600,
-            seconds = this + 0,
-            str = '';
-
-        if (seconds > DAY_IN_SECONDS) {
-            var days = Math.ceil(seconds / DAY_IN_SECONDS);
-            str = days + ( days > 1 ? ' days left' : ' day left' );
-        } else {
-            var hours = Math.floor(seconds / HOUR_IN_SECONDS),
-                minutes = 0;
-            seconds = hours ? seconds % (hours * HOUR_IN_SECONDS) : seconds;
-            minutes = Math.floor(seconds / MINUTE_IN_SECONDS);
-            seconds = minutes ? seconds % (minutes * MINUTE_IN_SECONDS) : seconds;
-
-
-            if (hours && hours < 10) {
-                hours = '0' + hours;
-            }
-
-            if (minutes < 10) {
-                minutes = '0' + minutes;
-            }
-
-            if (seconds < 10) {
-                seconds = '0' + seconds;
-            }
-
-            str = hours + ':' + minutes + ':' + seconds;
-        }
-
-        return str;
-    });
-
-    LP.listPluck = function (arr, field, c) {
-        var r = [];
-
-        for (var i = 0, n = arr.length; i < n; i++) {
-
-            if (c) {
-                var o = false;
-                for (var j in c) {
-                    if (c.hasOwnProperty(j)) {
-                        if (arr[i][j] != c[j]) {
-                            o = true;
-                            break;
-                        }
-                    }
-                }
-                if (o) {
-                    continue
-                }
-                r.push(arr[i][field]);
-            } else {
-                r.push(arr[i][field]);
-            }
-        }
-        return r;
-    }
-
-
     LearnPress = LP;
 
 })(jQuery);

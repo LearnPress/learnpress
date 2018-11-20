@@ -6,8 +6,6 @@ if (typeof LearnPress === 'undefined') {
 }
 ;(function ($) {
     "use strict";
-
-    return '';
     LearnPress.Course = $.extend(
         LearnPress.Course || {}, {
             finish: function (data, callback) {

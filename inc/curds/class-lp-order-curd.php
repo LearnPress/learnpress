@@ -437,8 +437,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$order->set_data_via_methods(
 				array(
 					'user_id'         => $users,//get_post_meta( $order->get_id(), '_user_id', true ),
-					'order_date'      => LP_Datetime::instance( $post->post_date ),
-					'date_modified'   => LP_Datetime::instance( $post->post_modified ),
+					'order_date'      => new LP_Datetime( $post->post_date ),
+					'date_modified'   => new LP_Datetime( $post->post_modified ),
 					'status'          => str_replace( 'lp-', '', $post->post_status ),
 					'parent_id'       => $post->post_parent,
 					'created_via'     => get_post_meta( $post->ID, '_created_via', true ),

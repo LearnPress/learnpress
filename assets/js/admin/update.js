@@ -1,5 +1,6 @@
 ;(function ($) {
     'use strict';
+
     var Package = function (data) {
         this.data = data;
 
@@ -171,42 +172,20 @@
         }
     };
 
-    function initSyncs() {
-        var $chkAll = $('#learn-press-check-all-syncs'),
-            $chks = $('#learn-press-syncs').find('[name^="lp-repair"]');
 
-        $chkAll.on('click', function () {
-            $chks.prop('checked', this.checked)
-        });
-
-        $chks.on('click', function () {
-            $chkAll.prop('checked', $chks.filter(':checked').length === $chks.length);
-        })
-    }
 
     function init() {
+
         window.lpGlobalSettings = window.lpGlobalSettings || {};
 
         if($('#learn-press-updater').length) {
             var Updater = new Vue(UpdaterSettings);
-            initSyncs();
         }
+
+
         // return;
+        //
         // var i18n = window.lpUpdateSettings || {};
-        //
-        // var getUpdatePackages = function (callback) {
-        //     $.ajax({
-        //         url: lpGlobalSettings.admin_url,
-        //         data: {
-        //             'lp-ajax': 'get-update-packages'
-        //         },
-        //         success: function (res) {
-        //             var packages = LP.parseJSON(res);
-        //             callback.call(null, packages)
-        //         }
-        //     })
-        // }
-        //
         // $(document).on('click', '#button-update', function (e) {
         //     e.preventDefault();
         //     var $form = $('#learn-press-update-form'),
@@ -228,15 +207,6 @@
         //         return false;
         //     }
         //
-        //     var packages = null;
-        //
-        //     getUpdatePackages(function (res) {
-        //         packages = res;
-        //         console.log(packages)
-        //     });
-        //     return;
-        //
-        //
         //     var $btn = $(this),
         //         url = $btn.addClass('disabled').attr('href'),
         //         context = $btn.data('context');
@@ -254,8 +224,7 @@
         //             }
         //         }
         //     });
-        //
-        // }).on('click', '#skip-notice-install', function () {
+        // }).on('click', '#skip-notice-install', function(){
         //     $.post({
         //         url: '',
         //         data: {
@@ -264,7 +233,7 @@
         //     });
         //
         //     $('#notice-install').fadeOut();
-        // })
+        // });
     }
 
     $(document).ready(init);

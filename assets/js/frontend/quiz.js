@@ -6,7 +6,7 @@
  * @version 1.1
  */
 ;(function ($) {
-    return;
+
     !Number.prototype.toTime && (Number.prototype.toTime = function () {
 
         var MINUTE_IN_SECONDS = 60,

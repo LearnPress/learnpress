@@ -18,8 +18,6 @@ $user          = LP_Global::user();
 $course_item   = LP_Global::course_item();
 $course        = LP_Global::course();
 $can_view_item = $user->can_view_item( $course_item->get_id(), $course->get_id() );
-
-echo __FILE__;
 ?>
 
 <div id="learn-press-content-item">

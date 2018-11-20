@@ -49,7 +49,7 @@ class LP_Update_30 extends LP_Update_Base {
 		@$wpdb->query( $sql );
 
 		// Update start_time_gmt, end_time_gmt with offset time from start_time, end_time
-		$time      = LP_Datetime::instance();
+		$time      = new LP_Datetime();
 		$offset    = $time->getOffset( true );
 		$null_time = LP_Datetime::getSqlNullDate();
 

@@ -355,7 +355,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					) );
 				}
 
-				LP_Object_Cache::set( $question_id, $answer_options, 'question-answers' );
+				LP_Object_Cache::set( 'answer-options-' . $question_id, $answer_options, 'learn-press/questions' );
 				$new_question->set_data( 'answer_options', $answer_options );
 
 				return $new_question;
@@ -873,7 +873,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				foreach ( $results as $k => $v ) {
 
 					if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
-						unset( $answer_data['question_answer_id'] );
+						unset($answer_data['question_answer_id']);
 						foreach ( $answer_data as $data_key => $data_value ) {
 							$v->{$data_key} = $data_value;
 						}
@@ -941,67 +941,27 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 *
 		 * @return array|bool
 		 */
-		public function load_answer_options( $question_id, $single = true ) {
+		public function load_answer_options( $question_id ) {
 
+			global $wpdb;
+
+			$return_id = 0;
 
 			if ( is_array( $question_id ) ) {
-				$z = microtime( true );
 
-				if ( $single ) {
-					foreach ( $question_id as $q_id ) {
-						$this->load_answer_options( $q_id );
-					}
-				} else {
-					global $wpdb;
-
-					$query = "
-						SELECT * 
-						FROM {$wpdb->learnpress_question_answers} 
-						WHERE question_id IN(" . join( ',', $question_id ) . ")
-						ORDER BY question_id, answer_order ASC
-					";
-					if ( $results = $wpdb->get_results( $query ) ) {
-						$answer_options = array();
-						$qid            = 0;
-						foreach ( $results as $k => $v ) {
-
-							if ( $qid && ( $qid !== $v->question_id ) ) {
-								LP_Object_Cache::set( $qid, $answer_options, 'question-answers' );
-								$answer_options = array();
-							}
-
-							if ( $qid !== $v->question_id ) {
-								$qid = $v->question_id;
-							}
-
-							$answer_options[ $v->question_answer_id ] = array(
-								'question_answer_id' => $v->question_answer_id,
-								'question_id'        => $v->question_id,
-								'answer_order'       => $v->answer_order
-							);
-
-							if ( $answer_data = LP_Helper::maybe_unserialize( $v->answer_data ) ) {
-								foreach ( $answer_data as $data_key => $data_value ) {
-
-									if ( $data_key == 'question_answer_id' ) {
-										continue;
-									}
-
-									$answer_options[ $v->question_answer_id ][ $data_key ] = $data_value;
-								}
-							}
-						}
-
-						// The last question
-						LP_Object_Cache::set( $qid, $answer_options, 'question-answers' );
+				foreach ( $question_id as $q_id ) {
+					$this->load_answer_options( $q_id );
+					if ( ! $return_id ) {
+						$return_id = $q_id;
 					}
 				}
-				$question_id = reset( $question_id );
+				$question_id = $return_id;
 			}
 
-			if ( false === ( $answer_options = LP_Object_Cache::get( $question_id, 'question-answers' ) ) ) {
+			if ( false === ( $answer_options = LP_Hard_Cache::get( 'question-' . $question_id, 'question-answers' ) ) ) {
+
 				$answer_options = $this->_read_answers( $question_id );
-				LP_Object_Cache::set( $question_id, $answer_options, 'question-answers' );
+				LP_Hard_Cache::set( 'question-' . $question_id, $answer_options, 'question-answers' );
 			}
 
 			return $answer_options;

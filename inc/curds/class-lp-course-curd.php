@@ -408,7 +408,8 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 				LP_Object_Cache::set( $course_id, $section_items[ $course_id ], 'learn-press/course-curriculum' );
 				//$section_ids   = wp_list_pluck( $sections, 'section_id' );
-				$section_items[ $course_id ] = $this->_read_course_section_items( $section_ids, $course_id );
+
+
 			}
 
 			return reset( $section_items );
@@ -418,9 +419,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT section_items.item_id 
-				FROM {$wpdb->posts} course
-				INNER JOIN {$wpdb->learnpress_sections} course_sections ON course.ID  = course_sections.section_course_id
-				INNER JOIN {$wpdb->learnpress_section_items} section_items ON course_sections.section_id = section_items.section_id
+				FROM wp_posts course
+				INNER JOIN wp_learnpress_sections course_sections ON course.ID  = course_sections.section_course_id
+				INNER JOIN wp_learnpress_section_items section_items ON course_sections.section_id = section_items.section_id
 				WHERE course.ID = %d
 			", $course_id );
 
@@ -811,7 +812,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			$query = $wpdb->prepare( $sql, $params );
 
 			$stats_object = array();
-
 			if ( $results = $wpdb->get_results( $query ) ) {
 				foreach ( $results as $result ) {
 					$stats_object[ $result->post_type ] = $result->count;

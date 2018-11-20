@@ -38,11 +38,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		protected $_questions = array();
 
 		/**
-		 * @var null
-		 */
-		protected static $curd = null;
-
-		/**
 		 * @var array
 		 */
 		protected $_data = array(
@@ -62,6 +57,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		);
 
 		/**
+		 * @var int
+		 */
+		protected static $_loaded = 0;
+
+		/**
 		 * Constructor gets the post object and sets the ID for the loaded course.
 		 *
 		 * @param mixed $the_quiz
@@ -70,9 +70,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		public function __construct( $the_quiz, $args = array() ) {
 
 			//parent::__construct( $the_quiz, $args );
-			if ( empty( self::$curd ) ) {
-				self::$curd = new LP_Quiz_CURD();
-			}
+
+			$this->_curd = new LP_Quiz_CURD();
 
 			if ( is_numeric( $the_quiz ) && $the_quiz > 0 ) {
 				$this->set_id( $the_quiz );
@@ -81,11 +80,29 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			} elseif ( ! empty( $the_quiz->ID ) ) {
 				$this->set_id( absint( $the_quiz->ID ) );
 			}
-
 			if ( $this->get_id() > 0 ) {
 				$this->load();
 			}
 
+			self::$_loaded ++;
+			if ( self::$_loaded == 1 ) {
+				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+			}
+		}
+
+		/**
+		 * Log debug data.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $data
+		 *
+		 * @return array
+		 */
+		public static function log( $data ) {
+			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
+			return $data;
 		}
 
 		/**
@@ -101,8 +118,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Load quiz data
 		 */
 		public function load() {
-			self::$curd->load( $this );
-
+			$this->_curd->load( $this );
 		}
 
 		/**
@@ -140,9 +156,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function save() {
 			if ( $this->get_id() ) {
-				$return = self::$curd->update( $this );
+				$return = $this->_curd->update( $this );
 			} else {
-				$return = self::$curd->create( $this );
+				$return = $this->_curd->create( $this );
 			}
 
 			return $return;
@@ -315,7 +331,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function get_mark() {
 			$mark = $this->get_data( 'mark' );
-
 			if ( false === $mark || '' === $mark ) {
 				$questions = $this->get_questions();
 				$mark      = 0;
@@ -343,36 +358,71 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get quiz questions.
 		 *
-		 * @param string $return. Added 3.2.0
-		 *
-		 * @return LP_Question[]|int[]
+		 * @return mixed
 		 */
-		public function get_questions( $return = '' ) {
-
-			if ( $return ) {
-				$namespace = "/{$return}";
-			} else {
-				$namespace = '';
-			}
-
-			if ( false === ( $questions = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'learn-press/questions' . $namespace ) ) ) {
+		public function get_questions() {
+			if ( false === ( $questions = LP_Object_Cache::get( $this->get_id(), 'quiz-questions' ) ) ) {
 				$questions = array();
 
-				if ( $ids = self::$curd->read_questions( $this->get_id() ) ) {
+				if ( $ids = $this->_curd->read_questions( $this->get_id() ) ) {
 					foreach ( $ids as $id ) {
-						if ( $return === 'object' ) {
-							$questions[ $id ] = LP_Question::get_question( $id );
-							$questions[ $id ]->set_quiz( $this->get_id() );
-						} else {
-							$questions[ $id ] = $id;
-						}
+						$questions[ $id ] = $id;
 					}
 				}
 
-				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $questions, 'learn-press/questions' . $namespace );
+				LP_Object_Cache::set( $this->get_id(), $questions, 'quiz-questions' );
 			}
 
-			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $this->get_course_id() );
+			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
+		}
+
+		/**
+		 * Quiz editor get questions.
+		 *
+		 * @return mixed
+		 */
+		public function quiz_editor_get_questions() {
+			// list questions
+			$questions = $this->get_questions();
+			// order questions in quiz
+			$question_order = learn_press_quiz_get_questions_order( $questions );
+
+			$result = array();
+			if ( is_array( $questions ) ) {
+				foreach ( $questions as $index => $id ) {
+
+					$question = LP_Question::get_question( $id );
+
+					$answers = array();
+					// handle question answer
+					if ( is_array( $question->get_data( 'answer_options' ) ) ) {
+						foreach ( $question->get_data( 'answer_options' ) as $answer ) {
+							$answers[] = $answer;
+						}
+					}
+
+					$post     = get_post( $id );
+					$result[] = apply_filters( 'learn-press/quiz-editor/question-data', array(
+						'id'       => $id,
+						'open'     => false,
+						'title'    => $post->post_title,
+						'type'     => array(
+							'key'   => $question->get_type(),
+							'label' => $question->get_type_label()
+						),
+						'answers'  => apply_filters( 'learn-press/quiz-editor/question-answers-data', $answers, $id, $this->get_id() ),
+						'settings' => array(
+							'content'     => $post->post_content,
+							'mark'        => get_post_meta( $id, '_lp_mark', true ),
+							'explanation' => get_post_meta( $id, '_lp_explanation', true ),
+							'hint'        => get_post_meta( $id, '_lp_hint', true )
+						),
+						'order'    => $question_order[ $index ]
+					), $id, $this->get_id() );
+				}
+			}
+
+			return apply_filters( 'learn-press/quiz/quiz_editor_questions', $result, $this->get_id() );
 		}
 
 		/**
@@ -397,15 +447,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return int
 		 */
 		public function count_questions() {
-			if ( ! $size = get_post_meta( $this->get_id(), '_question_count', true ) ) {
-				$size = 0;
-
-				if ( $ids = $this->get_question_ids() ) {
-					$size = sizeof( $ids );
-				}
+			$size = 0;
+			if ( ( $questions = $this->get_questions() ) ) {
+				$size = sizeof( $questions );
 			}
 
-			return apply_filters( 'learn-press/quiz/count-questions', absint( $size ), $this->get_id(), $this->get_course_id() );
+			return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
 		}
 
 		/**
@@ -417,7 +464,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function get_question_ids() {
 			if ( false === ( $ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids' ) ) ) {
-				$ids = self::$curd->read_question_ids( $this->get_id() );
+				$ids = $this->_curd->read_question_ids( $this->get_id() );
 				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids' );
 			}
 
@@ -530,12 +577,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return string
 		 */
 		public function get_question_link( $question_id = null ) {
-			$course    = LP_Global::course() ? LP_Global::course() : $this->get_course();
+			$course    = LP_Global::course();
 			$permalink = $course->get_item_link( $this->get_id() );
 			if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->get_id() ) != 'draft' ) {
-				if ( learn_press_get_post_type( $question_id ) === LP_QUESTION_CPT ) {
+				if ( get_post_type( $question_id ) === LP_QUESTION_CPT ) {
 					$question_name = get_post_field( 'post_name', $question_id );
-					$permalink     = $permalink . $question_name . '/';
+					$permalink     = $permalink . $question_name;
 				}
 			} else {
 				$permalink = add_query_arg( array( 'question', $question_id ), $permalink );
@@ -570,9 +617,15 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool
 		 */
 		public function get_prev_question( $id ) {
-			$nav = $this->get_question_nav( $id );
+			$prev = false;
+			if ( ( $questions = $this->get_questions() ) ) {
+				$questions = array_values( $questions );
+				if ( 0 < ( $at = array_search( $id, $questions ) ) ) {
+					$prev = $questions[ $at - 1 ];
+				}
+			}
 
-			return apply_filters( 'learn-press/quiz/prev-question-id', isset( $nav[0] ) ? $nav[0] : false, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/prev-question-id', $prev, $this->get_id() );
 		}
 
 		/**
@@ -583,29 +636,15 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool
 		 */
 		public function get_next_question( $id ) {
-			$nav = $this->get_question_nav( $id );
-
-			return apply_filters( 'learn-press/quiz/next-question-id', isset( $nav[2] ) ? $nav[2] : false, $this->get_id() );
-		}
-
-		public function get_question_nav( $current_id ) {
-			$next = $prev = false;
-
-			if ( ( $questions = $this->get_question_ids() ) ) {
+			$next = false;
+			if ( ( $questions = $this->get_questions() ) ) {
 				$questions = array_values( $questions );
-
-				if ( false !== ( $at = array_search( $current_id, $questions ) ) ) {
-					if ( sizeof( $questions ) - 1 > $at ) {
-						$next = $questions[ $at + 1 ];
-					}
-
-					if ( $at > 0 ) {
-						$prev = $questions[ $at - 1 ];
-					}
+				if ( sizeof( $questions ) - 1 > ( $at = array_search( $id, $questions ) ) ) {
+					$next = $questions[ $at + 1 ];
 				}
 			}
 
-			return array( $prev, $current_id, $next );
+			return apply_filters( 'learn-press/quiz/next-question-id', $next, $this->get_id() );
 		}
 
 		/**
@@ -691,7 +730,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool|LP_Question
 		 */
 		public function get_current_question( $user_id = 0, $course_id = 0 ) {
-			die( __FUNCTION__ );
 			$user = learn_press_get_user( $user_id );
 			$id   = $user->get_current_quiz_question( $this->get_id(), $course_id );
 
@@ -704,9 +742,6 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return LP_Question|int
 		 */
 		public function get_viewing_question( $return = '' ) {
-			/**
-			 * @var LP_Question $lp_quiz_question
-			 */
 			global $lp_quiz_question;
 
 			return $return !== 'id' ? $lp_quiz_question : ( $lp_quiz_question ? $lp_quiz_question->get_id() : 0 );
@@ -839,7 +874,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		public function get_minus_points() {
-			return floatval( $this->get_data( 'minus_points' ) );
+			return $this->get_data( 'minus_points' );
 		}
 
 		public function get_minus_skip_questions() {

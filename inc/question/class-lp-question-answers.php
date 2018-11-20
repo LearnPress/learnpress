@@ -253,11 +253,6 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			LP_Helper::shuffle_assoc( $this->_answers );
 		}
 
-		/**
-		 * @param string $more
-		 *
-		 * @return array
-		 */
 		public function get_class( $more = '' ) {
 			$classes = array( 'answer-options' );
 			if ( $more && is_string( $more ) ) {
@@ -303,28 +298,6 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			$classes = $this->get_class( $more );
 			echo 'class="' . join( ' ', $classes ) . '"';
 		}
-
-		/**
-		 * Get raw data of questions
-		 *
-		 * @since 3.1.0
-		 *
-		 * @return array
-		 */
-		public function to_array() {
-			$data = array();
-
-			/**
-			 * @var LP_Question_Answer_Option $answer
-			 */
-			if ( $this->_answers ) {
-				foreach ( $this->_answers as $answer ) {
-					$data[] = $answer->to_array();
-				}
-			}
-
-			return $data;
-		}
 	}
 }
 
@@ -356,17 +329,6 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		public function __construct( $question, $data ) {
 			$this->_data     = $data;
 			$this->_question = $question;
-		}
-
-		/**
-		 * Return raw data of answer option
-		 *
-		 * @since 3.1.0
-		 *
-		 * @return array
-		 */
-		public function to_array() {
-			return array_merge( $this->_data, array( 'classes' => $this->get_class() ) );
 		}
 
 		/**

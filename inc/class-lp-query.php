@@ -113,6 +113,7 @@ class LP_Query {
 	 */
 	function add_rewrite_rules() {
 
+		// lesson
 		$course_type  = LP_COURSE_CPT;
 		$post_types   = get_post_types( '', 'objects' );
 		$slug         = preg_replace( '!^/!', '', $post_types[ $course_type ]->rewrite['slug'] );
@@ -155,6 +156,7 @@ class LP_Query {
 			);
 
 		} else {
+
 			$rules[] = array(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
@@ -209,7 +211,6 @@ class LP_Query {
 			);
 		}
 
-
 		global $wp_rewrite;
 
 		/**
@@ -220,33 +221,40 @@ class LP_Query {
 			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
 
 			if ( $pll->options['hide_default'] ) {
-				$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
+				if ( isset( $pll->options['default_lang'] ) ) {
+					$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
+				}
 			}
 
 			if ( ! empty( $pll_languages ) ) {
 				$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
+			}else{
+				$pll_languages = '';
 			}
 
 		}
-
+		$new_rules = array();
 		foreach ( $rules as $k => $rule ) {
+			$new_rules[] = $rule;
+			call_user_func_array( 'add_rewrite_rule', $rule );
 
 			/**
 			 * Modify rewrite rule
 			 */
 			if ( isset( $pll_languages ) ) {
-				$rule[0] = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
-				$rule[1] = str_replace(
+
+				$rule[0]     = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
+				$rule[1]     = str_replace(
 					array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
 					array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
 					$rule[1]
 				);
+				$new_rules[] = $rule;
+				call_user_func_array( 'add_rewrite_rule', $rule );
 			}
-			$rules[ $k ] = $rule;
-			call_user_func_array( 'add_rewrite_rule', $rule );
 		}
 
-		$new_rules = md5( serialize( $rules ) );
+		$new_rules = md5( serialize( $new_rules ) );
 		$old_rules = get_transient( 'lp_rewrite_rules_hash' );
 
 		if ( $old_rules !== $new_rules ) {
@@ -255,10 +263,7 @@ class LP_Query {
 		}
 
 		do_action( 'learn_press_add_rewrite_rules' );
-	}
 
-	public function pll_rewrite_rules( $rules ) {
-		return $rules;
 	}
 
 
@@ -308,7 +313,7 @@ class LP_Query {
 			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
 		}
 
-		//add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
+		add_filter( 'posts_where', array( $this, 'exclude_preview_course' ) );
 	}
 
 	/**
@@ -356,7 +361,6 @@ class LP_Query {
 	 * @return string
 	 */
 	public function exclude_preview_course( $where ) {
-		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.11' );
 		global $wpdb;
 
 		if ( ! is_admin() && learn_press_is_courses() ) {

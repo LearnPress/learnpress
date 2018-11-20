@@ -15,12 +15,12 @@
 defined( 'ABSPATH' ) || exit();
 
 
-//do_action( 'learn-press/before-main-content' );
+do_action( 'learn-press/before-main-content' );
 
 do_action( 'learn-press/before-single-item' );
 
 ?>
-<div id="learn-press-course" class="course-summary item-summary content-single-item">
+<div id="learn-press-course" class="course-summary">
 	<?php
 	/**
 	 * @since 3.0.0
@@ -35,6 +35,6 @@ do_action( 'learn-press/before-single-item' );
 /**
  * @since 3.0.0
  */
-//do_action( 'learn-press/after-main-content' );
+do_action( 'learn-press/after-main-content' );
 
-do_action( 'learn-press/after-single-item' );
+do_action( 'learn-press/after-single-course' );

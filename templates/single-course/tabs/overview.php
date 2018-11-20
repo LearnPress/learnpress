@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/tabs/overview.php.
  *
- * @author   ThimPress
+ * @author  ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -13,9 +13,9 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
-$course = LP_Global::course();
 ?>
+
+<?php global $course; ?>
 
 <div class="course-description" id="learn-press-course-description">
 

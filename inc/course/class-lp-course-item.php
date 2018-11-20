@@ -64,6 +64,25 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		}
 
 		/**
+		 * Get type of item.
+		 *
+		 * @param string $context
+		 *
+		 * @return string
+		 */
+		public function get_item_type( $context = '' ) {
+			$post_type = $this->_item_type;
+
+			if ( $context === 'display' ) {
+				if ( $post_type_object = get_post_type_object( $post_type ) ) {
+					$post_type = $post_type_object->labels->singular_name;
+				}
+			}
+
+			return $post_type;
+		}
+
+		/**
 		 * @return string
 		 */
 		public function get_icon_class() {
@@ -76,25 +95,26 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @return bool
 		 */
 		public function is_preview( $context = 'display' ) {
-			if ( $this->get_post_type() === LP_LESSON_CPT && '' === $this->_preview ) {
-				$is_preview = get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
-
-				if ( $course = $this->get_course() ) {
-					$user_id = get_current_user_id();
-
-					if ( false === ( $cached = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), 'learn-press/preview-items' ) ) ) {
-						$user = learn_press_get_current_user();
-
-						if ( $user->has_enrolled_course( $course->get_id() ) ) {
-							$is_preview = false;
-						}
-						LP_Object_Cache::set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $this->get_id(), $is_preview ? 'yes' : 'no', 'learn-press/preview-items' );
-					} else {
-						$is_preview = $cached === 'yes' ? true : false;
-					}
-				}
-				$this->_preview = $is_preview;
+			if ( empty( $GLOBALS['course-item/is-preview'] ) ) {
+				$GLOBALS['course-item/is-preview'] = 0;
 			}
+
+			$t       = microtime( true );
+			$user_id = get_current_user_id();
+			if ( $this->get_post_type() === LP_LESSON_CPT && '' === $this->_preview ) {
+				$course_id = $this->get_course_id();
+				$item_id   = $this->get_id();
+
+				if ( false === ( $is_preview = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course_id . '-' . $item_id, 'learn-press/preview-items' ) ) ) {
+					$api   = new LP_User_Item_CURD();
+					$items = $api->parse_items_preview( $course_id, $user_id );
+
+					$is_preview = isset( $items[ $item_id ] ) ? $items[ $item_id ] : 'no';
+				}
+
+				$this->_preview = $is_preview === 'yes';
+			}
+			$GLOBALS['course-item/is-preview'] += microtime( true ) - $t;
 
 			return $context === 'display' ? apply_filters( 'learn-press/course-item-preview', $this->_preview, $this->get_id() ) : $this->_preview;
 		}

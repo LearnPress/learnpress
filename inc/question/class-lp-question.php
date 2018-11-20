@@ -19,7 +19,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 	 *
 	 * @extend LP_Course_Item
 	 */
-	class LP_Question extends LP_Abstract_Post_Data { //LP_Course_Item {
+	class LP_Question extends LP_Course_Item {
 
 		/**
 		 * @var null
@@ -68,16 +68,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		protected static $_loaded = 0;
 
 		/**
-		 * @var null
-		 */
-		public static $curd = null;
-
-		/**
-		 * @var null
-		 */
-		protected $the_quiz = null;
-
-		/**
 		 * @var array
 		 */
 		protected $_data = array(
@@ -102,10 +92,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			parent::__construct( $the_question, $args );
 
-			if ( empty( self::$curd ) ) {
-				self::$curd = new LP_Question_CURD();
-			}
-
+			$this->_curd = new LP_Question_CURD();
 			if ( is_numeric( $the_question ) && $the_question > 0 ) {
 				$this->set_id( $the_question );
 			} elseif ( $the_question instanceof self ) {
@@ -130,6 +117,25 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			$this->_options = $args;
 			$this->_init();
+			self::$_loaded ++;
+			if ( self::$_loaded == 1 ) {
+				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
+			}
+		}
+
+		/**
+		 * Debug log.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param $data
+		 *
+		 * @return array
+		 */
+		public static function log( $data ) {
+			$data[] = __CLASS__ . '( ' . self::$_loaded . ' )';
+
+			return $data;
 		}
 
 		/**
@@ -138,7 +144,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @throws Exception
 		 */
 		public function load() {
-			self::$curd->load( $this );
+			$this->_curd->load( $this );
 		}
 
 		/**
@@ -166,9 +172,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		public function save() {
 
 			if ( $this->get_id() ) {
-				$return = self::$curd->update( $this );
+				$return = $this->_curd->update( $this );
 			} else {
-				$return = self::$curd->create( $this );
+				$return = $this->_curd->create( $this );
 			}
 
 			return $return;
@@ -188,14 +194,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$this->_set_data( 'mark', abs( $mark ) );
 		}
 
-		public function set_quiz( $the_quiz ) {
-			$this->the_quiz = $the_quiz;
-		}
-
-		public function get_quiz() {
-			return $this->the_quiz;
-		}
-
 		/**
 		 * Do something before get data.
 		 * Some data now is not auto loading when object is created
@@ -212,7 +210,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					$answer_options = parent::get_data( $name, $default );
 
 					if ( ! $answer_options ) {
-						$answer_options = self::$curd->load_answer_options( $this->get_id() );
+						$answer_options = $this->_curd->load_answer_options( $this->get_id() );
 						$this->set_data( $name, $answer_options );
 					}
 
@@ -636,20 +634,15 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return LP_Question_Answers
 		 */
 		public function get_answers( $field = null, $exclude = null ) {
-			//$question_id, 'question-answers'
-			if ( false === ( $answers = LP_Object_Cache::get( $this->get_id(), 'question-answers' ) ) ) {
+			$answers = array();
+			LP_Debug::logTime( __FUNCTION__ );
+			if ( false === ( $answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'learn-press/questions' ) ) ) {
 
-				if ( $this->the_quiz && $quiz = LP_Quiz::get_quiz( $this->the_quiz ) ) {
-					$questions = $quiz->get_question_ids();
-				} else {
-					$questions = array( $this->get_id() );
-				}
-
-				if ( ! $answers = self::$curd->load_answer_options( $questions, false ) ) {
+				if ( ! $answers = $this->_curd->load_answer_options( $this->get_id() ) ) {
 					$answers = $this->get_default_answers();
-					LP_Object_Cache::set( $this->get_id(), $answers, 'question-answers' );
 				}
 
+				LP_Object_Cache::set( 'answer-options-' . $this->get_id(), $answers, 'learn-press/questions' );
 			};
 
 			if ( $answers ) {
@@ -658,6 +651,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			// @deprecated
 			$answers = apply_filters( 'learn_press_question_answers', $answers, $this );
+			LP_Debug::logTime( __FUNCTION__ );
 
 			return apply_filters( 'learn-press/questions/answers', $answers, $this->get_id() );
 		}
@@ -1064,19 +1058,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
 
 			return LP_Object_Cache::set( 'question-' . $this->get_id() . '/' . $key, $checked, 'learn-press/answer-checked' );
-		}
-
-
-		public function offsetExists( $offset ) {
-		}
-
-		public function offsetGet( $offset ) {
-		}
-
-		public function offsetSet( $offset, $value ) {
-		}
-
-		public function offsetUnset( $offset ) {
 		}
 	}
 

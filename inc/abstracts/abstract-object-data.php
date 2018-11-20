@@ -71,7 +71,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * CURD class to manipulation with database.
 		 *
-		 * @var LP_Object_Data_CURD
+		 * @var null
 		 */
 		protected $_curd = null;
 
@@ -211,8 +211,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		public function get_data_date( $name ) {
 			$data = $this->get_data( $name );
 
-			return is_a( $data, 'LP_Datetime' ) ? $data : LP_Datetime::instance( $data );
+			return is_a( $data, 'LP_Datetime' ) ? $data : new LP_Datetime( $data );
 		}
+
 
 		/**
 		 * @param string $name
@@ -282,7 +283,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 						die( __FILE__ . '::' . __FUNCTION__ );;
 					}
 				}
-				$this->_changes[] = $key_or_data;
 			}
 		}
 
@@ -300,12 +300,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param $key
 		 * @param $value
 		 */
-		public function set_data_date( $key, $value = 'current_time' ) {
-
-			if ( $value === 'current_time' || '' === $value ) {
-				$value = current_time( 'timestamp' );
-			}
-
+		public function set_data_date( $key, $value ) {
 			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
 				$value = new LP_Datetime( $value );
 			}
@@ -449,7 +444,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * Read all metas and set to object
 		 */
 		public function read_meta() {
-			if ( $meta_data = $this->get_curd()->read_meta( $this ) ) {
+			if ( $meta_data = $this->_curd->read_meta( $this ) ) {
 
 				$external_metas = array_filter( $meta_data, array( $this, 'exclude_metas' ) );
 
@@ -559,12 +554,10 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param mixed  $prev_value
 		 */
 		public function update_meta( $key = '', $value = '', $prev_value = '' ) {
-			$curd = $this->get_curd();
-
 			if ( func_num_args() == 0 ) {
 				if ( $this->_meta_data ) {
 					foreach ( $this->_meta_data as $meta_data ) {
-						$curd->update_meta( $this, $meta_data );
+						$this->_curd->update_meta( $this, $meta_data );
 					}
 				}
 			} else {
@@ -578,23 +571,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 			}
 		}
 
-		/**
-		 * Retrieve CURD Object instance for this class.
-		 * If the child class did not define a static $curd for all instance
-		 * then get an instance of CURD defined for each child class.
-		 *
-		 * @since 3.x.x
-		 *
-		 * @return LP_Object_Data_CURD
-		 */
-		public function get_curd() {
-			$called_class = get_called_class();
-			if ( property_exists( $called_class, 'curd' ) ) {
-				return $called_class::$curd;
-			}
-
-			return $this->_curd;
-		}
 
 		/**
 		 * Get meta keys.

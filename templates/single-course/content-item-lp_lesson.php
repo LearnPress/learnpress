@@ -11,14 +11,10 @@
 
 /**
  * Prevent loading this file directly
- *
- * @var LP_Course_Item $itemx
  */
 defined( 'ABSPATH' ) || exit();
 
 $item   = LP_Global::course_item();
-$course = LP_Global::course();
-
 ?>
 
 <div <?php learn_press_content_item_summary_class();?>>
@@ -34,27 +30,3 @@ $course = LP_Global::course();
 	?>
 
 </div>
-
-<?php /*
-<div :class="mainClass()" data-classes="<?php echo join( ' ', learn_press_content_item_summary_main_classes() ); ?>">
-    <!--    <div class="content-item-scrollable">-->
-    <!--        <div class="content-item-wrap">-->
-    [[{{currentItem.id}}, {{courseLoaded}}]]
-	<?php
-	foreach ( $course->get_sections() as $section ) {
-		foreach ( $section->get_items() as $itemx ) {
-			?>
-            <div v-show="isShowItem(<?php echo $itemx->get_id(); ?>)">
-				<?php echo $itemx->get_content(); ?>
-            </div>
-			<?php
-		}
-	}
-	?>
-
-    <button type="button" @click="_completeItem($event)" :disabled="currentItem.completed">
-        <template v-if="currentItem.completed">{{'<?php esc_html_e( 'Completed', 'learnpress' ); ?>'}}</template>
-        <template v-else>{{'<?php esc_html_e( 'Complete', 'learnpress' ); ?>'}}</template>
-    </button>
-</div>
-*/ ?>
