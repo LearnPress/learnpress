@@ -419,9 +419,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT section_items.item_id 
-				FROM wp_posts course
-				INNER JOIN wp_learnpress_sections course_sections ON course.ID  = course_sections.section_course_id
-				INNER JOIN wp_learnpress_section_items section_items ON course_sections.section_id = section_items.section_id
+				FROM {$wpdb->posts} course
+				INNER JOIN {$wpdb->learnpress_sections} course_sections ON course.ID  = course_sections.section_course_id
+				INNER JOIN {$wpdb->learnpress_section_items} section_items ON course_sections.section_id = section_items.section_id
 				WHERE course.ID = %d
 			", $course_id );
 

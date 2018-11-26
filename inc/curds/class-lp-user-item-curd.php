@@ -511,14 +511,11 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 		if ( $get_item_ids ) {
 			foreach ( $get_item_ids as $item_id ) {
-				$is_preview = get_post_meta( $item_id, '_lp_preview', true ) == 'yes';
-
+				$is_preview = get_post_meta( $item_id, '_lp_preview', true );#// == 'yes';
+				if( $enrolled ){
+					$is_preview = 'no';
+				}
 				if ( false === ( $cached = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course_id . '-' . $item_id, 'learn-press/preview-items' ) ) ) {
-
-					if ( $enrolled ) {
-						$is_preview = 'no';
-					}
-
 					LP_Object_Cache::set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $item_id, $is_preview, 'learn-press/preview-items' );
 				} else {
 					///$is_preview = $cached === 'yes' ? true : false;
