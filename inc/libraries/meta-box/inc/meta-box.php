@@ -49,7 +49,7 @@ class RW_Meta_Box {
 	 * @param array $meta_box Meta box definition.
 	 */
 	public function __construct( $meta_box ) {
-		$meta_box = self::normalize( $meta_box );
+		$meta_box       = self::normalize( $meta_box );
 		$this->meta_box = $meta_box;
 
 		$storage = $this->get_storage();
@@ -88,7 +88,7 @@ class RW_Meta_Box {
 	 *
 	 * @return bool
 	 */
-	protected function is_shown() {
+	public function is_shown() {
 		$show = apply_filters( 'rwmb_show', true, $this->meta_box );
 
 		return apply_filters( "rwmb_show_{$this->id}", $show, $this->meta_box );
@@ -144,10 +144,6 @@ class RW_Meta_Box {
 			wp_enqueue_style( 'rwmb-rtl', RWMB_CSS_URL . 'style-rtl.css', array(), RWMB_VER );
 		}
 
-		if ( 'seamless' === $this->style ) {
-			wp_enqueue_script( 'rwmb', RWMB_JS_URL . 'script.js', array( 'jquery' ), RWMB_VER, true );
-		}
-
 		// Load clone script conditionally.
 		foreach ( $this->fields as $field ) {
 			if ( $field['clone'] ) {
@@ -178,6 +174,9 @@ class RW_Meta_Box {
 	 * Add meta box for multiple post types
 	 */
 	public function add_meta_boxes() {
+		$screen = get_current_screen();
+		add_filter( "postbox_classes_{$screen->id}_{$this->id}", array( $this, 'postbox_classes' ) );
+
 		foreach ( $this->post_types as $post_type ) {
 			add_meta_box(
 				$this->id,
@@ -188,6 +187,23 @@ class RW_Meta_Box {
 				$this->priority
 			);
 		}
+	}
+
+	/**
+	 * Modify meta box postbox classes.
+	 *
+	 * @param  array $classes Array of classes.
+	 * @return array
+	 */
+	public function postbox_classes( $classes ) {
+		if ( $this->closed && ! in_array( 'closed', $classes ) ) {
+			$classes[] = 'closed';
+		}
+		if ( 'seamless' === $this->style ) {
+			$classes[] = 'rwmb-seamless';
+		}
+
+		return $classes;
 	}
 
 	/**
@@ -210,13 +226,14 @@ class RW_Meta_Box {
 	 * Callback function to show fields in meta box
 	 */
 	public function show() {
-		$this->set_object_id( $this->get_current_object_id() );
+		if ( null === $this->object_id ) {
+			$this->set_object_id( $this->get_current_object_id() );
+		}
 		$saved = $this->is_saved();
 
 		// Container.
 		printf(
-			'<div class="rwmb-meta-box%s" data-autosave="%s" data-object-type="%s">',
-			esc_attr( 'seamless' === $this->style ? ' rwmb-meta-box--seamless' : '' ),
+			'<div class="rwmb-meta-box" data-autosave="%s" data-object-type="%s">',
 			esc_attr( $this->autosave ? 'true' : 'false' ),
 			esc_attr( $this->object_type )
 		);
@@ -295,6 +312,9 @@ class RW_Meta_Box {
 			}
 			$new = RWMB_Field::filter( 'value', $new, $field, $old );
 
+			// Filter to allow the field to be modified.
+			$field = RWMB_Field::filter( 'field', $field, $field, $new, $old );
+
 			// Call defined method to save meta value, if there's no methods, call common one.
 			RWMB_Field::call( $field, 'save', $new, $old, $post_id );
 
@@ -327,27 +347,28 @@ class RW_Meta_Box {
 	 */
 	public static function normalize( $meta_box ) {
 		// Set default values for meta box.
-		$meta_box = wp_parse_args( $meta_box, array(
-			'id'             => sanitize_title( $meta_box['title'] ),
-			'context'        => 'normal',
-			'priority'       => 'high',
-			'post_types'     => 'post',
-			'autosave'       => false,
-			'default_hidden' => false,
-			'style'          => 'default',
-		) );
+		$meta_box = wp_parse_args(
+			$meta_box,
+			array(
+				'id'             => sanitize_title( $meta_box['title'] ),
+				'context'        => 'normal',
+				'priority'       => 'high',
+				'post_types'     => 'post',
+				'autosave'       => false,
+				'default_hidden' => false,
+				'style'          => 'default',
+			)
+		);
 
 		/**
 		 * Use 'post_types' for better understanding and fallback to 'pages' for previous versions.
 		 *
 		 * @since 4.4.1
 		 */
-		if ( ! empty( $meta_box['pages'] ) ) {
-			$meta_box['post_types'] = $meta_box['pages'];
-		}
+		rwmb_change_array_key( $meta_box, 'pages', 'post_types' );
 
 		// Make sure the post type is an array and is sanitized.
-		$meta_box['post_types'] = array_map( 'sanitize_key', (array) $meta_box['post_types'] );
+		$meta_box['post_types'] = array_map( 'sanitize_key', rwmb_csv_to_array( $meta_box['post_types'] ) );
 
 		return $meta_box;
 	}
@@ -391,10 +412,14 @@ class RW_Meta_Box {
 			if ( empty( $field['id'] ) ) {
 				continue;
 			}
+
 			$value = RWMB_Field::call( $field, 'raw_meta', $this->object_id );
+			if ( false === $value ) {
+				continue;
+			}
 			if (
 				( ! $field['multiple'] && '' !== $value )
-				|| ( $field['multiple'] && array() !== $value )
+				|| ( $field['multiple'] && is_array( $value ) && array() !== $value )
 			) {
 				return true;
 			}

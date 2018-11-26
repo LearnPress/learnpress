@@ -16,12 +16,16 @@ class RWMB_File_Field extends RWMB_Field {
 		wp_enqueue_style( 'rwmb-file', RWMB_CSS_URL . 'file.css', array(), RWMB_VER );
 		wp_enqueue_script( 'rwmb-file', RWMB_JS_URL . 'file.js', array( 'jquery-ui-sortable' ), RWMB_VER, true );
 
-		self::localize_script( 'rwmb-file', 'rwmbFile', array(
-			// Translators: %d is the number of files in singular form.
-			'maxFileUploadsSingle' => __( 'You may only upload maximum %d file', 'learnpress' ),
-			// Translators: %d is the number of files in plural form.
-			'maxFileUploadsPlural' => __( 'You may only upload maximum %d files', 'learnpress' ),
-		) );
+		self::localize_script(
+			'rwmb-file',
+			'rwmbFile',
+			array(
+				// Translators: %d is the number of files in singular form.
+				'maxFileUploadsSingle' => __( 'You may only upload maximum %d file', 'meta-box' ),
+				// Translators: %d is the number of files in plural form.
+				'maxFileUploadsPlural' => __( 'You may only upload maximum %d files', 'meta-box' ),
+			)
+		);
 	}
 
 	/**
@@ -50,7 +54,7 @@ class RWMB_File_Field extends RWMB_Field {
 		if ( wp_delete_attachment( $attachment_id ) ) {
 			wp_send_json_success();
 		}
-		wp_send_json_error( __( 'Error: Cannot delete file', 'learnpress' ) );
+		wp_send_json_error( __( 'Error: Cannot delete file', 'meta-box' ) );
 	}
 
 	/**
@@ -63,7 +67,7 @@ class RWMB_File_Field extends RWMB_Field {
 	 */
 	public static function html( $meta, $field ) {
 		$meta      = array_filter( (array) $meta );
-		$i18n_more = apply_filters( 'rwmb_file_add_string', _x( '+ Add new file', 'file upload', 'learnpress' ), $field );
+		$i18n_more = apply_filters( 'rwmb_file_add_string', _x( '+ Add new file', 'file upload', 'meta-box' ), $field );
 		$html      = self::get_uploaded_files( $meta, $field );
 
 		// Show form upload.
@@ -118,8 +122,8 @@ class RWMB_File_Field extends RWMB_Field {
 	 * @return string
 	 */
 	protected static function file_html( $file, $index, $field ) {
-		$i18n_delete = apply_filters( 'rwmb_file_delete_string', _x( 'Delete', 'file upload', 'learnpress' ) );
-		$i18n_edit   = apply_filters( 'rwmb_file_edit_string', _x( 'Edit', 'file upload', 'learnpress' ) );
+		$i18n_delete = apply_filters( 'rwmb_file_delete_string', _x( 'Delete', 'file upload', 'meta-box' ) );
+		$i18n_edit   = apply_filters( 'rwmb_file_edit_string', _x( 'Edit', 'file upload', 'meta-box' ) );
 		$attributes  = self::get_attributes( $field, $file );
 		$path        = get_attached_file( $file );
 		$icon        = wp_get_attachment_image( $file, array( 60, 60 ), true );
@@ -137,12 +141,18 @@ class RWMB_File_Field extends RWMB_Field {
 				</div>
 				<input type="hidden" name="%s[%s]" value="%s">
 			</li>',
-			wp_get_attachment_url( $file ), $icon,
-			wp_get_attachment_url( $file ), get_the_title( $file ),
+			wp_get_attachment_url( $file ),
+			$icon,
+			wp_get_attachment_url( $file ),
+			get_the_title( $file ),
 			basename( $path ),
-			get_edit_post_link( $file ), $i18n_edit,
-			$file, $i18n_delete,
-			$attributes['name'], $index, $file
+			get_edit_post_link( $file ),
+			$i18n_edit,
+			$file,
+			$i18n_delete,
+			$attributes['name'],
+			$index,
+			$file
 		);
 	}
 
@@ -256,12 +266,15 @@ class RWMB_File_Field extends RWMB_Field {
 	 */
 	public static function normalize( $field ) {
 		$field             = parent::normalize( $field );
-		$field             = wp_parse_args( $field, array(
-			'std'              => array(),
-			'force_delete'     => false,
-			'max_file_uploads' => 0,
-			'mime_type'        => '',
-		) );
+		$field             = wp_parse_args(
+			$field,
+			array(
+				'std'              => array(),
+				'force_delete'     => false,
+				'max_file_uploads' => 0,
+				'mime_type'        => '',
+			)
+		);
 		$field['multiple'] = true;
 
 		$field['file_input_name'] = '_file_' . $field['id'];
@@ -328,13 +341,16 @@ class RWMB_File_Field extends RWMB_Field {
 			return false;
 		}
 
-		return wp_parse_args( array(
-			'ID'    => $file,
-			'name'  => basename( $path ),
-			'path'  => $path,
-			'url'   => wp_get_attachment_url( $file ),
-			'title' => get_the_title( $file ),
-		), wp_get_attachment_metadata( $file ) );
+		return wp_parse_args(
+			array(
+				'ID'    => $file,
+				'name'  => basename( $path ),
+				'path'  => $path,
+				'url'   => wp_get_attachment_url( $file ),
+				'title' => get_the_title( $file ),
+			),
+			wp_get_attachment_metadata( $file )
+		);
 	}
 
 	/**
