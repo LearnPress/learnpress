@@ -435,10 +435,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				 * user. If the order is for multi users then it will trigger in
 				 * each child order
 				 */
-				if ( ! is_array( $user_id ) && ( ( $new_status !== $old_status ) || $trigger_action ) ) {
+				if ( ! is_array( $user_id ) && ( ( $new_status == $old_status ) && $trigger_action ) ) {
 					$status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $order->get_id(), $status );
-					do_action( 'learn-press/order/status-' . $status . '-to-' . $status, $order->get_id() );
 					do_action( 'learn-press/order/status-changed', $order->get_id(), $status, $status );
 				}
 
