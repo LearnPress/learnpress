@@ -168,6 +168,7 @@ function learn_press_add_user_roles() {
 		array()
 	);
 
+
 	$course_cap = LP_COURSE_CPT . 's';
 	$lesson_cap = LP_LESSON_CPT . 's';
 	$order_cap  = LP_ORDER_CPT . 's';
