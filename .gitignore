@@ -26,3 +26,4 @@ test list.txt
 /.settings/
 .DS_Store
 .gitignore
+local-debug.php
