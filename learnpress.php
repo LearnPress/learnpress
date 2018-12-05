@@ -755,3 +755,39 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+
+
+global $xxxxx;
+
+$xxxxx = 'wtddd';
+
+add_filter( 'cron_schedules', function ( $schedules ) {
+	global $xxxxx;
+	$schedules[ $xxxxx ] = array(
+		'interval' => 120,
+		'display'  => __( 'Two seconds' )
+	);
+
+	return $schedules;
+} );
+
+if ( $xxxxx !== wp_get_schedule( 'learn_press_cleanup_sessions' ) ) {
+
+	wp_clear_scheduled_hook( 'learn_press_cleanup_sessions' );
+
+	wp_schedule_event( time(), $xxxxx, 'learn_press_cleanup_sessions' );
+
+	echo "111111";
+}
+
+add_action( 'learn_press_cleanup_sessions', function () {
+	global $wpdb;
+	LP_Debug::instance()->add('wátdasdas', 'sessions' );
+
+	$query = $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_sessions WHERE session_expiry < %d", time() );
+	$wpdb->query( $query );
+	LP_Debug::instance()->add( $query, 'sessions' );
+} );
+
+echo wp_get_schedule( 'learn_press_cleanup_sessions' );
