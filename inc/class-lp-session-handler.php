@@ -36,6 +36,13 @@ class LP_Session_Handler implements ArrayAccess {
 	private $_has_cookie = false;
 
 	/**
+	 * @since 3.x.x
+	 *
+	 * @var bool
+	 */
+	private $_has_browser_cookie = false;
+
+	/**
 	 * @var string Custom session table name
 	 */
 	private $_table;
@@ -95,8 +102,9 @@ class LP_Session_Handler implements ArrayAccess {
 	public function __construct() {
 		global $wpdb;
 
-		$this->_cookie = 'wp_learn_press_session_' . COOKIEHASH;
-		$this->_table  = $wpdb->prefix . 'learnpress_sessions';
+		$this->_cookie             = 'wp_learn_press_session_' . COOKIEHASH;
+		$this->_table              = $wpdb->prefix . 'learnpress_sessions';
+		$this->_has_browser_cookie = ! empty( $_COOKIE ) && sizeof( $_COOKIE ) > 0;
 
 		if ( $cookie = $this->get_session_cookie() ) {
 			$this->_customer_id        = $cookie[0];
@@ -137,6 +145,10 @@ class LP_Session_Handler implements ArrayAccess {
 		}
 	}
 
+	public function has_cookie() {
+		return $this->_has_cookie && $this->_has_browser_cookie;
+	}
+
 	public function has_session() {
 		return isset( $_COOKIE[ $this->_cookie ] ) || $this->_has_cookie || is_user_logged_in();
 	}
@@ -164,9 +176,17 @@ class LP_Session_Handler implements ArrayAccess {
 
 		list( $customer_id, $session_expiration, $cookie_hash ) = explode( '||', $_COOKIE[ $this->_cookie ] );
 
-
 		$to_hash = $customer_id . '|' . $session_expiration;
 		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
+
+//		LP_Debug::instance()->add( array(
+//			$this->_customer_id,
+//			$_COOKIE,
+//			$_REQUEST,
+//			$_POST,
+//			$_GET,
+//			$_SERVER
+//		), 'sessions-cookie' );
 
 		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
 			return false;
@@ -202,7 +222,7 @@ class LP_Session_Handler implements ArrayAccess {
 
 	public function save_data() {
 
-		if ( $this->_changed && $this->has_session() ) {
+		if ( $this->_changed && $this->has_session() && $this->has_cookie() ) {
 			global $wpdb;
 
 			$wpdb->replace(
@@ -218,6 +238,14 @@ class LP_Session_Handler implements ArrayAccess {
 					'%d'
 				)
 			);
+//			LP_Debug::instance()->add( array(
+//				$this->_customer_id,
+//				$_COOKIE,
+//				$_REQUEST,
+//				$_POST,
+//				$_GET,
+//				$_SERVER
+//			), __FUNCTION__ );
 
 			// Set cache
 			LP_Object_Cache::set( $this->get_cache_prefix() . $this->_customer_id, $this->_data, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
@@ -314,6 +342,7 @@ class LP_Session_Handler implements ArrayAccess {
 				'%d'
 			)
 		);
+		//LP_Debug::instance()->add( $customer_id, __FUNCTION__ );
 	}
 
 	/**
