@@ -128,7 +128,8 @@ class LP_Assets extends LP_Abstract_Assets {
 						'plupload',
 						'backbone',
 						'jquery-ui-slider',
-						'jquery-ui-draggable'
+						'jquery-ui-draggable',
+						'jquery-touch-punch',
 					),
 					'enqueue' => learn_press_is_profile()
 				),
