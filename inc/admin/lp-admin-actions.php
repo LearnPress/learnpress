@@ -16,15 +16,26 @@ add_action( 'admin_footer', 'learn_press_footer_advertisement', - 10 );
 function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
 
-	if ( !did_action('plugin_loaded') || current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
+	/**
+	 * Correct 'plugins_loaded'
+     *
+     * @since 3.x.x
+     */
+	if ( !did_action('plugins_loaded') || current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
 		return $query;
 	}
+
+	if (  current_user_can( 'manage_options' ) || ( $pagenow != 'edit.php' ) ) {
+		return $query;
+	}
+
 	if ( ! in_array( $post_type, apply_filters( 'learn-press/filter-user-access-types', array(
 		LP_COURSE_CPT,
 		LP_LESSON_CPT,
 		LP_QUIZ_CPT,
 		LP_QUESTION_CPT
-	) ) ) ) {
+	) ) )
+	) {
 		return;
 	}
 	$items = $wpdb->get_col(
@@ -43,6 +54,8 @@ function _learn_press_set_user_items( $query ) {
 		$query->set( 'post__in', $items );
 	}
 	add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
+
+
 }
 
 add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );
