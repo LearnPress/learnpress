@@ -1768,7 +1768,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Prepare course items.
 		 *
-		 * @since 3.x.x
+		 * @since 3.2.0
 		 *
 		 * @return array
 		 */

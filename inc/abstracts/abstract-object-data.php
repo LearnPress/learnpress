@@ -173,7 +173,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		/**
 		 * Get object data.
 		 *
-		 * @updated 3.x.x
+		 * @updated 3.2.0
 		 * @date    13 Nov 2018
 		 *
 		 * @param string $name - Optional. Name of data want to get, true if return all.

@@ -43,7 +43,7 @@ class LP_Strings {
 	protected static $strings = array();
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.2.0
 	 */
 	public static function load() {
 		$strings = array();
