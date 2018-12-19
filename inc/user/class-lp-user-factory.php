@@ -147,7 +147,7 @@ class LP_User_Factory {
 	protected static function _update_user_item_purchased( $order, $old_status, $new_status ) {
 		global $wpdb;
 		$curd         = new LP_User_CURD();
-		$parent_order = ! $order->is_child() ? $order->get_parent() : $order;
+		$parent_order = $order->is_child() ? $order->get_parent() : $order;
 		$items        = ! $order->is_child() ? $order->get_items() : $parent_order->get_items();
 
 		if ( ! $items ) {
