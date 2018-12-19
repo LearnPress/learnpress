@@ -88,7 +88,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'create-pages',
 				'search-authors',
 				'skip-notice-install',
-				'join_newsletter'
+				'join_newsletter',
+				'skip-notice-install',
+				'dashboard-order-status',
+				'dashboard-plugin-status',
+				'sync-course-orders',
+				'sync-user-orders',
+				'sync-course-final-quiz',
+				'sync-remove-older-data',
+				'sync-calculate-course-results'
+				//'sync-user-courses',
 			);
 			foreach ( $ajax_events as $action => $callback ) {
 
@@ -106,6 +115,139 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				LP_Request::register_ajax( $action, $callback );
 			}
+		}
+
+		public function sync_calculate_course_results(){
+			if ( empty( $_REQUEST['sync'] ) ) {
+				die();
+			}
+
+			global $wpdb;
+			$api  = LP_Repair_Database::instance();
+			$sync = $_REQUEST['sync'];
+
+			if ( $sync === 'get-users' ) {
+				$query = $wpdb->prepare( "
+                    SELECT ID
+                    FROM {$wpdb->users}
+                    WHERE 1
+                ", 1 );
+
+				$users = $wpdb->get_col( $query );
+
+				learn_press_send_json( array( 'users' => $users ) );
+			}
+
+			$api->calculate_course_results( $sync );
+			learn_press_send_json( array( 'result' => 'success' ) );
+
+			die();
+        }
+
+		/**
+		 * Sync orders for each course
+		 *
+		 * @since 3.1.0
+		 */
+		public function sync_course_orders() {
+			if ( empty( $_REQUEST['sync'] ) ) {
+				die();
+			}
+
+			global $wpdb;
+			$api  = LP_Repair_Database::instance();
+			$sync = $_REQUEST['sync'];
+
+			if ( $sync === 'get-courses' ) {
+				learn_press_send_json( array( 'courses' => $api->get_all_courses() ) );
+			}
+
+			$api->sync_course_orders( $sync );
+			learn_press_send_json( array( 'result' => 'success' ) );
+
+			die();
+		}
+
+		/**
+		 * Sync orders for each user
+		 *
+		 * @since 3.1.0
+		 */
+		public function sync_user_orders() {
+			if ( empty( $_REQUEST['sync'] ) ) {
+				die();
+			}
+
+			global $wpdb;
+			$api  = LP_Repair_Database::instance();
+			$sync = $_REQUEST['sync'];
+
+			if ( $sync === 'get-users' ) {
+				$query = $wpdb->prepare( "
+                    SELECT ID
+                    FROM {$wpdb->users}
+                    WHERE 1
+                ", 1 );
+
+				$users = $wpdb->get_col( $query );
+
+				learn_press_send_json( array( 'users' => $users ) );
+			}
+
+			$api->sync_user_orders( $sync );
+			learn_press_send_json( array( 'result' => 'success' ) );
+
+			die();
+		}
+
+		/**
+		 * Remap final quiz for each course
+		 *
+		 * @since 3.1.0
+		 */
+		public function sync_course_final_quiz() {
+			if ( empty( $_REQUEST['sync'] ) ) {
+				die();
+			}
+
+			global $wpdb;
+			$api  = LP_Repair_Database::instance();
+			$sync = $_REQUEST['sync'];
+
+			if ( $sync === 'get-courses' ) {
+				learn_press_send_json( array( 'courses' => $api->get_all_courses() ) );
+			}
+
+			$api->sync_course_final_quiz( $sync );
+			learn_press_send_json( array( 'result' => 'success' ) );
+
+			die();
+		}
+
+		public function sync_remove_older_data() {
+		    $api = LP_Repair_Database::instance();
+		    $api->remove_older_post_meta();
+			learn_press_send_json( array( 'result' => 'success' ) );
+			die();
+		}
+
+		/**
+		 * Get html of order status to display in WP Dashboad
+		 */
+		public function dashboard_order_status() {
+			learn_press_admin_view( 'dashboard/order-status' );
+			die();
+		}
+
+		public function dashboard_plugin_status() {
+			$dashboard   = new LP_Admin_Dashboard();
+			$plugin_data = $dashboard->get_data();
+			if ( ! $plugin_data || is_wp_error( $plugin_data ) ) {
+				learn_press_admin_view( 'dashboard/plugin-status/html-no-data' );
+			} else {
+				learn_press_admin_view( 'dashboard/plugin-status/html-results', array( 'plugin_data' => $plugin_data ) );
+			}
+			die();
 		}
 
 		public static function search_authors() {
@@ -239,7 +381,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$post_id = LP_Request::get_string( 'id' );
 
 			// get post type
-			$post_type = get_post_type( $post_id );
+			$post_type = learn_press_get_post_type( $post_id );
 
 			if ( ! $post_id ) {
 				learn_press_send_json_error( __( 'Ops! ID not found', 'learnpress' ) );
@@ -252,7 +394,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
 						$curd        = new LP_Course_CURD();
-						$new_item_id = $curd->duplicate( $post_id, $duplicate_args );
+						$new_item_id = $curd->duplicate( $post_id, array() );
 						break;
 					case LP_LESSON_CPT:
 						$curd        = new LP_Lesson_CURD();
@@ -351,7 +493,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 				update_post_meta( $id, '_lp_preview', $previewable );
 			}
-			die(__FILE__ . '::'.__FUNCTION__);;
 		}
 
 		/**
@@ -435,7 +576,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
-			if ( ! is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
+			if ( ! is_numeric( $order_id ) || learn_press_get_post_type( $order_id ) != 'lp_order' ) {
 				die( __( 'Invalid order', 'learnpress' ) );
 			}
 
@@ -473,15 +614,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				die( __( 'Permission denied', 'learnpress' ) );
 			}
 
-			// verify nonce
-//			$nonce = learn_press_get_request( 'nonce' );
-//			if ( !wp_verify_nonce( $nonce, 'add_item_to_order' ) ) {
-//				die( __( 'Check nonce failed', 'learnpress' ) );
-//			}
-
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
-			if ( ! is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
+			if ( ! is_numeric( $order_id ) || learn_press_get_post_type( $order_id ) != 'lp_order' ) {
 				die( __( 'Invalid order', 'learnpress' ) );
 			}
 
@@ -490,9 +625,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$order    = learn_press_get_order( $order_id );
 
 			global $wpdb;
+
 			$response = array(
 				'result' => 'error'
 			);
+
 			if ( $order_item_ids = $order->add_items( $item_ids ) ) {
 				$html        = '';
 				$order_items = $order->get_items();
@@ -508,6 +645,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						if ( ! in_array( $item['id'], $order_item_ids ) ) {
 							continue;
 						}
+
 						ob_start();
 						include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
 						$html .= ob_get_clean();

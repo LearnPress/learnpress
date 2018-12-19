@@ -30,7 +30,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 */
 	public function load( &$quiz ) {
 		$the_id = $quiz->get_id();
-		if ( ! $the_id || LP_QUIZ_CPT !== get_post_type( $the_id ) ) {
+		if ( ! $the_id || LP_QUIZ_CPT !== learn_press_get_post_type( $the_id ) ) {
 			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 		}
 		$quiz->set_data_via_methods(
@@ -76,7 +76,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
 
 		$id        = $quiz->get_id();
-		$questions = LP_Object_Cache::get( 'questions-' . $id, 'lp-quizzes' );
+		$questions = LP_Object_Cache::get( 'questions-' . $id, 'learn-press/quizzes' );
 		if ( false === $questions || $quiz->get_no_cache() ) {
 			global $wpdb;
 			$questions = array();
@@ -94,7 +94,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$questions[ $v->ID ] = $v->ID;
 				}
 			}
-			LP_Object_Cache::set( 'questions-' . $id, $questions, 'lp-quizzes' );
+			LP_Object_Cache::set( 'questions-' . $id, $questions, 'learn-press/quizzes' );
 
 			$this->_load_question_answers( $quiz );
 		}
@@ -107,14 +107,14 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 * @param LP_Quiz $quiz
 	 */
 	protected function _update_meta_cache( &$quiz ) {
-		$meta_ids = LP_Object_Cache::get( 'questions-' . $quiz->get_id(), 'lp-quizzes' );
+		$meta_ids = LP_Object_Cache::get( 'questions-' . $quiz->get_id(), 'learn-press/quizzes' );
 
 		if ( false === $meta_ids ) {
 			$meta_ids = array( $quiz->get_id() );
 		} else {
 			$meta_ids[] = $quiz->get_id();
 		}
-		LP_Helper_CURD::update_meta_cache( 'post', $meta_ids );
+		LP_Helper_CURD::update_meta_cache( $meta_ids );
 	}
 
 	/**
@@ -170,7 +170,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 
 			foreach ( $answer_options as $question_id => $options ) {
-				LP_Object_Cache::set( 'answer-options-' . $question_id, $options, 'lp-questions' );
+				LP_Object_Cache::set( 'answer-options-' . $question_id, $options, 'learn-press/questions' );
 			}
 
 			foreach ( $meta_ids as $meta_id ) {
@@ -185,7 +185,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 		if ( $un_fetched ) {
 			foreach ( $un_fetched as $question_id ) {
-				LP_Object_Cache::set( 'answer-options-' . $question_id, array(), 'lp-questions' );
+				LP_Object_Cache::set( 'answer-options-' . $question_id, array(), 'learn-press/questions' );
 			}
 		}
 		//
@@ -306,7 +306,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			return $this->get_error( 'QUESTION_NOT_EXISTS' );
 		}
 
-		return LP_Object_Cache::get( 'questions-' . $the_quiz->get_id(), 'lp-quizzes' );
+		return LP_Object_Cache::get( 'questions-' . $the_quiz->get_id(), 'learn-press/quizzes' );
 	}
 
 	/**
@@ -415,7 +415,57 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Get single user item by values of fields.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string|array $field
+	 * @param string       $value
+	 *
+	 * @return mixed
+	 */
+	public function get_item_by( $field, $value = '' ) {
+		if ( $rows = $this->get_items_by( $field, $value ) ) {
+			return $rows[0];
+		}
 
+		return false;
+	}
+
+	/**
+	 * Get multiple rows of user item by values of fields.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string|array $field
+	 * @param string       $value
+	 *
+	 * @return array
+	 */
+	public function get_items_by( $field, $value = '' ) {
+		global $wpdb;
+		$where = "";
+
+		if ( is_array( $field ) ) {
+			foreach ( $field as $k => $v ) {
+				if ( is_string( $v ) ) {
+					$where .= $wpdb->prepare( " AND {$k} = %s", $v );
+				} else {
+					$where .= $wpdb->prepare( " AND {$k} = %d", $v );
+				}
+			}
+		} else {
+			if ( is_string( $value ) ) {
+				$where .= $wpdb->prepare( " AND {$field} = %s", $value );
+			} else {
+				$where .= $wpdb->prepare( " AND {$field} = %s", $value );
+			}
+		}
+
+		$query = "SELECT * FROM {$wpdb->learnpress_user_items} WHERE 1 {$where}";
+
+		return $wpdb->get_results( $query );
+	}
 
 	/**
 	 * Get WP_Object.
@@ -430,5 +480,156 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Parse attribute 'preview' for all items in a course
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param int $course_id
+	 * @param int $user_id
+	 *
+	 * @return array
+	 */
+	public function parse_items_preview( $course_id, $user_id = 0 ) {
+
+		$items = array();
+
+		if ( ! $course = learn_press_get_course( $course_id ) ) {
+			return $items;
+		}
+
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
+
+		$user         = learn_press_get_user( $user_id, false );
+		$current_item = LP_Global::course_item();
+		$get_item_ids = $course->get_item_ids();
+		$enrolled     = $user ? $user->has_enrolled_course( $course_id ) : false;
+
+		if ( $get_item_ids ) {
+			foreach ( $get_item_ids as $item_id ) {
+				$is_preview = get_post_meta( $item_id, '_lp_preview', true );#// == 'yes';
+				if( $enrolled ){
+					$is_preview = 'no';
+				}
+				if ( false === ( $cached = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course_id . '-' . $item_id, 'learn-press/preview-items' ) ) ) {
+					LP_Object_Cache::set( 'item-' . $user_id . '-' . $course->get_id() . '-' . $item_id, $is_preview, 'learn-press/preview-items' );
+				} else {
+					///$is_preview = $cached === 'yes' ? true : false;
+				}
+
+				$items[ $item_id ] = $is_preview;
+			}
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Parse classes for all items in a course.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param int          $course_id
+	 * @param int          $user_id
+	 * @param array|string $more
+	 *
+	 * @return array
+	 */
+	public function parse_items_classes( $course_id, $user_id = 0, $more = array() ) {
+		$items = array();
+
+		if ( ! $course = learn_press_get_course( $course_id ) ) {
+			return $items;
+		}
+
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
+
+		$user            = learn_press_get_user( $user_id, false );
+		$current_item    = LP_Global::course_item();
+		$get_item_ids    = $course->get_item_ids();
+		$enrolled        = $user ? $user->has_enrolled_course( $course_id ) : false;
+		$is_free         = $course->is_free();
+		$required_enroll = $course->is_required_enroll();
+
+		if ( $get_item_ids ) {
+			foreach ( $get_item_ids as $item_id ) {
+				$item = $course->get_item( $item_id );
+
+				$defaults = array_merge(
+					array(
+						'course-item',
+						'course-item-' . $item->get_item_type(),
+						'course-item-' . $item_id
+					), (array) $more
+				);
+
+				if ( ( 'standard' !== ( $post_format = $item->get_format() ) ) && $post_format ) {
+					$defaults[] = 'course-item-type-' . $post_format;
+				}
+
+				if ( $current_item && $current_item->get_id() == $item->get_id() ) {
+					$defaults[] = 'current';
+				}
+
+				if ( $item->is_preview() ) {
+					$defaults[] = 'item-preview';
+					$defaults[] = 'has-status';
+				} elseif ( $item->is_blocked() ) {
+					$defaults[] = 'item-locked';
+				} else {
+					if ( $course ) {
+						if ( $is_free && ! $required_enroll ) {
+							$defaults[] = 'item-free';
+						} else {
+							if ( $user ) {
+								if ( $enrolled ) {
+									$item_status = $user->get_item_status( $item_id, $course_id );
+									$item_grade  = $user->get_item_grade( $item_id, $course_id );
+
+									if ( $item_status ) {
+										$defaults[] = 'has-status';
+										$defaults[] = 'status-' . $item_status;
+									}
+									switch ( $item_status ) {
+										case 'started':
+											break;
+										case 'completed':
+											$defaults[] = $item_grade;
+											break;
+										default:
+											if ( $item_class = apply_filters( 'learn-press/course-item-status-class', $item_status, $item_grade, $item->get_item_type(), $item_id, $course_id ) ) {
+												$defaults[] = $item_class;
+											}
+									}
+								}
+							}
+
+							if ( ! $enrolled ) {
+								$defaults[] = 'item-locked';
+							}
+						}
+					} else {
+						$defaults[] = 'item-locked';
+					}
+				}
+				$classes = apply_filters( 'learn-press/course-item-class', $defaults, $item->get_item_type(), $item_id, $course_id );
+
+				// Filter unwanted values
+				$classes = is_array( $classes ) ? $classes : explode( ' ', $classes );
+				$classes = array_filter( $classes );
+				$classes = array_unique( $classes );
+
+				LP_Object_Cache::set( 'item-' . $user_id . '-' . $item_id, $classes, 'learn-press/post-classes' );
+				$items[ $item_id ] = $classes;
+			}
+		}
+
+		return $items;
 	}
 }

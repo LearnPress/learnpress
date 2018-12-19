@@ -63,8 +63,7 @@
 
 				this.map.setCenter( this.marker.position );
 				this.map.setZoom( zoom );
-			}
-			else if ( this.addressField ) {
+			} else if ( this.addressField ) {
 				this.geocodeAddress();
 			}
 		},
@@ -92,7 +91,7 @@
 
 			/**
 			 * Add a custom event that allows other scripts to refresh the maps when needed
-			 * For example: when maps is in tabs or hidden div (this is known issue of Google Maps)
+			 * For example: when maps is in tabs or hidden div.
 			 *
 			 * @see https://developers.google.com/maps/documentation/javascript/reference ('resize' Event)
 			 */
@@ -111,30 +110,24 @@
 		},
 
 		refresh: function () {
+			if ( ! this.map ) {
+				return;
+			}
 			var zoom = this.map.getZoom(),
 				center = this.map.getCenter();
 
-			if ( this.map ) {
-				google.maps.event.trigger( this.map, 'resize' );
-				this.map.setZoom( zoom );
-				this.map.setCenter( center );
-			}
+			google.maps.event.trigger( this.map, 'resize' );
+			this.map.setZoom( zoom );
+			this.map.panTo( center );
 		},
 
 		// Autocomplete address
 		autocomplete: function () {
-			var that = this;
+			var that = this,
+				$address = this.getAddressField();
 
-			// No address field or more than 1 address fields, ignore
-			if ( ! this.addressField || this.addressField.split( ',' ).length > 1 ) {
+			if ( null === $address ) {
 				return;
-			}
-
-			var $address = $( 'input[name="' + this.addressField + '"]');
-
-			// If map and address is inside a group, the input name of address field is changed.
-			if ( 0 === $address.length ) {
-				$address = this.$container.closest( '.rwmb-group-wrapper' ).find( 'input[name*="[' + this.addressField + ']"]' );
 			}
 
 			// If Meta Box Geo Location installed. Do not run auto complete.
@@ -153,7 +146,14 @@
 						'region': that.$canvas.data( 'region' )
 					};
 					geocoder.geocode( options, function ( results ) {
-						response( $.map( results, function ( item ) {
+						if ( ! results.length ) {
+							response( [ {
+								value: '',
+								label: RWMB_Map.no_results_string
+							} ] );
+							return;
+						}
+						response( results.map( function ( item ) {
 							return {
 								label: item.formatted_address,
 								value: item.formatted_address,
@@ -165,7 +165,6 @@
 				},
 				select: function ( event, ui ) {
 					var latLng = new google.maps.LatLng( ui.item.latitude, ui.item.longitude );
-
 					that.map.setCenter( latLng );
 					that.marker.setPosition( latLng );
 					that.updateCoordinate( latLng );
@@ -181,18 +180,8 @@
 
 		// Find coordinates by address
 		geocodeAddress: function () {
-			var address,
-				addressList = [],
-				fieldList = this.addressField.split( ',' ),
-				loop,
+			var address = this.getAddress(),
 				that = this;
-
-			for ( loop = 0; loop < fieldList.length; loop ++ ) {
-				addressList[loop] = $( '#' + fieldList[loop] ).val();
-			}
-
-			address = addressList.join( ',' ).replace( /\n/g, ',' ).replace( /,,/g, ',' );
-
 			if ( ! address ) {
 				return;
 			}
@@ -205,6 +194,50 @@
 				that.marker.setPosition( results[0].geometry.location );
 				that.updateCoordinate( results[0].geometry.location );
 			} );
+		},
+
+		// Get the address field.
+		getAddressField: function() {
+			// No address field or more than 1 address fields, ignore
+			if ( ! this.addressField || this.addressField.split( ',' ).length > 1 ) {
+				return null;
+			}
+			return this.findAddressField( this.addressField );
+		},
+
+		// Get the address value for geocoding.
+		getAddress: function() {
+			var that = this;
+
+			return this.addressField.split( ',' )
+				.map( function( part ) {
+					part = that.findAddressField( part );
+					return null === part ? '' : part.val();
+				} )
+				.join( ',' ).replace( /\n/g, ',' ).replace( /,,/g, ',' );
+		},
+
+		// Find address field based on its name attribute. Auto search inside groups when needed.
+		findAddressField: function( fieldName ) {
+			// Not in a group.
+			var $address = $( 'input[name="' + fieldName + '"]');
+			if ( $address.length ) {
+				return $address;
+			}
+
+			// If map and address is inside a cloneable group.
+			$address = this.$container.closest( '.rwmb-group-clone' ).find( 'input[name*="[' + fieldName + ']"]' );
+			if ( $address.length ) {
+				return $address;
+			}
+
+			// If map and address is inside a non-cloneable group.
+			$address = this.$container.closest( '.rwmb-group-wrapper' ).find( 'input[name*="[' + fieldName + ']"]' );
+			if ( $address.length ) {
+				return $address;
+			}
+
+			return null;
 		}
 	};
 
@@ -216,7 +249,7 @@
 				return;
 			}
 
-			controller = new MapField( $( this ) );
+			controller = new MapField( $this );
 			controller.init();
 			$this.data( 'mapController', controller );
 		} );

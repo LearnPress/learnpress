@@ -4,7 +4,7 @@
   "description": "[![Stories in Ready](https://badge.waffle.io/LearnPress/LearnPress.svg?label=ready&title=Ready)](http://waffle.io/LearnPress/LearnPress)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./vendor/bin/phpcs -d date.timezone=UTC"
   },
   "repository": {
     "type": "git",
@@ -20,15 +20,22 @@
     "fs": "0.0.1-security",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
-    "gulp-copy": "^1.0.0",
-    "gulp-less": "^3.4.0",
+    "gulp-clean-css": "^3.9.4",
+    "gulp-concat": "^2.6.1",
+    "gulp-copy": "^1.1.0",
+    "gulp-less": "^3.3.0",
     "gulp-livereload": "^3.8.1",
     "gulp-replace": "^0.5.4",
-    "gulp-sourcemaps": "^2.6.0",
-    "gulp-zip": "^4.0.0",
+    "gulp-sass": "^3.2.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-svn": "^1.0.8",
+    "gulp-uglify": "^3.0.0",
+    "gulp-zip": "^4.1.0",
     "mkdirp": "^0.5.1",
+    "pump": "^1.0.3",
     "read-file": "^0.2.0",
     "replace": "^0.3.0",
+    "uglify": "^0.1.5",
     "yargs": "^7.1.0"
   }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="LearnPress ruleset">
+    <description>LearnPress rules for PHP_CodeSniffer</description>
+
+    <arg name="extensions" value="php"/>
+
+    <!-- Run against the PHPCompatibility ruleset -->
+    <rule ref="PHPCompatibility" />
+
+    <file>./inc/</file>
+    <file>./templates/</file>
+    <file>learnpress.php</file>
+    <file>learnpress.php</file>
+
+    <exclude-pattern>./inc/admin/includes/class-markdown-parse.php</exclude-pattern>
+    <exclude-pattern>*/inc/libraries/*</exclude-pattern>
+</ruleset>

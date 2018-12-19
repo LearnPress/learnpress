@@ -171,7 +171,10 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		}
 
 		/**
-		 * Get object data
+		 * Get object data.
+		 *
+		 * @updated 3.2.0
+		 * @date    13 Nov 2018
 		 *
 		 * @param string $name - Optional. Name of data want to get, true if return all.
 		 * @param mixed  $default
@@ -179,7 +182,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return array|mixed
 		 */
 		public function get_data( $name = '', $default = '' ) {
-			if ( is_string( $name ) ) {
+			if ( is_string( $name ) && $name ) {
 				// Check in data first then check in extra data
 				return
 					array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :
@@ -191,12 +194,26 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				}
 
 				return $data;
-			} elseif ( true === $name ) {
-				return array_merge( $this->_data, $this->_extra_data );
 			}
 
-			return false;
+			return array_merge( $this->_data, $this->_extra_data );
 		}
+
+		/**
+		 * Get data as LP_Datetime object
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param string $name
+		 *
+		 * @return array|LP_Datetime|mixed
+		 */
+		public function get_data_date( $name ) {
+			$data = $this->get_data( $name );
+
+			return is_a( $data, 'LP_Datetime' ) ? $data : new LP_Datetime( $data );
+		}
+
 
 		/**
 		 * @param string $name
@@ -263,7 +280,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 					catch ( Exception $ex ) {
 						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
-						die(__FILE__ . '::'.__FUNCTION__);;
+						die( __FILE__ . '::' . __FUNCTION__ );;
 					}
 				}
 			}
@@ -529,14 +546,31 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 
 		/**
 		 * Update meta.
+		 *
+		 * @updated 3.1.0
+		 *
+		 * @param string $key
+		 * @param mixed  $value
+		 * @param mixed  $prev_value
 		 */
-		public function update_meta() {
-			if ( $this->_meta_data ) {
-				foreach ( $this->_meta_data as $meta_data ) {
-					$this->_curd->update_meta( $this, $meta_data );
+		public function update_meta( $key = '', $value = '', $prev_value = '' ) {
+			if ( func_num_args() == 0 ) {
+				if ( $this->_meta_data ) {
+					foreach ( $this->_meta_data as $meta_data ) {
+						$this->_curd->update_meta( $this, $meta_data );
+					}
+				}
+			} else {
+				$update = update_post_meta( $this->get_id(), $key, $value, $prev_value );
+				if ( ! is_bool( $update ) && $update ) {
+					$this->_meta_data = (object) array(
+						'meta_key'   => $key,
+						'meta_value' => $value
+					);
 				}
 			}
 		}
+
 
 		/**
 		 * Get meta keys.

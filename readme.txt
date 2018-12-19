@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.5
-Stable tag: 3.1.0.1
+Stable tag: 3.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,19 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.2.1 =
+~ Fixed can't enroll course.
+~ Fixed upload issue and drag user avatar on mobile.
+~ Fixed course duration does not work properly.
+~ Fixed question with multi language.
+~ Fixed mail to user 2 times when completed course.
+
+= 3.2.0 =
+~ Fixed issue info of order added manual not correct.
+~ Fixed issue course duplicated is published.
+~ Fixed issue Course content column show as "No Content".
+~ Fixed some issues related to cache.
+
 = 3.1.0 =
 ~ Fixed issue vulnerabilities.
 ~ Fixed issue related to object cache when doing quiz.
@@ -244,7 +257,11 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed breadcrumb not show page name when viewing archive course
 ~ Fixed archive course show header is title of first course
 
+
 == Upgrade Notice ==
+
+= 0.9.19 =
+In this version, we have changed a little bit about LearnPress Plugin directory structure and moved all add-ons to become independence plugins. If you face any problems relate to add-ons, please completely remove old version and re-install LearnPress. It does not affect your current data. Thank you.
 
 == Other note ==
 <a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.

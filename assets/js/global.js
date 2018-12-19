@@ -1,10 +1,8 @@
 /**
  * Common functions/utils used in all page
  */
-
-
-if (typeof window.LP === 'undefined') {
-    window.LP = window.LearnPress = {};
+if (typeof window.LP == 'undefined') {
+	window.LP = window.LearnPress = {};
 }
 
 
@@ -121,38 +119,38 @@ if (typeof window.LP === 'undefined') {
             var keys = this.name.match(validate),
                 objPath = "indexed['" + match[0] + "']";
 
-            if (keys) {
-                if (typeof indexed[match[0]] !== 'object') {
-                    indexed[match[0]] = {};
-                }
+			if (keys) {
+				if (typeof indexed[match[0]] != 'object') {
+					indexed[match[0]] = {};
+				}
 
-                $.each(keys, function (i, prop) {
-                    prop = prop.replace(/\]|\[/g, '');
-                    var rawPath = objPath.replace(/'|\[|\]/g, ''),
-                        objExp = '',
-                        preObjPath = objPath;
+				$.each(keys, function (i, prop) {
+					prop = prop.replace(/\]|\[/g, '');
+					var rawPath = objPath.replace(/'|\[|\]/g, ''),
+						objExp = '',
+						preObjPath = objPath;
 
-                    if (prop === '') {
-                        if (arrayKeys[rawPath] === undefined) {
-                            arrayKeys[rawPath] = 0;
-                        } else {
-                            arrayKeys[rawPath]++;
-                        }
-                        objPath += "['" + arrayKeys[rawPath] + "']";
-                    } else {
-                        if (!isNaN(prop)) {
-                            arrayKeys[rawPath] = prop;
-                        }
-                        objPath += "['" + prop + "']";
-                    }
-                    try {
-                        if (i === keys.length - 1) {
-                            objExp = objPath + "= !(that.value + '').length || isNaN(that.value) ? that.value : Number(that.value);";
-                            end = true;
-                        } else {
-                            objExp = objPath + "={}";
-                            end = false;
-                        }
+					if (prop == '') {
+						if (arrayKeys[rawPath] == undefined) {
+							arrayKeys[rawPath] = 0;
+						} else {
+							arrayKeys[rawPath]++;
+						}
+						objPath += "['" + arrayKeys[rawPath] + "']";
+					} else {
+						if (!isNaN(prop)) {
+							arrayKeys[rawPath] = prop;
+						}
+						objPath += "['" + prop + "']";
+					}
+					try {
+						if (i == keys.length - 1) {
+							objExp = objPath + "=that.value;";
+							end = true;
+						} else {
+							objExp = objPath + "={}";
+							end = false;
+						}
 
                         var evalString = "" +
                             "if( typeof " + objPath + " == 'undefined'){" + objExp + ";" +
@@ -188,6 +186,8 @@ if (typeof window.LP === 'undefined') {
             if (!content || ($el.data('LP_Tooltip') !== undefined)) {
                 return;
             }
+
+            console.log(content);
             var $tooltip = null;
             $el.hover(function (e) {
                 $tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();
@@ -199,166 +199,166 @@ if (typeof window.LP === 'undefined') {
                         position.left += left;
                     } else {
 
-                    }
-                    if ($.isNumeric(top)) {
-                        position.top += top;
-                    } else {
+					}
+					if ($.isNumeric(top)) {
+						position.top += top;
+					} else {
 
-                    }
-                }
-                $tooltip.css({
-                    top: position.top,
-                    left: position.left
-                });
-                $tooltip.fadeIn();
-            }, function () {
-                $tooltip && $tooltip.remove();
-            });
-            $el.data('LP_Tooltip', true);
-        });
-    };
-    $.fn.hasEvent = function (name) {
-        var events = $(this).data('events');
-        if (typeof events.LP === 'undefined') {
-            return false;
-        }
-        for (i = 0; i < events.LP.length; i++) {
-            if (events.LP[i].namespace === name) {
-                return true;
-            }
-        }
-        return false;
-    };
-    $.fn.dataToJSON = function () {
-        var json = {};
-        $.each(this[0].attributes, function () {
-            var m = this.name.match(/^data-(.*)/);
-            if (m) {
-                json[m[1]] = this.value;
-            }
-        });
-        return json;
-    };
+					}
+				}
+				$tooltip.css({
+					top : position.top,
+					left: position.left
+				});
+				$tooltip.fadeIn();
+			}, function () {
+				$tooltip && $tooltip.remove();
+			});
+			$el.data('tooltip', true);
+		});
+	};
+	$.fn.hasEvent = function (name) {
+		var events = $(this).data('events');
+		if (typeof events.LP == 'undefined') {
+			return false;
+		}
+		for (i = 0; i < events.LP.length; i++) {
+			if (events.LP[i].namespace == name) {
+				return true;
+			}
+		}
+		return false;
+	};
+	$.fn.dataToJSON = function () {
+		var json = {};
+		$.each(this[0].attributes, function () {
+			var m = this.name.match(/^data-(.*)/);
+			if (m) {
+				json[m[1]] = this.value;
+			}
+		});
+		return json;
+	};
 
-    String.prototype.getQueryVar = function (name) {
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(this);
-        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    };
-    String.prototype.addQueryVar = function (name, value) {
-        var url = this,
-            m = url.split('#');
-        url = m[0];
-        if (name.match(/\[/)) {
-            url += url.match(/\?/) ? '&' : '?';
-            url += name + '=' + value;
-        } else {
-            if ((url.indexOf('&' + name + '=') !== -1) || (url.indexOf('?' + name + '=') !== -1)) {
-                url = url.replace(new RegExp(name + "=([^&#]*)", 'g'), name + '=' + value);
-            } else {
-                url += url.match(/\?/) ? '&' : '?';
-                url += name + '=' + value;
-            }
-        }
-        return url + (m[1] ? '#' + m[1] : '');
-    };
-    String.prototype.removeQueryVar = function (name) {
-        var url = this;
-        var m = url.split('#');
-        url = m[0];
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
-        url = url.replace(regex, '');
-        return url + (m[1] ? '#' + m[1] : '');
-    };
+	String.prototype.getQueryVar = function (name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(this);
+		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	};
+	String.prototype.addQueryVar = function (name, value) {
+		var url = this,
+			m = url.split('#');
+		url = m[0];
+		if (name.match(/\[/)) {
+			url += url.match(/\?/) ? '&' : '?';
+			url += name + '=' + value;
+		} else {
+			if ((url.indexOf('&' + name + '=') != -1) || (url.indexOf('?' + name + '=') != -1)) {
+				url = url.replace(new RegExp(name + "=([^&#]*)", 'g'), name + '=' + value);
+			} else {
+				url += url.match(/\?/) ? '&' : '?';
+				url += name + '=' + value;
+			}
+		}
+		return url + (m[1] ? '#' + m[1] : '');
+	};
+	String.prototype.removeQueryVar = function (name) {
+		var url = this;
+		var m = url.split('#');
+		url = m[0];
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
+		url = url.replace(regex, '');
+		return url + (m[1] ? '#' + m[1] : '');
+	};
 
-    if ($.isEmptyObject("") === false) {
-        $.isEmptyObject = function (a) {
-            for (prop in a) {
-                if (a.hasOwnProperty(prop)) {
-                    return false;
-                }
-            }
-            return true;
-        };
-    }
+	if ($.isEmptyObject("") == false) {
+		$.isEmptyObject = function (a) {
+			for (prop in a) {
+				if (a.hasOwnProperty(prop)) {
+					return false;
+				}
+			}
+			return true;
+		};
+	}
 
-    LP.MessageBox = {
-        /*
-         *
-         */
-        $block: null,
-        $window: null,
-        events: {},
-        instances: [],
-        instance: null,
-        quickConfirm: function (elem, args) {
-            var $e = $(elem);
-            $('[learn-press-quick-confirm]').each(function () {
-                ($ins = $(this).data('quick-confirm')) && (console.log($ins), $ins.destroy());
-            });
-            !$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
-                new (function (elem, args) {
-                    var $elem = $(elem),
-                        $div = $('<span class="learn-press-quick-confirm"></span>').insertAfter($elem), //($(document.body)),
-                        offset = $(elem).position() || {left: 0, top: 0},
-                        timerOut = null,
-                        timerHide = null,
-                        n = 3,
-                        hide = function () {
-                            $div.fadeOut('fast', function () {
-                                $(this).remove();
-                                $div.parent().css('position', '');
-                            });
-                            $elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
-                            stop();
-                        },
-                        stop = function () {
-                            timerHide && clearInterval(timerHide);
-                            timerOut && clearInterval(timerOut);
-                        },
-                        start = function () {
-                            timerOut = setInterval(function () {
-                                if (--n === 0) {
-                                    hide.call($div[0]);
-                                    $.isFunction(args.onCancel) && args.onCancel(args.data);
-                                    stop();
-                                }
-                                $div.find('span').html(' (' + n + ')');
-                            }, 1000);
+	LP.MessageBox = {
+		/*
+		 *
+		 */
+		$block         : null,
+		$window        : null,
+		events         : {},
+		instances      : [],
+		instance       : null,
+		quickConfirm   : function (elem, args) {
+			var $e = $(elem);
+			$('[learn-press-quick-confirm]').each(function () {
+				( $ins = $(this).data('quick-confirm') ) && ( console.log($ins), $ins.destroy() );
+			});
+			!$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
+				new (function (elem, args) {
+					var $elem = $(elem),
+						$div = $('<span class="learn-press-quick-confirm"></span>').insertAfter($elem), //($(document.body)),
+						offset = $(elem).position() || {left: 0, top: 0},
+						timerOut = null,
+						timerHide = null,
+						n = 3,
+						hide = function () {
+							$div.fadeOut('fast', function () {
+								$(this).remove();
+								$div.parent().css('position', '');
+							});
+							$elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
+							stop();
+						},
+						stop = function () {
+							timerHide && clearInterval(timerHide);
+							timerOut && clearInterval(timerOut);
+						},
+						start = function () {
+							timerOut = setInterval(function () {
+								if (--n == 0) {
+									hide.call($div[0]);
+									$.isFunction(args.onCancel) && args.onCancel(args.data);
+									stop();
+								}
+								$div.find('span').html(' (' + n + ')');
+							}, 1000);
 
-                            timerHide = setInterval(function () {
-                                if (!$elem.is(':visible') || $elem.css("visibility") === 'hidden') {
-                                    stop();
-                                    $div.remove();
-                                    $div.parent().css('position', '');
-                                    $.isFunction(args.onCancel) && args.onCancel(args.data);
-                                }
-                            }, 350);
-                        };
-                    args = $.extend({
-                        message: '',
-                        data: null,
-                        onOk: null,
-                        onCancel: null,
-                        offset: {top: 0, left: 0}
-                    }, args || {});
-                    $div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').append('<span> (' + n + ')</span>').css({});
-                    $div.click(function () {
-                        $.isFunction(args.onOk) && args.onOk(args.data);
-                        hide();
-                    }).hover(function () {
-                        stop();
-                    }, function () {
-                        start();
-                    });
-                    //$div.parent().css('position', 'relative');
-                    $div.css({
-                        left: ((offset.left + $elem.outerWidth()) - $div.outerWidth()) + args.offset.left,
-                        top: offset.top + $elem.outerHeight() + args.offset.top + 5
-                    }).hide().fadeIn('fast');
-                    start();
+							timerHide = setInterval(function () {
+								if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
+									stop();
+									$div.remove();
+									$div.parent().css('position', '');
+									$.isFunction(args.onCancel) && args.onCancel(args.data);
+								}
+							}, 350);
+						};
+					args = $.extend({
+						message : '',
+						data    : null,
+						onOk    : null,
+						onCancel: null,
+						offset  : {top: 0, left: 0}
+					}, args || {});
+					$div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').append('<span> (' + n + ')</span>').css({});
+					$div.click(function () {
+						$.isFunction(args.onOk) && args.onOk(args.data);
+						hide();
+					}).hover(function () {
+						stop();
+					}, function () {
+						start();
+					});
+					//$div.parent().css('position', 'relative');
+					$div.css({
+						left: ( ( offset.left + $elem.outerWidth() ) - $div.outerWidth() ) + args.offset.left,
+						top : offset.top + $elem.outerHeight() + args.offset.top + 5
+					}).hide().fadeIn('fast');
+					start();
 
                     this.destroy = function () {
                         $div.remove();
@@ -684,7 +684,7 @@ if (typeof window.LP === 'undefined') {
                 dataType = args.dataType || 'json',
                 data = args.action ? $.extend(args.data, {'lp-ajax': args.action}) : args.data,
                 beforeSend = args.beforeSend || function () {
-                },
+                    },
                 url = args.url || window.location.href;
 //                        console.debug( beforeSend );
             $.ajax({
@@ -815,7 +815,7 @@ if (typeof window.LP === 'undefined') {
                 }
                 if (reqWidth > seed.length) { // so short we pad
                     return new Array(1 + (reqWidth - seed.length))
-                        .join('0') + seed;
+                            .join('0') + seed;
                 }
                 return seed;
             };
@@ -832,7 +832,7 @@ if (typeof window.LP === 'undefined') {
 
             retId = prefix; // start with prefix, add current milliseconds hex string
             retId += formatSeed(parseInt(new Date()
-                .getTime() / 1000, 10), 8);
+                    .getTime() / 1000, 10), 8);
             retId += formatSeed(this.php_js.uniqidSeed, 5); // add seed hex string
             if (more_entropy) {
                 // for more entropy we add a float lower to 10
@@ -887,7 +887,7 @@ if (typeof window.LP === 'undefined') {
             });
             return $el;
         },
-        template: _.memoize(function (id, data) {
+        template: typeof _ !== 'undefined' ? _.memoize(function (id, data) {
             var compiled,
                 options = {
                     evaluate: /<#([\s\S]+?)#>/g,
@@ -903,7 +903,9 @@ if (typeof window.LP === 'undefined') {
             return data ? tmpl(data) : tmpl;
         }, function (a, b) {
             return a + '-' + JSON.stringify(b);
-        }),
+        }) : function () {
+            return '';
+        },
         alert: function (localize, callback) {
             var title = '',
                 message = '';
@@ -1060,8 +1062,11 @@ if (typeof window.LP === 'undefined') {
         });
     };
 
+    var xxx = 0;
+
     function QuickTip(el, options) {
-        var $el = $(el);
+        var $el = $(el),
+            uniId = $el.attr('data-id') || LP.uniqueId();
 
         options = $.extend({
             event: 'hover',
@@ -1072,17 +1077,27 @@ if (typeof window.LP === 'undefined') {
             tipClass: ''
         }, options, $el.data());
 
-        var content = $el.data('content-tip') || $el.html(),
+        $el.attr('data-id', uniId);
+
+        var content = $el.attr('data-content-tip') || $el.html(),
             $tip = $('<div class="learn-press-tip-floating">' + content + '</div>'),
             t = null,
             closeInterval = 0,
             useData = false,
-            arrowOffset = options.arrowOffset == 'el' ? $el.outerWidth() / 2 : 8;
+            arrowOffset = options.arrowOffset === 'el' ? $el.outerWidth() / 2 : 8,
+            $content = $('#__' + uniId);
+
+        if ($content.length === 0) {
+            $(document.body).append($('<div />').attr('id', '__' + uniId).html(content).css('display', 'none'))
+        }
+
+        content = $content.html();
 
         $tip.addClass(options.tipClass);
 
+        $el.data('content-tip', content);
         if ($el.attr('data-content-tip')) {
-            $el.removeAttr('data-content-tip');
+            //$el.removeAttr('data-content-tip');
             useData = true;
         }
 
@@ -1142,6 +1157,10 @@ if (typeof window.LP === 'undefined') {
                 show();
             })
         }
+
+        $(document).on('learn-press/close-all-quick-tip', function () {
+            close();
+        });
         $el.hover(
             function (e) {
                 e.stopPropagation();
@@ -1156,7 +1175,6 @@ if (typeof window.LP === 'undefined') {
                 }
             }
         ).addClass('ready');
-
         return {
             close: close,
             open: open
@@ -1315,9 +1333,9 @@ if (typeof window.LP === 'undefined') {
             });
         })();
 
-        $(document).on('click', '[data-block-content="yes"]', function () {
-            LP.blockContent();
-        });
+//        $(document).on('click', '[data-block-content="yes"]', function () {
+//            LP.blockContent();
+//        });
 
         $('.learn-press-tooltip, .lp-passing-conditional').LP_Tooltip({offset: [24, 24]});
 
@@ -1331,9 +1349,11 @@ if (typeof window.LP === 'undefined') {
                 }, delay, $el);
             }
         });
+
+        $(document).on('click', function () {
+            $(document).trigger('learn-press/close-all-quick-tip')
+        })
     });
     LearnPress = LP;
 
 })(jQuery);
-
-

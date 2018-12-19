@@ -41,3 +41,7 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 	}
 	learn_press_update_log( '1.0.8', array( 'time' => time() ) );
 }
+delete_option( 'learnpress_updater_step' );
+delete_option( 'learnpress_updater' );
+LP_Install::update_db_version('1.0.8');
+return array( 'done' => true, 'percent' => 100 );

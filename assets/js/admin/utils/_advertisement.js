@@ -3,9 +3,10 @@
         this.options = $.extend({}, options || {});
         var $el = $(el),
             $items = $el.find('.slide-item'),
-            $controls = $('<div class="slider-controls"><div class="next-item"></div><div class="prev-item"></div></div>'),
+            $controls = $('<div class="slider-controls"><div class="prev-item"></div><div class="next-item"></div></div>'),
             $wrapItems = $('<div class="slider-items"></div>').append($items),
-            itemIndex = 0;
+            itemIndex = 0,
+            timer = null;
 
         function init() {
             createHTML();
@@ -14,12 +15,28 @@
         }
 
         function createHTML() {
-            $el.append($wrapItems).append($controls);
+            $el.append($wrapItems);
+            $items.each(function () {
+                $(this).append($controls.clone())
+            })
         }
 
         function activeItem(index) {
             index = index !== undefined ? index : itemIndex;
-            $items.eq(index).addClass('slide-active').siblings().removeClass('slide-active');
+            var activeItem = $items.eq(index);
+
+            activeItem.show();
+            // A ha???
+            setTimeout(function () {
+                activeItem.addClass('slide-active');
+            }, 1);
+
+            activeItem.siblings().removeClass('slide-active');
+
+            timer && clearTimeout(timer);
+            timer = setTimeout(function () {
+                activeItem.siblings().hide();
+            }, 500)
         }
 
         function nextItem() {

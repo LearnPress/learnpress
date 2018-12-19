@@ -148,6 +148,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'learn-press-update'                => array(
 					'url' => $this->url( 'js/admin/update.js' )
+				),
+				'learn-press-sync-data'             => array(
+					'url' => $this->url( 'js/admin/sync-data.js' )
 				)
 			)
 		);

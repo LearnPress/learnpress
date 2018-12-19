@@ -21,7 +21,7 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 		$course = LP_Global::course();
 		$user   = LP_Global::user();
 
-		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+		if ( $course->get_external_link() ) {
 			return;
 		}
 
@@ -72,17 +72,20 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		$user   = LP_Global::user();
 		$course = LP_Global::course();
 
-		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+		if ( $course->get_external_link() ) {
+			learn_press_show_log('Course has external link');
 			return;
 		}
 
 		// If course is not published
 		if ( ! $course->is_publish() ) {
+			learn_press_show_log('Course is not published');
 			return;
 		}
 
 		// Locked course for user
 		if ( $user->is_locked_course( $course->get_id() ) ) {
+			learn_press_show_log('Course is locked');
 			return;
 		}
 
@@ -102,6 +105,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		}
 
 		$purchased = $user->has_purchased_course( $course->get_id() );
+
 		// For free course and user does not purchased
 		if ( $course->is_free() && ! $purchased ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
@@ -1104,7 +1108,7 @@ if ( ! function_exists( 'learn_press_content_item_script' ) ) {
                 background: #FFF;
                 border-right: 1px solid #DDD;
                 overflow: auto;
-                z-index: 99999;
+                z-index: 9999;
             }
 
             body.course-item-popup #learn-press-content-item {
@@ -2122,6 +2126,7 @@ function learn_press_setup_object_data( $post ) {
 			unset( $GLOBALS['course'] );
 		}
 		$object                = learn_press_get_course( $post );
+		$object->prepare();
 		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
 	}
 

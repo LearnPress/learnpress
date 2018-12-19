@@ -230,5 +230,24 @@ if ( ! class_exists( 'LP_Abstract_Post_Data' ) ) {
 		public function current_user_can_edit() {
 			return learn_press_get_current_user()->can_edit( $this->get_id() );
 		}
+
+		/**
+		 * Get post meta data.
+		 * Check if the meta is not stored on database then return FALSE
+		 *
+		 * @updated 3.1.0
+		 *
+		 * @param string $key
+		 * @param bool   $single
+		 *
+		 * @return mixed
+		 */
+		public function get_meta( $key, $single = true ) {
+			if ( ! metadata_exists( 'post', $this->get_id(), $key ) ) {
+				return false;
+			}
+
+			return get_post_meta( $this->get_id(), $key, $single );
+		}
 	}
 }

@@ -251,7 +251,21 @@ class LP_Profile_Tabs extends LP_Array_Access {
 	 * @return mixed|string
 	 */
 	public function get_current_url( $args = '', $with_permalink = false ) {
-		$url = $this->get_tab_link( $this->get_current_tab(), $this->get_current_section(), $this->get_profile()->get_user()->get_username() );
+		$current_tab 	= $this->get_current_tab();
+		$tab 		= $this->get_tab_at( $current_tab );
+		$sections 	= $tab['sections'];
+		
+		$current_section_slug = $this->get_current_section();
+		$section = array();
+		if(isset($sections[$current_section_slug])){
+			$sections[$current_section_slug];
+		} elseif($sections && !empty($sections)){
+			reset($sections);
+		}
+		if ( array_key_exists( 'slug', $section ) ) {
+			$current_section_slug = $section['slug'];
+		}
+		$url = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, $this->get_profile()->get_user()->get_username() );
 
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {

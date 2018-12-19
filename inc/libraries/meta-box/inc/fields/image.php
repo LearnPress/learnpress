@@ -47,7 +47,9 @@ class RWMB_Image_Field extends RWMB_File_Field {
 				</div>
 			</li>',
 			esc_attr( $field['image_size'] ),
-			$attributes['name'], $index, $file,
+			$attributes['name'],
+			$index,
+			$file,
 			wp_get_attachment_image( $file, $field['image_size'] ),
 			get_edit_post_link( $file ),
 			$file
@@ -64,9 +66,12 @@ class RWMB_Image_Field extends RWMB_File_Field {
 	 */
 	public static function normalize( $field ) {
 		$field = parent::normalize( $field );
-		$field = wp_parse_args( $field, array(
-			'image_size' => 'thumbnail',
-		) );
+		$field = wp_parse_args(
+			$field,
+			array(
+				'image_size' => 'thumbnail',
+			)
+		);
 
 		return $field;
 	}
@@ -105,9 +110,12 @@ class RWMB_Image_Field extends RWMB_File_Field {
 			return false;
 		}
 
-		$args       = wp_parse_args( $args, array(
-			'size' => 'thumbnail',
-		) );
+		$args       = wp_parse_args(
+			$args,
+			array(
+				'size' => 'thumbnail',
+			)
+		);
 		$image      = wp_get_attachment_image_src( $file, $args['size'] );
 		$attachment = get_post( $file );
 		$info       = array(
@@ -122,7 +130,7 @@ class RWMB_Image_Field extends RWMB_File_Field {
 			'alt'         => get_post_meta( $file, '_wp_attachment_image_alt', true ),
 		);
 		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
-			$info['srcset'] = wp_get_attachment_image_srcset( $file );
+			$info['srcset'] = wp_get_attachment_image_srcset( $file, $args['size'] );
 		}
 
 		$info = wp_parse_args( $info, wp_get_attachment_metadata( $file ) );

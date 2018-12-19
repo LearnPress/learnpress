@@ -25,6 +25,22 @@
     -o-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
+@-webkit-keyframes animation4 /* Safari and Chrome */ {
+  from {
+    left: -40%;
+    width: 40%; }
+  to {
+    left: 100%;
+    width: 10%; } }
+
+@keyframes animation4 {
+  from {
+    left: -40%;
+    width: 40%; }
+  to {
+    left: 100%;
+    width: 10%; } }
+
 @keyframes lp-rotating {
   from {
     transform: rotate(0deg);
@@ -866,7 +882,7 @@ ul.learn-press-nav-tabs {
             content: "\f00c"; }
         .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.status-completed .course-item-status {
           color: #00adff; }
-        .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.passed {
+        .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.passed .course-item-status {
           border-color: #00adff;
           color: #00adff; }
         .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.item-failed .course-item-status, .course-curriculum ul.curriculum-sections .section-content .course-item.has-status.failed .course-item-status {
@@ -1737,6 +1753,22 @@ body.lp-preview #course-item-content-header {
     -webkit-transform: rotate(360deg);
     -o-transform: rotate(360deg);
     transform: rotate(360deg); } }
+
+@-webkit-keyframes animation4 /* Safari and Chrome */ {
+  from {
+    left: -40%;
+    width: 40%; }
+  to {
+    left: 100%;
+    width: 10%; } }
+
+@keyframes animation4 {
+  from {
+    left: -40%;
+    width: 40%; }
+  to {
+    left: 100%;
+    width: 10%; } }
 
 #popup_container {
   opacity: 0;

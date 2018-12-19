@@ -302,11 +302,13 @@
 
     function pluginActions(e) {
 
-        if ($(e.target).closest('.learnpress-premium-plugin').length) {
+        // Premium addon
+        if ($(e.target).hasClass('buy-now')) {
             return;
         }
 
         e.preventDefault();
+
         var $plugin = $(this).closest('.plugin-card');
         if ($(this).hasClass('updating-message')) {
             return;
@@ -411,7 +413,7 @@
     function _ready() {
 
         $('.learn-press-dropdown-pages').dropdownPages();
-        $('.learn-press-advertisement-slider').LP_Advertisement_Slider();
+        $('.learn-press-advertisement-slider').LP_Advertisement_Slider().appendTo($('#wpbody-content'));
         $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
         $('.learn-press-tip').QuickTip();
 

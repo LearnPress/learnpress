@@ -361,7 +361,17 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return mixed
 		 */
 		public function get_questions() {
-			$questions = $this->_curd->get_questions( $this );
+			if ( false === ( $questions = LP_Object_Cache::get( $this->get_id(), 'quiz-questions' ) ) ) {
+				$questions = array();
+
+				if ( $ids = $this->_curd->read_questions( $this->get_id() ) ) {
+					foreach ( $ids as $id ) {
+						$questions[ $id ] = $id;
+					}
+				}
+
+				LP_Object_Cache::set( $this->get_id(), $questions, 'quiz-questions' );
+			}
 
 			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
 		}
@@ -443,6 +453,24 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			}
 
 			return apply_filters( 'learn-press/quiz/count-questions', $size, $this->get_id() );
+		}
+
+		/**
+		 * Get all question's ids of the quiz.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @return int[]
+		 */
+		public function get_question_ids() {
+			if ( false === ( $ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids' ) ) ) {
+				$ids = $this->_curd->read_question_ids( $this->get_id() );
+				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids' );
+			}
+
+			$ids = apply_filters( 'learn-press/quiz-question-ids', $ids, $this->get_id(), $this->get_course_id() );
+
+			return apply_filters( 'learn-press/quiz/get-question-ids', $ids, $this->get_id(), $this->get_course_id() );
 		}
 
 		/**
@@ -554,7 +582,12 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->get_id() ) != 'draft' ) {
 				if ( get_post_type( $question_id ) === LP_QUESTION_CPT ) {
 					$question_name = get_post_field( 'post_name', $question_id );
-					$permalink     = $permalink . $question_name;
+					preg_match('/\?/i', $permalink, $result);
+					if(empty($result)){
+						$permalink     = $permalink . $question_name;
+					} else {
+						$permalink = preg_replace('/\?/i', '/'.$question_name.'/?', $permalink);
+					}
 				}
 			} else {
 				$permalink = add_query_arg( array( 'question', $question_id ), $permalink );
@@ -628,7 +661,8 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * @return bool|mixed
 		 */
 		public function get_question_index( $id, $start = 0 ) {
-			$index = false;
+			$index = 0;
+
 			if ( ( $questions = $this->get_questions() ) ) {
 				$questions = array_values( $questions );
 				$index     = array_search( $id, $questions );
@@ -784,7 +818,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 * Get the lesson class name
 		 *
 		 * @param  WP_Post $the_quiz
-		 * @param  array $args (default: array())
+		 * @param  array   $args (default: array())
 		 *
 		 * @return string
 		 */
@@ -855,7 +889,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get css classes of question displays in a list.
 		 *
-		 * @param int $question_id
+		 * @param int  $question_id
 		 * @param null $position
 		 *
 		 * @return array

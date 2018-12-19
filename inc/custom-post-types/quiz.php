@@ -371,12 +371,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
-			if ( false !== $pos && ! array_key_exists( 'lp_course', $columns ) ) {
+			if ( false !== $pos && !array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
 						'author'          => __( 'Author', 'learnpress' ),
-						'lp_course'       => $this->_get_course_column_title(),
+						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
 						'duration'        => __( 'Duration', 'learnpress' ),
 						'preview'         => __( 'Preview', 'learnpress' )
@@ -538,7 +538,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns['author']          = 'author';
-			$columns['lp_course']       = 'course-name';
+			$columns[LP_COURSE_CPT]     = 'course-name';
 			$columns['num_of_question'] = 'question-count';
 
 			return $columns;

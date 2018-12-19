@@ -141,3 +141,7 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 		$wpdb->query( "ROLLBACK;" );
 	}
 }
+delete_option( 'learnpress_updater_step' );
+delete_option( 'learnpress_updater' );
+LP_Install::update_db_version('2.0');
+return array( 'done' => true, 'percent' => 100 );

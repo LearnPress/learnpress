@@ -18,23 +18,22 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 	}
 
 	/**
-	 * Walk options.
+	 * Get field HTML.
 	 *
-	 * @param array $field     Field parameters.
-	 * @param mixed $options   Select options.
-	 * @param mixed $db_fields Database fields to use in the output.
-	 * @param mixed $meta      Meta value.
-	 *
+	 * @param mixed $meta  Meta value.
+	 * @param array $field Field parameters.
 	 * @return string
 	 */
-	public static function walk( $field, $options, $db_fields, $meta ) {
-		$walker = new RWMB_Walker_Input_List( $db_fields, $field, $meta );
-		$output = self::get_select_all_html( $field );
-		$output .= sprintf( '<ul class="rwmb-input-list %s %s">',
-			$field['collapse'] ? 'collapse' : '',
-			$field['inline'] ? 'inline' : ''
+	public static function html( $meta, $field ) {
+		$options = self::transform_options( $field['options'] );
+		$walker  = new RWMB_Walker_Input_List( $field, $meta );
+		$output  = self::get_select_all_html( $field );
+		$output .= sprintf(
+			'<ul class="rwmb-input-list%s%s">',
+			$field['collapse'] ? ' rwmb-collapse' : '',
+			$field['inline'] ? ' rwmb-inline' : ''
 		);
-		$output .= $walker->walk( $options, $field['flatten'] ? - 1 : 0 );
+		$output .= $walker->walk( $options, $field['flatten'] ? -1 : 0 );
 		$output .= '</ul>';
 
 		return $output;
@@ -50,14 +49,17 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 		$field = $field['multiple'] ? RWMB_Multiple_Values_Field::normalize( $field ) : $field;
 		$field = RWMB_Input_Field::normalize( $field );
 		$field = parent::normalize( $field );
-		$field = wp_parse_args( $field, array(
-			'collapse'        => true,
-			'inline'          => null,
-			'select_all_none' => false,
-		) );
+		$field = wp_parse_args(
+			$field,
+			array(
+				'collapse'        => true,
+				'inline'          => null,
+				'select_all_none' => false,
+			)
+		);
 
 		$field['flatten'] = $field['multiple'] ? $field['flatten'] : true;
-		$field['inline'] = ! $field['multiple'] && ! isset( $field['inline'] ) ? true : $field['inline'];
+		$field['inline']  = ! $field['multiple'] && ! isset( $field['inline'] ) ? true : $field['inline'];
 
 		return $field;
 	}
@@ -71,10 +73,10 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 	 * @return array
 	 */
 	public static function get_attributes( $field, $value = null ) {
-		$attributes           = RWMB_Input_Field::get_attributes( $field, $value );
-		$attributes['id']     = false;
-		$attributes['type']   = $field['multiple'] ? 'checkbox' : 'radio';
-		$attributes['value']  = $value;
+		$attributes          = RWMB_Input_Field::get_attributes( $field, $value );
+		$attributes['id']    = false;
+		$attributes['type']  = $field['multiple'] ? 'checkbox' : 'radio';
+		$attributes['value'] = $value;
 
 		return $attributes;
 	}
@@ -87,7 +89,7 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 	 */
 	public static function get_select_all_html( $field ) {
 		if ( $field['multiple'] && $field['select_all_none'] ) {
-			return sprintf( '<p><button class="rwmb-input-list-select-all-none button" data-name="%s">%s</button></p>', $field['id'], __( 'Select All / None', 'learnpress' ) );
+			return sprintf( '<p><button class="rwmb-input-list-select-all-none button" data-name="%s">%s</button></p>', $field['id'], __( 'Select All / None', 'meta-box' ) );
 		}
 		return '';
 	}

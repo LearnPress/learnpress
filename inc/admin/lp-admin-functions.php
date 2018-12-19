@@ -444,10 +444,12 @@ function learn_press_trim_content( $content, $count = 0 ) {
  * @return mixed
  */
 function learn_press_get_education_themes() {
+
 	// New theme can be added here
 	return apply_filters(
 		'learn-press/education-themes',
 		array(
+			'22773871' => 'ivy-school',
 			'20370918' => 'wordpress-lms',
 			'14058034' => 'eduma',
 			'17097658' => 'coach',
@@ -473,6 +475,8 @@ if ( ! function_exists( 'learn_press_get_item_referral' ) ) {
 
 /**
  * Display advertisement about related themes at the bottom of admin pages.
+ *
+ * @updated 12 Nov 2018 - Enable/Disable shuffle the list of themes
  *
  * @return bool|void
  */
@@ -521,7 +525,20 @@ function learn_press_footer_advertisement() {
 		return;
 	}
 
-	shuffle( $list_themes );
+	// Disable shuffle themes for 3 days
+	$shuffle = LP()->settings()->get( 'ad_shuffle_themes' );
+
+	if ( ! $shuffle ) {
+		if ( wp_next_scheduled( 'learn-press/schedule-enable-shuffle-themes' ) === false ) {
+			wp_schedule_single_event( time() + 3 * DAY_IN_SECONDS, 'learn-press/schedule-enable-shuffle-themes' );
+		}
+		// Keep the first theme always in #1 and shuffle other themes
+		$first_theme = array_shift( $list_themes );
+		shuffle( $list_themes );
+		array_unshift( $list_themes, $first_theme );
+	} else {
+		shuffle( $list_themes );
+	}
 
 	$query_arg = learn_press_get_item_referral();
 
@@ -570,8 +587,6 @@ function learn_press_footer_advertisement() {
 		?>
     </div>
 	<?php
-
-
 }
 
 
@@ -2238,3 +2253,29 @@ function learn_press_preview_post_link( $link, $post ) {
 }
 
 add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
+
+/**
+ * Sync post meta when saving post type.
+ *
+ * @since 3.2.0
+ *
+ * @param int $post_id
+ */
+function learn_press_maybe_sync_data( $post_id ) {
+	$post_type = get_post_type( $post_id );
+
+	switch ( $post_type ) {
+		case LP_COURSE_CPT:
+			LP_Repair_Database::instance()->sync_user_courses();
+			break;
+		case LP_LESSON_CPT:
+			break;
+		case LP_QUIZ_CPT:
+			break;
+		default:
+	}
+}
+
+add_action( 'save_post', 'learn_press_maybe_sync_data' );
+
+include_once "class-lp-post-type-actions.php";

@@ -16,9 +16,13 @@ class RWMB_Autocomplete_Field extends RWMB_Multiple_Values_Field {
 		wp_enqueue_style( 'rwmb-autocomplete', RWMB_CSS_URL . 'autocomplete.css', '', RWMB_VER );
 		wp_enqueue_script( 'rwmb-autocomplete', RWMB_JS_URL . 'autocomplete.js', array( 'jquery-ui-autocomplete' ), RWMB_VER, true );
 
-		self::localize_script( 'rwmb-autocomplete', 'RWMB_Autocomplete', array(
-			'delete' => __( 'Delete', 'learnpress' ),
-		) );
+		self::localize_script(
+			'rwmb-autocomplete',
+			'RWMB_Autocomplete',
+			array(
+				'delete' => __( 'Delete', 'meta-box' ),
+			)
+		);
 	}
 
 	/**
@@ -78,7 +82,7 @@ class RWMB_Autocomplete_Field extends RWMB_Multiple_Values_Field {
 				$html .= sprintf(
 					$tpl,
 					esc_html( $label ),
-					esc_html__( 'Delete', 'learnpress' ),
+					esc_html__( 'Delete', 'meta-box' ),
 					esc_attr( $field['field_name'] ),
 					esc_attr( $value )
 				);
@@ -90,7 +94,7 @@ class RWMB_Autocomplete_Field extends RWMB_Multiple_Values_Field {
 				$html .= sprintf(
 					$tpl,
 					esc_html( $label ),
-					esc_html__( 'Delete', 'learnpress' ),
+					esc_html__( 'Delete', 'meta-box' ),
 					esc_attr( $field['field_name'] ),
 					esc_attr( $value )
 				);
@@ -110,9 +114,12 @@ class RWMB_Autocomplete_Field extends RWMB_Multiple_Values_Field {
 	 */
 	public static function normalize( $field ) {
 		$field = parent::normalize( $field );
-		$field = wp_parse_args( $field, array(
-			'size' => 30,
-		) );
+		$field = wp_parse_args(
+			$field,
+			array(
+				'size' => 30,
+			)
+		);
 		return $field;
 	}
 }
