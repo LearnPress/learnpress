@@ -37,7 +37,7 @@ Take a look at Premium **[Education WordPress Theme](http://themeforest.net/item
 - **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)**
 
 - Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=Z9QT_CGevhg)**
-[youtube https://www.youtube.com/watch?v=Z9QT_CGevhg&hd=1&&cc_load_policy=1]
+[youtube https://www.youtube.com/watch?v=3LDa8vtDIAk&hd=1&&cc_load_policy=1]
 
 Are you looking for *best LMS WordPress plugin*?
 
