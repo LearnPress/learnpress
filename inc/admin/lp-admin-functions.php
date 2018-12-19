@@ -2257,7 +2257,7 @@ add_filter( 'preview_post_link', 'learn_press_preview_post_link', 10, 2 );
 /**
  * Sync post meta when saving post type.
  *
- * @since 3.x.x
+ * @since 3.2.0
  *
  * @param int $post_id
  */

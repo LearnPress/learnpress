@@ -2,7 +2,7 @@
 /**
  * LearnPress frontend course app.
  *
- * @version 3.x.x
+ * @version 3.2.0
  * @author ThimPress
  * @package LearnPress/JS/Course
  */
