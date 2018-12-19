@@ -485,7 +485,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Parse attribute 'preview' for all items in a course
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.0
 	 *
 	 * @param int $course_id
 	 * @param int $user_id
@@ -531,7 +531,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	/**
 	 * Parse classes for all items in a course.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.0
 	 *
 	 * @param int          $course_id
 	 * @param int          $user_id

@@ -458,7 +458,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get all question's ids of the quiz.
 		 *
-		 * @since 3.x.x
+		 * @since 3.2.0
 		 *
 		 * @return int[]
 		 */
