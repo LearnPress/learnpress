@@ -11,7 +11,7 @@ add_action( 'admin_footer', 'learn_press_footer_advertisement', - 10 );
 /**
  * Filter post types the user can access in admin
  *
- * @param $query
+ * @param WP_Query $query
  */
 function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
@@ -22,11 +22,11 @@ function _learn_press_set_user_items( $query ) {
      * @since 3.x.x
      */
 	if ( !did_action('plugins_loaded') || current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
-		return $query;
+		return;
 	}
 
 	if (  current_user_can( 'manage_options' ) || ( $pagenow != 'edit.php' ) ) {
-		return $query;
+		return;
 	}
 
 	if ( ! in_array( $post_type, apply_filters( 'learn-press/filter-user-access-types', array(
@@ -38,6 +38,7 @@ function _learn_press_set_user_items( $query ) {
 	) {
 		return;
 	}
+
 	$items = $wpdb->get_col(
 		$wpdb->prepare(
 			"SELECT ID FROM $wpdb->posts
@@ -54,8 +55,6 @@ function _learn_press_set_user_items( $query ) {
 		$query->set( 'post__in', $items );
 	}
 	add_filter( 'views_edit-' . $post_type . '', '_learn_press_restrict_view_items', 10 );
-
-
 }
 
 add_action( 'pre_get_posts', '_learn_press_set_user_items', 10 );
@@ -90,6 +89,7 @@ function _learn_press_restrict_view_items( $views ) {
 			$query['post_status'] = $view;
 			$class                = ( get_query_var( 'post_status' ) == $view ) ? ' class="current"' : '';
 		}
+
 		$result = new WP_Query( $query );
 		if ( $result->found_posts > 0 ) {
 			$views[ $view ] = sprintf(
