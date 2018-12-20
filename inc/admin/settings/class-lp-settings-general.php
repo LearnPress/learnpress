@@ -49,6 +49,13 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
 				),
 				array(
+					'title'   => __( 'Login redirect', 'learnpress' ),
+					'id'      => 'login_redirect_page_id',
+					'default' => '',
+					'type'    => 'pages-dropdown',
+					'desc'    => __( 'The page where user will be redirected to after logging in.', 'learnpress' )
+				),
+				array(
 					'title' => __( 'Currency', 'learnpress' ),
 					'type'  => 'heading',
 					'desc'  => __( 'Setting up your currency unit and its formatting.', 'learnpress' )
