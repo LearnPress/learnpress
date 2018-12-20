@@ -1766,12 +1766,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function has_passed_course( $course_id ) {
 			$course = learn_press_get_course( $course_id );
 			if ( $course ) {
-				$results = $this->evaluate_course_results( $this->get_id() );
+				$results = $this->evaluate_course_results( $course_id );
 			} else {
 				$results = 0;
 			}
 
-			return apply_filters( 'learn_press_user_has_passed_course', $results >= $course->passing_condition ? $results : false, $course_id, $this );
+			return apply_filters( 'learn_press_user_has_passed_course', $results >= $course->get_passing_condition() ? $results : false, $course_id, $this );
 		}
 
 		/**
