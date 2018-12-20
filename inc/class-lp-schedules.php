@@ -19,6 +19,58 @@ class LP_Schedules {
 
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
 			add_filter( 'init', array( $this, '_update_current_user_course_expired' ) );
+			add_filter( 'init', array( $this, 'fix_bug_auto_finish_not_enrolled_course' ) );// remove this code on LP 3.2.3
+		}
+	}
+
+	/**
+	 * since version 3.2.2
+	 * Temp method use to fix bug. It will be remove in next version
+	 */
+	public function fix_bug_auto_finish_not_enrolled_course(){
+		global $wpdb;
+		$user_id = get_current_user_id();
+		if ( empty( $wpdb->learnpress_user_items ) ) {
+			return;
+		}
+		$query = $wpdb->prepare( "
+						SELECT user_item_id
+						FROM `{$wpdb->learnpress_user_items}`
+						WHERE 
+							`user_id` = %s
+							AND `ref_type` = %s
+							AND `status` = %s
+							AND `start_time` = %s 
+						", 
+						$user_id, LP_ORDER_CPT, 'finished','0000-00-00 00:00:00' );
+
+		$user_item_ids = $wpdb->get_results( $query );
+
+		// $user_item_ids = array(99991,99992,99993,99994,99995);// test data
+		if(!empty($user_item_ids)){
+
+			// clear item metas
+			$sql_delete = $wpdb->prepare("
+							DELETE
+							FROM `{$wpdb->learnpress_user_itemmeta}`
+							WHERE `learnpress_user_item_id` IN (".implode(', ', array_fill(0, count($user_item_ids), '%s')).")
+							",
+							$user_item_ids
+						);
+			$wpdb->query( $sql_delete );
+
+			// update status of item to purchased
+			$sql_update  = $wpdb->prepare("
+							UPDATE `{$wpdb->learnpress_user_items}`
+							SET `start_time_gmt` = %s,
+								`end_time` = %s, 
+								`end_time_gmt` = %s,
+								`status` = %s
+							WHERE `user_item_id` IN (".implode(', ', array_fill(0, count($user_item_ids), '%s')).")
+							",
+							array_merge( array('0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'purchased'), $user_item_ids)
+						);
+			$wpdb->query( $sql_update );
 		}
 	}
 
@@ -31,16 +83,6 @@ class LP_Schedules {
 		if ( empty( $wpdb->learnpress_user_items ) ) {
 			return;
 		}
-//		$course  = learn_press_get_course();
-//		$query   = $wpdb->prepare( "
-//			SELECT *
-//			FROM {$wpdb->prefix}learnpress_user_items
-//			WHERE end_time = %s
-//				AND item_type = %s
-//				AND status <> %s
-//				AND user_id = %s
-//			LIMIT 0, 10
-//		", '0000-00-00 00:00:00', 'lp_course', 'finished', $user_id );
 
 		$query = $wpdb->prepare( "
 			SELECT * 
@@ -48,13 +90,14 @@ class LP_Schedules {
 				SELECT * 
 				FROM {$wpdb->learnpress_user_items}
 				WHERE item_type = %s
-				AND user_id = %d AND status <> %s
+				AND user_id = %d AND status = %s
 				AND  end_time = %s
+				AND  start_time <> %s
 				ORDER BY item_id, user_item_id DESC 
 			) X 
 			GROUP BY item_id
 			LIMIT 0, 10
-		", LP_COURSE_CPT, $user_id, 'finished', '0000-00-00 00:00:00' );
+		", LP_COURSE_CPT, $user_id, 'enrolled', '0000-00-00 00:00:00', '0000-00-00 00:00:00' );
 
 		$results = $wpdb->get_results( $query );
 
@@ -225,21 +268,6 @@ class LP_Schedules {
 		if ( empty( $wpdb->learnpress_user_items ) ) {
 			return;
 		}
-		/* $query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_user_items
-			WHERE user_item_id IN(
-				SELECT user_item_id FROM(
-					SELECT user_item_id
-					FROM {$wpdb->prefix}learnpress_user_items
-					WHERE end_time = %s
-					AND item_type = %s
-					GROUP BY item_id
-					ORDER BY user_item_id DESC
-				) AS X
-			)
-			LIMIT 0, 10
-		", '0000-00-00 00:00:00', 'lp_course' );*/
 
 		$query = $wpdb->prepare( "
 			SELECT *
@@ -249,11 +277,12 @@ class LP_Schedules {
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE end_time = %s
 				AND item_type = %s
-				AND status <> %s
+				AND status = %s
+				AND start_time <> %s
 				GROUP BY item_id, user_id
 			  )
 			LIMIT 0, 10
-		", '0000-00-00 00:00:00', 'lp_course', 'finished' );
+		", '0000-00-00 00:00:00', 'lp_course', 'enrolled', '0000-00-00 00:00:00' );
 
 		if ( $results = $wpdb->get_results( $query ) ) {
 			$ids = array();
