@@ -167,7 +167,7 @@ class LP_Page_Controller {
 				$redirect    = false;
 				$quiz_status = $quiz_data ? $quiz_data->get_status() : false;
 
-				if ( $quiz_status === 'started' ) {
+				if ( $quiz_status == 'started' ) {
 					$current_question = 0;
 					if ( empty( $vars['question'] ) ) {
 						$current_question = learn_press_get_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', true );
@@ -188,7 +188,8 @@ class LP_Page_Controller {
 					if ( ! $question ) {
 						$redirect = $lp_course_item->get_question_link( $current_question );
 					}
-
+				} elseif ( $quiz_status === 'completed' ) {
+					$current_question = $question ? $question->ID : null;
 				} elseif ( $quiz_status !== 'completed' ) {
 					if ( $question ) {
 						$this->set_404( true );

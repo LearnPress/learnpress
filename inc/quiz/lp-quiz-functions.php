@@ -432,7 +432,6 @@ if ( ! function_exists( 'learn_press_quiz_get_questions_order' ) ) {
 function learn_press_is_review_questions() {
 	if ( ( $item = LP_Global::course_item() ) && ( $user = learn_press_get_current_user() ) ) {
 		$quiz_data = $user->get_item_data( $item->get_id(), LP_Global::course( 'id' ) );
-
 		return $quiz_data && $quiz_data->is_review_questions();
 	}
 
