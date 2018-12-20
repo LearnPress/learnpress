@@ -40,7 +40,7 @@ class LP_Session_Handler implements ArrayAccess {
 	 *
 	 * @var bool
 	 */
-	private $_has_browser_cookie = false;
+	private $_has_browser_cookie = true;
 
 	/**
 	 * @var string Custom session table name
@@ -99,12 +99,26 @@ class LP_Session_Handler implements ArrayAccess {
 		}
 	}
 
+	/**
+	 * LP_Session_Handler constructor.
+	 *
+	 * @version 3.x.x
+	 */
 	public function __construct() {
 		global $wpdb;
 
-		$this->_cookie             = 'wp_learn_press_session_' . COOKIEHASH;
-		$this->_table              = $wpdb->prefix . 'learnpress_sessions';
-		$this->_has_browser_cookie = ! empty( $_COOKIE ) && sizeof( $_COOKIE ) > 0;
+		$this->_cookie = 'wp_learn_press_session_' . COOKIEHASH;
+		$this->_table  = $wpdb->prefix . 'learnpress_sessions';
+
+		// Check cookie ...
+		if ( ! isset( $_COOKIE ) || sizeof( $_COOKIE ) == 0 ) {
+			$this->_has_browser_cookie = false;
+		}
+
+		// ...and user-agent to ensure user a viewing in a web browser
+		if ( empty( $_SERVER['HTTP_USER_AGENT'] ) || strpos( $_SERVER['HTTP_USER_AGENT'], 'Mozilla' ) === false ) {
+			$this->_has_browser_cookie = false;
+		}
 
 		if ( $cookie = $this->get_session_cookie() ) {
 			$this->_customer_id        = $cookie[0];

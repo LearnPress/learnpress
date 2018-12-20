@@ -80,16 +80,18 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		}
 
 		/**
-		 * Filter callback
+		 * Filter callback to get all tables of LP assigned to $wpdb.
 		 *
-		 * @param $prop
+		 * @version 3.x.x
+		 *
+		 * @param string $prop
 		 *
 		 * @return bool
 		 */
 		protected function _filter_tables( $prop ) {
 			global $wpdb;
 
-			return is_string( $prop ) && strpos( $prop, $wpdb->prefix . 'learnpress' ) !== false;
+			return is_string( $prop ) && strpos( $prop, $wpdb->prefix . 'learnpress' ) === 0;
 		}
 
 		/**
