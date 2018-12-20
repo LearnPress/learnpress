@@ -381,7 +381,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$new_order->save();
 				$new_status = get_post_status( $new_order->get_id() );
 
-				if ( ( $new_status !== $old_status ) || $trigger_action ) {
+				if ( ( $new_status == $old_status ) && $trigger_action ) {
 					$status     = str_replace( 'lp-', '', $new_status );
 					$old_status = str_replace( 'lp-', '', $new_status );
 					do_action( 'learn-press/order/status-' . $status, $new_order->get_id(), $status );
