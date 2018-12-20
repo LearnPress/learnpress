@@ -18,11 +18,11 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 LearnPress is free and always be free, but it has premium high quality WordPress Plugin which will probably help you make money from your **WordPress based LMS**, try and see how it is. LearnPress WordPress Online Course plugin is lightweight but super powerful with lots of add-ons to empower its core system.
 
-> **Christmas & New Year Week Sale - 10 Days Left**
+> **One-Off Sale - 10 Days Left - Limited Time Offer**
 
-> [Click here](http://eepurl.com/cbKSQX) to get a coupon for 25% Off all LearnPress Add-ons
+> [Click here](https://goo.gl/JzwYkj) to get a coupon for 20% Off all Learnpress Add-ons
 
-> Or you can [buy Education WP theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) for only 64$ and get all of them.
+> Or you can buy [Education WP Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) for only $69 and get all of them.
 
 > **HOT!!** [WordPress theme for Coaches, Trainers, Teachers - Coaching WP](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) is also FOR SALE at only $59, LearnPress included.
 
@@ -36,7 +36,7 @@ Take a look at Premium **[Education WordPress Theme](http://themeforest.net/item
 
 - **[How to create a Udemy or Coursera clone easily with LearnPress](https://thimpress.com/create-udemy-coursera-clone-easily-learnpress/?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)**
 
-- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=Z9QT_CGevhg)**
+- Step-by-step Youtube guide on setting up your own Online Course site. **[Click here >>](https://www.youtube.com/watch?v=3LDa8vtDIAk)**
 [youtube https://www.youtube.com/watch?v=3LDa8vtDIAk&hd=1&&cc_load_policy=1]
 
 Are you looking for *best LMS WordPress plugin*?

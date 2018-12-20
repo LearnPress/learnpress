@@ -2,6 +2,7 @@
 .idea/
 __*.php
 node_modules/
+cache/
 /assets/fonts/iconfont.ttf
 /assets/fonts/iconfont.woff
 /assets/fonts/icons.eot
@@ -16,7 +17,6 @@ node_modules/
 /assets/fonts/iconfont.svg
 /inc/test.php
 /local-debug.php
-cache/
 /languages/learnpress-vi.mo
 /languages/learnpress-vi.po
 test list.txt
