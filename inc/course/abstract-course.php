@@ -317,11 +317,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 				$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
 				if ( false === ( $items = LP_Object_Cache::get( 'course-' . $key, 'learn-press/course-items' ) ) ) {
-
+					
 					$items = array();
+					$item_types = $this->get_item_types(true);
 					foreach ( $type as $t ) {
-						if ( $items_by_type = LP_Object_Cache::get( 'course-' . $this->get_id(), 'learn-press/course-' . $t ) ) {
-							$items = array_merge( $items, $items_by_type );
+						if( isset($item_types[$t]) && !empty($item_types[$t]) ) {
+							$items = array_merge( $items, $item_types[$t] );
 						}
 					}
 
@@ -329,7 +330,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 						$items = array_diff( $items, $preview_items );
 					}
 
-					LP_Object_Cache::set( 'course-' . $key, $items, 'learn-press/course-items' );
+					LP_Object_Cache::set( 'course-' . $key, $items, 'learn-press/course-items' );// this line not correct when $type != ''
 
 				}
 			}
