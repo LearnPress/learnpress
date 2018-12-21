@@ -36,7 +36,7 @@ class LP_Session_Handler implements ArrayAccess {
 	private $_has_cookie = false;
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.2.2
 	 *
 	 * @var bool
 	 */
@@ -102,7 +102,7 @@ class LP_Session_Handler implements ArrayAccess {
 	/**
 	 * LP_Session_Handler constructor.
 	 *
-	 * @version 3.x.x
+	 * @version 3.2.2
 	 */
 	public function __construct() {
 		global $wpdb;
