@@ -82,7 +82,7 @@ if ( ! class_exists( 'LP_Background_Installer' ) ) {
 		/**
 		 * Filter callback to get all tables of LP assigned to $wpdb.
 		 *
-		 * @version 3.x.x
+		 * @version 3.2.2
 		 *
 		 * @param string $prop
 		 *
