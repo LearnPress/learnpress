@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 4.9.5
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+= 3.2.2 =
+~ Fixed review quiz doesn't work properly.
+~ Fixed table session create a lot of rows.
+~ Fixed can't enroll to a course purchased.
+~ Removed unused functions.
+
 = 3.2.1 =
 ~ Fixed can't enroll course.
 ~ Fixed upload issue and drag user avatar on mobile.
