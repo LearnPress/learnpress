@@ -32,7 +32,7 @@ ini_set('error_log', dirname(__FILE__).'/ipn_errors.log');
 
 
 // instantiate the IpnListener class
-include('../ipnlistener.php');
+include('ipnlistener.php');
 $listener = new IpnListener();
 
 
