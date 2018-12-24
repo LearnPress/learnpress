@@ -131,7 +131,8 @@ class LP_Schedules {
 						return;
 					}
 					$this->_update_user_course_items_expired( $course, $user );
-					$item_meta_id = $user->finish_course( $course->get_id(), true );
+					$user_course = $user->get_course_data( $course->get_id() );
+					$item_meta_id = $user_course->finish();
 					if ( $item_meta_id ) {
 						learn_press_update_user_item_meta( $item_meta_id, 'finishing_type', 'automation' );
 						do_action( 'learn_press_user_finish_course_automation', $course->get_id(), $item_meta_id, $user->get_id() );
