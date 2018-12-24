@@ -550,7 +550,8 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			$user_id = get_current_user_id();
 		}
 
-		$user            = learn_press_get_user( $user_id, false );
+		//$user            = learn_press_get_user( $user_id, false ); tested on client site and this function not work. Use the below line instead of!
+		$user            = learn_press_get_current_user();
 		$current_item    = LP_Global::course_item();
 		$get_item_ids    = $course->get_item_ids();
 		$enrolled        = $user ? $user->has_enrolled_course( $course_id ) : false;
