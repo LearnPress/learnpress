@@ -201,7 +201,8 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 = 3.2.2 =
 ~ Removed un-security code in PP library.
-
+~ Fixed get curriculum item types doesn't work properly.
+~ Fixed sort sections/items wrong in SQL query.
 
 = 3.2.2 =
 ~ Fixed review quiz doesn't work properly.
