@@ -284,7 +284,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			if ( ! isset( $_REQUEST['ipn'] ) ) {
 				return;
 			}
-			require_once( 'paypal-ipn/ipn.php' );
+
+			// Not use
+			//require_once( 'paypal-ipn/ipn.php' );
 		}
 
 		public function process_order_paypal_standard() {
