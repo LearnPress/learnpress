@@ -1796,7 +1796,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
                     INNER JOIN {$wpdb->learnpress_section_items} section_items ON course_sections.section_id = section_items.section_id
                     INNER JOIN {$wpdb->posts} item ON item.ID = section_items.item_id
                     WHERE course.ID = %d
-                    ORDER BY course_sections.section_id, course_sections.section_order,section_items.item_order,section_items.section_item_id ASC
+                    ORDER BY course_sections.section_order, course_sections.section_id, section_items.item_order,section_items.section_item_id ASC
                 ", $id );
 
 					$all_items = $wpdb->get_results( $query );
