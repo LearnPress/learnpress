@@ -487,6 +487,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			global $wpdb, $wp_query;
 
 			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
+				if(is_admin() && !$wp_query->query['post_status']){
+					$statuses = array_keys(learn_press_get_register_order_statuses());
+					$search = "{$wpdb->posts}.post_status = 'publish' ";
+					$tmps = array($search);
+					$tmp = "{$wpdb->posts}.post_status = %s ";
+					foreach($statuses as $status ){
+						$tmps[]=$wpdb->prepare( $tmp, $status );
+					}
+					$replace = implode(' OR ',$tmps);
+					$where = str_replace($search, $replace, $where);
+				}
 				return $where;
 			}
 
