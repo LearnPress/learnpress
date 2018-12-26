@@ -636,7 +636,11 @@ if ( ! function_exists( 'learn_press_is_ajax' ) ) {
  * @return int
  */
 function learn_press_get_page_id( $name ) {
-	return apply_filters( 'learn_press_get_page_id', LP_Settings::instance()->get( "{$name}_page_id", false ), $name );
+	$page_id = LP_Settings::instance()->get( "{$name}_page_id", false );
+	if(function_exists('icl_object_id')){
+		$page_id = icl_object_id($page_id,'page', false,ICL_LANGUAGE_CODE);
+	}
+	return apply_filters( 'learn_press_get_page_id', $page_id, $name );
 }
 
 /**
@@ -2462,7 +2466,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 	return $return;
 }
 
-add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
+// add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 
 /**
  * Return true if enable cart

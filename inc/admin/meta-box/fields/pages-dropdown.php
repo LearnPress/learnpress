@@ -19,6 +19,13 @@ if ( ! class_exists( 'RWMB_Pages_Dropdown_Field' ) ) {
 		 * @return string
 		 */
 		static function html( $meta, $field = '' ) {
+			if( $field['std'] && function_exists('icl_object_id') ) {
+				$field_std = icl_object_id($field['std'],'page', false,ICL_LANGUAGE_CODE);
+				if( $field_std ) {
+					$field['std'] = $field_std;
+				}
+			}
+
 			$args = array(
 				'echo'     => false,
 				'name'     => $field['id'],
