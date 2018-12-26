@@ -59,6 +59,7 @@ class LP_Plugins_Helper {
 		if ( ! $all_plugins ) {
 			return array_key_exists( $type, self::$plugins ) ? self::$plugins[ $type ] : self::$plugins;
 		}
+
 		$wp_plugins        = self::get_plugins_from_wp();
 		$premium_plugins   = self::get_premium_plugins();
 		$wp_installed      = array();
@@ -406,7 +407,6 @@ class LP_Plugins_Helper {
 	 */
 	public static function init() {
 		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
-		add_filter( 'extra_plugin_headers', array( __CLASS__, 'add_on_header' ) );
 
 		if ( ( LP_Request::get( 'force-check-update' ) !== 'yes' ) || ! wp_verify_nonce( LP_Request::get( '_wpnonce' ), 'lp-check-updates' ) ) {
 			return;
@@ -417,6 +417,13 @@ class LP_Plugins_Helper {
 		exit();
 	}
 }
+
+/**
+ * Fixed issue addons page doesn't show installed addons.
+ *
+ * @since 3.2.4
+ */
+add_filter( 'extra_plugin_headers', array( 'LP_Plugins_Helper', 'add_on_header' ) );
 
 // Init hooks, etc...
 add_action( 'init', array( 'LP_Plugins_Helper', 'init' ) );
