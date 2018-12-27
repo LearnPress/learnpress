@@ -80,8 +80,14 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		// question id
 		$question_id = $question->get_id();
 		// question answer
-		$answers = array_values( $question->get_data( 'answer_options' ) );
-
+		$answer_options = $question->get_data( 'answer_options' );
+		$answer = array();
+		foreach($answer_options as $answer_option ){
+			if(!isset($answer[$answer_option['question_answer_id']])){
+				$answer[$answer_option['question_answer_id']]=$answer_option;
+			}
+		}
+		$answers = array_values( $answer );
 		$data = wp_parse_args( $args, array(
 			'id'       => $question_id,
 			'open'     => false,
