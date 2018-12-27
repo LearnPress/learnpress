@@ -344,7 +344,7 @@ class LP_Schedules {
 					case LP_LESSON_CPT:
 						$duration = absint( get_post_meta( $row->item_id, '_lp_duration', true ) );
 						if ( $duration <= 0 ) {
-							continue;
+							continue 2;
 						}
 						if ( $row->item_type == LP_QUIZ_CPT ) {
 							$results = $user->finish_quiz( $row->item_id, $course->get_id() );

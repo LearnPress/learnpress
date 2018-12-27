@@ -217,7 +217,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 						break;
 					default:
 						if ( ! is_callable( array( $class, 'get_settings' ) ) ) {
-							continue;
+							continue 2;
 						}
 
 						$options = $class->get_settings( '', '' );
