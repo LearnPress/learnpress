@@ -512,7 +512,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		if ( $get_item_ids ) {
 			foreach ( $get_item_ids as $item_id ) {
 				$is_preview = get_post_meta( $item_id, '_lp_preview', true );#// == 'yes';
-				if( $enrolled ){
+				if ( $enrolled ) {
 					$is_preview = 'no';
 				}
 				if ( false === ( $cached = LP_Object_Cache::get( 'item-' . $user_id . '-' . $course_id . '-' . $item_id, 'learn-press/preview-items' ) ) ) {
@@ -561,6 +561,10 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		if ( $get_item_ids ) {
 			foreach ( $get_item_ids as $item_id ) {
 				$item = $course->get_item( $item_id );
+
+				if ( ! $item ) {
+					continue;
+				}
 
 				$defaults = array_merge(
 					array(

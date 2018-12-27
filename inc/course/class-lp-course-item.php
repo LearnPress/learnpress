@@ -308,7 +308,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			}
 
-			if ( $course ) {
+			if ( $course && $item) {
 				$item->set_course( $course );
 			}
 
