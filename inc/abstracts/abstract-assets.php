@@ -311,7 +311,7 @@ abstract class LP_Abstract_Assets {
 					}
 				}
 			}
-			$wp_scripts->print_extra_script( $handle );
+			//$wp_scripts->print_extra_script( $handle );
 		}
 
 	}
