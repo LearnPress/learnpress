@@ -337,7 +337,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				if ( false === ( $course_id = $this->_verify_course_item( $quiz_id, $course_id ) ) ) {
 					throw new Exception( __( 'Course does not exist or does not contain the quiz', 'learnpress' ), LP_INVALID_QUIZ_OR_COURSE );
 				}
-
+				$course = learn_press_get_course( $course_id );
 				$access_level = $this->get_course_access_level( $course_id );
 
 				// If user has already finished the course
@@ -345,7 +345,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( __( 'You have already finished the course of this quiz', 'learnpress' ), LP_COURSE_IS_FINISHED );
 				}
 
-				if ( $access_level < LP_COURSE_ACCESS_LEVEL_60 ) {
+				if ( $course->is_required_enroll() && $access_level < LP_COURSE_ACCESS_LEVEL_60 ) {
 					throw new Exception( __( 'Please enroll course before starting quiz.', 'learnpress' ), LP_COURSE_IS_FINISHED );
 				}
 
@@ -353,9 +353,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				if ( $this->has_item_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
 					throw new Exception( __( 'User has started or completed quiz', 'learnpress' ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 				}
-
-				$course = learn_press_get_course( $course_id );
-				$quiz   = learn_press_get_quiz( $quiz_id );
 				$user   = LP_Global::user();
 
 				if ( $course->is_required_enroll() && $user->is_guest()/* && ! $quiz->get_preview() */ ) {
