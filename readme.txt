@@ -200,11 +200,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 = 3.2.4 =
-~ Fixed cannot enroll course
-~ Fixed prev question button not working correct
-~ Fixed one extra answer option when add new question
+~ Fixed cannot enroll course.
+~ Fixed prev question button not working correct.
+~ Fixed one extra answer option when add new question.
 ~ Fixed some deprecated keywords for PHP 7.3.
 ~ Fixed item is null for an item which doesn't support it's type (like assignment after deactivate).
+~ Fixed bug the next and prev button not work in review mode of quiz.
 
 = 3.2.3 =
 ~ Removed un-security code in PP library.
