@@ -186,9 +186,8 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 		 */
 		public static function nav_question() {
 			$return = self::maybe_save_questions( 'nav-question' );
-
+			$nav      = LP_Request::get( 'nav-type' );
 			if ( is_array( $return ) ) {
-				$nav      = LP_Request::get( 'nav-type' );
 				$quiz     = learn_press_get_quiz( $return['quiz_id'] );
 				$redirect = false;
 				if ( $nav === 'prev-question' && ! empty( $return['prev_question'] ) ) {
@@ -196,7 +195,22 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 				} elseif ( ! empty( $return['next_question'] ) ) {
 					$redirect = $quiz->get_question_link( $return['next_question'] );
 				}
-
+				if($redirect){
+					wp_safe_redirect($redirect);
+					exit();
+				}
+			} else {
+				$quiz_id 		= LP_Request::get('quiz-id');
+				$question_id 	= LP_Request::get('question-id');
+				$quiz = learn_press_get_quiz( $quiz_id );
+				
+				if ( $nav === 'prev-question' && $question_id ) {
+					$prev_question_id = $quiz->get_prev_question($question_id);
+					$redirect = $quiz->get_question_link( $prev_question_id );
+				} else {
+					$next_question_id = $quiz->get_next_question($question_id);
+					$redirect = $quiz->get_question_link( $next_question_id );
+				}
 				if($redirect){
 					wp_safe_redirect($redirect);
 					exit();
