@@ -958,10 +958,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$question_id = $return_id;
 			}
 
-			if ( false === ( $answer_options = LP_Hard_Cache::get( 'question-' . $question_id, 'question-answers' ) ) ) {
+			if ( false === ( $answer_options = LP_Object_Cache::get( 'question-' . $question_id, 'question-answers' ) ) ) {
 
 				$answer_options = $this->_read_answers( $question_id );
-				LP_Hard_Cache::set( 'question-' . $question_id, $answer_options, 'question-answers' );
+				LP_Object_Cache::set( 'question-' . $question_id, $answer_options, 'question-answers' );
 			}
 
 			return $answer_options;
