@@ -199,6 +199,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.4 =
+~ Fixed cannot enroll course
+~ Fixed prev question button not working correct
+~ Fixed one extra answer option when add new question
+
 = 3.2.3 =
 ~ Fixed some deprecated keywords for PHP 7.3.
 ~ Fixed item is null for an item which doesn't support it's type (like assignment after deactivate).

@@ -44,7 +44,7 @@ class LP_Schedules {
 						", 
 						$user_id, LP_ORDER_CPT, 'finished','0000-00-00 00:00:00' );
 
-		$user_item_ids = $wpdb->get_results( $query );
+		$user_item_ids = $wpdb->get_col( $query );
 
 		// $user_item_ids = array(99991,99992,99993,99994,99995);// test data
 		if(!empty($user_item_ids)){
