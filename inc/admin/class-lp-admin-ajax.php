@@ -92,6 +92,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'skip-notice-install',
 				'dashboard-order-status',
 				'dashboard-plugin-status',
+				'dismiss-notice',
 				'sync-course-orders',
 				'sync-user-orders',
 				'sync-course-final-quiz',
@@ -117,7 +118,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
-		public function sync_calculate_course_results(){
+		public function sync_calculate_course_results() {
 			if ( empty( $_REQUEST['sync'] ) ) {
 				die();
 			}
@@ -142,7 +143,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( array( 'result' => 'success' ) );
 
 			die();
-        }
+		}
 
 		/**
 		 * Sync orders for each course
@@ -225,8 +226,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public function sync_remove_older_data() {
-		    $api = LP_Repair_Database::instance();
-		    $api->remove_older_post_meta();
+			$api = LP_Repair_Database::instance();
+			$api->remove_older_post_meta();
 			learn_press_send_json( array( 'result' => 'success' ) );
 			die();
 		}
@@ -486,7 +487,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( in_array( get_post_type( $id ), apply_filters( 'learn-press/reviewable-post-types', array(
 					'lp_lesson',
 					'lp_quiz'
-				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' ) ) {
+				) ) ) && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-item-preview' )
+			) {
 				$previewable = learn_press_get_request( 'previewable' );
 				if ( is_null( $previewable ) ) {
 					$previewable = '0';
@@ -675,7 +677,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -726,7 +729,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$term = stripslashes( $_REQUEST['term'] );
 
 			if ( empty( $term ) ) {
-				die(__FILE__ . '::'.__FUNCTION__);;
+				die( __FILE__ . '::' . __FUNCTION__ );;
 			}
 
 			$found_customers = array();
@@ -771,18 +774,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$query->query_where .= $wpdb->prepare( " OR user_name.meta_value LIKE %s ", '%' . $term . '%' );
 		}
 
+		/**
+		 * Dismiss notice
+		 *
+		 * @update 3.x.x
+		 */
 		public static function dismiss_notice() {
-			$context   = learn_press_get_request( 'context' );
-			$transient = learn_press_get_request( 'transient' );
+			$name    = learn_press_get_request( 'name' );
+			$value   = learn_press_get_request( 'value' );
+			$expired = learn_press_get_request( 'expired' );
 
-			if ( $context ) {
-				if ( $transient >= 0 ) {
-					set_transient( 'learn_press_dismiss_notice_' . $context, 'off', $transient ? $transient : DAY_IN_SECONDS * 7 );
-				} else {
-					update_option( 'learn_press_dismiss_notice_' . $context, 'off' );
-				}
-			}
-			die(__FILE__ . '::'.__FUNCTION__);;
+			LP_Admin_Notice::instance()->dismiss_notice_2( $name, $value, $expired );
+
+			die();
 		}
 
 		public static function plugin_action() {
