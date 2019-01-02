@@ -508,15 +508,21 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data = $this->get_course_data( $course_id );
 				$quiz        = learn_press_get_quiz( $quiz_id );
 				$quiz_data   = $course_data->get_item( $quiz_id );
-
+				$enable_history = $quiz->enable_archive_history();
+				
 				if ( ! $enable_history = $quiz->enable_archive_history() ) {
-					if ( $quiz_data->get_user_item_id() ) {
+					if ( $user_item_id = $quiz_data->get_user_item_id() ) {
 						global $wpdb;
-						$query = $wpdb->prepare( "
-						DELETE FROM {$wpdb->learnpress_user_items}
-						WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
-					", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
+						$query_meta = $wpdb->prepare( "
+							DELETE FROM {$wpdb->learnpress_user_itemmeta}
+							WHERE learnpress_user_item_id = %d
+						", $user_item_id );
+						$wpdb->query( $query_meta );
 
+						$query = $wpdb->prepare( "
+							DELETE FROM {$wpdb->learnpress_user_items}
+							WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
+						", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
 						$wpdb->query( $query );
 					} else {
 						$course_data->update_item_retaken_count( $quiz_id, 0 );
