@@ -28,7 +28,7 @@ class LP_Post_Type_Actions {
 		add_filter( 'pre_trash_post', array( $this, 'pre_trash_post' ), 10, 2 );
 		add_filter( 'trashed_post', array( $this, 'trashed_post' ), 1000, 1 );
 
-		add_filter( 'before_delete_post', array( $this, 'before_delete_post' ), 1000, 1 );
+		// add_filter( 'before_delete_post', array( $this, 'before_delete_post' ), 1000, 1 );
 		//add_filter( 'deleted_post', array( $this, 'deleted_post' ), 1000, 1 );
 
 		add_filter( 'transition_post_status', array( $this, 'transition_post_status' ), 1000, 3 );
