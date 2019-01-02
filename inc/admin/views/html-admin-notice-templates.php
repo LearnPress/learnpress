@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( learn_press_get_user_option( 'hide-notice-template-files' ) == 'yes' ) {
+if ( LP_Admin_Notice::instance()->has_dismissed_notice( 'outdated-template' ) == 'yes' ) {
 	return;
 }
 $template_dir   = get_template_directory();
@@ -27,7 +27,7 @@ $theme_name = implode( ' & ', $theme_name );
 
 $readmore = 'https://thimpress.com/knowledge-base/outdated-template-fix/';
 ?>
-<div id="message" class="learn-press-message notice-warning notice">
+<div id="message" class="learn-press-notice notice-warning notice">
     <p><?php printf( wp_kses( __( 'There is a new update of LearnPress. You may need to update your theme <strong>(%s)</strong> to avoid outdated template files.', 'learnpress' ), array( 'strong' => array() ) ), $theme_name ); ?></p>
     <p class="outdated-readmore-link"><?php echo sprintf( wp_kses( __( 'This is not a bug, don\'t worry. Read more about Outdated template files notice <a href="%s" target="_blank">here</a>.', 'learnpress' ), array(
 			'a' => array(
@@ -38,7 +38,13 @@ $readmore = 'https://thimpress.com/knowledge-base/outdated-template-fix/';
     <p>
         <a class="button"
            href="<?php echo admin_url( 'admin.php?page=learn-press-tools&amp;tab=templates' ); ?>"><?php esc_attr_e( 'View list of outdated templates', 'learnpress' ); ?></a>
+
+        <a href=""
+           onclick="LP.dismissMessage(this, {expired: 3600}); return false;"
+           data-name="outdated-template"
+           data-value="yes"
+           data-el="#message"
+           data-instant="yes"><?php esc_html_e( 'Dismiss', 'learnpress' ); ?></a>
     </p>
-    <a href="<?php echo admin_url( 'themes.php/?lp-hide-notice=template-files' ); ?>"
-       class="learn-press-admin-notice-dismiss"></a>
+
 </div>

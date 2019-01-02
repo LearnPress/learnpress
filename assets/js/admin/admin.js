@@ -2,6 +2,40 @@
 
     "use strict";
 
+    if (typeof LP === 'undefined') LP = {};
+
+    LP.dismissMessage = function (el, args) {
+        args = $.extend($(el).data(), args || {});
+
+        var dismissDone = function () {
+            if (args.el) {
+                $(args.el).fadeOut();
+            } else {
+                $(el).parent().fadeOut();
+            }
+        }
+
+        if (args.instant === 'yes') {
+            dismissDone();
+        }
+
+        $.ajax({
+            url: '',
+            data: {
+                'lp-ajax': 'dismiss-notice',
+                name: args.name,
+                value: args.value || 'yes',
+                expired: args.expired || ''
+            },
+            type: 'POST',
+            success: function () {
+                if (args.instant !== 'yes') {
+                    dismissDone();
+                }
+            }
+        })
+    }
+
     function makePaymentsSortable() {
         // Make payments sortable
         $('.learn-press-payments.sortable tbody').sortable({
@@ -380,7 +414,7 @@
         });
     }
 
-    function send_newsletter_info(e){
+    function send_newsletter_info(e) {
         var $notice = $(e.target),
             context = $notice.attr('data-context');
         $(this).addClass('updating-message button-working disabled');
@@ -403,7 +437,7 @@
         });
     }
 
-    function checkUpdates(e){
+    function checkUpdates(e) {
         //e.preventDefault();
     }
 
@@ -433,7 +467,7 @@
             .on('click', '.learn-press-filter-template', _callbackFilterTemplates)
             .on('click', '.lp-duplicate-row-action .lp-duplicate-post', _duplicatePost)
             .on('click', '#learn-press-newsletter-button button', send_newsletter_info)
-            .on('click','#learn-press-check-update-addons', checkUpdates)
+            .on('click', '#learn-press-check-update-addons', checkUpdates)
             .on('mousedown', '.lp-sortable-handle', function (e) {
                 $('html, body').addClass('lp-item-moving');
                 $(e.target).closest('.lp-sortable-handle').css('cursor', 'inherit');
@@ -448,4 +482,3 @@
     $doc.ready(_ready);
 })(jQuery);
 
-if (typeof LP === 'undefined') LP = {};

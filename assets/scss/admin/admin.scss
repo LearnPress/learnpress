@@ -26,6 +26,8 @@
 
 .lp-notice,
 .learn-press-notice {
+    position: relative;
+    padding: 12px;
     h4 {
         margin: 10px 0 15px
     }
@@ -42,6 +44,12 @@
             top: 5px;
             right: 10px;
         }
+    }
+
+    .lp-message-dismiss {
+        position: absolute;
+        right: 12px;
+        top: 12px;
     }
 }
 
@@ -82,7 +90,7 @@
     }
 }
 
-.learn-press-notice-assigned-item{
+.learn-press-notice-assigned-item {
     color: #FF0000;
 }
 

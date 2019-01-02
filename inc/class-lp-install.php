@@ -170,6 +170,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			// Force to show notice outdated template
 			learn_press_delete_user_option( 'hide-notice-template-files' );
 
+			LP_Admin_Notice::instance()->remove_dismissed_notice(
+				array(
+					'outdated-template'
+				)
+			);
+
 			self::update_db_version();
 			self::update_version();
 		}
