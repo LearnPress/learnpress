@@ -428,7 +428,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			if ( $section_ids ) {
 				$query .= " AND course_sections.section_id IN(" . join( ',', $section_ids ) . ")";
 			}
-
+			$query .= " ORDER BY course_sections.section_order, section_items.item_order";
 			return $wpdb->get_col( $query );
 		}
 
