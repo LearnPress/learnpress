@@ -67,7 +67,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				foreach ( $items as $item ) {
 					$course_id = $item['course_id'];
 					LP_Repair_Database::instance()->sync_course_orders( $course_id );
-					$count = $curd->count_enrolled_users_by_orders( $course_id ) + 1;
+					$count = $curd->count_enrolled_users_by_orders( $course_id );
 					update_post_meta( $course_id, 'count_enrolled_users', $count );
 				}
 			}
