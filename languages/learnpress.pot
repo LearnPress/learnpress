@@ -2331,11 +2331,11 @@ msgid "Items"
 msgstr ""
 
 #: inc/custom-post-types/course.php:108
-msgid "Course sale price must less than the regular price"
+msgid "Course sale price must be less than the regular price"
 msgstr ""
 
 #: inc/custom-post-types/course.php:109
-msgid "Course price must greater than the sale price"
+msgid "Course price must be greater than the sale price"
 msgstr ""
 
 #: inc/custom-post-types/course.php:110
@@ -4227,7 +4227,7 @@ msgid "The time is up! Your quiz will automate come to finish"
 msgstr ""
 
 #: inc/quiz/class-lp-quiz.php:504
-msgid "Congrats! You have finished this quiz"
+msgid "Congratulations! You have finished this quiz"
 msgstr ""
 
 #: inc/quiz/class-lp-quiz.php:505
