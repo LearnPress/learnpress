@@ -687,7 +687,7 @@ class LP_Repair_Database {
 		$courses_format  = array_fill( 0, sizeof( $courses ), '%d' );
 		$statuses_format = $wpdb->prepare( join( ',', $statuses_format ), $statuses );
 		$courses_format  = $wpdb->prepare( join( ',', $courses_format ), $courses );
-
+		$wpdb->query( 'SET SESSION group_concat_max_len = 18446744073709551615' );
 		$query = $wpdb->prepare( "
 				SELECT cid, status, orders
 				FROM(
