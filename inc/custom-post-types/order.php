@@ -485,19 +485,20 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
+		
+			if(is_admin() && $this->_is_archive() && !$wp_query->query['post_status']){
+				$statuses = array_keys(learn_press_get_register_order_statuses());
+				$search = "{$wpdb->posts}.post_status = 'publish' ";
+				$tmps = array($search);
+				$tmp = "{$wpdb->posts}.post_status = %s ";
+				foreach($statuses as $status ){
+					$tmps[]=$wpdb->prepare( $tmp, $status );
+				}
+				$replace = implode(' OR ',$tmps);
+				$where = str_replace($search, $replace, $where);
+			}
 
 			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
-				if(is_admin() && !$wp_query->query['post_status']){
-					$statuses = array_keys(learn_press_get_register_order_statuses());
-					$search = "{$wpdb->posts}.post_status = 'publish' ";
-					$tmps = array($search);
-					$tmp = "{$wpdb->posts}.post_status = %s ";
-					foreach($statuses as $status ){
-						$tmps[]=$wpdb->prepare( $tmp, $status );
-					}
-					$replace = implode(' OR ',$tmps);
-					$where = str_replace($search, $replace, $where);
-				}
 				return $where;
 			}
 
@@ -546,6 +547,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						OR {$wpdb->posts}.ID LIKE %s
 					) ";
 				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ) );
+				# search order via course name
+				$sql .= " OR ".$wpdb->prepare( " {$wpdb->posts}.ID IN (
+						SELECT DISTINCT order_id FROM {$wpdb->learnpress_order_items} WHERE `order_item_name` like %s
+					)",$s);
 				if ( ! empty( $matches2 ) && isset( $matches2[0] ) ) {
 					$where = str_replace( $matches2[0], $sql . ' OR ' . $matches2[0], $where );
 				} else {
