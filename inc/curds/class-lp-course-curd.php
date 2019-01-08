@@ -417,12 +417,15 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 		public function get_course_items( $course_id, $section_ids = array() ) {
 			global $wpdb;
+			$type  = learn_press_course_get_support_item_types( true );
 			$query = $wpdb->prepare( "
 				SELECT section_items.item_id 
 				FROM {$wpdb->posts} course
 				INNER JOIN {$wpdb->learnpress_sections} course_sections ON course.ID  = course_sections.section_course_id
 				INNER JOIN {$wpdb->learnpress_section_items} section_items ON course_sections.section_id = section_items.section_id
+				INNER JOIN {$wpdb->posts} p ON p.ID = section_items.item_id
 				WHERE course.ID = %d
+				AND section_items.item_type IN('" . join( "','", $type ) . "')
 			", $course_id );
 
 			if ( $section_ids ) {
