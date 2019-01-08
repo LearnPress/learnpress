@@ -219,7 +219,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function offsetExists( $offset ) {
 		$items = $this->read_items();
 
-		return array_key_exists( $offset, $items );
+		return array_key_exists( $offset, (array) $items );
 	}
 
 	public function evaluate() {
