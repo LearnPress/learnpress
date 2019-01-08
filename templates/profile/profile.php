@@ -44,5 +44,5 @@ if ( $profile->is_public() ) {
     </div>
 
 <?php } else {
-	_e( 'This user does not public their profile.', 'learnpress' );
+	_e( "This user's profile is not public.", 'learnpress' );
 }
