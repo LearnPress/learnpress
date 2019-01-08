@@ -875,7 +875,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$quiz        = learn_press_get_quiz( $quiz_id );
 			$quiz_item   = $data[ $quiz_id ];
 			$question_id = $quiz_item->get_current_question();
-
+			$viewing_question = $quiz->get_viewing_question( 'id' );
+			if( $viewing_question && $question_id != $viewing_question ) {
+				$question_id = $viewing_question;
+			}
 			if ( $question_id && $permalink ) {
 				return apply_filters( 'learn-press/current-user-question-permalink', $quiz->get_question_link( $question_id ), $quiz_id, $course_id, $this->get_id() );
 			}
