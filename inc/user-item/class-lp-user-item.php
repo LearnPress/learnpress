@@ -44,8 +44,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		//ksort( $item );
 
 		//$this->_data_key = md5( serialize( $item ) );
-		$this->_changes  = array();
-		$item_id         = 0;
+		$this->_changes = array();
+		$item_id        = 0;
 
 		if ( ! empty( $item['user_item_id'] ) ) {
 			$this->set_data( 'user_item_id', $item['user_item_id'] );
@@ -137,7 +137,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Set start-time.
 	 *
 	 * @param mixed $time
-	 * @param bool  $bound_to_gmt - Optional. TRUE to auto update for start-time gmt
+	 * @param bool $bound_to_gmt - Optional. TRUE to auto update for start-time gmt
 	 */
 	public function set_start_time( $time, $bound_to_gmt = false ) {
 		$this->set_data_date( 'start_time', $time );
@@ -198,7 +198,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set end-time for item.
 	 *
-	 * @param bool  $bound_to_gmt - Optional. Calculate gmt of end-time and update
+	 * @param bool $bound_to_gmt - Optional. Calculate gmt of end-time and update
 	 * @param mixed $time
 	 */
 	public function set_end_time( $time, $bound_to_gmt = false ) {
@@ -264,7 +264,20 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return string
 	 */
 	public function get_status() {
-		return $this->get_data( 'status' );
+		$got_status = $this->get_data( 'status' );
+		if ( ! $got_status && false !== ( $user_id = $this->get_extra_data( 'user_id' ) ) ) {
+			$user_item = learn_press_get_user_item( array(
+				'user_id'   => $user_id,
+				'item_id'   => $this->get_item_id(),
+				'parent_id' => $this->get_parent_id(),
+				'ref_id'    => $this->get_data( 'ref_id' )
+			) );
+			if ( ! empty( $user_item ) ) {
+				$got_status = $user_item->status;
+			}
+		}
+
+		return $got_status;
 	}
 
 	public function is_exists() {
@@ -384,7 +397,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @updated 3.1.0
 	 *
 	 * @param string $key
-	 * @param bool   $single
+	 * @param bool $single
 	 *
 	 * @return bool|mixed
 	 */
