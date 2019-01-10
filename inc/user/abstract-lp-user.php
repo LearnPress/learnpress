@@ -506,6 +506,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! apply_filters( 'learn-press/user/before-retake-quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
 				return false;
 			}
+			
 			$return = false;
 			try {
 
