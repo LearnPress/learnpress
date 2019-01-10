@@ -525,9 +525,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( sprintf( __( '%s::%s - User has not completed quiz.', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 				}
 
-				$course_data    = $this->get_course_data( $course_id );
-				$quiz           = learn_press_get_quiz( $quiz_id );
-				$quiz_data      = $course_data->get_item( $quiz_id );
+				$course_data = $this->get_course_data( $course_id );
+				$quiz        = learn_press_get_quiz( $quiz_id );
+				$quiz_data   = $course_data->get_item( $quiz_id );
 
 				if ( ! $enable_history = $quiz->enable_archive_history() ) {
 					if ( $user_item_id = $quiz_data->get_user_item_id() ) {
@@ -871,11 +871,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				return false;
 			}
 
-			$quiz        = learn_press_get_quiz( $quiz_id );
-			$quiz_item   = $data[ $quiz_id ];
-			$question_id = $quiz_item->get_current_question();
+			$quiz             = learn_press_get_quiz( $quiz_id );
+			$quiz_item        = $data[ $quiz_id ];
+			$question_id      = $quiz_item->get_current_question();
 			$viewing_question = $quiz->get_viewing_question( 'id' );
-			if( $viewing_question && $question_id != $viewing_question ) {
+			if ( $viewing_question && $question_id != $viewing_question ) {
 				$question_id = $viewing_question;
 			}
 			if ( $question_id && $permalink ) {
