@@ -528,7 +528,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data    = $this->get_course_data( $course_id );
 				$quiz           = learn_press_get_quiz( $quiz_id );
 				$quiz_data      = $course_data->get_item( $quiz_id );
-				$enable_history = $quiz->enable_archive_history();
 
 				if ( ! $enable_history = $quiz->enable_archive_history() ) {
 					if ( $user_item_id = $quiz_data->get_user_item_id() ) {
@@ -1341,7 +1340,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$view   = false;
 			$course = learn_press_get_course( $course_id );
-
+			if ( ! $course_id ) {
+				$course_id = $course->get_id();
+			}
 			// Disable preview course when course status is pending
 			if ( $course && $course->is_publish() && ( $item = $course->get_item( $item_id ) ) ) {
 				if ( $this->has_course_access_level( array(

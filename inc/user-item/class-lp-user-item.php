@@ -264,7 +264,19 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return string
 	 */
 	public function get_status() {
-		return $this->get_data( 'status' );
+		$got_status = $this->get_data( 'status' );
+		if ( ! $got_status && false !== ( $user_id = $this->get_extra_data( 'user_id' ) ) ) {
+			$user_item = learn_press_get_user_item( array(
+				'user_id'   => $user_id,
+				'item_id'   => $this->get_item_id(),
+				'parent_id' => $this->get_parent_id(),
+				'ref_id'    => $this->get_data( 'ref_id' )
+			) );
+			if ( ! empty( $user_item ) ) {
+				$got_status = $user_item->status;
+			}
+		}
+		return $got_status;
 	}
 
 	public function is_exists() {
