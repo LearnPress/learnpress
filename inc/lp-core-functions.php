@@ -554,7 +554,7 @@ function learn_press_setup_pages() {
 			wp_cache_add( $page->ID, $page, 'posts' );
 		}
 
-		LP_Object_Cache::set( 'static-page-ids', $page_ids, 'learn-press' );
+		//LP_Object_Cache::set( 'static-page-ids', $page_ids, 'learn-press' );
 	}
 }
 
