@@ -695,6 +695,7 @@ class LP_Repair_Database {
 					FROM {$wpdb->learnpress_order_itemmeta} oim 
 					INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
 					INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id 
+					INNER JOIN {$wpdb->postmeta} om ON o.ID = om.post_id AND `om`.`meta_key`='_user_id' AND concat('',om.`meta_value` * 1) = om.`meta_value`
 					WHERE o.post_type = %s
 					AND o.post_status IN ($statuses_format) 
 					AND oim.meta_value IN ($courses_format)
