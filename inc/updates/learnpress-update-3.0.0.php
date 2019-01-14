@@ -155,7 +155,7 @@ class LP_Update_30 extends LP_Update_Base {
 			LIMIT 0, 20
 		", '_lp_multi_users', '_order_version', LP_ORDER_CPT, '3.0.0' );
 
-		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
+		//LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 		if ( ! $parent_orders = $wpdb->get_col( $query ) ) {
 			return true;
@@ -235,7 +235,7 @@ class LP_Update_30 extends LP_Update_Base {
 	 */
 	public function update_user_course_items() {
 
-		LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
+		//LP_Debug::instance()->add( __FUNCTION__, 'lp-updater-300', false, true );
 
 		if ( ! $course_id = $this->get_course() ) {
 			return true;
@@ -336,7 +336,7 @@ class LP_Update_30 extends LP_Update_Base {
 			FROM {$wpdb->postmeta}
 			WHERE meta_key = %s AND (meta_value = %s OR meta_value = %s)
 		", '_lp_passing_grade_type', 'no', 'point' );
-		LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
+		//LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 
 		if ( $rows = $wpdb->get_results( $query ) ) {
@@ -493,7 +493,7 @@ class LP_Update_30 extends LP_Update_Base {
 				ORDER BY user_item_id ASC
 				LIMIT 0, 50
 			", LP_COURSE_CPT, $min_user_item_id );
-			LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
+			//LP_Debug::instance()->add( $query, 'updater-' . $this->version, false, true );
 
 			return $wpdb->get_results( $query );
 		}
