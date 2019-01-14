@@ -506,6 +506,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( ! apply_filters( 'learn-press/user/before-retake-quiz', true, $quiz_id, $course_id, $this->get_id() ) ) {
 				return false;
 			}
+			
 			$return = false;
 			try {
 
@@ -871,11 +872,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				return false;
 			}
 
-			$quiz        = learn_press_get_quiz( $quiz_id );
-			$quiz_item   = $data[ $quiz_id ];
-			$question_id = $quiz_item->get_current_question();
+			$quiz             = learn_press_get_quiz( $quiz_id );
+			$quiz_item        = $data[ $quiz_id ];
+			$question_id      = $quiz_item->get_current_question();
 			$viewing_question = $quiz->get_viewing_question( 'id' );
-			if( $viewing_question && $question_id != $viewing_question ) {
+			if ( $viewing_question && $question_id != $viewing_question ) {
 				$question_id = $viewing_question;
 			}
 			if ( $question_id && $permalink ) {

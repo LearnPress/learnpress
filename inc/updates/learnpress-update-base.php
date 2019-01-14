@@ -48,7 +48,7 @@ class LP_Update_Base {
 		     || preg_match_all( '#' . $wpdb->prefix . 'posts#im', $query )
 		     || preg_match_all( '#' . $wpdb->prefix . 'postmeta#im', $query )
 		) {
-			LP_Debug::instance()->add( "===== " . $this->version . " ===== \n" . $query, 'query-updater', false, true );
+			//LP_Debug::instance()->add( "===== " . $this->version . " ===== \n" . $query, 'query-updater', false, true );
 		}
 
 		return $query;
