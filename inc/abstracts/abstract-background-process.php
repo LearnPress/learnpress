@@ -109,7 +109,7 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 			print_r( $item );
 			print_r( $_REQUEST );
 			$msg = ob_get_clean();
-			LP_Debug::instance()->add( $msg, 'background-process-task', false, true );
+			////LP_Debug::instance()->add( $msg, 'background-process-task', false, true );
 
 			return false;
 		}

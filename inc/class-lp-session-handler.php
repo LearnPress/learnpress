@@ -193,7 +193,7 @@ class LP_Session_Handler implements ArrayAccess {
 		$to_hash = $customer_id . '|' . $session_expiration;
 		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
 
-//		LP_Debug::instance()->add( array(
+//		//LP_Debug::instance()->add( array(
 //			$this->_customer_id,
 //			$_COOKIE,
 //			$_REQUEST,
@@ -252,7 +252,7 @@ class LP_Session_Handler implements ArrayAccess {
 					'%d'
 				)
 			);
-//			LP_Debug::instance()->add( array(
+//			//LP_Debug::instance()->add( array(
 //				$this->_customer_id,
 //				$_COOKIE,
 //				$_REQUEST,
@@ -356,7 +356,7 @@ class LP_Session_Handler implements ArrayAccess {
 				'%d'
 			)
 		);
-		//LP_Debug::instance()->add( $customer_id, __FUNCTION__ );
+		////LP_Debug::instance()->add( $customer_id, __FUNCTION__ );
 	}
 
 	/**
