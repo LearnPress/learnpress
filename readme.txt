@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 5.0.2
-Stable tag: 3.2.5
+Stable tag: 3.2.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,20 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.5.1 =
+~ Fixed can not next/prev question when doing quiz.
+~ Fixed get wrong total student of a course.
+~ Updated language .POT file.
+
+= 3.2.5 =
+~ Fixed button for creating LP pages does not work properly.
+~ Fixed warning when getting course items does not exists.
+~ Added button to close warning for outdated templates.
+~ Fixed search order not working.
+~ Fixed get course items in incorrect order.
+~ Fixed can't start quiz when the course is not required enroll.
+~ Fixed the amount number of enrolled users isn't updated correctly.
+
 = 3.2.4 =
 ~ Fixed cannot enroll course.
 ~ Fixed prev question button not working correct.
