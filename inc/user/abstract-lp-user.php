@@ -1522,6 +1522,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				if ( $quiz = learn_press_get_quiz( $quiz_id ) ) {
 					$count = $quiz->get_retake_count();
 					if ( $count > 0 ) {
+						$count++;
 						// Number of taken
 						$taken = $this->count_retaken_quiz( $quiz_id, $course_id );
 						if ( $taken ) {
