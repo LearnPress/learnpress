@@ -216,6 +216,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Includes needed files.
 		 */
 		public function includes() {
+                        require_once ABSPATH . 'wp-includes/pluggable.php' ;
 			require_once 'inc/class-lp-exception.php';
 			require_once 'inc/class-lp-helper.php';
 			require_once 'inc/class-lp-settings.php';
