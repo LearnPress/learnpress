@@ -550,7 +550,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				);
 			}
 
-			if ( is_super_admin() ) {
+			if ( current_user_can('edit_author_' . LP_COURSE_CPT . 's') ) {
 				$default_tabs['author'] = new RW_Meta_Box( self::author_meta_box() );
 			}
 

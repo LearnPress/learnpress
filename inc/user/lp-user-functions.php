@@ -215,6 +215,7 @@ function learn_press_add_user_roles() {
 		$admin->add_cap( 'edit_private_' . $course_cap );
 		$admin->add_cap( 'delete_others_' . $course_cap );
 		$admin->add_cap( 'edit_others_' . $course_cap );
+		$admin->add_cap( 'edit_author_' . $course_cap );
 
 		$admin->add_cap( 'delete_' . $lesson_cap );
 		$admin->add_cap( 'delete_published_' . $lesson_cap );
