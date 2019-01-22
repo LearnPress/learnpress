@@ -2240,6 +2240,7 @@ function learn_press_get_log_file_path( $handle, $hash = false ) {
  * @return LP_Cart
  */
 function learn_press_get_checkout_cart() {
+
 	return apply_filters( 'learn_press_checkout_cart', LP()->cart );
 }
 

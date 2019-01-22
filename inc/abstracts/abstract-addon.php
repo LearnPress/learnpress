@@ -276,13 +276,13 @@ class LP_Addon {
 	}
 
 	/**
-     * Get template path.
-     *
+	 * Get template path.
+	 *
 	 * @return string
 	 */
 	public function get_template_path() {
 		if ( empty( $this->_template_path ) ) {
-            $this->_template_path = learn_press_template_path() . '/addons/' . preg_replace( '!^learnpress-!', '', dirname( $this->get_plugin_slug() ) );
+			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace( '!^learnpress-!', '', dirname( $this->get_plugin_slug() ) );
 		}
 
 		return $this->_template_path;
@@ -307,6 +307,36 @@ class LP_Addon {
 	 */
 	public function locate_template( $template_name ) {
 		return learn_press_locate_template( $template_name, $this->get_template_path(), dirname( $this->plugin_file ) . '/templates/' );
+	}
+
+	/**
+	 * Output content of admin view file.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $view
+	 * @param array  $args
+	 */
+	public function admin_view( $view, $args = array() ) {
+		$args['plugin_file'] = $this->plugin_file;
+		learn_press_admin_view( $view, $args );
+	}
+
+	/**
+	 * Get content of admin view file.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $view
+	 * @param array  $args
+	 *
+	 * @return string
+	 */
+	public function admin_view_content( $view, $args = array() ) {
+		ob_start();
+		$this->admin_view( $view, $args );
+
+		return ob_get_clean();
 	}
 
 	/**

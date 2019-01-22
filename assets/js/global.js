@@ -985,7 +985,22 @@ if (typeof window.LP == 'undefined') {
                 }
             }
             LP.Hook.doAction('learn_press_receive_message', data, target);
-        }
+        },
+        debounce: function (func, wait) {
+            var timeout;
+
+            return function () {
+                var context = this,
+                    args = arguments;
+
+                var executeFunction = function () {
+                    func.apply(context, args);
+                };
+
+                clearTimeout(timeout);
+                timeout = setTimeout(executeFunction, wait);
+            };
+        },
     }, LP);
 
     $.fn.rows = function () {

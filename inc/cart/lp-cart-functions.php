@@ -10,8 +10,8 @@ function learn_press_get_cart() {
 	return LP()->cart;
 }
 
-function learn_press_enable_cart(){
-	return apply_filters('learn-press/enable-cart', false);
+function learn_press_enable_cart() {
+	return apply_filters( 'learn-press/enable-cart', false );
 }
 
 /**
@@ -82,3 +82,26 @@ function learn_press_clear_cart_after_payment() {
 }
 
 add_action( 'get_header', 'learn_press_clear_cart_after_payment' );
+
+/**
+ * @param LP_Cart $cart
+ *
+ * @return mixed
+ */
+function learn_press_custom_checkout_cart( $cart ) {
+	if ( empty( $_REQUEST['single-item'] ) ) {
+		return $cart;
+	}
+
+	$cart = clone $cart;
+	$cart->empty_cart();
+	$items = explode( ',', $_REQUEST['single-item'] );
+
+	foreach ( $items as $item ) {
+		$cart->add_to_cart( $item );
+	}
+
+	return $cart;
+}
+
+add_filter( 'learn_press_checkout_cart', 'learn_press_custom_checkout_cart' );
