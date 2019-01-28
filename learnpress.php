@@ -497,15 +497,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @since 3.0.0
 		 */
 		public function plugin_loaded() {
-			$this->init();
-
-			// Background
-			$this->init_background_processes();
+//			$this->init();
+//
+//			// Background
+//			$this->init_background_processes();
 
 			// let third parties know that we're ready
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
 			do_action( 'learn-press/ready' );
+
+			$this->init();
+
+			// Background
+			$this->init_background_processes();
 		}
 
 		/**

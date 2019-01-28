@@ -43,8 +43,10 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			if ( isset( $wp->query_vars['lp-order-received'] ) ) {
 				$this->_order_received( $wp->query_vars['lp-order-received'] );
 			} else {
+				$checkoutCart = learn_press_get_checkout_cart();
+
 				// Check cart has contents
-				if ( LP()->cart->is_empty() ) {
+				if ( $checkoutCart->is_empty() ) {
 					learn_press_get_template( 'checkout/empty-cart.php' );
 				} else {
 					learn_press_get_template( 'checkout/form.php' );
