@@ -39,6 +39,10 @@ if ( $quiz_data->is_review_questions() ) {
             <p><?php echo $result['time_spend']; ?></p>
         </li>
         <li class="result-statistic-field">
+            <label><?php echo _x( 'Point', 'quiz-result', 'learnpress' ); ?></label>
+            <p><?php echo $result['user_mark'] . ' / ' . $result['mark']; ?></p>
+        </li>
+        <li class="result-statistic-field">
             <label><?php echo _x( 'Questions', 'quiz-result', 'learnpress' ); ?></label>
             <p><?php echo $quiz->count_questions(); ?></p>
         </li>
