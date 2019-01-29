@@ -452,11 +452,14 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			if ( ! $this->_is_archive() ) {
 				return $order_by_statement;
 			}
-
-			if ( $orderby = $this->_get_orderby() && $order = $this->_get_order() ) {
+			$orderby = $this->_get_orderby();
+			if ( $orderby && $order = $this->_get_order() ) {
 				switch ( $orderby ) {
 					case 'quiz-name':
 						$order_by_statement = "q.post_title {$order}";
+						break;
+					case 'date':
+						$order_by_statement = "post_date {$order}";
 						break;
 				}
 			}
