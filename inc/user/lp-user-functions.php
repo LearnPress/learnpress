@@ -149,6 +149,8 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 
 		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
 			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest( $user_id ) : new LP_User( $user_id );
+
+			do_action('learn-press/get-user', LP_Global::$users[ $user_id ], $user_id);
 		}
 		LP_Debug::logTime( __FUNCTION__ );
 

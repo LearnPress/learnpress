@@ -47,9 +47,37 @@ class LP_Page_Controller {
 		add_filter( 'template_include', array( $this, 'template_content_item' ) );
 		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ) );
 		add_filter( 'the_post', array( $this, 'setup_data' ) );
+		add_filter( 'the_post', array( $this, 'auto_shortcode' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+	}
+
+	/**
+	 * Auto inserting a registered shortcode to a specific page
+	 * if that page is viewing in single mode.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param WP_Post $the_post
+	 */
+	public function auto_shortcode( $the_post ) {
+		if ( is_page( $the_post->ID ) ) {
+
+			// Filter here to insert the shortcode
+			$auto_shortcodes = apply_filters( 'learn-press/auto-shortcode-pages', array() );
+
+			if ( ! empty( $auto_shortcodes[ $the_post->ID ] ) ) {
+				$shortcode_tag = $auto_shortcodes[ $the_post->ID ];
+
+				preg_match( '/\[' . $shortcode_tag . '\s?(.*)\]/', $the_post->post_content, $results );
+
+				if ( empty( $results ) ) {
+					$content                = $the_post->post_content . "[$shortcode_tag]";
+					$the_post->post_content = $content;
+				}
+			}
+		}
 	}
 
 	public function maybe_redirect_quiz( $template ) {
