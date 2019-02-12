@@ -27,7 +27,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_action( 'trashed_post', array( $this, 'trashed_order' ) );
 			add_action( 'transition_post_status', array( $this, 'restore_order' ), 10, 3 );
-			add_action( 'save_post', array( $this, 'recount_enrolled_users' ), 10, 3 );
+			add_action( 'save_post', array( $this, 'recount_enrolled_users' ), 11, 3 );
 
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 
@@ -67,7 +67,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				foreach ( $items as $item ) {
 					$course_id = $item['course_id'];
 					LP_Repair_Database::instance()->sync_course_orders( $course_id );
-					$count = $curd->count_enrolled_users_by_orders( $course_id ) + 1;
+					$count = $curd->count_enrolled_users_by_orders( $course_id );
 					update_post_meta( $course_id, 'count_enrolled_users', $count );
 				}
 			}

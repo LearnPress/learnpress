@@ -715,7 +715,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			delete_option( 'learnpress_db_version' );
 			update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 
-			LP_Debug::instance()->add( debug_backtrace(), 'update_db_version', false, true );
+			//LP_Debug::instance()->add( debug_backtrace(), 'update_db_version', false, true );
 		}
 
 		public static function update_version( $version = null ) {

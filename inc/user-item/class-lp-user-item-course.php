@@ -122,7 +122,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				$this->_items_by_item_ids[ $course_item->get_user_item_id() ] = $item_id;
 				$this->_items_by_order[]                                      = $item_id;
 
-				$items[ $item_id ]                                            = $course_item;
+				$items[ $item_id ] = $course_item;
 			}
 		}
 		LP_Object_Cache::set( $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
@@ -269,8 +269,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 
 		if ( $results === false ) {
 			$course_result = $course->get_data( 'course_result' );
-
-			if ( false === ( $results = $this->get_meta( 'course_results_' . $course_result ) ) ) {
+			$results       = $this->get_meta( 'course_results_' . $course_result );
+			if ( false === $results || ( isset( $results['result'] ) && ! $results['result'] ) ) {
 				$results = $this->calculate_course_results();
 			}
 
@@ -608,9 +608,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get completed items.
 	 *
-	 * @param string $type       - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
-	 * @param bool   $with_total - Optional. Include total if TRUE
-	 * @param int    $section_id - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool $with_total - Optional. Include total if TRUE
+	 * @param int $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
 	 */
@@ -672,8 +672,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get items completed by percentage.
 	 *
-	 * @param string $type       - Optional. Filter by type or not
-	 * @param int    $section_id - Optional. Get in specific section
+	 * @param string $type - Optional. Filter by type or not
+	 * @param int $section_id - Optional. Get in specific section
 	 *
 	 * @return float|int
 	 */
@@ -948,7 +948,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Add new item
 	 *
 	 * @param int|array $item_id
-	 * @param int       $user_id
+	 * @param int $user_id
 	 *
 	 * @return bool
 	 */
