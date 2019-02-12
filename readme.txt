@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 5.0.2
-Stable tag: 3.2.5.1
+Stable tag: 3.2.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,13 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.5.2 =
+~ Fixed bug can't access course after purchased.
+~ Fixed bug user can't redo quiz with option 'Retake' is 1.
+~ Fixed bug can't order questions by date in questions bank.
+~ Extracted purchased date to date and time in order emails.
+~ Show point of quiz in result page.
+
 = 3.2.5.1 =
 ~ Fixed can not next/prev question when doing quiz.
 ~ Fixed get wrong total student of a course.
