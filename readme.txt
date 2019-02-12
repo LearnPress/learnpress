@@ -199,6 +199,13 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.5.2 =
+~ Fixed bug can't access course after purchased.
+~ Fixed bug user can't redo quiz with option 'Retake' is 1.
+~ Fixed bug can't order questions by date in questions bank.
+~ Extracted purchased date to date and time in order emails.
+~ Show point of quiz in result page.
+
 = 3.2.5.1 =
 ~ Fixed can not next/prev question when doing quiz.
 ~ Fixed get wrong total student of a course.
