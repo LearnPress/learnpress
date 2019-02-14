@@ -3730,7 +3730,7 @@ add_action( 'wp_enqueue_scripts', 'learn_press_maybe_load_comment_js' );
 
 add_filter( 'learn-press/can-view-item', 'learn_press_filter_can_view_item', 10, 4 );
 
-function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id ) {
+function learn_press_filter_can_view_item( $view, $item_id, $user_id, $course_id ) {
 	$user = learn_press_get_user( $user_id );
 
 	if ( ! get_post_meta( $course_id, '_lp_submission', true ) ) {
