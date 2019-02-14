@@ -73,19 +73,22 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 		$course = LP_Global::course();
 
 		if ( $course->get_external_link() ) {
-			learn_press_show_log('Course has external link');
+			learn_press_show_log( 'Course has external link' );
+
 			return;
 		}
 
 		// If course is not published
 		if ( ! $course->is_publish() ) {
-			learn_press_show_log('Course is not published');
+			learn_press_show_log( 'Course is not published' );
+
 			return;
 		}
 
 		// Locked course for user
 		if ( $user->is_locked_course( $course->get_id() ) ) {
-			learn_press_show_log('Course is locked');
+			learn_press_show_log( 'Course is locked' );
+
 			return;
 		}
 
@@ -583,7 +586,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				if ( $request_tab === $v['id'] ) {
 					$v['active'] = true;
 					$has_active  = $k;
-				} elseif(isset($v['active']) && $v['active'] ){
+				} elseif ( isset( $v['active'] ) && $v['active'] ) {
 					$has_active = true;
 				}
 				$tabs[ $k ] = $v;
@@ -2125,7 +2128,7 @@ function learn_press_setup_object_data( $post ) {
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
 		}
-		$object                = learn_press_get_course( $post );
+		$object = learn_press_get_course( $post );
 		$object->prepare();
 		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
 	}
