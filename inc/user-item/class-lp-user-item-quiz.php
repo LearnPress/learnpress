@@ -244,7 +244,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 						$result['question_empty'] ++;
 					} else {
 						// minus for each wrong, empty question
-						$result['user_mark'] -= $quiz->get_minus_points();
+						$result['user_mark'] -= intval($quiz->get_minus_points());
 						$result['question_wrong'] ++;
 					}
 				}
