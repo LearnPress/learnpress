@@ -43,7 +43,7 @@ if ( ! $items ) {
     </tr>
     <tr>
         <th><?php _e( 'Purchase Date', 'learnpress' ); ?></th>
-        <td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $order->get_order_date( 'timestamp' ) ) ); ?></td>
+        <td><?php echo date_i18n( get_option( 'date_format' ), $order->get_order_date( 'timestamp' ) ); ?></td>
     </tr>
     <tr>
         <th><?php _e( 'Payment Method', 'learnpress' ); ?></th>
