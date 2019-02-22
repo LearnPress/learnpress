@@ -71,6 +71,11 @@
                         case 'radio':
                             value = control.find('input:checked').val();
                             break;
+                        case 'duration':
+                            value = control.find('input[type="number"], select').map(function () {
+                                return this.value;
+                            }).get().join(' ')
+                            break;
                         default:
                             value = control.find('input, select').val();
 
@@ -119,6 +124,7 @@
                     break;
                 case 'contains':
                 case 'in':
+                    console.log(value1, value2)
                     var _array, _string;
                     if ($.isArray(value1) && !$.isArray(value2)) {
                         _array = value1;
@@ -136,6 +142,9 @@
                             show = false;
                         }
                     }
+                    break;
+                case 'regex':
+                    eval("show = (value1 + '').match("+value2+");");
                     break;
                 default:
                     show = (value1 === value2);
@@ -224,7 +233,7 @@
         getFieldName: function (field) {
             return $(field).find('.rwmb-field-name').val();
         },
-        supportFields: ['yes-no', 'text', 'number', 'radio']
+        supportFields: ['yes-no', 'text', 'number', 'radio', 'duration']
     });
     $(document).ready(function () {
         new Conditional_Logic({conditionals: lp_conditional_logic});

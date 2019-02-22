@@ -213,7 +213,7 @@ class LP_Page_Controller {
 						learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $current_question );
 					}
 
-					if ( ! $question ) {
+					if ( ! $question && $current_question ) {
 						$redirect = $lp_course_item->get_question_link( $current_question );
 					}
 				} elseif ( $quiz_status === 'completed' ) {

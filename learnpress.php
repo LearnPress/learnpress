@@ -765,3 +765,44 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+
+//add_action('wp_redirect', function ($url){
+//    print_r($url);
+//    learn_press_debug(debug_backtrace());die();
+//});
+
+add_action('init', function (){
+
+	return;
+	global $wpdb;
+	echo $query = $wpdb->prepare( "
+			#SELECT *, GROUP_CONCAT(user_item_id)
+			#FROM (
+				SELECT * 
+				FROM {$wpdb->learnpress_user_items}
+				WHERE item_type IN('lp_quiz') 
+				AND %d 
+				ORDER BY item_id, user_item_id DESC 
+			#) X
+			#GROUP BY item_id
+		", 1 );
+
+	print_r($wpdb->get_results($query));
+	die();
+
+	echo $query = $wpdb->prepare( "
+            SELECT X.*
+            FROM(
+                SELECT o.*
+                FROM `{$wpdb->learnpress_user_items}` o                    # 'o' from 'oldest person in group'
+                  LEFT JOIN `{$wpdb->learnpress_user_items}` b             # 'b' from 'bigger age'
+                      ON o.item_id = b.item_id AND o.user_item_id < b.user_item_id
+                         
+            ) X 
+            LEFT JOIN `{$wpdb->learnpress_user_items}` c             # 'b' from 'bigger age'
+                      ON X.item_id = c.item_id AND X.user_item_id < c.user_item_id
+		", 0 );
+
+	print_r($wpdb->get_results($query));
+});

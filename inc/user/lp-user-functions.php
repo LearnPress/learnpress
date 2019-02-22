@@ -150,7 +150,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
 			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest( $user_id ) : new LP_User( $user_id );
 
-			do_action('learn-press/get-user', LP_Global::$users[ $user_id ], $user_id);
+			do_action( 'learn-press/get-user', LP_Global::$users[ $user_id ], $user_id );
 		}
 		LP_Debug::logTime( __FUNCTION__ );
 
@@ -435,17 +435,19 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 
 	// Table fields
 	$table_fields = array(
-		'user_id'        => '%d',
-		'item_id'        => '%d',
-		'ref_id'         => '%d',
-		'start_time'     => '%s',
-		'start_time_gmt' => '%s',
-		'end_time'       => '%s',
-		'end_time_gmt'   => '%s',
-		'item_type'      => '%s',
-		'status'         => '%s',
-		'ref_type'       => '%s',
-		'parent_id'      => '%d'
+		'user_id'             => '%d',
+		'item_id'             => '%d',
+		'ref_id'              => '%d',
+		'start_time'          => '%s',
+		'start_time_gmt'      => '%s',
+		'end_time'            => '%s',
+		'end_time_gmt'        => '%s',
+		'expiration_time'     => '%s',
+		'expiration_time_gmt' => '%s',
+		'item_type'           => '%s',
+		'status'              => '%s',
+		'ref_type'            => '%s',
+		'parent_id'           => '%d'
 	);
 
 	/**
@@ -505,6 +507,14 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 
 	$inserted = false;
 	$updated  = false;
+
+	// Ensure all fields are instance of LP_Datetime have to
+    // convert to string of datetime.
+	foreach ( $data as $k => $v ) {
+		if ( $v instanceof LP_Datetime ) {
+			$data[ $k ] = $v->toSql();
+		}
+	}
 
 	// If $where is not empty consider we are updating
 	if ( $where ) {

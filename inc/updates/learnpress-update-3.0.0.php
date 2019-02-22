@@ -243,12 +243,12 @@ class LP_Update_30 extends LP_Update_Base {
 
 		global $wpdb;
 
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 				INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
 				SELECT user_item_id, %s, COUNT(user_item_id) - 1 Y
 				FROM (
 					SELECT user_item_id, user_id, item_id
-					FROM wp_learnpress_user_items
+					FROM {$wpdb->learnpress_user_items}
 					WHERE item_id = %d
 	                ORDER BY user_item_id DESC
 		      	) X

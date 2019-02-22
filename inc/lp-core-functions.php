@@ -637,9 +637,10 @@ if ( ! function_exists( 'learn_press_is_ajax' ) ) {
  */
 function learn_press_get_page_id( $name ) {
 	$page_id = LP_Settings::instance()->get( "{$name}_page_id", false );
-	if(function_exists('icl_object_id')){
-		$page_id = icl_object_id($page_id,'page', false,ICL_LANGUAGE_CODE);
+	if ( function_exists( 'icl_object_id' ) ) {
+		$page_id = icl_object_id( $page_id, 'page', false, ICL_LANGUAGE_CODE );
 	}
+
 	return apply_filters( 'learn_press_get_page_id', $page_id, $name );
 }
 
@@ -2418,8 +2419,8 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 	if ( LP()->settings->get( 'auto_enroll' ) == 'no' ) {
 		return false;
 	}
-	wp_cache_delete('order-' . $order_id , 'lp-order-items');
-	LP_Object_Cache::delete( 'order-' . $order_id , 'lp-order-items' );
+	wp_cache_delete( 'order-' . $order_id, 'lp-order-items' );
+	LP_Object_Cache::delete( 'order-' . $order_id, 'lp-order-items' );
 	if ( ! $order = learn_press_get_order( $order_id ) ) {
 		return false;
 	}
@@ -3337,4 +3338,23 @@ function learn_press_show_log() {
 	if ( trim( LP_Request::get( 'show_log' ) ) === md5( AUTH_KEY ) ) {
 		call_user_func_array( 'learn_press_debug', func_get_args() );
 	}
+}
+
+/**
+ * Get url for setup cron job on server.
+ *
+ * @since 3.x.x
+ *
+ * @return string
+ */
+function learn_press_get_cron_url() {
+	$nonce = get_option( 'learnpress_cron_url_nonce' );
+
+	if ( ! $nonce ) {
+		$nonce = md5( microtime( true ) );
+		update_option( 'learnpress_cron_url_nonce', $nonce );
+	}
+	$url = add_query_arg( array( 'lp-ajax' => 'cron', 'sid' => $nonce ), get_home_url() );
+
+	return $url;
 }

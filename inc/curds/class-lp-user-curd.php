@@ -506,7 +506,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		 * Get all items in table with the max user-item-id in each
 		 * group of an item
 		 */
-		$query = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 			SELECT *
 			FROM (
 				SELECT * 

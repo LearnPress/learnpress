@@ -88,7 +88,33 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 									'value'   => 'yes'
 								)
 							)
-						)
+						),
+						// @since 3.x.x
+						array(
+							'name'       => __( 'Auto finish course', 'learnpress' ),
+							'id'         => 'auto_finish_course',
+							'type'       => 'yes-no',
+							'desc'       => __( 'Auto finish course if duration of course expire.', 'learnpress' ),
+							'std'        => 'auto_finish',
+							'inline'     => false,
+//							'visibility' => array(
+//								'state'       => 'hide',
+//								'conditional' => array(
+//									array(
+//										'field'   => '_lp_duration',
+//										'compare' => 'regex',
+//										'value'   => '/(^0.*|^\s)/'
+//									)
+//								)
+//							)
+						),
+						array(
+							'name' => __( 'Force complete items', 'learnpress' ),
+							'id'   => 'force_complete_course_items',
+							'type' => 'yes-no',
+							'desc' => __( 'Force to complete items (quizzes) in current progress before finish course.', 'learnpress' ),
+							'std'  => 'no'
+						),
 					)
 				),
 				// Archive
