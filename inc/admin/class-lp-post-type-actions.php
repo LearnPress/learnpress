@@ -115,6 +115,10 @@ class LP_Post_Type_Actions {
 			}
 		} elseif ( $this->is_course( $post_id ) ) {
 			do_action( 'learn-press/trashed-course', $post_id );
+		} elseif ( get_post_type( $post_id ) == LP_QUESTION_CPT ) {
+			global $wpdb;
+			// Delete the question trashed from quizzes
+			$wpdb->delete( $wpdb->prefix . 'learnpress_quiz_questions', array( 'question_id' => $post_id ), array( '%d' ) );
 		}
 
 		//echo 'trashed';
