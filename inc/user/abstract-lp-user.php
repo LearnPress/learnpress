@@ -396,9 +396,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( $quiz_data->get_user_item_id() ) {
 						global $wpdb;
 						$query = $wpdb->prepare( "
-						DELETE FROM {$wpdb->learnpress_user_items}
-						WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
-					", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
+							DELETE FROM {$wpdb->learnpress_user_items}
+							WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
+						", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
 
 						$wpdb->query( $query );
 					} else {
@@ -411,9 +411,22 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data->update_item_retaken_count( $quiz_id, '+1' );
 				$quiz_data->set_status( 'started' );
 				$quiz_data->set_user_id( $user->get_id() );
+
 				$date = new LP_Datetime();
 				$quiz_data->set_start_time( $date->toSql() );
-				$quiz_data->set_end_time_gmt( $date->toSql( false ) );
+
+				/**
+				 * If enable duration for quiz then update the expiration time
+				 * otherwise, consider quiz is lifetime access.
+				 */
+				if ( $quiz->get_duration()->get_seconds() ) {
+					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds() ), true );
+				} else {
+					$quiz_data->set_expiration_time( null );
+					$quiz_data->set_expiration_time_gmt( null );
+				}
+				print_r($quiz_data);
+				die();
 
 				if ( $quiz_data->update() ) {
 					$course_data->set_item( $quiz_data );
@@ -531,7 +544,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data = $this->get_course_data( $course_id );
 				$quiz        = learn_press_get_quiz( $quiz_id );
 				$quiz_data   = $course_data->get_item( $quiz_id );
-
+				var_dump( $quiz->enable_archive_history() );
+				die();
 				if ( ! $enable_history = $quiz->enable_archive_history() ) {
 					if ( $user_item_id = $quiz_data->get_user_item_id() ) {
 						global $wpdb;
@@ -2448,7 +2462,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				// Added since 3.x.x
 				if ( $course_duration ) {
 					$user_course->set_expiration_time( $date->getPeriod( $course_duration ) );
-					$user_course->set_expiration_time_gmt(  $date->getPeriod( $course_duration, false ) );
+					$user_course->set_expiration_time_gmt( $date->getPeriod( $course_duration, false ) );
 				} else {
 
 				}

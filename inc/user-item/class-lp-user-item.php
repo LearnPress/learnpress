@@ -67,7 +67,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( ! empty( $item['end_time'] ) ) {
 			$this->set_end_time( $item['end_time'], true );
 		} else {
-			$this->set_end_time( LP_Datetime::getSqlNullDate(), true );
+			$this->set_end_time( null );
+			$this->set_end_time_gmt( null );
 		}
 
 		if ( ! empty( $item['user_id'] ) ) {
@@ -202,9 +203,15 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param mixed $time
 	 */
 	public function set_end_time( $time, $bound_to_gmt = false ) {
-		$this->_set_data_date( 'end_time', $time );
-		if ( $bound_to_gmt ) {
-			$this->set_end_time_gmt( $this->get_end_time()->toSql( false ) );
+		if ( $time && $time !== '0000-00-00 00:00:00' ) {
+			var_dump('WTH');
+			$this->_set_data_date( 'end_time', $time );
+			if ( $bound_to_gmt ) {
+				$this->set_end_time_gmt( $this->get_end_time()->toSql( false ) );
+			}
+		} else {
+			$this->_set_data( 'end_time', '' );
+			$this->_set_data( 'end_time_gmt', '' );
 		}
 	}
 
@@ -230,7 +237,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param mixed $time
 	 */
 	public function set_end_time_gmt( $time ) {
-		$this->_set_data_date( 'end_time_gmt', $time );
+		if ( $time && $time !== '0000-00-00 00:00:00' ) {
+			$this->_set_data_date( 'end_time_gmt', $time );
+		} else {
+			$this->_set_data( 'end_time_gmt', '' );
+		}
 	}
 
 	/**
@@ -261,7 +272,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$this->_set_data_date( 'expiration_time', $time, false );
 
 		if ( $bound_to_gmt ) {
-			$this->set_expiration_time( $this->get_expiration_time()->toSql( false ) );
+			$this->set_expiration_time_gmt( $this->get_expiration_time()->toSql( false ) );
 		}
 	}
 
@@ -427,10 +438,10 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			'user_item_id'        => 0,
 			'user_id'             => 0,
 			'item_id'             => 0,
-			'start_time'          => '0000-00-00 00:00:00',
-			'start_time_gmt'      => '0000-00-00 00:00:00',
-			'end_time'            => '0000-00-00 00:00:00',
-			'end_time_gmt'        => '0000-00-00 00:00:00',
+			'start_time'          => '',
+			'start_time_gmt'      => '',
+			'end_time'            => '',
+			'end_time_gmt'        => '',
 			'expiration_time'     => '',
 			'expiration_time_gmt' => '',
 			'item_type'           => '',
