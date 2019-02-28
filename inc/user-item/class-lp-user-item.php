@@ -204,7 +204,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function set_end_time( $time, $bound_to_gmt = false ) {
 		if ( $time && $time !== '0000-00-00 00:00:00' ) {
-			var_dump('WTH');
 			$this->_set_data_date( 'end_time', $time );
 			if ( $bound_to_gmt ) {
 				$this->set_end_time_gmt( $this->get_end_time()->toSql( false ) );
@@ -223,8 +222,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return string|LP_Datetime
 	 */
 	public function get_end_time( $format = '' ) {
-		$date = $this->get_data_date( 'end_time' );
-		if ( $format ) {
+		$date = $this->get_data( 'end_time' );
+
+		if ( $format && $date instanceof LP_Datetime ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
 
@@ -253,7 +253,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_end_time_gmt( $format = '' ) {
 		$date = $this->get_data( 'end_time_gmt' );
-		if ( $format ) {
+
+		if ( $format && $date instanceof LP_Datetime ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
 
@@ -269,10 +270,15 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param bool               $bound_to_gmt
 	 */
 	public function set_expiration_time( $time, $bound_to_gmt = false ) {
-		$this->_set_data_date( 'expiration_time', $time, false );
+		if ( $time && $time !== '0000-00-00 00:00:00' ) {
+			$this->_set_data_date( 'expiration_time', $time, false );
 
-		if ( $bound_to_gmt ) {
-			$this->set_expiration_time_gmt( $this->get_expiration_time()->toSql( false ) );
+			if ( $bound_to_gmt ) {
+				$this->set_expiration_time_gmt( $this->get_expiration_time()->toSql( false ) );
+			}
+		} else {
+			$this->_set_data( 'expiration_time', '' );
+			$this->_set_data( 'expiration_time_gmt', '' );
 		}
 	}
 
@@ -295,7 +301,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param string|LP_Datetime $time
 	 */
 	public function set_expiration_time_gmt( $time ) {
-		$this->_set_data_date( 'expiration_time_gmt', $time, false );
+		if ( $time && $time !== '0000-00-00 00:00:00' ) {
+			$this->_set_data_date( 'expiration_time_gmt', $time, false );
+		} else {
+			$this->_set_data( 'expiration_time_gmt', '' );
+		}
 	}
 
 	/**
@@ -383,6 +393,16 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_user_item_id() {
 		return $this->get_data( 'user_item_id' );
+	}
+
+	/**
+	 * Change the primary key user_item_id of user-items.
+	 * Only use zero value to force creating new item.
+	 *
+	 * @param int $user_item_id
+	 */
+	public function set_user_item_id( $user_item_id ) {
+		$this->_set_data( 'user_item_id', $user_item_id );
 	}
 
 	public function get_item_id() {
@@ -530,9 +550,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
 				case 'end_time_gmt':
-					if ( ! $v ) {
-						$v = new LP_Datetime( $v );
-					}
+//					if ( ! $v ) {
+//						$v = new LP_Datetime( $v );
+//					}
 
 					$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql() : $v;
 					break;
@@ -589,12 +609,21 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			return false;
 		}
 
-		$data  = $this->get_mysql_data();
+		$data = $this->get_mysql_data();
+
+
+		/**
+		 * @since 3.x.x
+		 *
+		 * Allow filter to modify data
+		 */
+		$data  = apply_filters( 'learn-press/update-user-item-data', $data, $this->get_user_item_id() );
 		$where = array();
 
 		if ( $this->get_user_item_id() ) {
 			$where = array( 'user_item_id' => $this->get_user_item_id() );
 		}
+
 		$return = learn_press_update_user_item_field( $data, $where );
 
 		if ( $return ) {
@@ -643,6 +672,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	public function get_time_interval( $context = '' ) {
 		$start = $this->get_start_time();
 		$end   = $this->get_end_time();
+
+		if ( ! $start instanceof LP_Datetime || ! $end instanceof LP_Datetime ) {
+			return false;
+		}
+
 		if ( $start->is_null() || $end->is_null() ) {
 			return false;
 		}

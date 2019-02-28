@@ -467,14 +467,29 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	}
 
 	// Data and format
-	$data        = array();
-	$data_format = array();
+	$data             = array();
+	$data_format      = array();
+	$date_time_fields = array(
+		'start_time',
+		'start_time_gmt',
+		'end_time',
+		'end_time_gmt',
+		'expiration_time',
+		'expiration_time_gmt'
+	);
 
 	// Build data and data format
 	foreach ( $fields as $field => $value ) {
 		if ( ! empty( $table_fields[ $field ] ) ) {
 			$data[ $field ] = $value;
-			$data_format[]  = $table_fields[ $field ];
+
+			// Do not format the date-time field if it's value is NULL
+			if ( in_array( $field, $date_time_fields ) && ! $value ) {
+				$data[ $field ] = null;
+				$data_format[]  = '';
+			} else {
+				$data_format[] = $table_fields[ $field ];
+			}
 		}
 	}
 
@@ -509,7 +524,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	$updated  = false;
 
 	// Ensure all fields are instance of LP_Datetime have to
-    // convert to string of datetime.
+	// convert to string of datetime.
 	foreach ( $data as $k => $v ) {
 		if ( $v instanceof LP_Datetime ) {
 			$data[ $k ] = $v->toSql();
@@ -542,6 +557,9 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		$inserted = $where['user_item_id'];
 	}
 
+	/**
+	 * @var object|bool $updated_item
+	 */
 	$updated_item = false;
 
 	// Get the item we just have updated or inserted.

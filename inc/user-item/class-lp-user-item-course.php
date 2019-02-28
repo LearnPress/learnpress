@@ -122,7 +122,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				$this->_items_by_item_ids[ $course_item->get_user_item_id() ] = $item_id;
 				$this->_items_by_order[]                                      = $item_id;
 
-				$items[ $item_id ]                                            = $course_item;
+				$items[ $item_id ] = $course_item;
 			}
 		}
 		LP_Object_Cache::set( $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
@@ -410,14 +410,77 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Finish course for user
 	 *
+	 * @param bool $complete_items - Complete all items before finishing course.
+	 *
 	 * @return int
 	 */
-	public function finish() {
+	public function finish( $complete_items = false ) {
+
+		if ( $complete_items ) {
+			$this->complete_items();
+		}
 
 		$return = parent::complete( 'finished' );
 		$this->calculate_course_results();
 
 		return $return;
+	}
+
+	/**
+	 * Complete all items of course.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return bool
+	 */
+	public function complete_items() {
+
+		/**
+		 * Filters whether item types of course should be completed.
+		 * Only support lp_quiz by default.
+		 *
+		 * @since 3.x.x
+		 *
+		 * @param array $item_types
+		 * @param int   $course_id
+		 * @param int   $user_id
+		 */
+		$item_types = apply_filters( 'learn-press/auto-complete-course-items-types', array( LP_QUIZ_CPT ), $this->get_item_id(), $this->get_user_id() );
+
+		if ( ! $item_types ) {
+			return false;
+		}
+
+		if ( ! $items = $this->get_items() ) {
+			return false;
+		}
+
+		foreach ( $items as $item ) {
+			if ( ! in_array( $item->get_post_type(), $item_types ) || $item->is_completed() ) {
+				continue;
+			}
+
+			/**
+			 * Filters the item should be completed if has specific statuses.
+			 *
+			 * @since 3.x.x
+			 *
+			 * @param array $item_statuses
+			 * @param int   $item_id
+			 * @param int   $course_id
+			 * @param int   $user_id
+			 */
+			$item_statuses = apply_filters( 'learn-press/auto-complete-course-item-has-statuses', array( 'started' ), $item->get_item_id(), $item->get_course( 'id' ), $item->get_user_id() );
+
+			if ( ! in_array( $item->get_status(), $item_statuses ) ) {
+				continue;
+			}
+
+			//$user = $this->get_user();
+			$item->complete();
+		}
+
+		return true;
 	}
 
 	public function is_enrolled() {
@@ -990,9 +1053,13 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
-	 * Update user item
+	 * Update course item and it's child.
+	 *
 	 */
 	public function save() {
+		/**
+		 * @var LP_User_Item $item
+		 */
 		$this->update();
 
 		if ( ! $items = $this->get_items() ) {
@@ -1005,12 +1072,19 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				continue;
 			}
 
+			/**
+			 * Auto fill the end-time if it isn't already set
+			 */
+			if ( in_array( $item->get_status(), array( 'completed', 'finished' ) ) ) {
+
+				if ( ! $item->get_end_time() ) {
+					$item->set_end_time( new LP_Datetime(), true );
+				}
+
+			}
+
 			$item->update();
 		}
-
-//global $wp_object_cache;
-//
-//		learn_press_debug($wp_object_cache);
 
 		return true;
 	}

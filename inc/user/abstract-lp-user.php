@@ -425,8 +425,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$quiz_data->set_expiration_time( null );
 					$quiz_data->set_expiration_time_gmt( null );
 				}
-				print_r($quiz_data);
-				die();
 
 				if ( $quiz_data->update() ) {
 					$course_data->set_item( $quiz_data );
@@ -541,25 +539,34 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( sprintf( __( '%s::%s - User has not completed quiz.', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 				}
 
-				$course_data = $this->get_course_data( $course_id );
-				$quiz        = learn_press_get_quiz( $quiz_id );
-				$quiz_data   = $course_data->get_item( $quiz_id );
-				var_dump( $quiz->enable_archive_history() );
-				die();
+				$course_data     = $this->get_course_data( $course_id );
+				$quiz            = learn_press_get_quiz( $quiz_id );
+				$quiz_data       = $course_data->get_item( $quiz_id );
+				$create_new_item = true;
+				/**
+				 * If the option 'Archive History' in quiz is turn off
+				 * then remove all items in user-items table.
+				 */
 				if ( ! $enable_history = $quiz->enable_archive_history() ) {
 					if ( $user_item_id = $quiz_data->get_user_item_id() ) {
 						global $wpdb;
+
+						// Delete al meta
 						$query_meta = $wpdb->prepare( "
 							DELETE FROM {$wpdb->learnpress_user_itemmeta}
 							WHERE learnpress_user_item_id = %d
 						", $user_item_id );
 						$wpdb->query( $query_meta );
 
+						// Delete all items but ignore the last item. We will update it
+						// instead if create new item.
 						$query = $wpdb->prepare( "
 							DELETE FROM {$wpdb->learnpress_user_items}
 							WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
 						", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
 						$wpdb->query( $query );
+
+						$create_new_item = false;
 					} else {
 						$course_data->update_item_retaken_count( $quiz_id, 0 );
 					}
@@ -569,10 +576,31 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$course_data->update_item_retaken_count( $quiz_id, '+1' );
 				$quiz_data->set_status( 'started' );
+
+				$date = new LP_Datetime();
+				$quiz_data->set_start_time( $date->toSql() );
+
+				/**
+				 * If enable duration for quiz then update the expiration time
+				 * otherwise, consider quiz is lifetime access.
+				 */
+				if ( $quiz->get_duration()->get_seconds() ) {
+					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds() ), true );
+				} else {
+					$quiz_data->set_expiration_time( null );
+					$quiz_data->set_expiration_time_gmt( null );
+				}
+
+				if ( $create_new_item ) {
+					$quiz_data->set_user_item_id( 0 );
+				}
+
+				/*$course_data->update_item_retaken_count( $quiz_id, '+1' );
+				$quiz_data->set_status( 'started' );
 				$quiz_data->set_start_time( current_time( 'mysql' ), true );
 				$quiz_data->set_end_time( '0000-00-00 00:00:00' );
 				$quiz_data->set_end_time_gmt( '0000-00-00 00:00:00' );
-				$quiz_data->set_status( 'started' );
+				$quiz_data->set_status( 'started' );*/
 
 				if ( $quiz_data->update() ) {
 					$quiz_data->update_meta(
@@ -1655,7 +1683,21 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					return false;
 				} else {
 					$user_course = $this->get_course_data( $course_id );
-					$return      = $user_course->finish();
+
+					/**
+					 * Filters whether auto complete course items before finish course.
+					 *
+					 * @since 3.x.x
+					 *
+					 * @param bool $auto_complete_items - Default is true
+					 * @param int  $course_id
+					 * @param int  $user_id
+					 *
+					 */
+					$auto_complete_items = apply_filters( 'learn-press/auto-complete-course-items', true, $course_id, $this->get_id() );
+
+					$return = $user_course->finish( $auto_complete_items );
+
 					if ( $return ) {
 						do_action( 'learn-press/user-course-finished', $course_id, $this->get_id(), $return );
 					}
@@ -1929,9 +1971,20 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$start_time = new LP_Datetime( current_time( 'mysql' ) );
 				$course_data->set_start_time( $start_time->toSql() );
 				$course_data->set_start_time_gmt( $start_time->toSql( false ) );
-				$course_data->set_end_time( LP_Datetime::getSqlNullDate() );
-				$course_data->set_end_time_gmt( LP_Datetime::getSqlNullDate() );
+				$course_data->set_end_time( '' );
+				$course_data->set_end_time_gmt( '' );
+				$course = learn_press_get_course( $course_id );
 
+				/**
+				 * If enable duration for course then update the expiration time
+				 * otherwise, consider quiz is lifetime access.
+				 */
+				if ( $duration = $course->get_duration() ) {
+					$course_data->set_expiration_time( $start_time->getPeriod( $duration ), true );
+				} else {
+					$course_data->set_expiration_time( '' );
+					$course_data->set_expiration_time_gmt( '' );
+				}
 
 				if ( $result = $course_data->update() ) {
 					$course_data->increase_retake_count();
@@ -1993,13 +2046,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( $item->is_completed() ) {
 						throw new Exception( __( 'You have already completed this lesson.', 'learnpress' ), LP_COMPLETE_ITEM_FAIL );
 					}
-					//$item->set_end_time( '', true );
+
+
 					$item->set_status( 'completed' );
 
 					$course_data->save();
 
 					$result = $this->evaluate_course_results( $this->get_id() );
 				}
+
 
 				// @deprecated
 				do_action( 'learn_press_user_complete_lesson', $lesson_id, $result, $this->get_id() );
