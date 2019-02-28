@@ -774,8 +774,19 @@ $GLOBALS['LearnPress'] = LP();
 
 add_action('init', function (){
 
-	return;
 	global $wpdb;
+
+	learn_press_debug($wpdb->get_results("SELECT user_item_id, COUNT(user_item_id) - 1 Y
+				FROM (
+					SELECT user_item_id, user_id, item_id
+					FROM wp_learnpress_user_items
+					WHERE item_id = 11778
+	                ORDER BY user_item_id DESC
+		      	) X
+				GROUP BY user_id, item_id"));
+
+	return;
+
 	echo $query = $wpdb->prepare( "
 			#SELECT *, GROUP_CONCAT(user_item_id)
 			#FROM (

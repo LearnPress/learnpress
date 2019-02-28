@@ -223,7 +223,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_end_time( $format = '' ) {
 		$date = $this->get_data( 'end_time' );
-
+		$date = $date ? new LP_Datetime($date) : new LP_Datetime('0000-00-00 00:00:00');
 		if ( $format && $date instanceof LP_Datetime ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
@@ -253,6 +253,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_end_time_gmt( $format = '' ) {
 		$date = $this->get_data( 'end_time_gmt' );
+		$date = $date ? new LP_Datetime($date) : new LP_Datetime(0);
 
 		if ( $format && $date instanceof LP_Datetime ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );

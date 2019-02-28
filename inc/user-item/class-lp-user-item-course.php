@@ -1077,7 +1077,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			 */
 			if ( in_array( $item->get_status(), array( 'completed', 'finished' ) ) ) {
 
-				if ( ! $item->get_end_time() ) {
+				if ( ! $item->get_end_time() || $item->get_end_time()->is_null() ) {
 					$item->set_end_time( new LP_Datetime(), true );
 				}
 
