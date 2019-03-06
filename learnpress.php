@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 3.2.5.2
+Version: 9.9.9
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 5.0.2
@@ -227,6 +227,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-object-data.php';
 			require_once 'inc/abstracts/abstract-post-data.php';
 			require_once 'inc/abstracts/abstract-assets.php';
+			require_once 'inc/abstracts/abstract-object-query.php';
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
@@ -765,55 +766,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-
-//add_action('wp_redirect', function ($url){
-//    print_r($url);
-//    learn_press_debug(debug_backtrace());die();
-//});
-
-add_action('init', function (){
-
-	global $wpdb;
-
-	learn_press_debug($wpdb->get_results("SELECT user_item_id, COUNT(user_item_id) - 1 Y
-				FROM (
-					SELECT user_item_id, user_id, item_id
-					FROM wp_learnpress_user_items
-					WHERE item_id = 11778
-	                ORDER BY user_item_id DESC
-		      	) X
-				GROUP BY user_id, item_id"));
-
-	return;
-
-	echo $query = $wpdb->prepare( "
-			#SELECT *, GROUP_CONCAT(user_item_id)
-			#FROM (
-				SELECT * 
-				FROM {$wpdb->learnpress_user_items}
-				WHERE item_type IN('lp_quiz') 
-				AND %d 
-				ORDER BY item_id, user_item_id DESC 
-			#) X
-			#GROUP BY item_id
-		", 1 );
-
-	print_r($wpdb->get_results($query));
-	die();
-
-	echo $query = $wpdb->prepare( "
-            SELECT X.*
-            FROM(
-                SELECT o.*
-                FROM `{$wpdb->learnpress_user_items}` o                    # 'o' from 'oldest person in group'
-                  LEFT JOIN `{$wpdb->learnpress_user_items}` b             # 'b' from 'bigger age'
-                      ON o.item_id = b.item_id AND o.user_item_id < b.user_item_id
-                         
-            ) X 
-            LEFT JOIN `{$wpdb->learnpress_user_items}` c             # 'b' from 'bigger age'
-                      ON X.item_id = c.item_id AND X.user_item_id < c.user_item_id
-		", 0 );
-
-	print_r($wpdb->get_results($query));
-});

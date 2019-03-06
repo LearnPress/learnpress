@@ -342,7 +342,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		} else {
 		}
 
-		$this->update_meta( 'course_results_' . $course_result, $results );
+		$results = apply_filters('learn-press/update-course-results', $results, $this->get_item_id(), $this->get_user_id(), $this);
+
+		$this->update_meta( 'course_results_' . $course_result,  $results );
 		$this->update_meta( 'grade', $results['grade'] );
 
 		return $results;

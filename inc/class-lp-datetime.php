@@ -340,6 +340,10 @@ class LP_Datetime extends DateTime {
 	public function getPeriod( $seconds, $local = true ) {
 		$timestamp = $this->getTimestamp( $local );
 
+		if ( ! is_numeric( $seconds ) ) {
+			$seconds = strtotime( $seconds ) - time();
+		}
+
 		return date( 'Y-m-d H:i:s', $timestamp + $seconds );
 	}
 }

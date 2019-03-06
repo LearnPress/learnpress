@@ -2675,6 +2675,7 @@ function learn_press_debug() {
 
 	if ( $args ) {
 		foreach ( $args as $arg ) {
+		    echo "\n======LearnPress Debug=======\n";
 			print_r( $arg );
 			echo "\n=============================\n";
 		}
@@ -3357,4 +3358,35 @@ function learn_press_get_cron_url() {
 	$url = add_query_arg( array( 'lp-ajax' => 'cron', 'sid' => $nonce ), get_home_url() );
 
 	return $url;
+}
+
+/**
+ * Get courses expired.
+ *
+ * @since 3.x.x
+ *
+ * @return array
+ */
+function learn_press_get_expired_courses(){
+    global $wpdb;
+
+	$query = $wpdb->prepare( "
+			SELECT X.*
+			FROM(
+			SELECT ui.*
+                FROM {$wpdb->learnpress_user_items} ui
+				LEFT JOIN {$wpdb->learnpress_user_items} uix
+					ON ui.item_id = uix.item_id 
+						AND ui.user_id = uix.user_id
+						AND ui.user_item_id < uix.user_item_id
+			    WHERE uix.user_item_id IS NULL
+			) X
+			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
+			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
+			WHERE X.item_type = %s 
+				AND X.status = %s
+				AND expiration_time_gmt <= UTC_TIMESTAMP()
+			LIMIT 0, 10
+		", LP_COURSE_CPT, 'enrolled' );
+
 }

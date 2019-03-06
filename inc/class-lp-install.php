@@ -550,6 +550,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! self::$_update_files ) {
 				require_once ABSPATH . 'wp-admin/includes/file.php';
 				if ( WP_Filesystem() ) {
+
+					/**
+					 * @var WP_Filesystem_Base $wp_filesystem
+					 */
 					global $wp_filesystem;
 
 					if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . '/inc/updates' ) ) {
@@ -567,7 +571,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				if ( self::$_update_files ) {
 					ksort( self::$_update_files );
 				}
+
+				if ( file_exists( LP_PLUGIN_PATH . '/inc/updates/learnpress-update-x.x.x.php' ) ) {
+					self::$_update_files['9.9.9'] = 'learnpress-update-x.x.x.php';
+				}
 			}
+
 		}
 
 		/**

@@ -28,51 +28,93 @@ class LP_Schedules {
 		LP_Request::register_ajax( 'cron:nopriv', array( $this, 'do_cron' ) );
 	}
 
+	/**
+	 * Execute task when cron is calling
+	 *
+	 * @since 3.x.x
+	 */
 	public function do_cron() {
 		$nonce = LP_Request::get( 'sid' );
+
 		if ( $nonce !== get_option( 'learnpress_cron_url_nonce' ) ) {
 			wp_die( 'Forbidden access!' );
 		}
 
 		global $wpdb;
-		echo $query = $wpdb->prepare( "
-			SELECT X.*
-			FROM(
-			SELECT ui.*
-                FROM {$wpdb->learnpress_user_items} ui
-				LEFT JOIN {$wpdb->learnpress_user_items} uix
-					ON ui.item_id = uix.item_id 
-						AND ui.user_id = uix.user_id
-						AND ui.user_item_id < uix.user_item_id
-			    WHERE uix.user_item_id IS NULL
-			) X
-			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
-			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
-			WHERE X.item_type = %s 
-				#AND X.status = %s
-			LIMIT 0, 10
-		", LP_COURSE_CPT, 'enrolled' );
 
-		learn_press_debug($wpdb->get_results($query));
+		$curd = new LP_User_CURD();
+
+		// Get all courses in user-items are in-progress but has expired
+		$course_items = $curd->get_courses(
+			array(
+				'status'   => 'in-progress',
+				'expired'  => true,
+				'paginate' => false
+			)
+		);
+
+		if ( ! $course_items ) {
+			die();
+		}
+
+		foreach ($course_items as $course_item){
+			$user = learn_press_get_user($course_item->user_id);
+			$course_data = $user->get_course_data($course_item->course_id);
+			//LP_Debug::startTransaction();
+			$course_data->finish();
+			//LP_Debug::rollbackTransaction();
+
+//			$wpdb->update(
+//				$wpdb->learnpress_user_items,
+//					array(
+//						'end_time'=>
+//					)
+//			);
+		}
+
+		learn_press_debug( $course_items );
 
 
-		echo $query = $wpdb->prepare("
-			SELECT ui.*
-			FROM (
-			   SELECT user_id, item_id, MAX(user_item_id) max_id
-			   FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
-			) AS X
- 			INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = x.user_id AND ui.item_id = x.item_id AND ui.user_item_id = x.max_id
- 			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
-			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
-			WHERE ui.item_type = %s 
-				#AND ui.status = %s
- 			ORDER BY user_item_id ASC
-		", LP_COURSE_CPT, 'enrolled');
+//		global $wpdb;
+//		$query = $wpdb->prepare( "
+//			SELECT X.*
+//			FROM(
+//			SELECT ui.*
+//                FROM {$wpdb->learnpress_user_items} ui
+//				LEFT JOIN {$wpdb->learnpress_user_items} uix
+//					ON ui.item_id = uix.item_id
+//						AND ui.user_id = uix.user_id
+//						AND ui.user_item_id < uix.user_item_id
+//			    WHERE uix.user_item_id IS NULL
+//			) X
+//			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
+//			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
+//			WHERE X.item_type = %s
+//				AND X.status = %s
+//				AND expiration_time_gmt <= UTC_TIMESTAMP()
+//			LIMIT 0, 10
+//		", LP_COURSE_CPT, 'enrolled' );
+//
+//		learn_press_debug( $wpdb->get_results( $query ) );
 
-		learn_press_debug($wpdb->get_results($query));
 
-		LP_Debug::instance()->add( $query, 'auto-complete-course', false, true );
+//		echo $query = $wpdb->prepare("
+//			SELECT ui.*
+//			FROM (
+//			   SELECT user_id, item_id, MAX(user_item_id) max_id
+//			   FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
+//			) AS X
+// 			INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = x.user_id AND ui.item_id = x.item_id AND ui.user_item_id = x.max_id
+// 			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
+//			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
+//			WHERE ui.item_type = %s
+//				AND ui.status = %s
+// 			ORDER BY user_item_id ASC
+//		", LP_COURSE_CPT, 'enrolled');
+//
+//		learn_press_debug($wpdb->get_results($query));
+
+		//LP_Debug::instance()->add( $query, 'auto-complete-course', false, true );
 
 		die();
 	}
