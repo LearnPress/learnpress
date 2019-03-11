@@ -766,3 +766,41 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+
+add_action( 'plugins_loaded', function () {
+
+
+    global $wpdb;
+	//update_option('_lp_schedule_u',get_option('_lp_schedule_u', 0)+1 );
+
+	return;
+
+	$t = microtime( true );
+	global $wpdb;
+	$courses  = 11778;
+	$statuses = learn_press_get_order_statuses( true, true );
+	settype( $courses, 'array' );
+
+	$statuses_format = array_fill( 0, sizeof( $statuses ), '%s' );
+	$courses_format  = array_fill( 0, sizeof( $courses ), '%d' );
+	$statuses_format = $wpdb->prepare( join( ',', $statuses_format ), $statuses );
+	$courses_format  = $wpdb->prepare( join( ',', $courses_format ), $courses );
+	$wpdb->query( 'SET SESSION group_concat_max_len = 18446744073709551615' );
+
+	$query = $wpdb->prepare( "
+				SELECT cid, status, orders
+				FROM(
+					SELECT oim.meta_value cid, concat(oim.meta_value, ' ', o.post_status)  a, post_status `status`, GROUP_CONCAT(o.ID) orders
+					FROM {$wpdb->learnpress_order_itemmeta} oim 
+					INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+					INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id 
+					INNER JOIN {$wpdb->postmeta} om ON o.ID = om.post_id AND `om`.`meta_key`='_user_id' 
+					INNER JOIN {$wpdb->users} `u` ON u.ID = `om`.`meta_value`
+					WHERE o.post_type = %s
+					AND o.post_status IN ($statuses_format) 
+					AND oim.meta_value IN ($courses_format)
+					GROUP BY a, cid
+				) X
+			", '_course_id', 'lp_order' );
+} );

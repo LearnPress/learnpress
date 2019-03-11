@@ -25,7 +25,64 @@ class LP_Schedules {
 			) );// remove this code on LP 3.2.3
 		}
 
+		add_action( 'plugins_loaded', array( $this, 'run' ) );
+		add_action( 'learn-press/schedule-event-handler', array( $this, 'schedules' ) );
+
 		LP_Request::register_ajax( 'cron:nopriv', array( $this, 'do_cron' ) );
+	}
+
+	/**
+	 * @since 3.x.x
+	 */
+	public function schedules() {
+		/**
+		 * @var LP_Background_Schedule_Items $scheduleItems
+		 */
+		$scheduleItems = LP()->background( 'schedule-items' );
+		$scheduleItems->run();
+
+		LP_Debug::instance()->add([$_REQUEST, $_SERVER], 'x.'.date('Y.m.d.H.i.s') . '-'. microtime(true));
+	}
+
+	/**
+	 * Loop forever
+	 *
+	 * @since 3.x.x
+	 */
+	public function run() {
+
+		// Stop
+		if ( 'yes' !== get_option( '_lp_schedule_enable' ) ) {
+			return;
+		}
+
+		$time     = microtime( true );
+		$nextTime = get_option( '_lp_schedule_next' );
+		$exceed   = $time - $nextTime;
+		$c        = get_option( '_lp_schedule_c', 0 );
+		$duration = 15;
+
+		//
+		if ( $exceed >= $duration ) {
+			update_option( '_lp_schedule_next', $time );
+			update_option( '_lp_schedule_c', $c + 1 );
+			// Do what you want here...
+			do_action( 'learn-press/schedule-event-handler' );
+
+			LP_Debug::instance()->add([$_REQUEST, $_SERVER], date('Y.m.d.H.i.s') . '-'. microtime(true));
+
+			update_option( '_lp_schedule_r', 'no' );
+		} else {
+			if ( ! empty( $_REQUEST['lp-schedule-event'] ) ) {
+				sleep( $duration - ( $exceed % $duration ) );
+				update_option( '_lp_schedule_r', 'no' );
+			}
+		}
+
+		if ( get_option( '_lp_schedule_r' ) !== 'yes' ) {
+			update_option( '_lp_schedule_r', 'yes' );
+			wp_remote_get( add_query_arg( 'lp-schedule-event', 1, get_site_url() ) );
+		}
 	}
 
 	/**
@@ -40,39 +97,11 @@ class LP_Schedules {
 			wp_die( 'Forbidden access!' );
 		}
 
-		global $wpdb;
-
-		$curd = new LP_User_CURD();
-
-		// Get all courses in user-items are in-progress but has expired
-		$course_items = $curd->get_courses(
-			array(
-				'status'   => 'in-progress',
-				'expired'  => true,
-				'paginate' => false
-			)
-		);
-
-		if ( ! $course_items ) {
-			die();
-		}
-
-		foreach ($course_items as $course_item){
-			$user = learn_press_get_user($course_item->user_id);
-			$course_data = $user->get_course_data($course_item->course_id);
-			//LP_Debug::startTransaction();
-			$course_data->finish();
-			//LP_Debug::rollbackTransaction();
-
-//			$wpdb->update(
-//				$wpdb->learnpress_user_items,
-//					array(
-//						'end_time'=>
-//					)
-//			);
-		}
-
-		learn_press_debug( $course_items );
+		/**
+		 * @var LP_Background_Schedule_Items $scheduleItems
+		 */
+		$scheduleItems = LP()->background( 'schedule-items' );
+		$scheduleItems->run();
 
 
 //		global $wpdb;

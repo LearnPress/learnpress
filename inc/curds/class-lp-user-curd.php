@@ -165,9 +165,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$limit
 		";
 
+		LP_Debug::instance()->add($query, 'xxxx');
+
 		$rows = $wpdb->get_results( $query );
 
-		echo nl2br( $query );
+		//echo nl2br( $query );
 
 		if ( $args['paginate'] && $args['limit'] ) {
 			$found_courses = sizeof( $rows ) ? $wpdb->get_var( "SELECT FOUND_ROWS()" ) : 0;

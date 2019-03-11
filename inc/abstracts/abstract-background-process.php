@@ -45,10 +45,22 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		protected $prefix = 'lp';
 
 		/**
+		 * @var array
+		 *
+		 * @since 3.x.x
+		 */
+		protected $query_args = array();
+
+		/**
 		 * LP_Abstract_Background_Process constructor.
 		 */
 		public function __construct() {
 			parent::__construct();
+
+			$this->query_args = array(
+				'lp-background-process' => $this->get_id()
+			);
+
 			/**
 			 * Priority is important that will fix issue with WC cart doesnt remove
 			 * after completing checkout and get order details
@@ -96,6 +108,17 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		}
 
 		/**
+		 * Get unique ID
+		 *
+		 * @since 3.x.x
+		 *
+		 * @return mixed|string
+		 */
+		public function get_id(){
+			return $this->identifier;
+		}
+
+		/**
 		 * Schedule fallback event.
 		 */
 		protected function schedule_event() {
@@ -104,18 +127,45 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 			}
 		}
 
+		/**
+		 * @since 3.x.x
+		 *
+		 * @return bool
+		 */
+		public function has_queued() {
+			return ! $this->is_queue_empty();
+		}
+
+
 		protected function task( $item ) {
 			ob_start();
 			print_r( $item );
 			print_r( $_REQUEST );
 			$msg = ob_get_clean();
+
 			////LP_Debug::instance()->add( $msg, 'background-process-task', false, true );
 
 			return false;
 		}
 
+		/**
+		 * Get query args
+		 *
+		 * @return array
+		 */
+		protected function get_query_args() {
+			return array_merge(
+				array(
+					'action' => $this->identifier,
+					'nonce'  => wp_create_nonce( $this->identifier )
+				),
+				$this->query_args
+			);
+		}
+
 		public function clear_queue() {
 			$this->data = array();
+
 			return $this;
 		}
 

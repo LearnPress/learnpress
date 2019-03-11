@@ -91,29 +91,33 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						// @since 3.x.x
 						array(
-							'name'       => __( 'Auto finish course', 'learnpress' ),
-							'id'         => 'auto_finish_course',
-							'type'       => 'yes-no',
-							'desc'       => __( 'Auto finish course if duration of course expire.', 'learnpress' ),
-							'std'        => 'auto_finish',
-							'inline'     => false,
-//							'visibility' => array(
-//								'state'       => 'hide',
-//								'conditional' => array(
-//									array(
-//										'field'   => '_lp_duration',
-//										'compare' => 'regex',
-//										'value'   => '/(^0.*|^\s)/'
-//									)
-//								)
-//							)
+							'name'    => __( 'Auto finish course', 'learnpress' ),
+							'id'      => 'auto_finish_course',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Auto finish course if duration of course expire.', 'learnpress' ),
+							'default' => 'yes',
+							'inline'  => false
 						),
 						array(
-							'name' => __( 'Force complete items', 'learnpress' ),
-							'id'   => 'force_complete_course_items',
-							'type' => 'yes-no',
-							'desc' => __( 'Force to complete items (quizzes) in current progress before finish course.', 'learnpress' ),
-							'std'  => 'no'
+							'name'    => __( 'Force complete items', 'learnpress' ),
+							'id'      => 'force_complete_course_items',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Force to complete items (e.g quizzes) in current progress before finish course.', 'learnpress' ),
+							'default' => 'no'
+						),
+						array(
+							'name'    => __( 'Block items content', 'learnpress' ),
+							'id'      => 'course_content_blocking',
+							'type'    => 'radio',
+							'options' => array(
+								''                                   => __( 'No.', 'learnpress' ),
+								'duration_expire'                    => __( 'Block if duration expire.', 'learnpress' ),
+								'course_finished'                    => __( 'Block if course is finished.', 'learnpress' ),
+								'duration_expire_or_course_finished' => __( 'Block if duration expire or course is finished.', 'learnpress' ),
+							),
+							'desc'    => __( 'Action when course is finished.', 'learnpress' ),
+							'default' => '',
+							'inline'  => false
 						),
 					)
 				),

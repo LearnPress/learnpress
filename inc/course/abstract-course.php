@@ -858,15 +858,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		public function count_completed_orders() {
-			LP_Debug::logTime( __FUNCTION__ );
 
 			if ( $orders = $this->get_meta( 'order-completed' ) ) {
 				$count = sizeof( $orders );
 			} else {
 				$count = 0;
 			}
-
-			LP_Debug::logTime( __FUNCTION__ );
 
 			return $count;
 		}
