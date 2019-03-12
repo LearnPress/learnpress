@@ -1563,7 +1563,13 @@ function learn_press_get_become_a_teacher_form_fields() {
 			'type'        => 'text',
 			'placeholder' => __( 'Your phone number', 'learnpress' ),
 			'id'          => 'bat_phone'
-		)
+		),
+        'bat_message' => array(
+            'title'       => __( 'Message', 'learnpress' ),
+            'type'        => 'textarea',
+            'placeholder' => __( 'Your message', 'learnpress' ),
+            'id'          => 'bat_message'
+        )
 	);
 	$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
 
@@ -1584,7 +1590,8 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 			array(
 				'name'  => null,
 				'email' => null,
-				'phone' => null
+				'phone' => null,
+				'message' => null,
 			)
 		);
 
@@ -1607,7 +1614,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		$subject         = __( 'Please moderate', 'learnpress' );
 
 		$fields         = learn_press_get_become_a_teacher_form_fields();
-		$default_fields = array( 'bat_name', 'bat_email', 'bat_phone' );
+		$default_fields = array( 'bat_name', 'bat_email', 'bat_phone', 'bat_message' );
 		foreach ( $fields as $key => $field ) {
 			if ( isset( $_POST[ $key ] ) ) {
 				$fields[ $key ]['value'] = $_POST[ $key ];
@@ -1619,6 +1626,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 			$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
+			$notify_message .= sprintf( __( 'Message: %s', 'learnpress' ), $args['message'] ) . "\r\n";
 			foreach ( $fields as $key => $field ) {
 				if ( ! in_array( $key, $default_fields ) ) {
 					$notify_message .= $field['title'] . ': ' . ( isset( $field['value'] ) ? $field['value'] : '' ) . "\r\n";
