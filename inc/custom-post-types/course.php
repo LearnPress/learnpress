@@ -108,7 +108,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'notice_sale_price'      => __( 'Course sale price must less than the regular price', 'learnpress' ),
 					'notice_price'           => __( 'Course price must greater than the sale price', 'learnpress' ),
 					'notice_sale_start_date' => __( 'Sale start date must before sale end date', 'learnpress' ),
-					'notice_sale_end_date'   => __( 'Sale end date must before sale start date', 'learnpress' ),
+					'notice_sale_end_date'   => __( 'Sale end date must after sale start date', 'learnpress' ),
 					'notice_invalid_date'    => __( 'Invalid date', 'learnpress' ),
 				),
 				'sections'    => array(
@@ -1230,6 +1230,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			} else if ( ( $sale_price == '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || ! $this->_validate_sale_price_date() ) {
 				$keys = array( '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
 			}
+
 			if ( $keys ) {
 				$format = array_fill( 0, sizeof( $keys ), '%s' );
 				$sql    = "
@@ -1245,6 +1246,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					unset( $_REQUEST[ $key ] );
 					unset( $_POST[ $key ] );
 				}
+
 			}
 
 			if ( $price ) {
@@ -1265,6 +1267,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$sale_price_end   = learn_press_get_request( '_lp_sale_end' );
 			$end              = strtotime( $sale_price_end );
 			$start            = strtotime( $sale_price_start );
+
+			learn_press_debug($now, $sale_price_end, $sale_price_start, $end,$start);
 
 			return ( ( $now >= $start || ! $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
 		}

@@ -1273,7 +1273,8 @@ if (typeof window.LP == 'undefined') {
             }
 
             $('#field-_lp_sale_start div, #field-_lp_sale_end div').remove('.learn-press-tip-floating');
-            if (_start_date < _end_date) {
+
+            if (_start_date > _end_date) {
                 _parent_start.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_start_date + '</div>')
             }
         });
@@ -1291,7 +1292,7 @@ if (typeof window.LP == 'undefined') {
             }
 
             $('#field-_lp_sale_start div, #field-_lp_sale_end div').remove('.learn-press-tip-floating');
-            if (_start_date < _end_date) {
+            if (_start_date > _end_date) {
                 _parent_end.append('<div class="learn-press-tip-floating">' + lpAdminCourseEditorSettings.i18n.notice_sale_end_date + '</div>')
             }
         });
