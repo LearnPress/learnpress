@@ -60,8 +60,8 @@ function learn_press_get_theme_name( $folder ) {
  * @since 3.0.0
  *
  * @param string $tip
- * @param bool   $echo
- * @param array  $options
+ * @param bool $echo
+ * @param array $options
  *
  * @return string
  */
@@ -138,7 +138,7 @@ function learn_press_plugin_path( $sub_dir = '' ) {
  *
  * @param string $file
  * @param string $folder
- * @param bool   $include_once
+ * @param bool $include_once
  *
  * @return bool
  */
@@ -301,7 +301,7 @@ function learn_press_is_current_url( $url ) {
  * Remove unneeded characters in an URL
  *
  * @param string $url
- * @param bool   $trailingslashit
+ * @param bool $trailingslashit
  *
  * @return string
  */
@@ -359,7 +359,7 @@ function learn_press_section_item_types() {
  * Enqueue js code to print out
  *
  * @param string $code
- * @param bool   $script_tag - wrap code between <script> tag
+ * @param bool $script_tag - wrap code between <script> tag
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
@@ -382,9 +382,9 @@ function learn_press_enqueue_script( $code, $script_tag = false ) {
  * Get terms of a course by taxonomy.
  * E.g: course_tag, course_category
  *
- * @param int    $course_id
+ * @param int $course_id
  * @param string $taxonomy
- * @param array  $args
+ * @param array $args
  *
  * @return array|mixed
  */
@@ -491,7 +491,7 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  *
  * @param string $name
  * @param string $type
- * @param bool   $single
+ * @param bool $single
  *
  * @return array|bool|null|WP_Post
  */
@@ -609,7 +609,7 @@ add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
  * @param string $str
- * @param int    $lines
+ * @param int $lines
  */
 function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
@@ -637,9 +637,10 @@ if ( ! function_exists( 'learn_press_is_ajax' ) ) {
  */
 function learn_press_get_page_id( $name ) {
 	$page_id = LP_Settings::instance()->get( "{$name}_page_id", false );
-	if(function_exists('icl_object_id')){
-		$page_id = icl_object_id($page_id,'page', false,ICL_LANGUAGE_CODE);
+	if ( function_exists( 'icl_object_id' ) ) {
+		$page_id = icl_object_id( $page_id, 'page', false, ICL_LANGUAGE_CODE );
 	}
+
 	return apply_filters( 'learn_press_get_page_id', $page_id, $name );
 }
 
@@ -736,7 +737,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 				<?php echo $links; ?>
             </div>
             <!-- .pagination -->
-			<?php
+		<?php
 		endif;
 		$output = ob_get_clean();
 		if ( $args['echo'] ) {
@@ -860,7 +861,7 @@ function learn_press_human_time_to_seconds( $time, $default = '' ) {
  *
  * @param string $to
  * @param string $action
- * @param array  $vars
+ * @param array $vars
  *
  * @return mixed
  */
@@ -1542,7 +1543,7 @@ function learn_press_user_maybe_is_a_teacher( $user = null ) {
 function learn_press_get_become_a_teacher_form_fields() {
 	$user   = learn_press_get_current_user();
 	$fields = array(
-		'bat_name'  => array(
+		'bat_name'    => array(
 			'title'       => __( 'Name', 'learnpress' ),
 			'type'        => 'text',
 			'placeholder' => __( 'Your name', 'learnpress' ),
@@ -1550,7 +1551,7 @@ function learn_press_get_become_a_teacher_form_fields() {
 			'id'          => 'bat_name',
 			'required'    => true
 		),
-		'bat_email' => array(
+		'bat_email'   => array(
 			'title'       => __( 'Email', 'learnpress' ),
 			'type'        => 'email',
 			'placeholder' => __( 'Your email address', 'learnpress' ),
@@ -1558,18 +1559,18 @@ function learn_press_get_become_a_teacher_form_fields() {
 			'id'          => 'bat_email',
 			'required'    => true
 		),
-		'bat_phone' => array(
+		'bat_phone'   => array(
 			'title'       => __( 'Phone', 'learnpress' ),
 			'type'        => 'text',
 			'placeholder' => __( 'Your phone number', 'learnpress' ),
 			'id'          => 'bat_phone'
 		),
-        'bat_message' => array(
-            'title'       => __( 'Message', 'learnpress' ),
-            'type'        => 'textarea',
-            'placeholder' => __( 'Your message', 'learnpress' ),
-            'id'          => 'bat_message'
-        )
+		'bat_message' => array(
+			'title'       => __( 'Message', 'learnpress' ),
+			'type'        => 'textarea',
+			'placeholder' => __( 'Your message', 'learnpress' ),
+			'id'          => 'bat_message'
+		)
 	);
 	$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
 
@@ -1588,9 +1589,9 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'name'  => null,
-				'email' => null,
-				'phone' => null,
+				'name'    => null,
+				'email'   => null,
+				'phone'   => null,
 				'message' => null,
 			)
 		);
@@ -1829,8 +1830,8 @@ function learn_press_maybe_send_json( $data, $callback = null ) {
  * Get data from request.
  *
  * @param string $key
- * @param mixed  $default
- * @param mixed  $hash
+ * @param mixed $default
+ * @param mixed $hash
  *
  * @return mixed
  */
@@ -2037,7 +2038,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int  $expire
+ * @param int $expire
  * @param bool $secure
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
@@ -2230,7 +2231,7 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
 
 /**
  * @param string $handle
- * @param bool   $hash
+ * @param bool $hash
  *
  * @return string
  */
@@ -2425,8 +2426,8 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 	if ( LP()->settings->get( 'auto_enroll' ) == 'no' ) {
 		return false;
 	}
-	wp_cache_delete('order-' . $order_id , 'lp-order-items');
-	LP_Object_Cache::delete( 'order-' . $order_id , 'lp-order-items' );
+	wp_cache_delete( 'order-' . $order_id, 'lp-order-items' );
+	LP_Object_Cache::delete( 'order-' . $order_id, 'lp-order-items' );
 	if ( ! $order = learn_press_get_order( $order_id ) ) {
 		return false;
 	}
@@ -2656,7 +2657,7 @@ function learn_press_plugin_basename( $filepath ) {
  * Update log data for each LP version into wp option.
  *
  * @param string $version
- * @param mixed  $data
+ * @param mixed $data
  */
 function learn_press_update_log( $version, $data ) {
 	$logs = get_option( 'learn_press_update_logs' );
@@ -2818,10 +2819,10 @@ if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
  * Filter to comment reply link to fix bug the link is invalid for
  * lesson or quiz.
  *
- * @param string     $link
- * @param array      $args
+ * @param string $link
+ * @param array $args
  * @param WP_Comment $comment
- * @param WP_Post    $post
+ * @param WP_Post $post
  *
  * @return string
  */
@@ -2871,7 +2872,7 @@ function learn_press_deprecated_function( $function, $version, $replacement = nu
  * Sanitize content of tooltip
  *
  * @param string $tooltip
- * @param bool   $html
+ * @param bool $html
  *
  * @return string
  */
@@ -2997,8 +2998,7 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
 			try {
 				$data = unserialize( $content );
-			}
-			catch ( Exception $ex ) {
+			} catch ( Exception $ex ) {
 				print_r( $content );
 				die();
 			}
@@ -3195,7 +3195,7 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
  *
  * @param string $timestamp
  * @param string $format
- * @param bool   $gmt
+ * @param bool $gmt
  *
  * @return string
  */
@@ -3294,7 +3294,7 @@ function learn_press_get_post_type( $post ) {
  * @since 3.1.0
  *
  * @param int|array $id
- * @param string    $type
+ * @param string $type
  */
 function learn_press_cache_add_post_type( $id, $type = '' ) {
 	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
