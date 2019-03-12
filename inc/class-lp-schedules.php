@@ -41,7 +41,7 @@ class LP_Schedules {
 		$scheduleItems = LP()->background( 'schedule-items' );
 		$scheduleItems->run();
 
-		LP_Debug::instance()->add([$_REQUEST, $_SERVER], 'x.'.date('Y.m.d.H.i.s') . '-'. microtime(true));
+		LP_Debug::instance()->add( [ $_REQUEST, $_SERVER ], 'x.' . date( 'Y.m.d.H.i.s' ) . '-' . microtime( true ) );
 	}
 
 	/**
@@ -58,18 +58,16 @@ class LP_Schedules {
 
 		$time     = microtime( true );
 		$nextTime = get_option( '_lp_schedule_next' );
+		$duration = get_option( '_lp_schedule_event_duration', 15 );//default 15 seconds
 		$exceed   = $time - $nextTime;
-		$c        = get_option( '_lp_schedule_c', 0 );
-		$duration = 15;
 
 		//
 		if ( $exceed >= $duration ) {
 			update_option( '_lp_schedule_next', $time );
-			update_option( '_lp_schedule_c', $c + 1 );
 			// Do what you want here...
 			do_action( 'learn-press/schedule-event-handler' );
 
-			LP_Debug::instance()->add([$_REQUEST, $_SERVER], date('Y.m.d.H.i.s') . '-'. microtime(true));
+			LP_Debug::instance()->add( [ $_REQUEST, $_SERVER ], date( 'Y.m.d.H.i.s' ) . '-' . microtime( true ) );
 
 			update_option( '_lp_schedule_r', 'no' );
 		} else {

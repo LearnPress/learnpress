@@ -277,6 +277,15 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			LP_Object_Cache::set( 'course-' . $this->get_item_id() . '-' . $this->get_user_id(), $results, 'course-results' );
 		}
 
+		/**
+		 * If course it not finished then grade should be null
+		 *
+		 * @since 3.x.x
+		 */
+		if ( $this->get_status() !== 'finished' ) {
+			$results['grade'] = '';
+		}
+
 		if ( $prop === 'status' ) {
 			if ( isset( $results['grade'] ) ) {
 				$prop = 'grade';
@@ -342,9 +351,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		} else {
 		}
 
-		$results = apply_filters('learn-press/update-course-results', $results, $this->get_item_id(), $this->get_user_id(), $this);
+		$results = apply_filters( 'learn-press/update-course-results', $results, $this->get_item_id(), $this->get_user_id(), $this );
 
-		$this->update_meta( 'course_results_' . $course_result,  $results );
+		$this->update_meta( 'course_results_' . $course_result, $results );
 		$this->update_meta( 'grade', $results['grade'] );
 
 		return $results;

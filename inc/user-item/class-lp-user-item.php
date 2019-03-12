@@ -223,7 +223,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_end_time( $format = '' ) {
 		$date = $this->get_data( 'end_time' );
-		$date = $date ? new LP_Datetime($date) : new LP_Datetime('0000-00-00 00:00:00');
+		$date = $date ? new LP_Datetime( $date ) : new LP_Datetime( '0000-00-00 00:00:00' );
 		if ( $format && $date instanceof LP_Datetime ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
 		}
@@ -253,7 +253,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_end_time_gmt( $format = '' ) {
 		$date = $this->get_data( 'end_time_gmt' );
-		$date = $date ? new LP_Datetime($date) : new LP_Datetime(0);
+		$date = $date ? new LP_Datetime( $date ) : new LP_Datetime( 0 );
 
 		if ( $format && $date instanceof LP_Datetime ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
@@ -727,11 +727,18 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	/**
+	 * @since 3.x.x
+	 *
 	 * @param string $format
 	 *
 	 * @return int|mixed
 	 */
 	public function get_exceeded_time( $format = '' ) {
+
+		$expiration = $this->get_expiration_time();
+
+		return $expiration ? $expiration->getTimestamp() : false;
+
 		$start_time = $this->get_start_time()->getTimestamp();
 
 		if ( $course = $this->get_course() ) {

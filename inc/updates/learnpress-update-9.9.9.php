@@ -101,8 +101,6 @@ class LP_Update_999 extends LP_Update_Base {
 
 					$wpdb->query($query);
 
-					//echo $course_item->start_time, ',', $course->ID, $course->duration, $query;
-					echo $query, "\n";
 				}
 			}
 		}
