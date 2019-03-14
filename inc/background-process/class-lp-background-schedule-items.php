@@ -32,6 +32,33 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
+
+			add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
+			register_activation_hook( 'learnpress/learnpress.php', function () {
+				if ( ! wp_next_scheduled( 'my_hourly_event' ) ) {
+					wp_schedule_event( time(), 'lp_cron_schedule', 'learn_press_schedule_items' );
+				}
+
+				LP_Debug::instance()->add( [ $_REQUEST ], 'm.' . date( 'Y.m.d-H.i.s' ) . '-' . microtime( true ) );
+
+			} );
+			register_deactivation_hook( 'learnpress/learnpress.php', function () {
+				wp_clear_scheduled_hook( 'learn_press_schedule_items' );
+			} );
+			add_action( 'learn_press_schedule_items', array( $this, 'xxx' ) );
+		}
+
+		public function xxx() {
+			LP_Debug::instance()->add( [ $_REQUEST ], 'a.' . date( 'Y.m.d-H.i.s' ) . '-' . microtime( true ) );
+		}
+
+		public function cron_schedules( $schedules ) {
+			$schedules['lp_cron_schedule'] = array(
+				'interval' => 15,
+				'display'  => __( 'Every 3 Minutes', 'learnpress' )
+			);
+
+			return $schedules;
 		}
 
 		public function test() {
@@ -41,7 +68,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		/**
 		 * Run
 		 */
-		public function run(){
+		public function run() {
 			if ( ! $this->has_queued() ) {
 				$this->push_to_queue(
 					array( 'x' => 100 )

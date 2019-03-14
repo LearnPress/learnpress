@@ -16,7 +16,7 @@ class LP_Schedules {
 	 * LP_Schedules constructor.
 	 */
 	public function __construct() {
-
+		return;
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
 			//add_filter( 'init', array( $this, '_update_current_user_course_expired' ) );
 			add_filter( 'init', array(
@@ -24,11 +24,25 @@ class LP_Schedules {
 				'fix_bug_auto_finish_not_enrolled_course'
 			) );// remove this code on LP 3.2.3
 		}
+		add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
+
+		if (! wp_next_scheduled ( 'my_hourly_event' )) {
+			wp_schedule_event( time(), 'lp_cron_schedule', 'learn_press_schedule_');
+		}
 
 		add_action( 'plugins_loaded', array( $this, 'run' ) );
 		add_action( 'learn-press/schedule-event-handler', array( $this, 'schedules' ) );
 
 		LP_Request::register_ajax( 'cron:nopriv', array( $this, 'do_cron' ) );
+	}
+
+	public function cron_schedules( $schedules ) {
+		$schedules['lp_cron_schedule'] = array(
+			'interval' => 180,
+			'display'  => __( 'Every 3 Minutes', 'learnpress' )
+		);
+
+		return $schedules;
 	}
 
 	/**
@@ -66,8 +80,6 @@ class LP_Schedules {
 			update_option( '_lp_schedule_next', $time );
 			// Do what you want here...
 			do_action( 'learn-press/schedule-event-handler' );
-
-			LP_Debug::instance()->add( [ $_REQUEST, $_SERVER ], date( 'Y.m.d.H.i.s' ) . '-' . microtime( true ) );
 
 			update_option( '_lp_schedule_r', 'no' );
 		} else {
