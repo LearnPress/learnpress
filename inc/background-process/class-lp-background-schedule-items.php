@@ -32,24 +32,17 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 */
 		public function __construct() {
 			parent::__construct();
-
-			add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
-			register_activation_hook( 'learnpress/learnpress.php', function () {
-				if ( ! wp_next_scheduled( 'my_hourly_event' ) ) {
-					wp_schedule_event( time(), 'lp_cron_schedule', 'learn_press_schedule_items' );
-				}
-
-				LP_Debug::instance()->add( [ $_REQUEST ], 'm.' . date( 'Y.m.d-H.i.s' ) . '-' . microtime( true ) );
-
-			} );
-			register_deactivation_hook( 'learnpress/learnpress.php', function () {
-				wp_clear_scheduled_hook( 'learn_press_schedule_items' );
-			} );
 			add_action( 'learn_press_schedule_items', array( $this, 'xxx' ) );
+
 		}
 
 		public function xxx() {
+			$this->run();
+
 			LP_Debug::instance()->add( [ $_REQUEST ], 'a.' . date( 'Y.m.d-H.i.s' ) . '-' . microtime( true ) );
+			$t = date( 'H.i.s' );
+			sleep( 15 );
+			LP_Debug::instance()->add( $_REQUEST, date( 'Y.m.d-H.i.s' ) . '__' . $t );
 		}
 
 		public function cron_schedules( $schedules ) {
@@ -176,9 +169,11 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 			// Get all courses in user-items are in-progress but has expired
 			$course_items = $curd->get_courses(
 				array(
-					'status'   => 'in-progress',
-					'expired'  => true,
-					'paginate' => false
+					'status'        => 'in-progress',
+					'expired'       => true,
+					'paginate'      => false,
+					'no_join_users' => true,
+					'limit'         => 100
 				)
 			);
 
@@ -195,6 +190,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 				$course_data = $user->get_course_data( $course_item->course_id );
 
 				$course_data->finish( $complete_items );
+				LP_Debug::instance()->add( '', $course_data->get_user_id() . '-' . $course_data->get_course_id() . '.completed' );
 			}
 
 			//update_option( '_lp_schedule_x', absint( get_option( '_lp_schedule_x', 0 ) ) + 1 );

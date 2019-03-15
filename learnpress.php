@@ -423,6 +423,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_activate() {
 			do_action( 'learn-press/activate', $this );
+			$this->add_cron();
 		}
 
 		/**
@@ -434,6 +435,28 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_deactivate() {
 			do_action( 'learn-press/deactivate', $this );
+			$this->remove_cron();
+		}
+
+		protected function add_cron() {
+			add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
+
+			if ( ! wp_next_scheduled( 'learn_press_schedule_items' ) ) {
+				wp_schedule_event( time(), 'lp_cron_schedule_items', 'learn_press_schedule_items' );
+			}
+		}
+
+		protected function remove_cron() {
+			wp_clear_scheduled_hook( 'learn_press_schedule_items' );
+		}
+
+		public function cron_schedules( $schedules ) {
+			$schedules['lp_cron_schedule_items'] = array(
+				'interval' => 15,
+				'display'  => __( 'Every 3 Minutes', 'learnpress' )
+			);
+
+			return $schedules;
 		}
 
 		/**
@@ -507,6 +530,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
 			do_action( 'learn-press/ready' );
+			$this->add_cron();
 
 			$this->init();
 
@@ -771,7 +795,8 @@ $GLOBALS['LearnPress'] = LP();
 add_action( 'plugins_loaded', function () {
 
 
-    global $wpdb;
+	global $wpdb;
+
 	//update_option('_lp_schedule_u',get_option('_lp_schedule_u', 0)+1 );
 
 	return;

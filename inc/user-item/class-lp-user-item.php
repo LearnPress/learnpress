@@ -253,7 +253,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_end_time_gmt( $format = '' ) {
 		$date = $this->get_data( 'end_time_gmt' );
-		$date = $date ? new LP_Datetime( $date ) : new LP_Datetime( 0 );
+		$date = $date ? new LP_Datetime( $date ) : false;
 
 		if ( $format && $date instanceof LP_Datetime ) {
 			return $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format );
@@ -712,18 +712,72 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	/**
-	 * Return number of seconds has exceeded.
+	 * Return number of seconds has exceeded from the expiration time to now.
+	 * If less than or equals to 0 that means the time is exceeded.
+	 * Otherwise, the time is not exceeded.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return float|int
+	 */
+	public function get_exceeded() {
+		$time     = new LP_Datetime();
+		$current  = $time->getTimestamp( false );
+		$exceeded = $this->get_expiration_time_gmt();
+
+		return false !== $exceeded ? $exceeded->getTimestamp() - $current : false;
+	}
+
+	/**
+	 * Check if user was finished before the expiration time is exceeded.
+	 * If the expiration-time is NULL that mean the course is not set duration.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return bool|float|int
+	 */
+	public function is_exceeded() {
+		$expiration = $this->get_expiration_time_gmt();
+		$end        = $this->get_end_time_gmt();
+
+		// FALSE if expiration time not set
+		if ( ! $expiration ) {
+			return false;
+		}
+
+		// If course is not finished then consider end time is current time
+		if ( ! $end ) {
+			$end = new LP_Datetime();
+		}
+
+		return $end->getTimestamp() - $expiration->getTimestamp();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Return number of seconds has exceeded from the expiration time to now.
 	 * If less than or equals to 0 that means the time is exceeded.
 	 * Otherwise, the time is not exceeded
 	 *
 	 * @return float|int
 	 */
-	public function is_exceeded() {
+	public function is_exceeded_x() {
 		$time     = new LP_Datetime();
-		$current  = $time->getTimestamp();
-		$exceeded = $this->get_exceeded_time();
+		$current  = $time->getTimestamp( false );
+		$exceeded = $this->get_expiration_time_gmt();// $this->get_exceeded_time();
 
-		return false !== $exceeded ? $exceeded - $current : false;
+		return false !== $exceeded ? $exceeded->getTimestamp() - $current : false;
+	}
+
+	public function x() {
+		$expiration = $this->get_expiration_time_gmt();
+
+		if ( ! $expiration ) {
+			return false;
+		}
+
+		return $this->get_end_time_gmt()->getTimestamp() - $expiration->getTimestamp();
 	}
 
 	/**
@@ -733,7 +787,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return int|mixed
 	 */
-	public function get_exceeded_time( $format = '' ) {
+	public function get_exceeded_time_x( $format = '' ) {
 
 		$expiration = $this->get_expiration_time();
 
@@ -749,6 +803,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		return $duration !== false ? $format ? date( $format, $start_time + $duration ) : $start_time + $duration : false;
 	}
+
+	/////////////////////////////////////////////////////////////////////////////////
+
 
 	/**
 	 * Return true of item is completed/finished

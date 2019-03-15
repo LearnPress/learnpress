@@ -16,7 +16,6 @@ class LP_Schedules {
 	 * LP_Schedules constructor.
 	 */
 	public function __construct() {
-		return;
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
 			//add_filter( 'init', array( $this, '_update_current_user_course_expired' ) );
 			add_filter( 'init', array(
@@ -30,7 +29,7 @@ class LP_Schedules {
 			wp_schedule_event( time(), 'lp_cron_schedule', 'learn_press_schedule_');
 		}
 
-		add_action( 'plugins_loaded', array( $this, 'run' ) );
+		//add_action( 'plugins_loaded', array( $this, 'run' ) );
 		add_action( 'learn-press/schedule-event-handler', array( $this, 'schedules' ) );
 
 		LP_Request::register_ajax( 'cron:nopriv', array( $this, 'do_cron' ) );
@@ -66,7 +65,7 @@ class LP_Schedules {
 	public function run() {
 
 		// Stop
-		if ( 'yes' !== get_option( '_lp_schedule_enable' ) ) {
+		if ( 'yes' !== get_option( '_lp_schedule_enable' )) {
 			return;
 		}
 

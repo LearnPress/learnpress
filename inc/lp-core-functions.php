@@ -638,7 +638,7 @@ if ( ! function_exists( 'learn_press_is_ajax' ) ) {
 function learn_press_get_page_id( $name ) {
 	$page_id = LP_Settings::instance()->get( "{$name}_page_id", false );
 	if ( function_exists( 'icl_object_id' ) ) {
-		$page_id = icl_object_id( $page_id, 'page', false, ICL_LANGUAGE_CODE );
+		$page_id = icl_object_id( $page_id, 'page', false, defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '' );
 	}
 
 	return apply_filters( 'learn_press_get_page_id', $page_id, $name );
@@ -2675,7 +2675,7 @@ function learn_press_debug() {
 
 	if ( $args ) {
 		foreach ( $args as $arg ) {
-		    echo "\n======LearnPress Debug=======\n";
+			echo "\n======LearnPress Debug=======\n";
 			print_r( $arg );
 			echo "\n=============================\n";
 		}
@@ -3367,8 +3367,8 @@ function learn_press_get_cron_url() {
  *
  * @return array
  */
-function learn_press_get_expired_courses(){
-    global $wpdb;
+function learn_press_get_expired_courses() {
+	global $wpdb;
 
 	$query = $wpdb->prepare( "
 			SELECT X.*

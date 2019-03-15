@@ -80,7 +80,6 @@
                             value = control.find('input, select').val();
 
                     }
-
                     return this.compare(requirement['value'], value, requirement['compare']);
             }
         },

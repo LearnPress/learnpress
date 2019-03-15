@@ -106,18 +106,39 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'default' => 'no'
 						),
 						array(
-							'name'    => __( 'Block items content', 'learnpress' ),
-							'id'      => 'course_content_blocking',
+							'name'    => __( 'Block course', 'learnpress' ),
+							'id'      => 'course_blocking',
 							'type'    => 'radio',
 							'options' => array(
-								''                                   => __( 'No.', 'learnpress' ),
+								'no'                                 => __( 'No.', 'learnpress' ),
 								'duration_expire'                    => __( 'Block if duration expire.', 'learnpress' ),
 								'course_finished'                    => __( 'Block if course is finished.', 'learnpress' ),
 								'duration_expire_or_course_finished' => __( 'Block if duration expire or course is finished.', 'learnpress' ),
 							),
 							'desc'    => __( 'Action when course is finished.', 'learnpress' ),
-							'default' => '',
+							'default' => 'no',
+							'std'     => 'no',
 							'inline'  => false
+						),
+						array(
+							'name'       => __( 'Block content', 'learnpress' ),
+							'id'         => 'course_content_blocking',
+							'type'       => 'radio',
+							'options'    => array(
+								'content_items'     => __( 'Block content of items.', 'learnpress' ),
+								'course_curriculum' => __( 'Block course curriculum.', 'learnpress' )
+							),
+							'default'    => 'content_items',
+							'std'        => 'content_items',
+							'inline'     => false,
+							'visibility' => array(
+								'state'       => 'hide',
+								'conditional' => array(
+									'field'   => 'course_blocking',
+									'compare' => '=',
+									'value'   => 'no'
+								)
+							)
 						),
 					)
 				),

@@ -130,17 +130,28 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		return $items;
 	}
 
+	/**
+	 * Get Id of course.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return int
+	 */
+	public function get_course_id(){
+		return $this->get_data('item_id');
+	}
+
 	public function is_exceeded() {
 
-		$exceeded = DAY_IN_SECONDS * 360 * 100;
-
-		if ( ! $course = $this->get_course() ) {
-			return $exceeded;
-		}
-
-		if ( ! $course->get_duration() ) {
-			return $exceeded;
-		}
+//		$exceeded = DAY_IN_SECONDS * 360 * 100;
+//
+//		if ( ! $course = $this->get_course() ) {
+//			return $exceeded;
+//		}
+//
+//		if ( ! $course->get_duration() ) {
+//			return $exceeded;
+//		}
 
 		return parent::is_exceeded();
 	}

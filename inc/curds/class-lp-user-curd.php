@@ -47,7 +47,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		global $wpdb;
 
-		$args = wp_parse_args(
+		$no_join_users = isset( $args['no_join_users'] ) && $args['no_join_users'];
+		$args          = wp_parse_args(
 			$args,
 			array(
 				'offset'   => 0,
@@ -61,9 +62,15 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// Join
 		$join = "
-			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
 			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
 		";
+
+		if ( ! $no_join_users ) {
+			$join .= "
+				INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
+			";
+		}
+
 		$join .= $wpdb->prepare( "LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = X.user_item_id AND uim.meta_key = %s", 'grade' );
 
 		// Where
@@ -83,7 +90,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		// Limitation
-		$limit = $args['limit'] ? "
+		$limit = $args['limit'] > 0 ? "
 			LIMIT " . $args['offset'] . ", " . $args['limit'] : '';
 
 		if ( $args['status'] ) {
@@ -127,12 +134,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					X.status IN('" . join( "','", $status__in_1 ) . "')";
 
 				if ( ! in_array( 'in-progress', $status__in ) ) {
-					var_dump($status__in);
+					var_dump( $status__in );
 
 					$where .= "AND ( uim.meta_value IN('" . join( "','", $status__in_2 ) . "')
 						" . ( in_array( 'in-progress', $status__in ) ? ' OR uim.meta_value IS NULL' : '' ) . ")";
 				}
-				$where.=")";
+				$where .= ")";
 			}
 
 			$where .= " )";
@@ -149,8 +156,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$found_rows = '';
 		}
 
-		$query = "
-			SELECT {$found_rows} p.ID course_id, X.*, IF(X.status = 'finished' AND uim.meta_value IS NOT NULL, uim.meta_value, X.status) status
+		$query = $wpdb->prepare( "
+			SELECT {$found_rows} p.ID course_id, X.*, IF(X.status = %s AND uim.meta_value IS NOT NULL, uim.meta_value, X.status) status
 			FROM(
 			SELECT ui.*
                 FROM {$wpdb->learnpress_user_items} ui
@@ -163,11 +170,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$join
 			$where
 			$limit
-		";
-
-		LP_Debug::instance()->add($query, 'xxxx');
+		", 'finished' );
 
 		$rows = $wpdb->get_results( $query );
+
+		LP_Debug::instance()->add( $query, 'query-user-items' );
 
 		//echo nl2br( $query );
 
