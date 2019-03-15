@@ -112,14 +112,17 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 				}
 			}
 
-			// @since 3.0.0
-			$exclude = array_unique( (array) apply_filters( 'learn-press/modal-search-items/exclude', $this->_options['exclude'], $type, $context, $context_id ) );
+						
+			if ( ! $term ) {
+				// @since 3.0.0
+				$exclude = array_unique( (array) apply_filters( 'learn-press/modal-search-items/exclude', $this->_options['exclude'], $type, $context, $context_id ) );
 
-			// @deprecated
-			$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
+				// @deprecated
+				$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
 
-			if ( is_array( $exclude ) ) {
-				$exclude = array_map( 'intval', $exclude );
+				if ( is_array( $exclude ) ) {
+					$exclude = array_map( 'intval', $exclude );
+				}
 			}
 
 			$paged = max( 1, $this->_options['paged'] );
