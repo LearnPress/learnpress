@@ -623,9 +623,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			) );
 
 			foreach ( $pages as $id => $page ) {
-				$page_id = learn_press_get_page_id( $id ) ;
-			    var_dump($id, $page_id,get_post( $page_id ));die();
-
 				if ( ( $page_id = learn_press_get_page_id( $id ) ) && get_post( $page_id ) ) {
 					continue;
 				}
