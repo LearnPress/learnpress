@@ -606,12 +606,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return bool|mixed
 	 */
 	public function update( $force = false ) {
+
 		if ( ! $this->is_change() ) {
 			return false;
 		}
 
 		$data = $this->get_mysql_data();
-
 
 		/**
 		 * @since 3.x.x
@@ -633,6 +633,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			}
 			$this->_changes = array();
 		}
+
 		if ( $data_course = $this->get_parent() ) {
 			$data_course->calculate_course_results();
 		}

@@ -443,7 +443,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		'end_time'            => '%s',
 		'end_time_gmt'        => '%s',
 		'expiration_time'     => '%s',
-		'expiration_time_gmt' => '%s',
+		//'expiration_time_gmt' => '%s',
 		'item_type'           => '%s',
 		'status'              => '%s',
 		'ref_type'            => '%s',
@@ -475,7 +475,7 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		'end_time',
 		'end_time_gmt',
 		'expiration_time',
-		'expiration_time_gmt'
+		//'expiration_time_gmt'
 	);
 
 	// Build data and data format
@@ -530,6 +530,8 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 			$data[ $k ] = $v->toSql();
 		}
 	}
+
+	learn_press_debug($data);
 
 	// If $where is not empty consider we are updating
 	if ( $where ) {

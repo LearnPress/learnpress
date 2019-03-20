@@ -31,6 +31,11 @@ class LP_Install_Sample_Data {
 	public static $answer_range = array( 3, 5 );
 
 	/**
+	 * @var int
+	 */
+	public static $max_content_paragraph = 5;
+
+	/**
 	 * @var string
 	 */
 	protected $dummy_text = '';
@@ -255,17 +260,20 @@ class LP_Install_Sample_Data {
 		$length = rand( $min, $max );
 		$max    = sizeof( $this->dummy_text ) - 1;
 		$words  = array();
+
 		for ( $i = 0; $i < $length; $i ++ ) {
 			$words[] = $this->dummy_text[ rand( 0, $max ) ];
 		}
-		$p = '';
-		while ( $words ) {
+
+		$p = array();
+
+		while ( $words && sizeof($p) < self::$max_content_paragraph ) {
 			$len = rand( 10, 20 );
 			$cut = array_splice( $words, 0, $len );
-			$p   .= '<p>' . ucfirst( join( ' ', $cut ) ) . '</p>';
+			$p[] = '<p>' . ucfirst( join( ' ', $cut ) ) . '</p>';
 		}
 
-		return $p;
+		return join('', $p);
 	}
 
 	/**

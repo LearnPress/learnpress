@@ -790,3 +790,38 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+function xxxx($i) {
+
+	try {
+		$x = $i;
+		try{
+
+        }catch (Exception $ex){
+
+        }
+	}
+	catch ( Exception $ex ) {
+	}
+}
+
+function yyyy($i) {
+	$x = $i;
+}
+
+add_filter( 'init', function ( $q ) {
+    return;
+	LP_Debug::timeStart( '1' );
+	for ( $i = 0; $i < 10000; $i ++ ) {
+		xxxx($i);
+	}
+	LP_Debug::timeEnd( '1' );
+
+	LP_Debug::timeStart( '2' );
+	for ( $i = 0; $i < 10000; $i ++ ) {
+		yyyy($i);
+	}
+	LP_Debug::timeEnd( '2' );
+
+	return $q;
+} );

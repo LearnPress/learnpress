@@ -445,6 +445,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	public function get_items_by( $field, $value = '' ) {
 		global $wpdb;
 		$where = "";
+		$order = "ORDER BY user_item_id DESC";
 
 		if ( is_array( $field ) ) {
 			foreach ( $field as $k => $v ) {
@@ -462,7 +463,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		$query = "SELECT * FROM {$wpdb->learnpress_user_items} WHERE 1 {$where}";
+		$query = "SELECT * FROM {$wpdb->learnpress_user_items} WHERE 1 {$where} {$order}";
 
 		return $wpdb->get_results( $query );
 	}

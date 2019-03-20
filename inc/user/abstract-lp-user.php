@@ -2447,6 +2447,101 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Enroll this user to a course.
 		 *
+		 * @since 3.x.x
+		 *
+		 * @param int         $course_id
+		 * @param int         $order_id     - Optional. An user can be enrolled to a course
+		 *                                  without an order.
+		 * @param bool|string $overwrite    - Optional. FALSE will ignore inserting new item
+		 *                                  if there is a row with the same course and user
+		 *                                  and/or order. TRUE will overwrite if exists.
+		 *                                  If $overwrite = 'append' then new row will be
+		 *                                  inserted if exists.
+		 * @param bool        $wp_error     - Optional. TRUE will return WP_Error object if
+		 *                                  error.
+		 *
+		 * @return bool|WP_Error
+		 */
+		public function enroll_course( $course_id, $order_id = 0, $overwrite = false, $wp_error = false ) {
+
+			$return = false;
+
+			try {
+				$user_item_api = new LP_User_Item_CURD();
+				$find_query    = array(
+					'item_id' => $course_id,
+					'user_id' => $this->get_id()
+				);
+
+				if ( $order_id ) {
+					$find_query['ref_id'] = $order_id;
+				}
+
+				$course_items = $user_item_api->get_items_by( $find_query );
+				$course_item  = false;
+
+				if ( $course_items ) {
+					if ( ! $overwrite ) {
+						throw new Exception( __( 'Item exists.', 'learnpress' ) );
+					}
+
+					if ( $overwrite !== 'append' ) {
+						$course_item = (array) $course_items[0];
+					}
+				}
+
+				if ( ! $course_item ) {
+					$course_item = LP_User_Item::get_empty_item();
+				}
+
+				$course          = learn_press_get_course( $course_id );
+				$course_duration = $course->get_duration();
+				$user_id         = $this->get_id();
+
+				$date                          = new LP_Datetime();
+				$course_item['user_id']        = $user_id;
+				$course_item['item_id']        = $course_id;
+				$course_item['item_type']      = learn_press_get_post_type( $course_id );
+				$course_item['ref_id']         = $order_id;
+				$course_item['ref_type']       = ( $order_id != 0 ) ? learn_press_get_post_type( $order_id ) : '';
+				$course_item['start_time']     = $date->toSql();
+				$course_item['start_time_gmt'] = $date->toSql( false );
+
+				$user_course = new LP_User_Item_Course( $course_item );
+				$user_course->set_status( 'enrolled' );
+				$user_course->set_end_time_gmt( '0000-00-00 00:00:00' );
+
+				// Added since 3.x.x
+				if ( $course_duration ) {
+					$user_course->set_expiration_time( $date->getPeriod( $course_duration ) );
+					$user_course->set_expiration_time_gmt( $date->getPeriod( $course_duration, false ) );
+				}
+
+				if ( ! $user_course->update() ) {
+					throw new Exception( __( 'Update user item error.', 'learnpress' ) );
+				}
+
+				$user_id = is_user_logged_in() ? $this->get_id() : 0;
+
+				// Trigger action
+				do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
+
+				$return = $user_course->get_user_item_id();
+			}
+			catch ( Exception $ex ) {
+				if ( $wp_error ) {
+					return new WP_Error( 'enroll_course_error', $ex->getMessage() );
+				}
+
+				return false;
+			}
+
+			return $return;
+		}
+
+		/**
+		 * Enroll this user to a course.
+		 *
 		 * @param int $course_id
 		 * @param int $order_id
 		 *
@@ -2463,10 +2558,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|mixed|WP_Error
 		 */
 		public function enroll( $course_id, $order_id, $force = false ) {
+
+			return $this->enroll_course( $course_id, $order_id, false, true );
+
 			$return = false;
 			try {
 				global $wpdb;
-
+				learn_press_debug( debug_backtrace() );
+				die();
 				$course  = learn_press_get_course( $course_id );
 				$user_id = $this->get_id();
 
@@ -2485,7 +2584,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 
 				}
-
 				$user_item_api = new LP_User_Item_CURD();
 				$course_item   = $user_item_api->get_item_by( array(
 					'item_id' => $course_id,
