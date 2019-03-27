@@ -99,11 +99,10 @@ function learn_press_is_debug() {
  */
 function learn_press_get_post() {
 	global $post;
-	$post_id = ! empty( $post ) ? $post->ID : 0;
-	if ( empty( $post_id ) ) {
-		$post_id = learn_press_get_request( 'post' );
+	$post_id = learn_press_get_request( 'post' );
+	if(!$post_id){
+		$post_id = ! empty( $post ) ? $post->ID : 0;
 	}
-
 	if ( empty( $post_id ) ) {
 		$post_id = learn_press_get_request( 'post_ID' );
 	}
