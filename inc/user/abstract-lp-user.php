@@ -2464,8 +2464,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function enroll_course( $course_id, $order_id = 0, $overwrite = false, $wp_error = false ) {
 
-			$return = false;
-
 			try {
 				$user_item_api = new LP_User_Item_CURD();
 				$find_query    = array(
@@ -2558,14 +2556,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool|mixed|WP_Error
 		 */
 		public function enroll( $course_id, $order_id, $force = false ) {
+			global $wpdb;
 
-			return $this->enroll_course( $course_id, $order_id, false, true );
-
-			$return = false;
 			try {
-				global $wpdb;
-				learn_press_debug( debug_backtrace() );
-				die();
 				$course  = learn_press_get_course( $course_id );
 				$user_id = $this->get_id();
 
@@ -2584,53 +2577,13 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 
 				}
-				$user_item_api = new LP_User_Item_CURD();
-				$course_item   = $user_item_api->get_item_by( array(
-					'item_id' => $course_id,
-					'ref_id'  => $order_id,
-					'user_id' => $user_id
-				) );
 
-				if ( ! $course_item ) {
-					$course_item = LP_User_Item::get_empty_item();
-				} else {
-					settype( $course_item, 'array' );
-				}
+				$return = $this->enroll_course( $course_id, $order_id, false, false );
 
-				$course_duration = $course->get_duration();
-
-				$date                          = new LP_Datetime();
-				$course_item['user_id']        = $user_id;
-				$course_item['item_id']        = $course_id;
-				$course_item['item_type']      = learn_press_get_post_type( $course_id );
-				$course_item['ref_id']         = $order_id;
-				$course_item['ref_type']       = ( $order_id != 0 ) ? learn_press_get_post_type( $order_id ) : LP_ORDER_CPT;
-				$course_item['start_time']     = $date->toSql();
-				$course_item['start_time_gmt'] = $date->toSql( false );
-
-				$user_course = new LP_User_Item_Course( $course_item );
-				$user_course->set_status( 'enrolled' );
-				$user_course->set_end_time_gmt( '0000-00-00 00:00:00' );
-
-				// Added since 3.x.x
-				if ( $course_duration ) {
-					$user_course->set_expiration_time( $date->getPeriod( $course_duration ) );
-					$user_course->set_expiration_time_gmt( $date->getPeriod( $course_duration, false ) );
-				} else {
-
-				}
-
-				if ( $user_course->update() ) {
-					$return = true;
-				}
-
-				learn_press_remove_message( '', 'error' );
-				$user_id = is_user_logged_in() ? $this->get_id() : 0;
-
-				do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
+				//do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
 
 				// @deprecated
-				do_action( 'learn_press_user_enrolled_course', $course_id, $user_id, $user_course );
+				//do_action( 'learn_press_user_enrolled_course', $course_id, $user_id, $user_course );
 
 				return $return;
 			}

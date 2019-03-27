@@ -297,8 +297,11 @@ abstract class LP_Abstract_Submenu {
 		$classes    = array( 'wrap', 'lp-submenu-page', $this->get_id() );
 		?>
         <div class="<?php echo join( ' ', $classes ); ?>">
-            <div id="icon-themes" class="icon32"><br></div>
-            <h1 class="wp-heading-inline"><?php echo $this->get_menu_title(); ?></h1>
+	        <?php do_action('learn-press/admin/heading-icon', $active_tab);?>
+            <h1 class="wp-heading-inline">
+                <?php echo $this->get_menu_title(); ?>
+                <?php do_action('learn-press/admin/heading-title', $active_tab);?>
+            </h1>
 			<?php if ( $tabs ) { ?>
                 <h2 class="nav-tab-wrapper">
 					<?php foreach ( $tabs as $tab => $name ) { ?>

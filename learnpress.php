@@ -809,7 +809,11 @@ function yyyy($i) {
 	$x = $i;
 }
 
-add_filter( 'init', function ( $q ) {
+add_filter( 'wp_print_scripts', function ( $q ) {
+    ?>
+    <template include="sadsadsadads"></template>
+    <template include="xxxxxxx"></template>
+    <?php
     return;
 	LP_Debug::timeStart( '1' );
 	for ( $i = 0; $i < 10000; $i ++ ) {

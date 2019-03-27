@@ -47,7 +47,7 @@ class LP_Page_Controller {
 		add_filter( 'template_include', array( $this, 'template_content_item' ) );
 		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ) );
 		add_filter( 'the_post', array( $this, 'setup_data' ) );
-		add_filter( 'the_post', array( $this, 'auto_shortcode' ) );
+		add_filter( 'template_include', array( $this, 'auto_shortcode' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
@@ -59,9 +59,13 @@ class LP_Page_Controller {
 	 *
 	 * @since 3.x.x
 	 *
-	 * @param WP_Post $the_post
+	 * @param string $template
+	 *
+	 * @return string;
 	 */
-	public function auto_shortcode( $the_post ) {
+	public function auto_shortcode( $template ) {
+		global $post;
+		$the_post = $post;
 		if ( is_page( $the_post->ID ) ) {
 
 			// Filter here to insert the shortcode
@@ -78,6 +82,8 @@ class LP_Page_Controller {
 				}
 			}
 		}
+
+		return $template;
 	}
 
 	public function maybe_redirect_quiz( $template ) {

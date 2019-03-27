@@ -336,11 +336,16 @@
   z-index: 100000; }
 
 .advanced-list {
-  list-style: none; }
+  list-style: none;
+  background: #FFF;
+  padding: 5px 0 0 8px;
+  border: 1px solid #DDD;
+  border-radius: 3px; }
   .advanced-list li {
     display: inline-block;
     background: #EEE;
     padding: 3px 8px;
+    margin: 0 5px 5px -3px;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px; }
@@ -361,6 +366,10 @@
       display: inline-block; }
   .advanced-list.locked .remove-item {
     display: none; }
+  .advanced-list:after {
+    content: '';
+    display: block;
+    clear: both; }
 
 .lp-label-counter {
   border-radius: 20px;

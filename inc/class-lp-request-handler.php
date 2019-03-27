@@ -67,17 +67,19 @@ class LP_Request {
 
 	public static function maybe_redirect_checkout( $result, $order_id ) {
 		$course_id = get_transient( 'checkout_enroll_course_id' );
+
 		if(!$course_id){
 			if(isset($_REQUEST['enroll-course']) && $_REQUEST['enroll-course']){
 				$course_id = $_REQUEST['enroll-course'];
 			}
 		}
 		if ( $course_id ) {
+			delete_transient( 'checkout_enroll_course_id' );
+
 			$course = learn_press_get_course( $course_id );
 			$course_items = $course->get_items();
 			$first_item = ($course_items[0]) ? $course_items[0] : 0;
 			self::do_enroll( $course_id, $order_id, 'enroll-course', $first_item );
-			delete_transient( 'checkout_enroll_course_id' );
 			unset( $result['redirect'] );
 		}
 
@@ -114,6 +116,9 @@ class LP_Request {
 	 */
 	public static function purchase_course( $course_id, $action ) {
 
+		/**
+		 * @see LP_Request_Handler::maybe_enroll_course()
+		 */
 		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id, $action );
 		$course    = learn_press_get_course( $course_id );//echo'<pre>dsad';print_r($course->get_items());die;
 

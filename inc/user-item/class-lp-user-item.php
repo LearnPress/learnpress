@@ -738,7 +738,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return bool|float|int
 	 */
 	public function is_exceeded() {
-		$expiration = $this->get_expiration_time_gmt();
+		$expiration = $this->get_expiration_time();
 		$end        = $this->get_end_time_gmt();
 
 		// FALSE if expiration time not set
@@ -749,9 +749,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		// If course is not finished then consider end time is current time
 		if ( ! $end ) {
 			$end = new LP_Datetime();
+			$end = $end->getTimestamp( false );
+		} else {
+			$end = $end->getTimestamp();
 		}
 
-		return $end->getTimestamp() - $expiration->getTimestamp();
+		return $end - $expiration->getTimestamp();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////

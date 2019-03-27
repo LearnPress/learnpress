@@ -3801,20 +3801,37 @@ add_filter( 'learn-press/can-view-item', function ( $viewable, $item_id, $course
 add_filter( 'learn-press/course-item-content-html', function ( $html, $item_id, $course_id ) {
 	$user = learn_press_get_current_user();
 
-	if ( $user->has_finished_course( $course_id ) ) {
-		$course_blocking = LP()->settings()->get( 'course_blocking' );
-		$course_data = $user->get_course_data($course_id);
-		$end_time = $course_data->get_end_time_gmt();
-		$expired_time = $course_data->get_expiration_time_gmt();
+	$course_blocking = LP()->settings()->get( 'course_blocking' );
+	$course_data     = $user->get_course_data( $course_id );
+	$end_time        = $course_data->get_end_time_gmt();
+	$expired_time    = $course_data->get_expiration_time_gmt();
+	ob_start();
 
-		if ( ! in_array( $course_blocking, array( 'no', '' ) ) ) {
-		    ob_start();
+	switch ( $course_blocking ) {
+		case 'duration_expire':
+			if ( $course_data->is_exceeded() ) {
+				$html = __( 'Course duration is expired. Please contact admin site.', 'learnpress' );
+			}
 
-		    //var_dump($course_data->is_exceeded());
-		    learn_press_debug($course_data, $course_data->is_exceeded(), $course_data->get_user_item_id(), $course_data->get_expiration_time_gmt(),$course_data->get_end_time_gmt());
-			return ob_get_clean();
-		}
+			break;
+		case 'course_finished':
+
+			if ( $user->has_finished_course( $course_id ) ) {
+				$html = __( 'You finished this course. Please contact admin site.', 'learnpress' );
+			}
+
+			break;
+		case 'duration_expire_or_course_finished':
+			if ( $course_data->is_exceeded() || $user->has_finished_course( $course_id ) ) {
+				$html = __( 'Course duration is expired or you finished course. Please contact admin site.', 'learnpress' );
+			}
+		default:
+
 	}
+	if ( $html ) {
+		echo $html;
+	}
+	$html = ob_get_clean();
 
-	return $html;
+	return $html ? $html : false;
 }, 10, 3 );

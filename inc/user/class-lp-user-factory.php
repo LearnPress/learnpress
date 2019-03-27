@@ -160,9 +160,13 @@ class LP_User_Factory {
 
 		foreach ( $order->get_users() as $user_id ) {
 
-			$user = learn_press_get_user($user_id);
+			$user = learn_press_get_user( $user_id );
 
 			foreach ( $items as $item ) {
+
+				if ( get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+					continue;
+				}
 
 				if ( $user_item_id = self::_get_course_item( $order->get_id(), $item['course_id'], $user_id ) ) {
 					$user_item_id = $curd->update_user_item(
@@ -175,18 +179,18 @@ class LP_User_Factory {
 						)
 					);
 				} else {
-					$wpdb->insert(
-						$wpdb->learnpress_user_items,
-						array(
-							'item_id'   => $item['course_id'],
-							'ref_id'    => $order->get_id(),
-							'ref_type'  => LP_ORDER_CPT,
-							'user_id'   => $user_id,
-							'item_type' => LP_COURSE_CPT
-						)
-					);
+//					$wpdb->insert(
+//						$wpdb->learnpress_user_items,
+//						array(
+//							'item_id'   => $item['course_id'],
+//							'ref_id'    => $order->get_id(),
+//							'ref_type'  => LP_ORDER_CPT,
+//							'user_id'   => $user_id,
+//							'item_type' => LP_COURSE_CPT
+//						)
+//					);
 
-					$user->enroll_course($item['course_id'], $order->get_id(), false, false);
+					$user->enroll_course( $item['course_id'], $order->get_id(), false, false );
 
 					$user_item_id = $wpdb->insert_id;
 				}
@@ -195,10 +199,10 @@ class LP_User_Factory {
 					$item        = $curd->get_user_item_by_id( $user_item_id );
 					$last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
 					$args        = array( 'status' => $last_status );
-					$course_id 	= $item['item_id'];
-					$can_enroll 	= $user->can_enroll_course($course_id);
-					$auto_enroll 	= LP()->settings->get( 'auto_enroll' ) == 'yes';
-					if ( $new_status == 'completed' && $can_enroll && $auto_enroll) {
+					$course_id   = $item['item_id'];
+					$can_enroll  = $user->can_enroll_course( $course_id );
+					$auto_enroll = LP()->settings->get( 'auto_enroll' ) == 'yes';
+					if ( $new_status == 'completed' && $can_enroll && $auto_enroll ) {
 						$args['status'] = 'enrolled';
 					}
 					if ( ! $last_status ) {
