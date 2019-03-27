@@ -1270,7 +1270,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			learn_press_debug($now, $sale_price_end, $sale_price_start, $end,$start);
 
-			return ( ( $now >= $start || ! $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
+			return ( ( $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
 		}
 
 		/**
