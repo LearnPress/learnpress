@@ -250,7 +250,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			}
 
 			$query = $wpdb->prepare( "
-				SELECT item_id id, item_type `type`, si.section_id
+				SELECT item_id id, it.post_type `type`, si.section_id
 				FROM {$wpdb->learnpress_section_items} si 
 				INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id
 				INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
