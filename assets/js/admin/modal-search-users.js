@@ -3,6 +3,8 @@
     'use strict';
     window.$Vue = window.$Vue || Vue;
 
+    var $VueHTTP = $Vue.http;
+
     $(document).ready(function () {
         $Vue.component('learn-press-modal-search-users', {
             template: '#learn-press-modal-search-users',
@@ -33,7 +35,7 @@
                 },
                 search: _.debounce(function (term) {
                     var that = this;
-                    $Vue.http.post(
+                    $VueHTTP.post(
                         window.location.href, {
                             type: this.postType,
                             context: this.context,
