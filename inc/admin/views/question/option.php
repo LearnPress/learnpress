@@ -30,9 +30,10 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    (function ($store, $) {
+        window.$Vue = window.$Vue || Vue;
 
-        Vue.component('lp-question-answer-option', {
+        $Vue.component('lp-question-answer-option', {
             template: '#tmpl-lp-question-answer-option',
             props: ['answer', 'index', 'type', 'radio', 'number'],
             data: function () {
@@ -88,6 +89,6 @@
                 }
             }
         })
-    })(Vue, LP_Question_Store, jQuery);
+    })(LP_Question_Store, jQuery);
 
 </script>

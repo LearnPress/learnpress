@@ -28,11 +28,13 @@
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue || Vue;
+
     jQuery(function ($) {
 
-        (function (Vue, $store) {
+        (function ($store) {
 
-            Vue.component('lp-pagination', {
+            $Vue.component('lp-pagination', {
                 template: '#tmpl-lp-pagination',
                 props: ['total'],
                 data: function () {
@@ -73,7 +75,7 @@
                 }
             });
 
-        })(Vue, LP_Curriculum_Store);
+        })(LP_Curriculum_Store);
 
     })
 </script>

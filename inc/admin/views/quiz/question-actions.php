@@ -58,9 +58,10 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function ($store) {
+        window.$Vue = window.$Vue || Vue;
 
-        Vue.component('lp-quiz-question-actions', {
+        $Vue.component('lp-quiz-question-actions', {
             template: '#tmpl-lp-quiz-question-actions',
             props: ['question', 'index'],
             data: function () {
@@ -160,5 +161,5 @@
             }
         });
 
-    })(Vue, LP_Quiz_Store);
+    })(LP_Quiz_Store);
 </script>

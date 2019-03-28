@@ -17,9 +17,10 @@ learn_press_admin_view( 'quiz/pagination' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function ($store) {
+        window.$Vue = window.$Vue || Vue;
 
-        Vue.component('lp-quiz-choose-item', {
+        $Vue.component('lp-quiz-choose-item', {
             template: '#tmpl-lp-quiz-choose-item',
             props: ['item', 'added'],
             watch: {
@@ -41,7 +42,7 @@ learn_press_admin_view( 'quiz/pagination' );
             }
         })
 
-    })(Vue, LP_Quiz_Store);
+    })(LP_Quiz_Store);
 </script>
 
 <script type="text/x-template" id="tmpl-lp-quiz-choose-items">
@@ -103,9 +104,11 @@ learn_press_admin_view( 'quiz/pagination' );
 </script>
 
 <script>
-    (function (Vue, $store, $) {
+    window.$Vue = window.$Vue || Vue;
 
-        Vue.component('lp-quiz-choose-items', {
+    (function ($store, $) {
+
+        $Vue.component('lp-quiz-choose-items', {
             template: '#tmpl-lp-quiz-choose-items',
             data: function () {
                 return {
@@ -238,5 +241,5 @@ learn_press_admin_view( 'quiz/pagination' );
             }
         })
 
-    })(Vue, LP_Quiz_Store, jQuery)
+    })(LP_Quiz_Store, jQuery)
 </script>

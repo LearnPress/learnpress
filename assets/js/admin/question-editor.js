@@ -15,12 +15,17 @@
     };
 })(window);
 
+window.$Vue = window.$Vue || Vue;
+window.$Vuex = window.$Vuex || Vuex;
+
+var $VueHTTP = Vue.http;
+
 /**
  * Root Store
  *
  * @since 3.0.0
  */
-(function (exports, Vue, Vuex, helpers, data) {
+(function (exports, helpers, data) {
 
     var state = helpers.cloneObject(data.root),
         i18n = helpers.cloneObject(data.i18n);
@@ -129,7 +134,7 @@
     var actions = {
 
         changeQuestionType: function (context, payload) {
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'change-question-type',
                 question_type: payload.type,
                 draft_question: context.getters.autoDraft ? JSON.stringify(payload.question) : ''
@@ -144,7 +149,7 @@
         },
 
         updateAnswersOrder: function (context, order) {
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'sort-answer',
                 order: order
             }).then(
@@ -162,14 +167,14 @@
                 return;
             }
             answer = JSON.stringify(answer);
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'update-answer-title',
                 answer: answer
             })
         },
 
         updateCorrectAnswer: function (context, correct) {
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'change-correct',
                 correct: JSON.stringify(correct)
             }).then(
@@ -186,7 +191,7 @@
         deleteAnswer: function (context, payload) {
 
             context.commit('DELETE_ANSWER', payload.id);
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'delete-answer',
                 answer_id: payload.id
             }).then(
@@ -203,7 +208,7 @@
 
         newAnswer: function (context, data) {
             context.commit('ADD_NEW_ANSWER', data.answer);
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'new-answer'
             }).then(
                 function (response) {
@@ -236,14 +241,14 @@
         }
     };
 
-    exports.LP_Question_Store = new Vuex.Store({
+    exports.LP_Question_Store = new $Vuex.Store({
         state: state,
         getters: getters,
         mutations: mutations,
         actions: actions
     });
 
-})(window, Vue, Vuex, LP_Helpers, lp_question_editor);
+})(window, LP_Helpers, lp_question_editor);
 
 
 /**
@@ -251,11 +256,11 @@
  *
  * @since 3.0.0
  */
-(function (exports, Vue, $store) {
+(function (exports, $store) {
     var $ = jQuery,
         $publishingAction = null;
 
-    Vue.http.LPRequest = function (payload) {
+    LP.Request = function (payload) {
         $publishingAction = $('#publishing-action');
 
         payload['id'] = $store.getters.id;
@@ -267,7 +272,7 @@
         $publishingAction.find('.spinner').addClass('is-active');
         $publishingAction.addClass('code-' + payload['code']);
 
-        return Vue.http.post($store.getters.urlAjax,
+        return $VueHTTP.post($store.getters.urlAjax,
             payload,
             {
                 emulateJSON: true,
@@ -278,7 +283,7 @@
             });
     };
 
-    Vue.http.interceptors.push(function (request, next) {
+    $VueHTTP.interceptors.push(function (request, next) {
         if (request.params['namespace'] !== 'LPQuestionEditorRequest') {
             next();
             return;
@@ -307,7 +312,7 @@
 
         });
     });
-})(window, Vue, LP_Question_Store);
+})(window, LP_Question_Store);
 
 
 /**
@@ -315,11 +320,11 @@
  *
  * @since 3.0.0
  */
-(function ($, Vue, $store) {
+(function ($, $store) {
     $(document).ready(function () {
-        window.LP_Question_Editor = new Vue({
+        window.LP_Question_Editor = new $Vue({
             el: '#admin-editor-lp_question',
             template: '<lp-question-editor></lp-question-editor>'
         });
     });
-})(jQuery, Vue, LP_Question_Store);
+})(jQuery, LP_Question_Store);

@@ -72,9 +72,10 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    (function ($store) {
+        window.$Vue = window.$Vue || Vue;
 
-        Vue.component('lp-quiz-question-meta', {
+        $Vue.component('lp-quiz-question-meta', {
             template: '#tmpl-lp-quiz-question-meta',
             props: ['question'],
             methods: {
@@ -109,5 +110,5 @@
             }
         })
 
-    })(Vue, LP_Quiz_Store);
+    })(LP_Quiz_Store);
 </script>

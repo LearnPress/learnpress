@@ -1,6 +1,8 @@
 ;
 (function ($) {
     "use strict";
+    window.$Vue = window.$Vue || Vue;
+
     $(document).ready(function () {
 
         var $listItems = $('.list-order-items').find('tbody'),
@@ -60,7 +62,7 @@
                 $listItems.find('.no-order-items').show();
             }
 
-            Vue.http.post(
+            $Vue.http.post(
                 window.location.href, {
                     order_id: $('#post_ID').val(),
                     items: [item_id],
@@ -102,7 +104,7 @@
                 callbacks: {
                     addItems: function () {
                         var that = this;
-                        Vue.http.post(
+                        $Vue.http.post(
                             window.location.href, {
                                 order_id: this.contextId,
                                 items: this.selected,

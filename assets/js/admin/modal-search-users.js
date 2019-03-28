@@ -1,9 +1,10 @@
 /*global jQuery, Backbone, _ */
-( function ($, Vue, _) {
+( function ($, _) {
     'use strict';
+    window.$Vue = window.$Vue || Vue;
 
     $(document).ready(function () {
-        Vue.component('learn-press-modal-search-users', {
+        $Vue.component('learn-press-modal-search-users', {
             template: '#learn-press-modal-search-users',
             data: function () {
                 return {
@@ -32,7 +33,7 @@
                 },
                 search: _.debounce(function (term) {
                     var that = this;
-                    Vue.http.post(
+                    $Vue.http.post(
                         window.location.href, {
                             type: this.postType,
                             context: this.context,
@@ -114,7 +115,7 @@
             }
         });
 
-        window.LP.$modalSearchUsers = new Vue({
+        window.LP.$modalSearchUsers = new $Vue({
             el: '#vue-modal-search-users',
             data: {
                 show: false,
@@ -142,4 +143,4 @@
         });
     });
 
-}(jQuery, Vue, _));
+}(jQuery, _));

@@ -24,11 +24,13 @@ learn_press_admin_view( 'course/new-section' );
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue || Vue;
+
     jQuery(function ($) {
 
-        (function (Vue, $store) {
+        (function ( $store) {
 
-            Vue.component('lp-list-sections', {
+            $Vue.component('lp-list-sections', {
                 template: '#tmpl-lp-list-sections',
                 computed: {
                     // all sections
@@ -68,6 +70,6 @@ learn_press_admin_view( 'course/new-section' );
                     }
                 }
             });
-        })(Vue, LP_Curriculum_Store);
+        })( LP_Curriculum_Store);
     });
 </script>
