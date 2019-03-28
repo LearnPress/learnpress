@@ -11940,8 +11940,6 @@
 
     Vue.compile = compileToFunctions;
 
-    Vue.wth = 'wtf'
-
     return Vue;
 
 }));

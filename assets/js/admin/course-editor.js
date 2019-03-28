@@ -115,9 +115,7 @@ jQuery(function ($) {
                 var pos;
 
                 if (newSection.temp_id) {
-                    console.log(newSection)
                     state.sections.map(function (section, i) {
-                        console.log(section)
                         if (newSection.temp_id == section.id) {
                             pos = i;
                             return false;

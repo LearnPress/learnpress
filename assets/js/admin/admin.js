@@ -66,7 +66,6 @@
                         order: order
                     },
                     success: function (response) {
-                        console.log(response)
                     }
                 });
             }
