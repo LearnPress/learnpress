@@ -607,7 +607,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             Vue.http
                 .LPRequest({
                     type: 'delete-question',
-                    question_id: question.id
+                    question_id: question_id
                 })
                 .then(function () {
                     question.id = question.temp_id;

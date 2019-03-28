@@ -16,9 +16,9 @@ class LP_Helper_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $type - E.g: post, user, ...
-	 * @param array  $ids
-	 * @param int    $limit
+	 * @param string    $type - E.g: post, user, ...
+	 * @param array|int $ids
+	 * @param int       $limit
 	 */
 	public static function update_meta_cache( $ids, $type = 'post', $limit = 500 ) {
 
@@ -95,6 +95,7 @@ class LP_Helper_CURD {
 			foreach ( $posts as $post ) {
 				$post                    = sanitize_post( $post, 'raw' );
 				$post_types[ $post->ID ] = $post->post_type;
+
 				wp_cache_set( $post->ID, $post, 'posts' );
 			}
 		}
