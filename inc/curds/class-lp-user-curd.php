@@ -507,15 +507,16 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		 * group of an item
 		 */
 		$query = $wpdb->prepare( "
-			SELECT *
-			FROM (
-				SELECT * 
-				FROM {$wpdb->learnpress_user_items}
-				WHERE item_type IN({$type_in}) 
-				AND parent_id = %d 
-				ORDER BY item_id, user_item_id DESC 
-			) X
-			GROUP BY item_id
+			SELECT ui.* 
+			FROM ( 
+				SELECT user_id, item_id, MAX(user_item_id) max_id 
+				FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
+			 ) AS X
+			INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id 
+			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id 
+			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id 
+			WHERE ui.parent_id = %d
+			ORDER BY user_item_id ASC
 		", $user_item_id );
 
 		return $wpdb->get_results( $query );
