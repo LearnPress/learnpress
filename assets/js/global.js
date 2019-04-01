@@ -1186,7 +1186,7 @@ if (typeof window.LP == 'undefined') {
             function (e) {
                 e.stopPropagation();
                 if (options.autoClose) {
-                    hide();
+                    //hide();
                 }
             }
         ).addClass('ready');

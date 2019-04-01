@@ -1674,7 +1674,7 @@ body.twentyseventeen.learnpress-page #primary article.page .entry-content {
   position: absolute;
   margin-left: -1px;
   font-size: 12px;
-  z-index: 9999;
+  z-index: 9999999;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px; }
