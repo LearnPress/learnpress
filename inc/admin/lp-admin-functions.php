@@ -449,6 +449,7 @@ function learn_press_get_education_themes() {
 	return apply_filters(
 		'learn-press/education-themes',
 		array(
+			'23451388' => 'kindergarten',
 			'22773871' => 'ivy-school',
 			'20370918' => 'wordpress-lms',
 			'14058034' => 'eduma',
@@ -506,6 +507,7 @@ function learn_press_footer_advertisement() {
 
 	$theme_ids     = learn_press_get_education_themes();
 	$current_theme = wp_get_theme();
+
 
 	$include = array_keys( $theme_ids );
 
