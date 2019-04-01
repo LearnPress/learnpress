@@ -22,9 +22,12 @@
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue || Vue;
+
     jQuery(function() {
-        (function (Vue, $store) {
-            Vue.component('lp-added-items-preview', {
+        (function ($store) {
+
+            $Vue.component('lp-added-items-preview', {
                 template: '#tmpl-lp-added-items-preview',
                 props: {
                     show: true
@@ -40,6 +43,6 @@
                     }
                 }
             });
-        })(Vue, LP_Curriculum_Store);
+        })(LP_Curriculum_Store);
     });
 </script>

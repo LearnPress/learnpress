@@ -87,7 +87,6 @@
                         that.items = [];
                         that.callToCallback();
                     }
-                    console.log('Get items: ', that.items.length);
                 }
             });
         }

@@ -15,12 +15,17 @@
     };
 })(window);
 
+window.$Vue = window.$Vue || Vue;
+window.$Vuex = window.$Vuex || Vuex;
+
+var $VueHTTP = Vue.http;
+
 /**
  * Choose quiz items modal store.
  *
  * @since 3.0.0
  */
-var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
+var LP_Choose_Quiz_Items_Modal_Store = (function (exports, helpers, data) {
 
     var state = helpers.cloneObject(data.chooseItems);
     state.quizId = false;
@@ -114,13 +119,12 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         searchItems: function (context, payload) {
             context.commit('SEARCH_ITEM_REQUEST');
 
-            Vue.http
-                .LPRequest({
-                    type: 'search-items',
-                    query: payload.query,
-                    page: payload.page,
-                    exclude: JSON.stringify([])
-                }).then(
+            LP.Request({
+                type: 'search-items',
+                query: payload.query,
+                page: payload.page,
+                exclude: JSON.stringify([])
+            }).then(
                 function (response) {
                     var result = response.body;
 
@@ -156,7 +160,7 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             var items = context.getters.addedItems;
 
             if (items.length > 0) {
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'add-questions-to-quiz',
                     items: JSON.stringify(items),
                     draft_quiz: JSON.stringify(quiz)
@@ -188,14 +192,14 @@ var LP_Choose_Quiz_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         actions: actions
     }
 
-})(window, Vue, LP_Helpers, lp_quiz_editor);
+})(window, LP_Helpers, lp_quiz_editor);
 
 /**
  * I18n Store
  *
  * @since 3.0.0
  */
-var LP_Quiz_i18n_Store = (function (Vue, helpers, data) {
+var LP_Quiz_i18n_Store = (function (helpers, data) {
 
     var state = helpers.cloneObject(data.i18n);
 
@@ -211,14 +215,14 @@ var LP_Quiz_i18n_Store = (function (Vue, helpers, data) {
         getters: getters
     }
 
-})(Vue, LP_Helpers, lp_quiz_editor);
+})(LP_Helpers, lp_quiz_editor);
 
 /**
  * List quiz questions store.
  *
  * @since 3.0.0
  */
-var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
+var LP_List_Quiz_Questions_Store = (function (helpers, data, $) {
 
     var state = helpers.cloneObject(data.listQuestions);
 
@@ -300,7 +304,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                         for (var i = 0, n = question.answers.length; i < n; i++) {
                             if (question.answers[i].question_answer_id == payload.answer.temp_id) {
                                 found = true;
-                                Vue.set(question.answers, i, payload.answer);
+                                $Vue.set(question.answers, i, payload.answer);
                             }
                         }
                     }
@@ -328,7 +332,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             if (question.temp_id) {
                 for (var i = 0, n = state.questions.length; i < n; i++) {
                     if (state.questions[i].id === question.temp_id) {
-                        Vue.set(state.questions, i, question);
+                        $Vue.set(state.questions, i, question);
                         found = true;
                         break;
                     }
@@ -413,23 +417,23 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             })
         },
         'UPDATE_QUESTION_REQUEST': function (state, questionId) {
-            Vue.set(state.statusUpdateQuestionItem, questionId, 'updating');
+            $Vue.set(state.statusUpdateQuestionItem, questionId, 'updating');
         },
         'UPDATE_QUESTION_SUCCESS': function (state, questionID) {
-            Vue.set(state.statusUpdateQuestionItem, questionID, 'successful');
+            $Vue.set(state.statusUpdateQuestionItem, questionID, 'successful');
         },
         'UPDATE_QUESTION_FAILURE': function (state, questionID) {
-            Vue.set(state.statusUpdateQuestionItem, questionID, 'failed')
+            $Vue.set(state.statusUpdateQuestionItem, questionID, 'failed')
         },
 
         'UPDATE_QUESTION_ANSWER_REQUEST': function (state, question_id) {
-            Vue.set(state.statusUpdateQuestionAnswer, question_id, 'updating');
+            $Vue.set(state.statusUpdateQuestionAnswer, question_id, 'updating');
         },
         'UPDATE_QUESTION_ANSWER_SUCCESS': function (state, question_id) {
-            Vue.set(state.statusUpdateQuestionAnswer, question_id, 'successful');
+            $Vue.set(state.statusUpdateQuestionAnswer, question_id, 'successful');
         },
         'UPDATE_QUESTION_ANSWER_FAIL': function (state, question_id) {
-            Vue.set(state.statusUpdateQuestionAnswer, question_id, 'failed');
+            $Vue.set(state.statusUpdateQuestionAnswer, question_id, 'failed');
         },
         'DELETE_ANSWER': function (state, data) {
             state.questions.map(function (question, index) {
@@ -459,14 +463,14 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 context.commit('CLOSE_LIST_QUESTIONS');
             }
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'hidden-questions',
                 hidden: context.getters['hiddenQuestions']
             })
         },
 
         updateQuizQuestionsHidden: function (context, data) {
-            Vue.http.LPRequest($.extend({}, data, {
+            LP.Request($.extend({}, data, {
                 type: 'update-quiz-questions-hidden'
             }));
         },
@@ -475,7 +479,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             var newQuestion = JSON.parse(JSON.stringify(payload.question));
             newQuestion.settings = {};
             context.commit('ADD_NEW_QUESTION', newQuestion);
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'new-question',
                 question: JSON.stringify(payload.question),
                 draft_quiz: JSON.stringify(payload.quiz)
@@ -499,7 +503,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         updateQuestionsOrder: function (context, order) {
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'sort-questions',
                 order: JSON.stringify(order)
             }).then(
@@ -516,7 +520,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
 
             context.commit('UPDATE_QUESTION_REQUEST', question.id);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'update-question-title',
                 question: JSON.stringify(question)
             }).then(
@@ -533,7 +537,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
 
             context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'change-question-type',
                 question_id: payload.question_id,
                 question_type: payload.type
@@ -556,7 +560,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         },
 
         cloneQuestion: function (context, question) {
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'clone-question',
                 question: JSON.stringify(question)
             }).then(
@@ -581,7 +585,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             question.temp_id = LP.uniqueId();
             context.commit('REMOVE_QUESTION', question);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'remove-question',
                 question_id: question_id
             }).then(
@@ -604,11 +608,10 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             var question_id = question.id;
             question.temp_id = LP.uniqueId();
             context.commit('REMOVE_QUESTION', question);
-            Vue.http
-                .LPRequest({
-                    type: 'delete-question',
-                    question_id: question_id
-                })
+            LP.Request({
+                type: 'delete-question',
+                question_id: question_id
+            })
                 .then(function () {
                     question.id = question.temp_id;
                     question.temp_id = 0;
@@ -627,7 +630,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 context.commit('OPEN_QUESTION', question);
             }
 
-            Vue.http.LPRequest({
+            LP.Request({
                     type: 'hidden-questions',
                     hidden: context.getters['hiddenQuestions']
                 }
@@ -637,7 +640,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         updateQuestionAnswersOrder: function (context, payload) {
             context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'sort-question-answers',
                 question_id: payload.question_id,
                 order: JSON.stringify(payload.order)
@@ -659,7 +662,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
 
             context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'update-question-answer-title',
                 question_id: parseInt(payload.question_id),
                 answer: JSON.stringify(payload.answer)
@@ -678,7 +681,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         updateQuestionCorrectAnswer: function (context, payload) {
             context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'change-question-correct-answer',
                 question_id: payload.question_id,
                 correct: JSON.stringify(payload.correct)
@@ -702,7 +705,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             context.commit('DELETE_ANSWER', payload);
             context.commit('UPDATE_QUESTION_REQUEST', payload.question_id);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'delete-question-answer',
                 question_id: payload.question_id,
                 answer_id: payload.answer_id
@@ -734,12 +737,11 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
                 question_id: question_id,
                 answer: {'text': LP_Quiz_Store.getters['i18n/all'].new_option, 'question_answer_id': temp_id}
             });
-            Vue.http
-                .LPRequest({
-                    type: 'new-question-answer',
-                    question_id: question_id,
-                    question_answer_id: temp_id
-                })
+            LP.Request({
+                type: 'new-question-answer',
+                question_id: question_id,
+                question_answer_id: temp_id
+            })
                 .then(
                     function (response) {
                         var result = response.body;
@@ -764,7 +766,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
 
             context.commit('UPDATE_QUESTION_REQUEST', question.id);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'update-question-content',
                 question: JSON.stringify(question)
             }).then(
@@ -781,7 +783,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
 
             context.commit('UPDATE_QUESTION_REQUEST', payload.question.id);
 
-            Vue.http.LPRequest({
+            LP.Request({
                 type: 'update-question-meta',
                 question: JSON.stringify(payload.question),
                 meta_key: payload.meta_key
@@ -804,14 +806,14 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         actions: actions
     }
 
-})(Vue, LP_Helpers, lp_quiz_editor, jQuery);
+})(LP_Helpers, lp_quiz_editor, jQuery);
 
 /**
  * Root Store
  *
  * @since 3.0.0
  */
-(function (exports, Vue, Vuex, helpers, data) {
+(function (exports, helpers, data) {
 
     var state = helpers.cloneObject(data.root);
 
@@ -871,11 +873,10 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
 
     var actions = {
         heartbeat: function (context) {
-            Vue.http
-                .LPRequest({
-                        type: 'heartbeat'
-                    }
-                )
+            LP.Request({
+                    type: 'heartbeat'
+                }
+            )
                 .then(
                     function (response) {
                         var result = response.body;
@@ -906,7 +907,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         }
     };
 
-    exports.LP_Quiz_Store = new Vuex.Store({
+    exports.LP_Quiz_Store = new $Vuex.Store({
         state: state,
         getters: getters,
         mutations: mutations,
@@ -918,7 +919,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         }
     });
 
-})(window, Vue, Vuex, LP_Helpers, lp_quiz_editor);
+})(window, LP_Helpers, lp_quiz_editor);
 
 
 /**
@@ -926,11 +927,11 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
  *
  * @since 3.0.0
  */
-(function (exports, Vue, $store) {
+(function (exports, $store) {
     var $ = jQuery,
         $publishingAction = null;
 
-    Vue.http.LPRequest = function (payload) {
+    LP.Request = function (payload) {
         payload['id'] = $store.getters.id;
         payload['nonce'] = $store.getters.nonce;
         payload['lp-ajax'] = $store.getters.action;
@@ -942,7 +943,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         $publishingAction.find('.spinner').addClass('is-active');
         $publishingAction.addClass('code-' + payload['code']);
 
-        return Vue.http.post($store.getters.urlAjax,
+        return $VueHTTP.post($store.getters.urlAjax,
             payload, {
                 emulateJSON: true,
                 params: {
@@ -952,7 +953,7 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
             });
     };
 
-    Vue.http.interceptors.push(function (request, next) {
+    $VueHTTP.interceptors.push(function (request, next) {
         if (request.params['namespace'] !== 'LPListQuizQuestionsRequest') {
             next();
             return;
@@ -984,18 +985,18 @@ var LP_List_Quiz_Questions_Store = (function (Vue, helpers, data, $) {
         });
     });
 
-})(window, Vue, LP_Quiz_Store);
+})(window, LP_Quiz_Store);
 
 /**
  * Init app.
  *
  * @since 3.0.0
  */
-(function ($, Vue, $store) {
+(function ($, $store) {
     $(document).ready(function () {
-        window.LP_Quiz_Editor = new Vue({
+        window.LP_Quiz_Editor = new $Vue({
             el: '#admin-editor-lp_quiz',
             template: '<lp-quiz-editor></lp-quiz-editor>'
         });
     });
-})(jQuery, Vue, LP_Quiz_Store);
+})(jQuery, LP_Quiz_Store);

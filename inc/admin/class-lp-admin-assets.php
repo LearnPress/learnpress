@@ -65,19 +65,19 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'ver' => '2.5.16'
 				),
 				'lp-vuex'                           => array(
-					'url' => self::url( 'js/vendor/vuex.2.3.1.js' ),
-					'ver' => '2.3.1'
+					'url' => self::url( 'js/vendor/vuex.js' ),
+					'ver' => '3.1.0'
 				),
 				'lp-vue-resource'                   => array(
-					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
+					'url' => self::url( 'js/vendor/vue-resource.js' ),
 					'ver' => '1.3.4'
 				),
 				'lp-sortable'                       => array(
-					'url' => self::url( 'js/vendor/sortable.1.6.0.js' ),
+					'url' => self::url( 'js/vendor/sortable.js' ),
 					'ver' => '1.6.0'
 				),
 				'lp-vuedraggable'                   => array(
-					'url'  => self::url( 'js/vendor/vuedraggable.2.14.1.js' ),
+					'url'  => self::url( 'js/vendor/vuedraggable.js' ),
 					'ver'  => '2.14.1',
 					'deps' => array( 'lp-sortable' )
 				),
