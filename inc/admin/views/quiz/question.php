@@ -18,9 +18,10 @@ learn_press_admin_view( 'quiz/question-settings' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    (function ($store, $) {
+        window.$Vue = window.$Vue || Vue;
 
-        Vue.component('lp-quiz-question-item', {
+        $Vue.component('lp-quiz-question-item', {
             template: '#tmpl-lp-quiz-question-item',
             props: ['question', 'index'],
             computed: {
@@ -54,5 +55,5 @@ learn_press_admin_view( 'quiz/question-settings' );
             }
         });
 
-    })(Vue, LP_Quiz_Store, jQuery);
+    })(LP_Quiz_Store, jQuery);
 </script>

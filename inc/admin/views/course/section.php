@@ -66,11 +66,13 @@ learn_press_admin_view( 'course/new-section-item' );
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue || Vue;
+
     jQuery(function ($) {
 
-        (function (Vue, $store) {
+        (function ($store) {
 
-            Vue.component('lp-section', {
+            $Vue.component('lp-section', {
                 template: '#tmpl-lp-section',
                 props: ['section', 'index', 'disableCurriculum'],
                 data: function () {
@@ -288,6 +290,6 @@ learn_press_admin_view( 'course/new-section-item' );
                 }
             });
 
-        })(Vue, LP_Curriculum_Store);
+        })(LP_Curriculum_Store);
     });
 </script>

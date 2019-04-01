@@ -23,11 +23,12 @@ learn_press_admin_view( 'course/sections' );
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue = Vue;
     jQuery(function ($) {
 
-        (function (Vue, $store) {
+        (function ( $store) {
 
-            Vue.component('lp-curriculum', {
+            $Vue.component('lp-curriculum', {
                 template: '#tmpl-lp-course-curriculum',
                 computed: {
                     status: function () {
@@ -55,7 +56,7 @@ learn_press_admin_view( 'course/sections' );
                 }
             });
 
-        })(Vue, LP_Curriculum_Store);
+        })(LP_Curriculum_Store);
 
     })
 </script>

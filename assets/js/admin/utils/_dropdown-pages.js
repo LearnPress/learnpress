@@ -28,7 +28,6 @@
                     $sel.append($option);
                 } else {
                     $option.insertAfter($('option[value="' + args.positions[position - 1] + '"]', $sel));
-                    console.log($('option[value="' + args.positions[position - 1] + '"]', $sel))
                 }
             });
         }

@@ -124,8 +124,6 @@
                 i = i ? i : 1;
 
                 if (p) {
-                    console.log('Updating ...', this.packages.currentVersion(), p)
-
                     $.ajax({
                         url: lpGlobalSettings.admin_url,
                         data: {
@@ -154,7 +152,6 @@
                             }
                         },
                         error: function () {
-                            console.log('Update Error: Retry!');
                             that.doUpdate(p, i);
                         }
                     });

@@ -29,10 +29,11 @@ learn_press_admin_view( 'course/modal-choose-items' );
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue || Vue;
     jQuery(function ($) {
-        (function (Vue, $store) {
+        (function ($store) {
 
-            Vue.component('lp-course-editor', {
+            $Vue.component('lp-course-editor', {
                 template: '#tmpl-lp-course-editor',
                 created: function () {
                     setInterval(function () {
@@ -46,6 +47,6 @@ learn_press_admin_view( 'course/modal-choose-items' );
                 }
             });
 
-        })(Vue, LP_Curriculum_Store);
+        })(LP_Curriculum_Store);
     })
 </script>

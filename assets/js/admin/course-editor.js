@@ -15,8 +15,12 @@
     };
 })(window);
 
-jQuery(function ($) {
+window.$Vue = window.$Vue || Vue;
+window.$Vuex = window.$Vuex || Vuex;
 
+var $VueHTTP = Vue.http;
+
+jQuery(function ($) {
 
     /**
      * I18n Store
@@ -24,7 +28,7 @@ jQuery(function ($) {
      * @since 3.0.0
      */
 
-    var LP_Curriculum_i18n_Store = (function (Vue, helpers, data) {
+    var LP_Curriculum_i18n_Store = (function (helpers, data) {
         var state = helpers.cloneObject(data.i18n);
 
         var getters = {
@@ -39,14 +43,14 @@ jQuery(function ($) {
             getters: getters
         };
 
-    })(Vue, LP_Helpers, lpAdminCourseEditorSettings);
+    })(LP_Helpers, lpAdminCourseEditorSettings);
 
     /**
      * Sections Store.
      *
      * @since 3.0.0
      */
-    var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
+    var LP_Curriculum_Sections_Store = (function (helpers, data) {
         var state = helpers.cloneObject(data.sections);
 
         state.statusUpdateSection = {};
@@ -111,9 +115,7 @@ jQuery(function ($) {
                 var pos;
 
                 if (newSection.temp_id) {
-                    console.log(newSection)
                     state.sections.map(function (section, i) {
-                        console.log(section)
                         if (newSection.temp_id == section.id) {
                             pos = i;
                             return false;
@@ -122,7 +124,7 @@ jQuery(function ($) {
                 }
 
                 if (pos !== undefined) {
-                    Vue.set(state.sections, pos, newSection);
+                    $Vue.set(state.sections, pos, newSection);
                 } else {
                     state.sections.push(newSection);
                 }
@@ -205,27 +207,27 @@ jQuery(function ($) {
             },
 
             'UPDATE_SECTION_REQUEST': function (state, sectionId) {
-                Vue.set(state.statusUpdateSection, sectionId, 'updating');
+                $Vue.set(state.statusUpdateSection, sectionId, 'updating');
             },
 
             'UPDATE_SECTION_SUCCESS': function (state, sectionId) {
-                Vue.set(state.statusUpdateSection, sectionId, 'successful');
+                $Vue.set(state.statusUpdateSection, sectionId, 'successful');
             },
 
             'UPDATE_SECTION_FAILURE': function (state, sectionId) {
-                Vue.set(state.statusUpdateSection, sectionId, 'failed');
+                $Vue.set(state.statusUpdateSection, sectionId, 'failed');
             },
 
             'UPDATE_SECTION_ITEM_REQUEST': function (state, itemId) {
-                Vue.set(state.statusUpdateSectionItem, itemId, 'updating');
+                $Vue.set(state.statusUpdateSectionItem, itemId, 'updating');
             },
 
             'UPDATE_SECTION_ITEM_SUCCESS': function (state, itemId) {
-                Vue.set(state.statusUpdateSectionItem, itemId, 'successful');
+                $Vue.set(state.statusUpdateSectionItem, itemId, 'successful');
             },
 
             'UPDATE_SECTION_ITEM_FAILURE': function (state, itemId) {
-                Vue.set(state.statusUpdateSectionItem, itemId, 'failed');
+                $Vue.set(state.statusUpdateSectionItem, itemId, 'failed');
             },
             'APPEND_EMPTY_ITEM_TO_SECTION': function (state, data) {
 
@@ -257,7 +259,7 @@ jQuery(function ($) {
                         var item_id = section.items[i].id;
                         if (item_id) {
                             if (data.items[item_id]) {
-                                Vue.set(section.items, i, data.items[item_id])
+                                $Vue.set(section.items, i, data.items[item_id])
                             }
                         }
                     } catch (ex) {
@@ -280,14 +282,14 @@ jQuery(function ($) {
                     context.commit('CLOSE_ALL_SECTIONS');
                 }
 
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'hidden-sections',
                     hidden: context.getters['hiddenSections']
                 });
             },
 
             updateSectionsOrder: function (context, order) {
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'sort-sections',
                     order: JSON.stringify(order)
                 }).then(
@@ -309,7 +311,7 @@ jQuery(function ($) {
                     context.commit('OPEN_SECTION', section);
                 }
 
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'hidden-sections',
                     hidden: context.getters['hiddenSections']
                 });
@@ -318,11 +320,10 @@ jQuery(function ($) {
             updateSection: function (context, section) {
                 context.commit('UPDATE_SECTION_REQUEST', section.id);
 
-                Vue.http
-                    .LPRequest({
-                        type: 'update-section',
-                        section: JSON.stringify(section)
-                    })
+                LP.Request({
+                    type: 'update-section',
+                    section: JSON.stringify(section)
+                })
                     .then(function () {
                         context.commit('UPDATE_SECTION_SUCCESS', section.id);
                     })
@@ -334,7 +335,7 @@ jQuery(function ($) {
             removeSection: function (context, payload) {
                 context.commit('REMOVE_SECTION', payload.index);
 
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'remove-section',
                     section_id: payload.section.id
                 }).then(
@@ -360,7 +361,7 @@ jQuery(function ($) {
                     title: newSection.section_name
                 });
 
-                Vue.http.LPRequest(newSection).then(
+                LP.Request(newSection).then(
                     function (response) {
                         var result = response.body;
 
@@ -380,7 +381,7 @@ jQuery(function ($) {
             updateSectionItem: function (context, payload) {
                 context.commit('UPDATE_SECTION_ITEM_REQUEST', payload.item.id);
 
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'update-section-item',
                     section_id: payload.section_id,
                     item: JSON.stringify(payload.item)
@@ -407,12 +408,11 @@ jQuery(function ($) {
                 var id = payload.item.id;
                 context.commit('REMOVE_SECTION_ITEM', payload);
                 payload.item.temp_id = 0;
-                Vue.http
-                    .LPRequest({
-                        type: 'remove-section-item',
-                        section_id: payload.section_id,
-                        item_id: id
-                    }).then(
+                LP.Request({
+                    type: 'remove-section-item',
+                    section_id: payload.section_id,
+                    item_id: id
+                }).then(
                     function () {
                         context.commit('REMOVE_SECTION_ITEM', payload);
                     }
@@ -423,12 +423,11 @@ jQuery(function ($) {
                 var id = payload.item.id;
                 context.commit('REMOVE_SECTION_ITEM', payload);
                 payload.item.temp_id = 0;
-                Vue.http
-                    .LPRequest({
-                        type: 'delete-section-item',
-                        section_id: payload.section_id,
-                        item_id: id
-                    }).then(
+                LP.Request({
+                    type: 'delete-section-item',
+                    section_id: payload.section_id,
+                    item_id: id
+                }).then(
                     function () {
                         context.commit('REMOVE_SECTION_ITEM', payload);
                     }
@@ -439,7 +438,7 @@ jQuery(function ($) {
 
                 context.commit('APPEND_EMPTY_ITEM_TO_SECTION', payload)
                 //context.commit('UPDATE_SECTION_ITEMS', {section_id: payload.section_id, items: result.data});
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'new-section-item',
                     section_id: payload.section_id,
                     item: JSON.stringify(payload.item)
@@ -466,7 +465,7 @@ jQuery(function ($) {
             },
 
             updateSectionItems: function (context, payload) {
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'update-section-items',
                     section_id: payload.section_id,
                     items: JSON.stringify(payload.items),
@@ -493,7 +492,7 @@ jQuery(function ($) {
             mutations: mutations,
             actions: actions
         };
-    })(Vue, LP_Helpers, lpAdminCourseEditorSettings);
+    })(LP_Helpers, lpAdminCourseEditorSettings);
 
 
     /**
@@ -503,7 +502,7 @@ jQuery(function ($) {
      *
      * @type {{namespaced, state, getters, mutations, actions}}
      */
-    var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
+    var LP_Choose_Items_Modal_Store = (function (exports, helpers, data) {
         var state = helpers.cloneObject(data.chooseItems);
         state.sectionId = false;
         state.pagination = '';
@@ -594,7 +593,7 @@ jQuery(function ($) {
             searchItems: function (context, payload) {
                 context.commit('SEARCH_ITEMS_REQUEST');
 
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'search-items',
                     query: payload.query,
                     item_type: payload.type,
@@ -634,7 +633,7 @@ jQuery(function ($) {
                 var items = context.getters.addedItems;
 
                 if (items.length > 0) {
-                    Vue.http.LPRequest({
+                    LP.Request({
                         type: 'add-items-to-section',
                         section_id: context.getters.section,
                         items: JSON.stringify(items)
@@ -667,14 +666,14 @@ jQuery(function ($) {
             mutations: mutations,
             actions: actions
         }
-    })(window, Vue, LP_Helpers, lpAdminCourseEditorSettings);
+    })(window, LP_Helpers, lpAdminCourseEditorSettings);
 
     /**
      * Root Store
      *
      * @since 3.0.0
      */
-    (function (exports, Vue, Vuex, helpers, data) {
+    (function (exports, helpers, data) {
         var state = helpers.cloneObject(data.root);
 
         state.status = 'success';
@@ -737,7 +736,7 @@ jQuery(function ($) {
 
         var actions = {
             heartbeat: function (context) {
-                Vue.http.LPRequest({
+                LP.Request({
                     type: 'heartbeat'
                 }).then(
                     function (response) {
@@ -754,7 +753,7 @@ jQuery(function ($) {
                 var auto_draft = context.getters['autoDraft'];
 
                 if (auto_draft) {
-                    Vue.http.LPRequest({
+                    LP.Request({
                         type: 'draft-course',
                         course: JSON.stringify(payload)
                     }).then(function (response) {
@@ -789,7 +788,7 @@ jQuery(function ($) {
             }
         };
 
-        exports.LP_Curriculum_Store = new Vuex.Store({
+        exports.LP_Curriculum_Store = new $Vuex.Store({
             state: state,
             getters: getters,
             mutations: mutations,
@@ -801,20 +800,20 @@ jQuery(function ($) {
             }
         });
 
-    })(window, Vue, Vuex, LP_Helpers, lpAdminCourseEditorSettings);
+    })(window, LP_Helpers, lpAdminCourseEditorSettings);
 
     /**
      * HTTP
      *
      * @since 3.0.0
      */
-    (function (exports, Vue, $store) {
-        Vue.http.LPRequest = function (payload) {
+    (function (exports, $store) {
+        LP.Request = function (payload) {
             payload['id'] = $store.getters.id;
             payload['nonce'] = $store.getters.nonce;
             payload['lp-ajax'] = $store.getters.action;
 
-            return Vue.http.post($store.getters.urlAjax,
+            return $VueHTTP.post($store.getters.urlAjax,
                 payload,
                 {
                     emulateJSON: true,
@@ -824,7 +823,7 @@ jQuery(function ($) {
                 });
         };
 
-        Vue.http.interceptors.push(function (request, next) {
+        $VueHTTP.interceptors.push(function (request, next) {
             if (request.params['namespace'] !== 'LPCurriculumRequest') {
                 next();
                 return;
@@ -848,20 +847,20 @@ jQuery(function ($) {
                 }
             });
         });
-    })(window, Vue, LP_Curriculum_Store);
+    })(window, LP_Curriculum_Store);
 
     /**
      * Init app.
      *
      * @since 3.0.0
      */
-    (function ($, Vue, $store) {
+    (function ($, $store) {
         $(document).ready(function () {
-            window.LP_Course_Editor = new Vue({
+            window.LP_Course_Editor = new $Vue({
                 el: '#admin-editor-lp_course',
                 template: '<lp-course-editor></lp-course-editor>'
             });
         });
-    })(jQuery, Vue, LP_Curriculum_Store);
+    })(jQuery, LP_Curriculum_Store);
 
 });
