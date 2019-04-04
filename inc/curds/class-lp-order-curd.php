@@ -96,7 +96,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function read_items( $order ) {
 		global $wpdb;
-		$screen = get_current_screen();
+		$screen = function_exists('get_current_screen')? get_current_screen():null;
 		$query = $wpdb->prepare( "
 			SELECT order_item_id as id, order_item_name as name 
 				, oim.meta_value as `course_id`
@@ -116,7 +116,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			foreach ( $_items as $item ) {
 				$item = (array) $item;
 				$items[$item['id']] = $item;
-				if($screen->id !== 'edit-lp_order'){
+				if(!$screen || $screen->id !== 'edit-lp_order'){
 					$this->get_item_meta( $item );	
 				}
 				if ( ! empty( $item['course_id'] ) ) {
