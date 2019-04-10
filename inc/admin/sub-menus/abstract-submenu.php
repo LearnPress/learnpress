@@ -357,6 +357,7 @@ abstract class LP_Abstract_Submenu {
 
 			// If I have a function named 'page_content_TAB_SLUG' then call it.
 			$callback = array( $this, sprintf( 'page_content_%s', $tab ) );
+
 			if ( is_callable( $callback ) ) {
 				call_user_func_array( $callback, array() );
 			} else {
