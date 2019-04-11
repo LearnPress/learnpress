@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 5.0.2
-Stable tag: 3.2.5.2
+Stable tag: 3.2.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.5.3 =
+~ Changed SQL to read course items by user item ID.
+~ Improved performance in admin orders page.
+~ Upgraded Vue/Vuex to latest version.
+~ Added new theme to LP ad.
+
 = 3.2.5.2 =
 ~ Fixed bug can't access course after purchased.
 ~ Fixed bug user can't redo quiz with option 'Retake' is 1.
