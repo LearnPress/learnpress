@@ -95,12 +95,17 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 */
 	public function read_items( $order ) {
-
 		global $wpdb;
-
+		$screen = function_exists('get_current_screen')? get_current_screen():null;
 		$query = $wpdb->prepare( "
-			SELECT order_item_id as id, order_item_name as name
+			SELECT order_item_id as id, order_item_name as name 
+				, oim.meta_value as `course_id`
+				# , oim2.meta_value as `quantity`
+				# , oim3.meta_value as `total`
 			FROM {$wpdb->learnpress_order_items} oi 
+				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key='_course_id'
+				# INNER JOIN {$wpdb->learnpress_order_itemmeta} oim2 ON oi.order_item_id = oim2.learnpress_order_item_id AND oim2.meta_key='_quantity'
+				# INNER JOIN {$wpdb->learnpress_order_itemmeta} oim3 ON oi.order_item_id = oim3.learnpress_order_item_id AND oim3.meta_key='_total'
 			WHERE order_id = %d 
 		", $order->get_id() );
 
@@ -110,7 +115,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		if ( $_items ) {
 			foreach ( $_items as $item ) {
 				$item = (array) $item;
-				$this->get_item_meta( $item );
+				$items[$item['id']] = $item;
+				if(!$screen || $screen->id !== 'edit-lp_order'){
+					$this->get_item_meta( $item );	
+				}
 				if ( ! empty( $item['course_id'] ) ) {
 					$items[ $item['id'] ] = $item;
 				}
