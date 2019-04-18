@@ -236,6 +236,10 @@ abstract class LP_Abstract_Assets {
 					$data = array( 'url' => $data );
 				}
 
+				if ( empty( $data['url'] ) ) {
+					continue;
+				}
+
 				$data = wp_parse_args(
 					$data,
 					array(

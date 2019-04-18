@@ -2280,4 +2280,54 @@ function learn_press_maybe_sync_data( $post_id ) {
 
 add_action( 'save_post', 'learn_press_maybe_sync_data' );
 
+/**
+ * Return id of current screen.
+ *
+ * @since 3.x.x
+ *
+ * @return bool|string
+ */
+function learn_press_get_screen_id() {
+	global $current_screen;
+	$screen_id = $current_screen ? $current_screen->id : false;
+
+	return $screen_id;
+}
+
+/**
+ * Check if current screen is a page of LP or
+ * editing post type of LP such as course, lesson, etc...
+ *
+ * @since 3.x.x
+ *
+ * @return bool
+ */
+function learn_press_is_admin_page() {
+	$screen_id     = learn_press_get_screen_id();
+	$is_learnpress = false;
+
+	// Is editing post-type of LP
+	$post_types = array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_LESSON_CPT, LP_QUESTION_CPT, LP_ORDER_CPT );
+	foreach ( $post_types as $post_type ) {
+		if ( in_array( $screen_id, array( "edit-{$post_type}", $post_type ) ) ) {
+			$is_learnpress = true;
+			break;
+		}
+	}
+
+	// Is sub-menu under LP?
+	if ( strpos( $screen_id, 'learnpress_page_' ) === 0 ) {
+		$is_learnpress = true;
+	}
+
+//	echo '<div style="z-index:100000;position: fixed;background: #FFF">';
+//	var_dump( $screen_id );
+//	var_dump( $is_learnpress );
+//
+//	echo "XXXXXX";
+//	echo '</div>';
+
+	return apply_filters( 'learn-press/is-admin-page', $is_learnpress, $screen_id );
+}
+
 include_once "class-lp-post-type-actions.php";
