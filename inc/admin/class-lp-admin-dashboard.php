@@ -183,7 +183,9 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 						'active_installs'   => true,
 						'short_description' => true,
 						'description'       => true,
-						'ratings'           => true
+						'ratings'           => true,
+						// Need pass this fields because WP may be changed it default from true to false
+						'downloaded'        => true
 					)
 				) );
 				set_transient( 'lp_plugin_status', $api, 12 * HOUR_IN_SECONDS );
