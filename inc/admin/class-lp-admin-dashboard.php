@@ -31,25 +31,28 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * Order status widget
 		 */
 		public function order_statuses() {
-			$order_statuses    = learn_press_get_order_statuses( true, true );
-			$eduma_data        = $this->_get_theme_info( 14058034 );
-			$specific_statuses = array( 'lp-completed', 'lp-failed', 'lp-on-hold' );
 
-			foreach ( $order_statuses as $status ) {
-				if ( ! in_array( $status, $specific_statuses ) ) {
-					$specific_statuses[] = $status;
-				}
-			}
-
-			$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
 			?>
+
             <ul class="lp-order-statuses">
                 <li class="count-number total-raised">
                     <strong><?php echo $this->_get_order_total_raised(); ?></strong>
                     <p><?php _e( 'Total Raised', 'learnpress' ); ?></p>
                 </li>
-				<?php foreach ( $specific_statuses as $status ) : ?>
-					<?php
+				<?php
+
+				$order_statuses    = learn_press_get_order_statuses( true, true );
+				$specific_statuses = array( 'lp-completed', 'lp-failed'/*, 'lp-on-hold'*/ );
+
+				foreach ( $order_statuses as $status ) {
+					if ( ! in_array( $status, $specific_statuses ) ) {
+						$specific_statuses[] = $status;
+					}
+				}
+
+				$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
+
+				foreach ( $specific_statuses as $status ) :
 					$status_object = get_post_status_object( $status );
 					if ( ! $status_object ) {
 						continue;
@@ -72,6 +75,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
                         </div>
                     </li>
 				<?php endforeach; ?>
+				<?php $eduma_data = $this->_get_theme_info( 14058034 ); ?>
                 <li class="clear"></li>
                 <li class="featured-theme">
                     <p>
