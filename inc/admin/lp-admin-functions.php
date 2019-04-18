@@ -2320,14 +2320,74 @@ function learn_press_is_admin_page() {
 		$is_learnpress = true;
 	}
 
-//	echo '<div style="z-index:100000;position: fixed;background: #FFF">';
-//	var_dump( $screen_id );
-//	var_dump( $is_learnpress );
-//
-//	echo "XXXXXX";
-//	echo '</div>';
-
 	return apply_filters( 'learn-press/is-admin-page', $is_learnpress, $screen_id );
+}
+
+function learn_press_get_orders_status_chart_data() {
+	$data = array(
+		'type'    => 'pie',
+		'data'    => array(
+			'labels'   => array(),//[ 'Pending', 'Processing', 'Completed', 'Failed', 'Cancelled' ],
+			'datasets' => [
+				array(
+					'label'           => '# of Votes',
+					'data'            => array(), //[ 12, 19, 3, 5, 2 ],
+					//'backgroundColor' => array(),
+					//'borderColor'     => array(),
+					'backgroundColor' => array(
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(153, 102, 255, 0.2)',
+						'rgba(255, 159, 64, 0.2)'
+                    ),
+					'borderColor'     => array(
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)'
+                    ),
+					'borderWidth' => 1
+				)
+			]
+		),
+		'options' => array(
+			'scales' => array(
+				'yAxes' => array(
+					array(
+						'ticks' => array(
+							'beginAtZero' => true
+						)
+					)
+				)
+			),
+//			'legend' => array(
+//				'display' => false
+//			)
+		)
+	);
+
+	$order_statuses    = learn_press_get_order_statuses( true, true );
+	$specific_statuses = array( 'lp-completed', 'lp-failed'/*, 'lp-on-hold'*/ );
+
+	foreach ( $order_statuses as $status ) {
+		if ( ! in_array( $status, $specific_statuses ) ) {
+			$specific_statuses[] = $status;
+		}
+	}
+
+	$labels = learn_press_get_order_statuses();
+	$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
+
+	foreach ( $counts as $k => $v ) {
+		$data['data']['labels'][]                         = isset( $labels[ $k ] ) ? $labels[ $k ] : 'Untitled';
+		$data['data']['datasets'][0]['data'][]            = $v;
+		//$data['data']['datasets'][0]['backgroundColor'][] = 'rgba(54, 162, 235, 0.2)';
+		//$data['data']['datasets'][0]['borderColor'][]     = 'rgba(54, 162, 235, 1)';
+	}
+
+	return $data;
 }
 
 include_once "class-lp-post-type-actions.php";

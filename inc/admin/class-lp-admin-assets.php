@@ -172,6 +172,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'learn-press-sync-data'             => array(
 					'url'  => $this->url( 'js/admin/sync-data.js' ),
 					'deps' => array( 'lp-vue' )
+				),
+				'learn-press-chartjs'               => array(
+					'url'    => $this->url( 'js/vendor/chart.min.js' ),
+					'screens' => 'dashboard'
 				)
 			)
 		);
