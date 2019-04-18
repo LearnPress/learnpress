@@ -2307,7 +2307,10 @@ function learn_press_is_admin_page() {
 	$is_learnpress = false;
 
 	// Is editing post-type of LP
-	$post_types = array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_LESSON_CPT, LP_QUESTION_CPT, LP_ORDER_CPT );
+	$post_types = apply_filters(
+		'learn-press/admin-post-type-pages',
+		array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_LESSON_CPT, LP_QUESTION_CPT, LP_ORDER_CPT, 'lp_cert', 'lp_assignment' )
+	);
 	foreach ( $post_types as $post_type ) {
 		if ( in_array( $screen_id, array( "edit-{$post_type}", $post_type ) ) ) {
 			$is_learnpress = true;
@@ -2340,15 +2343,15 @@ function learn_press_get_orders_status_chart_data() {
 						'rgba(75, 192, 192, 0.2)',
 						'rgba(153, 102, 255, 0.2)',
 						'rgba(255, 159, 64, 0.2)'
-                    ),
+					),
 					'borderColor'     => array(
 						'rgba(54, 162, 235, 1)',
 						'rgba(255, 206, 86, 1)',
 						'rgba(75, 192, 192, 1)',
 						'rgba(153, 102, 255, 1)',
 						'rgba(255, 159, 64, 1)'
-                    ),
-					'borderWidth' => 1
+					),
+					'borderWidth'     => 1
 				)
 			]
 		),
@@ -2381,8 +2384,8 @@ function learn_press_get_orders_status_chart_data() {
 	$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
 
 	foreach ( $counts as $k => $v ) {
-		$data['data']['labels'][]                         = isset( $labels[ $k ] ) ? $labels[ $k ] : 'Untitled';
-		$data['data']['datasets'][0]['data'][]            = $v;
+		$data['data']['labels'][]              = isset( $labels[ $k ] ) ? $labels[ $k ] : 'Untitled';
+		$data['data']['datasets'][0]['data'][] = $v;
 		//$data['data']['datasets'][0]['backgroundColor'][] = 'rgba(54, 162, 235, 0.2)';
 		//$data['data']['datasets'][0]['borderColor'][]     = 'rgba(54, 162, 235, 1)';
 	}
