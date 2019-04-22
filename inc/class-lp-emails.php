@@ -91,7 +91,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			$this->emails['LP_Email_Processing_Order_Guest'] = include( 'emails/class-lp-email-processing-order-guest.php' );
 
 			// Completed order
-			$this->emails['LP_Email_Completed_Order_Admin']  = include( 'emails/class-lp-email-completed-order-admin.php' );
+			$this->emails['LP_Email_Completed_Order_Admin'] = include( 'emails/class-lp-email-completed-order-admin.php' );
 			$this->emails['LP_Email_Completed_Order_User']  = include( 'emails/class-lp-email-completed-order-user.php' );
 			$this->emails['LP_Email_Completed_Order_Guest'] = include( 'emails/class-lp-email-completed-order-guest.php' );
 
@@ -126,6 +126,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			//$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );
 
 			//$this->emails['LP_Email_Enrolled_Course_Admin']     = include( 'emails/class-lp-email-enrolled-course-admin.php' );
+
+			do_action_ref_array( 'learn-press/register-emails', array( &$this->emails, $this ) );
 		}
 
 
@@ -221,7 +223,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				$args = func_get_args();
 				self::instance();
 				do_action_ref_array( current_filter() . '/notification', $args );
-			} catch ( Exception $e ) {
+			}
+			catch ( Exception $e ) {
 			}
 		}
 
@@ -229,7 +232,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * Email header.
 		 *
 		 * @param string $heading
-		 * @param bool $echo
+		 * @param bool   $echo
 		 *
 		 * @return string
 		 */
@@ -248,7 +251,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		 * Email footer.
 		 *
 		 * @param string $footer_text
-		 * @param bool $echo
+		 * @param bool   $echo
 		 *
 		 * @return string
 		 */

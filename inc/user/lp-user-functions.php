@@ -124,7 +124,6 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	 */
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
 		LP_Debug::logTime( __FUNCTION__ );
-
 		if ( $user_id != LP()->session->guest_user_id ) {
 			// Check if user is existing
 			if ( $current && ! get_user_by( 'id', $user_id ) ) {
