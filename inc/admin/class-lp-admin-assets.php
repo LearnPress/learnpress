@@ -66,27 +66,41 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp-vue'                            => array(
 					'url'     => self::url( 'js/vendor/vue' . $min . '.js' ),
 					'ver'     => '2.5.16',
-					'deps'    => array( 'lp-vuex', 'lp-vue-resource', 'lp-vuedraggable' ),
 					'screens' => array(
-						'learnpress_page_learn-press-tools'
+						'learnpress'
 					)
 				),
 				'lp-vuex'                           => array(
-					'url' => self::url( 'js/vendor/vuex.js' ),
-					'ver' => '3.1.0'
+					'url'  => self::url( 'js/vendor/vuex.js' ),
+					'ver'  => '3.1.0',
+					'deps' => array( 'lp-vue' ),
+					'screens' => array(
+						'learnpress'
+					)
 				),
 				'lp-vue-resource'                   => array(
-					'url' => self::url( 'js/vendor/vue-resource.js' ),
-					'ver' => '1.3.4'
+					'url'  => self::url( 'js/vendor/vue-resource.js' ),
+					'ver'  => '1.3.4',
+					'deps' => array( 'lp-vue' ),
+					'screens' => array(
+						'learnpress'
+					)
 				),
 				'lp-sortable'                       => array(
-					'url' => self::url( 'js/vendor/sortable.js' ),
-					'ver' => '1.6.0'
+					'url'  => self::url( 'js/vendor/sortable.js' ),
+					'ver'  => '1.6.0',
+					'deps' => array( 'lp-vue' ),
+					'screens' => array(
+						'learnpress'
+					)
 				),
 				'lp-vuedraggable'                   => array(
 					'url'  => self::url( 'js/vendor/vuedraggable.js' ),
 					'ver'  => '2.14.1',
-					'deps' => array( 'lp-sortable' )
+					'deps' => array( 'lp-vue', 'lp-sortable' ),
+					'screens' => array(
+						'learnpress'
+					)
 				),
 				'learn-press-global'                => array(
 					'url'     => $this->url( 'js/global.js' ),
@@ -174,7 +188,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'deps' => array( 'lp-vue' )
 				),
 				'learn-press-chartjs'               => array(
-					'url'    => $this->url( 'js/vendor/chart.min.js' ),
+					'url'     => $this->url( 'js/vendor/chart.min.js' ),
 					'screens' => 'dashboard'
 				)
 			)
