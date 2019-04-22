@@ -199,6 +199,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.5.4 =
+~ Fixed load js missing dependencies and only in LP page.
+
 = 3.2.5.3 =
 ~ Changed SQL to read course items by user item ID.
 ~ Improved performance in admin orders page.
