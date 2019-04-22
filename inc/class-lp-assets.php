@@ -175,6 +175,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				}*/
 				$enqueue = apply_filters( 'learn-press/enqueue-script', $enqueue, $handle );
 				if ( $handle == 'font-awesome' || $enqueue ) {
+					wp_enqueue_script('jquery');
 					wp_enqueue_script( $handle );
 				}
 			}

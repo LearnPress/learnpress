@@ -126,6 +126,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 			//$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );
 
 			//$this->emails['LP_Email_Enrolled_Course_Admin']     = include( 'emails/class-lp-email-enrolled-course-admin.php' );
+			do_action_ref_array( 'learn-press/register-emails', array( &$this->emails, $this ) );
 		}
 
 
