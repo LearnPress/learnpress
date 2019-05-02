@@ -505,8 +505,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			preg_match( "#{$wpdb->posts}\.post_author IN\s*\((\d+)\)#", $where, $matches );
 			if ( ! empty( $matches ) && isset( $matches[1] ) ) {
 				$author_id = intval( $matches[1] );
-				$sql   = " pm1.meta_value = %d ";
-				$sql   = $wpdb->prepare( $sql, $author_id );
+				$sql   = " ( pm1.meta_value = %d OR pm1.meta_value LIKE %s)";
+				$sql   = $wpdb->prepare( $sql, $author_id, '%"' . $wpdb->esc_like( $author_id ) . '"%' );
 				$where = str_replace( $matches[0], $sql, $where );
 			}
 
@@ -965,6 +965,20 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * Register new post status for order
 		 */
 		public function register_post_statues() {
+			if(isset($_GET['debug_x'])){
+				global $wpdb;
+				$user_id = get_current_user_id();
+				if ( empty( $wpdb->learnpress_user_items ) ) {
+					return;
+				}
+				$user_id = 67975;
+				$query = $wpdb->prepare( "
+						SELECT oi.order_id FROM `{$wpdb->learnpress_order_items}` as oi
+						INNER JOIN `{$wpdb->posts}` as post ON oi.order_id = post.ID AND post.post_status LIKE %s 
+						",
+					'lp_completed' );
+				echo'<pre>';print_r($wpdb->get_col( $query ));die;
+			}
 			$statuses = learn_press_get_register_order_statuses();
 			foreach ( $statuses as $status => $args ) {
 				register_post_status( $status, $args );
