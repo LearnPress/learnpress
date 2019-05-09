@@ -81,14 +81,14 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 				/**
 				 * If the instructor also is admin and email for admin is enabled
 				 */
-				$instructor_email = $instructor->get_email();
+				$instructor_email = $user->get_email();
 				$admin_email = apply_filters( 'learn-press/email/admin-email', get_option( 'admin_email' ));
 				$admin_email =LP()->settings->get( 'emails_new-order-admin.recipients', $admin_email );
 				if ( $user->is_admin() && $admin_email == $instructor_email && LP_Emails::get_email( 'new-order-admin' )->enable() ) {
 					continue;
 				}
 
-				$this->recipient     = $user->get_data( 'email' );
+				$this->recipient     = $instructor_email;
 				$this->instructor_id = $user_id;
 
 				$this->get_object();
