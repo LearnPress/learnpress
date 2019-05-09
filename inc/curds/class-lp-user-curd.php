@@ -501,6 +501,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$item_types     = learn_press_get_course_item_types();
 		$type_in_format = array_fill( 0, sizeof( $item_types ), '%s' );
 		$type_in        = $wpdb->prepare( join( ',', $type_in_format ), $item_types );
+		if ( is_user_logged_in() ) {
+			$user_inner_join = "INNER JOIN {$wpdb->users} u ON u.ID = X.user_id";
+		} else {
+			$user_inner_join = '';
+		}
 
 		/**
 		 * Get all items in table with the max user-item-id in each
@@ -513,7 +518,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
 			 ) AS X
 			INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id 
-			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id 
+			{$user_inner_join} 
 			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id 
 			WHERE ui.parent_id = %d
 			ORDER BY user_item_id ASC
