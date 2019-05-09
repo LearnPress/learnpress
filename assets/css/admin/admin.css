@@ -2961,7 +2961,9 @@
           padding: 10px 14px; }
       #lp-modal-choose-items .lp-choose-items .main .list-items {
         min-height: 260px;
-        margin: 0; }
+        margin: 0;
+        max-height: 460px;
+        overflow-y: auto; }
         #lp-modal-choose-items .lp-choose-items .main .list-items li {
           margin: 15px 0;
           cursor: pointer; }
