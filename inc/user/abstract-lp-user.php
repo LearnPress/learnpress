@@ -825,7 +825,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 			$course = learn_press_get_course( $course_id );
 
-			if ( false == ( $id = learn_press_get_user_item_meta( $course_data->get_user_item_id(), '_current_item', true ) ) ) {
+			if ( false == ( $id = learn_press_get_user_item_meta( $course_data->get_user_item_id(), '_current_item', true ) ) || $this->has_completed_item( $id, $course_id ) ) {
 
 				if ( $items = $course->get_items( '', false ) ) {
 					foreach ( $items as $item_id ) {
