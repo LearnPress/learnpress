@@ -199,6 +199,14 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.5.5 =
+~ Fixed guest can not start quiz with no require enroll course option.
+~ Fixed sql to filter orders by user ID.
+~ Fixed issue of sending email when finished course: not correct Grade.
+~ Fixed can not see Actions buttons when adding questions into the quiz.
+~ Fixed changed the logic of Continue button for Course: continue with the next incomplete item.
+~ Fixed wrong code to pick up instructor email.
+
 = 3.2.5.4 =
 ~ Fixed load js missing dependencies and only in LP page.
 
