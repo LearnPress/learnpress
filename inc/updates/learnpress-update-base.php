@@ -85,14 +85,14 @@ class LP_Update_Base {
 				if ( $callback == $step ) {
 					if ( is_callable( array( $this, $callback ) ) ) {
 
-						echo "Running " . get_class( $this ) . '::' . $callback, "\n";
+						$this->output( "Running " . get_class( $this ) . '::' . $callback . "\n" );
 						update_option( 'learnpress_updater_running_step', $step );
 						if ( $return = call_user_func( array( $this, $callback ) ) ) {
 							$this->_next_step();
 						}
 
 					} else {
-						echo "$callback failed";
+						$this->output( "$callback failed" );
 						$this->_next_step();
 					}
 
@@ -103,13 +103,13 @@ class LP_Update_Base {
 			}
 
 			if ( ! $called ) {
-				echo "Step {$step} not found";
+				$this->output( "Step {$step} not found" );
 				$this->_next_step();
 			}
 
 		}
 		catch ( Exception $exception ) {
-			echo $exception->getMessage();
+			$this->output( $exception->getMessage() );
 			LP_Debug::rollbackTransaction();
 		}
 
@@ -138,6 +138,14 @@ class LP_Update_Base {
 		$end_step = end( $this->steps );
 
 		return $step === $end_step;
+	}
+
+	protected function output( $content ) {
+		if ( ! learn_press_is_ajax() ) {
+			return;
+		}
+
+		print_r( $content );
 	}
 
 	/**
