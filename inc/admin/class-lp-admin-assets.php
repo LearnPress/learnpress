@@ -119,7 +119,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'admin'                             => array(
 					'url'  => $this->url( 'js/admin/admin.js' ),
-					'deps' => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' )
+					'deps' => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
+					'screens' => array( '*' )
 				),
 				'admin-tabs'                        => array(
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
