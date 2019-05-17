@@ -178,6 +178,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'deps'    => array(
 						'learn-press-modal-search-items',
 						'learn-press-modal-search-users',
+						'learn-press-utils',
 						'lp-vue'
 					),
 					'screens' => array( LP_ORDER_CPT )
