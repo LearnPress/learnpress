@@ -157,7 +157,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$time_diff = time() - $time;
 
 		if ( $human_diff_time && $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-			$h_time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
+			$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
 		} else {
 			$h_time = mysql2date( $format, $m_time );
 		}
