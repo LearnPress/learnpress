@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 5.0.2
-Stable tag: 3.2.5.4
+Stable tag: 3.2.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,13 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.5.6 =
+~ Added new strings for translating.
+~ Corrected currency of Rwandan franc.
+~ Fixed missing utils library when adding manually the orders.
+~ Fixed upgrade function that doesn't hide the message when it done.
+~ Fixed can't create new page in settings.
+
 = 3.2.5.5 =
 ~ Fixed guest can not start quiz with no require enroll course option.
 ~ Fixed sql to filter orders by user ID.
