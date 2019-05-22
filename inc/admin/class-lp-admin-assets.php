@@ -62,7 +62,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'wp-color-picker'                   => array(
 					'screens' => 'learnpress_page_learn-press-settings'
 				),
-				'select2'                           => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
+				'select2'                           => array(
+					'url'	=> LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
+				),
 				'lp-vue'                            => array(
 					'url'     => self::url( 'js/vendor/vue' . $min . '.js' ),
 					'ver'     => '2.5.16',
@@ -119,7 +121,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'admin'                             => array(
 					'url'  => $this->url( 'js/admin/admin.js' ),
-					'deps' => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' )
+					'deps' => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
+					'screens' => array( '*' )
 				),
 				'admin-tabs'                        => array(
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
@@ -175,6 +178,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'deps'    => array(
 						'learn-press-modal-search-items',
 						'learn-press-modal-search-users',
+						'learn-press-utils',
 						'lp-vue'
 					),
 					'screens' => array( LP_ORDER_CPT )
