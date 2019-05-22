@@ -1268,8 +1268,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$end              = strtotime( $sale_price_end );
 			$start            = strtotime( $sale_price_start );
 
-			learn_press_debug($now, $sale_price_end, $sale_price_start, $end,$start);
-
 			return ( ( $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
 		}
 
