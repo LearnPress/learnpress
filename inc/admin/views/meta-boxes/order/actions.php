@@ -26,9 +26,9 @@ defined( 'ABSPATH' ) || exit();
 				<?php
 				if ( current_user_can( "delete_post", $post->ID ) ) {
 					if ( ! EMPTY_TRASH_DAYS ) {
-						$delete_text = __( 'Delete Permanently' );
+						$delete_text = __( 'Delete Permanently', 'learnpress' );
 					} else {
-						$delete_text = __( 'Move to Trash' );
+						$delete_text = __( 'Move to Trash', 'learnpress' );
 					} ?>
                     <a class="submitdelete deletion" href="<?php echo get_delete_post_link( $post->ID ); ?>">
 						<?php echo $delete_text; ?>

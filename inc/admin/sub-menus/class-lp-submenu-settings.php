@@ -60,7 +60,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 					break;
 				case 'emails':
 					$sections       = array(
-						'new_course' => __( 'New course' )
+						'new_course' => __( 'New course', 'learnpress' )
 					);
 					$this->sections = apply_filters( 'learn-press/admin/page-settings/emails/sections', $sections );
 					break;

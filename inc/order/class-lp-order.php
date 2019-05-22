@@ -144,7 +144,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						$time_diff = time() - $time;
 
 						if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-							$date = sprintf( __( '%s ago' ), human_time_diff( $time ) );
+							$date = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
 						} else {
 							$date = mysql2date( get_option( 'date_format' ), $m_time );
 						}

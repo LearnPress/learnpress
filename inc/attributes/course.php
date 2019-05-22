@@ -228,7 +228,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 				'edit'   => sprintf(
 					'<a href="%s" aria-label="%s" >%s </a > ',
 					esc_url( $edit_link ),
-					esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;' ), $tax->name ) ),
+					esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;', 'learnpress' ), $tax->name ) ),
 					__( 'Edit', 'learnpress' )
 				),
 				'delete' => sprintf(

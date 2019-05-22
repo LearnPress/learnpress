@@ -30,7 +30,9 @@ $instance = $this->instance;
 
     <div class="widget-body">
 		<?php foreach ( $courses as $course_id ) {
-
+			if ( ! $course_id ) {
+				continue;
+			}
 			$post = get_post( $course_id );
 			setup_postdata( $post );
 			$course = learn_press_get_course( $course_id );

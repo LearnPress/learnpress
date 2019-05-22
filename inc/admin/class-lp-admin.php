@@ -485,7 +485,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					'denied-request'
 				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id ) ) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
-					wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
+					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
 				} ?>
 
                 <div class="updated notice">
