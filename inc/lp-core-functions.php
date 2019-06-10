@@ -3385,7 +3385,8 @@ function learn_press_get_expired_courses() {
 			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
 			WHERE X.item_type = %s 
 				AND X.status = %s
-				AND expiration_time_gmt <= UTC_TIMESTAMP()
+				#AND expiration_time_gmt <= UTC_TIMESTAMP()
+				AND expiration_time <= UTC_TIMESTAMP()
 			LIMIT 0, 10
 		", LP_COURSE_CPT, 'enrolled' );
 

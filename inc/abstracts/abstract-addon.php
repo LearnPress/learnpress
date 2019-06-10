@@ -54,6 +54,8 @@ class LP_Addon {
 	 */
 	protected $_template_path = '';
 
+	protected static $on_activate_plugins = array();
+
 	/**
 	 * LP_Addon constructor.
 	 */

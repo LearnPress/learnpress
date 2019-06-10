@@ -368,7 +368,6 @@ abstract class LP_Abstract_Submenu {
 
 			// @since 3.x.x
 			do_action( 'learn-press/admin/after-page-content-sections', $page, $tab, $this );
-
 		}
 
 		echo '</div>';

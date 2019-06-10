@@ -1275,11 +1275,13 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 
 		if ( $quiz = LP_Global::course_item_quiz() ) {
 			$user = LP_Global::user();
+
 			if ( $user_quiz = $user->get_item_data( $quiz->get_id(), LP_Global::course( true ) ) ) {
 				$remaining_time = $user_quiz->get_time_remaining();
 			} else {
 				$remaining_time = false;
 			}
+
 			$args = array(
 				'id'            => $quiz->get_id(),
 				'totalTime'     => $quiz->get_duration()->get(),
@@ -1611,6 +1613,7 @@ if ( ! function_exists( 'learn_press_course_remaining_time' ) ) {
 		}
 
 		if ( false === ( $remain = $user->get_course_remaining_time( $course->get_id() ) ) ) {
+
 			return;
 		}
 
@@ -3804,7 +3807,7 @@ add_filter( 'learn-press/course-item-content-html', function ( $html, $item_id, 
 	$course_blocking = LP()->settings()->get( 'course_blocking' );
 	$course_data     = $user->get_course_data( $course_id );
 	$end_time        = $course_data->get_end_time_gmt();
-	$expired_time    = $course_data->get_expiration_time_gmt();
+	//$expired_time    = $course_data->get_expiration_time_gmt();
 	ob_start();
 
 	switch ( $course_blocking ) {
@@ -3825,6 +3828,8 @@ add_filter( 'learn-press/course-item-content-html', function ( $html, $item_id, 
 			if ( $course_data->is_exceeded() || $user->has_finished_course( $course_id ) ) {
 				$html = __( 'Course duration is expired or you finished course. Please contact admin site.', 'learnpress' );
 			}
+
+			var_dump($course_data->is_exceeded() , $user->has_finished_course( $course_id ) );
 		default:
 
 	}

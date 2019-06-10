@@ -52,6 +52,11 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
                 <input type="number" size="3" value="<?php echo $answer_range[1]; ?>" min="1" max="10"
                        name="answer-range[]">
             </li>
+            <li>
+                <p><?php esc_html_e( 'Course price', 'learnpress' ); ?></p>
+                <input type="number" size="3" value="" min="0"
+                       name="course-price">
+            </li>
         </ul>
     </fieldset>
 

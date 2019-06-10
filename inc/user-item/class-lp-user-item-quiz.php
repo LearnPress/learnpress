@@ -239,12 +239,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					if ( false === $check['answered'] ) {
 						if ( $quiz->get_minus_skip_questions() ) {
 							// minus for each wrong, empty question
-							$result['user_mark'] -= floatval($quiz->get_minus_points());
+							$result['user_mark'] -= floatval( $quiz->get_minus_points() );
 						}
 						$result['question_empty'] ++;
 					} else {
 						// minus for each wrong, empty question
-						$result['user_mark'] -= floatval($quiz->get_minus_points());
+						$result['user_mark'] -= floatval( $quiz->get_minus_points() );
 						$result['question_wrong'] ++;
 					}
 				}
@@ -392,23 +392,30 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	/**
 	 * Return time remaining.
 	 *
+	 * @param string $return - Optional.
+	 *
 	 * @return LP_Duration
 	 */
-	public function get_time_remaining() {
-		$quiz          = learn_press_get_quiz( $this->get_item_id() );
-		$quiz_duration = $quiz->get_duration();
-		$diff          = false;
-		if ( $quiz_duration && $quiz_duration->get_seconds() >= 0 ) {
-			$diff = current_time( 'timestamp' ) - $this->get_start_time()->getTimestamp();
-			$diff = $quiz_duration->diff( $diff )->get_seconds();
-			if ( $diff <= 0 ) {
-				$diff = 0;
-			}
-		}
+	public function get_time_remaining( $return = 'object' ) {
 
-		$remaining = $diff !== false ? new LP_Duration( $diff ) : false;
+		$time = parent::get_time_remaining( $return );
 
-		return apply_filters( 'learn-press/quiz/time-remaining', $remaining, $this->get_item_id(), $this->get_course_id() );
+		return apply_filters( 'learn-press/quiz/time-remaining', $time, $this->get_item_id(), $this->get_course_id(), $this->get_user_id() );
+
+//		$quiz          = learn_press_get_quiz( $this->get_item_id() );
+//		$quiz_duration = $quiz->get_duration();
+//		$diff          = false;
+//		if ( $quiz_duration && $quiz_duration->get_seconds() >= 0 ) {
+//			$diff = current_time( 'timestamp' ) - $this->get_start_time()->getTimestamp();
+//			$diff = $quiz_duration->diff( $diff )->get_seconds();
+//			if ( $diff <= 0 ) {
+//				$diff = 0;
+//			}
+//		}
+//
+//		$remaining = $diff !== false ? new LP_Duration( $diff ) : false;
+//
+//		return apply_filters( 'learn-press/quiz/time-remaining', $remaining, $this->get_item_id(), $this->get_course_id() );
 	}
 
 	/**
@@ -573,8 +580,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return apply_filters( 'learn-press/user-quiz/can-hint-answer', $can, $this->get_id(), $this->get_course_id() );
 	}
 
-	public function complete($status = 'completed'){
-		parent::complete($status);
+	public function complete( $status = 'completed' ) {
+		parent::complete( $status );
 		$this->update();
 	}
 
@@ -582,7 +589,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @deprecated
 	 */
 	public function finish() {
-		$this->complete('completed');
+		$this->complete( 'completed' );
 	}
 
 	public function is_review_questions() {

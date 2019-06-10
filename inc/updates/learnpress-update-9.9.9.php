@@ -54,6 +54,11 @@ class LP_Update_999 extends LP_Update_Base {
      		 ADD `expiration_time_gmt` DATETIME NULL DEFAULT NULL AFTER `expiration_time`;
 		";
 
+		$query = "
+     		 ALTER TABLE `{$wpdb->prefix}learnpress_user_items` 
+     		 ADD `expiration_time` DATETIME NULL DEFAULT NULL AFTER `end_time_gmt`;
+		";
+
 		$wpdb->query( $query );
 
 		return true;
@@ -91,13 +96,13 @@ class LP_Update_999 extends LP_Update_Base {
 				foreach ( $course_items as $course_item ) {
 					$date                = new LP_Datetime( $course_item->start_time );
 					$expiration_time     = $date->getPeriod( $course->duration );
-					$expiration_time_gmt = $date->toSql( false );
+					//$expiration_time_gmt = $date->toSql( false );
 
 					$query = $wpdb->prepare( "
 						UPDATE {$wpdb->learnpress_user_items}
-						SET expiration_time = %s, expiration_time_gmt = %s
+						SET expiration_time = %s ##, expiration_time_gmt = %s
 						WHERE item_id = %d
-					", $expiration_time, $expiration_time_gmt, $course->ID );
+					", $expiration_time, /*$expiration_time_gmt,*/ $course->ID );
 
 					$wpdb->query($query);
 

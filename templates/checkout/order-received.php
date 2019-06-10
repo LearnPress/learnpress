@@ -4,18 +4,19 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/checkout/order-received.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.9
+ * @version  3.x.x
  */
 
 /**
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php
+/**
+ * @var LP_Course $_course
+ */
 if ( isset( $order ) ) {
 
 	if ( is_int( $order ) ) {
@@ -39,10 +40,13 @@ if ( isset( $order ) ) {
 				$items = $order->get_items();
 				$count = sizeof( $items );
 				foreach ( $items as $item ) {
-					if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+
+					$_course = apply_filters( 'learn-press/order-received/item-product', learn_press_get_course( $item['course_id'] ) );
+
+					if ( ! $_course ) {
 						$links[] = __( 'Course does not exist', 'learnpress' );
 					} else {
-						$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
+						$link = '<a href="' . $_course->get_permalink() . '">' . $_course->get_title() . ' (#' . $_course->get_id() . ')' . '</a>';
 						if ( $count > 1 ) {
 							$link = sprintf( '<li>%s</li>', $link );
 						}
@@ -78,6 +82,18 @@ if ( isset( $order ) ) {
                 </td>
             </tr>
 		<?php endif; ?>
+
+		<?php
+		/**
+		 * @since 3.x.x
+		 */
+		?>
+        <tr class="status">
+            <th><?php _e( 'Status', 'learnpress' ); ?></th>
+            <td>
+                <strong><?php echo $order->get_status(); ?></strong>
+            </td>
+        </tr>
     </table>
 
 	<?php do_action( 'learn-press/order/received/' . $order->payment_method, $order->id ); ?>

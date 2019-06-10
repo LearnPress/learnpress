@@ -66,7 +66,7 @@ class LP_Page_Controller {
 	public function auto_shortcode( $template ) {
 		global $post;
 		$the_post = $post;
-		if ( is_page( $the_post->ID ) ) {
+		if ( $the_post && is_page( $the_post->ID ) ) {
 
 			// Filter here to insert the shortcode
 			$auto_shortcodes = apply_filters( 'learn-press/auto-shortcode-pages', array() );

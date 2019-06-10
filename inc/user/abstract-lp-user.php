@@ -413,18 +413,20 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$quiz_data->set_user_id( $user->get_id() );
 
 				$date = new LP_Datetime();
-				$quiz_data->set_start_time( $date->toSql() );
+				$quiz_data->set_start_time( $date->toSql(), true );
 
 				/**
 				 * If enable duration for quiz then update the expiration time
 				 * otherwise, consider quiz is lifetime access.
 				 */
-				if ( $quiz->get_duration()->get_seconds() ) {
-					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds() ), true );
-				} else {
-					$quiz_data->set_expiration_time( null );
-					$quiz_data->set_expiration_time_gmt( null );
-				}
+				$expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
+
+//				if ( $quiz->get_duration()->get_seconds() ) {
+//					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds(), false ) );
+//				} else {
+//					$quiz_data->set_expiration_time( null );
+//					//$quiz_data->set_expiration_time_gmt( null );
+//				}
 
 				if ( $quiz_data->update() ) {
 					$course_data->set_item( $quiz_data );
@@ -578,18 +580,24 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$quiz_data->set_status( 'started' );
 
 				$date = new LP_Datetime();
-				$quiz_data->set_start_time( $date->toSql() );
+				$quiz_data->set_start_time( $date->toSql(), true );
+				$quiz_data->set_end_time( null );
+				$quiz_data->set_end_time_gmt( null );
 
 				/**
 				 * If enable duration for quiz then update the expiration time
 				 * otherwise, consider quiz is lifetime access.
 				 */
-				if ( $quiz->get_duration()->get_seconds() ) {
-					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds() ), true );
-				} else {
-					$quiz_data->set_expiration_time( null );
-					$quiz_data->set_expiration_time_gmt( null );
-				}
+
+				$expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
+				LP_Debug::instance()->add( [ $expiration, $quiz->get_duration()->get_seconds() ], '', '', true );
+
+//				if ( $quiz->get_duration()->get_seconds() ) {
+//					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds() ), true );
+//				} else {
+//					$quiz_data->set_expiration_time( null );
+//					//$quiz_data->set_expiration_time_gmt( null );
+//				}
 
 				if ( $create_new_item ) {
 					$quiz_data->set_user_item_id( 0 );
@@ -1983,7 +1991,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$course_data->set_expiration_time( $start_time->getPeriod( $duration ), true );
 				} else {
 					$course_data->set_expiration_time( '' );
-					$course_data->set_expiration_time_gmt( '' );
+					//$course_data->set_expiration_time_gmt( '' );
 				}
 
 				if ( $result = $course_data->update() ) {
@@ -2511,8 +2519,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				// Added since 3.x.x
 				if ( $course_duration ) {
-					$user_course->set_expiration_time( $date->getPeriod( $course_duration ) );
-					$user_course->set_expiration_time_gmt( $date->getPeriod( $course_duration, false ) );
+					// Expiration is GTM time
+					$expiration = new LP_Datetime( $date->getPeriod( $course_duration, false ) );
+					$user_course->set_expiration_time( $expiration->toSql() );
 				}
 
 				if ( ! $user_course->update() ) {

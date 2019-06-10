@@ -128,6 +128,10 @@ class LP_Install_Sample_Data {
 
 			$this->create_sections( $course_id );
 
+			if ( $price = LP_Request::get( 'course-price' ) ) {
+				update_post_meta( $course_id, '_lp_price', $price );
+			}
+
 			?>
             <div class="lp-install-sample-data-response">
 				<?php printf( __( 'Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
@@ -140,7 +144,8 @@ class LP_Install_Sample_Data {
 
 			LP_Debug::commitTransaction();
 
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 
 			echo $ex->getMessage();
@@ -181,7 +186,8 @@ class LP_Install_Sample_Data {
 
 				$this->_delete_post( $post->ID );
 			}
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 			echo "Error: " . $ex->getMessage();
 		}
@@ -267,13 +273,13 @@ class LP_Install_Sample_Data {
 
 		$p = array();
 
-		while ( $words && sizeof($p) < self::$max_content_paragraph ) {
+		while ( $words && sizeof( $p ) < self::$max_content_paragraph ) {
 			$len = rand( 10, 20 );
 			$cut = array_splice( $words, 0, $len );
 			$p[] = '<p>' . ucfirst( join( ' ', $cut ) ) . '</p>';
 		}
 
-		return join('', $p);
+		return join( '', $p );
 	}
 
 	/**
@@ -358,7 +364,7 @@ class LP_Install_Sample_Data {
 	 * Create section.
 	 *
 	 * @param string $name
-	 * @param int $course_id
+	 * @param int    $course_id
 	 *
 	 * @return int
 	 */
@@ -419,8 +425,8 @@ class LP_Install_Sample_Data {
 	 * Create lesson.
 	 *
 	 * @param string $name
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param int    $section_id
+	 * @param int    $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -460,8 +466,8 @@ class LP_Install_Sample_Data {
 	 * Create quiz.
 	 *
 	 * @param string $name
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param int    $section_id
+	 * @param int    $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -566,7 +572,7 @@ class LP_Install_Sample_Data {
 	/**
 	 * Create answers for a question.
 	 *
-	 * @param int $question_id
+	 * @param int    $question_id
 	 * @param string $type
 	 */
 	protected function create_question_answers( $question_id, $type ) {

@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/checkout/review-order.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -59,12 +59,12 @@ defined( 'ABSPATH' ) || exit();
 
 			$cart_item = apply_filters( 'learn-press/review-order/cart-item', $cart_item );
 			$item_id   = $cart_item['item_id'];
-			$_course   = learn_press_get_course( $item_id );
+			$_course   = apply_filters( 'learn-press/review-order/cart-item-product', learn_press_get_course( $item_id ), $cart_item );
 
 			if ( $_course && 0 < $cart_item['quantity'] ) {
 				?>
                 <tr class="<?php echo esc_attr( apply_filters( 'learn-press/review-order/cart-item-class', 'cart-item', $cart_item, $cart_item_key ) ); ?>">
-                    <?php
+					<?php
 					/**
 					 * @deprecated
 					 */

@@ -108,7 +108,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			if ( is_numeric( $date ) ) {
 				$date = date( 'Y-m-d H:i:s', $date );
 			}
-			$this->set_data_date( 'order_date', $date );
+			$this->_set_data_date( 'order_date', $date );
+
 		}
 
 		/**
@@ -1137,7 +1138,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param mixed $date
 		 */
 		public function set_date_modified( $date ) {
-			$this->_set_data( 'date_modified', $date );
+			$this->_set_data_date( 'date_modified', $date );
 		}
 
 		/**
