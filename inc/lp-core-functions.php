@@ -538,7 +538,7 @@ function learn_press_setup_pages() {
 		}
 
 		$query = $wpdb->prepare( "
-			SELECT ID, post_title, post_name, post_content, post_parent, post_type
+			SELECT ID, post_title, post_name, post_date, post_date_gmt, post_modified, post_modified_gmt, post_content, post_parent, post_type
 			FROM {$wpdb->posts}
 			WHERE %d AND ID IN(" . join( ',', $page_ids ) . ")
 			AND post_status <> %s
