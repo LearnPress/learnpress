@@ -1047,6 +1047,8 @@
   .learnpress .rwmb-field .description {
     margin-top: 8px;
     color: #888; }
+    .learnpress .rwmb-field .description.err {
+      color: #FF0000; }
   .learnpress .rwmb-field .rwmb-input-list {
     margin-left: 0; }
   .learnpress .rwmb-field.rwmb-heading-wrapper h4 {
