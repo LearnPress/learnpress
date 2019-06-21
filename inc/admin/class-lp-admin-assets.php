@@ -59,18 +59,18 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
-				'wp-color-picker'                   => array(
+				'wp-color-picker'    => array(
 					'screens' => 'learnpress_page_learn-press-settings'
 				),
-				'select2'                           => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
-				'lp-vue'                            => array(
+				'select2'            => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
+				'lp-vue'             => array(
 					'url'     => self::url( 'js/vendor/vue' . $min . '.js' ),
 					'ver'     => '2.5.16',
 					'screens' => array(
 						'learnpress'
 					)
 				),
-				'lp-vuex'                           => array(
+				'lp-vuex'            => array(
 					'url'     => self::url( 'js/vendor/vuex.js' ),
 					'ver'     => '3.1.0',
 					'deps'    => array( 'lp-vue' ),
@@ -78,7 +78,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'lp-vue-resource'                   => array(
+				'lp-vue-resource'    => array(
 					'url'     => self::url( 'js/vendor/vue-resource.js' ),
 					'ver'     => '1.3.4',
 					'deps'    => array( 'lp-vue' ),
@@ -86,7 +86,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'lp-sortable'                       => array(
+				'lp-sortable'        => array(
 					'url'     => self::url( 'js/vendor/sortable.js' ),
 					'ver'     => '1.6.0',
 					'deps'    => array( 'lp-vue' ),
@@ -94,7 +94,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'lp-vuedraggable'                   => array(
+				'lp-vuedraggable'    => array(
 					'url'     => self::url( 'js/vendor/vuedraggable.js' ),
 					'ver'     => '2.14.1',
 					'deps'    => array( 'lp-vue', 'lp-sortable' ),
@@ -102,7 +102,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'learn-press-global'                => array(
+				'learn-press-global' => array(
 					'url'     => $this->url( 'js/global.js' ),
 					'deps'    => array(
 						'jquery',
@@ -113,7 +113,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					'screens' => array( 'learnpress' )
 				),
-				'learn-press-utils'                 => array(
+				'learn-press-utils'  => array(
 					'url'  => $this->url( 'js/admin/utils.js' ),
 					'deps' => array( 'jquery' )
 				),
@@ -122,23 +122,26 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 //					'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
 //					'screens' => array( 'learnpress' )
 //				),
-				'admin-tabs'                        => array(
+				'admin-tabs'         => array(
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'lp-admin'                          => array(
-					'url'  => $this->url( 'js/admin/admin.js' ),
-					'deps' => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
-					'screens' => array( '*' )
-				),
-				'lp-admin-tabs'                     => array(
+
+				'lp-admin-tabs' => array(
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'tipsy'                             => array(
+				'tipsy'         => array(
 					'url'  => $this->url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
 					'deps' => array( 'jquery' )
 				),
+
+				'lp-admin' => array(
+					'url'     => $this->url( 'js/admin/admin.js' ),
+					'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker', 'tipsy' ),
+					'screens' => array( '*' )
+				),
+
 				'learn-press-admin-course-editor'   => array(
 					'url'     => $this->url( 'js/admin/course-editor.js' ),
 					'deps'    => array(
