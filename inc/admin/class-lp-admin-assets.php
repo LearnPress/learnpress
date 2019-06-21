@@ -71,33 +71,33 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					)
 				),
 				'lp-vuex'                           => array(
-					'url'  => self::url( 'js/vendor/vuex.js' ),
-					'ver'  => '3.1.0',
-					'deps' => array( 'lp-vue' ),
+					'url'     => self::url( 'js/vendor/vuex.js' ),
+					'ver'     => '3.1.0',
+					'deps'    => array( 'lp-vue' ),
 					'screens' => array(
 						'learnpress'
 					)
 				),
 				'lp-vue-resource'                   => array(
-					'url'  => self::url( 'js/vendor/vue-resource.js' ),
-					'ver'  => '1.3.4',
-					'deps' => array( 'lp-vue' ),
+					'url'     => self::url( 'js/vendor/vue-resource.js' ),
+					'ver'     => '1.3.4',
+					'deps'    => array( 'lp-vue' ),
 					'screens' => array(
 						'learnpress'
 					)
 				),
 				'lp-sortable'                       => array(
-					'url'  => self::url( 'js/vendor/sortable.js' ),
-					'ver'  => '1.6.0',
-					'deps' => array( 'lp-vue' ),
+					'url'     => self::url( 'js/vendor/sortable.js' ),
+					'ver'     => '1.6.0',
+					'deps'    => array( 'lp-vue' ),
 					'screens' => array(
 						'learnpress'
 					)
 				),
 				'lp-vuedraggable'                   => array(
-					'url'  => self::url( 'js/vendor/vuedraggable.js' ),
-					'ver'  => '2.14.1',
-					'deps' => array( 'lp-vue', 'lp-sortable' ),
+					'url'     => self::url( 'js/vendor/vuedraggable.js' ),
+					'ver'     => '2.14.1',
+					'deps'    => array( 'lp-vue', 'lp-sortable' ),
 					'screens' => array(
 						'learnpress'
 					)
@@ -126,12 +126,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
 					'deps' => array( 'jquery' )
 				),
-				'lp-admin'                          => array(
-					'url'  => $this->url( 'js/admin/admin.js' ),
-					'deps' => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
-					'screens' => array( 'learnpress' )
-				),
-				'lp-admin-tabs'                     => array(
+
+				'lp-admin-tabs' => array(
 					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
 					'deps' => array( 'jquery' )
 				),
@@ -139,6 +135,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
 					'deps' => array( 'jquery' )
 				),
+
+				'lp-admin' => array(
+					'url'     => $this->url( 'js/admin/admin.js' ),
+					'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker', 'tipsy' ),
+					'screens' => array( '*' )
+				),
+
 				'learn-press-admin-course-editor'   => array(
 					'url'     => $this->url( 'js/admin/course-editor.js' ),
 					'deps'    => array(
