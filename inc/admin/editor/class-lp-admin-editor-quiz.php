@@ -68,7 +68,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 	 */
 	public function get_question_data_to_quiz_editor( $question, $object = false, $args = array() ) {
 
-		if ( ! $object ) {
+		if ( ! $object || ! $question ) {
 			if ( get_post_type( $question ) !== LP_QUESTION_CPT ) {
 				return array();
 			}
