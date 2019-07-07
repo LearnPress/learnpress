@@ -290,11 +290,13 @@ var LP_List_Quiz_Questions_Store = (function (helpers, data, $) {
                 return question;
             });
         },
-        'SORT_QUESTION_ANSWERS': function (state, orders) {
+        'SORT_QUESTION_ANSWERS': function (state, data) {
             state.questions = state.questions.map(function (question) {
-                question.answers.answer_order = orders[question.answers.question_answer_id];
+                if (parseInt(question.id) === data.id) {
+                    question.answers = data.answers;
+                }
                 return question;
-            })
+            });
         },
         'ADD_QUESTION_ANSWER': function (state, payload) {
             state.questions = state.questions.map(function (question) {
