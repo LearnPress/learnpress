@@ -341,7 +341,8 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		}
 
 		// sort answer
-		$this->result = $this->question_curd->sort_answers( $question_id, $order );
+		$question = $this->question_curd->sort_answers( $question_id, $order );
+		$this->result = $this->get_question_data_to_quiz_editor( $question, true );
 
 		return true;
 	}
