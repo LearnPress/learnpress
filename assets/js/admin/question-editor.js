@@ -156,7 +156,7 @@ var $VueHTTP = Vue.http;
                 function (response) {
                     var result = response.body;
                     if (result.success) {
-                        // context.commit('SET_ANSWERS', result.data);
+                        context.commit('SET_ANSWERS', result.data);
                     }
                 }
             )
