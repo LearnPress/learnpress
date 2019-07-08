@@ -345,6 +345,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/class-lp-widget.php';
 
+			// REST APIs
+			require_once 'inc/abstracts/abstract-api.php';
+			require_once 'inc/abstracts/abstract-rest-controller.php';
+
 			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
 				include_once 'local-debug.php';
 			}

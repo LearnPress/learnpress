@@ -541,8 +541,6 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		}
 	}
 
-	learn_press_debug( $data );
-
 	// If $where is not empty consider we are updating
 	if ( $where ) {
 		$updated = $wpdb->update(

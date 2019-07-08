@@ -2,7 +2,7 @@
  * Common functions/utils used in all page
  */
 if (typeof window.LP == 'undefined') {
-	window.LP = window.LearnPress = {};
+    window.LP = window.LearnPress = {};
 }
 
 
@@ -119,38 +119,38 @@ if (typeof window.LP == 'undefined') {
             var keys = this.name.match(validate),
                 objPath = "indexed['" + match[0] + "']";
 
-			if (keys) {
-				if (typeof indexed[match[0]] != 'object') {
-					indexed[match[0]] = {};
-				}
+            if (keys) {
+                if (typeof indexed[match[0]] != 'object') {
+                    indexed[match[0]] = {};
+                }
 
-				$.each(keys, function (i, prop) {
-					prop = prop.replace(/\]|\[/g, '');
-					var rawPath = objPath.replace(/'|\[|\]/g, ''),
-						objExp = '',
-						preObjPath = objPath;
+                $.each(keys, function (i, prop) {
+                    prop = prop.replace(/\]|\[/g, '');
+                    var rawPath = objPath.replace(/'|\[|\]/g, ''),
+                        objExp = '',
+                        preObjPath = objPath;
 
-					if (prop == '') {
-						if (arrayKeys[rawPath] == undefined) {
-							arrayKeys[rawPath] = 0;
-						} else {
-							arrayKeys[rawPath]++;
-						}
-						objPath += "['" + arrayKeys[rawPath] + "']";
-					} else {
-						if (!isNaN(prop)) {
-							arrayKeys[rawPath] = prop;
-						}
-						objPath += "['" + prop + "']";
-					}
-					try {
-						if (i == keys.length - 1) {
-							objExp = objPath + "=that.value;";
-							end = true;
-						} else {
-							objExp = objPath + "={}";
-							end = false;
-						}
+                    if (prop == '') {
+                        if (arrayKeys[rawPath] == undefined) {
+                            arrayKeys[rawPath] = 0;
+                        } else {
+                            arrayKeys[rawPath]++;
+                        }
+                        objPath += "['" + arrayKeys[rawPath] + "']";
+                    } else {
+                        if (!isNaN(prop)) {
+                            arrayKeys[rawPath] = prop;
+                        }
+                        objPath += "['" + prop + "']";
+                    }
+                    try {
+                        if (i == keys.length - 1) {
+                            objExp = objPath + "=that.value;";
+                            end = true;
+                        } else {
+                            objExp = objPath + "={}";
+                            end = false;
+                        }
 
                         var evalString = "" +
                             "if( typeof " + objPath + " == 'undefined'){" + objExp + ";" +
@@ -199,166 +199,166 @@ if (typeof window.LP == 'undefined') {
                         position.left += left;
                     } else {
 
-					}
-					if ($.isNumeric(top)) {
-						position.top += top;
-					} else {
+                    }
+                    if ($.isNumeric(top)) {
+                        position.top += top;
+                    } else {
 
-					}
-				}
-				$tooltip.css({
-					top : position.top,
-					left: position.left
-				});
-				$tooltip.fadeIn();
-			}, function () {
-				$tooltip && $tooltip.remove();
-			});
-			$el.data('tooltip', true);
-		});
-	};
-	$.fn.hasEvent = function (name) {
-		var events = $(this).data('events');
-		if (typeof events.LP == 'undefined') {
-			return false;
-		}
-		for (i = 0; i < events.LP.length; i++) {
-			if (events.LP[i].namespace == name) {
-				return true;
-			}
-		}
-		return false;
-	};
-	$.fn.dataToJSON = function () {
-		var json = {};
-		$.each(this[0].attributes, function () {
-			var m = this.name.match(/^data-(.*)/);
-			if (m) {
-				json[m[1]] = this.value;
-			}
-		});
-		return json;
-	};
+                    }
+                }
+                $tooltip.css({
+                    top: position.top,
+                    left: position.left
+                });
+                $tooltip.fadeIn();
+            }, function () {
+                $tooltip && $tooltip.remove();
+            });
+            $el.data('tooltip', true);
+        });
+    };
+    $.fn.hasEvent = function (name) {
+        var events = $(this).data('events');
+        if (typeof events.LP == 'undefined') {
+            return false;
+        }
+        for (i = 0; i < events.LP.length; i++) {
+            if (events.LP[i].namespace == name) {
+                return true;
+            }
+        }
+        return false;
+    };
+    $.fn.dataToJSON = function () {
+        var json = {};
+        $.each(this[0].attributes, function () {
+            var m = this.name.match(/^data-(.*)/);
+            if (m) {
+                json[m[1]] = this.value;
+            }
+        });
+        return json;
+    };
 
-	String.prototype.getQueryVar = function (name) {
-		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-			results = regex.exec(this);
-		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-	};
-	String.prototype.addQueryVar = function (name, value) {
-		var url = this,
-			m = url.split('#');
-		url = m[0];
-		if (name.match(/\[/)) {
-			url += url.match(/\?/) ? '&' : '?';
-			url += name + '=' + value;
-		} else {
-			if ((url.indexOf('&' + name + '=') != -1) || (url.indexOf('?' + name + '=') != -1)) {
-				url = url.replace(new RegExp(name + "=([^&#]*)", 'g'), name + '=' + value);
-			} else {
-				url += url.match(/\?/) ? '&' : '?';
-				url += name + '=' + value;
-			}
-		}
-		return url + (m[1] ? '#' + m[1] : '');
-	};
-	String.prototype.removeQueryVar = function (name) {
-		var url = this;
-		var m = url.split('#');
-		url = m[0];
-		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
-		url = url.replace(regex, '');
-		return url + (m[1] ? '#' + m[1] : '');
-	};
+    String.prototype.getQueryVar = function (name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(this);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    };
+    String.prototype.addQueryVar = function (name, value) {
+        var url = this,
+            m = url.split('#');
+        url = m[0];
+        if (name.match(/\[/)) {
+            url += url.match(/\?/) ? '&' : '?';
+            url += name + '=' + value;
+        } else {
+            if ((url.indexOf('&' + name + '=') != -1) || (url.indexOf('?' + name + '=') != -1)) {
+                url = url.replace(new RegExp(name + "=([^&#]*)", 'g'), name + '=' + value);
+            } else {
+                url += url.match(/\?/) ? '&' : '?';
+                url += name + '=' + value;
+            }
+        }
+        return url + (m[1] ? '#' + m[1] : '');
+    };
+    String.prototype.removeQueryVar = function (name) {
+        var url = this;
+        var m = url.split('#');
+        url = m[0];
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
+        url = url.replace(regex, '');
+        return url + (m[1] ? '#' + m[1] : '');
+    };
 
-	if ($.isEmptyObject("") == false) {
-		$.isEmptyObject = function (a) {
-			for (prop in a) {
-				if (a.hasOwnProperty(prop)) {
-					return false;
-				}
-			}
-			return true;
-		};
-	}
+    if ($.isEmptyObject("") == false) {
+        $.isEmptyObject = function (a) {
+            for (prop in a) {
+                if (a.hasOwnProperty(prop)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    }
 
-	LP.MessageBox = {
-		/*
-		 *
-		 */
-		$block         : null,
-		$window        : null,
-		events         : {},
-		instances      : [],
-		instance       : null,
-		quickConfirm   : function (elem, args) {
-			var $e = $(elem);
-			$('[learn-press-quick-confirm]').each(function () {
-				( $ins = $(this).data('quick-confirm') ) && ( console.log($ins), $ins.destroy() );
-			});
-			!$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
-				new (function (elem, args) {
-					var $elem = $(elem),
-						$div = $('<span class="learn-press-quick-confirm"></span>').insertAfter($elem), //($(document.body)),
-						offset = $(elem).position() || {left: 0, top: 0},
-						timerOut = null,
-						timerHide = null,
-						n = 3,
-						hide = function () {
-							$div.fadeOut('fast', function () {
-								$(this).remove();
-								$div.parent().css('position', '');
-							});
-							$elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
-							stop();
-						},
-						stop = function () {
-							timerHide && clearInterval(timerHide);
-							timerOut && clearInterval(timerOut);
-						},
-						start = function () {
-							timerOut = setInterval(function () {
-								if (--n == 0) {
-									hide.call($div[0]);
-									$.isFunction(args.onCancel) && args.onCancel(args.data);
-									stop();
-								}
-								$div.find('span').html(' (' + n + ')');
-							}, 1000);
+    LP.MessageBox = {
+        /*
+         *
+         */
+        $block: null,
+        $window: null,
+        events: {},
+        instances: [],
+        instance: null,
+        quickConfirm: function (elem, args) {
+            var $e = $(elem);
+            $('[learn-press-quick-confirm]').each(function () {
+                ( $ins = $(this).data('quick-confirm') ) && ( console.log($ins), $ins.destroy() );
+            });
+            !$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
+                new (function (elem, args) {
+                    var $elem = $(elem),
+                        $div = $('<span class="learn-press-quick-confirm"></span>').insertAfter($elem), //($(document.body)),
+                        offset = $(elem).position() || {left: 0, top: 0},
+                        timerOut = null,
+                        timerHide = null,
+                        n = 3,
+                        hide = function () {
+                            $div.fadeOut('fast', function () {
+                                $(this).remove();
+                                $div.parent().css('position', '');
+                            });
+                            $elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
+                            stop();
+                        },
+                        stop = function () {
+                            timerHide && clearInterval(timerHide);
+                            timerOut && clearInterval(timerOut);
+                        },
+                        start = function () {
+                            timerOut = setInterval(function () {
+                                if (--n == 0) {
+                                    hide.call($div[0]);
+                                    $.isFunction(args.onCancel) && args.onCancel(args.data);
+                                    stop();
+                                }
+                                $div.find('span').html(' (' + n + ')');
+                            }, 1000);
 
-							timerHide = setInterval(function () {
-								if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
-									stop();
-									$div.remove();
-									$div.parent().css('position', '');
-									$.isFunction(args.onCancel) && args.onCancel(args.data);
-								}
-							}, 350);
-						};
-					args = $.extend({
-						message : '',
-						data    : null,
-						onOk    : null,
-						onCancel: null,
-						offset  : {top: 0, left: 0}
-					}, args || {});
-					$div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').append('<span> (' + n + ')</span>').css({});
-					$div.click(function () {
-						$.isFunction(args.onOk) && args.onOk(args.data);
-						hide();
-					}).hover(function () {
-						stop();
-					}, function () {
-						start();
-					});
-					//$div.parent().css('position', 'relative');
-					$div.css({
-						left: ( ( offset.left + $elem.outerWidth() ) - $div.outerWidth() ) + args.offset.left,
-						top : offset.top + $elem.outerHeight() + args.offset.top + 5
-					}).hide().fadeIn('fast');
-					start();
+                            timerHide = setInterval(function () {
+                                if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
+                                    stop();
+                                    $div.remove();
+                                    $div.parent().css('position', '');
+                                    $.isFunction(args.onCancel) && args.onCancel(args.data);
+                                }
+                            }, 350);
+                        };
+                    args = $.extend({
+                        message: '',
+                        data: null,
+                        onOk: null,
+                        onCancel: null,
+                        offset: {top: 0, left: 0}
+                    }, args || {});
+                    $div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').append('<span> (' + n + ')</span>').css({});
+                    $div.click(function () {
+                        $.isFunction(args.onOk) && args.onOk(args.data);
+                        hide();
+                    }).hover(function () {
+                        stop();
+                    }, function () {
+                        start();
+                    });
+                    //$div.parent().css('position', 'relative');
+                    $div.css({
+                        left: ( ( offset.left + $elem.outerWidth() ) - $div.outerWidth() ) + args.offset.left,
+                        top: offset.top + $elem.outerHeight() + args.offset.top + 5
+                    }).hide().fadeIn('fast');
+                    start();
 
                     this.destroy = function () {
                         $div.remove();
@@ -667,6 +667,11 @@ if (typeof window.LP == 'undefined') {
             return (type || "json") === "json" ? this.parseJSON(response) : response;
         },
         parseJSON: function (data) {
+
+            if ($.isPlainObject(data)) {
+                return data;
+            }
+
             var m = (data + '').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
             try {
                 if (m) {
