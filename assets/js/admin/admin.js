@@ -414,6 +414,7 @@
     }
 
     function send_newsletter_info(e) {
+        e.preventDefault();
         var $notice = $(e.target),
             context = $notice.attr('data-context');
         $(this).addClass('updating-message button-working disabled');
@@ -445,15 +446,15 @@
 
     function _ready() {
 
-        $('.learn-press-dropdown-pages').dropdownPages();
-        $('.learn-press-advertisement-slider').LP_Advertisement_Slider().appendTo($('#wpbody-content'));
-        $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
-        $('.learn-press-tip').QuickTip();
+        // $('.learn-press-dropdown-pages').dropdownPages();
+        // $('.learn-press-advertisement-slider').LP_Advertisement_Slider().appendTo($('#wpbody-content'));
+        // $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
+        // $('.learn-press-tip').QuickTip();
 
-        initTooltips();
-        initSelect2();
-        makePaymentsSortable();
-        initSingleCoursePermalink();
+        // initTooltips();
+        // initSelect2();
+        // makePaymentsSortable();
+        // initSingleCoursePermalink();
 
         $doc.on('click', '.change-email-status', updateEmailStatus)
             .on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails)
@@ -465,7 +466,7 @@
             .on('click', '.plugin-action-buttons a', pluginActions)
             .on('click', '.learn-press-filter-template', _callbackFilterTemplates)
             .on('click', '.lp-duplicate-row-action .lp-duplicate-post', _duplicatePost)
-            .on('click', '#learn-press-newsletter-button button', send_newsletter_info)
+            .on('click', '#learn-press-newsletter-button a', send_newsletter_info)
             .on('click', '#learn-press-check-update-addons', checkUpdates)
             .on('mousedown', '.lp-sortable-handle', function (e) {
                 $('html, body').addClass('lp-item-moving');

@@ -2028,7 +2028,7 @@ function learn_press_get_register_url() {
  * @return mixed
  */
 function learn_press_add_notice( $message, $type = 'updated' ) {
-	LP_Admin_Notice::add( $message, $type );
+	LP_Admin_Notice::instance()->add( $message, $type );
 }
 
 /**

@@ -51,6 +51,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
 
 			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
+
+			add_filter( 'learn-press/dismissed-notice-response', array( $this, 'join_newsletter' ), 10, 2 );
 		}
 
 		/**
@@ -327,7 +329,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int $post
+		 * @param int    $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -386,7 +388,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array $actions
+		 * @param array   $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -483,7 +485,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			if ( ( in_array( $action, array(
 					'accepted-request',
 					'denied-request'
-				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id ) ) {
+				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id )
+			) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
 					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
 				} ?>
@@ -711,6 +714,57 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 */
 		function delete_user_data( $user_id ) {
 			learn_press_delete_user_data( $user_id );
+		}
+
+		/**
+		 * Send data to join newsletter or dismiss
+		 *
+		 * @since 3.0.10
+		 */
+		public function join_newsletter( $data, $notice ) {
+
+			$context = LP_Request::get_string( 'context' );
+			if ( ! $context || $context != 'newsletter' || ( $notice !== 'newsletter-button' ) ) {
+//				update_option( 'learn-press-dismissed-newsletter-button', 1 );
+//				learn_press_send_json_success( __( 'Dismissed!', 'learnpress' ) );
+				return $data;
+			}
+
+			$user = learn_press_get_current_user();
+			if ( ! $user || $user->get_email() == '' ) {
+				//learn_press_send_json_error( __( 'Fail while joining newsletter! Please try again!', 'learnpress' ) );
+				$data['error'] = __( 'Fail while joining newsletter! Please try again!', 'learnpress' );
+			}
+
+			$url      = 'https://thimpress.com/mailster/subscribe';
+			$response = wp_remote_post( $url, array(
+					'method'      => 'POST',
+					'timeout'     => 45,
+					'redirection' => 5,
+					'httpversion' => '1.0',
+					'blocking'    => true,
+					'headers'     => array(),
+					'body'        => array(
+						'_referer' => 'extern',
+						'_nonce'   => '4b266caf7b',
+						'formid'   => '19',
+						'email'    => $user->get_email(),
+						'website'  => site_url(),
+					),
+					'cookies'     => array()
+				)
+			);
+			if ( is_wp_error( $response ) ) {
+				$error_message = $response->get_error_message();
+				//learn_press_send_json_error( __( 'Something went wrong: ', 'learnpress' ) . $error_message );
+				$data['message'] = __( 'Something went wrong: ', 'learnpress' ) . $error_message;
+			} else {
+				//update_option( 'learn-press-dismissed-newsletter-button', 1 );
+				//learn_press_send_json_success( __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.', 'learnpress' ) );
+				$data['message'] = __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.', 'learnpress' );
+			}
+
+			return $data;
 		}
 
 		/**

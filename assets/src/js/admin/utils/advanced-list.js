@@ -5,7 +5,7 @@
      * @param el
      * @param options
      */
-    var advancedList = function (el, options) {
+    var AdvancedList = function (el, options) {
         var self = this,
             $el = $(el).hasClass('advanced-list') ? $(el) : $('.advanced-list', el);
 
@@ -109,7 +109,7 @@
     }
 
     // Export
-    $.fn.advancedList = function (options) {
+    $.fn.LP('AdvancedList', function (options) {
         var args = [];
         for (var i = 1; i < arguments.length; i++) {
             args.push(arguments[i]);
@@ -129,5 +129,5 @@
             }
             return this;
         })
-    }
+    });
 })(jQuery);

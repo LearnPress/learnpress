@@ -103,6 +103,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public $backgrounds = array();
 
 		/**
+		 * @var LP_Admin_Notice
+         *
+         * @since 3.x.x
+		 */
+		public $adminNotices = null;
+
+		/**
 		 * LearnPress constructor.
 		 */
 		public function __construct() {
@@ -521,7 +528,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_cart();
-			}
+			}else{
+			    $this->adminNotices = LP_Admin_Notice::instance();
+            }
 
 			// init email notification hooks
 			LP_Emails::init_email_notifications();

@@ -332,7 +332,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
-		 * Send data to join newsletter or dismiss
+		 * Send data to join newsletter or dismiss.
+         *
+		 * [
+		 *  This function has deprecated since 3.x.x from this class.
+         *  Please check class LP_Admin and hook learn-press/dismissed-notice-response for more details.
+         *  Newsletter function be hooked to the hook above to send subscription when
+         *  notice has already dismissed.
+		 * ]
+         *
+         * @deprecated
 		 *
 		 * @since 3.0.10
 		 */
@@ -784,7 +793,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$value   = learn_press_get_request( 'value' );
 			$expired = learn_press_get_request( 'expired' );
 
-			LP_Admin_Notice::instance()->dismiss_notice_2( $name, $value, $expired );
+			//LP_Admin_Notice::instance()->dismiss_notice_2( $name, $value, $expired );
 
 			die();
 		}

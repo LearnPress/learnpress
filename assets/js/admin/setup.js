@@ -70,7 +70,7 @@
 
                     LP.setUrl(loadUrl);
 
-                    $('.learn-press-dropdown-pages').dropdownPages();
+                    $('.learn-press-dropdown-pages').LP('DropdownPages');
                     $('.learn-press-tip').QuickTip();
                     $main.removeClass('loading');
                 }
@@ -126,7 +126,7 @@
                 ),
                 success: function (res) {
                     replaceMainContent($(res).contents().filter('#main'));
-                    $('.learn-press-dropdown-pages').dropdownPages();
+                    $('.learn-press-dropdown-pages').LP('DropdownPages');
                     blockContent(false);
                 }
             });

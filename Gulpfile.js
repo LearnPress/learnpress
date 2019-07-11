@@ -68,6 +68,8 @@ var rootPath = '/Users/tu/Documents/foobla',
     currentVer = null,
     copySvnFiles = [
         'assets/**/*',
+        '!assets/src/**/*',
+        '!assets/scss/**/*',
         'dummy-data/**/*',
         'inc/**/*',
         'languages/**/*',
