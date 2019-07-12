@@ -86,7 +86,7 @@ if ( ! class_exists( 'LP_Quiz_Factory' ) ) {
 			$quiz    = learn_press_get_quiz( $quiz_id );
 			$preview = $quiz->get_preview();
 
-			if ( ( ! $course->is_required_enroll() && ! $user->has_course_status( $course_id, 'enrolled' ) ) || $preview ) {
+			if ( ( ! $course->is_required_enroll() && ! $user->has_course_status( $course_id, 'enrolled' ) ) ) { //not support preview feature of quiz any more
 				// if quiz is previewable, $preview = true, force create enroll course record notwithstanding course require enroll or not
 				$ret = $user->enroll( $course_id, 0, $preview );
 
