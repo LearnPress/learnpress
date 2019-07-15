@@ -7,6 +7,10 @@ import Debug  from './debug-log';
 import Advertisement from './advertisement';
 import DropdownPages from './dropdown-pages';
 import AdvancedList from './advanced-list';
+import AdminTabs from './admin-tabs';
+import isEmail from '../../utils/email-validator';
+
+import CL from './conditional-logic';
 
 export default {
     ...Utils,
@@ -14,5 +18,7 @@ export default {
     Debug,
     Advertisement,
     DropdownPages,
-    AdvancedList
+    AdvancedList,
+    AdminTabs,
+    isEmail
 }

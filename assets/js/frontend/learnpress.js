@@ -1,5 +1,5 @@
 ;(function ($) {
     $(document).ready(function () {
-        $('.learn-press-tip').QuickTip();
+        $('.learn-press-tip').LP('QuickTip');
     })
 })(jQuery);

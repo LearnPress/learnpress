@@ -66,7 +66,6 @@
     }
 
     $.fn.LP('Advertisement', function (opts) {
-        console.log(opts)
         return $.each(this, function () {
             var $slider = $(this).data('LP_Advertisement_Slider');
             if (!$slider) {

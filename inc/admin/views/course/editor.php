@@ -47,6 +47,8 @@ learn_press_admin_view( 'course/modal-choose-items' );
                 }
             });
 
+            console.log('X')
+
         })(LP_Curriculum_Store);
     })
 </script>

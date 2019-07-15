@@ -5,6 +5,9 @@
  */
 //import Utils from './utils';
 //import Test from './test';
+
+import Update from './pages/update';
+
 ;(function () {
     const $ = jQuery;
 
@@ -96,30 +99,6 @@
         });
     };
 
-    // const sendNewsletter = function sendNewsletter(e) {
-    //     e.preventDefault();
-    //     var $notice = $(e.target),
-    //         context = $notice.attr('data-context');
-    //     $(this).addClass('updating-message button-working disabled');
-    //     $.ajax({
-    //         url: '',
-    //         data: {
-    //             'lp-ajax': 'join_newsletter',
-    //             context: context
-    //         },
-    //         success: function (response) {
-    //             response = LP.parseJSON(response);
-    //             $(this).removeClass('updating-message button-working');
-    //             if (response.success) {
-    //                 $('#learn-press-newsletter-button').fadeOut();
-    //                 //alert(response.data);
-    //             } else {
-    //                 //alert(response.data);
-    //             }
-    //         }
-    //     });
-    // };
-
     const preventDefault = function preventDefault(e) {
         e.preventDefault();
         return false;
@@ -130,7 +109,8 @@
         $('.learn-press-dropdown-pages').LP('DropdownPages');
         $('.learn-press-advertisement-slider').LP('Advertisement', 'a', 's').appendTo($('#wpbody-content'));
         $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
-        $('.learn-press-tip').QuickTip();
+        $('.learn-press-tip').LP('QuickTip');
+        //$('.learn-press-tabs').LP('AdminTab');
 
         $(document)
             .on('click', '#learn-press-create-pages', createPages)

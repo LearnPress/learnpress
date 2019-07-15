@@ -29,15 +29,18 @@ const extractConfig = {
 
 module.exports = {
     entry: {
-        './assets/js/admin/admin.min': './assets/src/js/admin/admin.js',
-        './assets/js/admin/learnpress.min': './assets/src/js/admin/learnpress.js',
-        './assets/js/admin/utils.min': './assets/src/js/admin/utils/index.js',
-        './assets/js/utils.min': './assets/src/js/utils/index.js',
-        //'./assets/js/admin/integration': './src/admin/integration.dev.js',
+        './assets/js/admin/admin': './assets/src/js/admin/admin.js',
+        './assets/js/admin/learnpress': './assets/src/js/admin/learnpress.js',
+        './assets/js/admin/utils': './assets/src/js/admin/utils/index.js',
+        './assets/js/utils': './assets/src/js/utils/index.js',
+        './assets/js/admin/editor/course': './assets/src/js/admin/editor/course.js',
+        './assets/js/admin/editor/quiz': './assets/src/js/admin/editor/quiz.js',
+        './assets/js/admin/editor/question': './assets/src/js/admin/editor/question.js',
+        './assets/js/admin/conditional-logic': './assets/src/js/admin/utils/conditional-logic.js',
     },
     output: {
         path: path.resolve(__dirname),
-        filename: '[name].js',
+        filename: 'production' === process.env.NODE_ENV ? '[name].min.js' : '[name].dev.js',
     },
     watch: 'production' !== process.env.NODE_ENV,
     devtool: process.env.NODE_ENV === 'production' ? '' : 'source-map',

@@ -28,8 +28,9 @@
 </script>
 
 <script type="text/javascript">
-    (function ($store) {
-        window.$Vue = window.$Vue || Vue;
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
         $Vue.component('lp-quiz-question-answer-option', {
             template: '#tmpl-lp-quiz-question-answer-option',
@@ -111,5 +112,5 @@
             }
         });
 
-    })(LP_Quiz_Store);
+    })
 </script>

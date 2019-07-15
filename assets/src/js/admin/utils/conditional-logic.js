@@ -227,6 +227,8 @@
         supportFields: ['yes-no', 'text', 'number', 'radio']
     });
     $(document).ready(function () {
-        new Conditional_Logic({conditionals: lp_conditional_logic});
+        if(window.lp_conditional_logic !==undefined) {
+            new Conditional_Logic({conditionals:lp_conditional_logic});
+        }
     })
 })(jQuery);

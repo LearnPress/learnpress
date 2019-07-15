@@ -1,3 +1,7 @@
+import AdminTools from './pages/tools';
+import Statistic from './pages/statistic';
+import SyncData from './pages/sync-data';
+
 ;(function () {
     const $ = jQuery;
     const $doc = $(document);
@@ -262,6 +266,8 @@
         initTooltips();
         initSingleCoursePermalink();
 
+        $('.learn-press-tabs').LP('AdminTab');
+
         $(document)
             .on('click', '.learn-press-payments .status .dashicons', togglePaymentStatus)
             .on('click', '.change-email-status', updateEmailStatus)
@@ -270,9 +276,7 @@
             .on('click', '.learn-press-filter-template', callbackFilterTemplates)
             .on('click', '#learn-press-enable-emails, #learn-press-disable-emails', toggleEmails)
             .on('click', '.lp-duplicate-row-action .lp-duplicate-post', duplicatePost)
-            .on('click', '#learn-press-install-sample-data-notice a', importCourses)
-
-
+            .on('click', '#learn-press-install-sample-data-notice a', importCourses);
     };
 
     $(document).ready(onReady)

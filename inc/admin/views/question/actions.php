@@ -31,7 +31,9 @@
 
 <script type="text/javascript">
 
-    (function ($store) {
+    jQuery(function ($) {
+        var $store = window.LP_Question_Store;
+
         window.$Vue = window.$Vue || Vue;
 
         $Vue.component('lp-question-actions', {
@@ -61,6 +63,6 @@
             }
         })
 
-    })(LP_Question_Store);
+    });
 
 </script>

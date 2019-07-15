@@ -3,7 +3,7 @@
     var $doc = $(document),
         isRunning = false;
 
-    function installSampleCourse(e) {
+    const installSampleCourse = function installSampleCourse(e) {
         e.preventDefault();
 
         var $button = $(this);
@@ -34,7 +34,7 @@
         });
     }
 
-    function uninstallSampleCourse(e) {
+    const uninstallSampleCourse = function uninstallSampleCourse(e) {
         e.preventDefault();
 
         var $button = $(this);
@@ -62,7 +62,7 @@
         })
     }
 
-    function clearHardCache(e) {
+    const clearHardCache = function clearHardCache(e) {
         e.preventDefault();
         var $button = $(this);
 
@@ -83,7 +83,7 @@
         });
     }
 
-    function toggleHardCache() {
+    const toggleHardCache = function toggleHardCache() {
         $.ajax({
             url: 'admin.php?page=lp-toggle-hard-cache-option',
             data: {v: this.checked ? 'yes' : 'no'},
@@ -94,13 +94,15 @@
         });
     }
 
+    const toggleOptions = function toggleOptions(e) {
+        e.preventDefault();
+        $('.lp-install-sample-data-options').toggleClass('hide-if-js');
+    }
+
     $doc.on('click', '#learn-press-install-sample-data', installSampleCourse)
         .on('click', '#learn-press-uninstall-sample-data', uninstallSampleCourse)
         .on('click', '#learn-press-clear-cache', clearHardCache)
         .on('click', 'input[name="enable_hard_cache"]', toggleHardCache)
-        .on('click', '#learn-press-install-sample-data-options', function (e) {
-            e.preventDefault();
-            $('.lp-install-sample-data-options').toggleClass('hide-if-js');
-        })
+        .on('click', '#learn-press-install-sample-data-options', toggleOptions)
 
 })(jQuery);

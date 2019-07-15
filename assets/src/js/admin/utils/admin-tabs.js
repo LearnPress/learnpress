@@ -67,7 +67,7 @@
 
         init();
     };
-    $.fn.lpAdminTab = function (options) {
+    $.fn.LP('AdminTab', function (options) {
         options = $.extend({}, options || {});
         return $.each(this, function () {
             var $el = $(this),
@@ -79,10 +79,5 @@
             }
             return $el;
         })
-    };
-
-    var $doc = $(document);
-    $doc.ready(function () {
-        $('.learn-press-tabs').lpAdminTab();
     });
 })(jQuery);

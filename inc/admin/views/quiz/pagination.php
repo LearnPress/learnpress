@@ -26,8 +26,9 @@
 </script>
 
 <script type="text/javascript">
-    (function ($store, $) {
-        window.$Vue = window.$Vue || Vue;
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
         $Vue.component('lp-quiz-pagination', {
             template: '#tmpl-lp-quiz-pagination',
@@ -73,5 +74,5 @@
             }
         });
 
-    })(LP_Quiz_Store, jQuery)
+    })
 </script>

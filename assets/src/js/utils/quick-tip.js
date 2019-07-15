@@ -52,7 +52,7 @@
             }
 
             if (options.single) {
-                $('.learn-press-tip').not($el).QuickTip('close');
+                $('.learn-press-tip').not($el).LP('QuickTip', 'close');
             }
 
             $tip.appendTo(document.body);
@@ -116,7 +116,7 @@
         }
     }
 
-    $.fn.QuickTip = function (options) {
+    $.fn.LP('QuickTip', function (options) {
         return $.each(this, function () {
             var $tip = $(this).data('quick-tip');
 
@@ -129,6 +129,6 @@
                 $tip[options] && $tip[options].apply($tip);
             }
         })
-    }
+    });
 })
 (jQuery);

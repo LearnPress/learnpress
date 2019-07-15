@@ -25,8 +25,9 @@ learn_press_admin_view( 'quiz/question-meta' );
 
 
 <script type="text/javascript">
-    (function ($, $store) {
-        window.$Vue = window.$Vue || Vue;
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
         $Vue.component('lp-quiz-question-settings', {
             template: '#tmpl-lp-quiz-question-settings',
@@ -43,5 +44,5 @@ learn_press_admin_view( 'quiz/question-meta' );
                 }
             }
         })
-    })(jQuery, LP_Quiz_Store)
+    })
 </script>
