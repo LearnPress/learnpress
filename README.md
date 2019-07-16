@@ -137,3 +137,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 **Other note**  
 <a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  
+
+##For DEVs
+1. <code>git clone https://github.com/LearnPress/learnpress.git</code>  
+
+2. <code>npm install</code>
+
+3. <code>npm run dev</code> Watch changes to compile js/scss when developing.
+
+4. <code>npm run build</code> Build and compress js files.
