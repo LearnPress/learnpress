@@ -263,8 +263,10 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 				}
 			}
 
+			$min = defined( 'LP_DEBUG_DEV' ) && LP_DEBUG_DEV ? '' : '.min';
+
 			// Enqueue js and localize settings.
-			wp_enqueue_script( 'lp-conditional-logic', LP()->plugin_url( 'assets/js/admin/conditional-logic.dev.js' ) );
+			wp_enqueue_script( 'lp-conditional-logic', LP()->plugin_url( 'assets/js/admin/conditional-logic' . $min . '.js' ) );
 			wp_localize_script( 'lp-conditional-logic', 'lp_conditional_logic', self::$conditional_logic );
 		}
 	}

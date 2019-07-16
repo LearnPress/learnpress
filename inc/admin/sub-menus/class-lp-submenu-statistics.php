@@ -212,7 +212,7 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 			'jquery',
 			'jquery-ui-datepicker'
 		) );
-		wp_enqueue_script( 'learn-press-statistic', LP_JS_URL . 'admin/statistic.js' );
+		wp_enqueue_script( 'learn-press-statistic', LP_JS_URL . 'admin/pages/statistic.js' );
 	}
 
 	public function page_content_courses() {

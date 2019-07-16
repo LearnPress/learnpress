@@ -42,7 +42,7 @@ import Update from './pages/update';
             },
             dataType: 'text',
             success: function (res) {
-                var $message = $button.closest('.error').html('<p>' + res + '</p>');
+                var $message = $button.closest('.lp-notice').html('<p>' + res + '</p>');
                 setTimeout(function () {
                     $message.fadeOut()
                 }, 2000);

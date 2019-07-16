@@ -9,6 +9,9 @@ import DropdownPages from './dropdown-pages';
 import AdvancedList from './advanced-list';
 import AdminTabs from './admin-tabs';
 import isEmail from '../../utils/email-validator';
+import ModalSearchUsers from './modal-search-users';
+import ModalSearchItems from './modal-search-items';
+import SearchItems from './search-items';
 
 import CL from './conditional-logic';
 
@@ -20,5 +23,7 @@ export default {
     DropdownPages,
     AdvancedList,
     AdminTabs,
-    isEmail
+    isEmail,
+    ModalSearchItems,
+    ModalSearchUsers
 }

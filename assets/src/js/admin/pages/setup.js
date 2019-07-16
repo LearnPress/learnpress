@@ -1,9 +1,7 @@
+import isEmail from '../../utils/email-validator';
+
 ;(function ($) {
-
     "use strict";
-
-    import isEmail from '../../utils/email-validator';
-
     var $main,
         $setupForm;
 
@@ -23,7 +21,7 @@
                     }
                     break;
             }
-            if (!validateEmail(this.value)) {
+            if (!isEmail(this.value)) {
                 valid = false;
                 $this.css('border-color', '#FF0000');
             }

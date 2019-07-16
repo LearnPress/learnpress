@@ -133,7 +133,7 @@ class LP_Setup_Wizard {
 		wp_enqueue_script( 'lp-select2', $assets->url( '../inc/libraries/meta-box/js/select2/select2.min.js' ) );
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/admin/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'js/admin/admin.js' ) );
-		wp_enqueue_script( 'lp-setup', $assets->url( 'js/admin/setup.js' ), array(
+		wp_enqueue_script( 'lp-setup', $assets->url( 'js/admin/pages/setup.js' ), array(
 			'learn-press-global',
 			'lp-select2',
 			'lp-admin',

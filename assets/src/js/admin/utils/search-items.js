@@ -6,7 +6,7 @@
             if (!$cloneWraps) {
                 $cloneWraps = $wraps.clone();
             }
-            keywords = keyword.toLowerCase().split(/\s+/).filter(function (a, b) {
+            var keywords = keyword.toLowerCase().split(/\s+/).filter(function (a, b) {
                 return a.length >= 3;
             });
             var foundItems = function ($w1, $w2) {
