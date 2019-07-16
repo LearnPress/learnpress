@@ -15,7 +15,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 
 	}
 
-
 	protected function _get_script_data() {
 		return array(
 			'learn-press-global'         => array(
@@ -147,7 +146,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'     => $this->url( 'js/admin/editor/course' . $min . '.js' ),
 					'deps'    => array(
 						'lp-vue',
-						'learn-press-modal-search-items',
+						//'learn-press-modal-search-items',
 						//'lp-admin-tabs'
 					),
 					'screens' => array( LP_COURSE_CPT )
@@ -156,7 +155,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'     => $this->url( 'js/admin/editor/quiz' . $min . '.js' ),
 					'deps'    => array(
 						'lp-vue',
-						'learn-press-modal-search-items'
+						//'learn-press-modal-search-items'
 					),
 					'screens' => array( LP_QUIZ_CPT )
 				),
@@ -164,7 +163,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'     => $this->url( 'js/admin/editor/question' . $min . '.js' ),
 					'deps'    => array(
 						'lp-vue',
-						'learn-press-modal-search-items'
+						//'learn-press-modal-search-items'
 					),
 					'screens' => array( LP_QUESTION_CPT )
 				),
