@@ -96,7 +96,7 @@ var rootPath = '/Users/tu/Documents/foobla',
     },
     removeConst = function (callback) {
         return gulp.src(['inc/lp-constants.php'])
-            .pipe(replace(/define\( 'LP_DEBUG_DEV'(.*)/g, ''))
+            .pipe(replace(/define\( 'LP_DEBUG'(.*)/g, ''))
             .pipe(gulp.dest(svnTrunkPath, {overwrite: true}))
             .on('end', function () {
                 callback ? callback() : 'do nothing';

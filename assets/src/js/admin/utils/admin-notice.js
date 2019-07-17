@@ -1,4 +1,4 @@
-import extend from '../utils/extend';
+import extend from '../../utils/extend';
 const $ = window.jQuery;
 
 const dismissNotice = function dismissNotice(notice, options) {

@@ -46,7 +46,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_scripts() {
-		$min = defined( 'LP_DEBUG_DEV' ) && LP_DEBUG_DEV ? '' : '.min';
+		$min = learn_press_is_debug() ? '' : '.min';
 
 		return apply_filters(
 			'learn-press/admin-default-scripts',
@@ -95,7 +95,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					)
 				),
 				'learn-press-global' => array(
-					'url'     => $this->url( 'js/global.js' ),
+					'url'     => $this->url( 'js/global' . $min . '.js' ),
 					'deps'    => array(
 						'jquery',
 						'underscore',

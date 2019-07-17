@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 24);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -143,7 +143,11 @@ function HTTP(options) {
 /* 4 */,
 /* 5 */,
 /* 6 */,
-/* 7 */
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -171,10 +175,6 @@ var i18n = function i18n(i18n) {
 exports.default = i18n;
 
 /***/ }),
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
 /* 12 */,
 /* 13 */,
 /* 14 */,
@@ -187,7 +187,10 @@ exports.default = i18n;
 /* 21 */,
 /* 22 */,
 /* 23 */,
-/* 24 */
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -197,7 +200,7 @@ var _http = __webpack_require__(0);
 
 var _http2 = _interopRequireDefault(_http);
 
-var _course = __webpack_require__(25);
+var _course = __webpack_require__(28);
 
 var _course2 = _interopRequireDefault(_course);
 
@@ -227,7 +230,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -237,27 +240,27 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _modalCourseItems = __webpack_require__(26);
+var _modalCourseItems = __webpack_require__(29);
 
 var _modalCourseItems2 = _interopRequireDefault(_modalCourseItems);
 
-var _courseSection = __webpack_require__(30);
+var _courseSection = __webpack_require__(33);
 
 var _courseSection2 = _interopRequireDefault(_courseSection);
 
-var _i18n = __webpack_require__(7);
+var _i18n = __webpack_require__(11);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _course = __webpack_require__(34);
+var _course = __webpack_require__(37);
 
 var _course2 = _interopRequireDefault(_course);
 
-var _course3 = __webpack_require__(35);
+var _course3 = __webpack_require__(38);
 
 var _course4 = _interopRequireDefault(_course3);
 
-var _course5 = __webpack_require__(36);
+var _course5 = __webpack_require__(39);
 
 var _course6 = _interopRequireDefault(_course5);
 
@@ -287,7 +290,7 @@ var Course = function Course(data) {
 exports.default = Course;
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -312,15 +315,15 @@ exports.default = function (data) {
     };
 };
 
-var _modalCourseItems = __webpack_require__(27);
+var _modalCourseItems = __webpack_require__(30);
 
 var _modalCourseItems2 = _interopRequireDefault(_modalCourseItems);
 
-var _modalCourseItems3 = __webpack_require__(28);
+var _modalCourseItems3 = __webpack_require__(31);
 
 var _modalCourseItems4 = _interopRequireDefault(_modalCourseItems3);
 
-var _modalCourseItems5 = __webpack_require__(29);
+var _modalCourseItems5 = __webpack_require__(32);
 
 var _modalCourseItems6 = _interopRequireDefault(_modalCourseItems5);
 
@@ -329,7 +332,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var $ = jQuery;
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -374,7 +377,7 @@ var Getters = {
 exports.default = Getters;
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -424,7 +427,7 @@ var Mutations = {
 exports.default = Mutations;
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -511,7 +514,7 @@ var ModalCourseItems = {
 exports.default = ModalCourseItems;
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -547,15 +550,15 @@ exports.default = function (data) {
     };
 };
 
-var _courseSection = __webpack_require__(31);
+var _courseSection = __webpack_require__(34);
 
 var _courseSection2 = _interopRequireDefault(_courseSection);
 
-var _courseSection3 = __webpack_require__(32);
+var _courseSection3 = __webpack_require__(35);
 
 var _courseSection4 = _interopRequireDefault(_courseSection3);
 
-var _courseSection5 = __webpack_require__(33);
+var _courseSection5 = __webpack_require__(36);
 
 var _courseSection6 = _interopRequireDefault(_courseSection5);
 
@@ -564,7 +567,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var $ = jQuery;
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -765,7 +768,7 @@ var CourseCurriculum = {
 exports.default = CourseCurriculum;
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -948,7 +951,7 @@ var CourseCurriculum = {
 exports.default = CourseCurriculum;
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -988,7 +991,7 @@ var CourseCurriculum = {
 exports.default = CourseCurriculum;
 
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1030,7 +1033,7 @@ var Course = {
 exports.default = Course;
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1066,7 +1069,7 @@ var Course = {
 exports.default = Course;
 
 /***/ }),
-/* 36 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
