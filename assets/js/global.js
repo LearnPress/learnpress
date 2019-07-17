@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 61);
+/******/ 	return __webpack_require__(__webpack_require__.s = 62);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -124,7 +124,11 @@ var _eventCallback = __webpack_require__(7);
 
 var _eventCallback2 = _interopRequireDefault(_eventCallback);
 
-var _jquery = __webpack_require__(8);
+var _hook = __webpack_require__(8);
+
+var _hook2 = _interopRequireDefault(_hook);
+
+var _jquery = __webpack_require__(9);
 
 var jplugins = _interopRequireWildcard(_jquery);
 
@@ -182,6 +186,7 @@ if ($.isEmptyObject("") == false) {
 }
 
 var _default = {
+    Hook: _hook2.default,
     setUrl: function setUrl(url, ember, title) {
         if (url) {
             history.pushState({}, title, url);
@@ -853,6 +858,7 @@ var MessageBox = {
     quickConfirm: function quickConfirm(elem, args) {
         var $e = $(elem);
         $('[learn-press-quick-confirm]').each(function () {
+            var $ins;
             ($ins = $(this).data('quick-confirm')) && (console.log($ins), $ins.destroy());
         });
         !$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm', new function (elem, args) {
@@ -1090,7 +1096,7 @@ exports.default = MessageBox;
 
 /***/ }),
 
-/***/ 61:
+/***/ 62:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1215,6 +1221,95 @@ exports.default = Event_Callback;
 /***/ }),
 
 /***/ 8:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var Hook = {
+    hooks: { action: {}, filter: {} },
+    addAction: function addAction(action, callable, priority, tag) {
+        this.addHook('action', action, callable, priority, tag);
+        return this;
+    },
+    addFilter: function addFilter(action, callable, priority, tag) {
+        this.addHook('filter', action, callable, priority, tag);
+        return this;
+    },
+    doAction: function doAction(action) {
+        this.doHook('action', action, arguments);
+        return this;
+    },
+    applyFilters: function applyFilters(action) {
+        return this.doHook('filter', action, arguments);
+    },
+    removeAction: function removeAction(action, tag) {
+        this.removeHook('action', action, tag);
+        return this;
+    },
+    removeFilter: function removeFilter(action, priority, tag) {
+        this.removeHook('filter', action, priority, tag);
+        return this;
+    },
+    addHook: function addHook(hookType, action, callable, priority, tag) {
+        if (undefined === this.hooks[hookType][action]) {
+            this.hooks[hookType][action] = [];
+        }
+        var hooks = this.hooks[hookType][action];
+        if (undefined === tag) {
+            tag = action + '_' + hooks.length;
+        }
+        this.hooks[hookType][action].push({ tag: tag, callable: callable, priority: priority });
+        return this;
+    },
+    doHook: function doHook(hookType, action, args) {
+
+        // splice args from object into array and remove first index which is the hook name
+        args = Array.prototype.slice.call(args, 1);
+
+        if (undefined !== this.hooks[hookType][action]) {
+            var hooks = this.hooks[hookType][action],
+                hook;
+            //sort by priority
+            hooks.sort(function (a, b) {
+                return a["priority"] - b["priority"];
+            });
+            for (var i = 0; i < hooks.length; i++) {
+                hook = hooks[i].callable;
+                if (typeof hook !== 'function') hook = window[hook];
+                if ('action' === hookType) {
+                    hook.apply(null, args);
+                } else {
+                    args[0] = hook.apply(null, args);
+                }
+            }
+        }
+        if ('filter' === hookType) {
+            return args[0];
+        }
+        return this;
+    },
+    removeHook: function removeHook(hookType, action, priority, tag) {
+        if (undefined !== this.hooks[hookType][action]) {
+            var hooks = this.hooks[hookType][action];
+            for (var i = hooks.length - 1; i >= 0; i--) {
+                if ((undefined === tag || tag === hooks[i].tag) && (undefined === priority || priority === hooks[i].priority)) {
+                    hooks.splice(i, 1);
+                }
+            }
+        }
+        return this;
+    }
+};
+
+exports.default = Hook;
+
+/***/ }),
+
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

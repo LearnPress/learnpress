@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 19);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -124,7 +124,11 @@ var _eventCallback = __webpack_require__(7);
 
 var _eventCallback2 = _interopRequireDefault(_eventCallback);
 
-var _jquery = __webpack_require__(8);
+var _hook = __webpack_require__(8);
+
+var _hook2 = _interopRequireDefault(_hook);
+
+var _jquery = __webpack_require__(9);
 
 var jplugins = _interopRequireWildcard(_jquery);
 
@@ -182,6 +186,7 @@ if ($.isEmptyObject("") == false) {
 }
 
 var _default = {
+    Hook: _hook2.default,
     setUrl: function setUrl(url, ember, title) {
         if (url) {
             history.pushState({}, title, url);
@@ -850,6 +855,7 @@ var MessageBox = {
     quickConfirm: function quickConfirm(elem, args) {
         var $e = $(elem);
         $('[learn-press-quick-confirm]').each(function () {
+            var $ins;
             ($ins = $(this).data('quick-confirm')) && (console.log($ins), $ins.destroy());
         });
         !$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm', new function (elem, args) {
@@ -1204,6 +1210,94 @@ exports.default = Event_Callback;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+var Hook = {
+    hooks: { action: {}, filter: {} },
+    addAction: function addAction(action, callable, priority, tag) {
+        this.addHook('action', action, callable, priority, tag);
+        return this;
+    },
+    addFilter: function addFilter(action, callable, priority, tag) {
+        this.addHook('filter', action, callable, priority, tag);
+        return this;
+    },
+    doAction: function doAction(action) {
+        this.doHook('action', action, arguments);
+        return this;
+    },
+    applyFilters: function applyFilters(action) {
+        return this.doHook('filter', action, arguments);
+    },
+    removeAction: function removeAction(action, tag) {
+        this.removeHook('action', action, tag);
+        return this;
+    },
+    removeFilter: function removeFilter(action, priority, tag) {
+        this.removeHook('filter', action, priority, tag);
+        return this;
+    },
+    addHook: function addHook(hookType, action, callable, priority, tag) {
+        if (undefined === this.hooks[hookType][action]) {
+            this.hooks[hookType][action] = [];
+        }
+        var hooks = this.hooks[hookType][action];
+        if (undefined === tag) {
+            tag = action + '_' + hooks.length;
+        }
+        this.hooks[hookType][action].push({ tag: tag, callable: callable, priority: priority });
+        return this;
+    },
+    doHook: function doHook(hookType, action, args) {
+
+        // splice args from object into array and remove first index which is the hook name
+        args = Array.prototype.slice.call(args, 1);
+
+        if (undefined !== this.hooks[hookType][action]) {
+            var hooks = this.hooks[hookType][action],
+                hook;
+            //sort by priority
+            hooks.sort(function (a, b) {
+                return a["priority"] - b["priority"];
+            });
+            for (var i = 0; i < hooks.length; i++) {
+                hook = hooks[i].callable;
+                if (typeof hook !== 'function') hook = window[hook];
+                if ('action' === hookType) {
+                    hook.apply(null, args);
+                } else {
+                    args[0] = hook.apply(null, args);
+                }
+            }
+        }
+        if ('filter' === hookType) {
+            return args[0];
+        }
+        return this;
+    },
+    removeHook: function removeHook(hookType, action, priority, tag) {
+        if (undefined !== this.hooks[hookType][action]) {
+            var hooks = this.hooks[hookType][action];
+            for (var i = hooks.length - 1; i >= 0; i--) {
+                if ((undefined === tag || tag === hooks[i].tag) && (undefined === priority || priority === hooks[i].priority)) {
+                    hooks.splice(i, 1);
+                }
+            }
+        }
+        return this;
+    }
+};
+
+exports.default = Hook;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -1410,7 +1504,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1432,7 +1526,7 @@ function isEmail(email) {
 };
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1674,14 +1768,14 @@ function isEmail(email) {
 })(jQuery);
 
 /***/ }),
-/* 11 */,
 /* 12 */,
 /* 13 */,
 /* 14 */,
 /* 15 */,
 /* 16 */,
 /* 17 */,
-/* 18 */
+/* 18 */,
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1701,43 +1795,43 @@ var _utils = __webpack_require__(3);
 
 var Utils = _interopRequireWildcard(_utils);
 
-var _adminNotice = __webpack_require__(19);
+var _adminNotice = __webpack_require__(20);
 
 var _adminNotice2 = _interopRequireDefault(_adminNotice);
 
-var _advertisement = __webpack_require__(20);
+var _advertisement = __webpack_require__(21);
 
 var _advertisement2 = _interopRequireDefault(_advertisement);
 
-var _dropdownPages = __webpack_require__(21);
+var _dropdownPages = __webpack_require__(22);
 
 var _dropdownPages2 = _interopRequireDefault(_dropdownPages);
 
-var _advancedList = __webpack_require__(22);
+var _advancedList = __webpack_require__(23);
 
 var _advancedList2 = _interopRequireDefault(_advancedList);
 
-var _adminTabs = __webpack_require__(23);
+var _adminTabs = __webpack_require__(24);
 
 var _adminTabs2 = _interopRequireDefault(_adminTabs);
 
-var _emailValidator = __webpack_require__(9);
+var _emailValidator = __webpack_require__(10);
 
 var _emailValidator2 = _interopRequireDefault(_emailValidator);
 
-var _modalSearchUsers = __webpack_require__(24);
+var _modalSearchUsers = __webpack_require__(25);
 
 var _modalSearchUsers2 = _interopRequireDefault(_modalSearchUsers);
 
-var _modalSearchItems = __webpack_require__(25);
+var _modalSearchItems = __webpack_require__(26);
 
 var _modalSearchItems2 = _interopRequireDefault(_modalSearchItems);
 
-var _searchItems = __webpack_require__(26);
+var _searchItems = __webpack_require__(27);
 
 var _searchItems2 = _interopRequireDefault(_searchItems);
 
-var _conditionalLogic = __webpack_require__(10);
+var _conditionalLogic = __webpack_require__(11);
 
 var _conditionalLogic2 = _interopRequireDefault(_conditionalLogic);
 
@@ -1757,7 +1851,7 @@ exports.default = _extends({}, Utils, {
 });
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1819,7 +1913,7 @@ var dismissNotice = function dismissNotice(notice, options) {
 exports.default = dismissNotice;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1905,7 +1999,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2045,7 +2139,7 @@ exports.default = dismissNotice;
 })();
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2184,7 +2278,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2275,7 +2369,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2427,7 +2521,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2578,7 +2672,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

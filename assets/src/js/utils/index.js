@@ -9,6 +9,7 @@ import fn from './fn';
 import QuickTip from './quick-tip';
 import MessageBox from './message-box';
 import Event_Callback from './event-callback';
+import Hook from './hook';
 
 import * as jplugins from './jquery.plugins';
 
@@ -62,6 +63,7 @@ if ($.isEmptyObject("") == false) {
 }
 
 const _default = {
+    Hook: Hook,
     setUrl: function (url, ember, title) {
         if (url) {
             history.pushState({}, title, url);

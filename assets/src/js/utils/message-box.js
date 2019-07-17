@@ -11,6 +11,7 @@ const MessageBox = {
     quickConfirm: function (elem, args) {
         var $e = $(elem);
         $('[learn-press-quick-confirm]').each(function () {
+            var $ins;
             ( $ins = $(this).data('quick-confirm') ) && ( console.log($ins), $ins.destroy() );
         });
         !$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
