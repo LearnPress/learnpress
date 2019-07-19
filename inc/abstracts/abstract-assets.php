@@ -38,7 +38,6 @@ abstract class LP_Abstract_Assets {
 	 * LP_Abstract_Assets constructor.
 	 */
 	public function __construct() {
-		$this->_cache = learn_press_is_debug() ? microtime( true ) : '';
 
 		$priory = 1000;
 		if ( is_admin() ) {
@@ -365,7 +364,7 @@ abstract class LP_Abstract_Assets {
 	 * @return string
 	 */
 	protected function _get_url( $url ) {
-		if ( $this->_cache ) {
+		if ( learn_press_is_debug() ) {
 			$url = add_query_arg( 'nocache', $this->_cache, $url );
 		}
 

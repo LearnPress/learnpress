@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Debugging
-if ( ! empty( $_REQUEST['debug'] ) || ( defined( 'LP_DEBUG_DEV' ) && LP_DEBUG_DEV ) ) {
+if ( ! empty( $_REQUEST['debug'] ) || ( defined( 'LP_DEBUG' ) && LP_DEBUG ) ) {
 	require_once( 'debug.php' );
 }
 
@@ -89,7 +89,29 @@ function learn_press_quick_tip( $tip, $echo = true, $options = array() ) {
  * @return bool
  */
 function learn_press_is_debug() {
-	return defined( 'LP_DEBUG_DEV' ) && LP_DEBUG_DEV;
+
+	/**
+	 * Priority #1
+	 */
+	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'true' && learn_press_get_current_user()->is_admin()) {
+		return true;
+	}
+
+	/**
+	 * Priority #2
+	 */
+	if ( defined( 'LP_DEBUG' ) ) {
+		return LP_DEBUG;
+	}
+
+	/**
+	 * Priority #3
+	 */
+	$is_debug = LP()->settings->get( 'debug' ) == 'yes';
+
+	define( 'LP_DEBUG', $is_debug );
+
+	return LP_DEBUG;
 }
 
 /**
@@ -100,7 +122,7 @@ function learn_press_is_debug() {
 function learn_press_get_post() {
 	global $post;
 	$post_id = learn_press_get_request( 'post' );
-	if(!$post_id){
+	if ( ! $post_id ) {
 		$post_id = ! empty( $post ) ? $post->ID : 0;
 	}
 	if ( empty( $post_id ) ) {
@@ -2029,7 +2051,7 @@ function learn_press_get_register_url() {
  * @return mixed
  */
 function learn_press_add_notice( $message, $type = 'updated' ) {
-	LP_Admin_Notice::add( $message, $type );
+	LP_Admin_Notice::instance()->add( $message, $type );
 }
 
 /**
@@ -2601,12 +2623,7 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
  * @return boolean
  */
 function learn_press_debug_enable() {
-	if ( defined( 'LP_DEBUG' ) ) {
-		return LP_DEBUG;
-	}
-	define( 'LP_DEBUG', LP()->settings->get( 'debug' ) == 'yes' ? true : false );
-
-	return learn_press_debug_enable();
+	return learn_press_is_debug();
 }
 
 /**
@@ -2861,7 +2878,7 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 add_filter( 'comment_reply_link', 'learn_press_comment_reply_link', 10, 4 );
 
 function learn_press_deprecated_function( $function, $version, $replacement = null ) {
-	if ( defined( 'LP_DEBUG' ) && LP_DEBUG === true ) {
+	if ( learn_press_is_debug() ) {
 		_deprecated_function( $function, $version, $replacement );
 	}
 }

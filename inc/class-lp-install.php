@@ -48,7 +48,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			add_action( 'learn-press/activate', array( __CLASS__, 'install' ) );
 			add_action( 'admin_init', array( __CLASS__, 'do_update' ) );
 			add_action( 'admin_init', array( __CLASS__, 'check_update' ) );
-			add_action( 'admin_init', array( __CLASS__, 'subsciption_button' ) );
+			add_action( 'admin_init', array( __CLASS__, 'subscription_button' ) );
 
 			//add_action( 'learn_press_activate', array( __CLASS__, 'install' ) );
 
@@ -78,22 +78,27 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 		}
 
-		public static function subsciption_button() {
+		public static function subscription_button() {
 			// Only administrator of the site can do this
 			if ( ! current_user_can( 'administrator' ) ) {
 				return;
 			}
-			$is_dismiss_newsletter_button = get_option( 'learn-press-dismissed-newsletter-button', 0 );
-			if ( $is_dismiss_newsletter_button ) {
-				return;
-			}
-			// Show message if the latest version is not already updated
-			add_action( 'admin_notices', array( __CLASS__, 'show_subscription_button' ), 20 );
+
+			LP_Admin_Notice::instance()->add('tools/subscription-button.php', '', true, 'newsletter-button');
+
+//			return;
+//
+//			$is_dismiss_newsletter_button = get_option( 'learn-press-dismissed-newsletter-button', 0 );
+//			if ( $is_dismiss_newsletter_button ) {
+//				return;
+//			}
+//			// Show message if the latest version is not already updated
+//			add_action( 'admin_notices', array( __CLASS__, 'show_subscription_button' ), 20 );
 		}
 
-		public static function show_subscription_button() {
-			learn_press_admin_view( 'tools/subscription-button' );
-		}
+//		public static function show_subscription_button() {
+//			learn_press_admin_view( 'tools/subscription-button' );
+//		}
 
 		/**
 		 * Check new update and show message in admin
@@ -511,12 +516,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					$message     .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learnpress' ), __( 'Ok', 'learnpress' ), __( 'Cancel', 'learnpress' ) );
 					$message     .= sprintf( '<p id="learn-press-upgrade-course-actions"><a href="%s" class="button" data-action="upgrade">%s</a>&nbsp;<button class="button disabled" data-action="abort">%s</button></p>', $upgrade_url, __( 'Upgrade now', 'learnpress' ), __( 'No, thank!', 'learnpress' ) );
 
-					LP_Admin_Notice::add( $message, 'error' );
+					LP_Admin_Notice::instance()->add( $message, 'error' );
 				}
 
 				// Notify for instructor
 				if ( learn_press_current_user_is( 'instructor' ) ) {
-					LP_Admin_Notice::add( sprintf( '<p>%s</p>', __( 'LearnPress has been updated and the database needs to be upgraded before you can work with it. Please notify the site administrator.', 'learnpress' ) ), 'error' );
+					LP_Admin_Notice::instance()->add( sprintf( '<p>%s</p>', __( 'LearnPress has been updated and the database needs to be upgraded before you can work with it. Please notify the site administrator.', 'learnpress' ) ), 'error' );
 				}
 			}
 		}

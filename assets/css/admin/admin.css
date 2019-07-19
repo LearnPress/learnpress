@@ -3198,6 +3198,33 @@ body.lp-item-moving {
     position: absolute;
     right: 12px;
     top: 12px; }
+  .lp-notice .notice-dismiss,
+  .learn-press-notice .notice-dismiss {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    border: none;
+    margin: 0;
+    padding: 9px;
+    background: 0 0;
+    color: #72777c;
+    cursor: pointer;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
+    .lp-notice .notice-dismiss:before,
+    .learn-press-notice .notice-dismiss:before {
+      background: 0 0;
+      color: #72777c;
+      content: "\f153";
+      display: block;
+      font: normal 16px/20px dashicons;
+      speak: none;
+      height: 20px;
+      text-align: center;
+      width: 20px;
+      -webkit-font-smoothing: antialiased; }
 
 .learn-press-dropdown-pages {
   display: inline-block; }

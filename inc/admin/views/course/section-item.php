@@ -70,7 +70,7 @@
                 mounted: function () {
                     this.$nextTick(function () {
                         var $ = jQuery;
-                        $(this.$el).find('.lp-title-attr-tip').QuickTip({
+                        $(this.$el).find('.lp-title-attr-tip').LP('QuickTip', {
                             closeInterval: 0,
                             arrowOffset: 'el',
                             tipClass: 'preview-item-tip'

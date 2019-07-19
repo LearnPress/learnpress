@@ -12,16 +12,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	public function __construct() {
 		parent::__construct();
-		add_action( 'learn-press/enqueue-script/learn-press-modal-search-items', array(
-			'LP_Modal_Search_Items',
-			'instance'
-		) );
-		add_action( 'learn-press/enqueue-script/learn-press-modal-search-users', array(
-			'LP_Modal_Search_Users',
-			'instance'
-		) );
-	}
 
+	}
 
 	protected function _get_script_data() {
 		return array(
@@ -54,23 +46,23 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * @return mixed
 	 */
 	protected function _get_scripts() {
-		$min = defined( 'LP_DEBUG_DEV' ) && LP_DEBUG_DEV ? '' : '.min';
+		$min = learn_press_is_debug() ? '' : '.min';
 
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
-				'wp-color-picker'                   => array(
+				'wp-color-picker'    => array(
 					'screens' => 'learnpress_page_learn-press-settings'
 				),
-				'select2'                           => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
-				'lp-vue'                            => array(
-					'url'     => self::url( 'js/vendor/vue' . $min . '.js' ),
+				'select2'            => LP_Admin_Assets::url( '../inc/libraries/meta-box/js/select2/select2.min.js' ),
+				'lp-vue'             => array(
+					'url'     => self::url( 'js/vendor/vue.min.js' ),
 					'ver'     => '2.5.16',
 					'screens' => array(
 						'learnpress'
 					)
 				),
-				'lp-vuex'                           => array(
+				'lp-vuex'            => array(
 					'url'     => self::url( 'js/vendor/vuex.js' ),
 					'ver'     => '3.1.0',
 					'deps'    => array( 'lp-vue' ),
@@ -78,7 +70,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'lp-vue-resource'                   => array(
+				'lp-vue-resource'    => array(
 					'url'     => self::url( 'js/vendor/vue-resource.js' ),
 					'ver'     => '1.3.4',
 					'deps'    => array( 'lp-vue' ),
@@ -86,7 +78,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'lp-sortable'                       => array(
+				'lp-sortable'        => array(
 					'url'     => self::url( 'js/vendor/sortable.js' ),
 					'ver'     => '1.6.0',
 					'deps'    => array( 'lp-vue' ),
@@ -94,7 +86,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'lp-vuedraggable'                   => array(
+				'lp-vuedraggable'    => array(
 					'url'     => self::url( 'js/vendor/vuedraggable.js' ),
 					'ver'     => '2.14.1',
 					'deps'    => array( 'lp-vue', 'lp-sortable' ),
@@ -102,8 +94,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'learn-press-global'                => array(
-					'url'     => $this->url( 'js/global.js' ),
+				'learn-press-global' => array(
+					'url'     => $this->url( 'js/global' . $min . '.js' ),
 					'deps'    => array(
 						'jquery',
 						'underscore',
@@ -113,8 +105,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					'screens' => array( 'learnpress' )
 				),
-				'learn-press-utils'                 => array(
-					'url'  => $this->url( 'js/admin/utils.js' ),
+				'learn-press-utils'  => array(
+					'url'  => $this->url( 'js/admin/utils' . $min . '.js' ),
 					'deps' => array( 'jquery' )
 				),
 //				'admin'                             => array(
@@ -122,64 +114,72 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 //					'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker' ),
 //					'screens' => array( 'learnpress' )
 //				),
-				'admin-tabs'                        => array(
-					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
-					'deps' => array( 'jquery' )
-				),
-
-				'lp-admin-tabs' => array(
-					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
-					'deps' => array( 'jquery' )
-				),
-				'tipsy'                             => array(
+//				'admin-tabs'         => array(
+//					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
+//					'deps' => array( 'jquery' )
+//				),
+//
+//				'lp-admin-tabs' => array(
+//					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
+//					'deps' => array( 'jquery' )
+//				),
+				'tipsy'              => array(
 					'url'  => $this->url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
 					'deps' => array( 'jquery' )
 				),
 
 				'lp-admin' => array(
-					'url'     => $this->url( 'js/admin/admin.js' ),
+					//'url'     => $this->url( 'js/admin/admin.js' ),
+					'url'     => $this->url( 'js/admin/admin' . $min . '.js' ),
+					'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker', 'tipsy' ),
+					'screens' => array( '*' )
+				),
+
+				'lp-admin-learnpress' => array(
+					//'url'     => $this->url( 'js/admin/admin.js' ),
+					'url'     => $this->url( 'js/admin/learnpress' . $min . '.js' ),
 					'deps'    => array( 'learn-press-global', 'learn-press-utils', 'wp-color-picker', 'tipsy' ),
 					'screens' => array( '*' )
 				),
 
 				'learn-press-admin-course-editor'   => array(
-					'url'     => $this->url( 'js/admin/course-editor.js' ),
+					'url'     => $this->url( 'js/admin/editor/course' . $min . '.js' ),
 					'deps'    => array(
 						'lp-vue',
-						'learn-press-modal-search-items',
-						'lp-admin-tabs'
+						//'learn-press-modal-search-items',
+						//'lp-admin-tabs'
 					),
 					'screens' => array( LP_COURSE_CPT )
 				),
 				'learn-press-admin-quiz-editor'     => array(
-					'url'     => $this->url( 'js/admin/quiz-editor.js' ),
+					'url'     => $this->url( 'js/admin/editor/quiz' . $min . '.js' ),
 					'deps'    => array(
 						'lp-vue',
-						'learn-press-modal-search-items'
+						//'learn-press-modal-search-items'
 					),
 					'screens' => array( LP_QUIZ_CPT )
 				),
 				'learn-press-admin-question-editor' => array(
-					'url'     => $this->url( 'js/admin/question-editor.js' ),
+					'url'     => $this->url( 'js/admin/editor/question' . $min . '.js' ),
 					'deps'    => array(
 						'lp-vue',
-						'learn-press-modal-search-items'
+						//'learn-press-modal-search-items'
 					),
 					'screens' => array( LP_QUESTION_CPT )
 				),
-				'learn-press-modal-search-items'    => array(
-					'url'  => $this->url( 'js/admin/modal-search-items.js' ),
-					'deps' => array( 'learn-press-global', 'lp-vue' )
-				),
-				'learn-press-modal-search-users'    => array(
-					'url'  => $this->url( 'js/admin/modal-search-users.js' ),
-					'deps' => array( 'learn-press-global', 'lp-vue' )
-				),
+//				'learn-press-modal-search-items'    => array(
+//					'url'  => $this->url( 'js/admin/modal-search-items.js' ),
+//					'deps' => array( 'learn-press-global', 'lp-vue' )
+//				),
+//				'learn-press-modal-search-users'    => array(
+//					'url'  => $this->url( 'js/admin/modal-search-users.js' ),
+//					'deps' => array( 'learn-press-global', 'lp-vue' )
+//				),
 				'learn-press-meta-box-order'        => array(
-					'url'     => $this->url( 'js/admin/meta-box-order.js' ),
+					'url'     => $this->url( 'js/admin/partial/meta-box-order' . $min . '.js' ),
 					'deps'    => array(
-						'learn-press-modal-search-items',
-						'learn-press-modal-search-users',
+						//'learn-press-modal-search-items',
+						//'learn-press-modal-search-users',
 						'learn-press-utils',
 						'lp-vue'
 					),

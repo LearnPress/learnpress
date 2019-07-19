@@ -21,6 +21,7 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     mkdirp = require("mkdirp"),
     concat = require('gulp-concat'),
+    args = require('yargs').argv,
     cleanCSS = require('gulp-clean-css');
 
 gulp.task('scss', function () {
@@ -68,12 +69,32 @@ var rootPath = '/Users/tu/Documents/foobla',
     currentVer = null,
     copySvnFiles = [
         'assets/**/*',
+        '!assets/src/**/*',
+        '!assets/scss/**/*',
+        '!assets/**/*.js.map',
+        '!assets/**/*.dev.js',
         'dummy-data/**/*',
         'inc/**/*',
         'languages/**/*',
         'templates/**/*',
         'index.php',
         'learnpress.php'
+    ],
+    exclude = [
+        'assets/js/admin/admin.js',
+        'assets/js/admin/learnpress.js',
+        'assets/js/admin/utils.js',
+        'assets/js/admin/editor/course.js',
+        'assets/js/admin/editor/quiz.js',
+        'assets/js/admin/editor/question.js',
+        'assets/js/admin/conditional-logic.js',
+        'assets/js/admin/partial/meta-box-order.js',
+        'assets/js/admin/pages/statistic.js',
+        'assets/js/admin/pages/setup.js',
+        'assets/js/frontend/learnpress.js',
+        'assets/js/frontend/utils.js',
+        'assets/js/global.js',
+        'assets/js/utils.js',
     ],
     getCurrentVer = function (force) {
         if (currentVer === null || force === true) {
@@ -92,7 +113,7 @@ var rootPath = '/Users/tu/Documents/foobla',
     },
     removeConst = function (callback) {
         return gulp.src(['inc/lp-constants.php'])
-            .pipe(replace(/define\( 'LP_DEBUG_DEV'(.*)/g, ''))
+            .pipe(replace(/define\( 'LP_DEBUG'(.*)/g, ''))
             .pipe(gulp.dest(svnTrunkPath, {overwrite: true}))
             .on('end', function () {
                 callback ? callback() : 'do nothing';
@@ -158,10 +179,25 @@ gulp.task('copy-zip', ['clr-zip'], function () {
     mkdirp(releasePath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');
+
+    if (args.pro === 1) {
+        copyFiles = copyFiles.concat(exclude.map((file) => ['!', file].join('')))
+    }
+
     return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
 });
 
-gulp.task('mk-zip', ['copy-zip'], function () {
+/**
+ * Turn of debug and replace version x.x.x to current version
+ */
+gulp.task('replace', ['copy-zip'], () => {
+    return gulp.src([releasePath + '/**/*.php'])
+        .pipe(replace(/define\( 'LP_DEBUG', true \);/, 'define( \'LP_DEBUG\', false);'))
+        .pipe(replace(/([0-9]+)\.x\.x/g, getCurrentVer()))
+        .pipe(gulp.dest(releasePath, {overwrite: true}));
+});
+
+gulp.task('mk-zip', ['replace'], function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
     return gulp.src(zipPath + '/**/learnpress/**/*')
@@ -213,19 +249,19 @@ gulp.task('cfcss', function () {
         .pipe(gulp.dest('assets/css'))
 });
 
-gulp.task('mk-zip', ['copy-zip'], function () {
-    process.chdir(releasePath);
-    var zipPath = releasePath.replace(/learnpress/, '');
-    return gulp.src(zipPath + '/**/learnpress/**/*')
-        .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
-        .pipe(gulp.dest(zipPath));
-});
-
-gulp.task('zipx', ['mk-zip'], function () {
-    var zipPath = releasePath + '.' + currentVer + '.zip';
-    console.log(zipPath)
-    return gulp.src([zipPath])
-        .pipe(gulpCopy("/Users/tu/Documents/htdocs/"));
-})
+// gulp.task('mk-zip', ['copy-zip'], function () {
+//     process.chdir(releasePath);
+//     var zipPath = releasePath.replace(/learnpress/, '');
+//     return gulp.src(zipPath + '/**/learnpress/**/*')
+//         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
+//         .pipe(gulp.dest(zipPath));
+// });
+//
+// gulp.task('zipx', ['mk-zip'], function () {
+//     var zipPath = releasePath + '.' + currentVer + '.zip';
+//     console.log(zipPath)
+//     return gulp.src([zipPath])
+//         .pipe(gulpCopy("/Users/tu/Documents/htdocs/"));
+// })
 
 // end of the world!

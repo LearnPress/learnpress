@@ -38,7 +38,9 @@ learn_press_admin_view( 'question/option' );
 </script>
 
 <script type="text/javascript">
-    (function ($store, $) {
+    jQuery(function ( $) {
+        var $store = window.LP_Question_Store;
+
         window.$Vue = window.$Vue || Vue;
 
         $Vue.component('lp-question-answer', {
@@ -137,6 +139,6 @@ learn_press_admin_view( 'question/option' );
                 }
             }
         })
-    })(LP_Question_Store, jQuery);
+    });
 
 </script>
