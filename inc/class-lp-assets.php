@@ -73,6 +73,8 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	public function _get_scripts() {
+		$min = learn_press_is_debug() ? '' : '.min';
+
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
@@ -95,15 +97,20 @@ class LP_Assets extends LP_Abstract_Assets {
 					'enqueue' => false
 				),
 				'global'           => array(
-					'url'  => self::url( 'js/global.js' ),
+					'url'  => self::url( 'js/global' . $min . '.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils' )
+				),
+				'wp-utils'         => array(
+					'url'     => self::url( 'js/utils' . $min . '.js' ),
+					'deps'    => array( 'jquery' ),
+					'screens' => '*'
 				),
 				'jquery-scrollbar' => array(
 					'url'  => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.js' ),
 					'deps' => array( 'jquery' )
 				),
 				'learnpress'       => array(
-					'url'  => self::url( 'js/frontend/learnpress.js' ),
+					'url'  => self::url( 'js/frontend/learnpress' . $min . '.js' ),
 					'deps' => array( 'global' )
 				),
 				'checkout'         => array(
@@ -175,7 +182,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				}*/
 				$enqueue = apply_filters( 'learn-press/enqueue-script', $enqueue, $handle );
 				if ( $handle == 'font-awesome' || $enqueue ) {
-					wp_enqueue_script('jquery');
+					wp_enqueue_script( 'jquery' );
 					wp_enqueue_script( $handle );
 				}
 			}

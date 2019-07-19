@@ -30,7 +30,8 @@
 </script>
 
 <script type="text/javascript">
-    (function ($store, $) {
+    jQuery(function ($) {
+        var $store = window.LP_Question_Store;
         window.$Vue = window.$Vue || Vue;
 
         $Vue.component('lp-question-answer-option', {
@@ -89,6 +90,6 @@
                 }
             }
         })
-    })(LP_Question_Store, jQuery);
+    });
 
 </script>

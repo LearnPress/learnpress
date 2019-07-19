@@ -126,7 +126,7 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 			delete_option( 'learnpress_db_version' );
 			delete_option( 'learnpress_version' );
 
-			LP_Admin_Notice::add( __( 'All courses, lessons, quizzes and questions have been removed', 'learnpress' ), 'updated', '', true );
+			LP_Admin_Notice::instance()->add( __( 'All courses, lessons, quizzes and questions have been removed', 'learnpress' ), 'updated', '', true );
 			wp_redirect( admin_url( 'admin.php?page=learn-press-tools&learn-press-remove-data=1' ) );
 			exit();
 		}
@@ -189,7 +189,7 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 			", '%' . $wpdb->esc_like( 'lpr_' ) . '%', $wpdb->esc_like( 'lpr_' ) . '%' )
 			);
 
-			LP_Admin_Notice::add( __( 'Outdated data from version older than 1.0 has been removed', 'learnpress' ), 'updated', '', true );
+			LP_Admin_Notice::instance()->add( __( 'Outdated data from version older than 1.0 has been removed', 'learnpress' ), 'updated', '', true );
 
 			wp_redirect( admin_url( 'admin.php?page=learn-press-tools' ) );
 			exit();

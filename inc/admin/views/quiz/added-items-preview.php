@@ -20,8 +20,9 @@
 </script>
 
 <script type="text/javascript">
-    (function ($store) {
-        window.$Vue = window.$Vue || Vue;
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
         $Vue.component('lp-quiz-added-items-preview', {
                 template: '#tmpl-lp-quiz-added-items-preview',
@@ -42,5 +43,5 @@
             }
         );
 
-    })(LP_Quiz_Store);
+    });
 </script>

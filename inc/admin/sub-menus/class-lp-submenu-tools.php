@@ -68,7 +68,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 	}
 
 	public function enqueue_assets() {
-		wp_enqueue_script( 'learn-press-submenu-tools', LP()->plugin_url( 'assets/js/admin/admin-tools.js' ), array( 'jquery' ) );
+		//wp_enqueue_script( 'learn-press-submenu-tools', LP()->plugin_url( 'assets/js/admin/admin-tools.js' ), array( 'jquery' ) );
 	}
 
 	/**

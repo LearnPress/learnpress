@@ -298,4 +298,8 @@ class LP_Helper {
 
 		return $page_id;
 	}
+
+	public static function uniq(){
+
+	}
 }
