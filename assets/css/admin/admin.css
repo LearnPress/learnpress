@@ -1639,6 +1639,20 @@
       clear: both;
       width: auto;
       padding: 8px 12px 0 12px; }
+      .lp-order-statuses li.featured-theme .star-rating {
+        display: inline-block;
+        line-height: 14px;
+        vertical-align: middle; }
+        .lp-order-statuses li.featured-theme .star-rating .star {
+          font-size: 14px;
+          width: 14px;
+          height: 14px; }
+      .lp-order-statuses li.featured-theme > div {
+        margin-bottom: 3px; }
+        .lp-order-statuses li.featured-theme > div span {
+          font-size: 12px;
+          vertical-align: middle;
+          color: #999; }
     .lp-order-statuses li:nth-child(even) .counter-inner {
       margin-left: 0; }
     .lp-order-statuses li:nth-child(odd) .counter-inner {
