@@ -85,12 +85,12 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	}
 
-	protected function get_all_plugins_url() {
+	protected function get_all_plugins_url( $min = '' ) {
 		$url = false;
 		if ( get_option( 'learn_press_exclude_frontend_libraries' ) ) {
 			$uploadDir = wp_upload_dir();
-			if ( file_exists( $uploadDir['basedir'] . '/learnpress/plugins.all.js' ) ) {
-				$url = $uploadDir['baseurl'] . '/learnpress/plugins.all.js';
+			if ( file_exists( $uploadDir['basedir'] . '/learnpress/plugins.all' . $min . '.js' ) ) {
+				$url = $uploadDir['baseurl'] . '/learnpress/plugins.all' . $min . '.js';
 			}
 		}
 
@@ -111,7 +111,7 @@ class LP_Assets extends LP_Abstract_Assets {
 //					'ver' => '2.5.16'
 //				),
 				'lp-plugins-all'   => array(
-					'url' => ( $url = $this->get_all_plugins_url() ) ? $url : self::url( 'js/vendor/plugins.all' . $min . '.js' ),
+					'url' => ( $url = $this->get_all_plugins_url( $min ) ) ? $url : self::url( 'js/vendor/plugins.all' . $min . '.js' ),
 				),
 //				'lp-vue-plugins'    => array(
 //					'url'  => self::url( 'js/vendor/vue-plugins' . $min . '.js' ),

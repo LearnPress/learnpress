@@ -34,12 +34,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		);
 	}
 
-	protected function get_all_plugins_url() {
+	protected function get_all_plugins_url( $min = '' ) {
 		$url = false;
 		if ( get_option( 'learn_press_exclude_admin_libraries' ) ) {
 			$uploadDir = wp_upload_dir();
-			if ( file_exists( $uploadDir['basedir'] . '/learnpress/admin.plugins.all.js' ) ) {
-				$url = $uploadDir['baseurl'] . '/learnpress/admin.plugins.all.js';
+			if ( file_exists( $uploadDir['basedir'] . '/learnpress/admin.plugins.all' . $min . '.js' ) ) {
+				$url = $uploadDir['baseurl'] . '/learnpress/admin.plugins.all' . $min . '.js';
 			}
 		}
 
@@ -69,7 +69,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 //					)
 //				),
 				'lp-plugins-all'     => array(
-					'url'     => ( $url = $this->get_all_plugins_url() ) ? $url : self::url( 'js/vendor/admin.plugins.all.min.js' ),
+					'url'     => ( $url = $this->get_all_plugins_url( $min ) ) ? $url : self::url( 'js/vendor/admin.plugins.all' . $min . '.js' ),
 					'screens' => array(
 						'learnpress'
 					)
@@ -212,10 +212,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/admin/sync-data.js' ),
 					'deps' => array( 'lp-vue' )
 				),
-				'learn-press-chartjs'               => array(
-					'url'     => $this->url( 'js/vendor/chart.min.js' ),
-					'screens' => 'dashboard'
-				)
+//				'learn-press-chartjs'               => array(
+//					'url'     => $this->url( 'js/vendor/chart.min.js' ),
+//					'screens' => 'dashboard'
+//				)
 			)
 		);
 	}

@@ -73,6 +73,7 @@ var rootPath = '/Users/tu/Documents/foobla',
         '!assets/scss/**/*',
         '!assets/**/*.js.map',
         '!assets/**/*.dev.js',
+        '!assets/**/*bak*',
         'dummy-data/**/*',
         'inc/**/*',
         'languages/**/*',
@@ -191,7 +192,7 @@ gulp.task('copy-zip', ['clr-zip'], function () {
  * Turn of debug and replace version x.x.x to current version
  */
 gulp.task('replace', ['copy-zip'], () => {
-    return gulp.src([releasePath + '/**/*.*'])
+    return gulp.src([releasePath + '/**/*.php', releasePath + '/**/*.js'])
         .pipe(replace(/define\( 'LP_DEBUG', true \);/, 'define( \'LP_DEBUG\', false);'))
         .pipe(replace(/([0-9]+)\.x\.x/g, getCurrentVer()))
         .pipe(gulp.dest(releasePath, {overwrite: true}));

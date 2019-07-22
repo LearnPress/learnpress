@@ -2,12 +2,28 @@ const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 const uglifyJS = require('uglify-js');
 const uglifyCSS = require('uglifycss');
 
+const isCompressed = function isCompressed(code, n = 5) {
+    var m = code.match(/\n/gm);
+
+    return !m || (m.length <= n);
+}
+
 const minifyJsDest = function minifyJsDest(dest, code, isDev) {
     if (isDev === undefined) {
         isDev = process.env.NODE_ENV !== 'production';
     }
-    const min = !isDev ? '.min' : '';
+    var min = !isDev ? '.min' : '';
+
+    if (!min && isCompressed(code)) {
+        min = '.min';
+    }
+
+    if(dest.indexOf('.min')!==-1){
+        min = '';
+    }
+
     code = !isDev ? uglifyJS.minify(code).code : code;
+
 
     return {
         [`${dest}${min}.js`]: code
@@ -35,7 +51,7 @@ const adminSources = () => [
     './assets/src/js/vendor/vue/vue-resource.js',
     './assets/src/js/vendor/vue/vue-draggable.js',
     './assets/src/js/vendor/jquery/jquery.tipsy.js',
-    './assets/src/js/vendor/chart.min.js',
+   // './assets/src/js/vendor/chart.min.js',
 ];
 
 const frontendSources = () => [
@@ -100,7 +116,7 @@ adminSources().concat(frontendSources()).filter((value, index, self) => {
     options.files.push({
         src: [file],
         dest: function (code) {
-            return minifyJsDest(file.replace(/\/assets\/src\//, '/assets/').replace(/(\.min\.js$|\.js$)/, ''), code);
+            return minifyJsDest(file.replace(/\/assets\/src\//, '/assets/').replace(/(\.js$)/, ''), code);
         }
     })
 })
