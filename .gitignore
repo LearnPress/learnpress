@@ -19,6 +19,8 @@ cache/
 /local-debug.php
 /languages/learnpress-vi.mo
 /languages/learnpress-vi.po
+/releases
+/build
 /**/*.map
 /**/_bk/
 test list.txt

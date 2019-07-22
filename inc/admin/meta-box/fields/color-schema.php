@@ -54,6 +54,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 	 * @return string
 	 */
 	public static function html( $meta, $field = array() ) {
+		$settings = LP()->settings;
 		ob_start();
 		$colors = self::get_colors();
 
@@ -75,7 +76,9 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		$schemas = array_values( $schemas );
 
 		?>
-        <div id="color-schemas">
+
+        <div id="color-schemas"
+             class="clearfix-after <?php echo $settings->get( 'show_hide_color_schemas' ) === 'yes' ? 'hide-if-js' : ''; ?>">
 			<?php foreach ( $schemas as $k => $schema ) { ?>
                 <div class="color-schemas<?php echo $k == 0 ? ' current' : ''; ?>">
                     <table>
@@ -105,6 +108,8 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
                 </div>
 			<?php } ?>
         </div>
+        <a href="" id="learn-press-show-hide-schemas"><?php esc_html_e( 'Show/Hide', 'learnpress' ); ?></a>
+
         <script type="text/javascript">
             jQuery(function ($) {
 
@@ -144,6 +149,12 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
                         $new = $btn.closest('.color-schemas');
                     $current.insertAfter($new).removeClass('current');
                     $current.parent().prepend($new.addClass('current'));
+                }).on('click', '#learn-press-show-hide-schemas', function (e) {
+                    e.preventDefault();
+                    var hide = $('#color-schemas').toggleClass('hide-if-js').hasClass('hide-if-js');
+                    $.ajax({
+
+                    });
                 });
 
                 $('#color-schemas').find('.color-selector input').wpColorPicker();

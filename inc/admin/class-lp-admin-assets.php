@@ -17,13 +17,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 
 	protected function _get_script_data() {
 		return array(
-			'learn-press-global'         => array(
-				'i18n'    => array(
-					'test_message' => 'This is global script for both admin and site'
-				),
-				'ajax'    => admin_url( 'admin-ajax.php' ),
-				'siteurl' => site_url()
-			),
+			'learn-press-global'         => learn_press_global_script_params(),
 			'learn-press-meta-box-order' => apply_filters(
 				'learn-press/meta-box-order/script-data',
 				array(
@@ -62,38 +56,52 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'learnpress'
 					)
 				),
-				'lp-vuex'            => array(
-					'url'     => self::url( 'js/vendor/vuex.js' ),
-					'ver'     => '3.1.0',
-					'deps'    => array( 'lp-vue' ),
+				'lp-vue-plugins'     => array(
+					'url'     => self::url( 'js/vendor/vue-plugins' . $min . '.js' ),
+					'ver'     => '2.5.16',
 					'screens' => array(
 						'learnpress'
 					)
 				),
-				'lp-vue-resource'    => array(
-					'url'     => self::url( 'js/vendor/vue-resource.js' ),
-					'ver'     => '1.3.4',
-					'deps'    => array( 'lp-vue' ),
+				'jquery-plugins'     => array(
+					'url'     => self::url( 'js/vendor/jquery-plugins' . $min . '.js' ),
+					'ver'     => '2.5.16',
 					'screens' => array(
 						'learnpress'
 					)
 				),
-				'lp-sortable'        => array(
-					'url'     => self::url( 'js/vendor/sortable.js' ),
-					'ver'     => '1.6.0',
-					'deps'    => array( 'lp-vue' ),
-					'screens' => array(
-						'learnpress'
-					)
-				),
-				'lp-vuedraggable'    => array(
-					'url'     => self::url( 'js/vendor/vuedraggable.js' ),
-					'ver'     => '2.14.1',
-					'deps'    => array( 'lp-vue', 'lp-sortable' ),
-					'screens' => array(
-						'learnpress'
-					)
-				),
+//				'lp-vuex'            => array(
+//					'url'     => self::url( 'js/vendor/vuex.js' ),
+//					'ver'     => '3.1.0',
+//					'deps'    => array( 'lp-vue' ),
+//					'screens' => array(
+//						'learnpress'
+//					)
+//				),
+//				'lp-vue-resource'    => array(
+//					'url'     => self::url( 'js/vendor/vue-resource.js' ),
+//					'ver'     => '1.3.4',
+//					'deps'    => array( 'lp-vue' ),
+//					'screens' => array(
+//						'learnpress'
+//					)
+//				),
+//				'lp-sortable'        => array(
+//					'url'     => self::url( 'js/vendor/sortable.js' ),
+//					'ver'     => '1.6.0',
+//					'deps'    => array( 'lp-vue' ),
+//					'screens' => array(
+//						'learnpress'
+//					)
+//				),
+//				'lp-vuedraggable'    => array(
+//					'url'     => self::url( 'js/vendor/vuedraggable.js' ),
+//					'ver'     => '2.14.1',
+//					'deps'    => array( 'lp-vue', 'lp-sortable' ),
+//					'screens' => array(
+//						'learnpress'
+//					)
+//				),
 				'learn-press-global' => array(
 					'url'     => $this->url( 'js/global' . $min . '.js' ),
 					'deps'    => array(
@@ -124,7 +132,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 //					'deps' => array( 'jquery' )
 //				),
 				'tipsy'              => array(
-					'url'  => $this->url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
+					'url'  => $this->url( 'js/vendor/jquery-tipsy'.$min.'.js' ),
 					'deps' => array( 'jquery' )
 				),
 

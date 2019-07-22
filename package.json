@@ -33,6 +33,7 @@
     "eslint": "^4.19.1",
     "extract-text-webpack-plugin": "^3.0.2",
     "fs": "0.0.1-security",
+    "got": "^9.6.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^3.9.4",
@@ -46,6 +47,7 @@
     "gulp-svn": "^1.0.8",
     "gulp-uglify": "^3.0.0",
     "gulp-zip": "^4.1.0",
+    "jquery": "^3.4.1",
     "mkdirp": "^0.5.1",
     "node-sass": "^4.9.0",
     "postcss-loader": "^2.1.5",
@@ -57,9 +59,12 @@
     "read-file": "^0.2.0",
     "replace": "^0.3.0",
     "sass-loader": "^6.0.7",
+    "sortablejs": "^1.10.0-rc3",
     "style-loader": "^0.19.1",
     "uglify": "^0.1.5",
     "webpack": "^3.11.0",
+    "webpack-concat-plugin": "^3.0.0",
+    "webpack-merge-and-include-globally": "^2.1.16",
     "yargs": "^7.1.0"
   },
   "dependencies": {

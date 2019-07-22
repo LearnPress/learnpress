@@ -60,12 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 20);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
-/* 1 */
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87,8 +86,7 @@ exports.default = function () {
 };
 
 /***/ }),
-/* 2 */,
-/* 3 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104,31 +102,31 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                                                                                                                                                                                                                                                                    * @version 3.x.x
                                                                                                                                                                                                                                                                    */
 
-var _extend = __webpack_require__(1);
+var _extend = __webpack_require__(0);
 
 var _extend2 = _interopRequireDefault(_extend);
 
-var _fn = __webpack_require__(4);
+var _fn = __webpack_require__(2);
 
 var _fn2 = _interopRequireDefault(_fn);
 
-var _quickTip = __webpack_require__(5);
+var _quickTip = __webpack_require__(3);
 
 var _quickTip2 = _interopRequireDefault(_quickTip);
 
-var _messageBox = __webpack_require__(6);
+var _messageBox = __webpack_require__(4);
 
 var _messageBox2 = _interopRequireDefault(_messageBox);
 
-var _eventCallback = __webpack_require__(7);
+var _eventCallback = __webpack_require__(5);
 
 var _eventCallback2 = _interopRequireDefault(_eventCallback);
 
-var _hook = __webpack_require__(8);
+var _hook = __webpack_require__(6);
 
 var _hook2 = _interopRequireDefault(_hook);
 
-var _jquery = __webpack_require__(9);
+var _jquery = __webpack_require__(7);
 
 var jplugins = _interopRequireWildcard(_jquery);
 
@@ -648,7 +646,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 4 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -695,7 +693,7 @@ var exp;
 exports.default = exp;
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -833,7 +831,7 @@ exports.default = exp;
 })(jQuery);
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1092,7 +1090,7 @@ var MessageBox = {
 exports.default = MessageBox;
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1201,7 +1199,7 @@ var Event_Callback = function Event_Callback(self) {
 exports.default = Event_Callback;
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1289,7 +1287,7 @@ var Hook = {
 exports.default = Hook;
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1504,6 +1502,8 @@ exports.default = {
 };
 
 /***/ }),
+/* 8 */,
+/* 9 */,
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1775,7 +1775,8 @@ function isEmail(email) {
 /* 16 */,
 /* 17 */,
 /* 18 */,
-/* 19 */
+/* 19 */,
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1791,27 +1792,27 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 // local utilities
 
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(1);
 
 var Utils = _interopRequireWildcard(_utils);
 
-var _adminNotice = __webpack_require__(20);
+var _adminNotice = __webpack_require__(21);
 
 var _adminNotice2 = _interopRequireDefault(_adminNotice);
 
-var _advertisement = __webpack_require__(21);
+var _advertisement = __webpack_require__(22);
 
 var _advertisement2 = _interopRequireDefault(_advertisement);
 
-var _dropdownPages = __webpack_require__(22);
+var _dropdownPages = __webpack_require__(23);
 
 var _dropdownPages2 = _interopRequireDefault(_dropdownPages);
 
-var _advancedList = __webpack_require__(23);
+var _advancedList = __webpack_require__(24);
 
 var _advancedList2 = _interopRequireDefault(_advancedList);
 
-var _adminTabs = __webpack_require__(24);
+var _adminTabs = __webpack_require__(25);
 
 var _adminTabs2 = _interopRequireDefault(_adminTabs);
 
@@ -1819,15 +1820,15 @@ var _emailValidator = __webpack_require__(10);
 
 var _emailValidator2 = _interopRequireDefault(_emailValidator);
 
-var _modalSearchUsers = __webpack_require__(25);
+var _modalSearchUsers = __webpack_require__(26);
 
 var _modalSearchUsers2 = _interopRequireDefault(_modalSearchUsers);
 
-var _modalSearchItems = __webpack_require__(26);
+var _modalSearchItems = __webpack_require__(27);
 
 var _modalSearchItems2 = _interopRequireDefault(_modalSearchItems);
 
-var _searchItems = __webpack_require__(27);
+var _searchItems = __webpack_require__(28);
 
 var _searchItems2 = _interopRequireDefault(_searchItems);
 
@@ -1851,7 +1852,7 @@ exports.default = _extends({}, Utils, {
 });
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1861,7 +1862,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _extend = __webpack_require__(1);
+var _extend = __webpack_require__(0);
 
 var _extend2 = _interopRequireDefault(_extend);
 
@@ -1913,7 +1914,7 @@ var dismissNotice = function dismissNotice(notice, options) {
 exports.default = dismissNotice;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1999,7 +2000,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2139,7 +2140,7 @@ exports.default = dismissNotice;
 })();
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2278,7 +2279,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2369,7 +2370,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2521,7 +2522,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2672,7 +2673,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

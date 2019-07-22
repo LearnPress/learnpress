@@ -3362,3 +3362,26 @@ function learn_press_show_log() {
 		call_user_func_array( 'learn_press_debug', func_get_args() );
 	}
 }
+
+/**
+ * @since 3.x.x
+ *
+ * @return array
+ */
+function learn_press_global_script_params() {
+	$js = array(
+		'ajax'        => admin_url( 'admin-ajax.php' ),
+		'plugin_url'  => LP()->plugin_url(),
+		'siteurl'     => home_url(),
+		'current_url' => learn_press_get_current_url(),
+		'theme'       => get_stylesheet(),
+		'localize'    => array(
+			'button_ok'     => __( 'OK', 'learnpress' ),
+			'button_cancel' => __( 'Cancel', 'learnpress' ),
+			'button_yes'    => __( 'Yes', 'learnpress' ),
+			'button_no'     => __( 'No', 'learnpress' )
+		)
+	);
+
+	return $js;
+}

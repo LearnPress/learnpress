@@ -63,7 +63,7 @@ gulp.task('compress-css', function () {
  */
 var rootPath = '/Users/tu/Documents/foobla',
     svnPath = rootPath + '/svn/learnpress',
-    releasePath = rootPath + '/releases/learnpress',
+    releasePath = __dirname + '/releases/learnpress',
     svnTrunkPath = svnPath + '/trunk',
     svnTagsPath = svnPath + '/tags',
     currentVer = null,
@@ -191,7 +191,7 @@ gulp.task('copy-zip', ['clr-zip'], function () {
  * Turn of debug and replace version x.x.x to current version
  */
 gulp.task('replace', ['copy-zip'], () => {
-    return gulp.src([releasePath + '/**/*.php'])
+    return gulp.src([releasePath + '/**/*.*'])
         .pipe(replace(/define\( 'LP_DEBUG', true \);/, 'define( \'LP_DEBUG\', false);'))
         .pipe(replace(/([0-9]+)\.x\.x/g, getCurrentVer()))
         .pipe(gulp.dest(releasePath, {overwrite: true}));
@@ -200,6 +200,7 @@ gulp.task('replace', ['copy-zip'], () => {
 gulp.task('mk-zip', ['replace'], function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
+
     return gulp.src(zipPath + '/**/learnpress/**/*')
         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
         .pipe(gulp.dest(zipPath));
