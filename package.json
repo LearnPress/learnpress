@@ -62,6 +62,7 @@
     "sortablejs": "^1.10.0-rc3",
     "style-loader": "^0.19.1",
     "uglify": "^0.1.5",
+    "uglifycss": "0.0.29",
     "webpack": "^3.11.0",
     "webpack-concat-plugin": "^3.0.0",
     "webpack-merge-and-include-globally": "^2.1.16",

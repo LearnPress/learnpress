@@ -399,7 +399,8 @@
   clear: both;
   height: 0;
   opacity: 0;
-  display: block; }
+  display: block;
+  content: ''; }
 
 @-moz-keyframes lp-spinner {
   100% {

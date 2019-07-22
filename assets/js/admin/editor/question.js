@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 55);
+/******/ 	return __webpack_require__(__webpack_require__.s = 54);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 55:
+/***/ 54:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75,7 +75,7 @@ var _http = __webpack_require__(8);
 
 var _http2 = _interopRequireDefault(_http);
 
-var _question = __webpack_require__(56);
+var _question = __webpack_require__(55);
 
 var _question2 = _interopRequireDefault(_question);
 
@@ -106,7 +106,7 @@ $(document).ready(function () {
 
 /***/ }),
 
-/***/ 56:
+/***/ 55:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -116,15 +116,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _question = __webpack_require__(57);
+var _question = __webpack_require__(56);
 
 var _question2 = _interopRequireDefault(_question);
 
-var _question3 = __webpack_require__(58);
+var _question3 = __webpack_require__(57);
 
 var _question4 = _interopRequireDefault(_question3);
 
-var _question5 = __webpack_require__(59);
+var _question5 = __webpack_require__(58);
 
 var _question6 = _interopRequireDefault(_question5);
 
@@ -150,7 +150,7 @@ exports.default = Question;
 
 /***/ }),
 
-/***/ 57:
+/***/ 56:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -228,7 +228,7 @@ exports.default = Question;
 
 /***/ }),
 
-/***/ 58:
+/***/ 57:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -284,7 +284,7 @@ exports.default = Question;
 
 /***/ }),
 
-/***/ 59:
+/***/ 58:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

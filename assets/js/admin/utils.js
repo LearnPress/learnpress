@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 19);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1379,7 +1379,6 @@ var LP_Tooltip = function LP_Tooltip(options) {
             return;
         }
 
-        console.log(content);
         var $tooltip = null;
         $el.hover(function (e) {
             $tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();
@@ -1775,8 +1774,7 @@ function isEmail(email) {
 /* 16 */,
 /* 17 */,
 /* 18 */,
-/* 19 */,
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1796,23 +1794,23 @@ var _utils = __webpack_require__(1);
 
 var Utils = _interopRequireWildcard(_utils);
 
-var _adminNotice = __webpack_require__(21);
+var _adminNotice = __webpack_require__(20);
 
 var _adminNotice2 = _interopRequireDefault(_adminNotice);
 
-var _advertisement = __webpack_require__(22);
+var _advertisement = __webpack_require__(21);
 
 var _advertisement2 = _interopRequireDefault(_advertisement);
 
-var _dropdownPages = __webpack_require__(23);
+var _dropdownPages = __webpack_require__(22);
 
 var _dropdownPages2 = _interopRequireDefault(_dropdownPages);
 
-var _advancedList = __webpack_require__(24);
+var _advancedList = __webpack_require__(23);
 
 var _advancedList2 = _interopRequireDefault(_advancedList);
 
-var _adminTabs = __webpack_require__(25);
+var _adminTabs = __webpack_require__(24);
 
 var _adminTabs2 = _interopRequireDefault(_adminTabs);
 
@@ -1820,15 +1818,15 @@ var _emailValidator = __webpack_require__(10);
 
 var _emailValidator2 = _interopRequireDefault(_emailValidator);
 
-var _modalSearchUsers = __webpack_require__(26);
+var _modalSearchUsers = __webpack_require__(25);
 
 var _modalSearchUsers2 = _interopRequireDefault(_modalSearchUsers);
 
-var _modalSearchItems = __webpack_require__(27);
+var _modalSearchItems = __webpack_require__(26);
 
 var _modalSearchItems2 = _interopRequireDefault(_modalSearchItems);
 
-var _searchItems = __webpack_require__(28);
+var _searchItems = __webpack_require__(27);
 
 var _searchItems2 = _interopRequireDefault(_searchItems);
 
@@ -1852,7 +1850,7 @@ exports.default = _extends({}, Utils, {
 });
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1914,7 +1912,7 @@ var dismissNotice = function dismissNotice(notice, options) {
 exports.default = dismissNotice;
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2000,7 +1998,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2140,7 +2138,7 @@ exports.default = dismissNotice;
 })();
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2279,7 +2277,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2370,7 +2368,7 @@ exports.default = dismissNotice;
 })(jQuery);
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2522,7 +2520,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2673,7 +2671,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

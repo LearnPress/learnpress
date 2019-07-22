@@ -351,6 +351,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/class-lp-widget.php';
 
+			/**
+			 * REST APIs
+             *
+             * @since 3.x.x
+             */
+			require_once 'inc/abstracts/abstract-rest-api.php';
+			require_once 'inc/abstracts/abstract-rest-controller.php';
+			require_once 'inc/rest-api/class-lp-core-api.php';
+
 			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
 				include_once 'local-debug.php';
 			}
@@ -519,6 +528,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Init LearnPress when WP initialises
 		 */
 		public function init() {
+
+			$this->api = new LP_Core_API();
 
 			$this->view_log();
 

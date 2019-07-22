@@ -1,72 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
-const uglifyJS = require('uglify-js');
-
 // Set different CSS extraction for editor only and common block styles
 const blocksCSSPlugin = new ExtractTextPlugin({
     filename: './assets/css/main.css',
 });
 
-const minifyDest = function minifyDest(dest, code) {
-    const min = process.env.NODE_ENV === 'production' ? '.min' : '';
-    code = process.env.NODE_ENV === 'production' ? uglifyJS.minify(code).code : code;
-
-    return {
-        [`${dest}${min}.js`]: code
-    }
-}
-
-const mergeAndCompressJs = new MergeIntoSingleFilePlugin({
-    files: [{
-        src: [
-            './assets/src/js/vendor/vue/vuex.js',
-            './assets/src/js/vendor/vue/vue-resource.js',
-            './assets/src/js/vendor/vue/vue-draggable.js',
-        ],
-        dest: function (code) {
-            return minifyDest('assets/js/vendor/vue-plugins', code);
-        }
-    }, {
-        src: [
-            './assets/src/js/vendor/jquery/jquery-alert.js',
-            './assets/src/js/vendor/jquery/jquery-appear.js',
-            './assets/src/js/vendor/jquery/jquery-cookie.js',
-            './assets/src/js/vendor/jquery/jquery-scrollTo.js',
-            './assets/src/js/vendor/jquery/jquery-timer.js',
-        ],
-        dest: function (code) {
-            return minifyDest('assets/js/vendor/jquery-plugins', code);
-        }
-    }, {
-        src: [
-            './assets/src/js/vendor/jquery/jquery-scrollbar/jquery.scrollbar.js'
-        ],
-        dest: function (code) {
-            return minifyDest('assets/js/vendor/jquery-scrollbar', code);
-        }
-    }, {
-        src: [
-            './assets/src/js/vendor/jquery/jquery-tipsy/jquery.tipsy.js'
-        ],
-        dest: function (code) {
-            return minifyDest(`assets/js/vendor/jquery-tipsy`, code);
-        }
-    },{
-        src: [
-            './assets/src/js/vendor/jquery/jquery-scrollbar/jquery.scrollbar.css',
-            './assets/src/js/vendor/jquery/jquery-tipsy/jquery.tipsy.css',
-            './assets/src/css/jalert.css',
-        ],
-        dest: function (code) {
-            //return minifyDest(`assets/css/bundle`, code);
-            return {
-                'assets/css/bundle.css': code
-            }
-        }
-    }]
-})
+const tools = require('./tools/webpack');
 
 // Configuration for the ExtractTextPlugin.
 const extractConfig = {
@@ -130,6 +70,6 @@ module.exports = {
     },
     plugins: [
         blocksCSSPlugin,
-        mergeAndCompressJs
+        tools.mergeAndCompressJs
     ]
 };

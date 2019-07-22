@@ -30,7 +30,6 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 
 		parent::__construct( $item );
 		$this->set_default_data( $item );
-		//echo "xxxxxx=", microtime( true ) - $t, "\n";
 
 	}
 

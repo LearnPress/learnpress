@@ -1379,7 +1379,6 @@ var LP_Tooltip = function LP_Tooltip(options) {
             return;
         }
 
-        console.log(content);
         var $tooltip = null;
         $el.hover(function (e) {
             $tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();

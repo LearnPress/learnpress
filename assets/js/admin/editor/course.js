@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 29);
+/******/ 	return __webpack_require__(__webpack_require__.s = 28);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -191,8 +191,7 @@ exports.default = i18n;
 /* 25 */,
 /* 26 */,
 /* 27 */,
-/* 28 */,
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -202,7 +201,7 @@ var _http = __webpack_require__(8);
 
 var _http2 = _interopRequireDefault(_http);
 
-var _course = __webpack_require__(30);
+var _course = __webpack_require__(29);
 
 var _course2 = _interopRequireDefault(_course);
 
@@ -232,7 +231,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -242,11 +241,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _modalCourseItems = __webpack_require__(31);
+var _modalCourseItems = __webpack_require__(30);
 
 var _modalCourseItems2 = _interopRequireDefault(_modalCourseItems);
 
-var _courseSection = __webpack_require__(35);
+var _courseSection = __webpack_require__(34);
 
 var _courseSection2 = _interopRequireDefault(_courseSection);
 
@@ -254,15 +253,15 @@ var _i18n = __webpack_require__(12);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _course = __webpack_require__(39);
+var _course = __webpack_require__(38);
 
 var _course2 = _interopRequireDefault(_course);
 
-var _course3 = __webpack_require__(40);
+var _course3 = __webpack_require__(39);
 
 var _course4 = _interopRequireDefault(_course3);
 
-var _course5 = __webpack_require__(41);
+var _course5 = __webpack_require__(40);
 
 var _course6 = _interopRequireDefault(_course5);
 
@@ -292,7 +291,7 @@ var Course = function Course(data) {
 exports.default = Course;
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -317,15 +316,15 @@ exports.default = function (data) {
     };
 };
 
-var _modalCourseItems = __webpack_require__(32);
+var _modalCourseItems = __webpack_require__(31);
 
 var _modalCourseItems2 = _interopRequireDefault(_modalCourseItems);
 
-var _modalCourseItems3 = __webpack_require__(33);
+var _modalCourseItems3 = __webpack_require__(32);
 
 var _modalCourseItems4 = _interopRequireDefault(_modalCourseItems3);
 
-var _modalCourseItems5 = __webpack_require__(34);
+var _modalCourseItems5 = __webpack_require__(33);
 
 var _modalCourseItems6 = _interopRequireDefault(_modalCourseItems5);
 
@@ -334,7 +333,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var $ = jQuery;
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -379,7 +378,7 @@ var Getters = {
 exports.default = Getters;
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -429,7 +428,7 @@ var Mutations = {
 exports.default = Mutations;
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -516,7 +515,7 @@ var ModalCourseItems = {
 exports.default = ModalCourseItems;
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -552,15 +551,15 @@ exports.default = function (data) {
     };
 };
 
-var _courseSection = __webpack_require__(36);
+var _courseSection = __webpack_require__(35);
 
 var _courseSection2 = _interopRequireDefault(_courseSection);
 
-var _courseSection3 = __webpack_require__(37);
+var _courseSection3 = __webpack_require__(36);
 
 var _courseSection4 = _interopRequireDefault(_courseSection3);
 
-var _courseSection5 = __webpack_require__(38);
+var _courseSection5 = __webpack_require__(37);
 
 var _courseSection6 = _interopRequireDefault(_courseSection5);
 
@@ -569,7 +568,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var $ = jQuery;
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -770,7 +769,7 @@ var CourseCurriculum = {
 exports.default = CourseCurriculum;
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -953,7 +952,7 @@ var CourseCurriculum = {
 exports.default = CourseCurriculum;
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -993,7 +992,7 @@ var CourseCurriculum = {
 exports.default = CourseCurriculum;
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1035,7 +1034,7 @@ var Course = {
 exports.default = Course;
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1071,7 +1070,7 @@ var Course = {
 exports.default = Course;
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

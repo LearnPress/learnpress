@@ -78,7 +78,7 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
 		?>
 
         <div id="color-schemas"
-             class="clearfix-after <?php echo $settings->get( 'show_hide_color_schemas' ) === 'yes' ? 'hide-if-js' : ''; ?>">
+             class="clearfix-after <?php echo $settings->get( 'hide_admin_color_schemas' ) === 'yes' ? 'hide-if-js' : ''; ?>">
 			<?php foreach ( $schemas as $k => $schema ) { ?>
                 <div class="color-schemas<?php echo $k == 0 ? ' current' : ''; ?>">
                     <table>
@@ -153,7 +153,11 @@ class RWMB_Color_Schema_Field extends RWMB_Field {
                     e.preventDefault();
                     var hide = $('#color-schemas').toggleClass('hide-if-js').hasClass('hide-if-js');
                     $.ajax({
-
+                        url: '../wp-json/lp/v1/settings/hide_admin_color_schemas',
+                        type: 'post',
+                        data: {
+                            data: hide ? 'yes' : 'no'
+                        }
                     });
                 });
 

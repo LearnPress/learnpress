@@ -60,18 +60,18 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 17);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 17:
+/***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _tools = __webpack_require__(18);
+var _tools = __webpack_require__(17);
 
 var _tools2 = _interopRequireDefault(_tools);
 
@@ -79,7 +79,7 @@ var _statistic = __webpack_require__(9);
 
 var _statistic2 = _interopRequireDefault(_statistic);
 
-var _syncData = __webpack_require__(19);
+var _syncData = __webpack_require__(18);
 
 var _syncData2 = _interopRequireDefault(_syncData);
 
@@ -394,7 +394,7 @@ $(document).ready(onReady);
 
 /***/ }),
 
-/***/ 18:
+/***/ 17:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -504,7 +504,7 @@ $(document).ready(onReady);
 
 /***/ }),
 
-/***/ 19:
+/***/ 18:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 42);
+/******/ 	return __webpack_require__(__webpack_require__.s = 41);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -204,14 +204,13 @@ exports.default = i18n;
 /* 38 */,
 /* 39 */,
 /* 40 */,
-/* 41 */,
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _quiz = __webpack_require__(43);
+var _quiz = __webpack_require__(42);
 
 var _quiz2 = _interopRequireDefault(_quiz);
 
@@ -243,7 +242,7 @@ window.jQuery(document).ready(function () {
 });
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -253,19 +252,19 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _quiz = __webpack_require__(44);
+var _quiz = __webpack_require__(43);
 
 var _quiz2 = _interopRequireDefault(_quiz);
 
-var _quiz3 = __webpack_require__(45);
+var _quiz3 = __webpack_require__(44);
 
 var _quiz4 = _interopRequireDefault(_quiz3);
 
-var _quiz5 = __webpack_require__(46);
+var _quiz5 = __webpack_require__(45);
 
 var _quiz6 = _interopRequireDefault(_quiz5);
 
-var _modalQuizItems = __webpack_require__(47);
+var _modalQuizItems = __webpack_require__(46);
 
 var _modalQuizItems2 = _interopRequireDefault(_modalQuizItems);
 
@@ -273,7 +272,7 @@ var _i18n = __webpack_require__(12);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _questionList = __webpack_require__(51);
+var _questionList = __webpack_require__(50);
 
 var _questionList2 = _interopRequireDefault(_questionList);
 
@@ -303,7 +302,7 @@ var Quiz = function Quiz(data) {
 exports.default = Quiz;
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -342,7 +341,7 @@ var Quiz = {
 exports.default = Quiz;
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -377,7 +376,7 @@ var Quiz = {
 exports.default = Quiz;
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -420,7 +419,7 @@ var Quiz = {
 exports.default = Quiz;
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -430,15 +429,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _modalQuizItems = __webpack_require__(48);
+var _modalQuizItems = __webpack_require__(47);
 
 var _modalQuizItems2 = _interopRequireDefault(_modalQuizItems);
 
-var _modalQuizItems3 = __webpack_require__(49);
+var _modalQuizItems3 = __webpack_require__(48);
 
 var _modalQuizItems4 = _interopRequireDefault(_modalQuizItems3);
 
-var _modalQuizItems5 = __webpack_require__(50);
+var _modalQuizItems5 = __webpack_require__(49);
 
 var _modalQuizItems6 = _interopRequireDefault(_modalQuizItems5);
 
@@ -464,7 +463,7 @@ var Quiz = function Quiz(data) {
 exports.default = Quiz;
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +507,7 @@ var ModalQuizItems = {
 exports.default = ModalQuizItems;
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -558,7 +557,7 @@ var ModalQuizItems = {
 exports.default = ModalQuizItems;
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -645,7 +644,7 @@ var ModalQuizItems = {
 exports.default = ModalQuizItems;
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -655,15 +654,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _questionList = __webpack_require__(52);
+var _questionList = __webpack_require__(51);
 
 var _questionList2 = _interopRequireDefault(_questionList);
 
-var _questionList3 = __webpack_require__(53);
+var _questionList3 = __webpack_require__(52);
 
 var _questionList4 = _interopRequireDefault(_questionList3);
 
-var _questionList5 = __webpack_require__(54);
+var _questionList5 = __webpack_require__(53);
 
 var _questionList6 = _interopRequireDefault(_questionList5);
 
@@ -700,7 +699,7 @@ var QuestionList = function QuestionList(data) {
 exports.default = QuestionList;
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -752,7 +751,7 @@ var QuestionList = {
 exports.default = QuestionList;
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -933,7 +932,7 @@ var QuestionList = {
 exports.default = QuestionList;
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

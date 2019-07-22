@@ -93,8 +93,12 @@ function learn_press_is_debug() {
 	/**
 	 * Priority #1
 	 */
-	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'true' && learn_press_get_current_user()->is_admin()) {
+	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'true' && learn_press_get_current_user()->is_admin() ) {
 		return true;
+	}
+
+	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'false' ) {
+		return false;
 	}
 
 	/**
