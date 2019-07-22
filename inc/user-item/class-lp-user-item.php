@@ -43,8 +43,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		//ksort( $item );
 
 		//$this->_data_key = md5( serialize( $item ) );
-		$this->_changes  = array();
-		$item_id         = 0;
+		$this->_changes = array();
+		$item_id        = 0;
 
 		if ( ! empty( $item['user_item_id'] ) ) {
 			$this->set_data( 'user_item_id', $item['user_item_id'] );
@@ -264,17 +264,24 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function get_status() {
 		$got_status = $this->get_data( 'status' );
-		if ( ! $got_status && false !== ( $user_id = $this->get_extra_data( 'user_id' ) ) ) {
+
+		if ( ( false === $got_status ) && false !== ( $user_id = $this->get_extra_data( 'user_id' ) ) ) {
 			$user_item = learn_press_get_user_item( array(
 				'user_id'   => $user_id,
 				'item_id'   => $this->get_item_id(),
 				'parent_id' => $this->get_parent_id(),
 				'ref_id'    => $this->get_data( 'ref_id' )
 			) );
+
 			if ( ! empty( $user_item ) ) {
 				$got_status = $user_item->status;
+			} else {
+				$got_status = '';
 			}
+
+			$this->set_data( 'status', $got_status );
 		}
+
 		return $got_status;
 	}
 
