@@ -62,13 +62,13 @@ class LP_Admin_Notice {
 	}
 
 	public function load() {
-		if ( ! $notices = get_user_option( $this->option_id ) ) {
+		if ( ! $notices = get_option( $this->option_id ) ) {
 			return false;
 		}
 
 		$this->notices = array_merge( $notices, $this->notices );
 
-		delete_user_option( get_current_user_id(), $this->option_id );
+		delete_option( $this->option_id );
 
 		return true;
 	}
@@ -151,7 +151,7 @@ class LP_Admin_Notice {
 		}
 
 		if ( $redirect_notices ) {
-			update_user_option( get_current_user_id(), $this->option_id, $redirect_notices );
+			update_option( $this->option_id, $redirect_notices );
 		}
 
 		return true;
@@ -205,14 +205,14 @@ class LP_Admin_Notice {
 		}
 
 		// Also remove in db
-		if ( $redirects = get_user_option( $this->option_id ) ) {
+		if ( $redirects = get_option( $this->option_id ) ) {
 			foreach ( $notice as $id ) {
 				if ( ! empty( $redirects[ $id ] ) ) {
 					unset( $redirects[ $id ] );
 				}
 			}
 
-			update_user_option( get_current_user_id(), $this->option_id, $redirects );
+			update_option( $this->option_id, $redirects );
 		}
 
 		return $this->notices;
@@ -225,7 +225,7 @@ class LP_Admin_Notice {
 	 */
 	public function clear() {
 		$this->notices = array();
-		delete_user_option( get_current_user_id(), $this->option_id );
+		delete_option( $this->option_id );
 	}
 
 	/**
@@ -236,7 +236,7 @@ class LP_Admin_Notice {
 			return;
 		}
 
-		if ( ! $dismissed = get_user_option( $this->dismissed_option_id ) ) {
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
 			$dismissed = array();
 		}
 
@@ -244,7 +244,7 @@ class LP_Admin_Notice {
 
 		if ( array_search( $id, $dismissed ) === false ) {
 			$dismissed[] = $id;
-			update_user_option( get_current_user_id(), $this->dismissed_option_id, $dismissed );
+			update_option( $this->dismissed_option_id, $dismissed );
 		}
 
 		do_action( 'learn-press/dismissed-notice', $id );
@@ -295,7 +295,7 @@ class LP_Admin_Notice {
 	 */
 	public function has_dismissed_notice( $name ) {
 
-		if ( ! $dismissed = get_user_option( $this->dismissed_option_id ) ) {
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
 			return false;
 		}
 
@@ -323,7 +323,7 @@ class LP_Admin_Notice {
 	 * @return bool
 	 */
 	public function restore_dismissed_notice( $notice ) {
-		if ( ! $dismissed = get_user_option( $this->dismissed_option_id ) ) {
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
 			return false;
 		}
 
@@ -335,7 +335,7 @@ class LP_Admin_Notice {
 			}
 		}
 
-		update_user_option( get_current_user_id(), $this->dismissed_option_id, $dismissed );
+		update_option( $this->dismissed_option_id, $dismissed );
 
 		return true;
 	}
@@ -346,7 +346,7 @@ class LP_Admin_Notice {
 	 * @since 3.2.6
 	 */
 	public function clear_dismissed_notice() {
-		delete_user_option( get_current_user_id(), $this->dismissed_option_id );
+		delete_option( $this->dismissed_option_id );
 	}
 
 	/**
