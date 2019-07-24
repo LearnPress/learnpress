@@ -4,9 +4,6 @@
  * 1/ Run "npm install gulp -g" if you did not run it any time in the past.
  * 2/ Run "npm install gulp --save-dev" to install gulp in your project directory.
  * 3/ Run "npm install package-name[ package-name...] --save-dev
- *
- * EX: npm install gulp gulp-zip gulp-copy gulp-clean gulp-sass gulp-livereload gulp-sourcemaps read-file gulp-replace mkdirp gulp-concat gulp-uglify gulp-clean-css pump --save-dev
-
  */
 'use strict';
 const zip = require('gulp-zip');
@@ -63,16 +60,21 @@ gulp.task('compress-css', function () {
  */
 var rootPath = '/Users/tu/Documents/foobla',
     svnPath = rootPath + '/svn/learnpress',
-    releasePath = rootPath + '/releases/learnpress',
+    releasePath = __dirname + '/releases/learnpress',
     svnTrunkPath = svnPath + '/trunk',
     svnTagsPath = svnPath + '/tags',
     currentVer = null,
     copySvnFiles = [
-        'assets/**/*',
+        'assets/css/**/*',
+        'assets/fonts/**/*',
+        'assets/images/**/*',
+        'assets/js/**/*',
+        'assets/**/*.php',
         '!assets/src/**/*',
         '!assets/scss/**/*',
         '!assets/**/*.js.map',
         '!assets/**/*.dev.js',
+        '!assets/**/*bak*',
         'dummy-data/**/*',
         'inc/**/*',
         'languages/**/*',
@@ -191,7 +193,7 @@ gulp.task('copy-zip', ['clr-zip'], function () {
  * Turn of debug and replace version x.x.x to current version
  */
 gulp.task('replace', ['copy-zip'], () => {
-    return gulp.src([releasePath + '/**/*.php'])
+    return gulp.src([releasePath + '/**/*.php', releasePath + '/**/*.js'])
         .pipe(replace(/define\( 'LP_DEBUG', true \);/, 'define( \'LP_DEBUG\', false);'))
         .pipe(replace(/([0-9]+)\.x\.x/g, getCurrentVer()))
         .pipe(gulp.dest(releasePath, {overwrite: true}));
@@ -200,6 +202,7 @@ gulp.task('replace', ['copy-zip'], () => {
 gulp.task('mk-zip', ['replace'], function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
+
     return gulp.src(zipPath + '/**/learnpress/**/*')
         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
         .pipe(gulp.dest(zipPath));

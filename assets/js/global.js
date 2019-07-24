@@ -65,7 +65,7 @@
 /************************************************************************/
 /******/ ({
 
-/***/ 1:
+/***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88,7 +88,7 @@ exports.default = function () {
 
 /***/ }),
 
-/***/ 3:
+/***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -101,34 +101,34 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
                                                                                                                                                                                                                                                                    * Utility functions may use for both admin and frontend.
                                                                                                                                                                                                                                                                    *
-                                                                                                                                                                                                                                                                   * @version 3.x.x
+                                                                                                                                                                                                                                                                   * @version 3.2.6
                                                                                                                                                                                                                                                                    */
 
-var _extend = __webpack_require__(1);
+var _extend = __webpack_require__(0);
 
 var _extend2 = _interopRequireDefault(_extend);
 
-var _fn = __webpack_require__(4);
+var _fn = __webpack_require__(2);
 
 var _fn2 = _interopRequireDefault(_fn);
 
-var _quickTip = __webpack_require__(5);
+var _quickTip = __webpack_require__(3);
 
 var _quickTip2 = _interopRequireDefault(_quickTip);
 
-var _messageBox = __webpack_require__(6);
+var _messageBox = __webpack_require__(4);
 
 var _messageBox2 = _interopRequireDefault(_messageBox);
 
-var _eventCallback = __webpack_require__(7);
+var _eventCallback = __webpack_require__(5);
 
 var _eventCallback2 = _interopRequireDefault(_eventCallback);
 
-var _hook = __webpack_require__(8);
+var _hook = __webpack_require__(6);
 
 var _hook2 = _interopRequireDefault(_hook);
 
-var _jquery = __webpack_require__(9);
+var _jquery = __webpack_require__(7);
 
 var jplugins = _interopRequireWildcard(_jquery);
 
@@ -649,7 +649,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 4:
+/***/ 2:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -664,7 +664,7 @@ Object.defineProperty(exports, "__esModule", {
  * Create : $.fn.LP( 'PLUGIN_NAME', func) <=> $.fn.LP_PLUGIN_NAME
  * Usage: $(selector).LP('PLUGIN_NAME') <=> $(selector).LP_PLUGIN_NAME()
  *
- * @version 3.x.x
+ * @version 3.2.6
  */
 
 var $ = window.jQuery;
@@ -697,7 +697,7 @@ exports.default = exp;
 
 /***/ }),
 
-/***/ 5:
+/***/ 3:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -836,7 +836,7 @@ exports.default = exp;
 
 /***/ }),
 
-/***/ 6:
+/***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1096,21 +1096,7 @@ exports.default = MessageBox;
 
 /***/ }),
 
-/***/ 62:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(3);
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ }),
-
-/***/ 7:
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1127,6 +1113,7 @@ Object.defineProperty(exports, "__esModule", {
  */
 var Event_Callback = function Event_Callback(self) {
     var callbacks = {};
+    var $ = window.jQuery;
 
     this.on = function (event, callback) {
         var namespaces = event.split('.'),
@@ -1220,7 +1207,7 @@ exports.default = Event_Callback;
 
 /***/ }),
 
-/***/ 8:
+/***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1309,7 +1296,21 @@ exports.default = Hook;
 
 /***/ }),
 
-/***/ 9:
+/***/ 62:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(1);
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1401,7 +1402,6 @@ var LP_Tooltip = function LP_Tooltip(options) {
             return;
         }
 
-        console.log(content);
         var $tooltip = null;
         $el.hover(function (e) {
             $tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();

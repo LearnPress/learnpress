@@ -1,11 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 // Set different CSS extraction for editor only and common block styles
 const blocksCSSPlugin = new ExtractTextPlugin({
     filename: './assets/css/main.css',
 });
+
+const tools = require('./tools/webpack');
 
 // Configuration for the ExtractTextPlugin.
 const extractConfig = {
@@ -25,7 +26,6 @@ const extractConfig = {
         },
     ],
 };
-
 
 module.exports = {
     entry: {
@@ -58,7 +58,7 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['babel-preset-env']
+                        presets: ['babel-preset-env', 'es2015']
                     }
                 },
             },
@@ -70,5 +70,6 @@ module.exports = {
     },
     plugins: [
         blocksCSSPlugin,
+        tools.mergeAndCompressJs
     ]
 };

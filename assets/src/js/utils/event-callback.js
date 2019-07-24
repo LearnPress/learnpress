@@ -6,6 +6,7 @@
  */
 const Event_Callback = function Event_Callback(self) {
     var callbacks = {};
+    var $ = window.jQuery;
 
     this.on = function (event, callback) {
         var namespaces = event.split('.'),

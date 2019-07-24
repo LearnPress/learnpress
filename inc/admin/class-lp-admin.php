@@ -60,7 +60,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.2.6
 		 */
 		public function load_modal() {
 			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, LP_ORDER_CPT ) ) ) {

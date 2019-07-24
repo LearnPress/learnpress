@@ -2283,7 +2283,7 @@ add_action( 'save_post', 'learn_press_maybe_sync_data' );
 /**
  * Return id of current screen.
  *
- * @since 3.x.x
+ * @since 3.2.6
  *
  * @return bool|string
  */
@@ -2298,7 +2298,7 @@ function learn_press_get_screen_id() {
  * Check if current screen is a page of LP or
  * editing post type of LP such as course, lesson, etc...
  *
- * @since 3.x.x
+ * @since 3.2.6
  *
  * @return bool
  */

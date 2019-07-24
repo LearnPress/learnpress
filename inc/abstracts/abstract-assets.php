@@ -371,6 +371,10 @@ abstract class LP_Abstract_Assets {
 		return $url;
 	}
 
+	public function get_compressible_assets(){
+		return array();
+	}
+
 	public static function add_param() {
 
 	}

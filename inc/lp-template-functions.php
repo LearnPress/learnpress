@@ -3791,7 +3791,7 @@ function learn_press_get_link_current_question_instead_of_continue_button( $link
 add_filter( 'learn-press/course-item-link', 'learn_press_get_link_current_question_instead_of_continue_button', 10, 2 );
 
 /**
- * @since 3.x.x
+ * @since 3.2.6
  */
 function learn_press_define_debug_mode() {
 	if ( ! learn_press_is_debug() ) {

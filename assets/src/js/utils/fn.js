@@ -4,7 +4,7 @@
  * Create : $.fn.LP( 'PLUGIN_NAME', func) <=> $.fn.LP_PLUGIN_NAME
  * Usage: $(selector).LP('PLUGIN_NAME') <=> $(selector).LP_PLUGIN_NAME()
  *
- * @version 3.x.x
+ * @version 3.2.6
  */
 
 const $ = window.jQuery;

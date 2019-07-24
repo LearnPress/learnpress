@@ -21,7 +21,7 @@ class LP_Admin_Notice {
 	protected static $_notices = array();
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @var LP_Admin_Notice
 	 */
@@ -30,7 +30,7 @@ class LP_Admin_Notice {
 	/**
 	 * List of notices.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @var array
 	 */
@@ -39,7 +39,7 @@ class LP_Admin_Notice {
 	/**
 	 * Option key for storing notices.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @var string
 	 */
@@ -62,13 +62,13 @@ class LP_Admin_Notice {
 	}
 
 	public function load() {
-		if ( ! $notices = get_user_option( $this->option_id ) ) {
+		if ( ! $notices = get_option( $this->option_id ) ) {
 			return false;
 		}
 
 		$this->notices = array_merge( $notices, $this->notices );
 
-		delete_user_option( get_current_user_id(), $this->option_id );
+		delete_option( $this->option_id );
 
 		return true;
 	}
@@ -76,7 +76,7 @@ class LP_Admin_Notice {
 	/**
 	 * Add new notice to show in admin page.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string|WP_Error $message
 	 * @param string          $type
@@ -151,7 +151,7 @@ class LP_Admin_Notice {
 		}
 
 		if ( $redirect_notices ) {
-			update_user_option( get_current_user_id(), $this->option_id, $redirect_notices );
+			update_option( $this->option_id, $redirect_notices );
 		}
 
 		return true;
@@ -160,7 +160,7 @@ class LP_Admin_Notice {
 	/**
 	 * Check if a notice is already added by id.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string[] $notice
 	 *
@@ -185,7 +185,7 @@ class LP_Admin_Notice {
 	/**
 	 * Remove one or more notices from queue by ids.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string|array $notice
 	 *
@@ -205,14 +205,14 @@ class LP_Admin_Notice {
 		}
 
 		// Also remove in db
-		if ( $redirects = get_user_option( $this->option_id ) ) {
+		if ( $redirects = get_option( $this->option_id ) ) {
 			foreach ( $notice as $id ) {
 				if ( ! empty( $redirects[ $id ] ) ) {
 					unset( $redirects[ $id ] );
 				}
 			}
 
-			update_user_option( get_current_user_id(), $this->option_id, $redirects );
+			update_option( $this->option_id, $redirects );
 		}
 
 		return $this->notices;
@@ -221,22 +221,22 @@ class LP_Admin_Notice {
 	/**
 	 * Clear all notices.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 */
 	public function clear() {
 		$this->notices = array();
-		delete_user_option( get_current_user_id(), $this->option_id );
+		delete_option( $this->option_id );
 	}
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 */
 	public function dismiss_notice() {
 		if ( ! $id = LP_Request::get( 'lp-dismiss-notice' ) ) {
 			return;
 		}
 
-		if ( ! $dismissed = get_user_option( $this->dismissed_option_id ) ) {
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
 			$dismissed = array();
 		}
 
@@ -244,7 +244,7 @@ class LP_Admin_Notice {
 
 		if ( array_search( $id, $dismissed ) === false ) {
 			$dismissed[] = $id;
-			update_user_option( get_current_user_id(), $this->dismissed_option_id, $dismissed );
+			update_option( $this->dismissed_option_id, $dismissed );
 		}
 
 		do_action( 'learn-press/dismissed-notice', $id );
@@ -263,7 +263,7 @@ class LP_Admin_Notice {
 	/**
 	 * Update option to turn-off a notice.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string $name
 	 * @param string $value
@@ -287,7 +287,7 @@ class LP_Admin_Notice {
 	/**
 	 * Check if a notice has dismissed.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string $name
 	 *
@@ -295,7 +295,7 @@ class LP_Admin_Notice {
 	 */
 	public function has_dismissed_notice( $name ) {
 
-		if ( ! $dismissed = get_user_option( $this->dismissed_option_id ) ) {
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
 			return false;
 		}
 
@@ -316,14 +316,14 @@ class LP_Admin_Notice {
 	/**
 	 * Restore dismissed notices by id.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string[] $notice
 	 *
 	 * @return bool
 	 */
 	public function restore_dismissed_notice( $notice ) {
-		if ( ! $dismissed = get_user_option( $this->dismissed_option_id ) ) {
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
 			return false;
 		}
 
@@ -335,7 +335,7 @@ class LP_Admin_Notice {
 			}
 		}
 
-		update_user_option( get_current_user_id(), $this->dismissed_option_id, $dismissed );
+		update_option( $this->dismissed_option_id, $dismissed );
 
 		return true;
 	}
@@ -343,16 +343,16 @@ class LP_Admin_Notice {
 	/**
 	 * Clear all notices has dismissed.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 */
 	public function clear_dismissed_notice() {
-		delete_user_option( get_current_user_id(), $this->dismissed_option_id );
+		delete_option( $this->dismissed_option_id );
 	}
 
 	/**
 	 * Remove a notice has been dismissed.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string|array $name    - Optional. NULL will remove all notices.
 	 * @param bool         $expired - Optional. TRUE if dismiss notice as transient (in case $name passed).
@@ -486,7 +486,7 @@ class LP_Admin_Notice {
 	/**
 	 * Get single instance of this class
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @return LP_Admin_Notice
 	 */

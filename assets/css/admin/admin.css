@@ -390,6 +390,18 @@
 .rwmb-duration {
   border: 1px solid #ddd; }
 
+.clearfix {
+  clear: both;
+  height: 0;
+  opacity: 0; }
+
+.clearfix-after:after {
+  clear: both;
+  height: 0;
+  opacity: 0;
+  display: block;
+  content: ''; }
+
 @-moz-keyframes lp-spinner {
   100% {
     -moz-transform: rotate(360deg); } }

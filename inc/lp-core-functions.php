@@ -93,8 +93,12 @@ function learn_press_is_debug() {
 	/**
 	 * Priority #1
 	 */
-	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'true' && learn_press_get_current_user()->is_admin()) {
+	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'true' && learn_press_get_current_user()->is_admin() ) {
 		return true;
+	}
+
+	if ( isset( $_REQUEST['LP_DEBUG'] ) && $_REQUEST['LP_DEBUG'] === 'false' ) {
+		return false;
 	}
 
 	/**
@@ -3360,4 +3364,27 @@ function learn_press_show_log() {
 	if ( trim( LP_Request::get( 'show_log' ) ) === md5( AUTH_KEY ) ) {
 		call_user_func_array( 'learn_press_debug', func_get_args() );
 	}
+}
+
+/**
+ * @since 3.2.6
+ *
+ * @return array
+ */
+function learn_press_global_script_params() {
+	$js = array(
+		'ajax'        => admin_url( 'admin-ajax.php' ),
+		'plugin_url'  => LP()->plugin_url(),
+		'siteurl'     => home_url(),
+		'current_url' => learn_press_get_current_url(),
+		'theme'       => get_stylesheet(),
+		'localize'    => array(
+			'button_ok'     => __( 'OK', 'learnpress' ),
+			'button_cancel' => __( 'Cancel', 'learnpress' ),
+			'button_yes'    => __( 'Yes', 'learnpress' ),
+			'button_no'     => __( 'No', 'learnpress' )
+		)
+	);
+
+	return $js;
 }
