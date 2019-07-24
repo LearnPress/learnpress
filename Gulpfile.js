@@ -4,9 +4,6 @@
  * 1/ Run "npm install gulp -g" if you did not run it any time in the past.
  * 2/ Run "npm install gulp --save-dev" to install gulp in your project directory.
  * 3/ Run "npm install package-name[ package-name...] --save-dev
- *
- * EX: npm install gulp gulp-zip gulp-copy gulp-clean gulp-sass gulp-livereload gulp-sourcemaps read-file gulp-replace mkdirp gulp-concat gulp-uglify gulp-clean-css pump --save-dev
-
  */
 'use strict';
 const zip = require('gulp-zip');
@@ -68,7 +65,11 @@ var rootPath = '/Users/tu/Documents/foobla',
     svnTagsPath = svnPath + '/tags',
     currentVer = null,
     copySvnFiles = [
-        'assets/**/*',
+        'assets/css/**/*',
+        'assets/fonts/**/*',
+        'assets/images/**/*',
+        'assets/js/**/*',
+        'assets/**/*.php',
         '!assets/src/**/*',
         '!assets/scss/**/*',
         '!assets/**/*.js.map',
