@@ -195,15 +195,15 @@
 	}
 
 	// Shortuct functions
-	jAlert = function (message, title, callback) {
+	window.jAlert = function (message, title, callback) {
 		$.alerts.alert(message, title, callback);
 	}
 
-	jConfirm = function (message, title, callback) {
+    window.jConfirm = function (message, title, callback) {
 		$.alerts.confirm(message, title, callback);
 	};
 
-	jPrompt = function (message, value, title, callback) {
+    window.jPrompt = function (message, value, title, callback) {
 		$.alerts.prompt(message, value, title, callback);
 	};
 

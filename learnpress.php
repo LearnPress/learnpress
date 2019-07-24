@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 3.2.5.6
+Version: 3.2.6
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 5.0.2
@@ -351,6 +351,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/class-lp-widget.php';
 
+			/**
+			 * REST APIs
+             *
+             * @since 3.x.x
+             */
+			require_once 'inc/abstracts/abstract-rest-api.php';
+			require_once 'inc/abstracts/abstract-rest-controller.php';
+			require_once 'inc/rest-api/class-lp-core-api.php';
+
 			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
 				include_once 'local-debug.php';
 			}
@@ -519,6 +528,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Init LearnPress when WP initialises
 		 */
 		public function init() {
+
+			$this->api = new LP_Core_API();
 
 			$this->view_log();
 

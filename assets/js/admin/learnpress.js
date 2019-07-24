@@ -75,7 +75,7 @@ var _tools = __webpack_require__(17);
 
 var _tools2 = _interopRequireDefault(_tools);
 
-var _statistic = __webpack_require__(2);
+var _statistic = __webpack_require__(9);
 
 var _statistic2 = _interopRequireDefault(_statistic);
 
@@ -771,7 +771,7 @@ $(document).ready(onReady);
 
 /***/ }),
 
-/***/ 2:
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

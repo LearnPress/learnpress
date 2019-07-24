@@ -360,8 +360,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   }
 
   if (typeof exports == "object") {
-    var Sortable = require("sortablejs");
-    module.exports = buildDraggable(Sortable);
+    // var Sortable = require("sortablejs");
+    // module.exports = buildDraggable(Sortable);
   } else if (typeof define == "function" && define.amd) {
     define(['sortablejs'], function (Sortable) {
       return buildDraggable(Sortable);

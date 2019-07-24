@@ -1153,6 +1153,9 @@ body .lp-quiz-buttons .form-button-finish-course {
     margin: 0; }
     #course-item-content-header .course-title a {
       box-shadow: none; }
+    #course-item-content-header .course-title:before {
+      content: '';
+      display: none; }
   #course-item-content-header .form-button.lp-button-back {
     float: right;
     margin-right: 15px; }

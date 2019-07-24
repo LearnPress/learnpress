@@ -64,7 +64,15 @@
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -137,14 +145,6 @@ function HTTP(options) {
 }
 
 /***/ }),
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
 /* 9 */,
 /* 10 */,
 /* 11 */,
@@ -214,7 +214,7 @@ var _quiz = __webpack_require__(42);
 
 var _quiz2 = _interopRequireDefault(_quiz);
 
-var _http = __webpack_require__(0);
+var _http = __webpack_require__(8);
 
 var _http2 = _interopRequireDefault(_http);
 
