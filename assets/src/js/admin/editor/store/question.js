@@ -5,10 +5,10 @@ import actions from '../actions/question';
 const $ = window.jQuery;
 const Question = function Question(data) {
     var state = $.extend({
-            status: 'successful',
-            countCurrentRequest: 0
-        }, data.root),
-        i18n = $.extend({}, data.i18n);
+        status: 'successful',
+        countCurrentRequest: 0,
+        i18n: $.extend({}, data.i18n)
+    }, data.root);
 
     return {
         state: state,
