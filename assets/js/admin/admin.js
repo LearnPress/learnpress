@@ -80,7 +80,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 ; /**
    * JS code may run in all pages in admin.
    *
-   * @version 3.x.x
+   * @version 3.2.6
    */
 //import Utils from './utils';
 //import Test from './test';

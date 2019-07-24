@@ -21,7 +21,7 @@ cache/
 /languages/learnpress-vi.po
 /releases
 /build
-/**/*.map
+/**/*.js.map
 /**/_bk/
 test list.txt
 

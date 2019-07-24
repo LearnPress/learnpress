@@ -1,6 +1,6 @@
 <?php
 /**
- * @since 3.x.x
+ * @since 3.2.6
  */
 
 defined( 'ABSPATH' ) or die;

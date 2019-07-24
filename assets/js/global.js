@@ -101,7 +101,7 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
                                                                                                                                                                                                                                                                    * Utility functions may use for both admin and frontend.
                                                                                                                                                                                                                                                                    *
-                                                                                                                                                                                                                                                                   * @version 3.x.x
+                                                                                                                                                                                                                                                                   * @version 3.2.6
                                                                                                                                                                                                                                                                    */
 
 var _extend = __webpack_require__(0);
@@ -664,7 +664,7 @@ Object.defineProperty(exports, "__esModule", {
  * Create : $.fn.LP( 'PLUGIN_NAME', func) <=> $.fn.LP_PLUGIN_NAME
  * Usage: $(selector).LP('PLUGIN_NAME') <=> $(selector).LP_PLUGIN_NAME()
  *
- * @version 3.x.x
+ * @version 3.2.6
  */
 
 var $ = window.jQuery;
@@ -1113,6 +1113,7 @@ Object.defineProperty(exports, "__esModule", {
  */
 var Event_Callback = function Event_Callback(self) {
     var callbacks = {};
+    var $ = window.jQuery;
 
     this.on = function (event, callback) {
         var namespaces = event.split('.'),

@@ -1,7 +1,7 @@
 /**
  * Utility functions may use for both admin and frontend.
  *
- * @version 3.x.x
+ * @version 3.2.6
  */
 
 import extend from './extend';

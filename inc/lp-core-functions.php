@@ -3368,7 +3368,7 @@ function learn_press_show_log() {
 }
 
 /**
- * @since 3.x.x
+ * @since 3.2.6
  *
  * @return array
  */

@@ -105,7 +105,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * @var LP_Admin_Notice
          *
-         * @since 3.x.x
+         * @since 3.2.6
 		 */
 		public $adminNotices = null;
 
@@ -354,7 +354,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			/**
 			 * REST APIs
              *
-             * @since 3.x.x
+             * @since 3.2.6
              */
 			require_once 'inc/abstracts/abstract-rest-api.php';
 			require_once 'inc/abstracts/abstract-rest-controller.php';
