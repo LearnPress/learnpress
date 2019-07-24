@@ -157,7 +157,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'quiz'             => array(
 					'url'     => self::url( 'js/frontend/quiz.js' ),
-					'deps'    => array( 'global', 'jquery-scrollbar', 'watchjs' ),
+					'deps'    => array( 'global'),//, 'jquery-scrollbar', 'watchjs' ),
 					'enqueue' => LP_Global::course_item_quiz() ? true : false
 				),
 				'profile-user'     => array(

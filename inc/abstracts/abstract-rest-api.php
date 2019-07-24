@@ -5,7 +5,7 @@
  *
  * Base class for api
  *
- * @since 3.x.x
+ * @since 3.2.6
  */
 abstract class LP_Abstract_API {
 	/**
@@ -33,7 +33,7 @@ abstract class LP_Abstract_API {
 	/**
 	 * Init REST.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 */
 	public function rest_api_init() {
 		if ( ! class_exists( 'WP_REST_Server' ) ) {
@@ -53,7 +53,7 @@ abstract class LP_Abstract_API {
 	/**
 	 * Register routes
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 */
 	public function rest_api_register_routes() {
 		if ( ! $this->controllers ) {
