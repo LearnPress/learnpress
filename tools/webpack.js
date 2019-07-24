@@ -110,7 +110,9 @@ const options = {
     ]
 }
 
-adminSources().concat(frontendSources()).filter((value, index, self) => {
+adminSources().concat(frontendSources()).concat([
+    './assets/src/js/vendor/chart.min.js'
+]).filter((value, index, self) => {
     return self.indexOf(value) === index;
 }).forEach((file) => {
     options.files.push({
