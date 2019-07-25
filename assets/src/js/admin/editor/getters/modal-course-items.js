@@ -26,7 +26,7 @@ const Getters = {
     types: function (state) {
         return state.types;
     },
-    section: function () {
+    section: function (state) {
         return state.sectionId;
     }
 };
