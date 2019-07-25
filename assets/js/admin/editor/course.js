@@ -370,7 +370,7 @@ var Getters = {
     types: function types(state) {
         return state.types;
     },
-    section: function section() {
+    section: function section(state) {
         return state.sectionId;
     }
 };
