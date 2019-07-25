@@ -49,7 +49,7 @@ const Question = {
         return state;
     },
     i18n: function (state) {
-        return i18n;
+        return state.i18n;
     }
 };
 

@@ -134,9 +134,9 @@ var $ = window.jQuery;
 var Question = function Question(data) {
     var state = $.extend({
         status: 'successful',
-        countCurrentRequest: 0
-    }, data.root),
-        i18n = $.extend({}, data.i18n);
+        countCurrentRequest: 0,
+        i18n: $.extend({}, data.i18n)
+    }, data.root);
 
     return {
         state: state,
@@ -209,19 +209,9 @@ var Question = {
     state: function state(_state) {
         return _state;
     },
-    i18n: function (_i18n) {
-        function i18n(_x) {
-            return _i18n.apply(this, arguments);
-        }
-
-        i18n.toString = function () {
-            return _i18n.toString();
-        };
-
-        return i18n;
-    }(function (state) {
-        return i18n;
-    })
+    i18n: function i18n(state) {
+        return state.i18n;
+    }
 };
 
 exports.default = Question;

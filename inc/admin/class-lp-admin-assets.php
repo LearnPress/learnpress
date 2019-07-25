@@ -200,17 +200,17 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						//'learn-press-modal-search-items',
 						//'learn-press-modal-search-users',
 						'learn-press-utils',
-						'lp-vue'
+						//'lp-vue'
 					),
 					'screens' => array( LP_ORDER_CPT )
 				),
 				'learn-press-update'                => array(
 					'url'  => $this->url( 'js/admin/update.js' ),
-					'deps' => array( 'lp-vue' )
+					//'deps' => array( 'lp-vue' )
 				),
 				'learn-press-sync-data'             => array(
 					'url'  => $this->url( 'js/admin/sync-data.js' ),
-					'deps' => array( 'lp-vue' )
+					//'deps' => array( 'lp-vue' )
 				),
 //				'learn-press-chartjs'               => array(
 //					'url'     => $this->url( 'js/vendor/chart.min.js' ),
