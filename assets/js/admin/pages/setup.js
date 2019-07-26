@@ -44,6 +44,11 @@
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -59,42 +64,24 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 60);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/admin/pages/setup.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 10:
+/***/ "./assets/src/js/admin/pages/setup.js":
+/*!********************************************!*\
+  !*** ./assets/src/js/admin/pages/setup.js ***!
+  \********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = isEmail;
-/**
- * Validate is an email.
- *
- * @param email
- * @return {boolean}
- */
-function isEmail(email) {
-  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
-};
-
-/***/ }),
-
-/***/ 60:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _emailValidator = __webpack_require__(10);
+var _emailValidator = __webpack_require__(/*! ../../utils/email-validator */ "./assets/src/js/utils/email-validator.js");
 
 var _emailValidator2 = _interopRequireDefault(_emailValidator);
 
@@ -254,6 +241,33 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
     $(document).ready(onReady);
 })(jQuery);
+
+/***/ }),
+
+/***/ "./assets/src/js/utils/email-validator.js":
+/*!************************************************!*\
+  !*** ./assets/src/js/utils/email-validator.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = isEmail;
+/**
+ * Validate is an email.
+ *
+ * @param email
+ * @return {boolean}
+ */
+function isEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+};
 
 /***/ })
 

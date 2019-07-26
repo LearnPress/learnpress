@@ -1,10 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// Set different CSS extraction for editor only and common block styles
-const blocksCSSPlugin = new ExtractTextPlugin({
-    filename: './assets/css/main.css',
-});
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// // Set different CSS extraction for editor only and common block styles
+// const blocksCSSPlugin = new ExtractTextPlugin({
+//     filename: './assets/css/main.css',
+// });
 
 const tools = require('./tools/webpack');
 
@@ -62,14 +62,14 @@ module.exports = {
                     }
                 },
             },
-            {
-                test: /([a-zA-Z0-9\s_\\.\-\(\):])+(.s?css)$/,
-                use: blocksCSSPlugin.extract(extractConfig),
-            },
+            // {
+            //     test: /([a-zA-Z0-9\s_\\.\-\(\):])+(.s?css)$/,
+            //     use: blocksCSSPlugin.extract(extractConfig),
+            // },
         ],
     },
     plugins: [
-        blocksCSSPlugin,
+        //blocksCSSPlugin,
         tools.mergeAndCompressJs
     ]
 };

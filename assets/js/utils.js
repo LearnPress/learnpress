@@ -44,6 +44,11 @@
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -59,12 +64,133 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/utils/index.js");
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ "./assets/src/js/utils/event-callback.js":
+/*!***********************************************!*\
+  !*** ./assets/src/js/utils/event-callback.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/**
+ * Manage event callbacks.
+ * Allow add/remove a callback function into custom event of an object.
+ *
+ * @constructor
+ */
+var Event_Callback = function Event_Callback(self) {
+    var callbacks = {};
+    var $ = window.jQuery;
+
+    this.on = function (event, callback) {
+        var namespaces = event.split('.'),
+            namespace = '';
+
+        if (namespaces.length > 1) {
+            event = namespaces[0];
+            namespace = namespaces[1];
+        }
+
+        if (!callbacks[event]) {
+            callbacks[event] = [[], {}];
+        }
+
+        if (namespace) {
+            if (!callbacks[event][1][namespace]) {
+                callbacks[event][1][namespace] = [];
+            }
+            callbacks[event][1][namespace].push(callback);
+        } else {
+            callbacks[event][0].push(callback);
+        }
+
+        return self;
+    };
+
+    this.off = function (event, callback) {
+        var namespaces = event.split('.'),
+            namespace = '';
+
+        if (namespaces.length > 1) {
+            event = namespaces[0];
+            namespace = namespaces[1];
+        }
+
+        if (!callbacks[event]) {
+            return self;
+        }
+        var at = -1;
+        if (!namespace) {
+            if ($.isFunction(callback)) {
+                at = callbacks[event][0].indexOf(callback);
+                if (at < 0) {
+                    return self;
+                }
+                callbacks[event][0].splice(at, 1);
+            } else {
+                callbacks[event][0] = [];
+            }
+        } else {
+            if (!callbacks[event][1][namespace]) {
+                return self;
+            }
+
+            if ($.isFunction(callback)) {
+                at = callbacks[event][1][namespace].indexOf(callback);
+                if (at < 0) {
+                    return self;
+                }
+                callbacks[event][1][namespace].splice(at, 1);
+            } else {
+                callbacks[event][1][namespace] = [];
+            }
+        }
+
+        return self;
+    };
+
+    this.callEvent = function (event, callbackArgs) {
+        if (!callbacks[event]) {
+            return;
+        }
+
+        if (callbacks[event][0]) {
+            for (var i = 0; i < callbacks[event][0].length; i++) {
+                $.isFunction(callbacks[event][0][i]) && callbacks[event][i][0].apply(self, callbackArgs);
+            }
+        }
+
+        if (callbacks[event][1]) {
+            for (var i in callbacks[event][1]) {
+                for (var j = 0; j < callbacks[event][1][i].length; j++) {
+                    $.isFunction(callbacks[event][1][i][j]) && callbacks[event][1][i][j].apply(self, callbackArgs);
+                }
+            }
+        }
+    };
+};
+
+exports.default = Event_Callback;
+
+/***/ }),
+
+/***/ "./assets/src/js/utils/extend.js":
+/*!***************************************!*\
+  !*** ./assets/src/js/utils/extend.js ***!
+  \***************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86,7 +212,157 @@ exports.default = function () {
 };
 
 /***/ }),
-/* 1 */
+
+/***/ "./assets/src/js/utils/fn.js":
+/*!***********************************!*\
+  !*** ./assets/src/js/utils/fn.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/**
+ * Auto prepend `LP` prefix for jQuery fn plugin name.
+ *
+ * Create : $.fn.LP( 'PLUGIN_NAME', func) <=> $.fn.LP_PLUGIN_NAME
+ * Usage: $(selector).LP('PLUGIN_NAME') <=> $(selector).LP_PLUGIN_NAME()
+ *
+ * @version 3.2.6
+ */
+
+var $ = window.jQuery;
+var exp;
+
+(function () {
+
+    if ($ === undefined) {
+        return;
+    }
+
+    $.fn.LP = exp = function exp(widget, fn) {
+        if ($.isFunction(fn)) {
+            $.fn['LP_' + widget] = fn;
+        } else if (widget) {
+            var args = [];
+            if (arguments.length > 1) {
+                for (var i = 1; i < arguments.length; i++) {
+                    args.push(arguments[i]);
+                }
+            }
+
+            return $.isFunction($(this)['LP_' + widget]) ? $(this)['LP_' + widget].apply(this, args) : this;
+        }
+        return this;
+    };
+})();
+
+exports.default = exp;
+
+/***/ }),
+
+/***/ "./assets/src/js/utils/hook.js":
+/*!*************************************!*\
+  !*** ./assets/src/js/utils/hook.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var Hook = {
+    hooks: { action: {}, filter: {} },
+    addAction: function addAction(action, callable, priority, tag) {
+        this.addHook('action', action, callable, priority, tag);
+        return this;
+    },
+    addFilter: function addFilter(action, callable, priority, tag) {
+        this.addHook('filter', action, callable, priority, tag);
+        return this;
+    },
+    doAction: function doAction(action) {
+        this.doHook('action', action, arguments);
+        return this;
+    },
+    applyFilters: function applyFilters(action) {
+        return this.doHook('filter', action, arguments);
+    },
+    removeAction: function removeAction(action, tag) {
+        this.removeHook('action', action, tag);
+        return this;
+    },
+    removeFilter: function removeFilter(action, priority, tag) {
+        this.removeHook('filter', action, priority, tag);
+        return this;
+    },
+    addHook: function addHook(hookType, action, callable, priority, tag) {
+        if (undefined === this.hooks[hookType][action]) {
+            this.hooks[hookType][action] = [];
+        }
+        var hooks = this.hooks[hookType][action];
+        if (undefined === tag) {
+            tag = action + '_' + hooks.length;
+        }
+        this.hooks[hookType][action].push({ tag: tag, callable: callable, priority: priority });
+        return this;
+    },
+    doHook: function doHook(hookType, action, args) {
+
+        // splice args from object into array and remove first index which is the hook name
+        args = Array.prototype.slice.call(args, 1);
+
+        if (undefined !== this.hooks[hookType][action]) {
+            var hooks = this.hooks[hookType][action],
+                hook;
+            //sort by priority
+            hooks.sort(function (a, b) {
+                return a["priority"] - b["priority"];
+            });
+            for (var i = 0; i < hooks.length; i++) {
+                hook = hooks[i].callable;
+                if (typeof hook !== 'function') hook = window[hook];
+                if ('action' === hookType) {
+                    hook.apply(null, args);
+                } else {
+                    args[0] = hook.apply(null, args);
+                }
+            }
+        }
+        if ('filter' === hookType) {
+            return args[0];
+        }
+        return this;
+    },
+    removeHook: function removeHook(hookType, action, priority, tag) {
+        if (undefined !== this.hooks[hookType][action]) {
+            var hooks = this.hooks[hookType][action];
+            for (var i = hooks.length - 1; i >= 0; i--) {
+                if ((undefined === tag || tag === hooks[i].tag) && (undefined === priority || priority === hooks[i].priority)) {
+                    hooks.splice(i, 1);
+                }
+            }
+        }
+        return this;
+    }
+};
+
+exports.default = Hook;
+
+/***/ }),
+
+/***/ "./assets/src/js/utils/index.js":
+/*!**************************************!*\
+  !*** ./assets/src/js/utils/index.js ***!
+  \**************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102,31 +378,31 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                                                                                                                                                                                                                                                                    * @version 3.2.6
                                                                                                                                                                                                                                                                    */
 
-var _extend = __webpack_require__(0);
+var _extend = __webpack_require__(/*! ./extend */ "./assets/src/js/utils/extend.js");
 
 var _extend2 = _interopRequireDefault(_extend);
 
-var _fn = __webpack_require__(2);
+var _fn = __webpack_require__(/*! ./fn */ "./assets/src/js/utils/fn.js");
 
 var _fn2 = _interopRequireDefault(_fn);
 
-var _quickTip = __webpack_require__(3);
+var _quickTip = __webpack_require__(/*! ./quick-tip */ "./assets/src/js/utils/quick-tip.js");
 
 var _quickTip2 = _interopRequireDefault(_quickTip);
 
-var _messageBox = __webpack_require__(4);
+var _messageBox = __webpack_require__(/*! ./message-box */ "./assets/src/js/utils/message-box.js");
 
 var _messageBox2 = _interopRequireDefault(_messageBox);
 
-var _eventCallback = __webpack_require__(5);
+var _eventCallback = __webpack_require__(/*! ./event-callback */ "./assets/src/js/utils/event-callback.js");
 
 var _eventCallback2 = _interopRequireDefault(_eventCallback);
 
-var _hook = __webpack_require__(6);
+var _hook = __webpack_require__(/*! ./hook */ "./assets/src/js/utils/hook.js");
 
 var _hook2 = _interopRequireDefault(_hook);
 
-var _jquery = __webpack_require__(7);
+var _jquery = __webpack_require__(/*! ./jquery.plugins */ "./assets/src/js/utils/jquery.plugins.js");
 
 var jplugins = _interopRequireWildcard(_jquery);
 
@@ -646,7 +922,12 @@ exports.default = {
 };
 
 /***/ }),
-/* 2 */
+
+/***/ "./assets/src/js/utils/jquery.plugins.js":
+/*!***********************************************!*\
+  !*** ./assets/src/js/utils/jquery.plugins.js ***!
+  \***********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -655,183 +936,217 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-/**
- * Auto prepend `LP` prefix for jQuery fn plugin name.
- *
- * Create : $.fn.LP( 'PLUGIN_NAME', func) <=> $.fn.LP_PLUGIN_NAME
- * Usage: $(selector).LP('PLUGIN_NAME') <=> $(selector).LP_PLUGIN_NAME()
- *
- * @version 3.2.6
- */
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var $ = window.jQuery;
-var exp;
 
-(function () {
+var serializeJSON = function serializeJSON(path) {
+    var isInput = $(this).is('input') || $(this).is('select') || $(this).is('textarea');
+    var unIndexed = isInput ? $(this).serializeArray() : $(this).find('input, select, textarea').serializeArray(),
+        indexed = {},
+        validate = /(\[([a-zA-Z0-9_-]+)?\]?)/g,
+        arrayKeys = {},
+        end = false;
+    $.each(unIndexed, function () {
+        var that = this,
+            match = this.name.match(/^([0-9a-zA-Z_-]+)/);
+        if (!match) {
+            return;
+        }
+        var keys = this.name.match(validate),
+            objPath = "indexed['" + match[0] + "']";
 
-    if ($ === undefined) {
-        return;
-    }
+        if (keys) {
+            if (_typeof(indexed[match[0]]) != 'object') {
+                indexed[match[0]] = {};
+            }
 
-    $.fn.LP = exp = function exp(widget, fn) {
-        if ($.isFunction(fn)) {
-            $.fn['LP_' + widget] = fn;
-        } else if (widget) {
-            var args = [];
-            if (arguments.length > 1) {
-                for (var i = 1; i < arguments.length; i++) {
-                    args.push(arguments[i]);
+            $.each(keys, function (i, prop) {
+                prop = prop.replace(/\]|\[/g, '');
+                var rawPath = objPath.replace(/'|\[|\]/g, ''),
+                    objExp = '',
+                    preObjPath = objPath;
+
+                if (prop == '') {
+                    if (arrayKeys[rawPath] == undefined) {
+                        arrayKeys[rawPath] = 0;
+                    } else {
+                        arrayKeys[rawPath]++;
+                    }
+                    objPath += "['" + arrayKeys[rawPath] + "']";
+                } else {
+                    if (!isNaN(prop)) {
+                        arrayKeys[rawPath] = prop;
+                    }
+                    objPath += "['" + prop + "']";
                 }
-            }
+                try {
+                    if (i == keys.length - 1) {
+                        objExp = objPath + "=that.value;";
+                        end = true;
+                    } else {
+                        objExp = objPath + "={}";
+                        end = false;
+                    }
 
-            return $.isFunction($(this)['LP_' + widget]) ? $(this)['LP_' + widget].apply(this, args) : this;
-        }
-        return this;
-    };
-})();
-
-exports.default = exp;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-;(function ($) {
-    function QuickTip(el, options) {
-        var $el = $(el),
-            uniId = $el.attr('data-id') || LP.uniqueId();
-
-        options = $.extend({
-            event: 'hover',
-            autoClose: true,
-            single: true,
-            closeInterval: 1000,
-            arrowOffset: null,
-            tipClass: ''
-        }, options, $el.data());
-
-        $el.attr('data-id', uniId);
-
-        var content = $el.attr('data-content-tip') || $el.html(),
-            $tip = $('<div class="learn-press-tip-floating">' + content + '</div>'),
-            t = null,
-            closeInterval = 0,
-            useData = false,
-            arrowOffset = options.arrowOffset === 'el' ? $el.outerWidth() / 2 : 8,
-            $content = $('#__' + uniId);
-
-        if ($content.length === 0) {
-            $(document.body).append($('<div />').attr('id', '__' + uniId).html(content).css('display', 'none'));
-        }
-
-        content = $content.html();
-
-        $tip.addClass(options.tipClass);
-
-        $el.data('content-tip', content);
-        if ($el.attr('data-content-tip')) {
-            //$el.removeAttr('data-content-tip');
-            useData = true;
-        }
-
-        closeInterval = options.closeInterval;
-
-        if (options.autoClose === false) {
-            $tip.append('<a class="close"></a>');
-            $tip.on('click', '.close', function () {
-                close();
+                    var evalString = "" + "if( typeof " + objPath + " == 'undefined'){" + objExp + ";" + "}else{" + "if(end){" + "if(typeof " + preObjPath + "!='object'){" + preObjPath + "={};}" + objExp + "}" + "}";
+                    eval(evalString);
+                } catch (e) {
+                    console.log('Error:' + e + "\n" + objExp);
+                }
             });
+        } else {
+            indexed[match[0]] = this.value;
         }
-
-        function show() {
-            if (t) {
-                clearTimeout(t);
-                return;
-            }
-
-            if (options.single) {
-                $('.learn-press-tip').not($el).LP('QuickTip', 'close');
-            }
-
-            $tip.appendTo(document.body);
-            var pos = $el.offset();
-
-            $tip.css({
-                top: pos.top - $tip.outerHeight() - 8,
-                left: pos.left - $tip.outerWidth() / 2 + arrowOffset
-            });
-        }
-
-        function hide() {
-            t && clearTimeout(t);
-            t = setTimeout(function () {
-                $tip.detach();
-                t = null;
-            }, closeInterval);
-        }
-
-        function close() {
-            closeInterval = 0;
-            hide();
-            closeInterval = options.closeInterval;
-        }
-
-        function open() {
-            show();
-        }
-
-        if (!useData) {
-            $el.html('');
-        }
-
-        if (options.event === 'click') {
-            $el.on('click', function (e) {
-                e.stopPropagation();
-                show();
-            });
-        }
-
-        $(document).on('learn-press/close-all-quick-tip', function () {
-            close();
-        });
-        $el.hover(function (e) {
-            e.stopPropagation();
-            if (options.event !== 'click') {
-                show();
-            }
-        }, function (e) {
-            e.stopPropagation();
-            if (options.autoClose) {
-                hide();
-            }
-        }).addClass('ready');
-        return {
-            close: close,
-            open: open
-        };
+    });
+    if (path) {
+        path = "['" + path.replace('.', "']['") + "']";
+        var c = 'try{indexed = indexed' + path + '}catch(ex){console.log(c, ex);}';
+        eval(c);
     }
+    return indexed;
+};
 
-    $.fn.LP('QuickTip', function (options) {
-        return $.each(this, function () {
-            var $tip = $(this).data('quick-tip');
+var LP_Tooltip = function LP_Tooltip(options) {
+    options = $.extend({}, {
+        offset: [0, 0]
+    }, options || {});
+    return $.each(this, function () {
+        var $el = $(this),
+            content = $el.data('content');
+        if (!content || $el.data('LP_Tooltip') !== undefined) {
+            return;
+        }
 
-            if (!$tip) {
-                $tip = new QuickTip(this, options);
-                $(this).data('quick-tip', $tip);
+        var $tooltip = null;
+        $el.hover(function (e) {
+            $tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();
+            var position = $el.offset();
+            if ($.isArray(options.offset)) {
+                var top = options.offset[1],
+                    left = options.offset[0];
+                if ($.isNumeric(left)) {
+                    position.left += left;
+                } else {}
+                if ($.isNumeric(top)) {
+                    position.top += top;
+                } else {}
             }
+            $tooltip.css({
+                top: position.top,
+                left: position.left
+            });
+            $tooltip.fadeIn();
+        }, function () {
+            $tooltip && $tooltip.remove();
+        });
+        $el.data('tooltip', true);
+    });
+};
 
-            if ($.type(options) === 'string') {
-                $tip[options] && $tip[options].apply($tip);
-            }
+var hasEvent = function hasEvent(name) {
+    var events = $(this).data('events');
+    if (typeof events.LP == 'undefined') {
+        return false;
+    }
+    for (i = 0; i < events.LP.length; i++) {
+        if (events.LP[i].namespace == name) {
+            return true;
+        }
+    }
+    return false;
+};
+
+var dataToJSON = function dataToJSON() {
+    var json = {};
+    $.each(this[0].attributes, function () {
+        var m = this.name.match(/^data-(.*)/);
+        if (m) {
+            json[m[1]] = this.value;
+        }
+    });
+    return json;
+};
+
+var rows = function rows() {
+    var h = $(this).height();
+    var lh = $(this).css('line-height').replace("px", "");
+    $(this).attr({ height: h, 'line-height': lh });
+    return Math.floor(h / parseInt(lh));
+};
+
+var checkLines = function checkLines(p) {
+    return this.each(function () {
+        var $e = $(this),
+            rows = $e.rows();
+
+        p.call(this, rows);
+    });
+};
+
+var findNext = function findNext(selector) {
+    var $selector = $(selector),
+        $root = this.first(),
+        index = $selector.index($root),
+        $next = $selector.eq(index + 1);
+    return $next.length ? $next : false;
+};
+
+var findPrev = function findPrev(selector) {
+    var $selector = $(selector),
+        $root = this.first(),
+        index = $selector.index($root),
+        $prev = $selector.eq(index - 1);
+    return $prev.length ? $prev : false;
+};
+
+var progress = function progress(v) {
+    return this.each(function () {
+        var t = parseInt(v / 100 * 360),
+            timer = null,
+            $this = $(this);
+
+        if (t < 180) {
+            $this.find('.progress-circle').removeClass('gt-50');
+        } else {
+            $this.find('.progress-circle').addClass('gt-50');
+        }
+        $this.find('.fill').css({
+            transform: 'rotate(' + t + 'deg)'
         });
     });
-})(jQuery);
+};
+
+$.fn.serializeJSON = serializeJSON;
+$.fn.LP_Tooltip = LP_Tooltip;
+$.fn.hasEvent = hasEvent;
+$.fn.dataToJSON = dataToJSON;
+$.fn.rows = rows;
+$.fn.checkLines = checkLines;
+$.fn.findNext = findNext;
+$.fn.findPrev = findPrev;
+$.fn.progress = progress;
+
+exports.default = {
+    serializeJSON: serializeJSON,
+    LP_Tooltip: LP_Tooltip,
+    hasEvent: hasEvent,
+    dataToJSON: dataToJSON,
+    rows: rows,
+    checkLines: checkLines,
+    findNext: findNext,
+    findPrev: findPrev,
+    progress: progress
+};
 
 /***/ }),
-/* 4 */
+
+/***/ "./assets/src/js/utils/message-box.js":
+/*!********************************************!*\
+  !*** ./assets/src/js/utils/message-box.js ***!
+  \********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1090,417 +1405,149 @@ var MessageBox = {
 exports.default = MessageBox;
 
 /***/ }),
-/* 5 */
+
+/***/ "./assets/src/js/utils/quick-tip.js":
+/*!******************************************!*\
+  !*** ./assets/src/js/utils/quick-tip.js ***!
+  \******************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-/**
- * Manage event callbacks.
- * Allow add/remove a callback function into custom event of an object.
- *
- * @constructor
- */
-var Event_Callback = function Event_Callback(self) {
-    var callbacks = {};
-    var $ = window.jQuery;
+;(function ($) {
+    function QuickTip(el, options) {
+        var $el = $(el),
+            uniId = $el.attr('data-id') || LP.uniqueId();
 
-    this.on = function (event, callback) {
-        var namespaces = event.split('.'),
-            namespace = '';
+        options = $.extend({
+            event: 'hover',
+            autoClose: true,
+            single: true,
+            closeInterval: 1000,
+            arrowOffset: null,
+            tipClass: ''
+        }, options, $el.data());
 
-        if (namespaces.length > 1) {
-            event = namespaces[0];
-            namespace = namespaces[1];
+        $el.attr('data-id', uniId);
+
+        var content = $el.attr('data-content-tip') || $el.html(),
+            $tip = $('<div class="learn-press-tip-floating">' + content + '</div>'),
+            t = null,
+            closeInterval = 0,
+            useData = false,
+            arrowOffset = options.arrowOffset === 'el' ? $el.outerWidth() / 2 : 8,
+            $content = $('#__' + uniId);
+
+        if ($content.length === 0) {
+            $(document.body).append($('<div />').attr('id', '__' + uniId).html(content).css('display', 'none'));
         }
 
-        if (!callbacks[event]) {
-            callbacks[event] = [[], {}];
+        content = $content.html();
+
+        $tip.addClass(options.tipClass);
+
+        $el.data('content-tip', content);
+        if ($el.attr('data-content-tip')) {
+            //$el.removeAttr('data-content-tip');
+            useData = true;
         }
 
-        if (namespace) {
-            if (!callbacks[event][1][namespace]) {
-                callbacks[event][1][namespace] = [];
-            }
-            callbacks[event][1][namespace].push(callback);
-        } else {
-            callbacks[event][0].push(callback);
-        }
+        closeInterval = options.closeInterval;
 
-        return self;
-    };
-
-    this.off = function (event, callback) {
-        var namespaces = event.split('.'),
-            namespace = '';
-
-        if (namespaces.length > 1) {
-            event = namespaces[0];
-            namespace = namespaces[1];
-        }
-
-        if (!callbacks[event]) {
-            return self;
-        }
-        var at = -1;
-        if (!namespace) {
-            if ($.isFunction(callback)) {
-                at = callbacks[event][0].indexOf(callback);
-                if (at < 0) {
-                    return self;
-                }
-                callbacks[event][0].splice(at, 1);
-            } else {
-                callbacks[event][0] = [];
-            }
-        } else {
-            if (!callbacks[event][1][namespace]) {
-                return self;
-            }
-
-            if ($.isFunction(callback)) {
-                at = callbacks[event][1][namespace].indexOf(callback);
-                if (at < 0) {
-                    return self;
-                }
-                callbacks[event][1][namespace].splice(at, 1);
-            } else {
-                callbacks[event][1][namespace] = [];
-            }
-        }
-
-        return self;
-    };
-
-    this.callEvent = function (event, callbackArgs) {
-        if (!callbacks[event]) {
-            return;
-        }
-
-        if (callbacks[event][0]) {
-            for (var i = 0; i < callbacks[event][0].length; i++) {
-                $.isFunction(callbacks[event][0][i]) && callbacks[event][i][0].apply(self, callbackArgs);
-            }
-        }
-
-        if (callbacks[event][1]) {
-            for (var i in callbacks[event][1]) {
-                for (var j = 0; j < callbacks[event][1][i].length; j++) {
-                    $.isFunction(callbacks[event][1][i][j]) && callbacks[event][1][i][j].apply(self, callbackArgs);
-                }
-            }
-        }
-    };
-};
-
-exports.default = Event_Callback;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var Hook = {
-    hooks: { action: {}, filter: {} },
-    addAction: function addAction(action, callable, priority, tag) {
-        this.addHook('action', action, callable, priority, tag);
-        return this;
-    },
-    addFilter: function addFilter(action, callable, priority, tag) {
-        this.addHook('filter', action, callable, priority, tag);
-        return this;
-    },
-    doAction: function doAction(action) {
-        this.doHook('action', action, arguments);
-        return this;
-    },
-    applyFilters: function applyFilters(action) {
-        return this.doHook('filter', action, arguments);
-    },
-    removeAction: function removeAction(action, tag) {
-        this.removeHook('action', action, tag);
-        return this;
-    },
-    removeFilter: function removeFilter(action, priority, tag) {
-        this.removeHook('filter', action, priority, tag);
-        return this;
-    },
-    addHook: function addHook(hookType, action, callable, priority, tag) {
-        if (undefined === this.hooks[hookType][action]) {
-            this.hooks[hookType][action] = [];
-        }
-        var hooks = this.hooks[hookType][action];
-        if (undefined === tag) {
-            tag = action + '_' + hooks.length;
-        }
-        this.hooks[hookType][action].push({ tag: tag, callable: callable, priority: priority });
-        return this;
-    },
-    doHook: function doHook(hookType, action, args) {
-
-        // splice args from object into array and remove first index which is the hook name
-        args = Array.prototype.slice.call(args, 1);
-
-        if (undefined !== this.hooks[hookType][action]) {
-            var hooks = this.hooks[hookType][action],
-                hook;
-            //sort by priority
-            hooks.sort(function (a, b) {
-                return a["priority"] - b["priority"];
+        if (options.autoClose === false) {
+            $tip.append('<a class="close"></a>');
+            $tip.on('click', '.close', function () {
+                close();
             });
-            for (var i = 0; i < hooks.length; i++) {
-                hook = hooks[i].callable;
-                if (typeof hook !== 'function') hook = window[hook];
-                if ('action' === hookType) {
-                    hook.apply(null, args);
-                } else {
-                    args[0] = hook.apply(null, args);
-                }
-            }
         }
-        if ('filter' === hookType) {
-            return args[0];
-        }
-        return this;
-    },
-    removeHook: function removeHook(hookType, action, priority, tag) {
-        if (undefined !== this.hooks[hookType][action]) {
-            var hooks = this.hooks[hookType][action];
-            for (var i = hooks.length - 1; i >= 0; i--) {
-                if ((undefined === tag || tag === hooks[i].tag) && (undefined === priority || priority === hooks[i].priority)) {
-                    hooks.splice(i, 1);
-                }
-            }
-        }
-        return this;
-    }
-};
 
-exports.default = Hook;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var $ = window.jQuery;
-
-var serializeJSON = function serializeJSON(path) {
-    var isInput = $(this).is('input') || $(this).is('select') || $(this).is('textarea');
-    var unIndexed = isInput ? $(this).serializeArray() : $(this).find('input, select, textarea').serializeArray(),
-        indexed = {},
-        validate = /(\[([a-zA-Z0-9_-]+)?\]?)/g,
-        arrayKeys = {},
-        end = false;
-    $.each(unIndexed, function () {
-        var that = this,
-            match = this.name.match(/^([0-9a-zA-Z_-]+)/);
-        if (!match) {
-            return;
-        }
-        var keys = this.name.match(validate),
-            objPath = "indexed['" + match[0] + "']";
-
-        if (keys) {
-            if (_typeof(indexed[match[0]]) != 'object') {
-                indexed[match[0]] = {};
+        function show() {
+            if (t) {
+                clearTimeout(t);
+                return;
             }
 
-            $.each(keys, function (i, prop) {
-                prop = prop.replace(/\]|\[/g, '');
-                var rawPath = objPath.replace(/'|\[|\]/g, ''),
-                    objExp = '',
-                    preObjPath = objPath;
+            if (options.single) {
+                $('.learn-press-tip').not($el).LP('QuickTip', 'close');
+            }
 
-                if (prop == '') {
-                    if (arrayKeys[rawPath] == undefined) {
-                        arrayKeys[rawPath] = 0;
-                    } else {
-                        arrayKeys[rawPath]++;
-                    }
-                    objPath += "['" + arrayKeys[rawPath] + "']";
-                } else {
-                    if (!isNaN(prop)) {
-                        arrayKeys[rawPath] = prop;
-                    }
-                    objPath += "['" + prop + "']";
-                }
-                try {
-                    if (i == keys.length - 1) {
-                        objExp = objPath + "=that.value;";
-                        end = true;
-                    } else {
-                        objExp = objPath + "={}";
-                        end = false;
-                    }
+            $tip.appendTo(document.body);
+            var pos = $el.offset();
 
-                    var evalString = "" + "if( typeof " + objPath + " == 'undefined'){" + objExp + ";" + "}else{" + "if(end){" + "if(typeof " + preObjPath + "!='object'){" + preObjPath + "={};}" + objExp + "}" + "}";
-                    eval(evalString);
-                } catch (e) {
-                    console.log('Error:' + e + "\n" + objExp);
-                }
+            $tip.css({
+                top: pos.top - $tip.outerHeight() - 8,
+                left: pos.left - $tip.outerWidth() / 2 + arrowOffset
             });
-        } else {
-            indexed[match[0]] = this.value;
-        }
-    });
-    if (path) {
-        path = "['" + path.replace('.', "']['") + "']";
-        var c = 'try{indexed = indexed' + path + '}catch(ex){console.log(c, ex);}';
-        eval(c);
-    }
-    return indexed;
-};
-
-var LP_Tooltip = function LP_Tooltip(options) {
-    options = $.extend({}, {
-        offset: [0, 0]
-    }, options || {});
-    return $.each(this, function () {
-        var $el = $(this),
-            content = $el.data('content');
-        if (!content || $el.data('LP_Tooltip') !== undefined) {
-            return;
         }
 
-        var $tooltip = null;
+        function hide() {
+            t && clearTimeout(t);
+            t = setTimeout(function () {
+                $tip.detach();
+                t = null;
+            }, closeInterval);
+        }
+
+        function close() {
+            closeInterval = 0;
+            hide();
+            closeInterval = options.closeInterval;
+        }
+
+        function open() {
+            show();
+        }
+
+        if (!useData) {
+            $el.html('');
+        }
+
+        if (options.event === 'click') {
+            $el.on('click', function (e) {
+                e.stopPropagation();
+                show();
+            });
+        }
+
+        $(document).on('learn-press/close-all-quick-tip', function () {
+            close();
+        });
         $el.hover(function (e) {
-            $tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();
-            var position = $el.offset();
-            if ($.isArray(options.offset)) {
-                var top = options.offset[1],
-                    left = options.offset[0];
-                if ($.isNumeric(left)) {
-                    position.left += left;
-                } else {}
-                if ($.isNumeric(top)) {
-                    position.top += top;
-                } else {}
+            e.stopPropagation();
+            if (options.event !== 'click') {
+                show();
             }
-            $tooltip.css({
-                top: position.top,
-                left: position.left
-            });
-            $tooltip.fadeIn();
-        }, function () {
-            $tooltip && $tooltip.remove();
-        });
-        $el.data('tooltip', true);
-    });
-};
-
-var hasEvent = function hasEvent(name) {
-    var events = $(this).data('events');
-    if (typeof events.LP == 'undefined') {
-        return false;
+        }, function (e) {
+            e.stopPropagation();
+            if (options.autoClose) {
+                hide();
+            }
+        }).addClass('ready');
+        return {
+            close: close,
+            open: open
+        };
     }
-    for (i = 0; i < events.LP.length; i++) {
-        if (events.LP[i].namespace == name) {
-            return true;
-        }
-    }
-    return false;
-};
 
-var dataToJSON = function dataToJSON() {
-    var json = {};
-    $.each(this[0].attributes, function () {
-        var m = this.name.match(/^data-(.*)/);
-        if (m) {
-            json[m[1]] = this.value;
-        }
-    });
-    return json;
-};
+    $.fn.LP('QuickTip', function (options) {
+        return $.each(this, function () {
+            var $tip = $(this).data('quick-tip');
 
-var rows = function rows() {
-    var h = $(this).height();
-    var lh = $(this).css('line-height').replace("px", "");
-    $(this).attr({ height: h, 'line-height': lh });
-    return Math.floor(h / parseInt(lh));
-};
+            if (!$tip) {
+                $tip = new QuickTip(this, options);
+                $(this).data('quick-tip', $tip);
+            }
 
-var checkLines = function checkLines(p) {
-    return this.each(function () {
-        var $e = $(this),
-            rows = $e.rows();
-
-        p.call(this, rows);
-    });
-};
-
-var findNext = function findNext(selector) {
-    var $selector = $(selector),
-        $root = this.first(),
-        index = $selector.index($root),
-        $next = $selector.eq(index + 1);
-    return $next.length ? $next : false;
-};
-
-var findPrev = function findPrev(selector) {
-    var $selector = $(selector),
-        $root = this.first(),
-        index = $selector.index($root),
-        $prev = $selector.eq(index - 1);
-    return $prev.length ? $prev : false;
-};
-
-var progress = function progress(v) {
-    return this.each(function () {
-        var t = parseInt(v / 100 * 360),
-            timer = null,
-            $this = $(this);
-
-        if (t < 180) {
-            $this.find('.progress-circle').removeClass('gt-50');
-        } else {
-            $this.find('.progress-circle').addClass('gt-50');
-        }
-        $this.find('.fill').css({
-            transform: 'rotate(' + t + 'deg)'
+            if ($.type(options) === 'string') {
+                $tip[options] && $tip[options].apply($tip);
+            }
         });
     });
-};
-
-$.fn.serializeJSON = serializeJSON;
-$.fn.LP_Tooltip = LP_Tooltip;
-$.fn.hasEvent = hasEvent;
-$.fn.dataToJSON = dataToJSON;
-$.fn.rows = rows;
-$.fn.checkLines = checkLines;
-$.fn.findNext = findNext;
-$.fn.findPrev = findPrev;
-$.fn.progress = progress;
-
-exports.default = {
-    serializeJSON: serializeJSON,
-    LP_Tooltip: LP_Tooltip,
-    hasEvent: hasEvent,
-    dataToJSON: dataToJSON,
-    rows: rows,
-    checkLines: checkLines,
-    findNext: findNext,
-    findPrev: findPrev,
-    progress: progress
-};
+})(jQuery);
 
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=utils.js.map
