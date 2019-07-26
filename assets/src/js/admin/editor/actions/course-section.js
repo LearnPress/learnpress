@@ -190,7 +190,7 @@ const CourseCurriculum = {
         );
     },
 
-    updateSectionItems: function (context, payload) {
+    updateSectionItems: function ({state}, payload) {
         LP.Request({
             type: 'update-section-items',
             section_id: payload.section_id,

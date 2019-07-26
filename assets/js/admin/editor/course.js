@@ -44,6 +44,11 @@
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -59,516 +64,18 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/admin/editor/course.js");
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */,
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = HTTP;
-function HTTP(options) {
-    var $ = window.jQuery;
-    var $VueHTTP = Vue.http;
-
-    options = $.extend({
-        ns: 'LPRequest',
-        store: false
-    }, options || {});
-
-    var $publishingAction = null;
-
-    LP.Request = function (payload) {
-        $publishingAction = $('#publishing-action');
-
-        payload['id'] = options.store.getters.id;
-        payload['nonce'] = options.store.getters.nonce;
-        payload['lp-ajax'] = options.store.getters.action;
-        payload['code'] = options.store.getters.code;
-
-        $publishingAction.find('#publish').addClass('disabled');
-        $publishingAction.find('.spinner').addClass('is-active');
-        $publishingAction.addClass('code-' + payload['code']);
-
-        return $VueHTTP.post(options.store.getters.urlAjax, payload, {
-            emulateJSON: true,
-            params: {
-                namespace: options.ns,
-                code: payload['code']
-            }
-        });
-    };
-
-    $VueHTTP.interceptors.push(function (request, next) {
-        if (request.params['namespace'] !== options.ns) {
-            next();
-            return;
-        }
-
-        options.store.dispatch('newRequest');
-
-        next(function (response) {
-            if (!jQuery.isPlainObject(response.body)) {
-                response.body = LP.parseJSON(response.body);
-            }
-
-            var body = response.body;
-            var result = body.success || false;
-
-            if (result) {
-                options.store.dispatch('requestCompleted', 'successful');
-            } else {
-                options.store.dispatch('requestCompleted', 'failed');
-            }
-            $publishingAction.removeClass('code-' + request.params.code);
-            if (!$publishingAction.attr('class')) {
-                $publishingAction.find('#publish').removeClass('disabled');
-                $publishingAction.find('.spinner').removeClass('is-active');
-            }
-        });
-    });
-}
-
-/***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var $ = window.jQuery;
-var i18n = function i18n(i18n) {
-    var state = $.extend({}, i18n);
-    var getters = {
-        all: function all(state) {
-            return state;
-        }
-    };
-
-    return {
-        namespaced: true,
-        state: state,
-        getters: getters
-    };
-};
-
-exports.default = i18n;
-
-/***/ }),
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _http = __webpack_require__(8);
-
-var _http2 = _interopRequireDefault(_http);
-
-var _course = __webpack_require__(29);
-
-var _course2 = _interopRequireDefault(_course);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.$Vue = window.$Vue || Vue;
-window.$Vuex = window.$Vuex || Vuex;
-
-var $ = window.jQuery;
-
-/**
- * Init app.
- *
- * @since 3.0.0
- */
-$(document).ready(function () {
-
-    window.LP_Curriculum_Store = new $Vuex.Store((0, _course2.default)(lpAdminCourseEditorSettings));
-    (0, _http2.default)({ ns: 'LPCurriculumRequest', store: LP_Curriculum_Store });
-
-    setTimeout(function () {
-        window.LP_Course_Editor = new $Vue({
-            el: '#admin-editor-lp_course',
-            template: '<lp-course-editor></lp-course-editor>'
-        });
-    }, 100);
-});
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _modalCourseItems = __webpack_require__(30);
-
-var _modalCourseItems2 = _interopRequireDefault(_modalCourseItems);
-
-var _courseSection = __webpack_require__(34);
-
-var _courseSection2 = _interopRequireDefault(_courseSection);
-
-var _i18n = __webpack_require__(12);
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _course = __webpack_require__(38);
-
-var _course2 = _interopRequireDefault(_course);
-
-var _course3 = __webpack_require__(39);
-
-var _course4 = _interopRequireDefault(_course3);
-
-var _course5 = __webpack_require__(40);
-
-var _course6 = _interopRequireDefault(_course5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var $ = window.jQuery;
-var Course = function Course(data) {
-    var state = $.extend({}, data.root);
-
-    state.status = 'success';
-    state.heartbeat = true;
-    state.countCurrentRequest = 0;
-
-    return {
-        state: state,
-        getters: _course2.default,
-        mutations: _course4.default,
-        actions: _course6.default,
-        modules: {
-            ci: (0, _modalCourseItems2.default)(data),
-            i18n: (0, _i18n2.default)(data.i18n),
-            ss: (0, _courseSection2.default)(data)
-        }
-    };
-};
-
-exports.default = Course;
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-exports.default = function (data) {
-    var state = $.extend({}, data.chooseItems);
-    state.sectionId = false;
-    state.pagination = '';
-    state.status = '';
-
-    return {
-        namespaced: true,
-        state: state,
-        getters: _modalCourseItems2.default,
-        mutations: _modalCourseItems4.default,
-        actions: _modalCourseItems6.default
-    };
-};
-
-var _modalCourseItems = __webpack_require__(31);
-
-var _modalCourseItems2 = _interopRequireDefault(_modalCourseItems);
-
-var _modalCourseItems3 = __webpack_require__(32);
-
-var _modalCourseItems4 = _interopRequireDefault(_modalCourseItems3);
-
-var _modalCourseItems5 = __webpack_require__(33);
-
-var _modalCourseItems6 = _interopRequireDefault(_modalCourseItems5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var $ = jQuery;
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var Getters = {
-    status: function status(state) {
-        return state.status;
-    },
-    pagination: function pagination(state) {
-        return state.pagination;
-    },
-    items: function items(state, _getters) {
-        return state.items.map(function (item) {
-            var find = _getters.addedItems.find(function (_item) {
-                return item.id === _item.id;
-            });
-
-            item.added = !!find;
-
-            return item;
-        });
-    },
-    addedItems: function addedItems(state) {
-        return state.addedItems;
-    },
-    isOpen: function isOpen(state) {
-        return state.open;
-    },
-    types: function types(state) {
-        return state.types;
-    },
-    section: function section(state) {
-        return state.sectionId;
-    }
-};
-
-exports.default = Getters;
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var Mutations = {
-    'TOGGLE': function TOGGLE(state) {
-        state.open = !state.open;
-    },
-    'SET_SECTION': function SET_SECTION(state, sectionId) {
-        state.sectionId = sectionId;
-    },
-    'SET_LIST_ITEMS': function SET_LIST_ITEMS(state, items) {
-        state.items = items;
-    },
-    'ADD_ITEM': function ADD_ITEM(state, item) {
-        state.addedItems.push(item);
-    },
-    'REMOVE_ADDED_ITEM': function REMOVE_ADDED_ITEM(state, item) {
-        state.addedItems.forEach(function (_item, index) {
-            if (_item.id === item.id) {
-                state.addedItems.splice(index, 1);
-            }
-        });
-    },
-    'RESET': function RESET(state) {
-        state.addedItems = [];
-        state.items = [];
-    },
-    'UPDATE_PAGINATION': function UPDATE_PAGINATION(state, pagination) {
-        state.pagination = pagination;
-    },
-    'SEARCH_ITEMS_REQUEST': function SEARCH_ITEMS_REQUEST(state) {
-        state.status = 'loading';
-    },
-    'SEARCH_ITEMS_SUCCESS': function SEARCH_ITEMS_SUCCESS(state) {
-        state.status = 'successful';
-    },
-    'SEARCH_ITEMS_FAILURE': function SEARCH_ITEMS_FAILURE(state) {
-        state.status = 'failed';
-    }
-};
-
-exports.default = Mutations;
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var ModalCourseItems = {
-
-    toggle: function toggle(context) {
-        context.commit('TOGGLE');
-    },
-
-    open: function open(context, sectionId) {
-        context.commit('SET_SECTION', sectionId);
-        context.commit('RESET');
-        context.commit('TOGGLE');
-    },
-
-    searchItems: function searchItems(context, payload) {
-        context.commit('SEARCH_ITEMS_REQUEST');
-
-        LP.Request({
-            type: 'search-items',
-            query: payload.query,
-            item_type: payload.type,
-            page: payload.page,
-            exclude: JSON.stringify([])
-        }).then(function (response) {
-            var result = response.body;
-
-            if (!result.success) {
-                return;
-            }
-
-            var data = result.data;
-
-            context.commit('SET_LIST_ITEMS', data.items);
-            context.commit('UPDATE_PAGINATION', data.pagination);
-            context.commit('SEARCH_ITEMS_SUCCESS');
-        }, function (error) {
-            context.commit('SEARCH_ITEMS_FAILURE');
-
-            console.error(error);
-        });
-    },
-
-    addItem: function addItem(context, item) {
-        context.commit('ADD_ITEM', item);
-    },
-
-    removeItem: function removeItem(context, index) {
-        context.commit('REMOVE_ADDED_ITEM', index);
-    },
-
-    addItemsToSection: function addItemsToSection(context) {
-        var items = context.getters.addedItems;
-
-        if (items.length > 0) {
-            LP.Request({
-                type: 'add-items-to-section',
-                section_id: context.getters.section,
-                items: JSON.stringify(items)
-            }).then(function (response) {
-                var result = response.body;
-
-                if (result.success) {
-                    context.commit('TOGGLE');
-
-                    var items = result.data;
-                    context.commit('ss/UPDATE_SECTION_ITEMS', {
-                        section_id: context.getters.section,
-                        items: items
-                    }, { root: true });
-                }
-            }, function (error) {
-                console.error(error);
-            });
-        }
-    }
-};
-
-exports.default = ModalCourseItems;
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-exports.default = function (data) {
-    var state = $.extend({}, data.sections);
-
-    state.statusUpdateSection = {};
-    state.statusUpdateSectionItem = {};
-
-    state.sections = state.sections.map(function (section) {
-        var hiddenSections = state.hidden_sections;
-        var find = hiddenSections.find(function (sectionId) {
-            return parseInt(section.id) === parseInt(sectionId);
-        });
-
-        section.open = !find;
-
-        return section;
-    });
-
-    return {
-        namespaced: true,
-        state: state,
-        getters: _courseSection6.default,
-        mutations: _courseSection4.default,
-        actions: _courseSection2.default
-    };
-};
-
-var _courseSection = __webpack_require__(35);
-
-var _courseSection2 = _interopRequireDefault(_courseSection);
-
-var _courseSection3 = __webpack_require__(36);
-
-var _courseSection4 = _interopRequireDefault(_courseSection3);
-
-var _courseSection5 = __webpack_require__(37);
-
-var _courseSection6 = _interopRequireDefault(_courseSection5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var $ = jQuery;
-
-/***/ }),
-/* 35 */
+/******/ ({
+
+/***/ "./assets/src/js/admin/editor/actions/course-section.js":
+/*!**************************************************************!*\
+  !*** ./assets/src/js/admin/editor/actions/course-section.js ***!
+  \**************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -748,7 +255,9 @@ var CourseCurriculum = {
         });
     },
 
-    updateSectionItems: function updateSectionItems(context, payload) {
+    updateSectionItems: function updateSectionItems(_ref, payload) {
+        var state = _ref.state;
+
         LP.Request({
             type: 'update-section-items',
             section_id: payload.section_id,
@@ -769,7 +278,436 @@ var CourseCurriculum = {
 exports.default = CourseCurriculum;
 
 /***/ }),
-/* 36 */
+
+/***/ "./assets/src/js/admin/editor/actions/course.js":
+/*!******************************************************!*\
+  !*** ./assets/src/js/admin/editor/actions/course.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var Course = {
+    heartbeat: function heartbeat(context) {
+        LP.Request({
+            type: 'heartbeat'
+        }).then(function (response) {
+            var result = response.body;
+            context.commit('UPDATE_HEART_BEAT', !!result.success);
+        }, function (error) {
+            context.commit('UPDATE_HEART_BEAT', false);
+        });
+    },
+
+    draftCourse: function draftCourse(context, payload) {
+        var auto_draft = context.getters['autoDraft'];
+
+        if (auto_draft) {
+            LP.Request({
+                type: 'draft-course',
+                course: JSON.stringify(payload)
+            }).then(function (response) {
+                var result = response.body;
+
+                if (!result.success) {
+                    return;
+                }
+
+                context.commit('UPDATE_AUTO_DRAFT_STATUS', false);
+            });
+        }
+    },
+
+    newRequest: function newRequest(context) {
+        context.commit('INCREASE_NUMBER_REQUEST');
+        context.commit('UPDATE_STATUS', 'loading');
+
+        window.onbeforeunload = function () {
+            return '';
+        };
+    },
+
+    requestCompleted: function requestCompleted(context, status) {
+        context.commit('DECREASE_NUMBER_REQUEST');
+
+        if (context.getters.currentRequest === 0) {
+            context.commit('UPDATE_STATUS', status);
+            window.onbeforeunload = null;
+        }
+    }
+};
+
+exports.default = Course;
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/actions/modal-course-items.js":
+/*!******************************************************************!*\
+  !*** ./assets/src/js/admin/editor/actions/modal-course-items.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var ModalCourseItems = {
+
+    toggle: function toggle(context) {
+        context.commit('TOGGLE');
+    },
+
+    open: function open(context, sectionId) {
+        context.commit('SET_SECTION', sectionId);
+        context.commit('RESET');
+        context.commit('TOGGLE');
+    },
+
+    searchItems: function searchItems(context, payload) {
+        context.commit('SEARCH_ITEMS_REQUEST');
+
+        LP.Request({
+            type: 'search-items',
+            query: payload.query,
+            item_type: payload.type,
+            page: payload.page,
+            exclude: JSON.stringify([])
+        }).then(function (response) {
+            var result = response.body;
+
+            if (!result.success) {
+                return;
+            }
+
+            var data = result.data;
+
+            context.commit('SET_LIST_ITEMS', data.items);
+            context.commit('UPDATE_PAGINATION', data.pagination);
+            context.commit('SEARCH_ITEMS_SUCCESS');
+        }, function (error) {
+            context.commit('SEARCH_ITEMS_FAILURE');
+
+            console.error(error);
+        });
+    },
+
+    addItem: function addItem(context, item) {
+        context.commit('ADD_ITEM', item);
+    },
+
+    removeItem: function removeItem(context, index) {
+        context.commit('REMOVE_ADDED_ITEM', index);
+    },
+
+    addItemsToSection: function addItemsToSection(context) {
+        var items = context.getters.addedItems;
+
+        if (items.length > 0) {
+            LP.Request({
+                type: 'add-items-to-section',
+                section_id: context.getters.section,
+                items: JSON.stringify(items)
+            }).then(function (response) {
+                var result = response.body;
+
+                if (result.success) {
+                    context.commit('TOGGLE');
+
+                    var items = result.data;
+                    context.commit('ss/UPDATE_SECTION_ITEMS', {
+                        section_id: context.getters.section,
+                        items: items
+                    }, { root: true });
+                }
+            }, function (error) {
+                console.error(error);
+            });
+        }
+    }
+};
+
+exports.default = ModalCourseItems;
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/course.js":
+/*!**********************************************!*\
+  !*** ./assets/src/js/admin/editor/course.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _http = __webpack_require__(/*! ./http */ "./assets/src/js/admin/editor/http.js");
+
+var _http2 = _interopRequireDefault(_http);
+
+var _course = __webpack_require__(/*! ./store/course */ "./assets/src/js/admin/editor/store/course.js");
+
+var _course2 = _interopRequireDefault(_course);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.$Vue = window.$Vue || Vue;
+window.$Vuex = window.$Vuex || Vuex;
+
+var $ = window.jQuery;
+
+/**
+ * Init app.
+ *
+ * @since 3.0.0
+ */
+$(document).ready(function () {
+
+    window.LP_Curriculum_Store = new $Vuex.Store((0, _course2.default)(lpAdminCourseEditorSettings));
+    (0, _http2.default)({ ns: 'LPCurriculumRequest', store: LP_Curriculum_Store });
+
+    setTimeout(function () {
+        window.LP_Course_Editor = new $Vue({
+            el: '#admin-editor-lp_course',
+            template: '<lp-course-editor></lp-course-editor>'
+        });
+    }, 100);
+});
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/getters/course-section.js":
+/*!**************************************************************!*\
+  !*** ./assets/src/js/admin/editor/getters/course-section.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var CourseCurriculum = {
+    sections: function sections(state) {
+        return state.sections || [];
+    },
+    urlEdit: function urlEdit(state) {
+        return state.urlEdit;
+    },
+    hiddenSections: function hiddenSections(state) {
+        return state.sections.filter(function (section) {
+            return !section.open;
+        }).map(function (section) {
+            return parseInt(section.id);
+        });
+    },
+    isHiddenAllSections: function isHiddenAllSections(state, getters) {
+        var sections = getters['sections'];
+        var hiddenSections = getters['hiddenSections'];
+
+        return hiddenSections.length === sections.length;
+    },
+    statusUpdateSection: function statusUpdateSection(state) {
+        return state.statusUpdateSection;
+    },
+    statusUpdateSectionItem: function statusUpdateSectionItem(state) {
+        return state.statusUpdateSectionItem;
+    }
+};
+
+exports.default = CourseCurriculum;
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/getters/course.js":
+/*!******************************************************!*\
+  !*** ./assets/src/js/admin/editor/getters/course.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var Course = {
+    heartbeat: function heartbeat(state) {
+        return state.heartbeat;
+    },
+    action: function action(state) {
+        return state.action;
+    },
+    id: function id(state) {
+        return state.course_id;
+    },
+    autoDraft: function autoDraft(state) {
+        return state.auto_draft;
+    },
+    disable_curriculum: function disable_curriculum(state) {
+        return state.disable_curriculum;
+    },
+    status: function status(state) {
+        return state.status || 'error';
+    },
+    currentRequest: function currentRequest(state) {
+        return state.countCurrentRequest || 0;
+    },
+    urlAjax: function urlAjax(state) {
+        return state.ajax;
+    },
+    nonce: function nonce(state) {
+        return state.nonce;
+    }
+};
+
+exports.default = Course;
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/getters/modal-course-items.js":
+/*!******************************************************************!*\
+  !*** ./assets/src/js/admin/editor/getters/modal-course-items.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var Getters = {
+    status: function status(state) {
+        return state.status;
+    },
+    pagination: function pagination(state) {
+        return state.pagination;
+    },
+    items: function items(state, _getters) {
+        return state.items.map(function (item) {
+            var find = _getters.addedItems.find(function (_item) {
+                return item.id === _item.id;
+            });
+
+            item.added = !!find;
+
+            return item;
+        });
+    },
+    addedItems: function addedItems(state) {
+        return state.addedItems;
+    },
+    isOpen: function isOpen(state) {
+        return state.open;
+    },
+    types: function types(state) {
+        return state.types;
+    },
+    section: function section(state) {
+        return state.sectionId;
+    }
+};
+
+exports.default = Getters;
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/http.js":
+/*!********************************************!*\
+  !*** ./assets/src/js/admin/editor/http.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = HTTP;
+function HTTP(options) {
+    var $ = window.jQuery;
+    var $VueHTTP = Vue.http;
+
+    options = $.extend({
+        ns: 'LPRequest',
+        store: false
+    }, options || {});
+
+    var $publishingAction = null;
+
+    LP.Request = function (payload) {
+        $publishingAction = $('#publishing-action');
+
+        payload['id'] = options.store.getters.id;
+        payload['nonce'] = options.store.getters.nonce;
+        payload['lp-ajax'] = options.store.getters.action;
+        payload['code'] = options.store.getters.code;
+
+        $publishingAction.find('#publish').addClass('disabled');
+        $publishingAction.find('.spinner').addClass('is-active');
+        $publishingAction.addClass('code-' + payload['code']);
+
+        return $VueHTTP.post(options.store.getters.urlAjax, payload, {
+            emulateJSON: true,
+            params: {
+                namespace: options.ns,
+                code: payload['code']
+            }
+        });
+    };
+
+    $VueHTTP.interceptors.push(function (request, next) {
+        if (request.params['namespace'] !== options.ns) {
+            next();
+            return;
+        }
+
+        options.store.dispatch('newRequest');
+
+        next(function (response) {
+            if (!jQuery.isPlainObject(response.body)) {
+                response.body = LP.parseJSON(response.body);
+            }
+
+            var body = response.body;
+            var result = body.success || false;
+
+            if (result) {
+                options.store.dispatch('requestCompleted', 'successful');
+            } else {
+                options.store.dispatch('requestCompleted', 'failed');
+            }
+            $publishingAction.removeClass('code-' + request.params.code);
+            if (!$publishingAction.attr('class')) {
+                $publishingAction.find('#publish').removeClass('disabled');
+                $publishingAction.find('.spinner').removeClass('is-active');
+            }
+        });
+    });
+}
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/mutations/course-section.js":
+/*!****************************************************************!*\
+  !*** ./assets/src/js/admin/editor/mutations/course-section.js ***!
+  \****************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -952,89 +890,12 @@ var CourseCurriculum = {
 exports.default = CourseCurriculum;
 
 /***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var CourseCurriculum = {
-    sections: function sections(state) {
-        return state.sections || [];
-    },
-    urlEdit: function urlEdit(state) {
-        return state.urlEdit;
-    },
-    hiddenSections: function hiddenSections(state) {
-        return state.sections.filter(function (section) {
-            return !section.open;
-        }).map(function (section) {
-            return parseInt(section.id);
-        });
-    },
-    isHiddenAllSections: function isHiddenAllSections(state, getters) {
-        var sections = getters['sections'];
-        var hiddenSections = getters['hiddenSections'];
-
-        return hiddenSections.length === sections.length;
-    },
-    statusUpdateSection: function statusUpdateSection(state) {
-        return state.statusUpdateSection;
-    },
-    statusUpdateSectionItem: function statusUpdateSectionItem(state) {
-        return state.statusUpdateSectionItem;
-    }
-};
-
-exports.default = CourseCurriculum;
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var Course = {
-    heartbeat: function heartbeat(state) {
-        return state.heartbeat;
-    },
-    action: function action(state) {
-        return state.action;
-    },
-    id: function id(state) {
-        return state.course_id;
-    },
-    autoDraft: function autoDraft(state) {
-        return state.auto_draft;
-    },
-    disable_curriculum: function disable_curriculum(state) {
-        return state.disable_curriculum;
-    },
-    status: function status(state) {
-        return state.status || 'error';
-    },
-    currentRequest: function currentRequest(state) {
-        return state.countCurrentRequest || 0;
-    },
-    urlAjax: function urlAjax(state) {
-        return state.ajax;
-    },
-    nonce: function nonce(state) {
-        return state.nonce;
-    }
-};
-
-exports.default = Course;
-
-/***/ }),
-/* 39 */
+/***/ "./assets/src/js/admin/editor/mutations/course.js":
+/*!********************************************************!*\
+  !*** ./assets/src/js/admin/editor/mutations/course.js ***!
+  \********************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1070,7 +931,12 @@ var Course = {
 exports.default = Course;
 
 /***/ }),
-/* 40 */
+
+/***/ "./assets/src/js/admin/editor/mutations/modal-course-items.js":
+/*!********************************************************************!*\
+  !*** ./assets/src/js/admin/editor/mutations/modal-course-items.js ***!
+  \********************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1079,58 +945,250 @@ exports.default = Course;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var Course = {
-    heartbeat: function heartbeat(context) {
-        LP.Request({
-            type: 'heartbeat'
-        }).then(function (response) {
-            var result = response.body;
-            context.commit('UPDATE_HEART_BEAT', !!result.success);
-        }, function (error) {
-            context.commit('UPDATE_HEART_BEAT', false);
+var Mutations = {
+    'TOGGLE': function TOGGLE(state) {
+        state.open = !state.open;
+    },
+    'SET_SECTION': function SET_SECTION(state, sectionId) {
+        state.sectionId = sectionId;
+    },
+    'SET_LIST_ITEMS': function SET_LIST_ITEMS(state, items) {
+        state.items = items;
+    },
+    'ADD_ITEM': function ADD_ITEM(state, item) {
+        state.addedItems.push(item);
+    },
+    'REMOVE_ADDED_ITEM': function REMOVE_ADDED_ITEM(state, item) {
+        state.addedItems.forEach(function (_item, index) {
+            if (_item.id === item.id) {
+                state.addedItems.splice(index, 1);
+            }
         });
     },
-
-    draftCourse: function draftCourse(context, payload) {
-        var auto_draft = context.getters['autoDraft'];
-
-        if (auto_draft) {
-            LP.Request({
-                type: 'draft-course',
-                course: JSON.stringify(payload)
-            }).then(function (response) {
-                var result = response.body;
-
-                if (!result.success) {
-                    return;
-                }
-
-                context.commit('UPDATE_AUTO_DRAFT_STATUS', false);
-            });
-        }
+    'RESET': function RESET(state) {
+        state.addedItems = [];
+        state.items = [];
     },
-
-    newRequest: function newRequest(context) {
-        context.commit('INCREASE_NUMBER_REQUEST');
-        context.commit('UPDATE_STATUS', 'loading');
-
-        window.onbeforeunload = function () {
-            return '';
-        };
+    'UPDATE_PAGINATION': function UPDATE_PAGINATION(state, pagination) {
+        state.pagination = pagination;
     },
-
-    requestCompleted: function requestCompleted(context, status) {
-        context.commit('DECREASE_NUMBER_REQUEST');
-
-        if (context.getters.currentRequest === 0) {
-            context.commit('UPDATE_STATUS', status);
-            window.onbeforeunload = null;
-        }
+    'SEARCH_ITEMS_REQUEST': function SEARCH_ITEMS_REQUEST(state) {
+        state.status = 'loading';
+    },
+    'SEARCH_ITEMS_SUCCESS': function SEARCH_ITEMS_SUCCESS(state) {
+        state.status = 'successful';
+    },
+    'SEARCH_ITEMS_FAILURE': function SEARCH_ITEMS_FAILURE(state) {
+        state.status = 'failed';
     }
+};
+
+exports.default = Mutations;
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/store/course-section.js":
+/*!************************************************************!*\
+  !*** ./assets/src/js/admin/editor/store/course-section.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (data) {
+    var state = $.extend({}, data.sections);
+
+    state.statusUpdateSection = {};
+    state.statusUpdateSectionItem = {};
+
+    state.sections = state.sections.map(function (section) {
+        var hiddenSections = state.hidden_sections;
+        var find = hiddenSections.find(function (sectionId) {
+            return parseInt(section.id) === parseInt(sectionId);
+        });
+
+        section.open = !find;
+
+        return section;
+    });
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: _courseSection6.default,
+        mutations: _courseSection4.default,
+        actions: _courseSection2.default
+    };
+};
+
+var _courseSection = __webpack_require__(/*! ../actions/course-section */ "./assets/src/js/admin/editor/actions/course-section.js");
+
+var _courseSection2 = _interopRequireDefault(_courseSection);
+
+var _courseSection3 = __webpack_require__(/*! ../mutations/course-section */ "./assets/src/js/admin/editor/mutations/course-section.js");
+
+var _courseSection4 = _interopRequireDefault(_courseSection3);
+
+var _courseSection5 = __webpack_require__(/*! ../getters/course-section */ "./assets/src/js/admin/editor/getters/course-section.js");
+
+var _courseSection6 = _interopRequireDefault(_courseSection5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var $ = jQuery;
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/store/course.js":
+/*!****************************************************!*\
+  !*** ./assets/src/js/admin/editor/store/course.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _modalCourseItems = __webpack_require__(/*! ../store/modal-course-items */ "./assets/src/js/admin/editor/store/modal-course-items.js");
+
+var _modalCourseItems2 = _interopRequireDefault(_modalCourseItems);
+
+var _courseSection = __webpack_require__(/*! ../store/course-section */ "./assets/src/js/admin/editor/store/course-section.js");
+
+var _courseSection2 = _interopRequireDefault(_courseSection);
+
+var _i18n = __webpack_require__(/*! ../store/i18n */ "./assets/src/js/admin/editor/store/i18n.js");
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _course = __webpack_require__(/*! ../getters/course */ "./assets/src/js/admin/editor/getters/course.js");
+
+var _course2 = _interopRequireDefault(_course);
+
+var _course3 = __webpack_require__(/*! ../mutations/course */ "./assets/src/js/admin/editor/mutations/course.js");
+
+var _course4 = _interopRequireDefault(_course3);
+
+var _course5 = __webpack_require__(/*! ../actions/course */ "./assets/src/js/admin/editor/actions/course.js");
+
+var _course6 = _interopRequireDefault(_course5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var $ = window.jQuery;
+var Course = function Course(data) {
+    var state = $.extend({}, data.root);
+
+    state.status = 'success';
+    state.heartbeat = true;
+    state.countCurrentRequest = 0;
+
+    return {
+        state: state,
+        getters: _course2.default,
+        mutations: _course4.default,
+        actions: _course6.default,
+        modules: {
+            ci: (0, _modalCourseItems2.default)(data),
+            i18n: (0, _i18n2.default)(data.i18n),
+            ss: (0, _courseSection2.default)(data)
+        }
+    };
 };
 
 exports.default = Course;
 
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/store/i18n.js":
+/*!**************************************************!*\
+  !*** ./assets/src/js/admin/editor/store/i18n.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var $ = window.jQuery;
+var i18n = function i18n(i18n) {
+    var state = $.extend({}, i18n);
+    var getters = {
+        all: function all(state) {
+            return state;
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters
+    };
+};
+
+exports.default = i18n;
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/editor/store/modal-course-items.js":
+/*!****************************************************************!*\
+  !*** ./assets/src/js/admin/editor/store/modal-course-items.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (data) {
+    var state = $.extend({}, data.chooseItems);
+    state.sectionId = false;
+    state.pagination = '';
+    state.status = '';
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: _modalCourseItems2.default,
+        mutations: _modalCourseItems4.default,
+        actions: _modalCourseItems6.default
+    };
+};
+
+var _modalCourseItems = __webpack_require__(/*! ../getters/modal-course-items */ "./assets/src/js/admin/editor/getters/modal-course-items.js");
+
+var _modalCourseItems2 = _interopRequireDefault(_modalCourseItems);
+
+var _modalCourseItems3 = __webpack_require__(/*! ../mutations/modal-course-items */ "./assets/src/js/admin/editor/mutations/modal-course-items.js");
+
+var _modalCourseItems4 = _interopRequireDefault(_modalCourseItems3);
+
+var _modalCourseItems5 = __webpack_require__(/*! ../actions/modal-course-items */ "./assets/src/js/admin/editor/actions/modal-course-items.js");
+
+var _modalCourseItems6 = _interopRequireDefault(_modalCourseItems5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var $ = jQuery;
+
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=course.js.map
