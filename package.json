@@ -34,7 +34,7 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "fs": "0.0.1-security",
     "got": "^9.6.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^3.9.4",
     "gulp-concat": "^2.6.1",

@@ -33,10 +33,10 @@ gulp.task('scss', function () {
 gulp.task('watch', function () {
     liveReload.listen();
     gulp.watch(['assets/scss/**/*.scss'], ['scss']);
-    gulp.watch(['assets/js/admin/utils/*.js'], ['compress-js']);
+    //gulp.watch(['assets/js/admin/utils/*.js'], ['compress-js']);
 });
 
-gulp.task('default', ['scss', 'watch', 'compress-js']);
+gulp.task('default', gulp.series('scss', 'watch'));
 
 
 var uglify = require('gulp-uglify');
@@ -130,54 +130,54 @@ gulp.task('clr-trunk', function () {
 });
 
 // Copy working dir to trunk
-gulp.task('copy-trunk', ['clr-trunk'], function () {
+gulp.task('copy-trunk', gulp.series('clr-trunk', function () {
     mkdirp(svnTrunkPath);
     return gulp.src(copySvnFiles).pipe(gulpCopy(svnTrunkPath));
-});
+}));
 
 // Copy trunk to current tag
-gulp.task('copy-tag', ['clr-tag'], function () {
+gulp.task('copy-tag', gulp.series('clr-tag', function () {
     var tagPath = svnTagsPath + '/' + getCurrentVer();
     mkdirp(tagPath);
     process.chdir(svnTrunkPath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');
     return gulp.src(copyFiles).pipe(gulpCopy(tagPath));
-});
+}));
 
 gulp.task('clr-release', function () {
     return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
 });
 
-gulp.task('copy-release', ['clr-release'], function () {
+gulp.task('copy-release', gulp.series('clr-release', function () {
     mkdirp(releasePath);
     process.chdir(svnTrunkPath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');
     return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
-});
+}));
 
-gulp.task('release', ['copy-release'], function () {
+gulp.task('release', gulp.series('copy-release', function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
     return gulp.src(zipPath + '/**/learnpress/**/*')
         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
         .pipe(gulp.dest(zipPath));
-});
+}));
 
 // main task
-gulp.task('svn', ['scss', 'copy-trunk'], function () {
+gulp.task('svn', gulp.series('scss', 'copy-trunk', function () {
     updateReadme(getCurrentVer(true), function () {
         return gulp.start('release', ['copy-tag']);
     })
-});
+}));
 
 // Create zipped version
 gulp.task('clr-zip', function () {
     return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
 });
 
-gulp.task('copy-zip', ['clr-zip'], function () {
+gulp.task('copy-zip', gulp.series('clr-zip', function () {
     mkdirp(releasePath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');
@@ -187,30 +187,28 @@ gulp.task('copy-zip', ['clr-zip'], function () {
     }
 
     return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
-});
+}));
 
 /**
  * Turn of debug and replace version x.x.x to current version
  */
-gulp.task('replace', ['copy-zip'], () => {
+gulp.task('replace', gulp.series('copy-zip', () => {
     return gulp.src([releasePath + '/**/*.php', releasePath + '/**/*.js'])
         .pipe(replace(/define\( 'LP_DEBUG', true \);/, 'define( \'LP_DEBUG\', false);'))
         .pipe(replace(/([0-9]+)\.x\.x/g, getCurrentVer()))
         .pipe(gulp.dest(releasePath, {overwrite: true}));
-});
+}));
 
-gulp.task('mk-zip', ['replace'], function () {
+gulp.task('mk-zip', gulp.series('replace', function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
 
     return gulp.src(zipPath + '/**/learnpress/**/*')
         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
         .pipe(gulp.dest(zipPath));
-});
+}));
 
-gulp.task('zip', ['mk-zip'], function () {
-
-});
+gulp.task('zip', gulp.series('mk-zip'));
 
 gulp.task('scss-popup', function () {
     return gulp.src(['assets/scss/frontend/_item-popup.scss'])
