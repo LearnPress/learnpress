@@ -44,6 +44,11 @@
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -59,19 +64,24 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/admin/admin.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 14:
+/***/ "./assets/src/js/admin/admin.js":
+/*!**************************************!*\
+  !*** ./assets/src/js/admin/admin.js ***!
+  \**************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _update = __webpack_require__(15);
+var _update = __webpack_require__(/*! ./pages/update */ "./assets/src/js/admin/pages/update.js");
 
 var _update2 = _interopRequireDefault(_update);
 
@@ -200,7 +210,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /***/ }),
 
-/***/ 15:
+/***/ "./assets/src/js/admin/pages/update.js":
+/*!*********************************************!*\
+  !*** ./assets/src/js/admin/pages/update.js ***!
+  \*********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

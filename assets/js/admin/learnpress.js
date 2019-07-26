@@ -44,6 +44,11 @@
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -59,27 +64,32 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/admin/learnpress.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 16:
+/***/ "./assets/src/js/admin/learnpress.js":
+/*!*******************************************!*\
+  !*** ./assets/src/js/admin/learnpress.js ***!
+  \*******************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _tools = __webpack_require__(17);
+var _tools = __webpack_require__(/*! ./pages/tools */ "./assets/src/js/admin/pages/tools.js");
 
 var _tools2 = _interopRequireDefault(_tools);
 
-var _statistic = __webpack_require__(9);
+var _statistic = __webpack_require__(/*! ./pages/statistic */ "./assets/src/js/admin/pages/statistic.js");
 
 var _statistic2 = _interopRequireDefault(_statistic);
 
-var _syncData = __webpack_require__(18);
+var _syncData = __webpack_require__(/*! ./pages/sync-data */ "./assets/src/js/admin/pages/sync-data.js");
 
 var _syncData2 = _interopRequireDefault(_syncData);
 
@@ -394,384 +404,11 @@ $(document).ready(onReady);
 
 /***/ }),
 
-/***/ 17:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-;(function ($) {
-
-    var $doc = $(document),
-        isRunning = false;
-
-    var installSampleCourse = function installSampleCourse(e) {
-        e.preventDefault();
-
-        var $button = $(this);
-
-        if (isRunning) {
-            return;
-        }
-
-        if (!confirm(lpGlobalSettings.i18n.confirm_install_sample_data)) {
-            return;
-        }
-
-        $button.addClass('disabled').html($button.data('installing-text'));
-        $('.lp-install-sample-data-response').remove();
-        isRunning = true;
-        $.ajax({
-            url: $button.attr('href'),
-            data: $('.lp-install-sample-data-options').serializeJSON(),
-            success: function success(response) {
-                $button.removeClass('disabled').html($button.data('text'));
-                isRunning = false;
-                $(response).insertBefore($button.parent());
-            },
-            error: function error() {
-                $button.removeClass('disabled').html($button.data('text'));
-                isRunning = false;
-            }
-        });
-    };
-
-    var uninstallSampleCourse = function uninstallSampleCourse(e) {
-        e.preventDefault();
-
-        var $button = $(this);
-
-        if (isRunning) {
-            return;
-        }
-
-        if (!confirm(lpGlobalSettings.i18n.confirm_uninstall_sample_data)) {
-            return;
-        }
-
-        $button.addClass('disabled').html($button.data('uninstalling-text'));
-        isRunning = true;
-        $.ajax({
-            url: $button.attr('href'),
-            success: function success(response) {
-                $button.removeClass('disabled').html($button.data('text'));
-                isRunning = false;
-            },
-            error: function error() {
-                $button.removeClass('disabled').html($button.data('text'));
-                isRunning = false;
-            }
-        });
-    };
-
-    var clearHardCache = function clearHardCache(e) {
-        e.preventDefault();
-        var $button = $(this);
-
-        if ($button.hasClass('disabled')) {
-            return;
-        }
-
-        $button.addClass('disabled').html($button.data('cleaning-text'));
-        $.ajax({
-            url: $button.attr('href'),
-            data: {},
-            success: function success(response) {
-                $button.removeClass('disabled').html($button.data('text'));
-            },
-            error: function error() {
-                $button.removeClass('disabled').html($button.data('text'));
-            }
-        });
-    };
-
-    var toggleHardCache = function toggleHardCache() {
-        $.ajax({
-            url: 'admin.php?page=lp-toggle-hard-cache-option',
-            data: { v: this.checked ? 'yes' : 'no' },
-            success: function success(response) {},
-            error: function error() {}
-        });
-    };
-
-    var toggleOptions = function toggleOptions(e) {
-        e.preventDefault();
-        $('.lp-install-sample-data-options').toggleClass('hide-if-js');
-    };
-
-    $doc.on('click', '#learn-press-install-sample-data', installSampleCourse).on('click', '#learn-press-uninstall-sample-data', uninstallSampleCourse).on('click', '#learn-press-clear-cache', clearHardCache).on('click', 'input[name="enable_hard_cache"]', toggleHardCache).on('click', '#learn-press-install-sample-data-options', toggleOptions);
-})(jQuery);
-
-/***/ }),
-
-/***/ 18:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-;(function ($) {
-    var Sync_Base = {
-        id: 'sync-base',
-        syncing: false,
-        items: false,
-        completed: false,
-        callback: null,
-        methodGetItems: '',
-        itemsKey: '',
-        chunkSize: 50,
-        sync: function sync(callback) {
-            if (this.syncing) {
-                return;
-            }
-
-            this.callback = callback;
-
-            if (this.items === false) {
-                this.get_items();
-            } else {
-                if (!this.dispatch()) {
-                    this.completed = true;
-                    this.callToCallback();
-                    return;
-                }
-            }
-
-            this.syncing = true;
-        },
-        init: function init() {
-            this.syncing = false;
-            this.items = false;
-            this.completed = false;
-        },
-        is_completed: function is_completed() {
-            return this.completed;
-        },
-        dispatch: function dispatch() {
-            var that = this,
-                items = this.items ? this.items.splice(0, this.chunkSize) : false;
-            if (!items || items.length === 0) {
-                return false;
-            }
-            $.ajax({
-                url: '',
-                data: {
-                    'lp-ajax': this.id,
-                    sync: items
-                },
-                method: 'post',
-                success: function success(response) {
-                    response = LP.parseJSON(response);
-                    that.syncing = false;
-                    if (response.result !== 'success') {
-                        that.completed = true;
-                    }
-                    that.callToCallback();
-                    if (that.is_completed()) {
-                        return;
-                    }
-
-                    that.sync(that.callback);
-                }
-            });
-
-            return true;
-        },
-        callToCallback: function callToCallback() {
-            this.callback && this.callback.call(this);
-        },
-        get_items: function get_items() {
-            var that = this;
-            $.ajax({
-                url: '',
-                data: {
-                    'lp-ajax': this.id,
-                    sync: this.methodGetItems
-                },
-                success: function success(response) {
-                    that.syncing = false;
-                    response = LP.parseJSON(response);
-                    if (response[that.itemsKey]) {
-                        that.items = response[that.itemsKey];
-                        that.sync(that.callback);
-                    } else {
-                        that.completed = true;
-                        that.items = [];
-                        that.callToCallback();
-                    }
-                }
-            });
-        }
-    };
-
-    var Sync_Course_Orders = $.extend({}, Sync_Base, {
-        id: 'sync-course-orders',
-        methodGetItems: 'get-courses',
-        itemsKey: 'courses'
-    });
-
-    var Sync_User_Courses = $.extend({}, Sync_Base, {
-        id: 'sync-user-courses',
-        methodGetItems: 'get-users',
-        itemsKey: 'users',
-        chunkSize: 500
-    });
-
-    var Sync_User_Orders = $.extend({}, Sync_Base, {
-        id: 'sync-user-orders',
-        methodGetItems: 'get-users',
-        itemsKey: 'users',
-        chunkSize: 500
-    });
-
-    var Sync_Course_Final_Quiz = $.extend({}, Sync_Base, {
-        id: 'sync-course-final-quiz',
-        methodGetItems: 'get-courses',
-        itemsKey: 'courses',
-        chunkSize: 500
-    });
-
-    var Sync_Remove_Older_Data = $.extend({}, Sync_Base, {
-        id: 'sync-remove-older-data',
-        methodGetItems: 'remove-older-data',
-        itemsKey: '_nothing_here',
-        chunkSize: 500
-    });
-
-    var Sync_Calculate_Course_Results = $.extend({}, Sync_Base, {
-        id: 'sync-calculate-course-results',
-        methodGetItems: 'get-users',
-        itemsKey: 'users',
-        chunkSize: 1
-    });
-
-    window.LP_Sync_Data = {
-        syncs: [],
-        syncing: 0,
-        options: {},
-        start: function start(options) {
-            this.syncs = [];
-            this.options = $.extend({
-                onInit: function onInit() {},
-                onStart: function onStart() {},
-                onCompleted: function onCompleted() {},
-                onCompletedAll: function onCompletedAll() {}
-            }, options || {});
-
-            if (!this.get_syncs()) {
-                return;
-            }
-            this.reset();
-            this.options.onInit.call(this);
-            var that = this,
-                syncing = 0,
-                totalSyncs = this.syncs.length,
-                syncCallback = function syncCallback($sync) {
-
-                if ($sync.is_completed()) {
-                    syncing++;
-                    that.options.onCompleted.call(that, $sync);
-                    if (syncing >= totalSyncs) {
-
-                        that.options.onCompletedAll.call(that);
-                        return;
-                    }
-                    that.sync(syncing, syncCallback);
-                }
-            };
-            this.sync(syncing, syncCallback);
-        },
-        reset: function reset() {
-            for (var sync in this.syncs) {
-                try {
-                    this[this.syncs[sync]].init();
-                } catch (e) {}
-            }
-        },
-        sync: function sync(_sync, callback) {
-            var that = this,
-                $sync = this[this.syncs[_sync]];
-            that.options.onStart.call(that, $sync);
-            $sync.sync(function () {
-                callback.call(that, $sync);
-            });
-        },
-        get_syncs: function get_syncs() {
-            var syncs = $('input[name^="lp-repair"]:checked').serializeJSON()['lp-repair'];
-            if (!syncs) {
-                return false;
-            }
-
-            for (var sync in syncs) {
-                if (syncs[sync] !== 'yes') {
-                    continue;
-                }
-
-                sync = sync.replace(/[-]+/g, '_');
-
-                if (!this[sync]) {
-                    continue;
-                }
-
-                this.syncs.push(sync);
-            }
-
-            return this.syncs;
-        },
-        get_sync: function get_sync(id) {
-            id = id.replace(/[-]+/g, '_');
-            return this[id];
-        },
-        sync_course_orders: Sync_Course_Orders,
-        sync_user_orders: Sync_User_Orders,
-        sync_user_courses: Sync_User_Courses,
-        sync_course_final_quiz: Sync_Course_Final_Quiz,
-        sync_remove_older_data: Sync_Remove_Older_Data,
-        sync_calculate_course_results: Sync_Calculate_Course_Results
-    };
-
-    $(document).ready(function () {
-        function initSyncs() {
-            var $chkAll = $('#learn-press-check-all-syncs'),
-                $chks = $('#learn-press-syncs').find('[name^="lp-repair"]');
-
-            $chkAll.on('click', function () {
-                $chks.prop('checked', this.checked);
-            });
-
-            $chks.on('click', function () {
-                $chkAll.prop('checked', $chks.filter(':checked').length === $chks.length);
-            });
-        }
-
-        initSyncs();
-    }).on('click', '.lp-button-repair', function () {
-        function getInput(sync) {
-            return $('ul#learn-press-syncs').find('input[name*="' + sync + '"]');
-        }
-
-        LP_Sync_Data.start({
-            onInit: function onInit() {
-                $('ul#learn-press-syncs').children().removeClass('syncing synced');
-                $('.lp-button-repair').prop('disabled', true);
-            },
-            onStart: function onStart($sync) {
-                getInput($sync.id).closest('li').addClass('syncing');
-            },
-            onCompleted: function onCompleted($sync) {
-                getInput($sync.id).closest('li').removeClass('syncing').addClass('synced');
-            },
-            onCompletedAll: function onCompletedAll() {
-                $('ul#learn-press-syncs').children().removeClass('syncing synced');
-                $('.lp-button-repair').prop('disabled', false);
-            }
-        });
-    });
-})(jQuery);
-
-/***/ }),
-
-/***/ 9:
+/***/ "./assets/src/js/admin/pages/statistic.js":
+/*!************************************************!*\
+  !*** ./assets/src/js/admin/pages/statistic.js ***!
+  \************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1063,6 +700,391 @@ $(document).ready(onReady);
 	if (typeof data == 'undefined') return;
 
 	drawCoursesChart(data, config);
+})(jQuery);
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/pages/sync-data.js":
+/*!************************************************!*\
+  !*** ./assets/src/js/admin/pages/sync-data.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+;(function ($) {
+    var Sync_Base = {
+        id: 'sync-base',
+        syncing: false,
+        items: false,
+        completed: false,
+        callback: null,
+        methodGetItems: '',
+        itemsKey: '',
+        chunkSize: 50,
+        sync: function sync(callback) {
+            if (this.syncing) {
+                return;
+            }
+
+            this.callback = callback;
+
+            if (this.items === false) {
+                this.get_items();
+            } else {
+                if (!this.dispatch()) {
+                    this.completed = true;
+                    this.callToCallback();
+                    return;
+                }
+            }
+
+            this.syncing = true;
+        },
+        init: function init() {
+            this.syncing = false;
+            this.items = false;
+            this.completed = false;
+        },
+        is_completed: function is_completed() {
+            return this.completed;
+        },
+        dispatch: function dispatch() {
+            var that = this,
+                items = this.items ? this.items.splice(0, this.chunkSize) : false;
+            if (!items || items.length === 0) {
+                return false;
+            }
+            $.ajax({
+                url: '',
+                data: {
+                    'lp-ajax': this.id,
+                    sync: items
+                },
+                method: 'post',
+                success: function success(response) {
+                    response = LP.parseJSON(response);
+                    that.syncing = false;
+                    if (response.result !== 'success') {
+                        that.completed = true;
+                    }
+                    that.callToCallback();
+                    if (that.is_completed()) {
+                        return;
+                    }
+
+                    that.sync(that.callback);
+                }
+            });
+
+            return true;
+        },
+        callToCallback: function callToCallback() {
+            this.callback && this.callback.call(this);
+        },
+        get_items: function get_items() {
+            var that = this;
+            $.ajax({
+                url: '',
+                data: {
+                    'lp-ajax': this.id,
+                    sync: this.methodGetItems
+                },
+                success: function success(response) {
+                    that.syncing = false;
+                    response = LP.parseJSON(response);
+                    if (response[that.itemsKey]) {
+                        that.items = response[that.itemsKey];
+                        that.sync(that.callback);
+                    } else {
+                        that.completed = true;
+                        that.items = [];
+                        that.callToCallback();
+                    }
+                }
+            });
+        }
+    };
+
+    var Sync_Course_Orders = $.extend({}, Sync_Base, {
+        id: 'sync-course-orders',
+        methodGetItems: 'get-courses',
+        itemsKey: 'courses'
+    });
+
+    var Sync_User_Courses = $.extend({}, Sync_Base, {
+        id: 'sync-user-courses',
+        methodGetItems: 'get-users',
+        itemsKey: 'users',
+        chunkSize: 500
+    });
+
+    var Sync_User_Orders = $.extend({}, Sync_Base, {
+        id: 'sync-user-orders',
+        methodGetItems: 'get-users',
+        itemsKey: 'users',
+        chunkSize: 500
+    });
+
+    var Sync_Course_Final_Quiz = $.extend({}, Sync_Base, {
+        id: 'sync-course-final-quiz',
+        methodGetItems: 'get-courses',
+        itemsKey: 'courses',
+        chunkSize: 500
+    });
+
+    var Sync_Remove_Older_Data = $.extend({}, Sync_Base, {
+        id: 'sync-remove-older-data',
+        methodGetItems: 'remove-older-data',
+        itemsKey: '_nothing_here',
+        chunkSize: 500
+    });
+
+    var Sync_Calculate_Course_Results = $.extend({}, Sync_Base, {
+        id: 'sync-calculate-course-results',
+        methodGetItems: 'get-users',
+        itemsKey: 'users',
+        chunkSize: 1
+    });
+
+    window.LP_Sync_Data = {
+        syncs: [],
+        syncing: 0,
+        options: {},
+        start: function start(options) {
+            this.syncs = [];
+            this.options = $.extend({
+                onInit: function onInit() {},
+                onStart: function onStart() {},
+                onCompleted: function onCompleted() {},
+                onCompletedAll: function onCompletedAll() {}
+            }, options || {});
+
+            if (!this.get_syncs()) {
+                return;
+            }
+            this.reset();
+            this.options.onInit.call(this);
+            var that = this,
+                syncing = 0,
+                totalSyncs = this.syncs.length,
+                syncCallback = function syncCallback($sync) {
+
+                if ($sync.is_completed()) {
+                    syncing++;
+                    that.options.onCompleted.call(that, $sync);
+                    if (syncing >= totalSyncs) {
+
+                        that.options.onCompletedAll.call(that);
+                        return;
+                    }
+                    that.sync(syncing, syncCallback);
+                }
+            };
+            this.sync(syncing, syncCallback);
+        },
+        reset: function reset() {
+            for (var sync in this.syncs) {
+                try {
+                    this[this.syncs[sync]].init();
+                } catch (e) {}
+            }
+        },
+        sync: function sync(_sync, callback) {
+            var that = this,
+                $sync = this[this.syncs[_sync]];
+            that.options.onStart.call(that, $sync);
+            $sync.sync(function () {
+                callback.call(that, $sync);
+            });
+        },
+        get_syncs: function get_syncs() {
+            var syncs = $('input[name^="lp-repair"]:checked').serializeJSON()['lp-repair'];
+            if (!syncs) {
+                return false;
+            }
+
+            for (var sync in syncs) {
+                if (syncs[sync] !== 'yes') {
+                    continue;
+                }
+
+                sync = sync.replace(/[-]+/g, '_');
+
+                if (!this[sync]) {
+                    continue;
+                }
+
+                this.syncs.push(sync);
+            }
+
+            return this.syncs;
+        },
+        get_sync: function get_sync(id) {
+            id = id.replace(/[-]+/g, '_');
+            return this[id];
+        },
+        sync_course_orders: Sync_Course_Orders,
+        sync_user_orders: Sync_User_Orders,
+        sync_user_courses: Sync_User_Courses,
+        sync_course_final_quiz: Sync_Course_Final_Quiz,
+        sync_remove_older_data: Sync_Remove_Older_Data,
+        sync_calculate_course_results: Sync_Calculate_Course_Results
+    };
+
+    $(document).ready(function () {
+        function initSyncs() {
+            var $chkAll = $('#learn-press-check-all-syncs'),
+                $chks = $('#learn-press-syncs').find('[name^="lp-repair"]');
+
+            $chkAll.on('click', function () {
+                $chks.prop('checked', this.checked);
+            });
+
+            $chks.on('click', function () {
+                $chkAll.prop('checked', $chks.filter(':checked').length === $chks.length);
+            });
+        }
+
+        initSyncs();
+    }).on('click', '.lp-button-repair', function () {
+        function getInput(sync) {
+            return $('ul#learn-press-syncs').find('input[name*="' + sync + '"]');
+        }
+
+        LP_Sync_Data.start({
+            onInit: function onInit() {
+                $('ul#learn-press-syncs').children().removeClass('syncing synced');
+                $('.lp-button-repair').prop('disabled', true);
+            },
+            onStart: function onStart($sync) {
+                getInput($sync.id).closest('li').addClass('syncing');
+            },
+            onCompleted: function onCompleted($sync) {
+                getInput($sync.id).closest('li').removeClass('syncing').addClass('synced');
+            },
+            onCompletedAll: function onCompletedAll() {
+                $('ul#learn-press-syncs').children().removeClass('syncing synced');
+                $('.lp-button-repair').prop('disabled', false);
+            }
+        });
+    });
+})(jQuery);
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/pages/tools.js":
+/*!********************************************!*\
+  !*** ./assets/src/js/admin/pages/tools.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+;(function ($) {
+
+    var $doc = $(document),
+        isRunning = false;
+
+    var installSampleCourse = function installSampleCourse(e) {
+        e.preventDefault();
+
+        var $button = $(this);
+
+        if (isRunning) {
+            return;
+        }
+
+        if (!confirm(lpGlobalSettings.i18n.confirm_install_sample_data)) {
+            return;
+        }
+
+        $button.addClass('disabled').html($button.data('installing-text'));
+        $('.lp-install-sample-data-response').remove();
+        isRunning = true;
+        $.ajax({
+            url: $button.attr('href'),
+            data: $('.lp-install-sample-data-options').serializeJSON(),
+            success: function success(response) {
+                $button.removeClass('disabled').html($button.data('text'));
+                isRunning = false;
+                $(response).insertBefore($button.parent());
+            },
+            error: function error() {
+                $button.removeClass('disabled').html($button.data('text'));
+                isRunning = false;
+            }
+        });
+    };
+
+    var uninstallSampleCourse = function uninstallSampleCourse(e) {
+        e.preventDefault();
+
+        var $button = $(this);
+
+        if (isRunning) {
+            return;
+        }
+
+        if (!confirm(lpGlobalSettings.i18n.confirm_uninstall_sample_data)) {
+            return;
+        }
+
+        $button.addClass('disabled').html($button.data('uninstalling-text'));
+        isRunning = true;
+        $.ajax({
+            url: $button.attr('href'),
+            success: function success(response) {
+                $button.removeClass('disabled').html($button.data('text'));
+                isRunning = false;
+            },
+            error: function error() {
+                $button.removeClass('disabled').html($button.data('text'));
+                isRunning = false;
+            }
+        });
+    };
+
+    var clearHardCache = function clearHardCache(e) {
+        e.preventDefault();
+        var $button = $(this);
+
+        if ($button.hasClass('disabled')) {
+            return;
+        }
+
+        $button.addClass('disabled').html($button.data('cleaning-text'));
+        $.ajax({
+            url: $button.attr('href'),
+            data: {},
+            success: function success(response) {
+                $button.removeClass('disabled').html($button.data('text'));
+            },
+            error: function error() {
+                $button.removeClass('disabled').html($button.data('text'));
+            }
+        });
+    };
+
+    var toggleHardCache = function toggleHardCache() {
+        $.ajax({
+            url: 'admin.php?page=lp-toggle-hard-cache-option',
+            data: { v: this.checked ? 'yes' : 'no' },
+            success: function success(response) {},
+            error: function error() {}
+        });
+    };
+
+    var toggleOptions = function toggleOptions(e) {
+        e.preventDefault();
+        $('.lp-install-sample-data-options').toggleClass('hide-if-js');
+    };
+
+    $doc.on('click', '#learn-press-install-sample-data', installSampleCourse).on('click', '#learn-press-uninstall-sample-data', uninstallSampleCourse).on('click', '#learn-press-clear-cache', clearHardCache).on('click', 'input[name="enable_hard_cache"]', toggleHardCache).on('click', '#learn-press-install-sample-data-options', toggleOptions);
 })(jQuery);
 
 /***/ })
