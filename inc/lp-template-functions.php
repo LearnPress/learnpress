@@ -37,6 +37,10 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 
 		// If course is reached limitation.
 		if ( ! $course->is_in_stock() ) {
+			if ( $message = apply_filters( 'learn-press/maximum-students-reach', __( 'This course is out of stock', 'learnpress' ) ) ) {
+				learn_press_display_message( $message );
+			}
+
 			return;
 		}
 
