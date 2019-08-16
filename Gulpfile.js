@@ -146,7 +146,7 @@ gulp.task('copy-tag', gulp.series('clr-tag', function () {
 }));
 
 gulp.task('clr-release', function () {
-    return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
+    return gulp.src(releasePath + '/', {read: false, allowEmpty: true}).pipe(clean({force: true}));
 });
 
 gulp.task('copy-release', gulp.series('clr-release', function () {
@@ -174,7 +174,7 @@ gulp.task('svn', gulp.series('scss', 'copy-trunk', function () {
 
 // Create zipped version
 gulp.task('clr-zip', function () {
-    return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
+    return gulp.src(releasePath + '/', {read: false, allowEmpty: true}).pipe(clean({force: true}));
 });
 
 gulp.task('copy-zip', gulp.series('clr-zip', function () {
