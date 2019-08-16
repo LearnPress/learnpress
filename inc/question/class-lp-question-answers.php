@@ -454,6 +454,11 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 */
 		public function is_checked() {
 			if ( false === $this->get_answered() ) {
+				if ( $this->get_question()->show_correct_answers() === 'yes' && $this->is_true() ) {
+
+					return true;
+				}
+
 				return false;
 			}
 
