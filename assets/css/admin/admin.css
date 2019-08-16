@@ -390,7 +390,7 @@
 .rwmb-duration {
   border: 1px solid #ddd; }
 
-.clearfix {
+ul .clearfix {
   clear: both;
   height: 0;
   opacity: 0; }
