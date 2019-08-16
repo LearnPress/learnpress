@@ -606,10 +606,20 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
 			$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
+			$order_items = $order->get_items();
+			if ( $order_items ) {
+				$html        = '';
+				foreach ( $order_items as $item ) {
+					ob_start();
+					include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
+					$html .= ob_get_clean();
+				}
+			}
 
 			learn_press_send_json(
 				array(
 					'result'     => 'success',
+					'item_html'  => $html,
 					'order_data' => $order_data
 				)
 			);
