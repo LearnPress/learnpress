@@ -47,9 +47,43 @@ class LP_Page_Controller {
 		add_filter( 'template_include', array( $this, 'template_content_item' ) );
 		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ) );
 		add_filter( 'the_post', array( $this, 'setup_data' ) );
+		add_filter( 'template_include', array( $this, 'auto_shortcode' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+	}
+
+	/**
+	 * Auto inserting a registered shortcode to a specific page
+	 * if that page is viewing in single mode.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param string $template
+	 *
+	 * @return string;
+	 */
+	public function auto_shortcode( $template ) {
+		global $post;
+		$the_post = $post;
+		if ( $the_post && is_page( $the_post->ID ) ) {
+
+			// Filter here to insert the shortcode
+			$auto_shortcodes = apply_filters( 'learn-press/auto-shortcode-pages', array() );
+
+			if ( ! empty( $auto_shortcodes[ $the_post->ID ] ) ) {
+				$shortcode_tag = $auto_shortcodes[ $the_post->ID ];
+
+				preg_match( '/\[' . $shortcode_tag . '\s?(.*)\]/', $the_post->post_content, $results );
+
+				if ( empty( $results ) ) {
+					$content                = $the_post->post_content . "[$shortcode_tag]";
+					$the_post->post_content = $content;
+				}
+			}
+		}
+
+		return $template;
 	}
 
 	public function maybe_redirect_quiz( $template ) {
@@ -185,7 +219,7 @@ class LP_Page_Controller {
 						learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $current_question );
 					}
 
-					if ( ! $question ) {
+					if ( ! $question && $current_question ) {
 						$redirect = $lp_course_item->get_question_link( $current_question );
 					}
 				} elseif ( $quiz_status === 'completed' ) {
@@ -293,7 +327,8 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
-
+		
+		//LP_Debug::instance()->add(debug_backtrace());
 		$this->_maybe_redirect_courses_page();
 		$this->_maybe_redirect_course_item();
 

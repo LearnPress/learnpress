@@ -3,7 +3,7 @@
 /**
  * Class LP_REST_Authentication
  *
- * @since 3.2.6
+ * @since 3.x.x
  */
 class LP_REST_Authentication {
 

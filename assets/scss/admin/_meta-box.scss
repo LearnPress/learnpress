@@ -18,6 +18,9 @@
         .description {
             margin-top: 8px;
             color: #888;
+            &.err {
+                color: #FF0000;
+            }
         }
         .rwmb-input-list {
             margin-left: 0;
@@ -109,13 +112,13 @@
     }
     .lp-item-assigned {
         font-size: 14px;
-        a{
+        a {
             text-decoration: none;
         }
         ul {
             margin-bottom: 0;
             ul {
-                strong{
+                strong {
                     font-weight: normal;
                 }
             }

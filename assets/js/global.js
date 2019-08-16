@@ -873,14 +873,14 @@ $(document).ready(function () {
         })($el, options);
     });
 
-    $('body').on('click', '.learn-press-nav-tabs li a', function (e) {
-        e.preventDefault();
-        var $tab = $(this),
-            url = '';
-        $tab.closest('li').addClass('active').siblings().removeClass('active');
-        $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
-        $(document).trigger('learn-press/nav-tabs/clicked', $tab);
-    });
+    // $('body').on('click', '.learn-press-nav-tabs li a', function (e) {
+    //     e.preventDefault();
+    //     var $tab = $(this),
+    //         url = '';
+    //     $tab.closest('li').addClass('active').siblings().removeClass('active');
+    //     $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
+    //     $(document).trigger('learn-press/nav-tabs/clicked', $tab);
+    // });
 
     setTimeout(function () {
         $('.learn-press-nav-tabs li.active:not(.default) a').trigger('click');

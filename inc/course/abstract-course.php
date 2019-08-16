@@ -858,15 +858,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		public function count_completed_orders() {
-			LP_Debug::logTime( __FUNCTION__ );
 
 			if ( $orders = $this->get_meta( 'order-completed' ) ) {
 				$count = sizeof( $orders );
 			} else {
 				$count = 0;
 			}
-
-			LP_Debug::logTime( __FUNCTION__ );
 
 			return $count;
 		}
@@ -1110,6 +1107,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$prev_id = $next_id = 0;
 
 			if ( $item_ids = $this->get_item_ids() ) {
+
 				if ( false !== ( $pos = array_search( $current_item, $item_ids ) ) ) {
 					$max     = sizeof( $item_ids ) - 1;
 					$user    = learn_press_get_current_user();

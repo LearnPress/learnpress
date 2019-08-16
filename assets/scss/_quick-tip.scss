@@ -28,7 +28,7 @@
     position: absolute;
     margin-left: -1px;
     font-size: 12px;
-    z-index: 9999;
+    z-index: 9999999;
     @include border-radius(3px);
     .close {
         display: inline-block;

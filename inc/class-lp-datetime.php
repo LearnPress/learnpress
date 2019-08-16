@@ -324,4 +324,26 @@ class LP_Datetime extends DateTime {
 	public static function getSqlNullDate() {
 		return '0000-00-00 00:00:00';
 	}
+
+	/**
+	 * Add X seconds into datetime of this object.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param int $seconds
+	 */
+	public function addDuration( $seconds ) {
+		$timestamp = $this->getTimestamp();
+		parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz );
+	}
+
+	public function getPeriod( $seconds, $local = true ) {
+		$timestamp = $this->getTimestamp( $local );
+
+		if ( ! is_numeric( $seconds ) ) {
+			$seconds = strtotime( $seconds ) - time();
+		}
+
+		return date( 'Y-m-d H:i:s', $timestamp + $seconds );
+	}
 }

@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 3.2.6.2
+Version: 9.9.9
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 5.0.2
@@ -234,6 +234,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-object-data.php';
 			require_once 'inc/abstracts/abstract-post-data.php';
 			require_once 'inc/abstracts/abstract-assets.php';
+			require_once 'inc/abstracts/abstract-object-query.php';
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
@@ -438,6 +439,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_activate() {
 			do_action( 'learn-press/activate', $this );
+			//$this->add_cron();
 		}
 
 		/**
@@ -449,6 +451,28 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_deactivate() {
 			do_action( 'learn-press/deactivate', $this );
+			$this->remove_cron();
+		}
+
+		protected function add_cron() {
+			add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
+
+			if ( ! wp_next_scheduled( 'learn_press_schedule_items' ) ) {
+				wp_schedule_event( time(), 'lp_cron_schedule_items', 'learn_press_schedule_items' );
+			}
+		}
+
+		protected function remove_cron() {
+			wp_clear_scheduled_hook( 'learn_press_schedule_items' );
+		}
+
+		public function cron_schedules( $schedules ) {
+			$schedules['lp_cron_schedule_items'] = array(
+				'interval' => 15,
+				'display'  => __( 'Every 3 Minutes', 'learnpress' )
+			);
+
+			return $schedules;
 		}
 
 		/**
@@ -513,15 +537,21 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @since 3.0.0
 		 */
 		public function plugin_loaded() {
-			$this->init();
-
-			// Background
-			$this->init_background_processes();
+//			$this->init();
+//
+//			// Background
+//			$this->init_background_processes();
 
 			// let third parties know that we're ready
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
 			do_action( 'learn-press/ready' );
+			$this->add_cron();
+
+			$this->init();
+
+			// Background
+			$this->init_background_processes();
 		}
 
 		/**

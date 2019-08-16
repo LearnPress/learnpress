@@ -299,7 +299,27 @@ class LP_Helper {
 		return $page_id;
 	}
 
-	public static function uniq(){
+	/**
+	 * Wrap function ksort of PHP itself and support recursive.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param  array $array
+	 * @param int    $sort_flags
+	 *
+	 * @return bool
+	 */
+	public static function ksort( &$array, $sort_flags = SORT_REGULAR ) {
+		if ( ! is_array( $array ) ) {
+			return false;
+		}
 
+		ksort( $array, $sort_flags );
+
+		foreach ( $array as &$arr ) {
+			self::ksort( $arr, $sort_flags );
+		}
+
+		return true;
 	}
 }

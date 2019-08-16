@@ -538,6 +538,7 @@ function learn_press_format_price( $price, $args = array() ) {
 			'thousands_separator' => false
 		)
 	);
+
 	$with_currency       = $args['with_currency'];
 	$thousands_separator = $args['thousands_separator'] === false ? $settings->get( 'thousands_separator', ',' ) : $args['thousands_separator'];
 	$number_of_decimals  = $args['number_of_decimals'] === false ? $settings->get( 'number_of_decimals', 2 ) : $args['number_of_decimals'];

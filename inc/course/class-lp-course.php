@@ -104,7 +104,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				return LP_Global::$courses[ $the_course ];
 			}
 
-			LP_Debug::logTime(__FUNCTION__);
+			LP_Debug::logTime( __FUNCTION__ );
 			$the_course = self::get_course_object( $the_course );
 
 			if ( ! $the_course ) {
@@ -145,7 +145,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			 * loaded or has been deleted for some reasons.
 			 */
 			$course->load();
-			LP_Debug::logTime(__FUNCTION__);
+			LP_Debug::logTime( __FUNCTION__ );
 
 			return $course;
 		}
@@ -186,6 +186,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return WP_Post|bool false on failure
 		 */
 		private static function get_course_object( $the_course ) {
+			$the_course_passed = $the_course;
 			if ( false === $the_course ) {
 				$the_course = get_post_type() === LP_COURSE_CPT ? $GLOBALS['post'] : false;
 			} elseif ( is_numeric( $the_course ) ) {
@@ -200,7 +201,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$the_course = false;
 			}
 
-			return apply_filters( 'learn-press/course/post-object', $the_course );
+			return apply_filters( 'learn-press/course/post-object', $the_course, $the_course_passed );
 		}
 	}
 

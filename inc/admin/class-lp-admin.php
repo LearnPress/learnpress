@@ -45,6 +45,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'pre_get_posts', array( $this, 'filter_pages' ), 10 );
 			add_filter( 'views_users', array( $this, 'views_users' ), 10, 1 );
 			add_filter( 'user_row_actions', array( $this, 'user_row_actions' ), 10, 2 );
+			add_filter( 'post_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
 			add_filter( 'get_pages', array( $this, 'add_empty_page' ), 1000, 2 );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
 			add_filter( 'views_plugins', array( $this, 'views_plugins' ) );
@@ -71,6 +72,24 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				LP_Modal_Search_Users::instance();
 			}
 		}
+
+		/**
+         * Filter to post row actions.
+         *
+         * @since 9.9.9
+         *
+		 * @param array $actions
+		 * @param WP_Post $post
+         *
+         * @return array
+		 */
+		public function post_row_actions($actions = array(), $post){
+		    if(get_post_type($post->ID) === LP_COURSE_CPT){
+		        //$actions['course_id'] = sprintf('<span>[#%d]</span>', $post->ID);
+            }
+
+            return $actions;
+        }
 
 		/**
 		 * @param $options
@@ -635,7 +654,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			) );
 
 			foreach ( $pages as $id => $page ) {
-
 				if ( ( $page_id = learn_press_get_page_id( $id ) ) && get_post( $page_id ) ) {
 					continue;
 				}

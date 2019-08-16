@@ -34,6 +34,187 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		add_action( 'init', array( $this, 'init' ) );
 	}
 
+	/**
+	 * Get courses of an user.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param array $args
+	 *
+	 * @return array
+	 */
+	public function get_courses( $args = array() ) {
+
+		global $wpdb;
+
+		$no_join_users = isset( $args['no_join_users'] ) && $args['no_join_users'];
+		$args          = wp_parse_args(
+			$args,
+			array(
+				'offset'   => 0,
+				'limit'    => 10,
+				'expired'  => false,
+				'status'   => '',
+				'user_id'  => 0,
+				'paginate' => false
+			)
+		);
+
+		// Join
+		$join = "
+			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
+		";
+
+		if ( ! $no_join_users ) {
+			$join .= "
+				INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
+			";
+		}
+
+		$join .= $wpdb->prepare( "LEFT JOIN {$wpdb->learnpress_user_itemmeta} uim ON uim.learnpress_user_item_id = X.user_item_id AND uim.meta_key = %s", 'grade' );
+
+		// Where
+		$where = $wpdb->prepare( "WHERE 1
+		    AND X.item_type = %s
+		", LP_COURSE_CPT );
+
+		if ( $args['user_id'] ) {
+
+			if ( ! is_array( $args['user_id'] ) ) {
+				$user__in = preg_split( '!\s*,\s*!', $args['user_id'] );
+			} else {
+				$user__in = $args['user_id'];
+			}
+
+			$where .= "AND u.ID IN(" . join( ',', $user__in ) . ")";
+		}
+
+		// Limitation
+		$limit = $args['limit'] > 0 ? "
+			LIMIT " . $args['offset'] . ", " . $args['limit'] : '';
+
+		if ( $args['status'] ) {
+
+			if ( ! is_array( $args['status'] ) ) {
+				$status__in = preg_split( '!\s*,\s*!', $args['status'] );
+			} else {
+				$status__in = $args['status'];
+			}
+
+			$where .= " AND ( X.status IN('" . join( "','", $status__in ) . "')";
+
+			$status__in_1 = array();
+			$status__in_2 = array();
+
+			if ( in_array( 'failed', $status__in ) ) {
+				$status__in_1[] = 'finished';
+				$status__in_2[] = 'failed';
+			}
+
+			if ( in_array( 'passed', $status__in ) ) {
+				$status__in_1[] = 'finished';
+				$status__in_2[] = 'passed';
+			}
+
+			if ( in_array( 'in-progress', $status__in ) ) {
+				$status__in_1[] = 'enrolled';
+				$status__in_2[] = 'in-progress';
+			}
+
+			if ( in_array( 'finished', $status__in ) ) {
+				$status__in_1[] = 'passed';
+				$status__in_1[] = 'failed';
+				$status__in_2[] = 'passed';
+				$status__in_2[] = 'failed';
+			}
+
+			if ( $status__in_1 || $status__in_2 ) {
+
+				$where .= " OR (
+					X.status IN('" . join( "','", $status__in_1 ) . "')";
+
+				if ( ! in_array( 'in-progress', $status__in ) ) {
+					var_dump( $status__in );
+
+					$where .= "AND ( uim.meta_value IN('" . join( "','", $status__in_2 ) . "')
+						" . ( in_array( 'in-progress', $status__in ) ? ' OR uim.meta_value IS NULL' : '' ) . ")";
+				}
+				$where .= ")";
+			}
+
+			$where .= " )";
+
+		}
+
+		if ( $args['expired'] ) {
+			//$where .= " AND expiration_time_gmt <= UTC_TIMESTAMP()";
+			$where .= " AND expiration_time <= UTC_TIMESTAMP()";
+		}
+
+		if ( $args['paginate'] && ! empty( $limit ) ) {
+			$found_rows = 'SQL_CALC_FOUND_ROWS';
+		} else {
+			$found_rows = '';
+		}
+
+		$query = $wpdb->prepare( "
+			SELECT {$found_rows} p.ID course_id, X.*, IF(X.status = %s AND uim.meta_value IS NOT NULL, uim.meta_value, X.status) status
+			FROM(
+			SELECT ui.*
+                FROM {$wpdb->learnpress_user_items} ui
+				LEFT JOIN {$wpdb->learnpress_user_items} uix
+					ON ui.item_id = uix.item_id 
+						AND ui.user_id = uix.user_id
+						AND ui.user_item_id < uix.user_item_id
+			    WHERE uix.user_item_id IS NULL
+			) X
+			$join
+			$where
+			$limit
+		", 'finished' );
+
+		$rows = $wpdb->get_results( $query );
+
+		LP_Debug::instance()->add( $query, 'query-user-items' );
+
+		//echo nl2br( $query );
+
+		if ( $args['paginate'] && $args['limit'] ) {
+			$found_courses = sizeof( $rows ) ? $wpdb->get_var( "SELECT FOUND_ROWS()" ) : 0;
+
+			$return = array(
+				'courses'       => $rows,
+				'found_courses' => $found_courses,
+				'max_num_pages' => $found_courses ? ceil( $found_courses / $args['limit'] ) : 0
+			);
+		} else {
+			$return = $rows;
+		}
+
+//		$query = $wpdb->prepare( "
+//			SELECT X.*
+//			FROM(
+//			SELECT ui.*
+//                FROM {$wpdb->learnpress_user_items} ui
+//				LEFT JOIN {$wpdb->learnpress_user_items} uix
+//					ON ui.item_id = uix.item_id
+//						AND ui.user_id = uix.user_id
+//						AND ui.user_item_id < uix.user_item_id
+//			    WHERE uix.user_item_id IS NULL
+//			) X
+//
+//			WHERE
+//				AND X.status = %s
+//				AND expiration_time_gmt <= UTC_TIMESTAMP()
+//			LIMIT 0, 10
+//		", LP_COURSE_CPT, 'enrolled' );
+
+		//echo nl2br( $query );
+		//learn_press_debug( $return );
+
+		return $return;
+	}
+
 	public function init() {
 		if ( $this->_user_id || $this->_course_id ) {
 			if ( ! $this->_course_id ) {
@@ -125,12 +306,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array|mixed
 	 */
 	public function get_orders( $user_id, $args = array() ) {
-
+		
 		// If user does not exists
 		if ( ! $user_id || ! $user = learn_press_get_user( $user_id ) ) {
 			return false;
 		}
-
+		
 		$cache_key = false;
 		if ( $args ) {
 			$args = wp_parse_args(
@@ -143,22 +324,22 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			ksort( $args );
 			$cache_key = md5( serialize( $args ) );
-
+			
 			/**
 			 * Get orders from cache by args
 			 */
 			if ( false !== ( $orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'lp-user-orders' ) ) ) {
 				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-
+				
 				return $orders;
 			}
 		}
 		// Get orders for the user from cache
 		$orders = LP_Object_Cache::get( 'user-' . $user_id, 'lp-user-orders' );
-
+		
 		if ( false === $orders ) {
 			global $wpdb;
-
+			
 			$orders                = array();
 			$post_status_in        = learn_press_get_order_statuses( true, true );
 			$post_status_in_format = array_fill( 0, sizeof( $post_status_in ), '%s' );
@@ -511,6 +692,18 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		 * Get all items in table with the max user-item-id in each
 		 * group of an item
 		 */
+//		$query = $wpdb->prepare( "
+//			SELECT *
+//			FROM (
+//				SELECT *
+//				FROM {$wpdb->learnpress_user_items}
+//				WHERE item_type IN({$type_in})
+//				AND parent_id = %d
+//				ORDER BY item_id, user_item_id DESC
+//			) X
+//			GROUP BY item_id
+//		", $user_item_id );
+
 		$query = $wpdb->prepare( "
 			SELECT ui.* 
 			FROM ( 
@@ -1796,6 +1989,4 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		return $new_user;
 	}
-
-
 }

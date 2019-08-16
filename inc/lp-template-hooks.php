@@ -419,4 +419,4 @@ add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_b
 /**
  * @see learn_press_reset_single_item_summary_content
  */
-add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );
+//add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );

@@ -247,6 +247,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param bool  $extra
 		 */
 		protected function _set_data( $key_or_data, $value = '', $extra = false ) {
+
 			if ( is_array( $key_or_data ) ) {
 				foreach ( $key_or_data as $key => $value ) {
 					$this->_set_data( $key, $value, $extra );
@@ -275,12 +276,11 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 							$this->_extra_data[ $key_or_data ] = $value;
 						}
 
-
 					}
 					catch ( Exception $ex ) {
 						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
-						die( __FILE__ . '::' . __FUNCTION__ );;
+						die( __FILE__ . '::' . __FUNCTION__ );
 					}
 				}
 			}
@@ -305,7 +305,19 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				$value = new LP_Datetime( $value );
 			}
 
-			$this->_set_data( $key, $value );
+			$this->_set_data( $key, $value, true );
+		}
+
+		/**
+		 * @param $key
+		 * @param $value
+		 */
+		protected function _set_data_date( $key, $value, $extra = false ) {
+			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
+				$value = new LP_Datetime( $value );
+			}
+
+			$this->_set_data( $key, $value, $extra );
 		}
 
 		public function set_data_null_date( $key ) {

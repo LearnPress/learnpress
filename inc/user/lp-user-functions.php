@@ -125,6 +125,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 	function learn_press_get_user( $user_id, $current = false, $force_new = false ) {
 		LP_Debug::logTime( __FUNCTION__ );
 
+		$is_guest = false;
 		if ( $user_id != LP()->session->guest_user_id ) {
 			// Check if user is existing
 			if ( $current && ! get_user_by( 'id', $user_id ) ) {
@@ -148,7 +149,18 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 		}
 
 		if ( $force_new || empty( LP_Global::$users[ $user_id ] ) ) {
-			LP_Global::$users[ $user_id ] = isset( $is_guest ) ? new LP_User_Guest( $user_id ) : new LP_User( $user_id );
+			/**
+			 * LP Hook.
+             *
+             * Filter the default class name to get LP user.
+			 *
+			 * @since 3.x.x
+			 */
+			$userClass = apply_filters( 'learn-press/user-class', $is_guest ? 'LP_User_Guest' : 'LP_User', $is_guest );
+
+			LP_Global::$users[ $user_id ] = new $userClass( $user_id );
+
+			do_action( 'learn-press/get-user', LP_Global::$users[ $user_id ], $user_id );
 		}
 		LP_Debug::logTime( __FUNCTION__ );
 
@@ -433,17 +445,19 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 
 	// Table fields
 	$table_fields = array(
-		'user_id'        => '%d',
-		'item_id'        => '%d',
-		'ref_id'         => '%d',
-		'start_time'     => '%s',
-		'start_time_gmt' => '%s',
-		'end_time'       => '%s',
-		'end_time_gmt'   => '%s',
-		'item_type'      => '%s',
-		'status'         => '%s',
-		'ref_type'       => '%s',
-		'parent_id'      => '%d'
+		'user_id'         => '%d',
+		'item_id'         => '%d',
+		'ref_id'          => '%d',
+		'start_time'      => '%s',
+		'start_time_gmt'  => '%s',
+		'end_time'        => '%s',
+		'end_time_gmt'    => '%s',
+		'expiration_time' => '%s',
+		//'expiration_time_gmt' => '%s',
+		'item_type'       => '%s',
+		'status'          => '%s',
+		'ref_type'        => '%s',
+		'parent_id'       => '%d'
 	);
 
 	/**
@@ -463,14 +477,29 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	}
 
 	// Data and format
-	$data        = array();
-	$data_format = array();
+	$data             = array();
+	$data_format      = array();
+	$date_time_fields = array(
+		'start_time',
+		'start_time_gmt',
+		'end_time',
+		'end_time_gmt',
+		'expiration_time',
+		//'expiration_time_gmt'
+	);
 
 	// Build data and data format
 	foreach ( $fields as $field => $value ) {
 		if ( ! empty( $table_fields[ $field ] ) ) {
 			$data[ $field ] = $value;
-			$data_format[]  = $table_fields[ $field ];
+
+			// Do not format the date-time field if it's value is NULL
+			if ( in_array( $field, $date_time_fields ) && ! $value ) {
+				$data[ $field ] = null;
+				$data_format[]  = '';
+			} else {
+				$data_format[] = $table_fields[ $field ];
+			}
 		}
 	}
 
@@ -504,6 +533,14 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	$inserted = false;
 	$updated  = false;
 
+	// Ensure all fields are instance of LP_Datetime have to
+	// convert to string of datetime.
+	foreach ( $data as $k => $v ) {
+		if ( $v instanceof LP_Datetime ) {
+			$data[ $k ] = $v->toSql();
+		}
+	}
+
 	// If $where is not empty consider we are updating
 	if ( $where ) {
 		$updated = $wpdb->update(
@@ -530,6 +567,9 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		$inserted = $where['user_item_id'];
 	}
 
+	/**
+	 * @var object|bool $updated_item
+	 */
 	$updated_item = false;
 
 	// Get the item we just have updated or inserted.

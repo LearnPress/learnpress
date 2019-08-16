@@ -515,6 +515,7 @@ abstract class LP_Abstract_Post_Type {
 			$meta_box[2] = array( $this, '_do_output_meta_box' );
 			call_user_func_array( 'add_meta_box', $meta_box );
 		}
+
 	}
 
 	public function before_delete( $post_id ) {

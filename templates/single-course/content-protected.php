@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit();
     <span class="icon"></span>
 
 	<?php
-    if( $can_view_item && $can_view_item == 'not-enrolled' ){
+    if( isset($can_view_item) && $can_view_item == 'not-enrolled' ){
 	    echo apply_filters( 'learn_press_content_item_protected_message',
 		    __( 'This content is protected, please enroll course to view this content!', 'learnpress' ) );
 	    learn_press_course_enroll_button();

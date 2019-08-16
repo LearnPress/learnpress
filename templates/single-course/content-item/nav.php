@@ -10,10 +10,9 @@
 defined( 'ABSPATH' ) or die();
 
 /**
- * @var LP_Course_Item $next_item
  * @var LP_Course_Item $prev_item
+ * @var LP_Course_Item $next_item
  */
-
 if ( ! isset( $prev_item ) && ! isset( $next_item ) ) {
 	return;
 }

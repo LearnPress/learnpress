@@ -485,16 +485,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
-			if( is_admin() && $this->_is_archive() && !$wp_query->query['post_status'] ) {
-				$statuses = array_keys(learn_press_get_register_order_statuses());
-				$search = "{$wpdb->posts}.post_status = 'publish' ";
-				$tmps = array($search);
-				$tmp = "{$wpdb->posts}.post_status = %s ";
-				foreach( $statuses as $status ) {
-					$tmps[]=$wpdb->prepare( $tmp, $status );
+
+			if ( is_admin() && $this->_is_archive() && ! $wp_query->query['post_status'] ) {
+				$statuses = array_keys( learn_press_get_register_order_statuses() );
+				$search   = "{$wpdb->posts}.post_status = 'publish' ";
+				$tmps     = array( $search );
+				$tmp      = "{$wpdb->posts}.post_status = %s ";
+				foreach ( $statuses as $status ) {
+					$tmps[] = $wpdb->prepare( $tmp, $status );
 				}
-				$replace = implode(' OR ',$tmps);
-				$where = str_replace($search, $replace, $where);
+				$replace = implode( ' OR ', $tmps );
+				$where   = str_replace( $search, $replace, $where );
 			}
 
 			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
@@ -504,9 +505,24 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			# filter by user id
 			preg_match( "#{$wpdb->posts}\.post_author IN\s*\((\d+)\)#", $where, $matches );
 			if ( ! empty( $matches ) && isset( $matches[1] ) ) {
+
 				$author_id = intval( $matches[1] );
 				$sql   = " ( pm1.meta_value = %d OR pm1.meta_value LIKE %s)";
-				$sql   = $wpdb->prepare( $sql, $author_id, '%"' . $wpdb->esc_like( $author_id ) . '"%' );
+
+				$sql       = " {$wpdb->posts}.ID IN ( SELECT 
+						IF( p.post_parent >0, p.post_parent, p.ID)
+					FROM
+						{$wpdb->posts} AS p
+							INNER JOIN
+						{$wpdb->postmeta} m ON p.ID = m.post_id and p.post_type = %s 
+								AND m.meta_key = %s
+							INNER JOIN 
+						{$wpdb->users} u on m.meta_value = u.ID
+					WHERE
+						p.post_type = 'lp_order'
+							AND u.ID = %d ) ";
+
+				$sql   = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $author_id ) );
 				$where = str_replace( $matches[0], $sql, $where );
 			}
 
@@ -534,9 +550,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					) ";
 				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ) );
 				# search order via course name
-				$sql .= " OR ".$wpdb->prepare( " {$wpdb->posts}.ID IN (
+				$sql .= " OR " . $wpdb->prepare( " {$wpdb->posts}.ID IN (
 						SELECT DISTINCT order_id FROM {$wpdb->learnpress_order_items} WHERE `order_item_name` like %s
-					)",$s);
+					)", $s );
 				if ( ! empty( $matches2 ) && isset( $matches2[0] ) ) {
 					$sql = $wpdb->prepare(" loi.order_item_name LIKE %s",$s);
 					$where = str_replace( $matches2[0], $sql . ' OR ' . $matches2[0], $where );
@@ -550,7 +566,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 		public function posts_fields( $fields ) {
 			global $wp_query;
-			
+
 			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
 				return $fields;
 			}
@@ -845,12 +861,15 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$items = $the_order->get_items();
 					$count = sizeof( $items );
 					foreach ( $items as $item ) {
-						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
+
+						$product = learn_press_get_course( $item['course_id'] );
+
+						if ( ! $product ) {
 							$links[] = apply_filters( 'learn-press/get_info_item_order', __( 'Course does not exist', 'learnpress' ), $item );
 						} else if ( get_post_status( $item['course_id'] ) !== 'publish' ) {
 							$links[] = get_the_title( $item['course_id'] ) . sprintf( ' (#%d - %s)', $item['course_id'], __( 'Deleted', 'learnpress' ) );
 						} else {
-							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
+							$link = '<a href="' . $product->get_permalink() . '">' . $product->get_title() . ' (#' . $product->get_id() . ')' . '</a>';
 							if ( $count > 1 ) {
 								$link = sprintf( '<li>%s</li>', $link );
 							}

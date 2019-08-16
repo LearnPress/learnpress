@@ -60,8 +60,8 @@ function learn_press_get_theme_name( $folder ) {
  * @since 3.0.0
  *
  * @param string $tip
- * @param bool $echo
- * @param array $options
+ * @param bool   $echo
+ * @param array  $options
  *
  * @return string
  */
@@ -163,7 +163,7 @@ function learn_press_plugin_path( $sub_dir = '' ) {
  *
  * @param string $file
  * @param string $folder
- * @param bool $include_once
+ * @param bool   $include_once
  *
  * @return bool
  */
@@ -326,7 +326,7 @@ function learn_press_is_current_url( $url ) {
  * Remove unneeded characters in an URL
  *
  * @param string $url
- * @param bool $trailingslashit
+ * @param bool   $trailingslashit
  *
  * @return string
  */
@@ -384,7 +384,7 @@ function learn_press_section_item_types() {
  * Enqueue js code to print out
  *
  * @param string $code
- * @param bool $script_tag - wrap code between <script> tag
+ * @param bool   $script_tag - wrap code between <script> tag
  */
 function learn_press_enqueue_script( $code, $script_tag = false ) {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
@@ -407,9 +407,9 @@ function learn_press_enqueue_script( $code, $script_tag = false ) {
  * Get terms of a course by taxonomy.
  * E.g: course_tag, course_category
  *
- * @param int $course_id
+ * @param int    $course_id
  * @param string $taxonomy
- * @param array $args
+ * @param array  $args
  *
  * @return array|mixed
  */
@@ -516,7 +516,7 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  *
  * @param string $name
  * @param string $type
- * @param bool $single
+ * @param bool   $single
  *
  * @return array|bool|null|WP_Post
  */
@@ -634,7 +634,7 @@ add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
  * @param string $str
- * @param int $lines
+ * @param int    $lines
  */
 function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
@@ -663,9 +663,8 @@ if ( ! function_exists( 'learn_press_is_ajax' ) ) {
 function learn_press_get_page_id( $name ) {
 	$page_id = LP_Settings::instance()->get( "{$name}_page_id", false );
 	if ( function_exists( 'icl_object_id' ) ) {
-		$page_id = icl_object_id( $page_id, 'page', false, ICL_LANGUAGE_CODE );
+		$page_id = icl_object_id( $page_id, 'page', false, defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '' );
 	}
-
 	return apply_filters( 'learn_press_get_page_id', $page_id, $name );
 }
 
@@ -886,7 +885,7 @@ function learn_press_human_time_to_seconds( $time, $default = '' ) {
  *
  * @param string $to
  * @param string $action
- * @param array $vars
+ * @param array  $vars
  *
  * @return mixed
  */
@@ -1855,8 +1854,8 @@ function learn_press_maybe_send_json( $data, $callback = null ) {
  * Get data from request.
  *
  * @param string $key
- * @param mixed $default
- * @param mixed $hash
+ * @param mixed  $default
+ * @param mixed  $hash
  *
  * @return mixed
  */
@@ -2256,7 +2255,7 @@ if ( ! function_exists( 'learn_press_reset_auto_increment' ) ) {
 
 /**
  * @param string $handle
- * @param bool $hash
+ * @param bool   $hash
  *
  * @return string
  */
@@ -2677,7 +2676,7 @@ function learn_press_plugin_basename( $filepath ) {
  * Update log data for each LP version into wp option.
  *
  * @param string $version
- * @param mixed $data
+ * @param mixed  $data
  */
 function learn_press_update_log( $version, $data ) {
 	$logs = get_option( 'learn_press_update_logs' );
@@ -2702,6 +2701,7 @@ function learn_press_debug() {
 
 	if ( $args ) {
 		foreach ( $args as $arg ) {
+			echo "\n======LearnPress Debug=======\n";
 			print_r( $arg );
 			echo "\n=============================\n";
 		}
@@ -2839,10 +2839,10 @@ if ( ! function_exists( 'learn_press_is_negative_value' ) ) {
  * Filter to comment reply link to fix bug the link is invalid for
  * lesson or quiz.
  *
- * @param string $link
- * @param array $args
+ * @param string     $link
+ * @param array      $args
  * @param WP_Comment $comment
- * @param WP_Post $post
+ * @param WP_Post    $post
  *
  * @return string
  */
@@ -2892,7 +2892,7 @@ function learn_press_deprecated_function( $function, $version, $replacement = nu
  * Sanitize content of tooltip
  *
  * @param string $tooltip
- * @param bool $html
+ * @param bool   $html
  *
  * @return string
  */
@@ -3215,7 +3215,7 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
  *
  * @param string $timestamp
  * @param string $format
- * @param bool $gmt
+ * @param bool   $gmt
  *
  * @return string
  */
@@ -3314,7 +3314,7 @@ function learn_press_get_post_type( $post ) {
  * @since 3.1.0
  *
  * @param int|array $id
- * @param string $type
+ * @param string    $type
  */
 function learn_press_cache_add_post_type( $id, $type = '' ) {
 	if ( false === ( $post_types = LP_Object_Cache::get( 'post-types', 'learn-press' ) ) ) {
@@ -3387,4 +3387,55 @@ function learn_press_global_script_params() {
 	);
 
 	return $js;
+}
+
+/**
+ * Get url for setup cron job on server.
+ *
+ * @since 3.x.x
+ *
+ * @return string
+ */
+function learn_press_get_cron_url() {
+	$nonce = get_option( 'learnpress_cron_url_nonce' );
+
+	if ( ! $nonce ) {
+		$nonce = md5( microtime( true ) );
+		update_option( 'learnpress_cron_url_nonce', $nonce );
+	}
+	$url = add_query_arg( array( 'lp-ajax' => 'cron', 'sid' => $nonce ), get_home_url() );
+
+	return $url;
+}
+
+/**
+ * Get courses expired.
+ *
+ * @since 3.x.x
+ *
+ * @return array
+ */
+function learn_press_get_expired_courses() {
+	global $wpdb;
+
+	$query = $wpdb->prepare( "
+			SELECT X.*
+			FROM(
+			SELECT ui.*
+                FROM {$wpdb->learnpress_user_items} ui
+				LEFT JOIN {$wpdb->learnpress_user_items} uix
+					ON ui.item_id = uix.item_id 
+						AND ui.user_id = uix.user_id
+						AND ui.user_item_id < uix.user_item_id
+			    WHERE uix.user_item_id IS NULL
+			) X
+			INNER JOIN {$wpdb->users} u ON u.ID = X.user_id
+			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id
+			WHERE X.item_type = %s 
+				AND X.status = %s
+				#AND expiration_time_gmt <= UTC_TIMESTAMP()
+				AND expiration_time <= UTC_TIMESTAMP()
+			LIMIT 0, 10
+		", LP_COURSE_CPT, 'enrolled' );
+
 }

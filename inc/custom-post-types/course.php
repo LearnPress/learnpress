@@ -584,9 +584,27 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Duration', 'learnpress' ),
 						'id'   => '_lp_duration',
 						'type' => 'duration',
-						'desc' => __( 'The duration of the course.', 'learnpress' ),
+						'desc' => __( 'The duration of the course. Lifetime access if duration is zero.', 'learnpress' ),
 						'std'  => '10 weeks'
 					),
+					// @since 3.x.x
+
+					array(
+						'name'    => __( 'Block items content', 'learnpress' ),
+						'id'      => '_lp_block_content',
+						'type'    => 'radio',
+						'options' => array(
+							''                                   => __( 'No.', 'learnpress' ),
+							'duration_expire'                    => __( 'Block if duration expire.', 'learnpress' ),
+							'course_finished'                    => __( 'Block if course is finished.', 'learnpress' ),
+							'duration_expire_or_course_finished' => __( 'Block if duration expire or course is finished.', 'learnpress' ),
+						),
+						'desc'    => __( 'Action when course is finished.', 'learnpress' ),
+						'std'     => '',
+						'inline'  => false
+					),
+					//////
+
 					array(
 						'name' => __( 'Maximum Students', 'learnpress' ),
 						'id'   => '_lp_max_students',
@@ -916,7 +934,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function author_meta_box() {
 
-			$course_id = LP_Request::get_int('post');
+			$course_id = LP_Request::get_int( 'post' );
 			$post      = get_post( $course_id );
 			$author    = $post ? $post->post_author : get_current_user_id();
 
@@ -933,17 +951,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 				}
 			}
-			$fields = array ();
-			if (is_super_admin ()) {
-				$fields [] = array (
-						'name' => __ ( 'Author', 'learnpress' ),
-						'id' => '_lp_course_author',
-						'desc' => '',
-						'multiple' => false,
-						'allowClear' => false,
-						'type' => 'select',
-						'options' => $include,
-						'std' => $author
+			$fields = array();
+			if ( is_super_admin() ) {
+				$fields [] = array(
+					'name'       => __( 'Author', 'learnpress' ),
+					'id'         => '_lp_course_author',
+					'desc'       => '',
+					'multiple'   => false,
+					'allowClear' => false,
+					'type'       => 'select',
+					'options'    => $include,
+					'std'        => $author
 				);
 			}
 			$meta_box = array(
@@ -955,9 +973,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'fields'   => $fields
 			);
 			$meta_box = apply_filters( 'learn_press_course_author_meta_box', $meta_box );
-			if(empty($meta_box['fields'])){
+			if ( empty( $meta_box['fields'] ) ) {
 				return false;
 			}
+
 			return $meta_box;
 
 		}
