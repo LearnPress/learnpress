@@ -843,7 +843,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	public function get_item_at( $at = 0 ) {
 		$items   = $this->read_items();
 		$item_id = ! empty( $this->_items_by_order[ $at ] ) ? $this->_items_by_order[ $at ] : 0;
-		if ( ! $item_id ) {
+		if ( ! $item_id && $items ) {
 			$items   = array_values( $items );
 			$item_id = $items[ $at ]->get_id();
 		}
