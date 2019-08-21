@@ -35,6 +35,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
 			add_action( 'init', array( $this, 'init' ), 50 );
 			add_action( 'admin_init', array( $this, 'admin_redirect' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_modal' ) );
 
 			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 			add_filter( 'manage_users_custom_column', array( $this, 'users_custom_column' ), 10, 3 );
@@ -51,6 +52,24 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
 
 			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
+
+			add_filter( 'learn-press/dismissed-notice-response', array(
+				$this,
+				'on_dismissed_notice_response'
+			), 10, 2 );
+		}
+
+		/**
+		 * @since 3.2.6
+		 */
+		public function load_modal() {
+			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, LP_ORDER_CPT ) ) ) {
+				LP_Modal_Search_Items::instance();
+			};
+
+			if ( in_array( get_post_type(), array( LP_ORDER_CPT ) ) ) {
+				LP_Modal_Search_Users::instance();
+			}
 		}
 
 		/**
@@ -134,6 +153,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function init() {
+
+			///die(get_post_type());
+			add_action( 'learn-press/enqueue-script/learn-press-modal-search-items', array(
+				'LP_Modal_Search_Items',
+				'instance'
+			) );
+			add_action( 'learn-press/enqueue-script/learn-press-modal-search-users', array(
+				'LP_Modal_Search_Users',
+				'instance'
+			) );
+
 			if ( 'yes' === LP_Request::get_string( 'lp-hide-upgrade-message' ) ) {
 				delete_transient( 'lp_upgraded_30' );
 			}
@@ -327,7 +357,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int $post
+		 * @param int    $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -386,7 +416,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array $actions
+		 * @param array   $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -483,9 +513,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			if ( ( in_array( $action, array(
 					'accepted-request',
 					'denied-request'
-				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id ) ) {
+				) ) ) && ( $user_id = LP_Request::get_int( 'user_id' ) ) && get_user_by( 'id', $user_id )
+			) {
 				if ( ! current_user_can( 'promote_user', $user_id ) ) {
-					wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
+					wp_die( __( 'Sorry, you are not allowed to edit this user.', 'learnpress' ) );
 				} ?>
 
                 <div class="updated notice">
@@ -714,6 +745,60 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		/**
+		 * Send data to join newsletter or dismiss.
+		 * @since 3.0.10
+		 *
+		 * @param array  $data
+		 * @param string $notice
+		 *
+		 * @return array
+		 */
+		public function on_dismissed_notice_response( $data, $notice ) {
+			switch ( $notice ) {
+				case 'skip-setup-wizard':
+					delete_option( 'learn_press_install' );
+					break;
+				case 'newsletter-button':
+					$context = LP_Request::get_string( 'context' );
+					if ( ! $context || $context != 'newsletter' ) {
+						break;
+					}
+
+					$user = learn_press_get_current_user();
+					if ( ! $user || $user->get_email() == '' ) {
+						$data['error'] = __( 'Fail while joining newsletter! Please try again!', 'learnpress' );
+					}
+
+					$url      = 'https://thimpress.com/mailster/subscribe';
+					$response = wp_remote_post( $url, array(
+							'method'      => 'POST',
+							'timeout'     => 45,
+							'redirection' => 5,
+							'httpversion' => '1.0',
+							'blocking'    => true,
+							'headers'     => array(),
+							'body'        => array(
+								'_referer' => 'extern',
+								'_nonce'   => '4b266caf7b',
+								'formid'   => '19',
+								'email'    => $user->get_email(),
+								'website'  => site_url(),
+							),
+							'cookies'     => array()
+						)
+					);
+					if ( is_wp_error( $response ) ) {
+						$error_message   = $response->get_error_message();
+						$data['message'] = __( 'Something went wrong: ', 'learnpress' ) . $error_message;
+					} else {
+						$data['message'] = __( 'Thank you for subscribing! Please check and click the confirmation link from the email we\'ve just sent to your mail box.', 'learnpress' );
+					}
+			}
+
+			return $data;
+		}
+
+		/**
 		 * Include all classes and functions used for admin
 		 */
 		public function includes() {
@@ -722,7 +807,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'lp-admin-functions.php';
 			include_once 'lp-admin-actions.php';
 			require_once LP_PLUGIN_PATH . 'inc/background-process/class-lp-background-query-items.php';
-
 			include_once 'class-lp-admin-assets.php';
 			include_once 'class-lp-admin-dashboard.php';
 			include_once 'class-lp-admin-tools.php';

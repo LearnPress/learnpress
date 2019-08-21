@@ -144,7 +144,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						$time_diff = time() - $time;
 
 						if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-							$date = sprintf( __( '%s ago' ), human_time_diff( $time ) );
+							$date = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
 						} else {
 							$date = mysql2date( get_option( 'date_format' ), $m_time );
 						}
@@ -739,7 +739,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
 
-			wp_cache_delete( 'order-' . $this->get_id(), 'learn-press/order-items' );
+			LP_Object_Cache::delete( 'order-' . $this->get_id(), 'learn-press/order-items' );
 
 			/**
 			 * @since 3.0.0

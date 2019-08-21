@@ -28,9 +28,11 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
-        Vue.component('lp-quiz-question-answer-option', {
+        $Vue.component('lp-quiz-question-answer-option', {
             template: '#tmpl-lp-quiz-question-answer-option',
             props: ['question', 'answer', 'index'],
             data: function () {
@@ -110,5 +112,5 @@
             }
         });
 
-    })(Vue, LP_Quiz_Store);
+    })
 </script>

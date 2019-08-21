@@ -19,6 +19,10 @@ cache/
 /local-debug.php
 /languages/learnpress-vi.mo
 /languages/learnpress-vi.po
+/releases
+/build
+/**/*.js.map
+/**/_bk/
 test list.txt
 
 package-lock.json

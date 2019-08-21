@@ -243,7 +243,7 @@ class LP_Update_30 extends LP_Update_Base {
 
 		global $wpdb;
 
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 				INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
 				SELECT user_item_id, %s, COUNT(user_item_id) - 1 Y
 				FROM (
@@ -256,6 +256,8 @@ class LP_Update_30 extends LP_Update_Base {
 			", '_lp_retaken_count', $course_id );
 
 		$wpdb->query( $query );
+
+		$this->output($query);
 
 		return false;
 	}

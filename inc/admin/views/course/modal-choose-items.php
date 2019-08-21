@@ -18,10 +18,11 @@ learn_press_admin_view( 'course/pagination' );
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue || Vue;
 
     jQuery(function ($) {
-        (function (Vue, $store) {
-            Vue.component('lp-course-choose-item', {
+        (function ($store) {
+            $Vue.component('lp-course-choose-item', {
                 template: '#tmpl-lp-course-choose-item',
                 props: ['item', 'added'],
                 watch: {
@@ -43,7 +44,7 @@ learn_press_admin_view( 'course/pagination' );
                 }
             });
 
-        })(Vue, LP_Curriculum_Store);
+        })(LP_Curriculum_Store);
     })
 
 </script>
@@ -113,12 +114,13 @@ learn_press_admin_view( 'course/pagination' );
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue || Vue;
 
     jQuery(function ($) {
 
-        (function (Vue, $store) {
+        (function ($store) {
 
-            Vue.component('lp-curriculum-choose-items', {
+            $Vue.component('lp-curriculum-choose-items', {
                 template: '#tmpl-lp-course-choose-items',
                 data: function () {
                     return {
@@ -272,6 +274,6 @@ learn_press_admin_view( 'course/pagination' );
                 }
             });
 
-        })(Vue, LP_Curriculum_Store);
+        })(LP_Curriculum_Store);
     });
 </script>

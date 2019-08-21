@@ -466,3 +466,19 @@ $remove-icon-color: #d05d5d;
 .rwmb-duration {
     border: 1px solid #ddd;
 }
+
+ul .clearfix {
+    clear: both;
+    height: 0;
+    opacity: 0;
+}
+
+.clearfix-after {
+    &:after {
+        clear: both;
+        height: 0;
+        opacity: 0;
+        display: block;
+        content: '';
+    }
+}

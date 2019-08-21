@@ -390,6 +390,18 @@
 .rwmb-duration {
   border: 1px solid #ddd; }
 
+ul .clearfix {
+  clear: both;
+  height: 0;
+  opacity: 0; }
+
+.clearfix-after:after {
+  clear: both;
+  height: 0;
+  opacity: 0;
+  display: block;
+  content: ''; }
+
 @-moz-keyframes lp-spinner {
   100% {
     -moz-transform: rotate(360deg); } }
@@ -1639,6 +1651,20 @@
       clear: both;
       width: auto;
       padding: 8px 12px 0 12px; }
+      .lp-order-statuses li.featured-theme .star-rating {
+        display: inline-block;
+        line-height: 14px;
+        vertical-align: middle; }
+        .lp-order-statuses li.featured-theme .star-rating .star {
+          font-size: 14px;
+          width: 14px;
+          height: 14px; }
+      .lp-order-statuses li.featured-theme > div {
+        margin-bottom: 3px; }
+        .lp-order-statuses li.featured-theme > div span {
+          font-size: 12px;
+          vertical-align: middle;
+          color: #999; }
     .lp-order-statuses li:nth-child(even) .counter-inner {
       margin-left: 0; }
     .lp-order-statuses li:nth-child(odd) .counter-inner {
@@ -2961,7 +2987,9 @@
           padding: 10px 14px; }
       #lp-modal-choose-items .lp-choose-items .main .list-items {
         min-height: 260px;
-        margin: 0; }
+        margin: 0;
+        max-height: 460px;
+        overflow-y: auto; }
         #lp-modal-choose-items .lp-choose-items .main .list-items li {
           margin: 15px 0;
           cursor: pointer; }
@@ -3182,6 +3210,33 @@ body.lp-item-moving {
     position: absolute;
     right: 12px;
     top: 12px; }
+  .lp-notice .notice-dismiss,
+  .learn-press-notice .notice-dismiss {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    border: none;
+    margin: 0;
+    padding: 9px;
+    background: 0 0;
+    color: #72777c;
+    cursor: pointer;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
+    .lp-notice .notice-dismiss:before,
+    .learn-press-notice .notice-dismiss:before {
+      background: 0 0;
+      color: #72777c;
+      content: "\f153";
+      display: block;
+      font: normal 16px/20px dashicons;
+      speak: none;
+      height: 20px;
+      text-align: center;
+      width: 20px;
+      -webkit-font-smoothing: antialiased; }
 
 .learn-press-dropdown-pages {
   display: inline-block; }

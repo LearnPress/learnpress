@@ -118,7 +118,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
-		public function sync_calculate_course_results() {
+		public static function sync_calculate_course_results() {
 			if ( empty( $_REQUEST['sync'] ) ) {
 				die();
 			}
@@ -150,7 +150,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.1.0
 		 */
-		public function sync_course_orders() {
+		public static function sync_course_orders() {
 			if ( empty( $_REQUEST['sync'] ) ) {
 				die();
 			}
@@ -174,7 +174,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.1.0
 		 */
-		public function sync_user_orders() {
+		public static function sync_user_orders() {
 			if ( empty( $_REQUEST['sync'] ) ) {
 				die();
 			}
@@ -206,7 +206,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 * @since 3.1.0
 		 */
-		public function sync_course_final_quiz() {
+		public static function sync_course_final_quiz() {
 			if ( empty( $_REQUEST['sync'] ) ) {
 				die();
 			}
@@ -225,7 +225,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		public function sync_remove_older_data() {
+		public static function sync_remove_older_data() {
 			$api = LP_Repair_Database::instance();
 			$api->remove_older_post_meta();
 			learn_press_send_json( array( 'result' => 'success' ) );
@@ -235,12 +235,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Get html of order status to display in WP Dashboad
 		 */
-		public function dashboard_order_status() {
+		public static function dashboard_order_status() {
 			learn_press_admin_view( 'dashboard/order-status' );
 			die();
 		}
 
-		public function dashboard_plugin_status() {
+		public static function dashboard_plugin_status() {
 			$dashboard   = new LP_Admin_Dashboard();
 			$plugin_data = $dashboard->get_data();
 			if ( ! $plugin_data || is_wp_error( $plugin_data ) ) {
@@ -332,7 +332,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
-		 * Send data to join newsletter or dismiss
+		 * Send data to join newsletter or dismiss.
+         *
+		 * [
+		 *  This function has deprecated since 3.2.6 from this class.
+         *  Please check class LP_Admin and hook learn-press/dismissed-notice-response for more details.
+         *  Newsletter function be hooked to the hook above to send subscription when
+         *  notice has already dismissed.
+		 * ]
+         *
+         * @deprecated
 		 *
 		 * @since 3.0.10
 		 */
@@ -597,10 +606,20 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
 			$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
+			$order_items = $order->get_items();
+			if ( $order_items ) {
+				$html        = '';
+				foreach ( $order_items as $item ) {
+					ob_start();
+					include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
+					$html .= ob_get_clean();
+				}
+			}
 
 			learn_press_send_json(
 				array(
 					'result'     => 'success',
+					'item_html'  => $html,
 					'order_data' => $order_data
 				)
 			);
@@ -777,14 +796,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Dismiss notice
 		 *
-		 * @update 3.x.x
+		 * @update 3.2.6
 		 */
 		public static function dismiss_notice() {
 			$name    = learn_press_get_request( 'name' );
 			$value   = learn_press_get_request( 'value' );
 			$expired = learn_press_get_request( 'expired' );
 
-			LP_Admin_Notice::instance()->dismiss_notice_2( $name, $value, $expired );
+			//LP_Admin_Notice::instance()->dismiss_notice_2( $name, $value, $expired );
 
 			die();
 		}
@@ -991,7 +1010,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		public function custom_stats() {
+		public static function custom_stats() {
 			$from      = ! empty( $_REQUEST['from'] ) ? $_REQUEST['from'] : 0;
 			$to        = ! empty( $_REQUEST['to'] ) ? $_REQUEST['to'] : 0;
 			$date_diff = strtotime( $to ) - strtotime( $from );

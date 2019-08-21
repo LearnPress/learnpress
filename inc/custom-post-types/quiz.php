@@ -203,10 +203,13 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @param $post_id
 		 */
 		public function before_delete_quiz( $post_id ) {
+			if ( get_post_type( $post_id ) !== LP_QUIZ_CPT ) {
+				return;
+			}
 			// quiz curd
 			$curd = new LP_Quiz_CURD();
 			// remove question from course items
-			$curd->delete( $question_id );
+			$curd->delete( $post_id );
 		}
 
 		/**
@@ -371,7 +374,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
-			if ( false !== $pos && !array_key_exists( LP_COURSE_CPT, $columns ) ) {
+			if ( false !== $pos && ! array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
@@ -397,7 +400,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int    $post_id
+		 * @param int $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;
@@ -538,7 +541,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns['author']          = 'author';
-			$columns[LP_COURSE_CPT]     = 'course-name';
+			$columns[ LP_COURSE_CPT ]   = 'course-name';
 			$columns['num_of_question'] = 'question-count';
 
 			return $columns;

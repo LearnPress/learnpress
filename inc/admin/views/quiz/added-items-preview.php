@@ -20,9 +20,11 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
-        Vue.component('lp-quiz-added-items-preview', {
+        $Vue.component('lp-quiz-added-items-preview', {
                 template: '#tmpl-lp-quiz-added-items-preview',
                 props: {
                     // only show added items
@@ -41,5 +43,5 @@
             }
         );
 
-    })(Vue, LP_Quiz_Store);
+    });
 </script>

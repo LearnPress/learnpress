@@ -742,6 +742,10 @@ body {
         a {
             box-shadow: none;
         }
+        &:before {
+            content: '';
+            display: none;
+        }
     }
     .form-button {
         &.lp-button-back {

@@ -125,51 +125,51 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array|mixed
 	 */
 	public function get_orders( $user_id, $args = array() ) {
-		
+
 		// If user does not exists
 		if ( ! $user_id || ! $user = learn_press_get_user( $user_id ) ) {
 			return false;
 		}
-		
+
 		$cache_key = false;
 		if ( $args ) {
 			$args = wp_parse_args(
-					$args,
-					array(
-							'group_by_order' => false,
-							'status'         => ''
-					)
-					);
-			
+				$args,
+				array(
+					'group_by_order' => false,
+					'status'         => ''
+				)
+			);
+
 			ksort( $args );
 			$cache_key = md5( serialize( $args ) );
-			
+
 			/**
 			 * Get orders from cache by args
 			 */
 			if ( false !== ( $orders = LP_Object_Cache::get( "user-{$user_id}-" . $cache_key, 'lp-user-orders' ) ) ) {
 				LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-				
+
 				return $orders;
 			}
 		}
 		// Get orders for the user from cache
 		$orders = LP_Object_Cache::get( 'user-' . $user_id, 'lp-user-orders' );
-		
+
 		if ( false === $orders ) {
 			global $wpdb;
-			
+
 			$orders                = array();
 			$post_status_in        = learn_press_get_order_statuses( true, true );
 			$post_status_in_format = array_fill( 0, sizeof( $post_status_in ), '%s' );
-			
+
 			// Get order by user
 			$sql_orders = $wpdb->prepare( "
 				SELECT p.*
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %d
 			", '_user_id', $user_id );
-			
+
 			/**
 			 * Get order checked out by Guest but with the email of the user are getting
 			 */
@@ -179,7 +179,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s AND meta_value = %s
 				LEFT JOIN {$wpdb->postmeta} pmu ON p.ID = pmu.post_id AND pmu.meta_key = %s AND pmu.meta_value IS NULL
 			", '_checkout_email', $user->get_email(), '_user_id' );
-			
+
 			/**
 			 * The rest
 			 */
@@ -188,22 +188,22 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				AND p.post_status IN(" . join( ',', $post_status_in_format ) . ")
 				ORDER BY ID DESC
 			", array_merge( array(
-					LP_ORDER_CPT
+				LP_ORDER_CPT
 			), $post_status_in ) );
-			
+
 			$sql = $sql_orders . " UNION " . $sql_guest_orders . $sql_rest;
-			
+
 			if ( $order_posts = $wpdb->get_results( $sql ) ) {
 				$order_ids = array();
 				foreach ( $order_posts as $order_post ) {
-					
+
 					// Put post into cache to user later ... maybe.
 					$_post = sanitize_post( $order_post, 'raw' );
 					wp_cache_add( $_post->ID, $_post, 'posts' );
-					
+
 					$order_ids[] = $_post->ID;
 				}
-				
+
 				$order_ids_format = array_fill( 0, sizeof( $order_ids ), '%d' );
 				$query            = $wpdb->prepare( "
 						SELECT meta_value as course_id, order_id
@@ -212,7 +212,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 						WHERE oi.order_id IN (" . join( ',', $order_ids_format ) . ")
 						ORDER BY FIELD(order_id, " . join( ',', $order_ids_format ) . ")
 					", array_merge( array( '_course_id' ), $order_ids, $order_ids ) );
-				
+
 				if ( $results = $wpdb->get_results( $query ) ) {
 					foreach ( $results as $result ) {
 						if ( empty( $orders[ $result->course_id ] ) ) {
@@ -225,11 +225,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			// Store to cache
 			LP_Object_Cache::set( 'user-' . $user_id, $orders, 'lp-user-orders' );
 		}
-		
+
 		if ( $orders ) {
 			if ( array_key_exists( 'status', $args ) && $args['status'] ) {
 				LP_Helper::sanitize_order_status( $args['status'] );
-				
+
 				$statuses = (array) $args['status'];
 				foreach ( $orders as $course_id => $order_ids ) {
 					$orders[ $course_id ] = array();
@@ -240,18 +240,18 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 				}
 			}
-			
+
 			if ( array_key_exists( 'group_by_order', $args ) && $args['group_by_order'] ) {
 				$this->_group_orders( $orders );
 			}
 		}
-		
+
 		if ( $cache_key ) {
 			LP_Object_Cache::set( "user-{$user_id}-" . $cache_key, $orders, 'lp-user-orders' );
 		}
-		
+
 		LP_Debug::log_function( __CLASS__ . '::' . __FUNCTION__ );
-		
+
 		return $orders;
 	}
 
@@ -501,21 +501,27 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$item_types     = learn_press_get_course_item_types();
 		$type_in_format = array_fill( 0, sizeof( $item_types ), '%s' );
 		$type_in        = $wpdb->prepare( join( ',', $type_in_format ), $item_types );
+		if ( is_user_logged_in() ) {
+			$user_inner_join = "INNER JOIN {$wpdb->users} u ON u.ID = X.user_id";
+		} else {
+			$user_inner_join = '';
+		}
 
 		/**
 		 * Get all items in table with the max user-item-id in each
 		 * group of an item
 		 */
 		$query = $wpdb->prepare( "
-			SELECT *
-			FROM (
-				SELECT * 
-				FROM {$wpdb->learnpress_user_items}
-				WHERE item_type IN({$type_in}) 
-				AND parent_id = %d 
-				ORDER BY item_id, user_item_id DESC 
-			) X
-			GROUP BY item_id
+			SELECT ui.* 
+			FROM ( 
+				SELECT user_id, item_id, MAX(user_item_id) max_id 
+				FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
+			 ) AS X
+			INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id 
+			{$user_inner_join} 
+			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id 
+			WHERE ui.parent_id = %d
+			ORDER BY user_item_id ASC
 		", $user_item_id );
 
 		return $wpdb->get_results( $query );
@@ -1309,7 +1315,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				 * Get an array of all orders are completed with keys are id of
 				 * courses
 				 */
-				$orders     = $this->get_orders( $user_id, array( 'status' => 'completed' ) );
+				$orders = $this->get_orders( $user_id, array( 'status' => 'completed' ) );
 
 				if ( ! $orders ) {
 					throw new Exception( "", 0 );
@@ -1342,7 +1348,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$from = "FROM {$wpdb->learnpress_user_items} ui";
 
 				// JOIN
-				$join = "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id";
+				$join = $wpdb->prepare( "INNER JOIN {$wpdb->posts} c ON c.ID = ui.item_id AND c.post_type = %s", LP_COURSE_CPT );
 
 				// WHERE
 				$where = $wpdb->prepare( "
@@ -1646,7 +1652,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 							) );
 							break;
 					}
-				}else {
+				} else {
 
 					$having .= $wpdb->prepare( " AND X.status IN( %s, %s )", array(
 						'started',

@@ -3,7 +3,7 @@
  * Template for displaying LP information.
  */
 defined( 'ABSPATH' ) || exit();
-if ( ! isset( $plugin_data ) || is_wp_error($plugin_data) ) {
+if ( ! isset( $plugin_data ) || is_wp_error( $plugin_data ) ) {
 	return;
 }
 ?>
@@ -14,7 +14,11 @@ if ( ! isset( $plugin_data ) || is_wp_error($plugin_data) ) {
                target="_blank"><?php echo esc_html( $plugin_data->name ) ?></a>
         </li>
         <li>
-			<?php printf( '<span><strong>%s</strong></span>: %s', __( 'Downloaded', 'learnpress' ), number_format( $plugin_data->downloaded ) ) ?>
+			<?php
+			if ( ! empty( $plugin_data->downloaded ) ) {
+				printf( '<span><strong>%s</strong></span>: %s', __( 'Downloaded', 'learnpress' ), number_format( $plugin_data->downloaded ) );
+			}
+			?>
 			<?php printf( '<span><strong>%s</strong></span>: %s', __( 'Active Installed', 'learnpress' ), number_format( $plugin_data->active_installs ) ) ?>
         </li>
     </ul>

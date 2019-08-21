@@ -149,9 +149,14 @@ abstract class LP_Abstract_Post_Type {
 			?>
             <script>
                 jQuery(function ($) {
-                    var $input = $('#post-search-input'),
-                        $form = $($input[0].form),
-                        $select = $('<select name="author" id="author"></select>').append('<?php echo esc_js( $option );?>').insertAfter($input).select2({
+                    var $input = $('#post-search-input');
+
+                    if (!$input.length) {
+                        return;
+                    }
+
+                    var $form = $($input[0].form),
+                        $select = $('<select name="author" id="author"></select>').append($('<?php echo $option;?>')).insertAfter($input).select2({
                             ajax: {
                                 url: window.location.href + '&lp-ajax=search-authors',
                                 dataType: 'json',
@@ -635,8 +640,8 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	/**
-     * Get string for searching
-     *
+	 * Get string for searching
+	 *
 	 * @return string
 	 */
 	private function _get_search() {
@@ -801,7 +806,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 }
 
-class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type{
+class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
 	/**
 	 * Get string for searching
 	 *

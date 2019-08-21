@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
 Requires at least: 3.8
 Tested up to: 5.0.2
-Stable tag: 3.2.5.2
+Stable tag: 3.2.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -199,6 +199,49 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.2.6.3 =
+~ Fixed css conflict with text block of vc.
+~ Fixed show message 'Out of stock' for course reached limitation users.
+~ Fixed show checked answers when review quiz.
+~ Fixed review quiz option does not work properly.
+~ Fixed update view after removing order's items.
+
+= 3.2.6.2 =
+~ Fixed cannt add items to course.
+
+= 3.2.6 =
+~ Added option to exclude js/css libraries unnecessary (used in theme or other plugins).
+~ Added alt prop to user profile avatar.
+~ Fixed can't next/prev questions when doing quiz.
+~ Fixed wrong items navigation when learning course.
+~ Fixed missing js of some pages in admin.
+~ Fixed can't close admin notices.
+~ Updated envato api to newer version.
+
+= 3.2.5.6 =
+~ Added new strings for translating.
+~ Corrected currency of Rwandan franc.
+~ Fixed missing utils library when adding manually the orders.
+~ Fixed upgrade function that doesn't hide the message when it done.
+~ Fixed can't create new page in settings.
+
+= 3.2.5.5 =
+~ Fixed guest can not start quiz with no require enroll course option.
+~ Fixed sql to filter orders by user ID.
+~ Fixed issue of sending email when finished course: not correct Grade.
+~ Fixed can not see Actions buttons when adding questions into the quiz.
+~ Fixed changed the logic of Continue button for Course: continue with the next incomplete item.
+~ Fixed wrong code to pick up instructor email.
+
+= 3.2.5.4 =
+~ Fixed load js missing dependencies and only in LP page.
+
+= 3.2.5.3 =
+~ Changed SQL to read course items by user item ID.
+~ Improved performance in admin orders page.
+~ Upgraded Vue/Vuex to latest version.
+~ Added new theme to LP ad.
+
 = 3.2.5.2 =
 ~ Fixed bug can't access course after purchased.
 ~ Fixed bug user can't redo quiz with option 'Retake' is 1.

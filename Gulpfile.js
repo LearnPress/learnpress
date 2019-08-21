@@ -4,9 +4,6 @@
  * 1/ Run "npm install gulp -g" if you did not run it any time in the past.
  * 2/ Run "npm install gulp --save-dev" to install gulp in your project directory.
  * 3/ Run "npm install package-name[ package-name...] --save-dev
- *
- * EX: npm install gulp gulp-zip gulp-copy gulp-clean gulp-sass gulp-livereload gulp-sourcemaps read-file gulp-replace mkdirp gulp-concat gulp-uglify gulp-clean-css pump --save-dev
-
  */
 'use strict';
 const zip = require('gulp-zip');
@@ -21,6 +18,7 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     mkdirp = require("mkdirp"),
     concat = require('gulp-concat'),
+    args = require('yargs').argv,
     cleanCSS = require('gulp-clean-css');
 
 gulp.task('scss', function () {
@@ -35,10 +33,10 @@ gulp.task('scss', function () {
 gulp.task('watch', function () {
     liveReload.listen();
     gulp.watch(['assets/scss/**/*.scss'], ['scss']);
-    gulp.watch(['assets/js/admin/utils/*.js'], ['compress-js']);
+    //gulp.watch(['assets/js/admin/utils/*.js'], ['compress-js']);
 });
 
-gulp.task('default', ['scss', 'watch', 'compress-js']);
+gulp.task('default', gulp.series('scss', 'watch'));
 
 
 var uglify = require('gulp-uglify');
@@ -62,18 +60,43 @@ gulp.task('compress-css', function () {
  */
 var rootPath = '/Users/tu/Documents/foobla',
     svnPath = rootPath + '/svn/learnpress',
-    releasePath = rootPath + '/releases/learnpress',
+    releasePath = __dirname + '/releases/learnpress',
     svnTrunkPath = svnPath + '/trunk',
     svnTagsPath = svnPath + '/tags',
     currentVer = null,
     copySvnFiles = [
-        'assets/**/*',
+        'assets/css/**/*',
+        'assets/fonts/**/*',
+        'assets/images/**/*',
+        'assets/js/**/*',
+        'assets/**/*.php',
+        '!assets/src/**/*',
+        '!assets/scss/**/*',
+        '!assets/**/*.js.map',
+        '!assets/**/*.dev.js',
+        '!assets/**/*bak*',
         'dummy-data/**/*',
         'inc/**/*',
         'languages/**/*',
         'templates/**/*',
         'index.php',
         'learnpress.php'
+    ],
+    exclude = [
+        'assets/js/admin/admin.js',
+        'assets/js/admin/learnpress.js',
+        'assets/js/admin/utils.js',
+        'assets/js/admin/editor/course.js',
+        'assets/js/admin/editor/quiz.js',
+        'assets/js/admin/editor/question.js',
+        'assets/js/admin/conditional-logic.js',
+        'assets/js/admin/partial/meta-box-order.js',
+        'assets/js/admin/pages/statistic.js',
+        'assets/js/admin/pages/setup.js',
+        'assets/js/frontend/learnpress.js',
+        'assets/js/frontend/utils.js',
+        'assets/js/global.js',
+        'assets/js/utils.js',
     ],
     getCurrentVer = function (force) {
         if (currentVer === null || force === true) {
@@ -92,7 +115,7 @@ var rootPath = '/Users/tu/Documents/foobla',
     },
     removeConst = function (callback) {
         return gulp.src(['inc/lp-constants.php'])
-            .pipe(replace(/define\( 'LP_DEBUG_DEV'(.*)/g, ''))
+            .pipe(replace(/define\( 'LP_DEBUG'(.*)/g, ''))
             .pipe(gulp.dest(svnTrunkPath, {overwrite: true}))
             .on('end', function () {
                 callback ? callback() : 'do nothing';
@@ -107,71 +130,85 @@ gulp.task('clr-trunk', function () {
 });
 
 // Copy working dir to trunk
-gulp.task('copy-trunk', ['clr-trunk'], function () {
+gulp.task('copy-trunk', gulp.series('clr-trunk', function () {
     mkdirp(svnTrunkPath);
     return gulp.src(copySvnFiles).pipe(gulpCopy(svnTrunkPath));
-});
+}));
 
 // Copy trunk to current tag
-gulp.task('copy-tag', ['clr-tag'], function () {
+gulp.task('copy-tag', gulp.series('clr-tag', function () {
     var tagPath = svnTagsPath + '/' + getCurrentVer();
     mkdirp(tagPath);
     process.chdir(svnTrunkPath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');
     return gulp.src(copyFiles).pipe(gulpCopy(tagPath));
-});
+}));
 
 gulp.task('clr-release', function () {
-    return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
+    return gulp.src(releasePath + '/', {read: false, allowEmpty: true}).pipe(clean({force: true}));
 });
 
-gulp.task('copy-release', ['clr-release'], function () {
+gulp.task('copy-release', gulp.series('clr-release', function () {
     mkdirp(releasePath);
     process.chdir(svnTrunkPath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');
     return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
-});
+}));
 
-gulp.task('release', ['copy-release'], function () {
+gulp.task('release', gulp.series('copy-release', function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
     return gulp.src(zipPath + '/**/learnpress/**/*')
         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
         .pipe(gulp.dest(zipPath));
-});
+}));
 
 // main task
-gulp.task('svn', ['scss', 'copy-trunk'], function () {
+gulp.task('svn', gulp.series('scss', 'copy-trunk', function () {
     updateReadme(getCurrentVer(true), function () {
         return gulp.start('release', ['copy-tag']);
     })
-});
+}));
 
 // Create zipped version
 gulp.task('clr-zip', function () {
-    return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
+    return gulp.src(releasePath + '/', {read: false, allowEmpty: true}).pipe(clean({force: true}));
 });
 
-gulp.task('copy-zip', ['clr-zip'], function () {
+gulp.task('copy-zip', gulp.series('clr-zip', function () {
     mkdirp(releasePath);
     var copyFiles = copySvnFiles;
     copyFiles.push('readme.txt');
-    return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
-});
 
-gulp.task('mk-zip', ['copy-zip'], function () {
+    if (args.pro === 1) {
+        copyFiles = copyFiles.concat(exclude.map((file) => ['!', file].join('')))
+    }
+
+    return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
+}));
+
+/**
+ * Turn of debug and replace version x.x.x to current version
+ */
+gulp.task('replace', gulp.series('copy-zip', () => {
+    return gulp.src([releasePath + '/**/*.php', releasePath + '/**/*.js'])
+        .pipe(replace(/define\( 'LP_DEBUG', true \);/, 'define( \'LP_DEBUG\', false);'))
+        .pipe(replace(/([0-9]+)\.x\.x/g, getCurrentVer()))
+        .pipe(gulp.dest(releasePath, {overwrite: true}));
+}));
+
+gulp.task('mk-zip', gulp.series('replace', function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
+
     return gulp.src(zipPath + '/**/learnpress/**/*')
         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
         .pipe(gulp.dest(zipPath));
-});
+}));
 
-gulp.task('zip', ['mk-zip'], function () {
-
-});
+gulp.task('zip', gulp.series('mk-zip'));
 
 gulp.task('scss-popup', function () {
     return gulp.src(['assets/scss/frontend/_item-popup.scss'])
@@ -213,19 +250,19 @@ gulp.task('cfcss', function () {
         .pipe(gulp.dest('assets/css'))
 });
 
-gulp.task('mk-zip', ['copy-zip'], function () {
-    process.chdir(releasePath);
-    var zipPath = releasePath.replace(/learnpress/, '');
-    return gulp.src(zipPath + '/**/learnpress/**/*')
-        .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
-        .pipe(gulp.dest(zipPath));
-});
-
-gulp.task('zipx', ['mk-zip'], function () {
-    var zipPath = releasePath + '.' + currentVer + '.zip';
-    console.log(zipPath)
-    return gulp.src([zipPath])
-        .pipe(gulpCopy("/Users/tu/Documents/htdocs/"));
-})
+// gulp.task('mk-zip', ['copy-zip'], function () {
+//     process.chdir(releasePath);
+//     var zipPath = releasePath.replace(/learnpress/, '');
+//     return gulp.src(zipPath + '/**/learnpress/**/*')
+//         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
+//         .pipe(gulp.dest(zipPath));
+// });
+//
+// gulp.task('zipx', ['mk-zip'], function () {
+//     var zipPath = releasePath + '.' + currentVer + '.zip';
+//     console.log(zipPath)
+//     return gulp.src([zipPath])
+//         .pipe(gulpCopy("/Users/tu/Documents/htdocs/"));
+// })
 
 // end of the world!

@@ -16,9 +16,11 @@ learn_press_admin_view( 'quiz/question' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
-        Vue.component('lp-quiz-questions', {
+        $Vue.component('lp-quiz-questions', {
             template: '#tmpl-lp-quiz-questions',
             computed: {
                 // list quiz questions
@@ -55,5 +57,5 @@ learn_press_admin_view( 'quiz/question' );
             }
         });
 
-    })(Vue, LP_Quiz_Store, jQuery)
+    })
 </script>

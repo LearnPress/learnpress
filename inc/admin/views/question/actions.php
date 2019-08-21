@@ -31,9 +31,12 @@
 
 <script type="text/javascript">
 
-    (function (Vue, $store) {
+    jQuery(function ($) {
+        var $store = window.LP_Question_Store;
 
-        Vue.component('lp-question-actions', {
+        window.$Vue = window.$Vue || Vue;
+
+        $Vue.component('lp-question-actions', {
             template: '#tmpl-lp-question-actions',
             props: ['type'],
             computed: {
@@ -60,6 +63,6 @@
             }
         })
 
-    })(Vue, LP_Question_Store);
+    });
 
 </script>

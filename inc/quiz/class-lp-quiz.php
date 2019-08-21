@@ -335,8 +335,9 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				$questions = $this->get_questions();
 				$mark      = 0;
 				foreach ( $questions as $question_id ) {
-					$question = LP_Question::get_question( $question_id );
-					$mark     += $question->get_mark();
+					if ( $question = LP_Question::get_question( $question_id ) ) {
+						$mark += $question->get_mark();
+					}
 				}
 				$this->_set_data( 'mark', $mark );
 			}
@@ -582,11 +583,11 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 			if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->get_id() ) != 'draft' ) {
 				if ( get_post_type( $question_id ) === LP_QUESTION_CPT ) {
 					$question_name = get_post_field( 'post_name', $question_id );
-					preg_match('/\?/i', $permalink, $result);
-					if(empty($result)){
-						$permalink     = $permalink . $question_name;
+					preg_match( '/\?/i', $permalink, $result );
+					if ( empty( $result ) ) {
+						$permalink = $permalink . $question_name;
 					} else {
-						$permalink = preg_replace('/\?/i', '/'.$question_name.'/?', $permalink);
+						$permalink = preg_replace( '/\?/i', '/' . $question_name . '/?', $permalink );
 					}
 				}
 			} else {

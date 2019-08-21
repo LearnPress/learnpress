@@ -38,9 +38,12 @@ learn_press_admin_view( 'question/option' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    jQuery(function ( $) {
+        var $store = window.LP_Question_Store;
 
-        Vue.component('lp-question-answer', {
+        window.$Vue = window.$Vue || Vue;
+
+        $Vue.component('lp-question-answer', {
             template: '#tmpl-lp-question-answer',
             props: ['type', 'answers'],
             computed: {
@@ -136,6 +139,6 @@ learn_press_admin_view( 'question/option' );
                 }
             }
         })
-    })(Vue, LP_Question_Store, jQuery);
+    });
 
 </script>

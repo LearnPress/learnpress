@@ -82,9 +82,11 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store, $) {
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
-        Vue.component('lp-quiz-editor', {
+        $Vue.component('lp-quiz-editor', {
             template: '#tmpl-lp-quiz-editor',
             data: function () {
                 return {
@@ -180,5 +182,5 @@ learn_press_admin_view( 'quiz/modal-choose-items' );
             }
         })
 
-    })(Vue, LP_Quiz_Store, jQuery);
+    })
 </script>

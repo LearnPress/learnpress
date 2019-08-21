@@ -22,11 +22,11 @@
         <div class="item-actions">
             <div class="actions">
                 <div class="action preview-item lp-title-attr-tip"
-                     data-content-tip="<?php echo esc_attr( 'Turn on/off this item is preview', 'learnpress' ); ?>">
+                     data-content-tip="<?php esc_attr_e( 'Turn on/off this item is preview', 'learnpress' ); ?>">
                     <a class="lp-btn-icon dashicons" :class="previewClass" @click="togglePreview"></a>
                 </div>
                 <div class="action edit-item lp-title-attr-tip"
-                     data-content-tip="<?php echo esc_attr( 'Edit item', 'learnpress' ); ?>">
+                     data-content-tip="<?php esc_attr_e( 'Edit item', 'learnpress' ); ?>">
                     <a :href="url" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a>
                 </div>
                 <div class="action delete-item" v-if="!disableCurriculum">
@@ -47,11 +47,13 @@
 </script>
 
 <script type="text/javascript">
+    window.$Vue = window.$Vue || Vue;
+
     jQuery(function ($) {
 
-        (function (Vue, $store) {
+        (function ($store) {
 
-            Vue.component('lp-section-item', {
+            $Vue.component('lp-section-item', {
                 template: '#tmpl-lp-section-item',
                 props: ['item', 'order', 'disableCurriculum'],
                 data: function () {
@@ -68,7 +70,7 @@
                 mounted: function () {
                     this.$nextTick(function () {
                         var $ = jQuery;
-                        $(this.$el).find('.lp-title-attr-tip').QuickTip({
+                        $(this.$el).find('.lp-title-attr-tip').LP('QuickTip', {
                             closeInterval: 0,
                             arrowOffset: 'el',
                             tipClass: 'preview-item-tip'
@@ -142,6 +144,6 @@
                 }
             });
 
-        })(Vue, LP_Curriculum_Store);
+        })(LP_Curriculum_Store);
     })
 </script>

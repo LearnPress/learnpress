@@ -21,24 +21,249 @@ class LP_Admin_Notice {
 	protected static $_notices = array();
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @var LP_Admin_Notice
 	 */
 	protected static $instance = false;
 
 	/**
+	 * List of notices.
+	 *
+	 * @since 3.2.6
+	 *
+	 * @var array
+	 */
+	protected $notices = array();
+
+	/**
+	 * Option key for storing notices.
+	 *
+	 * @since 3.2.6
+	 *
+	 * @var string
+	 */
+	protected $option_id = 'lp_admin_notices';
+
+	/**
+	 * @var string
+	 */
+	protected $dismissed_option_id = 'lp_admin_dismissed_notices';
+
+	/**
 	 * LP_Admin_Notice construct
 	 */
 	protected function __construct() {
 		add_action( 'init', array( $this, 'dismiss_notice' ) );
-		add_action( 'admin_notices', array( __CLASS__, 'show_notices' ), 100000 );
+		add_action( 'init', array( $this, 'load' ) );
+		//add_action( 'admin_notices', array( __CLASS__, 'show_notices' ), 100000 );
+		add_action( 'admin_notices', array( $this, 'show_notices' ), 90 );
+		//LP_Request::register_ajax('dismiss-notice', array($this, 'dismiss_notice'));
+	}
+
+	public function load() {
+		if ( ! $notices = get_option( $this->option_id ) ) {
+			return false;
+		}
+
+		$this->notices = array_merge( $notices, $this->notices );
+
+		delete_option( $this->option_id );
+
+		return true;
+	}
+
+	/**
+	 * Add new notice to show in admin page.
+	 *
+	 * @since 3.2.6
+	 *
+	 * @param string|WP_Error $message
+	 * @param string          $type
+	 * @param bool            $dismissible
+	 * @param string          $id
+	 * @param bool            $redirect
+	 * @param bool            $override
+	 *
+	 * @return boolean
+	 */
+	public function add( $message, $type = 'success', $dismissible = true, $id = '', $redirect = false, $override = false ) {
+		if ( ! $id ) {
+			$id = uniqid();
+		}
+
+		if ( empty( $this->notices[ $id ] ) || $override ) {
+			$this->notices[ $id ] = array(
+				'message'     => $message,
+				'type'        => $type ? $type : 'success',
+				'redirect'    => $redirect,
+				'dismissible' => $dismissible
+			);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param string|WP_Error $message
+	 * @param string          $type
+	 * @param bool            $dismissible
+	 * @param string          $id
+	 * @param bool            $override
+	 *
+	 * @return bool
+	 */
+	public function add_redirect( $message, $type = 'success', $dismissible = false, $id = '', $override = false ) {
+		return $this->add( $message, $type, $dismissible, $id, true, $override );
+	}
+
+	/**
+	 * Show all notices.
+	 *
+	 * @return bool
+	 */
+	public function show_notices() {
+		if ( empty( $this->notices ) ) {
+			return false;
+		}
+
+		$redirect_notices = array();
+
+		foreach ( $this->notices as $id => $notice ) {
+			$notice['message'] = $notice['message'] instanceof WP_Error ? $notice['message']->get_error_message() : $notice['message'];
+
+			if ( $notice['redirect'] ) {
+				$notice['redirect']      = false;
+				$redirect_notices[ $id ] = $notice;
+			} else {
+
+				if ( ! $this->has_dismissed_notice( $id ) ) {
+					if ( preg_match( '/.php$/', $notice['message'] ) ) {
+						$view = $notice['message'];
+					} else {
+						$view = 'admin-notice.php';
+					}
+					learn_press_admin_view( $view, array_merge( $notice, array( 'id' => $id ) ) );
+				}
+			}
+		}
+
+		if ( $redirect_notices ) {
+			update_option( $this->option_id, $redirect_notices );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a notice is already added by id.
+	 *
+	 * @since 3.2.6
+	 *
+	 * @param string[] $notice
+	 *
+	 * @return bool
+	 */
+	public function has_notice( $notice ) {
+		settype( $notice, 'array' );
+
+		if ( ! $this->notices ) {
+			return false;
+		}
+
+		foreach ( $notice as $id ) {
+			if ( ! empty( $this->notices[ $id ] ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Remove one or more notices from queue by ids.
+	 *
+	 * @since 3.2.6
+	 *
+	 * @param string|array $notice
+	 *
+	 * @return array|bool
+	 */
+	public function remove( $notice ) {
+		settype( $notice, 'array' );
+
+		if ( ! $this->notices ) {
+			return false;
+		}
+
+		foreach ( $notice as $id ) {
+			if ( ! empty( $this->notices[ $id ] ) ) {
+				unset( $this->notices[ $id ] );
+			}
+		}
+
+		// Also remove in db
+		if ( $redirects = get_option( $this->option_id ) ) {
+			foreach ( $notice as $id ) {
+				if ( ! empty( $redirects[ $id ] ) ) {
+					unset( $redirects[ $id ] );
+				}
+			}
+
+			update_option( $this->option_id, $redirects );
+		}
+
+		return $this->notices;
+	}
+
+	/**
+	 * Clear all notices.
+	 *
+	 * @since 3.2.6
+	 */
+	public function clear() {
+		$this->notices = array();
+		delete_option( $this->option_id );
+	}
+
+	/**
+	 * @since 3.2.6
+	 */
+	public function dismiss_notice() {
+		if ( ! $id = LP_Request::get( 'lp-dismiss-notice' ) ) {
+			return;
+		}
+
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
+			$dismissed = array();
+		}
+
+		do_action( 'learn-press/before-dismiss-notice', $id );
+
+		if ( array_search( $id, $dismissed ) === false ) {
+			$dismissed[] = $id;
+			update_option( $this->dismissed_option_id, $dismissed );
+		}
+
+		do_action( 'learn-press/dismissed-notice', $id );
+
+		learn_press_send_json(
+			apply_filters(
+				'learn-press/dismissed-notice-response',
+				array(
+					'dismissed' => $id
+				),
+				$id
+			)
+		);
 	}
 
 	/**
 	 * Update option to turn-off a notice.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string $name
 	 * @param string $value
@@ -62,29 +287,72 @@ class LP_Admin_Notice {
 	/**
 	 * Check if a notice has dismissed.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string $name
 	 *
 	 * @return bool
 	 */
 	public function has_dismissed_notice( $name ) {
-		if ( $transient = get_transient( 'lp_dismiss_notice' . $name ) ) {
-			return $transient;
-		}
 
-		$values = get_option( 'lp_dismiss_notice' );
-		if ( ! $values ) {
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
 			return false;
 		}
 
-		return isset( $values[ $name ] ) ? $values[ $name ] : false;
+		return array_search( $name, $dismissed ) !== false;
+
+//		if ( $transient = get_transient( 'lp_dismiss_notice' . $name ) ) {
+//			return $transient;
+//		}
+//
+//		$values = get_option( 'lp_dismiss_notice' );
+//		if ( ! $values ) {
+//			return false;
+//		}
+//
+//		return isset( $values[ $name ] ) ? $values[ $name ] : false;
+	}
+
+	/**
+	 * Restore dismissed notices by id.
+	 *
+	 * @since 3.2.6
+	 *
+	 * @param string[] $notice
+	 *
+	 * @return bool
+	 */
+	public function restore_dismissed_notice( $notice ) {
+		if ( ! $dismissed = get_option( $this->dismissed_option_id ) ) {
+			return false;
+		}
+
+		settype( $notice, 'array' );
+
+		foreach ( $notice as $id ) {
+			if ( false !== ( $at = array_search( $id, $dismissed ) ) ) {
+				unset( $dismissed[ $at ] );
+			}
+		}
+
+		update_option( $this->dismissed_option_id, $dismissed );
+
+		return true;
+	}
+
+	/**
+	 * Clear all notices has dismissed.
+	 *
+	 * @since 3.2.6
+	 */
+	public function clear_dismissed_notice() {
+		delete_option( $this->dismissed_option_id );
 	}
 
 	/**
 	 * Remove a notice has been dismissed.
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @param string|array $name    - Optional. NULL will remove all notices.
 	 * @param bool         $expired - Optional. TRUE if dismiss notice as transient (in case $name passed).
@@ -134,7 +402,10 @@ class LP_Admin_Notice {
 		return false;
 	}
 
-	public function dismiss_notice() {
+	/**
+	 * @deprecated
+	 */
+	public function dismiss_notice_deprecated() {
 
 		$notice = learn_press_get_request( 'lp-hide-notice' );
 		if ( ! $notice ) {
@@ -155,12 +426,14 @@ class LP_Admin_Notice {
 	/**
 	 * Add new notice to queue
 	 *
+	 * @deprecated
+	 *
 	 * @param string $message The message want to display
 	 * @param string $type    The class name of WP message type updated|update-nag|error
 	 * @param string $id      Custom id for html element's ID
 	 * @param        bool
 	 */
-	public static function add( $message, $type = 'success', $id = '', $redirect = false ) {
+	public static function add_deprecated( $message, $type = 'success', $id = '', $redirect = false ) {
 		if ( $redirect ) {
 			$notices = get_transient( 'learn_press_redirect_notices' );
 			if ( empty( $notices ) ) {
@@ -181,14 +454,16 @@ class LP_Admin_Notice {
 		}
 	}
 
-	public static function add_redirect( $message, $type = 'updated', $id = '' ) {
+	public static function add_redirect_reprecated( $message, $type = 'updated', $id = '' ) {
 		self::add( $message, $type, $id, true );
 	}
 
 	/**
 	 * Show all notices has registered
+	 *
+	 * @deprecated
 	 */
-	public static function show_notices() {
+	public static function show_notices_deprecated() {
 		if ( self::$_notices ) {
 			foreach ( self::$_notices as $notice ) {
 				if ( empty( $notice ) ) {
@@ -211,7 +486,7 @@ class LP_Admin_Notice {
 	/**
 	 * Get single instance of this class
 	 *
-	 * @since 3.x.x
+	 * @since 3.2.6
 	 *
 	 * @return LP_Admin_Notice
 	 */

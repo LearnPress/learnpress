@@ -80,6 +80,26 @@
             clear: both;
             width: auto;
             padding: 8px 12px 0 12px;
+
+            .star-rating {
+                display: inline-block;
+                line-height: 14px;
+                vertical-align: middle;
+                .star {
+                    font-size: 14px;
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+
+            > div {
+                margin-bottom: 3px;
+                span {
+                    font-size: 12px;
+                    vertical-align: middle;
+                    color: #999;
+                }
+            }
         }
         &:nth-child(even) {
             .counter-inner {

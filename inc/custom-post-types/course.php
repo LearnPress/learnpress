@@ -108,7 +108,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'notice_sale_price'      => __( 'Course sale price must less than the regular price', 'learnpress' ),
 					'notice_price'           => __( 'Course price must greater than the sale price', 'learnpress' ),
 					'notice_sale_start_date' => __( 'Sale start date must before sale end date', 'learnpress' ),
-					'notice_sale_end_date'   => __( 'Sale end date must before sale start date', 'learnpress' ),
+					'notice_sale_end_date'   => __( 'Sale end date must after sale start date', 'learnpress' ),
 					'notice_invalid_date'    => __( 'Invalid date', 'learnpress' ),
 				),
 				'sections'    => array(
@@ -372,7 +372,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 			if ( self::$_enable_review ) {
 				if ( ! empty( $_POST ) && learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
-					LP_Admin_Notice::add_redirect( __( 'Sorry! You can not update a course while it is being viewed!', 'learnpress' ), 'error' );
+					LP_Admin_Notice::instance()->add_redirect( __( 'Sorry! You can not update a course while it is being viewed!', 'learnpress' ), 'error' );
 					wp_redirect( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) );
 					exit();
 				}
@@ -1230,6 +1230,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			} else if ( ( $sale_price == '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || ! $this->_validate_sale_price_date() ) {
 				$keys = array( '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
 			}
+
 			if ( $keys ) {
 				$format = array_fill( 0, sizeof( $keys ), '%s' );
 				$sql    = "
@@ -1245,6 +1246,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					unset( $_REQUEST[ $key ] );
 					unset( $_POST[ $key ] );
 				}
+
 			}
 
 			if ( $price ) {
@@ -1266,7 +1268,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$end              = strtotime( $sale_price_end );
 			$start            = strtotime( $sale_price_start );
 
-			return ( ( $now >= $start || ! $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
+			return ( ( $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
 		}
 
 		/**

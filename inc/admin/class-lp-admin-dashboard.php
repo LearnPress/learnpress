@@ -31,25 +31,28 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * Order status widget
 		 */
 		public function order_statuses() {
-			$order_statuses    = learn_press_get_order_statuses( true, true );
-			$eduma_data        = $this->_get_theme_info( 14058034 );
-			$specific_statuses = array( 'lp-completed', 'lp-failed', 'lp-on-hold' );
 
-			foreach ( $order_statuses as $status ) {
-				if ( ! in_array( $status, $specific_statuses ) ) {
-					$specific_statuses[] = $status;
-				}
-			}
-
-			$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
 			?>
+
             <ul class="lp-order-statuses">
                 <li class="count-number total-raised">
                     <strong><?php echo $this->_get_order_total_raised(); ?></strong>
                     <p><?php _e( 'Total Raised', 'learnpress' ); ?></p>
                 </li>
-				<?php foreach ( $specific_statuses as $status ) : ?>
-					<?php
+				<?php
+
+				$order_statuses    = learn_press_get_order_statuses( true, true );
+				$specific_statuses = array( 'lp-completed', 'lp-failed'/*, 'lp-on-hold'*/ );
+
+				foreach ( $order_statuses as $status ) {
+					if ( ! in_array( $status, $specific_statuses ) ) {
+						$specific_statuses[] = $status;
+					}
+				}
+
+				$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
+
+				foreach ( $specific_statuses as $status ) :
 					$status_object = get_post_status_object( $status );
 					if ( ! $status_object ) {
 						continue;
@@ -72,19 +75,38 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
                         </div>
                     </li>
 				<?php endforeach; ?>
-                <li class="clear"></li>
-                <li class="featured-theme">
-                    <p>
-                        <a href="<?php echo esc_url( $eduma_data['item']['url'] ) ?>">
-							<?php echo esc_html( $eduma_data['item']['item'] ) ?>
-                        </a> - <?php printf( '%s%s', '$', $eduma_data['item']['cost'] ) ?>
-                    </p>
-                    <p>
-						<?php _e( 'Created by: ', 'learnpress' ) ?>
-                        <a href="https://thimpress.com/"
-                           class="author"><?php echo esc_html( $eduma_data['item']['user'] ); ?></a>
-                    </p>
-                </li>
+				<?php
+				$eduma_data = $this->_get_theme_info( 14058034 );
+
+				if ( ! empty( $eduma_data ) ) {
+					?>
+                    <li class="clear"></li>
+                    <li class="featured-theme">
+                        <p>
+                            <a href="<?php echo esc_url( $eduma_data['url'] ) ?>">
+								<?php echo esc_html( $eduma_data['name'] ) ?>
+                            </a> - <?php printf( '%s%s', '$', $eduma_data['price_cents'] / 100 ); ?>
+                        </p>
+                        <div>
+
+							<?php wp_star_rating( array(
+								'rating' => $eduma_data['rating']['rating'],
+								'type'   => 'rating',
+								'number' => $eduma_data['rating']['count']
+							) ); ?>
+                            <span class="count-rating">(<?php echo $eduma_data['rating']['count']; ?>)</span>
+                            <span>
+                                - <?php echo $eduma_data['number_of_sales'] . __( ' sales', 'learnpress' ); ?>
+                            </span>
+                        </div>
+                        <p>
+							<?php _e( 'Created by: ', 'learnpress' ) ?>
+                            <a href="https://thimpress.com/"
+                               class="author"><?php echo esc_html( $eduma_data['author_username'] ); ?></a>
+                        </p>
+                    </li>
+
+				<?php } ?>
             </ul>
 			<?php
 		}
@@ -114,50 +136,19 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 */
 		private function _get_theme_info( $item_id ) {
 
-			/* Data cache timeout in seconds - It send a new request each hour instead of each page refresh */
-			$CACHE_EXPIRATION = 3600;
+			$alls = LP_Plugins_Helper::get_related_themes();
 
-			/* Set the transient ID for caching */
-			$transient_id = sprintf( 'lp_envato_item_data_%s', $item_id );
-
-			/* Get the cached data */
-			$cached_item = get_transient( $transient_id );
-
-			/* Check if the function has to send a new API request */
-			if ( ! $cached_item || ( $cached_item->item_id != $item_id ) ) {
-
-				/* Set the API URL, %s will be replaced with the item ID  */
-				$api_url = "http://marketplace.envato.com/api/edge/item:%s.json";
-
-				/* Fetch data using the WordPress function wp_remote_get() */
-				$response = wp_safe_remote_get( sprintf( $api_url, $item_id ) );
-
-				/* Check for errors, if there are some errors return false */
-				if ( is_wp_error( $response ) or ( wp_remote_retrieve_response_code( $response ) != 200 ) ) {
-					return false;
-				}
-
-				/* Transform the JSON string into a PHP array */
-				$item_data = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				/* Check for incorrect data */
-				if ( ! is_array( $item_data ) ) {
-					return false;
-				}
-
-				/* Prepare data for caching */
-				$cached_item            = new stdClass();
-				$cached_item->item_id   = $item_id;
-				$cached_item->item_info = $item_data;
-
-				/* Set the transient - cache item data */
-				set_transient( $transient_id, $cached_item, $CACHE_EXPIRATION );
-
+			if ( ! $alls ) {
+				return false;
 			}
 
-			/* If the item is already cached return the cached info */
+			foreach ( $alls as $k => $types ) {
+				if ( isset( $types[ $item_id ] ) ) {
+					return $types[ $item_id ];
+				}
+			}
 
-			return $cached_item->item_info;
+			return false;
 		}
 
 		/**
@@ -179,7 +170,9 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 						'active_installs'   => true,
 						'short_description' => true,
 						'description'       => true,
-						'ratings'           => true
+						'ratings'           => true,
+						// Need pass this fields because WP may be changed it default from true to false
+						'downloaded'        => true
 					)
 				) );
 				set_transient( 'lp_plugin_status', $api, 12 * HOUR_IN_SECONDS );

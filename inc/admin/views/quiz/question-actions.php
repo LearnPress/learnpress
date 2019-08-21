@@ -58,9 +58,11 @@
 </script>
 
 <script type="text/javascript">
-    (function (Vue, $store) {
+    jQuery(function ($) {
+        var $Vue = window.$Vue || Vue;
+        var $store = window.LP_Quiz_Store;
 
-        Vue.component('lp-quiz-question-actions', {
+        $Vue.component('lp-quiz-question-actions', {
             template: '#tmpl-lp-quiz-question-actions',
             props: ['question', 'index'],
             data: function () {
@@ -73,7 +75,7 @@
             mounted: function () {
                 this.$nextTick(function () {
                     var $ = jQuery;
-                    $(this.$el).find('.lp-title-attr-tip').QuickTip({
+                    $(this.$el).find('.lp-title-attr-tip').LP('QuickTip',{
                         closeInterval: 0,
                         arrowOffset: 'el',
                         tipClass: 'preview-item-tip'
@@ -160,5 +162,5 @@
             }
         });
 
-    })(Vue, LP_Quiz_Store);
+    })
 </script>

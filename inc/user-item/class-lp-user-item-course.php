@@ -92,12 +92,14 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 
 		if ( $user_course_items ) {
+			$tmp = array();
 			// Convert keys of array from numeric to keys is item id
-			foreach ( array_keys( $user_course_items ) as $key ) {
-				$user_course_item                                = $user_course_items[ $key ];
-				$user_course_items[ $user_course_item->item_id ] = $user_course_item;
-				unset( $user_course_items[ $key ] );
+			foreach ( $user_course_items as $user_course_item ) {
+				$tmp[ $user_course_item->item_id ] = $user_course_item;
 			}
+
+			$user_course_items = $tmp;
+			unset( $tmp );
 		} else {
 			$user_course_items = array();
 		}
@@ -126,6 +128,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			}
 		}
 		LP_Object_Cache::set( $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
+
 
 		return $items;
 	}
@@ -608,9 +611,9 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get completed items.
 	 *
-	 * @param string $type - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
-	 * @param bool $with_total - Optional. Include total if TRUE
-	 * @param int $section_id - Optional. Get in specific section
+	 * @param string $type       - Optional. Filter by type (such lp_quiz, lp_lesson) if passed
+	 * @param bool   $with_total - Optional. Include total if TRUE
+	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return array|bool|mixed
 	 */
@@ -672,8 +675,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get items completed by percentage.
 	 *
-	 * @param string $type - Optional. Filter by type or not
-	 * @param int $section_id - Optional. Get in specific section
+	 * @param string $type       - Optional. Filter by type or not
+	 * @param int    $section_id - Optional. Get in specific section
 	 *
 	 * @return float|int
 	 */
@@ -838,8 +841,12 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * @return LP_User_Item_Course
 	 */
 	public function get_item_at( $at = 0 ) {
-		$this->read_items();
+		$items   = $this->read_items();
 		$item_id = ! empty( $this->_items_by_order[ $at ] ) ? $this->_items_by_order[ $at ] : 0;
+		if ( ! $item_id && $items ) {
+			$items   = array_values( $items );
+			$item_id = $items[ $at ]->get_id();
+		}
 
 		return $this->offsetGet( $item_id );
 	}
@@ -948,7 +955,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	 * Add new item
 	 *
 	 * @param int|array $item_id
-	 * @param int $user_id
+	 * @param int       $user_id
 	 *
 	 * @return bool
 	 */

@@ -63,10 +63,13 @@ $localize = array(
 );
 ?>
 <script>
+    window.$Vue = window.$Vue || Vue;
+
     jQuery(function ($) {
+
         var js_localize = <?php echo wp_json_encode( $localize );?>
 
-            new Vue({
+            new $Vue({
                 el: '#learn-press-reset-course-users',
                 data: {
                     s: '',

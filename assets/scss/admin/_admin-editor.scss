@@ -836,6 +836,8 @@
             .list-items {
                 min-height: 260px;
                 margin: 0;
+                max-height: 460px;
+                overflow-y: auto;
                 li {
                     margin: 15px 0;
                     cursor: pointer;

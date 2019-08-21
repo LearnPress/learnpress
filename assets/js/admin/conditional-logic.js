@@ -1,3 +1,86 @@
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/admin/utils/conditional-logic.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./assets/src/js/admin/utils/conditional-logic.js":
+/*!********************************************************!*\
+  !*** ./assets/src/js/admin/utils/conditional-logic.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 /**
  * Conditional Logic for metabox fields
  *
@@ -8,9 +91,9 @@
 ;(function ($) {
     window.conditional_logic_gray_state = function (state, field) {
         if (state) {
-            $(this).removeClass('disabled')
+            $(this).removeClass('disabled');
         } else {
-            $(this).addClass('disabled')
+            $(this).addClass('disabled');
         }
     };
     var Conditional_Logic = window.Conditional_Logic = function (options) {
@@ -19,7 +102,7 @@
     };
 
     Conditional_Logic.prototype = $.extend(Conditional_Logic.prototype, {
-        evaluate: function (changedId, conditionals) {
+        evaluate: function evaluate(changedId, conditionals) {
             if (!conditionals) {
                 return undefined;
             }
@@ -43,7 +126,7 @@
             }
             return show;
         },
-        evaluateRequirement: function (requirement) {
+        evaluateRequirement: function evaluateRequirement(requirement) {
             if (!requirement) {
                 return undefined;
             }
@@ -80,42 +163,42 @@
             }
         },
 
-        compare: function (value2, value1, operator) {
+        compare: function compare(value2, value1, operator) {
             var show = undefined;
             switch (operator) {
                 case '===':
-                    show = (value1 === value2);
+                    show = value1 === value2;
                     break;
                 case '==':
                 case '=':
                 case 'equals':
                 case 'equal':
-                    show = (value1 === value2);
+                    show = value1 === value2;
                     break;
                 case '!==':
-                    show = (value1 !== value2);
+                    show = value1 !== value2;
                     break;
                 case '!=':
                 case 'not equal':
-                    show = (value1 !== value2);
+                    show = value1 !== value2;
                     break;
                 case '>=':
                 case 'greater or equal':
                 case 'equal or greater':
-                    show = (value1 >= value2);
+                    show = value1 >= value2;
                     break;
                 case '<=':
                 case 'smaller or equal':
                 case 'equal or smaller':
-                    show = (value1 <= value2);
+                    show = value1 <= value2;
                     break;
                 case '>':
                 case 'greater':
-                    show = (value1 > value2);
+                    show = value1 > value2;
                     break;
                 case '<':
                 case 'smaller':
-                    show = (value1 < value2);
+                    show = value1 < value2;
                     break;
                 case 'contains':
                 case 'in':
@@ -138,14 +221,14 @@
                     }
                     break;
                 default:
-                    show = (value1 === value2);
+                    show = value1 === value2;
             }
             if (show !== undefined) {
                 return show;
             }
             return true;
         },
-        hasConditional: function (source, target) {
+        hasConditional: function hasConditional(source, target) {
             if (!this.options.conditionals) {
                 return;
             }
@@ -159,7 +242,7 @@
             }
             return false;
         },
-        update: function (changedField, $fields) {
+        update: function update(changedField, $fields) {
             var $changedField = $(changedField),
                 id = this.getFieldName($changedField);
             $fields = $fields || $('.rwmb-field');
@@ -182,14 +265,14 @@
                         show = !show;
                     }
                     if ($.isFunction(window[conditional.state_callback])) {
-                        window[conditional.state_callback].call(thisField, show, thisField)
+                        window[conditional.state_callback].call(thisField, show, thisField);
                     } else {
                         thisField.toggle(show);
                     }
                 }
             }, this);
         },
-        updateAll: function () {
+        updateAll: function updateAll() {
             var $fields = $('.rwmb-field'),
                 that = this;
             _.forEach($fields, function (field) {
@@ -209,7 +292,7 @@
                 }).trigger('change');
             }, this);
         },
-        getFieldType: function (field) {
+        getFieldType: function getFieldType(field) {
             var $field = $(field);
             if ($field.length === 0) {
                 return false;
@@ -221,12 +304,19 @@
             }
             return false;
         },
-        getFieldName: function (field) {
+        getFieldName: function getFieldName(field) {
             return $(field).find('.rwmb-field-name').val();
         },
         supportFields: ['yes-no', 'text', 'number', 'radio']
     });
     $(document).ready(function () {
-        new Conditional_Logic({conditionals: lp_conditional_logic});
-    })
+        if (window.lp_conditional_logic !== undefined) {
+            new Conditional_Logic({ conditionals: lp_conditional_logic });
+        }
+    });
 })(jQuery);
+
+/***/ })
+
+/******/ });
+//# sourceMappingURL=conditional-logic.js.map

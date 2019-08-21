@@ -19,6 +19,20 @@ defined( 'ABSPATH' ) or die();
     (function (win, doc) {
         var t = null;
 
+        function parseJSON(data) {
+            var m = (data + '').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
+            try {
+                if (m) {
+                    data = $.parseJSON(m[1]);
+                } else {
+                    data = $.parseJSON(data);
+                }
+            } catch (e) {
+                data = {};
+            }
+            return data;
+        }
+
         function sendRequest() {
             t = setTimeout(function () {
                 var $ = jQuery;
@@ -28,7 +42,7 @@ defined( 'ABSPATH' ) or die();
                         'lp-ajax': 'check-updated'
                     },
                     success: function (response) {
-                        response = LP.parseJSON(response);
+                        response = parseJSON(response);
                         if (response.result === 'success') {
                             clearInterval(t);
                             $('.lp-notice-update-database.do-updating').replaceWith($(response.message));
