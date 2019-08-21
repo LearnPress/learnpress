@@ -1531,6 +1531,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 							$can = $count;
 						}
 
+						$can = max( $can, 0 );
+
 						$can = absint( $can );
 					}
 				}
