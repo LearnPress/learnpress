@@ -544,6 +544,8 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 
 /**
  * Cache static pages
+ *
+ * @deprecated
  */
 function learn_press_setup_pages() {
 	global $wpdb;
@@ -554,7 +556,7 @@ function learn_press_setup_pages() {
 
 		foreach ( $pages as $page ) {
 			$id = get_option( 'learn_press_' . $page . '_page_id' );
-			if ( $id ) {
+			if ( absint( $id ) > 0 ) {
 				$page_ids[] = $id;
 			}
 		}
@@ -582,10 +584,6 @@ function learn_press_setup_pages() {
 		//LP_Object_Cache::set( 'static-page-ids', $page_ids, 'learn-press' );
 	}
 }
-
-add_action( 'init', 'learn_press_setup_pages' );
-
-//add_action( 'init', 'learn_press_setup_pages' );
 
 function learn_press_get_course_item_object( $post_type ) {
 	switch ( $post_type ) {
