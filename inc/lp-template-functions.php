@@ -3756,7 +3756,7 @@ add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_templa
 
 function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
     if ( $template_name == 'global/block-content.php' ) {
-		$can_view_item = false;
+	    $can_view_item = false;
 		if ( ! is_user_logged_in() ) {
 			$can_view_item = 'not-logged-in';
 		} elseif ( ! learn_press_current_user_enrolled_course() ) {
