@@ -2,7 +2,9 @@
   "name": "learnpress/learnpress",
   "type": "wordpress lms",
   "license": "GPL",
-  "require": {},
+  "require": {
+    "squizlabs/php_codesniffer": "2.*"
+  },
   "require-dev": {
     "sstalle/php7cc": "^1.1",
     "squizlabs/php_codesniffer": "^2.0",

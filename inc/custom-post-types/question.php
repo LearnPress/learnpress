@@ -262,12 +262,13 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				foreach ( $answers as $index => $answer ) {
 					$insert = array(
 						'question_id'  => $question_id,
-						'answer_data'  => serialize( array(
-								'text'    => stripslashes( $answer['text'] ),
-								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-								'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
-							)
-						),
+						/* @since 4.0 */
+						//'answer_data'  => serialize( array(
+						'answer_title' => stripslashes( $answer['text'] ),
+						'answer_value' => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+						'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+						//	)
+						//),
 						'answer_order' => $index + 1
 					);
 					$curd->add_answer( $question_type, $insert );
@@ -333,12 +334,12 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				'author' => __( 'Author', 'learnpress' ),
+				'author'    => __( 'Author', 'learnpress' ),
 				LP_QUIZ_CPT => __( 'Quiz', 'learnpress' ),
 				'type'      => __( 'Type', 'learnpress' )
 			);
 
-			if ( false !== $pos && !array_key_exists( LP_QUIZ_CPT, $columns ) ) {
+			if ( false !== $pos && ! array_key_exists( LP_QUIZ_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					$new_columns,
@@ -473,8 +474,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['author'] = 'author';
-			$columns[LP_QUIZ_CPT] = 'quiz-name';
+			$columns['author']      = 'author';
+			$columns[ LP_QUIZ_CPT ] = 'quiz-name';
+
 			return $columns;
 		}
 

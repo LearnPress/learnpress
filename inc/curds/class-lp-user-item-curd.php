@@ -143,12 +143,13 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$answer_options[ $v->question_id ] = array();
 				}
 				$v = (array) $v;
-				if ( $answer_data = LP_Helper::maybe_unserialize( $v['answer_data'] ) ) {
-					foreach ( $answer_data as $kk => $vv ) {
-						$v[ $kk ] = $vv;
-					}
-				}
-				unset( $v['answer_data'] );
+				// 4.0
+//				if ( $answer_data = LP_Helper::maybe_unserialize( $v['answer_data'] ) ) {
+//					foreach ( $answer_data as $kk => $vv ) {
+//						$v[ $kk ] = $vv;
+//					}
+//				}
+//				unset( $v['answer_data'] );
 
 
 				$answer_options[ $v['question_id'] ][] = $v;

@@ -581,8 +581,14 @@ class LP_Install_Sample_Data {
 		$answers = $this->get_answers( $type );
 		foreach ( $answers as $answer ) {
 			$data = array(
-				'question_id' => $question_id,
-				'answer_data' => maybe_serialize( $answer )
+				'question_id'  => $question_id,
+				/**
+				 * @since 4.0
+				 */
+				'answer_title' => $answer['text'],
+				'answer_value' => $answer['value'],
+				'is_true'      => $answer['is_true']
+				//'answer_data' => maybe_serialize( $answer )
 			);
 
 			$wpdb->insert(

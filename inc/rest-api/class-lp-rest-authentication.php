@@ -19,6 +19,8 @@ class LP_REST_Authentication {
 
 	public function __construct() {
 		add_action( 'rest_authentication_errors', array( $this, 'rest_cookie_check_errors' ), 0 );
+		//add_filter( 'determine_current_user', array( $this, 'authenticate' ), 15 );
+		//add_filter( 'rest_pre_dispatch', array( $this, 'check_user_permissions' ), 10, 3 );
 	}
 
 	/**
@@ -37,6 +39,90 @@ class LP_REST_Authentication {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Check if request is rest api.
+	 *
+	 * @return bool
+	 */
+	public function is_rest_api_request() {
+		if ( empty( $_SERVER['REQUEST_URI'] ) ) {
+			return false;
+		}
+
+		$rest_prefix = trailingslashit( rest_get_url_prefix() );
+		$request_uri = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+
+		return apply_filters( 'learn-press/is-rest-api-request', false !== strpos( $request_uri, $rest_prefix . 'lp/' ) );
+	}
+
+	/**
+	 * @param int $user_id
+	 *
+	 * @return int
+	 */
+	public function authenticate( $user_id ) {
+		if ( $user_id || ! $this->is_rest_api_request() ) {
+			return $user_id;
+		}
+
+		if ( is_ssl() ) {
+			$user_id = $this->perform_basic_authentication();
+		}
+
+		if ( $user_id ) {
+			return $user_id;
+		}
+
+		return $this->perform_oauth_authentication();
+	}
+
+	public function perform_basic_authentication(){
+		return 2;
+	}
+
+	public function perform_oauth_authentication(){
+
+		return 2;
+
+		$params = $this->get_oauth_parameters();
+		if ( empty( $params ) ) {
+			return false;
+		}
+
+		//var_dump(__FILE__, $params);
+		// Fetch WP user by consumer key.
+		$this->user = $this->get_user_data_by_consumer_key( $params['oauth_consumer_key'] );
+
+		if ( empty( $this->user ) ) {
+			$this->set_error( new WP_Error( 'woocommerce_rest_authentication_error', __( 'Consumer key is invalid.', 'woocommerce' ), array( 'status' => 401 ) ) );
+
+			return false;
+		}
+
+		// Perform OAuth validation.
+		$signature = $this->check_oauth_signature( $this->user, $params );
+		if ( is_wp_error( $signature ) ) {
+			$this->set_error( $signature );
+			return false;
+		}
+
+		$timestamp_and_nonce = $this->check_oauth_timestamp_and_nonce( $this->user, $params['oauth_timestamp'], $params['oauth_nonce'] );
+		if ( is_wp_error( $timestamp_and_nonce ) ) {
+			$this->set_error( $timestamp_and_nonce );
+			return false;
+		}
+
+		return $this->user->user_id;
+	}
+
+	public function get_user_by_consumer_key(){
+
+	}
+
+	public function check_user_permissions() {
+
 	}
 
 	/**

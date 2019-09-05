@@ -25,8 +25,9 @@ class LP_Schedules {
 		}
 		add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
 
-		if (! wp_next_scheduled ( 'my_hourly_event' )) {
-			wp_schedule_event( time(), 'lp_cron_schedule', 'learn_press_schedule_');
+		$args = array( false );
+		if ( ! wp_next_scheduled( 'learn_press_schedule_', $args ) ) {
+			wp_schedule_event( time(), 'lp_cron_schedule', 'learn_press_schedule_', $args );
 		}
 
 		//add_action( 'plugins_loaded', array( $this, 'run' ) );
@@ -65,7 +66,7 @@ class LP_Schedules {
 	public function run() {
 
 		// Stop
-		if ( 'yes' !== get_option( '_lp_schedule_enable' )) {
+		if ( 'yes' !== get_option( '_lp_schedule_enable' ) ) {
 			return;
 		}
 

@@ -1575,7 +1575,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				if ( $quiz = learn_press_get_quiz( $quiz_id ) ) {
 					$count = $quiz->get_retake_count();
 					if ( $count > 0 ) {
-						$count++;
+						$count ++;
 						// Number of taken
 						$taken = $this->count_retaken_quiz( $quiz_id, $course_id );
 						if ( $taken ) {
@@ -2042,7 +2042,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data = $this->get_course_data( $course_id );
 
 				if ( ! $course_data || ! $course_data->get_user_item_id() ) {
-					throw new Exception( __( 'You have to enroll course to complete lesson.', 'learnpress', LP_COMPLETE_ITEM_FAIL ) );
+					throw new Exception( __( 'You have to enroll course to complete lesson.', 'learnpress' ), LP_COMPLETE_ITEM_FAIL );
 				}
 
 				$result = false;
@@ -2174,7 +2174,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_course_access_level( $course_id ) {
 
 			$access_level = LP_Object_Cache::get( 'course-' . $course_id . '-' . $this->get_id(), 'learn-press/course-access-levels' );
-			if ( false === $access_level) {
+			if ( false === $access_level ) {
 
 				$course = learn_press_get_course( $course_id );
 
@@ -2329,8 +2329,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function has_purchased_course( $course_id ) {
 
-			$order = $this->get_course_order($course_id, 'id', true );
-			$purchased = !empty($order);
+			$order     = $this->get_course_order( $course_id, 'id', true );
+			$purchased = ! empty( $order );
 			$purchased = apply_filters( 'learn-press/user-purchased-course', $purchased, $course_id, $this->get_id() );
 			// @deprecated
 			$purchased = apply_filters( 'learn_press_user_has_purchased_course', $purchased, $course_id, $this->get_id() );
@@ -2450,14 +2450,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return int|LP_Order|mixed
 		 */
 
-		public function get_course_order( $course_id, $return = 'object', $completed= false ) {
-			$orders   = $this->get_orders(!$completed);
+		public function get_course_order( $course_id, $return = 'object', $completed = false ) {
+			$orders   = $this->get_orders( ! $completed );
 			$order_id = false;
-			if( isset( $orders[ $course_id ] ) ){
-				if( $completed ) {
+			if ( isset( $orders[ $course_id ] ) ) {
+				if ( $completed ) {
 					$order_ids = $orders[ $course_id ];
 					foreach ( $order_ids as $oid ) {
-						if('lp-completed' ==  get_post_status($oid)){
+						if ( 'lp-completed' == get_post_status( $oid ) ) {
 							$order_id = $oid;
 							break;
 						}
@@ -2466,6 +2466,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$order_id = ! empty( $orders[ $course_id ] ) ? $orders[ $course_id ] : false;
 				}
 			}
+
 			return $order_id ? ( $return === 'object' ? learn_press_get_order( $order_id ) : $order_id ) : false;
 		}
 
