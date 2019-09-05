@@ -2,9 +2,12 @@
 /**
  * Define common constants used by LearnPress
  */
-$upload_dir = wp_upload_dir();
+include_once ABSPATH . 'wp-admin/includes/plugin.php';
+$upload_dir  = wp_upload_dir();
+$plugin_info = get_plugin_data( LP_PLUGIN_FILE );
+
 // version
-define( 'LEARNPRESS_VERSION', '3.2.6.3' );
+define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
 
 define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 

@@ -64,6 +64,10 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 			$question = LP_Question::get_question( $question );
 		}
 
+		if ( ! $question ) {
+			return array();
+		}
+
 		// question id
 		$question_id = $question->get_id();
 
