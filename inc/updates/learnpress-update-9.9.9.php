@@ -14,7 +14,13 @@ class LP_Update_999 extends LP_Update_Base {
 
 	public function __construct() {
 		$this->version = '9.9.9';
-		$this->steps   = array( 'alter_datetime_default_value', 'add_columns', 'update_expiration_time' );
+		$this->steps   = array(
+			'alter_datetime_default_value',
+			'add_columns',
+			'update_expiration_time',
+			'update_time_field_from_time_gmt',
+			'remove_time_gmt'
+		);
 
 		parent::__construct();
 	}
@@ -94,21 +100,49 @@ class LP_Update_999 extends LP_Update_Base {
 			if ( $course_items = $wpdb->get_results( $query ) ) {
 
 				foreach ( $course_items as $course_item ) {
-					$date                = new LP_Datetime( $course_item->start_time );
-					$expiration_time     = $date->getPeriod( $course->duration );
+					$date            = new LP_Datetime( $course_item->start_time );
+					$expiration_time = $date->getPeriod( $course->duration );
 					//$expiration_time_gmt = $date->toSql( false );
 
 					$query = $wpdb->prepare( "
 						UPDATE {$wpdb->learnpress_user_items}
 						SET expiration_time = %s ##, expiration_time_gmt = %s
 						WHERE item_id = %d
-					", $expiration_time, /*$expiration_time_gmt,*/ $course->ID );
+					", $expiration_time, /*$expiration_time_gmt,*/
+						$course->ID );
 
-					$wpdb->query($query);
+					$wpdb->query( $query );
 
 				}
 			}
 		}
+
+		return true;
+	}
+
+	public function update_time_field_from_time_gmt() {
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
+			UPDATE {$wpdb->learnpress_user_items} 
+			SET 
+				`start_time` = `start_time_gmt`,
+				`end_time` = `end_time_gmt`
+		" );
+
+		$wpdb->query( $query );
+
+		return true;
+	}
+
+	public function remove_time_gmt() {
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
+			ALTER TABLE {$wpdb->learnpress_user_items}  DROP `start_time_gmt`, `end_time_gmt`
+		" );
+
+		$wpdb->query( $query );
 
 		return true;
 	}
