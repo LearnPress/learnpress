@@ -128,7 +128,8 @@ class LP_Update_999 extends LP_Update_Base {
 			SET 
 				`start_time` = `start_time_gmt`,
 				`end_time` = `end_time_gmt`
-		" );
+			WHERE %d
+		", 1 );
 
 		$wpdb->query( $query );
 
@@ -138,11 +139,7 @@ class LP_Update_999 extends LP_Update_Base {
 	public function remove_time_gmt() {
 		global $wpdb;
 
-		$query = $wpdb->prepare( "
-			ALTER TABLE {$wpdb->learnpress_user_items}  DROP `start_time_gmt`, `end_time_gmt`
-		" );
-
-		$wpdb->query( $query );
+		$wpdb->query( "ALTER TABLE {$wpdb->learnpress_user_items} DROP `start_time_gmt`, `end_time_gmt`" );
 
 		return true;
 	}

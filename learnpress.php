@@ -439,7 +439,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_activate() {
 			do_action( 'learn-press/activate', $this );
-			//$this->add_cron();
 		}
 
 		/**
