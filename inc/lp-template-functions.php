@@ -1918,8 +1918,17 @@ if ( ! function_exists( 'learn_press_single_quiz_title' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_course_loop_item_buttons' ) ) {
+	/**
+	 * @deprecated
+	 *
+	 * @since 4.x.x
+	 *
+	 * @return bool
+	 */
 	function learn_press_course_loop_item_buttons() {
-		learn_press_get_template( 'single-course/buttons.php' );
+
+		return false;
+		//learn_press_get_template( 'single-course/buttons.php' );
 	}
 }
 
@@ -2139,7 +2148,6 @@ function learn_press_setup_object_data( $post ) {
 		$object->prepare();
 		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
 	}
-
 
 	return $object;
 }
@@ -3761,7 +3769,7 @@ function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id
 add_filter( 'learn_press_get_template', 'learn_press_filter_block_content_template', 10, 5 );
 
 function learn_press_filter_block_content_template( $located, $template_name, $args, $template_path, $default_path ) {
-    if ( $template_name == 'global/block-content.php' ) {
+	if ( $template_name == 'global/block-content.php' ) {
 		$can_view_item = false;
 		if ( ! is_user_logged_in() ) {
 			$can_view_item = 'not-logged-in';
@@ -3833,7 +3841,7 @@ add_filter( 'learn-press/course-item-content-html', function ( $html, $item_id, 
 				$html = __( 'Course duration is expired or you finished course. Please contact admin site.', 'learnpress' );
 			}
 
-			var_dump($course_data->is_exceeded() , $user->has_finished_course( $course_id ) );
+			var_dump( $course_data->is_exceeded(), $user->has_finished_course( $course_id ) );
 		default:
 
 	}
@@ -3859,3 +3867,29 @@ function learn_press_define_debug_mode() {
 
 add_action( 'admin_print_scripts', 'learn_press_define_debug_mode' );
 add_action( 'wp_print_scripts', 'learn_press_define_debug_mode' );
+
+/***************************/
+/********** 4.x.x **********/
+/***************************/
+
+function learn_press_courses_layouts(){
+	return apply_filters( 'learn-press/courses-layouts', array('grid', 'list') );
+}
+
+/**
+ * Get layout template for archive course page.
+ *
+ * @since 4.x.x
+ *
+ * @return mixed
+ */
+function learn_press_get_courses_layout() {
+	$layouts = learn_press_courses_layouts();
+	$layout  = defined( 'LP_COURSES_LAYOUT' ) ? LP_COURSES_LAYOUT : LP()->settings()->get( 'course_layout' );
+
+	if ( ! $layout || ! in_array( $layout, $layouts ) ) {
+		$layout = reset( $layouts );
+	}
+
+	return $layout;
+}

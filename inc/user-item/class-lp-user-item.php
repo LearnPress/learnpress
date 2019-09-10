@@ -466,9 +466,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			'user_id'         => 0,
 			'item_id'         => 0,
 			'start_time'      => '',
-			'start_time_gmt'  => '',
+			//'start_time_gmt'  => '', // removed since 4.0
 			'end_time'        => '',
-			'end_time_gmt'    => '',
+			//'end_time_gmt'    => '',  // removed since 4.0
 			'expiration_time' => '',
 			//'expiration_time_gmt' => '',
 			'item_type'       => '',

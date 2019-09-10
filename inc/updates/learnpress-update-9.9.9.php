@@ -139,7 +139,7 @@ class LP_Update_999 extends LP_Update_Base {
 	public function remove_time_gmt() {
 		global $wpdb;
 
-		$wpdb->query( "ALTER TABLE {$wpdb->learnpress_user_items} DROP `start_time_gmt`, `end_time_gmt`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->learnpress_user_items} DROP `start_time_gmt`, DROP `end_time_gmt`" );
 
 		return true;
 	}

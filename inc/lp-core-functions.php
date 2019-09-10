@@ -663,6 +663,7 @@ function learn_press_get_page_id( $name ) {
 	if ( function_exists( 'icl_object_id' ) ) {
 		$page_id = icl_object_id( $page_id, 'page', false, defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '' );
 	}
+
 	return apply_filters( 'learn_press_get_page_id', $page_id, $name );
 }
 
@@ -759,7 +760,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 				<?php echo $links; ?>
             </div>
             <!-- .pagination -->
-		<?php
+			<?php
 		endif;
 		$output = ob_get_clean();
 		if ( $args['echo'] ) {
@@ -2060,7 +2061,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  *
  * @param      $name
  * @param      $value
- * @param int $expire
+ * @param int  $expire
  * @param bool $secure
  */
 function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
@@ -3016,7 +3017,8 @@ function learn_press_cache_get( $key, $group, $found = null ) {
 		if ( file_exists( $file ) && $content = file_get_contents( $file ) ) {
 			try {
 				$data = unserialize( $content );
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				print_r( $content );
 				die();
 			}
@@ -3436,4 +3438,21 @@ function learn_press_get_expired_courses() {
 			LIMIT 0, 10
 		", LP_COURSE_CPT, 'enrolled' );
 
+}
+
+/**
+ * Add error to log file.
+ *
+ * @since x.x.x
+ *
+ * @param mixed $data
+ */
+function learn_press_error_log( $data ) {
+	if ( ! is_string( $data ) ) {
+		ob_start();
+		print_r( $data );
+		$data = ob_get_clean();
+	}
+
+	error_log( $data . "\n" );
 }

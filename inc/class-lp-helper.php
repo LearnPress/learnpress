@@ -94,6 +94,7 @@ class LP_Helper {
 	 * @param array|int $ids
 	 */
 	public static function cache_posts( $ids ) {
+
 		global $wpdb;
 
 		settype( $ids, 'array' );

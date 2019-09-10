@@ -105,8 +105,9 @@ $user_ip      = $order->get_user_ip_address();
 					_e( 'In order to change the order user, please change the order status to \'Pending\'.', 'learnpress' );
 					echo '</p>';
 
-					learn_press_admin_view( 'meta-boxes/order/child-order', array( 'order' => $order ) );
-				} ?>
+				}
+				learn_press_admin_view( 'meta-boxes/order/child-order', array( 'order' => $order ) );
+				?>
 
             </div>
 

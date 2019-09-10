@@ -420,3 +420,24 @@ add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_b
  * @see learn_press_reset_single_item_summary_content
  */
 //add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );
+
+/**
+ * 4.x.x
+ */
+
+add_action( 'learn-press/before-courses-loop', function () {
+	$layouts = learn_press_courses_layouts();
+	?>
+    <div class="lp-courses-bar <?php echo learn_press_get_courses_layout();?>">
+        <div class="search-courses">
+            <input type="text">
+        </div>
+        <div class="switch-layout">
+			<?php foreach ( $layouts as $layout ) { ?>
+                <span class="switch-btn <?php echo $layout; ?>"></span>
+			<?php } ?>
+        </div>
+    </div>
+	<?php
+
+} );

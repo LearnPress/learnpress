@@ -2176,6 +2176,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_course_access_level( $course_id ) {
 
 			$access_level = LP_Object_Cache::get( 'course-' . $course_id . '-' . $this->get_id(), 'learn-press/course-access-levels' );
+
 			if ( false === $access_level ) {
 
 				$course = learn_press_get_course( $course_id );
@@ -2196,7 +2197,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$access_level = apply_filters( 'learn-press/course-access-level-default', $access_level, $course_id, $this->get_id() );
 
 				if ( ( $order = $this->get_course_order( $course_id, 'object', true ) ) ) {
-
 					switch ( $order->get_status() ) {
 						case 'completed':
 							$access_level = LP_COURSE_ACCESS_LEVEL_50;
@@ -2217,6 +2217,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 							}
 						}
 					}
+
 				}
 
 				LP_Object_Cache::set( 'course-' . $course_id . '-' . $this->get_id(), $access_level, 'learn-press/course-access-levels' );
@@ -2503,24 +2504,61 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$find_query['ref_id'] = $order_id;
 				}
 
+				$course       = learn_press_get_course( $course_id );
 				$course_items = $user_item_api->get_items_by( $find_query );
 				$course_item  = false;
 
 				if ( $course_items ) {
-					if ( ! $overwrite ) {
-						throw new Exception( __( 'Item exists.', 'learnpress' ) );
+//					if ( ! $overwrite ) {
+//						learn_press_error_log( array(
+//							__CLASS__ . '::' . __FUNCTION__ . '=>Item exists',
+//							$course_items
+//						) );
+//						throw new Exception( __( 'Item exists.', 'learnpress' ) );
+//					}
+
+//					if ( $overwrite !== 'append' ) {
+//						$course_item = (array) $course_items[0];
+//					}
+
+
+					switch ( $course_items[0]->status ) {
+						case 'pending':
+						case 'enrolled':
+
+							if ( $course_items[0]->status === 'pending' && $course->is_required_enroll() ) {
+								return false;
+							}
+
+							/**
+							 * If current status is 'enrolled' but it's order is not completed
+							 * then mark it is completed.
+							 */
+							if ( $order_id ) {
+								$order = learn_press_get_order( $order_id );
+
+								if ( $order && $order->get_status() !== 'completed' ) {
+									$order->set_status( 'completed' );
+									$order->save();
+								}
+							}
+
+							return $course_items[0]->user_item_id;
+						case 'purchased':
+							$course_item = (array) $course_items[0];
+							break;
+						case 'archived':
+						case 'completed':
+							break;
 					}
 
-					if ( $overwrite !== 'append' ) {
-						$course_item = (array) $course_items[0];
-					}
+
 				}
 
 				if ( ! $course_item ) {
 					$course_item = LP_User_Item::get_empty_item();
 				}
 
-				$course          = learn_press_get_course( $course_id );
 				$course_duration = $course->get_duration();
 				$user_id         = $this->get_id();
 
@@ -2578,13 +2616,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Enroll this user to a course.
 		 *
-		 * @param      $course_id
-		 * @param      $order_id
-		 * @param bool $force | Force create db record for preview quiz case
+		 * @param int  $course_id
+		 * @param int  $order_id
+		 * @param bool $force    - Optional. Force create db record for preview quiz case
+		 * @param bool $wp_error - Optional. TRUE will return WP_Error object if there is an error.
 		 *
 		 * @return bool|mixed|WP_Error
 		 */
-		public function enroll( $course_id, $order_id, $force = false ) {
+		public function enroll( $course_id, $order_id, $force = false, $wp_error = false ) {
 			global $wpdb;
 
 			try {
@@ -2607,7 +2646,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				}
 
-				$return = $this->enroll_course( $course_id, $order_id, false, false );
+				$return = $this->enroll_course( $course_id, $order_id, false, $wp_error );
 
 				//do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
 

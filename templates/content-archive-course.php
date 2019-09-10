@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.0
+ * @version 4.0
  */
 
 /**
@@ -15,7 +15,6 @@
 defined( 'ABSPATH' ) || exit();
 
 global $post, $wp_query, $lp_tax_query, $wp_query;
-
 /**
  * @deprecated
  */
@@ -52,7 +51,7 @@ if ( LP()->wp_query->have_posts() ) :
 
 	while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
 
-		learn_press_get_template_part( 'content', 'course' );
+		learn_press_get_template_part( 'content-course', learn_press_get_courses_layout() );
 
 	endwhile;
 

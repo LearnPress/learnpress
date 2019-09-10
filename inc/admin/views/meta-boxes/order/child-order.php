@@ -20,6 +20,7 @@ if ( ! $order->is_multi_users() ) {
         <th>#</th>
         <th><?php _e( 'Customer', 'learnpress' ); ?></th>
         <th><?php _e( 'Order key', 'learnpress' ); ?></th>
+        <th><?php _e( 'Status', 'learnpress' ); ?></th>
     </tr>
     </thead>
     <tbody>
@@ -35,6 +36,7 @@ if ( ! $order->is_multi_users() ) {
             </td>
             <td><?php echo $child_order->get_customer_name(); ?></td>
             <td><?php echo $child_order->get_order_key(); ?></td>
+            <td><?php echo $child_order->get_status(); ?></td>
         </tr>
 	<?php } ?>
     </tbody>

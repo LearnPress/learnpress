@@ -1,0 +1,18 @@
+.lp-courses-bar {
+    display: flex;
+    .search-courses {
+        flex: 0 0 1;
+        input[type="text"] {
+            border: 1px solid #DDD;
+        }
+    }
+
+    .switch-layout {
+        flex: 1;
+        .switch-btn {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+        }
+    }
+}

@@ -44,7 +44,7 @@ class LP_Page_Controller {
 
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
-		add_filter( 'template_include', array( $this, 'template_content_item' ) );
+		add_filter( 'template_include', array( $this, 'template_content_item' ), 20 );
 		add_filter( 'template_include', array( $this, 'maybe_redirect_quiz' ) );
 		add_filter( 'the_post', array( $this, 'setup_data' ) );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ) );
@@ -144,7 +144,6 @@ class LP_Page_Controller {
 		if ( $wp_query->queried_object_id !== $lp_course->get_id() ) {
 			return $post;
 		}
-
 		try {
 
 			// If item name is set in query vars
@@ -260,6 +259,7 @@ class LP_Page_Controller {
 	}
 
 	public function template_content_item( $template ) {
+
 		/**
 		 * @var LP_Course      $lp_course
 		 * @var LP_Course_Item $lp_course_item
@@ -327,7 +327,6 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
-		
 		//LP_Debug::instance()->add(debug_backtrace());
 		$this->_maybe_redirect_courses_page();
 		$this->_maybe_redirect_course_item();

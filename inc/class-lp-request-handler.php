@@ -338,7 +338,8 @@ class LP_Request {
 				'error'
 			);
 		} else {
-			$thing = $user->enroll( $course_id, $order_id );
+
+			$thing = $user->enroll( $course_id, $order_id, null, true );
 
 			if ( is_wp_error( $thing ) ) {
 				learn_press_add_message(
@@ -357,6 +358,11 @@ class LP_Request {
 				if ( $item_id ) {
 					$redirect = learn_press_get_course_item_permalink( $course_id, $item_id );
 				}
+			} else {
+				learn_press_add_message(
+					sprintf( __( 'Something went wrong when enrolling course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+					'error'
+				);
 			}
 
 		}
