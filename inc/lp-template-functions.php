@@ -2483,7 +2483,7 @@ function learn_press_get_template_part( $slug, $name = '' ) {
 	if ( ! $template ) {
 		$template = locate_template( array( "{$slug}.php", learn_press_template_path() . "/{$slug}.php" ) );
 	}
-
+    
 	// Allow 3rd party plugin filter template file from their plugin
 	if ( $template ) {
 		$template = apply_filters( 'learn_press_get_template_part', $template, $slug, $name );
@@ -3892,4 +3892,25 @@ function learn_press_get_courses_layout() {
 	}
 
 	return $layout;
+}
+
+function learn_press_course_categories($post = 0){
+    $post = get_post($post);
+
+	$terms = get_object_term_cache( $post->ID, 'course_category' );
+	if ( false === $terms ) {
+		$terms = wp_get_object_terms( $post->ID, 'course_category' );
+	}
+
+	if(!$terms){
+	    return;
+    }
+
+    ?>
+    <div class="course-categories">
+        <?php foreach ($terms as $term){?>
+            <a href="<?php echo esc_attr(get_term_link($term));?>"><?php echo $term->name;?></a>
+        <?php }?>
+    </div>
+    <?php
 }

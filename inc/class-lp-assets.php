@@ -155,6 +155,10 @@ class LP_Assets extends LP_Abstract_Assets {
 					'url'  => self::url( 'js/frontend/course.js' ),
 					'deps' => array( 'global' )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
 				),
+				'courses'           => array(
+					'url'  => self::url( 'js/frontend/courses.js' ),
+					'deps' => array( 'global' )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
+				),
 				'quiz'             => array(
 					'url'     => self::url( 'js/frontend/quiz.js' ),
 					'deps'    => array( 'global'),//, 'jquery-scrollbar', 'watchjs' ),

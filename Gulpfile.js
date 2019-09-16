@@ -32,7 +32,7 @@ gulp.task('scss', function () {
 
 gulp.task('watch', function () {
     liveReload.listen();
-    gulp.watch(['assets/scss/**/*.scss'], ['scss']);
+    gulp.watch(['assets/scss/**/*.scss'], gulp.series('scss'));
     //gulp.watch(['assets/js/admin/utils/*.js'], ['compress-js']);
 });
 

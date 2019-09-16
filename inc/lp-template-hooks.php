@@ -358,8 +358,8 @@ add_action( 'learn-press/after-main-content', 'learn_press_wrapper_end', 5 );
  * @see learn_press_courses_loop_item_thumbnail
  * @see learn_press_courses_loop_item_title
  */
-add_action( 'learn-press/courses-loop-item-title', 'learn_press_courses_loop_item_thumbnail', 10 );
-add_action( 'learn-press/courses-loop-item-title', 'learn_press_courses_loop_item_title', 15 );
+add_action( 'learn-press/before-courses-loop-item', 'learn_press_courses_loop_item_thumbnail', 10 );
+//add_action( 'learn-press/before-courses-loop-item', 'learn_press_courses_loop_item_instructor', 5 );
 
 /**
  * @see learn_press_courses_loop_item_begin_meta
@@ -369,13 +369,44 @@ add_action( 'learn-press/courses-loop-item-title', 'learn_press_courses_loop_ite
  * @see learn_press_course_loop_item_buttons
  * @see learn_press_course_loop_item_user_progress
  */
+add_action( 'learn-press/before-courses-loop-item', function () {
+	echo '<div class="course-content">';
+}, 1000 );
+
+add_action( 'learn-press/courses-loop-item-title', 'learn_press_courses_loop_item_title', 5 );
+
+
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_begin_meta', 10 );
+
+add_action( 'learn-press/after-courses-loop-item', function () {
+	global $post;
+	?>
+    <div class="course-categories">
+		<?php echo get_the_term_list( '', 'course_category', sprintf( '<span>%s</span>', __( 'in', 'learnpress' ) ), '|', '' ) ?>
+    </div>
+    <div class="course-tags">
+		<?php echo get_the_term_list( '', 'course_tag', '', '', '' ); ?>
+    </div>
+    <div class="course-excerpt"><?php echo wp_trim_words( $post->post_content, 15 ); ?></div>
+
+	<?php
+}, 0 );
+
+add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_students', 20 );
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_price', 20 );
-add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_instructor', 25 );
+add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_price', 20 );
+add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_price', 20 );
+add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_price', 20 );
+
+//add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_instructor', 25 );
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_courses_loop_item_end_meta', 30 );
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_course_loop_item_buttons', 35 );
 add_action( 'learn-press/after-courses-loop-item', 'learn_press_course_loop_item_user_progress', 40 );
 
+add_action( 'learn-press/after-courses-loop-item', function () {
+	echo '</div>';
+}, 1000 );
+//add_action( 'learn-press/after-courses-loop-item', LP()->template()->cb( 'course_button' ), 1000 );
 /**
  * @see learn_press_courses_pagination
  */
@@ -427,17 +458,37 @@ add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_b
 
 add_action( 'learn-press/before-courses-loop', function () {
 	$layouts = learn_press_courses_layouts();
+	$active  = learn_press_get_courses_layout();
 	?>
-    <div class="lp-courses-bar <?php echo learn_press_get_courses_layout();?>">
-        <div class="search-courses">
-            <input type="text">
-        </div>
+    <div class="lp-courses-bar <?php echo $active ?>" id="wtf">
+        <form class="search-courses" method="post">
+            <input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>" name="s">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
         <div class="switch-layout">
 			<?php foreach ( $layouts as $layout ) { ?>
-                <span class="switch-btn <?php echo $layout; ?>"></span>
+                <input type="radio"
+                       name="lp-switch-layout-btn"
+                       value="<?php echo esc_attr( $layout ); ?>"
+                       id="lp-switch-layout-btn-<?php echo $layout; ?>" <?php checked( $layout, $active ); ?>>
+                <label class="switch-btn <?php echo $layout; ?>"
+                       title="<?php echo esc_attr__( sprintf( __( 'Switch to %s', 'learnpress' ), $layout ) ); ?>"
+                       for="lp-switch-layout-btn-<?php echo $layout; ?>"></label>
 			<?php } ?>
         </div>
     </div>
 	<?php
 
 } );
+
+function wpdocs_custom_excerpt_length( $length ) {
+	return 20;
+}
+
+add_filter( 'excerpt_length', 'wpdocs_custom_excerpt_length', 999 );
+
+function wpdocs_excerpt_more( $more ) {
+	return ' asd';
+}
+
+add_filter( 'excerpt_more', 'wpdocs_excerpt_more' );

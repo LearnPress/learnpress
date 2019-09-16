@@ -51,7 +51,7 @@ if ( LP()->wp_query->have_posts() ) :
 
 	while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
 
-		learn_press_get_template_part( 'content-course', learn_press_get_courses_layout() );
+		learn_press_get_template_part( 'content-course', 'grid' );
 
 	endwhile;
 

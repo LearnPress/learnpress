@@ -317,12 +317,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 				$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
 				if ( false === ( $items = LP_Object_Cache::get( 'course-' . $key, 'learn-press/course-items' ) ) ) {
-					
-					$items = array();
-					$item_types = $this->get_item_types(true);
+
+					$items      = array();
+					$item_types = $this->get_item_types( true );
 					foreach ( $type as $t ) {
-						if( isset($item_types[$t]) && !empty($item_types[$t]) ) {
-							$items = array_merge( $items, $item_types[$t] );
+						if ( isset( $item_types[ $t ] ) && ! empty( $item_types[ $t ] ) ) {
+							$items = array_merge( $items, $item_types[ $t ] );
 						}
 					}
 
@@ -537,13 +537,19 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * @param int|bool $with_avatar
+		 * @param string   $link_class
+		 *
 		 * @return string
 		 */
-		public function get_instructor_html() {
+		public function get_instructor_html( $with_avatar = false, $link_class = "" ) {
 			$instructor = $this->get_instructor_name();
-			$html       = sprintf(
-				'<a href="%s">%s</a>',
+
+			$html = sprintf(
+				'<a href="%s"%s>%s<span>%s</span></a>',
 				learn_press_user_profile_link( get_post_field( 'post_author', $this->get_id() ) ),
+				$link_class ? sprintf( 'class="%s"', $link_class ) : '',
+				$with_avatar ? get_avatar( $this->get_instructor( 'id' ), $with_avatar === true ? 48 : $with_avatar ) : '',
 				$instructor
 			);
 

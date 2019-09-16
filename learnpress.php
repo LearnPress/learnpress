@@ -104,10 +104,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		/**
 		 * @var LP_Admin_Notice
-         *
-         * @since 3.2.6
+		 *
+		 * @since 3.2.6
 		 */
 		public $adminNotices = null;
+
+		public $template = null;
 
 		/**
 		 * LearnPress constructor.
@@ -334,7 +336,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );
-			require_once( 'inc/lp-template-hooks.php' );
+
+			require_once "inc/class-lp-template.php";
+
 			require_once 'inc/cart/class-lp-cart.php';
 			require_once 'inc/cart/lp-cart-functions.php';
 			require_once 'inc/gateways/class-lp-gateway-abstract.php';
@@ -354,9 +358,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			/**
 			 * REST APIs
-             *
-             * @since 3.2.6
-             */
+			 *
+			 * @since 3.2.6
+			 */
 			require_once 'inc/abstracts/abstract-rest-api.php';
 			require_once 'inc/abstracts/abstract-rest-controller.php';
 			require_once 'inc/rest-api/class-lp-core-api.php';
@@ -540,6 +544,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 //
 //			// Background
 //			$this->init_background_processes();
+			require_once( 'inc/lp-template-hooks.php' );
 
 			// let third parties know that we're ready
 			do_action( 'learn_press_ready' );
@@ -551,6 +556,36 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Background
 			$this->init_background_processes();
+		}
+
+		/**
+		 * Get instance of class LP_Template.
+		 *
+		 * @since 4.x.x
+		 *
+		 * @param string $hook
+		 * @param string $cb
+		 * @param int    $priority
+		 * @param int    $number_args
+		 *
+		 * @return LP_Template|null
+		 *
+		 * @throws Exception
+		 */
+		public function template( $hook = '', $cb = '', $priority = 10, $number_args = 1 ) {
+			if ( ! $this->template ) {
+				$this->template = LP_Template::instance();
+			}
+
+			if ( $num = func_num_args() ) {
+				if ( $num < 2 || ! is_callable( array( $this->template, $cb ) ) ) {
+					throw new Exception( __( 'Callback function for template hook doesn\'t exists.', 'learnpress' ) );
+				}
+
+				$this->template->hook( $hook, $cb, $priority, $number_args );
+			}
+
+			return $this->template;
 		}
 
 		/**
@@ -568,9 +603,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_cart();
-			}else{
-			    $this->adminNotices = LP_Admin_Notice::instance();
-            }
+			} else {
+				$this->adminNotices = LP_Admin_Notice::instance();
+			}
 
 			// init email notification hooks
 			LP_Emails::init_email_notifications();

@@ -47,5 +47,4 @@ $user = LP_Global::user();
 	// @deprecated
     do_action( 'learn_press_after_courses_loop_item' );
     ?>
-GRID
 </li>

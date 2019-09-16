@@ -15,4 +15,4 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<ul class="learn-press-courses <?php echo learn_press_get_courses_layout(); ?>">
+<ul class="learn-press-courses" data-layout="<?php echo learn_press_get_courses_layout(); ?>">
