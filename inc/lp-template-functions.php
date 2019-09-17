@@ -18,52 +18,7 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 	 * Purchase course button.
 	 */
 	function learn_press_course_purchase_button() {
-		$course = LP_Global::course();
-		$user   = LP_Global::user();
-
-		if ( $course->get_external_link() ) {
-			return;
-		}
-
-		// If course is not published
-		if ( ! $course->is_publish() ) {
-			return;
-		}
-
-		// Course is not require enrolling
-		if ( ! $course->is_required_enroll() || $course->is_free() || $user->has_enrolled_course( $course->get_id() ) ) {
-			return;
-		}
-
-		// If course is reached limitation.
-		if ( ! $course->is_in_stock() ) {
-			if ( $message = apply_filters( 'learn-press/maximum-students-reach', __( 'This course is out of stock', 'learnpress' ) ) ) {
-				learn_press_display_message( $message );
-			}
-
-			return;
-		}
-
-		// User can not purchase course
-		if ( ! $user->can_purchase_course( $course->get_id() ) ) {
-			return;
-		}
-
-		// If user has already purchased course but has not finished yet.
-		if ( $user->has_purchased_course( $course->get_id() ) && 'finished' !== $user->get_course_status( $course->get_id() ) ) {
-			return;
-		}
-
-		// If the order contains course is processing
-		if ( ( $order = $user->get_course_order( $course->get_id() ) ) && $order->get_status() === 'processing' ) {
-			if ( $message = apply_filters( 'learn-press/order-processing-message', __( 'Your order is waiting for processing', 'learnpress' ) ) ) {
-				learn_press_display_message( $message );
-			}
-
-			return;
-		}
-
-		learn_press_get_template( 'single-course/buttons/purchase.php' );
+		LP()->template()->course_purchase_button();
 	}
 
 }
@@ -73,55 +28,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 	 * Enroll course button.
 	 */
 	function learn_press_course_enroll_button() {
-		$user   = LP_Global::user();
-		$course = LP_Global::course();
-
-		if ( $course->get_external_link() ) {
-			learn_press_show_log( 'Course has external link' );
-
-			return;
-		}
-
-		// If course is not published
-		if ( ! $course->is_publish() ) {
-			learn_press_show_log( 'Course is not published' );
-
-			return;
-		}
-
-		// Locked course for user
-		if ( $user->is_locked_course( $course->get_id() ) ) {
-			learn_press_show_log( 'Course is locked' );
-
-			return;
-		}
-
-		// Course out of stock (full students)
-		if ( ! $course->is_in_stock() ) {
-			return;
-		}
-
-		// Course is not require enrolling
-		if ( ! $course->is_required_enroll() ) {
-			return;
-		}
-
-		// User can not enroll course
-		if ( ! $user->can_enroll_course( $course->get_id() ) ) {
-			return;
-		}
-
-		$purchased = $user->has_purchased_course( $course->get_id() );
-
-		// For free course and user does not purchased
-		if ( $course->is_free() && ! $purchased ) {
-			learn_press_get_template( 'single-course/buttons/enroll.php' );
-		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
-			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
-				learn_press_get_template( 'single-course/buttons/enroll.php' );
-			}
-		}
-
+		LP()->template()->course_enroll_button();
 	}
 
 }
@@ -3926,8 +3833,8 @@ function learn_press_register_sidebars() {
 			'name'          => __( 'Course Sidebar', 'learnpress' ),
 			'id'            => 'course-sidebar',
 			'description'   => __( 'Widgets in this area will be shown in single course', 'learnpress' ),
-			'before_widget' => '<li id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</li>',
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</div>',
 			'before_title'  => '<h2 class="widgettitle">',
 			'after_title'   => '</h2>',
 		)
@@ -3941,8 +3848,8 @@ function learn_press_setup_theme() {
 		'widgets' => array(
 			// Place three core-defined widgets in the sidebar area.
 			'course-sidebar' => array(
-				'lp-widget-course-progress',
-				'lp-widget-course-info'
+				'xxx' => array( 'lp-widget-course-progress' ),
+				'yyy' => array( 'lp-widget-course-info' )
 			)
 		)
 	);

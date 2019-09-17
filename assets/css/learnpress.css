@@ -2121,6 +2121,27 @@ body.confirm #popup_container {
     .lp-courses-bar .switch-layout input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       display: none; }
 
+.course-summary-sidebar .course-sidebar-preview {
+  border: 1px solid #DDD;
+  background: #F5F5F5;
+  padding: 20px; }
+  .course-summary-sidebar .course-sidebar-preview .media-preview {
+    margin: -20px -20px 20px; }
+    .course-summary-sidebar .course-sidebar-preview .media-preview img {
+      max-width: 100%;
+      height: auto;
+      vertical-align: top; }
+  .course-summary-sidebar .course-sidebar-preview .lp-course-buttons > * {
+    margin-bottom: 10px; }
+    .course-summary-sidebar .course-sidebar-preview .lp-course-buttons > *:last-child {
+      margin-bottom: 0; }
+  .course-summary-sidebar .course-sidebar-preview .lp-course-buttons form, .course-summary-sidebar .course-sidebar-preview .lp-course-buttons button {
+    width: 100%; }
+  .course-summary-sidebar .course-sidebar-preview > * {
+    margin-bottom: 20px; }
+    .course-summary-sidebar .course-sidebar-preview > *:last-child {
+      margin-bottom: 0; }
+
 input[type="text"],
 input[type="email"],
 input[type="number"],

@@ -120,7 +120,7 @@ add_action( 'learn-press/before-profile-nav', 'learn_press_profile_mobile_menu',
  * @see learn_press_single_course_summary
  */
 add_action( 'learn-press/single-course-summary', 'learn_press_single_course_summary', 5 );
-add_action( 'learn-press/single-course-summary', LP()->template()->cb('course_sidebar'), 5 );
+add_action( 'learn-press/single-course-summary', LP()->template()->cb( 'course_sidebar' ), 5 );
 
 /**
  * @see learn_press_course_meta_start_wrapper
@@ -457,30 +457,7 @@ add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_b
  * 4.x.x
  */
 
-add_action( 'learn-press/before-courses-loop', function () {
-	$layouts = learn_press_courses_layouts();
-	$active  = learn_press_get_courses_layout();
-	?>
-    <div class="lp-courses-bar <?php echo $active ?>" id="wtf">
-        <form class="search-courses" method="post">
-            <input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>" name="s">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
-        <div class="switch-layout">
-			<?php foreach ( $layouts as $layout ) { ?>
-                <input type="radio"
-                       name="lp-switch-layout-btn"
-                       value="<?php echo esc_attr( $layout ); ?>"
-                       id="lp-switch-layout-btn-<?php echo $layout; ?>" <?php checked( $layout, $active ); ?>>
-                <label class="switch-btn <?php echo $layout; ?>"
-                       title="<?php echo esc_attr__( sprintf( __( 'Switch to %s', 'learnpress' ), $layout ) ); ?>"
-                       for="lp-switch-layout-btn-<?php echo $layout; ?>"></label>
-			<?php } ?>
-        </div>
-    </div>
-	<?php
-
-} );
+add_action( 'learn-press/before-courses-loop', LP()->template()->cb( 'courses_top_bar' ), 10 );
 
 function wpdocs_custom_excerpt_length( $length ) {
 	return 20;
@@ -493,3 +470,7 @@ function wpdocs_excerpt_more( $more ) {
 }
 
 add_filter( 'excerpt_more', 'wpdocs_excerpt_more' );
+
+add_action( 'learn-press/course-summary-sidebar', LP()->template()->cb( 'course_sidebar_preview' ), 10 );
+add_action( 'learn-press/course-summary-sidebar', LP()->template()->cb( 'course_extra_key_features' ), 10 );
+add_action( 'learn-press/course-summary-sidebar', LP()->template()->cb( 'course_extra_requirements' ), 10 );

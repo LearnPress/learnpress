@@ -18,8 +18,20 @@ class LP_Template {
 	protected function __construct() {
 	}
 
-	public function course_sidebar(){
+	public function course_sidebar() {
 		learn_press_get_template( 'single-course/sidebar' );
+	}
+
+	public function course_sidebar_preview() {
+		learn_press_get_template( 'single-course/sidebar/preview' );
+	}
+
+	public function course_buttons() {
+		learn_press_get_template( 'single-course/buttons' );
+	}
+
+	public function course_media_preview() {
+		echo get_the_post_thumbnail();
 	}
 
 	public function course_button() {
@@ -30,14 +42,209 @@ class LP_Template {
 		echo "[COURSE TITLE]";
 	}
 
+	public function courses_top_bar() {
+		learn_press_get_template( 'courses-top-bar' );
+	}
+
+	public function course_pricing() {
+		learn_press_get_template( 'single-course/price' );
+	}
+
+	public function course_purchase_button() {
+		$course = LP_Global::course();
+		$user   = LP_Global::user();
+
+		if ( $course->get_external_link() ) {
+			return;
+		}
+
+		// If course is not published
+		if ( ! $course->is_publish() ) {
+			return;
+		}
+
+		// Course is not require enrolling
+		if ( ! $course->is_required_enroll() || $course->is_free() || $user->has_enrolled_course( $course->get_id() ) ) {
+			return;
+		}
+
+		// If course is reached limitation.
+		if ( ! $course->is_in_stock() ) {
+			if ( $message = apply_filters( 'learn-press/maximum-students-reach', __( 'This course is out of stock', 'learnpress' ) ) ) {
+				learn_press_display_message( $message );
+			}
+
+			return;
+		}
+
+		// User can not purchase course
+		if ( ! $user->can_purchase_course( $course->get_id() ) ) {
+			return;
+		}
+
+		// If user has already purchased course but has not finished yet.
+		if ( $user->has_purchased_course( $course->get_id() ) && 'finished' !== $user->get_course_status( $course->get_id() ) ) {
+			return;
+		}
+
+		// If the order contains course is processing
+		if ( ( $order = $user->get_course_order( $course->get_id() ) ) && $order->get_status() === 'processing' ) {
+			if ( $message = apply_filters( 'learn-press/order-processing-message', __( 'Your order is waiting for processing', 'learnpress' ) ) ) {
+				learn_press_display_message( $message );
+			}
+
+			return;
+		}
+
+		learn_press_get_template( 'single-course/buttons/purchase.php' );
+	}
+
+	public function course_enroll_button() {
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+
+		if ( $course->get_external_link() ) {
+			learn_press_show_log( 'Course has external link' );
+
+			return;
+		}
+
+		// If course is not published
+		if ( ! $course->is_publish() ) {
+			learn_press_show_log( 'Course is not published' );
+
+			return;
+		}
+
+		// Locked course for user
+		if ( $user->is_locked_course( $course->get_id() ) ) {
+			learn_press_show_log( 'Course is locked' );
+
+			return;
+		}
+
+		// Course out of stock (full students)
+		if ( ! $course->is_in_stock() ) {
+			return;
+		}
+
+		// Course is not require enrolling
+		if ( ! $course->is_required_enroll() ) {
+			return;
+		}
+
+		// User can not enroll course
+		if ( ! $user->can_enroll_course( $course->get_id() ) ) {
+			return;
+		}
+
+		$purchased = $user->has_purchased_course( $course->get_id() );
+
+		// For free course and user does not purchased
+		if ( $course->is_free() && ! $purchased ) {
+			learn_press_get_template( 'single-course/buttons/enroll.php' );
+		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
+			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
+				learn_press_get_template( 'single-course/buttons/enroll.php' );
+			}
+		}
+	}
+
+	public function course_extra_requirements() {
+		$requirements = apply_filters(
+			'learn-press/course-extra-requirements',
+			get_post_meta( get_the_ID(), '_lp_requirements', true ),
+			get_the_ID()
+		);
+
+		if ( ! $requirements ) {
+			return;
+		}
+
+		learn_press_get_template(
+			'single-course/sidebar/course-extra',
+			array(
+				'type'    => 'requirements',
+				'title'   => __( 'Requirements', 'learnpress' ),
+				'content' => $requirements
+			)
+		);
+	}
+
+	public function course_extra_key_features() {
+		$key_features = apply_filters(
+			'learn-press/course-extra-key-features',
+			get_post_meta( get_the_ID(), '_lp_key_features', true ),
+			get_the_ID()
+		);
+
+		if ( ! $key_features ) {
+			return;
+		}
+
+		learn_press_get_template(
+			'single-course/sidebar/course-extra',
+			array(
+				'type'    => 'key-features',
+				'title'   => __( 'Key features', 'learnpress' ),
+				'content' => $key_features
+			)
+		);
+	}
+
+	public function course_extra_target_audiences() {
+		$target_audiences = apply_filters(
+			'learn-press/course-extra-target-audiences',
+			get_post_meta( get_the_ID(), '_lp_target_audience', true ),
+			get_the_ID()
+		);
+
+		if ( ! $target_audiences ) {
+			return;
+		}
+
+		learn_press_get_template(
+			'single-course/sidebar/course-extra',
+			array(
+				'type'    => 'target-audiences',
+				'title'   => __( 'Target audiences', 'learnpress' ),
+				'content' => $target_audiences
+			)
+		);
+	}
+
+	/**
+	 * Return is callable method of self class.
+	 *
+	 * @since 4.x.x
+	 *
+	 * @param string $callback
+	 *
+	 * @return array
+	 */
 	public function cb( $callback ) {
 		return array( $this, $callback );
 	}
 
+	/**
+	 * Add callable method of self class to a hook of template.
+	 *
+	 * @param string $name
+	 * @param string $callback
+	 * @param int    $priority
+	 * @param int    $number_args
+	 */
 	public function hook( $name, $callback, $priority = 10, $number_args = 1 ) {
 		add_action( $name, $this->cb( $callback ), $priority, $number_args );
 	}
 
+	/**
+	 * Remove hooked callable method.
+	 *
+	 * @param string $tag
+	 * @param string $function_to_remove - '*' will remove all methods.
+	 * @param int    $priority
+	 */
 	public function remove( $tag, $function_to_remove, $priority = 10 ) {
 		global $wp_filter;
 
