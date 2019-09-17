@@ -29,7 +29,7 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 			$duplicate_link = array(
 				array(
 					'link'  => $duplicate_link,
-					'title' => __( 'Duplicate this course', 'learnpress' ),
+					'title' => _x( 'Copy', 'copy course', 'learnpress' ),
 					'class' => 'lp-duplicate-post lp-duplicate-course',
 					'data'  => $post->ID
 				)
@@ -49,15 +49,15 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_QUIZ_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this quiz', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-quiz" data-post-id="%s">%s</a>', $post->ID, _x( 'Copy', 'copy quiz', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_QUESTION_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this question', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-question" data-post-id="%s">%s</a>', $post->ID, _x( 'Copy', 'copy question', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		} else if ( LP_LESSON_CPT === $post->post_type ) {
 			unset( $actions['view'] );
-			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>', $post->ID, __( 'Duplicate this lesson', 'learnpress' ) );
+			$link                               = sprintf( '<a href="#" class="lp-duplicate-post lp-duplicate-lesson" data-post-id="%s">%s</a>', $post->ID, _x( 'Copy', 'copy lesson', 'learnpress' ) );
 			$actions['lp-duplicate-row-action'] = $link;
 		}
 

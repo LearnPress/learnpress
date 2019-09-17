@@ -1434,6 +1434,33 @@ ul .clearfix {
       .wp-list-table .column-preview input[type="checkbox"]:checked:before {
         margin-top: -1px; }
 
+.wp-list-table .column-instructor {
+  width: 150px; }
+  .wp-list-table .column-instructor .post-author {
+    display: inline-block; }
+    .wp-list-table .column-instructor .post-author img {
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      vertical-align: middle;
+      margin-right: 5px; }
+    .wp-list-table .column-instructor .post-author a {
+      display: inline-block;
+      vertical-align: middle; }
+
+.wp-list-table .column-students {
+  width: 80px; }
+
+.wp-list-table .column-price {
+  width: 120px; }
+
+.wp-list-table .column-thumbnail {
+  width: 100px;
+  padding-top: 11px; }
+  .wp-list-table .column-thumbnail img {
+    max-width: 100%;
+    height: auto; }
+
 .post-type-page .column-lp-page {
   width: 200px; }
 
@@ -1441,6 +1468,11 @@ ul .clearfix {
   color: #FF0000;
   font-size: 11px;
   margin: 0; }
+
+.post-state .post-author {
+  font-weight: normal;
+  font-size: 14px;
+  font-style: italic; }
 
 #learn-press-box-edit-slug {
   background: #FFF;

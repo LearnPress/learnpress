@@ -129,6 +129,7 @@ if ( ! class_exists( 'LP_Widget' ) ) {
 					}
 				}
 			}
+
 			parent::__construct( $id_base, $this->_name_prefix . $name, $widget_options, $control_options );
 		}
 

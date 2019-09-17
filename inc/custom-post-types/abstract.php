@@ -117,6 +117,18 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
 	}
 
+	public function column_instructor( $post_id = 0 ) {
+		global $post;
+
+		$args = array(
+			'post_type' => $post->post_type,
+			'author'    => get_the_author_meta( 'ID' ),
+		);
+
+		$author_link = add_query_arg( $args, 'edit.php' );
+		echo sprintf( '<span class="post-author">%s<a href="%s">%s</a></span>', get_avatar( get_the_author_meta( 'ID' ), 32 ), $author_link, get_the_author() );
+	}
+
 	public function get_post_type() {
 		$post_type = get_post_type();
 		if ( ! $post_type ) {

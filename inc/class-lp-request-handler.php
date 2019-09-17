@@ -836,6 +836,27 @@ class LP_Request {
 
 		return $redirect;
 	}
+
+	public static function get_cookie( $name, $def = false, $global = false ) {
+		if ( $global ) {
+			return isset( $_COOKIE[ $name ] ) ? $_COOKIE[ $name ] : $def;
+		}
+
+		$cookie = isset( $_COOKIE['LP'] ) ? (array) json_decode( stripslashes( $_COOKIE['LP'] ) ) : array();
+
+		return isset( $cookie[ $name ] ) ? $cookie[ $name ] : $def;
+	}
+
+	public static function set_cookie( $name, $value, $expires = '', $domain = '', $path = '', $secure = false ) {
+		if ( func_num_args() > 2 ) {
+			learn_press_setcookie( $name, $value, $expires, $secure );
+		} else {
+			$cookie = isset( $_COOKIE['LP'] ) ? maybe_unserialize( $_COOKIE['LP'] ) : array();
+
+			$cookie[ $name ] = $value;
+			learn_press_setcookie( 'LP', $value );
+		}
+	}
 }
 
 LP_Request::init();

@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.x.x
  */
 
 /**
@@ -19,17 +19,19 @@ $course = LP_Global::course();
 
 <div class="course-author">
 
-    <h3><?php _e( 'Instructor', 'learnpress' ); ?></h3>
+    <!--    <h3>--><?php //_e( 'Instructor', 'learnpress' ); ?><!--</h3>-->
 
 	<?php do_action( 'learn-press/before-single-course-instructor' ); ?>
 
     <p class="author-name">
 		<?php echo $course->get_instructor()->get_profile_picture(); ?>
-		<?php echo $course->get_instructor_html(); ?>
     </p>
 
     <div class="author-bio">
-		<?php echo $course->get_author()->get_description(); ?>
+        <div class="author-title"><?php echo $course->get_instructor_html(); ?></div>
+        <div class="author-description">
+			<?php echo $course->get_author()->get_description(); ?>
+        </div>
     </div>
 
 	<?php do_action( 'learn-press/after-single-course-instructor' ); ?>

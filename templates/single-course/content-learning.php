@@ -37,6 +37,7 @@ do_action( 'learn_press_before_content_learning' );
 	 * @see   learn_press_course_meta_start_wrapper()
 	 */
 	do_action( 'learn-press/content-learning-summary' );
+
 	?>
 
 </div>

@@ -1436,6 +1436,7 @@ if ( ! function_exists( 'learn_press_courses_loop_item_students' ) ) {
 	 * Output the students of the course within loop
 	 */
 	function learn_press_courses_loop_item_students() {
+		echo '<div class="clearfix"></div>';
 		learn_press_get_template( 'loop/course/students.php' );
 	}
 }
@@ -2483,7 +2484,7 @@ function learn_press_get_template_part( $slug, $name = '' ) {
 	if ( ! $template ) {
 		$template = locate_template( array( "{$slug}.php", learn_press_template_path() . "/{$slug}.php" ) );
 	}
-    
+
 	// Allow 3rd party plugin filter template file from their plugin
 	if ( $template ) {
 		$template = apply_filters( 'learn_press_get_template_part', $template, $slug, $name );
@@ -3872,8 +3873,8 @@ add_action( 'wp_print_scripts', 'learn_press_define_debug_mode' );
 /********** 4.x.x **********/
 /***************************/
 
-function learn_press_courses_layouts(){
-	return apply_filters( 'learn-press/courses-layouts', array('grid', 'list') );
+function learn_press_courses_layouts() {
+	return apply_filters( 'learn-press/courses-layouts', array( 'grid', 'list' ) );
 }
 
 /**
@@ -3885,7 +3886,11 @@ function learn_press_courses_layouts(){
  */
 function learn_press_get_courses_layout() {
 	$layouts = learn_press_courses_layouts();
-	$layout  = defined( 'LP_COURSES_LAYOUT' ) ? LP_COURSES_LAYOUT : LP()->settings()->get( 'course_layout' );
+
+	if ( ! $layout = LP_Request::get_cookie( 'courses-layout' ) ) {
+		var_dump( $layout );
+		$layout = defined( 'LP_COURSES_LAYOUT' ) ? LP_COURSES_LAYOUT : LP()->settings()->get( 'course_layout' );
+	}
 
 	if ( ! $layout || ! in_array( $layout, $layouts ) ) {
 		$layout = reset( $layouts );
@@ -3894,23 +3899,56 @@ function learn_press_get_courses_layout() {
 	return $layout;
 }
 
-function learn_press_course_categories($post = 0){
-    $post = get_post($post);
+function learn_press_course_categories( $post = 0 ) {
+	$post = get_post( $post );
 
 	$terms = get_object_term_cache( $post->ID, 'course_category' );
 	if ( false === $terms ) {
 		$terms = wp_get_object_terms( $post->ID, 'course_category' );
 	}
 
-	if(!$terms){
-	    return;
-    }
+	if ( ! $terms ) {
+		return;
+	}
 
-    ?>
+	?>
     <div class="course-categories">
-        <?php foreach ($terms as $term){?>
-            <a href="<?php echo esc_attr(get_term_link($term));?>"><?php echo $term->name;?></a>
-        <?php }?>
+		<?php foreach ( $terms as $term ) { ?>
+            <a href="<?php echo esc_attr( get_term_link( $term ) ); ?>"><?php echo $term->name; ?></a>
+		<?php } ?>
     </div>
-    <?php
+	<?php
 }
+
+function learn_press_register_sidebars() {
+	register_sidebar(
+		array(
+			'name'          => __( 'Course Sidebar', 'learnpress' ),
+			'id'            => 'course-sidebar',
+			'description'   => __( 'Widgets in this area will be shown in single course', 'learnpress' ),
+			'before_widget' => '<li id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</li>',
+			'before_title'  => '<h2 class="widgettitle">',
+			'after_title'   => '</h2>',
+		)
+	);
+}
+
+add_action( 'widgets_init', 'learn_press_register_sidebars' );
+
+function learn_press_setup_theme() {
+	$support = array(
+		'widgets' => array(
+			// Place three core-defined widgets in the sidebar area.
+			'course-sidebar' => array(
+				'lp-widget-course-progress',
+				'lp-widget-course-info'
+			)
+		)
+	);
+
+	add_theme_support( 'starter-content', $support );
+
+}
+
+add_action( 'after_setup_theme', 'learn_press_setup_theme' );

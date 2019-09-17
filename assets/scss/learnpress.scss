@@ -44,9 +44,30 @@ input[type="password"] {
 
 .learnpress-page {
     .lp-button {
-        line-height: 45px;
-        padding: 0 12px;
-        height: 45px;
+        padding: 12px 24px;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 1;
+        color: #FFF;
+        background: #00adff;
+        vertical-align: middle;
+        height: 40px;
+
+        &.large {
+            font-size: 18px;
+            padding: 18px 30px;
+            height: 52px;
+        }
+
+        @include transition(all 0.25s);
+
+        &.gray {
+            background: #849096;
+        }
+
+        &:hover {
+            background: #0387c5;
+        }
     }
 }
 
@@ -59,7 +80,6 @@ input[type="password"] {
 }
 
 /* Archive */
-
 
 .order-comments {
     width: 100%;
@@ -262,15 +282,30 @@ ul.list-table-nav {
         text-align: right;
     }
 }
+
 .content-item-wrap {
     #comments {
         margin-left: 0;
         margin-right: 0;
-        #comment{
+        #comment {
             @include box-sizing(border-box);
         }
     }
 }
+
+.course-summary {
+    display: flex;
+    .course-landing-summary,
+    .course-learning-summary {
+        flex: 1;
+    }
+
+    .course-summary-sidebar {
+        flex: 0 0 250px;
+        margin-left: 30px;
+    }
+}
+
 @media screen and (max-width: 768px) {
     ul.learn-press-courses {
         .course {

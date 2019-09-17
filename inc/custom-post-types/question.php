@@ -334,9 +334,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				'author'    => __( 'Author', 'learnpress' ),
-				LP_QUIZ_CPT => __( 'Quiz', 'learnpress' ),
-				'type'      => __( 'Type', 'learnpress' )
+				'instructor' => __( 'Author', 'learnpress' ),
+				LP_QUIZ_CPT  => __( 'Quiz', 'learnpress' ),
+				'type'       => __( 'Type', 'learnpress' )
 			);
 
 			if ( false !== $pos && ! array_key_exists( LP_QUIZ_CPT, $columns ) ) {
@@ -348,7 +348,12 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			$user = wp_get_current_user();
+
 			if ( in_array( LP_TEACHER_ROLE, $user->roles ) ) {
+				unset( $columns['instructor'] );
+			}
+
+			if ( ! empty( $columns['author'] ) ) {
 				unset( $columns['author'] );
 			}
 
@@ -363,6 +368,9 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			switch ( $name ) {
+				case 'instructor':
+					$this->column_instructor( $post_id );
+					break;
 				case 'lp_quiz':
 					// question curd
 					$curd = new LP_Question_CURD();
@@ -474,7 +482,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['author']      = 'author';
+			$columns['instructor']  = 'author';
 			$columns[ LP_QUIZ_CPT ] = 'quiz-name';
 
 			return $columns;

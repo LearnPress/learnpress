@@ -491,12 +491,20 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 								intval( $count - 1 ),
 								'students-html',
 								'learnpress'
-							)
-							, $count - 1
+							),
+							$count - 1
 						);
 					endif;
 				else:
-					$output = sprintf( _nx( 'One student enrolled', '<span class="course-students-number">%1$s</span> students enrolled', $count, 'students-html', 'learnpress' ), $count );
+					$output = sprintf(
+						_nx(
+							'One student enrolled',
+							'<span class="course-students-number">%1$s</span> students enrolled',
+							$count,
+							'students-html',
+							'learnpress'
+						),
+						$count );
 				endif;
 			else:
 				$output = __( 'No student enrolled', 'learnpress' );

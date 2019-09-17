@@ -109,6 +109,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public $adminNotices = null;
 
+		/**
+		 * @var LP_Template
+		 */
 		public $template = null;
 
 		/**
@@ -568,7 +571,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @param int    $priority
 		 * @param int    $number_args
 		 *
-		 * @return LP_Template|null
+		 * @return LP_Template
 		 *
 		 * @throws Exception
 		 */

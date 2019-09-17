@@ -5,6 +5,12 @@
             display: block;
         }
     }
+
+    &.show-all {
+        .course-tab-panel {
+            margin-bottom: 40px;
+        }
+    }
 }
 
 .lp-single-course {
@@ -24,8 +30,18 @@
             }
         }
         .author-bio {
-            font-size: 15px;
-            font-style: italic;
+            .author-title {
+                font-size: 18px;
+                margin-bottom: 10px;
+                a{
+                    text-decoration: none;
+                    box-shadow: none;
+                }
+            }
+            .author-description {
+                font-size: 15px;
+                font-style: italic;
+            }
         }
         &:after {
             @include clear-fix();
@@ -90,6 +106,46 @@ ul.learn-press-nav-tabs {
             }
         }
     }
+
+    &[data-tabs="2"] {
+        .course-nav {
+            width: 50%;
+        }
+    }
+
+    &[data-tabs="3"] {
+        .course-nav {
+            width: 33.333333%;
+        }
+    }
+
+    &[data-tabs="4"] {
+        .course-nav {
+            width: 25%;
+        }
+    }
+
+    &[data-tabs="5"] {
+        .course-nav {
+            width: 20%;
+        }
+    }
+
+    &[data-tabs="6"] {
+        .course-nav {
+            width: 16.66666%;
+        }
+    }
+
+    &[data-tabs] {
+        .course-nav {
+            a {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+
     &:after {
         @include clear-fix();
     }

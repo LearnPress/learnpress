@@ -1,48 +1,108 @@
 ;(function ($) {
+    const fetchCourses = function (args) {
+        var url = args.url || 'http://localhost/learnpress/dev/courses-2/';
+        var $wrapElement = args.wrapElement || '#lp-archive-courses';
 
+        delete args.url;
+        delete args.wrapElement;
+
+        LP.setUrl(url);
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: url,
+                data: $.extend({}, args || {}),
+                type: 'post',
+                success: (response) => {
+                    var newEl = $(response).contents().find($wrapElement);
+
+                    if (newEl.length) {
+                        $($wrapElement).replaceWith(newEl)
+                    } else {
+                        $($wrapElement).html('')
+                    }
+
+                    bindEventCoursesLayout();
+                    $.scrollTo($wrapElement);
+                    resolve(newEl);
+                },
+                error: (response) => {
+                    reject();
+                }
+            });
+        })
+    }
+
+    /**
+     * Ajax searching when user typing on search-box.
+     *
+     * @param event
+     */
     const searchCourseHandler = function (event) {
         event.preventDefault();
 
-        $.ajax({
-            url: 'http://localhost/learnpress/dev/courses-2/',
-            data: {
-                s: $(this).find('input[name="s"]').val()
-            },
-            type: 'post',
-            success: (response) => {
-                var newEl = $(response).contents().find('.learn-press-courses');
+        fetchCourses({
+            s: $(this).find('input[name="s"]').val()
+        });
+    };
 
-                if (newEl.length) {
-                    $('.learn-press-courses').replaceWith(newEl)
-                } else {
-                    $('.learn-press-courses').html('')
-                }
+    /**
+     * Switch layout between Grid and List.
+     *
+     * @param event
+     */
+    const switchCoursesLayoutHandler = function (event) {
+        var $target;
+        var $parent = $(this).parent();
 
-            }
+        while (!$target || !$target.length) {
+            $target = $parent.find('.learn-press-courses');
+            $parent = $parent.parent();
+        }
+
+        $target.attr('data-layout', this.value);
+        LP.Cookies.set('courses-layout', this.value);
+    };
+
+    const selectCoursesLayout = function () {
+        var coursesLayout = LP.Cookies.get('courses-layout');
+        var switches = $('.lp-courses-bar .switch-layout')
+            .find('[name="lp-switch-layout-btn"]');
+
+        if (coursesLayout) {
+            switches
+                .filter('[value="' + coursesLayout + '"]')
+                .prop('checked', true)
+                .trigger('change');
+        }
+    };
+
+    const coursePaginationHandler = function (event) {
+        event.preventDefault();
+
+        var permalink = $(event.target).attr('href');
+
+        if (!permalink) {
+            return;
+        }
+
+        fetchCourses({
+            url: permalink
         })
     };
 
-    const switchCoursesLayoutHandler = function (event) {
-        var $target;//= $(this).data('target');
-
-        if(!$target){
-            var $parent = $(this).parent();
-            while(!$target || !$target.length){
-               $target = $parent.find('.learn-press-courses');
-               $parent = $parent.parent();
-               console.log('X')
-            }
-
-            $(this).data('target', $target);
-        }
-
-        $target.attr('data-layout', this.value)
-
-    };
+    const bindEventCoursesLayout = function () {
+        $('#lp-archive-courses')
+            .on('submit', '.search-courses', searchCourseHandler)
+            .on('change', 'input[name="lp-switch-layout-btn"]', switchCoursesLayoutHandler)
+            .on('click', '.learn-press-pagination .page-numbers', coursePaginationHandler);
+    }
 
     $(document).ready(function () {
-        $('.search-courses').on('submit', searchCourseHandler);
-        $('input[name="lp-switch-layout-btn"]').on('change', switchCoursesLayoutHandler)
+        bindEventCoursesLayout();
+
+        //
+        selectCoursesLayout();
     })
 
 })(jQuery);

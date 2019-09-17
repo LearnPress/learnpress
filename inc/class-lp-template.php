@@ -18,6 +18,10 @@ class LP_Template {
 	protected function __construct() {
 	}
 
+	public function course_sidebar(){
+		learn_press_get_template( 'single-course/sidebar' );
+	}
+
 	public function course_button() {
 		echo "[COURSE BUTTON]";
 	}

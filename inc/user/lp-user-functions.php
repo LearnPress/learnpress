@@ -503,9 +503,6 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		}
 	}
 
-	learn_press_debug($fields);
-
-
 	if ( ! empty( $fields['user_item_id'] ) ) {
 		$where = wp_parse_args(
 			$where,

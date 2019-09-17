@@ -1314,6 +1314,65 @@ $(document).ready(function () {
 
 /***/ }),
 
+/***/ "./assets/src/js/utils/cookies.js":
+/*!****************************************!*\
+  !*** ./assets/src/js/utils/cookies.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var Cookies = {
+    get: function get(name, def, global) {
+        var ret;
+
+        if (global) {
+            ret = wpCookies.get(name);
+        } else {
+            var ck = wpCookies.get('LP');
+
+            if (ck) {
+                ck = JSON.parse(ck);
+                ret = ck[name];
+            }
+        }
+
+        if (!ret && ret !== def) {
+            ret = def;
+        }
+
+        return ret;
+    },
+
+    set: function set(name, value, expires, domain, path, secure) {
+
+        if (arguments.length > 2) {
+            wpCookies.set(name, value, expires, domain, path, secure);
+        } else {
+            var ck = wpCookies.get('LP');
+
+            if (ck) {
+                ck = JSON.parse(ck);
+            } else {
+                ck = {};
+            }
+
+            ck[name] = value;
+
+            wpCookies.set('LP', JSON.stringify(ck));
+        }
+    }
+};
+
+exports.default = Cookies;
+
+/***/ }),
+
 /***/ "./assets/src/js/utils/email-validator.js":
 /*!************************************************!*\
   !*** ./assets/src/js/utils/email-validator.js ***!
@@ -1671,6 +1730,10 @@ var _eventCallback2 = _interopRequireDefault(_eventCallback);
 var _hook = __webpack_require__(/*! ./hook */ "./assets/src/js/utils/hook.js");
 
 var _hook2 = _interopRequireDefault(_hook);
+
+var _cookies = __webpack_require__(/*! ./cookies */ "./assets/src/js/utils/cookies.js");
+
+var _cookies2 = _interopRequireDefault(_cookies);
 
 var _jquery = __webpack_require__(/*! ./jquery.plugins */ "./assets/src/js/utils/jquery.plugins.js");
 
@@ -2183,12 +2246,14 @@ $(document).ready(function () {
 
 (0, _extend2.default)(_extends({
     Event_Callback: _eventCallback2.default,
-    MessageBox: _messageBox2.default
+    MessageBox: _messageBox2.default,
+    Cookies: _cookies2.default
 }, _default));
 
 exports.default = {
     fn: _fn2.default,
-    QuickTip: _quickTip2.default
+    QuickTip: _quickTip2.default,
+    Cookies: _cookies2.default
 };
 
 /***/ }),

@@ -120,6 +120,7 @@ add_action( 'learn-press/before-profile-nav', 'learn_press_profile_mobile_menu',
  * @see learn_press_single_course_summary
  */
 add_action( 'learn-press/single-course-summary', 'learn_press_single_course_summary', 5 );
+add_action( 'learn-press/single-course-summary', LP()->template()->cb('course_sidebar'), 5 );
 
 /**
  * @see learn_press_course_meta_start_wrapper

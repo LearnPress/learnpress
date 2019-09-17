@@ -378,7 +378,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
-						'author'          => __( 'Author', 'learnpress' ),
+						'instructor'      => __( 'Author', 'learnpress' ),
 						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
 						'duration'        => __( 'Duration', 'learnpress' ),
@@ -389,7 +389,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 			unset ( $columns['taxonomy-lesson-tag'] );
 			$user = wp_get_current_user();
+
 			if ( in_array( 'lp_teacher', $user->roles ) ) {
+				unset( $columns['instructor'] );
+			}
+
+			if ( ! empty( $columns['author'] ) ) {
 				unset( $columns['author'] );
 			}
 
@@ -400,11 +405,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Display content for custom column
 		 *
 		 * @param string $name
-		 * @param int $post_id
+		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			global $post;
 			switch ( $name ) {
+				case 'instructor':
+					$this->column_instructor( $post_id );
+					break;
 				case 'lp_course':
 					$this->_get_item_course( $post_id );
 					break;
@@ -540,7 +548,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['author']          = 'author';
+			$columns['instructor']      = 'author';
 			$columns[ LP_COURSE_CPT ]   = 'course-name';
 			$columns['num_of_question'] = 'question-count';
 

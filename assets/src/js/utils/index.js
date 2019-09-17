@@ -10,6 +10,8 @@ import QuickTip from './quick-tip';
 import MessageBox from './message-box';
 import Event_Callback from './event-callback';
 import Hook from './hook';
+import Cookies from './cookies';
+
 
 import * as jplugins from './jquery.plugins';
 
@@ -523,10 +525,12 @@ $(document).ready(function () {
 extend({
     Event_Callback,
     MessageBox,
+    Cookies,
     ..._default
 });
 
 export default {
     fn,
-    QuickTip
+    QuickTip,
+    Cookies
 }

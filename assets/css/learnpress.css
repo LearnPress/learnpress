@@ -642,6 +642,9 @@
   #learn-press-course-tabs .course-tab-panel.active {
     display: block; }
 
+#learn-press-course-tabs.show-all .course-tab-panel {
+  margin-bottom: 40px; }
+
 .lp-single-course .course-author {
   margin-bottom: 40px; }
   .lp-single-course .course-author .author-name {
@@ -654,7 +657,13 @@
       border-radius: 50%; }
     .lp-single-course .course-author .author-name a {
       display: block; }
-  .lp-single-course .course-author .author-bio {
+  .lp-single-course .course-author .author-bio .author-title {
+    font-size: 18px;
+    margin-bottom: 10px; }
+    .lp-single-course .course-author .author-bio .author-title a {
+      text-decoration: none;
+      box-shadow: none; }
+  .lp-single-course .course-author .author-bio .author-description {
     font-size: 15px;
     font-style: italic; }
   .lp-single-course .course-author:after {
@@ -714,6 +723,19 @@ ul.learn-press-nav-tabs {
       width: 100%;
       content: '';
       left: 0; }
+  ul.learn-press-nav-tabs[data-tabs="2"] .course-nav {
+    width: 50%; }
+  ul.learn-press-nav-tabs[data-tabs="3"] .course-nav {
+    width: 33.333333%; }
+  ul.learn-press-nav-tabs[data-tabs="4"] .course-nav {
+    width: 25%; }
+  ul.learn-press-nav-tabs[data-tabs="5"] .course-nav {
+    width: 20%; }
+  ul.learn-press-nav-tabs[data-tabs="6"] .course-nav {
+    width: 16.66666%; }
+  ul.learn-press-nav-tabs[data-tabs] .course-nav a {
+    width: 100%;
+    text-align: center; }
   ul.learn-press-nav-tabs:after {
     clear: both;
     display: block;
@@ -1327,6 +1349,8 @@ body .lp-quiz-buttons .form-button-finish-course {
     border-radius: 4px;
     -webkit-transition: background linear 0.25s;
     -moz-transition: background linear 0.25s;
+    -ms-transition: background linear 0.25s;
+    -o-transition: background linear 0.25s;
     transition: background linear 0.25s; }
     .answer-options .answer-option .option-title {
       font-size: smaller;
@@ -1344,6 +1368,8 @@ body .lp-quiz-buttons .form-button-finish-course {
         background: #DDD;
         -webkit-transition: background linear 0.25s;
         -moz-transition: background linear 0.25s;
+        -ms-transition: background linear 0.25s;
+        -o-transition: background linear 0.25s;
         transition: background linear 0.25s; }
     .answer-options .answer-option input[type="checkbox"],
     .answer-options .answer-option input[type="radio"] {
@@ -1385,6 +1411,8 @@ body .lp-quiz-buttons .form-button-finish-course {
         transform: rotate(36deg) scale(0);
         -webkit-transition: all 0.25s;
         -moz-transition: all 0.25s;
+        -ms-transition: all 0.25s;
+        -o-transition: all 0.25s;
         transition: all 0.25s; }
       .answer-options .answer-option input[type="checkbox"]:checked ~ .option-title .option-title-content,
       .answer-options .answer-option input[type="radio"]:checked ~ .option-title .option-title-content {
@@ -2113,9 +2141,27 @@ input[type="password"] {
   margin-bottom: 20px; }
 
 .learnpress-page .lp-button {
-  line-height: 45px;
-  padding: 0 12px;
-  height: 45px; }
+  padding: 12px 24px;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 1;
+  color: #FFF;
+  background: #00adff;
+  vertical-align: middle;
+  height: 40px;
+  -webkit-transition: all 0.25s;
+  -moz-transition: all 0.25s;
+  -ms-transition: all 0.25s;
+  -o-transition: all 0.25s;
+  transition: all 0.25s; }
+  .learnpress-page .lp-button.large {
+    font-size: 18px;
+    padding: 18px 30px;
+    height: 52px; }
+  .learnpress-page .lp-button.gray {
+    background: #849096; }
+  .learnpress-page .lp-button:hover {
+    background: #0387c5; }
 
 .course-meta {
   margin-bottom: 20px; }
@@ -2290,6 +2336,15 @@ ul.list-table-nav {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box; }
+
+.course-summary {
+  display: flex; }
+  .course-summary .course-landing-summary,
+  .course-summary .course-learning-summary {
+    flex: 1; }
+  .course-summary .course-summary-sidebar {
+    flex: 0 0 250px;
+    margin-left: 30px; }
 
 @media screen and (max-width: 768px) {
   ul.learn-press-courses .course {
