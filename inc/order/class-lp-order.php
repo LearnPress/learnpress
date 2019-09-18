@@ -1212,6 +1212,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $the_id );
 				do_action( 'learn-press/order/status-changed', $the_id, $old_status, $new_status );
 
+				
 				return true;
 			}
 

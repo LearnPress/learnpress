@@ -6,14 +6,41 @@
 
 // Twenty Sixteen
 body {
-    &.twentysixteen {
-        &.learnpress-page {
+    &.learnpress-page {
+        &.twentysixteen {
+            #primary {
+                .entry-content {
+                    float: none;
+                    width: auto;
+                    margin: 0 15%;
+                }
+            }
+        }
+        &.twentyfifteen {
+            .course-summary-sidebar {
+                .widget {
+                    width: 100%;
+                    padding: 0;
+                }
+            }
+        }
+        &.twentysixteen {
             .entry-footer {
                 display: none;
             }
             .entry-content {
                 float: none;
                 width: auto;
+            }
+        }
+
+        &.twentyseventeen {
+            #primary {
+                article {
+                    &.type-page {
+                        width: 100%;
+                    }
+                }
             }
         }
     }

@@ -3325,7 +3325,7 @@ function learn_press_body_classes( $classes ) {
 			$classes[] = get_stylesheet();
 			$classes[] = 'learnpress';
 			$classes[] = 'learnpress-page';
-		}
+        }
 	}
 
 	return $classes;

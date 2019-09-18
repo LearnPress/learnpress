@@ -1634,12 +1634,24 @@ button[data-counter] {
  * CSS for overriding some style defaults of themes
  */
 /**/
-body.twentysixteen.learnpress-page .entry-footer {
+body.learnpress-page.twentysixteen #primary .entry-content {
+  float: none;
+  width: auto;
+  margin: 0 15%; }
+
+body.learnpress-page.twentyfifteen .course-summary-sidebar .widget {
+  width: 100%;
+  padding: 0; }
+
+body.learnpress-page.twentysixteen .entry-footer {
   display: none; }
 
-body.twentysixteen.learnpress-page .entry-content {
+body.learnpress-page.twentysixteen .entry-content {
   float: none;
   width: auto; }
+
+body.learnpress-page.twentyseventeen #primary article.type-page {
+  width: 100%; }
 
 @media screen and (min-width: 61.5625em) {
   body.twentysixteen.learnpress-page .entry-footer {
@@ -2377,10 +2389,3 @@ ul.list-table-nav {
     ul.learn-press-courses .course {
       width: 100%;
       margin-right: 0; } }
-
-.twentyseventeen #primary {
-  width: 100%; }
-
-@media screen and (min-width: 48em) {
-  .has-sidebar:not(.error404) #primary {
-    width: 100%; } }

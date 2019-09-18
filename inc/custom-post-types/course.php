@@ -997,22 +997,22 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'priority' => 'default',
 				'fields'   => array(
 					array(
-						'name'       => __( 'Requirements', 'learnpress' ),
-						'id'         => '_lp_requirements',
-						'desc'       => '',
-						'type'       => 'wysiwyg'
+						'name' => __( 'Requirements', 'learnpress' ),
+						'id'   => '_lp_requirements',
+						'desc' => '',
+						'type' => 'wysiwyg'
 					),
 					array(
-						'name'       => __( 'Target audience', 'learnpress' ),
-						'id'         => '_lp_target_audience',
-						'desc'       => '',
-						'type'       => 'wysiwyg'
+						'name' => __( 'Target audience', 'learnpress' ),
+						'id'   => '_lp_target_audience',
+						'desc' => '',
+						'type' => 'wysiwyg'
 					),
 					array(
-						'name'       => __( 'Key features', 'learnpress' ),
-						'id'         => '_lp_key_features',
-						'desc'       => '',
-						'type'       => 'wysiwyg'
+						'name' => __( 'Key features', 'learnpress' ),
+						'id'   => '_lp_key_features',
+						'desc' => '',
+						'type' => 'wysiwyg'
 					)
 				)
 			);
@@ -1403,7 +1403,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			switch ( $column ) {
 				case 'thumbnail':
-					echo get_the_post_thumbnail( $post, 'thumbnail' );
+					echo $course->get_image( 'thumbnail' );
 					break;
 				case 'instructor':
 					$this->column_instructor( $post->ID );
