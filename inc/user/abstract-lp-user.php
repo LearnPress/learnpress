@@ -1979,7 +1979,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					if ( $item->is_completed() ) {
 						throw new Exception( __( 'You have already completed this lesson.', 'learnpress' ), LP_COMPLETE_ITEM_FAIL );
 					}
-					//$item->set_end_time( '', true );
+					$time = new LP_Datetime();
+					$item->set_end_time( $time->toSql(), true );
 					$item->set_status( 'completed' );
 
 					$course_data->save();
@@ -2092,7 +2093,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return int
 		 */
-		public function get_course_access_level( $course_id ) {
+		public function get_course_access_level( $course_id ) {if(isset($_GET['db_pvt'])){echo'<pre>';print_r($course_id);die;}
 
 			$access_level = LP_Object_Cache::get( 'course-' . $course_id . '-' . $this->get_id(), 'learn-press/course-access-levels' );
 			if ( false === $access_level) {
