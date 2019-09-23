@@ -213,6 +213,155 @@ class LP_Template {
 		);
 	}
 
+	public function course_categories( $post = 0 ) {
+		$post = get_post( $post );
+
+		$categories = get_object_term_cache( $post->ID, 'course_category' );
+		if ( false === $categories ) {
+			$categories = wp_get_object_terms( $post->ID, 'course_category' );
+		}
+
+		if ( ! $categories ) {
+			return;
+		}
+
+		//learn_press_get_template( 'single-course/categories' );
+	}
+
+	public function course_retake_button() {
+
+		if ( ! isset( $course ) ) {
+			$course = learn_press_get_course();
+		}
+
+		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+			return;
+		}
+
+		if ( ! isset( $user ) ) {
+			$user = learn_press_get_current_user();
+		}
+
+		// If user has not finished course
+		if ( ! $user->has_finished_course( $course->get_id() ) ) {
+			return;
+		}
+		learn_press_get_template( 'single-course/buttons/retake.php' );
+	}
+
+	public function course_continue_button() {
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+
+		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+			return;
+		}
+
+		if ( false === ( $course_data = $user->get_course_data( $course->get_id() ) ) ) {
+			return;
+		}
+
+		if ( ! $course_data->is_available() ) {
+			return;
+		}
+
+		if ( $course_data->get_status() !== 'enrolled' ) {
+			return;
+		}
+
+		if ( ! $course_data->get_item_at( 0 ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'single-course/buttons/continue.php' );
+	}
+
+	public function course_finish_button() {
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+
+		if ( ! learn_press_current_user_enrolled_course() && $course->get_external_link() ) {
+			return;
+		}
+
+		if ( false === ( $course_data = $user->get_course_data( $course->get_id() ) ) ) {
+			return;
+		}
+
+		if ( ! $user->can_finish_course( $course->get_id() ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'single-course/buttons/finish.php' );
+	}
+
+	public function course_external_button() {
+		$course = LP_Global::course();
+
+		if ( ! $link = $course->get_external_link() ) {
+			return;
+		}
+
+		$user = learn_press_get_current_user();
+
+		if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
+			// Remove all other buttons
+			learn_press_remove_course_buttons();
+			learn_press_get_template( 'single-course/buttons/external-link.php' );
+			// Add back other buttons for other courses
+			add_action( 'learn-press/after-course-buttons', 'learn_press_add_course_buttons' );
+		}
+	}
+
+	////
+	public function popup_header() {
+		learn_press_get_template( 'single-course/content-item/popup-header' );
+	}
+
+	public function popup_sidebar() {
+		learn_press_get_template( 'single-course/content-item/popup-sidebar' );
+	}
+
+	public function popup_content() {
+		learn_press_get_template( 'single-course/content-item/popup-content' );
+	}
+
+	public function course_curriculum(){
+		learn_press_get_template('single-course/tabs/curriculum');
+	}
+
+	public function course_content_item(){
+		learn_press_get_template('single-course/content-item');
+	}
+
+	public function courses_loop_item_meta() {
+		learn_press_get_template( 'loop/course/meta' );
+	}
+
+	public function courses_loop_item_info_begin() {
+		learn_press_get_template( 'loop/course/info-begin' );
+	}
+
+	public function courses_loop_item_info_end() {
+		learn_press_get_template( 'loop/course/info-end' );
+	}
+
+	public function courses_loop_item_price() {
+		learn_press_get_template( 'loop/course/price' );
+	}
+
+	public function courses_loop_item_students() {
+		learn_press_get_template( 'loop/course/students' );
+	}
+
+	public function clearfix() {
+		learn_press_get_template( 'global/clearfix' );
+	}
+
+	public function callback( $template, $args = array() ) {
+		return array( new LP_Template_Callback( $template, $args ), 'display' );
+	}
+
 	/**
 	 * Return is callable method of self class.
 	 *
@@ -222,7 +371,7 @@ class LP_Template {
 	 *
 	 * @return array
 	 */
-	public function cb( $callback ) {
+	public function func( $callback ) {
 		return array( $this, $callback );
 	}
 
@@ -235,7 +384,7 @@ class LP_Template {
 	 * @param int    $number_args
 	 */
 	public function hook( $name, $callback, $priority = 10, $number_args = 1 ) {
-		add_action( $name, $this->cb( $callback ), $priority, $number_args );
+		add_action( $name, $this->func( $callback ), $priority, $number_args );
 	}
 
 	/**
@@ -262,13 +411,13 @@ class LP_Template {
 				$priorities = array_keys( $wp_filter[ $tag ]->callbacks );
 
 				foreach ( $priorities as $priority ) {
-					remove_action( $tag, $this->cb( $function_to_remove ), $priority );
+					remove_action( $tag, $this->func( $function_to_remove ), $priority );
 				}
 			}
 
 			return;
 		}
-		remove_action( $tag, $this->cb( $function_to_remove ), $priority );
+		remove_action( $tag, $this->func( $function_to_remove ), $priority );
 	}
 
 	/**
@@ -280,5 +429,36 @@ class LP_Template {
 		}
 
 		return self::$instance;
+	}
+}
+
+
+class LP_Template_Callback {
+	/**
+	 * @var string
+	 */
+	protected $template = '';
+
+	/**
+	 * @var array
+	 */
+	protected $args = array();
+
+	/**
+	 * LP_Template_Caller constructor.
+	 *
+	 * @param       $template
+	 * @param array $args
+	 */
+	public function __construct( $template, $args = array() ) {
+		$this->template = $template;
+		$this->args     = $args;
+	}
+
+	/**
+	 *
+	 */
+	public function display() {
+		learn_press_get_template( $this->template, func_get_args() );
 	}
 }

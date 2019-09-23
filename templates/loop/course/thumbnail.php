@@ -19,7 +19,18 @@ $course = LP_Global::course();
 
 <div class="course-thumbnail">
     <a href="<?php the_permalink(); ?>">
-		<?php echo $course->get_image( 'course_thumbnail' ); ?>
+
+        <div class="thumbnail-preview">
+            <div class="thumbnail">
+
+                <div class="centered">
+	                <?php echo $course->get_image( 'course_thumbnail' ); ?>
+                </div>
+
+            </div>
+
+        </div>
+
     </a>
 
 	<?php echo $course->get_instructor_html( 34, 'course-instructor' ); ?>

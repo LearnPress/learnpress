@@ -21,6 +21,7 @@ $primary-bg-color-after: #000;
 @import "frontend/alerts";
 @import "frontend/courses";
 @import "frontend/course-sidebar";
+@import "frontend/popup";
 
 input[type="text"],
 input[type="email"],
@@ -53,6 +54,7 @@ input[type="password"] {
         background: #00adff;
         vertical-align: middle;
         height: 40px;
+        @include box-sizing(border-box);
 
         &.large {
             font-size: 18px;
@@ -74,6 +76,13 @@ input[type="password"] {
 
 .course-meta {
     margin-bottom: 20px;
+
+    .course-students {
+        &:before {
+            font-family: fontawesome;
+            content: '';
+        }
+    }
 }
 
 #learn-press-course-tabs {

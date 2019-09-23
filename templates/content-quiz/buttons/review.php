@@ -23,7 +23,7 @@ do_action( 'learn-press/before-quiz-review-button' ); ?>
 
 	<?php do_action( 'learn-press/begin-quiz-review-button' ); ?>
 
-    <button type="submit"><?php _e( 'Review', 'learnpress' ); ?></button>
+    <button type="submit" class="lp-button"><?php _e( 'Review', 'learnpress' ); ?></button>
 
 	<?php do_action( 'learn-press/end-quiz-review-button' ); ?>
 

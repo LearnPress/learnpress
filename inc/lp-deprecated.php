@@ -493,3 +493,481 @@ function learn_press_load_content_item_only( $name ) {
 		}
 	}
 }
+
+/**
+ * Version 4.x.x
+ */
+
+/**
+ * New functions since 3.0.0
+ */
+if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
+	/**
+	 * Purchase course button.
+	 */
+	function learn_press_course_purchase_button() {
+		_deprecated_function( __FUNCTION__, '4.x.x' );
+		LP()->template()->course_purchase_button();
+	}
+
+}
+
+if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
+	/**
+	 * Enroll course button.
+	 */
+	function learn_press_course_enroll_button() {
+		_deprecated_function( __FUNCTION__, '4.x.x' );
+		LP()->template()->course_enroll_button();
+	}
+
+}
+
+
+if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
+
+	/**
+	 * Retake course button
+	 */
+	function learn_press_course_retake_button() {
+		_deprecated_function( __FUNCTION__, '4.x.x' );
+		LP()->template()->func( 'course_retake_button' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_continue_button' ) ) {
+
+	/**
+	 * Retake course button
+	 */
+	function learn_press_course_continue_button() {
+		_deprecated_function( __FUNCTION__, '4.0.0' );
+		LP()->template()->func( 'course_continue_button' );
+	}
+}
+
+
+if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
+
+	/**
+	 * Retake course button
+	 */
+	function learn_press_course_finish_button() {
+		_deprecated_function( __FUNCTION__, '4.x.x' );
+		LP()->template()->func( 'course_finish_button' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_external_button' ) ) {
+
+	/**
+	 * Retake course button
+	 */
+	function learn_press_course_external_button() {
+		LP()->template()->func('course_external_button');
+	}
+}
+
+
+if ( ! function_exists( 'learn_press_curriculum_section_title' ) ) {
+
+	/**
+	 * Section title
+	 *
+	 * @param LP_Course_Section $section
+	 *
+	 * @hooked learn-press/section-summary
+	 */
+	function learn_press_curriculum_section_title( $section ) {
+		learn_press_get_template( 'single-course/section/title.php', array( 'section' => $section ) );
+	}
+
+}
+
+if ( ! function_exists( 'learn_press_curriculum_section_content' ) ) {
+
+	/**
+	 * Section content
+	 *
+	 * @param LP_Course_Section $section
+	 *
+	 * @hooked learn-press/section-summary
+	 */
+	function learn_press_curriculum_section_content( $section ) {
+		learn_press_get_template( 'single-course/section/content.php', array( 'section' => $section ) );
+	}
+
+}
+
+if ( ! function_exists( 'learn_press_checkout_form_login' ) ) {
+
+	/**
+	 * Output login form before checkout form if user is not logged in
+	 *
+	 * @hooked learn-press/before-checkout-form
+	 */
+	function learn_press_checkout_form_login() {
+
+		if ( ! LP()->checkout()->is_enable_login() ) {
+			return;
+		}
+
+		learn_press_get_template( 'checkout/form-login.php' );
+	}
+
+}
+
+if ( ! function_exists( 'learn_press_checkout_form_register' ) ) {
+
+	/**
+	 * Output register form before checkout form if user is not logged in.
+	 *
+	 * @hooked learn-press/before-checkout-form
+	 */
+	function learn_press_checkout_form_register() {
+
+		if ( ! LP()->checkout()->is_enable_register() ) {
+			return;
+		}
+
+		learn_press_get_template( 'checkout/form-register.php' );
+	}
+
+}
+
+if ( ! function_exists( 'learn_press_order_review' ) ) {
+	/**
+	 * Output order details
+	 *
+	 * @hooked learn-press/checkout-order-review
+	 */
+	function learn_press_order_review() {
+		learn_press_get_template( 'checkout/review-order.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_order_payment' ) ) {
+	/**
+	 * Output payment methods
+	 *
+	 * @hooked learn-press/checkout-order-review
+	 */
+	function learn_press_order_payment() {
+		$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+
+		learn_press_get_template( 'checkout/payment.php', array( 'available_gateways' => $available_gateways ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_order_guest_email' ) ) {
+	/**
+	 * Output payment methods
+	 *
+	 * @hooked learn-press/checkout-order-review
+	 */
+	function learn_press_order_guest_email() {
+		$checkout = LP()->checkout();
+		if ( $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
+			learn_press_get_template( 'checkout/guest-email.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_order_comment' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @hooked learn-press/checkout-order-review
+	 */
+	function learn_press_order_comment() {
+		learn_press_get_template( 'checkout/order-comment.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_user_profile_header' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @hooked learn-press/before-user-profile
+	 */
+	function learn_press_user_profile_header( $user ) {
+		$profile = LP_Global::profile();
+
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		learn_press_get_template( 'profile/profile-cover.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_user_profile_content' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @hooked learn-press/user-profile
+	 */
+	function learn_press_user_profile_content( $user ) {
+		$profile = LP_Global::profile();
+
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		learn_press_get_template( 'profile/content.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_user_profile_footer' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @hooked learn-press/after-user-profile
+	 */
+	function learn_press_user_profile_footer( $user ) {
+		//learn_press_get_template( 'profile/footer.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_user_profile_tabs' ) ) {
+	/**
+	 * Get tabs for user profile
+	 *
+	 * @param $user
+	 */
+	function learn_press_user_profile_tabs( $user = null ) {
+		$profile = LP_Global::profile();
+
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_single_course_summary' ) ) {
+	/**
+	 * Display content of single course summary
+	 */
+	function learn_press_single_course_summary() {
+		if ( learn_press_is_learning_course() ) {
+			learn_press_get_template( 'single-course/content-learning.php' );
+		} else {
+			learn_press_get_template( 'single-course/content-landing.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_price' ) ) {
+	/**
+	 * Display course price.
+	 */
+	function learn_press_course_price() {
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+
+		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
+			return;
+		}
+
+		learn_press_get_template( 'single-course/price.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_meta_start_wrapper' ) ) {
+	/**
+	 * Output the thumbnail of the course within loop
+	 */
+	function learn_press_course_meta_start_wrapper() {
+		learn_press_get_template( 'global/course-meta-start.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_meta_end_wrapper' ) ) {
+	/**
+	 * Output the thumbnail of the course within loop
+	 */
+	function learn_press_course_meta_end_wrapper() {
+		learn_press_get_template( 'global/course-meta-end.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_students' ) ) {
+	/**
+	 * Display course students
+	 */
+	function learn_press_course_students() {
+		learn_press_get_template( 'single-course/students.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_status' ) ) {
+	/**
+	 * Display the title for single course
+	 */
+	function learn_press_course_status() {
+		learn_press_get_template( 'single-course/status.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_courses_loop_item_instructor' ) ) {
+	/**
+	 * Output the instructor of the course within loop
+	 */
+	function learn_press_courses_loop_item_instructor() {
+		learn_press_get_template( 'loop/course/instructor.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_tabs' ) ) {
+	/*
+	 * Output course tabs
+	 */
+
+	function learn_press_course_tabs() {
+		learn_press_get_template( 'single-course/tabs/tabs.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_item_content' ) ) {
+	/**
+	 * Get course item content template.
+	 *
+	 * @since 3.0.0
+	 */
+	function learn_press_course_item_content() {
+		global $lp_course, $lp_course_item;
+
+		$item = LP_Global::course_item();
+
+		if ( $item->is_blocked() ) {
+			learn_press_get_template( 'global/block-content.php' );
+
+			return;
+		}
+
+		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
+
+		if ( file_exists( $item_template_name ) ) {
+			learn_press_get_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
+		}
+	}
+}
+
+
+if ( ! function_exists( 'learn_press_content_item_quiz_title' ) ) {
+	function learn_press_content_item_quiz_title() {
+		learn_press_get_template( 'content-quiz/title.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_quiz_intro' ) ) {
+	function learn_press_content_item_quiz_intro() {
+		$course = LP_Global::course();
+		$user   = LP_Global::user();
+		$quiz   = LP_Global::course_item_quiz();
+
+		if ( $user->has_quiz_status( array( 'started', 'completed' ), $quiz->get_id(), $course->get_id() ) ) {
+			return;
+		}
+
+		if ( ! $user->has_quiz_status( 'started', $quiz->get_id(), $course->get_id() ) ) {
+			//return;
+		}
+
+		if ( $quiz->get_viewing_question() ) {
+			return;
+		}
+
+		learn_press_get_template( 'content-quiz/intro.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_quiz_content' ) ) {
+
+	function learn_press_content_item_summary_quiz_content() {
+		$item = LP_Global::course_item();
+
+		if ( ! $item->get_viewing_question() ) {
+			learn_press_get_template( 'content-quiz/description.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_question_title' ) ) {
+
+	function learn_press_content_item_summary_question_title() {
+		$quiz = LP_Global::course_item_quiz();
+
+		if ( $question = $quiz->get_viewing_question() ) {
+			learn_press_get_template( 'content-question/title.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_quiz_progress' ) ) {
+
+	function learn_press_content_item_summary_quiz_progress() {
+		$course = LP_Global::course();
+		$quiz   = LP_Global::course_item_quiz();
+		$user   = LP_Global::user();
+
+		if ( ! $user ) {
+			return;
+		}
+
+		if ( $user->has_quiz_status( array( 'viewed', '' ), $quiz->get_id(), $course->get_id() ) ) {
+			return;
+		}
+
+		if ( $question = $quiz->get_viewing_question() ) {
+			learn_press_get_template( 'content-quiz/progress.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_quiz_countdown' ) ) {
+
+	function learn_press_content_item_summary_quiz_countdown() {
+		$quiz = LP_Global::course_item_quiz();
+
+		if ( $question = $quiz->get_viewing_question() ) {
+			learn_press_get_template( 'content-quiz/countdown.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_quiz_result' ) ) {
+
+	function learn_press_content_item_summary_quiz_result() {
+		$quiz = LP_Global::course_item_quiz();
+		$user = LP_Global::user();
+		if ( ! $user->has_completed_quiz( $quiz->get_id(), get_the_ID() ) ) {
+			return;
+		}
+		learn_press_get_template( 'content-quiz/result.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_quiz_question' ) ) {
+
+	function learn_press_content_item_summary_quiz_question() {
+		$quiz = LP_Global::course_item_quiz();
+
+		if ( $question = $quiz->get_viewing_question() ) {
+			learn_press_get_template( 'content-question/content.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_question_content' ) ) {
+
+	function learn_press_content_item_summary_question_content() {
+		$quiz = LP_Global::course_item_quiz();
+
+		if ( $question = $quiz->get_viewing_question() ) {
+			learn_press_get_template( 'content-question/description.php' );
+		}
+	}
+}

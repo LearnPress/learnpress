@@ -39,7 +39,7 @@ $quiz = LP_Global::course_item_quiz();
 	/**
 	 * @see learn_press_content_item_summary_question_numbers()
 	 */
-	do_action( 'learn-press/after-content-item-summary/' . $quiz->get_item_type() );
+	//do_action( 'learn-press/after-content-item-summary/' . $quiz->get_item_type() );
 	?>
 
 </div>

@@ -98,7 +98,15 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	public function _get_scripts() {
-		$min = learn_press_is_debug() ? '' : '.min';
+		$min   = learn_press_is_debug() ? '' : '.min';
+		$wp_js = array(
+			'wp-element',
+			'wp-compose',
+			'wp-data',
+			'wp-hooks',
+			'wp-api-fetch',
+			'lodash'
+		);
 
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
@@ -151,19 +159,31 @@ class LP_Assets extends LP_Abstract_Assets {
 					'enqueue' => learn_press_is_checkout() || learn_press_is_course() && ! learn_press_is_learning_course()
 
 				),
-				'course'           => array(
-					'url'  => self::url( 'js/frontend/course.js' ),
-					'deps' => array( 'global' )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
+				'data-controls'           => array(
+					'url'  => self::url( 'js/frontend/data-controls.js' ),
+					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
 				),
-				'courses'           => array(
+				'lesson'           => array(
+					'url'  => self::url( 'js/frontend/lesson.js' ),
+					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
+				),
+				'quiz'           => array(
+					'url'  => self::url( 'js/frontend/quiz.js' ),
+					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
+				),
+				'single-course'    => array(
+					'url'  => self::url( 'js/frontend/single-course.js' ),
+					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
+				),
+				'courses'          => array(
 					'url'  => self::url( 'js/frontend/courses.js' ),
 					'deps' => array( 'global' )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
 				),
-				'quiz'             => array(
-					'url'     => self::url( 'js/frontend/quiz.js' ),
-					'deps'    => array( 'global'),//, 'jquery-scrollbar', 'watchjs' ),
-					'enqueue' => LP_Global::course_item_quiz() ? true : false
-				),
+//				'quiz'             => array(
+//					'url'     => self::url( 'js/frontend/quiz.js' ),
+//					'deps'    => array( 'global' ),//, 'jquery-scrollbar', 'watchjs' ),
+//					'enqueue' => LP_Global::course_item_quiz() ? true : false
+//				),
 				'profile-user'     => array(
 					'url'     => self::url( 'js/frontend/profile.js' ),
 					'deps'    => array(
@@ -259,3 +279,4 @@ function learn_press_assets() {
 if ( ! is_admin() ) {
 	learn_press_assets();
 }
+

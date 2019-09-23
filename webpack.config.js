@@ -44,6 +44,7 @@ module.exports = {
         './assets/js/global': './assets/src/js/global.js',
         './assets/js/utils': './assets/src/js/utils/index.js',
         './assets/js/frontend/courses': './assets/src/js/frontend/courses.js',
+        './assets/js/frontend/single-course': './assets/src/js/frontend/single-course.js',
     },
     output: {
         path: path.resolve(__dirname),

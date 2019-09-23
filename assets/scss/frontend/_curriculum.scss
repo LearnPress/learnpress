@@ -67,9 +67,12 @@
             font-size: 24px;
         }
     }
+
     .lp-course-buttons {
         margin-bottom: 20px;
     }
+
+
 }
 
 .edit-content {
@@ -464,7 +467,7 @@ ul.learn-press-nav-tabs {
 }
 
 body {
-    &.course-item-popup {
+    &.course-item-popupx {
         overflow: hidden;
         _opacity: 0;
         #learn-press-course-curriculum {
@@ -808,7 +811,6 @@ body {
             float: right;
             margin-right: 15px;
             button {
-                line-height: 34px;
             }
         }
     }

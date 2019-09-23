@@ -24,7 +24,7 @@ do_action( 'learn-press/before-quiz-result-button' );
 
 	<?php do_action( 'learn-press/begin-quiz-result-button' ); ?>
 
-    <button type="submit"><?php _e( 'Summary', 'learnpress' ); ?></button>
+    <button type="submit" class="lp-button"><?php _e( 'Summary', 'learnpress' ); ?></button>
 
 	<?php do_action( 'learn-press/end-quiz-result-button' ); ?>
 

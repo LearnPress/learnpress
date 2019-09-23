@@ -347,7 +347,8 @@ class LP_Page_Controller {
 			if ( $this->_is_single() ) {
 				global $post;
 				setup_postdata( $post );
-				add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
+				//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
+				return learn_press_locate_template('content-single-item.php');
 			} elseif ( $this->_is_archive() ) {
 				$this->_load_archive_courses( $template );
 			}
@@ -721,6 +722,7 @@ class LP_Page_Controller {
 		}
 
 		$content = ob_get_clean();
+
 		remove_filter( 'the_content', 'wpautop' );
 
 		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );

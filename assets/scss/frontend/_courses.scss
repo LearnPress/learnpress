@@ -45,12 +45,9 @@
 
             .course-thumbnail {
                 position: relative;
-                img {
-                    line-height: 1;
+                img{
                     vertical-align: middle;
-                    &.x{}
                 }
-
                 .course-instructor {
                     display: inline-block;
                     left: 5px;
@@ -150,7 +147,7 @@
                     }
                 }
 
-                .course-excerpt{
+                .course-excerpt {
                     display: none;
                     margin: 0 10px 10px 10px;
                     font-size: 14px;
@@ -174,7 +171,7 @@
             }
 
             .course-categories,
-            .course-tags{
+            .course-tags {
                 display: none;
             }
         }
@@ -185,6 +182,43 @@
                 display: flex;
                 .course-thumbnail {
                     flex: 0 0 300px;
+
+                    .thumbnail-preview {
+                        &:before {
+                            //content: "";
+                            //display: block;
+                            //padding-top: 100%;
+                        }
+                        .thumbnail {
+                            overflow: hidden;
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            bottom: 0;
+                            left: 0;
+                            opacity: 1;
+                            transition: opacity .1s;
+                            .centered {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                transform: translate(50%, 50%);
+                                img {
+                                    line-height: 1;
+                                    vertical-align: middle;
+
+                                    transform: translate(-50%, -50%);
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    max-width: none;
+                                    max-height: 100%;
+                                }
+                            }
+                        }
+                    }
                 }
                 .course-content {
                     flex: 1;
@@ -193,12 +227,21 @@
                     border: 1px solid #eaf5fb;
                     border-left: 0;
                     background: #f7fcff;
+                    min-height: 200px;
+                    .separator {
+                        display: block;
+                        margin-bottom: 60px;
+                    }
                     .course-info {
                         position: absolute;
                         bottom: 10px;
                         left: 10px;
                         right: 10px;
                         color: inherit;
+
+                        &:before {
+                            content: '';
+                        }
                     }
                 }
                 .course-permalink {
@@ -234,7 +277,7 @@
                     }
                 }
 
-                .course-excerpt{
+                .course-excerpt {
                     display: -webkit-box;
                 }
             }

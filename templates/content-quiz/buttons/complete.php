@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit();
 
 		<?php do_action( 'learn-press/quiz/begin-complete-button' ); ?>
 
-        <button type="submit"><?php _e( 'Complete', 'learnpress' ); ?></button>
+        <button type="submit" class="lp-button"><?php _e( 'Submit', 'learnpress' ); ?></button>
 
 		<?php do_action( 'learn-press/quiz/end-complete-button' ); ?>
 
