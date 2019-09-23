@@ -1,0 +1,88 @@
+#popup-course {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #FFF;
+  z-index: 99990;
+  display: flex; }
+  #popup-course #popup-header {
+    position: fixed;
+    left: 0;
+    right: 0;
+    background: #5383F7;
+    z-index: 100;
+    border-bottom: 1px solid #d9e0f1;
+    padding: 0;
+    height: 60px; }
+    #popup-course #popup-header > * {
+      display: inline-block;
+      margin: 0 20px 0 0;
+      padding: 0;
+      vertical-align: top; }
+  #popup-course #popup-sidebar {
+    flex: 0 0 400px;
+    position: relative;
+    margin: 60px 0 0 0;
+    overflow: auto;
+    border-right: 1px solid #d9e0f1; }
+    #popup-course #popup-sidebar .course-curriculum {
+      width: 400px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      overflow: auto; }
+      #popup-course #popup-sidebar .course-curriculum .section .circle-progress {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 3px solid #d9e0f1;
+        border-radius: 50%; }
+      #popup-course #popup-sidebar .course-curriculum .section .section-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #FFF;
+        border-bottom: 1px solid #d9e0f1;
+        padding: 10px 10px; }
+        #popup-course #popup-sidebar .course-curriculum .section .section-header .section-title {
+          color: #5383F7;
+          font-weight: normal;
+          margin-bottom: 0;
+          font-size: 16px;
+          line-height: 1;
+          padding: 8px 0; }
+        #popup-course #popup-sidebar .course-curriculum .section .section-header .section-desc {
+          display: none; }
+      #popup-course #popup-sidebar .course-curriculum .section .section-content {
+        margin-bottom: 0; }
+        #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item {
+          border-bottom: 1px solid #d9e0f1;
+          padding: 0 10px; }
+          #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .section-item-link {
+            color: #777; }
+          #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .item-name {
+            padding: 10px 10px 10px 5px; }
+          #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .circle-progress {
+            width: 18px;
+            height: 18px;
+            border-width: 2px; }
+          #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item .item-meta.duration {
+            background: #d9e0f1; }
+          #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item:before {
+            background: #d9e0f1; }
+  #popup-course #popup-content {
+    flex: 1;
+    position: relative;
+    margin: 60px 0 0 0;
+    overflow: auto; }
+    #popup-course #popup-content #learn-press-content-item {
+      margin: 40px auto;
+      max-width: 1200px;
+      width: 90%; }
+  #popup-course .lp-quiz-buttons .complete-quiz {
+    float: right; }
+
+body.admin-bar #popup-course {
+  top: 32px; }
