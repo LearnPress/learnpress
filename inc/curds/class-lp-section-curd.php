@@ -365,7 +365,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$quiz_curd  = new LP_Quiz_CURD();
 			$item['id'] = $quiz_curd->create( $args );
 		} else {
-			$item['id'] = apply_filters( 'learn-press/new-section-item-data', $item, $args, $this->course_id );
+			$item['id'] = apply_filters( 'learn-press/new-section-item-data', $item['id'], $item, $args, $this->course_id );
 		}
 
 		if ( is_wp_error( $item['id'] ) || ! $item['id'] ) {

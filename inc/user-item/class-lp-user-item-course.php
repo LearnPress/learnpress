@@ -319,7 +319,8 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				$results = $this->_evaluate_course_by_completed_quizzes();
 				break;
 			default:
-				$results = apply_filters( 'learn-press/evaluate_passed_conditions', $course_result, $this );
+				$results = array();
+				$results = apply_filters( 'learn-press/evaluate_passed_conditions', $results, $course_result, $this );
 				break;
 		}
 
