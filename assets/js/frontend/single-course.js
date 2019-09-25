@@ -1,3 +1,4 @@
+this["LP"] = this["LP"] || {}; this["LP"]["singleCourse"] =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -90,10 +91,123 @@
 /*!*************************************************!*\
   !*** ./assets/src/js/frontend/single-course.js ***!
   \*************************************************/
+/*! exports provided: init */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
+/* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
+
+function init() {
+  console.log('Init single course');
+}
+jQuery(function ($) {
+  $('.course-curriculum').scroll(function () {
+    var $el = $('#section-section-1-549 .section-header');
+    console.log($el.css('top'), $el.scrollTop());
+  }); // wp.element.render(
+  //     <SingleCourse />,
+  //     $('.entry-content')[0]
+  // )
+});
+
+/***/ }),
+
+/***/ "./assets/src/js/frontend/single-course/index.js":
+/*!*******************************************************!*\
+  !*** ./assets/src/js/frontend/single-course/index.js ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _learnpress_quiz__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @learnpress/quiz */ "@learnpress/quiz");
+/* harmony import */ var _learnpress_quiz__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_learnpress_quiz__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./store */ "./assets/src/js/frontend/single-course/store/index.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_store__WEBPACK_IMPORTED_MODULE_2__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+var SingleCourse =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(SingleCourse, _Component);
+
+  function SingleCourse() {
+    _classCallCheck(this, SingleCourse);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(SingleCourse).apply(this, arguments));
+  }
+
+  _createClass(SingleCourse, [{
+    key: "render",
+    value: function render() {
+      return React.createElement(React.Fragment, null, "this is course", React.createElement(_learnpress_quiz__WEBPACK_IMPORTED_MODULE_1___default.a, null));
+    }
+  }]);
+
+  return SingleCourse;
+}(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (SingleCourse);
+
+/***/ }),
+
+/***/ "./assets/src/js/frontend/single-course/store/index.js":
+/*!*************************************************************!*\
+  !*** ./assets/src/js/frontend/single-course/store/index.js ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: Plugin/Preset files are not allowed to export objects, only functions. In /Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-preset-es2015/lib/index.js\n    at createDescriptor (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:178:11)\n    at items.map (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:109:50)\n    at Array.map (<anonymous>)\n    at createDescriptors (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:109:29)\n    at createPresetDescriptors (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:101:10)\n    at passPerPreset (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:58:96)\n    at cachedFunction (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/caching.js:33:19)\n    at presets.presets (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:29:84)\n    at mergeChainOpts (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:320:26)\n    at /Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:283:7\n    at buildRootChain (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:68:29)\n    at loadPrivatePartialConfig (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/partial.js:85:55)\n    at Object.loadPartialConfig (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/partial.js:110:18)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:144:26)\n    at Generator.next (<anonymous>)\n    at asyncGeneratorStep (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:3:103)\n    at _next (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:194)\n    at /Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:364\n    at new Promise (<anonymous>)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:97)\n    at Object.loader (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:60:18)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:55:12)");
+/**
+ * Created by tu on 9/19/19.
+ */
+
+/***/ }),
+
+/***/ "@learnpress/quiz":
+/*!***************************************!*\
+  !*** external {"this":["LP","quiz"]} ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function() { module.exports = this["LP"]["quiz"]; }());
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!******************************************!*\
+  !*** external {"this":["wp","element"]} ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function() { module.exports = this["wp"]["element"]; }());
 
 /***/ })
 

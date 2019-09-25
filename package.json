@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./vendor/bin/phpcs -d date.timezone=UTC",
-    "dev": "cross-env BABEL_ENV=default webpack --mode=development --watch",
+    "dev": "cross-env BABEL_ENV=default webpack --mode=development",
+    "dev-watch": "cross-env BABEL_ENV=default webpack --mode=development --watch",
     "dev-packages": "cross-env BABEL_ENV=default webpack --config tools/build.packages.js --mode=development --watch",
     "build-packages": "cross-env BABEL_ENV=default webpack --config tools/build.packages.js",
     "build": "cross-env BABEL_ENV=default NODE_ENV=production webpack --progress -p",
@@ -22,7 +23,6 @@
   },
   "homepage": "https://github.com/LearnPress/LearnPress#readme",
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@wordpress/babel-preset-default": "^1.2.0",
@@ -75,6 +75,7 @@
     "yargs": "^7.1.0"
   },
   "dependencies": {
+    "@babel/core": "^7.6.0",
     "@learnpress/custom-templated-path-webpack-plugin": "^1.0.0",
     "@learnpress/dependency-extraction-webpack-plugin": "^1.0.0",
     "@wordpress/custom-templated-path-webpack-plugin": "^1.5.0",

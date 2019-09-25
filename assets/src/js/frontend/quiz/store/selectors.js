@@ -62,3 +62,12 @@ export function getData(state, prop) {
 
     return userQuiz;
 }
+
+export function getDefaultRestArgs(state) {
+    const {userQuiz} = state;
+
+    return {
+        item_id: userQuiz.id,
+        course_id: userQuiz.course_id
+    }
+}

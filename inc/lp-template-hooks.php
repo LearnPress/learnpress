@@ -185,6 +185,9 @@ add_action( 'learn-press/content-single', 'learn_press_content_single_course', 1
 add_action( 'learn-press/single-item-summary', LP()->template()->func( 'popup_header' ), 5 );
 add_action( 'learn-press/single-item-summary', LP()->template()->func( 'popup_sidebar' ), 10 );
 add_action( 'learn-press/single-item-summary', LP()->template()->func( 'popup_content' ), 10 );
+add_action( 'learn-press/single-item-summary', LP()->template()->func( 'popup_footer' ), 15 );
+
+add_action( 'learn-press/popup-footer', LP()->template()->func( 'popup_footer_nav' ), 15 );
 
 /**
  * @see learn_press_course_item_content
@@ -243,7 +246,7 @@ add_action( 'learn-press/course-section-item/before-lp_lesson-meta', 'learn_pres
  * @see learn_press_content_item_summary_content
  */
 add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_quiz_title', 5 );
-add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_quiz_intro', 10 );
+//add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_quiz_intro', 10 );
 
 /**
  * @see learn_press_content_item_summary_quiz_content
@@ -259,6 +262,7 @@ add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_cont
 //add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 20 );
 //add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_question', 25 );
 add_action( 'learn-press/content-item-summary/lp_quiz', function () {
+	$user      = learn_press_get_current_user();
 	$course    = LP_Global::course();
 	$quiz      = LP_Global::course_item_quiz();
 	$questions = array();
@@ -276,7 +280,12 @@ add_action( 'learn-press/content-item-summary/lp_quiz', function () {
 		}
 	}
 
+	$userCourse = $user->get_course_data( $course->get_id() );
+	$userQuiz   = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
+
 	$js = array(
+		'course_id'       => $course->get_id(),
+		'nonce'           => wp_create_nonce( sprintf( 'user-quiz-%d', get_current_user_id() ) ),
 		'id'              => $quiz->get_id(),
 		'title'           => $quiz->get_title(),
 		'content'         => $quiz->get_content(),
@@ -284,9 +293,10 @@ add_action( 'learn-press/content-item-summary/lp_quiz', function () {
 		'questionIds'     => array_map( 'absint', array_values( $question_ids ) ),
 		'currentQuestion' => absint( reset( $question_ids ) ),
 		'questionNav'     => 'infinity',
-		'status'          => '',
+		'status'          => $userQuiz ? $userQuiz->get_status() : '',
 		'attempts'        => array(),
-		'attemptsCount'   => 10
+		'attemptsCount'   => 10,
+		'answered'        => ""
 	);
 
 	?>

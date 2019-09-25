@@ -96,7 +96,7 @@ class LP_REST_Authentication {
 		$this->user = $this->get_user_data_by_consumer_key( $params['oauth_consumer_key'] );
 
 		if ( empty( $this->user ) ) {
-			$this->set_error( new WP_Error( 'woocommerce_rest_authentication_error', __( 'Consumer key is invalid.', 'woocommerce' ), array( 'status' => 401 ) ) );
+			$this->set_error( new WP_Error( 'learnpress_rest_authentication_error', __( 'Consumer key is invalid.', 'learnpress' ), array( 'status' => 401 ) ) );
 
 			return false;
 		}

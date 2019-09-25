@@ -93,7 +93,104 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: Plugin/Preset files are not allowed to export objects, only functions. In /Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-preset-es2015/lib/index.js\n    at createDescriptor (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:178:11)\n    at items.map (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:109:50)\n    at Array.map (<anonymous>)\n    at createDescriptors (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:109:29)\n    at createPresetDescriptors (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:101:10)\n    at passPerPreset (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:58:96)\n    at cachedFunction (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/caching.js:33:19)\n    at presets.presets (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:29:84)\n    at mergeChainOpts (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:320:26)\n    at /Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:283:7\n    at buildRootChain (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:68:29)\n    at loadPrivatePartialConfig (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/partial.js:85:55)\n    at Object.loadPartialConfig (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/partial.js:110:18)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:144:26)\n    at Generator.next (<anonymous>)\n    at asyncGeneratorStep (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:3:103)\n    at _next (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:194)\n    at /Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:364\n    at new Promise (<anonymous>)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:97)\n    at Object.loader (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:60:18)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:55:12)");
+;
+
+(function ($) {
+  var fetchCourses = function fetchCourses(args) {
+    var url = args.url || 'http://localhost/learnpress/dev/courses-2/';
+    var $wrapElement = args.wrapElement || '#lp-archive-courses';
+    delete args.url;
+    delete args.wrapElement;
+    LP.setUrl(url);
+    return new Promise(function (resolve, reject) {
+      $.ajax({
+        url: url,
+        data: $.extend({}, args || {}),
+        type: 'post',
+        success: function success(response) {
+          var newEl = $(response).contents().find($wrapElement);
+
+          if (newEl.length) {
+            $($wrapElement).replaceWith(newEl);
+          } else {
+            $($wrapElement).html('');
+          }
+
+          bindEventCoursesLayout();
+          $.scrollTo($wrapElement);
+          resolve(newEl);
+        },
+        error: function error(response) {
+          reject();
+        }
+      });
+    });
+  };
+  /**
+   * Ajax searching when user typing on search-box.
+   *
+   * @param event
+   */
+
+
+  var searchCourseHandler = function searchCourseHandler(event) {
+    event.preventDefault();
+    fetchCourses({
+      s: $(this).find('input[name="s"]').val()
+    });
+  };
+  /**
+   * Switch layout between Grid and List.
+   *
+   * @param event
+   */
+
+
+  var switchCoursesLayoutHandler = function switchCoursesLayoutHandler(event) {
+    var $target;
+    var $parent = $(this).parent();
+
+    while (!$target || !$target.length) {
+      $target = $parent.find('.learn-press-courses');
+      $parent = $parent.parent();
+    }
+
+    $target.attr('data-layout', this.value);
+    LP.Cookies.set('courses-layout', this.value);
+  };
+
+  var selectCoursesLayout = function selectCoursesLayout() {
+    var coursesLayout = LP.Cookies.get('courses-layout');
+    var switches = $('.lp-courses-bar .switch-layout').find('[name="lp-switch-layout-btn"]');
+
+    if (coursesLayout) {
+      switches.filter('[value="' + coursesLayout + '"]').prop('checked', true).trigger('change');
+    }
+  };
+
+  var coursePaginationHandler = function coursePaginationHandler(event) {
+    event.preventDefault();
+    var permalink = $(event.target).attr('href');
+
+    if (!permalink) {
+      return;
+    }
+
+    fetchCourses({
+      url: permalink
+    });
+  };
+
+  var bindEventCoursesLayout = function bindEventCoursesLayout() {
+    $('#lp-archive-courses').on('submit', '.search-courses', searchCourseHandler).on('change', 'input[name="lp-switch-layout-btn"]', switchCoursesLayoutHandler).on('click', '.learn-press-pagination .page-numbers', coursePaginationHandler);
+  };
+
+  $(document).ready(function () {
+    bindEventCoursesLayout(); //
+
+    selectCoursesLayout();
+  });
+})(jQuery);
 
 /***/ })
 

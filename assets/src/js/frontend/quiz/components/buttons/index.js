@@ -61,33 +61,67 @@ class Buttons extends Component {
         submitQuiz();
     };
 
+    setQuizMode = (mode) => () => {
+        const {
+            setQuizMode
+        } = this.props;
+
+        setQuizMode(mode);
+    };
+
+    isReviewing = () => {
+        const {
+            isReviewing
+        } = this.props;
+
+        return isReviewing
+    };
+
     render() {
         const {
             status,
-            questionNav
+            questionNav,
+            isReviewing
         } = this.props;
 
         return <div className="quiz-buttons">
             {
-                -1 !== ['', 'completed'].indexOf(status) &&
+                -1 !== ['', 'completed'].indexOf(status) && !isReviewing &&
                 <button className="lp-button start" onClick={ this.startQuiz }>{ __('Start', 'learnpress') }</button>
             }
 
             {
-                'started' === status && (
+                ('started' === status || isReviewing) && (
                     <React.Fragment>
                         { ('infinity' === questionNav || !this.isFirst()) &&
-                        <button className="lp-button nav prev" onClick={ this.nav('prev') }>{ __('Prev', 'learnpress') }</button>
+                        <button className="lp-button nav prev"
+                                onClick={ this.nav('prev') }>{ __('Prev', 'learnpress') }</button>
                         }
 
                         {('infinity' === questionNav || !this.isLast()) &&
-                        <button className="lp-button nav next" onClick={ this.nav('next') }>{ __('Next', 'learnpress') }</button>
+                        <button className="lp-button nav next"
+                                onClick={ this.nav('next') }>{ __('Next', 'learnpress') }</button>
                         }
 
-                        { ('infinity' === questionNav || this.isLast()) &&
-                        <button className="lp-button submit" onClick={ this.submit }>{ __('Submit', 'learnpress') }</button>
+                        { (('infinity' === questionNav || this.isLast()) && !isReviewing) &&
+                        <button className="lp-button submit-quiz"
+                                onClick={ this.submit }>{ __('Submit', 'learnpress') }</button>
                         }
                     </React.Fragment>
+                )
+            }
+
+            {
+                isReviewing && (
+                    <button className="lp-button back-quiz"
+                            onClick={ this.setQuizMode('') }>{ __('Back', 'learnpress') }</button>
+                )
+            }
+
+            {
+                ('completed' === status) && !isReviewing && (
+                    <button className="lp-button review-quiz"
+                            onClick={ this.setQuizMode('reviewing') }>{ __('Review', 'learnpress') }</button>
                 )
             }
 
@@ -105,19 +139,22 @@ export default compose([
             status: getData('status'),
             questionIds: getData('questionIds'),
             questionNav: getData('questionNav'),
-            currentQuestion: getData('currentQuestion')
+            currentQuestion: getData('currentQuestion'),
+            isReviewing: getData('mode') === 'reviewing'
         }
     }),
     withDispatch((dispatch, {id}) => {
         const {
             startQuiz,
             setCurrentQuestion,
-            submitQuiz
+            submitQuiz,
+            setQuizMode
         } = dispatch('learnpress/quiz');
 
         return {
             startQuiz,
             setCurrentQuestion,
+            setQuizMode,
             submitQuiz: function () {
                 submitQuiz(id)
             }

@@ -90,10 +90,322 @@
 /*!**************************************!*\
   !*** ./assets/src/js/admin/admin.js ***!
   \**************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pages_update__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pages/update */ "./assets/src/js/admin/pages/update.js");
+/* harmony import */ var _pages_update__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_pages_update__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * JS code may run in all pages in admin.
+ *
+ * @version 3.2.6
+ */
+//import Utils from './utils';
+//import Test from './test';
+
+;
+
+(function () {
+  var $ = jQuery;
+
+  var updateItemPreview = function updateItemPreview() {
+    $.ajax({
+      url: '',
+      data: {
+        'lp-ajax': 'toggle_item_preview',
+        item_id: this.value,
+        previewable: this.checked ? 'yes' : 'no',
+        nonce: $(this).attr('data-nonce')
+      },
+      dataType: 'text',
+      success: function success(response) {
+        response = LP.parseJSON(response);
+      }
+    });
+  };
+  /**
+   * Callback event for button to creating pages inside error message.
+   *
+   * @param {Event} e
+   */
+
+
+  var createPages = function createPages(e) {
+    var $button = $(this).addClass('disabled');
+    e.preventDefault();
+    $.post({
+      url: $button.attr('href'),
+      data: {
+        'lp-ajax': 'create-pages'
+      },
+      dataType: 'text',
+      success: function success(res) {
+        var $message = $button.closest('.lp-notice').html('<p>' + res + '</p>');
+        setTimeout(function () {
+          $message.fadeOut();
+        }, 2000);
+      }
+    });
+  };
+
+  var hideUpgradeMessage = function hideUpgradeMessage(e) {
+    e.preventDefault();
+    var $btn = $(this);
+    $btn.closest('.lp-upgrade-notice').fadeOut();
+    $.post({
+      url: '',
+      data: {
+        'lp-hide-upgrade-message': 'yes'
+      },
+      success: function success(res) {}
+    });
+  };
+
+  var pluginActions = function pluginActions(e) {
+    // Premium addon
+    if ($(e.target).hasClass('buy-now')) {
+      return;
+    }
+
+    e.preventDefault();
+    var $plugin = $(this).closest('.plugin-card');
+
+    if ($(this).hasClass('updating-message')) {
+      return;
+    }
+
+    $(this).addClass('updating-message button-working disabled');
+    $.ajax({
+      url: $(this).attr('href'),
+      data: {},
+      success: function success(r) {
+        $.ajax({
+          url: window.location.href,
+          success: function success(r) {
+            var $p = $(r).find('#' + $plugin.attr('id'));
+
+            if ($p.length) {
+              $plugin.replaceWith($p);
+            } else {
+              $plugin.find('.plugin-action-buttons a').removeClass('updating-message button-working').html(learn_press_admin_localize.plugin_installed);
+            }
+          }
+        });
+      }
+    });
+  };
+
+  var preventDefault = function preventDefault(e) {
+    e.preventDefault();
+    return false;
+  };
+
+  var onReady = function onReady() {
+    $('.learn-press-dropdown-pages').LP('DropdownPages');
+    $('.learn-press-advertisement-slider').LP('Advertisement', 'a', 's').appendTo($('#wpbody-content'));
+    $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
+    $('.learn-press-tip').LP('QuickTip'); //$('.learn-press-tabs').LP('AdminTab');
+
+    $(document).on('click', '#learn-press-create-pages', createPages).on('click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage).on('click', '.plugin-action-buttons a', pluginActions).on('click', '[data-remove-confirm]', preventDefault).on('mousedown', '.lp-sortable-handle', function (e) {
+      $('html, body').addClass('lp-item-moving');
+      $(e.target).closest('.lp-sortable-handle').css('cursor', 'inherit');
+    }).on('mouseup', function (e) {
+      $('html, body').removeClass('lp-item-moving');
+      $('.lp-sortable-handle').css('cursor', '');
+    });
+  };
+
+  $(document).ready(onReady);
+})();
+
+/***/ }),
+
+/***/ "./assets/src/js/admin/pages/update.js":
+/*!*********************************************!*\
+  !*** ./assets/src/js/admin/pages/update.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: Plugin/Preset files are not allowed to export objects, only functions. In /Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-preset-es2015/lib/index.js\n    at createDescriptor (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:178:11)\n    at items.map (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:109:50)\n    at Array.map (<anonymous>)\n    at createDescriptors (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:109:29)\n    at createPresetDescriptors (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:101:10)\n    at passPerPreset (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:58:96)\n    at cachedFunction (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/caching.js:33:19)\n    at presets.presets (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:29:84)\n    at mergeChainOpts (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:320:26)\n    at /Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:283:7\n    at buildRootChain (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:68:29)\n    at loadPrivatePartialConfig (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/partial.js:85:55)\n    at Object.loadPartialConfig (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/partial.js:110:18)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:144:26)\n    at Generator.next (<anonymous>)\n    at asyncGeneratorStep (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:3:103)\n    at _next (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:194)\n    at /Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:364\n    at new Promise (<anonymous>)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:97)\n    at Object.loader (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:60:18)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:55:12)");
+;
+
+(function ($) {
+  'use strict';
+
+  var Package = function Package(data) {
+    this.data = data;
+    var currentIndex = -1,
+        currentVersion = null,
+        currentPackage = null,
+        versions = Object.keys(this.data);
+
+    this.reset = function (current) {
+      current = current === undefined || current > versions.length - 1 || current < 0 ? 0 : current;
+      currentIndex = current;
+      currentVersion = versions[current];
+      currentPackage = this.data[currentVersion];
+      return currentPackage;
+    };
+
+    this.next = function () {
+      if (currentIndex >= versions.length - 1) {
+        return false;
+      }
+
+      currentIndex++;
+      this.reset(currentIndex);
+      return currentPackage;
+    };
+
+    this.prev = function () {
+      if (currentIndex <= 0) {
+        return false;
+      }
+
+      currentIndex--;
+      this.reset(currentIndex);
+      return currentPackage;
+    };
+
+    this.currentVersion = function () {
+      return currentVersion;
+    };
+
+    this.hasPackage = function () {
+      return versions.length;
+    };
+
+    this.getPercentCompleted = function () {
+      return currentIndex / versions.length;
+    };
+
+    this.getTotal = function () {
+      return versions.length;
+    };
+
+    if (!this.data) {
+      return;
+    }
+  };
+
+  var UpdaterSettings = {
+    el: '#learn-press-updater',
+    data: {
+      packages: null,
+      status: '',
+      force: false
+    },
+    watch: {
+      packages: function packages(newPackages, oldPackages) {
+        if (newPackages) {}
+      }
+    },
+    mounted: function mounted() {
+      $(this.$el).show();
+    },
+    methods: {
+      getUpdatePackages: function getUpdatePackages(callback) {
+        var that = this;
+        $.ajax({
+          url: lpGlobalSettings.admin_url,
+          data: {
+            'lp-ajax': 'get-update-packages',
+            force: this.force,
+            _wpnonce: lpGlobalSettings._wpnonce
+          },
+          success: function success(res) {
+            var packages = LP.parseJSON(res);
+            that.packages = new Package(packages);
+            callback && callback.call(that);
+          }
+        });
+      },
+      start: function start(e, force) {
+        this.packages = null;
+        this.force = force;
+        this.getUpdatePackages(function () {
+          if (this.packages.hasPackage()) {
+            var p = this.packages.next();
+            this.status = 'updating';
+            this.doUpdate(p);
+          }
+        });
+      },
+      getPackages: function getPackages() {
+        return this.packages ? this.packages.data : {};
+      },
+      hasPackage: function hasPackage() {
+        return !$.isEmptyObject(this.getPackages());
+      },
+      updateButtonClass: function updateButtonClass() {
+        return {
+          'disabled': this.status === 'updating'
+        };
+      },
+      doUpdate: function doUpdate(p, i) {
+        var that = this;
+        p = p ? p : this.packages.next();
+        i = i ? i : 1;
+
+        if (p) {
+          $.ajax({
+            url: lpGlobalSettings.admin_url,
+            data: {
+              'lp-ajax': 'do-update-package',
+              "package": p,
+              version: this.packages.currentVersion(),
+              _wpnonce: lpGlobalSettings._wpnonce,
+              force: this.force,
+              i: i
+            },
+            success: function success(res) {
+              var response = LP.parseJSON(res),
+                  $status = $(that.$el).find('.updater-progress-status');
+
+              if (response.done === 'yes') {
+                that.update(that.packages.getPercentCompleted() * 100);
+                that.doUpdate();
+              } else {
+                var newWidth = that.packages.getPercentCompleted() * 100;
+
+                if (response.percent) {
+                  var stepWidth = 1 / that.packages.getTotal();
+                  newWidth += stepWidth * response.percent;
+                }
+
+                that.update(newWidth);
+                that.doUpdate(p, ++i);
+              }
+            },
+            error: function error() {
+              that.doUpdate(p, i);
+            }
+          });
+        } else {
+          that.update(100).addClass('completed');
+          setTimeout(function (x) {
+            x.status = 'completed';
+          }, 2000, this);
+        }
+      },
+      update: function update(value) {
+        return $(this.$el).find('.updater-progress-status').css('width', value + '%').attr('data-value', parseInt(value));
+      }
+    }
+  };
+
+  function init() {
+    window.lpGlobalSettings = window.lpGlobalSettings || {};
+
+    if ($('#learn-press-updater').length) {
+      var Updater = new Vue(UpdaterSettings);
+    }
+  }
+
+  $(document).ready(init);
+})(jQuery);
 
 /***/ })
 

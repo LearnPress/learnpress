@@ -20,25 +20,33 @@ class Questions extends Component {
         const {
             status,
             currentQuestion,
-            questions
+            questions,
+            questionsRendered,
+            isReviewing
         } = this.props;
 
         let viewMode = false, isShow = true;
 
-        if (status === 'completed' && viewMode !== 'review') {
+        if (status === 'completed' && !isReviewing) {
             isShow = false;
         }
 
 
-        return <div className="quiz-questions" style={ {display: isShow ? '' : 'none'} }>
-            {
-                questions.map((question) => {
-                    const isCurrent = currentQuestion === question.id;
-                    return <Question isCurrent={ isCurrent } key={ `loop-question-${question.id}` }
-                                     question={ question }/>
-                })
-            }
-        </div>
+        return <React.Fragment>
+            [{isReviewing}]
+            <div className="quiz-questions" style={ {display: isShow ? '' : 'none'} }>
+                {
+                    questions.map((question) => {
+                        const isCurrent = currentQuestion === question.id;
+                        const isRendered = questionsRendered && questionsRendered.indexOf(question.id) !== -1;
+
+                        return ( isRendered || !isRendered && isCurrent ) ?
+                            <Question isCurrent={ isCurrent } key={ `loop-question-${question.id}` }
+                                      question={ question }/> : '';
+                    })
+                }
+            </div>
+        </React.Fragment>
     }
 }
 
@@ -52,7 +60,9 @@ export default compose([
         return {
             status: getData('status'),
             currentQuestion: getData('currentQuestion'),
-            questions: getQuestions()
+            questions: getQuestions(),
+            questionsRendered: getData('questionsRendered'),
+            isReviewing: getData('mode') === 'reviewing'
         }
     }),
     withDispatch((dispatch) => {

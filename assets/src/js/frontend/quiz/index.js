@@ -23,32 +23,37 @@ class Quiz extends Component {
         } = this.props;
 
         setQuizData(settings);
+
+        jQuery('#popup-content').scroll(function () {
+            jQuery('.quiz-status').css('top', jQuery(this).scrollTop())
+        })
     }
 
     startQuiz = (event) => {
         this.props.startQuiz();
-    }
+    };
 
     render() {
         const {
-            status
+            status,
+            isReviewing
         } = this.props;
 
         const isA = -1 !== ['', 'completed'].indexOf(status);
 
         return <React.Fragment>
-            { 'completed' === status && <Result/> }
-            { isA && <Meta /> }
-            { isA && <Content /> }
+            { !isReviewing && 'completed' === status && <Result/> }
+            { !isReviewing && !status && <Meta /> }
+            { !isReviewing && isA && <Content /> }
 
             { 'started' === status && <Status /> }
 
-            { -1 !== ['completed', 'started'].indexOf(status) && <Questions />}
+            { ((-1 !== ['completed', 'started'].indexOf(status)) || isReviewing) && <Questions />}
 
             <Buttons />
 
             {
-                isA &&
+                isA && !isReviewing &&
                 <Attempts />
             }
 
@@ -66,7 +71,8 @@ export default compose([
         return {
             questions: getQuestions(),
             status: getData('status'),
-            store: getData()
+            store: getData(),
+            isReviewing: getData('mode') === 'reviewing'
         }
     }),
     withDispatch((dispatch) => {

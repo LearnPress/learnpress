@@ -7,7 +7,7 @@ import {select as wpSelect} from '@wordpress/data';
  * @param data
  * @return {{type: string, data: *}}
  */
-export function setQuizData(data){
+export function setQuizData(data) {
     return {
         type: 'SET_QUIZ_DATA',
         data
@@ -20,7 +20,7 @@ export function setQuizData(data){
  * @param questionId
  * @return {{type: string, data: *}}
  */
-export function setCurrentQuestion(questionId){
+export function setCurrentQuestion(questionId) {
     return {
         type: 'SET_CURRENT_QUESTION',
         questionId
@@ -37,12 +37,21 @@ export function __requestStartQuizSuccess(data, quizId, courseId, userId) {
     }
 }
 
-export function* startQuiz(quizId, courseId, userId) {
+export function* startQuiz() {
     //yield dispatch('learnpress/quiz', '__requestStartQuizStart');
 
+    const {
+        item_id,
+        course_id
+    } = wpSelect('learnpress/quiz').getDefaultRestArgs();
+
     const quiz = yield apiFetch({
-        path: 'wp/v2/taxonomies',
-        method: 'GET'
+        path: 'lp/v1/users/start-quiz',
+        method: 'POST',
+        data: {
+            item_id: item_id,
+            course_id: course_id
+        }
     });
 
     //yield dispatch('course-learner/course', 'startQuiz', quiz);
@@ -67,5 +76,19 @@ export function updateUserQuestionAnswers(questionId, answers, quizId, courseId 
         quizId,
         courseId,
         userId
+    }
+}
+
+export function markQuestionRendered(questionId) {
+    return {
+        type: 'MARK_QUESTION_RENDERED',
+        questionId
+    }
+}
+
+export function setQuizMode(mode) {
+    return {
+        type: 'SET_QUIZ_MODE',
+        mode
     }
 }

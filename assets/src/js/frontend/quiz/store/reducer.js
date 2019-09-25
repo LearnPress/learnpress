@@ -1,6 +1,6 @@
 import {combineReducers} from '@wordpress/data';
 
-const {omit, flow} = lodash;
+const {omit, flow, isArray} = lodash;
 const STORE_DATA = {};
 
 export const setItemStatus = (item, status) => {
@@ -12,6 +12,48 @@ export const setItemStatus = (item, status) => {
     return {
         ...item,
         userSettings
+    }
+}
+
+const updateUserQuestionAnswer = (state, action) => {
+    const {questions} = state;
+    const at = questions.findIndex((question) => {
+        return question.id == action.questionId;
+    });
+
+    if (at === -1) {
+        return state;
+    }
+
+    questions[at] = {
+        ...questions[at],
+        answered: action.answers
+    };
+
+    return {
+        ...state,
+        questions: [
+            ...questions
+        ]
+    }
+};
+
+const markQuestionRendered = (state, action) => {
+    const {
+        questionsRendered
+    } = state;
+
+    if (isArray(questionsRendered)) {
+        questionsRendered.push(action.questionId);
+        return {
+            ...state,
+            questionsRendered: [...questionsRendered]
+        }
+    } else {
+        return {
+            ...state,
+            questionsRendered: [action.questionId]
+        }
     }
 }
 
@@ -49,8 +91,13 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 }]
             }
         case 'UPDATE_USER_QUESTION_ANSWERS':
+            return updateUserQuestionAnswer(state, action);
+        case 'MARK_QUESTION_RENDERED':
+            return markQuestionRendered(state, action);
+        case 'SET_QUIZ_MODE':
             return {
                 ...state,
+                mode: action.mode
             }
     }
     return state;

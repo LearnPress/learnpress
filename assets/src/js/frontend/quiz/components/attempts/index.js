@@ -63,7 +63,7 @@ export default compose([
         const {
             getData
         } = select('learnpress/quiz');
-        console.log(a, b)
+
         return {
             id: getData('id'),
             attempts: getData('attempts'),

@@ -66,6 +66,10 @@ class Result extends Component {
                     <label>Skipped</label>
                     <p>5</p>
                 </li>
+                <li className="result-statistic-field">
+                    <label>Attempt</label>
+                    <p>5/10</p>
+                </li>
             </ul>
 
         </div>

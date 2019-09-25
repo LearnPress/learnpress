@@ -2423,23 +2423,7 @@ if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 
 if ( ! function_exists( 'learn_press_content_item_nav' ) ) {
 	function learn_press_content_item_nav() {
-		$course    = LP_Global::course();
-		$next_item = $prev_item = false;
 
-		if ( $next_id = $course->get_next_item() ) {
-			$next_item = $course->get_item( $next_id );
-		}
-		if ( $prev_id = $course->get_prev_item() ) {
-			$prev_item = $course->get_item( $prev_id );
-		}
-
-		learn_press_get_template(
-			'single-course/content-item/nav.php',
-			array(
-				'next_item' => $next_item,
-				'prev_item' => $prev_item
-			)
-		);
 	}
 }
 

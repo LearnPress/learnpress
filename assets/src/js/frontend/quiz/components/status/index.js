@@ -9,16 +9,21 @@ class Status extends Component {
         super(...arguments);
     }
 
-    componentDidMount() {
+    getCurrentQuestionIndex = () => {
+        const {
+            questionIds,
+            currentQuestion
+        } = this.props;
 
-    }
+        const at = questionIds.indexOf(currentQuestion)
 
-    componentWillUnmount() {
+        return at !== false ? at + 1 : 0;
     }
 
     render() {
         const {
-            content
+            content,
+            questionIds
         } = this.props;
 
         const result = {
@@ -28,10 +33,15 @@ class Status extends Component {
             questionsCorrect: [],
             questionsWrong: [],
             questionsSkipped: []
-        }
+        };
+
+        const c = this.getCurrentQuestionIndex();
 
         return <div className="quiz-status">
-            <Timer />
+            <div>
+                <div>{`${c} of ${questionIds.length}`}</div>
+                <Timer />
+            </div>
         </div>
     }
 }
@@ -43,7 +53,8 @@ export default compose([
         } = select('learnpress/quiz');
 
         return {
-            content: getData('content')
+            questionIds: getData('questionIds'),
+            currentQuestion: getData('currentQuestion')
         }
     }),
     withDispatch((dispatch) => {

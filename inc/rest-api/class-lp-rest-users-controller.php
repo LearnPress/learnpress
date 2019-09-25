@@ -40,15 +40,139 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'callback'            => array( $this, 'delete_item' ),
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'enroll_course' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
 				'schema' => array( $this, 'get_public_item_schema' ),
+			),
+
+			'start-quiz' => array(
+				array(
+					'methods'  => WP_REST_Server::EDITABLE,
+					'callback' => array( $this, 'start_quiz' ),
+					//'permission_callback' => array( $this, 'check_admin_permission' ),
+					'args'     => $this->get_item_endpoint_args()
+				),
 			)
 		);
 
 		parent::register_routes();
 	}
 
+	/**
+	 * Get args for user item endpoints.
+	 *
+	 * @return array
+	 */
+	public function get_item_endpoint_args() {
+		return array(
+//			'user_id'   => array(
+//				'description'       => __( 'The ID of user object.', 'learnpress' ),
+//				'type'              => 'int',
+//				'validate_callback' => array( $this, 'validate_arg' ),
+//				//'required'          => true
+//			),
+			'item_id'   => array(
+				'description'       => __( 'The ID of course item object.', 'learnpress' ),
+				'type'              => 'int',
+				'validate_callback' => array( $this, 'validate_arg' ),
+				'required'          => true
+			),
+			'course_id' => array(
+				'description'       => __( 'The ID of course object.', 'learnpress' ),
+				'type'              => 'int',
+				'validate_callback' => array( $this, 'validate_arg' ),
+				'required'          => true
+			)
+		);
+	}
+
+	/**
+	 * Validation callback to verify rest args.
+	 *
+	 * @param mixed           $value
+	 * @param WP_REST_Request $request
+	 * @param string          $param
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function validate_arg( $value, $request, $param ) {
+		$attributes = $request->get_attributes();
+
+		if ( ! isset( $attributes['args'][ $param ] ) ) {
+			return new WP_Error( 'rest_invalid_param', sprintf( esc_html__( '%s was not registered as a request argument.', 'learnpress' ), $param ), array( 'status' => 400 ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Sanitize callback.
+	 *
+	 * @param mixed           $value
+	 * @param WP_REST_Request $request
+	 * @param string          $param
+	 *
+	 * @return mixed
+	 */
+	public function sanitize_arg( $value, $request, $param ) {
+		switch ( $param ) {
+			case 'user_id':
+			case 'item_id':
+			case 'course_id':
+				return absint( $value );
+		}
+
+		return $value;
+	}
+
 	public function check_admin_permission() {
 		return LP_REST_Authentication::check_admin_permission();
+	}
+
+	/**
+	 * Enroll an user to a course.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function enroll_course( $request ) {
+		$response = array(
+			$_REQUEST
+		);
+
+		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * User starts a quiz.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function start_quiz( $request ) {
+
+		$user_id   = get_current_user_id();
+		$item_id   = $request['item_id'];
+		$course_id = $request['course_id'];
+		$user      = learn_press_get_user( $user_id );
+		$result    = $user->start_quiz( $item_id, $course_id, true );
+		$success   = ! is_wp_error( $result );
+
+		$response = array(
+			'success' => $success,
+			'message' => ! $success ? $result->get_error_message() : __( 'Success!', 'learnpress' )
+		);
+
+		if ( $success ) {
+			$response['results'] = array();
+		}
+
+		return rest_ensure_response( $response );
 	}
 
 	/**

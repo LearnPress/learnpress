@@ -39,6 +39,7 @@
             bottom: 0;
             overflow: auto;
             .section {
+
                 .circle-progress {
                     display: inline-block;
                     width: 24px;
@@ -159,7 +160,7 @@
         overflow: auto;
 
         #learn-press-content-item {
-            margin: 40px auto;
+            margin: 40px auto 80px auto;
             max-width: 1200px;
             width: 90%;
         }
@@ -169,7 +170,9 @@
             .quiz-buttons {
                 .lp-button {
                     margin: 0 10px 0 0;
-                    &.submit {
+                    &.submit-quiz,
+                    &.back-quiz,
+                    &.review-quiz{
                         float: right;
                         margin: 0;
                     }
@@ -178,9 +181,64 @@
         }
     }
 
+    #popup-footer {
+        position: fixed;
+        left: 400px;
+        right: 0;
+        bottom: 0;
+        height: 50px;
+        background: #F5F5F5;
+    }
+
     .lp-quiz-buttons {
-        .complete-quiz {
+        .complete-quiz,
+        .back-quiz,
+        .review-quiz {
             float: right;
+        }
+    }
+
+    .quiz-status {
+        position: absolute;
+        top: 0;
+
+        left: 0;
+        right: 0;
+        background: #F5F5F5;
+        > div {
+            display: flex;
+            height: 40px;
+            line-height: 40px;
+            margin: 0 auto;
+            max-width: 1200px;
+            width: 90%;
+        }
+    }
+
+    .answer-option{
+        border: 2px solid #d9e0f1;
+        padding: 0;
+        background: #FFFFFF;
+        > label{
+            padding: 10px 10px 10px 10px;
+            display: flex;
+            font-weight: normal;
+            color: #8e8e8e;
+            margin: 0;
+            width: 100%;
+            .option-check{
+                &:checked{
+                    border-color: #00adff;
+                }
+            }
+            &:hover{
+                background: #f7f7f7;
+            }
+        }
+        .option-title{
+            &:before{
+                display: none;
+            }
         }
     }
 }

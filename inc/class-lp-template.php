@@ -326,12 +326,40 @@ class LP_Template {
 		learn_press_get_template( 'single-course/content-item/popup-content' );
 	}
 
-	public function course_curriculum(){
-		learn_press_get_template('single-course/tabs/curriculum');
+	public function popup_footer() {
+		learn_press_get_template( 'single-course/content-item/popup-footer' );
 	}
 
-	public function course_content_item(){
-		learn_press_get_template('single-course/content-item');
+	public function popup_footer_nav() {
+		$course    = LP_Global::course();
+		$next_item = $prev_item = false;
+
+		if ( $next_id = $course->get_next_item() ) {
+			$next_item = $course->get_item( $next_id );
+		}
+		if ( $prev_id = $course->get_prev_item() ) {
+			$prev_item = $course->get_item( $prev_id );
+		}
+
+		if ( ! $prev_item && ! $next_item ) {
+			return;
+		}
+
+		learn_press_get_template(
+			'single-course/content-item/nav.php',
+			array(
+				'next_item' => $next_item,
+				'prev_item' => $prev_item
+			)
+		);
+	}
+
+	public function course_curriculum() {
+		learn_press_get_template( 'single-course/tabs/curriculum' );
+	}
+
+	public function course_content_item() {
+		learn_press_get_template( 'single-course/content-item' );
 	}
 
 	public function courses_loop_item_meta() {

@@ -2262,18 +2262,57 @@ body.confirm #popup_container {
     margin: 60px 0 0 0;
     overflow: auto; }
     #popup-course #popup-content #learn-press-content-item {
-      margin: 40px auto;
+      margin: 40px auto 80px auto;
       max-width: 1200px;
       width: 90%; }
     #popup-course #popup-content #learn-press-quiz-app {
       margin-bottom: 40px; }
       #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button {
         margin: 0 10px 0 0; }
-        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button.submit {
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button.submit-quiz, #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button.back-quiz, #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button.review-quiz {
           float: right;
           margin: 0; }
-  #popup-course .lp-quiz-buttons .complete-quiz {
+  #popup-course #popup-footer {
+    position: fixed;
+    left: 400px;
+    right: 0;
+    bottom: 0;
+    height: 50px;
+    background: #F5F5F5; }
+  #popup-course .lp-quiz-buttons .complete-quiz,
+  #popup-course .lp-quiz-buttons .back-quiz,
+  #popup-course .lp-quiz-buttons .review-quiz {
     float: right; }
+  #popup-course .quiz-status {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #F5F5F5; }
+    #popup-course .quiz-status > div {
+      display: flex;
+      height: 40px;
+      line-height: 40px;
+      margin: 0 auto;
+      max-width: 1200px;
+      width: 90%; }
+  #popup-course .answer-option {
+    border: 2px solid #d9e0f1;
+    padding: 0;
+    background: #FFFFFF; }
+    #popup-course .answer-option > label {
+      padding: 10px 10px 10px 10px;
+      display: flex;
+      font-weight: normal;
+      color: #8e8e8e;
+      margin: 0;
+      width: 100%; }
+      #popup-course .answer-option > label .option-check:checked {
+        border-color: #00adff; }
+      #popup-course .answer-option > label:hover {
+        background: #f7f7f7; }
+    #popup-course .answer-option .option-title:before {
+      display: none; }
 
 body.admin-bar #popup-course {
   top: 32px; }
