@@ -1,161 +1,102 @@
-/**
- * Single Quiz functions
- *
- * @author ThimPress
- * @package LearnPress/JS
- * @version 1.1
- */
-;(function ($) {
+this["LP"] = this["LP"] || {}; this["LP"]["quiz"] =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/frontend/quiz.js");
+/******/ })
+/************************************************************************/
+/******/ ({
 
-    !Number.prototype.toTime && (Number.prototype.toTime = function () {
+/***/ "./assets/src/js/frontend/quiz.js":
+/*!****************************************!*\
+  !*** ./assets/src/js/frontend/quiz.js ***!
+  \****************************************/
+/*! exports provided: default, init */
+/***/ (function(module, exports) {
 
-        var MINUTE_IN_SECONDS = 60,
-            HOUR_IN_SECONDS = 3600,
-            DAY_IN_SECONDS = 24 * 3600,
-            seconds = this + 0,
-            str = '';
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/tu/Documents/foobla/repo/LearnPress/assets/src/js/frontend/quiz.js'");
 
-        if (seconds > DAY_IN_SECONDS) {
-            var days = Math.ceil(seconds / DAY_IN_SECONDS);
-            str = days + ( days > 1 ? ' days left' : ' day left' );
-        } else {
-            var hours = Math.floor(seconds / HOUR_IN_SECONDS),
-                minutes = 0;
-            seconds = hours ? seconds % (hours * HOUR_IN_SECONDS) : seconds;
-            minutes = Math.floor(seconds / MINUTE_IN_SECONDS);
-            seconds = minutes ? seconds % (minutes * MINUTE_IN_SECONDS) : seconds;
+/***/ })
 
-
-            if (hours && hours < 10) {
-                hours = '0' + hours;
-            }
-
-            if (minutes < 10) {
-                minutes = '0' + minutes;
-            }
-
-            if (seconds < 10) {
-                seconds = '0' + seconds;
-            }
-
-            str = hours + ':' + minutes + ':' + seconds;
-        }
-
-        return str;
-    });
-
-    function LP_Quiz(settings) {
-
-        var self = this,
-            thisSettings = $.extend({}, settings),
-            remainingTime = thisSettings.remainingTime,
-            timerCountdown = null,
-            $timeElement = $('.quiz-countdown .progress-number'),
-            callbackEvents = new LP.Event_Callback(this);
-
-        function timeCountdown() {
-            stopCountdown();
-            var overtime = thisSettings.remainingTime <= 0,
-                isCompleted = -1 !== $.inArray(settings.status, ['completed', 'finished']);
-
-            if (isCompleted) {
-                return;
-            }
-
-            if (overtime) {
-                $('form.complete-quiz').off('submit.learn-press-confirm');
-                callbackEvents.callEvent('finish');
-                return;
-            }
-            thisSettings.remainingTime--;
-            timerCountdown = setTimeout(timeCountdown, 1000);
-        }
-
-        function stopCountdown() {
-            timerCountdown && clearTimeout(timerCountdown);
-        }
-
-        function initCountdown() {
-            thisSettings.watchChange('remainingTime', function (prop, oldVal, newVal) {
-                remainingTime = newVal;
-                onTick.apply(self, [oldVal, newVal]);
-                return newVal;
-            });
-        }
-
-        function onTick(oldVal, newVal) {
-            callbackEvents.callEvent('tick', [newVal]);
-            if (newVal <= 0) {
-                stopCountdown();
-
-                // Disable confirm message
-                $('form.complete-quiz').off('submit.learn-press-confirm');
-                callbackEvents.callEvent('finish');
-            }
-        }
-
-        function showTime() {
-            if (remainingTime < 0) {
-                remainingTime = 0;
-            }
-            $timeElement.html(remainingTime.toTime());
-        }
-
-        function submit() {
-            $('form.complete-quiz').submit();
-        }
-
-        function beforeSubmit() {
-            var $form = $(this),
-                $input = $form.find('input[name="nav-type"]'),
-                navType = $form[0].className.match(/(prev|next|skip)-question/);
-
-            if (!$input.length) {
-                $input = $('<input type="hidden" name="nav-type" />').val(navType[0]).appendTo($form);
-            }
-        }
-
-        function init() {
-            if (thisSettings.onTick) {
-                self.on('tick', thisSettings.onTick);
-            }
-
-            if (thisSettings.onFinish) {
-                self.on('finish', thisSettings.onFinish);
-            }
-
-            $(document).on('submit', '.next-question, .prev-question, .skip-question', beforeSubmit);
-            initCountdown();
-            timeCountdown();
-        }
-
-        // Events
-        this.on = callbackEvents.on;
-        this.off = callbackEvents.off;
-
-        if (thisSettings.totalTime > 0) {
-            this.on('tick.showTime', showTime);
-            this.on('finish.submit', submit);
-        }
-
-        this.getRemainingTime = function () {
-            return remainingTime;
-        }
-
-        if(thisSettings.remainingTime <= 0){
-            // Disable confirm message
-            $('form.complete-quiz').off('submit.learn-press-confirm');
-            callbackEvents.callEvent('finish');
-        }
-
-        init();
-    }
-
-    $(document).ready(function () {
-        if (typeof lpQuizSettings !== 'undefined') {
-            window.lpQuiz = new LP_Quiz(lpQuizSettings);
-        }
-    })
-
-
-})(jQuery);
+/******/ });
+//# sourceMappingURL=quiz.js.map

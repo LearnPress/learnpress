@@ -1,4 +1,4 @@
-this["LP"] = this["LP"] || {}; this["LP"]["lesson"] =
+this["LP"] = this["LP"] || {}; this["LP"]["dataControls"] =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -82,21 +82,21 @@ this["LP"] = this["LP"] || {}; this["LP"]["lesson"] =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/frontend/lesson.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/frontend/data-controls.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./assets/src/js/frontend/lesson.js":
-/*!******************************************!*\
-  !*** ./assets/src/js/frontend/lesson.js ***!
-  \******************************************/
-/*! no static exports found */
+/***/ "./assets/src/js/frontend/data-controls.js":
+/*!*************************************************!*\
+  !*** ./assets/src/js/frontend/data-controls.js ***!
+  \*************************************************/
+/*! exports provided: apiFetch, select, dispatch, controls */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/tu/Documents/foobla/repo/LearnPress/assets/src/js/frontend/lesson.js'");
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/tu/Documents/foobla/repo/LearnPress/assets/src/js/frontend/data-controls.js'");
 
 /***/ })
 
 /******/ });
-//# sourceMappingURL=lesson.js.map
+//# sourceMappingURL=data-controls.js.map
