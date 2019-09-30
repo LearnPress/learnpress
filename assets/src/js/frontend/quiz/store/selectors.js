@@ -71,3 +71,27 @@ export function getDefaultRestArgs(state) {
         course_id: userQuiz.course_id
     }
 }
+
+export function getQuestionAnswered(state, id) {
+    const {userQuiz} = state;
+    let answered;
+
+    if (userQuiz.status === 'started') {
+        answered = get(userQuiz, 'answered');
+    } else {
+        answered = get(userQuiz, 'attempts[0].answered');
+    }
+
+    return answered ? answered[id] : undefined;
+}
+
+export function getCurrentQuestion(state) {
+    const {userQuiz} = state;
+    const {currentQuestion} = userQuiz;
+    const s = select('learnpress/quiz');
+    const questions = s.getQuestions();
+
+    return questions.find((q) => {
+        return q.id == currentQuestion;
+    })
+}

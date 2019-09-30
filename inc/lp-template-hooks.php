@@ -261,43 +261,119 @@ add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_cont
 //add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_content', 15 );
 //add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_countdown', 20 );
 //add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_question', 25 );
+
+function get_attempts( $quiz_id, $course_id, $user_id ) {
+	$user       = learn_press_get_user( $user_id );
+	$userCourse = $user->get_course_data( $course_id );
+	$userQuiz   = $userCourse ? $userCourse->get_item( $quiz_id ) : false;
+	$attempts   = array();
+	if ( $userQuiz ) {
+		if ( $rows = $userQuiz->get_history() ) {
+			foreach ( $rows as $row ) {
+				$attempts[] = $row;
+			}
+		}
+	}
+
+	learn_press_debug( LP_Object_Cache::instance() );
+
+	var_dump( $rows );
+
+	return $attempts;
+}
+
 add_action( 'learn-press/content-item-summary/lp_quiz', function () {
 	$user      = learn_press_get_current_user();
 	$course    = LP_Global::course();
 	$quiz      = LP_Global::course_item_quiz();
 	$questions = array();
+	$showHint  = $quiz->get_show_hint();
+	$showCheck = $quiz->get_show_check_answer();
+	$userJS    = array();
+
+
+	$userCourse = $user->get_course_data( $course->get_id() );
+	$userQuiz   = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
+	$attempts   = $userQuiz->get_attempts();/// get_attempts($quiz->get_id(), $course->get_id(), $user->get_id());
+
+	if ( $userQuiz ) {
+		$status  = $userQuiz->get_status();
+		$results = $userQuiz->get_results( '' );
+		//$attempts = array_merge( $attempts, [ $results ] );
+
+		$userJS = array(
+			'status'            => $status,
+			'attempts'          => $attempts,
+			'checked_questions' => $userQuiz->get_checked_questions(),
+			'hinted_questions'  => $userQuiz->get_hint_questions()
+		);
+	}
 
 	if ( $question_ids = $quiz->get_questions() ) {
+		$checkedQuestions = isset( $userJS['checked_questions'] ) ? $userJS['checked_questions'] : array();
+		$hintedQuestions  = isset( $userJS['hinted_questions'] ) ? $userJS['hinted_questions'] : array();
+
 		foreach ( $question_ids as $id ) {
-			$question    = learn_press_get_question( $id );
+			$question       = learn_press_get_question( $id );
+			$canHint        = false;
+			$canCheck       = false;
+			$hinted         = false;
+			$checked        = false;
+			$theHint        = '';
+			$theExplanation = '';
+
+			if ( $showHint ) {
+				$theHint = $question->get_hint();
+				$hinted  = in_array( $id, $hintedQuestions );
+				$canHint = ! $hinted && $theHint;
+			}
+
+			if ( $showCheck ) {
+				$theExplanation = $question->get_explanation();
+				$checked        = in_array( $id, $checkedQuestions );
+				$canCheck       = ! $checked;
+			}
+
+			//$canHint  = $showHint ?  !in_array($id, $hintedQuestions) : false;
+			//$canCheck = $showExplanation ? !in_array($id, $checkedQuestions) : false;
+
 			$questions[] = array(
-				'id'      => absint( $id ),
-				'title'   => $question->get_title(),
-				'content' => $question->get_content(),
-				'type'    => $question->get_type(),
-				'options' => array_values( $question->get_answer_options() )
+				'id'          => absint( $id ),
+				'title'       => $question->get_title(),
+				'content'     => $question->get_content(),
+				'type'        => $question->get_type(),
+				'options'     => array_values( $question->get_answer_options() ),
+				'can_hint'    => $canHint,
+				'can_check'   => $canCheck,
+				'hint'        => $hinted ? $theHint : '',
+				'explanation' => $checked ? $theExplanation : ''
 			);
 		}
 	}
 
-	$userCourse = $user->get_course_data( $course->get_id() );
-	$userQuiz   = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
-
 	$js = array(
-		'course_id'       => $course->get_id(),
-		'nonce'           => wp_create_nonce( sprintf( 'user-quiz-%d', get_current_user_id() ) ),
-		'id'              => $quiz->get_id(),
-		'title'           => $quiz->get_title(),
-		'content'         => $quiz->get_content(),
-		'questions'       => $questions,
-		'questionIds'     => array_map( 'absint', array_values( $question_ids ) ),
-		'currentQuestion' => absint( reset( $question_ids ) ),
-		'questionNav'     => 'infinity',
-		'status'          => $userQuiz ? $userQuiz->get_status() : '',
-		'attempts'        => array(),
-		'attemptsCount'   => 10,
-		'answered'        => ""
+		'course_id'            => $course->get_id(),
+		'nonce'                => wp_create_nonce( sprintf( 'user-quiz-%d', get_current_user_id() ) ),
+		'id'                   => $quiz->get_id(),
+		'title'                => $quiz->get_title(),
+		'content'              => $quiz->get_content(),
+		'questions'            => $questions,
+		'questionIds'          => array_map( 'absint', array_values( $question_ids ) ),
+		'currentQuestion'      => absint( reset( $question_ids ) ),
+		'questionNav'          => 'infinity',
+		'status'               => '',
+		'attempts'             => array(),
+		'attemptsCount'        => 10,
+		'answered'             => '',
+		'passing_grade'        => $quiz->get_passing_grade(),
+		'review_questions'     => $quiz->get_review_questions(),
+		'show_correct_answers' => $quiz->get_show_result(),
+		'show_check_answers'   => $quiz->get_show_check_answer(),
+		'show_hint'            => $quiz->get_show_hint()
 	);
+
+	$js = array_merge( $js, $userJS );
+
 
 	?>
     <div id="learn-press-quiz-app"></div>
@@ -306,12 +382,13 @@ add_action( 'learn-press/content-item-summary/lp_quiz', function () {
             jQuery(($) => {
                 LP.quiz.init(
                     '#learn-press-quiz-app',
-					<?php echo json_encode( $js );?>
+					<?php echo json_encode( $js, JSON_PRETTY_PRINT );?>
                 );
             })
         });
     </script>
 	<?php
+
 }, 25 );
 
 /**

@@ -4,7 +4,7 @@ import {compose} from '@wordpress/compose';
 import {__} from '@wordpress/i18n';
 
 const $ = window.jQuery;
-const {uniqueId} = lodash;
+const {uniqueId, isArray} = lodash;
 
 class Question extends Component {
 
@@ -29,12 +29,19 @@ class Question extends Component {
     }
 
     setAnswerChecked = () => (event) => {
-        const $options = this.$wrap.find('.option-check');
-        const answered = [];
+
         const {
             updateUserQuestionAnswers,
-            question
+            question,
+            status
         } = this.props;
+
+        if (status !== 'started') {
+            return 'can not set answers'
+        }
+
+        const $options = this.$wrap.find('.option-check');
+        const answered = [];
         const isSingle = question.type !== 'multi_choice';
 
         $options.each((i, option) => {
@@ -50,6 +57,20 @@ class Question extends Component {
         updateUserQuestionAnswers(question.id, isSingle ? answered[0] : answered)
 
     };
+
+    maybeCheckedAnswer = (value) => {
+        const {
+            answered
+        } = this.props;
+
+        if (isArray(answered)) {
+            return !!answered.find((a) => {
+                return a == value;
+            })
+        }
+
+        return value == answered;
+    }
 
     getOptionType = (questionType, option) => {
         let type = 'radio';
@@ -73,14 +94,15 @@ class Question extends Component {
             question,
             isCurrent,
             markQuestionRendered,
-            questionsRendered
+            questionsRendered,
+            answered
         } = this.props;
 
         return <div className="question" style={ {display: isCurrent ? '' : 'none'} } ref={ this.setRef }>
             <h4>{ question.title }</h4>
             <div dangerouslySetInnerHTML={ {__html: question.content} }>
             </div>
-            [{JSON.stringify(question.answered)}]
+            [{JSON.stringify(answered)}]
             <ul id={`answer-options-${question.id}`} className="answer-options">
                 {
                     question.options.map((option) => {
@@ -93,6 +115,8 @@ class Question extends Component {
                                        name={ `learn-press-question-${question.id}` }
                                        id={`learn-press-answer-option-${optionId}`}
                                        onChange={ this.setAnswerChecked() }
+                                       disabled={ status !== 'started' }
+                                       checked={ this.maybeCheckedAnswer(option.value) }
                                        value={ option.value }/>
 
                                 <div className="option-title">
@@ -106,20 +130,42 @@ class Question extends Component {
                     })
                 }
             </ul>
+
+            {
+                question.hint && <React.Fragment>
+                    <div className="question-explanation-content">
+                        <strong className="explanation-title">{ __( 'Explanation:', 'learnpress' ) }</strong>
+                        <div dangerouslySetInnerHTML={ { __html: question.hint } }>
+                        </div>
+                    </div>
+                </React.Fragment>
+            }
+
+            {
+                question.explanation && <React.Fragment>
+                    <div className="question-hint-content">
+                        <strong className="hint-title">{ __( 'Hint:', 'learnpress' ) }</strong>
+                        <div dangerouslySetInnerHTML={ {__html: question.explanation} }>
+                        </div>
+                    </div>
+                </React.Fragment>
+
+            }
         </div>
     }
 }
 
 export default compose([
-    withSelect((select) => {
+    withSelect((select, {question: {id}}) => {
         const {
-            getData
+            getData,
+            getQuestionAnswered
         } = select('learnpress/quiz');
 
         return {
             status: getData('status'),
             questions: getData('question'),
-            answered: getData('answered'),
+            answered: getQuestionAnswered(id),
             questionsRendered: getData('questionsRendered')
         }
     }),

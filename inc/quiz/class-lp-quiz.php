@@ -258,10 +258,10 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		/**
-		 * @return array|mixed
+		 * @return int|bool
 		 */
 		public function get_show_check_answer() {
-			return $this->get_data( 'show_check_answer' );
+			return intval( $this->get_data( 'show_check_answer' ) );
 		}
 
 		/**

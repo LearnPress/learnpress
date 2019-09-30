@@ -50,13 +50,13 @@ class Questions extends Component {
     }
 }
 
-export default compose([
-    withSelect((select) => {
+export default compose(
+    withSelect((select, a, b) => {
         const {
             getData,
-            getQuestions
+            getQuestions,
+            getQuestionAnswered
         } = select('learnpress/quiz');
-
         return {
             status: getData('status'),
             currentQuestion: getData('currentQuestion'),
@@ -74,4 +74,4 @@ export default compose([
             startQuiz
         }
     })
-])(Questions);
+)(Questions);

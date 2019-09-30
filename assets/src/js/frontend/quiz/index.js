@@ -2,13 +2,11 @@ import {Component} from '@wordpress/element';
 import {compose} from '@wordpress/compose';
 import {withDispatch, withSelect} from '@wordpress/data';
 import {
-    Title,
     Content,
     Meta,
     Buttons,
     Questions,
     Attempts,
-    Timer,
     Result,
     Status
 } from './components';
@@ -24,9 +22,15 @@ class Quiz extends Component {
 
         setQuizData(settings);
 
-        jQuery('#popup-content').scroll(function () {
-            jQuery('.quiz-status').css('top', jQuery(this).scrollTop())
-        })
+        console.log(settings)
+    }
+
+    componentWillReceiveProps() {
+        console.time('QUIZ');
+    }
+
+    componentDidUpdate() {
+        console.timeEnd('QUIZ')
     }
 
     startQuiz = (event) => {
@@ -36,12 +40,19 @@ class Quiz extends Component {
     render() {
         const {
             status,
-            isReviewing
+            isReviewing,
+            answered,
+            hintCount,
+            checkCount
         } = this.props;
 
         const isA = -1 !== ['', 'completed'].indexOf(status);
 
         return <React.Fragment>
+            <div>ANSWERS: [{JSON.stringify(answered)}]</div>
+            <div>HINT: [{hintCount}]</div>
+            <div>Explanation: [{checkCount}]</div>
+
             { !isReviewing && 'completed' === status && <Result/> }
             { !isReviewing && !status && <Meta /> }
             { !isReviewing && isA && <Content /> }
@@ -72,7 +83,10 @@ export default compose([
             questions: getQuestions(),
             status: getData('status'),
             store: getData(),
-            isReviewing: getData('mode') === 'reviewing'
+            answered: getData('answered'),
+            isReviewing: getData('mode') === 'reviewing',
+            hintCount: getData('show_hint'),
+            checkCount: getData('show_check_answers')
         }
     }),
     withDispatch((dispatch) => {

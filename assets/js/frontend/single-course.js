@@ -91,16 +91,44 @@ this["LP"] = this["LP"] || {}; this["LP"]["singleCourse"] =
 /*!*************************************************!*\
   !*** ./assets/src/js/frontend/single-course.js ***!
   \*************************************************/
-/*! exports provided: init */
+/*! exports provided: init, formatDuration */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDuration", function() { return formatDuration; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
 
-function init() {
-  console.log('Init single course');
+function init() {}
+function formatDuration(seconds) {
+  var html = '';
+  var x, d;
+  var day_in_seconds = 3600 * 24;
+
+  if (seconds > day_in_seconds) {
+    d = (seconds - seconds % day_in_seconds) / day_in_seconds;
+    seconds = seconds % day_in_seconds;
+  } else if (seconds == day_in_seconds) {
+    return '24:00';
+  }
+
+  x = new Date(seconds * 1000).toUTCString().match(/\d{2}:\d{2}:\d{2}/)[0].split(':');
+
+  if (x[2] === '00') {
+    x.splice(2, 1);
+  }
+
+  if (x[0] === '00') {
+    x[0] = 0;
+  }
+
+  if (d) {
+    x[0] = parseInt(x[0]) + d * 24;
+  }
+
+  html = x.join(':');
+  return html;
 }
 jQuery(function ($) {
   $('.course-curriculum').scroll(function () {

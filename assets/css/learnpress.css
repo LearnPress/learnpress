@@ -2267,11 +2267,17 @@ body.confirm #popup_container {
       width: 90%; }
     #popup-course #popup-content #learn-press-quiz-app {
       margin-bottom: 40px; }
-      #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button {
-        margin: 0 10px 0 0; }
-        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button.submit-quiz, #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button.back-quiz, #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button.review-quiz {
-          float: right;
-          margin: 0; }
+      #popup-course #popup-content #learn-press-quiz-app .quiz-buttons {
+        display: flex; }
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-left,
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right {
+          flex: 1; }
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-left .lp-button {
+          margin: 0 10px 0 0; }
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right {
+          text-align: right; }
+          #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right .lp-button {
+            margin: 0 0 0 10px; }
   #popup-course #popup-footer {
     position: fixed;
     left: 400px;

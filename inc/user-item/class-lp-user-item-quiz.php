@@ -59,7 +59,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			//$this->_parse_answers();
 		}
 
-		return ! empty( $this->_answers[ $id ] ) ? $this->_answers[ $id ] : false;
+		return array_key_exists( $id, $this->_answers ) ? $this->_answers[ $id ] : null;
 	}
 
 	/**
@@ -196,6 +196,66 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
+	 * Get all attempts of a quiz.
+	 *
+	 * @param string $args
+	 *
+	 * @return array
+	 */
+	public function get_attempts( $args = '' ) {
+		global $wpdb;
+
+		$args = wp_parse_args(
+			$args,
+			array(
+				'evaluation_questions' => false,
+				'limit'                => - 1
+			)
+		);
+
+		$attempts = array();
+		$query    = $wpdb->prepare( "
+			SELECT * 
+			FROM {$wpdb->learnpress_user_items}
+			WHERE parent_id = %d
+			ORDER BY user_item_id DESC
+			" . ( $args['limit'] > 0 ? "LIMIT 0, {$args['limit']}" : '' ) . "
+		", $this->get_parent_id() );
+
+		$quiz = $this->get_quiz();
+
+		if ( $rows = $wpdb->get_results( $query ) ) {
+
+			foreach ( $rows as $row ) {
+				$results              = learn_press_get_user_item_meta( $row->user_item_id, 'results', true );
+				$evaluation_questions = $results['questions'];
+
+				if ( ! $args['evaluation_questions'] ) {
+					unset( $results['questions'] );
+				}
+
+				if ( ! array_key_exists( 'passing_grade', $results ) ) {
+					$results['passing_grade'] = $quiz->get_passing_grade();
+				}
+
+				$attempts[] = array_merge(
+					array(
+						'id'              => absint( $row->user_item_id ),
+						'start_time'      => $row->start_time,
+						'end_time'        => $row->end_time,
+						'expiration_time' => $row->expiration_time,
+						'grade'           => learn_press_get_user_item_meta( $row->user_item_id, 'grade', true ),
+						'answered'        => learn_press_get_user_item_meta( $row->user_item_id, '_question_answers', true )
+					),
+					$results
+				);
+			}
+		}
+
+		return $attempts;
+	}
+
+	/**
 	 * Calculate results of quiz.
 	 *
 	 * @since 3.1.0
@@ -218,7 +278,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'grade'             => '',
 			'result'            => 0,
 			'time_spend'        => $this->get_time_interval( 'display' ),
-			'retake_count'      => 0
+			'retake_count'      => 0,
+			'passing_grade'     => $quiz->get_passing_grade()
 		);
 
 		if ( $questions = $quiz->get_questions() ) {
@@ -230,7 +291,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$answered          = $this->get_question_answer( $question_id );
 				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
 				$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
-				$check['answered'] = ! isset( $check['answered'] ) ? $answered !== false : $check['answered'];
+				$check['answered'] = ! isset( $check['answered'] ) ? $answered !== null : $check['answered'];
 
 				if ( false !== $check['answered'] && $check['correct'] ) {
 					$result['question_correct'] ++;

@@ -1,17 +1,34 @@
 import {Component} from '@wordpress/element';
 import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
-import {__} from '@wordpress/i18n';
+import {__, _x} from '@wordpress/i18n';
 
 const {uniqueId} = lodash;
 
+/**
+ * Displays list of all attempt from a quiz.
+ */
 class Attempts extends Component {
+    getDurationLabel(attempt) {
+        if (!attempt.expiration_time) {
+            return __('Unlimited', 'learnpress');
+        }
+
+        const {formatDuration} = LP.singleCourse;
+        const milliseconds = new Date(attempt.expiration_time).getTime() - new Date(attempt.start_time).getTime();
+
+        return milliseconds ? formatDuration(milliseconds / 1000) : '';
+    }
+
+    getTimeSpendLabel(attempt){
+        const {formatDuration} = LP.singleCourse;
+        const milliseconds = new Date(attempt.end_time).getTime() - new Date(attempt.start_time).getTime();
+        return milliseconds ? formatDuration(milliseconds / 1000) : '';
+    }
 
     render() {
         const {
-            status,
             attempts,
-            questionNav,
             attemptsCount
         } = this.props;
 
@@ -35,14 +52,13 @@ class Attempts extends Component {
                     <tbody>
                     {
                         attempts.map((row) => {
-                            const rowId = 'attempts-' + uniqueId();
-                            return <tr key={ rowId }>
-                                <td>{row.time}</td>
-                                <td>{row.questions}</td>
-                                <td>{row.spendTime[0]} / {row.spendTime[1]}</td>
-                                <td>{row.marks[0]} / {row.marks[1]}</td>
-                                <td>{row.passingGrade}</td>
-                                <td>{row.result}</td>
+                            return <tr key={ `attempt-${row.id}` }>
+                                <td>{row.start_time}</td>
+                                <td>{row.question_correct} / {row.question_count}</td>
+                                <td>{ this.getTimeSpendLabel(row) } / {this.getDurationLabel(row)}</td>
+                                <td>{row.user_mark} / {row.mark}</td>
+                                <td>{row.passing_grade || __('-', 'unknown passing grade value', 'learnpress')}</td>
+                                <td>{parseFloat(row.result).toFixed(2)}% <label>{row.grade_text}</label></td>
                             </tr>
                         })
                     }
@@ -59,7 +75,7 @@ class Attempts extends Component {
 }
 
 export default compose([
-    withSelect((select, a, b) => {
+    withSelect((select) => {
         const {
             getData
         } = select('learnpress/quiz');

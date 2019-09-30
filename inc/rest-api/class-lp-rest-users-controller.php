@@ -1,10 +1,74 @@
 <?php
 
+/**
+ * Class LP_REST_Users_Controller
+ *
+ * @since 4.x.x
+ */
 class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
+	/**
+	 * @var LP_User
+	 */
+	protected $user = null;
+
+	/**
+	 * @var LP_Course
+	 */
+	protected $course = null;
+
+	/**
+	 * @var LP_Course_Item|LP_Quiz|LP_Lesson
+	 */
+	protected $item = null;
+
+	/**
+	 * @var LP_User_Item_Course
+	 */
+	protected $userCourse = null;
+
+	/**
+	 * @var LP_User_Item|LP_User_Item_Quiz
+	 */
+	protected $userItem = null;
+
 	public function __construct() {
 		$this->namespace = 'lp/v1';
 		$this->rest_base = 'users';
 		parent::__construct();
+
+		add_filter( 'rest_pre_dispatch', array( $this, 'rest_pre_dispatch' ), 10, 3 );
+	}
+
+	/**
+	 * Init data prepares for callbacks of rest
+	 *
+	 * @param                 $null
+	 * @param WP_REST_Server  $server
+	 * @param WP_REST_Request $request
+	 *
+	 * @return mixed
+	 */
+	public function rest_pre_dispatch( $null, $server, $request ) {
+		$user_id   = get_current_user_id();
+		$item_id   = $request['item_id'];
+		$course_id = $request['course_id'];
+
+		$this->user   = learn_press_get_user( $user_id );
+		$this->course = learn_press_get_course( $course_id );
+
+		if ( $this->course ) {
+			$this->item = $this->course->get_item( $item_id );
+		}
+
+		if ( is_user_logged_in() ) {
+			$this->userCourse = $this->user->get_course_data( $course_id );
+
+			if ( $this->userCourse ) {
+				$this->userItem = $this->userCourse->get_item( $item_id );
+			}
+		}
+
+		return $null;
 	}
 
 	public function register_routes() {
@@ -52,6 +116,33 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'  => WP_REST_Server::EDITABLE,
 					'callback' => array( $this, 'start_quiz' ),
+					//'permission_callback' => array( $this, 'check_admin_permission' ),
+					'args'     => $this->get_item_endpoint_args()
+				),
+			),
+
+			'submit-quiz' => array(
+				array(
+					'methods'  => WP_REST_Server::EDITABLE,
+					'callback' => array( $this, 'submit_quiz' ),
+					//'permission_callback' => array( $this, 'check_admin_permission' ),
+					'args'     => $this->get_item_endpoint_args()
+				),
+			),
+
+			'hint-answer' => array(
+				array(
+					'methods'  => WP_REST_Server::EDITABLE,
+					'callback' => array( $this, 'hint_answer' ),
+					//'permission_callback' => array( $this, 'check_admin_permission' ),
+					'args'     => $this->get_item_endpoint_args()
+				),
+			),
+
+			'check-answer' => array(
+				array(
+					'methods'  => WP_REST_Server::EDITABLE,
+					'callback' => array( $this, 'check_answer' ),
 					//'permission_callback' => array( $this, 'check_admin_permission' ),
 					'args'     => $this->get_item_endpoint_args()
 				),
@@ -160,8 +251,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$item_id   = $request['item_id'];
 		$course_id = $request['course_id'];
 		$user      = learn_press_get_user( $user_id );
-		$result    = $user->start_quiz( $item_id, $course_id, true );
-		$success   = ! is_wp_error( $result );
+
+		if ( $user->has_started_quiz( $item_id, $course_id ) ) {
+			$result = $user->retake_quiz( $item_id, $course_id, true );
+		} else {
+			$result = $user->start_quiz( $item_id, $course_id, true );
+		}
+
+		$success = ! is_wp_error( $result );
 
 		$response = array(
 			'success' => $success,
@@ -171,6 +268,86 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		if ( $success ) {
 			$response['results'] = array();
 		}
+
+		return rest_ensure_response( $response );
+	}
+
+	/**
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return mixed|WP_REST_Response
+	 */
+	public function submit_quiz( $request ) {
+		$user_id     = get_current_user_id();
+		$item_id     = $request['item_id'];
+		$course_id   = $request['course_id'];
+		$answered    = $request['answered'];
+		$user        = learn_press_get_user( $user_id );
+		$user_course = $user->get_course_data( $course_id );
+		$result      = false;
+		$user_quiz   = false;
+
+		if ( $user_course ) {
+			$user_quiz = $user_course->get_item( $item_id );
+
+			if ( $user_quiz ) {
+				$user_quiz->add_question_answer( $answered );
+				$user_quiz->update();
+
+				$result = $user_quiz->get_results( '', true );
+			}
+		}
+
+		$finished = $user->finish_quiz( $item_id, $course_id, true );
+		$success  = ! is_wp_error( $finished );
+
+		$response = array(
+			'success' => $success,
+			'message' => ! $success ? $finished->get_error_message() : __( 'Success!', 'learnpress' )
+		);
+
+		if ( $success ) {
+			$attempts            = $user_quiz->get_attempts( array( 'limit' => 1 ) );
+			$response['results'] = $attempts[0];
+		}
+
+		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * Hint the question and response hint content.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return mixed|WP_REST_Response
+	 */
+	public function hint_answer( $request ) {
+		$question_id = $request['question_id'];
+		$hintCount   = $this->userItem->hint( $question_id );
+		$question    = learn_press_get_question( $question_id );
+
+		// Response
+		$response = array(
+			'count'        => $hintCount,
+			'hint_content' => $question->get_hint()
+		);
+
+		return rest_ensure_response( $response );
+	}
+
+	public function check_answer( $request ) {
+		$question_id = $request['question_id'];
+		$answered    = $request['answered'];
+		$this->userItem->add_question_answer( $question_id, $answered );
+		$hintCount = $this->userItem->check_question( $question_id );
+		$question  = learn_press_get_question( $question_id );
+
+		// Response
+		$response = array(
+			'count'               => $hintCount,
+			'explanation_content' => $question->get_explanation()
+		);
 
 		return rest_ensure_response( $response );
 	}

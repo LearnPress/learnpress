@@ -168,13 +168,21 @@
         #learn-press-quiz-app {
             margin-bottom: 40px;
             .quiz-buttons {
-                .lp-button {
-                    margin: 0 10px 0 0;
-                    &.submit-quiz,
-                    &.back-quiz,
-                    &.review-quiz{
-                        float: right;
-                        margin: 0;
+                display: flex;
+
+                .button-left,
+                .button-right {
+                    flex: 1;
+                }
+                .button-left {
+                    .lp-button {
+                        margin: 0 10px 0 0;
+                    }
+                }
+                .button-right {
+                    text-align: right;
+                    .lp-button {
+                        margin: 0 0 0 10px;
                     }
                 }
             }
@@ -215,28 +223,28 @@
         }
     }
 
-    .answer-option{
+    .answer-option {
         border: 2px solid #d9e0f1;
         padding: 0;
         background: #FFFFFF;
-        > label{
+        > label {
             padding: 10px 10px 10px 10px;
             display: flex;
             font-weight: normal;
             color: #8e8e8e;
             margin: 0;
             width: 100%;
-            .option-check{
-                &:checked{
+            .option-check {
+                &:checked {
                     border-color: #00adff;
                 }
             }
-            &:hover{
+            &:hover {
                 background: #f7f7f7;
             }
         }
-        .option-title{
-            &:before{
+        .option-title {
+            &:before {
                 display: none;
             }
         }

@@ -4,6 +4,12 @@ import {compose} from '@wordpress/compose';
 import {__} from '@wordpress/i18n';
 
 class Buttons extends Component {
+
+    /**
+     * Start or re-take quiz.
+     *
+     * @param event
+     */
     startQuiz = (event) => {
         event.preventDefault();
 
@@ -14,6 +20,11 @@ class Buttons extends Component {
         startQuiz();
     };
 
+    /**
+     * Callback function for Prev/Next buttons to move question back or next.
+     *
+     * @param to
+     */
     nav = (to) => (event) => {
         const {
             setCurrentQuestion,
@@ -35,6 +46,11 @@ class Buttons extends Component {
         setCurrentQuestion(questionIds[currentAt]);
     };
 
+    /**
+     * Check current question is in end of list.
+     *
+     * @return {boolean}
+     */
     isLast = () => {
         const {
             currentQuestion,
@@ -44,6 +60,11 @@ class Buttons extends Component {
         return questionIds.indexOf(currentQuestion) === questionIds.length - 1;
     };
 
+    /**
+     * Check current question is in begin of list.
+     *
+     * @return {boolean}
+     */
     isFirst = () => {
         const {
             currentQuestion,
@@ -53,6 +74,9 @@ class Buttons extends Component {
         return questionIds.indexOf(currentQuestion) === 0;
     };
 
+    /**
+     * Submit question to record results.
+     */
     submit = () => {
         const {
             submitQuiz
@@ -77,54 +101,143 @@ class Buttons extends Component {
         return isReviewing
     };
 
+    /**
+     * Callback to show hint
+     */
+    showHint = () => {
+        const {
+            showHint,
+            currentQuestion
+        } = this.props;
+
+        showHint(currentQuestion);
+    };
+
+    /**
+     * Callback to check question answer
+     */
+    checkAnswer = () => {
+        const {
+            checkAnswer,
+            currentQuestion
+        } = this.props;
+
+        checkAnswer(currentQuestion);
+    };
+
+    maybeShowButton = (type) => {
+        const {
+            showHint,
+            showCheck,
+            currentQuestion,
+            checkedQuestions,
+            hintedQuestions,
+            question
+        } = this.props;
+
+        switch (type) {
+            case 'hint':
+                if (!showHint) {
+                    return false;
+                }
+
+                if (!hintedQuestions) {
+                    return true;
+                }
+
+                if (!question.can_hint) {
+                    return false;
+                }
+
+                return hintedQuestions.indexOf(currentQuestion) === -1;
+
+            case 'check':
+                if (!showCheck) {
+                    return false;
+                }
+
+                if (!checkedQuestions) {
+                    return true;
+                }
+
+                if (!question.can_check) {
+                    return false;
+                }
+
+                return checkedQuestions.indexOf(currentQuestion) === -1;
+        }
+    };
+
     render() {
         const {
             status,
             questionNav,
-            isReviewing
+            isReviewing,
+            showReview
         } = this.props;
 
         return <div className="quiz-buttons">
-            {
-                -1 !== ['', 'completed'].indexOf(status) && !isReviewing &&
-                <button className="lp-button start" onClick={ this.startQuiz }>{ __('Start', 'learnpress') }</button>
-            }
+            <div className="button-left">
 
-            {
-                ('started' === status || isReviewing) && (
-                    <React.Fragment>
-                        { ('infinity' === questionNav || !this.isFirst()) &&
-                        <button className="lp-button nav prev"
-                                onClick={ this.nav('prev') }>{ __('Prev', 'learnpress') }</button>
-                        }
+                {
+                    -1 !== ['', 'completed'].indexOf(status) && !isReviewing &&
+                    <button className="lp-button start"
+                            onClick={ this.startQuiz }>{ __('Start', 'learnpress') }</button>
+                }
 
-                        {('infinity' === questionNav || !this.isLast()) &&
-                        <button className="lp-button nav next"
-                                onClick={ this.nav('next') }>{ __('Next', 'learnpress') }</button>
-                        }
+                {
+                    ('started' === status || isReviewing) && (
+                        <React.Fragment>
+                            { ('infinity' === questionNav || !this.isFirst()) &&
+                            <button className="lp-button nav prev"
+                                    onClick={ this.nav('prev') }>{ __('Prev', 'learnpress') }</button>
+                            }
 
-                        { (('infinity' === questionNav || this.isLast()) && !isReviewing) &&
-                        <button className="lp-button submit-quiz"
-                                onClick={ this.submit }>{ __('Submit', 'learnpress') }</button>
-                        }
-                    </React.Fragment>
-                )
-            }
+                            {('infinity' === questionNav || !this.isLast()) &&
+                            <button className="lp-button nav next"
+                                    onClick={ this.nav('next') }>{ __('Next', 'learnpress') }</button>
+                            }
+                        </React.Fragment>
+                    )
+                }
 
-            {
-                isReviewing && (
-                    <button className="lp-button back-quiz"
-                            onClick={ this.setQuizMode('') }>{ __('Back', 'learnpress') }</button>
-                )
-            }
+            </div>
+            <div className="button-right">
+                {
+                    ('started' === status || isReviewing) && (
+                        <React.Fragment>
+                            {
+                                this.maybeShowButton('hint') && <button className="lp-button hint"
+                                                                        onClick={ this.showHint }>{ __('Hint', 'learnpress') }</button>
+                            }
 
-            {
-                ('completed' === status) && !isReviewing && (
-                    <button className="lp-button review-quiz"
-                            onClick={ this.setQuizMode('reviewing') }>{ __('Review', 'learnpress') }</button>
-                )
-            }
+                            {
+                                this.maybeShowButton('check') && <button className="lp-button check"
+                                                                         onClick={ this.checkAnswer }>{ __('Check', 'learnpress') }</button>
+                            }
 
+                            { (('infinity' === questionNav || this.isLast()) && !isReviewing) &&
+                            <button className="lp-button submit-quiz"
+                                    onClick={ this.submit }>{ __('Submit', 'learnpress') }</button>
+                            }
+                        </React.Fragment>
+                    )
+                }
+
+                {
+                    isReviewing && showReview && (
+                        <button className="lp-button back-quiz"
+                                onClick={ this.setQuizMode('') }>{ __('Result', 'learnpress') }</button>
+                    )
+                }
+
+                {
+                    ('completed' === status) && showReview && !isReviewing && (
+                        <button className="lp-button review-quiz"
+                                onClick={ this.setQuizMode('reviewing') }>{ __('Review', 'learnpress') }</button>
+                    )
+                }
+            </div>
         </div>
     }
 }
@@ -132,7 +245,8 @@ class Buttons extends Component {
 export default compose([
     withSelect((select, a, b) => {
         const {
-            getData
+            getData,
+            getCurrentQuestion
         } = select('learnpress/quiz');
         return {
             id: getData('id'),
@@ -140,7 +254,13 @@ export default compose([
             questionIds: getData('questionIds'),
             questionNav: getData('questionNav'),
             currentQuestion: getData('currentQuestion'),
-            isReviewing: getData('mode') === 'reviewing'
+            isReviewing: getData('review_questions') && getData('mode') === 'reviewing',
+            showReview: getData('review_questions'),
+            showHint: getData('show_hint'),
+            showCheck: getData('show_check_answers'),
+            checkedQuestions: getData('checked_questions'),
+            hintedQuestions: getData('hinted_questions'),
+            question: getCurrentQuestion()
         }
     }),
     withDispatch((dispatch, {id}) => {
@@ -148,15 +268,23 @@ export default compose([
             startQuiz,
             setCurrentQuestion,
             submitQuiz,
-            setQuizMode
+            setQuizMode,
+            showHint,
+            checkAnswer
         } = dispatch('learnpress/quiz');
 
         return {
             startQuiz,
             setCurrentQuestion,
             setQuizMode,
-            submitQuiz: function () {
+            submitQuiz: function (id) {
                 submitQuiz(id)
+            },
+            showHint: function (id) {
+                showHint(id)
+            },
+            checkAnswer: function (id) {
+                checkAnswer(id)
             }
         }
     })

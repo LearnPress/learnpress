@@ -3,14 +3,19 @@ import {select as wpSelect} from '@wordpress/data';
 
 /**
  * Set user data for app.
- *
+ * @param key
  * @param data
  * @return {{type: string, data: *}}
  */
-export function setQuizData(data) {
+export function setQuizData(key, data) {
+    if (typeof key !== 'string') {
+        data = key;
+        key = undefined;
+    }
     return {
         type: 'SET_QUIZ_DATA',
-        data
+        data,
+        key
     }
 }
 
@@ -59,12 +64,37 @@ export function* startQuiz() {
     yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', quiz);
 }
 
-export function submitQuiz(quizId, courseId, userId) {
+export function __requestSubmitQuizSuccess(results) {
     return {
-        type: 'SUBMIT_QUIZ',
-        quizId,
-        courseId,
-        userId
+        type: 'SUBMIT_QUIZ_SUCCESS',
+        results
+    }
+}
+export function* submitQuiz() {
+    const {
+        getDefaultRestArgs,
+        getData
+    } = wpSelect('learnpress/quiz');
+
+    const {
+        item_id,
+        course_id
+    } = getDefaultRestArgs();
+
+    const answered = getData('answered');
+
+    const result = yield apiFetch({
+        path: 'lp/v1/users/submit-quiz',
+        method: 'POST',
+        data: {
+            item_id,
+            course_id,
+            answered
+        }
+    });
+
+    if (result.success) {
+        yield dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', result.results);
     }
 }
 
@@ -73,10 +103,74 @@ export function updateUserQuestionAnswers(questionId, answers, quizId, courseId 
         type: 'UPDATE_USER_QUESTION_ANSWERS',
         questionId,
         answers,
-        quizId,
-        courseId,
-        userId
     }
+}
+
+export function __requestShowHintSuccess(id, result) {
+    return {
+        type: 'SET_QUESTION_HINT',
+        questionId: id,
+        ...result
+    }
+}
+
+export function* showHint(id) {
+    const {
+        getDefaultRestArgs,
+        getData
+    } = wpSelect('learnpress/quiz');
+
+    const {
+        item_id,
+        course_id
+    } = getDefaultRestArgs();
+
+    const result = yield apiFetch({
+        path: 'lp/v1/users/hint-answer',
+        method: 'POST',
+        data: {
+            item_id,
+            course_id,
+            question_id: id
+        }
+    });
+
+    yield dispatch('learnpress/quiz', '__requestShowHintSuccess', id, result);
+}
+
+export function __requestCheckAnswerSuccess(id, result) {
+    return {
+        type: 'CHECK_ANSWER',
+        questionId: id,
+        ...result
+    }
+}
+
+export function* checkAnswer(id) {
+    const {
+        getDefaultRestArgs,
+        getQuestionAnswered
+    } = wpSelect('learnpress/quiz');
+
+    const {
+        item_id,
+        course_id
+    } = getDefaultRestArgs();
+
+
+
+    const result = yield apiFetch({
+        path: 'lp/v1/users/check-answer',
+        method: 'POST',
+        data: {
+            item_id,
+            course_id,
+            question_id: id,
+            answered: getQuestionAnswered(id)
+        }
+    });
+
+    yield dispatch('learnpress/quiz', '__requestCheckAnswerSuccess', id, result);
 }
 
 export function markQuestionRendered(questionId) {

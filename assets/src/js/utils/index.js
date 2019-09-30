@@ -438,7 +438,7 @@ const _default = {
             }
         }
         LP.Hook.doAction('learn_press_receive_message', data, target);
-    }
+    },
 }
 
 $(document).ready(function () {
