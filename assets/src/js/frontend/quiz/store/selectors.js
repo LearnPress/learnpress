@@ -1,5 +1,20 @@
 import {select} from '@wordpress/data';
-const {get} = lodash;
+const {get, isArray} = lodash;
+
+const getQuestionOptions = function getQuestionOptions(state, id){
+    console.time('parseOptions');
+
+    const question = getQuestion(state, id);
+    let options = question.options;
+
+    options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)):options;
+    options = !isArray(options) ? JSON.parse(options) : options;
+
+    console.timeEnd('parseOptions')
+    return options;
+};
+
+export {getQuestionOptions}
 
 /**
  * Get current status of an item in course.
@@ -68,7 +83,7 @@ export function getDefaultRestArgs(state) {
 
     return {
         item_id: userQuiz.id,
-        course_id: userQuiz.course_id
+        course_id: userQuiz.courseId
     }
 }
 
@@ -85,13 +100,28 @@ export function getQuestionAnswered(state, id) {
     return answered ? answered[id] : undefined;
 }
 
+
 export function getCurrentQuestion(state) {
     const {userQuiz} = state;
     const {currentQuestion} = userQuiz;
+
+    return getQuestion(state, currentQuestion)
+}
+
+const getQuestion = function getQuestion(state, theId) {
+    const {userQuiz} = state;
     const s = select('learnpress/quiz');
     const questions = s.getQuestions();
 
     return questions.find((q) => {
-        return q.id == currentQuestion;
+        return q.id == theId;
     })
+};
+
+export {getQuestion};
+
+export function isCheckedAnswer(state, id) {
+    const checkedQuestions = get(state, 'userQuiz.checkedQuestions') || [];
+
+    return checkedQuestions.indexOf(id) !== -1;
 }

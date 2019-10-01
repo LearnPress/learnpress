@@ -72,27 +72,38 @@ const updateAttempt = (attempts, newAttempt) => {
 
 const setQuestionHint = (state, action) => {
     const questions = state.questions.map((question) => {
-        return question.id == action.questionId ? {...question, hint: action.hint_content} : question;
+        return question.id == action.questionId ? {...question, hint: action.hint} : question;
     });
 
     return {
         ...state,
         questions: [...questions],
-        show_hint: action.count,
-        hinted_questions: [...state.hinted_questions, action.questionId]
+        hintedQuestions: [...state.hintedQuestions, action.questionId]
     }
 };
 
 const checkAnswer = (state, action) => {
     const questions = state.questions.map((question) => {
-        return question.id == action.questionId ? {...question, explanation: action.explanation_content} : question;
+        if (question.id !== action.questionId) {
+            return question;
+        }
+
+        const newArgs = {
+            explanation: action.explanation
+        };
+
+        if (action.options) {
+            newArgs.options = action.options;
+        }
+
+        return {...question, ...newArgs};
     });
 
     return {
         ...state,
         questions: [...questions],
-        show_check_answers: action.count,
-        checked_questions: [...state.checked_questions, action.questionId]
+        answered: {...state.answered, [action.questionId]: action.answered || ''},
+        checkedQuestions: [...state.checkedQuestions, action.questionId]
     }
 };
 
@@ -108,15 +119,21 @@ export const userQuiz = (state = STORE_DATA, action) => {
 
             return {
                 ...state,
-                ...action.data
+                ...action.data,
+                currentQuestion: LP.localStorage.get(`Q${action.data.id}.currentQuestion`) || action.data.currentQuestion
             };
 
         case 'START_QUIZ':
         case 'START_QUIZ_SUCCESS':
             return resetCurrentQuestion(state, {
-                status: 'started'
+                status: 'started',
+                checkedQuestions: [],
+                hintedQuestions: [],
+                mode: '',
+                answered: {}
             });
         case 'SET_CURRENT_QUESTION':
+            LP.localStorage.set(`Q${state.id}.currentQuestion`, action.questionId);
             return {
                 ...state,
                 currentQuestion: action.questionId
@@ -132,6 +149,11 @@ export const userQuiz = (state = STORE_DATA, action) => {
         case 'MARK_QUESTION_RENDERED':
             return markQuestionRendered(state, action);
         case 'SET_QUIZ_MODE':
+            if (action.mode == 'reviewing') {
+                return resetCurrentQuestion(state, {
+                    mode: action.mode
+                })
+            }
             return {
                 ...state,
                 mode: action.mode

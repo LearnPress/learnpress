@@ -196,7 +196,7 @@ function (_Component) {
       }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Date', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Questions', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Spend', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Marks', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Passing Grade', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Result', 'learnpress')))), React.createElement("tbody", null, attempts.map(function (row) {
         return React.createElement("tr", {
           key: "attempt-".concat(row.id)
-        }, React.createElement("td", null, row.start_time), React.createElement("td", null, row.question_correct, " / ", row.question_count), React.createElement("td", null, _this.getTimeSpendLabel(row), " / ", _this.getDurationLabel(row)), React.createElement("td", null, row.user_mark, " / ", row.mark), React.createElement("td", null, row.passing_grade || Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("td", null, parseFloat(row.result).toFixed(2), "% ", React.createElement("label", null, row.grade_text)));
+        }, React.createElement("td", null, row.start_time), React.createElement("td", null, row.question_correct, " / ", row.question_count), React.createElement("td", null, _this.getTimeSpendLabel(row), " / ", _this.getDurationLabel(row)), React.createElement("td", null, row.user_mark, " / ", row.mark), React.createElement("td", null, row.passing_grade || Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("td", null, parseFloat(row.result).toFixed(2), "% ", React.createElement("label", null, row.grade_text)));
       }))), !hasAttempts && React.createElement("p", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('There is no attempt now.', 'learnpress')));
     }
   }]);
@@ -376,7 +376,12 @@ function (_Component) {
           currentQuestion = _this$props6.currentQuestion,
           checkedQuestions = _this$props6.checkedQuestions,
           hintedQuestions = _this$props6.hintedQuestions,
-          question = _this$props6.question;
+          question = _this$props6.question,
+          status = _this$props6.status;
+
+      if (status !== 'started') {
+        return false;
+      }
 
       switch (type) {
         case 'hint':
@@ -388,7 +393,7 @@ function (_Component) {
             return true;
           }
 
-          if (!question.can_hint) {
+          if (!question.has_hint) {
             return false;
           }
 
@@ -401,11 +406,10 @@ function (_Component) {
 
           if (!checkedQuestions) {
             return true;
-          }
+          } // if (!question.has_check) {
+          //     return false;
+          // }
 
-          if (!question.can_check) {
-            return false;
-          }
 
           return checkedQuestions.indexOf(currentQuestion) === -1;
       }
@@ -470,12 +474,12 @@ function (_Component) {
     questionIds: getData('questionIds'),
     questionNav: getData('questionNav'),
     currentQuestion: getData('currentQuestion'),
-    isReviewing: getData('review_questions') && getData('mode') === 'reviewing',
-    showReview: getData('review_questions'),
-    showHint: getData('show_hint'),
-    showCheck: getData('show_check_answers'),
-    checkedQuestions: getData('checked_questions'),
-    hintedQuestions: getData('hinted_questions'),
+    isReviewing: getData('reviewQuestions') && getData('mode') === 'reviewing',
+    showReview: getData('reviewQuestions'),
+    showHint: getData('showHint'),
+    showCheck: getData('showCheckAnswers'),
+    checkedQuestions: getData('checkedQuestions'),
+    hintedQuestions: getData('hintedQuestions'),
     question: getCurrentQuestion()
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch, _ref) {
@@ -649,6 +653,12 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -669,6 +679,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+
+
 var Meta =
 /*#__PURE__*/
 function (_Component) {
@@ -683,16 +696,56 @@ function (_Component) {
   _createClass(Meta, [{
     key: "render",
     value: function render() {
-      return React.createElement("div", null, React.createElement("ul", {
+      var metaFields = this.props.metaFields;
+      return metaFields && React.createElement(React.Fragment, null, React.createElement("ul", {
         className: "quiz-intro"
-      }, React.createElement("li", null, React.createElement("label", null, "Attempts allowed"), React.createElement("span", null, "3")), React.createElement("li", null, React.createElement("label", null, "Duration"), React.createElement("span", null, "00:10:00")), React.createElement("li", null, React.createElement("label", null, "Passing grade"), React.createElement("span", null, "90%")), React.createElement("li", null, React.createElement("label", null, "Questions"), React.createElement("span", null, "5"))));
+      }, Object.values(metaFields).map(function (field, i) {
+        return React.createElement("li", {
+          key: "quiz-intro-field-".concat(i)
+        }, React.createElement("label", {
+          dangerouslySetInnerHTML: {
+            __html: field.label
+          }
+        }), React.createElement("span", {
+          dangerouslySetInnerHTML: {
+            __html: field.value
+          }
+        }));
+      })));
     }
   }]);
 
   return Meta;
 }(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
-/* harmony default export */ __webpack_exports__["default"] = (Meta);
+/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["withSelect"])(function (select) {
+  var _select = select('learnpress/quiz'),
+      getData = _select.getData;
+
+  return {
+    metaFields: LP.Hook.applyFilters('quiz-meta-fields', {
+      attemptsCount: {
+        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Attempts allowed', 'learnpress'),
+        content: getData('attemptsCount')
+      },
+      duration: {
+        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Duration', 'learnpress'),
+        content: getData('duration')
+      },
+      passingGrade: {
+        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Passing grade', 'learnpress'),
+        content: getData('passingGrade')
+      },
+      questionsCount: {
+        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Questions', 'learnpress'),
+        content: function () {
+          var ids = getData('questionsIds');
+          return ids ? ids.length : 0;
+        }()
+      }
+    })
+  };
+}))(Meta));
 
 /***/ }),
 
@@ -783,7 +836,7 @@ function (_Component) {
         isShow = false;
       }
 
-      return React.createElement(React.Fragment, null, "[", isReviewing, "]", React.createElement("div", {
+      return React.createElement(React.Fragment, null, React.createElement("div", {
         className: "quiz-questions",
         style: {
           display: isShow ? '' : 'none'
@@ -846,6 +899,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -885,60 +942,43 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Question).apply(this, arguments));
 
-    _defineProperty(_assertThisInitialized(_this), "setAnswerChecked", function () {
-      return function (event) {
-        var _this$props = _this.props,
-            updateUserQuestionAnswers = _this$props.updateUserQuestionAnswers,
-            question = _this$props.question,
-            status = _this$props.status;
-
-        if (status !== 'started') {
-          return 'can not set answers';
-        }
-
-        var $options = _this.$wrap.find('.option-check');
-
-        var answered = [];
-        var isSingle = question.type !== 'multi_choice';
-        $options.each(function (i, option) {
-          if (option.checked) {
-            answered.push(option.value);
-
-            if (isSingle) {
-              return false;
-            }
-          }
-        });
-        updateUserQuestionAnswers(question.id, isSingle ? answered[0] : answered);
-      };
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "maybeCheckedAnswer", function (value) {
-      var answered = _this.props.answered;
-
-      if (isArray(answered)) {
-        return !!answered.find(function (a) {
-          return a == value;
-        });
-      }
-
-      return value == answered;
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "getOptionType", function (questionType, option) {
-      var type = 'radio';
-
-      switch (questionType) {
-        case 'multi_choice':
-          type = 'checkbox';
-          break;
-      }
-
-      return type;
-    });
-
     _defineProperty(_assertThisInitialized(_this), "setRef", function (el) {
       _this.$wrap = $(el);
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "parseOptions", function (options) {
+      options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {
+        format: CryptoJSAesJson
+      }).toString(CryptoJS.enc.Utf8)) : options;
+      options = !isArray(options) ? JSON.parse(options) : options;
+      return options;
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getWrapperClass", function () {
+      var _this$props = _this.props,
+          question = _this$props.question,
+          answered = _this$props.answered;
+      var classes = ['question', 'question-' + question.type];
+
+      _this.parseOptions(question.options).map(function (option) {
+        if (option.is_true !== undefined) {
+          classes.push('question-answered');
+          return false;
+        }
+      });
+
+      return classes;
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getEditLink", function () {
+      var _this$props2 = _this.props,
+          question = _this$props2.question,
+          editPermalink = _this$props2.editPermalink;
+      return editPermalink ? editPermalink.replace(/[0-9]+/, question.id) : '';
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "editPermalink", function (editPermalink) {
+      return Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])('<a href="%s">%s</a>', editPermalink, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Edit', 'learnpress'));
     });
 
     _this.$wrap = null;
@@ -948,10 +988,10 @@ function (_Component) {
   _createClass(Question, [{
     key: "componentDidMount",
     value: function componentDidMount(a) {
-      var _this$props2 = this.props,
-          question = _this$props2.question,
-          isCurrent = _this$props2.isCurrent,
-          markQuestionRendered = _this$props2.markQuestionRendered;
+      var _this$props3 = this.props,
+          question = _this$props3.question,
+          isCurrent = _this$props3.isCurrent,
+          markQuestionRendered = _this$props3.markQuestionRendered;
 
       if (isCurrent) {
         markQuestionRendered(question.id);
@@ -962,68 +1002,53 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this$props4 = this.props,
+          question = _this$props4.question,
+          isCurrent = _this$props4.isCurrent,
+          answered = _this$props4.answered;
+      var QuestionTypes = LP.questionTypes["default"];
+      var editPermalink = this.getEditLink();
 
-      var _this$props3 = this.props,
-          status = _this$props3.status,
-          question = _this$props3.question,
-          isCurrent = _this$props3.isCurrent,
-          markQuestionRendered = _this$props3.markQuestionRendered,
-          questionsRendered = _this$props3.questionsRendered,
-          answered = _this$props3.answered;
-      return React.createElement("div", {
-        className: "question",
+      if (editPermalink) {
+        jQuery('#wp-admin-bar-edit-lp_question').find('.ab-item').attr('href', editPermalink);
+      }
+
+      return React.createElement(React.Fragment, null, React.createElement("div", {
+        className: this.getWrapperClass().join(' '),
         style: {
           display: isCurrent ? '' : 'none'
         },
         ref: this.setRef
-      }, React.createElement("h4", null, question.title), React.createElement("div", {
+      }, React.createElement("h4", {
+        className: "question-title"
+      }, question.title, editPermalink && React.createElement("span", {
+        dangerouslySetInnerHTML: {
+          __html: this.editPermalink(editPermalink)
+        },
+        className: "edit-link"
+      })), React.createElement("div", {
         dangerouslySetInnerHTML: {
           __html: question.content
         }
-      }), "[", JSON.stringify(answered), "]", React.createElement("ul", {
-        id: "answer-options-".concat(question.id),
-        className: "answer-options"
-      }, question.options.map(function (option) {
-        var optionId = uniqueId();
-        return React.createElement("li", {
-          className: "answer-option",
-          key: "answer-option-".concat(option.question_answer_id)
-        }, React.createElement("label", null, React.createElement("input", {
-          type: _this2.getOptionType(question.type, option),
-          className: "option-check",
-          name: "learn-press-question-".concat(question.id),
-          id: "learn-press-answer-option-".concat(optionId),
-          onChange: _this2.setAnswerChecked(),
-          disabled: status !== 'started',
-          checked: _this2.maybeCheckedAnswer(option.value),
-          value: option.value
-        }), React.createElement("div", {
-          className: "option-title"
-        }, React.createElement("div", {
-          className: "option-title-content",
-          htmlFor: "learn-press-answer-option-".concat(optionId),
-          dangerouslySetInnerHTML: {
-            __html: option.text
-          }
-        }))));
-      })), question.hint && React.createElement(React.Fragment, null, React.createElement("div", {
+      }), React.createElement(QuestionTypes, _objectSpread({}, this.props, {
+        $wrap: this.$wrap
+      })), question.explanation && React.createElement(React.Fragment, null, React.createElement("div", {
         className: "question-explanation-content"
       }, React.createElement("strong", {
         className: "explanation-title"
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Explanation:', 'learnpress')), React.createElement("div", {
         dangerouslySetInnerHTML: {
-          __html: question.hint
+          __html: question.explanation
         }
-      }))), question.explanation && React.createElement(React.Fragment, null, React.createElement("div", {
+      }))), question.hint && React.createElement(React.Fragment, null, React.createElement("div", {
         className: "question-hint-content"
       }, React.createElement("strong", {
         className: "hint-title"
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Hint:', 'learnpress')), React.createElement("div", {
         dangerouslySetInnerHTML: {
-          __html: question.explanation
+          __html: question.hint
         }
-      }))));
+      })))));
     }
   }]);
 
@@ -1041,7 +1066,8 @@ function (_Component) {
     status: getData('status'),
     questions: getData('question'),
     answered: getQuestionAnswered(id),
-    questionsRendered: getData('questionsRendered')
+    questionsRendered: getData('questionsRendered'),
+    editPermalink: getData('editPermalink')
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),
@@ -1125,13 +1151,13 @@ function (_Component) {
       var results = this.props.results;
       return React.createElement("div", {
         className: "quiz-result"
-      }, React.createElement("h3", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your Result', 'learnpress')), console.log(results), React.createElement("div", {
+      }, React.createElement("h3", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your Result', 'learnpress')), React.createElement("div", {
         className: "result-grade"
       }, React.createElement("span", {
         className: "result-achieved"
       }, this.getResultPercentage(results), "%"), React.createElement("span", {
         className: "result-require"
-      }, undefined !== results.passing_grade ? results.passing_grade : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("p", {
+      }, undefined !== results.passing_grade ? results.passing_grade : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("p", {
         className: "result-message",
         dangerouslySetInnerHTML: {
           __html: this.getResultMessage(results)
@@ -1563,11 +1589,29 @@ function (_Component) {
   _createClass(Quiz, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      console.time('Quiz.componentDidMount');
       var _this$props = this.props,
           settings = _this$props.settings,
           setQuizData = _this$props.setQuizData;
-      setQuizData(settings);
-      console.log(settings);
+      var sanitizedSettings = {};
+
+      function camelCaseDash(string) {
+        return string.replace(/[-_]([a-z])/g, function (match, letter) {
+          return letter.toUpperCase();
+        });
+      }
+
+      for (var prop in settings) {
+        if (!settings.hasOwnProperty(prop)) {
+          continue;
+        }
+
+        sanitizedSettings[camelCaseDash(prop)] = settings[prop];
+      }
+
+      console.timeEnd('Quiz.componentDidMount');
+      console.log(sanitizedSettings);
+      setQuizData(sanitizedSettings);
     }
   }, {
     key: "componentWillReceiveProps",
@@ -1584,12 +1628,10 @@ function (_Component) {
     value: function render() {
       var _this$props2 = this.props,
           status = _this$props2.status,
-          isReviewing = _this$props2.isReviewing,
-          answered = _this$props2.answered,
-          hintCount = _this$props2.hintCount,
-          checkCount = _this$props2.checkCount;
-      var isA = -1 !== ['', 'completed'].indexOf(status);
-      return React.createElement(React.Fragment, null, React.createElement("div", null, "ANSWERS: [", JSON.stringify(answered), "]"), React.createElement("div", null, "HINT: [", hintCount, "]"), React.createElement("div", null, "Explanation: [", checkCount, "]"), !isReviewing && 'completed' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Result"], null), !isReviewing && !status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Meta"], null), !isReviewing && isA && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Content"], null), 'started' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Status"], null), (-1 !== ['completed', 'started'].indexOf(status) || isReviewing) && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Questions"], null), React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Buttons"], null), isA && !isReviewing && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Attempts"], null));
+          isReviewing = _this$props2.isReviewing;
+      var isA = -1 !== ['', 'completed'].indexOf(status); // Just render content if status !== undefined (meant all data loaded)
+
+      return undefined !== status && React.createElement(React.Fragment, null, !isReviewing && 'completed' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Result"], null), !isReviewing && !status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Meta"], null), !isReviewing && isA && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Content"], null), 'started' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Status"], null), (-1 !== ['completed', 'started'].indexOf(status) || isReviewing) && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Questions"], null), React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Buttons"], null), isA && !isReviewing && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Attempts"], null));
     }
   }]);
 
@@ -1607,8 +1649,8 @@ function (_Component) {
     store: getData(),
     answered: getData('answered'),
     isReviewing: getData('mode') === 'reviewing',
-    hintCount: getData('show_hint'),
-    checkCount: getData('show_check_answers')
+    hintCount: getData('showHint'),
+    checkCount: getData('showCheckAnswers')
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),
@@ -1841,15 +1883,20 @@ function __requestCheckAnswerSuccess(id, result) {
   }, result);
 }
 function checkAnswer(id) {
-  var _wpSelect3, getDefaultRestArgs, getQuestionAnswered, _getDefaultRestArgs3, item_id, course_id, result;
+  var _wpSelect3, getData, getDefaultRestArgs, getQuestionAnswered, getQuestionOptions, _getDefaultRestArgs3, item_id, course_id, result;
 
   return regeneratorRuntime.wrap(function checkAnswer$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
-          _wpSelect3 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect3.getDefaultRestArgs, getQuestionAnswered = _wpSelect3.getQuestionAnswered;
+          console.time('checkAnswer');
+          _wpSelect3 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getData = _wpSelect3.getData, getDefaultRestArgs = _wpSelect3.getDefaultRestArgs, getQuestionAnswered = _wpSelect3.getQuestionAnswered, getQuestionOptions = _wpSelect3.getQuestionOptions; // if(getData('crypto')){
+          //     const options = getQuestionOptions(id);
+          //     console.log(options)
+          // }
+
           _getDefaultRestArgs3 = getDefaultRestArgs(), item_id = _getDefaultRestArgs3.item_id, course_id = _getDefaultRestArgs3.course_id;
-          _context4.next = 4;
+          _context4.next = 5;
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["apiFetch"])({
             path: 'lp/v1/users/check-answer',
             method: 'POST',
@@ -1857,16 +1904,19 @@ function checkAnswer(id) {
               item_id: item_id,
               course_id: course_id,
               question_id: id,
-              answered: getQuestionAnswered(id)
+              answered: getQuestionAnswered(id) || ''
             }
           });
 
-        case 4:
+        case 5:
           result = _context4.sent;
-          _context4.next = 7;
+          _context4.next = 8;
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestCheckAnswerSuccess', id, result);
 
-        case 7:
+        case 8:
+          console.timeEnd('checkAnswer');
+
+        case 9:
         case "end":
           return _context4.stop();
       }
@@ -1921,8 +1971,6 @@ var store = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["registerStore"]
   actions: _actions__WEBPACK_IMPORTED_MODULE_2__,
   controls: _objectSpread({}, dataControls)
 });
-console.log('Create store'); /// sdf sdfsdf s
-
 Object(_middlewares__WEBPACK_IMPORTED_MODULE_4__["default"])(store);
 /* harmony default export */ __webpack_exports__["default"] = (store);
 
@@ -2076,26 +2124,35 @@ var updateAttempt = function updateAttempt(attempts, newAttempt) {
 var setQuestionHint = function setQuestionHint(state, action) {
   var questions = state.questions.map(function (question) {
     return question.id == action.questionId ? _objectSpread({}, question, {
-      hint: action.hint_content
+      hint: action.hint
     }) : question;
   });
   return _objectSpread({}, state, {
     questions: _toConsumableArray(questions),
-    show_hint: action.count,
-    hinted_questions: [].concat(_toConsumableArray(state.hinted_questions), [action.questionId])
+    hintedQuestions: [].concat(_toConsumableArray(state.hintedQuestions), [action.questionId])
   });
 };
 
 var checkAnswer = function checkAnswer(state, action) {
   var questions = state.questions.map(function (question) {
-    return question.id == action.questionId ? _objectSpread({}, question, {
-      explanation: action.explanation_content
-    }) : question;
+    if (question.id !== action.questionId) {
+      return question;
+    }
+
+    var newArgs = {
+      explanation: action.explanation
+    };
+
+    if (action.options) {
+      newArgs.options = action.options;
+    }
+
+    return _objectSpread({}, question, {}, newArgs);
   });
   return _objectSpread({}, state, {
     questions: _toConsumableArray(questions),
-    show_check_answers: action.count,
-    checked_questions: [].concat(_toConsumableArray(state.checked_questions), [action.questionId])
+    answered: _objectSpread({}, state.answered, _defineProperty({}, action.questionId, action.answered || '')),
+    checkedQuestions: [].concat(_toConsumableArray(state.checkedQuestions), [action.questionId])
   });
 };
 
@@ -2109,15 +2166,22 @@ var userQuiz = function userQuiz() {
         return _objectSpread({}, state, _defineProperty({}, action.key, action.data));
       }
 
-      return _objectSpread({}, state, {}, action.data);
+      return _objectSpread({}, state, {}, action.data, {
+        currentQuestion: LP.localStorage.get("Q".concat(action.data.id, ".currentQuestion")) || action.data.currentQuestion
+      });
 
     case 'START_QUIZ':
     case 'START_QUIZ_SUCCESS':
       return resetCurrentQuestion(state, {
-        status: 'started'
+        status: 'started',
+        checkedQuestions: [],
+        hintedQuestions: [],
+        mode: '',
+        answered: {}
       });
 
     case 'SET_CURRENT_QUESTION':
+      LP.localStorage.set("Q".concat(state.id, ".currentQuestion"), action.questionId);
       return _objectSpread({}, state, {
         currentQuestion: action.questionId
       });
@@ -2136,6 +2200,12 @@ var userQuiz = function userQuiz() {
       return markQuestionRendered(state, action);
 
     case 'SET_QUIZ_MODE':
+      if (action.mode == 'reviewing') {
+        return resetCurrentQuestion(state, {
+          mode: action.mode
+        });
+      }
+
       return _objectSpread({}, state, {
         mode: action.mode
       });
@@ -2193,11 +2263,12 @@ var blocks = flow(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["combineReducers"
 /*!********************************************************!*\
   !*** ./assets/src/js/frontend/quiz/store/selectors.js ***!
   \********************************************************/
-/*! exports provided: getItemStatus, getProp, getQuizAttempts, getQuizAnswered, getQuestions, getData, getDefaultRestArgs, getQuestionAnswered, getCurrentQuestion */
+/*! exports provided: getQuestionOptions, getItemStatus, getProp, getQuizAttempts, getQuizAnswered, getQuestions, getData, getDefaultRestArgs, getQuestionAnswered, getCurrentQuestion, getQuestion, isCheckedAnswer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getQuestionOptions", function() { return getQuestionOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getItemStatus", function() { return getItemStatus; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getProp", function() { return getProp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getQuizAttempts", function() { return getQuizAttempts; });
@@ -2207,11 +2278,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDefaultRestArgs", function() { return getDefaultRestArgs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getQuestionAnswered", function() { return getQuestionAnswered; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCurrentQuestion", function() { return getCurrentQuestion; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getQuestion", function() { return getQuestion; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isCheckedAnswer", function() { return isCheckedAnswer; });
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
 
 var _lodash = lodash,
-    get = _lodash.get;
+    get = _lodash.get,
+    isArray = _lodash.isArray;
+
+var getQuestionOptions = function getQuestionOptions(state, id) {
+  console.time('parseOptions');
+  var question = getQuestion(state, id);
+  var options = question.options;
+  options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {
+    format: CryptoJSAesJson
+  }).toString(CryptoJS.enc.Utf8)) : options;
+  options = !isArray(options) ? JSON.parse(options) : options;
+  console.timeEnd('parseOptions');
+  return options;
+};
+
+
 /**
  * Get current status of an item in course.
  *
@@ -2276,7 +2364,7 @@ function getDefaultRestArgs(state) {
   var userQuiz = state.userQuiz;
   return {
     item_id: userQuiz.id,
-    course_id: userQuiz.course_id
+    course_id: userQuiz.courseId
   };
 }
 function getQuestionAnswered(state, id) {
@@ -2294,11 +2382,22 @@ function getQuestionAnswered(state, id) {
 function getCurrentQuestion(state) {
   var userQuiz = state.userQuiz;
   var currentQuestion = userQuiz.currentQuestion;
+  return getQuestion(state, currentQuestion);
+}
+
+var getQuestion = function getQuestion(state, theId) {
+  var userQuiz = state.userQuiz;
   var s = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["select"])('learnpress/quiz');
   var questions = s.getQuestions();
   return questions.find(function (q) {
-    return q.id == currentQuestion;
+    return q.id == theId;
   });
+};
+
+
+function isCheckedAnswer(state, id) {
+  var checkedQuestions = get(state, 'userQuiz.checkedQuestions') || [];
+  return checkedQuestions.indexOf(id) !== -1;
 }
 
 /***/ }),

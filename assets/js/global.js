@@ -462,7 +462,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _event_callback__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./event-callback */ "./assets/src/js/utils/event-callback.js");
 /* harmony import */ var _hook__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./hook */ "./assets/src/js/utils/hook.js");
 /* harmony import */ var _cookies__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./cookies */ "./assets/src/js/utils/cookies.js");
-/* harmony import */ var _jquery_plugins__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./jquery.plugins */ "./assets/src/js/utils/jquery.plugins.js");
+/* harmony import */ var _local_storage__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./local-storage */ "./assets/src/js/utils/local-storage.js");
+/* harmony import */ var _jquery_plugins__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./jquery.plugins */ "./assets/src/js/utils/jquery.plugins.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -474,6 +475,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  *
  * @version 3.2.6
  */
+
 
 
 
@@ -1036,12 +1038,14 @@ $(document).ready(function () {
 Object(_extend__WEBPACK_IMPORTED_MODULE_0__["default"])(_objectSpread({
   Event_Callback: _event_callback__WEBPACK_IMPORTED_MODULE_4__["default"],
   MessageBox: _message_box__WEBPACK_IMPORTED_MODULE_3__["default"],
-  Cookies: _cookies__WEBPACK_IMPORTED_MODULE_6__["default"]
+  Cookies: _cookies__WEBPACK_IMPORTED_MODULE_6__["default"],
+  localStorage: _local_storage__WEBPACK_IMPORTED_MODULE_7__["default"]
 }, _default));
 /* harmony default export */ __webpack_exports__["default"] = ({
   fn: _fn__WEBPACK_IMPORTED_MODULE_1__["default"],
   QuickTip: _quick_tip__WEBPACK_IMPORTED_MODULE_2___default.a,
-  Cookies: _cookies__WEBPACK_IMPORTED_MODULE_6__["default"]
+  Cookies: _cookies__WEBPACK_IMPORTED_MODULE_6__["default"],
+  localStorage: _local_storage__WEBPACK_IMPORTED_MODULE_7__["default"]
 });
 
 /***/ }),
@@ -1275,6 +1279,63 @@ $.fn.progress = progress;
   findPrev: findPrev,
   progress: progress
 });
+
+/***/ }),
+
+/***/ "./assets/src/js/utils/local-storage.js":
+/*!**********************************************!*\
+  !*** ./assets/src/js/utils/local-storage.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var _localStorage = {
+  __key: 'LP',
+  set: function set(name, value) {
+    var data = this.get();
+    var _lodash = lodash,
+        set = _lodash.set;
+    set(data, name, value);
+    localStorage.setItem(this.__key, JSON.stringify(data));
+  },
+  get: function get(name, def) {
+    var data = JSON.parse(localStorage.getItem(this.__key) || "{}");
+    var _lodash2 = lodash,
+        get = _lodash2.get;
+    return !name ? data : get(data, name) || def;
+  },
+  exists: function exists(name) {
+    var data = this.get();
+    return data.hasOwnProperty(name);
+  },
+  remove: function remove(name) {
+    var data = this.get();
+    var newData = {};
+
+    if (!this.exists(name)) {
+      return false;
+    }
+
+    for (var prop in data) {
+      if (name === prop) {
+        continue;
+      }
+
+      newData[prop] = data[prop];
+    }
+
+    this.__set(newData);
+  },
+  __get: function __get() {
+    return localStorage.getItem(this.__key);
+  },
+  __set: function __set(data) {
+    localStorage.setItem(this.__key, JSON.stringify(data || "{}"));
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (_localStorage);
 
 /***/ }),
 

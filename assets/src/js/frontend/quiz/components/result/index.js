@@ -26,11 +26,10 @@ class Result extends Component {
         return <div className="quiz-result">
 
             <h3>{ __('Your Result', 'learnpress') }</h3>
-            {console.log(results)}
             <div className="result-grade">
                 <span className="result-achieved">{ this.getResultPercentage(results) }%</span>
                 <span
-                    className="result-require">{ undefined !== results.passing_grade ? results.passing_grade : __('-', 'unknown passing grade value', 'learnpress') }</span>
+                    className="result-require">{ undefined !== results.passing_grade ? results.passing_grade : _x('-', 'unknown passing grade value', 'learnpress') }</span>
                 <p className="result-message" dangerouslySetInnerHTML={ {__html: this.getResultMessage(results)} }>
                 </p>
             </div>

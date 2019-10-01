@@ -1,28 +1,59 @@
 import {Component} from '@wordpress/element';
+import {compose} from '@wordpress/compose';
+import {withSelect} from '@wordpress/data';
+import {__} from '@wordpress/i18n';
 
-class Meta extends Component{
-    render(){
-        return <div>
-            <ul className="quiz-intro">
-                <li>
-                    <label>Attempts allowed</label>
-                    <span>3</span>
-                </li>
-                <li>
-                    <label>Duration</label>
-                    <span>00:10:00</span>
-                </li>
-                <li>
-                    <label>Passing grade</label>
-                    <span>90%</span>
-                </li>
-                <li>
-                    <label>Questions</label>
-                    <span>5</span>
-                </li>
-            </ul>
-        </div>
+class Meta extends Component {
+    render() {
+        const {
+            metaFields
+        } = this.props;
+
+        return metaFields && <React.Fragment>
+                <ul className="quiz-intro">
+                    {
+                        Object.values(metaFields).map((field, i) => {
+                            return <li key={`quiz-intro-field-${i}`}>
+                                <label dangerouslySetInnerHTML={{__html: field.label}}>
+                                </label>
+                                <span dangerouslySetInnerHTML={{__html: field.value}}>
+                            </span>
+                            </li>
+                        })
+                    }
+                </ul>
+            </React.Fragment>
     }
 }
 
-export default Meta;
+export default compose(
+    withSelect((select) => {
+        const {
+            getData
+        } = select('learnpress/quiz');
+
+        return {
+            metaFields: LP.Hook.applyFilters('quiz-meta-fields', {
+                attemptsCount: {
+                    label: __('Attempts allowed', 'learnpress'),
+                    content: getData('attemptsCount')
+                },
+                duration: {
+                    label: __('Duration', 'learnpress'),
+                    content: getData('duration')
+                },
+                passingGrade: {
+                    label: __('Passing grade', 'learnpress'),
+                    content: getData('passingGrade')
+                },
+                questionsCount: {
+                    label: __('Questions', 'learnpress'),
+                    content: (function () {
+                        const ids = getData('questionsIds');
+                        return ids ? ids.length : 0;
+                    })()
+                }
+            })
+        };
+    })
+)(Meta);

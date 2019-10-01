@@ -267,10 +267,25 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get answer options of the question
 		 *
+		 * @param array $args - Optional.
+		 *
 		 * @return mixed
 		 */
-		public function get_answer_options() {
-			return apply_filters( 'learn-press/question/answer-options', $this->get_data( 'answer_options' ), $this->get_id() );
+		public function get_answer_options( $args = array() ) {
+
+			$args    = wp_parse_args( $args, array( 'with_true_or_false' => true ) );
+			$options = $this->get_data( 'answer_options' );
+
+			// Remove key 'is_true' if no need.
+			if ( $options && !$args['with_true_or_false'] ) {
+				foreach ( $options as $k => $option ) {
+					if ( array_key_exists( 'is_true', $options[ $k ] ) ) {
+						unset( $options[ $k ]['is_true'] );
+					}
+				}
+			}
+
+			return apply_filters( 'learn-press/question/answer-options', $options, $this->get_id() );
 		}
 
 		/**

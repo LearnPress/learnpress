@@ -147,16 +147,23 @@ export function __requestCheckAnswerSuccess(id, result) {
 }
 
 export function* checkAnswer(id) {
+    console.time('checkAnswer');
     const {
+        getData,
         getDefaultRestArgs,
-        getQuestionAnswered
+        getQuestionAnswered,
+        getQuestionOptions
     } = wpSelect('learnpress/quiz');
+
+    // if(getData('crypto')){
+    //     const options = getQuestionOptions(id);
+    //     console.log(options)
+    // }
 
     const {
         item_id,
         course_id
     } = getDefaultRestArgs();
-
 
 
     const result = yield apiFetch({
@@ -166,11 +173,13 @@ export function* checkAnswer(id) {
             item_id,
             course_id,
             question_id: id,
-            answered: getQuestionAnswered(id)
+            answered: getQuestionAnswered(id) || ''
         }
     });
 
     yield dispatch('learnpress/quiz', '__requestCheckAnswerSuccess', id, result);
+    console.timeEnd('checkAnswer');
+
 }
 
 export function markQuestionRendered(questionId) {

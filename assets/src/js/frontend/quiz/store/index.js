@@ -15,8 +15,7 @@ const store = registerStore('learnpress/quiz', {
         ...dataControls
     }
 });
-console.log('Create store');
-/// sdf sdfsdf s
+
 applyMiddlewares(store);
 
 export default store;

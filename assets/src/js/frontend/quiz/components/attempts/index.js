@@ -57,7 +57,7 @@ class Attempts extends Component {
                                 <td>{row.question_correct} / {row.question_count}</td>
                                 <td>{ this.getTimeSpendLabel(row) } / {this.getDurationLabel(row)}</td>
                                 <td>{row.user_mark} / {row.mark}</td>
-                                <td>{row.passing_grade || __('-', 'unknown passing grade value', 'learnpress')}</td>
+                                <td>{row.passing_grade || _x('-', 'unknown passing grade value', 'learnpress')}</td>
                                 <td>{parseFloat(row.result).toFixed(2)}% <label>{row.grade_text}</label></td>
                             </tr>
                         })

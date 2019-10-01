@@ -248,6 +248,23 @@
                 display: none;
             }
         }
+        &.answer-correct {
+            border-color: #5383F7;
+        }
+        &.answered-correct {
+        }
+        &.answered-wrong {
+            border-color: #ff6423;
+        }
+    }
+
+    .question-title {
+        display: block;
+        .edit-link {
+            font-weight: normal;
+            float: right;
+            font-size: 14px;
+        }
     }
 }
 

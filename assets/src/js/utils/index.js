@@ -11,7 +11,7 @@ import MessageBox from './message-box';
 import Event_Callback from './event-callback';
 import Hook from './hook';
 import Cookies from './cookies';
-
+import _localStorage from './local-storage';
 
 import * as jplugins from './jquery.plugins';
 
@@ -526,11 +526,13 @@ extend({
     Event_Callback,
     MessageBox,
     Cookies,
+    localStorage: _localStorage,
     ..._default
 });
 
 export default {
     fn,
     QuickTip,
-    Cookies
+    Cookies,
+    localStorage: _localStorage
 }

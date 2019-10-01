@@ -102,7 +102,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function init() {}
 function formatDuration(seconds) {
-  var html = '';
+  var html;
   var x, d;
   var day_in_seconds = 3600 * 24;
 

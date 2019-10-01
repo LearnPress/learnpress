@@ -1,7 +1,7 @@
 import {Component} from '@wordpress/element';
 import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
-import {__} from '@wordpress/i18n';
+import {__, sprintf} from '@wordpress/i18n';
 
 const $ = window.jQuery;
 const {uniqueId, isArray} = lodash;
@@ -28,130 +28,97 @@ class Question extends Component {
         return a;
     }
 
-    setAnswerChecked = () => (event) => {
+    setRef = (el) => {
+        this.$wrap = $(el);
+    };
 
+    parseOptions = (options) => {
+        options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)) : options;
+        options = !isArray(options) ? JSON.parse(options) : options;
+
+        return options;
+    };
+
+    getWrapperClass = () => {
         const {
-            updateUserQuestionAnswers,
             question,
-            status
+            answered
         } = this.props;
 
-        if (status !== 'started') {
-            return 'can not set answers'
-        }
+        const classes = ['question', 'question-' + question.type];
 
-        const $options = this.$wrap.find('.option-check');
-        const answered = [];
-        const isSingle = question.type !== 'multi_choice';
-
-        $options.each((i, option) => {
-            if (option.checked) {
-                answered.push(option.value);
-
-                if (isSingle) {
-                    return false;
-                }
+        this.parseOptions(question.options).map((option) => {
+            if (option.is_true !== undefined) {
+                classes.push('question-answered');
+                return false;
             }
         });
 
-        updateUserQuestionAnswers(question.id, isSingle ? answered[0] : answered)
-
+        return classes;
     };
 
-    maybeCheckedAnswer = (value) => {
+    getEditLink = () => {
         const {
-            answered
+            question,
+            editPermalink
         } = this.props;
 
-        if (isArray(answered)) {
-            return !!answered.find((a) => {
-                return a == value;
-            })
-        }
-
-        return value == answered;
-    }
-
-    getOptionType = (questionType, option) => {
-        let type = 'radio';
-
-        switch (questionType) {
-            case 'multi_choice':
-                type = 'checkbox';
-                break;
-        }
-
-        return type;
+        return editPermalink ? editPermalink.replace(/[0-9]+/, question.id) : '';
     };
 
-    setRef = (el) => {
-        this.$wrap = $(el);
-    }
+    editPermalink = (editPermalink) => {
+        return sprintf('<a href="%s">%s</a>', editPermalink, __('Edit', 'learnpress'))
+    };
 
     render() {
         const {
-            status,
             question,
             isCurrent,
-            markQuestionRendered,
-            questionsRendered,
             answered
         } = this.props;
 
-        return <div className="question" style={ {display: isCurrent ? '' : 'none'} } ref={ this.setRef }>
-            <h4>{ question.title }</h4>
-            <div dangerouslySetInnerHTML={ {__html: question.content} }>
-            </div>
-            [{JSON.stringify(answered)}]
-            <ul id={`answer-options-${question.id}`} className="answer-options">
+        const QuestionTypes = LP.questionTypes.default;
+        const editPermalink = this.getEditLink();
+
+        if (editPermalink) {
+            jQuery('#wp-admin-bar-edit-lp_question').find('.ab-item').attr('href', editPermalink);
+        }
+
+        return <React.Fragment>
+            <div className={ this.getWrapperClass().join(' ') } style={ {display: isCurrent ? '' : 'none'} }
+                 ref={ this.setRef }>
+                <h4 className="question-title">
+                    { question.title }
+                    {
+                        editPermalink && <span dangerouslySetInnerHTML={ {__html: this.editPermalink(editPermalink)} }  className="edit-link">
+                        </span>
+                    }
+                </h4>
+                <div dangerouslySetInnerHTML={ {__html: question.content} }>
+                </div>
+                <QuestionTypes {...{...this.props, $wrap: this.$wrap}}/>
                 {
-                    question.options.map((option) => {
-                        const optionId = uniqueId();
-
-                        return <li className={`answer-option`} key={ `answer-option-${option.question_answer_id}` }>
-                            <label>
-                                <input type={ this.getOptionType(question.type, option) }
-                                       className="option-check"
-                                       name={ `learn-press-question-${question.id}` }
-                                       id={`learn-press-answer-option-${optionId}`}
-                                       onChange={ this.setAnswerChecked() }
-                                       disabled={ status !== 'started' }
-                                       checked={ this.maybeCheckedAnswer(option.value) }
-                                       value={ option.value }/>
-
-                                <div className="option-title">
-                                    <div className="option-title-content"
-                                         htmlFor={`learn-press-answer-option-${optionId}`}
-                                         dangerouslySetInnerHTML={ {__html: option.text} }>
-                                    </div>
-                                </div>
-                            </label>
-                        </li>
-                    })
+                    question.explanation && <React.Fragment>
+                        <div className="question-explanation-content">
+                            <strong className="explanation-title">{ __('Explanation:', 'learnpress') }</strong>
+                            <div dangerouslySetInnerHTML={ {__html: question.explanation} }>
+                            </div>
+                        </div>
+                    </React.Fragment>
                 }
-            </ul>
 
-            {
-                question.hint && <React.Fragment>
-                    <div className="question-explanation-content">
-                        <strong className="explanation-title">{ __( 'Explanation:', 'learnpress' ) }</strong>
-                        <div dangerouslySetInnerHTML={ { __html: question.hint } }>
+                {
+                    question.hint && <React.Fragment>
+                        <div className="question-hint-content">
+                            <strong className="hint-title">{ __('Hint:', 'learnpress') }</strong>
+                            <div dangerouslySetInnerHTML={ {__html: question.hint} }>
+                            </div>
                         </div>
-                    </div>
-                </React.Fragment>
-            }
+                    </React.Fragment>
 
-            {
-                question.explanation && <React.Fragment>
-                    <div className="question-hint-content">
-                        <strong className="hint-title">{ __( 'Hint:', 'learnpress' ) }</strong>
-                        <div dangerouslySetInnerHTML={ {__html: question.explanation} }>
-                        </div>
-                    </div>
-                </React.Fragment>
-
-            }
-        </div>
+                }
+            </div>
+        </React.Fragment>
     }
 }
 
@@ -166,7 +133,8 @@ export default compose([
             status: getData('status'),
             questions: getData('question'),
             answered: getQuestionAnswered(id),
-            questionsRendered: getData('questionsRendered')
+            questionsRendered: getData('questionsRendered'),
+            editPermalink: getData('editPermalink')
         }
     }),
     withDispatch((dispatch) => {

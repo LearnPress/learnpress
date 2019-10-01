@@ -514,6 +514,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	public function check_question( $question_id ) {
 		try {
 			$checked = false;
+
 			if ( ( $remain = $this->can_check_answer() ) && ( ! $checked = $this->has_checked_question( $question_id ) ) ) {
 				$checked   = $this->get_checked_questions();
 				$checked[] = $question_id;
@@ -590,6 +591,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$checked = $this->get_check_answer_count();
 				$can     = $value - $checked;
 			}
+			/**
+			 * TODO: apply this for new setting.
+			 */
+			$can = true;
 		}
 
 		return apply_filters( 'learn-press/user-quiz/can-check-answer', $can, $this->get_item_id(), $this->get_course_id() );
@@ -636,6 +641,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$hint = $this->get_count_hint();
 				$can  = $value - $hint;
 			}
+
+			// TODO: 4.x.x
+			$can = true;
 		}
 
 		return apply_filters( 'learn-press/user-quiz/can-hint-answer', $can, $this->get_id(), $this->get_course_id() );

@@ -329,8 +329,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 		// Response
 		$response = array(
-			'count'        => $hintCount,
-			'hint_content' => $question->get_hint()
+			'hint' => $question->get_hint()
 		);
 
 		return rest_ensure_response( $response );
@@ -339,14 +338,20 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	public function check_answer( $request ) {
 		$question_id = $request['question_id'];
 		$answered    = $request['answered'];
+
 		$this->userItem->add_question_answer( $question_id, $answered );
+		$this->userItem->update();
 		$hintCount = $this->userItem->check_question( $question_id );
-		$question  = learn_press_get_question( $question_id );
+		$this->userItem->update();
+
+		$question = learn_press_get_question( $question_id );
 
 		// Response
 		$response = array(
-			'count'               => $hintCount,
-			'explanation_content' => $question->get_explanation()
+			'explanation' => $question->get_explanation(),
+			'options'     => array_values( $question->get_answer_options() ),
+			'result'      => $question->check( $answered ),
+			'answered'    => $answered
 		);
 
 		return rest_ensure_response( $response );

@@ -15,14 +15,31 @@ import store from './store';
 
 class Quiz extends Component {
     componentDidMount() {
+        console.time('Quiz.componentDidMount');
         const {
             settings,
             setQuizData
         } = this.props;
 
-        setQuizData(settings);
+        const sanitizedSettings = {};
 
-        console.log(settings)
+        function camelCaseDash(string) {
+            return string.replace(
+                /[-_]([a-z])/g,
+                (match, letter) => letter.toUpperCase()
+            );
+        }
+
+        for(let prop in settings){
+            if(!settings.hasOwnProperty(prop)){
+                continue;
+            }
+
+            sanitizedSettings[camelCaseDash(prop)] = settings[prop];
+        }
+        console.timeEnd('Quiz.componentDidMount');
+console.log(sanitizedSettings)
+        setQuizData(sanitizedSettings);
     }
 
     componentWillReceiveProps() {
@@ -40,35 +57,35 @@ class Quiz extends Component {
     render() {
         const {
             status,
-            isReviewing,
-            answered,
-            hintCount,
-            checkCount
+            isReviewing
         } = this.props;
 
         const isA = -1 !== ['', 'completed'].indexOf(status);
 
-        return <React.Fragment>
-            <div>ANSWERS: [{JSON.stringify(answered)}]</div>
-            <div>HINT: [{hintCount}]</div>
-            <div>Explanation: [{checkCount}]</div>
+        // Just render content if status !== undefined (meant all data loaded)
+        return undefined !== status && (
+                <React.Fragment>
+                    {/*<div>ANSWERS: [{JSON.stringify(answered)}]</div>*/}
+                    {/*<div>HINT: [{hintCount}]</div>*/}
+                    {/*<div>Explanation: [{checkCount}]</div>*/}
 
-            { !isReviewing && 'completed' === status && <Result/> }
-            { !isReviewing && !status && <Meta /> }
-            { !isReviewing && isA && <Content /> }
+                    { !isReviewing && 'completed' === status && <Result/> }
+                    { !isReviewing && !status && <Meta /> }
+                    { !isReviewing && isA && <Content /> }
 
-            { 'started' === status && <Status /> }
+                    { 'started' === status && <Status /> }
 
-            { ((-1 !== ['completed', 'started'].indexOf(status)) || isReviewing) && <Questions />}
+                    { ((-1 !== ['completed', 'started'].indexOf(status)) || isReviewing) && <Questions />}
 
-            <Buttons />
+                    <Buttons />
 
-            {
-                isA && !isReviewing &&
-                <Attempts />
-            }
+                    {
+                        isA && !isReviewing &&
+                        <Attempts />
+                    }
 
-        </React.Fragment>
+                </React.Fragment>
+            )
     }
 }
 
@@ -85,8 +102,8 @@ export default compose([
             store: getData(),
             answered: getData('answered'),
             isReviewing: getData('mode') === 'reviewing',
-            hintCount: getData('show_hint'),
-            checkCount: getData('show_check_answers')
+            hintCount: getData('showHint'),
+            checkCount: getData('showCheckAnswers')
         }
     }),
     withDispatch((dispatch) => {

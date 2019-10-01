@@ -4,7 +4,7 @@ export function init() {
 }
 
 export function formatDuration(seconds) {
-    let html = '';
+    let html;
     let x, d;
     const day_in_seconds = 3600 * 24;
 

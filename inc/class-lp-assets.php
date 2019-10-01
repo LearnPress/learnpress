@@ -159,7 +159,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'enqueue' => learn_press_is_checkout() || learn_press_is_course() && ! learn_press_is_learning_course()
 
 				),
-				'data-controls'           => array(
+				'data-controls'    => array(
 					'url'  => self::url( 'js/frontend/data-controls.js' ),
 					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
 				),
@@ -167,7 +167,11 @@ class LP_Assets extends LP_Abstract_Assets {
 					'url'  => self::url( 'js/frontend/lesson.js' ),
 					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
 				),
-				'quiz'           => array(
+				'question-types'   => array(
+					'url'  => self::url( 'js/frontend/question-types.js' ),
+					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
+				),
+				'quiz'             => array(
 					'url'  => self::url( 'js/frontend/quiz.js' ),
 					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
 				),
@@ -207,6 +211,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					'deps' => array(
 						'jquery'
 					)
+				),
+				'crypto-js'        => array(
+					'url' => 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js'
 				)
 			)
 		);

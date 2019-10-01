@@ -17,6 +17,7 @@ const {camelCaseDash} = require('@wordpress/scripts/utils');
 const packageDir = baseDir + '/assets/src/';
 const buildPackages = [
     'frontend/single-course',
+    'frontend/question-types',
     'frontend/lesson',
     'frontend/quiz',
     'frontend/data-controls'

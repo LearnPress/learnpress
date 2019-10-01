@@ -33,7 +33,6 @@ class Questions extends Component {
 
 
         return <React.Fragment>
-            [{isReviewing}]
             <div className="quiz-questions" style={ {display: isShow ? '' : 'none'} }>
                 {
                     questions.map((question) => {

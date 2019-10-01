@@ -2319,6 +2319,16 @@ body.confirm #popup_container {
         background: #f7f7f7; }
     #popup-course .answer-option .option-title:before {
       display: none; }
+    #popup-course .answer-option.answer-correct {
+      border-color: #5383F7; }
+    #popup-course .answer-option.answered-wrong {
+      border-color: #ff6423; }
+  #popup-course .question-title {
+    display: block; }
+    #popup-course .question-title .edit-link {
+      font-weight: normal;
+      float: right;
+      font-size: 14px; }
 
 body.admin-bar #popup-course {
   top: 32px; }

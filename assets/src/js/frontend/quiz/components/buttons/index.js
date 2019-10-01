@@ -132,8 +132,13 @@ class Buttons extends Component {
             currentQuestion,
             checkedQuestions,
             hintedQuestions,
-            question
+            question,
+            status
         } = this.props;
+
+        if (status !== 'started') {
+            return false;
+        }
 
         switch (type) {
             case 'hint':
@@ -145,7 +150,7 @@ class Buttons extends Component {
                     return true;
                 }
 
-                if (!question.can_hint) {
+                if (!question.has_hint) {
                     return false;
                 }
 
@@ -160,9 +165,9 @@ class Buttons extends Component {
                     return true;
                 }
 
-                if (!question.can_check) {
-                    return false;
-                }
+                // if (!question.has_check) {
+                //     return false;
+                // }
 
                 return checkedQuestions.indexOf(currentQuestion) === -1;
         }
@@ -254,12 +259,12 @@ export default compose([
             questionIds: getData('questionIds'),
             questionNav: getData('questionNav'),
             currentQuestion: getData('currentQuestion'),
-            isReviewing: getData('review_questions') && getData('mode') === 'reviewing',
-            showReview: getData('review_questions'),
-            showHint: getData('show_hint'),
-            showCheck: getData('show_check_answers'),
-            checkedQuestions: getData('checked_questions'),
-            hintedQuestions: getData('hinted_questions'),
+            isReviewing: getData('reviewQuestions') && getData('mode') === 'reviewing',
+            showReview: getData('reviewQuestions'),
+            showHint: getData('showHint'),
+            showCheck: getData('showCheckAnswers'),
+            checkedQuestions: getData('checkedQuestions'),
+            hintedQuestions: getData('hintedQuestions'),
             question: getCurrentQuestion()
         }
     }),
