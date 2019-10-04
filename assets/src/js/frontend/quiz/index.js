@@ -13,7 +13,20 @@ import {
 
 import store from './store';
 
+const {chunk, isNumber} = lodash;
+
 class Quiz extends Component {
+    constructor(props) {
+        super(...arguments);
+
+
+        this.state = {
+            currentPage: 1,
+            numPages: 0,
+            pages: []
+        };
+    }
+
     componentDidMount() {
         console.time('Quiz.componentDidMount');
         const {
@@ -30,20 +43,45 @@ class Quiz extends Component {
             );
         }
 
-        for(let prop in settings){
-            if(!settings.hasOwnProperty(prop)){
+        for (let prop in settings) {
+            if (!settings.hasOwnProperty(prop)) {
                 continue;
             }
 
             sanitizedSettings[camelCaseDash(prop)] = settings[prop];
         }
+
+        const {
+            questionIds,
+            questionsLayout
+        } = sanitizedSettings;
+
+        const chunks = chunk(questionIds, questionsLayout);
+
+        sanitizedSettings.currentPage = 1;
+        sanitizedSettings.numPages = chunks.length;
+        sanitizedSettings.pages = chunks;
+
         console.timeEnd('Quiz.componentDidMount');
-console.log(sanitizedSettings)
+        console.log(sanitizedSettings)
         setQuizData(sanitizedSettings);
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps) {
         console.time('QUIZ');
+
+        const {
+            questionIds,
+            questionsLayout,
+            setQuizData
+        } = nextProps;
+
+        const chunks = chunk(questionIds, questionsLayout);
+
+        // setQuizData({
+        //     numPages: chunks.length,
+        //     pages: chunks
+        // });
     }
 
     componentDidUpdate() {
@@ -57,8 +95,16 @@ console.log(sanitizedSettings)
     render() {
         const {
             status,
-            isReviewing
+            isReviewing,
+            // numPages,
+            // currentPage
         } = this.props;
+
+        // const {
+        //     numPages,
+        //     currentPage,
+        //     pages
+        // } = this.state;
 
         const isA = -1 !== ['', 'completed'].indexOf(status);
 
@@ -75,7 +121,8 @@ console.log(sanitizedSettings)
 
                     { 'started' === status && <Status /> }
 
-                    { ((-1 !== ['completed', 'started'].indexOf(status)) || isReviewing) && <Questions />}
+                    { ((-1 !== ['completed', 'started'].indexOf(status)) || isReviewing) &&
+                    <Questions/>}
 
                     <Buttons />
 
@@ -103,7 +150,9 @@ export default compose([
             answered: getData('answered'),
             isReviewing: getData('mode') === 'reviewing',
             hintCount: getData('showHint'),
-            checkCount: getData('showCheckAnswers')
+            questionIds: getData('questionIds'),
+            checkCount: getData('showCheckAnswers'),
+            questionsLayout: getData('questionsLayout') || 1
         }
     }),
     withDispatch((dispatch) => {

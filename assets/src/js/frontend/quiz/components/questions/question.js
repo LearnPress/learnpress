@@ -2,9 +2,10 @@ import {Component} from '@wordpress/element';
 import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
 import {__, sprintf} from '@wordpress/i18n';
+import Buttons from "./buttons";
 
 const $ = window.jQuery;
-const {uniqueId, isArray} = lodash;
+const {uniqueId, isArray, isNumber} = lodash;
 
 class Question extends Component {
 
@@ -47,12 +48,9 @@ class Question extends Component {
 
         const classes = ['question', 'question-' + question.type];
 
-        this.parseOptions(question.options).map((option) => {
-            if (option.is_true !== undefined) {
-                classes.push('question-answered');
-                return false;
-            }
-        });
+        if (this.parseOptions(question.options)[0].is_true !== undefined) {
+            classes.push('question-answered');
+        }
 
         return classes;
     };
@@ -73,8 +71,10 @@ class Question extends Component {
     render() {
         const {
             question,
-            isCurrent,
-            answered
+            isShow,
+            isShowIndex,
+            questionsLayout,
+            status
         } = this.props;
 
         const QuestionTypes = LP.questionTypes.default;
@@ -85,18 +85,23 @@ class Question extends Component {
         }
 
         return <React.Fragment>
-            <div className={ this.getWrapperClass().join(' ') } style={ {display: isCurrent ? '' : 'none'} }
+            <div className={ this.getWrapperClass().join(' ') } style={ {display: isShow ? '' : 'none'} }
                  ref={ this.setRef }>
                 <h4 className="question-title">
+                    { isShowIndex ? <span className="question-index">{isShowIndex}.</span> : ''}
                     { question.title }
                     {
-                        editPermalink && <span dangerouslySetInnerHTML={ {__html: this.editPermalink(editPermalink)} }  className="edit-link">
+                        editPermalink && <span dangerouslySetInnerHTML={ {__html: this.editPermalink(editPermalink)} }
+                                               className="edit-link">
                         </span>
                     }
                 </h4>
-                <div dangerouslySetInnerHTML={ {__html: question.content} }>
+
+                <div className="question-content" dangerouslySetInnerHTML={ {__html: question.content} }>
                 </div>
+
                 <QuestionTypes {...{...this.props, $wrap: this.$wrap}}/>
+
                 {
                     question.explanation && <React.Fragment>
                         <div className="question-explanation-content">
@@ -117,6 +122,8 @@ class Question extends Component {
                     </React.Fragment>
 
                 }
+                { ('started' === status) && (questionsLayout > 1) && <Buttons question={question}/> }
+
             </div>
         </React.Fragment>
     }
@@ -126,7 +133,8 @@ export default compose([
     withSelect((select, {question: {id}}) => {
         const {
             getData,
-            getQuestionAnswered
+            getQuestionAnswered,
+            isCorrect,
         } = select('learnpress/quiz');
 
         return {
@@ -134,7 +142,9 @@ export default compose([
             questions: getData('question'),
             answered: getQuestionAnswered(id),
             questionsRendered: getData('questionsRendered'),
-            editPermalink: getData('editPermalink')
+            editPermalink: getData('editPermalink'),
+            isCorrect: isCorrect(id),
+            numPages: getData('numPages')
         }
     }),
     withDispatch((dispatch) => {

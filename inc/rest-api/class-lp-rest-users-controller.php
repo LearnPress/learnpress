@@ -349,7 +349,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		// Response
 		$response = array(
 			'explanation' => $question->get_explanation(),
-			'options'     => array_values( $question->get_answer_options() ),
+			'options'     => xxx_get_question_options_for_js( $question, array( 'include_is_true' => true ) ),
 			'result'      => $question->check( $answered ),
 			'answered'    => $answered
 		);

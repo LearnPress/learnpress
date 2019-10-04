@@ -163,6 +163,10 @@ class LP_Assets extends LP_Abstract_Assets {
 					'url'  => self::url( 'js/frontend/data-controls.js' ),
 					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
 				),
+				'config'           => array(
+					'url'  => self::url( 'js/frontend/config.js' ),
+					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )
+				),
 				'lesson'           => array(
 					'url'  => self::url( 'js/frontend/lesson.js' ),
 					'deps' => array_merge( $wp_js, array( 'global' ) )//, 'jquery-scrollbar', 'watchjs', 'jalerts' )

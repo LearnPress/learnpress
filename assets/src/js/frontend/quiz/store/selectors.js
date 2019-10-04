@@ -1,13 +1,13 @@
 import {select} from '@wordpress/data';
 const {get, isArray} = lodash;
 
-const getQuestionOptions = function getQuestionOptions(state, id){
+const getQuestionOptions = function getQuestionOptions(state, id) {
     console.time('parseOptions');
 
     const question = getQuestion(state, id);
     let options = question.options;
 
-    options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)):options;
+    options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)) : options;
     options = !isArray(options) ? JSON.parse(options) : options;
 
     console.timeEnd('parseOptions')
@@ -101,11 +101,15 @@ export function getQuestionAnswered(state, id) {
 }
 
 
-export function getCurrentQuestion(state) {
-    const {userQuiz} = state;
-    const {currentQuestion} = userQuiz;
+export function getCurrentQuestion(state, ret = '') {
+    const questionsLayout = get(state, 'userQuiz.questionsLayout') || 1;
 
-    return getQuestion(state, currentQuestion)
+    if (questionsLayout > 1) {
+        return false;
+    }
+
+    const currentPage = get(state, 'userQuiz.currentPage') || 1;
+    return ret === 'object' ? get(state, `userQuiz.questions[${currentPage - 1}]`) : get(state, `userQuiz.questionIds[${currentPage - 1}]`)
 }
 
 const getQuestion = function getQuestion(state, theId) {
@@ -124,4 +128,8 @@ export function isCheckedAnswer(state, id) {
     const checkedQuestions = get(state, 'userQuiz.checkedQuestions') || [];
 
     return checkedQuestions.indexOf(id) !== -1;
+}
+
+export function isCorrect(state, id) {
+
 }

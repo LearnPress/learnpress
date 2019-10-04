@@ -191,13 +191,17 @@ function (_Component) {
           attempts = _this$props.attempts,
           attemptsCount = _this$props.attemptsCount;
       var hasAttempts = attempts && !!attempts.length;
-      return React.createElement(React.Fragment, null, React.createElement("h4", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Attempts', 'learnpress'), " ( ", attempts.length || 0, " / ", attemptsCount, " )"), hasAttempts && React.createElement("table", {
+      return React.createElement(React.Fragment, null, React.createElement("div", {
         className: "quiz-attempts"
-      }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Date', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Questions', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Spend', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Marks', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Passing Grade', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Result', 'learnpress')))), React.createElement("tbody", null, attempts.map(function (row) {
+      }, React.createElement("h4", {
+        className: "attempts-heading"
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Attempts', 'learnpress'), " ( ", attempts.length || 0, " / ", attemptsCount, " )"), hasAttempts && React.createElement("table", null, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Date', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Questions', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Spend', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Marks', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Passing Grade', 'learnpress')), React.createElement("th", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Result', 'learnpress')))), React.createElement("tbody", null, attempts.map(function (row) {
         return React.createElement("tr", {
           key: "attempt-".concat(row.id)
         }, React.createElement("td", null, row.start_time), React.createElement("td", null, row.question_correct, " / ", row.question_count), React.createElement("td", null, _this.getTimeSpendLabel(row), " / ", _this.getDurationLabel(row)), React.createElement("td", null, row.user_mark, " / ", row.mark), React.createElement("td", null, row.passing_grade || Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("td", null, parseFloat(row.result).toFixed(2), "% ", React.createElement("label", null, row.grade_text)));
-      }))), !hasAttempts && React.createElement("p", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('There is no attempt now.', 'learnpress')));
+      }))), !hasAttempts && React.createElement("p", {
+        className: "no-attempts-message"
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('There is no attempt now.', 'learnpress'))));
     }
   }]);
 
@@ -236,10 +240,10 @@ function (_Component) {
 
 /***/ }),
 
-/***/ "./assets/src/js/frontend/quiz/components/buttons/index.js":
-/*!*****************************************************************!*\
-  !*** ./assets/src/js/frontend/quiz/components/buttons/index.js ***!
-  \*****************************************************************/
+/***/ "./assets/src/js/frontend/quiz/components/buttons/button-check.js":
+/*!************************************************************************!*\
+  !*** ./assets/src/js/frontend/quiz/components/buttons/button-check.js ***!
+  \************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -278,6 +282,207 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+var ButtonCheck =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(ButtonCheck, _Component);
+
+  function ButtonCheck() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    _classCallCheck(this, ButtonCheck);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(ButtonCheck)).call.apply(_getPrototypeOf2, [this].concat(args)));
+
+    _defineProperty(_assertThisInitialized(_this), "checkAnswer", function () {
+      var _this$props = _this.props,
+          checkAnswer = _this$props.checkAnswer,
+          question = _this$props.question;
+      checkAnswer(question.id);
+    });
+
+    return _this;
+  }
+
+  _createClass(ButtonCheck, [{
+    key: "render",
+    value: function render() {
+      return React.createElement("button", {
+        className: "lp-button check",
+        onClick: this.checkAnswer
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Check answer', 'label of button check answer', 'learnpress'));
+    }
+  }]);
+
+  return ButtonCheck;
+}(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch, _ref) {
+  var id = _ref.id;
+
+  var _dispatch = dispatch('learnpress/quiz'),
+      _checkAnswer = _dispatch.checkAnswer;
+
+  return {
+    checkAnswer: function checkAnswer(id) {
+      _checkAnswer(id);
+    }
+  };
+}))(ButtonCheck));
+
+/***/ }),
+
+/***/ "./assets/src/js/frontend/quiz/components/buttons/button-hint.js":
+/*!***********************************************************************!*\
+  !*** ./assets/src/js/frontend/quiz/components/buttons/button-hint.js ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+var ButtonHint =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(ButtonHint, _Component);
+
+  function ButtonHint() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    _classCallCheck(this, ButtonHint);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(ButtonHint)).call.apply(_getPrototypeOf2, [this].concat(args)));
+
+    _defineProperty(_assertThisInitialized(_this), "showHint", function () {
+      var _this$props = _this.props,
+          showHint = _this$props.showHint,
+          question = _this$props.question;
+      showHint(question.id);
+    });
+
+    return _this;
+  }
+
+  _createClass(ButtonHint, [{
+    key: "render",
+    value: function render() {
+      return React.createElement("button", {
+        className: "lp-button check",
+        onClick: this.showHint
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Hint', 'learnpress'));
+    }
+  }]);
+
+  return ButtonHint;
+}(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch, _ref) {
+  var id = _ref.id;
+
+  var _dispatch = dispatch('learnpress/quiz'),
+      _showHint = _dispatch.showHint;
+
+  return {
+    showHint: function showHint(id) {
+      _showHint(id);
+    }
+  };
+}))(ButtonHint));
+
+/***/ }),
+
+/***/ "./assets/src/js/frontend/quiz/components/buttons/index.js":
+/*!*****************************************************************!*\
+  !*** ./assets/src/js/frontend/quiz/components/buttons/index.js ***!
+  \*****************************************************************/
+/*! exports provided: MaybeShowButton, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MaybeShowButton", function() { return MaybeShowButton; });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _buttons_button_check__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../buttons/button-check */ "./assets/src/js/frontend/quiz/components/buttons/button-check.js");
+/* harmony import */ var _buttons_button_hint__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../buttons/button-hint */ "./assets/src/js/frontend/quiz/components/buttons/button-hint.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+
+
 var Buttons =
 /*#__PURE__*/
 function (_Component) {
@@ -305,37 +510,34 @@ function (_Component) {
     _defineProperty(_assertThisInitialized(_this), "nav", function (to) {
       return function (event) {
         var _this$props = _this.props,
-            setCurrentQuestion = _this$props.setCurrentQuestion,
-            currentQuestion = _this$props.currentQuestion,
-            questionIds = _this$props.questionIds,
-            questionNav = _this$props.questionNav;
-        var currentAt = questionIds.indexOf(currentQuestion);
+            questionNav = _this$props.questionNav,
+            currentPage = _this$props.currentPage,
+            numPages = _this$props.numPages,
+            setCurrentPage = _this$props.setCurrentPage;
 
         switch (to) {
           case 'prev':
-            currentAt = currentAt > 0 ? currentAt - 1 : questionNav === 'infinity' ? questionIds.length - 1 : currentAt;
+            currentPage = currentPage > 1 ? currentPage - 1 : questionNav === 'infinity' ? numPages : 1;
             break;
 
           default:
-            currentAt = currentAt < questionIds.length - 1 ? currentAt + 1 : questionNav === 'infinity' ? 0 : currentAt;
+            currentPage = currentPage < numPages ? currentPage + 1 : questionNav === 'infinity' ? 1 : numPages;
         }
 
-        setCurrentQuestion(questionIds[currentAt]);
+        setCurrentPage(currentPage);
       };
     });
 
     _defineProperty(_assertThisInitialized(_this), "isLast", function () {
       var _this$props2 = _this.props,
-          currentQuestion = _this$props2.currentQuestion,
-          questionIds = _this$props2.questionIds;
-      return questionIds.indexOf(currentQuestion) === questionIds.length - 1;
+          currentPage = _this$props2.currentPage,
+          numPages = _this$props2.numPages;
+      return currentPage === numPages;
     });
 
     _defineProperty(_assertThisInitialized(_this), "isFirst", function () {
-      var _this$props3 = _this.props,
-          currentQuestion = _this$props3.currentQuestion,
-          questionIds = _this$props3.questionIds;
-      return questionIds.indexOf(currentQuestion) === 0;
+      var currentPage = _this.props.currentPage;
+      return currentPage === 1;
     });
 
     _defineProperty(_assertThisInitialized(_this), "submit", function () {
@@ -355,77 +557,26 @@ function (_Component) {
       return isReviewing;
     });
 
-    _defineProperty(_assertThisInitialized(_this), "showHint", function () {
-      var _this$props4 = _this.props,
-          showHint = _this$props4.showHint,
-          currentQuestion = _this$props4.currentQuestion;
-      showHint(currentQuestion);
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "checkAnswer", function () {
-      var _this$props5 = _this.props,
-          checkAnswer = _this$props5.checkAnswer,
-          currentQuestion = _this$props5.currentQuestion;
-      checkAnswer(currentQuestion);
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "maybeShowButton", function (type) {
-      var _this$props6 = _this.props,
-          showHint = _this$props6.showHint,
-          showCheck = _this$props6.showCheck,
-          currentQuestion = _this$props6.currentQuestion,
-          checkedQuestions = _this$props6.checkedQuestions,
-          hintedQuestions = _this$props6.hintedQuestions,
-          question = _this$props6.question,
-          status = _this$props6.status;
-
-      if (status !== 'started') {
-        return false;
-      }
-
-      switch (type) {
-        case 'hint':
-          if (!showHint) {
-            return false;
-          }
-
-          if (!hintedQuestions) {
-            return true;
-          }
-
-          if (!question.has_hint) {
-            return false;
-          }
-
-          return hintedQuestions.indexOf(currentQuestion) === -1;
-
-        case 'check':
-          if (!showCheck) {
-            return false;
-          }
-
-          if (!checkedQuestions) {
-            return true;
-          } // if (!question.has_check) {
-          //     return false;
-          // }
-
-
-          return checkedQuestions.indexOf(currentQuestion) === -1;
-      }
-    });
-
     return _this;
   }
 
   _createClass(Buttons, [{
     key: "render",
+
+    /**
+     * Render buttons
+     *
+     * @return {XML}
+     */
     value: function render() {
-      var _this$props7 = this.props,
-          status = _this$props7.status,
-          questionNav = _this$props7.questionNav,
-          isReviewing = _this$props7.isReviewing,
-          showReview = _this$props7.showReview;
+      var _this$props3 = this.props,
+          status = _this$props3.status,
+          questionNav = _this$props3.questionNav,
+          isReviewing = _this$props3.isReviewing,
+          showReview = _this$props3.showReview,
+          numPages = _this$props3.numPages,
+          question = _this$props3.question,
+          questionsLayout = _this$props3.questionsLayout;
       return React.createElement("div", {
         className: "quiz-buttons"
       }, React.createElement("div", {
@@ -433,7 +584,7 @@ function (_Component) {
       }, -1 !== ['', 'completed'].indexOf(status) && !isReviewing && React.createElement("button", {
         className: "lp-button start",
         onClick: this.startQuiz
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Start', 'learnpress')), ('started' === status || isReviewing) && React.createElement(React.Fragment, null, ('infinity' === questionNav || !this.isFirst()) && React.createElement("button", {
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Start', 'learnpress')), ('started' === status || isReviewing) && numPages > 1 && React.createElement(React.Fragment, null, ('infinity' === questionNav || !this.isFirst()) && React.createElement("button", {
         className: "lp-button nav prev",
         onClick: this.nav('prev')
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Prev', 'learnpress')), ('infinity' === questionNav || !this.isLast()) && React.createElement("button", {
@@ -441,13 +592,19 @@ function (_Component) {
         onClick: this.nav('next')
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Next', 'learnpress')))), React.createElement("div", {
         className: "button-right"
-      }, ('started' === status || isReviewing) && React.createElement(React.Fragment, null, this.maybeShowButton('hint') && React.createElement("button", {
-        className: "lp-button hint",
-        onClick: this.showHint
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Hint', 'learnpress')), this.maybeShowButton('check') && React.createElement("button", {
-        className: "lp-button check",
-        onClick: this.checkAnswer
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Check', 'learnpress')), ('infinity' === questionNav || this.isLast()) && !isReviewing && React.createElement("button", {
+      }, 'started' === status
+      /*|| isReviewing*/
+      && React.createElement(React.Fragment, null, questionsLayout === 1 && [React.createElement(MaybeShowButton, {
+        key: "button-hint",
+        type: "hint",
+        Button: _buttons_button_hint__WEBPACK_IMPORTED_MODULE_5__["default"],
+        question: question
+      }), React.createElement(MaybeShowButton, {
+        key: "button-check",
+        type: "check",
+        Button: _buttons_button_check__WEBPACK_IMPORTED_MODULE_4__["default"],
+        question: question
+      })], ('infinity' === questionNav || this.isLast()) && !isReviewing && React.createElement("button", {
         className: "lp-button submit-quiz",
         onClick: this.submit
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Submit', 'learnpress'))), isReviewing && showReview && React.createElement("button", {
@@ -462,26 +619,97 @@ function (_Component) {
 
   return Buttons;
 }(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+/**
+ * Helper function to check a button should be show or not.
+ *
+ * Buttons [hint, check]
+ */
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])([Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select, a, b) {
+
+var MaybeShowButton = Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select) {
   var _select = select('learnpress/quiz'),
-      getData = _select.getData,
-      getCurrentQuestion = _select.getCurrentQuestion;
+      getData = _select.getData;
 
   return {
+    status: getData('status'),
+    showHint: getData('showHint'),
+    showCheck: getData('showCheckAnswers'),
+    checkedQuestions: getData('checkedQuestions'),
+    hintedQuestions: getData('hintedQuestions'),
+    questionsLayout: getData('questionsLayout')
+  };
+}))(function (props) {
+  var showHint = props.showHint,
+      showCheck = props.showCheck,
+      checkedQuestions = props.checkedQuestions,
+      hintedQuestions = props.hintedQuestions,
+      question = props.question,
+      status = props.status,
+      type = props.type,
+      Button = props.Button;
+
+  if (status !== 'started') {
+    return false;
+  }
+
+  var theButton = React.createElement(Button, {
+    question: question
+  });
+
+  switch (type) {
+    case 'hint':
+      if (!showHint) {
+        return false;
+      }
+
+      if (!hintedQuestions) {
+        return theButton;
+      }
+
+      if (!question.has_hint) {
+        return false;
+      }
+
+      return hintedQuestions.indexOf(question.id) === -1 && theButton;
+
+    case 'check':
+      if (!showCheck) {
+        return false;
+      }
+
+      if (!checkedQuestions) {
+        return theButton;
+      }
+
+      return checkedQuestions.indexOf(question.id) === -1 && theButton;
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])([Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select) {
+  var _select2 = select('learnpress/quiz'),
+      getData = _select2.getData,
+      getCurrentQuestion = _select2.getCurrentQuestion;
+
+  var data = {
     id: getData('id'),
     status: getData('status'),
     questionIds: getData('questionIds'),
     questionNav: getData('questionNav'),
-    currentQuestion: getData('currentQuestion'),
     isReviewing: getData('reviewQuestions') && getData('mode') === 'reviewing',
     showReview: getData('reviewQuestions'),
     showHint: getData('showHint'),
     showCheck: getData('showCheckAnswers'),
     checkedQuestions: getData('checkedQuestions'),
     hintedQuestions: getData('hintedQuestions'),
-    question: getCurrentQuestion()
+    numPages: getData('numPages'),
+    currentPage: getData('currentPage'),
+    questionsLayout: getData('questionsLayout')
   };
+
+  if (data.questionsLayout === 1) {
+    data.question = getCurrentQuestion('object');
+  }
+
+  return data;
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch, _ref) {
   var id = _ref.id;
 
@@ -491,12 +719,14 @@ function (_Component) {
       _submitQuiz = _dispatch.submitQuiz,
       setQuizMode = _dispatch.setQuizMode,
       _showHint = _dispatch.showHint,
-      _checkAnswer = _dispatch.checkAnswer;
+      _checkAnswer = _dispatch.checkAnswer,
+      setCurrentPage = _dispatch.setCurrentPage;
 
   return {
     startQuiz: startQuiz,
     setCurrentQuestion: setCurrentQuestion,
     setQuizMode: setQuizMode,
+    setCurrentPage: setCurrentPage,
     submitQuiz: function submitQuiz(id) {
       _submitQuiz(id);
     },
@@ -564,6 +794,7 @@ function (_Component) {
     value: function render() {
       var content = this.props.content;
       return React.createElement("div", {
+        className: "quiz-content",
         dangerouslySetInnerHTML: {
           __html: content
         }
@@ -749,6 +980,42 @@ function (_Component) {
 
 /***/ }),
 
+/***/ "./assets/src/js/frontend/quiz/components/questions/buttons.js":
+/*!*********************************************************************!*\
+  !*** ./assets/src/js/frontend/quiz/components/questions/buttons.js ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _buttons_button_hint__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../buttons/button-hint */ "./assets/src/js/frontend/quiz/components/buttons/button-hint.js");
+/* harmony import */ var _buttons_button_check__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../buttons/button-check */ "./assets/src/js/frontend/quiz/components/buttons/button-check.js");
+/* harmony import */ var _buttons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../buttons */ "./assets/src/js/frontend/quiz/components/buttons/index.js");
+
+
+
+
+
+var Buttons = function Buttons(props) {
+  var question = props.question;
+  return React.createElement(React.Fragment, null, React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_3__["MaybeShowButton"], {
+    type: "hint",
+    Button: _buttons_button_hint__WEBPACK_IMPORTED_MODULE_1__["default"],
+    question: question
+  }), React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_3__["MaybeShowButton"], {
+    type: "check",
+    Button: _buttons_button_check__WEBPACK_IMPORTED_MODULE_2__["default"],
+    question: question
+  }));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Buttons);
+
+/***/ }),
+
 /***/ "./assets/src/js/frontend/quiz/components/questions/index.js":
 /*!*******************************************************************!*\
   !*** ./assets/src/js/frontend/quiz/components/questions/index.js ***!
@@ -792,24 +1059,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+var _lodash = lodash,
+    isNumber = _lodash.isNumber,
+    chunk = _lodash.chunk;
 
 var Questions =
 /*#__PURE__*/
 function (_Component) {
   _inherits(Questions, _Component);
 
-  function Questions() {
-    var _getPrototypeOf2;
-
+  function Questions(props) {
     var _this;
 
     _classCallCheck(this, Questions);
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Questions)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Questions).apply(this, arguments));
 
     _defineProperty(_assertThisInitialized(_this), "startQuiz", function (event) {
       event.preventDefault();
@@ -817,36 +1081,78 @@ function (_Component) {
       startQuiz();
     });
 
+    _defineProperty(_assertThisInitialized(_this), "isInVisibleRange", function (id, index) {
+      var _this$props = _this.props,
+          currentPage = _this$props.currentPage,
+          questionsLayout = _this$props.questionsLayout;
+      return currentPage === Math.ceil(index / questionsLayout);
+    });
+
+    _this.needToTop = false;
     return _this;
   }
 
   _createClass(Questions, [{
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      var checkProps = ['isReviewing', 'currentPage'];
+
+      for (var i = 0; i < checkProps.length; i++) {
+        if (this.props[checkProps[i]] !== nextProps[checkProps[i]]) {
+          this.needToTop = true;
+          return;
+        }
+      }
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      if (this.needToTop) {
+        jQuery('#popup-content').animate({
+          scrollTop: 0
+        });
+        this.needToTop = false;
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this$props = this.props,
-          status = _this$props.status,
-          currentQuestion = _this$props.currentQuestion,
-          questions = _this$props.questions,
-          questionsRendered = _this$props.questionsRendered,
-          isReviewing = _this$props.isReviewing;
+      var _this2 = this;
+
+      var _this$props2 = this.props,
+          status = _this$props2.status,
+          currentQuestion = _this$props2.currentQuestion,
+          questions = _this$props2.questions,
+          questionsRendered = _this$props2.questionsRendered,
+          isReviewing = _this$props2.isReviewing,
+          questionsLayout = _this$props2.questionsLayout;
       var viewMode = false,
-          isShow = true;
+          isShow = true; //if (!showAllQuestions) {
 
       if (status === 'completed' && !isReviewing) {
         isShow = false;
-      }
+      } //}
+
 
       return React.createElement(React.Fragment, null, React.createElement("div", {
         className: "quiz-questions",
         style: {
           display: isShow ? '' : 'none'
         }
-      }, questions.map(function (question) {
-        var isCurrent = currentQuestion === question.id;
+      }, questions.map(function (question, index) {
+        var isCurrent = questionsLayout ? false : currentQuestion === question.id;
         var isRendered = questionsRendered && questionsRendered.indexOf(question.id) !== -1;
-        return isRendered || !isRendered && isCurrent ? React.createElement(_question__WEBPACK_IMPORTED_MODULE_4__["default"], {
+
+        var isVisible = _this2.isInVisibleRange(question.id, index + 1);
+
+        return isRendered || !isRendered
+        /*&& isCurrent*/
+        || isVisible ? React.createElement(_question__WEBPACK_IMPORTED_MODULE_4__["default"], {
           isCurrent: isCurrent,
           key: "loop-question-".concat(question.id),
+          isShow: isVisible,
+          isShowIndex: questionsLayout ? index + 1 : false,
+          questionsLayout: questionsLayout,
           question: question
         }) : '';
       })));
@@ -859,15 +1165,17 @@ function (_Component) {
 /* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select, a, b) {
   var _select = select('learnpress/quiz'),
       getData = _select.getData,
-      getQuestions = _select.getQuestions,
-      getQuestionAnswered = _select.getQuestionAnswered;
+      getQuestions = _select.getQuestions;
 
   return {
     status: getData('status'),
     currentQuestion: getData('currentQuestion'),
     questions: getQuestions(),
     questionsRendered: getData('questionsRendered'),
-    isReviewing: getData('mode') === 'reviewing'
+    isReviewing: getData('mode') === 'reviewing',
+    numPages: getData('numPages'),
+    currentPage: getData('currentPage'),
+    questionsLayout: getData('questionsLayout') || 1
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),
@@ -897,6 +1205,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _buttons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./buttons */ "./assets/src/js/frontend/quiz/components/questions/buttons.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -925,10 +1234,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 var $ = window.jQuery;
 var _lodash = lodash,
     uniqueId = _lodash.uniqueId,
-    isArray = _lodash.isArray;
+    isArray = _lodash.isArray,
+    isNumber = _lodash.isNumber;
 
 var Question =
 /*#__PURE__*/
@@ -960,12 +1271,9 @@ function (_Component) {
           answered = _this$props.answered;
       var classes = ['question', 'question-' + question.type];
 
-      _this.parseOptions(question.options).map(function (option) {
-        if (option.is_true !== undefined) {
-          classes.push('question-answered');
-          return false;
-        }
-      });
+      if (_this.parseOptions(question.options)[0].is_true !== undefined) {
+        classes.push('question-answered');
+      }
 
       return classes;
     });
@@ -1004,8 +1312,10 @@ function (_Component) {
     value: function render() {
       var _this$props4 = this.props,
           question = _this$props4.question,
-          isCurrent = _this$props4.isCurrent,
-          answered = _this$props4.answered;
+          isShow = _this$props4.isShow,
+          isShowIndex = _this$props4.isShowIndex,
+          questionsLayout = _this$props4.questionsLayout,
+          status = _this$props4.status;
       var QuestionTypes = LP.questionTypes["default"];
       var editPermalink = this.getEditLink();
 
@@ -1016,17 +1326,20 @@ function (_Component) {
       return React.createElement(React.Fragment, null, React.createElement("div", {
         className: this.getWrapperClass().join(' '),
         style: {
-          display: isCurrent ? '' : 'none'
+          display: isShow ? '' : 'none'
         },
         ref: this.setRef
       }, React.createElement("h4", {
         className: "question-title"
-      }, question.title, editPermalink && React.createElement("span", {
+      }, isShowIndex ? React.createElement("span", {
+        className: "question-index"
+      }, isShowIndex, ".") : '', question.title, editPermalink && React.createElement("span", {
         dangerouslySetInnerHTML: {
           __html: this.editPermalink(editPermalink)
         },
         className: "edit-link"
       })), React.createElement("div", {
+        className: "question-content",
         dangerouslySetInnerHTML: {
           __html: question.content
         }
@@ -1048,7 +1361,9 @@ function (_Component) {
         dangerouslySetInnerHTML: {
           __html: question.hint
         }
-      })))));
+      }))), 'started' === status && questionsLayout > 1 && React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        question: question
+      })));
     }
   }]);
 
@@ -1060,14 +1375,17 @@ function (_Component) {
 
   var _select = select('learnpress/quiz'),
       getData = _select.getData,
-      getQuestionAnswered = _select.getQuestionAnswered;
+      getQuestionAnswered = _select.getQuestionAnswered,
+      isCorrect = _select.isCorrect;
 
   return {
     status: getData('status'),
     questions: getData('question'),
     answered: getQuestionAnswered(id),
     questionsRendered: getData('questionsRendered'),
-    editPermalink: getData('editPermalink')
+    editPermalink: getData('editPermalink'),
+    isCorrect: isCorrect(id),
+    numPages: getData('numPages')
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),
@@ -1151,7 +1469,9 @@ function (_Component) {
       var results = this.props.results;
       return React.createElement("div", {
         className: "quiz-result"
-      }, React.createElement("h3", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your Result', 'learnpress')), React.createElement("div", {
+      }, React.createElement("h3", {
+        className: "result-heading"
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your Result', 'learnpress')), React.createElement("div", {
         className: "result-grade"
       }, React.createElement("span", {
         className: "result-achieved"
@@ -1560,29 +1880,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+var _lodash = lodash,
+    chunk = _lodash.chunk,
+    isNumber = _lodash.isNumber;
 
 var Quiz =
 /*#__PURE__*/
 function (_Component) {
   _inherits(Quiz, _Component);
 
-  function Quiz() {
-    var _getPrototypeOf2;
-
+  function Quiz(props) {
     var _this;
 
     _classCallCheck(this, Quiz);
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Quiz)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Quiz).apply(this, arguments));
 
     _defineProperty(_assertThisInitialized(_this), "startQuiz", function (event) {
       _this.props.startQuiz();
     });
 
+    _this.state = {
+      currentPage: 1,
+      numPages: 0,
+      pages: []
+    };
     return _this;
   }
 
@@ -1609,14 +1931,27 @@ function (_Component) {
         sanitizedSettings[camelCaseDash(prop)] = settings[prop];
       }
 
+      var questionIds = sanitizedSettings.questionIds,
+          questionsLayout = sanitizedSettings.questionsLayout;
+      var chunks = chunk(questionIds, questionsLayout);
+      sanitizedSettings.currentPage = 1;
+      sanitizedSettings.numPages = chunks.length;
+      sanitizedSettings.pages = chunks;
       console.timeEnd('Quiz.componentDidMount');
       console.log(sanitizedSettings);
       setQuizData(sanitizedSettings);
     }
   }, {
     key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps() {
+    value: function componentWillReceiveProps(nextProps) {
       console.time('QUIZ');
+      var questionIds = nextProps.questionIds,
+          questionsLayout = nextProps.questionsLayout,
+          setQuizData = nextProps.setQuizData;
+      var chunks = chunk(questionIds, questionsLayout); // setQuizData({
+      //     numPages: chunks.length,
+      //     pages: chunks
+      // });
     }
   }, {
     key: "componentDidUpdate",
@@ -1628,7 +1963,12 @@ function (_Component) {
     value: function render() {
       var _this$props2 = this.props,
           status = _this$props2.status,
-          isReviewing = _this$props2.isReviewing;
+          isReviewing = _this$props2.isReviewing; // const {
+      //     numPages,
+      //     currentPage,
+      //     pages
+      // } = this.state;
+
       var isA = -1 !== ['', 'completed'].indexOf(status); // Just render content if status !== undefined (meant all data loaded)
 
       return undefined !== status && React.createElement(React.Fragment, null, !isReviewing && 'completed' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Result"], null), !isReviewing && !status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Meta"], null), !isReviewing && isA && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Content"], null), 'started' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Status"], null), (-1 !== ['completed', 'started'].indexOf(status) || isReviewing) && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Questions"], null), React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Buttons"], null), isA && !isReviewing && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Attempts"], null));
@@ -1650,7 +1990,9 @@ function (_Component) {
     answered: getData('answered'),
     isReviewing: getData('mode') === 'reviewing',
     hintCount: getData('showHint'),
-    checkCount: getData('showCheckAnswers')
+    questionIds: getData('questionIds'),
+    checkCount: getData('showCheckAnswers'),
+    questionsLayout: getData('questionsLayout') || 1
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),
@@ -1669,13 +2011,14 @@ function (_Component) {
 /*!******************************************************!*\
   !*** ./assets/src/js/frontend/quiz/store/actions.js ***!
   \******************************************************/
-/*! exports provided: setQuizData, setCurrentQuestion, __requestStartQuizSuccess, startQuiz, __requestSubmitQuizSuccess, submitQuiz, updateUserQuestionAnswers, __requestShowHintSuccess, showHint, __requestCheckAnswerSuccess, checkAnswer, markQuestionRendered, setQuizMode */
+/*! exports provided: setQuizData, setCurrentQuestion, setCurrentPage, __requestStartQuizSuccess, startQuiz, __requestSubmitQuizSuccess, submitQuiz, updateUserQuestionAnswers, __requestShowHintSuccess, showHint, __requestCheckAnswerSuccess, checkAnswer, markQuestionRendered, setQuizMode */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setQuizData", function() { return setQuizData; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCurrentQuestion", function() { return setCurrentQuestion; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCurrentPage", function() { return setCurrentPage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__requestStartQuizSuccess", function() { return __requestStartQuizSuccess; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startQuiz", function() { return startQuiz; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__requestSubmitQuizSuccess", function() { return __requestSubmitQuizSuccess; });
@@ -1695,8 +2038,6 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var _marked =
 /*#__PURE__*/
 regeneratorRuntime.mark(startQuiz),
@@ -1710,6 +2051,8 @@ regeneratorRuntime.mark(showHint),
 /*#__PURE__*/
 regeneratorRuntime.mark(checkAnswer);
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 /**
@@ -1720,15 +2063,15 @@ regeneratorRuntime.mark(checkAnswer);
  */
 
 function setQuizData(key, data) {
-  if (typeof key !== 'string') {
+  if (typeof key === 'string') {
+    data = _defineProperty({}, key, data);
+  } else {
     data = key;
-    key = undefined;
   }
 
   return {
     type: 'SET_QUIZ_DATA',
-    data: data,
-    key: key
+    data: data
   };
 }
 /**
@@ -1742,6 +2085,12 @@ function setCurrentQuestion(questionId) {
   return {
     type: 'SET_CURRENT_QUESTION',
     questionId: questionId
+  };
+}
+function setCurrentPage(currentPage) {
+  return {
+    type: 'SET_CURRENT_PAGE',
+    currentPage: currentPage
   };
 }
 function __requestStartQuizSuccess(data, quizId, courseId, userId) {
@@ -2063,7 +2412,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var _lodash = lodash,
     omit = _lodash.omit,
     flow = _lodash.flow,
-    isArray = _lodash.isArray;
+    isArray = _lodash.isArray,
+    chunk = _lodash.chunk;
 var STORE_DATA = {};
 var setItemStatus = function setItemStatus(item, status) {
   var userSettings = _objectSpread({}, item.userSettings, {
@@ -2162,8 +2512,10 @@ var userQuiz = function userQuiz() {
 
   switch (action.type) {
     case 'SET_QUIZ_DATA':
-      if (action.key) {
-        return _objectSpread({}, state, _defineProperty({}, action.key, action.data));
+      if (action.data.questionsLayout) {
+        var chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsLayout);
+        action.data.numPages = chunks.length;
+        action.data.pages = chunks;
       }
 
       return _objectSpread({}, state, {}, action.data, {
@@ -2184,6 +2536,11 @@ var userQuiz = function userQuiz() {
       LP.localStorage.set("Q".concat(state.id, ".currentQuestion"), action.questionId);
       return _objectSpread({}, state, {
         currentQuestion: action.questionId
+      });
+
+    case 'SET_CURRENT_PAGE':
+      return _objectSpread({}, state, {
+        currentPage: action.currentPage
       });
 
     case 'SUBMIT_QUIZ_SUCCESS':
@@ -2263,7 +2620,7 @@ var blocks = flow(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["combineReducers"
 /*!********************************************************!*\
   !*** ./assets/src/js/frontend/quiz/store/selectors.js ***!
   \********************************************************/
-/*! exports provided: getQuestionOptions, getItemStatus, getProp, getQuizAttempts, getQuizAnswered, getQuestions, getData, getDefaultRestArgs, getQuestionAnswered, getCurrentQuestion, getQuestion, isCheckedAnswer */
+/*! exports provided: getQuestionOptions, getItemStatus, getProp, getQuizAttempts, getQuizAnswered, getQuestions, getData, getDefaultRestArgs, getQuestionAnswered, getCurrentQuestion, getQuestion, isCheckedAnswer, isCorrect */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2280,6 +2637,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCurrentQuestion", function() { return getCurrentQuestion; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getQuestion", function() { return getQuestion; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isCheckedAnswer", function() { return isCheckedAnswer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isCorrect", function() { return isCorrect; });
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -2380,9 +2738,15 @@ function getQuestionAnswered(state, id) {
   return answered ? answered[id] : undefined;
 }
 function getCurrentQuestion(state) {
-  var userQuiz = state.userQuiz;
-  var currentQuestion = userQuiz.currentQuestion;
-  return getQuestion(state, currentQuestion);
+  var ret = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  var questionsLayout = get(state, 'userQuiz.questionsLayout') || 1;
+
+  if (questionsLayout > 1) {
+    return false;
+  }
+
+  var currentPage = get(state, 'userQuiz.currentPage') || 1;
+  return ret === 'object' ? get(state, "userQuiz.questions[".concat(currentPage - 1, "]")) : get(state, "userQuiz.questionIds[".concat(currentPage - 1, "]"));
 }
 
 var getQuestion = function getQuestion(state, theId) {
@@ -2399,6 +2763,7 @@ function isCheckedAnswer(state, id) {
   var checkedQuestions = get(state, 'userQuiz.checkedQuestions') || [];
   return checkedQuestions.indexOf(id) !== -1;
 }
+function isCorrect(state, id) {}
 
 /***/ }),
 

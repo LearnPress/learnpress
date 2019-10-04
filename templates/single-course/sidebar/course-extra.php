@@ -4,12 +4,12 @@ if ( ! isset( $type ) || ! isset( $content ) ) {
 }
 
 ?>
-<div class="course-extra-<?php echo $type; ?>">
+<div class="course-extras style-checks <?php echo $type; ?>">
 	<?php if ( isset( $title ) ) { ?>
-        <h4 class="course-extra-<?php echo $type; ?>__title"><?php echo esc_html( $title ); ?></h4>
+        <h4 class="course-extras__title"><?php echo esc_html( $title ); ?></h4>
 	<?php } ?>
 
-    <div class="course-extra-<?php echo $type; ?>__content">
+    <div class="course-extras__content">
 		<?php if ( is_array( $content ) ) { ?>
             <ul>
 				<?php foreach ( $content as $line ) { ?>

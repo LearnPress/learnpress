@@ -847,3 +847,14 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+add_action( 'XXXXXXXX', function () {
+	?>
+    <select v-on:change="onChange($event, 1)">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="4">3</option>
+        <option value="1">4</option>
+    </select>
+	<?php
+} );

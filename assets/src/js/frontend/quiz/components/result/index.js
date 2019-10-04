@@ -24,8 +24,7 @@ class Result extends Component {
         } = this.props;
 
         return <div className="quiz-result">
-
-            <h3>{ __('Your Result', 'learnpress') }</h3>
+            <h3 className="result-heading">{ __('Your Result', 'learnpress') }</h3>
             <div className="result-grade">
                 <span className="result-achieved">{ this.getResultPercentage(results) }%</span>
                 <span

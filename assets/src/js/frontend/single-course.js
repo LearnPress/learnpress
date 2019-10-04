@@ -35,14 +35,35 @@ export function formatDuration(seconds) {
     return html;
 }
 
+const toggleSidebarHandler = function toggleSidebarHandler(event) {
+    LP.localStorage.set('sidebar-toggle', event.target.checked);
+};
+
+export {toggleSidebarHandler};
 
 
 jQuery(($) => {
+    var t;
 
-    $('.course-curriculum').scroll(() => {
-        var $el = $('#section-section-1-549 .section-header');
-        console.log($el.css('top'), $el.scrollTop());
-    })
+    $('.course-curriculum').scroll(lodash.throttle(function(){
+        var $self = $(this),
+            $el = $('#section-section-1-549 .section-header');
+        $self.addClass('scrolling');
+        t && clearTimeout(t);
+        t = setTimeout(() => {
+            $self.removeClass('scrolling');
+        }, 1000)
+    }, 500)).find('.section-desc').each((i, el) => {
+        const a = $('<span class="show-desc"></span>').on('click', () => {
+            b.toggleClass('c');
+        });
+        const b = $(el).siblings('.section-title').append(a)
+    });
+
+    $(document).on('change', '#sidebar-toggle', LP.singleCourse.toggleSidebarHandler);
+
+    $('#sidebar-toggle').prop('checked', LP.localStorage.get('sidebar-toggle'));
+
     // wp.element.render(
     //     <SingleCourse />,
     //     $('.entry-content')[0]

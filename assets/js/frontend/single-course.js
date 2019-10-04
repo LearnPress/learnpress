@@ -91,13 +91,14 @@ this["LP"] = this["LP"] || {}; this["LP"]["singleCourse"] =
 /*!*************************************************!*\
   !*** ./assets/src/js/frontend/single-course.js ***!
   \*************************************************/
-/*! exports provided: init, formatDuration */
+/*! exports provided: init, formatDuration, toggleSidebarHandler */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDuration", function() { return formatDuration; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggleSidebarHandler", function() { return toggleSidebarHandler; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
 
 function init() {}
@@ -130,11 +131,30 @@ function formatDuration(seconds) {
   html = x.join(':');
   return html;
 }
+
+var toggleSidebarHandler = function toggleSidebarHandler(event) {
+  LP.localStorage.set('sidebar-toggle', event.target.checked);
+};
+
+
 jQuery(function ($) {
-  $('.course-curriculum').scroll(function () {
-    var $el = $('#section-section-1-549 .section-header');
-    console.log($el.css('top'), $el.scrollTop());
-  }); // wp.element.render(
+  var t;
+  $('.course-curriculum').scroll(lodash.throttle(function () {
+    var $self = $(this),
+        $el = $('#section-section-1-549 .section-header');
+    $self.addClass('scrolling');
+    t && clearTimeout(t);
+    t = setTimeout(function () {
+      $self.removeClass('scrolling');
+    }, 1000);
+  }, 500)).find('.section-desc').each(function (i, el) {
+    var a = $('<span class="show-desc"></span>').on('click', function () {
+      b.toggleClass('c');
+    });
+    var b = $(el).siblings('.section-title').append(a);
+  });
+  $(document).on('change', '#sidebar-toggle', LP.singleCourse.toggleSidebarHandler);
+  $('#sidebar-toggle').prop('checked', LP.localStorage.get('sidebar-toggle')); // wp.element.render(
   //     <SingleCourse />,
   //     $('.entry-content')[0]
   // )

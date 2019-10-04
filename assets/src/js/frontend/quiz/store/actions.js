@@ -8,14 +8,15 @@ import {select as wpSelect} from '@wordpress/data';
  * @return {{type: string, data: *}}
  */
 export function setQuizData(key, data) {
-    if (typeof key !== 'string') {
+    if (typeof key === 'string') {
+        data = {[key]: data}
+    }else{
         data = key;
-        key = undefined;
     }
+
     return {
         type: 'SET_QUIZ_DATA',
         data,
-        key
     }
 }
 
@@ -29,6 +30,13 @@ export function setCurrentQuestion(questionId) {
     return {
         type: 'SET_CURRENT_QUESTION',
         questionId
+    }
+}
+
+export function setCurrentPage(currentPage) {
+    return {
+        type: 'SET_CURRENT_PAGE',
+        currentPage
     }
 }
 

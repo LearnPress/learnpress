@@ -7,9 +7,14 @@
  */
 ?>
 <div id="popup-sidebar">
-    <?php
+    <form method="post" id="search-course">
+        <input type="text" name="s" autocomplete="off"
+               placeholder="<?php echo esc_attr( _x( 'Search course...', 'search course input placeholder', 'learnpress' ) ); ?>">
+        <button name="submit"></button>
+    </form>
+	<?php
 
-    LP()->template()->course_curriculum();
+	LP()->template()->course_curriculum();
 
-    ?>
+	?>
 </div>

@@ -35,10 +35,11 @@ class Attempts extends Component {
         const hasAttempts = attempts && !!attempts.length;
 
         return <React.Fragment>
-            <h4>{ __('Attempts', 'learnpress') } ( {attempts.length || 0} / {attemptsCount} )</h4>
+            <div className="quiz-attempts">
+            <h4 className="attempts-heading">{ __('Attempts', 'learnpress') } ( {attempts.length || 0} / {attemptsCount} )</h4>
             {
                 hasAttempts &&
-                <table className="quiz-attempts">
+                <table>
                     <thead>
                     <tr>
                         <th>{ __('Date', 'learnpress') }</th>
@@ -68,8 +69,9 @@ class Attempts extends Component {
 
             {
                 !hasAttempts &&
-                <p>{ __('There is no attempt now.', 'learnpress') }</p>
+                <p className="no-attempts-message">{ __('There is no attempt now.', 'learnpress') }</p>
             }
+            </div>
         </React.Fragment>
     }
 }

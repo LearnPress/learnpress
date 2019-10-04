@@ -232,12 +232,67 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				'priority'   => 'high',
 				'fields'     => array(
 					array(
-						'name' => __( 'Pagination Questions', 'learnpress' ),
-						'desc' => __( 'Show list of questions while doing quiz as ordered numbers (1, 2, 3, etc).', 'learnpress' ),
-						'id'   => '_lp_show_hide_question',
+						'name'         => __( 'Duration', 'learnpress' ),
+						'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
+						'id'           => '_lp_duration',
+						'type'         => 'duration',
+						'default_time' => 'minute',
+						'min'          => 0,
+						'std'          => 10,
+					),
+					array(
+						'name'        => __( 'Passing grade (<span>%</span>)', 'learnpress' ),
+						'desc'        => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
+						'id'          => '_lp_passing_grade',
+						'type'        => 'number',
+						'after_input' => '&nbsp;%',
+						'min'         => 0,
+						'max'         => 100,
+						'std'         => 80
+					),
+					array(
+						'name' => __( 'Negative marking', 'learnpress' ),
+						//'id'   => '_lp_minus_points',
+						'id'   => '_lp_negative_marking',
 						'type' => 'yes_no',
+						'desc' => __( 'For every questions users answer wrongly, users are deducted the question point.', 'learnpress' ),
+						'std'  => 'no',
+					),
+					array(
+						'name' => __( 'Instant check', 'learnpress' ),
+						//'id'   => '_lp_show_check_answer',
+						'id'   => '_lp_instant_check',
+						'type' => 'yes_no',
+						'desc' => __( 'Allow users can immediately check their answer is right or wrong + show explanation.', 'learnpress' ),
 						'std'  => 'no'
 					),
+					array(
+						'name' => __( 'Retry', 'learnpress' ),
+						//'id'   => '_lp_retake_count',
+						'id'   => '_lp_retry',
+						'type' => 'yes_no',
+						'desc' => __( 'Allow users can retry quiz with 1 time max.', 'learnpress' ),
+						'std'  => 'no'
+					),
+					array(
+						'name' => __( 'Pagination', 'learnpress' ),
+						'desc' => __( 'How many questions should be shown in each page.', 'learnpress' ),
+						//'id'   => '_lp_show_hide_question',
+						'id'   => '_lp_pagination',
+						'type' => 'number',
+						'std'  => 1,
+                        'min'=>1,
+                        'step'=>1
+					),
+					array(
+						'name' => __( 'Review', 'learnpress' ),
+						'id'   => '_lp_review',
+						'type' => 'yes-no',
+						'desc' => __( 'If quiz is completed: show all list questions, user\'s answers, explanation.', 'learnpress' ),
+						'std'  => 'yes'
+					),
+					/////////
+                    /*
 					array(
 						'name' => __( 'Review Questions', 'learnpress' ),
 						'id'   => '_lp_review_questions',
@@ -262,15 +317,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							)
 						)
 					),
-					array(
-						'name'         => __( 'Duration', 'learnpress' ),
-						'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
-						'id'           => '_lp_duration',
-						'type'         => 'duration',
-						'default_time' => 'minute',
-						'min'          => 0,
-						'std'          => 10,
-					),
+
 //					array(
 //						'name' => __( 'Preview Quiz', 'learnpress' ),
 //						'id'   => '_lp_preview',
@@ -304,16 +351,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							)
 						)
 					),
-					array(
-						'name'        => __( 'Passing Grade (<span>%</span>)', 'learnpress' ),
-						'desc'        => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
-						'id'          => '_lp_passing_grade',
-						'type'        => 'number',
-						'after_input' => '&nbsp;%',
-						'min'         => 0,
-						'max'         => 100,
-						'std'         => 80
-					),
+
 					array(
 						'name' => __( 'Re-take', 'learnpress' ),
 						'id'   => '_lp_retake_count',
@@ -356,7 +394,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'  => '0',
 						'min'  => - 1,
 						'max'  => 100
-					)
+					)*/
 				)
 			);
 

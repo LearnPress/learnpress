@@ -20,6 +20,7 @@ const buildPackages = [
     'frontend/question-types',
     'frontend/lesson',
     'frontend/quiz',
+    'frontend/config',
     'frontend/data-controls'
 ];
 

@@ -382,6 +382,14 @@ class LP_Template {
 		learn_press_get_template( 'loop/course/students' );
 	}
 
+	public function begin_courses_loop(){
+		learn_press_get_template( 'loop/course/loop-begin.php' );
+	}
+
+	public function end_courses_loop(){
+		learn_press_get_template( 'loop/course/loop-end.php' );
+	}
+
 	public function clearfix() {
 		learn_press_get_template( 'global/clearfix' );
 	}

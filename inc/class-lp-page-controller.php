@@ -347,8 +347,11 @@ class LP_Page_Controller {
 			if ( $this->_is_single() ) {
 				global $post;
 				setup_postdata( $post );
-				//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
-				return learn_press_locate_template('content-single-item.php');
+				if ( $course_item = LP_Global::course_item() ) {
+					return learn_press_locate_template( 'content-single-item.php' );
+				} else {
+					add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
+				}
 			} elseif ( $this->_is_archive() ) {
 				$this->_load_archive_courses( $template );
 			}

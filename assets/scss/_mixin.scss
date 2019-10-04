@@ -107,6 +107,24 @@
         color: $color;
     }
 }
+@mixin placeholder-fontStyle($style) {
+    &::-webkit-input-placeholder {
+        font-style: $style;
+    }
+    &::-moz-placeholder {
+        font-style: $style;
+    }
+    &:-ms-input-placeholder {
+        font-style: $style;
+    }
+    &:-moz-placeholder {
+        font-style: $style;
+    }
+    &::placeholder{
+        font-style: $style;
+
+    }
+}
 
 
 @-webkit-keyframes rotating4 /* Safari and Chrome */

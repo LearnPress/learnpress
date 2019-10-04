@@ -1,6 +1,6 @@
 import {combineReducers} from '@wordpress/data';
 
-const {omit, flow, isArray} = lodash;
+const {omit, flow, isArray, chunk} = lodash;
 const STORE_DATA = {};
 
 export const setItemStatus = (item, status) => {
@@ -110,11 +110,12 @@ const checkAnswer = (state, action) => {
 export const userQuiz = (state = STORE_DATA, action) => {
     switch (action.type) {
         case 'SET_QUIZ_DATA':
-            if (action.key) {
-                return {
-                    ...state,
-                    [action.key]: action.data
-                }
+
+            if (action.data.questionsLayout) {
+                const chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsLayout);
+
+                action.data.numPages = chunks.length;
+                action.data.pages = chunks;
             }
 
             return {
@@ -138,6 +139,11 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 ...state,
                 currentQuestion: action.questionId
             };
+        case 'SET_CURRENT_PAGE':
+            return {
+                ...state,
+                currentPage: action.currentPage
+            }
         case 'SUBMIT_QUIZ_SUCCESS':
             return resetCurrentQuestion(state, {
                 status: 'completed',

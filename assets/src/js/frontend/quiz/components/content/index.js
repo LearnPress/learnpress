@@ -8,7 +8,7 @@ class Content extends Component {
             content
         } = this.props;
 
-        return <div dangerouslySetInnerHTML={ {__html: content} }>
+        return <div className="quiz-content" dangerouslySetInnerHTML={ {__html: content} }>
             </div>
     }
 }

@@ -1295,19 +1295,7 @@ var _localStorage = {
   },
   remove: function remove(name) {
     var data = this.get();
-    var newData = {};
-
-    if (!this.exists(name)) {
-      return false;
-    }
-
-    for (var prop in data) {
-      if (name === prop) {
-        continue;
-      }
-
-      newData[prop] = data[prop];
-    }
+    var newData = lodash.omit(data, name);
 
     this.__set(newData);
   },

@@ -6,8 +6,11 @@
     </div>
 
 	<?php
+
 	// Price box
-	LP()->template()->course_pricing();
+	if ( ! in_array( learn_press_user_course_status(), array( 'finished', 'enrolled' ) ) ) {
+		LP()->template()->course_pricing();
+	}
 
 	// Buttons
 	LP()->template()->course_buttons();

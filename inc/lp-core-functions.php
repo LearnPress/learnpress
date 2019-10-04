@@ -3456,3 +3456,25 @@ function learn_press_error_log( $data ) {
 
 	error_log( $data . "\n" );
 }
+
+/**
+ * Get status of global course for current user.
+ *
+ * @since 4.x.x
+ *
+ * @param int $user_id
+ * @param int $course_id
+ *
+ * @return bool|string
+ */
+function learn_press_user_course_status( $user_id = 0, $course_id = 0 ) {
+	if ( ! $user = learn_press_get_user( $user_id ? $user_id : get_current_user_id() ) ) {
+		return false;
+	}
+
+	if ( ! $userCourse = $user->get_course_data( $course_id ) ) {
+		return false;
+	}
+
+	return $userCourse->get_status();
+}

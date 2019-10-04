@@ -273,15 +273,38 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 */
 		public function get_answer_options( $args = array() ) {
 
-			$args    = wp_parse_args( $args, array( 'with_true_or_false' => true ) );
+			$args = wp_parse_args(
+				$args,
+				array(
+					'exclude' => '',
+					'map'     => ''
+				)
+			);
+
+			if ( $args['exclude'] && is_string( $args['exclude'] ) ) {
+				$exclude = array_map( 'trim', explode( ',', $args['exclude'] ) );
+			} else {
+				$exclude = $args['exclude'];
+			}
+
+			$map = $args['map'];
+
 			$options = $this->get_data( 'answer_options' );
 
-			// Remove key 'is_true' if no need.
-			if ( $options && !$args['with_true_or_false'] ) {
+			// Remove key if it present in $exclude.
+			if ( $options && ( $exclude || $map ) ) {
+				$exclude = array_flip( $exclude );
+
+
 				foreach ( $options as $k => $option ) {
-					if ( array_key_exists( 'is_true', $options[ $k ] ) ) {
-						unset( $options[ $k ]['is_true'] );
+
+					foreach ( $map as $k_map => $v_map ) {
+						if ( array_key_exists( $k_map, $option ) ) {
+							$option[ $v_map ]  = $option[ $k_map ];
+							$exclude[ $k_map ] = 1;
+						}
 					}
+					$options[ $k ] = array_diff_key( $option, $exclude );
 				}
 			}
 

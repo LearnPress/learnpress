@@ -47,7 +47,7 @@ if ( LP()->wp_query->have_posts() ) :
 	 */
 	do_action( 'learn-press/before-courses-loop' );
 
-	learn_press_begin_courses_loop();
+	LP()->template()->begin_courses_loop();
 
 	while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
 
@@ -55,7 +55,7 @@ if ( LP()->wp_query->have_posts() ) :
 
 	endwhile;
 
-	learn_press_end_courses_loop();
+	LP()->template()->end_courses_loop();
 
 	/**
 	 * @since 3.0.0

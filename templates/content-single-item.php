@@ -20,9 +20,13 @@ get_header();
 
 //do_action( 'learn-press/before-single-item' );
 
+learn_press_debug(debug_backtrace());
+
 ?>
 <div id="popup-course" class="course-summary">
-	<?php
+    <input type="checkbox" id="sidebar-toggle" />
+
+    <?php
 	/**
 	 * @since 3.0.0
 	 *

@@ -4,6 +4,34 @@ import QuestionBase from '../../question-base';
 
 class QuestionMultipleChoices extends QuestionBase {
 
+    isCorrect = () => {
+        const {
+            answered
+        } = this.props;
+
+        if (answered === undefined) {
+            return false;
+        }
+
+        let i, option, options;
+
+        for (i = 0, options = this.getOptions(); i < options.length; i++) {
+            option = options[i];
+
+            if (option.is_true === 'yes') {
+                if (answered.indexOf(option.value) === -1) {
+                    return false;
+                }
+            } else {
+                if (answered.indexOf(option.value) !== -1) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    };
+
     getOptionClass = (option) => {
         const {
             answered
@@ -11,7 +39,7 @@ class QuestionMultipleChoices extends QuestionBase {
 
         const optionClass = [...this.state.optionClass];
 
-        if (answered!==undefined && this.maybeShowCorrectAnswer()) {
+        if (answered !== undefined && this.maybeShowCorrectAnswer()) {
             if (option.is_true === 'yes') {
                 optionClass.push('answer-correct');
                 answered.indexOf(option.value) !== -1 && optionClass.push('answered-correct');

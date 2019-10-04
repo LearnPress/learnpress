@@ -2,6 +2,8 @@ import {Component} from '@wordpress/element';
 import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
 import {__} from '@wordpress/i18n';
+import {default as ButtonCheck} from '../buttons/button-check';
+import {default as ButtonHint} from '../buttons/button-hint';
 
 class Buttons extends Component {
 
@@ -26,24 +28,22 @@ class Buttons extends Component {
      * @param to
      */
     nav = (to) => (event) => {
-        const {
-            setCurrentQuestion,
-            currentQuestion,
-            questionIds,
-            questionNav
+        let {
+            questionNav,
+            currentPage,
+            numPages,
+            setCurrentPage
         } = this.props;
-
-        let currentAt = questionIds.indexOf(currentQuestion);
 
         switch (to) {
             case 'prev':
-                currentAt = currentAt > 0 ? currentAt - 1 : (questionNav === 'infinity' ? questionIds.length - 1 : currentAt);
+                currentPage = currentPage > 1 ? currentPage - 1 : (questionNav === 'infinity' ? numPages : 1);
                 break;
             default:
-                currentAt = currentAt < questionIds.length - 1 ? currentAt + 1 : (questionNav === 'infinity' ? 0 : currentAt);
+                currentPage = currentPage < numPages ? currentPage + 1 : (questionNav === 'infinity' ? 1 : numPages);
         }
 
-        setCurrentQuestion(questionIds[currentAt]);
+        setCurrentPage(currentPage);
     };
 
     /**
@@ -53,11 +53,11 @@ class Buttons extends Component {
      */
     isLast = () => {
         const {
-            currentQuestion,
-            questionIds,
+            currentPage,
+            numPages
         } = this.props;
 
-        return questionIds.indexOf(currentQuestion) === questionIds.length - 1;
+        return currentPage === numPages;
     };
 
     /**
@@ -67,11 +67,10 @@ class Buttons extends Component {
      */
     isFirst = () => {
         const {
-            currentQuestion,
-            questionIds,
+            currentPage
         } = this.props;
 
-        return questionIds.indexOf(currentQuestion) === 0;
+        return currentPage === 1;
     };
 
     /**
@@ -85,6 +84,11 @@ class Buttons extends Component {
         submitQuiz();
     };
 
+    /**
+     * Set viewing mode for quiz e.q: reviewing
+     *
+     * @param mode
+     */
     setQuizMode = (mode) => () => {
         const {
             setQuizMode
@@ -93,6 +97,11 @@ class Buttons extends Component {
         setQuizMode(mode);
     };
 
+    /**
+     * Return TRUE if is reviewing mode
+     *
+     * @return {Component.props.isReviewing}
+     */
     isReviewing = () => {
         const {
             isReviewing
@@ -102,83 +111,19 @@ class Buttons extends Component {
     };
 
     /**
-     * Callback to show hint
+     * Render buttons
+     *
+     * @return {XML}
      */
-    showHint = () => {
-        const {
-            showHint,
-            currentQuestion
-        } = this.props;
-
-        showHint(currentQuestion);
-    };
-
-    /**
-     * Callback to check question answer
-     */
-    checkAnswer = () => {
-        const {
-            checkAnswer,
-            currentQuestion
-        } = this.props;
-
-        checkAnswer(currentQuestion);
-    };
-
-    maybeShowButton = (type) => {
-        const {
-            showHint,
-            showCheck,
-            currentQuestion,
-            checkedQuestions,
-            hintedQuestions,
-            question,
-            status
-        } = this.props;
-
-        if (status !== 'started') {
-            return false;
-        }
-
-        switch (type) {
-            case 'hint':
-                if (!showHint) {
-                    return false;
-                }
-
-                if (!hintedQuestions) {
-                    return true;
-                }
-
-                if (!question.has_hint) {
-                    return false;
-                }
-
-                return hintedQuestions.indexOf(currentQuestion) === -1;
-
-            case 'check':
-                if (!showCheck) {
-                    return false;
-                }
-
-                if (!checkedQuestions) {
-                    return true;
-                }
-
-                // if (!question.has_check) {
-                //     return false;
-                // }
-
-                return checkedQuestions.indexOf(currentQuestion) === -1;
-        }
-    };
-
     render() {
         const {
             status,
             questionNav,
             isReviewing,
-            showReview
+            showReview,
+            numPages,
+            question,
+            questionsLayout
         } = this.props;
 
         return <div className="quiz-buttons">
@@ -191,7 +136,7 @@ class Buttons extends Component {
                 }
 
                 {
-                    ('started' === status || isReviewing) && (
+                    ('started' === status || isReviewing) && (numPages > 1) && (
                         <React.Fragment>
                             { ('infinity' === questionNav || !this.isFirst()) &&
                             <button className="lp-button nav prev"
@@ -209,16 +154,16 @@ class Buttons extends Component {
             </div>
             <div className="button-right">
                 {
-                    ('started' === status || isReviewing) && (
+                    ('started' === status /*|| isReviewing*/) && (
                         <React.Fragment>
-                            {
-                                this.maybeShowButton('hint') && <button className="lp-button hint"
-                                                                        onClick={ this.showHint }>{ __('Hint', 'learnpress') }</button>
-                            }
 
                             {
-                                this.maybeShowButton('check') && <button className="lp-button check"
-                                                                         onClick={ this.checkAnswer }>{ __('Check', 'learnpress') }</button>
+                                questionsLayout === 1 && [
+                                    <MaybeShowButton key="button-hint" type="hint" Button={ ButtonHint }
+                                                     question={question}/>,
+                                    <MaybeShowButton key="button-check" type="check" Button={ ButtonCheck }
+                                                     question={question}/>
+                                ]
                             }
 
                             { (('infinity' === questionNav || this.isLast()) && !isReviewing) &&
@@ -247,26 +192,101 @@ class Buttons extends Component {
     }
 }
 
+/**
+ * Helper function to check a button should be show or not.
+ *
+ * Buttons [hint, check]
+ */
+export const MaybeShowButton = compose(
+    withSelect((select) => {
+        const {
+            getData
+        } = select('learnpress/quiz');
+        return {
+            status: getData('status'),
+            showHint: getData('showHint'),
+            showCheck: getData('showCheckAnswers'),
+            checkedQuestions: getData('checkedQuestions'),
+            hintedQuestions: getData('hintedQuestions'),
+            questionsLayout: getData('questionsLayout')
+        }
+    })
+)((props) => {
+    const {
+        showHint,
+        showCheck,
+        checkedQuestions,
+        hintedQuestions,
+        question,
+        status,
+        type,
+        Button
+    } = props;
+
+    if (status !== 'started') {
+        return false;
+    }
+
+    const theButton = <Button question={question}/>;
+
+    switch (type) {
+        case 'hint':
+
+            if (!showHint) {
+                return false;
+            }
+
+            if (!hintedQuestions) {
+                return theButton;
+            }
+
+            if (!question.has_hint) {
+                return false;
+            }
+
+            return hintedQuestions.indexOf(question.id) === -1 && theButton;
+
+        case 'check':
+            if (!showCheck) {
+                return false;
+            }
+
+            if (!checkedQuestions) {
+                return theButton;
+            }
+
+            return checkedQuestions.indexOf(question.id) === -1 && theButton;
+    }
+});
+
 export default compose([
-    withSelect((select, a, b) => {
+    withSelect((select) => {
         const {
             getData,
             getCurrentQuestion
         } = select('learnpress/quiz');
-        return {
+
+        const data = {
             id: getData('id'),
             status: getData('status'),
             questionIds: getData('questionIds'),
             questionNav: getData('questionNav'),
-            currentQuestion: getData('currentQuestion'),
             isReviewing: getData('reviewQuestions') && getData('mode') === 'reviewing',
             showReview: getData('reviewQuestions'),
             showHint: getData('showHint'),
             showCheck: getData('showCheckAnswers'),
             checkedQuestions: getData('checkedQuestions'),
             hintedQuestions: getData('hintedQuestions'),
-            question: getCurrentQuestion()
+            numPages: getData('numPages'),
+            currentPage: getData('currentPage'),
+            questionsLayout: getData('questionsLayout')
         }
+
+        if (data.questionsLayout === 1) {
+            data.question = getCurrentQuestion('object');
+        }
+
+        return data;
     }),
     withDispatch((dispatch, {id}) => {
         const {
@@ -275,13 +295,15 @@ export default compose([
             submitQuiz,
             setQuizMode,
             showHint,
-            checkAnswer
+            checkAnswer,
+            setCurrentPage
         } = dispatch('learnpress/quiz');
 
         return {
             startQuiz,
             setCurrentQuestion,
             setQuizMode,
+            setCurrentPage,
             submitQuiz: function (id) {
                 submitQuiz(id)
             },
