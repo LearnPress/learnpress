@@ -3546,3 +3546,31 @@ function learn_press_is_page( $page_name ) {
 
 	return $page_id && is_page( $page_id );
 }
+
+/**
+ * Get end-date from start date with a duration.
+ *
+ * @param string|int $duration
+ * @param string|int $start
+ *
+ * @return false|string
+ */
+function learn_press_date_end_from( $duration, $start = '' ) {
+	$format = 'Y-m-d H:i:s';
+
+	if ( ! $start ) {
+		$start = time();
+	} else if ( ! is_numeric( $start ) ) {
+		$start = strtotime( $start );
+	}
+
+	// is LP duration format, e.g: 10 weeks
+	if ( preg_match( '/^[0-9]+ [a-z]+$/', $duration ) ) {
+		$duration = ( new LP_Duration( $duration ) )->get();
+	} else if ( ! is_numeric( $duration ) ) {
+		// 10 days 5 hours ...
+		$duration = strtotime( $duration, 0 );
+	}
+
+	return date( $format, $start + $duration );
+}

@@ -607,13 +607,18 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @updated 3.1.0
 	 *
-	 * @param bool $force - Optional. Added from 3.1.0 to force update if even the data is not changed.
+	 * @param bool $force    - Optional. Added from 3.1.0 to force update if even the data is not changed.
+	 * @param bool $wp_error - Optional. Added from 4.x.x to return WP_Error
 	 *
 	 * @return bool|mixed
 	 */
-	public function update( $force = false ) {
+	public function update( $force = false, $wp_error = false ) {
 
-		if ( ! $this->is_change() ) {
+		if ( ! $force && ! $this->is_change() ) {
+			if ( $wp_error ) {
+				return new WP_Error( 'item_not_changed', __( 'Item not changed.', 'learnpress' ) );
+			}
+
 			return false;
 		}
 

@@ -2648,6 +2648,10 @@ body.confirm #popup_container {
   #popup-course .question:not(.question-answered) input[type="radio"]:checked + .option-title,
   #popup-course .question:not(.question-answered) input[type="checkbox"]:checked + .option-title {
     border-color: #99aee4; }
+  #popup-course .scrollbar-light > .scroll-element.scroll-y .scroll-bar {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
 
 body.admin-bar #popup-course {
   top: 32px; }
@@ -2680,6 +2684,17 @@ body.admin-bar #popup-course {
     width: 100%;
     height: 100%;
     border-radius: 50%; }
+
+@media screen and (max-width: 1280px) {
+  #popup-course #popup-sidebar {
+    flex-basis: 300px; }
+    #popup-course #popup-sidebar .course-curriculum {
+      width: 300px; }
+  #popup-course #popup-header,
+  #popup-course #popup-footer {
+    left: 300px; }
+  #popup-course #sidebar-toggle {
+    left: 299px; } }
 
 @media screen and (max-width: 782px) {
   body.admin-bar #popup-course {

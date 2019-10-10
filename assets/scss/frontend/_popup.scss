@@ -1,8 +1,9 @@
 .lp-button {
     @include border-radius(3px);
 }
-#learn-press-course-curriculum{
-    .section-header{
+
+#learn-press-course-curriculum {
+    .section-header {
         background: #FFF;
         border-bottom: 1px solid #d9e0f1;
         padding: 10px 0;
@@ -70,6 +71,7 @@
         }
     }
 }
+
 #popup-course {
     position: fixed;
     top: 0;
@@ -211,7 +213,7 @@
                             background: #d9e0f1;
                         }
 
-                        &.current{
+                        &.current {
                             background: #f4f7ff;
                         }
                     }
@@ -533,6 +535,16 @@
             }
         }
     }
+
+    .scrollbar-light {
+        > .scroll-element {
+            &.scroll-y {
+                .scroll-bar {
+                    @include box-sizing(border-box);
+                }
+            }
+        }
+    }
 }
 
 body {
@@ -576,6 +588,25 @@ body {
                 height: 100%;
                 border-radius: 50%;
             }
+        }
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    #popup-course {
+        #popup-sidebar {
+            flex-basis: 300px;
+            .course-curriculum {
+                width: 300px;
+            }
+        }
+
+        #popup-header,
+        #popup-footer {
+            left: 300px;
+        }
+        #sidebar-toggle {
+            left: 299px;
         }
     }
 }

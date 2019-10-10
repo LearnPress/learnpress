@@ -2857,7 +2857,6 @@ function learn_press_get_courses_layout() {
 	$layouts = learn_press_courses_layouts();
 
 	if ( ! $layout = LP_Request::get_cookie( 'courses-layout' ) ) {
-		var_dump( $layout );
 		$layout = defined( 'LP_COURSES_LAYOUT' ) ? LP_COURSES_LAYOUT : LP()->settings()->get( 'course_layout' );
 	}
 

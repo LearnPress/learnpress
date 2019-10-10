@@ -69,11 +69,22 @@ if ( $question_ids = $quiz->get_questions() ) {
 		$questionData = array(
 			'id'          => absint( $id ),
 			'title'       => $question->get_title(),
-			'content'     => $question->get_content(),
 			'type'        => $question->get_type(),
 			'hint'        => $hinted ? $theHint : '',
 			'explanation' => $checked ? $theExplanation : ''
 		);
+
+		if ( $content = $question->get_content() ) {
+			$questionData['content'] = $content;
+		}
+
+		if ( $hinted && $theHint ) {
+			$questionData['hint'] = $theHint;
+		}
+
+		if ( $checked && $theExplanation ) {
+			$questionData['explanation'] = $theExplanation;
+		}
 
 		if ( $hasHint ) {
 			$questionData['has_hint'] = $hasHint;
@@ -151,20 +162,35 @@ $js = array(
 	'status'               => '',
 	'attempts'             => array(),
 	'attempts_count'       => 10,
-	'answered'             => (object) $answered,
+	'answered'             => $answered ? (object) $answered : new stdClass(),
 	'passing_grade'        => $quiz->get_passing_grade(),
+	'negative_marking'     => get_post_meta( $quiz->get_id(), '_lp_negative_marking', true ) === 'yes',
+	'instant_check'        => get_post_meta( $quiz->get_id(), '_lp_instant_check', true ) === 'yes',
+	'retry'                => get_post_meta( $quiz->get_id(), '_lp_retry', true ) === 'yes',
+	'questions_layout'     => 100,//get_post_meta( $quiz->get_id(), '_lp_pagination', true ),
 	'review_questions'     => $quiz->get_review_questions(),
+	////
 	'show_correct_answers' => $quiz->get_show_result(),
 	'show_check_answers'   => ! ! $quiz->get_show_check_answer(),
 	'show_hint'            => ! ! $quiz->get_show_hint(),
+	////
 	'support_options'      => learn_press_get_question_support_answer_options(),
 	'duration'             => $duration ? $duration->get() : false,
 	'crypto'               => $cryptoJsAes,
 	'edit_permalink'       => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
-	'questions_layout'     => 1
 );
 
-$js = array_merge( $js, $userJS );
+$js       = array_merge( $js, $userJS );
+$duration = $quiz->get_duration();
+var_dump($duration->get());
+print_r( learn_press_create_user_item_for_quiz( array(
+	'item_id'   => $quiz->get_id(),
+	'duration'  => $duration ? $duration->get() : 0,
+	'parent_id' => $userCourse ? $userCourse->get_user_item_id() : 0,
+    'create_meta' => array(
+            'ahihi'=>1
+    )
+), true ) );
 
 ?>
 <div id="learn-press-quiz-app"></div>

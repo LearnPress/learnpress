@@ -162,7 +162,14 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-single-course'    => array(
 					'url'     => self::url( 'js/frontend/single-course.js' ),
-					'deps'    => array( 'lp-global', 'lp-config', 'lp-data-controls', 'lp-quiz', 'lp-lesson' ),
+					'deps'    => array(
+						'lp-global',
+						'lp-custom-scrollbar',
+						'lp-config',
+						'lp-data-controls',
+						'lp-quiz',
+						'lp-lesson'
+					),
 					'screens' => array( 'course' )
 				),
 				'lp-courses'          => array(
@@ -188,6 +195,12 @@ class LP_Assets extends LP_Abstract_Assets {
 						'jquery'
 					),
 					'screens' => learn_press_is_page( 'become_a_teacher' )
+				),
+				'lp-custom-scrollbar' => array(
+					'url'  => self::url( 'js/vendor/jquery/jquery.scrollbar.js' ),
+					'deps' => array(
+						'jquery'
+					)
 				),
 //				'crypto-js'        => array(
 //					'url' => 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js'
@@ -291,6 +304,13 @@ class LP_Assets extends LP_Abstract_Assets {
 					if ( learn_press_is_page( $page ) ) {
 						$is_screen = true;
 						break;
+					}
+
+					foreach ( $single_post_types as $post_type => $alias ) {
+						if ( is_singular( $post_type ) ) {
+							$is_screen = true;
+							break 2;
+						}
 					}
 				}
 			} else {

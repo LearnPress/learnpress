@@ -1,7 +1,6 @@
 import SingleCourse from './single-course/index';
 
-export function init() {
-}
+const $ = jQuery;
 
 export function formatDuration(seconds) {
     let html;
@@ -41,32 +40,73 @@ const toggleSidebarHandler = function toggleSidebarHandler(event) {
 
 export {toggleSidebarHandler};
 
+const createCustomScrollbar = function (element) {
+    [].map.call(arguments, (element) => {
+        $(element).each(function () {
+            $(this)
+                .addClass('scrollbar-light')
+                .css({
+                    opacity: 1
+                })
+                .scrollbar({
+                    scrollx: false
+                })
+                .parent()
+                .css({
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    width: '100%',
+                    opacity: 1
+                })
+        });
+    });
+};
 
-jQuery(($) => {
-    var t;
+const AjaxSearchCourses = function (el) {
+    var $form = $(el);
+    var submit = function () {
 
-    $('.course-curriculum').scroll(lodash.throttle(function(){
+        wp.apiFetch({
+            url: '?s='+$(this).find('input[name="s"]').val(),
+        });
+
+        return false;
+    }
+
+    $form.on('submit', submit);
+}
+
+$(() => {
+    var timerClearScroll;
+    var $curriculum = $('#learn-press-course-curriculum');
+
+    $curriculum.scroll(lodash.throttle(function () {
         var $self = $(this);
 
         $self.addClass('scrolling');
-        t && clearTimeout(t);
-        t = setTimeout(() => {
+        timerClearScroll && clearTimeout(timerClearScroll);
+        timerClearScroll = setTimeout(() => {
             $self.removeClass('scrolling');
-        }, 1000)
+        }, 1000);
 
-    }, 500)).find('.section-desc').each((i, el) => {
+    }, 500));
+
+    $curriculum.find('.section-desc').each((i, el) => {
         const a = $('<span class="show-desc"></span>').on('click', () => {
             b.toggleClass('c');
         });
         const b = $(el).siblings('.section-title').append(a)
     });
 
-    $(document).on('change', '#sidebar-toggle', LP.singleCourse.toggleSidebarHandler);
+    $('#sidebar-toggle').on('change', toggleSidebarHandler).prop('checked', LP.localStorage.get('sidebar-toggle'));
 
-    $('#sidebar-toggle').prop('checked', LP.localStorage.get('sidebar-toggle'));
+    new AjaxSearchCourses($('#search-course'));
 
-    // wp.element.render(
-    //     <SingleCourse />,
-    //     $('.entry-content')[0]
-    // )
+    //createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
+
+
+    // if (window.location.hash) {
+    //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
+    // }
 })

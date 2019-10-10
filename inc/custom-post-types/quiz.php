@@ -307,7 +307,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Pagination', 'learnpress' ),
-						'desc' => __( 'How many questions should be shown in each page.', 'learnpress' ),
+						'desc' => __( 'How many questions should be shown in each page, default 1.', 'learnpress' ),
 						//'id'   => '_lp_show_hide_question',
 						'id'   => '_lp_pagination',
 						'type' => 'number',

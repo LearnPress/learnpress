@@ -71,6 +71,9 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		return $null;
 	}
 
+	/**
+	 * Register rest routes.
+	 */
 	public function register_routes() {
 		$this->routes = array(
 			'' => array(

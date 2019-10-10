@@ -91,17 +91,16 @@ this["LP"] = this["LP"] || {}; this["LP"]["singleCourse"] =
 /*!*************************************************!*\
   !*** ./assets/src/js/frontend/single-course.js ***!
   \*************************************************/
-/*! exports provided: init, formatDuration, toggleSidebarHandler */
+/*! exports provided: formatDuration, toggleSidebarHandler */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDuration", function() { return formatDuration; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggleSidebarHandler", function() { return toggleSidebarHandler; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
 
-function init() {}
+var $ = jQuery;
 function formatDuration(seconds) {
   var html;
   var x, d;
@@ -137,26 +136,60 @@ var toggleSidebarHandler = function toggleSidebarHandler(event) {
 };
 
 
-jQuery(function ($) {
-  var t;
-  $('.course-curriculum').scroll(lodash.throttle(function () {
+
+var createCustomScrollbar = function createCustomScrollbar(element) {
+  [].map.call(arguments, function (element) {
+    $(element).each(function () {
+      $(this).addClass('scrollbar-light').css({
+        opacity: 1
+      }).scrollbar({
+        scrollx: false
+      }).parent().css({
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        width: '100%',
+        opacity: 1
+      });
+    });
+  });
+};
+
+var AjaxSearchCourses = function AjaxSearchCourses(el) {
+  var $form = $(el);
+
+  var submit = function submit() {
+    wp.apiFetch({
+      url: '?s=' + $(this).find('input[name="s"]').val()
+    });
+    return false;
+  };
+
+  $form.on('submit', submit);
+};
+
+$(function () {
+  var timerClearScroll;
+  var $curriculum = $('#learn-press-course-curriculum');
+  $curriculum.scroll(lodash.throttle(function () {
     var $self = $(this);
     $self.addClass('scrolling');
-    t && clearTimeout(t);
-    t = setTimeout(function () {
+    timerClearScroll && clearTimeout(timerClearScroll);
+    timerClearScroll = setTimeout(function () {
       $self.removeClass('scrolling');
     }, 1000);
-  }, 500)).find('.section-desc').each(function (i, el) {
+  }, 500));
+  $curriculum.find('.section-desc').each(function (i, el) {
     var a = $('<span class="show-desc"></span>').on('click', function () {
       b.toggleClass('c');
     });
     var b = $(el).siblings('.section-title').append(a);
   });
-  $(document).on('change', '#sidebar-toggle', LP.singleCourse.toggleSidebarHandler);
-  $('#sidebar-toggle').prop('checked', LP.localStorage.get('sidebar-toggle')); // wp.element.render(
-  //     <SingleCourse />,
-  //     $('.entry-content')[0]
-  // )
+  $('#sidebar-toggle').on('change', toggleSidebarHandler).prop('checked', LP.localStorage.get('sidebar-toggle'));
+  new AjaxSearchCourses($('#search-course')); //createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
+  // if (window.location.hash) {
+  //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
+  // }
 });
 
 /***/ }),

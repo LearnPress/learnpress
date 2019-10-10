@@ -214,13 +214,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		);
 
 		$attempts = array();
-		$query    = $wpdb->prepare( "
+		echo $query    = $wpdb->prepare( "
 			SELECT * 
 			FROM {$wpdb->learnpress_user_items}
-			WHERE parent_id = %d
+			WHERE parent_id = %d AND item_type = %s
+			AND status = %s
 			ORDER BY user_item_id DESC
 			" . ( $args['limit'] > 0 ? "LIMIT 0, {$args['limit']}" : '' ) . "
-		", $this->get_parent_id() );
+		", $this->get_parent_id(), LP_QUIZ_CPT, 'completed' );
 
 		$quiz = $this->get_quiz();
 
