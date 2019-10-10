@@ -565,6 +565,9 @@ var QuestionList = {
   externalComponent: function externalComponent(state) {
     return state.externalComponent || [];
   },
+  supportAnswerOptions: function supportAnswerOptions(state) {
+    return state.supportAnswerOptions || [];
+  },
   hiddenQuestionsSettings: function hiddenQuestionsSettings(state) {
     return state.hidden_questions_settings || [];
   },

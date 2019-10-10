@@ -82,6 +82,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		protected $_setup_postdata = false;
 
+		public $object_type = 'object-data';
+
 		/**
 		 * LP_Abstract_Object_Data constructor.
 		 *
@@ -400,13 +402,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return bool
 		 */
 		public function is_support( $feature, $type = '' ) {
-			$feature    = $this->_sanitize_feature_key( $feature );
-			$is_support = array_key_exists( $feature, $this->_supports ) ? true : false;
-			if ( $type && $is_support ) {
-				return $this->_supports[ $feature ] === $type;
-			}
-
-			return $is_support;
+			$feature = $this->_sanitize_feature_key( $feature );
+			return LP_Global::object_is_support_feature( $this->object_type, $feature, $type );
 		}
 
 		/**
@@ -416,8 +413,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param string $type
 		 */
 		public function add_support( $feature, $type = 'yes' ) {
-			$feature                     = $this->_sanitize_feature_key( $feature );
-			$this->_supports[ $feature ] = $type === null ? 'yes' : $type;
+
+			$feature = $this->_sanitize_feature_key( $feature );
+			LP_Global::add_object_feature( $this->object_type, $feature, $type );
 		}
 
 		/**
@@ -435,7 +433,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return array
 		 */
 		public function get_supports() {
-			return $this->_supports;
+			return LP_Global::get_object_supports( $this->object_type );// $this->_supports;
 		}
 
 		/**

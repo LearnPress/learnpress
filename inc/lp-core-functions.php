@@ -3478,3 +3478,71 @@ function learn_press_user_course_status( $user_id = 0, $course_id = 0 ) {
 
 	return $userCourse->get_status();
 }
+
+/**
+ * Return list types of questions that support answer options.
+ *
+ * @since 4.x.x
+ *
+ * @return array
+ */
+function learn_press_get_question_support_answer_options() {
+	$questions = learn_press_get_question_support_feature( 'answer-options' );
+
+	return apply_filters( 'learn-press/questions-support-answer-options', $questions );
+}
+
+/**
+ * Return list types of question that support a feature.
+ *
+ * @since 4.x.x
+ *
+ * @param string $feature
+ *
+ * @return array
+ */
+function learn_press_get_question_support_feature( $feature ) {
+	$questions = array();
+
+	if ( $types = LP_Global::get_object_supports( 'question' ) ) {
+		foreach ( $types as $type => $features ) {
+			if ( array_key_exists( $feature, $features ) ) {
+				$questions[] = $type;
+			}
+		}
+	}
+
+	return $questions;
+}
+
+/**
+ * Helper function to output html for rendering a 'circle progress bar'
+ *
+ * @since 4.x.x
+ *
+ * @param int    $percent
+ * @param int    $width
+ * @param int    $border
+ * @param string $color
+ */
+function learn_press_circle_progress_html( $percent = 0, $width = 32, $border = 4, $color = '' ) {
+	$radius        = $width / 2;
+	$r             = ( $width - $border ) / 2;
+	$circumference = $r * 2 * pi();
+	$offset        = $circumference - $percent / 100 * $circumference;
+
+	printf( '<svg class="circle-progress-bar" width="%d" height="%d">
+        <circle class="circle-progress-bar__circle" 
+                stroke="%s" 
+                stroke-width="%d" 
+                style="stroke-dasharray:%s %s; stroke-dashoffset:%s;"
+                fill="transparent" 
+                r="%d" cx="%d" cy="%d"></circle>
+    </svg>', $width, $width, $color, $border, $circumference, $circumference, $offset, $r, $radius, $radius );
+}
+
+function learn_press_is_page( $page_name ) {
+	$page_id = learn_press_get_page_id( $page_name );
+
+	return $page_id && is_page( $page_id );
+}

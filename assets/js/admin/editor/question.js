@@ -248,6 +248,9 @@ var Question = {
   externalComponent: function externalComponent(state) {
     return state.externalComponent || [];
   },
+  supportAnswerOptions: function supportAnswerOptions(state) {
+    return state.supportAnswerOptions || [];
+  },
   state: function state(_state) {
     return _state;
   },
@@ -406,10 +409,12 @@ $(document).ready(function () {
     store: LP_Question_Store
   });
   setTimeout(function () {
-    window.LP_Question_Editor = new $Vue({
-      el: '#admin-editor-lp_question',
-      template: '<lp-question-editor></lp-question-editor>'
-    });
+    if ($('#admin-editor-lp_question').length) {
+      window.LP_Question_Editor = new $Vue({
+        el: '#admin-editor-lp_question',
+        template: '<lp-question-editor></lp-question-editor>'
+      });
+    }
   }, 100);
 });
 

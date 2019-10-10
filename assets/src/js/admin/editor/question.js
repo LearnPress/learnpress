@@ -17,9 +17,12 @@ $(document).ready(function () {
     HTTP({ns: 'LPQuestionEditorRequest', store: LP_Question_Store});
 
     setTimeout(() => {
-        window.LP_Question_Editor = new $Vue({
-            el: '#admin-editor-lp_question',
-            template: '<lp-question-editor></lp-question-editor>'
-        });
+        if ($('#admin-editor-lp_question').length) {
+            window.LP_Question_Editor = new $Vue({
+                el: '#admin-editor-lp_question',
+                template: '<lp-question-editor></lp-question-editor>'
+            });
+
+        }
     }, 100)
 });

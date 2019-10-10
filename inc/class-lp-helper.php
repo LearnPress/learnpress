@@ -324,5 +324,27 @@ class LP_Helper {
 		return true;
 	}
 
+	/**
+	 * Return new array/object with the keys exists in list of props.
+	 *
+	 * @param array|string $props
+	 * @param array|object $obj
+	 *
+	 * @return array|object
+	 */
+	public function pick( $props, $obj ) {
+		$is_array  = is_array( $obj );
+		$new_array = array();
+		settype( $props, 'array' );
 
+		foreach ( $props as $prop ) {
+			if ( $is_array && array_key_exists( $prop, $obj ) ) {
+				$new_array[ $prop ] = $obj[ $prop ];
+			} else if ( ! $is_array && property_exists( $obj, $prop ) ) {
+				$new_array[ $prop ] = $obj->{$prop};
+			}
+		}
+
+		return $is_array ? $new_array : (object) $new_array;
+	}
 }

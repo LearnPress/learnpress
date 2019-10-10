@@ -1,6 +1,6 @@
 <?php
 /**
- * LP_Question_True_Or_False
+ * LP_Question_Fill_In_Blanks
  *
  * @author  ThimPress
  * @package LearnPress/Templates
@@ -13,21 +13,26 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
+if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 
 	/**
-	 * Class LP_Question_True_Or_False
+	 * Class LP_Question_Fill_In_Blanks
 	 */
-	class LP_Question_True_Or_False extends LP_Question {
+	class LP_Question_Fill_In_Blanks extends LP_Question {
 		/**
 		 * Type of this question.
 		 *
 		 * @var string
 		 */
-		protected $_question_type = 'true_or_false';
+		protected $_question_type = 'fill_in_blanks';
 
 		/**
-		 * LP_Question_True_Or_False constructor.
+		 * @var bool
+		 */
+		protected $_answer_options = false;
+
+		/**
+		 * LP_Question_Fill_In_Blanks constructor.
 		 *
 		 * @param null $the_question
 		 * @param null $args
@@ -36,30 +41,24 @@ if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
 		 */
 		public function __construct( $the_question = null, $args = null ) {
 			parent::__construct( $the_question, $args );
+			//$this->add_support('answer-options');
 		}
 
-		/**
-		 * Get true or false default answers.
-		 *
-		 * @return array
-		 */
-		public function get_default_answers() {
-			$answers = array(
+		public function get_editor_settings() {
+			$blanks = $this->get_data( 'answer_options' );
+
+			global $post;
+
+			return array_merge(
+				parent::get_editor_settings(),
 				array(
-					'question_answer_id' => - 1,
-					'is_true'            => 'yes',
-					'value'              => 'true',
-					'text'               => __( 'True', 'learnpress' )
-				),
-				array(
-					'question_answer_id' => - 2,
-					'is_true'            => 'no',
-					'value'              => 'false',
-					'text'               => __( 'False', 'learnpress' )
+					'id'                 => $post->ID,
+					'instantParseBlanks' => true,
+					'blankOptions'       => $blanks ? array_values( $blanks ) : array(),
+					'blankFillsStyle'    => get_post_meta( $post->ID, '_lp_blank_fills_style', true ),
+					'blanksStyle'        => get_post_meta( $post->ID, '_lp_blanks_style', true ),
 				)
 			);
-
-			return $answers;
 		}
 
 		/**
@@ -86,3 +85,4 @@ if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
 		}
 	}
 }
+

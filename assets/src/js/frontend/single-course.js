@@ -46,13 +46,14 @@ jQuery(($) => {
     var t;
 
     $('.course-curriculum').scroll(lodash.throttle(function(){
-        var $self = $(this),
-            $el = $('#section-section-1-549 .section-header');
+        var $self = $(this);
+
         $self.addClass('scrolling');
         t && clearTimeout(t);
         t = setTimeout(() => {
             $self.removeClass('scrolling');
         }, 1000)
+
     }, 500)).find('.section-desc').each((i, el) => {
         const a = $('<span class="show-desc"></span>').on('click', () => {
             b.toggleClass('c');

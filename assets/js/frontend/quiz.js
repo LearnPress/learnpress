@@ -1258,11 +1258,14 @@ function (_Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "parseOptions", function (options) {
-      options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {
-        format: CryptoJSAesJson
-      }).toString(CryptoJS.enc.Utf8)) : options;
-      options = !isArray(options) ? JSON.parse(options) : options;
-      return options;
+      if (options) {
+        options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {
+          format: CryptoJSAesJson
+        }).toString(CryptoJS.enc.Utf8)) : options;
+        options = !isArray(options) ? JSON.parse(options) : options;
+      }
+
+      return options || [];
     });
 
     _defineProperty(_assertThisInitialized(_this), "getWrapperClass", function () {
@@ -1271,7 +1274,9 @@ function (_Component) {
           answered = _this$props.answered;
       var classes = ['question', 'question-' + question.type];
 
-      if (_this.parseOptions(question.options)[0].is_true !== undefined) {
+      var options = _this.parseOptions(question.options);
+
+      if (options.length && options[0].is_true !== undefined) {
         classes.push('question-answered');
       }
 

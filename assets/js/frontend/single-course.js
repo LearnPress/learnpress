@@ -140,8 +140,7 @@ var toggleSidebarHandler = function toggleSidebarHandler(event) {
 jQuery(function ($) {
   var t;
   $('.course-curriculum').scroll(lodash.throttle(function () {
-    var $self = $(this),
-        $el = $('#section-section-1-549 .section-header');
+    var $self = $(this);
     $self.addClass('scrolling');
     t && clearTimeout(t);
     t = setTimeout(function () {

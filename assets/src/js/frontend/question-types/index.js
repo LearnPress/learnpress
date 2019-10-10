@@ -1,7 +1,7 @@
 import {Component} from '@wordpress/element';
 import {compose} from '@wordpress/compose';
 import {withDispatch, withSelect} from '@wordpress/data';
-import {__} from '@wordpress/i18n';
+import {__, sprintf} from '@wordpress/i18n';
 
 export * from './components';
 
@@ -11,11 +11,12 @@ class QuestionTypes extends Component {
             question
         } = this.props;
 
-        let types = {
+        let types = LP.Hook.applyFilters('question-types', {
             single_choice: LP.questionTypes.SingleChoice,
             multi_choice: LP.questionTypes.MultipleChoices,
-            true_or_false: LP.questionTypes.TrueOrFalse
-        };
+            true_or_false: LP.questionTypes.TrueOrFalse,
+            fill_in_blanks: LP.questionTypes.FillInBlanks
+        });
 
         let questionComponent = types[question.type];
 
@@ -33,7 +34,7 @@ class QuestionTypes extends Component {
 
         const TheQuestion = this.getQuestion() || function () {
                 return <div
-                    dangerouslySetInnerHTML={ {__html: __('Question <code>' + question.type + '</code> invalid!', 'learnpress')} }>
+                    dangerouslySetInnerHTML={ {__html: sprintf(__('Question <code>%s</code> invalid!', 'learnpress'), question.type)} }>
                 </div>
             };
 

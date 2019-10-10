@@ -227,15 +227,18 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		if ( $rows = $wpdb->get_results( $query ) ) {
 
 			foreach ( $rows as $row ) {
-				$results              = learn_press_get_user_item_meta( $row->user_item_id, 'results', true );
-				$evaluation_questions = $results['questions'];
+				if ( $results = learn_press_get_user_item_meta( $row->user_item_id, 'results', true ) ) {
+					$evaluation_questions = $results['questions'];
 
-				if ( ! $args['evaluation_questions'] ) {
-					unset( $results['questions'] );
-				}
+					if ( ! $args['evaluation_questions'] ) {
+						unset( $results['questions'] );
+					}
 
-				if ( ! array_key_exists( 'passing_grade', $results ) ) {
-					$results['passing_grade'] = $quiz->get_passing_grade();
+					if ( ! array_key_exists( 'passing_grade', $results ) ) {
+						$results['passing_grade'] = $quiz->get_passing_grade();
+					}
+				} else {
+					$results = array();
 				}
 
 				$attempts[] = array_merge(

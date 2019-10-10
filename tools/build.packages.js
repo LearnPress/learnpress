@@ -16,6 +16,10 @@ const buildPath = __dirname + '/build';
 const {camelCaseDash} = require('@wordpress/scripts/utils');
 const packageDir = baseDir + '/assets/src/';
 const buildPackages = [
+    // Admin
+    'admin/data-controls',
+    'admin/question-editor',
+    // Frontend
     'frontend/single-course',
     'frontend/question-types',
     'frontend/lesson',
@@ -23,6 +27,8 @@ const buildPackages = [
     'frontend/config',
     'frontend/data-controls'
 ];
+
+console.log(buildPackages)
 
 const {
     NODE_ENV: mode = 'development',

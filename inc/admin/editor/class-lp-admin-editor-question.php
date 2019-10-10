@@ -186,7 +186,7 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 	public function update_answer_title( $args = array() ) {
 		// answers
 		$answer = ! empty( $args['answer'] ) ? $args['answer'] : false;
-		$answer = json_decode( wp_unslash( $answer ), true );
+		$answer = is_string( $answer ) ? json_decode( wp_unslash( $answer ), true ) : $answer;
 
 		if ( ! $answer ) {
 			return false;

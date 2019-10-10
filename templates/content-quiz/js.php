@@ -30,7 +30,7 @@ $editable    = $user->is_admin() || get_post_field( $user->is_author_of( $course
 if ( $userQuiz ) {
 	$status  = $userQuiz->get_status();
 	$results = $userQuiz->get_results( '' );
-	$userJS = array(
+	$userJS  = array(
 		'status'            => $status,
 		'attempts'          => $attempts,
 		'checked_questions' => $userQuiz->get_checked_questions(),
@@ -93,8 +93,30 @@ if ( $question_ids = $quiz->get_questions() ) {
 
 		$with_true_or_false = $checked || $status === 'completed';
 
-		$questionData['options'] = xxx_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
-		$questions[] = $questionData;
+		if ( $question->is_support( 'answer-options' ) ) {
+			$questionData['options'] = xxx_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
+		} elseif ( $question->get_type() === 'fill_in_blanks' ) {
+			$blanks          = xxx_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
+			$blankFillsStyle = get_post_meta( $id, '_lp_blank_fills_style', true );
+
+			foreach ( $blanks as $k => $blank ) {
+				$blanks[ $k ]['text'] = preg_replace( '/\{\{([^\{\"\'].*?)\}\}/', '{{BLANK}}', $blank['text'] );
+				$blankOptions         = learn_press_get_question_answer_meta( $blank['uid'], '_blanks', true );
+
+				if ( in_array( $blankFillsStyle, array( 'select', 'enumeration' ) ) ) {
+					$blanks[ $k ]['words'] = isset( $blankOptions['words'] ) ? $blankOptions['words'] : array();
+				}
+
+				if ( isset( $blankOptions['tip'] ) ) {
+					$blanks[ $k ]['tip'] = $blankOptions['tip'];
+				}
+			}
+			$questionData['options']         = $blanks;
+			$questionData['blankFillsStyle'] = $blankFillsStyle;
+			$questionData['blanksStyle']     = get_post_meta( $id, '_lp_blanks_style', true );
+		}
+
+		$questions[] = apply_filters( 'learn-press/single-quiz-js/question-data', $questionData, $question->get_type(), $question->get_id(), $question );
 	}
 
 	if ( $status !== 'completed' ) {
@@ -135,11 +157,7 @@ $js = array(
 	'show_correct_answers' => $quiz->get_show_result(),
 	'show_check_answers'   => ! ! $quiz->get_show_check_answer(),
 	'show_hint'            => ! ! $quiz->get_show_hint(),
-	'support_options'      => apply_filters( 'learn-press/4.0/question-support-options', array(
-		'true_or_false',
-		'single_choice',
-		'multi_choice'
-	) ),
+	'support_options'      => learn_press_get_question_support_answer_options(),
 	'duration'             => $duration ? $duration->get() : false,
 	'crypto'               => $cryptoJsAes,
 	'edit_permalink'       => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
@@ -161,20 +179,20 @@ $js = array_merge( $js, $userJS );
             })
         }, 300)
     });
-//    var CryptoJSAesJson = {
-//        stringify: function (cipherParams) {
-//            var j = {ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64)};
-//            if (cipherParams.iv) j.iv = cipherParams.iv.toString();
-//            if (cipherParams.salt) j.s = cipherParams.salt.toString();
-//            return JSON.stringify(j).replace(/\s/g, '');
-//        },
-//        parse: function (jsonStr) {
-//            var j = JSON.parse(jsonStr);
-//            var cipherParams = CryptoJS.lib.CipherParams.create({ciphertext: CryptoJS.enc.Base64.parse(j.ct)});
-//            if (j.iv) cipherParams.iv = CryptoJS.enc.Hex.parse(j.iv);
-//            if (j.s) cipherParams.salt = CryptoJS.enc.Hex.parse(j.s);
-//            return cipherParams;
-//        }
-//    }
+    //    var CryptoJSAesJson = {
+    //        stringify: function (cipherParams) {
+    //            var j = {ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64)};
+    //            if (cipherParams.iv) j.iv = cipherParams.iv.toString();
+    //            if (cipherParams.salt) j.s = cipherParams.salt.toString();
+    //            return JSON.stringify(j).replace(/\s/g, '');
+    //        },
+    //        parse: function (jsonStr) {
+    //            var j = JSON.parse(jsonStr);
+    //            var cipherParams = CryptoJS.lib.CipherParams.create({ciphertext: CryptoJS.enc.Base64.parse(j.ct)});
+    //            if (j.iv) cipherParams.iv = CryptoJS.enc.Hex.parse(j.iv);
+    //            if (j.s) cipherParams.salt = CryptoJS.enc.Hex.parse(j.s);
+    //            return cipherParams;
+    //        }
+    //    }
 
 </script>

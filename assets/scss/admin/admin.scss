@@ -282,3 +282,11 @@
         }
     }
 }
+
+.edit-post-layout__metaboxes{
+    .rwmb-label > label {
+        font-weight: bold;
+        font-size: small;
+        color: #666;
+    }
+}

@@ -143,11 +143,12 @@ class QuestionBase extends Component {
     };
 
     parseOptions = (options) => {
+        if (options) {
+            options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)) : options;
+            options = !isArray(options) ? JSON.parse(options) : options;
+        }
 
-        options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)) : options;
-        options = !isArray(options) ? JSON.parse(options) : options;
-
-        return options;
+        return options || [];
     };
 
     getOptions = () => {

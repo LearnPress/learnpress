@@ -105,6 +105,7 @@ __webpack_require__.r(__webpack_exports__);
 //import Utils from './utils';
 //import Test from './test';
 
+var LP = LP || {};
 ;
 
 (function () {
@@ -202,6 +203,16 @@ __webpack_require__.r(__webpack_exports__);
     return false;
   };
 
+  LP.createButtonAddNewQuestion = function () {
+    if (!$(document.body).hasClass('post-type-lp_question')) {
+      return;
+    }
+
+    var $addNew = $(document).find('.page-title-action');
+    var $newButton = $('<select><option>True Or False</option></select>');
+    $newButton.insertBefore($addNew);
+  };
+
   var onReady = function onReady() {
     $('.learn-press-dropdown-pages').LP('DropdownPages');
     $('.learn-press-advertisement-slider').LP('Advertisement', 'a', 's').appendTo($('#wpbody-content'));
@@ -215,6 +226,7 @@ __webpack_require__.r(__webpack_exports__);
       $('html, body').removeClass('lp-item-moving');
       $('.lp-sortable-handle').css('cursor', '');
     });
+    LP.createButtonAddNewQuestion();
   };
 
   $(document).ready(onReady);

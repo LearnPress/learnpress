@@ -49,13 +49,6 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		protected static $_types = array();
 
 		/**
-		 * Any features this question support.
-		 *
-		 * @var array
-		 */
-		protected $_supports = array();
-
-		/**
 		 * support answer options
 		 *
 		 * @var bool
@@ -66,6 +59,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @var int
 		 */
 		protected static $_loaded = 0;
+
+		/**
+		 * @var string
+		 */
+		public $object_type = 'question';
 
 		/**
 		 * @var array
@@ -104,6 +102,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			if ( $this->_answer_options ) {
 				$this->add_support( 'answer_options' );
 				$this->add_support( 'auto_calculate_point' );
+
 				if ( $this->get_type() !== 'true_or_false' ) {
 					$this->add_support( 'add_answer_option' );
 				}
@@ -121,6 +120,29 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			if ( self::$_loaded == 1 ) {
 				add_filter( 'debug_data', array( __CLASS__, 'log' ) );
 			}
+		}
+
+		public function add_support( $feature, $type = 'yes' ) {
+			$feature = $this->_sanitize_feature_key( $feature );
+			LP_Global::add_object_feature( $this->object_type . '.' . $this->get_type(), $feature, $type );
+		}
+
+		public function is_support( $feature, $type = '' ) {
+			$feature = $this->_sanitize_feature_key( $feature );
+
+			return LP_Global::object_is_support_feature( $this->object_type . '.' . $this->get_type(), $feature, $type );
+		}
+
+		public function get_supports() {
+			if ( empty( LP_Global::$object_support_features ) ) {
+				return false;
+			}
+
+			return LP_Global::get_object_supports( $this->object_type . '.' . $this->get_type() );
+		}
+
+		public static function get_type_support_answer_options() {
+
 		}
 
 		/**
@@ -345,10 +367,12 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @return mixed
 		 */
 		public static function get_types() {
-			$types = array(
-				'true_or_false' => __( 'True Or False', 'learnpress' ),
-				'multi_choice'  => __( 'Multi Choice', 'learnpress' ),
-				'single_choice' => __( 'Single Choice', 'learnpress' )
+			$types = apply_filters( 'learn-press/question-types', array(
+					'true_or_false'  => __( 'True Or False', 'learnpress' ),
+					'multi_choice'   => __( 'Multi Choice', 'learnpress' ),
+					'single_choice'  => __( 'Single Choice', 'learnpress' ),
+					'fill_in_blanks' => __( 'Fill In Blanks', 'learnpress' ),
+				)
 			);
 
 			return apply_filters( 'learn_press_question_types', $types );
@@ -1095,6 +1119,46 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$key = $user_answer ? md5( serialize( $user_answer ) ) : - 1;
 
 			return LP_Object_Cache::set( 'question-' . $this->get_id() . '/' . $key, $checked, 'learn-press/answer-checked' );
+		}
+
+		/**
+		 * Get default json data for editor settings
+		 *
+		 * @since 4.x.x
+		 *
+		 * @return array
+		 */
+		public function get_editor_default_settings() {
+			return apply_filters(
+				'learn-press/question-editor-default-settings',
+				array(
+					'id'       => $this->get_id(),
+					'type'     => $this->get_type(),
+					'duration' => $this->get_duration()
+				)
+			);
+		}
+
+		/**
+		 * Get json data for editor settings.
+		 *
+		 * @since 4.x.x
+		 *
+		 * @return array
+		 */
+		public function get_editor_settings() {
+			$defaults = $this->get_editor_default_settings();
+
+			return apply_filters(
+				'learn-press/question-editor-settings',
+				array_merge(
+					$defaults,
+					array()
+				),
+				$this->get_type(),
+				$this->get_id(),
+				$this
+			);
 		}
 	}
 

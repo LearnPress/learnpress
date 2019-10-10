@@ -8,6 +8,9 @@ const QuestionList = {
     externalComponent: function (state) {
         return state.externalComponent || [];
     },
+    supportAnswerOptions: function (state) {
+        return state.supportAnswerOptions || [];
+    },
     hiddenQuestionsSettings: function (state) {
         return state.hidden_questions_settings || [];
     },

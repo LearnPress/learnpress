@@ -89,7 +89,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			if ( LP_QUESTION_CPT !== get_post_type() ) {
 				return;
 			}
-			learn_press_admin_view( 'question/editor' );
+
+			//learn_press_admin_view( 'question/editor' );
 		}
 
 		/**
@@ -128,20 +129,22 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'learn-press/question-editor/localize-script',
 					array(
 						'root' => array(
-							'id'                => $post->ID,
-							'auto_draft'        => get_post_status( $post->ID ) == 'auto-draft',
-							'open'              => false,
-							'title'             => get_the_title( $post->ID ),
-							'type'              => array(
+							'id'                   => $post->ID,
+							'auto_draft'           => get_post_status( $post->ID ) == 'auto-draft',
+							'open'                 => false,
+							'title'                => get_the_title( $post->ID ),
+							'type'                 => array(
 								'key'   => $question->get_type(),
 								'label' => $question->get_type_label()
 							),
-							'answers'           => apply_filters( 'learn-press/question-editor/question-answers-data', $answers, $post->ID, 0 ),
-							'ajax'              => admin_url( '' ),
-							'action'            => 'admin_question_editor',
-							'nonce'             => wp_create_nonce( 'learnpress_admin_question_editor' ),
-							'questionTypes'     => LP_Question::get_types(),
-							'externalComponent' => apply_filters( 'learn-press/admin/external-js-component', array() )
+							'answers'              => apply_filters( 'learn-press/question-editor/question-answers-data', $answers, $post->ID, 0 ),
+							'ajax'                 => admin_url( '' ),
+							'action'               => 'admin_question_editor',
+							'nonce'                => wp_create_nonce( 'learnpress_admin_question_editor' ),
+							'questionTypes'        => LP_Question::get_types(),
+							//'supportAnswerOptions' => learn_press_get_question_type_support()// apply_filters( 'learn-press/admin/external-js-component', array() )
+							'supportAnswerOptions' => learn_press_get_question_support_answer_options()
+							// apply_filters( 'learn-press/admin/external-js-component', array() )
 						),
 						'i18n' => apply_filters( 'learn-press/question-editor/i18n',
 							array(
@@ -204,6 +207,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				'show_in_menu'       => 'learn_press',
 				'show_in_admin_bar'  => true,
 				'show_in_nav_menus'  => true,
+				'show_in_rest'       => true,
 				'supports'           => array( 'title', 'editor', 'revisions' ),
 				'hierarchical'       => false,
 				'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
@@ -220,6 +224,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			if ( ! is_array( $hidden ) && empty( $hidden ) ) {
 				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
 			}
+
 		}
 
 		/**
@@ -280,8 +285,44 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * Add question meta box settings.
 		 */
 		public function add_meta_boxes() {
+
+			self::$metaboxes['question-editor'] = new RW_Meta_Box(
+				array(
+					'id'     => 'question-editor',
+					'title'  => __( 'Answer Options', 'learnpress' ),
+					'pages'  => array( LP_QUESTION_CPT ),
+					'fields' => array(
+						array(
+							'type'     => 'custom_html',
+							'callback' => array( $this, 'admin_editor' )
+						)
+					)
+				)
+			);
+
 			self::$metaboxes['general_settings'] = new RW_Meta_Box( self::settings_meta_box() );
+
 			parent::add_meta_boxes();
+		}
+
+		/**
+		 * Admin editor
+		 *
+		 * @since 4.x.x
+		 *
+		 * @return bool|string
+		 */
+		public function admin_editor() {
+			$question = LP_Question::get_question();
+
+			if ( $question->is_support( 'answer-options' ) ) {
+				return learn_press_admin_view_content( 'question/editor' );
+			}
+
+			ob_start();
+			do_action( 'learn-press/question-admin-editor', $question );
+
+			return ob_get_clean();
 		}
 
 		/**
@@ -321,7 +362,11 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				)
 			);
 
-			return apply_filters( 'learn_press_question_meta_box_args', $meta_box );
+
+
+			$meta_box = apply_filters( 'learn_press_question_meta_box_args', $meta_box );
+
+			return apply_filters( 'learn-press/question-meta-box-settings', $meta_box );
 		}
 
 		/**

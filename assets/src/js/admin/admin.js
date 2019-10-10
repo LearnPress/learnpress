@@ -7,7 +7,7 @@
 //import Test from './test';
 
 import Update from './pages/update';
-
+var LP = LP || {};
 ;(function () {
     const $ = jQuery;
 
@@ -104,6 +104,17 @@ import Update from './pages/update';
         return false;
     };
 
+    LP.createButtonAddNewQuestion = function () {
+        if(!$(document.body).hasClass('post-type-lp_question')){
+            return;
+        }
+
+        var $addNew = $(document).find('.page-title-action');
+        var $newButton = $('<select><option>True Or False</option></select>');
+
+        $newButton.insertBefore($addNew);
+    };
+
     var onReady = function onReady() {
 
         $('.learn-press-dropdown-pages').LP('DropdownPages');
@@ -125,6 +136,8 @@ import Update from './pages/update';
                 $('html, body').removeClass('lp-item-moving');
                 $('.lp-sortable-handle').css('cursor', '');
             });
+
+        LP.createButtonAddNewQuestion();
     };
 
     $(document).ready(onReady)

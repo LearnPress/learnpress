@@ -34,10 +34,12 @@ class Question extends Component {
     };
 
     parseOptions = (options) => {
-        options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)) : options;
-        options = !isArray(options) ? JSON.parse(options) : options;
+        if (options) {
+            options = !isArray(options) ? JSON.parse(CryptoJS.AES.decrypt(options.data, options.key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8)) : options;
+            options = !isArray(options) ? JSON.parse(options) : options;
+        }
 
-        return options;
+        return options || [];
     };
 
     getWrapperClass = () => {
@@ -47,8 +49,8 @@ class Question extends Component {
         } = this.props;
 
         const classes = ['question', 'question-' + question.type];
-
-        if (this.parseOptions(question.options)[0].is_true !== undefined) {
+        const options = this.parseOptions(question.options);
+        if (options.length && options[0].is_true !== undefined) {
             classes.push('question-answered');
         }
 

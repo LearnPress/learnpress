@@ -2347,6 +2347,12 @@ ul .clearfix {
 /**
  * Quiz admin editor.
  */
+#quiz-editor .inside .rwmb-custom_html-wrapper .rwmb-label {
+  display: none; }
+
+#quiz-editor .inside .rwmb-custom_html-wrapper .rwmb-input {
+  margin-left: 0; }
+
 #admin-editor-lp_quiz .lp-box-data-head {
   padding: 12px 10px; }
   #admin-editor-lp_quiz .lp-box-data-head h3 {
@@ -2436,9 +2442,10 @@ ul .clearfix {
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings {
     border: 1px solid #ddd;
     border-left: none;
-    border-right: none; }
+    border-right: none;
+    padding: 0 20px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings > * {
-      padding: 20px; }
+      padding: 20px 20px 20px 0; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options {
       border: 1px solid #ddd; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings .quiz-question-data table.lp-list-options .sort {
@@ -2628,7 +2635,8 @@ ul .clearfix {
       background: #fff; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options {
         text-align: left;
-        padding-left: 0; }
+        padding-left: 0;
+        padding-right: 0; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .inside {
           margin: 0;
           padding: 0; }
@@ -2736,6 +2744,12 @@ ul .clearfix {
 /**.section-item-counts span
  *  Question admin editor.
  */
+#question-editor .inside .rwmb-custom_html-wrapper .rwmb-label {
+  display: none; }
+
+#question-editor .inside .rwmb-custom_html-wrapper .rwmb-input {
+  margin-left: 0; }
+
 #admin-editor-lp_question {
   background: #fff; }
   #admin-editor-lp_question .lp-box-data-head {
@@ -2899,6 +2913,77 @@ ul .clearfix {
           opacity: 0.5; }
     #admin-editor-lp_question .lp-box-data-content .add-answer {
       margin: 15px 0 0 0; }
+
+#fill-in-blanks-editor {
+  display: flex; }
+  #fill-in-blanks-editor .blank-options {
+    flex: 0 0 65%; }
+  #fill-in-blanks-editor .blanks {
+    width: 100%;
+    margin: 0; }
+    #fill-in-blanks-editor .blanks .blank {
+      margin: 0 0 20px 0;
+      border: 1px solid #d9e0f1;
+      padding: 20px;
+      background: #fbfcff; }
+      #fill-in-blanks-editor .blanks .blank label {
+        font-weight: bold; }
+      #fill-in-blanks-editor .blanks .blank .blank-content {
+        width: 100%;
+        min-height: 74px;
+        font-size: 16px; }
+      #fill-in-blanks-editor .blanks .blank .blank-words .word {
+        background: #DDD;
+        line-height: 1;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px; }
+        #fill-in-blanks-editor .blanks .blank .blank-words .word.correct {
+          background: #00a1e6; }
+      #fill-in-blanks-editor .blanks .blank .blank-tip p {
+        font-style: italic; }
+      #fill-in-blanks-editor .blanks .blank .button-remove {
+        color: #FF0000; }
+  #fill-in-blanks-editor .passage-preview {
+    flex: 1;
+    margin-left: 20px;
+    border: 1px solid #DDD;
+    padding: 15px 20px;
+    line-height: 24px;
+    font-size: 16px;
+    text-align: justify; }
+    #fill-in-blanks-editor .passage-preview .blank-input {
+      height: 16px;
+      vertical-align: middle;
+      width: 50px;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      border-bottom: 1px dashed #DDD;
+      margin: -2px 10px;
+      font-size: 16px;
+      padding: 0;
+      /* line-height: 11px; */
+      display: inline-block;
+      position: relative; }
+  #fill-in-blanks-editor .blanks-list {
+    width: 100%; }
+    #fill-in-blanks-editor .blanks-list textarea {
+      min-height: 300px;
+      width: 100%;
+      font-size: 18px;
+      line-height: 30px;
+      box-shadow: none;
+      outline: none;
+      margin-bottom: 20px;
+      background: #f9f9f9; }
+    #fill-in-blanks-editor .blanks-list code {
+      line-height: 1;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px; }
+      #fill-in-blanks-editor .blanks-list code.correct {
+        background: #00a1e6; }
 
 /**
  * Modal choose items.
@@ -3435,3 +3520,8 @@ body.lp-item-moving {
 
 .select2 .select2-selection.select2-selection--multiple {
   min-height: 30px; }
+
+.edit-post-layout__metaboxes .rwmb-label > label {
+  font-weight: bold;
+  font-size: small;
+  color: #666; }

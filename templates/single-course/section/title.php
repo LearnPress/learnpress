@@ -44,7 +44,8 @@ $title = $section->get_title();
 		<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
 
         <div class="section-meta">
-            <div class="circle-progress"></div>
+            <div class="section-progress"
+                 title="<?php echo round($percent,2); ?>%"><?php learn_press_circle_progress_html( $percent, 24, 6 ); ?></div>
             <!--
             <div class="learn-press-progress section-progress" title="<?php echo intval( $percent ); ?>%">
                 <div class="progress-bg">
@@ -53,14 +54,15 @@ $title = $section->get_title();
             </div>
             -->
 
-<!--            <div class="circle-progress" data-pct="100">-->
-<!--                    <svg id="svg" width="20" height="20" viewPort="0 0 10 10" version="1.1" xmlns="http://www.w3.org/2000/svg">-->
-<!--                        <circle r="9" cx="10" cy="10" fill="transparent" stroke-dasharray="56.548" stroke-dashoffset="0"></circle>-->
-<!--                        <circle class="bar" r="9" cx="10" cy="10" fill="transparent" stroke-dasharray="56.548" stroke-dashoffset="25"></circle>-->
-<!--                    </svg>-->
-<!--            </div>-->
-<!--            <span class="step">--><?php //printf( __( '%d/%d', 'learnpress' ), $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items( '', false ) ); ?><!--</span>-->
-<!--            <span class="collapse"></span>-->
+            <!--            <div class="circle-progress" data-pct="100">-->
+            <!--                    <svg id="svg" width="20" height="20" viewPort="0 0 10 10" version="1.1" xmlns="http://www.w3.org/2000/svg">-->
+            <!--                        <circle r="9" cx="10" cy="10" fill="transparent" stroke-dasharray="56.548" stroke-dashoffset="0"></circle>-->
+            <!--                        <circle class="bar" r="9" cx="10" cy="10" fill="transparent" stroke-dasharray="56.548" stroke-dashoffset="25"></circle>-->
+            <!--                    </svg>-->
+            <!--            </div>-->
+            <!--            <span class="step">-->
+			<?php //printf( __( '%d/%d', 'learnpress' ), $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items( '', false ) ); ?><!--</span>-->
+            <!--            <span class="collapse"></span>-->
         </div>
 
 	<?php } ?>

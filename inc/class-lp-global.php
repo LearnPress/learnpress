@@ -55,6 +55,13 @@ class LP_Global {
 	public static $custom_posts = array();
 
 	/**
+	 * @var array
+	 *
+	 * @since 4.x.x
+	 */
+	public static $object_support_features = array();
+
+	/**
 	 * @return LP_Quiz|LP_Lesson
 	 */
 	public static function course_item() {
@@ -215,5 +222,105 @@ class LP_Global {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @since 4.x.x
+	 *
+	 * @param string $object_type
+	 * @param string $feature
+	 * @param string $type
+	 *
+	 * @return mixed
+	 */
+	public static function add_object_feature( $object_type, $feature, $type = 'yes' ) {
+		$namespace   = explode( '.', $object_type );
+		$object_type = $namespace[0];
+		$namespace   = isset( $namespace[1] ) ? $namespace[1] : false;
+
+		if ( ! isset( self::$object_support_features[ $object_type ] ) ) {
+			self::$object_support_features[ $object_type ] = array();
+		}
+
+		if ( $namespace ) {
+			if ( ! isset( self::$object_support_features[ $object_type ][ $namespace ] ) ) {
+				self::$object_support_features[ $object_type ][ $namespace ] = array();
+			}
+
+			return self::$object_support_features[ $object_type ][ $namespace ][ $feature ] = $type === null ? 'yes' : $type;
+		}
+
+		return self::$object_support_features[ $object_type ][ $feature ] = $type === null ? 'yes' : $type;
+	}
+
+	/**
+	 * Checks if an object is support a feature.
+	 *
+	 * @since 4.x.x
+	 *
+	 * @param string $object_type
+	 * @param string $feature
+	 * @param mixed  $type
+	 *
+	 * @return bool
+	 */
+	public static function object_is_support_feature( $object_type, $feature, $type = null ) {
+		$objects     = self::$object_support_features;
+		$namespace   = explode( '.', $object_type );
+		$object_type = $namespace[0];
+		$namespace   = isset( $namespace[1] ) ? $namespace[1] : false;
+
+		if ( empty( $objects[ $object_type ] ) ) {
+			return false;
+		}
+
+		if ( $namespace && empty( $objects[ $object_type ][ $namespace ] ) ) {
+			return false;
+		}
+
+		if ( $namespace ) {
+			$is_support = array_key_exists( $feature, $objects[ $object_type ][ $namespace ] ) ? true : false;
+
+			if ( $type && $is_support ) {
+				return $objects[ $object_type ][ $namespace ][ $feature ] === $type;
+			}
+
+			return $is_support;
+		}
+
+		$is_support = array_key_exists( $feature, $objects[ $object_type ] ) ? true : false;
+
+		if ( $type && $is_support ) {
+			return $objects[ $object_type ][ $feature ] === $type;
+		}
+
+		return $is_support;
+	}
+
+	/**
+	 * Get all features that an object support.
+	 *
+	 * @since 4.x.x
+	 *
+	 * @param string $object_type
+	 *
+	 * @return array|mixed
+	 */
+	public static function get_object_supports( $object_type ) {
+		$namespace   = explode( '.', $object_type );
+		$object_type = $namespace[0];
+		$namespace   = isset( $namespace[1] ) ? $namespace[1] : false;
+
+		if ( empty( self::$object_support_features[ $object_type ] ) ) {
+			return array();
+		}
+
+		if ( $namespace ) {
+			if ( empty( self::$object_support_features[ $object_type ][ $namespace ] ) ) {
+				return array();
+			}
+		}
+
+		return self::$object_support_features[ $object_type ];
 	}
 }

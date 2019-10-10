@@ -107,6 +107,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'capability_type'    => LP_LESSON_CPT,
 						'map_meta_cap'       => true,
 						'show_in_menu'       => 'learn_press',
+						'show_in_rest'       => true,
 						'show_in_admin_bar'  => true,
 						'show_in_nav_menus'  => true,
 						'supports'           => array(
@@ -190,7 +191,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'hidden_questions'          => ! empty( $hidden_questions ) ? $hidden_questions : array(),
 					'hidden_questions_settings' => $hidden_questions_settings ? $hidden_questions_settings : array(),
 					'disableUpdateList'         => false,
-					'externalComponent'         => apply_filters( 'learn-press/admin/external-js-component', array() )
+					'supportAnswerOptions'      => learn_press_get_question_support_answer_options()
+					//apply_filters( 'learn-press/admin/external-js-component', array() )
 				)
 			) ) );
 		}
@@ -213,9 +215,38 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
+		 * Admin editor
+		 *
+		 * @since 4.x.x
+		 *
+		 * @return bool|string
+		 */
+		public function admin_editor() {
+			$quiz = LP_Quiz::get_quiz();
+
+
+			//do_action( 'learn-press/question-admin-editor', $question );
+            return learn_press_admin_view_content( 'quiz/editor' );
+
+		}
+
+		/**
 		 * Add question meta box settings.
 		 */
 		public function add_meta_boxes() {
+			self::$metaboxes['quiz-editor'] = new RW_Meta_Box(
+				array(
+					'id'     => 'quiz-editor',
+					'title'  => __( 'Questions', 'learnpress' ),
+					'pages'  => array( LP_QUIZ_CPT ),
+					'fields' => array(
+						array(
+							'type'     => 'custom_html',
+							'callback' => array( $this, 'admin_editor' )
+						)
+					)
+				)
+			);
 			self::$metaboxes['quiz_settings'] = new RW_Meta_Box( self::settings_meta_box() );
 			parent::add_meta_boxes();
 		}
@@ -281,8 +312,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'id'   => '_lp_pagination',
 						'type' => 'number',
 						'std'  => 1,
-                        'min'=>1,
-                        'step'=>1
+						'min'  => 1,
+						'step' => 1
 					),
 					array(
 						'name' => __( 'Review', 'learnpress' ),
@@ -292,7 +323,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'  => 'yes'
 					),
 					/////////
-                    /*
+					/*
 					array(
 						'name' => __( 'Review Questions', 'learnpress' ),
 						'id'   => '_lp_review_questions',
