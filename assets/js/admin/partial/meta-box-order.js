@@ -157,7 +157,7 @@
             });
         });
 
-        $('.order-date.date-picker').on('change', function () {
+        $('.order-date.date-picker-backendorder').on('change', function () {
             var m = this.value.split('-');
             ['aa', 'mm', 'jj'].forEach(function (v, k) {
                 $('input[name="' + v + '"]').val(m[k]);
@@ -166,7 +166,7 @@
             dateFormat: 'yy-mm-dd',
             numberOfMonths: 1,
             showButtonPanel: true,
-            select: function select() {
+            onSelect: function select() {
                 console.log(arguments);
             }
         });
