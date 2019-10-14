@@ -8,9 +8,21 @@ const Buttons = function Buttons(props) {
         question
     } = props;
 
+    const buttons = {
+        'instant-check': () => {
+            return <MaybeShowButton type="check" Button={ ButtonCheck } question={question}/>
+        },
+        'hint': () => {
+            return <MaybeShowButton type="hint" Button={ ButtonHint } question={question}/>
+        }
+    }
+
     return <React.Fragment>
-        <MaybeShowButton type="hint" Button={ ButtonHint } question={question}/>
-        <MaybeShowButton type="check" Button={ ButtonCheck } question={question}/>
+        {
+            LP.config.questionFooterButtons().map((name)=>{
+                return <React.Fragment key={ `button-${name}` }>{ buttons[name] && buttons[name]() }</React.Fragment>
+            })
+        }
     </React.Fragment>
 };
 

@@ -17,7 +17,7 @@ class ButtonCheck extends Component {
     };
 
     render() {
-        return <button className="lp-button check"
+        return <button className="lp-button instant-check"
                        onClick={ this.checkAnswer }>{ _x('Check answer', 'label of button check answer', 'learnpress') }</button>
     }
 }

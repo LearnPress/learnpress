@@ -169,7 +169,7 @@ class Buttons extends Component {
                 {
                     -1 !== ['', 'completed'].indexOf(status) && !isReviewing &&
                     <button className="lp-button start"
-                            onClick={ this.startQuiz }>{ status === 'completed' ? _x('Retry','label button retry quiz', 'learnpress') : __('Start', 'label button start quiz', 'learnpress') }</button>
+                            onClick={ this.startQuiz }>{ status === 'completed' ? _x('Retry','label button retry quiz', 'learnpress') : _x('Start', 'label button start quiz', 'learnpress') }</button>
                 }
 
                 {
@@ -286,6 +286,7 @@ export const MaybeShowButton = compose(
             return hintedQuestions.indexOf(question.id) === -1 && theButton;
 
         case 'check':
+
             if (!showCheck) {
                 return false;
             }

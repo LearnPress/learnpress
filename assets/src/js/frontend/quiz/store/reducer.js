@@ -137,7 +137,11 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 mode: '',
                 answered: {},
                 questions: action.data.questions,
-                questionIds: action.data.question_ids
+                questionIds: action.data.question_ids,
+                totalTime: action.data.total_time,
+                duration: action.data.duration,
+                endTime: action.data.end_time,
+                currentPage: 1
             });
         case 'SET_CURRENT_QUESTION':
             LP.localStorage.set(`Q${state.id}.currentQuestion`, action.questionId);
@@ -156,7 +160,9 @@ export const userQuiz = (state = STORE_DATA, action) => {
             return resetCurrentQuestion(state, {
                 status: 'completed',
                 attempts: updateAttempt(state.attempts, action.results),
-                answered: false
+                submitting: false,
+                answered: false,
+                currentPage: 1
             });
         case 'UPDATE_USER_QUESTION_ANSWERS':
             return state.status === 'started' ? updateUserQuestionAnswer(state, action) : state;

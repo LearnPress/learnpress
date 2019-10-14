@@ -1563,7 +1563,7 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 	$defaults    = array(
 		'user_id'         => get_current_user_id(),
 		'item_id'         => '',
-		'start_time'      => $currentTime->toSql(),
+		'start_time'      => $currentTime->toSql( false ),
 		'end_time'        => '',
 		'expiration_time' => '',
 		'item_type'       => '',
@@ -1697,7 +1697,7 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 				//'questions'       => $quiz->get_question_ids(),
 				'duration'        => $duration ? $quiz->get_duration()->get() : 'unlimited',
 				'passingGrade'    => $quiz->get_passing_grade(),
-				'negativeMarking' => get_post_meta( $quiz->get_id(), '_lp_negative_marking', true ) === 'yes'
+				'negativeMarking' => $quiz->get_negative_marking()
 			),
 			'grade'   => '',
 			//'answers' => '',

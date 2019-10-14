@@ -314,7 +314,7 @@ function (_Component) {
     key: "render",
     value: function render() {
       return React.createElement("button", {
-        className: "lp-button check",
+        className: "lp-button instant-check",
         onClick: this.checkAnswer
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Check answer', 'label of button check answer', 'learnpress'));
     }
@@ -412,9 +412,9 @@ function (_Component) {
     key: "render",
     value: function render() {
       return React.createElement("button", {
-        className: "lp-button check",
+        className: "btn-show-hint",
         onClick: this.showHint
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Hint', 'learnpress'));
+      });
     }
   }]);
 
@@ -618,7 +618,7 @@ function (_Component) {
       }, -1 !== ['', 'completed'].indexOf(status) && !isReviewing && React.createElement("button", {
         className: "lp-button start",
         onClick: this.startQuiz
-      }, status === 'completed' ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Retry', 'label button retry quiz', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Start', 'label button start quiz', 'learnpress')), ('started' === status || isReviewing) && numPages > 1 && React.createElement(React.Fragment, null, pageNumbers ? React.createElement(React.Fragment, null, React.createElement("div", {
+      }, status === 'completed' ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Retry', 'label button retry quiz', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Start', 'label button start quiz', 'learnpress')), ('started' === status || isReviewing) && numPages > 1 && React.createElement(React.Fragment, null, pageNumbers ? React.createElement(React.Fragment, null, React.createElement("div", {
         className: "questions-pagination"
       }, React.createElement("div", {
         className: "page-numbers"
@@ -1043,14 +1043,26 @@ __webpack_require__.r(__webpack_exports__);
 
 var Buttons = function Buttons(props) {
   var question = props.question;
-  return React.createElement(React.Fragment, null, React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_3__["MaybeShowButton"], {
-    type: "hint",
-    Button: _buttons_button_hint__WEBPACK_IMPORTED_MODULE_1__["default"],
-    question: question
-  }), React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_3__["MaybeShowButton"], {
-    type: "check",
-    Button: _buttons_button_check__WEBPACK_IMPORTED_MODULE_2__["default"],
-    question: question
+  var buttons = {
+    'instant-check': function instantCheck() {
+      return React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_3__["MaybeShowButton"], {
+        type: "check",
+        Button: _buttons_button_check__WEBPACK_IMPORTED_MODULE_2__["default"],
+        question: question
+      });
+    },
+    'hint': function hint() {
+      return React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_3__["MaybeShowButton"], {
+        type: "hint",
+        Button: _buttons_button_hint__WEBPACK_IMPORTED_MODULE_1__["default"],
+        question: question
+      });
+    }
+  };
+  return React.createElement(React.Fragment, null, LP.config.questionFooterButtons().map(function (name) {
+    return React.createElement(React.Fragment, {
+      key: "button-".concat(name)
+    }, buttons[name] && buttons[name]());
   }));
 };
 
@@ -1248,6 +1260,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _buttons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./buttons */ "./assets/src/js/frontend/quiz/components/questions/buttons.js");
+/* harmony import */ var _buttons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../buttons */ "./assets/src/js/frontend/quiz/components/buttons/index.js");
+/* harmony import */ var _buttons_button_hint__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../buttons/button-hint */ "./assets/src/js/frontend/quiz/components/buttons/button-hint.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -1271,6 +1285,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
 
 
 
@@ -1377,23 +1393,44 @@ function (_Component) {
           questionsPerPage = _this$props4.questionsPerPage,
           status = _this$props4.status;
       var QuestionTypes = LP.questionTypes["default"];
-      var editPermalink = this.getEditLink();
 
-      if (editPermalink) {
-        jQuery('#wp-admin-bar-edit-lp_question').find('.ab-item').attr('href', editPermalink);
+      var _editPermalink = this.getEditLink();
+
+      if (_editPermalink) {
+        jQuery('#wp-admin-bar-edit-lp_question').find('.ab-item').attr('href', _editPermalink);
       }
 
+      var titleParts = {
+        'index': function index() {
+          return isShowIndex ? React.createElement("span", {
+            className: "question-index"
+          }, isShowIndex, ".") : '';
+        },
+        'title': function title() {
+          return question.title;
+        },
+        'hint': function hint() {
+          return React.createElement(_buttons_button_hint__WEBPACK_IMPORTED_MODULE_6__["default"], {
+            question: question
+          });
+        },
+        'edit-permalink': function editPermalink() {
+          return _editPermalink && React.createElement("span", {
+            dangerouslySetInnerHTML: {
+              __html: _this2.editPermalink(_editPermalink)
+            },
+            className: "edit-link"
+          });
+        }
+      };
       var blocks = {
         title: function title() {
           return React.createElement("h4", {
             className: "question-title"
-          }, isShowIndex ? React.createElement("span", {
-            className: "question-index"
-          }, isShowIndex, ".") : '', question.title, editPermalink && React.createElement("span", {
-            dangerouslySetInnerHTML: {
-              __html: _this2.editPermalink(editPermalink)
-            },
-            className: "edit-link"
+          }, LP.config.questionTitleParts().map(function (name) {
+            return React.createElement(React.Fragment, {
+              key: "title-part-".concat(name)
+            }, titleParts[name] && titleParts[name]());
           }));
         },
         content: function content() {
@@ -1421,7 +1458,7 @@ function (_Component) {
           })));
         },
         hint: function hint() {
-          return question.hint && React.createElement(React.Fragment, null, React.createElement("div", {
+          return question.hint && !question.explanation && React.createElement(React.Fragment, null, React.createElement("div", {
             className: "question-hint-content"
           }, React.createElement("strong", {
             className: "hint-title"
@@ -1432,7 +1469,9 @@ function (_Component) {
           })));
         },
         buttons: function buttons() {
-          return 'started' === status && questionsPerPage > 1 && React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          return 'started' === status &&
+          /*&& (questionsPerPage > 1)*/
+          React.createElement(_buttons__WEBPACK_IMPORTED_MODULE_4__["default"], {
             question: question
           });
         }
@@ -2769,7 +2808,11 @@ var userQuiz = function userQuiz() {
         mode: '',
         answered: {},
         questions: action.data.questions,
-        questionIds: action.data.question_ids
+        questionIds: action.data.question_ids,
+        totalTime: action.data.total_time,
+        duration: action.data.duration,
+        endTime: action.data.end_time,
+        currentPage: 1
       });
 
     case 'SET_CURRENT_QUESTION':
@@ -2788,7 +2831,9 @@ var userQuiz = function userQuiz() {
       return resetCurrentQuestion(state, {
         status: 'completed',
         attempts: updateAttempt(state.attempts, action.results),
-        answered: false
+        submitting: false,
+        answered: false,
+        currentPage: 1
       });
 
     case 'UPDATE_USER_QUESTION_ANSWERS':

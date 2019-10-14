@@ -2465,6 +2465,10 @@ body.confirm #popup_container {
     overflow: auto; }
     #popup-course #popup-content .lp-button {
       margin: 0 10px 0 0; }
+      #popup-course #popup-content .lp-button.instant-check:before {
+        font-family: Fontawesome;
+        content: "\f058";
+        margin-right: 5px; }
     #popup-course #popup-content #learn-press-content-item .content-item-wrap {
       margin: 0 auto;
       max-width: 1000px;
@@ -2749,6 +2753,15 @@ body.confirm #popup_container {
   #popup-course .question .question-index {
     display: inline-block;
     margin: 0 5px 0 0; }
+  #popup-course .question .btn-show-hint {
+    background: transparent;
+    color: #d9e0f1;
+    padding: 0;
+    margin: 0 0 0 10px;
+    font-size: 21px; }
+    #popup-course .question .btn-show-hint:before {
+      content: "\f059";
+      font-family: Fontawesome; }
   #popup-course .question.question-fill_in_blanks .blanks .blank-input-wrap {
     display: inline-block; }
   #popup-course .question.question-fill_in_blanks .blanks .blank-block {

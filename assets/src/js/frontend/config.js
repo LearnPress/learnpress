@@ -34,7 +34,15 @@ export const isQuestionCorrect = {
  * Allow to sort the blocks of question
  */
 export const questionBlocks = function(){
-    return LP.Hook.applyFilters('question-blocks', ['title', 'content', 'answer-options', 'explanation', 'hint']);
+    return LP.Hook.applyFilters('question-blocks', ['title', 'content', 'answer-options', 'explanation', 'hint', 'buttons']);
+}
+
+export const questionFooterButtons = function () {
+    return LP.Hook.applyFilters('question-footer-buttons', ['instant-check']);
+}
+
+export const questionTitleParts = function () {
+    return LP.Hook.applyFilters('question-title-parts', ['index', 'title', 'hint', 'edit-permalink']);
 }
 
 export const questionChecker = function(type){

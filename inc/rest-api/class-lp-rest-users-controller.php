@@ -280,36 +280,54 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$checkedQuestions = array();
 			$hintedQuestions  = array();
 			$questionIds      = array();
+			$results          = array();
+			$duration         = $quiz->get_duration();
 
 			if ( $userQuiz ) {
 				$status           = $userQuiz->get_status();
 				$checkedQuestions = $userQuiz->get_checked_questions();
 				$hintedQuestions  = $userQuiz->get_hint_questions();
-				$results          = $userQuiz->get_results( '' );
+				$quizResults      = $userQuiz->get_results( '' );
 
-				$questionIds = $results->getQuestions( 'ids' );
-				$answered    = $results->getAnswered();
+				$questionIds = $quizResults->getQuestions( 'ids' );
+				$answered    = $quizResults->getAnswered();
+
+				$expirationTime = $userQuiz->get_expiration_time();
+
+				// If expiration time is specific then calculate total time
+				if ( $expirationTime && ! $expirationTime->is_null() ) {
+					$totalTime = strtotime( $userQuiz->get_expiration_time() ) - strtotime( $userQuiz->get_start_time() );
+				}
 
 				// @deprecated
 				//$answered         = $userQuiz->get_meta( '_question_answers' );
+
+				$questions = learn_press_rest_prepare_user_questions(
+					$questionIds,
+					array(
+						'instant_hint'      => $showHint,
+						'instant_check'     => $showCheck,
+						'quiz_status'       => $status,
+						'checked_questions' => $checkedQuestions,
+						'hinted_questions'  => $hintedQuestions,
+						'answered'          => $answered
+					)
+				);
+
+				$results = array(
+					'question_ids' => $questionIds,
+					'questions'    => $questions
+				);
+
+				if ( isset( $totalTime ) ) {
+					$results['total_time'] = $totalTime;
+					$results['end_time']   = $expirationTime->toSql();
+				}
 			}
 
-			$questions = learn_press_rest_prepare_user_questions(
-				$questionIds,
-				array(
-					'instant_hint'      => $showHint,
-					'instant_check'     => $showCheck,
-					'quiz_status'       => $status,
-					'checked_questions' => $checkedQuestions,
-					'hinted_questions'  => $hintedQuestions,
-					'answered'          => $answered
-				)
-			);
+			$results['duration'] = $duration ? $duration->get() : false;
 
-			$response['results'] = array(
-				'question_ids' => $questionIds,
-				'questions'    => $questions
-			);
+			$response['results'] = $results;
 		}
 
 		return rest_ensure_response( $response );

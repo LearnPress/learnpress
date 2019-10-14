@@ -17,8 +17,9 @@ class ButtonHint extends Component {
     };
 
     render() {
-        return <button className="lp-button check"
-                       onClick={ this.showHint }>{ __('Hint', 'learnpress') }</button>
+        return <button className="btn-show-hint"
+                       onClick={ this.showHint }>
+        </button>
     }
 }
 

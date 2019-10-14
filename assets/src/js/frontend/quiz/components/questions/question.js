@@ -3,6 +3,8 @@ import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
 import {__, sprintf} from '@wordpress/i18n';
 import Buttons from "./buttons";
+import {MaybeShowButton} from '../buttons';
+import {default as ButtonHint} from '../buttons/button-hint';
 
 const $ = window.jQuery;
 const {uniqueId, isArray, isNumber, bind} = lodash;
@@ -96,17 +98,33 @@ class Question extends Component {
             jQuery('#wp-admin-bar-edit-lp_question').find('.ab-item').attr('href', editPermalink);
         }
 
+        const titleParts = {
+            'index': () => {
+                return isShowIndex ? <span className="question-index">{isShowIndex}.</span> : ''
+            },
+
+            'title': () => {
+                return question.title
+            },
+
+            'hint': () => {
+                return <ButtonHint question={ question }></ButtonHint>
+            },
+
+            'edit-permalink': () => {
+                return editPermalink && <span dangerouslySetInnerHTML={ {__html: this.editPermalink(editPermalink)} }
+                                              className="edit-link">
+                        </span>
+            }
+        };
+
         const blocks = {
             title: () => {
                 return <h4 className="question-title">
-                    { isShowIndex ? <span className="question-index">{isShowIndex}.</span> : ''}
-
-                    { question.title }
-
                     {
-                        editPermalink && <span dangerouslySetInnerHTML={ {__html: this.editPermalink(editPermalink)} }
-                                               className="edit-link">
-                        </span>
+                        LP.config.questionTitleParts().map((name) => {
+                            return <React.Fragment key={ `title-part-${name}` }>{ titleParts[name] && titleParts[name]() }</React.Fragment>
+                        })
                     }
                 </h4>
             },
@@ -131,7 +149,7 @@ class Question extends Component {
             },
 
             hint: () => {
-                return question.hint && <React.Fragment>
+                return question.hint && !question.explanation && <React.Fragment>
                         <div className="question-hint-content">
                             <strong className="hint-title">{ __('Hint:', 'learnpress') }</strong>
                             <div dangerouslySetInnerHTML={ {__html: question.hint} }>
@@ -141,7 +159,7 @@ class Question extends Component {
             },
 
             buttons: () => {
-                return ('started' === status) && (questionsPerPage > 1) && <Buttons question={question}/>
+                return ('started' === status) /*&& (questionsPerPage > 1)*/ && <Buttons question={question}/>
             }
         };
 
@@ -153,7 +171,8 @@ class Question extends Component {
 
                 {
                     configBlocks.map((name) => {
-                        return <React.Fragment key={ `block-${name}` }>{ blocks[name] ? blocks[name]() : '' }</React.Fragment>
+                        return <React.Fragment
+                            key={ `block-${name}` }>{ blocks[name] ? blocks[name]() : '' }</React.Fragment>
                     })
                 }
 
