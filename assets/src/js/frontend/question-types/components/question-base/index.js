@@ -164,7 +164,7 @@ class QuestionBase extends Component {
             answered
         } = this.props;
 
-        if (answered === undefined || answered === '') {
+        if (!answered ){ ///}  answered === undefined || answered === '') {
             return false;
         }
 

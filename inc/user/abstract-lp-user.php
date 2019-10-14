@@ -547,56 +547,60 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( sprintf( __( '%s::%s - User has not completed quiz.', 'learnpress' ), __CLASS__, __FUNCTION__ ), LP_QUIZ_HAS_STARTED_OR_COMPLETED );
 				}
 
-				$course_data     = $this->get_course_data( $course_id );
-				$quiz            = learn_press_get_quiz( $quiz_id );
-				$quiz_data       = $course_data->get_item( $quiz_id );
-				$create_new_item = true;
-				/**
-				 * If the option 'Archive History' in quiz is turn off
-				 * then remove all items in user-items table.
-				 */
-				if ( ! $enable_history = $quiz->enable_archive_history() ) {
-					if ( $user_item_id = $quiz_data->get_user_item_id() ) {
-						global $wpdb;
+				$return = learn_press_user_start_quiz( $quiz_id, false, $course_id, $wp_error );
 
-						// Delete al meta
-						$query_meta = $wpdb->prepare( "
+				if(1===0) {
+
+					$course_data     = $this->get_course_data( $course_id );
+					$quiz            = learn_press_get_quiz( $quiz_id );
+					$quiz_data       = $course_data->get_item( $quiz_id );
+					$create_new_item = true;
+					/**
+					 * If the option 'Archive History' in quiz is turn off
+					 * then remove all items in user-items table.
+					 */
+					if ( ! $enable_history = $quiz->enable_archive_history() ) {
+						if ( $user_item_id = $quiz_data->get_user_item_id() ) {
+							global $wpdb;
+
+							// Delete al meta
+							$query_meta = $wpdb->prepare( "
 							DELETE FROM {$wpdb->learnpress_user_itemmeta}
 							WHERE learnpress_user_item_id = %d
 						", $user_item_id );
-						$wpdb->query( $query_meta );
+							$wpdb->query( $query_meta );
 
-						// Delete all items but ignore the last item. We will update it
-						// instead if create new item.
-						$query = $wpdb->prepare( "
+							// Delete all items but ignore the last item. We will update it
+							// instead if create new item.
+							$query = $wpdb->prepare( "
 							DELETE FROM {$wpdb->learnpress_user_items}
 							WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
 						", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
-						$wpdb->query( $query );
+							$wpdb->query( $query );
 
-						$create_new_item = false;
+							$create_new_item = false;
+						} else {
+							$course_data->update_item_retaken_count( $quiz_id, 0 );
+						}
 					} else {
-						$course_data->update_item_retaken_count( $quiz_id, 0 );
+						$count_history = $course_data->count_history_items( $quiz_id );
 					}
-				} else {
-					$count_history = $course_data->count_history_items( $quiz_id );
-				}
 
-				$course_data->update_item_retaken_count( $quiz_id, '+1' );
-				$quiz_data->set_status( 'started' );
+					$course_data->update_item_retaken_count( $quiz_id, '+1' );
+					$quiz_data->set_status( 'started' );
 
-				$date = new LP_Datetime();
-				$quiz_data->set_start_time( $date->toSql(), true );
-				$quiz_data->set_end_time( null );
-				$quiz_data->set_end_time_gmt( null );
+					$date = new LP_Datetime();
+					$quiz_data->set_start_time( $date->toSql(), true );
+					$quiz_data->set_end_time( null );
+					$quiz_data->set_end_time_gmt( null );
 
-				/**
-				 * If enable duration for quiz then update the expiration time
-				 * otherwise, consider quiz is lifetime access.
-				 */
+					/**
+					 * If enable duration for quiz then update the expiration time
+					 * otherwise, consider quiz is lifetime access.
+					 */
 
-				$expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
-				LP_Debug::instance()->add( [ $expiration, $quiz->get_duration()->get_seconds() ], '', '', true );
+					$expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
+					LP_Debug::instance()->add( [ $expiration, $quiz->get_duration()->get_seconds() ], '', '', true );
 
 //				if ( $quiz->get_duration()->get_seconds() ) {
 //					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds() ), true );
@@ -605,35 +609,35 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 //					//$quiz_data->set_expiration_time_gmt( null );
 //				}
 
-				if ( $create_new_item ) {
-					$quiz_data->set_user_item_id( 0 );
+					if ( $create_new_item ) {
+						$quiz_data->set_user_item_id( 0 );
+					}
+
+					/*$course_data->update_item_retaken_count( $quiz_id, '+1' );
+					$quiz_data->set_status( 'started' );
+					$quiz_data->set_start_time( current_time( 'mysql' ), true );
+					$quiz_data->set_end_time( '0000-00-00 00:00:00' );
+					$quiz_data->set_end_time_gmt( '0000-00-00 00:00:00' );
+					$quiz_data->set_status( 'started' );*/
+
+					if ( $quiz_data->update() ) {
+						$quiz_data->update_meta(
+							array(
+								'_question_answers' => false,
+								'_grade'            => false,
+								'results'           => false
+							)
+						);
+
+						$course_data->set_item( $quiz_data );
+					}
+
+
+					if ( $questions = $quiz->get_questions() ) {
+						$question_id = reset( $questions );
+						learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
+					}
 				}
-
-				/*$course_data->update_item_retaken_count( $quiz_id, '+1' );
-				$quiz_data->set_status( 'started' );
-				$quiz_data->set_start_time( current_time( 'mysql' ), true );
-				$quiz_data->set_end_time( '0000-00-00 00:00:00' );
-				$quiz_data->set_end_time_gmt( '0000-00-00 00:00:00' );
-				$quiz_data->set_status( 'started' );*/
-
-				if ( $quiz_data->update() ) {
-					$quiz_data->update_meta(
-						array(
-							'_question_answers' => false,
-							'_grade'            => false,
-							'results'           => false
-						)
-					);
-
-					$course_data->set_item( $quiz_data );
-				}
-
-
-				if ( $questions = $quiz->get_questions() ) {
-					$question_id = reset( $questions );
-					learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
-				}
-
 				/**
 				 * @since 3.0.0
 				 */

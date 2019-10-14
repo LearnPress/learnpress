@@ -159,6 +159,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $this->get_data( 'ref_id' );
 	}
 
+	/**
+	 * @deprecated
+	 *
+	 * @param string $prop
+	 * @param bool   $force
+	 *
+	 * @return array|bool|mixed
+	 */
 	public function get_result( $prop = 'result', $force = false ) {
 		return $this->get_results( $prop, $force );
 	}
@@ -169,7 +177,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @param string $prop
 	 * @param bool   $force - Optional. Force to refresh cache.
 	 *
-	 * @return array|bool|mixed
+	 * @return array|LP_Quiz_Results
 	 */
 	public function get_results( $prop = 'result', $force = false ) {
 		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
@@ -193,7 +201,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		}
 		LP_Debug::logTime( __CLASS__ . '::' . __FUNCTION__ );
 
-		return $prop && $result && array_key_exists( $prop, $result ) ? $result[ $prop ] : $result;
+		$result = new LP_Quiz_Results($result);
+
+		return $prop ? $result[$prop] : $result;
 	}
 
 	/**
@@ -286,7 +296,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @return array
 	 */
 	public function calculate_results() {
-		$quiz = learn_press_get_quiz( $this->get_item_id() );
+		$quiz        = learn_press_get_quiz( $this->get_item_id() );
+		$lastResults = $this->get_meta( 'results' );
+		$questions   = $lastResults && isset( $lastResults['questions'] ) ? $lastResults['questions'] : array();
 
 		$result = array(
 			'questions'         => array(),
@@ -305,37 +317,38 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'passing_grade'     => $quiz->get_passing_grade()
 		);
 
-		$question_ids = $this->get_questions();
+		//$question_ids = $this->get_questions();
 
-		if ( $question_ids ) {
+		if ( $questions ) {
 
-			foreach ( $question_ids as $question_id ) {
+			foreach ( $questions as $question_id => $lastChecked ) {
 
 				$question = LP_Question::get_question( $question_id );
-
-				$answered          = $this->get_question_answer( $question_id );
-				$check             = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
-				$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
+				$answered = $this->get_question_answer( $question_id );
+				$check    = apply_filters( 'learn-press/quiz/check-question-result', $question->check( $answered ), $question_id, $this );
+				//$check['type']     = ! isset( $check['type'] ) || ! $check['type'] ? $question->get_type() : $check['type'];
 				$check['answered'] = ! isset( $check['answered'] ) ? $answered !== null : $check['answered'];
 
 				if ( false !== $check['answered'] && $check['correct'] ) {
 					$result['question_correct'] ++;
 					$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
 				} else {
+					$negativeMarking = apply_filters( 'learn-press/get-negative-marking', floatval( $question->get_mark() ), $question_id, $quiz->get_id() );
+
 					if ( false === $check['answered'] ) {
-						if ( $quiz->get_minus_skip_questions() ) {
+						if ( $quiz->get_negative_marking() ) {
 							// minus for each wrong, empty question
-							$result['user_mark'] -= floatval( $quiz->get_minus_points() );
+							$result['user_mark'] -= $negativeMarking;
 						}
 						$result['question_empty'] ++;
 					} else {
 						// minus for each wrong, empty question
-						$result['user_mark'] -= floatval( $quiz->get_minus_points() );
+						$result['user_mark'] -= $negativeMarking;
 						$result['question_wrong'] ++;
 					}
 				}
 
-				$result['questions'][ $question_id ] = $check;
+				$result['questions'][ $question_id ] = apply_filters( 'learn-press/question-results-data', $lastChecked ? array_merge( $lastChecked, $check ) : $check, $question_id, $quiz->get_id() );
 
 				if ( $check['answered'] ) {
 					$result['question_answered'] ++;
@@ -349,7 +362,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$result['result']         = $percent;
 			$result['grade']          = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
 			$result['grade_text']     = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
-			$result['question_count'] = sizeof( $question_ids );
+			$result['question_count'] = sizeof( $questions );
 
 			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
 				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );

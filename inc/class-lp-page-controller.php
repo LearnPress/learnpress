@@ -182,7 +182,7 @@ class LP_Page_Controller {
 			$lp_course->set_viewing_item( $lp_course_item );
 
 			// If item viewing is a QUIZ and have a question...
-			if ( LP_QUIZ_CPT === $item_type ) {
+			if ( 1 === 0 && LP_QUIZ_CPT === $item_type ) {
 				$question = false;
 				// If has question in request but it seems the question does not exists
 				if ( ! empty( $vars['question'] ) && ! $question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT ) ) {

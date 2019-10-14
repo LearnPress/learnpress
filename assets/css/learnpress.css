@@ -90,6 +90,29 @@
     left: 50%;
     margin-left: -3px; }
 
+.lp-ajaxload-style-1 {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: inline-block; }
+  .lp-ajaxload-style-1:before, .lp-ajaxload-style-1:after {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid #DDD;
+    top: 0;
+    left: 0;
+    content: ''; }
+  .lp-ajaxload-style-1:after {
+    border-color: #2FA7FF;
+    clip: rect(0px, 32px, 16px, 16px);
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    -webkit-animation: lp-rotating 1s linear infinite;
+    -moz-animation: lp-rotating 1s linear infinite;
+    animation: lp-rotating 1s linear infinite; }
+
 .learn-press-checkout.guest-checkout {
   display: none; }
 
@@ -2460,12 +2483,53 @@ body.confirm #popup_container {
           text-align: right; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right .lp-button {
             margin: 0 0 10px 10px; }
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button[data-type="question-nav"] {
+          background: #fbfcff;
+          border: 1px solid #d9e0f1;
+          color: #777;
+          margin: 0; }
+          #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button[data-type="question-nav"]:before {
+            content: '';
+            border: 2px solid #d9e0f1;
+            border-top-color: transparent;
+            border-left-color: transparent;
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            -webkit-transform: rotate(-45deg);
+            -moz-transform: rotate(-45deg);
+            -ms-transform: rotate(-45deg);
+            -o-transform: rotate(-45deg);
+            transform: rotate(-45deg); }
+          #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button[data-type="question-nav"].prev:before {
+            margin-left: 7px;
+            -webkit-transform: rotate(135deg);
+            -moz-transform: rotate(135deg);
+            -ms-transform: rotate(135deg);
+            -o-transform: rotate(135deg);
+            transform: rotate(135deg); }
+          #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button[data-type="question-nav"].next {
+            margin-left: -1px; }
+            #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button[data-type="question-nav"].next:before {
+              margin-right: 7px; }
+          #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .lp-button[data-type="question-nav"]:hover {
+            background: #FFF; }
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center {
           display: block; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-left {
             text-align: center; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-right {
             display: none; }
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons:not(.infinity).is-first .prev {
+          display: none; }
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons:not(.infinity).is-last .next {
+          display: none; }
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons:not(.is-first):not(.is-last) .prev {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0; }
+        #popup-course #popup-content #learn-press-quiz-app .quiz-buttons:not(.is-first):not(.is-last) .next {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0; }
       #popup-course #popup-content #learn-press-quiz-app .questions-pagination {
         text-align: center; }
         #popup-course #popup-content #learn-press-quiz-app .questions-pagination .page-numbers {
@@ -2536,6 +2600,8 @@ body.confirm #popup_container {
           stroke: #FF0000; }
       #popup-course #popup-content .quiz-status #button-submit-quiz {
         margin: 0 0 0 10px; }
+      #popup-course #popup-content .quiz-status.submitting #button-submit-quiz {
+        background: #DDD; }
     #popup-course #popup-content.fixed-quiz-status .quiz-status {
       background: #d9e0f1;
       color: #777; }

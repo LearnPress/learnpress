@@ -10,7 +10,7 @@ import {select as wpSelect} from '@wordpress/data';
 export function setQuizData(key, data) {
     if (typeof key === 'string') {
         data = {[key]: data}
-    }else{
+    } else {
         data = key;
     }
 
@@ -72,13 +72,25 @@ export function* startQuiz() {
     yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', quiz.results);
 }
 
+export function __requestSubmitQuiz() {
+    return {
+        type: 'SUBMIT_QUIZ'
+    }
+}
+
 export function __requestSubmitQuizSuccess(results) {
+
+    LP.Hook.doAction('quiz-submitted', results);
+
     return {
         type: 'SUBMIT_QUIZ_SUCCESS',
         results
     }
 }
+
 export function* submitQuiz() {
+    yield dispatch('learnpress/quiz', '__requestSubmitQuiz');
+
     const {
         getDefaultRestArgs,
         getData

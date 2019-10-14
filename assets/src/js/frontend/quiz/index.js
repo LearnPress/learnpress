@@ -39,7 +39,7 @@ class Quiz extends Component {
 
         function camelCaseDash(string) {
             return string.replace(
-                /[-_]([a-z])/g,
+                /[-_]([a-z0-9])/g,
                 (match, letter) => letter.toUpperCase()
             );
         }

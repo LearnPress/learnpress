@@ -133,7 +133,7 @@ class LP_Datetime extends DateTime {
 	}
 
 	public function is_null() {
-		return $this->raw_date === '0000-00-00 00:00:00';
+		return ! $this->raw_date || $this->raw_date === '0000-00-00 00:00:00';
 	}
 
 	public function get_raw_date() {

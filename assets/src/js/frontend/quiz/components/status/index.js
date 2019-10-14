@@ -9,6 +9,14 @@ const {debounce} = lodash;
 class Status extends Component {
     constructor() {
         super(...arguments);
+
+        this.state = {
+            submitting: false
+        }
+
+        LP.Hook.addAction('quiz-submitted', (results) => {
+            console.log(results)
+        });
     }
 
     componentDidMount() {
@@ -21,15 +29,19 @@ class Status extends Component {
         let isFixed = false;
         let marginLeft = '-' + $ciw.css('margin-left');
 
-        $(window).resize(debounce(function () {
+        $(window).on('resize.refresh-quiz-stauts-bar', debounce(function () {
             marginLeft = '-' + $ciw.css('margin-left');
 
             $qs.css({
                 'margin-left': marginLeft,
                 'margin-right': marginLeft
             });
-        }, 100)).trigger('resize');
+        }, 100)).trigger('resize.refresh-quiz-stauts-bar');
 
+        /**
+         * Check when status bar is stopped in the top
+         * to add new class into html
+         */
         $sc.scroll(() => {
 
             if ($sc.scrollTop() >= pcTop) {
@@ -52,30 +64,41 @@ class Status extends Component {
         })
     };
 
+    /**
+     * Submit question to record results.
+     */
+    submit = () => {
+        const {
+            submitQuiz
+        } = this.props;
+
+        submitQuiz();
+    };
+
     render() {
         const {
             currentPage,
-            numPages,
             questionsPerPage,
-            questionsCount
+            questionsCount,
+            submitting,
+            totalTime,
+            duration
         } = this.props;
-
-        const result = {
-            timeSpend: 123,
-            marks: [],
-            questionsCount: 5,
-            questionsCorrect: [],
-            questionsWrong: [],
-            questionsSkipped: []
-        };
+        // const {
+        //     submitting
+        // } = this.state;
+        const classNames = ['quiz-status'];
 
         let start = (currentPage - 1) * questionsPerPage + 1;
         let end = start + questionsPerPage - 1;
 
         end = Math.min(end, questionsCount);
 
+        if (submitting) {
+            classNames.push('submitting');
+        }
 
-        return <div className="quiz-status">
+        return <div className={ classNames.join(' ') }>
             <div>
                 <div className="questions-index">
                     {
@@ -92,10 +115,11 @@ class Status extends Component {
                 </div>
 
                 <div className="submit-quiz">
-                    <button className="lp-button" id="button-submit-quiz">{ __('Submit', 'learnpress') }</button>
+                    <button className="lp-button" id="button-submit-quiz"
+                            onClick={ this.submit }>{ !submitting ? __('Submit', 'learnpress') : __('Submitting...', 'learnpress') }</button>
                 </div>
 
-                <Timer />
+                { totalTime && duration && <Timer  /> }
 
             </div>
         </div>
@@ -112,18 +136,23 @@ export default compose([
             currentPage: getData('currentPage'),
             numPages: getData('numPages'),
             questionsPerPage: getData('questionsPerPage'),
-            questionsCount: getData('questionIds').length
+            questionsCount: getData('questionIds').length,
+            submitting: getData('submitting'),
+            totalTime: getData('totalTime'),
+            duration: getData('duration'),
         }
     }),
     withDispatch((dispatch) => {
         const {
-            setQuizData,
-            startQuiz
+            //setQuizData,
+            submitQuiz,
+            //startQuiz
         } = dispatch('learnpress/quiz');
 
         return {
-            setQuizData,
-            startQuiz
+            //setQuizData,
+            submitQuiz
+            //startQuiz
         }
     })
 ])(Status);

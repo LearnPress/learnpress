@@ -1,7 +1,7 @@
 import {Component} from '@wordpress/element';
 import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
-import {__} from '@wordpress/i18n';
+import {__, _x} from '@wordpress/i18n';
 import {default as ButtonCheck} from '../buttons/button-check';
 import {default as ButtonHint} from '../buttons/button-hint';
 
@@ -149,13 +149,27 @@ class Buttons extends Component {
             currentPage
         } = this.props;
 
-        return <div className="quiz-buttons align-center">
+        const classNames = ['quiz-buttons align-center'];
+
+        if(questionNav==='questionNav'){
+            classNames.push('infinity');
+        }
+
+        if(this.isFirst()){
+            classNames.push('is-first');
+        }
+
+        if(this.isLast()){
+            classNames.push('is-last');
+        }
+
+        return <div className={ classNames.join(' ') }>
             <div className="button-left">
 
                 {
                     -1 !== ['', 'completed'].indexOf(status) && !isReviewing &&
                     <button className="lp-button start"
-                            onClick={ this.startQuiz }>{ __('Start', 'learnpress') }</button>
+                            onClick={ this.startQuiz }>{ status === 'completed' ? _x('Retry','label button retry quiz', 'learnpress') : __('Start', 'label button start quiz', 'learnpress') }</button>
                 }
 
                 {
@@ -172,15 +186,10 @@ class Buttons extends Component {
                                         </div>
                                     </div>
                                 </React.Fragment> : <React.Fragment>
-                                    { ('infinity' === questionNav || !this.isFirst()) &&
-                                    <button className="lp-button nav prev"
-                                            onClick={ this.nav('prev') }>{ __('Prev', 'learnpress') }</button>
-                                    }
-
-                                    {('infinity' === questionNav || !this.isLast()) &&
-                                    <button className="lp-button nav next"
-                                            onClick={ this.nav('next') }>{ __('Next', 'learnpress') }</button>
-                                    }
+                                    <button className="lp-button nav prev" data-type="question-nav"
+                                            onClick={ this.nav('prev') }>{__('', 'learnpress') }</button>
+                                    <button className="lp-button nav next" data-type="question-nav"
+                                            onClick={ this.nav('next') }>{ __('', 'learnpress') }</button>
                                 </React.Fragment>
                             }
                         </React.Fragment>

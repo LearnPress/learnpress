@@ -285,8 +285,13 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$status           = $userQuiz->get_status();
 				$checkedQuestions = $userQuiz->get_checked_questions();
 				$hintedQuestions  = $userQuiz->get_hint_questions();
-				$answered         = $userQuiz->get_meta( '_question_answers' );
-				$questionIds      = $userQuiz->get_meta( 'questions' );
+				$results          = $userQuiz->get_results( '' );
+
+				$questionIds = $results->getQuestions( 'ids' );
+				$answered    = $results->getAnswered();
+
+				// @deprecated
+				//$answered         = $userQuiz->get_meta( '_question_answers' );
 			}
 
 			$questions = learn_press_rest_prepare_user_questions(

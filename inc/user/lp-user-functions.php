@@ -1687,13 +1687,27 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 		$createMeta = array();
 	}
 
-	$quiz     = LP_Quiz::get_quiz( $itemData['item_id'] );
+	$quiz        = LP_Quiz::get_quiz( $itemData['item_id'] );
+	$duration    = $quiz->get_duration();
+	$questionIds = $quiz->get_question_ids();
+
 	$metaData = array_merge(
 		array(
-			'questions' => $quiz->get_question_ids(),
-			'grade'     => '',
-			'answers'   => '',
-			'results'   => ''
+			'data'    => array(
+				//'questions'       => $quiz->get_question_ids(),
+				'duration'        => $duration ? $quiz->get_duration()->get() : 'unlimited',
+				'passingGrade'    => $quiz->get_passing_grade(),
+				'negativeMarking' => get_post_meta( $quiz->get_id(), '_lp_negative_marking', true ) === 'yes'
+			),
+			'grade'   => '',
+			//'answers' => '',
+			'results' => array(
+				'questions' => array_fill_keys( $questionIds, array(
+					'answered' => '',
+					'correct'  => '',
+					'mark'     => 0
+				) )
+			)
 		),
 		$createMeta
 	);
@@ -1775,6 +1789,18 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 //	}
 }
 
+/**
+ * Create new user item prepare for user starts a quiz
+ *
+ * @since 4.x.x
+ *
+ * @param int  $quiz_id
+ * @param int  $user_id
+ * @param int  $course_id
+ * @param bool $wp_error
+ *
+ * @return array|bool|LP_User_Item|WP_Error
+ */
 function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
@@ -1815,6 +1841,16 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 	return $userQuiz;
 }
 
+/**
+ * Prepares list of questions for rest api.
+ *
+ * @since 4.x.x
+ *
+ * @param int[] $question_ids
+ * @param array $args
+ *
+ * @return array
+ */
 function learn_press_rest_prepare_user_questions( $question_ids, $args = array() ) {
 
 
@@ -1931,6 +1967,9 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 			$questions[] = apply_filters( 'learn-press/single-quiz-js/question-data', $questionData, $question->get_type(), $question->get_id(), $question );
 		}
 
+		/**
+		 * Remove answered
+		 */
 		if ( $quizStatus !== 'completed' ) {
 			if ( $checkedQuestions && $quizStatus ) {
 
@@ -1945,7 +1984,6 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				}
 			}
 		}
-
 	}
 
 	return $questions;

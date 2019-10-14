@@ -123,7 +123,11 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 ...action.data,
                 currentPage: LP.localStorage.get(`Q${action.data.id}.currentPage`) || action.data.currentPage
             };
-
+        case 'SUBMIT_QUIZ':
+            return {
+                ...state,
+                submitting: true
+            }
         case 'START_QUIZ':
         case 'START_QUIZ_SUCCESS':
             return resetCurrentQuestion(state, {

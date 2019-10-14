@@ -9,7 +9,7 @@ class QuestionMultipleChoices extends QuestionBase {
             answered
         } = this.props;
 
-        if (answered === undefined) {
+        if (!answered ) {
             return false;
         }
 
@@ -39,7 +39,7 @@ class QuestionMultipleChoices extends QuestionBase {
 
         const optionClass = [...this.state.optionClass];
 
-        if (answered !== undefined && this.maybeShowCorrectAnswer()) {
+        if (!answered && this.maybeShowCorrectAnswer()) {
             if (option.is_true === 'yes') {
                 optionClass.push('answer-correct');
                 answered.indexOf(option.value) !== -1 && optionClass.push('answered-correct');

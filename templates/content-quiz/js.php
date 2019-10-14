@@ -33,16 +33,28 @@ if ( $userQuiz ) {
 	$results          = $userQuiz->get_results( '' );
 	$checkedQuestions = $userQuiz->get_checked_questions();
 	$hintedQuestions  = $userQuiz->get_hint_questions();
+	$expirationTime   = $userQuiz->get_expiration_time();
+
+	// If expiration time is specific then calculate total time
+	if ( $expirationTime && ! $expirationTime->is_null() ) {
+		$totalTime = strtotime( $userQuiz->get_expiration_time() ) - strtotime( $userQuiz->get_start_time() );
+	}
 
 	$userJS = array(
 		'status'            => $status,
 		'attempts'          => $attempts,
 		'checked_questions' => $checkedQuestions,
-		'hinted_questions'  => $hintedQuestions
+		'hinted_questions'  => $hintedQuestions,
+		'start_time'        => $userQuiz->get_start_time()->toSql()
 	);
 
-	$answered     = $userQuiz->get_meta( '_question_answers' );
-	$question_ids = $userQuiz->get_meta( 'questions' );
+	if ( isset( $totalTime ) ) {
+		$userJS['totalTime'] = $totalTime;
+		$userJS['endTime']   = $expirationTime->toSql();
+	}
+
+	$answered     = $results->getAnswered();// $userQuiz->get_meta( '_question_answers' );
+	$question_ids = $results->getQuestions( 'ids' );// $userQuiz->get_meta( 'questions' );
 
 	if ( $question_ids === false ) {
 		$question_ids = $quiz->get_question_ids();
@@ -60,7 +72,7 @@ $questions = learn_press_rest_prepare_user_questions( $question_ids,
 		'quiz_status'       => $status,
 		'checked_questions' => $checkedQuestions,
 		'hinted_questions'  => $hintedQuestions,
-		'answered'          => $answered
+		'answered'          => $answered,
 	)
 );
 
@@ -75,7 +87,7 @@ $js = array(
 	'questions'            => $questions,
 	'question_ids'         => array_map( 'absint', array_values( $question_ids ) ),
 	'current_question'     => absint( reset( $question_ids ) ),
-	'question_nav'         => 'infinity',
+	'question_nav'         => '',
 	'status'               => '',
 	'attempts'             => array(),
 	'attempts_count'       => 10,
@@ -112,13 +124,13 @@ $js = array_merge( $js, $userJS );
 ?>
 <div id="learn-press-quiz-app"></div>
 <script>
-        jQuery(function(){
-            LP.Hook.addAction('course-ready', () => {
-                LP.quiz.init(
-                    '#learn-press-quiz-app',
-			        <?php echo( json_encode( $js ) );?>
-                );
-            })
+    jQuery(function () {
+        LP.Hook.addAction('course-ready', () => {
+            LP.quiz.init(
+                '#learn-press-quiz-app',
+				<?php echo( json_encode( $js ) );?>
+            );
         })
+    })
 
 </script>

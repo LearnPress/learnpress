@@ -4,13 +4,27 @@ import {compose} from '@wordpress/compose';
 const {useState} = React;
 
 class Timer extends Component {
-    constructor() {
+    constructor(props) {
         super(...arguments);
-        const t = 60;
+
+        this.init(props)
+    }
+
+    init = (props) => {
+        const {
+            endTime,
+            totalTime
+        } = props;
+
+        const d1 = new Date(endTime);
+        const d2 = new Date();
+        const tz = new Date().getTimezoneOffset();
+        const t = parseInt(d1.getTime() / 1000 - (d2.getTime() / 1000 + (tz * 60 ) ));
+
         this.state = {
             seconds: t,
-            totalTime: 60,
-            remainingSeconds: t,
+            totalTime: totalTime,
+            remainingSeconds: t > 0 ? t : 0,
             currentTime: parseInt(new Date().getTime() / 1000),
             percent: 100
         }
@@ -23,7 +37,7 @@ class Timer extends Component {
             //let remainingSeconds = seconds - offset;
 
             let {remainingSeconds} = this.state;
-            remainingSeconds-=1;
+            remainingSeconds -= 1;
 
             if (remainingSeconds > 0) {
                 this.setState(({seconds}) => ({
@@ -32,8 +46,9 @@ class Timer extends Component {
                 }))
             }
 
-            if (remainingSeconds === 0) {
-                clearInterval(this.myInterval)
+            if (remainingSeconds <= 0) {
+                clearInterval(this.myInterval);
+                this.submit();
             }
         }, 1000);
     }
@@ -41,6 +56,17 @@ class Timer extends Component {
     componentWillUnmount() {
         clearInterval(this.myInterval)
     }
+
+    /**
+     * Submit question to record results.
+     */
+    submit = () => {
+        const {
+            submitQuiz
+        } = this.props;
+
+        submitQuiz();
+    };
 
     formatTime = (separator = ':') => {
         const {remainingSeconds: seconds, totalTime} = this.state;
@@ -71,7 +97,6 @@ class Timer extends Component {
         const r = ( width - border ) / 2;
         const circumference = r * 2 * Math.PI;
         const offset = circumference - percent / 100 * circumference;
-
         const styles = {
             strokeDasharray: `${circumference} ${circumference}`,
             strokeDashoffset: offset
@@ -79,7 +104,7 @@ class Timer extends Component {
 
         const className = ['clock'];
 
-        if(percent <= 5){
+        if (percent <= 5) {
             className.push('x')
         }
 
@@ -113,18 +138,20 @@ export default compose([
         } = select('learnpress/quiz');
 
         return {
-            content: getData('content')
+            submitting: getData('submitting'),
+            totalTime: getData('totalTime') ? getData('totalTime') : getData('duration'),
+            endTime: getData('endTime')
         }
     }),
     withDispatch((dispatch) => {
         const {
             setQuizData,
-            startQuiz
+            submitQuiz
         } = dispatch('learnpress/quiz');
 
         return {
             setQuizData,
-            startQuiz
+            submitQuiz
         }
     })
 ])(Timer);
