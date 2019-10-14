@@ -2,28 +2,62 @@ import {Component} from '@wordpress/element';
 import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
 import Timer from '../timer';
-const {useState} = React;
+import {__, sprintf} from '@wordpress/i18n';
+const $ = jQuery;
+const {debounce} = lodash;
 
 class Status extends Component {
     constructor() {
         super(...arguments);
     }
 
-    getCurrentQuestionIndex = () => {
-        const {
-            questionIds,
-            currentQuestion
-        } = this.props;
+    componentDidMount() {
+        const $pc = $('#popup-content');
+        const $sc = $pc.find('.content-item-scrollable:eq(1)');
+        const $ciw = $pc.find('.content-item-wrap');
+        const $qs = $pc.find('.quiz-status');
+        const pcTop = $qs.offset().top - 92;
 
-        const at = questionIds.indexOf(currentQuestion)
+        let isFixed = false;
+        let marginLeft = '-' + $ciw.css('margin-left');
 
-        return at !== false ? at + 1 : 0;
-    }
+        $(window).resize(debounce(function () {
+            marginLeft = '-' + $ciw.css('margin-left');
+
+            $qs.css({
+                'margin-left': marginLeft,
+                'margin-right': marginLeft
+            });
+        }, 100)).trigger('resize');
+
+        $sc.scroll(() => {
+
+            if ($sc.scrollTop() >= pcTop) {
+                if (isFixed) {
+                    return;
+                }
+                isFixed = true;
+            } else {
+                if (!isFixed) {
+                    return;
+                }
+                isFixed = false;
+            }
+
+            if (isFixed) {
+                $pc.addClass('fixed-quiz-status');
+            } else {
+                $pc.removeClass('fixed-quiz-status');
+            }
+        })
+    };
 
     render() {
         const {
-            content,
-            questionIds
+            currentPage,
+            numPages,
+            questionsPerPage,
+            questionsCount
         } = this.props;
 
         const result = {
@@ -35,12 +69,34 @@ class Status extends Component {
             questionsSkipped: []
         };
 
-        const c = this.getCurrentQuestionIndex();
+        let start = (currentPage - 1) * questionsPerPage + 1;
+        let end = start + questionsPerPage - 1;
+
+        end = Math.min(end, questionsCount);
+
 
         return <div className="quiz-status">
             <div>
-                <div>{`${c} of ${questionIds.length}`}</div>
+                <div className="questions-index">
+                    {
+                        end < questionsCount && (
+                            questionsPerPage > 1
+                                ? sprintf(__('Question %d to %d of %d', 'learnpress'), start, end, questionsCount)
+                                : sprintf(__('Question %d of %d', 'learnpress'), start, questionsCount)
+                        )
+                    }
+
+                    {
+                        end === questionsCount && sprintf(__('Question %d to %d', 'learnpress'), start, end)
+                    }
+                </div>
+
+                <div className="submit-quiz">
+                    <button className="lp-button" id="button-submit-quiz">{ __('Submit', 'learnpress') }</button>
+                </div>
+
                 <Timer />
+
             </div>
         </div>
     }
@@ -53,8 +109,10 @@ export default compose([
         } = select('learnpress/quiz');
 
         return {
-            questionIds: getData('questionIds'),
-            currentQuestion: getData('currentQuestion')
+            currentPage: getData('currentPage'),
+            numPages: getData('numPages'),
+            questionsPerPage: getData('questionsPerPage'),
+            questionsCount: getData('questionIds').length
         }
     }),
     withDispatch((dispatch) => {

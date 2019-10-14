@@ -111,8 +111,8 @@ export const userQuiz = (state = STORE_DATA, action) => {
     switch (action.type) {
         case 'SET_QUIZ_DATA':
 
-            if (action.data.questionsLayout) {
-                const chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsLayout);
+            if (action.data.questionsPerPage) {
+                const chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsPerPage);
 
                 action.data.numPages = chunks.length;
                 action.data.pages = chunks;
@@ -121,7 +121,7 @@ export const userQuiz = (state = STORE_DATA, action) => {
             return {
                 ...state,
                 ...action.data,
-                currentQuestion: LP.localStorage.get(`Q${action.data.id}.currentQuestion`) || action.data.currentQuestion
+                currentPage: LP.localStorage.get(`Q${action.data.id}.currentPage`) || action.data.currentPage
             };
 
         case 'START_QUIZ':
@@ -131,7 +131,9 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 checkedQuestions: [],
                 hintedQuestions: [],
                 mode: '',
-                answered: {}
+                answered: {},
+                questions: action.data.questions,
+                questionIds: action.data.question_ids
             });
         case 'SET_CURRENT_QUESTION':
             LP.localStorage.set(`Q${state.id}.currentQuestion`, action.questionId);
@@ -140,6 +142,8 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 currentQuestion: action.questionId
             };
         case 'SET_CURRENT_PAGE':
+            LP.localStorage.set(`Q${state.id}.currentPage`, action.currentPage);
+
             return {
                 ...state,
                 currentPage: action.currentPage

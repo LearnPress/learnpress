@@ -6,35 +6,39 @@ const {useState} = React;
 class Timer extends Component {
     constructor() {
         super(...arguments);
-        const t = 1800;
+        const t = 60;
         this.state = {
             seconds: t,
-            totalTime: 3600,
+            totalTime: 60,
             remainingSeconds: t,
-            currentTime: parseInt(new Date().getTime() / 1000)
+            currentTime: parseInt(new Date().getTime() / 1000),
+            percent: 100
         }
     }
 
     componentDidMount() {
         this.myInterval = setInterval(() => {
-            const {seconds, currentTime} = this.state;
-            const offset = parseInt(new Date().getTime() / 1000) - currentTime;
+            const {seconds, currentTime, totalTime} = this.state;
+            //const offset = parseInt(new Date().getTime() / 1000) - currentTime;
+            //let remainingSeconds = seconds - offset;
 
-            let remainingSeconds = seconds - offset;
+            let {remainingSeconds} = this.state;
+            remainingSeconds-=1;
 
             if (remainingSeconds > 0) {
                 this.setState(({seconds}) => ({
-                    remainingSeconds: remainingSeconds
+                    remainingSeconds: remainingSeconds,
+                    percent: (remainingSeconds / totalTime) * 100
                 }))
             }
 
             if (remainingSeconds === 0) {
                 clearInterval(this.myInterval)
             }
-        }, 500);
+        }, 1000);
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         clearInterval(this.myInterval)
     }
 
@@ -52,9 +56,40 @@ class Timer extends Component {
             t.push((m - m % 60) / 60);
             t.push(m % 60);
         }
+
         return t.map((a) => {
             return a < 10 ? `0${a}` : a;
         }).join(separator);
+    }
+
+    getCircle = () => {
+        const {percent} = this.state;
+
+        const width = 40;
+        const border = 4;
+        const radius = width / 2;
+        const r = ( width - border ) / 2;
+        const circumference = r * 2 * Math.PI;
+        const offset = circumference - percent / 100 * circumference;
+
+        const styles = {
+            strokeDasharray: `${circumference} ${circumference}`,
+            strokeDashoffset: offset
+        };
+
+        const className = ['clock'];
+
+        if(percent <= 5){
+            className.push('x')
+        }
+
+        return <div className={ className.join(' ') }>
+            <svg className="circle-progress-bar" width={ width } height={ width }>
+                <circle className="circle-progress-bar__circle" strokeWidth={ border } style={ styles }
+                        fill="transparent" r={ r } cx={ radius } cy={ radius }>
+                </circle>
+            </svg>
+        </div>
     }
 
     render() {
@@ -62,8 +97,11 @@ class Timer extends Component {
             content
         } = this.props;
 
-        return <div>
-            {this.formatTime()}
+
+        return <div className="countdown">
+            <span>{ this.formatTime() }</span>
+
+            { this.getCircle() }
         </div>
     }
 }

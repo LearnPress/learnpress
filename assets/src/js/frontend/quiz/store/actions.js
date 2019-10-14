@@ -69,7 +69,7 @@ export function* startQuiz() {
 
     //yield dispatch('course-learner/course', 'startQuiz', quiz);
 
-    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', quiz);
+    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', quiz.results);
 }
 
 export function __requestSubmitQuizSuccess(results) {

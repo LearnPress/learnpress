@@ -33,7 +33,7 @@ class QuestionTypes extends Component {
         childProps.supportOptions = supportOptions.indexOf(question.type) !== -1;
 
         const TheQuestion = this.getQuestion() || function () {
-                return <div
+                return <div className="question-types"
                     dangerouslySetInnerHTML={ {__html: sprintf(__('Question <code>%s</code> invalid!', 'learnpress'), question.type)} }>
                 </div>
             };

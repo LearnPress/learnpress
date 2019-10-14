@@ -1,7 +1,5 @@
 import {Component} from '@wordpress/element';
-import {withSelect} from '@wordpress/data';
-import {compose} from '@wordpress/compose';
-
+import {select as wpSelect} from '@wordpress/data';
 import {__} from '@wordpress/i18n';
 
 const {isArray, get, set} = lodash;
@@ -38,6 +36,10 @@ class QuestionBase extends Component {
         }
     }
 
+    /**
+     *
+     * @return {Component.props.answered|boolean|Component.props.isCheckedAnswer}
+     */
     maybeShowCorrectAnswer = () => {
         const {
             answered,
@@ -48,6 +50,13 @@ class QuestionBase extends Component {
         return (answered && (status === 'completed')) || isCheckedAnswer;
     };
 
+    /**
+     * Disable answer option in review mode or user has
+     * checked the question.
+     *
+     * @param option
+     * @return {Component.props.isCheckedAnswer|boolean}
+     */
     maybeDisabledOption = (option) => {
         const {
             answered,
@@ -58,6 +67,10 @@ class QuestionBase extends Component {
         return isCheckedAnswer || (status !== 'started');
     };
 
+    /**
+     * Event callback for clicking on answer option to
+     * store answered
+     */
     setAnswerChecked = () => (event) => {
         const {
             updateUserQuestionAnswers,
@@ -130,15 +143,6 @@ class QuestionBase extends Component {
 
         const classes = ['answer-option'];
 
-        // if (answered) {
-        //     if (option.is_true === 'yes') {
-        //         classes.push('answer-correct');
-        //         answered.indexOf(option.value) !== -1 && classes.option[option.question_answer_id].push('answered-correct');
-        //     } else {
-        //         answered.indexOf(option.value) !== -1 && classes.option[option.question_answer_id].push('answered-wrong');
-        //     }
-        // }
-
         return classes;
     };
 
@@ -181,7 +185,32 @@ class QuestionBase extends Component {
 
     getChecker = () => {
         //const checker = LP['questionChecker'][]
+    };
+
+    isChecked = () => {
+        const {
+            question
+        } = this.props;
+
+        return wpSelect('learnpress/quiz').isCheckedAnswer(question.id);
     }
+
+    getCorrectLabel = () => {
+        const {
+            status,
+            answered,
+            question
+        } = this.props;
+
+        const checker = LP['config']['isQuestionCorrect'][question.type] || this.isCorrect;
+        const isCorrect = checker.call(this);
+
+        return this.maybeShowCorrectAnswer() &&
+            <div className={ `question-response` + (isCorrect ? ' correct' : ' incorrect') }>
+                <span className="label">{ isCorrect ? __('Correct', 'learnpress') : __('Incorrect', 'learnpress')}</span>
+                <span className="point">{ sprintf(__('%d/%d point', 'learnpress'), isCorrect ? question.point : 0, question.point)}</span>
+            </div>
+    };
 
     render() {
         const {
@@ -189,10 +218,7 @@ class QuestionBase extends Component {
             status
         } = this.props;
 
-        const checker = LP['config']['isQuestionCorrect'][question.type] || this.isCorrect;
-        const isCorrect = checker.call(this);
-
-        return <div>
+        return <div className="question-answers">
             {this.isDefaultType() &&
             <ul id={`answer-options-${question.id}`} className="answer-options">
                 {
@@ -213,26 +239,6 @@ class QuestionBase extends Component {
                                    dangerouslySetInnerHTML={ {__html: option.text || option.value} }>
                             </label>
                         </li>
-                        // return <li className={ this.getOptionClass(option).join(' ') }
-                        //            key={ `answer-option-${option.question_answer_id}` }>
-                        //     <label>
-                        //         <input type={ this.getOptionType(question.type, option) }
-                        //                className="option-check"
-                        //                name={ `learn-press-question-${question.id}` }
-                        //                id={ ID }
-                        //                onChange={ this.setAnswerChecked() }
-                        //                disabled={ this.maybeDisabledOption(option) }
-                        //                checked={ this.maybeCheckedAnswer(option.value) }
-                        //                value={ option.value }/>
-                        //
-                        //         <div className="option-title">
-                        //             <div className="option-title-content"
-                        //                  htmlFor={ ID }
-                        //                  dangerouslySetInnerHTML={ {__html: option.text} }>
-                        //             </div>
-                        //         </div>
-                        //     </label>
-                        // </li>
                     })
                 }
             </ul>
@@ -240,11 +246,7 @@ class QuestionBase extends Component {
 
             { !this.isDefaultType() && this.getWarningMessage()}
 
-            { status === 'completed' &&
-            <div className={ `question-response` + (isCorrect ? ' correct' : ' incorrect') }>
-                <span>{ isCorrect ? __('Correct', 'learnpress') : __('Incorrect', 'learnpress')}</span>
-            </div>
-            }
+            { this.getCorrectLabel() }
         </div>
     }
 }

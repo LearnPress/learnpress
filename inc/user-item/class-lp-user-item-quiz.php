@@ -66,11 +66,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * Update data to database
 	 *
 	 * @param bool $force
+	 * @param bool $wp_error
 	 *
 	 * @return bool|mixed
 	 */
-	public function update( $force = false ) {
-		$return = parent::update();
+	public function update( $force = false, $wp_error = false ) {
+		$return = parent::update( $force, $wp_error );
 		learn_press_update_user_item_meta( $this->get_user_item_id(), '_question_answers', $this->_answers );
 		$this->calculate_results();
 
@@ -214,7 +215,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		);
 
 		$attempts = array();
-		echo $query    = $wpdb->prepare( "
+		$query    = $wpdb->prepare( "
 			SELECT * 
 			FROM {$wpdb->learnpress_user_items}
 			WHERE parent_id = %d AND item_type = %s
@@ -260,6 +261,24 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
+	 * Get question ids user has started inside quiz.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool|array
+	 */
+	public function get_questions() {
+		$ids = $this->get_meta( 'questions' );
+
+		if ( $ids === false ) {
+			$quiz = learn_press_get_quiz( $this->get_item_id() );
+			$ids  = $quiz->get_question_ids();
+		}
+
+		return apply_filters( 'learn-press/user-item-quiz-questions', $ids, $this->get_user_id(), $this );
+	}
+
+	/**
 	 * Calculate results of quiz.
 	 *
 	 * @since 3.1.0
@@ -286,9 +305,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'passing_grade'     => $quiz->get_passing_grade()
 		);
 
-		if ( $questions = $quiz->get_questions() ) {
+		$question_ids = $this->get_questions();
 
-			foreach ( $questions as $question_id ) {
+		if ( $question_ids ) {
+
+			foreach ( $question_ids as $question_id ) {
 
 				$question = LP_Question::get_question( $question_id );
 
@@ -328,7 +349,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$result['result']         = $percent;
 			$result['grade']          = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
 			$result['grade_text']     = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
-			$result['question_count'] = sizeof( $questions );
+			$result['question_count'] = sizeof( $question_ids );
 
 			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
 				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );

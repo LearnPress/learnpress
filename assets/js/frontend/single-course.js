@@ -168,7 +168,7 @@ var AjaxSearchCourses = function AjaxSearchCourses(el) {
   $form.on('submit', submit);
 };
 
-$(function () {
+$(window).load(function () {
   var timerClearScroll;
   var $curriculum = $('#learn-press-course-curriculum');
   $curriculum.scroll(lodash.throttle(function () {
@@ -186,8 +186,10 @@ $(function () {
     var b = $(el).siblings('.section-title').append(a);
   });
   $('#sidebar-toggle').on('change', toggleSidebarHandler).prop('checked', LP.localStorage.get('sidebar-toggle'));
-  new AjaxSearchCourses($('#search-course')); //createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
-  // if (window.location.hash) {
+  new AjaxSearchCourses($('#search-course'));
+  createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
+  LP.Hook.doAction('course-ready');
+  console.log('BBBB'); // if (window.location.hash) {
   //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
   // }
 });

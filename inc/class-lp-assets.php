@@ -202,6 +202,13 @@ class LP_Assets extends LP_Abstract_Assets {
 						'jquery'
 					)
 				),
+				'lp-custom'           => array(
+					'url'     => self::url( 'js/frontend/custom.js' ),
+					'deps'    => array(
+						'jquery'
+					),
+					'screens' => '*'
+				),
 //				'crypto-js'        => array(
 //					'url' => 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js'
 //				)

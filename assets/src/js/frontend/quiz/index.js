@@ -14,6 +14,7 @@ import {
 import store from './store';
 
 const {chunk, isNumber} = lodash;
+const $ = jQuery;
 
 class Quiz extends Component {
     constructor(props) {
@@ -53,10 +54,10 @@ class Quiz extends Component {
 
         const {
             questionIds,
-            questionsLayout
+            questionsPerPage
         } = sanitizedSettings;
 
-        const chunks = chunk(questionIds, questionsLayout);
+        const chunks = chunk(questionIds, questionsPerPage);
 
         sanitizedSettings.currentPage = 1;
         sanitizedSettings.numPages = chunks.length;
@@ -67,16 +68,17 @@ class Quiz extends Component {
         setQuizData(sanitizedSettings);
     }
 
+
     componentWillReceiveProps(nextProps) {
         console.time('QUIZ');
 
         const {
             questionIds,
-            questionsLayout,
+            questionsPerPage,
             setQuizData
         } = nextProps;
 
-        const chunks = chunk(questionIds, questionsLayout);
+        const chunks = chunk(questionIds, questionsPerPage);
 
         // setQuizData({
         //     numPages: chunks.length,
@@ -149,10 +151,10 @@ export default compose([
             store: getData(),
             answered: getData('answered'),
             isReviewing: getData('mode') === 'reviewing',
-            hintCount: getData('showHint'),
+            //hintCount: getData('showHint'),
             questionIds: getData('questionIds'),
-            checkCount: getData('showCheckAnswers'),
-            questionsLayout: getData('questionsLayout') || 1
+            checkCount: getData('instantCheck'),
+            questionsPerPage: getData('questionsPerPage') || 1
         }
     }),
     withDispatch((dispatch) => {

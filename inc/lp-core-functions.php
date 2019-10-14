@@ -3574,3 +3574,5 @@ function learn_press_date_end_from( $duration, $start = '' ) {
 
 	return date( $format, $start + $duration );
 }
+
+include_once dirname( __FILE__ ) . '/lp-custom-hooks.php';

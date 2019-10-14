@@ -46,9 +46,9 @@ class Questions extends Component {
     isInVisibleRange = (id, index) => {
         const {
             currentPage,
-            questionsLayout,
+            questionsPerPage,
         } = this.props;
-        return currentPage === Math.ceil(index / questionsLayout);
+        return currentPage === Math.ceil(index / questionsPerPage);
     };
 
     render() {
@@ -58,7 +58,7 @@ class Questions extends Component {
             questions,
             questionsRendered,
             isReviewing,
-            questionsLayout
+            questionsPerPage
         } = this.props;
 
         let viewMode = false, isShow = true;
@@ -73,14 +73,14 @@ class Questions extends Component {
             <div className="quiz-questions" style={ {display: isShow ? '' : 'none'} }>
                 {
                     questions.map((question, index) => {
-                        const isCurrent = questionsLayout ? false : currentQuestion === question.id;
+                        const isCurrent = questionsPerPage ? false : currentQuestion === question.id;
                         const isRendered = questionsRendered && questionsRendered.indexOf(question.id) !== -1;
                         const isVisible = this.isInVisibleRange(question.id, index + 1);
                         return ( isRendered || !isRendered /*&& isCurrent*/ ) || isVisible ?
                             <Question isCurrent={ isCurrent } key={ `loop-question-${question.id}` }
                                       isShow={isVisible }
-                                      isShowIndex={questionsLayout ? index + 1 : false}
-                                      questionsLayout={questionsLayout}
+                                      isShowIndex={questionsPerPage ? index + 1 : false}
+                                      questionsPerPage={questionsPerPage}
                                       question={ question }/> : '';
                     })
                 }
@@ -103,7 +103,7 @@ export default compose(
             isReviewing: getData('mode') === 'reviewing',
             numPages: getData('numPages'),
             currentPage: getData('currentPage'),
-            questionsLayout: getData('questionsLayout') || 1
+            questionsPerPage: getData('questionsPerPage') || 1
         }
     }),
     withDispatch((dispatch) => {

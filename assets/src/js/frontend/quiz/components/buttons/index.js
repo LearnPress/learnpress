@@ -47,6 +47,26 @@ class Buttons extends Component {
     };
 
     /**
+     * Move to a specific page
+     *
+     * @param pageNum
+     */
+    moveTo = (pageNum) => (event) => {
+        event.preventDefault();
+
+        const {
+            numPages,
+            setCurrentPage
+        } = this.props;
+
+        if (pageNum < 1 || pageNum > numPages) {
+            return;
+        }
+
+        setCurrentPage(pageNum);
+    };
+
+    /**
      * Check current question is in end of list.
      *
      * @return {boolean}
@@ -123,10 +143,13 @@ class Buttons extends Component {
             showReview,
             numPages,
             question,
-            questionsLayout
+            questionsPerPage,
+            pageNumbers,
+            pages,
+            currentPage
         } = this.props;
 
-        return <div className="quiz-buttons">
+        return <div className="quiz-buttons align-center">
             <div className="button-left">
 
                 {
@@ -138,14 +161,27 @@ class Buttons extends Component {
                 {
                     ('started' === status || isReviewing) && (numPages > 1) && (
                         <React.Fragment>
-                            { ('infinity' === questionNav || !this.isFirst()) &&
-                            <button className="lp-button nav prev"
-                                    onClick={ this.nav('prev') }>{ __('Prev', 'learnpress') }</button>
-                            }
+                            {
+                                pageNumbers ? <React.Fragment>
+                                    <div className="questions-pagination">
+                                        <div className="page-numbers">
+                                            {pages.map((ids, pageNum) => {
+                                                return pageNum + 1 === currentPage ? <span key={`page-number-${pageNum}`}>{pageNum + 1}</span> :
+                                                    <a key={`page-number-${pageNum}`} onClick={ this.moveTo(pageNum + 1) }>{pageNum + 1}</a>
+                                            })}
+                                        </div>
+                                    </div>
+                                </React.Fragment> : <React.Fragment>
+                                    { ('infinity' === questionNav || !this.isFirst()) &&
+                                    <button className="lp-button nav prev"
+                                            onClick={ this.nav('prev') }>{ __('Prev', 'learnpress') }</button>
+                                    }
 
-                            {('infinity' === questionNav || !this.isLast()) &&
-                            <button className="lp-button nav next"
-                                    onClick={ this.nav('next') }>{ __('Next', 'learnpress') }</button>
+                                    {('infinity' === questionNav || !this.isLast()) &&
+                                    <button className="lp-button nav next"
+                                            onClick={ this.nav('next') }>{ __('Next', 'learnpress') }</button>
+                                    }
+                                </React.Fragment>
                             }
                         </React.Fragment>
                     )
@@ -158,7 +194,7 @@ class Buttons extends Component {
                         <React.Fragment>
 
                             {
-                                questionsLayout === 1 && [
+                                questionsPerPage === 1 && [
                                     <MaybeShowButton key="button-hint" type="hint" Button={ ButtonHint }
                                                      question={question}/>,
                                     <MaybeShowButton key="button-check" type="check" Button={ ButtonCheck }
@@ -204,16 +240,14 @@ export const MaybeShowButton = compose(
         } = select('learnpress/quiz');
         return {
             status: getData('status'),
-            showHint: getData('showHint'),
-            showCheck: getData('showCheckAnswers'),
+            showCheck: getData('instantCheck'),
             checkedQuestions: getData('checkedQuestions'),
             hintedQuestions: getData('hintedQuestions'),
-            questionsLayout: getData('questionsLayout')
+            questionsPerPage: getData('questionsPerPage')
         }
     })
 )((props) => {
     const {
-        showHint,
         showCheck,
         checkedQuestions,
         hintedQuestions,
@@ -231,10 +265,6 @@ export const MaybeShowButton = compose(
 
     switch (type) {
         case 'hint':
-
-            if (!showHint) {
-                return false;
-            }
 
             if (!hintedQuestions) {
                 return theButton;
@@ -273,16 +303,17 @@ export default compose([
             questionNav: getData('questionNav'),
             isReviewing: getData('reviewQuestions') && getData('mode') === 'reviewing',
             showReview: getData('reviewQuestions'),
-            showHint: getData('showHint'),
-            showCheck: getData('showCheckAnswers'),
+            showCheck: getData('instantCheck'),
             checkedQuestions: getData('checkedQuestions'),
             hintedQuestions: getData('hintedQuestions'),
             numPages: getData('numPages'),
+            pages: getData('pages'),
             currentPage: getData('currentPage'),
-            questionsLayout: getData('questionsLayout')
-        }
+            questionsPerPage: getData('questionsPerPage'),
+            pageNumbers: getData('pageNumbers'),
+        };
 
-        if (data.questionsLayout === 1) {
+        if (data.questionsPerPage === 1) {
             data.question = getCurrentQuestion('object');
         }
 

@@ -5,16 +5,17 @@ import {__, sprintf} from '@wordpress/i18n';
 import Buttons from "./buttons";
 
 const $ = window.jQuery;
-const {uniqueId, isArray, isNumber} = lodash;
+const {uniqueId, isArray, isNumber, bind} = lodash;
 
 class Question extends Component {
 
     constructor() {
         super(...arguments);
-
+        this.state = {
+            time: null
+        }
         this.$wrap = null;
     }
-
 
     componentDidMount(a) {
         const {
@@ -26,6 +27,14 @@ class Question extends Component {
         if (isCurrent) {
             markQuestionRendered(question.id)
         }
+
+        // Refresh render function to pass $wrap to child
+        if (!this.state.time) {
+            this.setState({
+                time: new Date()
+            })
+        }
+
         return a;
     }
 
@@ -50,6 +59,7 @@ class Question extends Component {
 
         const classes = ['question', 'question-' + question.type];
         const options = this.parseOptions(question.options);
+
         if (options.length && options[0].is_true !== undefined) {
             classes.push('question-answered');
         }
@@ -75,7 +85,7 @@ class Question extends Component {
             question,
             isShow,
             isShowIndex,
-            questionsLayout,
+            questionsPerPage,
             status
         } = this.props;
 
@@ -86,45 +96,66 @@ class Question extends Component {
             jQuery('#wp-admin-bar-edit-lp_question').find('.ab-item').attr('href', editPermalink);
         }
 
-        return <React.Fragment>
-            <div className={ this.getWrapperClass().join(' ') } style={ {display: isShow ? '' : 'none'} }
-                 ref={ this.setRef }>
-                <h4 className="question-title">
+        const blocks = {
+            title: () => {
+                return <h4 className="question-title">
                     { isShowIndex ? <span className="question-index">{isShowIndex}.</span> : ''}
+
                     { question.title }
+
                     {
                         editPermalink && <span dangerouslySetInnerHTML={ {__html: this.editPermalink(editPermalink)} }
                                                className="edit-link">
                         </span>
                     }
                 </h4>
+            },
 
-                <div className="question-content" dangerouslySetInnerHTML={ {__html: question.content} }>
+            content: () => {
+                return <div className="question-content" dangerouslySetInnerHTML={ {__html: question.content} }>
                 </div>
+            },
 
-                <QuestionTypes {...{...this.props, $wrap: this.$wrap}}/>
+            'answer-options': () => {
+                return this.$wrap && <QuestionTypes {...{...this.props, $wrap: this.$wrap}}/>
+            },
 
-                {
-                    question.explanation && <React.Fragment>
+            explanation: () => {
+                return question.explanation && <React.Fragment>
                         <div className="question-explanation-content">
                             <strong className="explanation-title">{ __('Explanation:', 'learnpress') }</strong>
                             <div dangerouslySetInnerHTML={ {__html: question.explanation} }>
                             </div>
                         </div>
                     </React.Fragment>
-                }
+            },
 
-                {
-                    question.hint && <React.Fragment>
+            hint: () => {
+                return question.hint && <React.Fragment>
                         <div className="question-hint-content">
                             <strong className="hint-title">{ __('Hint:', 'learnpress') }</strong>
                             <div dangerouslySetInnerHTML={ {__html: question.hint} }>
                             </div>
                         </div>
                     </React.Fragment>
+            },
 
+            buttons: () => {
+                return ('started' === status) && (questionsPerPage > 1) && <Buttons question={question}/>
+            }
+        };
+
+        const configBlocks = LP.config.questionBlocks();
+
+        return <React.Fragment>
+            <div className={ this.getWrapperClass().join(' ') } style={ {display: isShow ? '' : 'none'} }
+                 ref={ this.setRef }>
+
+                {
+                    configBlocks.map((name) => {
+                        return <React.Fragment key={ `block-${name}` }>{ blocks[name] ? blocks[name]() : '' }</React.Fragment>
+                    })
                 }
-                { ('started' === status) && (questionsLayout > 1) && <Buttons question={question}/> }
 
             </div>
         </React.Fragment>

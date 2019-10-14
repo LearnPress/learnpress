@@ -102,9 +102,9 @@ export function getQuestionAnswered(state, id) {
 
 
 export function getCurrentQuestion(state, ret = '') {
-    const questionsLayout = get(state, 'userQuiz.questionsLayout') || 1;
+    const questionsPerPage = get(state, 'userQuiz.questionsPerPage') || 1;
 
-    if (questionsLayout > 1) {
+    if (questionsPerPage > 1) {
         return false;
     }
 

@@ -256,20 +256,55 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$user      = learn_press_get_user( $user_id );
 
 		if ( $user->has_started_quiz( $item_id, $course_id ) ) {
-			$result = $user->retake_quiz( $item_id, $course_id, true );
+			$userQuiz = $user->retake_quiz( $item_id, $course_id, true );
 		} else {
-			$result = $user->start_quiz( $item_id, $course_id, true );
+			$userQuiz = $user->start_quiz( $item_id, $course_id, true );
 		}
 
-		$success = ! is_wp_error( $result );
+		$success = ! is_wp_error( $userQuiz );
 
 		$response = array(
 			'success' => $success,
-			'message' => ! $success ? $result->get_error_message() : __( 'Success!', 'learnpress' )
+			'message' => ! $success ? $userQuiz->get_error_message() : __( 'Success!', 'learnpress' )
 		);
 
 		if ( $success ) {
-			$response['results'] = array();
+			$course     = LP_Course::get_course( $course_id );
+			$quiz       = LP_Quiz::get_quiz( $item_id );
+			$showHint   = $quiz->get_show_hint();
+			$showCheck  = $quiz->get_show_check_answer();
+			$userCourse = $user->get_course_data( $course->get_id() );
+			//$userQuiz         = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
+			$answered         = array();
+			$status           = '';
+			$checkedQuestions = array();
+			$hintedQuestions  = array();
+			$questionIds      = array();
+
+			if ( $userQuiz ) {
+				$status           = $userQuiz->get_status();
+				$checkedQuestions = $userQuiz->get_checked_questions();
+				$hintedQuestions  = $userQuiz->get_hint_questions();
+				$answered         = $userQuiz->get_meta( '_question_answers' );
+				$questionIds      = $userQuiz->get_meta( 'questions' );
+			}
+
+			$questions = learn_press_rest_prepare_user_questions(
+				$questionIds,
+				array(
+					'instant_hint'      => $showHint,
+					'instant_check'     => $showCheck,
+					'quiz_status'       => $status,
+					'checked_questions' => $checkedQuestions,
+					'hinted_questions'  => $hintedQuestions,
+					'answered'          => $answered
+				)
+			);
+
+			$response['results'] = array(
+				'question_ids' => $questionIds,
+				'questions'    => $questions
+			);
 		}
 
 		return rest_ensure_response( $response );

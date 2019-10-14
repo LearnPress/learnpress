@@ -481,9 +481,9 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	$data_format      = array();
 	$date_time_fields = array(
 		'start_time',
-		'start_time_gmt',
+		//'start_time_gmt',
 		'end_time',
-		'end_time_gmt',
+		//'end_time_gmt',
 		'expiration_time',
 		//'expiration_time_gmt'
 	);
@@ -1550,29 +1550,24 @@ function learn_press_get_user_role( $user_id ) {
 	return false;
 }
 
-function learn_press_create_user_item_quiz_meta() {
-
-}
-
 /**
  * @param array $args
- * @param bool  $wp_error - Optional. TRUE will return WP_Error on fail.
+ * @param bool  $wp_error
  *
- * @return bool|array|WP_Error
+ * @return bool|int|LP_User_Item|mixed|WP_Error
  */
-function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = false ) {
+function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 	global $wpdb;
 
-	$supportTypes = apply_filters( 'learn-press/create-user-item-quiz-types', array( LP_QUIZ_CPT ) );
-	$currentTime  = new LP_Datetime();
-	$defaults     = array(
+	$currentTime = new LP_Datetime();
+	$defaults    = array(
 		'user_id'         => get_current_user_id(),
 		'item_id'         => '',
 		'start_time'      => $currentTime->toSql(),
 		'end_time'        => '',
 		'expiration_time' => '',
-		'item_type'       => LP_QUIZ_CPT,
-		'status'          => 'started',
+		'item_type'       => '',
+		'status'          => '',
 		'ref_id'          => 0,
 		'ref_type'        => 0,
 		'parent_id'       => 0,
@@ -1582,12 +1577,16 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 	$itemData = wp_parse_args( $args, $defaults );
 
 	// Validate item_id and post type
-	if ( empty( $itemData['item_id'] ) || ! in_array( get_post_type( $itemData['item_id'] ), $supportTypes ) ) {
+	if ( empty( $itemData['item_id'] ) ) {
 		if ( $wp_error ) {
 			return new WP_Error( 'invalid_item_id', __( 'Invalid item id.', 'learnpress' ) );
 		}
 
 		return 0;
+	}
+
+	if ( empty( $itemData['item_type'] ) && $post_type = learn_press_get_post_type( $itemData['item_id'] ) ) {
+		$itemData['item_type'] = $post_type;
 	}
 
 	// Calculate the expiration time if duration is specific.
@@ -1612,7 +1611,7 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 	}
 
 	// Filter
-	if ( ! $itemData = apply_filters( 'learn-press/create-user-item-quiz-data', $itemData ) ) {
+	if ( ! $itemData = apply_filters( 'learn-press/create-user-item-data', $itemData ) ) {
 		if ( $wp_error ) {
 			return new WP_Error( 'invalid_item_data', __( 'Invalid item data.', 'learnpress' ) );
 		}
@@ -1620,23 +1619,65 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 		return 0;
 	}
 
+	do_action( 'learn-press/before-create-user-item', $itemData );
+
 	$createMeta = ! empty( $itemData['create_meta'] ) ? $itemData['create_meta'] : false;
 
 	if ( $createMeta ) {
 		unset( $itemData['create_meta'] );
 	}
 
-
-	// TODO: insert to database and get result.
 	$userItem = new LP_User_Item( $itemData );
-	$result   = $userItem->update( true, true );
+	$result   = $userItem->update( true, false );
 
-	print_r( $userItem );
+	if ( ! $result || is_wp_error( $result ) ) {
 
-	// Create meta data or not?
-	if ( ! $createMeta ) {
-		return $result;
+		if ( $wp_error && is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return 0;
 	}
+
+	do_action( 'learn-press/created-user-item', $userItem, $itemData );
+
+	$createMeta = apply_filters( 'learn-press/create-user-item-meta', $createMeta, $itemData );
+	if ( ! $createMeta ) {
+		return $userItem;
+	}
+
+	do_action( 'learn-press/before-create-user-item-meta', $createMeta );
+
+	foreach ( $createMeta as $key => $value ) {
+		learn_press_update_user_item_meta( $userItem->get_user_item_id(), $key, $value );
+	}
+
+	do_action( 'learn-press/created-user-item-meta', $userItem, $createMeta );
+
+	return $userItem;
+}
+
+
+/**
+ * @param array $args
+ * @param bool  $wp_error - Optional. TRUE will return WP_Error on fail.
+ *
+ * @return bool|array|LP_User_Item|WP_Error
+ */
+function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = false ) {
+
+	global $wpdb;
+
+	$itemData = wp_parse_args(
+		$args,
+		array(
+			'item_type' => LP_QUIZ_CPT,
+			'status'    => 'started',
+			'user_id'   => get_current_user_id()
+		)
+	);
+
+	$createMeta = ! empty( $itemData['create_meta'] ) ? $itemData['create_meta'] : false;
 
 	/**
 	 * If you want to add values for meta pass it through
@@ -1657,71 +1698,255 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 		$createMeta
 	);
 
+	$itemData['create_meta'] = $metaData;
 
-	return [ $result, $itemData, $metaData ];
+	$userItem = learn_press_create_user_item( $itemData, $wp_error );
 
-	$quiz      = learn_press_get_quiz( $quiz_id );
-	$quiz_data = $course_data->get_item( $quiz_id );
-	if ( ! $quiz_data ) {
-		$user_item_api = new LP_User_Item_CURD();
-		$course_item   = $user_item_api->get_item_by( array(
-			'item_id' => $course_id,
-			'user_id' => $user->get_id()
-		) );
-
-		$quiz_item              = LP_User_Item::get_empty_item();
-		$quiz_item['user_id']   = $user->get_id();
-		$quiz_item['item_id']   = $quiz_id;
-		$quiz_item['item_type'] = learn_press_get_post_type( $quiz_id );
-		$quiz_item['ref_id']    = $course_id;
-		$quiz_item['ref_type']  = learn_press_get_post_type( $course_id );
-		$quiz_item['parent_id'] = $course_item->user_item_id;
-
-		$quiz_data = new LP_User_Item_Quiz( $quiz_item );
+	if ( $userItem && ! is_wp_error( $userItem ) ) {
+		$userItem = new LP_User_Item_Quiz( $userItem->get_data() );
+		$userItem->update( true );
 	}
 
-	if ( ! $enable_history = $quiz->enable_archive_history() ) {
-		if ( $quiz_data->get_user_item_id() ) {
-			global $wpdb;
-			$query = $wpdb->prepare( "
-							DELETE FROM {$wpdb->learnpress_user_items}
-							WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
-						", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
+	return $userItem;
 
-			$wpdb->query( $query );
-		} else {
-			$course_data->update_item_retaken_count( $quiz_id, 0 );
-		}
+//	$quiz      = learn_press_get_quiz( $quiz_id );
+//	$quiz_data = $course_data->get_item( $quiz_id );
+//	if ( ! $quiz_data ) {
+//		$user_item_api = new LP_User_Item_CURD();
+//		$course_item   = $user_item_api->get_item_by( array(
+//			'item_id' => $course_id,
+//			'user_id' => $user->get_id()
+//		) );
+//
+//		$quiz_item              = LP_User_Item::get_empty_item();
+//		$quiz_item['user_id']   = $user->get_id();
+//		$quiz_item['item_id']   = $quiz_id;
+//		$quiz_item['item_type'] = learn_press_get_post_type( $quiz_id );
+//		$quiz_item['ref_id']    = $course_id;
+//		$quiz_item['ref_type']  = learn_press_get_post_type( $course_id );
+//		$quiz_item['parent_id'] = $course_item->user_item_id;
+//
+//		$quiz_data = new LP_User_Item_Quiz( $quiz_item );
+//	}
+//
+//	if ( ! $enable_history = $quiz->enable_archive_history() ) {
+//		if ( $quiz_data->get_user_item_id() ) {
+//			global $wpdb;
+//			$query = $wpdb->prepare( "
+//							DELETE FROM {$wpdb->learnpress_user_items}
+//							WHERE user_id = %d AND item_id = %d AND user_item_id <> %d
+//						", $this->get_id(), $quiz_id, $quiz_data->get_user_item_id() );
+//
+//			$wpdb->query( $query );
+//		} else {
+//			$course_data->update_item_retaken_count( $quiz_id, 0 );
+//		}
+//	} else {
+//		$count_history = $course_data->count_history_items( $quiz_id );
+//	}
+//
+//	$course_data->update_item_retaken_count( $quiz_id, '+1' );
+//	$quiz_data->set_status( 'started' );
+//	$quiz_data->set_user_id( $user->get_id() );
+//
+//	$date = new LP_Datetime();
+//	$quiz_data->set_start_time( $date->toSql(), true );
+//
+//	/**
+//	 * If enable duration for quiz then update the expiration time
+//	 * otherwise, consider quiz is lifetime access.
+//	 */
+//	$expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
+//
+////				if ( $quiz->get_duration()->get_seconds() ) {
+////					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds(), false ) );
+////				} else {
+////					$quiz_data->set_expiration_time( null );
+////					//$quiz_data->set_expiration_time_gmt( null );
+////				}
+//
+//	if ( $quiz_data->update() ) {
+//		$course_data->set_item( $quiz_data );
+//	}
+//
+//	if ( $questions = $quiz->get_questions() ) {
+//		$question_id = reset( $questions );
+//		learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
+//	}
+}
+
+function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	global $wpdb;
+
+	// Get user item parent id
+	$query  = $wpdb->prepare( "
+	    SELECT user_item_id, item_id id, item_type type
+	    FROM {$wpdb->learnpress_user_items} 
+	    WHERE user_item_id = (SELECT max(user_item_id)
+	    FROM {$wpdb->learnpress_user_items}
+	    WHERE user_id = %d AND item_id = %d AND status = %s)
+	", $user_id, $course_id, 'enrolled' );
+	$parent = $wpdb->get_row( $query );
+
+	do_action( 'learn-press/before-user-start-quiz', $quiz_id, $user_id, $course_id );
+
+	$quiz     = LP_Quiz::get_quiz( $quiz_id );
+	$duration = $quiz->get_duration();
+	$userQuiz = learn_press_create_user_item_for_quiz(
+		array(
+			'item_id'   => $quiz->get_id(),
+			'duration'  => $duration ? $duration->get() : 0,
+			'user_id'   => $user_id,
+			'parent_id' => $parent ? absint( $parent->user_item_id ) : 0,
+			'ref_type'  => $parent ? $parent->type : '',
+			'ref_id'    => $parent ? $parent->id : ''
+		),
+		$wp_error
+	);
+
+	if ( $userQuiz && ! is_wp_error( $userQuiz ) ) {
+		do_action( 'learn-press/user-started-quiz', $userQuiz, $quiz_id, $user_id, $course_id );
+	}
+
+	return $userQuiz;
+}
+
+function learn_press_rest_prepare_user_questions( $question_ids, $args = array() ) {
+
+
+	if ( is_numeric( $args ) ) {
+
 	} else {
-		$count_history = $course_data->count_history_items( $quiz_id );
+		$args = wp_parse_args(
+			$args,
+			array(
+				'instant_hint'      => true,
+				'instant_check'     => true,
+				'quiz_status'       => '',
+				'checked_questions' => array(),
+				'hinted_questions'  => array()
+			)
+		);
 	}
 
-	$course_data->update_item_retaken_count( $quiz_id, '+1' );
-	$quiz_data->set_status( 'started' );
-	$quiz_data->set_user_id( $user->get_id() );
+	$checkedQuestions = $args['checked_questions'];
+	$hintedQuestions  = $args['hinted_questions'];
+	$instantHint      = $args['instant_hint'];
+	$instantCheck     = $args['instant_check'];
+	$quizStatus       = $args['quiz_status'];
+	$questions        = array();
 
-	$date = new LP_Datetime();
-	$quiz_data->set_start_time( $date->toSql(), true );
+	if ( $question_ids ) {
+		//$checkedQuestions = isset( $userJS['checked_questions'] ) ? $userJS['checked_questions'] : array();
+		//$hintedQuestions  = isset( $userJS['hinted_questions'] ) ? $userJS['hinted_questions'] : array();
 
-	/**
-	 * If enable duration for quiz then update the expiration time
-	 * otherwise, consider quiz is lifetime access.
-	 */
-	$expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
+		foreach ( $question_ids as $id ) {
+			$question       = learn_press_get_question( $id );
+			$hasHint        = false;
+			$hasExplanation = false;
+			$canCheck       = false;
+			$hinted         = false;
+			$checked        = false;
+			$theHint        = '';
+			$theExplanation = '';
 
-//				if ( $quiz->get_duration()->get_seconds() ) {
-//					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds(), false ) );
-//				} else {
-//					$quiz_data->set_expiration_time( null );
-//					//$quiz_data->set_expiration_time_gmt( null );
-//				}
+			if ( $instantHint ) {
+				$theHint = $question->get_hint();
+				$hinted  = in_array( $id, $hintedQuestions );
+				$hasHint = ! ! $theHint;
+			}
 
-	if ( $quiz_data->update() ) {
-		$course_data->set_item( $quiz_data );
+			if ( $instantCheck ) {
+				$theExplanation = $question->get_explanation();
+				$checked        = in_array( $id, $checkedQuestions );
+				$hasExplanation = ! ! $theExplanation;
+			}
+
+			$questionData = array(
+				'id'          => absint( $id ),
+				'title'       => $question->get_title(),
+				'type'        => $question->get_type(),
+				'hint'        => $hinted ? $theHint : '',
+				'explanation' => $checked ? $theExplanation : '',
+				'point'       => ( $mark = $question->get_mark() ) ? $mark : 1
+			);
+
+			if ( $content = $question->get_content() ) {
+				$questionData['content'] = $content;
+			}
+
+			if ( $hinted && $theHint ) {
+				$questionData['hint'] = $theHint;
+			}
+
+			if ( $checked && $theExplanation ) {
+				$questionData['explanation'] = $theExplanation;
+			}
+
+			if ( $hasHint ) {
+				$questionData['has_hint'] = $hasHint;
+
+				if ( $hinted ) {
+					$questionData['hint'] = $theHint;
+				}
+			}
+
+			if ( $hasExplanation ) {
+				$questionData['has_explanation'] = $hasExplanation;
+
+				if ( $checked ) {
+					$questionData['explanation'] = $theExplanation;
+				}
+			}
+
+			$with_true_or_false = $checked || $quizStatus === 'completed';
+
+			if ( $question->is_support( 'answer-options' ) ) {
+				$questionData['options'] = xxx_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
+			} elseif ( $question->get_type() === 'fill_in_blanks' ) {
+				$blanks          = xxx_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
+				$blankFillsStyle = get_post_meta( $id, '_lp_blank_fills_style', true );
+
+				foreach ( $blanks as $k => $blank ) {
+					$blanks[ $k ]['text'] = preg_replace( '/\{\{([^\{\"\'].*?)\}\}/', '{{BLANK}}', $blank['text'] );
+					$blankOptions         = learn_press_get_question_answer_meta( $blank['uid'], '_blanks', true );
+
+					if ( in_array( $blankFillsStyle, array( 'select', 'enumeration' ) ) ) {
+						$blanks[ $k ]['words'] = isset( $blankOptions['words'] ) ? $blankOptions['words'] : array();
+					}
+
+					if ( isset( $blankOptions['tip'] ) ) {
+						$blanks[ $k ]['tip'] = $blankOptions['tip'];
+					}
+				}
+				$questionData['options']         = $blanks;
+				$questionData['blankFillsStyle'] = $blankFillsStyle;
+				$questionData['blanksStyle']     = get_post_meta( $id, '_lp_blanks_style', true );
+			}
+
+			$questions[] = apply_filters( 'learn-press/single-quiz-js/question-data', $questionData, $question->get_type(), $question->get_id(), $question );
+		}
+
+		if ( $quizStatus !== 'completed' ) {
+			if ( $checkedQuestions && $quizStatus ) {
+
+				$omitIds = array_diff( $question_ids, $checkedQuestions );
+
+				if ( $omitIds ) {
+					foreach ( $omitIds as $omitId ) {
+						if ( ! empty( $answered[ $omitId ] ) ) {
+							unset( $answered[ $omitId ] );
+						}
+					}
+				}
+			}
+		}
+
 	}
 
-	if ( $questions = $quiz->get_questions() ) {
-		$question_id = reset( $questions );
-		learn_press_update_user_item_meta( $quiz_data->get_user_item_id(), '_current_question', $question_id );
-	}
+	return $questions;
 }

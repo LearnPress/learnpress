@@ -237,9 +237,12 @@
             margin: 0 10px 0 0;
         }
         #learn-press-content-item {
-            margin: 40px auto 80px auto;
-            max-width: 1000px;
-            width: 90%;
+            .content-item-wrap {
+                margin: 0 auto;
+                max-width: 1000px;
+                width: 90%;
+                padding: 40px 0 80px 0;
+            }
         }
 
         #learn-press-quiz-app {
@@ -262,6 +265,120 @@
                         margin: 0 0 10px 10px;
                     }
                 }
+
+                &.align-center {
+                    display: block;
+                    .button-left {
+                        text-align: center;
+                    }
+                    .button-right {
+                        display: none;
+                    }
+                }
+            }
+
+            .questions-pagination {
+                text-align: center;
+                .page-numbers {
+                    display: inline-block;
+                    span, a {
+                        display: inline-block;
+                        padding: 5px 5px 3px 5px;
+                        background: #f4f7ff;
+                        margin: 0 3px 5px 2px;
+                        line-height: 1;
+                        border: 1px solid #d9e0f1;
+                        color: #7b7b7b;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        min-width: 15px;
+                    }
+                    span {
+                        border-color: #DDD;
+                        background: #f5f5f5;
+                    }
+                }
+            }
+        }
+
+        .quiz-status {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            margin: 0 0 20px 0;
+            color: #777;
+            z-index: 99;
+            > div {
+                //display: flex;
+                height: 50px;
+                line-height: 40px;
+                margin: 0 auto;
+                max-width: 1000px;
+                width: 90%;
+                background: #d9e0f1;
+                padding: 5px 10px;
+                box-sizing: border-box;
+                border-radius: 4px;
+            }
+
+            .questions-index {
+                display: inline-block;
+            }
+
+            .countdown,
+            .submit-quiz {
+                display: inline-block;
+                float: right;
+            }
+
+            .countdown {
+                .clock {
+                    display: inline-block;
+                    width: 40px;
+                    height: 40px;
+                    &:before {
+                        border: 4px solid #b1c1e6;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        content: '';
+                        position: absolute;
+                        @include box-sizing(border-box);
+                    }
+                    .circle-progress-bar {
+                        position: relative;
+                        width: 40px;
+                        height: 40px;
+                        stroke: #5383f7;
+                        display: inline-block;
+                        .circle-progress-bar__circle {
+                            transition: 0.35s stroke-dashoffset;
+                            transform: rotate(-90deg);
+                            transform-origin: 50% 50%;
+                        }
+                    }
+
+                    &.x {
+                        .circle-progress-bar__circle {
+                            stroke: #FF0000;
+                        }
+                    }
+                }
+            }
+
+            #button-submit-quiz {
+                margin: 0 0 0 10px;
+            }
+        }
+
+        &.fixed-quiz-status {
+            .quiz-status {
+                background: #d9e0f1;
+                color: #777;
+                > div {
+                    padding: 5px 0;
+                }
             }
         }
     }
@@ -273,6 +390,7 @@
         bottom: 0;
         height: 50px;
         background: #F5F5F5;
+        z-index: 999;
         @include transition(left 0.25s);
     }
 
@@ -334,23 +452,6 @@
         .back-quiz,
         .review-quiz {
             float: right;
-        }
-    }
-
-    .quiz-status {
-        position: absolute;
-        top: 0;
-
-        left: 0;
-        right: 0;
-        background: #F5F5F5;
-        > div {
-            display: flex;
-            height: 40px;
-            line-height: 40px;
-            margin: 0 auto;
-            max-width: 1000px;
-            width: 90%;
         }
     }
 
@@ -427,7 +528,7 @@
             }
             &.answer-correct {
                 .option-title {
-                    border-color: #5383F7;
+                    border-color: #4CAF50;
                 }
             }
             &.answered-correct {
@@ -454,16 +555,31 @@
         }
 
         .question-response {
-            display: inline-block;
-            line-height: 1;
-            padding: 8px 10px;
-            border-radius: 4px;
-            color: #FFF;
-            &.correct {
-                background: #5382f7;
+            margin-bottom: 10px;
+            font-size: 14px;
+            .label {
+                display: inline-block;
+                line-height: 1;
+                padding: 8px 10px;
+                border-radius: 4px;
+                color: #FFF;
+                margin: 0 5px 0 0;
             }
+
+            .point {
+                display: inline-block;
+            }
+
+            &.correct {
+                .label {
+                    background: #4CAF50;
+                }
+            }
+
             &.incorrect {
-                background: #ff6423;
+                .label {
+                    background: #ff6423;
+                }
             }
         }
 
@@ -531,7 +647,7 @@
         &:not(.question-answered) {
             input[type="radio"]:checked + .option-title,
             input[type="checkbox"]:checked + .option-title {
-                border-color: #99aee4;
+                //border-color: #99aee4;
             }
         }
     }

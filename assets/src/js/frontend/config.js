@@ -8,10 +8,39 @@ export const classNames = {
     }
 }
 
+const questionCheckers = {
+    single_choice: function () {
+
+    },
+
+    multi_choice: function () {
+
+    },
+
+    true_or_false: function () {
+
+    }
+}
+
 export const isQuestionCorrect = {
     'fill_in_blank': function () {
         return true;
     }
 }
 
-export const checkQuestion = {}
+/**
+ * Question blocks.
+ *
+ * Allow to sort the blocks of question
+ */
+export const questionBlocks = function(){
+    return LP.Hook.applyFilters('question-blocks', ['title', 'content', 'answer-options', 'explanation', 'hint']);
+}
+
+export const questionChecker = function(type){
+    const c = LP.Hook.applyFilters('question-checkers', questionCheckers);
+
+    return type && c[type] ? c[type] : function () {
+        return {}
+    }
+}

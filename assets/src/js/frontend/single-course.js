@@ -77,7 +77,7 @@ const AjaxSearchCourses = function (el) {
     $form.on('submit', submit);
 }
 
-$(() => {
+$(window).load(() => {
     var timerClearScroll;
     var $curriculum = $('#learn-press-course-curriculum');
 
@@ -103,9 +103,12 @@ $(() => {
 
     new AjaxSearchCourses($('#search-course'));
 
-    //createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
+    createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
 
 
+    LP.Hook.doAction('course-ready');
+
+    console.log('BBBB')
     // if (window.location.hash) {
     //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
     // }
