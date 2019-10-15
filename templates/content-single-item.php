@@ -22,7 +22,7 @@ get_header();
 ?>
 <div id="popup-course" class="course-summary">
 
-    <input type="checkbox" id="sidebar-toggle" />
+    <input type="checkbox" id="sidebar-toggle" checked="checked" />
 
     <?php
 	/**

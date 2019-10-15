@@ -169,16 +169,9 @@ export function __requestCheckAnswerSuccess(id, result) {
 export function* checkAnswer(id) {
     console.time('checkAnswer');
     const {
-        getData,
         getDefaultRestArgs,
         getQuestionAnswered,
-        getQuestionOptions
     } = wpSelect('learnpress/quiz');
-
-    // if(getData('crypto')){
-    //     const options = getQuestionOptions(id);
-    //     console.log(options)
-    // }
 
     const {
         item_id,

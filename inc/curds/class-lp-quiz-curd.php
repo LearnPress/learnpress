@@ -62,6 +62,10 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					'preview'              => get_post_meta( $quiz->get_id(), '_lp_preview', true ),
 					'minus_points'         => get_post_meta( $quiz->get_id(), '_lp_minus_points', true ),
 					'minus_skip_questions' => get_post_meta( $quiz->get_id(), '_lp_minus_skip_questions', true ),
+
+					'instant_check'    => get_post_meta( $quiz->get_id(), '_lp_instant_check', true ),
+					'negative_marking' => get_post_meta( $quiz->get_id(), '_lp_negative_marking', true ),
+					'retry'            => get_post_meta( $quiz->get_id(), '_lp_retry', true ),
 				)
 			);
 			//$this->_load_questions( $quiz );
@@ -309,11 +313,11 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					settype( $v, 'object' );
 					wp_cache_set( $v->ID, $v, 'posts' );
 
-					$question_ids[]                  = $v->ID;
+					$question_ids[] = $v->ID;
 				}
 			}
 
-				LP_Object_Cache::set( 'questions-' . $quiz_id, $question_ids, 'learn-press/quizzes' );
+			LP_Object_Cache::set( 'questions-' . $quiz_id, $question_ids, 'learn-press/quizzes' );
 
 			LP_Helper_CURD::cache_posts( $question_ids );
 			$question_factory = new LP_Question_CURD();

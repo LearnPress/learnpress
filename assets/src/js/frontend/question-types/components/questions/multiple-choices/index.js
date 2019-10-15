@@ -2,6 +2,8 @@ import {Component} from '@wordpress/element';
 import {__} from '@wordpress/i18n';
 import QuestionBase from '../../question-base';
 
+const {isBoolean} = lodash;
+
 class QuestionMultipleChoices extends QuestionBase {
 
     isCorrect = () => {
@@ -9,7 +11,7 @@ class QuestionMultipleChoices extends QuestionBase {
             answered
         } = this.props;
 
-        if (!answered ) {
+        if (isBoolean(answered) || !answered ) {
             return false;
         }
 
@@ -29,6 +31,8 @@ class QuestionMultipleChoices extends QuestionBase {
             }
         }
 
+        console.log(this.getOptions())
+
         return true;
     };
 
@@ -39,7 +43,7 @@ class QuestionMultipleChoices extends QuestionBase {
 
         const optionClass = [...this.state.optionClass];
 
-        if (!answered && this.maybeShowCorrectAnswer()) {
+        if (answered && this.maybeShowCorrectAnswer()) {
             if (option.is_true === 'yes') {
                 optionClass.push('answer-correct');
                 answered.indexOf(option.value) !== -1 && optionClass.push('answered-correct');

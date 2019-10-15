@@ -17,11 +17,16 @@ export const setItemStatus = (item, status) => {
 
 const updateUserQuestionAnswer = (state, action) => {
     const {answered} = state;
-    const newAnswer = {[action.questionId]: action.answers};
+    const newAnswer = {
+        ...(answered[action.questionId] || {}),
+        answered: action.answers
+    };
+
+    console.log(newAnswer, action);
 
     return {
         ...state,
-        answered: {...(answered || {}), ...newAnswer}
+        answered: {[action.questionId]: newAnswer}
     }
 };
 
@@ -102,7 +107,10 @@ const checkAnswer = (state, action) => {
     return {
         ...state,
         questions: [...questions],
-        answered: {...state.answered, [action.questionId]: action.answered || ''},
+        answered: {
+            ...state.answered,
+            [action.questionId]: action.result
+        },
         checkedQuestions: [...state.checkedQuestions, action.questionId]
     }
 };

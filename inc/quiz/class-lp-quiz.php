@@ -178,7 +178,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		public function set_negative_marking( $set ) {
-			$this->_set_data( 'negative_marking', $set === true || $set === 1 ? 'yes' : 'no' );
+			$this->_set_data( 'negative_marking', ! learn_press_is_negative_value( $set ) ? 'yes' : 'no' );
 		}
 
 		public function get_instant_check() {
@@ -186,7 +186,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		public function set_instant_check( $set ) {
-			$this->_set_data( 'instant_check', $set === true || $set === 1 ? 'yes' : 'no' );
+			$this->_set_data( 'instant_check', ! learn_press_is_negative_value( $set ) ? 'yes' : 'no' );
 		}
 
 		public function get_retry() {
@@ -194,7 +194,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		}
 
 		public function set_retry( $set ) {
-			$this->_set_data( 'retry', $set === true || $set === 1 ? 'yes' : 'no' );
+			$this->_set_data( 'retry', ! learn_press_is_negative_value( $set ) ? 'yes' : 'no' );
 		}
 
 		public function get_pagination() {

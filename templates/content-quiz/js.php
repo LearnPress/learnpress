@@ -53,7 +53,7 @@ if ( $userQuiz ) {
 		$userJS['endTime']   = $expirationTime->toSql();
 	}
 
-	$answered     = $results->getAnswered();// $userQuiz->get_meta( '_question_answers' );
+	$answered     = $results->getQuestions();// getAnswered();// $userQuiz->get_meta( '_question_answers' );
 	$question_ids = $results->getQuestions( 'ids' );// $userQuiz->get_meta( 'questions' );
 
 	if ( $question_ids === false ) {

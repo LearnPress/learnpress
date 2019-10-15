@@ -17,7 +17,7 @@ class QuestionTrueOrFalse extends QuestionBase {
         } = this.props;
 
         const optionClass = [...this.state.optionClass, "XYZ"];
-        if (!answered && this.maybeShowCorrectAnswer()) {
+        if (answered && this.maybeShowCorrectAnswer()) {
 
             if (option.is_true === 'yes') {
                 optionClass.push('answer-correct');

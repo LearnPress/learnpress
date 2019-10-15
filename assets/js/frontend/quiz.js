@@ -2504,18 +2504,14 @@ function __requestCheckAnswerSuccess(id, result) {
   }, result);
 }
 function checkAnswer(id) {
-  var _wpSelect3, getData, getDefaultRestArgs, getQuestionAnswered, getQuestionOptions, _getDefaultRestArgs3, item_id, course_id, result;
+  var _wpSelect3, getDefaultRestArgs, getQuestionAnswered, _getDefaultRestArgs3, item_id, course_id, result;
 
   return regeneratorRuntime.wrap(function checkAnswer$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
           console.time('checkAnswer');
-          _wpSelect3 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getData = _wpSelect3.getData, getDefaultRestArgs = _wpSelect3.getDefaultRestArgs, getQuestionAnswered = _wpSelect3.getQuestionAnswered, getQuestionOptions = _wpSelect3.getQuestionOptions; // if(getData('crypto')){
-          //     const options = getQuestionOptions(id);
-          //     console.log(options)
-          // }
-
+          _wpSelect3 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect3.getDefaultRestArgs, getQuestionAnswered = _wpSelect3.getQuestionAnswered;
           _getDefaultRestArgs3 = getDefaultRestArgs(), item_id = _getDefaultRestArgs3.item_id, course_id = _getDefaultRestArgs3.course_id;
           _context4.next = 5;
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["apiFetch"])({
@@ -2700,10 +2696,13 @@ var setItemStatus = function setItemStatus(item, status) {
 var updateUserQuestionAnswer = function updateUserQuestionAnswer(state, action) {
   var answered = state.answered;
 
-  var newAnswer = _defineProperty({}, action.questionId, action.answers);
+  var newAnswer = _objectSpread({}, answered[action.questionId] || {}, {
+    answered: action.answers
+  });
 
+  console.log(newAnswer, action);
   return _objectSpread({}, state, {
-    answered: _objectSpread({}, answered || {}, {}, newAnswer)
+    answered: _defineProperty({}, action.questionId, newAnswer)
   });
 };
 
@@ -2773,7 +2772,7 @@ var checkAnswer = function checkAnswer(state, action) {
   });
   return _objectSpread({}, state, {
     questions: _toConsumableArray(questions),
-    answered: _objectSpread({}, state.answered, _defineProperty({}, action.questionId, action.answered || '')),
+    answered: _objectSpread({}, state.answered, _defineProperty({}, action.questionId, action.result)),
     checkedQuestions: [].concat(_toConsumableArray(state.checkedQuestions), [action.questionId])
   });
 };
@@ -3013,15 +3012,7 @@ function getDefaultRestArgs(state) {
 }
 function getQuestionAnswered(state, id) {
   var userQuiz = state.userQuiz;
-  var answered;
-
-  if (userQuiz.status === 'started') {
-    answered = get(userQuiz, 'answered');
-  } else {
-    answered = get(userQuiz, 'attempts[0].answered');
-  }
-
-  return answered ? answered[id] : undefined;
+  return get(userQuiz, "answered.".concat(id, ".answered")) || undefined;
 }
 function getCurrentQuestion(state) {
   var ret = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';

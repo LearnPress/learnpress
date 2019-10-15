@@ -326,6 +326,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$results['duration'] = $duration ? $duration->get() : false;
+			$results['answered'] = $userQuiz->get_results( '' )->getQuestions();
 
 			$response['results'] = $results;
 		}
@@ -354,9 +355,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			if ( $user_quiz ) {
 				$user_quiz->add_question_answer( $answered );
-				$user_quiz->update();
-
-				$result = $user_quiz->get_results( '', true );
 			}
 		}
 
@@ -400,19 +398,14 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$question_id = $request['question_id'];
 		$answered    = $request['answered'];
 
-		$this->userItem->add_question_answer( $question_id, $answered );
-		$this->userItem->update();
-		$hintCount = $this->userItem->check_question( $question_id );
-		$this->userItem->update();
-
+		$checked  = $this->userItem->check_question( $question_id, $answered );
 		$question = learn_press_get_question( $question_id );
 
 		// Response
 		$response = array(
 			'explanation' => $question->get_explanation(),
 			'options'     => xxx_get_question_options_for_js( $question, array( 'include_is_true' => true ) ),
-			'result'      => $question->check( $answered ),
-			'answered'    => $answered
+			'result'      => $checked
 		);
 
 		return rest_ensure_response( $response );

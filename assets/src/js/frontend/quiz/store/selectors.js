@@ -89,15 +89,8 @@ export function getDefaultRestArgs(state) {
 
 export function getQuestionAnswered(state, id) {
     const {userQuiz} = state;
-    let answered;
 
-    if (userQuiz.status === 'started') {
-        answered = get(userQuiz, 'answered');
-    } else {
-        answered = get(userQuiz, 'attempts[0].answered');
-    }
-
-    return answered ? answered[id] : undefined;
+    return get(userQuiz, `answered.${id}.answered`) || undefined;
 }
 
 
