@@ -241,6 +241,19 @@ function learn_press_random_value( $len = 8 ) {
 	return substr( md5( uniqid( mt_rand(), true ) ), 0, $len );
 }
 
+function learn_press_map_columns_format( $columns, $format ) {
+	$return = array();
+	foreach ( $columns as $k => $v ) {
+		if ( ! empty( $format[ $k ] ) ) {
+			$return[] = $format[ $k ];
+		} else {
+			$return[] = '%s'; // default is string
+		}
+	}
+
+	return $return;
+}
+
 /**
  * Check to see if an endpoint is showing in current URL.
  *

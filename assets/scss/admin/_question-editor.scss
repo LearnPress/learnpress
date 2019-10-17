@@ -157,6 +157,7 @@
                                 fill: #d5dce0;
                                 height: 18px;
                                 vertical-align: middle;
+                                margin-top: -2px;
                             }
                             &:hover {
                                 .svg-icon {
@@ -228,7 +229,8 @@
                                 font-family: Dashicons;
                                 position: absolute;
                                 left: 10px;
-                                top: 12px;
+                                top: 8px;
+                                //top: 12px;
                                 display: inline-block;
                                 @include rotating4();
                             }

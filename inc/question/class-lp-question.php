@@ -653,9 +653,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		public static function get_default_answer() {
 			$answer = array(
 				'question_answer_id' => - 1,
-				'title'               => __( 'New Option', 'learnpress' ),
-				'is_true'            => false,
-				'value'              => learn_press_uniqid()
+				'title'              => '',
+				'is_true'            => '',
+				'value'              => learn_press_random_value()
 			);
 
 			return $answer;
@@ -672,19 +672,19 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					'question_answer_id' => - 1,
 					'is_true'            => 'yes',
 					'value'              => learn_press_random_value(),
-					'title'               => __( 'First option', 'learnpress' )
+					'title'              => __( 'First option', 'learnpress' )
 				),
 				array(
 					'question_answer_id' => - 2,
 					'is_true'            => 'no',
 					'value'              => learn_press_random_value(),
-					'title'               => __( 'Second option', 'learnpress' )
+					'title'              => __( 'Second option', 'learnpress' )
 				),
 				array(
 					'question_answer_id' => - 3,
 					'is_true'            => 'no',
 					'value'              => learn_press_random_value(),
-					'title'               => __( 'Third option', 'learnpress' )
+					'title'              => __( 'Third option', 'learnpress' )
 				)
 			);
 
@@ -732,11 +732,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 			foreach ( $answers as $index => $answer ) {
 				$answer = array(
-					'question_id'  => $this->get_id(),
-					'title' => $answer['title'],
-					'value' => isset( $answer['value'] ) ? $answer['value'] : '',
-					'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
-					'order' => $index + 1
+					'question_id' => $this->get_id(),
+					'title'       => $answer['title'],
+					'value'       => isset( $answer['value'] ) ? $answer['value'] : '',
+					'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+					'order'       => $index + 1
 				);
 
 				$wpdb->insert(
@@ -748,13 +748,13 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$question_answer_id = $wpdb->insert_id;
 
 				if ( $question_answer_id ) {
-					$answer['question_answer_id']=$question_answer_id;
+					$answer['question_answer_id'] = $question_answer_id;
 				}
 
-				$answers[$index] = $answer;
+				$answers[ $index ] = $answer;
 			}
 
-			$this->set_data('answer_options', $answers);
+			$this->set_data( 'answer_options', $answers );
 		}
 
 		/**

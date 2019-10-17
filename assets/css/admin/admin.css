@@ -2856,7 +2856,8 @@ ul .clearfix {
             visibility: hidden;
             fill: #d5dce0;
             height: 18px;
-            vertical-align: middle; }
+            vertical-align: middle;
+            margin-top: -2px; }
           #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.sort:hover .svg-icon {
             fill: #0085ba; }
         #admin-editor-lp_question .lp-box-data-content table.list-question-answers tbody tr td.order {
@@ -2895,7 +2896,7 @@ ul .clearfix {
           font-family: Dashicons;
           position: absolute;
           left: 10px;
-          top: 12px;
+          top: 8px;
           display: inline-block;
           -webkit-animation: rotating4 2s linear infinite;
           -moz-animation: rotating4 2s linear infinite;

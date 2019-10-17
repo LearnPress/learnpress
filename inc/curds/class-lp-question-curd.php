@@ -396,12 +396,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				'data'  => apply_filters(
 					'learn-press/question/update-answer-data',
 					array(
-//						'answer_data' => serialize( array(
-//								'text'    => stripslashes( $answer['title'] ),
-//								'value'   => isset( $answer['value'] ) ? $answer['value'] : '',
-//								'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
-//							)
-//						)
 						'title'   => stripslashes( $answer['title'] ),
 						'value'   => isset( $answer['value'] ) ? $answer['value'] : '',
 						'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
@@ -420,6 +414,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				array( '%d', '%d' )
 			);
 
+			var_dump($update);
 
 			do_action( 'learn-press/question/updated-answer-data', $question_id, $answer['question_answer_id'], $answer );
 
@@ -612,34 +607,45 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return false;
 			}
 
-			error_log( __CLASS__ . '::' . $new_answer );
+			error_log( __CLASS__ . '::new_answer' );
 
 			$question = LP_Question::get_question( $question_id );
 
 			// exist answer options
 			$answers = $question->get_data( 'answer_options' );
 			// number answer options
-			$number = count( $question->get_data( 'answer_options' ) );
+			$number = count( $answers );
 
 			global $wpdb;
 
-			$insert = $wpdb->insert(
-				$wpdb->learnpress_question_answers,
+			$new_answer = wp_parse_args(
+				$new_answer,
 				array(
 					'question_id' => $question_id,
-					/** @since 4.0 */
-					//'answer_data'  => serialize( $new_answer ),
-					'title'       => $new_answer['title'],
-					'value'       => $new_answer['value'],
-					'is_true'     => $new_answer['is_true'],
-					'order'       => $number + 1,
-				),
-				array( '%d', '%s', '%d' ) );
+					'title'       => '',
+					'value'       => learn_press_random_value(),
+					'is_true'     => '',
+					'order'       => $number + 1
+				)
+			);
+
+			$insert = $wpdb->insert(
+				$wpdb->learnpress_question_answers,
+				$new_answer,
+				learn_press_map_columns_format(
+					$new_answer,
+					array(
+						'question_id' => '%d',
+						'title'       => '%s',
+						'value'       => '%s',
+						'is_true'     => '%s',
+						'order'       => '%d'
+					)
+				)
+			);
 
 			if ( $insert ) {
 				$new_answer['question_answer_id'] = $wpdb->insert_id;
-				$new_answer['question_id']        = $question_id;
-				$new_answer['order']              = $number + 1;
 
 				if ( is_array( $answers ) ) {
 					$answers = array_merge( $answers, array( $new_answer ) );

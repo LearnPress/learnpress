@@ -70,7 +70,6 @@ learn_press_admin_view( 'question/answer' );
                 }
             },
             created: function () {
-                console.log($store.getters['supportAnswerOptions'])
             },
             methods: {
                 changeType: function (type) {
