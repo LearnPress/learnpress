@@ -669,19 +669,22 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		public function get_default_answers() {
 			$answers = array(
 				array(
-					'is_true' => 'yes',
-					'value'   => learn_press_uniqid(),
-					'text'    => __( 'First option', 'learnpress' )
+					'question_answer_id' => - 1,
+					'is_true'            => 'yes',
+					'value'              => learn_press_uniqid(),
+					'text'               => __( 'First option', 'learnpress' )
 				),
 				array(
-					'is_true' => 'no',
-					'value'   => learn_press_uniqid(),
-					'text'    => __( 'Second option', 'learnpress' )
+					'question_answer_id' => - 2,
+					'is_true'            => 'no',
+					'value'              => learn_press_uniqid(),
+					'text'               => __( 'Second option', 'learnpress' )
 				),
 				array(
-					'is_true' => 'no',
-					'value'   => learn_press_uniqid(),
-					'text'    => __( 'Third option', 'learnpress' )
+					'question_answer_id' => - 3,
+					'is_true'            => 'no',
+					'value'              => learn_press_uniqid(),
+					'text'               => __( 'Third option', 'learnpress' )
 				)
 			);
 

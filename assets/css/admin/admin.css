@@ -3525,3 +3525,50 @@ body.lp-item-moving {
   font-weight: bold;
   font-size: small;
   color: #666; }
+
+body.post-type-lp_question #button-new-question {
+  display: inline-block;
+  position: relative; }
+  body.post-type-lp_question #button-new-question div {
+    position: absolute;
+    top: 100%;
+    margin: 0 0 0 -1px;
+    left: 0;
+    min-width: 100px;
+    background: #FFFF;
+    font-weight: normal;
+    border: 1px solid #DDD;
+    display: none;
+    z-index: 9999; }
+    body.post-type-lp_question #button-new-question div a {
+      display: block;
+      white-space: nowrap;
+      color: #00a0d2;
+      padding: 5px 10px;
+      min-width: 100px;
+      margin: 0;
+      text-decoration: none; }
+      body.post-type-lp_question #button-new-question div a:hover {
+        background: #F1F1F1; }
+  body.post-type-lp_question #button-new-question > a {
+    padding-right: 15px;
+    position: relative;
+    text-decoration: none; }
+    body.post-type-lp_question #button-new-question > a:after {
+      content: '';
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border: 5px solid transparent;
+      border-top-color: #0f7aae;
+      position: absolute;
+      margin: 0px;
+      top: 6px;
+      right: 0; }
+  body.post-type-lp_question #button-new-question:hover div {
+    display: block; }
+  body.post-type-lp_question #button-new-question:hover > a {
+    color: #FFF; }
+    body.post-type-lp_question #button-new-question:hover > a:after {
+      color: #FFF;
+      border-top-color: #FFF; }

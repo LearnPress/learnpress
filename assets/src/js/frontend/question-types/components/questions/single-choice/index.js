@@ -9,12 +9,17 @@ class QuestionSingleChoice extends QuestionBase {
 
         const optionClass = [...this.state.optionClass];
 
-        if (answered!==undefined && this.maybeShowCorrectAnswer()) {
+        if (this.maybeShowCorrectAnswer()) {
             if (option.is_true === 'yes') {
                 optionClass.push('answer-correct');
-                (answered === option.value) && optionClass.push('answered-correct');
-            } else {
-                (answered === option.value) && optionClass.push('answered-wrong');
+            }
+
+            if(answered) {
+                if (option.is_true === 'yes') {
+                    (answered === option.value) && optionClass.push('answered-correct');
+                } else {
+                    (answered === option.value) && optionClass.push('answered-wrong');
+                }
             }
         }
 

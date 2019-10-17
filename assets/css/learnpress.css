@@ -2253,10 +2253,13 @@ body.confirm #popup_container {
       top: 12px;
       border-radius: 50%; }
 
-.lp-button {
+.learnpress-page .lp-button {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px; }
+  .learnpress-page .lp-button:disabled, .learnpress-page .lp-button[disabled] {
+    background: #DDD;
+    pointer-events: none; }
 
 #learn-press-course-curriculum .section-header {
   background: #FFF;

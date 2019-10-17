@@ -1,5 +1,5 @@
 import {Component} from '@wordpress/element';
-import {withSelect, withDispatch} from '@wordpress/data';
+import {withSelect, withDispatch, select} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
 import Timer from '../timer';
 import {__, sprintf} from '@wordpress/i18n';
@@ -75,6 +75,14 @@ class Status extends Component {
         submitQuiz();
     };
 
+    getMark = () => {
+        const answered = select('learnpress/quiz').getData('answered');
+        console.log('getMark')
+        return Object.values(answered).reduce((m, r) => {
+            return m + r.mark;
+        }, 0);
+    };
+
     render() {
         const {
             currentPage,
@@ -82,7 +90,8 @@ class Status extends Component {
             questionsCount,
             submitting,
             totalTime,
-            duration
+            duration,
+            userMark
         } = this.props;
         // const {
         //     submitting
@@ -114,6 +123,8 @@ class Status extends Component {
                     }
                 </div>
 
+                Earned Point: {userMark}
+
                 <div className="submit-quiz">
                     <button className="lp-button" id="button-submit-quiz"
                             onClick={ this.submit }>{ !submitting ? __('Submit', 'learnpress') : __('Submitting...', 'learnpress') }</button>
@@ -129,7 +140,8 @@ class Status extends Component {
 export default compose([
     withSelect((select) => {
         const {
-            getData
+            getData,
+            getUserMark
         } = select('learnpress/quiz');
 
         return {
@@ -140,6 +152,7 @@ export default compose([
             submitting: getData('submitting'),
             totalTime: getData('totalTime'),
             duration: getData('duration'),
+            userMark: getUserMark()
         }
     }),
     withDispatch((dispatch) => {

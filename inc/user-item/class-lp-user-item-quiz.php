@@ -218,7 +218,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
 
-
 		if ( false === ( $result = LP_Object_Cache::get( $cache_key, 'learn-press/quiz-result' ) ) || $force ) {
 			if ( false === ( $result = $this->_get_results() ) ) {
 				$result = $this->calculate_results();
@@ -226,7 +225,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 			LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
 		}
-
 		$result = new LP_Quiz_Results( $result );
 
 		return $prop ? $result[ $prop ] : $result;
@@ -329,7 +327,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$lastResults = array();
 		}
 
-		$questions = isset( $lastResults['questions'] ) ? $lastResults['questions'] : array();
+		$questions = isset( $lastResults['questions'] ) ? $lastResults['questions'] : array_fill_keys( $quiz->get_question_ids(), array() );
 		//$answered = isset( $lastResults['answered'] ) ? $lastResults['questions'] : array();
 
 		$result = array(
@@ -597,8 +595,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		$checked = false;
 
 		try {
-			$this->add_question_answer( $question_id, $answered );
-
 			if ( $this->can_check_answer( $question_id ) ) {
 				$this->add_question_answer( $question_id, $answered );
 				$this->add_checked_question( $question_id );

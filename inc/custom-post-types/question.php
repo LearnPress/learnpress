@@ -105,15 +105,38 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			global $post, $pagenow;
+			$question = LP_Question::get_question( $post->ID );
 
 			// add default answer for new question
 			if ( $pagenow === 'post-new.php' ) {
-				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'true_or_false' ) ) );
-				$answers  = $question->get_default_answers();
+				$answers = $question->get_default_answers();
+				global $wpdb;
+//				foreach ( $answers as $order => $answer ) {
+//					$insert_id = $wpdb->insert(
+//						$wpdb->learnpress_question_answers,
+//						array(
+//							'question_id'  => $post->ID,
+//							'answer_title' => $answer['text'],
+//							'answer_value' => $answer['value'],
+//							'is_true'      => $answer['is_true'],
+//							'answer_order' => $order + 1
+//						)
+//					);
+//
+//					$answers[ $order ]['question_answer_id'] = $insert_id;
+//				}
+
 			} else {
-				$question = LP_Question::get_question( $post->ID );
-				$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
+				$answers = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 			}
+
+//			if ( $pagenow === 'post-new.php' ) {
+//				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'true_or_false' ) ) );
+//				$answers  = $question->get_default_answers();
+//			} else {
+//				$question = LP_Question::get_question( $post->ID );
+//				$answers  = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
+//			}
 
 			if ( empty( $answers ) ) {
 				$answers = array(
@@ -207,7 +230,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				'show_in_menu'       => 'learn_press',
 				'show_in_admin_bar'  => true,
 				'show_in_nav_menus'  => true,
-				'show_in_rest'       => true,
+				//'show_in_rest'       => true,
 				'supports'           => array( 'title', 'editor', 'revisions' ),
 				'hierarchical'       => false,
 				'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
@@ -250,9 +273,17 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public function save_question( $question_id ) {
 			if ( get_post_status( $question_id ) == 'auto-draft' ) {
-				$curd          = new LP_Question_CURD();
-				$user_id       = learn_press_get_current_user_id();
-				$question_type = 'true_or_false';
+				if ( empty( $_REQUEST['question-type'] ) ) {
+					$types         = array_keys( learn_press_question_types() );
+					$question_type = reset( $types );
+				} else {
+					$question_type = $_REQUEST['question-type'];
+				}
+
+				//var_dump($question_type);die();
+				$curd    = new LP_Question_CURD();
+				$user_id = learn_press_get_current_user_id();
+				//$question_type = 'true_or_false';
 
 
 				update_post_meta( $question_id, '_lp_type', $question_type );
@@ -361,7 +392,6 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					)
 				)
 			);
-
 
 
 			$meta_box = apply_filters( 'learn_press_question_meta_box_args', $meta_box );

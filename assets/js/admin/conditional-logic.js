@@ -1,2 +1,381 @@
-!function(e){var i={};function t(a){if(i[a])return i[a].exports;var n=i[a]={i:a,l:!1,exports:{}};return e[a].call(n.exports,n,n.exports,t),n.l=!0,n.exports}t.m=e,t.c=i,t.d=function(e,i,a){t.o(e,i)||Object.defineProperty(e,i,{enumerable:!0,get:a})},t.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},t.t=function(e,i){if(1&i&&(e=t(e)),8&i)return e;if(4&i&&"object"==typeof e&&e&&e.__esModule)return e;var a=Object.create(null);if(t.r(a),Object.defineProperty(a,"default",{enumerable:!0,value:e}),2&i&&"string"!=typeof e)for(var n in e)t.d(a,n,function(i){return e[i]}.bind(null,n));return a},t.n=function(e){var i=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(i,"a",i),i},t.o=function(e,i){return Object.prototype.hasOwnProperty.call(e,i)},t.p="",t(t.s=10)}({10:function(e,i){!function(e){window.conditional_logic_gray_state=function(i,t){i?e(this).removeClass("disabled"):e(this).addClass("disabled")};var i=window.Conditional_Logic=function(i){this.options=e.extend({},i||{}),this.updateAll()};i.prototype=e.extend(i.prototype,{evaluate:function(i,t){if(t&&t&&e.isArray(t.conditional)){var a=void 0,n=t.conditional;for(var r in n){var o=this.evaluateRequirement(n[r]),s=(n[r].combine||"and").toLowerCase();void 0!==o&&void 0!==a?a="and"===s?a&&o:a||o:void 0===a&&(a=o)}return a}},evaluateRequirement:function(i){if(i&&i.field){void 0===i.compare&&(i.compare="=");var t=e("#field-"+i.field);switch(i.state){case"show":return t.is(":visible");case"hide":return!t.is(":visible");default:var a="";switch(this.getFieldType(t)){case"yes-no":var n=t.find('input[type="checkbox"]');a=n.is(":checked")?n.val():"";break;case"radio":a=t.find("input:checked").val();break;default:a=t.find("input, select").val()}return this.compare(i.value,a,i.compare)}}},compare:function(i,t,a){var n=void 0;switch(a){case"===":n=t===i;break;case"==":case"=":case"equals":case"equal":n=t===i;break;case"!==":n=t!==i;break;case"!=":case"not equal":n=t!==i;break;case">=":case"greater or equal":case"equal or greater":n=t>=i;break;case"<=":case"smaller or equal":case"equal or smaller":n=t<=i;break;case">":case"greater":n=t>i;break;case"<":case"smaller":n=t<i;break;case"contains":case"in":var r,o;e.isArray(t)&&!e.isArray(i)?(r=t,o=i):e.isArray(i)&&!e.isArray(t)&&(r=i,o=t),r&&o?-1===e.inArray(o,r)&&(n=!1):-1===t.indexOf(i)&&-1===i.indexOf(t)&&(n=!1);break;default:n=t===i}return void 0===n||n},hasConditional:function(e,i){if(this.options.conditionals){if(!this.options.conditionals[i])return!1;for(var t in this.options.conditionals[i].conditional)if(this.options.conditionals[i].conditional[t].field===e)return this.options.conditionals[i];return!1}},update:function(i,t){var a=e(i),n=this.getFieldName(a);t=t||e(".rwmb-field"),_.forEach(t,(function(i){var t=e(i),r=this.getFieldName(t);if(r!==n){var o=this.hasConditional(n,r);if(o){var s=this.evaluate(a,o);void 0!==s&&("hide"===o.state&&(s=!s),e.isFunction(window[o.state_callback])?window[o.state_callback].call(t,s,t):t.toggle(s))}}}),this)},updateAll:function(){var i=e(".rwmb-field"),t=this;_.forEach(i,(function(a){var n=e(a),r=this.getFieldType(n),o=n.find(".rwmb-field-name").val();o&&(n.attr("id","field-"+o),-1!==_.indexOf(this.supportFields,r)&&n.find("input, select, textarea").on("change",(function(){t.update(e(this).closest(".rwmb-field"),i)})).trigger("change"))}),this)},getFieldType:function(i){var t=e(i);if(0===t.length)return!1;var a=t.get(0).className.match(/rwmb-([^\s]*)-wrapper/);return!!a&&a[1]},getFieldName:function(i){return e(i).find(".rwmb-field-name").val()},supportFields:["yes-no","text","number","radio"]}),e(document).ready((function(){void 0!==window.lp_conditional_logic&&new i({conditionals:lp_conditional_logic})}))}(jQuery)}});
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./assets/src/js/admin/utils/conditional-logic.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./assets/src/js/admin/utils/conditional-logic.js":
+/*!********************************************************!*\
+  !*** ./assets/src/js/admin/utils/conditional-logic.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Conditional Logic for metabox fields
+ *
+ * @author ThimPress
+ * @package LearnPress/JS
+ * @version 3.0.0
+ */
+;
+
+(function ($) {
+  window.conditional_logic_gray_state = function (state, field) {
+    if (state) {
+      $(this).removeClass('disabled');
+    } else {
+      $(this).addClass('disabled');
+    }
+  };
+
+  var Conditional_Logic = window.Conditional_Logic = function (options) {
+    this.options = $.extend({}, options || {});
+    this.updateAll();
+  };
+
+  Conditional_Logic.prototype = $.extend(Conditional_Logic.prototype, {
+    evaluate: function evaluate(changedId, conditionals) {
+      if (!conditionals) {
+        return undefined;
+      }
+
+      if (!conditionals || !$.isArray(conditionals.conditional)) {
+        return undefined;
+      }
+
+      var show = undefined,
+          controls = conditionals.conditional;
+
+      for (var i in controls) {
+        var _show = this.evaluateRequirement(controls[i]),
+            operator = (controls[i].combine || 'and').toLowerCase();
+
+        if (_show !== undefined && show !== undefined) {
+          if (operator === 'and') {
+            show = show && _show;
+          } else {
+            show = show || _show;
+          }
+        } else if (show === undefined) {
+          show = _show;
+        }
+      }
+
+      return show;
+    },
+    evaluateRequirement: function evaluateRequirement(requirement) {
+      if (!requirement) {
+        return undefined;
+      }
+
+      if (!requirement['field']) {
+        return undefined;
+      }
+
+      if (requirement['compare'] === undefined) {
+        requirement['compare'] = '=';
+      }
+
+      var control = $('#field-' + requirement.field);
+
+      switch (requirement['state']) {
+        case 'show':
+          return control.is(':visible');
+          break;
+
+        case 'hide':
+          return !control.is(':visible');
+          break;
+
+        default:
+          var value = '';
+
+          switch (this.getFieldType(control)) {
+            case 'yes-no':
+              var $chk = control.find('input[type="checkbox"]');
+              value = $chk.is(':checked') ? $chk.val() : '';
+              break;
+
+            case 'radio':
+              value = control.find('input:checked').val();
+              break;
+
+            default:
+              value = control.find('input, select').val();
+          }
+
+          return this.compare(requirement['value'], value, requirement['compare']);
+      }
+    },
+    compare: function compare(value2, value1, operator) {
+      var show = undefined;
+
+      switch (operator) {
+        case '===':
+          show = value1 === value2;
+          break;
+
+        case '==':
+        case '=':
+        case 'equals':
+        case 'equal':
+          show = value1 === value2;
+          break;
+
+        case '!==':
+          show = value1 !== value2;
+          break;
+
+        case '!=':
+        case 'not equal':
+          show = value1 !== value2;
+          break;
+
+        case '>=':
+        case 'greater or equal':
+        case 'equal or greater':
+          show = value1 >= value2;
+          break;
+
+        case '<=':
+        case 'smaller or equal':
+        case 'equal or smaller':
+          show = value1 <= value2;
+          break;
+
+        case '>':
+        case 'greater':
+          show = value1 > value2;
+          break;
+
+        case '<':
+        case 'smaller':
+          show = value1 < value2;
+          break;
+
+        case 'contains':
+        case 'in':
+          var _array, _string;
+
+          if ($.isArray(value1) && !$.isArray(value2)) {
+            _array = value1;
+            _string = value2;
+          } else if ($.isArray(value2) && !$.isArray(value1)) {
+            _array = value2;
+            _string = value1;
+          }
+
+          if (_array && _string) {
+            if (-1 === $.inArray(_string, _array)) {
+              show = false;
+            }
+          } else {
+            if (-1 === value1.indexOf(value2) && -1 === value2.indexOf(value1)) {
+              show = false;
+            }
+          }
+
+          break;
+
+        default:
+          show = value1 === value2;
+      }
+
+      if (show !== undefined) {
+        return show;
+      }
+
+      return true;
+    },
+    hasConditional: function hasConditional(source, target) {
+      if (!this.options.conditionals) {
+        return;
+      }
+
+      if (!this.options.conditionals[target]) {
+        return false;
+      }
+
+      for (var i in this.options.conditionals[target]['conditional']) {
+        if (this.options.conditionals[target]['conditional'][i].field === source) {
+          return this.options.conditionals[target];
+        }
+      }
+
+      return false;
+    },
+    update: function update(changedField, $fields) {
+      var $changedField = $(changedField),
+          id = this.getFieldName($changedField);
+      $fields = $fields || $('.rwmb-field');
+
+      _.forEach($fields, function (field) {
+        var thisField = $(field),
+            thisId = this.getFieldName(thisField);
+
+        if (thisId === id) {
+          return;
+        }
+
+        var conditional = this.hasConditional(id, thisId);
+
+        if (!conditional) {
+          return;
+        }
+
+        var show = this.evaluate($changedField, conditional);
+
+        if (show !== undefined) {
+          if (conditional.state === 'hide') {
+            show = !show;
+          }
+
+          if ($.isFunction(window[conditional.state_callback])) {
+            window[conditional.state_callback].call(thisField, show, thisField);
+          } else {
+            thisField.toggle(show);
+          }
+        }
+      }, this);
+    },
+    updateAll: function updateAll() {
+      var $fields = $('.rwmb-field'),
+          that = this;
+
+      _.forEach($fields, function (field) {
+        var $field = $(field),
+            type = this.getFieldType($field),
+            id = $field.find('.rwmb-field-name').val();
+
+        if (!id) {
+          return;
+        }
+
+        $field.attr('id', 'field-' + id);
+
+        if (-1 === _.indexOf(this.supportFields, type)) {
+          return;
+        }
+
+        $field.find('input, select, textarea').on('change', function () {
+          that.update($(this).closest('.rwmb-field'), $fields);
+        }).trigger('change');
+      }, this);
+    },
+    getFieldType: function getFieldType(field) {
+      var $field = $(field);
+
+      if ($field.length === 0) {
+        return false;
+      }
+
+      var className = $field.get(0).className,
+          m = className.match(/rwmb-([^\s]*)-wrapper/);
+
+      if (m) {
+        return m[1];
+      }
+
+      return false;
+    },
+    getFieldName: function getFieldName(field) {
+      return $(field).find('.rwmb-field-name').val();
+    },
+    supportFields: ['yes-no', 'text', 'number', 'radio']
+  });
+  $(document).ready(function () {
+    if (window.lp_conditional_logic !== undefined) {
+      new Conditional_Logic({
+        conditionals: lp_conditional_logic
+      });
+    }
+  });
+})(jQuery);
+
+/***/ })
+
+/******/ });
 //# sourceMappingURL=conditional-logic.js.map

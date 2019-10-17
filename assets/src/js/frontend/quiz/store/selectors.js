@@ -126,3 +126,48 @@ export function isCheckedAnswer(state, id) {
 export function isCorrect(state, id) {
 
 }
+
+export function getUserMark(state) {
+    const userQuiz = state.userQuiz || {};
+    const {
+        answered,
+        negativeMarking,
+        questions,
+        checkedQuestions
+    } = userQuiz;
+    let totalMark = 0;
+
+    for (let id in answered) {
+        if (!answered.hasOwnProperty(id)) {
+            continue;
+        }
+
+        id = parseInt(id);
+        const data = answered[id];
+        const questionMark = data.question_mark ? data.question_mark : (function () {
+            const question = questions.find((q) => {
+                return q.id === id;
+            });
+
+            return question ? question.point : 0;
+        })();
+        const isChecked = checkedQuestions.indexOf(id) !== -1;
+
+        // User checked option but not submit or check
+        if (data.temp) {
+            continue;
+        }
+
+        if (negativeMarking) {
+            if (data.answered) {
+                totalMark = data.correct ? totalMark + data.mark : totalMark - questionMark;
+            }
+        } else {
+            if (data.answered && data.correct) {
+                totalMark += data.mark;
+            }
+        }
+    }
+
+    return totalMark > 0 ? totalMark : 0;
+}

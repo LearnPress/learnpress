@@ -1,5 +1,12 @@
-.lp-button {
-    @include border-radius(3px);
+.learnpress-page {
+    .lp-button {
+        @include border-radius(3px);
+
+        &:disabled, &[disabled] {
+            background: #DDD;
+            pointer-events: none;
+        }
+    }
 }
 
 #learn-press-course-curriculum {

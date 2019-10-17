@@ -313,9 +313,11 @@ function (_Component) {
   _createClass(ButtonCheck, [{
     key: "render",
     value: function render() {
+      var answered = this.props.answered;
       return React.createElement("button", {
         className: "lp-button instant-check",
-        onClick: this.checkAnswer
+        onClick: this.checkAnswer,
+        disabled: !answered
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Check answer', 'label of button check answer', 'learnpress'));
     }
   }]);
@@ -323,8 +325,17 @@ function (_Component) {
   return ButtonCheck;
 }(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch, _ref) {
-  var id = _ref.id;
+/* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select, _ref) {
+  var id = _ref.question.id;
+
+  var _select = select('learnpress/quiz'),
+      getQuestionAnswered = _select.getQuestionAnswered;
+
+  return {
+    answered: getQuestionAnswered(id)
+  };
+}), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch, _ref2) {
+  var id = _ref2.id;
 
   var _dispatch = dispatch('learnpress/quiz'),
       _checkAnswer = _dispatch.checkAnswer;
@@ -1711,6 +1722,14 @@ function (_Component) {
       submitQuiz();
     });
 
+    _defineProperty(_assertThisInitialized(_this), "getMark", function () {
+      var answered = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz').getData('answered');
+      console.log('getMark');
+      return Object.values(answered).reduce(function (m, r) {
+        return m + r.mark;
+      }, 0);
+    });
+
     _this.state = {
       submitting: false
     };
@@ -1773,7 +1792,8 @@ function (_Component) {
           questionsCount = _this$props.questionsCount,
           submitting = _this$props.submitting,
           totalTime = _this$props.totalTime,
-          duration = _this$props.duration; // const {
+          duration = _this$props.duration,
+          userMark = _this$props.userMark; // const {
       //     submitting
       // } = this.state;
 
@@ -1790,7 +1810,7 @@ function (_Component) {
         className: classNames.join(' ')
       }, React.createElement("div", null, React.createElement("div", {
         className: "questions-index"
-      }, end < questionsCount && (questionsPerPage > 1 ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d to %d of %d', 'learnpress'), start, end, questionsCount) : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d of %d', 'learnpress'), start, questionsCount)), end === questionsCount && Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d to %d', 'learnpress'), start, end)), React.createElement("div", {
+      }, end < questionsCount && (questionsPerPage > 1 ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d to %d of %d', 'learnpress'), start, end, questionsCount) : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d of %d', 'learnpress'), start, questionsCount)), end === questionsCount && Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d to %d', 'learnpress'), start, end)), "Earned Point: ", userMark, React.createElement("div", {
         className: "submit-quiz"
       }, React.createElement("button", {
         className: "lp-button",
@@ -1805,7 +1825,8 @@ function (_Component) {
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["compose"])([Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withSelect"])(function (select) {
   var _select = select('learnpress/quiz'),
-      getData = _select.getData;
+      getData = _select.getData,
+      getUserMark = _select.getUserMark;
 
   return {
     currentPage: getData('currentPage'),
@@ -1814,7 +1835,8 @@ function (_Component) {
     questionsCount: getData('questionIds').length,
     submitting: getData('submitting'),
     totalTime: getData('totalTime'),
-    duration: getData('duration')
+    duration: getData('duration'),
+    userMark: getUserMark()
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),
@@ -2697,12 +2719,13 @@ var updateUserQuestionAnswer = function updateUserQuestionAnswer(state, action) 
   var answered = state.answered;
 
   var newAnswer = _objectSpread({}, answered[action.questionId] || {}, {
-    answered: action.answers
+    answered: action.answers,
+    temp: true
   });
 
   console.log(newAnswer, action);
   return _objectSpread({}, state, {
-    answered: _defineProperty({}, action.questionId, newAnswer)
+    answered: _objectSpread({}, state.answered, _defineProperty({}, action.questionId, newAnswer))
   });
 };
 
@@ -2805,7 +2828,7 @@ var userQuiz = function userQuiz() {
         checkedQuestions: [],
         hintedQuestions: [],
         mode: '',
-        answered: {},
+        answered: action.data.answered,
         questions: action.data.questions,
         questionIds: action.data.question_ids,
         totalTime: action.data.total_time,
@@ -2831,7 +2854,7 @@ var userQuiz = function userQuiz() {
         status: 'completed',
         attempts: updateAttempt(state.attempts, action.results),
         submitting: false,
-        answered: false,
+        answered: action.data.answered,
         currentPage: 1
       });
 
@@ -2905,7 +2928,7 @@ var blocks = flow(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["combineReducers"
 /*!********************************************************!*\
   !*** ./assets/src/js/frontend/quiz/store/selectors.js ***!
   \********************************************************/
-/*! exports provided: getQuestionOptions, getItemStatus, getProp, getQuizAttempts, getQuizAnswered, getQuestions, getData, getDefaultRestArgs, getQuestionAnswered, getCurrentQuestion, getQuestion, isCheckedAnswer, isCorrect */
+/*! exports provided: getQuestionOptions, getItemStatus, getProp, getQuizAttempts, getQuizAnswered, getQuestions, getData, getDefaultRestArgs, getQuestionAnswered, getCurrentQuestion, getQuestion, isCheckedAnswer, isCorrect, getUserMark */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2923,6 +2946,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getQuestion", function() { return getQuestion; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isCheckedAnswer", function() { return isCheckedAnswer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isCorrect", function() { return isCorrect; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUserMark", function() { return getUserMark; });
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -3041,6 +3065,58 @@ function isCheckedAnswer(state, id) {
   return checkedQuestions.indexOf(id) !== -1;
 }
 function isCorrect(state, id) {}
+function getUserMark(state) {
+  var userQuiz = state.userQuiz || {};
+  var answered = userQuiz.answered,
+      negativeMarking = userQuiz.negativeMarking,
+      questions = userQuiz.questions,
+      checkedQuestions = userQuiz.checkedQuestions;
+  var totalMark = 0;
+
+  var _loop = function _loop(_id) {
+    if (!answered.hasOwnProperty(_id)) {
+      id = _id;
+      return "continue";
+    }
+
+    _id = parseInt(_id);
+    var data = answered[_id];
+    var questionMark = data.question_mark ? data.question_mark : function () {
+      var question = questions.find(function (q) {
+        id = _id;
+        return q.id === _id;
+      });
+      id = _id;
+      return question ? question.point : 0;
+    }();
+    var isChecked = checkedQuestions.indexOf(_id) !== -1; // User checked option but not submit or check
+
+    if (data.temp) {
+      id = _id;
+      return "continue";
+    }
+
+    if (negativeMarking) {
+      if (data.answered) {
+        totalMark = data.correct ? totalMark + data.mark : totalMark - questionMark;
+      }
+    } else {
+      if (data.answered && data.correct) {
+        totalMark += data.mark;
+      }
+    }
+
+    id = _id;
+  };
+
+  for (var id in answered) {
+    var _ret = _loop(id);
+
+    if (_ret === "continue") continue;
+  }
+
+  return totalMark > 0 ? totalMark : 0;
+}
 
 /***/ }),
 

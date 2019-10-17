@@ -280,7 +280,7 @@ abstract class LP_Abstract_Assets {
 	}
 
 	public function get_script_var_name( $handle ) {
-		$handle = str_replace( array( 'learn-press', '_', '-' ), ' ', $handle );
+		$handle = str_replace( array( 'learn-press', 'lp', '_', '-' ), ' ', $handle );
 		$handle = ucwords( $handle );
 
 		return 'lp' . str_replace( ' ', '', $handle ) . 'Settings';

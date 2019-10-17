@@ -56,7 +56,7 @@ if ( $userQuiz ) {
 	$answered     = $results->getQuestions();// getAnswered();// $userQuiz->get_meta( '_question_answers' );
 	$question_ids = $results->getQuestions( 'ids' );// $userQuiz->get_meta( 'questions' );
 
-	if ( $question_ids === false ) {
+	if ( !$question_ids ) {
 		$question_ids = $quiz->get_question_ids();
 	}
 }

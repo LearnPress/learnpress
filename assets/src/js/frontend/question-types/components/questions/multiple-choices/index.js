@@ -11,7 +11,7 @@ class QuestionMultipleChoices extends QuestionBase {
             answered
         } = this.props;
 
-        if (isBoolean(answered) || !answered ) {
+        if (isBoolean(answered) || !answered) {
             return false;
         }
 
@@ -31,8 +31,6 @@ class QuestionMultipleChoices extends QuestionBase {
             }
         }
 
-        console.log(this.getOptions())
-
         return true;
     };
 
@@ -43,12 +41,17 @@ class QuestionMultipleChoices extends QuestionBase {
 
         const optionClass = [...this.state.optionClass];
 
-        if (answered && this.maybeShowCorrectAnswer()) {
+        if (this.maybeShowCorrectAnswer()) {
             if (option.is_true === 'yes') {
                 optionClass.push('answer-correct');
-                answered.indexOf(option.value) !== -1 && optionClass.push('answered-correct');
-            } else {
-                answered.indexOf(option.value) !== -1 && optionClass.push('answered-wrong');
+            }
+
+            if (answered) {
+                if (option.is_true === 'yes') {
+                    answered.indexOf(option.value) !== -1 && optionClass.push('answered-correct');
+                } else {
+                    answered.indexOf(option.value) !== -1 && optionClass.push('answered-wrong');
+                }
             }
         }
 

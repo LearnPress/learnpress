@@ -19,14 +19,18 @@ const updateUserQuestionAnswer = (state, action) => {
     const {answered} = state;
     const newAnswer = {
         ...(answered[action.questionId] || {}),
-        answered: action.answers
+        answered: action.answers,
+        temp: true
     };
 
     console.log(newAnswer, action);
 
     return {
         ...state,
-        answered: {[action.questionId]: newAnswer}
+        answered: {
+            ...state.answered,
+            [action.questionId]: newAnswer
+        }
     }
 };
 
@@ -143,7 +147,7 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 checkedQuestions: [],
                 hintedQuestions: [],
                 mode: '',
-                answered: {},
+                answered: action.data.answered,
                 questions: action.data.questions,
                 questionIds: action.data.question_ids,
                 totalTime: action.data.total_time,
@@ -169,7 +173,7 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 status: 'completed',
                 attempts: updateAttempt(state.attempts, action.results),
                 submitting: false,
-                answered: false,
+                answered: action.data.answered,
                 currentPage: 1
             });
         case 'UPDATE_USER_QUESTION_ANSWERS':

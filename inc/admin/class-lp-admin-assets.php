@@ -30,6 +30,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				array(
 					'i18n_confirm' => __( 'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?', 'learnpress' )
 				)
+			),
+			'lp-admin'=>apply_filters(
+				'learn-press/admin/script-data',
+				array(
+					'ajax'=>admin_url('admin-ajax.php'),
+					'questionTypes' => learn_press_question_types()
+				)
 			)
 		);
 	}

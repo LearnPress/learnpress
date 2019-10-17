@@ -104,15 +104,42 @@ var LP = LP || {};
         return false;
     };
 
+    const ajaxCreateQuestionType = function ajaxCreateQuestionType(e) {
+        const type = $(e.target).data('type') || $(this).find('li:first').data('type');
+        const ajaxUrl = window['lpAdminSettings'].ajax;
+
+        $.ajax({
+            url: ajaxUrl,
+            data: {
+                'lp-ajax': 'create-question-type',
+                type
+            }
+        });
+    };
+
     LP.createButtonAddNewQuestion = function () {
-        if(!$(document.body).hasClass('post-type-lp_question')){
+        if (!$(document.body).hasClass('post-type-lp_question')) {
+            return;
+        }
+        var $addNew = $(document).find('.page-title-action');
+
+        if(!$addNew.length){
             return;
         }
 
-        var $addNew = $(document).find('.page-title-action');
-        var $newButton = $('<select><option>True Or False</option></select>');
+        var types = window['lpAdminSettings'].questionTypes;
+        var $newButton = $('<div id="button-new-question" class="page-title-action"><div></div></div>');
+        var url = $addNew.attr('href');
 
+        for (var type in types) {
+            $newButton.find('div').append(`<a href="${url.addQueryVar('question-type', type)}">${types[type]}</a>`)
+        }
+
+        $newButton.find('span').html($addNew.text());
+
+        //$addNew.append($newButton);
         $newButton.insertBefore($addNew);
+        $newButton.prepend($addNew.removeClass('page-title-action'));
     };
 
     var onReady = function onReady() {
@@ -122,6 +149,8 @@ var LP = LP || {};
         $('.learn-press-toggle-item-preview').on('change', updateItemPreview);
         $('.learn-press-tip').LP('QuickTip');
         //$('.learn-press-tabs').LP('AdminTab');
+
+        LP.createButtonAddNewQuestion();
 
         $(document)
             .on('click', '#learn-press-create-pages', createPages)
@@ -135,9 +164,8 @@ var LP = LP || {};
             .on('mouseup', function (e) {
                 $('html, body').removeClass('lp-item-moving');
                 $('.lp-sortable-handle').css('cursor', '');
-            });
-
-        LP.createButtonAddNewQuestion();
+            })
+            //.on('click', '#button-new-question', ajaxCreateQuestionType);
     };
 
     $(document).ready(onReady)
