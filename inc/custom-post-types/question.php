@@ -229,7 +229,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				'show_in_menu'       => 'learn_press',
 				'show_in_admin_bar'  => true,
 				'show_in_nav_menus'  => true,
-				//'show_in_rest'       => true,
+				'show_in_rest'       => true,
 				'supports'           => array( 'title', 'editor', 'revisions' ),
 				'hierarchical'       => false,
 				'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
@@ -368,7 +368,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				'pages'  => array( LP_QUESTION_CPT ),
 				'fields' => array(
 					array(
-						'name'  => __( 'Mark for this question', 'learnpress' ),
+						'name'  => __( 'Question mark', 'learnpress' ),
 						'id'    => '_lp_mark',
 						'type'  => 'number',
 						'clone' => false,
@@ -377,14 +377,14 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 						'std'   => 1
 					),
 					array(
-						'name' => __( 'Question Explanation', 'learnpress' ),
+						'name' => __( 'Question explanation', 'learnpress' ),
 						'id'   => '_lp_explanation',
 						'type' => 'textarea',
 						'desc' => __( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ),
 						'std'  => null
 					),
 					array(
-						'name' => __( 'Question Hint', 'learnpress' ),
+						'name' => __( 'Question hint', 'learnpress' ),
 						'id'   => '_lp_hint',
 						'type' => 'textarea',
 						'desc' => __( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ),

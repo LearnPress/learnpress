@@ -4,11 +4,11 @@
 #quiz-editor {
     .inside {
         .rwmb-custom_html-wrapper {
-            .rwmb-label {
+            > .rwmb-label {
                 display: none;
             }
 
-            .rwmb-input {
+            > .rwmb-input {
                 margin-left: 0;
             }
         }

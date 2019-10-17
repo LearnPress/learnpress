@@ -82,27 +82,28 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$question->set_type( $args['type'] );
 
 				if ( $args['create_answers'] ) {
-					$answers = $question->get_default_answers();
-					// insert answers data in new question
-					foreach ( $answers as $index => $answer ) {
-						$insert = array(
-							'question_id' => $question_id,
-							/**
-							 * @since 4.0
-							 */
-//							'answer_data'  => serialize( array(
-//									'text'    => stripslashes( $answer['title'] ),
-//									'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-//									'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
-//								)
-//							),
-							'title'       => stripslashes( $answer['title'] ),
-							'value'       => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-							'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
-							'order'       => $index + 1
-						);
-						$this->add_answer( $args['type'], $insert );
-					}
+					$question->create_default_answers();
+					//$answers = $question->get_default_answers();
+//					// insert answers data in new question
+//					foreach ( $answers as $index => $answer ) {
+//						$insert = array(
+//							'question_id' => $question_id,
+//							/**
+//							 * @since 4.0
+//							 */
+////							'answer_data'  => serialize( array(
+////									'text'    => stripslashes( $answer['title'] ),
+////									'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+////									'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
+////								)
+////							),
+//							'title'       => stripslashes( $answer['title'] ),
+//							'value'       => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+//							'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+//							'order'       => $index + 1
+//						);
+//						$this->add_answer( $args['type'], $insert );
+//					}
 
 					// add question to quiz
 					if ( ! empty( $args['quiz_id'] ) ) {
@@ -413,8 +414,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				array( '%s', '%s', '%s' ),
 				array( '%d', '%d' )
 			);
-
-			var_dump($update);
 
 			do_action( 'learn-press/question/updated-answer-data', $question_id, $answer['question_answer_id'], $answer );
 

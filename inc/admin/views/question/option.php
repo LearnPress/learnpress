@@ -93,6 +93,8 @@
                     }
                 },
                 changeCorrect: function (e) {
+                    this.updating = true;
+
                     this.answer.is_true = (e.target.checked) ? 'yes' : '';
                     this.$emit('changeCorrect', this.answer);
                 },

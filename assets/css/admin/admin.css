@@ -1113,9 +1113,6 @@ ul .clearfix {
 .learnpress #learn-press-toggle-course-results {
   display: block; }
 
-.learnpress #postbox-container-2 .inside .rwmb-meta-box {
-  margin: 20px 0 0; }
-
 .learnpress .lp-item-assigned {
   font-size: 14px; }
   .learnpress .lp-item-assigned a {
@@ -2347,10 +2344,10 @@ ul .clearfix {
 /**
  * Quiz admin editor.
  */
-#quiz-editor .inside .rwmb-custom_html-wrapper .rwmb-label {
+#quiz-editor .inside .rwmb-custom_html-wrapper > .rwmb-label {
   display: none; }
 
-#quiz-editor .inside .rwmb-custom_html-wrapper .rwmb-input {
+#quiz-editor .inside .rwmb-custom_html-wrapper > .rwmb-input {
   margin-left: 0; }
 
 #admin-editor-lp_quiz .lp-box-data-head {
