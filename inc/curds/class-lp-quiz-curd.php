@@ -649,7 +649,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 				$wpdb->update(
 					$wpdb->learnpress_question_answers,
-					array( 'answer_order' => $order ),
+					array( 'order' => $order ),
 					array( 'question_answer_id' => $answer_id )
 				);
 			}

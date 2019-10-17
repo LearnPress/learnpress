@@ -81,14 +81,14 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$question_id = $question->get_id();
 		// question answer
 		$answer_options = $question->get_data( 'answer_options' );
-		$answer = array();
-		foreach($answer_options as $answer_option ){
-			if(!isset($answer[$answer_option['question_answer_id']])){
-				$answer[$answer_option['question_answer_id']]=$answer_option;
+		$answer         = array();
+		foreach ( $answer_options as $answer_option ) {
+			if ( ! isset( $answer[ $answer_option['question_answer_id'] ] ) ) {
+				$answer[ $answer_option['question_answer_id'] ] = $answer_option;
 			}
 		}
 		$answers = array_values( $answer );
-		$data = wp_parse_args( $args, array(
+		$data    = wp_parse_args( $args, array(
 			'id'       => $question_id,
 			'open'     => false,
 			'title'    => get_the_title( $question_id ),
@@ -436,7 +436,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 				'temp_id'            => isset( $args['question_answer_id'] ) ? $args['question_answer_id'] : 0,
 				'question_answer_id' => $new_answer_id,
 				'question_id'        => $question_id,
-				'answer_order'       => count( $question->get_data( 'answer_options' ) )
+				'order'              => count( $question->get_data( 'answer_options' ) )
 			) );
 
 			return true;

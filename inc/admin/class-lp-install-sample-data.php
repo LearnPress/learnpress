@@ -585,8 +585,8 @@ class LP_Install_Sample_Data {
 				/**
 				 * @since 4.0
 				 */
-				'answer_title' => $answer['text'],
-				'answer_value' => $answer['value'],
+				'title' => $answer['title'],
+				'value' => $answer['value'],
 				'is_true'      => $answer['is_true']
 				//'answer_data' => maybe_serialize( $answer )
 			);
@@ -613,7 +613,7 @@ class LP_Install_Sample_Data {
 
 		for ( $i = 1; $i <= $option_count; $i ++ ) {
 			$answers[] = array(
-				'text'    => $this->generate_title(),
+				'title'    => $this->generate_title(),
 				'value'   => md5( uniqid() ),
 				'is_true' => 'no'
 			);
@@ -623,7 +623,7 @@ class LP_Install_Sample_Data {
 		if ( $type !== 'multi_choice' ) {
 			$at                        = rand( 0, sizeof( $answers ) - 1 );
 			$answers[ $at ]['is_true'] = 'yes';
-			$answers[ $at ]['text']    .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+			$answers[ $at ]['title']    .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
 		} else {
 			$has_true_option = false;
 			while ( ! $has_true_option ) {
@@ -631,7 +631,7 @@ class LP_Install_Sample_Data {
 					$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';
 
 					if ( $answers[ $k ]['is_true'] === 'yes' ) {
-						$answers[ $k ]['text'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+						$answers[ $k ]['title'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
 						$has_true_option       = true;
 					}
 				}

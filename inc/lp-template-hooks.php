@@ -278,7 +278,7 @@ function xxx_get_question_options_for_js( $question, $args = array() ) {
 			'key'  => $key
 		);
 	} else {
-		$exclude_option_key = array( 'question_id', 'answer_order' );
+		$exclude_option_key = array( 'question_id', 'order' );
 		if ( ! $args['include_is_true'] ) {
 			$exclude_option_key[] = 'is_true';
 		}

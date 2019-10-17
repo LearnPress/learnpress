@@ -86,20 +86,20 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					// insert answers data in new question
 					foreach ( $answers as $index => $answer ) {
 						$insert = array(
-							'question_id'  => $question_id,
+							'question_id' => $question_id,
 							/**
 							 * @since 4.0
 							 */
 //							'answer_data'  => serialize( array(
-//									'text'    => stripslashes( $answer['text'] ),
+//									'text'    => stripslashes( $answer['title'] ),
 //									'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
 //									'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
 //								)
 //							),
-							'answer_title' => stripslashes( $answer['text'] ),
-							'answer_value' => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-							'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
-							'answer_order' => $index + 1
+							'title'       => stripslashes( $answer['title'] ),
+							'value'       => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+							'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+							'order'       => $index + 1
 						);
 						$this->add_answer( $args['type'], $insert );
 					}
@@ -224,13 +224,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					$wpdb->insert(
 						$wpdb->learnpress_question_answers,
 						array(
-							'question_id'  => $new_question_id,
+							'question_id' => $new_question_id,
 							/* @since 4.0 */
 							//'answer_data'  => $option->answer_data,
-							'answer_title' => ! empty( $answer_data['text'] ) ? $answer_data['text'] : '',
-							'answer_value' => ! empty( $answer_data['value'] ) ? $answer_data['value'] : '',
-							'is_true'      => ! empty( $answer_data['is_true'] ) ? $answer_data['is_true'] : '',
-							'answer_order' => $option->answer_order
+							'title'       => ! empty( $answer_data['title'] ) ? $answer_data['title'] : '',
+							'value'       => ! empty( $answer_data['value'] ) ? $answer_data['value'] : '',
+							'is_true'     => ! empty( $answer_data['is_true'] ) ? $answer_data['is_true'] : '',
+							'order'       => $option->order
 						),
 						array( '%d', '%s', '%s' )
 					);
@@ -397,14 +397,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'learn-press/question/update-answer-data',
 					array(
 //						'answer_data' => serialize( array(
-//								'text'    => stripslashes( $answer['text'] ),
+//								'text'    => stripslashes( $answer['title'] ),
 //								'value'   => isset( $answer['value'] ) ? $answer['value'] : '',
 //								'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
 //							)
 //						)
-						'answer_title' => stripslashes( $answer['text'] ),
-						'answer_value' => isset( $answer['value'] ) ? $answer['value'] : '',
-						'is_true'      => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
+						'title'   => stripslashes( $answer['title'] ),
+						'value'   => isset( $answer['value'] ) ? $answer['value'] : '',
+						'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
 					)
 				),
 				'where' => array(
@@ -450,7 +450,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			foreach ( $question_answers as $index => $answer ) {
 
 				$answer_data = array(
-					'text'    => stripslashes( $answer['text'] ),
+					'title'   => stripslashes( $answer['title'] ),
 					'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
 					'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : ''
 				);
@@ -469,8 +469,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$answers[ $index ] = array(
 					'question_answer_id' => $answer['question_answer_id'],
 					'question_id'        => $question_id,
-					'answer_order'       => $answer['answer_order'],
-					'text'               => $answer_data['text'],
+					'order'              => $answer['order'],
+					'title'              => $answer_data['title'],
 					'value'              => $answer_data['value'],
 					'is_true'            => $answer_data['is_true']
 				);
@@ -480,14 +480,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'data'  => array(
 						/* @since 4.0 */
 						//'answer_data' => serialize( $answer_data )
-						'answer_title' => $answer_data['text'],
-						'answer_value' => $answer_data['value'],
-						'is_true'      => $answer_data['is_true'],
+						'title'   => $answer_data['title'],
+						'value'   => $answer_data['value'],
+						'is_true' => $answer_data['is_true'],
 					),
 					'where' => array(
 						'question_answer_id' => $answer['question_answer_id'],
 						'question_id'        => $question_id,
-						'answer_order'       => $answer['answer_order']
+						'order'              => $answer['order']
 					)
 				);
 			}
@@ -534,7 +534,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				foreach ( $order as $index => $answer_id ) {
 					$wpdb->update(
 						$wpdb->learnpress_question_answers,
-						array( 'answer_order' => $index + 1 ),
+						array( 'order' => $index + 1 ),
 						array( 'question_answer_id' => $answer_id )
 					);
 
@@ -612,6 +612,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return false;
 			}
 
+			error_log( __CLASS__ . '::' . $new_answer );
+
 			$question = LP_Question::get_question( $question_id );
 
 			// exist answer options
@@ -624,20 +626,20 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			$insert = $wpdb->insert(
 				$wpdb->learnpress_question_answers,
 				array(
-					'question_id'  => $question_id,
+					'question_id' => $question_id,
 					/** @since 4.0 */
 					//'answer_data'  => serialize( $new_answer ),
-					'answer_title' => $new_answer['text'],
-					'answer_value' => $new_answer['value'],
-					'is_true'      => $new_answer['is_true'],
-					'answer_order' => $number + 1,
+					'title'       => $new_answer['title'],
+					'value'       => $new_answer['value'],
+					'is_true'     => $new_answer['is_true'],
+					'order'       => $number + 1,
 				),
 				array( '%d', '%s', '%d' ) );
 
 			if ( $insert ) {
 				$new_answer['question_answer_id'] = $wpdb->insert_id;
 				$new_answer['question_id']        = $question_id;
-				$new_answer['answer_order']       = $number + 1;
+				$new_answer['order']              = $number + 1;
 
 				if ( is_array( $answers ) ) {
 					$answers = array_merge( $answers, array( $new_answer ) );
@@ -753,18 +755,18 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				// insert answers data in new question
 				foreach ( $answer_options as $index => $answer ) {
 					$insert        = array(
-						'question_id'  => $question_id,
+						'question_id' => $question_id,
 // @since 4.0
 //						'answer_data'  => serialize( array(
-//								'text'    => stripslashes( $answer['text'] ),
+//								'text'    => stripslashes( $answer['title'] ),
 //								'value'   => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
 //								'is_true' => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : ''
 //							)
 //						),
-						'answer_title' => stripslashes( $answer['text'] ),
-						'answer_value' => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-						'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
-						'answer_order' => $index + 1
+						'title'       => stripslashes( $answer['title'] ),
+						'value'       => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+						'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+						'order'       => $index + 1
 					);
 					$new_answers[] = $this->add_answer( $new_question->get_type(), $insert );
 				};
@@ -787,21 +789,26 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 */
 		public function add_answer( $question_type = '', $args = array() ) {
 
+
 			global $wpdb;
 
 			$question    = LP_Question::get_question( $args['question_id'], array( 'type' => $question_type ) );
 			$answer_data = maybe_unserialize( $args['answer_data'] );
+			ob_start();
+			print_r( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
+			error_log( ob_get_clean() );
+			die( __CLASS__ . "::" . __FUNCTION__ );
 
 			$wpdb->insert(
 				$wpdb->learnpress_question_answers,
 				array(
-					'question_id'  => $args['question_id'],
+					'question_id' => $args['question_id'],
 					// 4.0
 					//'answer_data'  => $args['answer_data'],
-					'answer_title' => ! empty( $answer_data['text'] ) ? $answer_data['text'] : '',
-					'answer_value' => ! empty( $answer_data['value'] ) ? $answer_data['value'] : '',
-					'is_true'      => ! empty( $answer_data['is_true'] ) ? $answer_data['is_true'] : '',
-					'answer_order' => $args['answer_order']
+					'title'       => ! empty( $answer_data['title'] ) ? $answer_data['title'] : 'wwwwwww',
+					'value'       => ! empty( $answer_data['value'] ) ? $answer_data['value'] : '',
+					'is_true'     => ! empty( $answer_data['is_true'] ) ? $answer_data['is_true'] : '',
+					'order'       => $args['order']
 				),
 				array( '%d', '%s', '%d' ) );
 
@@ -814,8 +821,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$new_answer_option_data = array(
 					'question_answer_id' => $question_answer_id,
 					'question_id'        => $args['question_id'],
-					'answer_order'       => $args['answer_order'],
-					'text'               => $unserialize_data['text'],
+					'order'              => $args['order'],
+					'title'              => $unserialize_data['title'],
 					'value'              => $unserialize_data['value'],
 					'is_true'            => $unserialize_data['is_true']
 				);
@@ -895,7 +902,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				SELECT *
 				FROM {$wpdb->prefix}learnpress_question_answers
 				WHERE question_id = %d
-				ORDER BY answer_order ASC
+				ORDER BY `order` ASC
 			", $question_id );
 
 			$answer_options = array();
@@ -916,10 +923,10 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					$answer_option = array(
 						'question_answer_id' => absint( $v->question_answer_id ),
 						'question_id'        => absint( $v->question_id ),
-						'text'               => $v->answer_title,
-						'value'              => $v->answer_value,
+						'title'              => $v->title,
+						'value'              => $v->value,
 						'is_true'            => $v->is_true,
-						'answer_order'       => absint( $v->answer_order )
+						'order'              => absint( $v->order )
 					);
 
 					$answer_options[ $v->question_answer_id ] = $answer_option;
@@ -947,7 +954,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					SELECT *
 					FROM {$wpdb->prefix}learnpress_question_answers
 					WHERE question_id = %d
-					ORDER BY answer_order ASC
+					ORDER BY `order` ASC
 				", $id );
 				/* @since 4.0 */
 //				if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {

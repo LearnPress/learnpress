@@ -132,7 +132,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_question_answers
 			WHERE question_id IN(" . join( ',', $format ) . ")
-			ORDER BY question_id, answer_order ASC
+			ORDER BY question_id, `order` ASC
 		", $questions );
 		if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
 			$answer_options = array();

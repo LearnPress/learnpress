@@ -12,7 +12,7 @@
         <td class="order">{{index +1}}.</td>
         <td class="answer-text">
             <form @submit.prevent="">
-                <input type="text" v-model="answer.text"
+                <input type="text" v-model="answer.title"
                        @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle"/>
             </form>
         </td>
@@ -82,7 +82,7 @@
                 deleteAnswer: function () {
                     this.$emit('deleteAnswer', {
                         id: this.id,
-                        order: this.answer.answer_order
+                        order: this.answer.order
                     });
                 },
                 isNew: function () {

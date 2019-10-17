@@ -410,9 +410,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$this->empty_answers();
 			if ( $answer_options = $this->get_data( 'answer_options' ) ) {
 				$question_order = 1;
-				$query          = "INSERT INTO {$wpdb->prefix}learnpress_question_answers(`question_id`, `answer_order`) VALUES";
+				$query          = "INSERT INTO {$wpdb->prefix}learnpress_question_answers(`question_id`, `order`) VALUES";
 				foreach ( $answer_options as $answer_option ) {
-					if ( empty( $answer_option['text'] ) ) {
+					if ( empty( $answer_option['title'] ) ) {
 						if ( apply_filters( 'learn-press/question/ignore-insert-empty-answer-option', true, $answer_option, $id ) ) {
 							continue;
 						}
@@ -582,12 +582,12 @@ if ( ! class_exists( 'LP_Question' ) ) {
 	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam ON qa.question_answer_id = qam.learnpress_question_answer_id AND qam.meta_key = %s
 	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam2 ON qa.question_answer_id = qam2.learnpress_question_answer_id AND qam2.meta_key = %s
 	            WHERE qa.question_id = %d
-	            ORDER BY answer_order
+	            ORDER BY `order`
 			", 'value', 'text', $this->get_id() );
 			if ( $answers = $wpdb->get_results( $query ) ) {
 				$query = "
                 UPDATE {$wpdb->learnpress_question_answers} 
-                SET answer_order = CASE
+                SET `order` = CASE
             ";
 				for ( $order = 0, $n = sizeof( $orders ); $order < $n; $order ++ ) {
 					$found_answer = false;
@@ -602,7 +602,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					}
 					$query .= $wpdb->prepare( "WHEN question_answer_id = %d THEN %d", $found_answer->question_answer_id, $order + 1 ) . "\n";
 				}
-				$query .= sprintf( "ELSE answer_order END WHERE question_id = %d", $this->get_id() );
+				$query .= sprintf( "ELSE `order` END WHERE question_id = %d", $this->get_id() );
 				$wpdb->query( $query );
 			}
 		}
@@ -653,7 +653,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		public static function get_default_answer() {
 			$answer = array(
 				'question_answer_id' => - 1,
-				'text'               => __( 'New Option', 'learnpress' ),
+				'title'               => __( 'New Option', 'learnpress' ),
 				'is_true'            => false,
 				'value'              => learn_press_uniqid()
 			);
@@ -671,20 +671,20 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				array(
 					'question_answer_id' => - 1,
 					'is_true'            => 'yes',
-					'value'              => learn_press_uniqid(),
-					'text'               => __( 'First option', 'learnpress' )
+					'value'              => learn_press_random_value(),
+					'title'               => __( 'First option', 'learnpress' )
 				),
 				array(
 					'question_answer_id' => - 2,
 					'is_true'            => 'no',
-					'value'              => learn_press_uniqid(),
-					'text'               => __( 'Second option', 'learnpress' )
+					'value'              => learn_press_random_value(),
+					'title'               => __( 'Second option', 'learnpress' )
 				),
 				array(
 					'question_answer_id' => - 3,
 					'is_true'            => 'no',
-					'value'              => learn_press_uniqid(),
-					'text'               => __( 'Third option', 'learnpress' )
+					'value'              => learn_press_random_value(),
+					'title'               => __( 'Third option', 'learnpress' )
 				)
 			);
 
@@ -718,6 +718,43 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			$answers = apply_filters( 'learn_press_question_answers', $answers, $this );
 
 			return apply_filters( 'learn-press/questions/answers', $answers, $this->get_id() );
+		}
+
+		/**
+		 * Create default answers.
+		 *
+		 * @since 4.x.x
+		 */
+		public function create_default_answers() {
+			global $wpdb;
+
+			$answers = $this->get_default_answers();
+
+			foreach ( $answers as $index => $answer ) {
+				$answer = array(
+					'question_id'  => $this->get_id(),
+					'title' => $answer['title'],
+					'value' => isset( $answer['value'] ) ? $answer['value'] : '',
+					'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+					'order' => $index + 1
+				);
+
+				$wpdb->insert(
+					$wpdb->learnpress_question_answers,
+					$answer,
+					array( '%d', '%s', '%s', '%s', '%d' )
+				);
+
+				$question_answer_id = $wpdb->insert_id;
+
+				if ( $question_answer_id ) {
+					$answer['question_answer_id']=$question_answer_id;
+				}
+
+				$answers[$index] = $answer;
+			}
+
+			$this->set_data('answer_options', $answers);
 		}
 
 		/**

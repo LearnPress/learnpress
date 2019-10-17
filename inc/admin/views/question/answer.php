@@ -109,10 +109,10 @@ learn_press_admin_view( 'question/option' );
                 },
                 // change answer title
                 updateTitle: function (answer) {
-                    if (!this.draft) {
+                    //if (!this.draft) {
                         // update title
                         $store.dispatch('updateAnswerTitle', answer);
-                    }
+                    //}
                 },
                 // change correct answer
                 changeCorrect: function (correct) {

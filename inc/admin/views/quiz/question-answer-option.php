@@ -12,7 +12,7 @@
         <td class="sort lp-sortable-handle"><?php learn_press_admin_view( 'svg-icon' ); ?></td>
         <td class="order">{{index +1}}.</td>
         <td class="answer-text">
-            <input type="text" v-model="answer.text"
+            <input type="text" v-model="answer.title"
                    @change="changeTitle" @keyup.enter="updateTitle" @blur="updateTitle" @keyup="keyUp"/>
         </td>
         <td class="answer-correct lp-answer-check">
@@ -38,7 +38,7 @@
             data: function () {
                 return {
                     // origin answer text
-                    text: this.answer.text,
+                    title: this.answer.title,
                     changed: false
                 }
             },
@@ -104,7 +104,7 @@
                     var keyCode = event.keyCode;
                     // escape update answer option items text
                     if (keyCode === 27) {
-                        this.answer.text = this.text;
+                        this.answer.title = this.title;
                     } else {
                         this.$emit('nav', {key: event.keyCode, order: this.index});
                     }

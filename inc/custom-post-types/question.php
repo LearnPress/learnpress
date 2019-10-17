@@ -108,27 +108,26 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			$question = LP_Question::get_question( $post->ID );
 
 			// add default answer for new question
-			if ( $pagenow === 'post-new.php' ) {
-				$answers = $question->get_default_answers();
-				global $wpdb;
-//				foreach ( $answers as $order => $answer ) {
-//					$insert_id = $wpdb->insert(
-//						$wpdb->learnpress_question_answers,
-//						array(
-//							'question_id'  => $post->ID,
-//							'answer_title' => $answer['text'],
-//							'answer_value' => $answer['value'],
-//							'is_true'      => $answer['is_true'],
-//							'answer_order' => $order + 1
-//						)
-//					);
+//			if ( $pagenow === 'post-new.php' ) {
+//				$answers = $question->get_default_answers();
+//				global $wpdb;
+////				foreach ( $answers as $order => $answer ) {
+////					$insert_id = $wpdb->insert(
+////						$wpdb->learnpress_question_answers,
+////						array(
+////							'question_id'  => $post->ID,
+////							'answer_title' => $answer['text'],
+////							'answer_value' => $answer['value'],
+////							'is_true'      => $answer['is_true'],
+////							'answer_order' => $order + 1
+////						)
+////					);
+////
+////					$answers[ $order ]['question_answer_id'] = $insert_id;
+////				}
 //
-//					$answers[ $order ]['question_answer_id'] = $insert_id;
-//				}
-
-			} else {
+//			} else {
 				$answers = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
-			}
 
 //			if ( $pagenow === 'post-new.php' ) {
 //				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'true_or_false' ) ) );
@@ -142,7 +141,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$answers = array(
 					array(
 						'question_answer_id' => 0,
-						'text'               => ''
+						'title'               => ''
 					)
 				);
 			}
@@ -272,44 +271,45 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param $question_id
 		 */
 		public function save_question( $question_id ) {
-			if ( get_post_status( $question_id ) == 'auto-draft' ) {
-				if ( empty( $_REQUEST['question-type'] ) ) {
-					$types         = array_keys( learn_press_question_types() );
-					$question_type = reset( $types );
-				} else {
-					$question_type = $_REQUEST['question-type'];
-				}
-
-				//var_dump($question_type);die();
-				$curd    = new LP_Question_CURD();
-				$user_id = learn_press_get_current_user_id();
-				//$question_type = 'true_or_false';
-
-
-				update_post_meta( $question_id, '_lp_type', $question_type );
-				get_user_meta( $user_id, '_learn_press_memorize_question_types', $question_type );
-
-				$question = LP_Question::get_question( $question_id, array( 'type' => $question_type ) );
-				$question->set_type( $question_type );
-
-				$answers = $question->get_default_answers();
-
-				// insert answers data in new question
-				foreach ( $answers as $index => $answer ) {
-					$insert = array(
-						'question_id'  => $question_id,
-						/* @since 4.0 */
-						//'answer_data'  => serialize( array(
-						'answer_title' => stripslashes( $answer['text'] ),
-						'answer_value' => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
-						'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
-						//	)
-						//),
-						'answer_order' => $index + 1
-					);
-					$curd->add_answer( $question_type, $insert );
-				}
+			if ( get_post_status( $question_id ) != 'auto-draft' ) {
+				return;
 			}
+
+			if ( empty( $_REQUEST['question-type'] ) ) {
+				$types         = array_keys( learn_press_question_types() );
+				$question_type = reset( $types );
+			} else {
+				$question_type = $_REQUEST['question-type'];
+			}
+
+			update_post_meta( $question_id, '_lp_type', $question_type );
+			//get_user_meta( $user_id, '_learn_press_memorize_question_types', $question_type );
+
+			$question = LP_Question::get_question( $question_id );
+
+			if ( $question->is_support( 'answer-options' ) ) {
+				$question->create_default_answers();
+			}
+
+//			//$question->set_type( $question_type );
+//
+//			//$answers = $question->get_default_answers();
+//
+//			// insert answers data in new question
+//			foreach ( $answers as $index => $answer ) {
+//				$insert = array(
+//					'question_id'  => $question_id,
+//					/* @since 4.0 */
+//					//'answer_data'  => serialize( array(
+//					'answer_title' => stripslashes( $answer['text'] ),
+//					'answer_value' => isset( $answer['value'] ) ? stripslashes( $answer['value'] ) : '',
+//					'is_true'      => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+//					//	)
+//					//),
+//					'answer_order' => $index + 1
+//				);
+//				$curd->add_answer( $question_type, $insert );
+//			}
 		}
 
 		/**

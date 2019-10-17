@@ -1865,13 +1865,13 @@ if ( ! function_exists( 'learn_press_duplicate_question' ) ) {
 				$wpdb->insert(
 					$wpdb->learnpress_question_answers,
 					array(
-						'question_id'  => $new_question_id,
+						'question_id' => $new_question_id,
 						/** @since 4.0 * */
 						//'answer_data'  => $q_a->answer_data,
-						'answer_title' => $q_a->answer_title,
-						'answer_value' => $q_a->answer_value,
-						'is_true'      => $q_a->is_true,
-						'answer_order' => $q_a->answer_order
+						'title'       => $q_a->title,
+						'value'       => $q_a->value,
+						'is_true'     => $q_a->is_true,
+						'order'       => $q_a->order
 					),
 					array(
 						'%d',
@@ -1930,13 +1930,13 @@ if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
 						$wpdb->insert(
 							$wpdb->learnpress_question_answers,
 							array(
-								'question_id'  => $new_question_id,
+								'question_id' => $new_question_id,
 								/** @since 4.0 * */
 								//'answer_data'  => $q_a->answer_data,
-								'answer_title' => $q_a->answer_title,
-								'answer_value' => $q_a->answer_value,
-								'is_true'      => $q_a->is_true,
-								'answer_order' => $q_a->answer_order
+								'title'       => $q_a->title,
+								'value'       => $q_a->value,
+								'is_true'     => $q_a->is_true,
+								'order'       => $q_a->order
 							),
 							array(
 								'%d',

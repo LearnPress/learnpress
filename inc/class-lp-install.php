@@ -785,8 +785,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				CREATE TABLE {$wpdb->learnpress_question_answers} (
 					question_answer_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					question_id bigint(20) unsigned NOT NULL DEFAULT '0',
-					answer_data text NOT NULL,
-					answer_order bigint(20) unsigned NOT NULL DEFAULT '0',
+					title text NOT NULL,
+					`value` varchar(32) NOT NULL,
+					`order` bigint(20) unsigned NOT NULL DEFAULT '0',
 					PRIMARY KEY  (question_answer_id)
 				) $collate;";
 			}
