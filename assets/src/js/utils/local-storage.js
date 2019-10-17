@@ -12,8 +12,9 @@ const _localStorage = {
     get: function (name, def) {
         const data = JSON.parse(localStorage.getItem(this.__key) || "{}");
         const {get} = lodash;
+        const value = get(data, name);
 
-        return !name ? data : ( get(data, name) || def );
+        return !name ? data : ( value !== undefined ? value : def );
     },
 
     exists: function (name) {

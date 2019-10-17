@@ -78,6 +78,13 @@
                             color: #0073aa;
                             min-width: 100px;
                         }
+                        &.disabled {
+                            background: #F5F5F5;
+                            a {
+                                color: #999;
+                                pointer-events: none;
+                            }
+                        }
                     }
                     &:hover {
                         display: block;

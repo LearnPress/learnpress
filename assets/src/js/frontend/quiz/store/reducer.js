@@ -1,6 +1,7 @@
 import {combineReducers} from '@wordpress/data';
 
 const {omit, flow, isArray, chunk} = lodash;
+const {camelCaseDashObjectKeys} = LP;
 const STORE_DATA = {};
 
 export const setItemStatus = (item, status) => {
@@ -122,7 +123,6 @@ const checkAnswer = (state, action) => {
 export const userQuiz = (state = STORE_DATA, action) => {
     switch (action.type) {
         case 'SET_QUIZ_DATA':
-
             if (action.data.questionsPerPage) {
                 const chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsPerPage);
 
@@ -142,18 +142,13 @@ export const userQuiz = (state = STORE_DATA, action) => {
             }
         case 'START_QUIZ':
         case 'START_QUIZ_SUCCESS':
+            console.log(action.results)
             return resetCurrentQuestion(state, {
-                status: 'started',
                 checkedQuestions: [],
                 hintedQuestions: [],
                 mode: '',
-                answered: action.data.answered,
-                questions: action.data.questions,
-                questionIds: action.data.question_ids,
-                totalTime: action.data.total_time,
-                duration: action.data.duration,
-                endTime: action.data.end_time,
-                currentPage: 1
+                currentPage: 1,
+                ...action.results
             });
         case 'SET_CURRENT_QUESTION':
             LP.localStorage.set(`Q${state.id}.currentQuestion`, action.questionId);
@@ -170,11 +165,10 @@ export const userQuiz = (state = STORE_DATA, action) => {
             }
         case 'SUBMIT_QUIZ_SUCCESS':
             return resetCurrentQuestion(state, {
-                status: 'completed',
                 attempts: updateAttempt(state.attempts, action.results),
                 submitting: false,
-                answered: action.data.answered,
-                currentPage: 1
+                currentPage: 1,
+                ...action.results
             });
         case 'UPDATE_USER_QUESTION_ANSWERS':
             return state.status === 'started' ? updateUserQuestionAnswer(state, action) : state;

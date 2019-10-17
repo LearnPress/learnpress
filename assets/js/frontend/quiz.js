@@ -1493,6 +1493,7 @@ function (_Component) {
         style: {
           display: isShow ? '' : 'none'
         },
+        "data-id": question.id,
         ref: this.setRef
       }, configBlocks.map(function (name) {
         return React.createElement(React.Fragment, {
@@ -1643,7 +1644,7 @@ function (_Component) {
       getData = _select.getData;
 
   return {
-    results: get(getData('attempts'), '0')
+    results: getData('results')
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),
@@ -2198,31 +2199,15 @@ function (_Component) {
       var _this$props = this.props,
           settings = _this$props.settings,
           setQuizData = _this$props.setQuizData;
-      var sanitizedSettings = {};
-
-      function camelCaseDash(string) {
-        return string.replace(/[-_]([a-z0-9])/g, function (match, letter) {
-          return letter.toUpperCase();
-        });
-      }
-
-      for (var prop in settings) {
-        if (!settings.hasOwnProperty(prop)) {
-          continue;
-        }
-
-        sanitizedSettings[camelCaseDash(prop)] = settings[prop];
-      }
-
-      var questionIds = sanitizedSettings.questionIds,
-          questionsPerPage = sanitizedSettings.questionsPerPage;
-      var chunks = chunk(questionIds, questionsPerPage);
-      sanitizedSettings.currentPage = 1;
-      sanitizedSettings.numPages = chunks.length;
-      sanitizedSettings.pages = chunks;
+      var question_ids = settings.question_ids,
+          questions_per_page = settings.questions_per_page;
+      var chunks = chunk(question_ids, questions_per_page);
+      settings.currentPage = 1;
+      settings.numPages = chunks.length;
+      settings.pages = chunks;
       console.timeEnd('Quiz.componentDidMount');
-      console.log(sanitizedSettings);
-      setQuizData(sanitizedSettings);
+      setQuizData(settings);
+      console.log(wp.data.select('learnpress/quiz').getData());
     }
   }, {
     key: "componentWillReceiveProps",
@@ -2339,6 +2324,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+var _LP = LP,
+    camelCaseDashObjectKeys = _LP.camelCaseDashObjectKeys;
 /**
  * Set user data for app.
  * @param key
@@ -2355,7 +2342,7 @@ function setQuizData(key, data) {
 
   return {
     type: 'SET_QUIZ_DATA',
-    data: data
+    data: camelCaseDashObjectKeys(data)
   };
 }
 /**
@@ -2377,13 +2364,13 @@ function setCurrentPage(currentPage) {
     currentPage: currentPage
   };
 }
-function __requestStartQuizSuccess(data, quizId, courseId, userId) {
+function __requestStartQuizSuccess(results, quizId, courseId, userId) {
   return {
     type: 'START_QUIZ_SUCCESS',
     quizId: quizId,
     courseId: courseId,
     userId: userId,
-    data: data
+    results: results
   };
 }
 function startQuiz() {
@@ -2408,7 +2395,7 @@ function startQuiz() {
         case 3:
           quiz = _context.sent;
           _context.next = 6;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestStartQuizSuccess', quiz.results);
+          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(quiz.results));
 
         case 6:
         case "end":
@@ -2430,7 +2417,7 @@ function __requestSubmitQuizSuccess(results) {
   };
 }
 function submitQuiz() {
-  var _wpSelect, getDefaultRestArgs, getData, _getDefaultRestArgs, item_id, course_id, answered, result;
+  var _wpSelect, getDefaultRestArgs, getData, getAnswered, _getDefaultRestArgs, item_id, course_id, answered, result;
 
   return regeneratorRuntime.wrap(function submitQuiz$(_context2) {
     while (1) {
@@ -2440,9 +2427,9 @@ function submitQuiz() {
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestSubmitQuiz');
 
         case 2:
-          _wpSelect = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect.getDefaultRestArgs, getData = _wpSelect.getData;
+          _wpSelect = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect.getDefaultRestArgs, getData = _wpSelect.getData, getAnswered = _wpSelect.getAnswered;
           _getDefaultRestArgs = getDefaultRestArgs(), item_id = _getDefaultRestArgs.item_id, course_id = _getDefaultRestArgs.course_id;
-          answered = getData('answered');
+          answered = getAnswered();
           _context2.next = 7;
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["apiFetch"])({
             path: 'lp/v1/users/submit-quiz',
@@ -2456,16 +2443,17 @@ function submitQuiz() {
 
         case 7:
           result = _context2.sent;
+          console.log(result, camelCaseDashObjectKeys(result.results));
 
           if (!result.success) {
-            _context2.next = 11;
+            _context2.next = 12;
             break;
           }
 
-          _context2.next = 11;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestSubmitQuizSuccess', result.results);
+          _context2.next = 12;
+          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(result.results));
 
-        case 11:
+        case 12:
         case "end":
           return _context2.stop();
       }
@@ -2510,7 +2498,7 @@ function showHint(id) {
         case 4:
           result = _context3.sent;
           _context3.next = 7;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestShowHintSuccess', id, result);
+          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestShowHintSuccess', id, camelCaseDashObjectKeys(result));
 
         case 7:
         case "end":
@@ -2550,7 +2538,7 @@ function checkAnswer(id) {
         case 5:
           result = _context4.sent;
           _context4.next = 8;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestCheckAnswerSuccess', id, result);
+          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestCheckAnswerSuccess', id, camelCaseDashObjectKeys(result));
 
         case 8:
           console.timeEnd('checkAnswer');
@@ -2704,6 +2692,8 @@ var _lodash = lodash,
     flow = _lodash.flow,
     isArray = _lodash.isArray,
     chunk = _lodash.chunk;
+var _LP = LP,
+    camelCaseDashObjectKeys = _LP.camelCaseDashObjectKeys;
 var STORE_DATA = {};
 var setItemStatus = function setItemStatus(item, status) {
   var userSettings = _objectSpread({}, item.userSettings, {
@@ -2823,19 +2813,13 @@ var userQuiz = function userQuiz() {
 
     case 'START_QUIZ':
     case 'START_QUIZ_SUCCESS':
-      return resetCurrentQuestion(state, {
-        status: 'started',
+      console.log(action.results);
+      return resetCurrentQuestion(state, _objectSpread({
         checkedQuestions: [],
         hintedQuestions: [],
         mode: '',
-        answered: action.data.answered,
-        questions: action.data.questions,
-        questionIds: action.data.question_ids,
-        totalTime: action.data.total_time,
-        duration: action.data.duration,
-        endTime: action.data.end_time,
         currentPage: 1
-      });
+      }, action.results));
 
     case 'SET_CURRENT_QUESTION':
       LP.localStorage.set("Q".concat(state.id, ".currentQuestion"), action.questionId);
@@ -2850,13 +2834,11 @@ var userQuiz = function userQuiz() {
       });
 
     case 'SUBMIT_QUIZ_SUCCESS':
-      return resetCurrentQuestion(state, {
-        status: 'completed',
+      return resetCurrentQuestion(state, _objectSpread({
         attempts: updateAttempt(state.attempts, action.results),
         submitting: false,
-        answered: action.data.answered,
         currentPage: 1
-      });
+      }, action.results));
 
     case 'UPDATE_USER_QUESTION_ANSWERS':
       return state.status === 'started' ? updateUserQuestionAnswer(state, action) : state;
@@ -2928,7 +2910,7 @@ var blocks = flow(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__["combineReducers"
 /*!********************************************************!*\
   !*** ./assets/src/js/frontend/quiz/store/selectors.js ***!
   \********************************************************/
-/*! exports provided: getQuestionOptions, getItemStatus, getProp, getQuizAttempts, getQuizAnswered, getQuestions, getData, getDefaultRestArgs, getQuestionAnswered, getCurrentQuestion, getQuestion, isCheckedAnswer, isCorrect, getUserMark */
+/*! exports provided: getQuestionOptions, getItemStatus, getProp, getQuizAttempts, getQuizAnswered, getQuestions, getData, getDefaultRestArgs, getQuestionAnswered, getCurrentQuestion, getQuestion, isCheckedAnswer, isCorrect, getAnswered, getUserMark */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2946,6 +2928,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getQuestion", function() { return getQuestion; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isCheckedAnswer", function() { return isCheckedAnswer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isCorrect", function() { return isCorrect; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAnswered", function() { return getAnswered; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUserMark", function() { return getUserMark; });
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
@@ -3065,6 +3048,23 @@ function isCheckedAnswer(state, id) {
   return checkedQuestions.indexOf(id) !== -1;
 }
 function isCorrect(state, id) {}
+
+var getAnswered = function getAnswered(state) {
+  var data = get(state, 'userQuiz.answered');
+  var returnData = {};
+
+  for (var id in data) {
+    if (!data.hasOwnProperty(id)) {
+      continue;
+    }
+
+    returnData[id] = data.answered;
+  }
+
+  return returnData;
+};
+
+
 function getUserMark(state) {
   var userQuiz = state.userQuiz || {};
   var answered = userQuiz.answered,

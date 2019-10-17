@@ -1,6 +1,7 @@
 import {dispatch, select, apiFetch} from '@learnpress/data-controls';
 import {select as wpSelect} from '@wordpress/data';
 
+const {camelCaseDashObjectKeys} = LP;
 /**
  * Set user data for app.
  * @param key
@@ -16,7 +17,7 @@ export function setQuizData(key, data) {
 
     return {
         type: 'SET_QUIZ_DATA',
-        data,
+        data: camelCaseDashObjectKeys(data)
     }
 }
 
@@ -40,13 +41,13 @@ export function setCurrentPage(currentPage) {
     }
 }
 
-export function __requestStartQuizSuccess(data, quizId, courseId, userId) {
+export function __requestStartQuizSuccess(results, quizId, courseId, userId) {
     return {
         type: 'START_QUIZ_SUCCESS',
         quizId,
         courseId,
         userId,
-        data
+        results
     }
 }
 
@@ -69,7 +70,7 @@ export function* startQuiz() {
 
     //yield dispatch('course-learner/course', 'startQuiz', quiz);
 
-    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', quiz.results);
+    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(quiz.results));
 }
 
 export function __requestSubmitQuiz() {
@@ -93,7 +94,8 @@ export function* submitQuiz() {
 
     const {
         getDefaultRestArgs,
-        getData
+        getData,
+        getAnswered
     } = wpSelect('learnpress/quiz');
 
     const {
@@ -101,7 +103,7 @@ export function* submitQuiz() {
         course_id
     } = getDefaultRestArgs();
 
-    const answered = getData('answered');
+    const answered = getAnswered();
 
     const result = yield apiFetch({
         path: 'lp/v1/users/submit-quiz',
@@ -112,9 +114,9 @@ export function* submitQuiz() {
             answered
         }
     });
-
+    console.log(result, camelCaseDashObjectKeys(result.results))
     if (result.success) {
-        yield dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', result.results);
+        yield dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(result.results));
     }
 }
 
@@ -155,7 +157,7 @@ export function* showHint(id) {
         }
     });
 
-    yield dispatch('learnpress/quiz', '__requestShowHintSuccess', id, result);
+    yield dispatch('learnpress/quiz', '__requestShowHintSuccess', id, camelCaseDashObjectKeys(result));
 }
 
 export function __requestCheckAnswerSuccess(id, result) {
@@ -190,7 +192,7 @@ export function* checkAnswer(id) {
         }
     });
 
-    yield dispatch('learnpress/quiz', '__requestCheckAnswerSuccess', id, result);
+    yield dispatch('learnpress/quiz', '__requestCheckAnswerSuccess', id, camelCaseDashObjectKeys(result));
     console.timeEnd('checkAnswer');
 
 }

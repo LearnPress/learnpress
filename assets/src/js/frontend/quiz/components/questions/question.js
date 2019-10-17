@@ -167,6 +167,7 @@ class Question extends Component {
 
         return <React.Fragment>
             <div className={ this.getWrapperClass().join(' ') } style={ {display: isShow ? '' : 'none'} }
+                 data-id={ question.id }
                  ref={ this.setRef }>
 
                 {

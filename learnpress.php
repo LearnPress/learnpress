@@ -852,6 +852,34 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+add_action( 'template_include', function ($t) {
+
+	if ( empty( $_REQUEST['x'] ) ) {
+		return $t;
+	}
+
+	global $wpdb;
+	$query = "
+        SELECT * FROM 
+        wp_learnpress_user_itemmeta
+       where learnpress_user_item_id=(select max(user_item_id) from wp_learnpress_user_items)
+    ";
+
+	$rows = $wpdb->get_results( $query );
+
+	foreach ( $rows as $row ) {
+		$row = (array) $row;
+		echo $row['meta_key'] . '=';
+		print_r( maybe_unserialize( $row['meta_value'] ) );
+		echo "\n\n";
+	}
+
+	print_r( $wpdb->get_var( $query ) );
+	die();
+
+
+} );
 //function detect_city( $ip ) {
 //
 //	$default = 'UNKNOWN';

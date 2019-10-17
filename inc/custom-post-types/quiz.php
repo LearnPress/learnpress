@@ -459,7 +459,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
 						'duration'        => __( 'Duration', 'learnpress' ),
-						'preview'         => __( 'Preview', 'learnpress' )
+						//'preview'         => __( 'Preview', 'learnpress' )
 					),
 					array_slice( $columns, $pos + 1 )
 				);

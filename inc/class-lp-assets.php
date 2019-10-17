@@ -164,7 +164,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'url'     => self::url( 'js/frontend/single-course.js' ),
 					'deps'    => array(
 						'lp-global',
-						'lp-custom-scrollbar',
+						//'lp-custom-scrollbar',
 						'lp-config',
 						'lp-data-controls',
 						'lp-quiz',
@@ -196,12 +196,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					'screens' => learn_press_is_page( 'become_a_teacher' )
 				),
-				'lp-custom-scrollbar' => array(
-					'url'  => self::url( 'js/vendor/jquery/jquery.scrollbar.js' ),
-					'deps' => array(
-						'jquery'
-					)
-				),
+//				'lp-custom-scrollbar' => array(
+//					'url'  => self::url( 'js/vendor/jquery/jquery.scrollbar.js' ),
+//					'deps' => array(
+//						'jquery'
+//					)
+//				),
 				'lp-custom'           => array(
 					'url'     => self::url( 'js/frontend/custom.js' ),
 					'deps'    => array(

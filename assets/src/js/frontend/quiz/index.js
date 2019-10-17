@@ -35,37 +35,22 @@ class Quiz extends Component {
             setQuizData
         } = this.props;
 
-        const sanitizedSettings = {};
-
-        function camelCaseDash(string) {
-            return string.replace(
-                /[-_]([a-z0-9])/g,
-                (match, letter) => letter.toUpperCase()
-            );
-        }
-
-        for (let prop in settings) {
-            if (!settings.hasOwnProperty(prop)) {
-                continue;
-            }
-
-            sanitizedSettings[camelCaseDash(prop)] = settings[prop];
-        }
-
         const {
-            questionIds,
-            questionsPerPage
-        } = sanitizedSettings;
+            question_ids,
+            questions_per_page
+        } = settings;
 
-        const chunks = chunk(questionIds, questionsPerPage);
+        const chunks = chunk(question_ids, questions_per_page);
 
-        sanitizedSettings.currentPage = 1;
-        sanitizedSettings.numPages = chunks.length;
-        sanitizedSettings.pages = chunks;
+        settings.currentPage = 1;
+        settings.numPages = chunks.length;
+        settings.pages = chunks;
 
         console.timeEnd('Quiz.componentDidMount');
-        console.log(sanitizedSettings)
-        setQuizData(sanitizedSettings);
+        setQuizData(settings);
+
+        console.log(wp.data.select('learnpress/quiz').getData())
+
     }
 
 

@@ -283,8 +283,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 						'start_time'      => $row->start_time,
 						'end_time'        => $row->end_time,
 						'expiration_time' => $row->expiration_time,
-						'grade'           => learn_press_get_user_item_meta( $row->user_item_id, 'grade', true ),
-						'answered'        => learn_press_get_user_item_meta( $row->user_item_id, '_question_answers', true )
+						'grade'           => learn_press_get_user_item_meta( $row->user_item_id, 'grade', true )
 					),
 					$results
 				);
@@ -385,6 +384,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					$result['question_answered'] ++;
 				}
 			}
+
 
 			// make sure user mark greater than 0
 			$result['user_mark'] = ( $result['user_mark'] >= 0 ) ? $result['user_mark'] : 0;

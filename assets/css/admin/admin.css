@@ -2805,6 +2805,11 @@ ul .clearfix {
             text-align: right;
             color: #0073aa;
             min-width: 100px; }
+          #admin-editor-lp_question .lp-box-data-head .question-actions .question-types ul li.disabled {
+            background: #F5F5F5; }
+            #admin-editor-lp_question .lp-box-data-head .question-actions .question-types ul li.disabled a {
+              color: #999;
+              pointer-events: none; }
         #admin-editor-lp_question .lp-box-data-head .question-actions .question-types ul:hover {
           display: block; }
       #admin-editor-lp_question .lp-box-data-head .question-actions:hover .question-types ul {

@@ -132,7 +132,7 @@ function formatDuration(seconds) {
 }
 
 var toggleSidebarHandler = function toggleSidebarHandler(event) {
-  LP.localStorage.set('sidebar-toggle', event.target.checked);
+  LP.Cookies.set('sidebar-toggle', event.target.checked);
 };
 
 
@@ -169,27 +169,35 @@ var AjaxSearchCourses = function AjaxSearchCourses(el) {
 };
 
 $(window).load(function () {
+  var $popup = $('#popup-course');
   var timerClearScroll;
-  var $curriculum = $('#learn-press-course-curriculum');
-  $curriculum.scroll(lodash.throttle(function () {
-    var $self = $(this);
-    $self.addClass('scrolling');
-    timerClearScroll && clearTimeout(timerClearScroll);
-    timerClearScroll = setTimeout(function () {
-      $self.removeClass('scrolling');
-    }, 1000);
-  }, 500));
+  var $curriculum = $('#learn-press-course-curriculum'); // Popup only
+
+  if ($popup.length) {
+    $curriculum.scroll(lodash.throttle(function () {
+      var $self = $(this);
+      $self.addClass('scrolling');
+      timerClearScroll && clearTimeout(timerClearScroll);
+      timerClearScroll = setTimeout(function () {
+        $self.removeClass('scrolling');
+      }, 1000);
+    }, 500));
+    $('#sidebar-toggle').on('change', toggleSidebarHandler);
+    new AjaxSearchCourses($('#search-course'));
+    createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
+    LP.toElement('.course-item.current', {
+      container: '.curriculum-scrollable:eq(1)',
+      offset: 200
+    });
+  }
+
   $curriculum.find('.section-desc').each(function (i, el) {
     var a = $('<span class="show-desc"></span>').on('click', function () {
       b.toggleClass('c');
     });
     var b = $(el).siblings('.section-title').append(a);
   });
-  $('#sidebar-toggle').on('change', toggleSidebarHandler).prop('checked', LP.localStorage.get('sidebar-toggle'));
-  new AjaxSearchCourses($('#search-course'));
-  createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
-  LP.Hook.doAction('course-ready');
-  console.log('BBBB'); // if (window.location.hash) {
+  LP.Hook.doAction('course-ready'); // if (window.location.hash) {
   //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
   // }
 });

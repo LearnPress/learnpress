@@ -71,7 +71,7 @@ export default compose([
         } = select('learnpress/quiz');
 
         return {
-            results: get(getData('attempts'), '0')
+            results: getData('results')
         }
     }),
     withDispatch((dispatch) => {

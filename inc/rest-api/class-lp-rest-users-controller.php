@@ -327,6 +327,10 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$results['duration'] = $duration ? $duration->get() : false;
 			$results['answered'] = $userQuiz->get_results( '' )->getQuestions();
+			$results['status']   = $userQuiz->get_status();
+
+			$attempts           = $userQuiz->get_attempts( array( 'limit' => 1 ) );
+			$results['results'] = $attempts[0];
 
 			$response['results'] = $results;
 		}
@@ -347,14 +351,15 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		$answered    = $request['answered'];
 		$user        = learn_press_get_user( $user_id );
 		$user_course = $user->get_course_data( $course_id );
-		$result      = false;
-		$user_quiz   = false;
+		$results     = array();
+		$userQuiz    = false;
 
 		if ( $user_course ) {
-			$user_quiz = $user_course->get_item( $item_id );
+			$userQuiz = $user_course->get_item( $item_id );
 
-			if ( $user_quiz ) {
-				$user_quiz->add_question_answer( $answered );
+			if ( $userQuiz ) {
+				$userQuiz->add_question_answer( $answered );
+				$userQuiz->calculate_results();
 			}
 		}
 
@@ -367,8 +372,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		);
 
 		if ( $success ) {
-			$attempts            = $user_quiz->get_attempts( array( 'limit' => 1 ) );
-			$response['results'] = $attempts[0];
+			$attempts            = $userQuiz->get_attempts( array( 'limit' => 1 ) );
+			$results['answered'] = $userQuiz->get_results( '' )->getQuestions();
+			$results['status']   = $userQuiz->get_status();
+			$results['results']  = $attempts[0];
+
+			$response['results'] = $results;
 		}
 
 		return rest_ensure_response( $response );

@@ -36,7 +36,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param mixed
 		 */
 		public function __construct( $post_type, $args = '' ) {
-
+			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'edit_form_after_editor', array( __CLASS__, 'template_question_editor' ) );
 			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_question_editor' ) );
@@ -48,6 +48,25 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			     ->add_map_method( 'save', 'save_question' );
 
 			parent::__construct( $post_type, $args );
+		}
+
+		/**
+		 * Add question types support answer options
+		 *
+		 * @since 4.x.x
+		 */
+		public function plugins_loaded() {
+			$default_support_options = apply_filters(
+				'learn-press/default-question-types-support-answer-options',
+				array(
+					'true_or_false',
+					'single_choice',
+					'multi_choice'
+				) );
+
+			foreach ( $default_support_options as $type ) {
+				LP_Global::add_object_feature( 'question.' . $type, 'answer-options', 'yes' );
+			}
 		}
 
 		/**
@@ -127,7 +146,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 ////				}
 //
 //			} else {
-				$answers = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
+			$answers = ( $question->get_data( 'answer_options' ) ? array_values( $question->get_data( 'answer_options' ) ) : array() );
 
 //			if ( $pagenow === 'post-new.php' ) {
 //				$question = LP_Question::get_question( $post->ID, array( 'type' => apply_filters( 'learn-press/default-add-new-question-type', 'true_or_false' ) ) );
@@ -141,7 +160,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 				$answers = array(
 					array(
 						'question_answer_id' => 0,
-						'title'               => ''
+						'title'              => ''
 					)
 				);
 			}

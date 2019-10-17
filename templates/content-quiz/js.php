@@ -45,7 +45,8 @@ if ( $userQuiz ) {
 		'attempts'          => $attempts,
 		'checked_questions' => $checkedQuestions,
 		'hinted_questions'  => $hintedQuestions,
-		'start_time'        => $userQuiz->get_start_time()->toSql()
+		'start_time'        => $userQuiz->get_start_time()->toSql(),
+		'results'           => $userQuiz->get_results( '' )->get()
 	);
 
 	if ( isset( $totalTime ) ) {
@@ -56,7 +57,7 @@ if ( $userQuiz ) {
 	$answered     = $results->getQuestions();// getAnswered();// $userQuiz->get_meta( '_question_answers' );
 	$question_ids = $results->getQuestions( 'ids' );// $userQuiz->get_meta( 'questions' );
 
-	if ( !$question_ids ) {
+	if ( ! $question_ids ) {
 		$question_ids = $quiz->get_question_ids();
 	}
 }
@@ -108,6 +109,7 @@ $js = array(
 	'duration'             => $duration ? $duration->get() : false,
 	'crypto'               => $cryptoJsAes,
 	'edit_permalink'       => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
+	'results'              => array()
 );
 
 $js = array_merge( $js, $userJS );

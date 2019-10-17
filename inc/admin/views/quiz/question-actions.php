@@ -19,8 +19,9 @@
         <div class="type">{{question.type.label}}</div>
         <div class="actions">
             <div class="lp-box-data-actions lp-toolbar-buttons">
-                <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type lp-title-attr-tip"
-                     data-content-tip="<?php echo esc_attr( 'Change type', 'learnpress' ); ?>">
+                <div
+                        class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type lp-title-attr-tip"
+                        data-content-tip="<?php echo esc_attr( 'Change type', 'learnpress' ); ?>">
                     <a class="lp-btn-icon dashicons dashicons-randomize"></a>
                     <ul>
                         <li v-for="(type, key) in questionTypes" :class="active(key)">
@@ -75,7 +76,7 @@
             mounted: function () {
                 this.$nextTick(function () {
                     var $ = jQuery;
-                    $(this.$el).find('.lp-title-attr-tip').LP('QuickTip',{
+                    $(this.$el).find('.lp-title-attr-tip').LP('QuickTip', {
                         closeInterval: 0,
                         arrowOffset: 'el',
                         tipClass: 'preview-item-tip'
@@ -108,7 +109,18 @@
             methods: {
                 // check question type active
                 active: function (type) {
-                    return this.question.type.key === type ? 'active' : '';
+                    var classes = [''];
+
+                    if (this.question.type.key === type) {
+                        classes.push('active');
+                    }
+
+                    var supportTypes = $store.getters['lqs/supportAnswerOptions'];
+                    if (supportTypes.indexOf(type) === -1 || supportTypes.indexOf(this.question.type.key) === -1) {
+                        classes.push('disabled')
+                    }
+
+                    return classes;
                 },
                 // onchange question title
                 changeTitle: function () {
@@ -123,7 +135,7 @@
                 },
                 // change question type
                 changeType: function (type) {
-                    if (this.question.type !== type) {
+                    if (this.question.type.key !== type) {
                         $store.dispatch('lqs/changeQuestionType', {
                             question_id: this.question.id,
                             type: type
@@ -158,6 +170,10 @@
                     } else {
                         this.$emit('nav', {key: e.keyCode, order: this.index});
                     }
+                },
+                getQuestionsSupportAnswerOptions: function () {
+                    var supportTypes = $store.getters['lqs/supportAnswerOptions'];
+                    return supportTypes.indexOf(this.question.type.key) !== -1 ? lodash.pick(this.questionTypes, supportTypes) : false;
                 }
             }
         });

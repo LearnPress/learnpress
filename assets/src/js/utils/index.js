@@ -439,6 +439,40 @@ const _default = {
         }
         LP.Hook.doAction('learn_press_receive_message', data, target);
     },
+
+    camelCaseDashObjectKeys: function (obj, deep = false) {
+        const self = LP;
+        const isArray = function (a) {
+            return Array.isArray(a);
+        };
+        const isObject = function (o) {
+            return o === Object(o) && !isArray(o) && typeof o !== 'function';
+        };
+        const toCamel = (s) => {
+            return s.replace(/([-_][a-z])/ig, ($1) => {
+                return $1.toUpperCase()
+                    .replace('-', '')
+                    .replace('_', '');
+            });
+        };
+
+        if (isObject(obj)) {
+            const n = {};
+
+            Object.keys(obj)
+                .forEach((k) => {
+                    n[toCamel(k)] = deep ? self.camelCaseDashObjectKeys(obj[k]) : obj[k];
+                });
+
+            return n;
+        } else if (isArray(obj)) {
+            return obj.map((i) => {
+                return self.camelCaseDashObjectKeys(i);
+            });
+        }
+
+        return obj;
+    }
 }
 
 $(document).ready(function () {

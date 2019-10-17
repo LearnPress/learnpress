@@ -236,7 +236,7 @@ class QuestionBase extends Component {
                                    checked={ this.maybeCheckedAnswer(option.value) }
                                    value={ status === 'started' ? option.value : '' }/>
                             <label htmlFor={ ID } className="option-title"
-                                   dangerouslySetInnerHTML={ {__html: option.text || option.value} }>
+                                   dangerouslySetInnerHTML={ {__html: option.title || option.value} }>
                             </label>
                         </li>
                     })

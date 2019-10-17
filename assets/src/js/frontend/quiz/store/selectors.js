@@ -89,7 +89,6 @@ export function getDefaultRestArgs(state) {
 
 export function getQuestionAnswered(state, id) {
     const {userQuiz} = state;
-
     return get(userQuiz, `answered.${id}.answered`) || undefined;
 }
 
@@ -126,6 +125,22 @@ export function isCheckedAnswer(state, id) {
 export function isCorrect(state, id) {
 
 }
+
+const getAnswered = function (state) {
+    const data = get(state, 'userQuiz.answered');
+    const returnData = {};
+
+    for (let id in data) {
+        if (!data.hasOwnProperty(id)) {
+            continue;
+        }
+        returnData[id] = data.answered;
+    }
+
+    return returnData;
+}
+
+export {getAnswered};
 
 export function getUserMark(state) {
     const userQuiz = state.userQuiz || {};
