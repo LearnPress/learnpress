@@ -173,7 +173,7 @@ class QuestionBase extends Component {
         for (i = 0, options = this.getOptions(); i < options.length; i++) {
             option = options[i];
 
-            if (option.is_true === 'yes') {
+            if (option.isTrue === 'yes') {
                 if (answered == option.value) {
                     return true;
                 }

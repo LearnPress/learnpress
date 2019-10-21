@@ -1694,20 +1694,19 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 	$metaData = array_merge(
 		array(
 			'data'    => array(
-				//'questions'       => $quiz->get_question_ids(),
 				'duration'        => $duration ? $quiz->get_duration()->get() : 'unlimited',
 				'passingGrade'    => $quiz->get_passing_grade(),
 				'negativeMarking' => $quiz->get_negative_marking()
 			),
 			'grade'   => '',
-			//'answers' => '',
 			'results' => array(
 				'questions' => array_fill_keys( $questionIds, array(
 					'answered' => '',
 					'correct'  => '',
 					'mark'     => 0
 				) )
-			)
+			),
+			'version' => LEARNPRESS_VERSION
 		),
 		$createMeta
 	);
@@ -1948,7 +1947,7 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				$blankFillsStyle = get_post_meta( $id, '_lp_blank_fills_style', true );
 
 				foreach ( $blanks as $k => $blank ) {
-					$blanks[ $k ]['text'] = preg_replace( '/\{\{([^\{\"\'].*?)\}\}/', '{{BLANK}}', $blank['text'] );
+					$blanks[ $k ]['text'] = preg_replace( '/\{\{([^\{\"\'].*?)\}\}/', '{{BLANK}}', $blank['title'] );
 					$blankOptions         = learn_press_get_question_answer_meta( $blank['uid'], '_blanks', true );
 
 					if ( in_array( $blankFillsStyle, array( 'select', 'enumeration' ) ) ) {

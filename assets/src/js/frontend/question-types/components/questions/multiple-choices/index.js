@@ -20,7 +20,7 @@ class QuestionMultipleChoices extends QuestionBase {
         for (i = 0, options = this.getOptions(); i < options.length; i++) {
             option = options[i];
 
-            if (option.is_true === 'yes') {
+            if (option.isTrue === 'yes') {
                 if (answered.indexOf(option.value) === -1) {
                     return false;
                 }
@@ -42,12 +42,12 @@ class QuestionMultipleChoices extends QuestionBase {
         const optionClass = [...this.state.optionClass];
 
         if (this.maybeShowCorrectAnswer()) {
-            if (option.is_true === 'yes') {
+            if (option.isTrue === 'yes') {
                 optionClass.push('answer-correct');
             }
 
             if (answered) {
-                if (option.is_true === 'yes') {
+                if (option.isTrue === 'yes') {
                     answered.indexOf(option.value) !== -1 && optionClass.push('answered-correct');
                 } else {
                     answered.indexOf(option.value) !== -1 && optionClass.push('answered-wrong');

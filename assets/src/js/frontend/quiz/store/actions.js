@@ -1,7 +1,7 @@
 import {dispatch, select, apiFetch} from '@learnpress/data-controls';
-import {select as wpSelect} from '@wordpress/data';
+import {select as wpSelect, dispatch as wpDispatch} from '@wordpress/data';
 
-const {camelCaseDashObjectKeys} = LP;
+const {camelCaseDashObjectKeys, Hook} = LP;
 /**
  * Set user data for app.
  * @param key
@@ -41,7 +41,19 @@ export function setCurrentPage(currentPage) {
     }
 }
 
+export function __requestBeforeStartQuiz(quizId, courseId, userId) {
+
+    Hook.addAction('before-start-quiz', quizId, courseId, userId);
+
+    return {
+        type: 'BEFORE_START_QUIZ'
+    }
+}
+
 export function __requestStartQuizSuccess(results, quizId, courseId, userId) {
+
+    results = Hook.applyFilters('quiz-started', results, quizId, courseId, userId);
+
     return {
         type: 'START_QUIZ_SUCCESS',
         quizId,
@@ -51,15 +63,19 @@ export function __requestStartQuizSuccess(results, quizId, courseId, userId) {
     }
 }
 
-export function* startQuiz() {
-    //yield dispatch('learnpress/quiz', '__requestStartQuizStart');
+/**
+ * Request to api for starting a quiz.
+ */
+const startQuiz = function*() {
 
     const {
         item_id,
         course_id
     } = wpSelect('learnpress/quiz').getDefaultRestArgs();
 
-    const quiz = yield apiFetch({
+    yield dispatch('learnpress/quiz', '__requestBeforeStartQuiz', item_id, course_id);
+
+    let response = yield apiFetch({
         path: 'lp/v1/users/start-quiz',
         method: 'POST',
         data: {
@@ -68,10 +84,12 @@ export function* startQuiz() {
         }
     });
 
-    //yield dispatch('course-learner/course', 'startQuiz', quiz);
+    response = Hook.applyFilters('request-start-quiz-response', response, item_id, course_id);
 
-    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(quiz.results));
+    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']));
 }
+
+export {startQuiz}
 
 export function __requestSubmitQuiz() {
     return {
@@ -81,7 +99,7 @@ export function __requestSubmitQuiz() {
 
 export function __requestSubmitQuizSuccess(results) {
 
-    LP.Hook.doAction('quiz-submitted', results);
+    results = Hook.applyFilters('quiz-submitted', results);
 
     return {
         type: 'SUBMIT_QUIZ_SUCCESS',
@@ -94,8 +112,7 @@ export function* submitQuiz() {
 
     const {
         getDefaultRestArgs,
-        getData,
-        getAnswered
+        getQuestionsSelectedAnswers
     } = wpSelect('learnpress/quiz');
 
     const {
@@ -103,9 +120,8 @@ export function* submitQuiz() {
         course_id
     } = getDefaultRestArgs();
 
-    const answered = getAnswered();
-
-    const result = yield apiFetch({
+    const answered = getQuestionsSelectedAnswers();
+    let response = yield apiFetch({
         path: 'lp/v1/users/submit-quiz',
         method: 'POST',
         data: {
@@ -114,9 +130,11 @@ export function* submitQuiz() {
             answered
         }
     });
-    console.log(result, camelCaseDashObjectKeys(result.results))
-    if (result.success) {
-        yield dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(result.results));
+
+    response = Hook.applyFilters('request-submit-quiz-response', response, item_id, course_id);
+
+    if (response.success) {
+        yield dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results));
     }
 }
 

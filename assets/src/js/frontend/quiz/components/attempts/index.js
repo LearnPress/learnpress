@@ -10,33 +10,32 @@ const {uniqueId} = lodash;
  */
 class Attempts extends Component {
     getDurationLabel(attempt) {
-        if (!attempt.expiration_time) {
+        if (!attempt.expirationTime) {
             return __('Unlimited', 'learnpress');
         }
 
         const {formatDuration} = LP.singleCourse;
-        const milliseconds = new Date(attempt.expiration_time).getTime() - new Date(attempt.start_time).getTime();
+        const milliseconds = new Date(attempt.expirationTime).getTime() - new Date(attempt.startTime).getTime();
 
         return milliseconds ? formatDuration(milliseconds / 1000) : '';
     }
 
     getTimeSpendLabel(attempt){
         const {formatDuration} = LP.singleCourse;
-        const milliseconds = new Date(attempt.end_time).getTime() - new Date(attempt.start_time).getTime();
+        const milliseconds = new Date(attempt.endTime).getTime() - new Date(attempt.startTime).getTime();
         return milliseconds ? formatDuration(milliseconds / 1000) : '';
     }
 
     render() {
         const {
-            attempts,
-            attemptsCount
+            attempts
         } = this.props;
 
         const hasAttempts = attempts && !!attempts.length;
 
-        return <React.Fragment>
+        return !hasAttempts ? false : <React.Fragment>
             <div className="quiz-attempts">
-            <h4 className="attempts-heading">{ __('Attempts', 'learnpress') } ( {attempts.length || 0} / {attemptsCount} )</h4>
+            <h4 className="attempts-heading">{ __('Last Attempted', 'learnpress') }</h4>
             {
                 hasAttempts &&
                 <table>
@@ -54,12 +53,12 @@ class Attempts extends Component {
                     {
                         attempts.map((row) => {
                             return <tr key={ `attempt-${row.id}` }>
-                                <td>{row.start_time}</td>
-                                <td>{row.question_correct} / {row.question_count}</td>
+                                <td>{row.startTime}</td>
+                                <td>{row.questionCorrect} / {row.questionCount}</td>
                                 <td>{ this.getTimeSpendLabel(row) } / {this.getDurationLabel(row)}</td>
-                                <td>{row.user_mark} / {row.mark}</td>
-                                <td>{row.passing_grade || _x('-', 'unknown passing grade value', 'learnpress')}</td>
-                                <td>{parseFloat(row.result).toFixed(2)}% <label>{row.grade_text}</label></td>
+                                <td>{row.userMark} / {row.mark}</td>
+                                <td>{row.passingGrade || _x('-', 'unknown passing grade value', 'learnpress')}</td>
+                                <td>{parseFloat(row.result).toFixed(2)}% <label>{row.gradeText}</label></td>
                             </tr>
                         })
                     }
@@ -67,10 +66,10 @@ class Attempts extends Component {
                 </table>
             }
 
-            {
-                !hasAttempts &&
-                <p className="no-attempts-message">{ __('There is no attempt now.', 'learnpress') }</p>
-            }
+            {/*{*/}
+                {/*!hasAttempts &&*/}
+                {/*<p className="no-attempts-message">{ __('There is no attempt now.', 'learnpress') }</p>*/}
+            {/*}*/}
             </div>
         </React.Fragment>
     }
@@ -84,7 +83,7 @@ export default compose([
 
         return {
             id: getData('id'),
-            attempts: getData('attempts'),
+            attempts: [getData('attempts[0]')],
             attemptsCount: getData('attemptsCount'),
             status: getData('status'),
             questionIds: getData('questionIds'),

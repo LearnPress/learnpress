@@ -20,7 +20,10 @@ $userJS    = array();
 
 $userCourse       = $user->get_course_data( $course->get_id() );
 $userQuiz         = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
-$attempts         = $userQuiz->get_attempts();/// get_attempts($quiz->get_id(), $course->get_id(), $user->get_id());
+$attempts         = $userQuiz->get_attempts( array(
+	'limit'  => 1,
+	'offset' => 1
+) );/// get_attempts($quiz->get_id(), $course->get_id(), $user->get_id());
 $answered         = array();
 $status           = '';
 $checkedQuestions = array();
@@ -30,7 +33,7 @@ $cryptoJsAes = false;//function_exists( 'openssl_decrypt' );
 $editable    = $user->is_admin() || get_post_field( $user->is_author_of( $course->get_id() ) );
 if ( $userQuiz ) {
 	$status           = $userQuiz->get_status();
-	$results          = $userQuiz->get_results( '' );
+	$quizResults      = $userQuiz->get_results( '' );
 	$checkedQuestions = $userQuiz->get_checked_questions();
 	$hintedQuestions  = $userQuiz->get_hint_questions();
 	$expirationTime   = $userQuiz->get_expiration_time();
@@ -46,7 +49,7 @@ if ( $userQuiz ) {
 		'checked_questions' => $checkedQuestions,
 		'hinted_questions'  => $hintedQuestions,
 		'start_time'        => $userQuiz->get_start_time()->toSql(),
-		'results'           => $userQuiz->get_results( '' )->get()
+		'results'           => $quizResults->get()
 	);
 
 	if ( isset( $totalTime ) ) {
@@ -54,8 +57,8 @@ if ( $userQuiz ) {
 		$userJS['endTime']   = $expirationTime->toSql();
 	}
 
-	$answered     = $results->getQuestions();// getAnswered();// $userQuiz->get_meta( '_question_answers' );
-	$question_ids = $results->getQuestions( 'ids' );// $userQuiz->get_meta( 'questions' );
+	$answered     = $quizResults->getQuestions();// getAnswered();// $userQuiz->get_meta( '_question_answers' );
+	$question_ids = $quizResults->getQuestions( 'ids' );// $userQuiz->get_meta( 'questions' );
 
 	if ( ! $question_ids ) {
 		$question_ids = $quiz->get_question_ids();

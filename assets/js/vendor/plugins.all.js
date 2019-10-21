@@ -15469,7 +15469,6 @@ if (!Object.prototype.unwatchChange) {
  */
 ;
 (function (root, factory) {
-    console.log(root, root.jQuery)
     factory(root.jQuery);
 }(window, function ($) {
     // Hello

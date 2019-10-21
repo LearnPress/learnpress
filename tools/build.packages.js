@@ -16,10 +16,12 @@ const buildPath = __dirname + '/build';
 const {camelCaseDash} = require('@wordpress/scripts/utils');
 const packageDir = baseDir + '/assets/src/';
 const buildPackages = [
+
     // Admin
     'admin/data-controls',
     'admin/question-editor',
     // Frontend
+    'frontend/modal',
     'frontend/single-course',
     'frontend/question-types',
     'frontend/lesson',

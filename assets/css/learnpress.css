@@ -2257,6 +2257,10 @@ body.confirm #popup_container {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px; }
+  .learnpress-page .lp-button.secondary {
+    background: #9198ab; }
+    .learnpress-page .lp-button.secondary:hover {
+      background: #9ba6c5; }
   .learnpress-page .lp-button:disabled, .learnpress-page .lp-button[disabled] {
     background: #DDD;
     pointer-events: none; }
@@ -2758,12 +2762,12 @@ body.confirm #popup_container {
     margin: 0 5px 0 0; }
   #popup-course .question .btn-show-hint {
     background: transparent;
-    color: #d9e0f1;
+    color: #00adff;
     padding: 0;
     margin: 0 0 0 10px;
     font-size: 21px; }
     #popup-course .question .btn-show-hint:before {
-      content: "\f059";
+      content: "\f05a";
       font-family: Fontawesome; }
   #popup-course .question.question-fill_in_blanks .blanks .blank-input-wrap {
     display: inline-block; }
@@ -2870,6 +2874,53 @@ body.admin-bar #popup-course {
     left: 0; }
   #popup-course .course-item-meta .item-meta.count-questions, #popup-course .course-item-meta .item-meta.duration {
     display: none; } }
+
+#lp-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999999;
+  background: #000;
+  opacity: 0.5;
+  display: none; }
+
+#lp-modal-window {
+  position: fixed;
+  min-width: 300px;
+  background: #FFF;
+  z-index: 999999;
+  display: none;
+  padding: 20px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px; }
+  #lp-modal-window #lp-modal-content {
+    margin: 0 0 20px 0; }
+    #lp-modal-window #lp-modal-content > * {
+      margin: 0 0 0.5em; }
+  #lp-modal-window #lp-modal-buttons .lp-button {
+    float: right;
+    margin: 0 0 0 10px;
+    position: relative; }
+    #lp-modal-window #lp-modal-buttons .lp-button.modal-button-cancel {
+      position: absolute;
+      top: 0;
+      right: 20px;
+      padding: 0;
+      background: transparent;
+      color: #777; }
+      #lp-modal-window #lp-modal-buttons .lp-button.modal-button-cancel span {
+        display: none; }
+      #lp-modal-window #lp-modal-buttons .lp-button.modal-button-cancel:after {
+        content: "\f00d";
+        font-family: Fontawesome; }
+      #lp-modal-window #lp-modal-buttons .lp-button.modal-button-cancel:hover {
+        color: #00adff; }
 
 input[type="text"],
 input[type="email"],

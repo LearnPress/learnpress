@@ -13,10 +13,6 @@ class Status extends Component {
         this.state = {
             submitting: false
         }
-
-        LP.Hook.addAction('quiz-submitted', (results) => {
-            console.log(results)
-        });
     }
 
     componentDidMount() {
@@ -68,6 +64,14 @@ class Status extends Component {
      * Submit question to record results.
      */
     submit = () => {
+
+        const {confirm} = select('learnpress/modal');
+        const title = select('learnpress/quiz').getData('title');
+
+        if ('no' === confirm(sprintf(__('<p>Are you sure to submit quiz:</p><strong>%s</strong>?', 'learnpress'), title), this.submit)) {
+            return;
+        }
+
         const {
             submitQuiz
         } = this.props;
@@ -77,7 +81,6 @@ class Status extends Component {
 
     getMark = () => {
         const answered = select('learnpress/quiz').getData('answered');
-        console.log('getMark')
         return Object.values(answered).reduce((m, r) => {
             return m + r.mark;
         }, 0);
@@ -123,7 +126,7 @@ class Status extends Component {
                     }
                 </div>
 
-                Earned Point: {userMark}
+                <div className="current-point">{sprintf(__('Earned Point: %s', 'learnpress'), userMark)}</div>
 
                 <div className="submit-quiz">
                     <button className="lp-button" id="button-submit-quiz"

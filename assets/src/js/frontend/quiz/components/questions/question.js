@@ -62,7 +62,7 @@ class Question extends Component {
         const classes = ['question', 'question-' + question.type];
         const options = this.parseOptions(question.options);
 
-        if (options.length && options[0].is_true !== undefined) {
+        if (options.length && options[0].isTrue !== undefined) {
             classes.push('question-answered');
         }
 
@@ -187,7 +187,7 @@ export default compose([
         const {
             getData,
             getQuestionAnswered,
-            isCorrect,
+            //isCorrect,
         } = select('learnpress/quiz');
 
         return {
@@ -196,7 +196,7 @@ export default compose([
             answered: getQuestionAnswered(id),
             questionsRendered: getData('questionsRendered'),
             editPermalink: getData('editPermalink'),
-            isCorrect: isCorrect(id),
+            //isCorrect: isCorrect(id),
             numPages: getData('numPages')
         }
     }),

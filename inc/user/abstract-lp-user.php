@@ -858,16 +858,17 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				//learn_press_show_log($course_data, $course_data->get_item( $item_id ));
 
 				if ( $item = $course_data->get_item( $item_id ) ) {
-					learn_press_show_log( 'HERE' );
 				} else {
 					$item = LP_User_Item::get_item_object( $item_id );
 					$item->set_ref_id( $course_id );
 					$item->set_parent_id( $course_data->get_user_item_id() );
+
+					if ( $return = $item->update() ) {
+						$course_data->set_item( $item );
+					}
 				}
 
-				if ( $return = $item->update() ) {
-					$course_data->set_item( $item );
-				}
+
 			}
 
 			return $return;

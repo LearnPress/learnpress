@@ -8,6 +8,7 @@ $primary-bg-color-after: #000;
 // Import
 @import "mixin.scss";
 @import "ajaxload";
+
 @import "frontend/checkout";
 @import "frontend/form";
 @import "frontend/profile";
@@ -22,6 +23,7 @@ $primary-bg-color-after: #000;
 @import "frontend/courses";
 @import "frontend/course-sidebar";
 @import "frontend/popup";
+@import "modal";
 
 input[type="text"],
 input[type="email"],

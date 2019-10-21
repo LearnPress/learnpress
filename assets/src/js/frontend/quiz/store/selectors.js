@@ -55,6 +55,12 @@ export function getQuizAnswered(state, itemId) {
     return item ? get(item, 'userSettings.answered', {}) : {};
 }
 
+/**
+ * Get all questions in quiz.
+ *
+ * @param state
+ * @return {*}
+ */
 export function getQuestions(state) {
     const {userQuiz} = state;
     const questions = get(userQuiz, 'questions');
@@ -89,10 +95,17 @@ export function getDefaultRestArgs(state) {
 
 export function getQuestionAnswered(state, id) {
     const {userQuiz} = state;
+
     return get(userQuiz, `answered.${id}.answered`) || undefined;
 }
 
-
+/**
+ * Get current question is doing.
+ *
+ * @param {object} state
+ * @param {string} ret
+ * @return {*}
+ */
 export function getCurrentQuestion(state, ret = '') {
     const questionsPerPage = get(state, 'userQuiz.questionsPerPage') || 1;
 
@@ -104,6 +117,12 @@ export function getCurrentQuestion(state, ret = '') {
     return ret === 'object' ? get(state, `userQuiz.questions[${currentPage - 1}]`) : get(state, `userQuiz.questionIds[${currentPage - 1}]`)
 }
 
+/**
+ * Return a question contains fully data with title, content, ...
+ *
+ * @param state
+ * @param theId
+ */
 const getQuestion = function getQuestion(state, theId) {
     const {userQuiz} = state;
     const s = select('learnpress/quiz');
@@ -116,6 +135,13 @@ const getQuestion = function getQuestion(state, theId) {
 
 export {getQuestion};
 
+/**
+ * If user has used 'Instant check' for a question.
+ *
+ * @param {object} state - Global state for app.
+ * @param {number} id
+ * @return {boolean}
+ */
 export function isCheckedAnswer(state, id) {
     const checkedQuestions = get(state, 'userQuiz.checkedQuestions') || [];
 
@@ -126,22 +152,46 @@ export function isCorrect(state, id) {
 
 }
 
-const getAnswered = function (state) {
+/**
+ * Get questions user has selected answers.
+ *
+ * @param {object} state. Global app state
+ * @param {number} questionId
+ * @return {{}}
+ */
+const getQuestionsSelectedAnswers = function (state, questionId) {
     const data = get(state, 'userQuiz.answered');
     const returnData = {};
 
-    for (let id in data) {
-        if (!data.hasOwnProperty(id)) {
+    for (let loopId in data) {
+        if (!data.hasOwnProperty(loopId)) {
             continue;
         }
-        returnData[id] = data.answered;
+
+        // Answer filled by user
+        if (data[loopId].temp) {
+
+            // If specific a question then return it only.
+            if (questionId && loopId === questionId) {
+                return data[loopId].answered;
+            }
+
+            returnData[loopId] = data[loopId].answered;
+        }
     }
 
     return returnData;
 }
 
-export {getAnswered};
+export {getQuestionsSelectedAnswers};
 
+/**
+ * Get mark user earned.
+ * Just for questions user has used 'Instant check' button.
+ *
+ * @param state
+ * @return {number}
+ */
 export function getUserMark(state) {
     const userQuiz = state.userQuiz || {};
     const {
@@ -159,7 +209,7 @@ export function getUserMark(state) {
 
         id = parseInt(id);
         const data = answered[id];
-        const questionMark = data.question_mark ? data.question_mark : (function () {
+        const questionMark = data.questionMark ? data.questionMark : (function () {
             const question = questions.find((q) => {
                 return q.id === id;
             });

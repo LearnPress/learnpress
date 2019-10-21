@@ -936,3 +936,5 @@ add_action( 'template_include', function ($t) {
 //add_action('plugins_loaded', function(){
 //	var_dump(WC_Geolocation::geolocate_ip('14.162.255.20'));
 //});
+
+

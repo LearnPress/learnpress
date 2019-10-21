@@ -19,7 +19,7 @@ class QuestionFillInBlanks extends QuestionBase {
         const optionClass = [...this.state.optionClass, "XYZ"];
         if (!answered && this.maybeShowCorrectAnswer()) {
 
-            if (option.is_true === 'yes') {
+            if (option.isTrue === 'yes') {
                 optionClass.push('answer-correct');
                 (answered === option.value) && optionClass.push('answered-correct');
             } else {

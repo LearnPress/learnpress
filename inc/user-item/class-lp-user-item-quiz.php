@@ -62,6 +62,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				} else {
 					$questions[ $id ] = array( 'answered' => $answer );
 				}
+			} else {
 			}
 		}
 
@@ -69,6 +70,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		// Update to DB
 		$this->update_meta( 'results', $results->get() );
+		$this->calculate_results();
 
 		// Clear cache to apply new changes
 		$cache_key = sprintf( 'quiz-%d-%d-%d', $this->get_user_id(), $this->get_course_id(), $this->get_item_id() );
@@ -225,7 +227,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 			LP_Object_Cache::set( $cache_key, $result, 'learn-press/quiz-result' );
 		}
-		$result = new LP_Quiz_Results( $result );
+		$result['user_item_id'] = $this->get_user_item_id();
+		$result['interval'] = [$this->get_start_time(), $this->get_end_time()];
+		$result                 = new LP_Quiz_Results( $result );
 
 		return $prop ? $result[ $prop ] : $result;
 	}
@@ -244,9 +248,19 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			$args,
 			array(
 				'evaluation_questions' => false,
-				'limit'                => - 1
+				'limit'                => - 1,
+				'offset'               => '',
+				'paged'                => ''
 			)
 		);
+
+		$limit  = isset( $args['limit'] ) && $args['limit'] > 0 ? $args['limit'] : false;
+		$offset = isset( $args['offset'] ) && $args['offset'] > 0 ? $args['offset'] : 0;
+		$paged  = isset( $args['paged'] ) && $args['paged'] > 0 ? $args['paged'] : false;
+
+		if ( ! $offset && $paged && $limit ) {
+			$offset = ( $paged - 1 ) * $limit;
+		}
 
 		$attempts = array();
 		$query    = $wpdb->prepare( "
@@ -255,7 +269,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			WHERE parent_id = %d AND item_type = %s
 			AND status = %s
 			ORDER BY user_item_id DESC
-			" . ( $args['limit'] > 0 ? "LIMIT 0, {$args['limit']}" : '' ) . "
+			" . ( $limit ? "LIMIT {$offset}, {$limit}" : '' ) . "
 		", $this->get_parent_id(), LP_QUIZ_CPT, 'completed' );
 
 		$quiz = $this->get_quiz();
@@ -363,12 +377,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					$result['question_correct'] ++;
 					$result['user_mark'] += array_key_exists( 'mark', $check ) ? floatval( $check['mark'] ) : $question->get_mark();
 				} else {
-					$negativeMarking = apply_filters( 'learn-press/get-negative-marking', floatval( $question->get_mark() ), $question_id, $quiz->get_id() );
+					$negativeMarking = apply_filters( 'learn-press/get-negative-marking-value', floatval( $question->get_mark() ), $question_id, $quiz->get_id() );
 
+					// If answered is empty consider user has skipped question
 					if ( ! $check['answered'] ) {
+						// TODO: check this again!!!
 						if ( $quiz->get_negative_marking() ) {
 							// minus for each wrong, empty question
-							$result['user_mark'] -= $negativeMarking;
+							//$result['user_mark'] -= $negativeMarking;
 						}
 						$result['question_empty'] ++;
 					} else {
@@ -385,19 +401,25 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				}
 			}
 
-
 			// make sure user mark greater than 0
 			$result['user_mark'] = ( $result['user_mark'] >= 0 ) ? $result['user_mark'] : 0;
 
-			$percent                  = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
-			$result['result']         = $percent;
-			$result['grade']          = $this->get_status() === 'completed' ? ( $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed' ) : '';
-			$result['grade_text']     = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
+			$percent          = $result['mark'] ? ( $result['user_mark'] / $result['mark'] ) * 100 : 0;
+			$result['result'] = $percent;
+
+			if ( $this->get_status() === 'completed' ) {
+				$result['grade']      = $percent >= $this->get_quiz()->get_data( 'passing_grade' ) ? 'passed' : 'failed';
+				$result['grade_text'] = ( $result['grade'] == 'passed' ) ? __( 'passed', 'learnpress' ) : __( 'failed', 'learnpress' );
+			} else {
+				$result['grade']      = 'ungraded';
+				$result['grade_text'] = __( 'Ungraded', 'learnpress' );
+			}
 			$result['question_count'] = sizeof( $questions );
 
 			if ( $result['grade'] != learn_press_get_user_item_meta( $this->get_user_item_id(), 'grade', true ) ) {
 				learn_press_update_user_item_meta( $this->get_user_item_id(), 'grade', $result['grade'] );
 			}
+
 		}
 
 		$this->update_meta( 'results', $result );
@@ -423,6 +445,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 	public function get_time_interval( $context = '' ) {
 		$interval = parent::get_time_interval();
+
 		if ( $context == 'display' ) {
 			$quiz = $this->get_quiz();
 			if ( $interval && $quiz->get_duration() ) {
@@ -708,6 +731,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function finish() {
 		$this->complete( 'completed' );
+
+		// Force to re-calculate quiz results and update cache.
+		$this->get_results( '', true );
 	}
 
 	public function is_review_questions() {

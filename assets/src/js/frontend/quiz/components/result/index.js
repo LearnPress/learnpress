@@ -11,7 +11,7 @@ class Result extends Component {
     }
 
     getResultMessage(results) {
-        return sprintf(__('Your grade is <strong>%s</strong>', 'learnpress'), results.grade_text);
+        return sprintf(__('Your grade is <strong>%s</strong>', 'learnpress'), results.gradeText);
     }
 
     getResultPercentage(results) {
@@ -28,7 +28,7 @@ class Result extends Component {
             <div className="result-grade">
                 <span className="result-achieved">{ this.getResultPercentage(results) }%</span>
                 <span
-                    className="result-require">{ undefined !== results.passing_grade ? results.passing_grade : _x('-', 'unknown passing grade value', 'learnpress') }</span>
+                    className="result-require">{ undefined !== results.passingGrade ? results.passingGrade : _x('-', 'unknown passing grade value', 'learnpress') }</span>
                 <p className="result-message" dangerouslySetInnerHTML={ {__html: this.getResultMessage(results)} }>
                 </p>
             </div>
@@ -36,27 +36,27 @@ class Result extends Component {
             <ul className="result-statistic">
                 <li className="result-statistic-field">
                     <label>{ __('Time spend', 'learnpress') }</label>
-                    <p>{results.time_spend}</p>
+                    <p>{results.timeSpend}</p>
                 </li>
                 <li className="result-statistic-field">
                     <label>{ __('Point', 'learnpress') }</label>
-                    <p>{ results.user_mark } / { results.mark }</p>
+                    <p>{ results.userMark } / { results.mark }</p>
                 </li>
                 <li className="result-statistic-field">
                     <label>{ __('Questions', 'learnpress') }</label>
-                    <p>{ results.question_count }</p>
+                    <p>{ results.questionCount }</p>
                 </li>
                 <li className="result-statistic-field">
                     <label>{ __('Correct', 'learnpress') }</label>
-                    <p>{ results.question_correct }</p>
+                    <p>{ results.questionCorrect }</p>
                 </li>
                 <li className="result-statistic-field">
                     <label>{ __('Wrong', 'learnpress') }</label>
-                    <p>{ results.question_wrong }</p>
+                    <p>{ results.questionWrong }</p>
                 </li>
                 <li className="result-statistic-field">
                     <label>{ __('Skipped', 'learnpress') }</label>
-                    <p>{ results.question_empty }</p>
+                    <p>{ results.questionEmpty }</p>
                 </li>
             </ul>
 

@@ -16,10 +16,11 @@ class LP_Update_999 extends LP_Update_Base {
 		$this->version = '9.9.9';
 		$this->steps   = array(
 			'alter_datetime_default_value',
-			'add_columns',
+			'alter_tables',
 			'update_expiration_time',
 			'update_time_field_from_time_gmt',
-			'remove_time_gmt'
+			'remove_time_gmt',
+			'add_question'
 		);
 
 		parent::__construct();
@@ -52,7 +53,7 @@ class LP_Update_999 extends LP_Update_Base {
 	 *
 	 * @return bool
 	 */
-	public function add_columns() {
+	public function alter_tables() {
 		global $wpdb;
 		$query = "
      		 ALTER TABLE `{$wpdb->prefix}learnpress_user_items` 
@@ -64,8 +65,21 @@ class LP_Update_999 extends LP_Update_Base {
      		 ALTER TABLE `{$wpdb->prefix}learnpress_user_items` 
      		 ADD `expiration_time` DATETIME NULL DEFAULT NULL AFTER `end_time_gmt`;
 		";
-
 		$wpdb->query( $query );
+
+		$query = "
+			ALTER TABLE `{$wpdb->prefix}learnpress_question_answers` ADD INDEX(`question_id`);
+		";
+		$wpdb->query( $query );
+
+		$query = "
+			ALTER TABLE `{$wpdb->prefix}learnpress_user_itemmeta` ADD INDEX(`learnpress_user_item_id`);
+		";
+		$wpdb->query( $query );
+
+		$query = "
+			ALTER TABLE `{$wpdb->prefix}learnpress_user_itemmeta` ADD INDEX(`meta_key`);
+		";
 
 		return true;
 	}

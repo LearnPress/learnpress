@@ -48,10 +48,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$item_id        = 0;
 
 		if ( ! empty( $item['user_item_id'] ) ) {
-			$this->set_data( 'user_item_id', $item['user_item_id'] );
+			$this->set_data( 'user_item_id', absint( $item['user_item_id'] ) );
 		}
 
 		if ( ! empty( $item['item_id'] ) ) {
+			$item['item_id'] = absint( $item['item_id'] );
+
 			$this->set_id( $item['item_id'] );
 			$this->set_data( 'item_id', $item['item_id'] );
 			$this->set_data( 'item_type', learn_press_get_post_type( $item['item_id'] ) );
@@ -72,6 +74,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		if ( ! empty( $item['user_id'] ) ) {
+			$item['user_id'] = absint( $item['user_id'] );
+
 			$this->set_user_id( $item['user_id'] );
 		} else {
 			$this->set_user_id( get_current_user_id() );
@@ -85,6 +89,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		if ( ! empty( $item['ref_id'] ) ) {
+			$item['ref_id'] = absint( $item['ref_id'] );
+
 			$this->set_ref_id( $item['ref_id'] );
 			if ( empty( $item['ref_type'] ) ) {
 				$this->set_data( 'ref_type', learn_press_get_post_type( $item['ref_id'] ) );
@@ -96,6 +102,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		if ( ! empty( $item['parent_id'] ) ) {
+			$item['parent_id'] = absint( $item['parent_id'] );
+
 			$this->set_parent_id( $item['parent_id'] );
 		}
 
@@ -409,7 +417,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @param int $user_item_id
 	 */
 	public function set_user_item_id( $user_item_id ) {
-		$this->_set_data( 'user_item_id', $user_item_id );
+		$this->_set_data( 'user_item_id', absint( $user_item_id ) );
 	}
 
 	public function get_item_id() {
@@ -872,8 +880,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$end_time  = new LP_Datetime();
 		$null_time = '0000-00-00 00:00';
 
-		$this->set_end_time( $end_time->toSql() );
-		$this->set_end_time_gmt( $end_time->toSql( false ) );
+		$this->set_end_time( $end_time->toSql(false) );
 		$this->set_status( $status );
 		$this->update();
 

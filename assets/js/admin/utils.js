@@ -2244,7 +2244,7 @@ var _default = {
     LP.Hook.doAction('learn_press_receive_message', data, target);
   },
   camelCaseDashObjectKeys: function camelCaseDashObjectKeys(obj) {
-    var deep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var deep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
     var self = LP;
 
     var isArray = function isArray(a) {
@@ -3095,7 +3095,6 @@ var MessageBox = {
 ;
 
 (function (root, factory) {
-  console.log(root, root.jQuery);
   factory(root.jQuery);
 })(window, function ($) {
   // Hello

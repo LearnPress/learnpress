@@ -440,7 +440,7 @@ const _default = {
         LP.Hook.doAction('learn_press_receive_message', data, target);
     },
 
-    camelCaseDashObjectKeys: function (obj, deep = false) {
+    camelCaseDashObjectKeys: function (obj, deep = true) {
         const self = LP;
         const isArray = function (a) {
             return Array.isArray(a);

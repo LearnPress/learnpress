@@ -904,7 +904,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			global $wpdb;
 
 			$query = $wpdb->prepare( "
-				SELECT *
+				SELECT question_answer_id, title, value, is_true
 				FROM {$wpdb->prefix}learnpress_question_answers
 				WHERE question_id = %d
 				ORDER BY `order` ASC
@@ -927,11 +927,11 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 					$answer_option = array(
 						'question_answer_id' => absint( $v->question_answer_id ),
-						'question_id'        => absint( $v->question_id ),
+						//'question_id'        => absint( $v->question_id ),
 						'title'              => $v->title,
 						'value'              => $v->value,
 						'is_true'            => $v->is_true,
-						'order'              => absint( $v->order )
+						'order'              => $k + 1 // Need???
 					);
 
 					$answer_options[ $v->question_answer_id ] = $answer_option;

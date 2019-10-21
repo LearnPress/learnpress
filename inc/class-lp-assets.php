@@ -118,6 +118,12 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
+				'lp-modal'           => array(
+					'url'     => self::url( 'js/frontend/modal.js' ),
+					'deps'    => array(
+						'jquery'
+					)
+				),
 				'lp-plugins-all'      => array(
 					'url' => ( $url = $this->get_all_plugins_url( $min ) ) ? $url : self::url( 'js/vendor/plugins.all' . $min . '.js' ),
 				),
@@ -158,7 +164,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-quiz'             => array(
 					'url'  => self::url( 'js/frontend/quiz.js' ),
-					'deps' => array_merge( $wp_js, array( 'lp-global', 'lp-question-types' ) )
+					'deps' => array_merge( $wp_js, array( 'lp-global', 'lp-question-types', 'lp-modal' ) )
 				),
 				'lp-single-course'    => array(
 					'url'     => self::url( 'js/frontend/single-course.js' ),

@@ -1,5 +1,5 @@
 import {Component} from '@wordpress/element';
-import {withSelect, withDispatch} from '@wordpress/data';
+import {withSelect, withDispatch, select} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
 import {__, _x} from '@wordpress/i18n';
 import {default as ButtonCheck} from '../buttons/button-check';
@@ -13,11 +13,20 @@ class Buttons extends Component {
      * @param event
      */
     startQuiz = (event) => {
-        event.preventDefault();
+        event && event.preventDefault();
 
         const {
-            startQuiz
+            startQuiz,
+            status
         } = this.props;
+
+        if (status === 'completed') {
+            const {confirm} = select('learnpress/modal');
+
+            if ('no' === confirm('Are you sure you want to retry quiz?', this.startQuiz)) {
+                return;
+            }
+        }
 
         startQuiz();
     };
@@ -151,15 +160,15 @@ class Buttons extends Component {
 
         const classNames = ['quiz-buttons align-center'];
 
-        if(questionNav==='questionNav'){
+        if (questionNav === 'questionNav') {
             classNames.push('infinity');
         }
 
-        if(this.isFirst()){
+        if (this.isFirst()) {
             classNames.push('is-first');
         }
 
-        if(this.isLast()){
+        if (this.isLast()) {
             classNames.push('is-last');
         }
 
@@ -169,7 +178,7 @@ class Buttons extends Component {
                 {
                     -1 !== ['', 'completed'].indexOf(status) && !isReviewing &&
                     <button className="lp-button start"
-                            onClick={ this.startQuiz }>{ status === 'completed' ? _x('Retry','label button retry quiz', 'learnpress') : _x('Start', 'label button start quiz', 'learnpress') }</button>
+                            onClick={ this.startQuiz }>{ status === 'completed' ? _x('Retry', 'label button retry quiz', 'learnpress') : _x('Start', 'label button start quiz', 'learnpress') }</button>
                 }
 
                 {
@@ -180,8 +189,10 @@ class Buttons extends Component {
                                     <div className="questions-pagination">
                                         <div className="page-numbers">
                                             {pages.map((ids, pageNum) => {
-                                                return pageNum + 1 === currentPage ? <span key={`page-number-${pageNum}`}>{pageNum + 1}</span> :
-                                                    <a key={`page-number-${pageNum}`} onClick={ this.moveTo(pageNum + 1) }>{pageNum + 1}</a>
+                                                return pageNum + 1 === currentPage ?
+                                                    <span key={`page-number-${pageNum}`}>{pageNum + 1}</span> :
+                                                    <a key={`page-number-${pageNum}`}
+                                                       onClick={ this.moveTo(pageNum + 1) }>{pageNum + 1}</a>
                                             })}
                                         </div>
                                     </div>
@@ -279,7 +290,7 @@ export const MaybeShowButton = compose(
                 return theButton;
             }
 
-            if (!question.has_hint) {
+            if (!question.hasHint) {
                 return false;
             }
 

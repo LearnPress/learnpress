@@ -2,6 +2,13 @@
     .lp-button {
         @include border-radius(3px);
 
+        &.secondary {
+            background: #9198ab;
+            &:hover {
+                background: #9ba6c5;
+            }
+        }
+
         &:disabled, &[disabled] {
             background: #DDD;
             pointer-events: none;
@@ -681,12 +688,13 @@
         }
         .btn-show-hint {
             background: transparent;
-            color: #d9e0f1;
+            //color: #d9e0f1;
+            color: #00adff;
             padding: 0;
             margin: 0 0 0 10px;
             font-size: 21px;
             &:before {
-                content: "\f059";
+                content: "\f05a";
                 font-family: Fontawesome;
             }
         }

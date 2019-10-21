@@ -283,54 +283,53 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results          = array();
 			$duration         = $quiz->get_duration();
 
-			if ( $userQuiz ) {
-				$status           = $userQuiz->get_status();
-				$checkedQuestions = $userQuiz->get_checked_questions();
-				$hintedQuestions  = $userQuiz->get_hint_questions();
-				$quizResults      = $userQuiz->get_results( '' );
+			//if ( $userQuiz ) {
+			$status           = $userQuiz->get_status();
+			$checkedQuestions = $userQuiz->get_checked_questions();
+			$hintedQuestions  = $userQuiz->get_hint_questions();
+			$quizResults      = $userQuiz->get_results( '' );
 
-				$questionIds = $quizResults->getQuestions( 'ids' );
-				$answered    = $quizResults->getAnswered();
+			$questionIds = $quizResults->getQuestions( 'ids' );
+			$answered    = $quizResults->getAnswered();
 
-				$expirationTime = $userQuiz->get_expiration_time();
+			$expirationTime = $userQuiz->get_expiration_time();
 
-				// If expiration time is specific then calculate total time
-				if ( $expirationTime && ! $expirationTime->is_null() ) {
-					$totalTime = strtotime( $userQuiz->get_expiration_time() ) - strtotime( $userQuiz->get_start_time() );
-				}
-
-				// @deprecated
-				//$answered         = $userQuiz->get_meta( '_question_answers' );
-
-				$questions = learn_press_rest_prepare_user_questions(
-					$questionIds,
-					array(
-						'instant_hint'      => $showHint,
-						'instant_check'     => $showCheck,
-						'quiz_status'       => $status,
-						'checked_questions' => $checkedQuestions,
-						'hinted_questions'  => $hintedQuestions,
-						'answered'          => $answered
-					)
-				);
-
-				$results = array(
-					'question_ids' => $questionIds,
-					'questions'    => $questions
-				);
-
-				if ( isset( $totalTime ) ) {
-					$results['total_time'] = $totalTime;
-					$results['end_time']   = $expirationTime->toSql();
-				}
+			// If expiration time is specific then calculate total time
+			if ( $expirationTime && ! $expirationTime->is_null() ) {
+				$totalTime = strtotime( $userQuiz->get_expiration_time() ) - strtotime( $userQuiz->get_start_time() );
 			}
 
-			$results['duration'] = $duration ? $duration->get() : false;
-			$results['answered'] = $userQuiz->get_results( '' )->getQuestions();
-			$results['status']   = $userQuiz->get_status();
+			// @deprecated
+			//$answered         = $userQuiz->get_meta( '_question_answers' );
 
-			$attempts           = $userQuiz->get_attempts( array( 'limit' => 1 ) );
-			$results['results'] = $attempts[0];
+			$questions = learn_press_rest_prepare_user_questions(
+				$questionIds,
+				array(
+					'instant_hint'      => $showHint,
+					'instant_check'     => $showCheck,
+					'quiz_status'       => $status,
+					'checked_questions' => $checkedQuestions,
+					'hinted_questions'  => $hintedQuestions,
+					'answered'          => $answered
+				)
+			);
+
+			$results = array(
+				'question_ids' => $questionIds,
+				'questions'    => $questions
+			);
+
+			if ( isset( $totalTime ) ) {
+				$results['total_time'] = $totalTime;
+				$results['end_time']   = $expirationTime->toSql();
+			}
+			//}
+
+			$results['duration'] = $duration ? $duration->get() : false;
+			$results['answered'] = $quizResults->getQuestions();
+			$results['status']   = $quizResults->get( 'status' );
+			$results['results']  = $quizResults->get();
+			$results['attempts'] = $userQuiz->get_attempts( array( 'limit' => 1, 'offset' => 1 ) );
 
 			$response['results'] = $results;
 		}
@@ -345,6 +344,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return mixed|WP_REST_Response
 	 */
 	public function submit_quiz( $request ) {
+		//LP_Debug::startTransaction();
 		$user_id     = get_current_user_id();
 		$item_id     = $request['item_id'];
 		$course_id   = $request['course_id'];
@@ -359,7 +359,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			if ( $userQuiz ) {
 				$userQuiz->add_question_answer( $answered );
-				$userQuiz->calculate_results();
 			}
 		}
 
@@ -371,14 +370,19 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			'message' => ! $success ? $finished->get_error_message() : __( 'Success!', 'learnpress' )
 		);
 
+
 		if ( $success ) {
-			$attempts            = $userQuiz->get_attempts( array( 'limit' => 1 ) );
-			$results['answered'] = $userQuiz->get_results( '' )->getQuestions();
-			$results['status']   = $userQuiz->get_status();
-			$results['results']  = $attempts[0];
+			$userQuiz            = $user_course->get_item( $item_id );
+			$quizResults         = $userQuiz->get_results( '' );
+			$results['answered'] = $quizResults->getQuestions();
+			$results['status']   = $quizResults->get( 'status' );
+			$results['results']  = $quizResults->get();
+			$results['attempts'] = $userQuiz->get_attempts( array( 'limit' => 1, 'offset' => 1 ) );
 
 			$response['results'] = $results;
 		}
+
+		//LP_Debug::rollbackTransaction();
 
 		return rest_ensure_response( $response );
 	}
