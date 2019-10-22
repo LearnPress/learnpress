@@ -1716,9 +1716,11 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 	 */
 	function learn_press_duplicate_post( $post_id = null, $args = array(), $meta = true ) {
 		$post = get_post( $post_id );
+
 		if ( ! $post ) {
 			return false;
 		}
+
 		$default = array(
 			'comment_status' => $post->comment_status,
 			'ping_status'    => $post->ping_status,
@@ -1731,14 +1733,24 @@ if ( ! function_exists( 'learn_press_duplicate_post' ) ) {
 			'post_title'     => $post->post_title . __( ' Copy', 'learnpress' ),
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
-			'menu_order'     => $post->menu_order
+			'menu_order'     => $post->menu_order,
+			'exclude_meta'   => array()
 		);
-		$args    = wp_parse_args( $args, $default );
+
+		$args         = wp_parse_args( $args, $default );
+		$exclude_meta = array();
+
+		if ( ! empty( $args['exclude_meta'] ) ) {
+			$exclude_meta = $args['exclude_meta'];
+			unset( $args['exclude_meta'] );
+		}
 
 		$new_post_id = wp_insert_post( $args );
 
+
 		if ( ! is_wp_error( $new_post_id ) && $meta ) {
-			learn_press_duplicate_post_meta( $post_id, $new_post_id );
+
+			learn_press_duplicate_post_meta( $post_id, $new_post_id, $exclude_meta );
 			// assign related tags/categories to new course
 			$taxonomies = get_object_taxonomies( $post->post_type );
 			foreach ( $taxonomies as $taxonomy ) {
