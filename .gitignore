@@ -33,5 +33,6 @@ script.sh
 /.project
 /.buildpath
 /.settings
+/yarn-error.log
 .gitignore
 
