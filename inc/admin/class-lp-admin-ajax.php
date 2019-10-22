@@ -333,15 +333,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 		/**
 		 * Send data to join newsletter or dismiss.
-         *
+		 *
 		 * [
 		 *  This function has deprecated since 3.2.6 from this class.
-         *  Please check class LP_Admin and hook learn-press/dismissed-notice-response for more details.
-         *  Newsletter function be hooked to the hook above to send subscription when
-         *  notice has already dismissed.
+		 *  Please check class LP_Admin and hook learn-press/dismissed-notice-response for more details.
+		 *  Newsletter function be hooked to the hook above to send subscription when
+		 *  notice has already dismissed.
 		 * ]
-         *
-         * @deprecated
+		 *
+		 * @deprecated
 		 *
 		 * @since 3.0.10
 		 */
@@ -404,7 +404,18 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				switch ( $post_type ) {
 					case LP_COURSE_CPT:
 						$curd        = new LP_Course_CURD();
-						$new_item_id = $curd->duplicate( $post_id, array() );
+						$new_item_id = $curd->duplicate( $post_id, array(
+							'exclude_meta' => array(
+								'order-pending',
+								'order-processing',
+								'order-completed',
+								'order-cancelled',
+                                'order-failed',
+                                'count_enrolled_users',
+                                '_lp_sample_data',
+                                '_lp_retake_count'
+							)
+						) );
 						break;
 					case LP_LESSON_CPT:
 						$curd        = new LP_Lesson_CURD();
@@ -606,9 +617,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
 			$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
-			$order_items = $order->get_items();
+			$order_items                 = $order->get_items();
 			if ( $order_items ) {
-				$html        = '';
+				$html = '';
 				foreach ( $order_items as $item ) {
 					ob_start();
 					include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
