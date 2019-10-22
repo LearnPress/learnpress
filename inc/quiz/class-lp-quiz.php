@@ -359,22 +359,25 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		/**
 		 * Get quiz questions.
 		 *
+		 * @param string $context
+		 *
 		 * @return mixed
 		 */
-		public function get_questions() {
-			if ( false === ( $questions = LP_Object_Cache::get( $this->get_id(), 'quiz-questions' ) ) ) {
+		public function get_questions( $context = 'display' ) {
+
+			if ( false === ( $questions = LP_Object_Cache::get( $this->get_id(), 'quiz-questions-' . $context ) ) ) {
 				$questions = array();
 
-				if ( $ids = $this->_curd->read_questions( $this->get_id() ) ) {
+				if ( $ids = $this->_curd->read_questions( $this->get_id(), $context ) ) {
 					foreach ( $ids as $id ) {
 						$questions[ $id ] = $id;
 					}
 				}
 
-				LP_Object_Cache::set( $this->get_id(), $questions, 'quiz-questions' );
+				LP_Object_Cache::set( $this->get_id(), $questions, 'quiz-questions-' . $context );
 			}
 
-			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id() );
+			return apply_filters( 'learn-press/quiz/questions', $questions, $this->get_id(), $context );
 		}
 
 		/**
@@ -384,7 +387,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 */
 		public function quiz_editor_get_questions() {
 			// list questions
-			$questions = $this->get_questions();
+			$questions = $this->get_questions( 'edit' );
 			// order questions in quiz
 			$question_order = learn_press_quiz_get_questions_order( $questions );
 
@@ -461,17 +464,20 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 		 *
 		 * @since 3.2.0
 		 *
+		 * @param string $context
+		 *
 		 * @return int[]
 		 */
-		public function get_question_ids() {
-			if ( false === ( $ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids' ) ) ) {
-				$ids = $this->_curd->read_question_ids( $this->get_id() );
-				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids' );
+		public function get_question_ids( $context = 'display' ) {
+
+			if ( false === ( $ids = LP_Object_Cache::get( 'quiz-' . $this->get_id(), 'quiz-question-ids-' . $context ) ) ) {
+				$ids = $this->_curd->read_question_ids( $this->get_id(), $context );
+				LP_Object_Cache::set( 'quiz-' . $this->get_id(), $ids, 'quiz-question-ids-' . $context );
 			}
 
-			$ids = apply_filters( 'learn-press/quiz-question-ids', $ids, $this->get_id(), $this->get_course_id() );
+			$ids = apply_filters( 'learn-press/quiz-question-ids', $ids, $this->get_id(), $this->get_course_id(), $context );
 
-			return apply_filters( 'learn-press/quiz/get-question-ids', $ids, $this->get_id(), $this->get_course_id() );
+			return apply_filters( 'learn-press/quiz/get-question-ids', $ids, $this->get_id(), $this->get_course_id(), $context );
 		}
 
 		/**
