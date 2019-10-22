@@ -21,6 +21,7 @@
 
         <div class="item-actions">
             <div class="actions">
+                <?php do_action( 'learn_press_before_display_item_actions' );?>
                 <div class="action preview-item lp-title-attr-tip"
                      data-content-tip="<?php esc_attr_e( 'Turn on/off this item is preview', 'learnpress' ); ?>">
                     <a class="lp-btn-icon dashicons" :class="previewClass" @click="togglePreview"></a>
@@ -41,6 +42,7 @@
                         </li>
                     </ul>
                 </div>
+	            <?php do_action( 'learn_press_after_display_item_actions' );?>
             </div>
         </div>
     </li>
@@ -140,7 +142,7 @@
                         this.item.preview = !this.item.preview;
                         this.changed = true;
                         this.updateTitle();
-                    }
+                    }<?php do_action( 'learn_press_after_section_item_script' );?>
                 }
             });
 

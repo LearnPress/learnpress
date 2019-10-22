@@ -42,7 +42,7 @@ $user_ip      = $order->get_user_ip_address();
             <input type="hidden" name="jj" value="<?php echo date( 'd', $order->get_order_date( 'timestamp' ) ); ?>">
             <input type="hidden" name="ss" value="<?php echo date( 's', $order->get_order_date( 'timestamp' ) ); ?>">
 
-            <input type="text" class="order-date date-picker" name="order-date"
+            <input type="text" class="order-date date-picker-backendorder" name="order-date"
                    pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
                    value="<?php echo esc_attr( $order->get_order_date( 'd' ) ); ?>">
             @
