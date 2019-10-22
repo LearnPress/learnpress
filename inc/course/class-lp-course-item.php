@@ -336,12 +336,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		public function to_array() {
 			$post = get_post( $this->get_id() );
 
-			return array(
+			return apply_filters( 'learn-press/item/to_array', array(
 				'id'      => $this->get_id(),
 				'type'    => $this->get_item_type(),
 				'title'   => $post->post_title,
 				'preview' => $this->is_preview()
-			);
+			) );
 		}
 
 		/**
