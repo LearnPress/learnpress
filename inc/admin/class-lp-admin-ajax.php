@@ -410,10 +410,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 								'order-processing',
 								'order-completed',
 								'order-cancelled',
-                                'order-failed',
-                                'count_enrolled_users',
-                                '_lp_sample_data',
-                                '_lp_retake_count'
+								'order-failed',
+								'count_enrolled_users',
+								'_lp_sample_data',
+								'_lp_retake_count'
 							)
 						) );
 						break;

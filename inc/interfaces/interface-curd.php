@@ -218,4 +218,35 @@ class LP_Object_Data_CURD {
 
 		return false;
 	}
+
+	/**
+	 * Wrap function $wpdb->prepare(...) to support arguments as
+	 * array.
+	 *
+	 * @param string      $query
+	 * @param array|mixed $args
+	 *
+	 * @example
+	 *
+	 * $this->prepare($sql, $one, $two, array($three, $four, $file))
+	 * => $wpdb->prepare($sql, $one, $two, $three, $four, $file)
+	 *
+	 * @return string
+	 */
+	public function prepare( $query, $args ) {
+		global $wpdb;
+		$args = func_get_args();
+		array_shift( $args );
+		$new_args = array();
+
+		foreach ( $args as $arg ) {
+			if ( is_array( $arg ) ) {
+				$new_args = array_merge( $new_args, $arg );
+			} else {
+				$new_args[] = $arg;
+			}
+		}
+
+		return $wpdb->prepare( $query, $new_args );
+	}
 }
