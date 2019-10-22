@@ -207,14 +207,19 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 		/**
 		 * Read question of a quiz from database
+		 *
+		 * @param int    $quiz_id
+		 * @param string $context
+		 *
+		 * @return array|bool
 		 */
-		public function read_questions( $quiz_id ) {
+		public function read_questions( $quiz_id, $context = 'display' ) {
 
 			if ( ! $quiz = learn_press_get_quiz( $quiz_id ) ) {
 				return false;
 			}
 
-			if ( $question_ids = $quiz->get_question_ids() ) {
+			if ( $question_ids = $quiz->get_question_ids( $context ) ) {
 				LP_Helper_CURD::cache_posts( $question_ids );
 				//$question_factory = new LP_Question_CURD();
 				//$question_factory->load_answer_options( $question_ids );
@@ -226,21 +231,31 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 		/**
 		 * Read all question ids of a quiz.
 		 *
-		 * @param int $quiz_id
+		 * @param int    $quiz_id
+		 * @param string $context
 		 *
 		 * @return array
 		 */
-		public function read_question_ids( $quiz_id ) {
+		public function read_question_ids( $quiz_id, $context = 'display' ) {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+
+			if ( $context === 'display' ) {
+				$statuses = array( 'publish' );
+			} else {
+				$statuses = array( 'publish', 'draft', 'auto-draft' );
+			}
+
+			$format = array_fill( 0, sizeof( $statuses ), '%s' );
+
+			$query = $this->prepare( "
 				SELECT question_id
 				FROM {$wpdb->posts} p 
 				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.quiz_id = p.ID 
 				INNER JOIN {$wpdb->posts} q ON qq.question_id = q.ID AND q.post_status <> %s
 				AND p.ID = %d
-				AND p.post_status = %s
+				AND p.post_status IN(" . join( ',', $format ) . ")
 				ORDER BY question_order
-			", 'trash', $quiz_id, 'publish' );
+			", 'trash', $quiz_id, $statuses );
 
 			$ids = $wpdb->get_col( $query );
 
@@ -309,11 +324,11 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					settype( $v, 'object' );
 					wp_cache_set( $v->ID, $v, 'posts' );
 
-					$question_ids[]                  = $v->ID;
+					$question_ids[] = $v->ID;
 				}
 			}
 
-				LP_Object_Cache::set( 'questions-' . $quiz_id, $question_ids, 'learn-press/quizzes' );
+			LP_Object_Cache::set( 'questions-' . $quiz_id, $question_ids, 'learn-press/quizzes' );
 
 			LP_Helper_CURD::cache_posts( $question_ids );
 			$question_factory = new LP_Question_CURD();

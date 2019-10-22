@@ -81,14 +81,14 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		$question_id = $question->get_id();
 		// question answer
 		$answer_options = $question->get_data( 'answer_options' );
-		$answer = array();
-		foreach($answer_options as $answer_option ){
-			if(!isset($answer[$answer_option['question_answer_id']])){
-				$answer[$answer_option['question_answer_id']]=$answer_option;
+		$answer         = array();
+		foreach ( $answer_options as $answer_option ) {
+			if ( ! isset( $answer[ $answer_option['question_answer_id'] ] ) ) {
+				$answer[ $answer_option['question_answer_id'] ] = $answer_option;
 			}
 		}
 		$answers = array_values( $answer );
-		$data = wp_parse_args( $args, array(
+		$data    = wp_parse_args( $args, array(
 			'id'       => $question_id,
 			'open'     => false,
 			'title'    => get_the_title( $question_id ),
@@ -604,10 +604,15 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			foreach ( $questions as $key => $question ) {
 				// add question to hidden questions in quiz meta
 				$hidden_questions[] = $question['id'];
-				update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );
 				// add question to quiz
 				$this->quiz_curd->add_question( $quiz_id, $question['id'] );
 			}
+
+			$hidden_questions = array_unique( $hidden_questions );
+
+			update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );
+
+			LP_Object_Cache::flush();
 			$this->result = $this->quiz->quiz_editor_get_questions();
 
 			return true;
