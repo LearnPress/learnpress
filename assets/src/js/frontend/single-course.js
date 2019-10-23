@@ -4,6 +4,7 @@ const $ = jQuery;
 const {
     debounce
 } = lodash;
+const {_x} = wp.i18n;
 
 export function formatDuration(seconds) {
     let html;
@@ -66,17 +67,24 @@ const createCustomScrollbar = function (element) {
     });
 };
 
+
 const AjaxSearchCourses = function (el) {
     var $form = $(el);
     var $ul = $('<ul class="search-results"></ul>').appendTo($form);
     var $input = $form.find('input[name="s"]');
+    var paged = 1;
+
     var submit = async function (e) {
         e.preventDefault();
         const response = await wp.apiFetch({
-            path: 'lp/v1/courses/search?s=' + $input.val(),
+            path: 'lp/v1/courses/search?s=' + $input.val() + '&page=' + paged,
         });
 
-        const courses = response.results.courses;
+        const {
+            courses,
+            num_pages,
+            page
+        } = response.results;
         $ul.html('');
 
         if (courses.length) {
@@ -84,24 +92,44 @@ const AjaxSearchCourses = function (el) {
                 $ul.append(`<li class="search-results__item">
                     <a href="${course.url}">
                     ` + (course.thumbnail.small ? `<img src="${course.thumbnail.small}" />` : '') + `
-                        <span>${course.title}</span>
+                        <h4 class="search-results__item-title">${course.title}</h4>
+                        <span class="search-results__item-author">${course.author}</span>
+                        ${course.price_html}
                         </a>
                     </li>`);
             });
+
+            if (num_pages > 1) {
+                $ul.append(`<li class="search-results__pagination">
+                  ` + ([...Array(num_pages).keys()].map((i) => {
+                        return i === paged - 1 ? '<span>' + (i + 1) + '</span>' : '<a data-page="' + (i + 1) + '">' + (i + 1) + '</a>'
+                    })).join('') + `
+                </li>`)
+            }
         } else {
-            $ul.append('<li class="search-results__not-found">No course found!</li>');
+            $ul.append('<li class="search-results__not-found">' + _x('No course found!', 'ajax search course not found', 'learnpress') + '</li>');
         }
 
-        $form.addClass('searching')
+        $form.addClass('searching');
+
 
         return false;
     };
 
-
-    $input.on('keyup', debounce(submit, 300));
+    $input.on('keyup', debounce(function (e) {
+        paged = 1;
+        if (e.target.value.length < 3) {
+            return;
+        }
+        submit(e)
+    }, 300));
     $form.on('click', '.clear', () => {
         $form.removeClass('searching');
         $input.val('')
+    }).on('click', '.search-results__pagination a', (e) => {
+        e.preventDefault();
+        paged = $(e.target).data('page');
+        submit(e);
     })
 }
 

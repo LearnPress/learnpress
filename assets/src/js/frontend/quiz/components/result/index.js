@@ -41,11 +41,28 @@ class Result extends Component {
         } = this.props;
 
         const classNames = ['quiz-result', results.grade];
+        const border = 10;
+        const width = 200;
+        const percent = this.getResultPercentage(results);
+        const radius = width / 2;
+        const r = ( width - border ) / 2;
+        const circumference = r * 2 * Math.PI;
+        const offset = circumference - percent / 100 * circumference;
+        const styles = {
+            strokeDasharray: `${circumference} ${circumference}`,
+            strokeDashoffset: offset
+        }
 
         return <div className={ classNames.join(' ') }>
             <h3 className="result-heading">{ __('Your Result', 'learnpress') }</h3>
             <div className="result-grade">
-                <span className="result-achieved">{ this.getResultPercentage(results) }%</span>
+
+                <svg className="circle-progress-bar" width={width} height={width}>
+                    <circle className="circle-progress-bar__circle" stroke="" strokeWidth={border} style={styles}
+                            fill="transparent" r={r} cx={radius} cy={radius}></circle>
+                </svg>
+
+                <span className="result-achieved">{ percent }%</span>
                 <span
                     className="result-require">{ undefined !== results.passingGrade ? results.passingGrade : _x('-', 'unknown passing grade value', 'learnpress') }</span>
                 <p className="result-message" dangerouslySetInnerHTML={ {__html: this.getResultMessage(results)} }>

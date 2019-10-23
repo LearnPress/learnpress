@@ -99,6 +99,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDuration", function() { return formatDuration; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggleSidebarHandler", function() { return toggleSidebarHandler; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -107,6 +115,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var $ = jQuery;
 var _lodash = lodash,
     debounce = _lodash.debounce;
+var _x = wp.i18n._x;
 function formatDuration(seconds) {
   var html;
   var x, d;
@@ -165,6 +174,7 @@ var AjaxSearchCourses = function AjaxSearchCourses(el) {
   var $form = $(el);
   var $ul = $('<ul class="search-results"></ul>').appendTo($form);
   var $input = $form.find('input[name="s"]');
+  var paged = 1;
 
   var submit =
   /*#__PURE__*/
@@ -172,7 +182,8 @@ var AjaxSearchCourses = function AjaxSearchCourses(el) {
     var _ref = _asyncToGenerator(
     /*#__PURE__*/
     regeneratorRuntime.mark(function _callee(e) {
-      var response, courses;
+      var response, _response$results, courses, num_pages, page;
+
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -180,20 +191,26 @@ var AjaxSearchCourses = function AjaxSearchCourses(el) {
               e.preventDefault();
               _context.next = 3;
               return wp.apiFetch({
-                path: 'lp/v1/courses/search?s=' + $input.val()
+                path: 'lp/v1/courses/search?s=' + $input.val() + '&page=' + paged
               });
 
             case 3:
               response = _context.sent;
-              courses = response.results.courses;
+              _response$results = response.results, courses = _response$results.courses, num_pages = _response$results.num_pages, page = _response$results.page;
               $ul.html('');
 
               if (courses.length) {
                 courses.map(function (course) {
-                  $ul.append("<li class=\"search-results__item\">\n                    <a href=\"".concat(course.url, "\">\n                    ") + (course.thumbnail.small ? "<img src=\"".concat(course.thumbnail.small, "\" />") : '') + "\n                        <span>".concat(course.title, "</span>\n                        </a>\n                    </li>"));
+                  $ul.append("<li class=\"search-results__item\">\n                    <a href=\"".concat(course.url, "\">\n                    ") + (course.thumbnail.small ? "<img src=\"".concat(course.thumbnail.small, "\" />") : '') + "\n                        <h4 class=\"search-results__item-title\">".concat(course.title, "</h4>\n                        <span class=\"search-results__item-author\">").concat(course.author, "</span>\n                        ").concat(course.price_html, "\n                        </a>\n                    </li>"));
                 });
+
+                if (num_pages > 1) {
+                  $ul.append("<li class=\"search-results__pagination\">\n                  " + _toConsumableArray(Array(num_pages).keys()).map(function (i) {
+                    return i === paged - 1 ? '<span>' + (i + 1) + '</span>' : '<a data-page="' + (i + 1) + '">' + (i + 1) + '</a>';
+                  }).join('') + "\n                </li>");
+                }
               } else {
-                $ul.append('<li class="search-results__not-found">No course found!</li>');
+                $ul.append('<li class="search-results__not-found">' + _x('No course found!', 'ajax search course not found', 'learnpress') + '</li>');
               }
 
               $form.addClass('searching');
@@ -207,15 +224,27 @@ var AjaxSearchCourses = function AjaxSearchCourses(el) {
       }, _callee);
     }));
 
-    return function submit(_x) {
+    return function submit(_x2) {
       return _ref.apply(this, arguments);
     };
   }();
 
-  $input.on('keyup', debounce(submit, 300));
+  $input.on('keyup', debounce(function (e) {
+    paged = 1;
+
+    if (e.target.value.length < 3) {
+      return;
+    }
+
+    submit(e);
+  }, 300));
   $form.on('click', '.clear', function () {
     $form.removeClass('searching');
     $input.val('');
+  }).on('click', '.search-results__pagination a', function (e) {
+    e.preventDefault();
+    paged = $(e.target).data('page');
+    submit(e);
   });
 };
 

@@ -104,12 +104,29 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					);
 				}
 
+				ob_start(); ?>
+                <div class="course-price">
+
+					<?php if ( $course->has_sale_price() ) { ?>
+
+                        <span class="origin-price"> <?php echo $course->get_origin_price_html(); ?></span>
+
+					<?php } ?>
+
+                    <span class="price"><?php echo $course->get_price_html(); ?></span>
+
+                </div>
+				<?php
+				$price_html = ob_get_clean();
+
 				$courses[] = array(
-					'id'        => $post->ID,
-					'title'     => get_the_title(),
-					'url'       => get_permalink(),
-					'content'   => get_the_content(),
-					'thumbnail' => $thumbnail
+					'id'         => $post->ID,
+					'title'      => get_the_title(),
+					'url'        => get_permalink(),
+					'content'    => get_the_content(),
+					'thumbnail'  => $thumbnail,
+					'author'     => $course->get_author_display_name(),
+					'price_html' => $price_html
 				);
 			}
 			wp_reset_postdata();

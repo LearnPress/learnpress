@@ -1637,15 +1637,39 @@ function (_Component) {
     value: function render() {
       var results = this.props.results;
       var classNames = ['quiz-result', results.grade];
+      var border = 10;
+      var width = 200;
+      var percent = this.getResultPercentage(results);
+      var radius = width / 2;
+      var r = (width - border) / 2;
+      var circumference = r * 2 * Math.PI;
+      var offset = circumference - percent / 100 * circumference;
+      var styles = {
+        strokeDasharray: "".concat(circumference, " ").concat(circumference),
+        strokeDashoffset: offset
+      };
       return React.createElement("div", {
         className: classNames.join(' ')
       }, React.createElement("h3", {
         className: "result-heading"
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your Result', 'learnpress')), React.createElement("div", {
         className: "result-grade"
-      }, React.createElement("span", {
+      }, React.createElement("svg", {
+        className: "circle-progress-bar",
+        width: width,
+        height: width
+      }, React.createElement("circle", {
+        className: "circle-progress-bar__circle",
+        stroke: "",
+        strokeWidth: border,
+        style: styles,
+        fill: "transparent",
+        r: r,
+        cx: radius,
+        cy: radius
+      })), React.createElement("span", {
         className: "result-achieved"
-      }, this.getResultPercentage(results), "%"), React.createElement("span", {
+      }, percent, "%"), React.createElement("span", {
         className: "result-require"
       }, undefined !== results.passingGrade ? results.passingGrade : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("p", {
         className: "result-message",
@@ -1852,13 +1876,13 @@ function (_Component) {
         className: "questions-index"
       }, end < questionsCount && (questionsPerPage > 1 ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d to %d of %d', 'learnpress'), start, end, questionsCount) : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d of %d', 'learnpress'), start, questionsCount)), end === questionsCount && Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Question %d to %d', 'learnpress'), start, end)), React.createElement("div", {
         className: "current-point"
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Earned Point: %s', 'learnpress'), userMark)), React.createElement("div", {
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Earned Point: %s', 'learnpress'), userMark)), React.createElement("div", null, React.createElement("div", {
         className: "submit-quiz"
       }, React.createElement("button", {
         className: "lp-button",
         id: "button-submit-quiz",
         onClick: this.submit
-      }, !submitting ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Submit', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Submitting...', 'learnpress'))), totalTime && duration && React.createElement(_timer__WEBPACK_IMPORTED_MODULE_3__["default"], null)));
+      }, !submitting ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Submit', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Submitting...', 'learnpress'))), totalTime && duration && React.createElement(_timer__WEBPACK_IMPORTED_MODULE_3__["default"], null))));
     }
   }]);
 

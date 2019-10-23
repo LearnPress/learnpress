@@ -128,13 +128,14 @@ class Status extends Component {
 
                 <div className="current-point">{sprintf(__('Earned Point: %s', 'learnpress'), userMark)}</div>
 
-                <div className="submit-quiz">
-                    <button className="lp-button" id="button-submit-quiz"
-                            onClick={ this.submit }>{ !submitting ? __('Submit', 'learnpress') : __('Submitting...', 'learnpress') }</button>
+                <div>
+                    <div className="submit-quiz">
+                        <button className="lp-button" id="button-submit-quiz"
+                                onClick={ this.submit }>{ !submitting ? __('Submit', 'learnpress') : __('Submitting...', 'learnpress') }</button>
+                    </div>
+
+                    { totalTime && duration && <Timer  /> }
                 </div>
-
-                { totalTime && duration && <Timer  /> }
-
             </div>
         </div>
     }
