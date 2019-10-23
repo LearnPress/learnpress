@@ -1,6 +1,9 @@
 import SingleCourse from './single-course/index';
 
 const $ = jQuery;
+const {
+    debounce
+} = lodash;
 
 export function formatDuration(seconds) {
     let html;
@@ -65,19 +68,44 @@ const createCustomScrollbar = function (element) {
 
 const AjaxSearchCourses = function (el) {
     var $form = $(el);
-    var submit = function () {
-
-        wp.apiFetch({
-            url: '?s=' + $(this).find('input[name="s"]').val(),
+    var $ul = $('<ul class="search-results"></ul>').appendTo($form);
+    var $input = $form.find('input[name="s"]');
+    var submit = async function (e) {
+        e.preventDefault();
+        const response = await wp.apiFetch({
+            path: 'lp/v1/courses/search?s=' + $input.val(),
         });
 
-        return false;
-    }
+        const courses = response.results.courses;
+        $ul.html('');
 
-    $form.on('submit', submit);
+        if (courses.length) {
+            courses.map((course) => {
+                $ul.append(`<li class="search-results__item">
+                    <a href="${course.url}">
+                    ` + (course.thumbnail.small ? `<img src="${course.thumbnail.small}" />` : '') + `
+                        <span>${course.title}</span>
+                        </a>
+                    </li>`);
+            });
+        } else {
+            $ul.append('<li class="search-results__not-found">No course found!</li>');
+        }
+
+        $form.addClass('searching')
+
+        return false;
+    };
+
+
+    $input.on('keyup', debounce(submit, 300));
+    $form.on('click', '.clear', () => {
+        $form.removeClass('searching');
+        $input.val('')
+    })
 }
 
-$(window).load(() => {
+$(window).on('load', () => {
     var $popup = $('#popup-course');
     var timerClearScroll;
     var $curriculum = $('#learn-press-course-curriculum');
@@ -98,7 +126,7 @@ $(window).load(() => {
 
         $('#sidebar-toggle').on('change', toggleSidebarHandler);
 
-        new AjaxSearchCourses($('#search-course'));
+        new AjaxSearchCourses($popup.find('.search-course'));
 
         createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
 

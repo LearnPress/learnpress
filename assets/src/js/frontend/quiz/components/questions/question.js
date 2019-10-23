@@ -14,7 +14,8 @@ class Question extends Component {
     constructor() {
         super(...arguments);
         this.state = {
-            time: null
+            time: null,
+            showHint: false
         }
         this.$wrap = null;
     }
@@ -87,7 +88,7 @@ class Question extends Component {
             question,
             isShow,
             isShowIndex,
-            questionsPerPage,
+            isShowHint,
             status
         } = this.props;
 
@@ -149,7 +150,7 @@ class Question extends Component {
             },
 
             hint: () => {
-                return question.hint && !question.explanation && <React.Fragment>
+                return question.hint && !question.explanation && question.showHint && <React.Fragment>
                         <div className="question-hint-content">
                             <strong className="hint-title">{ __('Hint:', 'learnpress') }</strong>
                             <div dangerouslySetInnerHTML={ {__html: question.hint} }>

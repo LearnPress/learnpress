@@ -82,25 +82,14 @@ class Quiz extends Component {
     render() {
         const {
             status,
-            isReviewing,
-            // numPages,
-            // currentPage
+            isReviewing
         } = this.props;
-
-        // const {
-        //     numPages,
-        //     currentPage,
-        //     pages
-        // } = this.state;
 
         const isA = -1 !== ['', 'completed'].indexOf(status);
 
         // Just render content if status !== undefined (meant all data loaded)
         return undefined !== status && (
                 <React.Fragment>
-                    {/*<div>ANSWERS: [{JSON.stringify(answered)}]</div>*/}
-                    {/*<div>HINT: [{hintCount}]</div>*/}
-                    {/*<div>Explanation: [{checkCount}]</div>*/}
 
                     { !isReviewing && 'completed' === status && <Result/> }
                     { !isReviewing && !status && <Meta /> }

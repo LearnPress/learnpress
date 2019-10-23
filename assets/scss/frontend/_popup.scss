@@ -151,10 +151,11 @@
         overflow: auto;
         border-right: 1px solid #d9e0f1;
         @include transition(0.25s);
-        #search-course {
+        .search-course {
             display: flex;
             height: 60px;
             background: #4274ef;
+            position: relative;
             input[name="s"] {
                 background: transparent;
                 border: none;
@@ -177,10 +178,90 @@
                 font-family: Fontawesome;
                 background: transparent;
                 line-height: 1px;
+
                 &:before {
                     content: "\f002";
                     font-size: 24px;
                     color: #DDD;
+                }
+
+                &.clear {
+                    right: 0;
+                    display: none;
+                    &:before {
+                        content: "\f00d";
+                    }
+                }
+
+                &:hover {
+                    &:before {
+                        color: #FFF;
+                    }
+                }
+            }
+
+            .search-results {
+                position: fixed;
+                left: 0;
+                top: 92px;
+                z-index: 99999999;
+                background: #FFF;
+                border-right: 1px solid #d9e0f1;
+                border-top-color: transparent;
+                width: 400px;
+                bottom: 0;
+                margin: 0;
+                overflow: auto;
+                display: none;
+                .search-results__item {
+                    img {
+                        width: 50px;
+                        left: 0;
+                        position: absolute;
+                    }
+                    a {
+                        padding: 0 10px 0 60px;
+                        height: 50px;
+                        line-height: 50px;
+                        position: relative;
+                        overflow: hidden;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 1;
+                        -webkit-box-orient: vertical;
+                        text-overflow: ellipsis;
+                        color: #777;
+                        margin: 0 10px 1px 0;
+                    }
+                    &:hover {
+                        background: #d9e0f1;
+                    }
+                }
+                .search-results__not-found {
+                    padding: 10px;
+                    color: #777;
+                }
+            }
+
+            &.searching {
+                .search-results {
+                    display: block;
+                }
+
+                .clear {
+                    display: block;
+                }
+
+                &:after {
+                    width: 0;
+                    height: 0;
+                    border: 10px solid transparent;
+                    border-bottom-color: #FFF;
+                    content: '';
+                    position: absolute;
+                    bottom: 0px;
+                    left: 50%;
+                    margin-left: -10px;
+                    z-index: 1;
                 }
             }
         }
@@ -491,6 +572,55 @@
         background: #F5F5F5;
         z-index: 999;
         @include transition(left 0.25s);
+
+        .course-item-nav {
+            .prev,
+            .next {
+                span {
+                    display: none;
+                }
+                a {
+                    display: block;
+                }
+                line-height: 50px;
+                padding: 0 20px;
+
+                &:before {
+                    content: '';
+                    border: 2px solid #999;
+                    border-top-color: transparent;
+                    border-left-color: transparent;
+                    display: inline-block;
+                    width: 15px;
+                    height: 15px;
+                    margin: 16px;
+                    @include transform(rotate(-45deg));
+                }
+
+                &:hover {
+                    a {
+                        color: #0387c5;
+                    }
+                    &:before {
+                        border-right-color: #0387c5;
+                        border-bottom-color: #0387c5;
+                    }
+                }
+            }
+
+            .next {
+                &:before {
+                    float: right;
+                }
+            }
+
+            .prev {
+                &:before {
+                    float: left;
+                    @include transform(rotate(135deg));
+                }
+            }
+        }
     }
 
     #sidebar-toggle {
@@ -765,6 +895,7 @@
 
     .scrollbar-light {
         > .scroll-element {
+            z-index: 9999;
             &.scroll-y {
                 .scroll-bar {
                     @include box-sizing(border-box);

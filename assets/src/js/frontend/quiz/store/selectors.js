@@ -88,8 +88,8 @@ export function getDefaultRestArgs(state) {
     const {userQuiz} = state;
 
     return {
-        item_id: userQuiz.id,
-        course_id: userQuiz.courseId
+        itemId: userQuiz.id,
+        courseId: userQuiz.courseId
     }
 }
 

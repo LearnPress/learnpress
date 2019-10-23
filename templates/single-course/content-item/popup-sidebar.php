@@ -7,10 +7,11 @@
  */
 ?>
 <div id="popup-sidebar">
-    <form method="post" id="search-course">
+    <form method="post" class="search-course">
         <input type="text" name="s" autocomplete="off"
                placeholder="<?php echo esc_attr( _x( 'Search course...', 'search course input placeholder', 'learnpress' ) ); ?>">
         <button name="submit"></button>
+        <button type="button" class="clear"></button>
     </form>
 	<?php
 

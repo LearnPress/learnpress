@@ -2379,11 +2379,12 @@ body.confirm #popup_container {
     -ms-transition: 0.25s;
     -o-transition: 0.25s;
     transition: 0.25s; }
-    #popup-course #popup-sidebar #search-course {
+    #popup-course #popup-sidebar .search-course {
       display: flex;
       height: 60px;
-      background: #4274ef; }
-      #popup-course #popup-sidebar #search-course input[name="s"] {
+      background: #4274ef;
+      position: relative; }
+      #popup-course #popup-sidebar .search-course input[name="s"] {
         background: transparent;
         border: none;
         color: #DDD;
@@ -2393,27 +2394,27 @@ body.confirm #popup_container {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box; }
-        #popup-course #popup-sidebar #search-course input[name="s"]::-webkit-input-placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]::-webkit-input-placeholder {
           color: #DDD; }
-        #popup-course #popup-sidebar #search-course input[name="s"]::-moz-placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]::-moz-placeholder {
           color: #DDD; }
-        #popup-course #popup-sidebar #search-course input[name="s"]:-ms-input-placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]:-ms-input-placeholder {
           color: #DDD; }
-        #popup-course #popup-sidebar #search-course input[name="s"]:-moz-placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]:-moz-placeholder {
           color: #DDD; }
-        #popup-course #popup-sidebar #search-course input[name="s"]::placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]::placeholder {
           color: #DDD; }
-        #popup-course #popup-sidebar #search-course input[name="s"]::-webkit-input-placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]::-webkit-input-placeholder {
           font-style: italic; }
-        #popup-course #popup-sidebar #search-course input[name="s"]::-moz-placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]::-moz-placeholder {
           font-style: italic; }
-        #popup-course #popup-sidebar #search-course input[name="s"]:-ms-input-placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]:-ms-input-placeholder {
           font-style: italic; }
-        #popup-course #popup-sidebar #search-course input[name="s"]:-moz-placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]:-moz-placeholder {
           font-style: italic; }
-        #popup-course #popup-sidebar #search-course input[name="s"]::placeholder {
+        #popup-course #popup-sidebar .search-course input[name="s"]::placeholder {
           font-style: italic; }
-      #popup-course #popup-sidebar #search-course button {
+      #popup-course #popup-sidebar .search-course button {
         position: absolute;
         top: 0;
         height: 32px;
@@ -2423,10 +2424,66 @@ body.confirm #popup_container {
         font-family: Fontawesome;
         background: transparent;
         line-height: 1px; }
-        #popup-course #popup-sidebar #search-course button:before {
+        #popup-course #popup-sidebar .search-course button:before {
           content: "\f002";
           font-size: 24px;
           color: #DDD; }
+        #popup-course #popup-sidebar .search-course button.clear {
+          right: 0;
+          display: none; }
+          #popup-course #popup-sidebar .search-course button.clear:before {
+            content: "\f00d"; }
+        #popup-course #popup-sidebar .search-course button:hover:before {
+          color: #FFF; }
+      #popup-course #popup-sidebar .search-course .search-results {
+        position: fixed;
+        left: 0;
+        top: 92px;
+        z-index: 99999999;
+        background: #FFF;
+        border-right: 1px solid #d9e0f1;
+        border-top-color: transparent;
+        width: 400px;
+        bottom: 0;
+        margin: 0;
+        overflow: auto;
+        display: none; }
+        #popup-course #popup-sidebar .search-course .search-results .search-results__item img {
+          width: 50px;
+          left: 0;
+          position: absolute; }
+        #popup-course #popup-sidebar .search-course .search-results .search-results__item a {
+          padding: 0 10px 0 60px;
+          height: 50px;
+          line-height: 50px;
+          position: relative;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          text-overflow: ellipsis;
+          color: #777;
+          margin: 0 10px 1px 0; }
+        #popup-course #popup-sidebar .search-course .search-results .search-results__item:hover {
+          background: #d9e0f1; }
+        #popup-course #popup-sidebar .search-course .search-results .search-results__not-found {
+          padding: 10px;
+          color: #777; }
+      #popup-course #popup-sidebar .search-course.searching .search-results {
+        display: block; }
+      #popup-course #popup-sidebar .search-course.searching .clear {
+        display: block; }
+      #popup-course #popup-sidebar .search-course.searching:after {
+        width: 0;
+        height: 0;
+        border: 10px solid transparent;
+        border-bottom-color: #FFF;
+        content: '';
+        position: absolute;
+        bottom: 0px;
+        left: 50%;
+        margin-left: -10px;
+        z-index: 1; }
     #popup-course #popup-sidebar .course-curriculum {
       width: 400px;
       position: absolute;
@@ -2631,6 +2688,47 @@ body.confirm #popup_container {
     -ms-transition: left 0.25s;
     -o-transition: left 0.25s;
     transition: left 0.25s; }
+    #popup-course #popup-footer .course-item-nav .prev,
+    #popup-course #popup-footer .course-item-nav .next {
+      line-height: 50px;
+      padding: 0 20px; }
+      #popup-course #popup-footer .course-item-nav .prev span,
+      #popup-course #popup-footer .course-item-nav .next span {
+        display: none; }
+      #popup-course #popup-footer .course-item-nav .prev a,
+      #popup-course #popup-footer .course-item-nav .next a {
+        display: block; }
+      #popup-course #popup-footer .course-item-nav .prev:before,
+      #popup-course #popup-footer .course-item-nav .next:before {
+        content: '';
+        border: 2px solid #999;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        margin: 16px;
+        -webkit-transform: rotate(-45deg);
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        transform: rotate(-45deg); }
+      #popup-course #popup-footer .course-item-nav .prev:hover a,
+      #popup-course #popup-footer .course-item-nav .next:hover a {
+        color: #0387c5; }
+      #popup-course #popup-footer .course-item-nav .prev:hover:before,
+      #popup-course #popup-footer .course-item-nav .next:hover:before {
+        border-right-color: #0387c5;
+        border-bottom-color: #0387c5; }
+    #popup-course #popup-footer .course-item-nav .next:before {
+      float: right; }
+    #popup-course #popup-footer .course-item-nav .prev:before {
+      float: left;
+      -webkit-transform: rotate(135deg);
+      -moz-transform: rotate(135deg);
+      -ms-transform: rotate(135deg);
+      -o-transform: rotate(135deg);
+      transform: rotate(135deg); }
   #popup-course #sidebar-toggle {
     margin: 0;
     position: absolute;
@@ -2807,10 +2905,12 @@ body.confirm #popup_container {
     list-style-position: inside; }
   #popup-course .question.question-fill_in_blanks .blanks.one-paragraph {
     line-height: 3; }
-  #popup-course .scrollbar-light > .scroll-element.scroll-y .scroll-bar {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box; }
+  #popup-course .scrollbar-light > .scroll-element {
+    z-index: 9999; }
+    #popup-course .scrollbar-light > .scroll-element.scroll-y .scroll-bar {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box; }
 
 body.admin-bar #popup-course {
   top: 32px; }

@@ -1886,14 +1886,14 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 			$canCheck       = false;
 			$hinted         = false;
 			$checked        = false;
-			$theHint        = '';
+			$theHint        = $question->get_hint();
 			$theExplanation = '';
 
-			if ( $instantHint ) {
-				$theHint = $question->get_hint();
-				$hinted  = in_array( $id, $hintedQuestions );
-				$hasHint = ! ! $theHint;
-			}
+//			if ( $instantHint ) {
+//				$theHint = $question->get_hint();
+//				$hinted  = in_array( $id, $hintedQuestions );
+//				$hasHint = ! ! $theHint;
+//			}
 
 			if ( $instantCheck ) {
 				$theExplanation = $question->get_explanation();
@@ -1905,8 +1905,8 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				'id'          => absint( $id ),
 				'title'       => $question->get_title(),
 				'type'        => $question->get_type(),
-				'hint'        => $hinted ? $theHint : '',
-				'explanation' => $checked ? $theExplanation : '',
+				//'hint'        => $theHint,//$hinted ? $theHint : '',
+				//'explanation' => $checked ? $theExplanation : '',
 				'point'       => ( $mark = $question->get_mark() ) ? $mark : 1
 			);
 
@@ -1914,7 +1914,7 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				$questionData['content'] = $content;
 			}
 
-			if ( $hinted && $theHint ) {
+			if ( /*$hinted &&*/ $theHint ) {
 				$questionData['hint'] = $theHint;
 			}
 
@@ -1922,13 +1922,13 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 				$questionData['explanation'] = $theExplanation;
 			}
 
-			if ( $hasHint ) {
-				$questionData['has_hint'] = $hasHint;
-
-				if ( $hinted ) {
-					$questionData['hint'] = $theHint;
-				}
-			}
+//			if ( $hasHint ) {
+//				$questionData['has_hint'] = $hasHint;
+//
+//				if ( $hinted ) {
+//					$questionData['hint'] = $theHint;
+//				}
+//			}
 
 			if ( $hasExplanation ) {
 				$questionData['has_explanation'] = $hasExplanation;

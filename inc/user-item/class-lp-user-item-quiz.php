@@ -268,9 +268,10 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			FROM {$wpdb->learnpress_user_items}
 			WHERE parent_id = %d AND item_type = %s
 			AND status = %s
+			AND item_id = %d
 			ORDER BY user_item_id DESC
 			" . ( $limit ? "LIMIT {$offset}, {$limit}" : '' ) . "
-		", $this->get_parent_id(), LP_QUIZ_CPT, 'completed' );
+		", $this->get_parent_id(), LP_QUIZ_CPT, 'completed', $this->get_item_id() );
 
 		$quiz = $this->get_quiz();
 

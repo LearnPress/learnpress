@@ -99,8 +99,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDuration", function() { return formatDuration; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggleSidebarHandler", function() { return toggleSidebarHandler; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 var $ = jQuery;
+var _lodash = lodash,
+    debounce = _lodash.debounce;
 function formatDuration(seconds) {
   var html;
   var x, d;
@@ -157,18 +163,63 @@ var createCustomScrollbar = function createCustomScrollbar(element) {
 
 var AjaxSearchCourses = function AjaxSearchCourses(el) {
   var $form = $(el);
+  var $ul = $('<ul class="search-results"></ul>').appendTo($form);
+  var $input = $form.find('input[name="s"]');
 
-  var submit = function submit() {
-    wp.apiFetch({
-      url: '?s=' + $(this).find('input[name="s"]').val()
-    });
-    return false;
-  };
+  var submit =
+  /*#__PURE__*/
+  function () {
+    var _ref = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(e) {
+      var response, courses;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              e.preventDefault();
+              _context.next = 3;
+              return wp.apiFetch({
+                path: 'lp/v1/courses/search?s=' + $input.val()
+              });
 
-  $form.on('submit', submit);
+            case 3:
+              response = _context.sent;
+              courses = response.results.courses;
+              $ul.html('');
+
+              if (courses.length) {
+                courses.map(function (course) {
+                  $ul.append("<li class=\"search-results__item\">\n                    <a href=\"".concat(course.url, "\">\n                    ") + (course.thumbnail.small ? "<img src=\"".concat(course.thumbnail.small, "\" />") : '') + "\n                        <span>".concat(course.title, "</span>\n                        </a>\n                    </li>"));
+                });
+              } else {
+                $ul.append('<li class="search-results__not-found">No course found!</li>');
+              }
+
+              $form.addClass('searching');
+              return _context.abrupt("return", false);
+
+            case 9:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function submit(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  $input.on('keyup', debounce(submit, 300));
+  $form.on('click', '.clear', function () {
+    $form.removeClass('searching');
+    $input.val('');
+  });
 };
 
-$(window).load(function () {
+$(window).on('load', function () {
   var $popup = $('#popup-course');
   var timerClearScroll;
   var $curriculum = $('#learn-press-course-curriculum'); // Popup only
@@ -183,7 +234,7 @@ $(window).load(function () {
       }, 1000);
     }, 500));
     $('#sidebar-toggle').on('change', toggleSidebarHandler);
-    new AjaxSearchCourses($('#search-course'));
+    new AjaxSearchCourses($popup.find('.search-course'));
     createCustomScrollbar($curriculum.find('.curriculum-scrollable'), $('#popup-content').find('.content-item-scrollable'));
     LP.toElement('.course-item.current', {
       container: '.curriculum-scrollable:eq(1)',

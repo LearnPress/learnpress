@@ -210,9 +210,10 @@ function (_Component) {
   var _select = select('learnpress/quiz'),
       getData = _select.getData;
 
+  var lastAttempted = getData('attempts[0]');
   return {
     id: getData('id'),
-    attempts: [getData('attempts[0]')],
+    attempts: lastAttempted ? [lastAttempted] : [],
     attemptsCount: getData('attemptsCount'),
     status: getData('status'),
     questionIds: getData('questionIds'),
@@ -411,7 +412,7 @@ function (_Component) {
       var _this$props = _this.props,
           showHint = _this$props.showHint,
           question = _this$props.question;
-      showHint(question.id);
+      showHint(question.id, !question.showHint);
     });
 
     return _this;
@@ -420,10 +421,11 @@ function (_Component) {
   _createClass(ButtonHint, [{
     key: "render",
     value: function render() {
-      return React.createElement("button", {
+      var question = this.props.question;
+      return question.hint ? React.createElement("button", {
         className: "btn-show-hint",
         onClick: this.showHint
-      });
+      }) : '';
     }
   }]);
 
@@ -437,8 +439,8 @@ function (_Component) {
       _showHint = _dispatch.showHint;
 
   return {
-    showHint: function showHint(id) {
-      _showHint(id);
+    showHint: function showHint(id, show) {
+      _showHint(id, show);
     }
   };
 }))(ButtonHint));
@@ -975,6 +977,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+var _LP = LP,
+    Hook = _LP.Hook;
 
 var Meta =
 /*#__PURE__*/
@@ -998,11 +1002,11 @@ function (_Component) {
           key: "quiz-intro-field-".concat(i)
         }, React.createElement("label", {
           dangerouslySetInnerHTML: {
-            __html: field.label
+            __html: field.title
           }
         }), React.createElement("span", {
           dangerouslySetInnerHTML: {
-            __html: field.value
+            __html: field.content
           }
         }));
       })));
@@ -1016,24 +1020,26 @@ function (_Component) {
   var _select = select('learnpress/quiz'),
       getData = _select.getData;
 
+  var _LP2 = LP,
+      singleCourse = _LP2.singleCourse;
   return {
-    metaFields: LP.Hook.applyFilters('quiz-meta-fields', {
-      attemptsCount: {
-        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Attempts allowed', 'learnpress'),
-        content: getData('attemptsCount')
-      },
+    metaFields: Hook.applyFilters('quiz-meta-fields', {
+      // attemptsCount: {
+      //     label: __('Attempts allowed', 'learnpress'),
+      //     content: getData('attemptsCount')
+      // },
       duration: {
-        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Duration', 'learnpress'),
-        content: getData('duration')
+        title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Duration', 'learnpress'),
+        content: singleCourse.formatDuration(getData('duration'))
       },
       passingGrade: {
-        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Passing grade', 'learnpress'),
+        title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Passing grade', 'learnpress'),
         content: getData('passingGrade')
       },
       questionsCount: {
-        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Questions', 'learnpress'),
+        title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Questions', 'learnpress'),
         content: function () {
-          var ids = getData('questionsIds');
+          var ids = getData('questionIds');
           return ids ? ids.length : 0;
         }()
       }
@@ -1375,7 +1381,8 @@ function (_Component) {
     });
 
     _this.state = {
-      time: null
+      time: null,
+      showHint: false
     };
     _this.$wrap = null;
     return _this;
@@ -1411,7 +1418,7 @@ function (_Component) {
           question = _this$props4.question,
           isShow = _this$props4.isShow,
           isShowIndex = _this$props4.isShowIndex,
-          questionsPerPage = _this$props4.questionsPerPage,
+          isShowHint = _this$props4.isShowHint,
           status = _this$props4.status;
       var QuestionTypes = LP.questionTypes["default"];
 
@@ -1479,7 +1486,7 @@ function (_Component) {
           })));
         },
         hint: function hint() {
-          return question.hint && !question.explanation && React.createElement(React.Fragment, null, React.createElement("div", {
+          return question.hint && !question.explanation && question.showHint && React.createElement(React.Fragment, null, React.createElement("div", {
             className: "question-hint-content"
           }, React.createElement("strong", {
             className: "hint-title"
@@ -1572,13 +1579,15 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
@@ -1593,27 +1602,43 @@ function (_Component) {
   _inherits(Result, _Component);
 
   function Result() {
+    var _this;
+
     _classCallCheck(this, Result);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Result).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Result).apply(this, arguments));
+
+    _defineProperty(_assertThisInitialized(_this), "getResultMessage", function (results) {
+      return Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your grade is <strong>%s</strong>', 'learnpress'), results.gradeText);
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getResultPercentage", function (results) {
+      return results.result === 100 ? results.result : parseFloat(results.result).toFixed(2);
+    });
+
+    return _this;
   }
+  /**
+   * Get result message.
+   *
+   * @param results
+   * @return {*|string}
+   */
+
 
   _createClass(Result, [{
-    key: "getResultMessage",
-    value: function getResultMessage(results) {
-      return Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your grade is <strong>%s</strong>', 'learnpress'), results.gradeText);
-    }
-  }, {
-    key: "getResultPercentage",
-    value: function getResultPercentage(results) {
-      return parseFloat(results.result).toFixed(2);
-    }
-  }, {
     key: "render",
+
+    /**
+     * Render HTML elements.
+     *
+     * @return {XML}
+     */
     value: function render() {
       var results = this.props.results;
+      var classNames = ['quiz-result', results.grade];
       return React.createElement("div", {
-        className: "quiz-result"
+        className: classNames.join(' ')
       }, React.createElement("h3", {
         className: "result-heading"
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your Result', 'learnpress')), React.createElement("div", {
@@ -2247,12 +2272,7 @@ function (_Component) {
     value: function render() {
       var _this$props2 = this.props,
           status = _this$props2.status,
-          isReviewing = _this$props2.isReviewing; // const {
-      //     numPages,
-      //     currentPage,
-      //     pages
-      // } = this.state;
-
+          isReviewing = _this$props2.isReviewing;
       var isA = -1 !== ['', 'completed'].indexOf(status); // Just render content if status !== undefined (meant all data loaded)
 
       return undefined !== status && React.createElement(React.Fragment, null, !isReviewing && 'completed' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Result"], null), !isReviewing && !status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Meta"], null), !isReviewing && isA && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Content"], null), 'started' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Status"], null), (-1 !== ['completed', 'started'].indexOf(status) || isReviewing) && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Questions"], null), React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Buttons"], null), isA && !isReviewing && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Attempts"], null));
@@ -2380,13 +2400,12 @@ function setCurrentPage(currentPage) {
   };
 }
 function __requestBeforeStartQuiz(quizId, courseId, userId) {
-  Hook.addAction('before-start-quiz', quizId, courseId, userId);
   return {
     type: 'BEFORE_START_QUIZ'
   };
 }
 function __requestStartQuizSuccess(results, quizId, courseId, userId) {
-  results = Hook.applyFilters('quiz-started', results, quizId, courseId, userId);
+  Hook.doAction('quiz-started', results, quizId, courseId, userId);
   return {
     type: 'START_QUIZ_SUCCESS',
     quizId: quizId,
@@ -2402,34 +2421,40 @@ function __requestStartQuizSuccess(results, quizId, courseId, userId) {
 var startQuiz =
 /*#__PURE__*/
 regeneratorRuntime.mark(function startQuiz() {
-  var _wpSelect$getDefaultR, item_id, course_id, response;
+  var _wpSelect$getDefaultR, itemId, courseId, doStart, response;
 
   return regeneratorRuntime.wrap(function startQuiz$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _wpSelect$getDefaultR = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz').getDefaultRestArgs(), item_id = _wpSelect$getDefaultR.item_id, course_id = _wpSelect$getDefaultR.course_id;
-          _context.next = 3;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestBeforeStartQuiz', item_id, course_id);
+          _wpSelect$getDefaultR = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz').getDefaultRestArgs(), itemId = _wpSelect$getDefaultR.itemId, courseId = _wpSelect$getDefaultR.courseId;
+          doStart = Hook.applyFilters('before-start-quiz', true, itemId, courseId); // Allow third-party can ignore core action
 
-        case 3:
-          _context.next = 5;
+          if (!(true !== doStart)) {
+            _context.next = 4;
+            break;
+          }
+
+          return _context.abrupt("return");
+
+        case 4:
+          _context.next = 6;
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["apiFetch"])({
             path: 'lp/v1/users/start-quiz',
             method: 'POST',
             data: {
-              item_id: item_id,
-              course_id: course_id
+              item_id: itemId,
+              course_id: courseId
             }
           });
 
-        case 5:
+        case 6:
           response = _context.sent;
-          response = Hook.applyFilters('request-start-quiz-response', response, item_id, course_id);
-          _context.next = 9;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']));
+          response = Hook.applyFilters('request-start-quiz-response', response, itemId, courseId);
+          _context.next = 10;
+          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']), itemId, courseId);
 
-        case 9:
+        case 10:
         case "end":
           return _context.stop();
       }
@@ -2442,51 +2467,57 @@ function __requestSubmitQuiz() {
     type: 'SUBMIT_QUIZ'
   };
 }
-function __requestSubmitQuizSuccess(results) {
-  results = Hook.applyFilters('quiz-submitted', results);
+function __requestSubmitQuizSuccess(results, quizId, courseId) {
+  Hook.doAction('quiz-submitted', results, quizId, courseId);
   return {
     type: 'SUBMIT_QUIZ_SUCCESS',
     results: results
   };
 }
 function submitQuiz() {
-  var _wpSelect, getDefaultRestArgs, getQuestionsSelectedAnswers, _getDefaultRestArgs, item_id, course_id, answered, response;
+  var _wpSelect, getDefaultRestArgs, getQuestionsSelectedAnswers, _getDefaultRestArgs, itemId, courseId, doSubmit, answered, response;
 
   return regeneratorRuntime.wrap(function submitQuiz$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          _context2.next = 2;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestSubmitQuiz');
-
-        case 2:
           _wpSelect = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect.getDefaultRestArgs, getQuestionsSelectedAnswers = _wpSelect.getQuestionsSelectedAnswers;
-          _getDefaultRestArgs = getDefaultRestArgs(), item_id = _getDefaultRestArgs.item_id, course_id = _getDefaultRestArgs.course_id;
+          _getDefaultRestArgs = getDefaultRestArgs(), itemId = _getDefaultRestArgs.itemId, courseId = _getDefaultRestArgs.courseId;
+          doSubmit = Hook.applyFilters('before-submit-quiz', true);
+
+          if (!(true !== doSubmit)) {
+            _context2.next = 5;
+            break;
+          }
+
+          return _context2.abrupt("return");
+
+        case 5:
           answered = getQuestionsSelectedAnswers();
-          _context2.next = 7;
+          _context2.next = 8;
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["apiFetch"])({
             path: 'lp/v1/users/submit-quiz',
             method: 'POST',
             data: {
-              item_id: item_id,
-              course_id: course_id,
+              item_id: itemId,
+              course_id: courseId,
               answered: answered
             }
           });
 
-        case 7:
+        case 8:
           response = _context2.sent;
-          response = Hook.applyFilters('request-submit-quiz-response', response, item_id, course_id);
+          response = Hook.applyFilters('request-submit-quiz-response', response, itemId, courseId);
 
           if (!response.success) {
-            _context2.next = 12;
+            _context2.next = 13;
             break;
           }
 
-          _context2.next = 12;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results));
+          _context2.next = 13;
+          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results), itemId, courseId);
 
-        case 12:
+        case 13:
         case "end":
           return _context2.stop();
       }
@@ -2502,38 +2533,22 @@ function updateUserQuestionAnswers(questionId, answers, quizId) {
     answers: answers
   };
 }
-function __requestShowHintSuccess(id, result) {
-  return _objectSpread({
+function __requestShowHintSuccess(id, showHint) {
+  return {
     type: 'SET_QUESTION_HINT',
-    questionId: id
-  }, result);
+    questionId: id,
+    showHint: showHint
+  };
 }
-function showHint(id) {
-  var _wpSelect2, getDefaultRestArgs, getData, _getDefaultRestArgs2, item_id, course_id, result;
-
+function showHint(id, showHint) {
   return regeneratorRuntime.wrap(function showHint$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          _wpSelect2 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect2.getDefaultRestArgs, getData = _wpSelect2.getData;
-          _getDefaultRestArgs2 = getDefaultRestArgs(), item_id = _getDefaultRestArgs2.item_id, course_id = _getDefaultRestArgs2.course_id;
-          _context3.next = 4;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["apiFetch"])({
-            path: 'lp/v1/users/hint-answer',
-            method: 'POST',
-            data: {
-              item_id: item_id,
-              course_id: course_id,
-              question_id: id
-            }
-          });
+          _context3.next = 2;
+          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestShowHintSuccess', id, showHint);
 
-        case 4:
-          result = _context3.sent;
-          _context3.next = 7;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestShowHintSuccess', id, camelCaseDashObjectKeys(result));
-
-        case 7:
+        case 2:
         case "end":
           return _context3.stop();
       }
@@ -2547,22 +2562,22 @@ function __requestCheckAnswerSuccess(id, result) {
   }, result);
 }
 function checkAnswer(id) {
-  var _wpSelect3, getDefaultRestArgs, getQuestionAnswered, _getDefaultRestArgs3, item_id, course_id, result;
+  var _wpSelect2, getDefaultRestArgs, getQuestionAnswered, _getDefaultRestArgs2, itemId, courseId, result;
 
   return regeneratorRuntime.wrap(function checkAnswer$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
           console.time('checkAnswer');
-          _wpSelect3 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect3.getDefaultRestArgs, getQuestionAnswered = _wpSelect3.getQuestionAnswered;
-          _getDefaultRestArgs3 = getDefaultRestArgs(), item_id = _getDefaultRestArgs3.item_id, course_id = _getDefaultRestArgs3.course_id;
+          _wpSelect2 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect2.getDefaultRestArgs, getQuestionAnswered = _wpSelect2.getQuestionAnswered;
+          _getDefaultRestArgs2 = getDefaultRestArgs(), itemId = _getDefaultRestArgs2.itemId, courseId = _getDefaultRestArgs2.courseId;
           _context4.next = 5;
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["apiFetch"])({
             path: 'lp/v1/users/check-answer',
             method: 'POST',
             data: {
-              item_id: item_id,
-              course_id: course_id,
+              item_id: itemId,
+              course_id: courseId,
               question_id: id,
               answered: getQuestionAnswered(id) || ''
             }
@@ -2791,12 +2806,12 @@ var updateAttempt = function updateAttempt(attempts, newAttempt) {
 var setQuestionHint = function setQuestionHint(state, action) {
   var questions = state.questions.map(function (question) {
     return question.id == action.questionId ? _objectSpread({}, question, {
-      hint: action.hint
+      showHint: action.showHint
     }) : question;
   });
   return _objectSpread({}, state, {
-    questions: _toConsumableArray(questions),
-    hintedQuestions: [].concat(_toConsumableArray(state.hintedQuestions), [action.questionId])
+    questions: _toConsumableArray(questions) //hintedQuestions: [...state.hintedQuestions, action.questionId]
+
   });
 };
 
@@ -2829,12 +2844,13 @@ var userQuiz = function userQuiz() {
 
   switch (action.type) {
     case 'SET_QUIZ_DATA':
-      if (action.data.questionsPerPage) {
-        var chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsPerPage);
-        action.data.numPages = chunks.length;
-        action.data.pages = chunks;
+      if (1 > action.data.questionsPerPage) {
+        action.data.questionsPerPage = 1;
       }
 
+      var chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsPerPage);
+      action.data.numPages = chunks.length;
+      action.data.pages = chunks;
       return _objectSpread({}, state, {}, action.data, {
         currentPage: LP.localStorage.get("Q".concat(action.data.id, ".currentPage")) || action.data.currentPage
       });
@@ -3053,8 +3069,8 @@ function getData(state, prop) {
 function getDefaultRestArgs(state) {
   var userQuiz = state.userQuiz;
   return {
-    item_id: userQuiz.id,
-    course_id: userQuiz.courseId
+    itemId: userQuiz.id,
+    courseId: userQuiz.courseId
   };
 }
 function getQuestionAnswered(state, id) {

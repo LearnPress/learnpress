@@ -91,7 +91,7 @@ this["LP"] = this["LP"] || {}; this["LP"]["config"] =
 /*!******************************************!*\
   !*** ./assets/src/js/frontend/config.js ***!
   \******************************************/
-/*! exports provided: classNames, isQuestionCorrect, questionBlocks, questionFooterButtons, questionTitleParts, questionChecker */
+/*! exports provided: classNames, isQuestionCorrect, questionBlocks, questionFooterButtons, questionTitleParts, questionChecker, quizStartBlocks */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -102,6 +102,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "questionFooterButtons", function() { return questionFooterButtons; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "questionTitleParts", function() { return questionTitleParts; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "questionChecker", function() { return questionChecker; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "quizStartBlocks", function() { return quizStartBlocks; });
+var _LP = LP,
+    Hook = _LP.Hook;
 var classNames = {
   Quiz: {
     Result: ['quiz-result'],
@@ -141,6 +144,13 @@ var questionChecker = function questionChecker(type) {
   return type && c[type] ? c[type] : function () {
     return {};
   };
+};
+var quizStartBlocks = function quizStartBlocks() {
+  var blocks = Hook.applyFilters('quiz-start-blocks', {
+    meta: true,
+    description: true,
+    custom: "Hello"
+  });
 };
 
 /***/ })

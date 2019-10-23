@@ -43,7 +43,6 @@ export function setCurrentPage(currentPage) {
 
 export function __requestBeforeStartQuiz(quizId, courseId, userId) {
 
-    Hook.addAction('before-start-quiz', quizId, courseId, userId);
 
     return {
         type: 'BEFORE_START_QUIZ'
@@ -52,7 +51,7 @@ export function __requestBeforeStartQuiz(quizId, courseId, userId) {
 
 export function __requestStartQuizSuccess(results, quizId, courseId, userId) {
 
-    results = Hook.applyFilters('quiz-started', results, quizId, courseId, userId);
+    Hook.doAction('quiz-started', results, quizId, courseId, userId);
 
     return {
         type: 'START_QUIZ_SUCCESS',
@@ -69,37 +68,43 @@ export function __requestStartQuizSuccess(results, quizId, courseId, userId) {
 const startQuiz = function*() {
 
     const {
-        item_id,
-        course_id
+        itemId,
+        courseId
     } = wpSelect('learnpress/quiz').getDefaultRestArgs();
 
-    yield dispatch('learnpress/quiz', '__requestBeforeStartQuiz', item_id, course_id);
+    const doStart = Hook.applyFilters('before-start-quiz', true, itemId, courseId);
+
+    // Allow third-party can ignore core action
+    if (true !== doStart) {
+        return;
+    }
 
     let response = yield apiFetch({
         path: 'lp/v1/users/start-quiz',
         method: 'POST',
         data: {
-            item_id: item_id,
-            course_id: course_id
+            item_id: itemId,
+            course_id: courseId
         }
     });
 
-    response = Hook.applyFilters('request-start-quiz-response', response, item_id, course_id);
+    response = Hook.applyFilters('request-start-quiz-response', response, itemId, courseId);
 
-    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']));
-}
+    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']), itemId, courseId);
+};
 
 export {startQuiz}
 
 export function __requestSubmitQuiz() {
+
     return {
         type: 'SUBMIT_QUIZ'
     }
 }
 
-export function __requestSubmitQuizSuccess(results) {
+export function __requestSubmitQuizSuccess(results, quizId, courseId) {
 
-    results = Hook.applyFilters('quiz-submitted', results);
+    Hook.doAction('quiz-submitted', results, quizId, courseId);
 
     return {
         type: 'SUBMIT_QUIZ_SUCCESS',
@@ -108,7 +113,6 @@ export function __requestSubmitQuizSuccess(results) {
 }
 
 export function* submitQuiz() {
-    yield dispatch('learnpress/quiz', '__requestSubmitQuiz');
 
     const {
         getDefaultRestArgs,
@@ -116,25 +120,31 @@ export function* submitQuiz() {
     } = wpSelect('learnpress/quiz');
 
     const {
-        item_id,
-        course_id
+        itemId,
+        courseId
     } = getDefaultRestArgs();
+
+    const doSubmit = Hook.applyFilters('before-submit-quiz', true);
+
+    if (true !== doSubmit) {
+        return;
+    }
 
     const answered = getQuestionsSelectedAnswers();
     let response = yield apiFetch({
         path: 'lp/v1/users/submit-quiz',
         method: 'POST',
         data: {
-            item_id,
-            course_id,
+            item_id: itemId,
+            course_id: courseId,
             answered
         }
     });
 
-    response = Hook.applyFilters('request-submit-quiz-response', response, item_id, course_id);
+    response = Hook.applyFilters('request-submit-quiz-response', response, itemId, courseId);
 
     if (response.success) {
-        yield dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results));
+        yield dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results), itemId, courseId);
     }
 }
 
@@ -146,36 +156,38 @@ export function updateUserQuestionAnswers(questionId, answers, quizId, courseId 
     }
 }
 
-export function __requestShowHintSuccess(id, result) {
+export function __requestShowHintSuccess(id, showHint) {
     return {
         type: 'SET_QUESTION_HINT',
         questionId: id,
-        ...result
+        showHint
     }
 }
 
-export function* showHint(id) {
-    const {
-        getDefaultRestArgs,
-        getData
-    } = wpSelect('learnpress/quiz');
+export function* showHint(id, showHint) {
+    yield dispatch('learnpress/quiz', '__requestShowHintSuccess', id, showHint);
 
-    const {
-        item_id,
-        course_id
-    } = getDefaultRestArgs();
-
-    const result = yield apiFetch({
-        path: 'lp/v1/users/hint-answer',
-        method: 'POST',
-        data: {
-            item_id,
-            course_id,
-            question_id: id
-        }
-    });
-
-    yield dispatch('learnpress/quiz', '__requestShowHintSuccess', id, camelCaseDashObjectKeys(result));
+    // const {
+    //     getDefaultRestArgs,
+    //     getData
+    // } = wpSelect('learnpress/quiz');
+    //
+    // const {
+    //     itemId,
+    //     courseId
+    // } = getDefaultRestArgs();
+    //
+    // const result = yield apiFetch({
+    //     path: 'lp/v1/users/hint-answer',
+    //     method: 'POST',
+    //     data: {
+    //         itemId,
+    //         courseId,
+    //         question_id: id
+    //     }
+    // });
+    //
+    // yield dispatch('learnpress/quiz', '__requestShowHintSuccess', id, camelCaseDashObjectKeys(result));
 }
 
 export function __requestCheckAnswerSuccess(id, result) {
@@ -194,8 +206,8 @@ export function* checkAnswer(id) {
     } = wpSelect('learnpress/quiz');
 
     const {
-        item_id,
-        course_id
+        itemId,
+        courseId
     } = getDefaultRestArgs();
 
 
@@ -203,8 +215,8 @@ export function* checkAnswer(id) {
         path: 'lp/v1/users/check-answer',
         method: 'POST',
         data: {
-            item_id,
-            course_id,
+            item_id: itemId,
+            course_id: courseId,
             question_id: id,
             answered: getQuestionAnswered(id) || ''
         }

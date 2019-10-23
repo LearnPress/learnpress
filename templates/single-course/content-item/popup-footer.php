@@ -19,9 +19,5 @@ $user   = LP_Global::user();
 ?>
 
 <div id="popup-footer">
-
-    <div>
-		<?php do_action( 'learn-press/popup-footer' ); ?>
-    </div>
-
+	<?php do_action( 'learn-press/popup-footer' ); ?>
 </div>

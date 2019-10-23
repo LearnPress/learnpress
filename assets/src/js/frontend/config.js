@@ -1,3 +1,7 @@
+const {
+    Hook
+} = LP;
+
 export const classNames = {
     Quiz: {
         Result: ['quiz-result'],
@@ -51,4 +55,12 @@ export const questionChecker = function(type){
     return type && c[type] ? c[type] : function () {
         return {}
     }
+}
+
+export const quizStartBlocks = function () {
+    const blocks = Hook.applyFilters('quiz-start-blocks', {
+        meta: true,
+        description: true,
+        custom: "Hello"
+    })
 }

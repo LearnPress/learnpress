@@ -10,20 +10,39 @@ class Result extends Component {
         super(...arguments);
     }
 
-    getResultMessage(results) {
+    /**
+     * Get result message.
+     *
+     * @param results
+     * @return {*|string}
+     */
+    getResultMessage = (results) => {
         return sprintf(__('Your grade is <strong>%s</strong>', 'learnpress'), results.gradeText);
-    }
+    };
 
-    getResultPercentage(results) {
-        return parseFloat(results.result).toFixed(2);
-    }
+    /**
+     * Get result percentage.
+     *
+     * @param results
+     * @return {string}
+     */
+    getResultPercentage = (results) => {
+        return results.result === 100 ? results.result : parseFloat(results.result).toFixed(2);
+    };
 
+    /**
+     * Render HTML elements.
+     *
+     * @return {XML}
+     */
     render() {
         const {
             results
         } = this.props;
 
-        return <div className="quiz-result">
+        const classNames = ['quiz-result', results.grade];
+
+        return <div className={ classNames.join(' ') }>
             <h3 className="result-heading">{ __('Your Result', 'learnpress') }</h3>
             <div className="result-grade">
                 <span className="result-achieved">{ this.getResultPercentage(results) }%</span>

@@ -187,6 +187,34 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * Get course thumbnail, return placeholder if it does not exists
+		 *
+		 * @param string $size
+		 *
+		 * @return string
+		 */
+		public function get_image_url( $size = 'course_thumbnail' ) {
+			$course_id = $this->get_id();
+			$url       = '';
+
+			if ( has_post_thumbnail( $course_id ) ) {
+				$url = get_the_post_thumbnail_url( $course_id, $size );
+			} elseif ( ( $parent_id = wp_get_post_parent_id( $course_id ) ) && has_post_thumbnail( $parent_id ) ) {
+				$url = get_the_post_thumbnail_url( $parent_id, $size );
+			}
+
+			if ( ! $url ) {
+				if ( 'course_thumbnail' == $size ) {
+					$url = LP()->image( 'no-image.png' );
+				} else {
+					$url = LP()->image( 'placeholder-800x450' );
+				}
+			}
+
+			return apply_filters( 'learn-press/course-thumbnail-url', $url, $this->get_id(), $size );
+		}
+
+		/**
 		 * @return false|string
 		 */
 		public function get_permalink() {

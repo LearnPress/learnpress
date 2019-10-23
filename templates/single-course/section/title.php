@@ -45,7 +45,7 @@ $title = $section->get_title();
 
         <div class="section-meta">
             <div class="section-progress"
-                 title="<?php echo round($percent,2); ?>%"><?php learn_press_circle_progress_html( $percent, 24, 6 ); ?></div>
+                 title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ), round( $percent, 2 ) ) ); ?>"><?php learn_press_circle_progress_html( $percent, 24, 6 ); ?></div>
         </div>
 
 	<?php } ?>

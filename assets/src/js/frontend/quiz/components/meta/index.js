@@ -3,6 +3,8 @@ import {compose} from '@wordpress/compose';
 import {withSelect} from '@wordpress/data';
 import {__} from '@wordpress/i18n';
 
+const {Hook} = LP;
+
 class Meta extends Component {
     render() {
         const {
@@ -14,9 +16,9 @@ class Meta extends Component {
                     {
                         Object.values(metaFields).map((field, i) => {
                             return <li key={`quiz-intro-field-${i}`}>
-                                <label dangerouslySetInnerHTML={{__html: field.label}}>
+                                <label dangerouslySetInnerHTML={{__html: field.title}}>
                                 </label>
-                                <span dangerouslySetInnerHTML={{__html: field.value}}>
+                                <span dangerouslySetInnerHTML={{__html: field.content}}>
                             </span>
                             </li>
                         })
@@ -32,24 +34,27 @@ export default compose(
             getData
         } = select('learnpress/quiz');
 
+        const {
+            singleCourse
+        } = LP;
         return {
-            metaFields: LP.Hook.applyFilters('quiz-meta-fields', {
-                attemptsCount: {
-                    label: __('Attempts allowed', 'learnpress'),
-                    content: getData('attemptsCount')
-                },
+            metaFields: Hook.applyFilters('quiz-meta-fields', {
+                // attemptsCount: {
+                //     label: __('Attempts allowed', 'learnpress'),
+                //     content: getData('attemptsCount')
+                // },
                 duration: {
-                    label: __('Duration', 'learnpress'),
-                    content: getData('duration')
+                    title: __('Duration', 'learnpress'),
+                    content: singleCourse.formatDuration(getData('duration'))
                 },
                 passingGrade: {
-                    label: __('Passing grade', 'learnpress'),
+                    title: __('Passing grade', 'learnpress'),
                     content: getData('passingGrade')
                 },
                 questionsCount: {
-                    label: __('Questions', 'learnpress'),
+                    title: __('Questions', 'learnpress'),
                     content: (function () {
-                        const ids = getData('questionsIds');
+                        const ids = getData('questionIds');
                         return ids ? ids.length : 0;
                     })()
                 }

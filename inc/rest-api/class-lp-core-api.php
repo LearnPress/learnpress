@@ -14,6 +14,7 @@ class LP_Core_API extends LP_Abstract_API {
 
 		include_once dirname( __FILE__ ) . '/class-lp-rest-settings-controller.php';
 		include_once dirname( __FILE__ ) . '/class-lp-rest-users-controller.php';
+		include_once dirname( __FILE__ ) . '/class-lp-rest-courses-controller.php';
 
 		do_action( 'learn-press/core-api/includes' );
 	}
@@ -22,6 +23,7 @@ class LP_Core_API extends LP_Abstract_API {
 		$controllers = array(
 			'LP_REST_Settings_Controller',
 			'LP_REST_Users_Controller',
+			'LP_REST_Courses_Controller',
 		);
 
 		$this->controllers = apply_filters( 'learn-press/core-api/controllers', $controllers );

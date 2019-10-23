@@ -82,13 +82,13 @@ const updateAttempt = (attempts, newAttempt) => {
 
 const setQuestionHint = (state, action) => {
     const questions = state.questions.map((question) => {
-        return question.id == action.questionId ? {...question, hint: action.hint} : question;
+        return question.id == action.questionId ? {...question, showHint: action.showHint} : question;
     });
 
     return {
         ...state,
         questions: [...questions],
-        hintedQuestions: [...state.hintedQuestions, action.questionId]
+        //hintedQuestions: [...state.hintedQuestions, action.questionId]
     }
 };
 
@@ -123,12 +123,14 @@ const checkAnswer = (state, action) => {
 export const userQuiz = (state = STORE_DATA, action) => {
     switch (action.type) {
         case 'SET_QUIZ_DATA':
-            if (action.data.questionsPerPage) {
-                const chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsPerPage);
-
-                action.data.numPages = chunks.length;
-                action.data.pages = chunks;
+            if (1 > action.data.questionsPerPage) {
+                action.data.questionsPerPage = 1;
             }
+
+            const chunks = chunk(state.questionIds || action.data.questionIds, action.data.questionsPerPage);
+
+            action.data.numPages = chunks.length;
+            action.data.pages = chunks;
 
             return {
                 ...state,

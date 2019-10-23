@@ -80,10 +80,11 @@ export default compose([
         const {
             getData
         } = select('learnpress/quiz');
+        const lastAttempted = getData('attempts[0]');
 
         return {
             id: getData('id'),
-            attempts: [getData('attempts[0]')],
+            attempts: lastAttempted ? [lastAttempted] : [],
             attemptsCount: getData('attemptsCount'),
             status: getData('status'),
             questionIds: getData('questionIds'),

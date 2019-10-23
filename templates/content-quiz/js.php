@@ -49,7 +49,6 @@ if ( $userQuiz ) {
 		'checked_questions' => $checkedQuestions,
 		'hinted_questions'  => $hintedQuestions,
 		'start_time'        => $userQuiz->get_start_time()->toSql(),
-		'results'           => $quizResults->get()
 	);
 
 	if ( isset( $totalTime ) ) {
@@ -57,10 +56,11 @@ if ( $userQuiz ) {
 		$userJS['endTime']   = $expirationTime->toSql();
 	}
 
-	$answered     = $quizResults->getQuestions();// getAnswered();// $userQuiz->get_meta( '_question_answers' );
-	$question_ids = $quizResults->getQuestions( 'ids' );// $userQuiz->get_meta( 'questions' );
-
-	if ( ! $question_ids ) {
+	if ( $quizResults ) {
+		$userJS['results'] = $quizResults->get();
+		$answered          = $quizResults->getQuestions();// getAnswered();// $userQuiz->get_meta( '_question_answers' );
+		$question_ids      = $quizResults->getQuestions( 'ids' );// $userQuiz->get_meta( 'questions' );
+	} else {
 		$question_ids = $quiz->get_question_ids();
 	}
 }
@@ -103,11 +103,7 @@ $js = array(
 	'questions_per_page'   => absint( get_post_meta( $quiz->get_id(), '_lp_pagination', true ) ),
 	'page_numbers'         => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
 	'review_questions'     => $quiz->get_review_questions(),
-	////
-	'show_correct_answers' => $quiz->get_show_result(),
-	//'show_check_answers'   => ! ! $quiz->get_show_check_answer(),
-	//'show_hint'            => ! ! $quiz->get_show_hint(),
-	////
+	//'show_correct_answers' => $quiz->get_show_result(),
 	'support_options'      => learn_press_get_question_support_answer_options(),
 	'duration'             => $duration ? $duration->get() : false,
 	'crypto'               => $cryptoJsAes,

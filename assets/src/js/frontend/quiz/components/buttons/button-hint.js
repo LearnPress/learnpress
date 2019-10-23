@@ -13,13 +13,17 @@ class ButtonHint extends Component {
             question
         } = this.props;
 
-        showHint(question.id);
+        showHint(question.id, !question.showHint);
     };
 
     render() {
-        return <button className="btn-show-hint"
-                       onClick={ this.showHint }>
-        </button>
+        const {
+            question
+        } = this.props;
+
+        return question.hint ? <button className="btn-show-hint"
+                                       onClick={ this.showHint }>
+        </button> : '';
     }
 }
 
@@ -30,8 +34,8 @@ export default compose(
         } = dispatch('learnpress/quiz');
 
         return {
-            showHint: function (id) {
-                showHint(id)
+            showHint: function (id, show) {
+                showHint(id, show)
             }
         }
     })
