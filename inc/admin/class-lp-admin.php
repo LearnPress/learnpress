@@ -663,7 +663,7 @@ return;
 		public function wrapper_editor() {
 			$post_type = get_post_type();
 
-			if ( in_array( $post_type, array( LP_COURSE_CPT, LP_QUIZ_CPT/*, LP_QUESTION_CPT*/ ) ) ) {
+			if ( in_array( $post_type, array( LP_COURSE_CPT/*, LP_QUIZ_CPT, LP_QUESTION_CPT*/ ) ) ) {
 				learn_press_admin_view( 'editor-wrapper', array( 'post_type' => $post_type ) );
 			}
 		}

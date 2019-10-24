@@ -19,6 +19,7 @@ window.jQuery(document).ready(function () {
             el: '#admin-editor-lp_quiz',
             template: '<lp-quiz-editor></lp-quiz-editor>'
         });
+
     }, 100);
 
 });

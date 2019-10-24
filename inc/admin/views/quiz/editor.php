@@ -8,7 +8,7 @@
 learn_press_admin_view( 'quiz/questions' );
 learn_press_admin_view( 'quiz/modal-choose-items' );
 ?>
-<div id="admin-editor-lp_quiz">
+<div id="admin-editor-lp_quiz" xxxx="5">
     <div class="lp-place-holder">
         <div class="line-heading"></div>
 

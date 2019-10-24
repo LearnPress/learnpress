@@ -140,6 +140,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( LP_QUIZ_CPT !== get_post_type() ) {
 				return;
 			}
+
 			learn_press_admin_view( 'quiz/editor' );
 		}
 
@@ -239,19 +240,22 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Add question meta box settings.
 		 */
 		public function add_meta_boxes() {
-			self::$metaboxes['quiz-editor']   = new RW_Meta_Box(
-				array(
-					'id'     => 'quiz-editor',
-					'title'  => __( 'Questions', 'learnpress' ),
-					'pages'  => array( LP_QUIZ_CPT ),
-					'fields' => array(
-						array(
-							'type'     => 'custom_html',
-							'callback' => array( $this, 'admin_editor' )
+			if ( $this->is_support_gutenberg() ) {
+				self::$metaboxes['quiz-editor'] = new RW_Meta_Box(
+					array(
+						'id'     => 'quiz-editor',
+						'title'  => __( 'Questions', 'learnpress' ),
+						'pages'  => array( LP_QUIZ_CPT ),
+						'fields' => array(
+							array(
+								'type'     => 'custom_html',
+								'callback' => array( $this, 'admin_editor' )
+							)
 						)
 					)
-				)
-			);
+				);
+			}
+
 			self::$metaboxes['quiz_settings'] = new RW_Meta_Box( self::settings_meta_box() );
 			parent::add_meta_boxes();
 		}
