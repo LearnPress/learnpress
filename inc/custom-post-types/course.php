@@ -588,7 +588,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc' => __( 'The duration of the course. Lifetime access if duration is zero.', 'learnpress' ),
 						'std'  => '10 weeks'
 					),
-					// @since 3.x.x
+					// @since 3.3.0
 
 					array(
 						'name'    => __( 'Block items content', 'learnpress' ),

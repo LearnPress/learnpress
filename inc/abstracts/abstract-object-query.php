@@ -5,7 +5,7 @@
  *
  * Base class for query functionality on post type object.
  *
- * @since 3.x.x
+ * @since 3.3.0
  */
 abstract class LP_Object_Query {
 	/**
@@ -26,7 +26,7 @@ abstract class LP_Object_Query {
 	/**
 	 * Get all query vars.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @return array
 	 */
@@ -37,7 +37,7 @@ abstract class LP_Object_Query {
 	/**
 	 * Get value of a query var by key.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $var_name
 	 * @param string $default
@@ -55,7 +55,7 @@ abstract class LP_Object_Query {
 	/**
 	 * Set new value for query var.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $var_name
 	 * @param mixed  $value
@@ -71,7 +71,7 @@ abstract class LP_Object_Query {
 	/**
 	 * Get default query vars.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @return array
 	 */

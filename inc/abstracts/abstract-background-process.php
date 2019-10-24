@@ -47,7 +47,7 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		/**
 		 * @var array
 		 *
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 */
 		protected $query_args = array();
 
@@ -110,7 +110,7 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		/**
 		 * Get unique ID
 		 *
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 *
 		 * @return mixed|string
 		 */
@@ -128,7 +128,7 @@ if ( ! class_exists( 'LP_Abstract_Background_Process' ) ) {
 		}
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 *
 		 * @return bool
 		 */

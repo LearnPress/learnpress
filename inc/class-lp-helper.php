@@ -303,7 +303,7 @@ class LP_Helper {
 	/**
 	 * Wrap function ksort of PHP itself and support recursive.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param  array $array
 	 * @param int    $sort_flags

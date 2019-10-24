@@ -1009,7 +1009,7 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 	function learn_press_course_item_type_link( $post_link, $post, $leavename, $sample ) {
 
 		/**
-		 * @updated 3.x.x
+		 * @updated 3.3.0
 		 */
 		if ( ! learn_press_is_support_course_item_type( $post->post_type ) ) {
 			return $post_link;

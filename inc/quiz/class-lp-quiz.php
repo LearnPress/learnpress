@@ -146,7 +146,7 @@ if ( ! class_exists( 'LP_Quiz' ) ) {
 				//'archive_history'      => 'no',
 				//'show_check_answer'    => 0,
 				//'show_hint'            => 0,
-				// 4.x.x
+				// 3.3.0
 				'negative_marking'   => 'no',
 				'instant_check'      => 'no',
 				'retry'              => 'no',

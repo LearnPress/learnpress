@@ -1709,7 +1709,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					/**
 					 * Filters whether auto complete course items before finish course.
 					 *
-					 * @since 3.x.x
+					 * @since 3.3.0
 					 *
 					 * @param bool $auto_complete_items - Default is true
 					 * @param int  $course_id
@@ -2488,7 +2488,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Enroll this user to a course.
 		 *
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 *
 		 * @param int         $course_id
 		 * @param int         $order_id     - Optional. An user can be enrolled to a course
@@ -2587,7 +2587,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$user_course->set_status( 'enrolled' );
 				$user_course->set_end_time_gmt( '0000-00-00 00:00:00' );
 
-				// Added since 3.x.x
+				// Added since 3.3.0
 				if ( $course_duration ) {
 					// Expiration is GTM time
 					$expiration = new LP_Datetime( $date->getPeriod( $course_duration, false ) );

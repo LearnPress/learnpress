@@ -148,7 +148,7 @@ if ( ! class_exists( 'LP_Background_Schedule_Items' ) ) {
 		 * Update user-item status.
 		 * This function called in background by schedule event.
 		 *
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 *
 		 * @param mixed $data
 		 *

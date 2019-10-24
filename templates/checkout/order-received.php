@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.x.x
+ * @version  3.3.0
  */
 
 /**
@@ -85,7 +85,7 @@ if ( isset( $order ) ) {
 
 		<?php
 		/**
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 */
 		?>
         <tr class="status">

@@ -154,7 +154,7 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
 			 *
 			 * Filter the default class name to get LP user.
 			 *
-			 * @since 3.x.x
+			 * @since 3.3.0
 			 */
 			$userClass = apply_filters( 'learn-press/user-class', $is_guest ? 'LP_User_Guest' : 'LP_User', $is_guest );
 
@@ -1791,7 +1791,7 @@ function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = fal
 /**
  * Create new user item prepare for user starts a quiz
  *
- * @since 4.x.x
+ * @since 3.3.0
  *
  * @param int  $quiz_id
  * @param int  $user_id
@@ -1843,7 +1843,7 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 /**
  * Prepares list of questions for rest api.
  *
- * @since 4.x.x
+ * @since 3.3.0
  *
  * @param int[] $question_ids
  * @param array $args

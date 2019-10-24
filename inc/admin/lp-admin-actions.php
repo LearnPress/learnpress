@@ -279,7 +279,7 @@ if ( ! function_exists( 'lp_remove_admin_warning' ) ) {
 }
 add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 
-// 4.x.x
+// 3.3.0
 function learn_press_fill_in_blanks_admin_editor( $question ) {
 	learn_press_admin_view( 'question/fill-in-blanks', array( 'question' => $question ) );
 }

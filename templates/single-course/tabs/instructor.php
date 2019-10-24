@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.x.x
+ * @version  3.3.0
  */
 
 /**

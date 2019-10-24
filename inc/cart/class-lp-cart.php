@@ -52,7 +52,7 @@ class LP_Cart {
 	/**
 	 * Constructor
 	 *
-	 * @param string $key . Added since 3.x.x
+	 * @param string $key . Added since 3.3.0
 	 */
 	public function __construct( $key = '' ) {
 

@@ -46,7 +46,7 @@ class LP_Schedules {
 	}
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 */
 	public function schedules() {
 		/**
@@ -61,7 +61,7 @@ class LP_Schedules {
 	/**
 	 * Loop forever
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 */
 	public function run() {
 
@@ -98,7 +98,7 @@ class LP_Schedules {
 	/**
 	 * Execute task when cron is calling
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 */
 	public function do_cron() {
 		$nonce = LP_Request::get( 'sid' );
@@ -218,7 +218,7 @@ class LP_Schedules {
 	 * Auto finished course when time is expired for users
 	 *
 	 * @updated
-	 * + 3.x.x: Changed sql
+	 * + 3.3.0: Changed sql
 	 */
 	public function _update_current_user_course_expired() {
 		global $wpdb, $post;

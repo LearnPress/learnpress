@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.x.x
+ * @version 3.3.0
  */
 
 defined( 'ABSPATH' ) or die;

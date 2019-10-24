@@ -495,7 +495,7 @@ function learn_press_load_content_item_only( $name ) {
 }
 
 /**
- * Version 4.x.x
+ * Version 3.3.0
  */
 
 /**
@@ -506,7 +506,7 @@ if ( ! function_exists( 'learn_press_course_purchase_button' ) ) {
 	 * Purchase course button.
 	 */
 	function learn_press_course_purchase_button() {
-		_deprecated_function( __FUNCTION__, '4.x.x' );
+		_deprecated_function( __FUNCTION__, '3.3.0' );
 		LP()->template()->course_purchase_button();
 	}
 
@@ -517,7 +517,7 @@ if ( ! function_exists( 'learn_press_course_enroll_button' ) ) {
 	 * Enroll course button.
 	 */
 	function learn_press_course_enroll_button() {
-		_deprecated_function( __FUNCTION__, '4.x.x' );
+		_deprecated_function( __FUNCTION__, '3.3.0' );
 		LP()->template()->course_enroll_button();
 	}
 
@@ -530,7 +530,7 @@ if ( ! function_exists( 'learn_press_course_retake_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_retake_button() {
-		_deprecated_function( __FUNCTION__, '4.x.x' );
+		_deprecated_function( __FUNCTION__, '3.3.0' );
 		LP()->template()->func( 'course_retake_button' );
 	}
 }
@@ -553,7 +553,7 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 	 * Retake course button
 	 */
 	function learn_press_course_finish_button() {
-		_deprecated_function( __FUNCTION__, '4.x.x' );
+		_deprecated_function( __FUNCTION__, '3.3.0' );
 		LP()->template()->func( 'course_finish_button' );
 	}
 }
@@ -975,14 +975,14 @@ if ( ! function_exists( 'learn_press_content_item_summary_question_content' ) ) 
 if ( ! function_exists( 'learn_press_content_item_summary_quiz_buttons' ) ) {
 
 	function learn_press_content_item_summary_quiz_buttons() {
-		_deprecated_function( __FUNCTION__, '4.x.x' );
+		_deprecated_function( __FUNCTION__, '3.3.0' );
 		learn_press_get_template( 'content-quiz/buttons.php' );
 	}
 }
 
 if ( ! function_exists( 'learn_press_profile_tab_orders' ) ) {
 	function learn_press_profile_tab_orders() {
-		_deprecated_function( __FUNCTION__, '4.x.x' );
+		_deprecated_function( __FUNCTION__, '3.3.0' );
 		learn_press_get_template( 'profile/tabs/orders/list.php' );
 	}
 }
@@ -1322,7 +1322,7 @@ if ( ! function_exists( 'learn_press_course_loop_item_buttons' ) ) {
 	/**
 	 * @deprecated
 	 *
-	 * @since 4.x.x
+	 * @since 3.3.0
 	 *
 	 * @return bool
 	 */

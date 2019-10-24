@@ -3,7 +3,7 @@
 /**
  * Class LP_REST_Users_Controller
  *
- * @since 4.x.x
+ * @since 3.3.0
  */
 class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	/**

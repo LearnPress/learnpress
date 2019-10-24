@@ -89,7 +89,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 								)
 							)
 						),
-						// @since 3.x.x
+						// @since 3.3.0
 						array(
 							'name'    => __( 'Auto finish course', 'learnpress' ),
 							'id'      => 'auto_finish_course',

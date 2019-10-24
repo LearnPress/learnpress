@@ -58,7 +58,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Add question types support answer options
 		 *
-		 * @since 4.x.x
+		 * @since 3.3.0
 		 */
 		public function plugins_loaded() {
 			$default_support_options = apply_filters(
@@ -363,7 +363,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Admin editor
 		 *
-		 * @since 4.x.x
+		 * @since 3.3.0
 		 *
 		 * @return bool|string
 		 */

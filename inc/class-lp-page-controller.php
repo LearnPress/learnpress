@@ -57,7 +57,7 @@ class LP_Page_Controller {
 	 * Auto inserting a registered shortcode to a specific page
 	 * if that page is viewing in single mode.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $template
 	 *

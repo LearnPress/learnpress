@@ -491,7 +491,7 @@ add_action( 'learn-press/after-empty-cart-message', 'learn_press_back_to_class_b
 //add_action( 'wp_head', 'learn_press_reset_single_item_summary_content' );
 
 /**
- * 4.x.x
+ * 3.3.0
  */
 
 add_action( 'learn-press/before-courses-loop', LP()->template()->func( 'courses_top_bar' ), 10 );

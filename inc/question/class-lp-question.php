@@ -723,7 +723,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Create default answers.
 		 *
-		 * @since 4.x.x
+		 * @since 3.3.0
 		 */
 		public function create_default_answers() {
 			global $wpdb;
@@ -1164,7 +1164,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get default json data for editor settings
 		 *
-		 * @since 4.x.x
+		 * @since 3.3.0
 		 *
 		 * @return array
 		 */
@@ -1182,7 +1182,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		/**
 		 * Get json data for editor settings.
 		 *
-		 * @since 4.x.x
+		 * @since 3.3.0
 		 *
 		 * @return array
 		 */

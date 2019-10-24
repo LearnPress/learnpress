@@ -352,7 +352,7 @@ abstract class LP_Abstract_Submenu {
 			$page = $this->_get_page();
 			$tab  = $this->get_active_tab();
 
-			// @since 3.x.x
+			// @since 3.3.0
 			do_action( 'learn-press/admin/before-page-content-sections', $page, $tab, $this );
 
 			// If I have a function named 'page_content_TAB_SLUG' then call it.
@@ -366,7 +366,7 @@ abstract class LP_Abstract_Submenu {
 				do_action( 'learn-press/admin/page-content-' . $page . '/' . $tab );
 			}
 
-			// @since 3.x.x
+			// @since 3.3.0
 			do_action( 'learn-press/admin/after-page-content-sections', $page, $tab, $this );
 		}
 

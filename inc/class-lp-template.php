@@ -3,7 +3,7 @@
 /**
  * Class LP_Template
  *
- * @since 4.x.x
+ * @since 3.3.0
  */
 class LP_Template {
 
@@ -401,7 +401,7 @@ class LP_Template {
 	/**
 	 * Return is callable method of self class.
 	 *
-	 * @since 4.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $callback
 	 *

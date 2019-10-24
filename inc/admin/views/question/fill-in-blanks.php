@@ -2,7 +2,7 @@
 /**
  * View for displaying fill-in-blanks question editor.
  *
- * @version 4.x.x
+ * @version 3.3.0
  * @author  ThimPress
  * @package LearnPress/Views
  */

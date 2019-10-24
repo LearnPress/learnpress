@@ -2778,7 +2778,7 @@ function learn_press_get_link_current_question_instead_of_continue_button( $link
 
 add_filter( 'learn-press/course-item-link', 'learn_press_get_link_current_question_instead_of_continue_button', 10, 2 );
 
-/** 3.x.x */
+/** 3.3.0 */
 add_filter( 'learn-press/can-view-item', function ( $viewable, $item_id, $course_id ) {
 	return $viewable;
 }, 10, 3 );
@@ -2839,7 +2839,7 @@ add_action( 'admin_print_scripts', 'learn_press_define_debug_mode' );
 add_action( 'wp_print_scripts', 'learn_press_define_debug_mode' );
 
 /***************************/
-/********** 4.x.x **********/
+/********** 3.3.0 **********/
 /***************************/
 
 function learn_press_courses_layouts() {
@@ -2849,7 +2849,7 @@ function learn_press_courses_layouts() {
 /**
  * Get layout template for archive course page.
  *
- * @since 4.x.x
+ * @since 3.3.0
  *
  * @return mixed
  */

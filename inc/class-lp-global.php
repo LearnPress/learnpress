@@ -57,7 +57,7 @@ class LP_Global {
 	/**
 	 * @var array
 	 *
-	 * @since 4.x.x
+	 * @since 3.3.0
 	 */
 	public static $object_support_features = array();
 
@@ -225,7 +225,7 @@ class LP_Global {
 	}
 
 	/**
-	 * @since 4.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $object_type
 	 * @param string $feature
@@ -256,7 +256,7 @@ class LP_Global {
 	/**
 	 * Checks if an object is support a feature.
 	 *
-	 * @since 4.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $object_type
 	 * @param string $feature
@@ -300,7 +300,7 @@ class LP_Global {
 	/**
 	 * Get all features that an object support.
 	 *
-	 * @since 4.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $object_type
 	 *

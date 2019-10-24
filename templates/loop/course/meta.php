@@ -2,7 +2,7 @@
 /**
  * Template for displaying meta data in course loop.
  *
- * @version 4.x.x
+ * @version 3.3.0
  *
  * @author ThimPress
  * @package LearnPress/Templates

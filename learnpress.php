@@ -568,7 +568,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Get instance of class LP_Template.
 		 *
-		 * @since 4.x.x
+		 * @since 3.3.0
 		 *
 		 * @param string $hook
 		 * @param string $cb

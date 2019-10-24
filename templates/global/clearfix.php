@@ -2,7 +2,7 @@
 /**
  * Template for rendering a div to stop all floating elements.
  *
- * @version 4.x.x
+ * @version 3.3.0
  *
  * @author  ThimPress
  * @package LearnPress/Templates

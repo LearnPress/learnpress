@@ -136,7 +136,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Get Id of course.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @return int
 	 */
@@ -294,7 +294,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		/**
 		 * If course it not finished then grade should be null
 		 *
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 */
 		if ( $this->get_status() !== 'finished' ) {
 			$results['grade'] = '';
@@ -455,7 +455,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 	/**
 	 * Complete all items of course.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @return bool
 	 */
@@ -465,7 +465,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		 * Filters whether item types of course should be completed.
 		 * Only support lp_quiz by default.
 		 *
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 *
 		 * @param array $item_types
 		 * @param int   $course_id
@@ -489,7 +489,7 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 			/**
 			 * Filters the item should be completed if has specific statuses.
 			 *
-			 * @since 3.x.x
+			 * @since 3.3.0
 			 *
 			 * @param array $item_statuses
 			 * @param int   $item_id

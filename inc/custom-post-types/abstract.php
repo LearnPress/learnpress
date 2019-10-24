@@ -846,7 +846,7 @@ class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
 	/**
 	 * Return TRUE if this post-type is support Gutenberg editor.
 	 *
-	 * @since 4.x.x
+	 * @since 3.3.0
 	 *
 	 * @return bool
 	 */

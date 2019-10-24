@@ -3409,7 +3409,7 @@ function learn_press_global_script_params() {
 /**
  * Get url for setup cron job on server.
  *
- * @since 3.x.x
+ * @since 3.3.0
  *
  * @return string
  */
@@ -3428,7 +3428,7 @@ function learn_press_get_cron_url() {
 /**
  * Get courses expired.
  *
- * @since 3.x.x
+ * @since 3.3.0
  *
  * @return array
  */
@@ -3477,7 +3477,7 @@ function learn_press_error_log( $data ) {
 /**
  * Get status of global course for current user.
  *
- * @since 4.x.x
+ * @since 3.3.0
  *
  * @param int $user_id
  * @param int $course_id
@@ -3499,7 +3499,7 @@ function learn_press_user_course_status( $user_id = 0, $course_id = 0 ) {
 /**
  * Return list types of questions that support answer options.
  *
- * @since 4.x.x
+ * @since 3.3.0
  *
  * @return array
  */
@@ -3512,7 +3512,7 @@ function learn_press_get_question_support_answer_options() {
 /**
  * Return list types of question that support a feature.
  *
- * @since 4.x.x
+ * @since 3.3.0
  *
  * @param string $feature
  *
@@ -3535,7 +3535,7 @@ function learn_press_get_question_support_feature( $feature ) {
 /**
  * Helper function to output html for rendering a 'circle progress bar'
  *
- * @since 4.x.x
+ * @since 3.3.0
  *
  * @param int    $percent
  * @param int    $width

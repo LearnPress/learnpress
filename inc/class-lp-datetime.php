@@ -328,7 +328,7 @@ class LP_Datetime extends DateTime {
 	/**
 	 * Add X seconds into datetime of this object.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param int $seconds
 	 */

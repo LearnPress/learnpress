@@ -676,7 +676,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	}
 
 	/**
-	 * @param int $question_id - Added since 4.x.x
+	 * @param int $question_id - Added since 3.3.0
 	 *
 	 * @return bool
 	 */

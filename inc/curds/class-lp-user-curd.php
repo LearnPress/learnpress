@@ -37,7 +37,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Get courses of an user.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param array $args
 	 *

@@ -223,7 +223,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		/**
 		 * Admin editor
 		 *
-		 * @since 4.x.x
+		 * @since 3.3.0
 		 *
 		 * @return bool|string
 		 */

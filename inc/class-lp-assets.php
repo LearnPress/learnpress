@@ -277,7 +277,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		}
 
 		/**
-		 * @since 4.x.x
+		 * @since 3.3.0
 		 */
 		do_action( 'learn-press/after-enqueue-scripts' );
 	}
@@ -285,7 +285,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	/**
 	 * Check is currently in a screen required.
 	 *
-	 * @since 4.x.x
+	 * @since 3.3.0
 	 *
 	 * @param array $screens
 	 *

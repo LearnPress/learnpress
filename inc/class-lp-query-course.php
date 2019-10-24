@@ -3,7 +3,7 @@
 /**
  * Class LP_Course_Query
  *
- * @version 3.x.x
+ * @version 3.3.0
  */
 class LP_Course_Query extends LP_Object_Query {
 

@@ -273,7 +273,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set expiration time.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string|LP_Datetime $time
 	 * @param bool               $bound_to_gmt
@@ -294,7 +294,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get expiration time.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @return string|LP_Datetime $time
 	 */
@@ -305,7 +305,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Set expiration time gmt.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string|LP_Datetime $time
 	 */
@@ -320,7 +320,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get expiration time.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @return string|LP_Datetime $time
 	 */
@@ -616,7 +616,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @updated 3.1.0
 	 *
 	 * @param bool $force    - Optional. Added from 3.1.0 to force update if even the data is not changed.
-	 * @param bool $wp_error - Optional. Added from 4.x.x to return WP_Error
+	 * @param bool $wp_error - Optional. Added from 3.3.0 to return WP_Error
 	 *
 	 * @return bool|mixed
 	 */
@@ -633,7 +633,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$data = $this->get_mysql_data();
 
 		/**
-		 * @since 3.x.x
+		 * @since 3.3.0
 		 *
 		 * Allow filter to modify data
 		 */
@@ -736,7 +736,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * If less than or equals to 0 that means the time is exceeded.
 	 * Otherwise, the time is not exceeded.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @return float|int
 	 */
@@ -753,7 +753,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * Check if user was finished before the expiration time is exceeded.
 	 * If the expiration-time is NULL that mean the course is not set duration.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @return bool|float|int
 	 */
@@ -810,7 +810,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	/**
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $format
 	 *
@@ -838,7 +838,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get time remaining for user item.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param string $return - Optional. What kind of data to return.
 	 *
@@ -954,7 +954,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Calculate expiration time from the start time and duration.
 	 *
-	 * @since 3.x.x
+	 * @since 3.3.0
 	 *
 	 * @param int|string|LP_Datetime $duration
 	 *
