@@ -38,7 +38,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			'order_key'        => '',
 			'total'            => 0,
 			'subtotal'         => 0,
-			'created_via'      => ''
+			'created_via'      => '',
+			'checkout_email'      => ''
 		);
 
 		/**
@@ -1072,8 +1073,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			if ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) {
 				$email = $user->get_data( 'email' );
 			} // Order is checked out by guest
-			elseif ( $email = $this->get_checkout_email() ) {
-
+			if ( ! $email ) {
+				$email = $this->get_checkout_email();
 			}
 
 			return $email;
