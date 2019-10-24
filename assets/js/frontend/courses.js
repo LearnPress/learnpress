@@ -96,8 +96,11 @@
 ;
 
 (function ($) {
+  var _lodash = lodash,
+      debounce = _lodash.debounce;
+
   var fetchCourses = function fetchCourses(args) {
-    var url = args.url || 'http://localhost/learnpress/dev/courses-2/';
+    var url = args.url || lpGlobalSettings.courses_url;
     var $wrapElement = args.wrapElement || '#lp-archive-courses';
     delete args.url;
     delete args.wrapElement;
@@ -133,18 +136,17 @@
    */
 
 
-  var searchCourseHandler = function searchCourseHandler(event) {
+  var searchCourseHandler = debounce(function (event) {
     event.preventDefault();
     fetchCourses({
       s: $(this).find('input[name="s"]').val()
     });
-  };
+  });
   /**
    * Switch layout between Grid and List.
    *
    * @param event
    */
-
 
   var switchCoursesLayoutHandler = function switchCoursesLayoutHandler(event) {
     var $target;
@@ -177,12 +179,12 @@
     }
 
     fetchCourses({
-      url: permalink
+      url: permalink.addQueryVar('s', $('.search-courses input[name="s"]').val())
     });
   };
 
   var bindEventCoursesLayout = function bindEventCoursesLayout() {
-    $('#lp-archive-courses').on('submit', '.search-courses', searchCourseHandler).on('change', 'input[name="lp-switch-layout-btn"]', switchCoursesLayoutHandler).on('click', '.learn-press-pagination .page-numbers', coursePaginationHandler);
+    $('#lp-archive-courses').on('keyup', '.search-courses input[name="s"]', searchCourseHandler).on('change', 'input[name="lp-switch-layout-btn"]', switchCoursesLayoutHandler).on('click', '.learn-press-pagination .page-numbers', coursePaginationHandler);
   };
 
   $(document).ready(function () {

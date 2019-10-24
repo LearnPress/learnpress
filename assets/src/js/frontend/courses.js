@@ -1,6 +1,8 @@
 ;(function ($) {
+    const {debounce} = lodash;
+
     const fetchCourses = function (args) {
-        var url = args.url || 'http://localhost/learnpress/dev/courses-2/';
+        var url = args.url || lpGlobalSettings.courses_url;
         var $wrapElement = args.wrapElement || '#lp-archive-courses';
 
         delete args.url;
@@ -38,13 +40,13 @@
      *
      * @param event
      */
-    const searchCourseHandler = function (event) {
+    const searchCourseHandler = debounce(function (event) {
         event.preventDefault();
 
         fetchCourses({
             s: $(this).find('input[name="s"]').val()
         });
-    };
+    });
 
     /**
      * Switch layout between Grid and List.
@@ -87,13 +89,13 @@
         }
 
         fetchCourses({
-            url: permalink
+            url: permalink.addQueryVar('s', $('.search-courses input[name="s"]').val())
         })
     };
 
     const bindEventCoursesLayout = function () {
         $('#lp-archive-courses')
-            .on('submit', '.search-courses', searchCourseHandler)
+            .on('keyup', '.search-courses input[name="s"]', searchCourseHandler)
             .on('change', 'input[name="lp-switch-layout-btn"]', switchCoursesLayoutHandler)
             .on('click', '.learn-press-pagination .page-numbers', coursePaginationHandler);
     }

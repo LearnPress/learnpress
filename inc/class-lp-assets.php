@@ -59,11 +59,12 @@ class LP_Assets extends LP_Abstract_Assets {
 	public function _get_script_data() {
 		return array(
 			'lp-global'       => array(
-				'url'      => learn_press_get_current_url(),
-				'siteurl'  => site_url(),
-				'ajax'     => admin_url( 'admin-ajax.php' ),
-				'theme'    => get_stylesheet(),
-				'localize' => array(
+				'url'         => learn_press_get_current_url(),
+				'siteurl'     => site_url(),
+				'ajax'        => admin_url( 'admin-ajax.php' ),
+				'courses_url' => learn_press_get_page_link( 'courses' ),
+				'theme'       => get_stylesheet(),
+				'localize'    => array(
 					'button_ok'     => __( 'OK', 'learnpress' ),
 					'button_cancel' => __( 'Cancel', 'learnpress' ),
 					'button_yes'    => __( 'Yes', 'learnpress' ),
@@ -118,9 +119,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-				'lp-modal'           => array(
-					'url'     => self::url( 'js/frontend/modal.js' ),
-					'deps'    => array(
+				'lp-modal'            => array(
+					'url'  => self::url( 'js/frontend/modal.js' ),
+					'deps' => array(
 						'jquery'
 					)
 				),
@@ -180,7 +181,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-courses'          => array(
 					'url'     => self::url( 'js/frontend/courses.js' ),
-					'deps'    => array( 'lp-global' ),
+					'deps'    => array( 'lp-global', 'lodash' ),
 					'screens' => learn_press_is_courses()
 				),
 				'lp-profile-user'     => array(
