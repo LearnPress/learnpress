@@ -535,10 +535,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$sql = $wpdb->prepare( $sql, array( LP_ORDER_CPT, '_user_id', $s, $s, $s, $s, $s ) );
 				# search order via course name
 				$sql .= " OR ".$wpdb->prepare( " {$wpdb->posts}.ID IN (
-						SELECT DISTINCT order_id FROM {$wpdb->learnpress_order_items} WHERE `order_item_name` like %s
-					)",$s);
+						SELECT DISTINCT order_id FROM {$wpdb->learnpress_order_items} loi
+						INNER JOIN {$wpdb->learnpress_order_itemmeta} loim ON loi.order_item_id = loim.learnpress_order_item_id AND loim.meta_key LIKE %s
+						WHERE `order_item_name` LIKE %s OR loim.meta_value LIKE %s 
+					)", array( '_course_id', $s, $s ) );
 				if ( ! empty( $matches2 ) && isset( $matches2[0] ) ) {
-					$sql = $wpdb->prepare(" loi.order_item_name LIKE %s",$s);
+					$sql .= $wpdb->prepare(" OR loi.order_item_name LIKE %s",$s);
 					$where = str_replace( $matches2[0], $sql . ' OR ' . $matches2[0], $where );
 				} else {
 					$where .= " AND " . $sql;
