@@ -80,6 +80,7 @@ class LP_Update_999 extends LP_Update_Base {
 		$query = "
 			ALTER TABLE `{$wpdb->prefix}learnpress_user_itemmeta` ADD INDEX(`meta_key`);
 		";
+		$wpdb->query( $query );
 
 		return true;
 	}

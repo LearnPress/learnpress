@@ -791,7 +791,7 @@
                 svg {
                     @include transform(rotate(-90deg));
                     circle {
-                        stroke: #3eacff;
+                        //stroke: #3eacff;
                         stroke: #4CAF50;
                     }
                 }
