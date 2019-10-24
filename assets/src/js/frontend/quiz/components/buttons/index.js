@@ -173,7 +173,7 @@ class Buttons extends Component {
         }
 
         return <div className={ classNames.join(' ') }>
-            <div className="button-left">
+            <div className={ `button-left` + (status === 'started' ? ' fixed' : '') }>
 
                 {
                     -1 !== ['', 'completed'].indexOf(status) && !isReviewing &&

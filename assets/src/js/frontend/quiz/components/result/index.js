@@ -3,11 +3,16 @@ import {withSelect, withDispatch} from '@wordpress/data';
 import {compose} from '@wordpress/compose';
 import {__, _x, sprintf} from '@wordpress/i18n';
 
-const {get} = lodash;
+const {get, debounce} = lodash;
 
 class Result extends Component {
     constructor() {
         super(...arguments);
+
+        this.state = {
+            percentage: 0,
+            done: false
+        }
     }
 
     /**
@@ -27,8 +32,62 @@ class Result extends Component {
      * @return {string}
      */
     getResultPercentage = (results) => {
+        // const {
+        //     percent
+        // } = this.state;
+        //
+        // const maxPercent = results.result;
+
+
         return results.result === 100 ? results.result : parseFloat(results.result).toFixed(2);
     };
+
+    componentDidMount() {
+        this.animate();
+    }
+
+    componentWillReceiveProps(a, b) {
+        if (a.results.result === b.results.result) {
+            return;
+        }
+
+        this.animate();
+    }
+
+    animate() {
+        const {
+            results
+        } = this.props;
+
+        this.setState({
+            percentage: 0,
+            done: false
+        });
+
+        jQuery.easing['_customEasing'] = function(e, f, a, h, g) {
+            return h * Math.sqrt(1 - (f = f / g - 1) * f) + a
+        }/*function(e, f, a, h, g) {
+            return (f == g) ? a + h : h * (-Math.pow(2, -10 * f / g) + 1) + a
+        }*/
+
+        debounce(() => {
+            var $el = jQuery('<span />').css({
+                width: 1,
+                height: 1
+            }).appendTo(document.body);
+            $el.css('left', 0).animate({left: results.result}, {
+                duration: 1500,
+                step: (now, fx) => {
+                    this.setState({percentage: now})
+                },
+                done: () => {
+                    this.setState({done: true});
+                    $el.remove();
+                },
+                easing: '_customEasing'
+            })
+        }, 1500)();
+    }
 
     /**
      * Render HTML elements.
@@ -40,14 +99,24 @@ class Result extends Component {
             results
         } = this.props;
 
+        let {
+            percentage,
+            done
+        } = this.state;
+
+        if (percentage < 100) {
+            percentage = parseFloat(percentage).toFixed(2)
+        }
+
         const classNames = ['quiz-result', results.grade];
         const border = 10;
         const width = 200;
         const percent = this.getResultPercentage(results);
+
         const radius = width / 2;
         const r = ( width - border ) / 2;
         const circumference = r * 2 * Math.PI;
-        const offset = circumference - percent / 100 * circumference;
+        const offset = circumference - percentage / 100 * circumference;
         const styles = {
             strokeDasharray: `${circumference} ${circumference}`,
             strokeDashoffset: offset
@@ -56,17 +125,16 @@ class Result extends Component {
         return <div className={ classNames.join(' ') }>
             <h3 className="result-heading">{ __('Your Result', 'learnpress') }</h3>
             <div className="result-grade">
-
                 <svg className="circle-progress-bar" width={width} height={width}>
                     <circle className="circle-progress-bar__circle" stroke="" strokeWidth={border} style={styles}
                             fill="transparent" r={r} cx={radius} cy={radius}></circle>
                 </svg>
 
-                <span className="result-achieved">{ percent }%</span>
+                <span className="result-achieved">{ percentage }%</span>
                 <span
                     className="result-require">{ undefined !== results.passingGrade ? results.passingGrade : _x('-', 'unknown passing grade value', 'learnpress') }</span>
-                <p className="result-message" dangerouslySetInnerHTML={ {__html: this.getResultMessage(results)} }>
-                </p>
+                { done && <p className="result-message"
+                             dangerouslySetInnerHTML={ {__html: this.getResultMessage(results)} }></p> }
             </div>
 
             <ul className="result-statistic">

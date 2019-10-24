@@ -259,10 +259,11 @@ class LP_Install_Sample_Data {
 	 *
 	 * @param int $min
 	 * @param int $max
+	 * @param int $paragraphs
 	 *
 	 * @return string
 	 */
-	protected function generate_content( $min = 100, $max = 500 ) {
+	protected function generate_content( $min = 100, $max = 500, $paragraphs = 10 ) {
 		$length = rand( $min, $max );
 		$max    = sizeof( $this->dummy_text ) - 1;
 		$words  = array();
@@ -273,7 +274,11 @@ class LP_Install_Sample_Data {
 
 		$p = array();
 
-		while ( $words && sizeof( $p ) < self::$max_content_paragraph ) {
+		if ( ! $paragraphs ) {
+			$paragraphs = self::$max_content_paragraph;
+		}
+
+		while ( $words && sizeof( $p ) < $paragraphs ) {
 			$len = rand( 10, 20 );
 			$cut = array_splice( $words, 0, $len );
 			$p[] = '<p>' . ucfirst( join( ' ', $cut ) ) . '</p>';
@@ -314,7 +319,7 @@ class LP_Install_Sample_Data {
 			'post_title'   => strlen( $name ) ? $name : __( 'Sample course', 'learnpress' ),
 			'post_type'    => LP_COURSE_CPT,
 			'post_status'  => 'publish',
-			'post_content' => $this->generate_content()
+			'post_content' => $this->generate_content( 25, 40, 5 )
 		);
 
 		$course_id = wp_insert_post( $data );
@@ -478,7 +483,7 @@ class LP_Install_Sample_Data {
 			'post_title'   => $name,
 			'post_type'    => LP_QUIZ_CPT,
 			'post_status'  => 'publish',
-			'post_content' => $this->generate_content()
+			'post_content' => $this->generate_content( 25, 40, 2 )
 		);
 
 		$quiz_id = wp_insert_post( $data );
@@ -486,19 +491,24 @@ class LP_Install_Sample_Data {
 		if ( $quiz_id ) {
 
 			$metas = array(
-				'_lp_preview'              => 'no',
-				'_lp_minus_points'         => 0,
-				'_lp_minus_skip_questions' => 'no',
-				'_lp_show_hide_question'   => 'no',
-				'_lp_review_questions'     => 'yes',
-				'_lp_show_result'          => 'yes',
-				'_lp_duration'             => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
-				'_lp_passing_grade'        => rand( 5, 9 ) * 10,
-				'_lp_retake_count'         => rand( 0, 10 ),
-				'_lp_archive_history'      => 'no',
-				'_lp_show_check_answer'    => '0',
-				'_lp_show_hint'            => '0',
-				'_lp_sample_data'          => 'yes'
+				'_lp_preview'          => 'no',
+				//'_lp_minus_points'         => 0,
+				//'_lp_minus_skip_questions' => 'no',
+				//'_lp_show_hide_question'   => 'no',
+				//'_lp_review_questions'     => 'yes',
+				//'_lp_show_result'          => 'yes',
+				'_lp_duration'         => ( rand( 1, 5 ) * 10 ) . ' ' . 'minute',
+				'_lp_passing_grade'    => rand( 5, 9 ) * 10,
+				//'_lp_retake_count'         => rand( 0, 10 ),
+				//'_lp_archive_history'      => 'no',
+				//'_lp_show_check_answer'    => '0',
+				//'_lp_show_hint'            => '0',
+				'_lp_sample_data'      => 'yes',
+				'_lp_negative_marking' => 'no',
+				'_lp_instant_check'    => 'no',
+				'_lp_retry'            => 'no',
+				'_lp_pagination'       => '1',
+				'_lp_review'           => 'yes',
 			);
 
 			foreach ( $metas as $key => $value ) {
@@ -538,7 +548,7 @@ class LP_Install_Sample_Data {
 				'post_title'   => 'Question ' . $question_index ++,
 				'post_type'    => LP_QUESTION_CPT,
 				'post_status'  => 'publish',
-				'post_content' => $this->generate_content()
+				'post_content' => $this->generate_content( 25, 40, 2 )
 			);
 
 			$question_id = wp_insert_post( $data );
@@ -565,7 +575,9 @@ class LP_Install_Sample_Data {
 
 			if ( $wpdb->insert_id ) {
 				$this->create_question_answers( $question_id, $type );
-			}
+			}else{
+			    error_log('create_quiz_questions => ', $wpdb->last_error);
+            }
 		}
 	}
 
@@ -579,22 +591,23 @@ class LP_Install_Sample_Data {
 		global $wpdb;
 
 		$answers = $this->get_answers( $type );
-		foreach ( $answers as $answer ) {
+		foreach ( $answers as $order => $answer ) {
 			$data = array(
-				'question_id'  => $question_id,
+				'question_id' => $question_id,
 				/**
 				 * @since 4.0
 				 */
-				'title' => $answer['title'],
-				'value' => $answer['value'],
-				'is_true'      => $answer['is_true']
+				'title'       => $answer['title'],
+				'value'       => $answer['value'],
+				'is_true'     => $answer['is_true'],
+				'order'       => $order + 1
 				//'answer_data' => maybe_serialize( $answer )
 			);
 
 			$wpdb->insert(
 				$wpdb->learnpress_question_answers,
 				$data,
-				array( '%d', '%s' )
+				array( '%d', '%s', '%s', '%s', '%d' )
 			);
 		}
 	}
@@ -613,8 +626,8 @@ class LP_Install_Sample_Data {
 
 		for ( $i = 1; $i <= $option_count; $i ++ ) {
 			$answers[] = array(
-				'title'    => $this->generate_title(),
-				'value'   => md5( uniqid() ),
+				'title'   => $this->generate_title(),
+				'value'   => learn_press_random_value(),
 				'is_true' => 'no'
 			);
 		}
@@ -623,7 +636,7 @@ class LP_Install_Sample_Data {
 		if ( $type !== 'multi_choice' ) {
 			$at                        = rand( 0, sizeof( $answers ) - 1 );
 			$answers[ $at ]['is_true'] = 'yes';
-			$answers[ $at ]['title']    .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+			$answers[ $at ]['title']   = _x( '[TRUE] - ', 'install-sample-course', 'learnpress' ) . $answers[ $at ]['title'];
 		} else {
 			$has_true_option = false;
 			while ( ! $has_true_option ) {
@@ -631,8 +644,8 @@ class LP_Install_Sample_Data {
 					$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';
 
 					if ( $answers[ $k ]['is_true'] === 'yes' ) {
-						$answers[ $k ]['title'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
-						$has_true_option       = true;
+						$answers[ $k ]['title'] = _x( ' [TRUE] - ', 'install-sample-course', 'learnpress' ) . $answers[ $k ]['title'];
+						$has_true_option        = true;
 					}
 				}
 			}

@@ -2586,7 +2586,7 @@ body.confirm #popup_container {
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right {
           flex: 1; }
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-left .lp-button {
-          margin: 0 10px 10px 0; }
+          margin: 0 5px 10px 5px; }
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right {
           text-align: right; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons .button-right .lp-button {
@@ -2626,6 +2626,14 @@ body.confirm #popup_container {
           display: block; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-left {
             text-align: center; }
+            #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-left.fixed {
+              position: fixed;
+              bottom: 4px;
+              z-index: 99999;
+              width: 200px;
+              left: 50%;
+              transform: translateX(-50%);
+              margin-left: 200px; }
           #popup-course #popup-content #learn-press-quiz-app .quiz-buttons.align-center .button-right {
             display: none; }
         #popup-course #popup-content #learn-press-quiz-app .quiz-buttons:not(.infinity).is-first .prev {
@@ -2865,7 +2873,6 @@ body.confirm #popup_container {
     -o-transform: rotate(-90deg);
     transform: rotate(-90deg); }
     #popup-course .quiz-result.passed .result-grade svg circle {
-      stroke: #3eacff;
       stroke: #4CAF50; }
   #popup-course .quiz-result.passed .result-grade .result-achieved {
     color: #4CAF50; }

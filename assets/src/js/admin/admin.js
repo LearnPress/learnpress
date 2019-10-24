@@ -7,6 +7,7 @@
 //import Test from './test';
 
 import Update from './pages/update';
+/// Why
 var LP = LP || {};
 ;(function () {
     const $ = jQuery;

@@ -407,7 +407,7 @@
                 }
                 .button-left {
                     .lp-button {
-                        margin: 0 10px 10px 0;
+                        margin: 0 5px 10px 5px;
                     }
                 }
                 .button-right {
@@ -457,6 +457,16 @@
                     display: block;
                     .button-left {
                         text-align: center;
+
+                        &.fixed{
+                            position: fixed;
+                            bottom: 4px;
+                            z-index: 99999;
+                            width: 200px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            margin-left: 200px;
+                        }
                     }
                     .button-right {
                         display: none;

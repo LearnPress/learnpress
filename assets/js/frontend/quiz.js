@@ -637,7 +637,7 @@ function (_Component) {
       return React.createElement("div", {
         className: classNames.join(' ')
       }, React.createElement("div", {
-        className: "button-left"
+        className: "button-left" + (status === 'started' ? ' fixed' : '')
       }, -1 !== ['', 'completed'].indexOf(status) && !isReviewing && React.createElement("button", {
         className: "lp-button start",
         onClick: this.startQuiz
@@ -1594,7 +1594,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 var _lodash = lodash,
-    get = _lodash.get;
+    get = _lodash.get,
+    debounce = _lodash.debounce;
 
 var Result =
 /*#__PURE__*/
@@ -1613,9 +1614,18 @@ function (_Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "getResultPercentage", function (results) {
+      // const {
+      //     percent
+      // } = this.state;
+      //
+      // const maxPercent = results.result;
       return results.result === 100 ? results.result : parseFloat(results.result).toFixed(2);
     });
 
+    _this.state = {
+      percentage: 0,
+      done: false
+    };
     return _this;
   }
   /**
@@ -1627,15 +1637,81 @@ function (_Component) {
 
 
   _createClass(Result, [{
-    key: "render",
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.animate();
+    }
+  }, {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(a, b) {
+      if (a.results.result === b.results.result) {
+        return;
+      }
 
+      this.animate();
+    }
+  }, {
+    key: "animate",
+    value: function animate() {
+      var _this2 = this;
+
+      var results = this.props.results;
+      this.setState({
+        percentage: 0,
+        done: false
+      });
+
+      jQuery.easing['_customEasing'] = function (e, f, a, h, g) {
+        return h * Math.sqrt(1 - (f = f / g - 1) * f) + a;
+      };
+      /*function(e, f, a, h, g) {
+         return (f == g) ? a + h : h * (-Math.pow(2, -10 * f / g) + 1) + a
+      }*/
+
+
+      debounce(function () {
+        var $el = jQuery('<span />').css({
+          width: 1,
+          height: 1
+        }).appendTo(document.body);
+        $el.css('left', 0).animate({
+          left: results.result
+        }, {
+          duration: 1500,
+          step: function step(now, fx) {
+            _this2.setState({
+              percentage: now
+            });
+          },
+          done: function done() {
+            _this2.setState({
+              done: true
+            });
+
+            $el.remove();
+          },
+          easing: '_customEasing'
+        });
+      }, 1500)();
+    }
     /**
      * Render HTML elements.
      *
      * @return {XML}
      */
+
+  }, {
+    key: "render",
     value: function render() {
       var results = this.props.results;
+      var _this$state = this.state,
+          percentage = _this$state.percentage,
+          done = _this$state.done;
+
+      if (percentage < 100) {
+        percentage = parseFloat(percentage).toFixed(2);
+      }
+
       var classNames = ['quiz-result', results.grade];
       var border = 10;
       var width = 200;
@@ -1643,7 +1719,7 @@ function (_Component) {
       var radius = width / 2;
       var r = (width - border) / 2;
       var circumference = r * 2 * Math.PI;
-      var offset = circumference - percent / 100 * circumference;
+      var offset = circumference - percentage / 100 * circumference;
       var styles = {
         strokeDasharray: "".concat(circumference, " ").concat(circumference),
         strokeDashoffset: offset
@@ -1669,9 +1745,9 @@ function (_Component) {
         cy: radius
       })), React.createElement("span", {
         className: "result-achieved"
-      }, percent, "%"), React.createElement("span", {
+      }, percentage, "%"), React.createElement("span", {
         className: "result-require"
-      }, undefined !== results.passingGrade ? results.passingGrade : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), React.createElement("p", {
+      }, undefined !== results.passingGrade ? results.passingGrade : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), done && React.createElement("p", {
         className: "result-message",
         dangerouslySetInnerHTML: {
           __html: this.getResultMessage(results)
