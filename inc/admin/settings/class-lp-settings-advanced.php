@@ -189,6 +189,19 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 			'learn_press_profile_settings',
 			array(
 				array(
+					'title'           => __( 'Enable Gutenberg', 'learnpress' ),
+					'id'              => 'enable_gutenberg',
+					'default'         => 'no',
+					'type'            => 'checkbox_list',
+					'options'         => array(
+						'-1'          => __( 'Disable all', 'learnpress' ),
+						LP_QUIZ_CPT     => __( 'Quiz', 'learnpress' ),
+						LP_LESSON_CPT   => __( 'Lesson', 'learnpress' ),
+						LP_QUESTION_CPT => __( 'Question', 'learnpress' )
+					),
+					'desc'            => __( 'Enable Gutenberg editor for custom posts.', 'learnpress' )
+				),
+				array(
 					'title'   => __( 'Enable custom colors', 'learnpress' ),
 					'id'      => 'enable_custom_colors',
 					'default' => 'no',

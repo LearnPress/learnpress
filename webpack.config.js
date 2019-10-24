@@ -9,23 +9,23 @@ const webpack = require('webpack');
 const tools = require('./tools/webpack');
 
 // Configuration for the ExtractTextPlugin.
-const extractConfig = {
-    use: [
-        {loader: 'raw-loader'},
-        {
-            loader: 'postcss-loader',
-            options: {
-                plugins: [require('autoprefixer')],
-            },
-        },
-        {
-            loader: 'sass-loader',
-            query: {
-                outputStyle: 'production' === process.env.NODE_ENV ? 'compressed' : 'nested'
-            },
-        },
-    ],
-};
+// const extractConfig = {
+//     use: [
+//         {loader: 'raw-loader'},
+//         {
+//             loader: 'postcss-loader',
+//             options: {
+//                 plugins: [require('autoprefixer')],
+//             },
+//         },
+//         {
+//             loader: 'sass-loader',
+//             query: {
+//                 outputStyle: 'production' === process.env.NODE_ENV ? 'compressed' : 'nested'
+//             },
+//         },
+//     ],
+// };
 
 module.exports = {
     entry: {
@@ -43,12 +43,14 @@ module.exports = {
         './assets/js/frontend/utils': './assets/src/js/frontend/utils/index.js',
         './assets/js/global': './assets/src/js/global.js',
         './assets/js/utils': './assets/src/js/utils/index.js',
+        './assets/js/frontend/courses': './assets/src/js/frontend/courses.js',
+        //'./assets/js/frontend/single-course': './assets/src/js/frontend/single-course.js',
     },
     output: {
         path: path.resolve(__dirname),
         filename: 'production' === process.env.NODE_ENV ? '[name].min.js' : '[name].js',
     },
-    watch: 'production' !== process.env.NODE_ENV,
+    watch: false,//'production' !== process.env.NODE_ENV,
     devtool: process.env.NODE_ENV === 'production' ? '' : 'source-map',
     module: {
         rules: [
@@ -58,7 +60,13 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['babel-preset-env', 'es2015']
+                        //presets: ['babel-preset-env', 'es2015']
+                        presets: [
+                            "@babel/preset-env",
+                            // "@babel/preset-react",
+                            // "@babel/env",
+                            // "@babel/react"
+                        ]
                     }
                 },
             },

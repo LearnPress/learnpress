@@ -45,9 +45,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_filter( 'pre_get_posts', array( $this, 'filter_pages' ), 10 );
 			add_filter( 'views_users', array( $this, 'views_users' ), 10, 1 );
 			add_filter( 'user_row_actions', array( $this, 'user_row_actions' ), 10, 2 );
+			add_filter( 'post_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
 			add_filter( 'get_pages', array( $this, 'add_empty_page' ), 1000, 2 );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
 			add_filter( 'views_plugins', array( $this, 'views_plugins' ) );
+			add_filter( 'admin_enqueue_scripts', array( $this, 'create_question_type' ) );
 
 			LP_Request::register( 'lp-action', array( $this, 'filter_users' ) );
 
@@ -57,6 +59,54 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				$this,
 				'on_dismissed_notice_response'
 			), 10, 2 );
+
+			//add_filter( 'display_post_states', array( $this, 'display_post_states' ), 10, 2 );
+		}
+
+		public function create_question_type() {
+			global $post;
+
+			if ( LP_QUESTION_CPT !== get_post_type() ) {
+				return;
+			}
+return;
+			var_dump(get_post_meta( $post->ID, '_lp_type', true ), $post);die();
+
+			if ( get_post_meta( $post->ID, '_lp_type', true ) ) {
+				return;
+			}
+
+			if ( empty( $_REQUEST['question-type'] ) ) {
+				$types = array_keys( learn_press_question_types() );
+				$type  = reset( $types );
+			} else {
+				$type = $_REQUEST['question-type'];
+			}
+
+			update_post_meta( $post->ID, '_lp_type', $type );
+		}
+
+		public function display_post_states( $post_states, $post ) {
+
+			if ( ! in_array( get_post_type(), array(
+				LP_COURSE_CPT,
+				LP_QUIZ_CPT,
+				LP_LESSON_CPT,
+				LP_QUESTION_CPT
+			) )
+			) {
+				return $post_states;
+			}
+			$args = array(
+				'post_type' => $post->post_type,
+				'author'    => get_the_author_meta( 'ID' ),
+			);
+
+			$author_link = add_query_arg( $args, 'edit.php' );
+
+			$post_states['author'] = sprintf( '<span class="post-author">by <a href="%s">%s</a></span>', $author_link, get_the_author() );
+
+			return $post_states;
 		}
 
 		/**
@@ -70,6 +120,24 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			if ( in_array( get_post_type(), array( LP_ORDER_CPT ) ) ) {
 				LP_Modal_Search_Users::instance();
 			}
+		}
+
+		/**
+		 * Filter to post row actions.
+		 *
+		 * @since 9.9.9
+		 *
+		 * @param array   $actions
+		 * @param WP_Post $post
+		 *
+		 * @return array
+		 */
+		public function post_row_actions( $actions = array(), $post ) {
+			if ( get_post_type( $post->ID ) === LP_COURSE_CPT ) {
+				//$actions['course_id'] = sprintf('<span>[#%d]</span>', $post->ID);
+			}
+
+			return $actions;
 		}
 
 		/**
@@ -595,7 +663,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function wrapper_editor() {
 			$post_type = get_post_type();
 
-			if ( in_array( $post_type, array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
+			if ( in_array( $post_type, array( LP_COURSE_CPT, LP_QUIZ_CPT/*, LP_QUESTION_CPT*/ ) ) ) {
 				learn_press_admin_view( 'editor-wrapper', array( 'post_type' => $post_type ) );
 			}
 		}
@@ -635,7 +703,6 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			) );
 
 			foreach ( $pages as $id => $page ) {
-
 				if ( ( $page_id = learn_press_get_page_id( $id ) ) && get_post( $page_id ) ) {
 					continue;
 				}

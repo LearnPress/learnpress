@@ -94,6 +94,7 @@ class LP_Helper {
 	 * @param array|int $ids
 	 */
 	public static function cache_posts( $ids ) {
+
 		global $wpdb;
 
 		settype( $ids, 'array' );
@@ -299,7 +300,51 @@ class LP_Helper {
 		return $page_id;
 	}
 
-	public static function uniq(){
+	/**
+	 * Wrap function ksort of PHP itself and support recursive.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param  array $array
+	 * @param int    $sort_flags
+	 *
+	 * @return bool
+	 */
+	public static function ksort( &$array, $sort_flags = SORT_REGULAR ) {
+		if ( ! is_array( $array ) ) {
+			return false;
+		}
 
+		ksort( $array, $sort_flags );
+
+		foreach ( $array as &$arr ) {
+			self::ksort( $arr, $sort_flags );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Return new array/object with the keys exists in list of props.
+	 *
+	 * @param array|string $props
+	 * @param array|object $obj
+	 *
+	 * @return array|object
+	 */
+	public function pick( $props, $obj ) {
+		$is_array  = is_array( $obj );
+		$new_array = array();
+		settype( $props, 'array' );
+
+		foreach ( $props as $prop ) {
+			if ( $is_array && array_key_exists( $prop, $obj ) ) {
+				$new_array[ $prop ] = $obj[ $prop ];
+			} else if ( ! $is_array && property_exists( $obj, $prop ) ) {
+				$new_array[ $prop ] = $obj->{$prop};
+			}
+		}
+
+		return $is_array ? $new_array : (object) $new_array;
 	}
 }

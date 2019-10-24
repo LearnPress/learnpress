@@ -88,7 +88,58 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 									'value'   => 'yes'
 								)
 							)
-						)
+						),
+						// @since 3.x.x
+						array(
+							'name'    => __( 'Auto finish course', 'learnpress' ),
+							'id'      => 'auto_finish_course',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Auto finish course if duration of course expire.', 'learnpress' ),
+							'default' => 'yes',
+							'inline'  => false
+						),
+						array(
+							'name'    => __( 'Force complete items', 'learnpress' ),
+							'id'      => 'force_complete_course_items',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Force to complete items (e.g quizzes) in current progress before finish course.', 'learnpress' ),
+							'default' => 'no'
+						),
+						array(
+							'name'    => __( 'Block course', 'learnpress' ),
+							'id'      => 'course_blocking',
+							'type'    => 'radio',
+							'options' => array(
+								'no'                                 => __( 'No.', 'learnpress' ),
+								'duration_expire'                    => __( 'Block if duration expire.', 'learnpress' ),
+								'course_finished'                    => __( 'Block if course is finished.', 'learnpress' ),
+								'duration_expire_or_course_finished' => __( 'Block if duration expire or course is finished.', 'learnpress' ),
+							),
+							'desc'    => __( 'Action when course is finished.', 'learnpress' ),
+							'default' => 'no',
+							'std'     => 'no',
+							'inline'  => false
+						),
+						array(
+							'name'       => __( 'Block content', 'learnpress' ),
+							'id'         => 'course_content_blocking',
+							'type'       => 'radio',
+							'options'    => array(
+								'content_items'     => __( 'Block content of items.', 'learnpress' ),
+								'course_curriculum' => __( 'Block course curriculum.', 'learnpress' )
+							),
+							'default'    => 'content_items',
+							'std'        => 'content_items',
+							'inline'     => false,
+							'visibility' => array(
+								'state'       => 'hide',
+								'conditional' => array(
+									'field'   => 'course_blocking',
+									'compare' => '=',
+									'value'   => 'no'
+								)
+							)
+						),
 					)
 				),
 				// Archive

@@ -7,12 +7,13 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-quiz-question-answer-option">
-    <tr class="answer-option" :class="[isNew() ? 'empty-option' : '']" :data-answer-id="answer.question_answer_id"
+    <tr class="answer-option" :class="[isNew() || isUpdating() ? 'empty-option' : '']"
+        :data-answer-id="answer.question_answer_id"
         :data-order-answer="index">
         <td class="sort lp-sortable-handle"><?php learn_press_admin_view( 'svg-icon' ); ?></td>
         <td class="order">{{index +1}}.</td>
         <td class="answer-text">
-            <input type="text" v-model="answer.text"
+            <input type="text" v-model="answer.title"
                    @change="changeTitle" @keyup.enter="updateTitle" @blur="updateTitle" @keyup="keyUp"/>
         </td>
         <td class="answer-correct lp-answer-check">
@@ -38,8 +39,17 @@
             data: function () {
                 return {
                     // origin answer text
-                    text: this.answer.text,
-                    changed: false
+                    title: this.answer.title,
+                    changed: false,
+                    updating: false
+                }
+            },
+            watch: {
+                status: function (newStatus) {
+                    if (newStatus !== 'updating') {
+                        this.updating = false;
+                    }
+                    return newStatus;
                 }
             },
             computed: {
@@ -69,6 +79,9 @@
                 // deletable answer option
                 deletable: function () {
                     return !((this.answer.is_true === 'yes' && this.numberCorrect === 1) || (this.question.type.key === 'true_or_false') || this.question.answers.length < 3);
+                },
+                status: function () {
+                    return $store.getters['lqs/statusUpdateQuestionItem'][this.question.id] || '';
                 }
             },
             methods: {
@@ -76,6 +89,8 @@
                     return isNaN(this.answer.question_answer_id)
                 },
                 changeCorrect: function (e) {
+                    this.updating = true;
+
                     this.answer.is_true = (e.target.checked) ? 'yes' : '';
                     this.$emit('changeCorrect', this.answer);
                 },
@@ -86,6 +101,7 @@
                 // update answer option title
                 updateTitle: function () {
                     if (this.changed) {
+                        this.updating = true;
                         $store.dispatch('lqs/updateQuestionAnswerTitle', {
                             question_id: this.question.id,
                             answer: this.answer
@@ -99,12 +115,15 @@
                         answer_id: this.answer.question_answer_id
                     });
                 },
+                isUpdating: function () {
+                    return this.updating;
+                },
                 // navigation answer option items
                 keyUp: function (event) {
                     var keyCode = event.keyCode;
                     // escape update answer option items text
                     if (keyCode === 27) {
-                        this.answer.text = this.text;
+                        this.answer.title = this.title;
                     } else {
                         this.$emit('nav', {key: event.keyCode, order: this.index});
                     }

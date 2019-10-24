@@ -82,6 +82,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 */
 		protected $_setup_postdata = false;
 
+		public $object_type = 'object-data';
+
 		/**
 		 * LP_Abstract_Object_Data constructor.
 		 *
@@ -247,6 +249,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param bool  $extra
 		 */
 		protected function _set_data( $key_or_data, $value = '', $extra = false ) {
+
 			if ( is_array( $key_or_data ) ) {
 				foreach ( $key_or_data as $key => $value ) {
 					$this->_set_data( $key, $value, $extra );
@@ -275,12 +278,11 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 							$this->_extra_data[ $key_or_data ] = $value;
 						}
 
-
 					}
 					catch ( Exception $ex ) {
 						print_r( $key_or_data );
 						print_r( $ex->getMessage() );
-						die( __FILE__ . '::' . __FUNCTION__ );;
+						die( __FILE__ . '::' . __FUNCTION__ );
 					}
 				}
 			}
@@ -305,7 +307,19 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 				$value = new LP_Datetime( $value );
 			}
 
-			$this->_set_data( $key, $value );
+			$this->_set_data( $key, $value, true );
+		}
+
+		/**
+		 * @param $key
+		 * @param $value
+		 */
+		protected function _set_data_date( $key, $value, $extra = false ) {
+			if ( LP_Datetime::getSqlNullDate() !== $value && ! $value instanceof LP_Datetime ) {
+				$value = new LP_Datetime( $value );
+			}
+
+			$this->_set_data( $key, $value, $extra );
 		}
 
 		public function set_data_null_date( $key ) {
@@ -388,13 +402,8 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return bool
 		 */
 		public function is_support( $feature, $type = '' ) {
-			$feature    = $this->_sanitize_feature_key( $feature );
-			$is_support = array_key_exists( $feature, $this->_supports ) ? true : false;
-			if ( $type && $is_support ) {
-				return $this->_supports[ $feature ] === $type;
-			}
-
-			return $is_support;
+			$feature = $this->_sanitize_feature_key( $feature );
+			return LP_Global::object_is_support_feature( $this->object_type, $feature, $type );
 		}
 
 		/**
@@ -404,8 +413,9 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param string $type
 		 */
 		public function add_support( $feature, $type = 'yes' ) {
-			$feature                     = $this->_sanitize_feature_key( $feature );
-			$this->_supports[ $feature ] = $type === null ? 'yes' : $type;
+
+			$feature = $this->_sanitize_feature_key( $feature );
+			LP_Global::add_object_feature( $this->object_type, $feature, $type );
 		}
 
 		/**
@@ -423,7 +433,7 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @return array
 		 */
 		public function get_supports() {
-			return $this->_supports;
+			return LP_Global::get_object_supports( $this->object_type );// $this->_supports;
 		}
 
 		/**

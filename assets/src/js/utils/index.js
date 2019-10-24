@@ -10,7 +10,9 @@ import QuickTip from './quick-tip';
 import MessageBox from './message-box';
 import Event_Callback from './event-callback';
 import Hook from './hook';
-
+import Cookies from './cookies';
+import _localStorage from './local-storage';
+import jQueryScrollbar from '../vendor/jquery/jquery.scrollbar';
 import * as jplugins from './jquery.plugins';
 
 const $ = jQuery;
@@ -436,6 +438,40 @@ const _default = {
             }
         }
         LP.Hook.doAction('learn_press_receive_message', data, target);
+    },
+
+    camelCaseDashObjectKeys: function (obj, deep = true) {
+        const self = LP;
+        const isArray = function (a) {
+            return Array.isArray(a);
+        };
+        const isObject = function (o) {
+            return o === Object(o) && !isArray(o) && typeof o !== 'function';
+        };
+        const toCamel = (s) => {
+            return s.replace(/([-_][a-z])/ig, ($1) => {
+                return $1.toUpperCase()
+                    .replace('-', '')
+                    .replace('_', '');
+            });
+        };
+
+        if (isObject(obj)) {
+            const n = {};
+
+            Object.keys(obj)
+                .forEach((k) => {
+                    n[toCamel(k)] = deep ? self.camelCaseDashObjectKeys(obj[k]) : obj[k];
+                });
+
+            return n;
+        } else if (isArray(obj)) {
+            return obj.map((i) => {
+                return self.camelCaseDashObjectKeys(i);
+            });
+        }
+
+        return obj;
     }
 }
 
@@ -465,14 +501,14 @@ $(document).ready(function () {
 
     });
 
-    $('body')
-        .on('click', '.learn-press-nav-tabs li a', function (e) {
-            e.preventDefault();
-            var $tab = $(this), url = '';
-            $tab.closest('li').addClass('active').siblings().removeClass('active');
-            $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
-            $(document).trigger('learn-press/nav-tabs/clicked', $tab);
-        });
+    // $('body')
+    //     .on('click', '.learn-press-nav-tabs li a', function (e) {
+    //         e.preventDefault();
+    //         var $tab = $(this), url = '';
+    //         $tab.closest('li').addClass('active').siblings().removeClass('active');
+    //         $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
+    //         $(document).trigger('learn-press/nav-tabs/clicked', $tab);
+    //     });
 
     setTimeout(function () {
         $('.learn-press-nav-tabs li.active:not(.default) a').trigger('click');
@@ -523,10 +559,14 @@ $(document).ready(function () {
 extend({
     Event_Callback,
     MessageBox,
+    Cookies,
+    localStorage: _localStorage,
     ..._default
 });
 
 export default {
     fn,
-    QuickTip
+    QuickTip,
+    Cookies,
+    localStorage: _localStorage
 }

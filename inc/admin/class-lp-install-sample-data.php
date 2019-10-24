@@ -31,6 +31,11 @@ class LP_Install_Sample_Data {
 	public static $answer_range = array( 3, 5 );
 
 	/**
+	 * @var int
+	 */
+	public static $max_content_paragraph = 5;
+
+	/**
 	 * @var string
 	 */
 	protected $dummy_text = '';
@@ -123,6 +128,10 @@ class LP_Install_Sample_Data {
 
 			$this->create_sections( $course_id );
 
+			if ( $price = LP_Request::get( 'course-price' ) ) {
+				update_post_meta( $course_id, '_lp_price', $price );
+			}
+
 			?>
             <div class="lp-install-sample-data-response">
 				<?php printf( __( 'Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
@@ -135,7 +144,8 @@ class LP_Install_Sample_Data {
 
 			LP_Debug::commitTransaction();
 
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 
 			echo $ex->getMessage();
@@ -176,7 +186,8 @@ class LP_Install_Sample_Data {
 
 				$this->_delete_post( $post->ID );
 			}
-		} catch ( Exception $ex ) {
+		}
+		catch ( Exception $ex ) {
 			LP_Debug::rollbackTransaction();
 			echo "Error: " . $ex->getMessage();
 		}
@@ -255,17 +266,20 @@ class LP_Install_Sample_Data {
 		$length = rand( $min, $max );
 		$max    = sizeof( $this->dummy_text ) - 1;
 		$words  = array();
+
 		for ( $i = 0; $i < $length; $i ++ ) {
 			$words[] = $this->dummy_text[ rand( 0, $max ) ];
 		}
-		$p = '';
-		while ( $words ) {
+
+		$p = array();
+
+		while ( $words && sizeof( $p ) < self::$max_content_paragraph ) {
 			$len = rand( 10, 20 );
 			$cut = array_splice( $words, 0, $len );
-			$p   .= '<p>' . ucfirst( join( ' ', $cut ) ) . '</p>';
+			$p[] = '<p>' . ucfirst( join( ' ', $cut ) ) . '</p>';
 		}
 
-		return $p;
+		return join( '', $p );
 	}
 
 	/**
@@ -350,7 +364,7 @@ class LP_Install_Sample_Data {
 	 * Create section.
 	 *
 	 * @param string $name
-	 * @param int $course_id
+	 * @param int    $course_id
 	 *
 	 * @return int
 	 */
@@ -411,8 +425,8 @@ class LP_Install_Sample_Data {
 	 * Create lesson.
 	 *
 	 * @param string $name
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param int    $section_id
+	 * @param int    $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -452,8 +466,8 @@ class LP_Install_Sample_Data {
 	 * Create quiz.
 	 *
 	 * @param string $name
-	 * @param int $section_id
-	 * @param int $course_id
+	 * @param int    $section_id
+	 * @param int    $course_id
 	 *
 	 * @return int|WP_Error
 	 */
@@ -558,7 +572,7 @@ class LP_Install_Sample_Data {
 	/**
 	 * Create answers for a question.
 	 *
-	 * @param int $question_id
+	 * @param int    $question_id
 	 * @param string $type
 	 */
 	protected function create_question_answers( $question_id, $type ) {
@@ -567,8 +581,14 @@ class LP_Install_Sample_Data {
 		$answers = $this->get_answers( $type );
 		foreach ( $answers as $answer ) {
 			$data = array(
-				'question_id' => $question_id,
-				'answer_data' => maybe_serialize( $answer )
+				'question_id'  => $question_id,
+				/**
+				 * @since 4.0
+				 */
+				'title' => $answer['title'],
+				'value' => $answer['value'],
+				'is_true'      => $answer['is_true']
+				//'answer_data' => maybe_serialize( $answer )
 			);
 
 			$wpdb->insert(
@@ -593,7 +613,7 @@ class LP_Install_Sample_Data {
 
 		for ( $i = 1; $i <= $option_count; $i ++ ) {
 			$answers[] = array(
-				'text'    => $this->generate_title(),
+				'title'    => $this->generate_title(),
 				'value'   => md5( uniqid() ),
 				'is_true' => 'no'
 			);
@@ -603,7 +623,7 @@ class LP_Install_Sample_Data {
 		if ( $type !== 'multi_choice' ) {
 			$at                        = rand( 0, sizeof( $answers ) - 1 );
 			$answers[ $at ]['is_true'] = 'yes';
-			$answers[ $at ]['text']    .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+			$answers[ $at ]['title']    .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
 		} else {
 			$has_true_option = false;
 			while ( ! $has_true_option ) {
@@ -611,7 +631,7 @@ class LP_Install_Sample_Data {
 					$answers[ $k ]['is_true'] = rand( 0, 100 ) % 2 ? 'yes' : 'no';
 
 					if ( $answers[ $k ]['is_true'] === 'yes' ) {
-						$answers[ $k ]['text'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
+						$answers[ $k ]['title'] .= _x( ' [TRUE]', 'install-sample-course', 'learnpress' );
 						$has_true_option       = true;
 					}
 				}

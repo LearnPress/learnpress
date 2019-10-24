@@ -4,19 +4,22 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/categories.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  4.x.x
  */
 
 /**
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-?>
 
-<?php $term_list = get_the_term_list( get_the_ID(), 'course_category', '', ', ', '' ); ?>
-
-<?php if ( $term_list ) {
-	printf( '<span class="cat-links">%s</span>', $term_list );
+if ( ! isset( $categories ) ) {
+	return;
 }
+?>
+<div class="course-categories">
+	<?php foreach ( $categories as $category ) { ?>
+        <a href="<?php echo esc_attr( get_term_link( $category ) ); ?>"><?php echo $category->name; ?></a>
+	<?php } ?>
+</div>

@@ -67,17 +67,19 @@ class LP_Request {
 
 	public static function maybe_redirect_checkout( $result, $order_id ) {
 		$course_id = get_transient( 'checkout_enroll_course_id' );
-		if(!$course_id){
-			if(isset($_REQUEST['enroll-course']) && $_REQUEST['enroll-course']){
+
+		if ( ! $course_id ) {
+			if ( isset( $_REQUEST['enroll-course'] ) && $_REQUEST['enroll-course'] ) {
 				$course_id = $_REQUEST['enroll-course'];
 			}
 		}
 		if ( $course_id ) {
-			$course = learn_press_get_course( $course_id );
-			$course_items = $course->get_items();
-			$first_item = ($course_items[0]) ? $course_items[0] : 0;
-			self::do_enroll( $course_id, $order_id, 'enroll-course', $first_item );
 			delete_transient( 'checkout_enroll_course_id' );
+
+			$course       = learn_press_get_course( $course_id );
+			$course_items = $course->get_items();
+			$first_item   = ( $course_items[0] ) ? $course_items[0] : 0;
+			self::do_enroll( $course_id, $order_id, 'enroll-course', $first_item );
 			unset( $result['redirect'] );
 		}
 
@@ -114,6 +116,9 @@ class LP_Request {
 	 */
 	public static function purchase_course( $course_id, $action ) {
 
+		/**
+		 * @see LP_Request_Handler::maybe_enroll_course()
+		 */
 		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id, $action );
 		$course    = learn_press_get_course( $course_id );//echo'<pre>dsad';print_r($course->get_items());die;
 
@@ -224,7 +229,7 @@ class LP_Request {
 				 * @see LP_Request::do_enroll()
 				 */
 				$course_items = $course->get_items();
-				$first_item = ($course_items[0]) ? $course_items[0] : 0;
+				$first_item   = ( $course_items[0] ) ? $course_items[0] : 0;
 				do_action( "learn-press/{$action}-handler/enroll", $course_id, $order->get_id(), $action, $first_item );
 			}
 
@@ -261,18 +266,18 @@ class LP_Request {
 		if ( ! $course ) {
 			return false;
 		}
-/** # comment because maybe conflict with eduma
-		if ( 'enroll-course' == $action ) {
-			if ( ! $user->can_enroll_course( $course_id ) ) {
-				learn_press_add_message(
-					sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
-					'error'
-				);
-
-				return false;
-			}
-		}
-**/
+		/** # comment because maybe conflict with eduma
+		 * if ( 'enroll-course' == $action ) {
+		 * if ( ! $user->can_enroll_course( $course_id ) ) {
+		 * learn_press_add_message(
+		 * sprintf( __( 'You can not enroll course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+		 * 'error'
+		 * );
+		 *
+		 * return false;
+		 * }
+		 * }
+		 **/
 		$cart = LP()->cart;
 
 		if ( ! $cart->get_items() ) {
@@ -333,7 +338,8 @@ class LP_Request {
 				'error'
 			);
 		} else {
-			$thing = $user->enroll( $course_id, $order_id );
+
+			$thing = $user->enroll( $course_id, $order_id, null, true );
 
 			if ( is_wp_error( $thing ) ) {
 				learn_press_add_message(
@@ -352,6 +358,11 @@ class LP_Request {
 				if ( $item_id ) {
 					$redirect = learn_press_get_course_item_permalink( $course_id, $item_id );
 				}
+			} else {
+				learn_press_add_message(
+					sprintf( __( 'Something went wrong when enrolling course &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+					'error'
+				);
 			}
 
 		}
@@ -565,6 +576,12 @@ class LP_Request {
 			case 'get':
 				$env = $_GET;
 				break;
+			case 'put':
+			case 'delete':
+				$data = file_get_contents( 'php://input' );
+				$env  = array();
+				parse_str( $data, $env );
+				break;
 			case 'wp':
 				global $wp;
 				$env = $wp->query_vars;
@@ -600,7 +617,7 @@ class LP_Request {
 				$return = (string) $return;
 				break;
 			case 'array':
-				$return = (array) $return;
+				$return = $return ? (array) $return : array();
 				break;
 		}
 
@@ -818,6 +835,27 @@ class LP_Request {
 		}
 
 		return $redirect;
+	}
+
+	public static function get_cookie( $name, $def = false, $global = false ) {
+		if ( $global ) {
+			return isset( $_COOKIE[ $name ] ) ? $_COOKIE[ $name ] : $def;
+		}
+
+		$cookie = isset( $_COOKIE['LP'] ) ? (array) json_decode( stripslashes( $_COOKIE['LP'] ) ) : array();
+
+		return isset( $cookie[ $name ] ) ? $cookie[ $name ] : $def;
+	}
+
+	public static function set_cookie( $name, $value, $expires = '', $domain = '', $path = '', $secure = false ) {
+		if ( func_num_args() > 2 ) {
+			learn_press_setcookie( $name, $value, $expires, $secure );
+		} else {
+			$cookie = isset( $_COOKIE['LP'] ) ? maybe_unserialize( $_COOKIE['LP'] ) : array();
+
+			$cookie[ $name ] = $value;
+			learn_press_setcookie( 'LP', $value );
+		}
 	}
 }
 

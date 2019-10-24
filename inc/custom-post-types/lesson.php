@@ -24,6 +24,11 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		protected static $_instance = null;
 
 		/**
+		 * @var string
+		 */
+		protected $_post_type = LP_LESSON_CPT;
+
+		/**
 		 * LP_Lesson_Post_Type constructor.
 		 *
 		 * @param $post_type
@@ -203,6 +208,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'show_in_menu'       => 'learn_press',
 					'show_in_admin_bar'  => true,
 					'show_in_nav_menus'  => true,
+					'show_in_rest'       => $this->is_support_gutenberg(),
 					'supports'           => array(
 						'title',
 						'editor',
@@ -307,7 +313,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			// append new column after title column
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				'author'      => __( 'Author', 'learnpress' ),
+				'instructor'  => __( 'Author', 'learnpress' ),
 				LP_COURSE_CPT => $this->_get_course_column_title()
 			);
 
@@ -329,7 +335,12 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 			unset ( $columns['taxonomy-lesson-tag'] );
 			$user = wp_get_current_user();
+
 			if ( in_array( LP_TEACHER_ROLE, $user->roles ) ) {
+				unset( $columns['instructor'] );
+			}
+
+			if ( ! empty( $columns['author'] ) ) {
 				unset( $columns['author'] );
 			}
 
@@ -344,6 +355,9 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
 			switch ( $name ) {
+				case 'instructor':
+					$this->column_instructor( $post_id );
+					break;
 				case LP_COURSE_CPT:
 					$this->_get_item_course( $post_id );
 					break;
@@ -377,7 +391,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns[ LP_COURSE_CPT ] = 'course-name';
-			$columns['author']        = 'author';
+			$columns['instructor']    = 'author';
 
 			return $columns;
 		}

@@ -8,7 +8,22 @@
 learn_press_admin_view( 'quiz/questions' );
 learn_press_admin_view( 'quiz/modal-choose-items' );
 ?>
+<div id="admin-editor-lp_quiz">
+    <div class="lp-place-holder">
+        <div class="line-heading"></div>
 
+        <div class="line-sm"></div>
+        <div class="line-xs"></div>
+
+        <div class="line-df"></div>
+        <div class="line-lgx"></div>
+        <div class="line-lg"></div>
+
+        <div class="line-df"></div>
+        <div class="line-lg"></div>
+        <div class="line-lgx"></div>
+    </div>
+</div>
 <script type="text/x-template" id="tmpl-lp-quiz-editor">
     <div id="admin-editor-lp_quiz" class="learn-press-box-data lp-admin-editor">
         <div v-if="heartbeat">

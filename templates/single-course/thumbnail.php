@@ -28,7 +28,7 @@ if ( ! has_post_thumbnail() || $video_embed ) {
 	return;
 }
 ?>
-
+sadasdasd
 <div class="course-thumbnail">
 	<?php
 	$image_title   = get_the_title( get_post_thumbnail_id() ) ? esc_attr( get_the_title( get_post_thumbnail_id() ) ) : '';

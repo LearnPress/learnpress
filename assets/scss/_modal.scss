@@ -1,0 +1,59 @@
+#lp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999999;
+    background: #000;
+    opacity: 0.5;
+    display: none;
+}
+
+#lp-modal-window {
+    position: fixed;
+    min-width: 300px;
+    background: #FFF;
+    z-index: 999999;
+    display: none;
+    padding: 20px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    @include border-radius(4px);
+
+    #lp-modal-content {
+        margin: 0 0 20px 0;
+        > * {
+            margin: 0 0 0.5em;
+        }
+    }
+
+    #lp-modal-buttons {
+        .lp-button {
+            float: right;
+            margin: 0 0 0 10px;
+            position: relative;
+            &.modal-button-cancel {
+                position: absolute;
+                top: 0;
+                right: 20px;
+                padding: 0;
+                background: transparent;
+                color: #777;
+                span {
+                    display: none;
+                }
+
+                &:after {
+                    content: "\f00d";
+                    font-family: Fontawesome;
+                }
+
+                &:hover {
+                    color: #00adff;
+                }
+            }
+        }
+    }
+}

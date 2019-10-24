@@ -14,5 +14,5 @@
  */
 defined( 'ABSPATH' ) || exit();
 ?>
-
+<div class="separator"></div>
 <div class="course-info">

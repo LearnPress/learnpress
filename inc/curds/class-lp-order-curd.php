@@ -459,6 +459,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'currency'        => get_post_meta( $post->ID, '_order_currency', true )
 				)
 			);
+
 			//$this->read_items( $order );
 			$order->get_items();
 			$order->read_meta();

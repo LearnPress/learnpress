@@ -1,7 +1,21 @@
 /**
  * Quiz admin editor.
  */
+#quiz-editor {
+    .inside {
+        .rwmb-custom_html-wrapper {
+            > .rwmb-label {
+                display: none;
+            }
+
+            > .rwmb-input {
+                margin-left: 0;
+            }
+        }
+    }
+}
 #admin-editor-lp_quiz {
+
     .lp-box-data-head {
         padding: 12px 10px;
         h3 {
@@ -141,8 +155,9 @@
                     border: 1px solid #ddd;
                     border-left: none;
                     border-right: none;
+                    padding: 0 20px;
                     & > * {
-                        padding: 20px;
+                        padding: 20px 20px 20px 0;
                     }
                     .quiz-question-data {
                         table.lp-list-options {
@@ -424,6 +439,7 @@
                         .quiz-question-options {
                             text-align: left;
                             padding-left: 0;
+                            padding-right: 0;
                             .inside {
                                 margin: 0;
                                 padding: 0;

@@ -398,10 +398,15 @@ $remove-icon-color: #d05d5d;
 
 .advanced-list {
     list-style: none;
+    background: #FFF;
+    padding: 5px 0 0 8px;
+    border: 1px solid #DDD;
+    border-radius: 3px;
     li {
         display: inline-block;
         background: #EEE;
         padding: 3px 8px;
+        margin: 0 5px 5px -3px;
         @include border-radius(2px);
         .remove-item {
             display: inline-block;
@@ -427,6 +432,12 @@ $remove-icon-color: #d05d5d;
         .remove-item {
             display: none;
         }
+    }
+
+    &:after {
+        content: '';
+        display: block;
+        clear: both;
     }
 }
 

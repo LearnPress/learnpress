@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.0
+ * @version 4.0
  */
 
 /**
@@ -15,7 +15,6 @@
 defined( 'ABSPATH' ) || exit();
 
 global $post, $wp_query, $lp_tax_query, $wp_query;
-
 /**
  * @deprecated
  */
@@ -48,15 +47,15 @@ if ( LP()->wp_query->have_posts() ) :
 	 */
 	do_action( 'learn-press/before-courses-loop' );
 
-	learn_press_begin_courses_loop();
+	LP()->template()->begin_courses_loop();
 
 	while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post();
 
-		learn_press_get_template_part( 'content', 'course' );
+		learn_press_get_template_part( 'content-course', 'grid' );
 
 	endwhile;
 
-	learn_press_end_courses_loop();
+	LP()->template()->end_courses_loop();
 
 	/**
 	 * @since 3.0.0

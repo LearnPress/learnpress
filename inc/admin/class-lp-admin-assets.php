@@ -30,6 +30,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				array(
 					'i18n_confirm' => __( 'Before taking this action, we strongly recommend you should backup your site first before proceeding. Should any issues come at hand, do not hesitate to contact our Support team. Are you sure to proceed the update protocol?', 'learnpress' )
 				)
+			),
+			'lp-admin'=>apply_filters(
+				'learn-press/admin/script-data',
+				array(
+					'ajax'=>admin_url('admin-ajax.php'),
+					'questionTypes' => learn_press_question_types()
+				)
 			)
 		);
 	}
@@ -205,12 +212,39 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'screens' => array( LP_ORDER_CPT )
 				),
 				'learn-press-update'                => array(
-					'url'  => $this->url( 'js/admin/update.js' ),
+					'url' => $this->url( 'js/admin/update.js' ),
 					//'deps' => array( 'lp-vue' )
 				),
 				'learn-press-sync-data'             => array(
-					'url'  => $this->url( 'js/admin/sync-data.js' ),
+					'url' => $this->url( 'js/admin/sync-data.js' ),
 					//'deps' => array( 'lp-vue' )
+				),
+				'learn-press-data-controls'       => array(
+					'url'       => $this->url( 'js/frontend/data-controls.js' ),
+					'screens'   => array( LP_QUESTION_CPT ),
+					'in_footer' => true,
+					'deps' => array(
+						'wp-element',
+						'wp-compose',
+						'wp-data',
+						'wp-hooks',
+						'wp-api-fetch',
+						'lodash'
+					)
+					//'deps' => array( 'lp-vue' )
+				),
+				'learn-press-question-editor'       => array(
+					'url'       => $this->url( 'js/admin/question-editor.js' ),
+					'screens'   => array( LP_QUESTION_CPT ),
+					'in_footer' => true,
+					'deps' => array(
+						'wp-element',
+						'wp-compose',
+						'wp-data',
+						'wp-hooks',
+						'wp-api-fetch',
+						'lodash'
+					)
 				),
 //				'learn-press-chartjs'               => array(
 //					'url'     => $this->url( 'js/vendor/chart.min.js' ),

@@ -51,8 +51,14 @@ class LP_Cart {
 
 	/**
 	 * Constructor
+	 *
+	 * @param string $key . Added since 3.x.x
 	 */
-	public function __construct() {
+	public function __construct( $key = '' ) {
+
+		if ( $key ) {
+			$this->_cart_session_key = $key;
+		}
 
 		LP_Request_Handler::register( 'add-course-to-cart', array( $this, 'add_to_cart' ), 20 );
 		LP_Request_Handler::register( 'remove-cart-item', array( $this, 'remove_item' ), 20 );
@@ -115,7 +121,6 @@ class LP_Cart {
 	 */
 	public function get_cart() {
 		if ( ! did_action( 'wp_loaded' ) ) {
-			learn_press_debug( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
 			_doing_it_wrong( __FUNCTION__, __( 'Get cart should not be called before the wp_loaded action.', 'learnpress' ), '2.3' );
 		}
 
@@ -137,6 +142,7 @@ class LP_Cart {
 	 */
 	public function add_to_cart( $course_id, $quantity = 1, $item_data = array() ) {
 		try {
+
 			$course = learn_press_get_course( $course_id );
 
 			// Check if course can be purchased
@@ -224,7 +230,7 @@ class LP_Cart {
 				if ( ! $course ) {
 					continue;
 				}
-				$subtotal = apply_filters( 'learn-press/calculate_sub_total', $course->get_price() * $item['quantity'], $item);
+				$subtotal = apply_filters( 'learn-press/calculate_sub_total', $course->get_price() * $item['quantity'], $item );
 				$total    = $subtotal;
 
 				$this->_cart_content[ $cart_id ]['subtotal'] = $subtotal;
@@ -243,6 +249,7 @@ class LP_Cart {
 	 * Update cart content to session
 	 */
 	public function update_session() {
+		//LP_Debug::instance()->add(array($this->_cart_session_key, $this->get_cart_for_session(), debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)),'CART');
 		learn_press_session_set( $this->_cart_session_key, $this->get_cart_for_session() );
 	}
 
@@ -290,7 +297,7 @@ class LP_Cart {
 			}
 
 			do_action( 'learn_press_cart_loaded_from_session' );
-			LP()->session->set( 'cart', $this->get_cart_for_session() );
+			LP()->session->set( $this->_cart_session_key, $this->get_cart_for_session() );
 			do_action( 'learn_press_get_cart_from_session' );
 
 			// Update total

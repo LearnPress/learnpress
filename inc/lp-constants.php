@@ -8,6 +8,7 @@ $plugin_info = get_plugin_data( LP_PLUGIN_FILE );
 
 // version
 define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
+//define( 'LEARNPRESS_VERSION', '9.9.9' );
 
 define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 
@@ -41,7 +42,7 @@ define( 'LP_ORDER_CPT', 'lp_order' );
 define( 'LP_TEACHER_ROLE', 'lp_teacher' );
 
 // Turn debug mode on/off
-//define( 'LP_DEBUG', true );
+define( 'LP_DEBUG', true );
 define( 'LP_CACHE_RESOURCE', false );
 
 // Options
@@ -71,6 +72,7 @@ define( 'LP_QUIZ_HAS_STARTED_OR_COMPLETED', 160 );
 define( 'LP_ERROR_NO_PAYMENT_METHOD_SELECTED', 1000 );
 define( 'LP_COMPLETE_ITEM_FAIL', 170 );
 define( 'LP_COMPRESS_ASSETS', false );
+define( 'LP_COURSES_LAYOUT', 'list' );
 
 /**
  * Thim Market library

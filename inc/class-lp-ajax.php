@@ -270,7 +270,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			}
 			$finished = $user->finish_course( $course_id );
 			$response = array(
-				'redirect' => get_the_permalink( $course_id )
+				'redirect' => apply_filters( 'learn-press/finish-course-redirect', get_the_permalink( $course_id ), $course_id )
 			);
 
 			if ( $finished ) {
@@ -349,11 +349,11 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * Retake course action
 		 */
 		public static function retake_course() {
-			$security        = LP_Request::get_string( 'retake-course-nonce' );
-			$course_id       = LP_Request::get_int( 'retake-course' );
-			$user            = learn_press_get_current_user();
-			$course          = learn_press_get_course( $course_id );
-			$response        = array(
+			$security  = LP_Request::get_string( 'retake-course-nonce' );
+			$course_id = LP_Request::get_int( 'retake-course' );
+			$user      = learn_press_get_current_user();
+			$course    = learn_press_get_course( $course_id );
+			$response  = array(
 				'result' => 'error'
 			);
 

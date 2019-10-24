@@ -62,6 +62,10 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 					'preview'              => get_post_meta( $quiz->get_id(), '_lp_preview', true ),
 					'minus_points'         => get_post_meta( $quiz->get_id(), '_lp_minus_points', true ),
 					'minus_skip_questions' => get_post_meta( $quiz->get_id(), '_lp_minus_skip_questions', true ),
+
+					'instant_check'    => get_post_meta( $quiz->get_id(), '_lp_instant_check', true ),
+					'negative_marking' => get_post_meta( $quiz->get_id(), '_lp_negative_marking', true ),
+					'retry'            => get_post_meta( $quiz->get_id(), '_lp_retry', true ),
 				)
 			);
 			//$this->_load_questions( $quiz );
@@ -660,7 +664,7 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 
 				$wpdb->update(
 					$wpdb->learnpress_question_answers,
-					array( 'answer_order' => $order ),
+					array( 'order' => $order ),
 					array( 'question_answer_id' => $answer_id )
 				);
 			}

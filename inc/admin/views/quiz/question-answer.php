@@ -100,7 +100,8 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                 // new answer option
                 newAnswer: function () {
                     $store.dispatch('lqs/newQuestionAnswer', {
-                        question_id: this.question.id, success: function (answer) {
+                        question_id: this.question.id,
+                        success: function (answer) {
                             $(this.$el).find('tr[data-answer-id="' + answer.question_answer_id + '"] .answer-text input').focus();
                         }, context: this
                     });

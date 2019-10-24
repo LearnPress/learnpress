@@ -90,7 +90,8 @@ abstract class LP_Abstract_Submenu {
 		}
 	}
 
-	public function enqueue_assets(){}
+	public function enqueue_assets() {
+	}
 
 	public function is_displaying() {
 		return $this->get_id() === LP_Request::get_string( 'page' );
@@ -294,11 +295,13 @@ abstract class LP_Abstract_Submenu {
 		$tabs       = $this->get_tabs();
 		$active_tab = $this->get_active_tab();
 		$classes    = array( 'wrap', 'lp-submenu-page', $this->get_id() );
-
 		?>
         <div class="<?php echo join( ' ', $classes ); ?>">
-            <div id="icon-themes" class="icon32"><br></div>
-            <h1 class="wp-heading-inline"><?php echo $this->get_menu_title(); ?></h1>
+	        <?php do_action('learn-press/admin/heading-icon', $active_tab);?>
+            <h1 class="wp-heading-inline">
+                <?php echo $this->get_menu_title(); ?>
+                <?php do_action('learn-press/admin/heading-title', $active_tab);?>
+            </h1>
 			<?php if ( $tabs ) { ?>
                 <h2 class="nav-tab-wrapper">
 					<?php foreach ( $tabs as $tab => $name ) { ?>
@@ -343,11 +346,18 @@ abstract class LP_Abstract_Submenu {
 		do_action( 'learn-press/admin/page-content-sections', $this );
 
 		echo '<div class="lp-admin-tab-content">';
+
+
 		if ( $this->has_tabs() ) {
 			$page = $this->_get_page();
 			$tab  = $this->get_active_tab();
+
+			// @since 3.x.x
+			do_action( 'learn-press/admin/before-page-content-sections', $page, $tab, $this );
+
 			// If I have a function named 'page_content_TAB_SLUG' then call it.
 			$callback = array( $this, sprintf( 'page_content_%s', $tab ) );
+
 			if ( is_callable( $callback ) ) {
 				call_user_func_array( $callback, array() );
 			} else {
@@ -355,7 +365,11 @@ abstract class LP_Abstract_Submenu {
 				do_action( 'learn-press/admin/page-content-' . $page, $tab );
 				do_action( 'learn-press/admin/page-content-' . $page . '/' . $tab );
 			}
+
+			// @since 3.x.x
+			do_action( 'learn-press/admin/after-page-content-sections', $page, $tab, $this );
 		}
+
 		echo '</div>';
 	}
 

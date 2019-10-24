@@ -26,6 +26,7 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 		 * @return void
 		 */
 		public static function load_textdomain() {
+			return;
 			_deprecated_function( __FUNCTION__, '3.0.0' );
 			$plugin_folder = basename( LP_PLUGIN_PATH );
 			$text_domain   = 'learnpress';
@@ -35,8 +36,8 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 				load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-admin-{$locale}.mo" );
 				load_textdomain( $text_domain, WP_LANG_DIR . "/plugins/{$plugin_folder}-admin-{$locale}.mo" );
 			}
-			load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo" );
-			load_plugin_textdomain( $text_domain, false, plugin_basename( LP_PLUGIN_PATH ) . "/languages" );
+			//load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo" );
+			//load_plugin_textdomain( $text_domain, false, plugin_basename( LP_PLUGIN_PATH ) . "/languages" );
 		}
 
 		/**
@@ -64,7 +65,6 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 		 * @param string $language_folder
 		 */
 		public static function load_plugin_text_domain( $path, $text_domain = '', $language_folder = 'languages' ) {
-
 			// Get absolute plugin folder instead of plugin file
 			if ( false !== strpos( $path, '.php' ) ) {
 				$path = dirname( $path );

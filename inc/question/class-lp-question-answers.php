@@ -339,7 +339,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * @return string
 		 */
 		public function get_title( $context = '' ) {
-			$title = array_key_exists( 'text', $this->_data ) ? $this->_data['text'] : '';
+			$title = array_key_exists( 'title', $this->_data ) ? $this->_data['title'] : '';
 			if ( $context == 'display' ) {
 				$title = do_shortcode( $title );
 			}
@@ -498,7 +498,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		}
 
 		public function __toString() {
-			return (string) $this->_data['text'];
+			return (string) $this->_data['title'];
 		}
 
 		/**

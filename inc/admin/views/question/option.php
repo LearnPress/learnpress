@@ -7,12 +7,12 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-question-answer-option">
-    <tr class="answer-option" :class="[isNew() ? 'new-option' : '']" :data-answer-id="id">
+    <tr class="answer-option" :class="[isNew() || isUpdating() ? 'new-option' : '']" :data-answer-id="id">
         <td class="sort lp-sortable-handle"><?php learn_press_admin_view( 'svg-icon' ); ?></td>
         <td class="order">{{index +1}}.</td>
         <td class="answer-text">
             <form @submit.prevent="">
-                <input type="text" v-model="answer.text"
+                <input type="text" v-model="answer.title"
                        @change="changeTitle" @blur="updateTitle" @keyup.enter="updateTitle"/>
             </form>
         </td>
@@ -39,7 +39,8 @@
             props: ['answer', 'index', 'type', 'radio', 'number'],
             data: function () {
                 return {
-                    changed: false
+                    changed: false,
+                    updating: false
                 }
             },
             computed: {
@@ -58,12 +59,27 @@
                 // deletable answer
                 deletable: function () {
                     return !(this.number < 3 || (this.correct && $store.getters['numberCorrect'] === 1) || this.type === 'true_or_false');
+                },
+                status: function () {
+                    return $store.getters['status'];
+                }
+            },
+            watch: {
+                status: function (s) {
+                    if (s !== 'loading') {
+                        this.updating = false;
+                    }
+                    return s;
                 }
             },
             mounted: function () {
                 if (this.isNew()) {
                     this.changed = true;
                     this.updateTitle();
+
+                    setTimeout(() => {
+                        $(this.$el).find('.answer-text input').focus();
+                    }, 300)
                 }
             },
             methods: {
@@ -72,21 +88,27 @@
                 },
                 updateTitle: function () {
                     if (this.changed) {
+                        this.updating = true;
                         this.$emit('updateTitle', this.answer);
                     }
                 },
                 changeCorrect: function (e) {
+                    this.updating = true;
+
                     this.answer.is_true = (e.target.checked) ? 'yes' : '';
                     this.$emit('changeCorrect', this.answer);
                 },
                 deleteAnswer: function () {
                     this.$emit('deleteAnswer', {
                         id: this.id,
-                        order: this.answer.answer_order
+                        order: this.answer.order
                     });
                 },
                 isNew: function () {
                     return isNaN(this.answer.question_answer_id);
+                },
+                isUpdating: function () {
+                    return this.updating;
                 }
             }
         })

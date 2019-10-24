@@ -10,7 +10,7 @@
 
     <div class="lp-box-data-head lp-row">
         <h3 class="heading">
-            <?php esc_html_e( 'Question Answers', 'learnpress' ); ?>
+			<?php esc_html_e( 'Question Answers', 'learnpress' ); ?>
             <div class="section-item-counts"><span>{{typeLabel()}}</span></div>
         </h3>
         <div class="lp-box-data-actions lp-toolbar-buttons">
@@ -33,6 +33,7 @@
 
     jQuery(function ($) {
         var $store = window.LP_Question_Store;
+        var pick = lodash.pick;
 
         window.$Vue = window.$Vue || Vue;
 
@@ -52,13 +53,28 @@
                 },
                 // check question type active
                 active: function (type) {
-                    return this.type === type ? 'active' : '';
+                    var classes = [''];
+
+                    if (this.type === type) {
+                        classes.push('active');
+                    }
+
+                    var supportTypes = $store.getters['supportAnswerOptions'];
+                    if (supportTypes.indexOf(type) === -1 || supportTypes.indexOf(this.type) === -1) {
+                        classes.push('disabled')
+                    }
+
+                    return classes;
                 },
                 // change question type
                 changeType: function (type) {
                     if (this.type !== type) {
                         this.$emit('changeType', type);
                     }
+                },
+                getQuestionsSupportAnswerOptions: function () {
+                    var supportTypes = $store.getters['supportAnswerOptions'];
+                    return supportTypes.indexOf(this.type) !== -1 ? pick(this.types, supportTypes) : false;
                 }
             }
         })

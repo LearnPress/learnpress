@@ -45,6 +45,9 @@ const Question = {
     externalComponent: function (state) {
         return state.externalComponent || [];
     },
+    supportAnswerOptions: function (state) {
+        return state.supportAnswerOptions || [];
+    },
     state: function (state) {
         return state;
     },

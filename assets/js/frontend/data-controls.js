@@ -92,9 +92,140 @@ this["LP"] = this["LP"] || {}; this["LP"]["dataControls"] =
   !*** ./assets/src/js/frontend/data-controls.js ***!
   \*************************************************/
 /*! exports provided: apiFetch, select, dispatch, controls */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "apiFetch", function() { return apiFetch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select", function() { return select; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return dispatch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "controls", function() { return controls; });
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+
+
+var apiFetch = function apiFetch(request) {
+  return {
+    type: 'API_FETCH',
+    request: request
+  };
+};
+function select(storeKey, selectorName) {
+  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
+
+  return {
+    type: 'SELECT',
+    storeKey: storeKey,
+    selectorName: selectorName,
+    args: args
+  };
+}
+function dispatch(storeKey, actionName) {
+  for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+    args[_key2 - 2] = arguments[_key2];
+  }
+
+  return {
+    type: 'DISPATCH',
+    storeKey: storeKey,
+    actionName: actionName,
+    args: args
+  };
+}
+
+var resolveSelect = function resolveSelect(registry, _ref) {
+  var storeKey = _ref.storeKey,
+      selectorName = _ref.selectorName,
+      args = _ref.args;
+  return new Promise(function (resolve) {
+    var hasFinished = function hasFinished() {
+      return registry.select('').hasFinishedResolution(storeKey, selectorName, args);
+    };
+
+    var getResult = function getResult() {
+      return registry.select(storeKey)[selectorName].apply(null, args);
+    }; // trigger the selector (to trigger the resolver)
+
+
+    var result = getResult();
+
+    if (hasFinished()) {
+      return resolve(result);
+    }
+
+    var unsubscribe = registry.subscribe(function () {
+      if (hasFinished()) {
+        unsubscribe();
+        resolve(getResult());
+      }
+    });
+  });
+};
+
+var controls = {
+  API_FETCH: function API_FETCH(_ref2) {
+    var request = _ref2.request;
+    return _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()(request);
+  },
+  SELECT: Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["createRegistryControl"])(function (registry) {
+    return function (_ref3) {
+      var _registry$select;
+
+      var storeKey = _ref3.storeKey,
+          selectorName = _ref3.selectorName,
+          args = _ref3.args;
+      return registry.select(storeKey)[selectorName].hasResolver ? resolveSelect(registry, {
+        storeKey: storeKey,
+        selectorName: selectorName,
+        args: args
+      }) : (_registry$select = registry.select(storeKey))[selectorName].apply(_registry$select, _toConsumableArray(args));
+    };
+  }),
+  DISPATCH: Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["createRegistryControl"])(function (registry) {
+    return function (_ref4) {
+      var _registry$dispatch;
+
+      var storeKey = _ref4.storeKey,
+          actionName = _ref4.actionName,
+          args = _ref4.args;
+      return (_registry$dispatch = registry.dispatch(storeKey))[actionName].apply(_registry$dispatch, _toConsumableArray(args));
+    };
+  })
+};
+
+/***/ }),
+
+/***/ "@wordpress/api-fetch":
+/*!*******************************************!*\
+  !*** external {"this":["wp","apiFetch"]} ***!
+  \*******************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: ENOENT: no such file or directory, open '/Users/tu/Documents/foobla/repo/LearnPress/assets/src/js/frontend/data-controls.js'");
+(function() { module.exports = this["wp"]["apiFetch"]; }());
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!***************************************!*\
+  !*** external {"this":["wp","data"]} ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function() { module.exports = this["wp"]["data"]; }());
 
 /***/ })
 

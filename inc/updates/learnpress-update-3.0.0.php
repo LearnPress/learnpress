@@ -243,21 +243,32 @@ class LP_Update_30 extends LP_Update_Base {
 
 		global $wpdb;
 
-		$query = $wpdb->prepare( "
-				INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
-				SELECT user_item_id, %s, COUNT(user_item_id) - 1 Y
-				FROM (
-					SELECT user_item_id, user_id, item_id
-					FROM wp_learnpress_user_items
-					WHERE item_id = %d
-	                ORDER BY user_item_id DESC
-		      	) X
-				GROUP BY user_id, item_id
-			", '_lp_retaken_count', $course_id );
+//		$query = $wpdb->prepare( "
+//				INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
+//				SELECT user_item_id, %s, COUNT(user_item_id) - 1 Y
+//				FROM (
+//					SELECT user_item_id, user_id, item_id
+//					FROM {$wpdb->learnpress_user_items}
+//					WHERE item_id = %d
+//	                ORDER BY user_item_id DESC
+//		      	) X
+//				GROUP BY user_id, item_id
+//			", '_lp_retaken_count', $course_id );
+
+		$query = $wpdb->prepare("
+			INSERT INTO {$wpdb->learnpress_user_itemmeta}( `learnpress_user_item_id`, `meta_key`, `meta_value` )
+			SELECT e.user_item_id, %s, (
+				SELECT COUNT(user_item_id) 
+				FROM {$wpdb->learnpress_user_items} f
+				WHERE f.user_id = e.user_id AND f.item_id=  e.item_id AND f.user_item_id <= e.user_item_id 
+			) - 1 x
+			FROM {$wpdb->learnpress_user_items} e
+			WHERE item_id = %d
+			ORDER BY user_item_id DESC
+			LIMIT 1
+		",'_lp_retaken_count', $course_id );
 
 		$wpdb->query( $query );
-
-		$this->output($query);
 
 		return false;
 	}

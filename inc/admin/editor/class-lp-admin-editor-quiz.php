@@ -436,7 +436,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 				'temp_id'            => isset( $args['question_answer_id'] ) ? $args['question_answer_id'] : 0,
 				'question_answer_id' => $new_answer_id,
 				'question_id'        => $question_id,
-				'answer_order'       => count( $question->get_data( 'answer_options' ) )
+				'order'              => count( $question->get_data( 'answer_options' ) )
 			) );
 
 			return true;

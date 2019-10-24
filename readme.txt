@@ -199,6 +199,16 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 3.3.0 =
++ Added new UI/UX for Quiz screen in frontend.
++ Added enable Gutenberg for lesson and quiz and question.
++ Added extra meta for course: Requirements, Target Audience, Key Features.
+~ Improved quiz settings that made it simpler and easy to use.
+~ Improved single course page.
+~ Improved archive course page.
+~ Restructure database table.
+~ Added some hooks/filters.
+
 = 3.2.6.4 =
 ~ Fixed some errors.
 

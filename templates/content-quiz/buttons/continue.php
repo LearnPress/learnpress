@@ -23,7 +23,7 @@ $user = LP_Global::user(); ?>
 
 		<?php do_action( 'learn-press/quiz/begin-continue-button' ); ?>
 
-        <button type="submit"><?php _e( 'Continue', 'learnpress' ); ?></button>
+        <button type="submit" class="lp-button"><?php _e( 'Continue', 'learnpress' ); ?></button>
 
 		<?php do_action( 'learn-press/quiz/end-continue-button' ); ?>
     </form>

@@ -545,6 +545,7 @@ class LP_Checkout {
 				throw new Exception( __( 'Your cart is currently empty.', 'learnpress' ) );
 			}
 
+
 //			if ( ! is_user_logged_in() && isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
 //				$creds                  = array();
 //				$creds['user_login']    = $this->user_login;
@@ -584,13 +585,18 @@ class LP_Checkout {
 
 				// allow Third-party hook
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
+
+
 				if ( $this->payment_method ) {
 					// Store the order is waiting for payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;
 					// Process Payment
 					$result = $this->payment_method->process_payment( $order_id );
+
 					if ( isset( $result['result'] ) && 'success' === $result['result'] ) {
 						$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
+
+
 						if ( learn_press_is_ajax() ) {
 							learn_press_send_json( $result );
 						} else {
@@ -604,6 +610,9 @@ class LP_Checkout {
 					$order = new LP_Order( $order_id );
 					if ( $order && $order->payment_complete() ) {
 
+						/**
+						 * @see LP_Request_Handler::maybe_redirect_checkout()
+						 */
 						$result = apply_filters( 'learn-press/checkout-no-payment-result',
 							array(
 								'result'   => 'success',

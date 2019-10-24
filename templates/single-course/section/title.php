@@ -44,13 +44,8 @@ $title = $section->get_title();
 		<?php $percent = $user_course->get_percent_completed_items( '', $section->get_id() ); ?>
 
         <div class="section-meta">
-            <div class="learn-press-progress section-progress" title="<?php echo intval( $percent ); ?>%">
-                <div class="progress-bg">
-                    <div class="progress-active primary-background-color" style="left: <?php echo $percent; ?>%;"></div>
-                </div>
-            </div>
-            <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items( '', false ) ); ?></span>
-            <span class="collapse"></span>
+            <div class="section-progress"
+                 title="<?php echo esc_attr( sprintf( __( 'Section progress %s%%', 'learnpress' ), round( $percent, 2 ) ) ); ?>"><?php learn_press_circle_progress_html( $percent, 24, 6 ); ?></div>
         </div>
 
 	<?php } ?>

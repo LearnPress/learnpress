@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/content-landing.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -34,6 +34,7 @@ do_action( 'learn_press_before_content_landing' );
 	 * @since 3.0.0
 	 */
 	do_action( 'learn-press/content-landing-summary' );
+
 	?>
 
 </div>

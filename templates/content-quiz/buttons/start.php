@@ -24,7 +24,7 @@ $quiz   = LP_Global::course_item_quiz();
 
 		<?php do_action( 'learn-press/begin-quiz-start-button' ); ?>
 
-        <button type="submit" class="button"><?php _e( 'Start', 'learnpress' ); ?></button>
+        <button type="submit" class="button lp-button"><?php _e( 'Start', 'learnpress' ); ?></button>
 
 		<?php do_action( 'learn-press/end-quiz-start-button' ); ?>
 

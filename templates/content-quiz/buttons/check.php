@@ -38,7 +38,7 @@ $button_text = $checked ? __( 'Checked', 'learnpress' ) : __( 'Check', 'learnpre
 		<?php } else { ?>
 
             <button type="submit"
-                    class="button-check-answer"
+                    class="button-check-answer lp-button"
                     data-counter="<?php echo $user->can_check_answer( $quiz->get_id() ); ?>"
 				<?php disabled( $checked ); ?>>
                 <?php echo $button_text; ?>

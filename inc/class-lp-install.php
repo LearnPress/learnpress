@@ -555,6 +555,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! self::$_update_files ) {
 				require_once ABSPATH . 'wp-admin/includes/file.php';
 				if ( WP_Filesystem() ) {
+
+					/**
+					 * @var WP_Filesystem_Base $wp_filesystem
+					 */
 					global $wp_filesystem;
 
 					if ( $files = $wp_filesystem->dirlist( LP_PLUGIN_PATH . '/inc/updates' ) ) {
@@ -572,7 +576,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				if ( self::$_update_files ) {
 					ksort( self::$_update_files );
 				}
+
+				if ( file_exists( LP_PLUGIN_PATH . '/inc/updates/learnpress-update-x.x.x.php' ) ) {
+					self::$_update_files['9.9.9'] = 'learnpress-update-x.x.x.php';
+				}
 			}
+
 		}
 
 		/**
@@ -776,8 +785,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				CREATE TABLE {$wpdb->learnpress_question_answers} (
 					question_answer_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					question_id bigint(20) unsigned NOT NULL DEFAULT '0',
-					answer_data text NOT NULL,
-					answer_order bigint(20) unsigned NOT NULL DEFAULT '0',
+					title text NOT NULL,
+					`value` varchar(32) NOT NULL,
+					`order` bigint(20) unsigned NOT NULL DEFAULT '0',
 					PRIMARY KEY  (question_answer_id)
 				) $collate;";
 			}
@@ -850,10 +860,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					user_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					user_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					item_id bigint(20) unsigned NOT NULL DEFAULT '0',
-					start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-					start_time_gmt datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-					end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-					end_time_gmt datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+					start_time datetime NULL DEFAULT NULL,
+					start_time_gmt datetime NOT NULL NULL,
+					end_time datetime NULL DEFAULT NULL,
+					end_time_gmt datetime NULL DEFAULT NULL,
+					expiration_time datetime DEFAULT NULL,
 					item_type varchar(45) NOT NULL DEFAULT '',
 					status varchar(45) NOT NULL DEFAULT '',
 					ref_id bigint(20) unsigned NOT NULL DEFAULT '0',

@@ -31,6 +31,8 @@
 @mixin transition($args...) {
     -webkit-transition: $args;
     -moz-transition: $args;
+    -ms-transition: $args;
+    -o-transition: $args;
     transition: $args;
 }
 
@@ -103,6 +105,24 @@
     }
     &::placeholder{
         color: $color;
+    }
+}
+@mixin placeholder-fontStyle($style) {
+    &::-webkit-input-placeholder {
+        font-style: $style;
+    }
+    &::-moz-placeholder {
+        font-style: $style;
+    }
+    &:-ms-input-placeholder {
+        font-style: $style;
+    }
+    &:-moz-placeholder {
+        font-style: $style;
+    }
+    &::placeholder{
+        font-style: $style;
+
     }
 }
 

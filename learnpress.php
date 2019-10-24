@@ -4,10 +4,10 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 3.2.6.4
+Version: 3.3.0
 Author URI: http://thimpress.com
 Requires at least: 3.8
-Tested up to: 5.0.2
+Tested up to: 5.2.4
 
 Text Domain: learnpress
 Domain Path: /languages/
@@ -104,10 +104,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		/**
 		 * @var LP_Admin_Notice
-         *
-         * @since 3.2.6
+		 *
+		 * @since 3.2.6
 		 */
 		public $adminNotices = null;
+
+		/**
+		 * @var LP_Template
+		 */
+		public $template = null;
 
 		/**
 		 * LearnPress constructor.
@@ -234,6 +239,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-object-data.php';
 			require_once 'inc/abstracts/abstract-post-data.php';
 			require_once 'inc/abstracts/abstract-assets.php';
+			require_once 'inc/abstracts/abstract-object-query.php';
 			require_once 'inc/class-lp-query-course.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
@@ -323,6 +329,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/user-item/class-lp-user-item-quiz.php';
+			require_once 'inc/user-item/class-lp-quiz-results.php';
 			require_once 'inc/class-lp-session-handler.php';
 
 			if ( is_admin() ) {
@@ -333,7 +340,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );
-			require_once( 'inc/lp-template-hooks.php' );
+
+			require_once "inc/class-lp-template.php";
+
 			require_once 'inc/cart/class-lp-cart.php';
 			require_once 'inc/cart/lp-cart-functions.php';
 			require_once 'inc/gateways/class-lp-gateway-abstract.php';
@@ -353,12 +362,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			/**
 			 * REST APIs
-             *
-             * @since 3.2.6
-             */
+			 *
+			 * @since 3.2.6
+			 */
 			require_once 'inc/abstracts/abstract-rest-api.php';
 			require_once 'inc/abstracts/abstract-rest-controller.php';
 			require_once 'inc/rest-api/class-lp-core-api.php';
+			//
+			require_once 'inc/admin/rest-api/class-lp-core-api.php';
+
 
 			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
 				include_once 'local-debug.php';
@@ -449,6 +461,28 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function on_deactivate() {
 			do_action( 'learn-press/deactivate', $this );
+			$this->remove_cron();
+		}
+
+		protected function add_cron() {
+			add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
+
+			if ( ! wp_next_scheduled( 'learn_press_schedule_items' ) ) {
+				wp_schedule_event( time(), 'lp_cron_schedule_items', 'learn_press_schedule_items' );
+			}
+		}
+
+		protected function remove_cron() {
+			wp_clear_scheduled_hook( 'learn_press_schedule_items' );
+		}
+
+		public function cron_schedules( $schedules ) {
+			$schedules['lp_cron_schedule_items'] = array(
+				'interval' => 15,
+				'display'  => __( 'Every 3 Minutes', 'learnpress' )
+			);
+
+			return $schedules;
 		}
 
 		/**
@@ -513,15 +547,52 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @since 3.0.0
 		 */
 		public function plugin_loaded() {
-			$this->init();
-
-			// Background
-			$this->init_background_processes();
+//			$this->init();
+//
+//			// Background
+//			$this->init_background_processes();
+			require_once( 'inc/lp-template-hooks.php' );
 
 			// let third parties know that we're ready
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
 			do_action( 'learn-press/ready' );
+			$this->add_cron();
+
+			$this->init();
+
+			// Background
+			$this->init_background_processes();
+		}
+
+		/**
+		 * Get instance of class LP_Template.
+		 *
+		 * @since 4.x.x
+		 *
+		 * @param string $hook
+		 * @param string $cb
+		 * @param int    $priority
+		 * @param int    $number_args
+		 *
+		 * @return LP_Template
+		 *
+		 * @throws Exception
+		 */
+		public function template( $hook = '', $cb = '', $priority = 10, $number_args = 1 ) {
+			if ( ! $this->template ) {
+				$this->template = LP_Template::instance();
+			}
+
+			if ( $num = func_num_args() ) {
+				if ( $num < 2 || ! is_callable( array( $this->template, $cb ) ) ) {
+					throw new Exception( __( 'Callback function for template hook doesn\'t exists.', 'learnpress' ) );
+				}
+
+				$this->template->hook( $hook, $cb, $priority, $number_args );
+			}
+
+			return $this->template;
 		}
 
 		/**
@@ -529,7 +600,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function init() {
 
-			$this->api = new LP_Core_API();
+			$this->api       = new LP_Core_API();
+			$this->admin_api = new LP_Admin_Core_API();
 
 			$this->view_log();
 
@@ -539,9 +611,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_cart();
-			}else{
-			    $this->adminNotices = LP_Admin_Notice::instance();
-            }
+			} else {
+				$this->adminNotices = LP_Admin_Notice::instance();
+			}
 
 			// init email notification hooks
 			LP_Emails::init_email_notifications();
@@ -780,3 +852,89 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+add_action( 'template_include', function ($t) {
+
+	if ( empty( $_REQUEST['x'] ) ) {
+		return $t;
+	}
+
+	global $wpdb;
+	$query = "
+        SELECT * FROM 
+        wp_learnpress_user_itemmeta
+       where learnpress_user_item_id=(select max(user_item_id) from wp_learnpress_user_items)
+    ";
+
+	$rows = $wpdb->get_results( $query );
+
+	foreach ( $rows as $row ) {
+		$row = (array) $row;
+		echo $row['meta_key'] . '=';
+		print_r( maybe_unserialize( $row['meta_value'] ) );
+		echo "\n\n";
+	}
+
+	print_r( $wpdb->get_var( $query ) );
+	die();
+
+
+} );
+//function detect_city( $ip ) {
+//
+//	$default = 'UNKNOWN';
+//
+//	if ( ! is_string( $ip ) || strlen( $ip ) < 1 || $ip == '127.0.0.1' || $ip == 'localhost' ) {
+//		$ip = '8.8.8.8';
+//	}
+//
+//	$curlopt_useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2) Gecko/20100115 Firefox/3.6 (.NET CLR 3.5.30729)';
+//
+//	$url = 'http://ipinfodb.com/ip_locator.php?ip=' . urlencode( $ip );
+//	$ch  = curl_init();
+//
+//	$curl_opt = array(
+//		CURLOPT_FOLLOWLOCATION => 1,
+//		CURLOPT_HEADER         => 0,
+//		CURLOPT_RETURNTRANSFER => 1,
+//		CURLOPT_USERAGENT      => $curlopt_useragent,
+//		CURLOPT_URL            => $url,
+//		CURLOPT_TIMEOUT        => 1,
+//		CURLOPT_REFERER        => 'http://' . $_SERVER['HTTP_HOST'],
+//	);
+//
+//
+//	curl_setopt_array( $ch, $curl_opt );
+//
+//	$content = curl_exec( $ch );
+//
+////	if (!is_null($curl_info)) {
+////		$curl_info = curl_getinfo($ch);
+////	}
+//
+//	$city  = '';
+//	$state = '';
+//
+//	curl_close( $ch );
+//
+//	if ( preg_match( '{<li>City : ([^<]*)</li>}i', $content, $regs ) ) {
+//		$city = $regs[1];
+//	}
+//	if ( preg_match( '{<li>State/Province : ([^<]*)</li>}i', $content, $regs ) ) {
+//		$state = $regs[1];
+//	}
+//
+//	if ( $city != '' && $state != '' ) {
+//		$location = $city . ', ' . $state;
+//
+//		return $location;
+//	} else {
+//		return $default;
+//	}
+//
+//}
+//add_action('plugins_loaded', function(){
+//	var_dump(WC_Geolocation::geolocate_ip('14.162.255.20'));
+//});
+
+

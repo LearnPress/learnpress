@@ -187,6 +187,34 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * Get course thumbnail, return placeholder if it does not exists
+		 *
+		 * @param string $size
+		 *
+		 * @return string
+		 */
+		public function get_image_url( $size = 'course_thumbnail' ) {
+			$course_id = $this->get_id();
+			$url       = '';
+
+			if ( has_post_thumbnail( $course_id ) ) {
+				$url = get_the_post_thumbnail_url( $course_id, $size );
+			} elseif ( ( $parent_id = wp_get_post_parent_id( $course_id ) ) && has_post_thumbnail( $parent_id ) ) {
+				$url = get_the_post_thumbnail_url( $parent_id, $size );
+			}
+
+			if ( ! $url ) {
+				if ( 'course_thumbnail' == $size ) {
+					$url = LP()->image( 'no-image.png' );
+				} else {
+					$url = LP()->image( 'placeholder-800x450' );
+				}
+			}
+
+			return apply_filters( 'learn-press/course-thumbnail-url', $url, $this->get_id(), $size );
+		}
+
+		/**
 		 * @return false|string
 		 */
 		public function get_permalink() {
@@ -317,12 +345,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 				$key = $this->get_id() . '-' . md5( serialize( func_get_args() ) );
 				if ( false === ( $items = LP_Object_Cache::get( 'course-' . $key, 'learn-press/course-items' ) ) ) {
-					
-					$items = array();
-					$item_types = $this->get_item_types(true);
+
+					$items      = array();
+					$item_types = $this->get_item_types( true );
 					foreach ( $type as $t ) {
-						if( isset($item_types[$t]) && !empty($item_types[$t]) ) {
-							$items = array_merge( $items, $item_types[$t] );
+						if ( isset( $item_types[ $t ] ) && ! empty( $item_types[ $t ] ) ) {
+							$items = array_merge( $items, $item_types[ $t ] );
 						}
 					}
 
@@ -491,12 +519,20 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 								intval( $count - 1 ),
 								'students-html',
 								'learnpress'
-							)
-							, $count - 1
+							),
+							$count - 1
 						);
 					endif;
 				else:
-					$output = sprintf( _nx( 'One student enrolled', '<span class="course-students-number">%1$s</span> students enrolled', $count, 'students-html', 'learnpress' ), $count );
+					$output = sprintf(
+						_nx(
+							'One student enrolled',
+							'<span class="course-students-number">%1$s</span> students enrolled',
+							$count,
+							'students-html',
+							'learnpress'
+						),
+						$count );
 				endif;
 			else:
 				$output = __( 'No student enrolled', 'learnpress' );
@@ -537,13 +573,19 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * @param int|bool $with_avatar
+		 * @param string   $link_class
+		 *
 		 * @return string
 		 */
-		public function get_instructor_html() {
+		public function get_instructor_html( $with_avatar = false, $link_class = "" ) {
 			$instructor = $this->get_instructor_name();
-			$html       = sprintf(
-				'<a href="%s">%s</a>',
+
+			$html = sprintf(
+				'<a href="%s"%s>%s<span>%s</span></a>',
 				learn_press_user_profile_link( get_post_field( 'post_author', $this->get_id() ) ),
+				$link_class ? sprintf( 'class="%s"', $link_class ) : '',
+				$with_avatar ? get_avatar( $this->get_instructor( 'id' ), $with_avatar === true ? 48 : $with_avatar ) : '',
 				$instructor
 			);
 
@@ -858,15 +900,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		public function count_completed_orders() {
-			LP_Debug::logTime( __FUNCTION__ );
 
 			if ( $orders = $this->get_meta( 'order-completed' ) ) {
 				$count = sizeof( $orders );
 			} else {
 				$count = 0;
 			}
-
-			LP_Debug::logTime( __FUNCTION__ );
 
 			return $count;
 		}
@@ -1110,6 +1149,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$prev_id = $next_id = 0;
 
 			if ( $item_ids = $this->get_item_ids() ) {
+
 				if ( false !== ( $pos = array_search( $current_item, $item_ids ) ) ) {
 					$max     = sizeof( $item_ids ) - 1;
 					$user    = learn_press_get_current_user();

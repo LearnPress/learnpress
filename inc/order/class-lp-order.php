@@ -109,7 +109,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			if ( is_numeric( $date ) ) {
 				$date = date( 'Y-m-d H:i:s', $date );
 			}
-			$this->set_data_date( 'order_date', $date );
+			$this->_set_data_date( 'order_date', $date );
+
 		}
 
 		/**
@@ -123,26 +124,28 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$date = $this->get_data( 'order_date' );
 
 			if ( 'edit' !== $context ) {
-				$strtime = strtotime( $date->toSql() );
 
-				switch ( $context ) {
-					case 'd':
-						$date = date_i18n( 'Y-m-d', $strtime );
-						break;
-					case 'h':
-						$date = date_i18n( 'H', $strtime );
-						break;
-					case 'm':
-						$date = date_i18n( 'i', $strtime );
-						break;
-					case 'timestamp':
-						$date = $strtime;
-						break;
-					default:
-						$post      = get_post( $this->get_id() );
-						$m_time    = $post->post_date;
-						$time      = get_post_time( 'G', true, $post );
-						$time_diff = time() - $time;
+				if ( $date instanceof LP_Datetime ) {
+					$strtime = strtotime( $date->toSql() );
+
+					switch ( $context ) {
+						case 'd':
+							$date = date_i18n( 'Y-m-d', $strtime );
+							break;
+						case 'h':
+							$date = date_i18n( 'H', $strtime );
+							break;
+						case 'm':
+							$date = date_i18n( 'i', $strtime );
+							break;
+						case 'timestamp':
+							$date = $strtime;
+							break;
+						default:
+							$post      = get_post( $this->get_id() );
+							$m_time    = $post->post_date;
+							$time      = get_post_time( 'G', true, $post );
+							$time_diff = time() - $time;
 
 						if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
 							$date = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
@@ -150,6 +153,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 							$date = mysql2date( get_option( 'date_format' ), $m_time );
 						}
 
+					}
 				}
 			} elseif ( ! $date instanceof LP_Datetime ) {
 				$date = new LP_Datetime( $date );
@@ -1035,7 +1039,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function get_user_data() {
 			$data = array();
 			if ( $user_ids = $this->get_data( 'user_id' ) ) {
-				$user_ids = (array)$user_ids;
+				$user_ids = (array) $user_ids;
 				if ( is_array( $user_ids ) ) {
 					foreach ( $user_ids as $user_id ) {
 						$user = learn_press_get_user( $user_id );
@@ -1135,7 +1139,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param mixed $date
 		 */
 		public function set_date_modified( $date ) {
-			$this->_set_data( 'date_modified', $date );
+			$this->_set_data_date( 'date_modified', $date );
 		}
 
 		/**
@@ -1209,6 +1213,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $the_id );
 				do_action( 'learn-press/order/status-changed', $the_id, $old_status, $new_status );
 
+				
 				return true;
 			}
 

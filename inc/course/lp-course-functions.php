@@ -1008,6 +1008,13 @@ if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
 	 */
 	function learn_press_course_item_type_link( $post_link, $post, $leavename, $sample ) {
 
+		/**
+		 * @updated 3.x.x
+		 */
+		if ( ! learn_press_is_support_course_item_type( $post->post_type ) ) {
+			return $post_link;
+		}
+
 		remove_filter( 'post_type_link', 'learn_press_course_item_type_link', 10 );
 
 		// if ( learn_press_is_support_course_item_type( $post->post_type ) && $course = LP_Global::course() ) {

@@ -12,7 +12,7 @@ learn_press_admin_view( 'quiz/question-meta' );
 <script type="text/x-template" id="tmpl-lp-quiz-question-settings">
     <div class="question-settings"
          :class="[question.open ? 'table-row' : 'hide-if-js', isHiddenSettings(question.id) ? 'closed' : '']">
-        <template v-if="isExternal">
+        <template v-if="!supportAnswerOptions">
 			<?php do_action( 'learn-press/quiz-editor/question-js-component' ); ?>
         </template>
         <template v-else>
@@ -34,10 +34,11 @@ learn_press_admin_view( 'quiz/question-meta' );
             props: ['question', 'index'],
             computed: {
                 // check external vue component
-                isExternal: function () {
-                    return $store.getters['lqs/externalComponent'].indexOf(this.question.type.key) !== -1;
+                supportAnswerOptions: function () {
+                    return $store.getters['lqs/supportAnswerOptions'].indexOf(this.question.type.key) !== -1;
                 }
             },
+
             methods: {
                 isHiddenSettings: function (id) {
                     return $.inArray(id, $store.getters['lqs/hiddenQuestionsSettings']) !== -1;

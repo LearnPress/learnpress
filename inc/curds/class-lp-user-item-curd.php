@@ -132,7 +132,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_question_answers
 			WHERE question_id IN(" . join( ',', $format ) . ")
-			ORDER BY question_id, answer_order ASC
+			ORDER BY question_id, `order` ASC
 		", $questions );
 		if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
 			$answer_options = array();
@@ -143,12 +143,13 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 					$answer_options[ $v->question_id ] = array();
 				}
 				$v = (array) $v;
-				if ( $answer_data = LP_Helper::maybe_unserialize( $v['answer_data'] ) ) {
-					foreach ( $answer_data as $kk => $vv ) {
-						$v[ $kk ] = $vv;
-					}
-				}
-				unset( $v['answer_data'] );
+				// 4.0
+//				if ( $answer_data = LP_Helper::maybe_unserialize( $v['answer_data'] ) ) {
+//					foreach ( $answer_data as $kk => $vv ) {
+//						$v[ $kk ] = $vv;
+//					}
+//				}
+//				unset( $v['answer_data'] );
 
 
 				$answer_options[ $v['question_id'] ][] = $v;
@@ -445,6 +446,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	public function get_items_by( $field, $value = '' ) {
 		global $wpdb;
 		$where = "";
+		$order = "ORDER BY user_item_id DESC";
 
 		if ( is_array( $field ) ) {
 			foreach ( $field as $k => $v ) {
@@ -462,7 +464,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 			}
 		}
 
-		$query = "SELECT * FROM {$wpdb->learnpress_user_items} WHERE 1 {$where}";
+		$query = "SELECT * FROM {$wpdb->learnpress_user_items} WHERE 1 {$where} {$order}";
 
 		return $wpdb->get_results( $query );
 	}

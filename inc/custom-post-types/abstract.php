@@ -117,6 +117,18 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
 	}
 
+	public function column_instructor( $post_id = 0 ) {
+		global $post;
+
+		$args = array(
+			'post_type' => $post->post_type,
+			'author'    => get_the_author_meta( 'ID' ),
+		);
+
+		$author_link = add_query_arg( $args, 'edit.php' );
+		echo sprintf( '<span class="post-author">%s<a href="%s">%s</a></span>', get_avatar( get_the_author_meta( 'ID' ), 32 ), $author_link, get_the_author() );
+	}
+
 	public function get_post_type() {
 		$post_type = get_post_type();
 		if ( ! $post_type ) {
@@ -515,6 +527,7 @@ abstract class LP_Abstract_Post_Type {
 			$meta_box[2] = array( $this, '_do_output_meta_box' );
 			call_user_func_array( 'add_meta_box', $meta_box );
 		}
+
 	}
 
 	public function before_delete( $post_id ) {
@@ -828,5 +841,23 @@ class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
 	 */
 	protected function _get_orderby() {
 		return LP_Request::get( 'orderby' );
+	}
+
+	/**
+	 * Return TRUE if this post-type is support Gutenberg editor.
+	 *
+	 * @since 4.x.x
+	 *
+	 * @return bool
+	 */
+	public function is_support_gutenberg() {
+		$post_types = LP()->settings()->get( 'enable_gutenberg' );
+		$support    = false;
+
+		if ( $post_types ) {
+			$support = in_array( $this->_post_type, $post_types ) && ! in_array( '-1', $post_types );
+		}
+
+		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
 	}
 }

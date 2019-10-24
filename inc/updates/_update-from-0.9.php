@@ -582,21 +582,26 @@ class LP_Upgrade_From_09 {
 					$ordering = 0;
 					foreach ( $meta['answer'] as $order => $answer ) {
 						$question_data = array(
-							'text'    => $answer['text'],
-							'value'   => $ordering,
-							'is_true' => $this->_is_false_value( $answer['is_true'] ) ? 'no' : 'yes'
+							'question_id' => $new_id,
+							'title'       => $answer['title'],
+							'value'       => $ordering,
+							'is_true'     => $this->_is_false_value( $answer['is_true'] ) ? 'no' : 'yes',
+							'order'       => ++ $ordering
 						);
+
 						if ( $meta['type'] == 'sorting_choice' ) {
 							unset( $question_data['is_true'] );
 						}
+
 						$wpdb->insert(
 							$wpdb->prefix . 'learnpress_question_answers',
-							array(
-								'question_id'  => $new_id,
-								'answer_data'  => serialize( $question_data ),
-								'answer_order' => ++ $ordering
-							),
-							array( '%d', '%s', '%d' )
+//							array(
+//								'question_id' => $new_id,
+//								//'answer_data'  => serialize( $question_data ),
+//								'order'       => ++ $ordering
+//							),
+							$question_data,
+							array( '%d', '%s', '%s', '%s', '%d' )
 						);
 					}
 				}
@@ -1023,7 +1028,7 @@ class LP_Upgrade_From_09 {
 			return;
 		}
 		foreach ( $user_meta_rows as $user_meta ) {
-			$user_meta = $this->_parse_user_meta( $user_meta );
+			$user_meta         = $this->_parse_user_meta( $user_meta );
 			$new_course_id     = 0;
 			$user_course_items = array();
 			$user_parent_items = array();

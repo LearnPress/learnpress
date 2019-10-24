@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-03 10:35+0000\n"
-"PO-Revision-Date: 2018-07-03 10:37+0000\n"
+"PO-Revision-Date: 2019-02-15 02:17+0000\n"
 "Language-Team: Spanish (Spain)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Loco https://localise.biz/\n"
-"Last-Translator: admin <phonglq@foobla.com>\n"
-"Language: es_ES"
+"Last-Translator: admin <tunnhn@gmail.com>\n"
+"Language: es_ES\n"
+"X-Loco-Version: 2.2.0; wp-5.0.3"
 
 #: learnpress.php:371
 #, php-format
@@ -26,32 +27,26 @@ msgid ""
 "fully operational (currently <strong>%s</strong>)"
 msgstr ""
 
-#: inc/lp-core-functions.php:351
-#: inc/lp-template-functions.php:2664
-#: inc/course/lp-course-functions.php:540
-#: inc/custom-post-types/lesson.php:204
+#: inc/lp-core-functions.php:351 inc/lp-template-functions.php:2664
+#: inc/course/lp-course-functions.php:540 inc/custom-post-types/lesson.php:204
 #: inc/admin/settings/class-lp-settings-courses.php:150
 msgid "Lesson"
 msgstr "Lección"
 
-#: inc/lp-core-functions.php:352
-#: inc/lp-template-functions.php:2654
+#: inc/lp-core-functions.php:352 inc/lp-template-functions.php:2654
 #: inc/course/lp-course-functions.php:541
-#: inc/custom-post-types/question.php:337
-#: inc/custom-post-types/quiz.php:92
+#: inc/custom-post-types/question.php:337 inc/custom-post-types/quiz.php:92
 #: inc/admin/settings/class-lp-settings-courses.php:157
 #: templates/profile/tabs/quizzes.php:38
 msgid "Quiz"
 msgstr "Examen"
 
-#: inc/lp-core-functions.php:677
-#: inc/admin/class-lp-modal-search-users.php:135
+#: inc/lp-core-functions.php:677 inc/admin/class-lp-modal-search-users.php:135
 #: inc/admin/class-lp-modal-search-items.php:210
 msgid "<"
 msgstr ""
 
-#: inc/lp-core-functions.php:678
-#: inc/admin/class-lp-modal-search-users.php:136
+#: inc/lp-core-functions.php:678 inc/admin/class-lp-modal-search-users.php:136
 #: inc/admin/class-lp-modal-search-items.php:211
 msgid ">"
 msgstr ""
@@ -436,8 +431,7 @@ msgstr ""
 msgid "Liberian dollar"
 msgstr ""
 
-#: inc/lp-core-functions.php:1058
-#: inc/lp-core-functions.php:1129
+#: inc/lp-core-functions.php:1058 inc/lp-core-functions.php:1129
 msgid "Libyan dinar"
 msgstr ""
 
@@ -745,8 +739,7 @@ msgid_plural "minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/lp-core-functions.php:1497
-#: inc/admin/views/quiz/editor.php:29
+#: inc/lp-core-functions.php:1497 inc/admin/views/quiz/editor.php:29
 #: inc/admin/views/tools/course/html-course.php:29
 #: inc/admin/views/tools/course/html-user.php:29
 msgid "Name"
@@ -831,33 +824,24 @@ msgstr "Aceptar: %s"
 msgid "Your request has been sent! We will get back to you soon!"
 msgstr ""
 
-#: inc/lp-core-functions.php:2215
-#: inc/class-lp-assets.php:48
+#: inc/lp-core-functions.php:2215 inc/class-lp-assets.php:48
 msgid "OK"
 msgstr ""
 
-#: inc/lp-core-functions.php:2216
-#: inc/class-lp-assets.php:49
-#: inc/class-lp-install.php:513
-#: inc/order/class-lp-order.php:940
-#: inc/custom-post-types/course.php:868
-#: inc/admin/class-lp-admin-ajax.php:723
-#: inc/admin/class-lp-admin.php:215
-#: templates/checkout/form-login.php:103
+#: inc/lp-core-functions.php:2216 inc/class-lp-assets.php:49
+#: inc/class-lp-install.php:513 inc/order/class-lp-order.php:940
+#: inc/custom-post-types/course.php:868 inc/admin/class-lp-admin-ajax.php:723
+#: inc/admin/class-lp-admin.php:215 templates/checkout/form-login.php:103
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: inc/lp-core-functions.php:2217
-#: inc/class-lp-assets.php:50
-#: inc/class-lp-gdpr.php:426
-#: inc/libraries/meta-box/inc/fields/checkbox.php:53
+#: inc/lp-core-functions.php:2217 inc/class-lp-assets.php:50
+#: inc/class-lp-gdpr.php:426 inc/libraries/meta-box/inc/fields/checkbox.php:53
 msgid "Yes"
 msgstr "Si"
 
-#: inc/lp-core-functions.php:2218
-#: inc/class-lp-assets.php:51
-#: inc/class-lp-gdpr.php:426
-#: templates/content-quiz/intro.php:25
+#: inc/lp-core-functions.php:2218 inc/class-lp-assets.php:51
+#: inc/class-lp-gdpr.php:426 templates/content-quiz/intro.php:25
 #: inc/libraries/meta-box/inc/fields/checkbox.php:53
 msgid "No"
 msgstr "No"
@@ -909,18 +893,14 @@ msgstr "¿Deseas cancelar la orden?"
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: inc/lp-core-functions.php:2715
-#: inc/course/lp-course-functions.php:1007
-#: inc/user/class-lp-profile.php:847
-#: inc/user/class-lp-profile.php:881
+#: inc/lp-core-functions.php:2715 inc/course/lp-course-functions.php:1007
+#: inc/user/class-lp-profile.php:847 inc/user/class-lp-profile.php:881
 #: inc/user-item/class-lp-user-item.php:320
 msgid "Passed"
 msgstr ""
 
-#: inc/lp-core-functions.php:2718
-#: inc/course/lp-course-functions.php:1010
-#: inc/user/class-lp-profile.php:848
-#: inc/user/class-lp-profile.php:882
+#: inc/lp-core-functions.php:2718 inc/course/lp-course-functions.php:1010
+#: inc/user/class-lp-profile.php:848 inc/user/class-lp-profile.php:882
 #: inc/user-item/class-lp-user-item.php:321
 msgid "Failed"
 msgstr ""
@@ -945,15 +925,13 @@ msgctxt "static-page-name"
 msgid "Become a Teacher"
 msgstr ""
 
-#: inc/class-lp-assets.php:58
-#: inc/class-lp-assets.php:65
+#: inc/class-lp-assets.php:58 inc/class-lp-assets.php:65
 #: inc/shortcodes/class-lp-shortcode-become-a-teacher.php:124
 #: templates/checkout/payment.php:20
 msgid "Processing"
 msgstr "Procesando"
 
-#: inc/class-lp-assets.php:59
-#: inc/class-lp-assets.php:66
+#: inc/class-lp-assets.php:59 inc/class-lp-assets.php:66
 msgid "Redirecting"
 msgstr ""
 
@@ -961,18 +939,15 @@ msgstr ""
 msgid "Invalid field"
 msgstr ""
 
-#: inc/class-lp-assets.php:61
-#: inc/attributes/course.php:103
+#: inc/class-lp-assets.php:61 inc/attributes/course.php:103
 msgid "Unknown error"
 msgstr ""
 
-#: inc/class-lp-assets.php:62
-#: templates/checkout/payment.php:19
+#: inc/class-lp-assets.php:62 templates/checkout/payment.php:19
 msgid "Place order"
 msgstr "Realizar pedido"
 
-#: inc/class-lp-emails.php:136
-#: inc/class-lp-emails.php:143
+#: inc/class-lp-emails.php:136 inc/class-lp-emails.php:143
 msgid "Cheatin&#8217; huh?"
 msgstr "Haciendo trampa; ¿eh?"
 
@@ -981,8 +956,7 @@ msgstr "Haciendo trampa; ¿eh?"
 msgid "Function %s should be overwritten in child class"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:39
-#: inc/class-lp-forms-handler.php:116
+#: inc/class-lp-forms-handler.php:39 inc/class-lp-forms-handler.php:116
 #: inc/class-lp-forms-handler.php:197
 #, php-format
 msgid "Field \"%s\" is required."
@@ -1028,16 +1002,11 @@ msgstr ""
 msgid "Password must include at least one of these characters ~!@#$%^&*() !"
 msgstr ""
 
-#: inc/lp-deprecated.php:370
-#: inc/lp-deprecated.php:402
-#: inc/admin/lp-admin-actions.php:59
-#: inc/admin/lp-admin-functions.php:835
-#: inc/admin/lp-admin-functions.php:1000
-#: inc/admin/lp-admin-functions.php:1202
-#: inc/admin/lp-admin-functions.php:2083
-#: inc/user/class-lp-profile.php:813
-#: inc/user/class-lp-profile.php:845
-#: inc/user/class-lp-profile.php:879
+#: inc/lp-deprecated.php:370 inc/lp-deprecated.php:402
+#: inc/admin/lp-admin-actions.php:59 inc/admin/lp-admin-functions.php:835
+#: inc/admin/lp-admin-functions.php:1000 inc/admin/lp-admin-functions.php:1202
+#: inc/admin/lp-admin-functions.php:2083 inc/user/class-lp-profile.php:813
+#: inc/user/class-lp-profile.php:845 inc/user/class-lp-profile.php:879
 #: templates/widgets/course-info/default.php:44
 #: inc/admin/views/statistics/courses.php:27
 #: inc/admin/views/statistics/courses.php:42
@@ -1055,27 +1024,22 @@ msgstr "Todo"
 msgid "Learning"
 msgstr "Aprendizaje"
 
-#: inc/lp-deprecated.php:372
-#: inc/custom-post-types/order.php:756
+#: inc/lp-deprecated.php:372 inc/custom-post-types/order.php:756
 #: inc/user/class-lp-profile.php:284
 msgid "Purchased"
 msgstr "Compardo"
 
-#: inc/lp-deprecated.php:373
-#: inc/lp-deprecated.php:404
-#: inc/user/class-lp-profile.php:846
-#: inc/user/class-lp-profile.php:880
+#: inc/lp-deprecated.php:373 inc/lp-deprecated.php:404
+#: inc/user/class-lp-profile.php:846 inc/user/class-lp-profile.php:880
 #: inc/user-item/class-lp-user-item.php:319
 msgid "Finished"
 msgstr "Terminado"
 
-#: inc/lp-deprecated.php:374
-#: inc/user/class-lp-profile.php:277
+#: inc/lp-deprecated.php:374 inc/user/class-lp-profile.php:277
 msgid "Owned"
 msgstr ""
 
-#: inc/lp-deprecated.php:403
-#: inc/course/lp-course-functions.php:1013
+#: inc/lp-deprecated.php:403 inc/course/lp-course-functions.php:1013
 #: inc/user-item/class-lp-user-item.php:314
 #: inc/user-item/class-lp-user-item.php:315
 #: inc/user-item/class-lp-user-item.php:316
@@ -1103,14 +1067,12 @@ msgstr ""
 msgid "Invalid action."
 msgstr ""
 
-#: inc/class-lp-request-handler.php:285
-#: inc/class-lp-request-handler.php:319
+#: inc/class-lp-request-handler.php:285 inc/class-lp-request-handler.php:319
 #, php-format
 msgid "You can not enroll course &quot;%s&quot"
 msgstr ""
 
-#: inc/class-lp-request-handler.php:311
-#: inc/course/lp-course-functions.php:1107
+#: inc/class-lp-request-handler.php:311 inc/course/lp-course-functions.php:1107
 msgid "Invalid request!"
 msgstr ""
 
@@ -1165,8 +1127,7 @@ msgstr ""
 msgid "The order %s has been successfully recovered."
 msgstr ""
 
-#: inc/class-lp-ajax.php:246
-#: inc/admin/class-lp-admin-ajax.php:926
+#: inc/class-lp-ajax.php:246 inc/admin/class-lp-admin-ajax.php:926
 msgid "Profile picture upload failed"
 msgstr ""
 
@@ -1276,8 +1237,7 @@ msgstr "El usuario %s no está disponible!"
 msgid "Preview Course"
 msgstr ""
 
-#: inc/class-lp-preview-course.php:83
-#: inc/class-lp-preview-course.php:100
+#: inc/class-lp-preview-course.php:83 inc/class-lp-preview-course.php:100
 msgid "Invalid preview item."
 msgstr ""
 
@@ -1330,10 +1290,8 @@ msgstr "Estado del pedido"
 msgid "Order Total"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:165
-#: inc/custom-post-types/order.php:887
-#: inc/custom-post-types/order.php:888
-#: inc/custom-post-types/order.php:892
+#: inc/class-lp-gdpr.php:165 inc/custom-post-types/order.php:887
+#: inc/custom-post-types/order.php:888 inc/custom-post-types/order.php:892
 #: inc/user/class-lp-profile.php:312
 #: inc/admin/settings/class-lp-settings-profile.php:165
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:22
@@ -1341,23 +1299,19 @@ msgstr ""
 msgid "Orders"
 msgstr "Compras"
 
-#: inc/class-lp-gdpr.php:213
-#: inc/class-lp-gdpr.php:332
+#: inc/class-lp-gdpr.php:213 inc/class-lp-gdpr.php:332
 msgid "Course Author"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:217
-#: inc/class-lp-gdpr.php:336
+#: inc/class-lp-gdpr.php:217 inc/class-lp-gdpr.php:336
 msgid "Course Name"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:221
-#: inc/class-lp-gdpr.php:340
+#: inc/class-lp-gdpr.php:221 inc/class-lp-gdpr.php:340
 msgid "Course Date"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:225
-#: inc/class-lp-gdpr.php:344
+#: inc/class-lp-gdpr.php:225 inc/class-lp-gdpr.php:344
 msgid "Course URL"
 msgstr ""
 
@@ -1365,23 +1319,19 @@ msgstr ""
 msgid "Owned Course"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:264
-#: inc/class-lp-gdpr.php:400
+#: inc/class-lp-gdpr.php:264 inc/class-lp-gdpr.php:400
 msgid "Item Name"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:268
-#: inc/class-lp-gdpr.php:404
+#: inc/class-lp-gdpr.php:268 inc/class-lp-gdpr.php:404
 msgid "Item Type"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:272
-#: inc/class-lp-gdpr.php:408
+#: inc/class-lp-gdpr.php:272 inc/class-lp-gdpr.php:408
 msgid "Item URL"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:279
-#: inc/class-lp-gdpr.php:432
+#: inc/class-lp-gdpr.php:279 inc/class-lp-gdpr.php:432
 msgid "Course Items"
 msgstr ""
 
@@ -1401,8 +1351,7 @@ msgstr ""
 msgid "Course Grade"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:361
-#: templates/content-quiz/result.php:33
+#: inc/class-lp-gdpr.php:361 templates/content-quiz/result.php:33
 msgid "Ungraded"
 msgstr ""
 
@@ -1410,8 +1359,7 @@ msgstr ""
 msgid "Purchased Course"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:415
-#: inc/custom-post-types/order.php:759
+#: inc/class-lp-gdpr.php:415 inc/custom-post-types/order.php:759
 #: inc/custom-post-types/order.php:759
 #: templates/emails/order-items-table.php:53
 #: templates/emails/plain/order-items-table.php:30
@@ -1426,16 +1374,14 @@ msgstr "Estado"
 msgid "Grade"
 msgstr ""
 
-#: inc/class-lp-gdpr.php:425
-#: inc/admin/lp-admin-functions.php:1207
+#: inc/class-lp-gdpr.php:425 inc/admin/lp-admin-functions.php:1207
 #: inc/user-item/class-lp-user-item.php:318
 #: templates/content-lesson/button-complete.php:36
 #: inc/admin/views/statistics/orders.php:63
 msgid "Completed"
 msgstr "Completado"
 
-#: inc/class-lp-query-list-table.php:28
-#: inc/custom-post-types/course.php:95
+#: inc/class-lp-query-list-table.php:28 inc/custom-post-types/course.php:95
 msgid "item"
 msgstr ""
 
@@ -1459,8 +1405,7 @@ msgstr ""
 msgid "Overview"
 msgstr "Resumen"
 
-#: inc/lp-template-functions.php:558
-#: inc/admin/views/course/curriculum.php:15
+#: inc/lp-template-functions.php:558 inc/admin/views/course/curriculum.php:15
 msgid "Curriculum"
 msgstr "Plan estudios"
 
@@ -1477,12 +1422,9 @@ msgstr ""
 msgid "Course Search Results"
 msgstr ""
 
-#: inc/lp-template-functions.php:1317
-#: inc/custom-post-types/course.php:128
-#: inc/custom-post-types/course.php:130
-#: inc/admin/lp-admin-actions.php:213
-#: inc/admin/class-lp-admin.php:277
-#: inc/user/class-lp-profile.php:299
+#: inc/lp-template-functions.php:1317 inc/custom-post-types/course.php:128
+#: inc/custom-post-types/course.php:130 inc/admin/lp-admin-actions.php:213
+#: inc/admin/class-lp-admin.php:277 inc/user/class-lp-profile.php:299
 #: inc/admin/settings/class-lp-settings-profile.php:149
 #: inc/admin/settings/class-lp-settings-profile.php:274
 #: inc/admin/settings/class-lp-settings-courses.php:12
@@ -1519,15 +1461,12 @@ msgstr ""
 msgid "&nbsp;&ndash; Page %s"
 msgstr "&nbsp;&ndash; Página %s"
 
-#: inc/lp-template-functions.php:2658
-#: inc/lp-template-functions.php:3218
+#: inc/lp-template-functions.php:2658 inc/lp-template-functions.php:3218
 msgid "Final"
 msgstr ""
 
-#: inc/lp-template-functions.php:2667
-#: inc/course/lp-course-functions.php:889
-#: inc/custom-post-types/abstract.php:777
-#: inc/custom-post-types/lesson.php:339
+#: inc/lp-template-functions.php:2667 inc/course/lp-course-functions.php:889
+#: inc/custom-post-types/abstract.php:777 inc/custom-post-types/lesson.php:339
 #: inc/custom-post-types/quiz.php:382
 #: templates/single-course/section/item-meta.php:25
 msgid "Preview"
@@ -1537,8 +1476,7 @@ msgstr "Vista previa"
 msgid "Fill out the form and send us your requesting."
 msgstr ""
 
-#: inc/lp-template-functions.php:3226
-#: inc/custom-post-types/quiz.php:419
+#: inc/lp-template-functions.php:3226 inc/custom-post-types/quiz.php:419
 #, php-format
 msgid "%d question"
 msgid_plural "%d questions"
@@ -1569,8 +1507,7 @@ msgctxt "duration"
 msgid "%s sec"
 msgstr ""
 
-#: inc/lp-template-functions.php:3252
-#: inc/course/lp-course-functions.php:810
+#: inc/lp-template-functions.php:3252 inc/course/lp-course-functions.php:810
 msgid "Edit this item"
 msgstr "Editar este elemento"
 
@@ -1703,16 +1640,14 @@ msgstr "Gracias por usar Mentoría online"
 msgid "No setting available."
 msgstr ""
 
-#: inc/class-lp-multi-language.php:52
-#: inc/custom-post-types/question.php:294
+#: inc/class-lp-multi-language.php:52 inc/custom-post-types/question.php:294
 #: inc/user/class-lp-profile.php:325
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:14
 #: inc/admin/views/quiz/question-meta.php:12
 msgid "Settings"
 msgstr "Ajustes"
 
-#: inc/class-lp-multi-language.php:53
-#: inc/libraries/meta-box/inc/core.php:38
+#: inc/class-lp-multi-language.php:53 inc/libraries/meta-box/inc/core.php:38
 msgid "Documentation"
 msgstr "Documentación"
 
@@ -1721,8 +1656,7 @@ msgstr "Documentación"
 msgid "Add-ons"
 msgstr "Complementos"
 
-#: inc/class-lp-checkout.php:160
-#: inc/class-lp-checkout.php:425
+#: inc/class-lp-checkout.php:160 inc/class-lp-checkout.php:425
 msgid "Please enter your email."
 msgstr ""
 
@@ -1736,8 +1670,7 @@ msgstr ""
 msgid "Username"
 msgstr "Nombre de usuario"
 
-#: inc/class-lp-checkout.php:211
-#: inc/user/class-lp-profile.php:336
+#: inc/class-lp-checkout.php:211 inc/user/class-lp-profile.php:336
 #: inc/shortcodes/class-lp-shortcode-login-form.php:69
 #: inc/shortcodes/class-lp-shortcode-login-form.php:71
 #: inc/shortcodes/class-lp-shortcode-register-form.php:80
@@ -1745,8 +1678,7 @@ msgstr "Nombre de usuario"
 msgid "Password"
 msgstr "Contraseña"
 
-#: inc/class-lp-checkout.php:267
-#: inc/class-lp-checkout.php:276
+#: inc/class-lp-checkout.php:267 inc/class-lp-checkout.php:276
 #: inc/class-lp-checkout.php:315
 #, php-format
 msgid "Error %d: Unable to create order. Please try again."
@@ -1772,8 +1704,7 @@ msgstr "Por favor, introduce contraseña de usuario"
 msgid "No payment method is selected"
 msgstr ""
 
-#: inc/class-lp-checkout.php:545
-#: templates/checkout/empty-cart.php:19
+#: inc/class-lp-checkout.php:545 templates/checkout/empty-cart.php:19
 msgid "Your cart is currently empty."
 msgstr "Tu lista esta vacía."
 
@@ -1782,10 +1713,8 @@ msgstr "Tu lista esta vacía."
 msgid "Item \"%s\" is not purchasable."
 msgstr "Artículo \"%s\" no se puede comprar."
 
-#: inc/class-lp-market-products.php:12
-#: inc/admin/class-lp-admin-menu.php:90
-#: inc/admin/lp-admin-functions.php:1582
-#: inc/admin/class-lp-admin.php:103
+#: inc/class-lp-market-products.php:12 inc/admin/class-lp-admin-menu.php:90
+#: inc/admin/lp-admin-functions.php:1582 inc/admin/class-lp-admin.php:103
 #: inc/admin/class-lp-admin.php:105
 #: inc/admin/settings/class-lp-settings-emails.php:161
 msgid "LearnPress"
@@ -1799,8 +1728,7 @@ msgstr ""
 msgid "Search course..."
 msgstr "Buscar curso.."
 
-#: templates/search-form.php:29
-#: inc/admin/views/tools/course/html-course.php:21
+#: templates/search-form.php:29 inc/admin/views/tools/course/html-course.php:21
 #: inc/admin/views/tools/course/html-user.php:21
 msgid "Search"
 msgstr "Buscar"
@@ -1811,8 +1739,7 @@ msgstr "Buscar"
 msgid "No course found."
 msgstr "Curso no encontrado"
 
-#: inc/order/class-lp-order.php:198
-#: inc/order/class-lp-order.php:217
+#: inc/order/class-lp-order.php:198 inc/order/class-lp-order.php:217
 #: templates/checkout/order-received.php:25
 msgid "Thank you. Your order has been received."
 msgstr "Gracias! Hemos recibido tu pedido"
@@ -1826,13 +1753,11 @@ msgstr ""
 msgid "%s (Guest)"
 msgstr ""
 
-#: inc/order/class-lp-order.php:508
-#: inc/custom-post-types/order.php:807
+#: inc/order/class-lp-order.php:508 inc/custom-post-types/order.php:807
 msgid "(Guest)"
 msgstr ""
 
-#: inc/order/class-lp-order.php:933
-#: inc/custom-post-types/question.php:376
+#: inc/order/class-lp-order.php:933 inc/custom-post-types/question.php:376
 #: inc/custom-post-types/abstract.php:582
 #: inc/custom-post-types/abstract.php:756
 #: inc/custom-post-types/abstract.php:765
@@ -2009,19 +1934,15 @@ msgstr[1] ""
 msgid "No student enrolled"
 msgstr "Ningún estudiante inscrito"
 
-#: inc/course/abstract-course.php:731
-#: inc/custom-post-types/course.php:1380
-#: inc/admin/lp-admin-functions.php:1020
-#: inc/admin/lp-admin-functions.php:2103
+#: inc/course/abstract-course.php:731 inc/custom-post-types/course.php:1380
+#: inc/admin/lp-admin-functions.php:1020 inc/admin/lp-admin-functions.php:2103
 #: inc/admin/views/statistics/courses.php:46
 #: inc/admin/views/statistics/general.php:63
 msgid "Free"
 msgstr "Gratis"
 
-#: inc/course/abstract-course.php:813
-#: inc/course/abstract-course.php:832
-#: inc/quiz/class-lp-quiz.php:524
-#: inc/lesson/class-lp-lesson.php:104
+#: inc/course/abstract-course.php:813 inc/course/abstract-course.php:832
+#: inc/quiz/class-lp-quiz.php:524 inc/lesson/class-lp-lesson.php:104
 #, php-format
 msgid "The function %s doesn't exist"
 msgstr ""
@@ -2031,8 +1952,7 @@ msgstr ""
 msgid "%d of %d items completed"
 msgstr "%d de %d elementos completados"
 
-#: inc/course/abstract-course.php:1195
-#: inc/course/abstract-course.php:1197
+#: inc/course/abstract-course.php:1195 inc/course/abstract-course.php:1197
 #, php-format
 msgid "%d%% completed"
 msgstr "%d%% finalizado"
@@ -2060,13 +1980,11 @@ msgstr ""
 msgid "Processing..."
 msgstr "Procesando..."
 
-#: inc/custom-post-types/order.php:637
-#: inc/custom-post-types/order.php:640
+#: inc/custom-post-types/order.php:637 inc/custom-post-types/order.php:640
 msgid "Apply"
 msgstr "Aplicar"
 
-#: inc/custom-post-types/order.php:678
-#: inc/custom-post-types/order.php:893
+#: inc/custom-post-types/order.php:678 inc/custom-post-types/order.php:893
 msgid "View Order"
 msgstr "Ver Pedido"
 
@@ -2074,8 +1992,7 @@ msgstr "Ver Pedido"
 msgid "View child orders"
 msgstr ""
 
-#: inc/custom-post-types/order.php:754
-#: inc/custom-post-types/order.php:889
+#: inc/custom-post-types/order.php:754 inc/custom-post-types/order.php:889
 #: templates/profile/tabs/orders/list.php:32
 msgid "Order"
 msgstr "Pedido"
@@ -2084,10 +2001,8 @@ msgstr "Pedido"
 msgid "Student"
 msgstr "Alumno"
 
-#: inc/custom-post-types/order.php:757
-#: templates/checkout/order-received.php:62
-#: templates/profile/tabs/quizzes.php:39
-#: templates/profile/tabs/courses.php:33
+#: inc/custom-post-types/order.php:757 templates/checkout/order-received.php:62
+#: templates/profile/tabs/quizzes.php:39 templates/profile/tabs/courses.php:33
 #: inc/admin/views/statistics/orders.php:46
 #: templates/profile/tabs/courses/purchased.php:39
 #: templates/profile/tabs/orders/list.php:33
@@ -2095,8 +2010,7 @@ msgstr "Alumno"
 msgid "Date"
 msgstr "Fecha"
 
-#: inc/custom-post-types/order.php:758
-#: templates/order/order-details.php:29
+#: inc/custom-post-types/order.php:758 templates/order/order-details.php:29
 #: templates/order/order-details.php:85
 #: templates/emails/order-items-table.php:96
 #: templates/checkout/review-order.php:33
@@ -2114,13 +2028,11 @@ msgstr ""
 msgid "%s ago"
 msgstr "hace %s"
 
-#: inc/custom-post-types/order.php:838
-#: templates/checkout/order-received.php:43
+#: inc/custom-post-types/order.php:838 templates/checkout/order-received.php:43
 msgid "Course does not exist"
 msgstr ""
 
-#: inc/custom-post-types/order.php:852
-#: templates/checkout/order-received.php:57
+#: inc/custom-post-types/order.php:852 templates/checkout/order-received.php:57
 msgid "(No item)"
 msgstr ""
 
@@ -2133,16 +2045,13 @@ msgstr "Pagar con <strong>%s</strong>"
 msgid "Add New Order"
 msgstr "Agregar Nueva Órden"
 
-#: inc/custom-post-types/order.php:891
-#: inc/custom-post-types/order.php:974
+#: inc/custom-post-types/order.php:891 inc/custom-post-types/order.php:974
 #: templates/order/order-details.php:23
 msgid "Order Details"
 msgstr "Información de pedido"
 
-#: inc/custom-post-types/order.php:894
-#: inc/custom-post-types/question.php:190
-#: inc/custom-post-types/lesson.php:208
-#: inc/custom-post-types/course.php:133
+#: inc/custom-post-types/order.php:894 inc/custom-post-types/question.php:190
+#: inc/custom-post-types/lesson.php:208 inc/custom-post-types/course.php:133
 msgid "Add New"
 msgstr "Añadir Nuevo"
 
@@ -2166,43 +2075,35 @@ msgstr "No hay pedidos en la Papelera"
 msgid "Order Actions"
 msgstr "Acciones del Pedido"
 
-#: inc/custom-post-types/question.php:64
-#: inc/custom-post-types/lesson.php:118
+#: inc/custom-post-types/question.php:64 inc/custom-post-types/lesson.php:118
 #: inc/custom-post-types/quiz.php:64
 #, php-format
 msgid "Unassigned %s"
 msgstr ""
 
-#: inc/custom-post-types/question.php:147
-#: inc/custom-post-types/quiz.php:180
+#: inc/custom-post-types/question.php:147 inc/custom-post-types/quiz.php:180
 #: inc/question/class-lp-question.php:568
 msgid "New Option"
 msgstr ""
 
-#: inc/custom-post-types/question.php:162
-#: inc/updates/_update-from-0.9.php:1216
+#: inc/custom-post-types/question.php:162 inc/updates/_update-from-0.9.php:1216
 msgid "Question Tag"
 msgstr "Etiqueta de la pregunta"
 
 #: inc/custom-post-types/question.php:163
-#: inc/custom-post-types/question.php:164
-#: inc/custom-post-types/course.php:207
-#: inc/updates/_update-from-0.9.php:1194
-#: inc/updates/_update-from-0.9.php:1195
-#: inc/updates/_update-from-0.9.php:1196
-#: inc/updates/_update-from-0.9.php:1217
+#: inc/custom-post-types/question.php:164 inc/custom-post-types/course.php:207
+#: inc/updates/_update-from-0.9.php:1194 inc/updates/_update-from-0.9.php:1195
+#: inc/updates/_update-from-0.9.php:1196 inc/updates/_update-from-0.9.php:1217
 #: inc/updates/_update-from-0.9.php:1218
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: inc/custom-post-types/question.php:165
-#: inc/updates/_update-from-0.9.php:1197
+#: inc/custom-post-types/question.php:165 inc/updates/_update-from-0.9.php:1197
 #: inc/updates/_update-from-0.9.php:1219
 msgid "Add New Tag"
 msgstr "Añadir nueva etiqueta"
 
-#: inc/custom-post-types/question.php:166
-#: inc/updates/_update-from-0.9.php:1198
+#: inc/custom-post-types/question.php:166 inc/updates/_update-from-0.9.php:1198
 #: inc/updates/_update-from-0.9.php:1220
 msgid "All Tags"
 msgstr "Todas las etiquetas"
@@ -2212,16 +2113,13 @@ msgstr "Todas las etiquetas"
 msgid "Question Bank"
 msgstr "Banco de preguntas"
 
-#: inc/custom-post-types/question.php:186
-#: inc/custom-post-types/quiz.php:183
+#: inc/custom-post-types/question.php:186 inc/custom-post-types/quiz.php:183
 #: templates/content-quiz/progress.php:43
 msgid "Question"
 msgstr "Pregunta"
 
-#: inc/custom-post-types/question.php:187
-#: inc/custom-post-types/quiz.php:184
-#: inc/custom-post-types/quiz.php:380
-#: templates/content-quiz/intro.php:36
+#: inc/custom-post-types/question.php:187 inc/custom-post-types/quiz.php:184
+#: inc/custom-post-types/quiz.php:380 templates/content-quiz/intro.php:36
 #: inc/admin/views/quiz/editor.php:16
 #: inc/admin/views/quiz/modal-choose-items.php:55
 msgid "Questions"
@@ -2289,26 +2187,21 @@ msgid ""
 "users click the 'Hint' button."
 msgstr ""
 
-#: inc/custom-post-types/question.php:336
-#: inc/custom-post-types/lesson.php:330
-#: inc/custom-post-types/course.php:943
-#: inc/custom-post-types/course.php:949
-#: inc/custom-post-types/course.php:1290
-#: inc/custom-post-types/course.php:1297
+#: inc/custom-post-types/question.php:336 inc/custom-post-types/lesson.php:330
+#: inc/custom-post-types/course.php:943 inc/custom-post-types/course.php:949
+#: inc/custom-post-types/course.php:1290 inc/custom-post-types/course.php:1297
 #: inc/custom-post-types/quiz.php:378
 msgid "Author"
 msgstr "Autor"
 
 #: inc/custom-post-types/question.php:338
-#: inc/admin/views/settings/payments.php:24
-#: inc/admin/views/quiz/editor.php:30
+#: inc/admin/views/settings/payments.php:24 inc/admin/views/quiz/editor.php:30
 msgid "Type"
 msgstr "Tipo"
 
 #: inc/custom-post-types/question.php:374
 #: inc/custom-post-types/abstract.php:580
-#: inc/admin/class-lp-install-sample-data.php:132
-#: inc/attributes/course.php:232
+#: inc/admin/class-lp-install-sample-data.php:132 inc/attributes/course.php:232
 #: templates/content-lesson/no-content.php:22
 msgid "Edit"
 msgstr "Editar"
@@ -2320,8 +2213,7 @@ msgstr "Editar"
 msgid "Not assigned yet"
 msgstr "No asignado todavía"
 
-#: inc/custom-post-types/question.php:533
-#: inc/custom-post-types/lesson.php:499
+#: inc/custom-post-types/question.php:533 inc/custom-post-types/lesson.php:499
 #: inc/custom-post-types/quiz.php:654
 msgid "Assigned"
 msgstr ""
@@ -2343,14 +2235,12 @@ msgid ""
 "it is not published."
 msgstr ""
 
-#: inc/custom-post-types/abstract.php:556
-#: inc/admin/lp-admin-functions.php:44
+#: inc/custom-post-types/abstract.php:556 inc/admin/lp-admin-functions.php:44
 #: templates/order/order-details.php:28
 #: templates/emails/order-items-table.php:66
 #: templates/checkout/review-order.php:32
 #: inc/admin/sub-menus/class-lp-submenu-tools.php:22
-#: templates/profile/tabs/quizzes.php:37
-#: templates/profile/tabs/courses.php:32
+#: templates/profile/tabs/quizzes.php:37 templates/profile/tabs/courses.php:32
 #: inc/admin/meta-box/fields/course-permalink.php:47
 #: inc/admin/views/statistics/orders.php:47
 #: templates/profile/tabs/courses/purchased.php:38
@@ -2422,8 +2312,7 @@ msgstr ""
 msgid "No Preview %s"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:202
-#: inc/custom-post-types/lesson.php:203
+#: inc/custom-post-types/lesson.php:202 inc/custom-post-types/lesson.php:203
 #: inc/custom-post-types/lesson.php:206
 #: templates/widgets/course-info/default.php:29
 msgid "Lessons"
@@ -2483,10 +2372,8 @@ msgstr ""
 msgid "Format"
 msgstr "Formato"
 
-#: inc/custom-post-types/lesson.php:336
-#: inc/custom-post-types/course.php:581
-#: inc/custom-post-types/quiz.php:263
-#: inc/custom-post-types/quiz.php:381
+#: inc/custom-post-types/lesson.php:336 inc/custom-post-types/course.php:581
+#: inc/custom-post-types/quiz.php:263 inc/custom-post-types/quiz.php:381
 #: templates/content-quiz/intro.php:28
 msgid "Duration"
 msgstr "Duración.."
@@ -2503,17 +2390,14 @@ msgstr "Por favor, introduzca el título del exámen"
 msgid "Create a new"
 msgstr ""
 
-#: inc/custom-post-types/course.php:97
-#: inc/custom-post-types/quiz.php:178
-#: templates/checkout/payment.php:132
-#: templates/checkout/form.php:89
+#: inc/custom-post-types/course.php:97 inc/custom-post-types/quiz.php:178
+#: templates/checkout/payment.php:132 templates/checkout/form.php:89
 #: inc/admin/views/setup/content.php:75
 #: inc/admin/views/updates/update-screen.php:46
 msgid "Back"
 msgstr ""
 
-#: inc/custom-post-types/course.php:98
-#: inc/custom-post-types/quiz.php:179
+#: inc/custom-post-types/course.php:98 inc/custom-post-types/quiz.php:179
 #: inc/admin/views/course/modal-choose-items.php:57
 #: inc/admin/views/quiz/modal-choose-items.php:52
 msgid "Selected items"
@@ -2604,13 +2488,11 @@ msgctxt "slug"
 msgid "courses"
 msgstr "cursos"
 
-#: inc/custom-post-types/course.php:178
-#: inc/custom-post-types/course.php:180
+#: inc/custom-post-types/course.php:178 inc/custom-post-types/course.php:180
 msgid "Course Categories"
 msgstr "Categorías de cursos:"
 
-#: inc/custom-post-types/course.php:181
-#: inc/custom-post-types/course.php:182
+#: inc/custom-post-types/course.php:181 inc/custom-post-types/course.php:182
 msgid "Category"
 msgstr "Categoría"
 
@@ -2671,8 +2553,7 @@ msgstr "Añadir o eliminar etiquetas"
 msgid "Choose from the most used tags"
 msgstr "Elegir entre las etiquetas más usadas"
 
-#: inc/custom-post-types/course.php:220
-#: inc/admin/lp-admin-actions.php:224
+#: inc/custom-post-types/course.php:220 inc/admin/lp-admin-actions.php:224
 msgid "Tags"
 msgstr "Etiquetas"
 
@@ -2689,8 +2570,7 @@ msgstr ""
 msgid "Course Settings"
 msgstr ""
 
-#: inc/custom-post-types/course.php:575
-#: inc/user/class-lp-profile.php:330
+#: inc/custom-post-types/course.php:575 inc/user/class-lp-profile.php:330
 #: inc/admin/settings/class-lp-settings-profile.php:54
 #: inc/admin/settings/class-lp-settings-payments.php:55
 #: inc/admin/settings/class-lp-settings-general.php:16
@@ -2879,8 +2759,7 @@ msgstr "Este curso es gratuito."
 msgid "Course price in <strong>%s</strong> currency."
 msgstr ""
 
-#: inc/custom-post-types/course.php:832
-#: inc/custom-post-types/course.php:1293
+#: inc/custom-post-types/course.php:832 inc/custom-post-types/course.php:1293
 #: inc/custom-post-types/course.php:1300
 #: templates/emails/order-items-table.php:68
 msgid "Price"
@@ -2928,8 +2807,7 @@ msgid "The course price you want to suggest for admin to set."
 msgstr ""
 "El precio del curso que desea sugerir para que el administrador configure."
 
-#: inc/custom-post-types/course.php:900
-#: inc/custom-post-types/course.php:1383
+#: inc/custom-post-types/course.php:900 inc/custom-post-types/course.php:1383
 msgid "No requirement enroll"
 msgstr ""
 
@@ -3004,13 +2882,11 @@ msgstr ""
 msgid "Course has been updated by Reviewer"
 msgstr ""
 
-#: inc/custom-post-types/course.php:1291
-#: inc/custom-post-types/course.php:1298
+#: inc/custom-post-types/course.php:1291 inc/custom-post-types/course.php:1298
 msgid "Content"
 msgstr "Contenido"
 
-#: inc/custom-post-types/course.php:1292
-#: inc/custom-post-types/course.php:1299
+#: inc/custom-post-types/course.php:1292 inc/custom-post-types/course.php:1299
 #: inc/admin/lp-admin-functions.php:845
 #: inc/admin/views/statistics/courses.php:8
 #: inc/admin/views/statistics/users.php:8
@@ -3021,8 +2897,7 @@ msgstr "Contenido"
 msgid "Students"
 msgstr "Alumnos"
 
-#: inc/custom-post-types/course.php:1303
-#: inc/admin/lp-admin-actions.php:219
+#: inc/custom-post-types/course.php:1303 inc/admin/lp-admin-actions.php:219
 msgid "Categories"
 msgstr "Categorías"
 
@@ -3064,10 +2939,8 @@ msgstr "0 Exámen"
 msgid "No content"
 msgstr "No existe contenido"
 
-#: inc/custom-post-types/quiz.php:90
-#: inc/custom-post-types/quiz.php:91
-#: inc/custom-post-types/quiz.php:95
-#: inc/user/class-lp-profile.php:306
+#: inc/custom-post-types/quiz.php:90 inc/custom-post-types/quiz.php:91
+#: inc/custom-post-types/quiz.php:95 inc/user/class-lp-profile.php:306
 #: inc/admin/settings/class-lp-settings-profile.php:157
 #: inc/admin/settings/class-lp-settings-profile.php:291
 #: templates/widgets/course-info/default.php:34
@@ -3086,8 +2959,7 @@ msgstr "Editar exámen"
 msgid "View Quiz"
 msgstr "Ver Exámen"
 
-#: inc/custom-post-types/quiz.php:97
-#: inc/curds/class-lp-quiz-curd.php:83
+#: inc/custom-post-types/quiz.php:97 inc/curds/class-lp-quiz-curd.php:83
 #: inc/admin/editor/class-lp-admin-editor-quiz.php:141
 msgid "New Quiz"
 msgstr "Nuevo exámen"
@@ -3677,8 +3549,7 @@ msgstr ""
 msgid "Access denied"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:439
-#: inc/admin/class-lp-admin-ajax.php:485
+#: inc/admin/class-lp-admin-ajax.php:439 inc/admin/class-lp-admin-ajax.php:485
 #: templates/order/order-details.php:18
 msgid "Invalid order"
 msgstr ""
@@ -3687,14 +3558,12 @@ msgstr ""
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: inc/admin/class-lp-admin-ajax.php:672
-#: inc/admin/class-lp-admin-ajax.php:845
+#: inc/admin/class-lp-admin-ajax.php:672 inc/admin/class-lp-admin-ajax.php:845
 #: inc/admin/lp-admin-functions.php:253
 msgid "Edit Page"
 msgstr "Editar Pagina"
 
-#: inc/admin/class-lp-admin-ajax.php:673
-#: inc/admin/class-lp-admin-ajax.php:847
+#: inc/admin/class-lp-admin-ajax.php:673 inc/admin/class-lp-admin-ajax.php:847
 #: inc/admin/lp-admin-functions.php:255
 msgid "View Page"
 msgstr "Ver Página"
@@ -3733,8 +3602,7 @@ msgid ""
 "again!"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:772
-#: inc/admin/class-lp-admin-ajax.php:793
+#: inc/admin/class-lp-admin-ajax.php:772 inc/admin/class-lp-admin-ajax.php:793
 #: inc/admin/class-lp-admin-ajax.php:813
 msgid "You do not have the permission to deactivate plugins on this site."
 msgstr ""
@@ -3784,7 +3652,7 @@ msgstr ""
 #: inc/admin/class-lp-install-sample-data.php:614
 msgctxt "install-sample-course"
 msgid " [TRUE]"
-msgstr ""
+msgstr "try"
 
 #: inc/admin/class-lp-modal-search-users.php:49
 #: inc/admin/class-lp-modal-search-items.php:59
@@ -3900,13 +3768,11 @@ msgstr "Cancelar [ESC]"
 msgid "Minutes"
 msgstr "Minutos"
 
-#: inc/admin/lp-admin-functions.php:376
-#: inc/admin/lp-admin-functions.php:417
+#: inc/admin/lp-admin-functions.php:376 inc/admin/lp-admin-functions.php:417
 msgid "Plain text"
 msgstr "Sólo Texto"
 
-#: inc/admin/lp-admin-functions.php:377
-#: inc/admin/lp-admin-functions.php:418
+#: inc/admin/lp-admin-functions.php:377 inc/admin/lp-admin-functions.php:418
 #: inc/admin/settings/class-lp-settings-emails.php:147
 msgid "HTML"
 msgstr ""
@@ -3930,25 +3796,21 @@ msgstr "Ver Demostración"
 msgid "Instructors"
 msgstr "Profesores"
 
-#: inc/admin/lp-admin-functions.php:1005
-#: inc/admin/lp-admin-functions.php:2088
+#: inc/admin/lp-admin-functions.php:1005 inc/admin/lp-admin-functions.php:2088
 #: inc/user/class-lp-profile.php:814
 #: inc/admin/views/meta-boxes/course/review-logs.php:25
 msgid "Publish"
 msgstr "Publicado"
 
-#: inc/admin/lp-admin-functions.php:1010
-#: inc/admin/lp-admin-functions.php:1212
-#: inc/admin/lp-admin-functions.php:2093
-#: inc/user/class-lp-profile.php:815
+#: inc/admin/lp-admin-functions.php:1010 inc/admin/lp-admin-functions.php:1212
+#: inc/admin/lp-admin-functions.php:2093 inc/user/class-lp-profile.php:815
 #: inc/admin/views/statistics/courses.php:44
 #: inc/admin/views/statistics/general.php:61
 #: inc/admin/views/statistics/orders.php:64
 msgid "Pending"
 msgstr "Pendiente"
 
-#: inc/admin/lp-admin-functions.php:1015
-#: inc/admin/lp-admin-functions.php:2098
+#: inc/admin/lp-admin-functions.php:1015 inc/admin/lp-admin-functions.php:2098
 #: inc/admin/views/statistics/courses.php:45
 #: inc/admin/views/statistics/general.php:62
 msgid "Paid"
@@ -4137,8 +3999,7 @@ msgstr ""
 msgid "Emails"
 msgstr ""
 
-#: inc/admin/class-lp-setup-wizard.php:229
-#: inc/admin/views/setup/content.php:92
+#: inc/admin/class-lp-setup-wizard.php:229 inc/admin/views/setup/content.php:92
 #: inc/admin/views/setup/steps/finish.php:12
 msgid "Finish"
 msgstr ""
@@ -4165,8 +4026,7 @@ msgstr ""
 msgid "Cart Page"
 msgstr ""
 
-#: inc/admin/class-lp-admin.php:188
-#: inc/admin/class-lp-admin.php:601
+#: inc/admin/class-lp-admin.php:188 inc/admin/class-lp-admin.php:601
 msgid "Checkout Page"
 msgstr "Página del pago"
 
@@ -4186,8 +4046,7 @@ msgstr ""
 msgid "Billing"
 msgstr ""
 
-#: inc/admin/class-lp-admin.php:216
-#: inc/admin/class-lp-admin.php:279
+#: inc/admin/class-lp-admin.php:216 inc/admin/class-lp-admin.php:279
 #: inc/admin/settings/class-lp-settings-checkout.php:22
 #: inc/admin/views/setup/steps/pages.php:40
 msgid "Checkout"
@@ -4213,8 +4072,7 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
-#: inc/admin/class-lp-admin.php:249
-#: templates/checkout/form-register.php:48
+#: inc/admin/class-lp-admin.php:249 templates/checkout/form-register.php:48
 #: templates/global/form-register.php:43
 msgid "Register"
 msgstr ""
@@ -4418,8 +4276,7 @@ msgstr "No hay preguntas disponibles para este cuestionario "
 msgid "Something went wrong!"
 msgstr ""
 
-#: inc/quiz/class-lp-quiz.php:428
-#: templates/content-quiz/progress.php:47
+#: inc/quiz/class-lp-quiz.php:428 templates/content-quiz/progress.php:47
 #: templates/content-quiz/intro.php:25
 msgid "Unlimited"
 msgstr "Ilimitado"
@@ -4544,10 +4401,8 @@ msgstr "Imagen se carga el éxito"
 msgid "Error in uploading image"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:928
-#: inc/user/lp-user-functions.php:959
-#: inc/user/lp-user-functions.php:975
-#: inc/user/lp-user-functions.php:982
+#: inc/user/lp-user-functions.php:928 inc/user/lp-user-functions.php:959
+#: inc/user/lp-user-functions.php:975 inc/user/lp-user-functions.php:982
 msgid "Thumbnail of image profile not created"
 msgstr "Miniatura de imagen no creó el perfil"
 
@@ -4559,13 +4414,11 @@ msgstr ""
 msgid "Profile picture is changed"
 msgstr "foto de perfil cambiada"
 
-#: inc/user/lp-user-functions.php:1045
-#: inc/user/lp-user-functions.php:1532
+#: inc/user/lp-user-functions.php:1045 inc/user/lp-user-functions.php:1532
 msgid "Old password incorrect!"
 msgstr "La contraseña anterior es incorrecta"
 
-#: inc/user/lp-user-functions.php:1059
-#: inc/user/lp-user-functions.php:1539
+#: inc/user/lp-user-functions.php:1059 inc/user/lp-user-functions.php:1539
 msgid "Confirmation password incorrect!"
 msgstr "Contraseña incorrecta"
 
@@ -4642,8 +4495,7 @@ msgstr ""
 msgid "You can not hint question."
 msgstr ""
 
-#: inc/user/abstract-lp-user.php:1461
-#: inc/user/abstract-lp-user.php:1821
+#: inc/user/abstract-lp-user.php:1461 inc/user/abstract-lp-user.php:1821
 #: inc/user/abstract-lp-user.php:1833
 #, php-format
 msgid "The role %s for user doesn't exist"
@@ -4657,8 +4509,7 @@ msgstr ""
 msgid "You have already completed this lesson"
 msgstr "Has completado esta lección."
 
-#: inc/user/abstract-lp-user.php:2508
-#: inc/user/abstract-lp-user.php:2512
+#: inc/user/abstract-lp-user.php:2508 inc/user/abstract-lp-user.php:2512
 msgid "Failed to enroll course."
 msgstr ""
 
@@ -4773,10 +4624,8 @@ msgstr "Verdadero"
 msgid "False"
 msgstr "Falso"
 
-#: inc/attributes/course.php:137
-#: inc/attributes/course.php:295
-#: inc/attributes/course.php:308
-#: inc/attributes/course.php:310
+#: inc/attributes/course.php:137 inc/attributes/course.php:295
+#: inc/attributes/course.php:308 inc/attributes/course.php:310
 msgid "Attributes"
 msgstr ""
 
@@ -4792,8 +4641,7 @@ msgstr ""
 msgid "Terms"
 msgstr ""
 
-#: inc/attributes/course.php:306
-#: inc/attributes/course.php:309
+#: inc/attributes/course.php:306 inc/attributes/course.php:309
 msgid "Attribute"
 msgstr ""
 
@@ -4955,13 +4803,11 @@ msgstr ""
 msgid "<p>Sorry! Failed to duplicate course!</p>"
 msgstr ""
 
-#: inc/curds/class-lp-user-curd.php:1082
-#: inc/curds/class-lp-user-curd.php:1275
+#: inc/curds/class-lp-user-curd.php:1082 inc/curds/class-lp-user-curd.php:1275
 msgid "course"
 msgstr "curso"
 
-#: inc/curds/class-lp-user-curd.php:1083
-#: inc/curds/class-lp-user-curd.php:1276
+#: inc/curds/class-lp-user-curd.php:1083 inc/curds/class-lp-user-curd.php:1276
 msgid "courses"
 msgstr ""
 
@@ -5135,8 +4981,7 @@ msgstr "Método de pago:"
 msgid "Status:"
 msgstr "Estado:"
 
-#: templates/order/order-details.php:81
-#: templates/checkout/review-order.php:130
+#: templates/order/order-details.php:81 templates/checkout/review-order.php:130
 msgid "Subtotal"
 msgstr ""
 
@@ -5165,8 +5010,7 @@ msgstr "Número de pedido"
 msgid "Purchase Date"
 msgstr ""
 
-#: templates/emails/order-items-table.php:49
-#: templates/checkout/payment.php:40
+#: templates/emails/order-items-table.php:49 templates/checkout/payment.php:40
 #: templates/checkout/order-received.php:75
 #: templates/emails/plain/order-items-table.php:28
 msgid "Payment Method"
@@ -5208,8 +5052,7 @@ msgstr "Cliente recurrente"
 msgid "I am a returning customer."
 msgstr ""
 
-#: templates/checkout/form-login.php:102
-#: templates/checkout/form-login.php:112
+#: templates/checkout/form-login.php:102 templates/checkout/form-login.php:112
 #: templates/global/form-login.php:49
 msgid "Login"
 msgstr "Iniciar sesión"
@@ -6281,8 +6124,7 @@ msgstr "Costo: %s"
 msgid "My Quizzes"
 msgstr ""
 
-#: templates/profile/tabs/quizzes.php:40
-#: templates/profile/tabs/courses.php:35
+#: templates/profile/tabs/quizzes.php:40 templates/profile/tabs/courses.php:35
 #: templates/profile/tabs/courses/purchased.php:41
 msgid "Progress"
 msgstr ""
