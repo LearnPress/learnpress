@@ -4,10 +4,10 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 9.9.9
+Version: 3.3.0
 Author URI: http://thimpress.com
 Requires at least: 3.8
-Tested up to: 5.0.2
+Tested up to: 5.2.4
 
 Text Domain: learnpress
 Domain Path: /languages/

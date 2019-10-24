@@ -7,8 +7,8 @@ $upload_dir  = wp_upload_dir();
 $plugin_info = get_plugin_data( LP_PLUGIN_FILE );
 
 // version
-//define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
-define( 'LEARNPRESS_VERSION', '9.9.9' );
+define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
+//define( 'LEARNPRESS_VERSION', '9.9.9' );
 
 define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 

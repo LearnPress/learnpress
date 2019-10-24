@@ -842,4 +842,22 @@ class LP_Abstract_Post_Type_Core extends LP_Abstract_Post_Type {
 	protected function _get_orderby() {
 		return LP_Request::get( 'orderby' );
 	}
+
+	/**
+	 * Return TRUE if this post-type is support Gutenberg editor.
+	 *
+	 * @since 4.x.x
+	 *
+	 * @return bool
+	 */
+	public function is_support_gutenberg() {
+		$post_types = LP()->settings()->get( 'enable_gutenberg' );
+		$support    = false;
+
+		if ( $post_types ) {
+			$support = in_array( $this->_post_type, $post_types ) && ! in_array( '-1', $post_types );
+		}
+
+		return apply_filters( 'learn-press/custom-post-support-gutenberg', $support, $this->get_post_type() );
+	}
 }

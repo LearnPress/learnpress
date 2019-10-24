@@ -30,6 +30,11 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public static $metaboxes = array();
 
 		/**
+		 * @var string
+		 */
+		protected $_post_type = LP_QUIZ_CPT;
+
+		/**
 		 * LP_Quiz_Post_Type constructor.
 		 *
 		 * @param $post_type
@@ -107,7 +112,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'capability_type'    => LP_LESSON_CPT,
 						'map_meta_cap'       => true,
 						'show_in_menu'       => 'learn_press',
-						'show_in_rest'       => true,
+						'show_in_rest'       => $this->is_support_gutenberg(),
 						'show_in_admin_bar'  => true,
 						'show_in_nav_menus'  => true,
 						'supports'           => array(
@@ -226,7 +231,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 
 			//do_action( 'learn-press/question-admin-editor', $question );
-            return learn_press_admin_view_content( 'quiz/editor' );
+			return learn_press_admin_view_content( 'quiz/editor' );
 
 		}
 
@@ -234,7 +239,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Add question meta box settings.
 		 */
 		public function add_meta_boxes() {
-			self::$metaboxes['quiz-editor'] = new RW_Meta_Box(
+			self::$metaboxes['quiz-editor']   = new RW_Meta_Box(
 				array(
 					'id'     => 'quiz-editor',
 					'title'  => __( 'Questions', 'learnpress' ),
