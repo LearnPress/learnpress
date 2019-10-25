@@ -27,7 +27,13 @@ const buildPackages = [
     'frontend/lesson',
     'frontend/quiz',
     'frontend/config',
-    'frontend/data-controls'
+    'frontend/data-controls',
+    'frontend/custom',
+    'frontend/checkout',
+    'frontend/profile',
+    'frontend/become-teacher',
+    'frontend/add-to-cart',
+    'frontend/enroll',
 ];
 
 console.log(buildPackages)

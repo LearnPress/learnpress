@@ -42,7 +42,7 @@ define( 'LP_ORDER_CPT', 'lp_order' );
 define( 'LP_TEACHER_ROLE', 'lp_teacher' );
 
 // Turn debug mode on/off
-define( 'LP_DEBUG', true );
+//define( 'LP_DEBUG', true );
 define( 'LP_CACHE_RESOURCE', false );
 
 // Options

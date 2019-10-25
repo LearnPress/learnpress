@@ -144,7 +144,6 @@ export const userQuiz = (state = STORE_DATA, action) => {
             }
         case 'START_QUIZ':
         case 'START_QUIZ_SUCCESS':
-            console.log(action.results)
             return resetCurrentQuestion(state, {
                 checkedQuestions: [],
                 hintedQuestions: [],

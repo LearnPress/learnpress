@@ -142,33 +142,33 @@ class LP_Assets extends LP_Abstract_Assets {
 					'deps' => array( 'lp-global' )
 				),
 				'lp-checkout'         => array(
-					'url'     => self::url( 'js/frontend/checkout.js' ),
+					'url'     => self::url( 'js/frontend/checkout' . $min . '.js' ),
 					'deps'    => array( 'lp-global' ),
 					'screens' => learn_press_is_checkout() || learn_press_is_course() && ! learn_press_is_learning_course()
 
 				),
 				'lp-data-controls'    => array(
-					'url'  => self::url( 'js/frontend/data-controls.js' ),
+					'url'  => self::url( 'js/frontend/data-controls' . $min . '.js' ),
 					'deps' => array_merge( $wp_js, array( 'lp-global' ) )
 				),
 				'lp-config'           => array(
-					'url'  => self::url( 'js/frontend/config.js' ),
+					'url'  => self::url( 'js/frontend/config' . $min . '.js' ),
 					'deps' => array_merge( $wp_js, array( 'lp-global' ) )
 				),
 				'lp-lesson'           => array(
-					'url'  => self::url( 'js/frontend/lesson.js' ),
+					'url'  => self::url( 'js/frontend/lesson' . $min . '.js' ),
 					'deps' => array_merge( $wp_js, array( 'lp-global' ) )
 				),
 				'lp-question-types'   => array(
-					'url'  => self::url( 'js/frontend/question-types.js' ),
+					'url'  => self::url( 'js/frontend/question-types' . $min . '.js' ),
 					'deps' => array_merge( $wp_js, array( 'lp-global' ) )
 				),
 				'lp-quiz'             => array(
-					'url'  => self::url( 'js/frontend/quiz.js' ),
+					'url'  => self::url( 'js/frontend/quiz' . $min . '.js' ),
 					'deps' => array_merge( $wp_js, array( 'lp-global', 'lp-question-types', 'lp-modal' ) )
 				),
 				'lp-single-course'    => array(
-					'url'     => self::url( 'js/frontend/single-course.js' ),
+					'url'     => self::url( 'js/frontend/single-course' . $min . '.js' ),
 					'deps'    => array(
 						'lp-global',
 						//'lp-custom-scrollbar',
@@ -180,12 +180,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					'screens' => array( 'course' )
 				),
 				'lp-courses'          => array(
-					'url'     => self::url( 'js/frontend/courses.js' ),
+					'url'     => self::url( 'js/frontend/courses' . $min . '.js' ),
 					'deps'    => array( 'lp-global', 'lodash' ),
 					'screens' => learn_press_is_courses()
 				),
 				'lp-profile-user'     => array(
-					'url'     => self::url( 'js/frontend/profile.js' ),
+					'url'     => self::url( 'js/frontend/profile' . $min . '.js' ),
 					'deps'    => array(
 						'global',
 						'plupload',
@@ -197,7 +197,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'screens' => learn_press_is_profile()
 				),
 				'lp-become-a-teacher' => array(
-					'url'     => self::url( 'js/frontend/become-teacher.js' ),
+					'url'     => self::url( 'js/frontend/become-teacher' . $min . '.js' ),
 					'deps'    => array(
 						'jquery'
 					),
@@ -210,7 +210,7 @@ class LP_Assets extends LP_Abstract_Assets {
 //					)
 //				),
 				'lp-custom'           => array(
-					'url'     => self::url( 'js/frontend/custom.js' ),
+					'url'     => self::url( 'js/frontend/custom' . $min . '.js' ),
 					'deps'    => array(
 						'jquery'
 					),

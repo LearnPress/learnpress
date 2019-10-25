@@ -29,7 +29,6 @@ class Quiz extends Component {
     }
 
     componentDidMount() {
-        console.time('Quiz.componentDidMount');
         const {
             settings,
             setQuizData
@@ -46,16 +45,10 @@ class Quiz extends Component {
         settings.numPages = chunks.length;
         settings.pages = chunks;
 
-        console.timeEnd('Quiz.componentDidMount');
         setQuizData(settings);
-
-        console.log(wp.data.select('learnpress/quiz').getData())
-
     }
 
-
     componentWillReceiveProps(nextProps) {
-        console.time('QUIZ');
 
         const {
             questionIds,
@@ -72,7 +65,6 @@ class Quiz extends Component {
     }
 
     componentDidUpdate() {
-        console.timeEnd('QUIZ')
     }
 
     startQuiz = (event) => {

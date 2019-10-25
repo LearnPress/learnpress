@@ -1,6 +1,13 @@
 import {dispatch, select, apiFetch} from '@learnpress/data-controls';
 import {select as wpSelect, dispatch as wpDispatch} from '@wordpress/data';
 
+function _dispatch() {
+    var args = [].slice.call(arguments, 2);
+    const d = wpDispatch(arguments[0]);
+    const f = arguments[1];
+    d[f](...args);
+}
+
 const {camelCaseDashObjectKeys, Hook} = LP;
 /**
  * Set user data for app.
@@ -50,6 +57,7 @@ export function __requestBeforeStartQuiz(quizId, courseId, userId) {
 }
 
 export function __requestStartQuizSuccess(results, quizId, courseId, userId) {
+    console.log('__requestStartQuizSuccess:', results)
 
     Hook.doAction('quiz-started', results, quizId, courseId, userId);
 
@@ -90,7 +98,10 @@ const startQuiz = function*() {
 
     response = Hook.applyFilters('request-start-quiz-response', response, itemId, courseId);
 
-    yield dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']), itemId, courseId);
+    yield _dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']), itemId, courseId);
+
+    //yield _dispatch(wpDispatch('learnpress/quiz').__requestStartQuizSuccess(camelCaseDashObjectKeys(response['results']), itemId, courseId));
+
 };
 
 export {startQuiz}
@@ -144,7 +155,7 @@ export function* submitQuiz() {
     response = Hook.applyFilters('request-submit-quiz-response', response, itemId, courseId);
 
     if (response.success) {
-        yield dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results), itemId, courseId);
+        yield _dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results), itemId, courseId);
     }
 }
 
@@ -165,7 +176,7 @@ export function __requestShowHintSuccess(id, showHint) {
 }
 
 export function* showHint(id, showHint) {
-    yield dispatch('learnpress/quiz', '__requestShowHintSuccess', id, showHint);
+    yield _dispatch('learnpress/quiz', '__requestShowHintSuccess', id, showHint);
 
     // const {
     //     getDefaultRestArgs,
@@ -187,7 +198,7 @@ export function* showHint(id, showHint) {
     //     }
     // });
     //
-    // yield dispatch('learnpress/quiz', '__requestShowHintSuccess', id, camelCaseDashObjectKeys(result));
+    // yield _dispatch('learnpress/quiz', '__requestShowHintSuccess', id, camelCaseDashObjectKeys(result));
 }
 
 export function __requestCheckAnswerSuccess(id, result) {
@@ -199,7 +210,6 @@ export function __requestCheckAnswerSuccess(id, result) {
 }
 
 export function* checkAnswer(id) {
-    console.time('checkAnswer');
     const {
         getDefaultRestArgs,
         getQuestionAnswered,
@@ -222,8 +232,7 @@ export function* checkAnswer(id) {
         }
     });
 
-    yield dispatch('learnpress/quiz', '__requestCheckAnswerSuccess', id, camelCaseDashObjectKeys(result));
-    console.timeEnd('checkAnswer');
+    yield _dispatch('learnpress/quiz', '__requestCheckAnswerSuccess', id, camelCaseDashObjectKeys(result));
 
 }
 

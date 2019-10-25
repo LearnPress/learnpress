@@ -3,13 +3,12 @@
  *
  * @version 3.2.6
  */
-//import Utils from './utils';
-//import Test from './test';
 
-import Update from './pages/update';
+import './pages/update';
+
 /// Why
 var LP = LP || {};
-;(function () {
+(function () {
     const $ = jQuery;
 
     const updateItemPreview = function updateItemPreview() {

@@ -102,8 +102,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "controls", function() { return controls; });
 /* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
 /* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -112,7 +110,12 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+ //import { createRegistryControl } from '@wordpress/data';
 
+var createRegistryControl = function createRegistryControl(registryControl) {
+  registryControl.isRegistryControl = true;
+  return registryControl;
+};
 
 var apiFetch = function apiFetch(request) {
   return {
@@ -179,7 +182,7 @@ var controls = {
     var request = _ref2.request;
     return _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()(request);
   },
-  SELECT: Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["createRegistryControl"])(function (registry) {
+  SELECT: createRegistryControl(function (registry) {
     return function (_ref3) {
       var _registry$select;
 
@@ -193,7 +196,7 @@ var controls = {
       }) : (_registry$select = registry.select(storeKey))[selectorName].apply(_registry$select, _toConsumableArray(args));
     };
   }),
-  DISPATCH: Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["createRegistryControl"])(function (registry) {
+  DISPATCH: createRegistryControl(function (registry) {
     return function (_ref4) {
       var _registry$dispatch;
 
@@ -215,17 +218,6 @@ var controls = {
 /***/ (function(module, exports) {
 
 (function() { module.exports = this["wp"]["apiFetch"]; }());
-
-/***/ }),
-
-/***/ "@wordpress/data":
-/*!***************************************!*\
-  !*** external {"this":["wp","data"]} ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-(function() { module.exports = this["wp"]["data"]; }());
 
 /***/ })
 

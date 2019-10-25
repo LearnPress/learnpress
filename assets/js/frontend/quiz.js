@@ -1689,10 +1689,19 @@ function (_Component) {
             });
 
             $el.remove();
+            jQuery('#quizResultGrade').css({
+              transform: 'scale(1.3)',
+              transition: 'all 0.25s'
+            });
+            debounce(function () {
+              jQuery('#quizResultGrade').css({
+                transform: 'scale(1)'
+              });
+            }, 500)();
           },
           easing: '_customEasing'
         });
-      }, 1500)();
+      }, 1000)();
     }
     /**
      * Render HTML elements.
@@ -1729,6 +1738,7 @@ function (_Component) {
       }, React.createElement("h3", {
         className: "result-heading"
       }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Your Result', 'learnpress')), React.createElement("div", {
+        id: "quizResultGrade",
         className: "result-grade"
       }, React.createElement("svg", {
         className: "circle-progress-bar",
@@ -2336,7 +2346,6 @@ function (_Component) {
   _createClass(Quiz, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      console.time('Quiz.componentDidMount');
       var _this$props = this.props,
           settings = _this$props.settings,
           setQuizData = _this$props.setQuizData;
@@ -2346,14 +2355,11 @@ function (_Component) {
       settings.currentPage = 1;
       settings.numPages = chunks.length;
       settings.pages = chunks;
-      console.timeEnd('Quiz.componentDidMount');
       setQuizData(settings);
-      console.log(wp.data.select('learnpress/quiz').getData());
     }
   }, {
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
-      console.time('QUIZ');
       var questionIds = nextProps.questionIds,
           questionsPerPage = nextProps.questionsPerPage,
           setQuizData = nextProps.setQuizData;
@@ -2364,9 +2370,7 @@ function (_Component) {
     }
   }, {
     key: "componentDidUpdate",
-    value: function componentDidUpdate() {
-      console.timeEnd('QUIZ');
-    }
+    value: function componentDidUpdate() {}
   }, {
     key: "render",
     value: function render() {
@@ -2456,7 +2460,23 @@ regeneratorRuntime.mark(checkAnswer);
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+
+
+
+function _dispatch() {
+  var args = [].slice.call(arguments, 2);
+  var d = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["dispatch"])(arguments[0]);
+  var f = arguments[1];
+  d[f].apply(d, _toConsumableArray(args));
+}
 
 var _LP = LP,
     camelCaseDashObjectKeys = _LP.camelCaseDashObjectKeys,
@@ -2505,6 +2525,7 @@ function __requestBeforeStartQuiz(quizId, courseId, userId) {
   };
 }
 function __requestStartQuizSuccess(results, quizId, courseId, userId) {
+  console.log('__requestStartQuizSuccess:', results);
   Hook.doAction('quiz-started', results, quizId, courseId, userId);
   return {
     type: 'START_QUIZ_SUCCESS',
@@ -2552,7 +2573,7 @@ regeneratorRuntime.mark(function startQuiz() {
           response = _context.sent;
           response = Hook.applyFilters('request-start-quiz-response', response, itemId, courseId);
           _context.next = 10;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']), itemId, courseId);
+          return _dispatch('learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys(response['results']), itemId, courseId);
 
         case 10:
         case "end":
@@ -2615,7 +2636,7 @@ function submitQuiz() {
           }
 
           _context2.next = 13;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results), itemId, courseId);
+          return _dispatch('learnpress/quiz', '__requestSubmitQuizSuccess', camelCaseDashObjectKeys(response.results), itemId, courseId);
 
         case 13:
         case "end":
@@ -2646,7 +2667,7 @@ function showHint(id, showHint) {
       switch (_context3.prev = _context3.next) {
         case 0:
           _context3.next = 2;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestShowHintSuccess', id, showHint);
+          return _dispatch('learnpress/quiz', '__requestShowHintSuccess', id, showHint);
 
         case 2:
         case "end":
@@ -2668,10 +2689,9 @@ function checkAnswer(id) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
-          console.time('checkAnswer');
           _wpSelect2 = Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["select"])('learnpress/quiz'), getDefaultRestArgs = _wpSelect2.getDefaultRestArgs, getQuestionAnswered = _wpSelect2.getQuestionAnswered;
           _getDefaultRestArgs2 = getDefaultRestArgs(), itemId = _getDefaultRestArgs2.itemId, courseId = _getDefaultRestArgs2.courseId;
-          _context4.next = 5;
+          _context4.next = 4;
           return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["apiFetch"])({
             path: 'lp/v1/users/check-answer',
             method: 'POST',
@@ -2683,15 +2703,12 @@ function checkAnswer(id) {
             }
           });
 
-        case 5:
+        case 4:
           result = _context4.sent;
-          _context4.next = 8;
-          return Object(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__["dispatch"])('learnpress/quiz', '__requestCheckAnswerSuccess', id, camelCaseDashObjectKeys(result));
+          _context4.next = 7;
+          return _dispatch('learnpress/quiz', '__requestCheckAnswerSuccess', id, camelCaseDashObjectKeys(result));
 
-        case 8:
-          console.timeEnd('checkAnswer');
-
-        case 9:
+        case 7:
         case "end":
           return _context4.stop();
       }
@@ -2962,7 +2979,6 @@ var userQuiz = function userQuiz() {
 
     case 'START_QUIZ':
     case 'START_QUIZ_SUCCESS':
-      console.log(action.results);
       return resetCurrentQuestion(state, _objectSpread({
         checkedQuestions: [],
         hintedQuestions: [],

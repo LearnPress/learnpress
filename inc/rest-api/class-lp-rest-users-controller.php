@@ -249,7 +249,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function start_quiz( $request ) {
-
 		$user_id   = get_current_user_id();
 		$item_id   = $request['item_id'];
 		$course_id = $request['course_id'];

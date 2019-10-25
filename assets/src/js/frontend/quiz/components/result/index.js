@@ -83,10 +83,20 @@ class Result extends Component {
                 done: () => {
                     this.setState({done: true});
                     $el.remove();
+                    jQuery('#quizResultGrade').css({
+                        transform: 'scale(1.3)',
+                        transition: 'all 0.25s'
+                    });
+
+                    debounce(()=>{
+                        jQuery('#quizResultGrade').css({
+                            transform: 'scale(1)'
+                        });
+                    }, 500)()
                 },
                 easing: '_customEasing'
             })
-        }, 1500)();
+        }, 1000)();
     }
 
     /**
@@ -124,7 +134,7 @@ class Result extends Component {
 
         return <div className={ classNames.join(' ') }>
             <h3 className="result-heading">{ __('Your Result', 'learnpress') }</h3>
-            <div className="result-grade">
+            <div id="quizResultGrade" className="result-grade">
                 <svg className="circle-progress-bar" width={width} height={width}>
                     <circle className="circle-progress-bar__circle" stroke="" strokeWidth={border} style={styles}
                             fill="transparent" r={r} cx={radius} cy={radius}></circle>

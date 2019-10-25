@@ -1,5 +1,11 @@
 import triggerFetch from '@wordpress/api-fetch';
-import { createRegistryControl } from '@wordpress/data';
+//import { createRegistryControl } from '@wordpress/data';
+
+const createRegistryControl = function createRegistryControl(registryControl) {
+    registryControl.isRegistryControl = true;
+
+    return registryControl;
+}
 
 export const apiFetch = ( request ) => {
     return {
