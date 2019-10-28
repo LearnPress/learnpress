@@ -15,6 +15,9 @@ import store from './store';
 
 const {chunk, isNumber} = lodash;
 const $ = jQuery;
+const MyContext = React.createContext({status: -1});
+
+export {MyContext};
 
 class Quiz extends Component {
     constructor(props) {
@@ -82,7 +85,25 @@ class Quiz extends Component {
         // Just render content if status !== undefined (meant all data loaded)
         return undefined !== status && (
                 <React.Fragment>
+                    <MyContext.Provider value={ this.props }>
+                    <div id="test-element">
+                        I am TEST
+                        {/*<LP.quiz.MyContext.Consumer>*/}
+                            {/*{*/}
+                                {/*(a)=>{*/}
+                                    {/*return JSON.stringify(a.status)*/}
+                                {/*}*/}
+                            {/*}*/}
+                        {/*</LP.quiz.MyContext.Consumer>*/}
+                        [
+                        {
+                            LP.Hook.doAction('xxxx', '')
+                        }
+                        ]
+                    </div>
+                    </MyContext.Provider>
 
+                    { 1===1 && <div>
                     { !isReviewing && 'completed' === status && <Result/> }
                     { !isReviewing && !status && <Meta /> }
                     { !isReviewing && isA && <Content /> }
@@ -99,6 +120,7 @@ class Quiz extends Component {
                         <Attempts />
                     }
 
+                    </div> }
                 </React.Fragment>
             )
     }

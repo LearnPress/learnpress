@@ -4,9 +4,8 @@
  * @version 3.2.6
  */
 
-import './pages/update';
+import './partial/update';
 
-/// Why
 var LP = LP || {};
 (function () {
     const $ = jQuery;

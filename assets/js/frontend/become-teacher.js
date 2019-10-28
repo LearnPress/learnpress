@@ -1,4 +1,3 @@
-this["LP"] = this["LP"] || {}; this["LP"]["becomeTeacher"] =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};

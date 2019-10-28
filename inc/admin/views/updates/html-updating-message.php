@@ -18,12 +18,18 @@ defined( 'ABSPATH' ) or die();
 <script type="text/javascript">
     (function (win, doc) {
         var t = null;
+        var $ = jQuery;
 
         function parseJSON(data) {
-            var m = (data + '').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
+            if (typeof data !== 'string') {
+                return data;
+            }
+
+            var m = String.raw({raw: data}).match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/s);
+
             try {
                 if (m) {
-                    data = $.parseJSON(m[1]);
+                    data = $.parseJSON(m[1].replace(/(?:\r\n|\r|\n)/g, ''));
                 } else {
                     data = $.parseJSON(data);
                 }
@@ -44,15 +50,19 @@ defined( 'ABSPATH' ) or die();
                     success: function (response) {
                         response = parseJSON(response);
                         if (response.result === 'success') {
-                            clearInterval(t);
+                            clearTimeout(t);
                             $('.lp-notice-update-database.do-updating').replaceWith($(response.message));
+                            window.onbeforeunload = null;
                             return;
                         }
-
                         sendRequest();
                     }
                 });
-            }, 3000);
+            }, 1000);
+
+            window.onbeforeunload = function () {
+                return 'Warning! Please dont close or reload this page.'
+            }
         }
 
         if (document.readyState === "complete") {

@@ -853,7 +853,7 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-add_action( 'template_include', function ($t) {
+add_action( 'template_include', function ( $t ) {
 
 	if ( empty( $_REQUEST['x'] ) ) {
 		return $t;
@@ -936,5 +936,3 @@ add_action( 'template_include', function ($t) {
 //add_action('plugins_loaded', function(){
 //	var_dump(WC_Geolocation::geolocate_ip('14.162.255.20'));
 //});
-
-

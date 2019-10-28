@@ -10,3 +10,5 @@ export const init = function init(elem, settings) {
         jQuery(elem)[0]
     )
 }
+
+export {MyContext} from './quiz/index';

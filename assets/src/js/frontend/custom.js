@@ -29,3 +29,68 @@ Hook.addAction('quiz-submitted', function (response, id) {
 
     window.onbeforeunload = null;
 });
+
+$(document).ready(() => {
+    const CustomComponent = function () {
+        const [time, setTime] = React.useState(0);
+        let [t, setT] = React.useState();
+
+        if (!t) {
+            t = setInterval(() => {
+                setTime(new Date().toString())
+            }, 1000);
+
+            setT(t)
+        }
+
+        return <div>
+            <LP.quiz.MyContext.Consumer>
+                {
+                    (a) => {
+                        return a.status;
+                    }
+                }
+            </LP.quiz.MyContext.Consumer>
+
+            {time}
+        </div>;
+    }
+
+    function CustomComponent2() {
+        const [time, setTime] = React.useState(0);
+
+        let [t, setT] = React.useState();
+
+        if (!t) {
+            t = setInterval(() => {
+                setTime(time+1);
+                console.log(time)
+            }, 1000);
+
+            setT(t)
+        }
+
+        return <div>
+            <LP.quiz.MyContext.Consumer>
+                {
+                    (a) => {
+                        return a.status;
+                    }
+                }
+            </LP.quiz.MyContext.Consumer>
+
+            {time}
+        </div>;
+    }
+
+    Hook.addAction('xxxx', () => {
+        return <CustomComponent key="1"/>
+    })
+    Hook.addAction('xxxx', () => {
+        return <CustomComponent2 key="2"/>
+    })
+    setTimeout(() => {
+        //wp.element.render(<CustomComponent />, jQuery('#test-element')[0])
+
+    }, 1000)
+})

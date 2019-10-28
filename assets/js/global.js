@@ -365,8 +365,7 @@ var Hook = {
     return this;
   },
   doAction: function doAction(action) {
-    this.doHook('action', action, arguments);
-    return this;
+    return this.doHook('action', action, arguments);
   },
   applyFilters: function applyFilters(action) {
     return this.doHook('filter', action, arguments);
@@ -414,7 +413,7 @@ var Hook = {
         if (typeof hook !== 'function') hook = window[hook];
 
         if ('action' === hookType) {
-          hook.apply(null, args);
+          args[i] = hook.apply(null, args);
         } else {
           args[0] = hook.apply(null, args);
         }
@@ -425,7 +424,7 @@ var Hook = {
       return args[0];
     }
 
-    return this;
+    return args;
   },
   removeHook: function removeHook(hookType, action, priority, tag) {
     if (undefined !== this.hooks[hookType][action]) {
@@ -593,7 +592,7 @@ var _default = {
     window.location.href = url;
   },
   parseResponse: function parseResponse(response, type) {
-    var m = response.match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
+    var m = response.match(/<\x2D\x2D LP_AJAX_START \x2D\x2D>([\s\S]*)<\x2D\x2D LP_AJAX_END \x2D\x2D>/);
 
     if (m) {
       response = m[1];
@@ -602,11 +601,17 @@ var _default = {
     return (type || "json") === "json" ? this.parseJSON(response) : response;
   },
   parseJSON: function parseJSON(data) {
-    var m = (data + '').match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
+    if (typeof data !== 'string') {
+      return data;
+    }
+
+    var m = String.raw({
+      raw: data
+    }).match(/<\x2D\x2D LP_AJAX_START \x2D\x2D>([\s\S]*)<\x2D\x2D LP_AJAX_END \x2D\x2D>/);
 
     try {
       if (m) {
-        data = $.parseJSON(m[1]);
+        data = $.parseJSON(m[1].replace(/(?:\r\n|\r|\n)/g, ''));
       } else {
         data = $.parseJSON(data);
       }

@@ -91,13 +91,15 @@ this["LP"] = this["LP"] || {}; this["LP"]["quiz"] =
 /*!****************************************!*\
   !*** ./assets/src/js/frontend/quiz.js ***!
   \****************************************/
-/*! exports provided: default, init */
+/*! exports provided: default, init, MyContext */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
 /* harmony import */ var _quiz_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./quiz/index */ "./assets/src/js/frontend/quiz/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MyContext", function() { return _quiz_index__WEBPACK_IMPORTED_MODULE_0__["MyContext"]; });
+
 
 var _LP = LP,
     Modal = _LP.modal["default"];
@@ -107,6 +109,7 @@ var init = function init(elem, settings) {
     settings: settings
   })), jQuery(elem)[0]);
 };
+
 
 /***/ }),
 
@@ -2276,11 +2279,12 @@ function (_Component) {
 /*!**********************************************!*\
   !*** ./assets/src/js/frontend/quiz/index.js ***!
   \**********************************************/
-/*! exports provided: default */
+/*! exports provided: MyContext, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MyContext", function() { return MyContext; });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
@@ -2318,6 +2322,10 @@ var _lodash = lodash,
     chunk = _lodash.chunk,
     isNumber = _lodash.isNumber;
 var $ = jQuery;
+var MyContext = React.createContext({
+  status: -1
+});
+
 
 var Quiz =
 /*#__PURE__*/
@@ -2379,7 +2387,11 @@ function (_Component) {
           isReviewing = _this$props2.isReviewing;
       var isA = -1 !== ['', 'completed'].indexOf(status); // Just render content if status !== undefined (meant all data loaded)
 
-      return undefined !== status && React.createElement(React.Fragment, null, !isReviewing && 'completed' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Result"], null), !isReviewing && !status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Meta"], null), !isReviewing && isA && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Content"], null), 'started' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Status"], null), (-1 !== ['completed', 'started'].indexOf(status) || isReviewing) && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Questions"], null), React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Buttons"], null), isA && !isReviewing && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Attempts"], null));
+      return undefined !== status && React.createElement(React.Fragment, null, React.createElement(MyContext.Provider, {
+        value: this.props
+      }, React.createElement("div", {
+        id: "test-element"
+      }, "I am TEST", "[", LP.Hook.doAction('xxxx', ''), "]")),  true && React.createElement("div", null, !isReviewing && 'completed' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Result"], null), !isReviewing && !status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Meta"], null), !isReviewing && isA && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Content"], null), 'started' === status && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Status"], null), (-1 !== ['completed', 'started'].indexOf(status) || isReviewing) && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Questions"], null), React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Buttons"], null), isA && !isReviewing && React.createElement(_components__WEBPACK_IMPORTED_MODULE_3__["Attempts"], null)));
     }
   }]);
 

@@ -1,4 +1,3 @@
-this["LP"] = this["LP"] || {}; this["LP"]["custom"] =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -94,6 +93,14 @@ this["LP"] = this["LP"] || {}; this["LP"]["custom"] =
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 /**
  * Custom functions for frontend quiz.
  */
@@ -116,6 +123,67 @@ Hook.addAction('quiz-submitted', function (response, id) {
   $(".course-item-".concat(id)).removeClass('status-started').addClass("has-status status-completed ".concat(response.results.grade));
   console.log(arguments);
   window.onbeforeunload = null;
+});
+$(document).ready(function () {
+  var CustomComponent = function CustomComponent() {
+    var _React$useState = React.useState(0),
+        _React$useState2 = _slicedToArray(_React$useState, 2),
+        time = _React$useState2[0],
+        setTime = _React$useState2[1];
+
+    var _React$useState3 = React.useState(),
+        _React$useState4 = _slicedToArray(_React$useState3, 2),
+        t = _React$useState4[0],
+        setT = _React$useState4[1];
+
+    if (!t) {
+      t = setInterval(function () {
+        setTime(new Date().toString());
+      }, 1000);
+      setT(t);
+    }
+
+    return React.createElement("div", null, React.createElement(LP.quiz.MyContext.Consumer, null, function (a) {
+      return a.status;
+    }), time);
+  };
+
+  function CustomComponent2() {
+    var _React$useState5 = React.useState(0),
+        _React$useState6 = _slicedToArray(_React$useState5, 2),
+        time = _React$useState6[0],
+        setTime = _React$useState6[1];
+
+    var _React$useState7 = React.useState(),
+        _React$useState8 = _slicedToArray(_React$useState7, 2),
+        t = _React$useState8[0],
+        setT = _React$useState8[1];
+
+    if (!t) {
+      t = setInterval(function () {
+        setTime(time + 1);
+        console.log(time);
+      }, 1000);
+      setT(t);
+    }
+
+    return React.createElement("div", null, React.createElement(LP.quiz.MyContext.Consumer, null, function (a) {
+      return a.status;
+    }), time);
+  }
+
+  Hook.addAction('xxxx', function () {
+    return React.createElement(CustomComponent, {
+      key: "1"
+    });
+  });
+  Hook.addAction('xxxx', function () {
+    return React.createElement(CustomComponent2, {
+      key: "2"
+    });
+  });
+  setTimeout(function () {//wp.element.render(<CustomComponent />, jQuery('#test-element')[0])
+  }, 1000);
 });
 
 /***/ })

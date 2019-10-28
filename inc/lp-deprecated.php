@@ -554,6 +554,7 @@ if ( ! function_exists( 'learn_press_course_finish_button' ) ) {
 	 */
 	function learn_press_course_finish_button() {
 		_deprecated_function( __FUNCTION__, '3.3.0' );
+
 		LP()->template()->func( 'course_finish_button' );
 	}
 }

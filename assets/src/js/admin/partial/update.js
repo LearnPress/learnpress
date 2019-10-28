@@ -169,8 +169,6 @@
         }
     };
 
-
-
     function init() {
 
         window.lpGlobalSettings = window.lpGlobalSettings || {};

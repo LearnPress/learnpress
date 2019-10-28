@@ -9,8 +9,7 @@ const Hook = {
         return this;
     },
     doAction: function (action) {
-        this.doHook('action', action, arguments);
-        return this;
+        return this.doHook('action', action, arguments);
     },
     applyFilters: function (action) {
         return this.doHook('filter', action, arguments);
@@ -49,17 +48,19 @@ const Hook = {
                 hook = hooks[i].callable;
                 if (typeof hook !== 'function')
                     hook = window[hook];
+
                 if ('action' === hookType) {
-                    hook.apply(null, args);
+                    args[i] = hook.apply(null, args);
                 } else {
-                    args[0] = hook.apply(null, args);
+                   args[0] = hook.apply(null, args);
                 }
             }
         }
+
         if ('filter' === hookType) {
             return args[0];
         }
-        return this;
+        return args;
     },
     removeHook: function (hookType, action, priority, tag) {
         if (undefined !== this.hooks[hookType][action]) {

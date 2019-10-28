@@ -340,7 +340,7 @@ add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_complete_button', 30 )
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_result_button', 35 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_summary_button', 40 );
 add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 45 );
-add_action( 'learn-press/quiz-buttons', 'learn_press_course_finish_button', 50 );
+add_action( 'learn-press/quiz-buttons', LP()->template()->func( 'course_finish_button' ), 50 );
 
 /**
  * @see learn_press_control_displaying_course_item

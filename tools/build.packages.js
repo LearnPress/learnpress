@@ -29,11 +29,11 @@ const buildPackages = [
     'frontend/config',
     'frontend/data-controls',
     'frontend/custom',
-    'frontend/checkout',
-    'frontend/profile',
-    'frontend/become-teacher',
-    'frontend/add-to-cart',
-    'frontend/enroll',
+    //'frontend/checkout',
+    //'frontend/profile',
+    //'frontend/become-teacher',
+    //'frontend/add-to-cart',
+    //'frontend/enroll',
 ];
 
 console.log(buildPackages)
