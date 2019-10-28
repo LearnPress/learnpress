@@ -13,16 +13,16 @@ include_once dirname( __FILE__ ) . '/learnpress-update-base.php';
 class LP_Update_330 extends LP_Update_Base {
 
 	public function __construct() {
-		$this->version = '9.9.9';
+		$this->version = '3.3.0';
 		$this->steps   = array(
 			'alter_datetime_default_value',
 			'alter_tables',
 			'update_time_field_from_time_gmt',
 			'update_expiration_time',
-			'remove_time_gmt',
+			//'remove_time_gmt',
 			'update_question_answers',
 			'update_quiz_settings',
-			'delete_table_columns'
+			//'delete_table_columns'
 		);
 
 		parent::__construct();
@@ -231,55 +231,88 @@ class LP_Update_330 extends LP_Update_Base {
 	 */
 	public function update_expiration_time() {
 		global $wpdb;
-		$query = $wpdb->prepare( "
-			SELECT p.ID, pm.meta_value duration
-			FROM {$wpdb->posts} p 
-			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
-			WHERE 
-				p.post_type IN(%s, %s) AND meta_value NOT LIKE %s
-		", '_lp_duration', LP_COURSE_CPT, LP_QUIZ_CPT, $wpdb->esc_like( '0 ' ) . '%' );
+//		$query = $wpdb->prepare( "
+//			SELECT p.ID id, pm.meta_value duration
+//			FROM {$wpdb->posts} p
+//			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+//			WHERE
+//				p.post_type IN(%s, %s) AND meta_value NOT LIKE %s
+//		", '_lp_duration', LP_COURSE_CPT, LP_QUIZ_CPT, $wpdb->esc_like( '0 ' ) . '%' );
 
-		if ( ! $courses = $wpdb->get_results( $query ) ) {
-			return true;
-		}
+//		if ( ! $posts = $wpdb->get_results( $query ) ) {
+//			return true;
+//		}
+//
+//		LP_Debug::instance()->add( $query, 'upgrade' );
+//		LP_Debug::instance()->add( $posts, 'upgrade' );
 
-		foreach ( $courses as $course ) {
+		try {
+			$offset = absint( get_transient( 'lp_upgrade_user_items_offset' ) );
+			$limit  = 500;
 
+			/**
+			 * Join user-items with post-meta to get user-items and duration.
+			 */
 			$query = $wpdb->prepare( "
-				SELECT *
-				FROM {$wpdb->learnpress_user_items}
-				WHERE item_id = %d
-				AND status IN(%s, %s, %s)
-				LIMIT 0, 500
-			", $course->ID, 'enrolled', 'viewed', 'started' );
+				SELECT ui.*, pm.meta_value as duration
+				FROM {$wpdb->learnpress_user_items} ui
+				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = ui.item_id AND pm.meta_key = %s
+				WHERE ui.start_time_gmt <> %s
+				ORDER BY user_item_id ASC
+				LIMIT %d, %d
+			", '_lp_duration', '0000-00-00 00:00:00', $offset, $limit );
 
-			if ( $course_items = $wpdb->get_results( $query ) ) {
+			if ( ! $user_items = $wpdb->get_results( $query ) ) {
+				return true;
+			}
 
-				foreach ( $course_items as $course_item ) {
-					$date            = new LP_Datetime( $course_item->start_time );
-					$expiration_time = $date->getPeriod( $course->duration );
+			LP_Debug::instance()->add( $query, 'upgrade-' . $this->version );
+			LP_Debug::instance()->add( $user_items, 'upgrade-' . $this->version );
+			LP_Debug::startTransaction();
 
-					$query = $wpdb->prepare( "
+			foreach ( $user_items as $user_item ) {
+
+				// Ignore if duration is not set
+				if ( ! $user_item->duration ) {
+					continue;
+				}
+
+				if ( ! $user_item->start_time_gmt || $user_item->start_time_gmt === '0000-00-00 00:00:00' ) {
+					continue;
+				}
+
+				$duration        = new LP_Duration( $user_item->duration );
+				$expiration_time = learn_press_date_end_from( $duration->get(), strtotime( $user_item->start_time_gmt ) );
+
+				$query = $wpdb->prepare( "
 							UPDATE {$wpdb->learnpress_user_items}
 							SET expiration_time = %s
-							WHERE item_id = %d
+							WHERE user_item_id = %d
 						",
-						$expiration_time,
-						$course->ID
-					);
+					$expiration_time,
+					$user_item->user_item_id
+				);
 
-					$wpdb->query( $query );
+				LP_Debug::instance()->add( $query, 'upgrade-' . $this->version );
 
-				}
+				$wpdb->query( $query );
+
 			}
+			set_transient( 'lp_upgrade_user_items_offset', $offset + $limit, DAY_IN_SECONDS );
+
+			LP_Debug::commitTransaction();
+		}
+		catch ( Exception $ex ) {
+			LP_Debug::rollbackTransaction();
 		}
 
-		return true;
+		return false;
 	}
 
 	public function update_time_field_from_time_gmt() {
 		global $wpdb;
 
+		return true;
 		$query = $wpdb->prepare( "
 			UPDATE {$wpdb->learnpress_user_items} 
 			SET 
@@ -409,7 +442,7 @@ class LP_Update_330 extends LP_Update_Base {
 						case '_lp_retake_count':
 							$update_meta['_lp_retry'] = $wpdb->prepare( '(%d, %s, %s)',
 								$meta->post_id,
-								'_lp_review',
+								'_lp_retry',
 								$meta->meta_value > 0 ? 'yes' : 'no'
 							);
 							break;
@@ -417,7 +450,7 @@ class LP_Update_330 extends LP_Update_Base {
 						case '_lp_show_check_answer':
 							$update_meta['_lp_instant_check'] = $wpdb->prepare( '(%d, %s, %s)',
 								$meta->post_id,
-								'_lp_review',
+								'_lp_instant_check',
 								$meta->meta_value === '0' ? 'no' : 'yes'
 							);
 							break;
@@ -464,6 +497,7 @@ class LP_Update_330 extends LP_Update_Base {
 	public function delete_table_columns() {
 		global $wpdb;
 
+		return true;
 		$wpdb->query( "
 			ALTER TABLE
 			DROP COLUMN `answer_data`,

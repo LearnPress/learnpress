@@ -600,7 +600,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					 */
 
 					$expiration = $quiz_data->set_duration( $quiz->get_duration()->get_seconds() );
-					LP_Debug::instance()->add( [ $expiration, $quiz->get_duration()->get_seconds() ], '', '', true );
+					//LP_Debug::instance()->add( [ $expiration, $quiz->get_duration()->get_seconds() ], '', '', true );
 
 //				if ( $quiz->get_duration()->get_seconds() ) {
 //					$quiz_data->set_expiration_time( $date->getPeriod( $quiz->get_duration()->get_seconds() ), true );

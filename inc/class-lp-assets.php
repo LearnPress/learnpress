@@ -175,7 +175,8 @@ class LP_Assets extends LP_Abstract_Assets {
 						'lp-config',
 						'lp-data-controls',
 						'lp-quiz',
-						'lp-lesson'
+						'lp-lesson',
+						'lp-custom'
 					),
 					'screens' => array( 'course' )
 				),
@@ -213,8 +214,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'url'     => self::url( 'js/frontend/custom' . $min . '.js' ),
 					'deps'    => array(
 						'jquery'
-					),
-					'screens' => '*'
+					)
 				),
 //				'crypto-js'        => array(
 //					'url' => 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js'

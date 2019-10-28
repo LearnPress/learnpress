@@ -170,20 +170,17 @@ $(document).ready(function () {
     return React.createElement("div", null, React.createElement(LP.quiz.MyContext.Consumer, null, function (a) {
       return a.status;
     }), time);
-  }
+  } // Hook.addAction('xxxx', () => {
+  //     return <CustomComponent key="1"/>
+  // })
+  // Hook.addAction('xxxx', () => {
+  //     return <CustomComponent2 key="2"/>
+  // })
+  // setTimeout(() => {
+  //     //wp.element.render(<CustomComponent />, jQuery('#test-element')[0])
+  //
+  // }, 1000)
 
-  Hook.addAction('xxxx', function () {
-    return React.createElement(CustomComponent, {
-      key: "1"
-    });
-  });
-  Hook.addAction('xxxx', function () {
-    return React.createElement(CustomComponent2, {
-      key: "2"
-    });
-  });
-  setTimeout(function () {//wp.element.render(<CustomComponent />, jQuery('#test-element')[0])
-  }, 1000);
 });
 
 /***/ })

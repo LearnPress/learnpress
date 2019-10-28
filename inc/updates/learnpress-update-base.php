@@ -159,6 +159,8 @@ class LP_Update_Base {
 		} else {
 			$next_step = end( $this->steps );
 		}
+
+		var_dump($next_step);
 		if ( $next_step ) {
 			update_option( 'learnpress_updater_step', $next_step );
 		} else {

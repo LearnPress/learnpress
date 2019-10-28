@@ -1715,7 +1715,9 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var results = this.props.results;
+      var _this$props = this.props,
+          results = _this$props.results,
+          passingGrade = _this$props.passingGrade;
       var _this$state = this.state,
           percentage = _this$state.percentage,
           done = _this$state.done;
@@ -1736,6 +1738,7 @@ function (_Component) {
         strokeDasharray: "".concat(circumference, " ").concat(circumference),
         strokeDashoffset: offset
       };
+      var passingGradeValue = results.passingGrade || passingGrade;
       return React.createElement("div", {
         className: classNames.join(' ')
       }, React.createElement("h3", {
@@ -1760,7 +1763,7 @@ function (_Component) {
         className: "result-achieved"
       }, percentage, "%"), React.createElement("span", {
         className: "result-require"
-      }, undefined !== results.passingGrade ? results.passingGrade : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), done && React.createElement("p", {
+      }, passingGradeValue ? passingGradeValue : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('-', 'unknown passing grade value', 'learnpress')), done && React.createElement("p", {
         className: "result-message",
         dangerouslySetInnerHTML: {
           __html: this.getResultMessage(results)
@@ -1791,7 +1794,8 @@ function (_Component) {
       getData = _select.getData;
 
   return {
-    results: getData('results')
+    results: getData('results'),
+    passingGrade: getData('passingGrade')
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),

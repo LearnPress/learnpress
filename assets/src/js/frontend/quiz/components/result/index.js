@@ -106,7 +106,8 @@ class Result extends Component {
      */
     render() {
         const {
-            results
+            results,
+            passingGrade
         } = this.props;
 
         let {
@@ -131,6 +132,7 @@ class Result extends Component {
             strokeDasharray: `${circumference} ${circumference}`,
             strokeDashoffset: offset
         }
+        const passingGradeValue = results.passingGrade || passingGrade;
 
         return <div className={ classNames.join(' ') }>
             <h3 className="result-heading">{ __('Your Result', 'learnpress') }</h3>
@@ -142,7 +144,7 @@ class Result extends Component {
 
                 <span className="result-achieved">{ percentage }%</span>
                 <span
-                    className="result-require">{ undefined !== results.passingGrade ? results.passingGrade : _x('-', 'unknown passing grade value', 'learnpress') }</span>
+                    className="result-require">{ passingGradeValue ? passingGradeValue : _x('-', 'unknown passing grade value', 'learnpress') }</span>
                 { done && <p className="result-message"
                              dangerouslySetInnerHTML={ {__html: this.getResultMessage(results)} }></p> }
             </div>
@@ -185,7 +187,8 @@ export default compose([
         } = select('learnpress/quiz');
 
         return {
-            results: getData('results')
+            results: getData('results'),
+            passingGrade: getData('passingGrade')
         }
     }),
     withDispatch((dispatch) => {
