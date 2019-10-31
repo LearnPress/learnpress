@@ -1176,7 +1176,8 @@ ul .clearfix {
       background: #FFF;
       font-weight: bold;
       width: 221px;
-      border-color: #DDD; }
+      border-color: #DDD;
+      color: #777; }
 
 .learn-press-tabs.vertical .tabs-container {
   overflow: hidden;
@@ -3346,7 +3347,6 @@ body.lp-item-moving {
   .learnpress #field-_lp_target_audience .rwmb-text-list-clone .rwmb-text-list,
   .learnpress #field-_lp_key_features .rwmb-text-list-clone .rwmb-text-list {
     padding: 7px 10px;
-    font-size: 16px;
     width: calc(100% - 30px);
     background: transparent;
     box-shadow: none;
