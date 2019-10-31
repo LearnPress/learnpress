@@ -122,7 +122,7 @@ var LP = LP || {};
         }
         var $addNew = $(document).find('.page-title-action');
 
-        if(!$addNew.length){
+        if (!$addNew.length) {
             return;
         }
 
@@ -140,6 +140,23 @@ var LP = LP || {};
         $newButton.insertBefore($addNew);
         $newButton.prepend($addNew.removeClass('page-title-action'));
     };
+
+    var focusToInputWhenCloningTextList = function (event) {
+        setTimeout(() => {
+            $(event.target).closest('.rwmb-text-list-wrapper').find('.rwmb-text-list:last').focus();
+        }, 40)
+    };
+
+    var addOptionToTextList = function addOptionToTextList(event) {
+        if (event.keyCode !== 13) {
+            return;
+        }
+
+        event.preventDefault();
+
+        $(event.target).closest('.rwmb-text-list-wrapper').find('.add-clone').trigger('click');
+
+    }
 
     var onReady = function onReady() {
 
@@ -164,7 +181,15 @@ var LP = LP || {};
                 $('html, body').removeClass('lp-item-moving');
                 $('.lp-sortable-handle').css('cursor', '');
             })
-            //.on('click', '#button-new-question', ajaxCreateQuestionType);
+            .on('click', '.rwmb-text-list-wrapper .add-clone', focusToInputWhenCloningTextList)
+            .on('keypress', '.rwmb-text-list-wrapper .rwmb-text-list', addOptionToTextList);
+
+        setTimeout(() => {
+            $('.rwmb-text-list-wrapper .rwmb-input').removeClass('ui-sortable').sortable({
+                axis: 'y',
+                handle: 'label'
+            });
+        }, 100);
     };
 
     $(document).ready(onReady)

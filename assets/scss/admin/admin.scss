@@ -24,10 +24,60 @@
     }
 }
 
-.learnpress{
-    .postbox{
-        .rwmb-meta-box{
+.learnpress {
+    .postbox {
+        .rwmb-meta-box {
             margin-top: 10px;
+        }
+    }
+
+    #field-_lp_requirements,
+    #field-_lp_target_audience,
+    #field-_lp_key_features {
+        .rwmb-text-list-clone {
+            clear: none;
+            border: 1px solid #DDD;
+            border-radius: 4px;
+            position: relative;
+            .rwmb-text-list-label {
+                display: none;
+            }
+            .rwmb-text-list {
+                padding: 7px 10px;
+                font-size: 16px;
+                width: calc(100% - 30px);
+                background: transparent;
+                box-shadow: none;
+                border: none;
+                color: #777;
+            }
+            .remove-clone {
+                top: 50%;
+                right: 7px;
+                margin-top: -10px;
+                background: #DDD;
+                @include transition(right 0.25s);
+            }
+            &:hover {
+                > label {
+                    &:after {
+                        content: "\f329";
+                        font-family: Dashicons;
+                        font-size: 24px;
+                        margin: 8px 0 0 22px;
+                        position: absolute;
+                        display: inline-block;
+                        color: #777;
+                    }
+                }
+                .rwmb-text-list {
+                    width: calc(100% - 50px);
+                }
+                .remove-clone {
+                    background: #e74c3c;
+                    right: 27px;
+                }
+            }
         }
     }
 }

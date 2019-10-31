@@ -3598,12 +3598,23 @@ function learn_press_date_diff( $from, $to ) {
 
 function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 	if ( $namespace ) {
-		$cookie = ! empty( $_COOKIE[ $namespace ] ) ? (array)json_decode( stripslashes( $_COOKIE[ $namespace ] ) ) : array();
+		$cookie = ! empty( $_COOKIE[ $namespace ] ) ? (array) json_decode( stripslashes( $_COOKIE[ $namespace ] ) ) : array();
 	} else {
 		$cookie = $_COOKIE;
 	}
 
 	return isset( $cookie[ $name ] ) ? $cookie[ $name ] : null;
+}
+
+function learn_press_default_course_levels() {
+	$levels = array(
+		'beginner'     => __( 'Beginner', 'learnpress' ),
+		'intermediate' => __( 'Intermediate', 'learnpress' ),
+		'expert'       => __( 'Expert', 'learnpress' ),
+		''             => __( 'All Levels', 'learnpress' ),
+	);
+
+	return apply_filters( 'learn-press/default-course-levels', $levels );
 }
 
 include_once dirname( __FILE__ ) . '/lp-custom-hooks.php';
