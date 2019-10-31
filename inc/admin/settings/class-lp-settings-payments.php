@@ -77,12 +77,12 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 				apply_filters(
 					'learn-press/payment-settings/general',
 					array(
-						array(
-							'title'   => __( 'Checkout page', 'learnpress' ),
-							'id'      => 'checkout_page_id',
-							'default' => '',
-							'type'    => 'pages-dropdown'
-						),
+//						array(
+//							'title'   => __( 'Checkout page', 'learnpress' ),
+//							'id'      => 'checkout_page_id',
+//							'default' => '',
+//							'type'    => 'pages-dropdown'
+//						),
 						array(
 							'title'   => __( 'Auto enroll', 'learnpress' ),
 							'id'      => 'auto_enroll',
@@ -97,20 +97,20 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 							'type'    => 'yes-no',
 							'desc'    => __( 'Enable user buy course as a Guest.', 'learnpress' )
 						),
-						array(
-							'title'   => __( 'Enable login in checkout', 'learnpress' ),
-							'id'      => 'enable_login_checkout',
-							'default' => 'yes',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Enable login form in checkout page.', 'learnpress' )
-						),
-						array(
-							'title'   => __( 'Enable registration in checkout', 'learnpress' ),
-							'id'      => 'enable_registration_checkout',
-							'default' => 'yes',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Enable registration form in checkout page.', 'learnpress' )
-						),
+//						array(
+//							'title'   => __( 'Enable login in checkout', 'learnpress' ),
+//							'id'      => 'enable_login_checkout',
+//							'default' => 'yes',
+//							'type'    => 'yes-no',
+//							'desc'    => __( 'Enable login form in checkout page.', 'learnpress' )
+//						),
+//						array(
+//							'title'   => __( 'Enable registration in checkout', 'learnpress' ),
+//							'id'      => 'enable_registration_checkout',
+//							'default' => 'yes',
+//							'type'    => 'yes-no',
+//							'desc'    => __( 'Enable registration form in checkout page.', 'learnpress' )
+//						),
 						array(
 						'title'   => __( 'Terms & conditions page', 'learnpress' ),
 						'id'      => 'term_conditions_page_id',
@@ -123,12 +123,12 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 				apply_filters(
 					'learn-press/payment-settings/checkout-endpoints',
 					array(
+//						array(
+//							'title' => __( 'Endpoints', 'learnpress' ),
+//							'type'  => 'heading',
+//						),
 						array(
-							'title' => __( 'Endpoints', 'learnpress' ),
-							'type'  => 'heading',
-						),
-						array(
-							'title'       => __( 'Order received', 'learnpress' ),
+							'title'       => __( 'Order received slug', 'learnpress' ),
 							'id'          => 'checkout_endpoints[lp_order_received]',
 							'default'     => 'lp-order-received',
 							'placeholder' => __( 'lp-order-received', 'learnpress' ),

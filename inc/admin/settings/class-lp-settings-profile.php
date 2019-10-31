@@ -55,85 +55,85 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 							'desc'  => __( 'General settings.', 'learnpress' )
 						),
-						array(
-							'title'   => __( 'Profile page', 'learnpress' ),
-							'id'      => 'profile_page_id',
-							'default' => '',
-							'type'    => 'pages-dropdown'
-						),
-						array(
-							'title'   => __( 'Add link to admin bar', 'learnpress' ),
-							'id'      => 'admin_bar_link',
-							'default' => 'yes',
-							'type'    => 'yes-no'
-						),
-						array(
-							'title'       => __( 'Text link', 'learnpress' ),
-							'id'          => 'admin_bar_link_text',
-							'default'     => '',
-							'type'        => 'text',
-							'placeholder' => get_post_field( 'post_title', learn_press_get_page_id( 'profile' ) ),
-							'desc'        => __( 'If empty, please enter the name of the page used for profile.', 'learnpress' ),
-							'visibility'  => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => 'admin_bar_link',
-										'compare' => '=',
-										'value'   => 'yes'
-									)
-								)
-							)
-						),
-						array(
-							'title'      => __( 'Target link', 'learnpress' ),
-							'id'         => 'admin_bar_link_target',
-							'default'    => 'yes',
-							'type'       => 'select',
-							'options'    => array(
-								'_self'  => __( 'Open in same the window', 'learnpress' ),
-								'_blank' => __( 'Open in a new window', 'learnpress' )
-							),
-							'visibility' => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => 'admin_bar_link',
-										'compare' => '=',
-										'value'   => 'yes'
-									)
-								)
-							)
-						),
-						array(
-							'title'   => __( 'Courses per page', 'learnpress' ),
-							'id'      => 'profile_courses_limit',
-							'default' => '10',
-							'type'    => 'number',
-							'min'     => 1,
-							'desc'    => __( 'Number of courses displayed per page in profile.', 'learnpress' )
-						),
-						array(
-							'title'   => __( 'Enable login form', 'learnpress' ),
-							'id'      => 'enable_login_profile',
-							'default' => 'no',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Enable login from profile if the user is not logged in.', 'learnpress' )
-						),
-						array(
-							'title'   => __( 'Enable register form', 'learnpress' ),
-							'id'      => 'enable_register_profile',
-							'default' => 'no',
-							'type'    => 'yes-no',
-							'desc'    => __( 'Enable register from profile if the user is not logged in.', 'learnpress' )
-						)
+//						array(
+//							'title'   => __( 'Profile page', 'learnpress' ),
+//							'id'      => 'profile_page_id',
+//							'default' => '',
+//							'type'    => 'pages-dropdown'
+//						),
+//						array(
+//							'title'   => __( 'Add link to admin bar', 'learnpress' ),
+//							'id'      => 'admin_bar_link',
+//							'default' => 'yes',
+//							'type'    => 'yes-no'
+//						),
+//						array(
+//							'title'       => __( 'Text link', 'learnpress' ),
+//							'id'          => 'admin_bar_link_text',
+//							'default'     => '',
+//							'type'        => 'text',
+//							'placeholder' => get_post_field( 'post_title', learn_press_get_page_id( 'profile' ) ),
+//							'desc'        => __( 'If empty, please enter the name of the page used for profile.', 'learnpress' ),
+//							'visibility'  => array(
+//								'state'       => 'show',
+//								'conditional' => array(
+//									array(
+//										'field'   => 'admin_bar_link',
+//										'compare' => '=',
+//										'value'   => 'yes'
+//									)
+//								)
+//							)
+//						),
+//						array(
+//							'title'      => __( 'Target link', 'learnpress' ),
+//							'id'         => 'admin_bar_link_target',
+//							'default'    => 'yes',
+//							'type'       => 'select',
+//							'options'    => array(
+//								'_self'  => __( 'Open in same the window', 'learnpress' ),
+//								'_blank' => __( 'Open in a new window', 'learnpress' )
+//							),
+//							'visibility' => array(
+//								'state'       => 'show',
+//								'conditional' => array(
+//									array(
+//										'field'   => 'admin_bar_link',
+//										'compare' => '=',
+//										'value'   => 'yes'
+//									)
+//								)
+//							)
+//						),
+//						array(
+//							'title'   => __( 'Courses per page', 'learnpress' ),
+//							'id'      => 'profile_courses_limit',
+//							'default' => '10',
+//							'type'    => 'number',
+//							'min'     => 1,
+//							'desc'    => __( 'Number of courses displayed per page in profile.', 'learnpress' )
+//						),
+//						array(
+//							'title'   => __( 'Enable login form', 'learnpress' ),
+//							'id'      => 'enable_login_profile',
+//							'default' => 'no',
+//							'type'    => 'yes-no',
+//							'desc'    => __( 'Enable login from profile if the user is not logged in.', 'learnpress' )
+//						),
+//						array(
+//							'title'   => __( 'Enable register form', 'learnpress' ),
+//							'id'      => 'enable_register_profile',
+//							'default' => 'no',
+//							'type'    => 'yes-no',
+//							'desc'    => __( 'Enable register from profile if the user is not logged in.', 'learnpress' )
+//						)
 					)
 				),
 				apply_filters(
 					'learn-press/profile-settings-fields/sub-tabs',
 					array(
 						array(
-							'title' => __( 'Sub Tab Slugs', 'learnpress' ),
+							'title' => __( 'Permalinks', 'learnpress' ),
 							'type'  => 'heading',
 							'desc'  => __( 'The slugs of tabs display in profile page. Each tab should be unique.', 'learnpress' )
 						),
@@ -183,13 +183,13 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 				apply_filters(
 					'learn-press/profile-settings-fields/settings-tab',
 					array(
+//						array(
+//							'title' => __( 'Settings', 'learnpress' ),
+//							'type'  => 'heading',
+//							'desc'  => __( 'The slugs of sections in settings tab. Each slugs should be unique.', 'learnpress' )
+//						),
 						array(
-							'title' => __( 'Settings Tab', 'learnpress' ),
-							'type'  => 'heading',
-							'desc'  => __( 'The slugs of sections in settings tab. Each slugs should be unique.', 'learnpress' )
-						),
-						array(
-							'title'       => __( 'Slug', 'learnpress' ),
+							'title'       => __( 'Settings', 'learnpress' ),
 							'id'          => 'profile_endpoints[profile-settings]',
 							'type'        => 'text',
 							'default'     => 'settings',
@@ -222,88 +222,88 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						)
 					)
 				),
-				apply_filters(
-					'learn-press/profile-settings-fields/avatar',
-					array(
-						array(
-							'title' => __( 'Avatar', 'learnpress' ),
-							'type'  => 'heading',
-							'desc'  => __( 'User avatar settings.', 'learnpress' )
-						),
-						array(
-							'title'   => __( 'Enable custom avatar', 'learnpress' ),
-							'id'      => 'profile_avatar',
-							'default' => 'yes',
-							'type'    => 'yes-no'
-						),
-						array(
-							'title'      => __( 'Size', 'learnpress' ),
-							'id'         => 'profile_picture_thumbnail_size',
-							'default'    => array( 'width' => 200, 'height' => 200 ),
-							'type'       => 'image-dimensions',
-							'visibility' => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => 'profile_avatar',
-										'compare' => '=',
-										'value'   => 'yes'
-									)
-								)
-							),
-							'desc'       => __( 'The height and width of avatar should be equal.', 'learnpress' )
-						)
-					)
-				),
+//				apply_filters(
+//					'learn-press/profile-settings-fields/avatar',
+//					array(
+//						array(
+//							'title' => __( 'Avatar', 'learnpress' ),
+//							'type'  => 'heading',
+//							'desc'  => __( 'User avatar settings.', 'learnpress' )
+//						),
+//						array(
+//							'title'   => __( 'Enable custom avatar', 'learnpress' ),
+//							'id'      => 'profile_avatar',
+//							'default' => 'yes',
+//							'type'    => 'yes-no'
+//						),
+//						array(
+//							'title'      => __( 'Size', 'learnpress' ),
+//							'id'         => 'profile_picture_thumbnail_size',
+//							'default'    => array( 'width' => 200, 'height' => 200 ),
+//							'type'       => 'image-dimensions',
+//							'visibility' => array(
+//								'state'       => 'show',
+//								'conditional' => array(
+//									array(
+//										'field'   => 'profile_avatar',
+//										'compare' => '=',
+//										'value'   => 'yes'
+//									)
+//								)
+//							),
+//							'desc'       => __( 'The height and width of avatar should be equal.', 'learnpress' )
+//						)
+//					)
+//				),
 				apply_filters(
 					'learn-press/profile-settings-fields/publicity',
 					array(
 						array(
-							'title' => __( 'Publicity', 'learnpress' ),
+							'title' => __( 'Privacy', 'learnpress' ),
 							'type'  => 'heading',
 							'desc'  => __( 'Publicity and sharing user profile content.', 'learnpress' )
 						),
 						array(
-							'title'   => __( 'My dashboard', 'learnpress' ),
+							'title'   => __( 'Public profile', 'learnpress' ),
 							'id'      => 'profile_publicity[dashboard]',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Public user profile content, if this option is turn off then other sections in profile also become invisible.', 'learnpress' )
 						),
-						array(
-							'title'      => __( 'Courses', 'learnpress' ),
-							'id'         => 'profile_publicity[courses]',
-							'default'    => 'no',
-							'type'       => 'yes-no',
-							'desc'       => __( 'Public user profile courses.', 'learnpress' ) . learn_press_quick_tip( __( 'Allow user to turn on/off sharing profile course option', 'learnpress' ), false ),
-							'visibility' => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => 'profile_publicity[dashboard]',
-										'compare' => '=',
-										'value'   => 'yes'
-									)
-								)
-							)
-						),
-						array(
-							'title'      => __( 'Quizzes', 'learnpress' ),
-							'id'         => 'profile_publicity[quizzes]',
-							'default'    => 'no',
-							'type'       => 'yes-no',
-							'desc'       => __( 'Public user profile quizzes.', 'learnpress' ) . learn_press_quick_tip( __( 'Allow user to turn on/off sharing profile quizzes option', 'learnpress' ), false ),
-							'visibility' => array(
-								'state'       => 'show',
-								'conditional' => array(
-									array(
-										'field'   => 'profile_publicity[dashboard]',
-										'compare' => '=',
-										'value'   => 'yes'
-									)
-								)
-							)
-						)
+//						array(
+//							'title'      => __( 'Courses', 'learnpress' ),
+//							'id'         => 'profile_publicity[courses]',
+//							'default'    => 'no',
+//							'type'       => 'yes-no',
+//							'desc'       => __( 'Public user profile courses.', 'learnpress' ) . learn_press_quick_tip( __( 'Allow user to turn on/off sharing profile course option', 'learnpress' ), false ),
+//							'visibility' => array(
+//								'state'       => 'show',
+//								'conditional' => array(
+//									array(
+//										'field'   => 'profile_publicity[dashboard]',
+//										'compare' => '=',
+//										'value'   => 'yes'
+//									)
+//								)
+//							)
+//						),
+//						array(
+//							'title'      => __( 'Quizzes', 'learnpress' ),
+//							'id'         => 'profile_publicity[quizzes]',
+//							'default'    => 'no',
+//							'type'       => 'yes-no',
+//							'desc'       => __( 'Public user profile quizzes.', 'learnpress' ) . learn_press_quick_tip( __( 'Allow user to turn on/off sharing profile quizzes option', 'learnpress' ), false ),
+//							'visibility' => array(
+//								'state'       => 'show',
+//								'conditional' => array(
+//									array(
+//										'field'   => 'profile_publicity[dashboard]',
+//										'compare' => '=',
+//										'value'   => 'yes'
+//									)
+//								)
+//							)
+//						)
 					)
 				)
 			)

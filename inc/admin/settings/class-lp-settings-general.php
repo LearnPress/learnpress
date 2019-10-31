@@ -37,17 +37,42 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 			'learn-press/general-settings-fields',
 			array(
 				array(
-					'title' => __( 'General', 'learnpress' ),
+					'title' => __( 'Important pages', 'learnpress' ),
 					'type'  => 'heading',
-					'desc'  => __( 'General settings.', 'learnpress' )
+					'desc'  => __( 'Static pages used in frontend.', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'Logout redirect', 'learnpress' ),
-					'id'      => 'logout_redirect_page_id',
+					'title'   => __( 'All Courses', 'learnpress' ),
+					'id'      => 'courses_page_id',
 					'default' => '',
-					'type'    => 'pages-dropdown',
-					'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
+					'type'    => 'pages-dropdown'
 				),
+				array(
+					'title'   => __( 'Profile', 'learnpress' ),
+					'id'      => 'profile_page_id',
+					'default' => '',
+					'type'    => 'pages-dropdown'
+				),
+				array(
+					'title'   => __( 'Checkout', 'learnpress' ),
+					'id'      => 'checkout_page_id',
+					'default' => '',
+					'type'    => 'pages-dropdown'
+				),
+				array(
+					'title'   => __( 'Become instructors', 'learnpress' ),
+					'id'      => 'become_a_teacher_page_id',
+					'default' => '',
+					'type'    => 'pages-dropdown'
+				),
+// 3.x.x
+//				array(
+//					'title'   => __( 'Logout redirect', 'learnpress' ),
+//					'id'      => 'logout_redirect_page_id',
+//					'default' => '',
+//					'type'    => 'pages-dropdown',
+//					'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
+//				),
 				array(
 					'title' => __( 'Currency', 'learnpress' ),
 					'type'  => 'heading',
@@ -85,7 +110,27 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'id'      => 'number_of_decimals',
 					'default' => '2',
 					'type'    => 'number'
-				)/*,
+				),
+				array(
+					'title' => __( 'Other', 'learnpress' ),
+					'type'  => 'heading',
+					'desc'  => __( 'Other settings.', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'Publish profile', 'learnpress' ),
+					'id'      => 'publish_profile',
+					'default' => 'no',
+					'type'    => 'yes-no',
+					'desc'    => __( 'Public user profile content, if this option is turn off then other sections in profile also become invisible.', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'Instructors registration', 'learnpress' ),
+					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
+					'id' => 'instructor_registration',
+					'default' => 'no',
+					'type'    => 'yes-no'
+				)
+					/*,
 				array(
 					'title' => __( 'Logout', 'learnpress' ),
 					'type'  => 'title'
