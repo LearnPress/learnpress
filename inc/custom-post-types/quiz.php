@@ -324,14 +324,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'min'  => 1,
 						'step' => 1
 					),
-					array(
-						'name' => __( 'Page numbers', 'learnpress' ),
-						'desc' => __( 'Show pages as numbers', 'learnpress' ),
-						//'id'   => '_lp_show_hide_question',
-						'id'   => '_lp_pagination_numbers',
-						'type' => 'yes_no',
-						'std'  => 'no'
-					),
+//					array(
+//						'name' => __( 'Page numbers', 'learnpress' ),
+//						'desc' => __( 'Show pages as numbers', 'learnpress' ),
+//						//'id'   => '_lp_show_hide_question',
+//						'id'   => '_lp_pagination_numbers',
+//						'type' => 'yes_no',
+//						'std'  => 'no'
+//					),
 					array(
 						'name' => __( 'Review', 'learnpress' ),
 						'id'   => '_lp_review',

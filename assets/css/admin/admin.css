@@ -1163,11 +1163,15 @@ ul .clearfix {
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
       text-transform: capitalize; }
+    .learn-press-tabs.vertical .tabs-nav li.icon a {
+      padding-left: 35px; }
     .learn-press-tabs.vertical .tabs-nav li.icon a:before {
       font-family: dashicons;
       font-size: 18px;
       vertical-align: top;
-      margin-right: 8px; }
+      margin-right: 8px;
+      position: absolute;
+      left: 10px; }
     .learn-press-tabs.vertical .tabs-nav li.active a {
       background: #FFF;
       font-weight: bold;
@@ -1735,7 +1739,7 @@ ul .clearfix {
   background: #fff;
   padding: 10px;
   display: block;
-  margin: 0 auto;
+  margin: 20px auto;
   box-shadow: 0 0 0 rgba(0, 0, 0, 0.1);
   border-radius: 3px; }
   .lp-place-holder [class*="line-"] {
@@ -2350,6 +2354,9 @@ ul .clearfix {
 #quiz-editor .inside .rwmb-custom_html-wrapper > .rwmb-input {
   margin-left: 0; }
 
+#admin-editor-lp_quiz form {
+  margin: 0; }
+
 #admin-editor-lp_quiz .lp-box-data-head {
   padding: 12px 10px; }
   #admin-editor-lp_quiz .lp-box-data-head h3 {
@@ -2538,7 +2545,8 @@ ul .clearfix {
         padding: 0; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item {
     background: #fff;
-    border-bottom: 1px solid #f1f1f1; }
+    border-bottom: 1px solid #f1f1f1;
+    line-height: 18px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item:nth-child(2n+1) {
       background: #f4fcff; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item.ui-sortable-helper {
@@ -2642,21 +2650,23 @@ ul .clearfix {
             margin: 0; }
             #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .inside .rwmb-meta-box .rwmb-field:nth-child(2n+1) {
               background: #f4fcff; }
-        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .hndle {
-          cursor: default; }
-        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .toggle {
-          float: right;
-          width: 36px;
-          height: 36px;
-          position: absolute;
-          top: 0;
-          right: 0;
-          line-height: 36px;
-          text-align: center; }
-          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .toggle:after {
-            font-family: Dashicons;
-            content: "\f460";
-            font-size: 18px; }
+        #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox {
+          border: 1px solid #DDD; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .hndle {
+            cursor: default; }
+          #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .toggle {
+            float: right;
+            width: 36px;
+            height: 36px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            line-height: 36px;
+            text-align: center; }
+            #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings .quiz-question-options .postbox .toggle:after {
+              font-family: Dashicons;
+              content: "\f460";
+              font-size: 18px; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings.closed .quiz-question-options {
         width: 38px; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-item .question-settings.closed .postbox {
@@ -2674,7 +2684,8 @@ ul .clearfix {
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .order {
       line-height: 28px; }
     #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row {
-      text-align: left; }
+      text-align: left;
+      height: auto; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .title {
         position: relative;
         display: inline-block;
@@ -2749,6 +2760,8 @@ ul .clearfix {
 
 #admin-editor-lp_question {
   background: #fff; }
+  #admin-editor-lp_question form {
+    margin: 0; }
   #admin-editor-lp_question .lp-box-data-head {
     padding: 0 10px; }
     #admin-editor-lp_question .lp-box-data-head .heading {
@@ -3314,6 +3327,9 @@ body.lp-item-moving {
 
 .button.disabled {
   pointer-events: none; }
+
+.learnpress .postbox .rwmb-meta-box {
+  margin-top: 10px; }
 
 .lp-notice,
 .learn-press-notice {

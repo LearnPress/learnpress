@@ -30,17 +30,52 @@ class LP_Post_Type_Actions {
 
 		// add_filter( 'before_delete_post', array( $this, 'before_delete_post' ), 1000, 1 );
 		//add_filter( 'deleted_post', array( $this, 'deleted_post' ), 1000, 1 );
-		add_action( 'edit_form_top', array( $this, 'create_default_section' ) );
+		add_action( 'save_post', array( $this, 'create_default_section' ), - 1000 );
 
 		add_filter( 'transition_post_status', array( $this, 'transition_post_status' ), 1000, 3 );
 	}
 
-	public function create_default_section( $post ) {
+	/**
+	 * Create default section for an auto-draft course.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return mixed
+	 */
+	public function create_default_section($post) {
+
 		if ( 'auto-draft' !== get_post_status( $post ) ) {
-			return;
+			return false;
 		}
 
+		if ( LP_COURSE_CPT !== get_post_type( $post ) ) {
+			return false;
+		}
 
+		if ( ! $course = LP_Course::get_course( $post ) ) {
+
+			return false;
+		}
+
+		if ( $course->get_curriculum_raw() ) {
+			return false;
+		}
+
+		$curd = new LP_Section_CURD( $post );
+		$args = array(
+			'section_course_id'   => $post,
+			'section_description' => '',
+			'section_name'        => apply_filters( 'learn-press/default-section-name', __( 'Section 1', 'learnpress' ) ),
+			'items'               => array(),
+		);
+
+
+		// create section
+		$section = $curd->create( $args );
+
+		LP_Object_Cache::flush();
+
+		return $section;
 	}
 
 	public function __get( $key ) {

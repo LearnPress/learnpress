@@ -14,7 +14,11 @@
         }
     }
 }
+
 #admin-editor-lp_quiz {
+    form {
+        margin: 0;
+    }
 
     .lp-box-data-head {
         padding: 12px 10px;
@@ -65,7 +69,6 @@
                 display: flex;
                 flex-direction: row;
                 text-align: center;
-
                 & > * {
                     width: 100%;
                     padding: 12px 10px
@@ -299,6 +302,7 @@
                 .question-item {
                     background: #fff;
                     border-bottom: 1px solid #f1f1f1;
+                    line-height: 18px;
                     &:nth-child(2n+1) {
                         background: #f4fcff;
                     }
@@ -454,6 +458,7 @@
                                 }
                             }
                             .postbox {
+                                border: 1px solid #DDD;
                                 .hndle {
                                     cursor: default;
                                 }
@@ -505,6 +510,7 @@
                 }
                 .table-row {
                     text-align: left;
+                    height: auto;
                     .add-new-question {
                         .title {
                             position: relative;
