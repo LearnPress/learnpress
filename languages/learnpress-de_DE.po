@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: LearnPress\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-25 15:12+0700\n"
-"PO-Revision-Date: 2015-08-14 17:13+0700\n"
+"PO-Revision-Date: 2019-10-31 10:25+0100\n"
 "Last-Translator: Hoang Ha <halink0803@gmail.com>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/wp-translations/learnpress/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: learnpress.php:352
 msgid "Learning Management System"
@@ -77,7 +77,7 @@ msgstr "Erweiterungen"
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:232
 #: templates/archive-course-content.php:25 templates/course_content.php:27
 msgid "Edit"
-msgstr "Editieren"
+msgstr "Bearbeiten"
 
 #: inc/class.lpr-question-type.php:120
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:113
@@ -91,11 +91,11 @@ msgstr "Entfernen"
 
 #: inc/class.lpr-question-type.php:121
 msgid "Expand"
-msgstr "Ausklappen"
+msgstr "Erweitern"
 
 #: inc/class.lpr-question-type.php:122
 msgid "Collapse"
-msgstr "Einklappen"
+msgstr "Schließen"
 
 #: inc/class.lpr-question-type.php:138
 msgid "Answer"
@@ -104,7 +104,7 @@ msgstr "Antwort"
 #: inc/class.lpr-question-type.php:170 inc/class.lpr-question-type.php:181
 #, php-format
 msgid "Function %s should override from its child"
-msgstr "Funktion %s sollte von seinem Kind überschrieben werden"
+msgstr "Die Funktion %s sollte von ihrem Kind überschrieben werden."
 
 #: inc/class.lpr-question-type.php:570
 msgid "Answer explanation"
@@ -129,7 +129,7 @@ msgstr "Lehrer werden"
 
 #: inc/class.lpr-shortcodes.php:63
 msgid "Fill out your information and send to us to become a teacher"
-msgstr "Geben Sie Ihre Daten ein und senden Sie sie uns, um Lehrer zu werden."
+msgstr "Füllen Sie Ihre Daten aus und senden Sie sie an uns, um Lehrer zu werden."
 
 #: inc/class.lpr-shortcodes.php:64
 msgid "Submit"
@@ -145,11 +145,11 @@ msgstr "Ihr Name"
 
 #: inc/class.lpr-shortcodes.php:76
 msgid "Email"
-msgstr "Email"
+msgstr "E-Mail"
 
 #: inc/class.lpr-shortcodes.php:78
 msgid "Your email address"
-msgstr "Geben Sie Ihre Email-Adresse ein"
+msgstr "Geben Sie Ihre E-Mail-Adresse ein"
 
 #: inc/class.lpr-shortcodes.php:82
 msgid "Phone"
@@ -161,7 +161,7 @@ msgstr "Ihre Telefonnummer"
 
 #: inc/class.lpr-shortcodes.php:151 inc/shortcodes/profile-page.php:21
 msgid "This user in not available!"
-msgstr "Dieser Nutzer in nicht verfügbar!"
+msgstr "Dieser Benutzer ist nicht verfügbar!"
 
 #: inc/lpr-add-on-functions.php:18 inc/lpr-core-functions.php:356
 msgid "All"
@@ -243,7 +243,7 @@ msgstr "Export/Import"
 
 #: inc/lpr-add-on-functions.php:420
 msgid "Export and Import your courses with all lesson and quiz in easiest way"
-msgstr "Export und Import Ihrer Kurse mit allen Lektion und Quiz auf einfachste Weise,"
+msgstr "Exportieren und importieren Sie Ihre Kurse mit allen Lektionen und Quiz auf einfachste Weise."
 
 #: inc/lpr-add-on-functions.php:429
 msgid "Prerequisite Courses"
@@ -251,7 +251,7 @@ msgstr "Kursvoraussetzungen"
 
 #: inc/lpr-add-on-functions.php:430
 msgid "Adding prerequisite course when add new a course "
-msgstr "Fügen Sie eine Kursvoraussetzung hinzu, wenn Sie einen neuen Kurs hinzufügen"
+msgstr "Hinzufügen eines vorausgesetzten Kurses beim Hinzufügen eines neuen Kurses "
 
 #: inc/lpr-add-on-functions.php:439
 msgid "Stripe"
@@ -263,11 +263,11 @@ msgstr "Zahlen Sie mit Stripe"
 
 #: inc/lpr-add-on-functions.php:449
 msgid "Courses Wishlist"
-msgstr "Kurse-Wunschzettel"
+msgstr "Kurs-Wunschzettel"
 
 #: inc/lpr-add-on-functions.php:450
 msgid "Wishlist feature"
-msgstr "Feature-Wunschzettel"
+msgstr "Wunschlistenfunktion"
 
 #: inc/lpr-add-on-functions.php:459
 msgid "WooCommerce Payment"
@@ -437,7 +437,7 @@ msgstr "Bitte geben Sie Ihren Namen ein."
 
 #: inc/lpr-core-functions.php:1583
 msgid "Please enter your email address"
-msgstr "Bitte geben Sie Ihre Email-Adresse ein."
+msgstr "Bitte geben Sie Ihre E-Mail-Adresse ein."
 
 #: inc/lpr-core-functions.php:1595
 #, php-format
@@ -452,7 +452,7 @@ msgstr "Name: %s"
 #: inc/lpr-core-functions.php:1598
 #, php-format
 msgid "Email: %s"
-msgstr "Email: %s"
+msgstr "E-Mail: %s"
 
 #: inc/lpr-core-functions.php:1599
 #, php-format
@@ -466,7 +466,7 @@ msgstr "Akzeptieren: %s"
 
 #: inc/lpr-course-functions.php:273 inc/lpr-course-functions.php:284
 msgid "You have not permission to view this page"
-msgstr "Sie haben kein Recht diese Seite zu sehen"
+msgstr "Du hast keine Berechtigung, diese Seite zu sehen."
 
 #: inc/lpr-course-functions.php:1061
 msgid "Congratulations! You have enrolled this course"
@@ -474,7 +474,7 @@ msgstr "Gratulation! Sie haben sich in den Kurs eingeschrieben."
 
 #: inc/lpr-course-functions.php:1081
 msgid "Invalid payment method."
-msgstr "Ungültige Zahlungsmethode"
+msgstr "Ungültige Zahlungsmethode."
 
 #: inc/lpr-course-functions.php:1086
 msgid "Sorry! You can not enroll to this course"
@@ -511,7 +511,7 @@ msgstr "Sicherheitscheck ist fehlgeschlagen!"
 
 #: inc/lpr-quiz-functions.php:147
 msgid "Assignment can not be re-started"
-msgstr "Die  Aufgabe kann nicht wiederholt werden"
+msgstr "Die Zuordnung kann nicht neu gestartet werden."
 
 #: inc/lpr-quiz-functions.php:158
 msgid "TIME EXPIRED, PLEASE SUBMIT THE ASSIGNMENT"
@@ -527,7 +527,7 @@ msgstr "eingereicht von Student"
 
 #: inc/lpr-quiz-functions.php:169
 msgid "Assignment submitted by Student"
-msgstr "Die Aufgabe wurde eingereicht von Student"
+msgstr "Vom Studenten eingereichte Aufgabe"
 
 #: inc/lpr-quiz-functions.php:205
 msgid "START ASSIGNMENT"
@@ -865,7 +865,7 @@ msgstr "LearnPress-Profil"
 
 #: inc/admin/class.lpr-profile.php:72
 msgid "User Information"
-msgstr "Benutzername"
+msgstr "Benutzer-Information"
 
 #: inc/admin/class.lpr-profile.php:82
 msgid "Quiz Results"
@@ -1013,12 +1013,12 @@ msgstr "Klick zur schnellen Namensbearbeitung"
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:95
 #: inc/admin/meta-boxes/fields/class.quiz-question.php:121
 msgid "Expand All"
-msgstr "Ausklappen"
+msgstr "Alle erweitern"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:96
 #: inc/admin/meta-boxes/fields/class.quiz-question.php:122
 msgid "Collapse All"
-msgstr "Einklappen"
+msgstr "Alle ausblenden"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:98
 msgid "Outline your course and add content with sections, lessons and quizzes."
@@ -1028,7 +1028,7 @@ msgstr "Entwerfen Sie  Ihren Kurs und fügen Sie Inhalt mit Abschnitten, Lektion
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:162
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:205
 msgid "Expand/Close"
-msgstr "Ausklappen/Schließen"
+msgstr "Erweitern/Schließen"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:140
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:232
@@ -1063,7 +1063,7 @@ msgstr "Schnell hinzufügen <span>Q</span>uiz"
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:196
 #: inc/custom-post-types/question.php:164 inc/custom-post-types/quiz.php:187
 msgid "Cancel [ESC]"
-msgstr "Beenden [ESC]"
+msgstr "Abbrechen [ESC]"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:189
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:197
@@ -1081,7 +1081,7 @@ msgstr "Der Kurs ist leer"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:488
 msgid "Success"
-msgstr "Erfolgreich"
+msgstr "Erfolgreich."
 
 #: inc/admin/meta-boxes/fields/class.question.php:85
 msgid "Select..."
@@ -1334,7 +1334,7 @@ msgstr "Sandbox API Signature"
 
 #: inc/admin/statistics/courses.php:9
 msgid "Relation of your courses"
-msgstr "Die Zusammenhänge Ihrer Kurse"
+msgstr "Zusammenhang Ihrer Kurse"
 
 #: inc/admin/statistics/students.php:9
 msgid "Number of student enrolled your courses"
@@ -1342,15 +1342,15 @@ msgstr "Anzahl der in Ihren Kurs eingeschriebenen Studenten"
 
 #: inc/admin/statistics/students.php:12
 msgid "Last 7 Days"
-msgstr "Letzte 7 Tage"
+msgstr "Letzten 7 Tagen"
 
 #: inc/admin/statistics/students.php:15
 msgid "Last 30 Days"
-msgstr "Letzte 30 Tage"
+msgstr "Letzten 30 Tage"
 
 #: inc/admin/statistics/students.php:18
 msgid "Last 12 Months"
-msgstr "Letzte 12 Monate"
+msgstr "Letzten 12 Monate"
 
 #: inc/admin/statistics/students.php:22
 msgid "From"
@@ -1965,11 +1965,11 @@ msgstr "Art der Frage"
 
 #: inc/custom-post-types/question.php:106
 msgid "Mark For This Question"
-msgstr "Zensur für diese Frage"
+msgstr "Markierung für diese Frage"
 
 #: inc/custom-post-types/question.php:110
 msgid "Mark for choosing the right answer"
-msgstr "Zensur für die Auswahl der richtigen Antwort"
+msgstr "Markierung für die Auswahl der richtigen Antwort"
 
 #: inc/custom-post-types/question.php:133
 msgid "Please enter the title of the question"
@@ -2284,15 +2284,15 @@ msgstr "Sie sind eingeschrieben"
 msgctxt ""
 msgid "You and one student enrolled"
 msgid_plural "You and %1$s students enrolled"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Du und ein angemeldeter Student"
+msgstr[1] "Du und %1$s Studenten, die sich angemeldet haben."
 
 #: templates/course/students.php:18
 #, php-format
 msgctxt ""
 msgid "One student enrolled"
 msgid_plural "%1$s students enrolled"
-msgstr[0] "%1§s Studenten sind eingeschrieben"
+msgstr[0] "Ein Student ist eingeschrieben"
 msgstr[1] "%1$s Studenten sind eingeschrieben"
 
 #: templates/course/students.php:21
