@@ -13,20 +13,17 @@ Hook.addFilter('question-blocks', function (blocks) {
 });
 
 Hook.addAction('before-start-quiz', function () {
+});
+
+Hook.addAction('quiz-started', function (results, id) {
+    $(`.course-item-${id}`).removeClass('status-completed failed passed').addClass('has-status status-started');
     window.onbeforeunload = function () {
         return 'Warning!';
     }
 });
 
-Hook.addAction('quiz-started', function (results, id) {
-    console.log(arguments)
-    $(`.course-item-${id}`).removeClass('status-completed failed passed').addClass('has-status status-started');
-});
-
 Hook.addAction('quiz-submitted', function (response, id) {
     $(`.course-item-${id}`).removeClass('status-started').addClass(`has-status status-completed ${response.results.grade}`);
-    console.log(arguments)
-
     window.onbeforeunload = null;
 });
 

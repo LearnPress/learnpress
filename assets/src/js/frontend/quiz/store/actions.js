@@ -57,10 +57,7 @@ export function __requestBeforeStartQuiz(quizId, courseId, userId) {
 }
 
 export function __requestStartQuizSuccess(results, quizId, courseId, userId) {
-    console.log('__requestStartQuizSuccess:', results)
-
     Hook.doAction('quiz-started', results, quizId, courseId, userId);
-
     return {
         type: 'START_QUIZ_SUCCESS',
         quizId,
@@ -247,5 +244,16 @@ export function setQuizMode(mode) {
     return {
         type: 'SET_QUIZ_MODE',
         mode
+    }
+}
+
+export function sendKey(keyPressed) {
+    setTimeout(()=>{
+        _dispatch('learnpress/quiz', 'sendKey', '');
+    }, 300);
+
+    return {
+        type: 'SEND_KEY',
+        keyPressed
     }
 }

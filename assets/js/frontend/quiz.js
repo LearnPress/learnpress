@@ -472,6 +472,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _buttons_button_hint__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../buttons/button-hint */ "./assets/src/js/frontend/quiz/components/buttons/button-hint.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -540,6 +552,7 @@ function (_Component) {
             currentPage = _this$props2.currentPage,
             numPages = _this$props2.numPages,
             setCurrentPage = _this$props2.setCurrentPage;
+        console.log('XXXX');
 
         switch (to) {
           case 'prev':
@@ -602,27 +615,114 @@ function (_Component) {
   }
 
   _createClass(Buttons, [{
-    key: "render",
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      if (nextProps.keyPressed === this.props.keyPressed) {
+        return;
+      }
 
+      switch (nextProps.keyPressed) {
+        case 'left':
+          return this.nav('prev')();
+
+        case 'right':
+          return this.nav('next')();
+      }
+    }
+    /**
+     * Displays pagination with numbers from min to max.
+     *
+     * @return {string}
+     */
+
+  }, {
+    key: "pageNumbers",
+    value: function pageNumbers(args) {
+      var _this2 = this;
+
+      var _this$props5 = this.props,
+          numPages = _this$props5.numPages,
+          currentPage = _this$props5.currentPage;
+
+      if (numPages < 2) {
+        return '';
+      }
+
+      args = _objectSpread({
+        numPages: numPages,
+        currentPage: currentPage,
+        midSize: 1,
+        endSize: 1,
+        prevNext: true
+      }, args || {});
+
+      if (args.endSize < 1) {
+        args.endSize = 1;
+      }
+
+      if (args.midSize < 0) {
+        args.midSize = 1;
+      }
+
+      var numbers = _toConsumableArray(Array(numPages).keys()),
+          dots = false;
+
+      return React.createElement("div", {
+        className: "nav-links"
+      }, args.prevNext && !this.isFirst() && React.createElement("a", {
+        className: "page-numbers prev",
+        "data-type": "question-navx",
+        onClick: this.nav('prev')
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('', 'learnpress')), numbers.map(function (number) {
+        number = number + 1;
+
+        if (number === args.currentPage) {
+          dots = true;
+          return React.createElement("span", {
+            key: "page-number-".concat(number),
+            className: "page-numbers current"
+          }, number);
+        } else {
+          if (number <= args.endSize || args.currentPage && number >= args.currentPage - args.midSize && number <= args.currentPage + args.midSize || number > args.numPages - args.endSize) {
+            dots = true;
+            return React.createElement("a", {
+              key: "page-number-".concat(number),
+              className: "page-numbers",
+              onClick: _this2.moveTo(number)
+            }, number);
+          } else if (dots) {
+            dots = false;
+            return React.createElement("span", {
+              key: "page-number-".concat(number),
+              className: "page-numbers dots"
+            }, "\u2026");
+          }
+        }
+      }), args.prevNext && !this.isLast() && React.createElement("a", {
+        className: "page-numbers next",
+        "data-type": "question-navx",
+        onClick: this.nav('next')
+      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('', 'learnpress')));
+    }
     /**
      * Render buttons
      *
      * @return {XML}
      */
-    value: function render() {
-      var _this2 = this;
 
-      var _this$props5 = this.props,
-          status = _this$props5.status,
-          questionNav = _this$props5.questionNav,
-          isReviewing = _this$props5.isReviewing,
-          showReview = _this$props5.showReview,
-          numPages = _this$props5.numPages,
-          question = _this$props5.question,
-          questionsPerPage = _this$props5.questionsPerPage,
-          pageNumbers = _this$props5.pageNumbers,
-          pages = _this$props5.pages,
-          currentPage = _this$props5.currentPage;
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$props6 = this.props,
+          status = _this$props6.status,
+          questionNav = _this$props6.questionNav,
+          isReviewing = _this$props6.isReviewing,
+          showReview = _this$props6.showReview,
+          numPages = _this$props6.numPages,
+          question = _this$props6.question,
+          questionsPerPage = _this$props6.questionsPerPage,
+          pages = _this$props6.pages,
+          currentPage = _this$props6.currentPage;
       var classNames = ['quiz-buttons align-center'];
 
       if (questionNav === 'questionNav') {
@@ -644,26 +744,9 @@ function (_Component) {
       }, -1 !== ['', 'completed'].indexOf(status) && !isReviewing && React.createElement("button", {
         className: "lp-button start",
         onClick: this.startQuiz
-      }, status === 'completed' ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Retry', 'label button retry quiz', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Start', 'label button start quiz', 'learnpress')), ('started' === status || isReviewing) && numPages > 1 && React.createElement(React.Fragment, null, pageNumbers ? React.createElement(React.Fragment, null, React.createElement("div", {
+      }, status === 'completed' ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Retry', 'label button retry quiz', 'learnpress') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["_x"])('Start', 'label button start quiz', 'learnpress')), ('started' === status || isReviewing) && numPages > 1 && React.createElement(React.Fragment, null, React.createElement("div", {
         className: "questions-pagination"
-      }, React.createElement("div", {
-        className: "page-numbers"
-      }, pages.map(function (ids, pageNum) {
-        return pageNum + 1 === currentPage ? React.createElement("span", {
-          key: "page-number-".concat(pageNum)
-        }, pageNum + 1) : React.createElement("a", {
-          key: "page-number-".concat(pageNum),
-          onClick: _this2.moveTo(pageNum + 1)
-        }, pageNum + 1);
-      })))) : React.createElement(React.Fragment, null, React.createElement("button", {
-        className: "lp-button nav prev",
-        "data-type": "question-nav",
-        onClick: this.nav('prev')
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('', 'learnpress')), React.createElement("button", {
-        className: "lp-button nav next",
-        "data-type": "question-nav",
-        onClick: this.nav('next')
-      }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('', 'learnpress'))))), React.createElement("div", {
+      }, this.pageNumbers()))), React.createElement("div", {
         className: "button-right"
       }, 'started' === status
       /*|| isReviewing*/
@@ -770,7 +853,8 @@ var MaybeShowButton = Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__["co
     pages: getData('pages'),
     currentPage: getData('currentPage'),
     questionsPerPage: getData('questionsPerPage'),
-    pageNumbers: getData('pageNumbers')
+    pageNumbers: getData('pageNumbers'),
+    keyPressed: getData('keyPressed')
   };
 
   if (data.questionsPerPage === 1) {
@@ -1172,6 +1256,36 @@ function (_Component) {
       return currentPage === Math.ceil(index / questionsPerPage);
     });
 
+    _defineProperty(_assertThisInitialized(_this), "nav", function (event) {
+      var sendKey = _this.props.sendKey;
+      console.log(event.keyCode);
+
+      switch (event.keyCode) {
+        case 37:
+          // left
+          return sendKey('left');
+
+        case 38:
+          // up
+          return;
+
+        case 39:
+          // right
+          return sendKey('right');
+
+        case 40:
+          // down
+          return;
+
+        default:
+          // 1 ... 9
+          if (event.keyCode >= 49 && event.keyCode <= 57) {
+            sendKey(event.keyCode - 48);
+          }
+
+      }
+    });
+
     _this.needToTop = false;
     return _this;
   }
@@ -1219,6 +1333,9 @@ function (_Component) {
 
 
       return React.createElement(React.Fragment, null, React.createElement("div", {
+        tabIndex: 100,
+        onKeyUp: this.nav
+      }, React.createElement("div", {
         className: "quiz-questions",
         style: {
           display: isShow ? '' : 'none'
@@ -1239,7 +1356,7 @@ function (_Component) {
           questionsPerPage: questionsPerPage,
           question: question
         }) : '';
-      })));
+      }))));
     }
   }]);
 
@@ -1263,10 +1380,12 @@ function (_Component) {
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__["withDispatch"])(function (dispatch) {
   var _dispatch = dispatch('learnpress/quiz'),
-      startQuiz = _dispatch.startQuiz;
+      startQuiz = _dispatch.startQuiz,
+      sendKey = _dispatch.sendKey;
 
   return {
-    startQuiz: startQuiz
+    startQuiz: startQuiz,
+    sendKey: sendKey
   };
 }))(Questions));
 
@@ -2435,7 +2554,7 @@ function (_Component) {
 /*!******************************************************!*\
   !*** ./assets/src/js/frontend/quiz/store/actions.js ***!
   \******************************************************/
-/*! exports provided: setQuizData, setCurrentQuestion, setCurrentPage, __requestBeforeStartQuiz, __requestStartQuizSuccess, startQuiz, __requestSubmitQuiz, __requestSubmitQuizSuccess, submitQuiz, updateUserQuestionAnswers, __requestShowHintSuccess, showHint, __requestCheckAnswerSuccess, checkAnswer, markQuestionRendered, setQuizMode */
+/*! exports provided: setQuizData, setCurrentQuestion, setCurrentPage, __requestBeforeStartQuiz, __requestStartQuizSuccess, startQuiz, __requestSubmitQuiz, __requestSubmitQuizSuccess, submitQuiz, updateUserQuestionAnswers, __requestShowHintSuccess, showHint, __requestCheckAnswerSuccess, checkAnswer, markQuestionRendered, setQuizMode, sendKey */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2456,6 +2575,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkAnswer", function() { return checkAnswer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "markQuestionRendered", function() { return markQuestionRendered; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setQuizMode", function() { return setQuizMode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendKey", function() { return sendKey; });
 /* harmony import */ var _learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @learnpress/data-controls */ "@learnpress/data-controls");
 /* harmony import */ var _learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_learnpress_data_controls__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
@@ -2541,7 +2661,6 @@ function __requestBeforeStartQuiz(quizId, courseId, userId) {
   };
 }
 function __requestStartQuizSuccess(results, quizId, courseId, userId) {
-  console.log('__requestStartQuizSuccess:', results);
   Hook.doAction('quiz-started', results, quizId, courseId, userId);
   return {
     type: 'START_QUIZ_SUCCESS',
@@ -2743,6 +2862,15 @@ function setQuizMode(mode) {
     mode: mode
   };
 }
+function sendKey(keyPressed) {
+  setTimeout(function () {
+    _dispatch('learnpress/quiz', 'sendKey', '');
+  }, 300);
+  return {
+    type: 'SEND_KEY',
+    keyPressed: keyPressed
+  };
+}
 
 /***/ }),
 
@@ -2894,7 +3022,6 @@ var updateUserQuestionAnswer = function updateUserQuestionAnswer(state, action) 
     temp: true
   });
 
-  console.log(newAnswer, action);
   return _objectSpread({}, state, {
     answered: _objectSpread({}, state.answered, _defineProperty({}, action.questionId, newAnswer))
   });
@@ -3043,6 +3170,11 @@ var userQuiz = function userQuiz() {
 
     case 'CHECK_ANSWER':
       return checkAnswer(state, action);
+
+    case 'SEND_KEY':
+      return _objectSpread({}, state, {
+        keyPressed: action.keyPressed
+      });
   }
 
   return state;

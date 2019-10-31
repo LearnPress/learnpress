@@ -24,8 +24,6 @@ const updateUserQuestionAnswer = (state, action) => {
         temp: true
     };
 
-    console.log(newAnswer, action);
-
     return {
         ...state,
         answered: {
@@ -189,6 +187,11 @@ export const userQuiz = (state = STORE_DATA, action) => {
             return setQuestionHint(state, action);
         case 'CHECK_ANSWER':
             return checkAnswer(state, action);
+        case 'SEND_KEY':
+            return {
+                ...state,
+                keyPressed: action.keyPressed
+            }
 
     }
     return state;

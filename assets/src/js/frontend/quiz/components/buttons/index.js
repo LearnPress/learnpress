@@ -43,7 +43,7 @@ class Buttons extends Component {
             numPages,
             setCurrentPage
         } = this.props;
-
+        console.log('XXXX')
         switch (to) {
             case 'prev':
                 currentPage = currentPage > 1 ? currentPage - 1 : (questionNav === 'infinity' ? numPages : 1);
@@ -139,6 +139,86 @@ class Buttons extends Component {
         return isReviewing
     };
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.keyPressed === this.props.keyPressed) {
+            return;
+        }
+        switch (nextProps.keyPressed) {
+            case 'left':
+                return this.nav('prev')();
+            case 'right':
+                return this.nav('next')()
+        }
+    }
+
+    /**
+     * Displays pagination with numbers from min to max.
+     *
+     * @return {string}
+     */
+    pageNumbers(args) {
+        const {
+            numPages,
+            currentPage
+        } = this.props;
+
+        if (numPages < 2) {
+            return '';
+        }
+
+        args = {
+            numPages,
+            currentPage,
+            midSize: 1,
+            endSize: 1,
+            prevNext: true,
+            ...( args || {})
+        };
+
+        if (args.endSize < 1) {
+            args.endSize = 1;
+        }
+
+        if (args.midSize < 0) {
+            args.midSize = 1;
+        }
+
+
+        let numbers = [...Array(numPages).keys()], dots = false;
+
+        return <div className="nav-links">
+            {
+                args.prevNext && !this.isFirst() && <a className="page-numbers prev" data-type="question-navx"
+                                         onClick={ this.nav('prev') }>{__('', 'learnpress') }</a>
+            }
+
+            {
+                numbers.map((number) => {
+                    number = number + 1;
+
+                    if (number === args.currentPage) {
+                        dots = true;
+                        return <span key={`page-number-${number}`} className="page-numbers current">{ number }</span>
+                    } else {
+                        if (number <= args.endSize || ( args.currentPage && number >= args.currentPage - args.midSize && number <= args.currentPage + args.midSize ) || number > args.numPages - args.endSize) {
+                            dots = true;
+                            return <a key={`page-number-${number}`} className='page-numbers'
+                                      onClick={ this.moveTo(number) }>{number}</a>
+                        } else if (dots) {
+                            dots = false;
+                            return <span key={`page-number-${number}`} className="page-numbers dots">&hellip;</span>
+                        }
+                    }
+                })
+            }
+
+            {
+                args.prevNext && !this.isLast() && <a className="page-numbers next" data-type="question-navx"
+                                         onClick={ this.nav('next') }>{ __('', 'learnpress') }</a>
+            }
+        </div>
+    }
+
     /**
      * Render buttons
      *
@@ -153,7 +233,6 @@ class Buttons extends Component {
             numPages,
             question,
             questionsPerPage,
-            pageNumbers,
             pages,
             currentPage
         } = this.props;
@@ -184,25 +263,20 @@ class Buttons extends Component {
                 {
                     ('started' === status || isReviewing) && (numPages > 1) && (
                         <React.Fragment>
-                            {
-                                pageNumbers ? <React.Fragment>
-                                    <div className="questions-pagination">
-                                        <div className="page-numbers">
-                                            {pages.map((ids, pageNum) => {
-                                                return pageNum + 1 === currentPage ?
-                                                    <span key={`page-number-${pageNum}`}>{pageNum + 1}</span> :
-                                                    <a key={`page-number-${pageNum}`}
-                                                       onClick={ this.moveTo(pageNum + 1) }>{pageNum + 1}</a>
-                                            })}
-                                        </div>
-                                    </div>
-                                </React.Fragment> : <React.Fragment>
-                                    <button className="lp-button nav prev" data-type="question-nav"
-                                            onClick={ this.nav('prev') }>{__('', 'learnpress') }</button>
-                                    <button className="lp-button nav next" data-type="question-nav"
-                                            onClick={ this.nav('next') }>{ __('', 'learnpress') }</button>
-                                </React.Fragment>
-                            }
+                            <div className="questions-pagination">
+                                {this.pageNumbers()}
+
+                                {/*<div className="page-numbers">*/}
+                                {/*{pages.map((ids, pageNum) => {*/}
+                                {/*return pageNum + 1 === currentPage ?*/}
+                                {/*<span key={`page-number-${pageNum}`}>{pageNum + 1}</span> :*/}
+                                {/*<a key={`page-number-${pageNum}`}*/}
+                                {/*onClick={ this.moveTo(pageNum + 1) }>{pageNum + 1}</a>*/}
+                                {/*})}*/}
+                                {/*</div>*/}
+                            </div>
+
+
                         </React.Fragment>
                     )
                 }
@@ -332,6 +406,7 @@ export default compose([
             currentPage: getData('currentPage'),
             questionsPerPage: getData('questionsPerPage'),
             pageNumbers: getData('pageNumbers'),
+            keyPressed: getData('keyPressed')
         };
 
         if (data.questionsPerPage === 1) {

@@ -18,9 +18,7 @@ class QuestionTypes extends Component {
             fill_in_blanks: LP.questionTypes.FillInBlanks
         });
 
-        let questionComponent = types[question.type];
-
-        return questionComponent
+        return types[question.type];
     }
 
     render() {
@@ -53,7 +51,8 @@ export default compose(
 
         return {
             supportOptions: getData('supportOptions'),
-            isCheckedAnswer: isCheckedAnswer(id)
+            isCheckedAnswer: isCheckedAnswer(id),
+            keyPressed: getData('keyPressed')
         }
     }),
     withDispatch(() => {

@@ -34,6 +34,22 @@ class QuestionBase extends Component {
                 options: this.parseOptions(nextProps.question.options)
             });
         }
+
+        if (nextProps.keyPressed === this.props.keyPressed) {
+            return;
+        }
+        if (nextProps.keyPressed >= 1 && nextProps.keyPressed <= 9) {
+            const input = Object.values(this.inputs)[nextProps.keyPressed - 1];
+            input && input.click();
+        }
+    }
+
+    setInputRef = (el, k) => {
+        if(!this.inputs){
+            this.inputs = {}
+        }
+
+        this.inputs[k] = el;
     }
 
     /**
@@ -164,7 +180,7 @@ class QuestionBase extends Component {
             answered
         } = this.props;
 
-        if (!answered ){ ///}  answered === undefined || answered === '') {
+        if (!answered) { ///}  answered === undefined || answered === '') {
             return false;
         }
 
@@ -193,7 +209,7 @@ class QuestionBase extends Component {
         } = this.props;
 
         return wpSelect('learnpress/quiz').isCheckedAnswer(question.id);
-    }
+    };
 
     getCorrectLabel = () => {
         const {
@@ -207,8 +223,10 @@ class QuestionBase extends Component {
 
         return this.maybeShowCorrectAnswer() &&
             <div className={ `question-response` + (isCorrect ? ' correct' : ' incorrect') }>
-                <span className="label">{ isCorrect ? __('Correct', 'learnpress') : __('Incorrect', 'learnpress')}</span>
-                <span className="point">{ sprintf(__('%d/%d point', 'learnpress'), isCorrect ? question.point : 0, question.point)}</span>
+                <span
+                    className="label">{ isCorrect ? __('Correct', 'learnpress') : __('Incorrect', 'learnpress')}</span>
+                <span
+                    className="point">{ sprintf(__('%d/%d point', 'learnpress'), isCorrect ? question.point : 0, question.point)}</span>
             </div>
     };
 
@@ -231,6 +249,9 @@ class QuestionBase extends Component {
                                    className="option-check"
                                    name={ status === 'started' ? `learn-press-question-${question.id}` : '' }
                                    id={ ID }
+                                   ref={ (el) => {
+                                       this.setInputRef(el, option.value)
+                                   } }
                                    onChange={ this.setAnswerChecked() }
                                    disabled={ this.maybeDisabledOption(option) }
                                    checked={ this.maybeCheckedAnswer(option.value) }

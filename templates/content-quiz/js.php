@@ -21,10 +21,7 @@ $userJS    = array();
 
 $userCourse       = $user->get_course_data( $course->get_id() );
 $userQuiz         = $userCourse ? $userCourse->get_item( $quiz->get_id() ) : false;
-$attempts         = $userQuiz->get_attempts( array(
-	'limit'  => 1,
-	'offset' => 1
-) );/// get_attempts($quiz->get_id(), $course->get_id(), $user->get_id());
+/// get_attempts($quiz->get_id(), $course->get_id(), $user->get_id());
 $answered         = array();
 $status           = '';
 $checkedQuestions = array();
@@ -43,6 +40,11 @@ if ( $userQuiz ) {
 	if ( $expirationTime && ! $expirationTime->is_null() ) {
 		$totalTime = strtotime( $userQuiz->get_expiration_time() ) - strtotime( $userQuiz->get_start_time() );
 	}
+
+	$attempts         = $userQuiz->get_attempts( array(
+		'limit'  => 1,
+		'offset' => 1
+	) );
 
 	$userJS = array(
 		'status'            => $status,

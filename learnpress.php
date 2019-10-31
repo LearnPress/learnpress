@@ -880,6 +880,12 @@ add_action( 'template_include', function ( $t ) {
 
 
 } );
+
+add_action('plugins_loaded', function(){
+//	for($i=1;$i<100;$i++){
+//		wp_insert_post(array('post_title'=>'Post ' . $i, 'post_status'=>'publish'));
+//	}
+});
 //function detect_city( $ip ) {
 //
 //	$default = 'UNKNOWN';
@@ -933,6 +939,4 @@ add_action( 'template_include', function ( $t ) {
 //	}
 //
 //}
-//add_action('plugins_loaded', function(){
-//	var_dump(WC_Geolocation::geolocate_ip('14.162.255.20'));
-//});
+

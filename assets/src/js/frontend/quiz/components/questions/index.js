@@ -51,6 +51,30 @@ class Questions extends Component {
         return currentPage === Math.ceil(index / questionsPerPage);
     };
 
+    nav = (event) => {
+        const {
+            sendKey
+        } = this.props;
+        console.log(event.keyCode)
+
+        switch (event.keyCode){
+            case 37: // left
+                return sendKey('left');
+            case 38: // up
+                return;
+            case 39: // right
+                return sendKey('right');
+            case 40: // down
+                return;
+            default:
+                // 1 ... 9
+                if(event.keyCode >= 49 && event.keyCode <=57){
+                    sendKey(event.keyCode - 48);
+                }
+        }
+
+    }
+
     render() {
         const {
             status,
@@ -70,6 +94,7 @@ class Questions extends Component {
         //}
 
         return <React.Fragment>
+            <div tabIndex={100} onKeyUp={ this.nav }>
             <div className="quiz-questions" style={ {display: isShow ? '' : 'none'} }>
                 {
                     questions.map((question, index) => {
@@ -84,6 +109,7 @@ class Questions extends Component {
                                       question={ question }/> : '';
                     })
                 }
+            </div>
             </div>
         </React.Fragment>
     }
@@ -108,11 +134,13 @@ export default compose(
     }),
     withDispatch((dispatch) => {
         const {
-            startQuiz
+            startQuiz,
+            sendKey
         } = dispatch('learnpress/quiz');
 
         return {
-            startQuiz
+            startQuiz,
+            sendKey
         }
     })
 )(Questions);

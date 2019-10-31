@@ -200,6 +200,14 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(QuestionBase).apply(this, arguments));
 
+    _defineProperty(_assertThisInitialized(_this), "setInputRef", function (el, k) {
+      if (!_this.inputs) {
+        _this.inputs = {};
+      }
+
+      _this.inputs[k] = el;
+    });
+
     _defineProperty(_assertThisInitialized(_this), "maybeShowCorrectAnswer", function () {
       var _this$props = _this.props,
           answered = _this$props.answered,
@@ -374,12 +382,16 @@ function (_Component) {
           options: this.parseOptions(nextProps.question.options)
         });
       }
-    }
-    /**
-     *
-     * @return {Component.props.answered|boolean|Component.props.isCheckedAnswer}
-     */
 
+      if (nextProps.keyPressed === this.props.keyPressed) {
+        return;
+      }
+
+      if (nextProps.keyPressed >= 1 && nextProps.keyPressed <= 9) {
+        var input = Object.values(this.inputs)[nextProps.keyPressed - 1];
+        input && input.click();
+      }
+    }
   }, {
     key: "render",
     value: function render() {
@@ -403,6 +415,9 @@ function (_Component) {
           className: "option-check",
           name: status === 'started' ? "learn-press-question-".concat(question.id) : '',
           id: ID,
+          ref: function ref(el) {
+            _this2.setInputRef(el, option.value);
+          },
           onChange: _this2.setAnswerChecked(),
           disabled: _this2.maybeDisabledOption(option),
           checked: _this2.maybeCheckedAnswer(option.value),
@@ -1022,8 +1037,7 @@ function (_Component) {
         true_or_false: LP.questionTypes.TrueOrFalse,
         fill_in_blanks: LP.questionTypes.FillInBlanks
       });
-      var questionComponent = types[question.type];
-      return questionComponent;
+      return types[question.type];
     });
 
     return _this;
@@ -1065,7 +1079,8 @@ function (_Component) {
 
   return {
     supportOptions: getData('supportOptions'),
-    isCheckedAnswer: isCheckedAnswer(id)
+    isCheckedAnswer: isCheckedAnswer(id),
+    keyPressed: getData('keyPressed')
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["withDispatch"])(function () {
   return {};

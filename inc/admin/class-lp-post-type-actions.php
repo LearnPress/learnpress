@@ -30,8 +30,17 @@ class LP_Post_Type_Actions {
 
 		// add_filter( 'before_delete_post', array( $this, 'before_delete_post' ), 1000, 1 );
 		//add_filter( 'deleted_post', array( $this, 'deleted_post' ), 1000, 1 );
+		add_action( 'edit_form_top', array( $this, 'create_default_section' ) );
 
 		add_filter( 'transition_post_status', array( $this, 'transition_post_status' ), 1000, 3 );
+	}
+
+	public function create_default_section( $post ) {
+		if ( 'auto-draft' !== get_post_status( $post ) ) {
+			return;
+		}
+
+
 	}
 
 	public function __get( $key ) {
