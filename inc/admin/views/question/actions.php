@@ -10,7 +10,7 @@
 
     <div class="lp-box-data-head lp-row">
         <h3 class="heading">
-			<?php esc_html_e( 'Question Answers', 'learnpress' ); ?>
+			<?php esc_html_e( 'Details', 'learnpress' ); ?>
             <div class="section-item-counts"><span>{{typeLabel()}}</span></div>
         </h3>
         <div class="lp-box-data-actions lp-toolbar-buttons">

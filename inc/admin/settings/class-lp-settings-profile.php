@@ -183,7 +183,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 					'learn-press/profile-settings-fields/settings-tab',
 					array(
 						array(
-							'title'       => __( 'General <small>Settings</small>', 'learnpress' ),
+							'title'       => __( 'Settings', 'learnpress' ),
 							'id'          => 'profile_endpoints[profile-settings]',
 							'type'        => 'text',
 							'default'     => 'settings',

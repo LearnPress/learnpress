@@ -22,11 +22,11 @@ LearnPress is free and always be free, but it has premium high quality WordPress
 
 > [Click here](https://goo.gl/JzwYkj) to get a coupon for 20% Off all Learnpress Add-ons
 
-> Or you can buy [Education WP Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) for only $69 and get all of them.
+> Or you can buy [Education WP Theme](https://1.envato.market/Yx2YR) for only $69 and get all of them.
 
-> **HOT!!** [WordPress theme for Coaches, Trainers, Teachers - Coaching WP](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) is also FOR SALE at only $59, LearnPress included.
+> **HOT!!** [WordPress theme for Coaches, Trainers, Teachers - Coaching WP](https://1.envato.market/Xq2Ra) is also FOR SALE at only $59, LearnPress included.
 
-> [Course Builder Wordpress Theme](https://themeforest.net/item/course-builder-wordpress-learning-management-system-theme-elearning-software/20370918?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) - WordPress LMS theme for online courses is also FOR SALE at only $64, Learnpress included.
+> [Course Builder Wordpress Theme](https://1.envato.market/13Zkd) - WordPress LMS theme for online courses is also FOR SALE at only $64, LearnPress included.
 
 ###LMS & Education WordPress Themes###
 

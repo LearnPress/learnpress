@@ -123,7 +123,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 				),
 				array(
 					'title'   => __( 'Instructors Registration', 'learnpress' ),
-					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
+					'desc'    => __( 'Enable the option in all registration forms.', 'learnpress' ),
 					'id' => 'instructor_registration',
 					'default' => 'no',
 					'type'    => 'yes-no'

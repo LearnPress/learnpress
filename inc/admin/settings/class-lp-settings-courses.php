@@ -195,7 +195,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 						),
 						array(
-							'title'   => __( 'Single course', 'learnpress' ),
+							'title'   => __( 'Course', 'learnpress' ),
 							'type'    => 'course-permalink',
 							'default' => '',
 							'id'      => 'course_base'
@@ -217,18 +217,18 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'placeholder' => 'quizzes'
 						),
 						array(
-							'title'       => __( 'Course Category Base', 'learnpress' ),
-							'id'          => 'course_category_base',
-							'default'     => 'course-category',
-							'type'        => 'text',
+							'title'   => __( 'Category Base', 'learnpress' ),
+							'id'      => 'course_category_base',
+							'default' => 'course-category',
+							'type'    => 'text',
 							'placeholder' => 'course-category',
 							'desc'        => __( sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-category</code>' ), 'learnpress' ),
 						),
 						array(
-							'title'       => __( 'Course Tag Base', 'learnpress' ),
-							'id'          => 'course_tag_base',
-							'default'     => 'course-tag',
-							'type'        => 'text',
+							'title'   => __( 'Tag Base', 'learnpress' ),
+							'id'      => 'course_tag_base',
+							'default' => 'course-tag',
+							'type'    => 'text',
 							'placeholder' => 'course-tag',
 							'desc'        => __( sprintf( 'e.g. %s/course/%s/sample-course/', home_url(), '<code>course-tag</code>' ), 'learnpress' ),
 						),
@@ -255,7 +255,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 //						),
 					)
 				)
-			// Thumbnail
+				// Thumbnail
 //				apply_filters( 'learn-press/course-settings-fields/thumbnails', array(
 //						array(
 //							'title' => __( 'Course thumbnails', 'learnpress' ),
