@@ -90,7 +90,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 							'id'      => 'auto_enroll',
 							'default' => 'yes',
 							'type'    => 'yes-no',
-							'desc'    => __( 'Skip enroll step after users successfully purchased courses.', 'learnpress' )
+							'desc'    => __( 'Skip Enroll Button after users successfully purchased courses.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Guest Checkout', 'learnpress' ),

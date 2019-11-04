@@ -13,4 +13,4 @@ defined( 'ABSPATH' ) or exit;
 
 <p class="large-text"><?php _e( 'Thanks for choosing LearnPress to sell your online courses!', 'learnpress' ); ?></p>
 
-<p class="large-text"><?php _e( 'Setup Wizard helps you config some basic information before creating your LMS content.', 'learnpress' ); ?></p>
+<p class="large-text"><?php _e( 'The following wizard will help you configure your LMS site and get you started quickly.', 'learnpress' ); ?></p>
