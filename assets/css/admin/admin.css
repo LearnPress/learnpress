@@ -3351,18 +3351,18 @@ body.lp-item-moving {
   margin-top: 10px; }
 
 .learnpress #field-_lp_requirements .rwmb-text-list-clone,
-.learnpress #field-_lp_target_audience .rwmb-text-list-clone,
+.learnpress #field-_lp_target_audiences .rwmb-text-list-clone,
 .learnpress #field-_lp_key_features .rwmb-text-list-clone {
   clear: none;
   border: 1px solid #DDD;
   border-radius: 4px;
   position: relative; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone .rwmb-text-list-label,
-  .learnpress #field-_lp_target_audience .rwmb-text-list-clone .rwmb-text-list-label,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .rwmb-text-list-label,
   .learnpress #field-_lp_key_features .rwmb-text-list-clone .rwmb-text-list-label {
     display: none; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone .rwmb-text-list,
-  .learnpress #field-_lp_target_audience .rwmb-text-list-clone .rwmb-text-list,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .rwmb-text-list,
   .learnpress #field-_lp_key_features .rwmb-text-list-clone .rwmb-text-list {
     padding: 7px 10px;
     width: calc(100% - 30px);
@@ -3371,7 +3371,7 @@ body.lp-item-moving {
     border: none;
     color: #777; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone .remove-clone,
-  .learnpress #field-_lp_target_audience .rwmb-text-list-clone .remove-clone,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .remove-clone,
   .learnpress #field-_lp_key_features .rwmb-text-list-clone .remove-clone {
     top: 50%;
     right: 7px;
@@ -3383,7 +3383,7 @@ body.lp-item-moving {
     -o-transition: right 0.25s;
     transition: right 0.25s; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover > label:after,
-  .learnpress #field-_lp_target_audience .rwmb-text-list-clone:hover > label:after,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover > label:after,
   .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover > label:after {
     content: "\f329";
     font-family: Dashicons;
@@ -3393,11 +3393,11 @@ body.lp-item-moving {
     display: inline-block;
     color: #777; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_target_audience .rwmb-text-list-clone:hover .rwmb-text-list,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .rwmb-text-list,
   .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .rwmb-text-list {
     width: calc(100% - 50px); }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .remove-clone,
-  .learnpress #field-_lp_target_audience .rwmb-text-list-clone:hover .remove-clone,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .remove-clone,
   .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .remove-clone {
     background: #e74c3c;
     right: 27px; }

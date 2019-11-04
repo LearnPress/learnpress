@@ -150,10 +150,13 @@ class LP_Template {
 		}
 	}
 
+
 	public function course_extra_requirements() {
+		$course = LP_Course::get_course( get_the_ID() );
+
 		$requirements = apply_filters(
 			'learn-press/course-extra-requirements',
-			get_post_meta( get_the_ID(), '_lp_requirements', true ),
+			$course->get_extra_info( 'requirements' ),
 			get_the_ID()
 		);
 
@@ -172,9 +175,11 @@ class LP_Template {
 	}
 
 	public function course_extra_key_features() {
+		$course = LP_Course::get_course( get_the_ID() );
+
 		$key_features = apply_filters(
 			'learn-press/course-extra-key-features',
-			get_post_meta( get_the_ID(), '_lp_key_features', true ),
+			$course->get_extra_info( 'key_features' ),
 			get_the_ID()
 		);
 
@@ -193,9 +198,11 @@ class LP_Template {
 	}
 
 	public function course_extra_target_audiences() {
+		$course = LP_Course::get_course( get_the_ID() );
+
 		$target_audiences = apply_filters(
 			'learn-press/course-extra-target-audiences',
-			get_post_meta( get_the_ID(), '_lp_target_audience', true ),
+			$course->get_extra_info( 'target_audiences' ),
 			get_the_ID()
 		);
 
@@ -382,11 +389,11 @@ class LP_Template {
 		learn_press_get_template( 'loop/course/students' );
 	}
 
-	public function begin_courses_loop(){
+	public function begin_courses_loop() {
 		learn_press_get_template( 'loop/course/loop-begin.php' );
 	}
 
-	public function end_courses_loop(){
+	public function end_courses_loop() {
 		learn_press_get_template( 'loop/course/loop-end.php' );
 	}
 

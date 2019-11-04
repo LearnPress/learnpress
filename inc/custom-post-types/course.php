@@ -1058,12 +1058,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array(
 						'name'    => __( 'Target Audience', 'learnpress' ),
-						'id'      => '_lp_target_audience',
+						'id'      => '_lp_target_audiences',
 						'desc'    => __( 'Who are your target students?', 'learnpress' ),
 						'type'    => 'text-list',
 						'clone'   => true,
 						'options' => array(
-							'' => __( 'Target audience', 'learnpress' )
+							'' => __( 'Target audiences', 'learnpress' )
 						)
 					),
 					array(

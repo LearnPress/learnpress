@@ -1867,5 +1867,33 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			return compact( 'type_items', 'section_items', 'course_sections' );
 		}
+
+		/**
+		 * Get extra info of course.
+		 * Target Audience, Key Features, Requirements, etc...
+		 *
+		 * @since 3.x.x
+		 *
+		 * @param string $type [target_audience, key_features, requirements]
+		 *
+		 * @return string|array
+		 */
+		public function get_extra_info( $type ) {
+			$extra_info_meta = get_post_meta( get_the_ID(), '_lp_' . $type, true );
+			$extra_info      = array();
+
+			/**
+			 * Only get first item in two-dimensions array of Metabox Text list field.
+			 */
+			if ( $extra_info_meta ) {
+				foreach ( $extra_info_meta as $item ) {
+					if ( $text = reset( $item ) ) {
+						$extra_info[] = $text;
+					}
+				}
+			}
+
+			return apply_filters( 'learn-press/course-extra-info', $extra_info, $type, $this->get_id() );
+		}
 	}
 }
