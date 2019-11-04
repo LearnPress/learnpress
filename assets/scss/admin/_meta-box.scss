@@ -14,6 +14,10 @@
             margin-left: 190px;
             float: none;
             width: auto;
+            input[type="checkbox"],
+            input[type="radio"] {
+                margin: 1px 5px 0 0;
+            }
         }
         .description {
             margin-top: 8px;
@@ -25,6 +29,16 @@
         .rwmb-input-list {
             margin-left: 0;
         }
+
+        #course_evaluation_method_quiz_options {
+            margin-left: 25px;
+            display: none;
+        }
+
+        input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options {
+            display: block;
+        }
+
         &.rwmb-heading-wrapper {
             h4 {
                 font-size: 15px;
