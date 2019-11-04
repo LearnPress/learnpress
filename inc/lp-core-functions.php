@@ -3567,6 +3567,8 @@ function learn_press_is_page( $page_name ) {
 /**
  * Get end-date from start date with a duration.
  *
+ * @since 3.x.x
+ *
  * @param string|int $duration
  * @param string|int $start
  *
@@ -3606,6 +3608,9 @@ function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 	return isset( $cookie[ $name ] ) ? $cookie[ $name ] : null;
 }
 
+/**
+ * @return array
+ */
 function learn_press_default_course_levels() {
 	$levels = array(
 		'beginner'     => __( 'Beginner', 'learnpress' ),

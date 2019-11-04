@@ -654,11 +654,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 //						)
 					),
 					array(
-						'name' => __( 'Featured', 'learnpress' ),
-						'id'   => '_lp_featured',
-						'type' => 'yes_no',
-						'desc' => __( 'Set course as featured.', 'learnpress' ),
-						'std'  => 'no',
+						'name'  => __( 'Featured', 'learnpress' ),
+						'id'    => '_lp_featured',
+						'type'  => 'yes_no',
+						'desc'  => __( 'Set course as featured.', 'learnpress' ),
+						'std'   => 'no',
+						'roles' => 'administrator' // Admin only
 					),
 					array(
 						'name'        => __( 'External Link', 'learnpress' ),
@@ -765,10 +766,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => $course_result_desc,
 						'options' => array(
-							'evaluate_lesson'         => __( 'With lessons', 'learnpress' )
-							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
-							'evaluate_quiz'         => __( 'With quizzes', 'learnpress' )
-							                             . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
+							'evaluate_lesson' => __( 'With lessons', 'learnpress' )
+							                     . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
+							'evaluate_quiz'   => __( 'With quizzes', 'learnpress' )
+							                     . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
 //							'evaluate_final_quiz'     => __( 'Evaluate via results of the final quiz', 'learnpress' )
 //							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_final_quiz'] )
 //							                             . $quiz_passing_condition_html,
@@ -1066,16 +1067,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						)
 					),
 					array(
-						'name'    => __( 'Welcome message', 'learnpress' ),
-						'id'      => '_lp_welcome_message',
-						'desc'    => __( 'Welcome message description here.', 'learnpress' ),
-						'type'    => 'wysiwyg'
+						'name' => __( 'Welcome message', 'learnpress' ),
+						'id'   => '_lp_welcome_message',
+						'desc' => __( 'Welcome message description here.', 'learnpress' ),
+						'type' => 'wysiwyg'
 					),
 					array(
-						'name'    => __( 'Congratulation message', 'learnpress' ),
-						'id'      => '_lp_congratulation_message',
-						'desc'    => __( 'Key features description here.', 'learnpress' ),
-						'type'    => 'wysiwyg'
+						'name' => __( 'Congratulation message', 'learnpress' ),
+						'id'   => '_lp_congratulation_message',
+						'desc' => __( 'Key features description here.', 'learnpress' ),
+						'type' => 'wysiwyg'
 					)
 				)
 			);

@@ -81,7 +81,7 @@ if ( ! function_exists( 'learn_press_settings_tabs_array' ) ) {
 			'profile'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
 			'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
 			// 3.x.x
-            //'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
+			//'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
 			'emails'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
 			'advanced' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-advanced.php",
 		);
@@ -2414,4 +2414,35 @@ function learn_press_get_orders_status_chart_data() {
 	return $data;
 }
 
+/**
+ * Callback function to filter outer html of meta box field.
+ * If option 'roles' is passed to field and current user does
+ * not have the role in that then do not show the field.
+ *
+ * @since 3.x.x
+ *
+ * @param string $outer_html
+ * @param array  $field
+ * @param mixed  $value
+ *
+ * @return string
+ */
+function learn_press_meta_box_field_outer_html( $outer_html, $field, $value ) {
+
+	if ( ! empty( $field['roles'] ) ) {
+		$roles = $field['roles'];
+		settype( $roles, 'array' );
+
+		global $current_user;
+		$user_roles = $current_user->roles;
+
+		if ( ! array_intersect( $roles, $user_roles ) ) {
+			return '';
+		}
+	}
+
+	return $outer_html;
+}
+
+add_filter( 'rwmb_outer_html', 'learn_press_meta_box_field_outer_html', 10, 3 );
 include_once "class-lp-post-type-actions.php";

@@ -1,3 +1,4 @@
+this["LP"] = this["LP"] || {}; this["LP"]["custom"] =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
