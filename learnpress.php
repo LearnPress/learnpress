@@ -881,11 +881,18 @@ add_action( 'template_include', function ( $t ) {
 
 } );
 
-add_action('plugins_loaded', function(){
+add_filter( 'wp_redirect', function ( $url ) {
+//    learn_press_debug(debug_backtrace(), $_REQUEST);
+	error_log( 'wp_redirect=>' . $url );
+
+	return $url;
+} );
+
+add_action( 'plugins_loaded', function () {
 //	for($i=1;$i<100;$i++){
 //		wp_insert_post(array('post_title'=>'Post ' . $i, 'post_status'=>'publish'));
 //	}
-});
+} );
 //function detect_city( $ip ) {
 //
 //	$default = 'UNKNOWN';

@@ -5,6 +5,10 @@ defined( 'ABSPATH' ) || exit();
  * Class LP_Submenu_Settings
  */
 class LP_Submenu_Settings extends LP_Abstract_Submenu {
+	/**
+	 * @var LP_Abstract_Settings_Page[]
+	 */
+	protected $tabs = array();
 
 	/**
 	 * LP_Submenu_Settings constructor.
@@ -93,12 +97,6 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
         <input type="hidden" name="lp-settings-nonce" value="<?php echo wp_create_nonce( 'lp-settings' ); ?>">
         <p class="lp-admin-settings-buttons">
             <button class="button button-primary"><?php esc_html_e( 'Save settings', 'learnpress' ); ?></button>
-<!--            <a class="button"-->
-<!--               href="--><?php //echo wp_nonce_url( 'admin.php?page=learn-press-settings&reset=yes' ); ?><!--"-->
-<!--               id="learn-press-reset-settings"-->
-<!--               data-text="--><?php //esc_attr_e( 'Do you want to restore all settings to default?', 'learnpress' ); ?><!--">-->
-<!--				--><?php //esc_html_e( 'Reset', 'learnpress' ); ?>
-<!--            </a>-->
         </p>
 		<?php
 	}
@@ -139,6 +137,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		// Filter redirect
 		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );
+
 		if ( $redirect ) {
 			wp_redirect( $redirect );
 			exit();

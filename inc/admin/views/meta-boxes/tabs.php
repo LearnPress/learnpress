@@ -80,7 +80,7 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 					$classes[] = 'icon';
 				}
 				$classes = apply_filters( 'learn-press/admin/tab-class', $classes, $tab );
-				echo sprintf( '<li class="%s">', join( ' ', $classes ) );
+				echo sprintf( '<li class="%s" data-tab="%s">', join( ' ', $classes ), $tab['id'] );
 				?>
                 <a <?php echo ! empty( $tab['icon'] ) ? 'class="' . $tab['icon'] . '"' : ''; ?>
                         href="<?php echo add_query_arg( 'tab', $tab['id'] ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>

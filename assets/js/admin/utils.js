@@ -180,6 +180,8 @@ Object(_utils_extend__WEBPACK_IMPORTED_MODULE_0__["default"])('Utils', {
       $currentContent.siblings('li.active').fadeOut(0, function () {
         $currentContent.addClass('active').siblings('li.active').removeClass('active');
       });
+      $el.find('input[name="learn-press-meta-box-tab"]').val($tab.data('tab'));
+      $(document).trigger('LP.adminTabs.selectTab', [$tab, url]);
       LP.setUrl(url);
     }
 

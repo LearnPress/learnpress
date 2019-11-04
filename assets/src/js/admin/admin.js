@@ -220,6 +220,12 @@ var LP = LP || {};
                 handle: 'label'
             });
         }, 100);
+
+        $(document).on('LP.adminTabs.selectTab', function (event, $tab, url) {
+            if ($(document).find('input[name="post_type"]').val() === 'lp_course') {
+                $('input[name="_wp_http_referer"], input[name="referredby"], input[name="_wp_original_http_referer"]').val(url);
+            }
+        })
     };
 
     $(document).ready(onReady)

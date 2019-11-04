@@ -51,7 +51,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
-			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 			//add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ), 10 );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
@@ -262,21 +261,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Add tab arg to admin edit course url.
-		 *
-		 * @param $m
-		 *
-		 * @return string
-		 */
-		public function add_course_tab_arg( $m ) {
-			if ( array_key_exists( '_lp_curriculum', $_POST ) && ! empty( $_POST['course-tab'] ) ) {
-				$m = add_query_arg( 'tab', $_POST['course-tab'], $m );
-			}
-
-			return $m;
-		}
-
-		/**
 		 * Update course.
 		 *
 		 * @param $course_id
@@ -342,8 +326,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 				update_post_meta( $quiz_id, '_lp_passing_grade', $passing_grade );
 			}
-
-			//update_post_meta( $quiz_id, '_lp_passing_grade', $passing_grade );
 
 			// Update course evaluation results method
 			$course_evaluation_results      = LP_Request::get_string( '_lp_course_result' );
