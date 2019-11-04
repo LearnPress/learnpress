@@ -42,7 +42,7 @@ class LP_Settings_Pages extends LP_Abstract_Settings_Page {
 					'type'    => 'pages-dropdown'
 				),
 				array(
-					'title'   => __( 'Instructors registration', 'learnpress' ),
+					'title'   => __( 'Instructor registration', 'learnpress' ),
 					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
 					'id' => 'instructor_registration',
 					'default' => 'no',

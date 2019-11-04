@@ -205,7 +205,7 @@ class LP_Setup_Wizard {
 					'welcome'  => array(
 						'title'       => __( 'Welcome', 'learnpress' ),
 						'callback'    => array( $this, 'step_welcome' ),
-						'next_button' => __( 'Run setup wizard', 'learnpress' )
+						'next_button' => __( 'Run Setup Wizard', 'learnpress' )
 					),
 					'currency' => array(
 						'title'            => __( 'Currency', 'learnpress' ),

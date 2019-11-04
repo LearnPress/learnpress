@@ -57,7 +57,7 @@ $wizard = LP_Setup_Wizard::instance();
 						if ( ! empty( $step['skip_prev_button'] ) ) {
 							echo $step['skip_prev_button'];
 						} else {
-							_e( 'Skip to next step', 'learnpress' );
+							_e( 'Skip', 'learnpress' );
 						}
 						?>
                     </a>

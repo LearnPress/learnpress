@@ -59,7 +59,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'type'    => 'pages-dropdown'
 				),
 				array(
-					'title'   => __( 'Become Istructors', 'learnpress' ),
+					'title'   => __( 'Become Instructors', 'learnpress' ),
 					'id'      => 'become_a_teacher_page_id',
 					'default' => '',
 					'type'    => 'pages-dropdown'
@@ -122,7 +122,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'desc'    => __( 'User Profile will be public by default.', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'Instructors Registration', 'learnpress' ),
+					'title'   => __( 'Instructor Registration', 'learnpress' ),
 					'desc'    => __( 'Enable the option in all registration forms.', 'learnpress' ),
 					'id' => 'instructor_registration',
 					'default' => 'no',
