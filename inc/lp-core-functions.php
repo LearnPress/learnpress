@@ -3609,6 +3609,10 @@ function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 }
 
 /**
+ * Get list of levels support in course.
+ *
+ * @since 3.x.x
+ *
  * @return array
  */
 function learn_press_default_course_levels() {
@@ -3620,6 +3624,38 @@ function learn_press_default_course_levels() {
 	);
 
 	return apply_filters( 'learn-press/default-course-levels', $levels );
+}
+
+/**
+ * Get default methods to evaluate course results.
+ *
+ * @since 3.x.x
+ *
+ * @return array
+ */
+function learn_press_course_evaluation_methods() {
+	$methods = array(
+		'evaluate_lesson' => __( 'With lessons', 'learnpress' ),
+		'evaluate_quiz'   => __( 'With quizzes', 'learnpress' )
+	);
+
+	return apply_filters( 'learn-press/course-evaluation-methods', $methods );
+}
+
+/**
+ * Get default methods to evaluate course results.
+ *
+ * @since 3.x.x
+ *
+ * @return array
+ */
+function learn_press_course_evaluation_method_quiz_options() {
+	$methods = array(
+		'evaluate_lesson' => __( 'With lessons', 'learnpress' ),
+		'evaluate_quiz'   => __( 'With quizzes', 'learnpress' )
+	);
+
+	return $methods;
 }
 
 include_once dirname( __FILE__ ) . '/lp-custom-hooks.php';

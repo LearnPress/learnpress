@@ -2445,4 +2445,24 @@ function learn_press_meta_box_field_outer_html( $outer_html, $field, $value ) {
 }
 
 add_filter( 'rwmb_outer_html', 'learn_press_meta_box_field_outer_html', 10, 3 );
+
+function learn_press_option_course_evaluation_method( $method ) {
+	global $post;
+	$evaluation_by = get_post_meta( $post->ID, '_lp_course_result_quiz', true );
+	switch ( $method ) {
+		case 'evaluate_quiz':
+			?>
+            <p id="course_evaluation_method_quiz_options">
+                <input type="checkbox" id="lp-course-result-evaluate-final-quiz" name="_lp_course_result_quiz"
+                       value="final_quiz" <?php checked( $evaluation_by === 'final_quiz' ); ?> />
+                <label for="lp-course-result-evaluate-final-quiz">
+					<?php esc_html_e( 'Only the final quiz', 'learnpress' ); ?>
+                </label>
+            </p>
+			<?php
+	}
+}
+
+add_action( 'learn-press/option-course-evaluation-method', 'learn_press_option_course_evaluation_method' );
+
 include_once "class-lp-post-type-actions.php";

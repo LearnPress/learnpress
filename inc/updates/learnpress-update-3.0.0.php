@@ -406,7 +406,7 @@ class LP_Update_30 extends LP_Update_Base {
 
 		$new_options = array(
 			'learn_press_profile_avatar'    => 'yes',
-			'learn_press_profile_publicity' => array( 'dashboard' => 'yes' )
+			'learn_press_profile_privacy' => array( 'dashboard' => 'yes' )
 		);
 
 		foreach ( $new_options as $k => $v ) {

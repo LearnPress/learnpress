@@ -37,7 +37,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * @var array
 		 */
-		protected $_publicity = array();
+		protected $_privacy = array();
 
 		/**
 		 * @var array
@@ -84,7 +84,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					'basic-information' => __( 'Account information updated successful.', 'learnpress' ),
 					'avatar'            => __( 'Account avatar updated successful.', 'learnpress' ),
 					'password'          => __( 'Password updated successful.', 'learnpress' ),
-					'publicity'         => __( 'Account publicity updated successful.', 'learnpress' ),
+					'privacy'         => __( 'Account privacy updated successful.', 'learnpress' ),
 				)
 			);
 
@@ -228,11 +228,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 
 				$settings         = LP()->settings;
-				$this->_publicity = apply_filters( 'learn-press/check-publicity-setting', array(
-					'view-tab-dashboard'         => $this->get_publicity( 'my-dashboard' ) == 'yes',
-					'view-tab-basic-information' => $this->get_publicity( 'dashboard' ) == 'yes',
-					'view-tab-courses'           => $this->get_publicity( 'courses' ) == 'yes',
-					'view-tab-quizzes'           => $this->get_publicity( 'quizzes' ) == 'yes'
+				$this->_privacy = apply_filters( 'learn-press/check-privacy-setting', array(
+					'view-tab-dashboard'         => $this->get_privacy( 'my-dashboard' ) == 'yes',
+					'view-tab-basic-information' => $this->get_privacy( 'dashboard' ) == 'yes',
+					'view-tab-courses'           => $this->get_privacy( 'courses' ) == 'yes',
+					'view-tab-quizzes'           => $this->get_privacy( 'quizzes' ) == 'yes'
 				), $this );
 			}
 
@@ -352,10 +352,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					);
 				}
 
-				if ( 'yes' === $settings->get( 'profile_publicity.dashboard' ) ) {
-					$this->_default_settings['settings']['sections']['publicity'] = array(
-						'title'    => __( 'Publicity', 'learnpress' ),
-						'slug'     => 'publicity',
+				if ( 'yes' === $settings->get( 'publish_profile' ) ) {
+					$this->_default_settings['settings']['sections']['privacy'] = array(
+						'title'    => __( 'Privacy', 'learnpress' ),
+						'slug'     =>  $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ),
 						'priority' => 40,
 						'callback' => array( $this, 'tab_order_details' )
 					);
@@ -513,7 +513,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function current_user_can( $capability ) {
 			$tab         = substr( $capability, strlen( 'view-tab-' ) );
-			$public_tabs = apply_filters( 'learn-press/profile/publicity-tabs', array() );
+			$public_tabs = apply_filters( 'learn-press/profile/privacy-tabs', array() );
 			// public profile courses and quizzes tab
 			if ( in_array( $tab, $public_tabs ) ) {
 				$can = true;
@@ -521,10 +521,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				if ( $this->_user && $this->_user->get_id() && ( get_current_user_id() === $this->_user->get_id() ) ) {
 					$can = true;
 				} else {
-					if ( empty( $this->_publicity['view-tab-dashboard'] ) || ( false === $this->_publicity['view-tab-dashboard'] ) ) {
+					if ( empty( $this->_privacy['view-tab-dashboard'] ) || ( false === $this->_privacy['view-tab-dashboard'] ) ) {
 						$can = false;
 					} else {
-						$can = ! empty( $this->_publicity[ $capability ] ) && ( $this->_publicity[ $capability ] == true );
+						$can = ! empty( $this->_privacy[ $capability ] ) && ( $this->_privacy[ $capability ] == true );
 					}
 				}
 			}
@@ -569,19 +569,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				case 'password':
 					$return = learn_press_update_user_profile_change_password( true );
 					break;
-				case 'publicity':
-					$publicity = LP_Request::get_array( 'publicity' );
+				case 'privacy':
+					$privacy = LP_Request::get_array( 'privacy' );
 
-					if ( empty( $publicity['my-dashboard'] ) ) {
-						$publicity = false;
-					} elseif ( 'yes' !== $publicity['my-dashboard'] ) {
-						$publicity = false;
+					if ( empty( $privacy['my-dashboard'] ) ) {
+						$privacy = false;
+					} elseif ( 'yes' !== $privacy['my-dashboard'] ) {
+						$privacy = false;
 					}
 
-					if ( ! $publicity ) {
-						update_user_meta( get_current_user_id(), '_lp_profile_publicity', array() );
+					if ( ! $privacy ) {
+						update_user_meta( get_current_user_id(), '_lp_profile_privacy', array() );
 					} else {
-						update_user_meta( get_current_user_id(), '_lp_profile_publicity', $publicity );
+						update_user_meta( get_current_user_id(), '_lp_profile_privacy', $privacy );
 					}
 
 			}
@@ -610,7 +610,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
-		 * Get publicity profile settings.
+		 * Get privacy profile settings.
 		 *
 		 * @since 3.0.0
 		 *
@@ -618,30 +618,30 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @return array|mixed
 		 */
-		public function get_publicity( $tab = '' ) {
+		public function get_privacy( $tab = '' ) {
 
-			$publicity = false;
+			$privacy = false;
 			/**
 			 * For first time user did not save anything from profile then get default
 			 * from settings in admin.
 			 */
-			if ( ( $user = $this->get_user() ) && ( '' === ( $publicity = $user->get_data( 'profile_publicity' ) ) ) ) {
-				$publicity = apply_filters( 'learn-press/get-publicity-setting', array(
-					'my-dashboard' => LP()->settings()->get( 'profile_publicity.dashboard' ),
-					'courses'      => LP()->settings()->get( 'profile_publicity.courses' ),
-					'quizzes'      => LP()->settings()->get( 'profile_publicity.quizzes' )
+			if ( ( $user = $this->get_user() ) && ( '' === ( $privacy = $user->get_data( 'profile_privacy' ) ) ) ) {
+				$privacy = apply_filters( 'learn-press/get-privacy-setting', array(
+					'my-dashboard' => LP()->settings()->get( 'profile_privacy.dashboard' ),
+					'courses'      => LP()->settings()->get( 'profile_privacy.courses' ),
+					'quizzes'      => LP()->settings()->get( 'profile_privacy.quizzes' )
 				) );
 			}
 
-			if ( $publicity && $tab ) {
-				if ( array_key_exists( $tab, $publicity ) ) {
-					return $publicity[ $tab ];
+			if ( $privacy && $tab ) {
+				if ( array_key_exists( $tab, $privacy ) ) {
+					return $privacy[ $tab ];
 				} else {
 					return false;
 				}
 			}
 
-			return $publicity ? $publicity : false;
+			return $privacy ? $privacy : false;
 		}
 
 		/**

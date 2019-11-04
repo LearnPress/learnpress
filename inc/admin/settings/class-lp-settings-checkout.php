@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * @deprecated
+ */
 class LP_Settings_Checkout extends LP_Abstract_Settings_Page {
 
 	/**

@@ -9,15 +9,36 @@
             width: 190px;
             font-size: 14px;
             text-transform: capitalize;
+            label {
+                > small {
+                    display: block;
+                    color: #999;
+                    font-style: italic;
+                    font-weight: normal;
+                }
+            }
         }
         .rwmb-input {
             margin-left: 190px;
             float: none;
             width: auto;
+            input[type="checkbox"],
+            input[type="radio"] {
+                margin: 1px 5px 0 0;
+            }
+            label {
+                > input[type="checkbox"],
+                > input[type="radio"] {
+                    margin-top: -1px;
+                }
+            }
         }
         .description {
             margin-top: 8px;
             color: #888;
+            code {
+                padding: 3px 3px 3px 0;
+            }
             &.err {
                 color: #FF0000;
             }
@@ -25,9 +46,19 @@
         .rwmb-input-list {
             margin-left: 0;
         }
+
+        #course_evaluation_method_quiz_options {
+            margin-left: 25px;
+            display: none;
+        }
+
+        input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options {
+            display: block;
+        }
+
         &.rwmb-heading-wrapper {
             h4 {
-                font-size: 15px;
+                font-size: 16px;
                 margin: 0 0 5px 0;
                 padding: 0 0 0;
                 border-bottom: 2px solid #563d7c;

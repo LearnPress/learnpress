@@ -343,6 +343,19 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				update_post_meta( $quiz_id, '_lp_passing_grade', $passing_grade );
 			}
 
+			//update_post_meta( $quiz_id, '_lp_passing_grade', $passing_grade );
+
+			// Update course evaluation results method
+			$course_evaluation_results      = LP_Request::get_string( '_lp_course_result' );
+			$course_evaluation_results_quiz = LP_Request::get_string( '_lp_course_result_quiz' );
+
+			update_post_meta( $course_id, '_lp_course_result', $course_evaluation_results );
+
+			if ( $course_evaluation_results !== 'evaluate_quiz' || ! $course_evaluation_results_quiz ) {
+				delete_post_meta( $course_id, '_lp_course_result_quiz' );
+			} else if ( $course_evaluation_results_quiz ) {
+				update_post_meta( $course_id, '_lp_course_result_quiz', $course_evaluation_results_quiz );
+			}
 		}
 
 		/**
@@ -751,6 +764,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			);
 
 			$course_result_option_tip = '<span class="learn-press-tip" data-x="1234">%s</span>';
+			//$evaluation_methods       = learn_press_default_course_evaluation_methods();
 
 			$meta_box = array(
 				'id'       => 'course_assessment',
@@ -760,16 +774,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'pages'    => array( LP_COURSE_CPT ),
 				'fields'   => array(
 					array(
-						'name'    => __( 'Evaluation', 'learnpress' ),
+						'name' => __( 'Evaluation', 'learnpress' ),
 						//'id'      => '_lp_evaluation',
-						'id'      => '_lp_course_result',
-						'type'    => 'radio',
-						'desc'    => $course_result_desc,
-						'options' => array(
-							'evaluate_lesson' => __( 'With lessons', 'learnpress' )
-							                     . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
-							'evaluate_quiz'   => __( 'With quizzes', 'learnpress' )
-							                     . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
+						'id'   => '_lp_course_result',
+						'type' => 'course-evaluation-results',
+						'desc' => $course_result_desc,
+//						'optionsx' => array(
+//							'evaluate_lesson' => __( 'With lessons', 'learnpress' )
+//							                     . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
+//							'evaluate_quiz'   => __( 'With quizzes', 'learnpress' )
+//							                     . learn_press_quick_tip( $course_result_option_desc['evaluate_lesson'], false ),
 //							'evaluate_final_quiz'     => __( 'Evaluate via results of the final quiz', 'learnpress' )
 //							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_final_quiz'] )
 //							                             . $quiz_passing_condition_html,
@@ -779,9 +793,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 //							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_passed_quizzes'] ),
 //							'evaluate_quiz'           => __( 'Evaluate via quizzes', 'learnpress' )
 //							                             . sprintf( $course_result_option_tip, $course_result_option_desc['evaluate_quiz'] )
-						),
-						'std'     => 'evaluate_lesson',
-						'inline'  => false
+						//),
+//						'options'  => $evaluation_methods,
+//						'std'      => reset( $evaluation_methods ),
+//						'inline'   => false
 					),
 					array(
 						'name'        => __( 'Passing Grade', 'learnpress' ),
@@ -1569,7 +1584,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				update_post_meta( $post->ID, '_lp_course_status', $new_status );
 			}
 
-			$this->_review_log();
+			//$this->_review_log();
 			delete_post_meta( $post->ID, '_lp_curriculum' );
 		}
 
