@@ -497,7 +497,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			array_unshift( $meta_box_settings['fields'], array(
 					'id'      => 'question-content',
 					'type'    => 'textarea', //'wysiwyg',
-					'name'    => __( 'Question Content', 'learnpress' ),
+					'name'    => __( 'taibeoQuestion Content', 'learnpress' ),
 					'default' => '',
 					'context' => 'quiz-list-questions'
 				)

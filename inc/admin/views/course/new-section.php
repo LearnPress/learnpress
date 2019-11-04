@@ -14,7 +14,7 @@
             <div class="section-head">
                 <span class="creatable"></span>
                 <input v-model="section_title" type="text" title="title" class="title-input"
-                       placeholder="<?php esc_attr_e( 'Write section name and press Enter', 'learnpress' ); ?>"
+                       placeholder="<?php esc_attr_e( 'Create a new section', 'learnpress' ); ?>"
                        @keyup.enter.prevent="newSection">
             </div>
         </form>

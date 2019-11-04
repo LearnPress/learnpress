@@ -53,7 +53,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title' => __( 'General', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'  => __( 'General settings.', 'learnpress' )
 						),
 //						array(
 //							'title'   => __( 'Profile page', 'learnpress' ),
@@ -135,7 +134,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title' => __( 'Permalinks', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'  => __( 'The slugs of tabs display in profile page. Each tab should be unique.', 'learnpress' )
 						),
 						array(
 							'title'       => __( 'Dashboard', 'learnpress' ),
@@ -143,7 +141,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'dashboard',
 							'placeholder' => 'dashboard',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.dashboard', 'dashboard' ) . "</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.dashboard', 'dashboard' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Courses', 'learnpress' ),
@@ -151,7 +149,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'courses',
 							'placeholder' => 'courses',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.courses', 'courses' ) . "</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.courses', 'courses' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Quizzes', 'learnpress' ),
@@ -159,7 +157,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'quizzes',
 							'placeholder' => 'quizzes',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.quizzes', 'quizzes' ) . "</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.quizzes', 'quizzes' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Orders', 'learnpress' ),
@@ -167,7 +165,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'orders',
 							'placeholder' => 'orders',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.orders', 'orders' ) . "</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.orders', 'orders' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Order details', 'learnpress' ),
@@ -175,7 +173,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'order-details',
 							'placeholder' => 'order-details',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.order-details', 'order-details' ) . "/123</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/" . $settings->get( 'profile_endpoints.order-details', 'order-details' ) . "/123</code>" )
 						)
 					),
 					$this
@@ -194,7 +192,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'settings',
 							'placeholder' => 'settings',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}</code>" )
 						),
 						array(
 							'title'       => __( 'Basic Information', 'learnpress' ),
@@ -202,7 +200,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'basic-information',
 							'placeholder' => 'basic-information',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ) . "</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Avatar', 'learnpress' ),
@@ -210,7 +208,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'avatar',
 							'placeholder' => 'avatar',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ) . "</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ) . "</code>" )
 						),
 						array(
 							'title'       => __( 'Change Password', 'learnpress' ),
@@ -218,7 +216,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'change-password',
 							'placeholder' => 'change-password',
-							'desc'        => sprintf( __( 'Example link is %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ) . "</code>" )
+							'desc'        => sprintf( __( 'e.g.  %s', 'learnpress' ), "<code>{$profile_url}/{$settings_slug}/" . $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ) . "</code>" )
 						)
 					)
 				),
