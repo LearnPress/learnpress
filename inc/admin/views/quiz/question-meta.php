@@ -16,7 +16,7 @@
                 <div class="rwmb-meta-box">
                     <div class="rwmb-field rwmb-textarea-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Content', 'learnpress' ); ?></label>
+                            <label for=""><?php _e( 'Describe More', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>

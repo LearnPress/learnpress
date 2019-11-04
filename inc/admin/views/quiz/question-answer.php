@@ -16,8 +16,8 @@ learn_press_admin_view( 'quiz/question-answer-option' );
                 <tr>
                     <th class="sort"></th>
                     <th class="order">#</th>
-                    <th class="answer-text"><?php esc_html_e( 'Answer Text', 'learnpress' ); ?></th>
-                    <th class="answer-correct"><?php esc_html_e( 'Correct?', 'learnpress' ); ?></th>
+                    <th class="answer-text"><?php esc_html_e( 'Answers', 'learnpress' ); ?></th>
+                    <th class="answer-correct"><?php esc_html_e( 'Correction', 'learnpress' ); ?></th>
                     <th class="actions"></th>
                 </tr>
                 </thead>
