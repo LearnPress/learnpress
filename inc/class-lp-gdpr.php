@@ -92,14 +92,14 @@ class LP_GDPR {
 		$export_items = array();
 
 		if ( $user = $profile->get_user() ) {
-			if ( $publicity = $user->get_data( 'profile_publicity' ) ) {
+			if ( $privacy = $user->get_data( 'profile_privacy' ) ) {
 				$export_item = array(
 					'group_id'    => 'lp-profile',
 					'group_label' => __( 'Profile Settings', 'learnpress' ),
 					'item_id'     => "profile-" . $wp_user->ID,
 					'data'        => array()
 				);
-				foreach ( $publicity as $key => $item ) {
+				foreach ( $privacy as $key => $item ) {
 					$export_item['data'][] = array(
 						'name'  => $key,
 						'value' => $item
@@ -487,7 +487,7 @@ class LP_GDPR {
 		$this->_eraser_user_items( $wp_user->ID, $page );
 		$this->_eraser_courses( $wp_user->ID, $page );
 
-		delete_user_meta( $wp_user->ID, '_lp_profile_publicity' );
+		delete_user_meta( $wp_user->ID, '_lp_profile_privacy' );
 		$eraser_data['items_removed'] = true;
 
 		return $eraser_data;
