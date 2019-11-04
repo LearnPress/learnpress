@@ -143,10 +143,32 @@ var LP = LP || {};
 
     var focusToInputWhenCloningTextList = function (event) {
         setTimeout(() => {
-            $(event.target).closest('.rwmb-text-list-wrapper').find('.rwmb-text-list:last').focus();
-        }, 40)
+
+            var $container = $(event.target).closest('.rwmb-text-list-wrapper');
+            var $siblings = $container.find('.rwmb-text-list-clone');
+            var $lastRow = $siblings.last();
+
+            $siblings.each(function () {
+                var $row = $(this);
+
+                if (!$row.find('.rwmb-text-list').val().length) {
+                    $row.find('.rwmb-text-list').focus();
+
+                    if (!$row.is($lastRow)) {
+                        $lastRow.remove();
+                    }
+                    return false;
+                }
+            });
+        }, 20)
     };
 
+    /**
+     * Add new option to Metabox Text list when user press Enter in
+     * an existing item.
+     *
+     * @param event
+     */
     var addOptionToTextList = function addOptionToTextList(event) {
         if (event.keyCode !== 13) {
             return;
@@ -154,7 +176,15 @@ var LP = LP || {};
 
         event.preventDefault();
 
-        $(event.target).closest('.rwmb-text-list-wrapper').find('.add-clone').trigger('click');
+        var $item = $(event.target).closest('.rwmb-text-list-clone');
+        var $container = $(event.target).closest('.rwmb-text-list-wrapper');
+        var $siblings = $container.find('.rwmb-text-list-clone');
+
+        if ($siblings.last().is($item)) {
+            $container.find('.add-clone').trigger('click');
+        } else {
+            $(event.target).closest('.rwmb-text-list-clone').next().find('.rwmb-text-list').focus();
+        }
 
     }
 

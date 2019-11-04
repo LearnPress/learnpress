@@ -220,7 +220,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'default'     => 'privacy',
 							'placeholder' => 'privacy',
-							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/<code>" . $settings->get( 'profile_endpoints.privacy', 'privacy' ) . "</code>" )
+							'desc'        => sprintf( 'e.g. %s', "{$profile_url}/{$settings_slug}/<code>" . $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ) . "</code>" )
 						)
 					)
 				)
