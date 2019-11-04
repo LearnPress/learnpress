@@ -195,7 +195,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'  => 'heading',
 						),
 						array(
-							'title'   => __( 'Single course', 'learnpress' ),
+							'title'   => __( 'Course', 'learnpress' ),
 							'type'    => 'course-permalink',
 							'default' => '',
 							'id'      => 'course_base'
@@ -217,14 +217,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'placeholder' => 'quizzes'
 						),
 						array(
-							'title'   => __( 'Course Category Base', 'learnpress' ),
+							'title'   => __( 'Category Base', 'learnpress' ),
 							'id'      => 'course_category_base',
 							'default' => 'course-category',
 							'type'    => 'text',
 							'placeholder' => 'course-category'
 						),
 						array(
-							'title'   => __( 'Course Tag Base', 'learnpress' ),
+							'title'   => __( 'Tag Base', 'learnpress' ),
 							'id'      => 'course_tag_base',
 							'default' => 'course-tag',
 							'type'    => 'text',
