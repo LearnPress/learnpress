@@ -266,14 +266,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public static function settings_meta_box() {
 
 			$meta_box = array(
-				'title'      => __( 'General Settings', 'learnpress' ),
+				'title'      => __( 'Settings', 'learnpress' ),
 				'post_types' => LP_QUIZ_CPT,
 				'context'    => 'normal',
 				'priority'   => 'high',
 				'fields'     => array(
 					array(
 						'name'         => __( 'Duration', 'learnpress' ),
-						'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
+						'desc'         => __( 'Set 0 for unlimited time on the quiz.', 'learnpress' ),
 						'id'           => '_lp_duration',
 						'type'         => 'duration',
 						'default_time' => 'minute',
@@ -281,8 +281,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'          => 10,
 					),
 					array(
-						'name'        => __( 'Passing grade (<span>%</span>)', 'learnpress' ),
-						'desc'        => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
+						'name'        => __( 'Passing Grade', 'learnpress' ),
+						'desc'        => __( 'The condition that must be achieved in order to be passed the quiz.', 'learnpress' ),
 						'id'          => '_lp_passing_grade',
 						'type'        => 'number',
 						'after_input' => '&nbsp;%',
@@ -291,11 +291,11 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'std'         => 80
 					),
 					array(
-						'name' => __( 'Negative marking', 'learnpress' ),
+						'name' => __( 'Negative Marking', 'learnpress' ),
 						//'id'   => '_lp_minus_points',
 						'id'   => '_lp_negative_marking',
 						'type' => 'yes_no',
-						'desc' => __( 'For every questions users answer wrongly, users are deducted the question point.', 'learnpress' ),
+						'desc' => __( 'For every questions students answer wrongly, the total point is deducted the question marks.', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(
@@ -303,7 +303,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						//'id'   => '_lp_show_check_answer',
 						'id'   => '_lp_instant_check',
 						'type' => 'yes_no',
-						'desc' => __( 'Allow users can immediately check their answer is right or wrong + show explanation.', 'learnpress' ),
+						'desc' => __( 'Allow students to immediately check their answers while doing the quiz.', 'learnpress' ),
 						'std'  => 'no'
 					),
 					array(
@@ -311,12 +311,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						//'id'   => '_lp_retake_count',
 						'id'   => '_lp_retry',
 						'type' => 'yes_no',
-						'desc' => __( 'Allow users can retry quiz with 1 time max.', 'learnpress' ),
+						'desc' => __( 'Allow students to try the quiz one more time.', 'learnpress' ),
 						'std'  => 'no'
 					),
 					array(
 						'name' => __( 'Pagination', 'learnpress' ),
-						'desc' => __( 'How many questions should be shown in each page, default 1.', 'learnpress' ),
+						'desc' => __( 'Set a number of questions showed in each page.', 'learnpress' ),
 						//'id'   => '_lp_show_hide_question',
 						'id'   => '_lp_pagination',
 						'type' => 'number',
@@ -336,7 +336,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'name' => __( 'Review', 'learnpress' ),
 						'id'   => '_lp_review',
 						'type' => 'yes-no',
-						'desc' => __( 'If quiz is completed: show all list questions, user\'s answers, explanation.', 'learnpress' ),
+						'desc' => __( 'Allow students to review the quiz after submitted.', 'learnpress' ),
 						'std'  => 'yes'
 					),
 					/////////

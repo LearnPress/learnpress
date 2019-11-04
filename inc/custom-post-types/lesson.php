@@ -230,22 +230,21 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$meta_boxes = apply_filters( 'learn_press_lesson_meta_box_args',
 				array(
 					'id'     => 'lesson_settings',
-					'title'  => __( 'Lesson Settings', 'learnpress' ),
+					'title'  => __( 'Settings', 'learnpress' ),
 					'pages'  => array( LP_LESSON_CPT ),
 					'fields' => array(
 						array(
-							'name'         => __( 'Lesson Duration', 'learnpress' ),
+							'name'         => __( 'Duration', 'learnpress' ),
 							'id'           => '_lp_duration',
 							'type'         => 'duration',
 							'default_time' => 'minute',
-							'desc'         => __( 'Duration of the lesson. Set 0 to disable.', 'learnpress' ),
 							'std'          => 30,
 						),
 						array(
-							'name' => __( 'Preview Lesson', 'learnpress' ),
+							'name' => __( 'Free View', 'learnpress' ),
 							'id'   => '_lp_preview',
 							'type' => 'yes-no',
-							'desc' => __( 'If this is a preview lesson, then student can view this lesson content without taking the course.', 'learnpress' ),
+							'desc' => __( 'Allows any users to view the lesson content.', 'learnpress' ),
 							'std'  => 'no'
 						)
 					)

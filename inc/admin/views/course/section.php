@@ -18,7 +18,7 @@ learn_press_admin_view( 'course/new-section-item' );
             <!--Section title-->
             <input v-model="section.title" type="text" title="title" class="title-input"
                    @change="updating" @blur="completed" @keyup.enter="completed"
-                   placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
+                   placeholder="<?php esc_attr_e( 'Create a new section', 'learnpress' ); ?>">
             <div class="section-item-counts">
                 <span v-for="item in countItems()">{{item.count}} {{item.name}}</span>
             </div>
@@ -35,7 +35,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     <input v-model="section.description" type="text" class="description-input no-submit"
                            title="description"
                            @change="updating" @blur="completed" @keyup.enter="completed" ref="description"
-                           placeholder="<?php esc_attr_e( 'Describe about this section', 'learnpress' ); ?>">
+                           placeholder="<?php esc_attr_e( 'Section description...', 'learnpress' ); ?>">
                 </div>
 
                 <div class="section-list-items" :class="{'no-item': !section.items.length}">

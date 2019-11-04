@@ -37,9 +37,8 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 			'learn-press/general-settings-fields',
 			array(
 				array(
-					'title' => __( 'Important pages', 'learnpress' ),
+					'title' => __( 'Important Pages', 'learnpress' ),
 					'type'  => 'heading',
-					'desc'  => __( 'Static pages used in frontend.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'All Courses', 'learnpress' ),
@@ -60,7 +59,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'type'    => 'pages-dropdown'
 				),
 				array(
-					'title'   => __( 'Become instructors', 'learnpress' ),
+					'title'   => __( 'Become Istructors', 'learnpress' ),
 					'id'      => 'become_a_teacher_page_id',
 					'default' => '',
 					'type'    => 'pages-dropdown'
@@ -87,7 +86,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'options' => $currencies
 				),
 				array(
-					'title'   => __( 'Currency position', 'learnpress' ),
+					'title'   => __( 'Currency Position', 'learnpress' ),
 					'id'      => 'currency_pos',
 					'default' => 'left',
 					'type'    => 'select',
@@ -106,7 +105,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'type'    => 'text'
 				),
 				array(
-					'title'   => __( 'Number of Decimals', 'learnpress' ),
+					'title'   => __( 'Number Of Decimals', 'learnpress' ),
 					'id'      => 'number_of_decimals',
 					'default' => '2',
 					'type'    => 'number'
@@ -114,17 +113,16 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 				array(
 					'title' => __( 'Other', 'learnpress' ),
 					'type'  => 'heading',
-					'desc'  => __( 'Other settings.', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'Publish profile', 'learnpress' ),
+					'title'   => __( 'Publish Profile', 'learnpress' ),
 					'id'      => 'publish_profile',
 					'default' => 'no',
 					'type'    => 'yes-no',
-					'desc'    => __( 'Public user profile content, if this option is turn off then other sections in profile also become invisible.', 'learnpress' )
+					'desc'    => __( 'User Profile will be public by default.', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'Instructors registration', 'learnpress' ),
+					'title'   => __( 'Instructors Registration', 'learnpress' ),
 					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
 					'id' => 'instructor_registration',
 					'default' => 'no',

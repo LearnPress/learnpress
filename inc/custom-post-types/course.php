@@ -573,7 +573,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				array(
 					'post_type' => LP_COURSE_CPT,
 					'tabs'      => $course_tabs,
-					'title'     => __( 'Course Settings', 'learnpress' )
+					'title'     => __( 'Settings', 'learnpress' )
 				)
 			);
 
@@ -598,7 +598,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Duration', 'learnpress' ),
 						'id'   => '_lp_duration',
 						'type' => 'duration',
-						'desc' => __( 'The duration of the course. Lifetime access if duration is zero.', 'learnpress' ),
+						'desc' => __( 'Set 0 for lifetime access.', 'learnpress' ),
 						'std'  => '10 weeks'
 					),
 
@@ -606,7 +606,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'    => __( 'Level', 'learnpress' ),
 						'id'      => '_lp_level',
 						'type'    => 'select',
-						'desc'    => __( 'The duration of the course. Lifetime access if duration is zero.', 'learnpress' ),
+						'desc'    => 'Choose a difficulty level.',
 						'std'     => '',
 						'options' => learn_press_default_course_levels()
 					),
@@ -614,7 +614,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Promote', 'learnpress' ),
 						'id'   => '_lp_students',
 						'type' => 'number',
-						'desc' => __( 'How many students have taken this course.', 'learnpress' ),
+						'desc' => __( 'Show a plus number of students for the course.', 'learnpress' ),
 						'std'  => 0,
 					),
 					// @since 3.3.0
@@ -639,21 +639,21 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Limit', 'learnpress' ),
 						'id'   => '_lp_max_students',
 						'type' => 'number',
-						'desc' => __( 'Maximum number of students who can enroll in this course.', 'learnpress' ),
+						'desc' => __( 'Maximum students can join the course. Set 0 for unlimited.', 'learnpress' ),
 						'std'  => 0,
 					),
 					array(
 						'name' => __( 'Retry', 'learnpress' ),
 						'id'   => '_lp_retake_count',
 						'type' => 'yes-no',
-						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable re-taking', 'learnpress' ),
+						'desc' => __( 'Allow students to try the course one more time.', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(
-						'name' => __( 'Block content', 'learnpress' ),
+						'name' => __( 'Hide Content', 'learnpress' ),
 						'id'   => '_lp_block_content',
 						'type' => 'yes-no',
-						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable re-taking', 'learnpress' ),
+						'desc' => __( 'Hide the curriculum content after students finished the course.', 'learnpress' ),
 						'std'  => 'no',
 //						'visibility'  => array(
 //							'state'       => 'show',
@@ -670,7 +670,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'  => __( 'Featured', 'learnpress' ),
 						'id'    => '_lp_featured',
 						'type'  => 'yes_no',
-						'desc'  => __( 'Set course as featured.', 'learnpress' ),
+						'desc'  => __( 'Add the course to Featured List.', 'learnpress' ),
 						'std'   => 'no',
 						'roles' => 'administrator' // Admin only
 					),
@@ -678,9 +678,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'        => __( 'External Link', 'learnpress' ),
 						'id'          => '_lp_external_link_buy_course',
 						'type'        => 'url',
-						'desc'        => __( 'Redirect to this url when you press button buy this course.', 'learnpress' ),
+						'desc'        => __( 'Normally use for offline classes, e.g. link to a contact page.', 'learnpress' ),
 						'std'         => '',
-						'placeholder' => 'http://example.com'
+						'placeholder' => 'https://'
 					),
 					/*array(
 						'name' => __( 'Block Lessons', 'learnpress' ),
@@ -799,13 +799,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 //						'inline'   => false
 					),
 					array(
-						'name'        => __( 'Passing grade', 'learnpress' ),
+						'name'        => __( 'Passing Grade', 'learnpress' ),
 						//'id'          => '_lp_passing_grade',
 						'id'          => '_lp_passing_condition',
 						'type'        => 'number',
 						'min'         => 0,
 						'max'         => 100,
-						'desc'        => __( 'The percentage of quiz result or completed lessons to finish the course.', 'learnpress' ),
+						'desc'        => __( 'The condition that must be achieved in order to be completed the course.', 'learnpress' ),
 						'std'         => 80,
 						'after_input' => '&nbsp;%',
 						'visibility'  => array(
@@ -883,7 +883,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				if ( ! $start_date && ! $end_date ) {
 					$sale_price_dates_class .= 'hide-if-js';
 				}
-				$message     .= sprintf( __( 'Course price in <strong>%s</strong> currency.', 'learnpress' ), learn_press_get_currency() );
+				$message     .= sprintf( __( 'Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>.', 'learnpress' ), learn_press_get_currency() );
 				$conditional = array(
 					'state'       => 'show',
 					'conditional' => array(
@@ -912,17 +912,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'       => 'number',
 						'min'        => 0,
 						'step'       => 0.01,
-						'desc'       => sprintf(
-							                '%s %s',
-							                sprintf( __( 'Course sale price in <strong>%s</strong> currency.', 'learnpress' ), learn_press_get_currency() ),
-							                __( 'Leave blank to remove sale price.', 'learnpress' )
-						                )
-						                . ' <a href="#"' . ( $start_date || $end_date ? ' style="display:none;"' : '' ) . ' id="_lp_sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
+						'desc'       => '<a href="#"' . ( $start_date || $end_date ? ' style="display:none;"' : '' ) . ' id="_lp_sale_price_schedule">' . __( 'Sale Schedule', 'learnpress' ) . '</a>',
 						'std'        => $sale_price,
 						'visibility' => $conditional
 					),
 					array(
-						'name'       => __( 'Sale start date', 'learnpress' ),
+						'name'       => __( 'Start Date', 'learnpress' ),
 						'id'         => '_lp_sale_start',
 						'type'       => 'datetime',
 						'std'        => $start_date,
@@ -930,7 +925,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'visibility' => $conditional
 					),
 					array(
-						'name'       => __( 'Sale end date', 'learnpress' ),
+						'name'       => __( 'End Date', 'learnpress' ),
 						'id'         => '_lp_sale_end',
 						'type'       => 'datetime',
 						'desc'       => '<a href="#" id="_lp_sale_price_schedule_cancel">' . __( 'Cancel', 'learnpress' ) . '</a>',
@@ -1054,7 +1049,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					array(
 						'name'    => __( 'Requirements', 'learnpress' ),
 						'id'      => '_lp_requirements',
-						'desc'    => __( 'Requirements description here.', 'learnpress' ),
+						'desc'    => __( 'Are there any course requirements or prerequisites?', 'learnpress' ),
 						'type'    => 'text-list',
 						'clone'   => true,
 						'options' => array(
@@ -1062,9 +1057,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						)
 					),
 					array(
-						'name'    => __( 'Target audience', 'learnpress' ),
+						'name'    => __( 'Target Audience', 'learnpress' ),
 						'id'      => '_lp_target_audience',
-						'desc'    => __( 'Target audience description here.', 'learnpress' ),
+						'desc'    => __( 'Who are your target students?', 'learnpress' ),
 						'type'    => 'text-list',
 						'clone'   => true,
 						'options' => array(
@@ -1072,9 +1067,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						)
 					),
 					array(
-						'name'    => __( 'Key features', 'learnpress' ),
+						'name'    => __( 'Key Features', 'learnpress' ),
 						'id'      => '_lp_key_features',
-						'desc'    => __( 'Key features description here.', 'learnpress' ),
+						'desc'    => __( 'What will students learn in your course?', 'learnpress' ),
 						'type'    => 'text-list',
 						'clone'   => true,
 						'options' => array(
@@ -1082,15 +1077,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						)
 					),
 					array(
-						'name' => __( 'Welcome message', 'learnpress' ),
+						'name' => __( 'Welcome Message', 'learnpress' ),
 						'id'   => '_lp_welcome_message',
-						'desc' => __( 'Welcome message description here.', 'learnpress' ),
+						'desc' => __( 'Show a welcome message for students when they enroll the course.', 'learnpress' ),
 						'type' => 'wysiwyg'
 					),
 					array(
-						'name' => __( 'Congratulation message', 'learnpress' ),
+						'name' => __( 'Congratulations Message', 'learnpress' ),
 						'id'   => '_lp_congratulation_message',
-						'desc' => __( 'Key features description here.', 'learnpress' ),
+						'desc' => __( 'Show a congratulations message for students when they complete the course.', 'learnpress' ),
 						'type' => 'wysiwyg'
 					)
 				)

@@ -9,14 +9,14 @@
 <script type="text/x-template" id="tmpl-lp-quiz-question-meta">
     <div class="quiz-question-options">
         <div class="postbox" @click="openSettings($event)">
-            <h2 class="hndle"><span><?php _e( 'Settings', 'learnpress' ); ?></span>
+            <h2 class="hndle"><span><?php _e( 'Details', 'learnpress' ); ?></span>
             </h2>
             <a class="toggle" @click.prevent="openSettings($event)"></a>
             <div class="inside">
                 <div class="rwmb-meta-box">
                     <div class="rwmb-field rwmb-textarea-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Question Content', 'learnpress' ); ?></label>
+                            <label for=""><?php _e( 'Content', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>
@@ -28,19 +28,32 @@
                     </div>
                     <div class="rwmb-field rwmb-number-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Mark for this question', 'learnpress' ); ?></label>
+                            <label for=""><?php _e( 'Marking', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>
                                 <input name="mark" type="number" min="1" v-model="question.settings.mark"
                                        @change="updateMeta">
-                                <p class="description"><?php _e( 'Mark for choosing the right answer.', 'learnpress' ); ?></p>
+                                <p class="description"><?php _e( 'Set question points.', 'learnpress' ); ?></p>
                             </div>
                         </div>
                     </div>
+	                <div class="rwmb-field rwmb-textarea-wrapper">
+		                <div class="rwmb-label">
+			                <label for=""><?php _e( 'Hint', 'learnpress' ); ?></label>
+		                </div>
+		                <div class="rwml-input">
+			                <div>
+                                   <textarea name="hint" id="" cols="60" rows="3" class="rwmb-textarea large-text"
+                                             @change="updateMeta"
+                                             v-model="question.settings.hint"></textarea>
+				                <p class="description"><?php _e( 'A little help for students to get the right answer.', 'learnpress' ); ?></p>
+			                </div>
+		                </div>
+	                </div>
                     <div class="rwmb-field rwmb-textarea-wrapper">
                         <div class="rwmb-label">
-                            <label for=""><?php _e( 'Question Explanation', 'learnpress' ); ?></label>
+                            <label for=""><?php _e( 'Explanation', 'learnpress' ); ?></label>
                         </div>
                         <div class="rwml-input">
                             <div>
@@ -48,20 +61,7 @@
                                              class="rwmb-textarea large-text"
                                              @change="updateMeta"
                                              v-model="question.settings.explanation"></textarea>
-                                <p class="description"><?php _e( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ); ?></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rwmb-field rwmb-textarea-wrapper">
-                        <div class="rwmb-label">
-                            <label for=""><?php _e( 'Question Hint', 'learnpress' ); ?></label>
-                        </div>
-                        <div class="rwml-input">
-                            <div>
-                                   <textarea name="hint" id="" cols="60" rows="3" class="rwmb-textarea large-text"
-                                             @change="updateMeta"
-                                             v-model="question.settings.hint"></textarea>
-                                <p class="description"><?php _e( 'Instruction for user to select the right answer. The text will be shown when users click the \'Hint\' button.', 'learnpress' ); ?></p>
+                                <p class="description"><?php _e( 'Explanation will be showed after students Instant Check.', 'learnpress' ); ?></p>
                             </div>
                         </div>
                     </div>
