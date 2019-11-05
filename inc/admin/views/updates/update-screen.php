@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) or exit;
 <div id="content">
     <div class="logo">
         <a href="">
-            <img src="https://ps.w.org/learnpress/assets/icon-128x128.png?rev=1176138">
+            <img src="https://ps.w.org/learnpress/assets/icon-256x256.png?rev=2146737">
         </a>
     </div>
     <div id="main">

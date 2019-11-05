@@ -205,7 +205,7 @@ class LP_Setup_Wizard {
 					'welcome'  => array(
 						'title'       => __( 'Welcome', 'learnpress' ),
 						'callback'    => array( $this, 'step_welcome' ),
-						'next_button' => __( 'Run setup wizard', 'learnpress' )
+						'next_button' => __( 'Run Setup Wizard', 'learnpress' )
 					),
 					'currency' => array(
 						'title'            => __( 'Currency', 'learnpress' ),
@@ -344,7 +344,6 @@ class LP_Setup_Wizard {
 		return array(
 			'paypal' => array(
 				'name'     => __( 'Paypal', 'learnpress' ),
-				'desc'     => __( 'Enter your Paypal email address to accept payment via Paypal.', 'learnpress' ),
 				'icon'     => LP()->plugin_url( '/assets/images/paypal-2.png' ),
 				'callback' => array( $this, 'setup_paypal' )
 			)
