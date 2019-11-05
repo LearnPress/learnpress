@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $settings = LP()->settings;
 ?>
-<h3><?php _e( 'Email Options', 'learnpress' ); ?></h3>
+<h3><?php _e( 'taibeoEmail Options', 'learnpress' ); ?></h3>
 <p class="description">
 	<?php _e( 'The following options affect the sender (email address and name) used in LearnPress emails.', 'learnpress' );?>
 </p>

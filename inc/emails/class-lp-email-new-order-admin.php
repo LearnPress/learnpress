@@ -25,7 +25,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 		public function __construct() {
 			$this->id          = 'new-order-admin';
 			$this->title       = __( 'Admin', 'learnpress' );
-			$this->description = __( 'Send email to admin when new order is placed.', 'learnpress' );
+			$this->description = __( 'Notify admin when a new order is placed.', 'learnpress' );
 
 			$this->default_subject = __( 'New order placed on {{order_date}}', 'learnpress' );
 			$this->default_heading = __( 'New user order', 'learnpress' );

@@ -295,7 +295,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						//'id'   => '_lp_minus_points',
 						'id'   => '_lp_negative_marking',
 						'type' => 'yes_no',
-						'desc' => __( 'For every questions students answer wrongly, the total point is deducted the question marks.', 'learnpress' ),
+						'desc' => __( 'For each question which students answer wrongly, the total point is deducted exactly the question mark.', 'learnpress' ),
 						'std'  => 'no',
 					),
 					array(

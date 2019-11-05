@@ -63,11 +63,11 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 					'name'        => $field['field_name'] . '[format]',
 					'class'       => 'lp-email-format',
 					'selected'    => $email_format,
-					'option_none' => array( '' => __( 'General setting', 'learnpress' ) )
+					'option_none' => array( '' => __( 'General Setting', 'learnpress' ) )
 				)
 			);
 			?>
-            <p class="description"><?php printf( __( 'Choose <strong>General setting</strong> to apply the setting from Email <a href="%s">General Options</a> ', 'learnpress' ), admin_url( 'admin.php?page=learn-press-settings&tab=emails&section=general' ) ); ?></p>
+
             <div class="lp-email-templates">
 				<?php
 				$templates = learn_press_email_formats();
@@ -148,7 +148,7 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 									<?php endforeach; ?>
                                 </ol>
                                 <p class="description">
-									<?php esc_html_e( 'Click on variables to add it into email content.', 'learnpress' ); ?>
+									<?php esc_html_e( 'Click on any variables above to insert them to the email.', 'learnpress' ); ?>
                                 </p>
 							<?php endif; ?>
 						<?php endif; ?>

@@ -987,23 +987,24 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 */
 		protected function _default_settings() {
 			$default = array(
-				array(
-					'type'  => 'heading',
-					'title' => $this->title,
-					'desc'  => $this->description
-				),
+//				array(
+//					'type'  => 'heading',
+//					'title' => $this->title,
+//					'desc'  => $this->description
+//				),
 				array(
 					'title'   => __( 'Enable', 'learnpress' ),
 					'type'    => 'yes-no',
 					'default' => 'no',
-					'id'      => $this->get_field_name( 'enable' )
+					'id'      => $this->get_field_name( 'enable' ),
+					'desc'  => $this->description
 				),
 				array(
 					'title'      => __( 'Recipient(s)', 'learnpress' ),
 					'type'       => 'text',
 					'default'    => get_option( 'admin_email' ),
 					'id'         => $this->get_field_name( 'recipients' ),
-					'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>.', 'learnpress' ), get_option( 'admin_email' ) ),
+					'desc'       => __( 'Separate other recipients by comma.', 'learnpress' ),
 					'visibility' => array(
 						'state'       => 'show',
 						'conditional' => array(
@@ -1020,7 +1021,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					'type'       => 'text',
 					'default'    => $this->default_subject,
 					'id'         => $this->get_field_name( 'subject' ),
-					'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>.', 'learnpress' ), $this->default_subject ),
 					'visibility' => array(
 						'state'       => 'show',
 						'conditional' => array(
@@ -1037,7 +1037,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					'type'       => 'text',
 					'default'    => $this->default_heading,
 					'id'         => $this->get_field_name( 'heading' ),
-					'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>.', 'learnpress' ), $this->default_heading ),
 					'visibility' => array(
 						'state'       => 'show',
 						'conditional' => array(
@@ -1050,7 +1049,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					)
 				),
 				array(
-					'title'                => __( 'Email content', 'learnpress' ),
+					'title'                => __( 'Content Type', 'learnpress' ),
 					'type'                 => 'email-content',
 					'default'              => '',
 					'id'                   => $this->get_field_name( 'email_content' ),

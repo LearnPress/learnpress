@@ -61,7 +61,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 			$emails = LP_Emails::instance()->emails;
 
 			$sections = array(
-				'general' => __( 'General options', 'learnpress' )
+				'general' => __( 'General', 'learnpress' )
 			);
 
 			if ( $emails ) {
@@ -109,58 +109,55 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 			'learn-press/emails-settings/general',
 			array(
 				array(
-					'title' => __( 'Email options', 'learnpress' ),
+					'title' => __( 'Sender Information', 'learnpress' ),
 					'type'  => 'heading',
-					'desc'  => __( 'The following options affect the sender (email address and name) used in LearnPress emails.', 'learnpress' )
+					'desc'  => __( 'For all outgoing LearnPress notification emails.', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'From name', 'learnpress' ),
+					'title'   => __( 'Sender Name', 'learnpress' ),
 					'id'      => 'emails_general[from_name]',
 					'default' => get_option( 'blogname' ),
 					'type'    => 'text'
 				),
 				array(
-					'title'   => __( 'From email', 'learnpress' ),
+					'title'   => __( 'Sender Email', 'learnpress' ),
 					'id'      => 'emails_general[from_email]',
 					'default' => get_option( 'admin_email' ),
-					'type'    => 'text'
+					'type'    => 'email'
 				),
 				array(
-					'title'   => __( 'Send email in background', 'learnpress' ),
+					'title'   => __( 'Background Email', 'learnpress' ),
 					'id'      => 'emails_general[send_email_background]',
 					'default' => 'no',
 					'type'    => 'yes-no',
-					'desc'    => __( 'Defer transaction email and runs in background.', 'learnpress' )
+					'desc'    => __( 'Sending emails in the background.', 'learnpress' )
 				),
 				array(
-					'title' => __( 'Email template', 'learnpress' ),
+					'title' => __( 'Template', 'learnpress' ),
 					'type'  => 'heading'
 				),
 				array(
-					'title'   => __( 'Default Email Content', 'learnpress' ),
+					'title'   => __( 'Content Type', 'learnpress' ),
 					'id'      => 'emails_general[default_email_content]',
 					'default' => 'plain',
 					'type'    => 'select',
-					'desc'    => __( 'Default email content type for all emails that set content type is <strong>General Settings</strong>.', 'learnpress' ),
 					'options' => array(
 						'plain' => __( 'Plain Text', 'learnpress' ),
 						'html'  => __( 'HTML', 'learnpress' )
 					)
 				),
 				array(
-					'title'            => __( 'Header image', 'learnpress' ),
+					'title'            => __( 'Header Image', 'learnpress' ),
 					'id'               => 'emails_general[header_image]',
 					'default'          => '',
 					'type'             => 'image_advanced',
 					'max_file_uploads' => 1,
-					'desc'             => __( 'The image will be displayed in the top of the email.', 'learnpress' )
 				),
 				array(
-					'title'   => __( 'Footer text', 'learnpress' ),
+					'title'   => __( 'Footer Text', 'learnpress' ),
 					'id'      => 'emails_general[footer_text]',
 					'default' => __( 'LearnPress', 'learnpress' ),
 					'type'    => 'textarea',
-					'desc'    => __( 'The texts display in the bottom of email.', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Emails', 'learnpress' ),
