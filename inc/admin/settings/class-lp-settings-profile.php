@@ -34,7 +34,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 		$settings      = LP()->settings();
 		$user          = wp_get_current_user();
 		$username      = $user->user_login;
-		$settings_slug = $settings->get( 'profile_endpoints.profile-settings' );
+		$settings_slug = $settings->get( 'profile_endpoints.settings', 'settings' );
 		$profile_slug  = 'profile';
 
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
