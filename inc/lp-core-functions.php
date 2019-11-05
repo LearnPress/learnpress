@@ -2527,38 +2527,6 @@ function learn_press_is_enable_cart() {
 }
 
 /**
- * Redirect back to course if the order have one course in that
- *
- * @param $results
- * @param $order_id
- *
- * @return mixed
- */
-function _learn_press_checkout_success_result( $results, $order_id ) {
-	if ( $results['result'] == 'success' ) {
-		if ( $order = learn_press_get_order( $order_id ) ) {
-			$items              = $order->get_items();
-			$enrolled_course_id = learn_press_auto_enroll_user_to_courses( $order_id );
-			$course_id          = 0;
-			if ( sizeof( $items ) == 1 ) {
-				$item                = reset( $items );
-				$course_id           = $item['course_id'];
-				$results['redirect'] = get_the_permalink( $course_id );
-			}
-			if ( ! $course_id ) {
-				$course_id = $enrolled_course_id;
-			}
-
-			if ( $course = learn_press_get_course( $course_id ) ) {
-				learn_press_add_message( sprintf( __( 'Congrats! You\'ve enrolled the course "%s".', 'learnpress' ), $course->get_title() ) );
-			}
-		}
-	}
-
-	return $results;
-}
-
-/**
  * Short way to get checkout object
  *
  * @param array
@@ -2728,30 +2696,6 @@ function learn_press_debug() {
 		die( __FUNCTION__ );
 	}
 }
-
-function learn_press_is_content_only() {
-	global $wp;
-
-	return ! empty( $wp->query_vars['content-item-only'] );
-}
-
-if ( ! function_exists( 'learn_press_profile_localize_script' ) ) {
-
-	/**
-	 * Translate javascript text
-	 */
-	function learn_press_profile_localize_script( $assets ) {
-		$translate = array(
-			'confirm_cancel_order' => array(
-				'message' => __( 'Are you sure you want to cancel order?', 'learnpress' ),
-				'title'   => __( 'Cancel Order', 'learnpress' )
-			)
-		);
-		//LP_Assets::add_localize( $translate );
-	}
-
-}
-add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
 
 /**
  * Get current time to user for calculate remaining time of quiz.
