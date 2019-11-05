@@ -329,14 +329,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			// Update course evaluation results method
 			$course_evaluation_results      = LP_Request::get_string( '_lp_course_result' );
-			$course_evaluation_results_quiz = LP_Request::get_string( '_lp_course_result_quiz' );
+			$course_evaluation_results_quiz = LP_Request::get_string( '_lp_evaluation_result_quiz' );
 
 			update_post_meta( $course_id, '_lp_course_result', $course_evaluation_results );
 
 			if ( $course_evaluation_results !== 'evaluate_quiz' || ! $course_evaluation_results_quiz ) {
-				delete_post_meta( $course_id, '_lp_course_result_quiz' );
+				delete_post_meta( $course_id, '_lp_evaluation_result_quiz' );
 			} else if ( $course_evaluation_results_quiz ) {
-				update_post_meta( $course_id, '_lp_course_result_quiz', $course_evaluation_results_quiz );
+				update_post_meta( $course_id, '_lp_evaluation_result_quiz', $course_evaluation_results_quiz );
 			}
 		}
 

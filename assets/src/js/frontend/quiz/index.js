@@ -86,21 +86,21 @@ class Quiz extends Component {
         return undefined !== status && (
                 <React.Fragment>
                     <MyContext.Provider value={ this.props }>
-                    <div id="test-element">
-                        I am TEST
-                        {/*<LP.quiz.MyContext.Consumer>*/}
-                            {/*{*/}
-                                {/*(a)=>{*/}
-                                    {/*return JSON.stringify(a.status)*/}
-                                {/*}*/}
-                            {/*}*/}
-                        {/*</LP.quiz.MyContext.Consumer>*/}
-                        [
-                        {
-                            LP.Hook.doAction('xxxx', '')
-                        }
-                        ]
-                    </div>
+                    {/*<div id="test-element">*/}
+                        {/*I am TEST*/}
+                        {/*/!*<LP.quiz.MyContext.Consumer>*!/*/}
+                            {/*/!*{*!/*/}
+                                {/*/!*(a)=>{*!/*/}
+                                    {/*/!*return JSON.stringify(a.status)*!/*/}
+                                {/*/!*}*!/*/}
+                            {/*/!*}*!/*/}
+                        {/*/!*</LP.quiz.MyContext.Consumer>*!/*/}
+                        {/*[*/}
+                        {/*{*/}
+                            {/*LP.Hook.doAction('xxxx', '')*/}
+                        {/*}*/}
+                        {/*]*/}
+                    {/*</div>*/}
                     </MyContext.Provider>
 
                     { 1===1 && <div>

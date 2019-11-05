@@ -141,6 +141,14 @@ var LP = LP || {};
         $newButton.prepend($addNew.removeClass('page-title-action'));
     };
 
+    /**
+     * Auto focus into the last item in Text list after user press 'Add more'
+     * button.
+     *
+     * If there is an empty item then focus it and remove the new item added.
+     *
+     * @param event
+     */
     var focusToInputWhenCloningTextList = function (event) {
         setTimeout(() => {
 

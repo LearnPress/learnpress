@@ -1341,7 +1341,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		public function is_evaluation( $thing ) {
-			return $this->get_data( 'course_result' ) == $thing;
+			return $this->get_evaluation_results_method() == $thing;
 		}
 
 		/**
@@ -1885,7 +1885,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			/**
 			 * Only get first item in two-dimensions array of Metabox Text list field.
 			 */
-			if ( $extra_info_meta ) {
+			if ( $extra_info_meta && is_array( $extra_info_meta ) ) {
 				foreach ( $extra_info_meta as $item ) {
 					if ( $text = reset( $item ) ) {
 						$extra_info[] = $text;
@@ -1894,6 +1894,36 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn-press/course-extra-info', $extra_info, $type, $this->get_id() );
+		}
+
+		/**
+		 * Get evaluation results method of a course.
+		 *
+		 * @since 3.x.x
+		 *
+		 * @return string
+		 */
+		public function get_evaluation_results_method() {
+			if ( empty( $this->_data['evaluation_results'] ) ) {
+				$all_methods = learn_press_course_evaluation_methods( 'keys' );
+				$method      = get_post_meta( $this->get_id(), '_lp_course_result', true );
+
+				if ( ! in_array( $method, $all_methods ) ) {
+					$method = key( $all_methods );
+				}
+
+				switch ( $method ) {
+					case 'evaluate_quiz':
+						if ( $quiz_method = get_post_meta( $this->get_id(), '_lp_course_result_quiz', true ) ) {
+							$method = $quiz_method;
+						}
+
+				}
+
+				$this->_data['evaluation_results'] = $method;
+			}
+
+			return apply_filters( 'learn-press/course-evaluation-results-method', $this->_data['evaluation_results'], $this->get_id(), $this );
 		}
 	}
 }

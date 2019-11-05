@@ -3631,15 +3631,17 @@ function learn_press_default_course_levels() {
  *
  * @since 3.x.x
  *
+ * @param string $return - Optional. 'keys' will return keys instead of all.
+ *
  * @return array
  */
-function learn_press_course_evaluation_methods() {
+function learn_press_course_evaluation_methods( $return = '' ) {
 	$methods = array(
 		'evaluate_lesson' => __( 'With lessons', 'learnpress' ),
 		'evaluate_quiz'   => __( 'With quizzes', 'learnpress' )
 	);
 
-	return apply_filters( 'learn-press/course-evaluation-methods', $methods );
+	return apply_filters( 'learn-press/course-evaluation-methods', $return==='keys' ? array_keys( $methods ) : $methods, $return );
 }
 
 /**

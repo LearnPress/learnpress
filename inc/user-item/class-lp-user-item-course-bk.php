@@ -240,7 +240,7 @@ class LP_User_Item_CourseY extends LP_User_Item implements ArrayAccess {
 		}
 
 		$this->load();
-		$course_result = $course->get_data( 'course_result' );
+		$course_result = $course->get_evaluation_results_method();
 		$results       = false;
 		switch ( $course_result ) {
 			// Completed lessons per total
