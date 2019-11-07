@@ -277,7 +277,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			//require_once 'inc/class-lp-cache.php';
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/class-lp-autoloader.php';
-			require_once 'inc/class-lp-install.php';
+
+			if ( get_option( 'learn_press_status' ) !== 'installed' ) {
+				require_once 'inc/class-lp-install.php';
+			}
+
 			require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';
 			require_once 'inc/abstract-settings.php';
@@ -391,7 +395,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			add_action( 'activate_' . $plugin_basename, array( $this, 'on_activate' ) );
 			add_action( 'deactivate_' . $plugin_basename, array( $this, 'on_deactivate' ) );
-			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
+			//add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
 
 			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );

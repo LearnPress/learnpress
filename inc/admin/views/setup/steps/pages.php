@@ -53,4 +53,13 @@ $settings = LP()->settings();
 			<?php learn_press_pages_dropdown( 'settings[pages][become_a_teacher_page_id]', $settings->get( 'become_a_teacher_page_id' ) ); ?>
         </td>
     </tr>
+    <tr>
+        <th>
+			<?php _e( 'Terms and Conditions', 'learnpress' ); ?>
+			<?php //learn_press_quick_tip( __( 'Page will display the form for submitting request to become a teacher.', 'learnpress' ) ); ?>
+        </th>
+        <td>
+			<?php learn_press_pages_dropdown( 'settings[pages][term_conditions_page_id]', $settings->get( 'term_conditions_page_id' ) ); ?>
+        </td>
+    </tr>
 </table>

@@ -160,6 +160,7 @@ __webpack_require__.r(__webpack_exports__);
         var $html = $(res);
         replaceMainContent($html.contents().filter('#main'));
         LP.setUrl(loadUrl);
+        $setupForm = $('#learn-press-setup-form');
         $('.learn-press-dropdown-pages').LP('DropdownPages');
         $('.learn-press-tip').LP('QuickTip');
         $main.removeClass('loading');
