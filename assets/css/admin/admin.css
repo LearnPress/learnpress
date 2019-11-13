@@ -1051,7 +1051,7 @@ ul .clearfix {
     float: left;
     width: 190px;
     font-size: 14px;
-    text-transform: capitalize; }
+    _text-transform: capitalize; }
     .learnpress .rwmb-field .rwmb-label label > small {
       display: block;
       color: #999;
@@ -1078,9 +1078,19 @@ ul .clearfix {
     margin-left: 0; }
   .learnpress .rwmb-field #course_evaluation_method_quiz_options {
     margin-left: 25px;
+    position: relative; }
+    .learnpress .rwmb-field #course_evaluation_method_quiz_options:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.5;
+      content: '';
+      background: #FFF;
+      z-index: 10; }
+  .learnpress .rwmb-field input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options:after {
     display: none; }
-  .learnpress .rwmb-field input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options {
-    display: block; }
   .learnpress .rwmb-field.rwmb-heading-wrapper h4 {
     font-size: 16px;
     margin: 0 0 5px 0;

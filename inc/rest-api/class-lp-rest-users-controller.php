@@ -286,7 +286,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$status           = $userQuiz->get_status();
 			$checkedQuestions = $userQuiz->get_checked_questions();
 			$hintedQuestions  = $userQuiz->get_hint_questions();
-			$quizResults      = $userQuiz->get_results( '' );
+			$quizResults      = $userQuiz->get_results( '', true );
 
 			$questionIds = $quizResults->getQuestions( 'ids' );
 			$answered    = $quizResults->getAnswered();
@@ -324,11 +324,12 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			}
 			//}
 
-			$results['duration'] = $duration ? $duration->get() : false;
-			$results['answered'] = $quizResults->getQuestions();
-			$results['status']   = $quizResults->get( 'status' );
-			$results['results']  = $quizResults->get();
-			$results['attempts'] = $userQuiz->get_attempts( array( 'limit' => 1, 'offset' => 1 ) );
+			$results['duration']     = $duration ? $duration->get() : false;
+			$results['answered']     = $quizResults->getQuestions();
+			$results['status']       = $quizResults->get( 'status' );
+			$results['results']      = $quizResults->get();
+			$results['attempts']     = $userQuiz->get_attempts( array( 'limit' => 1, 'offset' => 1 ) );
+			$results['user_item_id'] = $userQuiz->get_user_item_id();
 
 			$response['results'] = $results;
 		}

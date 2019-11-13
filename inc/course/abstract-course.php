@@ -867,19 +867,22 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function count_students() {
 
-			if ( metadata_exists( 'post', $this->get_id(), 'count_enrolled_users' ) ) {
-				$count_in_order = get_post_meta( $this->get_id(), 'count_enrolled_users', true );
-			} else {
-				$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
-			}
+//			if ( metadata_exists( 'post', $this->get_id(), 'count_enrolled_users' ) ) {
+//				$count_in_order = get_post_meta( $this->get_id(), 'count_enrolled_users', true );
+//			} else {
+//				$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+//			}
+
+			$count_users = LP()->utils->count_course_users( $this->get_id() );
+			$total       = $count_users['total'];
 
 			$append_students = LP()->settings()->get( 'enrolled_students_number' );
 
 			if ( ( 'yes' == $append_students ) || ! in_array( $append_students, array( 'yes', 'no' ) ) ) {
-				$count_in_order += $this->get_fake_students();
+				$total += $this->get_fake_students();
 			}
 
-			return $count_in_order;
+			return $total;
 		}
 
 		/**

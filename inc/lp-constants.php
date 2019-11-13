@@ -58,6 +58,7 @@ define( 'LP_COURSE_ACCESS_LEVEL_30', 30 ); // Admin site
 define( 'LP_COURSE_ACCESS_LEVEL_35', 35 ); // No require enrollment
 define( 'LP_COURSE_ACCESS_LEVEL_40', 40 ); // Ordered but not completed
 define( 'LP_COURSE_ACCESS_LEVEL_50', 50 ); // Order completed but not enrolled
+define( 'LP_COURSE_ACCESS_LEVEL_55', 55 ); // Enrolled but has blocked (access level = 0)
 define( 'LP_COURSE_ACCESS_LEVEL_60', 60 ); // User has already enrolled course
 define( 'LP_COURSE_ACCESS_LEVEL_70', 70 ); // User has already finished course
 

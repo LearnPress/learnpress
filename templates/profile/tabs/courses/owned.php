@@ -17,6 +17,7 @@ defined( 'ABSPATH' ) || exit();
 $profile       = learn_press_get_profile();
 $filter_status = LP_Request::get_string( 'filter-status' );
 $query         = $profile->query_courses( 'own', array( 'status' => $filter_status ) );
+
 ?>
 
 <div class="learn-press-subtab-content">
@@ -28,7 +29,26 @@ $query         = $profile->query_courses( 'own', array( 'status' => $filter_stat
 	<?php if ( $filters = $profile->get_own_courses_filters( $filter_status ) ) { ?>
         <ul class="lp-sub-menu">
 			<?php foreach ( $filters as $class => $link ) { ?>
-                <li class="<?php echo $class; ?>"><?php echo $link; ?></li>
+                <li class="<?php echo $class; ?>">
+					<?php
+					echo $link;
+					?>
+					<?php
+					$count = false;
+					if ( $class === 'all' ) {
+						$count = 0;
+						foreach ( $filters as $a => $b ) {
+							$count += $query[ $a ] !== false ? $query[ $a ] : 0;
+
+						}
+					} else {
+						$count = $query[ $class ];
+					}
+					if ( $count !== false ) {
+						printf( '<span class="count">%s</span>', $count );
+					}
+					?>
+                </li>
 			<?php } ?>
         </ul>
 	<?php } ?>

@@ -8,7 +8,7 @@
             float: left;
             width: 190px;
             font-size: 14px;
-            text-transform: capitalize;
+            _text-transform: capitalize;
             label {
                 > small {
                     display: block;
@@ -49,11 +49,24 @@
 
         #course_evaluation_method_quiz_options {
             margin-left: 25px;
-            display: none;
+            position: relative;
+            &:after {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                opacity: 0.5;
+                content: '';
+                background: #FFF;
+                z-index: 10;
+            }
         }
 
         input[name="_lp_course_result"]:checked ~ #course_evaluation_method_quiz_options {
-            display: block;
+            &:after {
+                display: none;
+            }
         }
 
         &.rwmb-heading-wrapper {

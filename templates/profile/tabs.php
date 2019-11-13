@@ -26,9 +26,9 @@ $profile = LP_Profile::instance();
 		<?php
 		foreach ( $profile->get_tabs()->tabs() as $tab_key => $tab_data ) {
 
-            /**
-             * @var $tab_data LP_Profile_Tab
-             */
+			/**
+			 * @var $tab_data LP_Profile_Tab
+			 */
 			if ( $tab_data->is_hidden() || ! $tab_data->user_can_view() ) {
 				continue;
 			}
@@ -39,7 +39,7 @@ $profile = LP_Profile::instance();
 			/**
 			 * @var $tab_data LP_Profile_Tab
 			 */
-			$sections    = $tab_data->sections();
+			$sections = $tab_data->sections();
 
 			if ( $sections && sizeof( $sections ) > 1 ) {
 				$tab_classes[] = 'has-child';
@@ -52,7 +52,7 @@ $profile = LP_Profile::instance();
             <li class="<?php echo join( ' ', $tab_classes ) ?>">
                 <!--tabs-->
                 <a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
-					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', esc_html( $tab_data['title'] ), $tab_key ); ?>
+					<?php echo esc_html( apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $tab_data['title'], $tab_key ) ); ?>
                 </a>
                 <!--section-->
 

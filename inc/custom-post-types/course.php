@@ -1517,8 +1517,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 					break;
 				case 'students' :
-					$count = $course->count_completed_orders();
-					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . $count . '</span>';
+					$count = LP()->utils->count_course_users( array(
+						'course_id' => $course->get_id(),
+						'status'    => array('finished', 'enrolled'),
+						'total_only'=>true
+					) );
+
+					echo '<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '">' . ($count ? $count : 0) . '</span>';
 
 			}
 		}

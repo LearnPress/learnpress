@@ -552,7 +552,6 @@ function (_Component) {
             currentPage = _this$props2.currentPage,
             numPages = _this$props2.numPages,
             setCurrentPage = _this$props2.setCurrentPage;
-        console.log('XXXX');
 
         switch (to) {
           case 'prev':
@@ -1764,9 +1763,11 @@ function (_Component) {
       this.animate();
     }
   }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(a, b) {
-      if (a.results.result === b.results.result) {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      var results = this.props.results;
+
+      if (prevProps.results.result === results.result) {
         return;
       }
 
@@ -1787,8 +1788,8 @@ function (_Component) {
         return h * Math.sqrt(1 - (f = f / g - 1) * f) + a;
       };
       /*function(e, f, a, h, g) {
-         return (f == g) ? a + h : h * (-Math.pow(2, -10 * f / g) + 1) + a
-      }*/
+       return (f == g) ? a + h : h * (-Math.pow(2, -10 * f / g) + 1) + a
+       }*/
 
 
       debounce(function () {
@@ -1823,7 +1824,7 @@ function (_Component) {
           },
           easing: '_customEasing'
         });
-      }, 1000)();
+      }, results.result > 0 ? 1000 : 10)();
     }
     /**
      * Render HTML elements.
@@ -3001,6 +3002,9 @@ var _lodash = lodash,
     chunk = _lodash.chunk;
 var _LP = LP,
     camelCaseDashObjectKeys = _LP.camelCaseDashObjectKeys;
+var _LP$localStorage = LP.localStorage,
+    storageGet = _LP$localStorage.get,
+    storageSet = _LP$localStorage.set;
 var STORE_DATA = {};
 var setItemStatus = function setItemStatus(item, status) {
   var userSettings = _objectSpread({}, item.userSettings, {
@@ -3040,11 +3044,12 @@ var markQuestionRendered = function markQuestionRendered(state, action) {
   }
 };
 
-var resetCurrentQuestion = function resetCurrentQuestion(state, args) {
-  var questionIds = state.questionIds;
-  return _objectSpread({}, state, {}, args, {
-    currentQuestion: questionIds ? questionIds[0] : false
-  });
+var resetCurrentPage = function resetCurrentPage(state, args) {
+  if (args.currentPage) {
+    storageSet("Q".concat(state.id, ".currentPage"), args.currentPage);
+  }
+
+  return _objectSpread({}, state, {}, args);
 };
 
 var updateAttempt = function updateAttempt(attempts, newAttempt) {
@@ -3110,7 +3115,7 @@ var userQuiz = function userQuiz() {
       action.data.numPages = chunks.length;
       action.data.pages = chunks;
       return _objectSpread({}, state, {}, action.data, {
-        currentPage: LP.localStorage.get("Q".concat(action.data.id, ".currentPage")) || action.data.currentPage
+        currentPage: storageGet("Q".concat(action.data.id, ".currentPage")) || action.data.currentPage
       });
 
     case 'SUBMIT_QUIZ':
@@ -3120,7 +3125,7 @@ var userQuiz = function userQuiz() {
 
     case 'START_QUIZ':
     case 'START_QUIZ_SUCCESS':
-      return resetCurrentQuestion(state, _objectSpread({
+      return resetCurrentPage(state, _objectSpread({
         checkedQuestions: [],
         hintedQuestions: [],
         mode: '',
@@ -3128,19 +3133,19 @@ var userQuiz = function userQuiz() {
       }, action.results));
 
     case 'SET_CURRENT_QUESTION':
-      LP.localStorage.set("Q".concat(state.id, ".currentQuestion"), action.questionId);
+      storageSet("Q".concat(state.id, ".currentQuestion"), action.questionId);
       return _objectSpread({}, state, {
         currentQuestion: action.questionId
       });
 
     case 'SET_CURRENT_PAGE':
-      LP.localStorage.set("Q".concat(state.id, ".currentPage"), action.currentPage);
+      storageSet("Q".concat(state.id, ".currentPage"), action.currentPage);
       return _objectSpread({}, state, {
         currentPage: action.currentPage
       });
 
     case 'SUBMIT_QUIZ_SUCCESS':
-      return resetCurrentQuestion(state, _objectSpread({
+      return resetCurrentPage(state, _objectSpread({
         attempts: updateAttempt(state.attempts, action.results),
         submitting: false,
         currentPage: 1
@@ -3154,7 +3159,7 @@ var userQuiz = function userQuiz() {
 
     case 'SET_QUIZ_MODE':
       if (action.mode == 'reviewing') {
-        return resetCurrentQuestion(state, {
+        return resetCurrentPage(state, {
           mode: action.mode
         });
       }

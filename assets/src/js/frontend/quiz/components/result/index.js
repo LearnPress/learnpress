@@ -46,8 +46,12 @@ class Result extends Component {
         this.animate();
     }
 
-    componentWillReceiveProps(a, b) {
-        if (a.results.result === b.results.result) {
+    componentDidUpdate(prevProps) {
+        const {
+            results
+        } = this.props;
+
+        if (prevProps.results.result === results.result) {
             return;
         }
 
@@ -64,11 +68,12 @@ class Result extends Component {
             done: false
         });
 
-        jQuery.easing['_customEasing'] = function(e, f, a, h, g) {
+        jQuery.easing['_customEasing'] = function (e, f, a, h, g) {
             return h * Math.sqrt(1 - (f = f / g - 1) * f) + a
-        }/*function(e, f, a, h, g) {
-            return (f == g) ? a + h : h * (-Math.pow(2, -10 * f / g) + 1) + a
-        }*/
+        }
+        /*function(e, f, a, h, g) {
+         return (f == g) ? a + h : h * (-Math.pow(2, -10 * f / g) + 1) + a
+         }*/
 
         debounce(() => {
             var $el = jQuery('<span />').css({
@@ -88,7 +93,7 @@ class Result extends Component {
                         transition: 'all 0.25s'
                     });
 
-                    debounce(()=>{
+                    debounce(() => {
                         jQuery('#quizResultGrade').css({
                             transform: 'scale(1)'
                         });
@@ -96,7 +101,7 @@ class Result extends Component {
                 },
                 easing: '_customEasing'
             })
-        }, 1000)();
+        }, results.result > 0 ? 1000 : 10)();
     }
 
     /**

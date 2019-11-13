@@ -13,10 +13,13 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
-
+/**
+ * @var LP_User_Item_Course $user_course
+ */
 $profile       = learn_press_get_profile();
 $filter_status = LP_Request::get_string( 'filter-status' );
 $query         = $profile->query_courses( 'purchased', array( 'status' => $filter_status ) );
+$counts        = $query['counts'];
 ?>
 
 <div class="learn-press-subtab-content">
@@ -25,8 +28,18 @@ $query         = $profile->query_courses( 'purchased', array( 'status' => $filte
 
 	<?php if ( $filters = $profile->get_purchased_courses_filters( $filter_status ) ) { ?>
         <ul class="lp-sub-menu">
-			<?php foreach ( $filters as $class => $link ) { ?>
-                <li class="<?php echo $class; ?>"><?php echo $link; ?></li>
+			<?php foreach ( $filters as $class => $link ) {
+				$count = $counts[ $class ];
+				if ( ! $count ) {
+					continue;
+				}
+				?>
+                <li class="<?php echo $class; ?>">
+					<?php
+					echo $link;
+					printf( '<span class="count">%s</span>', $count );
+					?>
+                </li>
 			<?php } ?>
         </ul>
 	<?php } ?>

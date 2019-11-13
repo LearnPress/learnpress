@@ -1,16 +1,16 @@
 const _localStorage = {
     __key: 'LP',
     set: function (name, value) {
-        const data = this.get();
+        const data = _localStorage.get();
         const {set} = lodash;
 
         set(data, name, value)
 
-        localStorage.setItem(this.__key, JSON.stringify(data));
+        localStorage.setItem(_localStorage.__key, JSON.stringify(data));
     },
 
     get: function (name, def) {
-        const data = JSON.parse(localStorage.getItem(this.__key) || "{}");
+        const data = JSON.parse(localStorage.getItem(_localStorage.__key) || "{}");
         const {get} = lodash;
         const value = get(data, name);
 
@@ -18,22 +18,22 @@ const _localStorage = {
     },
 
     exists: function (name) {
-        const data = this.get();
+        const data = _localStorage.get();
 
         return data.hasOwnProperty(name);
     },
 
     remove: function (name) {
-        const data = this.get();
+        const data = _localStorage.get();
         const newData = lodash.omit(data, name);
 
-        this.__set(newData);
+        _localStorage.__set(newData);
     },
     __get: function () {
-        return localStorage.getItem(this.__key);
+        return localStorage.getItem(_localStorage.__key);
     },
     __set: function (data) {
-        localStorage.setItem(this.__key, JSON.stringify(data || "{}"));
+        localStorage.setItem(_localStorage.__key, JSON.stringify(data || "{}"));
     }
 };
 

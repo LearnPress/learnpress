@@ -115,6 +115,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public $template = null;
 
 		/**
+		 * @var LP_Utils
+		 */
+		public $utils = null;
+
+		/**
 		 * LearnPress constructor.
 		 */
 		public function __construct() {
@@ -241,6 +246,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-assets.php';
 			require_once 'inc/abstracts/abstract-object-query.php';
 			require_once 'inc/class-lp-query-course.php';
+			require_once 'inc/class-lp-utils.php';
 			require_once 'inc/abstracts/abstract-addon.php';
 			require_once 'inc/class-lp-settings.php';
 			require_once 'inc/class-lp-thumbnail-helper.php';
@@ -273,7 +279,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/course/class-lp-course-section.php';
 			require_once 'inc/user-item/class-lp-user-item.php';
 			require_once 'inc/user-item/class-lp-user-item-course.php';
-			require_once 'inc/lp-deprecated.php';
+
+
+			//require_once 'inc/lp-deprecated.php';
 			//require_once 'inc/class-lp-cache.php';
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/class-lp-autoloader.php';
@@ -345,6 +353,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );
 
+			require_once "inc/templates/abstract-template.php";
+//			require_once "inc/templates/class-lp-course-template.php";
+//			require_once "inc/templates/class-lp-profile-template.php";
 			require_once "inc/class-lp-template.php";
 
 			require_once 'inc/cart/class-lp-cart.php';
@@ -574,29 +585,26 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @since 3.3.0
 		 *
-		 * @param string $hook
-		 * @param string $cb
-		 * @param int    $priority
-		 * @param int    $number_args
+		 * @param string $type
 		 *
-		 * @return LP_Template
+		 * @return LP_Template_Course|LP_Template_Profile
 		 *
 		 * @throws Exception
 		 */
-		public function template( $hook = '', $cb = '', $priority = 10, $number_args = 1 ) {
+		public function template( $type = 'course' /*$hook = '', $cb = '', $priority = 10, $number_args = 1 */) {
 			if ( ! $this->template ) {
 				$this->template = LP_Template::instance();
 			}
 
-			if ( $num = func_num_args() ) {
-				if ( $num < 2 || ! is_callable( array( $this->template, $cb ) ) ) {
-					throw new Exception( __( 'Callback function for template hook doesn\'t exists.', 'learnpress' ) );
-				}
+//			if ( $num = func_num_args() ) {
+//				if ( $num < 2 || ! is_callable( array( $this->template, $cb ) ) ) {
+//					throw new Exception( __( 'Callback function for template hook doesn\'t exists.', 'learnpress' ) );
+//				}
+//
+//				//$this->template->hook( $hook, $cb, $priority, $number_args );
+//			}
 
-				$this->template->hook( $hook, $cb, $priority, $number_args );
-			}
-
-			return $this->template;
+			return $this->template->{$type};
 		}
 
 		/**
@@ -612,6 +620,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$this->get_session();
 
 			$this->settings = $this->settings();
+			$this->utils    = LP_Utils::instance();
 
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_cart();
@@ -865,20 +874,27 @@ add_action( 'template_include', function ( $t ) {
 
 	global $wpdb;
 	$query = "
-        SELECT * FROM 
-        wp_learnpress_user_itemmeta
-       where learnpress_user_item_id=(select max(user_item_id) from wp_learnpress_user_items)
+        SELECT ID FROM 
+        wp_posts
+        where post_type='lp_course'
+        and post_status='publish'
     ";
 
-	$rows = $wpdb->get_results( $query );
+	$course_ids = $wpdb->get_col( $query );
+	shuffle( $course_ids );
+	array_splice( $course_ids, 0, rand( 1, sizeof( $course_ids ) / 2 ) );
 
-	foreach ( $rows as $row ) {
-		$row = (array) $row;
-		echo $row['meta_key'] . '=';
-		print_r( maybe_unserialize( $row['meta_value'] ) );
-		echo "\n\n";
+
+	$user_ids = $wpdb->get_col( "select ID from wp_users" );
+	shuffle( $user_ids );
+	array_splice( $user_ids, 0, rand( 1, sizeof( $user_ids ) / 2 ) );
+
+	foreach ( $user_ids as $user_id ) {
+		$user = learn_press_get_user( $user_id );
+		foreach ( $course_ids as $course_id ) {
+			$user->enroll_course( $course_id );
+		}
 	}
-
 	print_r( $wpdb->get_var( $query ) );
 	die();
 
@@ -892,7 +908,8 @@ add_filter( 'wp_redirect', function ( $url ) {
 	return $url;
 } );
 
-add_action( 'plugins_loaded', function () {
+add_action( 'template_includex', function () {
+	var_dump(learn_press_is_course_category(), learn_press_is_courses());
 //	for($i=1;$i<100;$i++){
 //		wp_insert_post(array('post_title'=>'Post ' . $i, 'post_status'=>'publish'));
 //	}

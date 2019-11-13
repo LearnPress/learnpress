@@ -808,6 +808,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return array
 		 */
 		public function get_own_courses_filters( $current_filter = '' ) {
+
 			$url      = $this->get_current_url();
 			$defaults = array(
 				'all'     => sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'All', 'learnpress' ) ),

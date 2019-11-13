@@ -8,7 +8,7 @@
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
-
+die();
 /**
  * Prevent loading this file directly
  */

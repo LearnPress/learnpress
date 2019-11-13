@@ -43,7 +43,6 @@ class Buttons extends Component {
             numPages,
             setCurrentPage
         } = this.props;
-        console.log('XXXX')
         switch (to) {
             case 'prev':
                 currentPage = currentPage > 1 ? currentPage - 1 : (questionNav === 'infinity' ? numPages : 1);

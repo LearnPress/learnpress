@@ -14,6 +14,10 @@
  */
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_User_Item_Course $user_course
+ */
+
 $profile = learn_press_get_profile();
 $query   = $profile->query_courses();
 

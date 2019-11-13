@@ -2,6 +2,7 @@ import {combineReducers} from '@wordpress/data';
 
 const {omit, flow, isArray, chunk} = lodash;
 const {camelCaseDashObjectKeys} = LP;
+const {get: storageGet, set: storageSet} = LP.localStorage;
 const STORE_DATA = {};
 
 export const setItemStatus = (item, status) => {
@@ -52,15 +53,14 @@ const markQuestionRendered = (state, action) => {
     }
 };
 
-const resetCurrentQuestion = (state, args) => {
-    const {
-        questionIds
-    } = state;
+const resetCurrentPage = (state, args) => {
+    if (args.currentPage) {
+        storageSet(`Q${state.id}.currentPage`, args.currentPage)
+    }
 
     return {
         ...state,
-        ...args,
-        currentQuestion: questionIds ? questionIds[0] : false
+        ...args
     }
 };
 
@@ -133,7 +133,7 @@ export const userQuiz = (state = STORE_DATA, action) => {
             return {
                 ...state,
                 ...action.data,
-                currentPage: LP.localStorage.get(`Q${action.data.id}.currentPage`) || action.data.currentPage
+                currentPage: storageGet(`Q${action.data.id}.currentPage`) || action.data.currentPage
             };
         case 'SUBMIT_QUIZ':
             return {
@@ -142,7 +142,7 @@ export const userQuiz = (state = STORE_DATA, action) => {
             }
         case 'START_QUIZ':
         case 'START_QUIZ_SUCCESS':
-            return resetCurrentQuestion(state, {
+            return resetCurrentPage(state, {
                 checkedQuestions: [],
                 hintedQuestions: [],
                 mode: '',
@@ -150,20 +150,20 @@ export const userQuiz = (state = STORE_DATA, action) => {
                 ...action.results
             });
         case 'SET_CURRENT_QUESTION':
-            LP.localStorage.set(`Q${state.id}.currentQuestion`, action.questionId);
+            storageSet(`Q${state.id}.currentQuestion`, action.questionId);
             return {
                 ...state,
                 currentQuestion: action.questionId
             };
         case 'SET_CURRENT_PAGE':
-            LP.localStorage.set(`Q${state.id}.currentPage`, action.currentPage);
+            storageSet(`Q${state.id}.currentPage`, action.currentPage);
 
             return {
                 ...state,
                 currentPage: action.currentPage
             }
         case 'SUBMIT_QUIZ_SUCCESS':
-            return resetCurrentQuestion(state, {
+            return resetCurrentPage(state, {
                 attempts: updateAttempt(state.attempts, action.results),
                 submitting: false,
                 currentPage: 1,
@@ -175,7 +175,7 @@ export const userQuiz = (state = STORE_DATA, action) => {
             return markQuestionRendered(state, action);
         case 'SET_QUIZ_MODE':
             if (action.mode == 'reviewing') {
-                return resetCurrentQuestion(state, {
+                return resetCurrentPage(state, {
                     mode: action.mode
                 })
             }

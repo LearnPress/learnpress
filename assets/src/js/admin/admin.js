@@ -196,6 +196,16 @@ var LP = LP || {};
 
     }
 
+    var autoCheckHideContentOption = function autoCheckHideContentOption(event) {
+        var isChecked = $(event.target).is(':checked');
+
+        if(!isChecked){
+            return;
+        }
+
+        $('#_lp_block_content').prop('checked', true);
+    }
+
     var onReady = function onReady() {
 
         $('.learn-press-dropdown-pages').LP('DropdownPages');
@@ -220,7 +230,8 @@ var LP = LP || {};
                 $('.lp-sortable-handle').css('cursor', '');
             })
             .on('click', '.rwmb-text-list-wrapper .add-clone', focusToInputWhenCloningTextList)
-            .on('keypress', '.rwmb-text-list-wrapper .rwmb-text-list', addOptionToTextList);
+            .on('keypress', '.rwmb-text-list-wrapper .rwmb-text-list', addOptionToTextList)
+            .on('change', '#_lp_retake_count', autoCheckHideContentOption)
 
         setTimeout(() => {
             $('.rwmb-text-list-wrapper .rwmb-input').removeClass('ui-sortable').sortable({

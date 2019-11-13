@@ -549,7 +549,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$return = learn_press_user_start_quiz( $quiz_id, false, $course_id, $wp_error );
 
-				if(1===0) {
+				if ( 1 === 0 ) {
 
 					$course_data     = $this->get_course_data( $course_id );
 					$quiz            = learn_press_get_quiz( $quiz_id );
@@ -1832,7 +1832,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function has_enrolled_course( $course_id, $force = false ) {
-			$enrolled = $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_60;
+
+
+			$enrolled = $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_55;// $this->get_course_access_level( $course_id ) >= LP_COURSE_ACCESS_LEVEL_60;
 
 			// @deprecated
 			$enrolled = apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
@@ -2084,7 +2086,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				do_action( 'learn_press_user_complete_lesson', $lesson_id, $result, $this->get_id() );
 
 				do_action( 'learn-press/user-completed-lesson', $lesson_id, $course_id, $this->get_id() );
-			} catch ( Exception $ex ) {
+			}
+			catch ( Exception $ex ) {
 				$result = $return_wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 			}
 
@@ -2208,27 +2211,55 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				// Default level
 				$access_level = apply_filters( 'learn-press/course-access-level-default', $access_level, $course_id, $this->get_id() );
 
-				if ( ( $order = $this->get_course_order( $course_id, 'object', true ) ) ) {
-
-					switch ( $order->get_status() ) {
-						case 'completed':
-							$access_level = LP_COURSE_ACCESS_LEVEL_50;
-							break;
-						default:
-							$access_level = LP_COURSE_ACCESS_LEVEL_40;
+				if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
+//					$access_level = LP_COURSE_ACCESS_LEVEL_60;
+//
+					// Access level of user item course
+					if ( $course_data->get_access_level() ) {
+						switch ( $course_data->get_status() ) {
+							case 'enrolled':
+								$access_level = LP_COURSE_ACCESS_LEVEL_60;
+								break;
+							case 'finished':
+								$access_level = LP_COURSE_ACCESS_LEVEL_70;
+								break;
+						}
+					} else {
+						$access_level = LP_COURSE_ACCESS_LEVEL_55;
 					}
 
-					if ( $access_level === LP_COURSE_ACCESS_LEVEL_50 ) {
-						if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
-							switch ( $course_data->get_status() ) {
-								case 'enrolled':
-									$access_level = LP_COURSE_ACCESS_LEVEL_60;
-									break;
-								case 'finished':
-									$access_level = LP_COURSE_ACCESS_LEVEL_70;
-									break;
-							}
+//					switch ( $course_data->get_status() ) {
+//						case 'enrolled':
+//							$access_level = LP_COURSE_ACCESS_LEVEL_60;
+//							break;
+//						case 'finished':
+//							$access_level = LP_COURSE_ACCESS_LEVEL_70;
+//							break;
+//					}
+				} else {
+
+					if ( ( $order = $this->get_course_order( $course_id, 'object', true ) ) ) {
+
+						switch ( $order->get_status() ) {
+							case 'completed':
+								$access_level = LP_COURSE_ACCESS_LEVEL_50;
+								break;
+							default:
+								$access_level = LP_COURSE_ACCESS_LEVEL_40;
 						}
+
+//						if ( $access_level === LP_COURSE_ACCESS_LEVEL_50 ) {
+//							if ( ( $course_data = $this->get_course_data( $course_id ) ) && $course_data->get_user_item_id() ) {
+//								switch ( $course_data->get_status() ) {
+//									case 'enrolled':
+//										$access_level = LP_COURSE_ACCESS_LEVEL_60;
+//										break;
+//									case 'finished':
+//										$access_level = LP_COURSE_ACCESS_LEVEL_70;
+//										break;
+//								}
+//							}
+//						}
 					}
 				}
 
@@ -2833,12 +2864,24 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return mixed
 		 */
 		public function can_access_course( $course_id ) {
-			$return = apply_filters( 'learn-press/user-can-access-course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->get_id() );
+
+			$accessible = $this->has_course_access_level(
+				array(
+					LP_COURSE_ACCESS_LEVEL_60,
+					LP_COURSE_ACCESS_LEVEL_70
+				),
+				$course_id,
+				'any'
+			);
+
+			//return apply_filters( 'learn-press/user-can-access-course', $accessible, $course_id, $user_id );
+			//$return = apply_filters( 'learn-press/user-can-access-course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->get_id() );
+			$accessible = apply_filters( 'learn-press/user-can-access-course', $accessible, $course_id, $this->get_id() );
 
 			// Deprecated since 3.0.0
-			$return = apply_filters( 'learn_press_user_can_access_course', $return, $course_id, $this->get_id() );
+			$accessible = apply_filters( 'learn_press_user_can_access_course', $accessible, $course_id, $this->get_id() );
 
-			return $return;
+			return $accessible;
 		}
 
 		/**

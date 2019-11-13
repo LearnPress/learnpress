@@ -30,5 +30,4 @@ defined( 'ABSPATH' ) || exit();
 
 	<?php do_action( 'learn-press/course-section-item/after-' . $item->get_item_type() . '-meta', $item ); ?>
 
-<!--    <div class="circle-progress"></div>-->
 </div>

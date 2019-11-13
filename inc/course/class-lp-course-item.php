@@ -176,7 +176,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$GLOBALS['get_class'] = 0;
 			}
 
-			$user_id = $user_id || get_current_user_id();
+			$user_id = $user_id ? $user_id : get_current_user_id();
 
 			$t = microtime( true );
 
@@ -308,7 +308,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			}
 
-			if ( $course && $item) {
+			if ( $course && $item ) {
 				$item->set_course( $course );
 			}
 

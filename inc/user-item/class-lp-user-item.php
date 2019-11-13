@@ -134,6 +134,17 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	}
 
 	/**
+	 * Get access level to a course.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return int
+	 */
+	public function get_access_level() {
+		return absint( $this->get_data( 'access_level' ) );
+	}
+
+	/**
 	 * Get type of item. Consider is post-type.
 	 *
 	 * @return array|mixed
@@ -880,7 +891,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		$end_time  = new LP_Datetime();
 		$null_time = '0000-00-00 00:00';
 
-		$this->set_end_time( $end_time->toSql(false) );
+		$this->set_end_time( $end_time->toSql( false ) );
 		$this->set_status( $status );
 		$this->update();
 

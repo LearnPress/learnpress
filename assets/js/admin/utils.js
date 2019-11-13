@@ -2625,34 +2625,37 @@ __webpack_require__.r(__webpack_exports__);
 var _localStorage = {
   __key: 'LP',
   set: function set(name, value) {
-    var data = this.get();
+    var data = _localStorage.get();
+
     var _lodash = lodash,
         set = _lodash.set;
     set(data, name, value);
-    localStorage.setItem(this.__key, JSON.stringify(data));
+    localStorage.setItem(_localStorage.__key, JSON.stringify(data));
   },
   get: function get(name, def) {
-    var data = JSON.parse(localStorage.getItem(this.__key) || "{}");
+    var data = JSON.parse(localStorage.getItem(_localStorage.__key) || "{}");
     var _lodash2 = lodash,
         get = _lodash2.get;
     var value = get(data, name);
     return !name ? data : value !== undefined ? value : def;
   },
   exists: function exists(name) {
-    var data = this.get();
+    var data = _localStorage.get();
+
     return data.hasOwnProperty(name);
   },
   remove: function remove(name) {
-    var data = this.get();
+    var data = _localStorage.get();
+
     var newData = lodash.omit(data, name);
 
-    this.__set(newData);
+    _localStorage.__set(newData);
   },
   __get: function __get() {
-    return localStorage.getItem(this.__key);
+    return localStorage.getItem(_localStorage.__key);
   },
   __set: function __set(data) {
-    localStorage.setItem(this.__key, JSON.stringify(data || "{}"));
+    localStorage.setItem(_localStorage.__key, JSON.stringify(data || "{}"));
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (_localStorage);

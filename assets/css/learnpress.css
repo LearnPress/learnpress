@@ -460,10 +460,24 @@
   list-style: none;
   margin: 0 0 10px 0; }
   .lp-sub-menu li {
-    display: inline-block; }
+    display: inline-block;
+    margin: 0 10px 0 0; }
     .lp-sub-menu li a, .lp-sub-menu li span {
       display: inline-block;
-      margin: 0 10px 0 0; }
+      vertical-align: middle;
+      margin-right: 6px; }
+      .lp-sub-menu li a.count, .lp-sub-menu li span.count {
+        background: #72909e;
+        line-height: 1;
+        padding: 5px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        color: #FFF;
+        min-width: 24px;
+        text-align: center; }
+    .lp-sub-menu li span + span.count {
+      background: #00adff;
+      float: right; }
 
 .learn-press-nav-items .learn-press-pagination {
   float: right; }

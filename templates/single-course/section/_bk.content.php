@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || exit();
  * @var LP_Course_Section $section
  * @var LP_Course_Item    $item
  */
-
 if ( ! isset( $section ) ) {
 	return;
 }

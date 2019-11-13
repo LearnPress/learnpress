@@ -36,7 +36,7 @@
     background: #f5f5f5;
     /*margin-bottom: -20000px;
     padding-bottom: 20000px;*/
-    &:before{
+    &:before {
         content: '';
         width: 200px;
         background: #F5F5F5;
@@ -248,9 +248,25 @@
     margin: 0 0 10px 0;
     li {
         display: inline-block;
+        margin: 0 10px 0 0;
         a, span {
             display: inline-block;
-            margin: 0 10px 0 0;
+            vertical-align: middle;
+            margin-right: 6px;
+            &.count {
+                background: #72909e;
+                line-height: 1;
+                padding: 5px 8px;
+                border-radius: 10px;
+                font-size: 12px;
+                color: #FFF;
+                min-width: 24px;
+                text-align: center;
+            }
+        }
+        span + span.count {
+            background: #00adff;
+            float: right;
         }
     }
 }
