@@ -649,11 +649,19 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 //						)
 					),
 					array(
-						'name'  => __( 'Featured', 'learnpress' ),
+						'name'  => __( 'Featured List', 'learnpress' ),
 						'id'    => '_lp_featured',
 						'type'  => 'yes_no',
 						'desc'  => __( 'Add the course to Featured List.', 'learnpress' ),
 						'std'   => 'no',
+						'roles' => 'administrator' // Admin only
+					),
+					array(
+						'name'  => __( 'Featured Review', 'learnpress' ),
+						'id'    => '_lp_featured_review',
+						'type'  => 'textarea',
+						'desc'  => __( 'A good review to promote the course.', 'learnpress' ),
+						'placeholder'   => 'e.g. This course is so great and helpful. Thank you the best teacher to explain and show us what LearnPress LMS is all about.',
 						'roles' => 'administrator' // Admin only
 					),
 					array(

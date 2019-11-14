@@ -17,11 +17,11 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		$this->tabs = apply_filters(
 			'learn-press/admin/tools-tabs',
 			array(
-				'template' => __( 'Template', 'learnpress' ),
+				'course'   => __( 'Course Data', 'learnpress' ),
 				'database' => __( 'Database', 'learnpress' ),
-				'course'   => __( 'Course', 'learnpress' ),
-				'cron'     => __( 'Cron', 'learnpress' ),
-				'cache'    => __( 'Cache', 'learnpress' )
+				'template' => __( 'Templates', 'learnpress' ),
+				'cron'     => __( 'Cron Jobs', 'learnpress' ),
+				'cache'    => __( 'Caches', 'learnpress' )
 			)
 		);
 

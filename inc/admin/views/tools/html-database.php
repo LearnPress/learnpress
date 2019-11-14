@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) or die();
 
-include_once "database/html-install-sample-data.php";
 include_once "database/html-repair-database.php";
 include_once "database/html-upgrade-database.php";
 include_once "database/html-remove-database.php";
