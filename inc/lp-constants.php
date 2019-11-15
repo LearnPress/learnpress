@@ -14,6 +14,7 @@ define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 
 // Plugin paths and urls
 define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( LP_PLUGIN_FILE ) ) );
+define( 'LP_TEMPLATE_PATH', LP_PLUGIN_PATH . 'templates/' );
 define( 'LP_CONTENT_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
 define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', LP_PLUGIN_FILE ) ) );
 define( 'LP_JS_URL', LP_PLUGIN_URL . 'assets/js/' );

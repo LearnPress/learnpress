@@ -327,7 +327,11 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
-		//LP_Debug::instance()->add(debug_backtrace());
+
+		if ( is_embed() ) {
+			return $template;
+		}
+
 		$this->_maybe_redirect_courses_page();
 		$this->_maybe_redirect_course_item();
 
@@ -335,11 +339,26 @@ class LP_Page_Controller {
 			return $tmpl;
 		}
 
+		$default_template = $this->get_page_template();
+
+		if ( $default_template ) {
+			$templates = $this->get_page_templates( $default_template );
+
+			if ( ! $template = locate_template( $templates ) ) {
+				$template = LP_TEMPLATE_PATH . $default_template;
+			}
+		}
+		var_dump( $template );
+
+		return $template;
+
 		if ( $this->_is_archive() || learn_press_is_course() ) {
 			// If there is no template is valid in theme or plugin
 			if ( ! ( $lp_template = $this->_find_template( $template ) ) ) {
+				add_filter( 'page_template_hierarchy', array( $this, 'page_template_hierarchy' ) );
 				// Get template of wp page.
 				$template = get_page_template();
+				remove_filter( 'page_template_hierarchy', array( $this, 'page_template_hierarchy' ) );
 			} else {
 				$template = $lp_template;
 			}
@@ -350,14 +369,83 @@ class LP_Page_Controller {
 				if ( $course_item = LP_Global::course_item() ) {
 					return learn_press_locate_template( 'content-single-item.php' );
 				} else {
-					add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
+					return learn_press_locate_template( 'single-lp_course.php' );
+
+					//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 				}
 			} elseif ( $this->_is_archive() ) {
 				$this->_load_archive_courses( $template );
 			}
 		}
 
+
 		return $template;
+	}
+
+	private function get_page_template() {
+		if ( is_singular( LP_COURSE_CPT ) ) {
+			$page_template = 'single-course.php';
+		} elseif ( learn_press_is_course_taxonomy() ) {
+			$object = get_queried_object();
+
+			if ( is_tax( 'course_category' ) || is_tax( 'course_tag' ) ) {
+				$page_template = 'taxonomy-' . $object->taxonomy . '.php';
+			} else {
+				$page_template = 'archive-course.php';
+			}
+		} elseif ( is_post_type_archive( LP_COURSE_CPT ) || is_page( learn_press_get_page_id( 'courses' ) ) ) {
+			$page_template = 'archive-course.php';
+		} else {
+			$page_template = '';
+		}
+
+		return apply_filters( 'learn-press/page-template', $page_template );
+	}
+
+	private function get_page_templates( $default_template ) {
+		$templates = apply_filters( 'learn-press/page-templates', array(), $default_template );
+
+		if ( is_page_template() ) {
+			$templates[] = get_page_template_slug();
+		}
+
+		if ( is_singular( LP_COURSE_CPT ) ) {
+			$object       = get_queried_object();
+			$name_decoded = urldecode( $object->post_name );
+			if ( $name_decoded !== $object->post_name ) {
+				$templates[] = "single-course-{$name_decoded}.php";
+			}
+			$templates[] = "single-product-{$object->post_name}.php";
+		}
+
+		if ( learn_press_is_course_taxonomy() ) {
+			$object      = get_queried_object();
+			$templates[] = 'taxonomy-' . $object->taxonomy . '-' . $object->slug . '.php';
+			$templates[] = learn_press_template_path( true ) . 'taxonomy-' . $object->taxonomy . '-' . $object->slug . '.php';
+			$templates[] = 'taxonomy-' . $object->taxonomy . '.php';
+			$templates[] = learn_press_template_path( true ) . 'taxonomy-' . $object->taxonomy . '.php';
+		}
+
+		$templates[] = $default_template;
+		$templates[] = learn_press_template_path( true ) . $default_template;
+
+		return array_unique( $templates );
+	}
+
+	/**
+	 * Filter to allow search more templates in theme for wp page template hierarchy.
+	 * Theme twentytwenty used 'singular.php' instead of 'page.php'
+	 *
+	 * @since 3.x.x
+	 *
+	 * @param array $templates
+	 *
+	 * @return array
+	 */
+	public function page_template_hierarchy( $templates ) {
+		$templates = array_merge( $templates, array( 'singular.php' ) );
+
+		return $templates;
 	}
 
 	/**

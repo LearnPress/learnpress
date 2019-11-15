@@ -127,13 +127,13 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 			if ( $query->have_posts() ) {
 				do_action( 'learn_press_before_courses_loop' );
 
-				LP()->template()->begin_courses_loop();
+				LP()->template('course')->begin_courses_loop();
 
 				while ( $query->have_posts() ) : $query->the_post();
 					learn_press_get_template_part( 'content', 'course' );
 				endwhile;
 
-				LP()->template()->end_courses_loop();
+				LP()->template('course')->end_courses_loop();
 
 				do_action( 'learn_press_after_courses_loop' );
 

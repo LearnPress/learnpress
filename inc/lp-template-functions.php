@@ -13,23 +13,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 	function learn_press_add_course_buttons() {
-		add_action( 'learn-press/course-buttons', LP()->template()->func( 'course_enroll_button' ), 5 );
-		add_action( 'learn-press/course-buttons', LP()->template()->func( 'course_purchase_button' ), 10 );
-		add_action( 'learn-press/course-buttons', LP()->template()->func( 'course_external_button' ), 15 );
-		add_action( 'learn-press/course-buttons', LP()->template()->func( 'course_retake_button' ), 20 );
-		add_action( 'learn-press/course-buttons', LP()->template()->func( 'course_continue_button' ), 25 );
-		add_action( 'learn-press/course-buttons', LP()->template()->func( 'course_finish_button' ), 30 );
+		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_enroll_button' ), 5 );
+		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_purchase_button' ), 10 );
+		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_external_button' ), 15 );
+		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_retake_button' ), 20 );
+		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_continue_button' ), 25 );
+		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_finish_button' ), 30 );
 	}
 }
 
 if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
 	function learn_press_remove_course_buttons() {
-		remove_action( 'learn-press/course-buttons', LP()->template()->func( 'course_enroll_button' ), 5 );
-		remove_action( 'learn-press/course-buttons', LP()->template()->func( 'course_purchase_button' ), 10 );
-		remove_action( 'learn-press/course-buttons', LP()->template()->func( 'course_external_button' ), 15 );
-		remove_action( 'learn-press/course-buttons', LP()->template()->func( 'course_retake_button' ), 20 );
-		remove_action( 'learn-press/course-buttons', LP()->template()->func( 'course_continue_button' ), 25 );
-		remove_action( 'learn-press/course-buttons', LP()->template()->func( 'course_finish_button' ), 30 );
+		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_enroll_button' ), 5 );
+		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_purchase_button' ), 10 );
+		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_external_button' ), 15 );
+		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_retake_button' ), 20 );
+		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_continue_button' ), 25 );
+		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_finish_button' ), 30 );
 	}
 }
 
@@ -50,7 +50,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			$defaults['overview'] = array(
 				'title'    => __( 'Overview', 'learnpress' ),
 				'priority' => 10,
-				'callback' => LP()->template()->callback( 'single-course/tabs/overview.php' )
+				'callback' => LP()->template('course')->callback( 'single-course/tabs/overview.php' )
 			);
 		}
 
@@ -58,13 +58,13 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		$defaults['curriculum'] = array(
 			'title'    => __( 'Curriculum', 'learnpress' ),
 			'priority' => 30,
-			'callback' => LP()->template()->callback( 'single-course/tabs/curriculum.php' )
+			'callback' => LP()->template('course')->callback( 'single-course/tabs/curriculum.php' )
 		);
 
 		$defaults['instructor'] = array(
 			'title'    => __( 'Instructor', 'learnpress' ),
 			'priority' => 40,
-			'callback' => LP()->template()->callback( 'single-course/tabs/instructor.php' )
+			'callback' => LP()->template('course')->callback( 'single-course/tabs/instructor.php' )
 		);
 
 
@@ -134,8 +134,6 @@ if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
 		}
 	}
 }
-
-
 
 
 if ( ! function_exists( 'learn_press_content_item_body_class' ) ) {
@@ -410,11 +408,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 }
 
 
-
-
-
 ///////////////////////////////////////
-
 
 
 if ( ! function_exists( 'learn_press_enroll_script' ) ) {
@@ -424,8 +418,6 @@ if ( ! function_exists( 'learn_press_enroll_script' ) ) {
 		learn_press_assets()->enqueue_script( 'learn-press-enroll', LP()->plugin_url( 'assets/js/frontend/enroll.js' ), array( 'learn-press-js' ) );
 	}
 }
-
-
 
 
 if ( ! function_exists( 'learn_press_course_loop_item_user_progress' ) ) {
@@ -1268,55 +1260,7 @@ if ( ! function_exists( 'learn_press_content_item_review_quiz_title' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_become_teacher_messages' ) ) {
-	function learn_press_become_teacher_messages() {
-		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-		if ( ! $messages ) {
-			return;
-		}
 
-		learn_press_get_template( 'global/become-teacher-form/message.php', array( 'messages' => $messages ) );
-	}
-}
-
-if ( ! function_exists( 'learn_press_become_teacher_heading' ) ) {
-
-	function learn_press_become_teacher_heading() {
-		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-		if ( $messages ) {
-			return;
-		}
-		?>
-        <h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
-		<?php
-	}
-}
-
-if ( ! function_exists( 'learn_press_become_teacher_form_fields' ) ) {
-
-	function learn_press_become_teacher_form_fields() {
-		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-		if ( $messages ) {
-			return;
-		}
-
-		include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
-
-		learn_press_get_template( 'global/become-teacher-form/form-fields.php', array( 'fields' => learn_press_get_become_a_teacher_form_fields() ) );
-	}
-}
-
-if ( ! function_exists( 'learn_press_become_teacher_button' ) ) {
-
-	function learn_press_become_teacher_button() {
-		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
-		if ( $messages ) {
-			return;
-		}
-
-		learn_press_get_template( 'global/become-teacher-form/button.php' );
-	}
-}
 
 if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
 
@@ -1601,18 +1545,6 @@ if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_back_to_class_button' ) ) {
-	function learn_press_back_to_class_button() {
-		$courses_link = learn_press_get_page_link( 'courses' );
-		if ( ! $courses_link ) {
-			return;
-		}
-		?>
-
-        <a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
-		<?php
-	}
-}
 
 //if ( ! function_exists( 'learn_press_reset_single_item_summary_content' ) ) {
 //	function learn_press_reset_single_item_summary_content() {
@@ -2057,7 +1989,6 @@ function learn_press_filter_can_view_item( $view, $item_id, $course_id, $user_id
 }
 
 
-
 function learn_press_get_link_current_question_instead_of_continue_button( $link, $item ) {
 	if ( get_post_type( $item->get_id() ) === LP_QUIZ_CPT ) {
 		$user      = LP_Global::user();
@@ -2215,3 +2146,78 @@ function learn_press_setup_theme() {
 }
 
 add_action( 'after_setup_theme', 'learn_press_setup_theme' );
+
+if ( ! function_exists( 'learn_press_page_title' ) ) {
+	function learn_press_page_title( $echo = true ) {
+
+		if ( is_search() ) {
+			$page_title = sprintf( __( 'Search results: &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() );
+
+			if ( get_query_var( 'paged' ) ) {
+				$page_title .= sprintf( __( '&nbsp;&ndash; Page %s', 'learnpress' ), get_query_var( 'paged' ) );
+			}
+		} elseif ( is_tax() ) {
+
+			$page_title = single_term_title( '', false );
+
+		} else {
+
+			$page_id    = learn_press_get_page_id( 'courses' );
+			$page_title = get_the_title( $page_id );
+		}
+
+		$page_title = apply_filters( 'learn-press/page-title', $page_title );
+
+		if ( $echo ) {
+			echo $page_title;
+		}
+
+		return $page_title;
+	}
+}
+
+/**
+ * @since 4.x.x
+ *
+ * @param LP_Question $question
+ * @param array       $args
+ *
+ * @return array
+ */
+function learn_press_get_question_options_for_js( $question, $args = array() ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'cryptoJsAes'     => false,
+			'include_is_true' => true
+		)
+	);
+
+	if ( $args['cryptoJsAes'] ) {
+		$options = array_values( $question->get_answer_options() );
+
+		$key     = uniqid();
+		$options = array(
+			'data' => cryptoJsAesEncrypt( $key, wp_json_encode( $options ) ),
+			'key'  => $key
+		);
+	} else {
+		$exclude_option_key = array( 'question_id', 'order' );
+		if ( ! $args['include_is_true'] ) {
+			$exclude_option_key[] = 'is_true';
+		}
+
+		$options = array_values( $question->get_answer_options(
+			array(
+				'exclude' => $exclude_option_key,
+				'map'     => array( 'question_answer_id' => 'uid' )
+			)
+		) );
+	}
+
+	return $options;
+}
+
+function learn_press_custom_excerpt_length( $length ) {
+	return 20;
+}

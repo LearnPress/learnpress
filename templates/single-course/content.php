@@ -14,13 +14,8 @@
  */
 defined( 'ABSPATH' ) || exit();
 ?>
-<div class="course-content">
+<div class="course-content course-summary-content">
 	<?php
-	/**
-	 * @deprecated
-	 */
-	do_action( 'learn_press_course_content_summary' );
-
 	/**
 	 * @since 3.x.x
 	 */

@@ -2215,7 +2215,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 //					$access_level = LP_COURSE_ACCESS_LEVEL_60;
 //
 					// Access level of user item course
-					if ( $course_data->get_access_level() ) {
+					if ( $course_data->get_access_level() >= 50 ) {
 						switch ( $course_data->get_status() ) {
 							case 'enrolled':
 								$access_level = LP_COURSE_ACCESS_LEVEL_60;
@@ -2225,7 +2225,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 								break;
 						}
 					} else {
-						$access_level = LP_COURSE_ACCESS_LEVEL_55;
+						//$access_level = LP_COURSE_ACCESS_LEVEL_55;
 					}
 
 //					switch ( $course_data->get_status() ) {

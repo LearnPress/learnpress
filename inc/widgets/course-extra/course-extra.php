@@ -60,13 +60,13 @@ if ( ! class_exists( 'LP_Widget_Course_Extra' ) ) {
 		public function show() {
 			switch ( $this->instance['type'] ) {
 				case 'key_features':
-					LP()->template()->course_extra_key_features();
+					LP()->template('course')->course_extra_key_features();
 					break;
 				case 'target_audience':
-					LP()->template()->course_extra_target_audiences();
+					LP()->template('course')->course_extra_target_audiences();
 					break;
 				case 'requirements':
-					LP()->template()->course_extra_requirements();
+					LP()->template('course')->course_extra_requirements();
 					break;
 			}
 		}

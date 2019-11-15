@@ -2193,6 +2193,9 @@ body.confirm #popup_container {
     .lp-courses-bar .switch-layout input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
       display: none; }
 
+.course-summary-content {
+  width: calc(10000px); }
+
 .course-summary-sidebar .course-sidebar-preview {
   border: 1px solid #d9e0f1;
   background: #fbfcff;

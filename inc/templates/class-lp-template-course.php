@@ -7,11 +7,7 @@
  *
  * @since 3.x.x
  */
-class LP_Template_Course extends LP_Abstract_Template{
-
-	public function course_sidebar() {
-		learn_press_get_template( 'single-course/sidebar' );
-	}
+class LP_Template_Course extends LP_Abstract_Template {
 
 	public function course_sidebar_preview() {
 		learn_press_get_template( 'single-course/sidebar/preview' );
@@ -22,7 +18,55 @@ class LP_Template_Course extends LP_Abstract_Template{
 	}
 
 	public function course_media_preview() {
-		echo get_the_post_thumbnail();
+		$course = learn_press_get_course();
+		echo $course->get_image();
+	}
+
+	public function loop_item_user_progress() {
+		$course = LP_Global::course();
+		$user   = LP_Global::user();
+
+		if ( $user && $user->has_enrolled_course( $course->get_id() ) ) {
+			echo $user->get_course_status( $course->get_id() );
+		}
+	}
+
+	/**
+	 * @param LP_Quiz $item
+	 */
+	public function quiz_meta_questions( $item ) {
+		$count = $item->count_questions();
+		echo '<span class="item-meta count-questions">' . sprintf( $count ? _n( '%d question', '%d questions', $count, 'learnpress' ) : __( '%d question', 'learnpress' ), $count ) . '</span>';
+	}
+
+	/**
+	 * @param LP_Quiz|LP_Lesson $item
+	 */
+	public function item_meta_duration( $item ) {
+		$duration = $item->get_duration();
+
+		if ( is_a( $duration, 'LP_Duration' ) && $duration->get() ) {
+			$format = array(
+				'day'    => _x( '%s day', 'duration', 'learnpress' ),
+				'hour'   => _x( '%s hour', 'duration', 'learnpress' ),
+				'minute' => _x( '%s min', 'duration', 'learnpress' ),
+				'second' => _x( '%s sec', 'duration', 'learnpress' ),
+			);
+			echo '<span class="item-meta duration">' . $duration->to_timer( $format, true ) . '</span>';
+		} elseif ( is_string( $duration ) && strlen( $duration ) ) {
+			echo '<span class="item-meta duration">' . $duration . '</span>';
+		}
+	}
+
+	/**
+	 * @param LP_Quiz $item
+	 */
+	public function quiz_meta_final( $item ) {
+		$course = LP_Global::course();
+		if ( ! $course->is_final_quiz( $item->get_id() ) ) {
+			return;
+		}
+		echo '<span class="item-meta final-quiz">' . __( 'Final', 'learnpress' ) . '</span>';
 	}
 
 	public function course_button() {
@@ -130,9 +174,10 @@ class LP_Template_Course extends LP_Abstract_Template{
 		}
 
 		$purchased = $user->has_purchased_course( $course->get_id() );
+		$enrolled  = $user->has_enrolled_course( $course->get_id() );
 
 		// For free course and user does not purchased
-		if ( $course->is_free() && ! $purchased ) {
+		if ( $course->is_free() && ! $enrolled ) {
 			learn_press_get_template( 'single-course/buttons/enroll.php' );
 		} elseif ( $purchased && $course_data = $user->get_course_data( $course->get_id() ) ) {
 			if ( in_array( $course_data->get_status(), array( 'purchased', '' ) ) ) {
@@ -259,9 +304,9 @@ class LP_Template_Course extends LP_Abstract_Template{
 			return;
 		}
 
-		if ( ! $course_data->is_available() ) {
-			return;
-		}
+//		if ( ! $course_data->is_available() ) {
+//			return;
+//		}
 
 		if ( $course_data->get_status() !== 'enrolled' ) {
 			return;
@@ -482,6 +527,44 @@ class LP_Template_Course extends LP_Abstract_Template{
 		}
 
 		learn_press_get_template( 'content-lesson/button-complete.php' );
+	}
+
+	public function back_to_class_button() {
+		$courses_link = learn_press_get_page_link( 'courses' );
+		if ( ! $courses_link ) {
+			return;
+		}
+		?>
+
+		<a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
+		<?php
+	}
+
+	public function lesson_comment_form() {
+		global $post;
+
+		if ( ! $course = LP_Global::course() ) {
+			return;
+		}
+
+		if ( ! $lesson = LP_Global::course_item() ) {
+			return;
+		}
+
+		$user = learn_press_get_current_user();
+
+// 	if ( ! $user->is_admin() && ! $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
+// 		return;
+// 	}
+
+		if ( $lesson->setup_postdata() ) {
+
+			if ( comments_open() || get_comments_number() ) {
+				comments_template();
+			}
+			$lesson->reset_postdata();
+		}
+
 	}
 }
 

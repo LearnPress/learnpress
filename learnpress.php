@@ -120,6 +120,21 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public $utils = null;
 
 		/**
+		 * @var LP_Core_API
+		 */
+		public $api = null;
+
+		/**
+		 * @var LP_Admin_Core_API
+		 */
+		public $admin_api = null;
+
+		/**
+		 *
+		 */
+		public $theme_support = null;
+
+		/**
 		 * LearnPress constructor.
 		 */
 		public function __construct() {
@@ -150,11 +165,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			);
 
 			foreach ( $supports as $name => $file ) {
-				if ( ! file_exists( $file ) ) {
+				if ( ! is_file( $file ) || ! file_exists( $file ) || preg_match( '~.php$~', $file ) ) {
 					$file = LP_PLUGIN_PATH . "/inc/background-process/class-lp-background-{$file}.php";
 				}
 
-				if ( file_exists( $file ) ) {
+				if ( file_exists( $file ) && is_readable( $file ) ) {
 					$this->backgrounds[ $name ] = include_once $file;
 				}
 			}
@@ -386,6 +401,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			//
 			require_once 'inc/admin/rest-api/class-lp-core-api.php';
 
+			include_once 'inc/theme-support/class-theme-support-base.php';
+			include_once 'inc/class-lp-theme-support.php';
+
 
 			if ( file_exists( LP_PLUGIN_PATH . '/local-debug.php' ) ) {
 				include_once 'local-debug.php';
@@ -587,24 +605,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @param string $type
 		 *
-		 * @return LP_Template_Course|LP_Template_Profile
+		 * @return LP_Template_Course|LP_Template_Profile|LP_Template_General|LP_Abstract_Template
 		 *
 		 * @throws Exception
 		 */
-		public function template( $type = 'course' /*$hook = '', $cb = '', $priority = 10, $number_args = 1 */) {
+		public function template( $type = 'general' ) {
 			if ( ! $this->template ) {
 				$this->template = LP_Template::instance();
 			}
 
-//			if ( $num = func_num_args() ) {
-//				if ( $num < 2 || ! is_callable( array( $this->template, $cb ) ) ) {
-//					throw new Exception( __( 'Callback function for template hook doesn\'t exists.', 'learnpress' ) );
-//				}
-//
-//				//$this->template->hook( $hook, $cb, $priority, $number_args );
-//			}
-
-			return $this->template->{$type};
+			return isset( $this->template->{$type} ) ? $this->template->{$type} : new LP_Abstract_Template();
 		}
 
 		/**
@@ -612,8 +622,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function init() {
 
-			$this->api       = new LP_Core_API();
-			$this->admin_api = new LP_Admin_Core_API();
+			$this->api           = new LP_Core_API();
+			$this->admin_api     = new LP_Admin_Core_API();
+			$this->theme_support = LP_Theme_Support::instance();
 
 			$this->view_log();
 
@@ -868,6 +879,7 @@ $GLOBALS['LearnPress'] = LP();
 
 add_action( 'template_include', function ( $t ) {
 
+	//learn_press_debug(debug_backtrace());
 	if ( empty( $_REQUEST['x'] ) ) {
 		return $t;
 	}
@@ -899,7 +911,7 @@ add_action( 'template_include', function ( $t ) {
 	die();
 
 
-} );
+}, 10 );
 
 add_filter( 'wp_redirect', function ( $url ) {
 //    learn_press_debug(debug_backtrace(), $_REQUEST);
@@ -909,7 +921,7 @@ add_filter( 'wp_redirect', function ( $url ) {
 } );
 
 add_action( 'template_includex', function () {
-	var_dump(learn_press_is_course_category(), learn_press_is_courses());
+	var_dump( learn_press_is_course_category(), learn_press_is_courses() );
 //	for($i=1;$i<100;$i++){
 //		wp_insert_post(array('post_title'=>'Post ' . $i, 'post_status'=>'publish'));
 //	}

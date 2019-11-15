@@ -23,7 +23,11 @@ class LP_Abstract_Template {
 	}
 
 	public function callback( $template, $args = array() ) {
-		return array( new LP_Template_Callback( $template, $args ), 'display' );
+		return array( new LP_Template_Callback( $template, $args ), 'callback' );
+	}
+
+	public function text( $text, $id = '' ) {
+		return array( new LP_Template_Callback( $text, $id ), 'text' );
 	}
 
 	/**
@@ -61,6 +65,49 @@ class LP_Abstract_Template {
 	public function remove( $tag, $function_to_remove, $priority = 10 ) {
 		global $wp_filter;
 
+		// remove filter text
+		if ( is_array( $function_to_remove ) ) {
+			if ( empty( $wp_filter[ $tag ] ) ) {
+				return;
+			}
+
+			if ( ! $callbacks = $wp_filter[ $tag ]->callbacks ) {
+				return;
+			}
+
+			$priorities = array_keys( $callbacks );
+
+			foreach ( $priorities as $priority1 ) {
+
+				if ( $priority !== '*' && $priority !== $priority1 ) {
+					continue;
+				}
+
+				if ( empty( $callbacks[ $priority1 ] ) ) {
+					continue;
+				}
+
+				foreach ( $callbacks[ $priority1 ] as $callback ) {
+
+					if ( ! $callback['function'][0] instanceof LP_Template_Callback ) {
+						continue;
+					}
+
+					if ( $callback['function'][0]->get_args() !== $function_to_remove[1] ) {
+						continue;
+					}
+
+					remove_action( $tag, $callback['function'], $priority1 );
+				}
+
+			}
+
+		}
+
+		/**
+		 * $function_to_remove === '*' will remove all functions hooked into a hook
+		 * in all priorities
+		 */
 		if ( $function_to_remove === '*' ) {
 			if ( ! empty( $wp_filter[ $tag ] ) ) {
 				unset( $wp_filter[ $tag ] );
@@ -69,6 +116,10 @@ class LP_Abstract_Template {
 			return;
 		}
 
+		/**
+		 * $priority === '*' will remove all functions hooked into a hook
+		 * in
+		 */
 		if ( $priority === '*' ) {
 
 			if ( ! empty( $wp_filter[ $tag ]->callbacks ) ) {
@@ -122,7 +173,7 @@ class LP_Template_Callback {
 	/**
 	 *
 	 */
-	public function display() {
+	public function callback() {
 		$template_args = array();
 
 		if ( $this->args ) {
@@ -133,5 +184,17 @@ class LP_Template_Callback {
 			}
 		}
 		learn_press_get_template( $this->template, $template_args );
+	}
+
+	public function text() {
+		echo $this->template;
+	}
+
+	public function get_args() {
+		return $this->args;
+	}
+
+	public function get_template() {
+		return $this->template;
 	}
 }

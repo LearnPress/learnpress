@@ -15,7 +15,7 @@
     </form>
 	<?php
 
-	LP()->template()->course_curriculum();
+	LP()->template('course')->course_curriculum();
 
 	?>
 </div>

@@ -42,7 +42,7 @@ if ( ! class_exists( 'LP_Widget_Course_Sidebar_Preview' ) ) {
 		 * Show widget in frontend.
 		 */
 		public function show() {
-			LP()->template()->course_sidebar_preview();
+			LP()->template('course')->course_sidebar_preview();
 		}
 
 	}

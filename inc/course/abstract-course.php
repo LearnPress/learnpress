@@ -1436,6 +1436,22 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function count_items( $type = '', $include_preview = true ) {
 
+
+			global $wpdb;
+			$item_types = learn_press_get_course_item_types();
+			$item_type_format = array_fill(0, sizeof($item_types), '%s');
+
+//			$query  =$wpdb->prepare("
+//				SELECT it.ID
+//				FROM {$wpdb->posts} c
+//				INNER JOIN {$wpdb->learnpress_sections} s ON s.section_course_id = c.ID
+//				INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+//				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
+//				WHERE c.ID = %d
+//				AND it.post_type IN (".join(',', $item_type_format).")
+//			", );
+
+
 			if ( $type === '' && $include_preview === true ) {
 				if ( false === ( $count_items = $this->get_meta( 'count_items' ) ) ) {
 					$items       = $this->get_item_ids();

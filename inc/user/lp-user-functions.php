@@ -1941,9 +1941,9 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 			$with_true_or_false = $checked || $quizStatus === 'completed';
 
 			if ( $question->is_support( 'answer-options' ) ) {
-				$questionData['options'] = xxx_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
+				$questionData['options'] = learn_press_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
 			} elseif ( $question->get_type() === 'fill_in_blanks' ) {
-				$blanks          = xxx_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
+				$blanks          = learn_press_get_question_options_for_js( $question, array( 'include_is_true' => $with_true_or_false ) );
 				$blankFillsStyle = get_post_meta( $id, '_lp_blank_fills_style', true );
 
 				foreach ( $blanks as $k => $blank ) {

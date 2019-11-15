@@ -64,6 +64,76 @@ class LP_Template_General extends LP_Abstract_Template{
 
 		learn_press_get_template( 'search-form.php', array( 's' => $s ) );
 	}
+
+	public function become_teacher_messages() {
+		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+		if ( ! $messages ) {
+			return;
+		}
+
+		learn_press_get_template( 'global/become-teacher-form/message.php', array( 'messages' => $messages ) );
+	}
+
+	public function become_teacher_heading() {
+		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+		if ( $messages ) {
+			return;
+		}
+		?>
+		<h3><?php _e( 'Fill out the form and send us your requesting.', 'learnpress' ); ?></h3>
+		<?php
+	}
+
+	public function become_teacher_form_fields() {
+		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+		if ( $messages ) {
+			return;
+		}
+
+		include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-meta-box-helper.php';
+
+		learn_press_get_template( 'global/become-teacher-form/form-fields.php', array( 'fields' => learn_press_get_become_a_teacher_form_fields() ) );
+	}
+
+	public function become_teacher_button() {
+		$messages = LP_Shortcode_Become_A_Teacher::get_messages();
+		if ( $messages ) {
+			return;
+		}
+
+		learn_press_get_template( 'global/become-teacher-form/button.php' );
+	}
+
+	function checkout_form_login() {
+
+		if ( ! LP()->checkout()->is_enable_login() ) {
+			return;
+		}
+
+		learn_press_get_template( 'checkout/form-login.php' );
+	}
+
+	public function checkout_form_register() {
+
+		if ( ! LP()->checkout()->is_enable_register() ) {
+			return;
+		}
+
+		learn_press_get_template( 'checkout/form-register.php' );
+	}
+
+	public function order_payment() {
+		$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+
+		learn_press_get_template( 'checkout/payment.php', array( 'available_gateways' => $available_gateways ) );
+	}
+
+	public function order_guest_email() {
+		$checkout = LP()->checkout();
+		if ( $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
+			learn_press_get_template( 'checkout/guest-email.php' );
+		}
+	}
 }
 
 return new LP_Template_General();

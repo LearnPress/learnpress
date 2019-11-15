@@ -417,7 +417,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 		// Response
 		$response = array(
 			'explanation' => $question->get_explanation(),
-			'options'     => xxx_get_question_options_for_js( $question, array( 'include_is_true' => true ) ),
+			'options'     => learn_press_get_question_options_for_js( $question, array( 'include_is_true' => true ) ),
 			'result'      => $checked
 		);
 
