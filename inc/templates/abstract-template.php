@@ -30,6 +30,15 @@ class LP_Abstract_Template {
 		return array( new LP_Template_Callback( $text, $id ), 'text' );
 	}
 
+	public function __call( $name, $arguments ) {
+		$log = sprintf( 'Template %s::%s doesn\'t exists.', get_class($this), $name );
+		error_log( $log );
+
+		if ( learn_press_is_debug() ) {
+			echo sprintf('<span title="%s" class="learn-press-template-warning"></span>', $log);
+		}
+	}
+
 	/**
 	 * Return is callable method of self class.
 	 *

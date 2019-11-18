@@ -3441,6 +3441,48 @@ ul.list-table-nav {
     flex: 0 0 250px;
     margin-left: 30px; }
 
+.learn-press-template-warning:before {
+  content: "\f071";
+  font-family: Fontawesome;
+  color: #FFC107; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"],
+#learn-press-course-tabs .course-tab-panel {
+  display: none; }
+
+#learn-press-course-tabs .course-nav label {
+  font-weight: normal;
+  margin: 0;
+  padding: 10px;
+  cursor: pointer; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(1):checked ~ .course-tab-panels .course-tab-panel:nth-child(1) {
+  display: block; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(2):checked ~ .course-tab-panels .course-tab-panel:nth-child(2) {
+  display: block; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(3):checked ~ .course-tab-panels .course-tab-panel:nth-child(3) {
+  display: block; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(4):checked ~ .course-tab-panels .course-tab-panel:nth-child(4) {
+  display: block; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(5):checked ~ .course-tab-panels .course-tab-panel:nth-child(5) {
+  display: block; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(6):checked ~ .course-tab-panels .course-tab-panel:nth-child(6) {
+  display: block; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(7):checked ~ .course-tab-panels .course-tab-panel:nth-child(7) {
+  display: block; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(8):checked ~ .course-tab-panels .course-tab-panel:nth-child(8) {
+  display: block; }
+
+#learn-press-course-tabs input[name="learn-press-course-tab-radio"]:nth-child(9):checked ~ .course-tab-panels .course-tab-panel:nth-child(9) {
+  display: block; }
+
 @media screen and (max-width: 768px) {
   ul.learn-press-courses .course {
     width: 48%; } }

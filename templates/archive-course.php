@@ -18,13 +18,17 @@ get_header( 'course' );
  * LP Hook
  */
 do_action( 'learn-press/before-main-content' );
+
 ?>
     <header class="learn-press-courses-header">
         <h1><?php learn_press_page_title(); ?></h1>
     </header>
 <?php
 
-//do_action( 'learn-press/before-courses-loop' );
+/**
+ * LP Hook
+ */
+do_action( 'learn-press/before-courses-loop' );
 
 LP()->template('course')->begin_courses_loop();
 

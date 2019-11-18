@@ -318,6 +318,38 @@ ul.list-table-nav {
     }
 }
 
+.learn-press-template-warning {
+    &:before {
+        content: "\f071";
+        font-family: Fontawesome;
+        color: #FFC107;
+    }
+}
+
+#learn-press-course-tabs {
+    input[name="learn-press-course-tab-radio"],
+    .course-tab-panel {
+        display: none;
+    }
+
+    .course-nav {
+        label {
+            font-weight: normal;
+            margin: 0;
+            padding: 10px;
+            cursor: pointer;
+        }
+    }
+
+    @for $i from 1 to 10 {
+        input[name="learn-press-course-tab-radio"]:nth-child(#{$i}):checked ~ .course-tab-panels {
+            .course-tab-panel:nth-child(#{$i}) {
+                display: block;
+            }
+        }
+    }
+}
+
 @media screen and (max-width: 768px) {
     ul.learn-press-courses {
         .course {

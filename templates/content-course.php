@@ -17,7 +17,6 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-
 	<?php
 
 	// @since 3.0.0
@@ -29,7 +28,6 @@ defined( 'ABSPATH' ) || exit();
 		<?php
 		// @since 3.0.0
 		do_action( 'learn-press/courses-loop-item-title' );
-		'abc/].php';
 		?>
 
     </a>

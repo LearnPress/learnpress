@@ -248,6 +248,14 @@ var AjaxSearchCourses = function AjaxSearchCourses(el) {
   });
 };
 
+var initCourseTabs = function initCourseTabs() {
+  $('#learn-press-course-tabs').on('change', 'input[name="learn-press-course-tab-radio"]', function () {
+    var selectedTab = $('input[name="learn-press-course-tab-radio"]:checked').val();
+    LP.Cookies.set('course-tab', selectedTab);
+    $('label[for="' + $(event.target).attr('id') + '"]').closest('li').addClass('active').siblings().removeClass('active');
+  });
+};
+
 $(window).on('load', function () {
   var $popup = $('#popup-course');
   var timerClearScroll;
@@ -277,6 +285,7 @@ $(window).on('load', function () {
     });
     var b = $(el).siblings('.section-title').append(a);
   });
+  initCourseTabs();
   LP.Hook.doAction('course-ready'); // if (window.location.hash) {
   //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
   // }

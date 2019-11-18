@@ -19,23 +19,39 @@ $tabs = learn_press_get_course_tabs();
 if ( empty( $tabs ) ) {
 	return;
 }
-$all_in_one = false;
+$all_in_one = true;
+$show_tabs  = true;
+$active_tab = learn_press_cookie_get( 'course-tab' );
+
+if ( ! $active_tab ) {
+	$active_tab = reset( array_keys( $tabs ) );
+}
+
 ?>
 
 <div id="learn-press-course-tabs" class="course-tabs<?php echo $all_in_one ? ' show-all' : ''; ?>">
-	<?php if ( ! $all_in_one ) { ?>
+	<?php if ( $show_tabs ) { ?>
+
+		<?php foreach ( $tabs as $key => $tab ) { ?>
+            <input type="radio" name="learn-press-course-tab-radio" id="tab-<?php echo $key; ?>"
+				<?php checked( $active_tab === $key ); ?>
+                   value="<?php echo $key; ?>"/>
+		<?php } ?>
+
         <ul class="learn-press-nav-tabs course-nav-tabs" data-tabs="<?php echo sizeof( $tabs ); ?>">
 
 			<?php foreach ( $tabs as $key => $tab ) { ?>
 
-				<?php $classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
-				if ( ! empty( $tab['active'] ) && $tab['active'] ) {
-					$classes[] = 'active default';
-				} ?>
+				<?php
+                $classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
+
+				if ( $active_tab === $key ) {
+					$classes[] = 'active';
+				}
+				?>
 
                 <li class="<?php echo join( ' ', $classes ); ?>">
-                    <a href="?tab=<?php echo esc_attr( $tab['id'] ); ?>"
-                       data-tab="#<?php echo esc_attr( $tab['id'] ); ?>"><?php echo $tab['title']; ?></a>
+                    <label for="tab-<?php echo $key; ?>"><?php echo $tab['title']; ?></label>
                 </li>
 
 			<?php } ?>
@@ -43,16 +59,15 @@ $all_in_one = false;
         </ul>
 
 	<?php } ?>
-	<?php foreach ( $tabs as $key => $tab ) {
+    <div class="course-tab-panels">
+		<?php foreach ( $tabs as $key => $tab ) {
 
-		$is_active = ( ! empty( $tab['active'] ) && $tab['active'] ) || $all_in_one;
-		?>
+			?>
 
-        <div class="course-tab-panel-<?php echo esc_attr( $key ); ?> course-tab-panel<?php echo $is_active ? ' active' : ''; ?>"
-             id="<?php echo esc_attr( $tab['id'] ); ?>">
+            <div class="course-tab-panel-<?php echo esc_attr( $key ); ?> course-tab-panel"
+                 id="<?php echo esc_attr( $tab['id'] ); ?>">
 
-			<?php
-			if ( apply_filters( 'learn_press_allow_display_tab_section', $is_active, $key, $tab ) ) {
+				<?php
 
 				if ( $all_in_one ) {
 					?>
@@ -68,11 +83,10 @@ $all_in_one = false;
 					 */
 					do_action( 'learn-press/course-tab-content', $key, $tab );
 				}
-			}
-			?>
+				?>
 
-        </div>
+            </div>
 
-	<?php } ?>
-
+		<?php } ?>
+    </div>
 </div>

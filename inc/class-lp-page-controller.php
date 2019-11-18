@@ -348,7 +348,6 @@ class LP_Page_Controller {
 				$template = LP_TEMPLATE_PATH . $default_template;
 			}
 		}
-		var_dump( $template );
 
 		return $template;
 
@@ -385,6 +384,14 @@ class LP_Page_Controller {
 	private function get_page_template() {
 		if ( is_singular( LP_COURSE_CPT ) ) {
 			$page_template = 'single-course.php';
+
+			if ( $this->_is_single() ) {
+				global $post;
+				setup_postdata( $post );
+				if ( $course_item = LP_Global::course_item() ) {
+					$page_template = 'content-single-item.php';
+				}
+			}
 		} elseif ( learn_press_is_course_taxonomy() ) {
 			$object = get_queried_object();
 
