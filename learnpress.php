@@ -605,16 +605,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @param string $type
 		 *
-		 * @return LP_Template_Course|LP_Template_Profile|LP_Template_General|LP_Abstract_Template
+		 * @return LP_Template_Course|LP_Template_Profile|LP_Template_General|LP_Abstract_Template|LP_Template
 		 *
 		 * @throws Exception
 		 */
-		public function template( $type = 'general' ) {
+		public function template( $type = '' ) {
 			if ( ! $this->template ) {
 				$this->template = LP_Template::instance();
 			}
 
-			return isset( $this->template->{$type} ) ? $this->template->{$type} : new LP_Abstract_Template();
+			return isset( $this->template->{$type} ) ? $this->template->{$type} : $this->template;
 		}
 
 		/**
@@ -979,4 +979,3 @@ add_action( 'template_includex', function () {
 //	}
 //
 //}
-

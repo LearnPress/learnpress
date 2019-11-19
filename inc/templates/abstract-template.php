@@ -192,6 +192,7 @@ class LP_Template_Callback {
 				}
 			}
 		}
+
 		learn_press_get_template( $this->template, $template_args );
 	}
 

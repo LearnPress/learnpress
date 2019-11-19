@@ -33,8 +33,10 @@
 
     #field-_lp_requirements,
     #field-_lp_target_audiences,
-    #field-_lp_key_features {
-        .rwmb-text-list-clone {
+    #field-_lp_key_features,
+    #field-_lp_faqs {
+        .rwmb-text-list-clone,
+        .rwmb-text-list-advanced-clone {
             clear: none;
             border: 1px solid #DDD;
             border-radius: 4px;
@@ -42,13 +44,15 @@
             .rwmb-text-list-label {
                 display: none;
             }
-            .rwmb-text-list {
+            .rwmb-text-list,
+            .rwmb-text-list-advanced {
                 padding: 7px 10px;
                 width: calc(100% - 30px);
                 background: transparent;
                 box-shadow: none;
                 border: none;
                 color: #777;
+                line-height: 1;
             }
             .remove-clone {
                 top: 50%;
@@ -58,24 +62,48 @@
                 @include transition(right 0.25s);
             }
             &:hover {
-                > label {
-                    &:after {
-                        content: "\f329";
-                        font-family: Dashicons;
-                        font-size: 24px;
-                        margin: 8px 0 0 22px;
-                        position: absolute;
-                        display: inline-block;
-                        color: #777;
-                    }
+                &:after {
+                    content: "\f329";
+                    font-family: Dashicons;
+                    font-size: 24px;
+                    margin: 8px 0 0 22px;
+                    position: absolute;
+                    display: inline-block;
+                    color: #777;
+                    top: 50%;
+                    margin-top: -9px;
                 }
-                .rwmb-text-list {
+                .rwmb-text-list,
+                .rwmb-text-list-advanced {
                     width: calc(100% - 50px);
                 }
                 .remove-clone {
                     background: #e74c3c;
                     right: 27px;
                 }
+            }
+        }
+    }
+
+    #field-_lp_faqs {
+        .rwmb-text-list-advanced-clone {
+            position: relative;
+            padding: 0 0 12px 0px;
+            .rwmb-text-list-label {
+                display: block;
+                padding: 10px 10px 0 10px;
+            }
+            .rwmb-text-list {
+                border: 1px solid #DDD;
+                margin: 0 0 0 10px;
+                vertical-align: top;
+            }
+            .remove-clone {
+                top: 50%;
+                right: 7px;
+                margin-top: -10px;
+                background: #DDD;
+                @include transition(right 0.25s);
             }
         }
     }

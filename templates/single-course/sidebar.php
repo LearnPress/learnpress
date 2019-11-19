@@ -1,10 +1,13 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: tu
- * Date: 9/16/19
- * Time: 5:05 PM
+ * Template for displaying course sidebar.
+ *
+ * @version 4.0.0
+ * @author  ThimPress
+ * @package LearnPress/Templates
  */
+
+defined( 'ABSPATH' ) or die;
 ?>
 <aside class="course-summary-sidebar">
 	<?php
@@ -16,7 +19,7 @@
 
 	if ( ! $output ) {
 		do_action( 'learn-press/course-summary-sidebar' );
-	}else {
+	} else {
 		echo $output;
 	}
 

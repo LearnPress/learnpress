@@ -3361,28 +3361,57 @@ body.lp-item-moving {
   margin-top: 10px; }
 
 .learnpress #field-_lp_requirements .rwmb-text-list-clone,
+.learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone,
 .learnpress #field-_lp_target_audiences .rwmb-text-list-clone,
-.learnpress #field-_lp_key_features .rwmb-text-list-clone {
+.learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone,
+.learnpress #field-_lp_key_features .rwmb-text-list-clone,
+.learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone,
+.learnpress #field-_lp_faqs .rwmb-text-list-clone,
+.learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone {
   clear: none;
   border: 1px solid #DDD;
   border-radius: 4px;
   position: relative; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone .rwmb-text-list-label,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone .rwmb-text-list-label,
   .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .rwmb-text-list-label,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone .rwmb-text-list-label {
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone .rwmb-text-list-label,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone .rwmb-text-list-label,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone .rwmb-text-list-label,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone .rwmb-text-list-label,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list-label {
     display: none; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone .rwmb-text-list,
+  .learnpress #field-_lp_requirements .rwmb-text-list-clone .rwmb-text-list-advanced,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone .rwmb-text-list,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone .rwmb-text-list-advanced,
   .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .rwmb-text-list,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone .rwmb-text-list {
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .rwmb-text-list-advanced,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone .rwmb-text-list,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone .rwmb-text-list-advanced,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone .rwmb-text-list,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone .rwmb-text-list-advanced,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone .rwmb-text-list,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone .rwmb-text-list-advanced,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone .rwmb-text-list,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone .rwmb-text-list-advanced,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list-advanced {
     padding: 7px 10px;
     width: calc(100% - 30px);
     background: transparent;
     box-shadow: none;
     border: none;
-    color: #777; }
+    color: #777;
+    line-height: 1; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone .remove-clone,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone .remove-clone,
   .learnpress #field-_lp_target_audiences .rwmb-text-list-clone .remove-clone,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone .remove-clone {
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone .remove-clone,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone .remove-clone,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone .remove-clone,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone .remove-clone,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .remove-clone {
     top: 50%;
     right: 7px;
     margin-top: -10px;
@@ -3392,25 +3421,71 @@ body.lp-item-moving {
     -ms-transition: right 0.25s;
     -o-transition: right 0.25s;
     transition: right 0.25s; }
-  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover > label:after,
-  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover > label:after,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover > label:after {
+  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover:after,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover:after,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover:after,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover:after,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover:after,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover:after,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover:after,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover:after {
     content: "\f329";
     font-family: Dashicons;
     font-size: 24px;
     margin: 8px 0 0 22px;
     position: absolute;
     display: inline-block;
-    color: #777; }
+    color: #777;
+    top: 50%;
+    margin-top: -9px; }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .rwmb-text-list,
+  .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .rwmb-text-list-advanced,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover .rwmb-text-list,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover .rwmb-text-list-advanced,
   .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .rwmb-text-list,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .rwmb-text-list {
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .rwmb-text-list-advanced,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover .rwmb-text-list,
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover .rwmb-text-list-advanced,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .rwmb-text-list,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .rwmb-text-list-advanced,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover .rwmb-text-list,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover .rwmb-text-list-advanced,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover .rwmb-text-list,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover .rwmb-text-list-advanced,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover .rwmb-text-list,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover .rwmb-text-list-advanced {
     width: calc(100% - 50px); }
   .learnpress #field-_lp_requirements .rwmb-text-list-clone:hover .remove-clone,
+  .learnpress #field-_lp_requirements .rwmb-text-list-advanced-clone:hover .remove-clone,
   .learnpress #field-_lp_target_audiences .rwmb-text-list-clone:hover .remove-clone,
-  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .remove-clone {
+  .learnpress #field-_lp_target_audiences .rwmb-text-list-advanced-clone:hover .remove-clone,
+  .learnpress #field-_lp_key_features .rwmb-text-list-clone:hover .remove-clone,
+  .learnpress #field-_lp_key_features .rwmb-text-list-advanced-clone:hover .remove-clone,
+  .learnpress #field-_lp_faqs .rwmb-text-list-clone:hover .remove-clone,
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone:hover .remove-clone {
     background: #e74c3c;
     right: 27px; }
+
+.learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone {
+  position: relative;
+  padding: 0 0 12px 0px; }
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list-label {
+    display: block;
+    padding: 10px 10px 0 10px; }
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .rwmb-text-list {
+    border: 1px solid #DDD;
+    margin: 0 0 0 10px;
+    vertical-align: top; }
+  .learnpress #field-_lp_faqs .rwmb-text-list-advanced-clone .remove-clone {
+    top: 50%;
+    right: 7px;
+    margin-top: -10px;
+    background: #DDD;
+    -webkit-transition: right 0.25s;
+    -moz-transition: right 0.25s;
+    -ms-transition: right 0.25s;
+    -o-transition: right 0.25s;
+    transition: right 0.25s; }
 
 .lp-notice,
 .learn-press-notice {

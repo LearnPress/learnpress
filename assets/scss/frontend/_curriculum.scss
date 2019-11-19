@@ -13,35 +13,17 @@
     }
 }
 
-.lp-single-course {
+#learn-press-course {
     .course-author {
         margin-bottom: 40px;
-        .author-name {
-            float: left;
-            margin: 0 20px 0 0;
-            text-align: center;
-            img {
-                width: 80px;
-                height: 80px;
-                border-radius: 50%;
-            }
-            a {
-                display: block;
-            }
+        display: flex;
+        .course-author__pull-left,
+        .course-author__pull-right{
+            flex:1;
         }
-        .author-bio {
-            .author-title {
-                font-size: 18px;
-                margin-bottom: 10px;
-                a{
-                    text-decoration: none;
-                    box-shadow: none;
-                }
-            }
-            .author-description {
-                font-size: 15px;
-                font-style: italic;
-            }
+
+        .course-author__meta{
+
         }
         &:after {
             @include clear-fix();
@@ -71,7 +53,6 @@
     .lp-course-buttons {
         margin-bottom: 20px;
     }
-
 
 }
 
@@ -868,6 +849,232 @@ body {
     }
 }
 
+/***********/
+.course-meta {
+    display: flex;
+    margin-bottom: 40px;
+    .course-meta__pull-left,
+    .course-meta__pull-right {
+        display: flex;
+    }
+    .course-meta__pull-left {
+
+    }
+    .course-meta__pull-right {
+
+    }
+
+    //&.two-columns{
+    //    .course-meta__pull-left,
+    //    .course-meta__pull-right {
+    //        flex: 1;
+    //    }
+    //}
+
+    .meta-item {
+        display: flex;
+        .meta-item__image {
+            flex: 0 0 36px;
+            margin-right: 10px;
+        }
+        .meta-item__value {
+            label {
+                font-weight: normal;
+                margin: 0;
+                text-transform: uppercase;
+                font-size: 12px;
+                color: #999;
+            }
+            > div {
+
+            }
+        }
+    }
+
+    .course-meta__pull-left {
+        .meta-item {
+            margin-right: 10px;
+        }
+    }
+    .course-meta__pull-right {
+        .meta-item {
+            margin-left: 10px;
+        }
+    }
+
+    &.two-columns {
+        .course-meta {
+            flex: 1;
+        }
+    }
+}
+
+// Extra info boxes
+
+.course-extra-box {
+    border: 1px solid #b3d0de;
+    margin-top: -1px;
+    .course-extra-box__title {
+        padding: 10px 15px;
+        font-weight: normal;
+        margin: 0;
+        background: #fbfcff;
+    }
+    .course-extra-box__content {
+        border-top: 1px solid #b3d0de;
+        display: none;
+
+        .course-extra-box__content-inner {
+            padding: 10px 15px;
+            -webkit-animation-name: course-extra-box__content-inner-transform;
+            animation-name: course-extra-box__content-inner-transform;
+            -webkit-animation-direction: normal;
+            animation-direction: normal;
+            -webkit-animation-duration: 0.3s;
+            animation-duration: 0.3s;
+            -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out;
+            -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+        }
+        ul, li {
+            list-style: none;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 5px 0;
+            &:before {
+                font-family: Fontawesome;
+                content: "\f00c";
+                margin-right: 10px;
+            }
+        }
+    }
+
+    &:last-child {
+        margin-bottom: 40px;
+    }
+}
+
+input[name="course-extra-box-ratio"] {
+    display: none;
+    &:checked + .course-extra-box {
+        .course-extra-box__content {
+            display: block;
+            .course-extra-box__content-inner {
+                transform: scale(1);
+            }
+        }
+    }
+}
+
+@-webkit-keyframes course-extra-box__content-inner-transform {
+    from {
+        opacity: 0;
+        -webkit-transform: translateX(5%);
+        transform: translateX(5%);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+    }
+}
+
+@keyframes course-extra-box__content-inner-transform {
+    from {
+        opacity: 0;
+        -webkit-transform: translateX(5%);
+        transform: translateX(5%);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+    }
+}
+
+// FAQs toggle boxes
+
+.course-faqs-box {
+    border: 1px solid #b3d0de;
+    margin-top: -1px;
+    .course-faqs-box__title {
+        padding: 10px 15px;
+        font-weight: normal;
+        margin: 0;
+        background: #fbfcff;
+    }
+    .course-faqs-box__content {
+        border-top: 1px solid #b3d0de;
+        display: none;
+
+        .course-faqs-box__content-inner {
+            padding: 10px 15px;
+            -webkit-animation-name: course-faqs-box__content-inner-transform;
+            animation-name: course-faqs-box__content-inner-transform;
+            -webkit-animation-direction: normal;
+            animation-direction: normal;
+            -webkit-animation-duration: 0.3s;
+            animation-duration: 0.3s;
+            -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out;
+            -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+        }
+
+    }
+
+    &:last-child {
+        margin-bottom: 40px;
+    }
+}
+
+input[name="course-faqs-box-ratio"] {
+    display: none;
+    &:checked + .course-faqs-box {
+        .course-faqs-box__content {
+            display: block;
+        }
+    }
+}
+
+@-webkit-keyframes course-faqs-box__content-inner-transform {
+    from {
+        opacity: 0;
+        -webkit-transform: translateX(5%);
+        transform: translateX(5%);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+    }
+}
+
+@keyframes course-faqs-box__content-inner-transform {
+    from {
+        opacity: 0;
+        -webkit-transform: translateX(5%);
+        transform: translateX(5%);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+    }
+}
+
+/***********/
 @media screen and (max-width: 1300px) {
     body.course-item-popup {
         #course-item-content-header .course-item-search {

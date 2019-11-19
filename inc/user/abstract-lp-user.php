@@ -2074,11 +2074,12 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$time = new LP_Datetime();
 					$item->set_end_time( $time->toSql(), true );
 					//
-
+					global $wpdb;
 					$item->set_status( 'completed' );
+					$item->update();
 
-					$course_data->save();
-
+					learn_press_debug( $wpdb );
+					die();
 					$result = $this->evaluate_course_results( $this->get_id() );
 				}
 
@@ -2849,11 +2850,25 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * @param string $type
 		 * @param int    $size
+		 * @param bool   $src_only
 		 *
 		 * @return false|string
 		 */
-		public function get_profile_picture( $type = '', $size = 96 ) {
+		public function get_profile_picture( $type = '', $size = 96, $src_only = false ) {
 			return LP_Profile::instance( $this->get_id() )->get_profile_picture( $type, $size );
+		}
+
+		public function get_profile_meta() {
+			$meta = array(
+				'courses'  => sprintf( __( '<span class="meta-number">%d</span> courses', 'learnpress' ), 12 ),
+				'students' => sprintf( __( '<span class="meta-number">%d</span> students', 'learnpress' ), 100 ),
+				'reviews'  => sprintf( __( '<span class="meta-number">%d</span> reviews', 'learnpress' ), 4 ),
+				'facebook' => sprintf( '<a href="%s">%s</a>', '', '<i class="fa fa-facebook"></i>' ),
+				'twitter'  => sprintf( '<a href="%s">%s</a>', '', '<i class="fa fa-twitter"></i>' ),
+				'google'   => sprintf( '<a href="%s">%s</a>', '', '<i class="fa fa-youtube"></i>' ),
+			);
+
+			return apply_filters( 'learn-press/user-profile-meta', $meta, $this->get_id(), $this );
 		}
 
 		/**

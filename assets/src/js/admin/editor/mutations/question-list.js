@@ -1,3 +1,5 @@
+var $ = window.jQuery;
+
 const QuestionList = {
     'SORT_QUESTIONS': function (state, orders) {
         state.questions = state.questions.map(function (question) {
@@ -151,7 +153,6 @@ const QuestionList = {
         $Vue.set(state.statusUpdateQuestionAnswer, question_id, 'failed');
     },
     'DELETE_ANSWER': function (state, data) {
-        console.log('A')
         state.questions.map(function (question, index) {
             if (question.id == data.question_id) {
                 for (var i = 0, n = question.answers.length; i < n; i++) {

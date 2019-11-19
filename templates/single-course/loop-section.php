@@ -25,7 +25,7 @@ if ( ! isset( $section ) ) {
 $course = learn_press_get_the_course();
 
 /**
- * Allow filter to hide this section in curriclum.
+ * Allow filter to hide this section in curriculum.
  *
  * @since 3.x.x
  */
@@ -35,6 +35,7 @@ if ( ! apply_filters( 'learn-press/section-visible', true, $section, $course ) )
 
 $user        = learn_press_get_current_user();
 $user_course = $user->get_course_data( get_the_ID() );
+$items       = $section->get_items();
 
 ?>
 
@@ -53,9 +54,14 @@ $user_course = $user->get_course_data( get_the_ID() );
 
         <div class="section-left">
 
-			<?php if ( $title = $section->get_title() ) { ?>
-                <h5 class="section-title"><?php echo $title; ?></h5>
-			<?php } ?>
+            <h5 class="section-title">
+				<?php
+				if ( ! $title = $section->get_title() ) {
+					$title = _x( 'Untitled', 'template title empty', 'learnpress' );
+				}
+				echo $title;
+				?>
+            </h5>
 
 			<?php if ( $description = $section->get_description() ) { ?>
                 <p class="section-desc"><?php echo $description; ?></p>
@@ -79,8 +85,6 @@ $user_course = $user->get_course_data( get_the_ID() );
 	<?php
 
 	do_action( 'learn-press/before-section-content', $section, $course->get_id() );
-
-	$items = $section->get_items();
 
 	if ( ! $items ) {
 		learn_press_display_message( __( 'No items in this section', 'learnpress' ) );

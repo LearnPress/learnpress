@@ -1,12 +1,13 @@
 <?php
 /**
- * Template for displaying course content within the loop.
+ * Template for displaying content of single course with curriculum and
+ * item's content inside it
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-single-course.php
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.0
+ * @version 4.0.0
  */
 
 /**
@@ -14,11 +15,26 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-get_header();
+/**
+ * @since 4.0.0
+ *
+ * @see LP_Template_General::template_header()
+ */
+do_action('learn-press/template-header');
 
-//do_action( 'learn-press/before-main-content' );
+/**
+ * LP Hook
+ */
+do_action( 'learn-press/before-main-content' );
 
-//do_action( 'learn-press/before-single-item' );
+/**
+ * LP Hook
+ */
+do_action( 'learn-press/before-single-item' );
+
+/**
+ * Get cookie stored for sidebar state
+ */
 $show_sidebar = learn_press_cookie_get( 'sidebar-toggle' );
 ?>
     <div id="popup-course" class="course-summary">
@@ -37,10 +53,24 @@ $show_sidebar = learn_press_cookie_get( 'sidebar-toggle' );
 <?php
 
 /**
+ * LP Hook
+ *
  * @since 3.0.0
  */
-//do_action( 'learn-press/after-main-content' );
+do_action( 'learn-press/after-main-content' );
 
-//do_action( 'learn-press/after-single-course' );
+/**
+ * LP Hook
+ *
+ * @since 3.0.0
+ */
+do_action( 'learn-press/after-single-course' );
 
-get_footer();
+/**
+ * LP Hook
+ *
+ * @since 4.0.0
+ *
+ * @see LP_Template_General::template_footer()
+ */
+do_action('learn-press/template-footer');

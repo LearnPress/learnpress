@@ -14,23 +14,43 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-$course = LP_Global::course();
+/**
+ * @var LP_Course $course
+ * @var LP_User   $instructor
+ *
+ */
+$course     = LP_Global::course();
+$instructor = $course->get_instructor();
 ?>
 
 <div class="course-author">
 
-    <!--    <h3>--><?php //_e( 'Instructor', 'learnpress' ); ?><!--</h3>-->
-
 	<?php do_action( 'learn-press/before-single-course-instructor' ); ?>
 
-    <p class="author-name">
-		<?php echo $course->get_instructor()->get_profile_picture(); ?>
-    </p>
+    <div class="course-author__pull-left">
+		<?php echo $instructor->get_profile_picture(); ?>
 
-    <div class="author-bio">
+        <div class="course-author__meta">
+
+			<?php
+
+			if ( $author_meta = $instructor->get_profile_meta() ) {
+				foreach ( $author_meta as $key => $value ) {
+					?>
+                    <span class="course-author__meta-row <?php echo $key; ?>"><?php echo $value; ?></span>
+					<?php
+				}
+			}
+
+			?>
+
+        </div>
+    </div>
+
+    <div class="course-author__pull-right">
         <div class="author-title"><?php echo $course->get_instructor_html(); ?></div>
         <div class="author-description">
-			<?php echo $course->get_author()->get_description(); ?>
+			<?php echo $instructor->get_description(); ?>
         </div>
     </div>
 

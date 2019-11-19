@@ -37,9 +37,11 @@ $course = LP_Global::course();
 		<?php if ( $curriculum = $course->get_curriculum() ) { ?>
 
             <ul class="curriculum-sections">
-				<?php foreach ( $curriculum as $section ) {
+				<?php
+                foreach ( $curriculum as $section ) {
 					learn_press_get_template( 'single-course/loop-section.php', array( 'section' => $section ) );
-				} ?>
+				}
+				?>
             </ul>
 
 		<?php } else { ?>

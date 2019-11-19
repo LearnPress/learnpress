@@ -10,9 +10,11 @@
 defined( 'ABSPATH' ) or die;
 
 /**
- * Page template header
+ * @since 4.0.0
+ *
+ * @see   LP_Template_General::template_header()
  */
-get_header( 'course' );
+do_action( 'learn-press/template-header' );
 
 /**
  * LP Hook
@@ -20,9 +22,13 @@ get_header( 'course' );
 do_action( 'learn-press/before-main-content' );
 
 ?>
+
+<?php if ( $page_title = learn_press_page_title( false ) ) { ?>
     <header class="learn-press-courses-header">
-        <h1><?php learn_press_page_title(); ?></h1>
+        <h1><?php echo $page_title; ?></h1>
     </header>
+<?php } ?>
+
 <?php
 
 /**
@@ -30,7 +36,7 @@ do_action( 'learn-press/before-main-content' );
  */
 do_action( 'learn-press/before-courses-loop' );
 
-LP()->template('course')->begin_courses_loop();
+LP()->template( 'course' )->begin_courses_loop();
 
 while ( have_posts() ) : the_post();
 
@@ -38,7 +44,7 @@ while ( have_posts() ) : the_post();
 
 endwhile;
 
-LP()->template('course')->end_courses_loop();
+LP()->template( 'course' )->end_courses_loop();
 
 /**
  * @since 3.0.0
@@ -53,10 +59,14 @@ do_action( 'learn-press/after-main-content' );
 
 /**
  * LP Hook
+ *
+ * @since 4.0.0
  */
 do_action( 'learn-press/sidebar' );
 
 /**
- * Page template footer
+ * @since 4.0.0
+ *
+ * @see   LP_Template_General::template_footer()
  */
-get_footer( 'course' );
+do_action( 'learn-press/template-footer' );

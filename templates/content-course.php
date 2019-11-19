@@ -19,14 +19,25 @@ defined( 'ABSPATH' ) || exit();
 <li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<?php
 
-	// @since 3.0.0
+	/**
+     * LP Hook
+     *
+	 * @since 3.0.0
+     *
+     * @called loop/course/thumbnail.php
+     * @echo DIV tag
+	 */
 	do_action( 'learn-press/before-courses-loop-item' );
 	?>
 
     <a href="<?php the_permalink(); ?>" class="course-permalink">
 
 		<?php
-		// @since 3.0.0
+		/**
+		 * @since 3.0.0
+         *
+         * @called loop/course/title.php
+		 */
 		do_action( 'learn-press/courses-loop-item-title' );
 		?>
 
@@ -34,7 +45,19 @@ defined( 'ABSPATH' ) || exit();
 
 	<?php
 
-	// @since 3.0.0
+	/**
+     * LP Hook
+     *
+     * @since 3.0.0
+     *
+	 * @see LP_Template_Course::courses_loop_item_meta()
+	 * @see LP_Template_Course::courses_loop_item_info_begin()
+	 * @see LP_Template_Course::clearfix()
+	 * @see LP_Template_Course::courses_loop_item_students()
+	 * @see LP_Template_Course::courses_loop_item_price()
+	 * @see LP_Template_Course::courses_loop_item_info_end()
+	 * @see LP_Template_Course::loop_item_user_progress()
+	 */
 	do_action( 'learn-press/after-courses-loop-item' );
 
 	?>

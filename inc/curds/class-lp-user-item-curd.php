@@ -525,6 +525,7 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 
 				$items[ $item_id ] = $is_preview;
 			}
+
 		}
 
 		return $items;

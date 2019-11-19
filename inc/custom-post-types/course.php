@@ -1067,6 +1067,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						)
 					),
 					array(
+						'name'    => __( 'FAQs', 'learnpress' ),
+						'id'      => '_lp_faqs',
+						'desc'    => __( 'What will students learn in your course?', 'learnpress' ),
+						'type'    => 'text-list-advanced',
+						'clone'   => true,
+						'options' => array(
+							'Question' => __( 'Question', 'learnpress' ),
+							'Answer' => __( 'Answer', 'learnpress' ),
+						)
+					),
+					array(
 						'name' => __( 'Welcome Message', 'learnpress' ),
 						'id'   => '_lp_welcome_message',
 						'desc' => __( 'Show a welcome message for students when they enroll the course.', 'learnpress' ),
@@ -1077,7 +1088,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'   => '_lp_congratulation_message',
 						'desc' => __( 'Show a congratulations message for students when they complete the course.', 'learnpress' ),
 						'type' => 'wysiwyg'
-					)
+					),
+
 				)
 			);
 

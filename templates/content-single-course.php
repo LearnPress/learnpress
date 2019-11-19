@@ -1,6 +1,6 @@
 <?php
 /**
- * Template for displaying course content within the loop.
+ * Template for displaying content of course without header and footer
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-single-course.php
  *
@@ -34,7 +34,8 @@ do_action( 'learn-press/before-single-course' );
 	/**
 	 * @since 3.0.0
 	 *
-	 * @see learn_press_single_course_summary()
+	 * @called single-course/content.php
+     * @called single-course/sidebar.php
 	 */
 	do_action( 'learn-press/single-course-summary' );
 	?>

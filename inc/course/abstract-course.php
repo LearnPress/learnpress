@@ -1438,8 +1438,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 
 			global $wpdb;
-			$item_types = learn_press_get_course_item_types();
-			$item_type_format = array_fill(0, sizeof($item_types), '%s');
+			$item_types       = learn_press_get_course_item_types();
+			$item_type_format = array_fill( 0, sizeof( $item_types ), '%s' );
 
 //			$query  =$wpdb->prepare("
 //				SELECT it.ID
@@ -1898,7 +1898,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return string|array
 		 */
 		public function get_extra_info( $type ) {
-			$extra_info_meta = get_post_meta( get_the_ID(), '_lp_' . $type, true );
+			$extra_info_meta = get_post_meta( $this->get_id(), '_lp_' . $type, true );
 			$extra_info      = array();
 
 			/**
@@ -1913,6 +1913,27 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			return apply_filters( 'learn-press/course-extra-info', $extra_info, $type, $this->get_id() );
+		}
+
+		/**
+		 * @since 4.0.0
+		 *
+		 * @return array
+		 */
+		public function get_faqs() {
+
+			$faqs = array();
+
+			if ( $data = get_post_meta( $this->get_id(), '_lp_faqs', true ) ) {
+				foreach ( $data as $faq ) {
+					$faqs[] = array(
+						'question' => $faq[0],
+						'answer'   => $faq[1]
+					);
+				}
+			}
+
+			return apply_filters( 'learn-press/course-faqs', $faqs, $this->get_id() );
 		}
 
 		/**

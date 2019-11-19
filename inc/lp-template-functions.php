@@ -13,23 +13,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 	function learn_press_add_course_buttons() {
-		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_enroll_button' ), 5 );
-		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_purchase_button' ), 10 );
-		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_external_button' ), 15 );
-		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_retake_button' ), 20 );
-		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_continue_button' ), 25 );
-		add_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_finish_button' ), 30 );
+		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
+		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
+		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
+		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_retake_button' ), 20 );
+		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
+		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );
 	}
 }
 
 if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
 	function learn_press_remove_course_buttons() {
-		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_enroll_button' ), 5 );
-		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_purchase_button' ), 10 );
-		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_external_button' ), 15 );
-		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_retake_button' ), 20 );
-		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_continue_button' ), 25 );
-		remove_action( 'learn-press/course-buttons', LP()->template('course')->func( 'course_finish_button' ), 30 );
+		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
+		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
+		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
+		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_retake_button' ), 20 );
+		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
+		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );
 	}
 }
 
@@ -50,7 +50,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			$defaults['overview'] = array(
 				'title'    => __( 'Overview', 'learnpress' ),
 				'priority' => 10,
-				'callback' => LP()->template('course')->callback( 'single-course/tabs/overview.php' )
+				'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/overview.php' )
 			);
 		}
 
@@ -58,13 +58,19 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		$defaults['curriculum'] = array(
 			'title'    => __( 'Curriculum', 'learnpress' ),
 			'priority' => 30,
-			'callback' => LP()->template('course')->callback( 'single-course/tabs/curriculum.php' )
+			'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/curriculum.php' )
 		);
 
 		$defaults['instructor'] = array(
 			'title'    => __( 'Instructor', 'learnpress' ),
 			'priority' => 40,
-			'callback' => LP()->template('course')->callback( 'single-course/tabs/instructor.php' )
+			'callback' => LP()->template( 'course' )->callback( 'single-course/tabs/instructor.php' )
+		);
+
+		$defaults['faqs'] = array(
+			'title'    => __( 'FAQs', 'learnpress' ),
+			'priority' => 50,
+			'callback' => LP()->template( 'course' )->func( 'faqs' )
 		);
 
 
@@ -996,8 +1002,16 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 	if ( ! file_exists( $located ) ) {
 		_doing_it_wrong( __FUNCTION__, sprintf( '<code>%s</code> does not exist.', $located ), '2.1' );
 
+		$log = sprintf( 'Template %s doesn\'t exists.', $template_name );
+		error_log( $log );
+
+		if ( learn_press_is_debug() ) {
+			echo sprintf( '<span title="%s" class="learn-press-template-warning"></span>', $log );
+		}
+
 		return;
 	}
+
 	// Allow 3rd party plugin filter template file from their plugin
 	$located = apply_filters( 'learn_press_get_template', $located, $template_name, $args, $template_path, $default_path );
 	if ( $located != '' ) {
@@ -1259,7 +1273,6 @@ if ( ! function_exists( 'learn_press_content_item_review_quiz_title' ) ) {
 		}
 	}
 }
-
 
 
 if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
@@ -2220,4 +2233,35 @@ function learn_press_get_question_options_for_js( $question, $args = array() ) {
 
 function learn_press_custom_excerpt_length( $length ) {
 	return 20;
+}
+
+/**
+ * Get post meta with key _lp_duration and translate.
+ *
+ * @since 4.0.0
+ *
+ * @param int    $post_id
+ * @param string $default
+ *
+ * @return string
+ */
+function learn_press_get_post_translated_duration( $post_id, $default = '' ) {
+	if ( ! $duration = get_post_meta( $post_id, '_lp_duration', true ) ) {
+		return $default;
+	}
+
+	return $duration;
+}
+
+/**
+ * Get level post meta.
+ *
+ * @param int $post_id
+ *
+ * @return string
+ */
+function learn_press_get_post_level( $post_id ) {
+	$level = get_post_meta( $post_id, '_lp_level', true );
+
+	return apply_filters( 'learn-press/level-label', ucwords( $level ), $post_id );
 }

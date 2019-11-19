@@ -32,6 +32,10 @@ class LP_Template {
 		$this->general = include_once 'templates/class-lp-template-general.php';
 	}
 
+	public function has_content( $where ) {
+		return has_action( $where );
+	}
+
 	/**
 	 * @return LP_Template
 	 */

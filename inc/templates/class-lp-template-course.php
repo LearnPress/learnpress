@@ -529,17 +529,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 		learn_press_get_template( 'content-lesson/button-complete.php' );
 	}
 
-	public function back_to_class_button() {
-		$courses_link = learn_press_get_page_link( 'courses' );
-		if ( ! $courses_link ) {
-			return;
-		}
-		?>
-
-		<a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learnpress' ); ?></a>
-		<?php
-	}
-
 	public function lesson_comment_form() {
 		global $post;
 
@@ -565,6 +554,87 @@ class LP_Template_Course extends LP_Abstract_Template {
 			$lesson->reset_postdata();
 		}
 
+	}
+
+	public function count_object() {
+		$course  = LP_Global::course();
+		$lessons = $course->get_items( LP_LESSON_CPT );
+		$quizzes = $course->get_items( LP_QUIZ_CPT );
+
+		$lessons  = sizeof( $lessons );
+		$quizzes  = sizeof( $quizzes );
+		$students = $course->count_students();
+
+		$counts = apply_filters(
+			'learn-press/count-meta-objects',
+			array(
+				'lesson'  => sprintf( $lessons > 1 ? __( '%d lessons', 'learnpress' ) : __( '%d lesson', 'learnpress' ), $lessons ),
+				'quiz'    => sprintf( $quizzes > 1 ? __( '%d quizzes', 'learnpress' ) : __( '%d quiz', 'learnpress' ), $quizzes ),
+				'student' => sprintf( $quizzes > 1 ? __( '%d students', 'learnpress' ) : __( '%d students', 'learnpress' ), $students ),
+			),
+			array( $lessons, $quizzes, $students )
+		);
+
+		foreach ( $counts as $object => $count ) {
+			learn_press_get_template( 'single-course/meta/count', array(
+				'count'  => $count,
+				'object' => $object
+			) );
+		}
+	}
+
+	public function course_extra_boxes() {
+		$course = LP_Course::get_course( get_the_ID() );
+
+		$boxes = apply_filters(
+			'learn-press/course-extra-boxes-data',
+			array(
+				array(
+					'title' => __( 'Requirements', 'learnpress' ),
+					'items' => $course->get_extra_info( 'requirements' )
+				),
+				array(
+					'title' => __( 'Features', 'learnpress' ),
+					'items' => $course->get_extra_info( 'key_features' )
+				),
+				array(
+					'title' => __( 'Target audiences', 'learnpress' ),
+					'items' => $course->get_extra_info( 'target_audiences' )
+				),
+			)
+		);
+
+		?>
+        <div>
+		<?php
+		$is_checked = 0;
+		foreach ( $boxes as $box ) {
+
+			if ( ! isset( $box['items'] ) || ! $box['items'] ) {
+				continue;
+			}
+
+			if ( ! $is_checked ) {
+				$box['checked'] = true;
+				$is_checked     = true;
+			}
+
+			learn_press_get_template( 'single-course/extra-info', $box );
+		}
+		?></div><?php
+	}
+
+	public function faqs() {
+		$course = LP_Course::get_course( get_the_ID() );
+
+		if ( ! $faqs = $course->get_faqs() ) {
+			return;
+		}
+
+
+		foreach ( $faqs as $faq ) {
+			learn_press_get_template( 'single-course/tabs/faqs', $faq );
+		}
 	}
 }
 
