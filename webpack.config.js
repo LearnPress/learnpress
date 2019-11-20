@@ -58,14 +58,12 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['babel-preset-env', 'es2015']
+                        presets: [
+                            "@babel/preset-env",
+                        ]
                     }
                 },
             },
-            // {
-            //     test: /([a-zA-Z0-9\s_\\.\-\(\):])+(.s?css)$/,
-            //     use: blocksCSSPlugin.extract(extractConfig),
-            // },
         ],
     },
     plugins: [

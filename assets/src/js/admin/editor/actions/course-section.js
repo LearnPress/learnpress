@@ -1,3 +1,4 @@
+const $ = window.jQuery;
 const CourseCurriculum = {
     toggleAllSections: function (context) {
         var hidden = context.getters['isHiddenAllSections'];

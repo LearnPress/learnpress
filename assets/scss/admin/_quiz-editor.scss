@@ -134,6 +134,8 @@
                             font-weight: normal;
                             color: #777;
                             padding: 0;
+                            min-height: auto;
+                            line-height: 1;
                         }
                     }
                 }
@@ -498,7 +500,9 @@
                                 border: 0;
                                 width: 100%;
                                 margin: 0;
-                                padding: 6px 0px;
+                                padding: 6px 0;
+                                line-height: 1;
+                                min-height: auto;
                                 @include box-shadow(none);
                                 @include border-radius(3px);
                                 &:focus {
@@ -513,11 +517,12 @@
                             }
                         }
                         .add-new {
-                            display: inline;
+                            display: inline-block;
                             position: relative;
+                            vertical-align: top;
                             ul.question-types {
                                 position: absolute;
-                                margin: 6px;
+                                margin: 0;
                                 background-color: #FFF;
                                 top: 100%;
                                 border: 1px solid #DDD;

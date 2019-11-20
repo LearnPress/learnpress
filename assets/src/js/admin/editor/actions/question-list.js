@@ -1,3 +1,4 @@
+const $ = window.jQuery;
 const QuestionList = {
 
     toggleAll: function (context) {

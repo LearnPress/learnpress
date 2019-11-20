@@ -4,10 +4,10 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 3.2.6.4
+Version: 3.2.6.5
 Author URI: http://thimpress.com
 Requires at least: 3.8
-Tested up to: 5.0.2
+Tested up to: 5.3
 
 Text Domain: learnpress
 Domain Path: /languages/
@@ -373,10 +373,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function init_hooks() {
 			$plugin_basename = $this->plugin_basename();
 
-			if ( 0 !== strcmp( $plugin_basename, 'learnpress/learnpress.php' ) ) {
-				add_action( 'admin_notices', array( $this, 'error' ) );
-			}
-
 			add_action( 'activate_' . $plugin_basename, array( $this, 'on_activate' ) );
 			add_action( 'deactivate_' . $plugin_basename, array( $this, 'on_deactivate' ) );
 			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
@@ -387,14 +383,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
 			add_action( 'init', array( $this, 'wp_init' ), 10 );
-		}
-
-		public function error() {
-			?>
-            <div class="error">
-                <p><?php printf( __( 'LearnPress plugin base directory must be <strong>learnpress/learnpres.php</strong> (case sensitive) to ensure all functions work properly and fully operational (currently <strong>%s</strong>)', 'learnpress' ), $this->plugin_basename() ); ?></p>
-            </div>
-			<?php
 		}
 
 		/**

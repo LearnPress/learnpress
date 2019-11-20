@@ -854,25 +854,25 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			$separated = apply_filters( 'learn_press_email_to_separated', false, $to, $this );
 
 			if ( ! $separated ) {
-				if ( ! empty( $_REQUEST['debug'] ) ) {
-					ob_start();
-					learn_press_debug( get_option( 'active_plugins' ) );
-					$message .= "======" . ob_get_clean();
-				}
-				$return = wp_mail( $to, $subject, $message, $headers, $attachments );
 
-				if ( ! empty( $_REQUEST['debug'] ) ) {
-					echo "[", get_class( $this ), " = {$return}]";
-					print_r( $to );
-					print_r( $subject );
-					print_r( $message );
-					print_r( $headers );
-					print_r( $attachments );
-				}
+				$return = wp_mail( $to, $subject, $message, $headers, $attachments );
+				ob_start();
+				var_dump( $return );
+				print_r( $to );
+				$log = ob_get_clean();
+
+				error_log( 'Sent mail to ' . $log );
 			} else {
 				if ( is_array( $to ) ) {
 					foreach ( $to as $t ) {
 						$return = wp_mail( $t, $subject, $message, $headers, $attachments );
+
+						ob_start();
+						var_dump( $return );
+						print_r( $to );
+						$log = ob_get_clean();
+
+						error_log( 'Sent mail to ' . $log );
 					}
 				}
 			}

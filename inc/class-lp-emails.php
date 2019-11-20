@@ -182,7 +182,8 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				//'learn_press_user_finish_course',
 			) );
 
-			if ( 'yes' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
+			// ????
+			if ( '1000' === LP()->settings()->get( 'emails_general.send_email_background' ) ) {
 
 				//self::$_background_emailer = new LP_Background_Emailer();
 
@@ -211,7 +212,10 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				'filter' => current_filter(),
 				'args'   => func_get_args(),
 			);
+
 			LP()->background( 'emailer' )->push_to_queue( $data_queue );
+			LP()->background( 'emailer' )->save();
+			LP()->background( 'emailer' )->dispatch_queue();
 		}
 
 		/**

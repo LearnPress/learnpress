@@ -199,6 +199,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 3.2.6.5 (20.11.2019) =
+~ Fixed email doesn't send.
+~ Fixed some js errors.
+~ Fixed js call twice times.
+~ Fixed question doesn't show after added to quiz.
+~ Fixed ignore some metadata when copying course.
+~ Fixed search orders in backend.
+
 = 3.2.6.4 =
 ~ Fixed some errors.
 

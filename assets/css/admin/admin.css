@@ -2389,7 +2389,9 @@ ul .clearfix {
     box-shadow: none;
     font-weight: normal;
     color: #777;
-    padding: 0; }
+    padding: 0;
+    min-height: auto;
+    line-height: 1; }
   #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .main .question-settings {
     border: 1px solid #ddd;
     border-left: none;
@@ -2635,7 +2637,9 @@ ul .clearfix {
           border: 0;
           width: 100%;
           margin: 0;
-          padding: 6px 0px;
+          padding: 6px 0;
+          line-height: 1;
+          min-height: auto;
           -webkit-box-shadow: none;
           -moz-box-shadow: none;
           box-shadow: none;
@@ -2654,11 +2658,12 @@ ul .clearfix {
             border-bottom: 1px solid #DDD;
             display: inline-block; }
       #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .add-new {
-        display: inline;
-        position: relative; }
+        display: inline-block;
+        position: relative;
+        vertical-align: top; }
         #admin-editor-lp_quiz .lp-box-data-content .lp-list-questions .footer .table-row .add-new-question .add-new ul.question-types {
           position: absolute;
-          margin: 6px;
+          margin: 0;
           background-color: #FFF;
           top: 100%;
           border: 1px solid #DDD;
