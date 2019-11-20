@@ -43,6 +43,7 @@ if ( ! class_exists( 'LP_Background_Emailer' ) ) {
 				try {
 					LP_Emails::instance();
 					do_action_ref_array( $callback['filter'] . '/notification', $callback['args'] );
+
 				}
 				catch ( Exception $e ) {
 
