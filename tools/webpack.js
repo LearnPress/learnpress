@@ -12,6 +12,7 @@ const minifyJsDest = function minifyJsDest(dest, code, isDev) {
     if (isDev === undefined) {
         isDev = process.env.NODE_ENV !== 'production';
     }
+
     var min = !isDev ? '.min' : '';
 
     if (!min && isCompressed(code)) {
@@ -21,9 +22,7 @@ const minifyJsDest = function minifyJsDest(dest, code, isDev) {
     if(dest.indexOf('.min')!==-1){
         min = '';
     }
-
-    code = !isDev ? uglifyJS.minify(`${dest}.js`).code : code;
-
+    code = !isDev ? uglifyJS.minify(code).code : code;
 
     return {
         [`${dest}${min}.js`]: code
@@ -90,9 +89,6 @@ const options = {
             ],
             dest: function (code) {
                 return minifyCssDest(`assets/css/bundle`, code);
-                // return {
-                //     'assets/css/bundle.css': code
-                // }
             }
         },
         {
@@ -102,17 +98,18 @@ const options = {
             ],
             dest: function (code) {
                 return minifyCssDest(`assets/css/admin.bundle`, code);
-                // return {
-                //     'assets/css/bundle.css': code
-                // }
+            }
+        },
+        {
+            src: ['./assets/src/js/vendor/chart.min.js'],
+            dest: function (code) {
+                return minifyJsDest(`assets/js/vendor/chart`, code);
             }
         }
     ]
 }
 
-adminSources().concat(frontendSources()).concat([
-    './assets/src/js/vendor/chart.min.js'
-]).filter((value, index, self) => {
+adminSources().concat(frontendSources()).filter((value, index, self) => {
     return self.indexOf(value) === index;
 }).forEach((file) => {
     options.files.push({

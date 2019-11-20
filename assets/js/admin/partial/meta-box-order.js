@@ -93,7 +93,166 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nError: Plugin/Preset files are not allowed to export objects, only functions. In /Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-preset-es2015/lib/index.js\n    at createDescriptor (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:178:11)\n    at items.map (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:109:50)\n    at Array.map (<anonymous>)\n    at createDescriptors (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:109:29)\n    at createPresetDescriptors (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:101:10)\n    at passPerPreset (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:58:96)\n    at cachedFunction (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/caching.js:33:19)\n    at presets.presets (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-descriptors.js:29:84)\n    at mergeChainOpts (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:320:26)\n    at /Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:283:7\n    at buildRootChain (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/config-chain.js:68:29)\n    at loadPrivatePartialConfig (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/partial.js:85:55)\n    at Object.loadPartialConfig (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/@babel/core/lib/config/partial.js:110:18)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:144:26)\n    at Generator.next (<anonymous>)\n    at asyncGeneratorStep (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:3:103)\n    at _next (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:194)\n    at /Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:364\n    at new Promise (<anonymous>)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:5:97)\n    at Object.loader (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:60:18)\n    at Object.<anonymous> (/Users/tu/Documents/foobla/repo/LearnPress/node_modules/babel-loader/lib/index.js:55:12)");
+;
+
+(function ($) {
+  "use strict";
+
+  window.$Vue = window.$Vue || Vue;
+  $(document).ready(function () {
+    var $listItems = $('.list-order-items').find('tbody'),
+        $listUsers = $('#list-users'),
+        template = function template(templateHTML, data) {
+      return _.template(templateHTML, {
+        evaluate: /<#([\s\S]+?)#>/g,
+        interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
+        escape: /\{\{([^\}]+?)\}\}(?!\})/g
+      })(data);
+    },
+        advancedListOptions = {
+      template: '#tmpl-order-advanced-list-item',
+      onRemove: function onRemove() {
+        if (this.$el.children().length === 0) {
+          this.$el.append('<li class="user-guest">' + orderOptions.i18n_guest + '</li>');
+        }
+
+        console.log(this.$el);
+      },
+      onAdd: function onAdd() {
+        this.$el.find('.user-guest').remove();
+      }
+    },
+        orderOptions = lpMetaBoxOrderSettings;
+
+    function getAddedUsers() {
+      return $('#list-users').children().map(function () {
+        return $(this).data('id');
+      }).get();
+    }
+
+    function getAddedItems() {
+      return $('.list-order-items tbody').children('.order-item-row').map(function () {
+        return $(this).data('id');
+      }).get();
+    }
+
+    if ($listUsers.length) {
+      $listUsers.LP('AdvancedList', advancedListOptions);
+
+      if (orderOptions.users) {
+        _.forEach(orderOptions.users, function (userData, userId) {
+          $listUsers.LP('AdvancedList', 'add', [template(orderOptions.userTextFormat, userData), userId]);
+        });
+      }
+    }
+
+    $listItems.on('click', '.remove-order-item', function (e) {
+      e.preventDefault();
+      var $item = $(this).closest('tr'),
+          item_id = $item.data('item_id');
+      $item.remove();
+
+      if ($listItems.children(':not(.no-order-items)').length === 0) {
+        $listItems.find('.no-order-items').show();
+      }
+
+      $Vue.http.post(window.location.href, {
+        order_id: $('#post_ID').val(),
+        items: [item_id],
+        'lp-ajax': 'remove_items_from_order'
+      }, {
+        emulateJSON: true,
+        params: {}
+      }).then(function (response) {
+        var result = LP.parseJSON(response.body || response.bodyText);
+        $('.order-subtotal').html(result.order_data.subtotal_html);
+        $('.order-total').html(result.order_data.total_html);
+      });
+    });
+    $('.order-date.date-picker-backendorder').on('change', function () {
+      var m = this.value.split('-');
+      ['aa', 'mm', 'jj'].forEach(function (v, k) {
+        $('input[name="' + v + '"]').val(m[k]);
+      });
+    }).datepicker({
+      dateFormat: 'yy-mm-dd',
+      numberOfMonths: 1,
+      showButtonPanel: true,
+      select: function select() {
+        console.log(arguments);
+      }
+    });
+    $('#learn-press-add-order-item').on('click', function () {
+      LP.$modalSearchItems.open({
+        data: {
+          postType: 'lp_course',
+          context: 'order-items',
+          contextId: $('#post_ID').val(),
+          exclude: getAddedItems(),
+          show: true
+        },
+        callbacks: {
+          addItems: function addItems() {
+            var that = this;
+            $Vue.http.post(window.location.href, {
+              order_id: this.contextId,
+              items: this.selected,
+              'lp-ajax': 'add_items_to_order'
+            }, {
+              emulateJSON: true,
+              params: {}
+            }).then(function (response) {
+              var result = LP.parseJSON(response.body || response.bodyText),
+                  $noItem = $listItems.find('.no-order-items').hide();
+              $(result.item_html).insertBefore($noItem);
+              $('.order-subtotal').html(result.order_data.subtotal_html);
+              $('.order-total').html(result.order_data.total_html);
+            });
+            this.close();
+          }
+        }
+      });
+    });
+    $(document).on('click', '.change-user', function (e) {
+      e.preventDefault();
+      LP.$modalSearchUsers.open({
+        data: {
+          context: 'order-items',
+          contextId: $('#post_ID').val(),
+          show: true,
+          multiple: $(this).data('multiple') === 'yes',
+          exclude: getAddedUsers(),
+          textFormat: orderOptions.userTextFormat
+        },
+        callbacks: {
+          addUsers: function addUsers(data) {
+            if (this.multiple) {
+              if (!$listUsers.length) {
+                $listUsers = $(LP.template('tmpl-order-data-user')({
+                  multiple: true
+                }));
+                $listUsers.LP('AdvancedList', advancedListOptions);
+                $('.order-data-user').replaceWith($listUsers);
+              }
+
+              for (var i = 0; i < this.selected.length; i++) {
+                $listUsers.LP('AdvancedList', 'add', [template(this.textFormat, this.selected[i]), this.selected[i].id]);
+              }
+            } else {
+              var $html = LP.template('tmpl-order-data-user')({
+                name: template(this.textFormat, this.selected[0]),
+                id: this.selected[0].id
+              });
+              $('.order-data-user').replaceWith($html);
+            }
+
+            this.close();
+          }
+        }
+      });
+    });
+  });
+})(jQuery);
 
 /***/ })
 

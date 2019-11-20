@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./vendor/bin/phpcs -d date.timezone=UTC",
-    "dev": "cross-env BABEL_ENV=default webpack --mode=development --watch",
+    "dev": "cross-env BABEL_ENV=default webpack --mode=development",
+    "dev-watch": "cross-env BABEL_ENV=default webpack --mode=development --watch",
     "build": "cross-env BABEL_ENV=default NODE_ENV=production webpack --progress -p",
     "prod": "webpack --progress --colors -p --config webpack.config.js --mode=production"
   },

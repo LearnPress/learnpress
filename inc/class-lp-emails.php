@@ -211,7 +211,10 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 				'filter' => current_filter(),
 				'args'   => func_get_args(),
 			);
+
 			LP()->background( 'emailer' )->push_to_queue( $data_queue );
+			LP()->background( 'emailer' )->save();
+			LP()->background( 'emailer' )->dispatch_queue();
 		}
 
 		/**
