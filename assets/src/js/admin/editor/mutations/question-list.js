@@ -1,3 +1,4 @@
+const $ = window.jQuery;
 const QuestionList = {
     'SORT_QUESTIONS': function (state, orders) {
         state.questions = state.questions.map(function (question) {

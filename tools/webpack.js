@@ -22,7 +22,7 @@ const minifyJsDest = function minifyJsDest(dest, code, isDev) {
         min = '';
     }
 
-    code = !isDev ? uglifyJS.minify(code).code : code;
+    code = !isDev ? uglifyJS.minify(`${dest}.js`).code : code;
 
 
     return {
@@ -122,7 +122,6 @@ adminSources().concat(frontendSources()).concat([
         }
     })
 })
-
 
 const mergeAndCompressJs = new MergeIntoSingleFilePlugin(options);
 
