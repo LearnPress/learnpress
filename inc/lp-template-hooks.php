@@ -3,6 +3,21 @@
  * Build courses content
  */
 
+/*****************************************/
+/**                                      */
+/**            DOCUMENTATION             */
+/**                                      */
+/*****************************************/
+
+/**
+ * Core template classes: LP_Template_General, LP_Template_Profile, LP_Template_Course.
+ *
+ * + Get instance of a template: LP()->template( TYPE ) e.g: LP()->template( 'course' )
+ * + LP()->template( TYPE )->func(CALLBACK) => hook to an action with function CALLBACK of TYPE class
+ * + LP()->template( TYPE )->callback( TEMPLATE ) => hook to an action to c
+ */
+
+
 defined( 'ABSPATH' ) || exit();
 
 /**
@@ -23,7 +38,11 @@ add_action( 'learn-press/template-footer', LP()->template( 'general' )->func( 't
  *
  * @see LP_Template_General::breadcrumb()
  */
+add_action( 'learn-press/before-main-content', LP()->template( 'general' )->text('<div class="lp-archive-courses">') ,-100);
 add_action( 'learn-press/before-main-content', LP()->template( 'general' )->func( 'breadcrumb' ) );
+
+add_action( 'learn-press/after-main-content', LP()->template( 'general' )->text('</div>'), 100 );
+
 
 /**
  * Course buttons
@@ -43,6 +62,7 @@ add_action( 'learn-press/before-courses-loop', LP()->template( 'course' )->func(
 
 /** BEGIN: Archive course loop item **/
 
+add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/badge-featured' ), 5 );
 add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->callback( 'loop/course/thumbnail.php' ), 10 );
 add_action( 'learn-press/before-courses-loop-item', LP()->template( 'course' )->text( '<!-- START .course-content --> <div class="course-content">' ), 1000 );
 
@@ -63,7 +83,7 @@ add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->f
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_students' ), 40 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_price' ), 50 );
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'courses_loop_item_info_end' ), 60 );
-add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'loop_item_user_progress' ), 70 );
+//add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->func( 'loop_item_user_progress' ), 70 );
 
 add_action( 'learn-press/after-courses-loop-item', LP()->template( 'course' )->text( '</div> <!-- END .course-content -->' ), 1000 );
 

@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/loop/course/students.php.
  *
- * @author  ThimPress
+ * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
  */
@@ -15,10 +15,11 @@
 defined( 'ABSPATH' ) || exit();
 
 $course = LP_Global::course();
+$count  = $course->count_students();
 ?>
 
 <span class="course-students">
 
-	<?php echo $course->get_students_html(); ?>
+    <?php echo $count > 1 ? sprintf( __( '<span class="meta-number">%d</span> students', 'learnpress' ), $count ) : sprintf( __( '<span class="meta-number">%d</span> student', 'learnpress' ), $count ); ?>
 
 </span>

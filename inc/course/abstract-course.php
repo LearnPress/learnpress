@@ -1965,5 +1965,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			return apply_filters( 'learn-press/course-evaluation-results-method', $this->_data['evaluation_results'], $this->get_id(), $this );
 		}
+
+		public function is_featured() {
+			return apply_filters( 'learn-press/course-is-featured', get_post_meta( $this->get_id(), '_lp_featured', true ) === 'yes', $this->get_id(), $this );
+		}
 	}
 }

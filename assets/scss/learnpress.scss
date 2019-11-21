@@ -345,6 +345,56 @@ ul.list-table-nav {
     }
 }
 
+.lp-badge {
+    display: inline-block;
+    position: relative;
+    line-height: 1;
+    height: 20px;
+    padding: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+
+    &:before,
+    &:after {
+        content: '';
+    }
+
+    &:before {
+        display: inline-block;
+        padding: 5px;
+        line-height: 1;
+        color: #FFF;
+        font-weight: bold;
+        position: relative;
+        z-index: 10;
+    }
+
+    &:after {
+        display: inline-block;
+        content: '';
+        position: absolute;
+        top: 2px;
+        width: 16px;
+        height: 16px;
+        transform: rotate(45deg);
+        right: -7px;
+        border-radius: 4px;
+        z-index: 0;
+    }
+
+    &.featured {
+        background: #FF5722;
+        &:before {
+            font-size: 10px;
+            content: attr(data-text);
+            text-transform: uppercase;
+        }
+        &:after {
+            background: #ff5722;
+        }
+    }
+}
+
 #learn-press-course-tabs {
     input[name="learn-press-course-tab-radio"],
     .course-tab-panel {

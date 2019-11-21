@@ -903,13 +903,21 @@ body {
     }
 
     .course-meta__pull-left {
+        flex: 1;
         .meta-item {
             margin-right: 10px;
         }
     }
     .course-meta__pull-right {
+        flex: 0 0 50%;
         .meta-item {
             margin-left: 10px;
+        }
+    }
+
+    &.course-meta-primary {
+        .meta-item {
+            flex: 1;
         }
     }
 

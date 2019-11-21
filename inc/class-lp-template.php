@@ -5,35 +5,44 @@
  *
  * @since 3.3.0
  */
-class LP_Template {
+class LP_Template implements ArrayAccess {
 	/**
 	 * @var LP_Template
 	 */
 	protected static $instance = null;
 
-	/**
-	 * @var LP_Template_Course
-	 */
-	public $profile = null;
-
-	/**
-	 * @var LP_Template_Profile
-	 */
-	public $course = null;
-
-	/**
-	 * @var LP_Template_General
-	 */
-	public $general = null;
+	protected $templates = array();
 
 	public function __construct() {
-		$this->course  = include_once 'templates/class-lp-template-course.php';
-		$this->profile = include_once 'templates/class-lp-template-profile.php';
-		$this->general = include_once 'templates/class-lp-template-general.php';
+
+		$this->templates = apply_filters(
+			'learn-press/templates-classes',
+			array(
+				'general' => include_once 'templates/class-lp-template-general.php',
+				'course'  => include_once 'templates/class-lp-template-course.php',
+				'profile' => include_once 'templates/class-lp-template-profile.php'
+			)
+		);
 	}
 
 	public function has_content( $where ) {
 		return has_action( $where );
+	}
+
+	public function offsetGet( $offset ) {
+		return ! empty( $this->templates[ $offset ] ) ? $this->templates[ $offset ] : false;
+	}
+
+	public function offsetSet( $offset, $value ) {
+		return false;
+	}
+
+	public function offsetExists( $offset ) {
+		return ! empty( $this->templates[ $offset ] );
+	}
+
+	public function offsetUnset( $offset ) {
+		return false;
 	}
 
 	/**

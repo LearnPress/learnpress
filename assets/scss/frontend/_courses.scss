@@ -35,7 +35,7 @@
             margin: 0 2% 20px 0;
             box-shadow: none;
             padding: 0;
-
+            position: relative;
             .course-thumbnail,
             .course-info {
                 //margin: 0 0 0.8em 0;
@@ -45,7 +45,7 @@
 
             .course-thumbnail {
                 position: relative;
-                img{
+                img {
                     vertical-align: middle;
                 }
                 .course-instructor {
@@ -173,6 +173,15 @@
             .course-categories,
             .course-tags {
                 display: none;
+            }
+
+            .lp-badge {
+                &.featured {
+                    position: absolute;
+                    z-index: 100;
+                    top: 10px;
+                    left: -10px;
+                }
             }
         }
 

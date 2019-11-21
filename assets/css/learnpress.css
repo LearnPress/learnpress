@@ -1270,10 +1270,16 @@ body .lp-quiz-buttons .form-button-finish-course {
       text-transform: uppercase;
       font-size: 12px;
       color: #999; }
-  .course-meta .course-meta__pull-left .meta-item {
-    margin-right: 10px; }
-  .course-meta .course-meta__pull-right .meta-item {
-    margin-left: 10px; }
+  .course-meta .course-meta__pull-left {
+    flex: 1; }
+    .course-meta .course-meta__pull-left .meta-item {
+      margin-right: 10px; }
+  .course-meta .course-meta__pull-right {
+    flex: 0 0 50%; }
+    .course-meta .course-meta__pull-right .meta-item {
+      margin-left: 10px; }
+  .course-meta.course-meta-primary .meta-item {
+    flex: 1; }
   .course-meta.two-columns .course-meta {
     flex: 1; }
 
@@ -2064,7 +2070,8 @@ body.confirm #popup_container {
     width: 31.33333%;
     margin: 0 2% 20px 0;
     box-shadow: none;
-    padding: 0; }
+    padding: 0;
+    position: relative; }
     .lp-archive-courses ul.learn-press-courses .course .course-thumbnail,
     .lp-archive-courses ul.learn-press-courses .course .course-info {
       margin: 0;
@@ -2176,6 +2183,11 @@ body.confirm #popup_container {
     .lp-archive-courses ul.learn-press-courses .course .course-categories,
     .lp-archive-courses ul.learn-press-courses .course .course-tags {
       display: none; }
+    .lp-archive-courses ul.learn-press-courses .course .lp-badge.featured {
+      position: absolute;
+      z-index: 100;
+      top: 10px;
+      left: -10px; }
   .lp-archive-courses ul.learn-press-courses[data-layout="list"] .course {
     width: 100%;
     display: flex; }
@@ -3597,6 +3609,44 @@ ul.list-table-nav {
   content: "\f071";
   font-family: Fontawesome;
   color: #FFC107; }
+
+.lp-badge {
+  display: inline-block;
+  position: relative;
+  line-height: 1;
+  height: 20px;
+  padding: 0;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px; }
+  .lp-badge:before, .lp-badge:after {
+    content: ''; }
+  .lp-badge:before {
+    display: inline-block;
+    padding: 5px;
+    line-height: 1;
+    color: #FFF;
+    font-weight: bold;
+    position: relative;
+    z-index: 10; }
+  .lp-badge:after {
+    display: inline-block;
+    content: '';
+    position: absolute;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    transform: rotate(45deg);
+    right: -7px;
+    border-radius: 4px;
+    z-index: 0; }
+  .lp-badge.featured {
+    background: #FF5722; }
+    .lp-badge.featured:before {
+      font-size: 10px;
+      content: attr(data-text);
+      text-transform: uppercase; }
+    .lp-badge.featured:after {
+      background: #ff5722; }
 
 #learn-press-course-tabs input[name="learn-press-course-tab-radio"],
 #learn-press-course-tabs .course-tab-panel {

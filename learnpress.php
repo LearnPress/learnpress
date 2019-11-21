@@ -614,7 +614,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$this->template = LP_Template::instance();
 			}
 
-			return isset( $this->template->{$type} ) ? $this->template->{$type} : $this->template;
+			return isset( $this->template[$type] ) ? $this->template[$type] : $this->template;
 		}
 
 		/**
