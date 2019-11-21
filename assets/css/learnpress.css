@@ -733,6 +733,15 @@
 #learn-press-course .course-featured-review .featured-review__stars {
   color: #FF9800; }
 
+#learn-press-course .course-tags a {
+  display: inline-block;
+  background: #9aa5ab;
+  font-size: 12px;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 4px;
+  color: #FFF; }
+
 .edit-content {
   margin-left: 5px; }
 

@@ -111,6 +111,8 @@ add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->fu
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tabs/tabs' ), 60 );
 add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/buttons' ), 70 );
 
+add_action( 'learn-press/course-content-summary', LP()->template( 'course' )->callback( 'single-course/tags' ), 80 );
+
 // Meta
 add_action( 'learn-press/course-meta-primary-left', LP()->template( 'course' )->callback( 'single-course/meta/instructor' ), 10 );
 add_action( 'learn-press/course-meta-primary-left', LP()->template( 'course' )->callback( 'single-course/meta/category' ), 20 );

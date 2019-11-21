@@ -1769,7 +1769,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return mixed
 		 */
 		public function get_tags() {
-			return apply_filters( 'learn-press/course-tags', get_the_term_list( $this->get_id(), 'course_tag', __( 'Tags: ', 'learnpress' ), ', ', '' ) );
+			return apply_filters( 'learn-press/course-tags', get_the_term_list( $this->get_id(), 'course_tag', __( 'Tags: ', 'learnpress' ), ' ', '' ) );
 		}
 
 		/**
