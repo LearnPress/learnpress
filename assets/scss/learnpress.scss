@@ -32,6 +32,10 @@ input[type="password"] {
     @include box-sizing(border-box);
 }
 
+.margin-bottom {
+    margin-bottom: 20px;
+}
+
 .hide-if-js {
     display: none !important;
 }
@@ -315,6 +319,15 @@ ul.list-table-nav {
     .course-summary-sidebar {
         flex: 0 0 250px;
         margin-left: 30px;
+        position: relative;
+
+        &.slide-down {
+            .course-summary-sidebar__inner {
+                position: fixed;
+                width: 250px;
+                top: 0;
+            }
+        }
     }
 }
 
@@ -338,6 +351,7 @@ ul.list-table-nav {
             margin: 0;
             padding: 10px;
             cursor: pointer;
+            text-align: center;
         }
     }
 

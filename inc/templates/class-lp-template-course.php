@@ -9,6 +9,26 @@
  */
 class LP_Template_Course extends LP_Abstract_Template {
 
+	/**
+	 * @var LP_Course
+	 */
+	public $course = null;
+
+	/**
+	 * LP_Template_Course constructor.
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		add_action( 'the_post', array( $this, 'get_course' ), 1000 );
+	}
+
+	public function get_course() {
+		global $post;
+
+		$this->course = LP_Global::course();
+	}
+
 	public function course_sidebar_preview() {
 		learn_press_get_template( 'single-course/sidebar/preview' );
 	}
@@ -635,6 +655,38 @@ class LP_Template_Course extends LP_Abstract_Template {
 		foreach ( $faqs as $faq ) {
 			learn_press_get_template( 'single-course/tabs/faqs', $faq );
 		}
+	}
+
+	public function sidebar() {
+	}
+
+	public function course_featured_review() {
+		$review_content = get_post_meta( $this->course->get_id(), '_lp_featured_review', true );
+
+		if ( ! $review_content ) {
+			return;
+		}
+
+		learn_press_get_template( 'single-course/featured-review', array(
+			'review_content' => $review_content,
+			'review_value'   => 5
+		) );
+	}
+
+	public function has_sidebar() {
+		$actions = array(
+			'learn-press/before-course-summary-sidebar',
+			'learn-press/course-summary-sidebar',
+			'learn-press/after-course-summary-sidebar'
+		);
+
+		foreach ( $actions as $action ) {
+			if ( has_action( $action ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

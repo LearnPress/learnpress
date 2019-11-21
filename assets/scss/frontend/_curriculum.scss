@@ -18,13 +18,28 @@
         margin-bottom: 40px;
         display: flex;
         .course-author__pull-left,
-        .course-author__pull-right{
-            flex:1;
+        .course-author__pull-right {
+            flex: 1;
         }
 
-        .course-author__meta{
+        .course-author__pull-left {
+            flex: 0 0 20%;
+            margin-right: 30px;
+        }
+
+        .course-author__meta {
 
         }
+
+        .course-author__meta-row {
+            display: block;
+            .fa-googleplus {
+                &:before {
+                    content: "\f0d5";
+                }
+            }
+        }
+
         &:after {
             @include clear-fix();
         }
@@ -54,6 +69,15 @@
         margin-bottom: 20px;
     }
 
+    .course-featured-review{
+        .featured-review__stars{
+            color: #FF9800;
+        }
+        .featured-review__content{
+
+        }
+    }
+
 }
 
 .edit-content {
@@ -65,6 +89,7 @@ ul.learn-press-nav-tabs {
     border-bottom: 3px solid #DDD;
     margin: 0 0 20px 0;
     padding: 0;
+    display: flex;
     .course-nav {
         float: left;
         position: relative;
@@ -91,38 +116,9 @@ ul.learn-press-nav-tabs {
         }
     }
 
-    &[data-tabs="2"] {
-        .course-nav {
-            width: 50%;
-        }
-    }
-
-    &[data-tabs="3"] {
-        .course-nav {
-            width: 33.333333%;
-        }
-    }
-
-    &[data-tabs="4"] {
-        .course-nav {
-            width: 25%;
-        }
-    }
-
-    &[data-tabs="5"] {
-        .course-nav {
-            width: 20%;
-        }
-    }
-
-    &[data-tabs="6"] {
-        .course-nav {
-            width: 16.66666%;
-        }
-    }
-
     &[data-tabs] {
         .course-nav {
+            flex: 1;
             a {
                 width: 100%;
                 text-align: center;

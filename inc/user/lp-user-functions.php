@@ -1902,19 +1902,21 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 			}
 
 			$questionData = array(
-				'id'          => absint( $id ),
-				'title'       => $question->get_title(),
-				'type'        => $question->get_type(),
+				'id'    => absint( $id ),
+				'title' => $question->get_title(),
+				'type'  => $question->get_type(),
 				//'hint'        => $theHint,//$hinted ? $theHint : '',
 				//'explanation' => $checked ? $theExplanation : '',
-				'point'       => ( $mark = $question->get_mark() ) ? $mark : 1
+				'point' => ( $mark = $question->get_mark() ) ? $mark : 1
 			);
 
 			if ( $content = $question->get_content() ) {
 				$questionData['content'] = $content;
 			}
 
-			if ( /*$hinted &&*/ $theHint ) {
+			if ( /*$hinted &&*/
+			$theHint
+			) {
 				$questionData['hint'] = $theHint;
 			}
 
@@ -1986,4 +1988,83 @@ function learn_press_rest_prepare_user_questions( $question_ids, $args = array()
 	}
 
 	return $questions;
+}
+
+/**
+ * Output html to show extra info of user in backend profile.
+ *
+ * @param WP_User $user
+ *
+ * @since 4.0.0
+ */
+function learn_press_append_user_profile_fields( $user ) {
+	learn_press_admin_view( 'backend-user-profile', array( 'user' => $user ) );
+}
+
+add_action( 'show_user_profile', 'learn_press_append_user_profile_fields' );
+add_action( 'edit_user_profile', 'learn_press_append_user_profile_fields' );
+
+/**
+ * Update extra profile data upon update user.
+ *
+ * @since 4.0.0
+ *
+ * @param int $user_id
+ */
+function learn_press_update_extra_user_profile_fields( $user_id ) {
+
+	if ( ! current_user_can( 'edit_user', $user_id ) ) {
+		return;
+	}
+
+	if ( isset( $_POST['_lp_extra_info'] ) ) {
+		update_user_meta( $user_id, '_lp_extra_info', $_POST['_lp_extra_info'] );
+	}
+}
+
+add_action( 'personal_options_update', 'learn_press_update_extra_user_profile_fields' );
+add_action( 'edit_user_profile_update', 'learn_press_update_extra_user_profile_fields' );
+
+/**
+ * Get extra profile info data
+ *
+ * @since 4.0.0
+ *
+ * @param int $user_id
+ *
+ * @return array
+ */
+function learn_press_get_user_extra_profile_info( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	$extra_profile_info = get_the_author_meta( '_lp_extra_info', $user_id );
+	$extra_fields       = learn_press_get_user_extra_profile_fields();
+
+	$extra_profile_info = wp_parse_args(
+		$extra_profile_info,
+		array_fill_keys( array_keys( $extra_fields ), '' )
+	);
+
+	return apply_filters( 'learn-press/user-extra-profile-info', $extra_profile_info, $user_id );
+}
+
+/**
+ * Get extra profile fields will be registered in backend profile.
+ *
+ * @since 4.0.0
+ *
+ * @return array
+ */
+function learn_press_get_user_extra_profile_fields() {
+	return apply_filters( 'learn-press/user-extra-profile-fields',
+		array(
+			'facebook'   => __( 'Facebook', 'learnpress' ),
+			'twitter'    => __( 'Twitter', 'learnpress' ),
+			'googleplus' => __( 'Google+', 'learnpress' ),
+			'youtube'    => __( 'Youtube', 'learnpress' ),
+			'linkedin'   => __( 'Linkedin', 'learnpress' ),
+		)
+	);
 }

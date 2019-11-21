@@ -91,13 +91,15 @@ this["LP"] = this["LP"] || {}; this["LP"]["singleCourse"] =
 /*!*************************************************!*\
   !*** ./assets/src/js/frontend/single-course.js ***!
   \*************************************************/
-/*! exports provided: formatDuration, toggleSidebarHandler */
+/*! exports provided: formatDuration, toggleSidebarHandler, initCourseTabs, initCourseSidebar */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDuration", function() { return formatDuration; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toggleSidebarHandler", function() { return toggleSidebarHandler; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initCourseTabs", function() { return initCourseTabs; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initCourseSidebar", function() { return initCourseSidebar; });
 /* harmony import */ var _single_course_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./single-course/index */ "./assets/src/js/frontend/single-course/index.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -256,6 +258,39 @@ var initCourseTabs = function initCourseTabs() {
   });
 };
 
+var initCourseSidebar = function initCourseSidebar() {
+  var $sidebar = $('.course-summary-sidebar');
+
+  if (!$sidebar.length) {
+    return;
+  }
+
+  var $window = $(window);
+  var $scroller = $sidebar.children();
+  var offset = $sidebar.offset();
+  var scrollTop = 0;
+  var options = {
+    offsetTop: 100
+  };
+
+  var onScroll = function onScroll() {
+    scrollTop = $window.scrollTop();
+    var top = scrollTop - offset.top + options.offsetTop;
+
+    if (top < 0) {
+      $sidebar.removeClass('slide-down');
+      $scroller.css('top', '');
+      return;
+    }
+
+    $sidebar.addClass('slide-down');
+    $scroller.css('top', options.offsetTop);
+  };
+
+  $window.on('scroll', onScroll);
+};
+
+
 $(window).on('load', function () {
   var $popup = $('#popup-course');
   var timerClearScroll;
@@ -286,6 +321,7 @@ $(window).on('load', function () {
     var b = $(el).siblings('.section-title').append(a);
   });
   initCourseTabs();
+  initCourseSidebar();
   LP.Hook.doAction('course-ready'); // if (window.location.hash) {
   //     $('.content-item-scrollable:last').scrollTo($(window.location.hash));
   // }

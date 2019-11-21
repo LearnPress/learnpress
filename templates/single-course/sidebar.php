@@ -8,21 +8,35 @@
  */
 
 defined( 'ABSPATH' ) or die;
+
+ob_start();
+dynamic_sidebar( 'course-sidebar' );
+$output = ob_get_clean();
+
+/**
+ * Hide sidebar if there is no content
+ */
+if ( ! $output && ! LP()->template( 'course' )->has_sidebar() ) {
+	return;
+}
+
 ?>
 <aside class="course-summary-sidebar">
-	<?php
-	ob_start();
-	dynamic_sidebar( 'course-sidebar' );
-	$output = ob_get_clean();
 
-	do_action( 'learn-press/before-course-summary-sidebar' );
+    <div class="course-summary-sidebar__inner">
 
-	if ( ! $output ) {
-		do_action( 'learn-press/course-summary-sidebar' );
-	} else {
-		echo $output;
-	}
+		<?php
 
-	do_action( 'learn-press/after-course-summary-sidebar' );
-	?>
+		do_action( 'learn-press/before-course-summary-sidebar' );
+
+		if ( ! $output ) {
+			do_action( 'learn-press/course-summary-sidebar' );
+		} else {
+			echo $output;
+		}
+
+		do_action( 'learn-press/after-course-summary-sidebar' );
+		?>
+
+    </div>
 </aside>

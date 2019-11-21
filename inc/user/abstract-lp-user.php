@@ -2862,11 +2862,14 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$meta = array(
 				'courses'  => sprintf( __( '<span class="meta-number">%d</span> courses', 'learnpress' ), 12 ),
 				'students' => sprintf( __( '<span class="meta-number">%d</span> students', 'learnpress' ), 100 ),
-				'reviews'  => sprintf( __( '<span class="meta-number">%d</span> reviews', 'learnpress' ), 4 ),
-				'facebook' => sprintf( '<a href="%s">%s</a>', '', '<i class="fa fa-facebook"></i>' ),
-				'twitter'  => sprintf( '<a href="%s">%s</a>', '', '<i class="fa fa-twitter"></i>' ),
-				'google'   => sprintf( '<a href="%s">%s</a>', '', '<i class="fa fa-youtube"></i>' ),
+				'reviews'  => sprintf( __( '<span class="meta-number">%d</span> reviews', 'learnpress' ), 4 )
 			);
+
+			if ( $extra_info = learn_press_get_user_extra_profile_info() ) {
+				foreach ( $extra_info as $k => $v ) {
+					$meta[ $k ] = sprintf( '<a href="%s"><i class="fa fa-%s"></i></a>', $v, $k );
+				}
+			}
 
 			return apply_filters( 'learn-press/user-profile-meta', $meta, $this->get_id(), $this );
 		}

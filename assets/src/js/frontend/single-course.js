@@ -139,8 +139,46 @@ const initCourseTabs = function () {
 
         LP.Cookies.set('course-tab', selectedTab);
 
-        $('label[for="'+$(event.target).attr('id')+'"]').closest('li').addClass('active').siblings().removeClass('active')
+        $('label[for="' + $(event.target).attr('id') + '"]').closest('li').addClass('active').siblings().removeClass('active')
     });
+}
+
+const initCourseSidebar = function initCourseSidebar() {
+    var $sidebar = $('.course-summary-sidebar');
+
+    if (!$sidebar.length) {
+        return;
+    }
+
+    var $window = $(window);
+    var $scroller = $sidebar.children();
+    var offset = $sidebar.offset();
+    var scrollTop = 0;
+    var options = {
+        offsetTop: 100
+    };
+
+    var onScroll = function () {
+        scrollTop = $window.scrollTop();
+
+        var top = scrollTop - offset.top + options.offsetTop;
+
+        if (top < 0) {
+            $sidebar.removeClass('slide-down');
+            $scroller.css('top', '');
+            return;
+        }
+
+        $sidebar.addClass('slide-down');
+        $scroller.css('top', options.offsetTop);
+    }
+
+    $window.on('scroll', onScroll);
+}
+
+export {
+    initCourseTabs,
+    initCourseSidebar
 }
 
 $(window).on('load', () => {
@@ -179,6 +217,7 @@ $(window).on('load', () => {
     });
 
     initCourseTabs();
+    initCourseSidebar();
 
     LP.Hook.doAction('course-ready');
 
