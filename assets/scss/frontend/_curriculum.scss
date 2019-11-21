@@ -33,6 +33,21 @@
 
         .course-author__meta-row {
             display: block;
+        }
+
+        .author-socials {
+            a {
+                display: inline-block;
+                width: 30px;
+                height: 30px;
+                background: #4f636d;
+                margin: 0 10px 0 0;
+                border-radius: 50%;
+                color: #FFF;
+                text-align: center;
+                padding: 4px 0;
+                font-size: 14px;
+            }
             .fa-googleplus {
                 &:before {
                     content: "\f0d5";
@@ -69,11 +84,11 @@
         margin-bottom: 20px;
     }
 
-    .course-featured-review{
-        .featured-review__stars{
+    .course-featured-review {
+        .featured-review__stars {
             color: #FF9800;
         }
-        .featured-review__content{
+        .featured-review__content {
 
         }
     }

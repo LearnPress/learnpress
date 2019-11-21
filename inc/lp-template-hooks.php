@@ -102,6 +102,8 @@ add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )
 //add_action( 'learn-press/course-meta-primary-right', LP()->template( 'course' )->callback( 'single-course/meta/category' ) );
 //add_action( 'learn-press/course-meta-primary-right', LP()->template( 'course' )->callback( 'single-course/meta/category' ) );
 
+
+
 // Sidebar content
 /**
  * @see LP_Template_Course::course_sidebar_preview()

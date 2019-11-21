@@ -588,9 +588,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$counts = apply_filters(
 			'learn-press/count-meta-objects',
 			array(
-				'lesson'  => sprintf( $lessons > 1 ? __( '%d lessons', 'learnpress' ) : __( '%d lesson', 'learnpress' ), $lessons ),
-				'quiz'    => sprintf( $quizzes > 1 ? __( '%d quizzes', 'learnpress' ) : __( '%d quiz', 'learnpress' ), $quizzes ),
-				'student' => sprintf( $quizzes > 1 ? __( '%d students', 'learnpress' ) : __( '%d students', 'learnpress' ), $students ),
+				'lesson'  => sprintf( $lessons > 1 ? __( '<span class="meta-number">%d</span> lessons', 'learnpress' ) : __( '<span class="meta-number">%d</span> lesson', 'learnpress' ), $lessons ),
+				'quiz'    => sprintf( $quizzes > 1 ? __( '<span class="meta-number">%d</span> quizzes', 'learnpress' ) : __( '<span class="meta-number">%d</span> quiz', 'learnpress' ), $quizzes ),
+				'student' => sprintf( $quizzes > 1 ? __( '<span class="meta-number">%d</span> students', 'learnpress' ) : __( '<span class="meta-number">%d</span> students', 'learnpress' ), $students ),
 			),
 			array( $lessons, $quizzes, $students )
 		);
@@ -672,6 +672,15 @@ class LP_Template_Course extends LP_Abstract_Template {
 			'review_value'   => 5
 		) );
 	}
+
+	public function instructor_socials(){
+		$instructor = $this->course->get_instructor();
+		$socials = $instructor->get_profile_socials();
+
+		foreach($socials as $social){
+		    echo $social;
+        }
+    }
 
 	public function has_sidebar() {
 		$actions = array(

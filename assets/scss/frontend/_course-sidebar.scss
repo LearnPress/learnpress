@@ -7,6 +7,7 @@
         border: 1px solid #d9e0f1;
         background: #fbfcff;
         padding: 20px;
+        overflow: hidden;
         @include border-radius(4px);
 
         .course-price {

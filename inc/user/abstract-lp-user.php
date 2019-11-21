@@ -2865,13 +2865,27 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				'reviews'  => sprintf( __( '<span class="meta-number">%d</span> reviews', 'learnpress' ), 4 )
 			);
 
+//			if ( $extra_info = learn_press_get_user_extra_profile_info() ) {
+//				foreach ( $extra_info as $k => $v ) {
+//					$meta[ $k ] = sprintf( '<a href="%s"><i class="fa fa-%s"></i></a>', $v, $k );
+//				}
+//			}
+
+			return apply_filters( 'learn-press/user-profile-meta', $meta, $this->get_id(), $this );
+		}
+
+		public function get_profile_socials() {
+			$socials = array();
 			if ( $extra_info = learn_press_get_user_extra_profile_info() ) {
 				foreach ( $extra_info as $k => $v ) {
-					$meta[ $k ] = sprintf( '<a href="%s"><i class="fa fa-%s"></i></a>', $v, $k );
+					if ( empty( $v ) ) {
+						continue;
+					}
+					$socials[ $k ] = sprintf( '<a href="%s"><i class="fa fa-%s"></i></a>', $v, $k );
 				}
 			}
 
-			return apply_filters( 'learn-press/user-profile-meta', $meta, $this->get_id(), $this );
+			return apply_filters( 'learn-press/user-profile-socials', $socials, $this->get_id(), $this );
 		}
 
 		/**

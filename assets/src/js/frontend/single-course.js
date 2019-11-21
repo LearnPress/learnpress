@@ -151,11 +151,13 @@ const initCourseSidebar = function initCourseSidebar() {
     }
 
     var $window = $(window);
-    var $scroller = $sidebar.children();
+    var $scrollable = $sidebar.children();
     var offset = $sidebar.offset();
     var scrollTop = 0;
+    var maxHeight = $sidebar.height();
+    var scrollHeight = $scrollable.height();
     var options = {
-        offsetTop: 100
+        offsetTop: 32
     };
 
     var onScroll = function () {
@@ -164,16 +166,21 @@ const initCourseSidebar = function initCourseSidebar() {
         var top = scrollTop - offset.top + options.offsetTop;
 
         if (top < 0) {
-            $sidebar.removeClass('slide-down');
-            $scroller.css('top', '');
+            $sidebar.removeClass('slide-top slide-down');
+            $scrollable.css('top', '');
             return;
         }
 
-        $sidebar.addClass('slide-down');
-        $scroller.css('top', options.offsetTop);
+        if (top > maxHeight - scrollHeight) {
+            $sidebar.removeClass('slide-down').addClass('slide-top');
+            $scrollable.css('top', maxHeight - scrollHeight);
+        } else {
+            $sidebar.removeClass('slide-top').addClass('slide-down');
+            $scrollable.css('top', options.offsetTop);
+        }
     }
 
-    $window.on('scroll', onScroll);
+    $window.on('scroll.fixed-course-sidebar', onScroll).trigger('scroll.fixed-course-sidebar');
 }
 
 export {

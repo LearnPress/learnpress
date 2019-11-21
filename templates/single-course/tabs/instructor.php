@@ -49,9 +49,55 @@ $instructor = $course->get_instructor();
 
     <div class="course-author__pull-right">
         <div class="author-title"><?php echo $course->get_instructor_html(); ?></div>
-        <div class="author-description">
-			<?php echo $instructor->get_description(); ?>
+        <div class="author-description margin-bottom">
+			<?php
+
+			/**
+			 * LP Hook
+			 *
+			 * @since 4.0.0
+			 */
+			do_action( 'learn-press/begin-course-instructor-description', $instructor );
+
+			echo $instructor->get_description();
+
+			/**
+			 * LP Hook
+			 *
+			 * @since 4.0.0
+			 */
+			do_action( 'learn-press/end-course-instructor-description', $instructor );
+
+			?>
         </div>
+
+		<?php
+		/**
+		 * LP Hook
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'learn-press/after-course-instructor-description', $instructor );
+		?>
+
+		<?php if ( $socials = $instructor->get_profile_socials() ) { ?>
+
+            <div class="author-socials">
+
+				<?php echo join( '', $socials ); ?>
+
+            </div>
+
+		<?php }
+
+		/**
+		 * LP Hook
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'learn-press/after-course-instructor-socials', $instructor );
+
+		?>
     </div>
 
 	<?php do_action( 'learn-press/after-single-course-instructor' ); ?>

@@ -320,12 +320,18 @@ ul.list-table-nav {
         flex: 0 0 250px;
         margin-left: 30px;
         position: relative;
-
+        .course-summary-sidebar__inner {
+            width: 250px;
+        }
         &.slide-down {
             .course-summary-sidebar__inner {
                 position: fixed;
-                width: 250px;
                 top: 0;
+            }
+        }
+        &.slide-top {
+            .course-summary-sidebar__inner {
+                position: absolute;
             }
         }
     }
