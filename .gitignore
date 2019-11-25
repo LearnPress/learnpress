@@ -22,6 +22,8 @@ cache/
 /releases
 /build
 /**/*.js.map
+/**/*.asset.php
+/**/*.deps.json
 /**/_bk/
 test list.txt
 
