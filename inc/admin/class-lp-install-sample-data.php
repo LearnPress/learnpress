@@ -329,11 +329,10 @@ class LP_Install_Sample_Data {
 				'_lp_duration'          => '10 week',
 				'_lp_max_students'      => '1000',
 				'_lp_students'          => '0',
-				'_lp_retake_count'      => '0',
+				'_lp_retry'             => 'no',
 				'_lp_featured'          => 'no',
 				'_lp_course_result'     => 'evaluate_lesson',
 				'_lp_passing_condition' => '80',
-				'_lp_required_enroll'   => 'yes',
 				'_lp_sample_data'       => 'yes'
 			);
 			foreach ( $metas as $key => $value ) {

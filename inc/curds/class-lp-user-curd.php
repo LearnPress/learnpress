@@ -692,19 +692,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		 * Get all items in table with the max user-item-id in each
 		 * group of an item
 		 */
-//		$query = $wpdb->prepare( "
-//			SELECT *
-//			FROM (
-//				SELECT *
-//				FROM {$wpdb->learnpress_user_items}
-//				WHERE item_type IN({$type_in})
-//				AND parent_id = %d
-//				ORDER BY item_id, user_item_id DESC
-//			) X
-//			GROUP BY item_id
-//		", $user_item_id );
 
-		$query = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 			SELECT ui.* 
 			FROM ( 
 				SELECT user_id, item_id, MAX(user_item_id) max_id 
@@ -1177,9 +1166,9 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'item_id'        => '%d',
 			'ref_id'         => '%d',
 			'start_time'     => '%s',
-			'start_time_gmt' => '%s',
+			//'start_time_gmt' => '%s',
 			'end_time'       => '%s',
-			'end_time_gmt'   => '%s',
+			//'end_time_gmt'   => '%s',
 			'item_type'      => '%s',
 			'status'         => '%s',
 			'ref_type'       => '%s',

@@ -35,15 +35,15 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 		}
 		$quiz->set_data_via_methods(
 			array(
-				'retake_count'       => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),
+				'retry'       => get_post_meta( $quiz->get_id(), '_lp_retry', true ),
 				'show_result'        => get_post_meta( $quiz->get_id(), '_lp_show_result', true ),
 				'passing_grade_type' => get_post_meta( $quiz->get_id(), '_lp_passing_grade_type', true ),
 				'passing_grade'      => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true ),
-				'show_check_answer'  => get_post_meta( $quiz->get_id(), '_lp_show_check_answer', true ),
-				'count_check_answer' => get_post_meta( $quiz->get_id(), '_lp_check_answer_count', true ),
-				'show_hint'          => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
-				'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
-				'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
+				'instant_check'  => get_post_meta( $quiz->get_id(), '_lp_instant_check', true ),
+				//'count_check_answer' => get_post_meta( $quiz->get_id(), '_lp_check_answer_count', true ),
+				//'show_hint'          => get_post_meta( $quiz->get_id(), '_lp_show_hint', true ),
+				//'archive_history'    => get_post_meta( $quiz->get_id(), '_lp_archive_history', true ),
+				//'count_hint'         => get_post_meta( $quiz->get_id(), '_lp_hint_count', true ),
 				'review_questions'   => get_post_meta( $quiz->get_id(), '_lp_review_questions', true ),
 			)
 		);

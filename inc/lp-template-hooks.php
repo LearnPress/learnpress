@@ -14,7 +14,8 @@
  *
  * + Get instance of a template: LP()->template( TYPE ) e.g: LP()->template( 'course' )
  * + LP()->template( TYPE )->func(CALLBACK) => hook to an action with function CALLBACK of TYPE class
- * + LP()->template( TYPE )->callback( TEMPLATE ) => hook to an action to c
+ * + LP()->template( TYPE )->callback( TEMPLATE ) => hook to an action to call to a template file directly.
+ * + LP()->template( TYPE )->text( TEXT ) => print a string.
  */
 
 

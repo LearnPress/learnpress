@@ -107,6 +107,14 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$this->set_parent_id( $item['parent_id'] );
 		}
 
+		if ( ! empty( $item['access_level'] ) ) {
+			$this->set_data( 'access_level', $item['access_level'] );
+		}
+
+		if ( ! empty( $item['graduation'] ) ) {
+			$this->set_data( 'graduation', $item['graduation'] );
+		}
+
 		$new_data = $this->get_mysql_data();
 		ksort( $new_data );
 		$this->_data_key = md5( serialize( $new_data ) );
@@ -202,11 +210,26 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		return $date;
 	}
 
+	/**
+	 * @deprecated 4.0.0
+	 *
+	 * @param $time
+	 */
 	public function set_start_time_gmt( $time ) {
+		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
 		$this->_set_data_date( 'start_time_gmt', $time );
 	}
 
+	/**
+	 * @deprecated
+	 *
+	 * @param string $format
+	 *
+	 * @return array|bool|LP_Datetime|mixed|string
+	 */
 	public function get_start_time_gmt( $format = '' ) {
+		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 		$date = $this->get_data_date( 'start_time_gmt' );
 		if ( $format ) {
 			return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
@@ -253,9 +276,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get end-time.
 	 *
+	 * @deprecated 4.0.0
+	 *
 	 * @param mixed $time
 	 */
 	public function set_end_time_gmt( $time ) {
+		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 		if ( $time && $time !== '0000-00-00 00:00:00' ) {
 			$this->_set_data_date( 'end_time_gmt', $time );
 		} else {
@@ -266,11 +293,15 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get end-time.
 	 *
+	 * @deprecated
+	 *
 	 * @param string $format
 	 *
 	 * @return string|LP_Datetime
 	 */
 	public function get_end_time_gmt( $format = '' ) {
+		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
+
 		$date = $this->get_data( 'end_time_gmt' );
 		$date = $date ? new LP_Datetime( $date ) : false;
 
@@ -320,13 +351,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @param string|LP_Datetime $time
 	 */
-	public function set_expiration_time_gmt( $time ) {
-		if ( $time && $time !== '0000-00-00 00:00:00' ) {
-			$this->_set_data_date( 'expiration_time_gmt', $time, false );
-		} else {
-			$this->_set_data( 'expiration_time_gmt', '' );
-		}
-	}
+//	public function set_expiration_time_gmt( $time ) {
+//		if ( $time && $time !== '0000-00-00 00:00:00' ) {
+//			$this->_set_data_date( 'expiration_time_gmt', $time, false );
+//		} else {
+//			$this->_set_data( 'expiration_time_gmt', '' );
+//		}
+//	}
 
 	/**
 	 * Get expiration time.
@@ -335,9 +366,9 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return string|LP_Datetime $time
 	 */
-	public function get_expiration_time_gmt() {
-		return $this->get_data_date( 'expiration_time_gmt' );
-	}
+//	public function get_expiration_time_gmt() {
+//		return $this->get_data_date( 'expiration_time_gmt' );
+//	}
 
 	/**
 	 * Set item-status.
@@ -492,6 +523,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			//'expiration_time_gmt' => '',
 			'item_type'       => '',
 			'status'          => '',
+			'graduation'      => '',
+			'access_level'    => 50,
 			'ref_id'          => '',
 			'ref_type'        => '',
 			'parent_id'       => 0,

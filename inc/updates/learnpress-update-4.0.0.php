@@ -6,14 +6,14 @@
 include_once dirname( __FILE__ ) . '/learnpress-update-base.php';
 
 /**
- * Class LP_Update_330
+ * Class LP_Update_400
  *
- * Helper class for updating database to 3.3.0
+ * Helper class for updating database to 4.0.0
  */
-class LP_Update_330 extends LP_Update_Base {
+class LP_Update_400 extends LP_Update_Base {
 
 	public function __construct() {
-		$this->version = '3.3.0';
+		$this->version = '4.0.0';
 		$this->steps   = array(
 			'alter_datetime_default_value',
 			'alter_tables',
@@ -186,6 +186,13 @@ class LP_Update_330 extends LP_Update_Base {
 
 	protected function alter_user_items() {
 		global $wpdb;
+
+		$query = "
+			ALTER TABLE {$wpdb->learnpress_user_items}
+			ADD COLUMN `graduation` VARCHAR(20) NULL AFTER `status`,
+			ADD COLUMN `access_level` TINYINT(3) NULL DEFAULT 50 AFTER `graduration` DEFAULT 
+		";
+		$wpdb->query($query);
 
 		$query = "
      		 ALTER TABLE `{$wpdb->prefix}learnpress_user_items` 
@@ -508,7 +515,7 @@ class LP_Update_330 extends LP_Update_Base {
 	}
 }
 
-$updater = new LP_Update_330();
+$updater = new LP_Update_400();
 $return  = $updater->update( LP_Request::get( 'force' ) == 'true' );
 
 return array( 'done' => $return, 'percent' => $updater->get_percent() );
