@@ -688,25 +688,65 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$user_inner_join = '';
 		}
 
-		/**
-		 * Get all items in table with the max user-item-id in each
-		 * group of an item
-		 */
+		$db_version = learn_press_get_user_item_meta( $user_item_id, '_db_version', true );
 
-		echo $query = $wpdb->prepare( "
-			SELECT ui.* 
-			FROM ( 
-				SELECT user_id, item_id, MAX(user_item_id) max_id 
-				FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
-			 ) AS X
-			INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id 
-			{$user_inner_join} 
-			INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id 
-			WHERE ui.parent_id = %d
-			ORDER BY user_item_id ASC
-		", $user_item_id );
+		if ( version_compare( $db_version, '4.0.0', '>=' ) ) {
+			$query = $wpdb->prepare( "
+				SELECT * 
+				FROM {$wpdb->learnpress_user_items} ui
+				WHERE ui.parent_id = %d
+				AND ui.access_level > 0
+			", $user_item_id );
+		} else {
 
-		return $wpdb->get_results( $query );
+			/**
+			 * Get all items in table with the max user-item-id in each
+			 * group of an item
+			 */
+
+			$query = $wpdb->prepare( "
+				SELECT ui.* 
+				FROM ( 
+					SELECT user_id, item_id, MAX(user_item_id) max_id 
+					FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
+				 ) AS X
+				INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id 
+				{$user_inner_join} 
+				INNER JOIN {$wpdb->posts} p ON p.ID = X.item_id 
+				WHERE ui.parent_id = %d
+				ORDER BY user_item_id ASC
+			", $user_item_id );
+
+			try {
+				LP_Debug::startTransaction();
+				if ( $items = $wpdb->get_results( $query ) ) {
+					foreach ( $items as $item ) {
+						$wpdb->update(
+							$wpdb->learnpress_user_items,
+							array(
+								'access_level' => 50
+							),
+							array( 'user_item_id' => $item->user_item_id ),
+							array( '%d' ),
+							array( '%d' )
+						);
+					}
+
+				}
+				learn_press_add_user_item_meta( $user_item_id, '_db_version', '4.0.0' );
+
+				$items = $this->read_course_items_by_user_item_id( $user_item_id );
+				LP_Debug::commitTransaction();
+
+				return $items;
+			}
+			catch ( Exception $ex ) {
+				LP_Debug::rollbackTransaction();
+			}
+		}
+		$items = $wpdb->get_results( $query );
+
+		return $items;
 	}
 
 	/**
@@ -1161,18 +1201,18 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// Table fields
 		$table_fields = array(
-			'user_item_id'   => '%d',
-			'user_id'        => '%d',
-			'item_id'        => '%d',
-			'ref_id'         => '%d',
-			'start_time'     => '%s',
+			'user_item_id' => '%d',
+			'user_id'      => '%d',
+			'item_id'      => '%d',
+			'ref_id'       => '%d',
+			'start_time'   => '%s',
 			//'start_time_gmt' => '%s',
-			'end_time'       => '%s',
+			'end_time'     => '%s',
 			//'end_time_gmt'   => '%s',
-			'item_type'      => '%s',
-			'status'         => '%s',
-			'ref_type'       => '%s',
-			'parent_id'      => '%d'
+			'item_type'    => '%s',
+			'status'       => '%s',
+			'ref_type'     => '%s',
+			'parent_id'    => '%d'
 		);
 
 		// Data and format

@@ -407,9 +407,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				}
 
 				LP_Object_Cache::set( $course_id, $section_items[ $course_id ], 'learn-press/course-curriculum' );
-				//$section_ids   = wp_list_pluck( $sections, 'section_id' );
-
-
 			}
 
 			return reset( $section_items );

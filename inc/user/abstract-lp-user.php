@@ -414,7 +414,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$quiz_data->set_user_id( $user->get_id() );
 
 					$date = new LP_Datetime();
-					$quiz_data->set_start_time( $date->toSql(), true );
+					$quiz_data->set_start_time( $date->toSql() );
 
 					/**
 					 * If enable duration for quiz then update the expiration time
@@ -590,9 +590,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$quiz_data->set_status( 'started' );
 
 					$date = new LP_Datetime();
-					$quiz_data->set_start_time( $date->toSql(), true );
+					$quiz_data->set_start_time( $date->toSql() );
 					$quiz_data->set_end_time( null );
-					$quiz_data->set_end_time_gmt( null );
+					//$quiz_data->set_end_time_gmt( null );
 
 					/**
 					 * If enable duration for quiz then update the expiration time
@@ -1668,27 +1668,34 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Check to see if user can retake a course, if yes return number of times
 		 *
+		 * @deprecated
+		 *
 		 * @param      $course_id
 		 * @param bool $force
 		 *
 		 * @return mixed
 		 */
 		public function can_retake_course( $course_id, $force = false ) {
+			return $this->can_retry_course( $course_id );
+		}
+
+		public function can_retry_course( $course_id ) {
 			$can = false;
 			if ( $course = learn_press_get_course( $course_id ) ) {
-				$count = $course->get_retake_count();
-				if ( $count > 0 ) {
-					// Number of taken
-					$taken = $this->count_retaken_course( $course_id, $force );
-					if ( $taken ) {
-						$can = $count - $taken;
-					} else {
-						$can = $count;
-					}
-				}
+				global $wpdb;
+
+				echo $query = $wpdb->prepare( "
+					SELECT COUNT(user_item_id)
+					FROM {$wpdb->learnpress_user_items}
+					WHERE user_id = %d 
+					AND item_id = %d 
+					AND item_type = %s
+				", $this->get_id(), $course_id, LP_COURSE_CPT );
+
+				$can = $wpdb->get_var( $query ) < 2;
 			}
 
-			return apply_filters( 'learn_press_user_can_retake_course', $can, $course->get_id(), $this->get_id() );
+			return apply_filters( 'learn-press/user-can-retry-course', $can, $this->get_id(), $course_id );
 		}
 
 		/**
@@ -1994,9 +2001,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_data->set_status( 'enrolled' );
 				$start_time = new LP_Datetime( current_time( 'mysql' ) );
 				$course_data->set_start_time( $start_time->toSql() );
-				$course_data->set_start_time_gmt( $start_time->toSql( false ) );
+				//$course_data->set_start_time_gmt( $start_time->toSql( false ) );
 				$course_data->set_end_time( '' );
-				$course_data->set_end_time_gmt( '' );
+				//$course_data->set_end_time_gmt( '' );
 				$course = learn_press_get_course( $course_id );
 
 				/**
@@ -2035,8 +2042,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		/**
 		 * Mark a lesson is completed for user
 		 *
-		 * @param     $lesson_id
-		 * @param int $course_id
+		 * @param int  $lesson_id
+		 * @param int  $course_id
+		 * @param bool $return_wp_error
 		 *
 		 * @return bool|WP_Error
 		 */
@@ -2072,14 +2080,20 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					}
 					// TODO: conflict???
 					$time = new LP_Datetime();
-					$item->set_end_time( $time->toSql(), true );
-					//
-					global $wpdb;
-					$item->set_status( 'completed' );
-					$item->update();
+					$item->set_end_time( $time->toSql( false ) );
 
-					learn_press_debug( $wpdb );
-					die();
+//					print_r($time->toSql(false));
+//					echo "\n<br />";
+//					print_r( current_time('mysql', true));
+//					die();
+					//
+					$item->set_status( 'completed' );
+					$updated = $item->update( true, true );
+
+					if ( is_wp_error( $updated ) ) {
+						return $return_wp_error ? $updated : false;
+					}
+
 					$result = $this->evaluate_course_results( $this->get_id() );
 				}
 
@@ -2617,7 +2631,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$user_course = new LP_User_Item_Course( $course_item );
 				$user_course->set_status( 'enrolled' );
-				$user_course->set_end_time_gmt( '0000-00-00 00:00:00' );
+				//$user_course->set_end_time_gmt( '0000-00-00 00:00:00' );
 
 				// Added since 3.3.0
 				if ( $course_duration ) {

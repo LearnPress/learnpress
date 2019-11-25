@@ -16,7 +16,7 @@ if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
 		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
 		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
-		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_retake_button' ), 20 );
+		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'button_retry' ), 20 );
 		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
 		add_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );
 	}
@@ -27,7 +27,7 @@ if ( ! function_exists( 'learn_press_remove_course_buttons' ) ) {
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_enroll_button' ), 5 );
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_purchase_button' ), 10 );
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_external_button' ), 15 );
-		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_retake_button' ), 20 );
+		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'button_retry' ), 20 );
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_continue_button' ), 25 );
 		remove_action( 'learn-press/course-buttons', LP()->template( 'course' )->func( 'course_finish_button' ), 30 );
 	}
@@ -2027,7 +2027,7 @@ add_filter( 'learn-press/course-item-content-html', function ( $html, $item_id, 
 
 	$course_blocking = LP()->settings()->get( 'course_blocking' );
 	$course_data     = $user->get_course_data( $course_id );
-	$end_time        = $course_data->get_end_time_gmt();
+	//$end_time        = $course_data->get_end_time_gmt();
 	//$expired_time    = $course_data->get_expiration_time_gmt();
 	ob_start();
 
@@ -2264,4 +2264,10 @@ function learn_press_get_post_level( $post_id ) {
 	$level = get_post_meta( $post_id, '_lp_level', true );
 
 	return apply_filters( 'learn-press/level-label', ucwords( $level ), $post_id );
+}
+
+function learn_press_is_preview_course() {
+	$course_id = isset( $GLOBALS['preview_course'] ) ? $GLOBALS['preview_course'] : 0;
+
+	return $course_id && get_post_type( $course_id ) === LP_COURSE_CPT;
 }

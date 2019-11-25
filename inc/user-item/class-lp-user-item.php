@@ -61,16 +61,16 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		}
 
 		if ( ! empty( $item['start_time'] ) ) {
-			$this->set_start_time( $item['start_time'], true );
+			$this->set_start_time( $item['start_time'] );
 		} else {
-			$this->set_start_time( current_time( 'mysql' ), true );
+			$this->set_start_time( current_time( 'mysql' ) );
 		}
 
 		if ( ! empty( $item['end_time'] ) ) {
 			$this->set_end_time( $item['end_time'], true );
 		} else {
 			$this->set_end_time( null );
-			$this->set_end_time_gmt( null );
+			//$this->set_end_time_gmt( null );
 		}
 
 		if ( ! empty( $item['user_id'] ) ) {
@@ -170,9 +170,13 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	public function set_start_time( $time, $bound_to_gmt = false ) {
 		$this->_set_data_date( 'start_time', $time );
 
-		if ( $bound_to_gmt ) {
-			$this->set_start_time_gmt( $this->get_start_time()->toSql( false ) );
+		if ( func_num_args() > 1 ) {
+			//_deprecated_argument( '$bound_to_gmt', '4.0.0' );
 		}
+
+//		if ( $bound_to_gmt ) {
+//			$this->set_start_time_gmt( $this->get_start_time()->toSql( false ) );
+//		}
 	}
 
 	public function get_time( $field, $format = '', $human_diff_time = false ) {
@@ -247,12 +251,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	public function set_end_time( $time, $bound_to_gmt = false ) {
 		if ( $time && $time !== '0000-00-00 00:00:00' ) {
 			$this->_set_data_date( 'end_time', $time );
-			if ( $bound_to_gmt ) {
-				$this->set_end_time_gmt( $this->get_end_time()->toSql( false ) );
-			}
+//			if ( $bound_to_gmt ) {
+//				$this->set_end_time_gmt( $this->get_end_time()->toSql( false ) );
+//			}
 		} else {
 			$this->_set_data( 'end_time', '' );
-			$this->_set_data( 'end_time_gmt', '' );
+			//$this->_set_data( 'end_time_gmt', '' );
 		}
 	}
 
@@ -803,8 +807,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 */
 	public function is_exceeded() {
 		$expiration = $this->get_expiration_time();
-		$end        = $this->get_end_time_gmt();
-		//$end        = $this->get_end_time()->getTimestamp();
+		//$end        = $this->get_end_time_gmt();
+		$end        = $this->get_end_time();
 
 		//learn_press_debug($expiration, $end);
 
@@ -850,7 +854,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			return false;
 		}
 
-		return $this->get_end_time_gmt()->getTimestamp() - $expiration->getTimestamp();
+		//return $this->get_end_time_gmt()->getTimestamp() - $expiration->getTimestamp();
+		return $this->get_end_time()->getTimestamp() - $expiration->getTimestamp();
 	}
 
 	/**

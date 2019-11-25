@@ -1,10 +1,13 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: tu
- * Date: 9/19/19
- * Time: 2:34 PM
+ * Template for displaying course currciulum in popup
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 4.0.0
  */
+
+defined( 'ABSPATH' ) or die;
 ?>
 <div id="popup-sidebar">
     <form method="post" class="search-course">
@@ -13,9 +16,13 @@
         <button name="submit"></button>
         <button type="button" class="clear"></button>
     </form>
+
 	<?php
 
-	LP()->template('course')->course_curriculum();
+	/**
+	 * Get course curriculum sections
+	 */
+	LP()->template( 'course' )->course_curriculum();
 
 	?>
 </div>

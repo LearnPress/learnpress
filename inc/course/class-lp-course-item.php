@@ -493,7 +493,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			if ( $course_author ) {
 				$author_id = $course_author->get_id();
 				if ( $author_id == $user_id ) {
-					return false;
+					//return false;
 				}
 			}
 
@@ -568,6 +568,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 						$blocked_items[ $course_item ] = 'no';
 					} elseif ( ! $block_item_types || is_array( $block_item_types ) && ! in_array( $item->get_post_type(), $block_item_types ) ) {
 						$blocked_items[ $course_item ] = 'no';
+					}
+				}
+
+				if ( $item_data = $course_item_data->get_item( $course_item ) ) {
+					if ( $item_data->get_access_level() > 0 && $item_data->get_access_level() < 50 ) {
+						$blocked_items[ $course_item ] = 'yes';
 					}
 				}
 			}

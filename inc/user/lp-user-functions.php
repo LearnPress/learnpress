@@ -449,11 +449,10 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 		'item_id'         => '%d',
 		'ref_id'          => '%d',
 		'start_time'      => '%s',
-		//'start_time_gmt'  => '%s',
 		'end_time'        => '%s',
-		//'end_time_gmt'    => '%s',
 		'expiration_time' => '%s',
-		//'expiration_time_gmt' => '%s',
+		'access_level'    => '%d',
+		'graduation'      => '%s',
 		'item_type'       => '%s',
 		'status'          => '%s',
 		'ref_type'        => '%s',
@@ -481,11 +480,8 @@ function learn_press_update_user_item_field( $fields, $where = false, $update_ca
 	$data_format      = array();
 	$date_time_fields = array(
 		'start_time',
-		//'start_time_gmt',
 		'end_time',
-		//'end_time_gmt',
 		'expiration_time',
-		//'expiration_time_gmt'
 	);
 
 	// Build data and data format

@@ -133,7 +133,6 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 		}
 		LP_Object_Cache::set( $this->get_user_id() . '-' . $this->get_id(), $items, 'learn-press/user-course-item-objects' );
 
-
 		return $items;
 	}
 

@@ -39,10 +39,11 @@ add_action( 'learn-press/template-footer', LP()->template( 'general' )->func( 't
  *
  * @see LP_Template_General::breadcrumb()
  */
-add_action( 'learn-press/before-main-content', LP()->template( 'general' )->text('<div class="lp-archive-courses">') ,-100);
+add_action( 'learn-press/before-main-content', LP()->template( 'general' )->text( '<div class="lp-archive-courses">' ), - 100 );
+add_action( 'learn-press/before-main-content', LP()->template( 'general' )->func( 'preview_course_notice' ) );
 add_action( 'learn-press/before-main-content', LP()->template( 'general' )->func( 'breadcrumb' ) );
 
-add_action( 'learn-press/after-main-content', LP()->template( 'general' )->text('</div>'), 100 );
+add_action( 'learn-press/after-main-content', LP()->template( 'general' )->text( '</div>' ), 100 );
 
 
 /**
@@ -124,7 +125,6 @@ add_action( 'learn-press/course-meta-secondary-left', LP()->template( 'course' )
 
 //add_action( 'learn-press/course-meta-primary-right', LP()->template( 'course' )->callback( 'single-course/meta/category' ) );
 //add_action( 'learn-press/course-meta-primary-right', LP()->template( 'course' )->callback( 'single-course/meta/category' ) );
-
 
 
 // Sidebar content
@@ -212,7 +212,8 @@ add_action( 'learn-press/after-content-item-summary/lp_lesson', LP()->template( 
 /**
  * @see LP_Template_Course::course_item_content()
  */
-add_action( 'learn-press/course-item-content', LP()->template( 'course' )->func( 'course_item_content' ), 5 );
+add_action( 'learn-press/course-item-content', LP()->template( 'general' )->func( 'preview_course_notice' ) );
+add_action( 'learn-press/course-item-content', LP()->template( 'course' )->func( 'course_item_content' ), 10 );
 //add_action( 'learn-press/after-course-item-content', 'learn_press_content_item_nav', 5 );
 
 /**
@@ -300,12 +301,6 @@ add_action( 'learn-press/after-empty-cart-message', LP()->template( 'general' )-
 
 // ******************************************************************************************************************* //
 
-add_action( 'learn-press/course-buttons', function () {
-	$user = LP_Global::user();
-	if ( $user->has_finished_course( get_the_ID() ) ) {
-		echo 'You finished course';
-	}
-} );
 
 add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
 add_action( 'learn-press/before-content-item-summary/lp_quiz', LP()->template( 'course' )->callback( 'content-quiz/title.php' ), 5 );

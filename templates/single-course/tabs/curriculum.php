@@ -15,7 +15,6 @@
 defined( 'ABSPATH' ) || exit();
 
 $course = LP_Global::course();
-
 ?>
 
 <div class="course-curriculum" id="learn-press-course-curriculum">

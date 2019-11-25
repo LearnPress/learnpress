@@ -175,7 +175,8 @@ input[type="password"] {
     background: #F5F5F5;
     position: relative;
     margin: 0 0 20px 0;
-    @include border-radius(5px);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
     &.icon {
         padding-left: 45px;
         &:after {
@@ -196,18 +197,29 @@ input[type="password"] {
             font-family: FontAwesome;
         }
     }
-    &:before {
+    &:before,
+    &:after {
         position: absolute;
         content: '';
         top: 0;
-        left: 0;
-        width: 5px;
-        height: 100%;
-        background: #00adff;
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
+        //border-top-left-radius: 5px;
+        //border-bottom-left-radius: 5px;
+    }
+    &:before {
+        right: 20px;
+        width: 20px;
+        height: 30px;
+    }
+    &:after {
+        width: 0;
+        height: 0;
+        border: 10px solid transparent;
+        border-bottom-color: #f5f5f5;
+        right: 20px;
+        top: 10px;
     }
     &.error {
+        border-top: 5px solid #d85554;
         &:before {
             background: #d85554;
         }
@@ -222,6 +234,10 @@ input[type="password"] {
         }
     }
     &.success {
+        border-top: 5px solid #00adff;
+        &:before {
+            background: #00adff;
+        }
         &.icon {
             &:before {
                 background: #00adff;

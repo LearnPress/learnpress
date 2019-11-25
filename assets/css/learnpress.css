@@ -2735,6 +2735,8 @@ body.confirm #popup_container {
               top: -1px;
               bottom: -1px;
               height: auto; }
+            #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item:after {
+              content: ''; }
             #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item.current {
               background: #f4f7ff; }
               #popup-course #popup-sidebar .course-curriculum .section .section-content .course-item.current:before {
@@ -3499,9 +3501,8 @@ input[type="password"] {
   background: #F5F5F5;
   position: relative;
   margin: 0 0 20px 0;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px; }
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px; }
   .learn-press-message.icon {
     padding-left: 45px; }
     .learn-press-message.icon:after {
@@ -3520,28 +3521,39 @@ input[type="password"] {
       border-radius: 50%;
       color: #FFF;
       font-family: FontAwesome; }
-  .learn-press-message:before {
+  .learn-press-message:before, .learn-press-message:after {
     position: absolute;
     content: '';
-    top: 0;
-    left: 0;
-    width: 5px;
-    height: 100%;
-    background: #00adff;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px; }
-  .learn-press-message.error:before {
-    background: #d85554; }
-  .learn-press-message.error.icon:before {
-    background: #d85554; }
-  .learn-press-message.error.icon:after {
-    content: "\f00d";
-    background: #d85554; }
-  .learn-press-message.success.icon:before {
-    background: #00adff; }
-  .learn-press-message.success.icon:after {
-    content: "\f129";
-    background: #00adff; }
+    top: 0; }
+  .learn-press-message:before {
+    right: 20px;
+    width: 20px;
+    height: 30px; }
+  .learn-press-message:after {
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-bottom-color: #f5f5f5;
+    right: 20px;
+    top: 10px; }
+  .learn-press-message.error {
+    border-top: 5px solid #d85554; }
+    .learn-press-message.error:before {
+      background: #d85554; }
+    .learn-press-message.error.icon:before {
+      background: #d85554; }
+    .learn-press-message.error.icon:after {
+      content: "\f00d";
+      background: #d85554; }
+  .learn-press-message.success {
+    border-top: 5px solid #00adff; }
+    .learn-press-message.success:before {
+      background: #00adff; }
+    .learn-press-message.success.icon:before {
+      background: #00adff; }
+    .learn-press-message.success.icon:after {
+      content: "\f129";
+      background: #00adff; }
 
 ul.list-table-nav {
   display: flex;

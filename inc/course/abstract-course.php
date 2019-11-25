@@ -278,9 +278,15 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @return bool
 		 */
 		public function is_required_enroll() {
-			$return = $this->get_data( 'required_enroll' ) == 'yes';
-			// @deprecated
-			$return = apply_filters( 'learn_press_course_required_enroll', $return, $this );
+
+//			$return = $this->get_data( 'required_enroll' ) == 'yes';
+//			// @deprecated
+//			$return = apply_filters( 'learn_press_course_required_enroll', $return, $this );
+
+			/**
+			 * Since version 4.0.0 feature 'no require enroll' has deprecated
+			 */
+			$return = true;
 
 			return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
 		}

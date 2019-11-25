@@ -126,6 +126,10 @@ class LP_Page_Controller {
 			return $post;
 		}
 
+		if ( wp_verify_nonce( LP_Request::get( 'preview' ), 'preview-' . $post->ID ) ) {
+			$GLOBALS['preview_course'] = $post->ID;
+		}
+
 		if ( ! empty( $courses[ $post->ID ] ) ) {
 			return $post;
 		}
