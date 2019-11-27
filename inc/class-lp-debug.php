@@ -307,11 +307,11 @@ class LP_Debug {
 			$time = microtime( true );
 		} else {
 			self::$log_times[ $name ][] = microtime( true ) - $time;
-			$time                     = 0;
+			$time                       = 0;
 		}
 	}
 
-	public static function getLogTimes(){
+	public static function getLogTimes() {
 		return self::$log_times;
 	}
 
@@ -402,5 +402,4 @@ class LP_Debug {
 
 	}
 }
-
 return LP_Debug::instance();

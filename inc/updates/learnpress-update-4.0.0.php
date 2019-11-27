@@ -19,6 +19,7 @@ class LP_Update_400 extends LP_Update_Base {
 			'alter_tables',
 			'update_time_field_from_time_gmt',
 			'update_expiration_time',
+			'update_item_graduation',
 			//'remove_time_gmt',
 			'update_question_answers',
 			'update_quiz_settings',
@@ -64,8 +65,54 @@ class LP_Update_400 extends LP_Update_Base {
 		$this->alter_quiz_questions();
 		$this->alter_user_itemmeta();
 		$this->alter_user_items();
+		$this->alter_sections();
+		$this->alter_section_items();
 
 		return true;
+	}
+
+	protected function alter_sections() {
+		global $wpdb;
+
+		foreach ( array( 'section_course_id', 'section_id', 'item_id' ) as $index ) {
+			try {
+				$wpdb->query( "
+					ALTER TABLE {$wpdb->learnpress_sections}
+					DROP INDEX `{$index}`;
+				" );
+			}
+			catch ( Exception $ex ) {
+			}
+		}
+
+		$wpdb->query( "
+			ALTER TABLE {$wpdb->learnpress_user_items}
+			ADD INDEX `section_course_id` (`section_course_id` ASC),
+			ADD INDEX `section_id` (`section_id` ASC),
+			ADD INDEX `item_id` (`item_id` ASC);
+		" );
+	}
+
+	protected function alter_section_items() {
+		global $wpdb;
+
+		foreach ( array( 'section_course_id', 'section_id', 'item_id' ) as $index ) {
+			try {
+				$wpdb->query( "
+					ALTER TABLE {$wpdb->learnpress_sections}
+					DROP INDEX `{$index}`;
+				" );
+			}
+			catch ( Exception $ex ) {
+			}
+		}
+
+		$wpdb->query( "
+			ALTER TABLE {$wpdb->learnpress_user_items}
+			ADD INDEX `section_course_id` (`section_course_id` ASC),
+			ADD INDEX `section_id` (`section_id` ASC),
+			ADD INDEX `item_id` (`item_id` ASC);
+		" );
 	}
 
 	protected function alter_order_itemmeta() {
@@ -189,14 +236,16 @@ class LP_Update_400 extends LP_Update_Base {
 
 		$query = "
 			ALTER TABLE {$wpdb->learnpress_user_items}
-			ADD COLUMN `graduation` VARCHAR(20) NULL AFTER `status`,
-			ADD COLUMN `access_level` TINYINT(3) NULL DEFAULT 50 AFTER `graduration` DEFAULT 
+			
 		";
-		$wpdb->query($query);
+		$wpdb->query( $query );
 
 		$query = "
-     		 ALTER TABLE `{$wpdb->prefix}learnpress_user_items` 
-     		 ADD `expiration_time` DATETIME NULL DEFAULT NULL AFTER `end_time`;
+     		ALTER TABLE `{$wpdb->prefix}learnpress_user_items` 
+     		ADD COLUMN `expiration_time` DATETIME NULL DEFAULT NULL AFTER `end_time`,
+     		ADD COLUMN `graduation` VARCHAR(20) NULL AFTER `status`,
+			ADD COLUMN `access_level` TINYINT(3) NULL DEFAULT 50 AFTER `graduation`, 
+			ADD COLUMN `u` TINYINT(3) NULL DEFAULT 0 AFTER `parent_id` 
 		";
 		$wpdb->query( $query );
 
@@ -260,47 +309,61 @@ class LP_Update_400 extends LP_Update_Base {
 			/**
 			 * Join user-items with post-meta to get user-items and duration.
 			 */
+//			$query = $wpdb->prepare( "
+//				SELECT ui.*, pm.meta_value as duration
+//				FROM {$wpdb->learnpress_user_items} ui
+//				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = ui.item_id AND pm.meta_key = %s
+//				WHERE ui.start_time <> %s AND ui.start_time <> %s
+//				ORDER BY user_item_id ASC
+//				LIMIT %d, %d
+//			", '_lp_duration', '0000-00-00 00:00:00', '', $offset, $limit );
+
 			$query = $wpdb->prepare( "
 				SELECT ui.*, pm.meta_value as duration
-				FROM {$wpdb->learnpress_user_items} ui
+				FROM ( 
+					SELECT user_id, item_id, MAX(user_item_id) max_id 
+					FROM {$wpdb->learnpress_user_items} GROUP BY user_id, item_id
+				 ) AS X
+				INNER JOIN {$wpdb->learnpress_user_items} ui ON ui.user_id = X.user_id AND ui.item_id = X.item_id AND ui.user_item_id = X.max_id 
 				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = ui.item_id AND pm.meta_key = %s
-				WHERE ui.start_time_gmt <> %s
+				WHERE ui.start_time <> %s AND ui.start_time <> %s
 				ORDER BY user_item_id ASC
 				LIMIT %d, %d
-			", '_lp_duration', '0000-00-00 00:00:00', $offset, $limit );
+			", '_lp_duration', '0000-00-00 00:00:00', '', $offset, $limit );
 
 			if ( ! $user_items = $wpdb->get_results( $query ) ) {
 				return true;
 			}
 
-			LP_Debug::instance()->add( $query, 'upgrade-' . $this->version );
-			LP_Debug::instance()->add( $user_items, 'upgrade-' . $this->version );
+			learn_press_debug_add( $query, 'upgrade-' . $this->version );
+			learn_press_debug_add( $user_items, 'upgrade-' . $this->version );
 			LP_Debug::startTransaction();
 
 			foreach ( $user_items as $user_item ) {
+				$expiration_time = '0000-00-00 00:00:00';
+				$query = "
+						UPDATE {$wpdb->learnpress_user_items}
+						SET expiration_time = %s,
+							access_level = %d,
+							u = 1
+						WHERE user_item_id = %d
+					";
 
-				// Ignore if duration is not set
-				if ( ! $user_item->duration ) {
-					continue;
+				// Ignore if duration is not set and ensure we have swapped start_time and start_time_gmt values
+				if ( $user_item->duration && !(! $user_item->start_time || $user_item->start_time == '0000-00-00 00:00:00')) {
+					// Expiration time = Start time + Duration
+					$duration        = new LP_Duration( $user_item->duration );
+					$expiration_time = learn_press_date_end_from( $duration->get(), strtotime( $user_item->start_time ) );
 				}
 
-				if ( ! $user_item->start_time_gmt || $user_item->start_time_gmt === '0000-00-00 00:00:00' ) {
-					continue;
-				}
-
-				$duration        = new LP_Duration( $user_item->duration );
-				$expiration_time = learn_press_date_end_from( $duration->get(), strtotime( $user_item->start_time_gmt ) );
-
-				$query = $wpdb->prepare( "
-							UPDATE {$wpdb->learnpress_user_items}
-							SET expiration_time = %s
-							WHERE user_item_id = %d
-						",
+				$query = $wpdb->prepare(
+					$query,
 					$expiration_time,
+					50, // default is accessible
 					$user_item->user_item_id
 				);
 
-				LP_Debug::instance()->add( $query, 'upgrade-' . $this->version );
+				learn_press_debug_add( $query, 'upgrade-' . $this->version );
 
 				$wpdb->query( $query );
 
@@ -316,15 +379,41 @@ class LP_Update_400 extends LP_Update_Base {
 		return false;
 	}
 
+	public function update_item_graduation(){
+		global $wpdb;
+
+		$query = $wpdb->prepare("
+			UPDATE {$wpdb->learnpress_user_items} ui
+			SET graduation = (
+				SELECT meta_value
+				FROM {$wpdb->learnpress_user_itemmeta}
+				WHERE meta_key = %s 
+				AND learnpress_user_item_id = ui.user_item_id
+			)
+			WHERE ui.u = %d
+		", 'grade', 1);
+		$wpdb->query($query);
+
+		$wpdb->query("ALTER TABLE {$wpdb->learnpress_user_items} DROP COLUMN u");
+
+		return true;
+	}
+
+	/**
+	 * Swap value between start_time/start_time_gmt and end_time/end_time_gmt
+	 * The field start_time_gmt/end_time_gmt are no longer used therefore
+	 * we keep them to backup values of start_time/end_time fields.
+	 *
+	 * @return bool
+	 */
 	public function update_time_field_from_time_gmt() {
 		global $wpdb;
 
-		return true;
 		$query = $wpdb->prepare( "
 			UPDATE {$wpdb->learnpress_user_items} 
 			SET 
-				`start_time` = `start_time_gmt`,
-				`end_time` = `end_time_gmt`
+				start_time = (@temp:=start_time), start_time = start_time_gmt, start_time_gmt = @temp,
+				end_time = (@temp:=end_time), end_time = end_time_gmt, end_time_gmt = @temp
 			WHERE %d
 		", 1 );
 
@@ -333,6 +422,9 @@ class LP_Update_400 extends LP_Update_Base {
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function remove_time_gmt() {
 		global $wpdb;
 

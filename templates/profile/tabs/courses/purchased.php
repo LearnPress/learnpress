@@ -29,7 +29,7 @@ $counts        = $query['counts'];
 	<?php if ( $filters = $profile->get_purchased_courses_filters( $filter_status ) ) { ?>
         <ul class="lp-sub-menu">
 			<?php foreach ( $filters as $class => $link ) {
-				$count = $counts[ $class ];
+				$count = isset( $counts[ $class ] ) ? $counts[ $class ] : 0;
 				if ( ! $count ) {
 					continue;
 				}

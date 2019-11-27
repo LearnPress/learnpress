@@ -3402,20 +3402,35 @@ function learn_press_get_expired_courses() {
 }
 
 /**
- * Add error to log file.
+ * Add debug log
  *
- * @since x.x.x
+ * @since 4.0.0
  *
- * @param mixed $data
+ * @param mixed  $message
+ * @param string $handle
+ * @param bool   $clear
+ * @param bool   $force
  */
-function learn_press_error_log( $data ) {
-	if ( ! is_string( $data ) ) {
+function learn_press_debug_add( $message, $handle = 'log', $clear = false, $force = false ) {
+	LP_Debug::instance()->add( $message, $handle, $clear, $force );
+}
+
+/**
+ * Add new error log. Support message as an array|object.
+ * Convert message to string if it is not a string.
+ *
+ * @since 4.0.0
+ *
+ * @param mixed $value
+ */
+function learn_press_error_log( $value ) {
+	if ( is_array( $value ) || is_object( $value ) ) {
 		ob_start();
-		print_r( $data );
-		$data = ob_get_clean();
+		print_r( $value );
+		$value = ob_get_clean();
 	}
 
-	error_log( $data . "\n" );
+	error_log( $value );
 }
 
 /**

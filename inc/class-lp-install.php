@@ -918,7 +918,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					section_order bigint(10) unsigned NOT NULL DEFAULT '1',
 					section_description longtext NOT NULL,
 					PRIMARY KEY (section_id),
-					KEY section_course_id (section_course_id)
+					KEY section_course_id (section_course_id),
+					KEY section_name (section_name);
 				) $collate;";
 			}
 
@@ -945,11 +946,16 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					expiration_time datetime DEFAULT NULL,
 					item_type varchar(45) NOT NULL DEFAULT '',
 					status varchar(45) NOT NULL DEFAULT '',
+					graduation varchar(20) NULL DEFAULT NULL,
+					access_level int(3) NOT NULL DEFAULT 50,
 					ref_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					ref_type varchar(45) DEFAULT '',
 					parent_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					PRIMARY KEY (user_item_id),
-					KEY parent_id (parent_id)
+					KEY parent_id (parent_id),
+					KEY user_id (user_id),
+					KEY item_id (item_id),
+					KEY ref_id (ref_id)
 				) $collate;";
 			}
 

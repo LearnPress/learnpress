@@ -224,70 +224,69 @@ class LP_Preview_Course {
 //		add_filter( 'wp_count_posts', array( __CLASS__, 'reduce_counts' ), 10, 3 );
 //		add_filter( 'posts_where_paged', array( __CLASS__, 'exclude' ) );
 
-		add_action( 'template_include', function ( $template ) {
+		add_action( 'template_include', array( __CLASS__, 'template_include' ) );
+		add_action( 'wp_footer', array( __CLASS__, 'output_script' ), 1000 );
+	}
 
-			if ( ! $preview_nonce = LP_Request::get( 'preview' ) || get_post_type() !== LP_COURSE_CPT ) {
-				return $template;
-			}
+	public static function output_script() {
+		if ( learn_press_is_preview_course() ) {
+			?>
+            <script>
+                jQuery(function ($) {
 
-			if ( $preview_nonce && ! current_user_can( 'edit_lp_course' ) ) {
-				wp_redirect( remove_query_arg( 'preview' ) );
-				exit();
-			}
+                    var $elements = $('form, a');
+                    var previewNonce = '<?php echo LP_Request::get( 'preview' );?>';
 
-			if ( wp_verify_nonce( $preview_nonce, 'preview-' . get_the_ID() ) ) {
-				return $template;
-			}
+                    $elements.each(function () {
+                        var $element = $(this),
+                            link = $element.attr('href') || $element.attr('action') || '';
 
-			if ( LP_Request::get( 'preview' ) === 'true' ) {
-				$redirect_url = remove_query_arg( 'preview' );
-				$redirect_url = add_query_arg( 'preview', wp_create_nonce( 'preview-' . get_the_ID() ), $redirect_url );
-				wp_redirect( $redirect_url );
-				exit();
-			}
+                        if (link.match(/^http:\/\/localhost\/learnpress\/dev/) || !link.match(/^https?:\/\//)) {
+                            link = link.addQueryVar('preview', previewNonce);
+                        }
 
-			return $template;
-		} );
-
-		add_action( 'wp_footer', function () {
-			if ( learn_press_is_preview_course() ) {
-				?>
-                <script>
-                    jQuery(function ($) {
-
-                        var $elements = $('form, a');
-                        var previewNonce = '<?php echo LP_Request::get( 'preview' );?>';
-
-                        $elements.each(function () {
-                            var $element = $(this),
-                                link = $element.attr('href') || $element.attr('action') || '';
-
-                            if (link.match(/^http:\/\/localhost\/learnpress\/dev/) || !link.match(/^https?:\/\//)) {
-                                link = link.addQueryVar('preview', previewNonce);
-                            }
-
-                            if ($element.is('a')) {
-                                $element.attr('href', link)
-                            } else {
-                                $element.attr('src', link)
-                            }
-                        })
-
-                        $.ajaxSetup({
-                            beforeSend: function (a, b) {
-                                b.url = b.url.addQueryVar('preview', previewNonce)
-                            }
-                        });
+                        if ($element.is('a')) {
+                            $element.attr('href', link)
+                        } else {
+                            $element.attr('src', link)
+                        }
                     })
 
-                </script>
-				<?php
-				//$template = learn_press_locate_template( 'single-course-preview.php' );
+                    $.ajaxSetup({
+                        beforeSend: function (a, b) {
+                            b.url = b.url.addQueryVar('preview', previewNonce)
+                        }
+                    });
+                })
 
-				//printf( '<iframe src="%s" style="position:fixed; top: 0;left: 0;width:100%%;height: 100%%;border:0;"></iframe>', remove_query_arg('preview', learn_press_get_current_url()));die();
-			}
+            </script>
+			<?php
+		}
+	}
 
-		}, 1000 );
+	public static function template_include( $template ) {
+
+		if ( ! ( $preview_nonce = LP_Request::get( 'preview' ) ) || get_post_type() !== LP_COURSE_CPT ) {
+			return $template;
+		}
+
+		if ( $preview_nonce && ! current_user_can( 'edit_lp_course' ) ) {
+			wp_redirect( remove_query_arg( 'preview' ) );
+			exit();
+		}
+
+		if ( wp_verify_nonce( $preview_nonce, 'preview-' . get_the_ID() ) ) {
+			return $template;
+		}
+
+		if ( LP_Request::get( 'preview' ) === 'true' ) {
+			$redirect_url = remove_query_arg( 'preview' );
+			$redirect_url = add_query_arg( 'preview', wp_create_nonce( 'preview-' . get_the_ID() ), $redirect_url );
+			wp_redirect( $redirect_url );
+			exit();
+		}
+
+		return $template;
 	}
 
 	public static function reduce_counts( $counts, $type, $perm ) {
