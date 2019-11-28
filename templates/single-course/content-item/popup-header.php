@@ -32,9 +32,9 @@ $course = LP_Global::course();
         <a href="<?php echo esc_url( $course->get_permalink() ) ?>"><?php echo $course->get_title(); ?></a>
     </h2>
 
-	<?php if ( $user->can_finish_course( $course->get_id() ) ) { ?>
-        <a class="lp-button button"
-           href="<?php echo $course->get_permalink(); ?>"><?php _e( 'Back to Course', 'learnpress' ); ?></a>
-	<?php } ?>
+	<?php if ( $user->can_finish_course( $course->get_id() ) ) {
+		LP()->template( 'course' )->course_finish_button();
+
+	} ?>
 
 </div>

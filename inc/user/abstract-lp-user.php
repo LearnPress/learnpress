@@ -1706,12 +1706,24 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $this->can_retry_course( $course_id );
 		}
 
+		/**
+		 * Check if user can retry course.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param $course_id
+		 *
+		 * @return bool
+		 */
 		public function can_retry_course( $course_id ) {
 			$can = false;
+
 			if ( $course = learn_press_get_course( $course_id ) ) {
 				global $wpdb;
 
-				echo $query = $wpdb->prepare( "
+				$retry_allowed = learn_press_get_course_max_retrying( $course_id );
+
+				$query = $wpdb->prepare( "
 					SELECT COUNT(user_item_id)
 					FROM {$wpdb->learnpress_user_items}
 					WHERE user_id = %d 
@@ -1719,7 +1731,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					AND item_type = %s
 				", $this->get_id(), $course_id, LP_COURSE_CPT );
 
-				$can = $wpdb->get_var( $query ) < 2;
+				$can = $wpdb->get_var( $query ) < $retry_allowed + 1;
 			}
 
 			return apply_filters( 'learn-press/user-can-retry-course', $can, $this->get_id(), $course_id );
@@ -1734,7 +1746,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function finish_course( $course_id ) {
 			$return = false;
+
 			if ( $course = learn_press_get_course( $course_id ) ) {
+
 				if ( ! $this->can_finish_course( $course_id ) ) {
 					return false;
 				} else {
@@ -2009,61 +2023,116 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $count;
 		}
 
+		/**
+		 * @deprecated
+		 *
+		 * @param $course_id
+		 *
+		 * @return bool|WP_Error
+		 */
 		public function retake_course( $course_id ) {
-			if ( ! $this->can_retake_course( $course_id ) ) {
-				return false;
-			}
+			return $this->retry_course( $course_id );
+		}
 
+		/**
+		 * Retry course action.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param int  $course_id
+		 * @param bool $wp_error - Return WP_Error object when getting any error.
+		 *
+		 * @return bool|WP_Error
+		 */
+		public function retry_course( $course_id, $wp_error = false ) {
 			global $wpdb;
-			$result = false;
 
-			$check = apply_filters( 'learn-press/before-retake-course', true, $course_id, $this->get_id() );
+			$result = false;
+			$check  = apply_filters( 'learn-press/before-retake-course', $this->can_retry_course( $course_id ), $course_id, $this->get_id() );
+
 			if ( ! $check ) {
 				return false;
 			}
 
-			if ( $course_data = $this->get_course_data( $course_id ) ) {
-				$course_data->delete_meta_data( array( 'grade', 'via', 'exceeded' ) );
-
-				$course_data->set_status( 'enrolled' );
-				$start_time = new LP_Datetime( current_time( 'mysql' ) );
-				$course_data->set_start_time( $start_time->toSql() );
-				//$course_data->set_start_time_gmt( $start_time->toSql( false ) );
-				$course_data->set_end_time( '' );
-				//$course_data->set_end_time_gmt( '' );
-				$course = learn_press_get_course( $course_id );
-
-				/**
-				 * If enable duration for course then update the expiration time
-				 * otherwise, consider quiz is lifetime access.
-				 */
-				if ( $duration = $course->get_duration() ) {
-					$course_data->set_expiration_time( $start_time->getPeriod( $duration ), true );
-				} else {
-					$course_data->set_expiration_time( '' );
-					//$course_data->set_expiration_time_gmt( '' );
+			try {
+				if ( ! $this->has_finished_course( $course_id ) ) {
+					throw new Exception( __( 'Your are learning course.', 'learnpress' ) );
 				}
 
-				if ( $result = $course_data->update() ) {
-					$course_data->increase_retake_count();
+				$user_item_api = new LP_User_Item_CURD();
+				$find_query    = array(
+					'item_id' => $course_id,
+					'user_id' => $this->get_id()
+				);
 
-					/*
-					 * Should be deleted all user items when user retake course?
-					 */
-					$wpdb->query(
-						$wpdb->prepare( "
-						DELETE FROM {$wpdb->prefix}learnpress_user_items
-						WHERE parent_id = %d
-					", $result->user_item_id )
-					);
+				$course       = learn_press_get_course( $course_id );
+				$course_items = $user_item_api->get_items_by( $find_query );
+				$ref_id       = 0;
+				if ( $course_items ) {
+					$ref_id = $course_items[0]->ref_id;
+				}
 
-					$course_data->calculate_course_results();
-					do_action( 'learn-press/user/retaken-course', $result, $course_id, $this->get_id() );
+				$result = $this->enroll_course( $course_id, $ref_id, false, $wp_error );
+
+				if ( is_wp_error( $result ) ) {
+					throw new Exception( __( 'Retry course error!', 'learnpress' ) );
 				}
 
 			}
+			catch ( Exception $ex ) {
+				return $wp_error ? new WP_Error( 'retry-course-error', $ex->getMessage() ) : false;
+			}
+
+			/**
+			 * LP hook
+			 *
+			 * @since 4.0.0
+			 */
+			do_action( 'learn-press/user-retried-course', $result, $course_id, $this->get_id() );
 
 			return $result;
+
+//			return;
+//			{
+//				$course_data->delete_meta_data( array( 'grade', 'via', 'exceeded' ) );
+//
+//				$course_data->set_status( 'enrolled' );
+//				$start_time = new LP_Datetime( current_time( 'mysql' ) );
+//				$course_data->set_start_time( $start_time->toSql() );
+//				$course_data->set_end_time( '' );
+//				$course = learn_press_get_course( $course_id );
+//
+//				/**
+//				 * If enable duration for course then update the expiration time
+//				 * otherwise, consider quiz is lifetime access.
+//				 */
+//				if ( $duration = $course->get_duration() ) {
+//					$course_data->set_expiration_time( $start_time->getPeriod( $duration ), true );
+//				} else {
+//					$course_data->set_expiration_time( '' );
+//					//$course_data->set_expiration_time_gmt( '' );
+//				}
+//
+//				if ( $result = $course_data->update() ) {
+//					$course_data->increase_retake_count();
+//
+//					/*
+//					 * Should be deleted all user items when user retake course?
+//					 */
+//					$wpdb->query(
+//						$wpdb->prepare( "
+//						DELETE FROM {$wpdb->prefix}learnpress_user_items
+//						WHERE parent_id = %d
+//					", $result->user_item_id )
+//					);
+//
+//					$course_data->calculate_course_results();
+//					do_action( 'learn-press/user/retaken-course', $result, $course_id, $this->get_id() );
+//				}
+//
+//			}
+//
+//			return $result;
 		}
 
 		/**
@@ -2594,19 +2663,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_item  = false;
 
 				if ( $course_items ) {
-//					if ( ! $overwrite ) {
-//						learn_press_error_log( array(
-//							__CLASS__ . '::' . __FUNCTION__ . '=>Item exists',
-//							$course_items
-//						) );
-//						throw new Exception( __( 'Item exists.', 'learnpress' ) );
-//					}
-
-//					if ( $overwrite !== 'append' ) {
-//						$course_item = (array) $course_items[0];
-//					}
-
-
 					switch ( $course_items[0]->status ) {
 						case 'pending':
 						case 'enrolled':
@@ -2636,8 +2692,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 						case 'completed':
 							break;
 					}
-
-
 				}
 
 				if ( ! $course_item ) {
@@ -2647,23 +2701,23 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				$course_duration = $course->get_duration();
 				$user_id         = $this->get_id();
 
-				$date                      = new LP_Datetime();
-				$course_item['user_id']    = $user_id;
-				$course_item['item_id']    = $course_id;
-				$course_item['item_type']  = learn_press_get_post_type( $course_id );
-				$course_item['ref_id']     = $order_id;
-				$course_item['ref_type']   = ( $order_id != 0 ) ? learn_press_get_post_type( $order_id ) : '';
-				$course_item['start_time'] = $date->toSql( false );
-				//$course_item['start_time_gmt'] = $date->toSql( false );
+				$date                        = new LP_Datetime();
+				$course_item['user_id']      = $user_id;
+				$course_item['item_id']      = $course_id;
+				$course_item['item_type']    = learn_press_get_post_type( $course_id );
+				$course_item['ref_id']       = $order_id;
+				$course_item['ref_type']     = ( $order_id != 0 ) ? learn_press_get_post_type( $order_id ) : '';
+				$course_item['start_time']   = $date->toSql( false );
+				$course_item['access_level'] = 50;
+				$course_item['graduation']   = 'in-progress';
 
 				$user_course = new LP_User_Item_Course( $course_item );
 				$user_course->set_status( 'enrolled' );
-				//$user_course->set_end_time_gmt( '0000-00-00 00:00:00' );
 
 				// Added since 3.3.0
 				if ( $course_duration ) {
 					// Expiration is GTM time
-					$expiration = new LP_Datetime( $date->getPeriod( $course_duration, false ) );
+					$expiration = new LP_Datetime( $date->getPeriod( $course_duration ) );
 					$user_course->set_expiration_time( $expiration->toSql() );
 				}
 
@@ -2736,7 +2790,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 				//do_action( 'learn-press/user-enrolled-course', $course_id, $user_id, $user_course );
 
 				// @deprecated
-				do_action( 'learn_press_user_enrolled_course', $course_id, $user_id, $user_course );
+				//do_action( 'learn_press_user_enrolled_course', $course_id, $user_id, $user_course );
 
 				return $return;
 			}

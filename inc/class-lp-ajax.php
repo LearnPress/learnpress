@@ -363,7 +363,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				learn_press_add_message( __( 'Error! Invalid course or failed security check.', 'learnpress' ), 'error' );
 			} else {
 				if ( $user->can_retake_course( $course_id ) ) {
-					if ( ! $result = $user->retake_course( $course_id ) ) {
+					if ( ! $result = $user->retry_course( $course_id ) ) {
 						learn_press_add_message( __( 'Error!', 'learnpress' ), 'error' );
 					} else {
 						learn_press_add_message( sprintf( __( 'You have retaken the course "%s"', 'learnpress' ), $course->get_title() ) );

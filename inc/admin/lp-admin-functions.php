@@ -579,7 +579,7 @@ function learn_press_footer_advertisement() {
 			$full_description  = learn_press_trim_content( $theme['description'] );
 			$short_description = learn_press_trim_content( $theme['description'], 75 );
 
-			$url_demo = add_query_arg( $query_arg, $theme['attributes'][4]['value'] );
+			$url_demo = $theme['attributes'][4]['value'];
 
 			?>
             <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="slide-item">

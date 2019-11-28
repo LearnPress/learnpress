@@ -3686,4 +3686,17 @@ function learn_press_get_quiz_max_retrying( $quiz_id = 0, $course_id = 0 ) {
 	return apply_filters( 'learn-press/max-retry-quiz-allowed', 1, $quiz_id, $course_id );
 }
 
+/**
+ * Get max retrying course allowed.
+ *
+ * @since 4.0.0
+ *
+ * @param int $course_id
+ *
+ * @return int
+ */
+function learn_press_get_course_max_retrying( $course_id ) {
+	return apply_filters( 'learn-press/max-retry-course-allowed', 1, $course_id );
+}
+
 include_once dirname( __FILE__ ) . '/lp-custom-hooks.php';

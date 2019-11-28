@@ -376,21 +376,22 @@ class LP_User_Item_Course extends LP_User_Item implements ArrayAccess {
 				'count_items'     => $count_items,
 				'completed_items' => $completed_items,
 				'skipped_items'   => $count_items - $completed_items,
-				'status'          => $this->get_status(),
-				'grade'           => ''
+				'status'          => $this->get_status()
 			),
 			$results
 		);
 
+		$graduation = '';
+
 		if ( ! in_array( $this->get_status(), array( 'purchased', 'viewed' ) ) ) {
-			$results['grade'] = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
+			$graduation = $this->is_finished() ? $this->_is_passed( $results['result'] ) : 'in-progress';
 		} else {
 		}
 
 		$results = apply_filters( 'learn-press/update-course-results', $results, $this->get_item_id(), $this->get_user_id(), $this );
 
 		$this->update_meta( 'course_results_' . $course_result, $results );
-		$this->update_meta( 'grade', $results['grade'] );
+		learn_press_update_user_item_field( array( 'graduation' => $graduation ), array( 'user_item_id' => $this->get_user_item_id() ) );
 
 		return $results;
 	}

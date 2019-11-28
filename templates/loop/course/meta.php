@@ -13,10 +13,6 @@ defined('ABSPATH') or die;
 global $post;
 ?>
 
-<div class="course-categories">
-	<?php echo get_the_term_list( '', 'course_category', sprintf( '<span>%s</span>', __( 'in', 'learnpress' ) ), '|', '' ) ?>
-</div>
-
 <div class="course-tags">
 	<?php echo get_the_term_list( '', 'course_tag', '', '', '' ); ?>
 </div>
