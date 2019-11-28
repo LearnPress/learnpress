@@ -464,14 +464,33 @@ if ( ! function_exists( 'learn_press_get_item_referral' ) ) {
 	/**
 	 * Set item link referral.
 	 *
-	 * @return array
+	 * @param int|string $item_id
+	 *
+	 * @return string
 	 */
-	function learn_press_get_item_referral() {
-		return array(
-			'ref'        => 'ThimPress',
-			'utm_source' => 'lp-backend',
-			'utm_medium' => 'lp-addondashboard'
+	function learn_press_get_item_referral( $item_id ) {
+//		return array(
+//			'ref'        => 'ThimPress',
+//			'utm_source' => 'lp-backend',
+//			'utm_medium' => 'lp-addondashboard'
+//		);
+
+		$affiliate_links = array(
+			14058034      => 'https://1.envato.market/Yx2YR', // eduma
+			22773871      => 'https://1.envato.market/akrzZ', // ivy-school
+			20370918      => 'https://1.envato.market/13Zkd', // wordpress-lms
+			17097658      => 'https://1.envato.market/Xq2Ra', // coach
+			23451388      => 'https://1.envato.market/oWov9',
+			11797847      => 'https://1.envato.market/zknvM',
+//			'Sailing'     => 'https://1.envato.market/G5Rkk',
+//			'Hotel'       => 'https://1.envato.market/VW2K3',
+//			'Megabuilder' => 'https://1.envato.market/03R5V',
+//			'GALAX'       => 'https://1.envato.market/qqO6y',
+//			'MAGAZET'     => 'https://1.envato.market/xPz65',
+//			'CHARITY'     => 'https://1.envato.market/jgJ65'
 		);
+
+		return isset( $affiliate_links[ $item_id ] ) ? $affiliate_links[ $item_id ] : '';
 	}
 }
 
@@ -543,7 +562,7 @@ function learn_press_footer_advertisement() {
 		shuffle( $list_themes );
 	}
 
-	$query_arg = learn_press_get_item_referral();
+	//$query_arg = learn_press_get_item_referral();
 
 	?>
 
@@ -553,8 +572,10 @@ function learn_press_footer_advertisement() {
 			if ( empty( $theme['url'] ) ) {
 				continue;
 			}
-			$theme['url'] = add_query_arg( $query_arg, $theme['url'] );
+			//$theme['url'] = add_query_arg( $query_arg, $theme['url'] );
 			//$theme['description'] = learn_press_trim_content( $theme['description'], 10 );
+
+			$url               = learn_press_get_item_referral( $theme['id'] );
 			$full_description  = learn_press_trim_content( $theme['description'] );
 			$short_description = learn_press_trim_content( $theme['description'], 75 );
 
@@ -563,13 +584,13 @@ function learn_press_footer_advertisement() {
 			?>
             <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="slide-item">
                 <div class="slide-thumbnail">
-                    <a href="<?php echo esc_url( $theme['url'] ); ?>">
+                    <a href="<?php echo esc_url( $url ); ?>">
                         <img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>"/>
                     </a>
                 </div>
 
                 <div class="slide-detail">
-                    <h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
+                    <h2><a href="<?php echo esc_url( $url ); ?>"><?php echo $theme['name']; ?></a></h2>
                     <p class="slide-description description-full">
 						<?php echo wp_kses_post( $full_description ); ?>
                     </p>
@@ -577,7 +598,7 @@ function learn_press_footer_advertisement() {
 						<?php echo wp_kses_post( $short_description ); ?>
                     </p>
                     <p class="slide-controls">
-                        <a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary"
+                        <a href="<?php echo esc_url( $url ); ?>" class="button button-primary"
                            target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
                         <a href="<?php echo esc_url( $url_demo ); ?>" class="button"
                            target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
