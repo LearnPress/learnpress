@@ -2320,9 +2320,10 @@ body.confirm #popup_container {
       font-size: 24px;
       display: block;
       margin: 0;
-      text-align: left; }
+      text-align: left;
+      color: #DDD; }
       .lp-courses-bar .switch-layout .switch-btn:before {
-        color: #0c6573;
+        color: #DDD;
         display: inline-block;
         line-height: 1;
         margin: 8px 6px;
@@ -2333,26 +2334,8 @@ body.confirm #popup_container {
         content: "\f0ca"; }
       .lp-courses-bar .switch-layout .switch-btn.active:before {
         color: #00a0d2; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(1):checked ~ .switch-btn:nth-child(2) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(3):checked ~ .switch-btn:nth-child(4) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(5):checked ~ .switch-btn:nth-child(6) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(7):checked ~ .switch-btn:nth-child(8) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(9):checked ~ .switch-btn:nth-child(10) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(11):checked ~ .switch-btn:nth-child(12) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(13):checked ~ .switch-btn:nth-child(14) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(15):checked ~ .switch-btn:nth-child(16) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(17):checked ~ .switch-btn:nth-child(18) {
-      display: none; }
-    .lp-courses-bar .switch-layout input[type="radio"]:nth-child(19):checked ~ .switch-btn:nth-child(20) {
-      display: none; }
+    .lp-courses-bar .switch-layout input[type="radio"]:checked + .switch-btn:before {
+      color: #00a0d2; }
 
 .course-summary-content {
   width: calc(10000px); }

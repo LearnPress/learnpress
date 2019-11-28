@@ -768,6 +768,7 @@ var ModalQuizItems = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+var $ = window.jQuery;
 var QuestionList = {
   'SORT_QUESTIONS': function SORT_QUESTIONS(state, orders) {
     state.questions = state.questions.map(function (question) {
@@ -926,7 +927,6 @@ var QuestionList = {
     $Vue.set(state.statusUpdateQuestionAnswer, question_id, 'failed');
   },
   'DELETE_ANSWER': function DELETE_ANSWER(state, data) {
-    console.log('A');
     state.questions.map(function (question, index) {
       if (question.id == data.question_id) {
         for (var i = 0, n = question.answers.length; i < n; i++) {

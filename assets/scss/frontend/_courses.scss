@@ -342,8 +342,9 @@
             display: block;
             margin: 0;
             text-align: left;
+            color: #DDD;
             &:before {
-                color: #0c6573;
+                color: #DDD;
                 display: inline-block;
                 line-height: 1;
                 margin: 8px 6px;
@@ -364,11 +365,16 @@
             }
         }
 
-        @for $i from 0 through 9 {
-            input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
-                display: none;
+        input[type="radio"]:checked + .switch-btn {
+            &:before {
+                color: #00a0d2;
             }
         }
+        //@for $i from 0 through 9 {
+        //    input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
+        //        display: none;
+        //    }
+        //}
 
     }
 

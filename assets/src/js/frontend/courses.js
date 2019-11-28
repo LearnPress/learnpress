@@ -3,7 +3,7 @@
 
     const fetchCourses = function (args) {
         var url = args.url || lpGlobalSettings.courses_url;
-        var $wrapElement = args.wrapElement || '#lp-archive-courses';
+        var $wrapElement = args.wrapElement || '.lp-archive-courses';
 
         delete args.url;
         delete args.wrapElement;
@@ -83,18 +83,25 @@
         event.preventDefault();
 
         var permalink = $(event.target).attr('href');
+        var s = $('.search-courses input[name="s"]').val();
 
         if (!permalink) {
             return;
         }
 
+        if (s) {
+            permalink = permalink.addQueryVar('s', s);
+        } else {
+            permalink = permalink.removeQueryVar('s');
+        }
+
         fetchCourses({
-            url: permalink.addQueryVar('s', $('.search-courses input[name="s"]').val())
+            url: permalink
         })
     };
 
     const bindEventCoursesLayout = function () {
-        $('#lp-archive-courses')
+        $('.lp-archive-courses')
             .on('keyup', '.search-courses input[name="s"]', searchCourseHandler)
             .on('change', 'input[name="lp-switch-layout-btn"]', switchCoursesLayoutHandler)
             .on('click', '.learn-press-pagination .page-numbers', coursePaginationHandler);

@@ -20,10 +20,11 @@ const Cookies = {
         return ret;
     },
 
-    set: function (name, value, expires, domain, path, secure) {
-
+    set: function (name, value, expires, path, domain, secure) {
+        console.log(arguments)
+        ;
         if (arguments.length > 2) {
-            wpCookies.set(name, value, expires, domain, path, secure)
+            wpCookies.set(name, value, expires, path, domain, secure)
         } else {
             var ck = wpCookies.get('LP');
 
@@ -35,7 +36,7 @@ const Cookies = {
 
             ck[name] = value;
 
-            wpCookies.set('LP', JSON.stringify(ck))
+            wpCookies.set('LP', JSON.stringify(ck), '', '/')
         }
     }
 };

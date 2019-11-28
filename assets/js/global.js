@@ -133,9 +133,11 @@ var Cookies = {
 
     return ret;
   },
-  set: function set(name, value, expires, domain, path, secure) {
+  set: function set(name, value, expires, path, domain, secure) {
+    console.log(arguments);
+
     if (arguments.length > 2) {
-      wpCookies.set(name, value, expires, domain, path, secure);
+      wpCookies.set(name, value, expires, path, domain, secure);
     } else {
       var ck = wpCookies.get('LP');
 
@@ -146,7 +148,7 @@ var Cookies = {
       }
 
       ck[name] = value;
-      wpCookies.set('LP', JSON.stringify(ck));
+      wpCookies.set('LP', JSON.stringify(ck), '', '/');
     }
   }
 };
